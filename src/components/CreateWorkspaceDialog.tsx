@@ -215,6 +215,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
         <CreateFromPicker
           value={draft.from}
           branches={branchSrc}
+          repoPath={repo?.path ?? null}
           disabled={busy}
           error={errors.from}
           onChange={(from) => {
