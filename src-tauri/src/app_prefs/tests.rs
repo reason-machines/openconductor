@@ -258,16 +258,17 @@ fn show_workspace_numbers_is_an_off_by_default_flag() {
     assert!(on("true"));
     assert!(!on("false"));
     assert!(!on("1"));
-    let u: AppPrefUpdate = serde_json::from_str(
-        r#"{"key":"experimental_show_workspace_numbers","value":true}"#,
-    )
-    .unwrap();
+    let u: AppPrefUpdate =
+        serde_json::from_str(r#"{"key":"experimental_show_workspace_numbers","value":true}"#)
+            .unwrap();
     assert_eq!(
         u.encode().unwrap(),
         Write::Set("experimental_show_workspace_numbers", "true".into())
     );
     assert_eq!(
-        AppPrefUpdate::ExperimentalShowWorkspaceNumbers(false).encode().unwrap(),
+        AppPrefUpdate::ExperimentalShowWorkspaceNumbers(false)
+            .encode()
+            .unwrap(),
         Write::Set("experimental_show_workspace_numbers", "false".into())
     );
 }

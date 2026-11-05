@@ -244,8 +244,9 @@ const demoPr = (over: Partial<RowPr>): RowPr => ({
 
 /** Sample data for screenshots and demos: open the app with `?demo=1`. */
 export function demoState(): AppState {
+  let number = 0;
   const ws = (name: string, status: Workspace["status"], added: number, removed: number): Workspace => ({
-    id: newId(), name, branch: name, status, diff: { added, removed }, createdAt: Date.now(),
+    id: newId(), name, branch: name, status, diff: { added, removed }, createdAt: Date.now(), number: ++number,
   });
   const repos: Repo[] = [
     {
