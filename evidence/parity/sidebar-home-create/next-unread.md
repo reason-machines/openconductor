@@ -42,11 +42,42 @@ What OpenConductor does now:
 - Codex sends: `touchWorkspace` is written through `db_touch_workspace`, so a Codex send moves `workspaces.updated_at` in conductor.db as a Reason send does through `chat_messages_save`.
 - The composer shows "Next unread" while another workspace is unread, except once the workspace's PR is merged. It goes through the same `openNextUnread` as Cmd+Alt+L.
 
+## Part 4: unread per chat
+
+Conductor keeps unread per chat. Offsets in this section are byte offsets into
+index-BGEQ8YjU.js (sha256 b5b01f33...) and character offsets into
+renderApp-D_fmY7hW.js (sha256 5199d392...). The renderApp offsets in the
+tables above are character offsets too, although they are labeled as bytes.
+For example, `g1o` is character 7,528,638 and byte 7,571,854. The file has
+multi-byte characters, so the two differ.
+
+| What | Where | Behavior |
+| --- | --- | --- |
+| Store | index `ret` @1,107,987 (SQL @1,108,155), `setUnread` @1,513,567 | `UPDATE sessions SET unread_count = ? WHERE id = ?`. An automatic mark for the turn the user has already seen is skipped (`ZO`). |
+| Mark workspace read | index `ntt` @1,141,633, `markWorkspaceAsRead` @1,521,162 | Every unread session of the workspace is set to 0, and the cached sessions are set to read. |
+| Workspace unread | renderApp `zJo` @9,817,319, `Zji` @9,773,017 | `sessions.filter(s => !s.isHidden).some(s => s.unread)`. |
+| Hand marks | renderApp `nV` @7,271,784 | `manuallyUnreadSessions` is a map of session to workspace, with `markManuallyUnread`, `clearManuallyUnread(session)` and `clearManuallyUnreadForWorkspace(workspace)`. |
+| Row menu | renderApp @7,305,700 to @7,306,400 | On an unread workspace, "Mark as read" runs `markWorkspaceAsRead(n)` and `F(n)`, which clears the workspace's hand marks. Otherwise, when the workspace has a selected session `H`, "Mark as unread" runs `setUnread(H, true)` and `markManuallyUnread(H)`. |
+| Chat tab menu | renderApp `Q` @7,376,974, menu @7,377,868 | Toggles that chat's unread flag. Marking it unread adds a hand mark, and marking it read removes it. |
+| Row click | renderApp `SFi` @9,882,235, click @9,885,300, `fea` @9,881,877, `$Zo` @9,859,690 | The row's attention session `G` is loaded only while the row is selected. It is the first session that is unread or in a needs_* status. A click on an unselected row, or on a row without `G`, navigates to the workspace. Otherwise the click marks `G` read when it is unread, then runs `navigateToSession(G)`. |
+| Next unread | renderApp `g1o` @7,528,638 | Candidates are all sessions in Qre order, skipping hidden sessions, sessions with no workspace, the selected session and read sessions, in visible workspaces. It navigates to the first one and does not mark it read itself; read-on-view does that. |
+| Read on view | renderApp `yIo` @8,716,730 | Per session. On mount it clears that session's hand mark (`xIo`). It then marks the session read if it is unread, visible and focused, with no hand mark. |
+
+What OpenConductor does now:
+
+- DB crate: `sessions::upsert_unread` creates the chat's row in its workspace, or fills a null `workspace_id` (rows from `chat_messages::save` have none, and Codex chats have no row). `sessions::unread_chats` lists unread, non-hidden chats.
+- src-tauri: `db_set_chat_unread` and `db_mark_workspace_read` replace `db_set_workspace_unread`. Both clear the legacy `workspaces.unread`: reading the main chat clears it, and so does Mark as read. `db_list_workspaces` rows carry `unreadChats`.
+- `Workspace.unreadChats` (`{id, at}`, where `at` is the row's `updated_at`) is the only unread state. The workspace's unread state is derived from it (`src/state/chatUnread.ts`). A legacy `workspaces.unread = 1` is folded into the main chat (`persisted.ts`).
+- Auto-unread marks the chat. Read-on-view reads only the shown chat. Hand marks are per chat.
+- The row menu, the row click and the chat tab menu follow the table above. The row click needs-attention check reads the chat statuses without changing them.
+- Next unread picks chats in Qre order, skipping the selected chat on the keyboard and button paths. It opens the chat's tab: `state/openChat.ts` carries the request, and `WorkspaceView` takes it. It still marks the chat read explicitly, which matches Conductor in effect because the button and key need a focused window.
+
 ## Differences that remain
 
-1. The unit is the workspace, not the chat: marks land on `workspaces.unread`. Conductor keeps them per chat in `sessions.unread_count`. Our `sessions` table already has that column, with `sessions::set_unread` and `mark_workspace_read`, so no migration is needed. The chat rows lack `workspace_id`, and nothing reads the column yet. Next PR.
-2. Plan and question waits are not hooked: our chats have no needs_* status yet (cdb73745, #428). Codex approval requests are hooked.
-3. There is no `next_unread_used` telemetry.
+1. Review tabs live in memory (`features/diff/ReviewButton.tsx`). After a restart, a stored unread review chat has no tab, so it counts as hidden, as Conductor's hidden sessions do: it does not keep the row bold, and Next unread skips it. Closing a review tab marks it read. Its DB row keeps `unread_count = 1` until the workspace is marked read.
+2. Plan and question waits are not hooked, because our chats have no needs_* status yet (cdb73745, #428). The row click already follows a needs_* chat status when one is reported.
+3. The chat tab menu has only the read and unread item. Rename, fork, copy transcript and close are not built. Chat tabs carry `data-unread`, but there is no unread dot yet.
+4. There is no `next_unread_used` telemetry.
 
 ## REA
 
@@ -58,3 +89,7 @@ What OpenConductor does now:
 - Browser test: `node --test tests/e2e/next-unread.e2e.mjs`, after `npm run build`.
 
 Follow-up: `rea trace-javascript-semantics` with seeds `markUnreadIfNotViewing`, `isSessionInView`, `Next unread` and the `unread_count` UPDATE (REA 6.7.0 on sven m5 max) all came back partial with 0 seed matches, so the offsets above come from plain-text reads. Runtime state is from a read-only query of Sven's conductor.db. All three are logged in evidence/rea/rea-invocations.tsv (ws_unread_auto_*).
+
+Part 4: `rea trace-javascript-semantics` with seeds `markWorkspaceAsRead`, `needs_plan_response` (the row click's attention filter) and `UPDATE sessions SET unread_count = 0 WHERE workspace_id = ?` (REA 6.7.0 on sven m5 max) all exited 0 with status partial, `seed_node_ids` [] and 0 seed matches. This is the same gap as before. The part-4 offsets come from plain-text reads of `/tmp/rea` copies with matching sha256 (ws_unread_chat_*).
+
+Part 4 checks: `cargo test` in crates/openconductor-db, `bash evidence/persistence/run-tests.sh`, `node --test src/state/chatUnread.test.ts src/state/openChat.test.ts src/state/autoUnread.test.ts src/state/nextUnread.test.ts src/state/persisted.test.ts`, and `TMPDIR=/tmp/<short> node --test tests/e2e/next-unread.e2e.mjs` (tests 3 and 4 are new).
