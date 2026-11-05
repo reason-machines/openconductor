@@ -140,13 +140,10 @@ async function send(text) {
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
-/** Opens every collapsed "N tool calls" summary, then expands every tool row and returns each row's tool input. */
+/** Opens every collapsed "N tool calls" summary, then returns each tool row's input as the agent reported it. */
 const toolInputs = () =>
   run(`for (const b of document.querySelectorAll('.chat-tool-summary-row[aria-expanded="false"]')) b.click(); return true;`).then(() =>
-  run(`
-    for (const b of document.querySelectorAll('.chat-tool-head[aria-expanded="false"]')) b.click();
-    return [...document.querySelectorAll('.chat-tool-body > pre:first-child')].map((p) => p.textContent);
-  `)).then((texts) => texts.map((t) => JSON.parse(t)));
+  run(`return [...document.querySelectorAll('.chat-tool[data-tool-input]')].map((e) => e.dataset.toolInput);`)).then((texts) => texts.map((t) => JSON.parse(t)));
 
 /** A finished turn has no Stop button. */
 const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await running()));
@@ -237,7 +234,10 @@ try {
   await waitFor("the Stop button", running);
   // Stop once the agent runs the turn (its tool row shows), so the fake CLI
   // counts it; a Stop before the prompt reaches Reason never sends it.
-  await waitFor('the "bash: sleep" tool row', () => chatText().then((t) => t.includes("bash: sleep")));
+  // Conductor's row: the tool name ("Bash") with the command in a chip ("sleep").
+  await waitFor('the Bash "sleep" tool row', () =>
+    run(`return [...document.querySelectorAll(".chat-tool")].some((r) => /\\bBash\\b/.test(r.innerText) && r.innerText.includes("sleep"));`),
+  );
   await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
   await waitFor('"Interrupted by user"', () => chatText().then((t) => t.includes("Interrupted by user")), 15000);
   await turnDone(4);
