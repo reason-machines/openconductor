@@ -326,10 +326,14 @@ try {
     runAsync(`const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke("session_statuses").then(done, (e) => done({ error: String(e) }));`);
   const needsPermission = (list) => list.some((i) => i.status === "needs-user-permission" && i.label === "Needs permission");
   await send("permission");
+  // The fake runs its "bash: rm -rf build" tool row first, then asks.
+  await waitFor('the "bash: rm -rf build" tool row', () => chatText().then((t) => t.includes("bash: rm -rf build")));
+  await waitFor("Needs permission on the sidebar row", async () => needsPermission(await sidebarStatus()), 15000).catch(async (e) => {
+    throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await sidebarStatus())}`);
+  });
   const card = await waitFor("the permission card", () => run(`const c = document.querySelector('[data-testid="chat-permission-request"]'); return c ? c.innerText : null;`));
   assert.match(card, /Approve tool use/);
   assert.match(card, /bash: rm -rf build/);
-  await waitFor("Needs permission on the sidebar row", async () => needsPermission(await sidebarStatus()));
   const storedRows = await waitFor("needs_user_permission in conductor.db", async () => {
     const rows = await storedStatuses();
     return Array.isArray(rows) && rows.some((r) => r.chatId === workspace.id && r.status === "needs_user_permission") && rows;
