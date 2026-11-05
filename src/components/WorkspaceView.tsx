@@ -48,6 +48,7 @@ import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest"
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
+import { AllFilesTree } from "../features/files/AllFilesTree";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
 import { BranchPicker } from "../features/pr/edit/BranchPicker";
@@ -539,9 +540,10 @@ interface RightPanelProps {
   /** Fix errors: send to the workspace's own chat. */
   sendToChat: (text: string, attachments: TextAttachment[]) => void;
   readOnly: boolean;
+  notify?: ArchiveNotify;
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly }: RightPanelProps) {
+function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly, notify }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -584,11 +586,7 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
           readOnly={readOnly}
         />
       ) : (
-        <div className="diff-body">
-          <div className="placeholder small">
-            <p>File tree of the worktree will appear here.</p>
-          </div>
-        </div>
+        <AllFilesTree worktree={worktree} notify={notify} />
       )}
     </section>
   );
@@ -915,6 +913,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               repo={repo}
               sendToChat={sendToChat}
               readOnly={workspace.status === "archived"}
+              notify={notify}
             />
             <ScriptsPanel repo={repo} workspace={workspace} />
           </div>
