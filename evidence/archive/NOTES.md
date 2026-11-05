@@ -145,7 +145,7 @@ the UI was checked in the browser build only.
 |---|---|---|---|
 | Already archived returns at once (@ ~1,063,549) | `flow::archive_workspace` early return | `archive_runs_the_script_records_the_row_and_removes_the_worktree` (second call) | implemented |
 | Per-workspace dedupe (`dedupedWorkspaceArchiving`) | `flow::InFlightArchives` (managed state) | `a_second_archive_while_one_runs_returns_at_once` | implemented |
-| Running agents ask first, then archive with `stopRunningAgents` (`W0`, @ ~3,299,721, dialog @ ~10,888,900) | `startArchive` / `blockedByAgents`, `ArchiveRunningDialog` | `startArchive asks instead of archiving over a running agent…`, `the running-agents dialog uses Conductor's copy` | partial: "Stop agents and archive" archives but does not cancel the agent's turn (see gaps) |
+| Running agents ask first, then archive with `stopRunningAgents` (`W0`, @ ~3,299,721, dialog @ ~10,888,900) | `startArchive` / `blockedByAgents`, `ArchiveRunningDialog` | `startArchive asks instead of archiving over a running agent…`, `the running-agents dialog uses Conductor's copy` | done: a running Reason or Codex chat blocks a plain archive; "Stop agents and archive" stops every chat of the workspace (`stopWorkspaceAgents`, `archiveAgents.test.ts`) |
 | Missing path / not a worktree is `WORKSPACE_CORRUPTED` (`hv` @ ~667,504) | `prepare` | `missing_directory_is_workspace_corrupted`, `a_missing_directory_is_workspace_corrupted_and_unknown_ids_fail` | implemented |
 | Whole worktree saved as checkpoint `conductor-archive-<id>` (`mYe`) | `prepare` via `checkpoint::save(force)` | `full_archive_saves_dirty_state_…` | implemented (id maps `/` to `-`, see differences) |
 | Conflict residue (102): stage unmerged paths, retry (`mYe`) | `prepare`, `stage_unmerged` | `abandoned_conflict_residue_is_staged_then_saved` | implemented |
@@ -155,7 +155,7 @@ the UI was checked in the browser build only.
 | `ensureLocalBranch`: checked-out branch, else the stored one, no deletion on detached HEAD | `prepare` | `detached_head_keeps_the_stored_branch_and_deletes_nothing` | implemented |
 | Archive commit = HEAD under `refs/conductor-archive-heads/<id>` (`vYe`) | `prepare`, `archive_head_ref` | `full_archive_…`, `delete_branch_on_archive_…` | implemented |
 | Row `state='archived'`, `branch`, `archive_commit` (`SYe`) | `openconductor_db::workspaces::archive` from `flow` | `archive_runs_the_script_records_the_row_…` | implemented |
-| Setup cancelled, run script killed, terminals destroyed (`mYe`, `Z$`) | `setup.cancel`, `runs.stop` in `flow`; terminals by `App`'s `removedWorkspaceIds` effect | not separately tested | partial: sessions are not cancelled |
+| Setup cancelled, run script killed, terminals destroyed (`mYe`, `Z$`) | `setup.cancel`, `runs.stop` in `flow`; terminals by `App`'s `removedWorkspaceIds` effect | not separately tested | sessions: every Reason and Codex chat of the workspace is stopped before `archive_workspace` runs (`Z$` @974,867 cancels every session; `archiveAgents.test.ts`) |
 | Archive script in the worktree before removal; failure is a toast (`wYe`, `qBt`) | `ScriptService::run_archive` from `flow`, notice "Archive script failed (exit code N)" | `archive_runs_the_script_…` (cwd, file present, env), `a_failing_archive_script_is_reported_…` | implemented (no "View logs" button) |
 | `.context` moved to `<root>/archived-contexts/<repo>/<dir>` (`Bmt`) | `archive_context_folder` | `full_archive_…`, `context_folder_replaces_an_older_archived_copy` | implemented |
 | Worktree removed, `rm -rf` + prune fallback with its toasts (`Vpe`) | `remove_worktree` | `full_archive_…`, `remove_worktree_falls_back_…` | implemented |
@@ -197,9 +197,11 @@ the UI was checked in the browser build only.
 
 ## Gaps
 
-- **Stop agents:** after "Stop agents and archive" the workspace view closes,
-  but the running chat turn is not cancelled; Conductor cancels each session
-  (`cancelSession`, `compressLogsAfterStop`). Only the frontend knows chat ids.
+- **Stop agents:** "Stop agents and archive" stops every Reason and Codex chat
+  of the workspace (`codex_cancel` for Codex) before the backend removes the
+  folder, as Conductor's `Z$` (@974,867) cancels every session. It does not
+  wait for the agent to confirm the stop, and Conductor's
+  `compressLogsAfterStop` has no counterpart.
 - **Unarchive restore dialog:** Conductor asks what to do when the branch was
   deleted, moved or is checked out elsewhere, and can restore onto a new,
   uniquely named branch. We recreate a deleted branch under its own name at
