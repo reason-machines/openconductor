@@ -9,7 +9,7 @@
 
 use sqlx::SqlitePool;
 
-use crate::{Error, Result};
+use crate::{exec_one, Error, Result};
 
 /// One row of `repos`, with the reference's NULL fallbacks applied.
 #[derive(Debug, Clone, PartialEq, Eq, sqlx::FromRow)]
@@ -44,6 +44,24 @@ pub struct NewRepo {
     pub remote: Option<String>,
     pub default_branch: Option<String>,
     pub hidden: bool,
+}
+
+/// Per-repository scripts, prompts and workspace-file settings.
+#[derive(Debug, Clone, Default, PartialEq, Eq, sqlx::FromRow)]
+pub struct RepoSettings {
+    pub setup_script: Option<String>,
+    pub run_script: Option<String>,
+    /// `concurrent` (default) or `nonconcurrent`.
+    pub run_script_mode: Option<String>,
+    pub archive_script: Option<String>,
+    pub custom_prompt_general: Option<String>,
+    pub custom_prompt_code_review: Option<String>,
+    pub custom_prompt_create_pr: Option<String>,
+    pub custom_prompt_fix_errors: Option<String>,
+    pub custom_prompt_resolve_merge_conflicts: Option<String>,
+    pub custom_prompt_rename_branch: Option<String>,
+    pub file_include_globs: Option<String>,
+    pub spotlight_testing: Option<bool>,
 }
 
 /// Add a repository at the end of the list (`display_order` one past the
@@ -90,6 +108,102 @@ pub async fn find_reusable_hidden(pool: &SqlitePool, root_path: &str) -> Result<
     .bind(root_path)
     .fetch_optional(pool)
     .await?)
+}
+
+pub async fn set_default_branch(pool: &SqlitePool, id: &str, branch: &str) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE repos SET default_branch = ? WHERE id = ?")
+            .bind(branch)
+            .bind(id),
+        pool,
+    )
+    .await
+}
+
+/// Set the git remote name and its URL together.
+pub async fn set_remote(
+    pool: &SqlitePool,
+    id: &str,
+    remote: &str,
+    remote_url: Option<&str>,
+) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE repos SET remote = ?, remote_url = ? WHERE id = ?")
+            .bind(remote)
+            .bind(remote_url)
+            .bind(id),
+        pool,
+    )
+    .await
+}
+
+pub async fn set_hidden(pool: &SqlitePool, id: &str, hidden: bool) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE repos SET hidden = ? WHERE id = ?")
+            .bind(hidden)
+            .bind(id),
+        pool,
+    )
+    .await
+}
+
+pub async fn set_icon(pool: &SqlitePool, id: &str, icon: Option<&str>) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE repos SET icon = ? WHERE id = ?")
+            .bind(icon)
+            .bind(id),
+        pool,
+    )
+    .await
+}
+
+/// Store the repository's `conductor.json`-style config (opaque JSON text).
+pub async fn set_conductor_config(pool: &SqlitePool, id: &str, config: Option<&str>) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE repos SET conductor_config = ? WHERE id = ?")
+            .bind(config)
+            .bind(id),
+        pool,
+    )
+    .await
+}
+
+pub async fn settings(pool: &SqlitePool, id: &str) -> Result<RepoSettings> {
+    sqlx::query_as(
+        "SELECT setup_script, run_script, run_script_mode, archive_script, custom_prompt_general, \
+         custom_prompt_code_review, custom_prompt_create_pr, custom_prompt_fix_errors, \
+         custom_prompt_resolve_merge_conflicts, custom_prompt_rename_branch, file_include_globs, \
+         spotlight_testing FROM repos WHERE id = ?",
+    )
+    .bind(id)
+    .fetch_optional(pool)
+    .await?
+    .ok_or(Error::NotFound)
+}
+
+/// Replace every setting at once with `settings`.
+pub async fn update_settings(pool: &SqlitePool, id: &str, s: &RepoSettings) -> Result<()> {
+    let query = sqlx::query(
+        "UPDATE repos SET setup_script = ?, run_script = ?, run_script_mode = ?, \
+         archive_script = ?, custom_prompt_general = ?, custom_prompt_code_review = ?, \
+         custom_prompt_create_pr = ?, custom_prompt_fix_errors = ?, \
+         custom_prompt_resolve_merge_conflicts = ?, custom_prompt_rename_branch = ?, \
+         file_include_globs = ?, spotlight_testing = ? WHERE id = ?",
+    )
+    .bind(&s.setup_script)
+    .bind(&s.run_script)
+    .bind(&s.run_script_mode)
+    .bind(&s.archive_script)
+    .bind(&s.custom_prompt_general)
+    .bind(&s.custom_prompt_code_review)
+    .bind(&s.custom_prompt_create_pr)
+    .bind(&s.custom_prompt_fix_errors)
+    .bind(&s.custom_prompt_resolve_merge_conflicts)
+    .bind(&s.custom_prompt_rename_branch)
+    .bind(&s.file_include_globs)
+    .bind(s.spotlight_testing)
+    .bind(id);
+    exec_one(query, pool).await
 }
 
 /// Give `ids` display orders 0, 1, 2, ... in the order given.
