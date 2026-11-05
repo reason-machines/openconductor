@@ -16,10 +16,11 @@ interface Props {
   state: AppState;
   dispatch: Dispatch<Action>;
   onOpenDialog: (d: DialogKind, repoId?: string) => void;
+  onOpenProject: () => void;
   info: AppInfo | null;
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, info }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, info }: Props) {
   const sel = state.selection;
   return (
     <aside className="sidebar" aria-label="Repositories and workspaces">
@@ -40,7 +41,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, info }: Props) {
 
       <div className="sidebar-section-header">
         <span>Repositories</span>
-        <button className="icon-btn" title="Add repository" aria-label="Add repository" onClick={() => onOpenDialog("open")}>
+        <button className="icon-btn" title="Add repository" aria-label="Add repository" onClick={onOpenProject}>
           <PlusIcon size={14} />
         </button>
       </div>
