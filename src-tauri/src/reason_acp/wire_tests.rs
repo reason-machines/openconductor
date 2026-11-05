@@ -1,7 +1,7 @@
 use super::provider::{ProviderEvent, TurnEnd};
 use super::updates::{map_path, AgentEvent, ReasonError, ToolRow, ToolStatus};
 use super::wire::event_json;
-use serde_json::json;
+use serde_json::{json, Value};
 use std::path::Path;
 
 #[test]
@@ -66,6 +66,8 @@ fn tool_paths_say_local_or_cloud_with_the_same_relative_path() {
             map_path("/Users/sven/project/src/a.rs", cwd),
             map_path(cloud, cwd),
         ],
+        tool_name: None,
+        raw_input: None,
     };
     let v = event_json("c", &ProviderEvent::Agent(AgentEvent::Tool(row)));
     assert_eq!(v["status"], "completed");
@@ -75,6 +77,29 @@ fn tool_paths_say_local_or_cloud_with_the_same_relative_path() {
     assert_eq!(locs[1]["sessionId"], "child-1");
     assert_eq!(locs[0]["relative"], "src/a.rs");
     assert_eq!(locs[1]["relative"], "src/a.rs");
+    assert_eq!(v["toolName"], Value::Null);
+    assert_eq!(v["rawInput"], Value::Null);
+}
+
+#[test]
+fn tool_rows_carry_the_provider_tool_name_and_raw_input() {
+    let row = ToolRow {
+        id: "t2".into(),
+        title: "Grep: redirectTo".into(),
+        kind: "search".into(),
+        status: ToolStatus::Running,
+        output: None,
+        diffs: Vec::new(),
+        locations: Vec::new(),
+        tool_name: Some("Grep".into()),
+        raw_input: Some(json!({ "pattern": "redirectTo", "path": "src" })),
+    };
+    let v = event_json("c", &ProviderEvent::Agent(AgentEvent::Tool(row)));
+    assert_eq!(v["toolName"], "Grep");
+    assert_eq!(
+        v["rawInput"],
+        json!({ "pattern": "redirectTo", "path": "src" })
+    );
 }
 
 #[test]

@@ -273,6 +273,8 @@ fn tool_row(id: &str, name: &str, input: &Value, cwd: &Path) -> ToolRow {
         output: None,
         diffs,
         locations,
+        tool_name: Some(name.to_owned()),
+        raw_input: Some(input.clone()),
     }
 }
 

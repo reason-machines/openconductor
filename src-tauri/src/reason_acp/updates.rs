@@ -79,6 +79,10 @@ pub struct ToolRow {
     pub output: Option<String>,
     pub diffs: Vec<Diff>,
     pub locations: Vec<MappedPath>,
+    /// The provider's own tool name (`Grep`, `Read`, ...), when it says.
+    pub tool_name: Option<String>,
+    /// The tool's input as the provider sent it, when it did.
+    pub raw_input: Option<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -259,6 +263,14 @@ fn tool_row(u: &Value, ctx: UpdateContext) -> Option<ToolRow> {
         output: None,
         diffs: Vec::new(),
         locations: Vec::new(),
+        tool_name: [
+            &u["_meta"]["claudeCode"]["toolName"],
+            &u["_meta"]["toolName"],
+        ]
+        .into_iter()
+        .find_map(Value::as_str)
+        .map(str::to_string),
+        raw_input: Some(u["rawInput"].clone()).filter(|v| !v.is_null()),
     };
     for item in u["content"].as_array().into_iter().flatten() {
         match item["type"].as_str() {
