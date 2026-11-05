@@ -14,6 +14,7 @@ await mkdir(out, { recursive: true });
 const driver = spawn(process.env.TAURI_DRIVER ?? "tauri-driver", [], { stdio: ["ignore", "inherit", "inherit"] });
 const wd = new WebDriver();
 const results = [];
+const ctx = {}; // shared between flows, e.g. the fixture repo add-repo created
 let failed = 0;
 
 try {
@@ -22,7 +23,7 @@ try {
   for (const flow of flows) {
     const started = Date.now();
     try {
-      await flow.run(wd);
+      await flow.run(wd, ctx);
       results.push({ flow: flow.name, status: "pass", ms: Date.now() - started });
       console.log(`PASS ${flow.name}`);
     } catch (e) {

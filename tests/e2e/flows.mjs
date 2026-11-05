@@ -48,11 +48,35 @@ export const flows = [
   },
   {
     name: "add-repo",
-    async run(wd) {
+    async run(wd, ctx) {
       const repo = makeRepoFixture("e2e-demo");
+      ctx.repo = repo;
       await wd.execute("window.__OC_E2E_PICK_FOLDER__ = arguments[0];", [repo]);
       await clickByText(wd, ".home-card", "Open project");
       await wd.waitFor("e2e-demo in the sidebar", async () => (await textsOf(wd, ".sb-repo-name")).includes("e2e-demo"));
+    },
+  },
+  {
+    name: "create-workspace",
+    async run(wd, ctx) {
+      if (!ctx.repo) throw new Error("needs the add-repo flow's repo");
+      const worktrees = () => (git(ctx.repo, "worktree", "list", "--porcelain").toString().match(/^worktree /gm) ?? []).length;
+      const namesBefore = await textsOf(wd, ".sb-ws-name");
+      const treesBefore = worktrees();
+      const [add] = await wd.findAll('.sb-repo-add[aria-label="Create workspace in e2e-demo"]');
+      if (!add) throw new Error("no Create workspace button for e2e-demo");
+      await wd.click(add);
+      const [submit] = await wd.waitFor("the Create workspace dialog", () => wd.findAll('form.create-ws button[type="submit"]').then((ids) => ids.length && ids));
+      await wd.click(submit);
+      await wd.waitFor("the workspace view", async () => (await wd.findAll(".workspace")).length > 0, 60000);
+      // Adding a repo already lists one workspace, so check the new one was added.
+      const names = await wd.waitFor("one more sidebar workspace", async () => {
+        const t = await textsOf(wd, ".sb-ws-name");
+        return t.length === namesBefore.length + 1 ? t : null;
+      });
+      // The backend made a real git worktree off the fixture repo.
+      const trees = worktrees();
+      if (trees !== treesBefore + 1) throw new Error(`git worktree list has ${trees} entries, want ${treesBefore + 1} (sidebar: ${JSON.stringify(names)})`);
     },
   },
 ];
