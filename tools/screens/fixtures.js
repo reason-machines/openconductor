@@ -44,6 +44,11 @@
     if (/config .*--get/.test(cmd)) return fail("");
     if (/rev-parse --abbrev-ref HEAD|branch --show-current/.test(cmd) && wt) return ok(wt.branch + "\n");
     if (/rev-parse/.test(cmd)) return ok("2222222222222222222222222222222222222222\n");
+    const show = cmd.match(/git( -c [^ ]+)* show '?[0-9a-f]{7,40}:([^' ]+)'?/);
+    if (show) {
+      const base = diff && diff.base && diff.base[show[2]];
+      return base !== undefined ? ok(base) : fail(`fatal: path '${show[2]}' does not exist`);
+    }
     if (/merge-base/.test(cmd)) return ok("1111111111111111111111111111111111111111\n");
     if (/diff .*--numstat/.test(cmd)) return ok(diff ? diff.files.map((f) => `${f.added}\t${f.removed}\t${f.path}`).join("\n") + "\n" : "");
     if (/diff .*--name-status/.test(cmd)) return ok(diff ? diff.files.map((f) => `M\t${f.path}`).join("\n") + "\n" : "");

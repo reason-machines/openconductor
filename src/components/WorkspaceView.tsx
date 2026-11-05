@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState, type Dispatch, type FormEvent } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
-import { ArchiveIcon, BranchIcon, FileIcon, SendIcon } from "./Icons";
+import { ArchiveIcon, BranchIcon, SendIcon } from "./Icons";
+import { applyChatEvents, emptyTranscript, type ChatTranscript } from "../features/chat/reducer.ts";
+import type { ChatMessage } from "../features/chat/types.ts";
+import { Transcript } from "../features/chat/Transcript.tsx";
+import { DiffViewer } from "../features/diff/DiffViewer";
+import { renameAfterFirstMessage } from "../workspace/firstMessage";
 
 interface Props {
   repo: Repo;
@@ -9,52 +14,62 @@ interface Props {
   dispatch: Dispatch<Action>;
 }
 
-interface Message {
-  id: number;
-  role: "user" | "system";
-  text: string;
+// Chat transcripts are kept per workspace in memory until the agent runtime lands.
+const transcripts = new Map<string, ChatTranscript>();
+
+function textMessage(workspaceId: string, role: ChatMessage["role"], text: string): ChatMessage {
+  const id = `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  return { id, sessionId: workspaceId, turnId: id, role, createdAt: new Date().toISOString(), blocks: [{ type: "text", text }] };
 }
 
-// Chat transcripts are kept per workspace in memory until the agent runtime lands.
-const transcripts = new Map<string, Message[]>();
+function withMessages(t: ChatTranscript, messages: ChatMessage[]): ChatTranscript {
+  const r = applyChatEvents(t, messages.map((message) => ({ type: "upsert", message })));
+  return r.ok ? r.transcript : t;
+}
 
 /** Puts the Create-workspace dialog's first message at the top of the new workspace's chat. */
 export function seedTranscript(workspaceId: string, text: string) {
-  transcripts.set(workspaceId, [{ id: Date.now(), role: "user", text }]);
+  transcripts.set(workspaceId, withMessages(emptyTranscript(workspaceId), [textMessage(workspaceId, "user", text)]));
 }
 
-function ChatPanel({ workspace }: { workspace: Workspace }) {
-  const [messages, setMessages] = useState<Message[]>(() => transcripts.get(workspace.id) ?? []);
+function ChatPanel({ repo, workspace, dispatch }: Props) {
+  const load = () => transcripts.get(workspace.id) ?? emptyTranscript(workspace.id);
+  const [transcript, setTranscript] = useState<ChatTranscript>(load);
   const [draft, setDraft] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setMessages(transcripts.get(workspace.id) ?? []);
+    setTranscript(load());
     setDraft("");
   }, [workspace.id]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
-  }, [messages]);
+  }, [transcript]);
+
+  function sendText(text: string) {
+    const first = !transcript.messages.some((m) => m.role === "user");
+    const next = withMessages(transcript, [
+      textMessage(workspace.id, "user", text),
+      textMessage(workspace.id, "system", "No agent is connected yet. The agent runtime is a later milestone; this message stays in this workspace's local transcript."),
+    ]);
+    transcripts.set(workspace.id, next);
+    setTranscript(next);
+    if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
+  }
 
   function send(e: FormEvent) {
     e.preventDefault();
     const text = draft.trim();
     if (!text) return;
-    const next: Message[] = [
-      ...messages,
-      { id: Date.now(), role: "user", text },
-      { id: Date.now() + 1, role: "system", text: "No agent is connected yet. The agent runtime is a later milestone; this message stays in this workspace's local transcript." },
-    ];
-    transcripts.set(workspace.id, next);
-    setMessages(next);
+    sendText(text);
     setDraft("");
   }
 
   return (
     <section className="chat" aria-label="Chat">
       <div className="chat-scroll">
-        {messages.length === 0 ? (
+        {transcript.messages.length === 0 ? (
           <div className="placeholder">
             <h3>Chat with the agent</h3>
             <p>
@@ -63,11 +78,7 @@ function ChatPanel({ workspace }: { workspace: Workspace }) {
             <p className="muted">Placeholder: agent sessions are not wired up yet.</p>
           </div>
         ) : (
-          messages.map((m) => (
-            <div key={m.id} className={`msg msg-${m.role}`}>
-              {m.text}
-            </div>
-          ))
+          <Transcript transcript={transcript} onRetry={(prompt) => sendText(prompt)} />
         )}
         <div ref={endRef} />
       </div>
@@ -94,7 +105,6 @@ function ChatPanel({ workspace }: { workspace: Workspace }) {
 
 function DiffPanel({ workspace, repo }: { workspace: Workspace; repo: Repo }) {
   const [tab, setTab] = useState<"changes" | "files">("changes");
-  const hasChanges = workspace.diff.added + workspace.diff.removed > 0;
   return (
     <section className="diff" aria-label="Changes">
       <div className="tabs" role="tablist">
@@ -105,28 +115,15 @@ function DiffPanel({ workspace, repo }: { workspace: Workspace; repo: Repo }) {
           Files
         </button>
       </div>
-      <div className="diff-body">
-        {tab === "changes" ? (
-          <>
-            <div className="diff-summary">
-              <span>
-                vs <code>{repo.defaultBranch}</code>
-              </span>
-              <span className="add">+{workspace.diff.added}</span>
-              <span className="del">-{workspace.diff.removed}</span>
-            </div>
-            <div className="placeholder small">
-              <FileIcon size={22} />
-              <p>{hasChanges ? "Diff viewer placeholder: file-by-file diffs will render here." : "No changes in this workspace yet."}</p>
-              <p className="muted">Diff loading comes from the workspace backend (not wired up yet).</p>
-            </div>
-          </>
-        ) : (
+      {tab === "changes" ? (
+        <DiffViewer workspaceId={workspace.id} worktree={null} baseBranch={repo.defaultBranch} />
+      ) : (
+        <div className="diff-body">
           <div className="placeholder small">
             <p>File tree of the worktree will appear here.</p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -160,7 +157,7 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
         </div>
       </header>
       <div className="ws-split">
-        <ChatPanel workspace={workspace} />
+        <ChatPanel repo={repo} workspace={workspace} dispatch={dispatch} />
         <DiffPanel workspace={workspace} repo={repo} />
       </div>
     </div>
