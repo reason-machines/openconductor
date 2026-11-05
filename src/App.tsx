@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppStore } from "./state/store";
 import { isSidebarVisible } from "./state/selectors";
 import { isToggleLeftSidebar, isTypingTarget } from "./state/shortcuts";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
-import { OpenProjectDialog, CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
+import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
-import { appInfo, type AppInfo } from "./backend";
+import { Toaster, useToasts } from "./components/Toast";
+import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
+import { decideOpenProject, failedToAddMessage } from "./state/openProject";
+import { PaletteHost } from "./palette/PaletteHost";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
@@ -20,6 +23,26 @@ export default function App() {
     setDialog(d);
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
+  const { toasts, show, dismiss } = useToasts();
+
+  // Open project: native picker straight away, then the backend folder checks.
+  const openProject = useCallback(async () => {
+    if (!inTauri()) return show("info", "Open project needs the desktop app.");
+    try {
+      const path = await pickFolder("Select project directory");
+      if (!path) return;
+      const outcome = decideOpenProject(path, await inspectProjectFolder(path));
+      if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
+      if (outcome.kind === "needsGitHubRepo") {
+        // The "Create a private GitHub repo?" dialog lands in the next PR.
+        return show("info", outcome.needsGitInit ? `${outcome.name} is not a git repository yet.` : `${outcome.name} has no origin remote yet.`);
+      }
+      const registered = await addRepository(outcome.path);
+      dispatch({ type: "addRepo", repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
+    } catch (err) {
+      show("error", failedToAddMessage(err));
+    }
+  }, [dispatch, show]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -49,15 +72,14 @@ export default function App() {
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} info={info} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} info={info} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
         ) : (
-          <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} />
+          <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}
       </main>
-      {dialog === "open" && <OpenProjectDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
       {dialog === "clone" && <CloneDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
       {dialog === "quickstart" && <QuickStartDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
       {dialog === "create" && (
@@ -67,10 +89,15 @@ export default function App() {
           prefixSettings={{}}
           githubUsername={null}
           onClose={() => setDialog(null)}
-          onAddRepository={() => setDialog("open")}
+          onAddRepository={() => {
+            setDialog(null);
+            void openProject();
+          }}
           dispatch={dispatch}
         />
       )}
+      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
+      <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );
 }
