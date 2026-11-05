@@ -1,0 +1,1289 @@
+{
+  "schema": "openconductor.parity-checklist.v1",
+  "scope": "Sidebar, Home and Create-workspace areas",
+  "reference": "Conductor.app v0.87.6 REA Wave 0 evidence on main (evidence/frontend, evidence/sqlite, evidence/ipc, evidence/runtime, evidence/ledger)",
+  "notes": [
+    "Feature descriptions are our own words. Conductor UI strings are referenced by index into evidence/frontend/copy-catalog.json, never copied; the checker pins each index to a sha256 prefix so a regenerated catalog is detected.",
+    "Detectors are case-insensitive regexes over our source (src/, src-tauri/src/, src-tauri/migrations/, migrations/). All match = implemented, some = partial, none = missing. They are a presence signal, not proof of behaviour; the report adjudicates by reading the code.",
+    "No screenshots of Conductor exist (native UI capture blocked by TCC, see rea-test-report.md), so visual parity (layout, spacing, ordering) is not scored here."
+  ],
+  "items": [
+    {
+      "id": "sidebar.home-entry",
+      "area": "sidebar",
+      "feature": "Sidebar entry that returns to Home, plus a keyboard command to go Home",
+      "evidence": {
+        "copy": [
+          2135,
+          2050
+        ],
+        "routes": [
+          "/"
+        ]
+      },
+      "detect": [
+        "HomeIcon|HomeButton|>Home<|kind:\\s*\"home\"",
+        "go_?to_?home|goToHome|navigate\\w*\\(.{0,20}home"
+      ]
+    },
+    {
+      "id": "sidebar.top-bar",
+      "area": "sidebar",
+      "feature": "Sidebar top bar with a sidebar toggle button and back/forward history arrows",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/screens/manifest.json"
+        ]
+      },
+      "detect": [
+        "toggle_?(left_?)?sidebar|toggleSidebar",
+        "go_?back|goBack|history\\.back|navigate\\(-1\\)",
+        "go_?forward|goForward|history\\.forward"
+      ]
+    },
+    {
+      "id": "sidebar.computer-switcher",
+      "area": "sidebar",
+      "feature": "Computer/account switcher at the top of the sidebar (initial avatar, name, chevron)",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/screens/manifest.json"
+        ]
+      },
+      "detect": [
+        "computer_?switcher|ComputerSwitcher|org_?switcher|OrgSwitcher|account_?switcher|AccountSwitcher"
+      ]
+    },
+    {
+      "id": "sidebar.primary-nav",
+      "area": "sidebar",
+      "feature": "Primary nav rows Home, Create and Search above the workspace list",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/screens/manifest.json"
+        ],
+        "routes": [
+          "/",
+          "/create"
+        ]
+      },
+      "detect": [
+        "HomeIcon|>Home<",
+        "(nav|sidebar)\\w*.{0,60}create|CreateNav|create_?nav",
+        "(nav|sidebar)\\w*.{0,60}search|SearchNav|search_?nav"
+      ]
+    },
+    {
+      "id": "sidebar.repo-groups",
+      "area": "sidebar",
+      "feature": "Workspaces listed under their repository, repositories as collapsible groups",
+      "evidence": {
+        "copy": [
+          3548
+        ],
+        "schema": [
+          "workspaces.repository_id"
+        ],
+        "ledger": [
+          "repo.add"
+        ]
+      },
+      "detect": [
+        "(repo|repository)\\.workspaces|repository_?id",
+        "(collapsed|aria-expanded|toggleRepo|collapse_?repo)"
+      ]
+    },
+    {
+      "id": "sidebar.workspaces-group",
+      "area": "sidebar",
+      "feature": "Workspace list grouped under a sentence-case 'my workspaces' label rather than an uppercase repositories header",
+      "evidence": {
+        "copy": [
+          2767
+        ],
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png"
+        ]
+      },
+      "detect": [
+        "my_?workspaces|myWorkspaces"
+      ]
+    },
+    {
+      "id": "sidebar.repo-order",
+      "area": "sidebar",
+      "feature": "Manual, persisted ordering of repositories",
+      "evidence": {
+        "schema": [
+          "repos.display_order"
+        ]
+      },
+      "detect": [
+        "display_?order"
+      ]
+    },
+    {
+      "id": "sidebar.repo-hide",
+      "area": "sidebar",
+      "feature": "Hide and unhide a repository, with a toggle to show hidden ones",
+      "evidence": {
+        "copy": [
+          2115,
+          4719,
+          4049,
+          2114
+        ],
+        "schema": [
+          "repos.hidden"
+        ]
+      },
+      "detect": [
+        "repo\\.hidden|repos\\.hidden|hidden_?repo|hide_?repo|hideRepo|\\bhidden\\s+INTEGER",
+        "show_?hidden|unhide"
+      ]
+    },
+    {
+      "id": "sidebar.repo-icon",
+      "area": "sidebar",
+      "feature": "Per-repository icon (icon, emoji, favicon or uploaded image) next to the repo name",
+      "evidence": {
+        "copy": [
+          486,
+          3556,
+          3251,
+          4070
+        ],
+        "schema": [
+          "repos.icon"
+        ]
+      },
+      "detect": [
+        "repo\\.icon|repo_?icon|repoIcon|repos\\.icon",
+        "(emoji|favicon)"
+      ]
+    },
+    {
+      "id": "sidebar.add-repo",
+      "area": "sidebar",
+      "feature": "Add-repository control reachable from the sidebar",
+      "evidence": {
+        "copy": [
+          77,
+          78,
+          91
+        ],
+        "ledger": [
+          "repo.add"
+        ]
+      },
+      "detect": [
+        "add_?repo"
+      ]
+    },
+    {
+      "id": "sidebar.ws-name",
+      "area": "sidebar",
+      "feature": "Workspace row shows the workspace name, distinguishing user-set from generated names",
+      "evidence": {
+        "schema": [
+          "workspaces.workspace_name",
+          "workspaces.user_set_workspace_name"
+        ]
+      },
+      "detect": [
+        "workspace_?name|ws\\.name",
+        "user_?set_?(workspace_?)?name"
+      ]
+    },
+    {
+      "id": "sidebar.ws-branch",
+      "area": "sidebar",
+      "feature": "Workspace branch visible from the sidebar row",
+      "evidence": {
+        "schema": [
+          "workspaces.branch",
+          "workspaces.user_set_branch_name"
+        ]
+      },
+      "detect": [
+        "\\.branch\\b",
+        "user_?set_?branch"
+      ]
+    },
+    {
+      "id": "sidebar.ws-status",
+      "area": "sidebar",
+      "feature": "Status indicator from a derived status with optional manual override (default in-progress)",
+      "evidence": {
+        "copy": [
+          4796,
+          5007
+        ],
+        "schema": [
+          "workspaces.derived_status",
+          "workspaces.manual_status"
+        ],
+        "ledger": [
+          "ws.status-archive"
+        ]
+      },
+      "detect": [
+        "(workspace|ws)\\.status|derived_?status|derivedStatus",
+        "derived_?status|derivedStatus",
+        "manual_?status|manualStatus"
+      ]
+    },
+    {
+      "id": "sidebar.ws-diffstat",
+      "area": "sidebar",
+      "feature": "Line additions/deletions on each row, colored, with a setting to color unselected rows",
+      "evidence": {
+        "copy": [
+          731,
+          156
+        ]
+      },
+      "detect": [
+        "diff_?stat|diffStat|\\.diff\\.added|lines_?added|additions",
+        "\\.diff\\.removed|lines_?removed|deletions",
+        "colored_?sidebar_?diffs?|sidebar_?diff_?colors?"
+      ]
+    },
+    {
+      "id": "sidebar.ws-unread",
+      "area": "sidebar",
+      "feature": "Unread marker, mark-as-unread action and jump-to-next-unread command",
+      "evidence": {
+        "copy": [
+          2595,
+          2054,
+          2832,
+          1534
+        ],
+        "schema": [
+          "workspaces.unread"
+        ]
+      },
+      "detect": [
+        "unread",
+        "(mark_?(as_?)?unread|markUnread)",
+        "next_?unread"
+      ]
+    },
+    {
+      "id": "sidebar.ws-pinned",
+      "area": "sidebar",
+      "feature": "Pin workspaces into a pinned group at the top",
+      "evidence": {
+        "copy": [
+          3263,
+          1863,
+          1864
+        ],
+        "schema": [
+          "workspaces.pinned_at"
+        ]
+      },
+      "detect": [
+        "pinned_?at|pinnedAt",
+        "\\bpin\\b|unpin"
+      ]
+    },
+    {
+      "id": "sidebar.sections",
+      "area": "sidebar",
+      "feature": "User navigation sections: create, rename, delete, emoji; move a workspace into or out of a section",
+      "evidence": {
+        "copy": [
+          2811,
+          1066,
+          1340,
+          1341,
+          1172,
+          553,
+          488,
+          544,
+          2750,
+          3517,
+          3839,
+          3841
+        ],
+        "schema": [
+          "navigation_sections.name",
+          "navigation_sections.emoji",
+          "navigation_sections.sort_order",
+          "navigation_section_memberships"
+        ],
+        "cli": [
+          "workspace move --section"
+        ]
+      },
+      "detect": [
+        "navigation_?sections?|nav_?section",
+        "(move_?to_?section|moveToSection|section_?membership)"
+      ]
+    },
+    {
+      "id": "sidebar.drag-to-section",
+      "area": "sidebar",
+      "feature": "Drag a workspace row onto a section",
+      "evidence": {
+        "copy": [
+          1289
+        ]
+      },
+      "detect": [
+        "(onDrop|draggable|dnd|useDrag)"
+      ]
+    },
+    {
+      "id": "sidebar.ws-numbers",
+      "area": "sidebar",
+      "feature": "Workspace numbers shown optionally, with Cmd+1..9 switching",
+      "evidence": {
+        "copy": [
+          4067,
+          4293,
+          4301,
+          1692
+        ],
+        "schema": [
+          "workspaces.number"
+        ]
+      },
+      "detect": [
+        "Digit[1-9]|key\\s*===?\\s*['\"][1-9]|(Cmd|Mod|Meta)\\+[1-9]|switch_?to_?workspace",
+        "workspace_?number|workspaceNumber|show_?workspace_?numbers"
+      ]
+    },
+    {
+      "id": "sidebar.ws-next-prev",
+      "area": "sidebar",
+      "feature": "Next/previous workspace commands",
+      "evidence": {
+        "copy": [
+          2833,
+          3351
+        ]
+      },
+      "detect": [
+        "next_?workspace|nextWorkspace",
+        "prev(ious)?_?workspace|prevWorkspace|previousWorkspace"
+      ]
+    },
+    {
+      "id": "sidebar.search",
+      "area": "sidebar",
+      "feature": "Search/filter workspaces",
+      "evidence": {
+        "copy": [
+          3833,
+          2919,
+          2992
+        ]
+      },
+      "detect": [
+        "(search|filter)_?workspaces?|workspace_?(search|filter)"
+      ]
+    },
+    {
+      "id": "sidebar.rename",
+      "area": "sidebar",
+      "feature": "Rename a workspace (local only), optionally also renaming the branch",
+      "evidence": {
+        "copy": [
+          3533,
+          1382,
+          148,
+          2355,
+          458,
+          3532
+        ],
+        "cli": [
+          "workspace rename"
+        ]
+      },
+      "detect": [
+        "rename_?workspace|renameWorkspace",
+        "rename_?branch|renameBranch"
+      ]
+    },
+    {
+      "id": "sidebar.archive",
+      "area": "sidebar",
+      "feature": "Archive with confirmation, refusing while a git operation is in progress, recording an archive commit",
+      "evidence": {
+        "copy": [
+          219,
+          223,
+          224,
+          786,
+          2723,
+          4222
+        ],
+        "schema": [
+          "workspaces.state",
+          "workspaces.archive_commit"
+        ],
+        "ledger": [
+          "ws.status-archive",
+          "ws.git-busy"
+        ],
+        "cli": [
+          "workspace archive"
+        ]
+      },
+      "detect": [
+        "archive_?workspace|archiveWorkspace",
+        "archive_?commit|archiveCommit",
+        "archive[\\s\\S]{0,400}(busy|in progress)"
+      ]
+    },
+    {
+      "id": "sidebar.archived-view",
+      "area": "sidebar",
+      "feature": "Browse archived workspaces and unarchive one",
+      "evidence": {
+        "copy": [
+          4860,
+          225,
+          4680,
+          4679,
+          4568
+        ]
+      },
+      "detect": [
+        "archived_?workspaces|view_?archived",
+        "unarchive|restore_?workspace"
+      ]
+    },
+    {
+      "id": "sidebar.resize-toggle",
+      "area": "sidebar",
+      "feature": "Resizable sidebar and show/hide toggles for left and right sidebars",
+      "evidence": {
+        "copy": [
+          3592,
+          4601,
+          4595,
+          4600
+        ],
+        "ipc": [
+          "toggle_left_sidebar",
+          "toggle_right_sidebar"
+        ],
+        "ledger": [
+          "ui.window-chrome"
+        ]
+      },
+      "detect": [
+        "sidebar_?width|sidebarWidth|resize_?handle|ResizeHandle|col-resize",
+        "toggle_?(left_?)?sidebar|toggleSidebar"
+      ]
+    },
+    {
+      "id": "sidebar.footer-usage",
+      "area": "sidebar",
+      "feature": "Optional CPU/memory usage readout in the sidebar footer",
+      "evidence": {
+        "copy": [
+          4061,
+          4071
+        ]
+      },
+      "detect": [
+        "(cpu|memory)_?usage|resource_?usage"
+      ]
+    },
+    {
+      "id": "sidebar.footer-actions",
+      "area": "sidebar",
+      "feature": "Sidebar footer with help and settings icon buttons",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/screens/manifest.json"
+        ]
+      },
+      "detect": [
+        "HelpIcon|help_?button|open_?help|openHelp",
+        "SettingsIcon|open_?settings|openSettings"
+      ]
+    },
+    {
+      "id": "sidebar.transparency",
+      "area": "sidebar",
+      "feature": "Sidebar transparency (vibrancy) setting",
+      "evidence": {
+        "copy": [
+          4076
+        ],
+        "ipc": [
+          "experimental_sidebar_transparency"
+        ],
+        "ledger": [
+          "ui.window-chrome"
+        ]
+      },
+      "detect": [
+        "sidebar_?transparency|vibrancy"
+      ]
+    },
+    {
+      "id": "sidebar.colors",
+      "area": "sidebar",
+      "feature": "Sidebar background, border and width match the reference screens in light and dark",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/frontend/css-tokens.json"
+        ]
+      },
+      "detect": [
+        "--sidebar(-background)?\\s*:",
+        "(256px|left_?panel_?width)"
+      ]
+    },
+    {
+      "id": "sidebar.ws-actions",
+      "area": "sidebar",
+      "feature": "Workspace actions menu on a row (copy info, rename, archive, pin, section)",
+      "evidence": {
+        "copy": [
+          4970,
+          954,
+          899
+        ]
+      },
+      "detect": [
+        "(context_?menu|onContextMenu|workspace_?actions)"
+      ]
+    },
+    {
+      "id": "sidebar.empty-state",
+      "area": "sidebar",
+      "feature": "Empty state when there are no repositories or workspaces",
+      "evidence": {
+        "copy": [
+          2769,
+          2952
+        ]
+      },
+      "detect": [
+        "no repositories|no workspaces|empty_?state|EmptyState|repos\\.length\\s*===\\s*0|workspaces\\.length\\s*===\\s*0"
+      ]
+    },
+    {
+      "id": "sidebar.add-menu",
+      "area": "sidebar",
+      "feature": "Sidebar add menu offering the three Home actions plus recent local repositories not yet added (spinner while loading)",
+      "evidence": {
+        "copy": [
+          77,
+          78
+        ],
+        "files": [
+          "evidence/screens/home.md"
+        ]
+      },
+      "detect": [
+        "(add_?repo_?menu|AddRepoMenu|add_?menu)",
+        "recent_?(local_?)?repos|recentRepos|recents"
+      ]
+    },
+    {
+      "id": "sidebar.visibility-settings",
+      "area": "sidebar",
+      "feature": "Left sidebar visibility and width persisted as settings (default visible, width 256)",
+      "evidence": {
+        "copy": [
+          4595
+        ],
+        "ipc": [
+          "toggle_left_sidebar"
+        ],
+        "files": [
+          "evidence/screens/home.md"
+        ]
+      },
+      "detect": [
+        "left_?panel_?visible|leftPanelVisible",
+        "left_?panel_?width|leftPanelWidth"
+      ]
+    },
+    {
+      "id": "home.route",
+      "area": "home",
+      "feature": "Home is the root route and the default screen",
+      "evidence": {
+        "routes": [
+          "/"
+        ],
+        "copy": [
+          2135
+        ],
+        "ledger": [
+          "ui.routes"
+        ]
+      },
+      "detect": [
+        "HomeScreen|HomePage|kind:\\s*\"home\"",
+        "createRoute|createRootRoute|path:\\s*\"/\"|<Route"
+      ]
+    },
+    {
+      "id": "home.org-states",
+      "area": "home",
+      "feature": "Home renders nothing while the organization loads and redirects a cloud organization to all-workspaces",
+      "evidence": {
+        "routes": [
+          "/all-workspaces"
+        ],
+        "files": [
+          "evidence/screens/home.md"
+        ]
+      },
+      "detect": [
+        "(organization|org)\\w*.{0,60}(loading|isLoading)",
+        "(is_?cloud|isCloud|cloud_?org).{0,120}all-workspaces"
+      ]
+    },
+    {
+      "id": "home.layout",
+      "area": "home",
+      "feature": "Centered wordmark (light/dark variants) above three label-only entry cards in a 1-to-3 column grid, whole area a window drag region",
+      "evidence": {
+        "files": [
+          "evidence/screens/home.md"
+        ]
+      },
+      "detect": [
+        "Wordmark",
+        "data-tauri-drag-region",
+        "(grid-cols|grid-template-columns|home-entr|EntryCard)"
+      ]
+    },
+    {
+      "id": "home.colors",
+      "area": "home",
+      "feature": "Home background and entry-card fill match the reference screens in light and dark",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/frontend/css-tokens.json"
+        ]
+      },
+      "detect": [
+        "--background\\s*:\\s*(hsl\\(24 10% 7%\\)|#141110)",
+        "--secondary\\s*:"
+      ]
+    },
+    {
+      "id": "home.sidebar-toggle",
+      "area": "home",
+      "feature": "When the left sidebar is hidden, Home shows a toggle button with its shortcut, offset past the traffic lights",
+      "evidence": {
+        "copy": [
+          4595
+        ],
+        "files": [
+          "evidence/screens/home.md"
+        ]
+      },
+      "detect": [
+        "(sidebar_?hidden|!\\s*\\w*(left)?\\w*sidebar\\w*visible|leftPanelVisible\\s*&&|!leftPanelVisible)",
+        "traffic_?lights?_?clearance|traffic-lights-clearance"
+      ]
+    },
+    {
+      "id": "home.add-local",
+      "area": "home",
+      "feature": "Add an existing local repository via a folder picker, with default-branch detection",
+      "evidence": {
+        "copy": [
+          78,
+          1198,
+          968,
+          3780,
+          2442
+        ],
+        "schema": [
+          "repos.root_path",
+          "repos.default_branch"
+        ],
+        "ledger": [
+          "repo.add"
+        ]
+      },
+      "detect": [
+        "(pick_?folder|pickFolder|dialog.*open|open\\(\\{\\s*directory)",
+        "default_?branch|defaultBranch",
+        "(detect_?default_?branch|symbolic-ref|rev-parse --abbrev-ref|remote show)"
+      ]
+    },
+    {
+      "id": "home.open-project-flow",
+      "area": "home",
+      "feature": "Open project: folder picker; no .git leads to an add dialog that offers git init; a missing origin (non-GitHub setting off) leads to the same dialog; otherwise add with a file:// remote; errors in a toast",
+      "evidence": {
+        "copy": [
+          2442
+        ],
+        "files": [
+          "evidence/screens/home.md"
+        ]
+      },
+      "detect": [
+        "needs_?git_?init|needsGitInit|\\.git\\b.{0,40}(exists|is_dir)",
+        "remote\\s+get-url|\"get-url\"",
+        "file://"
+      ]
+    },
+    {
+      "id": "home.clone-github",
+      "area": "home",
+      "feature": "Clone a GitHub repository by URL into a chosen folder, with progress",
+      "evidence": {
+        "copy": [
+          1385,
+          3551,
+          555,
+          616,
+          522,
+          1014
+        ],
+        "schema": [
+          "repos.remote_url"
+        ],
+        "ledger": [
+          "repo.add"
+        ]
+      },
+      "detect": [
+        "clone_?(repo|repository|dialog)|CloneDialog|cloneRepo",
+        "remote_?url|remoteUrl|github\\.com",
+        "git\\s+clone|\"clone\"\\s*,"
+      ]
+    },
+    {
+      "id": "home.new-project",
+      "area": "home",
+      "feature": "Create a new project: local folder, git init, optional private GitHub repo, then a first workspace",
+      "evidence": {
+        "copy": [
+          1047,
+          1050,
+          1063,
+          556,
+          2219,
+          2220,
+          1064,
+          1568
+        ]
+      },
+      "detect": [
+        "new_?project|create_?project|quick_?start|quickstart",
+        "git_?init|init_?repo|initRepo|\"init\"\\s*[,\\]]",
+        "gh\\s+repo\\s+create|\"repo\",\\s*\"create\""
+      ]
+    },
+    {
+      "id": "home.duplicate-repo",
+      "area": "home",
+      "feature": "Refuse adding a repository that is already added",
+      "evidence": {
+        "copy": [
+          4557
+        ]
+      },
+      "detect": [
+        "(repo|repository).{0,40}already (added|exists)|already (added|exists).{0,40}repo|duplicate_?repo|existing.{0,40}(path|remote)"
+      ]
+    },
+    {
+      "id": "home.no-repo-guard",
+      "area": "home",
+      "feature": "Home explains that a repository must be added before creating a workspace",
+      "evidence": {
+        "copy": [
+          42,
+          2947,
+          2952
+        ]
+      },
+      "detect": [
+        "(no repositor|add a repo|repos\\.length\\s*===\\s*0)"
+      ]
+    },
+    {
+      "id": "home.status-overview",
+      "area": "home",
+      "feature": "Home shows workspaces with their status (status matrix option, mine vs all)",
+      "evidence": {
+        "copy": [
+          4796,
+          5007,
+          137,
+          2767
+        ]
+      },
+      "detect": [
+        "(status_?matrix|my_?workspaces|all_?workspaces)"
+      ]
+    },
+    {
+      "id": "home.dashboard-routes",
+      "area": "home",
+      "feature": "Dashboard and all-workspaces routes",
+      "evidence": {
+        "routes": [
+          "/dashboard",
+          "/all-workspaces",
+          "/workspaces"
+        ],
+        "copy": [
+          1130
+        ]
+      },
+      "detect": [
+        "/dashboard",
+        "/all-workspaces"
+      ]
+    },
+    {
+      "id": "home.recent",
+      "area": "home",
+      "feature": "Recent workspaces list",
+      "evidence": {
+        "copy": [
+          3459
+        ]
+      },
+      "detect": [
+        "recent_?workspaces|recentWorkspaces"
+      ]
+    },
+    {
+      "id": "home.repo-search",
+      "area": "home",
+      "feature": "Search the repository list",
+      "evidence": {
+        "copy": [
+          3825,
+          2917,
+          2497
+        ]
+      },
+      "detect": [
+        "(search|filter)_?repo"
+      ]
+    },
+    {
+      "id": "home.recents",
+      "area": "home",
+      "feature": "Clone dialog shows recent repositories with loading placeholders and a screen-reader status",
+      "evidence": {
+        "files": [
+          "evidence/screens/home.md"
+        ]
+      },
+      "detect": [
+        "recent_?repos|recentRepos",
+        "(aria-busy|sr-only|role=\"status\")"
+      ]
+    },
+    {
+      "id": "home.first-run",
+      "area": "home",
+      "feature": "First-run onboarding route before Home",
+      "evidence": {
+        "routes": [
+          "/first-run-onboarding"
+        ],
+        "ledger": [
+          "ui.routes",
+          "pkg.first-run-bootstrap"
+        ]
+      },
+      "detect": [
+        "(first_?run|onboarding)"
+      ]
+    },
+    {
+      "id": "home.persist",
+      "area": "home",
+      "feature": "Repositories and workspaces persist in SQLite (conductor.db shape), surviving restart",
+      "evidence": {
+        "schema": [
+          "repos",
+          "workspaces"
+        ],
+        "ledger": [
+          "db.conductor-schema"
+        ]
+      },
+      "detect": [
+        "CREATE TABLE\\s+(IF NOT EXISTS\\s+)?\"?repos",
+        "CREATE TABLE\\s+(IF NOT EXISTS\\s+)?\"?workspaces"
+      ]
+    },
+    {
+      "id": "create.entry",
+      "area": "create",
+      "feature": "Create-workspace action per repository (sidebar and Home)",
+      "evidence": {
+        "copy": [
+          1068,
+          2819,
+          1059,
+          1051
+        ],
+        "ledger": [
+          "ws.create"
+        ],
+        "cli": [
+          "workspace create"
+        ]
+      },
+      "detect": [
+        "(new_?workspace|create_?workspace|newWorkspace|createWorkspace)"
+      ]
+    },
+    {
+      "id": "create.page",
+      "area": "create",
+      "feature": "Full-screen create-workspace page with its own composer and tab navigation",
+      "evidence": {
+        "routes": [
+          "/create"
+        ],
+        "copy": [
+          2821,
+          2820,
+          1994,
+          2831,
+          3350
+        ]
+      },
+      "detect": [
+        "create_?workspace_?page|CreateWorkspacePage|NewWorkspacePage|path:\\s*\"/create\"",
+        "new_?workspace_?composer|NewWorkspaceComposer|create\\w{0,30}composer"
+      ]
+    },
+    {
+      "id": "create.from-ref",
+      "area": "create",
+      "feature": "Create a workspace from a PR, branch or issue",
+      "evidence": {
+        "copy": [
+          1060,
+          1055,
+          1056,
+          597,
+          435,
+          523
+        ],
+        "cli": [
+          "workspace create --branch"
+        ]
+      },
+      "detect": [
+        "(from_?(pr|branch|issue)|create_?from|createFrom)"
+      ]
+    },
+    {
+      "id": "create.base-branch",
+      "area": "create",
+      "feature": "Choose the base branch new workspaces branch from; remember the intended target branch",
+      "evidence": {
+        "copy": [
+          305,
+          346,
+          1145
+        ],
+        "schema": [
+          "workspaces.initialization_parent_branch",
+          "workspaces.intended_target_branch"
+        ]
+      },
+      "detect": [
+        "base_?branch|baseBranch|parent_?branch",
+        "target_?branch|targetBranch"
+      ]
+    },
+    {
+      "id": "create.branch-picker",
+      "area": "create",
+      "feature": "Branch picker with search, loading, empty and error states",
+      "evidence": {
+        "files": [
+          "evidence/create-workspace/README.md"
+        ],
+        "cli": [
+          "workspace create --branch"
+        ]
+      },
+      "detect": [
+        "list_?branches|listBranches",
+        "(search|filter)_?branch|branch_?(search|filter)|searchBranches"
+      ]
+    },
+    {
+      "id": "create.worktree",
+      "area": "create",
+      "feature": "Each workspace is a git worktree on its own branch in a configurable workspaces directory",
+      "evidence": {
+        "copy": [
+          1299,
+          5019
+        ],
+        "schema": [
+          "workspaces.directory_name",
+          "workspaces.workspace_path"
+        ],
+        "ledger": [
+          "ws.create"
+        ],
+        "files": [
+          "evidence/scripts/WORKSPACE-NOTES.md"
+        ]
+      },
+      "detect": [
+        "worktree\\s+add|\"worktree\"[^\\]]{0,30}\"add\"|worktree_?add",
+        "workspaces_?(path|dir|root)|workspacesDir|workspaces_?directory"
+      ]
+    },
+    {
+      "id": "create.branch-prefix",
+      "area": "create",
+      "feature": "Branch name prefix setting (none, user-based or custom)",
+      "evidence": {
+        "copy": [
+          345,
+          3329,
+          1259
+        ],
+        "ipc": [
+          "branch_prefix_type",
+          "branch_prefix_custom"
+        ],
+        "ledger": [
+          "ws.create"
+        ],
+        "files": [
+          "evidence/create-workspace/README.md"
+        ]
+      },
+      "detect": [
+        "branch_?prefix_?type|branchPrefixType",
+        "branch_?prefix_?custom|branchPrefixCustom"
+      ]
+    },
+    {
+      "id": "create.placeholder-name",
+      "area": "create",
+      "feature": "Generated placeholder name/branch, replaced when the agent names the branch (rename-on-branch setting)",
+      "evidence": {
+        "copy": [
+          3534,
+          1645
+        ],
+        "schema": [
+          "workspaces.DEPRECATED_city_name",
+          "workspaces.placeholder_branch_name"
+        ],
+        "ledger": [
+          "ws.create"
+        ],
+        "files": [
+          "evidence/create-workspace/README.md"
+        ]
+      },
+      "detect": [
+        "placeholder_?branch|placeholderBranch",
+        "(cit(y|ies)|name_?generator)"
+      ]
+    },
+    {
+      "id": "create.validation",
+      "area": "create",
+      "feature": "Validate workspace names and branch names before creating",
+      "evidence": {
+        "copy": [
+          2355
+        ],
+        "files": [
+          "evidence/create-workspace/README.md"
+        ]
+      },
+      "detect": [
+        "(validate|is_?valid)_?workspace_?name|validateWorkspaceName|isValidWorkspaceName",
+        "check-ref-format|(validate|is_?valid)_?branch|validateBranch|isValidBranch"
+      ]
+    },
+    {
+      "id": "create.copy-files",
+      "area": "create",
+      "feature": "Copy ignored files (worktreeinclude / include globs / .env*) into each new workspace",
+      "evidence": {
+        "copy": [
+          803,
+          1916
+        ],
+        "schema": [
+          "repos.file_include_globs",
+          "workspaces.initialization_files_copied"
+        ]
+      },
+      "detect": [
+        "(files_?to_?copy|file_?include_?globs|worktreeinclude)"
+      ]
+    },
+    {
+      "id": "create.setup-script",
+      "area": "create",
+      "feature": "Run the repository setup script on creation and keep its log",
+      "evidence": {
+        "copy": [
+          3740,
+          3741,
+          2547,
+          5004,
+          5003
+        ],
+        "schema": [
+          "repos.setup_script",
+          "workspaces.setup_log_path"
+        ],
+        "ledger": [
+          "ws.setup-run-archive-scripts"
+        ]
+      },
+      "detect": [
+        "setup_?script|setupScript",
+        "setup_?log|setupLog"
+      ]
+    },
+    {
+      "id": "create.initializing",
+      "area": "create",
+      "feature": "Initializing state with progress while the workspace is created",
+      "evidence": {
+        "copy": [
+          1081,
+          1082,
+          4988,
+          4499
+        ],
+        "schema": [
+          "workspaces.state",
+          "workspaces.initialization_log_path"
+        ],
+        "files": [
+          "evidence/create-workspace/README.md"
+        ]
+      },
+      "detect": [
+        "initializing",
+        "setting_?up|settingUp",
+        "(setup_?progress|creation_?progress|creating workspace|CreatingWorkspace|running setup)"
+      ]
+    },
+    {
+      "id": "create.failure",
+      "area": "create",
+      "feature": "Creation failure surfaced with logs; incomplete workspaces cleaned up on start",
+      "evidence": {
+        "copy": [
+          4151,
+          1575,
+          594,
+          4987,
+          4498
+        ]
+      },
+      "detect": [
+        "(failed to create|create.*fail|initialization_?failed)",
+        "(cleanup|clean_?up).{0,40}(incomplete|initializ)"
+      ]
+    },
+    {
+      "id": "create.in-section",
+      "area": "create",
+      "feature": "Create a workspace directly inside a sidebar section",
+      "evidence": {
+        "copy": [
+          1057,
+          4975
+        ]
+      },
+      "detect": [
+        "(create_?in_?section|section_?id.{0,60}create|create.{0,60}section_?id)"
+      ]
+    },
+    {
+      "id": "create.first-message",
+      "area": "create",
+      "feature": "Draft the first agent message, then create the workspace and send it",
+      "evidence": {
+        "copy": [
+          1288
+        ],
+        "cli": [
+          "workspace create --message"
+        ],
+        "files": [
+          "evidence/create-workspace/README.md"
+        ]
+      },
+      "detect": [
+        "first_?message|initial_?message|initialMessage|firstMessage",
+        "(start|create)_?(first_?)?session|startSession|createSession"
+      ]
+    },
+    {
+      "id": "create.number",
+      "area": "create",
+      "feature": "Assign a per-workspace number on creation",
+      "evidence": {
+        "copy": [
+          1692
+        ],
+        "schema": [
+          "workspaces.number"
+        ]
+      },
+      "detect": [
+        "workspace_?number|workspaceNumber|(ws|workspace)\\.number\\b"
+      ]
+    },
+    {
+      "id": "create.autostart-run",
+      "area": "create",
+      "feature": "Optionally start the run script automatically after setup",
+      "evidence": {
+        "copy": [
+          4186
+        ],
+        "schema": [
+          "repos.run_script",
+          "repos.run_script_mode"
+        ]
+      },
+      "detect": [
+        "run_?script|runScript",
+        "(auto_?start|autoStart|auto_?run)"
+      ]
+    }
+  ]
+}

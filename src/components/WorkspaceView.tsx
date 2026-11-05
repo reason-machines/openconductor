@@ -18,6 +18,11 @@ interface Message {
 // Chat transcripts are kept per workspace in memory until the agent runtime lands.
 const transcripts = new Map<string, Message[]>();
 
+/** Puts the Create-workspace dialog's first message at the top of the new workspace's chat. */
+export function seedTranscript(workspaceId: string, text: string) {
+  transcripts.set(workspaceId, [{ id: Date.now(), role: "user", text }]);
+}
+
 function ChatPanel({ workspace }: { workspace: Workspace }) {
   const [messages, setMessages] = useState<Message[]>(() => transcripts.get(workspace.id) ?? []);
   const [draft, setDraft] = useState("");

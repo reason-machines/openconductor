@@ -1,0 +1,8 @@
+{
+  "info_plist": {
+    "NSMicrophoneUsageDescription": "No speech-to-text input yet; add the prompt with that feature."
+  },
+  "entitlements": {
+    "com.apple.security.device.audio-input": "No speech-to-text input yet; add the entitlement with that feature."
+  }
+}
