@@ -413,9 +413,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "git.createPR": () => {
       if (createShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.create(false);
     },
-    // Optional checks are not treated as blocking until that setting exists.
     "git.mergePR": () => {
-      if (mergeShortcutApplies(pullRequest.pr, false, prActions.busy === "merging")) void prActions.merge();
+      if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
     },
     "git.openInGitHub": prActions.openOnGitHub,
   });
