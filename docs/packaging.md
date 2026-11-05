@@ -33,6 +33,7 @@ The checker compares the bundle with `src-tauri/tauri.conf.json` and with REA's 
 
 - Bundle ID `com.reasonmachines.openconductor`, minimum macOS 12.0, category developer tools.
 - URL scheme `openconductor://`.
+- `Contents/Resources/conductor-skill/`, where Conductor ships its agent skill: OpenConductor's own Claude Code plugin (`openconductor`, skill `conductor`) from `src-tauri/resources/conductor-skill/`, describing OpenConductor's workspaces, repository settings, scripts, files to copy, Spotlight and checkpoints. Every `ClaudeLaunch` passes it with `--plugin-dir`. Check it with `claude plugin validate src-tauri/resources/conductor-skill`.
 - Folder-access prompts for Desktop, Documents and Downloads, for repositories stored there, and a microphone prompt for dictating messages.
 - Entitlements `com.apple.security.cs.allow-jit` and `com.apple.security.cs.allow-unsigned-executable-memory`, which the WebKit JavaScript engine needs under the hardened runtime, and `com.apple.security.device.audio-input`, without which the hardened runtime denies the microphone. Conductor 0.87.6 signs the same three (`evidence/packaging/conductor-reference.json`).
 - Icon from `src-tauri/icons/icon.svg`; regenerate every size with `scripts/gen-icons.sh`.

@@ -145,3 +145,10 @@ test("Stop ends the turn cancelled with the prompt offered again; a failed call 
   assert.equal(state.open.length, 0);
   assert.deepEqual(step.events[0], { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "failed", error: "The Reason CLI was not found." });
 });
+
+test("startTurn can take the turn id that names the turn's checkpoints", () => {
+  const step = startTurn(reasonChat("ws/one"), "hi", new Date(0), "0b6f2c7e-1d2a-4c55-9a59-6d1c1b2f3e4a");
+  const upsert = step.events[0];
+  assert.equal(upsert?.type === "upsert" ? upsert.message.turnId : null, "0b6f2c7e-1d2a-4c55-9a59-6d1c1b2f3e4a");
+  assert.equal(step.state.open[0]?.turnId, "0b6f2c7e-1d2a-4c55-9a59-6d1c1b2f3e4a");
+});
