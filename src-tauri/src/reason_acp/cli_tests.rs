@@ -136,12 +136,21 @@ fn live_cli_answers_initialize() {
         return;
     };
     let cfg = LaunchConfig::new(PathBuf::from(cli)).unwrap();
-    let (_process, stdin, stdout) = AgentProcess::spawn(&cfg, &std::env::temp_dir()).unwrap();
+    let (mut process, stdin, stdout) = AgentProcess::spawn(&cfg, &std::env::temp_dir()).unwrap();
     let conn = super::rpc::RpcConnection::start(stdout, stdin, Box::new(|_, _| {}));
     let params = serde_json::json!({"protocolVersion": 1, "clientCapabilities": {}});
-    let init = conn
-        .call("initialize", params, Some(Duration::from_secs(30)))
-        .unwrap();
+    let init = match conn.call("initialize", params, Some(Duration::from_secs(30))) {
+        Ok(v) => v,
+        Err(e) => {
+            // Give the stderr thread a moment to drain what the CLI logged.
+            std::thread::sleep(Duration::from_millis(500));
+            panic!(
+                "initialize failed: {e:?}; running: {}; stderr:\n{}",
+                process.is_running(),
+                process.stderr_tail().join("\n")
+            );
+        }
+    };
     assert_eq!(init["agentInfo"]["name"], "reason");
     let caps = &init["agentCapabilities"];
     assert_eq!(caps["loadSession"], true);
