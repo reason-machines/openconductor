@@ -1,0 +1,24 @@
+APP_TYPE: production
+Current PATH is: /usr/bin:/bin:/usr/sbin:/sbin
+User's login shell detected: /bin/zsh
+New PATH is: /Users/sven/code/conductor-rea-work/throwaway-home/.nix-profile/bin:/etc/profiles/per-user/sven/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+✓ Appended bin directory to PATH
+[binary_manager] claude ready at "/Users/sven/code/conductor-rea-work/throwaway-home/Library/Application Support/com.conductor.app/./agent-binaries/claude/2.1.284/claude"
+[binary_manager] codex ready at "/Users/sven/code/conductor-rea-work/throwaway-home/Library/Application Support/com.conductor.app/./agent-binaries/codex/0.156.1/codex"
+✓ watchexec runs successfully: watchexec 2.3.2 (5c810fd 2025-05-18) +pid1
+commit-hash: 5c810fd7c693a13d9fcd4d36bc825681bf8ada5e
+commit-date: 2025-05-18
+build-date: 2025-05-18
+release: 2.3.2
+features: default,pid1
+✓ gh runs successfully: gh version 2.100.0 (2026-09-03)
+https://github.com/cli/cli/releases/tag/v2.100.0
+✓ conductor-runtime runs successfully: conductor-runtime 0.87.6
+[RUST] Verbose logging disabled
+Starting sidecar...
+Sidecar stderr: [processLogPublisher] publishing disabled: CONDUCTOR_INTERNAL_PROCESS_LOGS_ENABLED is not "1"
+Sidecar stderr: [Log]Sidecar HTTP server listening on http://127.0.0.1:56719
+Sidecar stdout: HTTP_PORT=56719
+Sidecar stderr: [Log]Unix socket server listening on /Users/sven/code/conductor-rea-work/throwaway-home/tmp/conductor-sidecar-v2-9854.sock
+Sidecar stdout: SOCKET_PATH=/Users/sven/code/conductor-rea-work/throwaway-home/tmp/conductor-sidecar-v2-9854.sock
+Connecting to sidecar socket: /Users/sven/code/conductor-rea-work/throwaway-home/tmp/conductor-sidecar-v2-9854.sock
