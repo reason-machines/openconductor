@@ -49,6 +49,9 @@ pub struct AppPrefs {
     /// Experimental "Dashboard": shows the sidebar's Dashboard row and the
     /// `/dashboard` workspace board. Off unless the row says `"true"`.
     pub dashboard_enabled: bool,
+    /// "Use Claude Code with Chrome": Claude Code chats start with
+    /// `--chrome` (the reference sidecar's `extraArgs: { chrome: null }`).
+    pub chrome_mode_enabled: bool,
 }
 
 /// `"true"` / `"false"`, anything else (or no row) is `default`.
@@ -128,6 +131,9 @@ impl AppPrefs {
             sidebar_repo_filter: text(rows, keys::SIDEBAR_REPO_FILTER),
             sidebar_resource_usage: flag(rows, keys::SIDEBAR_RESOURCE_USAGE, false),
             dashboard_enabled: flag(rows, keys::DASHBOARD_ENABLED, false),
+            // The reference reads it as `=== "true"`.
+            chrome_mode_enabled: rows.get(keys::CHROME_MODE_ENABLED).map(String::as_str)
+                == Some("true"),
         }
     }
 }
@@ -157,6 +163,7 @@ pub enum AppPrefUpdate {
     SidebarResourceUsage(bool),
     /// The Experimental "Dashboard" switch (the reference's `eGt`).
     DashboardEnabled(bool),
+    ChromeModeEnabled(bool),
 }
 
 /// What an update does to the table.
@@ -204,6 +211,7 @@ impl AppPrefUpdate {
             SidebarRepoFilter(None) => Ok(Write::Delete(keys::SIDEBAR_REPO_FILTER)),
             SidebarResourceUsage(v) => b(keys::SIDEBAR_RESOURCE_USAGE, *v),
             DashboardEnabled(v) => b(keys::DASHBOARD_ENABLED, *v),
+            ChromeModeEnabled(v) => b(keys::CHROME_MODE_ENABLED, *v),
         }
     }
 }

@@ -86,4 +86,9 @@ export interface AppState {
   sections?: NavSection[];
   /** When the section layout last changed (ms); a write older than the stored one is refused. */
   sectionsUpdatedAt?: number;
+  /**
+   * An archived workspace opened from the archived list: shown read-only until
+   * it is unarchived. It is not in `repos`, so the sidebar never lists it.
+   */
+  archivedOpen?: { repoId: string; workspace: Workspace };
 }

@@ -20,7 +20,9 @@ import { Toaster, useToasts } from "./components/Toast";
 import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { ArchiveRunningDialog } from "./components/ArchiveRunningDialog";
-import { failureToast, onArchiveEvent, unarchiveFailedMessage } from "./workspace/archive";
+import { clearUnarchiveConflict, directoryExistsToast, failureToast, onArchiveEvent, revealUnarchiveConflict, unarchiveFailedMessage } from "./workspace/archive";
+import { ArchivedWorkspaceView } from "./components/ArchivedWorkspaceView";
+import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/RestoreWorkspaceDialog";
 import type { Action } from "./state/store";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
@@ -75,19 +77,49 @@ export default function App() {
   // Full archive (src/workspace/archive.ts): the running-agents question and
   // what the archive reports, wherever it was started from.
   const [archiveOverAgents, setArchiveOverAgents] = useState<Extract<Action, { type: "archiveWorkspace" }> | null>(null);
+  // Unarchive found the branch deleted, taken or moved: "Restore to new branch?".
+  const [restoreRequest, setRestoreRequest] = useState<RestoreRequest | null>(null);
+  const closeRestore = useCallback(() => setRestoreRequest(null), []);
   useEffect(
     () =>
       onArchiveEvent<Action>((e) => {
         if (e.type === "agents-running" && e.action.type === "archiveWorkspace") setArchiveOverAgents(e.action);
         if (e.type === "archived" || e.type === "unarchived") for (const n of e.result.notices) show(n.kind, n.message, { sticky: n.kind === "error" });
-        if (e.type === "unarchive-failed") show("error", unarchiveFailedMessage(e.error), { sticky: true });
+        if (e.type === "unarchived" && e.result.scenario && e.action.type === "unarchiveWorkspace") {
+          setRestoreRequest({ repoId: e.action.repoId, workspaceId: e.action.workspaceId, branch: e.result.branch ?? "unknown", scenario: e.result.scenario });
+        }
+        if (e.type === "unarchive-failed") {
+          const conflict = directoryExistsToast(e.error);
+          const retry = e.action.type === "unarchiveWorkspace" ? e.action : null;
+          if (conflict && retry) {
+            show("error", conflict.title, {
+              sticky: true,
+              description: conflict.description,
+              action: {
+                label: conflict.clearLabel,
+                onClick: () =>
+                  void clearUnarchiveConflict(retry.workspaceId).then(
+                    () => dispatch(retry),
+                    (err) => show("error", `Failed to delete folder: ${err instanceof Error ? err.message : String((err as { message?: unknown })?.message ?? err)}`, { sticky: true }),
+                  ),
+              },
+              extraActions: [
+                { label: conflict.openLabel, onClick: () => void revealUnarchiveConflict(retry.workspaceId).catch(() => undefined) },
+                { label: conflict.copyLabel, onClick: () => void navigator.clipboard?.writeText(conflict.path).catch(() => undefined) },
+              ],
+            });
+          } else {
+            show("error", unarchiveFailedMessage(e.error), { sticky: true });
+          }
+        }
         if (e.type === "failed" && e.action.type === "archiveWorkspace") {
+          const { repoId, workspaceId } = e.action;
           const retry = { ...e.action, mode: "discardGitOperationState" as const };
           const t = failureToast(e.error, e.mode);
           if (t.kind === "git-operation") {
             show("error", t.message, { sticky: true, action: { label: "Archive", onClick: () => dispatch(retry) } });
           } else {
-            show("error", t.message, { sticky: true });
+            show("error", t.message, { sticky: true, action: { label: t.deleteLabel, onClick: () => dispatch({ type: "deleteWorkspace", repoId, workspaceId }) } });
           }
         }
       }),
@@ -191,7 +223,11 @@ export default function App() {
 
   const sel = state.selection;
   const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
-  const workspace = sel.kind === "workspace" ? repo?.workspaces.find((w) => w.id === sel.workspaceId) : undefined;
+  // An archived workspace opened from the archived list is not in `repos` (parity:sidebar.archived-view).
+  const workspace =
+    sel.kind === "workspace"
+      ? (repo?.workspaces.find((w) => w.id === sel.workspaceId) ?? (state.archivedOpen?.workspace.id === sel.workspaceId ? state.archivedOpen.workspace : undefined))
+      : undefined;
   // Quick open needs an active (not archived) workspace, like the reference.
   const canQuickOpen = !!workspace && workspace.status !== "archived";
   const workspacePath = workspace?.path || repo?.path || (inTauri() ? null : "/demo");
@@ -243,7 +279,9 @@ export default function App() {
       {isSidebarVisible(state) && sidebarWidth.resizer}
       {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} />}
       <main className="main">
-        {repo && workspace ? (
+        {repo && workspace?.status === "archived" ? (
+          <ArchivedWorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
+        ) : repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
@@ -320,6 +358,7 @@ export default function App() {
           onConfirm={() => dispatch({ ...archiveOverAgents, stopRunningAgents: true })}
         />
       )}
+      {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );
