@@ -1,0 +1,48 @@
+# REA test report: Wave 0 on Conductor.app v0.87.6
+
+REA 6.7.0 (`/opt/homebrew/bin/rea`, CLI; MCP `tools/list` used only to read input schemas), on Sven's Mac "sven m5 max" (macOS 26.4, arm64, Node 26.8.1). Target: a `ditto` copy of `/Applications/Conductor.app` (bundle `com.conductor.app`, 0.87.6). Every invocation, exit code and first error line is in `evidence/rea/rea-invocations.tsv`; failing outputs are in `evidence/rea/*.error.json`.
+
+Conductor-derived data is treated as untrusted; Sven's running Conductor (pid 90880) and its data were never modified. Databases were analysed from APFS clones; runtime used a separate app copy with a throwaway HOME.
+
+## Results by tool
+
+| REA tool | Result | Notes |
+|---|---|---|
+| `doctor` | exit 1 (unhealthy) | No analysis engine configured (Ghidra/Hopper/IDA/Kuna/JADX); skill dir is a symlink; most client registrations missing. Informative, not a bug. |
+| `inspect-macho` | pass | arm64, min macOS 11.0, SDK 26.5; load commands, segments. |
+| `inspect-signature` | pass | Developer ID, team 27XN666UJ7, hardened runtime, entitlements allow-jit, allow-unsigned-executable-memory, audio-input. Also on `conductor-runtime`. |
+| `inspect-rust-binary` | pass (empty) | No cargo-auditable `.dep-v0` section; only a rustc commit hash. Crate list came from panic paths via `strings` instead. |
+| `inspect-plist` | pass | |
+| `inspect-artifact` | pass | App bundle (30 nodes), `conductor-runtime`, `agent-launcher`. Does not recognise the Bun `__BUN` payload or the Tauri asset table. |
+| `trace-dylib-resolution` | pass | |
+| `extract-artifact` (app dir) | pass | 30 entries; embedded frontend not surfaced. |
+| `extract-artifact` (Mach-O) | **fail** | `integrity_mismatch`: "Regular artifact entry is missing from inventory: slices/arm64". Same with `--integrity-policy record-and-continue`, which the error itself recommends. Bug: thin Mach-O extraction is impossible. |
+| `inspect` / `analyze` / `search` (binary_overview, search_strings) | **fail** | `provider_unavailable` until a disassembler is configured. |
+| `inspect-binary-layout` | **fail** | `capability_unavailable`: pwntools profile supports Linux x64 only. |
+| `inspect --provider ghidra` | **fail x3, then running** | (1) Ghidra 12.1.4 macOS release ships no `mac_arm_64` decompiler: `executable_missing`. Built `decompile`/`sleigh` from the bundled sources (needed `DEPNAMES` override; Makefile hardcodes `-arch x86_64` on Darwin, so the first build was x86_64 and was correctly rejected; final build thinned with `lipo`). (2) `provider_timeout` at the fixed 330 s startup deadline on the 70 MB binary; remediation `REA_GHIDRA_STARTUP_TIMEOUT_MS` worked. Result pending at time of writing. |
+| `analyze-javascript-application` (on `conductor-runtime`) | fail (expected) | Accepts only a directory or `.asar`; Bun single-file executables are not supported. |
+| `analyze-javascript-application` (on extracted frontend) | pass | 1,908 files, 1,896 parsed, 0 parse failures, 15,557 findings, 213 MB Evidence. Summary is Electron-centric: 0 IPC operations because Tauri `invoke` / `__TAURI_INTERNALS__` is not modelled. Many files hit "result budget" limits. |
+| `recover-javascript-sources` | **fail** | Needs `REA_WAKARU_COMMAND`, and only a Wakaru Linux x64 binary is accepted, so it cannot run on macOS arm64. |
+| `trace-javascript-semantics` | pass, 0 matches | Literal seeds `pty_spawn` (callers) and `rpc_to_sidecar` (forward-influence) found 0 seed nodes though both literals are in `index-BGEQ8YjU.js`; 935 / 11,355 relevant unknowns. Likely the budget-truncated file nodes are not searchable. |
+| `analyze-web-bundle` | not run | Needs a CDP endpoint; Tauri's WKWebView exposes none. Gap: no WKWebView/Safari Web Inspector route. |
+| `inspect-sqlite-database` | fail, then pass | Refuses DBs over 256 MiB (`resource_constraint`); both DBs are ~7 GB. Passed on schema-only snapshots (DDL + `_sqlx_migrations`). |
+| `capture-process` (CLI `--help`, app first start) | pass | Terminal frames, process samples, filesystem effects. Rendered frames keep only the visible screen, so long `--help` output had to be read directly as well. App run `truncated: true`. |
+| `observe-native-ui` | **fail** | (1) exec'd app: "process-identity-unavailable: Selected application does not expose a launch time" (works only for LaunchServices launches; bug or undocumented requirement). (2) After `open -n`: `screen-recording-denied`. (3) `--screenshot=false`: `accessibility-denied`. |
+| `capture-native-ui-scenario` | **fail** | `screen-recording-denied`. No screenshots of any screen exist. |
+| `build-reconstruction-obligation-ledger` | fail x2, then pass | (1) 11 obligations rejected for empty `review_evidence_ids` (min 1). (2) "Evidence bundle manifests are not canonical": the CLI gives no way to build a bundle from loose records, and `evidence-export` rejects the same non-canonical input. Fixed by calling REA's own `createEvidenceBundle` from `dist/domain/evidenceBundle.js`. Then 274 obligations. |
+| `evidence-export` | fail, then pass | Same canonicalisation issue; passed on the canonical bundle (17 records, 215 MB). |
+| `--schema` for workflow tools | gap | `trace-javascript-semantics` and `build-reconstruction-obligation-ledger` show only `inputJson: string`; the real schema is only in MCP `tools/list`. |
+
+## REA gaps and bugs (summary)
+
+1. No extractor for Tauri embedded assets (brotli asset table in `__TEXT`); wrote `tools/extract_tauri_assets.py` (2,902 assets).
+2. No support for Bun single-file executables (`__BUN` segment) in `inspect-artifact`, `extract-artifact` or `analyze-javascript-application`.
+3. `analyze-javascript-application` / `trace-javascript-semantics` do not model Tauri IPC (`invoke`, `plugin:x|y`); IPC list was derived by `tools/ipc_scan.py`.
+4. `extract-artifact` fails on any thin Mach-O (`slices/arm64` missing), even with `record-and-continue`.
+5. Ghidra provider on Apple silicon: release has no mac_arm_64 natives; REA's remediation says it will not build them but gives no route. 330 s default startup deadline is too low for a 70 MB binary.
+6. `inspect-binary-layout` and `recover-javascript-sources` (Wakaru) are Linux-x64-only.
+7. `observe-native-ui` requires a launch date only LaunchServices launches have; error text does not say so.
+8. `inspect-sqlite-database` hard 256 MiB cap with no schema-only mode.
+9. Building a ledger or bundle from loose Evidence records requires private canonical ordering; CLI `--schema` hides workflow input schemas.
+10. `trace-javascript-semantics` literal seeds miss literals present in budget-truncated files.
+11. Environment, not REA: Screen Recording and Accessibility are not granted to the REA host on this Mac, which blocks all native UI capture.
