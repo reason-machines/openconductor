@@ -160,3 +160,14 @@ test("a stopped turn's prompt is marked cancelled (Conductor's \"Cancelled\" cap
   const end = rows.find((r) => r.kind === "turn_end");
   assert.equal(end?.kind === "turn_end" && end.status, "cancelled");
 });
+
+test("a finished turn's footer carries when the turn started and ended", () => {
+  const at = (s: TurnStatus, iso: string): ChatEvent => ({ type: "turn_status", sessionId: "s1", turnId: "t1", status: s, at: iso });
+  const rows = buildRows(
+    apply([at("running", "2026-11-05T10:29:00.000Z"), upsert(msg("u1", "user", [text("hi")])), upsert(msg("a1", "assistant", [text("done")])), at("completed", "2026-11-05T10:37:00.000Z")]),
+  );
+  const end = rows.find((r) => r.kind === "turn_end");
+  assert.ok(end && end.kind === "turn_end");
+  assert.equal(end.startedAt, "2026-11-05T10:29:00.000Z");
+  assert.equal(end.endedAt, "2026-11-05T10:37:00.000Z");
+});

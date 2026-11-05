@@ -600,20 +600,44 @@ impl WorkspaceManager {
             }
             _ => None,
         };
-        let record = self.archive_record(&ws.repo_root, &ws.name);
-        std::fs::create_dir_all(record.parent().expect("record has parent"))?;
         let commit = ws.head.clone().or_else(|| git::git(&ws.repo_root, ["rev-parse", "--verify", "-q", &format!("refs/heads/{}^{{commit}}", ws.branch)]).ok());
-        let mut text = format!("branch={}\n", ws.branch);
-        if let Some(c) = &commit {
-            text.push_str(&format!("commit={c}\n"));
-        }
-        std::fs::write(&record, text)?;
+        self.record_archive(&ws.repo_root, &ws.name, &ws.branch, commit.as_deref())?;
         self.remove_worktree(&ws)?;
         if opts.delete_branch && !ws.branch.is_empty() && git::branch_exists(&ws.repo_root, &ws.branch) {
             git::git(&ws.repo_root, ["branch", "-D", &ws.branch])?;
         }
         let workspace = self.make(&ws.repo_root, &ws.name, ws.branch, WorkspaceState::Archived, commit);
         Ok(Archived { workspace, script })
+    }
+
+    /// Write the archive record (`branch=`, `commit=`) that keeps an archived
+    /// workspace listed and its name taken. [`Self::archive`] and the app's
+    /// full archive (`workspace_archive_commands`) both write it.
+    pub fn record_archive(
+        &self,
+        repo_root: &Path,
+        name: &str,
+        branch: &str,
+        commit: Option<&str>,
+    ) -> Result<(), WorkspaceError> {
+        let record = self.archive_record(repo_root, name);
+        std::fs::create_dir_all(record.parent().expect("record has parent"))?;
+        let mut text = format!("branch={branch}\n");
+        if let Some(c) = commit {
+            text.push_str(&format!("commit={c}\n"));
+        }
+        std::fs::write(&record, text)?;
+        Ok(())
+    }
+
+    /// Remove the archive record of `name`, if any (the full unarchive in
+    /// `workspace_archive` recreated the worktree itself).
+    pub fn forget_archive_record(&self, repo_root: &Path, name: &str) -> Result<(), WorkspaceError> {
+        let record = self.archive_record(repo_root, name);
+        if record.exists() {
+            std::fs::remove_file(record)?;
+        }
+        Ok(())
     }
 
     /// Restore an archived workspace: re-add its worktree on its branch, or
