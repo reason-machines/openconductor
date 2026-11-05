@@ -294,6 +294,7 @@ pub fn run() {
             sidebar_workspace_commands::db_set_workspace_pinned,
             sidebar_workspace_commands::db_set_workspace_unread,
             sidebar_workspace_commands::db_set_workspace_manual_status,
+            sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
             checkpoint_commands::checkpoint_save,
