@@ -306,7 +306,8 @@ mod tests {
                         cmd: cmd.into(),
                         callback: CallbackFn(0),
                         error: CallbackFn(1),
-                        url: "http://tauri.localhost".parse().unwrap(),
+                        // The webview's own URL is local, so the ACL lets app commands through.
+                        url: webview.url().unwrap(),
                         body: InvokeBody::Json(body),
                         headers: Default::default(),
                         invoke_key: INVOKE_KEY.to_string(),

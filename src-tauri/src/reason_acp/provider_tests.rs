@@ -165,3 +165,64 @@ fn provider_in(home: PathBuf) -> (Arc<ReasonProvider>, Log, PathBuf) {
     );
     (Arc::new(p), log, home)
 }
+
+#[test]
+fn config_is_set_on_a_new_session_and_unoffered_values_become_notices() {
+    use super::provider::ConfigChoice;
+    let (p, log, home) = provider("config");
+    p.open_chat("review", &home, None);
+    let choice = |id: &str, value: &str| ConfigChoice {
+        id: id.into(),
+        value: value.into(),
+    };
+    p.set_config(
+        "review",
+        vec![
+            choice("model", "byok:anthropic:claude-opus-5-5"),
+            choice("reasoning_effort", "high"),
+        ],
+    );
+    assert_eq!(p.prompt("review", "config"), TurnEnd::Completed);
+    assert_eq!(
+        reply(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=high"
+    );
+
+    // Reason would reset an unoffered model to its default: not sent, told instead.
+    let (p, log, home) = provider("config-unoffered");
+    p.open_chat("review", &home, None);
+    p.set_config(
+        "review",
+        vec![choice("model", "opus-5-1m"), choice("speed", "fast")],
+    );
+    assert_eq!(p.prompt("review", "config"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "model=default effort=default");
+    let notices: Vec<String> = log
+        .lock()
+        .unwrap()
+        .iter()
+        .filter_map(|(_, e)| match e {
+            ProviderEvent::Notice(n) => Some(n.clone()),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(notices.len(), 2, "{notices:?}");
+    assert!(notices[0].contains("opus-5-1m"));
+    assert!(notices[1].contains("speed"));
+}
+
+#[test]
+fn attachments_go_to_reason_as_embedded_files() {
+    use super::provider::Attachment;
+    let (p, log, home) = provider("attach");
+    p.open_chat("review", &home, None);
+    let a = Attachment {
+        name: "Review request.md".into(),
+        text: "the prompt".into(),
+    };
+    assert_eq!(
+        p.prompt_with("review", "attachments", &[a]),
+        TurnEnd::Completed
+    );
+    assert_eq!(reply(&log), "Review request.md: the prompt");
+}
