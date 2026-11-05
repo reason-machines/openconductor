@@ -10,6 +10,8 @@
 //   with a sender, so it never renders as the user's input.
 // - Tool rows keep the paths Reason reported, marked local or cloud with
 //   the same repository-relative path.
+// - A notice (e.g. a requested model Reason does not offer) is a system
+//   message.
 // Pure: no Tauri, no React, so `reason.test.ts` covers it.
 
 import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
@@ -40,7 +42,7 @@ export interface ReasonTurnEnd {
 
 export type ReasonPayload = { chatId: string } & (
   | { type: "sessionStarted"; sessionId: string }
-  | { type: "text" | "thought" | "report" | "userReplay"; text: string }
+  | { type: "text" | "thought" | "report" | "userReplay" | "notice"; text: string }
   | { type: "title"; title: string }
   | { type: "error"; code: string | null; status: number | null; message: string }
   | ReasonTool
@@ -76,10 +78,20 @@ function message(state: ReasonChatState, turnId: string, id: string, role: ChatM
   return { id, sessionId: state.chatId, turnId, role, createdAt: now.toISOString(), blocks };
 }
 
-/** The user's prompt: a new turn, running. */
-export function startTurn(state: ReasonChatState, text: string, now = new Date()): Step {
+/** A file sent with a prompt (as an embedded resource). */
+export interface PromptAttachment {
+  name: string;
+  text: string;
+}
+
+/** Line the transcript shows for an attachment; the agent gets the file itself. */
+export const attachmentLine = (name: string) => `Attached: ${name}`;
+
+/** The user's prompt: a new turn, running. Attachments show by name. */
+export function startTurn(state: ReasonChatState, text: string, now = new Date(), attachments: PromptAttachment[] = []): Step {
   const turnId = `${state.chatId}:t${state.next}`;
-  const user = message(state, turnId, `${turnId}:user`, "user", [{ type: "text", text }], now);
+  const blocks: Block[] = [{ type: "text", text }, ...attachments.map((a): Block => ({ type: "text", text: attachmentLine(a.name) }))];
+  const user = message(state, turnId, `${turnId}:user`, "user", blocks, now);
   return {
     state: { ...state, open: [...state.open, { turnId, assistant: null }], next: state.next + 1 },
     events: [
@@ -161,6 +173,12 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
       return { state, events: [], sessionId: p.sessionId };
     case "turnEnded":
       return closeOldest(state, p.end);
+    case "notice": {
+      const turn = state.open[state.open.length - 1];
+      const id = `${state.chatId}:n${state.next}`;
+      const m = message(state, turn?.turnId ?? id, id, "system", [{ type: "text", text: p.text }], now);
+      return { state: { ...state, next: state.next + 1 }, events: [{ type: "upsert", message: m }] };
+    }
     case "report": {
       const turn = state.open[state.open.length - 1];
       const id = `${state.chatId}:r${state.next}`;

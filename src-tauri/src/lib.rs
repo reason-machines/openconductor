@@ -264,6 +264,7 @@ pub fn run() {
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
+            persistence_commands::db_repo_prompt,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
             diff::comment_commands::diff_comments_list,

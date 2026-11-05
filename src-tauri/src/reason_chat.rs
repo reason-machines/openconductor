@@ -5,22 +5,42 @@
 //! stream to the window as [`wire::EVENT`] with the payloads in
 //! [`wire::event_json`]. The UI flow:
 //!
-//! 1. `reason_open_chat(chatId, cwd, sessionId?)` when a Reason chat is
-//!    shown; pass the Session id saved from its `sessionStarted` event so
-//!    a chat reopened after a restart resumes its Session.
-//! 2. `reason_prompt(chatId, text)` for the first message and every
-//!    follow-up; it resolves with the turn's end once the turn is over.
+//! 1. `reason_open_chat(chatId, cwd, sessionId?, config?)` when a Reason
+//!    chat is shown; pass the Session id saved from its `sessionStarted`
+//!    event so a chat reopened after a restart resumes its Session.
+//!    `config` (`[{ id, value }]`, e.g. `model`, `reasoning_effort`) is set
+//!    on the Session when it is created; one Reason does not offer comes
+//!    back as a `notice` event.
+//! 2. `reason_prompt(chatId, text, attachments?)` for the first message and
+//!    every follow-up; it resolves with the turn's end once the turn is
+//!    over. `attachments` (`[{ name, text }]`) go to Reason as embedded
+//!    files after the text.
 //! 3. `reason_cancel(chatId)` for Stop.
 
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 
+use serde::Deserialize;
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, State};
 
 use crate::reason_acp::cli::{find_reason_cli, LaunchConfig};
-use crate::reason_acp::provider::{ProviderEvent, ReasonProvider, Sink};
+use crate::reason_acp::provider::{Attachment, ConfigChoice, ProviderEvent, ReasonProvider, Sink};
 use crate::reason_acp::wire;
+
+/// JS `{ id, value }`: one Session config option.
+#[derive(Debug, Deserialize)]
+pub struct ConfigArg {
+    pub id: String,
+    pub value: String,
+}
+
+/// JS `{ name, text }`: one attachment sent with a prompt.
+#[derive(Debug, Deserialize)]
+pub struct AttachmentArg {
+    pub name: String,
+    pub text: String,
+}
 
 #[derive(Default)]
 pub struct ReasonChats {
@@ -70,9 +90,16 @@ pub fn reason_open_chat(
     chat_id: String,
     cwd: String,
     session_id: Option<String>,
+    config: Option<Vec<ConfigArg>>,
 ) -> Result<(), String> {
     let provider = state.provider(&app)?;
     provider.open_chat(&chat_id, &PathBuf::from(cwd), session_id);
+    let config = config.unwrap_or_default().into_iter();
+    let config = config.map(|c| ConfigChoice {
+        id: c.id,
+        value: c.value,
+    });
+    provider.set_config(&chat_id, config.collect());
     Ok(())
 }
 
@@ -84,11 +111,22 @@ pub async fn reason_prompt(
     state: State<'_, ReasonChats>,
     chat_id: String,
     text: String,
+    attachments: Option<Vec<AttachmentArg>>,
 ) -> Result<Value, String> {
     let provider = state.provider(&app)?;
-    let end = tauri::async_runtime::spawn_blocking(move || provider.prompt(&chat_id, &text))
-        .await
-        .map_err(|e| e.to_string())?;
+    let attachments: Vec<Attachment> = attachments
+        .unwrap_or_default()
+        .into_iter()
+        .map(|a| Attachment {
+            name: a.name,
+            text: a.text,
+        })
+        .collect();
+    let end = tauri::async_runtime::spawn_blocking(move || {
+        provider.prompt_with(&chat_id, &text, &attachments)
+    })
+    .await
+    .map_err(|e| e.to_string())?;
     Ok(wire::turn_end_json(&end))
 }
 

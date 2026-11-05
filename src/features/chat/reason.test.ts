@@ -145,3 +145,26 @@ test("Stop ends the turn cancelled with the prompt offered again; a failed call 
   assert.equal(state.open.length, 0);
   assert.deepEqual(step.events[0], { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "failed", error: "The Reason CLI was not found." });
 });
+
+test("a notice is a system message in the running turn", () => {
+  const s = startTurn(reasonChat("c"), "review").state;
+  const step = applyReasonPayload(s, { chatId: "c", type: "notice", text: "Reason does not offer model \"x\"" });
+  assert.equal(step.events.length, 1);
+  const ev = step.events[0];
+  assert.equal(ev.type, "upsert");
+  if (ev.type !== "upsert") return;
+  assert.equal(ev.message.role, "system");
+  assert.equal(ev.message.turnId, "c:t1");
+  assert.deepEqual(ev.message.blocks, [{ type: "text", text: "Reason does not offer model \"x\"" }]);
+});
+
+test("attachments show by name under the prompt", () => {
+  const step = startTurn(reasonChat("c"), "Review this", new Date(0), [{ name: "Review request.md", text: "long instructions" }]);
+  const ev = step.events[0];
+  assert.equal(ev.type, "upsert");
+  if (ev.type !== "upsert") return;
+  assert.deepEqual(ev.message.blocks, [
+    { type: "text", text: "Review this" },
+    { type: "text", text: "Attached: Review request.md" },
+  ]);
+});

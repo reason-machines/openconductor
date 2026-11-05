@@ -1,12 +1,20 @@
 // Runtime side of Reason chats: the Tauri commands in
 // `src-tauri/src/reason_chat.rs`, the `reason-chat-event` stream, and one
-// transcript per chat. The chat id is the workspace id. The Reason Session id
-// is saved per chat, so a chat reopened after a restart resumes its Session.
+// transcript per chat. A workspace's own chat has the workspace id; other
+// chats (reviews) get their own ids. The Reason Session id is saved per chat,
+// so a chat reopened after a restart resumes its Session. A chat can ask for
+// Session options (model, reasoning effort) before its first message.
 
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
-import { applyReasonPayload, failTurn, newestTurn, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
+import { applyReasonPayload, failTurn, newestTurn, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
+
+/** One Reason Session config option (`model`, `reasoning_effort`). */
+export interface ReasonConfig {
+  id: string;
+  value: string;
+}
 
 const EVENT = "reason-chat-event";
 const sessionKey = (chatId: string) => `openconductor.reason.session.${chatId}`;
@@ -15,6 +23,7 @@ interface Chat {
   state: ReasonChatState;
   transcript: ChatTranscript;
   opened: boolean;
+  config: ReasonConfig[];
   listeners: Set<(t: ChatTranscript) => void>;
 }
 
@@ -27,7 +36,7 @@ export const reasonAvailable = (): boolean => isTauri();
 function chat(chatId: string): Chat {
   let c = chats.get(chatId);
   if (!c) {
-    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), opened: false, listeners: new Set() };
+    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), opened: false, config: [], listeners: new Set() };
     chats.set(chatId, c);
   }
   return c;
@@ -64,20 +73,25 @@ export function subscribeReason(chatId: string, fn: (t: ChatTranscript) => void)
   return () => c.listeners.delete(fn);
 }
 
-/** Sends the first message or a follow-up; `cwd` is the workspace folder. */
-export async function sendReason(chatId: string, cwd: string, text: string): Promise<void> {
+/** Session options for a chat that has not sent its first message; set when Reason creates its Session. */
+export function configureReason(chatId: string, config: ReasonConfig[]): void {
+  chat(chatId).config = config;
+}
+
+/** Sends the first message or a follow-up; `cwd` is the workspace folder. Attachments go as embedded files. */
+export async function sendReason(chatId: string, cwd: string, text: string, attachments: PromptAttachment[] = []): Promise<void> {
   const c = chat(chatId);
-  apply(c, startTurn(c.state, text));
+  apply(c, startTurn(c.state, text, new Date(), attachments));
   const turnId = newestTurn(c.state)!;
   try {
     await ensureListening();
     if (!c.opened) {
-      await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)) });
+      await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)), config: c.config });
       c.opened = true;
     }
     // Resolves after the turn's `turnEnded` event; a rejection means the
     // turn never started (no CLI, no process), so no event will end it.
-    await invoke("reason_prompt", { chatId, text });
+    await invoke("reason_prompt", { chatId, text, attachments });
   } catch (e) {
     apply(c, failTurn(c.state, turnId, String(e)));
   }

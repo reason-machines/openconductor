@@ -65,6 +65,8 @@ export interface Settings {
     default_thinking_enabled: boolean;
     review_thinking_enabled: boolean;
     codex: { default_thinking_level: ThinkingLevel; review_thinking_level: ThinkingLevel; [extra: string]: unknown };
+    /** Conductor's `[models.claude_code]`; `review_effort_level` is `review_claude_effort_level`. */
+    claude_code?: { review_effort_level?: ClaudeEffortLevel | null; [extra: string]: unknown };
     [extra: string]: unknown;
   };
   providers: { [agent in AgentKind]?: ProviderConfig | null } & { [extra: string]: unknown };
@@ -106,6 +108,10 @@ export interface ProviderStatus {
   /** Why it is not ready, safe to display. */
   problem?: string;
 }
+
+/** Conductor's Claude effort levels (`review_claude_effort_level`). */
+export const CLAUDE_EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max", "ultracode"] as const;
+export type ClaudeEffortLevel = (typeof CLAUDE_EFFORT_LEVELS)[number];
 
 export const DEFAULT_SETTINGS: Settings = {
   $schema: "https://openconductor.dev/schemas/settings.schema.json",
