@@ -17,16 +17,6 @@ export function newId(): string {
   return Math.random().toString(36).slice(2, 10);
 }
 
-/** "owner/name" or a GitHub URL -> repo name. Returns null when not parseable. */
-export function repoNameFromGithub(input: string): { owner: string; name: string } | null {
-  const s = input.trim().replace(/\.git$/, "").replace(/\/$/, "");
-  const m =
-    s.match(/^(?:https?:\/\/)?(?:www\.)?github\.com\/([\w.-]+)\/([\w.-]+)$/i) ??
-    s.match(/^git@github\.com:([\w.-]+)\/([\w.-]+)$/i) ??
-    s.match(/^([\w.-]+)\/([\w.-]+)$/);
-  return m ? { owner: m[1], name: m[2] } : null;
-}
-
 export function basename(path: string): string {
   const parts = path.replace(/[\\/]+$/, "").split(/[\\/]/);
   return parts[parts.length - 1] || path;

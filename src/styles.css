@@ -379,7 +379,7 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .add-repo-pop { position: absolute; top: 100%; right: 0; z-index: 25; margin-top: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); padding: 6px; display: flex; flex-direction: column; gap: 6px; font-weight: 400; }
 .add-repo-menu { min-width: 160px; }
 .add-repo-menu button { text-align: left; padding: 6px 8px; border: 0; border-radius: 6px; background: none; color: inherit; font: inherit; cursor: pointer; }
-.add-repo-menu button:hover, .add-repo-menu button:focus-visible { background: var(--hover, rgba(127, 127, 127, 0.12)); outline: 0; }
+.add-repo-menu button:hover, .add-repo-menu button:focus-visible { background: var(--hover); outline: 0; }
 .add-repo-clone { width: min(380px, calc(100vw - 64px)); padding: 8px; }
 .add-repo-clone input { min-width: 0; }
 /* In the dialog the clone box spans the repository + base branch row; the menu stays under "Add…". */
@@ -393,3 +393,22 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .settings-agent-status { font-size: 12px; color: var(--muted); }
 .settings-agent-status.warn { color: var(--del); }
 .settings-agent-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+
+/* Clone GitHub repo dialog */
+.modal:has(.clone-dialog) { width: min(525px, calc(100vw - 48px)); }
+.clone-recent { display: flex; flex-direction: column; gap: 6px; }
+.clone-recent-heading { font-weight: 500; }
+.clone-recent-list { list-style: none; margin: 0; padding: 0; max-height: 9rem; overflow-y: auto; }
+.clone-recent-list button { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border: 0; border-radius: 6px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; min-width: 0; }
+.clone-recent-list button:hover, .clone-recent-list button.selected { background: var(--hover); }
+.clone-recent-list img, .clone-avatar { width: 24px; height: 24px; border-radius: 50%; flex: none; background: var(--border); }
+.clone-recent-name { flex: none; }
+.clone-recent-desc { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.clone-recent-skeleton { height: 28px; margin: 4px 0; border-radius: 6px; background: var(--border); animation: pulse 1.5s ease-in-out infinite; }
+.clone-progress { display: flex; flex-direction: column; gap: 6px; }
+.clone-progress-label { display: flex; align-items: center; gap: 6px; }
+.clone-spinner { width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: currentColor; border-radius: 50%; animation: clone-spin 0.8s linear infinite; }
+@keyframes clone-spin { to { transform: rotate(360deg); } }
+.clone-log { height: 8rem; margin: 0; padding: 8px; overflow: auto; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); font: 11px/1.4 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; }
+.clone-error { padding: 8px 10px; border-radius: 6px; background: color-mix(in srgb, var(--del) 12%, transparent); color: var(--del); user-select: text; white-space: pre-wrap; word-break: break-word; }
+.clone-kbd { margin-left: 6px; opacity: 0.6; font: inherit; }

@@ -109,9 +109,13 @@ becomes `https://<host>/<path>.git`.
   <n>" plus output, and creates only the default location
   (`default_clone_directory`, `<app data>/repos`). `github_recent_repos` and
   `github_git_protocol` back the recent list and the placeholder (through `gh`).
+- Closed in part 3: the dialog itself (`CloneGitHubRepoDialog`), opened from
+  Home's "Open GitHub project". The location is saved after a successful clone
+  (in the webview's local storage rather than Conductor's settings table, since
+  we have no such setting yet) and reused when that folder still exists.
 - Still open: the folder name is not sanitized beyond the URL's last segment
-  (Conductor's sanitizer rules are not recorded here), and `last_clone_directory`
-  is not saved yet (part 3, with the dialog).
+  (Conductor's sanitizer rules are not recorded here), and there is no
+  onboarding, so success does not move to a first-message step.
 
 ## REA notes
 
