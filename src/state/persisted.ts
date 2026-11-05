@@ -1,7 +1,7 @@
 // Repositories and workspaces from conductor.db (src-tauri/src/persistence_commands.rs).
 // In the desktop app these rows are the source of truth for the sidebar and Home;
 // localStorage keeps only UI preferences (selection, sidebar visibility, collapsed repos).
-import type { AppState, Repo, Selection, Workspace } from "./types";
+import type { AppState, Repo, Selection, UnreadChat, Workspace } from "./types";
 import { isWorkspaceStatus } from "./workspaceStatus.ts";
 
 export interface DbRepoRow {
@@ -33,7 +33,10 @@ export interface DbWorkspaceRow {
   /** `intended_target_branch`; absent from rows of an older backend. */
   intendedTargetBranch?: string | null;
   pinnedAt: string | null;
+  /** `workspaces.unread`, the legacy per-workspace flag; folded into the main chat. */
   unread: boolean;
+  /** The workspace's unread, non-hidden chats (`sessions.unread_count`); absent from rows of an older backend. */
+  unreadChats?: { id: string; updatedAt: string }[];
   /** The PR's title and body as last stored (`pr_title`, `pr_description`). */
   prTitle: string | null;
   prDescription: string | null;
@@ -91,7 +94,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             targetBranch: w.intendedTargetBranch ?? null,
             /* sidebar: pin, unread and status columns */
             pinnedAt: w.pinnedAt ? sqliteTime(w.pinnedAt) : undefined,
-            unread: w.unread || undefined,
+            unreadChats: unreadChatsOf(w),
             manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
             derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
             prTitle: w.prTitle ?? null,
@@ -102,6 +105,18 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
           }),
         ),
     }));
+}
+
+/**
+ * The row's unread chats. Only the main chat (id = workspace id) has a tab after a
+ * restart, since review tabs live in memory: a stored unread review chat counts as
+ * hidden, which Conductor leaves out of the workspace's unread (`zJo`). A legacy
+ * `workspaces.unread` = 1 marks the main chat.
+ */
+export function unreadChatsOf(w: DbWorkspaceRow): UnreadChat[] | undefined {
+  const chats = (w.unreadChats ?? []).filter((c) => c.id === w.id).map((c) => ({ id: c.id, at: sqliteTime(c.updatedAt) }));
+  if (w.unread && chats.length === 0) chats.push({ id: w.id, at: sqliteTime(w.updatedAt ?? w.createdAt) });
+  return chats.length > 0 ? chats : undefined;
 }
 
 /** Keep the selection only while it still points at a listed workspace. */

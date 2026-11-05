@@ -436,6 +436,56 @@ pub async fn set_unread(pool: &SqlitePool, id: &str, unread: bool) -> Result<()>
     .await
 }
 
+/// Set a chat's unread flag, creating its row when the chat has none yet
+/// (Codex chats, or a chat that has stored no message). A row created by
+/// `chat_messages::save` has no `workspace_id`; this fills it, so
+/// [`mark_workspace_read`] and [`unread_chats`] see the chat. An existing
+/// `workspace_id` is kept.
+///
+/// The reference has no such upsert: its `setUnread` (`ret`) updates a row
+/// that `createSession` made with the workspace id. Here chats are created
+/// by the frontend, so the row may not exist.
+pub async fn upsert_unread(
+    pool: &SqlitePool,
+    id: &str,
+    workspace_id: &str,
+    unread: bool,
+) -> Result<()> {
+    sqlx::query(
+        "INSERT INTO sessions (id, workspace_id, unread_count) VALUES (?, ?, ?) \
+         ON CONFLICT(id) DO UPDATE SET unread_count = excluded.unread_count, \
+         workspace_id = COALESCE(sessions.workspace_id, excluded.workspace_id)",
+    )
+    .bind(id)
+    .bind(workspace_id)
+    .bind(unread)
+    .execute(pool)
+    .await?;
+    Ok(())
+}
+
+/// An unread, non-hidden chat (one row of [`unread_chats`]).
+#[derive(Debug, Clone, PartialEq, Eq, sqlx::FromRow)]
+pub struct UnreadChat {
+    pub workspace_id: String,
+    pub id: String,
+    /// `sessions.updated_at` as stored (ISO-8601 or `datetime('now')`).
+    pub updated_at: String,
+}
+
+/// Every unread chat that is not hidden and belongs to a workspace, by
+/// workspace then id. A workspace is unread when it has one (reference
+/// `zJo`: `sessions.filter(s => !s.isHidden).some(s => s.unread)`).
+pub async fn unread_chats(pool: &SqlitePool) -> Result<Vec<UnreadChat>> {
+    Ok(sqlx::query_as(
+        "SELECT workspace_id, id, updated_at FROM sessions \
+         WHERE unread_count = 1 AND is_hidden IS NOT 1 AND workspace_id IS NOT NULL \
+         ORDER BY workspace_id, id",
+    )
+    .fetch_all(pool)
+    .await?)
+}
+
 /// Mark every unread session in a workspace read; returns their ids.
 pub async fn mark_workspace_read(pool: &SqlitePool, workspace_id: &str) -> Result<Vec<String>> {
     let ids: Vec<(String,)> =

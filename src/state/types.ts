@@ -33,8 +33,12 @@ export interface Workspace {
   prTitle?: string | null;
   /** Body of the workspace's pull request (`pr_description`); Create PR uses it verbatim. */
   prDescription?: string | null;
-  /** Unread agent output; the sidebar row's name turns semibold. */
-  unread?: boolean;
+  /**
+   * The workspace's unread chats (Conductor's `sessions.unread_count`, per chat): the
+   * workspace is unread while it has one (state/chatUnread.ts), and its sidebar row's
+   * name turns semibold. Absent when none is unread.
+   */
+  unreadChats?: UnreadChat[];
   /* sidebar: pin and status (Conductor's pinned_at, manual_status, derived_status) */
   /** When the workspace was pinned (ms); pinned rows sit in the sidebar's Pinned group. */
   pinnedAt?: number;
@@ -47,6 +51,12 @@ export interface Workspace {
   state?: string;
   /** The workspace's pull request as last read from GitHub; drives the row's status icon. */
   pr?: RowPr | null;
+}
+
+/** An unread chat; `at` (ms) is when its row last changed, the "Go to next unread" order. */
+export interface UnreadChat {
+  id: string;
+  at: number;
 }
 
 export interface Repo {

@@ -4,7 +4,7 @@
 import type { AppState, Workspace } from "../state/types.ts";
 import type { ActionEntry, PaletteData, WorkspaceEntry } from "./search/model.ts";
 import { sidebarEntries } from "../state/sidebarOrder.ts";
-import { nextUnreadWorkspace } from "../state/nextUnread.ts";
+import { nextUnreadChat } from "../state/nextUnread.ts";
 
 export interface WorkspaceRef {
   repoId: string;
@@ -60,7 +60,7 @@ export function paletteDataFromState(state: AppState, recentIds: readonly string
   return {
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
-    actions: nextUnreadWorkspace(state, { skipSelected: false }) ? PALETTE_ACTIONS : PALETTE_ACTIONS.filter((a) => a.id !== "go-to-next-unread"),
+    actions: nextUnreadChat(state, { skipSelected: false }) ? PALETTE_ACTIONS : PALETTE_ACTIONS.filter((a) => a.id !== "go-to-next-unread"),
     settings: [],
     recentWorkspaceIds: recentIds.filter((id) => known.has(id)),
     activeWorkspaceId,

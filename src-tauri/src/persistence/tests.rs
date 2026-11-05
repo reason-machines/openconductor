@@ -343,3 +343,42 @@ async fn lists_updated_at_as_last_activity() {
     assert_eq!(w.updated_at, "2030-01-02 03:04:05");
     assert_ne!(w.created_at, w.updated_at);
 }
+
+#[tokio::test]
+async fn lists_each_workspaces_unread_chats() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    for name in ["oslo", "lima"] {
+        finish_workspace(&pool, &ws("app", name), Some("main"), None)
+            .await
+            .unwrap();
+    }
+    use openconductor_db::sessions;
+    sessions::upsert_unread(&pool, "app/oslo", "app/oslo", true)
+        .await
+        .unwrap();
+    sessions::upsert_unread(&pool, "app/oslo:review:1", "app/oslo", true)
+        .await
+        .unwrap();
+    sessions::upsert_unread(&pool, "app/lima", "app/lima", false)
+        .await
+        .unwrap();
+    let rows = list_workspaces(&pool).await.unwrap();
+    let chats = |id: &str| -> Vec<String> {
+        rows.iter()
+            .find(|w| w.id == id)
+            .unwrap()
+            .unread_chats
+            .iter()
+            .map(|c| c.id.clone())
+            .collect()
+    };
+    assert_eq!(chats("app/oslo"), ["app/oslo", "app/oslo:review:1"]);
+    assert!(chats("app/lima").is_empty());
+    let first = &rows
+        .iter()
+        .find(|w| w.id == "app/oslo")
+        .unwrap()
+        .unread_chats[0];
+    assert!(!first.updated_at.is_empty());
+}

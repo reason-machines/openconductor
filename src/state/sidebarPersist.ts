@@ -4,7 +4,7 @@
 import type { Action } from "./store";
 
 export interface SidebarWrite {
-  command: "db_set_workspace_pinned" | "db_set_workspace_unread" | "db_set_workspace_manual_status" | "db_touch_workspace";
+  command: "db_set_workspace_pinned" | "db_set_chat_unread" | "db_mark_workspace_read" | "db_set_workspace_manual_status" | "db_touch_workspace";
   args: Record<string, unknown>;
 }
 
@@ -13,8 +13,11 @@ export function sidebarWrite(action: Action): SidebarWrite | undefined {
   switch (action.type) {
     case "setWorkspacePinned":
       return { command: "db_set_workspace_pinned", args: { workspaceId: action.workspaceId, pinned: action.pinned } };
-    case "setWorkspaceUnread":
-      return { command: "db_set_workspace_unread", args: { workspaceId: action.workspaceId, unread: action.unread } };
+    case "setChatUnread":
+      // sessions.unread_count of the chat; its row is created in the workspace when missing (Codex chats).
+      return { command: "db_set_chat_unread", args: { chatId: action.chatId, workspaceId: action.workspaceId, unread: action.unread } };
+    case "markWorkspaceRead":
+      return { command: "db_mark_workspace_read", args: { workspaceId: action.workspaceId } };
     case "setWorkspaceStatus":
       return { command: "db_set_workspace_manual_status", args: { workspaceId: action.workspaceId, status: action.status } };
     case "touchWorkspace":

@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MutableRefObject, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MouseEvent as ReactMouseEvent, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon, ChevronIcon } from "./Icons";
-import { clearManuallyUnread, readOnView, setShownChat } from "../state/autoUnread";
+import { clearManuallyUnread, markManuallyUnread, readOnView, setSelectedChat, setShownChat } from "../state/autoUnread";
+import { isChatUnread } from "../state/chatUnread";
+import { onChatRequest, takeChatRequest } from "../state/openChat";
 import { useWindowFocused } from "../state/useAutoUnread";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat } from "../features/chat/reasonChat.ts";
@@ -59,8 +61,10 @@ interface Props {
   workspace: Workspace;
   dispatch: Dispatch<Action>;
   notify?: ArchiveNotify;
-  /** Opens the next unread workspace; unset when nothing else is unread (the composer's "Next unread" button). */
+  /** Opens the next unread chat (the composer's "Next unread" button). */
   onNextUnread?: () => void;
+  /** Whether a chat other than `selectedChatId` is unread: the button shows only then. */
+  hasNextUnread?: (selectedChatId: string) => boolean;
 }
 
 // The chat runs Reason in the desktop app (one Reason Session per chat,
@@ -492,6 +496,11 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
 /** "chat" (the workspace's chat), "diff" (All changes), "pr" (the PR tab) or a review chat's id. */
 type MainTab = string;
 
+/** The tab that shows `chatId` of the workspace: "chat" for its own chat (or none), else the review chat's id. */
+function tabOfChat(workspaceId: string, chatId: string | undefined): MainTab {
+  return chatId === undefined || chatId === workspaceId ? "chat" : chatId;
+}
+
 interface MainTabsProps {
   title: string;
   active: MainTab;
@@ -503,11 +512,22 @@ interface MainTabsProps {
   onSelect: (t: MainTab) => void;
   onCloseDiff: () => void;
   onCloseReview: (chatId: string) => void;
+  /** The workspace's own chat id (its tab is "chat"). */
+  mainChatId: string;
+  isUnread: (chatId: string) => boolean;
+  /** The chat tab menu's "Mark as read" / "Mark as unread". */
+  onToggleRead: (chatId: string) => void;
 }
 
-function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview }: MainTabsProps) {
+function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead }: MainTabsProps) {
+  const [menu, setMenu] = useState<{ chatId: string; x: number; y: number } | null>(null);
+  const openMenu = (chatId: string) => (e: ReactMouseEvent) => {
+    e.preventDefault();
+    setMenu({ chatId, x: e.clientX, y: e.clientY });
+  };
   return (
     <div className="tabs main-tabs" role="tablist" aria-label="Workspace tabs">
+      {menu && <ChatTabMenu at={menu} unread={isUnread(menu.chatId)} onToggleRead={() => onToggleRead(menu.chatId)} onClose={() => setMenu(null)} />}
       {diffOpen && (
         <span className={`main-tab${active === "diff" ? " active" : ""}`}>
           <button role="tab" aria-selected={active === "diff"} className={active === "diff" ? "active" : ""} onClick={() => onSelect("diff")}>
@@ -519,7 +539,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
         </span>
       )}
       <span className={`main-tab${active === "chat" ? " active" : ""}`}>
-        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")} title={title}>
+        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")} onContextMenu={openMenu(mainChatId)} data-unread={isUnread(mainChatId) || undefined} title={title}>
           {title}
         </button>
       </span>
@@ -535,7 +555,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
       )}
       {reviews.map((r) => (
         <span key={r.chatId} className={`main-tab${active === r.chatId ? " active" : ""}`}>
-          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} title={`Code review on ${r.modelLabel}`}>
+          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} onContextMenu={openMenu(r.chatId)} data-unread={isUnread(r.chatId) || undefined} title={`Code review on ${r.modelLabel}`}>
             {r.title}
           </button>
           <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} title="Close tab" aria-label={`Close ${r.title} tab`}>
@@ -543,6 +563,45 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           </button>
         </span>
       ))}
+    </div>
+  );
+}
+
+/**
+ * A chat tab's right-click menu. Conductor's (renderApp-D_fmY7hW.js @7,377,893) starts
+ * with "Mark as read" / "Mark as unread" for that chat (`Q`: setUnread, and a hand mark
+ * when marking unread, cleared when marking read); its rename, fork, copy and close items
+ * are not here yet.
+ */
+function ChatTabMenu({ at, unread, onToggleRead, onClose }: { at: { x: number; y: number }; unread: boolean; onToggleRead: () => void; onClose: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) onClose();
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    window.addEventListener("blur", onClose);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("blur", onClose);
+    };
+  }, [onClose]);
+  return (
+    <div ref={ref} className="sb-ctx-menu" role="menu" aria-label="Chat actions" style={{ left: at.x, top: at.y }} onContextMenu={(e) => e.preventDefault()}>
+      <button
+        type="button"
+        role="menuitem"
+        className="sb-ctx-item"
+        onClick={() => {
+          onClose();
+          onToggleRead();
+        }}
+      >
+        <span className="sb-ctx-label">{unread ? "Mark as read" : "Mark as unread"}</span>
+      </button>
     </div>
   );
 }
@@ -589,7 +648,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
   archived: "Archived",
 };
 
-export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread }: Props) {
+export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread, hasNextUnread }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
@@ -602,7 +661,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     setDiffOpen(false);
     setPrOpen(false);
     setPickingTarget(false);
-    setMainTab("chat");
+    // Go to next unread or a row click may have asked for one of its chats (state/openChat.ts).
+    setMainTab(tabOfChat(workspace.id, takeChatRequest(workspace.id)));
+    return onChatRequest((id) => {
+      if (id === workspace.id) setMainTab(tabOfChat(workspace.id, takeChatRequest(workspace.id)));
+    });
   }, [workspace.id]);
   const openPrTab = useCallback(() => {
     setPrOpen(true);
@@ -700,6 +763,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
   loaded.current = review.onLoaded;
   const reviews = useReviewChats(repo, workspace, setMainTab);
   const closeReview = (chatId: string) => {
+    // A closed review counts as hidden: it no longer keeps the workspace unread.
+    if (isChatUnread(workspace, chatId)) dispatch({ type: "setChatUnread", repoId: repo.id, workspaceId: workspace.id, chatId, unread: false, at: Date.now() });
+    clearManuallyUnread(chatId);
     reviews.close(chatId);
     if (mainTab === chatId) setMainTab("chat");
   };
@@ -739,10 +805,24 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     setShownChat(transcriptShown);
     return () => setShownChat(null);
   }, [transcriptShown]);
-  useEffect(() => clearManuallyUnread(workspace.id), [workspace.id]);
+  // The selected chat tab (Conductor's selectedSessionId): the row menu's "Mark as unread" marks it.
+  const selectedChat = shownChat.current;
   useEffect(() => {
-    if (readOnView(workspace, { shownChatId: transcriptShown, focused })) dispatch({ type: "setWorkspaceUnread", repoId: repo.id, workspaceId: workspace.id, unread: false });
+    setSelectedChat(selectedChat);
+    return () => setSelectedChat(null);
+  }, [selectedChat]);
+  // Showing a chat (again) drops its hand mark (yIo's mount effect).
+  useEffect(() => clearManuallyUnread(selectedChat), [selectedChat]);
+  useEffect(() => {
+    const chatId = readOnView(workspace, { shownChatId: transcriptShown, focused });
+    if (chatId) dispatch({ type: "setChatUnread", repoId: repo.id, workspaceId: workspace.id, chatId, unread: false, at: Date.now() });
   }, [workspace, transcriptShown, focused, dispatch, repo.id]);
+  const toggleChatRead = (chatId: string) => {
+    const unread = !isChatUnread(workspace, chatId);
+    if (unread) markManuallyUnread(chatId);
+    else clearManuallyUnread(chatId);
+    dispatch({ type: "setChatUnread", repoId: repo.id, workspaceId: workspace.id, chatId, unread, at: Date.now() });
+  };
   // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
   const rightPanelVisible = useAppPrefs().right_panel_visible;
   return (
@@ -792,8 +872,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
           // Conductor hides the button once the workspace's PR is merged (g1o's `hidden`, `mIo` isMerged).
-          onNextUnread={prBase?.merged ? undefined : onNextUnread}
-          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
+          onNextUnread={!prBase?.merged && hasNextUnread?.(selectedChat) ? onNextUnread : undefined}
+          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} />}
           content={
             showDiff ? (
               <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} />

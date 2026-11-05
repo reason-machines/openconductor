@@ -10,6 +10,7 @@ import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
 import { withActivity } from "./nextUnread";
+import { withChatUnread, withWorkspaceRead } from "./chatUnread";
 import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, reorderSection, sectionOf, sectionsFromDb, withoutWorkspace, type DbNavSection, type NavSection } from "./navigationSections";
 import { sameRepoRecord } from "./addRepo";
 import { archiveWorkspace, emitArchiveEvent, startArchive, startUnarchive, stopWorkspaceAgents, unarchiveWorkspace, workspaceAgentStatus, type ArchiveMode } from "../workspace/archive";
@@ -63,7 +64,10 @@ export type Action =
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] }
   /* sidebar: row actions (unread, pin, status) */
-  | { type: "setWorkspaceUnread"; repoId: string; workspaceId: string; unread: boolean }
+  /** A chat's unread flag (`at`: when, ms; it orders Go to next unread). */
+  | { type: "setChatUnread"; repoId: string; workspaceId: string; chatId: string; unread: boolean; at: number }
+  /** Every chat of the workspace read (the row's "Mark as read"). */
+  | { type: "markWorkspaceRead"; repoId: string; workspaceId: string }
   | { type: "setWorkspacePinned"; repoId: string; workspaceId: string; pinned: boolean; at?: number }
   | { type: "setWorkspaceStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue }
   /** The user sent a message at `at`: last activity moves forward (chat_messages_save writes the same to conductor.db). */
@@ -205,8 +209,10 @@ export function reducer(state: AppState, action: Action): AppState {
       const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined, workspaces: r.workspaces.map(keepLive) }));
       return { ...state, repos, selection: validSelection(state.selection, repos) };
     }
-    case "setWorkspaceUnread":
-      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, unread: action.unread || undefined }));
+    case "setChatUnread":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => withChatUnread(w, action.chatId, action.unread, action.at));
+    case "markWorkspaceRead":
+      return updateWorkspace(state, action.repoId, action.workspaceId, withWorkspaceRead);
     case "setWorkspacePinned": {
       const next = updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
       // Conductor's pin mutation unassigns the workspace from its section first (index-BGEQ8YjU.js @3315700).

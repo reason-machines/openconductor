@@ -3,6 +3,7 @@ import type { Workspace } from "../state/types";
 import type { NavSection } from "../state/navigationSections";
 import { WORKSPACE_STATUSES, effectiveStatus, statusLabel, type WorkspaceStatusValue } from "../state/workspaceStatus";
 import { ChevronIcon } from "./Icons";
+import { isWorkspaceUnread } from "../state/chatUnread";
 
 // Conductor's workspace row menu (`D9e` -> `Aao` in the renderApp chunk,
 // REA-extracted and read as data), opened by right-clicking a sidebar row.
@@ -110,7 +111,7 @@ export function WorkspaceActionsMenu({ workspace, selected, at, actions, section
   return (
     <div ref={ref} className="sb-ctx-menu" role="menu" aria-label="Workspace actions" style={{ left: pos.x, top: pos.y }} onContextMenu={(e) => e.preventDefault()}>
       <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.toggleRead)}>
-        <span className="sb-ctx-label">{workspace.unread ? "Mark as read" : "Mark as unread"}</span>
+        <span className="sb-ctx-label">{isWorkspaceUnread(workspace) ? "Mark as read" : "Mark as unread"}</span>
         <kbd className="sb-ctx-kbd">R</kbd>
       </button>
       <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.togglePin)}>
