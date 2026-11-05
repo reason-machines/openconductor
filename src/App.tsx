@@ -15,6 +15,7 @@ import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/n
 import { Toaster, useToasts } from "./components/Toast";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
+import { FEEDBACK_URL } from "./components/helpMenu";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
@@ -107,6 +108,7 @@ export default function App() {
   useKeybindings({
     "openKeyboardShortcuts": toggleShortcuts,
     "openSettings": openSettings,
+    "sendFeedback": () => void openUrl(FEEDBACK_URL),
     "view.zoomIn": () => void changeZoom("in").catch((e) => show("error", errorText(e))),
     "view.zoomOut": () => void changeZoom("out").catch((e) => show("error", errorText(e))),
     "view.resetZoom": () => void changeZoom("reset").catch((e) => show("error", errorText(e))),
