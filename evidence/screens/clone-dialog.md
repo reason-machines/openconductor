@@ -104,11 +104,14 @@ becomes `https://<host>/<path>.git`.
 
 ## Gaps against what we have
 
-- `clone_repository` (#189) fails with "destination already exists" instead of
-  picking a unique name, returns git's stderr instead of "Git clone failed with
-  code <n>", streams no progress, and does not create the default location.
-- There is no recent-repos request, no `git_protocol` read and no saved
-  `last_clone_directory` yet.
+- Closed in part 2: `clone_repository` now picks a unique name, streams the
+  progress lines above over a channel, fails with "Git clone failed with code
+  <n>" plus output, and creates only the default location
+  (`default_clone_directory`, `<app data>/repos`). `github_recent_repos` and
+  `github_git_protocol` back the recent list and the placeholder (through `gh`).
+- Still open: the folder name is not sanitized beyond the URL's last segment
+  (Conductor's sanitizer rules are not recorded here), and `last_clone_directory`
+  is not saved yet (part 3, with the dialog).
 
 ## REA notes
 

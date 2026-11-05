@@ -84,6 +84,18 @@ async fn github_repo_availability(
     blocking(move || github_repo::GitHub::default().availability(&owner, &repo_name)).await
 }
 
+/// "Recent repos" for the clone dialog (see `github_repo::RECENT_REPOS_PATH`).
+#[tauri::command]
+async fn github_recent_repos() -> Result<Vec<github_repo::RecentRepo>, String> {
+    blocking(|| github_repo::GitHub::default().recent_repos()).await
+}
+
+/// `ssh` or `https`, from `gh config get git_protocol`.
+#[tauri::command]
+async fn github_git_protocol() -> Result<String, String> {
+    blocking(|| Ok(github_repo::GitHub::default().git_protocol().to_string())).await
+}
+
 /// Publish a local folder as a new private GitHub repo (see `github_repo`).
 #[tauri::command]
 async fn github_repo_create(
@@ -166,8 +178,11 @@ pub fn run() {
             github_repo_owners,
             github_repo_availability,
             github_repo_create,
+            github_recent_repos,
+            github_git_protocol,
             workspace::commands::add_repository,
             workspace::commands::clone_repository,
+            workspace::commands::default_clone_directory,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
             workspace::commands::branch_name_is_taken,
