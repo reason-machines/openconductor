@@ -344,6 +344,13 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 /* Create workspace */
 .modal:has(.create-ws) { width: min(560px, calc(100vw - 48px)); }
 .create-composer { margin: 0; }
+/* Create split button: "Create" plus the "Create in section" menu (Conductor's sQo / iQo). */
+.create-split { position: relative; display: inline-flex; }
+.create-split > .btn-primary[data-split] { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.create-split-toggle { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: 1px solid color-mix(in srgb, var(--accent-text) 20%, transparent); padding-left: 6px; padding-right: 6px; }
+.create-split-menu { position: absolute; right: 0; bottom: calc(100% + 4px); top: auto; width: 224px; max-height: 320px; overflow-y: auto; z-index: 20; }
+.create-split-heading { padding: 6px 8px; font-size: 12px; color: var(--muted); }
+.create-split-emoji { display: inline-flex; width: 16px; justify-content: center; margin-right: 6px; }
 .create-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .field select { flex: 1; min-width: 0; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); font: inherit; color: inherit; font-weight: 400; }
 .field select[aria-invalid="true"] { border-color: var(--del); }
