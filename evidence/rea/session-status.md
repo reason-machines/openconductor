@@ -16,6 +16,7 @@ Where the app shows them:
 | Chat tabs | `l8i` | needs_plan_response: plan icon; needs_user_input or needs_user_permission: question icon; working: typing loader; waiting: loader + "Waiting for background tasks"; cancelling: loader + "Cancelling". |
 | Board card | `rZo` | Text "Review plan", "Need permission", "Answer question", "Planning..."/"Working...", "Cancelling...", "Waiting...". |
 | Composer | `lTo`, send-mode rules | A turn is in flight for working, needs_*, cancelling (not waiting). |
+| Archive guard (index chunk) | `vfe` @3,262,348, guard @3,300,138 | Archive asks first ("Agents are still running") while any visible session is working, cancelling or waiting; needs_* do not block. |
 
 OpenConductor: the sidebar row (`rowStatus`), Home (`homeRowStatus`, the `vJo` rule) and the workspace
 header read `useWorkspaceSession`: every chat's status in this window (`chatStatuses`, the `aFi` hook),
