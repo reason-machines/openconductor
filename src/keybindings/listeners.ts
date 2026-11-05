@@ -31,7 +31,9 @@ const asElement = (x: unknown): ElementLike | undefined =>
 
 /**
  * Where focus is for this event: the text field in its path (the first INPUT or
- * TEXTAREA, else the outermost contenteditable), whether the target is inside
+ * TEXTAREA, else the outermost contenteditable, else a `data-keybinding-local`
+ * element that reads plain keys itself, such as the queued-messages list, so
+ * bare-key commands skip it as they skip a text field), whether the target is inside
  * `[data-terminal]`, and whether a recorder button is in the path.
  */
 export function probeFocus(e: Pick<ListenerEvent, "target" | "composedPath">): {
@@ -42,6 +44,7 @@ export function probeFocus(e: Pick<ListenerEvent, "target" | "composedPath">): {
   const path = e.composedPath().map(asElement).filter((x): x is ElementLike => x !== undefined);
   let field = path.find((el) => el.tagName === "INPUT" || el.tagName === "TEXTAREA");
   if (field === undefined) for (const el of path) if (el.isContentEditable === true) field = el;
+  field ??= path.find((el) => el.dataset?.keybindingLocal === "true");
   const target = asElement(e.target);
   return {
     field,
