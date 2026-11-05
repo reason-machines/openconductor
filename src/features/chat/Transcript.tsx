@@ -1,10 +1,12 @@
-// Transcript UI: draws the rows from `buildRows` (see view.ts). Message text is
-// shown as plain pre-wrapped text; markdown rendering is a separate slice.
+// Transcript UI: draws the rows from `buildRows` (see view.ts). Assistant text
+// renders as markdown (markdown.ts); user text stays as typed.
 
 import { useMemo, useState } from "react";
 import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin, type RowView, type ToolCallView } from "./view.ts";
 import { plainText } from "./types.ts";
+import { Markdown } from "./markdown.ts";
+import { openUrl } from "../../backend.ts";
 import "./chat.css";
 
 export interface TranscriptProps {
@@ -90,7 +92,7 @@ function reportLabel(origin: ReportOrigin): string {
 function Part({ part, isOpen, onToggle }: { part: PartView; isOpen: (id: string) => boolean; onToggle: (id: string) => void }) {
   switch (part.kind) {
     case "text":
-      return <div className={`chat-text${part.streaming ? " is-streaming" : ""}`}>{part.text}</div>;
+      return <Markdown text={part.text} className={`chat-text${part.streaming ? " is-streaming" : ""}`} onOpenLink={(href) => void openUrl(href)} />;
     case "thinking":
       return (
         <details className="chat-thinking" open={part.streaming}>

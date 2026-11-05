@@ -11,7 +11,7 @@
 .chat-system { align-self: center; color: var(--muted); font-size: 12px; text-align: center; }
 
 .chat-assistant { display: flex; flex-direction: column; gap: 6px; }
-.chat-text.is-streaming::after, .chat-thinking .is-streaming::after { content: ""; display: inline-block; width: 7px; height: 1em; margin-left: 2px; vertical-align: text-bottom; background: currentColor; opacity: 0.6; animation: chat-blink 1s steps(2) infinite; }
+.chat-text.is-streaming > :last-child::after, .chat-thinking .is-streaming::after { content: ""; display: inline-block; width: 7px; height: 1em; margin-left: 2px; vertical-align: text-bottom; background: currentColor; opacity: 0.6; animation: chat-blink 1s steps(2) infinite; }
 .chat-typing { display: inline-block; width: 28px; height: 10px; background: radial-gradient(circle, var(--muted) 2px, transparent 3px) 0 50% / 9px 10px repeat-x; animation: pulse 1.4s ease-in-out infinite; }
 @keyframes chat-blink { to { opacity: 0; } }
 
@@ -39,3 +39,66 @@
 .chat-turn-end { display: flex; align-items: center; gap: 8px; font-size: 12px; min-height: 20px; }
 .chat-turn-actions { display: flex; gap: 4px; margin-left: auto; }
 .chat-turn-error { color: var(--del); }
+
+/* Markdown (markdown.ts). Code colours follow Conductor's default code theme
+   (--code-* from its palette; evidence/chat/markdown.md) and its .hljs rules. */
+:root {
+  --code-fg: hsl(25 8% 16%); --code-bg: hsl(30 9% 95%); --code-comment: hsl(23 5% 63%);
+  --code-keyword: hsl(0 72% 51%); --code-string: hsl(360 13% 31%); --code-number: hsl(221 83% 53%);
+  --code-function: hsl(292 100% 46%); --code-class: hsl(20 90% 48%); --code-tag: hsl(142 72% 29%); --code-operator: hsl(0 72% 51%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --code-fg: hsl(30 8% 91%); --code-bg: hsl(24 9% 12%); --code-comment: hsl(22 4% 54%);
+    --code-keyword: hsl(0 91% 71%); --code-string: hsl(22 39% 78%); --code-number: hsl(213 94% 68%);
+    --code-function: hsl(292 100% 66%); --code-class: hsl(27 96% 61%); --code-tag: hsl(142 69% 58%); --code-operator: hsl(0 91% 71%);
+  }
+}
+:root[data-theme="dark"] {
+  --code-fg: hsl(30 8% 91%); --code-bg: hsl(24 9% 12%); --code-comment: hsl(22 4% 54%);
+  --code-keyword: hsl(0 91% 71%); --code-string: hsl(22 39% 78%); --code-number: hsl(213 94% 68%);
+  --code-function: hsl(292 100% 66%); --code-class: hsl(27 96% 61%); --code-tag: hsl(142 69% 58%); --code-operator: hsl(0 91% 71%);
+}
+
+.md { white-space: normal; line-height: 1.6; min-width: 0; }
+.md > :first-child { margin-top: 0; }
+.md > :last-child { margin-bottom: 0; }
+.md p { margin: 0 0 0.75em; }
+.md ul, .md ol { margin: 0 0 0.75em; padding-left: 1.5em; }
+.md li { margin: 0.2em 0; }
+.md li > p { margin: 0; }
+.md h1, .md h2, .md h3, .md h4 { margin: 1em 0 0.5em; line-height: 1.3; font-weight: 600; }
+.md h1 { font-size: 1.35em; } .md h2 { font-size: 1.2em; } .md h3 { font-size: 1.05em; } .md h4 { font-size: 1em; }
+.md blockquote { margin: 0 0 0.75em; padding-left: 12px; border-left: 3px solid var(--border); color: var(--muted); }
+.md hr { border: 0; border-top: 1px solid var(--border); margin: 1em 0; }
+.md-link { color: var(--accent); text-decoration: none; }
+.md-link:hover { text-decoration: underline; }
+.md code.md-code { font-family: var(--font-mono); font-size: 0.88em; padding: 1px 5px; border: 1px solid var(--border); border-radius: 5px; background: var(--hover); overflow-wrap: anywhere; }
+.md-pre { margin: 0 0 0.75em; }
+.md-code-block { position: relative; min-height: 35px; border-radius: 6px; background: var(--code-bg); overflow: hidden; font-variant-ligatures: none; }
+.md-code-scroll { margin: 0; max-height: 500px; overflow: auto; padding: 10px 12px; font: 12.5px/1.55 var(--font-mono); font-variant-ligatures: none; white-space: pre; }
+.md-code-scroll code { font: inherit; background: none; padding: 0; border-radius: 0; }
+.md-code-copy { position: absolute; top: 8px; right: 10px; font-size: 11px; color: var(--muted); padding: 1px 6px; border-radius: 5px; visibility: hidden; background: var(--code-bg); }
+.md-code-block:hover .md-code-copy, .md-code-copy:focus-visible { visibility: visible; }
+.md-code-copy:hover { color: var(--text); }
+.md-table-scroll { overflow-x: auto; margin: 0 0 0.75em; }
+.md table { border-collapse: collapse; width: 100%; font-size: 0.95em; }
+.md th, .md td { border: 1px solid var(--border); padding: 4px 8px; text-align: left; vertical-align: top; }
+.md th { font-weight: 600; background: var(--hover); }
+.md input[type="checkbox"] { margin: 0 6px 0 0; vertical-align: middle; }
+.md li:has(> input[type="checkbox"]) { list-style: none; margin-left: -1.3em; }
+
+.hljs { color: var(--code-fg); background: transparent; }
+.hljs-comment, .hljs-quote { color: var(--code-comment); font-style: italic; }
+.hljs-doctag, .hljs-keyword, .hljs-formula { color: var(--code-keyword); }
+.hljs-section, .hljs-name, .hljs-selector-tag, .hljs-subst { color: var(--code-tag); }
+.hljs-literal { color: var(--code-operator); }
+.hljs-string, .hljs-regexp, .hljs-attribute, .hljs-meta .hljs-string { color: var(--code-string); }
+.hljs-addition { color: var(--add); }
+.hljs-deletion { color: var(--del); }
+.hljs-attr, .hljs-variable, .hljs-template-variable, .hljs-type, .hljs-selector-class, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-number { color: var(--code-number); }
+.hljs-symbol, .hljs-bullet, .hljs-link, .hljs-meta, .hljs-selector-id, .hljs-title { color: var(--code-function); }
+.hljs-built_in, .hljs-title.class_, .hljs-class .hljs-title { color: var(--code-class); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 700; }
+.hljs-link { text-decoration: underline; }
