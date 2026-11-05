@@ -21,6 +21,7 @@
 
 pub mod agent;
 pub mod agent_binaries;
+pub mod agent_options;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
@@ -436,6 +437,10 @@ pub fn run() {
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
             app_prefs::commands::get_app_prefs,
+            agent_options::agent_system_binary,
+            agent_options::agent_config_file,
+            agent_options::open_agent_config,
+            agent_options::acp_agent_status,
             app_prefs::commands::set_app_pref,
             app_prefs::commands::record_open_in,
             open_in::commands::open_in_apps,

@@ -113,7 +113,7 @@ function UserPage({
     case "models":
       return <DefaultModelsPage settings={settings} save={save} />;
     case "providers":
-      return <AgentsPage settings={settings} reload={reload} />;
+      return <AgentsPage settings={settings} reload={reload} save={save} />;
     case "appearance":
       return <AppearancePage settings={settings} save={save} />;
     case "experimental":
