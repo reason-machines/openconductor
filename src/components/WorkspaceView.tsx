@@ -220,6 +220,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
     const first = main && !agent.snapshot(runId).transcript.messages.some((m) => m.role === "user");
     agent.submit(runId, cwd, text, mode, attached, repo.path || undefined);
+    dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 

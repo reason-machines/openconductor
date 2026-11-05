@@ -51,6 +51,18 @@ pub struct Batch {
     pub rewind_to: Option<String>,
 }
 
+/// When the batch's newest user message was created, if it has one: the time
+/// that moves `sessions.last_user_message_at` and the workspace's
+/// `updated_at` forward.
+pub fn latest_user_message_at(batch: &Batch) -> Option<&str> {
+    batch
+        .upserts
+        .iter()
+        .filter(|m| m.role == "user")
+        .map(|m| m.created_at.as_str())
+        .max()
+}
+
 /// Apply `batch` to chat `session_id`, creating its `sessions` row if needed.
 /// Upserting keeps a row's `rowid`, so [`load`] keeps the first-write order.
 pub async fn save(pool: &SqlitePool, session_id: &str, batch: &Batch) -> Result<()> {
@@ -77,13 +89,7 @@ pub async fn save(pool: &SqlitePool, session_id: &str, batch: &Batch) -> Result<
         .execute(&mut *tx)
         .await?;
     }
-    if let Some(last) = batch
-        .upserts
-        .iter()
-        .filter(|m| m.role == "user")
-        .map(|m| &m.created_at)
-        .max()
-    {
+    if let Some(last) = latest_user_message_at(batch) {
         sqlx::query(
             "UPDATE sessions SET last_user_message_at = ? \
              WHERE id = ? AND (last_user_message_at IS NULL OR last_user_message_at < ?)",

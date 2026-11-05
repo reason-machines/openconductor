@@ -2,14 +2,19 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`99edc40`, 2026-11-05)
+## Result on main (`f6c05d7`, 2026-11-05)
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `274ac80` | `962f017` | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Sidebar | 33 | 25 | 5 | 1 | 2 | 0 | **84.1%** | 79.5% | 78.0% | 75.0% | 70.5% | 65.9% | 65.9% |
-| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 85.3% | 62.5% |
-| Create workspace | 17 | 14 | 2 | 0 | 1 | 0 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 82.4% | 79.4% |
-| **All** | 68 | 52 | 11 | 1 | 3 | 1 | **86.2%** | 84.0% | 83.2% | 81.7% | 79.5% | 75.0% | 68.4% |
+| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `99edc40` | `274ac80` | `962f017` | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Sidebar | 33 | 26 | 4 | 1 | 2 | 0 | **85.6%** | 84.1% | 79.5% | 78.0% | 75.0% | 70.5% | 65.9% | 65.9% |
+| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 85.3% | 62.5% |
+| Create workspace | 17 | 14 | 2 | 0 | 1 | 0 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 82.4% | 79.4% |
+| **All** | 68 | 53 | 10 | 1 | 3 | 1 | **86.9%** | 86.2% | 84.0% | 83.2% | 81.7% | 79.5% | 75.0% | 68.4% |
+
+**Since `99edc40`.** Read on `f6c05d7`. Merges: #397 (`aa32456`, archive stops the workspace's agents), and #389, #402, #360, #424 and #425 (diff, chat, evidence; no item here).
+
+- `sidebar.archive` partial to implemented (#397): the last gap is closed. The running-agents check now folds every chat of the workspace (`workspaceAgentStatus`; working, cancelling or waiting block, as Conductor's `dYe`), and every archive calls `stopWorkspaceAgents`, which stops each working or cancelling chat, as Conductor's `Z$` (`index-BGEQ8YjU.js` @974,859) calls `cancelSession` for every session of a local workspace. Conductor's cancel also settles a waiting session (@3,013,752); no OpenConductor chat reports waiting, so nothing is left to settle.
+- `sidebar.archived-view` stays backend only. #397's title promises archived workspaces in the palette with Unarchive, and its first commit (`753f691`) had them, but rebuilding it on #391's backend dropped them: the squash touches only `store.ts` and `src/workspace/archive*`. The palette still filters archived workspaces out, and `reposFromDb` leaves archived rows out of state, so Home's "Only archived" filter is empty too. Only the archive-on-merge toast can unarchive.
 
 **Since `274ac80`.** Read on `99edc40`. Merges: #423 (`99edc40`, sidebar add-repository menu, rail and native sidebar menu items), and #415, #418 and #422 (evidence, diff theme and chat; no item here).
 

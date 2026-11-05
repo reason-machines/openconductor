@@ -193,7 +193,10 @@ fn sidebar_repo_filter_is_a_raw_id_and_all_projects_deletes_it() {
     let u: AppPrefUpdate =
         serde_json::from_str(r#"{"key":"sidebar_repo_filter","value":null}"#).unwrap();
     assert_eq!(u, AppPrefUpdate::SidebarRepoFilter(None));
-    assert_eq!(AppPrefs::from_rows(&HashMap::new()).sidebar_repo_filter, None);
+    assert_eq!(
+        AppPrefs::from_rows(&HashMap::new()).sidebar_repo_filter,
+        None
+    );
 
     tauri::async_runtime::block_on(async {
         let pool = openconductor_db::open_in_memory().await.unwrap();
@@ -217,4 +220,27 @@ fn sidebar_repo_filter_is_a_raw_id_and_all_projects_deletes_it() {
         let p = commands::load(&pool).await.unwrap();
         assert_eq!(p.sidebar_repo_filter, None);
     });
+}
+
+#[test]
+fn sidebar_resource_usage_is_an_off_by_default_flag() {
+    // `Te("sidebar_resource_usage", !1)` and setter `v6t` (index-BGEQ8YjU.js):
+    // a boolean written as "true" / "false", false when unset.
+    assert!(!AppPrefs::from_rows(&HashMap::new()).sidebar_resource_usage);
+    assert!(
+        AppPrefs::from_rows(&rows(&[("sidebar_resource_usage", "true")])).sidebar_resource_usage
+    );
+    assert!(
+        !AppPrefs::from_rows(&rows(&[("sidebar_resource_usage", "yes")])).sidebar_resource_usage
+    );
+    let u: AppPrefUpdate =
+        serde_json::from_str(r#"{"key":"sidebar_resource_usage","value":true}"#).unwrap();
+    assert_eq!(
+        u.encode().unwrap(),
+        Write::Set("sidebar_resource_usage", "true".into())
+    );
+    assert_eq!(
+        AppPrefUpdate::SidebarResourceUsage(false).encode().unwrap(),
+        Write::Set("sidebar_resource_usage", "false".into())
+    );
 }
