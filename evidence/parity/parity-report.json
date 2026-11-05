@@ -1,7 +1,7 @@
 {
  "ref": "origin/main",
- "sha": "7e75c2dd3a5397c838f7de6ee848ff7f3e933241",
- "source_files_scanned": 517,
+ "sha": "d8b3b2e0f9313f080fa100b9041df36a3f9d72ee",
+ "source_files_scanned": 521,
  "reference": {
   "conductor_version": "0.87.6",
   "keybindings_source": {
@@ -13,10 +13,10 @@
  },
  "overall": {
   "total": 419,
-  "matched": 202,
-  "partial": 130,
+  "matched": 203,
+  "partial": 129,
   "missing": 87,
-  "parity_pct": 63.7
+  "parity_pct": 63.8
  },
  "areas": {
   "settings": {
@@ -72,10 +72,10 @@
   },
   "shortcuts": {
    "total": 172,
-   "matched": 57,
-   "partial": 115,
+   "matched": 58,
+   "partial": 114,
    "missing": 0,
-   "parity_pct": 66.6,
+   "parity_pct": 66.9,
    "groups": {
     "General": {
      "total": 30,
@@ -100,10 +100,10 @@
     },
     "Chat": {
      "total": 51,
-     "matched": 4,
-     "partial": 47,
+     "matched": 5,
+     "partial": 46,
      "missing": 0,
-     "parity_pct": 53.9
+     "parity_pct": 54.9
     },
     "Workspace": {
      "total": 37,
@@ -1370,10 +1370,10 @@
    "result": "fail",
    "parity": {
     "total": 51,
-    "matched": 4,
-    "partial": 47,
+    "matched": 5,
+    "partial": 46,
     "missing": 0,
-    "parity_pct": 53.9
+    "parity_pct": 54.9
    },
    "gaps": [
     {
@@ -1514,11 +1514,6 @@
     {
      "group": "Chat",
      "id": "chat.denyToolCall",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.cancel",
      "status": "declared"
     },
     {
@@ -3917,8 +3912,8 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.cancel",
-   "status": "declared",
-   "detail": "meta+shift+Backspace; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+Backspace"
   },
   {
    "area": "shortcuts",

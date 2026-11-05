@@ -143,6 +143,9 @@ pub async fn reason_prompt(
         })
         .collect();
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
+    // Announced before the start checkpoint, so a Stop while it is saved
+    // still stops this prompt.
+    let ticket = provider.expect_prompt(&chat_id);
     let (end, changes) = tauri::async_runtime::spawn_blocking(move || {
         let target = match (&cwd, &turn) {
             (Some(workspace), Some(turn)) => Some(TurnTarget {
@@ -153,7 +156,7 @@ pub async fn reason_prompt(
             _ => None,
         };
         around_turn(target, || {
-            provider.prompt_with(&chat_id, &text, &attachments)
+            provider.prompt_expected(&chat_id, &text, &attachments, ticket)
         })
     })
     .await
