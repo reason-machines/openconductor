@@ -10,7 +10,7 @@ import { useKeybindingOverrides, useKeybindings } from "../../keybindings/Keybin
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
 import { canSteerNow, headStatusLabel, resolveSendMode, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
-import type { QueueAction } from "./reasonChat.ts";
+import type { QueueAction } from "./queue.ts";
 import "./queue.css";
 
 export interface ComposerProps {
@@ -26,9 +26,11 @@ export interface ComposerProps {
   onQueue: (action: QueueAction) => void;
   /** Files going out with the next message, shown above the message box. */
   attachments?: ReactNode;
+  /** Pickers shown before the key hint (the chat's agent and its access). */
+  controls?: ReactNode;
 }
 
-export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSteer, followUpMode = "steering", onSubmit, onStop, onQueue, attachments }: ComposerProps) {
+export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSteer, followUpMode = "steering", onSubmit, onStop, onQueue, attachments, controls }: ComposerProps) {
   const { overrides } = useKeybindingOverrides();
   const keys = (id: string) => effectiveShortcuts(id, overrides);
   const hint = (id: string) => {
@@ -79,10 +81,13 @@ export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSte
         {attachments}
         <textarea ref={inputRef} value={draft} placeholder={placeholder} onChange={(e) => setDraft(e.target.value)} onKeyDown={onKeyDown} rows={3} />
         <div className="composer-bar">
-          <span className="muted">
-            {hint("chat.submitMessage")} to {working ? (sendMode === "steer" ? "steer" : "queue") : "send"}
-            {working && canSteerNow(queue, canSteer) ? `, ${hint("chat.submitOppositeFollowUp")} to ${sendMode === "steer" ? "queue" : "steer"}` : ""}
-            {`, ${hint("chat.newLine")} for a new line`}
+          <span className="composer-hint">
+            {controls}
+            <span className="muted">
+              {hint("chat.submitMessage")} to {working ? (sendMode === "steer" ? "steer" : "queue") : "send"}
+              {working && canSteerNow(queue, canSteer) ? `, ${hint("chat.submitOppositeFollowUp")} to ${sendMode === "steer" ? "queue" : "steer"}` : ""}
+              {`, ${hint("chat.newLine")} for a new line`}
+            </span>
           </span>
           <span className="composer-actions">
             {working ? (
