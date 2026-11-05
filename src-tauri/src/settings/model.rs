@@ -26,6 +26,7 @@ pub struct Settings {
     #[serde(rename = "$schema")]
     pub schema: String,
     pub general: General,
+    pub appearance: Appearance,
     pub git: Git,
     pub models: Models,
     pub providers: Providers,
@@ -38,6 +39,7 @@ impl Default for Settings {
         Settings {
             schema: SCHEMA_URL.to_string(),
             general: General::default(),
+            appearance: Appearance::default(),
             git: Git::default(),
             models: Models::default(),
             providers: Providers::default(),
@@ -79,6 +81,37 @@ impl Default for General {
             theme: Theme::System,
             send_native_notification: true,
             sound_type: SoundType::Default,
+            extra: toml::Table::new(),
+        }
+    }
+}
+
+/// Conductor's Appearance tab. Key names are Conductor's setting keys
+/// (`evidence/settings/settings-registry.json`); Theme stays in `[general]`.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Appearance {
+    /// Interface zoom as a fraction: 1.0 is 100%. Conductor's steps are
+    /// 50% to 300% in 10% steps ([`ZOOM_MIN`], [`ZOOM_MAX`]).
+    pub zoom_level_v2: f64,
+    /// Softer colors while the dark theme is in effect.
+    pub low_contrast_dark_mode: bool,
+    /// Font family for code and diffs; `None` keeps the built-in stack.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mono_font: Option<String>,
+    #[serde(flatten)]
+    pub extra: toml::Table,
+}
+
+pub const ZOOM_MIN: f64 = 0.5;
+pub const ZOOM_MAX: f64 = 3.0;
+
+impl Default for Appearance {
+    fn default() -> Self {
+        Appearance {
+            zoom_level_v2: 1.0,
+            low_contrast_dark_mode: false,
+            mono_font: None,
             extra: toml::Table::new(),
         }
     }

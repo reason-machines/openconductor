@@ -51,7 +51,7 @@ registrations found.
   (`models`), Git, Ports; Agents & environment = Agents (`providers`), Environment;
   Repositories = Scripts, Actions, Misc; More = Experimental, Advanced.
 - So the "Agents" page is the `providers` route, and Theme lives on Appearance, not General.
-  Our General page carries Theme until an Appearance page exists (divergence).
+  Our Theme row moved to Appearance with that page; it is still stored as `general.theme`.
 - Git, user scope: Git identity (cloud only), Open pull requests in (GitHub, Linear,
   Graphite), Branch name prefix, Rename workspace when branch is named, Delete branch on
   archive, Archive on merge, Automerge, Treat optional checks as blocking, Set upstream on
@@ -128,3 +128,32 @@ it. Divergences and gaps:
 - The Reason agent is ours, not Conductor's, and has nothing to configure, so it has no card.
 - Layout is not compared against Conductor: no screenshot of its providers page exists
   (native capture blocked, `evidence/providers/README.md`).
+
+## Appearance page
+
+Source: the same `renderApp-D_fmY7hW.js` bundle and `evidence/frontend/css-tokens.json`.
+Conductor's Appearance rows (registry order): Colored sidebar diffs, Code ligatures, Theme,
+Low-contrast dark mode, App zoom, Accessible colors, Code theme, Mono Font, Markdown Style,
+Terminal font. Values read from the bundle:
+
+- App zoom (`zoom_level_v2`): a select of 50% to 300% in 10% steps (`lOt=50`, `WBi=300`,
+  `nYe=10`), stored as a fraction (`dsi(e/100)`), default 1. `view.zoomIn` / `view.zoomOut`
+  step it by 10% and clamp (`xZn`); its help text names those shortcuts.
+- Low-contrast dark mode (`low_contrast_dark_mode`): toggles class `low-contrast-dark` on
+  the root; the tokens are `html.dark.low-contrast-dark` in css-tokens.json.
+- Mono Font (`mono_font`): `["Geist Mono","iA Writer Mono"]` plus "Custom..." with an input
+  ("Enter font name...", "Enter font name exactly as installed on your system") and a
+  three-line preview. Conductor bundles Geist Mono and defaults to it.
+
+OpenConductor's Appearance page (`src/settings/AppearancePage.tsx`) has Theme, Low-contrast
+dark mode, App zoom and Mono Font, stored under `[appearance]` with Conductor's key names
+(Conductor keeps them in its settings table, not settings.toml). ⌘+ / ⌘− / ⌘0 change the
+zoom anywhere in the app. Divergences and gaps:
+
+- Zoom is CSS `zoom` on the document, not the webview's zoom.
+- No font is bundled, so the default is "System default" (the built-in mono stack), and
+  Geist Mono / iA Writer Mono apply only when installed. Font names that could end a CSS
+  string (quotes, `\`, `;`, braces, `<>`) are refused, in the UI and in `validate`.
+- The App zoom help text does not name the shortcuts, since overrides can change them.
+- Not built: Colored sidebar diffs, Code ligatures, Accessible colors, Code theme,
+  Markdown Style, Terminal font. The terminal keeps its own font.
