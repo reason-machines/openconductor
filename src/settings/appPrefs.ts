@@ -22,6 +22,8 @@ export interface AppPrefs {
   roundhouse_client_user_id: string | null;
   /** The sidebar's "Filter by project" repository id; null is all projects. */
   sidebar_repo_filter: string | null;
+  /** Experimental "Show sidebar resource usage"; off by default. */
+  sidebar_resource_usage: boolean;
   /** Experimental "Dashboard": the sidebar's Dashboard row and the /dashboard board. */
   dashboard_enabled: boolean;
 }
@@ -36,6 +38,7 @@ export type AppPrefUpdate =
         | "graphite_disabled"
         | "left_panel_visible"
         | "right_panel_visible"
+        | "sidebar_resource_usage"
         | "dashboard_enabled";
       value: boolean;
     }
@@ -60,6 +63,7 @@ export const DEFAULT_APP_PREFS: AppPrefs = {
   last_seen_announcement: null,
   roundhouse_client_user_id: null,
   sidebar_repo_filter: null,
+  sidebar_resource_usage: false,
   dashboard_enabled: false,
 };
 
