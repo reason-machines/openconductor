@@ -1,26 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { CloseIcon } from "./Icons";
+import { toastTimeout, type ToastAction, type ToastItem } from "./toastTiming";
 
-export interface ToastItem {
-  id: number;
-  kind: "error" | "info";
-  message: string;
-  /** A button beside the message, such as "Open in GitHub". */
-  action?: ToastAction;
-}
-
-export interface ToastAction {
-  label: string;
-  onClick: () => void;
-}
+export type { ToastAction, ToastItem };
 
 let nextId = 1;
 
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const dismiss = useCallback((id: number) => setToasts((t) => t.filter((x) => x.id !== id)), []);
-  const show = useCallback((kind: ToastItem["kind"], message: string, action?: ToastAction) => {
-    setToasts((t) => [...t, { id: nextId++, kind, message, action }]);
+  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean; action?: ToastAction }) => {
+    setToasts((t) => [...t, { id: nextId++, kind, message, sticky: opts?.sticky, action: opts?.action }]);
   }, []);
   return { toasts, show, dismiss };
 }
@@ -28,7 +18,9 @@ export function useToasts() {
 function Toast({ toast, onDismiss }: { toast: ToastItem; onDismiss: () => void }) {
   const [copied, setCopied] = useState(false);
   useEffect(() => {
-    const t = setTimeout(onDismiss, toast.kind === "error" ? 8000 : 4000);
+    const ms = toastTimeout(toast);
+    if (ms === null) return;
+    const t = setTimeout(onDismiss, ms);
     return () => clearTimeout(t);
   }, [toast, onDismiss]);
 

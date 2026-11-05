@@ -151,7 +151,7 @@ export default function App() {
           onClose={() => setDialog(null)}
           onCreated={(created, githubUrl) => {
             dispatch({ type: "addRepo", repo: created });
-            show("info", SUCCESS_TOAST, { label: OPEN_IN_GITHUB, onClick: () => void openUrl(githubUrl) });
+            show("info", SUCCESS_TOAST, { action: { label: OPEN_IN_GITHUB, onClick: () => void openUrl(githubUrl) } });
           }}
         />
       )}
@@ -166,6 +166,7 @@ export default function App() {
             setDialog(null);
             void openProject();
           }}
+          onWarning={(message) => show("error", message, { sticky: true })}
           dispatch={dispatch}
         />
       )}
