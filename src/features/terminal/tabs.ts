@@ -22,7 +22,10 @@ export interface TabsState {
 }
 
 export type TabsAction =
-  | { type: "open"; id: string }
+  /** `title` keeps a restored tab's saved title and leaves the counter alone. */
+  | { type: "open"; id: string; title?: string }
+  /** After restoring saved tabs: their active tab and title counter. */
+  | { type: "restored"; activeId: string | null; next: number }
   | { type: "close"; id: string }
   | { type: "select"; id: string }
   | { type: "ready"; id: string }
@@ -36,8 +39,12 @@ export function tabsReducer(s: TabsState, a: TabsAction): TabsState {
   switch (a.type) {
     case "open": {
       if (!canOpen(s) || s.tabs.some((t) => t.id === a.id)) return s;
-      const tab: TerminalTab = { id: a.id, title: `Terminal ${s.next}`, status: "starting" };
-      return { tabs: [...s.tabs, tab], activeId: a.id, next: s.next + 1 };
+      const tab: TerminalTab = { id: a.id, title: a.title ?? `Terminal ${s.next}`, status: "starting" };
+      return { tabs: [...s.tabs, tab], activeId: a.id, next: a.title === undefined ? s.next + 1 : s.next };
+    }
+    case "restored": {
+      const activeId = s.tabs.some((t) => t.id === a.activeId) ? a.activeId : s.activeId;
+      return { ...s, activeId, next: Math.max(s.next, a.next) };
     }
     case "close": {
       const i = s.tabs.findIndex((t) => t.id === a.id);

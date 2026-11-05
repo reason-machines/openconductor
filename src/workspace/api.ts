@@ -6,6 +6,7 @@ import { inTauri } from "../backend";
 import type { CreateFrom, CreateWorkspaceArgs } from "./createFlow";
 import { issueToFrom, listErrorState, prToFrom, type OpenIssueDto, type OpenPrDto, type SourceState } from "./createFrom";
 import type { BranchPrefixInfo } from "./naming";
+import { UPSTREAM_WARNING } from "./upstream";
 
 export interface RepositoryDto {
   id: string;
@@ -28,7 +29,10 @@ export interface CreatedWorkspaceDto {
   baseCommit: string;
   fetched: boolean;
   copiedFiles: string[];
+  /** Set when "Set upstream on plain git push" could not be applied to the new workspace. */
+  upstreamWarning: string | null;
 }
+
 
 /** Registers a local checkout with the backend (idempotent) and returns its backend id. */
 export async function ensureRepository(path: string): Promise<RepositoryDto> {
@@ -88,6 +92,8 @@ export async function createWorkspace(args: CreateWorkspaceArgs): Promise<Create
       baseCommit: "",
       fetched: false,
       copiedFiles: [],
+      // `?upstream-warning` in a plain browser previews the warning toast.
+      upstreamWarning: new URLSearchParams(window.location.search).has("upstream-warning") ? UPSTREAM_WARNING : null,
     };
   }
   return invoke<CreatedWorkspaceDto>("create_workspace", { ...args });
