@@ -21,6 +21,8 @@ pub mod bundled_bin;
 pub mod checkpoint;
 pub mod create_project;
 pub mod db;
+pub mod persistence;
+mod persistence_commands;
 pub mod diff;
 pub mod github_repo;
 pub mod menu;
@@ -31,6 +33,7 @@ pub mod reason_acp;
 pub mod reason_chat;
 pub mod scripts;
 pub mod settings;
+pub mod sidecar_stores;
 pub mod spotlight;
 mod spotlight_commands;
 pub mod terminal;
@@ -215,9 +218,25 @@ pub fn run() {
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
             let db = db::open(&data_dir)?;
             spotlight_commands::migrate_legacy_setting(&db);
-            app.manage(db);
             app.manage(terminal_commands::history_state(&data_dir));
-            app.manage(workspace::service::WorkspaceService::new(data_dir)?);
+            // Conductor's sidecar opens its session event outbox at start and
+            // carries on without it if that fails (sidecar_stores/).
+            match sidecar_stores::outbox::SessionEventOutbox::open(&sidecar_stores::outbox_root(&data_dir)) {
+                Ok(outbox) => {
+                    app.manage(outbox);
+                }
+                Err(e) => eprintln!(
+                    "Session event outbox is unavailable; continuing without durable backup delivery: {e}"
+                ),
+            }
+            app.manage(sidecar_stores::completions::SlashCommandSnapshotStore::new(
+                &sidecar_stores::completions_dir(&data_dir),
+            ));
+            let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
+            // Deletes workspaces left initializing, imports pre-database repositories.
+            persistence_commands::startup(&db, &workspaces)?;
+            app.manage(db);
+            app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
             app.manage(Terminals::new(app.handle().clone()));
@@ -254,6 +273,9 @@ pub fn run() {
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
+            persistence_commands::db_list_repos,
+            persistence_commands::db_list_workspaces,
+            persistence_commands::db_archive_workspace,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
             diff::comment_commands::diff_comments_list,

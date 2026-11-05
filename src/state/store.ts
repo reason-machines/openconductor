@@ -1,13 +1,20 @@
-import { useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import { newId, workspaceName } from "./names";
 import { isSidebarVisible } from "./selectors";
+import { inTauri } from "../backend";
+import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 
+/** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
+/** Desktop app: UI preferences only; repos and workspaces come from conductor.db. */
+const PREFS_KEY = "openconductor.shell.prefs.v1";
 
 export type Action =
   | { type: "select"; selection: Selection }
-  | { type: "addRepo"; repo: Omit<Repo, "id" | "workspaces"> }
+  /** `id` is the backend repository id; with it no placeholder workspace is made. */
+  | { type: "addRepo"; repo: Omit<Repo, "id" | "workspaces">; id?: string }
   | { type: "removeRepo"; repoId: string }
   | { type: "toggleRepo"; repoId: string }
   | { type: "newWorkspace"; repoId: string }
@@ -19,7 +26,9 @@ export type Action =
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
   | { type: "toggleSidebar" }
-  | { type: "reset"; state: AppState };
+  | { type: "reset"; state: AppState }
+  /** Replace repos and workspaces with the conductor.db rows (desktop app). */
+  | { type: "hydrate"; repos: Repo[] };
 
 const EMPTY: AppState = { repos: [], selection: { kind: "home" } };
 
@@ -36,6 +45,10 @@ export function reducer(state: AppState, action: Action): AppState {
     case "addRepo": {
       const existing = state.repos.find((r) => (action.repo.path && r.path === action.repo.path) || (action.repo.remote && r.remote === action.repo.remote));
       if (existing) return state;
+      if (action.id) {
+        const repo: Repo = { ...action.repo, id: action.id, workspaces: [] };
+        return { ...state, repos: [...state.repos.filter((r) => r.id !== action.id), repo] };
+      }
       const repo: Repo = { ...action.repo, id: newId(), workspaces: [] };
       const ws = makeWorkspace(repo);
       repo.workspaces.push(ws);
@@ -82,6 +95,11 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, sidebarVisible: !isSidebarVisible(state) };
     case "reset":
       return action.state;
+    case "hydrate": {
+      const collapsed = new Set(state.repos.filter((r) => r.collapsed).map((r) => r.id));
+      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined }));
+      return { ...state, repos, selection: validSelection(state.selection, repos) };
+    }
   }
 }
 
@@ -109,6 +127,13 @@ function load(): AppState {
     if (params.get("sidebar") === "0") s.sidebarVisible = false;
     return s;
   }
+  if (inTauri()) {
+    // Repos arrive from conductor.db after mount; collapsed ids wait on placeholder rows.
+    // First run after the switch: keep the selection and layout the old shell state had.
+    const prefs = parsePrefs(localStorage.getItem(PREFS_KEY) ?? legacyPrefs(localStorage.getItem(STORAGE_KEY)));
+    const repos = prefs.collapsed.map((id) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed: true }));
+    return { repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible };
+  }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw) as AppState;
@@ -118,11 +143,52 @@ function load(): AppState {
   return EMPTY;
 }
 
+/** UI prefs carried over from the pre-database shell state, as `PREFS_KEY` JSON. */
+function legacyPrefs(raw: string | null): string | null {
+  if (!raw) return null;
+  try {
+    return JSON.stringify(prefsOf(JSON.parse(raw) as AppState));
+  } catch {
+    return null;
+  }
+}
+
+/** Repos and workspaces from conductor.db, in sidebar order. */
+export async function loadReposFromDb(collapsed: Iterable<string> = []): Promise<Repo[]> {
+  const [repos, workspaces] = await Promise.all([
+    invoke<DbRepoRow[]>("db_list_repos"),
+    invoke<DbWorkspaceRow[]>("db_list_workspaces"),
+  ]);
+  return reposFromDb(repos, workspaces, collapsed);
+}
+
 export function useAppStore() {
-  const [state, dispatch] = useReducer(reducer, undefined, load);
+  const [state, rawDispatch] = useReducer(reducer, undefined, load);
+  const demo = new URLSearchParams(window.location.search).get("demo") === "1";
+  const desktop = inTauri() && !demo;
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("demo") === "1") return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+    if (!desktop) return;
+    loadReposFromDb().then(
+      (repos) => rawDispatch({ type: "hydrate", repos }),
+      (err) => console.error("conductor.db: could not list repositories", err),
+    );
+  }, [desktop]);
+  useEffect(() => {
+    if (demo) return;
+    if (desktop) localStorage.setItem(PREFS_KEY, JSON.stringify(prefsOf(state)));
+    else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }, [state, demo, desktop]);
+  // Writes the backend does not already record when its command runs.
+  const dispatch = useCallback(
+    (action: Action) => {
+      rawDispatch(action);
+      if (desktop && action.type === "archiveWorkspace") {
+        invoke("db_archive_workspace", { workspaceId: action.workspaceId }).catch((err) =>
+          console.error("conductor.db: could not archive workspace", err),
+        );
+      }
+    },
+    [desktop],
+  );
   return [state, dispatch] as const;
 }
