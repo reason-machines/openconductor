@@ -7,13 +7,15 @@ import {
   dropLegacyTurnCache,
   readCachedTurnChanges,
   turnCacheId,
-  TURN_CHANGES_SIZE_LIMIT,
-  TURN_CHANGES_SUBSYSTEM,
   writeCachedTurnChanges,
   type TurnChangesStorage,
   type TurnRef,
 } from "./turnChangesCache.ts";
 import type { FileChange } from "./types.ts";
+import { TURN_CHANGES_CACHE } from "../../lib/local-storage/subsystems.ts";
+
+const TURN_CHANGES_SIZE_LIMIT = TURN_CHANGES_CACHE.sizeLimit;
+const TURN_CHANGES_SUBSYSTEM = TURN_CHANGES_CACHE.name;
 
 /** The backend's subsystemStore as the frontend sees it: values cross as JSON text, and a value
  *  over the subsystem's limit is refused the way `subsystemEntries` reports `entryTooLarge`. */

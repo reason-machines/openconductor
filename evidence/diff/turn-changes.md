@@ -103,10 +103,10 @@ Frontend:
   `[sessionId, turnId]`, file list only, 5 MiB subsystem limit with the
   backend's least-recently-updated eviction, logged storage errors, shared
   in-flight loads, failed loads not cached) and the chip layout. Entries go
-  through `subsystemEntries` (features/terminal/localStorage.ts) to the
-  backend's `local_storage_get_entry` / `local_storage_set_entry`
-  (`SubsystemStore`, the same store the terminal tab list uses); a plain
-  browser keeps them in the webview's localStorage. Entries earlier builds
+  through the shared local-storage client (`localStorageClient()` and
+  `TURN_CHANGES_CACHE` in src/lib/local-storage, #358) to the backend's
+  `local_storage_get_entry` / `local_storage_set_entry` (`SubsystemStore`);
+  the browser build uses that client's in-memory stand-in. Entries earlier builds
   left in the webview's localStorage (`openconductor.turn-changes-cache:*`)
   are removed once at startup (#389); [`useTurnChanges.ts`](../../src/features/diff/useTurnChanges.ts)
   holds the app-wide store (fed by `reason_prompt`'s `turnChanges`, else

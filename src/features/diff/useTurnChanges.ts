@@ -4,12 +4,23 @@
 // one finished turn's changed files from it.
 import { useEffect, useState } from "react";
 import { inTauri } from "../../backend";
-import { subsystemEntries } from "../terminal/localStorage.ts";
+import { localStorageClient, TURN_CHANGES_CACHE } from "../../lib/local-storage/index.ts";
 import { loadTurnChanges } from "./api.ts";
-import { createTurnChangesStore, dropLegacyTurnCache, turnCacheId, TURN_CHANGES_SIZE_LIMIT, TURN_CHANGES_SUBSYSTEM, type TurnRef } from "./turnChangesCache.ts";
+import { createTurnChangesStore, dropLegacyTurnCache, turnCacheId, type TurnChangesStorage, type TurnRef } from "./turnChangesCache.ts";
 import type { FileChange } from "./types.ts";
 
-export const turnChanges = createTurnChangesStore(subsystemEntries(TURN_CHANGES_SUBSYSTEM, TURN_CHANGES_SIZE_LIMIT), loadTurnChanges);
+const { name: subsystem, sizeLimit } = TURN_CHANGES_CACHE;
+
+/** Conductor's cacheTurnChanges writes with entryStorage "subsystemStore", the only kind our store has. */
+const storage: TurnChangesStorage = {
+  getEntry: (id) => localStorageClient().getEntry({ subsystem, id }),
+  async setEntry(id, value) {
+    const r = await localStorageClient().setEntry({ subsystem, sizeLimit, id, content: value });
+    if (!r.success) throw new Error(`Failed to persist local storage entry ${subsystem}:${id}: ${r.reason}`);
+  },
+};
+
+export const turnChanges = createTurnChangesStore(storage, loadTurnChanges);
 
 // Earlier builds cached turns in the webview's localStorage; free that space once.
 try {

@@ -4,13 +4,15 @@
 //
 // As in Conductor 0.87.6 (index-BGEQ8YjU.js near byte 3130166; see
 // evidence/diff/turn-changes.md): entries live in the local-storage subsystem
-// `turn-changes-cache` (a `subsystemStore`, 5 MiB for the whole subsystem, the
+// `turn-changes-cache` (TURN_CHANGES_CACHE in lib/local-storage: a
+// `subsystemStore`, 5 MiB for the whole subsystem, the
 // least recently updated entries evicted to make room), keyed by the JSON
 // array [sessionId, turnId], each holding only the file list; storage errors
 // are logged, never thrown. Requests for the same turn share one in-flight
 // load. Only finished turns are loaded: a running turn has no end checkpoint.
 // Pure (storage and fetcher are injected) so turnChangesCache.test.ts covers it.
 
+import { turnChangesId } from "../../lib/local-storage/subsystems.ts";
 import type { FileChange, FileStatus } from "./types.ts";
 
 export interface TurnRef {
@@ -19,14 +21,10 @@ export interface TurnRef {
   turnId: string;
 }
 
-/** The reference's subsystem name and its size limit (bytes of the stored JSON). */
-export const TURN_CHANGES_SUBSYSTEM = "turn-changes-cache";
-export const TURN_CHANGES_SIZE_LIMIT = 5 * 1024 * 1024;
+/** Entry id: the JSON array [sessionId, turnId] (`turnChangesId` in lib/local-storage). */
+export const turnCacheId = (ref: TurnRef) => turnChangesId(ref);
 
-/** Entry id: the JSON array [sessionId, turnId]. */
-export const turnCacheId = (ref: TurnRef) => JSON.stringify([ref.sessionId, ref.turnId]);
-
-/** One local-storage subsystem's entries (`subsystemEntries` in features/terminal/localStorage.ts). */
+/** The `turn-changes-cache` subsystem's entries (lib/local-storage's client, bound in useTurnChanges.ts). */
 export interface TurnChangesStorage {
   getEntry(id: string): Promise<unknown>;
   setEntry(id: string, value: unknown): Promise<void>;
