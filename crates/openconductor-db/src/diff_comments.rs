@@ -6,27 +6,74 @@
 //! (`evidence/sqlite/diff-comments-values.json`): `state` was always
 //! `pending`; `location` was `file` or `modified`; a whole-file comment has
 //! a NULL `line_number` (the snapshot's `file_level` column was computed as
-//! `line_number IS NULL`, it is not a stored column). `base` (old side) and
-//! `sent` were not observed and are our own.
+//! `line_number IS NULL`, it is not a stored column). The old side is
+//! `original`, the value the reference's GitHub sync writes for a LEFT-side
+//! thread (evidence/diff/comments-github.md); rows we wrote earlier as `base`
+//! read as `original`. `sent` was not observed and is our own.
 //!
 //! Replies point at their parent with `reply_to_comment_id` and share the
 //! root's `thread_id`; resolving and deleting act on a whole thread.
 //! `DEPRECATED_update_memory` is left NULL.
 
-use sqlx::SqlitePool;
+use sqlx::encode::IsNull;
+use sqlx::error::BoxDynError;
+use sqlx::sqlite::{Sqlite, SqliteArgumentValue, SqliteTypeInfo, SqliteValueRef};
+use sqlx::{Decode, Encode, SqlitePool, Type};
 
 use crate::{exec, exec_one, Result};
 
 /// Which side of the diff a comment is anchored to (`diff_comments.location`).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
-#[sqlx(type_name = "TEXT", rename_all = "snake_case")]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Location {
     /// New side of the diff (observed).
     Modified,
-    /// Old side of the diff (ours; not observed).
-    Base,
+    /// Old side of the diff (the reference's value; we used to write `base`).
+    Original,
     /// The whole file (observed).
     File,
+}
+
+impl Location {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Location::Modified => "modified",
+            Location::Original => "original",
+            Location::File => "file",
+        }
+    }
+
+    /// A stored value; our earlier `base` is the old side.
+    pub fn parse(s: &str) -> Option<Self> {
+        match s {
+            "modified" => Some(Location::Modified),
+            "original" | "base" => Some(Location::Original),
+            "file" => Some(Location::File),
+            _ => None,
+        }
+    }
+}
+
+impl Type<Sqlite> for Location {
+    fn type_info() -> SqliteTypeInfo {
+        <str as Type<Sqlite>>::type_info()
+    }
+
+    fn compatible(ty: &SqliteTypeInfo) -> bool {
+        <str as Type<Sqlite>>::compatible(ty)
+    }
+}
+
+impl<'q> Encode<'q, Sqlite> for Location {
+    fn encode_by_ref(&self, buf: &mut Vec<SqliteArgumentValue<'q>>) -> Result<IsNull, BoxDynError> {
+        <&str as Encode<'q, Sqlite>>::encode(self.as_str(), buf)
+    }
+}
+
+impl<'r> Decode<'r, Sqlite> for Location {
+    fn decode(value: SqliteValueRef<'r>) -> Result<Self, BoxDynError> {
+        let s = <&str as Decode<'r, Sqlite>>::decode(value)?;
+        Location::parse(s).ok_or_else(|| format!("unknown diff_comments.location: {s}").into())
+    }
 }
 
 /// `diff_comments.state`.

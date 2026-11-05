@@ -19,7 +19,7 @@ import { showUncommittedChanges, TARGET_REMOTE, targetBranch } from "../features
 import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
-import { addAttachment, revertedNote, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
+import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
 import { attachmentPath, promptText, randomDir, rejectReason, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
 import { draftAttachmentsApi } from "../features/draft-attachments/api.ts";
 
@@ -46,6 +46,7 @@ import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
 import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
+import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
 
 interface Props {
@@ -61,6 +62,9 @@ interface Props {
 // lifecycle, Stop and the follow-up queue live in `features/chat/queue.ts`.
 /** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
+
+/** Wait after the last keystroke before the composer draft is saved. */
+const DRAFT_SAVE_DELAY_MS = 300;
 
 /** Queues the Create-workspace dialog's first message for the new workspace's chat. */
 export function seedTranscript(workspaceId: string, text: string) {
@@ -127,6 +131,45 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     }
     return unsubscribe;
   }, [chatId]);
+
+  // The draft is kept between launches (`composer-drafts`, keyed by the chat
+  // session, which is the workspace): loaded when the workspace opens, saved
+  // after typing pauses and when the workspace changes; an empty draft is
+  // removed.
+  const draftLoadedFor = useRef<string | null>(null);
+  const pendingDraft = useRef<{ id: string; text: string } | null>(null);
+  const flushDraft = useCallback(() => {
+    const p = pendingDraft.current;
+    pendingDraft.current = null;
+    if (p) void (p.text === "" ? composerDrafts().clear(p.id) : composerDrafts().save(p.id, p.text));
+  }, []);
+  useEffect(() => {
+    let live = true;
+    draftLoadedFor.current = null;
+    const id = workspace.id;
+    composerDrafts()
+      .load(id)
+      .then(
+        (saved) => {
+          if (!live) return;
+          draftLoadedFor.current = id;
+          if (saved) setDraft((d) => (d === "" ? saved : d));
+        },
+        () => {
+          if (live) draftLoadedFor.current = id;
+        },
+      );
+    return () => {
+      live = false;
+      flushDraft();
+    };
+  }, [workspace.id, flushDraft]);
+  useEffect(() => {
+    if (draftLoadedFor.current !== workspace.id) return;
+    pendingDraft.current = { id: workspace.id, text: draft };
+    const timer = setTimeout(flushDraft, DRAFT_SAVE_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [draft, workspace.id, flushDraft]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
@@ -484,8 +527,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, target: diffTarget, onLoaded, onOpen: openDiffTab });
   // Inserts go to the chat shown; sends (e.g. Create PR) go to the workspace's own chat, switching to it.
   const shownChat = useRef<string>(workspace.id);
-  const chat = useMemo<ChatBridge>(
+  // Review comments attach to the workspace's own chat, even while a review chat is shown.
+  const attach = useWorkspaceChatAttach(workspace.id, shownChat, chatBridge, useCallback(() => setMainTab("chat"), []));
+  const chat = useMemo<ChatBridge & ComposerAttach>(
     () => ({
+      attach,
       insert: (t) => chatBridge.current?.insert(t),
       send: (t) => {
         if (shownChat.current === workspace.id) return chatBridge.current?.send(t);
@@ -493,7 +539,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         setMainTab("chat");
       },
     }),
-    [workspace.id],
+    [workspace.id, attach],
   );
   // Fix errors goes to the workspace's own chat with its log files attached, and shows that chat.
   const sendToChat = useCallback(
@@ -504,7 +550,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     },
     [workspace.id],
   );
-  const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
+  const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
   // Keep the sidebar's PR title and body (`workspaces.pr_title`, `pr_description`) in step with GitHub, then archive on merge.

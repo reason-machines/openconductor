@@ -3,20 +3,24 @@
 // end on, a composer opened by clicking a line number, replies, edit, delete,
 // resolve, "add to chat", and next/previous comment through the keybinding
 // registry (diff.nextComment / diff.previousComment). The Review button lives
-// in the right panel (WorkspaceView). Conductor attaches comments to the composer as
-// attachments; until the agent runtime lands we insert them as text.
+// in the right panel (WorkspaceView). As in Conductor, "Add to chat" attaches
+// each comment to the workspace chat's composer as a markdown file carrying the
+// comment id (commentAttachment), and bodies render as markdown (commentMarkdown.ts).
 // GitHub review comments on the workspace PR are synced in (commentsApi.ts,
 // diff_comments_sync_github) and shown with author, Resolved / Outdated tags,
-// suggested changes, and Resolve (on GitHub) instead of edit/delete/reply.
+// suggested changes, Resolve (on GitHub) and Delete (here only, as Conductor
+// does); they cannot be edited or replied to. Comments on the PR itself are
+// listed from the Changes toolbar, so no file has to be open.
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { openUrl } from "../../backend";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { commentStoreFor } from "./commentsApi.ts";
 import {
   bodyParts,
+  commentAttachment,
   commentSource,
   commentTags,
   fileThreads,
-  formatForAgent,
   isRemoteThread,
   newLocalComment,
   hasPendingComments,
@@ -31,7 +35,10 @@ import {
   type DiffComment,
   type Thread,
 } from "./comments.ts";
+import type { ComposerAttach } from "./chatAttachment.ts";
+import { CommentMarkdown } from "./commentMarkdown.ts";
 import type { GithubSyncReport } from "./commentStore.ts";
+import "../chat/chat.css";
 import "./comments-github.css";
 import { revealLine, type LineAnchor, type LineRange } from "./FileDiffView";
 import { commentTargets, stepComment } from "./nav.ts";
@@ -116,10 +123,12 @@ function SuggestedChange({ base, code }: { base: string; code: string }) {
   );
 }
 
+const openLink = (href: string) => void openUrl(href);
+
 function CommentBody({ c }: { c: DiffComment }) {
   return (
     <div className="oc-comment-body">
-      {bodyParts(c.body, c.suggestion_base_code).map((p, i) => (p.kind === "text" ? <span key={i}>{p.text}</span> : <SuggestedChange key={i} base={c.suggestion_base_code ?? ""} code={p.code} />))}
+      {bodyParts(c.body, c.suggestion_base_code).map((p, i) => (p.kind === "text" ? <CommentMarkdown key={i} text={p.text} onOpenLink={openLink} /> : <SuggestedChange key={i} base={c.suggestion_base_code ?? ""} code={p.code} />))}
     </div>
   );
 }
@@ -160,14 +169,20 @@ function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
           </a>
         )}
         {source === "user-local" && (
-          <>
-            <button className="oc-link" onClick={() => setEditing(true)}>
-              Edit
-            </button>
-            <button className="oc-link" onClick={() => window.confirm(c.reply_to_comment_id ? "Delete this reply?" : "Delete this comment and its replies?") && void ops.remove(c)}>
-              Delete
-            </button>
-          </>
+          <button className="oc-link" onClick={() => setEditing(true)}>
+            Edit
+          </button>
+        )}
+        {/* Conductor's "Delete comment" removes any comment from its own list, without asking;
+            a GitHub comment stays on GitHub and comes back with the next sync. */}
+        {source === "remote" ? (
+          <button className="oc-link" aria-label="Delete comment" title="Remove from OpenConductor; it stays on GitHub" onClick={() => void ops.remove(c)}>
+            Delete
+          </button>
+        ) : (
+          <button className="oc-link" onClick={() => window.confirm(c.reply_to_comment_id ? "Delete this reply?" : "Delete this comment and its replies?") && void ops.remove(c)}>
+            Delete
+          </button>
         )}
       </div>
       <CommentBody c={c} />
@@ -209,7 +224,7 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
                   </button>
                 )}
                 {pending.length > 0 && (
-                  <button className="btn btn-small" onClick={() => void ops.toChat(pending)} title="Put this thread into the chat composer">
+                  <button className="btn btn-small" onClick={() => void ops.toChat(pending)} title="Attach this thread to the workspace chat">
                     Add to chat
                   </button>
                 )}
@@ -244,11 +259,45 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
 
 type Composing = LineRange & { path: string };
 
+/** Conductor's toasts for review comments. */
+export type Notify = (kind: "info" | "error", message: string) => void;
+
+/** Comments on the PR itself, listed from the Changes toolbar so no file has to be open. */
+function PrComments({ threads, prNumber, ops }: { threads: Thread[]; prNumber: number | null; ops: Ops }) {
+  const [open, setOpen] = useState(false);
+  if (threads.length === 0) return null;
+  return (
+    <span className="oc-pr-comments-pop">
+      <button className="btn btn-small" aria-expanded={open} onClick={() => setOpen((v) => !v)} title="Comments on the pull request">
+        PR comments <span className="tab-count">{threads.length}</span>
+      </button>
+      {open && (
+        <div className="oc-pr-comments-panel" role="dialog" aria-label="Pull request comments">
+          <div className="oc-pr-comments-head">
+            <strong>{plural(threads.length, "comment")} on the pull request{prNumber ? ` #${prNumber}` : ""}</strong>
+            <span className="spacer" />
+            <button className="oc-link" onClick={() => setOpen(false)} aria-label="Close">
+              ×
+            </button>
+          </div>
+          <div className="oc-threads">
+            {threads.map((t) => (
+              <ThreadView key={t.root.id} thread={t} ops={ops} focused={false} />
+            ))}
+          </div>
+        </div>
+      )}
+    </span>
+  );
+}
+
 /**
  * Review comments for the diff views. `reveal` opens a file in the diff tab,
- * so comment navigation can move to another file.
+ * so comment navigation can move to another file. `chat.attach` must reach the
+ * workspace's own chat (WorkspaceView routes it there); `notify` shows
+ * Conductor's "Comment resolved on GitHub" / "Failed to …" messages.
  */
-export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?: (path: string) => void, workspacePath: string | null = null) {
+export function useReviewComments(workspaceId: string, chat: ChatBridge & ComposerAttach, reveal?: (path: string) => void, workspacePath: string | null = null, notify?: Notify) {
   const store = useMemo(() => commentStoreFor(workspaceId, workspacePath), [workspaceId, workspacePath]);
   const [stored, setStored] = useState<DiffComment[]>([]);
   const [files, setFiles] = useState<FileDiff[]>([]);
@@ -305,11 +354,17 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?
   const threads = useMemo(() => threadsOf(comments), [comments]);
   const ready = pendingForAgent(comments);
 
+  // One attachment per comment, as Conductor's addReviewCommentToComposer does.
   const toChat = (cs: DiffComment[]) => {
     if (cs.length === 0) return Promise.resolve(false);
-    chat.insert(formatForAgent(cs, files));
-    return run(store.markSent(cs.map((c) => c.id)));
+    for (const c of cs) chat.attach(commentAttachment(c));
+    return run(store.markSent(cs.map((c) => c.id))).then((ok) => {
+      if (!ok) notify?.("error", cs.length === 1 ? "Failed to add comment to chat" : "Failed to add comments to chat");
+      return ok;
+    });
   };
+
+  const resolveOnGithub = store.resolveOnGithub;
 
   const ops: Ops = {
     reply: (root, body) =>
@@ -332,7 +387,24 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?
     edit: (c, body) => run(store.edit(c.id, body)),
     remove: (c) => run(store.remove(c.id)),
     resolve: (t, resolved) => run(store.resolve(threadKey(t.root), resolved)),
-    resolveOnGithub: store.resolveOnGithub && ((t) => run(store.resolveOnGithub!(threadKey(t.root)))),
+    // Conductor: "Comment resolved on GitHub", or "Failed to resolve comment: <reason>".
+    resolveOnGithub:
+      resolveOnGithub &&
+      ((t) =>
+        resolveOnGithub(threadKey(t.root)).then(
+          async () => {
+            setError(null);
+            await reload();
+            notify?.("info", "Comment resolved on GitHub");
+            return true;
+          },
+          (e: unknown) => {
+            const message = `Failed to resolve comment: ${e instanceof Error ? e.message : String(e)}`;
+            if (notify) notify("error", message);
+            else setError(message);
+            return false;
+          },
+        )),
     toChat,
   };
 
@@ -447,9 +519,10 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?
           Comment failed
         </span>
       )}
+      <PrComments threads={prThreads(threads)} prNumber={github.report?.pr_number ?? null} ops={ops} />
       {ready.length > 0 && (
-        <button className="btn btn-small" onClick={() => void toChat(ready)} title="Put every pending comment into the chat composer">
-          Add {plural(ready.length, "comment")} to chat
+        <button className="btn btn-small" onClick={() => void toChat(ready)} title={`Attach ${plural(ready.length, "comment")}, GitHub ones included, to the workspace chat`}>
+          Add all comments to chat
         </button>
       )}
     </>

@@ -168,11 +168,46 @@ function apply(c: Chat, step: Step) {
   }
 }
 
+// Every chat's session status (Conductor's `sessions.status`), so a sidebar
+// row can show its workspace's agent while that workspace is not open: chats
+// keep running here after their view unmounts. Closed (hidden) chats drop out,
+// as Conductor folds only a workspace's visible sessions.
+let statuses: ReadonlyMap<string, Q.SessionStatus> = new Map();
+const hiddenChats = new Set<string>();
+const statusListeners = new Set<() => void>();
+
+function publishStatus(c: Chat) {
+  const id = c.state.chatId;
+  const status = hiddenChats.has(id) ? undefined : c.queue.status;
+  if (statuses.get(id) === status) return;
+  const next = new Map(statuses);
+  if (status === undefined) next.delete(id);
+  else next.set(id, status);
+  statuses = next;
+  for (const fn of statusListeners) fn();
+}
+
+/** Chat id → session status of every visible chat; a new map on each change. */
+export const chatStatuses = (): ReadonlyMap<string, Q.SessionStatus> => statuses;
+
+export function subscribeChatStatuses(fn: () => void): () => void {
+  statusListeners.add(fn);
+  return () => statusListeners.delete(fn);
+}
+
+/** A closed chat tab: its agent no longer counts toward the workspace's status. */
+export function hideChat(chatId: string): void {
+  hiddenChats.add(chatId);
+  const c = chats.get(chatId);
+  if (c) publishStatus(c);
+}
+
 function setQueue(c: Chat, step: Q.QueueStep | Q.ChatQueue) {
   const { queue, effects } = "effects" in step ? step : { queue: step, effects: [] };
   if (queue !== c.queue) {
     c.queue = queue;
     notify(c);
+    publishStatus(c);
   }
   for (const e of effects) run(c, e);
 }
