@@ -3,8 +3,9 @@
 //! States and transitions follow the reference app's SQL (decoded frontend
 //! bundle and embedded migration text): a workspace is `initializing` while
 //! its worktree is created, `setting_up` while the setup script runs, then
-//! `ready`; either step can end in `failed`. There is no `updated_at`
-//! trigger on this table.
+//! `ready`; either step can end in `failed`. Archiving stores the branch
+//! and the commit it was archived at. There is no `updated_at` trigger on
+//! this table: only [`unarchive`] and [`touch`] move `updated_at`.
 
 use sqlx::SqlitePool;
 
@@ -165,6 +166,26 @@ pub async fn fail(pool: &SqlitePool, local_id: &str) -> Result<bool> {
     Ok(exec(q.bind(local_id), pool).await? > 0)
 }
 
+/// Archive: store the branch and the commit the worktree was at.
+pub async fn archive(
+    pool: &SqlitePool,
+    local_id: &str,
+    branch: &str,
+    archive_commit: Option<&str>,
+) -> Result<()> {
+    let q = sqlx::query("UPDATE workspaces SET state = 'archived', branch = ?, archive_commit = ? WHERE local_id = ?");
+    exec_one(q.bind(branch).bind(archive_commit).bind(local_id), pool).await
+}
+
+/// `archived` -> `setting_up`, bumping `updated_at`. False when not archived.
+pub async fn unarchive(pool: &SqlitePool, local_id: &str) -> Result<bool> {
+    let q = sqlx::query(
+        "UPDATE workspaces SET state = 'setting_up', updated_at = datetime('now') \
+         WHERE local_id = ? AND state = 'archived'",
+    );
+    Ok(exec(q.bind(local_id), pool).await? > 0)
+}
+
 pub async fn set_state(pool: &SqlitePool, local_id: &str, state: WorkspaceState) -> Result<()> {
     exec_one(
         sqlx::query("UPDATE workspaces SET state = ? WHERE local_id = ?")
@@ -173,6 +194,116 @@ pub async fn set_state(pool: &SqlitePool, local_id: &str, state: WorkspaceState)
         pool,
     )
     .await
+}
+
+/// Move `updated_at` forward to `at` (never backwards).
+pub async fn touch(pool: &SqlitePool, local_id: &str, at: &str) -> Result<()> {
+    let q = sqlx::query(
+        "UPDATE workspaces SET updated_at = CASE WHEN julianday(updated_at) < julianday(?) \
+         THEN ? ELSE updated_at END WHERE local_id = ?",
+    );
+    exec_one(q.bind(at).bind(at).bind(local_id), pool).await
+}
+
+/// Rename the branch; the PR title and description drafted for the old
+/// branch are cleared.
+pub async fn rename_branch(
+    pool: &SqlitePool,
+    local_id: &str,
+    branch: &str,
+    placeholder: Option<&str>,
+) -> Result<()> {
+    let q = sqlx::query(
+        "UPDATE workspaces SET branch = ?, placeholder_branch_name = ?, pr_title = NULL, \
+         pr_description = NULL WHERE local_id = ?",
+    );
+    exec_one(q.bind(branch).bind(placeholder).bind(local_id), pool).await
+}
+
+pub async fn set_active_session(
+    pool: &SqlitePool,
+    local_id: &str,
+    session_id: Option<&str>,
+) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE workspaces SET active_session_id = ? WHERE local_id = ?")
+            .bind(session_id)
+            .bind(local_id),
+        pool,
+    )
+    .await
+}
+
+pub async fn set_target_branch(
+    pool: &SqlitePool,
+    local_id: &str,
+    branch: Option<&str>,
+) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE workspaces SET intended_target_branch = ? WHERE local_id = ?")
+            .bind(branch)
+            .bind(local_id),
+        pool,
+    )
+    .await
+}
+
+pub async fn set_notes(pool: &SqlitePool, local_id: &str, notes: Option<&str>) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE workspaces SET notes = ? WHERE local_id = ?")
+            .bind(notes)
+            .bind(local_id),
+        pool,
+    )
+    .await
+}
+
+/// Pin (with the time pinned) or unpin.
+pub async fn set_pinned_at(
+    pool: &SqlitePool,
+    local_id: &str,
+    pinned_at: Option<&str>,
+) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE workspaces SET pinned_at = ? WHERE local_id = ?")
+            .bind(pinned_at)
+            .bind(local_id),
+        pool,
+    )
+    .await
+}
+
+pub async fn set_unread(pool: &SqlitePool, local_id: &str, unread: bool) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE workspaces SET unread = ? WHERE local_id = ?")
+            .bind(unread)
+            .bind(local_id),
+        pool,
+    )
+    .await
+}
+
+/// Override the derived status by hand; `None` clears the override.
+pub async fn set_manual_status(
+    pool: &SqlitePool,
+    local_id: &str,
+    status: Option<&str>,
+) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE workspaces SET manual_status = ? WHERE local_id = ?")
+            .bind(status)
+            .bind(local_id),
+        pool,
+    )
+    .await
+}
+
+/// Store a freshly derived status and drop any manual override.
+pub async fn set_derived_status(pool: &SqlitePool, local_id: &str, status: &str) -> Result<()> {
+    let q = sqlx::query(
+        "UPDATE workspaces SET manual_status = NULL, derived_status = ? WHERE local_id = ?",
+    );
+    exec_one(q.bind(status).bind(local_id), pool).await
 }
 
 /// Delete a workspace whose worktree was never created. False otherwise.
