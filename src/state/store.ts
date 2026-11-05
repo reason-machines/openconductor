@@ -29,7 +29,8 @@ export type Action =
       workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "targetBranch" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number">;
     }
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
-  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
+  /** `keepPlaceholder`: a name-only rename from the Rename dialog leaves `placeholder_branch_name` alone. */
+  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean; keepPlaceholder?: boolean }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
   /** The workspace's pull request title or body changed on GitHub (`workspaces.pr_title`, `pr_description`). `prDescription` and `pr` left out keep what the row has. */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
@@ -41,6 +42,8 @@ export type Action =
   /** Sidebar drag and drop: the full repo id list in its new order (`repos.display_order`). */
   | { type: "reorderRepos"; ids: string[] }
   | { type: "setSidebarVisible"; visible: boolean }
+  /** Change repository icon (`repos.icon`); null falls back to favicon, avatar, initial. */
+  | { type: "setRepoIcon"; repoId: string; icon: string | null }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] }
@@ -109,7 +112,7 @@ export function reducer(state: AppState, action: Action): AppState {
               ...w,
               name: action.name ?? w.name,
               branch: action.branch ?? w.branch,
-              placeholderBranchName: null,
+              ...(action.keepPlaceholder ? {} : { placeholderBranchName: null }),
               ...(action.userSet && action.name !== undefined ? { userSetWorkspaceName: true } : {}),
               ...(action.userSet && action.branch !== undefined ? { userSetBranchName: true } : {}),
             };
@@ -148,6 +151,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos: orderRepos(state.repos, action.ids) };
     case "setSidebarVisible":
       return isSidebarVisible(state) === action.visible ? state : { ...state, sidebarVisible: action.visible };
+    case "setRepoIcon":
+      return { ...state, repos: state.repos.map((r) => (r.id === action.repoId ? { ...r, icon: action.icon } : r)) };
     case "reset":
       return action.state;
     case "hydrate": {
@@ -280,6 +285,9 @@ export function useAppStore() {
       };
       if (desktop && action.type === "setRepoHidden") {
         invoke("db_set_repo_hidden", { repoId: action.repoId, hidden: action.hidden }).catch(rollback("hide repository"));
+      }
+      if (desktop && action.type === "setRepoIcon") {
+        invoke("db_set_repo_icon", { repoId: action.repoId, icon: action.icon }).catch(rollback("change repository icon"));
       }
       if (desktop && action.type === "reorderRepos") {
         invoke("db_reorder_repos", { ids: action.ids }).catch(rollback("reorder repositories"));

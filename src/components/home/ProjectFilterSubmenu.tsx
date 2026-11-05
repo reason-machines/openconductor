@@ -1,4 +1,5 @@
-import { useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { createPortal } from "react-dom";
 import type { Repo } from "../../state/types";
 import { ChevronIcon } from "../Icons";
 import { FILTER_BY_PROJECT, filterToValue, projectFilterOptions, valueToFilter, type RepoFilter } from "../../home/repoFilter";
@@ -25,9 +26,30 @@ const CheckMark = () => (
  * chosen one checked. Renders nothing with one repository or none.
  */
 export function ProjectFilterSubmenu({ repos, filter, onChange, onClose }: Props) {
-  const [open, setOpen] = useState(false);
+  const [at, setAt] = useState<{ x: number; y: number } | null>(null);
+  const open = at !== null;
   const popupRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  // The sidebar list scrolls (overflow clips sideways), so the popup is portaled to <body>
+  // at the trigger's right edge. Its mousedown must not reach the parent menu's
+  // outside-click listener on document, which would close the menu before the click lands.
+  const setOpen = (next: boolean) => {
+    const r = triggerRef.current?.getBoundingClientRect();
+    setAt(next && r ? { x: r.right, y: r.top } : null);
+  };
+  // The popup starts at the trigger's right edge (over the menu's padding), so moving across
+  // is continuous; a diagonal move can still clip the menu's corner, so leaving closes after
+  // a short grace period that re-entering cancels.
+  const leaveTimer = useRef<number | undefined>(undefined);
+  const cancelLeave = () => window.clearTimeout(leaveTimer.current);
+  useEffect(() => cancelLeave, []);
+  useEffect(() => {
+    const el = popupRef.current;
+    if (!open || !el) return;
+    const stop = (e: MouseEvent) => e.stopPropagation();
+    el.addEventListener("mousedown", stop);
+    return () => el.removeEventListener("mousedown", stop);
+  }, [open]);
   const options = projectFilterOptions(repos);
   if (!options) return null;
   const selected = filterToValue(filter);
@@ -62,7 +84,7 @@ export function ProjectFilterSubmenu({ repos, filter, onChange, onClose }: Props
   };
 
   return (
-    <div className="pf-sub" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+    <div className="pf-sub" onMouseEnter={() => { cancelLeave(); if (!open) setOpen(true); }} onMouseLeave={() => { cancelLeave(); leaveTimer.current = window.setTimeout(() => setOpen(false), 150); }}>
       <button
         ref={triggerRef}
         type="button"
@@ -77,8 +99,8 @@ export function ProjectFilterSubmenu({ repos, filter, onChange, onClose }: Props
         <span>{FILTER_BY_PROJECT}</span>
         <ChevronIcon size={16} />
       </button>
-      {open && (
-        <div ref={popupRef} className="sb-menu pf-popup" role="menu" aria-label={FILTER_BY_PROJECT} onKeyDown={onPopupKey}>
+      {at && createPortal(
+        <div ref={popupRef} className="sb-menu pf-popup" role="menu" aria-label={FILTER_BY_PROJECT} style={{ position: "fixed", left: at.x, top: at.y - 5 }} onKeyDown={onPopupKey}>
           {options.map((o) => {
             const checked = o.value === selected;
             return (
@@ -99,7 +121,8 @@ export function ProjectFilterSubmenu({ repos, filter, onChange, onClose }: Props
               </button>
             );
           })}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

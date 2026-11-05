@@ -40,6 +40,9 @@ pub struct AppPrefs {
     pub last_clone_directory: Option<String>,
     pub last_seen_announcement: Option<String>,
     pub roundhouse_client_user_id: Option<String>,
+    /// The sidebar's "Filter by project" repository id; `None` is all
+    /// projects.
+    pub sidebar_repo_filter: Option<String>,
 }
 
 /// `"true"` / `"false"`, anything else (or no row) is `default`.
@@ -116,6 +119,7 @@ impl AppPrefs {
             last_clone_directory: text(rows, keys::LAST_CLONE_DIRECTORY),
             last_seen_announcement: text(rows, keys::LAST_SEEN_ANNOUNCEMENT),
             roundhouse_client_user_id: text(rows, keys::ROUNDHOUSE_CLIENT_USER_ID),
+            sidebar_repo_filter: text(rows, keys::SIDEBAR_REPO_FILTER),
         }
     }
 }
@@ -138,6 +142,9 @@ pub enum AppPrefUpdate {
     LastSeenAnnouncement(String),
     /// `null` signs the cloud client out (deletes the row).
     RoundhouseClientUserId(Option<String>),
+    /// A repository id narrows the sidebar; `null` ("All projects") deletes
+    /// the row (the reference's `z6t`).
+    SidebarRepoFilter(Option<String>),
 }
 
 /// What an update does to the table.
@@ -178,6 +185,11 @@ impl AppPrefUpdate {
                 Ok(Write::Set(keys::ROUNDHOUSE_CLIENT_USER_ID, id.clone()))
             }
             RoundhouseClientUserId(None) => Ok(Write::Delete(keys::ROUNDHOUSE_CLIENT_USER_ID)),
+            SidebarRepoFilter(Some(id)) if id.trim().is_empty() => {
+                Err("sidebar_repo_filter must be a repository id".into())
+            }
+            SidebarRepoFilter(Some(id)) => Ok(Write::Set(keys::SIDEBAR_REPO_FILTER, id.clone())),
+            SidebarRepoFilter(None) => Ok(Write::Delete(keys::SIDEBAR_REPO_FILTER)),
         }
     }
 }
