@@ -1,0 +1,13 @@
+[package]
+name = "openconductor-db"
+version = "0.1.0"
+description = "OpenConductor persistence: SQLite schema migrations and data access"
+edition = "2021"
+publish = false
+
+[dependencies]
+sqlx = { version = "0.8.6", default-features = false, features = ["sqlite", "runtime-tokio", "macros", "migrate"] }
+thiserror = "2"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
