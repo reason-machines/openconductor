@@ -4,7 +4,7 @@
 //! The app opens with `initialize` and the `initialized` notification, then
 //! `thread/start` (or `thread/resume`) and one `turn/start` per user turn;
 //! `turn/interrupt` stops a turn. This module builds what the app sends;
-//! `codex_events` parses what the server sends back, including its
+//! [`super::codex_events`] parses what the server sends back, including its
 //! approval requests. Method and field names are from
 //! the app-server schema of Codex 0.156.1 (the version the reference app
 //! downloads) and 0.166.0, and a live 0.166.0 session; see
