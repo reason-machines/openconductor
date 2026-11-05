@@ -177,13 +177,17 @@ export const flows = [
     },
   },
   {
-    // The workspace's terminal panel runs a real login shell in the repository
+    // The workspace's terminal panel (shown with ⌘J) runs a real login shell in the repository
     // checkout. The typed line never contains "42", so seeing oc-term-42 proves
     // the shell evaluated it, and pwd shows where the shell started.
     name: "terminal",
     async run(wd, ctx) {
       if (!ctx.repo) throw new Error("needs the add-repo flow's repository");
       const rows = () => wd.execute("return document.querySelector('.terminal-panel .xterm-rows')?.textContent ?? null;", []);
+      // Conductor's default layout shows no terminal; ⌘J (Toggle terminal panel) shows it.
+      if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal panel by default");
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.chord(["\uE03D"], "j");
       const [screen] = await wd.waitFor("a terminal in the workspace's terminal panel", () => wd.findAll(".terminal-panel .xterm-screen").then((ids) => ids.length && ids), 60000);
       await wd.click(screen);
       await wd.keys("echo oc-term-$((6*7)); pwd\uE007");

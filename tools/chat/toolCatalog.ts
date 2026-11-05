@@ -1,0 +1,67 @@
+// One assistant message with a call for each of Conductor's row kinds that the lisbon
+// turn does not use (renderApp registry `Qpo`), for ?catalog=1 in transcript-fixture.tsx.
+// Inputs and results follow Claude Code's and Conductor's MCP tool shapes.
+import type { Block } from "../../src/features/chat/types.ts";
+
+const use = (id: string, name: string, input: Record<string, unknown>): Block => ({ type: "tool_use", id, name, input });
+const result = (id: string, content: string, isError = false): Block => ({ type: "tool_result", toolUseId: id, content, ...(isError ? { isError: true } : {}) });
+
+export function catalogBlocks(): Block[] {
+  return [
+    use("c1", "AskUserQuestion", { questions: [{ question: "Which login page should signed-in users skip?" }, { question: "Keep the redirect query?" }] }),
+    result("c1", "User responses:\n1. /login and /signup\n2. Yes"),
+    use("c2", "mcp__conductor__AskUserQuestion", { questions: [{ question: "Ship now?" }] }),
+    result("c2", "User cancelled the question"),
+    use("c3", "EnterPlanMode", {}),
+    result("c3", "Entered plan mode"),
+    use("c4", "ExitPlanMode", { plan: "## Plan\n\n1. Send signed-in users from `/login` to `/dashboard`.\n2. Add a test for `redirectTo`." }),
+    result("c4", "User approved the plan"),
+    use("c5", "Skill", { skill: "pstack:poteto-mode" }),
+    result("c5", "Launching skill"),
+    use("c6", "SlashCommand", { command: "/review:pr-comments" }),
+    result("c6", "ok"),
+    use("c7", "Thinking", { thinking: "The redirect runs before the session loads, so a signed-in user still sees the login page." }),
+    use("c8", "TaskCreate", { subject: "Fix the login redirect", description: "Signed-in users should land on the dashboard" }),
+    result("c8", "Task #1 created successfully: Fix the login redirect"),
+    use("c9", "TaskList", {}),
+    result("c9", "#1 [in_progress] Fix the login redirect\n#2 [pending] Add a redirect test\n#3 [completed] Read the auth module"),
+    use("c10", "TaskGet", { taskId: "1" }),
+    result("c10", "Task #1 [in_progress]: Fix the login redirect\nDescription: Signed-in users should land on the dashboard"),
+    use("c11", "TaskUpdate", { taskId: "2", addBlockedBy: ["1"] }),
+    result("c11", "Updated task #2"),
+    use("c12", "Teammate", { operation: "spawnTeam", team_name: "auth-fixers", description: "Fix and test the redirect", agent_type: "general-purpose" }),
+    result("c12", "Team spawned"),
+    use("c13", "SendMessage", { recipient: "tester", summary: "Run the auth tests", content: "Please run pnpm test src/lib/auth.test.ts" }),
+    result("c13", "Message sent"),
+    use("c14", "ScheduleWakeup", { delaySeconds: 300, reason: "check CI" }),
+    result("c14", "Scheduled"),
+    use("c15", "mcp__conductor__DiffComment", { comments: [{ file: "src/lib/auth.ts", lineNumber: 42, body: "This returns before the session loads." }] }),
+    result("c15", "Added 1 comment"),
+    use("c16", "mcp__conductor__GetDiffComments", { file: "src/lib/auth.ts" }),
+    result("c16", "src/lib/auth.ts:42 This returns before the session loads."),
+    use("c17", "mcp__conductor__GetTerminalOutput", { source: "run", maxLines: 50 }),
+    result("c17", '[{"type":"text","text":"PASS src/lib/auth.test.ts"}]'),
+    use("c18", "mcp__conductor__GetWorkspaceDiff", { stat: true }),
+    result("c18", " src/lib/auth.ts | 2 +-"),
+    use("c19", "mcp__conductor__RunLocalCommand", { command: "open -a Safari http://localhost:3000", description: "Open the app in Safari", reason: "Check the redirect in a real browser" }),
+    result("c19", '[{"type":"text","text":"ok"}]'),
+    use("c20", "BashOutput", { bash_id: "b1" }),
+    result("c20", "<status>running</status>\n<stdout>watching for changes</stdout>"),
+    use("c21", "ImageGeneration", { prompt: "a login page" }),
+    result("c21", ".context/generated_images/login.png"),
+    use("c22", "mcp__node_repl__js", { title: "count routes", code: "routes.length" }),
+    result("c22", "12"),
+    use("c23", "mcp__context7__get-library-docs", { context7CompatibleLibraryID: "/vercel/next.js", topic: "middleware redirects" }),
+    result("c23", "Use NextResponse.redirect in middleware."),
+    use("c24", "mcp__linear__get_issue", { id: "ENG-412" }),
+    result("c24", "Signed-in users see the login page"),
+    use("c25", "collab__spawnAgent", { receiver_thread_ids: ["019a-77b2-4c1d"], agent_nickname: "scout", agent_role: "explorer", prompt: "Find every caller of redirectTo", model: "gpt-5" }),
+    result("c25", '{"status":"completed"}'),
+    use("c26", "Task", { subagent_type: "Explore", description: "Find redirect callers", model: "opus", prompt: "Find every caller of redirectTo" }),
+    result("c26", "Found 2 callers:\n\n- `src/routes/login.tsx:18`\n- `src/middleware.ts:7`"),
+    use("c27", "Task", { subagent_type: "general-purpose", description: "Review the fix", prompt: "Review it" }),
+    result("c27", "Looks good."),
+    use("c28", "mcp__github__get_pull_request", { owner: "acme", repo: "web", pull_number: 7 }),
+    result("c28", "Not found", true),
+  ];
+}
