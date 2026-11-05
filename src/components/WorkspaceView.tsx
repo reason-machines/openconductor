@@ -119,7 +119,7 @@ function DiffPanel({ workspace, repo }: { workspace: Workspace; repo: Repo }) {
         </button>
       </div>
       {tab === "changes" ? (
-        <DiffViewer workspaceId={workspace.id} worktree={null} baseBranch={repo.defaultBranch} />
+        <DiffViewer workspaceId={workspace.id} worktree={workspace.path ?? null} baseBranch={repo.defaultBranch} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">

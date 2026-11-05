@@ -15,8 +15,10 @@
 
 pub mod agent;
 pub mod checkpoint;
+pub mod db;
 pub mod diff;
 pub mod github_repo;
+pub mod menu;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
@@ -121,7 +123,12 @@ async fn branch_prefix_settings() -> BranchPrefixInfo {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let builder = tauri::Builder::default();
+    // Conductor is macOS-only; elsewhere keep Tauri's no-menu default.
+    #[cfg(target_os = "macos")]
+    let builder = builder.menu(menu::build);
+    builder
+        .on_menu_event(|app, event| menu::handle_event(app, event.id().as_ref()))
         // Same plugin set as Conductor 0.87.6 (see Cargo.toml). Capabilities grant only the
         // commands its frontend calls (capabilities/default.json).
         .plugin(tauri_plugin_deep_link::init())
@@ -135,6 +142,7 @@ pub fn run() {
         .plugin(tauri_plugin_window_state::Builder::new().build())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
+            app.manage(db::open(&data_dir)?);
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
@@ -162,6 +170,12 @@ pub fn run() {
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
             diff::commands::diff_workspace,
+            diff::comment_commands::diff_comments_list,
+            diff::comment_commands::diff_comment_add,
+            diff::comment_commands::diff_comment_edit,
+            diff::comment_commands::diff_comment_delete,
+            diff::comment_commands::diff_comment_resolve,
+            diff::comment_commands::diff_comments_mark_sent,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
