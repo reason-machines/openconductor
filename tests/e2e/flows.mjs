@@ -1,7 +1,7 @@
 // Flows run in order against one app session. Each throws on failure.
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, stdio: "pipe" });
@@ -29,6 +29,19 @@ async function clickByText(wd, css, label) {
 // text reads "" until the animation finishes.
 function textsOf(wd, css) {
   return wd.execute("return Array.from(document.querySelectorAll(arguments[0]), (e) => e.textContent.trim());", [css]);
+}
+
+/** `key` under `[section]` of a TOML file, as its raw value text, or null. */
+function tomlValue(path, section, key) {
+  if (!existsSync(path)) return null;
+  let current = "";
+  for (const line of readFileSync(path, "utf8").split("\n")) {
+    const header = line.match(/^\s*\[([^\]]+)\]\s*$/);
+    if (header) current = header[1].trim();
+    const kv = current === section && line.match(/^\s*([A-Za-z0-9_-]+)\s*=\s*(.*?)\s*$/);
+    if (kv && kv[1] === key) return kv[2];
+  }
+  return null;
 }
 
 export const flows = [
@@ -239,6 +252,86 @@ export const flows = [
       await run(name, name);
       const back = await wd.waitFor(`the ${name} workspace view`, headerName);
       if (back !== name) throw new Error(`palette opened workspace ${JSON.stringify(back)}, want ${JSON.stringify(name)}`);
+    },
+  },
+  {
+    // ⌘, opens Settings on General; Appearance › Theme saves at once, re-themes
+    // the window and lands in settings.toml. Esc closes Settings, and reopening
+    // it reads the theme back from disk. The original theme is restored last.
+    name: "settings",
+    async run(wd) {
+      const META = "\uE03D";
+      const ESC = "\uE00C";
+      const file = join(process.env.OPENCONDUCTOR_HOME ?? join(homedir(), ".openconductor"), "settings.toml");
+      const heading = () => wd.execute("return document.querySelector('.settings .settings-header h1')?.textContent.trim() ?? null;", []);
+      const select = 'select[aria-label="Theme"]';
+      const selected = () => wd.execute("return document.querySelector(arguments[0])?.value ?? null;", [select]);
+      const docTheme = () => wd.execute("return document.documentElement.dataset.theme ?? 'system';", []);
+      const savedTheme = () => JSON.parse(tomlValue(file, "general", "theme") ?? '"system"');
+
+      async function openAppearance() {
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.chord([META], ",");
+        const first = await wd.waitFor("Settings after ⌘,", heading, 10000);
+        if (first !== "General") throw new Error(`Settings opened on ${JSON.stringify(first)}, want "General"`);
+        await clickByText(wd, ".settings-nav .nav-item", "Appearance");
+        await wd.waitFor("the Appearance page", async () => (await heading()) === "Appearance");
+        return wd.waitFor("the Theme select", selected);
+      }
+      async function choose(theme) {
+        const [option] = await wd.findAll(`${select} option[value="${theme}"]`);
+        if (!option) throw new Error(`no ${theme} option in the Theme select`);
+        await wd.click(option);
+        await wd.waitFor(`the window in the ${theme} theme`, async () => (await docTheme()) === theme);
+        await wd.waitFor(`theme = "${theme}" in ${file}`, async () => savedTheme() === theme).catch((e) => {
+          throw new Error(`${e.message}; [general] theme is ${tomlValue(file, "general", "theme")}`);
+        });
+      }
+      async function close() {
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys(ESC);
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+
+      const original = await openAppearance();
+      const target = original === "dark" ? "light" : "dark";
+      await choose(target);
+      await close();
+      if ((await docTheme()) !== target) throw new Error(`theme ${await docTheme()} after closing Settings, want ${target}`);
+
+      const reopened = await openAppearance();
+      if (reopened !== target) throw new Error(`Theme select shows ${JSON.stringify(reopened)} after reopening, want ${JSON.stringify(target)}`);
+      await choose(original);
+      await close();
+    },
+  },
+  {
+    // Open project on a folder that is already added is not refused: like
+    // Conductor it adds a second project on the same folder, `<name>-v1`
+    // (evidence/screens/duplicate-repo.md). Runs from the palette's
+    // "Open project" action, since Home's cards only show at start-up.
+    name: "duplicate-repo",
+    async run(wd, ctx) {
+      if (!ctx.repo) throw new Error("needs the add-repo flow's repo");
+      const ENTER = "\uE007";
+      await wd.execute("window.__OC_E2E_PICK_FOLDER__ = arguments[0];", [ctx.repo]);
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.chord(["\uE03D"], "k");
+      await wd.waitFor("the command palette", async () => (await wd.findAll('.palette[aria-label="Command palette"]')).length > 0, 10000);
+      await wd.keys("Open project");
+      await wd.waitFor("Open project highlighted", () =>
+        wd.execute("return document.querySelector('.palette-item.active .palette-title')?.textContent.trim() === 'Open project';", []),
+      );
+      await wd.keys(ENTER);
+      await wd.waitFor("e2e-demo-v1 in the sidebar", async () => (await textsOf(wd, ".sb-repo-name")).includes("e2e-demo-v1")).catch(async (e) => {
+        throw new Error(`${e.message}; sidebar ${JSON.stringify(await textsOf(wd, ".sb-repo-name"))}`);
+      });
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_repos');", []);
+      const demo = rows.filter((r) => r.name === "e2e-demo" || r.name === "e2e-demo-v1");
+      const roots = new Set(demo.map((r) => r.rootPath));
+      if (demo.length !== 2 || roots.size !== 1 || new Set(demo.map((r) => r.id)).size !== 2) {
+        throw new Error(`want two repos rows on one folder, got ${JSON.stringify(demo.map((r) => [r.id, r.name, r.rootPath]))}`);
+      }
     },
   },
 ];

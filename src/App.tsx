@@ -12,10 +12,10 @@ import { CreateProjectDialog } from "./components/CreateProjectDialog";
 import { OPEN_IN_GITHUB, SUCCESS_TOAST } from "./state/createProject";
 import { CloneGitHubRepoDialog } from "./components/CloneGitHubRepoDialog";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
-import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
+import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
@@ -61,6 +61,8 @@ export default function App() {
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // Archive on merge for workspaces that are not open (the open one reports through its own PR lookup).
+  useArchiveOnMergeWatcher({ repos: state.repos, openWorkspaceId: state.selection.kind === "workspace" ? state.selection.workspaceId : null, dispatch, notify: show });
   // A `/settings...` start URL opens settings where Conductor's router would
   // (src/settings/routes.ts); the URL then follows the open settings page.
   const routeContext = (): RouteContext => ({
@@ -123,16 +125,15 @@ export default function App() {
       const outcome = decideOpenProject(path, await inspectProjectFolder(path));
       if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
       if (outcome.kind === "needsGitHubRepo") return setGithubRepo({ path: outcome.path, name: outcome.name, needsGitInit: outcome.needsGitInit });
+      // An already-added folder is not refused: as in Conductor the backend
+      // registers a second project for it, named `<name>-v1`, `-v2`, ...
+      // (evidence/screens/duplicate-repo.md).
       const registered = await addRepository(outcome.path);
-      const existing = findExistingRepo(state.repos, { path: registered.root, remote: outcome.remote });
-      // Adding a hidden repository again unhides it (the backend's record_repository does the same).
-      if (existing?.hidden) return dispatch({ type: "setRepoHidden", repoId: existing.id, hidden: false });
-      if (existing) return show("error", REPO_EXISTS);
-      dispatch({ type: "addRepo", id: registered.id, repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
+      dispatch({ type: "addRepo", id: registered.id, repo: { name: registered.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
     } catch (err) {
       show("error", failedToAddMessage(err));
     }
-  }, [dispatch, show, state.repos]);
+  }, [dispatch, show]);
   const [quickOpen, setQuickOpen] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);

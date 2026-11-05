@@ -99,6 +99,37 @@ async fn create_lifecycle_initializing_then_ready() {
 
     archive(&pool, "app/oslo").await.unwrap();
     assert_eq!(list_workspaces(&pool).await.unwrap()[0].state, "archived");
+
+    unarchive(&pool, "app/oslo").await.unwrap();
+    assert_eq!(list_workspaces(&pool).await.unwrap()[0].state, "ready");
+    assert!(unarchive(&pool, "app/oslo").await.is_err());
+}
+
+#[tokio::test]
+async fn target_branch_is_listed_and_saved() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    begin_workspace(&pool, &ws("app", "oslo"), Some("develop"))
+        .await
+        .unwrap();
+    assert_eq!(
+        list_workspaces(&pool).await.unwrap()[0]
+            .intended_target_branch
+            .as_deref(),
+        Some("develop")
+    );
+    set_target_branch(&pool, "app/oslo", "release/2")
+        .await
+        .unwrap();
+    assert_eq!(
+        list_workspaces(&pool).await.unwrap()[0]
+            .intended_target_branch
+            .as_deref(),
+        Some("release/2")
+    );
+    assert!(set_target_branch(&pool, "app/missing", "main")
+        .await
+        .is_err());
 }
 
 #[tokio::test]
@@ -145,6 +176,19 @@ async fn record_repository_is_idempotent_and_unhides() {
         (rows[0].root_path.as_str(), rows[0].default_branch.as_str()),
         ("/src/a", "main")
     );
+}
+
+#[tokio::test]
+async fn a_second_project_on_the_same_folder_gets_its_own_row() {
+    // Conductor's repos table has no unique root_path: opening an added
+    // folder again inserts `<name>-v1` (evidence/screens/duplicate-repo.md).
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    let again = KnownRepo { id: "app-v1".into(), name: "app-v1".into(), ..repo("app") };
+    record_repository(&pool, &again).await.unwrap();
+    let rows = list_repos(&pool).await.unwrap();
+    let got: Vec<_> = rows.iter().map(|r| (r.id.as_str(), r.name.as_str(), r.root_path.as_str(), r.display_order)).collect();
+    assert_eq!(got, [("app", "app", "/src/app", 0), ("app-v1", "app-v1", "/src/app", 1)]);
 }
 
 #[tokio::test]

@@ -34,6 +34,9 @@ OpenConductor: `src/features/chat/markdown.ts` (react-markdown + remark-gfm + re
 
 - Shown only when the turn is complete (`MDo` → `TDo`).
 - Duration `endTime - startTime` formatted by `$Pt(ms, {showTenths:false})`: `"{m}m, {s}s"` or `"{s}s"`; then `" · "` and the end time by `SDo`: today `h:mm AM`, within 6 days `Mon h:mm AM`, else `Nov 5, h:mm AM` (year when not this year). Hover shows agent/model, `start → end` and token counts.
+- Hover range `OX(start) → OX(end)`, each `Nov 5, 2026, 10:29 AM`. `EDo` re-renders at local midnight so "today" moves.
+- `MDo` takes `isNotComplete` from its row (the running turn), so a stopped turn is complete and keeps its time; read from the bundle, not run.
+- OpenConductor (`turnTime.ts`): the same three formatters, fed by `TurnState.startedAt`/`endedAt` (#303); the hover is a `title` with the range only (no model or token counts yet), and the label is computed at render rather than re-rendered at midnight.
 - Then "Copy final message" (icon button), a "More actions" menu (Fork to new tab, Fork to new workspace, Reset chat), and the turn's changed files: first 3 chips (or 2 plus a "+N more" button when there are more), each chip a file name with `+added -removed`.
 
 ## Cancelled turns (`chat.cancel` rendering), from renderApp

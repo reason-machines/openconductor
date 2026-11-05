@@ -19,6 +19,7 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod agent_binaries;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
@@ -27,11 +28,14 @@ mod checkpoint_commands;
 mod chat_store_commands;
 pub mod claude_chat;
 pub mod create_project;
+pub mod archive_on_merge;
+mod archive_on_merge_commands;
 pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
 mod sidebar_repo_commands;
+mod sidebar_section_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
@@ -254,6 +258,8 @@ pub fn run() {
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
             // Conductor sweeps draft-attachments/ dirs older than 30 days at start.
             draft_attachments::sweep_at_startup(&data_dir);
+            // Conductor's binary_manager: agent-binaries/ with .meta sha256 files.
+            app.manage(agent_binaries::commands::manager(app.handle(), &data_dir));
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
@@ -281,6 +287,7 @@ pub fn run() {
             }
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
+            let settings_pool = db.0.clone();
             app.manage(db);
             app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
@@ -288,10 +295,16 @@ pub fn run() {
             app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
-            app.manage(settings::service::SettingsService::new(
+            // Appearance keys Conductor keeps in conductor.db live in its settings table.
+            let settings_service = settings::service::SettingsService::new(
                 settings::config_dir()?.join(settings::FILE_NAME),
                 agent::keychain::default_store(),
-            ));
+            )
+            .with_db(settings_pool);
+            if let Err(e) = settings_service.move_appearance_to_db() {
+                eprintln!("Appearance settings stay in settings.toml until next launch: {e}");
+            }
+            app.manage(settings_service);
             let scripts = scripts::service(app.handle());
             let spotlight = spotlight_commands::service(app.handle());
             scripts.set_auto_run_spotlight(spotlight::auto_run::hook(spotlight.clone()));
@@ -330,8 +343,13 @@ pub fn run() {
             persistence_commands::db_repo_prompt,
             onboarding_commands::db_first_run_onboarding_step,
             onboarding_commands::db_finish_first_run_onboarding,
+            persistence_commands::db_set_workspace_target_branch,
+            persistence_commands::db_unarchive_workspace,
+            archive_on_merge_commands::repo_archive_on_merge,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
+            sidebar_section_commands::db_read_navigation_sections,
+            sidebar_section_commands::db_write_navigation_sections,
             sidebar_workspace_commands::db_set_workspace_pinned,
             sidebar_workspace_commands::db_set_workspace_unread,
             sidebar_workspace_commands::db_set_workspace_manual_status,
@@ -342,6 +360,7 @@ pub fn run() {
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
+            diff::commands::diff_write_file,
             checkpoint_commands::checkpoint_save,
             checkpoint_commands::checkpoint_exists,
             checkpoint_commands::checkpoint_restore,
@@ -450,6 +469,9 @@ pub fn run() {
             draft_attachments::commands::draft_attachment_upload,
             draft_attachments::commands::draft_attachments_materialize,
             draft_attachments::commands::materialize_local_path_attachment,
+            agent_binaries::commands::get_agent_binary_state,
+            agent_binaries::commands::request_agent_binary_download,
+            agent_binaries::commands::cancel_agent_binary_download,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")
