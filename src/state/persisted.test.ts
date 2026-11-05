@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { nextUnreadWorkspace } from "./nextUnread.ts";
 import { keepPr, parsePrefs, prefsOf, reposFromDb, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted.ts";
 import type { Workspace } from "./types";
 
@@ -107,4 +108,18 @@ test("saved browser state drops live session statuses, including the old status:
   };
   const ws = withoutLiveSessions(saved).repos[0].workspaces;
   assert.deepEqual(ws.map((w) => [w.id, w.status, w.sessionStatus]), [["a", "idle", undefined], ["b", "idle", undefined], ["c", "archived", undefined]]);
+});
+
+test("loads updated_at, so Go to next unread picks the most recently active row", () => {
+  const repos = reposFromDb(
+    [repo("a")],
+    [
+      ws("a", "newer-created", "ready", { unread: true, createdAt: "2026-11-05 12:00:00", updatedAt: "2026-11-05 12:00:00" }),
+      ws("a", "older-active", "ready", { unread: true, createdAt: "2026-11-01 09:00:00", updatedAt: "2026-11-05 18:00:00" }),
+      ws("a", "old-backend", "ready", { createdAt: "2026-11-02 09:00:00" }),
+    ],
+    [],
+  );
+  assert.deepEqual(repos[0].workspaces.map((w) => w.updatedAt), [Date.UTC(2026, 10, 5, 12), Date.UTC(2026, 10, 5, 18), undefined]);
+  assert.equal(nextUnreadWorkspace({ selection: { kind: "home" }, repos }, { skipSelected: true })?.workspace.id, "a/older-active");
 });
