@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type Dispatch } from "react";
 import { inTauri } from "../backend";
 import type { Action } from "../state/store";
-import { clampSidebarWidth, getAppPrefs, loadAppPrefs, setAppPref, useAppPrefs } from "../settings/appPrefs";
+import { SIDEBAR_DEFAULT_WIDTH, SIDEBAR_MAX_WIDTH, SIDEBAR_MIN_WIDTH, clampSidebarWidth, getAppPrefs, loadAppPrefs, setAppPref, useAppPrefs } from "../settings/appPrefs";
 
 function warn(err: unknown) {
   console.warn("could not save panel layout", err);
@@ -45,34 +45,62 @@ export function toggleGarryMode(): void {
   setAppPref({ key: "garry_mode", value: !getAppPrefs().garry_mode }).catch(warn);
 }
 
-/** The sidebar width as a CSS variable for `.app`, and a drag handle that saves it on release. */
+/**
+ * The sidebar width as a CSS variable for `.app`, and Conductor's rail (`Nta`,
+ * decoded renderApp-D_fmY7hW.js @ byte 9,970,616; provider `Eta` @ 9,965,090):
+ * a primary-button drag previews the clamped width without saving it, release
+ * saves it to `left_panel_width`, a cancelled pointer goes back to the width the
+ * drag started at, and a double-click resets to 256 and saves that. There is no
+ * snap or collapse: the width only clamps to 192–480 (`Zsa` / `eoa`).
+ */
 export function useSidebarWidth(): { style: CSSProperties; resizer: JSX.Element } {
   const saved = useAppPrefs().left_panel_width;
   const [dragWidth, setDragWidth] = useState<number | null>(null);
   const width = dragWidth ?? clampSidebarWidth(saved);
-  const start = useRef<{ x: number; width: number } | null>(null);
+  const start = useRef<{ pointerId: number; x: number; width: number } | null>(null);
+  const commit = (next: number) => {
+    setDragWidth(next);
+    setAppPref({ key: "left_panel_width", value: next })
+      .catch(warn)
+      .finally(() => setDragWidth(null));
+  };
   const resizer = (
-    <div
-      className={`sidebar-resizer${dragWidth !== null ? " dragging" : ""}`}
+    <button
+      type="button"
+      className="sidebar-resizer"
+      data-dragging={dragWidth !== null && start.current !== null ? "" : undefined}
+      tabIndex={-1}
       role="separator"
       aria-orientation="vertical"
       aria-label="Resize sidebar"
-      aria-valuenow={width}
+      aria-valuemin={SIDEBAR_MIN_WIDTH}
+      aria-valuemax={SIDEBAR_MAX_WIDTH}
+      aria-valuenow={Math.round(width)}
+      onDoubleClick={() => commit(SIDEBAR_DEFAULT_WIDTH)}
       onPointerDown={(e) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
         e.currentTarget.setPointerCapture(e.pointerId);
-        start.current = { x: e.clientX, width };
-        setDragWidth(width);
+        start.current = { pointerId: e.pointerId, x: e.clientX, width };
       }}
       onPointerMove={(e) => {
-        if (start.current) setDragWidth(clampSidebarWidth(start.current.width + e.clientX - start.current.x));
+        const s = start.current;
+        if (!s) return;
+        e.preventDefault();
+        setDragWidth(clampSidebarWidth(s.width + e.clientX - s.x));
       }}
       onPointerUp={(e) => {
-        if (!start.current) return;
-        const next = clampSidebarWidth(start.current.width + e.clientX - start.current.x);
+        const s = start.current;
+        if (!s) return;
+        if (e.currentTarget.hasPointerCapture(s.pointerId)) e.currentTarget.releasePointerCapture(s.pointerId);
         start.current = null;
-        setAppPref({ key: "left_panel_width", value: next })
-          .catch(warn)
-          .finally(() => setDragWidth(null));
+        commit(clampSidebarWidth(s.width + e.clientX - s.x));
+      }}
+      onPointerCancel={() => {
+        const s = start.current;
+        if (!s) return;
+        start.current = null;
+        setDragWidth(null);
       }}
     />
   );
