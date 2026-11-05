@@ -1,4 +1,6 @@
 import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
+import type { RowPr } from "./rowStatus.ts";
+import type { NavSection } from "./navigationSections.ts";
 
 export type WorkspaceStatus = "idle" | "working" | "needs-review" | "archived";
 
@@ -33,6 +35,10 @@ export interface Workspace {
   derivedStatus?: WorkspaceStatusValue;
   /** `workspaces.number`, given on creation and shown as `W-<n>`; null for workspaces from before numbering. */
   number?: number | null;
+  /** `workspaces.state` (initializing, setting_up, ready, failed, ...): the row shows setup and failure. */
+  state?: string;
+  /** The workspace's pull request as last read from GitHub; drives the row's status icon. */
+  pr?: RowPr | null;
 }
 
 export interface Repo {
@@ -56,4 +62,8 @@ export interface AppState {
   selection: Selection;
   /** Left sidebar shown; absent in older saved state, which means shown. */
   sidebarVisible?: boolean;
+  /** User sidebar sections, in sidebar order (conductor.db `navigation_sections`). */
+  sections?: NavSection[];
+  /** When the section layout last changed (ms); a write older than the stored one is refused. */
+  sectionsUpdatedAt?: number;
 }
