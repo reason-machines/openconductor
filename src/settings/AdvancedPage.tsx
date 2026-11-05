@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Row } from "./GeneralPage";
+import { RootPathRow } from "./RootPathRow";
 import type { Settings } from "./types";
 import { withTopLevel } from "./agentSettings";
 import { scrollbackBytesFromMegabytes, scrollbackLimitBytes, scrollbackLimitMegabytes } from "../features/terminal/scrollback";
@@ -17,7 +18,8 @@ const EXECUTABLES = [
 ] as const;
 
 /**
- * Settings › More › Advanced: the Claude Code, Codex and OpenCode executable
+ * Settings › More › Advanced: Conductor's root directory (RootPathRow), then
+ * the Claude Code, Codex and OpenCode executable
  * paths and the SSH private key path (evidence/settings/NOTES.md, "Models
  * and providers"), then Scrollback limit (evidence/terminal/NOTES.md).
  * Conductor's remote execution and file-sync rows are not built.
@@ -25,6 +27,7 @@ const EXECUTABLES = [
 export function AdvancedPage({ settings, save }: Props) {
   return (
     <div className="settings-rows">
+      <RootPathRow />
       {EXECUTABLES.map((e) => (
         <PathRow
           key={e.key}

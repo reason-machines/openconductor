@@ -23,6 +23,7 @@ import {
   fileThreads,
   isRemoteThread,
   newLocalComment,
+  hasPendingComments,
   pendingForAgent,
   prThreads,
   refreshOutdated,
@@ -531,5 +532,9 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
     setFiles(loaded);
   }, []);
 
-  return { onLineClick, commentRange, anchors, annotations, notes, actions, onLoaded };
+  // The PR header's "changes requested" state offers "Add all comments to chat" while any comment is unsent.
+  const hasPending = hasPendingComments(comments);
+  const addAllToChat = () => void toChat(ready);
+
+  return { onLineClick, commentRange, anchors, annotations, notes, actions, onLoaded, hasPending, addAllToChat };
 }

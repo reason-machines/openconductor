@@ -8,7 +8,7 @@ const repo = (id: string, extra: Partial<DbRepoRow> = {}): DbRepoRow => ({
 });
 const ws = (repositoryId: string, dir: string, state = "ready", extra: Partial<DbWorkspaceRow> = {}): DbWorkspaceRow => ({
   id: `${repositoryId}/${dir}`, repositoryId, directoryName: dir, workspaceName: null, branch: dir, placeholderBranchName: null,
-  state, derivedStatus: null, manualStatus: null, workspacePath: `/data/${dir}`, pinnedAt: null, unread: false, number: null,
+  state, derivedStatus: null, manualStatus: null, workspacePath: `/data/${dir}`, pinnedAt: null, unread: false, prTitle: null, prDescription: null, number: null,
   createdAt: "2026-11-05 12:00:00", ...extra,
 });
 
@@ -32,6 +32,11 @@ test("maps rows in database order, marks hidden repos and drops archived workspa
 test("carries the workspace number from conductor.db", () => {
   const [r] = reposFromDb([repo("a")], [ws("a", "oslo", "ready", { number: 7 }), ws("a", "lima")], []);
   assert.deepEqual(r.workspaces.map((w) => w.number), [7, null]);
+});
+
+test("carries the workspace's intended target branch for the diff", () => {
+  const [r] = reposFromDb([repo("a")], [ws("a", "oslo", "ready", { intendedTargetBranch: "develop" }), ws("a", "lima")], []);
+  assert.deepEqual(r.workspaces.map((w) => w.targetBranch), ["develop", null]);
 });
 
 test("selection falls back to home when its workspace is gone", () => {

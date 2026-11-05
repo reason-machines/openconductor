@@ -149,6 +149,12 @@ export function refreshOutdated(comments: DiffComment[], files: FileDiff[]): Dif
   });
 }
 
+/** Any comment not yet sent to the agent, on lines still in the diff and not resolved: the reference's
+ *  header flag for "Add all comments to chat" (renderApp `Wus`: `state === "pending"`, not outdated, not resolved). */
+export function hasPendingComments(comments: Pick<DiffComment, "state" | "is_outdated" | "is_resolved">[]): boolean {
+  return comments.some((c) => c.state === "pending" && !c.is_outdated && !c.is_resolved);
+}
+
 /** Comments "Add all comments to chat" sends: saved, not yet in the chat, neither resolved
  *  nor outdated. GitHub and PR-level comments count, as in Conductor's addAllGithubCommentsToChat. */
 export function pendingForAgent(comments: DiffComment[]): DiffComment[] {
