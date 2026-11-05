@@ -39,14 +39,21 @@ pub fn resolve(repo_root: &Path, workspace: Option<&Path>) -> Result<EffectiveSe
 }
 
 /// Local-context environment variables for processes started in a
-/// workspace: agents, terminals and scripts. Errors read as no variables,
+/// workspace: agents, terminals and scripts, with the variables stored on
+/// Settings › Environment applied ([`super::stored_env`]). Errors read as no variables,
 /// so a broken settings file never blocks a terminal or an agent.
 pub fn local_env(
     repo_root: &Path,
     workspace: Option<&Path>,
 ) -> std::collections::BTreeMap<String, String> {
     match resolve(repo_root, workspace) {
-        Ok(e) => e.env.vars(EnvContext::Local),
+        Ok(e) => {
+            let stored = super::stored_env::stored_local();
+            e.env.vars_with_stored(
+                EnvContext::Local,
+                stored.iter().map(|(k, v)| (k.as_str(), v.as_str())),
+            )
+        }
         Err(err) => {
             eprintln!(
                 "settings: environment for {} not applied: {err}",

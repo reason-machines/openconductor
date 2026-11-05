@@ -8,6 +8,7 @@
 //! - `diff/`       diff viewer: git changes, unified diff parser
 //! - `quick_open/` quick open file index and fuzzy matching
 //! - `reason_acp/` the Reason agent over ACP; its commands are `reason_chat`
+//! - `codex_chat.rs` chats run by Codex (`agent::codex_runner`)
 //! - `claude_chat/` Claude Code chats with the signed-in `claude` CLI
 //! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //!   (`spotlight_commands.rs` is its IPC layer)
@@ -20,12 +21,14 @@
 
 pub mod agent;
 pub mod agent_binaries;
+pub mod agent_options;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
 pub mod checkpoint;
 mod checkpoint_commands;
 mod chat_store_commands;
+pub mod codex_chat;
 pub mod claude_chat;
 pub mod create_project;
 pub mod archive_on_merge;
@@ -43,14 +46,17 @@ mod sidebar_rename_commands;
 pub mod diff;
 pub mod draft_attachments;
 pub mod github_repo;
+pub mod local_account;
 pub mod menu;
 pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
+pub mod open_in;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
 pub mod reason_chat;
+pub mod resource_usage;
 mod root_path_commands;
 pub mod scripts;
 pub mod settings;
@@ -292,11 +298,13 @@ pub fn run() {
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
             let settings_pool = db.0.clone();
+            settings::stored_env::install(db.0.clone());
             app.manage(db);
             app.manage(workspaces);
             app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
+            app.manage(codex_chat::CodexChats::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
@@ -344,6 +352,9 @@ pub fn run() {
             workspace::commands::rename_workspace_branch,
             workspace_archive_commands::archive_workspace,
             workspace_archive_commands::unarchive_workspace,
+            workspace_archive_commands::delete_workspace,
+            workspace_archive_commands::reveal_unarchive_conflict,
+            workspace_archive_commands::clear_unarchive_conflict,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_repo_prompt,
@@ -389,6 +400,12 @@ pub fn run() {
             reason_chat::reason_prompt,
             reason_chat::reason_cancel,
             reason_chat::reason_list_sessions,
+            codex_chat::codex_cli_path,
+            codex_chat::codex_open_chat,
+            codex_chat::codex_prompt,
+            codex_chat::codex_cancel,
+            codex_chat::codex_answer,
+            codex_chat::codex_close_chat,
             claude_chat::commands::claude_cli_path,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
@@ -421,13 +438,25 @@ pub fn run() {
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
             app_prefs::commands::get_app_prefs,
+            agent_options::agent_system_binary,
+            agent_options::agent_config_file,
+            agent_options::open_agent_config,
+            agent_options::acp_agent_status,
             app_prefs::commands::set_app_pref,
             app_prefs::commands::record_open_in,
+            open_in::commands::open_in_apps,
+            open_in::commands::open_in_app,
             app_prefs::commands::client_instance_id,
             app_prefs::commands::graphite_cli_installed,
+            resource_usage::commands::get_resource_usage,
+            local_account::local_account,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,
+            settings::stored_env::env_vars_list,
+            settings::stored_env::env_vars_set,
+            settings::stored_env::env_vars_delete,
+            settings::stored_env::env_files_loaded,
             settings::commands::update_settings,
             settings::commands::get_repo_settings,
             settings::commands::provider_status,
@@ -486,6 +515,10 @@ pub fn run() {
             if let tauri::RunEvent::Exit = event {
                 if let Some(terminals) = app.try_state::<Terminals>() {
                     terminals.0.kill_all();
+                }
+                // Each Codex chat runs its own app-server.
+                if let Some(codex) = app.try_state::<codex_chat::CodexChats>() {
+                    codex.close_all();
                 }
                 // Run scripts lead their own process groups; do not orphan them.
                 if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {
