@@ -8,8 +8,8 @@ export type BranchPrefixType = "github_username" | "custom" | "none";
 export type ThinkingLevel = "minimal" | "low" | "medium" | "high" | "xhigh";
 
 /** `agent::AgentKind`. */
-export type AgentKind = "claude" | "codex" | "cursor" | "opencode";
-export const AGENTS: AgentKind[] = ["claude", "codex", "cursor", "opencode"];
+export type AgentKind = "claude" | "codex" | "cursor" | "opencode" | "reason";
+export const AGENTS: AgentKind[] = ["claude", "codex", "cursor", "opencode", "reason"];
 
 /** `agent::ProviderConfig`, tagged by `kind`. Options are per kind. */
 export type ProviderKind =
@@ -22,7 +22,8 @@ export type ProviderKind =
   | "openai_api"
   | "codex_gateway"
   | "cursor_api"
-  | "opencode_login";
+  | "opencode_login"
+  | "reason_login";
 export interface ProviderConfig {
   kind: ProviderKind;
   [option: string]: unknown;
@@ -34,6 +35,7 @@ export const DEFAULT_PROVIDER: Record<AgentKind, ProviderKind> = {
   codex: "codex_login",
   cursor: "cursor_api",
   opencode: "opencode_login",
+  reason: "reason_login",
 };
 
 export interface Settings {

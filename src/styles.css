@@ -1,7 +1,7 @@
 :root {
-  --bg: #f7f7f5;
+  /* App background: Conductor's --background (evidence/frontend/css-tokens.json, :root,.light). */
+  --bg: #ffffff;
   --panel: #ffffff;
-  --sidebar: #eeeeeb;
   --border: #e1e0dc;
   --text: #1f2328;
   --muted: #6b6f76;
@@ -16,6 +16,15 @@
   --secondary: #efefec;
   --secondary-hover: rgba(239, 239, 236, 0.8);
   --secondary-text: #3d4147;
+  /* Sidebar tokens, values from Conductor's --sidebar-* custom properties
+     (evidence/frontend/css-tokens.json, :root,.light). */
+  --sidebar-width: 256px;
+  --sidebar-background: #fafaf9;
+  --sidebar-foreground: #14100fb3;
+  --sidebar-muted-foreground: #14100f99;
+  --sidebar-accent: #14100f0d;
+  --sidebar-accent-foreground: #14100fcc;
+  --sidebar-border: #14100f1a;
   /* Left inset that clears the macOS traffic lights when the sidebar is hidden. */
   --traffic-lights-clearance: 64px;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
@@ -26,9 +35,8 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #17191d;
+    --bg: #141110;
     --panel: #1d2025;
-    --sidebar: #121417;
     --border: #2b2f36;
     --text: #e6e7e9;
     --muted: #8b9099;
@@ -41,12 +49,18 @@
     --secondary: #24272d;
     --secondary-hover: rgba(36, 39, 45, 0.8);
     --secondary-text: #c9ccd1;
+    /* evidence/frontend/css-tokens.json, .dark */
+    --sidebar-background: #211e1c;
+    --sidebar-foreground: #ffffffe6;
+    --sidebar-muted-foreground: #ffffff99;
+    --sidebar-accent: #ffffff0d;
+    --sidebar-accent-foreground: #ffffffe6;
+    --sidebar-border: #ffffff1a;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #17191d;
+  --bg: #141110;
   --panel: #1d2025;
-  --sidebar: #121417;
   --border: #2b2f36;
   --text: #e6e7e9;
   --muted: #8b9099;
@@ -59,6 +73,13 @@
   --secondary: #24272d;
   --secondary-hover: rgba(36, 39, 45, 0.8);
   --secondary-text: #c9ccd1;
+  /* evidence/frontend/css-tokens.json, .dark */
+  --sidebar-background: #211e1c;
+  --sidebar-foreground: #ffffffe6;
+  --sidebar-muted-foreground: #ffffff99;
+  --sidebar-accent: #ffffff0d;
+  --sidebar-accent-foreground: #ffffffe6;
+  --sidebar-border: #ffffff1a;
 }
 
 * { box-sizing: border-box; }
@@ -72,11 +93,13 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .add { color: var(--add); }
 .del { color: var(--del); }
 
-.app { display: grid; grid-template-columns: 248px 1fr; height: 100vh; overflow: hidden; }
+.app { display: grid; grid-template-columns: var(--sidebar-width) 1fr; height: 100vh; overflow: hidden; background: var(--bg); }
 .app.sidebar-hidden { grid-template-columns: 1fr; }
 
 /* Sidebar */
-.sidebar { background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; min-height: 0; padding: 0 8px; }
+/* Conductor's <aside>: border-r border-sidebar-border bg-sidebar-background/60 text-sidebar-foreground,
+   so the fill is the sidebar token at 60% over the app background. */
+.sidebar { background: color-mix(in srgb, var(--sidebar-background) 60%, transparent); color: var(--sidebar-foreground); border-right: 1px solid var(--sidebar-border); display: flex; flex-direction: column; min-height: 0; min-width: 0; padding: 0 8px; }
 .sidebar-drag { height: 28px; flex: none; }
 .sidebar-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; padding: 4px 8px 12px; }
 .nav-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; text-align: left; width: 100%; }
@@ -255,7 +278,18 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .term-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
 .term-dot.running { background: var(--add); }
 .term-dot.exited { background: var(--del); }
-.term-body { flex: 1; min-height: 0; padding: 4px 0 0 8px; overflow: hidden; }
+.term-body { position: relative; flex: 1; min-height: 0; padding: 4px 0 0 8px; overflow: hidden; }
+.term-mount { height: 100%; }
+/* Find in terminal: the reference's floating bar (top-2 right-4, w-96, rounded-lg, shadow-lg). */
+.term-find { position: absolute; top: 8px; right: 16px; z-index: 50; display: flex; align-items: center; gap: 12px; width: 384px; max-width: calc(100% - 32px); padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--sidebar, var(--panel)); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.25), 0 4px 6px -4px rgb(0 0 0 / 0.25); }
+.term-find-icon { display: flex; color: var(--muted); flex-shrink: 0; }
+.term-find input { flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: var(--text); font-size: 14px; }
+.term-find input::placeholder { color: var(--muted); }
+.term-find-count { white-space: nowrap; font-size: 14px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.term-find-buttons { display: flex; align-items: center; gap: 4px; }
+.term-find-buttons button { display: flex; padding: 2px; color: var(--muted); }
+.term-find-buttons button:hover:not(:disabled) { color: var(--text); }
+.term-find-buttons button:disabled { cursor: not-allowed; opacity: 0.4; }
 .term-host, .term-host .xterm { height: 100%; }
 .term-host .xterm-viewport { background-color: var(--panel) !important; }
 .term-error { padding: 8px 12px; color: var(--del); font-size: 12px; }
@@ -276,3 +310,27 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .ks-keys kbd { min-width: 20px; padding: 1px 5px; border: 1px solid var(--border); border-radius: 4px; font: inherit; font-size: 12px; text-align: center; }
 .ks-dim { opacity: 0.5; }
 .ks-empty { padding: 32px 0; text-align: center; font-size: 14px; color: var(--muted); }
+.settings-radios { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.settings-radio { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.settings-radio-detail { margin-left: 24px; display: flex; flex-direction: column; gap: 4px; }
+.settings-radio-detail p { margin: 0; }
+.settings-radio-detail input[type="text"] { font: inherit; color: inherit; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); min-width: 220px; }
+.settings-radio-detail input[aria-invalid="true"] { border-color: var(--del); }
+
+/* Run / Setup scripts panel (src/components/ScriptsPanel.tsx) */
+.ws-right { display: grid; grid-template-rows: minmax(0, 1fr) minmax(180px, 38%); min-height: 0; border-left: 1px solid var(--border); }
+.scripts { display: flex; flex-direction: column; min-height: 0; background: var(--panel); border-top: 1px solid var(--border); }
+.scripts-tabs { align-items: center; padding-bottom: 4px; }
+.scripts-actions { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+.scripts-actions select { font: inherit; font-size: 12px; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--panel); color: var(--text); }
+.scripts-actions .btn { color: var(--text); padding: 4px 10px; border: 1px solid var(--border); }
+.scripts-actions .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.scripts-actions .btn-stop { background: #b4483c; border-color: #b4483c; color: #fff; }
+.setup-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-left: 4px; background: var(--border); vertical-align: middle; }
+.setup-dot.running { background: #e8b04b; }
+.setup-dot.completed { background: #4f9d69; }
+.setup-dot.failed { background: #b4483c; }
+.scripts-meta { display: flex; gap: 10px; align-items: center; padding: 6px 12px; font-size: 12px; color: var(--muted); }
+.scripts-meta code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scripts-output { flex: 1; margin: 0; padding: 8px 12px 12px; overflow: auto; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; color: var(--text); }
+.scripts-error { padding: 6px 12px; font-size: 12px; color: #b4483c; }

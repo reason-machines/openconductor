@@ -161,6 +161,29 @@ to the webview. It logs `Failed to emit keyboard shortcuts dialog event: ` on er
 and `Warning: Could not add Keyboard Shortcuts menu item` if the item cannot be added.
 These strings come from `MacOS/conductor`.
 
+The same string run (0.87.6, `strings -a` on `MacOS/conductor`, re-read
+2026-11-05) holds every item Conductor adds, in this order, each followed by its
+own `Warning: Could not add <label> menu item`:
+
+- `Check for Updates`; `Settings...` with `CmdOrCtrl+,`; `custom_quit` with `Cmd+Q`.
+- `toggle_left_sidebar` "Toggle Left Sidebar", `toggle_right_sidebar` "Toggle Right Sidebar".
+- Help: `keyboard_shortcuts` "Keyboard Shortcuts" (no accelerator), `documentation`,
+  `best_practices` "Best Practices", `changelog` "Changelog", `send_feedback` with
+  `CmdOrCtrl+Alt+f`, `submit_a_prompt` "Submit a Prompt...", `diagnostics`
+  "Diagnostics...", `debug` with `CmdOrCtrl+Alt+i`.
+- The events they emit: `open_diagnostics_page`, `open_submit_prompt_dialog`,
+  `open_changelog_url`, `open_best_practices_url`, `open_feedback_dialog`,
+  `open_keyboard_shortcuts_dialog`, `open_documentation_url`.
+
+The binary also holds Tauri's `__tauri_help_menu__` and `__tauri_window_menu__`
+ids, consistent with appending to Tauri's default menu. Which submenu each
+non-Help item joins, and which event each id emits beyond `keyboard_shortcuts`,
+is inferred from string order, not decompiled code (see REA gaps). ⌥⌘/ is
+handled by the webview dispatcher, not a menu accelerator.
+
+OpenConductor: `src-tauri/src/menu.rs` appends Keyboard Shortcuts to the default
+Help submenu on macOS and emits `open_keyboard_shortcuts_dialog` on click.
+
 ## Key-bindings page (`/settings/user/key-bindings`)
 
 - Gated by `internal_settings_enabled` (or dev mode). Without it, the route
@@ -188,3 +211,8 @@ These strings come from `MacOS/conductor`.
   with stub constructors (`tools/keybindings_extract.mjs`).
 - No component tree: the bundle is minified and has no source maps. Component
   behaviour above comes from reading the minified React output.
+- `rea execute-rizin-command` on Sven's Mac fails with `capability_unavailable`
+  (rizin not installed, ENOENT), and `rea function` on the menu-event closure
+  `conductor_lib::run` at `0x100498360` fails with `provider_unavailable`: Ghidra,
+  Hopper, IDA and Kuna are all unconfigured there (no Java runtime). So the menu
+  builder was not decompiled; the native menu table above is from the string table.
