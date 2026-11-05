@@ -10,6 +10,7 @@ import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { Toaster, useToasts } from "./components/Toast";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
+import { PaletteHost } from "./palette/PaletteHost";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
@@ -95,6 +96,7 @@ export default function App() {
           dispatch={dispatch}
         />
       )}
+      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );

@@ -53,3 +53,6 @@ verifier_signature_openconductor_app	rea inspect-signature <CI artifact>/OpenCon
 verifier_signature_conductor	rea inspect-signature /Users/sven/code/conductor-rea-work/Conductor.app	0	-	-	
 verifier_dylib_openconductor_app	rea trace-dylib-resolution <CI artifact>/OpenConductor.app	0	16	14118	
 verifier_dylib_conductor	rea trace-dylib-resolution /Users/sven/code/conductor-rea-work/Conductor.app	0	-	-	
+trace_js_semantics_get_keychain_setting	rea trace-javascript-semantics /Users/sven/code/conductor-rea-work/trace_get_keychain_setting.json	0	~120	1811235	seed not found (partial, 0 nodes)
+trace_js_semantics_set_keychain_setting	rea trace-javascript-semantics /Users/sven/code/conductor-rea-work/trace_set_keychain_setting.json	0	~120	1811235	seed not found (partial, 0 nodes)
+trace_js_semantics_delete_keychain_setting	rea trace-javascript-semantics /Users/sven/code/conductor-rea-work/trace_delete_keychain_setting.json	0	~120	1811241	seed not found (partial, 0 nodes)
