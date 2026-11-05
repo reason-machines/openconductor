@@ -248,6 +248,10 @@ pub struct WorkspaceRow {
     pub pr_description: Option<String>,
     /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
     pub number: Option<i64>,
+    /// Log of the `git worktree add` script and `git ls-files | wc -l` at
+    /// creation (`initialization_log_path`, `initialization_files_copied`).
+    pub initialization_log_path: Option<String>,
+    pub initialization_files_copied: Option<i64>,
     pub created_at: String,
 }
 
@@ -292,6 +296,8 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 pr_title: w.pr_title,
                 pr_description: w.pr_description,
                 number: w.number,
+                initialization_log_path: w.initialization_log_path,
+                initialization_files_copied: w.initialization_files_copied,
                 created_at: w.created_at,
                 repository_id: w.repository_id,
                 id: w.local_id,

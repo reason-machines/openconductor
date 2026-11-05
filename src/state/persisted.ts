@@ -39,6 +39,9 @@ export interface DbWorkspaceRow {
   prDescription: string | null;
   /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
   number: number | null;
+  /** `initialization_log_path` / `initialization_files_copied`; absent from rows of an older backend. */
+  initializationLogPath?: string | null;
+  initializationFilesCopied?: number | null;
   createdAt: string;
 }
 
@@ -77,6 +80,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
           (w): Workspace => ({
             id: w.id,
             name: w.workspaceName ?? w.directoryName,
+            workspaceName: w.workspaceName,
             directoryName: w.directoryName,
             branch: w.branch,
             status: "idle",

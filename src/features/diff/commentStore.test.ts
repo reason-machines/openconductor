@@ -51,3 +51,20 @@ test("local store ignores corrupt storage", async () => {
   kv.setItem(localKey("ws"), "{not json");
   assert.deepEqual(await localCommentStore(kv, "ws").list(), []);
 });
+
+test("local store reads comments saved with the old side as \"base\" as \"original\"", async () => {
+  const kv = memory();
+  const old = { ...newLocalComment({ ...base, id: "o", side: "old", body: "gone?" }), location: "base" };
+  kv.setItem(localKey("ws"), JSON.stringify([old]));
+  const [c] = await localCommentStore(kv, "ws").list();
+  assert.equal(c.location, "original");
+});
+
+test("local store deletes a GitHub comment here only, leaving the rest of its thread", async () => {
+  const kv = memory();
+  const gh = (id: string, replyTo: string | null) => ({ ...newLocalComment({ ...base, id, body: id }), remote_url: `https://github.com/o/r/pull/1#${id}`, author: "octo", thread_id: "PRRT_1", reply_to_comment_id: replyTo });
+  kv.setItem(localKey("ws"), JSON.stringify([gh("github-PRRT_1-1", null), gh("github-PRRT_1-2", "github-PRRT_1-1")]));
+  const store = localCommentStore(kv, "ws");
+  await store.remove("github-PRRT_1-2");
+  assert.deepEqual((await store.list()).map((c) => c.id), ["github-PRRT_1-1"]);
+});
