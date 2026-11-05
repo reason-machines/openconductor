@@ -68,3 +68,7 @@ ghidra_ipc_strings	rea search /Users/sven/code/conductor-rea-work/Conductor.app/
 trace_js_semantics_get_keychain_setting	rea trace-javascript-semantics /Users/sven/code/conductor-rea-work/trace_get_keychain_setting.json	0	~120	1811235	seed not found (partial, 0 nodes)
 trace_js_semantics_set_keychain_setting	rea trace-javascript-semantics /Users/sven/code/conductor-rea-work/trace_set_keychain_setting.json	0	~120	1811235	seed not found (partial, 0 nodes)
 trace_js_semantics_delete_keychain_setting	rea trace-javascript-semantics /Users/sven/code/conductor-rea-work/trace_delete_keychain_setting.json	0	~120	1811241	seed not found (partial, 0 nodes)
+verifier_plist_openconductor_app_884f1f7	rea inspect-plist <CI artifact OpenConductor-debug-macos, run 42021844898, main 884f1f7>/OpenConductor.app --json	0	7	3109	
+verifier_signature_openconductor_app_884f1f7	rea inspect-signature <CI artifact, run 42021844898>/OpenConductor.app --json	0	4	2893	
+verifier_dylib_openconductor_app_884f1f7	rea trace-dylib-resolution <CI artifact, run 42021844898>/OpenConductor.app --json	0	3	14841	
+verifier_sqlite_rebuild_node24_884f1f7	npx rea-agents@6.8.0 inspect-sqlite-database <rebuild conductor.db from main 884f1f7 migrations> --schema-scope database --json (Linux, Node 24.22.2)	0	-	-	
