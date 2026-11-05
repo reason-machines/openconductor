@@ -31,6 +31,11 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
+      # Same as the reason-chat job: rust-cache restores stale artifacts of the
+      # path crates, so rebuild them every run.
+      - name: Rebuild path crates
+        working-directory: src-tauri
+        run: cargo clean -p oc-scripts -p openconductor-db
       - run: npm ci
       - name: Build the app (debug, no bundle)
         run: npx tauri build --debug --no-bundle
@@ -105,6 +110,19 @@ jobs:
         with:
           name: codex-chat-e2e-screens
           path: ${{ runner.temp }}/e2e-codex
+      - name: Transcript parity screenshots (fake reason acp, lisbon turn)
+        if: always()
+        env:
+          E2E_OUT: ${{ runner.temp }}/transcript-parity
+          # WebKitGTK on a GPU-less Xvfb paints nothing without these.
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: xvfb-run -a -s "-screen 0 1600x1000x24" node tools/e2e/transcript-parity.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: transcript-parity-screens
+          path: ${{ runner.temp }}/transcript-parity
           retention-days: 14
       - name: Configure git identity
         if: always()

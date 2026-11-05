@@ -143,6 +143,8 @@ export const configureReasonDefault = reason.configureDefault;
 /** Answers Reason's permission request with one of its options, or declines it with null. */
 export const answerPermission = reason.answerPermission;
 export type { ChatSnapshot, PermissionPrompt } from "./chatRuntime.ts";
+/** The options the chat's Sessions open with (a fork opens on the same). */
+export const reasonChatConfig = reason.config;
 
 /** The first message or a Retry: starts when idle, else waits in the queue. */
 export function sendReason(chatId: string, cwd: string, text: string, attachments: readonly PromptAttachment[] = [], repoPath?: string): void {

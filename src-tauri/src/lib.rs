@@ -21,6 +21,7 @@
 
 pub mod agent;
 pub mod agent_binaries;
+pub mod agent_options;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
@@ -298,6 +299,7 @@ pub fn run() {
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
             let settings_pool = db.0.clone();
+            settings::stored_env::install(db.0.clone());
             app.manage(db);
             app.manage(workspaces);
             app.manage(workspace_archive::flow::InFlightArchives::default());
@@ -351,6 +353,9 @@ pub fn run() {
             workspace::commands::rename_workspace_branch,
             workspace_archive_commands::archive_workspace,
             workspace_archive_commands::unarchive_workspace,
+            workspace_archive_commands::delete_workspace,
+            workspace_archive_commands::reveal_unarchive_conflict,
+            workspace_archive_commands::clear_unarchive_conflict,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_repo_prompt,
@@ -438,6 +443,10 @@ pub fn run() {
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
             app_prefs::commands::get_app_prefs,
+            agent_options::agent_system_binary,
+            agent_options::agent_config_file,
+            agent_options::open_agent_config,
+            agent_options::acp_agent_status,
             app_prefs::commands::set_app_pref,
             app_prefs::commands::record_open_in,
             open_in::commands::open_in_apps,
@@ -449,6 +458,10 @@ pub fn run() {
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,
+            settings::stored_env::env_vars_list,
+            settings::stored_env::env_vars_set,
+            settings::stored_env::env_vars_delete,
+            settings::stored_env::env_files_loaded,
             settings::commands::update_settings,
             settings::commands::get_repo_settings,
             settings::commands::provider_status,
