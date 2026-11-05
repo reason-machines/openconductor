@@ -1,4 +1,4 @@
-use openconductor_db::repos::{self, NewRepo};
+use openconductor_db::repos::{self, NewRepo, RepoSettings};
 use openconductor_db::{open_in_memory, Error};
 use sqlx::SqlitePool;
 
@@ -83,6 +83,64 @@ async fn reorder_sets_list_order() {
         .map(|r| r.id)
         .collect();
     assert_eq!(ids, ["c", "a", "b"]);
+}
+
+#[tokio::test]
+async fn setters_update_fields_and_bump_updated_at() {
+    let pool = open_in_memory().await.unwrap();
+    repos::insert(&pool, &new_repo("a")).await.unwrap();
+    sqlx::query("UPDATE repos SET updated_at = '2000-01-01 00:00:00'")
+        .execute(&pool)
+        .await
+        .unwrap();
+    repos::set_default_branch(&pool, "a", "trunk")
+        .await
+        .unwrap();
+    repos::set_remote(&pool, "a", "upstream", Some("git@example.com:o/a.git"))
+        .await
+        .unwrap();
+    repos::set_hidden(&pool, "a", true).await.unwrap();
+    repos::set_icon(&pool, "a", Some("rocket")).await.unwrap();
+    repos::set_conductor_config(&pool, "a", Some("{}"))
+        .await
+        .unwrap();
+    let a = repos::get(&pool, "a").await.unwrap().unwrap();
+    assert_eq!(a.default_branch.as_deref(), Some("trunk"));
+    assert_eq!(a.remote.as_deref(), Some("upstream"));
+    assert_eq!(a.remote_url.as_deref(), Some("git@example.com:o/a.git"));
+    assert!(a.hidden);
+    assert_eq!(a.icon.as_deref(), Some("rocket"));
+    assert_eq!(a.conductor_config.as_deref(), Some("{}"));
+    assert_ne!(a.updated_at, "2000-01-01 00:00:00");
+    assert!(matches!(
+        repos::set_hidden(&pool, "missing", true).await,
+        Err(Error::NotFound)
+    ));
+}
+
+#[tokio::test]
+async fn settings_round_trip() {
+    let pool = open_in_memory().await.unwrap();
+    repos::insert(&pool, &new_repo("a")).await.unwrap();
+    let defaults = repos::settings(&pool, "a").await.unwrap();
+    assert_eq!(defaults.run_script_mode.as_deref(), Some("concurrent"));
+    assert_eq!(defaults.spotlight_testing, Some(false));
+    let wanted = RepoSettings {
+        setup_script: Some("npm ci".into()),
+        run_script: Some("npm run dev".into()),
+        run_script_mode: Some("nonconcurrent".into()),
+        archive_script: Some("echo bye".into()),
+        custom_prompt_create_pr: Some("be brief".into()),
+        file_include_globs: Some(".env*".into()),
+        spotlight_testing: Some(true),
+        ..Default::default()
+    };
+    repos::update_settings(&pool, "a", &wanted).await.unwrap();
+    assert_eq!(repos::settings(&pool, "a").await.unwrap(), wanted);
+    assert!(matches!(
+        repos::settings(&pool, "missing").await,
+        Err(Error::NotFound)
+    ));
 }
 
 #[tokio::test]
