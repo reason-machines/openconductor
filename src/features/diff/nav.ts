@@ -9,6 +9,15 @@ export function step(index: number, count: number, dir: 1 | -1): number {
   return (index + dir + count) % count;
 }
 
+/** First unviewed file after `index`, wrapping; -1 when every file is viewed. */
+export function nextUnread(index: number, count: number, viewedAt: (i: number) => boolean): number {
+  for (let k = 1; k <= count; k++) {
+    const i = (Math.max(index, -1) + k + count) % count;
+    if (!viewedAt(i)) return i;
+  }
+  return -1;
+}
+
 export interface CommentTarget {
   id: string;
   fileIndex: number;

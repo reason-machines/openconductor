@@ -3,12 +3,21 @@
 //! [`wire::EVENT`] as a [`WireEvent`]; errors are the `Display` text.
 //! Commands are `async` so a slow spawn or kill stays off the main thread.
 
+use std::path::Path;
 use std::sync::Arc;
 
 use tauri::{AppHandle, Emitter, State};
 
+use crate::agent::secret::SecretString;
+use crate::db::Db;
+use crate::terminal::history_store::KEY_SECRET_NAME;
+use crate::terminal_history::{
+    key_or_create, HistoryRecord, LoadHistoryArgs, PersistHistoryArgs, TerminalHistory,
+};
+
 use crate::terminal::{
-    wire, PtyEvent, PtyManager, ShellOutput, ShellRequest, ShellRunner, SpawnArgs, WireEvent,
+    wire, CreateMirrorArgs, IdArgs, PtyEvent, PtyManager, ResizeMirrorArgs, ScreenSnapshot,
+    ScreenTextArgs, ShellOutput, ShellRequest, ShellRunner, SpawnArgs, WireEvent, WriteMirrorArgs,
 };
 
 /// Managed state: the app's terminals.
@@ -77,6 +86,110 @@ pub async fn pty_clear_history(state: State<'_, Terminals>, id: String) -> CmdRe
 #[tauri::command]
 pub async fn pty_list(state: State<'_, Terminals>) -> CmdResult<Vec<String>> {
     Ok(state.0.ids())
+}
+
+// Screens and mirrors take one `args` object, as the reference's webview
+// sends them. `id` is a terminal or a mirror.
+
+/// The last `maxLines` rows of a terminal's or mirror's screen.
+#[tauri::command]
+pub async fn pty_screen_text(
+    state: State<'_, Terminals>,
+    args: ScreenTextArgs,
+) -> CmdResult<String> {
+    state.0.screen_text(&args.id, args.max_lines()).map_err(err)
+}
+
+/// A snapshot a renderer restores by writing `rehydrateSequences`, then
+/// `snapshotAnsi`.
+#[tauri::command]
+pub async fn pty_screen_snapshot(
+    state: State<'_, Terminals>,
+    args: IdArgs,
+) -> CmdResult<ScreenSnapshot> {
+    state.0.screen_snapshot(&args.id).map_err(err)
+}
+
+/// A screen with no program behind it (the reference's remote terminals).
+#[tauri::command]
+pub async fn pty_create_mirror(
+    state: State<'_, Terminals>,
+    args: CreateMirrorArgs,
+) -> CmdResult<()> {
+    let max = args.max_buffered_bytes();
+    state
+        .0
+        .create_mirror(&args.id, args.cols, args.rows, max)
+        .map_err(err)
+}
+
+/// Feed output text into a mirror, or into a terminal's screen only.
+#[tauri::command]
+pub async fn pty_write_mirror(state: State<'_, Terminals>, args: WriteMirrorArgs) -> CmdResult<()> {
+    state
+        .0
+        .write_mirror(&args.id, args.data.as_bytes())
+        .map_err(err)
+}
+
+#[tauri::command]
+pub async fn pty_resize_mirror(
+    state: State<'_, Terminals>,
+    args: ResizeMirrorArgs,
+) -> CmdResult<()> {
+    state
+        .0
+        .resize_mirror(&args.id, args.cols, args.rows)
+        .map_err(err)
+}
+
+#[tauri::command]
+pub async fn pty_delete_mirror(state: State<'_, Terminals>, args: IdArgs) -> CmdResult<()> {
+    state.0.delete_mirror(&args.id).map_err(err)
+}
+
+/// Managed state for terminal history in `data_dir`. Its key lives in the
+/// app's secret store (the login Keychain on macOS) under the reference's
+/// secret name, created on first use. Elsewhere that store is in memory, so
+/// history saved there is unreadable after a restart.
+pub fn history_state(data_dir: &Path) -> TerminalHistory {
+    let secrets = crate::agent::keychain::default_store();
+    TerminalHistory::new(
+        data_dir,
+        Box::new(move || {
+            let stored = secrets.get(KEY_SECRET_NAME).map_err(err)?;
+            key_or_create(stored.map(|s| s.expose().to_owned()), |b64| {
+                secrets
+                    .set(KEY_SECRET_NAME, &SecretString::new(b64))
+                    .map_err(err)
+            })
+        }),
+    )
+}
+
+/// Save a terminal's or mirror's screen under `sessionId` so a later launch
+/// can restore it (encrypted entry plus a `terminal_sessions` row).
+#[tauri::command]
+pub async fn pty_persist_terminal_history(
+    terminals: State<'_, Terminals>,
+    history: State<'_, TerminalHistory>,
+    db: State<'_, Db>,
+    args: PersistHistoryArgs,
+) -> CmdResult<()> {
+    let screen = terminals.0.screen_snapshot(&args.id).map_err(err)?;
+    history
+        .persist(&db.0, HistoryRecord::new(args, screen))
+        .await
+}
+
+/// The saved record for `sessionId`, or `null` when there is none.
+#[tauri::command]
+pub async fn pty_load_terminal_history(
+    history: State<'_, TerminalHistory>,
+    db: State<'_, Db>,
+    args: LoadHistoryArgs,
+) -> CmdResult<Option<HistoryRecord>> {
+    history.load(&db.0, &args.session_id).await
 }
 
 /// Managed state: one-shot shell commands that can still be cancelled.

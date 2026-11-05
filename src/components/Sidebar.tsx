@@ -3,9 +3,10 @@ import type { AppState, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, MoreIcon, PlusIcon, SearchIcon, SidebarIcon } from "./Icons";
+import { ArrowLeftIcon, ArrowRightIcon, BranchIcon, ChevronDownIcon, ChevronIcon, HomeIcon, MoreIcon, PlusIcon, SearchIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
+import { byRecentActivity, workspaceLabel } from "./sidebarLabel";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
 function hint(commandId: string): string {
@@ -142,44 +143,80 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
           <HeaderMenu label="My workspaces" className="sb-section-menu" items={[{ label: "Add project…", onSelect: onOpenProject }]} />
         </div>
         {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
-        {!groupCollapsed && state.repos.map((repo) => (
-          <div key={repo.id} className="repo">
-            <div className="repo-row">
-              <button className="repo-toggle" onClick={() => dispatch({ type: "toggleRepo", repoId: repo.id })} aria-expanded={!repo.collapsed}>
-                <ChevronIcon size={12} open={!repo.collapsed} />
-                <span className="repo-name">{repo.name}</span>
-              </button>
-              <button className="icon-btn repo-add" title={`New workspace in ${repo.name}`} aria-label={`New workspace in ${repo.name}`} onClick={() => onOpenDialog("create", repo.id)}>
-                <PlusIcon size={13} />
-              </button>
+        {!groupCollapsed && (
+          <div className="sb-repo-groups">
+            {state.repos.map((repo) => (
+          <div key={repo.id} className="sb-repo-group">
+            <div className="sb-repo">
+              <div
+                className="sb-repo-header"
+                role="button"
+                tabIndex={0}
+                aria-expanded={!repo.collapsed}
+                onClick={() => dispatch({ type: "toggleRepo", repoId: repo.id })}
+                onKeyDown={(e) => {
+                  if (e.target !== e.currentTarget || (e.key !== "Enter" && e.key !== " ")) return;
+                  e.preventDefault();
+                  dispatch({ type: "toggleRepo", repoId: repo.id });
+                }}
+              >
+                <div className="sb-repo-main">
+                  <span className="sb-repo-lead">
+                    <span className="sb-repo-initial" aria-hidden>{repo.name.charAt(0).toUpperCase()}</span>
+                    <span className="sb-repo-chevron" aria-hidden>{repo.collapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}</span>
+                  </span>
+                  <span className="sb-repo-name">{repo.name}</span>
+                  {repo.collapsed && repo.workspaces.length > 0 && <span className="sb-repo-count">{repo.workspaces.length}</span>}
+                </div>
+                <span className="sb-repo-spacer" aria-hidden />
+                <button
+                  type="button"
+                  className="sb-repo-add"
+                  title="Create workspace"
+                  aria-label={`Create workspace in ${repo.name}`}
+                  onClick={(e) => { e.stopPropagation(); onOpenDialog("create", repo.id); }}
+                >
+                  <PlusIcon size={16} />
+                </button>
+              </div>
+              <HeaderMenu label={repo.name} className="sb-repo-menu" items={[{ label: "New workspace", onSelect: () => onOpenDialog("create", repo.id) }]} />
             </div>
             {!repo.collapsed && (
-              <ul className="ws-list">
-                {repo.workspaces.length === 0 && <li className="ws-empty">No workspaces</li>}
-                {repo.workspaces.map((ws) => {
+              <div className="sb-ws-list">
+                {repo.workspaces.length === 0 && <p className="ws-empty">No workspaces</p>}
+                {byRecentActivity(repo.workspaces).map((ws) => {
                   const active = sel.kind === "workspace" && sel.workspaceId === ws.id;
+                  const label = workspaceLabel({ name: ws.name, branch: ws.branch, prTitle: ws.prTitle, userSetWorkspaceName: ws.userSetWorkspaceName, targetBranch: repo.defaultBranch });
                   return (
-                    <li key={ws.id}>
-                      <button
-                        className={`ws-item ${active ? "active" : ""}`}
-                        onClick={() => dispatch({ type: "select", selection: { kind: "workspace", repoId: repo.id, workspaceId: ws.id } })}
-                        title={`${ws.branch} · ${STATUS_LABEL[ws.status]}`}
-                      >
-                        <span className={`status-dot ${ws.status}`} aria-label={STATUS_LABEL[ws.status]} />
-                        <span className="ws-name">{ws.name}</span>
-                        {(ws.diff.added > 0 || ws.diff.removed > 0) && (
-                          <span className="ws-diff">
-                            <span className="add">+{ws.diff.added}</span> <span className="del">-{ws.diff.removed}</span>
-                          </span>
-                        )}
-                      </button>
-                    </li>
+                    <button
+                      key={ws.id}
+                      type="button"
+                      className="sb-ws"
+                      data-testid="left-sidebar-workspace-item"
+                      data-active={active || undefined}
+                      data-unread={ws.unread || undefined}
+                      aria-current={active ? "page" : undefined}
+                      onClick={() => dispatch({ type: "select", selection: { kind: "workspace", repoId: repo.id, workspaceId: ws.id } })}
+                      title={`${label} · ${ws.branch} · ${STATUS_LABEL[ws.status]}`}
+                    >
+                      <span className={`sb-ws-status ${ws.status}`} role="img" aria-label={STATUS_LABEL[ws.status]}>
+                        <BranchIcon size={14} />
+                      </span>
+                      <span className="sb-ws-name">{label}</span>
+                      {(ws.diff.added > 0 || ws.diff.removed > 0) && (
+                        <span className="sb-ws-diff">
+                          <span className="add">+{ws.diff.added}</span> <span className="del">-{ws.diff.removed}</span>
+                        </span>
+                      )}
+                    </button>
                   );
                 })}
-              </ul>
+              </div>
             )}
           </div>
-        ))}
+            ))}
+          </div>
+        )}
       </nav>
 
       <div className="sidebar-footer">

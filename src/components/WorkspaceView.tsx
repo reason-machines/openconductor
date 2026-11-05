@@ -5,6 +5,7 @@ import { ArchiveIcon, BranchIcon, SendIcon } from "./Icons";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "../features/chat/reducer.ts";
 import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
+import { reasonAvailable, reasonTranscript, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
 import { DiffViewer } from "../features/diff/DiffViewer";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
@@ -20,8 +21,11 @@ interface Props {
   dispatch: Dispatch<Action>;
 }
 
-// Chat transcripts are kept per workspace in memory until the agent runtime lands.
+// In the desktop app the chat runs Reason (one Reason Session per workspace,
+// `features/chat/reasonChat.ts`). The browser preview keeps a local transcript.
 const transcripts = new Map<string, ChatTranscript>();
+/** The Create-workspace dialog's first message, sent to Reason when the chat opens. */
+const firstPrompts = new Map<string, string>();
 
 function textMessage(workspaceId: string, role: ChatMessage["role"], text: string): ChatMessage {
   const id = `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -35,19 +39,34 @@ function withMessages(t: ChatTranscript, messages: ChatMessage[]): ChatTranscrip
 
 /** Puts the Create-workspace dialog's first message at the top of the new workspace's chat. */
 export function seedTranscript(workspaceId: string, text: string) {
+  if (reasonAvailable()) {
+    firstPrompts.set(workspaceId, text);
+    return;
+  }
   transcripts.set(workspaceId, withMessages(emptyTranscript(workspaceId), [textMessage(workspaceId, "user", text)]));
 }
 
 function ChatPanel({ repo, workspace, dispatch, bridge }: Props & { bridge: MutableRefObject<ChatBridge | null> }) {
-  const load = () => transcripts.get(workspace.id) ?? emptyTranscript(workspace.id);
+  const reason = reasonAvailable();
+  const cwd = workspace.path ?? repo.path;
+  const load = () => (reason ? reasonTranscript(workspace.id) : (transcripts.get(workspace.id) ?? emptyTranscript(workspace.id)));
   const [transcript, setTranscript] = useState<ChatTranscript>(load);
   const [draft, setDraft] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const running = transcript.activeTurn !== null;
 
   useEffect(() => {
     setTranscript(load());
     setDraft("");
+    if (!reason) return;
+    const unsubscribe = subscribeReason(workspace.id, setTranscript);
+    const first = firstPrompts.get(workspace.id);
+    if (first !== undefined) {
+      firstPrompts.delete(workspace.id);
+      void sendReason(workspace.id, cwd, first);
+    }
+    return unsubscribe;
   }, [workspace.id]);
 
   useEffect(() => {
@@ -56,9 +75,14 @@ function ChatPanel({ repo, workspace, dispatch, bridge }: Props & { bridge: Muta
 
   function sendText(text: string) {
     const first = !transcript.messages.some((m) => m.role === "user");
+    if (reason) {
+      void sendReason(workspace.id, cwd, text);
+      if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
+      return;
+    }
     const next = withMessages(transcript, [
       textMessage(workspace.id, "user", text),
-      textMessage(workspace.id, "system", "No agent is connected yet. The agent runtime is a later milestone; this message stays in this workspace's local transcript."),
+      textMessage(workspace.id, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."),
     ]);
     transcripts.set(workspace.id, next);
     setTranscript(next);
@@ -91,7 +115,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge }: Props & { bridge: Muta
             <p>
               Messages you send here will run an agent inside <code>{workspace.name}</code>'s worktree on branch <code>{workspace.branch}</code>.
             </p>
-            <p className="muted">Placeholder: agent sessions are not wired up yet.</p>
+            <p className="muted">{reason ? "Reason runs this chat: one Reason Session per workspace." : "Browser preview: messages stay in a local transcript."}</p>
           </div>
         ) : (
           <Transcript transcript={transcript} onRetry={(prompt) => sendText(prompt)} />
@@ -111,9 +135,16 @@ function ChatPanel({ repo, workspace, dispatch, bridge }: Props & { bridge: Muta
         />
         <div className="composer-bar">
           <span className="muted">Enter to send, Shift+Enter for a new line</span>
-          <button className="btn btn-primary btn-small" type="submit" disabled={!draft.trim()}>
-            <SendIcon size={14} /> Send
-          </button>
+          <span className="composer-actions">
+            {running ? (
+              <button className="btn btn-small" type="button" title="Stop the agent" onClick={() => stopReason(workspace.id)}>
+                Stop
+              </button>
+            ) : null}
+            <button className="btn btn-primary btn-small" type="submit" disabled={!draft.trim()}>
+              <SendIcon size={14} /> Send
+            </button>
+          </span>
         </div>
       </form>
     </section>

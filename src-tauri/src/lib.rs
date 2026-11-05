@@ -16,6 +16,7 @@
 
 pub mod agent;
 pub mod checkpoint;
+pub mod create_project;
 pub mod db;
 pub mod diff;
 pub mod github_repo;
@@ -31,6 +32,7 @@ pub mod spotlight;
 mod spotlight_commands;
 pub mod terminal;
 mod terminal_commands;
+pub mod terminal_history;
 pub mod workspace;
 
 use serde::Serialize;
@@ -84,12 +86,49 @@ async fn github_repo_availability(
     blocking(move || github_repo::GitHub::default().availability(&owner, &repo_name)).await
 }
 
+/// "Recent repos" for the clone dialog (see `github_repo::RECENT_REPOS_PATH`).
+#[tauri::command]
+async fn github_recent_repos() -> Result<Vec<github_repo::RecentRepo>, String> {
+    blocking(|| github_repo::GitHub::default().recent_repos()).await
+}
+
+/// `ssh` or `https`, from `gh config get git_protocol`.
+#[tauri::command]
+async fn github_git_protocol() -> Result<String, String> {
+    blocking(|| Ok(github_repo::GitHub::default().git_protocol().to_string())).await
+}
+
 /// Publish a local folder as a new private GitHub repo (see `github_repo`).
 #[tauri::command]
 async fn github_repo_create(
     request: github_repo::CreateRequest,
 ) -> Result<github_repo::Created, String> {
     blocking(move || github_repo::GitHub::default().create(&request)).await
+}
+
+/// Home "Create project": scaffold from a template and publish a private
+/// GitHub repo (see `create_project`). JS: `invoke("create_new_project",
+/// { request, onProgress })`, `onProgress` a `Channel` of `{kind, text}`.
+#[tauri::command]
+async fn create_new_project(
+    request: create_project::Request,
+    on_progress: tauri::ipc::Channel<create_project::Progress>,
+) -> Result<create_project::Created, String> {
+    blocking(move || {
+        create_project::Creator::default().create(&request, &mut |p| {
+            let _ = on_progress.send(p);
+        })
+    })
+    .await
+}
+
+/// Save a repository's setup and run scripts to its local settings layer.
+#[tauri::command]
+fn save_repo_scripts(
+    repo_root: String,
+    scripts: create_project::RepoScripts,
+) -> Result<(), String> {
+    create_project::save_local_scripts(std::path::Path::new(&repo_root), &scripts)
 }
 
 #[derive(Serialize)]
@@ -143,9 +182,14 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_window_state::Builder::new().build())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_sql::Builder::new().build())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             app.manage(db::open(&data_dir)?);
+            app.manage(terminal_commands::history_state(&data_dir));
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
@@ -155,8 +199,11 @@ pub fn run() {
                 settings::config_dir()?.join(settings::FILE_NAME),
                 agent::keychain::default_store(),
             ));
-            app.manage(scripts::service(app.handle()));
-            app.manage(spotlight_commands::service(app.handle()));
+            let scripts = scripts::service(app.handle());
+            let spotlight = spotlight_commands::service(app.handle());
+            scripts.set_auto_run_spotlight(spotlight::auto_run::hook(spotlight.clone()));
+            app.manage(scripts);
+            app.manage(spotlight);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -166,8 +213,13 @@ pub fn run() {
             github_repo_owners,
             github_repo_availability,
             github_repo_create,
+            github_recent_repos,
+            github_git_protocol,
+            create_new_project,
+            save_repo_scripts,
             workspace::commands::add_repository,
             workspace::commands::clone_repository,
+            workspace::commands::default_clone_directory,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
             workspace::commands::branch_name_is_taken,
@@ -196,6 +248,14 @@ pub fn run() {
             terminal_commands::pty_read_history,
             terminal_commands::pty_clear_history,
             terminal_commands::pty_list,
+            terminal_commands::pty_screen_text,
+            terminal_commands::pty_screen_snapshot,
+            terminal_commands::pty_create_mirror,
+            terminal_commands::pty_write_mirror,
+            terminal_commands::pty_resize_mirror,
+            terminal_commands::pty_delete_mirror,
+            terminal_commands::pty_persist_terminal_history,
+            terminal_commands::pty_load_terminal_history,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
@@ -205,6 +265,8 @@ pub fn run() {
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
             pr::commands::pr_lookup,
+            pr::commands::pr_list_open,
+            pr::commands::gh_issue_list_open,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
             pr::commands::pr_merge,

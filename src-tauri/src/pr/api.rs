@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 use super::fetch::{fetch_prs, PrRequest};
 use super::gh::{Addressing, Gh, MergeMethod, MergeMethodCache, ProcessRunner, Runner};
 use super::info::{derived_status, PrLookup, WorkspaceStatus};
+use super::list::{OpenIssue, OpenPr};
 use super::prompt::CreatePrRequest;
 
 /// `gh` to run: `$OPENCONDUCTOR_GH` when set (a bundled copy), else `gh` on PATH.
@@ -88,6 +89,17 @@ pub fn lookup_prs<R: Runner>(
             lookup,
         })
         .collect())
+}
+
+/// Open PRs for the create-from picker; errors start `no_github:` or
+/// `no_remote:` when the picker should show a setup state.
+pub fn list_open_prs<R: Runner>(gh: &Gh<R>) -> Result<Vec<OpenPr>, String> {
+    gh.list_open_prs().map_err(|e| e.to_string())
+}
+
+/// Open GitHub issues for the create-from picker; errors as [`list_open_prs`].
+pub fn list_open_issues<R: Runner>(gh: &Gh<R>) -> Result<Vec<OpenIssue>, String> {
+    gh.list_open_issues().map_err(|e| e.to_string())
 }
 
 /// Merge with `method`, or the repository's preferred allowed method.

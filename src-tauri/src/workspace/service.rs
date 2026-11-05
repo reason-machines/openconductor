@@ -36,6 +36,10 @@ pub struct CreateWorkspaceRequest {
     /// Check out `branch_name` (local, or tracking `origin/<branch_name>`)
     /// instead of creating it; see [`CreateOptions::existing_branch`].
     pub existing_branch: bool,
+    /// PR whose head `branch_name` is; see [`CreateOptions::pr_number`].
+    pub pr_number: Option<u64>,
+    /// User setting `git.worktree_push_auto_setup_remote`.
+    pub push_auto_setup_remote: bool,
 }
 
 #[derive(Debug)]
@@ -83,18 +87,39 @@ impl WorkspaceService {
         Ok(info(&id, &root))
     }
 
+    /// Where clones go by default: `<data_dir>/repos` (Conductor uses
+    /// `<root>/repos`). Created on first clone, not here.
+    pub fn default_clone_dir(&self) -> PathBuf {
+        self.manager.data_dir().join("repos")
+    }
+
     /// Clone `url` into `<parent_dir>/<name>` (name from
-    /// [`naming::repo_name_from_url`]) and register it like
-    /// [`Self::add_repository`]. Fails, without renaming, if the destination
-    /// exists; a failed clone returns git's stderr.
-    pub fn clone_repository(&self, url: &str, parent_dir: &Path) -> Result<RepositoryInfo, WorkspaceError> {
+    /// [`naming::repo_name_from_url`], suffixed `-2`, `-3`, ... when taken) and
+    /// register it like [`Self::add_repository`]. A missing `parent_dir` is
+    /// created only when it is [`Self::default_clone_dir`]. Status lines and
+    /// git's own output go to `on_progress` in order.
+    pub fn clone_repository(
+        &self,
+        url: &str,
+        parent_dir: &Path,
+        on_progress: &mut dyn FnMut(&str),
+    ) -> Result<RepositoryInfo, WorkspaceError> {
         let url = url.trim();
         let name = naming::repo_name_from_url(url).ok_or_else(|| WorkspaceError::InvalidCloneUrl(url.to_string()))?;
-        let dest = parent_dir.join(name);
-        if dest.symlink_metadata().is_ok() {
-            return Err(WorkspaceError::DestinationExists(dest));
+        on_progress("Creating directory structure...");
+        if !parent_dir.is_dir() {
+            if parent_dir != self.default_clone_dir() {
+                return Err(WorkspaceError::TargetMissing(parent_dir.to_path_buf()));
+            }
+            on_progress(&format!("Creating default directory: {}", parent_dir.display()));
+            std::fs::create_dir_all(parent_dir)?;
         }
-        git::clone(url, &dest)?;
+        let name = naming::uniquify(&name, |c| parent_dir.join(c).symlink_metadata().is_ok());
+        let dest = parent_dir.join(name);
+        on_progress("Cloning repository...");
+        git::clone(url, &dest, on_progress)?;
+        on_progress("Detecting default branch...");
+        on_progress("Saving repository information...");
         self.add_repository(&dest)
     }
 
@@ -117,7 +142,9 @@ impl WorkspaceService {
             branch_name: non_empty(&req.branch_name),
             base_branch: non_empty(&req.base_branch),
             existing_branch: req.existing_branch,
+            pr_number: req.pr_number,
             fetch: true,
+            push_auto_setup_remote: req.push_auto_setup_remote,
             ..Default::default()
         };
         self.manager.create(&root, &opts)

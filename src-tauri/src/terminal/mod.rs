@@ -13,9 +13,14 @@
 //!   resumes when `pty_ack_bytes` brings it down to `FlowLimits::low`.
 //! * [`scrollback`]: bounded history for late renderers to replay.
 //! * [`screen`]: an `alacritty_terminal` grid of what the terminal shows,
-//!   read back as text or as a restorable ANSI snapshot.
+//!   read back as text or as a restorable ANSI snapshot. Every terminal
+//!   keeps one, fed by its reader.
+//! * `mirror`: screens with no program behind them, fed by the webview
+//!   (`pty_*_mirror`); the reference keeps one per remote terminal.
 //! * `kill`: hangs up the process group, then SIGKILL after a grace period.
 //! * [`wire`]: `pty_spawn` arguments and the events the webview receives.
+//! * [`history_store`]: closed terminals' snapshots kept between launches
+//!   in the reference's encrypted local-storage format.
 //! * [`shell_exec`]: one-shot `/bin/sh -c` commands, optionally cancellable
 //!   (`execute_shell_command[_cancellable]`, `cancel_shell_command`).
 //!
@@ -24,8 +29,10 @@
 //! (`terminal_commands.rs`) forwards events through an [`EventSink`].
 
 pub mod flow;
+pub mod history_store;
 mod kill;
 mod manager;
+mod mirror;
 pub mod screen;
 pub mod scrollback;
 pub mod shell_exec;
@@ -41,4 +48,7 @@ pub use screen::{ScreenSnapshot, ScreenState, TerminalModes};
 pub use scrollback::Scrollback;
 pub use shell_exec::{ShellOutput, ShellRequest, ShellRunner};
 pub use spawn::{EventSink, ExitInfo, Program, PtyEvent, Result, SpawnRequest, TerminalError};
-pub use wire::{SpawnArgs, WireEvent};
+pub use wire::{
+    CreateMirrorArgs, IdArgs, ResizeMirrorArgs, ScreenTextArgs, SpawnArgs, WireEvent,
+    WriteMirrorArgs,
+};

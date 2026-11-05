@@ -1,8 +1,10 @@
 // Thin bridge to the Rust side. Every call degrades gracefully in a plain
 // browser (vite dev / preview) so the shell can be developed without Tauri.
-import { invoke, isTauri } from "@tauri-apps/api/core";
+import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import type { FileMatch } from "./spotlight/quickOpen";
 import type { GitHubOwners } from "./state/githubRepoDialog";
+import type { GitProtocol, RecentRepo } from "./state/cloneDialog";
+import { STEP, targetPath, type RepoScripts, type TemplateId } from "./state/createProject";
 
 export interface AppInfo {
   name: string;
@@ -66,6 +68,54 @@ export async function githubRepoCreate(request: GitHubRepoCreateRequest): Promis
   return invoke("github_repo_create", { request });
 }
 
+export interface CreateProjectRequest {
+  parentDir: string;
+  slug: string;
+  template: TemplateId;
+}
+
+export interface CreatedProject {
+  path: string;
+  githubUrl: string;
+  originRemoteUrl: string;
+  defaultBranch: string;
+}
+
+export type CreateProgress = { kind: "step"; text: string } | { kind: "line"; text: string };
+
+/**
+ * Scaffold and publish a new project (`create_new_project`). Outside Tauri it
+ * plays the template's steps; a slug containing "fail" fails after the first.
+ */
+export async function createNewProject(
+  request: CreateProjectRequest,
+  onProgress: (p: CreateProgress) => void = () => {},
+): Promise<CreatedProject> {
+  if (!inTauri()) {
+    const demo: CreateProgress[] =
+      request.template === "nextjs"
+        ? [{ kind: "step", text: STEP.createNext }, { kind: "line", text: "Creating a new Next.js app..." }]
+        : [{ kind: "step", text: STEP.createDirectory }, { kind: "step", text: STEP.gitInit }];
+    for (const p of demo) {
+      onProgress(p);
+      await new Promise((r) => setTimeout(r, 200));
+      if (/fail/.test(request.slug)) throw new Error("Failed to initialize Git: demo failure");
+    }
+    onProgress({ kind: "step", text: STEP.githubRepo });
+    const path = targetPath(request.parentDir, request.slug);
+    return { path, githubUrl: `https://github.com/you/${request.slug}`, originRemoteUrl: `git@github.com:you/${request.slug}.git`, defaultBranch: "main" };
+  }
+  const channel = new Channel<CreateProgress>();
+  channel.onmessage = onProgress;
+  return invoke<CreatedProject>("create_new_project", { request, onProgress: channel });
+}
+
+/** Save a repo's setup and run scripts to `<root>/.conductor/settings.local.toml`. */
+export async function saveRepoScripts(repoRoot: string, scripts: RepoScripts): Promise<void> {
+  if (!inTauri()) return;
+  await invoke("save_repo_scripts", { repoRoot, scripts });
+}
+
 /** Native folder picker; returns null when cancelled or outside Tauri. */
 export async function pickFolder(title: string): Promise<string | null> {
   if (!inTauri()) return null;
@@ -101,4 +151,50 @@ function demoMatch(query: string, root: string): FileMatch[] {
 export async function fuzzyFilterFiles(workspacePath: string, query: string, excludeDirectories: boolean): Promise<FileMatch[]> {
   if (!inTauri()) return demoMatch(query, workspacePath);
   return invoke<FileMatch[]>("fuzzy_filter_files", { workspacePath, query, excludeDirectories });
+}
+
+// Clone dialog helpers (evidence/screens/clone-dialog.md). Outside Tauri they
+// return demo data so the dialog can be tried in a browser.
+
+const DEMO_RECENT_REPOS: RecentRepo[] = [
+  { id: 1, full_name: "you/notes", description: "Personal notes and scratch work", clone_url: "https://github.com/you/notes.git", ssh_url: "git@github.com:you/notes.git", owner: { avatar_url: "" } },
+  { id: 2, full_name: "acme/web", description: null, clone_url: "https://github.com/acme/web.git", ssh_url: "git@github.com:acme/web.git", owner: { avatar_url: "" } },
+];
+
+/** The 8 most recently pushed repos you can reach (`github_recent_repos`). */
+export async function githubRecentRepos(): Promise<RecentRepo[]> {
+  if (!inTauri()) return DEMO_RECENT_REPOS;
+  return invoke<RecentRepo[]>("github_recent_repos");
+}
+
+/** `gh config get git_protocol`, as "ssh" or "https" (`github_git_protocol`). */
+export async function githubGitProtocol(): Promise<GitProtocol> {
+  if (!inTauri()) return "https";
+  return (await invoke<string>("github_git_protocol")) === "ssh" ? "ssh" : "https";
+}
+
+const LAST_CLONE_DIRECTORY = "openconductor.lastCloneDirectory";
+
+/** The folder the last successful clone went into, or null. */
+export function lastCloneDirectory(): string | null {
+  try {
+    return localStorage.getItem(LAST_CLONE_DIRECTORY);
+  } catch {
+    return null;
+  }
+}
+
+/** Remembers the clone location; a failure to save is only logged. */
+export function saveLastCloneDirectory(path: string): void {
+  try {
+    localStorage.setItem(LAST_CLONE_DIRECTORY, path);
+  } catch (err) {
+    console.warn("could not save the last clone directory", err);
+  }
+}
+
+/** Whether `path` is an existing folder; always true outside Tauri. */
+export async function folderExists(path: string): Promise<boolean> {
+  if (!inTauri()) return true;
+  return inspectProjectFolder(path).then((f) => f.isDir, () => false);
 }

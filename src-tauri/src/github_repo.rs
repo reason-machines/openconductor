@@ -122,6 +122,28 @@ pub fn ssh_hint(detail: &str) -> String {
     }
 }
 
+/// One "Recent repos" row of the clone dialog: the fields of GitHub's
+/// `GET /user/repos` entry the dialog uses, in the API's own shape.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RecentRepo {
+    pub id: u64,
+    pub full_name: String,
+    pub description: Option<String>,
+    pub clone_url: String,
+    pub ssh_url: String,
+    pub owner: RepoOwner,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RepoOwner {
+    pub avatar_url: String,
+}
+
+/// The 8 most recently pushed repos the user owns, collaborates on or can
+/// reach through an org, as the reference app requests them.
+pub const RECENT_REPOS_PATH: &str =
+    "user/repos?affiliation=owner,collaborator,organization_member&sort=pushed&direction=desc&per_page=8";
+
 /// `gh` operations, with the program path injectable for tests.
 pub struct GitHub {
     pub gh: String,
@@ -173,6 +195,27 @@ impl GitHub {
             owners,
             orgs_error: None,
         })
+    }
+
+    /// See [`RECENT_REPOS_PATH`]. A failed request is "GitHub API error: <gh's message>".
+    pub fn recent_repos(&self) -> Result<Vec<RecentRepo>, String> {
+        let out = self.gh(&["api", RECENT_REPOS_PATH], &std::env::temp_dir())?;
+        if !out.ok {
+            return Err(format!(
+                "GitHub API error: {}",
+                or_default(out.detail(), "request failed")
+            ));
+        }
+        serde_json::from_str(&out.stdout).map_err(|e| format!("GitHub API error: {e}"))
+    }
+
+    /// `gh config get git_protocol`: `ssh` only when gh says so, else `https`
+    /// (gh's own default), including when gh is missing or fails.
+    pub fn git_protocol(&self) -> &'static str {
+        match self.gh(&["config", "get", "git_protocol"], &std::env::temp_dir()) {
+            Ok(out) if out.ok && out.stdout == "ssh" => "ssh",
+            _ => "https",
+        }
     }
 
     /// Run outside any checkout so `gh` never resolves the name against the cwd's repo.

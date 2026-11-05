@@ -13,7 +13,8 @@ interface Props {
  * Settings › Git. Conductor's user-scope Git tab has more rows (Open pull
  * requests in, Delete branch on archive, Archive on merge, Automerge, ...);
  * only rows whose setting something here reads are shown
- * (evidence/settings/NOTES.md, "Settings pages").
+ * (evidence/settings/NOTES.md, "Settings pages"). `delete_branch_on_archive`
+ * and `archive_on_merge` are stored but get rows once archiving is a command.
  */
 export function GitPage({ settings, save }: Props) {
   const git = settings.git;
@@ -82,6 +83,18 @@ export function GitPage({ settings, save }: Props) {
           )}
           {option("none", "None")}
         </div>
+      </Row>
+      <Row
+        label="Set upstream on plain git push"
+        help="Configure new workspaces so plain git push sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream."
+      >
+        <input
+          type="checkbox"
+          role="switch"
+          aria-label="Set upstream on plain git push"
+          checked={git.worktree_push_auto_setup_remote}
+          onChange={(e) => save(withField(settings, "git", "worktree_push_auto_setup_remote", e.target.checked))}
+        />
       </Row>
     </div>
   );

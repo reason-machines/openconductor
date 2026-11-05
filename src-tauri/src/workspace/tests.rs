@@ -245,6 +245,52 @@ fn existing_branch_tracks_remote_only_branch_after_fetch() {
 }
 
 #[test]
+fn existing_branch_with_pr_number_fetches_fork_head_from_pull_ref() {
+    let f = fixture();
+    let origin = f.tmp.path().join("origin.git");
+    sh(f.tmp.path(), &["init", "-q", "--bare", "-b", "main", origin.to_str().unwrap()]);
+    sh(&f.repo, &["remote", "add", "origin", origin.to_str().unwrap()]);
+    sh(&f.repo, &["push", "-q", "origin", "main"]);
+    // A fork's PR head is not a branch on origin; GitHub exposes it as refs/pull/<n>/head.
+    let fork = f.tmp.path().join("fork");
+    sh(f.tmp.path(), &["clone", "-q", origin.to_str().unwrap(), fork.to_str().unwrap()]);
+    sh(&fork, &["checkout", "-q", "-b", "bob/fix"]);
+    let tip = commit_file(&fork, "fix.txt", "fix\n", "fork fix");
+    sh(&fork, &["push", "-q", "origin", "HEAD:refs/pull/7/head"]);
+
+    // Without prNumber the branch is not found, as before.
+    assert!(matches!(f.mgr.create(&f.repo, &existing("bob/fix")), Err(WorkspaceError::BranchNotFound(_))));
+
+    let c = f.mgr.create(&f.repo, &CreateOptions { pr_number: Some(7), ..existing("bob/fix") }).unwrap();
+    let ws = &c.workspace;
+    assert!(c.fetched);
+    assert_eq!((c.base_ref.as_str(), c.base_commit.as_str()), ("bob/fix", tip.as_str()));
+    assert_eq!((ws.name.as_str(), ws.branch.as_str()), ("fix", "bob/fix"));
+    assert_eq!(sh(&ws.path, &["symbolic-ref", "--short", "HEAD"]), "bob/fix");
+    assert_eq!(sh(&ws.path, &["rev-parse", "HEAD"]), tip);
+    assert!(ws.path.join("fix.txt").is_file());
+    let upstream = Command::new("git").arg("-C").arg(&ws.path).args(["rev-parse", "--abbrev-ref", "@{upstream}"]).output().unwrap();
+    assert!(!upstream.status.success(), "no upstream for a fork PR branch");
+    assert_eq!(sh(&f.repo, &["symbolic-ref", "--short", "HEAD"]), "main");
+
+    // A PR that does not exist reports the PR number and git's error.
+    let missing = f.mgr.create(&f.repo, &CreateOptions { pr_number: Some(99), ..existing("carol/none") });
+    match missing {
+        Err(e @ WorkspaceError::PullRequestNotFound { number: 99, .. }) => {
+            assert!(e.to_string().starts_with("branch not found locally or on origin, and pull request #99"), "{e}");
+        }
+        other => panic!("expected PullRequestNotFound, got {other:?}"),
+    }
+    assert!(!git::branch_exists(&f.repo, "carol/none"));
+
+    // A same-repo PR (branch on origin) still tracks origin/<branch>, prNumber or not.
+    sh(&fork, &["push", "-q", "origin", "bob/fix:dave/same-repo"]);
+    let c = f.mgr.create(&f.repo, &CreateOptions { pr_number: Some(8), ..existing("dave/same-repo") }).unwrap();
+    assert_eq!(c.base_ref, "origin/dave/same-repo");
+    assert_eq!(sh(&c.workspace.path, &["rev-parse", "--abbrev-ref", "@{upstream}"]), "origin/dave/same-repo");
+}
+
+#[test]
 fn files_to_copy_default_env_glob_only_copies_gitignored() {
     let f = fixture();
     commit_file(&f.repo, ".gitignore", ".env\n.env.local\nnode_modules/\n", "ignore");
@@ -723,37 +769,107 @@ fn repo_name_from_url_takes_last_segment_without_dot_git() {
 }
 
 #[test]
-fn clone_repository_clones_registers_and_refuses_existing_destination() {
+fn clone_repository_streams_progress_and_picks_a_unique_name() {
     use super::service::WorkspaceService;
     let f = fixture();
     let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
     let parent = f.tmp.path().join("clones");
     std::fs::create_dir_all(&parent).unwrap();
     let url = f.repo.display().to_string();
+    let mut lines = Vec::new();
 
-    let r = svc.clone_repository(&url, &parent).unwrap();
+    let r = svc.clone_repository(&url, &parent, &mut |l| lines.push(l.to_string())).unwrap();
     assert_eq!((r.id.as_str(), r.name.as_str(), r.default_branch.as_str()), ("my-app", "My App", "main"));
     assert_eq!(r.root, parent.join("My App"));
     assert!(r.root.join("README.md").exists());
-    assert_eq!(svc.repositories().len(), 1);
+    assert_eq!(lines[..2], ["Creating directory structure...", "Cloning repository..."]);
+    assert!(lines.iter().any(|l| l.starts_with("Cloning into")), "{lines:?}");
+    assert_eq!(lines[lines.len() - 2..], ["Detecting default branch...", "Saving repository information..."]);
 
-    match svc.clone_repository(&url, &parent) {
-        Err(e @ WorkspaceError::DestinationExists(_)) => {
-            assert_eq!(e.to_string(), format!("destination already exists: {}", parent.join("My App").display()));
+    let again = svc.clone_repository(&url, &parent, &mut |_| {}).unwrap();
+    assert_eq!(again.root, parent.join("My App-2"));
+    assert_eq!(svc.repositories().len(), 2);
+}
+
+#[test]
+fn clone_repository_creates_only_the_default_dir_and_reports_exit_code() {
+    use super::service::WorkspaceService;
+    let f = fixture();
+    let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
+    let url = f.repo.display().to_string();
+
+    let elsewhere = f.tmp.path().join("missing");
+    match svc.clone_repository(&url, &elsewhere, &mut |_| {}) {
+        Err(e @ WorkspaceError::TargetMissing(_)) => {
+            assert_eq!(e.to_string(), format!("Target directory does not exist: {}", elsewhere.display()));
         }
-        other => panic!("expected DestinationExists, got {other:?}"),
+        other => panic!("expected TargetMissing, got {other:?}"),
     }
+    assert!(!elsewhere.exists());
+
+    let default = svc.default_clone_dir();
+    let mut lines = Vec::new();
+    let r = svc.clone_repository(&url, &default, &mut |l| lines.push(l.to_string())).unwrap();
+    assert_eq!(r.root, default.join("My App"));
+    assert_eq!(lines[1], format!("Creating default directory: {}", default.display()));
 
     let missing = f.tmp.path().join("no-such-repo");
-    match svc.clone_repository(&missing.display().to_string(), &parent) {
-        Err(e @ WorkspaceError::CloneFailed(_)) => {
-            let msg = e.to_string();
-            assert!(msg.contains("does not exist") || msg.starts_with("fatal:"), "{msg}");
-            assert!(!msg.contains("Cloning into"), "{msg}");
-        }
-        other => panic!("expected CloneFailed, got {other:?}"),
-    }
-    assert!(!parent.join("no-such-repo").exists());
+    let msg = svc.clone_repository(&missing.display().to_string(), &default, &mut |_| {}).unwrap_err().to_string();
+    assert!(msg.starts_with("Git clone failed with code 128\n\nSTDOUT:\n"), "{msg}");
+    assert!(msg.contains("STDERR:\n") && msg.contains("does not exist"), "{msg}");
+    assert!(!default.join("no-such-repo").exists());
     assert_eq!(svc.repositories().len(), 1);
-    assert!(matches!(svc.clone_repository("https://", &parent), Err(WorkspaceError::InvalidCloneUrl(_))));
+    assert!(matches!(svc.clone_repository("https://", &default, &mut |_| {}), Err(WorkspaceError::InvalidCloneUrl(_))));
+}
+
+/// `git config <args>` in `dir`, or `None` when the key is unset.
+fn config_get(dir: &Path, args: &[&str]) -> Option<String> {
+    let out = git::git_raw(dir, [&["config"], args].concat()).unwrap();
+    out.status.success().then(|| String::from_utf8_lossy(&out.stdout).trim().to_string())
+}
+
+#[test]
+fn push_auto_setup_remote_is_set_in_the_new_worktree_only() {
+    let f = fixture();
+    let opts = CreateOptions { push_auto_setup_remote: true, ..named("tokyo") };
+    let c = f.mgr.create(&f.repo, &opts).unwrap();
+    assert_eq!(c.upstream_warning, None);
+    let ws = &c.workspace.path;
+    assert_eq!(config_get(ws, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("true"));
+    assert_eq!(config_get(&f.repo, &["--get", "extensions.worktreeConfig"]).as_deref(), Some("true"));
+    // The main checkout and other workspaces do not inherit it.
+    assert_eq!(config_get(&f.repo, &["--get", "push.autoSetupRemote"]), None);
+    let other = f.mgr.create(&f.repo, &named("lisbon")).unwrap().workspace;
+    assert_eq!(config_get(&other.path, &["--get", "push.autoSetupRemote"]), None);
+}
+
+#[test]
+fn push_auto_setup_remote_off_writes_no_config() {
+    let f = fixture();
+    let c = f.mgr.create(&f.repo, &named("tokyo")).unwrap();
+    assert_eq!(c.upstream_warning, None);
+    assert_eq!(config_get(&c.workspace.path, &["--get", "push.autoSetupRemote"]), None);
+    assert_eq!(config_get(&f.repo, &["--get", "extensions.worktreeConfig"]), None);
+}
+
+#[test]
+fn push_auto_setup_remote_keeps_an_explicit_worktree_value() {
+    let f = fixture();
+    let ws = f.mgr.create(&f.repo, &named("tokyo")).unwrap().workspace;
+    sh(&f.repo, &["config", "extensions.worktreeConfig", "true"]);
+    sh(&ws.path, &["config", "--worktree", "push.autoSetupRemote", "false"]);
+    assert_eq!(git::configure_push_upstream(&f.repo, &ws.path), None);
+    assert_eq!(config_get(&ws.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("false"));
+}
+
+#[test]
+fn push_auto_setup_remote_skips_shared_core_worktree() {
+    let f = fixture();
+    let ws = f.mgr.create(&f.repo, &named("tokyo")).unwrap().workspace;
+    sh(&f.repo, &["config", "core.worktree", f.repo.to_str().unwrap()]);
+    assert_eq!(git::configure_push_upstream(&f.repo, &ws.path), Some(git::PUSH_UPSTREAM_WARNING));
+    assert_eq!(config_get(&f.repo, &["--get", "extensions.worktreeConfig"]), None);
+    // Already true through shared config: nothing to warn about.
+    sh(&f.repo, &["config", "push.autoSetupRemote", "true"]);
+    assert_eq!(git::configure_push_upstream(&f.repo, &ws.path), None);
 }

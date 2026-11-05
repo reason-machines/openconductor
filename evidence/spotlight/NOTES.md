@@ -7,6 +7,8 @@ Obligation `ws.spotlight` in [the ledger](../ledger/README.md). Code: [`src-taur
 - `evidence/scripts/bin/spotlighter.sh` (sha256 `f877d3ed…`, per `evidence/scripts/MANIFEST.md`): the watcher script.
 - Conductor's frontend bundle `index-BGEQ8YjU.js` and `renderApp-D_fmY7hW.js`, read as data on sven m5 max on 2026-11-05. The bundle is not in this repo; REA `search` does not index JS, so it was read with Python. The parts read were the run-script store (`startProcess`, `private_prepareSpotlightStart`, `killProcess`), the root-state check, the `pre-spotlight` save and restore, the sync status line parser, the Spotlight task definition and the `spotlight_testing` setting row. A second read the same day (extracted bundle under `~/tmp/oc-sidebar/frontend/dist/assets/` on the Mac) covered the settings registry entry, the "Use spotlight testing" row's `onCheckedChange`, `killProcessesForRepository`, `clearWorkspaceRuns`, the repo-local settings file migration and auto-run after setup.
 
+A third read on 2026-11-05 (same bundle, now at `~/code/conductor-rea-work/frontend/dist/assets/` on sven m5 max) covered the Run panel task list (`oxr` / `uRt`), the Spotlight button and empty-state text, the `H9i` gate and the start error toast.
+
 Nothing here was observed running. These rows come from reading code and scripts.
 
 ## Matched
@@ -25,6 +27,12 @@ Nothing here was observed running. These rows come from reading code and scripts
 | `spotlight_testing` is a top-level boolean in the settings files (registry `Te("spotlight_testing")`, file key `spotlight_testing`), read through every layer; unset means off | `setting::effective`, `setting::read`, `spotlight_testing_get` | `unset_means_off`, `repo_local_outranks_user_and_shared`, `managed_wins_and_is_reported` |
 | The "Use spotlight testing" row (Actions tab, repository scope) writes the repository local layer, `<root>/.conductor/settings.local.toml` | `setting::write_local` | `write_local_creates_the_file_and_keeps_other_keys` |
 | After writing, it stops the run processes of every workspace of the repository (`killProcessesForRepository` -> `clearWorkspaceRuns`), Spotlight included | `setting::apply`, `spotlight_testing_set` | `toggle_writes_then_stops_the_repository_runs_and_spotlight` |
+| With the setting on, a task `{label: "Spotlight", icon: "lamp-desk", kind: "spotlight", default: false}` is appended after the configured run tasks (`uRt`, pushed last in `oxr`); it never becomes the default task. The gate `H9i` is true for local (or no) organizations, which is always the case here | `runTasks` in `src/spotlight/testing.ts`, Run picker in `ScriptsPanel` | `Spotlight is appended after the run scripts only when the setting is on` |
+| Button text `Run Spotlight` / `Stop Spotlight` / `Stopping...`; idle text `Sync your changes to the repository root.` | `spotlightButton`, `SPOTLIGHT_EMPTY_TEXT` | `the Spotlight button starts, stops, or explains` |
+| One run-panel process per workspace: `startProcess` kills the workspace's current process first, so starting Spotlight stops its run script and starting a script ends its Spotlight session | `ScriptsPanel` `toggleSpotlightRun` / `startScript` | browser stand-in check in PR |
+| Spotlight starts with `allowRunScriptConcurrency: false`, so starting it kills the run scripts of every workspace of the repository, waiting ones included | `RunManager::stop_repository`, called first by `spotlight_start` | `stop_repository_stops_every_workspace_of_that_repo_only` |
+| Setting row text: title `Use spotlight testing`, description `Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.`; disabled while the repo-local layer cannot be written | `SPOTLIGHT_SETTING_*`, `toggleBlocked` | `the toggle is blocked without a checkout, while loading, and when managed` |
+| Auto-run after setup (`IRt`, called when a workspace leaves `setting_up`; third read on sven m5 max, 2026-11-05, bundle under `~/code/conductor-rea-work/frontend/dist/assets/`): once a local workspace's setup completes, or it has no setup script, with `auto_run_after_setup` on and a default run script, it starts Spotlight when the workspace's effective `spotlight_testing` is on and the run script otherwise. Spotlight still needs a run script (`fQe` gates on it first), starts with no run-script concurrency, and a failure is only logged. A run queued during setup (`waitingProcesses`) starts instead of the auto-run | `ScriptService::after_setup` with `spotlight::auto_run::hook` (same `start_session` as `spotlight_start`) | `spotlight_takes_the_auto_runs_place_when_the_hook_starts_it`, `a_run_queued_during_setup_starts_instead_of_the_auto_run`, `on_stops_the_repositorys_runs_and_spotlights_the_workspace` |
 
 ## Deliberate differences
 
@@ -38,11 +46,14 @@ Nothing here was observed running. These rows come from reading code and scripts
 - Writing `settings.local.toml` keeps every key but not comments, and a file that does not parse is reported and left alone.
 - Only the top-level `.gitignore` is applied (watchexec also reads nested ignore files). A change to a file ignored only by a nested file still syncs, and that sync copies nothing new.
 
+- The "Use spotlight testing" toggle sits in the Run tab, not in a repository settings page (Actions tab), because OpenConductor has no repository settings pages yet. It has no "Learn how" link; the description is its tooltip.
+- The Spotlight output area shows the typed events as timestamped lines (started, syncing, synced, skipped with the reason, sync failed, stopped with whether the root came back), not a terminal. The log of a stopped session stays until the next start.
+- A start error (blocked root) is shown in the panel's error line. The reference shows a toast with an "Open terminal" action when the message mentions the root repository.
+
 ## Not done yet
 
-- Frontend: bindings for `spotlight_start` / `spotlight_stop` / `spotlight_status` / `spotlight_testing_get` / `spotlight_testing_set`, a listener for `spotlight://event`, and the "Use spotlight testing" row (with its "Learn how" link to `conductor.build/docs/reference/scripts/spotlight-testing`).
-- Run panel: a "Spotlight" task (lamp-desk icon) that replaces Run, its empty state, and `getTerminalOutput` source `spotlight`.
-- Auto-run after setup: with the setting on, the reference starts Spotlight instead of the run script (`isSpotlight: a`, no run-script concurrency).
+- Moving the toggle into a repository settings page (Actions tab) with its "Learn how" link to `conductor.build/docs/reference/scripts/spotlight-testing`, once those pages exist.
+- `getTerminalOutput` source `spotlight` (agents reading Spotlight output).
 - Migrating a legacy `repos.spotlight_testing = 1` row into `settings.local.toml`, as the reference's one-time migration does. Ours reads only the settings files.
 - Remote (cloud workspace) Spotlight file sync. It is out of scope for local-only OpenConductor.
 

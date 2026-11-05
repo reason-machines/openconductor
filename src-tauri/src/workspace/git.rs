@@ -6,7 +6,10 @@
 
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
-use std::process::{Command, Output};
+use std::io::Read;
+use std::process::{Command, Output, Stdio};
+use std::sync::mpsc;
+use std::thread;
 
 use super::WorkspaceError;
 
@@ -55,18 +58,77 @@ where
     }
 }
 
-/// `git clone -- <url> <dest>`, run from `dest`'s parent (which must exist).
-/// On failure the error carries git's stderr without its "Cloning into" line.
-pub fn clone(url: &str, dest: &Path) -> Result<(), WorkspaceError> {
+/// `git clone --progress -- <url> <dest>`, run from `dest`'s parent (which
+/// must exist). Every non-empty output line, split on `\n` and on git's `\r`
+/// progress updates, goes to `on_line` as it arrives. A non-zero exit fails
+/// with "Git clone failed with code <n>", a blank line, then the captured
+/// `STDOUT:` and `STDERR:` sections (as Conductor's clone step does).
+pub fn clone(url: &str, dest: &Path, on_line: &mut dyn FnMut(&str)) -> Result<(), WorkspaceError> {
     let parent = dest.parent().unwrap_or(Path::new("."));
-    let args: [&OsStr; 4] = ["clone".as_ref(), "--".as_ref(), url.as_ref(), dest.as_os_str()];
-    let out = git_raw(parent, args)?;
-    if out.status.success() {
+    let mut child = Command::new("git")
+        .arg("-C")
+        .arg(parent)
+        .args(["clone", "--progress", "--"])
+        .arg(url)
+        .arg(dest)
+        .env("GIT_TERMINAL_PROMPT", "0")
+        .env("GIT_EDITOR", "true")
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .map_err(WorkspaceError::Io)?;
+    let (tx, rx) = mpsc::channel();
+    let stdout = child.stdout.take().map(|r| spawn_line_reader(r, false, tx.clone()));
+    let stderr = child.stderr.take().map(|r| spawn_line_reader(r, true, tx));
+    let (mut out, mut err) = (Vec::new(), Vec::new());
+    for (is_err, line) in rx {
+        on_line(&line);
+        if is_err { &mut err } else { &mut out }.push(line);
+    }
+    for reader in [stdout, stderr].into_iter().flatten() {
+        let _ = reader.join();
+    }
+    let status = child.wait().map_err(WorkspaceError::Io)?;
+    if status.success() {
         return Ok(());
     }
-    let stderr = String::from_utf8_lossy(&out.stderr);
-    let msg: Vec<&str> = stderr.lines().filter(|l| !l.starts_with("Cloning into ")).collect();
-    Err(WorkspaceError::CloneFailed(msg.join("\n").trim().to_string()))
+    let code = status.code().map_or_else(|| "unknown".to_string(), |c| c.to_string());
+    Err(WorkspaceError::CloneFailed(format!(
+        "Git clone failed with code {code}\n\nSTDOUT:\n{}\n\nSTDERR:\n{}",
+        out.join("\n"),
+        err.join("\n")
+    )))
+}
+
+/// Read `r` to the end on a thread, sending each trimmed non-empty line
+/// (split on `\n` or `\r`) tagged with `is_err`.
+fn spawn_line_reader(
+    mut r: impl Read + Send + 'static,
+    is_err: bool,
+    tx: mpsc::Sender<(bool, String)>,
+) -> thread::JoinHandle<()> {
+    thread::spawn(move || {
+        let mut buf = [0u8; 4096];
+        let mut line = Vec::new();
+        let flush = |line: &mut Vec<u8>| {
+            let text = String::from_utf8_lossy(line).trim().to_string();
+            line.clear();
+            if !text.is_empty() {
+                let _ = tx.send((is_err, text));
+            }
+        };
+        while let Ok(n @ 1..) = r.read(&mut buf) {
+            for &b in &buf[..n] {
+                if b == b'\n' || b == b'\r' {
+                    flush(&mut line);
+                } else {
+                    line.push(b);
+                }
+            }
+        }
+        flush(&mut line);
+    })
 }
 
 /// `true` when `git <args>` exits 0 (used for existence checks).
@@ -322,4 +384,33 @@ pub fn busy_state(worktree: &Path) -> Result<BusyState, WorkspaceError> {
         return Ok(BusyState::Revert);
     }
     Ok(BusyState::Clean)
+}
+
+/// Warning when a new workspace's push upstream could not be configured;
+/// Conductor's own wording.
+pub const PUSH_UPSTREAM_WARNING: &str =
+    "Couldn't configure Git push upstream settings. PR info may be less reliable until this branch has an upstream.";
+
+/// Make a plain `git push` in `worktree` set the branch upstream, the way
+/// Conductor does for new workspaces: `push.autoSetupRemote = true` in the
+/// worktree's own config, after enabling `extensions.worktreeConfig` in the
+/// main repository. An explicit worktree value is left alone. When shared
+/// config sets `core.worktree` or `core.bare = true`, enabling worktree config
+/// would change how every worktree reads them, so nothing is written and a
+/// warning is returned unless push.autoSetupRemote is already true anyway.
+/// Returns `Some(warning)` when the setting could not be applied.
+pub fn configure_push_upstream(main_root: &Path, worktree: &Path) -> Option<&'static str> {
+    if git_ok(worktree, ["config", "--worktree", "--get", "push.autoSetupRemote"]) {
+        return None;
+    }
+    let shared = |key: &str| git(main_root, ["config", "--get", key]).ok().filter(|v| !v.is_empty());
+    let core_worktree = shared("core.worktree").is_some();
+    let core_bare = shared("core.bare").is_some_and(|v| v.eq_ignore_ascii_case("true"));
+    if core_worktree || core_bare {
+        let already = git(worktree, ["config", "--type=bool", "--get", "push.autoSetupRemote"]).is_ok_and(|v| v == "true");
+        return (!already).then_some(PUSH_UPSTREAM_WARNING);
+    }
+    let ok = git_ok(main_root, ["config", "extensions.worktreeConfig", "true"])
+        && git_ok(worktree, ["config", "--worktree", "push.autoSetupRemote", "true"]);
+    (!ok).then_some(PUSH_UPSTREAM_WARNING)
 }

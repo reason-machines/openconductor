@@ -130,6 +130,8 @@ jobs:
         env:
           RUSTFLAGS: -D warnings
       - run: cargo clippy --all-targets -- -D warnings
+      - name: App persistence module (src-tauri/src/persistence) build, test and clippy
+        run: bash ../../evidence/persistence/run-tests.sh
 
   tools:
     name: Evidence tools compile
