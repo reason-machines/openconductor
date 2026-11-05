@@ -39,6 +39,7 @@ mod tests;
 use std::collections::HashSet;
 use std::fmt;
 use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
 
 pub use git::BusyState;
 pub use scripts::{RunningScript, ScriptContext, ScriptKind, ScriptOutput};
@@ -66,6 +67,10 @@ pub enum WorkspaceError {
     BranchCheckedOut { branch: String, path: PathBuf },
     /// No repository is registered under this id.
     UnknownRepository(String),
+    /// The workspace is still being created; see [`WorkspaceManager::mark_initializing`].
+    Initializing(String),
+    /// The operation needs an active worktree, but the workspace is archived or missing.
+    NotActive(String),
 }
 
 impl fmt::Display for WorkspaceError {
@@ -84,6 +89,8 @@ impl fmt::Display for WorkspaceError {
                 write!(f, "branch {branch} is already checked out at {}", path.display())
             }
             WorkspaceError::UnknownRepository(id) => write!(f, "unknown repository: {id}"),
+            WorkspaceError::Initializing(n) => write!(f, "workspace {n} is still initializing; try again when it is ready"),
+            WorkspaceError::NotActive(n) => write!(f, "workspace {n} is archived or missing"),
         }
     }
 }
@@ -177,13 +184,40 @@ pub struct Archived {
 #[derive(Debug, Clone)]
 pub struct WorkspaceManager {
     data_dir: PathBuf,
+    /// Worktree paths still being set up. In memory only, so a crash never
+    /// leaves a workspace stuck as initializing.
+    initializing: Arc<Mutex<HashSet<PathBuf>>>,
+}
+
+/// Marks a workspace as initializing until dropped.
+#[derive(Debug)]
+pub struct InitializingGuard {
+    set: Arc<Mutex<HashSet<PathBuf>>>,
+    path: PathBuf,
+}
+
+impl Drop for InitializingGuard {
+    fn drop(&mut self) {
+        self.set.lock().unwrap_or_else(|e| e.into_inner()).remove(&self.path);
+    }
 }
 
 const ARCHIVE_EXT: &str = "ws";
 
 impl WorkspaceManager {
     pub fn new(data_dir: impl Into<PathBuf>) -> Self {
-        Self { data_dir: data_dir.into() }
+        Self { data_dir: data_dir.into(), initializing: Arc::default() }
+    }
+
+    /// Mark the workspace at `path` as initializing (worktree creation, setup
+    /// script) until the guard drops. Branch renames are refused meanwhile.
+    pub fn mark_initializing(&self, path: &Path) -> InitializingGuard {
+        self.initializing.lock().unwrap_or_else(|e| e.into_inner()).insert(path.to_path_buf());
+        InitializingGuard { set: Arc::clone(&self.initializing), path: path.to_path_buf() }
+    }
+
+    pub fn is_initializing(&self, path: &Path) -> bool {
+        self.initializing.lock().unwrap_or_else(|e| e.into_inner()).contains(path)
     }
 
     pub fn data_dir(&self) -> &Path {
@@ -316,6 +350,7 @@ impl WorkspaceManager {
         }
 
         let path = ws_dir.join(&name);
+        let _initializing = self.mark_initializing(&path);
         std::fs::create_dir_all(&ws_dir)?;
         let mut args: Vec<&std::ffi::OsStr> = vec!["worktree".as_ref(), "add".as_ref(), "--quiet".as_ref()];
         match checkout {
@@ -460,6 +495,36 @@ impl WorkspaceManager {
         args.push(recreate_at.as_deref().unwrap_or(&ws.branch).as_ref());
         git::git(&ws.repo_root, args)?;
         std::fs::remove_file(self.archive_record(&ws.repo_root, &ws.name))?;
+        self.get(repo, name)
+    }
+
+    /// Rename an active workspace's branch (`git branch -m` in its worktree).
+    /// The directory name stays. Refused while the workspace is initializing,
+    /// mid merge/rebase, or when `new_branch` is taken locally or on a remote.
+    /// Renaming to the current name is a no-op.
+    pub fn rename_branch(&self, repo: &Path, name: &str, new_branch: &str) -> Result<Workspace, WorkspaceError> {
+        let ws = self.get(repo, name)?;
+        if self.is_initializing(&ws.path) {
+            return Err(WorkspaceError::Initializing(ws.name));
+        }
+        if ws.state != WorkspaceState::Active || ws.branch.is_empty() {
+            return Err(WorkspaceError::NotActive(ws.name));
+        }
+        let new_branch = new_branch.trim();
+        if new_branch == ws.branch {
+            return Ok(ws);
+        }
+        if !git::valid_branch_name(&ws.repo_root, new_branch) {
+            return Err(WorkspaceError::InvalidName(new_branch.to_string()));
+        }
+        if git::branch_name_is_taken(&ws.repo_root, new_branch)? {
+            return Err(WorkspaceError::BranchExists(new_branch.to_string()));
+        }
+        let busy = git::busy_state(&ws.path)?;
+        if busy != BusyState::Clean {
+            return Err(WorkspaceError::Busy(busy));
+        }
+        git::git(&ws.path, ["branch", "-m", &ws.branch, new_branch])?;
         self.get(repo, name)
     }
 

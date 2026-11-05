@@ -9,7 +9,7 @@ import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dia
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { Toaster, useToasts } from "./components/Toast";
 import { QuickOpenDialog, QUICK_OPEN_DIALOG_ID } from "./components/QuickOpenDialog";
-import { DEFAULT_BINDINGS, resolveBinding } from "./palette";
+import { resolveCommand } from "./keybindings/resolve";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { PaletteHost } from "./palette/PaletteHost";
@@ -67,8 +67,8 @@ export default function App() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const typing = isTypingTarget(document.activeElement as HTMLElement | null);
-      const ctx = { openDialogId: quickOpen ? QUICK_OPEN_DIALOG_ID : dialog, focus: typing ? ("input" as const) : ("none" as const) };
-      if (resolveBinding(DEFAULT_BINDINGS, e, ctx)?.id !== "nav.quickOpen") return;
+      const ctx = { activeDialogId: quickOpen ? QUICK_OPEN_DIALOG_ID : dialog, typing, inTerminal: false };
+      if (resolveCommand(e, ctx, ["nav.quickOpen"]) !== "nav.quickOpen") return;
       e.preventDefault();
       setQuickOpen((open) => !open && canQuickOpen);
     };

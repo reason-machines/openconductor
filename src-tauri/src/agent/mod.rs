@@ -7,6 +7,11 @@
 //!   key or auth token, optionally through a gateway with model overrides.
 //! * [`claude_cli`] - launching a Claude Code session: the six
 //!   [`PermissionMode`]s and the stream-json `claude` command line.
+//! * [`claude_stream`] - the stream-json lines exchanged with a running
+//!   `claude`: user turns, control requests, permission prompts and replies,
+//!   and turn results.
+//! * [`claude_session`] - a running `claude` process: spawn, write messages,
+//!   receive stdout events and stderr lines; killed on drop.
 //! * [`claude_cloud`] - Claude Code on Bedrock, Vertex AI and Foundry.
 //! * [`codex`] - Codex (login, OpenAI API key, OpenRouter / Vercel AI
 //!   Gateway), Cursor and OpenCode providers.
@@ -30,6 +35,8 @@ pub mod byok;
 pub mod claude;
 pub mod claude_cli;
 pub mod claude_cloud;
+pub mod claude_session;
+pub mod claude_stream;
 pub mod codex;
 pub mod env;
 pub mod keychain;
@@ -38,6 +45,7 @@ pub mod secret;
 
 pub use byok::{ProviderConfig, ProviderStatus};
 pub use claude_cli::{ClaudeLaunch, PermissionMode};
+pub use claude_session::{ClaudeSession, SessionEvent};
 pub use env::{AgentKind, LaunchEnv};
 pub use provider::{Provider, ProviderError};
 pub use secret::{MemorySecretStore, SecretStore, SecretString};

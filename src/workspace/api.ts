@@ -77,6 +77,16 @@ export async function listIssues(): Promise<SourceState<CreateFrom>> {
   return { status: "ready", items: SAMPLE_ISSUES };
 }
 
+/**
+ * Renames the workspace's git branch. The backend has no rename command yet
+ * (requested from the workspace lifecycle owner), so in Tauri this rejects and
+ * the caller keeps the old branch; the browser stand-in always succeeds.
+ */
+export async function renameWorkspaceBranch(workspaceId: string, branchName: string): Promise<void> {
+  if (!inTauri()) return;
+  await invoke("rename_workspace_branch", { workspaceId, branchName });
+}
+
 /** Tauri rejects with the Rust error string; keep it readable in the dialog. */
 export function errorText(e: unknown): string {
   if (typeof e === "string") return e;

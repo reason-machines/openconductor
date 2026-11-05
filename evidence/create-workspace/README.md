@@ -24,6 +24,7 @@ What the reference app (Conductor v0.87.6) does when a workspace is created, the
 - Collisions append `-v1`, `-v2`, ... (case-insensitive); unused cities are drawn first.
 - Default prefix type when unset is the GitHub username; unverified against the app.
 - Workspace names: letters, digits, `.`, `_`, `-`, no leading `.`/`-`, at most 64 characters. Branch names follow `git check-ref-format --branch` rules.
+- The generated name after the first message comes from the message itself (first line with words, filler and stopwords dropped, at most four words), not from a model; the reference wording says the branch name is "generated from the first message" but not how. The rename keeps the prefix the placeholder branch was created with, and auto-rename is on until a settings toggle exists.
 
 ## REA gaps
 
@@ -33,5 +34,6 @@ What the reference app (Conductor v0.87.6) does when a workspace is created, the
 ## Code
 
 - `src/workspace/naming.ts`: pure naming logic, tested by `src/workspace/naming.test.ts` (`node --test "src/**/*.test.ts"`).
+- `src/workspace/rename.ts`: first-message name generator and the rename plan for a workspace in app state, tested by `src/workspace/rename.test.ts`. `src/workspace/firstMessage.ts` applies it from the dialog and the chat. The backend has no `rename_workspace_branch` command yet, so the desktop app renames the workspace but keeps its git branch until one exists.
 - `src/workspace/createFrom.ts`: create-from picker logic (tab order, search, pasted GitHub/Linear references, status lines), tested by `src/workspace/createFrom.test.ts`. Picker states follow `frontend/copy-catalog.json` ("Loading pull requests...", "No pull requests found", "Add a GitHub repository remote to include pull requests", "Set up GitHub in settings to include pull requests", "Linear integration required", "Linear issue not found", "Could not load that pull request").
 - No backend lists PRs or issues yet; the desktop app shows the "Set up GitHub" state and the browser uses samples. Creating from an existing branch or PR head sends `existingBranch: true` to `create_workspace` (#106), which checks out the local branch or tracks `origin/<branch>`. A fork PR's branch is not on origin, so it fails with "branch not found locally or on origin"; fetching `pull/N/head` is not built.

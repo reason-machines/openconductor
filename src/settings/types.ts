@@ -1,0 +1,83 @@
+// Shapes of the settings IPC (src-tauri/src/settings/commands.rs). Field
+// names match the Rust serde names; unknown keys from newer builds ride along
+// untouched because every section is spread, never rebuilt field by field.
+
+export type Theme = "system" | "light" | "dark";
+export type SoundType = "default" | "none";
+export type BranchPrefixType = "github_username" | "custom" | "none";
+export type ThinkingLevel = "minimal" | "low" | "medium" | "high" | "xhigh";
+
+/** `agent::AgentKind`. */
+export type AgentKind = "claude" | "codex" | "cursor" | "opencode";
+export const AGENTS: AgentKind[] = ["claude", "codex", "cursor", "opencode"];
+
+/** `agent::ProviderConfig`, tagged by `kind`. Options are per kind. */
+export type ProviderKind =
+  | "claude_login"
+  | "anthropic_api"
+  | "bedrock"
+  | "vertex"
+  | "foundry"
+  | "codex_login"
+  | "openai_api"
+  | "codex_gateway"
+  | "cursor_api"
+  | "opencode_login";
+export interface ProviderConfig {
+  kind: ProviderKind;
+  [option: string]: unknown;
+}
+
+/** The provider each agent uses when settings name none: its CLI's own login. */
+export const DEFAULT_PROVIDER: Record<AgentKind, ProviderKind> = {
+  claude: "claude_login",
+  codex: "codex_login",
+  cursor: "cursor_api",
+  opencode: "opencode_login",
+};
+
+export interface Settings {
+  $schema: string;
+  general: { theme: Theme; send_native_notification: boolean; sound_type: SoundType; [extra: string]: unknown };
+  git: { branch_prefix_type: BranchPrefixType; branch_prefix_custom?: string | null; [extra: string]: unknown };
+  models: {
+    default: string;
+    review?: string | null;
+    default_thinking_enabled: boolean;
+    review_thinking_enabled: boolean;
+    codex: { default_thinking_level: ThinkingLevel; review_thinking_level: ThinkingLevel; [extra: string]: unknown };
+    [extra: string]: unknown;
+  };
+  providers: { [agent in AgentKind]?: ProviderConfig | null } & { [extra: string]: unknown };
+  [extra: string]: unknown;
+}
+
+/** One secret for `connect_provider`. Write-only: the backend never returns values. */
+export interface SecretInput {
+  key: string;
+  value: string;
+}
+
+/** `agent::byok::ProviderStatus`: whether each key is stored, never its value. */
+export interface ProviderStatus {
+  kind: ProviderKind;
+  agent: AgentKind;
+  secrets: { key: string; present: boolean }[];
+  /** Options and keys are present and well formed; not that the backend accepts them. */
+  ready: boolean;
+  /** Why it is not ready, safe to display. */
+  problem?: string;
+}
+
+export const DEFAULT_SETTINGS: Settings = {
+  $schema: "https://openconductor.dev/schemas/settings.schema.json",
+  general: { theme: "system", send_native_notification: true, sound_type: "default" },
+  git: { branch_prefix_type: "github_username" },
+  models: {
+    default: "opus",
+    default_thinking_enabled: true,
+    review_thinking_enabled: true,
+    codex: { default_thinking_level: "medium", review_thinking_level: "medium" },
+  },
+  providers: {},
+};

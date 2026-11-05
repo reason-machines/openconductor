@@ -1,6 +1,6 @@
-use openconductor_db::open_in_memory;
 use openconductor_db::repos::{self, NewRepo};
 use openconductor_db::workspaces::{self, NewWorkspace, WorkspaceState};
+use openconductor_db::{open_in_memory, Error};
 use sqlx::SqlitePool;
 
 async fn setup() -> SqlitePool {
@@ -93,6 +93,129 @@ async fn failure_only_from_initializing_or_setting_up() {
     assert!(workspaces::fail(&pool, "b").await.unwrap());
     assert_eq!(state(&pool, "a").await, WorkspaceState::Failed);
     assert_eq!(state(&pool, "b").await, WorkspaceState::Failed);
+}
+
+#[tokio::test]
+async fn archive_and_unarchive() {
+    let pool = setup().await;
+    workspaces::insert(&pool, &new_ws("a", WorkspaceState::Ready))
+        .await
+        .unwrap();
+    assert!(!workspaces::unarchive(&pool, "a").await.unwrap());
+    sqlx::query("UPDATE workspaces SET updated_at = '2000-01-01 00:00:00'")
+        .execute(&pool)
+        .await
+        .unwrap();
+    workspaces::archive(&pool, "a", "me/a-final", Some("abc123"))
+        .await
+        .unwrap();
+    let w = workspaces::get(&pool, "a")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert_eq!(w.state, WorkspaceState::Archived);
+    assert_eq!(w.branch.as_deref(), Some("me/a-final"));
+    assert_eq!(w.archive_commit.as_deref(), Some("abc123"));
+    // No trigger: archiving leaves updated_at alone.
+    assert_eq!(w.updated_at, "2000-01-01 00:00:00");
+    assert!(workspaces::unarchive(&pool, "a").await.unwrap());
+    let w = workspaces::get(&pool, "a")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert_eq!(w.state, WorkspaceState::SettingUp);
+    assert_ne!(w.updated_at, "2000-01-01 00:00:00");
+    assert!(matches!(
+        workspaces::archive(&pool, "nope", "b", None).await,
+        Err(Error::NotFound)
+    ));
+}
+
+#[tokio::test]
+async fn touch_only_moves_forward() {
+    let pool = setup().await;
+    workspaces::insert(&pool, &new_ws("a", WorkspaceState::Ready))
+        .await
+        .unwrap();
+    workspaces::touch(&pool, "a", "2100-01-01 00:00:00")
+        .await
+        .unwrap();
+    workspaces::touch(&pool, "a", "2000-01-01 00:00:00")
+        .await
+        .unwrap();
+    let w = workspaces::get(&pool, "a")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert_eq!(w.updated_at, "2100-01-01 00:00:00");
+}
+
+#[tokio::test]
+async fn field_setters() {
+    let pool = setup().await;
+    workspaces::insert(&pool, &new_ws("a", WorkspaceState::Ready))
+        .await
+        .unwrap();
+    sqlx::query("UPDATE workspaces SET pr_title = 't', pr_description = 'd'")
+        .execute(&pool)
+        .await
+        .unwrap();
+    workspaces::rename_branch(&pool, "a", "me/better", Some("me/a"))
+        .await
+        .unwrap();
+    workspaces::set_active_session(&pool, "a", Some("s1"))
+        .await
+        .unwrap();
+    workspaces::set_target_branch(&pool, "a", Some("develop"))
+        .await
+        .unwrap();
+    workspaces::set_notes(&pool, "a", Some("todo"))
+        .await
+        .unwrap();
+    workspaces::set_pinned_at(&pool, "a", Some("2026-11-05T10:00:00Z"))
+        .await
+        .unwrap();
+    workspaces::set_unread(&pool, "a", true).await.unwrap();
+    workspaces::set_manual_status(&pool, "a", Some("done"))
+        .await
+        .unwrap();
+    let w = workspaces::get(&pool, "a")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert_eq!(w.branch.as_deref(), Some("me/better"));
+    assert_eq!(w.placeholder_branch_name.as_deref(), Some("me/a"));
+    assert_eq!((w.pr_title, w.pr_description), (None, None));
+    assert_eq!(w.active_session_id.as_deref(), Some("s1"));
+    assert_eq!(w.intended_target_branch.as_deref(), Some("develop"));
+    assert_eq!(w.notes.as_deref(), Some("todo"));
+    assert_eq!(w.pinned_at.as_deref(), Some("2026-11-05T10:00:00Z"));
+    assert!(w.unread);
+    assert_eq!(w.manual_status.as_deref(), Some("done"));
+    workspaces::set_derived_status(&pool, "a", "in-review")
+        .await
+        .unwrap();
+    let w = workspaces::get(&pool, "a")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert_eq!(
+        (w.manual_status, w.derived_status.as_deref()),
+        (None, Some("in-review"))
+    );
+    workspaces::set_state(&pool, "a", WorkspaceState::Archiving)
+        .await
+        .unwrap();
+    assert_eq!(state(&pool, "a").await, WorkspaceState::Archiving);
+    assert!(matches!(
+        workspaces::set_notes(&pool, "nope", None).await,
+        Err(Error::NotFound)
+    ));
 }
 
 #[tokio::test]
