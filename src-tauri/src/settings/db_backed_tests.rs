@@ -1,0 +1,195 @@
+use std::collections::HashMap;
+use std::fs;
+use std::path::PathBuf;
+use std::sync::atomic::{AtomicU32, Ordering};
+use std::sync::Arc;
+
+use openconductor_db::{app_settings, SqlitePool};
+
+use super::db_backed::{self, KEYS};
+use super::service::SettingsService;
+use super::{Appearance, CodeTheme, FILE_NAME};
+use crate::agent::MemorySecretStore;
+
+fn rows(pairs: &[(&str, &str)]) -> HashMap<String, String> {
+    pairs
+        .iter()
+        .map(|(k, v)| (k.to_string(), v.to_string()))
+        .collect()
+}
+
+fn temp_file() -> PathBuf {
+    static N: AtomicU32 = AtomicU32::new(0);
+    let dir = std::env::temp_dir().join(format!(
+        "oc-settings-db-{}-{}",
+        std::process::id(),
+        N.fetch_add(1, Ordering::Relaxed)
+    ));
+    let _ = fs::remove_dir_all(&dir);
+    fs::create_dir_all(&dir).unwrap();
+    dir.join(FILE_NAME)
+}
+
+fn with_db(path: PathBuf) -> (SettingsService, SqlitePool) {
+    let pool = tauri::async_runtime::block_on(openconductor_db::open_in_memory()).unwrap();
+    let svc = SettingsService::new(path, Arc::new(MemorySecretStore::new())).with_db(pool.clone());
+    (svc, pool)
+}
+
+fn table(pool: &SqlitePool) -> HashMap<String, String> {
+    tauri::async_runtime::block_on(app_settings::active(pool))
+        .unwrap()
+        .into_iter()
+        .collect()
+}
+
+#[test]
+fn rows_decode_like_the_reference_hooks() {
+    let mut a = Appearance::default();
+    db_backed::overlay(
+        &mut a,
+        &rows(&[
+            ("zoom_level_v2", "1.1"),
+            ("mono_font", "Menlo"),
+            ("low_contrast_dark_mode", "true"),
+            ("code_theme", "tokyo-night"),
+            ("colored_sidebar_diffs", "true"),
+            ("file_ligatures_enabled", "false"),
+        ]),
+    );
+    assert_eq!(a.zoom_level_v2, 1.1);
+    assert_eq!(a.mono_font.as_deref(), Some("Menlo"));
+    assert!(a.low_contrast_dark_mode);
+    assert_eq!(a.code_theme, CodeTheme::TokyoNight);
+    assert_eq!(
+        a.extra
+            .get("colored_sidebar_diffs")
+            .and_then(|v| v.as_bool()),
+        Some(true)
+    );
+    assert!(!a.file_ligatures_enabled);
+
+    // Unusable values keep what was loaded; an unknown theme is the default.
+    let mut a = Appearance::default();
+    db_backed::overlay(
+        &mut a,
+        &rows(&[
+            ("zoom_level_v2", "9"),
+            ("code_theme", "neon"),
+            ("file_ligatures_enabled", "maybe"),
+        ]),
+    );
+    assert_eq!(a.zoom_level_v2, 1.0);
+    assert_eq!(a.code_theme, CodeTheme::Default);
+    assert!(a.file_ligatures_enabled);
+}
+
+#[test]
+fn values_encode_as_the_reference_writes_them() {
+    let mut a = Appearance {
+        zoom_level_v2: 1.0,
+        code_theme: CodeTheme::GruvboxDark,
+        ..Appearance::default()
+    };
+    let r: HashMap<_, _> = db_backed::rows(&a).into_iter().collect();
+    assert_eq!(r["zoom_level_v2"].as_deref(), Some("1"));
+    assert_eq!(r["code_theme"].as_deref(), Some("gruvbox-dark"));
+    assert_eq!(r["low_contrast_dark_mode"].as_deref(), Some("false"));
+    assert_eq!(r["file_ligatures_enabled"].as_deref(), Some("true"));
+    assert_eq!(r["mono_font"], None, "no font deletes the row");
+    assert_eq!(r["colored_sidebar_diffs"], None);
+    a.zoom_level_v2 = 1.2;
+    let r: HashMap<_, _> = db_backed::rows(&a).into_iter().collect();
+    assert_eq!(r["zoom_level_v2"].as_deref(), Some("1.2"));
+    // Only changed rows are written.
+    let current: HashMap<String, String> = db_backed::rows(&a)
+        .into_iter()
+        .filter_map(|(k, v)| v.map(|v| (k.to_string(), v)))
+        .collect();
+    assert!(db_backed::changes(&a, &current).is_empty());
+}
+
+#[test]
+fn update_writes_the_table_and_keeps_the_keys_out_of_the_file() {
+    let path = temp_file();
+    let (svc, pool) = with_db(path.clone());
+    let mut s = svc.get().unwrap();
+    s.appearance.zoom_level_v2 = 1.3;
+    s.appearance.mono_font = Some("Menlo".into());
+    s.appearance.code_theme = CodeTheme::Dracula;
+    s.appearance.terminal_font_size = 14;
+    s.appearance
+        .extra
+        .insert("colored_sidebar_diffs".into(), toml::Value::Boolean(true));
+    svc.update(s).unwrap();
+
+    let t = table(&pool);
+    assert_eq!(t["zoom_level_v2"], "1.3");
+    assert_eq!(t["mono_font"], "Menlo");
+    assert_eq!(t["code_theme"], "dracula");
+    assert_eq!(t["colored_sidebar_diffs"], "true");
+    let text = fs::read_to_string(&path).unwrap();
+    for key in KEYS {
+        assert!(
+            !text.contains(key),
+            "{key} must not be in the file:\n{text}"
+        );
+    }
+    assert!(text.contains("terminal_font_size = 14"), "{text}");
+
+    let back = svc.get().unwrap();
+    assert_eq!(back.appearance.zoom_level_v2, 1.3);
+    assert_eq!(back.appearance.mono_font.as_deref(), Some("Menlo"));
+    assert_eq!(back.appearance.code_theme, CodeTheme::Dracula);
+    assert_eq!(back.appearance.terminal_font_size, 14);
+
+    // Clearing the font deletes its row.
+    let mut s = back;
+    s.appearance.mono_font = None;
+    svc.update(s).unwrap();
+    assert!(!table(&pool).contains_key("mono_font"));
+}
+
+#[test]
+fn values_an_older_build_wrote_to_the_file_move_to_the_table_once() {
+    let path = temp_file();
+    fs::write(
+        &path,
+        "[appearance]\nzoom_level_v2 = 1.2\nmono_font = \"Menlo\"\ncode_theme = \"nord\"\nlow_contrast_dark_mode = true\nterminal_font_size = 15\n\n[git]\narchive_on_merge = true\n",
+    )
+    .unwrap();
+    let (svc, pool) = with_db(path.clone());
+    // A row the table already has wins over the file.
+    tauri::async_runtime::block_on(app_settings::set(&pool, "code_theme", "dracula")).unwrap();
+
+    let mut moved = svc.move_appearance_to_db().unwrap();
+    moved.sort();
+    assert_eq!(
+        moved,
+        vec!["low_contrast_dark_mode", "mono_font", "zoom_level_v2"]
+    );
+    let t = table(&pool);
+    assert_eq!(t["zoom_level_v2"], "1.2");
+    assert_eq!(t["code_theme"], "dracula");
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        !text.contains("zoom_level_v2") && !text.contains("code_theme"),
+        "{text}"
+    );
+    assert!(text.contains("terminal_font_size = 15"), "{text}");
+    assert!(text.contains("archive_on_merge = true"), "{text}");
+
+    let s = svc.get().unwrap();
+    assert_eq!(s.appearance.zoom_level_v2, 1.2);
+    assert_eq!(s.appearance.code_theme, CodeTheme::Dracula);
+    assert!(s.appearance.low_contrast_dark_mode);
+    assert!(s.git.archive_on_merge);
+    assert!(svc.move_appearance_to_db().unwrap().is_empty());
+}
+
+#[test]
+fn the_service_works_from_inside_the_async_runtime() {
+    let (svc, _pool) = with_db(temp_file());
+    let got = tauri::async_runtime::block_on(async { svc.get().map(|s| s.appearance) });
+    assert_eq!(got.unwrap().zoom_level_v2, 1.0);
+}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type Dispatch, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type Dispatch, type ReactNode, type RefObject } from "react";
 import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
@@ -8,11 +8,17 @@ import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { createPortal } from "react-dom";
 import { HelpMenu } from "./HelpMenu";
+import { RepoIcon } from "./RepoIcon";
+import { RepoIconDialog } from "./RepoIconDialog";
+import { RenameWorkspaceDialog } from "./RenameWorkspaceDialog";
 import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
 import { RepoWorkspaceList } from "./PendingWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
 import { pinnedEntries, repoGroupWorkspaces } from "../state/sidebarOrder";
+import { ProjectFilterSubmenu } from "./home/ProjectFilterSubmenu";
+import { useRepoFilter } from "../home/useRepoFilter";
+import { filterRepoGroups } from "../home/repoFilter";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
 function hint(commandId: string): string {
@@ -42,6 +48,8 @@ interface Props {
   /* sidebar: workspace row menu callbacks (rename dialog, archive flow) */
   onRenameWorkspace?: RowCallbacks["onRename"];
   onArchiveWorkspace?: RowCallbacks["onArchive"];
+  /** Shows an error toast (icon upload failures). */
+  onError?: (message: string) => void;
 }
 
 function NavRow({ icon, label, shortcut, active, onClick }: { icon: JSX.Element; label: string; shortcut: string; active?: boolean; onClick: () => void }) {
@@ -55,8 +63,10 @@ function NavRow({ icon, label, shortcut, active, onClick }: { icon: JSX.Element;
 }
 
 interface MenuItem { label: string; onSelect: () => void; shortcut?: string; destructive?: boolean }
-/** A menu entry, or "-" for a separator line. */
-type MenuEntry = MenuItem | "-";
+/** A custom entry, such as a submenu, rendered with the menu's close function. */
+interface MenuNode { key: string; render: (close: () => void) => ReactNode }
+/** A menu entry, a custom node, or "-" for a separator line. */
+type MenuEntry = MenuItem | MenuNode | "-";
 
 /** Menu panel shared by the hover "..." trigger and the right-click context menu. */
 function MenuPanel({ items, close, at }: { items: MenuEntry[]; close: () => void; at?: { x: number; y: number } }) {
@@ -65,6 +75,8 @@ function MenuPanel({ items, close, at }: { items: MenuEntry[]; close: () => void
       {items.map((item, i) =>
         item === "-" ? (
           <div key={`sep-${i}`} role="separator" className="sb-menu-sep" />
+        ) : "render" in item ? (
+          <div key={item.key} role="none">{item.render(close)}</div>
         ) : (
           <button
             key={item.label}
@@ -122,8 +134,12 @@ function HeaderMenu({ label, items, className, contextAt, onContextClose }: { la
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace }: Props) {
-  const rows = useWorkspaceRows(state, dispatch, { onRename: onRenameWorkspace, onArchive: onArchiveWorkspace });
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onError }: Props) {
+  // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
+  const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
+  const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
+  const rows = useWorkspaceRows(state, dispatch, { onRename: onRenameWorkspace ?? openRename, onArchive: onArchiveWorkspace });
+  const renamingWs = renaming && state.repos.find((r) => r.id === renaming.repoId)?.workspaces.find((w) => w.id === renaming.workspaceId);
   const pinned = pinnedEntries(state);
   const sel = state.selection;
   // Conductor persists this per collapse key; ours lasts for the session.
@@ -132,9 +148,16 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
   const [showHidden, setShowHidden] = useState(false);
   const [repoContext, setRepoContext] = useState<{ repoId: string; x: number; y: number } | null>(null);
   const closeRepoContext = useCallback(() => setRepoContext(null), []);
+  const [iconRepoId, setIconRepoId] = useState<string | null>(null);
+  const iconRepo = iconRepoId ? state.repos.find((r) => r.id === iconRepoId) : undefined;
   const [dragRepoId, setDragRepoId] = useState<string | null>(null);
   const [dropRepoId, setDropRepoId] = useState<string | null>(null);
-  const listed = visibleRepos(state.repos, showHidden);
+  // "Filter by project" (Conductor's `pra`, setting `sidebar_repo_filter`). Repos arrive from
+  // conductor.db after the first render (before that, only path-less placeholders for collapsed
+  // repos), so a stale filter is cleared only once real repos have loaded.
+  const [repoFilter, setRepoFilter] = useRepoFilter(state.repos, state.repos.some((r) => r.path !== ""));
+  // The filter narrows the repo groups only; Pinned keeps every repo's rows (`hBi`).
+  const listed = filterRepoGroups(visibleRepos(state.repos, showHidden), repoFilter);
   // Dragging is off with a single listed repo, as in Conductor.
   const canDrag = listed.length > 1;
   const dropOn = (targetId: string) => {
@@ -207,7 +230,10 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
               {groupCollapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}
             </span>
           </button>
-          <HeaderMenu label="My workspaces" className="sb-section-menu" items={[{ label: "Add project…", onSelect: onOpenProject }]} />
+          <HeaderMenu label="My workspaces" className="sb-section-menu" items={[
+            { label: "Add project…", onSelect: onOpenProject },
+            { key: "filter-by-project", render: (close) => <ProjectFilterSubmenu repos={state.repos} filter={repoFilter} onChange={setRepoFilter} onClose={close} /> },
+          ]} />
         </div>
         {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
         {!groupCollapsed && (
@@ -249,7 +275,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
               >
                 <div className="sb-repo-main">
                   <span className="sb-repo-lead">
-                    <span className="sb-repo-initial" aria-hidden>{repo.name.charAt(0).toUpperCase()}</span>
+                    <RepoIcon repo={repo} />
                     <span className="sb-repo-chevron" aria-hidden>{repo.collapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}</span>
                   </span>
                   <span className="sb-repo-name" data-hidden={repo.hidden || undefined}>{repo.name}</span>
@@ -273,6 +299,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
                 onContextClose={closeRepoContext}
                 items={[
                   { label: "Create workspace", shortcut: repoContext?.repoId === repo.id && sel.kind === "workspace" && sel.repoId === repo.id ? hint("workspace.create") : undefined, onSelect: () => onOpenDialog("create", repo.id) },
+                  { label: "Change icon…", onSelect: () => setIconRepoId(repo.id) },
                   { label: repo.hidden ? "Unhide repository" : "Hide repository", onSelect: () => dispatch({ type: "setRepoHidden", repoId: repo.id, hidden: !repo.hidden }) },
                 ]}
               />
@@ -303,6 +330,24 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
           </button>
         </div>
       </div>
+      {renaming && renamingWs && (
+        <RenameWorkspaceDialog
+          key={renamingWs.id}
+          repoId={renaming.repoId}
+          workspace={renamingWs}
+          dispatch={dispatch}
+          onClose={() => setRenaming(null)}
+          onError={(message) => onError?.(message)}
+        />
+      )}
+      {iconRepo && (
+        <RepoIconDialog
+          repo={iconRepo}
+          onChange={(icon) => dispatch({ type: "setRepoIcon", repoId: iconRepo.id, icon })}
+          onClose={() => setIconRepoId(null)}
+          onError={(message) => onError?.(message)}
+        />
+      )}
     </aside>
   );
 }

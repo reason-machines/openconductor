@@ -4,13 +4,14 @@
 // default follow-up mode, `chat.submitOppositeFollowUp` with the other one,
 // `chat.newLine` inserts a line break and `chat.cancel` stops the agent.
 
-import { useState, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
+import { useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { SendIcon } from "../../components/Icons";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
 import { canSteerNow, headStatusLabel, resolveSendMode, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
 import type { QueueAction } from "./queue.ts";
+import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
 import "./queue.css";
 
 export interface ComposerProps {
@@ -50,12 +51,24 @@ export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSte
   }
 
   useKeybindings({ "chat.cancel": () => (working ? onStop() : false) });
+  const queueRef = useRef<HTMLOListElement>(null);
+
+  /** Moves focus to a queued row or back to the message box. */
+  function focus(target: QueueFocus) {
+    if (target === "composer") return inputRef.current?.focus();
+    queueRef.current?.querySelector<HTMLElement>(`li[data-id="${CSS.escape(target.row)}"]`)?.focus();
+  }
 
   function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     const ev = e.nativeEvent;
     const hit = (id: string) => keys(id).some((s) => matchesEvent(s, ev));
     if (ev.isComposing) return;
-    if (hit("chat.cancel") && working) {
+    // ↑ with the caret at the very start goes to the last queued message.
+    const box = e.currentTarget;
+    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.altKey && box.selectionStart === 0 && box.selectionEnd === 0 && queue.items.length > 0 && queue.editingId === null) {
+      e.preventDefault();
+      focus({ row: queue.items[queue.items.length - 1].id });
+    } else if (hit("chat.cancel") && working) {
       e.preventDefault();
       onStop();
     } else if (hit("chat.submitOppositeFollowUp")) {
@@ -70,7 +83,7 @@ export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSte
 
   return (
     <div className="composer-wrap">
-      {queue.items.length > 0 ? <QueuePanel queue={queue} canSteer={canSteerNow(queue, canSteer)} onQueue={onQueue} /> : null}
+      {queue.items.length > 0 ? <QueuePanel queue={queue} canSteer={canSteerNow(queue, canSteer)} onQueue={onQueue} listRef={queueRef} focus={focus} keys={keys} /> : null}
       <form
         className="composer"
         onSubmit={(e: FormEvent) => {
@@ -114,8 +127,62 @@ export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSte
   );
 }
 
-function QueuePanel({ queue, canSteer, onQueue }: { queue: ChatQueue; canSteer: boolean; onQueue: (a: QueueAction) => void }) {
+type Keys = (id: string) => ReturnType<typeof effectiveShortcuts>;
+
+interface QueuePanelProps {
+  queue: ChatQueue;
+  canSteer: boolean;
+  onQueue: (a: QueueAction) => void;
+  listRef: RefObject<HTMLOListElement>;
+  focus: (target: QueueFocus) => void;
+  keys: Keys;
+}
+
+function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePanelProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [dragged, setDragged] = useState<string | null>(null);
+  const ids = queue.items.map((m) => m.id);
+
+  // The focused row's keys (the row itself, not its buttons): edit, delete, steer and moving between rows.
+  function onRowKeyDown(e: KeyboardEvent<HTMLLIElement>, id: string) {
+    if (e.target !== e.currentTarget || e.nativeEvent.isComposing) return;
+    const ev = e.nativeEvent;
+    const hit = (command: QueueCommand) => keys(command).some((s) => matchesEvent(s, ev));
+    const r = queueRowKey(ids, id, e.key, hit, canSteer);
+    if (!r) return;
+    e.preventDefault();
+    e.stopPropagation();
+    switch (r.kind) {
+      case "edit":
+        return onQueue({ kind: "edit", id });
+      case "delete":
+        onQueue({ kind: "delete", id });
+        return requestAnimationFrame(() => focus(r.focus));
+      case "steer":
+        onQueue({ kind: "steer", id });
+        return requestAnimationFrame(() => focus(r.focus));
+      case "focus":
+        return focus(r.focus);
+    }
+  }
+
+  const drag = (id: string) => ({
+    draggable: queue.editingId === null,
+    onDragStart: (e: React.DragEvent) => {
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", id);
+      setDragged(id);
+    },
+    onDragOver: (e: React.DragEvent) => {
+      if (dragged !== null) e.preventDefault();
+    },
+    onDrop: (e: React.DragEvent) => {
+      e.preventDefault();
+      if (dragged !== null && dragged !== id) onQueue({ kind: "reorder", ids: dropOrder(ids, dragged, id) });
+      setDragged(null);
+    },
+    onDragEnd: () => setDragged(null),
+  });
   const label = headStatusLabel(queue);
   return (
     <div className={`queue${queue.paused ? " is-paused" : ""}`}>
@@ -139,9 +206,21 @@ function QueuePanel({ queue, canSteer, onQueue }: { queue: ChatQueue; canSteer: 
         </span>
       </div>
       {collapsed ? null : (
-        <ol className="queue-list" aria-label="Queued messages">
+        <ol className="queue-list" aria-label="Queued messages" ref={listRef} data-keybinding-local="true">
           {queue.items.map((m, i) => (
-            <QueueRow key={m.id} id={m.id} text={m.text} first={i === 0} last={i === queue.items.length - 1} editing={queue.editingId === m.id} canSteer={canSteer} onQueue={onQueue} />
+            <QueueRow
+              key={m.id}
+              id={m.id}
+              text={m.text}
+              first={i === 0}
+              last={i === queue.items.length - 1}
+              editing={queue.editingId === m.id}
+              canSteer={canSteer}
+              onQueue={onQueue}
+              keys={keys}
+              dragging={dragged === m.id}
+              rowProps={{ ...drag(m.id), onKeyDown: (e: KeyboardEvent<HTMLLIElement>) => onRowKeyDown(e, m.id) }}
+            />
           ))}
         </ol>
       )}
@@ -157,9 +236,13 @@ interface RowProps {
   editing: boolean;
   canSteer: boolean;
   onQueue: (a: QueueAction) => void;
+  keys: Keys;
+  dragging: boolean;
+  /** Keys and drag handlers for the row. */
+  rowProps: React.LiHTMLAttributes<HTMLLIElement>;
 }
 
-function QueueRow({ id, text, first, last, editing, canSteer, onQueue }: RowProps) {
+function QueueRow({ id, text, first, last, editing, canSteer, onQueue, keys, dragging, rowProps }: RowProps) {
   const [value, setValue] = useState(text);
   if (editing) {
     return (
@@ -171,10 +254,18 @@ function QueueRow({ id, text, first, last, editing, canSteer, onQueue }: RowProp
           autoFocus
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Escape") onQueue({ kind: "cancelEdit" });
-            else if (e.key === "Enter" && !e.shiftKey) {
+            const ev = e.nativeEvent;
+            if (ev.isComposing) return;
+            const hit = (command: string) => keys(command).some((s) => matchesEvent(s, ev));
+            if (hit("chat.queueEdit.cancel")) {
               e.preventDefault();
-              onQueue({ kind: "saveEdit", text: value, steer: e.metaKey && canSteer });
+              onQueue({ kind: "cancelEdit" });
+            } else if (canSteer && hit("chat.queueEdit.saveAndSteer")) {
+              e.preventDefault();
+              onQueue({ kind: "saveEdit", text: value, steer: true });
+            } else if (hit("chat.queueEdit.save")) {
+              e.preventDefault();
+              onQueue({ kind: "saveEdit", text: value, steer: false });
             }
           }}
           rows={2}
@@ -196,7 +287,7 @@ function QueueRow({ id, text, first, last, editing, canSteer, onQueue }: RowProp
     );
   }
   return (
-    <li className="queue-row">
+    <li className={`queue-row${dragging ? " is-dragging" : ""}`} data-id={id} tabIndex={0} aria-label={`Queued message: ${text}`} {...rowProps}>
       <span className="queue-text" title={text}>
         {text}
       </span>

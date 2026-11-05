@@ -4,12 +4,13 @@
 // click-to-edit, and the base branch is a picker that retargets the PR
 // (`pr_edit`, `pr_retarget`). After a save the PR lookup is refreshed; until
 // it answers the saved values are shown.
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Modal } from "../../../components/Dialogs";
-import { ensureRepository, listBranches, type BranchDto } from "../../../workspace/api";
 import type { PrInfo } from "../types";
-import { editPr, retargetPr } from "./api";
-import { planPrEdit, planRetarget, prEditErrorMessage, retargetErrorMessage, type PrText } from "./edit";
+import type { TargetBranch } from "../useTargetBranch";
+import { BranchPicker } from "./BranchPicker";
+import { editPr } from "./api";
+import { planPrEdit, prEditErrorMessage, type PrText } from "./edit";
 import "./edit.css";
 
 interface Props {
@@ -20,6 +21,8 @@ interface Props {
   repoPath: string;
   defaultBranch: string;
   refresh: () => Promise<void>;
+  /** The workspace's target branch: picking a base changes it, retargeting the PR (useTargetBranch). */
+  target: TargetBranch;
 }
 
 function TitleDialog({ title, onSave, onClose }: { title: string; onSave: (t: string) => Promise<string | null>; onClose: () => void }) {
@@ -49,56 +52,7 @@ function TitleDialog({ title, onSave, onClose }: { title: string; onSave: (t: st
   );
 }
 
-type Branches = { status: "loading" } | { status: "error" } | { status: "ready"; items: BranchDto[] };
-
-function BasePicker({ base, repoPath, defaultBranch, onPick, onClose }: { base: string; repoPath: string; defaultBranch: string; onPick: (b: string) => void; onClose: () => void }) {
-  const [branches, setBranches] = useState<Branches>({ status: "loading" });
-  const [query, setQuery] = useState("");
-  const [attempt, setAttempt] = useState(0);
-  useEffect(() => {
-    let live = true;
-    setBranches({ status: "loading" });
-    ensureRepository(repoPath)
-      .then((r) => listBranches(r.id, defaultBranch))
-      .then((items) => live && setBranches({ status: "ready", items }), () => live && setBranches({ status: "error" }));
-    return () => {
-      live = false;
-    };
-  }, [repoPath, defaultBranch, attempt]);
-  const names = useMemo(() => {
-    if (branches.status !== "ready") return [];
-    const seen = new Set<string>();
-    for (const b of branches.items) seen.add(b.name.replace(/^origin\//, ""));
-    const q = query.trim().toLowerCase();
-    return [...seen].filter((n) => n.toLowerCase().includes(q));
-  }, [branches, query]);
-  return (
-    <div className="pr-base-picker" role="dialog" aria-label="Select target branch" onKeyDown={(e) => e.key === "Escape" && onClose()}>
-      <input autoFocus placeholder="Select target branch..." value={query} onChange={(e) => setQuery(e.target.value)} />
-      {branches.status === "loading" && <p className="muted small">Loading branches...</p>}
-      {branches.status === "error" && (
-        <p className="muted small">
-          Couldn't load branches. <button className="link-btn" onClick={() => setAttempt((n) => n + 1)}>Try again</button>
-        </p>
-      )}
-      {branches.status === "ready" && names.length === 0 && <p className="muted small">No branch found.</p>}
-      {branches.status === "ready" && names.length > 0 && (
-        <ul>
-          {names.map((n) => (
-            <li key={n}>
-              <button className={n === base ? "selected" : ""} onClick={() => onPick(n)}>
-                <span>{n}</span>
-                {n === defaultBranch && <span className="pr-badge">default</span>}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-export function PrHeader({ pr, worktree, repoPath, defaultBranch, refresh }: Props) {
+export function PrHeader({ pr, worktree, repoPath, defaultBranch, refresh, target }: Props) {
   // Saved values shown until the next lookup brings GitHub's.
   const [saved, setSaved] = useState<Partial<PrText> & { base?: string }>({});
   useEffect(() => setSaved({}), [pr.title, pr.body, pr.baseRefName, pr.number]);
@@ -139,16 +93,10 @@ export function PrHeader({ pr, worktree, repoPath, defaultBranch, refresh }: Pro
 
   const pickBase = async (next: string) => {
     setPicking(false);
-    const plan = planRetarget({ number: pr.number, baseRefName: base, isMerged: pr.isMerged }, next);
-    if (plan.kind === "skip") return;
     setError(null);
-    try {
-      await retargetPr(worktree ?? "", plan.number, plan.base);
-      setSaved((s) => ({ ...s, base: plan.base }));
-    } catch (e) {
-      setError(retargetErrorMessage(e));
-    }
-    void refresh();
+    const err = await target.change(next);
+    if (err) setError(err);
+    else setSaved((s) => ({ ...s, base: next.trim() }));
   };
 
   return (
@@ -158,10 +106,15 @@ export function PrHeader({ pr, worktree, repoPath, defaultBranch, refresh }: Pro
         {pr.authorLogin && <span className="pr-author">{pr.authorLogin}</span>}
         <span className="muted">into</span>
         <span className="pr-base-anchor">
-          <button className="pr-base" disabled={readOnly} title={readOnly ? undefined : "Change the PR's base branch"} onClick={() => setPicking((v) => !v)}>
+          <button
+            className="pr-base"
+            disabled={readOnly || target.disabledReason !== null || target.changing}
+            title={target.disabledReason ?? (readOnly ? undefined : "Change the PR's base branch")}
+            onClick={() => setPicking((v) => !v)}
+          >
             {base}
           </button>
-          {picking && <BasePicker base={base} repoPath={repoPath} defaultBranch={defaultBranch} onPick={(b) => void pickBase(b)} onClose={() => setPicking(false)} />}
+          {picking && <BranchPicker base={base} repoPath={repoPath} defaultBranch={defaultBranch} onPick={(b) => void pickBase(b)} onClose={() => setPicking(false)} />}
         </span>
       </div>
       <button className="pr-title" disabled={readOnly} title={readOnly ? undefined : "Edit PR title"} onClick={() => setEditingTitle(true)}>

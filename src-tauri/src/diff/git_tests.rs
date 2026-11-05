@@ -59,7 +59,68 @@ fn req(scope: Scope) -> DiffRequest {
 fn all() -> Scope {
     Scope::All {
         base: "main".into(),
+        remote: None,
     }
+}
+
+/// `feature` has one commit over local `main`; `origin/main` already
+/// contains it (the branch was merged upstream), local `main` does not.
+fn merged_upstream_repo() -> PathBuf {
+    let r = repo();
+    write(&r, "f.txt", "x\n");
+    commit(&r, "base");
+    sh(&r, &["checkout", "-q", "-b", "feature"]);
+    write(&r, "feature.txt", "y\n");
+    commit(&r, "feature work");
+    sh(&r, &["update-ref", "refs/remotes/origin/main", "HEAD"]);
+    write(&r, "f.txt", "uncommitted\n");
+    r
+}
+
+fn changed(r: &Path, scope: Scope) -> Vec<String> {
+    list_changes(r, &req(scope))
+        .unwrap()
+        .into_iter()
+        .map(|c| c.path)
+        .collect()
+}
+
+// parity:diff.changes-list:test
+#[test]
+fn all_changes_use_the_remote_target_ref_when_it_exists() {
+    let r = merged_upstream_repo();
+    let remote = Scope::All {
+        base: "main".into(),
+        remote: Some("origin".into()),
+    };
+    assert_eq!(changed(&r, remote), vec!["f.txt"]);
+    // Against the stale local branch the merged commit still shows.
+    assert_eq!(changed(&r, all()), vec!["f.txt", "feature.txt"]);
+}
+
+#[test]
+fn all_changes_fall_back_to_the_local_branch_without_a_remote_ref() {
+    let r = merged_upstream_repo();
+    let missing = Scope::All {
+        base: "main".into(),
+        remote: Some("upstream".into()),
+    };
+    assert_eq!(changed(&r, missing), vec!["f.txt", "feature.txt"]);
+}
+
+#[test]
+fn all_scope_without_remote_reads_the_old_request_shape() {
+    let s: Scope = serde_json::from_str(r#"{"kind":"all","base":"main"}"#).unwrap();
+    assert_eq!(s, all());
+    let s: Scope =
+        serde_json::from_str(r#"{"kind":"all","base":"main","remote":"origin"}"#).unwrap();
+    assert_eq!(
+        s,
+        Scope::All {
+            base: "main".into(),
+            remote: Some("origin".into())
+        }
+    );
 }
 
 #[test]
@@ -187,6 +248,7 @@ fn unknown_base_is_a_git_error() {
         &r,
         &req(Scope::All {
             base: "nope".into(),
+            remote: None,
         }),
     )
     .unwrap_err();

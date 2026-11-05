@@ -139,7 +139,7 @@ export function reasonModelId(model: string): string | null {
 }
 
 /** Reason's reasoning level for a Conductor effort setting; `ultracode` is beyond Reason's top level. */
-function reasonEffort(level: unknown): string | null {
+export function reasonEffort(level: unknown): string | null {
   if (typeof level !== "string") return null;
   if (level === "ultracode") return "max";
   return REASON_EFFORTS.includes(level) ? level : null;

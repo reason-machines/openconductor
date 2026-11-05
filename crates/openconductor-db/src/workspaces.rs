@@ -312,6 +312,18 @@ pub async fn set_derived_status(pool: &SqlitePool, local_id: &str, status: &str)
     exec_one(q.bind(status).bind(local_id), pool).await
 }
 
+/// Store the pull request's title and body (`pr_title`, `pr_description`).
+pub async fn set_pr_metadata(
+    pool: &SqlitePool,
+    local_id: &str,
+    title: Option<&str>,
+    description: Option<&str>,
+) -> Result<()> {
+    let q =
+        sqlx::query("UPDATE workspaces SET pr_title = ?, pr_description = ? WHERE local_id = ?");
+    exec_one(q.bind(title).bind(description).bind(local_id), pool).await
+}
+
 /// Delete a workspace whose worktree was never created. False otherwise.
 /// Persist a workspace's number: Conductor's `UPDATE workspaces SET number = ?
 /// WHERE local_id = ?` (decoded frontend, index chunk; "Failed to persist
