@@ -55,6 +55,66 @@ impl SpawnArgs {
     }
 }
 
+// Screen and mirror commands take one `args` object, as the reference's
+// webview sends them (`invoke("pty_screen_text", { args: { id, maxLines } })`).
+
+/// `pty_screen_snapshot` and `pty_delete_mirror`.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct IdArgs {
+    pub id: String,
+}
+
+/// `pty_screen_text`. The reference's callers pass
+/// `Number.MAX_SAFE_INTEGER` for everything; `null` also means everything.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct ScreenTextArgs {
+    pub id: String,
+    pub max_lines: Option<u64>,
+}
+
+impl ScreenTextArgs {
+    pub fn max_lines(&self) -> usize {
+        self.max_lines
+            .map_or(usize::MAX, |n| usize::try_from(n).unwrap_or(usize::MAX))
+    }
+}
+
+/// `pty_create_mirror`.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct CreateMirrorArgs {
+    pub id: String,
+    pub cols: u16,
+    pub rows: u16,
+    pub max_buffered_bytes: Option<u64>,
+}
+
+impl CreateMirrorArgs {
+    pub fn max_buffered_bytes(&self) -> Option<usize> {
+        self.max_buffered_bytes
+            .map(|n| usize::try_from(n).unwrap_or(usize::MAX))
+    }
+}
+
+/// `pty_resize_mirror`.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct ResizeMirrorArgs {
+    pub id: String,
+    pub cols: u16,
+    pub rows: u16,
+}
+
+/// `pty_write_mirror`: output text to feed the screen.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct WriteMirrorArgs {
+    pub id: String,
+    pub data: String,
+}
+
 /// A [`PtyEvent`] as the webview receives it.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(
@@ -155,6 +215,44 @@ mod tests {
 
         let bad = serde_json::from_value::<SpawnArgs>(json!({ "cwd": "/", "shell": "zsh" }));
         assert!(bad.is_err());
+    }
+
+    #[test]
+    fn screen_and_mirror_args_take_the_reference_shapes() {
+        let text: ScreenTextArgs = serde_json::from_value(json!({
+            "id": "t",
+            "maxLines": 9_007_199_254_740_991u64,
+        }))
+        .unwrap();
+        assert_eq!(text.max_lines(), 9_007_199_254_740_991);
+        let all: ScreenTextArgs =
+            serde_json::from_value(json!({ "id": "t", "maxLines": null })).unwrap();
+        assert_eq!(all.max_lines(), usize::MAX);
+
+        let create: CreateMirrorArgs = serde_json::from_value(json!({
+            "id": "remote-terminal-mirror:s1",
+            "cols": 100,
+            "rows": 30,
+            "maxBufferedBytes": 1_048_576,
+        }))
+        .unwrap();
+        assert_eq!((create.cols, create.rows), (100, 30));
+        assert_eq!(create.max_buffered_bytes(), Some(1_048_576));
+        let create: CreateMirrorArgs =
+            serde_json::from_value(json!({ "id": "m", "cols": 80, "rows": 24 })).unwrap();
+        assert_eq!(create.max_buffered_bytes(), None);
+
+        let write: WriteMirrorArgs =
+            serde_json::from_value(json!({ "id": "m", "data": "hi\r\n" })).unwrap();
+        assert_eq!(write.data, "hi\r\n");
+        let resize: ResizeMirrorArgs =
+            serde_json::from_value(json!({ "id": "m", "cols": 1, "rows": 2 })).unwrap();
+        assert_eq!((resize.cols, resize.rows), (1, 2));
+        let id: IdArgs = serde_json::from_value(json!({ "id": "m" })).unwrap();
+        assert_eq!(id.id, "m");
+
+        assert!(serde_json::from_value::<IdArgs>(json!({ "id": "m", "x": 1 })).is_err());
+        assert!(serde_json::from_value::<ScreenTextArgs>(json!({ "maxLines": 5 })).is_err());
     }
 
     #[test]

@@ -4,7 +4,8 @@ import { isSidebarVisible } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
-import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
+import { QuickStartDialog, type DialogKind } from "./components/Dialogs";
+import { CloneGitHubRepoDialog } from "./components/CloneGitHubRepoDialog";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
@@ -17,7 +18,7 @@ import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
 import { PaletteHost } from "./palette/PaletteHost";
-import { useKeybindings } from "./keybindings/KeybindingsProvider";
+import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
 import { SettingsView } from "./settings/SettingsView";
 import { pageFromPath, type SettingsPage } from "./settings/pages";
 import { applyTheme } from "./settings/useSettings";
@@ -84,6 +85,7 @@ export default function App() {
   const [quickOpen, setQuickOpen] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const { overrides } = useKeybindingOverrides();
   const toggleShortcuts = useCallback(() => setShortcutsOpen((open) => !open), []);
   useEffect(() => {
     if (!inTauri()) return;
@@ -132,7 +134,12 @@ export default function App() {
           <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}
       </main>
-      {dialog === "clone" && <CloneDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
+      {dialog === "clone" && (
+        <CloneGitHubRepoDialog
+          onClose={() => setDialog(null)}
+          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", repo: { name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
+        />
+      )}
       {dialog === "quickstart" && <QuickStartDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
       {dialog === "create" && (
         <CreateWorkspaceDialog
@@ -165,7 +172,7 @@ export default function App() {
           onError={(message) => show("error", createFailedMessage(message))}
         />
       )}
-      {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} />}
+      {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
       <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} />
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>

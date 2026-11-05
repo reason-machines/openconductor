@@ -98,6 +98,7 @@ export async function createWorkspace(args: CreateWorkspaceArgs): Promise<Create
 const SAMPLE_PRS: CreateFrom[] = [
   { kind: "pr", number: 128, title: "Fix login redirect loop", headBranch: "fix/login-redirect", baseBranch: "main" },
   { kind: "pr", number: 121, title: "Add dark mode toggle", headBranch: "feat/dark-mode", baseBranch: "main" },
+  { kind: "pr", number: 117, title: "Fix typo in README", headBranch: "main", baseBranch: "main", headOwner: "octocat", crossRepository: true },
 ];
 const SAMPLE_ISSUES: CreateFrom[] = [
   { kind: "issue", provider: "github", key: "#42", title: "Crash when opening an empty repo", body: "Steps: add a repo with no commits." },

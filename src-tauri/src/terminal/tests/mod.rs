@@ -237,4 +237,5 @@ fn dropping_the_manager_kills_terminals() {
 mod flow_history;
 mod kill_group;
 mod screen;
+mod screen_live;
 mod shell_exec;
