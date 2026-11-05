@@ -42,6 +42,15 @@ impl Session {
     fn exit_info(&self) -> Option<ExitInfo> {
         self.life.0.lock().unwrap().exit.clone()
     }
+
+    pub(crate) fn wait_exit(&self, timeout: Duration) -> Option<ExitInfo> {
+        let (lock, cv) = &*self.life;
+        let guard = lock.lock().unwrap();
+        let (guard, _) = cv
+            .wait_timeout_while(guard, timeout, |l| l.exit.is_none())
+            .unwrap();
+        guard.exit.clone()
+    }
 }
 
 pub struct PtyManager {
@@ -144,6 +153,11 @@ impl PtyManager {
                 });
             })?;
 
+        if let Some(command) = req.initial_command.as_deref().filter(|c| !c.is_empty()) {
+            let mut line = command.as_bytes().to_vec();
+            line.push(b'\r');
+            self.write(&id, &line)?;
+        }
         Ok(id)
     }
 
@@ -189,6 +203,23 @@ impl PtyManager {
                 pixel_height: 0,
             })
             .map_err(|e| TerminalError::Io(std::io::Error::other(e.to_string())))
+    }
+
+    /// The renderer has processed `n` more bytes of output.
+    pub fn ack_bytes(&self, id: &str, n: usize) -> Result<()> {
+        self.get(id)?.flow.ack(n);
+        Ok(())
+    }
+
+    /// Output kept for replay, oldest first.
+    pub fn history(&self, id: &str) -> Result<Vec<u8>> {
+        Ok(self.get(id)?.scrollback.lock().unwrap().to_vec())
+    }
+
+    /// "Clear terminal scrollback": drop the kept history.
+    pub fn clear_history(&self, id: &str) -> Result<()> {
+        self.get(id)?.scrollback.lock().unwrap().clear();
+        Ok(())
     }
 
     pub fn pid(&self, id: &str) -> Result<Option<u32>> {

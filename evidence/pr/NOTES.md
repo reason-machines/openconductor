@@ -33,10 +33,19 @@ Both match the asset manifest's decoded sizes. Locations below are byte offsets 
 |---|---|---|
 | PR fields read: number, url, author, base/head ref name and oid, viewer authored / latest review, created/updated, draft, merge state, merged at, review decision, review request count, state, auto-merge request, merge queue entry, title, body, head status check rollup | `model::PrNode` | `pr_node_deserializes_and_unknown_enums_degrade` |
 | Check rollup entries are check runs or status contexts; null nodes skipped; a check run's workflow name falls back to its check suite's workflow | `model::RawCheck`, `Check::from`, `Nodes::present` | same |
-| Merge is allowed for ADMIN, MAINTAIN, WRITE permission | `ViewerPermission::can_merge` | (used by later PRs) |
+| Merge is allowed for ADMIN, MAINTAIN, WRITE permission | `ViewerPermission::can_merge` | `read_permission_cannot_merge_and_missing_permission_is_unknown` |
+| Check rollup: re-runs collapse to one entry per identity (workflow + name for check runs, context for status contexts, then details URL, target URL, position), keeping the most recent by completed time, else started time, else 0; later entries win ties; first-seen order kept | `checks::dedupe_latest` | `reruns_collapse_to_latest_keeping_first_position`, `ties_and_missing_times_prefer_the_later_entry` |
+| `CLEAN` merge state reports checks passing with no failures, even when optional checks failed | `checks::summarize` | `clean_merge_state_is_passing_even_with_failed_optional_checks` |
+| Otherwise, with checks: pending = status IN_PROGRESS/EXPECTED/QUEUED or state PENDING/EXPECTED; failing = conclusion FAILURE/ERROR/CANCELLED/TIMED_OUT/ACTION_REQUIRED or state FAILURE/ERROR/STARTUP_FAILURE; failing beats pending beats passing. No checks and not clean: status unknown | same | `failing_wins_over_pending_and_counts_are_reported`, `no_checks_and_not_clean_leaves_status_unknown` |
+| A preview link is offered when exactly one failing check is a Vercel status (context `vercel`, any case, or target URL on vercel.com) | `ChecksSummary::vercel_url` | `single_failing_vercel_deployment_exposes_its_url` |
+| A closed, unmerged PR yields only "closed"; a merged PR keeps its identity but drops mergeability and checks; an open PR carries merge state, check summary, review decision and review-request count | `info::lookup_from_node` | `closed_unmerged_node_is_canceled`, `merged_node_is_done_and_drops_status`, `open_node_becomes_found_with_status_and_permission` |
+| `viewerCanMerge` comes from the repository `viewerPermission` (unknown when not reported) | `PrInfo::viewer_can_merge` | `read_permission_cannot_merge_and_missing_permission_is_unknown` |
+| Workspace `derived_status`: no PR = `in-progress`, open = `in-review`, merged = `done`, closed = `canceled`; stored values outside `backlog/in-progress/in-review/done/canceled` read as `in-progress` | `info::derived_status`, `WorkspaceStatus` | `workspace_status_round_trips_and_defaults` and the three above |
+| PR title/body are copied to the workspace's `pr_title` / `pr_description` only when they changed | `info::metadata_update` | `metadata_is_written_only_when_changed` |
 
 ## Deliberate differences
 
+- Timestamps are parsed by our own RFC 3339 parser (`checks::parse_timestamp_ms`) rather than the JS `Date.parse`; GitHub only sends `...Z` UTC timestamps, which both read the same.
 - Unknown GitHub enum values (a new `mergeStateStatus`, permission or queue state) deserialize to `Unknown` / `Other` instead of failing the response; the reference's schema validation rejects the whole response.
 
 ## REA gaps hit

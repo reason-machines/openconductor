@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { applyChatEvent, applyChatEvents, emptyTranscript, transcriptFromMessages, type ChatTranscript } from "./reducer.ts";
-import { plainText, type Block, type ChatEvent, type ChatMessage, type TurnStatus } from "./types.ts";
+import { messageOrigin, plainText, type Block, type ChatEvent, type ChatMessage, type TurnStatus } from "./types.ts";
 
 const msg = (id: string, role: ChatMessage["role"], blocks: Block[]): ChatMessage => ({
   id,
@@ -95,4 +95,24 @@ test("transcriptFromMessages keeps this session's messages and lets later copies
   const t = transcriptFromMessages("s1", [msg("m1", "user", []), other, msg("m1", "user", [{ type: "text", text: "v2" }])]);
   assert.deepEqual(t.messages.map((m) => m.id), ["m1"]);
   assert.equal(plainText(t.messages[0]!), "v2");
+});
+
+test("sender fields parse from the wire and decide the origin", () => {
+  // Same keys sender_fields_use_camel_case_and_are_omitted_when_absent pins in Rust.
+  const wire = `{"id":"m2","sessionId":"s1","turnId":"t1","role":"user","createdAt":"2026-11-05T10:00:00.000Z",
+    "senderSessionId":"child-1","senderApiKeyName":"ci","blocks":[{"type":"text","text":"done"}]}`;
+  const m = JSON.parse(wire) as ChatMessage;
+  assert.deepEqual(messageOrigin(m), { kind: "session", sessionId: "child-1" });
+  assert.deepEqual(messageOrigin({ ...m, senderSessionId: undefined }), { kind: "api_key", name: "ci" });
+  assert.deepEqual(messageOrigin(msg("u", "user", [])), { kind: "user" });
+  assert.deepEqual(messageOrigin(msg("a", "assistant", [])), { kind: "assistant" });
+  assert.deepEqual(messageOrigin(msg("s", "system", [])), { kind: "system" });
+});
+
+test("a session report arriving mid-turn leaves the active turn running", () => {
+  const report = { ...msg("r1", "user", [{ type: "text", text: "child finished" }]), senderSessionId: "child-1" };
+  const t = apply([status("t1", "running"), upsert(report)]);
+  assert.equal(t.activeTurn, "t1");
+  assert.deepEqual(t.turns["t1"], { status: "running" });
+  assert.deepEqual(messageOrigin(t.messages[0]!), { kind: "session", sessionId: "child-1" });
 });

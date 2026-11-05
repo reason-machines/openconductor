@@ -79,6 +79,27 @@ pub fn branch_exists(repo: &Path, branch: &str) -> bool {
     git_ok(repo, ["show-ref", "--verify", "--quiet", &format!("refs/heads/{branch}")])
 }
 
+/// Whether a new workspace cannot use `branch`: a local branch or any
+/// remote's tracking branch has that name, or a local branch blocks it as a
+/// path component (`a/b` exists so `a` cannot be created, or the reverse).
+/// Matches the create dialog's uniqueness check, which treats remote
+/// branches as taken too.
+pub fn branch_name_is_taken(repo: &Path, branch: &str) -> Result<bool, WorkspaceError> {
+    if branch_exists(repo, branch) {
+        return Ok(true);
+    }
+    for remote in git(repo, ["remote"])?.lines().filter(|l| !l.is_empty()) {
+        if git_ok(repo, ["show-ref", "--verify", "--quiet", &format!("refs/remotes/{remote}/{branch}")]) {
+            return Ok(true);
+        }
+    }
+    if !git(repo, ["for-each-ref", "--count=1", "--format=%(refname)", &format!("refs/heads/{branch}/")])?.is_empty() {
+        return Ok(true);
+    }
+    let parts: Vec<&str> = branch.split('/').collect();
+    Ok((1..parts.len()).any(|i| branch_exists(repo, &parts[..i].join("/"))))
+}
+
 pub fn remote_exists(repo: &Path, remote: &str) -> bool {
     git_ok(repo, ["remote", "get-url", remote])
 }

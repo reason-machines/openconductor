@@ -6,6 +6,7 @@ export const FolderIcon = ({ size }: P) => (<svg {...base(size)}><path d="M3 7a2
 export const CloudIcon = ({ size }: P) => (<svg {...base(size)}><path d="M7 18a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z" /><path d="M12 11v6m-3-3 3 3 3-3" /></svg>);
 export const SparkIcon = ({ size }: P) => (<svg {...base(size)}><path d="M12 3c.6 4.8 2.2 6.4 7 7-4.8.6-6.4 2.2-7 7-.6-4.8-2.2-6.4-7-7 4.8-.6 6.4-2.2 7-7z" /></svg>);
 export const HomeIcon = ({ size }: P) => (<svg {...base(size)}><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" /></svg>);
+export const SidebarIcon = ({ size }: P) => (<svg {...base(size)}><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>);
 export const PlusIcon = ({ size }: P) => (<svg {...base(size)}><path d="M12 5v14M5 12h14" /></svg>);
 export const ChevronIcon = ({ size, open }: P & { open?: boolean }) => (<svg {...base(size)} style={{ transform: open ? "rotate(90deg)" : undefined, transition: "transform .12s" }}><path d="m9 6 6 6-6 6" /></svg>);
 export const BranchIcon = ({ size }: P) => (<svg {...base(size)}><circle cx="6" cy="5" r="2" /><circle cx="6" cy="19" r="2" /><circle cx="18" cy="7" r="2" /><path d="M6 7v10M18 9c0 5-6 4-12 8" /></svg>);

@@ -1,6 +1,7 @@
 use super::*;
+use std::path::PathBuf;
 use std::sync::{Arc, Condvar, Mutex};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 const WAIT: Duration = Duration::from_secs(10);
 
@@ -76,6 +77,17 @@ fn output_of(ev: &[PtyEvent], id: Option<&str>) -> Vec<u8> {
     out
 }
 
+fn tempdir(tag: &str) -> PathBuf {
+    let dir = std::env::temp_dir().join(format!(
+        "oc-term-{tag}-{}-{}",
+        std::process::id(),
+        Instant::now().elapsed().as_nanos()
+    ));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    dir
+}
+
 fn sh(script: &str) -> Vec<String> {
     vec!["/bin/sh".into(), "-c".into(), script.into()]
 }
@@ -110,8 +122,9 @@ fn ready_data_exit_in_order_with_exit_code() {
         m.write(&id, b"x"),
         Err(TerminalError::NotRunning(_))
     ));
+    assert_eq!(m.history(&id).unwrap(), b"hello");
     m.kill(&id).unwrap();
-    assert!(matches!(m.exit_info(&id), Err(TerminalError::NotFound(_))));
+    assert!(matches!(m.history(&id), Err(TerminalError::NotFound(_))));
 }
 
 #[test]
@@ -146,3 +159,80 @@ fn resize_is_seen_by_the_program() {
         Err(TerminalError::InvalidSize { .. })
     ));
 }
+
+#[test]
+fn cwd_and_environment() {
+    let dir = tempdir("cwd");
+    let ev = Events::default();
+    let m = PtyManager::new(ev.sink());
+    let mut req = SpawnRequest::argv(
+        &dir,
+        sh("printf '%s|%s|%s|%s' \"$(pwd -P)\" \"$TERM\" \"$COLORTERM\" \"$OC_TEST\""),
+    );
+    req.env.push(("OC_TEST".into(), "yes".into()));
+    let id = m.spawn(req).unwrap();
+    ev.wait_exit(&id);
+    let want = format!(
+        "{}|xterm-256color|truecolor|yes",
+        dir.canonicalize().unwrap().display()
+    );
+    assert_eq!(ev.output(&id), want);
+    std::fs::remove_dir_all(&dir).unwrap();
+}
+
+#[test]
+fn ids_are_unique_and_caller_ids_are_kept() {
+    let ev = Events::default();
+    let m = PtyManager::new(ev.sink());
+    let mut req = SpawnRequest::argv(std::env::temp_dir(), sh("sleep 30"));
+    req.id = Some("tab-1".into());
+    assert_eq!(m.spawn(req.clone()).unwrap(), "tab-1");
+    assert!(matches!(
+        m.spawn(req),
+        Err(TerminalError::DuplicateId(id)) if id == "tab-1"
+    ));
+    let a = m
+        .spawn(SpawnRequest::argv(std::env::temp_dir(), sh("sleep 30")))
+        .unwrap();
+    let b = m
+        .spawn(SpawnRequest::argv(std::env::temp_dir(), sh("sleep 30")))
+        .unwrap();
+    assert_ne!(a, b);
+    assert_eq!(m.ids().len(), 3);
+    for op in [
+        m.write("nope", b"x").err(),
+        m.resize("nope", 10, 10).err(),
+        m.ack_bytes("nope", 1).err(),
+        m.kill("nope").err(),
+    ] {
+        assert!(matches!(op, Some(TerminalError::NotFound(_))));
+    }
+    m.kill_all();
+    assert!(m.ids().is_empty());
+}
+
+#[test]
+fn login_shell_runs_commands() {
+    let ev = Events::default();
+    let m = PtyManager::new(ev.sink());
+    let id = m.spawn(SpawnRequest::shell(std::env::temp_dir())).unwrap();
+    m.write(&id, b"echo RESULT_$((6*7)); exit\r").unwrap();
+    ev.wait_output(&id, "RESULT_42");
+    ev.wait_exit(&id);
+}
+
+#[test]
+fn dropping_the_manager_kills_terminals() {
+    let ev = Events::default();
+    let id;
+    {
+        let m = PtyManager::new(ev.sink());
+        id = m
+            .spawn(SpawnRequest::argv(std::env::temp_dir(), sh("sleep 300")))
+            .unwrap();
+    }
+    ev.wait_exit(&id);
+}
+
+mod flow_history;
+mod kill_group;
