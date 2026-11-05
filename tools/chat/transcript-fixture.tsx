@@ -42,9 +42,9 @@ const assistant: Block[] = [
 
 const events: ChatEvent[] = [
   { type: "upsert", message: { ...msg(`${T}:user`, "user", [{ type: "text", text: "After signing in, users with an expired session get bounced between /login and /dashboard forever. Can you find out why and fix it?" }], 0), ...(cancelled ? { cancelledAt: at(30) } : {}) } },
-  { type: "turn_status", sessionId: S, turnId: T, status: "running" },
+  { type: "turn_status", sessionId: S, turnId: T, status: "running", at: at(0) },
   { type: "upsert", message: msg(`${T}:assistant`, "assistant", cancelled ? assistant.slice(0, 3) : assistant, 2) },
-  ...(running ? [] : [{ type: "turn_status", sessionId: S, turnId: T, status: cancelled ? "cancelled" : "completed" } as ChatEvent]),
+  ...(running ? [] : [{ type: "turn_status", sessionId: S, turnId: T, status: cancelled ? "cancelled" : "completed", at: at(cancelled ? 31 : 480) } as ChatEvent]),
 ];
 const r = applyChatEvents(emptyTranscript(S), events);
 if (!r.ok) throw new Error(JSON.stringify(r.error));

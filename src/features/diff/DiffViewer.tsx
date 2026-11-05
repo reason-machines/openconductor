@@ -7,6 +7,7 @@ import "./diff.css";
 import { DiscardDialog } from "./DiscardDialog";
 import { ViewOptionsMenu } from "./Whitespace";
 import { FileDiffView, type LineAnchor, type LineRange } from "./FileDiffView";
+import { editableContents, useFileEdit } from "./EditInViewer.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
 export { ChangesList, type ChangesListProps } from "./ChangesList";
@@ -56,7 +57,7 @@ export interface DiffTabProps {
 
 /** Main-area "All changes" tab: the file picked in the changes list, with its toolbar. */
 export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations, notes }: DiffTabProps) {
-  const { opts, update, selected, files, load } = diff;
+  const { selected, files, load } = diff;
   if (!selected) {
     return (
       <div className="oc-diff oc-diff-tab">
@@ -67,6 +68,13 @@ export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations,
     );
   }
   const f = files[diff.current];
+  return <OpenFile diff={diff} f={f} selected={selected} onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} notes={notes} />;
+}
+
+/** The open file, editable in the entire-file layout (EditInViewer.ts). */
+function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annotations, notes }: DiffTabProps & { f: FileDiff; selected: FileDiff }) {
+  const { opts, update } = diff;
+  const edit = useFileEdit(diff.worktree, selected.path, editableContents(selected, opts.layout, opts.ignoreWhitespace), diff.reloadQuietly);
   return (
     <div className="oc-diff oc-diff-tab">
       <div className="oc-files">
@@ -86,6 +94,7 @@ export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations,
           loadFull={() => diff.loadFull(f)}
           onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
           onShowWhitespace={() => update({ ignoreWhitespace: false })}
+          edit={edit}
           tools={
             <>
               <LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />

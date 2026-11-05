@@ -66,7 +66,7 @@ impl From<store::DiffComment> for CommentDto {
             },
             location: match (file_level, c.location) {
                 (true, _) => "file",
-                (false, Some(Location::Base)) => "base",
+                (false, Some(Location::Original)) => "original",
                 _ => "modified",
             },
             file_level,
@@ -101,12 +101,9 @@ pub struct NewCommentInput {
 
 impl NewCommentInput {
     fn into_store(self, now: i64) -> Result<NewDiffComment, String> {
-        let location = match self.location.as_str() {
-            "modified" => Location::Modified,
-            "base" => Location::Base,
-            "file" => Location::File,
-            other => return Err(format!("unknown comment location: {other}")),
-        };
+        // `base` is what earlier builds of the frontend sent for the old side.
+        let location = Location::parse(&self.location)
+            .ok_or_else(|| format!("unknown comment location: {}", self.location))?;
         let file_level = self.file_level || location == Location::File;
         if self.body.trim().is_empty() {
             return Err("comment is empty".into());
@@ -237,7 +234,7 @@ fn remote_row(c: SyncedComment) -> RemoteDiffComment {
         body: c.body,
         location: match c.anchor {
             Anchor::Modified => Location::Modified,
-            Anchor::Base => Location::Base,
+            Anchor::Base => Location::Original,
             Anchor::File => Location::File,
         },
         created_at: c.created_at,
@@ -373,11 +370,13 @@ mod tests {
 
     #[tokio::test]
     async fn line_comment_roundtrips_in_the_frontend_shape() {
-        let c = roundtrip(input("base", 7, Some(9))).await;
+        let c = roundtrip(input("original", 7, Some(9))).await;
         assert_eq!(
             (c.line_number, c.end_line_number, c.location, c.state),
-            (7, Some(9), "base", "pending")
+            (7, Some(9), "original", "pending")
         );
+        // Earlier frontends sent the old side as `base`.
+        assert_eq!(roundtrip(input("base", 7, None)).await.location, "original");
         assert_eq!(
             (c.file_level, c.body.as_str(), c.created_at),
             (false, "fix this", 42)
@@ -479,7 +478,7 @@ mod tests {
         let review = rows.iter().find(|c| c.id == "github-T-1").unwrap();
         assert_eq!(
             (review.location, review.line_number, review.file_level),
-            ("base", 4, false)
+            ("original", 4, false)
         );
         assert!(review.is_resolved);
         let general = rows.iter().find(|c| c.id == "github-general-2").unwrap();

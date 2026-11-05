@@ -23,6 +23,7 @@ async fn a_saved_chat_loads_back_in_order_with_its_agent_session() {
         ],
         delete_ids: vec![],
         agent_session_id: Some("reason-1".into()),
+        rewind_to: None,
     };
     save(&pool, "w1", &first).await.unwrap();
     // A later update of a1 (streamed text) keeps its place; a new message goes last.
@@ -132,4 +133,52 @@ async fn columns_conductor_filters_on_are_written() {
             Some("2026-11-05T10:00:05Z".into())
         )
     );
+}
+
+#[tokio::test]
+async fn reset_chat_forgets_the_agent_session_until_a_new_one_is_saved() {
+    let pool = openconductor_db::open_in_memory().await.unwrap();
+    let first = Batch {
+        upserts: vec![
+            msg("u1", "user", "t1", "1"),
+            msg("a1", "assistant", "t1", "2"),
+            msg("u2", "user", "t2", "3"),
+        ],
+        agent_session_id: Some("reason-1".into()),
+        ..Default::default()
+    };
+    save(&pool, "w1", &first).await.unwrap();
+    // Reset chat to t1: t2 goes, and so does the session that remembers it.
+    let reset = Batch {
+        delete_ids: vec!["u2".into()],
+        rewind_to: Some("a1".into()),
+        ..Default::default()
+    };
+    save(&pool, "w1", &reset).await.unwrap();
+    let loaded = load(&pool, "w1").await.unwrap();
+    assert_eq!(loaded.agent_session_id, None);
+    let resume: (Option<String>,) =
+        sqlx::query_as("SELECT resume_session_at FROM sessions WHERE id = 'w1'")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+    assert_eq!(resume.0.as_deref(), Some("a1"));
+
+    // The next turn's new session replaces it and clears the marker.
+    let next = Batch {
+        upserts: vec![msg("u3", "user", "t3", "4")],
+        agent_session_id: Some("reason-2".into()),
+        ..Default::default()
+    };
+    save(&pool, "w1", &next).await.unwrap();
+    assert_eq!(
+        load(&pool, "w1").await.unwrap().agent_session_id.as_deref(),
+        Some("reason-2")
+    );
+    let resume: (Option<String>,) =
+        sqlx::query_as("SELECT resume_session_at FROM sessions WHERE id = 'w1'")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+    assert_eq!(resume.0, None);
 }
