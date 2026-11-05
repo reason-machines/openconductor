@@ -23,7 +23,7 @@ import os
 import sys
 import threading
 
-HOME = os.getcwd()
+HOME = os.path.realpath(os.getcwd())
 STATE = os.path.join(HOME, "state.json")
 CLOUD = "/home/runner/.reason/workspace/sessions/child-1/repo"
 lock = threading.Lock()
@@ -74,7 +74,9 @@ def prompt(rid, p):
     save(state)
     cmd = "".join(b.get("text", "") for b in p["prompt"])
     stop = "end_turn"
-    inside_home = session["cwd"] == HOME or session["cwd"].startswith(HOME.rstrip("/") + "/")
+    # Real paths: on macOS the temp folder /var/... is a symlink to /private/var/...
+    cwd = os.path.realpath(session["cwd"])
+    inside_home = cwd == HOME or cwd.startswith(HOME.rstrip("/") + "/")
     if not inside_home:
         text(sid, "agent_message_chunk", "Reason request failed (404 device_not_found)")
     elif cmd.startswith("echo: "):
