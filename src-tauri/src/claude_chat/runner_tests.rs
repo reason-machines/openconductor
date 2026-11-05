@@ -298,10 +298,18 @@ fn stop_denies_a_waiting_prompt_and_resolves_it() {
         .unwrap();
     let ended = types.iter().position(|t| t == "turnEnded").unwrap();
     assert!(resolved < ended, "{types:?}");
-    let sent = h.stdin();
-    let deny = sent
-        .iter()
-        .find(|m| m["type"] == "control_response")
-        .unwrap();
+    // The fake logs a line when it reads it, which can be after the turn ended.
+    let mut deny = None;
+    for _ in 0..500 {
+        deny = h
+            .stdin()
+            .into_iter()
+            .find(|m| m["type"] == "control_response");
+        if deny.is_some() {
+            break;
+        }
+        thread::sleep(Duration::from_millis(10));
+    }
+    let deny = deny.expect("Stop answers the waiting prompt");
     assert_eq!(deny["response"]["response"]["behavior"], "deny");
 }

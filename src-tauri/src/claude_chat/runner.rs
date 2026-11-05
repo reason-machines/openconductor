@@ -294,16 +294,23 @@ fn spawn_reader(
             SessionEvent::Event(e) => {
                 let mut st = state.lock().unwrap();
                 for out in st.mapper.map(&e) {
-                    if let ProviderEvent::TurnEnded(end) = &out {
+                    let ended = match &out {
+                        ProviderEvent::TurnEnded(end) => Some(end.clone()),
+                        _ => None,
+                    };
+                    if ended.is_some() {
                         st.stopping = false;
                         for (id, _) in st.take_asks() {
                             sink(&chat_id, ProviderEvent::InteractionResolved { id });
                         }
-                        if let Some(tx) = st.waiting.pop_front() {
-                            let _ = tx.send(end.clone());
-                        }
                     }
                     sink(&chat_id, out);
+                    // The waiting prompt returns once its end has been emitted.
+                    if let Some(end) = ended {
+                        if let Some(tx) = st.waiting.pop_front() {
+                            let _ = tx.send(end);
+                        }
+                    }
                 }
             }
             SessionEvent::BadLine { line, error } => {
@@ -342,8 +349,8 @@ fn spawn_reader(
                     })
                 };
                 while let Some(tx) = st.waiting.pop_front() {
-                    let _ = tx.send(end.clone());
                     sink(&chat_id, ProviderEvent::TurnEnded(end.clone()));
+                    let _ = tx.send(end.clone());
                 }
                 return;
             }
