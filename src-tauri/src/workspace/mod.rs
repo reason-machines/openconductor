@@ -173,8 +173,9 @@ pub struct CreateOptions {
     /// Fetch `origin/<base>` first so the workspace starts from the latest
     /// remote commit (does not move the branch checked out in the root).
     pub fetch: bool,
-    /// `file_include_globs` from repository settings.
-    pub file_include_globs: Option<Vec<String>>,
+    /// `file_include_globs` from repository settings: gitignore-style
+    /// patterns, one per line (see [`files_to_copy::patterns`]).
+    pub file_include_globs: Option<String>,
     /// Set `push.autoSetupRemote` in the new worktree's config
     /// (`git.worktree_push_auto_setup_remote`, see [`git::configure_push_upstream`]).
     pub push_auto_setup_remote: bool,
@@ -630,6 +631,27 @@ impl WorkspaceManager {
         let record = self.archive_record(&ws.repo_root, &ws.name);
         if record.exists() {
             std::fs::remove_file(record)?;
+        }
+        Ok(())
+    }
+
+    /// "Remove repository": remove every workspace of `repo` (worktrees,
+    /// forced, and archive records) and then the repository's workspaces
+    /// directory when nothing else is left in it. Branches and the repository
+    /// checkout itself are left alone, as Conductor's dialog promises ("The
+    /// source directory ... will not be modified").
+    pub fn remove_all(&self, repo: &Path) -> Result<(), WorkspaceError> {
+        let root = git::toplevel(repo)?;
+        for ws in self.list(&root)? {
+            if ws.state != WorkspaceState::Archived {
+                self.remove_worktree(&ws)?;
+            }
+            self.forget_archive_record(&root, &ws.name)?;
+        }
+        let dir = self.workspaces_dir(&root);
+        // Only empty directories go: anything a user put there stays.
+        for empty in [dir, self.archive_dir(&root)] {
+            let _ = std::fs::remove_dir(empty);
         }
         Ok(())
     }

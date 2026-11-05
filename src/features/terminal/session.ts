@@ -173,6 +173,16 @@ export const openTab = (workspaceId: string, cwd: string, initialCommand?: strin
   startTab(workspaceId, cwd, initialCommand, undefined, undefined, opts.quiet);
 
 /**
+ * ⌘⇧T from outside a terminal: open a tab running the Big terminal preset
+ * (`run`, from `bigTabRequest`). The workspace's saved tabs come back first, so
+ * the panel shown afterwards finds tabs and opens no plain shell of its own.
+ */
+export async function openBigTab(workspaceId: string, cwd: string, run: { command: string | undefined }, initialCommand?: string): Promise<string> {
+  await restoreWorkspaceTabs(workspaceId, cwd, initialCommand);
+  return startTab(workspaceId, cwd, initialCommand, undefined, run);
+}
+
+/**
  * Reopen the tabs `workspaceId` had when the app last ran, each with its saved
  * screen (if any) above a divider and a new shell. Runs once per workspace per
  * launch; resolves to whether the workspace now has tabs.
