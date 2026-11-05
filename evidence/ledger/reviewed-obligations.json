@@ -1,0 +1,1729 @@
+[
+ {
+  "obligation_id": "pkg.bundle",
+  "obligation_version": 1,
+  "title": "App bundle layout, Info.plist identity, URL scheme and usage strings",
+  "application_layer": "packaging",
+  "family": "packaging",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "Contents/Info.plist"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "packaged-process",
+  "required_verifier_authority": "packaged-process",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "rebuild bundle and diff Info.plist keys"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+   "ev_c505b1487683ff8c2b0260e51dde8e03e0bd2eb3afb7b6afc9e1f0b018feb68a",
+   "ev_c77ec9523dc61828b58e75ed7ca3b604968f34b09d35fe4980eb0abcb5ed8358"
+  ]
+ },
+ {
+  "obligation_id": "pkg.signing",
+  "obligation_version": 1,
+  "title": "Hardened runtime with JIT, unsigned-executable-memory and audio-input entitlements",
+  "application_layer": "packaging",
+  "family": "packaging",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "MacOS/conductor"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "packaged-process",
+  "required_verifier_authority": "packaged-process",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "codesign -d of our build"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_9ebab8fc7c5cd30c23019a9566921c83f641615843814d1169ce1d6e5a62a11d",
+   "ev_ac711cc69a072dbe5d90642fc62f3287e1fe0b543694f67d06b6ededb155249b"
+  ]
+ },
+ {
+  "obligation_id": "pkg.dylibs",
+  "obligation_version": 1,
+  "title": "Linked system frameworks and dylib load paths (WebKit, AppKit, Security)",
+  "application_layer": "native-abi",
+  "family": "packaging",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "MacOS/conductor"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "native-abi",
+  "required_verifier_authority": "native-abi",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "trace-dylib-resolution on our build"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_433dabdde49393ba00b3c40576bfd91681ebb580481485f99c98fdd1c28756d3",
+   "ev_4b8fc20547e64ebd8da6a894b3fc417f2129e318fb5a43cf58645c6b81ab5e48"
+  ]
+ },
+ {
+  "obligation_id": "pkg.tauri-stack",
+  "obligation_version": 1,
+  "title": "Tauri 2.11.1 shell with wry 0.55.1/tao 0.35.2 and 13 tauri plugins",
+  "application_layer": "runtime",
+  "family": "framework",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "MacOS/conductor (crate panic paths)"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "cargo tree of rebuild matches plugin set"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_4b8fc20547e64ebd8da6a894b3fc417f2129e318fb5a43cf58645c6b81ab5e48",
+   "ev_9fc1672dec6fadb0d76f8a16296179b144ca8f35cb86d750b6d40bf98f054b2c"
+  ]
+ },
+ {
+  "obligation_id": "pkg.embedded-frontend",
+  "obligation_version": 1,
+  "title": "React/Vite frontend embedded as Tauri asset table (2,902 brotli assets)",
+  "application_layer": "packaging",
+  "family": "frontend",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "MacOS/conductor @0x3086910"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "asset manifest of rebuild"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_4b8fc20547e64ebd8da6a894b3fc417f2129e318fb5a43cf58645c6b81ab5e48",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "pkg.first-run-bootstrap",
+  "obligation_version": 1,
+  "title": "First run copies bundled bin/ toolchain into App Support and writes ~/.conductor/settings.toml",
+  "application_layer": "process",
+  "family": "bootstrap",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "~/Library/Application Support/com.conductor.app/bin"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "teardown"
+  ],
+  "required_original_authority": "process",
+  "required_fixture_authority": "packaged-process",
+  "required_verifier_authority": "packaged-process",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "capture-process of rebuild first run, compare filesystem effects"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_becc8a2e5e25be166770543b0ace567b400b3aaba1a750d903be315d307f529d"
+  ]
+ },
+ {
+  "obligation_id": "proc.sidecar",
+  "obligation_version": 1,
+  "title": "Bun sidecar (conductor-runtime sidecar) started and health-checked by the Tauri shell",
+  "application_layer": "process",
+  "family": "sidecar",
+  "target": {
+   "artifact_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "bin/.internal/sidecar; ensure_sidecar_started, check_sidecar_http_health"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative",
+   "teardown"
+  ],
+  "required_original_authority": "process",
+  "required_fixture_authority": "packaged-process",
+  "required_verifier_authority": "packaged-process",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler",
+   "sidecar HTTP route inventory from Bun bundle"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_a7d6aec462b16c7f754dcd0dcd7faf2b92d72ed4928c70588f26add309fd3e8b",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_becc8a2e5e25be166770543b0ace567b400b3aaba1a750d903be315d307f529d"
+  ]
+ },
+ {
+  "obligation_id": "proc.rpc",
+  "obligation_version": 1,
+  "title": "Bidirectional frontend<->sidecar RPC via rpc_to_sidecar / rpc_from_sidecar",
+  "application_layer": "protocol",
+  "family": "sidecar",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "rpc_to_sidecar, rpc_from_sidecar"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "malformed",
+   "cancellation"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "protocol",
+  "required_verifier_authority": "protocol",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [
+   "proc.sidecar"
+  ],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler",
+   "message schema from Bun bundle"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_4b8fc20547e64ebd8da6a894b3fc417f2129e318fb5a43cf58645c6b81ab5e48",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "proc.logger",
+  "obligation_version": 1,
+  "title": "Logger subprocess with persistence, external-logging toggle and log export",
+  "application_layer": "process",
+  "family": "telemetry",
+  "target": {
+   "artifact_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "bin/.internal/logger; ensure_app_logger_started, export_app_logs, submit_app_logs"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_a7d6aec462b16c7f754dcd0dcd7faf2b92d72ed4928c70588f26add309fd3e8b",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "proc.actions",
+  "obligation_version": 1,
+  "title": "App-actions channel (ensure_app_actions_started, poll_app_action, submit_app_action_result)",
+  "application_layer": "process",
+  "family": "actions",
+  "target": {
+   "artifact_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "bin/.internal/actions"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [
+   "proc.sidecar"
+  ],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler",
+   "actions protocol from Bun bundle"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_a7d6aec462b16c7f754dcd0dcd7faf2b92d72ed4928c70588f26add309fd3e8b",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "cli.surface",
+  "obligation_version": 1,
+  "title": "conductor CLI: auth, project, workspace, section, session, message, routine commands and exit codes",
+  "application_layer": "cli",
+  "family": "cli",
+  "target": {
+   "artifact_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "bin/conductor -> conductor-runtime cli"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative",
+   "malformed"
+  ],
+  "required_original_authority": "process",
+  "required_fixture_authority": "packaged-process",
+  "required_verifier_authority": "packaged-process",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "capture each subcommand --help",
+   "authenticated CLI run (needs API token)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_0baad1f264fb3b2bffd7526543ed142ceefb2f13767f9a957debaa6f6789a6c8",
+   "ev_a7d6aec462b16c7f754dcd0dcd7faf2b92d72ed4928c70588f26add309fd3e8b"
+  ]
+ },
+ {
+  "obligation_id": "cli.auth-keychain",
+  "obligation_version": 1,
+  "title": "CLI API token stored in macOS Keychain (auth login/logout/whoami/status)",
+  "application_layer": "cli",
+  "family": "auth",
+  "target": {
+   "artifact_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "conductor auth"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "process",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [
+   "live auth token"
+  ],
+  "required_next_evidence": [
+   "keychain item attributes written by rebuild"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_0baad1f264fb3b2bffd7526543ed142ceefb2f13767f9a957debaa6f6789a6c8"
+  ]
+ },
+ {
+  "obligation_id": "db.conductor-schema",
+  "obligation_version": 1,
+  "title": "conductor.db schema: repos, workspaces, sessions, session_messages, diff_comments, settings, env_vars, port_forwards, navigation sections (142 sqlx migrations)",
+  "application_layer": "persistence",
+  "family": "persistence",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "conductor.db"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "unit",
+  "required_verifier_authority": "unit",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "schema diff of rebuild DB"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_67633d4a600d132c1ae076363015f758cf6b6ff528c6225665a60b047c2c5a07",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "db.cache-schema",
+  "obligation_version": 1,
+  "title": "cache.db mirror of session_messages plus client cache state and pending-message queue",
+  "application_layer": "persistence",
+  "family": "persistence",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "cache.db"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "unit",
+  "required_verifier_authority": "unit",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [
+   "db.conductor-schema"
+  ],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "schema diff of rebuild cache DB"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_202d2f9fcbf5be8a97cec7b5c27cfa0b7722d0b3e095404e9ac0b0923904aabf",
+   "ev_7c605d9c906f890b8c7cfce6e39afc89622a8e8cbfb394d1e45767adccdbca9d"
+  ]
+ },
+ {
+  "obligation_id": "db.local-storage",
+  "obligation_version": 1,
+  "title": "Encrypted file-backed local storage subsystems (composer drafts, terminal, route state, model picker, turn-changes cache)",
+  "application_layer": "persistence",
+  "family": "persistence",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "local-storage.*.json; get_or_create_local_storage_encryption_key"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "format of local-storage.entries files",
+   "Ghidra binding of the Rust #[tauri::command] handler"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_becc8a2e5e25be166770543b0ace567b400b3aaba1a750d903be315d307f529d"
+  ]
+ },
+ {
+  "obligation_id": "db.settings-toml",
+  "obligation_version": 1,
+  "title": "User settings in ~/.conductor/settings.toml with published JSON schema",
+  "application_layer": "persistence",
+  "family": "settings",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "~/.conductor/settings.toml"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "process",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "fetch/derive settings schema"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_becc8a2e5e25be166770543b0ace567b400b3aaba1a750d903be315d307f529d"
+  ]
+ },
+ {
+  "obligation_id": "repo.add",
+  "obligation_version": 1,
+  "title": "Add a local or GitHub repository (repos table: remote_url, default_branch, root_path, scripts, custom prompts)",
+  "application_layer": "application",
+  "family": "repos",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "/settings/repos"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [
+   "db.conductor-schema"
+  ],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)",
+   "Ghidra binding of the Rust #[tauri::command] handler"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "ws.create",
+  "obligation_version": 1,
+  "title": "Create workspace as git worktree with branch naming (branch_prefix_type, city-name placeholders)",
+  "application_layer": "application",
+  "family": "workspaces",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "/create; workspaces table"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative",
+   "cancellation"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [
+   "repo.add"
+  ],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)",
+   "process capture of git worktree add"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_0baad1f264fb3b2bffd7526543ed142ceefb2f13767f9a957debaa6f6789a6c8",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "ws.setup-run-archive-scripts",
+  "obligation_version": 1,
+  "title": "Per-repo setup, run (concurrent/exclusive) and archive scripts",
+  "application_layer": "process",
+  "family": "workspaces",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "repos.setup_script/run_script/archive_script; /scripts"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "process",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [
+   "ws.create"
+  ],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "process capture of script execution"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "ws.status-archive",
+  "obligation_version": 1,
+  "title": "Workspace states, derived/manual status, pin, unread, archive with archive_commit",
+  "application_layer": "application",
+  "family": "workspaces",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "workspaces.state/derived_status"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [
+   "ws.create"
+  ],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "ws.checkpoints",
+  "obligation_version": 1,
+  "title": "Turn checkpoints as git commits under refs/conductor-checkpoints/<id> (save/restore/diff)",
+  "application_layer": "process",
+  "family": "git",
+  "target": {
+   "artifact_sha256": "fd85f6b33d10e6f315a281efcfdd08656ca50f16e68c595089a86efae7f451f1",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "bin/checkpointer.sh"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative",
+   "malformed"
+  ],
+  "required_original_authority": "process",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "run checkpointer.sh in a scratch repo under capture-process"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+   "ev_c505b1487683ff8c2b0260e51dde8e03e0bd2eb3afb7b6afc9e1f0b018feb68a"
+  ]
+ },
+ {
+  "obligation_id": "ws.git-busy",
+  "obligation_version": 1,
+  "title": "Detect in-progress git operations before acting (git-busy-check.sh)",
+  "application_layer": "process",
+  "family": "git",
+  "target": {
+   "artifact_sha256": "95c8a1ec161f19cd1dd6b42bdafb62e91c4b2f8c0366a6e5ce8b362666335946",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "bin/git-busy-check.sh"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "process",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "capture-process in repo mid-rebase"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5"
+  ]
+ },
+ {
+  "obligation_id": "ws.spotlight",
+  "obligation_version": 1,
+  "title": "Spotlight testing: sync workspace changes into repo root via watchexec (spotlighter.sh)",
+  "application_layer": "process",
+  "family": "git",
+  "target": {
+   "artifact_sha256": "f877d3ed0eb9bca270b8ac05ded0d500add549ab6da68b266426484c6c0b1dae",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "bin/spotlighter.sh; repos.spotlight_testing"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "teardown"
+  ],
+  "required_original_authority": "process",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "capture-process of spotlighter"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "ws.file-tree-search",
+  "obligation_version": 1,
+  "title": "File tree, fuzzy file match and workspace grep",
+  "application_layer": "application",
+  "family": "files",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "list_file_tree, fuzzy_match_files, fuzzy_filter_files, grep_workspace"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "unit",
+  "required_verifier_authority": "unit",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "agent.binaries",
+  "obligation_version": 1,
+  "title": "Download, verify and manage Claude Code and Codex agent binaries (agent-binaries/ with sha256 meta)",
+  "application_layer": "process",
+  "family": "agents",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "agent-binaries/; request_agent_binary_download, get_agent_binary_state"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative",
+   "cancellation"
+  ],
+  "required_original_authority": "process",
+  "required_fixture_authority": "packaged-process",
+  "required_verifier_authority": "packaged-process",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "network capture of updater endpoint"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_becc8a2e5e25be166770543b0ace567b400b3aaba1a750d903be315d307f529d"
+  ]
+ },
+ {
+  "obligation_id": "agent.session-run",
+  "obligation_version": 1,
+  "title": "Start an agent session (claude/codex/opencode) in a workspace and stream messages",
+  "application_layer": "application",
+  "family": "sessions",
+  "target": {
+   "artifact_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "sessions/session_messages; sidecar"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative",
+   "cancellation"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [
+   "ws.create",
+   "agent.binaries",
+   "proc.sidecar"
+  ],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)",
+   "sidecar agent protocol from Bun bundle"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_a7d6aec462b16c7f754dcd0dcd7faf2b92d72ed4928c70588f26add309fd3e8b",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "agent.message-queue",
+  "obligation_version": 1,
+  "title": "Queued/pending messages, cancellation and resumable turns",
+  "application_layer": "application",
+  "family": "sessions",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "session_messages.queue_order/cancelled_at; session_pending_messages"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "cancellation"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [
+   "agent.session-run"
+  ],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_202d2f9fcbf5be8a97cec7b5c27cfa0b7722d0b3e095404e9ac0b0923904aabf",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "agent.models",
+  "obligation_version": 1,
+  "title": "Model picker, favorite models, thinking/effort levels, review model",
+  "application_layer": "application",
+  "family": "models",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "favorite_models; settings models.*"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_becc8a2e5e25be166770543b0ace567b400b3aaba1a750d903be315d307f529d",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "agent.providers",
+  "obligation_version": 1,
+  "title": "Provider credentials (Anthropic API key, Claude provider, Vertex, Codex ChatGPT) in keychain settings",
+  "application_layer": "application",
+  "family": "providers",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "get/set/delete_keychain_setting; /settings/user/providers"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [
+   "live provider credentials"
+  ],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "agent.conductor-skill",
+  "obligation_version": 1,
+  "title": "Ship a Claude Code plugin/skill that teaches agents the conductor CLI",
+  "application_layer": "packaging",
+  "family": "agents",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "Resources/conductor-skill"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "diff our skill package"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+   "ev_c505b1487683ff8c2b0260e51dde8e03e0bd2eb3afb7b6afc9e1f0b018feb68a"
+  ]
+ },
+ {
+  "obligation_id": "agent.attachments",
+  "obligation_version": 1,
+  "title": "Composer attachments and drafts (draft-attachments/, materialize_local_path_attachment)",
+  "application_layer": "application",
+  "family": "composer",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "draft-attachments/"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "agent.speech",
+  "obligation_version": 1,
+  "title": "Speech-to-text input using microphone",
+  "application_layer": "application",
+  "family": "composer",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "NSMicrophoneUsageDescription; audio-input entitlement"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_9ebab8fc7c5cd30c23019a9566921c83f641615843814d1169ce1d6e5a62a11d",
+   "ev_c77ec9523dc61828b58e75ed7ca3b604968f34b09d35fe4980eb0abcb5ed8358"
+  ]
+ },
+ {
+  "obligation_id": "term.pty",
+  "obligation_version": 1,
+  "title": "Integrated terminal via portable-pty: spawn, write, resize, kill, flow control, history persistence, mirrors",
+  "application_layer": "runtime",
+  "family": "terminal",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "pty_* commands"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "teardown"
+  ],
+  "required_original_authority": "process",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler",
+   "process capture of pty_spawn"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_4b8fc20547e64ebd8da6a894b3fc417f2129e318fb5a43cf58645c6b81ab5e48",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "term.shell-exec",
+  "obligation_version": 1,
+  "title": "Run shell commands (execute_shell_command[_cancellable], cancel)",
+  "application_layer": "process",
+  "family": "terminal",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "execute_shell_command"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "cancellation"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "diff.viewer",
+  "obligation_version": 1,
+  "title": "Diff viewer (Pierre diffs renderer: split/unified, virtualized file diffs, themes)",
+  "application_layer": "application",
+  "family": "diff",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "FileDiff, VirtualizedFileDiff, --diffs-* tokens"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "renderer",
+  "required_verifier_authority": "renderer",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "diff.comments",
+  "obligation_version": 1,
+  "title": "Inline diff comments stored in diff_comments",
+  "application_layer": "application",
+  "family": "review",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "diff_comments table; LineComment"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [
+   "diff.viewer"
+  ],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "pr.create",
+  "obligation_version": 1,
+  "title": "Create pull request with custom prompts and gh, PR title/description persisted on workspace",
+  "application_layer": "application",
+  "family": "github",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "custom_prompt_create_pr; workspaces.pr_title"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [
+   "ws.create"
+  ],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)",
+   "process capture of bundled gh"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "pr.agent-prompts",
+  "obligation_version": 1,
+  "title": "Repo-level custom prompts: code review, fix errors, resolve merge conflicts, rename branch, general",
+  "application_layer": "application",
+  "family": "github",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "repos.custom_prompt_*"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "ui.routes",
+  "obligation_version": 1,
+  "title": "Route map: dashboard, all-workspaces, automations, routines, settings (user/org), onboarding, diagnostics",
+  "application_layer": "application",
+  "family": "frontend",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "routes.json"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "renderer",
+  "required_verifier_authority": "renderer",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "ui.theme",
+  "obligation_version": 1,
+  "title": "Dark/light theme tokens and anti-flash background",
+  "application_layer": "application",
+  "family": "frontend",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "index.html; css-tokens.json"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "renderer",
+  "required_verifier_authority": "renderer",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "ui.window-chrome",
+  "obligation_version": 1,
+  "title": "Window vibrancy, traffic-light position, sidebars, dock badge, window state persistence",
+  "application_layer": "runtime",
+  "family": "window",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "update_window_vibrancy, update_traffic_light_position, set_dock_badge"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler",
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_4b8fc20547e64ebd8da6a894b3fc417f2129e318fb5a43cf58645c6b81ab5e48",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "ui.notifications",
+  "obligation_version": 1,
+  "title": "Native notifications and completion sounds",
+  "application_layer": "runtime",
+  "family": "notifications",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "send_native_notification; *.mp3 assets"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "ui.open-in-editor",
+  "obligation_version": 1,
+  "title": "Open workspace in external apps (Cursor, VS Code, Zed, Xcode, Ghostty)",
+  "application_layer": "application",
+  "family": "integrations",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "app-icons/"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_becc8a2e5e25be166770543b0ace567b400b3aaba1a750d903be315d307f529d"
+  ]
+ },
+ {
+  "obligation_id": "app.updater",
+  "obligation_version": 1,
+  "title": "Auto-update via tauri-plugin-updater (check, download, install)",
+  "application_layer": "runtime",
+  "family": "updater",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "plugin:updater|*"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "updater endpoint URL from binary strings"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_9fc1672dec6fadb0d76f8a16296179b144ca8f35cb86d750b6d40bf98f054b2c",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "app.deep-link",
+  "obligation_version": 1,
+  "title": "Deep links via registered URL scheme",
+  "application_layer": "runtime",
+  "family": "integrations",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "CFBundleURLTypes; plugin:deep-link"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "open URL scheme against rebuild"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_c77ec9523dc61828b58e75ed7ca3b604968f34b09d35fe4980eb0abcb5ed8358"
+  ]
+ },
+ {
+  "obligation_id": "net.port-forward",
+  "obligation_version": 1,
+  "title": "Port forwarding for workspace dev servers (start/stop, tokens)",
+  "application_layer": "protocol",
+  "family": "cloud",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "start_port_forward, stop_port_forward; port_forwards table"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [
+   "cloud account"
+  ],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+   "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e"
+  ]
+ },
+ {
+  "obligation_id": "net.remote-file-sync",
+  "obligation_version": 1,
+  "title": "Remote file sync for cloud workspaces",
+  "application_layer": "protocol",
+  "family": "cloud",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "start/stop/trigger_remote_file_sync"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [
+   "cloud account"
+  ],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "cloud.org",
+  "obligation_version": 1,
+  "title": "Cloud organization: login, members, sections, cloud workspaces, MCP servers, environment",
+  "application_layer": "application",
+  "family": "cloud",
+  "target": {
+   "artifact_sha256": null,
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "/login, /members, /settings/organization/*"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [
+   "cloud account"
+  ],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_0baad1f264fb3b2bffd7526543ed142ceefb2f13767f9a957debaa6f6789a6c8",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "cloud.routines",
+  "obligation_version": 1,
+  "title": "Routines/automations triggered by webhook",
+  "application_layer": "application",
+  "family": "cloud",
+  "target": {
+   "artifact_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "/routines, conductor routine create"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [
+   "cloud account"
+  ],
+  "required_next_evidence": [
+   "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_0baad1f264fb3b2bffd7526543ed142ceefb2f13767f9a957debaa6f6789a6c8",
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "net.http-proxy",
+  "obligation_version": 1,
+  "title": "Native HTTP fetch/upload, raw websockets and HTTP proxy config",
+  "application_layer": "protocol",
+  "family": "network",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "native_http_*, raw_websocket_*, configure_http_proxy"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ },
+ {
+  "obligation_id": "app.telemetry",
+  "obligation_version": 1,
+  "title": "Sentry and PostHog telemetry with opt-out (enterprise data privacy)",
+  "application_layer": "runtime",
+  "family": "telemetry",
+  "target": {
+   "artifact_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+   "application_node_id": null,
+   "semantic_node_id": null,
+   "location": "set_posthog_user_context; configure_sentry_external_logging_disabled"
+  },
+  "required": true,
+  "required_case_kinds": [
+   "positive",
+   "negative"
+  ],
+  "required_original_authority": "static",
+  "required_fixture_authority": "integration",
+  "required_verifier_authority": "integration",
+  "requires_parser_type": false,
+  "dependency_obligation_ids": [],
+  "residual_unknown_ids": [],
+  "unavailable_authority": [],
+  "required_next_evidence": [
+   "Ghidra binding of the Rust #[tauri::command] handler"
+  ],
+  "disposition": "active",
+  "review_evidence_ids": [
+   "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367"
+  ]
+ }
+]
