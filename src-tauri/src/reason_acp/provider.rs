@@ -348,11 +348,13 @@ impl ReasonProvider {
             turn.stop_requested = true;
             c.session_id.clone()
         };
-        self.withdraw_permissions(chat);
         let conn = self.agent.lock().unwrap().as_ref().map(|a| a.conn.clone());
         if let (Some(conn), Some(id)) = (conn, session_id) {
             let _ = conn.notify("session/cancel", json!({ "sessionId": id }));
         }
+        // After session/cancel, so the agent knows the turn is stopping when
+        // its permission request comes back `cancelled`.
+        self.withdraw_permissions(chat);
     }
 
     /// Answers the chat's permission request with `option_id`, or as

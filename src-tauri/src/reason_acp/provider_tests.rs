@@ -320,6 +320,6 @@ fn stop_answers_an_open_permission_request_cancelled() {
     p.cancel("chat");
     assert_eq!(turn.join().unwrap(), TurnEnd::Cancelled);
     assert_eq!(reply(&log), "permission: cancelled");
-    assert_eq!(resolved(&log), [r.request_id.clone()]);
+    assert_eq!(resolved(&log), std::slice::from_ref(&r.request_id));
     assert!(!p.answer_permission("chat", &r.request_id, Some("allow")));
 }

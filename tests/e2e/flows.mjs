@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
+import { installFakeApps } from "./fake-apps.mjs";
 
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, stdio: "pipe" });
 
@@ -320,6 +321,85 @@ export const flows = [
       } finally {
         await setStatus("idle").catch(() => {});
       }
+    },
+  },
+  {
+    // The header's Open button and its "Open in" menu, against stand-in app
+    // bundles in ~/Applications (fake-apps.mjs: the apps of Sven's Mac). The
+    // menu lists Finder (⌘O, 1), Cursor 2, VS Code 3, Zed 4, Xcode 5, Ghostty 6,
+    // Terminal 7 and Copy path 8, each with the app's icon; ⌘⇧O opens it, 8
+    // copies the path, and picking an app makes it the button's app.
+    name: "open-in",
+    setup(ctx) {
+      ctx.removeFakeApps = installFakeApps(homedir());
+    },
+    teardown(ctx) {
+      ctx.removeFakeApps?.();
+    },
+    async run(wd, ctx) {
+      const META = "\uE03D";
+      const SHIFT = "\uE008";
+      const ESC = "\uE00C";
+      const menuOpen = async () => (await wd.findAll('.oi-menu[role="menu"]')).length > 0;
+      const rows = () =>
+        wd.execute(
+          "return Array.from(document.querySelectorAll('.oi-menu .oi-row'), (r) => ({ label: r.querySelector('.oi-row-label').textContent, kbd: r.querySelector('.oi-row-kbd')?.textContent ?? null, num: r.querySelector('.oi-row-num')?.textContent ?? null, icon: !!r.querySelector('img') }));",
+          [],
+        );
+      const main = () => wd.execute("const b = document.querySelector('.ws-header .oi-main'); return b && { label: b.getAttribute('aria-label'), title: b.title, icon: !!b.querySelector('img'), disabled: b.disabled };", []);
+      const openMenu = async () => {
+        const [chevron] = await wd.findAll(".ws-header .oi-chevron");
+        await wd.click(chevron);
+        await wd.waitFor("the Open in menu", menuOpen, 10000);
+      };
+
+      const button = await wd.waitFor("the header's Open button with Finder's icon", async () => {
+        const b = await main();
+        return b && !b.disabled && b.icon ? b : null;
+      });
+      if (button.label !== "Open in Finder" || button.title !== "Open in Finder (⌘O)") throw new Error(`Open button ${JSON.stringify(button)}`);
+
+      await openMenu();
+      const want = [
+        ["Finder", "⌘O", "1"],
+        ["Cursor", null, "2"],
+        ["VS Code", null, "3"],
+        ["Zed", null, "4"],
+        ["Xcode", null, "5"],
+        ["Ghostty", null, "6"],
+        ["Terminal", null, "7"],
+      ];
+      const got = await rows();
+      const shape = got.map((r) => [r.label, r.kbd, r.num]);
+      if (JSON.stringify(shape) !== JSON.stringify([...want, ["Copy path", null, "8"]])) throw new Error(`menu rows ${JSON.stringify(shape)}`);
+      const noIcon = got.filter((r, i) => i < want.length && !r.icon).map((r) => r.label);
+      if (noIcon.length) throw new Error(`no app icon on ${JSON.stringify(noIcon)}`);
+      const shot = await wd.screenshot();
+      if (process.env.E2E_OUT) writeFileSync(join(process.env.E2E_OUT, "open-in-menu.png"), shot);
+
+      // Esc closes; ⌘⇧O opens it again; 8 runs Copy path.
+      await wd.keys(ESC);
+      await wd.waitFor("the menu to close on Esc", async () => !(await menuOpen()));
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.chord([META, SHIFT], "o");
+      await wd.waitFor("the Open in menu after ⌘⇧O", menuOpen, 10000);
+      await wd.keys("8");
+      await wd.waitFor("the menu to close after 8", async () => !(await menuOpen()));
+      await wd.waitFor("the Copied path toast", async () => (await textsOf(wd, ".toast-message")).includes("Copied workspace path to clipboard"));
+      const copied = await wd.execute("return window.__TAURI_INTERNALS__.invoke('plugin:clipboard-manager|read_text');", []);
+      if (!ctx.worktree || ![ctx.worktree, realpathSync(ctx.worktree)].includes(copied)) throw new Error(`clipboard ${JSON.stringify(copied)}, want the worktree ${JSON.stringify(ctx.worktree)}`);
+
+      // Picking an app saves it as the default: the button and the ⌘O hint move to it.
+      // (Linux has no `open -a`, so opening reports an error toast; the choice still sticks, as in Conductor.)
+      await openMenu();
+      const [cursor] = await wd.findAll('.oi-menu .oi-row[data-app="cursor"]');
+      await wd.click(cursor);
+      await wd.waitFor("the button to open in Cursor", async () => (await main())?.label === "Open in Cursor");
+      await openMenu();
+      const kbdRow = (await rows()).find((r) => r.kbd)?.label;
+      if (kbdRow !== "Cursor") throw new Error(`⌘O hint on ${JSON.stringify(kbdRow)}, want Cursor`);
+      await wd.keys("1");
+      await wd.waitFor("the button back on Finder", async () => (await main())?.label === "Open in Finder");
     },
   },
   {

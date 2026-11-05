@@ -3,7 +3,7 @@
 // copy follows Conductor's tool approval ("Approve tool use", "<tool> requires
 // your permission.", index-BGEQ8YjU.js TOOL_APPROVAL handler); the choices are
 // the options Reason sends, plus Deny, which answers `cancelled`.
-import type { PermissionPrompt } from "./reasonChat.ts";
+import type { PermissionPrompt } from "./chatRuntime.ts";
 
 interface Props {
   permissions: readonly PermissionPrompt[];
