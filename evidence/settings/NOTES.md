@@ -604,6 +604,18 @@ no Graphite stack UI (only the toggle and the `gt` check), and no syntax highlig
 sets only the code view's foreground and background, not token colors. The sidebar flag in localStorage
 (`UiPrefs.sidebarVisible`) is not migrated: the table cannot tell "unset" from "shown".
 
+### Composer send settings (`message_send_key`, `default_message_send_mode`)
+
+Source: plain byte-offset reads of `renderApp-D_fmY7hW.js` and `index-BGEQ8YjU.js` on `sven m5 max`
+(Conductor 0.87.6, 2026-11-06; `rea search` on the bundle has no JavaScript provider, logged in
+`../rea/rea-invocations.tsv` rows `composer_send_*`). Both keys are non-file-backed, so they are typed
+app preferences in `conductor.db` (`src-tauri/src/app_prefs`).
+
+| Row (tab General) | Conductor | OpenConductor |
+| --- | --- | --- |
+| "Send messages with" / "Choose which key combination sends messages" | Options `enter` "Enter", `cmd-enter` "⌘ Enter"; shows "Custom" when the four send commands match neither preset (`CQt`); detail "Use <new-line key> for new lines"; reset goes to Enter. Choosing writes the preset to `chat.newLine`, `chat.submitMessage`, `chat.submitOppositeFollowUp`, `chat.question.submit` in `keybinding_overrides_v1`, then the legacy `message_send_key` (`RQt`). At startup a legacy `cmd-enter` fills each send command that has no override with the ⌘ Enter preset (`HUt`). | `ComposerRows` on the General page; `composerSettings.chooseSendKey`, `overrides.sendKeyPresetUpdates`, `overrides.migrateLegacySendKey` (run by `main.tsx` before the keybindings load). The composer reads the overrides live, so the change applies at once. |
+| "Follow-up behavior" / "Queue messages to send after the agent finishes, or steer the agent mid-turn." | Options `queued` "Queue", `steering` "Steer"; reads `queued` only for that exact value, otherwise `steering` (`qQt`); detail "Use <opposite key> to queue" (or "to steer"). Hidden while the feature-flag setting `queue_messages_disabled` is `"true"` (`P5t`). | Same row and detail; `default_message_send_mode` app pref, passed by the chat view to the one `Composer` that serves Reason, Codex and Claude Code chats. Divergence: always shown, the rebuild has no feature flags. |
+
 ### REA gaps (app preferences slice)
 
 - `grep -l` with a quoted-key regex through `devices_exec` (zsh, nested quotes) matched nothing; plain

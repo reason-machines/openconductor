@@ -123,6 +123,11 @@ pub mod keys {
     pub const SIDEBAR_REPO_FILTER: &str = "sidebar_repo_filter";
     /// Experimental: CPU and memory readout in the sidebar; unset means off.
     pub const SIDEBAR_RESOURCE_USAGE: &str = "sidebar_resource_usage";
+    /// Legacy "Send messages with" choice, `enter` or `cmd-enter`; the
+    /// keybinding overrides hold the live keys, this row only seeds them.
+    pub const MESSAGE_SEND_KEY: &str = "message_send_key";
+    /// "Follow-up behavior": `queued` or `steering`; anything else steers.
+    pub const DEFAULT_MESSAGE_SEND_MODE: &str = "default_message_send_mode";
 }
 
 #[cfg(test)]

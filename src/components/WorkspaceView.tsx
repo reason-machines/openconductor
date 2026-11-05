@@ -137,7 +137,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   }, [main, running, onRunningChange]);
   // Garry Mode (Conductor's `garry_mode`, "Don't collapse tool calls", toggled with ⌃O): tool
   // groups stay open after the turn ends and tool calls start expanded.
-  const garryMode = useAppPrefs().garry_mode;
+  const { garry_mode: garryMode, default_message_send_mode: followUpMode } = useAppPrefs();
 
   useEffect(() => {
     setAgent(savedAgent(chatId));
@@ -353,6 +353,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         placeholder={`Ask the agent to work in ${workspace.name}…`}
         queue={queue}
         canSteer={codex ? CODEX_CAN_STEER : REASON_CAN_STEER}
+        followUpMode={followUpMode}
         onSubmit={onSubmit}
         onStop={() => (codex ? stopCodex : stopChat)(chatId)}
         onQueue={(action) => (codex ? codexQueueAction : queueAction)(chatId, action)}

@@ -3,6 +3,8 @@
 // store per window; every write goes through a typed `set_app_pref` update.
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { useSyncExternalStore } from "react";
+import type { FollowUpMode } from "../features/chat/queue.ts";
+import type { SendKeyMode } from "../keybindings/registry.ts";
 
 /** Field names are the settings-table keys (see `AppPrefs` in app_prefs/mod.rs). */
 export interface AppPrefs {
@@ -24,6 +26,10 @@ export interface AppPrefs {
   sidebar_repo_filter: string | null;
   /** Experimental "Show sidebar resource usage"; off by default. */
   sidebar_resource_usage: boolean;
+  /** Legacy "Send messages with" choice; the keybinding overrides hold the live keys. */
+  message_send_key: SendKeyMode;
+  /** "Follow-up behavior": what a message sent while the agent works does by default. */
+  default_message_send_mode: FollowUpMode;
 }
 
 /** One typed write: `{ key: "garry_mode", value: true }`. */
@@ -41,7 +47,9 @@ export type AppPrefUpdate =
     }
   | { key: "left_panel_width" | "onboarding_step" | "first_time_onboarding_step"; value: number }
   | { key: "last_clone_directory" | "last_seen_announcement"; value: string }
-  | { key: "roundhouse_client_user_id" | "sidebar_repo_filter"; value: string | null };
+  | { key: "roundhouse_client_user_id" | "sidebar_repo_filter"; value: string | null }
+  | { key: "message_send_key"; value: SendKeyMode }
+  | { key: "default_message_send_mode"; value: FollowUpMode };
 
 /** What the table reads as when it has no rows (Conductor's hook defaults). */
 export const DEFAULT_APP_PREFS: AppPrefs = {
@@ -61,6 +69,8 @@ export const DEFAULT_APP_PREFS: AppPrefs = {
   roundhouse_client_user_id: null,
   sidebar_repo_filter: null,
   sidebar_resource_usage: false,
+  message_send_key: "enter",
+  default_message_send_mode: "steering",
 };
 
 /** The state an update leads to, for the optimistic copy and the browser fallback. */

@@ -1,17 +1,19 @@
 import type { ReactNode } from "react";
 import { withField } from "./model";
 import { GeneralAppPrefRows } from "./rows/AppPrefRows";
+import { ComposerRows } from "./rows/ComposerRows";
 import type { Settings, SoundType } from "./types";
 
 interface Props {
   settings: Settings;
-  save: (next: Settings) => void;
+  save: (next: Settings) => Promise<boolean>;
 }
 
 export function GeneralPage({ settings, save }: Props) {
   const g = settings.general;
   return (
     <div className="settings-rows">
+      <ComposerRows settings={settings} save={save} />
       <Row label="Notifications" help="Post a macOS notification when an agent finishes or needs you.">
         <input
           type="checkbox"
