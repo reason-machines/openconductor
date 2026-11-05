@@ -7,6 +7,8 @@ import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { reasonAvailable, reasonTranscript, resetReasonChat, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
+import { answerCodex, CODEX_ACCESS, codexAccess, codexView, sendCodex, setCodexAccess, stopCodex, subscribeCodex, type CodexAccess } from "../features/chat/codexChat.ts";
+import { DECISION_LABELS, type CodexApproval, type CodexDecision } from "../features/chat/codex.ts";
 import { changedSinceTurn } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
@@ -67,11 +69,39 @@ interface ChatPanelProps extends Props {
   onRunningChange?: (running: boolean) => void;
 }
 
+// Which agent runs a workspace's chat; each keeps its own transcript.
+type ChatAgent = "reason" | "codex";
+const agentKey = (workspaceId: string) => `openconductor.agent.${workspaceId}`;
+const savedAgent = (workspaceId: string): ChatAgent => (localStorage.getItem(agentKey(workspaceId)) === "codex" ? "codex" : "reason");
+
+/** Codex asks before a command or patch; the turn waits for the answer. */
+function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswer: (d: CodexDecision) => void }) {
+  return (
+    <div className="codex-approval" role="alertdialog" aria-label="Codex approval">
+      <div className="codex-approval-title">{approval.kind === "command" ? "Codex wants to run a command" : "Codex wants to change files"}</div>
+      {approval.command ? <pre className="codex-approval-command">{approval.command}</pre> : null}
+      {approval.reason ? <div className="muted">{approval.reason}</div> : null}
+      <div className="codex-approval-actions">
+        {approval.decisions.map((d) => (
+          <button key={d} type="button" className={`btn btn-small${d === "accept" ? " btn-primary" : ""}`} onClick={() => onAnswer(d)}>
+            {DECISION_LABELS[d]}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunningChange }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
-  const load = () => (reason ? reasonTranscript(workspace.id) : (transcripts.get(workspace.id) ?? emptyTranscript(workspace.id)));
+  const [agent, setAgent] = useState<ChatAgent>(() => savedAgent(workspace.id));
+  const codex = reason && agent === "codex";
+  const load = (a: ChatAgent = agent) =>
+    !reason ? (transcripts.get(workspace.id) ?? emptyTranscript(workspace.id)) : a === "codex" ? codexView(workspace.id).transcript : reasonTranscript(workspace.id);
   const [transcript, setTranscript] = useState<ChatTranscript>(load);
+  const [approvals, setApprovals] = useState<CodexApproval[]>([]);
+  const [access, setAccess] = useState<CodexAccess>(() => codexAccess(workspace.id));
   const [draft, setDraft] = useState("");
   /** The turn whose "Reset chat?" dialog is open. */
   const [resetTurn, setResetTurn] = useState<string | null>(null);
@@ -81,18 +111,34 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   useEffect(() => onRunningChange?.(running), [running, onRunningChange]);
 
   useEffect(() => {
-    setTranscript(load());
+    setAgent(savedAgent(workspace.id));
+    setAccess(codexAccess(workspace.id));
     setDraft("");
     setResetTurn(null);
+  }, [workspace.id]);
+
+  useEffect(() => {
+    setTranscript(load(agent));
+    setApprovals(codex ? codexView(workspace.id).approvals : []);
     if (!reason) return;
-    const unsubscribe = subscribeReason(workspace.id, setTranscript);
+    const unsubscribe = codex
+      ? subscribeCodex(workspace.id, (v) => {
+          setTranscript(v.transcript);
+          setApprovals(v.approvals);
+        })
+      : subscribeReason(workspace.id, setTranscript);
     const first = firstPrompts.get(workspace.id);
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      void sendReason(workspace.id, cwd, first);
+      void (codex ? sendCodex : sendReason)(workspace.id, cwd, first);
     }
     return unsubscribe;
-  }, [workspace.id]);
+  }, [workspace.id, agent]);
+
+  function chooseAgent(next: ChatAgent) {
+    localStorage.setItem(agentKey(workspace.id), next);
+    setAgent(next);
+  }
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
@@ -101,7 +147,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   function sendText(text: string) {
     const first = !transcript.messages.some((m) => m.role === "user");
     if (reason) {
-      void sendReason(workspace.id, cwd, text);
+      void (codex ? sendCodex : sendReason)(workspace.id, cwd, text);
       if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
       return;
     }
@@ -142,14 +188,17 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
             <p>
               Messages you send here will run an agent inside <code>{workspace.name}</code>'s worktree on branch <code>{workspace.branch}</code>.
             </p>
-            <p className="muted">{reason ? "Reason runs this chat: one Reason Session per workspace." : "Browser preview: messages stay in a local transcript."}</p>
+            <p className="muted">
+              {!reason ? "Browser preview: messages stay in a local transcript." : codex ? "Codex runs this chat with your signed-in codex CLI, in this workspace's folder." : "Reason runs this chat: one Reason Session per workspace."}
+            </p>
           </div>
         ) : (
           <Transcript
             transcript={transcript}
             onRetry={(prompt) => sendText(prompt)}
             // Conductor: workspace with a path, not archived; disabled while the agent works.
-            onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
+            // Reset chat restores Reason turn checkpoints; Codex chats have none yet.
+            onResetChat={reason && !codex && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
           />
         )}
@@ -161,6 +210,13 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
           onConfirm={(resetFiles) => resetReasonChat(workspace.id, cwd, resetTurn, resetFiles)}
           onClose={() => setResetTurn(null)}
         />
+      ) : null}
+      {codex && approvals.length > 0 ? (
+        <div className="codex-approvals">
+          {approvals.map((a) => (
+            <ApprovalCard key={String(a.requestId)} approval={a} onAnswer={(d) => void answerCodex(workspace.id, a.requestId, d)} />
+          ))}
+        </div>
       ) : null}
       <form className="composer" onSubmit={send}>
         <textarea
@@ -174,10 +230,37 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
           rows={3}
         />
         <div className="composer-bar">
-          <span className="muted">Enter to send, Shift+Enter for a new line</span>
+          <span className="composer-hint">
+            {reason ? (
+              <select className="agent-select" aria-label="Agent" value={agent} disabled={running} onChange={(e) => chooseAgent(e.target.value as ChatAgent)}>
+                <option value="reason">Reason</option>
+                <option value="codex">Codex</option>
+              </select>
+            ) : null}
+            {codex ? (
+              <select
+                className="agent-select codex-access"
+                aria-label="Codex access"
+                value={access}
+                disabled={running}
+                onChange={(e) => {
+                  const next = e.target.value as CodexAccess;
+                  setAccess(next);
+                  void setCodexAccess(workspace.id, next);
+                }}
+              >
+                {(Object.keys(CODEX_ACCESS) as CodexAccess[]).map((k) => (
+                  <option key={k} value={k}>
+                    {CODEX_ACCESS[k].label}
+                  </option>
+                ))}
+              </select>
+            ) : null}
+            <span className="muted">Enter to send, Shift+Enter for a new line</span>
+          </span>
           <span className="composer-actions">
             {running ? (
-              <button className="btn btn-small" type="button" title="Stop the agent" onClick={() => stopReason(workspace.id)}>
+              <button className="btn btn-small" type="button" title="Stop the agent" onClick={() => (codex ? stopCodex : stopReason)(workspace.id)}>
                 Stop
               </button>
             ) : null}
