@@ -152,6 +152,7 @@ jobs:
         run: |
           python tools/parity_sidebar_home_create.py validate
           python tools/parity_sidebar_home_create.py score --tree . > /dev/null
+          python tools/parity_sidebar_home_create.py obligations --tree . > /dev/null
 
   frontend-unit:
     name: Frontend unit tests (node --test)
@@ -161,5 +162,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+      - run: npm ci
       - name: Pure TypeScript modules (Node strips types natively)
         run: node --test "src/**/*.test.ts"

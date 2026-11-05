@@ -1,0 +1,1226 @@
+{
+ "schema": "openconductor.builder-obligations.v1",
+ "ref": "origin/main",
+ "verdicts_verified_at": "2026-11-05 (main 884f1f7)",
+ "verdict_parity_pct": 43.8,
+ "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
+ "open": 52,
+ "by_owner": {
+  "create-workspace": 9,
+  "home": 13,
+  "persistence": 1,
+  "setup-and-run-scripts": 1,
+  "sidebar": 28
+ },
+ "obligations": [
+  {
+   "obligation_id": "parity.create.in-section",
+   "item": "create.in-section",
+   "area": "create",
+   "owner": "create-workspace",
+   "depends_on_builders": [
+    "sidebar"
+   ],
+   "feature": "Create a workspace directly inside a sidebar section",
+   "verdict": "missing",
+   "gap": "No sections.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     1057,
+     4975
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.create.number",
+   "item": "create.number",
+   "area": "create",
+   "owner": "create-workspace",
+   "depends_on_builders": [],
+   "feature": "Assign a per-workspace number on creation",
+   "verdict": "missing",
+   "gap": "No workspace numbers.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     1692
+    ],
+    "schema": [
+     "workspaces.number"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.create.setup-script",
+   "item": "create.setup-script",
+   "area": "create",
+   "owner": "create-workspace",
+   "depends_on_builders": [
+    "setup-and-run-scripts"
+   ],
+   "feature": "Run the repository setup script on creation and keep its log",
+   "verdict": "backend",
+   "gap": "The dialog reports no setup script; create_workspace never runs one. WorkspaceManager::run_setup and crates/scripts setup lifecycle exist but are not called (crates/scripts is not an app dependency).",
+   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
+   "ledger_obligations": [
+    "ws.setup-run-archive-scripts"
+   ],
+   "evidence": {
+    "copy": [
+     3740,
+     3741,
+     2547,
+     5004,
+     5003
+    ],
+    "schema": [
+     "repos.setup_script",
+     "workspaces.setup_log_path"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.create.branch-prefix",
+   "item": "create.branch-prefix",
+   "area": "create",
+   "owner": "create-workspace",
+   "depends_on_builders": [],
+   "feature": "Branch name prefix setting (none, user-based or custom)",
+   "verdict": "partial",
+   "gap": "resolveBranchPrefix is applied in the dialog, but App.tsx passes empty prefix settings and no GitHub username, so the prefix is always none; no settings UI.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [
+    "ws.create"
+   ],
+   "evidence": {
+    "copy": [
+     345,
+     3329,
+     1259
+    ],
+    "ipc": [
+     "branch_prefix_type",
+     "branch_prefix_custom"
+    ],
+    "files": [
+     "evidence/create-workspace/README.md"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.create.failure",
+   "item": "create.failure",
+   "area": "create",
+   "owner": "create-workspace",
+   "depends_on_builders": [],
+   "feature": "Creation failure surfaced with logs; incomplete workspaces cleaned up on start",
+   "verdict": "partial",
+   "gap": "Failure text is shown in the dialog; no setup log, and no startup cleanup of incomplete workspaces (workspaces::delete_if_initializing exists only in the unlinked DB crate).",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     4151,
+     1575,
+     594,
+     4987,
+     4498
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.create.first-message",
+   "item": "create.first-message",
+   "area": "create",
+   "owner": "create-workspace",
+   "depends_on_builders": [],
+   "feature": "Draft the first agent message, then create the workspace and send it",
+   "verdict": "partial",
+   "gap": "The first message seeds the workspace transcript and drives the rename (CreateWorkspaceDialog.tsx, firstMessage.ts); no agent session is started.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     1288
+    ],
+    "cli": [
+     "workspace create --message"
+    ],
+    "files": [
+     "evidence/create-workspace/README.md"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.create.from-ref",
+   "item": "create.from-ref",
+   "area": "create",
+   "owner": "create-workspace",
+   "depends_on_builders": [],
+   "feature": "Create a workspace from a PR, branch or issue",
+   "verdict": "partial",
+   "gap": "Create-from picker with PR, branch and issue tabs (CreateFromPicker.tsx, createFrom.ts); branches come from list_branches, but PRs and issues report unavailable in the desktop app (no GitHub/Linear listing command).",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     1060,
+     1055,
+     1056,
+     597,
+     435,
+     523
+    ],
+    "cli": [
+     "workspace create --branch"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.create.initializing",
+   "item": "create.initializing",
+   "area": "create",
+   "owner": "create-workspace",
+   "depends_on_builders": [],
+   "feature": "Initializing state with progress while the workspace is created",
+   "verdict": "partial",
+   "gap": "The dialog shows createFlow progress (creating, failed) while create_workspace runs; there is no initializing workspace row or view, and setup steps are skipped.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     1081,
+     1082,
+     4988,
+     4499
+    ],
+    "schema": [
+     "workspaces.state",
+     "workspaces.initialization_log_path"
+    ],
+    "files": [
+     "evidence/create-workspace/README.md"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.create.page",
+   "item": "create.page",
+   "area": "create",
+   "owner": "create-workspace",
+   "depends_on_builders": [],
+   "feature": "Full-screen create-workspace page with its own composer and tab navigation",
+   "verdict": "partial",
+   "gap": "Create is a modal form (CreateWorkspaceDialog.tsx) with a prompt box, repo and branch selects and a name field. The reference is a composer: repo chip, prompt, model/effort picker and Create button (REA compare at t=24: 7.6% dark, 89% light differ).",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "routes": [
+     "/create"
+    ],
+    "copy": [
+     2821,
+     2820,
+     1994,
+     2831,
+     3350
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.colors",
+   "item": "home.colors",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [
+    "theme"
+   ],
+   "feature": "Home background and entry-card fill match the reference screens in light and dark",
+   "verdict": "missing",
+   "gap": "Measured: dark main #17191d vs #141110, dark card #24272d vs #211e1c; light main #f7f7f5 vs #ffffff, light card #efefec vs #fafaf9. Every pixel differs at threshold 0 (REA compare-web-screenshots).",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "files": [
+     "evidence/screens/home--empty-signed-in--dark.png",
+     "evidence/screens/home--empty-signed-in--light.png",
+     "evidence/frontend/css-tokens.json"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.dashboard-routes",
+   "item": "home.dashboard-routes",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "Dashboard and all-workspaces routes",
+   "verdict": "missing",
+   "gap": "No /dashboard or /all-workspaces screens.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "routes": [
+     "/dashboard",
+     "/all-workspaces",
+     "/workspaces"
+    ],
+    "copy": [
+     1130
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.first-run",
+   "item": "home.first-run",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "First-run onboarding route before Home",
+   "verdict": "missing",
+   "gap": "No onboarding.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [
+    "ui.routes",
+    "pkg.first-run-bootstrap"
+   ],
+   "evidence": {
+    "routes": [
+     "/first-run-onboarding"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.org-states",
+   "item": "home.org-states",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "Home renders nothing while the organization loads and redirects a cloud organization to all-workspaces",
+   "verdict": "missing",
+   "gap": "No organization concept; no loading or cloud redirect state.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "routes": [
+     "/all-workspaces"
+    ],
+    "files": [
+     "evidence/screens/home.md"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.recents",
+   "item": "home.recents",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "Clone dialog shows recent repositories with loading placeholders and a screen-reader status",
+   "verdict": "missing",
+   "gap": "Clone dialog has no recent repositories (detector hit is CreateFromPicker's status line).",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "files": [
+     "evidence/screens/home.md"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.repo-search",
+   "item": "home.repo-search",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "Search the repository list",
+   "verdict": "missing",
+   "gap": "No repository search.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     3825,
+     2917,
+     2497
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.status-overview",
+   "item": "home.status-overview",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "Home shows workspaces with their status (status matrix option, mine vs all)",
+   "verdict": "missing",
+   "gap": "Home shows no workspace list or statuses.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     4796,
+     5007,
+     137,
+     2767
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.clone-github",
+   "item": "home.clone-github",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "Clone a GitHub repository by URL into a chosen folder, with progress",
+   "verdict": "partial",
+   "gap": "Dialog parses GitHub URLs but performs no clone and has no destination picker or progress.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [
+    "repo.add"
+   ],
+   "evidence": {
+    "copy": [
+     1385,
+     3551,
+     555,
+     616,
+     522,
+     1014
+    ],
+    "schema": [
+     "repos.remote_url"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.duplicate-repo",
+   "item": "home.duplicate-repo",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "Refuse adding a repository that is already added",
+   "verdict": "partial",
+   "gap": "Store silently ignores a duplicate path/remote; no already-exists message. Backend add_repository returns the existing id.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     4557
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.new-project",
+   "item": "home.new-project",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "Create a new project: local folder, git init, optional private GitHub repo, then a first workspace",
+   "verdict": "partial",
+   "gap": "Quick start dialog with placeholder templates; no git init, no GitHub repo, no first workspace on disk.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     1047,
+     1050,
+     1063,
+     556,
+     2219,
+     2220,
+     1064,
+     1568
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.open-project-flow",
+   "item": "home.open-project-flow",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "Open project: folder picker; no .git leads to an add dialog that offers git init; a missing origin (non-GitHub setting off) leads to the same dialog; otherwise add with a file:// remote; errors in a toast",
+   "verdict": "partial",
+   "gap": "Folder checks and decision are real (project.rs, src/state/openProject.ts with tests): file:// remote on success and error toasts. The no-.git / no-origin cases only show an info toast; the init / create-GitHub-repo dialog is not built.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     2442
+    ],
+    "files": [
+     "evidence/screens/home.md"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.recent",
+   "item": "home.recent",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "Recent workspaces list",
+   "verdict": "partial",
+   "gap": "The command palette keeps a most-recent-first list of visited workspaces (PaletteHost.tsx, in memory only); Home shows no recents.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     3459
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.route",
+   "item": "home.route",
+   "area": "home",
+   "owner": "home",
+   "depends_on_builders": [],
+   "feature": "Home is the root route and the default screen",
+   "verdict": "partial",
+   "gap": "Home is the default screen, but there is no router or '/' route (selection state in src/state/store.ts).",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [
+    "ui.routes"
+   ],
+   "evidence": {
+    "routes": [
+     "/"
+    ],
+    "copy": [
+     2135
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.home.persist",
+   "item": "home.persist",
+   "area": "home",
+   "owner": "persistence",
+   "depends_on_builders": [
+    "home"
+   ],
+   "feature": "Repositories and workspaces persist in SQLite (conductor.db shape), surviving restart",
+   "verdict": "partial",
+   "gap": "UI state lives in localStorage; backend keeps a TSV repo registry; the Conductor-shaped SQLite schema in crates/openconductor-db is not used by the app.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [
+    "db.conductor-schema"
+   ],
+   "evidence": {
+    "schema": [
+     "repos",
+     "workspaces"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.create.autostart-run",
+   "item": "create.autostart-run",
+   "area": "create",
+   "owner": "setup-and-run-scripts",
+   "depends_on_builders": [
+    "create-workspace"
+   ],
+   "feature": "Optionally start the run script automatically after setup",
+   "verdict": "backend",
+   "gap": "crates/scripts runner::should_auto_run (tested) decides auto-run after setup, but setup never runs on create and the crate is not an app dependency.",
+   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     4186
+    ],
+    "schema": [
+     "repos.run_script",
+     "repos.run_script_mode"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.add-menu",
+   "item": "sidebar.add-menu",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Sidebar add menu offering the three Home actions plus recent local repositories not yet added (spinner while loading)",
+   "verdict": "missing",
+   "gap": "'+' goes straight to the folder picker; no menu with the three Home actions and no recents (the detector hit is QuickOpen's recent files).",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     77,
+     78
+    ],
+    "files": [
+     "evidence/screens/home.md"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.colors",
+   "item": "sidebar.colors",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "theme"
+   ],
+   "feature": "Sidebar background, border and width match the reference screens in light and dark",
+   "verdict": "missing",
+   "gap": "Measured on REA captures at 1440x900: sidebar edge at x=248 vs 256; dark sidebar #121417 vs #1c1817; light sidebar #eeeeeb vs #fcfcfb. REA compare-web-screenshots (threshold 24): 3.1% (dark) / 5.4% (light) of sidebar pixels differ.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "files": [
+     "evidence/screens/home--empty-signed-in--dark.png",
+     "evidence/screens/home--empty-signed-in--light.png",
+     "evidence/frontend/css-tokens.json"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.computer-switcher",
+   "item": "sidebar.computer-switcher",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Computer/account switcher at the top of the sidebar (initial avatar, name, chevron)",
+   "verdict": "missing",
+   "gap": "Sidebar starts with our logo and name; the reference starts with a computer/account switcher.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "files": [
+     "evidence/screens/home--empty-signed-in--dark.png",
+     "evidence/screens/home--empty-signed-in--light.png",
+     "evidence/screens/manifest.json"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.drag-to-section",
+   "item": "sidebar.drag-to-section",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Drag a workspace row onto a section",
+   "verdict": "missing",
+   "gap": "No drag and drop.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     1289
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.footer-actions",
+   "item": "sidebar.footer-actions",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Sidebar footer with help and settings icon buttons",
+   "verdict": "missing",
+   "gap": "Footer shows app name, version and platform text; the reference shows help and settings icon buttons.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "files": [
+     "evidence/screens/home--empty-signed-in--dark.png",
+     "evidence/screens/home--empty-signed-in--light.png",
+     "evidence/screens/manifest.json"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.footer-usage",
+   "item": "sidebar.footer-usage",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Optional CPU/memory usage readout in the sidebar footer",
+   "verdict": "missing",
+   "gap": "Footer shows app name/version only.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     4061,
+     4071
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.sections",
+   "item": "sidebar.sections",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "persistence"
+   ],
+   "feature": "User navigation sections: create, rename, delete, emoji; move a workspace into or out of a section",
+   "verdict": "missing",
+   "gap": "No sections UI or commands; navigation_sections only in crates/openconductor-db/migrations/0005_navigation_and_favorites.sql (unwired).",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     2811,
+     1066,
+     1340,
+     1341,
+     1172,
+     553,
+     488,
+     544,
+     2750,
+     3517,
+     3839,
+     3841
+    ],
+    "schema": [
+     "navigation_sections.name",
+     "navigation_sections.emoji",
+     "navigation_sections.sort_order",
+     "navigation_section_memberships"
+    ],
+    "cli": [
+     "workspace move --section"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.top-bar",
+   "item": "sidebar.top-bar",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Sidebar top bar with a sidebar toggle button and back/forward history arrows",
+   "verdict": "missing",
+   "gap": "No in-sidebar toggle button (toggle is keyboard-only, plus a Home button when hidden) and no back/forward navigation; the reference shows all three at the top of the sidebar.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "files": [
+     "evidence/screens/home--empty-signed-in--dark.png",
+     "evidence/screens/home--empty-signed-in--light.png",
+     "evidence/screens/manifest.json"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.transparency",
+   "item": "sidebar.transparency",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Sidebar transparency (vibrancy) setting",
+   "verdict": "missing",
+   "gap": "No vibrancy/transparency.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [
+    "ui.window-chrome"
+   ],
+   "evidence": {
+    "copy": [
+     4076
+    ],
+    "ipc": [
+     "experimental_sidebar_transparency"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.workspaces-group",
+   "item": "sidebar.workspaces-group",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Workspace list grouped under a sentence-case 'my workspaces' label rather than an uppercase repositories header",
+   "verdict": "missing",
+   "gap": "We show an uppercase 'Repositories' header with a '+'; the reference shows a sentence-case 'my workspaces' label.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     2767
+    ],
+    "files": [
+     "evidence/screens/home--empty-signed-in--dark.png",
+     "evidence/screens/home--empty-signed-in--light.png"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.ws-actions",
+   "item": "sidebar.ws-actions",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Workspace actions menu on a row (copy info, rename, archive, pin, section)",
+   "verdict": "missing",
+   "gap": "No row context menu or actions menu.",
+   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     4970,
+     954,
+     899
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.archived-view",
+   "item": "sidebar.archived-view",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Browse archived workspaces and unarchive one",
+   "verdict": "backend",
+   "gap": "WorkspaceManager::restore exists (src-tauri/src/workspace/mod.rs); no command, no UI.",
+   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     4860,
+     225,
+     4680,
+     4679,
+     4568
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.rename",
+   "item": "sidebar.rename",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Rename a workspace (local only), optionally also renaming the branch",
+   "verdict": "backend",
+   "gap": "rename_workspace_branch command (src-tauri workspace) and the automatic first-message rename call it; no user-facing rename action.",
+   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     3533,
+     1382,
+     148,
+     2355,
+     458,
+     3532
+    ],
+    "cli": [
+     "workspace rename"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.repo-hide",
+   "item": "sidebar.repo-hide",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "persistence"
+   ],
+   "feature": "Hide and unhide a repository, with a toggle to show hidden ones",
+   "verdict": "backend",
+   "gap": "crates/openconductor-db repos::set_hidden and find_reusable_hidden (tested), but the app does not depend on that crate; no hide/unhide UI.",
+   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     2115,
+     4719,
+     4049,
+     2114
+    ],
+    "schema": [
+     "repos.hidden"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.repo-icon",
+   "item": "sidebar.repo-icon",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "persistence"
+   ],
+   "feature": "Per-repository icon (icon, emoji, favicon or uploaded image) next to the repo name",
+   "verdict": "backend",
+   "gap": "crates/openconductor-db repos::set_icon (tested); not linked into the app and no icon UI.",
+   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     486,
+     3556,
+     3251,
+     4070
+    ],
+    "schema": [
+     "repos.icon"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.repo-order",
+   "item": "sidebar.repo-order",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "persistence"
+   ],
+   "feature": "Manual, persisted ordering of repositories",
+   "verdict": "backend",
+   "gap": "crates/openconductor-db/src/repos.rs lists repos by display_order, created_at and appends new ones at the end, but the app does not depend on that crate and the sidebar renders insertion order from localStorage.",
+   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "schema": [
+     "repos.display_order"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.ws-pinned",
+   "item": "sidebar.ws-pinned",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "persistence"
+   ],
+   "feature": "Pin workspaces into a pinned group at the top",
+   "verdict": "backend",
+   "gap": "crates/openconductor-db workspaces::set_pinned_at (tested); crate not linked into the app; no pinned group or pin action.",
+   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     3263,
+     1863,
+     1864
+    ],
+    "schema": [
+     "workspaces.pinned_at"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.ws-unread",
+   "item": "sidebar.ws-unread",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "persistence"
+   ],
+   "feature": "Unread marker, mark-as-unread action and jump-to-next-unread command",
+   "verdict": "backend",
+   "gap": "crates/openconductor-db workspaces::set_unread (tested); crate not linked into the app; no unread styling or next-unread command.",
+   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     2595,
+     2054,
+     2832,
+     1534
+    ],
+    "schema": [
+     "workspaces.unread"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.archive",
+   "item": "sidebar.archive",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Archive with confirmation, refusing while a git operation is in progress, recording an archive commit",
+   "verdict": "partial",
+   "gap": "Archive from WorkspaceView and the palette (workspace.archive) only removes the localStorage row: no confirmation, no git-busy check, no call to WorkspaceManager::archive.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [
+    "ws.status-archive",
+    "ws.git-busy"
+   ],
+   "evidence": {
+    "copy": [
+     219,
+     223,
+     224,
+     786,
+     2723,
+     4222
+    ],
+    "schema": [
+     "workspaces.state",
+     "workspaces.archive_commit"
+    ],
+    "cli": [
+     "workspace archive"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.primary-nav",
+   "item": "sidebar.primary-nav",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Primary nav rows Home, Create and Search above the workspace list",
+   "verdict": "partial",
+   "gap": "Home and 'New workspace' rows (Sidebar.tsx); no Search row. The reference labels the second row Create.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "files": [
+     "evidence/screens/home--empty-signed-in--dark.png",
+     "evidence/screens/home--empty-signed-in--light.png",
+     "evidence/screens/manifest.json"
+    ],
+    "routes": [
+     "/",
+     "/create"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.resize-toggle",
+   "item": "sidebar.resize-toggle",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Resizable sidebar and show/hide toggles for left and right sidebars",
+   "verdict": "partial",
+   "gap": "Toggle works via Cmd+B and '[' (src/state/shortcuts.ts, App.tsx); the sidebar is a fixed 248px column with no resize.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [
+    "ui.window-chrome"
+   ],
+   "evidence": {
+    "copy": [
+     3592,
+     4601,
+     4595,
+     4600
+    ],
+    "ipc": [
+     "toggle_left_sidebar",
+     "toggle_right_sidebar"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.search",
+   "item": "sidebar.search",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "search-and-palette"
+   ],
+   "feature": "Search/filter workspaces",
+   "verdict": "partial",
+   "gap": "Workspaces are searchable from the command palette (src/palette/search/model.ts, Cmd+K) by name, branch and repo; the sidebar has no Search row to reach it.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     3833,
+     2919,
+     2992
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.visibility-settings",
+   "item": "sidebar.visibility-settings",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Left sidebar visibility and width persisted as settings (default visible, width 256)",
+   "verdict": "partial",
+   "gap": "Visibility persists inside the localStorage app state, not as a setting; width is fixed (248px vs evidence default 256).",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     4595
+    ],
+    "ipc": [
+     "toggle_left_sidebar"
+    ],
+    "files": [
+     "evidence/screens/home.md"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.ws-branch",
+   "item": "sidebar.ws-branch",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Workspace branch visible from the sidebar row",
+   "verdict": "partial",
+   "gap": "Branch appears only in the row tooltip.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "schema": [
+     "workspaces.branch",
+     "workspaces.user_set_branch_name"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.ws-diffstat",
+   "item": "sidebar.ws-diffstat",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Line additions/deletions on each row, colored, with a setting to color unselected rows",
+   "verdict": "partial",
+   "gap": "+/- counts render from stored placeholder numbers; not computed from git, no colour setting.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     731,
+     156
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.ws-name",
+   "item": "sidebar.ws-name",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Workspace row shows the workspace name, distinguishing user-set from generated names",
+   "verdict": "partial",
+   "gap": "Row shows the name; user_set_workspace_name / user_set_branch_name are now modelled (src/state/types.ts) but no user rename sets them, and rows show a name where the reference shows the branch-style title.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "schema": [
+     "workspaces.workspace_name",
+     "workspaces.user_set_workspace_name"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.ws-numbers",
+   "item": "sidebar.ws-numbers",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "keyboard-shortcuts"
+   ],
+   "feature": "Workspace numbers shown optionally, with Cmd+1..9 switching",
+   "verdict": "partial",
+   "gap": "workspace.switchTo1..9 are handled in PaletteHost.tsx over sidebarOrder (fromAppState.ts); rows never show numbers and there is no setting to show them.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     4067,
+     4293,
+     4301,
+     1692
+    ],
+    "schema": [
+     "workspaces.number"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.ws-status",
+   "item": "sidebar.ws-status",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "persistence"
+   ],
+   "feature": "Status indicator from a derived status with optional manual override (default in-progress)",
+   "verdict": "partial",
+   "gap": "Status dot uses our own idle/working/needs-review/archived model, not derived/manual status with in-progress default (src/state/types.ts).",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [
+    "ws.status-archive"
+   ],
+   "evidence": {
+    "copy": [
+     4796,
+     5007
+    ],
+    "schema": [
+     "workspaces.derived_status",
+     "workspaces.manual_status"
+    ]
+   },
+   "status": "open"
+  }
+ ]
+}

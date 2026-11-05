@@ -40,6 +40,7 @@ pub enum Location {
 
 /// One effective run script.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct RunScript {
     pub id: String,
     pub label: String,

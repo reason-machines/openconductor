@@ -47,6 +47,7 @@ pub struct RunRequest {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct RunStatus {
     pub workspace_id: String,
     pub script_id: String,
