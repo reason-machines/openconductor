@@ -62,3 +62,26 @@ test("automerge is offered for pending checks only with the setting and merge ri
   assert.equal(prControl(pending, { ...pr, viewerCanMerge: null }, { automerge: true })?.intent, "enable_automerge");
   assert.equal(prControl(pending, null, { automerge: true })?.intent, "status");
 });
+
+test("uncommitted changes offer Commit and push, with its shortcut in the tooltip", () => {
+  const c = at({ type: "commit_and_push" });
+  assert.deepEqual([c?.intent, c?.label], ["commit_and_push", "Commit and push"]);
+  assert.match(c!.title, /⌘⇧Y/);
+  // No PR is needed: the agent commits and pushes either way.
+  assert.equal(prControl({ tone: "out_of_sync", action: { type: "commit_and_push" } }, null)?.intent, "commit_and_push");
+});
+
+test("merge conflicts offer Resolve against the PR's base branch", () => {
+  const c = at({ type: "merge_conflicts" });
+  assert.deepEqual([c?.intent, c?.label], ["resolve_conflicts", "Resolve"]);
+  assert.match(c!.title, /#42 has merge conflicts with main/);
+  assert.equal(prControl({ tone: "out_of_sync", action: { type: "merge_conflicts" } }, null)?.intent, "status");
+});
+
+test("changes requested offers Add all comments to chat only while the diff has unsent comments", () => {
+  const withPending = at({ type: "changes_requested", hasPendingComments: true });
+  assert.deepEqual([withPending?.intent, withPending?.label], ["add_comments_to_chat", "Add all comments to chat"]);
+  assert.match(withPending!.title, /PR #42/);
+  const without = at({ type: "changes_requested", hasPendingComments: false });
+  assert.deepEqual([without?.intent, without?.label], ["status", "Changes requested"]);
+});

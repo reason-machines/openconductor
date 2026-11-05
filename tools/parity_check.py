@@ -558,12 +558,17 @@ def probe_packaging(tree, pref):
     for plugin in pref["tauri_plugins"]:
         items.append(item("packaging", "tauri plugin", plugin, "matched" if plugin in cargo else "missing"))
 
-    res_conf = json.dumps(bundle.get("resources", ""))
+    # Bundle-relative targets of `bundle.resources` (a map of source -> target, or a list of sources).
+    res = bundle.get("resources") or {}
+    targets = set(res.values()) if isinstance(res, dict) else {os.path.basename(s) for s in res}
+    diverged = load(os.path.join(EV, "packaging", "divergences.json")).get("bundled_resources", {})
     for r in pref["resources"]:
         name = r.split("/", 1)[1]
-        base = os.path.basename(name)
-        present = base in res_conf or any(p.endswith(name) for p in tree.paths if not p.startswith("evidence/"))
-        items.append(item("packaging", "bundled resource", name, "matched" if present else "missing"))
+        present = name in targets or any(p == name or p.endswith("/" + name)
+                                         for p in tree.paths if not p.startswith("evidence/"))
+        d = diverged.get(name)
+        detail = "" if present or not d else f'{d["kind"]}: {d["reason"]}'
+        items.append(item("packaging", "bundled resource", name, "matched" if present else "missing", detail))
 
     items.append(item("packaging", "frontend", "embedded-frontend",
                       "matched" if conf.get("build", {}).get("frontendDist") else "missing",

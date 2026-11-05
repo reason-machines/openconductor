@@ -111,12 +111,12 @@ fn names_are_uniquified_against_dirs_and_branches() {
     let a = f.mgr.create(&f.repo, &named("feature")).unwrap().workspace;
     let b = f.mgr.create(&f.repo, &named("feature")).unwrap().workspace;
     assert_eq!(a.name, "feature");
-    assert_eq!(b.name, "feature-2");
+    assert_eq!(b.name, "feature-v1");
     // A pre-existing branch also counts as taken.
     sh(&f.repo, &["branch", "taken"]);
     let c = f.mgr.create(&f.repo, &named("taken")).unwrap().workspace;
-    assert_eq!(c.name, "taken-2");
-    assert_eq!(c.branch, "taken-2");
+    assert_eq!(c.name, "taken-v1");
+    assert_eq!(c.branch, "taken-v1");
 }
 
 #[test]
@@ -379,7 +379,7 @@ fn archive_refuses_dirty_or_busy_then_keeps_branch_and_restores() {
     assert!(git::branch_exists(&f.repo, "arch"));
     assert!(f.mgr.list(&f.repo).unwrap().iter().all(|w| w.state == WorkspaceState::Archived));
     // Archived names stay taken.
-    assert_eq!(f.mgr.create(&f.repo, &named("arch")).unwrap().workspace.name, "arch-2");
+    assert_eq!(f.mgr.create(&f.repo, &named("arch")).unwrap().workspace.name, "arch-v1");
 
     let r = f.mgr.restore(&f.repo, "arch").unwrap();
     assert_eq!(r.state, WorkspaceState::Active);
@@ -579,7 +579,16 @@ fn naming_helpers() {
     assert_eq!(naming::slugify("---"), "");
     assert_eq!(naming::branch_for(Some("/sven/"), "x"), "sven/x");
     assert_eq!(naming::branch_for(Some(""), "x"), "x");
-    assert_eq!(naming::uniquify("a", |c| c == "a" || c == "a-2"), "a-3");
+    assert_eq!(naming::uniquify("a", |c| c == "a" || c == "a-v1"), "a-v2");
+    assert_eq!(naming::uniquify("a", |_| false), "a");
+    // Same bump as the reference app's: an existing -vN suffix is counted up.
+    assert_eq!(naming::bump("x"), "x-v1");
+    assert_eq!(naming::bump("x-v3"), "x-v4");
+    assert_eq!(naming::bump("a-v1-v2"), "a-v1-v3");
+    assert_eq!(naming::bump("-v5"), "-v5-v1");
+    assert_eq!(naming::bump("x-v"), "x-v-v1");
+    assert_eq!(naming::bump("x-v1a"), "x-v1a-v1");
+    assert_eq!(naming::uniquify("r-v2", |c| c == "r-v2"), "r-v3");
     let all: HashSet<String> = (0..100).map(|_| naming::generate_name(&HashSet::new())).collect();
     let n = naming::generate_name(&all);
     assert!(!all.contains(&n));
@@ -704,12 +713,12 @@ fn service_registers_repositories_and_creates_from_form_fields() {
     std::fs::create_dir_all(&other).unwrap();
     sh(&other, &["init", "-q", "-b", "main"]);
     commit_file(&other, "a.txt", "a\n", "init");
-    assert_eq!(svc.add_repository(&other).unwrap().id, "my-app-2");
+    assert_eq!(svc.add_repository(&other).unwrap().id, "my-app-v1");
 
     // Registry survives a restart.
     let svc = WorkspaceService::new(&data).unwrap();
     let ids: Vec<String> = svc.repositories().into_iter().map(|r| r.id).collect();
-    assert_eq!(ids, ["my-app", "my-app-2"]);
+    assert_eq!(ids, ["my-app", "my-app-v1"]);
 
     let req = CreateWorkspaceRequest {
         repository_id: "my-app".into(),
@@ -820,7 +829,7 @@ fn clone_repository_streams_progress_and_picks_a_unique_name() {
     assert_eq!(lines[lines.len() - 2..], ["Detecting default branch...", "Saving repository information..."]);
 
     let again = svc.clone_repository(&url, &parent, &mut |_| {}).unwrap();
-    assert_eq!(again.root, parent.join("My App-2"));
+    assert_eq!(again.root, parent.join("My App-v1"));
     assert_eq!(svc.repositories().len(), 2);
 }
 

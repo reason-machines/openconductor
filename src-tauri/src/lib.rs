@@ -27,18 +27,22 @@ mod checkpoint_commands;
 mod chat_store_commands;
 pub mod claude_chat;
 pub mod create_project;
+pub mod archive_on_merge;
+mod archive_on_merge_commands;
 pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
 mod sidebar_repo_commands;
 mod sidebar_workspace_commands;
+mod sidebar_rename_commands;
 pub mod diff;
 pub mod draft_attachments;
 pub mod github_repo;
 pub mod menu;
 pub mod pr;
 mod local_storage_commands;
+mod onboarding_commands;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
@@ -279,6 +283,7 @@ pub fn run() {
             }
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
+            let settings_pool = db.0.clone();
             app.manage(db);
             app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
@@ -286,10 +291,16 @@ pub fn run() {
             app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
-            app.manage(settings::service::SettingsService::new(
+            // Appearance keys Conductor keeps in conductor.db live in its settings table.
+            let settings_service = settings::service::SettingsService::new(
                 settings::config_dir()?.join(settings::FILE_NAME),
                 agent::keychain::default_store(),
-            ));
+            )
+            .with_db(settings_pool);
+            if let Err(e) = settings_service.move_appearance_to_db() {
+                eprintln!("Appearance settings stay in settings.toml until next launch: {e}");
+            }
+            app.manage(settings_service);
             let scripts = scripts::service(app.handle());
             let spotlight = spotlight_commands::service(app.handle());
             scripts.set_auto_run_spotlight(spotlight::auto_run::hook(spotlight.clone()));
@@ -326,11 +337,20 @@ pub fn run() {
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
             persistence_commands::db_repo_prompt,
+            onboarding_commands::db_first_run_onboarding_step,
+            onboarding_commands::db_finish_first_run_onboarding,
+            persistence_commands::db_set_workspace_target_branch,
+            persistence_commands::db_unarchive_workspace,
+            archive_on_merge_commands::repo_archive_on_merge,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
             sidebar_workspace_commands::db_set_workspace_pinned,
             sidebar_workspace_commands::db_set_workspace_unread,
             sidebar_workspace_commands::db_set_workspace_manual_status,
+            sidebar_repo_commands::db_set_repo_icon,
+            sidebar_repo_commands::repo_favicon,
+            sidebar_rename_commands::db_rename_workspace,
+            sidebar_rename_commands::db_mark_user_set_branch_name,
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
@@ -406,6 +426,9 @@ pub fn run() {
             pr::commands::pr_git_state,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
+            pr::commands::pr_template,
+            pr::commands::pr_commit_and_push_prompt,
+            pr::commands::pr_resolve_conflicts_prompt,
             pr::commands::pr_merge,
             pr::commands::pr_merge_method,
             pr::commands::pr_set_auto_merge,
@@ -415,6 +438,7 @@ pub fn run() {
             pr::commands::pr_edit,
             pr::commands::pr_retarget,
             pr::commands::pr_approve,
+            pr::workspace_sync::pr_sync_workspace,
             scripts::scripts_config,
             scripts::setup_script_start,
             scripts::setup_script_cancel,
