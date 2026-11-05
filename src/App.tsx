@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { isSidebarVisible, useAppStore } from "./state/store";
+import { useAppStore } from "./state/store";
+import { isSidebarVisible } from "./state/selectors";
+import { isToggleLeftSidebar, isTypingTarget } from "./state/shortcuts";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
@@ -11,6 +13,16 @@ export default function App() {
   const initialDialog = new URLSearchParams(window.location.search).get("dialog") as DialogKind | null;
   const [dialog, setDialog] = useState<DialogKind | null>(initialDialog);
   const [info, setInfo] = useState<AppInfo | null>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat || !isToggleLeftSidebar(e, isTypingTarget(document.activeElement as HTMLElement | null))) return;
+      e.preventDefault();
+      dispatch({ type: "toggleSidebar" });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [dispatch]);
 
   useEffect(() => {
     appInfo().then(setInfo).catch(() => setInfo(null));

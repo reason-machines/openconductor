@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from "react";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import { newId, workspaceName } from "./names";
+import { isSidebarVisible } from "./selectors";
 
 const STORAGE_KEY = "openconductor.shell.v1";
 
@@ -64,8 +65,6 @@ export function reducer(state: AppState, action: Action): AppState {
       return action.state;
   }
 }
-
-export const isSidebarVisible = (state: AppState): boolean => state.sidebarVisible !== false;
 
 /** Sample data for screenshots and demos: open the app with `?demo=1`. */
 export function demoState(): AppState {

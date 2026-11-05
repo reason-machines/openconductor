@@ -4,6 +4,8 @@ import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import { CloudIcon, FolderIcon, SidebarIcon, SparkIcon } from "./Icons";
 import { Wordmark } from "./Wordmark";
+import { activeWorkspaceCount } from "../state/selectors";
+import { TOGGLE_LEFT_SIDEBAR_HINT } from "../state/shortcuts";
 
 // Layout follows evidence/screens/home.md: wordmark, three entry cards, and a sidebar
 // toggle only while the sidebar is hidden. The repository list lives in the sidebar.
@@ -24,11 +26,6 @@ function EntryCard({ icon, label, onClick }: { icon: ReactNode; label: string; o
   );
 }
 
-/** Workspaces that are not archived, across all repositories. */
-export function activeWorkspaceCount(repos: Repo[]): number {
-  return repos.reduce((n, r) => n + r.workspaces.filter((w) => w.status !== "archived").length, 0);
-}
-
 export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog }: Props) {
   const hasWorkspaces = activeWorkspaceCount(repos) > 0;
   return (
@@ -37,7 +34,7 @@ export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog }: Pr
         <button
           type="button"
           className="home-sidebar-toggle"
-          title="Toggle left sidebar"
+          title={`Toggle left sidebar (${TOGGLE_LEFT_SIDEBAR_HINT})`}
           aria-label="Toggle left sidebar"
           onClick={() => dispatch({ type: "toggleSidebar" })}
         >
