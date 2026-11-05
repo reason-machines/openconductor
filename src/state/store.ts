@@ -2,12 +2,14 @@ import { useCallback, useEffect, useReducer } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import type { WorkspaceStatusValue } from "./workspaceStatus";
+import type { RowPr } from "./rowStatus";
 import { newId, workspaceName } from "./names";
-import { isSidebarVisible } from "./selectors";
+import { isSidebarVisible, startSelection } from "./selectors";
 import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
+import { sameRepoRecord } from "./addRepo";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -30,12 +32,15 @@ export type Action =
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
   /** The workspace's pull request title changed on GitHub (`workspaces.pr_title`). */
-  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null }
+  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; pr?: RowPr | null }
+  /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
+  | { type: "setWorkspaceWorking"; repoId: string; workspaceId: string; working: boolean }
   | { type: "toggleSidebar" }
   /** Sidebar repo menu: Hide / Unhide repository (`repos.hidden`). */
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
   /** Sidebar drag and drop: the full repo id list in its new order (`repos.display_order`). */
   | { type: "reorderRepos"; ids: string[] }
+  | { type: "setSidebarVisible"; visible: boolean }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] }
@@ -49,7 +54,7 @@ function updateWorkspace(state: AppState, repoId: string, workspaceId: string, f
   return { ...state, repos };
 }
 
-const EMPTY: AppState = { repos: [], selection: { kind: "home" } };
+const EMPTY: AppState = { repos: [], selection: { kind: "root" } };
 
 function makeWorkspace(repo: Repo): Workspace {
   const taken = new Set(repo.workspaces.map((w) => w.name));
@@ -62,8 +67,7 @@ export function reducer(state: AppState, action: Action): AppState {
     case "select":
       return { ...state, selection: action.selection };
     case "addRepo": {
-      const existing = state.repos.find((r) => (action.repo.path && r.path === action.repo.path) || (action.repo.remote && r.remote === action.repo.remote));
-      if (existing) return state;
+      if (sameRepoRecord(state.repos, { id: action.id, path: action.repo.path })) return state;
       if (action.id) {
         const repo: Repo = { ...action.repo, id: action.id, workspaces: [] };
         return { ...state, repos: [...state.repos.filter((r) => r.id !== action.id), repo] };
@@ -75,7 +79,7 @@ export function reducer(state: AppState, action: Action): AppState {
     }
     case "removeRepo": {
       const repos = state.repos.filter((r) => r.id !== action.repoId);
-      const sel = state.selection.kind === "workspace" && state.selection.repoId === action.repoId ? { kind: "home" as const } : state.selection;
+      const sel = state.selection.kind === "workspace" && state.selection.repoId === action.repoId ? { kind: "root" as const } : state.selection;
       return { ...state, repos, selection: sel };
     }
     case "toggleRepo":
@@ -111,7 +115,13 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos };
     }
     case "setWorkspacePr": {
-      const set = (w: Workspace): Workspace => (w.id === action.workspaceId && (w.prTitle ?? null) !== action.prTitle ? { ...w, prTitle: action.prTitle } : w);
+      const set = (w: Workspace): Workspace => {
+        if (w.id !== action.workspaceId) return w;
+        const titleSame = (w.prTitle ?? null) === action.prTitle;
+        const prSame = action.pr === undefined || JSON.stringify(w.pr ?? null) === JSON.stringify(action.pr);
+        if (titleSame && prSame) return w;
+        return { ...w, prTitle: action.prTitle, ...(action.pr === undefined ? {} : { pr: action.pr }) };
+      };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
     }
@@ -119,7 +129,7 @@ export function reducer(state: AppState, action: Action): AppState {
       const repos = state.repos.map((r) =>
         r.id === action.repoId ? { ...r, workspaces: r.workspaces.filter((w) => w.id !== action.workspaceId) } : r,
       );
-      const sel = state.selection.kind === "workspace" && state.selection.workspaceId === action.workspaceId ? { kind: "home" as const } : state.selection;
+      const sel = state.selection.kind === "workspace" && state.selection.workspaceId === action.workspaceId ? { kind: "root" as const } : state.selection;
       return { ...state, repos, selection: sel };
     }
     case "toggleSidebar":
@@ -128,11 +138,19 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos: setRepoHidden(state.repos, action.repoId, action.hidden) };
     case "reorderRepos":
       return { ...state, repos: orderRepos(state.repos, action.ids) };
+    case "setSidebarVisible":
+      return isSidebarVisible(state) === action.visible ? state : { ...state, sidebarVisible: action.visible };
     case "reset":
       return action.state;
     case "hydrate": {
       const collapsed = new Set(state.repos.filter((r) => r.collapsed).map((r) => r.id));
-      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined }));
+      // conductor.db has no PR or agent activity: keep what the open workspaces reported.
+      const live = new Map(state.repos.flatMap((r) => r.workspaces).map((w) => [w.id, w]));
+      const keepLive = (w: Workspace): Workspace => {
+        const old = live.get(w.id);
+        return old ? { ...w, status: old.status, ...(old.pr !== undefined ? { pr: old.pr } : {}) } : w;
+      };
+      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined, workspaces: r.workspaces.map(keepLive) }));
       return { ...state, repos, selection: validSelection(state.selection, repos) };
     }
     case "setWorkspaceUnread":
@@ -141,8 +159,18 @@ export function reducer(state: AppState, action: Action): AppState {
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
     case "setWorkspaceStatus":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, manualStatus: action.status }));
+    case "setWorkspaceWorking": {
+      const status: Workspace["status"] = action.working ? "working" : "idle";
+      const ws = state.repos.find((r) => r.id === action.repoId)?.workspaces.find((w) => w.id === action.workspaceId);
+      if (!ws || ws.status === status) return state;
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, status }));
+    }
   }
 }
+
+const demoPr = (over: Partial<RowPr>): RowPr => ({
+  number: 1, isMerged: false, isDraft: false, inMergeQueue: false, mergeState: "BLOCKED", checks: "passing", failingChecks: 0, viewerCanMerge: true, ...over,
+});
 
 /** Sample data for screenshots and demos: open the app with `?demo=1`. */
 export function demoState(): AppState {
@@ -152,7 +180,13 @@ export function demoState(): AppState {
   const repos: Repo[] = [
     {
       id: newId(), name: "openconductor", path: "~/code/openconductor", remote: "https://github.com/example/openconductor", defaultBranch: "main",
-      workspaces: [ws("amber-falcon", "working", 128, 14), ws("quiet-harbor", "needs-review", 42, 7), ws("lunar-reef", "idle", 0, 0)],
+      workspaces: [
+        ws("amber-falcon", "working", 128, 14),
+        { ...ws("quiet-harbor", "idle", 42, 7), pr: demoPr({ number: 12, mergeState: "CLEAN" }) },
+        { ...ws("copper-wren", "idle", 18, 2), pr: demoPr({ number: 14, checks: "failing", failingChecks: 1 }) },
+        { ...ws("misty-larch", "idle", 6, 0), pr: demoPr({ number: 9, isMerged: true }) },
+        ws("lunar-reef", "working", 0, 0),
+      ],
     },
     { id: newId(), name: "api-server", path: "~/code/api-server", defaultBranch: "main", workspaces: [ws("brisk-otter", "idle", 3, 1)] },
     { id: newId(), name: "design-system", path: "~/code/design-system", defaultBranch: "develop", workspaces: [] },
@@ -165,6 +199,7 @@ function load(): AppState {
   if (params.get("demo") === "1") {
     const s = demoState();
     if (params.get("view") === "home") s.selection = { kind: "home" };
+    if (params.get("view") === "root") s.selection = { kind: "root" };
     if (params.get("sidebar") === "0") s.sidebarVisible = false;
     return s;
   }
@@ -173,15 +208,15 @@ function load(): AppState {
     // First run after the switch: keep the selection and layout the old shell state had.
     const prefs = parsePrefs(localStorage.getItem(PREFS_KEY) ?? legacyPrefs(localStorage.getItem(STORAGE_KEY)));
     const repos = prefs.collapsed.map((id) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed: true }));
-    return { repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible };
+    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname);
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as AppState;
+    if (raw) return startSelection(JSON.parse(raw) as AppState, window.location.pathname);
   } catch {
     /* ignore corrupt state */
   }
-  return EMPTY;
+  return startSelection(EMPTY, window.location.pathname);
 }
 
 /** UI prefs carried over from the pre-database shell state, as `PREFS_KEY` JSON. */

@@ -246,8 +246,148 @@ a `/settings/repos...` start URL is resolved again once they are loaded. Diverge
 - Repo Git shows the base branch and remote read-only (Conductor lets you change both); repo
   Scripts shows the resolved setup, run and archive scripts read-only; repo Actions has Use
   spotlight testing (General preferences, `custom_prompt_general`, comes with the prompts keys);
-  repo Misc shows the root path only (no icon, workspaces path or Remove repository yet).
+  repo Misc shows the root path and the workspaces path (no icon or Remove repository yet).
+  Advanced has the root directory row (`advanced:conductor-root`) and Scrollback limit.
 - Settings search (`vUi` keywords per tab) is not built.
+
+## Models and providers (settings.toml.models, settings.toml.providers)
+
+Sources, read on `sven m5 max` on 2026-11-05 with REA's extracted frontend
+(`~/code/conductor-rea-work/frontend/dist/assets`, `index-BGEQ8YjU.js`, `renderApp-D_fmY7hW.js`),
+`main_strings.txt` (strings of the Conductor binary) and the agent CLIs Conductor bundles in
+`~/Library/Application Support/com.conductor.app/agent-binaries` (Claude Code 2.1.284, Codex 0.156.1).
+Key names, defaults and enums only; no user values were read.
+
+- Setting key to file key table (`index`, `oZ`): `default_model` -> `models.default`,
+  `review_model` -> `models.review`, `default_fast_mode` / `review_fast_mode` / `default_plan_mode`
+  -> `models.*`, `default_codex_thinking_level` / `review_codex_thinking_level` ->
+  `models.codex.{default,review}_thinking_level`, `default_codex_personality` ->
+  `models.codex.personality`, `default_claude_personality` -> `models.claude_code.personality`,
+  `default_claude_effort_level` / `review_claude_effort_level` ->
+  `models.claude_code.{default,review}_effort_level`, `codex_tool_approval_policy` ->
+  `models.codex.tool_approval_policy`, `visible_provider_models` -> `models.visible_provider_models`,
+  `claude_executable_path` -> `claude_code_executable_path`, and `codex_executable_path`,
+  `opencode_executable_path`, `claude_provider`, `codex_provider`, `bedrock_region`,
+  `vertex_project_id`, `ssh_key_path`, `tool_approvals_enabled` under their own names at top level.
+  Every `models.*` key except `models.visible_provider_models` has `workspaceConfigurable: false`,
+  as has `tool_approvals_enabled`; the provider, executable, region, project and SSH keys default to
+  workspace configurable. OpenConductor's `settings::layers::REPO_KEYS` is that list.
+- Defaults and enums (`wN` registry): `default_fast_mode` false, `tool_approvals_enabled` false,
+  `codex_tool_approval_policy` `default` (`default`, `always_approve`), `default_claude_personality`
+  `default` (`default`, `proactive`, `concise`, `explanatory`, `learning`); the session schema's
+  Codex personality is `none`, `friendly`, `pragmatic` and its thinking levels `none`, `low`,
+  `medium`, `high`, `xhigh`, `max`, `ultra`. The others have no default.
+- `claude_provider` (renderApp providers page): `custom` when the user picks API key, `default`
+  for the CLI login; a binary migration rewrites the removed `openai` to `default`. `codex_provider`:
+  `custom`, `chatgpt_sign_in`, anything else normalised to `default` (`TBe`).
+- Launch (`Ohe` in index): reads `claude_executable_path`, `claude_provider`, `codex_executable_path`,
+  `codex_provider` for the workspace (`getSettingForWorkspace`, else repo, else user), passes a path
+  only for a local host and only when set, and strips `ANTHROPIC_API_KEY`/`ANTHROPIC_AUTH_TOKEN`
+  (Codex: `CODEX_API_KEY`, `AI_GATEWAY_API_KEY`, `OPENAI_BASE_URL`) unless the provider is `custom`.
+  OpenCode runs as `<opencode_executable_path or opencode> acp`. Blank paths count as unset (`qx`).
+- `bedrock_region` and `vertex_project_id` are registered and file-backed but no 0.87.6 code reads
+  them (3 hits each in index, all registry); Bedrock and Vertex are chosen with
+  `CLAUDE_CODE_USE_BEDROCK` / `CLAUDE_CODE_USE_VERTEX` environment variables. A binary migration
+  turned the old `vertex_project_id` into `CLAUDE_CODE_USE_VERTEX=true` plus
+  `ANTHROPIC_VERTEX_PROJECT_ID`.
+- `tool_approvals_enabled`: chats require approval when it or the account's
+  `requiresToolApprovals` is set; the Big terminal presets switch from
+  `claude --dangerously-skip-permissions` to `claude` (`GN` / `kBe`). `codex_tool_approval_policy =
+  always_approve` answers every Codex tool approval with `always_allow`.
+- `ultracode` as a Claude effort, from definition to argv (Conductor 0.87.6, read 2026-11-05 on
+  sven m5 max; scans in `out/settings/ultracode.txt`, `ultracode-launch.txt`, `runtime-effort.txt`
+  in the REA work folder):
+  1. Defined: `Wv = ["low","medium","high","xhigh","max","ultracode"]` with label `Ultracode` and
+     description "Ultracode runs at extra-high effort with dynamic workflow orchestration."
+     (`index-BGEQ8YjU.js` @294871); `agentParams.effortLevel` for Claude is `KXe`, the same six
+     (@1079353). The session config's `thinkingLevel` enum has no `ultracode` (`pE` @143413), only
+     `none`..`ultra` plus a separate `ultracode: boolean`.
+  2. Frontend session config: `roe(t) { return t==="ultracode" ? "xhigh" : t }` and
+     `fit(t)` = `agentParams.effortLevel==="ultracode" ? true : undefined`; `Gd` builds
+     `thinkingLevel: roe(...)`, `ultracode: thinkingLevel==="ultracode" ? true : undefined`
+     (@1375824, @1377977). `ioe` maps `xhigh` + `ultracode` back to `ultracode` for display.
+  3. Sidecar, `Contents/Resources/bin/.internal/conductor-runtime` (Bun-compiled Mach-O, 76 MB,
+     sha256 `5723ead4...6eac0d`): `ly7` returns `"xhigh"` for Claude `effortLevel === "ultracode"`
+     and `dy7` returns `ultracode: true` (@75245342), the same mapping as `roe` / `fit`.
+  4. Sidecar launch builder: the Agent SDK query options are `effort: oB4(B.thinkingLevel)` (`oB4`:
+     `none` -> unset, `ultra` -> `max`, else unchanged, so `xhigh` stays `xhigh`) and
+     `settings: qB5(B)`, where `qB5` collects `outputStyle`, `fastMode` and `ultracode: true`
+     (@66285521, @66239283). The SDK's argv builder pushes `--effort <options.effort>` (@66167585)
+     and puts `settings` (JSON-serialized by `B8` when it is an object, @65501644) into its
+     extra-args map, which becomes `--settings <json>` (`ve6`, @65477838).
+  5. Claude Code's settings schema, embedded in the same binary, documents `ultracode`: "Enable
+     ultracode for the session: standing dynamic-workflow orchestration at any effort level.
+     Session-scoped, typically provided via --settings or the apply_flag_settings control
+     request" (@65371553).
+  So a Conductor `ultracode` chat runs `claude --effort xhigh --settings '{"ultracode":true,...}'`.
+  OpenConductor's `claude_launch` does the same: `EffortLevel::cli_value` gives `xhigh` and
+  `ultracode: true` joins `outputStyle` / `fastMode` in `--settings` (test
+  `ultracode_parses_round_trips_and_launches_as_xhigh`). Not observed in a running process: no
+  `ultracode` chat was started to capture the sidecar's actual argv.
+- The sidecar also sends Claude `thinking` (`HB5`: `--thinking adaptive` for adaptive models, else
+  `--max-thinking-tokens <budget>`, `--thinking disabled` for `none`) and always
+  `permissionMode: "bypassPermissions"`, answering approvals in-process. OpenConductor's launch
+  builder passes neither yet; recorded here, not changed in this PR.
+- With no `models.review`, a review runs on Conductor's built-in Claude default `opus-5-1m`, not
+  `models.default` (evidence/pr/ai-review.md); `settings::launch::REVIEW_FALLBACK_MODEL`.
+- `visible_provider_models` is a JSON string, an object keyed by provider (`claude`, `codex`,
+  `cursor`, `opencode`, `pi`) of `provider:model` ids; bad JSON or entries are ignored (`hee`).
+- Bundled CLIs: `claude --help` lists `--effort <level>` (low, medium, high, xhigh, max) and
+  `--settings <file-or-json>`; its strings hold the `outputStyle` and `fastMode` settings and the
+  built-in output styles Explanatory, Learning, Proactive and Concise. Codex's strings hold a
+  `Personality` enum `friendly`/`pragmatic`, `model_reasoning_effort`, `service_tier` and `fast`.
+
+OpenConductor (`src-tauri/src/settings/model.rs`, `launch.rs`, `layers.rs`):
+
+- Every key above parses from `settings.toml` under Conductor's path, round-trips, and is validated
+  (paths single-line; provider, region and project without whitespace; enums exact).
+- Provider precedence, highest first: `[providers.<agent>]` (ours), then `claude_provider` /
+  `codex_provider`, then the CLI login. A repository or managed layer that sets the top-level key
+  replaces a lower `[providers.<agent>]` table. `claude_provider = "custom"` is the Anthropic API
+  with the Keychain key; `bedrock` / `vertex` are OpenConductor values that use `bedrock_region` /
+  `vertex_project_id` (Vertex region `global`), because Conductor 0.87.6 has no reader for those
+  keys. `codex_provider = "custom"` is the OpenAI API; `chatgpt_sign_in` and `default` are Codex's
+  login.
+- `settings::launch::claude_launch` / `codex_launch` / `opencode_acp_command` build the agent
+  command from settings: executable path, provider env, model (`opus-5-5-1m` -> `--model
+  claude-opus-5-5[1m]`, Conductor's mapping), `--effort`, `--settings
+  {"outputStyle", "fastMode"}`, `--permission-mode plan` for a new chat with plan mode on, else
+  `default` with tool approvals on and `bypassPermissions` with them off; Codex `-c model`,
+  `model_reasoning_effort` (`max` and `ultra` run as `xhigh`, Codex's top level), `personality`,
+  `service_tier="fast"`. `Settings::codex_auto_approval` answers Codex approvals for
+  `always_approve`.
+- `get_repo_settings` (Tauri) merges user < repo shared (from `origin/<default branch>`) < repo local
+  < managed through `oc_scripts::config::load_layers`; repository files set only `REPO_KEYS`.
+
+Consumers still missing: no chat runner calls `claude_launch` / `codex_launch` yet (the
+new-workspace dialog's first session is "agent runtime pending"), so the model, effort, output
+style, fast and plan mode keys reach a real agent only once it does; nothing in the rebuild uses
+`ssh_key_path` (no cloud workspaces). Codex plan mode (Conductor's `collaborationMode: plan` per
+turn) is not passed. Not verified against a running agent: apart from `--effort` and `--settings`
+(read from Conductor's sidecar above), the CLI option mapping is from the bundled binaries' help
+and strings.
+
+### REA gaps hit (models and providers)
+
+- Conductor's sidecar, which turns the session config (`claudePersonality`, `effortLevel`,
+  `fastMode`, `personality`) into Claude Agent SDK and Codex options, is not in REA's extracted
+  artifacts: `grep -c` of `outputStyle`, `effortLevel`, `fastMode`, `claudePersonality` in
+  `main_strings.txt` is 0, and no sidecar JS exists outside `frontend/dist` in the work folder.
+  It is the Bun-compiled `Contents/Resources/bin/.internal/conductor-runtime`, whose embedded JS
+  REA's app extraction skipped. REA 6.7.0 has no Bun standalone-binary command (`rea --help` has
+  `inspect-go-binary` and `inspect-rust-binary`; `analyze-javascript-application` takes only ASAR or
+  a directory). REA bug: `rea extract-artifact <conductor-runtime>` fails with
+  `integrity_mismatch` ("Regular artifact entry is missing from inventory: slices/arm64"), and
+  still fails the same way with `--integrity-policy record-and-continue`, the retry its own
+  remediation recommends. The sidecar was read with a bounded Python `mmap` search of the binary
+  instead; the `ultracode` / `--effort` / `--settings` chain above comes from there.
+- Minified names differ between chunks (`pni`, `hni`, `XA` in renderApp are `XN`, `TBe`, `qx` in
+  index); REA's frontend analysis gives no cross-chunk symbol map, so definitions were found by
+  grepping each chunk.
+- One `devices_exec` call is capped at 60 s: `strings | grep -E '.{0,120}...'` over the 55 MB Claude
+  binary timed out twice; dumping strings to `out/cli/` in the background, then fixed-string greps,
+  worked.
+
 ## Prompts, git flags and environment
 
 Source: REA-extracted frontend on `sven m5 max` (`~/code/conductor-rea-work/frontend/dist/assets`,
@@ -423,3 +563,49 @@ variable values, and Conductor's per-variable copy button.
 - The published repository JSON schema (`settings.repo.schema.json`) lists
   `environment_variables.local/.cloud` but not the top-level shared entries that `SLe` reads;
   the bundle, not the schema, is the source for those.
+
+## App preferences in the settings table
+
+Source: REA-extracted frontend on `sven m5 max` (`~/code/conductor-rea-work/frontend/dist/assets`,
+`index-BGEQ8YjU.js` and `renderApp-D_fmY7hW.js`), read with `grep -lwF` and a context dump of every
+occurrence of each key, 2026-11-06. Key names and code only; no values were read from Conductor's
+`conductor.db` or `settings.toml`.
+
+Conductor's settings registry (`index-*.js`, `Te`/`Pe`/`yl` declarations and the `oZ` type map) marks
+each key file-backed (`Me({fileKey})`, lives in `settings.toml`) or non-file-backed (`Me()`/`xe()`,
+lives in the `settings` table). Every key below is non-file-backed, so OpenConductor stores it in
+`conductor.db` through `crates/openconductor-db/src/app_settings.rs` and decodes it in
+`src-tauri/src/app_prefs/` (typed `get_app_prefs`, `set_app_pref`, `record_open_in`,
+`client_instance_id`, `graphite_cli_installed`; no untyped key/value command).
+
+| Key | Default and encoding (REA source) | Consumer in OpenConductor |
+| --- | --- | --- |
+| `code_theme` | `yl("code_theme", _N, "default")`; `_N` = default, catppuccin-latte, -macchiato, -mocha, dracula, nord, tokyo-night, gruvbox-dark, solarized-dark; labels from `zPt` | Appearance row and diff highlighting built by the diff area (`DiffAppearanceRows.tsx`), stored in `settings.toml` `[appearance]` for now |
+| `colored_sidebar_diffs` | `Te(...,!1)`; `"true"`/`"false"`; sidebar row mutes counts unless selected or on (`eea`) | Appearance row and sidebar colors built in `AppearancePage.tsx` / `appearance.ts`, stored in `settings.toml` `[appearance]` for now |
+| `file_ligatures_enabled` | unset reads as on (`v5t`: `data ? data==="true" : true`) | Appearance row built by the diff area, stored in `settings.toml` `[appearance]` for now |
+| `garry_mode` | `Te(...,!1)`; toggled by `toggleGarryMode` | General row; `Transcript expandToolsByDefault`; ⌃O in `App.tsx` |
+| `experimental_show_agent_cost` | `Te(...,!1)`; read as `value==="true"` (or internal users unless `"false"`, `Y$e`) | Experimental row |
+| `experimental_tab_freak_mode` | `Te(...,!1)`; limit `iFt` = 10 on, 5 off, counting chats + terminals + browser (`oFt`) | Experimental row; terminal "+" and `startTab` limit |
+| `graphite_disabled` | `Te("graphite_disabled")`; disabled only when `"true"` (`ZUt`, `D9t`); row checked = gt installed && !disabled, reset writes `true` | Experimental row with "Install gt to enable." |
+| `default_open_in`, `open_in_mru_order` | MRU is a JSON string array of `app|local` / `app|remote`, newest first (`qzt`, `Hzt`, `UBe`, `HBe`); effective default = MRU[0] without suffix, else `default_open_in` (`l5t`) | `record_open_in` command |
+| `left_panel_visible`, `right_panel_visible` | unset reads as shown (`h5t`, `d5t`); written as `t.toString()`; zen mode sets both to `!left && !right` | `App.tsx` sidebar (`panelPrefs.tsx`), `WorkspaceView` right panel, ⌥⌘B, ⌘. |
+| `left_panel_width` | `parseInt`, default 256 (`mBe`); written `Math.round(w)`; drag range 192 to 480 (`Zsa`, `eoa`), saved on commit | `.app` `--sidebar-width` and a drag handle |
+| `onboarding_step`, `first_time_onboarding_step` | `parseInt(?? "0")`, `parseInt(?? "1")`; 999 = done (`_5t`) | stored and exposed only |
+| `last_clone_directory` | plain path, deleted when the data folder moves | clone and quick-start dialogs (`backend.ts`), localStorage value moved over once |
+| `last_seen_announcement` | announcement id; banner hidden when it equals the latest id (`Ena`) | stored and exposed only |
+| `client_instance_id` | `crypto.randomUUID()` stored on first read (`uue`) | `client_instance_id` command |
+| `roundhouse_client_user_id` | cloud sign-in user id; get/update/delete (`sWe`, `nWe`, `rWe`) | stored and exposed only |
+
+Missing consumers: the rebuild has no cloud workspaces (agent cost, Roundhouse), no "Open in" menu
+(MRU is recorded by `record_open_in` but nothing calls it yet), no onboarding, no announcements banner,
+no Graphite stack UI (only the toggle and the `gt` check), and no syntax highlighter, so a code theme
+sets only the code view's foreground and background, not token colors. The sidebar flag in localStorage
+(`UiPrefs.sidebarVisible`) is not migrated: the table cannot tell "unset" from "shown".
+
+### REA gaps (app preferences slice)
+
+- `grep -l` with a quoted-key regex through `devices_exec` (zsh, nested quotes) matched nothing; plain
+  `grep -lwF` worked. Not an REA bug, but REA has no "find setting key" query over the extracted bundle,
+  so every claim above comes from text search plus reading minified code, not from an REA trace.
+- Minified exports: hooks are re-exported under two-letter aliases (`p5t as og`, imported as `oEr`), which
+  REA's JavaScript semantic analysis does not resolve across chunks; we followed them by hand.

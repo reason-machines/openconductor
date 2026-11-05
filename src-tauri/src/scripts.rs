@@ -134,6 +134,23 @@ pub fn run_script_status(scripts: State<'_, ScriptService>, workspace_id: String
     }
 }
 
+/// Settings › Experimental "Auto-run after setup": the user-scope value.
+#[tauri::command]
+pub fn auto_run_after_setup_get(scripts: State<'_, ScriptService>) -> Result<bool, String> {
+    scripts.auto_run_after_setup()
+}
+
+/// Write the user-scope "Auto-run after setup" toggle; returns the value
+/// read back. New workspaces whose setup completes then start their default
+/// run script (`ScriptService::start_setup`).
+#[tauri::command]
+pub fn auto_run_after_setup_set(
+    scripts: State<'_, ScriptService>,
+    enabled: bool,
+) -> Result<bool, String> {
+    scripts.set_auto_run_after_setup(enabled)
+}
+
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ArchiveResultDto {
