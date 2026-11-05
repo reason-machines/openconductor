@@ -11,7 +11,7 @@ import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type 
 import { sidebarWrite } from "./sidebarPersist";
 import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, reorderSection, sectionOf, sectionsFromDb, withoutWorkspace, type DbNavSection, type NavSection } from "./navigationSections";
 import { sameRepoRecord } from "./addRepo";
-import { archiveWorkspace, emitArchiveEvent, startArchive, startUnarchive, unarchiveWorkspace, type ArchiveMode } from "../workspace/archive";
+import { archiveWorkspace, emitArchiveEvent, startArchive, startUnarchive, stopWorkspaceAgents, unarchiveWorkspace, workspaceAgentStatus, type ArchiveMode } from "../workspace/archive";
 import { scriptsConfig, startSetup } from "../scripts/api";
 import { workspaceRef } from "../scripts/model";
 import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
@@ -366,10 +366,10 @@ export function useAppStore() {
   const dispatch = useCallback(
     (action: Action) => {
       if (action.type === "archiveWorkspace") {
-        const ws = stateRef.current.repos.find((r) => r.id === action.repoId)?.workspaces.find((w) => w.id === action.workspaceId);
         void startArchive(action, {
-          status: ws?.status,
+          status: workspaceAgentStatus(action.workspaceId),
           hide: () => rawDispatch(action),
+          stopAgents: () => stopWorkspaceAgents(action.workspaceId),
           run: desktop ? (mode) => archiveWorkspace(action.workspaceId, mode) : null,
           reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
           emit: emitArchiveEvent,
