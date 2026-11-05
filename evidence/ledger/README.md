@@ -12,7 +12,7 @@ The REA ledger above is the obligation list as built from Conductor; it is not r
 
 | Record | Areas | Target | Parity | REA ledger obligations pass / fail | Builder obligations open |
 |---|---|---|---|---|---|
-| [`verifier/settings-shortcuts-persistence-packaging.md`](verifier/settings-shortcuts-persistence-packaging.md) (`.json`) | settings 48.4%, shortcuts 66.9%, persistence 72.7%, packaging 76.9% | main `ae3c015` | 63.8% | 7 / 10 | 21 of 35 |
+| [`verifier/settings-shortcuts-persistence-packaging.md`](verifier/settings-shortcuts-persistence-packaging.md) (`.json`) | settings 84.4%, shortcuts 66.9%, persistence 75.0%, packaging 76.9% | main `1cedef0` | 74.8% | 10 / 7 | 15 of 35 |
 | [`../parity/chat-diff-pr/PARITY.md`](../parity/chat-diff-pr/PARITY.md) (`parity.json`, `tools/parity_chat_diff_pr.py`) | chat 21.7%, diff 42.9%, PR 27.1% (41 features, hand-reviewed) | main `d91540c` | 30.5% (strict 0%) | not scored per REA obligation; parent obligations `agent.*`, `diff.*`, `pr.*` all still open | 39 of 41 ([#139](https://github.com/reason-machines/openconductor/issues/139), [#140](https://github.com/reason-machines/openconductor/issues/140), [#141](https://github.com/reason-machines/openconductor/issues/141)) |
 | [`../parity/reason-acp/PARITY.md`](../parity/reason-acp/PARITY.md) (`parity.json`, `tools/parity_reason_acp.py`) | Reason agent over ACP: 11 items under `agent.session-run`, `agent.providers`, `agent.message-queue` | `59ac0ba` | 100.0% | not scored (OpenConductor's own items; Conductor has no Reason agent) | none (`acp.signed-in`: [signed-in Mac run](../reason-acp/signed-in-run.md)) |
 
@@ -22,9 +22,9 @@ The records above score main only. An open PR that targets a failing builder obl
 
 | PR | Head (base) | Builder obligation | On main | With the PR | Record totals with the PR |
 |---|---|---|---|---|---|
-| [#358](https://github.com/reason-machines/openconductor/pull/358) frontend local-storage client, 11 subsystems, composer drafts | `cd408d2` (main `d8b3b2e`) | `db.local-storage.stores` (parent `db.local-storage`) | fail, 9.1% (1/11) | pass, 100.0% (11/11) | persistence 72.7% -> 95.5%, overall 63.8% -> 66.2%; REA ledger obligations 7 / 10 -> 8 / 9; builder obligations open 21 -> 20 of 35 |
+| [#358](https://github.com/reason-machines/openconductor/pull/358) frontend local-storage client, 11 subsystems, composer drafts | `b424d34` merged with main `1cedef0` (no conflicts) | `db.local-storage.stores` (parent `db.local-storage`) | fail, 9.1% (1/11) | pass, 100.0% (11/11) | persistence 75.0% -> 97.7%, overall 74.8% -> 77.2%; REA ledger obligations 10 / 7 -> 11 / 6; builder obligations open 15 -> 14 of 35 |
 
-With #358, the open persistence builder obligations are `persistence.agent-binaries` and `persistence.bin-source-markers` ([#329](https://github.com/reason-machines/openconductor/pull/329)).
+With #358, the only open persistence builder obligation is `persistence.agent-binaries`. `persistence.bin-source-markers` passes on main since [#329](https://github.com/reason-machines/openconductor/pull/329).
 
 A builder obligation is a slice of a failing feature that one builder can own. Every failing item belongs to exactly one, and each names its parent REA ledger obligation (keybindings have none: REA's JavaScript analysis did not return the registry, so the ledger has no keybinding obligation). `pass` is static presence on main, not observed runtime behavior.
 

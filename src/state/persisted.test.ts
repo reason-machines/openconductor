@@ -38,15 +38,15 @@ test("selection falls back to home when its workspace is gone", () => {
   const repos = reposFromDb([repo("a")], [ws("a", "oslo")], []);
   const keep = { kind: "workspace" as const, repoId: "a", workspaceId: "a/oslo" };
   assert.deepEqual(validSelection(keep, repos), keep);
-  assert.deepEqual(validSelection({ ...keep, workspaceId: "a/lima" }, repos), { kind: "home" });
+  assert.deepEqual(validSelection({ ...keep, workspaceId: "a/lima" }, repos), { kind: "root" });
 });
 
 test("prefs round-trip and survive garbage", () => {
   const repos = reposFromDb([repo("a"), repo("b")], [], ["b"]);
   const prefs = prefsOf({ repos, selection: { kind: "home" }, sidebarVisible: false });
   assert.deepEqual(parsePrefs(JSON.stringify(prefs)), { selection: { kind: "home" }, sidebarVisible: false, collapsed: ["b"] });
-  assert.deepEqual(parsePrefs("{nope"), { selection: { kind: "home" }, collapsed: [] });
-  assert.deepEqual(parsePrefs(null), { selection: { kind: "home" }, collapsed: [] });
+  assert.deepEqual(parsePrefs("{nope"), { selection: { kind: "root" }, collapsed: [] });
+  assert.deepEqual(parsePrefs(null), { selection: { kind: "root" }, collapsed: [] });
 });
 
 test("sidebar: pin, unread and status columns reach the workspace", () => {
