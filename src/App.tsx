@@ -12,6 +12,7 @@ import { QuickOpenDialog, QUICK_OPEN_DIALOG_ID } from "./components/QuickOpenDia
 import { DEFAULT_BINDINGS, resolveBinding } from "./palette";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
+import { PaletteHost } from "./palette/PaletteHost";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
@@ -122,6 +123,7 @@ export default function App() {
           onOpen={(path, mode) => show("info", `${mode === "diff" ? "Diff of" : "Opened"} ${path} (file viewer not built yet)`)}
         />
       )}
+      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );
