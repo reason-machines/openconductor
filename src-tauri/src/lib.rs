@@ -67,6 +67,7 @@ pub fn run() {
             workspace::commands::branch_name_is_taken,
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
+            workspace::commands::rename_workspace_branch,
             diff::commands::diff_workspace,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
