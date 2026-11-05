@@ -70,6 +70,17 @@ export class WebDriver {
     return this.#call("POST", this.#s("/actions"), { actions: [{ type: "key", id: "keyboard", actions }] });
   }
 
+  /** Press `key` while holding `modifiers` (WebDriver key codes, e.g. "\uE03D" Meta, "\uE009" Control). */
+  chord(modifiers, key) {
+    const actions = [
+      ...modifiers.map((value) => ({ type: "keyDown", value })),
+      { type: "keyDown", value: key },
+      { type: "keyUp", value: key },
+      ...[...modifiers].reverse().map((value) => ({ type: "keyUp", value })),
+    ];
+    return this.#call("POST", this.#s("/actions"), { actions: [{ type: "key", id: "keyboard", actions }] });
+  }
+
   title() {
     return this.#call("GET", this.#s("/title"));
   }
