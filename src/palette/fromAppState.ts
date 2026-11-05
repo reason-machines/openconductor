@@ -3,15 +3,21 @@
 
 import type { AppState, Workspace } from "../state/types.ts";
 import type { ActionEntry, PaletteData, WorkspaceEntry } from "./search/model.ts";
+import { sidebarEntries } from "../state/sidebarOrder.ts";
 
 export interface WorkspaceRef {
   repoId: string;
   workspace: Workspace;
 }
 
-/** Workspaces in sidebar order: repos in order, then their workspaces. */
+/** Workspaces in sidebar order: Pinned, then each repo's group, newest first (src/state/sidebarOrder.ts). */
 export function sidebarOrder(state: AppState): WorkspaceRef[] {
-  return state.repos.flatMap((r) => r.workspaces.map((workspace) => ({ repoId: r.id, workspace })));
+  return sidebarEntries(state);
+}
+
+/** What Cmd+1..9 count: the rows on screen, so collapsed repos are skipped, as the row hints are. */
+export function shortcutOrder(state: AppState): WorkspaceRef[] {
+  return sidebarEntries(state, { visibleOnly: true });
 }
 
 /** The workspace `delta` steps from the selected one, wrapping; first one if none is selected. */

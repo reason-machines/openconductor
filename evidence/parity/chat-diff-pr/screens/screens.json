@@ -7,19 +7,19 @@
       "file": "screens/ours-chat--transcript--dark.png",
       "reference": "evidence/screens/chat--transcript-collapsed-tools--dark.png",
       "theme": "dark",
-      "png_sha256": "244f65c3a786e52736b2f4022c3410801a3ebecf213565d74f504128be44f458",
-      "capture_evidence_id": "ev_751ff30abc09dbfa2d99337a345cc0a950379c301df0a1804ac9830a18b1c75e",
+      "png_sha256": "68a7060f81da1ef9d211faf5290d8fa72a44dbee837ed09c8f1231dfcba4fdb9",
+      "capture_evidence_id": "ev_3104396bf4e43fe26eed1613f64987687dca1eb68bec0ad095e8f6d16a5a9f69",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
-          "evidence_id": "ev_680b489913c2843e1b006b06ff73a7cba29aefedecfc2cf098b6e2cdd4f33b04",
-          "changed_pixels": 850208,
-          "changed_ratio": 0.6560246913580247
+          "evidence_id": "ev_f32c8967b30f27a0300a655f25b93d748bd5eaab1bee4571eb85d36da9327d3b",
+          "changed_pixels": 850210,
+          "changed_ratio": 0.6560262345679012
         },
         "threshold_24": {
-          "evidence_id": "ev_179fa6443ccbd6395377afadd233d2398f1da1068c896b8a77ff92f1b0a0cba6",
-          "changed_pixels": 72012,
-          "changed_ratio": 0.05556481481481482
+          "evidence_id": "ev_01509a1f9119ad50603867208e26c177b48ed9fcadb7543cbc64eee789f4dd93",
+          "changed_pixels": 69994,
+          "changed_ratio": 0.05400771604938272
         }
       }
     },
@@ -28,19 +28,19 @@
       "file": "screens/ours-chat--transcript--light.png",
       "reference": "evidence/screens/chat--transcript-collapsed-tools--light.png",
       "theme": "light",
-      "png_sha256": "521e8f0751b195f2c32fc42d29bc74c6a337686f4fd59cf7e4f4245cad9572bf",
-      "capture_evidence_id": "ev_82b893c12af8b7b397b6f583612b7b7b6272f149484892b21dd101003c82fef8",
+      "png_sha256": "b09b83ba94e1b13d1bc83d2fa6d04b092f4a9cd8f2318c0e41bc9a211375a65d",
+      "capture_evidence_id": "ev_3ab8d988a6c5ffede71eb3e424952c801d7fb68cc7f3f6a5348f327145decc91",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
-          "evidence_id": "ev_b9c23ab6b7ca9aa013944a4b6f1680528bae94d84138714569ba7d8083a09577",
-          "changed_pixels": 319738,
-          "changed_ratio": 0.24671141975308641
+          "evidence_id": "ev_ce0710fe67af4f44c6e61ebe176dac6adcfa4699e4c7f2b33e868791cd849589",
+          "changed_pixels": 321172,
+          "changed_ratio": 0.2478179012345679
         },
         "threshold_24": {
-          "evidence_id": "ev_50cc8e849784108887879faca6e201aef717ddd0c0923e465f227da582ffee51",
-          "changed_pixels": 63895,
-          "changed_ratio": 0.0493016975308642
+          "evidence_id": "ev_af7784756db98473c278f9fcc44d05471d3d213945be7cfb70288b505254d118",
+          "changed_pixels": 64095,
+          "changed_ratio": 0.04945601851851852
         }
       }
     },
@@ -49,19 +49,19 @@
       "file": "screens/ours-diff--file-unified--dark.png",
       "reference": "evidence/screens/diff--file-unified--dark.png",
       "theme": "dark",
-      "png_sha256": "68daad58add33870c2980964dfccd9f8f0de78c14e0bb74816cec8e3122fa1b9",
-      "capture_evidence_id": "ev_4177ba42ce63ccc05db03283760761ad331459e7e61eedbef20cc131facbe691",
+      "png_sha256": "492e723e60cfcff7b177352236706f5895f9d8babe7a0a4c0916c1ef23dbf229",
+      "capture_evidence_id": "ev_3b6109d6027381d8b537156a3f2d30b6ccdd28a45b639de2c7846cdec75e3bbb",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
-          "evidence_id": "ev_9cfa7539995165c7cea2fc11af074ddfe52be6c0e212056cfb271881d40d5031",
-          "changed_pixels": 1058415,
-          "changed_ratio": 0.8166782407407407
+          "evidence_id": "ev_f0557df343dc84d50f3b8e27b8cde4c1a83382aad1d169188b208228a3c45fbb",
+          "changed_pixels": 1058419,
+          "changed_ratio": 0.8166813271604938
         },
         "threshold_24": {
-          "evidence_id": "ev_fbd37569bc89bf37b1194786bee1bf0bc2deb28c60d28408f1425d754bf3624c",
-          "changed_pixels": 214674,
-          "changed_ratio": 0.16564351851851852
+          "evidence_id": "ev_317dd2a25d576ae282768d87f64d3d918aaee6e80676f118d4ddeb0d86b2cf42",
+          "changed_pixels": 215573,
+          "changed_ratio": 0.1663371913580247
         }
       }
     },
@@ -70,19 +70,19 @@
       "file": "screens/ours-diff--file-unified--light.png",
       "reference": "evidence/screens/diff--file-unified--light.png",
       "theme": "light",
-      "png_sha256": "9664332ff56a12360f654ac4787a0cf27f691e6f3f48256151d181f6641bf341",
-      "capture_evidence_id": "ev_93a8b828d9e8011ca97c46f0836edec1ab56d4c811a2b8c5632e71c956773e82",
+      "png_sha256": "327af8cf848c03f1b1c63c0eb082fbb9c52538da2595661a151eb30f987cbc6b",
+      "capture_evidence_id": "ev_9baa9e031d23c69d4e8bbdaf30805d9cc78bd47473c00ad7eb643c0c6db2bf6e",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
-          "evidence_id": "ev_cedfc123e428fb24d73964e8e5c0fedbf69eeee86b1f92fe9f983b20802e6eda",
-          "changed_pixels": 375839,
-          "changed_ratio": 0.2899992283950617
+          "evidence_id": "ev_197823fbc16d65f502768731a948d75ae387f3c7709002dc32eeea4bcdd7f8b5",
+          "changed_pixels": 377276,
+          "changed_ratio": 0.29110802469135805
         },
         "threshold_24": {
-          "evidence_id": "ev_94f2272f1d1b4ab639ac22e1638f61dd96a96c4aca7d09e56561e0fa8f481160",
-          "changed_pixels": 102289,
-          "changed_ratio": 0.0789266975308642
+          "evidence_id": "ev_5d8cd42bf738ac8468d405467c4dec0d7273e885f97fb16f676b4da3e47fb850",
+          "changed_pixels": 103286,
+          "changed_ratio": 0.07969598765432098
         }
       }
     },
@@ -91,19 +91,19 @@
       "file": "screens/ours-diff--file-split--dark.png",
       "reference": "evidence/screens/diff--file-split--dark.png",
       "theme": "dark",
-      "png_sha256": "d954a7b9f6e7b231376a709c5f14fa33567f62fd71a4d695064fd905db6c50e0",
-      "capture_evidence_id": "ev_108192e80c2c52a91df50c98685c7b7b1f72dd3529134886abded049ed6bec12",
+      "png_sha256": "6c7eec26bd0197d4da49efb0531fa709d572c38dd7786e789012bb5b98801d80",
+      "capture_evidence_id": "ev_fc6b5bbeb0e9e95cecf3376fc978c086d1b9ee091607c9c39da00b746b44ca3a",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
-          "evidence_id": "ev_fda68e38ccaebec7fcb2d9eb2f29183d841255d32c15d50bbc13fa199c4b5fa5",
-          "changed_pixels": 1058415,
-          "changed_ratio": 0.8166782407407407
+          "evidence_id": "ev_e935e99d7db6988d86f7a8d79dc6fdf72199fff7e471b71e8fb4ef4115512f9f",
+          "changed_pixels": 1058419,
+          "changed_ratio": 0.8166813271604938
         },
         "threshold_24": {
-          "evidence_id": "ev_e57189766b9e0e50019c2252aa26fd937616e6eb880b24c64e1b74ba1621ebea",
-          "changed_pixels": 169700,
-          "changed_ratio": 0.13094135802469137
+          "evidence_id": "ev_4e502a9ce9b0c5a316c05cf6be484b8ce3694db2d2a092b25e7e03884fcccbc4",
+          "changed_pixels": 170619,
+          "changed_ratio": 0.13165046296296296
         }
       }
     }

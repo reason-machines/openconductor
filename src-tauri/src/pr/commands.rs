@@ -91,6 +91,15 @@ pub async fn pr_merge(
     .await
 }
 
+/// The method Merge uses for this repository, for the button's tooltip.
+#[tauri::command]
+pub async fn pr_merge_method(repo_path: String) -> Result<MergeMethod, String> {
+    blocking(move || {
+        api::preferred_merge_method(&api::gh_in(&repo_path), merge_methods(), &repo_path)
+    })
+    .await
+}
+
 #[tauri::command]
 pub async fn pr_set_auto_merge(
     repo_path: String,

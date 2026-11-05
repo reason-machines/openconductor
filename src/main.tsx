@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import { DiffWorkerPool } from "./features/diff/DiffWorkerPool";
 import { KeybindingsProvider } from "./keybindings/KeybindingsProvider";
 import { getSettings } from "./settings/api";
 import { overridesRaw } from "./settings/keybindingOverrides";
@@ -11,8 +12,10 @@ const loadOverrides = async () => overridesRaw(await getSettings());
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <KeybindingsProvider loadOverrides={loadOverrides}>
-      <App />
-    </KeybindingsProvider>
+    <DiffWorkerPool>
+      <KeybindingsProvider loadOverrides={loadOverrides}>
+        <App />
+      </KeybindingsProvider>
+    </DiffWorkerPool>
   </React.StrictMode>,
 );

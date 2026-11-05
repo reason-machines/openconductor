@@ -46,6 +46,8 @@ export interface Settings {
   appearance: {
     zoom_level_v2: number;
     low_contrast_dark_mode: boolean;
+    /** Keep +/- colors on unselected sidebar rows; Conductor's default is off. */
+    colored_sidebar_diffs?: boolean;
     mono_font?: string | null;
     terminal_font_family?: string | null;
     /** Whole px, 10 to 20; 12 by default. */

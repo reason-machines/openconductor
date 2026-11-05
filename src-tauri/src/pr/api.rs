@@ -123,6 +123,16 @@ pub fn merge_pr<R: Runner>(
     Ok(method)
 }
 
+/// The method Merge will use: the repository's first allowed of squash,
+/// rebase, merge (cached per repository).
+pub fn preferred_merge_method<R: Runner>(
+    gh: &Gh<R>,
+    cache: &MergeMethodCache,
+    repo_key: &str,
+) -> Result<MergeMethod, String> {
+    resolve_method(gh, cache, repo_key, None)
+}
+
 /// Turn auto-merge on (with `method` or the preferred one) or off.
 pub fn set_auto_merge<R: Runner>(
     gh: &Gh<R>,
