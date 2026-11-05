@@ -120,3 +120,109 @@ export interface DbNavSection {
 export function sectionsFromDb(rows: readonly DbNavSection[]): NavSection[] {
   return rows.map((r) => ({ id: r.id, name: r.name, ...(r.emoji === null ? {} : { emoji: r.emoji }), workspaceIds: [...r.workspaceIds] }));
 }
+
+// ------------------------------------------------------------- drag and drop
+//
+// Conductor's pointer drag controller `esa` (renderApp-D_fmY7hW.js
+// @10091000-10096500, phase store `vm` @9936000-9939500; REA-decoded, read as
+// data): a dragged row drops on a section, on Pinned or on My workspaces
+// (`H`), and a drop that would leave it where it is is no target (`P`). A
+// dragged section header reorders the sections (`D`, `U`), the insertion
+// index coming from the section midpoints under the pointer (`Zra`). Rows
+// inside a section stay newest first (`usa`), so a section has no manual row
+// order to drag.
+
+export type DropTarget =
+  | { type: "section"; sectionId: string }
+  | { type: "pinned" }
+  | { type: "unsectioned" }
+  | { type: "reorder"; insertionIndex: number };
+
+export type DropAction = { kind: "assign"; sectionId: string } | { kind: "pin" } | { kind: "unpin" } | { kind: "unassign" };
+
+/** Drop-zone attributes the hit test reads (`eYe`, `aJn`, `iOt`, `rOt`). */
+export const DROP_ATTR = {
+  section: "data-navigation-section-drop-id",
+  sections: "data-navigation-sections-section",
+  pinned: "data-workspace-pinned-drop",
+  unsectioned: "data-workspace-unsectioned-drop",
+} as const;
+
+/** Pixels a press moves before it becomes a drag (`qra`). */
+export const DRAG_THRESHOLD_PX = 5;
+
+/** `P`: no target when the drop would leave the row where it already is. */
+export function workspaceDropTarget(sections: readonly NavSection[], workspaceId: string, pinned: boolean, hit: DropTarget | undefined): DropTarget | undefined {
+  const current = sectionOf(sections, workspaceId)?.id;
+  const stays =
+    hit?.type === "section" ? current === hit.sectionId : hit?.type === "pinned" ? pinned && current === undefined : hit?.type === "unsectioned" ? !pinned && current === undefined : false;
+  return stays ? undefined : hit;
+}
+
+/**
+ * `H`: what a row's drop does. On a section it moves there; on Pinned it pins
+ * (the pin takes it out of its section); on My workspaces it unpins a pinned
+ * row outside any section and otherwise takes the row out of its section.
+ */
+export function workspaceDropAction(sections: readonly NavSection[], workspaceId: string, pinned: boolean, target: DropTarget | undefined): DropAction | undefined {
+  if (target === undefined || target.type === "reorder") return undefined;
+  if (workspaceDropTarget(sections, workspaceId, pinned, target) === undefined) return undefined;
+  if (target.type === "section") return { kind: "assign", sectionId: target.sectionId };
+  if (target.type === "pinned") return { kind: "pin" };
+  return pinned && sectionOf(sections, workspaceId) === undefined ? { kind: "unpin" } : { kind: "unassign" };
+}
+
+/**
+ * `R`: a press on a row becomes a drag only when some drop could move it:
+ * there are sections, it is in one, or a Pinned / My workspaces zone it is
+ * not already in is on screen.
+ */
+export function canDragWorkspace(sections: readonly NavSection[], workspaceId: string, pinned: boolean, zones: { pinned: boolean; unsectioned: boolean }): boolean {
+  const sectioned = sectionOf(sections, workspaceId) !== undefined;
+  const toPinned = (!pinned || sectioned) && zones.pinned;
+  const toUnsectioned = (pinned || sectioned) && zones.unsectioned;
+  return sections.length > 0 || sectioned || toPinned || toUnsectioned;
+}
+
+/** `O`: sections reorder only when there are at least two. */
+export function canDragSection(sections: readonly NavSection[], sectionId: string): boolean {
+  return sections.length > 1 && sections.some((s) => s.id === sectionId);
+}
+
+/**
+ * `Zra`: the insertion index for pointer height `y`: before the first section
+ * whose vertical midpoint is below `y`, else after the last; `undefined` when
+ * a section has no rectangle on screen.
+ */
+export function insertionIndexAt(y: number, sections: readonly NavSection[], rects: ReadonlyMap<string, { top: number; height: number }>): number | undefined {
+  for (const [i, s] of sections.entries()) {
+    const r = rects.get(s.id);
+    if (r === undefined) return undefined;
+    if (y < r.top + r.height / 2) return i;
+  }
+  return sections.length;
+}
+
+/** `D`: an insertion index just above or below the dragged section is no move. */
+export function reorderTarget(sections: readonly NavSection[], sectionId: string, insertionIndex: number | undefined): DropTarget | undefined {
+  if (insertionIndex === undefined) return undefined;
+  const at = sections.findIndex((s) => s.id === sectionId);
+  return insertionIndex === at || insertionIndex === at + 1 ? undefined : { type: "reorder", insertionIndex };
+}
+
+/** `U`: the `toIndex` for `reorderSection`, or `undefined` when nothing moves. */
+export function reorderToIndex(sections: readonly NavSection[], sectionId: string, target: DropTarget | undefined): number | undefined {
+  if (target?.type !== "reorder") return undefined;
+  const at = sections.findIndex((s) => s.id === sectionId);
+  if (at === -1) return undefined;
+  const to = target.insertionIndex > at ? target.insertionIndex - 1 : target.insertionIndex;
+  return to === at ? undefined : to;
+}
+
+/** `Iea`: where a section draws the reorder line: above it, or below the last section. */
+export function reorderIndicator(target: DropTarget | undefined, sectionIndex: number, isLast: boolean): "above" | "below" | undefined {
+  if (target?.type !== "reorder") return undefined;
+  if (target.insertionIndex === sectionIndex) return "above";
+  if (isLast && target.insertionIndex === sectionIndex + 1) return "below";
+  return undefined;
+}
