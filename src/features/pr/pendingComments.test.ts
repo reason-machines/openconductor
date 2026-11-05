@@ -18,15 +18,15 @@ test("a pending comment counts unless it is outdated or resolved; sent ones neve
 });
 
 test("the header flag only counts comments 'Add all comments to chat' would send", () => {
-  // A GitHub comment on the PR itself has no file, and an empty body has nothing to say:
-  // pendingForAgent leaves both out, so the header must not offer a button that sends nothing.
+  // pendingForAgent skips a comment with no text, so the header must not offer a button that sends nothing.
+  // A GitHub comment on the PR itself is sent since #378, so it does count.
   const prLevel = c({ id: "github-general-1", file_path: "", file_level: true, location: "file", line_number: 0, remote_url: "https://github.com/o/r/pull/1#issuecomment-1", author: "octo" });
   const empty = c({ body: "" });
-  for (const set of [[prLevel], [empty], [prLevel, empty], [prLevel, c()], [c({ state: "sent" }), empty]]) {
+  for (const set of [[prLevel], [empty], [prLevel, empty], [empty, c()], [c({ state: "sent" }), empty]]) {
     assert.equal(hasPendingComments(set), pendingForAgent(set).length > 0, JSON.stringify(set.map((x) => [x.file_path, x.body, x.state])));
   }
-  assert.equal(hasPendingComments([prLevel, empty]), false);
-  assert.equal(hasPendingComments([prLevel, c()]), true);
+  assert.equal(hasPendingComments([empty]), false);
+  assert.equal(hasPendingComments([prLevel]), true);
 });
 
 test("the browser preview's changes-requested header carries the caller's pending-comment flag", async () => {

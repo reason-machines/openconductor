@@ -103,8 +103,9 @@ python slices of the bundle text around those offsets. REA was used for a
 - No unresolve on GitHub and no posting of replies or new comments to GitHub
   were found (no `unresolveReviewThread`, `addPullRequestReview*`,
   `in_reply_to` or `/replies` in either chunk).
-- "Add all GitHub comments to chat" takes pending rows that are neither
-  outdated nor resolved.
+- The store's `addAllGithubCommentsToChat` takes pending rows that are
+  neither outdated nor resolved, but no UI calls it; the UI's bulk action is
+  "Add all comments to chat" / "Add all to chat" (see comments-to-chat.md).
 
 ## OpenConductor
 
@@ -120,10 +121,10 @@ python slices of the bundle text around those offsets. REA was used for a
 - Frontend: `comments.ts` (source, tags, suggestion parsing, PR-level and
   file-level thread selection; tests in `githubComments.test.ts`),
   `commentsApi.ts`, `ReviewComments.tsx` (author/avatar, Resolved/Outdated,
-  View on GitHub, Suggested change, Resolve on GitHub; no reply or edit on
-  GitHub comments; Delete on them once they are no longer pending, through
-  `canDeleteComment` in comments.ts, with a confirmation that says the comment
-  comes back on the next sync, #389), `DiffViewer.tsx` (`notes` slot above the file),
+  View on GitHub, Suggested change, Resolve on GitHub, Delete (local only,
+  offered on GitHub and agent comments once they are no longer pending,
+  `canDeleteComment` in comments.ts, #389); no reply/edit on GitHub
+  comments), `DiffViewer.tsx` (`notes` slot above the file),
   `comments-github.css`.
 
 ## Divergences
@@ -133,20 +134,14 @@ python slices of the bundle text around those offsets. REA was used for a
   `gh pr view` in the workspace checkout. Merged PRs are skipped as in the
   reference; "no PR", "no GitHub access" and similar are reported as skipped
   rather than as warnings.
-- Location for the old side is stored as our `base`, not the reference's
-  `original` (our store's existing enum). Reading a reference database row
-  with `original` is not handled yet by our store.
-- Comment bodies render as markdown (`src/features/diff/commentMarkdown.ts`,
-  #389): the chat's remark plugins and components, raw HTML through
-  rehype-raw and rehype-sanitize with the default schema plus sub / sup /
-  details / summary (the reference's `MMi` setup in renderApp 0.87.6), and
-  ```` ```suggestion ```` fences drawn by the `code` component. Not ported:
-  the reference's remark plugin that links file paths in the text, and its
-  dedent of indented code blocks.
+- (Closed in evidence/diff/comments-to-chat.md: the old side is now stored
+  as `original`, legacy `base` rows read as `original`, and bodies render as
+  markdown with the reference's plugin stack.)
 - Where comments show: inline under their end line (as local comments do);
   outdated threads without a line and whole-file comments above the file's
   diff; PR-level comments in a collapsible "N comments on the pull request"
-  block above the file. Conductor also lists them in its comments panel,
+  block above the file, and in a "PR comments" panel from the Changes
+  toolbar that needs no file open. Conductor also lists them in its comments panel,
   which we do not have.
 - The "Resolved" tag also shows on the thread (collapsed "Resolved · N
   comments"), matching our existing local-thread UI. No "reviewed" state.

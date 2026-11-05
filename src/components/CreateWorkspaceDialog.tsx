@@ -3,6 +3,8 @@ import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import { Modal } from "./Dialogs";
 import { seedTranscript } from "./WorkspaceView";
+import { configureReason } from "../features/chat/reasonChat";
+import { sessionConfig } from "../features/chat/chatModel";
 import { RARITY_LABEL, generateWorkspaceNames, resolveBranchPrefix, type BranchPrefixSettings, type GeneratedName } from "../workspace/naming";
 import {
   FAILED_TO_CREATE,
@@ -158,7 +160,10 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
         number: created.number ?? null,
       };
       // The first message opens the workspace's first chat session (agent runtime pending).
-      if (firstSession) seedTranscript(id, firstSession.message);
+      if (firstSession) {
+        configureReason(id, sessionConfig(firstSession.model, firstSession.effort));
+        seedTranscript(id, firstSession.message);
+      }
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
       onClose();
       // ...and renames a placeholder city workspace after it.

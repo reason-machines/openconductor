@@ -5,53 +5,27 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { CommentMarkdown } from "./commentMarkdown.ts";
 
-const render = (body: string, suggestionBaseCode: string | null = null) => renderToStaticMarkup(createElement(CommentMarkdown, { body, suggestionBaseCode }));
+const html = (text: string) => renderToStaticMarkup(createElement(CommentMarkdown, { text }));
 
-test("comment bodies render as markdown: inline code, emphasis, lists and links", () => {
-  const html = render("Use `sum` here, **not** _total_.\n\n- one\n- two\n\nSee [docs](https://example.com/x).");
-  assert.match(html, /<code class="md-code">sum<\/code>/);
-  assert.match(html, /<strong>not<\/strong>/);
-  assert.match(html, /<em>total<\/em>/);
-  assert.equal((html.match(/<li>/g) ?? []).length, 2);
-  assert.match(html, /<a href="https:\/\/example.com\/x" class="md-link"/);
-  assert.doesNotMatch(html, /\*\*not\*\*/);
+test("comment bodies render GitHub-flavoured markdown with soft breaks", () => {
+  const out = html("**Bold** and `code`\nnext line\n\n- [ ] task\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n~~gone~~ https://example.com");
+  assert.match(out, /^<div class="md oc-md">/);
+  assert.match(out, /<strong>Bold<\/strong>/);
+  assert.match(out, /<code class="md-code">code<\/code><br\/>/);
+  assert.match(out, /<input type="checkbox" disabled=""\/>/);
+  assert.match(out, /<table>/);
+  assert.match(out, /<del>gone<\/del>/);
+  assert.match(out, /<a href="https:\/\/example.com" class="md-link" target="_blank" rel="noreferrer noopener">/);
 });
 
-test("fenced code in a comment is a highlighted code block", () => {
-  const html = render("Try:\n```ts\nconst a = 1;\nreturn a;\n```");
-  assert.match(html, /class="md-code-block"/);
-  assert.match(html, /<span class="hljs-keyword">const<\/span>/);
+test("comment code blocks use the chat's highlighted code block", () => {
+  assert.match(html("```ts\nconst a = 1;\n```"), /class="md-code-block"[^>]*><pre class="md-code-scroll"><code class="hljs language-ts">/);
 });
 
-test("GitHub's HTML tags render; anything unsafe is stripped", () => {
-  const html = render('<details><summary>Walkthrough</summary>\n\nBody <sub>small</sub> <sup>1</sup>\n\n</details>\n\n<script>alert(1)</script><img src="x" onerror="alert(1)"><a href="javascript:alert(1)">bad</a>');
-  assert.match(html, /<details><summary>Walkthrough<\/summary>/);
-  assert.match(html, /<sub>small<\/sub>/);
-  assert.match(html, /<sup>1<\/sup>/);
-  assert.doesNotMatch(html, /<script/);
-  assert.doesNotMatch(html, /onerror/);
-  assert.doesNotMatch(html, /javascript:/);
-});
-
-test("a suggestion fence is a Suggested change only when the original code is known", () => {
-  const body = "Rename it:\n```suggestion\nconst total = 1;\n```\nThanks";
-  const withBase = render(body, "const sum = 1;");
-  assert.match(withBase, /Suggested change/);
-  assert.match(withBase, /<div class="oc-suggestion-row del"><span class="sign">-<\/span>const sum = 1;<\/div>/);
-  assert.match(withBase, /<div class="oc-suggestion-row add"><span class="sign">\+<\/span>const total = 1;<\/div>/);
-  assert.match(withBase, /<p>Rename it:<\/p>/);
-  assert.match(withBase, /<p>Thanks<\/p>/);
-
-  const without = render(body, null);
-  assert.doesNotMatch(without, /Suggested change/);
-  assert.match(without, /const total = 1;/);
-
-  // An empty suggestion deletes the lines.
-  const del = render("```suggestion\n```", "gone();");
-  assert.match(del, /oc-suggestion-row del/);
-  assert.doesNotMatch(del, /oc-suggestion-row add/);
-});
-
-test("an empty body renders nothing", () => {
-  assert.equal(render(""), "");
+test("raw HTML from GitHub renders through the sanitizer: details/sub/sup/img stay, scripts and handlers go", () => {
+  const out = html('<details><summary>More</summary>Hidden <sub>x</sub><sup>2</sup></details>\n\n<img src="https://example.com/a.png" onerror="alert(1)">\n\n<script>alert(1)</script>\n\n[x](javascript:alert(1))');
+  assert.match(out, /<details><summary>More<\/summary>/);
+  assert.match(out, /<sub>x<\/sub><sup>2<\/sup>/);
+  assert.match(out, /<img src="https:\/\/example.com\/a.png"\/>/);
+  assert.doesNotMatch(out, /script|onerror|javascript:/);
 });

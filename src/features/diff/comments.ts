@@ -4,24 +4,37 @@
 // store can persist rows as-is. Stored `state`/`location` values follow an REA
 // inspection of a column-only snapshot of Conductor's diff_comments (1,508 rows,
 // evidence/sqlite/diff-comments-values.json): state was always "pending";
-// location was "file" (file-level) or "modified" (new side). "base" for the old
-// side and the "sent" state are our own: neither occurred in the data.
+// location was "file" (file-level) or "modified" (new side). The old side is
+// "original", the value Conductor's GitHub sync writes for a LEFT-side thread
+// and its agent note reads (evidence/diff/comments-to-chat.md); rows we stored
+// before as "base" are read as "original". The "sent" state is our own.
+import type { TextAttachment } from "./chatAttachment.ts";
 import type { FileDiff } from "./types.ts";
 
 /** Which side of the diff a comment is anchored to, as the UI sees it. */
 export type CommentSide = "old" | "new";
-/** Stored anchor: "modified" (new side), "base" (old side, inferred), "file" (whole file). */
-export type CommentLocation = "modified" | "base" | "file";
+/** Stored anchor: "modified" (new side), "original" (old side), "file" (whole file). */
+export type CommentLocation = "modified" | "original" | "file";
 /** `pending`: saved, not yet sent to the agent. `sent`: added to the chat (ours). */
 export type CommentState = "pending" | "sent";
 
 export function locationOf(side: CommentSide): CommentLocation {
-  return side === "old" ? "base" : "modified";
+  return side === "old" ? "original" : "modified";
+}
+
+/** A stored location, reading our earlier "base" for the old side as "original". */
+export function parseLocation(raw: string): CommentLocation {
+  return raw === "base" || raw === "original" ? "original" : raw === "file" ? "file" : "modified";
+}
+
+/** Rows as stored, with legacy "base" locations read as "original". */
+export function migrateLocations(rows: DiffComment[]): DiffComment[] {
+  return rows.map((c) => (c.location === parseLocation(c.location) ? c : { ...c, location: parseLocation(c.location) }));
 }
 
 /** UI side of a stored comment; file-level comments sit on the new side. */
 export function sideOf(c: Pick<DiffComment, "location">): CommentSide {
-  return c.location === "base" ? "old" : "new";
+  return c.location === "original" ? "old" : "new";
 }
 
 export interface DiffComment {
@@ -136,44 +149,85 @@ export function refreshOutdated(comments: DiffComment[], files: FileDiff[]): Dif
   });
 }
 
-/** A comment "add all comments to chat" would send: not yet sent, not resolved, on lines still in the diff,
- *  with a body and a file. PR-level GitHub comments have no file and stay out. */
+/** A comment "Add all comments to chat" sends: saved, not yet in the chat, neither resolved nor outdated,
+ *  with text. GitHub and PR-level comments count, as in Conductor's addAllGithubCommentsToChat. */
 function isPendingForAgent(c: DiffComment): boolean {
-  return c.state === "pending" && !c.is_resolved && !c.is_outdated && c.body.length > 0 && c.file_path !== "";
+  return c.state === "pending" && !c.is_resolved && !c.is_outdated && c.body.length > 0;
 }
 
 /** The header flag for "Add all comments to chat" (the reference's renderApp `Wus`: pending, not outdated,
- *  not resolved). Uses the same filter as `pendingForAgent`, so the button never shows with nothing to send. */
+ *  not resolved). Uses `pendingForAgent`'s filter, so the button never shows with nothing to send. */
 export function hasPendingComments(comments: DiffComment[]): boolean {
   return comments.some(isPendingForAgent);
 }
 
-/** Comments that "add all comments to chat" would send. */
+/** Comments "Add all comments to chat" sends. */
 export function pendingForAgent(comments: DiffComment[]): DiffComment[] {
   return comments.filter(isPendingForAgent);
 }
 
-/** Text handed to the agent composer: location, the commented code, then the note.
- *  A reply that follows its thread's earlier comment is quoted as a reply, without repeating the code. */
-export function formatForAgent(comments: DiffComment[], files: FileDiff[]): string {
-  const byPath = new Map(files.map((f) => [f.path, f]));
-  const seen = new Set<string>();
-  return comments
-    .map((c) => {
-      const key = c.thread_id ?? c.id;
-      if (seen.has(key)) return `> Reply: ${c.body}`;
-      seen.add(key);
-      const end = c.end_line_number ?? c.line_number;
-      if (c.file_level) return `${c.file_path}:\n${c.body}`;
-      const range = end === c.line_number ? `line ${c.line_number}` : `lines ${c.line_number}-${end}`;
-      const where = `${c.file_path} ${range}${c.location === "base" ? " (removed code)" : ""}`;
-      const lines = byPath.get(c.file_path) ? sideLines(byPath.get(c.file_path)!, sideOf(c)) : new Map<number, string>();
-      const code: string[] = [];
-      for (let n = c.line_number; n <= end; n++) if (lines.has(n)) code.push(lines.get(n)!);
-      const quoted = code.length ? `\n\`\`\`\n${code.join("\n")}\n\`\`\`` : "";
-      return `${where}:${quoted}\n${c.body}`;
-    })
-    .join("\n\n");
+/** Conductor's chip name for a comment attachment: `file.ts +12`, `file.ts +12-14`, the file,
+ *  `@author` for a PR-level comment, else the start of the body. */
+export function attachmentName(c: DiffComment): string {
+  const clean = (s: string) => s.replace(/⟧/g, "]");
+  const file = c.file_path.split("/").pop() || c.file_path;
+  if (file) {
+    if (c.file_level || c.line_number <= 0) return clean(file);
+    const end = c.end_line_number;
+    return clean(end !== null && end > c.line_number ? `${file} +${c.line_number}-${end}` : `${file} +${c.line_number}`);
+  }
+  if (c.author) return clean(`@${c.author}`);
+  if (c.body) {
+    const head = clean(c.body.slice(0, 30).replace(/\n/g, " "));
+    return head.length < c.body.length ? `${head}...` : head;
+  }
+  return "Comment";
+}
+
+/** The markdown file the agent receives for one comment: where it is, who left it, then the body. */
+export function attachmentText(c: DiffComment): string {
+  const source = commentSource(c);
+  const onFile = c.file_path !== "";
+  const end = c.end_line_number;
+  const lines = c.file_level || c.line_number <= 0 ? "Unknown" : end !== null && end > c.line_number ? `${c.line_number}-${end}` : `${c.line_number}`;
+  const where = !onFile
+    ? "This comment was left on the pull request itself, not on a file."
+    : c.file_level || c.location === "file"
+      ? "This comment was left on a file."
+      : c.location === "original"
+        ? "This comment was left on the base branch."
+        : "This comment was left on the modified branch.";
+  const who =
+    source === "remote"
+      ? c.author
+        ? `This comment was left on GitHub by @${c.author}.`
+        : "This comment was left on GitHub."
+      : source === "agent-local"
+        ? `This comment was left locally by ${c.author}. It is not a GitHub review thread.`
+        : "This comment was created locally in OpenConductor by the user. It is not a GitHub review thread.";
+  const thread =
+    source === "remote" && c.thread_id
+      ? c.reply_to_comment_id
+        ? `This comment is a reply in GitHub thread ${c.thread_id} to comment ${c.reply_to_comment_id}.`
+        : `This comment is the start of GitHub thread ${c.thread_id}.`
+      : undefined;
+  const meta = [
+    source === "remote" ? `GitHub review comment ID: ${c.id}` : `OpenConductor local comment ID: ${c.id}`,
+    onFile ? `File: ${c.file_path}` : undefined,
+    onFile ? `Lines: ${lines}` : undefined,
+    where,
+    who,
+    thread,
+    c.remote_url ? `Remote URL: ${c.remote_url}` : undefined,
+    `Outdated: ${c.is_outdated ? "yes" : "no"}`,
+    `Resolved: ${c.is_resolved ? "yes" : "no"}`,
+  ].filter((l): l is string => l !== undefined);
+  return `${meta.join("\n")}\n\n## Comment\n\n${c.body.trim()}\n`;
+}
+
+/** A comment as a chat attachment carrying its comment id (Conductor's `review` attachment). */
+export function commentAttachment(c: DiffComment): TextAttachment {
+  return { name: attachmentName(c), text: attachmentText(c), commentId: c.id };
 }
 
 export function markSent(comments: DiffComment[], ids: Set<string>, now: number): DiffComment[] {
@@ -213,10 +267,11 @@ export function commentSource(c: Pick<DiffComment, "remote_url" | "author">): Co
   return c.remote_url ? "remote" : c.author ? "agent-local" : "user-local";
 }
 
-/** Whether a comment card offers Delete. As in the reference (renderApp 0.87.6): while a comment is pending,
- *  its card (`kVo`) offers Delete only for the user's own comments; once it has left pending, the other
- *  card (`TVo`) offers it for every source, GitHub included. Ours has one non-pending state, `sent`.
- *  Delete removes the local row only; GitHub sync puts a remote comment back while it is still on the PR. */
+/** Whether a comment card offers Delete. Conductor picks the card by state (renderApp 0.87.6 near byte
+ *  9412604): a comment that is pending or ready_for_review, or sits in a composer, gets the card whose Delete
+ *  is for the user's own comments only (`kVo`); any other state gets the card whose Delete is on every
+ *  comment, GitHub included (`TVo`). Ours has one non-pending state, `sent`. Delete removes the local row
+ *  only; GitHub sync puts a remote comment back while it is still on the PR. */
 export function canDeleteComment(c: Pick<DiffComment, "remote_url" | "author" | "state">): boolean {
   return commentSource(c) === "user-local" || c.state !== "pending";
 }
@@ -239,6 +294,27 @@ export function fileThreads(threads: Thread[], path: string): Thread[] {
 /** Tags shown on a comment: resolved wins over outdated, as in the reference. */
 export function commentTags(c: Pick<DiffComment, "is_resolved" | "is_outdated">): ("Resolved" | "Outdated")[] {
   return c.is_resolved ? ["Resolved"] : c.is_outdated ? ["Outdated"] : [];
+}
+
+export type BodyPart = { kind: "text"; text: string } | { kind: "suggestion"; code: string };
+
+const SUGGESTION = /^```suggestion[^\n]*\n([\s\S]*?)^```[ \t]*$/gm;
+
+/** Split a comment body into text and ```suggestion blocks. Without the original code
+ *  (`suggestion_base_code`) a suggestion cannot be shown as a change and stays text. */
+export function bodyParts(body: string, suggestionBaseCode: string | null): BodyPart[] {
+  if (suggestionBaseCode === null) return [{ kind: "text", text: body }];
+  const parts: BodyPart[] = [];
+  let at = 0;
+  for (const m of body.matchAll(SUGGESTION)) {
+    const before = body.slice(at, m.index).replace(/\n$/, "");
+    if (before.trim()) parts.push({ kind: "text", text: before });
+    parts.push({ kind: "suggestion", code: m[1].replace(/\n$/, "") });
+    at = m.index + m[0].length;
+  }
+  const rest = body.slice(at).replace(/^\n/, "");
+  if (rest.trim() || parts.length === 0) parts.push({ kind: "text", text: rest });
+  return parts;
 }
 
 export interface SuggestionRow {

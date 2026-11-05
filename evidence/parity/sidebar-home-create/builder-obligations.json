@@ -1,15 +1,14 @@
 {
  "schema": "openconductor.builder-obligations.v1",
  "ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 0e2531b; sidebar items touched by #278 re-read on 0e2531b, others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 64.7,
+ "verdicts_verified_at": "2026-11-05 (main 4d72807: home.* re-read after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-name and sidebar.ws-status after #327, #344, #375, #379; sidebar.ws-status, ws-name and ws-branch after #337 on 1cedef0; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 75.0,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 36,
+ "open": 26,
  "by_owner": {
-  "create-workspace": 5,
-  "home": 9,
-  "setup-and-run-scripts": 1,
-  "sidebar": 21
+  "create-workspace": 4,
+  "home": 5,
+  "sidebar": 17
  },
  "obligations": [
   {
@@ -62,7 +61,7 @@
    "depends_on_builders": [],
    "feature": "Initializing state with progress while the workspace is created",
    "verdict": "partial",
-   "gap": "The dialog steps through creating, detecting-setup and running-setup (createFlow.ts reduceProgress) and create_workspace writes an initializing row, but the sidebar gets the workspace only after the worktree exists: no initializing row or view, no initialization log.",
+   "gap": "#327 adds a pendingLaunches store (src/workspace/pendingLaunches.ts, a port of Conductor's Y5e with the 120 s expiry): CreateWorkspaceDialog adds a launch on submit and removes it when the create finishes or fails, and RepoWorkspaceList/PendingWorkspaceRow (Sidebar.tsx) show an inert 'Untitled' row with a spinner ('Creating workspace...'), also in a collapsed group. Still no initializing workspace view and no initialization log, and the loader is a CSS spinner rather than Conductor's sprite.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -108,43 +107,15 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.create.worktree",
-   "item": "create.worktree",
-   "area": "create",
-   "owner": "create-workspace",
-   "depends_on_builders": [],
-   "feature": "Each workspace is a git worktree on its own branch in a configurable workspaces directory",
-   "verdict": "partial",
-   "gap": "create_workspace runs git worktree add on its own branch, but the location is fixed at <app data>/workspaces/<repo slug> (WorkspaceManager::workspaces_dir); no setting or UI changes it.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [
-    "ws.create"
-   ],
-   "evidence": {
-    "copy": [
-     1299,
-     5019
-    ],
-    "schema": [
-     "workspaces.directory_name",
-     "workspaces.workspace_path"
-    ],
-    "files": [
-     "evidence/scripts/WORKSPACE-NOTES.md"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.home.dashboard-routes",
    "item": "home.dashboard-routes",
    "area": "home",
    "owner": "home",
    "depends_on_builders": [],
    "feature": "Dashboard and all-workspaces routes",
-   "verdict": "missing",
-   "gap": "No /dashboard or /all-workspaces screens and no router.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+   "verdict": "partial",
+   "gap": "/all-workspaces is implemented by #322: the sidebar Home row, nav.home and the palette open AllWorkspaces, and a start path of /all-workspaces opens it. /dashboard is missing: REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest) shows route lta (@11,520,499) and a sidebar 'Dashboard' row (@10,029,038) shown when the dashboard_enabled setting is on (default 'false' in the index chunk's settings defaults); the rebuild has neither the route nor the setting.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
     "routes": [
@@ -159,107 +130,20 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.home.first-run",
-   "item": "home.first-run",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [],
-   "feature": "First-run onboarding route before Home",
-   "verdict": "missing",
-   "gap": "No onboarding screen, first-run check or onboarding route; only hidden onboarding.* keybinding registry entries.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [
-    "ui.routes",
-    "pkg.first-run-bootstrap"
-   ],
-   "evidence": {
-    "routes": [
-     "/first-run-onboarding"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.home.org-states",
-   "item": "home.org-states",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [],
-   "feature": "Home renders nothing while the organization loads and redirects a cloud organization to all-workspaces",
-   "verdict": "missing",
-   "gap": "No organization concept, no blank loading state on Home and no cloud redirect.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "routes": [
-     "/all-workspaces"
-    ],
-    "files": [
-     "evidence/screens/home.md"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.home.status-overview",
-   "item": "home.status-overview",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [],
-   "feature": "Home shows workspaces with their status (status matrix option, mine vs all)",
-   "verdict": "missing",
-   "gap": "HomeScreen.tsx shows only the wordmark and cards: no workspace list, status matrix or mine-vs-all filter.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     4796,
-     5007,
-     137,
-     2767
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.home.duplicate-repo",
    "item": "home.duplicate-repo",
    "area": "home",
    "owner": "home",
    "depends_on_builders": [],
-   "feature": "Refuse adding a repository that is already added",
+   "feature": "Adding an already-added repository again (Clone or Open project) makes a new project: no duplicate check, a new repos row, and Clone picks a unique folder (name-v1, name-v2)",
    "verdict": "partial",
-   "gap": "Open project and the Add-repository menu refuse an existing repo (REPO_EXISTS from findExistingRepo); the Clone dialog does no duplicate check (clone_repository picks a unique folder name and the store silently drops the duplicate).",
+   "gap": "Clone now matches (#343): the Clone dialog result is added under its backend id and a second clone of an added remote becomes its own project in a <name>-v1 folder (sameRepoRecord, src/state/addRepo.ts, tested; naming::bump since #379), as Conductor's g2t/C2t do. Open project still differs: App.tsx openProject refuses an already-added folder with REPO_EXISTS (findExistingRepo), and add_repository returns the existing id for a known path, while Conductor inserts a second repos row for the same folder named <name>-v1 (evidence/screens/duplicate-repo.md).",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
-    "copy": [
-     4557
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.home.new-project",
-   "item": "home.new-project",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [],
-   "feature": "Create a new project: local folder, git init, optional private GitHub repo, then a first workspace",
-   "verdict": "partial",
-   "gap": "Quick start opens CreateProjectDialog.tsx -> registered create_new_project (create_project.rs): git init with a first commit or create-next-app, private GitHub repo, add_repository. The GitHub repo cannot be skipped, and no real first workspace is created (App.tsx onCreated adds an in-memory placeholder under a client-side repo id).",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     1047,
-     1050,
-     1063,
-     556,
-     2219,
-     2220,
-     1064,
-     1568
+    "schema": [
+     "repos.remote_url",
+     "repos.root_path"
     ]
    },
    "status": "open"
@@ -272,7 +156,7 @@
    "depends_on_builders": [],
    "feature": "Recent workspaces list",
    "verdict": "partial",
-   "gap": "The command palette keeps an in-memory most-recent-first list of visited workspaces (PaletteHost.tsx, cap 8); Home shows no recents and the list is not persisted.",
+   "gap": "Re-read with REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest): 'Recent workspaces' is the command palette's All-tab heading with an empty query (m_a @10,909,908), not a Home list. Conductor keeps recentWorkspaceIds (most recent first, cap XOt = 5, recordViewedWorkspace) in its persisted UI store (partialize includes recentWorkspaceIds, index chunk @3,121,897), so the list survives a restart. Ours (src/palette/PaletteHost.tsx) shows the same heading and order but keeps up to 8 ids in React state only, so it is empty after a restart and holds 3 more than Conductor.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -287,64 +171,40 @@
    "item": "home.repo-search",
    "area": "home",
    "owner": "home",
-   "depends_on_builders": [],
-   "feature": "Search the repository list",
+   "depends_on_builders": [
+    "sidebar"
+   ],
+   "feature": "Narrow the repository list by project: the sidebar section header's Filter by project submenu (All projects, then each repository; shown with more than one repository; stored in sidebar_repo_filter) and the palette Projects tab (Search projects...). Home and the Add-repository menu have no repo search",
    "verdict": "partial",
-   "gap": "The palette's Projects tab filters repositories by name (src/palette/search/model.ts projectResults); there is no search field in the repository list or the Add-repository menu.",
+   "gap": "Re-anchored after REA on Conductor 0.87.6 (renderApp-D_fmY7hW.js, sha256 matches the manifest): Home and the Add-repository menu have no repo search; 'Search repositories...' is the cloud GitHub repo picker (mfa, @10,435,221). Local narrowing is the palette Projects tab and the section header's Filter by project submenu (pra @10,019,058: shown when repositories.length > 1, All projects then each repo, All deletes sidebar_repo_filter). The rebuild has the palette Projects tab (src/palette/search/model.ts projectResults) but no Filter by project on main. #354 is merged: the tested logic and submenu (src/home/repoFilter.ts, useRepoFilter.ts, ProjectFilterSubmenu.tsx) are on main but nothing mounts them. The mount is in sidebar PR #315 (not merged); it keeps the filter in localStorage rather than Conductor's sidebar_repo_filter settings row, which will score as a difference.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
     "copy": [
-     3825,
-     2917,
-     2497
+     1917,
+     134,
+     3822
     ]
    },
    "status": "open"
   },
   {
-   "obligation_id": "parity.home.route",
-   "item": "home.route",
+   "obligation_id": "parity.home.status-overview",
+   "item": "home.status-overview",
    "area": "home",
    "owner": "home",
    "depends_on_builders": [],
-   "feature": "Home is the root route and the default screen",
+   "feature": "Home list shows each workspace's active session status or its last-activity time (Conductor: needs plan response, needs permission, needs input, working, cancelling, waiting); status-matrix option and mine-vs-all",
    "verdict": "partial",
-   "gap": "Home is the default screen from the selection state in src/state/store.ts, but there is no router or '/' route: App.tsx only checks the start path for /create and /settings.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [
-    "ui.routes"
-   ],
-   "evidence": {
-    "routes": [
-     "/"
-    ],
-    "copy": [
-     2135
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.create.autostart-run",
-   "item": "create.autostart-run",
-   "area": "create",
-   "owner": "setup-and-run-scripts",
-   "depends_on_builders": [
-    "create-workspace"
-   ],
-   "feature": "Optionally start the run script automatically after setup",
-   "verdict": "partial",
-   "gap": "oc-scripts is linked and after a create-dialog setup ScriptService::after_setup calls should_auto_run and starts the run script; the option is only settable in the repo scripts config file: no UI sets it and save_repo_scripts does not write it.",
+   "gap": "#322 adds the Home list (AllWorkspaces.tsx, src/home/allWorkspaces.ts): grouped by last activity with counts, unread rows semibold, diff stat and a short relative time. The status column shows only 'working' (a spinner): our session status has only working/idle, so Conductor's other active statuses (needs plan response, needs permission, needs input, cancelling, waiting) never show, the same gap as sidebar.ws-status. The status-matrix toggle (internal_workspace_status_matrix, Settings > Experimental @10,701,242) and mine-vs-all (team organization sidebar, 'My workspaces' @10,055,740) are not built; #322 records them as cloud-only.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
     "copy": [
-     4186
-    ],
-    "schema": [
-     "repos.run_script",
-     "repos.run_script_mode"
+     4796,
+     5007,
+     137,
+     2767
     ]
    },
    "status": "open"
@@ -498,32 +358,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.repo-hide",
-   "item": "sidebar.repo-hide",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "persistence"
-   ],
-   "feature": "Hide and unhide a repository, with a toggle to show hidden ones",
-   "verdict": "backend",
-   "gap": "repos::set_hidden in the now-linked openconductor-db crate is tested and reposFromDb drops hidden rows, but no hide/unhide command is registered in lib.rs and there is no UI or show-hidden toggle.",
-   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     2115,
-     4719,
-     4049,
-     2114
-    ],
-    "schema": [
-     "repos.hidden"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.repo-icon",
    "item": "sidebar.repo-icon",
    "area": "sidebar",
@@ -625,26 +459,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.repo-order",
-   "item": "sidebar.repo-order",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "persistence"
-   ],
-   "feature": "Manual, persisted ordering of repositories",
-   "verdict": "partial",
-   "gap": "The sidebar lists repos in conductor.db order (db_list_repos -> openconductor_db repos::list, display_order then created_at). No UI or registered command reorders them.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "schema": [
-     "repos.display_order"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.resize-toggle",
    "item": "sidebar.resize-toggle",
    "area": "sidebar",
@@ -716,25 +530,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.ws-diffstat",
-   "item": "sidebar.ws-diffstat",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Line additions/deletions on each row, colored, with a setting to color unselected rows",
-   "verdict": "partial",
-   "gap": "Sidebar.tsx renders +/- counts (coloured on the active row), but reposFromDb sets them to 0/0, so the desktop app never shows them (only ?demo=1 and localStorage seeds do); no setting to colour unselected rows.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     731,
-     156
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.ws-name",
    "item": "sidebar.ws-name",
    "area": "sidebar",
@@ -742,7 +537,7 @@
    "depends_on_builders": [],
    "feature": "Workspace row shows the workspace name, distinguishing user-set from generated names",
    "verdict": "partial",
-   "gap": "workspaceLabel uses user-set name, then PR title, then prettified branch, and WorkspaceView now keeps prTitle in step with GitHub (setWorkspacePr via usePullRequest). renameWorkspace accepts userSet, but no rename dialog calls it and reposFromDb does not map user_set_workspace_name.",
+   "gap": "#344's pr_sync_workspace (src-tauri/src/pr/workspace_sync.rs, workspaces::set_pr_metadata) stores pr_title/pr_description after each PR lookup; list_workspaces returns them and reposFromDb maps prTitle, so a row keeps its PR title after a restart. It still updates only once the workspace has been opened and its PR read. Still partial: no rename dialog sets user_set_workspace_name on main (sidebar.rename; #315 adds it, not merged).",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -763,7 +558,7 @@
    ],
    "feature": "Workspace numbers shown optionally, with Cmd+1..9 switching",
    "verdict": "partial",
-   "gap": "workspace.switchTo1..9 are handled in PaletteHost.tsx over sidebarOrder; rows never show numbers and there is no setting to show them.",
+   "gap": "workspace.switchTo1..9 switch rows over sidebarOrder, and holding the switch modifier for 500 ms shows 1..9 in place of the first nine rows' icons (src/state/shortcutHint.ts, SidebarWorkspaceRow.tsx). The workspaces.number column is not shown and there is no setting to show numbers.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -780,41 +575,16 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.ws-pinned",
-   "item": "sidebar.ws-pinned",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "persistence"
-   ],
-   "feature": "Pin workspaces into a pinned group at the top",
-   "verdict": "partial",
-   "gap": "Pin/unpin from the row menu or P, and a Pinned group above My workspaces (src/state/sidebarOrder.ts, SidebarSections.tsx); reposFromDb maps pinned_at from conductor.db. Pins are local state only: no command writes set_pinned_at, so a desktop reload from the DB drops them.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     3263,
-     1863,
-     1864
-    ],
-    "schema": [
-     "workspaces.pinned_at"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.ws-status",
    "item": "sidebar.ws-status",
    "area": "sidebar",
    "owner": "sidebar",
    "depends_on_builders": [
-    "persistence"
+    "pr"
    ],
-   "feature": "Status indicator from a derived status with optional manual override (default in-progress)",
+   "feature": "Row status icon from workspace state, then the sessions' aggregated status, then PR state, else branch/local (not the manual Backlog/In progress status, which only groups the status-grouped sidebar)",
    "verdict": "partial",
-   "gap": "src/state/workspaceStatus.ts models effective status as manual, then derived, then in-progress, with a Set status submenu, and reposFromDb maps both columns. The row's status icon still renders the old idle/working model (SidebarWorkspaceRow.tsx STATUS_LABEL on ws.status), and the manual status is not written to conductor.db.",
+   "gap": "Judged against Conductor's row-icon chain. rowStatus.ts and RowStatusIcon.tsx are on main and SidebarWorkspaceRow uses them. #344 persists derived_status (setWorkspaceDerivedStatus) but the icon never reads it; the PR rules read only ws.pr, which only the open WorkspaceView's onLookup sets (rowPrOf) and which is not stored, so PR states never reach other rows or survive a restart. Session status is still only working/idle, so the needs-* and waiting states never show.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [
     "ws.status-archive"
@@ -822,11 +592,22 @@
    "evidence": {
     "copy": [
      4796,
-     5007
+     5007,
+     3979,
+     2785,
+     2784,
+     2783,
+     4901,
+     2189,
+     3445,
+     1287,
+     2625,
+     527,
+     3398
     ],
     "schema": [
-     "workspaces.derived_status",
-     "workspaces.manual_status"
+     "workspaces.state",
+     "sessions.status"
     ]
    },
    "status": "open"
@@ -841,7 +622,7 @@
    ],
    "feature": "Unread marker, mark-as-unread action and jump-to-next-unread command",
    "verdict": "partial",
-   "gap": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it; reposFromDb maps unread from conductor.db. Changes are not written back (no set_unread command), and there is no jump-to-next-unread-workspace command.",
+   "gap": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it. Changes are now written through the registered db_set_workspace_unread (sidebarPersist.ts) and reposFromDb maps workspaces.unread back. There is still no jump-to-next-unread-workspace command.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {

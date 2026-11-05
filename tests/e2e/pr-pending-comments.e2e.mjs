@@ -70,8 +70,10 @@ test("changes requested offers Add all comments to chat only while a diff commen
   }
   await add.click();
 
-  const composer = page.getByPlaceholder(/^Ask the agent/);
-  assert.match(await composer.inputValue(), /src\/server\/ready\.ts line 2:[\s\S]*Return 204 here/);
+  // The comment reaches the workspace chat as an attachment carrying its comment id (#378), not composer text.
+  const chip = page.locator(".composer-attachment", { hasText: "ready.ts +2" });
+  await chip.waitFor();
+  assert.match((await chip.getAttribute("title")) ?? "", /File: src\/server\/ready\.ts[\s\S]*Return 204 here/);
   await header.getByRole("button", { name: "Changes requested" }).waitFor();
   assert.equal(await add.count(), 0);
   await page.close();
@@ -85,10 +87,10 @@ const seeded = (over) => ({
   thread_id: null, reply_to_comment_id: null, is_outdated: false, is_resolved: false, suggestion_base_code: null, ...over,
 });
 
-test("PR-level and empty comments don't offer Add all comments to chat; bodies render as markdown; Delete follows the reference", async () => {
+test("an empty comment doesn't offer Add all comments to chat; bodies render as markdown; Delete follows the reference", async () => {
   const comments = [
-    // A GitHub comment on the PR itself: pending, but it has no file, so it is never sent to the agent.
-    seeded({ id: "github-general-1", file_path: "", line_number: 0, location: "file", file_level: true, body: "**LGTM** overall, see `ready.ts`.", remote_url: "https://github.com/acme/web/pull/42#issuecomment-1", author: "octo" }),
+    // A GitHub comment on the PR itself: pending but outdated, so it is not sent, and it is not deletable while pending.
+    seeded({ id: "github-general-1", file_path: "", line_number: 0, location: "file", file_level: true, is_outdated: true, body: "**LGTM** overall, see `ready.ts`.", remote_url: "https://github.com/acme/web/pull/42#issuecomment-1", author: "octo" }),
     // A local comment with no text.
     seeded({ id: "empty", body: "" }),
     // A GitHub review comment already added to the chat.
@@ -123,7 +125,7 @@ test("PR-level and empty comments don't offer Add all comments to chat; bodies r
   assert.equal(await review.locator(".oc-comment-body li").count(), 2);
   assert.doesNotMatch(await review.locator(".oc-comment-body").innerText(), /\*\*/);
 
-  // (c) A sent GitHub comment can be deleted; the pending PR-level one cannot (yet).
+  // (c) A sent GitHub comment can be deleted; the pending PR-level one cannot (Conductor's pending card).
   assert.equal(await review.getByRole("button", { name: "Delete" }).count(), 1);
   await page.locator(".oc-pr-comments summary").click();
   const prComment = page.locator(".oc-comment", { hasText: "overall" });

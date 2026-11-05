@@ -1,7 +1,7 @@
 // Flows run in order against one app session. Each throws on failure.
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, stdio: "pipe" });
@@ -29,6 +29,19 @@ async function clickByText(wd, css, label) {
 // text reads "" until the animation finishes.
 function textsOf(wd, css) {
   return wd.execute("return Array.from(document.querySelectorAll(arguments[0]), (e) => e.textContent.trim());", [css]);
+}
+
+/** `key` under `[section]` of a TOML file, as its raw value text, or null. */
+function tomlValue(path, section, key) {
+  if (!existsSync(path)) return null;
+  let current = "";
+  for (const line of readFileSync(path, "utf8").split("\n")) {
+    const header = line.match(/^\s*\[([^\]]+)\]\s*$/);
+    if (header) current = header[1].trim();
+    const kv = current === section && line.match(/^\s*([A-Za-z0-9_-]+)\s*=\s*(.*?)\s*$/);
+    if (kv && kv[1] === key) return kv[2];
+  }
+  return null;
 }
 
 export const flows = [
@@ -185,8 +198,10 @@ export const flows = [
   },
   {
     // ⌘K opens the palette from anywhere; typing filters it and Enter runs the
-    // active result. Go to Home leaves the workspace, and searching the
-    // workspace's name brings it back.
+    // active result. Go to Home leaves the workspace for the Home list
+    // (Conductor's /all-workspaces, titled "Home"; the wordmark-and-cards
+    // screen at / only shows at start-up), and searching the workspace's name
+    // brings it back.
     name: "command-palette",
     async run(wd) {
       const META = "\uE03D";
@@ -221,12 +236,73 @@ export const flows = [
 
       await open();
       await run("Go to Home", "Go to Home");
-      await wd.waitFor("the Home screen", async () => (await wd.findAll(".home")).length > 0 && (await wd.findAll(".workspace")).length === 0);
+      const homeList = () =>
+        wd.execute(
+          "return { title: document.querySelector('.allws .allws-title')?.textContent.trim() ?? null, rows: document.querySelectorAll('.allws .allws-row').length, workspace: !!document.querySelector('.workspace') };",
+          [],
+        );
+      await wd.waitFor("the Home list with the workspace's row", async () => {
+        const h = await homeList();
+        return h.title === "Home" && h.rows > 0 && !h.workspace;
+      }).catch(async (e) => {
+        throw new Error(`${e.message}; saw ${JSON.stringify(await homeList())}`);
+      });
 
       await open();
       await run(name, name);
       const back = await wd.waitFor(`the ${name} workspace view`, headerName);
       if (back !== name) throw new Error(`palette opened workspace ${JSON.stringify(back)}, want ${JSON.stringify(name)}`);
+    },
+  },
+  {
+    // ⌘, opens Settings on General; Appearance › Theme saves at once, re-themes
+    // the window and lands in settings.toml. Esc closes Settings, and reopening
+    // it reads the theme back from disk. The original theme is restored last.
+    name: "settings",
+    async run(wd) {
+      const META = "\uE03D";
+      const ESC = "\uE00C";
+      const file = join(process.env.OPENCONDUCTOR_HOME ?? join(homedir(), ".openconductor"), "settings.toml");
+      const heading = () => wd.execute("return document.querySelector('.settings .settings-header h1')?.textContent.trim() ?? null;", []);
+      const select = 'select[aria-label="Theme"]';
+      const selected = () => wd.execute("return document.querySelector(arguments[0])?.value ?? null;", [select]);
+      const docTheme = () => wd.execute("return document.documentElement.dataset.theme ?? 'system';", []);
+      const savedTheme = () => JSON.parse(tomlValue(file, "general", "theme") ?? '"system"');
+
+      async function openAppearance() {
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.chord([META], ",");
+        const first = await wd.waitFor("Settings after ⌘,", heading, 10000);
+        if (first !== "General") throw new Error(`Settings opened on ${JSON.stringify(first)}, want "General"`);
+        await clickByText(wd, ".settings-nav .nav-item", "Appearance");
+        await wd.waitFor("the Appearance page", async () => (await heading()) === "Appearance");
+        return wd.waitFor("the Theme select", selected);
+      }
+      async function choose(theme) {
+        const [option] = await wd.findAll(`${select} option[value="${theme}"]`);
+        if (!option) throw new Error(`no ${theme} option in the Theme select`);
+        await wd.click(option);
+        await wd.waitFor(`the window in the ${theme} theme`, async () => (await docTheme()) === theme);
+        await wd.waitFor(`theme = "${theme}" in ${file}`, async () => savedTheme() === theme).catch((e) => {
+          throw new Error(`${e.message}; [general] theme is ${tomlValue(file, "general", "theme")}`);
+        });
+      }
+      async function close() {
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys(ESC);
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+
+      const original = await openAppearance();
+      const target = original === "dark" ? "light" : "dark";
+      await choose(target);
+      await close();
+      if ((await docTheme()) !== target) throw new Error(`theme ${await docTheme()} after closing Settings, want ${target}`);
+
+      const reopened = await openAppearance();
+      if (reopened !== target) throw new Error(`Theme select shows ${JSON.stringify(reopened)} after reopening, want ${JSON.stringify(target)}`);
+      await choose(original);
+      await close();
     },
   },
 ];
