@@ -341,3 +341,18 @@ async fn imported_workspaces_have_no_number() {
         .unwrap();
     assert_eq!(numbers(&pool).await, [("app/oslo".to_string(), None)]);
 }
+
+#[tokio::test]
+async fn lists_updated_at_as_last_activity() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    finish_workspace(&pool, &ws("app", "oslo"), Some("main"), None)
+        .await
+        .unwrap();
+    openconductor_db::workspaces::touch(&pool, "app/oslo", "2030-01-02 03:04:05")
+        .await
+        .unwrap();
+    let w = &list_workspaces(&pool).await.unwrap()[0];
+    assert_eq!(w.updated_at, "2030-01-02 03:04:05");
+    assert_ne!(w.created_at, w.updated_at);
+}
