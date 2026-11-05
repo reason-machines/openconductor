@@ -1,4 +1,482 @@
 {
+  "chat--tool-calls-expanded--dark": {
+    "file": "chat--tool-calls-expanded--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "expand_tools"
+    ],
+    "notes": "The '4 tool calls, 2 messages' group expanded: Grep, Read, Edit and Bash rows with intermediate assistant text.",
+    "png_sha256": "95c1b84177755cb3db2965e303ee7f0259c2a1161d627525030a09c6bcb021f6",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_712ed72d44a360150f8f26578e482c9e346263349cce34469a39f571c64f70ec",
+      "scenario_sha256": "ab2271f1d1bb43fb1680710ea857e8a1f1cb2d80b9d3cac015f8ae32328c159f",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "chat--transcript-collapsed-tools--dark": {
+    "file": "chat--transcript-collapsed-tools--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace"
+    ],
+    "notes": "Workspace open: chat transcript with tool calls collapsed, composer, right panel with Changes (2 files) and Run tab. 'Couldn't load PR info' appears because GitHub is unreachable in the harness.",
+    "png_sha256": "38ce9dcde099c30eedd8454927c17c3cb46bc8a2f7d9e6e50a0ebcf0ccd6b9bb",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_c20cb6598e801de6db9e95edad28259736021781be7b4e4a4e1b8fd8ff4b750a",
+      "scenario_sha256": "538d8d09b2e9d7d3b1c31866bc12e4e17e3d6a565315e06b81f8d9eb2f80ac04",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "chat--transcript-collapsed-tools--light": {
+    "file": "chat--transcript-collapsed-tools--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace"
+    ],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "4a45461fe9344bf253e577ff50df3eb5e33f1995f6e1321eb7e716e6960e5694",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_06c2df4ccb977b20afdcd66767662700ed50cd0ccdf426e663739aeccb0ab42f",
+      "scenario_sha256": "4c12b58f70a463d1bdd98b1c5caae73e7cf7935aef697ad025604ef9e0bc0458",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "command-palette--all--dark": {
+    "file": "command-palette--all--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_palette"
+    ],
+    "notes": "Cmd+K: command palette, All tab, Actions list with shortcuts.",
+    "png_sha256": "def313efc6cff6a3011d0aea901cdf7fe9077b878f818bbd7016490a93e73346",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_2ce265c3d529a7c0e2ee6c7cd9a17e0ee2e262a56b2449f07798294beff75b02",
+      "scenario_sha256": "1fd04b9096350b40c3028c2033fcc04391548ed657de13a4d4db69420cf1eb2b",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "command-palette--all--light": {
+    "file": "command-palette--all--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_palette"
+    ],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "71ec4abdfb358baa8c5a7563b933b9f78a9abb4fb8a065b274fec1940e70bc32",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_2fde247556719f3961befcbfca3c08674218f91d78f52cd5717bf48bdbf56bbb",
+      "scenario_sha256": "f679e3913c72534dc751501e37a72196d8f7e42d54a1ce3bc0ddc34db7675105",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "command-palette--search-results--dark": {
+    "file": "command-palette--search-results--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_palette",
+      "pause0",
+      "type_query"
+    ],
+    "notes": "Command palette with the query 'login'.",
+    "png_sha256": "84b9cd8ad3c75e0bf825a81a1baea3a495dfc60b85884ec7e4aad53c99f67d93",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_28ba9b1619136a48dd5f06a823d3dbf17b444bb11668695503ce681829cca7f5",
+      "scenario_sha256": "037d5dd8af2a33e07eb753ba5b50186cb88ad83de2d7ccbccad509857969516f",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "command-palette--workspaces-tab--dark": {
+    "file": "command-palette--workspaces-tab--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_palette",
+      "pause0",
+      "tab_workspaces"
+    ],
+    "notes": "Command palette, Workspaces tab.",
+    "png_sha256": "7bd274e98885063d20d94b26365ddf2047c699181a98bd01e8bb63fe63fb2ddf",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_fa39745bef394338cc40d02f02caf7baf4c796fd89387e38cb00d3416709c7f1",
+      "scenario_sha256": "cd204d0556aad0eced2f35c3ec49ad1359190bcfceb17b737bed578b993e806e",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "create-workspace--from-repo--dark": {
+    "file": "create-workspace--from-repo--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "repo_plus"
+    ],
+    "notes": "'+' next to tide-web: create dialog with the repo preselected.",
+    "png_sha256": "06ef812769bb13944a2f793e007d74264dabc274313deb442a184cf4f60a0e7f",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_610f0f3aebf03f470b61fbdd505638ac15d8c7b3b4f28ec65c45278cb45bb67b",
+      "scenario_sha256": "288711a5a1e88b36f02980604e9e7337df52699e78c095a501fa718ceefc6fbc",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "create-workspace--no-repo--dark": {
+    "file": "create-workspace--no-repo--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "create"
+    ],
+    "notes": "Sidebar > Create: new-workspace composer ('What do you want to work on?') with 'Select repo', model chip and Create button.",
+    "png_sha256": "40d31de6656a394f01e1d17273256334cc9014bfc91cc87c5544af335ef2e865",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_6f8aa7b6c372a2e82aff47ddc458c0cb22951577e4c8b9e5a841f11c3d5e81b0",
+      "scenario_sha256": "89cd82f16f4d71b344e1ca732f157af4b80b73096303dff3b204ee2a6b534668",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "create-workspace--no-repo--light": {
+    "file": "create-workspace--no-repo--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "create"
+    ],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "d15be866ef44118d95943b3d2a05d6ac3ffe80674274a26ee1bcffa04d50ff72",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_d3035f26066a4e96795d27d1ebc1ce603df5b880f6253a055aa2ff28ebbe4287",
+      "scenario_sha256": "7158cbd3c737f76a23646d4bcd52fee8dbd305b5f03b5bc6c6ed54605dde732f",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "create-workspace--repo-picker--dark": {
+    "file": "create-workspace--repo-picker--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "create",
+      "pause0",
+      "open_repo_picker"
+    ],
+    "notes": "Create dialog with the repo picker open.",
+    "png_sha256": "735e22be094fb7f0c9727f7e96b2bbd81d670e2f96b9916e32c78020bf3ae46b",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_ed214cec1355d85640fce44ab164e9cdb87555395cc3f2677f2796682a6afce0",
+      "scenario_sha256": "384c0adacbc97494ae92a937b670cc37c493fae8a7a45582d938123bc7740037",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "create-workspace--typed-prompt--dark": {
+    "file": "create-workspace--typed-prompt--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "repo_plus",
+      "pause0",
+      "type_prompt"
+    ],
+    "notes": "Create dialog for tide-web with a typed prompt.",
+    "png_sha256": "0ee7c3bc9f95e44352507705cdaad9ad43cfe4fe9d98a72046883d878f59f150",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_a100655b51db9009fc5e65186b6efcae7d8227d281c0ee48116942369b0ae87c",
+      "scenario_sha256": "477dee8054243701b9ed778c83a6deb6252836c0a799074d7431be0dfa57204a",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "diff--added-tests--dark": {
+    "file": "diff--added-tests--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_test_diff"
+    ],
+    "notes": "Changes panel > src/lib/auth.test.ts: an all-additions hunk (+14).",
+    "png_sha256": "7b30e5e65cd74498b28d4b8367588fdecca5f3dc7268146632359690e48cbd90",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_17438533d7b36d2af21d0bc40149a10fd8d3d79b2c9b122fdefca5793a1eb85b",
+      "scenario_sha256": "ccd4684d4d39c58b1cf27ea0945b015fbda434db3e99c2340b1d96045df3b602",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "diff--entire-file--dark": {
+    "file": "diff--entire-file--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_auth_diff",
+      "pause2",
+      "entire_file"
+    ],
+    "notes": "Same file as 'Entire file' (raw view).",
+    "png_sha256": "ae6998ed1ba360d1355bf0331e648d70499c5954e3fce5d4e5ab2bbd9133c7fe",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_6a65b9ed288a7a6c7f9d2b177ecfbc72321bead7f9a11e3f88c8570fbe8feb3e",
+      "scenario_sha256": "637ca35a47a3aaf993923f361a617ffe172219fbaaa56b71165a62351a4494e2",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "diff--file-split--dark": {
+    "file": "diff--file-split--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_auth_diff",
+      "pause2",
+      "split_view"
+    ],
+    "notes": "Same file in split view (old left, new right).",
+    "png_sha256": "f370059147479bab8dbf6493c36ebe80ad7b98871239626e251132e61030745d",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_417034d200467144240433f0dbbb45e0d48ac50208a6a44ac832c0db7947f0c7",
+      "scenario_sha256": "1bebef8fbab14e6585ccad5abb1ca9b6624b1e57ae88e6c82917800bfda587e9",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "diff--file-unified--dark": {
+    "file": "diff--file-unified--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_auth_diff"
+    ],
+    "notes": "Changes panel > src/lib/auth.ts: unified diff tab with collapsed unmodified lines, one removed and one added line, Viewed checkbox.",
+    "png_sha256": "4cb12cfd05dced8a95762682d7e0cb41d16b710a919b3bac0fea00918086f61e",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_06b4101b8ce2f27f6e56019a53e1c31fd4769c7fca73e6259afbaa3d5ee65566",
+      "scenario_sha256": "baaeee178da839205a30568c107216f8a11eca0488642eb507a53ebc5781876b",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "diff--file-unified--light": {
+    "file": "diff--file-unified--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_auth_diff"
+    ],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "93c09c5ab3237a2dee48520c1d1b068220e0320e117783d4a37c1a4a6e2942fb",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_5dd3160eb4fc16e9c4c7ad3b244944e07d46b90d2e12e7b038bef5acba928793",
+      "scenario_sha256": "ea26b14beb11db507897e2a63abcef4b3b53eca00eaeddc8e02bd564b799a81e",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
   "home--empty-signed-in--dark": {
     "file": "home--empty-signed-in--dark.png",
     "route": "/",
@@ -41,6 +519,88 @@
       "rea_version": "rea-agents 6.7.0",
       "evidence_id": "ev_24e623814c28c90837d086fb00b98f19a8110ed5a16b60da506adad0f5b07791",
       "scenario_sha256": "9aa1ff540bf97d782436d257e7cf51ebedd30703d395501b45a25358331eb32f",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "menu--account--dark": {
+    "file": "menu--account--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "account"
+    ],
+    "notes": "Account menu from the sidebar header: email, Settings, Log out.",
+    "png_sha256": "4fcb3c22bc4ce67c9a63e4c63caf56394316fb6bbc24e4ee32b0839a5569d901",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_156181cfccc5966daaab528649e4c782f445507bce5cdf682659e568f81a41c4",
+      "scenario_sha256": "3bd13d99d638021c1d55b9707e60221a9cde2a90f05ee94d8523baefa8f27f3d",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "menu--model-picker--dark": {
+    "file": "menu--model-picker--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "model"
+    ],
+    "notes": "Composer model picker opened from the 'Opus 5 High' chip.",
+    "png_sha256": "41bea488c9b948af2b7d7a079625c9a7deb488519dbc1d3b23b19f9dad282342",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_078525b5280f0066a013da60b87034c2a112f6ab66ee9b3577660b6b5de0df98",
+      "scenario_sha256": "4ca4208a087e0cdab1809d419ea229fcb6bdeadc4788ea22cce5e27dc22b0f94",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "menu--workspace-context--dark": {
+    "file": "menu--workspace-context--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "context"
+    ],
+    "notes": "Right-click context menu on a sidebar workspace row.",
+    "png_sha256": "3f176da594673c73461f03997218843e0d3cfab9e950fcff28393d17a668d7cd",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_65447797791cfd95d8e210413464243396cf6320aededc5dfa1454ec67c99cb7",
+      "scenario_sha256": "3eaef13f4cfc0782608fcedb5dd6491b65466e23a41b51e9474896927ec79969",
       "browser": "Chromium 155.0.8059.84"
     },
     "page_errors": 0
@@ -112,6 +672,86 @@
       "rea_version": "rea-agents 6.7.0",
       "evidence_id": "ev_0eae8d69b88224337124e0ef5e5e71721c69a99992ea4df71be94357dd4762c5",
       "scenario_sha256": "89b156047b466a4a9551ad693688656ad70d18053c499612a892b0b5b74b5c76",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "sidebar--repos-collapsed--dark": {
+    "file": "sidebar--repos-collapsed--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [],
+    "notes": "Populated sidebar: three repos with workspace counts, Home in the main area.",
+    "png_sha256": "b989166d3e925686cdace8631929cfa4c020bde4b759a9c7ad1af44f73fd511c",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_4b3012b3d853839a0ff1a82f227f93747ceec86df6d8eb0be31f5f6c2177abdf",
+      "scenario_sha256": "c9c9888e94f26e92c86b8d495595fc380fc9209b2e0e1cef03dd3ce7ff133c65",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "sidebar--repos-expanded--dark": {
+    "file": "sidebar--repos-expanded--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "pause",
+      "expand_tide_api"
+    ],
+    "notes": "Two repos expanded: workspace rows (branch-derived names, unread rows in bold, diff stats on the row with changes).",
+    "png_sha256": "42c832f03baf1ff94ed0488f5704766ce07ee3046e9d08f67947147ca7410be6",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_e159e8c2d24510e7e94f324aa912204a083298dcb689067cb5be44702bd156d9",
+      "scenario_sha256": "c69a1a7b683e62a9a3324c79252486605a8b1315165c46c7426b6df0c617b186",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "sidebar--repos-expanded--light": {
+    "file": "sidebar--repos-expanded--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "pause",
+      "expand_tide_api"
+    ],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "e8a2ac9e3991db16d478cd58ab564bafe1b03f134873d96824a4688ac3bf19e0",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_b3b14cb58ba331ce889a6fee0dfd136ecb42e422911e451c51dc8e736250dfaa",
+      "scenario_sha256": "c119a54fff001e32499687d550f96925fad888979e3316a1a77bc6ec4e3fecd6",
       "browser": "Chromium 155.0.8059.84"
     },
     "page_errors": 0

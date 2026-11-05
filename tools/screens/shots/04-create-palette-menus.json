@@ -1,0 +1,371 @@
+[
+  {
+    "name": "command-palette--all--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_palette",
+        "action": "press",
+        "locator": {
+          "kind": "css",
+          "selector": "body"
+        },
+        "key": "Meta+k",
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1200,
+    "notes": "Cmd+K: command palette, All tab, Actions list with shortcuts."
+  },
+  {
+    "name": "command-palette--all--light",
+    "scenario": "populated",
+    "theme": "light",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_palette",
+        "action": "press",
+        "locator": {
+          "kind": "css",
+          "selector": "body"
+        },
+        "key": "Meta+k",
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1200,
+    "notes": "Same as dark, light theme."
+  },
+  {
+    "name": "command-palette--workspaces-tab--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_palette",
+        "action": "press",
+        "locator": {
+          "kind": "css",
+          "selector": "body"
+        },
+        "key": "Meta+k",
+        "timeout_ms": 3000
+      },
+      {
+        "step_id": "pause0",
+        "action": "wait_for_timeout",
+        "duration_ms": 600
+      },
+      {
+        "step_id": "tab_workspaces",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=dialog] >> text=Workspaces"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1200,
+    "notes": "Command palette, Workspaces tab."
+  },
+  {
+    "name": "command-palette--search-results--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_palette",
+        "action": "press",
+        "locator": {
+          "kind": "css",
+          "selector": "body"
+        },
+        "key": "Meta+k",
+        "timeout_ms": 3000
+      },
+      {
+        "step_id": "pause0",
+        "action": "wait_for_timeout",
+        "duration_ms": 600
+      },
+      {
+        "step_id": "type_query",
+        "action": "fill",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=dialog] input"
+        },
+        "value": {
+          "source": "literal",
+          "value": "login"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Command palette with the query 'login'."
+  },
+  {
+    "name": "create-workspace--no-repo--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "create",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Create >> nth=0"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1200,
+    "notes": "Sidebar > Create: new-workspace composer ('What do you want to work on?') with 'Select repo', model chip and Create button."
+  },
+  {
+    "name": "create-workspace--no-repo--light",
+    "scenario": "populated",
+    "theme": "light",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "create",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Create >> nth=0"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1200,
+    "notes": "Same as dark, light theme."
+  },
+  {
+    "name": "create-workspace--repo-picker--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "create",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Create >> nth=0"
+        },
+        "timeout_ms": 3000
+      },
+      {
+        "step_id": "pause0",
+        "action": "wait_for_timeout",
+        "duration_ms": 600
+      },
+      {
+        "step_id": "open_repo_picker",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Select repo"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1200,
+    "notes": "Create dialog with the repo picker open."
+  },
+  {
+    "name": "create-workspace--from-repo--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "repo_plus",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[data-sidebar-scroll-root] button:has(svg) >> nth=0"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1200,
+    "notes": "'+' next to tide-web: create dialog with the repo preselected."
+  },
+  {
+    "name": "create-workspace--typed-prompt--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "repo_plus",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[data-sidebar-scroll-root] button:has(svg) >> nth=0"
+        },
+        "timeout_ms": 3000
+      },
+      {
+        "step_id": "pause0",
+        "action": "wait_for_timeout",
+        "duration_ms": 600
+      },
+      {
+        "step_id": "type_prompt",
+        "action": "fill",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=dialog] [contenteditable=true], [role=dialog] textarea"
+        },
+        "value": {
+          "source": "literal",
+          "value": "Add a dark mode toggle to the settings page"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1200,
+    "notes": "Create dialog for tide-web with a typed prompt."
+  },
+  {
+    "name": "menu--account--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "account",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada Demo's Mac"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1000,
+    "notes": "Account menu from the sidebar header: email, Settings, Log out."
+  },
+  {
+    "name": "menu--model-picker--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "open_workspace",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/fix login redirect"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 2500
+      },
+      {
+        "step_id": "model",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Opus 5 >> nth=-1"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1200,
+    "notes": "Composer model picker opened from the 'Opus 5 High' chip."
+  },
+  {
+    "name": "menu--workspace-context--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "context",
+        "action": "click",
+        "button": "right",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/fix login redirect"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 1000,
+    "notes": "Right-click context menu on a sidebar workspace row."
+  }
+]

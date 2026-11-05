@@ -12,6 +12,11 @@ export interface Workspace {
   createdAt: number;
   /** Worktree path, once the backend created it. */
   path?: string;
+  /** `placeholder_branch_name`: the city branch, until the first message renames it. */
+  placeholderBranchName?: string | null;
+  /** `user_set_workspace_name` / `user_set_branch_name`: block the auto-rename. */
+  userSetWorkspaceName?: boolean;
+  userSetBranchName?: boolean;
 }
 
 export interface Repo {

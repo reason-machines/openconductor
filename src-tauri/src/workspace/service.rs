@@ -33,6 +33,9 @@ pub struct CreateWorkspaceRequest {
     pub directory_name: Option<String>,
     /// Base branch; `None` uses the repository's default branch.
     pub base_branch: Option<String>,
+    /// Check out `branch_name` (local, or tracking `origin/<branch_name>`)
+    /// instead of creating it; see [`CreateOptions::existing_branch`].
+    pub existing_branch: bool,
 }
 
 #[derive(Debug)]
@@ -98,6 +101,7 @@ impl WorkspaceService {
             name: non_empty(&req.directory_name),
             branch_name: non_empty(&req.branch_name),
             base_branch: non_empty(&req.base_branch),
+            existing_branch: req.existing_branch,
             fetch: true,
             ..Default::default()
         };

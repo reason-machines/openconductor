@@ -37,6 +37,9 @@ Pixel references of Conductor's screens for OpenConductor verifiers. Reference e
 
 - Rendered by Chromium on Linux, not WKWebView on macOS: font rasterisation differs slightly, and there are no native traffic lights or window vibrancy (the app paints the area, the OS does not).
 - The Lottie logo animation needs a WASM file from a CDN, which the harness blocks, so animated logos fall back or stay blank.
+- Pages load from \`http://conductor.localhost:4317\`, not \`localhost\`: Conductor bundles Virtuoso Message List, whose license check treats \`localhost\` as a development host and swaps the chat transcript for an expired-license banner (key expiry 2026-11-03). Inside Conductor's own webview this banner never shows.
+- Anything that needs GitHub or Conductor's servers (PR status, checks, announcements, cloud workspaces) shows its offline or error state, for example "Couldn't load PR info" in the right panel.
+- Populated scenarios use invented data: repos tide-web, tide-api and dotfiles; six workspaces named after cities; one transcript in "lisbon". Git answers come from a small fake in [fixtures.js](../../tools/screens/fixtures.js).
 - The onboarding carousel plays bundled videos, so its right-hand panel shows whichever frame was current at capture time.
 
 ## Screenshots

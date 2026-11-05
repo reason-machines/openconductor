@@ -11,17 +11,31 @@
 //!   failing.
 //! * [`info`]: normalized PR info and the workspace status it implies.
 //! * [`merge_eligibility`]: when the merge button may be offered.
+//! * [`header`]: what the workspace header's git/PR control shows.
+//! * [`gh`]: run `gh` from a checkout or against `owner/name`; typed
+//!   GraphQL variables; the repository's preferred merge method.
+//! * [`prompt`]: the create-PR message sent to the agent, and the
+//!   archive-on-merge rule.
 
 pub mod checks;
+pub mod gh;
+pub mod header;
 pub mod info;
 pub mod merge_eligibility;
 pub mod model;
+pub mod prompt;
 
 #[cfg(test)]
 mod checks_tests;
 #[cfg(test)]
+mod gh_tests;
+#[cfg(test)]
+mod header_tests;
+#[cfg(test)]
 mod info_tests;
 #[cfg(test)]
 mod merge_eligibility_tests;
+#[cfg(test)]
+mod prompt_tests;
 #[cfg(test)]
 mod tests;
