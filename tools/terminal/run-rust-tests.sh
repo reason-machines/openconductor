@@ -24,7 +24,7 @@ edition = "2021"
 publish = false
 
 [lib]
-path = "$module"
+path = "lib.rs"
 
 [dependencies]
 portable-pty = "=0.9.0"
@@ -37,6 +37,9 @@ serde_json = "1"
 
 [workspace]
 EOF
+# Nest the module as `terminal`, as src-tauri/src/lib.rs does, so paths
+# that only resolve at a crate root fail here too.
+printf '#[path = "%s"]\npub mod terminal;\n' "$module" > "$harness/lib.rs"
 
 cd "$harness"
 RUSTFLAGS="${RUSTFLAGS:-} -D warnings" cargo test "$@"
