@@ -3,8 +3,10 @@ import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { chatSnapshot, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
+import { chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { defaultChatConfig } from "../features/chat/chatModel.ts";
+import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
 import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
@@ -17,7 +19,9 @@ import { showUncommittedChanges, TARGET_REMOTE, targetBranch } from "../features
 import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
-import { addAttachment, revertedNote, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
+import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
+import { attachmentPath, promptText, randomDir, rejectReason, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
+import { draftAttachmentsApi } from "../features/draft-attachments/api.ts";
 
 /** Sends a message with attached text files from the chat shown (Fix errors). */
 interface AttachedSend {
@@ -42,6 +46,7 @@ import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
 import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
+import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
 
 interface Props {
@@ -57,6 +62,9 @@ interface Props {
 // lifecycle, Stop and the follow-up queue live in `features/chat/queue.ts`.
 /** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
+
+/** Wait after the last keystroke before the composer draft is saved. */
+const DRAFT_SAVE_DELAY_MS = 300;
 
 /** Queues the Create-workspace dialog's first message for the new workspace's chat. */
 export function seedTranscript(workspaceId: string, text: string) {
@@ -85,8 +93,9 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   const main = chatId === workspace.id;
   const [{ transcript, queue }, setSnapshot] = useState<ChatSnapshot>(() => chatSnapshot(chatId));
   const [draft, setDraft] = useState("");
-  // Text files the diff viewer attached (the revert note after a discard); they go out with the next message.
-  const [attachments, setAttachments] = useState<TextAttachment[]>([]);
+  // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
+  const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
+  const [attachError, setAttachError] = useState<string | null>(null);
   /** The turn whose "Reset chat?" dialog is open. */
   const [resetTurn, setResetTurn] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -96,13 +105,15 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   useEffect(() => {
     if (main) onRunningChange?.(running);
   }, [main, running, onRunningChange]);
-  // Garry Mode: tool calls start expanded (Conductor's `garry_mode`, toggled with ⌃O).
+  // Garry Mode (Conductor's `garry_mode`, "Don't collapse tool calls", toggled with ⌃O): tool
+  // groups stay open after the turn ends and tool calls start expanded.
   const garryMode = useAppPrefs().garry_mode;
 
   useEffect(() => {
     setSnapshot(chatSnapshot(chatId));
     setDraft("");
     setAttachments([]);
+    setAttachError(null);
     setResetTurn(null);
     const pendingMessage = takePendingMessage(chatId);
     if (pendingMessage?.kind === "draft") {
@@ -110,6 +121,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       inputRef.current?.focus();
     }
     const unsubscribe = subscribeChat(chatId, setSnapshot);
+    // The workspace's chat runs the default model unless the New workspace dialog picked one.
+    if (main) configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
     if (pendingMessage?.kind === "send") submit(pendingMessage.text, "queue", pendingMessage.attachments);
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
@@ -118,6 +131,45 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     }
     return unsubscribe;
   }, [chatId]);
+
+  // The draft is kept between launches (`composer-drafts`, keyed by the chat
+  // session, which is the workspace): loaded when the workspace opens, saved
+  // after typing pauses and when the workspace changes; an empty draft is
+  // removed.
+  const draftLoadedFor = useRef<string | null>(null);
+  const pendingDraft = useRef<{ id: string; text: string } | null>(null);
+  const flushDraft = useCallback(() => {
+    const p = pendingDraft.current;
+    pendingDraft.current = null;
+    if (p) void (p.text === "" ? composerDrafts().clear(p.id) : composerDrafts().save(p.id, p.text));
+  }, []);
+  useEffect(() => {
+    let live = true;
+    draftLoadedFor.current = null;
+    const id = workspace.id;
+    composerDrafts()
+      .load(id)
+      .then(
+        (saved) => {
+          if (!live) return;
+          draftLoadedFor.current = id;
+          if (saved) setDraft((d) => (d === "" ? saved : d));
+        },
+        () => {
+          if (live) draftLoadedFor.current = id;
+        },
+      );
+    return () => {
+      live = false;
+      flushDraft();
+    };
+  }, [workspace.id, flushDraft]);
+  useEffect(() => {
+    if (draftLoadedFor.current !== workspace.id) return;
+    pendingDraft.current = { id: workspace.id, text: draft };
+    const timer = setTimeout(flushDraft, DRAFT_SAVE_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [draft, workspace.id, flushDraft]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
@@ -146,9 +198,49 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     attach: (a) => setAttachments((list) => addAttachment(list, a)),
   };
 
-  function onSubmit(text: string, mode: SendMode) {
-    submit(text, mode, attachments);
+  /** Stages each file (Conductor's draft attachments); it reaches the workspace when the message is sent. */
+  async function attachFiles(files: File[]) {
+    setAttachError(null);
+    for (const file of files) {
+      const why = rejectReason(file);
+      if (why) {
+        setAttachError(why);
+        continue;
+      }
+      try {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const relativePath = attachmentPath(file.name, randomDir());
+        if (reason) await draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath, data: bytes });
+        const a: ComposerAttachment = { name: relativePath, label: file.name, text: promptText(bytes, relativePath), ...(reason ? { staged: relativePath } : {}) };
+        setAttachments((list) => addAttachment(list, a));
+      } catch (e) {
+        setAttachError(`Failed to attach ${file.name}: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    }
+  }
+
+  function removeAttachment(a: ComposerAttachment) {
+    setAttachments((list) => list.filter((x) => x.name !== a.name));
+    if (a.staged) draftAttachmentsApi.remove({ localWorkspaceId: workspace.id, relativePath: a.staged }).catch((e) => console.warn("chat: staged attachment not removed", e));
+  }
+
+  /** Copies staged files into the workspace (`.context/attachments/…`), then sends. */
+  async function onSubmit(text: string, mode: SendMode) {
+    const sending = attachments;
     setAttachments([]);
+    setAttachError(null);
+    const failed: string[] = [];
+    for (const a of sending) {
+      if (!a.staged) continue;
+      try {
+        await draftAttachmentsApi.uploadToWorkspace({ localWorkspaceId: workspace.id, relativePath: a.staged, workspacePath: cwd });
+      } catch (e) {
+        console.warn("chat: attachment not copied into the workspace", e);
+        failed.push(a.label ?? a.name);
+      }
+    }
+    if (failed.length > 0) setAttachError(`Not copied into the workspace (sent inline only): ${failed.join(", ")}`);
+    submit(text, mode, sending.map(({ name, text }) => ({ name, text })));
   }
 
   return (
@@ -174,6 +266,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           <Transcript
             transcript={transcript}
             expandToolsByDefault={garryMode}
+            dontCollapseToolCalls={garryMode}
             onRetry={(prompt) => submit(prompt, "queue")}
             // Conductor: workspace with a path, not archived; disabled while the agent works.
             onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
@@ -200,17 +293,23 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         onSubmit={onSubmit}
         onStop={() => stopChat(chatId)}
         onQueue={(action) => queueAction(chatId, action)}
+        onAttachFiles={(files) => void attachFiles(files)}
         attachments={
-          attachments.length > 0 ? (
+          attachments.length > 0 || attachError ? (
             <div className="composer-attachments" aria-label="Attachments">
               {attachments.map((a) => (
-                <span key={a.name} className="chip composer-attachment" title={a.text}>
-                  {a.name}
-                  <button type="button" className="composer-attachment-remove" aria-label={`Remove ${a.name}`} onClick={() => setAttachments((list) => list.filter((x) => x.name !== a.name))}>
+                <span key={a.name} className="chip composer-attachment" title={a.staged ?? a.text}>
+                  {a.label ?? a.name}
+                  <button type="button" className="composer-attachment-remove" aria-label={`Remove ${a.label ?? a.name}`} onClick={() => removeAttachment(a)}>
                     ×
                   </button>
                 </span>
               ))}
+              {attachError ? (
+                <span className="error small" role="alert">
+                  {attachError}
+                </span>
+              ) : null}
             </div>
           ) : null
         }
@@ -428,8 +527,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, target: diffTarget, onLoaded, onOpen: openDiffTab });
   // Inserts go to the chat shown; sends (e.g. Create PR) go to the workspace's own chat, switching to it.
   const shownChat = useRef<string>(workspace.id);
-  const chat = useMemo<ChatBridge>(
+  // Review comments attach to the workspace's own chat, even while a review chat is shown.
+  const attach = useWorkspaceChatAttach(workspace.id, shownChat, chatBridge, useCallback(() => setMainTab("chat"), []));
+  const chat = useMemo<ChatBridge & ComposerAttach>(
     () => ({
+      attach,
       insert: (t) => chatBridge.current?.insert(t),
       send: (t) => {
         if (shownChat.current === workspace.id) return chatBridge.current?.send(t);
@@ -437,7 +539,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         setMainTab("chat");
       },
     }),
-    [workspace.id],
+    [workspace.id, attach],
   );
   // Fix errors goes to the workspace's own chat with its log files attached, and shows that chat.
   const sendToChat = useCallback(
@@ -448,7 +550,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     },
     [workspace.id],
   );
-  const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
+  const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
   // Keep the sidebar's PR title and body (`workspaces.pr_title`, `pr_description`) in step with GitHub, then archive on merge.

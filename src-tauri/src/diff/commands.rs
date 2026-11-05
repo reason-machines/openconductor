@@ -1,4 +1,4 @@
-// parity:diff.changes-list:command parity:diff.whitespace:command parity:diff.discard:command
+// parity:diff.changes-list:command parity:diff.whitespace:command parity:diff.discard:command parity:diff.edit-in-viewer:command
 //! `#[tauri::command]` wrapper for the diff viewer. The frontend calls
 //! `invoke("diff_workspace", { repo, request })` (src/features/diff/api.ts),
 //! where `repo` is the workspace worktree and `request` a [`DiffRequest`].
@@ -11,6 +11,7 @@ use std::path::PathBuf;
 
 use super::discard::{discard_file, DiscardRequest};
 use super::git::{workspace_diff, DiffRequest, WorkspaceDiff};
+use super::write_file::{write_file, WriteFileRequest};
 
 fn worktree(repo: String) -> Result<PathBuf, String> {
     let repo = PathBuf::from(repo);
@@ -40,4 +41,15 @@ pub async fn diff_discard_file(repo: String, request: DiscardRequest) -> Result<
     })
     .await
     .map_err(|e| format!("discard task failed: {e}"))?
+}
+
+/// `invoke("diff_write_file", { repo, request })`: save a file edited in the diff viewer.
+#[tauri::command]
+pub async fn diff_write_file(repo: String, request: WriteFileRequest) -> Result<(), String> {
+    let repo = worktree(repo)?;
+    tauri::async_runtime::spawn_blocking(move || {
+        write_file(&repo, &request).map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| format!("save task failed: {e}"))?
 }

@@ -57,11 +57,13 @@ pub async fn chat_messages_save(
     upserts: Vec<StoredMessageDto>,
     delete_ids: Vec<String>,
     agent_session_id: Option<String>,
+    rewind_to: Option<String>,
 ) -> Result<(), String> {
     let batch = Batch {
         upserts: upserts.into_iter().map(StoredMessage::from).collect(),
         delete_ids,
         agent_session_id,
+        rewind_to,
     };
     store::save(&db.0, &chat_id, &batch)
         .await

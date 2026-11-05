@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useReducer, useState, type Dispatch, type FormEvent } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState, type Dispatch, type FormEvent } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import { Modal } from "./Dialogs";
 import { seedTranscript } from "./WorkspaceView";
+import { configureReason } from "../features/chat/reasonChat";
+import { sessionConfig } from "../features/chat/chatModel";
 import { RARITY_LABEL, generateWorkspaceNames, resolveBranchPrefix, type BranchPrefixSettings, type GeneratedName } from "../workspace/naming";
 import {
   FAILED_TO_CREATE,
@@ -25,7 +27,10 @@ import type { SourceState } from "../workspace/createFrom";
 import { CreateFromPicker } from "./CreateFromPicker";
 import { getSettings } from "../settings/api";
 import { newChatModel } from "../settings/models";
+import { defaultEffortSetting } from "../features/chat/chatModel";
 import { AddRepositoryMenu } from "./AddRepositoryMenu";
+import type { NavSection } from "../state/navigationSections";
+import { CREATE_IN_SECTION, SECTION_ASSIGN_FAILED, canCreateIn, sectionChoice } from "../workspace/createInSection";
 
 interface Props {
   repos: Repo[];
@@ -38,6 +43,10 @@ interface Props {
   /** A non-fatal issue while creating the workspace; the workspace still opens. */
   onWarning: (message: string) => void;
   dispatch: Dispatch<Action>;
+  /** The sidebar's sections, for "Create in section". */
+  sections?: readonly NavSection[];
+  /** The section the dialog was opened from (its menu's Create workspace). */
+  initialSectionId?: string;
 }
 
 // Until settings load; then the first chat uses Settings › Default models.
@@ -49,7 +58,12 @@ function suggestName(repo: Repo | undefined, branches: string[] = []): Generated
   return generateWorkspaceNames(1, taken, Math.random)[0];
 }
 
-export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, githubUsername, onClose, onAddRepository, onWarning, dispatch }: Props) {
+export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, githubUsername, onClose, onAddRepository, onWarning, dispatch, sections = [], initialSectionId }: Props) {
+  const choice = sectionChoice(sections, initialSectionId);
+  // The create outlives a render; check the section against the latest list when assigning.
+  const sectionsRef = useRef(sections);
+  sectionsRef.current = sections;
+  const [sectionMenuOpen, setSectionMenuOpen] = useState(false);
   const startRepo = repos.find((r) => r.id === initialRepoId) ?? repos[0];
   const [city, setCity] = useState(() => suggestName(startRepo));
   const [draft, setDraft] = useState<CreateDraft>(() =>
@@ -89,7 +103,15 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
 
   useEffect(() => {
     let live = true;
-    getSettings().then((s) => live && setDraft((d) => ({ ...d, ...newChatModel(s) })), () => undefined);
+    getSettings().then(
+      (s) =>
+        live &&
+        setDraft((d) => {
+          const chosen = newChatModel(s);
+          return { ...d, ...chosen, effort: defaultEffortSetting(s, chosen.agent) ?? d.effort };
+        }),
+      () => undefined,
+    );
     return () => {
       live = false;
     };
@@ -127,9 +149,9 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
     setErrors({});
   }
 
-  async function submit(e?: FormEvent) {
+  async function submit(e?: FormEvent, sectionId: string | undefined = choice.sectionId) {
     e?.preventDefault();
-    if (busy || !repo) return;
+    if (busy || !repo || !canCreateIn(sectionsRef.current, sectionId)) return;
     const built = buildCreateRequest(draft, prefix);
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
@@ -157,9 +179,17 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
         userSetBranchName: naming.user_set_branch_name,
         number: created.number ?? null,
       };
-      // The first message opens the workspace's first chat session (agent runtime pending).
-      if (firstSession) seedTranscript(id, firstSession.message);
+      // The first message opens the workspace's first chat session on the model and effort picked here.
+      if (firstSession) {
+        configureReason(id, sessionConfig(firstSession.model, firstSession.effort));
+        seedTranscript(id, firstSession.message);
+      }
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
+      if (sectionId !== undefined) {
+        // Assigning also unpins it (store `assignSection`); a section deleted meanwhile keeps the workspace unsectioned.
+        if (canCreateIn(sectionsRef.current, sectionId)) dispatch({ type: "assignSection", workspaceId: id, sectionId });
+        else onWarning(SECTION_ASSIGN_FAILED);
+      }
       onClose();
       // ...and renames a placeholder city workspace after it.
       if (firstSession) {
@@ -291,7 +321,43 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
         <div className="modal-actions">
           <span className="muted small create-hint">⌘↵ to create</span>
           <button type="button" className="btn" onClick={onClose} disabled={busy}>Cancel</button>
-          <button type="submit" className="btn btn-primary" disabled={busy}>{busy ? "Creating…" : "Create"}</button>
+          <div className="create-split" role="group" aria-label="Create workspace">
+            <button type="submit" className="btn btn-primary" data-split={choice.menu ? "true" : undefined} disabled={busy}>{busy ? "Creating…" : choice.label}</button>
+            {choice.menu && (
+              <button
+                type="button"
+                className="btn btn-primary create-split-toggle"
+                aria-label={CREATE_IN_SECTION}
+                title={CREATE_IN_SECTION}
+                aria-haspopup="menu"
+                aria-expanded={sectionMenuOpen}
+                disabled={busy}
+                onClick={() => setSectionMenuOpen((o) => !o)}
+              >
+                ▾
+              </button>
+            )}
+            {choice.menu && sectionMenuOpen && (
+              <div className="sb-menu create-split-menu" role="menu">
+                <div className="create-split-heading">{CREATE_IN_SECTION}</div>
+                {choice.menu.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    role="menuitem"
+                    className="sb-menu-item"
+                    disabled={busy}
+                    onClick={() => {
+                      setSectionMenuOpen(false);
+                      void submit(undefined, s.id);
+                    }}
+                  >
+                    <span>{s.emoji && <span aria-hidden="true" className="create-split-emoji">{s.emoji}</span>}{s.name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </form>
     </Modal>
