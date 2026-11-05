@@ -3,7 +3,7 @@
 // src-tauri/src/reason_acp/wire_tests.rs) through the transcript to rows.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applyReasonPayload, failTurn, newestTurn, reasonChat, startTurn, stopTurn, type ReasonChatState, type ReasonPayload, type ReasonPath } from "./reason.ts";
+import { applyReasonPayload, failTurn, newestTurn, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type ReasonPath } from "./reason.ts";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import { buildRows } from "./view.ts";
 import type { ChatEvent } from "./types.ts";
@@ -146,15 +146,32 @@ test("Stop ends the turn cancelled with the prompt offered again; a failed call 
   assert.deepEqual(step.events[0], { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "failed", error: "The Reason CLI was not found." });
 });
 
-test("Stop before the prompt is sent ends the turn as Stopped, and a later end goes to the next turn", () => {
-  let state = startTurn(reasonChat(CHAT), "slow").state;
-  const stop = stopTurn(state, `${CHAT}:t1`);
-  state = stop.state;
-  assert.equal(state.open.length, 0);
-  assert.deepEqual(stop.events, [{ type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "cancelled" }]);
-  assert.deepEqual(stopTurn(state, `${CHAT}:t1`).events, [], "a second stop changes nothing");
+test("a notice is a system message in the running turn", () => {
+  const s = startTurn(reasonChat("c"), "review").state;
+  const step = applyReasonPayload(s, { chatId: "c", type: "notice", text: "Reason does not offer model \"x\"" });
+  assert.equal(step.events.length, 1);
+  const ev = step.events[0];
+  assert.equal(ev.type, "upsert");
+  if (ev.type !== "upsert") return;
+  assert.equal(ev.message.role, "system");
+  assert.equal(ev.message.turnId, "c:t1");
+  assert.deepEqual(ev.message.blocks, [{ type: "text", text: "Reason does not offer model \"x\"" }]);
+});
 
-  state = startTurn(state, "next").state;
-  const end = applyReasonPayload(state, { chatId: CHAT, type: "turnEnded", end: { outcome: "completed" } });
-  assert.deepEqual(end.events, [{ type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t2`, status: "completed" }]);
+test("attachments show by name under the prompt", () => {
+  const step = startTurn(reasonChat("c"), "Review this", new Date(0), undefined, [{ name: "Review request.md", text: "long instructions" }]);
+  const ev = step.events[0];
+  assert.equal(ev.type, "upsert");
+  if (ev.type !== "upsert") return;
+  assert.deepEqual(ev.message.blocks, [
+    { type: "text", text: "Review this" },
+    { type: "text", text: "Attached: Review request.md" },
+  ]);
+});
+
+test("startTurn can take the turn id that names the turn's checkpoints", () => {
+  const step = startTurn(reasonChat("ws/one"), "hi", new Date(0), "0b6f2c7e-1d2a-4c55-9a59-6d1c1b2f3e4a");
+  const upsert = step.events[0];
+  assert.equal(upsert?.type === "upsert" ? upsert.message.turnId : null, "0b6f2c7e-1d2a-4c55-9a59-6d1c1b2f3e4a");
+  assert.equal(step.state.open[0]?.turnId, "0b6f2c7e-1d2a-4c55-9a59-6d1c1b2f3e4a");
 });

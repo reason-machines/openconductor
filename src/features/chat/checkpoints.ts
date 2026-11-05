@@ -6,7 +6,8 @@
 //   `refs/conductor-checkpoints/session-<session>-turn-<turn>-<start|end>`
 //   (`checkpointer.sh save --id … --force`). A skipped save (merge/rebase in
 //   progress, unresolved conflicts) or a failed one is logged, never shown:
-//   the turn runs either way.
+//   the turn runs either way. The backend saves them around `reason_prompt`
+//   (src-tauri/src/turn_checkpoint.rs) under the ids `turnCheckpointRef` gives.
 // - "Reset chat" on a turn checks that the turn's `end` checkpoint exists
 //   ("Checkpoint not found for this turn" otherwise), restores it when
 //   "Also reset files" is on, and only then deletes the later messages.
@@ -33,15 +34,12 @@ export function checkpointId(chatId: string, turnId: string, point: CheckpointPo
   return `session-${refSafe(chatId)}-turn-${turnKey(chatId, turnId)}-${point}`;
 }
 
-/** Snapshot the workspace at a turn's start or end. Never throws. */
-export async function saveTurnCheckpoint(invoke: Invoke, workspacePath: string, chatId: string, turnId: string, point: CheckpointPoint): Promise<void> {
-  const id = checkpointId(chatId, turnId, point);
-  try {
-    const r = (await invoke("checkpoint_save", { workspacePath, checkpointId: id })) as { saved: boolean; skipped?: string };
-    if (!r.saved) console.info(`[checkpoint] ${point} checkpoint ${id} skipped: ${r.skipped ?? "unknown reason"}`);
-  } catch (e) {
-    console.error(`[checkpoint] ${point} checkpoint ${id} failed:`, e);
-  }
+/**
+ * The `session` and `turn` parts of a turn's checkpoint ids, as the backend
+ * takes them (`reason_prompt`'s `turn`, the diff viewer's turn scope).
+ */
+export function turnCheckpointRef(chatId: string, turnId: string): { sessionId: string; turnId: string } {
+  return { sessionId: refSafe(chatId), turnId: turnKey(chatId, turnId) };
 }
 
 /** Files that differ between the turn's `end` checkpoint and the workspace now. */

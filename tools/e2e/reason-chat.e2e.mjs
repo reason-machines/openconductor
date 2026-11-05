@@ -207,26 +207,33 @@ try {
   // 5-6. Checkpoints: two turns that edit files, then "Reset chat" back to turn 5.
   const wsFile = (name) => join(workspace.path, name);
   const readWs = (name) => (existsSync(wsFile(name)) ? readFileSync(wsFile(name), "utf8") : null);
+  // Turn ids are `<chat>:<random uuid>`; read each one off the newest turn footer.
+  const newestTurnId = () => run(`const ends = document.querySelectorAll('.chat-turn-end[data-turn-id]'); return ends.length ? ends[ends.length - 1].dataset.turnId : null;`);
   await send("write: notes.txt=one");
   await waitFor('"turn 5 wrote notes.txt"', () => chatText().then((t) => t.includes("turn 5 wrote notes.txt")));
   await turnDone(5);
+  const t5 = await newestTurnId();
   await send("write: notes.txt=two;extra.txt=x");
   await waitFor('"turn 6 wrote"', () => chatText().then((t) => t.includes("turn 6 wrote notes.txt extra.txt")));
   await turnDone(6);
+  const t6 = await newestTurnId();
+  assert.ok(t5 && t6 && t5 !== t6, `turn ids ${t5} ${t6}`);
+  const chat = workspace.id.replace(/[^A-Za-z0-9._-]/g, "-");
+  // features/chat/checkpoints.ts turnKey: the id without its `<chat>:` prefix, ref-safe.
+  const key = (id) => (id.startsWith(`${workspace.id}:`) ? id.slice(workspace.id.length + 1) : id).replace(/[^A-Za-z0-9._-]/g, "-");
   assert.equal(readWs("notes.txt"), "two\n");
   assert.equal(readWs("extra.txt"), "x\n");
   const refs = await waitFor("turn 6's end checkpoint", () => {
     const out = execFileSync("git", ["for-each-ref", "--format=%(refname)", "refs/conductor-checkpoints/"], { cwd: workspace.path, encoding: "utf8" });
-    return out.includes("-turn-t6-end") && out.split("\n").filter(Boolean);
+    return out.includes(`-turn-${key(t6)}-end`) && out.split("\n").filter(Boolean);
   });
-  const chat = workspace.id.replace(/[^A-Za-z0-9._-]/g, "-");
-  for (const id of ["t5-start", "t5-end", "t6-start", "t6-end"]) {
+  for (const id of [`${key(t5)}-start`, `${key(t5)}-end`, `${key(t6)}-start`, `${key(t6)}-end`]) {
     assert.ok(refs.includes(`refs/conductor-checkpoints/session-${chat}-turn-${id}`), `${id} in ${refs.join(" ")}`);
   }
-  pass(`each turn saved start/end checkpoints (${refs.length} refs, e.g. session-${chat}-turn-t5-end)`);
+  pass(`each turn saved start/end checkpoints (${refs.length} refs, e.g. session-${chat}-turn-${key(t5)}-end)`);
 
-  const turn5 = '.chat-turn-end[data-turn-id$=":t5"]';
-  const lastHasMenu = await run(`return !!document.querySelector('.chat-turn-end[data-turn-id$=":t6"] button[aria-label="More actions"]');`);
+  const turn5 = `.chat-turn-end[data-turn-id="${t5}"]`;
+  const lastHasMenu = await run(`return !!document.querySelector('.chat-turn-end[data-turn-id="${t6}"] button[aria-label="More actions"]');`);
   assert.equal(lastHasMenu, false, "the last turn has no Reset chat");
   await wd("POST", `/element/${await find(`${turn5} button[aria-label="More actions"]`)}/click`, {});
   await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]`)}/click`, {});
