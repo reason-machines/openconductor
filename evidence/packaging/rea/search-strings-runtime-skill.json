@@ -1,0 +1,129 @@
+{
+ "evidence_id": "ev_5c7da8ff0653a7bc1b12da0a7e7c908edc1e25a1bcd11dffb16d454c84e23e2b",
+ "subject": {
+  "name": "conductor-runtime",
+  "digest": {
+   "sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d"
+  },
+  "local_path": "/Applications/Conductor.app/Contents/Resources/bin/.internal/conductor-runtime",
+  "format": "mach-o",
+  "architecture": "arm64"
+ },
+ "provider": {
+  "id": "ghidra",
+  "name": "Ghidra",
+  "version": "12.1.4"
+ },
+ "analysis_profile": {
+  "provider": {
+   "id": "ghidra",
+   "name": "Ghidra",
+   "version": "12.1.4"
+  },
+  "parameters": {
+   "target_kind": "executable",
+   "target_format": "mach-o",
+   "architecture": "arm64",
+   "available_architectures": [
+    "arm64"
+   ],
+   "import_mode": "ephemeral-source-immutable",
+   "annotation_policy": "atomic-function-entry-metadata-v1",
+   "load_image_observations": "source-mappings-entry-context-v2",
+   "function_body_evidence": "complete-inclusive-ranges-v1",
+   "function_references": "complete-body-and-entry-reference-manager-v2",
+   "call_relationship_coverage": "function-body-call-coverage-v5",
+   "function_dossier_coverage": "observed-facets-and-call-relationships-v1",
+   "string_inventory_evidence": "defined-data-coverage-v1",
+   "location_resolution": "explicit-address-exact-entry-symbol-first-v3",
+   "procedure_file_offset_resolution": "address-first-unique-target-source-mapping-v2",
+   "instruction_flow_evidence": "decoded-return-pcode-v1",
+   "instruction_references": "exact-address-incoming-without-synthetic-entry-v2",
+   "function_boundary_observations": "ghidra-function-boundary-limitations-v4",
+   "no_return_repair": "returning-imports-decoded-return-v2",
+   "process_launch": "inspected-jvm-launch-support-v1",
+   "jump_table_evidence": "typed-case-default-blocks-v1",
+   "decompiler_jump_loads": true,
+   "loader": "auto-from-header",
+   "language_id": "auto-from-header",
+   "compiler_spec_id": "auto-default",
+   "analyzer_preset": "ghidra-default"
+  },
+  "digest": "3fc72c9b4b78498fb992b938f8f3389dc670244a293c1d40abf5e1d10162ed3b"
+ },
+ "predicate_type": "rea.analysis",
+ "operation": "search_strings",
+ "parameters": {
+  "pattern": "conductor-skill|plugin-dir|plugin_dir|skills/",
+  "mode": "regex",
+  "case_sensitive": false
+ },
+ "normalized_result": [
+  {
+   "address": "0x104588027",
+   "string_length": 13025924,
+   "offset": 3513717,
+   "text": ": j = false, computerAdminEnabled: V = false, computerAdminClient: z }) {\n  return v85({ name: gB5, version: \"1.0.0\", tools: CV({ sessionId: U, workspaceDir: B, getCallbacks: G, includeRunLocalCommand: D, includeGetDiffComments: w, includeSummaryTools: j, includeComputerAdminTools: V, computerAdminClient: z }).map((L) => f85(L.name, L.description, L.inputSchemaShape, (A) => L.execute(A), { annotations: L.annotations, ...L.alwaysLoad !== undefined ? { alwaysLoad: L.alwaysLoad } : {} })) });\n}\nvar gB5 = \"conductor\";\nvar cB5 = y(() => {\n  sZ4();\n  kq();\n});\nfunction On4() {\n  let U = process.env.CONDUCTOR_INTERNAL_SKILL_PLUGIN_DIR?.trim();\n  if (!U)\n    return;\n  if (!lB5(zy.join(U, Mn4))) {\n    d0.warn(`[conductorSkillRuntime] CONDUCTOR_INTERNAL_SKILL_PLUGIN_DIR is set to ${U} but ${Mn4} is missing there; ignoring the Conductor skill plugin`);\n    return;\n  }\n  return U;\n}\nfunction dB5() {\n  let U = On4();\n  if (!U)\n    return;\n  return zy.join(U, Mn4);\n}\nfunction Nn4() {\n  let U = process.env.CONDUCTOR_INTERNAL_COMPUTER_ADMIN_SKILL_PLUGIN_DIR?.trim();\n  if (!U)\n    return;\n  if (!lB5(zy.join(U, Pn4))) {\n    d0.warn(`[conductorSkillRuntime] CONDUCTOR_INTERNAL_COMPUTER_ADMIN_SKILL_PLUGIN_DIR is set to ${U} but ${Pn4} is missing there; ignoring the computer-admin skill plugin`);\n    return;\n  }\n  return U;\n}\nfunction pB5() {\n  let U = Nn4();\n  if (!U)\n    return;\n  return zy.join(U, Pn4);\n}\nvar Mn4;\nvar Pn4;\nvar Rn4 = y(() => {\n  k8();\n  Mn4 = zy.join(\"skills\", \"conductor\", \"SKILL.md\"), Pn4 = zy.join(\"skills\", \"computer-admin\", \"SKILL.md\");\n});\nfunction iB5({ totalCostUsd: U, lastReportedCostUsd: B }) {\n  if (typeof U !== \"number\" || !Number.isFinite(U))\n    return { marginalCostUsd: undefined, nextBaseline: B };\n  return { marginalCostUsd: Math.max(0, U - B), nextBaseline: U };\n}\nfunction oB5({ window: U, windowDurationMins: B }) {\n  if (U?.utilization === null || U?.utilization === undefined)\n    return;\n  let G = U.resets_at === null ? NaN : Date.parse(U.resets_at);\n  return { usedPercent: U.utilization, windowDurationMins: B, re"
+  },
+  {
+   "address": "0x104588027",
+   "string_length": 13025924,
+   "offset": 3527089,
+   "text": "or(\"Brokered Claude OAuth mode is missing its token provider\");\n      let P = U !== undefined && this.claudeOauthAuthFailedSessions.has(U);\n      return M.refresh(P ? { forceRefresh: true } : {}).then((N) => {\n        if (U !== undefined)\n          this.claudeOauthAuthFailedSessions.delete(U);\n        return z.CLAUDE_CODE_OAUTH_TOKEN = N.accessToken, z.CLAUDE_CODE_OAUTH_SCOPES = N.scopes.join(\" \"), delete z.ANTHROPIC_API_KEY, { ...L(), claudeOauthTokenExpiresAt: N.expiresAt };\n      });\n    }, j = this.getClaudeAuthForNextSpawn?.();\n    return j === undefined ? w(undefined) : j.then(w);\n  }\n  getConductorSkillPlugins() {\n    let U = [], B = On4();\n    if (B)\n      U.push({ type: \"local\", path: B });\n    if (this.includeComputerAdminTools) {\n      let G = Nn4();\n      if (G)\n        U.push({ type: \"local\", path: G });\n    }\n    return U;\n  }\n  buildMcpServers({ sessionId: U, getCallbacks: B, config: G, workspaceSettingsBundle: D = this.lastKnownWorkspaceSettingsBundle }) {\n    return { ...D.mcpServers ? sc3(D.mcpServers) : {}, conductor: uB5({ sessionId: U, workspaceDir: this.workspaceDir, getCallbacks: B, localExecutionEnabled: G?.localExecutionMcpEnabled === true, getDiffCommentsEnabled: G?.getDiffCommen"
+  },
+  {
+   "address": "0x104588027",
+   "string_length": 13025924,
+   "offset": 3546634,
+   "text": " tempSessionId: B, workspaceSettingsBundle: G, forceTempQuery: D, agentAuthGeneration: w }) {\n    this.getSessionLogger(B).info(`[ClaudeAgentRunner] Launching Claude metadata query${D ? \" (auth check)\" : \"\"}`, { command: U.claudeExecutablePath, cwd: this.workspaceDir, env: oc3({ env: U.env, cloudEnv: G.cloudEnv }) });\n    let j = sB5(), V = this.queryFn({ prompt: j.prompt, options: { pathToClaudeCodeExecutable: U.claudeExecutablePath, executableArgs: U.executableArgs, cwd: this.workspaceDir, systemPrompt: aB4, settingSources: qn4, permissionMode: \"bypassPermissions\", env: U.env, plugins: this.getConductorSkillPlugins(), mcpServers: this.buildMcpServers({ sessionId: B, getCallbacks: () => {\n      return;\n    }, workspaceSettingsBundle: G }) } });\n    if (D)\n      return this.forcedMetadataQueries.set(B, j.end), { queryResult: V, tempSessionId: B };\n    return this.liveSessions.set(B, { sendMessage: () => {}, resolveTurn: undefined, rejectTurn: undefined, awaitedTurnUserMessageUuids: new Set, unconsumedSteerUserMessageUuids: new Set, settlementWatchdog: undefined, transcriptMirrorState: { hasAppended: false }, callbacks: undefined, queryResult: V, appliedConfig: { ...Wn4 }, currentSdkModel: undefined, model"
+  },
+  {
+   "address": "0x104588027",
+   "string_length": 13025924,
+   "offset": 3550724,
+   "text": "ExecutablePath, executableArgs: W.executableArgs, cwd: this.workspaceDir, env: { ...W.env, CLAUDE_CODE_ENABLE_OPUS_4_7_FAST_MODE: \"1\" }, sessionStore: T, sessionStoreFlush: \"eager\", ...D ? { resume: G ?? U, sessionId: U, resumeSessionAt: D, forkSession: true } : G ? { resume: G } : { sessionId: U }, model: Fy(B.model, { env: this.getEffectiveEnv(w) }), thinking: HB5({ model: B.model, thinkingLevel: B.thinkingLevel }), effort: oB4(B.thinkingLevel), permissionMode: \"bypassPermissions\", systemPrompt: uc3({ summaryToolsEnabled: B.summaryToolsEnabled === true }), settingSources: qn4, plugins: this.getConductorSkillPlugins(), maxTurns: 1000, additionalDirectories: B.additionalDirectories ?? [], disallowedTools: [\"AskUserQuestion\"], toolAliases: { AskUserQuestion: \"mcp__conductor__AskUserQuestion\" }, ...E ? { settings: E } : {}, ...B.chromeEnabled ? { extraArgs: { chrome: null } } : {}, stderr: (Y) => {\n      if (Y.includes(\"[DEBUG]\"))\n        return;\n      if (Y.includes(cc3))\n        this.liveSessions.get(U)?.callbacks?.onFastModeUnavailable(Y.trim()).fireAndForget();\n      A.info(`[ClaudeAgentRunner:stderr] ${Y.trim()}`);\n    }, canUseTool: async (Y, K, x) => {\n      if (AL({ source: \"workspace <> SDK\", sessi"
+  },
+  {
+   "address": "0x104588027",
+   "string_length": 13025924,
+   "offset": 3565027,
+   "text": "PlanUsage({ sessionId: U, queryResult: P.queryResult })]);\n        return { contextUsageData: N, ...H ? { planUsage: H } : {} };\n      }\n    }\n    let j = G ? Fy(G, { env: this.getEffectiveEnv(w) }) : undefined, V = this.getClaudeLaunchOptions({ workspaceSettingsBundle: w }), z = V instanceof Promise ? await V : V, L = sB5(), A = this.queryFn({ prompt: L.prompt, options: { pathToClaudeCodeExecutable: z.claudeExecutablePath, executableArgs: z.executableArgs, cwd: this.workspaceDir, systemPrompt: aB4, settingSources: qn4, resume: B, permissionMode: \"bypassPermissions\", env: z.env, plugins: this.getConductorSkillPlugins(), ...j ? { model: j } : {} } });\n    try {\n      let [M, P] = await Promise.all([A.getContextUsage(), this.getClaudePlanUsage({ sessionId: U, queryResult: A })]);\n      return { contextUsageData: M, ...P ? { planUsage: P } : {} };\n    } finally {\n      L.end();\n    }\n  }\n  async getClaudePlanUsage({ sessionId: U, queryResult: B }) {\n    try {\n      return await _c3(B);\n    } catch (G) {\n      this.getSessionLogger(U).debug(`[ClaudeAgentRunner] Could not read plan usage for session ${U}`, G);\n      return;\n    }\n  }\n}\nvar ZB5;\nvar kc3 = 120000;\nvar Sc3 = 1e4;\nvar nB5 = \"usage_EXPERIMENTAL_MAY"
+  },
+  {
+   "address": "0x104588027",
+   "string_length": 13025924,
+   "offset": 3678920,
+   "text": " });\n      if (V !== D.approvalPolicy)\n        this.getSessionLogger(G).info(\"[CodexAgentRunner] Adjusted Codex approval policy to satisfy managed requirements\", { requestedApprovalPolicy: D.approvalPolicy, approvalPolicy: V });\n      return { ...D, approvalPolicy: V };\n    } catch (w) {\n      return this.getSessionLogger(G).warn(\"[CodexAgentRunner] Could not read Codex managed requirements; using the requested approval policy\", w), D;\n    }\n  }\n  postWorkspaceSdkEvent({ sessionId: U, direction: B, data: G }) {\n    AL({ source: \"workspace <> SDK\", sessionId: U, direction: B, data: G });\n  }\n  getConductorSkillDeveloperInstructions({ summaryToolsEnabled: U }) {\n    let B = [], G = dB5();\n    if (G)\n      B.push(`The Conductor app provides a bundled Conductor skill at ${G}. Use it when helping with Conductor setup, troubleshooting, conductor.json, workspace scripts, files to copy, MCP, agent controls, review workflows, or other Conductor configuration.`);\n    if (this.includeComputerAdminTools) {\n      let D = pB5();\n      if (D)\n        B.push(`This is an admin workspace for administering the organization's cloud computer. A bundled computer-admin skill at ${D} explains how to read and rewrite the install script, save p"
+  },
+  {
+   "address": "0x104588027",
+   "string_length": 13025924,
+   "offset": 3707370,
+   "text": "ed: B.localExecutionMcpEnabled === true, getDiffCommentsEnabled: B.getDiffCommentsEnabled === true, summaryToolsEnabled: B.summaryToolsEnabled === true, prefetchedWorkspaceSettingsBundle: w }), A = this.getModelRouting(j, z);\n      if (D)\n        this.setCodexMcpConsentHandlers({ codex: V, sessionId: U, callbacks: D });\n      if (this.stoppedSessions.delete(U))\n        throw V.close().catch(() => {}), new S4({ userMessage: `Session ${U} was stopped during initialization`, code: y4.USER_CANCELLED, source: \"agent\", details: { sessionId: U } });\n      let M = B.fastMode ? \"fast\" : null, P = this.getConductorSkillDeveloperInstructions({ summaryToolsEnabled: B.summaryToolsEnabled === true }), N = await this.resolveCodexThreadPermissions({ codex: V, config: B, sessionId: U }), H = { model: A.model, modelProvider: A.modelProvider, cwd: this.workspaceDir, serviceTier: M, approvalPolicy: N.approvalPolicy, sandbox: N.sandbox, personality: LG4(B), persistExtendedHistory: true, developerInstructions: P, config: this.getThreadConfig(A.config) }, q;\n      try {\n        let E = this.persistedThreadIds.get(U) ?? G;\n        if (!E)\n          this.latestContextUsage.delete(U);\n        if (E)\n          try {\n            q = await V.resum"
+  }
+ ],
+ "confidence": "observed",
+ "authority": "shipped-artifact",
+ "environment": null,
+ "limitations": [
+  "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+  "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+  "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+  "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+  "Only Ghidra-defined string Data is observed; packed or undefined string bytes may be absent. Completeness applies to that inventory, and an empty search does not establish that text is absent from the artifact. If an address is known, use read_bytes and xrefs to inspect bytes and references.",
+  "Regex mode uses Java Pattern semantics. Matcher or compiler stack exhaustion returns a resource constraint without closing the session; literal mode avoids regex recursion and returns complete matching values.",
+  "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+ ],
+ "relationship_coverage": null,
+ "locations": [],
+ "evidence_links": [],
+ "trimmed": {
+  "tool": "tools/rea_trim_search.py",
+  "keep": "CONDUCTOR_INTERNAL_(COMPUTER_ADMIN_)?SKILL_PLUGIN_DIR|getConductorSkill(Plugins|DeveloperInstructions)|Mn4 = |conductorSkillRuntime",
+  "context_chars": 600,
+  "full_record_sha256": "dd64472622627c989fde1442b673cf36995fd10ece8cb9fd9961c6e850fa18c8",
+  "full_record_bytes": 27232440,
+  "excerpts": 7,
+  "note": "normalized_result holds excerpts of the matched strings, not REA's full result; raw_result is dropped"
+ }
+}

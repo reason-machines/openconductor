@@ -3,9 +3,11 @@
 // or ⌘Enter) and user overrides apply: `chat.submitMessage` sends with the
 // default follow-up mode, `chat.submitOppositeFollowUp` with the other one,
 // `chat.newLine` inserts a line break and `chat.cancel` stops the agent.
+// With `onAttachFiles`, files come in through the attach button,
+// `chat.addAttachment` (⌘U), pasting files and dropping them on the composer.
 
-import { useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
-import { SendIcon } from "../../components/Icons";
+import { useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
+import { PaperclipIcon, SendIcon } from "../../components/Icons";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
@@ -29,9 +31,13 @@ export interface ComposerProps {
   attachments?: ReactNode;
   /** Pickers shown before the key hint (the chat's agent and its access). */
   controls?: ReactNode;
+  /** Takes files the user attaches; without it the composer has no attach button. */
+  onAttachFiles?: (files: File[]) => void;
 }
 
-export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSteer, followUpMode = "steering", onSubmit, onStop, onQueue, attachments, controls }: ComposerProps) {
+export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSteer, followUpMode = "steering", onSubmit, onStop, onQueue, attachments, controls, onAttachFiles }: ComposerProps) {
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = useState(false);
   const { overrides } = useKeybindingOverrides();
   const keys = (id: string) => effectiveShortcuts(id, overrides);
   const hint = (id: string) => {
@@ -50,7 +56,21 @@ export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSte
     setDraft("");
   }
 
-  useKeybindings({ "chat.cancel": () => (working ? onStop() : false) });
+  useKeybindings({
+    "chat.cancel": () => (working ? onStop() : false),
+    "chat.addAttachment": () => (onAttachFiles ? fileInput.current?.click() : false),
+  });
+
+  const takeFiles = (list: FileList | null | undefined): boolean => {
+    const files = list ? Array.from(list) : [];
+    if (!onAttachFiles || files.length === 0) return false;
+    onAttachFiles(files);
+    return true;
+  };
+  const onPaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
+    if (takeFiles(e.clipboardData?.files)) e.preventDefault();
+  };
+  const hasFiles = (e: DragEvent) => onAttachFiles !== undefined && Array.from(e.dataTransfer?.types ?? []).includes("Files");
   const queueRef = useRef<HTMLOListElement>(null);
 
   /** Moves focus to a queued row or back to the message box. */
@@ -85,14 +105,24 @@ export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSte
     <div className="composer-wrap">
       {queue.items.length > 0 ? <QueuePanel queue={queue} canSteer={canSteerNow(queue, canSteer)} onQueue={onQueue} listRef={queueRef} focus={focus} keys={keys} /> : null}
       <form
-        className="composer"
+        className={`composer${dragging ? " is-dropping" : ""}`}
         onSubmit={(e: FormEvent) => {
           e.preventDefault();
           submit(false);
         }}
+        onDragOver={(e) => {
+          if (!hasFiles(e)) return;
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(e) => {
+          setDragging(false);
+          if (takeFiles(e.dataTransfer?.files)) e.preventDefault();
+        }}
       >
         {attachments}
-        <textarea ref={inputRef} value={draft} placeholder={placeholder} onChange={(e) => setDraft(e.target.value)} onKeyDown={onKeyDown} rows={3} />
+        <textarea ref={inputRef} value={draft} placeholder={placeholder} onChange={(e) => setDraft(e.target.value)} onKeyDown={onKeyDown} onPaste={onPaste} rows={3} />
         <div className="composer-bar">
           <span className="composer-hint">
             {controls}
@@ -103,6 +133,25 @@ export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSte
             </span>
           </span>
           <span className="composer-actions">
+            {onAttachFiles ? (
+              <>
+                <input
+                  ref={fileInput}
+                  type="file"
+                  multiple
+                  hidden
+                  aria-hidden
+                  tabIndex={-1}
+                  onChange={(e) => {
+                    takeFiles(e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+                <button type="button" className="btn btn-small composer-attach" title={`Add attachment (${hint("chat.addAttachment")})`} aria-label="Add attachment" onClick={() => fileInput.current?.click()}>
+                  <PaperclipIcon size={14} />
+                </button>
+              </>
+            ) : null}
             {working ? (
               <button
                 className="btn btn-small composer-stop"

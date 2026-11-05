@@ -28,6 +28,7 @@ import { restoreCheckpoint, turnCheckpointRef } from "./checkpoints.ts";
 import { applyReasonPayload, cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
+import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import { turnChanges } from "../diff/useTurnChanges.ts";
 import type { FileChange } from "../diff/types.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
@@ -41,6 +42,17 @@ export interface ReasonConfig {
 
 const EVENT = "reason-chat-event";
 const sessionKey = (chatId: string) => `openconductor.reason.session.${chatId}`;
+/** The chat's picked Session options (`configureReason`), kept for a Session it opens later (after Reset chat). */
+const configKey = (chatId: string) => `openconductor.reason.config.${chatId}`;
+
+function savedConfig(chatId: string): ReasonConfig[] | null {
+  try {
+    const v: unknown = JSON.parse(localStorage.getItem(configKey(chatId)) ?? "null");
+    return Array.isArray(v) ? v.filter((o): o is ReasonConfig => typeof o?.id === "string" && typeof o?.value === "string") : null;
+  } catch {
+    return null;
+  }
+}
 
 export interface ChatSnapshot {
   transcript: ChatTranscript;
@@ -55,9 +67,9 @@ interface Chat {
   /** Repository the chat's workspace belongs to, for its effective `prompts.general`. */
   repoPath: string | null;
   opened: boolean;
-  /** Options for the Session `session/new` creates; the first prompt waits for them. */
+  /** Options for the Session `session/new` creates (the first, or the one after Reset chat); the first prompt waits for them. */
   config: ReasonConfig[] | Promise<ReasonConfig[]>;
-  /** The chat's options were picked (New workspace dialog, review model), so the default does not replace them. */
+  /** The chat's options were picked (New workspace dialog, review model) or defaulted, so the default does not replace them. */
   configured: boolean;
   /** Turns shown as running whose prompt has not reached Reason yet. */
   unsent: Set<string>;
@@ -78,7 +90,20 @@ export const REASON_CAN_STEER = true;
 function chat(chatId: string): Chat {
   let c = chats.get(chatId);
   if (!c) {
-    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, repoPath: null, opened: false, config: [], configured: false, unsent: new Set(), stopped: new Set(), listeners: new Set() };
+    const saved = savedConfig(chatId);
+    c = {
+      state: reasonChat(chatId),
+      transcript: emptyTranscript(chatId),
+      queue: Q.emptyQueue(),
+      cwd: null,
+      repoPath: null,
+      opened: false,
+      config: saved ?? [],
+      configured: saved !== null,
+      unsent: new Set(),
+      stopped: new Set(),
+      listeners: new Set(),
+    };
     chats.set(chatId, c);
   }
   stored(c);
@@ -86,8 +111,15 @@ function chat(chatId: string): Chat {
 }
 
 const savers = new Map<string, ChatSaver>();
+/** Settles once a chat's stored transcript and Session id are in (or failed to load). */
+const loads = new Map<string, Promise<void>>();
 
-/** The chat's saver; the first call loads the stored transcript into an untouched chat. */
+/**
+ * The chat's saver; the first call loads the stored transcript into the chat.
+ * Nothing else changes the transcript before the load settles: `prompt` waits
+ * for it, so a message sent while loading lands after the stored turns and
+ * goes to the stored Session.
+ */
 function stored(c: Chat): ChatSaver | undefined {
   if (!reasonAvailable()) return undefined;
   const chatId = c.state.chatId;
@@ -96,11 +128,10 @@ function stored(c: Chat): ChatSaver | undefined {
   saver = new ChatSaver((batch) => invoke("chat_messages_save", { chatId, ...batch, agentSessionId: localStorage.getItem(sessionKey(chatId)) }));
   savers.set(chatId, saver);
   const s = saver;
-  invoke<{ messages: string[]; agentSessionId: string | null }>("chat_messages_load", { chatId })
+  const load = invoke<{ messages: string[]; agentSessionId: string | null }>("chat_messages_load", { chatId })
     .then(({ messages, agentSessionId }) => {
       if (agentSessionId && !localStorage.getItem(sessionKey(chatId))) localStorage.setItem(sessionKey(chatId), agentSessionId);
-      // A chat that already has messages (a prompt sent while loading) keeps them; the stored rows stay for the next open.
-      if (messages.length === 0 || c.transcript.messages.length > 0) return;
+      if (messages.length === 0) return;
       const r = applyChatEvents(c.transcript, restoreEvents(chatId, messages));
       if (!r.ok) return console.warn("chat: stored transcript not applied", r.error);
       c.transcript = r.transcript;
@@ -108,6 +139,7 @@ function stored(c: Chat): ChatSaver | undefined {
       notify(c);
     })
     .catch((e) => console.warn("chat: stored transcript not loaded", e));
+  loads.set(chatId, load);
   return saver;
 }
 
@@ -214,17 +246,26 @@ function ensureListening(): Promise<unknown> {
  */
 async function prompt(c: Chat, text: string, attachments: PromptAttachment[]): Promise<void> {
   const chatId = c.state.chatId;
-  const isNewChat = !c.opened && !localStorage.getItem(sessionKey(chatId)) && !c.transcript.messages.some((m) => m.role === "user");
   // A random turn id, so a turn's checkpoints and cached changes never
   // collide with a turn from an earlier app run.
   const turnId = `${chatId}:${crypto.randomUUID()}`;
-  apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
-  if (!reasonAvailable()) return preview.prompt(c, text);
-  // `submitChat` sets the folder before any effect runs.
-  const cwd = c.cwd ?? "";
+  if (!reasonAvailable()) {
+    apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
+    return preview.prompt(c, text);
+  }
   // Stop is shown from here on, but Reason only learns of the turn once
   // `reason_prompt` runs; a Stop before that is held in `c.stopped`.
   c.unsent.add(turnId);
+  // The stored transcript and Session id come first (see `stored`).
+  await loads.get(chatId);
+  // No Session yet: a new chat, or one whose Session was dropped by Reset
+  // chat. The new Session gets the conversation the chat still shows.
+  const newSession = !c.opened && !localStorage.getItem(sessionKey(chatId));
+  const isNewChat = newSession && !c.transcript.messages.some((m) => m.role === "user");
+  const carried = newSession ? earlierConversation(c.transcript) : null;
+  apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
+  // `submitChat` sets the folder before any effect runs.
+  const cwd = c.cwd ?? "";
   try {
     await ensureListening();
     if (!c.opened) {
@@ -241,7 +282,7 @@ async function prompt(c: Chat, text: string, attachments: PromptAttachment[]): P
     // the turn never started (no CLI, no process), so no event will end it.
     const turn = turnCheckpointRef(chatId, turnId);
     const agentText = isNewChat && c.repoPath ? await withGeneral(text, c.repoPath, cwd) : text;
-    const end = await invoke<{ turnChanges?: FileChange[] }>("reason_prompt", { chatId, text: agentText, attachments, turn });
+    const end = await invoke<{ turnChanges?: FileChange[] }>("reason_prompt", { chatId, text: agentText, attachments: carried ? [carried, ...attachments] : attachments, turn });
     if (end.turnChanges) turnChanges.record(turn, end.turnChanges);
   } catch (e) {
     c.unsent.delete(turnId);
@@ -263,15 +304,24 @@ async function withGeneral(text: string, repoPath: string, cwd: string): Promise
 /**
  * "Reset chat" to `turnId`: with `resetFiles`, restore the workspace to the
  * turn's end checkpoint first; only when that worked, delete the later
- * messages. The Reason Session itself is not rewound: ACP has no way to drop
- * turns from a Session, so the agent still remembers the deleted ones.
+ * messages. The agent is rewound too: a Reason Session cannot drop turns, so
+ * when messages were deleted the chat forgets its Session (here and in
+ * `conductor.db`, in the same write) and the next prompt opens a new one
+ * carrying the kept conversation (rewind.ts).
  */
 export async function resetReasonChat(chatId: string, cwd: string, turnId: string, resetFiles: boolean): Promise<void> {
   const c = chat(chatId);
   if (c.transcript.activeTurn !== null) throw new Error("Stop the agent before resetting the chat.");
   await restoreCheckpoint(invoke, cwd, chatId, turnId, resetFiles);
-  c.transcript = truncateAfterTurn(c.transcript, turnId);
-  savers.get(chatId)?.update(c.transcript);
+  const before = c.transcript;
+  c.transcript = truncateAfterTurn(before, turnId);
+  const lastKept = lastMessageOfTurn(c.transcript, turnId);
+  const saver = savers.get(chatId);
+  if (lastKept && c.transcript.messages.length < before.messages.length) {
+    localStorage.removeItem(sessionKey(chatId));
+    c.opened = false;
+    saver?.rewind(c.transcript, lastKept);
+  } else saver?.update(c.transcript);
   notify(c);
 }
 
@@ -304,13 +354,20 @@ export function sendReason(chatId: string, cwd: string, text: string, attachment
 }
 
 /**
- * Session options for a chat that has not sent its first message; set when
- * Reason creates its Session. A chat whose Session exists keeps its options.
+ * Session options for the chat's next new Session: its first, or the one
+ * after Reset chat. A Session that already exists keeps its own. Picked
+ * options are kept across restarts, so a Session opened after a reset still
+ * runs on them.
  */
 export function configureReason(chatId: string, config: ReasonConfig[]): void {
   const c = chat(chatId);
   c.config = config;
   c.configured = true;
+  try {
+    localStorage.setItem(configKey(chatId), JSON.stringify(config));
+  } catch (e) {
+    console.warn("reason chat: Session options not saved", e);
+  }
 }
 
 /**

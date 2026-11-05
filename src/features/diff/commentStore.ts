@@ -3,12 +3,13 @@
 // diff_comment* Tauri commands into conductor.db (commentsApi.ts); in a plain
 // browser they are kept in localStorage with the same semantics, so the UI can
 // be developed and checked without Tauri.
-import { deleteComment, editComment, markSent, setThreadResolved, type DiffComment } from "./comments.ts";
+import { deleteComment, editComment, markSent, migrateLocations, setThreadResolved, type DiffComment } from "./comments.ts";
 
 export interface CommentStore {
   list(): Promise<DiffComment[]>;
   add(c: DiffComment): Promise<void>;
   edit(id: string, body: string): Promise<void>;
+  /** Delete one comment here. A GitHub comment stays on GitHub, as in Conductor. */
   remove(id: string): Promise<void>;
   /** Resolve or reopen the thread with this key (see `threadKey`). */
   resolve(threadId: string, resolved: boolean): Promise<void>;
@@ -37,7 +38,8 @@ export function localCommentStore(storage: KV, workspaceId: string, now: () => n
   const read = (): DiffComment[] => {
     try {
       const v: unknown = JSON.parse(storage.getItem(localKey(workspaceId)) ?? "[]");
-      return Array.isArray(v) ? (v as DiffComment[]) : [];
+      // Rows saved before the old side was "original" still say "base".
+      return Array.isArray(v) ? migrateLocations(v as DiffComment[]) : [];
     } catch {
       return [];
     }

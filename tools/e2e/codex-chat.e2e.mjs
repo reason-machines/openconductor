@@ -10,8 +10,8 @@
 //                        command writes hello.txt in the workspace folder, a
 //                        second command cats it, the reply is "hello from codex"
 //   2. "follow-up"       the reply says "turn 2", so one Codex thread ran both
-//   3. "hello" + Deny    "Deny and stop" ends the turn as "Stopped."
-//   4. "slow" + Stop     Stop interrupts the running turn: "Stopped."
+//   3. "hello" + Deny    "Deny and stop" ends the turn as "Interrupted by user"
+//   4. "slow" + Stop     Stop interrupts the running turn: "Interrupted by user"
 //
 // Usage (under a display, e.g. xvfb-run):
 //   node tools/e2e/codex-chat.e2e.mjs <path to the built app binary>
@@ -235,21 +235,21 @@ try {
   await send("hello again");
   await waitFor("the second approval card", async () => (await approvalButtons()).length > 0);
   assert.ok(await clickApproval("Deny and stop"));
-  await waitFor('"Stopped."', () => chatText().then((t) => (t.match(/Stopped\./g) ?? []).length === 1));
+  await waitFor('"Interrupted by user"', () => chatText().then((t) => (t.match(/Interrupted by user/g) ?? []).length === 1));
   await turnDone(3);
   assert.deepEqual(requests().filter((r) => r.response).at(-1).response, { id: 1, result: { decision: "cancel" } });
-  pass('"Deny and stop" answers cancel and the turn ends as "Stopped."');
+  pass('"Deny and stop" answers cancel and the turn ends as "Interrupted by user"');
 
   // 4. Stop a running turn.
   await send("slow");
   await waitFor("the Stop button", running);
   await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
-  await waitFor('a second "Stopped."', () => chatText().then((t) => (t.match(/Stopped\./g) ?? []).length === 2), 20000);
+  await waitFor('a second "Interrupted by user"', () => chatText().then((t) => (t.match(/Interrupted by user/g) ?? []).length === 2), 20000);
   await turnDone(4);
   const interrupt = requests().find((r) => r.method === "turn/interrupt");
   assert.deepEqual(interrupt.params, { threadId: "th-e2e-1", turnId: "turn-4" });
   await screenshot("codex-3-stopped");
-  pass("Stop sends turn/interrupt for the running turn and the chat shows Stopped.");
+  pass('Stop sends turn/interrupt for the running turn and the chat shows "Interrupted by user"');
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {
