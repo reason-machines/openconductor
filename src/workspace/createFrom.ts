@@ -25,6 +25,56 @@ export type SourceState<T> =
 
 export interface BranchItem { name: string; remote: string | null }
 
+/** `pr_list_open` row (src-tauri/src/pr/list.rs `OpenPr`). */
+export interface OpenPrDto {
+  number: number;
+  title: string;
+  headRefName: string;
+  baseRefName: string;
+  author: string | null;
+  isCrossRepository: boolean;
+  headRepositoryOwner: string | null;
+  updatedAt: string;
+}
+
+/** `gh_issue_list_open` row (src-tauri/src/pr/list.rs `OpenIssue`). */
+export interface OpenIssueDto { number: number; title: string; url: string; body: string | null }
+
+export function prToFrom(pr: OpenPrDto): CreateFrom {
+  return {
+    kind: "pr",
+    number: pr.number,
+    title: pr.title,
+    headBranch: pr.headRefName,
+    baseBranch: pr.baseRefName,
+    ...(pr.headRepositoryOwner ? { headOwner: pr.headRepositoryOwner } : {}),
+    crossRepository: pr.isCrossRepository,
+  };
+}
+
+export function issueToFrom(issue: OpenIssueDto): CreateFrom {
+  return {
+    kind: "issue",
+    provider: "github",
+    key: `#${issue.number}`,
+    title: issue.title,
+    url: issue.url,
+    ...(issue.body ? { body: issue.body } : {}),
+  };
+}
+
+/**
+ * State for a rejected list call. The backend prefixes `no_github:` (gh
+ * missing or signed out) and `no_remote:` (no GitHub remote); anything else
+ * is shown as the error text.
+ */
+export function listErrorState(e: unknown): SourceState<never> {
+  const msg = typeof e === "string" ? e : e instanceof Error ? e.message : String(e);
+  if (msg.startsWith("no_github:")) return { status: "unavailable", reason: "no_github" };
+  if (msg.startsWith("no_remote:")) return { status: "unavailable", reason: "no_remote" };
+  return { status: "error", message: msg };
+}
+
 /** Plain words match title, number, branch, key or body; `#12` or `12` matches the number. */
 export function matches(from: CreateFrom, query: string): boolean {
   const q = query.trim().toLowerCase();

@@ -200,3 +200,26 @@ fn provider_configs_round_trip_per_agent() {
         .unwrap()
         .contains("[providers.claude]"));
 }
+
+#[test]
+fn git_flags_use_conductor_defaults_and_round_trip() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[git]\nbranch_prefix_type = \"none\"").unwrap();
+    let git = load(&path).unwrap().git;
+    assert!(
+        !git.delete_branch_on_archive
+            && !git.archive_on_merge
+            && git.worktree_push_auto_setup_remote
+    );
+    let mut s = Settings::default();
+    s.git.delete_branch_on_archive = true;
+    s.git.archive_on_merge = true;
+    s.git.worktree_push_auto_setup_remote = false;
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        text.contains("worktree_push_auto_setup_remote = false"),
+        "{text}"
+    );
+    assert_eq!(load(&path).unwrap().git, s.git);
+}

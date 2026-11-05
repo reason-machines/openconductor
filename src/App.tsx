@@ -4,7 +4,8 @@ import { isSidebarVisible } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
-import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
+import { QuickStartDialog, type DialogKind } from "./components/Dialogs";
+import { CloneGitHubRepoDialog } from "./components/CloneGitHubRepoDialog";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
@@ -137,7 +138,12 @@ export default function App() {
           <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}
       </main>
-      {dialog === "clone" && <CloneDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
+      {dialog === "clone" && (
+        <CloneGitHubRepoDialog
+          onClose={() => setDialog(null)}
+          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", repo: { name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
+        />
+      )}
       {dialog === "quickstart" && <QuickStartDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
       {dialog === "create" && (
         <CreateWorkspaceDialog

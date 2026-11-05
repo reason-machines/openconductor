@@ -130,14 +130,34 @@ pub enum BranchPrefixType {
     None,
 }
 
-#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Git {
     pub branch_prefix_type: BranchPrefixType,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub branch_prefix_custom: Option<String>,
+    /// Delete the local branch when a workspace is archived (Conductor default: off).
+    pub delete_branch_on_archive: bool,
+    /// Archive a local workspace after its PR is merged in the app (default: off).
+    pub archive_on_merge: bool,
+    /// Set `push.autoSetupRemote` in each new workspace's worktree config so
+    /// a plain `git push` sets the upstream (Conductor default: on).
+    pub worktree_push_auto_setup_remote: bool,
     #[serde(flatten)]
     pub extra: toml::Table,
+}
+
+impl Default for Git {
+    fn default() -> Self {
+        Self {
+            branch_prefix_type: BranchPrefixType::default(),
+            branch_prefix_custom: None,
+            delete_branch_on_archive: false,
+            archive_on_merge: false,
+            worktree_push_auto_setup_remote: true,
+            extra: toml::Table::new(),
+        }
+    }
 }
 
 /// Reasoning effort for Codex models (Codex CLI `model_reasoning_effort`).
