@@ -1,4 +1,5 @@
 import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
+import type { RowPr } from "./rowStatus.ts";
 
 export type WorkspaceStatus = "idle" | "working" | "needs-review" | "archived";
 
@@ -33,6 +34,10 @@ export interface Workspace {
   derivedStatus?: WorkspaceStatusValue;
   /** `workspaces.number`, given on creation and shown as `W-<n>`; null for workspaces from before numbering. */
   number?: number | null;
+  /** `workspaces.state` (initializing, setting_up, ready, failed, ...): the row shows setup and failure. */
+  state?: string;
+  /** The workspace's pull request as last read from GitHub; drives the row's status icon. */
+  pr?: RowPr | null;
 }
 
 export interface Repo {
