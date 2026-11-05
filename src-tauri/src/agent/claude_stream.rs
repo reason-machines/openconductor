@@ -112,7 +112,12 @@ pub enum ClaudeEvent {
         permission_mode: Option<PermissionMode>,
     },
     /// An assistant message (text, thinking and tool-use blocks).
-    Assistant { message: Value },
+    /// `api_error` is set when the CLI sent an API failure (usage limit,
+    /// authentication) as this message; its text is then the error.
+    Assistant {
+        message: Value,
+        api_error: Option<ApiError>,
+    },
     /// A user-role message from the CLI, usually tool results.
     ToolResults { message: Value },
     /// The turn finished.
@@ -131,6 +136,31 @@ pub enum ClaudeEvent {
     /// Anything else, kept whole: other system subtypes, stream events,
     /// types a newer CLI adds.
     Unknown(Value),
+}
+
+/// An API failure the CLI reported on an assistant message
+/// (`is_api_error_message: true`).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ApiError {
+    /// e.g. `usage_limit_reached` (`api_error`), else the `error` field.
+    pub code: Option<String>,
+    /// HTTP status (`api_error_status`).
+    pub status: Option<u16>,
+}
+
+impl ApiError {
+    fn parse(v: &Value) -> Option<Self> {
+        if v.get("is_api_error_message").and_then(Value::as_bool) != Some(true) {
+            return None;
+        }
+        Some(ApiError {
+            code: str_field(v, "api_error").or_else(|| str_field(v, "error")),
+            status: v
+                .get("api_error_status")
+                .and_then(Value::as_u64)
+                .and_then(|s| u16::try_from(s).ok()),
+        })
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -181,6 +211,7 @@ impl ClaudeEvent {
             },
             ("assistant", _) => ClaudeEvent::Assistant {
                 message: v.get("message").cloned().unwrap_or(Value::Null),
+                api_error: ApiError::parse(&v),
             },
             ("user", _) => ClaudeEvent::ToolResults {
                 message: v.get("message").cloned().unwrap_or(Value::Null),
@@ -331,7 +362,25 @@ mod tests {
         let msg = json!({"role": "assistant", "content": [{"type": "text", "text": "ok"}]});
         assert_eq!(
             parse(json!({"type": "assistant", "message": msg, "session_id": "s1"})),
-            ClaudeEvent::Assistant { message: msg }
+            ClaudeEvent::Assistant {
+                message: msg.clone(),
+                api_error: None
+            }
+        );
+        // The usage-limit form the signed-in CLI prints (evidence/claude-code/).
+        assert_eq!(
+            parse(
+                json!({"type": "assistant", "message": msg, "session_id": "s1",
+                         "error": "rate_limit", "is_api_error_message": true,
+                         "api_error_status": 429, "api_error": "usage_limit_reached"})
+            ),
+            ClaudeEvent::Assistant {
+                message: msg,
+                api_error: Some(ApiError {
+                    code: Some("usage_limit_reached".into()),
+                    status: Some(429)
+                })
+            }
         );
         assert!(matches!(
             parse(json!({"type": "user", "message": {"role": "user"}, "session_id": "s1"})),

@@ -30,7 +30,7 @@ import { AddRepositoryMenu } from "./AddRepositoryMenu";
 interface Props {
   repos: Repo[];
   initialRepoId: string | null;
-  /** `branch_prefix_type` / `branch_prefix_custom` settings. */
+  /** `branch_prefix_type` / `branch_prefix` settings. */
   prefixSettings: BranchPrefixSettings;
   githubUsername: string | null;
   onClose: () => void;
