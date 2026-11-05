@@ -7,8 +7,13 @@
 //! we match and what differs on purpose.
 //!
 //! * [`model`]: GraphQL wire types for the fields we select.
+//! * [`checks`]: collapse check re-runs and summarize passing / pending /
+//!   failing.
 
+pub mod checks;
 pub mod model;
 
+#[cfg(test)]
+mod checks_tests;
 #[cfg(test)]
 mod tests;
