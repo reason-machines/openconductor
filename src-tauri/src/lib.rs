@@ -16,6 +16,7 @@
 
 pub mod agent;
 pub mod checkpoint;
+pub mod create_project;
 pub mod db;
 pub mod diff;
 pub mod github_repo;
@@ -105,6 +106,22 @@ async fn github_repo_create(
     blocking(move || github_repo::GitHub::default().create(&request)).await
 }
 
+/// Home "Create project": scaffold from a template and publish a private
+/// GitHub repo (see `create_project`). JS: `invoke("create_new_project",
+/// { request, onProgress })`, `onProgress` a `Channel` of `{kind, text}`.
+#[tauri::command]
+async fn create_new_project(
+    request: create_project::Request,
+    on_progress: tauri::ipc::Channel<create_project::Progress>,
+) -> Result<create_project::Created, String> {
+    blocking(move || {
+        create_project::Creator::default().create(&request, &mut |p| {
+            let _ = on_progress.send(p);
+        })
+    })
+    .await
+}
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct BranchPrefixInfo {
@@ -156,9 +173,15 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_window_state::Builder::new().build())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_sql::Builder::new().build())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
-            app.manage(db::open(&data_dir)?);
+            let db = db::open(&data_dir)?;
+            spotlight_commands::migrate_legacy_setting(&db);
+            app.manage(db);
             app.manage(terminal_commands::history_state(&data_dir));
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());
@@ -185,6 +208,7 @@ pub fn run() {
             github_repo_create,
             github_recent_repos,
             github_git_protocol,
+            create_new_project,
             workspace::commands::add_repository,
             workspace::commands::clone_repository,
             workspace::commands::default_clone_directory,
