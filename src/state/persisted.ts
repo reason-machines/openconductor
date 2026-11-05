@@ -83,6 +83,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
             derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
             number: w.number ?? null,
+            state: w.state,
             userSetWorkspaceName: w.userSetWorkspaceName || undefined,
           }),
         ),

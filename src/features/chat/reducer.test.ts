@@ -117,6 +117,14 @@ test("a session report arriving mid-turn leaves the active turn running", () => 
   assert.deepEqual(messageOrigin(t.messages[0]!), { kind: "session", sessionId: "child-1" });
 });
 
+test("turn status keeps start and end times", () => {
+  const at = (turnId: string, s: TurnStatus, when: string): ChatEvent => ({ type: "turn_status", sessionId: "s1", turnId, status: s, at: when });
+  const t = apply([at("t1", "running", "2026-11-05T10:00:00.000Z"), at("t1", "completed", "2026-11-05T10:00:05.000Z"), at("t1", "failed", "2026-11-05T10:00:09.000Z")]);
+  assert.deepEqual(t.turns.t1, { status: "failed", startedAt: "2026-11-05T10:00:00.000Z", endedAt: "2026-11-05T10:00:05.000Z" });
+  const untimed = apply([status("t2", "running"), status("t2", "completed")]);
+  assert.deepEqual(untimed.turns.t2, { status: "completed" });
+});
+
 test("truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses", async () => {
   const { truncateAfterTurn } = await import("./reducer.ts");
   const m = (id: string, turnId: string, role: ChatMessage["role"]) => ({ ...msg(id, role, [{ type: "text", text: id }]), turnId });
