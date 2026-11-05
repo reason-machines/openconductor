@@ -17,3 +17,4 @@
 .pr-control .btn-merge { background: var(--add); border-color: var(--add); color: #fff; }
 .pr-control .btn-merge:disabled { opacity: 0.7; }
 .pr-control .pr-link { font-family: var(--font-mono); color: var(--muted); }
+.pr-control .btn-approve { border-color: var(--add); color: var(--add); }

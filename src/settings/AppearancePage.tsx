@@ -21,7 +21,8 @@ const BUILTIN = "builtin";
 const CUSTOM = "custom";
 
 /**
- * Settings › Appearance: Conductor's Theme, Low-contrast dark mode, App zoom
+ * Settings › Appearance: Conductor's Theme, Low-contrast dark mode, Colored
+ * sidebar diffs, App zoom
  * Mono Font and Terminal font rows, with its titles and descriptions
  * (evidence/settings/settings-registry.json); Accessible colors, Code theme
  * and Code ligatures come from the diff feature (DiffAppearanceRows.tsx).
@@ -72,6 +73,15 @@ export function AppearancePage({ settings, save }: Props) {
           aria-label="Low-contrast dark mode"
           checked={a.low_contrast_dark_mode}
           onChange={(e) => save(withAppearance(settings, "low_contrast_dark_mode", e.target.checked))}
+        />
+      </Row>
+      <Row label="Colored sidebar diffs" help="Always show line change colors in the sidebar, even for unselected workspaces.">
+        <input
+          type="checkbox"
+          role="switch"
+          aria-label="Colored sidebar diffs"
+          checked={a.colored_sidebar_diffs === true}
+          onChange={(e) => save(withAppearance(settings, "colored_sidebar_diffs", e.target.checked))}
         />
       </Row>
       <Row label="App zoom" help="Adjust the size of the OpenConductor interface.">
