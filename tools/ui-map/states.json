@@ -1004,7 +1004,7 @@
     },
     {
      "click": ".settings-repo",
-     "text": "tide-web"
+     "text": "Ttide-web"
     },
     {
      "click": ".settings-repo-sections .nav-item",
@@ -1045,7 +1045,7 @@
     },
     {
      "click": ".settings-repo",
-     "text": "tide-web"
+     "text": "Ttide-web"
     },
     {
      "click": ".settings-repo-sections .nav-item",
@@ -1086,7 +1086,7 @@
     },
     {
      "click": ".settings-repo",
-     "text": "tide-web"
+     "text": "Ttide-web"
     },
     {
      "click": ".settings-repo-sections .nav-item",
@@ -1127,7 +1127,7 @@
     },
     {
      "click": ".settings-repo",
-     "text": "tide-web"
+     "text": "Ttide-web"
     },
     {
      "click": ".settings-repo-sections .nav-item",
@@ -1168,7 +1168,7 @@
     },
     {
      "click": ".settings-repo",
-     "text": "tide-web"
+     "text": "Ttide-web"
     },
     {
      "click": ".settings-repo-sections .nav-item",
@@ -1725,8 +1725,7 @@
      "after_ms": 1500
     },
     {
-     "click": ".composer button",
-     "text": "Opus 5"
+     "click": ".composer .oc-model-chip"
     }
    ]
   },

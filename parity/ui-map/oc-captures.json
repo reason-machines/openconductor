@@ -3,7 +3,7 @@
   "status": "captured",
   "steps": 1,
   "file": "oc/all-workspaces.png",
-  "png_sha256": "d83c5db7dbba118bddb710cb710bc214acf0029b9f238c6d7fa974b88e992585",
+  "png_sha256": "f0203a0a256ee375b810c67032f73dc86a49ec19af7c065c4036ff32adb49ee3",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -23,7 +23,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -41,7 +41,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Reykjavik",
+    "Berlin",
     "tide-web"
    ],
    "roles": [
@@ -59,7 +59,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -74,8 +74,8 @@
     "Today",
     "1",
     "T",
-    "Reykjavik",
-    "1m"
+    "Berlin",
+    "39m"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -83,13 +83,13 @@
     820
    ]
   },
-  "ms": 6599
+  "ms": 4843
  },
  "create": {
   "status": "captured",
   "steps": 1,
   "file": "oc/create.png",
-  "png_sha256": "81ce84d5d8e683427e429f3484f0129f5c3e96440bf12d6da84139477fe256e0",
+  "png_sha256": "78b29a42e798d7002086a027d2939bf2a394c5d2b6680252ad2875cd42804097",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -109,7 +109,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -132,12 +132,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -184,7 +183,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -195,21 +194,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -270,7 +272,7 @@
     "Workspace name",
     "Common",
     "Branch",
-    "dallas",
+    "seoul",
     ". A placeholder name is replaced by a generated branch name after the first message.",
     "⌘↵ to create",
     "Cancel",
@@ -282,13 +284,13 @@
     820
    ]
   },
-  "ms": 7788
+  "ms": 5360
  },
  "create-repo-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/create-repo-picker.png",
-  "png_sha256": "60733539cf47e95ad8eb8f299f5001af303fbf6ab561b56f29ceb3fb8bd0efd3",
+  "png_sha256": "deb90c6d14306ea9b21e53dc021e9b10f1c09ee5a43408c75af8e5754234c527",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -308,7 +310,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -331,12 +333,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -387,7 +388,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -398,21 +399,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -476,9 +480,9 @@
     "Add…",
     "Base branch",
     "Workspace name",
-    "Common",
+    "Rare",
     "Branch",
-    "sydney",
+    "thimphu",
     ". A placeholder name is replaced by a generated branch name after the first message.",
     "⌘↵ to create",
     "Cancel",
@@ -490,13 +494,13 @@
     820
    ]
   },
-  "ms": 9798
+  "ms": 5723
  },
  "dialog-clone-github": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-clone-github.png",
-  "png_sha256": "9dcd5bbe0bdce1baf79a0823812b9a413273a2545a01efe116872a07011c148b",
+  "png_sha256": "958249151501b1208d8a71aca5b89b55c5ca0e94a1df0b615f896ed4bb3e2c48",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -516,7 +520,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -539,12 +543,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -591,7 +594,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -602,21 +605,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -682,13 +688,13 @@
     820
    ]
   },
-  "ms": 6791
+  "ms": 9339
  },
  "dialog-create-project": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-create-project.png",
-  "png_sha256": "96a1acc4d1c1bfd99079c65001845bcc50c910e38bc3719259a8a087259d8614",
+  "png_sha256": "9baddaf01002f77101f2cb80ed4f4aa159f600ed9ac2a6821aadab89a2a62bd9",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -708,7 +714,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -731,12 +737,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -784,7 +789,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -795,21 +800,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -882,13 +890,13 @@
     820
    ]
   },
-  "ms": 5734
+  "ms": 9204
  },
  "dialog-keyboard-shortcuts": {
   "status": "captured",
   "steps": 1,
   "file": "oc/dialog-keyboard-shortcuts.png",
-  "png_sha256": "7ee08fb451d25ef254080ec33d841adcf02f9d870872fa5312723bce0ae10056",
+  "png_sha256": "572cd28a50ba6226320302c52faac5c71bdf92535ca1c0e2fa770733d61bfdf7",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -908,7 +916,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -931,7 +939,7 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -940,7 +948,7 @@
     "Search models",
     "Search models",
     "Opus 4.8",
-    "Agent",
+    "Codex",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -983,7 +991,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -994,25 +1002,29 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "Opus 4.8",
     "High",
     "Opus 4.8",
     "High",
+    "Codex",
     "Add models",
     "Effort",
     "High",
@@ -1073,13 +1085,13 @@
     820
    ]
   },
-  "ms": 4810
+  "ms": 7657
  },
  "dialog-rename-workspace": {
   "status": "captured",
   "steps": 2,
   "file": "oc/dialog-rename-workspace.png",
-  "png_sha256": "4942fd0495fcda9c629661672eb76393cff6154feebe2a87b521df9abb98568d",
+  "png_sha256": "4cbd32f53248efa45ce8688ab0860924a1172db0731f004f43817aeaade0d75c",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1099,7 +1111,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1122,12 +1134,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -1170,7 +1181,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -1186,21 +1197,24 @@
     "OK",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -1259,13 +1273,13 @@
     820
    ]
   },
-  "ms": 5108
+  "ms": 6955
  },
  "diff-entire-file": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-entire-file.png",
-  "png_sha256": "0a95a3ec2ca941791f7156c3e98678e626fd32baf9ee3b4e601f8a799edcbd1e",
+  "png_sha256": "055d7e74f8f04fb526d7a949673eee0b7fa0362235da34dbd2ce0444f415f5c2",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1285,7 +1299,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1310,7 +1324,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "reykjavik",
+    "berlin",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
     "Discard changes",
@@ -1330,7 +1344,6 @@
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -1371,7 +1384,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -1382,8 +1395,8 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
@@ -1391,7 +1404,7 @@
     "Archive",
     "All changes",
     "×",
-    "reykjavik",
+    "berlin",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1458,13 +1471,13 @@
     820
    ]
   },
-  "ms": 8068
+  "ms": 7639
  },
  "diff-split": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-split.png",
-  "png_sha256": "464376305c9d4aa9464d368267ba8f1832b82036ef6951a36316762185b64610",
+  "png_sha256": "c9a906d8c24ee4d3b7e816b5e0c2f4de66fb75243c1d193e6256199e194138ad",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1484,7 +1497,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1509,7 +1522,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "reykjavik",
+    "berlin",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
     "Discard changes",
@@ -1529,7 +1542,6 @@
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -1570,7 +1582,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -1581,8 +1593,8 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
@@ -1590,7 +1602,7 @@
     "Archive",
     "All changes",
     "×",
-    "reykjavik",
+    "berlin",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1657,13 +1669,13 @@
     820
    ]
   },
-  "ms": 8664
+  "ms": 6888
  },
  "diff-unified": {
   "status": "captured",
   "steps": 2,
   "file": "oc/diff-unified.png",
-  "png_sha256": "c95ff99ef1d8094c6fa78a75c5caf2e63f7136691cd5a7f8d1459fade400ef0d",
+  "png_sha256": "6b1778a3d62277c374be6f680b2e71dba21c7ebe900f9b95acec0aeac0fb57d0",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1683,7 +1695,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1708,7 +1720,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "reykjavik",
+    "berlin",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
     "Discard changes",
@@ -1728,7 +1740,6 @@
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -1769,7 +1780,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -1780,8 +1791,8 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
@@ -1789,7 +1800,7 @@
     "Archive",
     "All changes",
     "×",
-    "reykjavik",
+    "berlin",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1856,13 +1867,13 @@
     820
    ]
   },
-  "ms": 7668
+  "ms": 6650
  },
  "first-run-onboarding": {
   "status": "captured",
   "steps": 0,
   "file": "oc/first-run-onboarding.png",
-  "png_sha256": "58b45c775bdbb610c40dcc207dc6c4b7e6195ac777fc3e082b18d78b357208db",
+  "png_sha256": "509a6ab5aa0dfa6e454f5b32c5e67309d635634e67a1dde1b3113340facf556e",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1885,13 +1896,13 @@
     820
    ]
   },
-  "ms": 5553
+  "ms": 4599
  },
  "home": {
   "status": "captured",
   "steps": 1,
   "file": "oc/home.png",
-  "png_sha256": "98562445f00d9b38e5be247e45b5d0a6b7b1d832907c2d4124c2e1ba84760f2a",
+  "png_sha256": "f0203a0a256ee375b810c67032f73dc86a49ec19af7c065c4036ff32adb49ee3",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1911,7 +1922,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1929,7 +1940,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Reykjavik",
+    "Berlin",
     "tide-web"
    ],
    "roles": [
@@ -1947,7 +1958,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -1962,8 +1973,8 @@
     "Today",
     "1",
     "T",
-    "Reykjavik",
-    "now"
+    "Berlin",
+    "39m"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1971,7 +1982,7 @@
     820
    ]
   },
-  "ms": 7307
+  "ms": 4187
  },
  "home-empty": {
   "status": "captured",
@@ -2021,13 +2032,13 @@
     820
    ]
   },
-  "ms": 7084
+  "ms": 5341
  },
  "login": {
   "status": "captured",
   "steps": 0,
   "file": "oc/login.png",
-  "png_sha256": "2b391538d65145f2aa8bf32fc142d605482015921a66564d409d44e3d23d5398",
+  "png_sha256": "882f6b501d435890d7ec9d4016e240a19155cc407e94569019ddd887a3640eb6",
   "dom": {
    "labels": [
     "Slide progress"
@@ -2050,13 +2061,13 @@
     820
    ]
   },
-  "ms": 5395
+  "ms": 4042
  },
  "menu-account": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-account.png",
-  "png_sha256": "fe786256cd842f7934a4629c038416854e96241deec43170f3c6fbc458a3eb9a",
+  "png_sha256": "128b73ae8c27532116f4f6bd49ae3cf59c86778d243280e41e45a7f653d00aa5",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2077,7 +2088,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2100,12 +2111,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -2149,7 +2159,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -2160,21 +2170,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2233,13 +2246,13 @@
     820
    ]
   },
-  "ms": 4458
+  "ms": 6115
  },
  "menu-help": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-help.png",
-  "png_sha256": "53376d61e7b0dc93fe7fac38e9916c1cbbe69baf4a695486d727f6cce3de98d9",
+  "png_sha256": "d7d4aab39b44a644a02d92488e185b7373525563d4c3e8146a3072b500de21f3",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2259,7 +2272,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2283,12 +2296,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -2331,7 +2343,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -2350,21 +2362,24 @@
     "OpenConductor v0.1.0",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2423,13 +2438,13 @@
     820
    ]
   },
-  "ms": 4284
+  "ms": 5781
  },
  "menu-model-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-model-picker.png",
-  "png_sha256": "3ab88e6489255d6161a4405926b67cf881a78bbf2919035e09d0d5916558f14b",
+  "png_sha256": "ad92f2d082b32075779cc06c09dcaef7c72ec2813ae5045ce80511fe649859e5",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2449,7 +2464,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Oslo · oslo · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2472,7 +2487,7 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "oslo",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -2481,21 +2496,13 @@
     "Search models",
     "Search models",
     "Opus 4.8",
-    "Agent",
+    "Codex",
     "Add",
     "Add attachments and more",
     "Send message ↵",
     "Send message ↵",
     "Changes",
-    "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
-    "Changed files",
-    "Open README.md",
-    "Discard changes to README.md",
-    "Discard changes",
-    "Open src/lib/auth.ts",
-    "Discard changes to src/lib/auth.ts",
-    "Discard changes",
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
@@ -2524,9 +2531,7 @@
     "T",
     "tide-web",
     "1",
-    "Oslo",
-    "+",
-    "5",
+    "Berlin",
     "T",
     "tide-api",
     "No workspaces",
@@ -2535,25 +2540,29 @@
     "No workspaces",
     "tide-web",
     "/",
-    "oslo",
-    "oslo",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "oslo",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "oslo",
-    "'s worktree on branch",
-    "oslo",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "Opus 4.8",
     "High",
     "Opus 4.8",
     "High",
+    "Codex",
     "Add models",
     "Effort",
     "High",
@@ -2562,35 +2571,12 @@
     "Cycle effort",
     "All files",
     "Changes",
-    "2",
     "Checks",
-    "Review",
     "All changes",
     "Uncommitted",
-    "0",
-    "/",
-    "2",
-    "viewed",
     "Refresh",
-    "2",
-    "files",
-    "changed",
-    "+",
-    "5",
-    "-",
-    "0",
-    "README.md",
-    "M",
-    "+",
-    "2",
-    "-",
-    "0",
-    "src/lib/auth.ts",
-    "U",
-    "+",
-    "3",
-    "-",
-    "0",
+    "Couldn't load changes.",
+    "git rev-parse --git-path rebase-merge failed: fatal: not a git repository: /tmp/oc-uimap-run/repos/tide-web/.git/worktrees/berlin",
     "Run",
     "Setup",
     "▶",
@@ -2614,13 +2600,13 @@
     820
    ]
   },
-  "ms": 5736
+  "ms": 5252
  },
  "menu-repo-actions": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-repo-actions.png",
-  "png_sha256": "7f8eaa44828471ef7eda4e8ca5a1ce166e8188d0af8c2e806365d1dfbdb70733",
+  "png_sha256": "f048d91fe4fd3f6ab854ad69513aa1fb24f6fb3376a4683fd8d84c5473c1f070",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2640,7 +2626,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2663,12 +2649,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -2713,7 +2698,7 @@
     "Change icon…",
     "Hide repository",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -2724,21 +2709,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2797,13 +2785,13 @@
     820
    ]
   },
-  "ms": 4648
+  "ms": 5743
  },
  "menu-workspace-context": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-workspace-context.png",
-  "png_sha256": "abd902ec072af260ef311a034c17f63bc82b6466800784e5fe87825535bdcd29",
+  "png_sha256": "ebed8410d4e7d64f1883f06cf9465f73d0fe0fcdcfa792c1f233aff5640d4c37",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2823,7 +2811,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2847,12 +2835,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -2895,7 +2882,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -2917,21 +2904,24 @@
     "⌘⇧A",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2990,13 +2980,13 @@
     820
    ]
   },
-  "ms": 4594
+  "ms": 5992
  },
  "menu-workspace-status": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-workspace-status.png",
-  "png_sha256": "af3bf988ec9efcadbaabe903bc936ae8ddbb5f29fb2d0d1d77bc8935154b0def",
+  "png_sha256": "c9964bedd477e0399ace6a076e4dc91081ed8dc8f31ad36515e37e40058c5863",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3016,7 +3006,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3041,12 +3031,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -3090,7 +3079,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -3118,21 +3107,24 @@
     "⌘⇧A",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3191,7 +3183,7 @@
     820
    ]
   },
-  "ms": 4943
+  "ms": 6140
  },
  "needs-permission": {
   "status": "no-equivalent",
@@ -3201,7 +3193,7 @@
   "status": "captured",
   "steps": 0,
   "file": "oc/onboarding-signed-out.png",
-  "png_sha256": "2b391538d65145f2aa8bf32fc142d605482015921a66564d409d44e3d23d5398",
+  "png_sha256": "ab1613bb0c698d184a29f43c68afc9b87f6e77701296c0da10d816963c9be544",
   "dom": {
    "labels": [
     "Slide progress"
@@ -3224,13 +3216,13 @@
     820
    ]
   },
-  "ms": 5210
+  "ms": 3980
  },
  "palette-all": {
   "status": "captured",
   "steps": 1,
   "file": "oc/palette-all.png",
-  "png_sha256": "bad7e42f95cc5e91b4c595883e53b8d1d0101f29290dd0f091acf4d9e20c978d",
+  "png_sha256": "90010460caad6805efeed95a07bf5f57e18beda6af94b24a6024d311702ecc0b",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3250,7 +3242,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3273,12 +3265,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -3328,7 +3319,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -3339,21 +3330,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3411,8 +3405,8 @@
     "Actions",
     "Settings",
     "Recent workspaces",
-    "reykjavik",
-    "tide-web · reykjavik",
+    "berlin",
+    "tide-web · berlin",
     "Workspace actions",
     "Archive workspace",
     "⌘⇧A",
@@ -3437,13 +3431,13 @@
     820
    ]
   },
-  "ms": 5262
+  "ms": 5947
  },
  "palette-search": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-search.png",
-  "png_sha256": "c04229c8d3a798b4ec33a50fe6d92edc546f52135816404bd8f80449c284d0c7",
+  "png_sha256": "0463d4870de0335bd295a70581905111fd0ddcb7053bd613ce860246b378bc51",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3463,7 +3457,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3486,12 +3480,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -3537,7 +3530,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -3548,21 +3541,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3627,13 +3623,13 @@
     820
    ]
   },
-  "ms": 5883
+  "ms": 6126
  },
  "palette-workspaces": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-workspaces.png",
-  "png_sha256": "8d2213534b51f11c790de34aac32ef46fd2d234844a50177a51f3e51e764ad37",
+  "png_sha256": "58f140852673bdfbabcd92397c7cb459ce25dacdc048bbe1c4185d839bd8c558",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3653,7 +3649,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3676,12 +3672,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -3729,7 +3724,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -3740,21 +3735,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3812,8 +3810,8 @@
     "Actions",
     "Settings",
     "Workspaces",
-    "reykjavik",
-    "tide-web · reykjavik"
+    "berlin",
+    "tide-web · berlin"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -3821,7 +3819,7 @@
     820
    ]
   },
-  "ms": 4682
+  "ms": 6576
  },
  "route-cloud-collab-onboarding": {
   "status": "no-equivalent",
@@ -3908,13 +3906,13 @@
     820
    ]
   },
-  "ms": 6432
+  "ms": 6441
  },
  "settings-advanced": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-advanced.png",
-  "png_sha256": "3ba760920cd750add26af091228d1ab0dc74d5cd2148eb155ec2532b6654e3e6",
+  "png_sha256": "7e77a0d14c24515ff764f77b2e45df58407dc71d6bee739bc1aafdd795041912",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3998,13 +3996,13 @@
     820
    ]
   },
-  "ms": 5863
+  "ms": 6244
  },
  "settings-appearance": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-appearance.png",
-  "png_sha256": "918682429587748e2bac95d40677f9737fc35c4cb89cce9307966f8eaa56ebb4",
+  "png_sha256": "6bbc3ea1337ba21406c463411ab9c326c72419cbe4150d445b443fd01613b19d",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4091,7 +4089,7 @@
     820
    ]
   },
-  "ms": 5855
+  "ms": 6411
  },
  "settings-cloud-setup": {
   "status": "no-equivalent",
@@ -4150,13 +4148,13 @@
     820
    ]
   },
-  "ms": 5873
+  "ms": 5624
  },
  "settings-experimental": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-experimental.png",
-  "png_sha256": "1b6cc1a19668a43d3ac5ff5fe99cfc099dc240ed19196684435c3288a814e517",
+  "png_sha256": "d2b11cd4bd0708175f25bed88473bd389282930793f147bfdde15e504bd186b5",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4250,13 +4248,13 @@
     820
    ]
   },
-  "ms": 5708
+  "ms": 6650
  },
  "settings-general": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-general.png",
-  "png_sha256": "0296296a39122609276f62773504bce435676beec5bb1e565d30cb3d09ac416b",
+  "png_sha256": "0f062e0d654e175e3084520fc86ff0b8dd17821c3170d6e0a969b2a1da72d9f3",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4344,13 +4342,13 @@
     820
    ]
   },
-  "ms": 6448
+  "ms": 5486
  },
  "settings-git": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-git.png",
-  "png_sha256": "8f9b2c342598562a8a3d559fd3be7be5f3a41f8ff607621e587eee9ad8cba130",
+  "png_sha256": "d3bf716b21dacafccfde92fac75e835325272e86e39ccbf0107e1535f3d3d802",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4424,7 +4422,7 @@
     820
    ]
   },
-  "ms": 6278
+  "ms": 6053
  },
  "settings-internal": {
   "status": "no-equivalent",
@@ -4434,7 +4432,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-key-bindings.png",
-  "png_sha256": "956398cfb098fd9938e599c0d3dd8edc5fd66517df054066a17da4a0055292d3",
+  "png_sha256": "b5849ab128d981568ddf34901c6aa26c97c5039b7eba94a14fa2151cb68557c1",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5259,7 +5257,7 @@
     820
    ]
   },
-  "ms": 5820
+  "ms": 6081
  },
  "settings-models": {
   "status": "captured",
@@ -5327,7 +5325,7 @@
     820
    ]
   },
-  "ms": 5632
+  "ms": 5688
  },
  "settings-org-computer": {
   "status": "no-equivalent",
@@ -5365,7 +5363,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-providers.png",
-  "png_sha256": "991a407ea91282b8fce3d6c55ac59c6cf2986d336014d595b6823f2b18e3be5e",
+  "png_sha256": "b4d16623a85b1b097af73315a7d47c649d60655663f2931f335cf252b596e5bc",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5461,13 +5459,13 @@
     820
    ]
   },
-  "ms": 5405
+  "ms": 5615
  },
  "settings-repo-actions": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-actions.png",
-  "png_sha256": "bec4615991580f9e4a759ee5d3b3719d6dcf4e38af8d7f0d8a9380147f8062b6",
+  "png_sha256": "fb00be2e48542cac313353d4092a64c7734f048b205c686df1f67bb02bcd507e",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5529,7 +5527,7 @@
     820
    ]
   },
-  "ms": 5865
+  "ms": 7412
  },
  "settings-repo-environment": {
   "status": "captured",
@@ -5593,7 +5591,7 @@
     820
    ]
   },
-  "ms": 6338
+  "ms": 8027
  },
  "settings-repo-git": {
   "status": "captured",
@@ -5655,7 +5653,7 @@
     820
    ]
   },
-  "ms": 6469
+  "ms": 6880
  },
  "settings-repo-misc": {
   "status": "captured",
@@ -5716,7 +5714,7 @@
     820
    ]
   },
-  "ms": 6777
+  "ms": 7891
  },
  "settings-repo-scripts": {
   "status": "captured",
@@ -5777,7 +5775,7 @@
     820
    ]
   },
-  "ms": 6287
+  "ms": 8247
  },
  "settings-search": {
   "status": "step-failed",
@@ -5873,7 +5871,7 @@
     820
    ]
   },
-  "ms": 12760
+  "ms": 15444
  },
  "settings-terminal": {
   "status": "step-failed",
@@ -5969,7 +5967,7 @@
     820
    ]
   },
-  "ms": 13437
+  "ms": 14236
  },
  "sidebar-after-archive": {
   "status": "captured",
@@ -6036,13 +6034,13 @@
     820
    ]
   },
-  "ms": 5394
+  "ms": 6330
  },
  "toast-copied-link": {
   "status": "captured",
   "steps": 2,
   "file": "oc/toast-copied-link.png",
-  "png_sha256": "7cef4861cc4a17b0de5d8cdac2893d575da89a3d9d713d282a108089e2cd41f6",
+  "png_sha256": "d21dd258a1e3eb40727080d0d8efb2f9e032187123f8cbb82192b0565b569769",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6062,7 +6060,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -6085,12 +6083,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -6134,7 +6131,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -6145,21 +6142,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6219,13 +6219,13 @@
     820
    ]
   },
-  "ms": 4016
+  "ms": 5726
  },
  "workspace-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-chat.png",
-  "png_sha256": "e94898e37d4e169bb53709279c38d871ef8ce9712b81230be81e7c588913aa35",
+  "png_sha256": "abf1a555a8625fcdc666321f194e4e54a01edcacdaafba97c8bd7ac345a01a74",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6245,7 +6245,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -6268,12 +6268,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -6314,7 +6313,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -6325,21 +6324,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6398,13 +6400,13 @@
     820
    ]
   },
-  "ms": 7708
+  "ms": 5467
  },
  "workspace-new-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-new-chat.png",
-  "png_sha256": "e94898e37d4e169bb53709279c38d871ef8ce9712b81230be81e7c588913aa35",
+  "png_sha256": "abf1a555a8625fcdc666321f194e4e54a01edcacdaafba97c8bd7ac345a01a74",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6424,7 +6426,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -6447,12 +6449,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -6493,7 +6494,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -6504,21 +6505,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6577,13 +6581,13 @@
     820
    ]
   },
-  "ms": 6646
+  "ms": 5486
  },
  "workspace-tool-calls": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-tool-calls.png",
-  "png_sha256": "e94898e37d4e169bb53709279c38d871ef8ce9712b81230be81e7c588913aa35",
+  "png_sha256": "abf1a555a8625fcdc666321f194e4e54a01edcacdaafba97c8bd7ac345a01a74",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6603,7 +6607,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Reykjavik · reykjavik · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -6626,12 +6630,11 @@
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "reykjavik",
+    "berlin",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Agent",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -6672,7 +6675,7 @@
     "T",
     "tide-web",
     "1",
-    "Reykjavik",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -6683,21 +6686,24 @@
     "No workspaces",
     "tide-web",
     "/",
-    "reykjavik",
-    "reykjavik",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "Idle",
     "Terminal",
     "Archive",
-    "reykjavik",
-    "Chat with the agent",
-    "Messages you send here will run an agent inside",
-    "reykjavik",
-    "'s worktree on branch",
-    "reykjavik",
-    ".",
-    "Reason runs this chat: one Reason Session per workspace.",
+    "berlin",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "berlin",
+    "Branched",
+    "berlin",
+    "from",
+    "main",
+    "Created",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6756,6 +6762,6 @@
     820
    ]
   },
-  "ms": 5347
+  "ms": 5484
  }
 }
