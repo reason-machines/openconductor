@@ -53,6 +53,11 @@ pub struct Workspace {
     pub unread: bool,
     pub pr_title: Option<String>,
     pub pr_description: Option<String>,
+    /// The user named the workspace (rename dialog or create form); the sidebar
+    /// then shows `workspace_name` as is instead of the PR title or branch.
+    pub user_set_workspace_name: bool,
+    /// Workspace number (shown as `W-<n>`); Conductor's hosting server assigns it.
+    pub number: Option<i64>,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -72,7 +77,8 @@ const SELECT_WITH_REPO: &str = "SELECT w.local_id, w.repository_id, w.directory_
     w.manual_status, w.active_session_id, w.initialization_parent_branch, \
     w.intended_target_branch, w.workspace_path, w.archive_commit, w.initialization_log_path, \
     w.initialization_files_copied, w.setup_log_path, w.pinned_at, w.notes, \
-    COALESCE(w.unread, 0) AS unread, w.pr_title, w.pr_description, w.created_at, w.updated_at, \
+    COALESCE(w.unread, 0) AS unread, w.pr_title, w.pr_description, \
+    COALESCE(w.user_set_workspace_name, 0) AS user_set_workspace_name, w.number, w.created_at, w.updated_at, \
     r.root_path, r.name AS repo_name, COALESCE(r.storage_version, 1) AS storage_version \
     FROM workspaces w JOIN repos r ON w.repository_id = r.id";
 
@@ -307,6 +313,28 @@ pub async fn set_derived_status(pool: &SqlitePool, local_id: &str, status: &str)
 }
 
 /// Delete a workspace whose worktree was never created. False otherwise.
+/// Persist a workspace's number: Conductor's `UPDATE workspaces SET number = ?
+/// WHERE local_id = ?` (decoded frontend, index chunk; "Failed to persist
+/// workspace number").
+pub async fn set_number(pool: &SqlitePool, local_id: &str, number: i64) -> Result<()> {
+    sqlx::query("UPDATE workspaces SET number = ? WHERE local_id = ?")
+        .bind(number)
+        .bind(local_id)
+        .execute(pool)
+        .await?;
+    Ok(())
+}
+
+/// The number the next workspace gets: one more than the highest ever stored.
+/// Conductor's server hands numbers out; with no server this is ours. Archived
+/// rows keep their number, so a number is never reused while its row exists.
+pub async fn next_number(pool: &SqlitePool) -> Result<i64> {
+    let (n,): (i64,) = sqlx::query_as("SELECT COALESCE(MAX(number), 0) + 1 FROM workspaces")
+        .fetch_one(pool)
+        .await?;
+    Ok(n)
+}
+
 pub async fn delete_if_initializing(pool: &SqlitePool, local_id: &str) -> Result<bool> {
     let q = sqlx::query("DELETE FROM workspaces WHERE local_id = ? AND state = 'initializing'");
     Ok(exec(q.bind(local_id), pool).await? > 0)

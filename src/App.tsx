@@ -4,6 +4,8 @@ import { destroyWorkspaceTerminals } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
+import { AllWorkspaces } from "./components/AllWorkspaces";
+import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
 import type { DialogKind } from "./components/Dialogs";
 import { CreateProjectDialog } from "./components/CreateProjectDialog";
@@ -24,7 +26,8 @@ import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepo
 import { PaletteHost } from "./palette/PaletteHost";
 import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
 import { SettingsView } from "./settings/SettingsView";
-import { pageFromPath, type SettingsPage } from "./settings/pages";
+import { USER_PAGES } from "./settings/pages";
+import { keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
 import { changeZoom } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
 import { errorText, getSettings } from "./settings/api";
@@ -55,10 +58,40 @@ export default function App() {
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
-  // `/settings` or `/settings/user/<page>` starts on that settings page.
-  const [settingsPage, setSettingsPage] = useState<SettingsPage | null>(() => pageFromPath(window.location.pathname));
-  const openSettings = useCallback(() => setSettingsPage((p) => p ?? "general"), []);
-  const closeSettings = useCallback(() => setSettingsPage(null), []);
+  // A `/settings...` start URL opens settings where Conductor's router would
+  // (src/settings/routes.ts); the URL then follows the open settings page.
+  const routeContext = (): RouteContext => ({
+    repoIds: state.repos.map((r) => r.id),
+    lastRepoId: state.selection.kind === "workspace" ? state.selection.repoId : null,
+    userPages: USER_PAGES,
+  });
+  const [settingsLocation, setSettingsLocation] = useState<SettingsLocation | null>(() =>
+    resolveSettingsUrl(window.location.pathname, window.location.search, routeContext()),
+  );
+  // On the desktop, repositories arrive from conductor.db after mount: resolve a
+  // `/settings/repos...` start URL again once they are there.
+  const pendingReposUrl = useRef(window.location.pathname.startsWith("/settings/repos") && state.repos.every((r) => !r.name));
+  useEffect(() => {
+    if (!pendingReposUrl.current || !state.repos.some((r) => r.name)) return;
+    pendingReposUrl.current = false;
+    const loc = resolveSettingsUrl(window.location.pathname, window.location.search, routeContext());
+    if (loc) navigateSettings(loc);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.repos]);
+  const navigateSettings = useCallback((loc: SettingsLocation | null) => {
+    setSettingsLocation(loc);
+    const search = keptSearch(window.location.search);
+    window.history.replaceState(window.history.state, "", (loc ? settingsPath(loc) : "/") + search);
+  }, []);
+  // Show the page a start URL resolved to, as Conductor's redirects do.
+  useEffect(() => {
+    if (settingsLocation && !pendingReposUrl.current) navigateSettings(settingsLocation);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const openSettings = useCallback(() => {
+    if (!settingsLocation) navigateSettings({ scope: "user", page: "general" });
+  }, [settingsLocation, navigateSettings]);
+  const closeSettings = useCallback(() => navigateSettings(null), [navigateSettings]);
 
   // Apply the saved theme and appearance at startup; the settings page applies later changes.
   useEffect(() => {
@@ -88,7 +121,10 @@ export default function App() {
       if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
       if (outcome.kind === "needsGitHubRepo") return setGithubRepo({ path: outcome.path, name: outcome.name, needsGitInit: outcome.needsGitInit });
       const registered = await addRepository(outcome.path);
-      if (findExistingRepo(state.repos, { path: registered.root, remote: outcome.remote })) return show("error", REPO_EXISTS);
+      const existing = findExistingRepo(state.repos, { path: registered.root, remote: outcome.remote });
+      // Adding a hidden repository again unhides it (the backend's record_repository does the same).
+      if (existing?.hidden) return dispatch({ type: "setRepoHidden", repoId: existing.id, hidden: false });
+      if (existing) return show("error", REPO_EXISTS);
       dispatch({ type: "addRepo", id: registered.id, repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
     } catch (err) {
       show("error", failedToAddMessage(err));
@@ -138,7 +174,7 @@ export default function App() {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
-  if (settingsPage) return <SettingsView page={settingsPage} onNavigate={setSettingsPage} onClose={closeSettings} />;
+  if (settingsLocation) return <SettingsView location={settingsLocation} repos={state.repos} onNavigate={navigateSettings} onClose={closeSettings} />;
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
@@ -146,6 +182,8 @@ export default function App() {
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
+        ) : sel.kind === "home" ? (
+          <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
         ) : (
           <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}

@@ -25,9 +25,16 @@
 //! * `commands`: the `#[tauri::command]` wrappers registered in `lib.rs`.
 //! * [`prompt`]: the create-PR message sent to the agent, and the
 //!   archive-on-merge rule.
+//! * [`runs`]: a failing check's GitHub Actions job log, and re-running a
+//!   PR's failed jobs (Checks tab).
+//! * [`review_comments`]: the PR's GitHub review threads and comments as
+//!   `diff_comments` rows, and resolving a thread on GitHub.
 
 pub mod api;
 pub mod checks;
+/// Checks tab commands (job log, re-run failed); not in the harness.
+#[cfg(not(pr_harness))]
+pub mod checks_commands;
 /// Tauri command wrappers; left out of the standalone harness
 /// (`--cfg pr_harness`), which has no `tauri` crate.
 #[cfg(not(pr_harness))]
@@ -41,6 +48,8 @@ pub mod list;
 pub mod merge_eligibility;
 pub mod model;
 pub mod prompt;
+pub mod review_comments;
+pub mod runs;
 
 #[cfg(test)]
 mod api_tests;
@@ -62,5 +71,9 @@ mod list_tests;
 mod merge_eligibility_tests;
 #[cfg(test)]
 mod prompt_tests;
+#[cfg(test)]
+mod review_comments_tests;
+#[cfg(test)]
+mod runs_tests;
 #[cfg(test)]
 mod tests;

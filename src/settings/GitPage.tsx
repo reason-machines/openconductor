@@ -14,7 +14,9 @@ interface Props {
  * requests in, Delete branch on archive, Archive on merge, Automerge, ...);
  * only rows whose setting something here reads are shown
  * (evidence/settings/NOTES.md, "Settings pages"). `delete_branch_on_archive`
- * and `archive_on_merge` are stored but get rows once archiving is a command.
+ * is stored but gets a row once archiving deletes branches. Conductor keeps
+ * Automerge and "Treat optional checks as blocking" outside settings.toml's
+ * sections; here they are top-level keys (default off).
  */
 export function GitPage({ settings, save }: Props) {
   const git = settings.git;
@@ -22,18 +24,18 @@ export function GitPage({ settings, save }: Props) {
   // The backend refuses `custom` without a prefix, so choosing Custom stays
   // local (input shown, nothing saved) until a valid prefix is entered.
   const [type, setLocalType] = useState<BranchPrefixType>(git.branch_prefix_type);
-  const [custom, setCustom] = useState(git.branch_prefix_custom ?? "");
+  const [custom, setCustom] = useState(git.branch_prefix ?? "");
   const customError = type === "custom" ? branchPrefixError(normalizeCustomPrefix(custom)) : null;
 
   useEffect(() => {
     loadBranchPrefix().then((info) => setGithubUser(info.githubUsername), () => setGithubUser(null));
   }, []);
   useEffect(() => setLocalType(git.branch_prefix_type), [git.branch_prefix_type]);
-  useEffect(() => setCustom(git.branch_prefix_custom ?? ""), [git.branch_prefix_custom]);
+  useEffect(() => setCustom(git.branch_prefix ?? ""), [git.branch_prefix]);
 
   const withCustom = (value: string): Settings => ({
     ...settings,
-    git: { ...git, branch_prefix_type: "custom", branch_prefix_custom: blankToNull(value) },
+    git: { ...git, branch_prefix_type: "custom", branch_prefix: blankToNull(value) },
   });
 
   const choose = (next: BranchPrefixType) => {
@@ -45,7 +47,7 @@ export function GitPage({ settings, save }: Props) {
   const commitCustom = () => {
     const value = normalizeCustomPrefix(custom);
     if (branchPrefixError(value) !== null) return;
-    if (git.branch_prefix_type === "custom" && value === (git.branch_prefix_custom ?? "")) return;
+    if (git.branch_prefix_type === "custom" && value === (git.branch_prefix ?? "")) return;
     save(withCustom(value));
   };
 
@@ -94,6 +96,39 @@ export function GitPage({ settings, save }: Props) {
           aria-label="Set upstream on plain git push"
           checked={git.worktree_push_auto_setup_remote}
           onChange={(e) => save(withField(settings, "git", "worktree_push_auto_setup_remote", e.target.checked))}
+        />
+      </Row>
+      <Row label="Archive on merge" help="Archive a workspace automatically once its pull request is merged.">
+        <input
+          type="checkbox"
+          role="switch"
+          aria-label="Archive on merge"
+          checked={git.archive_on_merge}
+          onChange={(e) => save(withField(settings, "git", "archive_on_merge", e.target.checked))}
+        />
+      </Row>
+      <Row
+        label="Automerge"
+        help="Offer an automerge button while a pull request's checks are still running. The GitHub repository must allow automerge."
+      >
+        <input
+          type="checkbox"
+          role="switch"
+          aria-label="Automerge"
+          checked={settings.automerge_enabled === true}
+          onChange={(e) => save({ ...settings, automerge_enabled: e.target.checked })}
+        />
+      </Row>
+      <Row
+        label="Treat optional checks as blocking"
+        help="Hide the merge button when any check failed, even checks GitHub does not require."
+      >
+        <input
+          type="checkbox"
+          role="switch"
+          aria-label="Treat optional checks as blocking"
+          checked={settings.treat_optional_checks_as_blocking === true}
+          onChange={(e) => save({ ...settings, treat_optional_checks_as_blocking: e.target.checked })}
         />
       </Row>
     </div>

@@ -5,6 +5,8 @@ import type { Settings } from "./types";
 import { setTerminalFont, terminalFontFrom } from "../features/terminal/font.ts";
 import { scrollbackRows, setScrollbackRows } from "../features/terminal/scrollback.ts";
 import { customCommandsFrom, presetFrom, setBigTerminal } from "../features/terminal/bigTerminal.ts";
+import { applyDiffAppearance } from "../features/diff/appearance.ts";
+import { executablePaths } from "./agentSettings.ts";
 
 /** Conductor's zoom steps: 50% to 300% in 10% steps, 100% by default. */
 export const ZOOM_PERCENTS: readonly number[] = Array.from({ length: (300 - 50) / 10 + 1 }, (_, i) => 50 + i * 10);
@@ -60,6 +62,8 @@ export function applyAppearance(s: Settings): void {
   root.style.zoom = a.zoom_level_v2 === DEFAULT_ZOOM ? "" : String(a.zoom_level_v2);
   if (a.low_contrast_dark_mode) root.dataset.lowContrast = "";
   else delete root.dataset.lowContrast;
+  if (a.colored_sidebar_diffs === true) root.dataset.coloredSidebarDiffs = "";
+  else delete root.dataset.coloredSidebarDiffs;
   if (a.mono_font) {
     root.dataset.monoFont = "";
     root.style.setProperty("--font-mono", monoFontStack(a.mono_font));
@@ -67,12 +71,15 @@ export function applyAppearance(s: Settings): void {
     delete root.dataset.monoFont;
     root.style.removeProperty("--font-mono");
   }
+  applyDiffAppearance({ ...a, mono_font_stack: monoFontStack(a.mono_font) }, root);
   setTerminalFont(terminalFontFrom(a));
   setScrollbackRows(scrollbackRows(s.advanced?.terminal_scrollback_limit_bytes));
   setBigTerminal({
     enabled: s.experimental?.experimental_big_terminal_mode === true,
     preset: presetFrom(s.terminal?.big_terminal_preset),
     customCommands: customCommandsFrom(s.terminal?.big_terminal_custom_commands),
+    requiresToolApprovals: s.tool_approvals_enabled === true,
+    executablePaths: executablePaths(s),
   });
 }
 

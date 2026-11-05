@@ -29,7 +29,7 @@ import { AddRepositoryMenu } from "./AddRepositoryMenu";
 interface Props {
   repos: Repo[];
   initialRepoId: string | null;
-  /** `branch_prefix_type` / `branch_prefix_custom` settings. */
+  /** `branch_prefix_type` / `branch_prefix` settings. */
   prefixSettings: BranchPrefixSettings;
   githubUsername: string | null;
   onClose: () => void;
@@ -150,6 +150,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
         placeholderBranchName: naming.placeholder_branch_name === null ? null : branchName,
         userSetWorkspaceName: naming.user_set_workspace_name,
         userSetBranchName: naming.user_set_branch_name,
+        number: created.number ?? null,
       };
       // The first message opens the workspace's first chat session (agent runtime pending).
       if (firstSession) seedTranscript(id, firstSession.message);

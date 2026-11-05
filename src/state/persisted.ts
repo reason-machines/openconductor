@@ -2,6 +2,7 @@
 // In the desktop app these rows are the source of truth for the sidebar and Home;
 // localStorage keeps only UI preferences (selection, sidebar visibility, collapsed repos).
 import type { AppState, Repo, Selection, Workspace } from "./types";
+import { isWorkspaceStatus } from "./workspaceStatus.ts";
 
 export interface DbRepoRow {
   id: string;
@@ -20,6 +21,8 @@ export interface DbWorkspaceRow {
   repositoryId: string;
   directoryName: string;
   workspaceName: string | null;
+  /** `workspaces.user_set_workspace_name`: the sidebar shows workspaceName as is. */
+  userSetWorkspaceName?: boolean;
   branch: string;
   placeholderBranchName: string | null;
   /** Schema value: initializing, setting_up, ready, archiving, archived, failed, ... */
@@ -29,6 +32,8 @@ export interface DbWorkspaceRow {
   workspacePath: string | null;
   pinnedAt: string | null;
   unread: boolean;
+  /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
+  number: number | null;
   createdAt: string;
 }
 
@@ -50,8 +55,8 @@ function sqliteTime(s: string): number {
 
 export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], collapsed: Iterable<string>): Repo[] {
   const folded = new Set(collapsed);
+  // Hidden repos stay in the list; the sidebar shows them behind its "show hidden" toggle.
   return repos
-    .filter((r) => !r.hidden)
     .map((r) => ({
       id: r.id,
       name: r.name,
@@ -59,6 +64,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
       remote: r.remoteUrl ?? undefined,
       defaultBranch: r.defaultBranch,
       collapsed: folded.has(r.id) || undefined,
+      hidden: r.hidden || undefined,
       workspaces: workspaces
         .filter((w) => w.repositoryId === r.id && !HIDDEN_STATES.has(w.state))
         .map(
@@ -71,6 +77,14 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             createdAt: sqliteTime(w.createdAt),
             path: w.workspacePath ?? undefined,
             placeholderBranchName: w.placeholderBranchName,
+            /* sidebar: pin, unread and status columns */
+            pinnedAt: w.pinnedAt ? sqliteTime(w.pinnedAt) : undefined,
+            unread: w.unread || undefined,
+            manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
+            derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
+            number: w.number ?? null,
+            state: w.state,
+            userSetWorkspaceName: w.userSetWorkspaceName || undefined,
           }),
         ),
     }));
@@ -80,7 +94,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
 export function validSelection(selection: Selection, repos: Repo[]): Selection {
   if (selection.kind !== "workspace") return selection;
   const repo = repos.find((r) => r.id === selection.repoId);
-  return repo?.workspaces.some((w) => w.id === selection.workspaceId) ? selection : { kind: "home" };
+  return repo?.workspaces.some((w) => w.id === selection.workspaceId) ? selection : { kind: "root" };
 }
 
 export function prefsOf(state: AppState): UiPrefs {
@@ -92,12 +106,12 @@ export function prefsOf(state: AppState): UiPrefs {
 }
 
 export function parsePrefs(raw: string | null): UiPrefs {
-  const fallback: UiPrefs = { selection: { kind: "home" }, collapsed: [] };
+  const fallback: UiPrefs = { selection: { kind: "root" }, collapsed: [] };
   if (!raw) return fallback;
   try {
     const p = JSON.parse(raw) as Partial<UiPrefs>;
     return {
-      selection: p.selection?.kind === "workspace" || p.selection?.kind === "home" ? p.selection : fallback.selection,
+      selection: p.selection?.kind === "workspace" || p.selection?.kind === "home" || p.selection?.kind === "root" ? p.selection : fallback.selection,
       sidebarVisible: typeof p.sidebarVisible === "boolean" ? p.sidebarVisible : undefined,
       collapsed: Array.isArray(p.collapsed) ? p.collapsed.filter((id): id is string => typeof id === "string") : [],
     };

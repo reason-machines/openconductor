@@ -10,13 +10,39 @@
 //! CLI's public interface; see `evidence/providers/README.md`.
 
 use std::fmt;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
+use std::sync::OnceLock;
 
 use serde::{Deserialize, Serialize};
 
 use super::env::LaunchEnv;
+
+/// The agent skill the bundle ships, a Claude Code plugin directory:
+/// `Contents/Resources/conductor-skill/`, the same place Conductor 0.87.6
+/// ships its own (`evidence/scripts/MANIFEST.md`). Source:
+/// `src-tauri/resources/conductor-skill/`.
+pub const BUNDLED_PLUGIN: &str = "conductor-skill";
+
+static BUNDLED_PLUGIN_DIR: OnceLock<PathBuf> = OnceLock::new();
+
+/// `<resource_dir>/conductor-skill` when it holds a plugin manifest; `None`
+/// for a dev build without bundle resources.
+pub fn bundled_plugin_dir(resource_dir: &Path) -> Option<PathBuf> {
+    let dir = resource_dir.join(BUNDLED_PLUGIN);
+    dir.join(".claude-plugin/plugin.json")
+        .is_file()
+        .then_some(dir)
+}
+
+/// Remember the bundled plugin at startup, so every [`ClaudeLaunch::new`]
+/// loads it with `--plugin-dir`.
+pub fn set_bundled_plugin_dir(resource_dir: &Path) {
+    if let Some(dir) = bundled_plugin_dir(resource_dir) {
+        let _ = BUNDLED_PLUGIN_DIR.set(dir);
+    }
+}
 
 /// Claude Code permission modes. The six values the reference app offers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
@@ -117,6 +143,13 @@ pub struct ClaudeLaunch {
     pub add_dirs: Vec<PathBuf>,
     /// Text appended to Claude Code's system prompt.
     pub append_system_prompt: Option<String>,
+    /// Plugins loaded for this session only (`--plugin-dir`); starts with
+    /// the bundled OpenConductor skill when the app has one.
+    pub plugin_dirs: Vec<PathBuf>,
+    /// `--effort` (`low`, `medium`, `high`, `xhigh`, `max`); the CLI default when unset.
+    pub effort: Option<String>,
+    /// Settings JSON passed with `--settings` (for example `outputStyle`, `fastMode`).
+    pub settings: Option<serde_json::Value>,
 }
 
 impl ClaudeLaunch {
@@ -131,6 +164,9 @@ impl ClaudeLaunch {
             prompt_over_stdio: true,
             add_dirs: Vec::new(),
             append_system_prompt: None,
+            plugin_dirs: BUNDLED_PLUGIN_DIR.get().cloned().into_iter().collect(),
+            effort: None,
+            settings: None,
         }
     }
 
@@ -161,6 +197,15 @@ impl ClaudeLaunch {
         }
         if let Some(text) = &self.append_system_prompt {
             args.extend(["--append-system-prompt".into(), text.clone()]);
+        }
+        for dir in &self.plugin_dirs {
+            args.extend(["--plugin-dir".into(), dir.display().to_string()]);
+        }
+        if let Some(effort) = &self.effort {
+            args.extend(["--effort".into(), effort.clone()]);
+        }
+        if let Some(settings) = &self.settings {
+            args.extend(["--settings".into(), settings.to_string()]);
         }
         args
     }
@@ -264,6 +309,49 @@ mod tests {
             .collect();
         assert_eq!(dirs, ["/a", "/b"]);
         assert!(!args.contains(&"--permission-prompt-tool".to_owned()));
+    }
+
+    #[test]
+    fn plugin_dirs_become_plugin_dir_flags() {
+        let mut launch = ClaudeLaunch::new("/w", LaunchEnv::new());
+        launch.plugin_dirs = vec!["/r/conductor-skill".into()];
+        let args = launch.args();
+        assert_eq!(
+            flag_value(&args, "--plugin-dir"),
+            Some("/r/conductor-skill")
+        );
+    }
+
+    #[test]
+    fn bundled_plugin_needs_a_manifest() {
+        let res = std::env::temp_dir().join(format!("oc-plugin-res-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&res);
+        std::fs::create_dir_all(res.join("conductor-skill")).unwrap();
+        assert_eq!(bundled_plugin_dir(&res), None, "no manifest: dev build");
+        std::fs::create_dir_all(res.join("conductor-skill/.claude-plugin")).unwrap();
+        std::fs::write(res.join("conductor-skill/.claude-plugin/plugin.json"), "{}").unwrap();
+        assert_eq!(bundled_plugin_dir(&res), Some(res.join("conductor-skill")));
+        let _ = std::fs::remove_dir_all(&res);
+    }
+
+    #[test]
+    fn shipped_plugin_is_a_claude_code_plugin_with_one_skill() {
+        let manifest: serde_json::Value = serde_json::from_str(include_str!(
+            "../../resources/conductor-skill/.claude-plugin/plugin.json"
+        ))
+        .unwrap();
+        assert_eq!(manifest["name"], "openconductor");
+        let skill = include_str!("../../resources/conductor-skill/skills/conductor/SKILL.md");
+        let front = skill
+            .strip_prefix("---\n")
+            .and_then(|rest| rest.split_once("\n---\n"))
+            .map(|(front, _)| front)
+            .expect("SKILL.md starts with YAML frontmatter");
+        assert!(front.lines().any(|l| l == "name: conductor"), "{front}");
+        assert!(
+            front.lines().any(|l| l.starts_with("description: ")),
+            "{front}"
+        );
     }
 
     #[test]

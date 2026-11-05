@@ -20,7 +20,12 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."
 const dist = path.join(repoRoot, "dist");
 const outDir = path.join(repoRoot, "evidence/parity/chat-diff-pr/screens");
 const refDir = path.join(repoRoot, "evidence/screens");
-const REA = process.env.REA ?? path.join(process.env.HOME, ".npm-global/bin/rea");
+const REA =
+  process.env.REA ??
+  [".npm-global/bin/rea", ".rea/node_modules/.bin/rea"]
+    .map((p) => path.join(process.env.HOME, p))
+    .find((p) => fs.existsSync(p)) ??
+  "rea";
 const CHROMIUM = process.env.CHROMIUM ?? "/usr/bin/chromium";
 const PORT = Number(process.env.PORT ?? 4329);
 const TMP = process.env.TMPDIR ?? "/tmp";
@@ -65,7 +70,7 @@ const SHOTS = [
     name: "ours-diff--file-split--dark",
     theme: "dark",
     ref: "diff--file-split--dark.png",
-    actions: [...openFile, { step_id: "split", action: "click", locator: { kind: "css", selector: "button[aria-label='Split diff']" }, timeout_ms: 5000 }],
+    actions: [...openFile, { step_id: "split", action: "click", locator: { kind: "css", selector: "button[aria-label='Split view']" }, timeout_ms: 5000 }],
   },
 ];
 

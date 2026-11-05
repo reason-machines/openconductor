@@ -96,16 +96,25 @@ pub async fn begin_workspace(
     w: &KnownWorkspace,
     parent_branch: Option<&str>,
 ) -> Result<()> {
-    insert_workspace(pool, w, WorkspaceState::Initializing, parent_branch, None).await
+    insert_workspace(pool, w, WorkspaceState::Initializing, parent_branch, None).await?;
+    // Numbered on creation, as Conductor does once its server answers.
+    workspaces::set_number(pool, &w.id, workspaces::next_number(pool).await?).await
 }
 
 /// The worktree exists: replace any row with this id by a `ready` one.
+/// Returns the workspace's number: the one `begin_workspace` gave it, or a new
+/// one when the replaced row was a leftover (an archived workspace) or absent.
 pub async fn finish_workspace(
     pool: &SqlitePool,
     w: &KnownWorkspace,
     parent_branch: Option<&str>,
     placeholder_branch_name: Option<&str>,
-) -> Result<()> {
+) -> Result<i64> {
+    let kept = workspaces::get(pool, &w.id)
+        .await?
+        .map(|r| r.workspace)
+        .filter(|r| r.state == WorkspaceState::Initializing)
+        .and_then(|r| r.number);
     workspaces::delete(pool, &w.id).await?;
     insert_workspace(
         pool,
@@ -114,7 +123,13 @@ pub async fn finish_workspace(
         parent_branch,
         placeholder_branch_name,
     )
-    .await
+    .await?;
+    let number = match kept {
+        Some(n) => n,
+        None => workspaces::next_number(pool).await?,
+    };
+    workspaces::set_number(pool, &w.id, number).await?;
+    Ok(number)
 }
 
 /// Creating the worktree failed: drop its `initializing` row.
@@ -187,6 +202,8 @@ pub struct WorkspaceRow {
     pub repository_id: String,
     pub directory_name: String,
     pub workspace_name: Option<String>,
+    /// `workspaces.user_set_workspace_name`: show `workspace_name` as is.
+    pub user_set_workspace_name: bool,
     pub branch: String,
     pub placeholder_branch_name: Option<String>,
     pub state: &'static str,
@@ -195,6 +212,8 @@ pub struct WorkspaceRow {
     pub workspace_path: Option<String>,
     pub pinned_at: Option<String>,
     pub unread: bool,
+    /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
+    pub number: Option<i64>,
     pub created_at: String,
 }
 
@@ -226,6 +245,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
             WorkspaceRow {
                 directory_name: w.directory_name.unwrap_or_default(),
                 workspace_name: w.workspace_name,
+                user_set_workspace_name: w.user_set_workspace_name,
                 branch: w.branch.unwrap_or_default(),
                 placeholder_branch_name: w.placeholder_branch_name,
                 state: state_name(w.state),
@@ -234,6 +254,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 workspace_path: w.workspace_path,
                 pinned_at: w.pinned_at,
                 unread: w.unread,
+                number: w.number,
                 created_at: w.created_at,
                 repository_id: w.repository_id,
                 id: w.local_id,

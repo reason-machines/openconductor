@@ -1,3 +1,6 @@
+import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
+import type { RowPr } from "./rowStatus.ts";
+
 export type WorkspaceStatus = "idle" | "working" | "needs-review" | "archived";
 
 export interface Workspace {
@@ -23,6 +26,18 @@ export interface Workspace {
   prTitle?: string | null;
   /** Unread agent output; the sidebar row's name turns semibold. */
   unread?: boolean;
+  /* sidebar: pin and status (Conductor's pinned_at, manual_status, derived_status) */
+  /** When the workspace was pinned (ms); pinned rows sit in the sidebar's Pinned group. */
+  pinnedAt?: number;
+  /** Status the user set from the row menu; wins over the derived one. */
+  manualStatus?: WorkspaceStatusValue;
+  derivedStatus?: WorkspaceStatusValue;
+  /** `workspaces.number`, given on creation and shown as `W-<n>`; null for workspaces from before numbering. */
+  number?: number | null;
+  /** `workspaces.state` (initializing, setting_up, ready, failed, ...): the row shows setup and failure. */
+  state?: string;
+  /** The workspace's pull request as last read from GitHub; drives the row's status icon. */
+  pr?: RowPr | null;
 }
 
 export interface Repo {
@@ -35,9 +50,16 @@ export interface Repo {
   defaultBranch: string;
   workspaces: Workspace[];
   collapsed?: boolean;
+  /** `repos.hidden`: left out of the sidebar unless "show hidden" is on. */
+  hidden?: boolean;
 }
 
-export type Selection = { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
+/**
+ * `root` is Conductor's `/` route: the wordmark and the three entry cards, shown at
+ * start and when the open workspace goes away. `home` is its `/all-workspaces`
+ * route, the workspace list that the sidebar Home row and nav.home open.
+ */
+export type Selection = { kind: "root" } | { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
 
 export interface AppState {
   repos: Repo[];
