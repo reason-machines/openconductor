@@ -258,3 +258,68 @@ fn a_stop_before_an_announced_prompt_is_sent_cancels_it_unsent() {
     );
     assert_eq!(reply(&log), "turn 1: next");
 }
+
+fn permission_request(log: &Log) -> super::provider::PermissionRequest {
+    wait_for(log, |e| matches!(e, ProviderEvent::PermissionRequested(_)));
+    let log = log.lock().unwrap();
+    let found = log.iter().find_map(|(_, ev)| match ev {
+        ProviderEvent::PermissionRequested(r) => Some(r.clone()),
+        _ => None,
+    });
+    found.unwrap()
+}
+
+fn resolved(log: &Log) -> Vec<String> {
+    let log = log.lock().unwrap();
+    let ids = log.iter().filter_map(|(_, ev)| match ev {
+        ProviderEvent::PermissionResolved { request_id } => Some(request_id.clone()),
+        _ => None,
+    });
+    ids.collect()
+}
+
+#[test]
+fn a_permission_request_waits_for_the_apps_answer() {
+    let (p, log, home) = provider("permission");
+    p.open_chat("chat", &home.join("project"), None);
+    let turn = {
+        let p = p.clone();
+        std::thread::spawn(move || p.prompt("chat", "permission"))
+    };
+    let r = permission_request(&log);
+    assert_eq!(r.title, "bash: rm -rf build");
+    let ids: Vec<_> = r
+        .options
+        .iter()
+        .map(|o| (o.option_id.as_str(), o.kind.as_str()))
+        .collect();
+    assert_eq!(ids, [("allow", "allow_once"), ("reject", "reject_once")]);
+    assert!(
+        !p.answer_permission("other-chat", &r.request_id, Some("allow")),
+        "another chat cannot answer it"
+    );
+    assert!(p.answer_permission("chat", &r.request_id, Some("allow")));
+    assert!(
+        !p.answer_permission("chat", &r.request_id, Some("allow")),
+        "answered once"
+    );
+    assert_eq!(turn.join().unwrap(), TurnEnd::Completed);
+    assert_eq!(reply(&log), "permission: allow");
+    assert_eq!(resolved(&log), [r.request_id]);
+}
+
+#[test]
+fn stop_answers_an_open_permission_request_cancelled() {
+    let (p, log, home) = provider("permission-stop");
+    p.open_chat("chat", &home.join("project"), None);
+    let turn = {
+        let p = p.clone();
+        std::thread::spawn(move || p.prompt("chat", "permission"))
+    };
+    let r = permission_request(&log);
+    p.cancel("chat");
+    assert_eq!(turn.join().unwrap(), TurnEnd::Cancelled);
+    assert_eq!(reply(&log), "permission: cancelled");
+    assert_eq!(resolved(&log), [r.request_id.clone()]);
+    assert!(!p.answer_permission("chat", &r.request_id, Some("allow")));
+}

@@ -40,6 +40,8 @@ export interface DbWorkspaceRow {
   /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
   number: number | null;
   createdAt: string;
+  /** `workspaces.updated_at`; absent from rows of an older backend. */
+  updatedAt?: string;
 }
 
 /** What the desktop app keeps in localStorage. */
@@ -83,6 +85,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             status: "idle",
             diff: { added: 0, removed: 0 },
             createdAt: sqliteTime(w.createdAt),
+            updatedAt: w.updatedAt ? sqliteTime(w.updatedAt) : undefined,
             path: w.workspacePath ?? undefined,
             placeholderBranchName: w.placeholderBranchName,
             targetBranch: w.intendedTargetBranch ?? null,

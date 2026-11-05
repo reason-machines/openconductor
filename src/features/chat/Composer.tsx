@@ -11,8 +11,8 @@ import { PaperclipIcon, SendIcon } from "../../components/Icons";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
-import { canSteerNow, headStatusLabel, resolveSendMode, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
-import type { QueueAction } from "./reasonChat.ts";
+import { canSteerNow, headStatusLabel, resolveSendMode, turnRunning, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
+import type { QueueAction } from "./queue.ts";
 import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
 import "./queue.css";
 
@@ -29,11 +29,13 @@ export interface ComposerProps {
   onQueue: (action: QueueAction) => void;
   /** Files going out with the next message, shown above the message box. */
   attachments?: ReactNode;
+  /** Pickers shown before the key hint (the chat's agent and its access). */
+  controls?: ReactNode;
   /** Takes files the user attaches; without it the composer has no attach button. */
   onAttachFiles?: (files: File[]) => void;
 }
 
-export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSteer, followUpMode = "steering", onSubmit, onStop, onQueue, attachments, onAttachFiles }: ComposerProps) {
+export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSteer, followUpMode = "steering", onSubmit, onStop, onQueue, attachments, controls, onAttachFiles }: ComposerProps) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const { overrides } = useKeybindingOverrides();
@@ -42,7 +44,7 @@ export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSte
     const s = keys(id)[0];
     return s ? glyphs(s) : "";
   };
-  const working = queue.status === "working" || queue.status === "cancelling";
+  const working = turnRunning(queue.status);
   const hasText = draft.trim() !== "";
   const mode = (opposite: boolean) => resolveSendMode({ canSteer: canSteerNow(queue, canSteer), defaultMode: followUpMode, opposite });
   const sendMode = working ? mode(false) : "queue";
@@ -122,10 +124,13 @@ export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSte
         {attachments}
         <textarea ref={inputRef} value={draft} placeholder={placeholder} onChange={(e) => setDraft(e.target.value)} onKeyDown={onKeyDown} onPaste={onPaste} rows={3} />
         <div className="composer-bar">
-          <span className="muted">
-            {hint("chat.submitMessage")} to {working ? (sendMode === "steer" ? "steer" : "queue") : "send"}
-            {working && canSteerNow(queue, canSteer) ? `, ${hint("chat.submitOppositeFollowUp")} to ${sendMode === "steer" ? "queue" : "steer"}` : ""}
-            {`, ${hint("chat.newLine")} for a new line`}
+          <span className="composer-hint">
+            {controls}
+            <span className="muted">
+              {hint("chat.submitMessage")} to {working ? (sendMode === "steer" ? "steer" : "queue") : "send"}
+              {working && canSteerNow(queue, canSteer) ? `, ${hint("chat.submitOppositeFollowUp")} to ${sendMode === "steer" ? "queue" : "steer"}` : ""}
+              {`, ${hint("chat.newLine")} for a new line`}
+            </span>
           </span>
           <span className="composer-actions">
             {onAttachFiles ? (

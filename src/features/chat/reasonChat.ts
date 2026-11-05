@@ -20,6 +20,12 @@
 // In the desktop app each chat's transcript is kept in `conductor.db`
 // (persist.ts): `stored()` loads it once when the chat is first used and
 // saves every later change.
+//
+// Each chat's session status is kept in `conductor.db` too
+// (`sessions.status`, see `syncStatuses`), so the sidebar and Home show a
+// workspace's agent from the moment the app starts. While Reason waits for
+// a permission answer (`permissionRequest`), the chat lists the request and
+// its status is `needs_user_permission` until `answerPermission`.
 
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -33,6 +39,7 @@ import { turnChanges } from "../diff/useTurnChanges.ts";
 import type { FileChange } from "../diff/types.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { withGeneralPreferences } from "../../settings/prompts.ts";
+import { workspaceOfChat } from "../../state/workspaceSessions.ts";
 
 /** One Reason Session config option (`model`, `reasoning_effort`). */
 export interface ReasonConfig {
@@ -54,9 +61,26 @@ function savedConfig(chatId: string): ReasonConfig[] | null {
   }
 }
 
+/** One choice Reason offers with a permission request. */
+export interface PermissionOption {
+  optionId: string;
+  name: string;
+  /** `allow_once`, `allow_always`, `reject_once` or `reject_always`. */
+  kind: string;
+}
+
+/** A tool call Reason waits to be allowed (ACP `session/request_permission`). */
+export interface PermissionPrompt {
+  requestId: string;
+  title: string;
+  options: PermissionOption[];
+}
+
 export interface ChatSnapshot {
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
+  /** Open permission requests, oldest first. */
+  permissions: readonly PermissionPrompt[];
 }
 
 interface Chat {
@@ -76,6 +100,7 @@ interface Chat {
   /** Unsent turns the user stopped: they end cancelled instead of being sent. */
   stopped: Set<string>;
   listeners: Set<(s: ChatSnapshot) => void>;
+  permissions: PermissionPrompt[];
 }
 
 const chats = new Map<string, Chat>();
@@ -103,6 +128,7 @@ function chat(chatId: string): Chat {
       unsent: new Set(),
       stopped: new Set(),
       listeners: new Set(),
+      permissions: [],
     };
     chats.set(chatId, c);
   }
@@ -143,7 +169,7 @@ function stored(c: Chat): ChatSaver | undefined {
   return saver;
 }
 
-const snapshot = (c: Chat): ChatSnapshot => ({ transcript: c.transcript, queue: c.queue });
+const snapshot = (c: Chat): ChatSnapshot => ({ transcript: c.transcript, queue: c.queue, permissions: c.permissions });
 const notify = (c: Chat) => {
   const s = snapshot(c);
   for (const fn of c.listeners) fn(s);
@@ -164,8 +190,42 @@ function apply(c: Chat, step: Step) {
   // A turn that ended moves the queue on: the next queued message may start.
   for (const e of step.events) {
     if (e.type !== "turn_status" || e.status === "running") continue;
+    // No turn runs any more: Reason can no longer use an answer to what was open.
+    if (openTurns(c.state) === 0 && c.permissions.length > 0) {
+      c.permissions = [];
+      notify(c);
+    }
     setQueue(c, Q.turnEnded(c.queue, e.status, openTurns(c.state) > 0));
   }
+}
+
+/** A permission request opened or closed; the chat's status follows. */
+function onPermission(c: Chat, p: ReasonPayload) {
+  if (p.type === "permissionRequest") {
+    c.permissions = [...c.permissions.filter((r) => r.requestId !== p.requestId), { requestId: p.requestId, title: p.title, options: p.options }];
+    notify(c);
+    setQueue(c, Q.permissionRequested(c.queue));
+  } else if (p.type === "permissionResolved") {
+    closePermission(c, p.requestId);
+  }
+}
+
+function closePermission(c: Chat, requestId: string) {
+  if (!c.permissions.some((r) => r.requestId === requestId)) return;
+  c.permissions = c.permissions.filter((r) => r.requestId !== requestId);
+  notify(c);
+  if (c.permissions.length === 0) setQueue(c, Q.permissionAnswered(c.queue));
+}
+
+/**
+ * Answers a permission request with one of its options, or declines it
+ * (`cancelled`) with `null`. The request closes when Reason confirms it, or
+ * at once when it was no longer open.
+ */
+export async function answerPermission(chatId: string, requestId: string, optionId: string | null): Promise<void> {
+  const c = chat(chatId);
+  const open = reasonAvailable() ? await invoke<boolean>("reason_answer_permission", { chatId, requestId, optionId }) : false;
+  if (!open) closePermission(c, requestId);
 }
 
 // Every chat's session status (Conductor's `sessions.status`), so a sidebar
@@ -176,30 +236,93 @@ let statuses: ReadonlyMap<string, Q.SessionStatus> = new Map();
 const hiddenChats = new Set<string>();
 const statusListeners = new Set<() => void>();
 
-function publishStatus(c: Chat) {
-  const id = c.state.chatId;
-  const status = hiddenChats.has(id) ? undefined : c.queue.status;
+function setStatus(id: string, status: Q.SessionStatus | undefined) {
   if (statuses.get(id) === status) return;
   const next = new Map(statuses);
-  if (status === undefined) next.delete(id);
+  if (status === undefined || status === "idle") next.delete(id);
   else next.set(id, status);
+  if (next.size === statuses.size && [...next].every(([k, v]) => statuses.get(k) === v)) return;
   statuses = next;
   for (const fn of statusListeners) fn();
 }
 
-/** Chat id → session status of every visible chat; a new map on each change. */
+function publishStatus(c: Chat) {
+  reportChatStatus(c.state.chatId, c.queue.status);
+}
+
+/**
+ * A chat's session status changed (any agent: Reason here, Codex in
+ * codexChat.ts): the sidebar and Home see it and `conductor.db` keeps it.
+ */
+export function reportChatStatus(chatId: string, status: Q.SessionStatus): void {
+  setStatus(chatId, hiddenChats.has(chatId) ? undefined : status);
+  if (!hiddenChats.has(chatId)) persistStatus(chatId, status);
+}
+
+/** Chat id → session status of every visible chat that is not idle; a new map on each change. */
 export const chatStatuses = (): ReadonlyMap<string, Q.SessionStatus> => statuses;
 
 export function subscribeChatStatuses(fn: () => void): () => void {
+  syncStatuses();
   statusListeners.add(fn);
   return () => statusListeners.delete(fn);
+}
+
+// `conductor.db` keeps every chat's status (`sessions.status`). Writes go
+// one at a time per chat so they land in order; each write comes back as a
+// `session-status` event, which is skipped while that chat has writes in
+// flight. Any other event (another window, a test driver) is applied.
+const STATUS_EVENT = "session-status";
+const SESSION_STATUSES = new Set<string>(["idle", "working", "cancelling", "error", "needs_plan_response", "needs_user_permission", "needs_user_input", "waiting"]);
+const writes = new Map<string, { chain: Promise<unknown>; inFlight: number }>();
+let syncing: Promise<unknown> | null = null;
+
+function persistStatus(chatId: string, status: Q.SessionStatus) {
+  if (!reasonAvailable()) return;
+  const w = writes.get(chatId) ?? { chain: Promise.resolve(), inFlight: 0 };
+  writes.set(chatId, w);
+  w.inFlight++;
+  w.chain = w.chain
+    .then(() => invoke("session_set_status", { chatId, workspaceId: workspaceOfChat(chatId), status }))
+    .catch((e) => {
+      w.inFlight--;
+      console.warn("chat: session status not saved", e);
+    });
+}
+
+interface StoredStatus {
+  chatId: string;
+  status: string;
+}
+
+function receivedStatus({ chatId, status }: StoredStatus) {
+  if (!SESSION_STATUSES.has(status) || hiddenChats.has(chatId)) return;
+  const w = writes.get(chatId);
+  if (w && w.inFlight > 0) {
+    w.inFlight--;
+    return;
+  }
+  setStatus(chatId, status as Q.SessionStatus);
+}
+
+/** Loads the stored statuses once and follows later writes. Desktop app only. */
+function syncStatuses() {
+  if (syncing || !reasonAvailable()) return;
+  syncing = listen<StoredStatus>(STATUS_EVENT, (e) => {
+    if (e.event === STATUS_EVENT) receivedStatus(e.payload);
+  })
+    .then(() => invoke<StoredStatus[]>("session_statuses"))
+    .then((rows) => {
+      // A chat that changed in this run already shows its own status.
+      for (const r of rows ?? []) if (!writes.has(r.chatId) && !statuses.has(r.chatId)) receivedStatus(r);
+    })
+    .catch((e) => console.warn("chat: stored session statuses not loaded", e));
 }
 
 /** A closed chat tab: its agent no longer counts toward the workspace's status. */
 export function hideChat(chatId: string): void {
   hiddenChats.add(chatId);
-  const c = chats.get(chatId);
-  if (c) publishStatus(c);
+  setStatus(chatId, undefined);
 }
 
 function setQueue(c: Chat, step: Q.QueueStep | Q.ChatQueue) {
@@ -230,7 +353,9 @@ function run(c: Chat, effect: Q.Effect) {
 function ensureListening(): Promise<unknown> {
   listening ??= listen<ReasonPayload>(EVENT, ({ payload }) => {
     const c = chats.get(payload.chatId);
-    if (c) apply(c, applyReasonPayload(c.state, payload));
+    if (!c) return;
+    if (payload.type === "permissionRequest" || payload.type === "permissionResolved") onPermission(c, payload);
+    else apply(c, applyReasonPayload(c.state, payload));
   });
   return listening;
 }
@@ -387,40 +512,11 @@ export function stopChat(chatId: string): void {
   setQueue(c, Q.stop(c.queue));
 }
 
-export type QueueAction =
-  | { kind: "delete"; id: string }
-  | { kind: "steer"; id: string }
-  | { kind: "edit"; id: string }
-  | { kind: "cancelEdit" }
-  | { kind: "saveEdit"; text: string; steer: boolean }
-  | { kind: "move"; id: string; by: -1 | 1 }
-  | { kind: "reorder"; ids: string[] }
-  | { kind: "pause" }
-  | { kind: "resume" };
+export type QueueAction = Q.QueueAction;
 
 export function queueAction(chatId: string, action: QueueAction): void {
   const c = chat(chatId);
-  const q = c.queue;
-  switch (action.kind) {
-    case "delete":
-      return setQueue(c, Q.remove(q, action.id));
-    case "steer":
-      return setQueue(c, Q.steerQueued(q, action.id));
-    case "edit":
-      return setQueue(c, Q.beginEdit(q, action.id));
-    case "cancelEdit":
-      return setQueue(c, Q.cancelEdit(q));
-    case "saveEdit":
-      return setQueue(c, Q.saveEdit(q, action.text, action.steer));
-    case "move":
-      return setQueue(c, Q.move(q, action.id, action.by));
-    case "reorder":
-      return setQueue(c, Q.reorder(q, action.ids));
-    case "pause":
-      return setQueue(c, Q.pause(q));
-    case "resume":
-      return setQueue(c, Q.resume(q));
-  }
+  setQueue(c, Q.actionStep(c.queue, action));
 }
 
 // Stand-in agent for the browser preview: each prompt "works" for a moment,

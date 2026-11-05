@@ -22,6 +22,8 @@ type Handler = (args: Record<string, unknown>) => unknown;
 const calls: { cmd: string; args: Record<string, unknown> }[] = [];
 const handlers = new Map<string, Handler>();
 const callbacks = new Map<number, (e: { event: string; payload: unknown }) => void>();
+/** Listener callback id → the event it listens to, as Tauri routes events by name. */
+const eventOf = new Map<number, string>();
 let nextCallback = 1;
 
 const store = new Map<string, string>();
@@ -41,7 +43,10 @@ g.__TAURI_INTERNALS__ = {
   },
   invoke: async (cmd: string, args: Record<string, unknown> = {}) => {
     calls.push({ cmd, args });
-    if (cmd === "plugin:event|listen") return 1;
+    if (cmd === "plugin:event|listen") {
+      eventOf.set(args.handler as number, args.event as string);
+      return 1;
+    }
     const h = handlers.get(cmd);
     return h ? h(args) : null;
   },
@@ -49,8 +54,12 @@ g.__TAURI_INTERNALS__ = {
 
 const rc = await import("./reasonChat.ts");
 
+function emitTo(event: string, payload: Record<string, unknown>) {
+  for (const [id, fn] of callbacks) if (eventOf.get(id) === event) fn({ event, payload });
+}
+
 function emit(payload: Record<string, unknown>) {
-  for (const fn of callbacks.values()) fn({ event: "reason-chat-event", payload });
+  emitTo("reason-chat-event", payload);
 }
 
 const tick = () => new Promise((r) => setTimeout(r, 0));
@@ -209,4 +218,128 @@ test("Reset chat rewinds the agent: the next prompt opens a new Session that car
   assert.match(carried.text, /first answer/);
   assert.doesNotMatch(carried.text, /second/);
   ends.shift()!();
+});
+
+function emitStatus(payload: Record<string, unknown>) {
+  emitTo("session-status", payload);
+}
+
+/** session_set_status echoes each write back as a session-status event, as the backend does. */
+function statusWritesEcho() {
+  handlers.set("session_set_status", (a) => {
+    setTimeout(() => emitStatus({ chatId: a.chatId, workspaceId: a.workspaceId, status: a.status }), 0);
+    return null;
+  });
+}
+
+test("stored statuses show at start, outside writes are applied and the chat's own writes do not echo", async () => {
+  handlers.set("session_statuses", () => [
+    { chatId: "ws-stored", workspaceId: "ws-stored", status: "needs_user_input" },
+    { chatId: "ws-stored:review:1", workspaceId: "ws-stored", status: "waiting" },
+  ]);
+  statusWritesEcho();
+  const unsubscribe = rc.subscribeChatStatuses(() => {});
+  await until(() => rc.chatStatuses().get("ws-stored") === "needs_user_input", "the stored status");
+  assert.equal(rc.chatStatuses().get("ws-stored:review:1"), "waiting");
+
+  // Another writer (a test driver, another window) changes a chat.
+  emitStatus({ chatId: "ws-stored", workspaceId: "ws-stored", status: "needs_plan_response" });
+  assert.equal(rc.chatStatuses().get("ws-stored"), "needs_plan_response");
+  emitStatus({ chatId: "ws-stored", workspaceId: "ws-stored", status: "idle" });
+  assert.equal(rc.chatStatuses().has("ws-stored"), false, "idle chats drop out");
+
+  // A closed chat no longer counts.
+  rc.hideChat("ws-stored:review:1");
+  assert.equal(rc.chatStatuses().has("ws-stored:review:1"), false);
+  emitStatus({ chatId: "ws-stored:review:1", workspaceId: "ws-stored", status: "working" });
+  assert.equal(rc.chatStatuses().has("ws-stored:review:1"), false);
+  unsubscribe();
+});
+
+test("a permission request makes the chat needs_user_permission until it is answered, and each status is stored", async () => {
+  const chatId = "ws-perm:review:2";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  statusWritesEcho();
+  const ends = promptsEndOnDemand();
+  handlers.set("reason_answer_permission", (a) => {
+    setTimeout(() => emit({ chatId: a.chatId, type: "permissionResolved", requestId: a.requestId }), 0);
+    return true;
+  });
+  rc.submitChat(chatId, "/w", "permission", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
+
+  emit({ chatId, type: "permissionRequest", requestId: "permission-1", title: "bash: rm -rf build", options: [{ optionId: "allow", name: "Allow", kind: "allow_once" }] });
+  let snap = rc.chatSnapshot(chatId);
+  assert.equal(snap.queue.status, "needs_user_permission");
+  assert.deepEqual(snap.permissions.map((p) => p.title), ["bash: rm -rf build"]);
+  assert.equal(rc.chatStatuses().get(chatId), "needs_user_permission");
+  await until(() => callsOf("session_set_status", chatId).some((c) => c.args.status === "needs_user_permission"), "the stored status");
+  assert.equal(callsOf("session_set_status", chatId)[0].args.workspaceId, "ws-perm", "a review chat is stored under its workspace");
+
+  await rc.answerPermission(chatId, "permission-1", "allow");
+  assert.deepEqual(callsOf("reason_answer_permission", chatId)[0].args, { chatId, requestId: "permission-1", optionId: "allow" });
+  await until(() => rc.chatSnapshot(chatId).queue.status === "working", "working again");
+  snap = rc.chatSnapshot(chatId);
+  assert.equal(snap.permissions.length, 0);
+
+  ends.shift()!();
+  await until(() => rc.chatSnapshot(chatId).queue.status === "idle", "idle");
+  // The echoes of earlier writes never put back an old status.
+  await until(() => callsOf("session_set_status", chatId).at(-1)?.args.status === "idle", "idle stored");
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(rc.chatStatuses().has(chatId), false);
+  assert.deepEqual(callsOf("session_set_status", chatId).map((c) => c.args.status), ["working", "needs_user_permission", "working", "idle"]);
+});
+
+test("a request Reason no longer holds closes at once", async () => {
+  const chatId = "ws-perm-gone";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  const ends = promptsEndOnDemand();
+  handlers.set("reason_answer_permission", () => false);
+  rc.submitChat(chatId, "/w", "permission", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
+  emit({ chatId, type: "permissionRequest", requestId: "permission-9", title: "t", options: [] });
+  await rc.answerPermission(chatId, "permission-9", null);
+  assert.equal(rc.chatSnapshot(chatId).permissions.length, 0);
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "working");
+  ends.shift()!();
+});
+
+test("needs_user_permission never outlives its request: Stop withdraws it, and a turn that ends unanswered clears it", async () => {
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  statusWritesEcho();
+
+  // Stop: the backend answers the request cancelled (permissionResolved), then the turn ends cancelled.
+  const stopped = "ws-perm-stop";
+  handlers.set("reason_prompt", (args) => {
+    const d = deferred<object>();
+    handlers.set("reason_cancel", () => {
+      emit({ chatId: args.chatId, type: "permissionResolved", requestId: "permission-s" });
+      emit({ chatId: args.chatId, type: "turnEnded", end: { outcome: "cancelled" } });
+      d.resolve({ outcome: "cancelled" });
+      return null;
+    });
+    return d.promise;
+  });
+  rc.submitChat(stopped, "/w", "permission", "queue");
+  await until(() => callsOf("reason_prompt", stopped).length === 1, "reason_prompt");
+  emit({ chatId: stopped, type: "permissionRequest", requestId: "permission-s", title: "t", options: [] });
+  assert.equal(rc.chatStatuses().get(stopped), "needs_user_permission");
+  rc.stopChat(stopped);
+  await until(() => rc.chatSnapshot(stopped).queue.status === "idle", "idle after Stop");
+  assert.equal(rc.chatSnapshot(stopped).permissions.length, 0);
+  assert.equal(rc.chatStatuses().has(stopped), false);
+
+  // The turn ends with the request still listed (no permissionResolved came).
+  const ended = "ws-perm-ended";
+  const ends = promptsEndOnDemand();
+  rc.submitChat(ended, "/w", "permission", "queue");
+  await until(() => callsOf("reason_prompt", ended).length === 1, "reason_prompt");
+  emit({ chatId: ended, type: "permissionRequest", requestId: "permission-e", title: "t", options: [] });
+  assert.equal(rc.chatSnapshot(ended).queue.status, "needs_user_permission");
+  ends.shift()!();
+  await until(() => rc.chatSnapshot(ended).queue.status === "idle", "idle after the turn");
+  assert.equal(rc.chatSnapshot(ended).permissions.length, 0);
+  assert.equal(rc.chatStatuses().has(ended), false);
+  await until(() => callsOf("session_set_status", ended).at(-1)?.args.status === "idle", "idle stored");
 });

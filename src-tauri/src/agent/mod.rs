@@ -24,6 +24,10 @@
 //! * [`codex_session`] - a running `codex app-server`: JSON-RPC calls that
 //!   wait for their response, approval answers, and the notifications in
 //!   between; killed on drop.
+//! * [`codex_wire`] - the payloads a Codex chat window receives: reply
+//!   text, reasoning, tool rows, approval prompts, notices, turn ends.
+//! * [`codex_runner`] - one Codex chat: a thread that owns its app-server,
+//!   runs prompts one at a time, answers approvals and stops turns.
 //! * [`env`] - [`AgentKind`] and [`LaunchEnv`], the environment an agent
 //!   process is launched with. A launch clears every inherited variable that
 //!   would route the agent elsewhere before setting its own.
@@ -52,7 +56,9 @@ pub mod codex;
 pub mod codex_cli;
 pub mod codex_events;
 pub mod codex_rpc;
+pub mod codex_runner;
 pub mod codex_session;
+pub mod codex_wire;
 pub mod env;
 pub mod keychain;
 pub mod provider;

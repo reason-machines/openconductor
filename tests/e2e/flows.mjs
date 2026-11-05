@@ -273,13 +273,14 @@ export const flows = [
         return path && existsSync(path) && realpathSync(path) === want;
       });
       if (!ws) throw new Error(`no stored workspace at ${want}: ${JSON.stringify(rows.map((w) => w.workspacePath ?? w.workspace_path))}`);
-      // Resolves with { error } instead of rejecting: WebKitWebDriver cannot
-      // report a promise rejected with a plain string ("Could not parse script result").
+      // Resolves with { refused } instead of rejecting: WebKitWebDriver cannot
+      // report a promise rejected with a plain string ("Could not parse script
+      // result"), and a result with an `error` key reads as a WebDriver error.
       const invoke = (cmd, args) =>
-        wd.execute("return window.__TAURI_INTERNALS__.invoke(arguments[0], arguments[1]).then((value) => ({ value }), (e) => ({ error: String(e) }));", [cmd, args]);
+        wd.execute("return window.__TAURI_INTERNALS__.invoke(arguments[0], arguments[1]).then((value) => ({ value }), (e) => ({ refused: String(e) }));", [cmd, args]);
       const setStatus = async (status) => {
         const r = await invoke("session_set_status", { chatId: ws.id, workspaceId: ws.id, status });
-        if (r.error) throw new Error(`session_set_status ${status} was refused (${r.error}); the sidebar row shows ${JSON.stringify(await sidebarIcons())}`);
+        if (r.refused) throw new Error(`session_set_status ${status} was refused (${r.refused}); the sidebar row shows ${JSON.stringify(await sidebarIcons())}`);
       };
       const shown = (css) => wd.execute("return Array.from(document.querySelectorAll(arguments[0]), (e) => ({ status: e.dataset.status, label: e.getAttribute('aria-label') }));", [css]);
       const sidebarIcons = () => shown('[data-testid="workspace-status-icon"]');

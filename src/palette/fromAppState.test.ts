@@ -59,3 +59,16 @@ test("workspace actions appear only with a workspace selected", () => {
   assert.ok(headings(state).includes("Workspace actions"));
   assert.ok(!headings({ ...state, selection: { kind: "home" } }).includes("Workspace actions"));
 });
+
+test("Go to next unread is listed under Navigation only while a non-archived workspace is unread", () => {
+  const ids = (s: AppState) => paletteDataFromState(s, []).actions.map((a) => a.id);
+  assert.ok(!ids(state).includes("go-to-next-unread"));
+  const unread: AppState = { ...state, repos: [{ ...state.repos[0], workspaces: [{ ...w("a", 1), unread: true }, w("b", 2)] }, state.repos[1]] };
+  const actions = paletteDataFromState(unread, []).actions;
+  const entry = actions.find((a) => a.id === "go-to-next-unread");
+  assert.equal(entry?.group, "navigation");
+  assert.equal(entry?.bindingId, "chat.nextAttention");
+  assert.equal(actions.filter((a) => a.group === "navigation")[0].id, "go-to-next-unread");
+  const archived: AppState = { ...state, repos: [{ ...state.repos[0], workspaces: [{ ...w("a", 1), unread: true, status: "archived" }] }] };
+  assert.ok(!ids(archived).includes("go-to-next-unread"));
+});

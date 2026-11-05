@@ -136,3 +136,10 @@
 .chat-turn-chip .a { color: var(--add); }
 .chat-turn-chip .d { color: var(--del); }
 .chat-turn-chip.more { color: var(--muted); }
+
+/* Open permission requests above the composer (PermissionRequests.tsx). */
+.chat-permissions { display: flex; flex-direction: column; gap: 6px; padding: 0 12px 8px; }
+.chat-permission { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--muted, transparent); }
+.chat-permission-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; font-size: 12px; }
+.chat-permission-text code { overflow-wrap: anywhere; }
+.chat-permission-actions { display: flex; gap: 6px; flex-shrink: 0; }
