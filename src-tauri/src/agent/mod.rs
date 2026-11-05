@@ -58,6 +58,9 @@ pub mod keychain;
 pub mod provider;
 pub mod reason;
 pub mod secret;
+#[cfg(all(test, unix))]
+#[path = "../test_exe.rs"]
+mod test_exe;
 
 pub use byok::{ProviderConfig, ProviderStatus};
 pub use claude_cli::{ClaudeLaunch, PermissionMode};

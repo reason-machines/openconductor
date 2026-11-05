@@ -27,6 +27,9 @@ mod cli_tests;
 #[cfg(test)]
 mod provider_tests;
 #[cfg(test)]
+#[path = "../test_exe.rs"]
+mod test_exe;
+#[cfg(test)]
 mod tests;
 #[cfg(test)]
 mod updates_tests;

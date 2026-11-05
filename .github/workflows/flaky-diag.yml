@@ -56,7 +56,8 @@ jobs:
             done
             echo "RESULT $name runs=$n failures=$fail" | tee -a "$GITHUB_STEP_SUMMARY"
           }
-          run_loop kill-alone 200 terminal::tests::kill_group::kill_stops_the_whole_process_group --exact
-          run_loop drop-alone 200 agent::claude_session::tests::drop_kills_a_running_process --exact
-          run_loop full-lib 40
+          run_loop kill-old-probe 2000 terminal::tests::diag_old_probe::old_probe_kill_stops_the_whole_process_group --exact
+          run_loop kill-fixed 2000 terminal::tests::kill_group::kill_stops_the_whole_process_group --exact
+          run_loop drop-fixed 500 agent::claude_session::tests::drop_kills_a_running_process --exact
+          run_loop full-lib-fixed 40
           kill "${hogs[@]}" 2>/dev/null || true

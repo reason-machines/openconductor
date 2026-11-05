@@ -1,9 +1,9 @@
 //! Finding the CLI, the argument list and a real spawn of a fake `reason`.
 
 use super::cli::{find_reason_cli, AgentProcess, LaunchConfig, LaunchError};
+use super::test_exe::write_executable;
 use std::fs;
 use std::io::{BufRead, BufReader};
-use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
@@ -17,8 +17,7 @@ fn temp_dir(name: &str) -> PathBuf {
 fn script(dir: &Path, body: &str, mode: u32) -> PathBuf {
     fs::create_dir_all(dir).unwrap();
     let path = dir.join("reason");
-    fs::write(&path, format!("#!/bin/sh\n{body}\n")).unwrap();
-    fs::set_permissions(&path, fs::Permissions::from_mode(mode)).unwrap();
+    write_executable(&path, &format!("#!/bin/sh\n{body}\n"), mode);
     path
 }
 

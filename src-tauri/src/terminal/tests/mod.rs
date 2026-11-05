@@ -234,6 +234,8 @@ fn dropping_the_manager_kills_terminals() {
     ev.wait_exit(&id);
 }
 
+#[cfg(target_os = "linux")]
+mod diag_old_probe;
 mod flow_history;
 mod kill_group;
 mod screen;

@@ -31,6 +31,8 @@ pub mod spotlight;
 mod spotlight_commands;
 pub mod terminal;
 mod terminal_commands;
+#[cfg(all(test, unix))]
+mod test_exe;
 pub mod workspace;
 
 use serde::Serialize;

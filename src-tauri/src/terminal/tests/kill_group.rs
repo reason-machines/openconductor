@@ -1,68 +1,28 @@
 use super::*;
 
-#[cfg(unix)]
+/// Whether `pid` is still running, from one read of `/proc/<pid>/stat`.
+///
+/// A killed background job is reparented and reaped by init, so it goes
+/// zombie (`Z`), then dead (`X`), then has no entry at all; each of those
+/// means gone. Asking `kill(pid, 0)` first and reading the state afterwards
+/// raced with the reaper: the job could be reaped between the two calls, and
+/// the failed read counted as alive (issue #177).
+#[cfg(target_os = "linux")]
 fn alive(pid: i32) -> bool {
-    // A zombie still answers kill(0); look at the state too.
-    if unsafe { libc::kill(pid, 0) } != 0 {
-        return false;
-    }
-    match std::fs::read_to_string(format!("/proc/{pid}/stat")) {
-        Ok(stat) => !stat
+    std::fs::read_to_string(format!("/proc/{pid}/stat")).is_ok_and(|stat| {
+        let state = stat
             .rsplit(')')
             .next()
-            .is_some_and(|rest| rest.trim_start().starts_with('Z')),
-        Err(_) => true,
-    }
+            .and_then(|rest| rest.trim_start().chars().next());
+        !matches!(state, Some('Z' | 'X'))
+    })
 }
 
-// DIAG (temporary, not for merge): describe a process and its pty.
-#[cfg(unix)]
-fn diag_proc(pid: i32) -> String {
-    let status = std::fs::read_to_string(format!("/proc/{pid}/status"))
-        .map(|s| {
-            s.lines()
-                .filter(|l| {
-                    ["Name", "State", "PPid", "NSpgid", "NSsid", "SigBlk", "SigIgn", "SigCgt", "SigPnd", "ShdPnd"]
-                        .iter()
-                        .any(|k| l.starts_with(&format!("{k}:")))
-                })
-                .collect::<Vec<_>>()
-                .join(" | ")
-        })
-        .unwrap_or_else(|e| format!("<{e}>"));
-    let fds = std::fs::read_dir(format!("/proc/{pid}/fd"))
-        .map(|d| {
-            d.flatten()
-                .map(|e| {
-                    format!(
-                        "{}->{}",
-                        e.file_name().to_string_lossy(),
-                        std::fs::read_link(e.path()).map(|p| p.display().to_string()).unwrap_or_default()
-                    )
-                })
-                .collect::<Vec<_>>()
-                .join(",")
-        })
-        .unwrap_or_default();
-    let cmd = std::fs::read(format!("/proc/{pid}/cmdline"))
-        .map(|b| String::from_utf8_lossy(&b).replace('\0', " "))
-        .unwrap_or_default();
-    format!("pid {pid}: {status} | fds {fds} | cmd {cmd}")
-}
-
-#[cfg(unix)]
-fn diag_holders(tty: &str) -> String {
-    let mut out = Vec::new();
-    for e in std::fs::read_dir("/proc").into_iter().flatten().flatten() {
-        let Ok(pid) = e.file_name().to_string_lossy().parse::<i32>() else { continue };
-        let holds = std::fs::read_dir(format!("/proc/{pid}/fd"))
-            .map(|d| d.flatten().any(|f| std::fs::read_link(f.path()).is_ok_and(|p| p.to_string_lossy() == tty)))
-            .unwrap_or(false);
-        if holds {
-            out.push(diag_proc(pid));
-        }
-    }
-    out.join("\n    ")
+/// No `/proc`: `kill(pid, 0)` also answers for a zombie, which only makes the
+/// wait for it longer; once the job is reaped it fails for good.
+#[cfg(all(unix, not(target_os = "linux")))]
+fn alive(pid: i32) -> bool {
+    unsafe { libc::kill(pid, 0) == 0 }
 }
 
 #[cfg(unix)]
@@ -83,33 +43,14 @@ fn kill_stops_the_whole_process_group() {
         .and_then(|s| s.trim().parse().ok())
         .unwrap_or_else(|| panic!("bad output {out:?}"));
     assert!(alive(bg));
-    let shpid = m.pid(&id).unwrap().unwrap() as i32;
-    let tty = std::fs::read_link(format!("/proc/{shpid}/fd/0"))
-        .map(|p| p.display().to_string())
-        .unwrap_or_default();
-    let before = format!("sh {}\n  bg {}", diag_proc(shpid), diag_proc(bg));
     let started = Instant::now();
     m.kill(&id).unwrap();
-    let (code, signal) = ev.wait_exit(&id);
+    let (_, signal) = ev.wait_exit(&id);
     assert!(signal.is_some(), "killed by a signal");
     assert!(started.elapsed() < Duration::from_secs(5));
     let deadline = Instant::now() + Duration::from_secs(5);
     while alive(bg) && Instant::now() < deadline {
         std::thread::sleep(Duration::from_millis(50));
-    }
-    if alive(bg) {
-        eprintln!(
-            "DIAG survivor: tty {tty} exit ({code},{signal:?}) after {:?}\n before kill:\n  {before}\n now:\n  bg {}\n  tty holders:\n    {}",
-            started.elapsed(),
-            diag_proc(bg),
-            diag_holders(&tty)
-        );
-        let ps = std::process::Command::new("ps")
-            .args(["-eo", "pid,ppid,pgid,sid,tty,stat,etimes,args"])
-            .output()
-            .map(|o| String::from_utf8_lossy(&o.stdout).into_owned())
-            .unwrap_or_default();
-        eprintln!("DIAG ps:\n{ps}");
     }
     assert!(!alive(bg), "background job {bg} survived kill");
     assert!(m.ids().is_empty());

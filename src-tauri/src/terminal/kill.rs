@@ -31,15 +31,14 @@ pub(crate) fn stop(s: Arc<Session>) -> Result<()> {
 #[cfg(unix)]
 fn signal_groups(s: &Session, sig: libc::c_int) {
     if let Some(pid) = s.pid {
-        let r = unsafe { libc::killpg(pid as libc::pid_t, sig) };
-        eprintln!("DIAG killpg({pid}, {sig}) = {r} {}", std::io::Error::last_os_error());
+        unsafe {
+            libc::killpg(pid as libc::pid_t, sig);
+        }
     }
-    let fg = s.master.lock().unwrap().process_group_leader();
-    if let Some(pgrp) = fg {
-        let r = unsafe { libc::killpg(pgrp, sig) };
-        eprintln!("DIAG killpg(fg {pgrp}, {sig}) = {r} {}", std::io::Error::last_os_error());
-    } else {
-        eprintln!("DIAG no foreground group");
+    if let Some(pgrp) = s.master.lock().unwrap().process_group_leader() {
+        unsafe {
+            libc::killpg(pgrp, sig);
+        }
     }
 }
 
