@@ -6,6 +6,10 @@
 //! evidence/frontend/diff-review-copy.json and the `diff_comments` table in
 //! evidence/sqlite/conductor.schema.sql.
 
+/// `#[tauri::command]` wrappers. Excluded from the standalone harness build
+/// (`--cfg diff_std_only`, see tools/diff/run-rust-tests.sh).
+#[cfg(not(diff_std_only))]
+pub mod commands;
 pub mod git;
 pub mod model;
 pub mod parse;
