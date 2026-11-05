@@ -619,3 +619,58 @@ fn changed_since_unknown_checkpoint_is_not_found() {
         other => panic!("expected NotFound, got {other:?}"),
     }
 }
+
+/// #435: another git process holding the worktree's `index.lock` (a status
+/// refresh, an agent's `git add`) must not fail a save, because save never
+/// writes the real index.
+#[test]
+fn save_succeeds_while_another_process_holds_index_lock() {
+    let t = repo_with_commit("index-lock");
+    let main = t.path();
+    // The reported failure was in a linked worktree (.git/worktrees/<name>).
+    let ws = main.join("wt");
+    g(
+        main,
+        &["worktree", "add", "-q", "-b", "wt", ws.to_str().unwrap()],
+    );
+    let ws = fs::canonicalize(&ws).unwrap();
+
+    write(&ws, "a.txt", "edited\n");
+    write(&ws, "staged.txt", "staged\n");
+    g(&ws, &["add", "staged.txt"]);
+    write(&ws, "untracked.txt", "u\n");
+    let index_tree = g(&ws, &["write-tree"]);
+    let status_before = status(&ws);
+
+    let index = PathBuf::from(g(
+        &ws,
+        &["rev-parse", "--path-format=absolute", "--git-path", "index"],
+    ));
+    let index_bytes = fs::read(&index).unwrap();
+    let lock = index.with_file_name("index.lock");
+    fs::write(&lock, b"held by another git process").unwrap();
+
+    let id = save(&ws, &named("locked")).expect("save must not take the real index.lock");
+    assert_eq!(id, "locked");
+    assert!(lock.exists(), "the other process's lock is left alone");
+    assert_eq!(
+        fs::read(&index).unwrap(),
+        index_bytes,
+        "real index untouched"
+    );
+    fs::remove_file(&lock).unwrap();
+
+    let cp = get(&ws, "locked").unwrap();
+    assert_eq!(cp.index_tree, index_tree);
+    let listed = g(&ws, &["ls-tree", "-r", "--name-only", &cp.worktree_tree]);
+    let files: Vec<&str> = listed.lines().collect();
+    assert_eq!(
+        files,
+        ["a.txt", "keep/b.txt", "staged.txt", "untracked.txt"]
+    );
+    assert_eq!(
+        g(&ws, &["show", &format!("{}:a.txt", cp.worktree_tree)]),
+        "edited"
+    );
+    assert_eq!(status(&ws), status_before);
+}
