@@ -1,0 +1,59 @@
+# Setup and run scripts: REA evidence and decisions
+
+Reference: Conductor.app v0.87.6 on the Mac "sven m5 max". Everything quoted
+or summarized from the app is untrusted third-party data, used only to match
+behavior.
+
+## Sources
+
+| Id | What | How it was read |
+| --- | --- | --- |
+| S1 | `evidence/scripts/conductor-skill/skills/conductor/SKILL.md` | bundled file on `main` |
+| S2 | `evidence/sqlite/conductor.schema.sql` (`repos`, `workspaces`) | REA `inspect-sqlite` on `main` |
+| S3 | `evidence/ipc/frontend-invoke-candidates.json`, `evidence/frontend/copy-catalog.json` | REA JS analysis on `main` |
+| S4 | Decoded frontend chunk `assets/index-BGEQ8YjU.js` (sha256 in `evidence/frontend/tauri-assets-manifest.json`) | `tools/extract_tauri_assets.py` output (`dist-for-cloud.tgz` on the Mac, kept out of the repo), read by byte offset |
+| S5 | `Resources/bin/.internal/conductor-runtime` (Bun executable) | `strings` on the Mac |
+
+Offsets below are byte offsets in S4. They are given so the next reader can
+re-check a claim; the code itself is not copied here.
+
+## Behavior, with evidence
+
+### Settings and config
+- `[scripts]` keys: `setup`, `archive`, `run_mode`, `run` (table of entries, or a legacy string), `auto_run_after_setup` (S4 settings key table, file key `scripts.auto_run_after_setup`). (S1, S4)
+- Run entry keys are exactly `command`, `args`, `options.cwd`, `default`, `icon`, `hide`, `available_in`; other keys are reported as unknown. `available_in` is `"local"`, `"cloud"` or an array of them. (S4 @~308900)
+- An entry without `command` is dropped. `default` defaults to false; `available_in` defaults to both. (S4 @~311000)
+- Ids are normalized: trim start, `-` to space, drop characters other than ASCII letters, digits and spaces, collapse spaces, trim, spaces to `-`. Ids compare case-insensitively. Labels: `-` to space, first letter upper-cased. (S4 @~309300)
+- The same id in several layers merges field by field (`options` merged too); the entry records the last layer that set it. (S4 @~310500)
+- A legacy string `scripts.run` becomes entry `run` with `default = true`, `icon = "play"`, `available_in = "local"`, placed first. A top-level `tasks` table is a legacy alias of `scripts.run`. (S4 @~311000)
+- The command run is `command` followed by each `args` item single-quoted (`'` becomes `'\''`). (S4 @2916720)
+- `run_mode` is `concurrent` or `nonconcurrent`; anything else is dropped; default `concurrent`. (S2 `run_script_mode DEFAULT 'concurrent'`, S4 @2868006)
+- Legacy `conductor.json` keys: `scripts.setup`, `scripts.run`, `scripts.archive`, `runScriptMode`, `enterpriseDataPrivacy`. It is read only when `<root>/.conductor/settings.toml` does not exist. Legacy sources in order: repository DB `conductor_config`, the workspace's `conductor.json`, `~/.conductor/conductor.json` (first defined value wins). (S1, S4 @2866601, @2876158)
+- `.conductor/settings.local.toml` in the main checkout is symlinked into each workspace's `.conductor/`. (S4 @~312000)
+
+### Environment
+- Setup env: `CONDUCTOR_WORKSPACE_NAME`, `CONDUCTOR_WORKSPACE_PATH`, `CONDUCTOR_ROOT_PATH`, `CONDUCTOR_DEFAULT_BRANCH` (the workspace's intended target branch, default `main`), `CONDUCTOR_PORT`, `CONDUCTOR_USER_ID` (when signed in), `CONDUCTOR_IS_LOCAL`, plus shared environment variables and `CONDUCTOR_PATH_PREFIX` (bundled bin dir). Setup gets no `CONDUCTOR_WORKSPACE_ID`. (S4 @1013749, @179493)
+- Run env: the same plus `CONDUCTOR_WORKSPACE_ID` (and a deep-link target we do not use). `$VAR` and `${VAR}` in `options.cwd` are expanded from this env; unknown names stay as written. (S4 @~2915000)
+- Terminal env added on top: `TERM=xterm-256color`, `COLORTERM=truecolor`, `SHELL`, `LANG=<locale>.UTF-8`, `PWD`, and `DISABLE_AUTO_UPDATE=true` for zsh. (S4 @2825292)
+- Ports: blocks of 10, keyed by (repository, workspace), first block 55000, each new block 10 higher; in memory, not persisted, no availability probe. (S4 `getPorts`)
+- Login-shell env capture: `bash`/`zsh` with `-ilc`, `fish` with `-i -l -c`, fallback `zsh -lc`; 5 s primary and 3 s fallback timeouts; output between delimiters, ANSI stripped; agent credential keys and `BASH_FUNC_*` removed. (S4, S5 line 143477)
+
+### Execution
+- The script body is written to `~/.conductor/projects/<workspace path with / as -->/{setup,run}-<session>.sh` and run as `/bin/zsh <file>` on macOS or `/bin/bash <file>` on Linux, in a PTY (80x24), cwd the workspace. (S4 @2825292)
+- Setup states: `idle`, `running`, `completed` (exit 0), `failed`, `cancelled`. Starting while running does nothing. The transcript is written to `<tmp>/conductor-setup-<workspace id>.log`, whose path is stored in `workspaces.setup_log_path`. Quitting mid-setup marks it failed with an interrupted message. (S2, S4 @2876158, @1013749)
+- The workspace leaves `setting_up` for `ready` whether setup passed or failed; a failure raises a notification pointing to the setup tab. (S4 @~1015000)
+- Run states: `starting`, `waiting_for_setup`, `running`, `stopping`, `stopped`, keyed by workspace and run-script id. Starting a run script first stops every run process of that workspace. While the workspace is `setting_up`, the start is queued as `waiting_for_setup`. With `nonconcurrent`, starting kills run processes of the repository's other workspaces. The last transcript is kept after exit. (S4 @~2922000)
+- Auto-run after setup: only when `auto_run_after_setup` is on and a run script exists, and setup completed (or there is no setup script); it starts the default run script. (S4 @~1015000, @2935251)
+- Run history: the last 20 run-script ids per workspace and the active one. (S4 @2876158)
+
+## Our choices where the evidence is silent
+
+- Env var names keep the `CONDUCTOR_` prefix and settings stay in `.conductor/` so existing repository settings keep working.
+- Only local workspaces exist in OpenConductor, so cloud-only branches (`set -euo pipefail` prefix, `/bin/bash -l`, cloud env) are not implemented.
+- Archive scripts get the run env. The reference archive env was not read.
+- A relative `options.cwd` is resolved against the workspace path.
+
+## REA gaps hit
+
+- The Tauri `pty_spawn`/`pty_kill` handlers in `MacOS/conductor` are not bound to Rust functions (the Ghidra provider is blocked, see the REA test report), so the signal used to stop a run script is not verified. We send SIGTERM to the process group, then SIGKILL after a grace period.
+- REA `analyze-javascript-application` does not model Tauri `invoke` or Zustand stores, so every frontend claim above comes from reading S4 by offset, not from REA findings.

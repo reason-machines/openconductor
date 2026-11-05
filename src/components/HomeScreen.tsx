@@ -2,59 +2,54 @@ import type { Dispatch, ReactNode } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
-import { CloudIcon, FolderIcon, LogoMark, SparkIcon } from "./Icons";
+import { CloudIcon, FolderIcon, SidebarIcon, SparkIcon } from "./Icons";
+import { Wordmark } from "./Wordmark";
+import { activeWorkspaceCount } from "../state/selectors";
+import { TOGGLE_LEFT_SIDEBAR_HINT } from "../state/shortcuts";
+
+// Layout follows evidence/screens/home.md: wordmark, three entry cards, and a sidebar
+// toggle only while the sidebar is hidden. The repository list lives in the sidebar.
 
 interface Props {
   repos: Repo[];
+  sidebarVisible: boolean;
   dispatch: Dispatch<Action>;
   onOpenDialog: (d: DialogKind) => void;
 }
 
-function Entry({ icon, title, body, onClick, hint }: { icon: ReactNode; title: string; body: string; onClick: () => void; hint?: string }) {
+function EntryCard({ icon, label, onClick }: { icon: ReactNode; label: string; onClick: () => void }) {
   return (
-    <button className="home-entry" onClick={onClick}>
-      <span className="home-entry-icon">{icon}</span>
-      <span className="home-entry-text">
-        <span className="home-entry-title">{title}</span>
-        <span className="home-entry-body">{body}</span>
-      </span>
-      {hint && <kbd className="home-entry-hint">{hint}</kbd>}
+    <button type="button" className="home-card" onClick={onClick}>
+      <span className="home-card-icon">{icon}</span>
+      <span className="home-card-label">{label}</span>
     </button>
   );
 }
 
-export function HomeScreen({ repos, dispatch, onOpenDialog }: Props) {
+export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog }: Props) {
+  const hasWorkspaces = activeWorkspaceCount(repos) > 0;
   return (
-    <div className="home">
-      <div className="titlebar-spacer" data-tauri-drag-region />
-      <div className="home-inner">
-        <div className="home-hero">
-          <LogoMark size={44} />
-          <h1>OpenConductor</h1>
-          <p>Run coding agents side by side, each in its own git worktree.</p>
+    <div className="home" data-tauri-drag-region>
+      {!sidebarVisible && (
+        <button
+          type="button"
+          className="home-sidebar-toggle"
+          title={`Toggle left sidebar (${TOGGLE_LEFT_SIDEBAR_HINT})`}
+          aria-label="Toggle left sidebar"
+          onClick={() => dispatch({ type: "toggleSidebar" })}
+        >
+          <SidebarIcon size={16} />
+        </button>
+      )}
+      <div className="home-wordmark">
+        <Wordmark />
+      </div>
+      <div className={`home-cards-wrap ${hasWorkspaces ? "has-workspaces" : ""}`}>
+        <div className="home-cards">
+          <EntryCard icon={<FolderIcon size={16} />} label="Open project" onClick={() => onOpenDialog("open")} />
+          <EntryCard icon={<CloudIcon size={16} />} label="Open GitHub project" onClick={() => onOpenDialog("clone")} />
+          <EntryCard icon={<SparkIcon size={16} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
         </div>
-
-        <div className="home-entries">
-          <Entry icon={<FolderIcon size={20} />} title="Open project" body="Add a git repository from this computer." onClick={() => onOpenDialog("open")} />
-          <Entry icon={<CloudIcon size={20} />} title="Open GitHub project" body="Clone a repository from GitHub by URL or owner/name." onClick={() => onOpenDialog("clone")} />
-          <Entry icon={<SparkIcon size={20} />} title="Quick start" body="Create a fresh repository from a starter template." onClick={() => onOpenDialog("quickstart")} />
-        </div>
-
-        {repos.length > 0 && (
-          <section className="home-recent">
-            <h2>Repositories</h2>
-            <ul>
-              {repos.map((r) => (
-                <li key={r.id}>
-                  <span className="recent-name">{r.name}</span>
-                  <span className="recent-path">{r.remote ?? r.path}</span>
-                  <span className="recent-count">{r.workspaces.length} workspace{r.workspaces.length === 1 ? "" : "s"}</span>
-                  <button className="btn btn-small" onClick={() => dispatch({ type: "newWorkspace", repoId: r.id })}>New workspace</button>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
       </div>
     </div>
   );
