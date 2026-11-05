@@ -112,10 +112,13 @@ const running = () => run("return !!document.querySelector('.composer button[tit
 const approvalButtons = () => run("return [...document.querySelectorAll('.codex-approval button')].map((b) => b.textContent);");
 const clickApproval = (label) =>
   run("const b = [...document.querySelectorAll('.codex-approval button')].find((b) => b.textContent === arguments[0]); if (!b) return false; b.click(); return true;", label);
-/** Opens every collapsed "N tool calls" summary (tool rows fold into it once a turn ends), then reads each row's tool name. */
+/**
+ * Opens every collapsed "N tool calls" summary (tool rows fold into it once a turn ends), then reads each
+ * row's command: Conductor draws a Codex command as a Bash row with the command in its right-hand chip.
+ */
 const toolNames = () =>
   run(`for (const b of document.querySelectorAll('.chat-tool-summary-row[aria-expanded="false"]')) b.click(); return true;`).then(() =>
-    run("return [...document.querySelectorAll('.chat-tool-name')].map((n) => n.textContent);"),
+    run("return [...document.querySelectorAll('.chat-tool')].map((t) => t.querySelector('.oc-code-chip')?.textContent ?? t.innerText);"),
   );
 const requests = () =>
   readFileSync(join(home, "codex-fake.jsonl"), "utf8")
@@ -204,9 +207,9 @@ try {
   // The commentary message folds into the (now opened) tool-call group and renders as Markdown, so its
   // `code` spans lose their backticks; the final reply stays outside it (user bubbles are left out: the prompt quotes the reply).
   const [grouped, outside] = await run(
-    `const groups = [...document.querySelectorAll('.chat-scroll .chat-tool-group')];
+    `const groups = [...document.querySelectorAll('.chat-scroll [data-tool-group]')];
      const clone = document.querySelector('.chat-scroll').cloneNode(true);
-     for (const g of clone.querySelectorAll('.chat-tool-group, .chat-user')) g.remove();
+     for (const g of clone.querySelectorAll('[data-tool-group], .chat-user')) g.remove();
      return [groups.map((g) => g.innerText).join('\\n'), clone.textContent];`,
   );
   assert.match(grouped, /I.ll create `?hello\.txt`? in the workspace, then run `?cat hello\.txt`?\./, "commentary message shown inside the tool-call group");

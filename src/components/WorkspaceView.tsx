@@ -102,6 +102,8 @@ interface ChatPanelProps extends Props {
   onRunningChange?: (running: boolean) => void;
   /** A file chip under a finished turn: open that file's changes from the turn. */
   openTurnFile: (turn: TurnRef, path: string) => void;
+  /** A file badge in a tool row (repository-relative path): open the file's changes when it has some. */
+  openFile?: (path: string) => void;
   /** Opens a forked chat tab on `config` with `draft` in its composer; returns its chat id. */
   forkToNewTab: (title: string, config: ConfigChoice[], draft: { text: string; attachments: TextAttachment[] }) => string;
   /** Every chat tab of the workspace (its own chat and the review and fork tabs), for the empty chat's transcript chips. */
@@ -144,7 +146,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, forkToNewTab, chatTabs }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -449,6 +451,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             onResetChat={reason && !codex && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
             turnFooter={codex ? undefined : turnFooter}
+            workspacePath={cwd}
+            onOpenFile={openFile ? (path) => openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined}
             // Conductor: any turn of a chat in a workspace that is not archived; disabled while a fork is made.
             onForkToNewTab={workspace.status !== "archived" ? (turnId) => void forkToTab(turnId) : undefined}
             // Conductor: the same, and only for a workspace on this machine. It restores the turn's
@@ -903,6 +907,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
+          openFile={diff.openPath}
           forkToNewTab={reviews.fork}
           chatTabs={[{ chatId: workspace.id, title: workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}

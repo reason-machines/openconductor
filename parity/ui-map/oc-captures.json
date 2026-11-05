@@ -3,7 +3,7 @@
   "status": "captured",
   "steps": 1,
   "file": "oc/all-workspaces.png",
-  "png_sha256": "cc52ba3854b1ec3bc7667f8c9b86573c5495d85a8030e40013bb0c28dc7c6186",
+  "png_sha256": "5a6817d605008019900fa550b0d69fcc9c4cb0732f74f142852e1845d489dc3d",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -14,10 +14,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -47,7 +48,6 @@
     "listbox"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -75,7 +75,7 @@
     "1",
     "T",
     "Moscow",
-    "3m"
+    "now"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -83,13 +83,13 @@
     820
    ]
   },
-  "ms": 4770
+  "ms": 5918
  },
  "create": {
   "status": "captured",
   "steps": 1,
   "file": "oc/create.png",
-  "png_sha256": "c937d14b4932b2797cf4241f8efa3368e836d1ddb3e3e8b0d7ba07f5ee1129fb",
+  "png_sha256": "4bf60c04c80b30d09679542c0cd89bf842635099e33ffc340d815971499be12a",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -100,10 +100,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -123,12 +124,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -153,13 +161,13 @@
     "Terminal input",
     "New workspace",
     "Close",
-    "What should the agent work on? (optional)"
+    "What should the agent work on? (optional)",
+    "Create workspace"
    ],
    "roles": [
     "dialog"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -244,9 +252,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$",
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "New workspace",
     "Create from",
     "Create from...",
@@ -256,7 +266,7 @@
     "Workspace name",
     "Common",
     "Branch",
-    "chicago",
+    "milan",
     ". A placeholder name is replaced by a generated branch name after the first message.",
     "⌘↵ to create",
     "Cancel",
@@ -268,13 +278,13 @@
     820
    ]
   },
-  "ms": 4924
+  "ms": 5622
  },
  "create-repo-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/create-repo-picker.png",
-  "png_sha256": "bf18b0dbd01fe5421448c0c69466a07998f99ed5db5d2e98d7c664c62de3fbb1",
+  "png_sha256": "21e492382409e8e81e55be00c5b1c51ff7ea52f61447dc669e0f42cd88785284",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -285,10 +295,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -308,12 +319,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -340,7 +358,8 @@
     "Close",
     "What should the agent work on? (optional)",
     "Create new workspace from PR, branch, or issue",
-    "Search by number, title, or paste a link"
+    "Search by number, title, or paste a link",
+    "Create workspace"
    ],
    "roles": [
     "dialog",
@@ -348,7 +367,6 @@
     "status"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -433,9 +451,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$",
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "New workspace",
     "Create from",
     "Create from...",
@@ -448,9 +468,9 @@
     "Add…",
     "Base branch",
     "Workspace name",
-    "Common",
+    "Uncommon",
     "Branch",
-    "seoul",
+    "valparaiso",
     ". A placeholder name is replaced by a generated branch name after the first message.",
     "⌘↵ to create",
     "Cancel",
@@ -462,13 +482,13 @@
     820
    ]
   },
-  "ms": 5069
+  "ms": 6179
  },
  "dialog-clone-github": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-clone-github.png",
-  "png_sha256": "676d5bcb8f5e5781e3df122721ac3363fe216c630387eb543478c09e626fc295",
+  "png_sha256": "e8196053d537faa1e67ee84a66e91a583950615979cf988e7ad0faae493eb047",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -479,10 +499,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -502,12 +523,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -539,7 +567,6 @@
     "dialog"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -624,9 +651,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$",
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "Clone GitHub repo",
     "Clone a GitHub repository and add it as a project.",
     "Repository URL",
@@ -641,13 +670,13 @@
     820
    ]
   },
-  "ms": 6465
+  "ms": 9443
  },
  "dialog-create-project": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-create-project.png",
-  "png_sha256": "51669b263389c6b4602eba03f89738fed10d299de5149da37460b252934d8a70",
+  "png_sha256": "7028c7a5b05a489140e7bf73415e647af02a2748612b1a20a349a6332c22d8a4",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -658,10 +687,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -681,12 +711,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -719,7 +756,6 @@
     "dialog"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -804,9 +840,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$",
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "Create project",
     "Create a local folder, private GitHub repo, and first workspace.",
     "Project name",
@@ -828,13 +866,13 @@
     820
    ]
   },
-  "ms": 6255
+  "ms": 7681
  },
  "dialog-keyboard-shortcuts": {
   "status": "captured",
   "steps": 1,
   "file": "oc/dialog-keyboard-shortcuts.png",
-  "png_sha256": "10d13305d434759c03ce0c799335740b8027ae3adbd776b07943d20cda7754c9",
+  "png_sha256": "f58ee4fb7d02ed5130cc07701d2e86d60fb9a39215352733bc0386b61f8bc74d",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -845,10 +883,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -868,12 +907,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -899,7 +945,6 @@
    ],
    "roles": [],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -984,9 +1029,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -994,13 +1041,13 @@
     820
    ]
   },
-  "ms": 4758
+  "ms": 4972
  },
  "dialog-rename-workspace": {
   "status": "captured",
   "steps": 2,
   "file": "oc/dialog-rename-workspace.png",
-  "png_sha256": "6be06dd2a03fbe9c3fb8d7b5da0ea447feb04ec3767226ea1c5cfb80e85b6fea",
+  "png_sha256": "a33cb656a07ce3b609c901d23d308c88f5841a960bb045db0f1a658deb67516c",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1011,10 +1058,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -1034,12 +1082,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -1067,7 +1122,6 @@
     "dialog"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -1157,9 +1211,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1167,13 +1223,13 @@
     820
    ]
   },
-  "ms": 4785
+  "ms": 5380
  },
  "diff-entire-file": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-entire-file.png",
-  "png_sha256": "6bbdf2b927e310a7c069c178fd92cfbb6241fadb3d1d62c0275bd912c872b5bf",
+  "png_sha256": "51991faad1f6467e5ab881ef70698dc9003b0505f2d9e5dcdeb22686203f24c5",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1184,10 +1240,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -1207,6 +1264,10 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
@@ -1230,6 +1291,9 @@
     "Mark as viewed (⌃V)",
     "Open the next file not marked as viewed",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -1255,7 +1319,6 @@
    ],
    "roles": [],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -1343,9 +1406,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1353,13 +1418,13 @@
     820
    ]
   },
-  "ms": 7571
+  "ms": 8483
  },
  "diff-split": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-split.png",
-  "png_sha256": "4c31e3ad26c14cad0684d0e1e7a6c1c491a373c1bf553342c8d9cf45791a144b",
+  "png_sha256": "ee1d0c7afbe666065b1b7aade0cbea543ae613836187b577d4927b42a9d720c7",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1370,10 +1435,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -1393,6 +1459,10 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
@@ -1416,6 +1486,9 @@
     "Mark as viewed (⌃V)",
     "Open the next file not marked as viewed",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -1441,7 +1514,6 @@
    ],
    "roles": [],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -1529,9 +1601,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1539,13 +1613,13 @@
     820
    ]
   },
-  "ms": 6943
+  "ms": 8986
  },
  "diff-unified": {
   "status": "captured",
   "steps": 2,
   "file": "oc/diff-unified.png",
-  "png_sha256": "77169e630967e7a7cd599f1381e3ba4ecfac3c9feaf9390c6ca27db22099fa83",
+  "png_sha256": "3d7e7cc57f4aaaec48b86bc79d20e00806cbc0fea44a06dd90adeea1731dc5ab",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1556,10 +1630,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -1579,6 +1654,10 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
@@ -1602,6 +1681,9 @@
     "Mark as viewed (⌃V)",
     "Open the next file not marked as viewed",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -1627,7 +1709,6 @@
    ],
    "roles": [],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -1715,9 +1796,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1725,13 +1808,13 @@
     820
    ]
   },
-  "ms": 7248
+  "ms": 7918
  },
  "first-run-onboarding": {
   "status": "captured",
   "steps": 0,
   "file": "oc/first-run-onboarding.png",
-  "png_sha256": "ac3cde161825c91681017f837dad4af666c47ed973ee03a7622224e674e3356a",
+  "png_sha256": "9a4ab6bc9298d4596cb6878219b7145dcb004fbac36d3a114362be6ef6de3aa9",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1754,13 +1837,13 @@
     820
    ]
   },
-  "ms": 3337
+  "ms": 5069
  },
  "home": {
   "status": "captured",
   "steps": 1,
   "file": "oc/home.png",
-  "png_sha256": "7530f50f3c37a9a5b7e46f244de528ad4af442e60ab988b8df0543a04865d878",
+  "png_sha256": "5a6817d605008019900fa550b0d69fcc9c4cb0732f74f142852e1845d489dc3d",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1771,10 +1854,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -1804,7 +1888,6 @@
     "listbox"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -1832,7 +1915,7 @@
     "1",
     "T",
     "Moscow",
-    "2m"
+    "now"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1840,13 +1923,13 @@
     820
    ]
   },
-  "ms": 4789
+  "ms": 5916
  },
  "home-empty": {
   "status": "captured",
   "steps": 1,
   "file": "oc/home-empty.png",
-  "png_sha256": "708ab2d40361f5ff81a9ce9bbf3847eb88cb02146edc35d9758684605fb898cc",
+  "png_sha256": "2ac2871af7729e1dba4d2351d64f4b80b4d39d79b604814b29e3bad503aae3fc",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1857,10 +1940,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Help",
     "Help",
@@ -1869,7 +1953,6 @@
    ],
    "roles": [],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -1890,13 +1973,13 @@
     820
    ]
   },
-  "ms": 4963
+  "ms": 6066
  },
  "login": {
   "status": "captured",
   "steps": 0,
   "file": "oc/login.png",
-  "png_sha256": "58b45c775bdbb610c40dcc207dc6c4b7e6195ac777fc3e082b18d78b357208db",
+  "png_sha256": "9ae1f6ca873d70aed9d9d4065a6aa96e9fea88745cd126847e350227678947c9",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1919,13 +2002,13 @@
     820
    ]
   },
-  "ms": 3925
+  "ms": 4770
  },
  "menu-account": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-account.png",
-  "png_sha256": "9bb04c91c90bde69d8c5a21481cf48acad396cd7970bfa0a00e8e44373daa2c9",
+  "png_sha256": "5a5d7ebf82c41a6d173ba65336f9783c51af5b1f99496f22faf221590e7d8fc1",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1936,10 +2019,12 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
+    "Account",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -1959,12 +2044,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -1988,10 +2080,12 @@
     "Clear terminal scrollback",
     "Terminal input"
    ],
-   "roles": [],
+   "roles": [
+    "menu"
+   ],
    "texts": [
-    "M",
     "My Mac",
+    "Settings",
     "Home",
     "⌘⇧H",
     "Create",
@@ -2075,9 +2169,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2085,13 +2181,13 @@
     820
    ]
   },
-  "ms": 4535
+  "ms": 5468
  },
  "menu-help": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-help.png",
-  "png_sha256": "e4b0e1def9529c50f3de2ca78dbc7d6261a65e07661eb7c85a7e44bb9326b2c7",
+  "png_sha256": "6d450f11170fa2c26674178867168f2896b6852f0c15ea7b0eb1d0f3d74be867",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2102,10 +2198,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -2126,12 +2223,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -2159,7 +2263,6 @@
     "menu"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -2252,9 +2355,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2262,7 +2367,7 @@
     820
    ]
   },
-  "ms": 5101
+  "ms": 5139
  },
  "menu-model-picker": {
   "status": "step-failed",
@@ -2270,7 +2375,7 @@
   "failed_step": 1,
   "error": "timed out waiting for .composer button \"Opus 5\"",
   "file": "oc/menu-model-picker.png",
-  "png_sha256": "2c450f0c560a6d0da0e5ee6b07a6d4141053b8a9139969f004876f8c58552d16",
+  "png_sha256": "80ad4eacc7b83516135ec961a1f6d11c48dd96fe3a8e4057b0baf644d5e9ced5",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2281,10 +2386,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -2304,12 +2410,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -2335,7 +2448,6 @@
    ],
    "roles": [],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -2420,9 +2532,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2430,13 +2544,13 @@
     820
    ]
   },
-  "ms": 14117
+  "ms": 13727
  },
  "menu-repo-actions": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-repo-actions.png",
-  "png_sha256": "a3ce7f639f5159f2d21f967747080676df7d170e8272a51512c4ef6227117468",
+  "png_sha256": "4ae7261f99ae973e215ce5fc774148a97db9b2af08da6ee8647af1af4634a787",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2447,10 +2561,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -2470,12 +2585,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -2503,7 +2625,6 @@
     "menu"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -2590,9 +2711,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2600,13 +2723,13 @@
     820
    ]
   },
-  "ms": 6207
+  "ms": 4120
  },
  "menu-workspace-context": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-workspace-context.png",
-  "png_sha256": "6fd73e03b5af28620316b85878bda5b6b46685a191a46ebe75f8ad90c77a35de",
+  "png_sha256": "e30a5dabac79c0d2f6064716920a03791562b26b0fa43287e4601a6f497af526",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2617,10 +2740,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -2641,12 +2765,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -2674,7 +2805,6 @@
     "menu"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -2702,6 +2832,8 @@
     "Set status",
     "Move to section",
     "Rename",
+    "Copy link",
+    "⌘⇧C",
     "Archive",
     "⌘⇧A",
     "tide-web",
@@ -2768,9 +2900,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2778,13 +2912,13 @@
     820
    ]
   },
-  "ms": 5597
+  "ms": 4832
  },
  "menu-workspace-status": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-workspace-status.png",
-  "png_sha256": "de1828ba5c46876f781b91f813ced7d6a9fe0890d0d66b9e0e44db79e922bb06",
+  "png_sha256": "8eac670f74cd350c944849f61d46a8cc9fc72495612ac9715ba4e0db475f5556",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2795,10 +2929,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -2820,12 +2955,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -2854,7 +2996,6 @@
     "menu"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -2888,6 +3029,8 @@
     "Canceled",
     "Move to section",
     "Rename",
+    "Copy link",
+    "⌘⇧C",
     "Archive",
     "⌘⇧A",
     "tide-web",
@@ -2954,9 +3097,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2964,7 +3109,7 @@
     820
    ]
   },
-  "ms": 5361
+  "ms": 4932
  },
  "needs-permission": {
   "status": "no-equivalent",
@@ -2974,7 +3119,7 @@
   "status": "captured",
   "steps": 0,
   "file": "oc/onboarding-signed-out.png",
-  "png_sha256": "6414ff41479f2d4deb08d0cd2c514be544f53436a7b4793e0c9c178334b9bcad",
+  "png_sha256": "9a4ab6bc9298d4596cb6878219b7145dcb004fbac36d3a114362be6ef6de3aa9",
   "dom": {
    "labels": [
     "Slide progress"
@@ -2997,13 +3142,13 @@
     820
    ]
   },
-  "ms": 3886
+  "ms": 4696
  },
  "palette-all": {
   "status": "captured",
   "steps": 1,
   "file": "oc/palette-all.png",
-  "png_sha256": "f5e35f9f2829ce42c66e74db98a72fbf450eebe843b4b3f58db210970c0b23f7",
+  "png_sha256": "25de67caea31df102989a6f16b45618db597d0671a69705fe6b6e754ab839927",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3014,10 +3159,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -3037,12 +3183,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -3077,7 +3230,6 @@
     "listbox"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -3162,9 +3314,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$",
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "All",
     "Workspaces",
     "Projects",
@@ -3188,7 +3342,8 @@
     "Next workspace",
     "⌘⌥↓",
     "Previous workspace",
-    "⌘⌥↑"
+    "⌘⌥↑",
+    "View archived workspaces"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -3196,13 +3351,13 @@
     820
    ]
   },
-  "ms": 4742
+  "ms": 4751
  },
  "palette-search": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-search.png",
-  "png_sha256": "b504a091848a819bae7656634176046157facc2a1de48a998a16e3893fa275b3",
+  "png_sha256": "86e50885e047e3dd9204d7465a1512443f484a935994d98b51ccea377f6446d6",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3213,10 +3368,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -3236,12 +3392,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -3272,7 +3435,6 @@
     "listbox"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -3357,9 +3519,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$",
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "All",
     "Workspaces",
     "Projects",
@@ -3373,13 +3537,13 @@
     820
    ]
   },
-  "ms": 5158
+  "ms": 7538
  },
  "palette-workspaces": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-workspaces.png",
-  "png_sha256": "c0e7b3177821fa206d2e3c23fc5951eb19d7bd67b1a184b7c2533d2f3afd580c",
+  "png_sha256": "6d0a26af330f238f791482713898d1b0a6b0fc0af6df5c2fb0ee668b6cb1c09b",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3390,10 +3554,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -3413,12 +3578,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -3442,6 +3614,7 @@
     "Clear terminal scrollback",
     "Terminal input",
     "Command palette",
+    "Archived workspaces",
     "Search workspaces...",
     "Workspaces"
    ],
@@ -3450,7 +3623,6 @@
     "listbox"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -3535,9 +3707,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$",
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "All",
     "Workspaces",
     "Projects",
@@ -3553,7 +3727,7 @@
     820
    ]
   },
-  "ms": 5146
+  "ms": 6154
  },
  "route-cloud-collab-onboarding": {
   "status": "no-equivalent",
@@ -3631,13 +3805,13 @@
     820
    ]
   },
-  "ms": 5999
+  "ms": 6622
  },
  "settings-advanced": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-advanced.png",
-  "png_sha256": "2fda33a7d3869da8fb009824ab3007658317d980a235a9c3b964461d746ebb6d",
+  "png_sha256": "558d907d0ac9f30344e2bcdb4caaaa97d87979c907b7eb5f26c7a89cfac374d4",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3696,7 +3870,7 @@
     820
    ]
   },
-  "ms": 6239
+  "ms": 7163
  },
  "settings-appearance": {
   "status": "captured",
@@ -3777,7 +3951,7 @@
     820
    ]
   },
-  "ms": 5783
+  "ms": 6632
  },
  "settings-cloud-setup": {
   "status": "no-equivalent",
@@ -3826,13 +4000,13 @@
     820
    ]
   },
-  "ms": 5936
+  "ms": 6492
  },
  "settings-experimental": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-experimental.png",
-  "png_sha256": "4e15b5af4f3891029ac449ff8bd676ccbccd9ce7f377298b397658d9187821d4",
+  "png_sha256": "20eeba918b037a648da831c4b37a2c9e779a9cd087ffba13d40e148e05f1143d",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3842,6 +4016,7 @@
     "Auto-run after setup",
     "Show agent cost",
     "Tab Freak Mode",
+    "Show sidebar resource usage",
     "Graphite stack support"
    ],
    "roles": [],
@@ -3873,6 +4048,8 @@
     "Show estimated agent costs for cloud workspaces.",
     "Tab Freak Mode",
     "Allow up to 10 chat and terminal tabs per workspace.",
+    "Show sidebar resource usage",
+    "Shows CPU and memory usage in the workspace sidebar footer.",
     "Graphite stack support",
     "Detect Graphite stacks for the active local workspace and show stack-aware UI in the git panel. Cloud workspaces are unaffected. When off, OpenConductor never runs the gt CLI. Install gt to enable. Warning: appears to sometimes cause performance issues"
    ],
@@ -3882,7 +4059,7 @@
     820
    ]
   },
-  "ms": 5863
+  "ms": 5801
  },
  "settings-general": {
   "status": "captured",
@@ -3931,7 +4108,7 @@
     820
    ]
   },
-  "ms": 5742
+  "ms": 7160
  },
  "settings-git": {
   "status": "captured",
@@ -3990,7 +4167,7 @@
     820
    ]
   },
-  "ms": 6357
+  "ms": 6542
  },
  "settings-internal": {
   "status": "no-equivalent",
@@ -4822,7 +4999,7 @@
     820
    ]
   },
-  "ms": 5864
+  "ms": 6524
  },
  "settings-models": {
   "status": "captured",
@@ -4887,7 +5064,7 @@
     820
    ]
   },
-  "ms": 5953
+  "ms": 6199
  },
  "settings-org-computer": {
   "status": "no-equivalent",
@@ -4925,7 +5102,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-providers.png",
-  "png_sha256": "00359ac6caf4ddf3a56d82edbef76340cd885e2371df40ddadca07bb6fcfca15",
+  "png_sha256": "0000a5319cdabf2c2473b03c7f370a6887d77a95c11a1a96859326df0f0ffd53",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4933,8 +5110,20 @@
     "Esc",
     "Claude Code",
     "Claude Code provider",
+    "Use Claude Code with Chrome",
+    "Claude Code executable path",
+    "/usr/local/bin/claude",
+    "Browse for executable",
+    "Browse for executable",
+    "Claude settings",
     "Codex",
     "Codex provider",
+    "Codex personality for new chats",
+    "Codex executable path",
+    "/usr/local/bin/codex",
+    "Browse for executable",
+    "Browse for executable",
+    "Codex config",
     "Cursor",
     "Cursor provider",
     "Cursor API key",
@@ -4967,10 +5156,28 @@
     "Using Claude Code login",
     "Provider",
     "Save",
+    "Use Claude Code with Chrome",
+    "Allow Claude Code to control your Chrome browser. To use this feature, first install the",
+    "Claude Code Chrome extension",
+    ". View",
+    "the docs",
+    "to learn more.",
+    "Claude Code executable path",
+    "Override the bundled Claude Code executable with a custom one. Leave empty to use the bundled version (recommended).",
+    "Claude settings",
+    "~/.claude/settings.json",
+    "Open in",
     "Codex",
     "Using ChatGPT (Codex login)",
     "Provider",
     "Save",
+    "Codex personality for new chats",
+    "Style to use when a new chat starts with a Codex model",
+    "Codex executable path",
+    "Override the bundled Codex executable with a custom one. Leave empty to use the bundled version (recommended).",
+    "Codex config",
+    "~/.codex/config.toml",
+    "Open in",
     "Cursor",
     "Cursor API key: cursor_api_key is not set",
     "Provider",
@@ -4979,7 +5186,8 @@
     "OpenCode",
     "Using OpenCode login",
     "Provider",
-    "Save"
+    "Save",
+    "Advanced"
    ],
    "url": "tauri://localhost/settings/user/providers",
    "viewport": [
@@ -4987,13 +5195,13 @@
     820
    ]
   },
-  "ms": 6225
+  "ms": 6128
  },
  "settings-repo-actions": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-actions.png",
-  "png_sha256": "66586281fd44ad0ecb5d86ad0f1fcfd5076afc2e09c901f1ffabcdff034b328b",
+  "png_sha256": "c0fe5c8d5891dbc958a831256175b7f8b6ac17f9bbbce6c66310a23cdeafb51e",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5043,7 +5251,7 @@
     "General preferences",
     "Add custom instructions sent to the agent at the start of every new chat.",
     "Settings file:",
-    "/home/runner/uimap/run/repos/tide-web/.conductor/settings.local.toml"
+    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/actions",
    "viewport": [
@@ -5051,13 +5259,13 @@
     820
    ]
   },
-  "ms": 6766
+  "ms": 8244
  },
  "settings-repo-environment": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-environment.png",
-  "png_sha256": "f254e51f51c00404c62501e8d22a233bd85e836b48337f7e83115e14d403a59e",
+  "png_sha256": "a5ac24a83634c6c95f65f088c28644e384b1da5c733f9b228687b70ffdf63c06",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5104,7 +5312,7 @@
     "No variables yet.",
     "Add variable",
     "Settings file:",
-    "/home/runner/uimap/run/repos/tide-web/.conductor/settings.local.toml"
+    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/environment",
    "viewport": [
@@ -5112,13 +5320,13 @@
     820
    ]
   },
-  "ms": 7374
+  "ms": 6044
  },
  "settings-repo-git": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-git.png",
-  "png_sha256": "8f26d842f2e356cf57049ac9988b2053283ee4beabe1bef6c532d11bc2b3c6bf",
+  "png_sha256": "ed8465cb2ce32522e1537602d48afd9c134b597c3c31847662a9c08e80f5514e",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5163,7 +5371,7 @@
     "Set upstream on plain git push",
     "Configure new workspaces so plain git push sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream. Currently from default.",
     "Settings file:",
-    "/home/runner/uimap/run/repos/tide-web/.conductor/settings.local.toml"
+    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/git",
    "viewport": [
@@ -5171,13 +5379,13 @@
     820
    ]
   },
-  "ms": 6120
+  "ms": 5875
  },
  "settings-repo-misc": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-misc.png",
-  "png_sha256": "f7ab55c78f357642239ece6798d8c1fd32f1b63f617dc9de557f83b76593a5c3",
+  "png_sha256": "def2d6dbd6923af993b331d3e1db1b80a88c410b254ee5eb94cb8bb04fd33a4b",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5185,7 +5393,7 @@
     "Esc",
     "Root path",
     "Workspaces path",
-    "/home/runner/uimap/run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web"
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web"
    ],
    "roles": [],
    "texts": [
@@ -5215,12 +5423,12 @@
     "Back",
     "Root path",
     "Do not move or delete this directory. Instead, remove the repository in OpenConductor.",
-    "/home/runner/uimap/run/repos/tide-web",
+    "/tmp/oc-uimap-run/repos/tide-web",
     "Workspaces path",
     "Do not move or delete the workspace subdirectories. Instead, archive workspaces in OpenConductor.",
-    "/home/runner/uimap/run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web",
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web",
     "Settings file:",
-    "/home/runner/uimap/run/repos/tide-web/.conductor/settings.local.toml"
+    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/misc",
    "viewport": [
@@ -5228,13 +5436,13 @@
     820
    ]
   },
-  "ms": 6437
+  "ms": 7935
  },
  "settings-repo-scripts": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-scripts.png",
-  "png_sha256": "b6160b3a4328ea3a739e94248b7f9e554fb9ca527aa31eea5ff6782f8c043064",
+  "png_sha256": "74e253ac4fbc729d302dbe151b754b73dc31c336af4d3d0ee21c6c5e73ed93c8",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5278,7 +5486,7 @@
     "Runs when a workspace is archived.",
     "None",
     "Settings file:",
-    "/home/runner/uimap/run/repos/tide-web/.conductor/settings.local.toml"
+    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/scripts",
    "viewport": [
@@ -5286,7 +5494,7 @@
     820
    ]
   },
-  "ms": 6232
+  "ms": 8364
  },
  "settings-search": {
   "status": "step-failed",
@@ -5337,7 +5545,7 @@
     820
    ]
   },
-  "ms": 13242
+  "ms": 14200
  },
  "settings-terminal": {
   "status": "step-failed",
@@ -5388,13 +5596,13 @@
     820
    ]
   },
-  "ms": 13629
+  "ms": 15084
  },
  "sidebar-after-archive": {
   "status": "captured",
   "steps": 2,
   "file": "oc/sidebar-after-archive.png",
-  "png_sha256": "23db0694e9774919a4ce3881e664491e89192cde2f699c381ea2872242b8cf2d",
+  "png_sha256": "dfa23e2da5e714b50bdd446343a72ac3299cb810e36ed06c92852648bbe34810",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5405,10 +5613,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -5426,7 +5635,6 @@
    ],
    "roles": [],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -5455,15 +5663,13 @@
     820
    ]
   },
-  "ms": 6801
+  "ms": 6888
  },
  "toast-copied-link": {
-  "status": "step-failed",
+  "status": "captured",
   "steps": 2,
-  "failed_step": 1,
-  "error": "timed out waiting for [role=menu] [role=menuitem] \"Copy link\"",
   "file": "oc/toast-copied-link.png",
-  "png_sha256": "6fd73e03b5af28620316b85878bda5b6b46685a191a46ebe75f8ad90c77a35de",
+  "png_sha256": "26326539c88f13ed202dd0d986666438e69c815ee4d5582ca464a940b57ffb5e",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5474,10 +5680,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -5491,19 +5698,25 @@
     "Create workspace in dotfiles",
     "Create workspace",
     "dotfiles actions",
-    "Workspace actions",
     "Help",
     "Help",
     "Settings",
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -5525,13 +5738,13 @@
     "New terminal tab",
     "Clear terminal scrollback",
     "Clear terminal scrollback",
-    "Terminal input"
+    "Terminal input",
+    "Dismiss"
    ],
    "roles": [
-    "menu"
+    "status"
    ],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -5552,15 +5765,6 @@
     "D",
     "dotfiles",
     "No workspaces",
-    "Mark as unread",
-    "R",
-    "Pin",
-    "P",
-    "Set status",
-    "Move to section",
-    "Rename",
-    "Archive",
-    "⌘⇧A",
     "tide-web",
     "/",
     "moscow",
@@ -5625,9 +5829,12 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
+    "Copied link"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -5635,13 +5842,13 @@
     820
    ]
   },
-  "ms": 13541
+  "ms": 5547
  },
  "workspace-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-chat.png",
-  "png_sha256": "2c450f0c560a6d0da0e5ee6b07a6d4141053b8a9139969f004876f8c58552d16",
+  "png_sha256": "80ad4eacc7b83516135ec961a1f6d11c48dd96fe3a8e4057b0baf644d5e9ced5",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5652,10 +5859,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -5675,12 +5883,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -5706,7 +5921,6 @@
    ],
    "roles": [],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -5791,9 +6005,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -5801,13 +6017,13 @@
     820
    ]
   },
-  "ms": 5310
+  "ms": 7237
  },
  "workspace-new-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-new-chat.png",
-  "png_sha256": "2c450f0c560a6d0da0e5ee6b07a6d4141053b8a9139969f004876f8c58552d16",
+  "png_sha256": "80ad4eacc7b83516135ec961a1f6d11c48dd96fe3a8e4057b0baf644d5e9ced5",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5818,10 +6034,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -5841,12 +6058,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -5872,7 +6096,6 @@
    ],
    "roles": [],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -5957,9 +6180,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -5967,13 +6192,13 @@
     820
    ]
   },
-  "ms": 5615
+  "ms": 6245
  },
  "workspace-tool-calls": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-tool-calls.png",
-  "png_sha256": "2c450f0c560a6d0da0e5ee6b07a6d4141053b8a9139969f004876f8c58552d16",
+  "png_sha256": "80ad4eacc7b83516135ec961a1f6d11c48dd96fe3a8e4057b0baf644d5e9ced5",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5984,10 +6209,11 @@
     "Go back (⌘[)",
     "Go forward",
     "Go forward (⌘])",
-    "My Mac",
+    "Account menu",
     "Home (⌘⇧H)",
     "Create (⌘N)",
     "Search (⌘K)",
+    "My workspaces",
     "My workspaces actions",
     "Create workspace in tide-web",
     "Create workspace",
@@ -6007,12 +6233,19 @@
     "Settings (⌘,)",
     "Target branch main",
     "Target branch",
+    "Open in Finder",
+    "Open in Finder (⌘O)",
+    "Open in...",
+    "Open in...",
     "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "moscow",
     "Ask the agent to work in moscow…",
+    "Agent",
+    "Add attachment",
+    "Add attachment (⌘U)",
     "Changes",
     "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
@@ -6038,7 +6271,6 @@
    ],
    "roles": [],
    "texts": [
-    "M",
     "My Mac",
     "Home",
     "⌘⇧H",
@@ -6123,9 +6355,11 @@
     "×",
     "+",
     "⌫",
-    "runner@ws-vdhlzimzq4qpza67rk64",
+    "runner@ws-74ueoc",
     "f",
-    "tba:/home/runner/uimap/run/repos/tide-web$"
+    "4ldb7l5b",
+    "f",
+    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -6133,6 +6367,6 @@
     820
    ]
   },
-  "ms": 6298
+  "ms": 6496
  }
 }
