@@ -3,7 +3,7 @@ import { openUrl } from "../backend";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { BookIcon, ExternalIcon, HelpIcon, KeyboardIcon, MessageIcon } from "./Icons";
-import { HELP_ITEMS, nextIndex, versionLine, type HelpIcon as HelpIconName, type HelpItem } from "./helpMenu";
+import { HELP_ITEMS, nextIndex, versionLine, type HelpIcon as HelpIconName, type HelpItem } from "./helpMenuItems";
 
 function shortcut(commandId: string): string {
   const c = COMMANDS.find((cmd) => cmd.id === commandId);
