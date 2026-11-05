@@ -12,6 +12,7 @@ import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
 import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
+import type { ChatAgent } from "../features/chat/chatAgentChoice.ts";
 import { commandSet, isKnownCommand, parseSlashCommand } from "../features/chat/slashCommands.ts";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
@@ -104,7 +105,6 @@ interface ChatPanelProps extends Props {
 }
 
 // Which agent runs a chat; each keeps its own transcript.
-type ChatAgent = "reason" | "codex";
 const agentKey = (chatId: string) => `openconductor.agent.${chatId}`;
 const savedAgent = (chatId: string): ChatAgent => (localStorage.getItem(agentKey(chatId)) === "codex" ? "codex" : "reason");
 
@@ -466,35 +466,35 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         onQueue={(action) => (codex ? codexQueueAction : queueAction)(chatId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
         controls={
-          reason ? (
-            <>
-              <select className="agent-select" aria-label="Agent" value={agent} disabled={running} onChange={(e) => chooseAgent(e.target.value as ChatAgent)}>
-                <option value="reason">Reason</option>
-                <option value="codex">Codex</option>
-              </select>
-              {codex ? (
-                <select
-                  className="agent-select codex-access"
-                  aria-label="Codex access"
-                  value={access}
-                  disabled={running}
-                  onChange={(e) => {
-                    const next = e.target.value as CodexAccess;
-                    setAccess(next);
-                    void setCodexAccess(chatId, next);
-                  }}
-                >
-                  {(Object.keys(CODEX_ACCESS) as CodexAccess[]).map((k) => (
-                    <option key={k} value={k}>
-                      {CODEX_ACCESS[k].label}
-                    </option>
-                  ))}
-                </select>
-              ) : null}
-            </>
+          // Codex's access mode; the agent itself is picked in the model picker.
+          codex ? (
+            <select
+              className="agent-select codex-access"
+              aria-label="Codex access"
+              value={access}
+              disabled={running}
+              onChange={(e) => {
+                const next = e.target.value as CodexAccess;
+                setAccess(next);
+                void setCodexAccess(chatId, next);
+              }}
+            >
+              {(Object.keys(CODEX_ACCESS) as CodexAccess[]).map((k) => (
+                <option key={k} value={k}>
+                  {CODEX_ACCESS[k].label}
+                </option>
+              ))}
+            </select>
           ) : null
         }
-        picker={main && !codex ? <ChatModelPicker chatId={chatId} /> : review ? <span className="oc-review-model">{review.modelLabel}</span> : null}
+        picker={
+          review ? (
+            <span className="oc-review-model">{review.modelLabel}</span>
+          ) : (
+            // A review chat keeps its model. The agent changes only between turns.
+            <ChatModelPicker chatId={chatId} agent={codex ? "codex" : "reason"} onAgentChange={reason && !running ? chooseAgent : undefined} />
+          )
+        }
         slashCommands={codex ? CODEX_SLASH_COMMANDS : SLASH_COMMANDS}
         onCommand={(text) => {
           // Reason runs as an ACP agent and Codex here through its app server: Conductor's built-in commands are not wired for either yet.

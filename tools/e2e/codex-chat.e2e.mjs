@@ -163,12 +163,13 @@ try {
   assert.equal(cliPath, join(bin, "codex"));
   pass(`codex_cli_path finds the CLI in ~/.local/bin: ${cliPath}`);
 
-  // Pick Codex in the composer's agent menu.
-  await run(
-    `const s = document.querySelector('.agent-select');
-     Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, 'codex');
-     s.dispatchEvent(new Event('change', { bubbles: true }));`,
+  // Pick Codex in the composer's model picker (Conductor's picker picks the agent too).
+  await run("document.querySelector(\"[data-testid='composer-model-button']\").click();");
+  await waitFor("Codex in the model picker", () =>
+    run("return [...document.querySelectorAll('.oc-model-menu .oc-model-item')].some((b) => b.textContent.trim() === 'Codex') || null;"),
   );
+  await screenshot("codex-0-model-picker");
+  await run("[...document.querySelectorAll('.oc-model-menu .oc-model-item')].find((b) => b.textContent.trim() === 'Codex').click();");
   const placeholder = await waitFor("the Codex chat panel", () => chatText().then((t) => t && t.includes("Codex runs this chat") && t));
   pass(`agent menu switches the chat to Codex: "${placeholder.split("\n").find((l) => l.includes("Codex runs"))}"`);
   const access = await run("const s = document.querySelector('.codex-access'); return s && [s.value, [...s.options].map((o) => o.textContent)];");
