@@ -1,17 +1,36 @@
 // Minimal W3C WebDriver client for tauri-driver (no dependencies).
 const ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 
+// Repaints a 1px transparent outline every 50 ms for arguments[0] ms. See screenshot().
+const REPAINT_START = `
+let el = document.getElementById("__oc_e2e_repaint");
+if (!el) {
+  el = document.createElement("div");
+  el.id = "__oc_e2e_repaint";
+  el.setAttribute("aria-hidden", "true");
+  el.style.cssText = "position:fixed;left:0;top:0;width:1px;height:1px;pointer-events:none";
+  document.documentElement.appendChild(el);
+}
+clearInterval(window.__ocE2eRepaint);
+const until = Date.now() + arguments[0];
+window.__ocE2eRepaint = setInterval(() => {
+  el.style.outline = el.style.outline ? "" : "1px solid transparent";
+  if (Date.now() > until) clearInterval(window.__ocE2eRepaint);
+}, 50);`;
+const REPAINT_STOP = `clearInterval(window.__ocE2eRepaint); document.getElementById("__oc_e2e_repaint")?.remove();`;
+
 export class WebDriver {
   constructor(base = "http://127.0.0.1:4444") {
     this.base = base;
     this.sessionId = null;
   }
 
-  async #call(method, path, body) {
+  async #call(method, path, body, timeoutMs) {
     const res = await fetch(this.base + path, {
       method,
       headers: { "content-type": "application/json" },
       body: body === undefined ? undefined : JSON.stringify(body),
+      signal: timeoutMs === undefined ? undefined : AbortSignal.timeout(timeoutMs),
     });
     const json = await res.json().catch(() => ({}));
     if (!res.ok || json?.value?.error) {
@@ -65,8 +84,23 @@ export class WebDriver {
     return this.#call("GET", this.#s("/title"));
   }
 
-  screenshot() {
-    return this.#call("GET", this.#s("/screenshot")).then((b64) => Buffer.from(b64, "base64"));
+  /**
+   * PNG of the window. WebKitGTK takes it only after the page's next paint
+   * (WebAutomationSession::takeScreenshot waits on callAfterNextPresentationUpdate),
+   * so on an idle page, one with nothing left to repaint, the request never
+   * returns; Node's fetch then gives up after its 300 s headers timeout. Keep an
+   * invisible element repainting until the snapshot is taken, and bound the wait.
+   */
+  async screenshot(timeoutMs = 20000) {
+    await this.execute(REPAINT_START, [timeoutMs]);
+    try {
+      return Buffer.from(await this.#call("GET", this.#s("/screenshot"), undefined, timeoutMs), "base64");
+    } catch (e) {
+      if (e?.name !== "TimeoutError") throw e;
+      throw new Error(`screenshot timed out after ${timeoutMs} ms: WebKit painted no frame even with the page forced to repaint, so the webview may be stuck`);
+    } finally {
+      await this.execute(REPAINT_STOP).catch(() => undefined);
+    }
   }
 
   /** Poll `fn` until it returns a truthy value or `timeoutMs` passes. */
