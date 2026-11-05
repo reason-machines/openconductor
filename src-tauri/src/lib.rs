@@ -17,6 +17,7 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod bundled_bin;
 pub mod checkpoint;
 pub mod create_project;
 pub mod db;
@@ -171,7 +172,7 @@ async fn branch_prefix_settings() -> BranchPrefixInfo {
         .and_then(|dir| settings::load(&dir.join(settings::FILE_NAME)))
         .map(|s| s.git)
         .unwrap_or_default();
-    let github_username = std::process::Command::new("gh")
+    let github_username = std::process::Command::new(bundled_bin::gh_path())
         .args(["config", "get", "-h", "github.com", "user"])
         .output()
         .ok()
@@ -210,6 +211,8 @@ pub fn run() {
         .plugin(tauri_plugin_sql::Builder::new().build())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
+            // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
+            bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
             let db = db::open(&data_dir)?;
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(db);

@@ -7,7 +7,9 @@ The contract has three parts:
      Conductor.app (evidence/packaging/conductor-reference.json) is present with
      the same value type, unless evidence/packaging/divergences.json lists it
      with a reason;
-  3. signing (macOS only): the bundle verifies with `codesign --strict`, has the
+  3. resources: every file src-tauri/tauri.bundle.conf.json bundles is in
+     Contents/Resources and executable;
+  4. signing (macOS only): the bundle verifies with `codesign --strict`, has the
      hardened runtime, and is signed the expected way (ad-hoc or Developer ID).
 
 Usage:
@@ -28,6 +30,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 REFERENCE = ROOT / "evidence/packaging/conductor-reference.json"
 DIVERGENCES = ROOT / "evidence/packaging/divergences.json"
 TAURI_CONF = ROOT / "src-tauri/tauri.conf.json"
+BUNDLE_CONF = ROOT / "src-tauri/tauri.bundle.conf.json"
 URL_SCHEME = "openconductor"
 FOLDER_KEYS = (
     "NSDesktopFolderUsageDescription",
@@ -104,6 +107,14 @@ def check_parity(info, reference, divergences, r):
     r.add("parity:extra-keys", True, ", ".join(extra) or "none")
 
 
+def check_resources(app, bundle_conf, r):
+    """Each bundled tool (bin/gh) is in Contents/Resources and executable."""
+    for target in bundle_conf.get("bundle", {}).get("resources", {}).values():
+        path = app / "Contents/Resources" / target
+        ok = path.is_file() and os.access(path, os.X_OK)
+        r.add(f"resource:{target}", ok, "present" if ok else "missing or not executable")
+
+
 def codesign(*args):
     p = subprocess.run(["codesign", *args], capture_output=True, text=True)
     return p.returncode, p.stdout, p.stderr
@@ -143,6 +154,7 @@ def main(argv=None):
     ap.add_argument("--reference", type=pathlib.Path, default=REFERENCE)
     ap.add_argument("--divergences", type=pathlib.Path, default=DIVERGENCES)
     ap.add_argument("--tauri-conf", type=pathlib.Path, default=TAURI_CONF)
+    ap.add_argument("--bundle-conf", type=pathlib.Path, default=BUNDLE_CONF)
     a = ap.parse_args(argv)
 
     app = a.app.resolve()
@@ -158,6 +170,7 @@ def main(argv=None):
     r = Report()
     check_identity(app, info, conf, r)
     check_parity(info, reference, divergences, r)
+    check_resources(app, json.loads(a.bundle_conf.read_text()), r)
     if not a.skip_codesign:
         check_signing(app, reference, divergences, a.signing, r)
 
