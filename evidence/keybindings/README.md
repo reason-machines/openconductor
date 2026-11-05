@@ -228,6 +228,19 @@ Detail from the page (`lEa`) and row recorder (`rEa`) in `renderApp-D_fmY7hW.js`
 - Recorder buttons are disabled while overrides are loading. Queued messages
   default to off, so the opposite follow-up row is hidden until that flag loads.
 
+OpenConductor: `src/settings/KeyBindingsPage.tsx` at `/settings/user/key-bindings`,
+listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
+
+- It is not gated. OpenConductor has no `internal_settings_enabled` flag, so
+  gating would make the page unreachable. The nav label is ours; Conductor's
+  internal-settings nav entry was not read.
+- Overrides are stored as the same `keybinding_overrides_v1` JSON string, but at
+  the top level of the settings file (the backend keeps keys it does not model)
+  instead of a `settings` table row. They are read once at startup by
+  `KeybindingsProvider` and written through the settings page's own save, so a
+  later change on another settings page cannot overwrite them with a stale copy.
+  A failed save shows the toast "Failed to save keyboard shortcut".
+
 ## REA gaps
 
 - `analyze-javascript-application` finds no IPC operations: it does not model

@@ -26,7 +26,7 @@
   --sidebar-accent-foreground: #14100fcc;
   --sidebar-border: #14100f1a;
   /* Left inset that clears the macOS traffic lights when the sidebar is hidden. */
-  --traffic-lights-clearance: 64px;
+  --traffic-lights-clearance: 66px;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
   font-size: 13px;
   color: var(--text);
@@ -99,12 +99,38 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 /* Sidebar */
 /* Conductor's <aside>: border-r border-sidebar-border bg-sidebar-background/60 text-sidebar-foreground,
    so the fill is the sidebar token at 60% over the app background. */
-.sidebar { background: color-mix(in srgb, var(--sidebar-background) 60%, transparent); color: var(--sidebar-foreground); border-right: 1px solid var(--sidebar-border); display: flex; flex-direction: column; min-height: 0; min-width: 0; padding: 0 8px; }
-.sidebar-drag { height: 28px; flex: none; }
-.sidebar-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; padding: 4px 8px 12px; }
-.nav-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; text-align: left; width: 100%; }
-.nav-item:hover, .repo-toggle:hover, .ws-item:hover, .icon-btn:hover { background: var(--hover); }
-.nav-item.active, .ws-item.active { background: var(--active); font-weight: 500; }
+.sidebar { background: color-mix(in srgb, var(--sidebar-background) 60%, transparent); color: var(--sidebar-foreground); border-right: 1px solid var(--sidebar-border); display: flex; flex-direction: column; min-height: 0; min-width: 0; font-size: 14px; line-height: 20px; }
+
+/* Sidebar header, after Conductor's sidebar root and nav group in the decoded renderApp chunk:
+   a 32px drag row (pt-2) whose toggle clears the traffic lights, back/forward at top-2 right-3.5,
+   then the computer switcher and Home / Create / Search rows (px-1.5 py-1.5 gap-2 rounded-md,
+   size-4 icon box, gap-0.5 between rows) above a border-b. */
+.sb-header { position: relative; flex: none; }
+.sb-topbar { display: flex; align-items: center; height: 32px; padding: 8px 0 0 calc(16px + var(--traffic-lights-clearance) + min(4px, var(--traffic-lights-clearance))); }
+.sb-toggle { display: inline-flex; padding: 0; color: var(--muted); transition: color 0.15s; }
+.sb-toggle:hover { color: var(--text); }
+.sb-history { position: absolute; top: 8px; right: 14px; z-index: 1; display: flex; align-items: center; gap: 8px; }
+.sb-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; color: var(--sidebar-muted-foreground); }
+.sb-icon-btn:hover:not(:disabled) { color: var(--sidebar-foreground); background: var(--sidebar-accent); }
+.sb-icon-btn:disabled { cursor: default; }
+.sb-primary { display: flex; flex-direction: column; gap: 2px; padding: 6px; border-bottom: 1px solid var(--sidebar-border); }
+.sb-row { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; padding: 6px; border-radius: 6px; text-align: left; cursor: pointer; }
+.sb-row:hover, .sb-row[data-active="true"] { background: var(--sidebar-accent); }
+.sb-row-icon { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex: none; color: var(--sidebar-muted-foreground); }
+.sb-row-icon svg { margin-bottom: 1px; }
+.sb-row-label { color: var(--sidebar-muted-foreground); }
+.sb-row-hint { margin-left: auto; font: inherit; font-size: 12px; color: var(--sidebar-muted-foreground); opacity: 0; }
+.sb-row:hover .sb-row-hint, .sb-row:focus-visible .sb-row-hint { opacity: 1; }
+.sb-computer { cursor: default; }
+.sb-computer:hover { background: none; }
+.sb-avatar { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 999px; background: var(--sidebar-accent); color: var(--sidebar-muted-foreground); font-size: 10px; font-weight: 500; line-height: 1; }
+.sb-computer-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--sidebar-accent-foreground); }
+.sb-computer svg { flex: none; color: var(--sidebar-muted-foreground); }
+
+/* Workspace list and footer (restyled in the following sidebar PRs). */
+.repo-list, .sidebar-section-header, .sidebar-footer { margin: 0 8px; }
+.repo-toggle:hover, .ws-item:hover, .icon-btn:hover { background: var(--hover); }
+.ws-item.active { background: var(--active); font-weight: 500; }
 .sidebar-section-header { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 16px 8px 4px; }
 .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 5px; color: var(--muted); }
 .repo-list { overflow-y: auto; flex: 1; min-height: 0; padding-bottom: 8px; }
@@ -312,6 +338,15 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .ks-or { font-size: 12px; color: var(--muted); }
 .ks-keys kbd { min-width: 20px; padding: 1px 5px; border: 1px solid var(--border); border-radius: 4px; font: inherit; font-size: 12px; text-align: center; }
 .ks-dim { opacity: 0.5; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.kb-page { display: flex; flex-direction: column; gap: 24px; }
+.kb-search { margin: 0; }
+.kb-group h3 { margin: 0 0 8px; font-size: 14px; font-weight: 500; color: var(--muted); }
+.kb-row { padding: 8px 16px; }
+.kb-recorder { min-width: 120px; min-height: 28px; display: inline-flex; justify-content: flex-end; align-items: center; padding: 2px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: inherit; font: inherit; font-size: 12px; cursor: pointer; }
+.kb-recorder:disabled { opacity: 0.5; cursor: default; }
+.kb-recorder.recording { border-color: var(--accent, currentColor); color: var(--muted); }
+.kb-fixed { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
 .ks-empty { padding: 32px 0; text-align: center; font-size: 14px; color: var(--muted); }
 .settings-radios { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
 .settings-radio { display: flex; align-items: center; gap: 8px; cursor: pointer; }
@@ -337,3 +372,23 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .scripts-meta code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scripts-output { flex: 1; margin: 0; padding: 8px 12px 12px; overflow: auto; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; color: var(--text); }
 .scripts-error { padding: 6px 12px; font-size: 12px; color: #b4483c; }
+
+/* Create workspace: Add repository (Open project / Clone repo) */
+.add-repo { position: relative; display: flex; }
+.add-repo-pop { position: absolute; top: 100%; right: 0; z-index: 25; margin-top: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); padding: 6px; display: flex; flex-direction: column; gap: 6px; font-weight: 400; }
+.add-repo-menu { min-width: 160px; }
+.add-repo-menu button { text-align: left; padding: 6px 8px; border: 0; border-radius: 6px; background: none; color: inherit; font: inherit; cursor: pointer; }
+.add-repo-menu button:hover, .add-repo-menu button:focus-visible { background: var(--hover, rgba(127, 127, 127, 0.12)); outline: 0; }
+.add-repo-clone { width: min(380px, calc(100vw - 64px)); padding: 8px; }
+.add-repo-clone input { min-width: 0; }
+/* In the dialog the clone box spans the repository + base branch row; the menu stays under "Add…". */
+.create-row { position: relative; }
+.create-row .add-repo { position: static; }
+.create-row .add-repo-pop { left: 0; right: 0; width: auto; }
+.create-row .add-repo-menu { left: auto; right: calc(50% + 6px); }
+.settings-agents { display: flex; flex-direction: column; gap: 24px; }
+.settings-agent-header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.settings-agent-header h2 { font-size: 14px; font-weight: 600; margin: 0; }
+.settings-agent-status { font-size: 12px; color: var(--muted); }
+.settings-agent-status.warn { color: var(--del); }
+.settings-agent-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
