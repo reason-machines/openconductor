@@ -344,8 +344,12 @@ try {
     runAsync(`const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke("session_statuses").then(done, (e) => done({ error: String(e) }));`);
   const needsPermission = (list) => list.some((i) => i.status === "needs-user-permission" && i.label === "Needs permission");
   await send("permission");
-  // The fake runs its "bash: rm -rf build" tool row first, then asks.
-  await waitFor('the "bash: rm -rf build" tool row', () => chatText().then((t) => t.includes("bash: rm -rf build")));
+  // The fake runs its "bash: rm -rf build" tool call first, then asks. Conductor's
+  // row shows it as the tool name ("Bash") with the command in a chip, like step 4;
+  // the permission card below keeps the ACP title.
+  await waitFor('the Bash "rm -rf build" tool row', () =>
+    run(`return [...document.querySelectorAll(".chat-tool")].some((r) => /\\bBash\\b/.test(r.innerText) && r.innerText.includes("rm -rf build"));`),
+  );
   await waitFor("Needs permission on the sidebar row", async () => needsPermission(await sidebarStatus()), 15000).catch(async (e) => {
     throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await sidebarStatus())}`);
   });
