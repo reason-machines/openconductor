@@ -77,16 +77,24 @@ def save(state):
         json.dump(state, f)
 
 
-def prompt(rid, p):
+def begin(rid, p):
+    """Registers the prompt before its thread starts, so a session/cancel
+    read right after it always finds it (the thread may run later)."""
     sid = p["sessionId"]
     if sid not in opened:
-        return send({"id": rid, "error": {"code": -32002, "message": f"Resource not found: {sid}"}})
+        send({"id": rid, "error": {"code": -32002, "message": f"Resource not found: {sid}"}})
+        return None
     prev = running.pop(sid, None)
     if prev:
         send({"id": prev[0], "result": {"stopReason": "cancelled"}})
         prev[1].set()
     cancel = threading.Event()
     running[sid] = (rid, cancel)
+    return cancel
+
+
+def prompt(rid, p, cancel):
+    sid = p["sessionId"]
     state = load()
     session = state["sessions"][sid]
     session["turns"] += 1
@@ -179,7 +187,9 @@ def handle(msg):
                  for k, v in load()["sessions"].items()]
         send({"id": rid, "result": {"sessions": items}})
     elif method == "session/prompt":
-        threading.Thread(target=prompt, args=(rid, p), daemon=True).start()
+        cancel = begin(rid, p)
+        if cancel is not None:
+            threading.Thread(target=prompt, args=(rid, p, cancel), daemon=True).start()
     elif method == "session/cancel":
         entry = running.get(p.get("sessionId"))
         if entry:
