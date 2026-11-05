@@ -58,7 +58,7 @@ export type Action =
   | { type: "deleteWorkspace"; repoId: string; workspaceId: string }
   /** The workspace is back in `repos`: stop showing it as archived. */
   | { type: "unarchivedWorkspace"; workspaceId: string }
-  /** Unarchive from the archive-on-merge toast: put the workspace back where it was. */
+  /** Put a workspace row back (reducer only; the browser stand-in for unarchive). */
   | { type: "restoreWorkspace"; repoId: string; workspace: Workspace }
   /** The target-branch picker saved `intended_target_branch` (useTargetBranch writes the row). */
   | { type: "setWorkspaceTargetBranch"; repoId: string; workspaceId: string; branch: string }
@@ -446,17 +446,6 @@ export function useAppStore() {
               const ws = repo?.workspaces.find((w) => w.id === workspaceId);
               if (ws) void rerunSetup(repo, ws);
             }, () => undefined),
-          reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
-          emit: emitArchiveEvent,
-        });
-        return;
-      }
-      if (action.type === "restoreWorkspace") {
-        const repo = stateRef.current.repos.find((r) => r.id === action.repoId);
-        void startUnarchive(action, {
-          show: () => rawDispatch(action),
-          run: desktop ? () => unarchiveWorkspace(action.workspace.id) : null,
-          setup: () => void rerunSetup(repo, action.workspace),
           reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
           emit: emitArchiveEvent,
         });
