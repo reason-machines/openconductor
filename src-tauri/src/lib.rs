@@ -49,6 +49,7 @@ pub mod terminal_output;
 mod terminal_output_commands;
 #[cfg(all(test, unix))]
 mod test_exe;
+pub mod tool_cli;
 pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
