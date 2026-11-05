@@ -1,0 +1,106 @@
+{
+ "conductor_version": "0.87.6",
+ "source": {
+  "asset": "/assets/index-BGEQ8YjU.js",
+  "asset_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+  "asset_table": "evidence/frontend/tauri-assets-manifest.json",
+  "method": "Scan of the decoded embedded frontend (the tree REA analyze-javascript-application read) for 'plugin:<name>|<command>' invoke strings, core plugins excluded. REA has no command that lists a Tauri app's plugin invokes, and its analyze-javascript-application Evidence contains none of them (rea-test-report.md)."
+ },
+ "note": "Command names only. Derived data from a third-party app; untrusted, kept to match behaviour. A command here is bundled into the frontend through the plugin's JS wrapper; that shows the wrapper is imported, not that every command is reached.",
+ "linked_plugins": [
+  "tauri-plugin-clipboard-manager",
+  "tauri-plugin-deep-link",
+  "tauri-plugin-dialog",
+  "tauri-plugin-fs",
+  "tauri-plugin-http",
+  "tauri-plugin-notification",
+  "tauri-plugin-opener",
+  "tauri-plugin-os",
+  "tauri-plugin-shell",
+  "tauri-plugin-sql",
+  "tauri-plugin-store",
+  "tauri-plugin-updater",
+  "tauri-plugin-window-state"
+ ],
+ "frontend_commands": {
+  "clipboard-manager": [
+   "read_text",
+   "write_html",
+   "write_text"
+  ],
+  "deep-link": [
+   "get_current"
+  ],
+  "dialog": [
+   "confirm",
+   "open",
+   "save"
+  ],
+  "fs": [
+   "copy_file",
+   "exists",
+   "fstat",
+   "ftruncate",
+   "mkdir",
+   "open",
+   "read",
+   "read_dir",
+   "read_file",
+   "read_text_file",
+   "remove",
+   "rename",
+   "seek",
+   "stat",
+   "unwatch",
+   "watch",
+   "write",
+   "write_file",
+   "write_text_file"
+  ],
+  "http": [
+   "fetch",
+   "fetch_cancel",
+   "fetch_read_body",
+   "fetch_send"
+  ],
+  "notification": [
+   "is_permission_granted"
+  ],
+  "opener": [
+   "open_path",
+   "open_url",
+   "reveal_item_in_dir"
+  ],
+  "process": [
+   "exit",
+   "restart"
+  ],
+  "shell": [
+   "execute",
+   "kill",
+   "open",
+   "spawn",
+   "stdin_write"
+  ],
+  "sql": [
+   "close",
+   "execute",
+   "load",
+   "select"
+  ],
+  "updater": [
+   "check",
+   "download",
+   "download_and_install",
+   "install"
+  ]
+ },
+ "linked_without_frontend_commands": [
+  "os",
+  "store",
+  "window-state"
+ ],
+ "frontend_commands_without_linked_crate": [
+  "process"
+ ]
+}

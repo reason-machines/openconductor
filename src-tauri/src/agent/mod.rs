@@ -17,6 +17,10 @@
 //!   Gateway), Cursor and OpenCode providers.
 //! * [`codex_cli`] - launching Codex: [`codex_cli::CodexPolicy`] (approval
 //!   policy and sandbox, or inherit) and the `codex app-server` command line.
+//! * [`codex_rpc`] - the JSON-RPC requests the app sends a running `codex
+//!   app-server`: handshake, threads, turns and approval answers.
+//! * [`codex_events`] - what the app-server sends back: responses, approval
+//!   requests and turn notifications.
 //! * [`env`] - [`AgentKind`] and [`LaunchEnv`], the environment an agent
 //!   process is launched with. A launch clears every inherited variable that
 //!   would route the agent elsewhere before setting its own.
@@ -41,6 +45,8 @@ pub mod claude_session;
 pub mod claude_stream;
 pub mod codex;
 pub mod codex_cli;
+pub mod codex_events;
+pub mod codex_rpc;
 pub mod env;
 pub mod keychain;
 pub mod provider;
