@@ -75,6 +75,31 @@ it fires on the pressed event or is equivalent to the recorded shortcut. So
 re-recording Cmd+K for the palette reports "Clear terminal scrollback"
 (`renderApp-D_fmY7hW.js`, the recorder's keydown handler).
 
+## Dispatcher
+
+From `renderApp-D_fmY7hW.js` on Sven's Mac (a zustand store with
+`register`/`unregister`/`dispatch`; window keydown listener in the capture phase,
+plus a bubble-phase one for a bare Escape that nothing else took).
+
+- Priorities: LOW 10, NORMAL 50, HIGH 100, TERMINAL 150, DIALOG 200.
+- Ignored: keys while a `[data-keybinding-recorder-active="true"]` element is in
+  the event path, and lone Meta/Control/Alt/Shift.
+- Focus: typing means an INPUT or TEXTAREA in the event path, or a
+  contenteditable element; terminal means the target is inside `[data-terminal]`.
+- Backspace outside a text field is always `preventDefault`ed. A bare Escape
+  while typing (not in a terminal) blurs the field and stops there.
+- A handler fires when its scope is focused, the key and modifiers match, and
+  `when` allows it: terminal focus needs `enableOnTerminalFocus`;
+  `requireTerminalFocus` needs terminal focus; a shortcut without modifiers needs
+  `allowWhileTyping` or `requireTerminalFocus` while typing or in a terminal;
+  `isGlobal` then passes; otherwise typing needs `enableOnInputFocus`; listed
+  `enableOnDialogIds` need that dialog open, and unlisted handlers need no dialog.
+- A held-key repeat runs only handlers with `allowRepeat`; with none, the event
+  is swallowed.
+- Order: priority, then more modifiers first. A callback returning `false`
+  passes to the next. The first that takes it sends `keyboard_shortcut_used`
+  with `keybinding_id`, plus `active_dialog_id` and `telemetry_context` when set.
+
 ## Help dialog (`openKeyboardShortcuts`, default ⌥⌘/)
 
 - Title "Keyboard shortcuts" with an icon, and a search input "Search shortcuts...".
