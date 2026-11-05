@@ -10,6 +10,7 @@ on:
       - "package-lock.json"
       - "scripts/package-macos.sh"
       - "tools/check_macos_bundle.py"
+      - "tools/test_check_macos_bundle.py"
       - "evidence/packaging/**"
       - ".github/workflows/package-macos.yml"
 
@@ -33,10 +34,17 @@ jobs:
       - run: npm ci
       - name: Build and sign (ad-hoc, hardened runtime)
         run: scripts/package-macos.sh --identity -
+      - name: Check the bundle against the packaging contract
+        run: |
+          python3 tools/check_macos_bundle.py src-tauri/target/debug/bundle/macos/OpenConductor.app \
+            --signing adhoc --report bundle-check.json
       - name: Zip the bundle
         run: ditto -c -k --keepParent src-tauri/target/debug/bundle/macos/OpenConductor.app OpenConductor-debug.zip
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: OpenConductor-debug-macos
-          path: OpenConductor-debug.zip
+          path: |
+            OpenConductor-debug.zip
+            bundle-check.json
           retention-days: 7

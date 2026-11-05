@@ -1,7 +1,7 @@
 {
  "schema": "openconductor.parity-verdicts.v1",
  "ref": "origin/main",
- "verified_at": "2026-11-05",
+ "verified_at": "2026-11-05 (main d846158)",
  "method": "Read on main: src/, src-tauri/src/, crates/. 'backend' = logic or a command exists and is tested, but no UI path reaches it.",
  "items": {
   "sidebar.home-entry": {
@@ -13,8 +13,8 @@
    "why": "Repos render as collapsible groups with nested workspace rows (Sidebar.tsx, store toggleRepo)."
   },
   "sidebar.repo-order": {
-   "verdict": "missing",
-   "why": "No ordering UI or logic; display_order exists only in crates/openconductor-db/migrations/0001_core.sql, which the app does not depend on."
+   "verdict": "backend",
+   "why": "crates/openconductor-db/src/repos.rs lists repos by display_order, created_at and appends new ones at the end, but the app does not depend on that crate and the sidebar renders insertion order from localStorage."
   },
   "sidebar.repo-hide": {
    "verdict": "missing",
@@ -122,7 +122,7 @@
   },
   "home.layout": {
    "verdict": "implemented",
-   "why": "Wordmark, three label-only cards, 1-to-3 column grid at 768px, drag region, fade-in and has-workspaces spacing (HomeScreen.tsx, styles.css) follow evidence/screens/home.md."
+   "why": "Matches evidence/screens: three label-only cards in a 1-to-3 grid sit at the reference position (y 368-495; x offset 4 px from the narrower sidebar), wordmark centered above, drag region, fade-in. Differences: card icons for GitHub (cloud vs globe) and Quick start (sparkle vs folder-plus); the wordmark is our own brand by design."
   },
   "home.sidebar-toggle": {
    "verdict": "implemented",
@@ -247,6 +247,34 @@
   "create.autostart-run": {
    "verdict": "missing",
    "why": "crates/scripts parses a scripts.auto_run_after_setup setting, but nothing acts on it and that crate is not an app dependency; workspace::scripts::spawn_run is never called after setup."
+  },
+  "sidebar.top-bar": {
+   "verdict": "missing",
+   "why": "No in-sidebar toggle button (toggle is keyboard-only, plus a Home button when hidden) and no back/forward navigation; the reference shows all three at the top of the sidebar."
+  },
+  "sidebar.computer-switcher": {
+   "verdict": "missing",
+   "why": "Sidebar starts with our logo and name; the reference starts with a computer/account switcher."
+  },
+  "sidebar.primary-nav": {
+   "verdict": "partial",
+   "why": "Home row only; no Create or Search rows."
+  },
+  "sidebar.workspaces-group": {
+   "verdict": "missing",
+   "why": "We show an uppercase 'Repositories' header with a '+'; the reference shows a sentence-case 'my workspaces' label."
+  },
+  "sidebar.footer-actions": {
+   "verdict": "missing",
+   "why": "Footer shows app name, version and platform text; the reference shows help and settings icon buttons."
+  },
+  "sidebar.colors": {
+   "verdict": "missing",
+   "why": "Measured on REA captures at 1440x900: sidebar edge at x=248 vs 256; dark sidebar #121417 vs #1c1817; light sidebar #eeeeeb vs #fcfcfb. REA compare-web-screenshots (threshold 24): 3.1% (dark) / 5.4% (light) of sidebar pixels differ."
+  },
+  "home.colors": {
+   "verdict": "missing",
+   "why": "Measured: dark main #17191d vs #141110, dark card #24272d vs #211e1c; light main #f7f7f5 vs #ffffff, light card #efefec vs #fafaf9. Every pixel differs at threshold 0 (REA compare-web-screenshots)."
   }
  }
 }

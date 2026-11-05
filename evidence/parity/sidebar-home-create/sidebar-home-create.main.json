@@ -1,31 +1,31 @@
 {
  "ref": "origin/main",
- "source_files": 68,
- "detector_parity_pct": 57.4,
+ "source_files": 79,
+ "detector_parity_pct": 54.4,
  "areas": {
   "sidebar": {
-   "items": 27,
+   "items": 33,
    "implemented": 10,
-   "partial": 7,
-   "missing": 10,
-   "parity_pct": 50.0,
+   "partial": 10,
+   "missing": 13,
+   "parity_pct": 45.5,
    "verdict_implemented": 2,
-   "verdict_partial": 9,
-   "verdict_backend": 1,
-   "verdict_missing": 15,
-   "verdict_parity_pct": 25.0
+   "verdict_partial": 10,
+   "verdict_backend": 2,
+   "verdict_missing": 19,
+   "verdict_parity_pct": 22.7
   },
   "home": {
-   "items": 17,
+   "items": 18,
    "implemented": 6,
-   "partial": 4,
+   "partial": 5,
    "missing": 7,
-   "parity_pct": 47.1,
+   "parity_pct": 47.2,
    "verdict_implemented": 2,
    "verdict_partial": 7,
    "verdict_backend": 1,
-   "verdict_missing": 7,
-   "verdict_parity_pct": 33.8
+   "verdict_missing": 8,
+   "verdict_parity_pct": 31.9
   },
   "create": {
    "items": 17,
@@ -63,6 +63,74 @@
    "recheck": false
   },
   {
+   "id": "sidebar.top-bar",
+   "area": "sidebar",
+   "feature": "Sidebar top bar with a sidebar toggle button and back/forward history arrows",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "toggle_?(left_?)?sidebar|toggleSidebar",
+     "matched": true,
+     "file": "src/App.tsx"
+    },
+    {
+     "pattern": "go_?back|goBack|history\\.back|navigate\\(-1\\)",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "go_?forward|goForward|history\\.forward",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No in-sidebar toggle button (toggle is keyboard-only, plus a Home button when hidden) and no back/forward navigation; the reference shows all three at the top of the sidebar.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.computer-switcher",
+   "area": "sidebar",
+   "feature": "Computer/account switcher at the top of the sidebar (initial avatar, name, chevron)",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "computer_?switcher|ComputerSwitcher|org_?switcher|OrgSwitcher|account_?switcher|AccountSwitcher",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "Sidebar starts with our logo and name; the reference starts with a computer/account switcher.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.primary-nav",
+   "area": "sidebar",
+   "feature": "Primary nav rows Home, Create and Search above the workspace list",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "HomeIcon|>Home<",
+     "matched": true,
+     "file": "src/components/Icons.tsx"
+    },
+    {
+     "pattern": "(nav|sidebar)\\w*.{0,60}create|CreateNav|create_?nav",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "(nav|sidebar)\\w*.{0,60}search|SearchNav|search_?nav",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "partial",
+   "why": "Home row only; no Create or Search rows.",
+   "recheck": false
+  },
+  {
    "id": "sidebar.repo-groups",
    "area": "sidebar",
    "feature": "Workspaces listed under their repository, repositories as collapsible groups",
@@ -84,6 +152,22 @@
    "recheck": false
   },
   {
+   "id": "sidebar.workspaces-group",
+   "area": "sidebar",
+   "feature": "Workspace list grouped under a sentence-case 'my workspaces' label rather than an uppercase repositories header",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "my_?workspaces|myWorkspaces",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "We show an uppercase 'Repositories' header with a '+'; the reference shows a sentence-case 'my workspaces' label.",
+   "recheck": false
+  },
+  {
    "id": "sidebar.repo-order",
    "area": "sidebar",
    "feature": "Manual, persisted ordering of repositories",
@@ -95,9 +179,9 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "missing",
-   "why": "No ordering UI or logic; display_order exists only in crates/openconductor-db/migrations/0001_core.sql, which the app does not depend on.",
-   "recheck": true
+   "verdict": "backend",
+   "why": "crates/openconductor-db/src/repos.rs lists repos by display_order, created_at and appends new ones at the end, but the app does not depend on that crate and the sidebar renders insertion order from localStorage.",
+   "recheck": false
   },
   {
    "id": "sidebar.repo-hide",
@@ -499,6 +583,27 @@
    "recheck": false
   },
   {
+   "id": "sidebar.footer-actions",
+   "area": "sidebar",
+   "feature": "Sidebar footer with help and settings icon buttons",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "HelpIcon|help_?button|open_?help|openHelp",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "SettingsIcon|open_?settings|openSettings",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "Footer shows app name, version and platform text; the reference shows help and settings icon buttons.",
+   "recheck": false
+  },
+  {
    "id": "sidebar.transparency",
    "area": "sidebar",
    "feature": "Sidebar transparency (vibrancy) setting",
@@ -512,6 +617,27 @@
    ],
    "verdict": "missing",
    "why": "No vibrancy/transparency.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.colors",
+   "area": "sidebar",
+   "feature": "Sidebar background, border and width match the reference screens in light and dark",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "--sidebar(-background)?\\s*:",
+     "matched": true,
+     "file": "src/styles.css"
+    },
+    {
+     "pattern": "(256px|left_?panel_?width)",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "Measured on REA captures at 1440x900: sidebar edge at x=248 vs 256; dark sidebar #121417 vs #1c1817; light sidebar #eeeeeb vs #fcfcfb. REA compare-web-screenshots (threshold 24): 3.1% (dark) / 5.4% (light) of sidebar pixels differ.",
    "recheck": false
   },
   {
@@ -539,7 +665,7 @@
     {
      "pattern": "no repositories|no workspaces|empty_?state|EmptyState|repos\\.length\\s*===\\s*0|workspaces\\.length\\s*===\\s*0",
      "matched": true,
-     "file": "src/components/Sidebar.tsx"
+     "file": "crates/openconductor-db/src/repos.rs"
     }
    ],
    "verdict": "implemented",
@@ -653,7 +779,28 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Wordmark, three label-only cards, 1-to-3 column grid at 768px, drag region, fade-in and has-workspaces spacing (HomeScreen.tsx, styles.css) follow evidence/screens/home.md.",
+   "why": "Matches evidence/screens: three label-only cards in a 1-to-3 grid sit at the reference position (y 368-495; x offset 4 px from the narrower sidebar), wordmark centered above, drag region, fade-in. Differences: card icons for GitHub (cloud vs globe) and Quick start (sparkle vs folder-plus); the wordmark is our own brand by design.",
+   "recheck": false
+  },
+  {
+   "id": "home.colors",
+   "area": "home",
+   "feature": "Home background and entry-card fill match the reference screens in light and dark",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "--background\\s*:\\s*(hsl\\(24 10% 7%\\)|#141110)",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "--secondary\\s*:",
+     "matched": true,
+     "file": "src/styles.css"
+    }
+   ],
+   "verdict": "missing",
+   "why": "Measured: dark main #17191d vs #141110, dark card #24272d vs #211e1c; light main #f7f7f5 vs #ffffff, light card #efefec vs #fafaf9. Every pixel differs at threshold 0 (REA compare-web-screenshots).",
    "recheck": false
   },
   {
@@ -806,7 +953,7 @@
     {
      "pattern": "(no repositor|add a repo|repos\\.length\\s*===\\s*0)",
      "matched": true,
-     "file": "src-tauri/src/workspace/mod.rs"
+     "file": "crates/openconductor-db/src/repos.rs"
     }
    ],
    "verdict": "partial",
@@ -1247,7 +1394,7 @@
    "status": "missing",
    "detectors": [
     {
-     "pattern": "workspace_?number|\\.number\\b",
+     "pattern": "workspace_?number|workspaceNumber|(ws|workspace)\\.number\\b",
      "matched": false,
      "file": null
     }
@@ -1279,6 +1426,6 @@
   }
  ],
  "verdicts_ref": "origin/main",
- "verdicts_verified_at": "2026-11-05",
- "verdict_parity_pct": 26.2
+ "verdicts_verified_at": "2026-11-05 (main d846158)",
+ "verdict_parity_pct": 24.6
 }

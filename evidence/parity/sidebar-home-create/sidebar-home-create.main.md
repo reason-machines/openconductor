@@ -1,16 +1,20 @@
-Scored `origin/main`: 68 source files. Detector parity **57.4%**. Verified parity **26.2%** (verdicts read on `origin/main`, 2026-11-05).
+Scored `origin/main`: 79 source files. Detector parity **54.4%**. Verified parity **24.6%** (verdicts read on `origin/main`, 2026-11-05 (main d846158)).
 
 | Area | Items | Implemented | Partial | Backend only | Missing | Verified parity | Detector parity |
 |---|---|---|---|---|---|---|---|
-| sidebar | 27 | 2 | 9 | 1 | 15 | 25.0% | 50.0% |
-| home | 17 | 2 | 7 | 1 | 7 | 33.8% | 47.1% |
+| sidebar | 33 | 2 | 10 | 2 | 19 | 22.7% | 45.5% |
+| home | 18 | 2 | 7 | 1 | 8 | 31.9% | 47.2% |
 | create | 17 | 0 | 1 | 12 | 4 | 20.6% | 79.4% |
 
 | ID | Verdict | Detector | Feature | Finding |
 |---|---|---|---|---|
 | `sidebar.home-entry` | partial | partial | Sidebar entry that returns to Home, plus a keyboard command to go Home | Sidebar Home button works (src/components/Sidebar.tsx); no go-to-Home shortcut is wired (keybinding registry declares commands only). |
+| `sidebar.top-bar` | missing | partial | Sidebar top bar with a sidebar toggle button and back/forward history arrows | No in-sidebar toggle button (toggle is keyboard-only, plus a Home button when hidden) and no back/forward navigation; the reference shows all three at the top of the sidebar. |
+| `sidebar.computer-switcher` | missing | missing | Computer/account switcher at the top of the sidebar (initial avatar, name, chevron) | Sidebar starts with our logo and name; the reference starts with a computer/account switcher. |
+| `sidebar.primary-nav` | partial | partial | Primary nav rows Home, Create and Search above the workspace list | Home row only; no Create or Search rows. |
 | `sidebar.repo-groups` | implemented | implemented | Workspaces listed under their repository, repositories as collapsible groups | Repos render as collapsible groups with nested workspace rows (Sidebar.tsx, store toggleRepo). |
-| `sidebar.repo-order` | missing (recheck) | implemented | Manual, persisted ordering of repositories | No ordering UI or logic; display_order exists only in crates/openconductor-db/migrations/0001_core.sql, which the app does not depend on. |
+| `sidebar.workspaces-group` | missing | missing | Workspace list grouped under a sentence-case 'my workspaces' label rather than an uppercase repositories header | We show an uppercase 'Repositories' header with a '+'; the reference shows a sentence-case 'my workspaces' label. |
+| `sidebar.repo-order` | backend | implemented | Manual, persisted ordering of repositories | crates/openconductor-db/src/repos.rs lists repos by display_order, created_at and appends new ones at the end, but the app does not depend on that crate and the sidebar renders insertion order from localStorage. |
 | `sidebar.repo-hide` | missing | partial | Hide and unhide a repository, with a toggle to show hidden ones | No hide/unhide; hidden column exists only in the unwired DB crate schema. |
 | `sidebar.repo-icon` | missing | partial | Per-repository icon (icon, emoji, favicon or uploaded image) next to the repo name | No repository icon support. |
 | `sidebar.add-repo` | partial | implemented | Add-repository control reachable from the sidebar | Sidebar '+' opens the Open-project dialog, which only appends to localStorage; it does not call the registered add_repository command. |
@@ -30,14 +34,17 @@ Scored `origin/main`: 68 source files. Detector parity **57.4%**. Verified parit
 | `sidebar.archived-view` | backend | missing | Browse archived workspaces and unarchive one | WorkspaceManager::restore exists (src-tauri/src/workspace/mod.rs); no command, no UI. |
 | `sidebar.resize-toggle` | partial | partial | Resizable sidebar and show/hide toggles for left and right sidebars | Toggle works via Cmd+B and '[' (src/state/shortcuts.ts, App.tsx); the sidebar is a fixed 248px column with no resize. |
 | `sidebar.footer-usage` | missing | missing | Optional CPU/memory usage readout in the sidebar footer | Footer shows app name/version only. |
+| `sidebar.footer-actions` | missing | missing | Sidebar footer with help and settings icon buttons | Footer shows app name, version and platform text; the reference shows help and settings icon buttons. |
 | `sidebar.transparency` | missing | missing | Sidebar transparency (vibrancy) setting | No vibrancy/transparency. |
+| `sidebar.colors` | missing | partial | Sidebar background, border and width match the reference screens in light and dark | Measured on REA captures at 1440x900: sidebar edge at x=248 vs 256; dark sidebar #121417 vs #1c1817; light sidebar #eeeeeb vs #fcfcfb. REA compare-web-screenshots (threshold 24): 3.1% (dark) / 5.4% (light) of sidebar pixels differ. |
 | `sidebar.ws-actions` | missing | missing | Workspace actions menu on a row (copy info, rename, archive, pin, section) | No row context menu or actions menu. |
 | `sidebar.empty-state` | implemented | implemented | Empty state when there are no repositories or workspaces | Muted single-line empty state matches evidence/screens/home.md. |
 | `sidebar.add-menu` | missing | missing | Sidebar add menu offering the three Home actions plus recent local repositories not yet added (spinner while loading) | '+' opens a dialog directly; no three-action menu, no recents. |
 | `sidebar.visibility-settings` | partial (recheck) | missing | Left sidebar visibility and width persisted as settings (default visible, width 256) | Visibility persists inside the localStorage app state, not as a setting; width is fixed (248px vs evidence default 256). |
 | `home.route` | partial | partial | Home is the root route and the default screen | Home is the default screen, but there is no router or '/' route (selection state in src/state/store.ts). |
 | `home.org-states` | missing | missing | Home renders nothing while the organization loads and redirects a cloud organization to all-workspaces | No organization concept; no loading or cloud redirect state. |
-| `home.layout` | implemented | implemented | Centered wordmark (light/dark variants) above three label-only entry cards in a 1-to-3 column grid, whole area a window drag region | Wordmark, three label-only cards, 1-to-3 column grid at 768px, drag region, fade-in and has-workspaces spacing (HomeScreen.tsx, styles.css) follow evidence/screens/home.md. |
+| `home.layout` | implemented | implemented | Centered wordmark (light/dark variants) above three label-only entry cards in a 1-to-3 column grid, whole area a window drag region | Matches evidence/screens: three label-only cards in a 1-to-3 grid sit at the reference position (y 368-495; x offset 4 px from the narrower sidebar), wordmark centered above, drag region, fade-in. Differences: card icons for GitHub (cloud vs globe) and Quick start (sparkle vs folder-plus); the wordmark is our own brand by design. |
+| `home.colors` | missing | partial | Home background and entry-card fill match the reference screens in light and dark | Measured: dark main #17191d vs #141110, dark card #24272d vs #211e1c; light main #f7f7f5 vs #ffffff, light card #efefec vs #fafaf9. Every pixel differs at threshold 0 (REA compare-web-screenshots). |
 | `home.sidebar-toggle` | implemented | implemented | When the left sidebar is hidden, Home shows a toggle button with its shortcut, offset past the traffic lights | Toggle shown only when the sidebar is hidden, with tooltip and shortcut hint (HomeScreen.tsx). |
 | `home.add-local` | partial | implemented | Add an existing local repository via a folder picker, with default-branch detection | Dialog with folder picker adds to localStorage with defaultBranch hard-coded to main; backend add_repository (git toplevel) and default_branch detection exist but are not called. |
 | `home.open-project-flow` | backend | partial | Open project: folder picker; no .git leads to an add dialog that offers git init; a missing origin (non-GitHub setting off) leads to the same dialog; otherwise add with a file:// remote; errors in a toast | Only the backend toplevel check exists (service.rs add_repository). No .git/init dialog, origin check, file:// remote or error toast. |

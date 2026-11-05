@@ -27,6 +27,59 @@
       ]
     },
     {
+      "id": "sidebar.top-bar",
+      "area": "sidebar",
+      "feature": "Sidebar top bar with a sidebar toggle button and back/forward history arrows",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/screens/manifest.json"
+        ]
+      },
+      "detect": [
+        "toggle_?(left_?)?sidebar|toggleSidebar",
+        "go_?back|goBack|history\\.back|navigate\\(-1\\)",
+        "go_?forward|goForward|history\\.forward"
+      ]
+    },
+    {
+      "id": "sidebar.computer-switcher",
+      "area": "sidebar",
+      "feature": "Computer/account switcher at the top of the sidebar (initial avatar, name, chevron)",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/screens/manifest.json"
+        ]
+      },
+      "detect": [
+        "computer_?switcher|ComputerSwitcher|org_?switcher|OrgSwitcher|account_?switcher|AccountSwitcher"
+      ]
+    },
+    {
+      "id": "sidebar.primary-nav",
+      "area": "sidebar",
+      "feature": "Primary nav rows Home, Create and Search above the workspace list",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/screens/manifest.json"
+        ],
+        "routes": [
+          "/",
+          "/create"
+        ]
+      },
+      "detect": [
+        "HomeIcon|>Home<",
+        "(nav|sidebar)\\w*.{0,60}create|CreateNav|create_?nav",
+        "(nav|sidebar)\\w*.{0,60}search|SearchNav|search_?nav"
+      ]
+    },
+    {
       "id": "sidebar.repo-groups",
       "area": "sidebar",
       "feature": "Workspaces listed under their repository, repositories as collapsible groups",
@@ -44,6 +97,23 @@
       "detect": [
         "(repo|repository)\\.workspaces|repository_?id",
         "(collapsed|aria-expanded|toggleRepo|collapse_?repo)"
+      ]
+    },
+    {
+      "id": "sidebar.workspaces-group",
+      "area": "sidebar",
+      "feature": "Workspace list grouped under a sentence-case 'my workspaces' label rather than an uppercase repositories header",
+      "evidence": {
+        "copy": [
+          2767
+        ],
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png"
+        ]
+      },
+      "detect": [
+        "my_?workspaces|myWorkspaces"
       ]
     },
     {
@@ -433,6 +503,22 @@
       ]
     },
     {
+      "id": "sidebar.footer-actions",
+      "area": "sidebar",
+      "feature": "Sidebar footer with help and settings icon buttons",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/screens/manifest.json"
+        ]
+      },
+      "detect": [
+        "HelpIcon|help_?button|open_?help|openHelp",
+        "SettingsIcon|open_?settings|openSettings"
+      ]
+    },
+    {
       "id": "sidebar.transparency",
       "area": "sidebar",
       "feature": "Sidebar transparency (vibrancy) setting",
@@ -449,6 +535,22 @@
       },
       "detect": [
         "sidebar_?transparency|vibrancy"
+      ]
+    },
+    {
+      "id": "sidebar.colors",
+      "area": "sidebar",
+      "feature": "Sidebar background, border and width match the reference screens in light and dark",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/frontend/css-tokens.json"
+        ]
+      },
+      "detect": [
+        "--sidebar(-background)?\\s*:",
+        "(256px|left_?panel_?width)"
       ]
     },
     {
@@ -568,6 +670,22 @@
         "Wordmark",
         "data-tauri-drag-region",
         "(grid-cols|grid-template-columns|home-entr|EntryCard)"
+      ]
+    },
+    {
+      "id": "home.colors",
+      "area": "home",
+      "feature": "Home background and entry-card fill match the reference screens in light and dark",
+      "evidence": {
+        "files": [
+          "evidence/screens/home--empty-signed-in--dark.png",
+          "evidence/screens/home--empty-signed-in--light.png",
+          "evidence/frontend/css-tokens.json"
+        ]
+      },
+      "detect": [
+        "--background\\s*:\\s*(hsl\\(24 10% 7%\\)|#141110)",
+        "--secondary\\s*:"
       ]
     },
     {
@@ -1146,7 +1264,7 @@
         ]
       },
       "detect": [
-        "workspace_?number|\\.number\\b"
+        "workspace_?number|workspaceNumber|(ws|workspace)\\.number\\b"
       ]
     },
     {

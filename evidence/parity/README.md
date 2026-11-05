@@ -1,45 +1,38 @@
-# Parity: sidebar, Home and Create workspace
+# Parity: settings, shortcuts, persistence, packaging
 
-Verifier output for the sidebar, Home and Create-workspace areas, scored against Conductor v0.87.6 REA evidence on main. No feature code here.
+`tools/parity_check.py` scores a git ref of this repository against the Conductor 0.87.6 evidence for four areas and writes [`PARITY.md`](PARITY.md) and [`parity-report.json`](parity-report.json). The report in this directory is for `origin/main` at the commit named in its first line.
 
-## Result on main (`685ba9b`, 2026-11-05)
+```bash
+# Full run: REA inspects the rebuild's SQLite schema too (needs Node.js 24.15+ for REA's SQLite reader).
+REA_NODE_BIN=/path/to/node-v24/bin python3 tools/parity_check.py check --ref origin/main --rea
+# Rebuild the settings and packaging reference files.
+python3 tools/parity_check.py reference --schema-user settings.schema.json --schema-repo settings.repo.schema.json
+```
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Verified parity |
-|---|---|---|---|---|---|---|
-| Sidebar | 27 | 2 | 9 | 1 | 15 | **25.0%** |
-| Home | 17 | 2 | 7 | 1 | 7 | **33.8%** |
-| Create workspace | 17 | 0 | 1 | 12 | 4 | **20.6%** |
-| **All** | 61 | 4 | 17 | 14 | 26 | **26.2%** |
+CI runs the checker without REA on every PR so it keeps working as the tree changes.
 
-Weights: implemented 1, partial 0.5, backend only 0.25, missing 0. "Backend only" means tested logic or a registered Tauri command exists, but no UI path reaches it. Per-item findings: [sidebar-home-create.main.md](sidebar-home-create.main.md).
+## Scoring
 
-The main finding is that the UI and the backend are not connected. The frontend (`src/`) is still the localStorage scaffold. Its only `invoke` call is `app_info`. The six registered workspace commands (`add_repository`, `list_repositories`, `list_branches`, `branch_name_is_taken`, `create_workspace`, `list_workspaces`) are never called. `src/workspace/createFlow.ts` and `src/workspace/naming.ts` are not imported by any component. The Conductor-shaped SQLite schema in `crates/openconductor-db` is not an app dependency. Connecting those pieces moves 12 create-workspace items from 0.25 to at least 0.5.
+Each item is `matched` (1), `partial` or `declared` (0.5) or `missing` (0). Items have equal weight within an area.
 
-## Gap list, by priority
+| Area | Items | Conductor reference | How the rebuild is probed |
+|---|---|---|---|
+| Settings | 43 user and 32 repo `settings.toml` keys, 29 `settings` table keys, 5 settings files, 16 settings routes | Published JSON schemas named by the `$schema` stamp in Conductor's `settings.toml` (all 44 leaf names also occur in the 0.87.6 frontend bundle); key names of the live `settings` table; `evidence/frontend/routes.json` | A `settings.toml` key is `matched` when a file that handles `settings.toml` names it, `declared` when only other code names it (a DB column or struct field). |
+| Shortcuts | 165 bindings plus 7 features (registry, override storage `keybinding_overrides_v1`, legacy aliases, conflict scopes, shortcuts dialog, `/key-bindings` route, send-key presets) | `evidence/keybindings/keybindings.json` (PR #23). An independent extractor run over the full `index-BGEQ8YjU.js` chunk agreed on all 165 ids, primary keys, `configurable` flags, categories and additional-key counts. | `matched`: registered with Conductor's default key and named by code outside the registry and tests. `declared`: registered with the right key, no handler names it. `partial`: registered with a different key. |
+| Persistence | 18 `conductor.db` and 7 `cache.db` tables, 19 app-data stores (checkpoint refs, window state, local-storage subsystems, outboxes) | REA `inspect-sqlite-database` Evidence in `evidence/sqlite/` | Applies the rebuild's `migrations/*.sql` to an empty DB (directories with `cache` in the path build `cache.db`), then compares REA's schema record of that DB column by column: name, declared type, not-null, primary key. |
+| Packaging | 20 Info.plist keys, URL scheme, 3 entitlements, hardened runtime, Developer ID signing, 22 linked system libraries, Tauri major version, 13 Tauri plugins, 15 bundled resources, embedded frontend | `evidence/packaging/conductor-reference.json` (REA inspect-plist and inspect-signature, strings reduced to type and length) and `conductor-dylibs.json` (REA trace-dylib-resolution) | REA inspect-plist, inspect-signature and trace-dylib-resolution on the CI-built `OpenConductor.app` (`rea/`, build named in `rea/openconductor-app-build.json`); plugins, resources and frontend from the tree. Without a built-app record it falls back to the bundle config. |
 
-1. **Connect create-workspace end to end.** Add a create dialog or page (repo, name, base-branch picker, create-from, first message) that calls `create_workspace` and `list_branches`, shows `createFlow` progress (initializing, setting up, ready, failed), and runs the setup script after the worktree is created. Today `create()` never runs setup. Items: `create.entry`, `create.page`, `create.base-branch`, `create.branch-picker`, `create.from-ref`, `create.worktree`, `create.validation`, `create.initializing`, `create.failure`, `create.setup-script`, `create.first-message`.
-2. **Connect the sidebar and Home to the backend.** Read repos and workspaces from `list_repositories` and `list_workspaces`, not localStorage. Open project should call `add_repository` and follow the evidence flow: no `.git` leads to an init dialog, a missing origin respects the non-GitHub setting, otherwise the repo is added with a `file://` remote, and errors show in a toast. Use the city names from `naming.ts` instead of `src/state/names.ts`. Items: `home.add-local`, `home.open-project-flow`, `home.duplicate-repo`, `home.persist`, `create.placeholder-name`, `sidebar.add-repo`.
-3. **Use the workspace status model.** Replace idle/working/needs-review with a derived status plus a manual override (default in-progress), as in `workspaces.derived_status` and `manual_status`. Item: `sidebar.ws-status`.
-4. **Add archive and restore commands.** Expose `WorkspaceManager::archive` and `restore` as commands. Add a confirmation and the git-busy refusal, plus an archived-workspaces view. Items: `sidebar.archive`, `sidebar.archived-view`.
-5. **Build the missing sidebar features** (each is schema-only or absent): pinning, unread state and next-unread, sections (create, rename, emoji, move, drag, create-in-section), repo order, hide and icon, rename, search, next/previous workspace, workspace numbers with Cmd+1..9, a row actions menu, an add menu with recents, a resizable width with 256 as default, transparency, and footer resource usage.
-6. **Build the missing Home features**: organization loading and cloud redirect, a router with `/`, `/dashboard` and `/all-workspaces`, a status overview, recent workspaces, repo search, recents in the clone dialog, a real clone, and a quick start that runs `git init` and creates the first workspace.
-7. **Build the remaining create features**: branch-prefix settings UI, workspace numbers, and auto-run after setup. `crates/scripts` parses `auto_run_after_setup`, but nothing acts on it.
+## Limits
 
-The visual-token gaps (sidebar colours, low-contrast dark mode, fonts, diff-stat colours, letter-spacing) are tracked by the separate sidebar token review (verifier 285aa125). This checklist does not score them.
+- Everything is static. A `matched` shortcut has a handler that names its id; that does not prove the key press runs the command. A `matched` table has the right columns; that does not prove the app reads and writes it.
+- The built-app REA records come from one CI run. When the target commit is newer, the report says so; rerun the REA step on a newer artifact to refresh them.
+- The published settings schemas were fetched from the public site, so they could be newer than 0.87.6. Their 44 leaf names were checked against the 0.87.6 bundle and all occur there; types and enums were not cross-checked.
+- The settings-table key list comes from one user's database (key names only, no values). Keys that are written only on some paths may be missing from it.
+- Value differences that are design choices (bundle id, executable name, URL scheme name, minimum macOS 12.0 vs 10.13) are shown in the item detail and do not lower the score.
 
-## Files
+## REA gaps found in this pass
 
-- [sidebar-home-create.checklist.json](sidebar-home-create.checklist.json): 61 items. Each has evidence references: copy-catalog indices, routes, schema columns, IPC keys, ledger obligations, CLI flags and evidence files. Each also has regex detectors. Features are described in our own words. Conductor strings are referenced only by catalog index, pinned by a sha256 prefix in [sidebar-home-create.copy-pins.json](sidebar-home-create.copy-pins.json).
-- [sidebar-home-create.verdicts.json](sidebar-home-create.verdicts.json): the verdict for each item, from reading the code on main.
-- [sidebar-home-create.main.json](sidebar-home-create.main.json) and [.md](sidebar-home-create.main.md): the scored output.
-- `tools/parity_check.py`: `validate` checks that every reference resolves against `evidence/`. `pin` re-pins copy indices. `score --ref <git ref>` or `score --tree <dir>` scores a checkout. CI runs `validate` and a smoke `score`.
-
-To re-verify after a merge, run `python tools/parity_check.py score --ref origin/main`. Then re-read every item marked `(recheck)`, plus any item whose detector status changed, and update its verdict. Detectors only detect presence. For example, a schema column in the unwired DB crate counts as a match. The verdicts are the score.
-
-## REA use and gaps found
-
-- **Reference data.** The reference is Wave 0 REA evidence on main: the copy catalog and routes from `analyze-javascript-application`, the schema from `inspect-sqlite-database`, the CLI help from `capture-process`, and the obligation ledger. It also uses `evidence/screens/home.md` and `evidence/create-workspace/README.md`. REA's app graph is module-level, with no component tree, so it cannot place UI strings in components.
-- **No REA comparison on main.** `rea compare-application-versions` needs two authenticated JavaScript Application Graphs of versions of the same app. A clean-room rebuild has no shared identity, so the comparison was not meaningful. Instead, REA 6.8.0 (`rea-agents`) `analyze-javascript-application` was run on the built frontend from PR #10 (`vite build`, 3 files, 163 KB) on a Linux cloud machine (2 vCPU, Node 22.23.4).
-- **REA bug: the analyzer stalls on a small bundle.** It hit `provider_timeout` at the default 300 s, then again at `--analysis-timeout-ms 900000`: 15 min wall time with only 2 min 51 s of user CPU. Partial Evidence `ev_11eebfcd2279d007895a0a6968095aaba614f8b10ff70ddd43d2415454dedb3f` reports `parsed_javascript_files: 0`, `skipped_javascript_files: 2`. Conductor's 54 MB tree finished in 179 s on macOS, so this looks like a stall in the worker on Linux, not slow parsing.
-- **REA gap: hidden input schema.** `compare-application-versions --schema` still shows only `inputJson: string`. The real schema is only in `dist/mcp-catalog-full.json` (also logged in Wave 0).
-- **No screenshots.** There are no screenshots of Conductor, because native UI capture is blocked by TCC. Layout, spacing, row height and menu contents are not scored.
+1. `inspect-sqlite-database` exits `capability_unavailable` on Node.js 22.23.4 ("requires the native DatabaseSync.limits API ... Node.js 24.15 or newer"). REA's setup docs list Node.js 22.23.4+ as supported, so the stated minimum is wrong for this tool. Worked on Node.js 24.22.2.
+2. `inspect-plist` on Linux exits `capability_unavailable` ("Native macOS utilities require macOS") even for a plain XML plist file that needs no native tool. Run on the Mac instead.
+3. `analyze-javascript-application` Evidence on the decoded frontend (`evidence/frontend/rea-analyze-javascript-application.json.gz`) does not contain the keybinding registry: none of the 165 registry ids occurs in it (only `workspace.contextMenu`, twice). The registry module hits REA's result budget, so a direct extractor was needed (PR #23, and the cross-check above).
+4. `trace-dylib-resolution`, `inspect-plist`, `inspect-signature` and `inspect-artifact` chained in one 60 s remote command did not finish; `trace-dylib-resolution` alone took 16 s on OpenConductor.app and 9 s on Conductor.app. Not a REA bug; noted because REA has no batch mode for several static inspections of one bundle.

@@ -14,14 +14,18 @@ use std::time::Duration;
 use sqlx::migrate::Migrator;
 use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePool, SqlitePoolOptions};
 
+pub mod repos;
+
 /// Every schema migration, embedded from `migrations/`.
 pub static MIGRATOR: Migrator = sqlx::migrate!("./migrations");
 
-/// Errors from opening or migrating a database.
+/// Errors from opening, migrating or querying a database.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error(transparent)]
     Sqlx(#[from] sqlx::Error),
+    #[error("no such row")]
+    NotFound,
     #[error(transparent)]
     Migrate(#[from] sqlx::migrate::MigrateError),
 }
