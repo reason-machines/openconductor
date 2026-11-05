@@ -20,10 +20,12 @@
 pub mod agent;
 pub mod bundled_bin;
 pub mod checkpoint;
+mod checkpoint_commands;
 pub mod create_project;
 pub mod db;
 pub mod persistence;
 mod persistence_commands;
+mod sidebar_workspace_commands;
 pub mod diff;
 pub mod github_repo;
 pub mod menu;
@@ -34,6 +36,7 @@ pub mod reason_acp;
 pub mod reason_chat;
 pub mod scripts;
 pub mod settings;
+pub mod sidecar_stores;
 pub mod spotlight;
 mod spotlight_commands;
 pub mod terminal;
@@ -223,6 +226,19 @@ pub fn run() {
             let db = db::open(&data_dir)?;
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
+            // Conductor's sidecar opens its session event outbox at start and
+            // carries on without it if that fails (sidecar_stores/).
+            match sidecar_stores::outbox::SessionEventOutbox::open(&sidecar_stores::outbox_root(&data_dir)) {
+                Ok(outbox) => {
+                    app.manage(outbox);
+                }
+                Err(e) => eprintln!(
+                    "Session event outbox is unavailable; continuing without durable backup delivery: {e}"
+                ),
+            }
+            app.manage(sidecar_stores::completions::SlashCommandSnapshotStore::new(
+                &sidecar_stores::completions_dir(&data_dir),
+            ));
             let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
@@ -267,8 +283,15 @@ pub fn run() {
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
+            sidebar_workspace_commands::db_set_workspace_pinned,
+            sidebar_workspace_commands::db_set_workspace_unread,
+            sidebar_workspace_commands::db_set_workspace_manual_status,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
+            checkpoint_commands::checkpoint_save,
+            checkpoint_commands::checkpoint_exists,
+            checkpoint_commands::checkpoint_restore,
+            checkpoint_commands::checkpoint_changed_count,
             diff::comment_commands::diff_comments_list,
             diff::comment_commands::diff_comment_add,
             diff::comment_commands::diff_comment_edit,
