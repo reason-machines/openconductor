@@ -40,6 +40,7 @@ mod sidebar_rename_commands;
 pub mod diff;
 pub mod draft_attachments;
 pub mod github_repo;
+pub mod local_account;
 pub mod menu;
 pub mod pr;
 mod local_storage_commands;
@@ -48,6 +49,7 @@ pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
 pub mod reason_chat;
+pub mod resource_usage;
 mod root_path_commands;
 pub mod scripts;
 pub mod settings;
@@ -415,6 +417,8 @@ pub fn run() {
             app_prefs::commands::record_open_in,
             app_prefs::commands::client_instance_id,
             app_prefs::commands::graphite_cli_installed,
+            resource_usage::commands::get_resource_usage,
+            local_account::local_account,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,
