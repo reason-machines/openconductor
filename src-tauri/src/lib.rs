@@ -19,6 +19,7 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod agent_binaries;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
@@ -259,6 +260,8 @@ pub fn run() {
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
             // Conductor sweeps draft-attachments/ dirs older than 30 days at start.
             draft_attachments::sweep_at_startup(&data_dir);
+            // Conductor's binary_manager: agent-binaries/ with .meta sha256 files.
+            app.manage(agent_binaries::commands::manager(app.handle(), &data_dir));
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
@@ -360,6 +363,7 @@ pub fn run() {
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
+            diff::commands::diff_write_file,
             checkpoint_commands::checkpoint_save,
             checkpoint_commands::checkpoint_exists,
             checkpoint_commands::checkpoint_restore,
@@ -468,6 +472,9 @@ pub fn run() {
             draft_attachments::commands::draft_attachment_upload,
             draft_attachments::commands::draft_attachments_materialize,
             draft_attachments::commands::materialize_local_path_attachment,
+            agent_binaries::commands::get_agent_binary_state,
+            agent_binaries::commands::request_agent_binary_download,
+            agent_binaries::commands::cancel_agent_binary_download,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")

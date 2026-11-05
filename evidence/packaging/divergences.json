@@ -42,5 +42,32 @@
       "reason": "68 KB native launcher: `agent-launcher <executable> [arguments...]` replaces itself (posix_spawn with the set-exec flag) with the agent after responsibility_spawnattrs_setdisclaim, so macOS attributes privacy permission prompts to the agent rather than to the app. OpenConductor launches agents directly, so their prompts are attributed to OpenConductor.",
       "evidence": "REA search_strings ev_839eea1ea5b9e626 on bin/.internal/agent-launcher (evidence/packaging/rea/search-strings-agent-launcher.json) (sha256 64c540b511fa): usage line, 'set agent permission attribution', 'set process replacement', imports _posix_spawnp, _posix_spawnattr_setflags, _responsibility_spawnattrs_setdisclaim"
     }
+  },
+  "linked_libraries": {
+    "CloudKit": {
+      "kind": "link_only",
+      "reason": "Conductor's MacOS/conductor links CloudKit (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_cloud_kit), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced).",
+      "evidence": "evidence/packaging/rea/macho-framework-use.json (tools/macho_framework_use.py over REA inspect-macho ev_4b8fc205… of MacOS/conductor)"
+    },
+    "CoreData": {
+      "kind": "link_only",
+      "reason": "Conductor's MacOS/conductor links CoreData (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_core_data), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced).",
+      "evidence": "evidence/packaging/rea/macho-framework-use.json (tools/macho_framework_use.py over REA inspect-macho ev_4b8fc205… of MacOS/conductor)"
+    },
+    "CoreImage": {
+      "kind": "link_only",
+      "reason": "Conductor's MacOS/conductor links CoreImage (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_core_image), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced).",
+      "evidence": "evidence/packaging/rea/macho-framework-use.json (tools/macho_framework_use.py over REA inspect-macho ev_4b8fc205… of MacOS/conductor)"
+    },
+    "CoreText": {
+      "kind": "link_only",
+      "reason": "Conductor's MacOS/conductor links CoreText (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_core_text), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced).",
+      "evidence": "evidence/packaging/rea/macho-framework-use.json (tools/macho_framework_use.py over REA inspect-macho ev_4b8fc205… of MacOS/conductor)"
+    },
+    "UserNotifications": {
+      "kind": "not_built",
+      "reason": "Conductor drives UNUserNotificationCenter itself through objc2-user-notifications (17 symbols): it requests authorization, sets its own NotificationCenterDelegate class as the delegate, posts UNNotificationRequests with a title, body and userInfo, and reads a clicked notification's actionIdentifier (imports UNNotificationDefaultActionIdentifier) and userInfo, so it reacts to clicks on its notifications. OpenConductor posts notifications only through tauri-plugin-notification and does not link UserNotifications or handle clicks. What Conductor does on a click is not established.",
+      "evidence": "evidence/packaging/rea/macho-framework-use.json (tools/macho_framework_use.py over REA inspect-macho ev_4b8fc205… of MacOS/conductor)"
+    }
   }
 }
