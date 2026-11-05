@@ -30,6 +30,7 @@ pub mod draft_attachments;
 pub mod github_repo;
 pub mod menu;
 pub mod pr;
+mod local_storage_commands;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
@@ -239,6 +240,7 @@ pub fn run() {
             app.manage(sidecar_stores::completions::SlashCommandSnapshotStore::new(
                 &sidecar_stores::completions_dir(&data_dir),
             ));
+            app.manage(local_storage_commands::state(&data_dir));
             let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
@@ -323,6 +325,9 @@ pub fn run() {
             terminal_commands::pty_load_terminal_history,
             terminal_commands::pty_delete_terminal_history,
             terminal_commands::pty_delete_workspace_terminal_history,
+            local_storage_commands::local_storage_get_entry,
+            local_storage_commands::local_storage_set_entry,
+            local_storage_commands::local_storage_remove_entry,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
