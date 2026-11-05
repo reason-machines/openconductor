@@ -25,6 +25,8 @@ export interface Workspace {
   userSetBranchName?: boolean;
   /** Title of the workspace's pull request; the sidebar row shows it in place of the branch. */
   prTitle?: string | null;
+  /** Body of the workspace's pull request (`pr_description`); Create PR uses it verbatim. */
+  prDescription?: string | null;
   /** Unread agent output; the sidebar row's name turns semibold. */
   unread?: boolean;
   /* sidebar: pin and status (Conductor's pinned_at, manual_status, derived_status) */
