@@ -8,3 +8,9 @@ export const isSidebarVisible = (state: AppState): boolean => state.sidebarVisib
 export function activeWorkspaceCount(repos: Repo[]): number {
   return repos.reduce((n, r) => n + r.workspaces.filter((w) => w.status !== "archived").length, 0);
 }
+
+/** Ids of workspaces in `prev` that `next` no longer has (archived, or their repository removed). */
+export function removedWorkspaceIds(prev: AppState, next: AppState): string[] {
+  const kept = new Set(next.repos.flatMap((r) => r.workspaces.map((w) => w.id)));
+  return prev.repos.flatMap((r) => r.workspaces.map((w) => w.id)).filter((id) => !kept.has(id));
+}

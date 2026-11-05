@@ -13,6 +13,7 @@ use crate::db::Db;
 use crate::terminal::history_store::KEY_SECRET_NAME;
 use crate::terminal_history::{
     key_or_create, HistoryRecord, LoadHistoryArgs, PersistHistoryArgs, TerminalHistory,
+    WorkspaceHistoryArgs,
 };
 
 use crate::terminal::{
@@ -190,6 +191,30 @@ pub async fn pty_load_terminal_history(
     args: LoadHistoryArgs,
 ) -> CmdResult<Option<HistoryRecord>> {
     history.load(&db.0, &args.session_id).await
+}
+
+/// Forget the saved session `sessionId` (a closed terminal tab). Ours: the
+/// reference deletes the row and entry from its frontend.
+#[tauri::command]
+pub async fn pty_delete_terminal_history(
+    history: State<'_, TerminalHistory>,
+    db: State<'_, Db>,
+    args: LoadHistoryArgs,
+) -> CmdResult<()> {
+    history.delete(&db.0, &args.session_id).await
+}
+
+/// Forget every saved session of `localWorkspaceId` (an archived workspace
+/// or removed repository); returns how many. Ours, like the one above.
+#[tauri::command]
+pub async fn pty_delete_workspace_terminal_history(
+    history: State<'_, TerminalHistory>,
+    db: State<'_, Db>,
+    args: WorkspaceHistoryArgs,
+) -> CmdResult<usize> {
+    history
+        .delete_workspace(&db.0, &args.local_workspace_id)
+        .await
 }
 
 /// Managed state: one-shot shell commands that can still be cancelled.

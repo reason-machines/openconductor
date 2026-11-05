@@ -134,8 +134,6 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-computer-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--sidebar-accent-foreground); }
 .sb-computer svg { flex: none; color: var(--sidebar-muted-foreground); }
 
-/* Workspace list and footer (restyled in the following sidebar PRs). */
-.sidebar-footer { margin: 0 8px; }
 .icon-btn:hover { background: var(--hover); }
 /* "My workspaces" header, after Conductor's `lBi`: text-xs font-semibold muted/70, px-1.5 py-1.5,
    a w-6 spacer under the hover "..." trigger (right-[26px]) and a chevron shown on hover.
@@ -199,7 +197,12 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .status-dot.working { background: var(--amber); opacity: 1; animation: pulse 1.4s ease-in-out infinite; }
 .status-dot.needs-review { background: var(--add); opacity: 1; }
 @keyframes pulse { 50% { opacity: 0.35; } }
-.sidebar-footer { color: var(--muted); font-size: 11px; padding: 8px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+/* Sidebar footer, after Conductor's `Nna`: px-4 py-3 flex justify-between border-t border-sidebar-border;
+   actions are flex gap-5 ml-auto; each icon is text-sidebar-muted-foreground hover:text-foreground. */
+.sb-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--sidebar-border); }
+.sb-footer-actions { position: relative; display: flex; align-items: center; gap: 20px; margin-left: auto; }
+.sb-footer-btn { display: inline-flex; padding: 0; color: var(--sidebar-muted-foreground); }
+.sb-footer-btn:hover, .sb-footer-btn[aria-expanded="true"] { color: var(--text); }
 
 /* Main */
 .main { min-width: 0; min-height: 0; background: var(--bg); }

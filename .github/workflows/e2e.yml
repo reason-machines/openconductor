@@ -48,3 +48,22 @@ jobs:
           name: reason-chat-e2e-screens
           path: ${{ runner.temp }}/e2e-screens
           retention-days: 14
+      - name: Configure git identity
+        run: |
+          git config --global user.name "CI"
+          git config --global user.email "ci@example.invalid"
+      - name: App flows (tests/e2e/run.mjs)
+        if: always()
+        env:
+          OC_APP: src-tauri/target/debug/openconductor
+          E2E_OUT: ${{ runner.temp }}/e2e-flows
+          # WebKitGTK on a GPU-less Xvfb paints nothing without these.
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: xvfb-run -a node tests/e2e/run.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-flows
+          path: ${{ runner.temp }}/e2e-flows
+          retention-days: 14

@@ -281,6 +281,8 @@ pub fn run() {
             terminal_commands::pty_delete_mirror,
             terminal_commands::pty_persist_terminal_history,
             terminal_commands::pty_load_terminal_history,
+            terminal_commands::pty_delete_terminal_history,
+            terminal_commands::pty_delete_workspace_terminal_history,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,

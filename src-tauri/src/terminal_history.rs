@@ -14,9 +14,18 @@
 //! takes it from a [`KeySource`] so it has no Tauri or Keychain types and is
 //! tested on its own (`tools/terminal/run-rust-tests.sh`).
 //!
+//! Deleting follows the reference's frontend store: closing a terminal drops
+//! its saved session ([`TerminalHistory::delete`]), removing a workspace
+//! drops all of that workspace's ([`TerminalHistory::delete_workspace`]), and
+//! entries with no row are removed before the first other history call of a
+//! launch ([`TerminalHistory::cleanup_unowned`]). Every call waits for that
+//! cleanup, as every reference call awaits its `cleanupPromise`, so it never
+//! sees a save's entry before its row exists.
+//!
 //! [`history_store`]: crate::terminal::history_store
 //! [`KEY_SECRET_NAME`]: crate::terminal::history_store::KEY_SECRET_NAME
 
+use std::collections::HashSet;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 
@@ -45,11 +54,19 @@ pub struct PersistHistoryArgs {
     pub has_received_user_input: bool,
 }
 
-/// `pty_load_terminal_history`'s `args`.
+/// `pty_load_terminal_history`'s and `pty_delete_terminal_history`'s `args`.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct LoadHistoryArgs {
     pub session_id: String,
+}
+
+/// `pty_delete_workspace_terminal_history`'s `args` (our command; the
+/// reference deletes from its frontend).
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct WorkspaceHistoryArgs {
+    pub local_workspace_id: String,
 }
 
 /// What `pty_load_terminal_history` returns; field names are the reference's.
@@ -137,6 +154,30 @@ impl HistoryRecord {
     }
 }
 
+/// Remove the `terminal-history` entries no `terminal_sessions` row owns;
+/// returns how many went.
+async fn remove_unowned(pool: &SqlitePool, storage: Arc<LocalStorage>) -> Result<usize, String> {
+    let owned: HashSet<String> = terminal_sessions::session_ids(pool)
+        .await
+        .map_err(|e| e.to_string())?
+        .into_iter()
+        .collect();
+    tokio::task::spawn_blocking(move || {
+        let mut removed = 0;
+        for id in storage.entry_ids(SUBSYSTEM).map_err(|e| e.to_string())? {
+            if !owned.contains(&id) {
+                storage
+                    .remove_entry(SUBSYSTEM, &id)
+                    .map_err(|e| e.to_string())?;
+                removed += 1;
+            }
+        }
+        Ok(removed)
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
 fn clamp_u16(n: i64) -> u16 {
     u16::try_from(n.max(0)).unwrap_or(u16::MAX)
 }
@@ -171,6 +212,9 @@ pub struct TerminalHistory {
     /// Opened on first use, so the Keychain is not touched at startup. A
     /// failed key read is retried on the next call.
     storage: Mutex<Option<Arc<LocalStorage>>>,
+    /// Set once this launch's cleanup of entries with no row succeeded; a
+    /// failed one is retried by the next call.
+    cleaned: tokio::sync::OnceCell<()>,
 }
 
 impl TerminalHistory {
@@ -179,6 +223,7 @@ impl TerminalHistory {
             root: root.into(),
             key,
             storage: Mutex::new(None),
+            cleaned: tokio::sync::OnceCell::new(),
         }
     }
 
@@ -193,9 +238,40 @@ impl TerminalHistory {
         Ok(s)
     }
 
+    /// The opened store, after this launch's cleanup (unless that already
+    /// succeeded). The key is read once per call, here; a cleanup failure is
+    /// logged, not returned, and the call goes on, as in the reference.
+    async fn ready(&self, pool: &SqlitePool) -> Result<Arc<LocalStorage>, String> {
+        let storage = self.storage()?;
+        if let Err(e) = self.cleanup_with(pool, &storage).await {
+            eprintln!("Failed to clean unowned terminal history entries: {e}");
+        }
+        Ok(storage)
+    }
+
+    /// Remove every `terminal-history` entry with no `terminal_sessions`
+    /// row (a save cut off between its two halves, or a delete whose entry
+    /// removal failed). Succeeds at most once per launch, before any other
+    /// history call goes on; calling it again after that is a no-op.
+    pub async fn cleanup_unowned(&self, pool: &SqlitePool) -> Result<(), String> {
+        let storage = self.storage()?;
+        self.cleanup_with(pool, &storage).await
+    }
+
+    async fn cleanup_with(
+        &self,
+        pool: &SqlitePool,
+        storage: &Arc<LocalStorage>,
+    ) -> Result<(), String> {
+        self.cleaned
+            .get_or_try_init(|| async { remove_unowned(pool, storage.clone()).await.map(|_| ()) })
+            .await
+            .map(|_| ())
+    }
+
     /// Save `record`: the encrypted screen entry first, then the row.
     pub async fn persist(&self, pool: &SqlitePool, record: HistoryRecord) -> Result<(), String> {
-        let storage = self.storage()?;
+        let storage = self.ready(pool).await?;
         let (row, snapshot_ansi) = record.into_parts();
         let id = row.session_id.clone();
         tokio::task::spawn_blocking(move || {
@@ -217,19 +293,51 @@ impl TerminalHistory {
         pool: &SqlitePool,
         session_id: &str,
     ) -> Result<Option<HistoryRecord>, String> {
+        let storage = self.ready(pool).await?;
         let Some(row) = terminal_sessions::get(pool, session_id)
             .await
             .map_err(|e| e.to_string())?
         else {
             return Ok(None);
         };
-        let storage = self.storage()?;
         let id = session_id.to_owned();
         let entry = tokio::task::spawn_blocking(move || storage.get_entry(SUBSYSTEM, &id))
             .await
             .map_err(|e| e.to_string())?
             .map_err(|e| e.to_string())?;
         Ok(entry.map(|ansi| HistoryRecord::from_parts(row, ansi)))
+    }
+
+    /// Forget `session_id`'s saved session: its row, then its entry. Either
+    /// may already be gone. The reference removes both at once; the row goes
+    /// first here so that an entry left by a failed removal has no row and
+    /// the next launch's cleanup removes it.
+    pub async fn delete(&self, pool: &SqlitePool, session_id: &str) -> Result<(), String> {
+        let storage = self.ready(pool).await?;
+        terminal_sessions::delete(pool, session_id)
+            .await
+            .map_err(|e| e.to_string())?;
+        let id = session_id.to_owned();
+        tokio::task::spawn_blocking(move || storage.remove_entry(SUBSYSTEM, &id))
+            .await
+            .map_err(|e| e.to_string())?
+            .map_err(|e| e.to_string())
+    }
+
+    /// Forget every saved session of `workspace_id`; returns how many.
+    pub async fn delete_workspace(
+        &self,
+        pool: &SqlitePool,
+        workspace_id: &str,
+    ) -> Result<usize, String> {
+        self.ready(pool).await?;
+        let ids = terminal_sessions::session_ids_for_workspace(pool, workspace_id)
+            .await
+            .map_err(|e| e.to_string())?;
+        for id in &ids {
+            self.delete(pool, id).await?;
+        }
+        Ok(ids.len())
     }
 }
 
@@ -313,6 +421,112 @@ mod tests {
                 "startedAt",
             ]
         );
+    }
+
+    fn entry_ids(root: &std::path::Path) -> Vec<String> {
+        let mut ids = LocalStorage::new(root, &[7u8; KEY_LEN])
+            .entry_ids(SUBSYSTEM)
+            .unwrap();
+        ids.sort();
+        ids
+    }
+
+    #[tokio::test]
+    async fn delete_forgets_the_row_and_the_entry() {
+        let root = temp_root("delete");
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        let history = TerminalHistory::new(&root, fixed_key());
+        for s in ["s1", "s2"] {
+            let r = HistoryRecord::new(args(s), snapshot());
+            history.persist(&pool, r).await.unwrap();
+        }
+        history.delete(&pool, "s1").await.unwrap();
+        assert_eq!(history.load(&pool, "s1").await.unwrap(), None);
+        assert_eq!(terminal_sessions::get(&pool, "s1").await.unwrap(), None);
+        assert_eq!(entry_ids(&root), ["s2"]);
+        assert!(history.load(&pool, "s2").await.unwrap().is_some());
+        // Already gone, or never saved: not an error.
+        history.delete(&pool, "s1").await.unwrap();
+        history.delete(&pool, "never").await.unwrap();
+        let _ = std::fs::remove_dir_all(root);
+    }
+
+    #[tokio::test]
+    async fn delete_workspace_forgets_only_that_workspace() {
+        let root = temp_root("delete-workspace");
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        let history = TerminalHistory::new(&root, fixed_key());
+        for (s, w) in [("s1", "w1"), ("s2", "w1"), ("s3", "w2")] {
+            let a = PersistHistoryArgs {
+                local_workspace_id: w.into(),
+                ..args(s)
+            };
+            history
+                .persist(&pool, HistoryRecord::new(a, snapshot()))
+                .await
+                .unwrap();
+        }
+        assert_eq!(history.delete_workspace(&pool, "w1").await.unwrap(), 2);
+        assert_eq!(entry_ids(&root), ["s3"]);
+        assert_eq!(terminal_sessions::session_ids(&pool).await.unwrap(), ["s3"]);
+        assert!(history.load(&pool, "s3").await.unwrap().is_some());
+        assert_eq!(history.delete_workspace(&pool, "w1").await.unwrap(), 0);
+        let _ = std::fs::remove_dir_all(root);
+    }
+
+    /// Entries a save left without a row (or a delete without removing) are
+    /// gone before the first call of a launch returns; owned ones stay.
+    #[tokio::test]
+    async fn the_first_call_removes_entries_with_no_row() {
+        let root = temp_root("cleanup");
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        // Left by an earlier launch: "owned" has its row, "orphan" none.
+        let earlier = TerminalHistory::new(&root, fixed_key());
+        earlier
+            .persist(&pool, HistoryRecord::new(args("owned"), snapshot()))
+            .await
+            .unwrap();
+        LocalStorage::new(&root, &[7u8; KEY_LEN])
+            .set_entry(SUBSYSTEM, SIZE_LIMIT, "orphan", "left over")
+            .unwrap();
+        assert_eq!(entry_ids(&root), ["orphan", "owned"]);
+
+        let history = TerminalHistory::new(&root, fixed_key());
+        assert!(history.load(&pool, "owned").await.unwrap().is_some());
+        assert_eq!(entry_ids(&root), ["owned"]);
+        let _ = std::fs::remove_dir_all(root);
+    }
+
+    /// A call that could not run the cleanup (here: the key could not be
+    /// read) leaves it to the next call rather than skipping it for the launch.
+    #[tokio::test]
+    async fn a_failed_cleanup_is_retried() {
+        let root = temp_root("cleanup-retry");
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        LocalStorage::new(&root, &[7u8; KEY_LEN])
+            .set_entry(SUBSYSTEM, SIZE_LIMIT, "orphan", "left over")
+            .unwrap();
+        let calls = Arc::new(AtomicUsize::new(0));
+        let c = calls.clone();
+        let history = TerminalHistory::new(
+            &root,
+            Box::new(move || {
+                if c.fetch_add(1, Ordering::SeqCst) == 0 {
+                    Err("keychain locked".into())
+                } else {
+                    Ok([7u8; KEY_LEN])
+                }
+            }),
+        );
+        // The key read fails, so neither the cleanup nor the delete runs.
+        assert_eq!(
+            history.delete(&pool, "x").await.unwrap_err(),
+            "keychain locked"
+        );
+        assert_eq!(entry_ids(&root), ["orphan"]);
+        history.delete(&pool, "x").await.unwrap();
+        assert!(entry_ids(&root).is_empty());
+        let _ = std::fs::remove_dir_all(root);
     }
 
     #[tokio::test]

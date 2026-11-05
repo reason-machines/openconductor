@@ -40,6 +40,13 @@ export async function ptyLoadTerminalHistory(sessionId: string): Promise<History
   return (await invoke<HistoryRecord | null>("pty_load_terminal_history", { args: { sessionId } })) ?? undefined;
 }
 
+/** Forget the session saved under `sessionId` (its tab was closed). */
+export const ptyDeleteTerminalHistory = (sessionId: string) => invoke<void>("pty_delete_terminal_history", { args: { sessionId } });
+
+/** Forget every session saved for `localWorkspaceId`; resolves to how many. */
+export const ptyDeleteWorkspaceTerminalHistory = (localWorkspaceId: string) =>
+  invoke<number>("pty_delete_workspace_terminal_history", { args: { localWorkspaceId } });
+
 /** Output kept by the backend, for a renderer that attaches late. */
 export async function ptyReadHistory(id: string): Promise<Uint8Array> {
   return decodeBase64(await invoke<string>("pty_read_history", { id }));
