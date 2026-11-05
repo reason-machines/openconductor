@@ -25,6 +25,7 @@ pub mod create_project;
 pub mod db;
 pub mod persistence;
 mod persistence_commands;
+mod sidebar_repo_commands;
 mod sidebar_workspace_commands;
 pub mod diff;
 pub mod draft_attachments;
@@ -48,6 +49,7 @@ pub mod terminal_output;
 mod terminal_output_commands;
 #[cfg(all(test, unix))]
 mod test_exe;
+pub mod tool_cli;
 pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
@@ -288,9 +290,12 @@ pub fn run() {
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
+            sidebar_repo_commands::db_set_repo_hidden,
+            sidebar_repo_commands::db_reorder_repos,
             sidebar_workspace_commands::db_set_workspace_pinned,
             sidebar_workspace_commands::db_set_workspace_unread,
             sidebar_workspace_commands::db_set_workspace_manual_status,
+            sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
             checkpoint_commands::checkpoint_save,

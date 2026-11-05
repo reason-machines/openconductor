@@ -7,7 +7,7 @@ import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, truncateAfterTurn, type ChatTranscript } from "./reducer.ts";
 import { restoreCheckpoint, saveTurnCheckpoint } from "./checkpoints.ts";
-import { applyReasonPayload, failTurn, newestTurn, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
+import { applyReasonPayload, failTurn, newestTurn, reasonChat, startTurn, stopTurn, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 
 const EVENT = "reason-chat-event";
 const sessionKey = (chatId: string) => `openconductor.reason.session.${chatId}`;
@@ -16,6 +16,8 @@ interface Chat {
   state: ReasonChatState;
   transcript: ChatTranscript;
   opened: boolean;
+  /** The turn shown as running whose prompt has not been sent yet, and whether Stop was pressed meanwhile. */
+  pending: { turnId: string; stopped: boolean } | null;
   listeners: Set<(t: ChatTranscript) => void>;
 }
 
@@ -28,7 +30,7 @@ export const reasonAvailable = (): boolean => isTauri();
 function chat(chatId: string): Chat {
   let c = chats.get(chatId);
   if (!c) {
-    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), opened: false, listeners: new Set() };
+    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), opened: false, pending: null, listeners: new Set() };
     chats.set(chatId, c);
   }
   return c;
@@ -70,6 +72,8 @@ export async function sendReason(chatId: string, cwd: string, text: string): Pro
   const c = chat(chatId);
   apply(c, startTurn(c.state, text));
   const turnId = newestTurn(c.state)!;
+  const pending = { turnId, stopped: false };
+  c.pending = pending;
   try {
     await ensureListening();
     if (!c.opened) {
@@ -79,10 +83,19 @@ export async function sendReason(chatId: string, cwd: string, text: string): Pro
     // Conductor snapshots the workspace around every turn so "Reset chat"
     // can bring the files back (features/chat/checkpoints.ts).
     await saveTurnCheckpoint(invoke, cwd, chatId, turnId, "start");
+    if (c.pending === pending) c.pending = null;
+    // Stop pressed while the turn was being set up: Reason has no turn to
+    // cancel yet, so end it here and never send the prompt.
+    if (pending.stopped) {
+      apply(c, stopTurn(c.state, turnId));
+      await saveTurnCheckpoint(invoke, cwd, chatId, turnId, "end");
+      return;
+    }
     // Resolves after the turn's `turnEnded` event; a rejection means the
     // turn never started (no CLI, no process), so no event will end it.
     await invoke("reason_prompt", { chatId, text });
   } catch (e) {
+    if (c.pending === pending) c.pending = null;
     apply(c, failTurn(c.state, turnId, String(e)));
     return;
   }
@@ -105,5 +118,7 @@ export async function resetReasonChat(chatId: string, cwd: string, turnId: strin
 
 /** Stop. A second Stop asks Reason to stop hard. */
 export function stopReason(chatId: string): void {
+  const pending = chats.get(chatId)?.pending;
+  if (pending) pending.stopped = true;
   void invoke("reason_cancel", { chatId });
 }

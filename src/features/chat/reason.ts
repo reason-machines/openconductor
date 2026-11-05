@@ -103,6 +103,15 @@ export function failTurn(state: ReasonChatState, turnId: string, error: string):
   };
 }
 
+/** A turn stopped before its prompt reached Reason, so no `turnEnded` will come for it. */
+export function stopTurn(state: ReasonChatState, turnId: string): Step {
+  if (!state.open.some((t) => t.turnId === turnId)) return { state, events: [] };
+  return {
+    state: { ...state, open: state.open.filter((t) => t.turnId !== turnId) },
+    events: [{ type: "turn_status", sessionId: state.chatId, turnId, status: "cancelled" }],
+  };
+}
+
 export function turnStatus(end: ReasonTurnEnd): { status: TurnStatus; error?: string } {
   switch (end.outcome) {
     case "failed":

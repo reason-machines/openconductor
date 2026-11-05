@@ -44,5 +44,7 @@ functions; they were read with a bounded plain-text read
   priority; `CommentNav` binds at `PRIORITY.HIGH + 1`. When the file has no
   comment that way the key falls through to the cross-file comment stepping
   in `ReviewComments.tsx`.
-- Mounting: inside the position-relative box around the file's `CodeView`
-  in `FileDiffView.tsx`, once that file renders through `CodeView`.
+- Mounting: `FileDiffView.tsx` renders `<CommentNav>` beside the file's
+  `CodeView`, inside the position-relative `.oc-code-scroll` box of the diff
+  tab, as Conductor does. It re-counts on scroll (`subscribeToScroll`) and
+  after each CodeView render (`onPostRender`), so comment heights are settled.

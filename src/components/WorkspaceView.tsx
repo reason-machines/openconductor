@@ -19,7 +19,9 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { ScriptsPanel } from "./ScriptsPanel";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
-import { usePullRequest } from "../features/pr/usePullRequest";
+import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest";
+import { useArchiveOnMerge } from "../features/pr/useArchiveOnMerge";
+import { ChecksTab } from "../features/pr/checks/ChecksTab";
 import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
 import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
@@ -191,9 +193,10 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   );
 }
 
-function RightPanel({ diff, actions }: { diff: WorkspaceDiff; actions: () => ReactNode }) {
-  const [tab, setTab] = useState<"changes" | "files">("changes");
+function RightPanel({ diff, actions, pr, worktree }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null }) {
+  const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   const count = diff.load.state === "ready" ? diff.files.length : null;
+  const checksStatus = pr.pr?.status?.checks.status ?? null;
   return (
     <section className="diff" aria-label="Changes">
       <div className="tabs" role="tablist">
@@ -203,9 +206,14 @@ function RightPanel({ diff, actions }: { diff: WorkspaceDiff; actions: () => Rea
         <button role="tab" aria-selected={tab === "changes"} className={tab === "changes" ? "active" : ""} onClick={() => setTab("changes")}>
           Changes {count ? <span className="tab-count">{count}</span> : null}
         </button>
+        <button role="tab" aria-selected={tab === "checks"} className={tab === "checks" ? "active" : ""} onClick={() => setTab("checks")}>
+          Checks {checksStatus ? <span className={`checks-dot ${checksStatus}`} aria-label={checksStatus} /> : null}
+        </button>
       </div>
       {tab === "changes" ? (
         <ChangesList diff={diff} actions={actions} />
+      ) : tab === "checks" ? (
+        <ChecksTab worktree={worktree} pr={pr.pr} refresh={pr.refresh} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -275,12 +283,14 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const chat = useMemo<ChatBridge>(() => ({ insert: (t) => chatBridge.current?.insert(t), send: (t) => chatBridge.current?.send(t) }), []);
   const review = useReviewComments(workspace.id, chat, undefined, diff.openPath);
   const [agentWorking, setAgentWorking] = useState(false);
-  // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub.
+  const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
+  // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub, then archive on merge.
   const onLookup = useCallback(
-    (next: PrLookup) => {
+    (next: PrLookup, previous: PrLookup | null) => {
       if (next.kind === "found") dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title });
+      archiveOnMerge(next, previous);
     },
-    [dispatch, repo.id, workspace.id],
+    [dispatch, repo.id, workspace.id, archiveOnMerge],
   );
   const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, onLookup });
   const prActions = usePrActions({
@@ -349,7 +359,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
         />
         <div className="ws-right">
-          <RightPanel diff={diff} actions={review.actions} />
+          <RightPanel diff={diff} actions={review.actions} pr={pullRequest} worktree={workspace.path ?? null} />
           <ScriptsPanel repo={repo} workspace={workspace} />
         </div>
       </div>

@@ -30,6 +30,8 @@ export interface DbWorkspaceRow {
   workspacePath: string | null;
   pinnedAt: string | null;
   unread: boolean;
+  /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
+  number: number | null;
   createdAt: string;
 }
 
@@ -51,8 +53,8 @@ function sqliteTime(s: string): number {
 
 export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], collapsed: Iterable<string>): Repo[] {
   const folded = new Set(collapsed);
+  // Hidden repos stay in the list; the sidebar shows them behind its "show hidden" toggle.
   return repos
-    .filter((r) => !r.hidden)
     .map((r) => ({
       id: r.id,
       name: r.name,
@@ -60,6 +62,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
       remote: r.remoteUrl ?? undefined,
       defaultBranch: r.defaultBranch,
       collapsed: folded.has(r.id) || undefined,
+      hidden: r.hidden || undefined,
       workspaces: workspaces
         .filter((w) => w.repositoryId === r.id && !HIDDEN_STATES.has(w.state))
         .map(
@@ -77,6 +80,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             unread: w.unread || undefined,
             manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
             derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
+            number: w.number ?? null,
           }),
         ),
     }));
