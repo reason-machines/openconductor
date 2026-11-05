@@ -2,6 +2,8 @@
 // Outside Tauri (vite dev, screenshots) each call has a local stand-in so the
 // Create-workspace dialog still runs end to end.
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
+import type { ScriptEvent, WorkspaceRef } from "../scripts/model";
 import { inTauri } from "../backend";
 import type { CreateFrom, CreateWorkspaceArgs } from "./createFlow";
 import type { SourceState } from "./createFrom";
@@ -55,6 +57,28 @@ export async function createWorkspace(args: CreateWorkspaceArgs): Promise<Create
     };
   }
   return invoke<CreatedWorkspaceDto>("create_workspace", { ...args });
+}
+
+/**
+ * Listens for `scripts://event`, then starts the workspace's setup script.
+ * Resolves `started: false` when there is none (or outside Tauri); call
+ * `stop()` to unlisten. The backend keeps running setup after `stop()`.
+ */
+export async function startSetup(ref: WorkspaceRef, onEvent: (e: ScriptEvent) => void): Promise<{ started: boolean; stop: () => void }> {
+  if (!inTauri()) return { started: false, stop: () => {} };
+  const unlisten = await listen<ScriptEvent>("scripts://event", ({ payload }) => onEvent(payload));
+  try {
+    const started = await invoke<boolean>("setup_script_start", { workspace: ref });
+    return { started, stop: unlisten };
+  } catch (e) {
+    unlisten();
+    throw e;
+  }
+}
+
+/** Starts setup again after a failure (the listener from `startSetup` stays). */
+export async function restartSetup(ref: WorkspaceRef): Promise<boolean> {
+  return inTauri() ? invoke<boolean>("setup_script_start", { workspace: ref }) : false;
 }
 
 // No backend command lists PRs or issues yet (no GitHub or Linear integration),
