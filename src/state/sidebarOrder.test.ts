@@ -35,3 +35,15 @@ test("effective status is manual, then derived, then in-progress", () => {
   assert.ok(isWorkspaceStatus("canceled"));
   assert.ok(!isWorkspaceStatus("archived"));
 });
+
+test("sectioned workspaces sit between Pinned and the repo groups and leave both", () => {
+  const withSections: AppState = {
+    ...state,
+    sections: [{ id: "s", name: "Focus", workspaceIds: ["a1", "a2", "b2"] }],
+  };
+  // a2 is pinned and sectioned: the section wins, as in Conductor (Pinned filters out sectioned ids).
+  assert.deepEqual(pinnedEntries(withSections).map((e) => e.workspace.id), ["b1"]);
+  assert.deepEqual(sidebarEntries(withSections).map((e) => e.workspace.id), ["b1", "b2", "a2", "a1", "a3"]);
+  // A collapsed section's rows are not numbered.
+  assert.deepEqual(sidebarEntries(withSections, { visibleOnly: true, collapsedSections: new Set(["s"]) }).map((e) => e.workspace.id), ["b1", "a3"]);
+});
