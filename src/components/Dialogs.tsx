@@ -4,9 +4,9 @@ import { basename, repoNameFromGithub } from "../state/names";
 import { inTauri, pickFolder } from "../backend";
 import { CloseIcon } from "./Icons";
 
-export type DialogKind = "open" | "clone" | "quickstart";
+export type DialogKind = "open" | "clone" | "quickstart" | "create";
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+export function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
   return (
     <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal" role="dialog" aria-modal="true" aria-label={title} onKeyDown={(e) => e.key === "Escape" && onClose()}>

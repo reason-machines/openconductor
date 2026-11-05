@@ -1,0 +1,70 @@
+{
+  "note": "REA 6.7.0 run on our own Developer ID signed debug build, reduced to what the packaging contract cares about. Local paths, the signer's name and timestamps are left out.",
+  "host": "sven m5 max (macOS, arm64)",
+  "build": {
+    "command": "scripts/package-macos.sh",
+    "source": "main 9e58070 plus the bundle checker change merged in #58",
+    "profile": "debug",
+    "signing_identity_kind": "Developer ID Application (picked from the keychain by the script)",
+    "notarized": false
+  },
+  "rea": {
+    "inspect_signature": {
+      "command": "rea inspect-signature OpenConductor.app",
+      "exit": 0,
+      "seconds": 16,
+      "evidence_id": "ev_1df7f2d077a5acebaec6c992ac8c649ec64a41860aac9277d570ee8f883e8755",
+      "subject": "Contents/MacOS/openconductor (Mach-O thin arm64)",
+      "provider": "native-macos",
+      "signed": true,
+      "identifier": "com.reasonmachines.openconductor",
+      "team_identifier_present": true,
+      "authority_chain": ["Developer ID Application", "Developer ID Certification Authority", "Apple Root CA"],
+      "hardened_runtime": true,
+      "entitlements": {
+        "com.apple.security.cs.allow-jit": true,
+        "com.apple.security.cs.allow-unsigned-executable-memory": true
+      }
+    },
+    "inspect_plist": {
+      "command": "rea inspect-plist OpenConductor.app/Contents/Info.plist",
+      "exit": 0,
+      "seconds": 5,
+      "evidence_id": "ev_b8ade9c9446cd2a065b5c5e306451a28967fc502796de0abe58be84ec607ad8c",
+      "format": "xml",
+      "bundle": {
+        "identifier": "com.reasonmachines.openconductor",
+        "executable": "openconductor",
+        "name": "OpenConductor",
+        "version": "0.1.0"
+      },
+      "keys": [
+        "CFBundleDevelopmentRegion",
+        "CFBundleDisplayName",
+        "CFBundleExecutable",
+        "CFBundleIconFile",
+        "CFBundleIdentifier",
+        "CFBundleInfoDictionaryVersion",
+        "CFBundleName",
+        "CFBundlePackageType",
+        "CFBundleShortVersionString",
+        "CFBundleURLTypes",
+        "CFBundleVersion",
+        "CSResourcesFileMapped",
+        "LSApplicationCategoryType",
+        "LSMinimumSystemVersion",
+        "LSRequiresCarbon",
+        "NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac",
+        "NSDesktopFolderUsageDescription",
+        "NSDocumentsFolderUsageDescription",
+        "NSDownloadsFolderUsageDescription",
+        "NSHighResolutionCapable"
+      ]
+    }
+  },
+  "bundle_check": {
+    "command": "python3 tools/check_macos_bundle.py OpenConductor.app --signing developer-id",
+    "result": "37/37 pass",
+    "without_58": "36/37; NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac missing"
+  }
+}
