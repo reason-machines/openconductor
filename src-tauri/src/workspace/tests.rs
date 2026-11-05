@@ -245,6 +245,52 @@ fn existing_branch_tracks_remote_only_branch_after_fetch() {
 }
 
 #[test]
+fn existing_branch_with_pr_number_fetches_fork_head_from_pull_ref() {
+    let f = fixture();
+    let origin = f.tmp.path().join("origin.git");
+    sh(f.tmp.path(), &["init", "-q", "--bare", "-b", "main", origin.to_str().unwrap()]);
+    sh(&f.repo, &["remote", "add", "origin", origin.to_str().unwrap()]);
+    sh(&f.repo, &["push", "-q", "origin", "main"]);
+    // A fork's PR head is not a branch on origin; GitHub exposes it as refs/pull/<n>/head.
+    let fork = f.tmp.path().join("fork");
+    sh(f.tmp.path(), &["clone", "-q", origin.to_str().unwrap(), fork.to_str().unwrap()]);
+    sh(&fork, &["checkout", "-q", "-b", "bob/fix"]);
+    let tip = commit_file(&fork, "fix.txt", "fix\n", "fork fix");
+    sh(&fork, &["push", "-q", "origin", "HEAD:refs/pull/7/head"]);
+
+    // Without prNumber the branch is not found, as before.
+    assert!(matches!(f.mgr.create(&f.repo, &existing("bob/fix")), Err(WorkspaceError::BranchNotFound(_))));
+
+    let c = f.mgr.create(&f.repo, &CreateOptions { pr_number: Some(7), ..existing("bob/fix") }).unwrap();
+    let ws = &c.workspace;
+    assert!(c.fetched);
+    assert_eq!((c.base_ref.as_str(), c.base_commit.as_str()), ("bob/fix", tip.as_str()));
+    assert_eq!((ws.name.as_str(), ws.branch.as_str()), ("fix", "bob/fix"));
+    assert_eq!(sh(&ws.path, &["symbolic-ref", "--short", "HEAD"]), "bob/fix");
+    assert_eq!(sh(&ws.path, &["rev-parse", "HEAD"]), tip);
+    assert!(ws.path.join("fix.txt").is_file());
+    let upstream = Command::new("git").arg("-C").arg(&ws.path).args(["rev-parse", "--abbrev-ref", "@{upstream}"]).output().unwrap();
+    assert!(!upstream.status.success(), "no upstream for a fork PR branch");
+    assert_eq!(sh(&f.repo, &["symbolic-ref", "--short", "HEAD"]), "main");
+
+    // A PR that does not exist reports the PR number and git's error.
+    let missing = f.mgr.create(&f.repo, &CreateOptions { pr_number: Some(99), ..existing("carol/none") });
+    match missing {
+        Err(e @ WorkspaceError::PullRequestNotFound { number: 99, .. }) => {
+            assert!(e.to_string().starts_with("branch not found locally or on origin, and pull request #99"), "{e}");
+        }
+        other => panic!("expected PullRequestNotFound, got {other:?}"),
+    }
+    assert!(!git::branch_exists(&f.repo, "carol/none"));
+
+    // A same-repo PR (branch on origin) still tracks origin/<branch>, prNumber or not.
+    sh(&fork, &["push", "-q", "origin", "bob/fix:dave/same-repo"]);
+    let c = f.mgr.create(&f.repo, &CreateOptions { pr_number: Some(8), ..existing("dave/same-repo") }).unwrap();
+    assert_eq!(c.base_ref, "origin/dave/same-repo");
+    assert_eq!(sh(&c.workspace.path, &["rev-parse", "--abbrev-ref", "@{upstream}"]), "origin/dave/same-repo");
+}
+
+#[test]
 fn files_to_copy_default_env_glob_only_copies_gitignored() {
     let f = fixture();
     commit_file(&f.repo, ".gitignore", ".env\n.env.local\nnode_modules/\n", "ignore");

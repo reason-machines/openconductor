@@ -203,12 +203,54 @@ Help submenu on macOS and emits `open_keyboard_shortcuts_dialog` on click.
   These are commands with `configurable:false`, plus the four send-key commands,
   which the message-send setting controls instead.
 
+Detail from the page (`lEa`) and row recorder (`rEa`) in `renderApp-D_fmY7hW.js`
+(sha256 `5199d392…`, from offset 11,218,000), modelled in `src/keybindings/editor.ts`:
+
+- Search uses the shared multi-field ranker (`WZ`, threshold 0.5) over
+  title, category, command id and a key text built per key part: `meta` gives
+  "command cmd ⌘", `ctrl` "control ctrl ⌃", `alt` "option alt ⌥", `shift`
+  "shift ⇧", any other part itself plus its glyph.
+- "Type shortcut" starts only when the box is empty, no typed shortcut is
+  showing, and the key is a modifier. It takes exclusive key capture; the box
+  shows the held modifier glyphs. The first recordable key sets the box to its
+  glyphs ("⌘K") and filters to rows with a key that fires on that press. Typing
+  in the box or blurring it leaves the mode. A query with no matches shows
+  nothing: there is no empty-state text.
+- Both recorders ignore repeats and IME composition, show held modifiers, and
+  treat a bare Escape as cancel. A modifier keydown also clears a shown
+  conflict. A recorded shortcut saves as a one-key override, and the row stops
+  recording before the save resolves. Blurring the row button cancels.
+- The row button's accessible name is "Change shortcut for <title>. Current
+  shortcuts: <Command+K or ...>." and, while recording, "Recording shortcut for
+  <title>. Press modifiers and a key." or "... Held modifiers: Command+Option.
+  Press a key.", also announced in a polite live region. The conflict line has
+  `role="alert"` and id `keybinding-conflict-<commandId>`.
+- Recorder buttons are disabled while overrides are loading. Queued messages
+  default to off, so the opposite follow-up row is hidden until that flag loads.
+
+OpenConductor: `src/settings/KeyBindingsPage.tsx` at `/settings/user/key-bindings`,
+listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
+
+- It is not gated. OpenConductor has no `internal_settings_enabled` flag, so
+  gating would make the page unreachable. The nav label is ours; Conductor's
+  internal-settings nav entry was not read.
+- Overrides are stored as the same `keybinding_overrides_v1` JSON string, but at
+  the top level of the settings file (the backend keeps keys it does not model)
+  instead of a `settings` table row. They are read once at startup by
+  `KeybindingsProvider` and written through the settings page's own save, so a
+  later change on another settings page cannot overwrite them with a stale copy.
+  A failed save shows the toast "Failed to save keyboard shortcut".
+
 ## REA gaps
 
 - `analyze-javascript-application` finds no IPC operations: it does not model
   Tauri `invoke` or `listen`. The registry and event wiring were located by
   string search on the decoded bundle, sliced by brace matching, and evaluated
   with stub constructors (`tools/keybindings_extract.mjs`).
+- The key-bindings page and recorder were read by byte offset in the decoded
+  `renderApp` chunk. REA has no view that addresses a minified JavaScript
+  function by name or offset, and its earlier `analyze-javascript-application`
+  run on the index chunk (90 MB of JSON) holds none of these strings.
 - No component tree: the bundle is minified and has no source maps. Component
   behaviour above comes from reading the minified React output.
 - `rea execute-rizin-command` on Sven's Mac fails with `capability_unavailable`
