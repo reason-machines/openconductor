@@ -341,10 +341,16 @@ export const flows = [
         const [submit] = await wd.waitFor("the Create workspace dialog", () => wd.findAll('form.create-ws button[type="submit"]').then((ids) => ids.length && ids));
         await wd.click(submit);
 
-        // The workspace is created despite the failing hook.
+        // The workspace is created despite the failing hook. The sidebar lists
+        // the pending row before `git worktree add` runs, so wait for git itself.
+        const errorToasts = () => wd.execute("return [...document.querySelectorAll('.toast.toast-error .toast-message')].map((e) => e.textContent.trim());", []);
+        let created;
+        try {
+          created = await wd.waitFor("a new git worktree", async () => worktreePaths().find((p) => !pathsBefore.includes(p)) ?? null, 60000);
+        } catch (e) {
+          throw new Error(`${e?.message ?? e}; error toasts: ${JSON.stringify(await errorToasts().catch(() => null))}`);
+        }
         await wd.waitFor("one more sidebar workspace", async () => (await textsOf(wd, ".sb-ws-name")).length === namesBefore.length + 1, 60000);
-        const created = worktreePaths().find((p) => !pathsBefore.includes(p));
-        if (!created) throw new Error("git worktree list has no new worktree");
 
         const toast = await wd.waitFor("the initialization-issue toast", toastState, 30000);
         if (!toast.buttons.includes("View logs")) throw new Error(`toast buttons ${JSON.stringify(toast.buttons)}, want "View logs"`);
