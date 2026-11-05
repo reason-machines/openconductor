@@ -1,7 +1,7 @@
 {
  "ledger_id": "rol_ba2a4881609d4eec7a8be78f1d5035ba6cd0f218c0073f39a66ceafade50e29c",
  "reviewed_at": "247d5a1",
- "head": "1e73a26",
+ "head": "d091166",
  "areas": {
   "chat": {
    "label": "Chat: agent transcript, composer, queue, attachments, models, turn controls",
@@ -17,7 +17,7 @@
     "missing": 4
    },
    "verified": 0,
-   "needs_rereview": 6
+   "needs_rereview": 8
   },
   "diff": {
    "label": "Diff viewer: changed files, file diff rendering, navigation, inline and GitHub review comments",
@@ -138,7 +138,7 @@
    "status": "partial",
    "score": 0.5,
    "code_score": 1.0,
-   "needs_rereview": false,
+   "needs_rereview": true,
    "reviewed_at": "247d5a1",
    "why": "#339: toolGroups.ts foldAgentRows/groupParts feed Transcript.tsx SummaryRow, 'N tool calls, M messages' with one icon per tool, open while the turn runs and collapsed after. Garry Mode (#332, AppPrefRows.tsx, \u2303O) reaches Transcript only as expandToolsByDefault; WorkspaceView never passes dontCollapseToolCalls, so groups still collapse after each turn. ToolRow still shows raw JSON input and result instead of per-tool rendering.",
    "obligation": "Group consecutive tool calls and intermediate text under one collapsible 'N tool calls, M messages' header, and add the keep-expanded setting wired to expandToolsByDefault.",
@@ -430,7 +430,7 @@
    "status": "partial",
    "score": 0.5,
    "code_score": 0.5,
-   "needs_rereview": false,
+   "needs_rereview": true,
    "reviewed_at": "247d5a1",
    "why": "Copy message, Copy final message, Retry, TurnMenu Reset chat and the TurnChanges chips unchanged, and now also work on transcripts reloaded from conductor.db (#371). chat.forkToNewTab has no handler; no edit-and-resend, Fork chat, or duration/time chips in the turn footer.",
    "obligation": "Add edit-and-resend and 'Fork chat' (a registered fork command creating a session from a turn), plus the footer's duration, time and changed-files chips.",
@@ -1547,5 +1547,5 @@
   }
  ],
  "broken_anchors": [],
- "implementation_files_scanned": 505
+ "implementation_files_scanned": 507
 }
