@@ -551,6 +551,16 @@ impl WorkspaceManager {
         Ok(())
     }
 
+    /// Remove the archive record of `name`, if any (the full unarchive in
+    /// `workspace_archive` recreated the worktree itself).
+    pub fn forget_archive_record(&self, repo_root: &Path, name: &str) -> Result<(), WorkspaceError> {
+        let record = self.archive_record(repo_root, name);
+        if record.exists() {
+            std::fs::remove_file(record)?;
+        }
+        Ok(())
+    }
+
     /// Restore an archived workspace: re-add its worktree on its branch, or
     /// recreate the branch at the archive commit when it was deleted.
     pub fn restore(&self, repo: &Path, name: &str) -> Result<Workspace, WorkspaceError> {

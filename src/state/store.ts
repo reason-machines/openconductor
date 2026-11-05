@@ -9,8 +9,12 @@ import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
+import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, sectionsFromDb, type DbNavSection, type NavSection } from "./navigationSections";
 import { sameRepoRecord } from "./addRepo";
-import { archiveWorkspace, emitArchiveEvent, startArchive, type ArchiveMode } from "../workspace/archive";
+import { archiveWorkspace, emitArchiveEvent, startArchive, startUnarchive, unarchiveWorkspace, type ArchiveMode } from "../workspace/archive";
+import { scriptsConfig, startSetup } from "../scripts/api";
+import { workspaceRef } from "../scripts/model";
+import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -30,7 +34,8 @@ export type Action =
       workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "targetBranch" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number">;
     }
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
-  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
+  /** `keepPlaceholder`: a name-only rename from the Rename dialog leaves `placeholder_branch_name` alone. */
+  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean; keepPlaceholder?: boolean }
   /**
    * Full archive (`archive_workspace`). `mode` "discardGitOperationState" is the
    * retry from the Git-operation warning; `stopRunningAgents` the confirmed
@@ -41,12 +46,18 @@ export type Action =
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
   /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
   | { type: "setWorkspaceWorking"; repoId: string; workspaceId: string; working: boolean }
+  /** Unarchive from the archive-on-merge toast: put the workspace back where it was. */
+  | { type: "restoreWorkspace"; repoId: string; workspace: Workspace }
+  /** The target-branch picker saved `intended_target_branch` (useTargetBranch writes the row). */
+  | { type: "setWorkspaceTargetBranch"; repoId: string; workspaceId: string; branch: string }
   | { type: "toggleSidebar" }
   /** Sidebar repo menu: Hide / Unhide repository (`repos.hidden`). */
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
   /** Sidebar drag and drop: the full repo id list in its new order (`repos.display_order`). */
   | { type: "reorderRepos"; ids: string[] }
   | { type: "setSidebarVisible"; visible: boolean }
+  /** Change repository icon (`repos.icon`); null falls back to favicon, avatar, initial. */
+  | { type: "setRepoIcon"; repoId: string; icon: string | null }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] }
@@ -54,8 +65,20 @@ export type Action =
   | { type: "setWorkspaceUnread"; repoId: string; workspaceId: string; unread: boolean }
   | { type: "setWorkspacePinned"; repoId: string; workspaceId: string; pinned: boolean; at?: number }
   | { type: "setWorkspaceStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue }
+  /* sidebar: user sections (navigationSections.ts) */
+  | { type: "createSection"; section: NavSection; beforeSectionId?: string }
+  | { type: "editSection"; sectionId: string; name: string; emoji?: string }
+  | { type: "deleteSection"; sectionId: string }
+  /** Move a workspace into `sectionId`, or out of its section with null. */
+  | { type: "assignSection"; workspaceId: string; sectionId: string | null }
+  | { type: "hydrateSections"; sections: NavSection[]; updatedAt: number }
   /** A PR lookup derived a new status (`workspaces.derived_status`); like the reference, it drops the manual status. */
   | { type: "setWorkspaceDerivedStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue };
+
+/** Apply a section edit and stamp the layout, as Conductor's `tve` does. */
+function withSections(state: AppState, sections: NavSection[]): AppState {
+  return { ...state, sections, sectionsUpdatedAt: nextUpdatedAt(state.sectionsUpdatedAt) };
+}
 
 function updateWorkspace(state: AppState, repoId: string, workspaceId: string, fn: (w: Workspace) => Workspace): AppState {
   const repos = state.repos.map((r) => (r.id !== repoId ? r : { ...r, workspaces: r.workspaces.map((w) => (w.id === workspaceId ? fn(w) : w)) }));
@@ -115,7 +138,7 @@ export function reducer(state: AppState, action: Action): AppState {
               ...w,
               name: action.name ?? w.name,
               branch: action.branch ?? w.branch,
-              placeholderBranchName: null,
+              ...(action.keepPlaceholder ? {} : { placeholderBranchName: null }),
               ...(action.userSet && action.name !== undefined ? { userSetWorkspaceName: true } : {}),
               ...(action.userSet && action.branch !== undefined ? { userSetBranchName: true } : {}),
             };
@@ -139,6 +162,14 @@ export function reducer(state: AppState, action: Action): AppState {
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
     }
+    case "restoreWorkspace": {
+      const repos = state.repos.map((r) =>
+        r.id === action.repoId && !r.workspaces.some((w) => w.id === action.workspace.id) ? { ...r, workspaces: [...r.workspaces, action.workspace] } : r,
+      );
+      return { ...state, repos };
+    }
+    case "setWorkspaceTargetBranch":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, targetBranch: action.branch }));
     case "archiveWorkspace": {
       const repos = state.repos.map((r) =>
         r.id === action.repoId ? { ...r, workspaces: r.workspaces.filter((w) => w.id !== action.workspaceId) } : r,
@@ -154,6 +185,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos: orderRepos(state.repos, action.ids) };
     case "setSidebarVisible":
       return isSidebarVisible(state) === action.visible ? state : { ...state, sidebarVisible: action.visible };
+    case "setRepoIcon":
+      return { ...state, repos: state.repos.map((r) => (r.id === action.repoId ? { ...r, icon: action.icon } : r)) };
     case "reset":
       return action.state;
     case "hydrate": {
@@ -173,6 +206,20 @@ export function reducer(state: AppState, action: Action): AppState {
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
     case "setWorkspaceStatus":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, manualStatus: action.status }));
+    case "createSection":
+      return withSections(state, createSection(state.sections ?? [], action.section, action.beforeSectionId));
+    case "editSection":
+      return withSections(state, editSection(state.sections ?? [], { id: action.sectionId, name: action.name, emoji: action.emoji }));
+    case "deleteSection":
+      return withSections(state, deleteSection(state.sections ?? [], action.sectionId));
+    case "assignSection": {
+      const next = withSections(state, assignWorkspace(state.sections ?? [], action.workspaceId, action.sectionId));
+      if (action.sectionId === null) return next;
+      // Conductor unpins a workspace once it is assigned to a section (index `k$t`).
+      return { ...next, repos: next.repos.map((r) => ({ ...r, workspaces: r.workspaces.map((w) => (w.id === action.workspaceId && w.pinnedAt !== undefined ? { ...w, pinnedAt: undefined } : w)) })) };
+    }
+    case "hydrateSections":
+      return { ...state, sections: action.sections, sectionsUpdatedAt: action.updatedAt };
     case "setWorkspaceWorking": {
       const status: Workspace["status"] = action.working ? "working" : "idle";
       const ws = state.repos.find((r) => r.id === action.repoId)?.workspaces.find((w) => w.id === action.workspaceId);
@@ -254,6 +301,12 @@ export async function loadReposFromDb(collapsed: Iterable<string> = []): Promise
   return reposFromDb(repos, workspaces, collapsed);
 }
 
+/** The sidebar section layout from conductor.db, or none stored yet. */
+export async function loadSectionsFromDb(): Promise<{ sections: NavSection[]; updatedAt: number }> {
+  const layout = await invoke<{ sections: DbNavSection[]; updatedAt: number } | null>("db_read_navigation_sections");
+  return { sections: sectionsFromDb(layout?.sections ?? []), updatedAt: layout?.updatedAt ?? 0 };
+}
+
 export function useAppStore() {
   const [state, rawDispatch] = useReducer(reducer, undefined, load);
   const demo = new URLSearchParams(window.location.search).get("demo") === "1";
@@ -265,6 +318,36 @@ export function useAppStore() {
       (err) => console.error("conductor.db: could not list repositories", err),
     );
   }, [desktop]);
+  // Sections: read once, then write the whole layout whenever an edit restamps it
+  // (Conductor's local backend `WIr` does the same through `tve`).
+  const sectionsWrittenAt = useRef<number | undefined>(undefined);
+  const reloadSections = useCallback(() => {
+    loadSectionsFromDb().then(
+      ({ sections, updatedAt }) => {
+        sectionsWrittenAt.current = updatedAt;
+        rawDispatch({ type: "hydrateSections", sections, updatedAt });
+      },
+      (err) => console.error("conductor.db: could not read sidebar sections", err),
+    );
+  }, []);
+  useEffect(() => {
+    if (desktop) reloadSections();
+  }, [desktop, reloadSections]);
+  useEffect(() => {
+    const at = state.sectionsUpdatedAt;
+    if (!desktop || at === undefined || at === sectionsWrittenAt.current) return;
+    sectionsWrittenAt.current = at;
+    invoke<boolean>("db_write_navigation_sections", { sections: state.sections ?? [], updatedAt: at }).then(
+      (written) => {
+        // A newer layout is stored (another window wrote it): show that one.
+        if (!written) reloadSections();
+      },
+      (err) => {
+        console.error("conductor.db: could not save sidebar sections", err);
+        reloadSections();
+      },
+    );
+  }, [desktop, state.sections, state.sectionsUpdatedAt, reloadSections]);
   useEffect(() => {
     if (demo) return;
     if (desktop) localStorage.setItem(PREFS_KEY, JSON.stringify(prefsOf(state)));
@@ -286,6 +369,17 @@ export function useAppStore() {
         });
         return;
       }
+      if (action.type === "restoreWorkspace") {
+        const repo = stateRef.current.repos.find((r) => r.id === action.repoId);
+        void startUnarchive(action, {
+          show: () => rawDispatch(action),
+          run: desktop ? () => unarchiveWorkspace(action.workspace.id) : null,
+          setup: () => void rerunSetup(repo, action.workspace),
+          reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
+          emit: emitArchiveEvent,
+        });
+        return;
+      }
       rawDispatch(action);
       // Optimistic, as in Conductor: on a failed write, reload the rows the database has.
       const rollback = (what: string) => (err: unknown) => {
@@ -294,6 +388,9 @@ export function useAppStore() {
       };
       if (desktop && action.type === "setRepoHidden") {
         invoke("db_set_repo_hidden", { repoId: action.repoId, hidden: action.hidden }).catch(rollback("hide repository"));
+      }
+      if (desktop && action.type === "setRepoIcon") {
+        invoke("db_set_repo_icon", { repoId: action.repoId, icon: action.icon }).catch(rollback("change repository icon"));
       }
       if (desktop && action.type === "reorderRepos") {
         invoke("db_reorder_repos", { ids: action.ids }).catch(rollback("reorder repositories"));
@@ -304,4 +401,18 @@ export function useAppStore() {
     [desktop],
   );
   return [state, dispatch] as const;
+}
+
+/** Conductor reruns the setup script after an unarchive; a failure shows through the setup watch. */
+async function rerunSetup(repo: Repo | undefined, ws: Workspace): Promise<void> {
+  const ref = repo && workspaceRef({ id: repo.id, path: repo.path, defaultBranch: repo.defaultBranch }, { id: ws.id, name: ws.name, path: ws.path });
+  if (!ref) return;
+  const workspace = { ...ref, targetBranch: ws.targetBranch ?? null };
+  try {
+    if (!(await scriptsConfig(workspace)).setup) return;
+    watchSetup(ws.id);
+    if (!(await startSetup(workspace))) unwatchSetup(ws.id);
+  } catch {
+    unwatchSetup(ws.id);
+  }
 }

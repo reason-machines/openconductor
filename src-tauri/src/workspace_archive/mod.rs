@@ -409,6 +409,130 @@ pub fn remove_worktree(repo_root: &Path, workspace: &Path) -> Result<(), String>
     })
 }
 
+/// What [`restore`] did.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Restored {
+    pub branch: String,
+    /// The branch was gone ("Delete branch on archive") and was recreated
+    /// at the archive commit.
+    pub recreated_branch: bool,
+    /// Uncommitted work from the archive checkpoint was put back.
+    pub restored_changes: bool,
+    pub notices: Vec<Notice>,
+}
+
+/// Unarchive (Conductor's `RWt` / `PY` @ ~3,304,884): re-add the worktree at
+/// `t.workspace_path` on `t.branch`, put back the uncommitted work saved in
+/// checkpoint `conductor-archive-<id>`, and move the archived `.context` back
+/// (`Wmt` @ ~2,268,547). The caller marks the row and reruns setup.
+///
+/// Refused, as in Conductor, when the row has no branch, the directory
+/// exists, or the branch is checked out in another worktree. A deleted
+/// branch is recreated at `archive_commit` (Conductor asks first, in its
+/// restore dialog, and names the new branch uniquely). When the branch has
+/// moved since the archive, the checkpoint is not restored, since that would
+/// reset the branch (Conductor asks first there too).
+pub fn restore(
+    t: &ArchiveTarget,
+    archive_commit: Option<&str>,
+    root_dir: Option<&Path>,
+) -> Result<Restored, String> {
+    let branch = t.branch.trim();
+    if branch.is_empty() {
+        return Err("Cannot rehydrate workspace without branch information".into());
+    }
+    let path = &t.workspace_path;
+    if path.as_os_str().is_empty() || path == &t.repo_root {
+        return Err("Workspace directory not found".into());
+    }
+    if path.exists() {
+        return Err(format!(
+            "Can't unarchive: {} already exists",
+            path.display()
+        ));
+    }
+    let branch_ref = format!("refs/heads/{branch}");
+    let commit = archive_commit.filter(|c| {
+        git(
+            &t.repo_root,
+            ["rev-parse", "--verify", "-q", &format!("{c}^{{commit}}")],
+        )
+        .is_ok()
+    });
+    let mut recreated_branch = false;
+    match git(&t.repo_root, ["rev-parse", "--verify", "-q", &branch_ref]) {
+        Ok(_) => {}
+        Err(_) => match commit {
+            Some(c) => {
+                git(&t.repo_root, ["branch", branch, c])?;
+                recreated_branch = true;
+            }
+            None => return Err(format!("Branch '{branch}' no longer exists")),
+        },
+    }
+    let worktrees = git(&t.repo_root, ["worktree", "list", "--porcelain"])?;
+    let mut current = "";
+    for line in worktrees.lines() {
+        if let Some(p) = line.strip_prefix("worktree ") {
+            current = p;
+        } else if line == format!("branch {branch_ref}") {
+            return Err(format!(
+                "Branch '{branch}' is already checked out at {current}"
+            ));
+        }
+    }
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| format!("{}: {e}", parent.display()))?;
+    }
+    let add: [&OsStr; 4] = [
+        "worktree".as_ref(),
+        "add".as_ref(),
+        path.as_os_str(),
+        branch.as_ref(),
+    ];
+    git(&t.repo_root, add)?;
+
+    let mut notices = Vec::new();
+    let mut restored_changes = false;
+    if let Some(c) = archive_commit {
+        let head = git(path, ["rev-parse", "HEAD"]).unwrap_or_default();
+        if head != c {
+            notices.push(Notice::error(format!(
+                "Uncommitted changes couldn't be recovered: branch '{branch}' has moved since the workspace was archived."
+            )));
+        } else {
+            match checkpoint::restore(path, &checkpoint_id(&t.local_id)) {
+                Ok(()) => restored_changes = true,
+                Err(e) => notices.push(Notice::error(format!(
+                    "Uncommitted changes couldn't be recovered: {e}"
+                ))),
+            }
+        }
+    }
+    if let Some(root) = root_dir {
+        let saved = root
+            .join(ARCHIVED_CONTEXTS_DIR)
+            .join(&t.repo_name)
+            .join(&t.directory_name);
+        let dest = path.join(CONTEXT_FOLDER);
+        // The archived copy wins over one the checkpoint brought back
+        // (Conductor git-excludes `.context`, so its checkpoints never hold
+        // it). Conductor only logs a failure here.
+        if saved.exists() {
+            if dest.exists() {
+                let _ = std::fs::remove_dir_all(&dest);
+            }
+            let _ = std::fs::rename(&saved, &dest);
+        }
+    }
+    Ok(Restored {
+        branch: branch.to_string(),
+        recreated_branch,
+        restored_changes,
+        notices,
+    })
+}
+
 /// "Delete branch on archive": `git branch -D`, skipping the default branch.
 pub fn delete_local_branch(repo_root: &Path, branch: &str, default_branch: &str) -> Option<Notice> {
     if branch == default_branch {

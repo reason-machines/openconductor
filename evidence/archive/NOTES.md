@@ -1,7 +1,7 @@
-# Workspace archive
+# Workspace archive and unarchive
 
-What Conductor 0.87.6 does when a workspace is archived, and how OpenConductor
-does the same. Reference: the decoded frontend chunk `index-BGEQ8YjU.js`
+What Conductor 0.87.6 does when a workspace is archived and unarchived, and how
+OpenConductor does the same. Reference: the decoded frontend chunk `index-BGEQ8YjU.js`
 (sha256 `b5b01f33fbbef68a…`, the same bytes on Sven's Mac at
 `~/code/conductor-rea-work/frontend/dist/assets/` and on the cloud computer at
 `/tmp/ocq/index.js`), read as plain text; offsets below are into it. Text pulled
@@ -16,8 +16,8 @@ archive in `flow.rs`), the `archive_workspace` command in
 Run the checks:
 
 ```bash
-bash tools/archive/run-rust-tests.sh          # 14 Rust tests + clippy, no Tauri needed
-node --test src/workspace/archiveModel.test.ts  # 9 frontend tests
+bash tools/archive/run-rust-tests.sh          # 19 Rust tests + clippy, no Tauri needed
+node --test src/workspace/archiveModel.test.ts  # 13 frontend tests
 ```
 
 ## Reference flow
@@ -91,6 +91,32 @@ retries in `discardGitOperationState` mode; `WORKSPACE_CORRUPTED` shows
 **Delete permanently**; any other error shows its message with **Delete
 anyway**. The row is hidden optimistically and the hide is rolled back on error.
 
+## Reference unarchive
+
+`unarchive` (`Xk.unarchive` @ ~3,311,065 and the `unarchiveWorkspace`
+mutation) calls `Z2` -> `RWt` (local) -> `PY` (@ ~3,304,884), then reruns the
+setup script when `needsSetupScript` (`Pfe`: `runWorkspaceSetupScript`, then
+`completeWorkspaceSetupIfStillSettingUp`):
+
+- `CWt` (@ ~3,304,123) picks a scenario: no branch or branch gone
+  (`branchDeleted`), branch checked out in another worktree (`branchTaken`),
+  branch moved since `archive_commit` (`branchDiverged`), else `happy`. Any
+  scenario but `happy` opens the restore dialog (`restore-workspace-dialog`),
+  which offers a new branch (`useNewBranch`: `git branch <unique name>
+  <archive_commit>`, then the same `PY`).
+- `PY`: "Cannot rehydrate workspace without branch information" without a
+  branch; `Can't unarchive: <path> already exists` (`xfe`) when the directory
+  exists; marks the row `initializing`; "Branch '<b>' no longer exists" /
+  "Branch '<b>' is already checked out at <path>"; `git worktree add <path>
+  <branch>` (`iWt` @ ~3,289,007, which also copies gitignored files per
+  `file_include_globs`); with an `archive_commit`, `checkpointer.sh restore
+  conductor-archive-<id>` (failure: toast "Uncommitted changes couldn't be
+  recovered: …", not fatal); moves `.context` back from `archived-contexts`
+  (`Wmt` @ ~2,268,547).
+- `MY`: row `setting_up` (`markSettingUpAfterUnarchive`), then setup reruns.
+- Failure: "Failed to unarchive: <message>" (`eU` @ ~3,311,139); for an
+  existing directory, a toast with Open in Finder / Reset.
+
 ## Runtime check on the real app's data (Sven's Mac, read-only)
 
 `conductor.db` opened with `?immutable=1`, 2026-11-05:
@@ -138,7 +164,15 @@ the UI was checked in the browser build only.
 | Optimistic hide, rolled back on error | `startArchive` (`hide`, `reload`) | `startArchive brings the row back…` | implemented |
 | `WORKSPACE_CORRUPTED` toast with **Delete permanently**; others with **Delete anyway** | `failureToast` (message only) | `a missing directory reads as a corrupted workspace…` | partial: no delete action (no delete-workspace command yet) |
 | Archive on merge gets the full archive | `useArchiveOnMerge` dispatches `archiveWorkspace`, which `startArchive` runs | flow tests + store wiring | implemented |
-| Unarchive recreates the worktree at `archive_commit`/branch and reruns setup | not in this PR | — | missing (follow-up; `db_unarchive_workspace` is in open PR #366) |
+| Unarchive: refuse without a branch, an existing directory, a branch checked out elsewhere, a missing branch (`PY` @ ~3,304,884) | `workspace_archive::restore` | `unarchive_refuses_what_conductor_refuses` | implemented |
+| Unarchive: `git worktree add <path> <branch>` | `restore` | `unarchive_brings_back_the_worktree_…` | implemented (no `file_include_globs` copy) |
+| Unarchive: checkpoint `conductor-archive-<id>` restored; failure is a toast | `restore` via `checkpoint::restore` | `unarchive_brings_back_the_worktree_…` (index, edits, untracked) | implemented |
+| Unarchive: `.context` back from `archived-contexts` (`Wmt`) | `restore` | `unarchive_brings_back_the_worktree_…` | implemented |
+| Unarchive: deleted branch (`branchDeleted` → new branch at `archive_commit`) | `restore` recreates the same branch name at `archive_commit` | `unarchive_recreates_a_deleted_branch_at_the_archive_commit` | partial: no restore dialog, no unique new name |
+| Unarchive: branch moved since archive (`branchDiverged`) | `restore` keeps the branch and skips the checkpoint, with a notice | `unarchive_leaves_the_checkpoint_when_the_branch_moved_since` | partial: no restore dialog |
+| Unarchive: row back, archive record dropped, setup rerun (`MY`, `Pfe`) | `flow::unarchive_workspace` (row `ready`), `startUnarchive` + `rerunSetup` in the store | `unarchive_recreates_the_worktree_with_its_work_and_marks_the_row_ready`, `unarchive shows the row, recreates the worktree, then reruns setup` | implemented (row goes to `ready`; the setup state lives in the UI, as for a new workspace) |
+| Unarchive failure: "Failed to unarchive: …", row put away again | `startUnarchive`, `unarchiveFailedMessage` | `a failed unarchive puts the row away again…` | implemented (no Open in Finder / Reset buttons) |
+| Unarchive from the archive-on-merge toast | `restoreWorkspace` action (from #366) now runs `unarchive_workspace` | store wiring | implemented; there is no archived-workspaces list yet to unarchive from elsewhere |
 
 ## Differences, on purpose
 
@@ -155,6 +189,8 @@ the UI was checked in the browser build only.
   no delete action to offer.
 - The command refuses to tear down a row whose path is the repository root
   itself (reported as `WORKSPACE_CORRUPTED`).
+- `db_archive_workspace` and `db_unarchive_workspace` (row-only) are gone;
+  `archive_workspace` and `unarchive_workspace` replace them.
 - The archive also writes our archive record
   (`<root>/archived/<repo-slug>/<dir>.ws`) so the name stays taken and
   `WorkspaceManager::list` keeps reporting it.
@@ -164,10 +200,16 @@ the UI was checked in the browser build only.
 - **Stop agents:** after "Stop agents and archive" the workspace view closes,
   but the running chat turn is not cancelled; Conductor cancels each session
   (`cancelSession`, `compressLogsAfterStop`). Only the frontend knows chat ids.
-- **Unarchive** keeps assuming the worktree exists (open PR #366). It needs to
-  re-add the worktree on the kept branch or at `archive_commit`, restore
-  `.context` from `archived-contexts` (`Wmt` @ ~2,268,547) and rerun setup,
-  as Conductor's `unarchiveWorkspace` does. Follow-up once #366 lands.
+- **Unarchive restore dialog:** Conductor asks what to do when the branch was
+  deleted, moved or is checked out elsewhere, and can restore onto a new,
+  uniquely named branch. We recreate a deleted branch under its own name at
+  the archive commit, keep a moved branch as it is (skipping the checkpoint
+  with a notice), and refuse a branch checked out elsewhere.
+- Unarchive does not copy gitignored files (`file_include_globs`) into the
+  re-added worktree, and the existing-directory toast has no Open in Finder /
+  Reset buttons.
+- Unarchive is reachable only from the archive-on-merge toast: there is no
+  archived-workspaces list yet.
 - Remote file sync, workspace links and the user-visible symlink have no
   counterpart in OpenConductor yet, so there is nothing to clean up.
 - Not run in the desktop app (see above).

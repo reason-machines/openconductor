@@ -38,3 +38,26 @@ pub async fn archive_workspace(
     };
     flow::archive_workspace(&deps, &workspace_id, mode.as_deref()).await
 }
+
+/// JS: `invoke("unarchive_workspace", { workspaceId })`: recreate the
+/// worktree with the work saved at archive time and mark the row `ready`;
+/// the frontend then reruns the setup script. Rejects with
+/// [`ArchiveFailureDto`]; the row stays archived when it does.
+#[tauri::command]
+pub async fn unarchive_workspace(
+    db: State<'_, Db>,
+    scripts: State<'_, ScriptService>,
+    service: State<'_, WorkspaceService>,
+    in_flight: State<'_, InFlightArchives>,
+    workspace_id: String,
+) -> Result<UnarchiveResultDto, ArchiveFailureDto> {
+    let no_delete = |_: &std::path::Path, _: &std::path::Path| false;
+    let deps = Deps {
+        pool: &db.0,
+        scripts: scripts.inner(),
+        manager: service.manager(),
+        delete_branch_on_archive: &no_delete,
+        in_flight: in_flight.inner(),
+    };
+    flow::unarchive_workspace(&deps, &workspace_id).await
+}

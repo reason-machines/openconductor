@@ -88,6 +88,17 @@ impl Env {
         };
         archive_workspace(&deps, "repo/ws", mode).await
     }
+    async fn unarchive(&self) -> Result<UnarchiveResultDto, ArchiveFailureDto> {
+        let setting = |_: &Path, _: &Path| false;
+        let deps = Deps {
+            pool: &self.pool,
+            scripts: &self.scripts,
+            manager: &self.manager,
+            delete_branch_on_archive: &setting,
+            in_flight: &self.in_flight,
+        };
+        unarchive_workspace(&deps, "repo/ws").await
+    }
     async fn row(&self) -> workspaces::Workspace {
         workspaces::get(&self.pool, "repo/ws")
             .await
@@ -228,5 +239,42 @@ async fn a_second_archive_while_one_runs_returns_at_once() {
     let second = second.unwrap();
     assert!(!second.archived);
     assert_eq!(second.archive_commit, None);
+    assert_eq!(e.row().await.state, WorkspaceState::Archived);
+}
+
+#[tokio::test]
+async fn unarchive_recreates_the_worktree_with_its_work_and_marks_the_row_ready() {
+    let e = env("flow-unarchive", "").await;
+    write(e.f.ws(), "wip.txt", "unsaved\n");
+    // Not archived yet: nothing to do.
+    assert!(!e.unarchive().await.unwrap().restored);
+
+    assert!(e.archive(None, true).await.unwrap().archived);
+    let record = e.f.tmp.0.join("root/archived/repo/ws.ws");
+    assert!(record.exists() && !e.f.ws().exists() && !e.f.branch_exists("sven/ws"));
+
+    let r = e.unarchive().await.unwrap();
+    assert!(
+        r.restored && r.recreated_branch && r.restored_changes,
+        "{r:?}"
+    );
+    assert_eq!(r.branch.as_deref(), Some("sven/ws"));
+    assert!(r.notices.is_empty());
+    assert_eq!(
+        fs::read_to_string(e.f.ws().join("wip.txt")).unwrap(),
+        "unsaved\n"
+    );
+    assert_eq!(g(e.f.ws(), &["branch", "--show-current"]), "sven/ws");
+    assert_eq!(e.row().await.state, WorkspaceState::Ready);
+    assert!(!record.exists());
+
+    // A directory in the way leaves the row archived.
+    assert!(e.archive(None, false).await.unwrap().archived);
+    fs::create_dir_all(e.f.ws()).unwrap();
+    let err = e.unarchive().await.unwrap_err();
+    assert_eq!(
+        err.message,
+        format!("Can't unarchive: {} already exists", e.f.ws().display())
+    );
     assert_eq!(e.row().await.state, WorkspaceState::Archived);
 }

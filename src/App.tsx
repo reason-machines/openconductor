@@ -16,9 +16,10 @@ import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
+import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { ArchiveRunningDialog } from "./components/ArchiveRunningDialog";
-import { failureToast, onArchiveEvent } from "./workspace/archive";
+import { failureToast, onArchiveEvent, unarchiveFailedMessage } from "./workspace/archive";
 import type { Action } from "./state/store";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
@@ -64,18 +65,22 @@ export default function App() {
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // Archive on merge for workspaces that are not open (the open one reports through its own PR lookup).
+  useArchiveOnMergeWatcher({ repos: state.repos, openWorkspaceId: state.selection.kind === "workspace" ? state.selection.workspaceId : null, dispatch, notify: show });
   // Full archive (src/workspace/archive.ts): the running-agents question and
   // what the archive reports, wherever it was started from.
   const [archiveOverAgents, setArchiveOverAgents] = useState<Extract<Action, { type: "archiveWorkspace" }> | null>(null);
   useEffect(
     () =>
-      onArchiveEvent<Extract<Action, { type: "archiveWorkspace" }>>((e) => {
-        if (e.type === "agents-running") setArchiveOverAgents(e.action);
-        if (e.type === "archived") for (const n of e.result.notices) show(n.kind, n.message, { sticky: n.kind === "error" });
-        if (e.type === "failed") {
+      onArchiveEvent<Action>((e) => {
+        if (e.type === "agents-running" && e.action.type === "archiveWorkspace") setArchiveOverAgents(e.action);
+        if (e.type === "archived" || e.type === "unarchived") for (const n of e.result.notices) show(n.kind, n.message, { sticky: n.kind === "error" });
+        if (e.type === "unarchive-failed") show("error", unarchiveFailedMessage(e.error), { sticky: true });
+        if (e.type === "failed" && e.action.type === "archiveWorkspace") {
+          const retry = { ...e.action, mode: "discardGitOperationState" as const };
           const t = failureToast(e.error, e.mode);
           if (t.kind === "git-operation") {
-            show("error", t.message, { sticky: true, action: { label: "Archive", onClick: () => dispatch({ ...e.action, mode: "discardGitOperationState" }) } });
+            show("error", t.message, { sticky: true, action: { label: "Archive", onClick: () => dispatch(retry) } });
           } else {
             show("error", t.message, { sticky: true });
           }
@@ -207,7 +212,7 @@ export default function App() {
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onError={(message) => show("error", message)} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />

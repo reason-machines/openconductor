@@ -24,7 +24,20 @@ export interface ArchiveResult {
   notices: ArchiveNotice[];
 }
 
-/** The rejection value of `archive_workspace`. */
+/** What `unarchive_workspace` did. */
+export interface UnarchiveResult {
+  /** False when the row was not archived, or an archive or unarchive of it was already running. */
+  restored: boolean;
+  branch: string | null;
+  /** The branch had been deleted on archive and was recreated at the archive commit. */
+  recreatedBranch: boolean;
+  /** Uncommitted work saved at archive time was put back. */
+  restoredChanges: boolean;
+  /** "Uncommitted changes couldn't be recovered: ..." */
+  notices: ArchiveNotice[];
+}
+
+/** The rejection value of `archive_workspace` and `unarchive_workspace`. */
 export interface ArchiveFailure {
   code: "WORKSPACE_CORRUPTED" | "WorkspaceArchiveBlockedByGitOperationError" | "ArchiveFailed" | string;
   message: string;
@@ -107,11 +120,44 @@ export async function startArchive<A extends { mode?: ArchiveMode; stopRunningAg
   }
 }
 
-/** What happened to an archive the store started, for the app shell to show. */
+/** What `startUnarchive` needs from the store. */
+export interface UnarchiveStartDeps<A> {
+  /** Put the row back (the store's reducer), optimistically. */
+  show: () => void;
+  /** Recreate the worktree; `null` outside the desktop app. */
+  run: (() => Promise<UnarchiveResult>) | null;
+  /** Rerun the setup script, as Conductor does after an unarchive (`needsSetupScript`). */
+  setup: () => void;
+  reload: () => void;
+  emit: (e: ArchiveEvent<A>) => void;
+}
+
+/** Unarchive: show the row, recreate the worktree, rerun setup; on failure put the row away again. */
+export async function startUnarchive<A>(action: A, d: UnarchiveStartDeps<A>): Promise<void> {
+  d.show();
+  if (!d.run) return;
+  try {
+    const result = await d.run();
+    if (result.restored) d.setup();
+    d.emit({ type: "unarchived", action, result });
+  } catch (error) {
+    d.reload();
+    d.emit({ type: "unarchive-failed", action, error });
+  }
+}
+
+/** Conductor's unarchive failure toast (`eU` @ ~3,311,139). */
+export function unarchiveFailedMessage(err: unknown): string {
+  return `Failed to unarchive: ${asFailure(err).message}`;
+}
+
+/** What happened to an archive or unarchive the store started, for the app shell to show. */
 export type ArchiveEvent<A> =
   | { type: "agents-running"; action: A }
   | { type: "archived"; action: A; result: ArchiveResult }
-  | { type: "failed"; action: A; error: unknown; mode: ArchiveMode };
+  | { type: "failed"; action: A; error: unknown; mode: ArchiveMode }
+  | { type: "unarchived"; action: A; result: UnarchiveResult }
+  | { type: "unarchive-failed"; action: A; error: unknown };
 
 type Listener<A> = (e: ArchiveEvent<A>) => void;
 const listeners = new Set<Listener<unknown>>();

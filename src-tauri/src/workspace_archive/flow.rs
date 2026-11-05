@@ -145,30 +145,13 @@ pub async fn archive_workspace(
             notices: vec![],
         });
     }
-    let repo_root = PathBuf::from(row.root_path.clone().unwrap_or_default());
-    let workspace_path = PathBuf::from(w.workspace_path.clone().unwrap_or_default());
-    // Never tear down the repository's own checkout.
-    if workspace_path.as_os_str().is_empty() || workspace_path == repo_root {
-        return Err(ArchiveError::Corrupted.into());
-    }
-    let default_branch = match openconductor_db::repos::get(pool, &w.repository_id).await {
-        Ok(Some(r)) => r.default_branch.filter(|b| !b.is_empty()),
-        _ => None,
-    }
-    .unwrap_or_else(|| crate::workspace::git::default_branch(&repo_root));
-    let directory_name = w.directory_name.clone().unwrap_or_default();
-    let target = ArchiveTarget {
-        local_id: workspace_id.clone(),
-        directory_name: directory_name.clone(),
-        workspace_path: workspace_path.clone(),
-        repo_root: repo_root.clone(),
-        repo_name: row
-            .repo_name
-            .clone()
-            .unwrap_or_else(|| directory_name.clone()),
-        branch: w.branch.clone().unwrap_or_default(),
-        default_branch: default_branch.clone(),
-    };
+    let target = target_of(pool, &row).await?;
+    let (repo_root, workspace_path, directory_name, default_branch) = (
+        target.repo_root.clone(),
+        target.workspace_path.clone(),
+        target.directory_name.clone(),
+        target.default_branch.clone(),
+    );
 
     // 1. Checkpoint, branch, archive commit (`mYe`).
     let prepared = {
@@ -249,5 +232,120 @@ pub async fn archive_workspace(
         branch: Some(prepared.persisted_branch),
         archive_commit: prepared.archive_commit,
         notices: notices.into_iter().map(notice_dto).collect(),
+    })
+}
+
+/// The row as an [`ArchiveTarget`]. Refuses a row with no path, or whose
+/// path is the repository's own checkout, which must never be torn down.
+async fn target_of(
+    pool: &SqlitePool,
+    row: &openconductor_db::workspaces::WorkspaceWithRepo,
+) -> Result<ArchiveTarget, ArchiveFailureDto> {
+    let w = &row.workspace;
+    let repo_root = PathBuf::from(row.root_path.clone().unwrap_or_default());
+    let workspace_path = PathBuf::from(w.workspace_path.clone().unwrap_or_default());
+    if workspace_path.as_os_str().is_empty() || workspace_path == repo_root {
+        return Err(ArchiveError::Corrupted.into());
+    }
+    let default_branch = match openconductor_db::repos::get(pool, &w.repository_id).await {
+        Ok(Some(r)) => r.default_branch.filter(|b| !b.is_empty()),
+        _ => None,
+    }
+    .unwrap_or_else(|| crate::workspace::git::default_branch(&repo_root));
+    let directory_name = w.directory_name.clone().unwrap_or_default();
+    Ok(ArchiveTarget {
+        local_id: w.local_id.clone(),
+        repo_name: row
+            .repo_name
+            .clone()
+            .unwrap_or_else(|| directory_name.clone()),
+        directory_name,
+        workspace_path,
+        repo_root,
+        branch: w.branch.clone().unwrap_or_default(),
+        default_branch,
+    })
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UnarchiveResultDto {
+    /// False when the row was not archived, or an archive or unarchive of it
+    /// was already running.
+    pub restored: bool,
+    pub branch: Option<String>,
+    /// The branch had been deleted and was recreated at the archive commit.
+    pub recreated_branch: bool,
+    /// Uncommitted work saved at archive time was put back.
+    pub restored_changes: bool,
+    pub notices: Vec<NoticeDto>,
+}
+
+/// Unarchive workspace `workspace_id` (Conductor's `RWt` / `PY`, index
+/// @ ~3,304,884): recreate the worktree on its branch (or at the archive
+/// commit when the branch was deleted), restore the uncommitted work and
+/// `.context` saved at archive time, drop the archive record and mark the row
+/// `ready`. The caller reruns the setup script (`needsSetupScript`). On an
+/// error the row is unchanged.
+pub async fn unarchive_workspace(
+    deps: &Deps<'_>,
+    workspace_id: &str,
+) -> Result<UnarchiveResultDto, ArchiveFailureDto> {
+    let not_restored = |branch: Option<String>| UnarchiveResultDto {
+        restored: false,
+        branch,
+        recreated_branch: false,
+        restored_changes: false,
+        notices: vec![],
+    };
+    let Some(_guard) = deps.in_flight.claim(workspace_id) else {
+        return Ok(not_restored(None));
+    };
+    let pool = deps.pool;
+    let row = openconductor_db::workspaces::get(pool, workspace_id)
+        .await
+        .map_err(|e| failed(e.to_string()))?
+        .ok_or_else(|| failed("Workspace not found"))?;
+    let w = &row.workspace;
+    if w.state != openconductor_db::workspaces::WorkspaceState::Archived {
+        return Ok(not_restored(w.branch.clone()));
+    }
+    let target = target_of(pool, &row).await?;
+    let commit = w.archive_commit.clone();
+    let root = deps.manager.root().to_path_buf();
+    let restored = {
+        let t = target.clone();
+        tokio::task::spawn_blocking(move || archive::restore(&t, commit.as_deref(), Some(&root)))
+            .await
+            .map_err(|e| failed(e.to_string()))?
+            .map_err(failed)?
+    };
+    // `markSettingUpAfterUnarchive`, then ready: the setup script's state
+    // lives in the UI, as for a new workspace.
+    if !openconductor_db::workspaces::unarchive(pool, workspace_id)
+        .await
+        .map_err(|e| failed(e.to_string()))?
+    {
+        return Err(failed("Workspace is not archived"));
+    }
+    openconductor_db::workspaces::set_state(
+        pool,
+        workspace_id,
+        openconductor_db::workspaces::WorkspaceState::Ready,
+    )
+    .await
+    .map_err(|e| failed(e.to_string()))?;
+    if let Err(e) = deps
+        .manager
+        .forget_archive_record(&target.repo_root, &target.directory_name)
+    {
+        eprintln!("unarchive: could not remove the archive record for {workspace_id}: {e}");
+    }
+    Ok(UnarchiveResultDto {
+        restored: true,
+        branch: Some(restored.branch),
+        recreated_branch: restored.recreated_branch,
+        restored_changes: restored.restored_changes,
+        notices: restored.notices.into_iter().map(notice_dto).collect(),
     })
 }

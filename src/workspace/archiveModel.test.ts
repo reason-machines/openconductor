@@ -9,6 +9,9 @@ import {
   failureToast,
   onArchiveEvent,
   startArchive,
+  startUnarchive,
+  unarchiveFailedMessage,
+  type UnarchiveResult,
   type ArchiveMode,
   type ArchiveResult,
   type ArchiveEvent,
@@ -100,4 +103,47 @@ test("outside the desktop app startArchive only hides the row", async () => {
   await startArchive({ id: "w" }, h.deps);
   assert.deepEqual(h.log, ["hide"]);
   assert.deepEqual(h.events, []);
+});
+
+const RESTORED: UnarchiveResult = { restored: true, branch: "sven/ws", recreatedBranch: true, restoredChanges: true, notices: [] };
+
+function unarchiveHarness(run: (() => Promise<UnarchiveResult>) | null) {
+  const log: string[] = [];
+  const events: ArchiveEvent<string>[] = [];
+  const deps = {
+    show: () => log.push("show"),
+    run: run && (() => (log.push("run"), run())),
+    setup: () => log.push("setup"),
+    reload: () => log.push("reload"),
+    emit: (e: ArchiveEvent<string>) => events.push(e),
+  };
+  return { log, events, deps };
+}
+
+test("unarchive shows the row, recreates the worktree, then reruns setup", async () => {
+  const h = unarchiveHarness(async () => RESTORED);
+  await startUnarchive("w", h.deps);
+  assert.deepEqual(h.log, ["show", "run", "setup"]);
+  assert.deepEqual(h.events, [{ type: "unarchived", action: "w", result: RESTORED }]);
+});
+
+test("unarchive of a row that was not archived reruns nothing", async () => {
+  const h = unarchiveHarness(async () => ({ ...RESTORED, restored: false }));
+  await startUnarchive("w", h.deps);
+  assert.deepEqual(h.log, ["show", "run"]);
+});
+
+test("a failed unarchive puts the row away again and reports Conductor's message", async () => {
+  const err = { code: "ArchiveFailed", message: "Can't unarchive: /w/tokyo already exists" };
+  const h = unarchiveHarness(async () => Promise.reject(err));
+  await startUnarchive("w", h.deps);
+  assert.deepEqual(h.log, ["show", "run", "reload"]);
+  assert.deepEqual(h.events, [{ type: "unarchive-failed", action: "w", error: err }]);
+  assert.equal(unarchiveFailedMessage(err), "Failed to unarchive: Can't unarchive: /w/tokyo already exists");
+});
+
+test("outside the desktop app unarchive only shows the row", async () => {
+  const h = unarchiveHarness(null);
+  await startUnarchive("w", h.deps);
+  assert.deepEqual(h.log, ["show"]);
 });

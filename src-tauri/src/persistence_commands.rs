@@ -48,11 +48,22 @@ pub async fn db_list_workspaces(db: State<'_, Db>) -> Result<Vec<WorkspaceRow>, 
     store::list_workspaces(&db.0).await.map_err(|e| e.to_string())
 }
 
-/// JS: `invoke("db_archive_workspace", { workspaceId })`: mark the row
-/// archived so it stays out of the sidebar after a restart.
+/// JS: `invoke("db_set_workspace_target_branch", { workspaceId, branch })`:
+/// save the branch the workspace merges into (Conductor's
+/// `setIntendedTargetBranch`). The branch is trimmed; a blank one is refused.
 #[tauri::command]
-pub async fn db_archive_workspace(db: State<'_, Db>, workspace_id: String) -> Result<(), String> {
-    store::archive(&db.0, &workspace_id).await.map_err(|e| e.to_string())
+pub async fn db_set_workspace_target_branch(
+    db: State<'_, Db>,
+    workspace_id: String,
+    branch: String,
+) -> Result<(), String> {
+    let branch = branch.trim();
+    if branch.is_empty() {
+        return Err("Target branch cannot be empty".into());
+    }
+    store::set_target_branch(&db.0, &workspace_id, branch)
+        .await
+        .map_err(|e| e.to_string())
 }
 
 /// JS: `invoke("db_repo_prompt", { repoId, prompt })`: one of the

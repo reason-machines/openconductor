@@ -97,8 +97,43 @@ async fn create_lifecycle_initializing_then_ready() {
         ("sven/fix-login", None)
     );
 
-    archive(&pool, "app/oslo").await.unwrap();
+    // The full archive and unarchive (workspace_archive::flow) write these rows.
+    mark_archived(&pool, "app/oslo").await;
     assert_eq!(list_workspaces(&pool).await.unwrap()[0].state, "archived");
+}
+
+/// The row as `workspace_archive::flow::archive_workspace` leaves it.
+async fn mark_archived(pool: &SqlitePool, local_id: &str) {
+    openconductor_db::workspaces::archive(pool, local_id, "sven/fix-login", Some("abc123"))
+        .await
+        .unwrap();
+}
+
+#[tokio::test]
+async fn target_branch_is_listed_and_saved() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    begin_workspace(&pool, &ws("app", "oslo"), Some("develop"))
+        .await
+        .unwrap();
+    assert_eq!(
+        list_workspaces(&pool).await.unwrap()[0]
+            .intended_target_branch
+            .as_deref(),
+        Some("develop")
+    );
+    set_target_branch(&pool, "app/oslo", "release/2")
+        .await
+        .unwrap();
+    assert_eq!(
+        list_workspaces(&pool).await.unwrap()[0]
+            .intended_target_branch
+            .as_deref(),
+        Some("release/2")
+    );
+    assert!(set_target_branch(&pool, "app/missing", "main")
+        .await
+        .is_err());
 }
 
 #[tokio::test]
@@ -119,7 +154,7 @@ async fn finish_replaces_a_stale_row_with_the_same_id() {
     finish_workspace(&pool, &ws("app", "oslo"), None, None)
         .await
         .unwrap();
-    archive(&pool, "app/oslo").await.unwrap();
+    mark_archived(&pool, "app/oslo").await;
     finish_workspace(&pool, &ws("app", "oslo"), None, None)
         .await
         .unwrap();
@@ -256,7 +291,7 @@ async fn numbers_are_not_reused_after_archive_or_a_failed_create() {
     finish_workspace(&pool, &ws("app", "oslo"), None, None)
         .await
         .unwrap();
-    archive(&pool, "app/oslo").await.unwrap();
+    mark_archived(&pool, "app/oslo").await;
     // A failed create gives its number back (its row is gone)...
     begin_workspace(&pool, &ws("app", "lima"), None)
         .await

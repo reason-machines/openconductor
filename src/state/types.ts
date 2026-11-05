@@ -1,5 +1,6 @@
 import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
 import type { RowPr } from "./rowStatus.ts";
+import type { NavSection } from "./navigationSections.ts";
 
 export type WorkspaceStatus = "idle" | "working" | "needs-review" | "archived";
 
@@ -7,6 +8,8 @@ export interface Workspace {
   id: string;
   /** Short display name for the workspace (also its worktree folder name). */
   name: string;
+  /** `workspaces.directory_name`: the worktree folder; `name` is `workspace_name` when one is stored. */
+  directoryName?: string;
   /** Git branch checked out in this workspace's worktree. */
   branch: string;
   status: WorkspaceStatus;
@@ -21,6 +24,8 @@ export interface Workspace {
   targetBranch?: string | null;
   /** `placeholder_branch_name`: the city branch, until the first message renames it. */
   placeholderBranchName?: string | null;
+  /** `workspaces.workspace_name` as stored; the sidebar label shows it before the PR title. */
+  workspaceName?: string | null;
   /** `user_set_workspace_name` / `user_set_branch_name`: block the auto-rename. */
   userSetWorkspaceName?: boolean;
   userSetBranchName?: boolean;
@@ -56,6 +61,8 @@ export interface Repo {
   collapsed?: boolean;
   /** `repos.hidden`: left out of the sidebar unless "show hidden" is on. */
   hidden?: boolean;
+  /** `repos.icon`: "emoji:<e>", an uploaded data:image URL, or a bundled icon name (src/state/repoIcon.ts). */
+  icon?: string | null;
 }
 
 /**
@@ -70,4 +77,8 @@ export interface AppState {
   selection: Selection;
   /** Left sidebar shown; absent in older saved state, which means shown. */
   sidebarVisible?: boolean;
+  /** User sidebar sections, in sidebar order (conductor.db `navigation_sections`). */
+  sections?: NavSection[];
+  /** When the section layout last changed (ms); a write older than the stored one is refused. */
+  sectionsUpdatedAt?: number;
 }
