@@ -1,7 +1,29 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Main window capabilities",
-  "windows": ["main"],
-  "permissions": ["core:default", "dialog:default"]
+  "description": "Main window capabilities. Plugin grants follow the plugin commands Conductor 0.87.6's frontend calls (evidence/packaging/conductor-plugin-commands.json).",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "dialog:default",
+    "clipboard-manager:allow-read-text",
+    "clipboard-manager:allow-write-text",
+    "clipboard-manager:allow-write-html",
+    "deep-link:allow-get-current",
+    "notification:allow-is-permission-granted",
+    "opener:allow-open-url",
+    "opener:allow-reveal-item-in-dir",
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [
+        {
+          "path": "$HOME/**"
+        }
+      ]
+    },
+    "process:allow-exit",
+    "process:allow-restart"
+  ]
 }

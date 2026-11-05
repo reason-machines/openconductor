@@ -39,7 +39,8 @@ fn open_node_becomes_found_with_status_and_permission() {
     assert_eq!(info.number, 7);
     assert_eq!(info.base_ref_oid.as_deref(), Some("base1"));
     assert_eq!(info.viewer_can_merge, Some(true));
-    assert_eq!(info.viewer_latest_review, Some(Some("old".into())));
+    let review = info.viewer_latest_review.as_ref().expect("reviewed");
+    assert_eq!(review.commit_oid.as_deref(), Some("old"));
     assert!(info.is_auto_merge_enabled);
     let status = info.status.as_ref().expect("open PR has status");
     assert_eq!(status.merge_state, MergeStateStatus::Unstable);

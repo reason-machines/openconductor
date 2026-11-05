@@ -5,18 +5,22 @@
 //! - `checkpoint/` checkpoints and revert
 //! - `agent/`      agent runner, providers and BYOK settings
 //! - `diff/`       diff viewer: git changes, unified diff parser
-//! - `quick_open/` quick open file index and fuzzy matching (Spotlight)
+//! - `quick_open/` quick open file index and fuzzy matching
+//! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //! - `settings/`   settings.toml and the Keychain-backed secret store
 //! - `terminal/`   PTY terminals (`terminal_commands.rs` is its IPC layer)
 //!
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod checkpoint;
 pub mod db;
 pub mod diff;
 pub mod project;
 pub mod quick_open;
+pub mod scripts;
 pub mod settings;
+pub mod spotlight;
 pub mod terminal;
 mod terminal_commands;
 pub mod workspace;
@@ -83,7 +87,17 @@ async fn branch_prefix_settings() -> BranchPrefixInfo {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        // Same plugin set as Conductor 0.87.6 (see Cargo.toml). Capabilities grant only the
+        // commands its frontend calls (capabilities/default.json).
+        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_os::init())
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_store::Builder::new().build())
+        .plugin(tauri_plugin_window_state::Builder::new().build())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             app.manage(db::open(&data_dir)?);
@@ -94,6 +108,7 @@ pub fn run() {
                 settings::config_dir()?.join(settings::FILE_NAME),
                 agent::keychain::default_store(),
             ));
+            app.manage(scripts::service(app.handle()));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -129,6 +144,15 @@ pub fn run() {
             settings::commands::provider_status,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
+            scripts::scripts_config,
+            scripts::setup_script_start,
+            scripts::setup_script_cancel,
+            scripts::setup_script_status,
+            scripts::run_script_start,
+            scripts::run_script_stop,
+            scripts::run_script_status,
+            scripts::run_script_output,
+            scripts::archive_script_run,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")
@@ -137,6 +161,10 @@ pub fn run() {
             if let tauri::RunEvent::Exit = event {
                 if let Some(terminals) = app.try_state::<Terminals>() {
                     terminals.0.kill_all();
+                }
+                // Run scripts lead their own process groups; do not orphan them.
+                if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {
+                    scripts.runs.stop_all();
                 }
             }
         });

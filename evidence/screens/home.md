@@ -101,7 +101,18 @@ No description text and no keyboard hint on the cards.
 - REA's `analyze-javascript-application` evidence (on main) has no component tree:
   the bundle is minified with no source maps, so component boundaries above come
   from reading the decoded chunk directly.
-- A follow-up REA `trace-javascript-semantics` pass on this chunk was not run: the
-  Mac went offline mid-session.
+- REA `trace-javascript-semantics` on this chunk is blocked by an REA resource
+  limit (run 2026-11-05 on the Mac, REA 6.7.0). `analyze-javascript-application`
+  with `--source-path assets__renderApp-D_fmY7hW.js` (11.6 MB) exhausts the
+  analyzer worker heap during static parse at 4 GB, at 16 GB, and at 16 GB with
+  semantic limits cut to 2,000 nodes and unknowns per file. 16 GB is REA's
+  maximum `--max-heap-mb`; the worker reaches about 17.5 GB RSS after about 9
+  minutes. Every run exits 0 with `parsed_javascript_files: 0`, and the semantic
+  graph holds module nodes only. A trace seeded with the literal "Select project
+  directory" in each direction (callers, backward-provenance, forward-influence,
+  ownership) returns `partial` with 0 seed matches. So the component boundaries
+  above still come from reading the decoded chunk directly. A way around this
+  would be to split the chunk into per-module files before analysis; that is
+  not done yet.
 - No live screenshot of Conductor's Home: native UI capture is blocked by TCC
   (`evidence/runtime/README.md`).

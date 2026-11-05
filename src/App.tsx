@@ -15,6 +15,13 @@ import { resolveCommand } from "./keybindings/resolve";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { PaletteHost } from "./palette/PaletteHost";
+import { SettingsView } from "./settings/SettingsView";
+import { pageFromPath, type SettingsPage } from "./settings/pages";
+import { applyTheme } from "./settings/useSettings";
+import { getSettings } from "./settings/api";
+import { useKeybindings } from "./palette/useKeybindings";
+import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
+import { listen } from "@tauri-apps/api/event";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
@@ -28,6 +35,16 @@ export default function App() {
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
   const { toasts, show, dismiss } = useToasts();
+  // `/settings` or `/settings/user/<page>` starts on that settings page.
+  const [settingsPage, setSettingsPage] = useState<SettingsPage | null>(() => pageFromPath(window.location.pathname));
+  const openSettings = useCallback(() => setSettingsPage((p) => p ?? "general"), []);
+  const closeSettings = useCallback(() => setSettingsPage(null), []);
+
+  // Apply the saved theme at startup; the settings page applies later changes.
+  useEffect(() => {
+    getSettings().then((s) => applyTheme(s.general.theme), () => undefined);
+  }, []);
+
 
   // Open project: native picker straight away, then the backend folder checks.
   const openProject = useCallback(async () => {
@@ -48,6 +65,15 @@ export default function App() {
     }
   }, [dispatch, show]);
   const [quickOpen, setQuickOpen] = useState(false);
+  // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const toggleShortcuts = useCallback(() => setShortcutsOpen((open) => !open), []);
+  useKeybindings({ openKeyboardShortcuts: toggleShortcuts, openSettings });
+  useEffect(() => {
+    if (!inTauri()) return;
+    const unlisten = listen("open_keyboard_shortcuts_dialog", toggleShortcuts);
+    return () => void unlisten.then((off) => off());
+  }, [toggleShortcuts]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -97,10 +123,11 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  if (settingsPage) return <SettingsView page={settingsPage} onNavigate={setSettingsPage} onClose={closeSettings} />;
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} info={info} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} info={info} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
@@ -132,6 +159,7 @@ export default function App() {
           onOpen={(path, mode) => show("info", `${mode === "diff" ? "Diff of" : "Opened"} ${path} (file viewer not built yet)`)}
         />
       )}
+      {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} />}
       <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>

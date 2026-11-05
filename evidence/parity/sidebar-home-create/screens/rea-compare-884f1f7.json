@@ -1,0 +1,132 @@
+{
+ "tool": "rea-agents 6.8.0: capture-browser-scenario, compare-web-screenshots",
+ "main": "884f1f7",
+ "viewport": "1440x900 @1x, locale en-US, timezone UTC",
+ "seed": "populated captures seed the shell's localStorage with 3 repos / 6 workspaces mirroring the reference fixture names (no Conductor strings)",
+ "captures": {
+  "ours-sidebar-populated-dark": {
+   "evidence_id": "ev_be2c48939dcf566aa143d1fd919225289bb9a72f02de8e3373212d1f101d5da5",
+   "png_sha256": "e1210a384c9b8911eb1485938de835031e7a25e2e359674700a1d1ea44c297c1",
+   "browser": "Chromium 155.0.8059.84",
+   "url": "http://localhost:4411/",
+   "color_scheme": "dark"
+  },
+  "ours-sidebar-populated-light": {
+   "evidence_id": "ev_3ec263aa6883607458dbd4d3467ec0c1a18e2b658214e297f083d18a2e62a383",
+   "png_sha256": "68dc00ba7dd5640139e40710083e9df301cc6cf22db123bd1f16a9ee6f4d04f3",
+   "browser": "Chromium 155.0.8059.84",
+   "url": "http://localhost:4411/",
+   "color_scheme": "light"
+  },
+  "ours-create-dialog-dark": {
+   "evidence_id": "ev_2c373dc6fbb099b9b6dae9286bdad2f3167d40a94077d38ec4048265421049ad",
+   "png_sha256": "5abc0b4bee0c3d1ffc8832ccd0e00917be3539296e4dc623a023b6846e05ff73",
+   "browser": "Chromium 155.0.8059.84",
+   "url": "http://localhost:4411/?dialog=create",
+   "color_scheme": "dark"
+  },
+  "ours-create-dialog-light": {
+   "evidence_id": "ev_469428852d1af88afc8bbb55b1adb70ee1af3e1872ab2a1bc107681e8ae0a83f",
+   "png_sha256": "3deb7258cddc551517929d954a718b25b8be1783acf0575314118163adae4e3f",
+   "browser": "Chromium 155.0.8059.84",
+   "url": "http://localhost:4411/?dialog=create",
+   "color_scheme": "light"
+  },
+  "ours-create-norepo-dark": {
+   "evidence_id": "ev_db585ddb97dd0c1a34f740de71125eee21f19fa09abde65592c5a7924641e005",
+   "png_sha256": "f70c5184cd62940f482d9b185f1f7f6a59deef81c057b32279e2c8d9970a31ba",
+   "browser": "Chromium 155.0.8059.84",
+   "url": "http://localhost:4412/?dialog=create",
+   "color_scheme": "dark"
+  },
+  "ours-home-empty-dark": {
+   "evidence_id": "ev_e89cacc550264f691b41f43fe2d8f825f058fa9bf42ff20a2631e7b4cb1f986c",
+   "png_sha256": "abc359a483cae2274f8c529ed86e44126fc30fe9489f22853058640221e7479d",
+   "browser": "Chromium 155.0.8059.84",
+   "url": "http://localhost:4412/",
+   "color_scheme": "dark"
+  }
+ },
+ "comparisons": {
+  "sidebar-dark": {
+   "reference": "evidence/screens/sidebar--repos-expanded--dark.png",
+   "ours": "evidence/parity/sidebar-home-create/screens/ours-sidebar-populated-dark.png",
+   "t0": {
+    "evidence_id": "ev_d4f395e6311fd1948af5e9492905511f6a667a11b108545140838c2ec7048325",
+    "status": "different",
+    "changed_pct": 100,
+    "mean_abs_channel_delta": 10.53
+   },
+   "t24": {
+    "evidence_id": "ev_3accc141575efdd8e6a04b2b459bf29ac01a808f1d299084035e49d94f3fb6de",
+    "status": "different",
+    "changed_pct": 4.36,
+    "mean_abs_channel_delta": 10.53
+   }
+  },
+  "sidebar-light": {
+   "reference": "evidence/screens/sidebar--repos-expanded--light.png",
+   "ours": "evidence/parity/sidebar-home-create/screens/ours-sidebar-populated-light.png",
+   "t0": {
+    "evidence_id": "ev_e0abc09dd06a15fa21a9cb8e040682a89f72d512b9e9934a29228d6a711884bf",
+    "status": "different",
+    "changed_pct": 100,
+    "mean_abs_channel_delta": 11.79
+   },
+   "t24": {
+    "evidence_id": "ev_d67f80ba40f3d192941fb9be48c09a1b901b8085ff9c652a31356bc52c19b24f",
+    "status": "different",
+    "changed_pct": 4.39,
+    "mean_abs_channel_delta": 11.79
+   }
+  },
+  "create-dark": {
+   "reference": "evidence/screens/create-workspace--from-repo--dark.png",
+   "ours": "evidence/parity/sidebar-home-create/screens/ours-create-dialog-dark.png",
+   "t0": {
+    "evidence_id": "ev_45265f5b16b0d226016db70768003a3fc370d2bd0f0747f58fbfcd9765c12593",
+    "status": "different",
+    "changed_pct": 100,
+    "mean_abs_channel_delta": 7.68
+   },
+   "t24": {
+    "evidence_id": "ev_90c92854b48d2ac2f10e171efc2372a5fc3501f4f62abfb2e0915a5996c2207c",
+    "status": "different",
+    "changed_pct": 7.62,
+    "mean_abs_channel_delta": 7.68
+   }
+  },
+  "create-light": {
+   "reference": "evidence/screens/create-workspace--no-repo--light.png",
+   "ours": "evidence/parity/sidebar-home-create/screens/ours-create-dialog-light.png",
+   "t0": {
+    "evidence_id": "ev_84479d124d696ede87ab1680fe5ec062c3ca5754f0aa8d876da8a2e4d2552819",
+    "status": "different",
+    "changed_pct": 100,
+    "mean_abs_channel_delta": 34.27
+   },
+   "t24": {
+    "evidence_id": "ev_78687f2fd1d6a2fa03b6ef09270f22f3546356c064330338b4a34c1d4da4427f",
+    "status": "different",
+    "changed_pct": 89.09,
+    "mean_abs_channel_delta": 34.27
+   }
+  },
+  "home-dark": {
+   "reference": "evidence/screens/home--empty-signed-in--dark.png",
+   "ours": "(recaptured; identical layout to screens/ours-home-empty-dark.png)",
+   "t0": {
+    "evidence_id": "ev_c729f681714621b1f7135de22605f401dc9fc456eed1275d876b33bb562b4078",
+    "status": "different",
+    "changed_pct": 100,
+    "mean_abs_channel_delta": 9.91
+   },
+   "t24": {
+    "evidence_id": "ev_e74c2b2e63db1446c94d0e0c8289aa97e4d66189d3873cef301e15f56bd6f3f0",
+    "status": "different",
+    "changed_pct": 3.73,
+    "mean_abs_channel_delta": 9.91
+   }
+  }
+ }
+}
