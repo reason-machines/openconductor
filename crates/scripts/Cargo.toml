@@ -1,0 +1,12 @@
+[package]
+name = "oc-scripts"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "OpenConductor workspace setup, run and archive scripts: settings, env, ports and process runner"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+
+# Standalone until the Tauri crate depends on it by path.
+[workspace]

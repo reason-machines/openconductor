@@ -10,6 +10,8 @@ fn msg(id: &str, role: Role, blocks: Vec<Block>) -> ChatMessage {
         created_at: "2026-11-05T10:00:00.000Z".into(),
         model: None,
         cancelled_at: None,
+        sender_session_id: None,
+        sender_api_key_name: None,
         blocks,
     }
 }
@@ -284,4 +286,44 @@ fn turn_status_tracks_the_active_turn() {
     assert_eq!(t.turn_status("t2"), Some(TurnStatus::Cancelled));
     assert!(TurnStatus::Failed.is_terminal());
     assert!(!TurnStatus::Running.is_terminal());
+}
+
+// ---- sender attribution (session_messages.sender_session_id / sender_api_key_name) ----
+
+#[test]
+fn sender_fields_use_camel_case_and_are_omitted_when_absent() {
+    let plain = serde_json::to_value(msg("m1", Role::User, vec![])).unwrap();
+    assert!(plain.get("senderSessionId").is_none());
+    assert!(plain.get("senderApiKeyName").is_none());
+
+    let mut m = msg("m2", Role::User, vec![Block::text("done: PR #7 merged")]);
+    m.sender_session_id = Some("child-1".into());
+    m.sender_api_key_name = Some("ci".into());
+    let v = serde_json::to_value(&m).unwrap();
+    assert_eq!(v["senderSessionId"], "child-1");
+    assert_eq!(v["senderApiKeyName"], "ci");
+    assert_eq!(serde_json::from_value::<ChatMessage>(v).unwrap(), m);
+}
+
+#[test]
+fn origin_tells_user_input_from_session_and_api_reports() {
+    let mut m = msg("m1", Role::User, vec![]);
+    assert_eq!(m.origin(), MessageOrigin::User);
+    m.sender_api_key_name = Some("ci".into());
+    assert_eq!(m.origin(), MessageOrigin::ApiKey("ci"));
+    m.sender_session_id = Some("child-1".into());
+    assert_eq!(m.origin(), MessageOrigin::Session("child-1"));
+    assert_eq!(msg("a", Role::Assistant, vec![]).origin(), MessageOrigin::Assistant);
+    assert_eq!(msg("s", Role::System, vec![]).origin(), MessageOrigin::System);
+}
+
+#[test]
+fn a_session_report_mid_turn_does_not_touch_the_active_turn() {
+    let mut t = Transcript::new("s1");
+    t.apply(&status("t1", TurnStatus::Running)).unwrap();
+    let mut report = msg("r1", Role::User, vec![Block::text("child finished")]);
+    report.sender_session_id = Some("child-1".into());
+    t.apply(&ChatEvent::Upsert { message: report }).unwrap();
+    assert_eq!(t.active_turn(), Some("t1"));
+    assert_eq!(t.turn_status("t1"), Some(TurnStatus::Running));
 }
