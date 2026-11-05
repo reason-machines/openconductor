@@ -30,10 +30,10 @@ import { ChatSaver, restoreEvents } from "./persist.ts";
 import type { FileChange } from "../diff/types.ts";
 
 /** Open turns of one chat, as reason.ts tracks them. */
-export type TurnState = ReasonChatState;
+export type ChatTurns = ReasonChatState;
 
 /** Hands a backend event to the runtime: `reduce` turns it into a `Step` on the chat's turn state. */
-export type Deliver = (chatId: string, reduce: (state: TurnState) => Step) => void;
+export type Deliver = (chatId: string, reduce: (state: ChatTurns) => Step) => void;
 
 /** One prompt as the backend sends it. */
 export interface PromptRequest {
@@ -129,7 +129,7 @@ export interface ChatRuntime<Config> {
 }
 
 interface Chat<Config> {
-  state: TurnState;
+  state: ChatTurns;
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
   cwd: string | null;
@@ -147,8 +147,47 @@ interface Chat<Config> {
   listeners: Set<(s: ChatSnapshot) => void>;
 }
 
+// Every chat's session status (Conductor's `sessions.status`), so a sidebar
+// row can show its workspace's agent while that workspace is not open: chats
+// keep running here after their view unmounts. Closed (hidden) chats drop out,
+// as Conductor folds only a workspace's visible sessions. Shared by every
+// runtime, so a workspace's status counts the chats of every backend.
+let statuses: ReadonlyMap<string, Q.SessionStatus> = new Map();
+const hiddenChats = new Set<string>();
+const statusListeners = new Set<() => void>();
+/** Each runtime's republish of one chat's status, if it has that chat. */
+const republishers = new Set<(chatId: string) => void>();
+
+function publishStatus(chatId: string, queueStatus: Q.SessionStatus) {
+  const status = hiddenChats.has(chatId) ? undefined : queueStatus;
+  if (statuses.get(chatId) === status) return;
+  const next = new Map(statuses);
+  if (status === undefined) next.delete(chatId);
+  else next.set(chatId, status);
+  statuses = next;
+  for (const fn of statusListeners) fn();
+}
+
+/** Chat id → session status of every visible chat; a new map on each change. */
+export const chatStatuses = (): ReadonlyMap<string, Q.SessionStatus> => statuses;
+
+export function subscribeChatStatuses(fn: () => void): () => void {
+  statusListeners.add(fn);
+  return () => statusListeners.delete(fn);
+}
+
+/** A closed chat tab: its agent no longer counts toward the workspace's status. */
+export function hideChat(chatId: string): void {
+  hiddenChats.add(chatId);
+  for (const republish of republishers) republish(chatId);
+}
+
 export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: ChatHost): ChatRuntime<Config> {
   const chats = new Map<string, Chat<Config>>();
+  republishers.add((chatId) => {
+    const c = chats.get(chatId);
+    if (c) publishStatus(chatId, c.queue.status);
+  });
   const savers = new Map<string, ChatSaver>();
   let listening: Promise<unknown> | null = null;
   const sessionKey = backend.sessionKey;
@@ -219,6 +258,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     if (queue !== c.queue) {
       c.queue = queue;
       notify(c);
+      publishStatus(c.state.chatId, c.queue.status);
     }
     for (const e of effects) run(c, e);
   }
