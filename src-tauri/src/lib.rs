@@ -218,6 +218,7 @@ pub fn run() {
             // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
             let db = db::open(&data_dir)?;
+            app.manage(db::open_cache(&data_dir));
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
             let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
