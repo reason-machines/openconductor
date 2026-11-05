@@ -48,9 +48,9 @@ test("row menu: read/unread, pin into the Pinned group, status, keys, archive", 
   const harbor = row(page, "Quiet harbor");
   await harbor.waitFor();
 
-  // Conductor's order for a local workspace; Rename is hidden until the rename dialog is wired.
+  // Conductor's order for a local workspace.
   await harbor.click({ button: "right" });
-  assert.deepEqual(await menuItems(page), ["Mark as unread", "Pin", "Set status", "Archive"]);
+  assert.deepEqual(await menuItems(page), ["Mark as unread", "Pin", "Set status", "Move to section", "Rename", "Archive"]);
   assert.equal(await harbor.getAttribute("data-menu-open"), "true");
   await page.keyboard.press("Escape");
   assert.equal(await menu(page).count(), 0);
@@ -180,5 +180,27 @@ test("row status icon follows the agent, then the PR, then the branch", async ()
   const rgb = (label) => icon(label).evaluate((el) => getComputedStyle(el).color);
   assert.notEqual(await rgb("Copper wren"), await rgb("Amber falcon"), "checks failing is coloured");
   assert.match(await row(page, "Copper wren").getAttribute("title"), /Checks failing$/);
+  await page.close();
+});
+
+test("row status: a workspace's agent keeps showing on its row after you leave it", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${base}/?demo=1`);
+  const icon = (label) => row(page, label).getByTestId("workspace-status-icon");
+  await row(page, "Brisk otter").click();
+  assert.equal(await icon("Brisk otter").getAttribute("data-status"), "local");
+  // The browser preview's stand-in agent works for 2.5 s per prompt.
+  const input = page.locator(".composer textarea, textarea[placeholder]").first();
+  await input.fill("look around");
+  await input.press("Enter");
+  await page.waitForFunction(() => document.querySelector('[aria-label^="Stop the agent"]') !== null);
+  await row(page, "Quiet harbor").click();
+  // Brisk otter is no longer open, but its chat is still running.
+  assert.deepEqual([await icon("Brisk otter").getAttribute("data-status"), await icon("Brisk otter").getAttribute("aria-label")], ["working", "Working"]);
+  await page.waitForFunction(
+    (sel) => [...document.querySelectorAll(sel)].some((r) => r.textContent.includes("Brisk otter") && r.querySelector('[data-testid="workspace-status-icon"]').dataset.status === "local"),
+    '[data-testid="left-sidebar-workspace-item"]',
+    { timeout: 10_000 },
+  );
   await page.close();
 });

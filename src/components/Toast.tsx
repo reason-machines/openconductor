@@ -9,8 +9,8 @@ let nextId = 1;
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const dismiss = useCallback((id: number) => setToasts((t) => t.filter((x) => x.id !== id)), []);
-  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean; action?: ToastAction }) => {
-    setToasts((t) => [...t, { id: nextId++, kind, message, sticky: opts?.sticky, action: opts?.action }]);
+  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean; action?: ToastAction; secondaryAction?: ToastAction }) => {
+    setToasts((t) => [...t, { id: nextId++, kind, message, sticky: opts?.sticky, action: opts?.action, secondaryAction: opts?.secondaryAction }]);
   }, []);
   return { toasts, show, dismiss };
 }
@@ -34,6 +34,9 @@ function Toast({ toast, onDismiss }: { toast: ToastItem; onDismiss: () => void }
       <span className="toast-message">{toast.message}</span>
       {toast.action && (
         <button className="btn btn-small" onClick={() => { toast.action?.onClick(); onDismiss(); }}>{toast.action.label}</button>
+      )}
+      {toast.secondaryAction && (
+        <button className="btn btn-small" onClick={() => { toast.secondaryAction?.onClick(); onDismiss(); }}>{toast.secondaryAction.label}</button>
       )}
       {toast.kind === "error" && (
         <button className="btn btn-small" onClick={copy}>{copied ? "Copied" : "Copy"}</button>

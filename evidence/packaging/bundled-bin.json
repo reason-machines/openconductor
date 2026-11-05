@@ -12,7 +12,7 @@
     "checkpointer.sh": "getCheckpointScriptLocation: local host -> `${appData}/bin/checkpointer.sh`",
     "spotlighter.sh": "hY() = `${appData}/bin/spotlighter.sh`",
     "agents": "Claude and Codex auth checks use `${Vl()}/claude` as the default executable; ACP providers live in appData/agent-binaries/acp-providers",
-    "conductor-skill": "only the remote path /conductor/worker/conductor-skill/skills/conductor/SKILL.md appears in the frontend"
+    "conductor-skill": "only the remote path /conductor/worker/conductor-skill/skills/conductor/SKILL.md appears in the frontend; locally the Rust side passes the resource to the sidecar in CONDUCTOR_INTERNAL_SKILL_PLUGIN_DIR (rea/search-strings-main-skill.json)"
   },
   "inference": "The frontend only reads appData/bin, while the files ship in Resources/bin, so Conductor's Rust side copies Resources/bin into appData/bin; the copy code is not in the frontend and was not located in the binary.",
   "upstream_identity": {
@@ -41,8 +41,8 @@
       "conductor-skill/": "src-tauri/resources/conductor-skill: OpenConductor's own Claude Code plugin (openconductor, skill conductor), written from OpenConductor's code, not copied from Conductor; shipped to Contents/Resources/conductor-skill and passed to every ClaudeLaunch with --plugin-dir (agent/claude_cli.rs)"
     },
     "not_bundled": {
-      "bin/watchexec": "spotlight watches natively (src-tauri/src/spotlight/watch.rs); Conductor's build also differs from the upstream release",
-      "bin/conductor, bin/.internal/*": "shims that exec conductor-runtime, Conductor's Bun-compiled agent runtime; no OpenConductor counterpart yet"
+      "bin/watchexec": "replaced by the native spotlight watcher; see divergences.json bundled_resources",
+      "bin/conductor, bin/.internal/*": "each listed with kind, reason and evidence in divergences.json bundled_resources (conductor-runtime and sidecar replaced by Rust agent launches, logger and actions Conductor-only, conductor CLI, internal and agent-launcher not built)"
     }
   }
 }

@@ -222,24 +222,35 @@
     {
       "id": "sidebar.ws-status",
       "area": "sidebar",
-      "feature": "Status indicator from a derived status with optional manual override (default in-progress)",
+      "feature": "Row status icon from workspace state, then the sessions' aggregated status, then PR state, else branch/local (not the manual Backlog/In progress status, which only groups the status-grouped sidebar)",
       "evidence": {
         "copy": [
           4796,
-          5007
+          5007,
+          3979,
+          2785,
+          2784,
+          2783,
+          4901,
+          2189,
+          3445,
+          1287,
+          2625,
+          527,
+          3398
         ],
         "schema": [
-          "workspaces.derived_status",
-          "workspaces.manual_status"
+          "workspaces.state",
+          "sessions.status"
         ],
         "ledger": [
           "ws.status-archive"
         ]
       },
       "detect": [
-        "(workspace|ws)\\.status|derived_?status|derivedStatus",
-        "derived_?status|derivedStatus",
-        "manual_?status|manualStatus"
+        "rowStatus|workspaceRowStatus",
+        "needs-plan-response|needs_plan_response",
+        "merge-queued|ready-to-merge|checks-failing"
       ]
     },
     {
@@ -780,7 +791,7 @@
     {
       "id": "home.new-project",
       "area": "home",
-      "feature": "Create a new project: local folder, git init, optional private GitHub repo, then a first workspace",
+      "feature": "Create a new project: local folder, git init, private GitHub repo (required, as in Conductor's Quick start), then a first workspace",
       "evidence": {
         "copy": [
           1047,
@@ -802,10 +813,11 @@
     {
       "id": "home.duplicate-repo",
       "area": "home",
-      "feature": "Refuse adding a repository that is already added",
+      "feature": "Adding an already-added repository again (Clone or Open project) makes a new project: no duplicate check, a new repos row, and Clone picks a unique folder (name-v1, name-v2)",
       "evidence": {
-        "copy": [
-          4557
+        "schema": [
+          "repos.remote_url",
+          "repos.root_path"
         ]
       },
       "detect": [
@@ -830,7 +842,7 @@
     {
       "id": "home.status-overview",
       "area": "home",
-      "feature": "Home shows workspaces with their status (status matrix option, mine vs all)",
+      "feature": "Home list shows each workspace's active session status or its last-activity time (Conductor: needs plan response, needs permission, needs input, working, cancelling, waiting); status-matrix option and mine-vs-all",
       "evidence": {
         "copy": [
           4796,
@@ -878,16 +890,17 @@
     {
       "id": "home.repo-search",
       "area": "home",
-      "feature": "Search the repository list",
+      "feature": "Narrow the repository list by project: the sidebar section header's Filter by project submenu (All projects, then each repository; shown with more than one repository; stored in sidebar_repo_filter) and the palette Projects tab (Search projects...). Home and the Add-repository menu have no repo search",
       "evidence": {
         "copy": [
-          3825,
-          2917,
-          2497
+          1917,
+          134,
+          3822
         ]
       },
       "detect": [
         "(search|filter)_?repo",
+        "repoFilter|sidebar_repo_filter|Filter by project",
         "projectResults"
       ]
     },

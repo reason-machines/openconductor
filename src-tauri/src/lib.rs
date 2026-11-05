@@ -19,6 +19,7 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
 pub mod checkpoint;
@@ -26,22 +27,28 @@ mod checkpoint_commands;
 mod chat_store_commands;
 pub mod claude_chat;
 pub mod create_project;
+pub mod archive_on_merge;
+mod archive_on_merge_commands;
 pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
 mod sidebar_repo_commands;
+mod sidebar_section_commands;
 mod sidebar_workspace_commands;
+mod sidebar_rename_commands;
 pub mod diff;
 pub mod draft_attachments;
 pub mod github_repo;
 pub mod menu;
 pub mod pr;
 mod local_storage_commands;
+mod onboarding_commands;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
 pub mod reason_chat;
+mod root_path_commands;
 pub mod scripts;
 pub mod settings;
 pub mod sidecar_stores;
@@ -64,17 +71,18 @@ use serde::Serialize;
 
 /// Once per launch, apply "Set upstream on plain git push" to existing
 /// workspaces in the background, as Conductor does after its first workspace
-/// load. Failures are only logged.
+/// load. Each workspace uses its effective `git.worktree_push_auto_setup_remote`
+/// (user, repository and workspace settings files); unreadable settings count
+/// as on, Conductor's "not false" check. Failures are only logged.
 fn spawn_push_upstream_backfill(app: tauri::AppHandle) {
     std::thread::spawn(move || {
-        let settings = app.state::<settings::service::SettingsService>();
-        match settings.get() {
-            Ok(s) if !s.git.worktree_push_auto_setup_remote => return,
-            Ok(_) => {}
-            Err(e) => eprintln!("Failed to read settings for Git push upstream backfill: {e}"),
-        }
         let workspaces = app.state::<workspace::service::WorkspaceService>();
-        for (id, warning) in workspaces.configure_push_upstream_for_existing() {
+        let enabled = |root: &std::path::Path, ws: &std::path::Path| {
+            settings::effective::resolve(root, Some(ws))
+                .map(|e| e.git.worktree_push_auto_setup_remote.value)
+                .unwrap_or(true)
+        };
+        for (id, warning) in workspaces.configure_push_upstream_for_existing(enabled) {
             eprintln!("Failed to configure Git push upstream settings for workspace {id}: {warning}");
         }
     });
@@ -269,9 +277,14 @@ pub fn run() {
                 &sidecar_stores::completions_dir(&data_dir),
             ));
             app.manage(local_storage_commands::state(&data_dir));
-            let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
+            let mut workspaces = workspace::service::WorkspaceService::new(data_dir)?;
+            // Settings › Advanced › root directory (`conductor_root_path`).
+            if let Some(root) = root_path_commands::root_from_settings(&db) {
+                workspaces = workspaces.with_root(root);
+            }
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
+            let settings_pool = db.0.clone();
             app.manage(db);
             app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
@@ -279,10 +292,16 @@ pub fn run() {
             app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
-            app.manage(settings::service::SettingsService::new(
+            // Appearance keys Conductor keeps in conductor.db live in its settings table.
+            let settings_service = settings::service::SettingsService::new(
                 settings::config_dir()?.join(settings::FILE_NAME),
                 agent::keychain::default_store(),
-            ));
+            )
+            .with_db(settings_pool);
+            if let Err(e) = settings_service.move_appearance_to_db() {
+                eprintln!("Appearance settings stay in settings.toml until next launch: {e}");
+            }
+            app.manage(settings_service);
             let scripts = scripts::service(app.handle());
             let spotlight = spotlight_commands::service(app.handle());
             scripts.set_auto_run_spotlight(spotlight::auto_run::hook(spotlight.clone()));
@@ -293,6 +312,9 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            root_path_commands::get_conductor_root,
+            root_path_commands::repo_workspaces_path,
+            root_path_commands::change_conductor_root,
             app_info,
             inspect_project_folder,
             branch_prefix_settings,
@@ -316,11 +338,22 @@ pub fn run() {
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
             persistence_commands::db_repo_prompt,
+            onboarding_commands::db_first_run_onboarding_step,
+            onboarding_commands::db_finish_first_run_onboarding,
+            persistence_commands::db_set_workspace_target_branch,
+            persistence_commands::db_unarchive_workspace,
+            archive_on_merge_commands::repo_archive_on_merge,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
+            sidebar_section_commands::db_read_navigation_sections,
+            sidebar_section_commands::db_write_navigation_sections,
             sidebar_workspace_commands::db_set_workspace_pinned,
             sidebar_workspace_commands::db_set_workspace_unread,
             sidebar_workspace_commands::db_set_workspace_manual_status,
+            sidebar_repo_commands::db_set_repo_icon,
+            sidebar_repo_commands::repo_favicon,
+            sidebar_rename_commands::db_rename_workspace,
+            sidebar_rename_commands::db_mark_user_set_branch_name,
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
@@ -377,6 +410,11 @@ pub fn run() {
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
+            app_prefs::commands::get_app_prefs,
+            app_prefs::commands::set_app_pref,
+            app_prefs::commands::record_open_in,
+            app_prefs::commands::client_instance_id,
+            app_prefs::commands::graphite_cli_installed,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,
@@ -391,6 +429,9 @@ pub fn run() {
             pr::commands::pr_git_state,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
+            pr::commands::pr_template,
+            pr::commands::pr_commit_and_push_prompt,
+            pr::commands::pr_resolve_conflicts_prompt,
             pr::commands::pr_merge,
             pr::commands::pr_merge_method,
             pr::commands::pr_set_auto_merge,
@@ -400,6 +441,7 @@ pub fn run() {
             pr::commands::pr_edit,
             pr::commands::pr_retarget,
             pr::commands::pr_approve,
+            pr::workspace_sync::pr_sync_workspace,
             scripts::scripts_config,
             scripts::setup_script_start,
             scripts::setup_script_cancel,

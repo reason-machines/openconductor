@@ -31,6 +31,8 @@
     selection: { kind: "home" },
   };
   const scenario = new URLSearchParams(location.search).get("oc_scenario");
+  // The references are signed in, so Conductor's first-run onboarding is done.
+  localStorage.setItem("openconductor.firstRunOnboardingStep", "999");
   if (scenario === "populated") localStorage.setItem("openconductor.shell.v1", JSON.stringify(state));
   else if (scenario === "empty") localStorage.removeItem("openconductor.shell.v1");
 })();

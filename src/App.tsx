@@ -16,6 +16,7 @@ import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
+import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
@@ -34,6 +35,7 @@ import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
@@ -45,6 +47,8 @@ export default function App() {
     prevState.current = state;
   }, [state]);
   const nav = useNavHistory(state, dispatch);
+  useSidebarVisiblePref(isSidebarVisible(state), dispatch);
+  const sidebarWidth = useSidebarWidth();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
   // `/create` (or `?dialog=create`) opens the Create-workspace dialog directly.
   const initialDialog = window.location.pathname === "/create" ? "create" : (new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
@@ -58,6 +62,8 @@ export default function App() {
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // Archive on merge for workspaces that are not open (the open one reports through its own PR lookup).
+  useArchiveOnMergeWatcher({ repos: state.repos, openWorkspaceId: state.selection.kind === "workspace" ? state.selection.workspaceId : null, dispatch, notify: show });
   // A `/settings...` start URL opens settings where Conductor's router would
   // (src/settings/routes.ts); the URL then follows the open settings page.
   const routeContext = (): RouteContext => ({
@@ -159,6 +165,9 @@ export default function App() {
     "nav.back": nav.onBack,
     "nav.forward": nav.onForward,
     "view.toggleLeftSidebar": () => dispatch({ type: "toggleSidebar" }),
+    "view.toggleRightSidebar": toggleRightPanel,
+    "view.toggleZenMode": () => toggleZenMode(isSidebarVisible(state), dispatch),
+    "toggleGarryMode": toggleGarryMode,
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
     "workspace.create": () => setDialog("create"),
   });
@@ -177,8 +186,9 @@ export default function App() {
   if (settingsLocation) return <SettingsView location={settingsLocation} repos={state.repos} onNavigate={navigateSettings} onClose={closeSettings} />;
 
   return (
-    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} />}
+    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
+      {isSidebarVisible(state) && sidebarWidth.resizer}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onError={(message) => show("error", message)} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
