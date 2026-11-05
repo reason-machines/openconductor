@@ -55,7 +55,10 @@ pub fn run_internal_script(
     tmp_dir: &Path,
     env: &[(&str, &str)],
 ) -> ScriptRun {
-    let content = format!("set -e\ncd {}\n{script}\n", shell_quote(&working_directory.to_string_lossy()));
+    let content = format!(
+        "set -e\ncd {}\n{script}\n",
+        shell_quote(&working_directory.to_string_lossy())
+    );
     run_logged(&content, shell, tmp_dir, env)
 }
 
@@ -65,7 +68,8 @@ pub fn run_logged(content: &str, shell: &Path, tmp_dir: &Path, env: &[(&str, &st
     let (ms, rand) = (now_ms(), rand36());
     let script = tmp_dir.join(format!("conductor-script-{ms}-{rand}.sh"));
     let log = tmp_dir.join(format!("conductor-{ms}-{rand}.log"));
-    if let Err(e) = std::fs::create_dir_all(tmp_dir).and_then(|_| std::fs::write(&script, content)) {
+    if let Err(e) = std::fs::create_dir_all(tmp_dir).and_then(|_| std::fs::write(&script, content))
+    {
         return ScriptRun {
             exit_code: 1,
             stderr: e.to_string(),
@@ -104,7 +108,13 @@ pub fn run_logged(content: &str, shell: &Path, tmp_dir: &Path, env: &[(&str, &st
     if exit_code != 0 && (!stdout.is_empty() || !stderr.is_empty()) {
         append(&log, &additional_output(exit_code, &stdout, &stderr));
     }
-    ScriptRun { exit_code, stdout, stderr, error: None, log_file_path: Some(log) }
+    ScriptRun {
+        exit_code,
+        stdout,
+        stderr,
+        error: None,
+        log_file_path: Some(log),
+    }
 }
 
 /// The block appended to a failed script's log when the wrapper printed
@@ -116,7 +126,11 @@ pub fn additional_output(exit_code: i32, stdout: &str, stderr: &str) -> String {
 fn append(log: &Path, text: &str) {
     use std::io::Write;
     // `echo "<text>" >> log` in Conductor, so a newline follows.
-    let r = std::fs::OpenOptions::new().create(true).append(true).open(log).and_then(|mut f| writeln!(f, "{text}"));
+    let r = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(log)
+        .and_then(|mut f| writeln!(f, "{text}"));
     if let Err(e) = r {
         eprintln!("init log: could not append to {}: {e}", log.display());
     }
@@ -134,7 +148,11 @@ pub fn failure_output(run: &ScriptRun) -> String {
     if let Some(e) = run.error.as_deref().filter(|e| !e.is_empty()) {
         return e.to_string();
     }
-    if let Some(text) = run.log_file_path.as_deref().and_then(|p| std::fs::read_to_string(p).ok()) {
+    if let Some(text) = run
+        .log_file_path
+        .as_deref()
+        .and_then(|p| std::fs::read_to_string(p).ok())
+    {
         let text = text.trim_end();
         if !text.is_empty() {
             return text.to_string();
@@ -184,7 +202,10 @@ pub fn shell_quote(s: &str) -> String {
 }
 
 fn now_ms() -> u128 {
-    SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_millis()).unwrap_or(0)
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_millis())
+        .unwrap_or(0)
 }
 
 /// Six base-36 characters, like Conductor's `Math.random().toString(36).substring(7)`.

@@ -350,5 +350,7 @@ async fn record_initialization_stores_the_log_and_file_count_and_ends_ready() {
     );
     assert_eq!(w.initialization_files_copied, Some(42));
     // An unknown workspace is an error, not a silent no-op.
-    assert!(record_initialization(&pool, "app/nope", None, 0).await.is_err());
+    assert!(record_initialization(&pool, "app/nope", None, 0)
+        .await
+        .is_err());
 }
