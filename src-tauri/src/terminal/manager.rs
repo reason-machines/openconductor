@@ -323,6 +323,8 @@ impl PtyManager {
         s.flow.close();
         if s.exit_info().is_none() {
             kill::stop(s)?;
+        } else {
+            eprintln!("DIAG kill: {id} already exited: {:?}", s.exit_info());
         }
         Ok(())
     }
