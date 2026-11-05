@@ -1,6 +1,8 @@
 // Headless end-to-end run of the debug OpenConductor build through tauri-driver.
 // Env: OC_APP (path to the debug binary), TAURI_DRIVER (default "tauri-driver"),
 // E2E_OUT (artifacts dir, default "e2e-artifacts").
+// After each flow it saves <flow>.png; a screenshot that fails or passes its 20 s
+// bound (WebDriver.screenshot) is reported in results.json, not skipped silently.
 import { spawn } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
