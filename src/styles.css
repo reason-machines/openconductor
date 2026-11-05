@@ -193,8 +193,10 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-ws-status.needs-review { color: var(--add); }
 .sb-ws-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 450; color: var(--sidebar-muted-foreground); }
 .sb-ws[data-unread] .sb-ws-name { font-weight: 600; color: var(--sidebar-accent-foreground); }
-.sb-ws-diff { flex: none; padding: 2px 4px; font-family: var(--font-mono); font-size: 11px; line-height: 14px; }
-.sb-ws:not([data-active]) .sb-ws-diff span { color: var(--sidebar-muted-foreground); }
+/* sidebar: ws-diffstat. Conductor's ID with compactCounts: flex gap-1, + then -, each only when > 0.
+   Unselected rows are muted unless Settings > Appearance > Colored sidebar diffs is on. */
+.sb-ws-diff { flex: none; display: flex; align-items: center; gap: 4px; padding: 2px 4px; font-family: var(--font-mono); font-size: 11px; line-height: 14px; }
+:root:not([data-colored-sidebar-diffs]) .sb-ws:not([data-active]) .sb-ws-diff span { color: var(--sidebar-muted-foreground); }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex: none; opacity: 0.6; display: inline-block; }
 .status-dot.working { background: var(--amber); opacity: 1; animation: pulse 1.4s ease-in-out infinite; }
 .status-dot.needs-review { background: var(--add); opacity: 1; }
@@ -525,6 +527,18 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .create-project-template-label { font-size: 13px; font-weight: 500; }
 .create-project-template-desc { font-size: 10px; font-weight: 400; color: var(--muted); text-align: center; }
 
+/* sidebar: repo menu, hidden repositories and drag to reorder (Conductor's repo list) */
+.sb-menu-sep { height: 1px; margin: 4px 0; background: var(--border); }
+.sb-menu-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.sb-menu-item[data-destructive] { color: var(--del); }
+.sb-menu-hint { font-family: inherit; font-size: 12px; color: var(--muted); }
+.sb-menu[data-context] { z-index: 50; }
+.sb-repo-name[data-hidden] { opacity: 0.5; }
+.sb-show-hidden { align-self: flex-start; padding: 4px 0 4px 6px; font-size: 12px; line-height: 16px; font-weight: 500; color: color-mix(in srgb, var(--sidebar-muted-foreground) 70%, transparent); }
+.sb-show-hidden:hover { color: var(--sidebar-foreground); }
+.sb-repo-group[data-dragging] { background: var(--sidebar-accent); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18); }
+.sb-repo-group[data-drop-target] > .sb-repo .sb-repo-header { box-shadow: inset 0 2px 0 var(--accent); }
+.sb-context-root { position: fixed; inset: 0 auto auto 0; width: 0; height: 0; z-index: 50; }
 /* sidebar: workspace row menu, Pinned group, status dots.
    Menu after Conductor's context menu (min-w-[200px], items with a trailing kbd hint);
    status colours are Conductor's --status-* tokens (evidence/frontend/css-tokens.json). */
