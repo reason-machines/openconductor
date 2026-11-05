@@ -6,6 +6,7 @@ test("settings start routes", () => {
   assert.equal(pageFromPath("/settings"), "general");
   assert.equal(pageFromPath("/settings/"), "general");
   assert.equal(pageFromPath("/settings/user/general"), "general");
+  assert.equal(pageFromPath("/settings/user/appearance"), "appearance");
   assert.equal(pageFromPath("/settings/user/git"), "git");
   assert.equal(pageFromPath("/settings/user/models"), "models");
   assert.equal(pageFromPath("/settings/user/key-bindings"), "key-bindings");
@@ -20,6 +21,7 @@ test("settings start routes", () => {
 test("page labels", () => {
   assert.equal(pageLabel("general"), "General");
   assert.equal(pageLabel("models"), "Default models");
+  assert.equal(pageLabel("appearance"), "Appearance");
   assert.equal(pageLabel("git"), "Git");
   assert.equal(pageLabel("key-bindings"), "Keyboard shortcuts");
   assert.equal(pageLabel("providers"), "Agents");

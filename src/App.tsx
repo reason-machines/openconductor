@@ -4,7 +4,8 @@ import { isSidebarVisible } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
-import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
+import { QuickStartDialog, type DialogKind } from "./components/Dialogs";
+import { CloneGitHubRepoDialog } from "./components/CloneGitHubRepoDialog";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
@@ -20,8 +21,9 @@ import { PaletteHost } from "./palette/PaletteHost";
 import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
 import { SettingsView } from "./settings/SettingsView";
 import { pageFromPath, type SettingsPage } from "./settings/pages";
-import { applyTheme } from "./settings/useSettings";
-import { getSettings } from "./settings/api";
+import { changeZoom } from "./settings/useSettings";
+import { applyAppearance } from "./settings/appearance";
+import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
@@ -47,9 +49,9 @@ export default function App() {
   const openSettings = useCallback(() => setSettingsPage((p) => p ?? "general"), []);
   const closeSettings = useCallback(() => setSettingsPage(null), []);
 
-  // Apply the saved theme at startup; the settings page applies later changes.
+  // Apply the saved theme and appearance at startup; the settings page applies later changes.
   useEffect(() => {
-    getSettings().then((s) => applyTheme(s.general.theme), () => undefined);
+    getSettings().then(applyAppearance, () => undefined);
   }, []);
 
 
@@ -103,6 +105,9 @@ export default function App() {
   useKeybindings({
     "openKeyboardShortcuts": toggleShortcuts,
     "openSettings": openSettings,
+    "view.zoomIn": () => void changeZoom("in").catch((e) => show("error", errorText(e))),
+    "view.zoomOut": () => void changeZoom("out").catch((e) => show("error", errorText(e))),
+    "view.resetZoom": () => void changeZoom("reset").catch((e) => show("error", errorText(e))),
     "nav.back": nav.onBack,
     "nav.forward": nav.onForward,
     "view.toggleLeftSidebar": () => dispatch({ type: "toggleSidebar" }),
@@ -133,7 +138,12 @@ export default function App() {
           <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}
       </main>
-      {dialog === "clone" && <CloneDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
+      {dialog === "clone" && (
+        <CloneGitHubRepoDialog
+          onClose={() => setDialog(null)}
+          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", repo: { name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
+        />
+      )}
       {dialog === "quickstart" && <QuickStartDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
       {dialog === "create" && (
         <CreateWorkspaceDialog
