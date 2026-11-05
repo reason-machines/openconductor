@@ -2,7 +2,7 @@
 // (/settings/user/<id>, evidence/settings/NOTES.md); pages are listed here
 // only once they are built.
 
-export type SettingsPage = "general" | "appearance" | "models" | "git" | "key-bindings" | "providers";
+export type SettingsPage = "general" | "appearance" | "models" | "git" | "key-bindings" | "providers" | "advanced";
 
 export const SETTINGS_GROUPS: { title: string; pages: { id: SettingsPage; label: string }[] }[] = [
   {
@@ -17,6 +17,8 @@ export const SETTINGS_GROUPS: { title: string; pages: { id: SettingsPage; label:
     ],
   },
   { title: "Agents & environment", pages: [{ id: "providers", label: "Agents" }] },
+  // Conductor's "More" group also holds Experimental, not built yet.
+  { title: "More", pages: [{ id: "advanced", label: "Advanced" }] },
 ];
 
 const PAGES = SETTINGS_GROUPS.flatMap((g) => g.pages);
