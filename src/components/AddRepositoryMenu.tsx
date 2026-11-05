@@ -261,14 +261,28 @@ export function SidebarAddRepositoryMenu({ open, onOpenChange, anchorRef, repos,
     const p = menuPosition({ x: anchor.right, y: anchor.bottom }, { width: MENU_WIDTH, height: menu.offsetHeight }, { width: window.innerWidth, height: window.innerHeight });
     setPos((prev) => (prev && prev.left === p.left && prev.top === p.top ? prev : { left: p.left, top: p.top }));
   });
+  // Focus the first item once the menu is placed (a hidden element cannot take focus).
+  const placed = pos !== null;
+  useEffect(() => {
+    if (open && placed) menuRef.current?.querySelector<HTMLElement>("[role=menuitem]")?.focus();
+  }, [open, placed]);
   useEffect(() => {
     if (!open) return;
-    menuRef.current?.querySelector<HTMLElement>("[role=menuitem]")?.focus();
     const onDown = (e: PointerEvent) => {
       if (!menuRef.current?.contains(e.target as Node)) onOpenChange(false);
     };
+    // Escape closes it wherever focus is, as the popover's dismiss handling does.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      e.stopPropagation();
+      onOpenChange(false);
+    };
     document.addEventListener("pointerdown", onDown, true);
-    return () => document.removeEventListener("pointerdown", onDown, true);
+    document.addEventListener("keydown", onKey, true);
+    return () => {
+      document.removeEventListener("pointerdown", onDown, true);
+      document.removeEventListener("keydown", onKey, true);
+    };
   }, [open, onOpenChange]);
   if (!open) return null;
   return createPortal(
@@ -279,10 +293,6 @@ export function SidebarAddRepositoryMenu({ open, onOpenChange, anchorRef, repos,
       className="add-menu"
       style={{ left: pos?.left ?? 0, top: pos?.top ?? 0, visibility: pos ? undefined : "hidden" }}
       onKeyDown={(e) => {
-        if (e.key === "Escape") {
-          e.stopPropagation();
-          return onOpenChange(false);
-        }
         const items = Array.from(menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not([disabled])') ?? []);
         const next = nextMenuIndex(e.key, items.findIndex((el) => el === document.activeElement), items.length);
         if (next === null) return;

@@ -61,7 +61,8 @@ export const RECENTS_STALE_MS = 5 * 60 * 1000;
 
 export const MENU_WIDTH = 320; // w-80
 const SIDE_OFFSET = 4; // sideOffset 4
-const VIEWPORT_PAD = 8;
+// The positioner's default collisionPadding (renderApp-D_fmY7hW.js @ byte 555,649: `collisionPadding:g=5`).
+const VIEWPORT_PAD = 5;
 
 /**
  * Where the popover goes: below its anchor (a point 24px left of the header's

@@ -47,7 +47,7 @@ test("the popover hangs below its anchor with its right edge on it, shifted into
   const view = { width: 1440, height: 900 };
   assert.deepEqual(menuPosition({ x: 600, y: 200 }, { width: MENU_WIDTH, height: 180 }, view), { left: 280, top: 204, side: "bottom" });
   // A narrow sidebar: the menu would start left of the window, so it shifts right.
-  assert.deepEqual(menuPosition({ x: 232, y: 200 }, { width: MENU_WIDTH, height: 180 }, view).left, 8);
+  assert.deepEqual(menuPosition({ x: 232, y: 200 }, { width: MENU_WIDTH, height: 180 }, view).left, 5);
   // No room below: flip above.
   assert.deepEqual(menuPosition({ x: 600, y: 800 }, { width: MENU_WIDTH, height: 180 }, view), { left: 280, top: 616, side: "top" });
 });
