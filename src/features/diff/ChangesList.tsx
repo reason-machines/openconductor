@@ -1,0 +1,95 @@
+// parity:diff.changes-list:ui parity:diff.discard:ui parity:diff.whitespace:ui parity:diff.viewed:ui
+// Right panel of the diff viewer: scope and whitespace options, the
+// "N files changed" header and one row per changed file with its stats and a
+// per-file discard. The selected file opens in DiffViewer.tsx's DiffTab.
+import type { ReactNode } from "react";
+import "./diff.css";
+import { RevertIcon } from "./DiscardDialog";
+import { STATUS_LETTER } from "./FileDiffView";
+import type { FileDiff } from "./types.ts";
+import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
+
+function Seg<T extends string>({ value, options, onChange }: { value: T; options: Array<[T, string]>; onChange: (v: T) => void }) {
+  return (
+    <span className="oc-seg">
+      {options.map(([v, label]) => (
+        <button key={v} aria-pressed={v === value} onClick={() => onChange(v)}>
+          {label}
+        </button>
+      ))}
+    </span>
+  );
+}
+
+export interface ChangesListProps {
+  diff: WorkspaceDiff;
+  /** Extra toolbar content (comment and review actions). */
+  actions?: (files: FileDiff[]) => ReactNode;
+}
+
+/** Right panel: scope and whitespace options, "N files changed" and one row per file. */
+export function ChangesList({ diff, actions }: ChangesListProps) {
+  const { opts, update, load, files, totals, current } = diff;
+  return (
+    <div className="oc-diff oc-diff-list">
+      <div className="oc-diff-toolbar">
+        <Seg value={opts.scope} options={[["all", "All changes"], ["uncommitted", "Uncommitted"]]} onChange={(scope) => update({ scope })} />
+        <label title="Hide changes that only touch whitespace">
+          <input type="checkbox" checked={opts.ignoreWhitespace} onChange={(e) => update({ ignoreWhitespace: e.target.checked })} /> Hide whitespace
+        </label>
+        <span className="spacer" />
+        {load.state === "ready" && files.length > 0 && (
+          <span className="muted">
+            {diff.viewedCount}/{files.length} viewed
+          </span>
+        )}
+        {actions?.(files)}
+        <button className="btn btn-small" onClick={diff.refresh} title="Reload changes">
+          Refresh
+        </button>
+      </div>
+      {load.state === "loading" && <div className="placeholder small">Loading changes…</div>}
+      {load.state === "error" && (
+        <div className="placeholder small">
+          <p className="error">Couldn't load changes.</p>
+          <p className="muted">{load.message}</p>
+        </div>
+      )}
+      {load.state === "ready" && files.length === 0 && (
+        <div className="placeholder small">
+          <p>{opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>
+          <p className="muted">Changes the agent makes show up here.</p>
+        </div>
+      )}
+      {load.state === "ready" && files.length > 0 && (
+        <nav className="oc-changes" aria-label="Changed files">
+          <div className="oc-changes-header">
+            <span>
+              {files.length} {files.length === 1 ? "file" : "files"} changed
+            </span>
+            <span className="oc-count">
+              <span className="a">+{totals.a}</span>
+              <span className="d">-{totals.d}</span>
+            </span>
+          </div>
+          {files.map((f, i) => (
+            <div key={f.path} className="oc-change-row">
+              <button className={`oc-change${diff.isViewed(f) ? " viewed" : ""}`} aria-current={i === current} onClick={() => diff.open(i)} title={`Open ${f.path}`}>
+                <span className="name">{f.path}</span>
+                <span className={`oc-status ${f.status}`}>{STATUS_LETTER[f.status]}</span>
+                <span className="oc-count">
+                  <span className="a">+{f.additions}</span>
+                  <span className="d">-{f.deletions}</span>
+                </span>
+              </button>
+              <button className="icon-btn oc-discard" onClick={() => diff.askDiscard(f)} title="Discard changes" aria-label={`Discard changes to ${f.path}`}>
+                <RevertIcon />
+              </button>
+            </div>
+          ))}
+        </nav>
+      )}
+    </div>
+  );
+}
+

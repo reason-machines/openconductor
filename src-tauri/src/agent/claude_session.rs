@@ -203,10 +203,10 @@ fn read_lines<R: Read + Send + 'static>(
 #[cfg(all(test, unix))]
 mod tests {
     use std::fs;
-    use std::os::unix::fs::PermissionsExt;
     use std::path::PathBuf;
     use std::sync::atomic::{AtomicU32, Ordering};
 
+    use super::super::test_exe::write_executable;
     use super::super::LaunchEnv;
     use super::*;
 
@@ -234,8 +234,7 @@ exit 3
         ));
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("claude");
-        fs::write(&path, FAKE_CLAUDE).unwrap();
-        fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+        write_executable(&path, FAKE_CLAUDE, 0o755);
         path
     }
 
