@@ -40,6 +40,7 @@ mod persistence_commands;
 pub mod recent_local_repos;
 mod recent_local_repos_commands;
 mod sidebar_repo_commands;
+mod repo_misc_commands;
 mod sidebar_section_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
@@ -370,6 +371,8 @@ pub fn run() {
             sidebar_workspace_commands::db_set_workspace_unread,
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
+            repo_misc_commands::repo_files_to_copy_preview,
+            repo_misc_commands::db_remove_repo,
             sidebar_repo_commands::repo_favicon,
             recent_local_repos_commands::recent_local_repositories,
             sidebar_rename_commands::db_rename_workspace,

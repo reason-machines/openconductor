@@ -3,7 +3,7 @@
 //!
 //! Resolution order (from the bundled skill, evidence/scripts/conductor-skill):
 //! 1. `.worktreeinclude` at the repository root,
-//! 2. `file_include_globs` from repository settings,
+//! 2. `file_include_globs` from repository settings (an empty value copies nothing),
 //! 3. the default `.env*` pattern.
 //!
 //! A file is copied only when it is untracked, matches the include patterns
@@ -27,18 +27,56 @@ pub enum IncludeSource {
     Default,
 }
 
-pub fn resolve_source(root: &Path, settings_globs: Option<&[String]>) -> IncludeSource {
+pub fn resolve_source(root: &Path, settings_globs: Option<&str>) -> IncludeSource {
     if root.join(WORKTREEINCLUDE).is_file() {
         IncludeSource::WorktreeInclude
-    } else if let Some(g) = settings_globs.filter(|g| !g.is_empty()) {
-        IncludeSource::SettingsGlobs(g.to_vec())
+    } else if let Some(text) = settings_globs {
+        IncludeSource::SettingsGlobs(patterns(text))
     } else {
         IncludeSource::Default
     }
 }
 
+/// The patterns of a `file_include_globs` text: one per line, trimmed,
+/// without blank lines and `#` comments. Conductor keeps the setting as one
+/// gitignore-style string; an empty one selects no files.
+pub fn patterns(text: &str) -> Vec<String> {
+    text.lines()
+        .map(str::trim)
+        .filter(|l| !l.is_empty() && !l.starts_with('#'))
+        .map(str::to_string)
+        .collect()
+}
+
+/// What the repository settings' "Files to copy" row previews: where the
+/// patterns come from, their text, and the files they select today.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Preview {
+    /// `"worktreeinclude"`, `"settings"` or `"default"`, as in the reference (`NBt`).
+    pub source: &'static str,
+    pub contents: String,
+    pub files: Vec<String>,
+}
+
+pub fn preview(root: &Path, settings_globs: Option<&str>) -> Result<Preview, WorkspaceError> {
+    let source = resolve_source(root, settings_globs);
+    let (label, contents) = match &source {
+        IncludeSource::WorktreeInclude => {
+            ("worktreeinclude", std::fs::read_to_string(root.join(WORKTREEINCLUDE)).map_err(WorkspaceError::Io)?)
+        }
+        IncludeSource::SettingsGlobs(_) => ("settings", settings_globs.unwrap_or_default().to_string()),
+        IncludeSource::Default => ("default", DEFAULT_GLOBS.join("\n")),
+    };
+    let files = files_to_copy(root, &source)?.iter().map(|p| p.display().to_string()).collect();
+    Ok(Preview { source: label, contents, files })
+}
+
 /// Paths (relative to `root`) that would be copied.
 pub fn files_to_copy(root: &Path, source: &IncludeSource) -> Result<Vec<PathBuf>, WorkspaceError> {
+    if matches!(source, IncludeSource::SettingsGlobs(g) if g.is_empty()) {
+        return Ok(Vec::new());
+    }
     let mut args: Vec<String> = vec!["ls-files".into(), "-z".into(), "--others".into(), "--ignored".into()];
     match source {
         IncludeSource::WorktreeInclude => {
