@@ -171,4 +171,50 @@ export const flows = [
       if (!text.includes("echo oc-term-$((6*7)); pwd")) throw new Error("the typed command is not echoed in the terminal");
     },
   },
+  {
+    // ⌘K opens the palette from anywhere; typing filters it and Enter runs the
+    // active result. Go to Home leaves the workspace, and searching the
+    // workspace's name brings it back.
+    name: "command-palette",
+    async run(wd) {
+      const META = "\uE03D";
+      const ENTER = "\uE007";
+      const DOWN = "\uE015";
+      const paletteOpen = async () => (await wd.findAll('.palette[aria-label="Command palette"]')).length > 0;
+      const activeTitle = () => wd.execute("return document.querySelector('.palette-item.active .palette-title')?.textContent.trim() ?? null;", []);
+      const titles = () => textsOf(wd, ".palette-item .palette-title");
+      const headerName = () => wd.execute("return document.querySelector('.ws-header .ws-title strong')?.textContent.trim() ?? null;", []);
+
+      const name = await wd.waitFor("the selected workspace's name", headerName);
+      async function open() {
+        // Leave the terminal so the chord reaches the app, not the shell.
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.chord([META], "k");
+        await wd.waitFor("the command palette after ⌘K", paletteOpen, 10000);
+        await wd.waitFor("focus in the palette input", () => wd.execute("return document.activeElement?.classList.contains('palette-input') ?? false;", []));
+      }
+      /** Type `query`, move the highlight onto `title` with ↓, and press Enter. */
+      async function run(query, title) {
+        await wd.keys(query);
+        await wd.waitFor(`${JSON.stringify(title)} in the results`, async () => (await titles()).includes(title)).catch(async (e) => {
+          throw new Error(`${e.message}; results ${JSON.stringify(await titles())}`);
+        });
+        for (let i = 0; (await activeTitle()) !== title; i++) {
+          if (i > 20) throw new Error(`could not highlight ${JSON.stringify(title)}; results ${JSON.stringify(await titles())}`);
+          await wd.keys(DOWN);
+        }
+        await wd.keys(ENTER);
+        await wd.waitFor("the palette to close after Enter", async () => !(await paletteOpen()));
+      }
+
+      await open();
+      await run("Go to Home", "Go to Home");
+      await wd.waitFor("the Home screen", async () => (await wd.findAll(".home")).length > 0 && (await wd.findAll(".workspace")).length === 0);
+
+      await open();
+      await run(name, name);
+      const back = await wd.waitFor(`the ${name} workspace view`, headerName);
+      if (back !== name) throw new Error(`palette opened workspace ${JSON.stringify(back)}, want ${JSON.stringify(name)}`);
+    },
+  },
 ];
