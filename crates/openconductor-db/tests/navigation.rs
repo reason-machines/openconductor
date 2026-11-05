@@ -4,6 +4,7 @@ use openconductor_db::open_in_memory;
 
 fn scope(user: &str) -> Scope {
     Scope {
+        hosting_server_url: None,
         organization_id: "org".into(),
         user_id: user.into(),
     }
@@ -37,10 +38,16 @@ async fn write_then_read_round_trips_with_sort_order() {
     assert!(navigation::write_layout(&pool, &scope("u"), &layout)
         .await
         .unwrap());
-    assert_eq!(
-        navigation::read_layout(&pool, &scope("u")).await.unwrap(),
-        Some(layout)
-    );
+    // Members written together share created_at and read back in (random)
+    // membership id order, as in the reference: compare them as sets.
+    let mut back = navigation::read_layout(&pool, &scope("u"))
+        .await
+        .unwrap()
+        .unwrap();
+    for s in &mut back.sections {
+        s.workspace_ids.sort();
+    }
+    assert_eq!(back, layout);
 
     let (sections, memberships) = navigation::read(&pool, &scope("u")).await.unwrap();
     assert_eq!(

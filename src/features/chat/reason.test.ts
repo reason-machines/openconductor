@@ -172,3 +172,33 @@ test("a turn stopped before its prompt reached Reason ends cancelled, leaving ea
   assert.deepEqual(status, { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t2`, status: "cancelled", at: t1.toISOString() });
   assert.deepEqual(cancelUnsent(step.state, `${CHAT}:t2`, t1).events, []);
 });
+
+test("a notice is a system message in the running turn", () => {
+  const s = startTurn(reasonChat("c"), "review").state;
+  const step = applyReasonPayload(s, { chatId: "c", type: "notice", text: "Reason does not offer model \"x\"" });
+  assert.equal(step.events.length, 1);
+  const ev = step.events[0];
+  assert.equal(ev.type, "upsert");
+  if (ev.type !== "upsert") return;
+  assert.equal(ev.message.role, "system");
+  assert.equal(ev.message.turnId, "c:t1");
+  assert.deepEqual(ev.message.blocks, [{ type: "text", text: "Reason does not offer model \"x\"" }]);
+});
+
+test("attachments show by name under the prompt", () => {
+  const step = startTurn(reasonChat("c"), "Review this", new Date(0), undefined, [{ name: "Review request.md", text: "long instructions" }]);
+  const ev = step.events[0];
+  assert.equal(ev.type, "upsert");
+  if (ev.type !== "upsert") return;
+  assert.deepEqual(ev.message.blocks, [
+    { type: "text", text: "Review this" },
+    { type: "text", text: "Attached: Review request.md" },
+  ]);
+});
+
+test("startTurn can take the turn id that names the turn's checkpoints", () => {
+  const step = startTurn(reasonChat("ws/one"), "hi", new Date(0), "0b6f2c7e-1d2a-4c55-9a59-6d1c1b2f3e4a");
+  const upsert = step.events[0];
+  assert.equal(upsert?.type === "upsert" ? upsert.message.turnId : null, "0b6f2c7e-1d2a-4c55-9a59-6d1c1b2f3e4a");
+  assert.equal(step.state.open[0]?.turnId, "0b6f2c7e-1d2a-4c55-9a59-6d1c1b2f3e4a");
+});

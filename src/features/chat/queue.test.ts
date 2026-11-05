@@ -40,7 +40,7 @@ test("send mode: steering by default, the opposite key queues, non-steering agen
 
 test("idle submit starts a turn; blank text does nothing", () => {
   const r = submit(emptyQueue(), "hello", "queue", now);
-  assert.deepEqual(r.effects, [{ kind: "start", text: "hello" }]);
+  assert.deepEqual(r.effects, [{ kind: "start", text: "hello", attachments: [] }]);
   assert.equal(r.queue.status, "working");
   assert.deepEqual(submit(emptyQueue(), "  \n", "steer", now).effects, []);
 });
@@ -48,7 +48,7 @@ test("idle submit starts a turn; blank text does nothing", () => {
 test("while working, steer goes into the turn and queue waits for the turn to end", () => {
   const q = working();
   const steer = submit(q, "also do X", "steer", now);
-  assert.deepEqual(steer.effects, [{ kind: "steer", text: "also do X" }]);
+  assert.deepEqual(steer.effects, [{ kind: "steer", text: "also do X", attachments: [] }]);
   assert.deepEqual(steer.queue.items, []);
 
   const queued = submit(q, "then Y", "queue", now);
@@ -60,11 +60,11 @@ test("while working, steer goes into the turn and queue waits for the turn to en
 test("a completed turn sends the head, one per turn, in order", () => {
   let q = working("a", "b");
   let r = turnEnded(q, "completed");
-  assert.deepEqual(r.effects, [{ kind: "start", text: "a" }]);
+  assert.deepEqual(r.effects, [{ kind: "start", text: "a", attachments: [] }]);
   assert.equal(r.queue.status, "working");
   assert.deepEqual(texts(r.queue), ["b"]);
   r = turnEnded(r.queue, "completed");
-  assert.deepEqual(r.effects, [{ kind: "start", text: "b" }]);
+  assert.deepEqual(r.effects, [{ kind: "start", text: "b", attachments: [] }]);
   r = turnEnded(r.queue, "completed");
   assert.deepEqual(r.effects, []);
   assert.equal(r.queue.status, "idle");
@@ -87,14 +87,14 @@ test("a failed turn pauses a non-empty queue; resume sends the head", () => {
   assert.deepEqual(more.effects, []);
   assert.deepEqual(texts(more.queue), ["a", "b"]);
   const resumed = resume(more.queue);
-  assert.deepEqual(resumed.effects, [{ kind: "start", text: "a" }]);
+  assert.deepEqual(resumed.effects, [{ kind: "start", text: "a", attachments: [] }]);
   assert.equal(resumed.queue.paused, false);
 });
 
 test("a failed turn with nothing queued leaves the next message free to start", () => {
   const failed = turnEnded(working(), "failed").queue;
   assert.equal(failed.paused, false);
-  assert.deepEqual(submit(failed, "retry", "queue", now).effects, [{ kind: "start", text: "retry" }]);
+  assert.deepEqual(submit(failed, "retry", "queue", now).effects, [{ kind: "start", text: "retry", attachments: [] }]);
 });
 
 test("a cancelled turn does not pause: the head sends after the cancellation", () => {
@@ -105,7 +105,7 @@ test("a cancelled turn does not pause: the head sends after the cancellation", (
   // Steering is not possible while cancelling; the message queues.
   assert.deepEqual(submit(s.queue, "b", "steer", now).effects, []);
   const r = turnEnded(s.queue, "cancelled");
-  assert.deepEqual(r.effects, [{ kind: "start", text: "a" }]);
+  assert.deepEqual(r.effects, [{ kind: "start", text: "a", attachments: [] }]);
 });
 
 test("Stop: second press is a hard stop; idle Stop does nothing", () => {
@@ -141,18 +141,18 @@ test("an edited head does not send until the edit is saved or cancelled", () => 
   assert.deepEqual(r.effects, []);
   assert.equal(r.queue.status, "idle");
   r = saveEdit(r.queue, "a2");
-  assert.deepEqual(r.effects, [{ kind: "start", text: "a2" }]);
+  assert.deepEqual(r.effects, [{ kind: "start", text: "a2", attachments: [] }]);
 
   q = beginEdit(working("a"), working("a").items[0]!.id);
   q = turnEnded(q, "completed").queue;
-  assert.deepEqual(cancelEdit(q).effects, [{ kind: "start", text: "a" }]);
+  assert.deepEqual(cancelEdit(q).effects, [{ kind: "start", text: "a", attachments: [] }]);
 });
 
 test("save and steer sends the edited text into the running turn", () => {
   let q = working("a", "b");
   q = beginEdit(q, q.items[1]!.id);
   const r = saveEdit(q, "b2", true);
-  assert.deepEqual(r.effects, [{ kind: "steer", text: "b2" }]);
+  assert.deepEqual(r.effects, [{ kind: "steer", text: "b2", attachments: [] }]);
   assert.deepEqual(texts(r.queue), ["a"]);
   assert.equal(r.queue.editingId, null);
 });
@@ -166,17 +166,26 @@ test("saving an edit as blank deletes the message", () => {
 test("steer a queued message: into the running turn, or start it when idle", () => {
   const q = working("a", "b");
   const r = steerQueued(q, q.items[1]!.id);
-  assert.deepEqual(r.effects, [{ kind: "steer", text: "b" }]);
+  assert.deepEqual(r.effects, [{ kind: "steer", text: "b", attachments: [] }]);
   assert.deepEqual(texts(r.queue), ["a"]);
   assert.equal(canSteerNow(q, true), true);
   assert.equal(canSteerNow(q, false), false);
 
   const failed = turnEnded(working("a"), "failed").queue;
   const s = steerQueued(failed, failed.items[0]!.id);
-  assert.deepEqual(s.effects, [{ kind: "start", text: "a" }]);
+  assert.deepEqual(s.effects, [{ kind: "start", text: "a", attachments: [] }]);
   assert.equal(s.queue.paused, false);
 
   const cancelling = stop(working("a")).queue;
   assert.deepEqual(steerQueued(cancelling, cancelling.items[0]!.id).effects, []);
   assert.equal(canSteerNow(cancelling, true), false);
+});
+
+test("a queued message keeps its attachments until it sends", () => {
+  const file = { name: "revert-note.md", text: "reverted a.txt" };
+  let s = submit(emptyQueue(), "first", "queue");
+  s = submit(s.queue, "with a file", "queue", new Date(), [file]);
+  assert.deepEqual(s.queue.items[0]!.attachments, [file]);
+  s = turnEnded(s.queue, "completed");
+  assert.deepEqual(s.effects, [{ kind: "start", text: "with a file", attachments: [file] }]);
 });

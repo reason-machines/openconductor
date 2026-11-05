@@ -1,7 +1,7 @@
 // Transcript UI: draws the rows from `buildRows` (see view.ts). Message text is
 // shown as plain pre-wrapped text; markdown rendering is a separate slice.
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin, type RowView, type ToolCallView } from "./view.ts";
 import { plainText } from "./types.ts";
@@ -17,9 +17,11 @@ export interface TranscriptProps {
   onResetChat?: (turnId: string) => void;
   /** "Reset chat" is shown but disabled, e.g. while the agent is working. */
   resetDisabled?: boolean;
+  /** Extra content under a finished turn (the files it changed). */
+  turnFooter?: (turnId: string) => ReactNode;
 }
 
-export function Transcript({ transcript, expandToolsByDefault = false, onRetry, onResetChat, resetDisabled = false }: TranscriptProps) {
+export function Transcript({ transcript, expandToolsByDefault = false, onRetry, onResetChat, resetDisabled = false, turnFooter }: TranscriptProps) {
   const rows = useMemo(() => buildRows(transcript), [transcript]);
   const [toggled, setToggled] = useState<ReadonlyMap<string, boolean>>(new Map());
   const toggleTool = (id: string) =>
@@ -36,6 +38,7 @@ export function Transcript({ transcript, expandToolsByDefault = false, onRetry, 
           onRetry={onRetry}
           onResetChat={onResetChat}
           resetDisabled={resetDisabled}
+          turnFooter={turnFooter}
         />
       ))}
     </div>
@@ -49,9 +52,10 @@ interface RowProps {
   onRetry?: (prompt: string, turnId: string) => void;
   onResetChat?: (turnId: string) => void;
   resetDisabled: boolean;
+  turnFooter?: (turnId: string) => ReactNode;
 }
 
-function Row({ row, isOpen, onToggle, onRetry, onResetChat, resetDisabled }: RowProps) {
+function Row({ row, isOpen, onToggle, onRetry, onResetChat, resetDisabled, turnFooter }: RowProps) {
   switch (row.kind) {
     case "user":
       return (
@@ -81,18 +85,21 @@ function Row({ row, isOpen, onToggle, onRetry, onResetChat, resetDisabled }: Row
       );
     case "turn_end":
       return (
-        <div className={`chat-turn-end status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
-          {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
-          {row.status === "cancelled" ? <span className="muted">Stopped.</span> : null}
-          <span className="chat-turn-actions">
-            {row.finalText ? <CopyButton text={row.finalText} label="Copy final message" /> : null}
-            {row.retryPrompt && onRetry ? (
-              <button type="button" className="chat-action" onClick={() => onRetry(row.retryPrompt!, row.turnId)}>
-                Retry
-              </button>
-            ) : null}
-            {row.canReset && onResetChat ? <TurnMenu disabled={resetDisabled} onResetChat={() => onResetChat(row.turnId)} /> : null}
-          </span>
+        <div className="chat-turn-footer">
+          {turnFooter?.(row.turnId)}
+          <div className={`chat-turn-end status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
+            {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
+            {row.status === "cancelled" ? <span className="muted">Stopped.</span> : null}
+            <span className="chat-turn-actions">
+              {row.finalText ? <CopyButton text={row.finalText} label="Copy final message" /> : null}
+              {row.retryPrompt && onRetry ? (
+                <button type="button" className="chat-action" onClick={() => onRetry(row.retryPrompt!, row.turnId)}>
+                  Retry
+                </button>
+              ) : null}
+              {row.canReset && onResetChat ? <TurnMenu disabled={resetDisabled} onResetChat={() => onResetChat(row.turnId)} /> : null}
+            </span>
+          </div>
         </div>
       );
   }

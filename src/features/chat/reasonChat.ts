@@ -1,8 +1,10 @@
 // Runtime side of Reason chats: the Tauri commands in
 // `src-tauri/src/reason_chat.rs`, the `reason-chat-event` stream, and one
-// transcript plus follow-up queue per chat. The chat id is the workspace id.
-// The Reason Session id is saved per chat, so a chat reopened after a restart
-// resumes its Session.
+// transcript plus follow-up queue per chat. A workspace's own chat has the
+// workspace id; other chats (reviews) get their own ids. The Reason Session id
+// is saved per chat, so a chat reopened after a restart resumes its Session.
+// A chat can ask for Session options (model, reasoning effort) before its
+// first message.
 //
 // Turn lifecycle, Stop and the queue are decided by `queue.ts`; this file runs
 // its effects. Reason steers natively: a prompt sent while a turn runs goes
@@ -18,9 +20,17 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, truncateAfterTurn, type ChatTranscript } from "./reducer.ts";
-import { restoreCheckpoint, saveTurnCheckpoint } from "./checkpoints.ts";
-import { applyReasonPayload, cancelUnsent, failTurn, newestTurn, openTurns, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
+import { restoreCheckpoint, turnCheckpointRef } from "./checkpoints.ts";
+import { applyReasonPayload, cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
+import { turnChanges } from "../diff/useTurnChanges.ts";
+import type { FileChange } from "../diff/types.ts";
+
+/** One Reason Session config option (`model`, `reasoning_effort`). */
+export interface ReasonConfig {
+  id: string;
+  value: string;
+}
 
 const EVENT = "reason-chat-event";
 const sessionKey = (chatId: string) => `openconductor.reason.session.${chatId}`;
@@ -36,6 +46,7 @@ interface Chat {
   queue: Q.ChatQueue;
   cwd: string | null;
   opened: boolean;
+  config: ReasonConfig[];
   /** Turns shown as running whose prompt has not reached Reason yet. */
   unsent: Set<string>;
   /** Unsent turns the user stopped: they end cancelled instead of being sent. */
@@ -55,7 +66,7 @@ export const REASON_CAN_STEER = true;
 function chat(chatId: string): Chat {
   let c = chats.get(chatId);
   if (!c) {
-    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, opened: false, unsent: new Set(), stopped: new Set(), listeners: new Set() };
+    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, opened: false, config: [], unsent: new Set(), stopped: new Set(), listeners: new Set() };
     chats.set(chatId, c);
   }
   return c;
@@ -98,7 +109,7 @@ function run(c: Chat, effect: Q.Effect) {
   switch (effect.kind) {
     case "start":
     case "steer":
-      void prompt(c, effect.text);
+      void prompt(c, effect.text, [...effect.attachments]);
       return;
     case "cancel":
       // Reason cancels only a prompt it has; one still on its way is stopped here.
@@ -117,38 +128,45 @@ function ensureListening(): Promise<unknown> {
   return listening;
 }
 
-/** Opens a turn in the transcript and sends the prompt; Reason steers it into a running turn. */
-async function prompt(c: Chat, text: string): Promise<void> {
+/**
+ * Opens a turn in the transcript and sends the prompt; Reason steers it into
+ * a running turn. The backend checkpoints the workspace before and after the
+ * turn under this turn's id and answers with the files the turn changed, which
+ * go to the turn-changes cache for the chips under the turn.
+ */
+async function prompt(c: Chat, text: string, attachments: PromptAttachment[]): Promise<void> {
   const chatId = c.state.chatId;
-  apply(c, startTurn(c.state, text));
-  const turnId = newestTurn(c.state)!;
+  // A random turn id, so a turn's checkpoints and cached changes never
+  // collide with a turn from an earlier app run.
+  const turnId = `${chatId}:${crypto.randomUUID()}`;
+  apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
   if (!reasonAvailable()) return preview.prompt(c, text);
   // `submitChat` sets the folder before any effect runs.
   const cwd = c.cwd ?? "";
-  // Stop is shown from here on, but Reason only learns of the turn at
-  // `reason_prompt`; a Stop before that is held in `c.stopped`.
+  // Stop is shown from here on, but Reason only learns of the turn once
+  // `reason_prompt` runs; a Stop before that is held in `c.stopped`.
   c.unsent.add(turnId);
   try {
     await ensureListening();
     if (!c.opened) {
-      await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)) });
+      await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)), config: c.config });
       c.opened = true;
     }
-    // Conductor snapshots the workspace around every turn so "Reset chat"
-    // can bring the files back (features/chat/checkpoints.ts).
-    await saveTurnCheckpoint(invoke, cwd, chatId, turnId, "start");
     c.unsent.delete(turnId);
     if (c.stopped.delete(turnId)) return apply(c, cancelUnsent(c.state, turnId));
-    // Resolves after the turn's `turnEnded` event; a rejection means the
-    // turn never started (no CLI, no process), so no event will end it.
-    await invoke("reason_prompt", { chatId, text });
+    // Conductor snapshots the workspace around every turn: the backend saves
+    // the `start` and `end` checkpoints (features/chat/checkpoints.ts names
+    // them, so "Reset chat" finds them) and answers with the files the turn
+    // changed. Resolves after the turn's `turnEnded` event; a rejection means
+    // the turn never started (no CLI, no process), so no event will end it.
+    const turn = turnCheckpointRef(chatId, turnId);
+    const end = await invoke<{ turnChanges?: FileChange[] }>("reason_prompt", { chatId, text, attachments, turn });
+    if (end.turnChanges) turnChanges.record(turn, end.turnChanges);
   } catch (e) {
     c.unsent.delete(turnId);
     c.stopped.delete(turnId);
     apply(c, failTurn(c.state, turnId, String(e)));
-    return;
   }
-  await saveTurnCheckpoint(invoke, cwd, chatId, turnId, "end");
 }
 
 /**
@@ -169,27 +187,31 @@ export function chatSnapshot(chatId: string): ChatSnapshot {
   return snapshot(chat(chatId));
 }
 
-/** @deprecated use `chatSnapshot`. */
-export function reasonTranscript(chatId: string): ChatTranscript {
-  return chat(chatId).transcript;
-}
-
 export function subscribeChat(chatId: string, fn: (s: ChatSnapshot) => void): () => void {
   const c = chat(chatId);
   c.listeners.add(fn);
   return () => c.listeners.delete(fn);
 }
 
-/** The composer's Send: starts a turn, steers the running one, or queues, per `mode`. `cwd` is the workspace folder. */
-export function submitChat(chatId: string, cwd: string, text: string, mode: Q.SendMode): void {
+/**
+ * The composer's Send: starts a turn, steers the running one, or queues, per
+ * `mode`. `cwd` is the workspace folder. Attachments go as embedded files and
+ * show by name.
+ */
+export function submitChat(chatId: string, cwd: string, text: string, mode: Q.SendMode, attachments: readonly PromptAttachment[] = []): void {
   const c = chat(chatId);
   c.cwd = cwd;
-  setQueue(c, Q.submit(c.queue, text, mode));
+  setQueue(c, Q.submit(c.queue, text, mode, new Date(), attachments));
 }
 
 /** The first message or a Retry: starts when idle, else waits in the queue. */
-export function sendReason(chatId: string, cwd: string, text: string): void {
-  submitChat(chatId, cwd, text, "queue");
+export function sendReason(chatId: string, cwd: string, text: string, attachments: readonly PromptAttachment[] = []): void {
+  submitChat(chatId, cwd, text, "queue", attachments);
+}
+
+/** Session options for a chat that has not sent its first message; set when Reason creates its Session. */
+export function configureReason(chatId: string, config: ReasonConfig[]): void {
+  chat(chatId).config = config;
 }
 
 /** Stop. A second Stop while the first is pending asks Reason to stop hard. */
@@ -197,9 +219,6 @@ export function stopChat(chatId: string): void {
   const c = chat(chatId);
   setQueue(c, Q.stop(c.queue));
 }
-
-/** @deprecated use `stopChat`. */
-export const stopReason = stopChat;
 
 export type QueueAction =
   | { kind: "delete"; id: string }

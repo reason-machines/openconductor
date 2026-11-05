@@ -4,7 +4,7 @@
 // default follow-up mode, `chat.submitOppositeFollowUp` with the other one,
 // `chat.newLine` inserts a line break and `chat.cancel` stops the agent.
 
-import { useState, type FormEvent, type KeyboardEvent, type RefObject } from "react";
+import { useState, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { SendIcon } from "../../components/Icons";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
@@ -24,9 +24,11 @@ export interface ComposerProps {
   onSubmit: (text: string, mode: SendMode) => void;
   onStop: () => void;
   onQueue: (action: QueueAction) => void;
+  /** Files going out with the next message, shown above the message box. */
+  attachments?: ReactNode;
 }
 
-export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSteer, followUpMode = "steering", onSubmit, onStop, onQueue }: ComposerProps) {
+export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSteer, followUpMode = "steering", onSubmit, onStop, onQueue, attachments }: ComposerProps) {
   const { overrides } = useKeybindingOverrides();
   const keys = (id: string) => effectiveShortcuts(id, overrides);
   const hint = (id: string) => {
@@ -74,6 +76,7 @@ export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSte
           submit(false);
         }}
       >
+        {attachments}
         <textarea ref={inputRef} value={draft} placeholder={placeholder} onChange={(e) => setDraft(e.target.value)} onKeyDown={onKeyDown} rows={3} />
         <div className="composer-bar">
           <span className="muted">
