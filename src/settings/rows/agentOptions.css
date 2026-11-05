@@ -1,0 +1,194 @@
+/*
+ * Per-agent options on Settings › Agents (AgentOptionRows.tsx). Sizes are
+ * Conductor's Tailwind classes from renderApp-D_fmY7hW.js; colours are its
+ * tokens from evidence/frontend/css-tokens.json (--success, --destructive,
+ * --input-border), with fallbacks for themes that do not define them.
+ */
+.settings-row.oc-agent-exec,
+.oc-agent-config,
+.oc-agent-advanced {
+  --oc-success: #16a249;
+  --oc-destructive: #dc2828;
+  --oc-input-border: #14100f1a;
+}
+@media (prefers-color-scheme: dark) {
+  .settings-row.oc-agent-exec,
+  .oc-agent-config,
+  .oc-agent-advanced {
+    --oc-success: #4ade80;
+    --oc-destructive: #f87272;
+    --oc-input-border: #fff3;
+  }
+}
+:root[data-theme="dark"] .settings-row.oc-agent-exec,
+:root[data-theme="dark"] .oc-agent-config,
+:root[data-theme="dark"] .oc-agent-advanced {
+  --oc-success: #4ade80;
+  --oc-destructive: #f87272;
+  --oc-input-border: #fff3;
+}
+:root[data-theme="light"] .settings-row.oc-agent-exec,
+:root[data-theme="light"] .oc-agent-config,
+:root[data-theme="light"] .oc-agent-advanced {
+  --oc-success: #16a249;
+  --oc-destructive: #dc2828;
+  --oc-input-border: #14100f1a;
+}
+
+/* Inline link buttons in descriptions (`text-foreground hover:underline`, ExternalLink size-3). */
+.oc-agent-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.oc-agent-link:hover { text-decoration: underline; }
+.oc-agent-link:disabled { opacity: 0.5; cursor: default; text-decoration: none; }
+.oc-agent-ext { flex-shrink: 0; }
+
+/* Codex personality trigger: w-[180px]. */
+.settings-row-control select.oc-agent-select-180 { width: 180px; min-width: 180px; }
+
+/* Executable path (`mGt`): input row (`flex items-center gap-2`), mono text-xs, folder button inside. */
+.oc-agent-exec-controls { display: flex; align-items: center; gap: 8px; }
+.oc-agent-exec-field { position: relative; flex: 1; min-width: 0; }
+.oc-agent-exec-input {
+  width: 100%;
+  height: 32px;
+  box-sizing: border-box;
+  padding: 4px 32px 4px 12px;
+  border: 1px solid var(--oc-input-border, var(--border));
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 12px;
+  line-height: 16px;
+}
+.oc-agent-exec-input::placeholder { color: var(--muted); }
+.oc-agent-exec-input:focus { outline: 2px solid var(--border); outline-offset: 1px; }
+.oc-agent-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.oc-agent-icon-btn:hover { color: var(--text); background: var(--hover); }
+.oc-agent-exec-browse { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); }
+.oc-agent-outline { flex-shrink: 0; background: transparent; color: var(--text); }
+.oc-agent-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+  color: #d97706;
+  font-size: 12px;
+  line-height: 16px;
+}
+.oc-agent-warning svg { flex-shrink: 0; margin-top: 2px; }
+.oc-agent-warning p { margin: 0; }
+
+/* Config file card (`Nzi`): `rounded-md border p-4`, h3 text-sm font-medium, mono text-xs path. */
+.oc-agent-config {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.oc-agent-config-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.oc-agent-config-text h3 { margin: 0; font-size: 14px; line-height: 20px; font-weight: 500; }
+.oc-agent-config-path {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 12px;
+  line-height: 16px;
+}
+.oc-agent-open-in { font-family: var(--font-mono, ui-monospace, monospace); }
+
+/* OpenCode "Advanced" (`xpa`): border-t pt-4, chevron rotates 90deg, body pt-4. */
+.oc-agent-advanced { border-top: 1px solid var(--border); padding-top: 16px; }
+.oc-agent-advanced-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.oc-agent-advanced-toggle:hover { color: var(--text); }
+.oc-agent-chevron { transition: transform 0.15s; }
+.oc-agent-chevron.open { transform: rotate(90deg); }
+.oc-agent-advanced-body { padding-top: 16px; display: flex; flex-direction: column; gap: 16px; }
+
+/* Status line (`gpa`). */
+.oc-agent-status { display: flex; flex-direction: column; gap: 8px; }
+.oc-agent-status-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.oc-agent-status-left { display: flex; min-width: 0; flex-wrap: wrap; align-items: center; gap: 6px 12px; color: var(--muted); font-size: 14px; }
+.oc-agent-status-left .oc-agent-link { color: var(--muted); }
+.oc-agent-status-left .oc-agent-link:hover { color: var(--text); }
+.oc-agent-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.oc-agent-ghost:hover { background: var(--hover); }
+.oc-agent-ghost:disabled { opacity: 0.5; cursor: default; }
+.oc-agent-spin { animation: oc-agent-spin 1s linear infinite; }
+@keyframes oc-agent-spin { to { transform: rotate(360deg); } }
+.oc-agent-outdated { margin: 0; color: var(--oc-destructive); font-size: 14px; }
+
+/* Badges (`Qu` with border-*\/40 bg-*\/10). */
+.oc-agent-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border: 1px solid;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+}
+.oc-agent-badge.ok { color: var(--oc-success); border-color: color-mix(in srgb, var(--oc-success) 40%, transparent); background: color-mix(in srgb, var(--oc-success) 10%, transparent); }
+.oc-agent-badge.problem { color: var(--oc-destructive); border-color: color-mix(in srgb, var(--oc-destructive) 40%, transparent); background: color-mix(in srgb, var(--oc-destructive) 10%, transparent); }
+.oc-agent-badge.muted { color: var(--muted); border-color: var(--border); background: var(--hover); }
+.oc-agent-badge-version { margin-left: 6px; font-family: var(--font-mono, ui-monospace, monospace); opacity: 0.8; }
+
+/* Inside a boxed .settings-rows list the card is one more row; standing alone (Conductor's tab column) it keeps its own border. */
+.settings-rows > .oc-agent-config { border: 0; border-top: 1px solid var(--border); border-radius: 0; }
+/* Under Advanced the executable path is a settings row of its own (`Al`: border-t pt-5). */
+.oc-agent-advanced-body > .settings-row.oc-agent-exec { border-top: 1px solid var(--border); padding: 20px 0 0; }

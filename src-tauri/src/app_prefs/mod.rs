@@ -47,6 +47,9 @@ pub struct AppPrefs {
     /// Experimental "Show sidebar resource usage" (the reference's
     /// `Te("sidebar_resource_usage", !1)`): off unless the row says `"true"`.
     pub sidebar_resource_usage: bool,
+    /// "Use Claude Code with Chrome": Claude Code chats start with
+    /// `--chrome` (the reference sidecar's `extraArgs: { chrome: null }`).
+    pub chrome_mode_enabled: bool,
 }
 
 /// `"true"` / `"false"`, anything else (or no row) is `default`.
@@ -130,6 +133,9 @@ impl AppPrefs {
             roundhouse_client_user_id: text(rows, keys::ROUNDHOUSE_CLIENT_USER_ID),
             sidebar_repo_filter: text(rows, keys::SIDEBAR_REPO_FILTER),
             sidebar_resource_usage: flag(rows, keys::SIDEBAR_RESOURCE_USAGE, false),
+            // The reference reads it as `=== "true"`.
+            chrome_mode_enabled: rows.get(keys::CHROME_MODE_ENABLED).map(String::as_str)
+                == Some("true"),
         }
     }
 }
@@ -158,6 +164,7 @@ pub enum AppPrefUpdate {
     SidebarRepoFilter(Option<String>),
     /// Written as `"true"` / `"false"` (the reference's `v6t`).
     SidebarResourceUsage(bool),
+    ChromeModeEnabled(bool),
 }
 
 /// What an update does to the table.
@@ -205,6 +212,7 @@ impl AppPrefUpdate {
             SidebarRepoFilter(Some(id)) => Ok(Write::Set(keys::SIDEBAR_REPO_FILTER, id.clone())),
             SidebarRepoFilter(None) => Ok(Write::Delete(keys::SIDEBAR_REPO_FILTER)),
             SidebarResourceUsage(v) => b(keys::SIDEBAR_RESOURCE_USAGE, *v),
+            ChromeModeEnabled(v) => b(keys::CHROME_MODE_ENABLED, *v),
         }
     }
 }

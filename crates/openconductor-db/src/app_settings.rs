@@ -120,6 +120,9 @@ pub mod keys {
     pub const CLIENT_INSTANCE_ID: &str = "client_instance_id";
     /// User id of the cloud (Roundhouse) client sign-in.
     pub const ROUNDHOUSE_CLIENT_USER_ID: &str = "roundhouse_client_user_id";
+    /// `"true"` launches Claude Code chats with `--chrome` ("Use Claude Code
+    /// with Chrome", Settings › Agents › Claude Code); unset means off.
+    pub const CHROME_MODE_ENABLED: &str = "chrome_mode_enabled";
     /// Repository id the sidebar is narrowed to ("Filter by project"); no
     /// row means all projects.
     pub const SIDEBAR_REPO_FILTER: &str = "sidebar_repo_filter";

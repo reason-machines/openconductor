@@ -19,11 +19,14 @@ import {
   type ProviderForm,
 } from "./providers";
 import { DEFAULT_PROVIDER, type ProviderKind, type ProviderStatus, type Settings } from "./types";
+import { AcpAgentOptions, ClaudeAgentOptions, CodexAgentOptions } from "./rows/AgentOptionRows";
 
 interface Props {
   settings: Settings;
   /** Re-reads settings after connect/disconnect, which write the file themselves. */
   reload: () => void;
+  /** Saves a settings change (the per-agent option rows). */
+  save: (next: Settings) => void;
 }
 
 /**
@@ -33,17 +36,25 @@ interface Props {
  * Code with Chrome" and per-provider model overrides; neither is shown yet
  * (evidence/settings/NOTES.md, "Agents").
  */
-export function AgentsPage({ settings, reload }: Props) {
+export function AgentsPage({ settings, reload, save }: Props) {
   return (
     <div className="settings-agents">
       {PROVIDER_AGENTS.map((agent) => (
-        <AgentProvider key={agent} agent={agent} settings={settings} reload={reload} />
+        <AgentProvider key={agent} agent={agent} settings={settings} reload={reload} save={save} />
       ))}
     </div>
   );
 }
 
-function AgentProvider({ agent, settings, reload }: { agent: ProviderAgent } & Props) {
+/** Each agent's options after its authentication (rows/AgentOptionRows.tsx). */
+function AgentOptions({ agent, settings, save }: { agent: ProviderAgent; settings: Settings; save: (next: Settings) => void }) {
+  if (agent === "claude") return <div className="settings-rows"><ClaudeAgentOptions settings={settings} save={save} /></div>;
+  if (agent === "codex") return <div className="settings-rows"><CodexAgentOptions settings={settings} save={save} /></div>;
+  if (agent === "opencode") return <AcpAgentOptions agent="opencode" settings={settings} save={save} />;
+  return null;
+}
+
+function AgentProvider({ agent, settings, reload, save }: { agent: ProviderAgent } & Props) {
   const stored = settings.providers[agent] ?? null;
   const storedKey = JSON.stringify(stored);
   const [status, setStatus] = useState<ProviderStatus | null>(null);
@@ -162,6 +173,7 @@ function AgentProvider({ agent, settings, reload }: { agent: ProviderAgent } & P
           Save
         </button>
       </div>
+      <AgentOptions agent={agent} settings={settings} save={save} />
     </section>
   );
 }
