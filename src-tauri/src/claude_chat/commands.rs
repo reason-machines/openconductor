@@ -9,6 +9,7 @@ use serde_json::Value;
 use tauri::{AppHandle, Emitter, Manager, State};
 
 use crate::agent::{AgentKind, ClaudeLaunch, PermissionMode};
+use crate::reason_acp::interaction::Answer;
 use crate::reason_acp::provider::{ProviderEvent, Sink};
 use crate::reason_acp::wire;
 use crate::settings::service::SettingsService;
@@ -42,9 +43,16 @@ impl ClaudeChats {
                     let mut launch = ClaudeLaunch::new(cwd, env);
                     launch.executable = exe;
                     launch.resume = resume;
-                    // No permission prompt UI yet: the agent works in the
-                    // workspace's own worktree without asking.
-                    launch.permission_mode = PermissionMode::BypassPermissions;
+                    // Account › "Claude Code tool approvals" (Conductor's
+                    // `tool_approvals_enabled`, off by default): ask before
+                    // tools run; otherwise the agent works in the workspace's
+                    // own worktree without asking.
+                    let approvals = settings.inner().get().map(|s| s.tool_approvals_enabled);
+                    launch.permission_mode = if approvals.unwrap_or(false) {
+                        PermissionMode::Default
+                    } else {
+                        PermissionMode::BypassPermissions
+                    };
                     Ok(launch)
                 });
                 let emit_app = app.clone();
@@ -97,4 +105,20 @@ pub async fn claude_prompt(
 #[tauri::command]
 pub fn claude_cancel(app: AppHandle, state: State<'_, ClaudeChats>, chat_id: String) {
     state.runner(&app).cancel(&chat_id);
+}
+
+/// Answers the chat's waiting permission prompt `id` (an `interaction`
+/// event): `{ kind: "option", optionId: "allow" | "deny" }` for a tool,
+/// `{ kind: "plan", approved, feedback? }` for a plan, `{ kind: "answers",
+/// answers }` for questions, or `{ kind: "cancel" }`.
+#[tauri::command]
+pub fn claude_respond(
+    app: AppHandle,
+    state: State<'_, ClaudeChats>,
+    chat_id: String,
+    id: String,
+    answer: Value,
+) -> Result<(), String> {
+    let answer = Answer::from_json(&answer)?;
+    state.runner(&app).respond(&chat_id, &id, &answer)
 }

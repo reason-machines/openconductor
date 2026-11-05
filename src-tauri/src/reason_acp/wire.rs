@@ -4,6 +4,7 @@
 //! [`event_json`] as its payload. Every payload has `chatId` and a `type`;
 //! field names are camelCase like the rest of the app's commands.
 
+use super::interaction::request_json;
 use super::provider::{ProviderEvent, SessionInfo, TurnEnd};
 use super::updates::{AgentEvent, Diff, MappedPath, Place, ToolRow, ToolStatus};
 use serde_json::{json, Value};
@@ -19,6 +20,12 @@ pub fn event_json(chat: &str, ev: &ProviderEvent) -> Value {
         ProviderEvent::TurnEnded(end) => json!({ "type": "turnEnded", "end": turn_end_json(end) }),
         ProviderEvent::Agent(a) => agent_json(a),
         ProviderEvent::Notice(t) => json!({ "type": "notice", "text": t }),
+        ProviderEvent::Interaction(i) => {
+            json!({ "type": "interaction", "id": i.id, "request": request_json(&i.request) })
+        }
+        ProviderEvent::InteractionResolved { id } => {
+            json!({ "type": "interactionResolved", "id": id })
+        }
     };
     v["chatId"] = json!(chat);
     v

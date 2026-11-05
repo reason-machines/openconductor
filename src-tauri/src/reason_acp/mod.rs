@@ -10,6 +10,7 @@
 //! * [`updates`]: `session/update` to provider events, error notices sent
 //!   as text, and local/cloud path mapping.
 //! * [`provider`]: one Reason Session per chat; follow-up, Stop, resume.
+//! * [`interaction`]: permission, plan and question requests the user answers.
 //! * [`wire`]: provider events as the JSON the chat UI receives.
 //!
 //! The module depends on `std`, `serde` and `serde_json` only, so it builds
@@ -17,6 +18,7 @@
 //! commands over it are in `crate::reason_chat`.
 
 pub mod cli;
+pub mod interaction;
 pub mod provider;
 pub mod rpc;
 pub mod updates;
@@ -24,6 +26,8 @@ pub mod wire;
 
 #[cfg(test)]
 mod cli_tests;
+#[cfg(test)]
+mod interaction_tests;
 #[cfg(test)]
 mod provider_tests;
 // Mounted here as well as at the crate root because tools/reason-acp/run-rust-tests.sh

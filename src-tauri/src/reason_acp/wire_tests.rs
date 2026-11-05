@@ -109,3 +109,26 @@ fn prompt_blocks_put_attachments_after_the_text_as_file_resources() {
         1
     );
 }
+
+#[test]
+fn interactions_go_out_with_their_request_and_resolve_by_id() {
+    use super::interaction::{Interaction, Request};
+    let plan = ProviderEvent::Interaction(Interaction {
+        id: "perm-1".into(),
+        request: Request::Plan {
+            plan: "do it".into(),
+        },
+    });
+    assert_eq!(
+        event_json("c", &plan),
+        json!({ "chatId": "c", "type": "interaction", "id": "perm-1",
+                "request": { "kind": "plan", "plan": "do it" } })
+    );
+    let done = ProviderEvent::InteractionResolved {
+        id: "perm-1".into(),
+    };
+    assert_eq!(
+        event_json("c", &done),
+        json!({ "chatId": "c", "type": "interactionResolved", "id": "perm-1" })
+    );
+}

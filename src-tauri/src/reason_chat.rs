@@ -20,6 +20,9 @@
 //!    carries `turnChanges`, the files the turn changed (absent when a
 //!    checkpoint was skipped or the turn touched more than 200 files).
 //! 3. `reason_cancel(chatId)` for Stop.
+//! 4. `reason_respond(chatId, id, answer)` answers an `interaction` event
+//!    (a permission request) with `{ kind: "option", optionId }` or
+//!    `{ kind: "cancel" }`.
 
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -30,6 +33,7 @@ use serde_json::Value;
 use tauri::{AppHandle, Emitter, State};
 
 use crate::reason_acp::cli::{find_reason_cli, LaunchConfig};
+use crate::reason_acp::interaction::Answer;
 use crate::reason_acp::provider::{Attachment, ConfigChoice, ProviderEvent, ReasonProvider, Sink};
 use crate::reason_acp::wire;
 use crate::turn_checkpoint::{around_turn, TurnTarget};
@@ -173,6 +177,20 @@ pub fn reason_cancel(state: State<'_, ReasonChats>, chat_id: String) {
     if let Some(p) = state.provider.lock().unwrap().as_ref() {
         p.cancel(&chat_id);
     }
+}
+
+/// Answers the chat's waiting request `id` (an `interaction` event).
+#[tauri::command]
+pub fn reason_respond(
+    state: State<'_, ReasonChats>,
+    chat_id: String,
+    id: String,
+    answer: Value,
+) -> Result<(), String> {
+    let answer = Answer::from_json(&answer)?;
+    let provider = state.provider.lock().unwrap().clone();
+    let provider = provider.ok_or("Reason is not running.")?;
+    provider.respond(&chat_id, &id, &answer)
 }
 
 /// Recent Sessions in the signed-in Workspace, newest first.

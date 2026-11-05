@@ -19,7 +19,12 @@ mid-turn user_message_chunk), "local" (a diff in the session's working folder),
 "cloud" (a diff under a cloud checkout), "write: a.txt=one;b.txt=two" (write
 files in the session's folder), "crash" (exit without answering),
 "config" (replies "model=M effort=E"), "attachments" (replies with each
-embedded resource as "NAME: TEXT", NAME the last part of its uri).
+embedded resource as "NAME: TEXT", NAME the last part of its uri),
+"permission" (asks session/request_permission for a running bash tool with
+allow-once, allow-always and reject-once options and replies
+"permission: selected OPTION" or "permission: cancelled"; session/cancel
+while it waits does not end the turn until the client answers, as ACP has
+the client answer "cancelled").
 
 session/new reports configOptions `model` and `reasoning_effort` like
 Reason does; session/set_config_option with a value an option does not
@@ -48,6 +53,8 @@ CLOUD = "/home/runner/.reason/workspace/sessions/child-1/repo"
 lock = threading.Lock()
 opened = set()
 running = {}  # session id -> (request id, threading.Event)
+asked = {}  # our request id -> [threading.Event, response]
+next_ask = [0]
 
 
 def send(msg):
@@ -62,6 +69,17 @@ def update(sid, **u):
 
 def text(sid, kind, t):
     update(sid, sessionUpdate=kind, content={"type": "text", "text": t})
+
+
+def ask(method, params):
+    """Sends a request to the client and waits for its response."""
+    with lock:
+        next_ask[0] += 1
+        rid = f"ask-{next_ask[0]}"
+        waiter = asked[rid] = [threading.Event(), None]
+    send({"id": rid, "method": method, "params": params})
+    waiter[0].wait()
+    return waiter[1]
 
 
 def load():
@@ -146,6 +164,23 @@ def prompt(rid, p, cancel):
                 f.write(content + "\n")
             names.append(name)
         text(sid, "agent_message_chunk", f"turn {session['turns']} wrote {' '.join(names)}")
+    elif cmd == "permission":
+        tool = {"toolCallId": "tool:p", "title": "bash: rm -rf build", "kind": "execute"}
+        update(sid, sessionUpdate="tool_call", status="pending", **tool)
+        options = [{"optionId": "allow-once", "name": "Allow", "kind": "allow_once"},
+                   {"optionId": "allow-always", "name": "Always allow", "kind": "allow_always"},
+                   {"optionId": "reject-once", "name": "Reject", "kind": "reject_once"}]
+        answer = ask("session/request_permission", {"sessionId": sid, "options": options,
+                                                    "toolCall": dict(tool, rawInput={"command": "rm -rf build"})})
+        outcome = (answer or {}).get("result", {}).get("outcome", {})
+        if outcome.get("outcome") == "selected":
+            update(sid, sessionUpdate="tool_call_update", status="completed", **tool)
+            text(sid, "agent_message_chunk", f"permission: selected {outcome.get('optionId')}")
+        else:
+            update(sid, sessionUpdate="tool_call_update", status="failed", **tool)
+            text(sid, "agent_message_chunk", "permission: cancelled")
+            if cancel.is_set():
+                stop = "cancelled"
     elif cmd == "crash":
         os._exit(3)
     if running.get(sid, (None,))[0] == rid:
@@ -155,7 +190,11 @@ def prompt(rid, p, cancel):
 
 def handle(msg):
     rid, method, p = msg.get("id"), msg.get("method"), msg.get("params") or {}
-    if method == "initialize":
+    if method is None and rid in asked:
+        waiter = asked.pop(rid)
+        waiter[1] = msg
+        waiter[0].set()
+    elif method == "initialize":
         caps = {"loadSession": True, "sessionCapabilities": {"list": {}, "resume": {}, "close": {}}}
         send({"id": rid, "result": {"protocolVersion": 1, "agentCapabilities": caps,
                                     "agentInfo": {"name": "reason"}}})
