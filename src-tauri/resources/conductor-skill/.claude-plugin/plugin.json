@@ -1,0 +1,6 @@
+{
+  "name": "openconductor",
+  "version": "0.1.0",
+  "description": "Teaches coding agents how OpenConductor workspaces, repository settings, scripts, Spotlight testing and checkpoints work.",
+  "author": { "name": "Reason Machines" }
+}
