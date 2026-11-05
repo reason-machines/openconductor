@@ -41,6 +41,17 @@ export interface ReasonConfig {
 
 const EVENT = "reason-chat-event";
 const sessionKey = (chatId: string) => `openconductor.reason.session.${chatId}`;
+/** The chat's own Session options (`configureReason`), kept for a Session it opens later (after Reset chat). */
+const configKey = (chatId: string) => `openconductor.reason.config.${chatId}`;
+
+function savedConfig(chatId: string): ReasonConfig[] | null {
+  try {
+    const v: unknown = JSON.parse(localStorage.getItem(configKey(chatId)) ?? "null");
+    return Array.isArray(v) ? v.filter((o): o is ReasonConfig => typeof o?.id === "string" && typeof o?.value === "string") : null;
+  } catch {
+    return null;
+  }
+}
 
 export interface ChatSnapshot {
   transcript: ChatTranscript;
@@ -55,7 +66,10 @@ interface Chat {
   /** Repository the chat's workspace belongs to, for its effective `prompts.general`. */
   repoPath: string | null;
   opened: boolean;
-  config: ReasonConfig[];
+  /** Options for the chat's next new Session; `prompt` waits for them. */
+  config: Promise<ReasonConfig[]>;
+  /** The options were chosen for this chat, not defaults from Settings. */
+  ownConfig: boolean;
   /** Turns shown as running whose prompt has not reached Reason yet. */
   unsent: Set<string>;
   /** Unsent turns the user stopped: they end cancelled instead of being sent. */
@@ -75,7 +89,20 @@ export const REASON_CAN_STEER = true;
 function chat(chatId: string): Chat {
   let c = chats.get(chatId);
   if (!c) {
-    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, repoPath: null, opened: false, config: [], unsent: new Set(), stopped: new Set(), listeners: new Set() };
+    const saved = savedConfig(chatId);
+    c = {
+      state: reasonChat(chatId),
+      transcript: emptyTranscript(chatId),
+      queue: Q.emptyQueue(),
+      cwd: null,
+      repoPath: null,
+      opened: false,
+      config: Promise.resolve(saved ?? []),
+      ownConfig: saved !== null,
+      unsent: new Set(),
+      stopped: new Set(),
+      listeners: new Set(),
+    };
     chats.set(chatId, c);
   }
   stored(c);
@@ -83,8 +110,15 @@ function chat(chatId: string): Chat {
 }
 
 const savers = new Map<string, ChatSaver>();
+/** Settles once a chat's stored transcript and Session id are in (or failed to load). */
+const loads = new Map<string, Promise<void>>();
 
-/** The chat's saver; the first call loads the stored transcript into an untouched chat. */
+/**
+ * The chat's saver; the first call loads the stored transcript into the chat.
+ * Nothing else changes the transcript before the load settles: `prompt` waits
+ * for it, so a message sent while loading lands after the stored turns and
+ * goes to the stored Session.
+ */
 function stored(c: Chat): ChatSaver | undefined {
   if (!reasonAvailable()) return undefined;
   const chatId = c.state.chatId;
@@ -93,11 +127,10 @@ function stored(c: Chat): ChatSaver | undefined {
   saver = new ChatSaver((batch) => invoke("chat_messages_save", { chatId, ...batch, agentSessionId: localStorage.getItem(sessionKey(chatId)) }));
   savers.set(chatId, saver);
   const s = saver;
-  invoke<{ messages: string[]; agentSessionId: string | null }>("chat_messages_load", { chatId })
+  const load = invoke<{ messages: string[]; agentSessionId: string | null }>("chat_messages_load", { chatId })
     .then(({ messages, agentSessionId }) => {
       if (agentSessionId && !localStorage.getItem(sessionKey(chatId))) localStorage.setItem(sessionKey(chatId), agentSessionId);
-      // A chat that already has messages (a prompt sent while loading) keeps them; the stored rows stay for the next open.
-      if (messages.length === 0 || c.transcript.messages.length > 0) return;
+      if (messages.length === 0) return;
       const r = applyChatEvents(c.transcript, restoreEvents(chatId, messages));
       if (!r.ok) return console.warn("chat: stored transcript not applied", r.error);
       c.transcript = r.transcript;
@@ -105,6 +138,7 @@ function stored(c: Chat): ChatSaver | undefined {
       notify(c);
     })
     .catch((e) => console.warn("chat: stored transcript not loaded", e));
+  loads.set(chatId, load);
   return saver;
 }
 
@@ -176,21 +210,26 @@ function ensureListening(): Promise<unknown> {
  */
 async function prompt(c: Chat, text: string, attachments: PromptAttachment[]): Promise<void> {
   const chatId = c.state.chatId;
-  const isNewChat = !c.opened && !localStorage.getItem(sessionKey(chatId)) && !c.transcript.messages.some((m) => m.role === "user");
   // A random turn id, so a turn's checkpoints and cached changes never
   // collide with a turn from an earlier app run.
   const turnId = `${chatId}:${crypto.randomUUID()}`;
-  apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
-  if (!reasonAvailable()) return preview.prompt(c, text);
-  // `submitChat` sets the folder before any effect runs.
-  const cwd = c.cwd ?? "";
+  if (!reasonAvailable()) {
+    apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
+    return preview.prompt(c, text);
+  }
   // Stop is shown from here on, but Reason only learns of the turn once
   // `reason_prompt` runs; a Stop before that is held in `c.stopped`.
   c.unsent.add(turnId);
+  // The stored transcript and Session id come first (see `stored`).
+  await loads.get(chatId);
+  const isNewChat = !c.opened && !localStorage.getItem(sessionKey(chatId)) && !c.transcript.messages.some((m) => m.role === "user");
+  apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
+  // `submitChat` sets the folder before any effect runs.
+  const cwd = c.cwd ?? "";
   try {
     await ensureListening();
     if (!c.opened) {
-      await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)), config: c.config });
+      await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)), config: await c.config });
       c.opened = true;
     }
     c.unsent.delete(turnId);
@@ -264,9 +303,30 @@ export function sendReason(chatId: string, cwd: string, text: string, attachment
   submitChat(chatId, cwd, text, "queue", attachments, repoPath);
 }
 
-/** Session options for a chat that has not sent its first message; set when Reason creates its Session. */
-export function configureReason(chatId: string, config: ReasonConfig[]): void {
-  chat(chatId).config = config;
+/**
+ * Session options (model, reasoning effort) for the chat's next new Session:
+ * its first, or the one after "Reset chat". A Session that already exists
+ * keeps its own. The chat's first prompt waits for a pending `config`. The
+ * chat's own options are kept across restarts; `fallback` options (the
+ * defaults from Settings) apply only to a chat that has none of its own.
+ */
+export function configureReason(chatId: string, config: ReasonConfig[] | Promise<ReasonConfig[]>, opts: { fallback?: boolean } = {}): void {
+  const c = chat(chatId);
+  if (opts.fallback && c.ownConfig) return;
+  const pending = Promise.resolve(config).catch((e: unknown) => {
+    console.warn("reason chat: Session options not read; Reason's defaults apply", e);
+    return [];
+  });
+  c.config = pending;
+  if (opts.fallback) return;
+  c.ownConfig = true;
+  void pending.then((list) => {
+    try {
+      localStorage.setItem(configKey(chatId), JSON.stringify(list));
+    } catch (e) {
+      console.warn("reason chat: Session options not saved", e);
+    }
+  });
 }
 
 /** Stop. A second Stop while the first is pending asks Reason to stop hard. */

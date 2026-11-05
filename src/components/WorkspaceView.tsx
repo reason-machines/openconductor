@@ -3,7 +3,9 @@ import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { chatSnapshot, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
+import { chatSnapshot, configureReason, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
+import { chatModel, sessionModel } from "../features/chat/sessionModel.ts";
+import { getSettings } from "../settings/api";
 import { Composer } from "../features/chat/Composer.tsx";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
@@ -49,8 +51,12 @@ interface Props {
 /** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
 
-/** Queues the Create-workspace dialog's first message for the new workspace's chat. */
-export function seedTranscript(workspaceId: string, text: string) {
+/**
+ * Queues the Create-workspace dialog's first message for the new workspace's
+ * chat, whose Session runs on the model and effort picked in the dialog.
+ */
+export function seedTranscript(workspaceId: string, text: string, model?: { model: string; effort: string }) {
+  if (model) configureReason(workspaceId, sessionModel(model.model, () => model.effort).config);
   firstPrompts.set(workspaceId, text);
 }
 
@@ -102,6 +108,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       inputRef.current?.focus();
     }
     const unsubscribe = subscribeChat(chatId, setSnapshot);
+    // The workspace's own chat starts on Settings › Default models unless it was given a model (the Create-workspace dialog).
+    if (main) configureReason(chatId, getSettings().then((s) => chatModel(s).config), { fallback: true });
     if (pendingMessage?.kind === "send") submit(pendingMessage.text, "queue", pendingMessage.attachments);
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
