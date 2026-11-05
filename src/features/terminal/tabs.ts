@@ -12,6 +12,8 @@ export interface TerminalTab {
   status: TabStatus;
   exitCode?: number;
   signal?: string | null;
+  /** From the shell integration marks (shellIntegration.ts); shown after the title. */
+  runningProgram?: string;
 }
 
 export interface TabsState {
@@ -29,7 +31,8 @@ export type TabsAction =
   | { type: "close"; id: string }
   | { type: "select"; id: string }
   | { type: "ready"; id: string }
-  | { type: "exit"; id: string; exitCode: number; signal: string | null };
+  | { type: "exit"; id: string; exitCode: number; signal: string | null }
+  | { type: "program"; id: string; runningProgram?: string };
 
 export const emptyTabs = (): TabsState => ({ tabs: [], activeId: null, next: 1 });
 
@@ -57,10 +60,17 @@ export function tabsReducer(s: TabsState, a: TabsAction): TabsState {
     case "select":
       return s.tabs.some((t) => t.id === a.id) ? { ...s, activeId: a.id } : s;
     case "ready":
-      return patch(s, a.id, (t) => (t.status === "starting" ? { ...t, status: "running" } : t));
+      return patch(s, a.id, (t) => ({ ...noProgram(t), status: t.status === "starting" ? "running" : t.status }));
     case "exit":
-      return patch(s, a.id, (t) => ({ ...t, status: "exited", exitCode: a.exitCode, signal: a.signal }));
+      return patch(s, a.id, (t) => ({ ...noProgram(t), status: "exited", exitCode: a.exitCode, signal: a.signal }));
+    case "program":
+      if (a.runningProgram === undefined) return patch(s, a.id, noProgram);
+      return patch(s, a.id, (t) => ({ ...t, runningProgram: a.runningProgram }));
   }
+}
+
+function noProgram({ runningProgram: _, ...t }: TerminalTab): TerminalTab {
+  return t;
 }
 
 function patch(s: TabsState, id: string, f: (t: TerminalTab) => TerminalTab): TabsState {

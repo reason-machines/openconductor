@@ -5,7 +5,7 @@ import type { DialogKind } from "../components/Dialogs";
 import { CommandPalette } from "./CommandPalette.tsx";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
-import { paletteDataFromState, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
+import { paletteDataFromState, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import type { ResultItem } from "./search/model.ts";
 
 const RECENT_LIMIT = 8;
@@ -56,7 +56,7 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
     "workspace.next": actions["next-workspace"],
     "workspace.previous": actions["previous-workspace"],
   };
-  for (let i = 1; i <= 9; i++) handlers[`workspace.switchTo${i}`] = () => go(sidebarOrder(state)[i - 1]);
+  for (let i = 1; i <= 9; i++) handlers[`workspace.switchTo${i}`] = () => go(shortcutOrder(state)[i - 1]);
   useKeybindings(handlers);
 
   function onSelect(item: ResultItem) {
