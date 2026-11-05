@@ -27,6 +27,7 @@ import { applyChatEvents, emptyTranscript, truncateAfterTurn, type ChatTranscrip
 import { restoreCheckpoint, turnCheckpointRef } from "./checkpoints.ts";
 import { applyReasonPayload, cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
+import { hideChatStatus, reportChatStatus } from "./chatStatusRegistry.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import { turnChanges } from "../diff/useTurnChanges.ts";
@@ -172,38 +173,14 @@ function apply(c: Chat, step: Step) {
   }
 }
 
-// Every chat's session status (Conductor's `sessions.status`), so a sidebar
-// row can show its workspace's agent while that workspace is not open: chats
-// keep running here after their view unmounts. Closed (hidden) chats drop out,
-// as Conductor folds only a workspace's visible sessions.
-let statuses: ReadonlyMap<string, Q.SessionStatus> = new Map();
-const hiddenChats = new Set<string>();
-const statusListeners = new Set<() => void>();
-
+/** The chat's status in the shared registry (chatStatusRegistry.ts). */
 function publishStatus(c: Chat) {
-  const id = c.state.chatId;
-  const status = hiddenChats.has(id) ? undefined : c.queue.status;
-  if (statuses.get(id) === status) return;
-  const next = new Map(statuses);
-  if (status === undefined) next.delete(id);
-  else next.set(id, status);
-  statuses = next;
-  for (const fn of statusListeners) fn();
-}
-
-/** Chat id → session status of every visible chat; a new map on each change. */
-export const chatStatuses = (): ReadonlyMap<string, Q.SessionStatus> => statuses;
-
-export function subscribeChatStatuses(fn: () => void): () => void {
-  statusListeners.add(fn);
-  return () => statusListeners.delete(fn);
+  reportChatStatus(c.state.chatId, "reason", c.queue.status);
 }
 
 /** A closed chat tab: its agent no longer counts toward the workspace's status. */
 export function hideChat(chatId: string): void {
-  hiddenChats.add(chatId);
-  const c = chats.get(chatId);
-  if (c) publishStatus(c);
+  hideChatStatus(chatId);
 }
 
 function setQueue(c: Chat, step: Q.QueueStep | Q.ChatQueue) {
@@ -391,40 +368,11 @@ export function stopChat(chatId: string): void {
   setQueue(c, Q.stop(c.queue));
 }
 
-export type QueueAction =
-  | { kind: "delete"; id: string }
-  | { kind: "steer"; id: string }
-  | { kind: "edit"; id: string }
-  | { kind: "cancelEdit" }
-  | { kind: "saveEdit"; text: string; steer: boolean }
-  | { kind: "move"; id: string; by: -1 | 1 }
-  | { kind: "reorder"; ids: string[] }
-  | { kind: "pause" }
-  | { kind: "resume" };
+export type QueueAction = Q.QueueAction;
 
 export function queueAction(chatId: string, action: QueueAction): void {
   const c = chat(chatId);
-  const q = c.queue;
-  switch (action.kind) {
-    case "delete":
-      return setQueue(c, Q.remove(q, action.id));
-    case "steer":
-      return setQueue(c, Q.steerQueued(q, action.id));
-    case "edit":
-      return setQueue(c, Q.beginEdit(q, action.id));
-    case "cancelEdit":
-      return setQueue(c, Q.cancelEdit(q));
-    case "saveEdit":
-      return setQueue(c, Q.saveEdit(q, action.text, action.steer));
-    case "move":
-      return setQueue(c, Q.move(q, action.id, action.by));
-    case "reorder":
-      return setQueue(c, Q.reorder(q, action.ids));
-    case "pause":
-      return setQueue(c, Q.pause(q));
-    case "resume":
-      return setQueue(c, Q.resume(q));
-  }
+  setQueue(c, Q.actionStep(c.queue, action));
 }
 
 // Stand-in agent for the browser preview: each prompt "works" for a moment,

@@ -130,6 +130,7 @@ test("the chat reports cancelling over working, and error only once the turn end
   assert.equal(chatSessionStatus({ running: false, queue: "idle" }), "idle");
   assert.equal(chatSessionStatus({ running: true, queue: "working" }), "working");
   assert.equal(chatSessionStatus({ running: true, queue: "idle" }), "working");
+  assert.equal(chatSessionStatus({ running: false, queue: "working" }), "working");
   assert.equal(chatSessionStatus({ running: true, queue: "cancelling" }), "cancelling");
   assert.equal(chatSessionStatus({ running: false, queue: "error" }), "error");
   assert.equal(chatSessionStatus({ running: true, queue: "error" }), "working");

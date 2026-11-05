@@ -128,7 +128,7 @@ export function reducer(state: AppState, action: Action): AppState {
     case "addWorkspace": {
       const ws: Workspace = { ...action.workspace, status: "idle", diff: { added: 0, removed: 0 }, createdAt: Date.now() };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, collapsed: false, workspaces: [...r.workspaces, ws] } : r));
-      return { repos, selection: { kind: "workspace", repoId: action.repoId, workspaceId: ws.id } };
+      return { ...state, repos, selection: { kind: "workspace", repoId: action.repoId, workspaceId: ws.id } };
     }
     case "renameWorkspace": {
       const rename = (w: Workspace): Workspace =>

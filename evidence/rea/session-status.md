@@ -22,6 +22,9 @@ OpenConductor: the sidebar row (`rowStatus`), Home (`homeRowStatus`, the `vJo` r
 header read `useWorkspaceSession`: every chat's status in this window (`chatStatuses`, the `aFi` hook),
 or `Workspace.sessionStatus` (statuses from elsewhere: the demo today) when the window has no chat for
 the workspace. `hasActiveTurn` is
-`lTo`. The chat runtime only produces working, cancelling, error and idle so far: Reason's ACP session has no
+`lTo`. Each agent reports its chats to one registry (`chatStatusRegistry.ts`). A Codex chat with a
+pending command or patch approval reports `needs_user_permission`, so that state is real for Codex
+(desktop only; not checked on a desktop build here). The Reason chat produces working, cancelling,
+error and idle only: Reason's ACP session has no
 permission, question, plan or background-task events, so nothing sets needs_* or waiting yet.
 Chat tabs and the board card are not built.

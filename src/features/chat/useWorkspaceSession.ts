@@ -2,7 +2,7 @@ import { useMemo, useSyncExternalStore } from "react";
 import { workspaceSessionStatus } from "../../state/workspaceSessions.ts";
 import type { SessionStatus } from "../../state/rowStatus.ts";
 import type { Workspace } from "../../state/types.ts";
-import { chatStatuses, subscribeChatStatuses } from "./reasonChat.ts";
+import { chatStatuses, subscribeChatStatuses } from "./chatStatusRegistry.ts";
 
 /**
  * The workspace's aggregated session status, live from every chat it has in

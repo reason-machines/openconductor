@@ -59,12 +59,13 @@ export interface ChatSessionState {
 /**
  * The session status a chat reports for its workspace. A Stop moves the queue
  * to cancelling while the turn is still running; a failed turn leaves `error`.
+ * The queue says working as soon as a turn starts, before its first event.
  * The chat runtime has no permission, question, plan or background-task events
  * yet, so it never reports the needs_* or waiting statuses itself.
  */
 export function chatSessionStatus({ running, queue }: ChatSessionState): SessionStatus {
   if (queue === "cancelling") return "cancelling";
-  if (running) return "working";
+  if (running || queue === "working") return "working";
   return queue === "error" ? "error" : "idle";
 }
 
