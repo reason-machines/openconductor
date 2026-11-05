@@ -7,6 +7,8 @@ import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { DiffViewer } from "../features/diff/DiffViewer";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
+import { TerminalPanel } from "../features/terminal/TerminalPanel";
+import { useKeybindings } from "../palette/useKeybindings.ts";
 import { ScriptsPanel } from "./ScriptsPanel";
 
 interface Props {
@@ -137,6 +139,8 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 };
 
 export function WorkspaceView({ repo, workspace, dispatch }: Props) {
+  const [showTerminal, setShowTerminal] = useState(true);
+  useKeybindings({ "view.toggleTerminalPanel": () => setShowTerminal((v) => !v) });
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region>
@@ -152,6 +156,9 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
           </span>
         </div>
         <div className="ws-actions">
+          <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
+            Terminal
+          </button>
           <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
             <ArchiveIcon size={14} /> Archive
           </button>
@@ -164,6 +171,8 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
           <ScriptsPanel repo={repo} workspace={workspace} />
         </div>
       </div>
+      {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
+      {showTerminal && <TerminalPanel workspaceId={workspace.id} cwd={repo.path} />}
     </div>
   );
 }
