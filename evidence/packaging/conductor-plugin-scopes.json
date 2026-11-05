@@ -1,0 +1,71 @@
+{
+  "conductor_version": "0.87.6",
+  "note": "Derived data from a third-party app; untrusted, kept to match behaviour. Rust packs string literals back to back, so one Ghidra string can hold several literals; 'entries' splits them at the boundaries the scope syntax makes clear.",
+  "rea": {
+    "command": "rea search Conductor.app/Contents/MacOS/conductor --pattern='\\$(HOME|APP[A-Z]*|RESOURCE)/|sqlite:|tauri-plugin-(fs|shell|sql|http|updater)' --mode regex --provider ghidra --snapshot snap/conductor-search.snap --format json",
+    "machine": "sven m5 max",
+    "seconds": 2672,
+    "exit": 0,
+    "evidence_id": "ev_ac9bd6d90d4a437226e5c04d9cd1db305371ea18846c9650b0897902881e1c11",
+    "subject_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+    "provider": "ghidra 12.1.4",
+    "operation": "search_strings",
+    "matches": 88
+  },
+  "fs_scope": {
+    "address": "0x10150a293",
+    "raw": "**/*/.git**/*/.conductor**/*/.context**/*/.github**/*/.github/**$HOME/.claude.json$HOME/.claude/*$HOME/.claude/commands$HOME/.claude/commands/*$HOME/.claude/commands/**/*$HOME/.claude/agents$HOME/.claude/agents/*$HOME/Library/Application Support/Claude/claude_desktop_config.json",
+    "entries": [
+      "**/*/.git",
+      "**/*/.conductor",
+      "**/*/.context",
+      "**/*/.github",
+      "**/*/.github/**",
+      "$HOME/.claude.json",
+      "$HOME/.claude/*",
+      "$HOME/.claude/commands",
+      "$HOME/.claude/commands/*",
+      "$HOME/.claude/commands/**/*",
+      "$HOME/.claude/agents",
+      "$HOME/.claude/agents/*",
+      "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+    ],
+    "ours": "The 13 entries plus a $HOME/** base. The search found no $HOME/** literal, so Conductor's base grant is something the pattern cannot match (likely a bare **); we keep the narrower $HOME/**."
+  },
+  "sidecar_path": {
+    "address": "0x10150a261",
+    "raw": "$APPDATA/bin/.internal/sidecarsidecar-runtime",
+    "ours": "Not granted: no frontend call site names sidecar-runtime or this path, and OpenConductor ships no sidecar there yet."
+  },
+  "fs_watch_feature": "Conductor links notify-8.2.0 and notify-debouncer-full-0.5.0 (evidence/ipc/rust-crates-from-paths.txt), which tauri-plugin-fs pulls in only with its watch feature, and the frontend calls plugin:fs|watch and unwatch. We enable features = [\"watch\"].",
+  "sql": {
+    "binary": {
+      "address": "0x101503e53",
+      "value": "sqlite:conductor.db"
+    },
+    "frontend": [
+      "sqlite:cache.db",
+      "sqlite:conductor.db"
+    ],
+    "ours": "sql:allow-load, allow-select, allow-execute, allow-close (the four commands the frontend calls); the sql plugin has no path scope."
+  },
+  "shell_scope": {
+    "source": "Decoded embedded frontend (assets/index-BGEQ8YjU.js, assets/renderApp-D_fmY7hW.js, the tree REA analyze-javascript-application read). Command.create names and arguments at every call site.",
+    "names": {
+      "exec-zsh": "args [\"-c\", <script>] at every site (scripts, PATH-prefixed git commands, caffeinate -i, pmset -g batt, the sidecar launch)",
+      "exec-bash": "args [\"-c\", <script>], used instead of exec-zsh on Linux",
+      "exec-open": "args [<workspace path>] (Open in Finder from the unarchive-conflict toast)"
+    },
+    "ours": "Each name is scoped to -c plus one script argument (exec-open: one path). cmd paths are /bin/zsh, /bin/bash, /usr/bin/open; a second REA search for the names and their cmd values (search_plugin_scopes2) was still running when this was written."
+  },
+  "http_scope": {
+    "source": "Decoded frontend: the plugin:http|fetch wrapper (mdt) has one caller, the app-wide fetch function nl, which every network call goes through, so Conductor's scope must admit arbitrary hosts.",
+    "ours": [
+      "https://*",
+      "https://*:*",
+      "http://*",
+      "http://*:*"
+    ]
+  },
+  "updater": "Not registered here; it needs an update signing key and endpoint."
+}

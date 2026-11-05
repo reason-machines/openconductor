@@ -32,6 +32,7 @@ use crate::db::Db;
 use crate::persistence_commands as persistence;
 use super::service::{CreateWorkspaceRequest, RepositoryInfo, WorkspaceService};
 use super::{Created, Workspace, WorkspaceState};
+use crate::settings::service::SettingsService;
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -77,6 +78,8 @@ pub struct CreatedWorkspaceDto {
     pub base_commit: String,
     pub fetched: bool,
     pub copied_files: Vec<String>,
+    /// Set when the "Set upstream on plain git push" setting could not be applied.
+    pub upstream_warning: Option<String>,
 }
 
 #[tauri::command]
@@ -155,12 +158,9 @@ pub async fn branch_name_is_taken(
 /// `prNumber` (optional) adds a last resort for PRs from forks: when the
 /// branch is neither local nor on origin, `pull/<prNumber>/head` is fetched
 /// into a local `branchName` (no upstream) and checked out.
-// One parameter per JS argument key, plus managed state.
-#[allow(clippy::too_many_arguments)]
 #[tauri::command]
 pub async fn create_workspace(
-    service: State<'_, WorkspaceService>,
-    db: State<'_, Db>,
+    app: AppHandle,
     repository_id: String,
     branch_name: Option<String>,
     directory_name: Option<String>,
@@ -168,6 +168,8 @@ pub async fn create_workspace(
     existing_branch: Option<bool>,
     pr_number: Option<u64>,
 ) -> Result<CreatedWorkspaceDto, String> {
+    let service = app.state::<WorkspaceService>();
+    let db = app.state::<Db>();
     let repo = service
         .repositories()
         .into_iter()
@@ -183,6 +185,12 @@ pub async fn create_workspace(
         base_branch,
         existing_branch: existing_branch.unwrap_or(false),
         pr_number,
+        // Unreadable settings fall back to Conductor's default (on).
+        push_auto_setup_remote: app
+            .state::<SettingsService>()
+            .get()
+            .map(|s| s.git.worktree_push_auto_setup_remote)
+            .unwrap_or(true),
     };
     match service.create_workspace(&req) {
         Ok(created) => {
@@ -258,5 +266,6 @@ fn created_dto(repository_id: &str, c: Created) -> CreatedWorkspaceDto {
         base_commit: c.base_commit,
         fetched: c.fetched,
         copied_files: c.copied_files.into_iter().map(|p| p.display().to_string()).collect(),
+        upstream_warning: c.upstream_warning,
     }
 }
