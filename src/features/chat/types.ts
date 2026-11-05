@@ -39,7 +39,27 @@ export interface ChatMessage {
   createdAt: string;
   model?: string;
   cancelledAt?: string;
+  /** Another session sent this message (e.g. a child session's report); never the user's own input. */
+  senderSessionId?: string;
+  /** The message arrived through this API key rather than the app. */
+  senderApiKeyName?: string;
   blocks: Block[];
+}
+
+/** Who a message came from, for rendering (mirrors `MessageOrigin` in model.rs). */
+export type MessageOrigin =
+  | { kind: "user" }
+  | { kind: "assistant" }
+  | { kind: "system" }
+  | { kind: "session"; sessionId: string }
+  | { kind: "api_key"; name: string };
+
+/** A user-role message is the user's own only when no session or API key sent it; a session sender wins. */
+export function messageOrigin(message: ChatMessage): MessageOrigin {
+  if (message.role !== "user") return { kind: message.role };
+  if (message.senderSessionId) return { kind: "session", sessionId: message.senderSessionId };
+  if (message.senderApiKeyName) return { kind: "api_key", name: message.senderApiKeyName };
+  return { kind: "user" };
 }
 
 export type TurnStatus = "running" | "completed" | "cancelled" | "failed";
