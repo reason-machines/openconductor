@@ -186,6 +186,64 @@ fn branch_name_is_taken_checks_local_remote_and_path_conflicts() {
     assert!(matches!(f.mgr.create(&f.repo, &opts), Err(WorkspaceError::BranchExists(_))));
 }
 
+fn existing(branch: &str) -> CreateOptions {
+    CreateOptions { branch_name: Some(branch.into()), existing_branch: true, fetch: true, ..Default::default() }
+}
+
+#[test]
+fn existing_branch_checks_out_local_branch_without_moving_it() {
+    let f = fixture();
+    sh(&f.repo, &["checkout", "-q", "-b", "sven/pr-head"]);
+    let tip = commit_file(&f.repo, "pr.txt", "pr\n", "pr work");
+    sh(&f.repo, &["checkout", "-q", "main"]);
+
+    let c = f.mgr.create(&f.repo, &existing("sven/pr-head")).unwrap();
+    let ws = &c.workspace;
+    assert_eq!((ws.name.as_str(), ws.branch.as_str()), ("pr-head", "sven/pr-head"));
+    assert_eq!((c.base_ref.as_str(), c.base_commit.as_str()), ("sven/pr-head", tip.as_str()));
+    assert!(!c.fetched, "no fetch for a local branch");
+    assert_eq!(sh(&ws.path, &["symbolic-ref", "--short", "HEAD"]), "sven/pr-head");
+    assert_eq!(sh(&ws.path, &["rev-parse", "HEAD"]), tip);
+    assert!(ws.path.join("pr.txt").is_file());
+
+    // A branch already checked out (here by the workspace just made, or the root) is refused.
+    let again = CreateOptions { name: Some("other".into()), ..existing("sven/pr-head") };
+    assert!(matches!(f.mgr.create(&f.repo, &again), Err(WorkspaceError::BranchCheckedOut { branch, .. }) if branch == "sven/pr-head"));
+    assert!(matches!(f.mgr.create(&f.repo, &existing("main")), Err(WorkspaceError::BranchCheckedOut { .. })));
+}
+
+#[test]
+fn existing_branch_tracks_remote_only_branch_after_fetch() {
+    let f = fixture();
+    let origin = f.tmp.path().join("origin.git");
+    sh(f.tmp.path(), &["init", "-q", "--bare", "-b", "main", origin.to_str().unwrap()]);
+    sh(&f.repo, &["remote", "add", "origin", origin.to_str().unwrap()]);
+    sh(&f.repo, &["push", "-q", "origin", "main"]);
+    // Someone else pushes a PR branch this clone has never fetched.
+    let other = f.tmp.path().join("other");
+    sh(f.tmp.path(), &["clone", "-q", origin.to_str().unwrap(), other.to_str().unwrap()]);
+    sh(&other, &["checkout", "-q", "-b", "alice/feature"]);
+    let tip = commit_file(&other, "feature.txt", "f\n", "feature");
+    sh(&other, &["push", "-q", "origin", "alice/feature"]);
+    assert!(!git::ref_exists(&f.repo, "origin/alice/feature"));
+
+    let c = f.mgr.create(&f.repo, &existing("alice/feature")).unwrap();
+    let ws = &c.workspace;
+    assert!(c.fetched);
+    assert_eq!((c.base_ref.as_str(), c.base_commit.as_str()), ("origin/alice/feature", tip.as_str()));
+    assert_eq!(ws.branch, "alice/feature");
+    assert_eq!(sh(&ws.path, &["rev-parse", "HEAD"]), tip);
+    assert_eq!(sh(&ws.path, &["rev-parse", "--abbrev-ref", "@{upstream}"]), "origin/alice/feature");
+    assert_eq!(sh(&f.repo, &["symbolic-ref", "--short", "HEAD"]), "main");
+
+    assert!(matches!(f.mgr.create(&f.repo, &existing("nobody/nothing")), Err(WorkspaceError::BranchNotFound(b)) if b == "nobody/nothing"));
+    let no_name = CreateOptions { existing_branch: true, ..Default::default() };
+    assert!(matches!(f.mgr.create(&f.repo, &no_name), Err(WorkspaceError::InvalidName(_))));
+    // Without existing_branch the same name is still refused as taken.
+    let fresh = CreateOptions { branch_name: Some("alice/feature".into()), ..Default::default() };
+    assert!(matches!(f.mgr.create(&f.repo, &fresh), Err(WorkspaceError::BranchExists(_))));
+}
+
 #[test]
 fn files_to_copy_default_env_glob_only_copies_gitignored() {
     let f = fixture();
@@ -579,6 +637,7 @@ fn service_registers_repositories_and_creates_from_form_fields() {
         branch_name: Some("sven/form".into()),
         directory_name: Some("".into()),
         base_branch: Some("main".into()),
+        ..Default::default()
     };
     let c = svc.create_workspace(&req).unwrap();
     assert_eq!((c.workspace.name.as_str(), c.workspace.branch.as_str()), ("form", "sven/form"));

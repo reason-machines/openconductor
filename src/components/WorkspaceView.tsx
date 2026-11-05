@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type Dispatch, type FormEvent } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
-import { ArchiveIcon, BranchIcon, FileIcon, SendIcon } from "./Icons";
+import { ArchiveIcon, BranchIcon, SendIcon } from "./Icons";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "../features/chat/reducer.ts";
 import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
+import { DiffViewer } from "../features/diff/DiffViewer";
 
 interface Props {
   repo: Repo;
@@ -101,7 +102,6 @@ function ChatPanel({ workspace }: { workspace: Workspace }) {
 
 function DiffPanel({ workspace, repo }: { workspace: Workspace; repo: Repo }) {
   const [tab, setTab] = useState<"changes" | "files">("changes");
-  const hasChanges = workspace.diff.added + workspace.diff.removed > 0;
   return (
     <section className="diff" aria-label="Changes">
       <div className="tabs" role="tablist">
@@ -112,28 +112,15 @@ function DiffPanel({ workspace, repo }: { workspace: Workspace; repo: Repo }) {
           Files
         </button>
       </div>
-      <div className="diff-body">
-        {tab === "changes" ? (
-          <>
-            <div className="diff-summary">
-              <span>
-                vs <code>{repo.defaultBranch}</code>
-              </span>
-              <span className="add">+{workspace.diff.added}</span>
-              <span className="del">-{workspace.diff.removed}</span>
-            </div>
-            <div className="placeholder small">
-              <FileIcon size={22} />
-              <p>{hasChanges ? "Diff viewer placeholder: file-by-file diffs will render here." : "No changes in this workspace yet."}</p>
-              <p className="muted">Diff loading comes from the workspace backend (not wired up yet).</p>
-            </div>
-          </>
-        ) : (
+      {tab === "changes" ? (
+        <DiffViewer workspaceId={workspace.id} worktree={null} baseBranch={repo.defaultBranch} />
+      ) : (
+        <div className="diff-body">
           <div className="placeholder small">
             <p>File tree of the worktree will appear here.</p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
