@@ -8,6 +8,7 @@
 //! - `diff/`       diff viewer: git changes, unified diff parser
 //! - `quick_open/` quick open file index and fuzzy matching
 //! - `reason_acp/` the Reason agent over ACP; its commands are `reason_chat`
+//! - `claude_chat/` Claude Code chats with the signed-in `claude` CLI
 //! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //!   (`spotlight_commands.rs` is its IPC layer)
 //! - `settings/`   settings.toml and the Keychain-backed secret store
@@ -19,11 +20,15 @@
 
 pub mod agent;
 pub mod agent_binaries;
+pub mod bin_source_markers;
 pub mod bundled_bin;
 pub mod checkpoint;
 mod checkpoint_commands;
+mod chat_store_commands;
+pub mod claude_chat;
 pub mod create_project;
 pub mod db;
+pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
 mod sidebar_repo_commands;
@@ -51,6 +56,7 @@ mod terminal_output_commands;
 #[cfg(all(test, unix))]
 mod test_exe;
 pub mod tool_cli;
+pub mod tool_spotlighter;
 pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
@@ -173,7 +179,7 @@ fn save_repo_scripts(
 #[serde(rename_all = "camelCase")]
 struct BranchPrefixInfo {
     branch_prefix_type: settings::BranchPrefixType,
-    branch_prefix_custom: Option<String>,
+    branch_prefix: Option<String>,
     github_username: Option<String>,
 }
 
@@ -196,8 +202,21 @@ async fn branch_prefix_settings() -> BranchPrefixInfo {
         .filter(|login| !login.is_empty());
     BranchPrefixInfo {
         branch_prefix_type: git.branch_prefix_type,
-        branch_prefix_custom: git.branch_prefix_custom,
+        branch_prefix: git.branch_prefix,
         github_username,
+    }
+}
+
+/// Conductor links tauri-plugin-updater and its frontend calls check, download, install and
+/// download_and_install. A release build bakes in its minisign public key from
+/// OPENCONDUCTOR_UPDATER_PUBKEY; without one the key in tauri.conf.json stays empty, so the
+/// plugin can check the endpoint but every install fails signature verification.
+fn updater_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R, tauri_plugin_updater::Config>
+{
+    let builder = tauri_plugin_updater::Builder::new();
+    match option_env!("OPENCONDUCTOR_UPDATER_PUBKEY") {
+        Some(key) if !key.is_empty() => builder.pubkey(key).build(),
+        _ => builder.build(),
     }
 }
 
@@ -224,6 +243,7 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_sql::Builder::new().build())
+        .plugin(updater_plugin())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
@@ -259,6 +279,7 @@ pub fn run() {
             app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
+            app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
             app.manage(settings::service::SettingsService::new(
@@ -271,6 +292,7 @@ pub fn run() {
             app.manage(scripts);
             app.manage(spotlight);
             spawn_push_upstream_backfill(app.handle().clone());
+            e2e::install(app.handle());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -322,9 +344,16 @@ pub fn run() {
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
             reason_chat::reason_open_chat,
+            chat_store_commands::chat_messages_save,
+            chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
             reason_chat::reason_cancel,
             reason_chat::reason_list_sessions,
+            claude_chat::commands::claude_cli_path,
+            claude_chat::commands::claude_open_chat,
+            claude_chat::commands::claude_prompt,
+            claude_chat::commands::claude_cancel,
+            e2e::e2e_report,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,
             terminal_commands::pty_resize,
@@ -352,7 +381,10 @@ pub fn run() {
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
             settings::commands::get_settings,
+            settings::effective::repo_settings_effective,
+            settings::effective::repo_settings_set_local,
             settings::commands::update_settings,
+            settings::commands::get_repo_settings,
             settings::commands::provider_status,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
