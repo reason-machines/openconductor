@@ -214,6 +214,8 @@ pub fn run() {
             spotlight_commands::spotlight_start,
             spotlight_commands::spotlight_stop,
             spotlight_commands::spotlight_status,
+            spotlight_commands::spotlight_testing_get,
+            spotlight_commands::spotlight_testing_set,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")
