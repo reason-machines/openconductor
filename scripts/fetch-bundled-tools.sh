@@ -30,7 +30,7 @@ fi
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 name=gh_${GH_VERSION}_macOS_arm64
-curl -fsSL --retry 3 -o "$tmp/gh.zip" "https://github.com/cli/cli/releases/download/v$GH_VERSION/$name.zip"
+curl -fsSL --retry 6 --retry-delay 5 --retry-all-errors --connect-timeout 30 -o "$tmp/gh.zip" "https://github.com/cli/cli/releases/download/v$GH_VERSION/$name.zip"
 [[ $(sha256 "$tmp/gh.zip") == "$GH_ZIP_SHA256" ]] || { echo "gh.zip sha256 mismatch" >&2; exit 1; }
 unzip -q "$tmp/gh.zip" "$name/bin/gh" -d "$tmp"
 [[ $(sha256 "$tmp/$name/bin/gh") == "$GH_BIN_SHA256" ]] || { echo "gh sha256 mismatch" >&2; exit 1; }
