@@ -187,3 +187,17 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .toast { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); font-size: 13px; }
 .toast-error { border-color: var(--del); }
 .toast-message { flex: 1; overflow-wrap: anywhere; }
+
+/* Quick open (⌘P). Pinned near the top like the reference's picker. */
+.qo-backdrop { place-items: start center; padding-top: 8px; }
+.qo { width: min(672px, calc(100vw - 48px)); overflow: hidden; display: flex; flex-direction: column; max-height: min(520px, calc(100vh - 32px)); }
+.qo-input { border: 0; border-bottom: 1px solid var(--border); background: transparent; color: inherit; font: inherit; font-size: 15px; padding: 12px 16px; outline: none; }
+.qo-list { list-style: none; margin: 0; padding: 6px; overflow-y: auto; }
+.qo-row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; cursor: default; white-space: nowrap; min-width: 0; }
+.qo-row[data-selected="true"] { background: var(--hover, rgba(127, 127, 127, 0.14)); }
+.qo-row mark { background: none; color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.qo-name { flex: none; }
+.qo-dir { color: var(--muted); overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+.qo-tag { margin-left: auto; color: var(--muted); font-size: 11px; }
+.qo-empty { padding: 18px 16px; color: var(--muted); font-size: 13px; }
+.qo-hint { border-top: 1px solid var(--border); padding: 6px 12px; color: var(--muted); font-size: 11px; }
