@@ -10,14 +10,18 @@
 //!
 //! The process starts on the first prompt (so a chat that is only looked at
 //! never starts Codex) and is started again, resuming the same thread, if it
-//! exits. Requests the app does not handle (user input, MCP elicitation,
-//! ...) are answered with an error so a turn never waits on them forever.
+//! exits. Requests the app has no UI for are answered the way Conductor's
+//! sidecar answers them when it has no handler (`evidence/providers/
+//! codex-conductor-client.md`): user input with no answers, MCP elicitation
+//! with cancel, anything else with an error, so a turn never waits on them.
 
 use std::collections::VecDeque;
 use std::sync::mpsc::{self, Receiver, Sender, TryRecvError};
 use std::sync::Arc;
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
+
+use serde_json::{json, Value};
 
 use super::codex_cli::CodexLaunch;
 use super::codex_events::{Notification, ServerMessage, ServerRequest};
@@ -64,6 +68,16 @@ pub struct RunnerConfig {
 
 /// JSON-RPC "method not found", for requests the app does not handle.
 const UNSUPPORTED: i64 = -32601;
+
+/// Conductor's answer to a request it has no handler for, when it gives
+/// one instead of an error.
+fn default_answer(method: &str) -> Option<Value> {
+    match method {
+        "item/tool/requestUserInput" => Some(json!({ "answers": {} })),
+        "mcpServer/elicitation/request" => Some(json!({ "action": "cancel", "content": null })),
+        _ => None,
+    }
+}
 /// Stderr lines kept to explain an unexpected exit.
 const STDERR_KEPT: usize = 8;
 
@@ -339,12 +353,22 @@ impl Worker {
                         }
                     }
                     ServerMessage::Request(ServerRequest::Other { id, method, .. }) => {
-                        let reply = format!("OpenConductor does not support {method} yet");
+                        let answer = default_answer(&method);
                         if let Some(s) = self.session.as_mut() {
-                            let _ = s.reject(&id, UNSUPPORTED, &reply);
+                            let _ = match &answer {
+                                Some(result) => s.respond(&id, result.clone()),
+                                None => s.reject(
+                                    &id,
+                                    UNSUPPORTED,
+                                    &format!("OpenConductor does not support {method} yet"),
+                                ),
+                            };
                         }
                         self.emit(Payload::Notice {
-                            message: format!("Codex asked for {method}, which OpenConductor does not support yet; declined."),
+                            message: format!(
+                                "Codex asked for {method}, which OpenConductor does not support yet; {}.",
+                                if answer.is_some() { "answered with nothing" } else { "declined" }
+                            ),
                             will_retry: false,
                         });
                     }
@@ -423,6 +447,8 @@ while IFS= read -r line; do
         *die*) echo 'boom' >&2; exit 3 ;;
         *ask*)
           echo '{"id":77,"method":"item/tool/requestUserInput","params":{"threadId":"t","turnId":"'$turn'","itemId":"q1","questions":[]}}' ;;
+        *perm*)
+          echo '{"id":78,"method":"item/permissions/requestApproval","params":{"threadId":"t","turnId":"'$turn'","itemId":"p1"}}' ;;
         *)
           echo '{"id":0,"method":"item/commandExecution/requestApproval","params":{"threadId":"t","turnId":"'$turn'","itemId":"exec-1","command":"cat hello.txt","cwd":"/ws","availableDecisions":["accept","cancel"]}}' ;;
       esac ;;
@@ -430,8 +456,10 @@ while IFS= read -r line; do
       echo '{"method":"item/completed","params":{"item":{"type":"commandExecution","id":"exec-1","command":"cat hello.txt","cwd":"/ws","status":"completed","commandActions":[],"aggregatedOutput":"hi","exitCode":0},"threadId":"t","turnId":"u'$n'"}}'
       echo '{"method":"item/agentMessage/delta","params":{"threadId":"t","turnId":"u'$n'","itemId":"m1","delta":"hi"}}'
       echo '{"method":"turn/completed","params":{"threadId":"t","turn":{"id":"u'$n'","items":[],"status":"completed"}}}' ;;
-    *'"error":{"code":-32601'*)
+    *'"answers":{}'*)
       echo '{"method":"turn/completed","params":{"threadId":"t","turn":{"id":"u'$n'","items":[],"status":"failed","error":{"message":"needed input"}}}}' ;;
+    *'"error":{"code":-32601'*)
+      echo '{"method":"turn/completed","params":{"threadId":"t","turn":{"id":"u'$n'","items":[],"status":"failed","error":{"message":"no permission"}}}}' ;;
     *'"method":"turn/interrupt"'*)
       echo "{\"id\":$id,\"result\":{}}"
       echo '{"method":"turn/completed","params":{"threadId":"t","turn":{"id":"u'$n'","items":[],"status":"interrupted"}}}' ;;
@@ -614,6 +642,13 @@ done
             TurnEnd::failed("needed input")
         );
         let reply = sent(&exe).into_iter().find(|v| v["id"] == 77).unwrap();
+        assert_eq!(reply, json!({"id": 77, "result": {"answers": {}}}));
+        let end = r.prompt("perm", None, None);
+        assert_eq!(
+            end.recv_timeout(WAIT).unwrap(),
+            TurnEnd::failed("no permission")
+        );
+        let reply = sent(&exe).into_iter().find(|v| v["id"] == 78).unwrap();
         assert_eq!(reply["error"]["code"], -32601);
         assert!(wait_for(&seen, "notice", 0)["message"]
             .as_str()

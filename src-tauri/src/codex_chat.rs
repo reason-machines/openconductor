@@ -41,10 +41,10 @@ pub struct CodexChats {
     shell_path: OnceLock<Option<OsString>>,
 }
 
-/// Until the chat offers a choice: ask before commands outside the
-/// workspace, write only inside it.
+/// Conductor's default when a session sets neither: never ask, full
+/// access (`rd3` in its sidecar; `evidence/providers/codex-conductor-client.md`).
 fn default_policy() -> CodexPolicy {
-    CodexPolicy::new(ApprovalPolicy::OnRequest, SandboxMode::WorkspaceWrite)
+    CodexPolicy::new(ApprovalPolicy::Never, SandboxMode::DangerFullAccess)
 }
 
 fn home() -> Option<PathBuf> {
