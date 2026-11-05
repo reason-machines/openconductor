@@ -713,6 +713,64 @@
     },
     "page_errors": 0
   },
+  "menu--open-in--dark": {
+    "file": "menu--open-in--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_menu"
+    ],
+    "notes": "Header Open button's chevron: 'Open in' menu with the apps of a Mac that has Cursor, VS Code, Zed, Xcode and Ghostty: Finder (⌘O, 1), Cursor 2, VS Code 3, Zed 4, Xcode 5, Ghostty 6, Terminal 7, Copy path 8.",
+    "png_sha256": "cbaa13ede58cf5af7949be5f5e649dbb70c5176024c39dc75cd3eeda3b6354ab",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.8.0",
+      "evidence_id": "ev_d542c9f256741ece8cafda9af94bc8955926746c1bbca454b261997567f1f994",
+      "scenario_sha256": "098392f607b175c572166865a199f9216477522d1fc8a502ed7b17349ba0c6b3",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "menu--open-in--light": {
+    "file": "menu--open-in--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_menu"
+    ],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "4b6b278635072d8f20064d36555f5d23a8c8b6bd9057628cd6e107fe3537c8a6",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.8.0",
+      "evidence_id": "ev_39539aa4b274460aaa8063457921e689b94ac02127602d5601b4ebcb33e17d57",
+      "scenario_sha256": "dae4571b6e228c2e4706df9db7282508b10ca49697082a3982bcbc4224ae43c8",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
   "menu--workspace-context--dark": {
     "file": "menu--workspace-context--dark.png",
     "route": "/",
