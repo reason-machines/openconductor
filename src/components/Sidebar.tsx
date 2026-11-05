@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useRef, useState, type Dispatch, type RefObject } from "react";
-import type { AppState, Workspace } from "../state/types";
+import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
-import { ArrowLeftIcon, ArrowRightIcon, BranchIcon, ChevronDownIcon, ChevronIcon, HomeIcon, MoreIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, MoreIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
-import { byRecentActivity, workspaceLabel } from "./sidebarLabel";
 import { createPortal } from "react-dom";
 import { HelpMenu } from "./HelpMenu";
 import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
+import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
+import { SidebarGroup } from "./SidebarSections";
+import { pinnedEntries, repoGroupWorkspaces } from "../state/sidebarOrder";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
 function hint(commandId: string): string {
@@ -24,13 +26,6 @@ export interface NavControls {
   onForward: () => void;
 }
 
-const STATUS_LABEL: Record<Workspace["status"], string> = {
-  idle: "Idle",
-  working: "Working",
-  "needs-review": "Ready for review",
-  archived: "Archived",
-};
-
 interface Props {
   state: AppState;
   dispatch: Dispatch<Action>;
@@ -43,6 +38,9 @@ interface Props {
   info: AppInfo | null;
   /** Local computer label; Conductor shows "<name>'s Mac", or "My Mac" with no user name. */
   computerName?: string;
+  /* sidebar: workspace row menu callbacks (rename dialog, archive flow) */
+  onRenameWorkspace?: RowCallbacks["onRename"];
+  onArchiveWorkspace?: RowCallbacks["onArchive"];
 }
 
 function NavRow({ icon, label, shortcut, active, onClick }: { icon: JSX.Element; label: string; shortcut: string; active?: boolean; onClick: () => void }) {
@@ -123,7 +121,9 @@ function HeaderMenu({ label, items, className, contextAt, onContextClose }: { la
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac" }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace }: Props) {
+  const rows = useWorkspaceRows(state, dispatch, { onRename: onRenameWorkspace, onArchive: onArchiveWorkspace });
+  const pinned = pinnedEntries(state);
   const sel = state.selection;
   // Conductor persists this per collapse key; ours lasts for the session.
   const [groupCollapsed, setGroupCollapsed] = useState(false);
@@ -184,6 +184,13 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
       </div>
 
       <nav className="repo-list">
+        {pinned.length > 0 && (
+          <SidebarGroup label="Pinned" count={pinned.length}>
+            {pinned.map(({ repoId, workspace }) => (
+              <SidebarWorkspaceRow key={workspace.id} workspace={workspace} targetBranch={state.repos.find((r) => r.id === repoId)?.defaultBranch ?? ""} {...rows.rowProps(repoId, workspace)} />
+            ))}
+          </SidebarGroup>
+        )}
         {/* "My workspaces" section header (Conductor's `lBi`): label, hover chevron, "..." menu with Add project. */}
         <div className="sb-section-header">
           <button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed} onClick={() => setGroupCollapsed(!groupCollapsed)}>
@@ -266,33 +273,9 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
             {!repo.collapsed && (
               <div className="sb-ws-list">
                 {repo.workspaces.length === 0 && <p className="ws-empty">No workspaces</p>}
-                {byRecentActivity(repo.workspaces).map((ws) => {
-                  const active = sel.kind === "workspace" && sel.workspaceId === ws.id;
-                  const label = workspaceLabel({ name: ws.name, branch: ws.branch, prTitle: ws.prTitle, userSetWorkspaceName: ws.userSetWorkspaceName, targetBranch: repo.defaultBranch });
-                  return (
-                    <button
-                      key={ws.id}
-                      type="button"
-                      className="sb-ws"
-                      data-testid="left-sidebar-workspace-item"
-                      data-active={active || undefined}
-                      data-unread={ws.unread || undefined}
-                      aria-current={active ? "page" : undefined}
-                      onClick={() => dispatch({ type: "select", selection: { kind: "workspace", repoId: repo.id, workspaceId: ws.id } })}
-                      title={`${label} · ${ws.branch} · ${STATUS_LABEL[ws.status]}`}
-                    >
-                      <span className={`sb-ws-status ${ws.status}`} role="img" aria-label={STATUS_LABEL[ws.status]}>
-                        <BranchIcon size={14} />
-                      </span>
-                      <span className="sb-ws-name">{label}</span>
-                      {(ws.diff.added > 0 || ws.diff.removed > 0) && (
-                        <span className="sb-ws-diff">
-                          <span className="add">+{ws.diff.added}</span> <span className="del">-{ws.diff.removed}</span>
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
+                {repoGroupWorkspaces(repo.workspaces).map((ws) => (
+                  <SidebarWorkspaceRow key={ws.id} workspace={ws} targetBranch={repo.defaultBranch} {...rows.rowProps(repo.id, ws)} />
+                ))}
               </div>
             )}
           </div>
@@ -305,6 +288,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
           </div>
         )}
       </nav>
+      {rows.menu}
 
       {/* Footer, after Conductor's `Nna`: px-4 py-3, top border, help and settings icons (h-4 w-4, stroke 1.5) gap-5 at the right. */}
       <div className="sb-footer">

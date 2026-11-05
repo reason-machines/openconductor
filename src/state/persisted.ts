@@ -2,6 +2,7 @@
 // In the desktop app these rows are the source of truth for the sidebar and Home;
 // localStorage keeps only UI preferences (selection, sidebar visibility, collapsed repos).
 import type { AppState, Repo, Selection, Workspace } from "./types";
+import { isWorkspaceStatus } from "./workspaceStatus.ts";
 
 export interface DbRepoRow {
   id: string;
@@ -72,6 +73,11 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             createdAt: sqliteTime(w.createdAt),
             path: w.workspacePath ?? undefined,
             placeholderBranchName: w.placeholderBranchName,
+            /* sidebar: pin, unread and status columns */
+            pinnedAt: w.pinnedAt ? sqliteTime(w.pinnedAt) : undefined,
+            unread: w.unread || undefined,
+            manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
+            derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
           }),
         ),
     }));
