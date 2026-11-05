@@ -28,6 +28,31 @@ jobs:
       - name: Checkpoint module build, test and clippy
         run: bash evidence/checkpoint/run-tests.sh
 
+  scripts:
+    name: Scripts crate build + test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    defaults:
+      run:
+        working-directory: crates/scripts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: Configure git identity for tests
+        run: |
+          git config --global user.name "CI"
+          git config --global user.email "ci@example.invalid"
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+        env:
+          RUSTFLAGS: -D warnings
+
   tools:
     name: Evidence tools compile
     runs-on: ubuntu-latest
