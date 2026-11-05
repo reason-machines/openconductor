@@ -243,8 +243,9 @@ mod tests {
     /// called with the JSON the frontend sends (`codexChat.ts`). Set
     /// `OPENCONDUCTOR_CODEX_IPC_E2E` to a file for the event log; needs a
     /// signed-in `codex` that `codex_cli_path` finds. Two prompts in one
-    /// chat with "Ask first": a command approval answered Allow, then a
-    /// follow-up on the same thread.
+    /// chat with approval `untrusted` (Codex asks before any command not on
+    /// its trusted list): approvals answered Allow, then a follow-up on the
+    /// same thread.
     #[test]
     fn live_ipc_chat_with_the_signed_in_codex() {
         use std::sync::Mutex as StdMutex;
@@ -326,12 +327,13 @@ mod tests {
                 "chatId": "ws-e2e",
                 "cwd": ws.display().to_string(),
                 "threadId": null,
-                "policy": {"approvalPolicy": "on-request", "sandbox": "workspace-write"}
+                "policy": {"approvalPolicy": "untrusted", "sandbox": "workspace-write"}
             }),
         )
         .unwrap();
 
         // Runs one prompt on its own thread while this one answers approvals.
+        let answered = std::cell::Cell::new(0);
         let prompt = |text: &'static str| {
             let w = webview.clone();
             let handle = std::thread::spawn(move || {
@@ -341,7 +343,6 @@ mod tests {
                     serde_json::json!({"chatId": "ws-e2e", "text": text}),
                 )
             });
-            let mut answered = 0;
             let deadline = Instant::now() + Duration::from_secs(300);
             while !handle.is_finished() {
                 assert!(Instant::now() < deadline, "prompt did not finish in 300 s");
@@ -352,7 +353,7 @@ mod tests {
                     .filter(|e| e["type"] == "approval")
                     .cloned()
                     .collect();
-                for a in approvals.iter().skip(answered) {
+                for a in approvals.iter().skip(answered.get()) {
                     eprintln!("approval: {}", a["command"]);
                     invoke(
                         &webview,
@@ -361,7 +362,7 @@ mod tests {
                     )
                     .unwrap();
                 }
-                answered = approvals.len();
+                answered.set(approvals.len());
                 std::thread::sleep(Duration::from_millis(100));
             }
             handle.join().unwrap().unwrap()
@@ -405,6 +406,7 @@ mod tests {
             of("tool")
         );
         assert_eq!(finals.len(), 2, "{finals:?}");
+        assert!(of("approval") >= 1, "Codex asked for no approval");
         assert!(
             finals.iter().all(|t| t.contains("hello from codex")),
             "{finals:?}"
