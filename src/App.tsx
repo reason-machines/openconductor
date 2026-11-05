@@ -193,8 +193,10 @@ export default function App() {
       {dialog === "quickstart" && (
         <CreateProjectDialog
           onClose={() => setDialog(null)}
-          onCreated={(created, githubUrl) => {
-            dispatch({ type: "addRepo", repo: created });
+          onRepoAdded={({ id, ...repo }) => dispatch({ type: "addRepo", id, repo })}
+          onCreated={(repoId, first, githubUrl) => {
+            dispatch({ type: "addWorkspace", repoId, workspace: first.workspace });
+            for (const warning of first.warnings) show("error", warning, { sticky: true });
             show("info", SUCCESS_TOAST, { action: { label: OPEN_IN_GITHUB, onClick: () => void openUrl(githubUrl) } });
           }}
         />
