@@ -37,8 +37,10 @@ const anchorOf = (l: DiffLine): LineAnchor => (l.kind === "deletion" ? { side: "
 
 export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleViewed, onLineClick, annotations }: Props) {
   const cols = layout === "split" ? 6 : 4;
-  const num = (n: number | null, side: CommentSide) => (
-    <td className="num" onClick={n !== null && onLineClick ? () => onLineClick({ side, line: n }) : undefined}>
+  // Either number of a row comments on that row's anchor (a context line anchors on the new side),
+  // so the composer opens where its annotation row is rendered.
+  const num = (n: number | null, line: DiffLine | null) => (
+    <td className="num" onClick={n !== null && line && onLineClick ? () => onLineClick(anchorOf(line)) : undefined}>
       {n ?? ""}
     </td>
   );
@@ -73,8 +75,8 @@ export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleV
             ...(layout === "unified"
               ? unifiedRows(h).flatMap((r, ri) => [
                   <tr className={r.line.kind} key={`${hi}-${ri}`}>
-                    {num(r.line.old_line, "old")}
-                    {num(r.line.new_line, "new")}
+                    {num(r.line.old_line, r.line)}
+                    {num(r.line.new_line, r.line)}
                     <td className="sign">{sign(r.line)}</td>
                     <td className="code">
                       <Text text={r.line.text} span={r.emphasis} kind={r.line.kind} />
@@ -84,10 +86,10 @@ export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleV
                 ])
               : splitRows(h).flatMap((r, ri) => [
                   <tr key={`${hi}-${ri}`}>
-                    {num(r.left?.old_line ?? null, "old")}
+                    {num(r.left?.old_line ?? null, r.left ?? null)}
                     <td className="sign">{r.left ? sign(r.left) : ""}</td>
                     <td className={`code ${r.left ? r.left.kind : "pad"}`}>{r.left && <Text text={r.left.text} span={r.leftEmphasis} kind={r.left.kind} />}</td>
-                    {num(r.right?.new_line ?? null, "new")}
+                    {num(r.right?.new_line ?? null, r.right ?? null)}
                     <td className="sign">{r.right ? sign(r.right) : ""}</td>
                     <td className={`code ${r.right ? r.right.kind : "pad"}`}>{r.right && <Text text={r.right.text} span={r.rightEmphasis} kind={r.right.kind} />}</td>
                   </tr>,
