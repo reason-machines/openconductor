@@ -44,8 +44,10 @@
 .oc-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
 .oc-seg button { padding: 3px 9px; color: var(--muted); }
 .oc-seg button[aria-pressed="true"] { background: var(--active); color: var(--text); }
+.oc-seg.oc-icons button { display: inline-flex; align-items: center; padding: 3px 7px; }
 
 .oc-changes { border-right: 1px solid var(--border); overflow-y: auto; padding: 4px 0; font-size: 12px; }
+.oc-changes-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 10px 6px; color: var(--muted); }
 .oc-change { display: flex; align-items: center; gap: 6px; width: 100%; padding: 3px 10px; text-align: left; }
 .oc-change:hover { background: var(--hover); }
 .oc-change[aria-current="true"] { background: var(--active); }
@@ -60,16 +62,21 @@
 .oc-count .d { color: var(--oc-diff-deletion); margin-left: 4px; }
 
 .oc-files { overflow: auto; min-width: 0; padding: 8px 12px 40px; }
+.oc-next-unread { position: sticky; bottom: 12px; display: block; width: fit-content; margin: 0 0 0 auto; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15); }
 .oc-file { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; content-visibility: auto; contain-intrinsic-size: auto 200px; }
 .oc-file-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--oc-diff-bg-gutter); border-bottom: 1px solid var(--border); font-size: 12px; }
 .oc-file-header .path { flex: 1; font-family: var(--oc-diff-font); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .oc-file-header label { display: inline-flex; gap: 4px; align-items: center; color: var(--muted); }
 .oc-file-note { padding: 10px 12px; color: var(--muted); font-size: 12px; }
 
-.oc-code { width: 100%; border-collapse: collapse; font-family: var(--oc-diff-font); font-size: var(--oc-diff-font-size); line-height: var(--oc-diff-line-height); table-layout: fixed; }
-.oc-code col.num { width: 44px; }
-.oc-code col.sign { width: 16px; }
-.oc-code td { padding: 0 8px; vertical-align: top; white-space: pre-wrap; word-break: break-all; }
+/* Lines never wrap: long lines scroll the file sideways, as in an editor. */
+.oc-code-scroll { overflow-x: auto; }
+.oc-code { min-width: 100%; border-collapse: collapse; font-family: var(--oc-diff-font); font-size: var(--oc-diff-font-size); line-height: var(--oc-diff-line-height); }
+/* Without table-layout: fixed, column widths come from the cells. */
+.oc-code td.num { min-width: 44px; width: 44px; box-sizing: border-box; }
+.oc-code td.sign { min-width: 16px; width: 16px; box-sizing: border-box; }
+.oc-code.split col.code { width: 50%; }
+.oc-code td { padding: 0 8px; vertical-align: top; white-space: pre; }
 .oc-code td.num { padding: 0 6px; text-align: right; color: var(--oc-diff-gutter-fg); background: var(--oc-diff-bg-gutter); user-select: none; cursor: pointer; white-space: nowrap; }
 .oc-code td.num:hover { color: var(--accent); }
 .oc-code td.sign { padding: 0 2px; user-select: none; color: var(--oc-diff-gutter-fg); }
@@ -79,7 +86,11 @@
 .oc-code tr:hover td.code { box-shadow: inset 0 0 0 999px var(--oc-diff-bg-hover); }
 .oc-code mark.addition { background: var(--oc-diff-bg-addition-emphasis); color: inherit; border-radius: 2px; }
 .oc-code mark.deletion { background: var(--oc-diff-bg-deletion-emphasis); color: inherit; border-radius: 2px; }
-.oc-code tr.hunk td { background: var(--oc-diff-bg-separator); color: var(--muted); padding: 2px 8px; }
+.oc-code tr.gap td { background: var(--oc-diff-bg-separator); padding: 0; }
+.oc-gap { display: flex; align-items: center; gap: 10px; width: 100%; padding: 3px 8px; color: var(--muted); font: inherit; text-align: left; background: none; border: 0; cursor: pointer; }
+.oc-gap:hover:not(:disabled) { color: var(--text); }
+.oc-gap:disabled { cursor: default; }
+.oc-gap .chev { width: 28px; text-align: center; }
 .oc-code tr.annotation td { background: var(--oc-diff-annotation-bg); padding: 6px 10px; white-space: normal; font-family: var(--font-sans); }
 
 /* parity:diff.comments-inline:ui  Review comment threads and composer. */
