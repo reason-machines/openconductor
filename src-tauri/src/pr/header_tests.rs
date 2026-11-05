@@ -71,7 +71,9 @@ fn merged_and_queued_win_over_everything() {
     };
     assert_eq!(
         action(&i),
-        Some(A::QueuedToMerge(MergeQueueState::AwaitingChecks))
+        Some(A::QueuedToMerge {
+            state: MergeQueueState::AwaitingChecks
+        })
     );
 }
 
@@ -104,22 +106,6 @@ fn local_state_comes_before_pr_state() {
         ..up
     });
     assert_eq!(action(&i), Some(A::MergeConflicts));
-}
-
-#[test]
-fn forge_without_pr_creation() {
-    let none = PrLookup::None;
-    let i = HeaderInputs {
-        pr: Some(none.clone()),
-        has_remote: true,
-        ..Default::default()
-    };
-    assert_eq!(action(&i), Some(A::CreatePr));
-    let i = HeaderInputs {
-        pr: Some(none.clone()),
-        ..Default::default()
-    };
-    assert_eq!(action(&i), None);
 }
 
 #[test]
@@ -227,4 +213,20 @@ fn mergeability_outcomes() {
         ..with_pr(&p)
     };
     assert_eq!(action(&loading), Some(A::LoadingPr));
+}
+
+#[test]
+fn forge_without_pr_creation() {
+    let none = PrLookup::None;
+    let i = HeaderInputs {
+        pr: Some(none.clone()),
+        has_remote: true,
+        ..Default::default()
+    };
+    assert_eq!(action(&i), Some(A::CreatePr));
+    let i = HeaderInputs {
+        pr: Some(none.clone()),
+        ..Default::default()
+    };
+    assert_eq!(action(&i), None);
 }

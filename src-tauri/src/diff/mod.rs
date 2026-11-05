@@ -10,6 +10,9 @@
 /// (`--cfg diff_std_only`, see tools/diff/run-rust-tests.sh).
 #[cfg(not(diff_std_only))]
 pub mod commands;
+/// Tauri commands over the `diff_comments` store; also excluded from the harness.
+#[cfg(not(diff_std_only))]
+pub mod comment_commands;
 pub mod git;
 pub mod model;
 pub mod parse;

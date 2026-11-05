@@ -3,7 +3,7 @@ use std::collections::VecDeque;
 use std::io;
 use std::path::{Path, PathBuf};
 
-use super::gh::{Addressing, CmdOutput, Gh, GhError, MergeMethod, Runner, Var};
+use super::gh::{Addressing, CmdOutput, Gh, GhError, MergeMethod, MergeMethodCache, Runner, Var};
 
 #[derive(Default)]
 pub(super) struct Fake {
@@ -131,4 +131,98 @@ fn repo_addressing_parses_owner_and_name() {
     assert_eq!(Addressing::repo("app"), None);
     assert_eq!(Addressing::repo("/app"), None);
     assert_eq!(Addressing::repo("acme/"), None);
+}
+
+fn argv(s: &str) -> Vec<String> {
+    s.split(' ').map(String::from).collect()
+}
+
+#[test]
+fn pr_commands_from_checkout_run_in_it_without_repo_flag() {
+    let f = Fake::default();
+    let gh = gh_cwd(&f);
+    gh.merge(5, MergeMethod::Squash).unwrap();
+    assert_eq!(
+        f.calls.borrow()[0],
+        (argv("pr merge 5 --squash"), Some("/w".into()))
+    );
+    gh.enable_auto_merge(5, MergeMethod::Rebase).unwrap();
+    assert_eq!(f.last_args(), argv("pr merge 5 --rebase --auto"));
+    gh.disable_auto_merge(5).unwrap();
+    assert_eq!(f.last_args(), argv("pr merge 5 --disable-auto"));
+    gh.mark_ready(5).unwrap();
+    assert_eq!(f.last_args(), argv("pr ready 5"));
+    gh.retarget(5, "release").unwrap();
+    assert_eq!(f.last_args(), argv("pr edit 5 --base release"));
+}
+
+#[test]
+fn explicit_repo_adds_repo_flag_and_no_cwd() {
+    let f = Fake::default();
+    gh_repo(&f).merge(9, MergeMethod::Merge).unwrap();
+    assert_eq!(
+        f.calls.borrow()[0],
+        (argv("pr merge 9 --merge --repo acme/app"), None)
+    );
+}
+
+#[test]
+fn edit_passes_title_and_body_as_single_arguments() {
+    let f = Fake::default();
+    let gh = gh_cwd(&f);
+    gh.edit(3, Some("Fix: it; rm -rf /"), None).unwrap();
+    assert_eq!(
+        f.last_args(),
+        vec!["pr", "edit", "3", "--title", "Fix: it; rm -rf /"]
+    );
+    gh.edit(3, None, Some("line 1\nline 2")).unwrap();
+    assert_eq!(
+        f.last_args(),
+        vec!["pr", "edit", "3", "--body", "line 1\nline 2"]
+    );
+}
+
+#[test]
+fn approve_pins_the_reviewed_commit() {
+    let f = Fake::default();
+    gh_cwd(&f).approve(4, "abc123").unwrap();
+    let want = "api repos/{owner}/{repo}/pulls/4/reviews -f event=APPROVE -f commit_id=abc123";
+    assert_eq!(f.last_args(), argv(want));
+    gh_repo(&f).approve(4, "abc123").unwrap();
+    assert_eq!(f.last_args()[1], "repos/acme/app/pulls/4/reviews");
+}
+
+#[test]
+fn failures_carry_gh_stderr() {
+    let f = Fake::default();
+    f.reply(1, "", "Pull request is not mergeable\n");
+    let err = gh_cwd(&f).merge(1, MergeMethod::Squash).unwrap_err();
+    assert_eq!(
+        err.to_string(),
+        "Merging the PR failed: Pull request is not mergeable"
+    );
+}
+
+#[test]
+fn merge_method_cache_keeps_successes_only() {
+    let cache = MergeMethodCache::default();
+    let err = cache.get_or_fetch("r1", || Err(GhError::MergeMethodUnknown));
+    assert!(err.is_err());
+    assert_eq!(
+        cache
+            .get_or_fetch("r1", || Ok(MergeMethod::Rebase))
+            .unwrap(),
+        MergeMethod::Rebase
+    );
+    let cached = cache
+        .get_or_fetch("r1", || panic!("must not refetch"))
+        .unwrap();
+    assert_eq!(cached, MergeMethod::Rebase);
+    cache.forget("r1");
+    assert_eq!(
+        cache
+            .get_or_fetch("r1", || Ok(MergeMethod::Squash))
+            .unwrap(),
+        MergeMethod::Squash
+    );
 }

@@ -83,6 +83,21 @@ impl WorkspaceService {
         Ok(info(&id, &root))
     }
 
+    /// Clone `url` into `<parent_dir>/<name>` (name from
+    /// [`naming::repo_name_from_url`]) and register it like
+    /// [`Self::add_repository`]. Fails, without renaming, if the destination
+    /// exists; a failed clone returns git's stderr.
+    pub fn clone_repository(&self, url: &str, parent_dir: &Path) -> Result<RepositoryInfo, WorkspaceError> {
+        let url = url.trim();
+        let name = naming::repo_name_from_url(url).ok_or_else(|| WorkspaceError::InvalidCloneUrl(url.to_string()))?;
+        let dest = parent_dir.join(name);
+        if dest.symlink_metadata().is_ok() {
+            return Err(WorkspaceError::DestinationExists(dest));
+        }
+        git::clone(url, &dest)?;
+        self.add_repository(&dest)
+    }
+
     pub fn repositories(&self) -> Vec<RepositoryInfo> {
         let repos = self.repos.lock().expect("registry lock");
         repos.iter().map(|(id, root)| info(id, root)).collect()

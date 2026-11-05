@@ -6,6 +6,12 @@ import { applyChatEvents, emptyTranscript, type ChatTranscript } from "../featur
 import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { DiffViewer } from "../features/diff/DiffViewer";
+import { renameAfterFirstMessage } from "../workspace/firstMessage";
+import { TerminalPanel } from "../features/terminal/TerminalPanel";
+import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
+import { ScriptsPanel } from "./ScriptsPanel";
+import { useCreateSetupRunning } from "../workspace/useSetupWatch";
+import { RUNNING_SETUP } from "../workspace/createFlow";
 
 interface Props {
   repo: Repo;
@@ -31,7 +37,7 @@ export function seedTranscript(workspaceId: string, text: string) {
   transcripts.set(workspaceId, withMessages(emptyTranscript(workspaceId), [textMessage(workspaceId, "user", text)]));
 }
 
-function ChatPanel({ workspace }: { workspace: Workspace }) {
+function ChatPanel({ repo, workspace, dispatch }: Props) {
   const load = () => transcripts.get(workspace.id) ?? emptyTranscript(workspace.id);
   const [transcript, setTranscript] = useState<ChatTranscript>(load);
   const [draft, setDraft] = useState("");
@@ -47,12 +53,14 @@ function ChatPanel({ workspace }: { workspace: Workspace }) {
   }, [transcript]);
 
   function sendText(text: string) {
+    const first = !transcript.messages.some((m) => m.role === "user");
     const next = withMessages(transcript, [
       textMessage(workspace.id, "user", text),
       textMessage(workspace.id, "system", "No agent is connected yet. The agent runtime is a later milestone; this message stays in this workspace's local transcript."),
     ]);
     transcripts.set(workspace.id, next);
     setTranscript(next);
+    if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
   function send(e: FormEvent) {
@@ -113,7 +121,7 @@ function DiffPanel({ workspace, repo }: { workspace: Workspace; repo: Repo }) {
         </button>
       </div>
       {tab === "changes" ? (
-        <DiffViewer workspaceId={workspace.id} worktree={null} baseBranch={repo.defaultBranch} />
+        <DiffViewer workspaceId={workspace.id} worktree={workspace.path ?? null} baseBranch={repo.defaultBranch} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -133,6 +141,9 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 };
 
 export function WorkspaceView({ repo, workspace, dispatch }: Props) {
+  const [showTerminal, setShowTerminal] = useState(true);
+  const settingUp = useCreateSetupRunning(workspace.id);
+  useKeybindings({ "view.toggleTerminalPanel": () => setShowTerminal((v) => !v) });
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region>
@@ -146,17 +157,30 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
           <span className={`chip status ${workspace.status}`}>
             <span className={`status-dot ${workspace.status}`} /> {STATUS_TEXT[workspace.status]}
           </span>
+          {settingUp && (
+            <span className="chip status setting-up" role="status">
+              <span className="status-dot working" /> {RUNNING_SETUP}
+            </span>
+          )}
         </div>
         <div className="ws-actions">
+          <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
+            Terminal
+          </button>
           <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
             <ArchiveIcon size={14} /> Archive
           </button>
         </div>
       </header>
       <div className="ws-split">
-        <ChatPanel workspace={workspace} />
-        <DiffPanel workspace={workspace} repo={repo} />
+        <ChatPanel repo={repo} workspace={workspace} dispatch={dispatch} />
+        <div className="ws-right">
+          <DiffPanel workspace={workspace} repo={repo} />
+          <ScriptsPanel repo={repo} workspace={workspace} />
+        </div>
       </div>
+      {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
+      {showTerminal && <TerminalPanel workspaceId={workspace.id} cwd={repo.path} />}
     </div>
   );
 }
