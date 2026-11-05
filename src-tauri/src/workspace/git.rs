@@ -385,3 +385,32 @@ pub fn busy_state(worktree: &Path) -> Result<BusyState, WorkspaceError> {
     }
     Ok(BusyState::Clean)
 }
+
+/// Warning when a new workspace's push upstream could not be configured;
+/// Conductor's own wording.
+pub const PUSH_UPSTREAM_WARNING: &str =
+    "Couldn't configure Git push upstream settings. PR info may be less reliable until this branch has an upstream.";
+
+/// Make a plain `git push` in `worktree` set the branch upstream, the way
+/// Conductor does for new workspaces: `push.autoSetupRemote = true` in the
+/// worktree's own config, after enabling `extensions.worktreeConfig` in the
+/// main repository. An explicit worktree value is left alone. When shared
+/// config sets `core.worktree` or `core.bare = true`, enabling worktree config
+/// would change how every worktree reads them, so nothing is written and a
+/// warning is returned unless push.autoSetupRemote is already true anyway.
+/// Returns `Some(warning)` when the setting could not be applied.
+pub fn configure_push_upstream(main_root: &Path, worktree: &Path) -> Option<&'static str> {
+    if git_ok(worktree, ["config", "--worktree", "--get", "push.autoSetupRemote"]) {
+        return None;
+    }
+    let shared = |key: &str| git(main_root, ["config", "--get", key]).ok().filter(|v| !v.is_empty());
+    let core_worktree = shared("core.worktree").is_some();
+    let core_bare = shared("core.bare").is_some_and(|v| v.eq_ignore_ascii_case("true"));
+    if core_worktree || core_bare {
+        let already = git(worktree, ["config", "--type=bool", "--get", "push.autoSetupRemote"]).is_ok_and(|v| v == "true");
+        return (!already).then_some(PUSH_UPSTREAM_WARNING);
+    }
+    let ok = git_ok(main_root, ["config", "extensions.worktreeConfig", "true"])
+        && git_ok(worktree, ["config", "--worktree", "push.autoSetupRemote", "true"]);
+    (!ok).then_some(PUSH_UPSTREAM_WARNING)
+}
