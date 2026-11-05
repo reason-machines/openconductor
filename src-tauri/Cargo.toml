@@ -29,6 +29,7 @@ tauri-plugin-fs = { version = "2", features = ["watch"] }
 tauri-plugin-http = "2"
 tauri-plugin-shell = "2"
 tauri-plugin-sql = { version = "2", features = ["sqlite"] }
+tauri-plugin-updater = "2"
 serde = { version = "1", features = ["derive"] }
 # preserve_order: local-storage records keep the reference's key order (terminal/history_store.rs)
 serde_json = { version = "1", features = ["preserve_order"] }
