@@ -4,6 +4,7 @@
 //! - `workspace/`  workspace lifecycle (worktrees, setup/run scripts)
 //! - `checkpoint/` checkpoints and revert
 //! - `agent/`      agent runner, providers and BYOK settings
+//!
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
