@@ -371,10 +371,12 @@ export const flows = [
         const tracked = git(created, "ls-files").toString().split("\n").filter(Boolean).length;
         if (row.initializationFilesCopied !== tracked) throw new Error(`initializationFilesCopied ${row.initializationFilesCopied}, want ${tracked} (git ls-files)`);
 
-        // The log holds the `git worktree add` output, the hook's stderr and the exit code.
+        // The log holds the `git worktree add` output and the hook's stderr. No
+        // "--- Additional Output ---" block: the wrapper's own output all went into the log (Jfe).
         if (!existsSync(logPath)) throw new Error(`${logPath} does not exist`);
         const log = readFileSync(logPath, "utf8");
-        for (const want of ["Preparing worktree", MARKER, "--- Additional Output ---", "Exit code: 1"]) {
+        if (log.includes("--- Additional Output ---")) throw new Error(`${logPath} has an Additional Output block, but the wrapper printed nothing of its own:\n${log}`);
+        for (const want of ["Preparing worktree", MARKER]) {
           if (!log.includes(want)) throw new Error(`${logPath} lacks ${JSON.stringify(want)}:\n${log}`);
         }
 
