@@ -3,13 +3,15 @@ import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat } from "../features/chat/reasonChat.ts";
+import { answerPermission, chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type PermissionPrompt } from "../features/chat/reasonChat.ts";
+import { PermissionRequests } from "../features/chat/PermissionRequests.tsx";
 import { Composer } from "../features/chat/Composer.tsx";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
-import { answerCodex, CODEX_ACCESS, CODEX_CAN_STEER, codexAccess, codexQueueAction, codexSnapshot, setCodexAccess, stopCodex, submitCodex, subscribeCodex, type CodexAccess, type CodexSnapshot } from "../features/chat/codexChat.ts";
+import { CodexConsentCard } from "../features/chat/CodexConsentCard.tsx";
+import { answerCodex, answerCodexConsent, CODEX_ACCESS, CODEX_CAN_STEER, codexAccess, codexQueueAction, codexSnapshot, setCodexAccess, stopCodex, submitCodex, subscribeCodex, type CodexAccess, type CodexSnapshot } from "../features/chat/codexChat.ts";
 import { DECISION_LABELS, type CodexApproval, type CodexDecision } from "../features/chat/codex.ts";
 import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
@@ -112,14 +114,17 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
+/** What the chat panel shows: Codex's approvals, or Reason's permission requests. */
+type ChatView = CodexSnapshot & { permissions?: readonly PermissionPrompt[] };
+
 function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
   const [agent, setAgent] = useState<ChatAgent>(() => savedAgent(chatId));
   const codex = reason && agent === "codex";
-  const snapshotOf = (a: ChatAgent): CodexSnapshot => (reason && a === "codex" ? codexSnapshot(chatId) : { ...chatSnapshot(chatId), approvals: [] });
-  const [{ transcript, queue, approvals }, setSnapshot] = useState<CodexSnapshot>(() => snapshotOf(agent));
+  const snapshotOf = (a: ChatAgent): ChatView => (reason && a === "codex" ? codexSnapshot(chatId) : { ...chatSnapshot(chatId), approvals: [], consents: [] });
+  const [{ transcript, queue, approvals, consents, permissions = [] }, setSnapshot] = useState<ChatView>(() => snapshotOf(agent));
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
@@ -146,7 +151,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Follows the chat and its agent (picking another agent shows that agent's transcript and queue).
   useEffect(() => {
     setSnapshot(snapshotOf(agent));
-    return codex ? subscribeCodex(chatId, setSnapshot) : subscribeChat(chatId, (s) => setSnapshot({ ...s, approvals: [] }));
+    return codex ? subscribeCodex(chatId, setSnapshot) : subscribeChat(chatId, (s) => setSnapshot({ ...s, approvals: [], consents: [] }));
   }, [chatId, agent]);
 
   function chooseAgent(next: ChatAgent) {
@@ -338,10 +343,18 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           onClose={() => setResetTurn(null)}
         />
       ) : null}
+      <PermissionRequests permissions={permissions} onAnswer={(requestId, optionId) => void answerPermission(chatId, requestId, optionId)} />
       {codex && approvals.length > 0 ? (
         <div className="codex-approvals">
           {approvals.map((a) => (
             <ApprovalCard key={String(a.requestId)} approval={a} onAnswer={(d) => void answerCodex(chatId, a.requestId, d)} />
+          ))}
+        </div>
+      ) : null}
+      {codex && consents.length > 0 ? (
+        <div className="codex-approvals">
+          {consents.map((c) => (
+            <CodexConsentCard key={String(c.requestId)} consent={c} onRespond={(answer) => void answerCodexConsent(chatId, c.requestId, answer)} />
           ))}
         </div>
       ) : null}

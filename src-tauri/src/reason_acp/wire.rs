@@ -19,6 +19,17 @@ pub fn event_json(chat: &str, ev: &ProviderEvent) -> Value {
         ProviderEvent::TurnEnded(end) => json!({ "type": "turnEnded", "end": turn_end_json(end) }),
         ProviderEvent::Agent(a) => agent_json(a),
         ProviderEvent::Notice(t) => json!({ "type": "notice", "text": t }),
+        ProviderEvent::PermissionRequested(r) => json!({
+            "type": "permissionRequest",
+            "requestId": r.request_id,
+            "title": r.title,
+            "options": r.options.iter().map(|o| json!({
+                "optionId": o.option_id, "name": o.name, "kind": o.kind,
+            })).collect::<Vec<_>>(),
+        }),
+        ProviderEvent::PermissionResolved { request_id } => {
+            json!({ "type": "permissionResolved", "requestId": request_id })
+        }
     };
     v["chatId"] = json!(chat);
     v

@@ -18,6 +18,9 @@ pub fn startup(db: &Db, service: &WorkspaceService) -> Result<(), Box<dyn std::e
     let pool = &db.0;
     tauri::async_runtime::block_on(async {
         store::delete_incomplete(pool).await?;
+        // Conductor's `xet`: sessions of local workspaces left busy by the
+        // last run go idle; `needs_user_input` survives.
+        openconductor_db::sessions::reset_busy_to_idle_at_startup(pool).await?;
         for repo in service.repositories() {
             if openconductor_db::repos::get(pool, &repo.id).await?.is_some() {
                 continue;

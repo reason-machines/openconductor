@@ -11,7 +11,7 @@ import { PaperclipIcon, SendIcon } from "../../components/Icons";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
-import { canSteerNow, headStatusLabel, resolveSendMode, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
+import { canSteerNow, headStatusLabel, resolveSendMode, turnRunning, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
 import type { QueueAction } from "./queue.ts";
 import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
 import "./queue.css";
@@ -44,7 +44,7 @@ export function Composer({ draft, setDraft, inputRef, placeholder, queue, canSte
     const s = keys(id)[0];
     return s ? glyphs(s) : "";
   };
-  const working = queue.status === "working" || queue.status === "cancelling";
+  const working = turnRunning(queue.status);
   const hasText = draft.trim() !== "";
   const mode = (opposite: boolean) => resolveSendMode({ canSteer: canSteerNow(queue, canSteer), defaultMode: followUpMode, opposite });
   const sendMode = working ? mode(false) : "queue";
