@@ -142,6 +142,8 @@ jobs:
         run: |
           python tools/packaging_ref.py
           git diff --exit-code evidence/packaging/conductor-reference.json
+      - name: Bundle checker unit tests
+        run: python -m unittest tools/test_check_macos_bundle.py
 
   frontend-unit:
     name: Frontend unit tests (node --test)
