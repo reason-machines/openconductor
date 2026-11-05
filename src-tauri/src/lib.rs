@@ -188,7 +188,9 @@ pub fn run() {
         .plugin(tauri_plugin_sql::Builder::new().build())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
-            app.manage(db::open(&data_dir)?);
+            let db = db::open(&data_dir)?;
+            spotlight_commands::migrate_legacy_setting(&db);
+            app.manage(db);
             app.manage(terminal_commands::history_state(&data_dir));
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());

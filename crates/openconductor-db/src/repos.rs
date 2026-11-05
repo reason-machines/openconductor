@@ -206,6 +206,17 @@ pub async fn update_settings(pool: &SqlitePool, id: &str, s: &RepoSettings) -> R
     exec_one(query, pool).await
 }
 
+/// Clear the legacy `spotlight_testing` column (set it to NULL) once its
+/// value lives in the repository's settings file, as the reference's
+/// repo-local settings file migration does.
+pub async fn clear_spotlight_testing(pool: &SqlitePool, id: &str) -> Result<()> {
+    exec_one(
+        sqlx::query("UPDATE repos SET spotlight_testing = NULL WHERE id = ?").bind(id),
+        pool,
+    )
+    .await
+}
+
 /// Give `ids` display orders 0, 1, 2, ... in the order given.
 pub async fn reorder(pool: &SqlitePool, ids: &[&str]) -> Result<()> {
     let mut tx = pool.begin().await?;
