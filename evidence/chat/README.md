@@ -35,3 +35,10 @@ OpenConductor: `src/features/chat/markdown.ts` (react-markdown + remark-gfm + re
 - Shown only when the turn is complete (`MDo` → `TDo`).
 - Duration `endTime - startTime` formatted by `$Pt(ms, {showTenths:false})`: `"{m}m, {s}s"` or `"{s}s"`; then `" · "` and the end time by `SDo`: today `h:mm AM`, within 6 days `Mon h:mm AM`, else `Nov 5, h:mm AM` (year when not this year). Hover shows agent/model, `start → end` and token counts.
 - Then "Copy final message" (icon button), a "More actions" menu (Fork to new tab, Fork to new workspace, Reset chat), and the turn's changed files: first 3 chips (or 2 plus a "+N more" button when there are more), each chip a file name with `+added -removed`.
+
+## Cancelled turns (`chat.cancel` rendering), from renderApp
+
+Read from the decoded `renderApp-D_fmY7hW.js` (REA skipped it, see rea-gaps.md), pretty-printed at `~/oc-chat-rea/renderApp.pretty.js`:
+- Line ~171348: a user message with `messageType === "settled" && cancelledAt !== null` renders a caption `"Cancelled"` under its bubble (`mt-0.5 text-xs text-muted-foreground`, right-aligned for the user's own message) and no retry status.
+- `gTr` (line ~307 of the chunk's helpers) matches error text containing `"aborted by user"` or `"Interrupted by user"`; the error message component (`hDi`, line ~171090) then renders only an outline badge `Interrupted by user` instead of the error.
+- OpenConductor: the prompt of a stopped turn carries `cancelledAt` (reason.ts, from #303), drawn as the "Cancelled" caption; the cancelled turn's end row shows the outline "Interrupted by user" badge (it was "Stopped.").

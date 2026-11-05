@@ -77,6 +77,7 @@ function Row({ row, isOpen, onToggle, summaries, onRetry, onResetChat, resetDisa
       return (
         <div className="chat-msg chat-user">
           <div className="chat-bubble">{row.text}</div>
+          {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
           <MessageActions text={row.text} />
         </div>
       );
@@ -97,7 +98,7 @@ function Row({ row, isOpen, onToggle, summaries, onRetry, onResetChat, resetDisa
           {turnFooter?.(row.turnId)}
           <div className={`chat-turn-end status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
             {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
-            {row.status === "cancelled" ? <span className="muted">Stopped.</span> : null}
+            {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
             <span className="chat-turn-actions">
               {row.finalText ? <CopyButton text={row.finalText} label="Copy final message" /> : null}
               {row.retryPrompt && onRetry ? (

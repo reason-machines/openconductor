@@ -1,7 +1,7 @@
 // Renders <Transcript> with a fixed transcript shaped like Conductor's
 // chat--transcript-collapsed-tools / chat--tool-calls-expanded references
 // (evidence/screens), so rendering changes can be screenshotted without an agent.
-// ?theme=dark|light, ?running=1 keeps the turn running, ?tools=expanded opens
+// ?theme=dark|light, ?running=1 keeps the turn running, ?cancelled=1 stops it early, ?tools=expanded opens
 // the "N tool calls, M messages" summary.
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -14,6 +14,7 @@ import "../../src/styles.css";
 const params = new URLSearchParams(location.search);
 document.documentElement.dataset.theme = params.get("theme") === "light" ? "light" : "dark";
 const running = params.get("running") === "1";
+const cancelled = params.get("cancelled") === "1";
 
 const S = "w1";
 const T = "w1:t1";
@@ -40,10 +41,10 @@ const assistant: Block[] = [
 ];
 
 const events: ChatEvent[] = [
-  { type: "upsert", message: msg(`${T}:user`, "user", [{ type: "text", text: "After signing in, users with an expired session get bounced between /login and /dashboard forever. Can you find out why and fix it?" }], 0) },
+  { type: "upsert", message: { ...msg(`${T}:user`, "user", [{ type: "text", text: "After signing in, users with an expired session get bounced between /login and /dashboard forever. Can you find out why and fix it?" }], 0), ...(cancelled ? { cancelledAt: at(30) } : {}) } },
   { type: "turn_status", sessionId: S, turnId: T, status: "running" },
-  { type: "upsert", message: msg(`${T}:assistant`, "assistant", assistant, 2) },
-  ...(running ? [] : [{ type: "turn_status", sessionId: S, turnId: T, status: "completed" } as ChatEvent]),
+  { type: "upsert", message: msg(`${T}:assistant`, "assistant", cancelled ? assistant.slice(0, 3) : assistant, 2) },
+  ...(running ? [] : [{ type: "turn_status", sessionId: S, turnId: T, status: cancelled ? "cancelled" : "completed" } as ChatEvent]),
 ];
 const r = applyChatEvents(emptyTranscript(S), events);
 if (!r.ok) throw new Error(JSON.stringify(r.error));

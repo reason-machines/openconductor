@@ -11,7 +11,7 @@
 //                        /repo checkout, marked cloud with the same a.txt
 //   3. "echo: follow-up" the reply says "turn 3", so one Reason Session ran
 //                        all three turns
-//   4. "slow", then Stop the turn ends as "Stopped."
+//   4. "slow", then Stop the turn ends as "Interrupted by user"
 //   5-6. two turns that write files; each saved start/end checkpoints
 //   7. "Reset chat" on turn 5   "Reset chat?" says 2 changed; Reset deletes
 //                        turn 6 and restores turn 5's files
@@ -200,9 +200,9 @@ try {
   await send("slow");
   await waitFor("the Stop button", running);
   await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
-  await waitFor('"Stopped."', () => chatText().then((t) => t.includes("Stopped.")), 15000);
+  await waitFor('"Interrupted by user"', () => chatText().then((t) => t.includes("Interrupted by user")), 15000);
   await turnDone(4);
-  pass('Stop ends the running turn: "Stopped."');
+  pass('Stop ends the running turn: "Interrupted by user"');
   await screenshot("reason-chat-stopped");
 
   // 5-6. Checkpoints: two turns that edit files, then "Reset chat" back to turn 5.
