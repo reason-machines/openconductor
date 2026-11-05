@@ -84,6 +84,8 @@ jobs:
         run: bash evidence/checkpoint/run-tests.sh
       - name: PR module build, test and clippy
         run: bash evidence/pr/run-tests.sh
+      - name: Quick open module build, test and clippy
+        run: bash evidence/quick_open/run-tests.sh
       - name: Settings module build, test, clippy and rustfmt
         run: bash scripts/test-settings.sh
 
@@ -138,10 +140,14 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m py_compile tools/*.py
+      - name: Parity checklist anchors resolve in REA evidence
+        run: python tools/parity_chat_diff_pr.py --check-anchors --out-dir "$RUNNER_TEMP/parity"
       - name: Packaging reference matches the REA evidence bundle
         run: |
           python tools/packaging_ref.py
           git diff --exit-code evidence/packaging/conductor-reference.json
+      - name: Bundle checker unit tests
+        run: python -m unittest tools/test_check_macos_bundle.py
 
   frontend-unit:
     name: Frontend unit tests (node --test)
