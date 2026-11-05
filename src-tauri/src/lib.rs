@@ -20,6 +20,7 @@
 
 pub mod agent;
 pub mod agent_binaries;
+pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
 pub mod checkpoint;
@@ -43,6 +44,7 @@ pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
 pub mod reason_chat;
+mod root_path_commands;
 pub mod scripts;
 pub mod settings;
 pub mod sidecar_stores;
@@ -65,17 +67,18 @@ use serde::Serialize;
 
 /// Once per launch, apply "Set upstream on plain git push" to existing
 /// workspaces in the background, as Conductor does after its first workspace
-/// load. Failures are only logged.
+/// load. Each workspace uses its effective `git.worktree_push_auto_setup_remote`
+/// (user, repository and workspace settings files); unreadable settings count
+/// as on, Conductor's "not false" check. Failures are only logged.
 fn spawn_push_upstream_backfill(app: tauri::AppHandle) {
     std::thread::spawn(move || {
-        let settings = app.state::<settings::service::SettingsService>();
-        match settings.get() {
-            Ok(s) if !s.git.worktree_push_auto_setup_remote => return,
-            Ok(_) => {}
-            Err(e) => eprintln!("Failed to read settings for Git push upstream backfill: {e}"),
-        }
         let workspaces = app.state::<workspace::service::WorkspaceService>();
-        for (id, warning) in workspaces.configure_push_upstream_for_existing() {
+        let enabled = |root: &std::path::Path, ws: &std::path::Path| {
+            settings::effective::resolve(root, Some(ws))
+                .map(|e| e.git.worktree_push_auto_setup_remote.value)
+                .unwrap_or(true)
+        };
+        for (id, warning) in workspaces.configure_push_upstream_for_existing(enabled) {
             eprintln!("Failed to configure Git push upstream settings for workspace {id}: {warning}");
         }
     });
@@ -272,7 +275,11 @@ pub fn run() {
                 &sidecar_stores::completions_dir(&data_dir),
             ));
             app.manage(local_storage_commands::state(&data_dir));
-            let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
+            let mut workspaces = workspace::service::WorkspaceService::new(data_dir)?;
+            // Settings › Advanced › root directory (`conductor_root_path`).
+            if let Some(root) = root_path_commands::root_from_settings(&db) {
+                workspaces = workspaces.with_root(root);
+            }
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
             app.manage(db);
@@ -296,6 +303,9 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            root_path_commands::get_conductor_root,
+            root_path_commands::repo_workspaces_path,
+            root_path_commands::change_conductor_root,
             app_info,
             inspect_project_folder,
             branch_prefix_settings,
@@ -380,6 +390,11 @@ pub fn run() {
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
+            app_prefs::commands::get_app_prefs,
+            app_prefs::commands::set_app_pref,
+            app_prefs::commands::record_open_in,
+            app_prefs::commands::client_instance_id,
+            app_prefs::commands::graphite_cli_installed,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,

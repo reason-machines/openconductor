@@ -39,7 +39,7 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
     githubGitProtocol().then((p) => live && setProtocol(p), () => undefined);
     loadRecentRepos().then((r) => live && setRecent(r), () => live && setRecent(null));
     (async () => {
-      const saved = lastCloneDirectory();
+      const saved = await lastCloneDirectory();
       const exists = saved ? await folderExists(saved) : false;
       const fallback = await defaultCloneDirectory().catch(() => "");
       if (live) setLocation((cur) => cur || initialLocation(saved, exists, fallback));

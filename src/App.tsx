@@ -34,6 +34,7 @@ import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
@@ -45,6 +46,8 @@ export default function App() {
     prevState.current = state;
   }, [state]);
   const nav = useNavHistory(state, dispatch);
+  useSidebarVisiblePref(isSidebarVisible(state), dispatch);
+  const sidebarWidth = useSidebarWidth();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
   // `/create` (or `?dialog=create`) opens the Create-workspace dialog directly.
   const initialDialog = window.location.pathname === "/create" ? "create" : (new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
@@ -159,6 +162,9 @@ export default function App() {
     "nav.back": nav.onBack,
     "nav.forward": nav.onForward,
     "view.toggleLeftSidebar": () => dispatch({ type: "toggleSidebar" }),
+    "view.toggleRightSidebar": toggleRightPanel,
+    "view.toggleZenMode": () => toggleZenMode(isSidebarVisible(state), dispatch),
+    "toggleGarryMode": toggleGarryMode,
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
     "workspace.create": () => setDialog("create"),
   });
@@ -177,7 +183,8 @@ export default function App() {
   if (settingsLocation) return <SettingsView location={settingsLocation} repos={state.repos} onNavigate={navigateSettings} onClose={closeSettings} />;
 
   return (
-    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
+    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
+      {isSidebarVisible(state) && sidebarWidth.resizer}
       {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} />}
       <main className="main">
         {repo && workspace ? (
