@@ -4,7 +4,7 @@
 // and the diff tab passes the options below (REA, renderApp chunk of 0.87.6).
 // Our backend returns parsed hunks, so they are turned back into a git patch
 // for Pierre to parse, and into full file contents for expanding gaps.
-import type { AnnotationSide, CodeViewItem, CodeViewLineScrollTarget, FileContents, FileDiffMetadata } from "@pierre/diffs";
+import type { AnnotationSide, CodeViewItem, CodeViewLineScrollTarget, FileContents, FileDiffMetadata, SelectedLineRange } from "@pierre/diffs";
 import type { CommentSide } from "./comments.ts";
 import type { DiffLayout, DiffLine, FileDiff } from "./types.ts";
 
@@ -80,6 +80,28 @@ export const fromPierreSide = (side: AnnotationSide | undefined): CommentSide =>
 export interface Anchor {
   side: CommentSide;
   line: number;
+}
+
+/**
+ * Lines picked for a new comment: `start` to `line` on `side`. The composer
+ * sits under `line`, the range's last line, where the thread will show.
+ */
+export interface LineRange extends Anchor {
+  start: number;
+}
+
+/**
+ * The comment range for a Pierre line selection or gutter click, as Conductor
+ * builds it: the lower line first, the side where the selection started.
+ */
+export function rangeOf(r: SelectedLineRange, side: CommentSide): LineRange {
+  return { side, start: Math.min(r.start, r.end), line: Math.max(r.start, r.end) };
+}
+
+/** Pierre's selection for a comment range, so the picked lines stay highlighted while it is composed. */
+export function selectionOf(range: LineRange, wholeFile: boolean): SelectedLineRange {
+  const side = wholeFile ? undefined : toPierreSide(range.side);
+  return { start: range.start, end: range.line, ...(side ? { side, endSide: side } : {}) };
 }
 
 export function codeViewItem(file: FileDiff, meta: FileDiffMetadata | undefined, layout: DiffLayout, anchors: Anchor[], version: number): CodeViewItem<Anchor> {

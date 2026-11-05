@@ -27,6 +27,8 @@
 //!   archive-on-merge rule.
 //! * [`runs`]: a failing check's GitHub Actions job log, and re-running a
 //!   PR's failed jobs (Checks tab).
+//! * [`review_comments`]: the PR's GitHub review threads and comments as
+//!   `diff_comments` rows, and resolving a thread on GitHub.
 
 pub mod api;
 pub mod checks;
@@ -46,6 +48,7 @@ pub mod list;
 pub mod merge_eligibility;
 pub mod model;
 pub mod prompt;
+pub mod review_comments;
 pub mod runs;
 
 #[cfg(test)]
@@ -68,6 +71,8 @@ mod list_tests;
 mod merge_eligibility_tests;
 #[cfg(test)]
 mod prompt_tests;
+#[cfg(test)]
+mod review_comments_tests;
 #[cfg(test)]
 mod runs_tests;
 #[cfg(test)]

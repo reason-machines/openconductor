@@ -4,6 +4,8 @@
 
 use tauri::State;
 
+use openconductor_db::repos::RepoSettings;
+
 use crate::db::Db;
 use crate::persistence::{self as store, KnownRepo, KnownWorkspace, RepoRow, WorkspaceRow};
 use crate::workspace::service::{RepositoryInfo, WorkspaceService};
@@ -51,6 +53,41 @@ pub async fn db_list_workspaces(db: State<'_, Db>) -> Result<Vec<WorkspaceRow>, 
 #[tauri::command]
 pub async fn db_archive_workspace(db: State<'_, Db>, workspace_id: String) -> Result<(), String> {
     store::archive(&db.0, &workspace_id).await.map_err(|e| e.to_string())
+}
+
+/// JS: `invoke("db_repo_prompt", { repoId, prompt })`: one of the
+/// repository's custom prompts, by Conductor's prompt type (`codeReview`,
+/// `createPR`, `fixErrors`, `resolveMergeConflicts`, `renameBranch`,
+/// `general`); null when the repository has none or it is blank.
+#[tauri::command]
+pub async fn db_repo_prompt(
+    db: State<'_, Db>,
+    repo_id: String,
+    prompt: String,
+) -> Result<Option<String>, String> {
+    let settings = openconductor_db::repos::settings(&db.0, &repo_id)
+        .await
+        .map_err(|e| e.to_string())?;
+    repo_prompt(&settings, &prompt)
+}
+
+/// The custom prompt of `kind` (Conductor's prompt type), trimmed; `None`
+/// when unset or blank.
+pub fn repo_prompt(s: &RepoSettings, kind: &str) -> Result<Option<String>, String> {
+    let value = match kind {
+        "codeReview" => &s.custom_prompt_code_review,
+        "createPR" => &s.custom_prompt_create_pr,
+        "fixErrors" => &s.custom_prompt_fix_errors,
+        "resolveMergeConflicts" => &s.custom_prompt_resolve_merge_conflicts,
+        "renameBranch" => &s.custom_prompt_rename_branch,
+        "general" => &s.custom_prompt_general,
+        _ => return Err(format!("unknown prompt type: {kind}")),
+    };
+    Ok(value
+        .as_deref()
+        .map(str::trim)
+        .filter(|v| !v.is_empty())
+        .map(str::to_string))
 }
 
 pub fn known_repo(r: &RepositoryInfo) -> KnownRepo {
@@ -133,5 +170,26 @@ pub async fn on_branch_renamed(db: &Db, workspace_id: &str, branch: &str) {
 fn log_err(what: &str, r: openconductor_db::Result<()>) {
     if let Err(e) = r {
         eprintln!("conductor.db: {what}: {e}");
+    }
+}
+
+#[cfg(test)]
+mod repo_prompt_tests {
+    use super::*;
+
+    #[test]
+    fn picks_the_prompt_by_conductor_type_and_drops_blank_ones() {
+        let s = RepoSettings {
+            custom_prompt_code_review: Some("  Focus on SQL.\n".into()),
+            custom_prompt_create_pr: Some("   ".into()),
+            ..RepoSettings::default()
+        };
+        assert_eq!(
+            repo_prompt(&s, "codeReview").unwrap().as_deref(),
+            Some("Focus on SQL.")
+        );
+        assert_eq!(repo_prompt(&s, "createPR").unwrap(), None);
+        assert_eq!(repo_prompt(&s, "general").unwrap(), None);
+        assert!(repo_prompt(&s, "review").is_err());
     }
 }

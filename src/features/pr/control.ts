@@ -12,6 +12,9 @@ export type Intent =
   | "ready"
   /** Approve the PR at the head commit shown. */
   | "approve"
+  /** Checks are pending: let GitHub merge once they pass (gh pr merge --auto), or stop that. */
+  | "enable_automerge"
+  | "disable_automerge"
   /** Plain status; clicking opens the PR on GitHub when there is one. */
   | "status";
 
@@ -32,7 +35,14 @@ export function mergeMethodText(method: MergeMethod | null): string | null {
   return null;
 }
 
-export function prControl(state: HeaderState | null, pr: PrInfo | null, method: MergeMethod | null = null): Control | null {
+export interface ControlOptions {
+  /** The repository's merge method, once known (Merge tooltip). */
+  method?: MergeMethod | null;
+  /** The "Automerge" setting. */
+  automerge?: boolean;
+}
+
+export function prControl(state: HeaderState | null, pr: PrInfo | null, opts: ControlOptions = {}): Control | null {
   if (!state) return null;
   const tone = state.tone;
   const num = pr ? `#${pr.number}` : "";
@@ -67,6 +77,12 @@ export function prControl(state: HeaderState | null, pr: PrInfo | null, method: 
       return status(label, `${plural(a.failed, "check")} failed${pending}`);
     }
     case "checks_pending":
+      // As in the reference: only with the setting on, a PR, and merge rights not ruled out.
+      if (opts.automerge && pr && pr.viewerCanMerge !== false) {
+        return pr.isAutoMergeEnabled
+          ? { intent: "disable_automerge", label: "Cancel automerge", title: `PR ${num} merges once its checks pass; click to cancel`, tone }
+          : { intent: "enable_automerge", label: "Automerge", title: `Merge PR ${num} automatically once its checks pass`, tone };
+      }
       return status("Checks running", `${plural(a.pending, "check")} still running`);
     case "approve_pr":
       return pr
@@ -78,7 +94,7 @@ export function prControl(state: HeaderState | null, pr: PrInfo | null, method: 
       return status("Merge blocked", "Branch protection blocks merging this PR");
     case "ready_to_merge": {
       const optional = a.optionalFailed > 0 ? ` (${plural(a.optionalFailed, "optional check")} failed)` : "";
-      const how = mergeMethodText(method) ?? "Merge";
+      const how = mergeMethodText(opts.method ?? null) ?? "Merge";
       return { intent: "merge", label: "Merge", title: `${how} PR ${num}${optional}`.trim(), tone };
     }
     case "unable_to_merge":
