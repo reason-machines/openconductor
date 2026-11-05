@@ -56,6 +56,8 @@ const SHELL_STATE = {
 // Runs in the page before the app. Everything it needs is inside it.
 function fakeBackend(shellState) {
   if (!localStorage.getItem("openconductor.shell.v1")) localStorage.setItem("openconductor.shell.v1", JSON.stringify(shellState));
+  // The desktop app keeps the selection in its prefs key; repos come from conductor.db.
+  if (!localStorage.getItem("openconductor.shell.prefs.v1")) localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ selection: shellState.selection, collapsed: [] }));
   const DISK = "__fake_backend_disk";
   const disk = () => JSON.parse(localStorage.getItem(DISK) ?? '{"history":{},"spawns":[],"mirrorWrites":[]}');
   const save = (d) => localStorage.setItem(DISK, JSON.stringify(d));
@@ -81,6 +83,12 @@ function fakeBackend(shellState) {
           return 1;
         case "plugin:event|unlisten":
           return;
+        case "db_list_repos":
+          return shellState.repos.map((r, i) => ({ id: r.id, name: r.name, rootPath: r.path, remoteUrl: null, defaultBranch: r.defaultBranch, displayOrder: i, hidden: false, icon: null, createdAt: "2026-01-01T00:00:00Z" }));
+        case "db_list_workspaces":
+          return shellState.repos.flatMap((r) => r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path ?? null, pinnedAt: null, unread: false, createdAt: "2026-01-01T00:00:00Z" })));
+        case "db_archive_workspace":
+          return null;
         case "pty_spawn": {
           const a = args.args;
           const d = disk();
@@ -145,6 +153,21 @@ function fakeBackend(shellState) {
         }
         case "pty_load_terminal_history":
           return disk().history[args.args.sessionId] ?? null;
+        case "pty_delete_terminal_history": {
+          const d = disk();
+          delete d.history[args.args.sessionId];
+          (d.deletes ??= []).push(args.args.sessionId);
+          save(d);
+          return;
+        }
+        case "pty_delete_workspace_terminal_history": {
+          const d = disk();
+          const ids = Object.keys(d.history).filter((id) => d.history[id].localWorkspaceId === args.args.localWorkspaceId);
+          for (const id of ids) delete d.history[id];
+          (d.workspaceDeletes ??= []).push(args.args.localWorkspaceId);
+          save(d);
+          return ids.length;
+        }
         case "pty_ack_bytes":
         case "pty_kill":
         case "pty_clear_history":
@@ -230,6 +253,9 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
   await page.locator(".term-tab").nth(1).click();
   await waitForScreen(page, "Previous terminal session restored");
   await page.locator(".term-tab").nth(1).getByRole("button", { name: "Close terminal" }).click();
+  // Its saved session is deleted, as in the reference; the other tab's stays.
+  await page.waitForFunction((id) => !(id in JSON.parse(localStorage.getItem("__fake_backend_disk")).history), second, { timeout: 5000 });
+  assert.ok((await disk(page)).history[first], "the open tab's saved session stays");
   await page.reload();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 1);
   await waitForScreen(page, "Previous terminal session restored");
@@ -248,6 +274,15 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
     first,
     { timeout: 5000 },
   );
+
+  // Archiving the workspace ends its terminals and deletes its saved sessions and tab list.
+  await page.waitForFunction(() => Object.keys(JSON.parse(localStorage.getItem("__fake_backend_disk")).history).length === 2, null, { timeout: 5000 });
+  await page.getByTitle("Archive workspace").click();
+  await page.waitForFunction(() => (JSON.parse(localStorage.getItem("__fake_backend_disk")).workspaceDeletes ?? []).includes("w1"), null, { timeout: 5000 });
+  const archived = await disk(page);
+  assert.deepEqual(archived.history, {});
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem("terminal-panel-tabs-v1") ?? "{}").w1), undefined);
+  assert.equal(await page.locator(".term-tab").count(), 0);
 
   assert.deepEqual(errors, []);
   await context.close();

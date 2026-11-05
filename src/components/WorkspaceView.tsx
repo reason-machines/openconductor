@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type Dispatch, type FormEvent, type MutableRefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type FormEvent, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon, SendIcon } from "./Icons";
@@ -6,7 +6,9 @@ import { applyChatEvents, emptyTranscript, type ChatTranscript } from "../featur
 import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { reasonAvailable, reasonTranscript, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
-import { DiffViewer } from "../features/diff/DiffViewer";
+import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
+import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
+import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
@@ -46,7 +48,15 @@ export function seedTranscript(workspaceId: string, text: string) {
   transcripts.set(workspaceId, withMessages(emptyTranscript(workspaceId), [textMessage(workspaceId, "user", text)]));
 }
 
-function ChatPanel({ repo, workspace, dispatch, bridge }: Props & { bridge: MutableRefObject<ChatBridge | null> }) {
+interface ChatPanelProps extends Props {
+  bridge: MutableRefObject<ChatBridge | null>;
+  /** The main area's tab strip. */
+  tabs: ReactNode;
+  /** Shown instead of the transcript while another tab (the diff) is active; the composer stays. */
+  content: ReactNode | null;
+}
+
+function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const load = () => (reason ? reasonTranscript(workspace.id) : (transcripts.get(workspace.id) ?? emptyTranscript(workspace.id)));
@@ -108,7 +118,9 @@ function ChatPanel({ repo, workspace, dispatch, bridge }: Props & { bridge: Muta
 
   return (
     <section className="chat" aria-label="Chat">
-      <div className="chat-scroll">
+      {tabs}
+      {content}
+      <div className="chat-scroll" hidden={content !== null}>
         {transcript.messages.length === 0 ? (
           <div className="placeholder">
             <h3>Chat with the agent</h3>
@@ -151,22 +163,21 @@ function ChatPanel({ repo, workspace, dispatch, bridge }: Props & { bridge: Muta
   );
 }
 
-function DiffPanel({ workspace, repo, bridge }: { workspace: Workspace; repo: Repo; bridge: MutableRefObject<ChatBridge | null> }) {
+function RightPanel({ diff, actions }: { diff: WorkspaceDiff; actions: () => ReactNode }) {
   const [tab, setTab] = useState<"changes" | "files">("changes");
-  const chat = useMemo<ChatBridge>(() => ({ insert: (t) => bridge.current?.insert(t), send: (t) => bridge.current?.send(t) }), [bridge]);
-  const review = useReviewComments(workspace.id, chat);
+  const count = diff.load.state === "ready" ? diff.files.length : null;
   return (
     <section className="diff" aria-label="Changes">
       <div className="tabs" role="tablist">
-        <button role="tab" aria-selected={tab === "changes"} className={tab === "changes" ? "active" : ""} onClick={() => setTab("changes")}>
-          Changes
-        </button>
         <button role="tab" aria-selected={tab === "files"} className={tab === "files" ? "active" : ""} onClick={() => setTab("files")}>
-          Files
+          All files
+        </button>
+        <button role="tab" aria-selected={tab === "changes"} className={tab === "changes" ? "active" : ""} onClick={() => setTab("changes")}>
+          Changes {count ? <span className="tab-count">{count}</span> : null}
         </button>
       </div>
       {tab === "changes" ? (
-        <DiffViewer workspaceId={workspace.id} worktree={workspace.path ?? null} baseBranch={repo.defaultBranch} {...review} />
+        <ChangesList diff={diff} actions={actions} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -175,6 +186,30 @@ function DiffPanel({ workspace, repo, bridge }: { workspace: Workspace; repo: Re
         </div>
       )}
     </section>
+  );
+}
+
+type MainTab = "chat" | "diff";
+
+function MainTabs({ title, active, diffOpen, onSelect, onCloseDiff }: { title: string; active: MainTab; diffOpen: boolean; onSelect: (t: MainTab) => void; onCloseDiff: () => void }) {
+  return (
+    <div className="tabs main-tabs" role="tablist" aria-label="Workspace tabs">
+      {diffOpen && (
+        <span className={`main-tab${active === "diff" ? " active" : ""}`}>
+          <button role="tab" aria-selected={active === "diff"} className={active === "diff" ? "active" : ""} onClick={() => onSelect("diff")}>
+            All changes
+          </button>
+          <button className="main-tab-close" onClick={onCloseDiff} title="Close tab" aria-label="Close All changes tab">
+            ×
+          </button>
+        </span>
+      )}
+      <span className={`main-tab${active === "chat" ? " active" : ""}`}>
+        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")} title={title}>
+          {title}
+        </button>
+      </span>
+    </div>
   );
 }
 
@@ -189,7 +224,38 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
   const chatBridge = useRef<ChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
-  useKeybindings({ "view.toggleTerminalPanel": () => setShowTerminal((v) => !v) });
+  // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
+  const [diffOpen, setDiffOpen] = useState(false);
+  const [mainTab, setMainTab] = useState<MainTab>("chat");
+  useEffect(() => {
+    setDiffOpen(false);
+    setMainTab("chat");
+  }, [workspace.id]);
+  const openDiffTab = useCallback(() => {
+    setDiffOpen(true);
+    setMainTab("diff");
+  }, []);
+  const closeDiffTab = () => {
+    setDiffOpen(false);
+    setMainTab("chat");
+  };
+
+  // The review hook needs the loaded files and the diff needs the hook's reveal, so loads go through a ref.
+  const loaded = useRef<((files: FileDiff[], scope: DiffScope) => void) | null>(null);
+  const onLoaded = useCallback((files: FileDiff[], scope: DiffScope) => loaded.current?.(files, scope), []);
+  const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, baseBranch: repo.defaultBranch, onLoaded, onOpen: openDiffTab });
+  const chat = useMemo<ChatBridge>(() => ({ insert: (t) => chatBridge.current?.insert(t), send: (t) => chatBridge.current?.send(t) }), []);
+  const review = useReviewComments(workspace.id, chat, undefined, diff.openPath);
+  loaded.current = review.onLoaded;
+
+  const switchTab = () => diffOpen && setMainTab((t) => (t === "chat" ? "diff" : "chat"));
+  useKeybindings({
+    "view.toggleTerminalPanel": () => setShowTerminal((v) => !v),
+    "diff.open": () => (diff.current < 0 && diff.files.length > 0 ? diff.open(0) : openDiffTab()),
+    "nav.nextTab": switchTab,
+    "nav.previousTab": switchTab,
+  });
+  const showDiff = diffOpen && mainTab === "diff";
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region>
@@ -219,13 +285,21 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
         </div>
       </header>
       <div className="ws-split">
-        <ChatPanel repo={repo} workspace={workspace} dispatch={dispatch} bridge={chatBridge} />
+        <ChatPanel
+          repo={repo}
+          workspace={workspace}
+          dispatch={dispatch}
+          bridge={chatBridge}
+          tabs={<MainTabs title={workspace.name} active={showDiff ? "diff" : "chat"} diffOpen={diffOpen} onSelect={setMainTab} onCloseDiff={closeDiffTab} />}
+          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
+        />
         <div className="ws-right">
-          <DiffPanel workspace={workspace} repo={repo} bridge={chatBridge} />
+          <RightPanel diff={diff} actions={review.actions} />
           <ScriptsPanel repo={repo} workspace={workspace} />
         </div>
       </div>
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
+      <DiffDiscardHost diff={diff} />
       {showTerminal && <TerminalPanel workspaceId={workspace.id} cwd={repo.path} />}
     </div>
   );

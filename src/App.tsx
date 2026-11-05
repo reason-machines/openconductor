@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "./state/store";
-import { isSidebarVisible } from "./state/selectors";
+import { destroyWorkspaceTerminals } from "./features/terminal/session";
+import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
@@ -33,6 +34,13 @@ import { useNavHistory } from "./state/useNavHistory";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
+  // A workspace that leaves the app (archived, or its repository removed)
+  // takes its terminals and their saved history with it, as in Conductor.
+  const prevState = useRef(state);
+  useEffect(() => {
+    for (const id of removedWorkspaceIds(prevState.current, state)) void destroyWorkspaceTerminals(id);
+    prevState.current = state;
+  }, [state]);
   const nav = useNavHistory(state, dispatch);
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
   // `/create` (or `?dialog=create`) opens the Create-workspace dialog directly.
@@ -67,7 +75,7 @@ export default function App() {
   );
   const addCreatedRepo = useCallback(async (target: GitHubRepoTarget, remote: string) => {
     const registered = await addRepository(target.path);
-    dispatch({ type: "addRepo", repo: { name: target.name, path: registered.root, remote, defaultBranch: registered.defaultBranch } });
+    dispatch({ type: "addRepo", id: registered.id, repo: { name: target.name, path: registered.root, remote, defaultBranch: registered.defaultBranch } });
   }, [dispatch]);
 
   // Open project: native picker straight away, then the backend folder checks.
@@ -81,7 +89,7 @@ export default function App() {
       if (outcome.kind === "needsGitHubRepo") return setGithubRepo({ path: outcome.path, name: outcome.name, needsGitInit: outcome.needsGitInit });
       const registered = await addRepository(outcome.path);
       if (findExistingRepo(state.repos, { path: registered.root, remote: outcome.remote })) return show("error", REPO_EXISTS);
-      dispatch({ type: "addRepo", repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
+      dispatch({ type: "addRepo", id: registered.id, repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
     } catch (err) {
       show("error", failedToAddMessage(err));
     }
@@ -145,7 +153,7 @@ export default function App() {
       {dialog === "clone" && (
         <CloneGitHubRepoDialog
           onClose={() => setDialog(null)}
-          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", repo: { name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
+          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", id: inTauri() ? cloned.id : undefined, repo: { name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
         />
       )}
       {dialog === "quickstart" && (

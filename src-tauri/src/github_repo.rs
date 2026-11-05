@@ -151,7 +151,9 @@ pub struct GitHub {
 
 impl Default for GitHub {
     fn default() -> Self {
-        GitHub { gh: "gh".into() }
+        GitHub {
+            gh: crate::bundled_bin::gh_path().to_string_lossy().into_owned(),
+        }
     }
 }
 

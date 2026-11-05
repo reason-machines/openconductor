@@ -17,9 +17,12 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod bundled_bin;
 pub mod checkpoint;
 pub mod create_project;
 pub mod db;
+pub mod persistence;
+mod persistence_commands;
 pub mod diff;
 pub mod github_repo;
 pub mod menu;
@@ -173,7 +176,7 @@ async fn branch_prefix_settings() -> BranchPrefixInfo {
         .and_then(|dir| settings::load(&dir.join(settings::FILE_NAME)))
         .map(|s| s.git)
         .unwrap_or_default();
-    let github_username = std::process::Command::new("gh")
+    let github_username = std::process::Command::new(bundled_bin::gh_path())
         .args(["config", "get", "-h", "github.com", "user"])
         .output()
         .ok()
@@ -212,11 +215,16 @@ pub fn run() {
         .plugin(tauri_plugin_sql::Builder::new().build())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
+            // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
+            bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
             let db = db::open(&data_dir)?;
             spotlight_commands::migrate_legacy_setting(&db);
-            app.manage(db);
             app.manage(terminal_commands::history_state(&data_dir));
-            app.manage(workspace::service::WorkspaceService::new(data_dir)?);
+            let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
+            // Deletes workspaces left initializing, imports pre-database repositories.
+            persistence_commands::startup(&db, &workspaces)?;
+            app.manage(db);
+            app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
             app.manage(Terminals::new(app.handle().clone()));
@@ -253,6 +261,9 @@ pub fn run() {
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
+            persistence_commands::db_list_repos,
+            persistence_commands::db_list_workspaces,
+            persistence_commands::db_archive_workspace,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
             diff::comment_commands::diff_comments_list,
@@ -284,6 +295,8 @@ pub fn run() {
             terminal_commands::pty_delete_mirror,
             terminal_commands::pty_persist_terminal_history,
             terminal_commands::pty_load_terminal_history,
+            terminal_commands::pty_delete_terminal_history,
+            terminal_commands::pty_delete_workspace_terminal_history,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,

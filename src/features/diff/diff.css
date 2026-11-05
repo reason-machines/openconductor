@@ -67,7 +67,16 @@
 .oc-count .a { color: var(--oc-diff-addition); }
 .oc-count .d { color: var(--oc-diff-deletion); margin-left: 4px; }
 
+/* Right panel: toolbar over the list. Main-area tab: one file filling the tab. */
+.oc-diff.oc-diff-list, .oc-diff.oc-diff-tab { grid-template-columns: minmax(0, 1fr); }
+.oc-diff.oc-diff-tab { grid-template-rows: minmax(0, 1fr); position: relative; }
+.oc-diff-tab .oc-next-unread { position: absolute; right: 16px; bottom: 12px; margin: 0; }
+.oc-diff-list .oc-changes { border-right: 0; }
+.oc-diff-list .oc-change-row { margin: 0 4px; border-radius: 6px; }
+.oc-diff-list .oc-change { padding: 5px 8px; border-radius: 6px; font-size: 13px; }
+.oc-diff-tab .oc-file { border-radius: 0; border-width: 0 0 1px; margin-bottom: 0; content-visibility: visible; }
 .oc-files { overflow: auto; min-width: 0; padding: 8px 12px 40px; }
+.oc-diff-tab .oc-files { padding: 0 0 40px; }
 .oc-next-unread { position: sticky; bottom: 12px; display: block; width: fit-content; margin: 0 0 0 auto; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15); }
 .oc-file { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; content-visibility: auto; contain-intrinsic-size: auto 200px; }
 .oc-file-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--oc-diff-bg-gutter); border-bottom: 1px solid var(--border); font-size: 12px; }
@@ -75,29 +84,9 @@
 .oc-file-header label { display: inline-flex; gap: 4px; align-items: center; color: var(--muted); }
 .oc-file-note { padding: 10px 12px; color: var(--muted); font-size: 12px; }
 
-/* Lines never wrap: long lines scroll the file sideways, as in an editor. */
-.oc-code-scroll { overflow-x: auto; }
-.oc-code { min-width: 100%; border-collapse: collapse; font-family: var(--oc-diff-font); font-size: var(--oc-diff-font-size); line-height: var(--oc-diff-line-height); }
-/* Without table-layout: fixed, column widths come from the cells. */
-.oc-code td.num { min-width: 44px; width: 44px; box-sizing: border-box; }
-.oc-code td.sign { min-width: 16px; width: 16px; box-sizing: border-box; }
-.oc-code.split col.code { width: 50%; }
-.oc-code td { padding: 0 8px; vertical-align: top; white-space: pre; }
-.oc-code td.num { padding: 0 6px; text-align: right; color: var(--oc-diff-gutter-fg); background: var(--oc-diff-bg-gutter); user-select: none; cursor: pointer; white-space: nowrap; }
-.oc-code td.num:hover { color: var(--accent); }
-.oc-code td.sign { padding: 0 2px; user-select: none; color: var(--oc-diff-gutter-fg); }
-.oc-code .addition td.code, .oc-code td.code.addition { background: var(--oc-diff-bg-addition); }
-.oc-code .deletion td.code, .oc-code td.code.deletion { background: var(--oc-diff-bg-deletion); }
-.oc-code td.code.pad { background: var(--oc-diff-bg-gutter); }
-.oc-code tr:hover td.code { box-shadow: inset 0 0 0 999px var(--oc-diff-bg-hover); }
-.oc-code mark.addition { background: var(--oc-diff-bg-addition-emphasis); color: inherit; border-radius: 2px; }
-.oc-code mark.deletion { background: var(--oc-diff-bg-deletion-emphasis); color: inherit; border-radius: 2px; }
-.oc-code tr.gap td { background: var(--oc-diff-bg-separator); padding: 0; }
-.oc-gap { display: flex; align-items: center; gap: 10px; width: 100%; padding: 3px 8px; color: var(--muted); font: inherit; text-align: left; background: none; border: 0; cursor: pointer; }
-.oc-gap:hover:not(:disabled) { color: var(--text); }
-.oc-gap:disabled { cursor: default; }
-.oc-gap .chev { width: 28px; text-align: center; }
-.oc-code tr.annotation td { background: var(--oc-diff-annotation-bg); padding: 6px 10px; white-space: normal; font-family: var(--font-sans); }
+/* Pierre draws the code; it never wraps (overflow: scroll), as in Conductor's diff tab. */
+.oc-code-scroll { min-width: 0; font-family: var(--oc-diff-font); }
+.oc-code-scroll .oc-threads { padding: 6px 10px; font-family: var(--font-sans); white-space: normal; }
 
 /* parity:diff.comments-inline:ui  Review comment threads and composer. */
 .oc-threads { display: flex; flex-direction: column; gap: 8px; word-break: normal; }

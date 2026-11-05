@@ -9,6 +9,7 @@ on:
       - "package.json"
       - "package-lock.json"
       - "scripts/package-macos.sh"
+      - "scripts/fetch-bundled-tools.sh"
       - "tools/check_macos_bundle.py"
       - "tools/test_check_macos_bundle.py"
       - "evidence/packaging/**"

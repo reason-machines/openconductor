@@ -6,6 +6,7 @@ import {
   PersistThrottle,
   TABS_STORAGE_KEY,
   readSaved,
+  removeWorkspace,
   restoreCwds,
   restoreOutput,
   writeWorkspace,
@@ -171,4 +172,59 @@ test("saves of one terminal never overlap, and a failed save does not stop the n
   await Promise.all([p.flush("a"), p.flush("a"), p.flush("a")]);
   assert.equal(calls, 3);
   assert.equal(maxRunning, 1);
+});
+
+test("drop cancels a pending save and runs its step after a save already running", async () => {
+  const { timers, advance } = fakeTimers();
+  const log: string[] = [];
+  let finishSave!: () => void;
+  const p = new PersistThrottle(
+    (id) =>
+      new Promise<void>((r) => {
+        log.push(`save ${id} start`);
+        finishSave = () => {
+          log.push(`save ${id} end`);
+          r();
+        };
+      }),
+    timers,
+  );
+  const saving = p.flush("a");
+  await new Promise((r) => setImmediate(r));
+  p.schedule("a");
+  const dropped = p.drop("a", async () => void log.push("delete a"));
+  assert.equal(p.isPending("a"), false);
+  await new Promise((r) => setImmediate(r));
+  // The delete waits for the running save, so the save cannot write it back.
+  assert.deepEqual(log, ["save a start"]);
+  finishSave();
+  await Promise.all([saving, dropped]);
+  await advance(PERSIST_DELAY_MS * 2);
+  assert.deepEqual(log, ["save a start", "save a end", "delete a"]);
+});
+
+test("a failed drop step does not reject and does not stop later saves", async () => {
+  const { timers } = fakeTimers();
+  const saves: string[] = [];
+  const p = new PersistThrottle(async (id) => void saves.push(id), timers);
+  await p.drop("a", async () => {
+    throw new Error("backend gone");
+  });
+  await p.flush("a");
+  assert.deepEqual(saves, ["a"]);
+});
+
+test("removeWorkspace forgets one workspace's tabs and keeps the others", () => {
+  const store = memory();
+  store.setItem(
+    TABS_STORAGE_KEY,
+    JSON.stringify({
+      w1: { tabs: [{ id: "t1", title: "Terminal 1", cwd: "/a" }], activeId: "t1", next: 2 },
+      w2: { tabs: [{ id: "t2", title: "Terminal 1", cwd: "/b" }], activeId: "t2", next: 2 },
+    }),
+  );
+  removeWorkspace(store, "w1");
+  assert.deepEqual(Object.keys(readSaved(store)), ["w2"]);
+  removeWorkspace(store, "missing");
+  assert.deepEqual(Object.keys(readSaved(store)), ["w2"]);
 });
