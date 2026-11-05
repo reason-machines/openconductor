@@ -362,7 +362,7 @@ fn unarchive_brings_back_the_worktree_its_uncommitted_work_and_context() {
     assert!(teardown(&f.target, &p, false, Some(&root)).is_empty());
     assert!(!f.ws().exists());
 
-    let r = restore(&f.target, p.archive_commit.as_deref(), Some(&root)).unwrap();
+    let r = restore(&f.target, p.archive_commit.as_deref(), Some(&root), false).unwrap();
     assert_eq!(
         r,
         Restored {
@@ -395,22 +395,117 @@ fn unarchive_brings_back_the_worktree_its_uncommitted_work_and_context() {
 }
 
 #[test]
-fn unarchive_recreates_a_deleted_branch_at_the_archive_commit() {
-    let f = Fixture::new("restore-deleted");
-    write(f.ws(), "b.txt", "committed\n");
-    g(f.ws(), &["add", "."]);
-    g(f.ws(), &["commit", "-q", "-m", "work"]);
-    let head = g(f.ws(), &["rev-parse", "HEAD"]);
+fn restore_scenarios_follow_conductors_cwt() {
+    let f = Fixture::new("restore-scenarios");
+    write(f.ws(), "wip.txt", "unsaved\n");
+    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
+    teardown(&f.target, &p, false, None);
+    let commit = p.archive_commit.as_deref();
+    assert_eq!(restore_scenario(&f.target, commit), None);
+
+    // Checked out by another worktree.
+    let other = f.tmp.0.join("other");
+    g(
+        f.repo(),
+        &["worktree", "add", "-q", other.to_str().unwrap(), "sven/ws"],
+    );
+    assert_eq!(
+        restore_scenario(&f.target, commit),
+        Some(RestoreScenario::BranchTaken)
+    );
+    // Moved since the archive (taken wins while it is checked out).
+    write(&other, "later.txt", "later\n");
+    g(&other, &["add", "."]);
+    g(&other, &["commit", "-q", "-m", "later"]);
+    g(
+        f.repo(),
+        &["worktree", "remove", "--force", other.to_str().unwrap()],
+    );
+    assert_eq!(
+        restore_scenario(&f.target, commit),
+        Some(RestoreScenario::BranchDiverged)
+    );
+    // A row archived without a commit cannot have diverged.
+    assert_eq!(restore_scenario(&f.target, None), None);
+    // Deleted.
+    g(f.repo(), &["branch", "-D", "sven/ws"]);
+    assert_eq!(
+        restore_scenario(&f.target, commit),
+        Some(RestoreScenario::BranchDeleted)
+    );
+    assert_eq!(RestoreScenario::BranchDeleted.as_str(), "branchDeleted");
+}
+
+#[test]
+fn branch_names_count_up_like_conductors_hf() {
+    assert_eq!(next_branch_name("sven/ws"), "sven/ws-v1");
+    assert_eq!(next_branch_name("sven/ws-v1"), "sven/ws-v2");
+    assert_eq!(next_branch_name("a-v1-v9"), "a-v1-v10");
+    assert_eq!(next_branch_name("my-very"), "my-very-v1");
+    assert_eq!(next_branch_name("-v3"), "-v3-v1");
+}
+
+#[test]
+fn restore_to_new_branch_skips_taken_names_and_keeps_the_work() {
+    let f = Fixture::new("restore-new-branch");
+    write(f.ws(), "wip.txt", "unsaved\n");
+    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
+    teardown(&f.target, &p, false, None);
+    let commit = p.archive_commit.as_deref();
+    // The branch moved on, and `-v1` is already taken locally.
+    let other = f.tmp.0.join("other");
+    g(
+        f.repo(),
+        &["worktree", "add", "-q", other.to_str().unwrap(), "sven/ws"],
+    );
+    write(&other, "later.txt", "later\n");
+    g(&other, &["add", "."]);
+    g(&other, &["commit", "-q", "-m", "later"]);
+    g(
+        f.repo(),
+        &["worktree", "remove", "--force", other.to_str().unwrap()],
+    );
+    g(f.repo(), &["branch", "sven/ws-v1"]);
+
+    let new_branch = create_restore_branch(&f.target, commit).unwrap();
+    assert_eq!(new_branch, "sven/ws-v2");
+    assert_eq!(g(f.repo(), &["rev-parse", "sven/ws-v2"]), commit.unwrap());
+    let mut t = f.target.clone();
+    t.branch = new_branch;
+    let r = restore(&t, commit, None, true).unwrap();
+    assert!(r.recreated_branch && r.restored_changes, "{r:?}");
+    assert_eq!(g(f.ws(), &["branch", "--show-current"]), "sven/ws-v2");
+    assert_eq!(
+        fs::read_to_string(f.ws().join("wip.txt")).unwrap(),
+        "unsaved\n"
+    );
+    // The moved branch keeps its commit.
+    assert!(!f.ws().join("later.txt").exists());
+    assert_ne!(g(f.repo(), &["rev-parse", "sven/ws"]), commit.unwrap());
+}
+
+#[test]
+fn restore_to_new_branch_of_a_deleted_branch_without_commit_refuses() {
+    let f = Fixture::new("restore-new-branch-old");
     let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
     teardown(&f.target, &p, true, None);
-    assert!(!f.branch_exists("sven/ws"));
+    assert!(create_restore_branch(&f.target, None)
+        .unwrap_err()
+        .starts_with("Cannot restore workspace: branch \"sven/ws\" was deleted or renamed."));
+}
 
-    let r = restore(&f.target, p.archive_commit.as_deref(), None).unwrap();
-    assert!(r.recreated_branch && r.restored_changes);
-    assert_eq!(g(f.ws(), &["rev-parse", "HEAD"]), head);
+#[test]
+fn unarchive_copies_the_gitignored_include_files_back() {
+    let f = Fixture::new("restore-include");
+    write(f.repo(), ".gitignore", ".env\n");
+    write(f.repo(), ".env", "SECRET_NAME=x\n");
+    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
+    teardown(&f.target, &p, false, None);
+    let r = restore(&f.target, p.archive_commit.as_deref(), None, false).unwrap();
+    assert!(r.notices.is_empty(), "{r:?}");
     assert_eq!(
-        fs::read_to_string(f.ws().join("b.txt")).unwrap(),
-        "committed\n"
+        fs::read_to_string(f.ws().join(".env")).unwrap(),
+        "SECRET_NAME=x\n"
     );
 }
 
@@ -424,13 +519,21 @@ fn unarchive_refuses_what_conductor_refuses() {
     let mut no_branch = f.target.clone();
     no_branch.branch = String::new();
     assert_eq!(
-        restore(&no_branch, commit, None).unwrap_err(),
+        restore(&no_branch, commit, None, false)
+            .unwrap_err()
+            .to_string(),
         "Cannot rehydrate workspace without branch information"
     );
 
     fs::create_dir_all(f.ws()).unwrap();
     assert_eq!(
-        restore(&f.target, commit, None).unwrap_err(),
+        restore(&f.target, commit, None, false).unwrap_err(),
+        RestoreError::DirectoryExists(f.ws().to_path_buf())
+    );
+    assert_eq!(
+        restore(&f.target, commit, None, false)
+            .unwrap_err()
+            .to_string(),
         format!("Can't unarchive: {} already exists", f.ws().display())
     );
     fs::remove_dir_all(f.ws()).unwrap();
@@ -441,7 +544,9 @@ fn unarchive_refuses_what_conductor_refuses() {
         &["worktree", "add", "-q", other.to_str().unwrap(), "sven/ws"],
     );
     assert_eq!(
-        restore(&f.target, commit, None).unwrap_err(),
+        restore(&f.target, commit, None, false)
+            .unwrap_err()
+            .to_string(),
         format!(
             "Branch 'sven/ws' is already checked out at {}",
             other.display()
@@ -454,46 +559,10 @@ fn unarchive_refuses_what_conductor_refuses() {
 
     g(f.repo(), &["branch", "-D", "sven/ws"]);
     assert_eq!(
-        restore(&f.target, None, None).unwrap_err(),
+        restore(&f.target, None, None, false)
+            .unwrap_err()
+            .to_string(),
         "Branch 'sven/ws' no longer exists"
     );
     assert!(!f.ws().exists());
-}
-
-#[test]
-fn unarchive_leaves_the_checkpoint_when_the_branch_moved_since() {
-    let f = Fixture::new("restore-moved");
-    write(f.ws(), "wip.txt", "unsaved\n");
-    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
-    teardown(&f.target, &p, false, None);
-    // Someone commits on the branch from elsewhere after the archive.
-    let elsewhere = f.tmp.0.join("elsewhere");
-    g(
-        f.repo(),
-        &[
-            "worktree",
-            "add",
-            "-q",
-            elsewhere.to_str().unwrap(),
-            "sven/ws",
-        ],
-    );
-    write(&elsewhere, "later.txt", "later\n");
-    g(&elsewhere, &["add", "."]);
-    g(&elsewhere, &["commit", "-q", "-m", "later"]);
-    let moved = g(&elsewhere, &["rev-parse", "HEAD"]);
-    g(
-        f.repo(),
-        &["worktree", "remove", "--force", elsewhere.to_str().unwrap()],
-    );
-
-    let r = restore(&f.target, p.archive_commit.as_deref(), None).unwrap();
-    assert!(!r.restored_changes);
-    assert_eq!(r.notices.len(), 1);
-    assert!(r.notices[0]
-        .message
-        .starts_with("Uncommitted changes couldn't be recovered: branch 'sven/ws' has moved"));
-    // The branch keeps its new commit; nothing was reset.
-    assert_eq!(g(f.ws(), &["rev-parse", "HEAD"]), moved);
-    assert!(!f.ws().join("wip.txt").exists());
 }

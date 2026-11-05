@@ -84,6 +84,9 @@ pub struct AppPrefs {
     pub sidebar_resource_usage: bool,
     pub message_send_key: MessageSendKey,
     pub default_message_send_mode: FollowUpMode,
+    /// "Use Claude Code with Chrome": Claude Code chats start with
+    /// `--chrome` (the reference sidecar's `extraArgs: { chrome: null }`).
+    pub chrome_mode_enabled: bool,
 }
 
 /// `"true"` / `"false"`, anything else (or no row) is `default`.
@@ -173,6 +176,9 @@ impl AppPrefs {
                 Some("queued") => FollowUpMode::Queued,
                 _ => FollowUpMode::Steering,
             },
+            // The reference reads it as `=== "true"`.
+            chrome_mode_enabled: rows.get(keys::CHROME_MODE_ENABLED).map(String::as_str)
+                == Some("true"),
         }
     }
 }
@@ -204,6 +210,7 @@ pub enum AppPrefUpdate {
     MessageSendKey(MessageSendKey),
     /// Written as `queued` / `steering` (the reference's `JUt`).
     DefaultMessageSendMode(FollowUpMode),
+    ChromeModeEnabled(bool),
 }
 
 /// What an update does to the table.
@@ -255,6 +262,7 @@ impl AppPrefUpdate {
                 keys::DEFAULT_MESSAGE_SEND_MODE,
                 m.as_str().into(),
             )),
+            ChromeModeEnabled(v) => b(keys::CHROME_MODE_ENABLED, *v),
         }
     }
 }

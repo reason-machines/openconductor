@@ -30,6 +30,8 @@ export interface AppPrefs {
   message_send_key: SendKeyMode;
   /** "Follow-up behavior": what a message sent while the agent works does by default. */
   default_message_send_mode: FollowUpMode;
+  /** "Use Claude Code with Chrome" (Settings › Agents › Claude Code): Claude Code chats start with `--chrome`. */
+  chrome_mode_enabled: boolean;
 }
 
 /** One typed write: `{ key: "garry_mode", value: true }`. */
@@ -42,7 +44,8 @@ export type AppPrefUpdate =
         | "graphite_disabled"
         | "left_panel_visible"
         | "right_panel_visible"
-        | "sidebar_resource_usage";
+        | "sidebar_resource_usage"
+        | "chrome_mode_enabled";
       value: boolean;
     }
   | { key: "left_panel_width" | "onboarding_step" | "first_time_onboarding_step"; value: number }
@@ -71,6 +74,7 @@ export const DEFAULT_APP_PREFS: AppPrefs = {
   sidebar_resource_usage: false,
   message_send_key: "enter",
   default_message_send_mode: "steering",
+  chrome_mode_enabled: false,
 };
 
 /** The state an update leads to, for the optimistic copy and the browser fallback. */
