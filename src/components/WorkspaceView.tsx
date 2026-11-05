@@ -8,7 +8,7 @@ import { Transcript } from "../features/chat/Transcript.tsx";
 import { DiffViewer } from "../features/diff/DiffViewer";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
-import { useKeybindings } from "../palette/useKeybindings.ts";
+import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 
 interface Props {
   repo: Repo;
