@@ -1,7 +1,7 @@
 {
   "schema": "openconductor.parity-verdicts.v1",
   "ref": "origin/main",
-  "verified_at": "2026-11-05 (main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+  "verified_at": "2026-11-05 (main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
   "method": "Read on main: src/, src-tauri/src/, crates/. 'backend' = logic or a command exists and is tested, but no UI path reaches it.",
   "items": {
     "sidebar.home-entry": {
@@ -29,8 +29,8 @@
       "why": "The My workspaces menu (HeaderMenu in Sidebar.tsx) runs openProject in App.tsx: folder picker, inspect_project_folder, add_repository, which now records the repo in conductor.db (on_repository_added)."
     },
     "sidebar.ws-name": {
-      "verdict": "partial",
-      "why": "Rename now sets user_set_workspace_name (#315: RenameWorkspaceDialog -> db_rename_workspace with userSet true), reposFromDb maps it and workspaceLabel (src/components/sidebarLabel.ts) shows a user-set name first, then the saved PR title (#344), then the prettified branch unless it is the target branch, then the directory name. REA on Conductor's $V (renderApp-D_fmY7hW.js @2,153,907) shows two differences left: (1) after a user-set name Conductor shows any stored workspace_name before the PR title even when it is not user-set ('if(e)return e'); ours skips a non-user-set workspace_name and goes to the PR title; (2) Conductor strips the configured branch prefix before prettifying (pGe({branch, branchPrefix}) via zce); workspaceLabel accepts no prefix, so a branch like 'sven/dark-mode' shows 'Sven/dark mode' instead of 'Dark mode'. The PR title also still refreshes only after the workspace is opened and its PR read."
+      "verdict": "implemented",
+      "why": "#370 on 66a892a: workspaceLabel (src/components/sidebarLabel.ts, tested) follows Conductor's $V (renderApp-D_fmY7hW.js @2,153,907): a user-set name, then any stored workspace_name (reposFromDb maps workspaceName), then the PR title, then the branch prettified with the configured branch prefix stripped (useBranchPrefix; 'sven/dark-mode' -> 'Dark mode'), unless it equals intended_target_branch ?? 'main', else the directory name. Rename sets user_set_workspace_name (#315). The PR title now refreshes for every on-screen row through the 5-minute sidebar PR poll (sidebarPrPoll.ts), not only the open workspace."
     },
     "sidebar.ws-branch": {
       "verdict": "implemented",
@@ -38,7 +38,7 @@
     },
     "sidebar.ws-status": {
       "verdict": "partial",
-      "why": "Judged against Conductor's row-icon chain. rowStatus.ts and RowStatusIcon.tsx are on main and SidebarWorkspaceRow uses them. #344 persists derived_status (setWorkspaceDerivedStatus) but the icon never reads it; the PR rules read only ws.pr, which only the open WorkspaceView's onLookup sets (rowPrOf) and which is not stored, so PR states never reach other rows or survive a restart. Session status is still only working/idle, so the needs-* and waiting states never show."
+      "why": "On 66a892a the row icon follows Conductor's chain: rowStatus({workspaceState: ws.state, session, pr: ws.pr}). #370 closed two gaps: the session status is now aggregated over every chat of the workspace (reasonChat chatStatuses -> workspaceSessionStatus, nTr order), and every on-screen row polls its PR every 5 minutes like Conductor's G5e (sidebarPrPoll.ts / sidebarPrPoller.ts, batched per repository), so PR states reach rows that are not open and come back after a restart once the row is on screen. Still missing: the chat queue's SessionStatus is only idle/working/cancelling/error, so needs_plan_response, needs_user_permission, needs_user_input and waiting never reach the icon."
     },
     "sidebar.ws-diffstat": {
       "verdict": "implemented",
@@ -53,12 +53,12 @@
       "why": "Pin/unpin from the row menu or P, and a Pinned group above My workspaces (src/state/sidebarOrder.ts, SidebarSections.tsx). In the desktop app the store writes each change through the registered db_set_workspace_pinned (sidebarPersist.ts, sidebar_workspace_commands.rs), which sets workspaces.pinned_at; reposFromDb maps it back on reload."
     },
     "sidebar.sections": {
-      "verdict": "missing",
-      "why": "Only the fixed My workspaces header; no crate code or Tauri command touches navigation_sections and there is no create/rename/delete/move UI."
+      "verdict": "implemented",
+      "why": "#370 on 66a892a: the section header menu (Edit section, New section…, Delete section) and the sidebar's 'New section…' open SectionDialog (name + emoji); the row menu's Move to section ▸ lists every section, 'New section…' (creates one holding the workspace) and 'Remove from section'. The edits are pure functions after Conductor's index-chunk _Y/SY/wY/yY/kY/V2 (src/state/navigationSections.ts, tested), the projection follows renderApp usa (first section wins, archived and hidden-repo workspaces left out, newest first), and the whole layout is read and written through db_read_navigation_sections / db_write_navigation_sections (sidebar_section_commands.rs, registered in lib.rs) into conductor.db's navigation_sections tables with Conductor's tve updatedAt stamp. Not wired: reorderSection (bY) has no UI yet; that belongs with sidebar.drag-to-section."
     },
     "sidebar.drag-to-section": {
       "verdict": "missing",
-      "why": "No drag and drop in src and no user sections to drop onto."
+      "why": "Still missing on 66a892a: the only drag and drop in the sidebar reorders repository groups (sb-repo-header draggable / dropOn). Workspace rows are not draggable and sections are not drop targets; #370 added sections but moves a workspace only through the row menu's Move to section."
     },
     "sidebar.ws-numbers": {
       "verdict": "partial",
@@ -98,7 +98,7 @@
     },
     "sidebar.ws-actions": {
       "verdict": "partial",
-      "why": "Right-clicking a row opens WorkspaceActionsMenu.tsx with mark read/unread (R), pin/unpin (P), Set status, Archive and, since #315, Rename (opens the Rename workspace dialog). Still missing: Copy link (Cmd+Shift+C) and Move to section, which the menu file notes as not built (no URL scheme, no sections)."
+      "why": "On 66a892a the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status ▸, Move to section ▸ (#370: every section, New section…, Remove from section), Rename (#315) and Archive. Still missing: Copy link (Cmd+Shift+C); WorkspaceActionsMenu.tsx notes it is not built because there is no URL scheme."
     },
     "sidebar.empty-state": {
       "verdict": "implemented",

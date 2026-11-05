@@ -55,7 +55,10 @@ interface Chat {
   /** Repository the chat's workspace belongs to, for its effective `prompts.general`. */
   repoPath: string | null;
   opened: boolean;
-  config: ReasonConfig[];
+  /** Options for the Session `session/new` creates; the first prompt waits for them. */
+  config: ReasonConfig[] | Promise<ReasonConfig[]>;
+  /** The chat's options were picked (New workspace dialog, review model), so the default does not replace them. */
+  configured: boolean;
   /** Turns shown as running whose prompt has not reached Reason yet. */
   unsent: Set<string>;
   /** Unsent turns the user stopped: they end cancelled instead of being sent. */
@@ -75,7 +78,7 @@ export const REASON_CAN_STEER = true;
 function chat(chatId: string): Chat {
   let c = chats.get(chatId);
   if (!c) {
-    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, repoPath: null, opened: false, config: [], unsent: new Set(), stopped: new Set(), listeners: new Set() };
+    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, repoPath: null, opened: false, config: [], configured: false, unsent: new Set(), stopped: new Set(), listeners: new Set() };
     chats.set(chatId, c);
   }
   stored(c);
@@ -133,11 +136,46 @@ function apply(c: Chat, step: Step) {
   }
 }
 
+// Every chat's session status (Conductor's `sessions.status`), so a sidebar
+// row can show its workspace's agent while that workspace is not open: chats
+// keep running here after their view unmounts. Closed (hidden) chats drop out,
+// as Conductor folds only a workspace's visible sessions.
+let statuses: ReadonlyMap<string, Q.SessionStatus> = new Map();
+const hiddenChats = new Set<string>();
+const statusListeners = new Set<() => void>();
+
+function publishStatus(c: Chat) {
+  const id = c.state.chatId;
+  const status = hiddenChats.has(id) ? undefined : c.queue.status;
+  if (statuses.get(id) === status) return;
+  const next = new Map(statuses);
+  if (status === undefined) next.delete(id);
+  else next.set(id, status);
+  statuses = next;
+  for (const fn of statusListeners) fn();
+}
+
+/** Chat id → session status of every visible chat; a new map on each change. */
+export const chatStatuses = (): ReadonlyMap<string, Q.SessionStatus> => statuses;
+
+export function subscribeChatStatuses(fn: () => void): () => void {
+  statusListeners.add(fn);
+  return () => statusListeners.delete(fn);
+}
+
+/** A closed chat tab: its agent no longer counts toward the workspace's status. */
+export function hideChat(chatId: string): void {
+  hiddenChats.add(chatId);
+  const c = chats.get(chatId);
+  if (c) publishStatus(c);
+}
+
 function setQueue(c: Chat, step: Q.QueueStep | Q.ChatQueue) {
   const { queue, effects } = "effects" in step ? step : { queue: step, effects: [] };
   if (queue !== c.queue) {
     c.queue = queue;
     notify(c);
+    publishStatus(c);
   }
   for (const e of effects) run(c, e);
 }
@@ -190,7 +228,8 @@ async function prompt(c: Chat, text: string, attachments: PromptAttachment[]): P
   try {
     await ensureListening();
     if (!c.opened) {
-      await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)), config: c.config });
+      const config = await c.config;
+      await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)), config });
       c.opened = true;
     }
     c.unsent.delete(turnId);
@@ -264,9 +303,25 @@ export function sendReason(chatId: string, cwd: string, text: string, attachment
   submitChat(chatId, cwd, text, "queue", attachments, repoPath);
 }
 
-/** Session options for a chat that has not sent its first message; set when Reason creates its Session. */
+/**
+ * Session options for a chat that has not sent its first message; set when
+ * Reason creates its Session. A chat whose Session exists keeps its options.
+ */
 export function configureReason(chatId: string, config: ReasonConfig[]): void {
-  chat(chatId).config = config;
+  const c = chat(chatId);
+  c.config = config;
+  c.configured = true;
+}
+
+/**
+ * The options a chat starts with when none were picked (the default model);
+ * the first prompt waits for them, and a failed lookup leaves Reason's default.
+ */
+export function configureReasonDefault(chatId: string, config: Promise<ReasonConfig[]>): void {
+  const c = chat(chatId);
+  if (c.configured || c.opened) return;
+  c.config = config.catch(() => []);
+  c.configured = true;
 }
 
 /** Stop. A second Stop while the first is pending asks Reason to stop hard. */

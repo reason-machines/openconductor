@@ -15,6 +15,7 @@
 //   5-6. two turns that write files; each saved start/end checkpoints
 //   7. "Reset chat" on turn 5   "Reset chat?" says 2 changed; Reset deletes
 //                        turn 6 and restores turn 5's files
+//   The Session runs Settings' default model (set before the chat opens).
 //
 // Usage (under a display, e.g. xvfb-run):
 //   node tools/e2e/reason-chat.e2e.mjs <path to the built app binary>
@@ -151,7 +152,10 @@ try {
   const seeded = await runAsync(
     `const done = arguments[arguments.length - 1];
      const invoke = window.__TAURI_INTERNALS__.invoke;
-     invoke("add_repository", { path: arguments[0] })
+     // The workspace chat's model comes from Settings' default model (#271).
+     invoke("get_settings")
+       .then((s) => invoke("update_settings", { settings: { ...s, models: { ...s.models, default: "opus-5-5-1m" } } }))
+       .then(() => invoke("add_repository", { path: arguments[0] }))
        .then((repo) => invoke("create_workspace", { repositoryId: repo.id, branchName: "e2e", directoryName: "e2e", baseBranch: null, existingBranch: false, prNumber: null }))
        .then((created) => done({ workspace: created.workspace }), (err) => done({ error: String(err) }));`,
     project,
@@ -275,9 +279,12 @@ try {
   await screenshot("reason-chat-after-reset");
   pass("Reset deleted turn 6 and restored the files: notes.txt is back to one, extra.txt is gone");
 
-  const sessions = Object.keys(JSON.parse(readFileSync(join(home, "state.json"), "utf8")).sessions);
+  const stored = JSON.parse(readFileSync(join(home, "state.json"), "utf8")).sessions;
+  const sessions = Object.keys(stored);
   assert.deepEqual(sessions, ["sess-1"], "one Reason Session for the workspace");
   pass(`the fake CLI saw one Session: ${sessions.join(", ")}`);
+  assert.equal(stored["sess-1"].config?.model, "byok:anthropic:claude-opus-5-5", JSON.stringify(stored["sess-1"]));
+  pass("the Session runs Settings' default model: session/set_config_option model=byok:anthropic:claude-opus-5-5");
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {

@@ -3,8 +3,10 @@ import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { chatSnapshot, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
+import { chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { defaultChatConfig } from "../features/chat/chatModel.ts";
+import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
 import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
@@ -110,6 +112,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       inputRef.current?.focus();
     }
     const unsubscribe = subscribeChat(chatId, setSnapshot);
+    // The workspace's chat runs the default model unless the New workspace dialog picked one.
+    if (main) configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
     if (pendingMessage?.kind === "send") submit(pendingMessage.text, "queue", pendingMessage.attachments);
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {

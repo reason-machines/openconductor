@@ -2,14 +2,22 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`df07012`, 2026-11-05)
+## Result on main (`66a892a`, 2026-11-05)
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `4b9dc87` | `d8b3b2e` |
-|---|---|---|---|---|---|---|---|---|---|
-| Sidebar | 33 | 18 | 10 | 1 | 4 | 0 | **70.5%** | 65.9% | 65.9% |
-| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 85.3% | 62.5% |
-| Create workspace | 17 | 14 | 2 | 0 | 1 | 0 | **88.2%** | 82.4% | 79.4% |
-| **All** | 68 | 45 | 16 | 1 | 5 | 1 | **79.5%** | 75.0% | 68.4% |
+| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `df07012` | `4b9dc87` | `d8b3b2e` |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Sidebar | 33 | 20 | 9 | 1 | 3 | 0 | **75.0%** | 70.5% | 65.9% | 65.9% |
+| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 85.3% | 62.5% |
+| Create workspace | 17 | 14 | 2 | 0 | 1 | 0 | **88.2%** | 88.2% | 82.4% | 79.4% |
+| **All** | 68 | 47 | 15 | 1 | 4 | 1 | **81.7%** | 79.5% | 75.0% | 68.4% |
+
+**Since `df07012`.** Read on `66a892a`. Merges: #370 (sidebar sections, row status from every chat, 5-minute PR lookup for on-screen rows, Conductor's label rule), `407e222` (#271, #365: chat model/effort and queue keys; no item here), #384 (evidence only), #345 and #386 (settings rows and settings in conductor.db; no item here).
+
+- `sidebar.sections` missing to implemented (#370): create, edit (name and emoji) and delete from the section header menu and New section…; Move to section ▸ and Remove from section in the row menu. Edits follow Conductor's `_Y`/`SY`/`wY`/`yY`/`kY`/`V2`, the projection follows `usa`, and the whole layout goes through `db_read_navigation_sections` / `db_write_navigation_sections` into conductor.db. Section reorder (`bY`) has no UI yet.
+- `sidebar.ws-name` partial to implemented (#370): a stored `workspace_name` now shows before the PR title even when not user-set, the configured branch prefix is stripped before prettifying, and the target is `intended_target_branch ?? "main"`, as in Conductor's `$V`.
+- `sidebar.ws-actions` stays partial, narrower: Move to section ▸ is in the row menu; only Copy link (Cmd+Shift+C) is missing.
+- `sidebar.ws-status` stays partial, narrower: the session status is aggregated over every chat of the workspace and every on-screen row polls its PR every 5 minutes (Conductor's `G5e`). The chat queue still has only idle/working/cancelling/error, so the needs-* and waiting states never reach the icon.
+- `sidebar.drag-to-section` stays missing: the sidebar's only drag reorders repository groups; rows are not draggable and sections are not drop targets.
 
 **Since `4b9dc87`.** Read on `0f82f19`. Merges: #315 (sidebar repo icon, Rename workspace dialog, Filter by project mount with `sidebar_repo_filter` in conductor.db), #383 (an E2E test only, no item), #323 (this folder only). Main has since moved to `247d5a1` (#345, #386, #392: settings rows, settings in conductor.db, packaging records), which touches no sidebar, Home or create code; `colored_sidebar_diffs` moving into the settings table does not change `ws-diffstat`. `df07012` (#366, archive on merge for every workspace) registers `db_unarchive_workspace`, reached only from the archive-on-merge toast's Unarchive, so `sidebar.archived-view` stays backend only with new detail; its PR polling dispatches no row PR state, so `ws-status` is unchanged. #305 was re-read: its squash title says evidence, but it carries the numbering code, so the earlier "evidence only" reading of it was wrong.
 
