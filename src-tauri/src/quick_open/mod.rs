@@ -24,6 +24,11 @@ use nucleo_matcher::{Config, Matcher, Utf32Str};
 use serde::{Deserialize, Serialize};
 use unicode_segmentation::UnicodeSegmentation;
 
+/// `#[tauri::command]` wrappers. Excluded from the standalone test build
+/// (`--cfg quick_open_std_only`, see evidence/quick_open/run-tests.sh).
+#[cfg(not(quick_open_std_only))]
+pub mod commands;
+
 #[cfg(test)]
 mod tests;
 

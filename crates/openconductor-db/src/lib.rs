@@ -15,6 +15,7 @@ use sqlx::migrate::Migrator;
 use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePool, SqlitePoolOptions};
 
 pub mod repos;
+pub mod workspaces;
 
 /// Every schema migration, embedded from `migrations/`.
 pub static MIGRATOR: Migrator = sqlx::migrate!("./migrations");
@@ -55,4 +56,19 @@ pub async fn open_in_memory() -> Result<SqlitePool> {
         .await?;
     MIGRATOR.run(&pool).await?;
     Ok(pool)
+}
+
+type Query<'a> = sqlx::query::Query<'a, sqlx::Sqlite, sqlx::sqlite::SqliteArguments<'a>>;
+
+/// Run a write and return how many rows it changed.
+async fn exec<'a>(query: Query<'a>, pool: &SqlitePool) -> Result<u64> {
+    Ok(query.execute(pool).await?.rows_affected())
+}
+
+/// Run a write that must hit a row; no row is [`Error::NotFound`].
+async fn exec_one<'a>(query: Query<'a>, pool: &SqlitePool) -> Result<()> {
+    match exec(query, pool).await? {
+        0 => Err(Error::NotFound),
+        _ => Ok(()),
+    }
 }

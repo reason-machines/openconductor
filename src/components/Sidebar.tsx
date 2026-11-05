@@ -15,11 +15,12 @@ const STATUS_LABEL: Record<Workspace["status"], string> = {
 interface Props {
   state: AppState;
   dispatch: Dispatch<Action>;
-  onOpenDialog: (d: DialogKind) => void;
+  onOpenDialog: (d: DialogKind, repoId?: string) => void;
+  onOpenProject: () => void;
   info: AppInfo | null;
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, info }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, info }: Props) {
   const sel = state.selection;
   return (
     <aside className="sidebar" aria-label="Repositories and workspaces">
@@ -33,10 +34,14 @@ export function Sidebar({ state, dispatch, onOpenDialog, info }: Props) {
         <HomeIcon size={15} />
         <span>Home</span>
       </button>
+      <button className="nav-item" onClick={() => onOpenDialog("create")} title="New workspace (⌘N)">
+        <PlusIcon size={15} />
+        <span>New workspace</span>
+      </button>
 
       <div className="sidebar-section-header">
         <span>Repositories</span>
-        <button className="icon-btn" title="Add repository" aria-label="Add repository" onClick={() => onOpenDialog("open")}>
+        <button className="icon-btn" title="Add repository" aria-label="Add repository" onClick={onOpenProject}>
           <PlusIcon size={14} />
         </button>
       </div>
@@ -50,7 +55,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, info }: Props) {
                 <ChevronIcon size={12} open={!repo.collapsed} />
                 <span className="repo-name">{repo.name}</span>
               </button>
-              <button className="icon-btn repo-add" title={`New workspace in ${repo.name}`} aria-label={`New workspace in ${repo.name}`} onClick={() => dispatch({ type: "newWorkspace", repoId: repo.id })}>
+              <button className="icon-btn repo-add" title={`New workspace in ${repo.name}`} aria-label={`New workspace in ${repo.name}`} onClick={() => onOpenDialog("create", repo.id)}>
                 <PlusIcon size={13} />
               </button>
             </div>

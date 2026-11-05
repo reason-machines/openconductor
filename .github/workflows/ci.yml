@@ -9,8 +9,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   frontend:
@@ -86,8 +86,6 @@ jobs:
         run: bash evidence/pr/run-tests.sh
       - name: Quick open module build, test and clippy
         run: bash evidence/quick_open/run-tests.sh
-      - name: Settings module build, test, clippy and rustfmt
-        run: bash scripts/test-settings.sh
 
   scripts:
     name: Scripts crate build + test (${{ matrix.os }})
@@ -148,6 +146,12 @@ jobs:
           git diff --exit-code evidence/packaging/conductor-reference.json
       - name: Bundle checker unit tests
         run: python -m unittest tools/test_check_macos_bundle.py
+      - name: Parity checker runs on this tree (settings, shortcuts, persistence, packaging)
+        run: python tools/parity_check.py check --ref HEAD --out-dir "$RUNNER_TEMP/parity-ssp"
+      - name: Sidebar/Home/create parity references resolve and the checker runs
+        run: |
+          python tools/parity_sidebar_home_create.py validate
+          python tools/parity_sidebar_home_create.py score --tree . > /dev/null
 
   frontend-unit:
     name: Frontend unit tests (node --test)

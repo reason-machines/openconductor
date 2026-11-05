@@ -1,0 +1,1431 @@
+{
+ "ref": "origin/main",
+ "source_files": 79,
+ "detector_parity_pct": 54.4,
+ "areas": {
+  "sidebar": {
+   "items": 33,
+   "implemented": 10,
+   "partial": 10,
+   "missing": 13,
+   "parity_pct": 45.5,
+   "verdict_implemented": 2,
+   "verdict_partial": 10,
+   "verdict_backend": 2,
+   "verdict_missing": 19,
+   "verdict_parity_pct": 22.7
+  },
+  "home": {
+   "items": 18,
+   "implemented": 6,
+   "partial": 5,
+   "missing": 7,
+   "parity_pct": 47.2,
+   "verdict_implemented": 2,
+   "verdict_partial": 7,
+   "verdict_backend": 1,
+   "verdict_missing": 8,
+   "verdict_parity_pct": 31.9
+  },
+  "create": {
+   "items": 17,
+   "implemented": 12,
+   "partial": 3,
+   "missing": 2,
+   "parity_pct": 79.4,
+   "verdict_implemented": 0,
+   "verdict_partial": 1,
+   "verdict_backend": 12,
+   "verdict_missing": 4,
+   "verdict_parity_pct": 20.6
+  }
+ },
+ "items": [
+  {
+   "id": "sidebar.home-entry",
+   "area": "sidebar",
+   "feature": "Sidebar entry that returns to Home, plus a keyboard command to go Home",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "HomeIcon|HomeButton|>Home<|kind:\\s*\"home\"",
+     "matched": true,
+     "file": "src/components/Icons.tsx"
+    },
+    {
+     "pattern": "go_?to_?home|goToHome|navigate\\w*\\(.{0,20}home",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "partial",
+   "why": "Sidebar Home button works (src/components/Sidebar.tsx); no go-to-Home shortcut is wired (keybinding registry declares commands only).",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.top-bar",
+   "area": "sidebar",
+   "feature": "Sidebar top bar with a sidebar toggle button and back/forward history arrows",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "toggle_?(left_?)?sidebar|toggleSidebar",
+     "matched": true,
+     "file": "src/App.tsx"
+    },
+    {
+     "pattern": "go_?back|goBack|history\\.back|navigate\\(-1\\)",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "go_?forward|goForward|history\\.forward",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No in-sidebar toggle button (toggle is keyboard-only, plus a Home button when hidden) and no back/forward navigation; the reference shows all three at the top of the sidebar.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.computer-switcher",
+   "area": "sidebar",
+   "feature": "Computer/account switcher at the top of the sidebar (initial avatar, name, chevron)",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "computer_?switcher|ComputerSwitcher|org_?switcher|OrgSwitcher|account_?switcher|AccountSwitcher",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "Sidebar starts with our logo and name; the reference starts with a computer/account switcher.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.primary-nav",
+   "area": "sidebar",
+   "feature": "Primary nav rows Home, Create and Search above the workspace list",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "HomeIcon|>Home<",
+     "matched": true,
+     "file": "src/components/Icons.tsx"
+    },
+    {
+     "pattern": "(nav|sidebar)\\w*.{0,60}create|CreateNav|create_?nav",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "(nav|sidebar)\\w*.{0,60}search|SearchNav|search_?nav",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "partial",
+   "why": "Home row only; no Create or Search rows.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.repo-groups",
+   "area": "sidebar",
+   "feature": "Workspaces listed under their repository, repositories as collapsible groups",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "(repo|repository)\\.workspaces|repository_?id",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "(collapsed|aria-expanded|toggleRepo|collapse_?repo)",
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
+    }
+   ],
+   "verdict": "implemented",
+   "why": "Repos render as collapsible groups with nested workspace rows (Sidebar.tsx, store toggleRepo).",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.workspaces-group",
+   "area": "sidebar",
+   "feature": "Workspace list grouped under a sentence-case 'my workspaces' label rather than an uppercase repositories header",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "my_?workspaces|myWorkspaces",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "We show an uppercase 'Repositories' header with a '+'; the reference shows a sentence-case 'my workspaces' label.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.repo-order",
+   "area": "sidebar",
+   "feature": "Manual, persisted ordering of repositories",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "display_?order",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    }
+   ],
+   "verdict": "backend",
+   "why": "crates/openconductor-db/src/repos.rs lists repos by display_order, created_at and appends new ones at the end, but the app does not depend on that crate and the sidebar renders insertion order from localStorage.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.repo-hide",
+   "area": "sidebar",
+   "feature": "Hide and unhide a repository, with a toggle to show hidden ones",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "repo\\.hidden|repos\\.hidden|hidden_?repo|hide_?repo|hideRepo|\\bhidden\\s+INTEGER",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "show_?hidden|unhide",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No hide/unhide; hidden column exists only in the unwired DB crate schema.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.repo-icon",
+   "area": "sidebar",
+   "feature": "Per-repository icon (icon, emoji, favicon or uploaded image) next to the repo name",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "repo\\.icon|repo_?icon|repoIcon|repos\\.icon",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "(emoji|favicon)",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+    }
+   ],
+   "verdict": "missing",
+   "why": "No repository icon support.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.add-repo",
+   "area": "sidebar",
+   "feature": "Add-repository control reachable from the sidebar",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "add_?repo",
+     "matched": true,
+     "file": "src-tauri/src/lib.rs"
+    }
+   ],
+   "verdict": "partial",
+   "why": "Sidebar '+' opens the Open-project dialog, which only appends to localStorage; it does not call the registered add_repository command.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.ws-name",
+   "area": "sidebar",
+   "feature": "Workspace row shows the workspace name, distinguishing user-set from generated names",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "workspace_?name|ws\\.name",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "user_?set_?(workspace_?)?name",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    }
+   ],
+   "verdict": "partial",
+   "why": "Row shows the name; no user-set vs generated distinction (user_set_* flags not modelled in the UI).",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.ws-branch",
+   "area": "sidebar",
+   "feature": "Workspace branch visible from the sidebar row",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "\\.branch\\b",
+     "matched": true,
+     "file": "src-tauri/src/workspace/commands.rs"
+    },
+    {
+     "pattern": "user_?set_?branch",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    }
+   ],
+   "verdict": "partial",
+   "why": "Branch appears only in the row tooltip.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.ws-status",
+   "area": "sidebar",
+   "feature": "Status indicator from a derived status with optional manual override (default in-progress)",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "(workspace|ws)\\.status|derived_?status|derivedStatus",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "derived_?status|derivedStatus",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "manual_?status|manualStatus",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    }
+   ],
+   "verdict": "partial",
+   "why": "Status dot uses our own idle/working/needs-review/archived model, not derived/manual status with in-progress default (src/state/types.ts).",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.ws-diffstat",
+   "area": "sidebar",
+   "feature": "Line additions/deletions on each row, colored, with a setting to color unselected rows",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "diff_?stat|diffStat|\\.diff\\.added|lines_?added|additions",
+     "matched": true,
+     "file": "src-tauri/src/diff/model.rs"
+    },
+    {
+     "pattern": "\\.diff\\.removed|lines_?removed|deletions",
+     "matched": true,
+     "file": "src-tauri/src/diff/model.rs"
+    },
+    {
+     "pattern": "colored_?sidebar_?diffs?|sidebar_?diff_?colors?",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "partial",
+   "why": "+/- counts render from stored placeholder numbers; not computed from git, no colour setting.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.ws-unread",
+   "area": "sidebar",
+   "feature": "Unread marker, mark-as-unread action and jump-to-next-unread command",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "unread",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "(mark_?(as_?)?unread|markUnread)",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "next_?unread",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No unread state, action or command; column only in the unwired DB crate.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.ws-pinned",
+   "area": "sidebar",
+   "feature": "Pin workspaces into a pinned group at the top",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "pinned_?at|pinnedAt",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "\\bpin\\b|unpin",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No pinning; pinned_at only in the unwired DB crate.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.sections",
+   "area": "sidebar",
+   "feature": "User navigation sections: create, rename, delete, emoji; move a workspace into or out of a section",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "navigation_?sections?|nav_?section",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+    },
+    {
+     "pattern": "(move_?to_?section|moveToSection|section_?membership)",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+    }
+   ],
+   "verdict": "missing",
+   "why": "No sections UI or commands; navigation_sections only in crates/openconductor-db/migrations/0005_navigation_and_favorites.sql (unwired).",
+   "recheck": true
+  },
+  {
+   "id": "sidebar.drag-to-section",
+   "area": "sidebar",
+   "feature": "Drag a workspace row onto a section",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "(onDrop|draggable|dnd|useDrag)",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No drag and drop.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.ws-numbers",
+   "area": "sidebar",
+   "feature": "Workspace numbers shown optionally, with Cmd+1..9 switching",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "Digit[1-9]|key\\s*===?\\s*['\"][1-9]|(Cmd|Mod|Meta)\\+[1-9]|switch_?to_?workspace",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "workspace_?number|workspaceNumber|show_?workspace_?numbers",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No numbers or Cmd+1..9 handler; registry entries in src/keybindings are declarations without handlers.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.ws-next-prev",
+   "area": "sidebar",
+   "feature": "Next/previous workspace commands",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "next_?workspace|nextWorkspace",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "prev(ious)?_?workspace|prevWorkspace|previousWorkspace",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "Declared in the keybinding registry only; no handler.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.search",
+   "area": "sidebar",
+   "feature": "Search/filter workspaces",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "(search|filter)_?workspaces?|workspace_?(search|filter)",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No workspace search.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.rename",
+   "area": "sidebar",
+   "feature": "Rename a workspace (local only), optionally also renaming the branch",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "rename_?workspace|renameWorkspace",
+     "matched": true,
+     "file": "src/workspace/naming.ts"
+    },
+    {
+     "pattern": "rename_?branch|renameBranch",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    }
+   ],
+   "verdict": "missing",
+   "why": "No user rename. src/workspace/naming.ts plans the automatic first-message rename only, and is not imported by the UI.",
+   "recheck": true
+  },
+  {
+   "id": "sidebar.archive",
+   "area": "sidebar",
+   "feature": "Archive with confirmation, refusing while a git operation is in progress, recording an archive commit",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "archive_?workspace|archiveWorkspace",
+     "matched": true,
+     "file": "src/components/WorkspaceView.tsx"
+    },
+    {
+     "pattern": "archive_?commit|archiveCommit",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "archive[\\s\\S]{0,400}(busy|in progress)",
+     "matched": true,
+     "file": "src-tauri/src/workspace/mod.rs"
+    }
+   ],
+   "verdict": "partial",
+   "why": "UI archive (WorkspaceView) deletes the localStorage row without confirmation or busy check. Backend WorkspaceManager::archive has the busy guard and archive commit but is not a registered command.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.archived-view",
+   "area": "sidebar",
+   "feature": "Browse archived workspaces and unarchive one",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "archived_?workspaces|view_?archived",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "unarchive|restore_?workspace",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "backend",
+   "why": "WorkspaceManager::restore exists (src-tauri/src/workspace/mod.rs); no command, no UI.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.resize-toggle",
+   "area": "sidebar",
+   "feature": "Resizable sidebar and show/hide toggles for left and right sidebars",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "sidebar_?width|sidebarWidth|resize_?handle|ResizeHandle|col-resize",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "toggle_?(left_?)?sidebar|toggleSidebar",
+     "matched": true,
+     "file": "src/App.tsx"
+    }
+   ],
+   "verdict": "partial",
+   "why": "Toggle works via Cmd+B and '[' (src/state/shortcuts.ts, App.tsx); the sidebar is a fixed 248px column with no resize.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.footer-usage",
+   "area": "sidebar",
+   "feature": "Optional CPU/memory usage readout in the sidebar footer",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "(cpu|memory)_?usage|resource_?usage",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "Footer shows app name/version only.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.footer-actions",
+   "area": "sidebar",
+   "feature": "Sidebar footer with help and settings icon buttons",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "HelpIcon|help_?button|open_?help|openHelp",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "SettingsIcon|open_?settings|openSettings",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "Footer shows app name, version and platform text; the reference shows help and settings icon buttons.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.transparency",
+   "area": "sidebar",
+   "feature": "Sidebar transparency (vibrancy) setting",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "sidebar_?transparency|vibrancy",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No vibrancy/transparency.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.colors",
+   "area": "sidebar",
+   "feature": "Sidebar background, border and width match the reference screens in light and dark",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "--sidebar(-background)?\\s*:",
+     "matched": true,
+     "file": "src/styles.css"
+    },
+    {
+     "pattern": "(256px|left_?panel_?width)",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "Measured on REA captures at 1440x900: sidebar edge at x=248 vs 256; dark sidebar #121417 vs #1c1817; light sidebar #eeeeeb vs #fcfcfb. REA compare-web-screenshots (threshold 24): 3.1% (dark) / 5.4% (light) of sidebar pixels differ.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.ws-actions",
+   "area": "sidebar",
+   "feature": "Workspace actions menu on a row (copy info, rename, archive, pin, section)",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "(context_?menu|onContextMenu|workspace_?actions)",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No row context menu or actions menu.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.empty-state",
+   "area": "sidebar",
+   "feature": "Empty state when there are no repositories or workspaces",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "no repositories|no workspaces|empty_?state|EmptyState|repos\\.length\\s*===\\s*0|workspaces\\.length\\s*===\\s*0",
+     "matched": true,
+     "file": "crates/openconductor-db/src/repos.rs"
+    }
+   ],
+   "verdict": "implemented",
+   "why": "Muted single-line empty state matches evidence/screens/home.md.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.add-menu",
+   "area": "sidebar",
+   "feature": "Sidebar add menu offering the three Home actions plus recent local repositories not yet added (spinner while loading)",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "(add_?repo_?menu|AddRepoMenu|add_?menu)",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "recent_?(local_?)?repos|recentRepos|recents",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "'+' opens a dialog directly; no three-action menu, no recents.",
+   "recheck": false
+  },
+  {
+   "id": "sidebar.visibility-settings",
+   "area": "sidebar",
+   "feature": "Left sidebar visibility and width persisted as settings (default visible, width 256)",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "left_?panel_?visible|leftPanelVisible",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "left_?panel_?width|leftPanelWidth",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "partial",
+   "why": "Visibility persists inside the localStorage app state, not as a setting; width is fixed (248px vs evidence default 256).",
+   "recheck": true
+  },
+  {
+   "id": "home.route",
+   "area": "home",
+   "feature": "Home is the root route and the default screen",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "HomeScreen|HomePage|kind:\\s*\"home\"",
+     "matched": true,
+     "file": "src/App.tsx"
+    },
+    {
+     "pattern": "createRoute|createRootRoute|path:\\s*\"/\"|<Route",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "partial",
+   "why": "Home is the default screen, but there is no router or '/' route (selection state in src/state/store.ts).",
+   "recheck": false
+  },
+  {
+   "id": "home.org-states",
+   "area": "home",
+   "feature": "Home renders nothing while the organization loads and redirects a cloud organization to all-workspaces",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "(organization|org)\\w*.{0,60}(loading|isLoading)",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "(is_?cloud|isCloud|cloud_?org).{0,120}all-workspaces",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No organization concept; no loading or cloud redirect state.",
+   "recheck": false
+  },
+  {
+   "id": "home.layout",
+   "area": "home",
+   "feature": "Centered wordmark (light/dark variants) above three label-only entry cards in a 1-to-3 column grid, whole area a window drag region",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "Wordmark",
+     "matched": true,
+     "file": "src/components/HomeScreen.tsx"
+    },
+    {
+     "pattern": "data-tauri-drag-region",
+     "matched": true,
+     "file": "src/components/HomeScreen.tsx"
+    },
+    {
+     "pattern": "(grid-cols|grid-template-columns|home-entr|EntryCard)",
+     "matched": true,
+     "file": "src/components/HomeScreen.tsx"
+    }
+   ],
+   "verdict": "implemented",
+   "why": "Matches evidence/screens: three label-only cards in a 1-to-3 grid sit at the reference position (y 368-495; x offset 4 px from the narrower sidebar), wordmark centered above, drag region, fade-in. Differences: card icons for GitHub (cloud vs globe) and Quick start (sparkle vs folder-plus); the wordmark is our own brand by design.",
+   "recheck": false
+  },
+  {
+   "id": "home.colors",
+   "area": "home",
+   "feature": "Home background and entry-card fill match the reference screens in light and dark",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "--background\\s*:\\s*(hsl\\(24 10% 7%\\)|#141110)",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "--secondary\\s*:",
+     "matched": true,
+     "file": "src/styles.css"
+    }
+   ],
+   "verdict": "missing",
+   "why": "Measured: dark main #17191d vs #141110, dark card #24272d vs #211e1c; light main #f7f7f5 vs #ffffff, light card #efefec vs #fafaf9. Every pixel differs at threshold 0 (REA compare-web-screenshots).",
+   "recheck": false
+  },
+  {
+   "id": "home.sidebar-toggle",
+   "area": "home",
+   "feature": "When the left sidebar is hidden, Home shows a toggle button with its shortcut, offset past the traffic lights",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "(sidebar_?hidden|!\\s*\\w*(left)?\\w*sidebar\\w*visible|leftPanelVisible\\s*&&|!leftPanelVisible)",
+     "matched": true,
+     "file": "src/components/HomeScreen.tsx"
+    },
+    {
+     "pattern": "traffic_?lights?_?clearance|traffic-lights-clearance",
+     "matched": true,
+     "file": "src/styles.css"
+    }
+   ],
+   "verdict": "implemented",
+   "why": "Toggle shown only when the sidebar is hidden, with tooltip and shortcut hint (HomeScreen.tsx).",
+   "recheck": false
+  },
+  {
+   "id": "home.add-local",
+   "area": "home",
+   "feature": "Add an existing local repository via a folder picker, with default-branch detection",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "(pick_?folder|pickFolder|dialog.*open|open\\(\\{\\s*directory)",
+     "matched": true,
+     "file": "src/App.tsx"
+    },
+    {
+     "pattern": "default_?branch|defaultBranch",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "(detect_?default_?branch|symbolic-ref|rev-parse --abbrev-ref|remote show)",
+     "matched": true,
+     "file": "src-tauri/src/workspace/git.rs"
+    }
+   ],
+   "verdict": "partial",
+   "why": "Dialog with folder picker adds to localStorage with defaultBranch hard-coded to main; backend add_repository (git toplevel) and default_branch detection exist but are not called.",
+   "recheck": false
+  },
+  {
+   "id": "home.open-project-flow",
+   "area": "home",
+   "feature": "Open project: folder picker; no .git leads to an add dialog that offers git init; a missing origin (non-GitHub setting off) leads to the same dialog; otherwise add with a file:// remote; errors in a toast",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "needs_?git_?init|needsGitInit|\\.git\\b.{0,40}(exists|is_dir)",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "remote\\s+get-url|\"get-url\"",
+     "matched": true,
+     "file": "src-tauri/src/workspace/git.rs"
+    },
+    {
+     "pattern": "file://",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "backend",
+   "why": "Only the backend toplevel check exists (service.rs add_repository). No .git/init dialog, origin check, file:// remote or error toast.",
+   "recheck": false
+  },
+  {
+   "id": "home.clone-github",
+   "area": "home",
+   "feature": "Clone a GitHub repository by URL into a chosen folder, with progress",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "clone_?(repo|repository|dialog)|CloneDialog|cloneRepo",
+     "matched": true,
+     "file": "src/App.tsx"
+    },
+    {
+     "pattern": "remote_?url|remoteUrl|github\\.com",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "git\\s+clone|\"clone\"\\s*,",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "partial",
+   "why": "Dialog parses GitHub URLs but performs no clone and has no destination picker or progress.",
+   "recheck": false
+  },
+  {
+   "id": "home.new-project",
+   "area": "home",
+   "feature": "Create a new project: local folder, git init, optional private GitHub repo, then a first workspace",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "new_?project|create_?project|quick_?start|quickstart",
+     "matched": true,
+     "file": "src/App.tsx"
+    },
+    {
+     "pattern": "git_?init|init_?repo|initRepo|\"init\"\\s*[,\\]]",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "gh\\s+repo\\s+create|\"repo\",\\s*\"create\"",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "partial",
+   "why": "Quick start dialog with placeholder templates; no git init, no GitHub repo, no first workspace on disk.",
+   "recheck": false
+  },
+  {
+   "id": "home.duplicate-repo",
+   "area": "home",
+   "feature": "Refuse adding a repository that is already added",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "(repo|repository).{0,40}already (added|exists)|already (added|exists).{0,40}repo|duplicate_?repo|existing.{0,40}(path|remote)",
+     "matched": true,
+     "file": "src/state/store.ts"
+    }
+   ],
+   "verdict": "partial",
+   "why": "Store silently ignores a duplicate path/remote; no already-exists message. Backend add_repository returns the existing id.",
+   "recheck": false
+  },
+  {
+   "id": "home.no-repo-guard",
+   "area": "home",
+   "feature": "Home explains that a repository must be added before creating a workspace",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "(no repositor|add a repo|repos\\.length\\s*===\\s*0)",
+     "matched": true,
+     "file": "crates/openconductor-db/src/repos.rs"
+    }
+   ],
+   "verdict": "partial",
+   "why": "Sidebar empty line exists; creating a workspace with no repository is not reachable, and no Home explanation is shown.",
+   "recheck": false
+  },
+  {
+   "id": "home.status-overview",
+   "area": "home",
+   "feature": "Home shows workspaces with their status (status matrix option, mine vs all)",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "(status_?matrix|my_?workspaces|all_?workspaces)",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "Home shows no workspace list or statuses.",
+   "recheck": false
+  },
+  {
+   "id": "home.dashboard-routes",
+   "area": "home",
+   "feature": "Dashboard and all-workspaces routes",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "/dashboard",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "/all-workspaces",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No /dashboard or /all-workspaces screens.",
+   "recheck": false
+  },
+  {
+   "id": "home.recent",
+   "area": "home",
+   "feature": "Recent workspaces list",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "recent_?workspaces|recentWorkspaces",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No recent workspaces.",
+   "recheck": false
+  },
+  {
+   "id": "home.repo-search",
+   "area": "home",
+   "feature": "Search the repository list",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "(search|filter)_?repo",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No repository search.",
+   "recheck": false
+  },
+  {
+   "id": "home.recents",
+   "area": "home",
+   "feature": "Clone dialog shows recent repositories with loading placeholders and a screen-reader status",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "recent_?repos|recentRepos",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "(aria-busy|sr-only|role=\"status\")",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "Clone dialog has no recent repositories.",
+   "recheck": false
+  },
+  {
+   "id": "home.first-run",
+   "area": "home",
+   "feature": "First-run onboarding route before Home",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "(first_?run|onboarding)",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No onboarding.",
+   "recheck": false
+  },
+  {
+   "id": "home.persist",
+   "area": "home",
+   "feature": "Repositories and workspaces persist in SQLite (conductor.db shape), surviving restart",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "CREATE TABLE\\s+(IF NOT EXISTS\\s+)?\"?repos",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "CREATE TABLE\\s+(IF NOT EXISTS\\s+)?\"?workspaces",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    }
+   ],
+   "verdict": "partial",
+   "why": "UI state lives in localStorage; backend keeps a TSV repo registry; the Conductor-shaped SQLite schema in crates/openconductor-db is not used by the app.",
+   "recheck": false
+  },
+  {
+   "id": "create.entry",
+   "area": "create",
+   "feature": "Create-workspace action per repository (sidebar and Home)",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "(new_?workspace|create_?workspace|newWorkspace|createWorkspace)",
+     "matched": true,
+     "file": "src-tauri/src/lib.rs"
+    }
+   ],
+   "verdict": "partial",
+   "why": "Per-repo '+' instantly adds a localStorage row with an adjective-noun name; no dialog, no worktree.",
+   "recheck": false
+  },
+  {
+   "id": "create.page",
+   "area": "create",
+   "feature": "Full-screen create-workspace page with its own composer and tab navigation",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "create_?workspace_?page|CreateWorkspacePage|NewWorkspacePage|path:\\s*\"/create\"",
+     "matched": false,
+     "file": null
+    },
+    {
+     "pattern": "new_?workspace_?composer|NewWorkspaceComposer|create\\w{0,30}composer",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No create page or composer.",
+   "recheck": false
+  },
+  {
+   "id": "create.from-ref",
+   "area": "create",
+   "feature": "Create a workspace from a PR, branch or issue",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "(from_?(pr|branch|issue)|create_?from|createFrom)",
+     "matched": true,
+     "file": "src/workspace/createFlow.ts"
+    }
+   ],
+   "verdict": "backend",
+   "why": "src/workspace/createFlow.ts models PR/branch/issue sources with tests; not used by the UI.",
+   "recheck": false
+  },
+  {
+   "id": "create.base-branch",
+   "area": "create",
+   "feature": "Choose the base branch new workspaces branch from; remember the intended target branch",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "base_?branch|baseBranch|parent_?branch",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "target_?branch|targetBranch",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    }
+   ],
+   "verdict": "backend",
+   "why": "create_workspace accepts a base branch and fetches origin/<base> first (mod.rs create); createFlow defaults it to the repo default branch; no UI.",
+   "recheck": false
+  },
+  {
+   "id": "create.branch-picker",
+   "area": "create",
+   "feature": "Branch picker with search, loading, empty and error states",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "list_?branches|listBranches",
+     "matched": true,
+     "file": "src-tauri/src/lib.rs"
+    },
+    {
+     "pattern": "(search|filter)_?branch|branch_?(search|filter)|searchBranches",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "backend",
+   "why": "list_branches command is registered; no picker UI.",
+   "recheck": false
+  },
+  {
+   "id": "create.worktree",
+   "area": "create",
+   "feature": "Each workspace is a git worktree on its own branch in a configurable workspaces directory",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "worktree\\s+add|\"worktree\"[^\\]]{0,30}\"add\"|worktree_?add",
+     "matched": true,
+     "file": "src-tauri/src/workspace/mod.rs"
+    },
+    {
+     "pattern": "workspaces_?(path|dir|root)|workspacesDir|workspaces_?directory",
+     "matched": true,
+     "file": "src-tauri/src/workspace/mod.rs"
+    }
+   ],
+   "verdict": "backend",
+   "why": "create_workspace runs git worktree add -b <branch> <data_dir>/workspaces/<slug>/<name> <base>; registered but never invoked by the UI.",
+   "recheck": false
+  },
+  {
+   "id": "create.branch-prefix",
+   "area": "create",
+   "feature": "Branch name prefix setting (none, user-based or custom)",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "branch_?prefix_?type|branchPrefixType",
+     "matched": true,
+     "file": "src-tauri/src/settings/model.rs"
+    },
+    {
+     "pattern": "branch_?prefix_?custom|branchPrefixCustom",
+     "matched": true,
+     "file": "src-tauri/src/settings/model.rs"
+    }
+   ],
+   "verdict": "backend",
+   "why": "naming.ts resolveBranchPrefix and settings keys exist; no settings UI and not wired to creation from the UI.",
+   "recheck": false
+  },
+  {
+   "id": "create.placeholder-name",
+   "area": "create",
+   "feature": "Generated placeholder name/branch, replaced when the agent names the branch (rename-on-branch setting)",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "placeholder_?branch|placeholderBranch",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "(cit(y|ies)|name_?generator)",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    }
+   ],
+   "verdict": "backend",
+   "why": "City names with rarity tiers and first-message rename plan (naming.ts, tested); the UI still uses src/state/names.ts adjective-noun names.",
+   "recheck": false
+  },
+  {
+   "id": "create.validation",
+   "area": "create",
+   "feature": "Validate workspace names and branch names before creating",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "(validate|is_?valid)_?workspace_?name|validateWorkspaceName|isValidWorkspaceName",
+     "matched": true,
+     "file": "src/workspace/createFlow.ts"
+    },
+    {
+     "pattern": "check-ref-format|(validate|is_?valid)_?branch|validateBranch|isValidBranch",
+     "matched": true,
+     "file": "src-tauri/src/checkpoint/mod.rs"
+    }
+   ],
+   "verdict": "backend",
+   "why": "validateWorkspaceName/validateBranchName (naming.ts) and git check-ref-format (git.rs valid_branch_name); no UI surfaces errors.",
+   "recheck": false
+  },
+  {
+   "id": "create.copy-files",
+   "area": "create",
+   "feature": "Copy ignored files (worktreeinclude / include globs / .env*) into each new workspace",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "(files_?to_?copy|file_?include_?globs|worktreeinclude)",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    }
+   ],
+   "verdict": "backend",
+   "why": "files_to_copy.rs resolves .worktreeinclude / globs / .env* and create() copies them; only reachable through the unwired command.",
+   "recheck": false
+  },
+  {
+   "id": "create.setup-script",
+   "area": "create",
+   "feature": "Run the repository setup script on creation and keep its log",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "setup_?script|setupScript",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "setup_?log|setupLog",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    }
+   ],
+   "verdict": "backend",
+   "why": "run_setup exists but create() does not call it and no log path is kept.",
+   "recheck": false
+  },
+  {
+   "id": "create.initializing",
+   "area": "create",
+   "feature": "Initializing state with progress while the workspace is created",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "initializing",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "setting_?up|settingUp",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "(setup_?progress|creation_?progress|creating workspace|CreatingWorkspace|running setup)",
+     "matched": true,
+     "file": "src/workspace/createFlow.ts"
+    }
+   ],
+   "verdict": "backend",
+   "why": "createFlow.ts progress reducer (initializing -> setting_up -> ready/failed); no UI.",
+   "recheck": false
+  },
+  {
+   "id": "create.failure",
+   "area": "create",
+   "feature": "Creation failure surfaced with logs; incomplete workspaces cleaned up on start",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "(failed to create|create.*fail|initialization_?failed)",
+     "matched": true,
+     "file": "src/workspace/createFlow.ts"
+    },
+    {
+     "pattern": "(cleanup|clean_?up).{0,40}(incomplete|initializ)",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "backend",
+   "why": "Failed state modelled in createFlow.ts; no failure UI and no startup cleanup of incomplete workspaces.",
+   "recheck": false
+  },
+  {
+   "id": "create.in-section",
+   "area": "create",
+   "feature": "Create a workspace directly inside a sidebar section",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "(create_?in_?section|section_?id.{0,60}create|create.{0,60}section_?id)",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+    }
+   ],
+   "verdict": "missing",
+   "why": "No sections.",
+   "recheck": true
+  },
+  {
+   "id": "create.first-message",
+   "area": "create",
+   "feature": "Draft the first agent message, then create the workspace and send it",
+   "status": "partial",
+   "detectors": [
+    {
+     "pattern": "first_?message|initial_?message|initialMessage|firstMessage",
+     "matched": true,
+     "file": "src/workspace/createFlow.ts"
+    },
+    {
+     "pattern": "(start|create)_?(first_?)?session|startSession|createSession",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "backend",
+   "why": "createFlow.ts carries the first message in the create request; no composer and no session start on create.",
+   "recheck": false
+  },
+  {
+   "id": "create.number",
+   "area": "create",
+   "feature": "Assign a per-workspace number on creation",
+   "status": "missing",
+   "detectors": [
+    {
+     "pattern": "workspace_?number|workspaceNumber|(ws|workspace)\\.number\\b",
+     "matched": false,
+     "file": null
+    }
+   ],
+   "verdict": "missing",
+   "why": "No workspace numbers (schema column only in the unwired DB crate).",
+   "recheck": false
+  },
+  {
+   "id": "create.autostart-run",
+   "area": "create",
+   "feature": "Optionally start the run script automatically after setup",
+   "status": "implemented",
+   "detectors": [
+    {
+     "pattern": "run_?script|runScript",
+     "matched": true,
+     "file": "crates/openconductor-db/migrations/0001_core.sql"
+    },
+    {
+     "pattern": "(auto_?start|autoStart|auto_?run)",
+     "matched": true,
+     "file": "crates/scripts/src/config/mod.rs"
+    }
+   ],
+   "verdict": "missing",
+   "why": "crates/scripts parses a scripts.auto_run_after_setup setting, but nothing acts on it and that crate is not an app dependency; workspace::scripts::spawn_run is never called after setup.",
+   "recheck": true
+  }
+ ],
+ "verdicts_ref": "origin/main",
+ "verdicts_verified_at": "2026-11-05 (main d846158)",
+ "verdict_parity_pct": 24.6
+}
