@@ -1,0 +1,42 @@
+{
+ "tool": "rea compare-application-versions",
+ "rea_version": "6.8.0",
+ "evidence_id": "ev_25ae8fd39f0736f0f47720c9ff6a09f98d847b144ec827b2f2d588295cbf4dff",
+ "comparison_id": "javc_53c410be57e0c0fe790e2d04cd565b43a6007d2bc5fd7f23722ba6deea7a7d46",
+ "left_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+ "left_graph_id": "jag_b1cc2a059f7e5d7508bbb0f74a17f2de392aeddb3010d35350777e61c4c100b7",
+ "left_subject": "Conductor.app v0.87.6 embedded frontend (dist)",
+ "right_evidence_id": "ev_18b904529520f09e07113028d2f160969f2e798d6532df62a9e953bec5c3d331",
+ "right_graph_id": "jag_cce315385b19bfcdc236c940a3724aea80ffe4cf6eb4728f6f3299a38109f0dd",
+ "right_commit": "92e2066883d0aa624fcf2d79fca0035d18ad449a",
+ "right_subject": "reason-machines/openconductor main (git archive)",
+ "summary": {
+  "unchanged": 0,
+  "added": 0,
+  "removed": 7090,
+  "changed": 0,
+  "unknown": 1915
+ },
+ "matching": {
+  "exact_node_identity": 0,
+  "exact_content_digest": 0,
+  "exact_module_source_digest": 0,
+  "source_map_identity": 0,
+  "structural_fingerprint": 0,
+  "semantic_key": 0,
+  "ambiguous": 0,
+  "unmatched": 9005
+ },
+ "left_statistics": {
+  "relevant_files": 1908,
+  "parsed_javascript_files": 1896,
+  "visited_ast_nodes": 1830605,
+  "findings": 15557
+ },
+ "right_statistics": {
+  "relevant_files": 27,
+  "parsed_javascript_files": 1,
+  "visited_ast_nodes": 74,
+  "findings": 3
+ }
+}

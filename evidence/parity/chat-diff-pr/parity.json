@@ -1,0 +1,933 @@
+{
+ "ledger_id": "rol_ba2a4881609d4eec7a8be78f1d5035ba6cd0f218c0073f39a66ceafade50e29c",
+ "areas": {
+  "chat": {
+   "label": "Chat: agent transcript, composer, queue, attachments, models, turn controls",
+   "features": 15,
+   "parity_pct": 2.2,
+   "strict_parity_pct": 0.0,
+   "absent": 14,
+   "partial": 1,
+   "verified": 0
+  },
+  "diff": {
+   "label": "Diff viewer: changed files, file diff rendering, navigation, inline and GitHub review comments",
+   "features": 14,
+   "parity_pct": 0.0,
+   "strict_parity_pct": 0.0,
+   "absent": 14,
+   "partial": 0,
+   "verified": 0
+  },
+  "pr": {
+   "label": "PR area: create, status, checks, merge, review and conflict flows",
+   "features": 12,
+   "parity_pct": 0.0,
+   "strict_parity_pct": 0.0,
+   "absent": 12,
+   "partial": 0,
+   "verified": 0
+  }
+ },
+ "total": {
+  "features": 41,
+  "parity_pct": 0.8,
+  "strict_parity_pct": 0.0
+ },
+ "features": [
+  {
+   "id": "chat.session-stream",
+   "area": "chat",
+   "title": "Start an agent session in a workspace and stream its messages into the transcript",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "data",
+    "backend",
+    "command",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "data",
+    "backend",
+    "command",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "ledger `agent.session-run` (blocked)",
+    "IPC `rpc_to_sidecar`",
+    "schema `sessions.claude_session_id`",
+    "schema `session_messages.full_message`"
+   ]
+  },
+  {
+   "id": "chat.markdown",
+   "area": "chat",
+   "title": "Render assistant messages as markdown with highlighted code blocks",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /render markdown message/ (2 hits)"
+   ]
+  },
+  {
+   "id": "chat.tool-calls",
+   "area": "chat",
+   "title": "Show agent tool calls as collapsible rows with a setting to keep them expanded",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /collapse tool calls/ (1 hit)"
+   ]
+  },
+  {
+   "id": "chat.composer-send",
+   "area": "chat",
+   "title": "Composer that sends a message, with a configurable send key",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "command",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "command",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /key combination sends messages/ (1 hit)",
+    "ledger `agent.session-run` (blocked)"
+   ]
+  },
+  {
+   "id": "chat.queue",
+   "area": "chat",
+   "title": "Queue messages while a turn runs: edit, delete, reorder, steer, pause and resume the queue",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "data",
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "data",
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "ledger `agent.message-queue` (blocked)",
+    "schema `session_messages.queue_order`",
+    "schema `session_messages_outbox.queue_order`",
+    "schema `sessions.queue_paused_at`",
+    "copy /queued message/ (17 hits)"
+   ]
+  },
+  {
+   "id": "chat.cancel",
+   "area": "chat",
+   "title": "Stop a running turn and mark cancelled messages",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "schema `session_messages.cancelled_at`",
+    "copy /request cancelled/ (1 hit)"
+   ]
+  },
+  {
+   "id": "chat.attachments",
+   "area": "chat",
+   "title": "Draft attachments in the composer (files, images, terminal output) that materialize on send",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "data",
+    "command",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "data",
+    "command",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "ledger `agent.attachments` (unowned)",
+    "schema `attachments.is_draft`",
+    "IPC `materialize_local_path_attachment`",
+    "copy /add attachment/ (3 hits)"
+   ]
+  },
+  {
+   "id": "chat.model-picker",
+   "area": "chat",
+   "title": "Model picker with favorites and per-session thinking/effort level",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "data",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "data",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "ledger `agent.models` (unowned)",
+    "schema `favorite_models`",
+    "schema `sessions.claude_effort_level`",
+    "schema `sessions.codex_thinking_level`",
+    "IPC `default_model`"
+   ]
+  },
+  {
+   "id": "chat.plan-mode",
+   "area": "chat",
+   "title": "Plan mode: enter, exit, and approve the agent's plan",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "schema `sessions.permission_mode`",
+    "copy /enter plan mode/ (1 hit)",
+    "copy /review and approve the plan/ (2 hits)"
+   ]
+  },
+  {
+   "id": "chat.context-usage",
+   "area": "chat",
+   "title": "Context window usage meter and compaction",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "schema `sessions.context_used_percent`",
+    "schema `sessions.is_compacting`",
+    "copy /compact the context window/ (1 hit)"
+   ]
+  },
+  {
+   "id": "chat.message-actions",
+   "area": "chat",
+   "title": "Per-message actions: copy, edit and resend, retry, fork the chat",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /copy message/ (2 hits)",
+    "copy /fork chat/ (3 hits)",
+    "copy /retry message/ (1 hit)"
+   ]
+  },
+  {
+   "id": "chat.tabs",
+   "area": "chat",
+   "title": "Several chat sessions per workspace as tabs, with titles and unread counts",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "data",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "data",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "schema `sessions.title`",
+    "schema `sessions.unread_count`",
+    "schema `sessions.workspace_id`",
+    "copy /split tabs/ (2 hits)"
+   ]
+  },
+  {
+   "id": "chat.revert-checkpoint",
+   "area": "chat",
+   "title": "Revert the workspace to the checkpoint taken at a turn",
+   "status": "partial",
+   "score": 0.333,
+   "layers_required": [
+    "backend",
+    "command",
+    "ui"
+   ],
+   "layers_present": [
+    "backend"
+   ],
+   "missing_layers": [
+    "command",
+    "ui"
+   ],
+   "hits": {
+    "backend": [
+     "src-tauri/src/checkpoint/mod.rs"
+    ]
+   },
+   "anchors": [
+    "ledger `ws.checkpoints` (unowned)",
+    "schema `session_messages.turn_id`",
+    "copy /later messages will be deleted/ (1 hit)"
+   ]
+  },
+  {
+   "id": "chat.speech",
+   "area": "chat",
+   "title": "Dictate a message with speech-to-text",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "ledger `agent.speech` (unowned)"
+   ]
+  },
+  {
+   "id": "chat.find",
+   "area": "chat",
+   "title": "Find text in the chat transcript",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /find in top-level messages/ (1 hit)"
+   ]
+  },
+  {
+   "id": "diff.changes-list",
+   "area": "diff",
+   "title": "List changed files for uncommitted and all-branch changes with per-file status",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "command",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "command",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /uncommitted changes/ (10 hits)",
+    "copy /all changes/ (11 hits)",
+    "ledger `diff.viewer` (unowned)"
+   ]
+  },
+  {
+   "id": "diff.file-render",
+   "area": "diff",
+   "title": "Render a file diff with syntax highlighting (reference uses the Pierre diff renderer)",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "ledger `diff.viewer` (unowned)",
+    "library `pierre`",
+    "copy /failed to load file diff/ (2 hits)"
+   ]
+  },
+  {
+   "id": "diff.split-unified",
+   "area": "diff",
+   "title": "Toggle split and unified diff layouts",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /split view/ (2 hits)",
+    "copy /unified view/ (2 hits)"
+   ]
+  },
+  {
+   "id": "diff.virtualized",
+   "area": "diff",
+   "title": "Virtualize long file lists and large diffs",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "ledger `diff.viewer` (unowned)"
+   ]
+  },
+  {
+   "id": "diff.whitespace",
+   "area": "diff",
+   "title": "Show or hide whitespace-only changes",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /hide whitespace changes/ (2 hits)",
+    "copy /only whitespace changes found/ (2 hits)"
+   ]
+  },
+  {
+   "id": "diff.viewed",
+   "area": "diff",
+   "title": "Mark files as viewed",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /mark as viewed/ (2 hits)",
+    "copy /toggle file as viewed/ (2 hits)"
+   ]
+  },
+  {
+   "id": "diff.navigation",
+   "area": "diff",
+   "title": "Keyboard navigation to the next/previous file and comment in a diff",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /next file in diff/ (2 hits)",
+    "copy /next comment in diff/ (3 hits)"
+   ]
+  },
+  {
+   "id": "diff.turn-changes",
+   "area": "diff",
+   "title": "Show the changes made in a selected agent turn, cached locally",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /changes in selected turn/ (2 hits)",
+    "copy /turn changes/ (4 hits)",
+    "ledger `ws.checkpoints` (unowned)",
+    "ledger `db.local-storage` (unowned)"
+   ]
+  },
+  {
+   "id": "diff.discard",
+   "area": "diff",
+   "title": "Discard changes to one file or all files after confirmation",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /discard file changes/ (3 hits)",
+    "copy /discard all changes to/ (3 hits)"
+   ]
+  },
+  {
+   "id": "diff.comments-inline",
+   "area": "diff",
+   "title": "Add, edit and delete inline comments on a line or line range",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "data",
+    "command",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "data",
+    "command",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "ledger `diff.comments` (blocked)",
+    "schema `diff_comments.line_number`",
+    "schema `diff_comments.end_line_number`",
+    "copy /edit comment/ (2 hits)"
+   ]
+  },
+  {
+   "id": "diff.comments-to-chat",
+   "area": "diff",
+   "title": "Send review comments to the agent chat as attachments",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "schema `attachments.comment_id`",
+    "copy /add all comments to chat/ (2 hits)"
+   ]
+  },
+  {
+   "id": "diff.comments-github",
+   "area": "diff",
+   "title": "Sync PR review comments from GitHub with resolved, outdated and suggestion state",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "data",
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "data",
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "schema `diff_comments.is_resolved`",
+    "schema `diff_comments.is_outdated`",
+    "schema `diff_comments.suggestion_base_code`",
+    "schema `diff_comments.remote_url`",
+    "copy /synced github pr comments/ (2 hits)"
+   ]
+  },
+  {
+   "id": "diff.edit-in-viewer",
+   "area": "diff",
+   "title": "Edit a file from the diff viewer",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /edit in diff viewer/ (2 hits)"
+   ]
+  },
+  {
+   "id": "diff.appearance",
+   "area": "diff",
+   "title": "Diff font, ligatures, syntax theme and colour-vision themes",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /font used for code and diffs/ (4 hits)",
+    "library `protanopia`"
+   ]
+  },
+  {
+   "id": "pr.create",
+   "area": "pr",
+   "title": "Create a pull request or draft PR from a workspace, persisting title and description",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "data",
+    "backend",
+    "command",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "data",
+    "backend",
+    "command",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "ledger `pr.create` (blocked)",
+    "schema `workspaces.pr_title`",
+    "schema `workspaces.pr_description`",
+    "copy /create draft pr/ (1 hit)"
+   ]
+  },
+  {
+   "id": "pr.custom-prompts",
+   "area": "pr",
+   "title": "Per-repository prompts for create PR, code review, fix errors, resolve conflicts, rename branch",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "data",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "data",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "ledger `pr.agent-prompts` (unowned)",
+    "schema `repos.custom_prompt_create_pr`",
+    "schema `repos.custom_prompt_fix_errors`",
+    "IPC `custom_prompt_code_review`"
+   ]
+  },
+  {
+   "id": "pr.status",
+   "area": "pr",
+   "title": "PR status in the workspace header (draft, open, review required, changes requested, merged)",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /pr changes requested/ (2 hits)",
+    "copy /draft pr open/ (1 hit)",
+    "copy /loading pr info/ (1 hit)"
+   ]
+  },
+  {
+   "id": "pr.checks",
+   "area": "pr",
+   "title": "CI checks list with logs, re-run failed, and optional-checks policy",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /re-run failed checks/ (1 hit)",
+    "copy /failed to fetch check logs/ (1 hit)",
+    "copy /treat optional checks as blocking/ (1 hit)"
+   ]
+  },
+  {
+   "id": "pr.merge",
+   "area": "pr",
+   "title": "Merge a PR (merge, squash, rebase), merge queue and automerge",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /squash and merge/ (1 hit)",
+    "copy /automerge/ (3 hits)",
+    "copy /in merge queue/ (1 hit)"
+   ]
+  },
+  {
+   "id": "pr.archive-on-merge",
+   "area": "pr",
+   "title": "Archive the workspace when its PR merges",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /archive on merge/ (1 hit)",
+    "schema `workspaces.archive_commit`"
+   ]
+  },
+  {
+   "id": "pr.commit-push",
+   "area": "pr",
+   "title": "Commit and push all workspace changes",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /commit and push all changes/ (2 hits)"
+   ]
+  },
+  {
+   "id": "pr.review-actions",
+   "area": "pr",
+   "title": "Approve, mark ready, edit title and change base branch of a PR",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /approve pr/ (2 hits)",
+    "copy /mark pr as ready/ (1 hit)",
+    "copy /edit pr title/ (1 hit)"
+   ]
+  },
+  {
+   "id": "pr.ai-review",
+   "area": "pr",
+   "title": "Start an AI code review with a configurable review model",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "IPC `review_model`",
+    "copy /get an ai code review/ (2 hits)"
+   ]
+  },
+  {
+   "id": "pr.resolve-conflicts",
+   "area": "pr",
+   "title": "Resolve merge conflicts with the agent; block actions while a merge or rebase is in progress",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /resolve conflicts/ (9 hits)",
+    "copy /finish rebasing or merging to see changes/ (2 hits)",
+    "IPC `custom_prompt_resolve_merge_conflicts`"
+   ]
+  },
+  {
+   "id": "pr.workspace-from-pr",
+   "area": "pr",
+   "title": "Create a workspace from an existing PR, branch or issue, with PR search",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /create new workspace from pr/ (1 hit)",
+    "copy /searching pull requests/ (1 hit)"
+   ]
+  },
+  {
+   "id": "pr.stack",
+   "area": "pr",
+   "title": "View and merge a stack of dependent PRs",
+   "status": "absent",
+   "score": 0.0,
+   "layers_required": [
+    "backend",
+    "ui"
+   ],
+   "layers_present": [],
+   "missing_layers": [
+    "backend",
+    "ui"
+   ],
+   "hits": {},
+   "anchors": [
+    "copy /failed to merge stack/ (1 hit)"
+   ]
+  }
+ ],
+ "broken_anchors": [],
+ "implementation_files_scanned": 4
+}
