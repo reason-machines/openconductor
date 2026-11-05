@@ -10,6 +10,7 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod project;
 pub mod quick_open;
 pub mod settings;
 pub mod workspace;
@@ -34,6 +35,12 @@ fn app_info() -> AppInfo {
     }
 }
 
+/// Folder checks for Home "Open project" (see `project`).
+#[tauri::command]
+fn inspect_project_folder(path: String) -> project::FolderInspection {
+    project::inspect_folder(std::path::Path::new(&path))
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -46,6 +53,7 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             app_info,
+            inspect_project_folder,
             workspace::commands::add_repository,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,

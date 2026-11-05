@@ -59,9 +59,6 @@ jobs:
       - run: npm run build
       - name: cargo check, test, clippy
         working-directory: src-tauri
-        env:
-          # Real login-Keychain round trip (throwaway service name) on macOS.
-          OPENCONDUCTOR_KEYCHAIN_TESTS: ${{ runner.os == 'macOS' && '1' || '0' }}
         run: |
           cargo check --locked --all-targets
           cargo test --locked

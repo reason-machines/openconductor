@@ -11,6 +11,8 @@
 //! * [`env`] - [`AgentKind`] and [`LaunchEnv`], the environment an agent
 //!   process is launched with. A launch clears every inherited variable that
 //!   would route the agent elsewhere before setting its own.
+//! * [`keychain`] - the app's [`SecretStore`]: the macOS login Keychain
+//!   ([`keychain::default_store`]), memory on other platforms.
 //! * [`provider`] - the [`Provider`] trait: how an agent CLI is pointed at a
 //!   model backend and authenticated, producing a [`LaunchEnv`] from its
 //!   options and secrets.
@@ -27,6 +29,7 @@ pub mod claude;
 pub mod claude_cloud;
 pub mod codex;
 pub mod env;
+pub mod keychain;
 pub mod provider;
 pub mod secret;
 
