@@ -13,6 +13,7 @@ import { TurnChanges } from "../features/chat/TurnChanges.tsx";
 import type { TurnRef } from "../features/diff/turnChangesCache.ts";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
+import { showUncommittedChanges, TARGET_REMOTE, targetBranch } from "../features/diff/target";
 import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
@@ -27,10 +28,12 @@ import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest"
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
+import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
-import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
+import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
+import { useAppPrefs } from "../settings/appPrefs";
 
 interface Props {
   repo: Repo;
@@ -84,6 +87,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   useEffect(() => {
     if (main) onRunningChange?.(running);
   }, [main, running, onRunningChange]);
+  // Garry Mode: tool calls start expanded (Conductor's `garry_mode`, toggled with ⌃O).
+  const garryMode = useAppPrefs().garry_mode;
 
   useEffect(() => {
     setSnapshot(chatSnapshot(chatId));
@@ -100,7 +105,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      sendReason(workspace.id, cwd, first);
+      sendReason(workspace.id, cwd, first, [], repo.path || undefined);
     }
     return unsubscribe;
   }, [chatId]);
@@ -112,7 +117,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Attachments (a review request, revert notes) go to Reason as embedded files and show by name.
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
     const first = main && !chatSnapshot(chatId).transcript.messages.some((m) => m.role === "user");
-    submitChat(chatId, cwd, text, mode, attached);
+    submitChat(chatId, cwd, text, mode, attached, repo.path || undefined);
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
@@ -158,6 +163,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         ) : (
           <Transcript
             transcript={transcript}
+            expandToolsByDefault={garryMode}
             onRetry={(prompt) => submit(prompt, "queue")}
             // Conductor: workspace with a path, not archived; disabled while the agent works.
             onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
@@ -209,6 +215,14 @@ function RightPanel({ diff, actions, pr, worktree, review, repo }: { diff: Works
   useEffect(() => {
     if (diff.turn) setTab("changes");
   }, [diff.turn]);
+  // parity:diff.changes-list:ui Cmd+Alt+U: the Changes tab in Uncommitted scope, or back to All changes.
+  useKeybindings({
+    "workspace.showUncommittedChanges": () => {
+      const next = showUncommittedChanges(tab, diff.opts.scope, diff.turn !== null);
+      setTab(next.tab);
+      diff.update({ scope: next.scope });
+    },
+  });
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
   return (
@@ -316,7 +330,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   // The review hook needs the loaded files and the diff needs the hook's reveal, so loads go through a ref.
   const loaded = useRef<((files: FileDiff[], scope: DiffScope) => void) | null>(null);
   const onLoaded = useCallback((files: FileDiff[], scope: DiffScope) => loaded.current?.(files, scope), []);
-  const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, baseBranch: repo.defaultBranch, onLoaded, onOpen: openDiffTab });
+  // "All changes" is diffed against the open PR's base, else the workspace's target branch (onLookup fills prBase).
+  const [prBase, setPrBase] = useState<{ base: string; merged: boolean } | null>(null);
+  useEffect(() => setPrBase(null), [workspace.id]);
+  const diffTarget = { branch: targetBranch({ prBase: prBase?.base ?? null, prMerged: prBase?.merged ?? false, intended: workspace.targetBranch, fallback: repo.defaultBranch }), remote: TARGET_REMOTE };
+  const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, target: diffTarget, onLoaded, onOpen: openDiffTab });
   // Inserts go to the chat shown; sends (e.g. Create PR) go to the workspace's own chat, switching to it.
   const shownChat = useRef<string>(workspace.id);
   const chat = useMemo<ChatBridge>(
@@ -333,7 +351,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
-  // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub, then archive on merge.
+  // Keep the sidebar's PR title and body (`workspaces.pr_title`, `pr_description`) in step with GitHub, then archive on merge.
   // The row's status icon reads the PR too (merged, checks failing, ready to merge, ...).
   const optionalChecksBlock = useRef(false);
   const prTitle = useRef(workspace.prTitle ?? null);
@@ -341,15 +359,17 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const onLookup = useCallback(
     (next: PrLookup, previous: PrLookup | null) => {
       if (next.kind === "found") {
-        dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title, pr: rowPrOf(next.info, optionalChecksBlock.current) });
+        dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title, prDescription: next.info.body ?? null, pr: rowPrOf(next.info, optionalChecksBlock.current) });
       } else {
         dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: prTitle.current, pr: null });
       }
+      setPrBase(next.kind === "found" ? { base: next.info.baseRefName, merged: next.info.isMerged } : null);
       archiveOnMerge(next, previous);
     },
     [dispatch, repo.id, workspace.id, archiveOnMerge],
   );
-  const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, onLookup });
+  const onDerivedStatus = useWorkspacePrSync({ repoId: repo.id, workspace, dispatch });
+  const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, hasPendingComments: review.hasPending, onLookup, onDerivedStatus });
   optionalChecksBlock.current = pullRequest.settings.optionalChecksBlock;
   useEffect(() => {
     dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: agentWorking });
@@ -358,10 +378,14 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   useEffect(() => () => dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: false }), [dispatch, repo.id, workspace.id]);
   const prActions = usePrActions({
     pullRequest,
+    repoId: repo.id,
     worktree: workspace.path ?? null,
     branch: workspace.branch,
     targetBranch: repo.defaultBranch,
+    prTitle: workspace.prTitle,
+    prDescription: workspace.prDescription,
     sendToAgent: chat.send,
+    addCommentsToChat: review.addAllToChat,
     notify,
   });
   loaded.current = review.onLoaded;
@@ -384,6 +408,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "git.createPR": () => {
       if (createShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.create(false);
     },
+    "git.commitAndPush": () => {
+      if (commitShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.commitAndPush();
+    },
     "git.mergePR": () => {
       if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
     },
@@ -393,6 +420,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
   const activeTab = showDiff ? "diff" : (activeReview?.chatId ?? "chat");
   shownChat.current = activeReview?.chatId ?? workspace.id;
+  // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
+  const rightPanelVisible = useAppPrefs().right_panel_visible;
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region>
@@ -413,7 +442,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           )}
         </div>
         <div className="ws-actions">
-          <PrControl pullRequest={pullRequest} actions={prActions} worktree={workspace.path ?? null} />
+          <PrControl pullRequest={pullRequest} actions={prActions} />
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
             Terminal
           </button>
@@ -422,7 +451,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           </button>
         </div>
       </header>
-      <div className="ws-split">
+      <div className={`ws-split${rightPanelVisible ? "" : " right-hidden"}`}>
         <ChatPanel
           repo={repo}
           workspace={workspace}
@@ -435,17 +464,19 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
           content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} /> : null}
         />
-        <div className="ws-right">
-          <RightPanel
-            diff={diff}
-            actions={review.actions}
-            pr={pullRequest}
-            worktree={workspace.path ?? null}
-            review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
-            repo={repo}
-          />
-          <ScriptsPanel repo={repo} workspace={workspace} />
-        </div>
+        {rightPanelVisible && (
+          <div className="ws-right">
+            <RightPanel
+              diff={diff}
+              actions={review.actions}
+              pr={pullRequest}
+              worktree={workspace.path ?? null}
+              review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
+              repo={repo}
+            />
+            <ScriptsPanel repo={repo} workspace={workspace} />
+          </div>
+        )}
       </div>
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
       <DiffDiscardHost diff={diff} onDiscarded={(f) => chatBridge.current?.attach(revertedNote(f.path))} />

@@ -55,3 +55,29 @@ pub async fn record_rollback(pool: &SqlitePool, version: i64, down_sql: &str) ->
             .bind(down_sql);
     exec(q, pool).await.map(|_| ())
 }
+
+/// Tables the reference empties, in its order, when the root path changes.
+const FORGOTTEN_ON_ROOT_CHANGE: [&str; 6] = [
+    "attachments",
+    "diff_comments",
+    "session_messages",
+    "sessions",
+    "workspaces",
+    "repos",
+];
+
+/// Forget every repository, workspace and chat, as the reference's root path
+/// change does (renderApp chunk, `changeRootPath` mutation: `DELETE FROM
+/// attachments`, `diff_comments`, `session_messages`, `sessions`,
+/// `workspaces`, `repos`, in that order). Settings and files on disk are
+/// kept. One transaction here; the reference runs six separate statements.
+pub async fn forget_repositories(pool: &SqlitePool) -> Result<()> {
+    let mut tx = pool.begin().await?;
+    for table in FORGOTTEN_ON_ROOT_CHANGE {
+        sqlx::query(&format!("DELETE FROM {table}"))
+            .execute(&mut *tx)
+            .await?;
+    }
+    tx.commit().await?;
+    Ok(())
+}

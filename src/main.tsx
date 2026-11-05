@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { DiffWorkerPool } from "./features/diff/DiffWorkerPool";
 import { KeybindingsProvider } from "./keybindings/KeybindingsProvider";
+import { FirstRunGate } from "./onboarding/FirstRunGate";
 import { getSettings } from "./settings/api";
 import { overridesRaw } from "./settings/keybindingOverrides";
 import "./fonts.css";
@@ -14,7 +15,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <DiffWorkerPool>
       <KeybindingsProvider loadOverrides={loadOverrides}>
-        <App />
+        <FirstRunGate>
+          <App />
+        </FirstRunGate>
       </KeybindingsProvider>
     </DiffWorkerPool>
   </React.StrictMode>,
