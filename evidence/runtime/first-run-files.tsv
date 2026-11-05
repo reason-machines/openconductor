@@ -1,0 +1,35 @@
+226	.conductor/settings.toml
+36	.local/state/gh/device-id
+65045	.zcompdump
+1058	Library/Application Support/com.conductor.app/.bin-source-markers.json
+171	Library/Application Support/com.conductor.app/agent-binaries/.meta/claude-2.1.284.json
+170	Library/Application Support/com.conductor.app/agent-binaries/.meta/codex-0.156.1-codex-code-mode-host.json
+171	Library/Application Support/com.conductor.app/agent-binaries/.meta/codex-0.156.1.json
+5955	Library/Application Support/com.conductor.app/app-icons/cursor.png
+21171	Library/Application Support/com.conductor.app/app-icons/ghostty.png
+7910	Library/Application Support/com.conductor.app/app-icons/vscode.png
+14911	Library/Application Support/com.conductor.app/app-icons/xcode.png
+16036	Library/Application Support/com.conductor.app/app-icons/zed.png
+103	Library/Application Support/com.conductor.app/bin/.internal/actions
+68608	Library/Application Support/com.conductor.app/bin/.internal/agent-launcher
+104	Library/Application Support/com.conductor.app/bin/.internal/internal
+102	Library/Application Support/com.conductor.app/bin/.internal/logger
+103	Library/Application Support/com.conductor.app/bin/.internal/sidecar
+12239	Library/Application Support/com.conductor.app/bin/checkpointer.sh
+135	Library/Application Support/com.conductor.app/bin/claude
+133	Library/Application Support/com.conductor.app/bin/codex
+148	Library/Application Support/com.conductor.app/bin/codex-code-mode-host
+109	Library/Application Support/com.conductor.app/bin/conductor
+1660	Library/Application Support/com.conductor.app/bin/git-busy-check.sh
+3943	Library/Application Support/com.conductor.app/bin/spotlighter.sh
+4096	Library/Application Support/com.conductor.app/cache.db
+32768	Library/Application Support/com.conductor.app/cache.db-shm
+218392	Library/Application Support/com.conductor.app/cache.db-wal
+299008	Library/Application Support/com.conductor.app/conductor.db
+32768	Library/Application Support/com.conductor.app/conductor.db-shm
+0	Library/Application Support/com.conductor.app/conductor.db-wal
+12625	Library/Application Support/com.conductor.app/local-storage.entries/lottie-sprite-cache/1%3Aconductor-loader%3A%252Fassets%252Fconductor-loader-ChN4oKj5.json%3A48%3A80%3A1.json
+595065	Library/Application Support/com.conductor.app/local-storage.entries/lottie-sprite-cache/1%3Aconductor-logo%3A%252Fassets%252Fconductor-logo-D8nFe6WB.json%3A640%3A112%3A1.json
+407	Library/Application Support/com.conductor.app/local-storage.metadata.json
+0	Library/Caches/com.conductor.app/.cookies
+1727	app-stdout.log
