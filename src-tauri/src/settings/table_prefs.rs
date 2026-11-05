@@ -215,7 +215,7 @@ pub fn changes(
         .collect())
 }
 
-fn file_section<'a>(table: &'a Table, section: Section) -> Option<&'a Table> {
+fn file_section(table: &Table, section: Section) -> Option<&Table> {
     match section.name() {
         None => Some(table),
         Some(name) => table.get(name).and_then(Value::as_table),
