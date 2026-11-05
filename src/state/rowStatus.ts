@@ -38,6 +38,36 @@ export const SESSION_STATUS_ORDER = [
 ] as const;
 export type SessionStatus = (typeof SESSION_STATUS_ORDER)[number];
 
+/** `sessions.status` as stored in conductor.db (the reference decoder accepts exactly these). */
+export const isSessionStatus = (s: unknown): s is SessionStatus => (SESSION_STATUS_ORDER as readonly unknown[]).includes(s);
+
+/**
+ * The session has a turn in flight (Conductor's `lTo`): working, waiting on the
+ * user for a plan, an answer or a permission, or cancelling. `waiting` (only
+ * background tasks left) and `idle`/`error` do not count.
+ */
+export function hasActiveTurn(s: SessionStatus): boolean {
+  return s === "working" || s === "needs_plan_response" || s === "needs_user_input" || s === "needs_user_permission" || s === "cancelling";
+}
+
+/** What a chat knows about its session: whether a turn runs, and its queue's state. */
+export interface ChatSessionState {
+  running: boolean;
+  queue: "idle" | "working" | "cancelling" | "error";
+}
+
+/**
+ * The session status a chat reports for its workspace. A Stop moves the queue
+ * to cancelling while the turn is still running; a failed turn leaves `error`.
+ * The chat runtime has no permission, question, plan or background-task events
+ * yet, so it never reports the needs_* or waiting statuses itself.
+ */
+export function chatSessionStatus({ running, queue }: ChatSessionState): SessionStatus {
+  if (queue === "cancelling") return "cancelling";
+  if (running) return "working";
+  return queue === "error" ? "error" : "idle";
+}
+
 /** The PR fields the row status reads (Conductor's `DXo` selector). */
 export interface RowPr {
   number: number;
@@ -127,6 +157,19 @@ export function rowStatus(i: RowStatusInput): RowStatus {
   if (fromSession) return fromSession;
   return firstRule(i, STATUS_RULES);
 }
+
+/**
+ * The status a Home row shows in place of its time, or null to show the time
+ * (Conductor's `vJo`). Home computes the row status from the workspace state and
+ * its sessions only, without the PR (`oWt({aggregatedSessionStatus, workspaceState})`),
+ * and shows it when it is neither a PR/branch status nor unstarted (`aWt`).
+ */
+export function homeRowStatus(i: Pick<RowStatusInput, "workspaceState" | "session">): RowStatus | null {
+  const s = rowStatus({ workspaceState: i.workspaceState, session: i.session });
+  return PR_OR_BRANCH.has(s) || s === "unstarted" ? null : s;
+}
+
+const PR_OR_BRANCH = new Set<RowStatus>(["merged", "merge-queued", "ready-to-merge", "draft-pr", "merge-conflict", "checks-failing", "checks-pending", "open-pr", "local", "branch"]);
 
 /** The PR/branch status alone (`cWt`), which also reports running checks. */
 export function rowGitStatus(i: RowStatusInput): RowStatus {

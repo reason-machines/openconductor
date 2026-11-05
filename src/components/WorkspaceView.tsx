@@ -45,6 +45,7 @@ import { usePrActions } from "../features/pr/usePrActions";
 import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
 import { useAppPrefs } from "../settings/appPrefs";
+import { chatSessionStatus, hasActiveTurn, isBusyStatus, rowStatus, rowStatusLabel, type SessionStatus } from "../state/rowStatus";
 
 interface Props {
   repo: Repo;
@@ -75,13 +76,13 @@ interface ChatPanelProps extends Props {
   tabs: ReactNode;
   /** Shown instead of the transcript while another tab (the diff) is active; the composer stays. */
   content: ReactNode | null;
-  /** The agent started or finished a turn. */
-  onRunningChange?: (running: boolean) => void;
+  /** The workspace chat's session status changed (a turn started, is cancelling, ended or failed). */
+  onSessionStatusChange?: (status: SessionStatus) => void;
   /** A file chip under a finished turn: open that file's changes from the turn. */
   openTurnFile: (turn: TurnRef, path: string) => void;
 }
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onSessionStatusChange, openTurnFile }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -94,10 +95,11 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const running = transcript.activeTurn !== null;
-  // Only the workspace's own chat counts as the agent working; a review chat does not.
+  const sessionStatus = chatSessionStatus({ running, queue: queue.status });
+  // Only the workspace's own chat is the workspace's session; a review chat is not.
   useEffect(() => {
-    if (main) onRunningChange?.(running);
-  }, [main, running, onRunningChange]);
+    if (main) onSessionStatusChange?.(sessionStatus);
+  }, [main, sessionStatus, onSessionStatusChange]);
   // Garry Mode: tool calls start expanded (Conductor's `garry_mode`, toggled with ⌃O).
   const garryMode = useAppPrefs().garry_mode;
 
@@ -383,10 +385,19 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
 
 const STATUS_TEXT: Record<Workspace["status"], string> = {
   idle: "Idle",
-  working: "Working",
   "needs-review": "Ready for review",
   archived: "Archived",
 };
+
+/** The header chip: an active session (working, needs input, ...) over the workspace's own status. */
+function headerStatus(ws: Workspace): { className: string; text: string } {
+  const session = ws.status === "archived" ? undefined : ws.sessionStatus;
+  if (session && session !== "error") {
+    const s = rowStatus({ session });
+    return { className: isBusyStatus(s) ? "working" : "needs-user", text: rowStatusLabel(s) };
+  }
+  return { className: ws.status, text: STATUS_TEXT[ws.status] };
+}
 
 export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
@@ -453,7 +464,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     [workspace.id],
   );
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
-  const [agentWorking, setAgentWorking] = useState(false);
+  const [sessionStatus, setSessionStatus] = useState<SessionStatus>("idle");
+  const agentWorking = hasActiveTurn(sessionStatus);
+  const header = headerStatus(workspace);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
   // Keep the sidebar's PR title and body (`workspaces.pr_title`, `pr_description`) in step with GitHub, then archive on merge.
   // The row's status icon reads the PR too (merged, checks failing, ready to merge, ...).
@@ -477,10 +490,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const target = useTargetBranch({ repo, workspace, pr: pullRequest.pr, refresh: pullRequest.refresh, dispatch });
   optionalChecksBlock.current = pullRequest.settings.optionalChecksBlock;
   useEffect(() => {
-    dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: agentWorking });
-  }, [dispatch, repo.id, workspace.id, agentWorking]);
-  // Nothing reports a closed workspace's agent, so its row stops showing it working.
-  useEffect(() => () => dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: false }), [dispatch, repo.id, workspace.id]);
+    dispatch({ type: "setWorkspaceSessionStatus", repoId: repo.id, workspaceId: workspace.id, status: sessionStatus });
+  }, [dispatch, repo.id, workspace.id, sessionStatus]);
+  // Nothing reports a closed workspace's agent, so its row stops showing it.
+  useEffect(() => () => dispatch({ type: "setWorkspaceSessionStatus", repoId: repo.id, workspaceId: workspace.id, status: "idle" }), [dispatch, repo.id, workspace.id]);
   const prActions = usePrActions({
     pullRequest,
     repoId: repo.id,
@@ -545,8 +558,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               PR #{prNumber}
             </button>
           )}
-          <span className={`chip status ${workspace.status}`}>
-            <span className={`status-dot ${workspace.status}`} /> {STATUS_TEXT[workspace.status]}
+          <span className={`chip status ${header.className}`}>
+            <span className={`status-dot ${header.className}`} /> {header.text}
           </span>
           {settingUp && (
             <span className="chip status setting-up" role="status">
@@ -572,7 +585,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           chatId={activeReview?.chatId ?? workspace.id}
           review={activeReview}
           bridge={chatBridge}
-          onRunningChange={setAgentWorking}
+          onSessionStatusChange={setSessionStatus}
           openTurnFile={diff.openTurnFile}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
           content={

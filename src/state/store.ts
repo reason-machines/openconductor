@@ -2,12 +2,12 @@ import { useCallback, useEffect, useReducer } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import type { WorkspaceStatusValue } from "./workspaceStatus";
-import type { RowPr } from "./rowStatus";
+import type { RowPr, SessionStatus } from "./rowStatus";
 import { newId, workspaceName } from "./names";
 import { isSidebarVisible, startSelection } from "./selectors";
 import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
-import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
+import { keepLive, parsePrefs, prefsOf, reposFromDb, validSelection, withSessionStatus, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
 import { sameRepoRecord } from "./addRepo";
 
@@ -34,8 +34,8 @@ export type Action =
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
   /** The workspace's pull request title or body changed on GitHub (`workspaces.pr_title`, `pr_description`). `prDescription` and `pr` left out keep what the row has. */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
-  /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
-  | { type: "setWorkspaceWorking"; repoId: string; workspaceId: string; working: boolean }
+  /** The open workspace's session status changed (working, cancelling, needs input, ...); the sidebar row and Home show it. */
+  | { type: "setWorkspaceSessionStatus"; repoId: string; workspaceId: string; status: SessionStatus }
   /** Unarchive from the archive-on-merge toast: put the workspace back where it was. */
   | { type: "restoreWorkspace"; repoId: string; workspace: Workspace }
   /** The target-branch picker saved `intended_target_branch` (useTargetBranch writes the row). */
@@ -171,11 +171,7 @@ export function reducer(state: AppState, action: Action): AppState {
       const collapsed = new Set(state.repos.filter((r) => r.collapsed).map((r) => r.id));
       // conductor.db has no PR or agent activity: keep what the open workspaces reported.
       const live = new Map(state.repos.flatMap((r) => r.workspaces).map((w) => [w.id, w]));
-      const keepLive = (w: Workspace): Workspace => {
-        const old = live.get(w.id);
-        return old ? { ...w, status: old.status, ...(old.pr !== undefined ? { pr: old.pr } : {}) } : w;
-      };
-      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined, workspaces: r.workspaces.map(keepLive) }));
+      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined, workspaces: r.workspaces.map((w) => keepLive(w, live.get(w.id))) }));
       return { ...state, repos, selection: validSelection(state.selection, repos) };
     }
     case "setWorkspaceUnread":
@@ -184,11 +180,10 @@ export function reducer(state: AppState, action: Action): AppState {
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
     case "setWorkspaceStatus":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, manualStatus: action.status }));
-    case "setWorkspaceWorking": {
-      const status: Workspace["status"] = action.working ? "working" : "idle";
+    case "setWorkspaceSessionStatus": {
       const ws = state.repos.find((r) => r.id === action.repoId)?.workspaces.find((w) => w.id === action.workspaceId);
-      if (!ws || ws.status === status) return state;
-      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, status }));
+      if (!ws || (ws.sessionStatus ?? "idle") === action.status) return state;
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => withSessionStatus(w, action.status));
     }
     case "setWorkspaceDerivedStatus":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, derivedStatus: action.status, manualStatus: undefined }));
@@ -201,8 +196,8 @@ const demoPr = (over: Partial<RowPr>): RowPr => ({
 
 /** Sample data for screenshots and demos: open the app with `?demo=1`. */
 export function demoState(): AppState {
-  const ws = (name: string, status: Workspace["status"], added: number, removed: number): Workspace => ({
-    id: newId(), name, branch: name, status, diff: { added, removed }, createdAt: Date.now(),
+  const ws = (name: string, session: SessionStatus, added: number, removed: number): Workspace => ({
+    id: newId(), name, branch: name, status: "idle", ...(session !== "idle" ? { sessionStatus: session } : {}), diff: { added, removed }, createdAt: Date.now(),
   });
   const repos: Repo[] = [
     {
@@ -213,9 +208,14 @@ export function demoState(): AppState {
         { ...ws("copper-wren", "idle", 18, 2), pr: demoPr({ number: 14, checks: "failing", failingChecks: 1 }) },
         { ...ws("misty-larch", "idle", 6, 0), pr: demoPr({ number: 9, isMerged: true }) },
         ws("lunar-reef", "working", 0, 0),
+        ws("tidal-moss", "needs_user_input", 11, 3),
+        ws("slate-heron", "needs_user_permission", 5, 0),
       ],
     },
-    { id: newId(), name: "api-server", path: "~/code/api-server", defaultBranch: "main", workspaces: [ws("brisk-otter", "idle", 3, 1)] },
+    {
+      id: newId(), name: "api-server", path: "~/code/api-server", defaultBranch: "main",
+      workspaces: [ws("brisk-otter", "idle", 3, 1), ws("pale-cedar", "waiting", 2, 0), ws("dusk-finch", "cancelling", 0, 0)],
+    },
     { id: newId(), name: "design-system", path: "~/code/design-system", defaultBranch: "develop", workspaces: [] },
   ];
   return { repos, selection: { kind: "workspace", repoId: repos[0].id, workspaceId: repos[0].workspaces[0].id } };
@@ -239,7 +239,7 @@ function load(): AppState {
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return startSelection(JSON.parse(raw) as AppState, window.location.pathname);
+    if (raw) return startSelection(withoutLiveSessions(JSON.parse(raw) as AppState), window.location.pathname);
   } catch {
     /* ignore corrupt state */
   }

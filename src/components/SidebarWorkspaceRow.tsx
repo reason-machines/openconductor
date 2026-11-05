@@ -33,7 +33,7 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
   const label = workspaceLabel({ name: ws.name, branch: ws.branch, prTitle: ws.prTitle, userSetWorkspaceName: ws.userSetWorkspaceName, targetBranch });
   const { ref, stat } = useRowDiffStat(ws, targetBranch, active);
-  const status = rowStatus({ workspaceState: ws.state, session: ws.status === "working" ? "working" : "idle", pr: ws.pr, hasRemote });
+  const status = rowStatus({ workspaceState: ws.state, session: ws.sessionStatus, pr: ws.pr, hasRemote });
   const statusLabel = rowStatusLabel(status);
   return (
     <button

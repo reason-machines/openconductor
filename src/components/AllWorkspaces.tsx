@@ -27,6 +27,8 @@ import {
   type HomeRow,
 } from "../home/allWorkspaces";
 import { effectiveShortcuts } from "../keybindings/overrides";
+import { RowStatusIcon } from "./RowStatusIcon";
+import { homeRowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
 import { glyphs } from "../keybindings/shortcut";
 
 interface Props {
@@ -90,6 +92,8 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
 function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRepoIcon: boolean; active: boolean; now: number; onOpen: () => void }) {
   const { workspace: ws, repo, archived, matches } = row;
   const tone = archived ? "is-archived" : ws.unread ? "is-unread" : "";
+  // Conductor's `vJo`: the row's session or setup status replaces its time while there is one.
+  const status = homeRowStatus({ workspaceState: ws.state, session: ws.sessionStatus });
   return (
     <div
       role="option"
@@ -122,8 +126,10 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
             <span className="allws-archived" title="Archived" aria-label="Archived">
               <ArchiveIcon size={14} />
             </span>
-          ) : ws.status === "working" ? (
-            <span className="allws-working" title="Working" aria-label="Working" />
+          ) : status ? (
+            <span className="allws-status" data-testid="home-row-status" data-status={status} data-color={rowStatusColor(status)} role="img" title={rowStatusLabel(status)} aria-label={rowStatusLabel(status)}>
+              <RowStatusIcon status={status} />
+            </span>
           ) : (
             shortRelativeTime(row.lastActiveAt, now)
           )}

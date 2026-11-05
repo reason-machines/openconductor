@@ -1,6 +1,19 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { aggregateSessions, isBusyStatus, rowGitStatus, rowStatus, rowStatusColor, rowStatusLabel, type RowPr } from "./rowStatus.ts";
+import {
+  aggregateSessions,
+  chatSessionStatus,
+  hasActiveTurn,
+  homeRowStatus,
+  isBusyStatus,
+  isSessionStatus,
+  rowGitStatus,
+  rowStatus,
+  rowStatusColor,
+  rowStatusLabel,
+  SESSION_STATUS_ORDER,
+  type RowPr,
+} from "./rowStatus.ts";
 
 const pr = (over: Partial<RowPr> = {}): RowPr => ({
   number: 7,
@@ -75,4 +88,70 @@ test("labels, colours and loaders", () => {
   assert.equal(rowStatusColor("open-pr"), "muted");
   assert.ok(isBusyStatus("working") && isBusyStatus("setting-up"));
   assert.ok(!isBusyStatus("needs-user-input"));
+});
+
+// Session statuses beyond working/idle, read with REA from Conductor 0.87.6's renderApp
+// chunk: `tTr`/`nTr` (order), `CXo` (row mapping), `lTo` (active turn), `vJo` + `aWt` (Home).
+
+test("every conductor.db session status parses; anything else does not", () => {
+  for (const s of ["idle", "working", "error", "needs_plan_response", "needs_user_input", "needs_user_permission", "cancelling", "waiting"]) assert.ok(isSessionStatus(s), s);
+  for (const s of ["needs_input", "planning", "Working", "", null, undefined, 3]) assert.ok(!isSessionStatus(s), String(s));
+});
+
+test("each active session status maps to its row status and label", () => {
+  const cases = [
+    ["needs_plan_response", "needs-plan-response", "Needs plan response"],
+    ["needs_user_permission", "needs-user-permission", "Needs permission"],
+    ["needs_user_input", "needs-user-input", "Needs input"],
+    ["working", "working", "Working"],
+    ["cancelling", "cancelling", "Cancelling"],
+    ["waiting", "waiting", "Waiting for background tasks"],
+  ] as const;
+  for (const [session, row, label] of cases) {
+    assert.equal(rowStatus({ session, pr: pr({ isMerged: true }) }), row, session);
+    assert.equal(rowStatusLabel(rowStatus({ session })), label, session);
+  }
+});
+
+test("the most urgent session wins: needs-* before working, cancelling and waiting", () => {
+  assert.equal(aggregateSessions(["waiting", "cancelling", "working", "needs_user_input"]), "needs_user_input");
+  assert.equal(aggregateSessions(["needs_user_input", "needs_user_permission"]), "needs_user_permission");
+  assert.equal(aggregateSessions(["waiting", "cancelling"]), "cancelling");
+  assert.equal(aggregateSessions(["idle", "waiting"]), "waiting");
+  assert.deepEqual([...SESSION_STATUS_ORDER].slice(0, 3), ["needs_plan_response", "needs_user_permission", "needs_user_input"]);
+});
+
+test("a turn is in flight while working, needing the user or cancelling, not while waiting", () => {
+  const active = SESSION_STATUS_ORDER.filter(hasActiveTurn);
+  assert.deepEqual(active, ["needs_plan_response", "needs_user_permission", "needs_user_input", "working", "cancelling"]);
+});
+
+test("the chat reports cancelling over working, and error only once the turn ended", () => {
+  assert.equal(chatSessionStatus({ running: false, queue: "idle" }), "idle");
+  assert.equal(chatSessionStatus({ running: true, queue: "working" }), "working");
+  assert.equal(chatSessionStatus({ running: true, queue: "idle" }), "working");
+  assert.equal(chatSessionStatus({ running: true, queue: "cancelling" }), "cancelling");
+  assert.equal(chatSessionStatus({ running: false, queue: "error" }), "error");
+  assert.equal(chatSessionStatus({ running: true, queue: "error" }), "working");
+});
+
+test("Home shows session and setup statuses in place of the time, never PR or branch ones", () => {
+  assert.equal(homeRowStatus({ session: "needs_user_input" }), "needs-user-input");
+  assert.equal(homeRowStatus({ session: "needs_user_permission" }), "needs-user-permission");
+  assert.equal(homeRowStatus({ session: "needs_plan_response" }), "needs-plan-response");
+  assert.equal(homeRowStatus({ session: "working" }), "working");
+  assert.equal(homeRowStatus({ session: "cancelling" }), "cancelling");
+  assert.equal(homeRowStatus({ session: "waiting" }), "waiting");
+  assert.equal(homeRowStatus({ workspaceState: "setting_up", session: "needs_user_input" }), "setting-up");
+  assert.equal(homeRowStatus({ workspaceState: "failed" }), "failed");
+  assert.equal(homeRowStatus({ workspaceState: "unstarted", session: "working" }), null);
+  assert.equal(homeRowStatus({ workspaceState: "ready", session: "idle" }), null);
+  assert.equal(homeRowStatus({ session: "error" }), null);
+  assert.equal(homeRowStatus({}), null);
+});
+
+test("cancelling and waiting draw the busy loader; needs-* draw an icon", () => {
+  assert.ok(isBusyStatus("cancelling"));
+  assert.ok(isBusyStatus("waiting"));
+  for (const s of ["needs-user-input", "needs-user-permission", "needs-plan-response"] as const) assert.ok(!isBusyStatus(s), s);
 });

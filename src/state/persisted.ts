@@ -3,6 +3,7 @@
 // localStorage keeps only UI preferences (selection, sidebar visibility, collapsed repos).
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import { isWorkspaceStatus } from "./workspaceStatus.ts";
+import type { SessionStatus } from "./rowStatus.ts";
 
 export interface DbRepoRow {
   id: string;
@@ -105,6 +106,36 @@ export function validSelection(selection: Selection, repos: Repo[]): Selection {
   if (selection.kind !== "workspace") return selection;
   const repo = repos.find((r) => r.id === selection.repoId);
   return repo?.workspaces.some((w) => w.id === selection.workspaceId) ? selection : { kind: "root" };
+}
+
+/** The workspace with its session status set; idle is stored as absent. */
+export function withSessionStatus(w: Workspace, status: SessionStatus): Workspace {
+  const { sessionStatus: _old, ...rest } = w;
+  return status === "idle" ? rest : { ...rest, sessionStatus: status };
+}
+
+/**
+ * A workspace re-read from conductor.db, keeping what the open workspace
+ * reported live: its session status and its pull request (neither is a column).
+ */
+export function keepLive(fresh: Workspace, old: Workspace | undefined): Workspace {
+  if (!old) return fresh;
+  return { ...fresh, ...(old.sessionStatus !== undefined ? { sessionStatus: old.sessionStatus } : {}), ...(old.pr !== undefined ? { pr: old.pr } : {}) };
+}
+
+/**
+ * Browser shell state saved before a reload: nothing reports an agent from
+ * before it, so drop every live session status (and the old `status: "working"`).
+ */
+export function withoutLiveSessions(state: AppState): AppState {
+  const repos = state.repos.map((r) => ({
+    ...r,
+    workspaces: r.workspaces.map((w): Workspace => {
+      const rest = withSessionStatus(w, "idle");
+      return (rest.status as string) === "working" ? { ...rest, status: "idle" } : rest;
+    }),
+  }));
+  return { ...state, repos };
 }
 
 export function prefsOf(state: AppState): UiPrefs {
