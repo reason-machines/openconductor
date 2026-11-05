@@ -11,7 +11,7 @@
 // `chat.focus` focuses the box. With `onAttachFiles`, files come in through
 // the "+" menu, `chat.addAttachment` (⌘U), pasting files and dropping them.
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
+import { useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
@@ -101,13 +101,6 @@ export function Composer({
     box.style.height = "auto";
     box.style.height = `${box.scrollHeight}px`;
   }, [draft, inputRef]);
-
-  // Conductor's editor has autoFocus: opening a chat puts the caret in its box
-  // (unless something else already has focus, such as a dialog).
-  useEffect(() => {
-    const box = inputRef.current;
-    if (box && (document.activeElement === null || document.activeElement === document.body)) box.focus();
-  }, [inputRef]);
 
   const query = focused ? slashQuery(draft, caret) : null;
   const slashMatches = useMemo(() => (query === null || query === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashDismissed, slashCommands]);
