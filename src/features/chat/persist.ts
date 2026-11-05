@@ -1,6 +1,6 @@
 // Keeps a chat's transcript in `conductor.db` across restarts (issue #272),
 // as Conductor keeps `sessions` and `session_messages`. The runtime
-// (reasonChat.ts) hands every new transcript to a `ChatSaver`, which writes
+// (chatRuntime.ts) hands every new transcript to a `ChatSaver`, which writes
 // the messages that changed and deletes the ones that went (Reset chat),
 // batched; when a chat opens, `restoreEvents` turns the stored rows back into
 // reducer events.
