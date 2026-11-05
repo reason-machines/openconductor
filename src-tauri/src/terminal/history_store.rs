@@ -950,14 +950,16 @@ mod tests {
         let index: Value =
             serde_json::from_str(&fs::read_to_string(root.join(METADATA_FILE)).unwrap()).unwrap();
         let rec = index["terminal"].as_object().unwrap();
+        // The reference's key order (it builds the record as an object
+        // literal); serde_json keeps it because the app enables preserve_order.
         assert_eq!(
             rec.keys().collect::<Vec<_>>(),
             [
-                "entries",
-                "entryStorage",
-                "sizeLimit",
                 "subsystem",
-                "totalSize"
+                "sizeLimit",
+                "totalSize",
+                "entryStorage",
+                "entries"
             ],
             "no protection key, as in the reference's record"
         );
