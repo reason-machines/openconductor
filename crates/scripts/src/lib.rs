@@ -5,6 +5,7 @@
 //! * [`launch`] starts one script process in its own process group.
 //! * [`ports`] hands each local workspace its block of ports.
 //! * [`runner`] runs, stops and tracks run scripts across workspaces.
+//! * [`shell_env`] captures the user's login-shell environment.
 //! * [`setup`] tracks each workspace's setup script run and its log.
 //!
 //! Behavior follows the reference app's evidence recorded in
@@ -20,3 +21,4 @@ pub mod ports;
 pub mod runner;
 #[cfg(unix)]
 pub mod setup;
+pub mod shell_env;
