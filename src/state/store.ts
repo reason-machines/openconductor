@@ -11,7 +11,7 @@ import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type 
 import { sidebarWrite } from "./sidebarPersist";
 import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, reorderSection, sectionOf, sectionsFromDb, withoutWorkspace, type DbNavSection, type NavSection } from "./navigationSections";
 import { sameRepoRecord } from "./addRepo";
-import { archiveWorkspace, emitArchiveEvent, startArchive, startUnarchive, stopWorkspaceAgents, unarchiveWorkspace, workspaceAgentStatus, type ArchiveMode } from "../workspace/archive";
+import { archiveWorkspace, deleteWorkspace, emitArchiveEvent, startArchive, startUnarchive, rememberBrowserArchived, stopWorkspaceAgents, takeBrowserArchived, unarchiveWorkspace, workspaceAgentStatus, type ArchiveMode } from "../workspace/archive";
 import { scriptsConfig, startSetup } from "../scripts/api";
 import { workspaceRef } from "../scripts/model";
 import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
@@ -46,6 +46,17 @@ export type Action =
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
   /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
   | { type: "setWorkspaceWorking"; repoId: string; workspaceId: string; working: boolean }
+  /** Open an archived workspace from the archived list: read-only, with Unarchive. */
+  | { type: "openArchivedWorkspace"; repoId: string; workspace: Workspace }
+  /**
+   * Unarchive by id (the archived list, the archived workspace's banner and
+   * header, the restore dialog's "Restore to new branch" with `useNewBranch`).
+   */
+  | { type: "unarchiveWorkspace"; repoId: string; workspaceId: string; useNewBranch?: boolean }
+  /** "Delete permanently" / "Delete anyway" after a failed archive: drop the row and its folder. */
+  | { type: "deleteWorkspace"; repoId: string; workspaceId: string }
+  /** The workspace is back in `repos`: stop showing it as archived. */
+  | { type: "unarchivedWorkspace"; workspaceId: string }
   /** Unarchive from the archive-on-merge toast: put the workspace back where it was. */
   | { type: "restoreWorkspace"; repoId: string; workspace: Workspace }
   /** The target-branch picker saved `intended_target_branch` (useTargetBranch writes the row). */
@@ -170,9 +181,16 @@ export function reducer(state: AppState, action: Action): AppState {
       );
       return { ...state, repos };
     }
+    case "openArchivedWorkspace":
+      return { ...state, archivedOpen: { repoId: action.repoId, workspace: action.workspace }, selection: { kind: "workspace", repoId: action.repoId, workspaceId: action.workspace.id } };
+    case "unarchiveWorkspace":
+      return state;
+    case "unarchivedWorkspace":
+      return state.archivedOpen?.workspace.id === action.workspaceId ? { ...state, archivedOpen: undefined } : state;
     case "setWorkspaceTargetBranch":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, targetBranch: action.branch }));
-    case "archiveWorkspace": {
+    case "archiveWorkspace":
+    case "deleteWorkspace": {
       const repos = state.repos.map((r) =>
         r.id === action.repoId ? { ...r, workspaces: r.workspaces.filter((w) => w.id !== action.workspaceId) } : r,
       );
@@ -200,7 +218,8 @@ export function reducer(state: AppState, action: Action): AppState {
         return old ? { ...w, status: old.status, ...(old.pr !== undefined ? { pr: old.pr } : {}) } : w;
       };
       const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined, workspaces: r.workspaces.map(keepLive) }));
-      return { ...state, repos, selection: validSelection(state.selection, repos) };
+      const viewingArchived = state.selection.kind === "workspace" && state.archivedOpen?.workspace.id === state.selection.workspaceId;
+      return { ...state, repos, selection: viewingArchived ? state.selection : validSelection(state.selection, repos) };
     }
     case "setWorkspaceUnread":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, unread: action.unread || undefined }));
@@ -366,11 +385,62 @@ export function useAppStore() {
   const dispatch = useCallback(
     (action: Action) => {
       if (action.type === "archiveWorkspace") {
+        const ws = stateRef.current.repos.find((r) => r.id === action.repoId)?.workspaces.find((w) => w.id === action.workspaceId);
         void startArchive(action, {
           status: workspaceAgentStatus(action.workspaceId),
-          hide: () => rawDispatch(action),
+          hide: () => {
+            if (!desktop && ws) rememberBrowserArchived(action.repoId, ws);
+            rawDispatch(action);
+          },
           stopAgents: () => stopWorkspaceAgents(action.workspaceId),
           run: desktop ? (mode) => archiveWorkspace(action.workspaceId, mode) : null,
+          reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
+          emit: emitArchiveEvent,
+        });
+        return;
+      }
+      if (action.type === "deleteWorkspace") {
+        rawDispatch(action);
+        if (desktop)
+          deleteWorkspace(action.workspaceId).then(
+            () => undefined,
+            (err) => {
+              console.error("delete_workspace failed", err);
+              void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined);
+            },
+          );
+        return;
+      }
+      if (action.type === "unarchiveWorkspace") {
+        const { repoId, workspaceId } = action;
+        const done = () => rawDispatch({ type: "unarchivedWorkspace", workspaceId });
+        if (!desktop) {
+          // Browser stand-in: put the archived row back.
+          const a = takeBrowserArchived(workspaceId) ?? (stateRef.current.archivedOpen?.workspace.id === workspaceId ? stateRef.current.archivedOpen : undefined);
+          void startUnarchive(action, {
+            show: () => {
+              if (a) rawDispatch({ type: "restoreWorkspace", repoId, workspace: { ...a.workspace, status: "idle", state: "ready" } });
+              done();
+            },
+            run: null,
+            setup: () => undefined,
+            reload: () => undefined,
+            emit: emitArchiveEvent,
+          });
+          return;
+        }
+        void startUnarchive(action, {
+          show: () => undefined,
+          run: () => unarchiveWorkspace(workspaceId, { useNewBranch: action.useNewBranch }),
+          // Restored: reload the rows (the workspace is `ready` again, maybe on a new branch), then rerun setup.
+          setup: () =>
+            void loadReposFromDb().then((repos) => {
+              rawDispatch({ type: "hydrate", repos });
+              done();
+              const repo = repos.find((r) => r.id === repoId);
+              const ws = repo?.workspaces.find((w) => w.id === workspaceId);
+              if (ws) void rerunSetup(repo, ws);
+            }, () => undefined),
           reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
           emit: emitArchiveEvent,
         });

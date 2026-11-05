@@ -701,3 +701,8 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .add-menu-recent-path { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .add-menu-loading { padding: 6px 10px; color: var(--muted); }
 .add-menu-spinner { white-space: pre; }
+/* parity:sidebar.archived-view: an archived workspace opened from the archived list. */
+.archived-banner { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 12px 12px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--hover); color: var(--muted); font-size: 13px; }
+.archived-banner-text { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.archived-placeholder { display: flex; align-items: center; justify-content: center; }
+.toast-description { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
