@@ -193,11 +193,17 @@ pub struct ArchiveOutcome {
 }
 
 /// Options of [`archive`] beyond the workspace itself.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct ArchiveRequest {
+    /// `workspaces.local_id`: names the checkpoint and the archive-heads ref.
+    pub local_id: String,
+    pub mode: ArchiveMode,
     /// `git.delete_branch_on_archive`.
     pub delete_branch: bool,
 }
+
+/// Writes the database row: `(branch, archive_commit)`.
+pub type RecordFn<'a> = dyn FnMut(&str, Option<&str>) -> Result<(), String> + 'a;
 
 /// Checkpoint, record and remove the worktree of workspace `name` in `repo`.
 /// `run_archive_script` runs between recording and removal (the archive
@@ -208,15 +214,13 @@ pub fn archive(
     manager: &WorkspaceManager,
     repo: &Path,
     name: &str,
-    local_id: &str,
-    mode: ArchiveMode,
     req: &ArchiveRequest,
-    record: &mut dyn FnMut(&str, Option<&str>) -> Result<(), String>,
+    record: &mut RecordFn<'_>,
     run_archive_script: &mut dyn FnMut(&Workspace) -> Option<String>,
 ) -> Result<ArchiveOutcome, ArchiveError> {
     let ws = manager.get(repo, name).map_err(|e| failed(name, e))?;
     let commit = match ws.state {
-        WorkspaceState::Active => save_archive_point(&ws, local_id, mode)?,
+        WorkspaceState::Active => save_archive_point(&ws, &req.local_id, req.mode)?,
         WorkspaceState::Archived | WorkspaceState::Missing => ws.head.clone(),
     };
     record(&ws.branch, commit.as_deref()).map_err(|e| failed(name, e))?;

@@ -6,11 +6,18 @@
 //! validated, so a bad value from the UI never reaches disk.
 
 pub mod commands;
+pub mod db_backed;
 pub mod effective;
+pub mod launch;
+pub mod layers;
 mod model;
 pub mod service;
 mod validate;
 
+#[cfg(test)]
+mod db_backed_tests;
+#[cfg(test)]
+mod launch_tests;
 #[cfg(test)]
 mod tests;
 
@@ -74,6 +81,16 @@ pub fn save(path: &Path, settings: &Settings) -> Result<(), SettingsError> {
     validate(settings)?;
     let text =
         toml::to_string_pretty(settings).map_err(|e| SettingsError::Invalid(e.to_string()))?;
+    write_text(path, &text)
+}
+
+/// Atomically writes an already validated settings `table` to `path`.
+pub fn save_table(path: &Path, table: &toml::Table) -> Result<(), SettingsError> {
+    let text = toml::to_string_pretty(table).map_err(|e| SettingsError::Invalid(e.to_string()))?;
+    write_text(path, &text)
+}
+
+fn write_text(path: &Path, text: &str) -> Result<(), SettingsError> {
     let dir = path.parent().unwrap_or_else(|| Path::new("."));
     fs::create_dir_all(dir).map_err(|e| SettingsError::Io(dir.to_path_buf(), e))?;
     let tmp = dir.join(format!(".{FILE_NAME}.{}.tmp", std::process::id()));

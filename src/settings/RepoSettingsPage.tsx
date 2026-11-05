@@ -6,7 +6,11 @@ import { setSpotlightTesting, spotlightTesting } from "../spotlight/testingApi";
 import { SPOTLIGHT_SETTING_DESCRIPTION, SPOTLIGHT_SETTING_TITLE, toggleBlocked, type SpotlightTesting } from "../spotlight/testing";
 import { Row } from "./GeneralPage";
 import { errorText } from "./api";
+import { WORKSPACES_PATH_DESCRIPTION, WORKSPACES_PATH_TITLE, repoWorkspacesPath } from "./rootPath";
 import type { RepoSection } from "./routes";
+import { RepoActionsRows } from "./rows/PromptRows";
+import { RepoEnvironmentRows } from "./rows/EnvironmentRows";
+import { RepoGitRows } from "./rows/RepoGitRows";
 
 interface Props {
   repo: Repo;
@@ -26,7 +30,7 @@ export function RepoSettingsPage({ repo, section }: Props) {
   const file = repo.path ? `${repo.path.replace(/\/+$/, "")}/.conductor/settings.local.toml` : null;
   return (
     <div className="settings-section">
-      {section === "environment" && <RepoEnvironment />}
+      {section === "environment" && <RepoEnvironment repo={repo} />}
       {section === "git" && <RepoGit repo={repo} />}
       {section === "scripts" && <RepoScripts repo={repo} />}
       {section === "actions" && <RepoActions repo={repo} />}
@@ -36,26 +40,24 @@ export function RepoSettingsPage({ repo, section }: Props) {
   );
 }
 
-function RepoEnvironment() {
-  return (
-    <div className="settings-rows">
-      <Row label="Environment settings" help="Environment variables, files, and preview URLs for this repository. Not editable here yet." >
-        <span />
-      </Row>
-    </div>
-  );
+function RepoEnvironment({ repo }: { repo: Repo }) {
+  if (!repo.path) return <p className="muted small">This repository has no local checkout, so its environment settings cannot be edited.</p>;
+  return <RepoEnvironmentRows repoPath={repo.path} />;
 }
 
 function RepoGit({ repo }: { repo: Repo }) {
   return (
-    <div className="settings-rows">
-      <Row label="Branch new workspaces from" help="Each workspace is an isolated copy of your codebase.">
-        <code aria-label="Base branch">{repo.defaultBranch || "main"}</code>
-      </Row>
-      <Row label="Remote origin" help="Where should we push, pull, and create PRs?">
-        <code aria-label="Remote origin">{repo.remote || "origin"}</code>
-      </Row>
-    </div>
+    <>
+      <div className="settings-rows">
+        <Row label="Branch new workspaces from" help="Each workspace is an isolated copy of your codebase.">
+          <code aria-label="Base branch">{repo.defaultBranch || "main"}</code>
+        </Row>
+        <Row label="Remote origin" help="Where should we push, pull, and create PRs?">
+          <code aria-label="Remote origin">{repo.remote || "origin"}</code>
+        </Row>
+      </div>
+      {repo.path && <RepoGitRows repoPath={repo.path} />}
+    </>
   );
 }
 
@@ -124,15 +126,29 @@ function RepoActions({ repo }: { repo: Repo }) {
         </Row>
       </div>
       {error && <p className="error small" role="alert">{error}</p>}
+      {repo.path && <RepoActionsRows repoPath={repo.path} />}
     </>
   );
 }
 
 function RepoMisc({ repo }: { repo: Repo }) {
+  // Conductor's `misc:workspaces-path`: the repository's `workspacesStoragePath`, read-only.
+  const [workspaces, setWorkspaces] = useState<string | null>(null);
+  useEffect(() => {
+    setWorkspaces(null);
+    repoWorkspacesPath(repo.id, repo.name).then(setWorkspaces, () => setWorkspaces(null));
+  }, [repo.id, repo.name]);
   return (
     <div className="settings-rows">
       <Row label="Root path" help="Do not move or delete this directory. Instead, remove the repository in OpenConductor.">
         <code aria-label="Root path">{repo.path || "No local checkout"}</code>
+      </Row>
+      <Row label={WORKSPACES_PATH_TITLE} help={WORKSPACES_PATH_DESCRIPTION}>
+        {workspaces && (
+          <code className="settings-path-value" aria-label={WORKSPACES_PATH_TITLE} title={workspaces}>
+            {workspaces}
+          </code>
+        )}
       </Row>
     </div>
   );

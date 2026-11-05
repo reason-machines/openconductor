@@ -1,0 +1,92 @@
+{
+  "error": "Analysis failed",
+  "code": "capability_unavailable",
+  "category": "unsupported_provider",
+  "message": "The selected analysis provider does not support this target. Choose another provider or open a supported extracted binary.",
+  "retryable": false,
+  "remediation": {
+    "action": "The selected analysis provider does not support this target. Choose another provider or open a supported extracted binary."
+  },
+  "details": {
+    "operation": "search_strings",
+    "selection_reason": "target_unsupported",
+    "requested_provider_id": "auto",
+    "candidate_ids": [
+      "ghidra",
+      "hopper",
+      "ida",
+      "kuna"
+    ],
+    "rejections": [
+      {
+        "provider_id": "ghidra",
+        "code": "target_kind_unsupported",
+        "reason": "Ghidra v1 imports executable targets, not artifact targets.",
+        "diagnostics": {
+          "host_platform": "darwin",
+          "target_kind": "artifact",
+          "target_format": "javascript",
+          "architecture": null,
+          "available_architectures": null,
+          "executable_role": null,
+          "managed": null
+        }
+      },
+      {
+        "provider_id": "hopper",
+        "code": "executable_missing",
+        "reason": "Hopper launcher is missing or not executable: /Applications/Hopper Disassembler.app/Contents/MacOS/hopper",
+        "diagnostics": {
+          "launcher_path": "/Applications/Hopper Disassembler.app/Contents/MacOS/hopper",
+          "platform": "darwin"
+        }
+      },
+      {
+        "provider_id": "hopper",
+        "code": "target_kind_unsupported",
+        "reason": "Hopper cannot directly analyze artifact targets.",
+        "diagnostics": {
+          "target_kind": "artifact",
+          "target_format": "javascript",
+          "architecture": null
+        }
+      },
+      {
+        "provider_id": "ida",
+        "code": "not_configured",
+        "reason": "Set REA_IDA_MCP_CONFIG to an upstream IDA MCP JSON registration; see docs/ida-provider.md.",
+        "diagnostics": {
+          "configured": false,
+          "live_connection_probed": false
+        }
+      },
+      {
+        "provider_id": "ida",
+        "code": "target_kind_unsupported",
+        "reason": "IDA MCP integration admits executable inputs, not analysis databases. Select the original input binary.",
+        "diagnostics": {
+          "target_kind": "artifact",
+          "target_format": "javascript"
+        }
+      },
+      {
+        "provider_id": "kuna",
+        "code": "not_configured",
+        "reason": "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna.",
+        "diagnostics": {
+          "configured": false,
+          "version_probed": false
+        }
+      },
+      {
+        "provider_id": "kuna",
+        "code": "target_kind_unsupported",
+        "reason": "Kuna decompiles executable images, not databases or archives.",
+        "diagnostics": {
+          "target_kind": "artifact",
+          "target_format": "javascript"
+        }
+      }
+    ]
+  }
+}

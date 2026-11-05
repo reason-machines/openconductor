@@ -76,17 +76,15 @@ struct Recorded {
     script_ran: bool,
 }
 
-fn run_archive(f: &Fixture, name: &str, mode: ArchiveMode, req: &ArchiveRequest, rec: &mut Recorded) -> Result<ArchiveOutcome, ArchiveError> {
-    let local_id = format!("app/{name}");
+fn run_archive(f: &Fixture, name: &str, mode: ArchiveMode, delete_branch: bool, rec: &mut Recorded) -> Result<ArchiveOutcome, ArchiveError> {
+    let req = ArchiveRequest { local_id: format!("app/{name}"), mode, delete_branch };
     let mut row = None;
     let mut script_ran = false;
     let out = archive(
         &f.mgr,
         &f.repo,
         name,
-        &local_id,
-        mode,
-        req,
+        &req,
         &mut |branch, commit| {
             row = Some((branch.to_string(), commit.map(str::to_string)));
             Ok(())
@@ -112,7 +110,7 @@ fn archive_records_head_ref_and_checkpoint_then_unarchive_restores_uncommitted_w
     std::fs::write(ws.path.join("scratch.txt"), "untracked\n").unwrap();
 
     let mut rec = Recorded::default();
-    let out = run_archive(&f, "tokyo", ArchiveMode::Safe, &ArchiveRequest::default(), &mut rec).unwrap();
+    let out = run_archive(&f, "tokyo", ArchiveMode::Safe, false, &mut rec).unwrap();
     assert_eq!(out.archive_commit.as_deref(), Some(head.as_str()));
     assert_eq!(out.branch, "tokyo");
     assert!(out.warnings.is_empty(), "{:?}", out.warnings);
@@ -146,14 +144,14 @@ fn archive_refuses_while_a_merge_is_in_progress_and_discard_mode_clears_it() {
     assert!(sh(&ws.path, &["rev-parse", "--verify", "MERGE_HEAD"]).0);
 
     let mut rec = Recorded::default();
-    let refused = run_archive(&f, "lima", ArchiveMode::Safe, &ArchiveRequest::default(), &mut rec);
+    let refused = run_archive(&f, "lima", ArchiveMode::Safe, false, &mut rec);
     assert_eq!(refused, Err(ArchiveError::GitBusy));
     assert_eq!(refused.unwrap_err().to_string(), GIT_BUSY);
     assert_eq!(rec.row, None, "nothing recorded on refusal");
     assert!(ws.path.is_dir(), "worktree untouched on refusal");
     assert!(sh(&ws.path, &["rev-parse", "--verify", "MERGE_HEAD"]).0, "merge state untouched on refusal");
 
-    let out = run_archive(&f, "lima", ArchiveMode::DiscardGitOperationState, &ArchiveRequest::default(), &mut rec).unwrap();
+    let out = run_archive(&f, "lima", ArchiveMode::DiscardGitOperationState, false, &mut rec).unwrap();
     assert!(out.archive_commit.is_some());
     assert!(rec.row.is_some());
     assert!(!ws.path.exists());
@@ -165,8 +163,7 @@ fn delete_branch_on_archive_deletes_it_and_unarchive_recreates_it_at_the_archive
     let ws = create(&f, "oslo");
     let head = commit(&ws.path, "w.txt", "w\n");
     let mut rec = Recorded::default();
-    let req = ArchiveRequest { delete_branch: true };
-    let out = run_archive(&f, "oslo", ArchiveMode::Safe, &req, &mut rec).unwrap();
+    let out = run_archive(&f, "oslo", ArchiveMode::Safe, true, &mut rec).unwrap();
     assert_eq!(out.archive_commit.as_deref(), Some(head.as_str()));
     assert!(!sh(&f.repo, &["rev-parse", "--verify", "refs/heads/oslo"]).0, "branch deleted");
 
@@ -180,7 +177,7 @@ fn unarchive_refuses_when_the_folder_exists_or_the_branch_is_checked_out_elsewhe
     let f = fixture();
     let ws = create(&f, "rome");
     let mut rec = Recorded::default();
-    run_archive(&f, "rome", ArchiveMode::Safe, &ArchiveRequest::default(), &mut rec).unwrap();
+    run_archive(&f, "rome", ArchiveMode::Safe, false, &mut rec).unwrap();
 
     std::fs::create_dir_all(&ws.path).unwrap();
     let err = unarchive(&f.mgr, &f.repo, "rome", "app/rome").unwrap_err();
@@ -206,7 +203,7 @@ fn the_default_branch_is_never_deleted() {
         .unwrap()
         .workspace;
     let mut rec = Recorded::default();
-    let out = run_archive(&f, &ws.name, ArchiveMode::Safe, &ArchiveRequest { delete_branch: true }, &mut rec).unwrap();
+    let out = run_archive(&f, &ws.name, ArchiveMode::Safe, true, &mut rec).unwrap();
     assert_eq!(out.warnings, vec!["Skipped deleting \"main\" because it is the repo default branch.".to_string()]);
     assert!(sh(&f.repo, &["rev-parse", "--verify", "refs/heads/main"]).0);
 }

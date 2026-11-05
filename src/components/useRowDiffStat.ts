@@ -46,5 +46,5 @@ export function useRowDiffStat(ws: Workspace, base: string, active: boolean) {
     };
   }, [enabled, worktree, base, active]);
 
-  return { ref, stat: live ?? ws.diff };
+  return { ref, stat: live ?? ws.diff, onScreen };
 }

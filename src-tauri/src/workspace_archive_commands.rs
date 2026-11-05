@@ -103,14 +103,12 @@ pub async fn archive_workspace(
         let delete_branch = crate::settings::effective::resolve(&root, ws_path.as_deref())
             .map(|e| e.git.delete_branch_on_archive.value)
             .unwrap_or(false);
-        let req = ArchiveRequest { delete_branch };
+        let req = ArchiveRequest { local_id: workspace_id.clone(), mode, delete_branch };
         let id = workspace_id.clone();
         core::archive(
             &manager,
             &root,
             &name,
-            &workspace_id,
-            mode,
             &req,
             &mut |branch, commit| {
                 tauri::async_runtime::block_on(workspaces::archive(&pool, &id, branch, commit)).map_err(|e| e.to_string())

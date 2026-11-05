@@ -11,10 +11,11 @@
 //                        /repo checkout, marked cloud with the same a.txt
 //   3. "echo: follow-up" the reply says "turn 3", so one Reason Session ran
 //                        all three turns
-//   4. "slow", then Stop the turn ends as "Stopped."
+//   4. "slow", then Stop the turn ends as "Interrupted by user"
 //   5-6. two turns that write files; each saved start/end checkpoints
 //   7. "Reset chat" on turn 5   "Reset chat?" says 2 changed; Reset deletes
 //                        turn 6 and restores turn 5's files
+//   The Session runs Settings' default model (set before the chat opens).
 //
 // Usage (under a display, e.g. xvfb-run):
 //   node tools/e2e/reason-chat.e2e.mjs <path to the built app binary>
@@ -121,12 +122,13 @@ async function send(text) {
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
-/** Expands every tool row and returns each row's tool input. */
+/** Opens every collapsed "N tool calls" summary, then expands every tool row and returns each row's tool input. */
 const toolInputs = () =>
+  run(`for (const b of document.querySelectorAll('.chat-tool-summary-row[aria-expanded="false"]')) b.click(); return true;`).then(() =>
   run(`
     for (const b of document.querySelectorAll('.chat-tool-head[aria-expanded="false"]')) b.click();
     return [...document.querySelectorAll('.chat-tool-body > pre:first-child')].map((p) => p.textContent);
-  `).then((texts) => texts.map((t) => JSON.parse(t)));
+  `)).then((texts) => texts.map((t) => JSON.parse(t)));
 
 /** A finished turn has no Stop button. */
 const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await running()));
@@ -150,7 +152,10 @@ try {
   const seeded = await runAsync(
     `const done = arguments[arguments.length - 1];
      const invoke = window.__TAURI_INTERNALS__.invoke;
-     invoke("add_repository", { path: arguments[0] })
+     // The workspace chat's model comes from Settings' default model (#271).
+     invoke("get_settings")
+       .then((s) => invoke("update_settings", { settings: { ...s, models: { ...s.models, default: "opus-5-5-1m" } } }))
+       .then(() => invoke("add_repository", { path: arguments[0] }))
        .then((repo) => invoke("create_workspace", { repositoryId: repo.id, branchName: "e2e", directoryName: "e2e", baseBranch: null, existingBranch: false, prNumber: null }))
        .then((created) => done({ workspace: created.workspace }), (err) => done({ error: String(err) }));`,
     project,
@@ -202,9 +207,9 @@ try {
   // counts it; a Stop before the prompt reaches Reason never sends it.
   await waitFor('the "bash: sleep" tool row', () => chatText().then((t) => t.includes("bash: sleep")));
   await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
-  await waitFor('"Stopped."', () => chatText().then((t) => t.includes("Stopped.")), 15000);
+  await waitFor('"Interrupted by user"', () => chatText().then((t) => t.includes("Interrupted by user")), 15000);
   await turnDone(4);
-  pass('Stop ends the running turn: "Stopped."');
+  pass('Stop ends the running turn: "Interrupted by user"');
   await screenshot("reason-chat-stopped");
 
   // 5-6. Checkpoints: two turns that edit files, then "Reset chat" back to turn 5.
@@ -274,9 +279,12 @@ try {
   await screenshot("reason-chat-after-reset");
   pass("Reset deleted turn 6 and restored the files: notes.txt is back to one, extra.txt is gone");
 
-  const sessions = Object.keys(JSON.parse(readFileSync(join(home, "state.json"), "utf8")).sessions);
+  const stored = JSON.parse(readFileSync(join(home, "state.json"), "utf8")).sessions;
+  const sessions = Object.keys(stored);
   assert.deepEqual(sessions, ["sess-1"], "one Reason Session for the workspace");
   pass(`the fake CLI saw one Session: ${sessions.join(", ")}`);
+  assert.equal(stored["sess-1"].config?.model, "byok:anthropic:claude-opus-5-5", JSON.stringify(stored["sess-1"]));
+  pass("the Session runs Settings' default model: session/set_config_option model=byok:anthropic:claude-opus-5-5");
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {

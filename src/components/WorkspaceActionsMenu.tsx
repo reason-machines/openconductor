@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Workspace } from "../state/types";
+import type { NavSection } from "../state/navigationSections";
 import { WORKSPACE_STATUSES, effectiveStatus, statusLabel, type WorkspaceStatusValue } from "../state/workspaceStatus";
 import { ChevronIcon } from "./Icons";
 
@@ -10,7 +11,11 @@ import { ChevronIcon } from "./Icons";
 // separator, Archive (⌘⇧A, shown on the selected row) / Unarchive.
 // R and P act on the row while the menu is open
 // (workspace.contextMenu.toggleRead / togglePin).
-// Not built here: Move to section (no sections yet) and Copy link (no URL scheme).
+// Move to section ▸ (Conductor's `Xoo` / `Joo`): every section (emoji, name,
+// a check on the current one, which is disabled), a separator when there are
+// sections, "New section…" (creates one holding this workspace) and
+// "Remove from section" when it is in one.
+// Not built here: Copy link (no URL scheme).
 
 export interface WorkspaceActions {
   toggleRead: () => void;
@@ -19,6 +24,10 @@ export interface WorkspaceActions {
   /** Absent until the rename dialog exists; the item is hidden. */
   rename?: () => void;
   archive: () => void;
+  moveToSection: (sectionId: string) => void;
+  /** Opens the New section dialog with this workspace to move. */
+  newSection: () => void;
+  removeFromSection: () => void;
 }
 
 interface Props {
@@ -28,13 +37,21 @@ interface Props {
   /** Viewport point the menu opens at (the right-click position). */
   at: { x: number; y: number };
   actions: WorkspaceActions;
+  /** The user's sections, in sidebar order. */
+  sections: readonly NavSection[];
+  /** Section that holds this workspace, if any. */
+  currentSectionId?: string;
   onClose: () => void;
 }
 
-export function WorkspaceActionsMenu({ workspace, selected, at, actions, onClose }: Props) {
+export function WorkspaceActionsMenu({ workspace, selected, at, actions, sections, currentSectionId, onClose }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState(at);
-  const [statusOpen, setStatusOpen] = useState(false);
+  const [sub, setSub] = useState<"status" | "section" | null>(null);
+  const statusOpen = sub === "status";
+  const sectionOpen = sub === "section";
+  const setStatusOpen = (open: boolean) => setSub(open ? "status" : null);
+  const setSectionOpen = (open: boolean) => setSub(open ? "section" : null);
   const current = effectiveStatus(workspace);
   const pinned = typeof workspace.pinnedAt === "number";
 
@@ -124,6 +141,48 @@ export function WorkspaceActionsMenu({ workspace, selected, at, actions, onClose
                 {s === current && <span className="sb-ctx-check" aria-hidden>✓</span>}
               </button>
             ))}
+          </div>
+        )}
+      </div>
+      <div className="sb-ctx-sub" onMouseEnter={() => setSectionOpen(true)} onMouseLeave={() => setSectionOpen(false)}>
+        <button
+          type="button"
+          role="menuitem"
+          className="sb-ctx-item"
+          aria-haspopup="menu"
+          aria-expanded={sectionOpen}
+          onClick={() => setSectionOpen(!sectionOpen)}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowRight") {
+              e.preventDefault();
+              setSectionOpen(true);
+            }
+          }}
+        >
+          <span className="sb-ctx-label">Move to section</span>
+          <ChevronIcon size={14} />
+        </button>
+        {sectionOpen && (
+          <div className="sb-ctx-menu sb-ctx-submenu" role="menu" aria-label="Move to section">
+            {sections.map((section) => {
+              const current = section.id === currentSectionId;
+              return (
+                <button key={section.id} type="button" role="menuitemradio" aria-checked={current} disabled={current} className="sb-ctx-item" onClick={run(() => actions.moveToSection(section.id))}>
+                  {section.emoji !== undefined && <span className="sb-section-emoji" aria-hidden>{section.emoji}</span>}
+                  <span className="sb-ctx-label">{section.name}</span>
+                  {current && <span className="sb-ctx-check" aria-hidden>✓</span>}
+                </button>
+              );
+            })}
+            {sections.length > 0 && <div className="sb-ctx-sep" role="separator" />}
+            <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.newSection)}>
+              <span className="sb-ctx-label">New section…</span>
+            </button>
+            {currentSectionId !== undefined && (
+              <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.removeFromSection)}>
+                <span className="sb-ctx-label">Remove from section</span>
+              </button>
+            )}
           </div>
         )}
       </div>

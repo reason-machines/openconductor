@@ -99,6 +99,38 @@ async fn create_lifecycle_initializing_then_ready() {
 
     workspaces::archive(&pool, "app/oslo", "sven/fix-login", Some("abc123")).await.unwrap();
     assert_eq!(list_workspaces(&pool).await.unwrap()[0].state, "archived");
+
+    // Unarchive (workspace_archive_commands) re-adds the worktree, then moves the row back.
+    assert!(workspaces::unarchive(&pool, "app/oslo").await.unwrap());
+    assert_eq!(list_workspaces(&pool).await.unwrap()[0].state, "setting_up");
+    assert!(!workspaces::unarchive(&pool, "app/oslo").await.unwrap());
+}
+
+#[tokio::test]
+async fn target_branch_is_listed_and_saved() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    begin_workspace(&pool, &ws("app", "oslo"), Some("develop"))
+        .await
+        .unwrap();
+    assert_eq!(
+        list_workspaces(&pool).await.unwrap()[0]
+            .intended_target_branch
+            .as_deref(),
+        Some("develop")
+    );
+    set_target_branch(&pool, "app/oslo", "release/2")
+        .await
+        .unwrap();
+    assert_eq!(
+        list_workspaces(&pool).await.unwrap()[0]
+            .intended_target_branch
+            .as_deref(),
+        Some("release/2")
+    );
+    assert!(set_target_branch(&pool, "app/missing", "main")
+        .await
+        .is_err());
 }
 
 #[tokio::test]
@@ -256,7 +288,7 @@ async fn numbers_are_not_reused_after_archive_or_a_failed_create() {
     finish_workspace(&pool, &ws("app", "oslo"), None, None)
         .await
         .unwrap();
-    archive(&pool, "app/oslo").await.unwrap();
+    workspaces::archive(&pool, "app/oslo", "oslo", None).await.unwrap();
     // A failed create gives its number back (its row is gone)...
     begin_workspace(&pool, &ws("app", "lima"), None)
         .await

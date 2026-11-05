@@ -51,6 +51,8 @@ test("archived rows of db_list_workspaces, newest first", () => {
     pinnedAt: null,
     unread: false,
     number: null,
+    prTitle: null,
+    prDescription: null,
     createdAt,
   });
   const out = archivedFromRows([row("app/a", "archived", "2026-11-01 10:00:00"), row("app/b", "ready", "2026-11-02 10:00:00"), row("app/c", "archived", "2026-11-03T10:00:00Z")]);

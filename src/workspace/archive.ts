@@ -78,6 +78,8 @@ export async function unarchiveWorkspace(workspaceId: string): Promise<Unarchive
       pinnedAt: null,
       unread: false,
       number: null,
+      prTitle: null,
+      prDescription: null,
       createdAt: new Date(ws.createdAt).toISOString(),
     };
     return { workspace: row, warning: null };

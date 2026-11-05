@@ -12,7 +12,7 @@
     "checkpointer.sh": "getCheckpointScriptLocation: local host -> `${appData}/bin/checkpointer.sh`",
     "spotlighter.sh": "hY() = `${appData}/bin/spotlighter.sh`",
     "agents": "Claude and Codex auth checks use `${Vl()}/claude` as the default executable; ACP providers live in appData/agent-binaries/acp-providers",
-    "conductor-skill": "only the remote path /conductor/worker/conductor-skill/skills/conductor/SKILL.md appears in the frontend"
+    "conductor-skill": "only the remote path /conductor/worker/conductor-skill/skills/conductor/SKILL.md appears in the frontend; locally the Rust side passes the resource to the sidecar in CONDUCTOR_INTERNAL_SKILL_PLUGIN_DIR (rea/search-strings-main-skill.json)"
   },
   "inference": "The frontend only reads appData/bin, while the files ship in Resources/bin, so Conductor's Rust side copies Resources/bin into appData/bin; the copy code is not in the frontend and was not located in the binary.",
   "upstream_identity": {
@@ -36,13 +36,13 @@
       "bin/gh": "scripts/fetch-bundled-tools.sh (pinned, both hashes checked) + src-tauri/tauri.bundle.conf.json; installed into $APPDATA/bin at startup by src-tauri/src/bundled_bin.rs; every gh caller resolves $OPENCONDUCTOR_GH, then $APPDATA/bin/gh, then PATH",
       "bin/checkpointer.sh": "src-tauri/resources/bin-tools/checkpointer.sh: shim that execs the app binary in tool mode (`openconductor --tool checkpointer`, src-tauri/src/tool_cli.rs) over the native src-tauri/src/checkpoint; same command line, output and exit codes (0/1/101/102/103) as Conductor's script",
       "bin/git-busy-check.sh": "src-tauri/resources/bin-tools/git-busy-check.sh: shim into `openconductor --tool git-busy-check` (checkpoint/busy.rs); prints clean | busy:<kind>, exit 2 for a bad path or non-repo",
+      "bin/spotlighter.sh": "src-tauri/resources/bin-tools/spotlighter.sh: shim into `openconductor --tool spotlighter` (src-tauri/src/tool_spotlighter.rs), which runs the native watch loop (spotlight/watch.rs) on the workspace into $CONDUCTOR_ROOT_PATH until SIGINT/SIGTERM/SIGHUP; same lines, /tmp/conductor-spotlight-<pid>.log copy and exit 1 for a missing or bad root as Conductor's script; CONDUCTOR_INT_CHECKPOINTER_PATH and CONDUCTOR_INT_WATCHEXEC_PATH are not needed",
       "bin/.internal/openconductor": "symlink to the running app binary, written into $APPDATA/bin at startup by bundled_bin::link_exe; the shims exec it, as Conductor's shims exec bin/.internal/conductor-runtime",
       "conductor-skill/": "src-tauri/resources/conductor-skill: OpenConductor's own Claude Code plugin (openconductor, skill conductor), written from OpenConductor's code, not copied from Conductor; shipped to Contents/Resources/conductor-skill and passed to every ClaudeLaunch with --plugin-dir (agent/claude_cli.rs)"
     },
     "not_bundled": {
-      "bin/watchexec": "spotlight watches natively (src-tauri/src/spotlight/watch.rs); Conductor's build also differs from the upstream release",
-      "bin/spotlighter.sh": "implemented natively in src-tauri/src/spotlight",
-      "bin/conductor, bin/.internal/*": "shims that exec conductor-runtime, Conductor's Bun-compiled agent runtime; no OpenConductor counterpart yet"
+      "bin/watchexec": "replaced by the native spotlight watcher; see divergences.json bundled_resources",
+      "bin/conductor, bin/.internal/*": "each listed with kind, reason and evidence in divergences.json bundled_resources (conductor-runtime and sidecar replaced by Rust agent launches, logger and actions Conductor-only, conductor CLI, internal and agent-launcher not built)"
     }
   }
 }
