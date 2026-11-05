@@ -108,6 +108,17 @@ REA, Conductor v0.87.6 on Sven's Mac (REA 6.7.0):
 - `rea search index-BGEQ8YjU.js --pattern=archive_on_merge`: `capability_unavailable` (`target_unsupported`); `search` only accepts binaries for the Ghidra / Hopper / IDA / Kuna providers, so there is no REA string search over a JavaScript chunk.
 - `rea analyze-javascript-application` on a folder holding only `index-BGEQ8YjU.js`: exit 0 in 214 s, Evidence `ev_ed84d75ccb95a40cc1e33f548754ea751c7b2923f173806870054005b3164fd5` (59 MB; 1,381 modules, 65 endpoints, 15 storage nodes). The literals behind merge, automerge and archive-on-merge (`archive_on_merge`, `Merge failed`, `Failed to enable automerge`, `--disable-auto`, `squashMergeAllowed`) occur 0 times in it; only `mergeStateStatus` (11) does. These behaviors therefore come from reading the byte-identical chunk at the offsets above.
 
+## PR title, description and base branch (pr_edit, pr_retarget)
+
+Reference (Conductor v0.87.6 decoded frontend chunks, read by text search as data; offsets recorded by Session a4cdd6eb): `updatePrMetadata` (index ~721,160) trims the title, refuses an empty one ("PR title cannot be empty"), does nothing when neither field is given, then runs `gh pr edit <n> [--title] [--body]`, updates the cached PR info optimistically and refreshes. A failed edit shows "Failed to update PR on GitHub: <msg>", with a separate message when the error names the read:org scope (~3,167,200). `updatePrBase` (~722,230) runs `gh pr edit <n> --base <b>` ("Failed to change the PR's base branch") and is called from the workspace target-branch change only for an open, unmerged PR whose base differs (~3,321,350). UI (renderApp): the PR tab header's clickable title opens an "Edit PR title" dialog with Cancel / Save ("Saving..."), Enter saves and Save is disabled when empty (~9,660,300); the description is click-to-edit with placeholder "PR description" (~9,668,100); the target branch picker reads "Select target branch...", "Loading branches...", "Couldn't load branches." / Try again, "No branch found." and marks the default branch (~2,934,300).
+
+Ours: `src/features/pr/edit/` (`edit.ts` rules + tests, `api.ts`, `PrHeader.tsx`), shown at the top of the Checks tab.
+
+Differences:
+- The header sits in the Checks tab; Conductor has a separate PR tab.
+- The base-branch picker lives in the PR header and retargets only the PR. OpenConductor has no per-workspace target branch yet (it diffs against the repository default), so `intended_target_branch` is not saved and Graphite stacks are not checked.
+- Errors show inline under the header rather than as toasts, and the saved title is not written to `workspaces.pr_title` directly; the refreshed lookup updates it through WorkspaceView's `onLookup`.
+
 ## REA gaps hit
 
 - `rea search` (6.7.0 on Sven's Mac) refuses the decoded frontend chunks: `capability_unavailable` / `unsupported_provider`, every provider (ghidra, hopper, ida, kuna) rejects a JavaScript artifact target (`target_kind_unsupported`); ghidra is also `not_configured` there (no `GHIDRA_INSTALL_DIR`, no Java). Run: `rea search frontend/dist/assets/index-BGEQ8YjU.js --pattern='archive_on_merge|archiveOnMerge' --mode regex`, 15 s, exit 1. The archive-on-merge, check-log and re-run locations above were found by Python text search over the same chunk on the Mac instead.

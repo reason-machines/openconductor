@@ -121,12 +121,13 @@ async function send(text) {
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
-/** Expands every tool row and returns each row's tool input. */
+/** Opens every collapsed "N tool calls" summary, then expands every tool row and returns each row's tool input. */
 const toolInputs = () =>
+  run(`for (const b of document.querySelectorAll('.chat-tool-summary-row[aria-expanded="false"]')) b.click(); return true;`).then(() =>
   run(`
     for (const b of document.querySelectorAll('.chat-tool-head[aria-expanded="false"]')) b.click();
     return [...document.querySelectorAll('.chat-tool-body > pre:first-child')].map((p) => p.textContent);
-  `).then((texts) => texts.map((t) => JSON.parse(t)));
+  `)).then((texts) => texts.map((t) => JSON.parse(t)));
 
 /** A finished turn has no Stop button. */
 const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await running()));

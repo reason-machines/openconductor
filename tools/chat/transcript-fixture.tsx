@@ -1,7 +1,8 @@
 // Renders <Transcript> with a fixed transcript shaped like Conductor's
 // chat--transcript-collapsed-tools / chat--tool-calls-expanded references
 // (evidence/screens), so rendering changes can be screenshotted without an agent.
-// ?theme=dark|light, ?running=1 keeps the turn running.
+// ?theme=dark|light, ?running=1 keeps the turn running, ?tools=expanded opens
+// the "N tool calls, M messages" summary.
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Transcript } from "../../src/features/chat/Transcript.tsx";
@@ -54,3 +55,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </main>
   </React.StrictMode>,
 );
+
+if (params.get("tools") === "expanded") {
+  setTimeout(() => document.querySelector<HTMLButtonElement>('.chat-tool-summary-row[aria-expanded="false"]')?.click(), 100);
+}
