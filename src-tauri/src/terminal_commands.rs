@@ -3,9 +3,13 @@
 //! [`wire::EVENT`] as a [`WireEvent`]; errors are the `Display` text.
 //! Commands are `async` so a slow spawn or kill stays off the main thread.
 
+use std::sync::Arc;
+
 use tauri::{AppHandle, Emitter, State};
 
-use crate::terminal::{wire, PtyEvent, PtyManager, SpawnArgs, WireEvent};
+use crate::terminal::{
+    wire, PtyEvent, PtyManager, ShellOutput, ShellRequest, ShellRunner, SpawnArgs, WireEvent,
+};
 
 /// Managed state: the app's terminals.
 pub struct Terminals(pub PtyManager);
@@ -73,4 +77,41 @@ pub async fn pty_clear_history(state: State<'_, Terminals>, id: String) -> CmdRe
 #[tauri::command]
 pub async fn pty_list(state: State<'_, Terminals>) -> CmdResult<Vec<String>> {
     Ok(state.0.ids())
+}
+
+/// Managed state: one-shot shell commands that can still be cancelled.
+#[derive(Default)]
+pub struct ShellCommands(pub Arc<ShellRunner>);
+
+/// Run `request.command` with `/bin/sh -c` and return its output.
+#[tauri::command]
+pub async fn execute_shell_command(
+    state: State<'_, ShellCommands>,
+    request: ShellRequest,
+) -> CmdResult<ShellOutput> {
+    let runner = state.0.clone();
+    tauri::async_runtime::spawn_blocking(move || runner.run(&request))
+        .await
+        .map_err(err)?
+        .map_err(err)
+}
+
+/// Like `execute_shell_command`; `cancel_shell_command` with `id` stops it.
+#[tauri::command]
+pub async fn execute_shell_command_cancellable(
+    state: State<'_, ShellCommands>,
+    id: String,
+    request: ShellRequest,
+) -> CmdResult<ShellOutput> {
+    let runner = state.0.clone();
+    tauri::async_runtime::spawn_blocking(move || runner.run_cancellable(&id, &request))
+        .await
+        .map_err(err)?
+        .map_err(err)
+}
+
+/// Stop a cancellable command; false when `id` is not running.
+#[tauri::command]
+pub async fn cancel_shell_command(state: State<'_, ShellCommands>, id: String) -> CmdResult<bool> {
+    Ok(state.0.cancel(&id))
 }

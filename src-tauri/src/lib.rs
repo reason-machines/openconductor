@@ -6,6 +6,7 @@
 //! - `agent/`      agent runner, providers and BYOK settings
 //! - `diff/`       diff viewer: git changes, unified diff parser
 //! - `quick_open/` quick open file index and fuzzy matching
+//! - `reason_acp/` the Reason agent over ACP; its commands are `reason_chat`
 //! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //! - `settings/`   settings.toml and the Keychain-backed secret store
 //! - `terminal/`   PTY terminals (`terminal_commands.rs` is its IPC layer)
@@ -15,8 +16,11 @@
 pub mod agent;
 pub mod checkpoint;
 pub mod diff;
+pub mod github_repo;
 pub mod project;
 pub mod quick_open;
+pub mod reason_acp;
+pub mod reason_chat;
 pub mod scripts;
 pub mod settings;
 pub mod spotlight;
@@ -26,7 +30,7 @@ pub mod workspace;
 
 use serde::Serialize;
 use tauri::Manager;
-use terminal_commands::Terminals;
+use terminal_commands::{ShellCommands, Terminals};
 
 #[derive(Serialize)]
 struct AppInfo {
@@ -49,6 +53,38 @@ fn app_info() -> AppInfo {
 #[tauri::command]
 fn inspect_project_folder(path: String) -> project::FolderInspection {
     project::inspect_folder(std::path::Path::new(&path))
+}
+
+/// Runs a blocking `gh`/`git` call off the async runtime's worker threads.
+async fn blocking<T: Send + 'static>(
+    f: impl FnOnce() -> Result<T, String> + Send + 'static,
+) -> Result<T, String> {
+    tauri::async_runtime::spawn_blocking(f)
+        .await
+        .map_err(|e| e.to_string())?
+}
+
+/// Owners for the "Create a private GitHub repo?" dialog (see `github_repo`).
+#[tauri::command]
+async fn github_repo_owners() -> Result<github_repo::Owners, String> {
+    blocking(|| github_repo::GitHub::default().owners()).await
+}
+
+/// Whether `owner/repo_name` is free on GitHub (see `github_repo`).
+#[tauri::command]
+async fn github_repo_availability(
+    owner: String,
+    repo_name: String,
+) -> Result<github_repo::Availability, String> {
+    blocking(move || github_repo::GitHub::default().availability(&owner, &repo_name)).await
+}
+
+/// Publish a local folder as a new private GitHub repo (see `github_repo`).
+#[tauri::command]
+async fn github_repo_create(
+    request: github_repo::CreateRequest,
+) -> Result<github_repo::Created, String> {
+    blocking(move || github_repo::GitHub::default().create(&request)).await
 }
 
 #[derive(Serialize)]
@@ -101,7 +137,9 @@ pub fn run() {
             let data_dir = app.path().app_data_dir()?;
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());
+            app.manage(reason_chat::ReasonChats::default());
             app.manage(Terminals::new(app.handle().clone()));
+            app.manage(ShellCommands::default());
             app.manage(settings::service::SettingsService::new(
                 settings::config_dir()?.join(settings::FILE_NAME),
                 agent::keychain::default_store(),
@@ -113,6 +151,9 @@ pub fn run() {
             app_info,
             inspect_project_folder,
             branch_prefix_settings,
+            github_repo_owners,
+            github_repo_availability,
+            github_repo_create,
             workspace::commands::add_repository,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
@@ -123,6 +164,11 @@ pub fn run() {
             diff::commands::diff_workspace,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
+            reason_chat::reason_cli_path,
+            reason_chat::reason_open_chat,
+            reason_chat::reason_prompt,
+            reason_chat::reason_cancel,
+            reason_chat::reason_list_sessions,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,
             terminal_commands::pty_resize,
@@ -131,6 +177,9 @@ pub fn run() {
             terminal_commands::pty_read_history,
             terminal_commands::pty_clear_history,
             terminal_commands::pty_list,
+            terminal_commands::execute_shell_command,
+            terminal_commands::execute_shell_command_cancellable,
+            terminal_commands::cancel_shell_command,
             settings::commands::get_settings,
             settings::commands::update_settings,
             settings::commands::provider_status,
@@ -157,6 +206,9 @@ pub fn run() {
                 // Run scripts lead their own process groups; do not orphan them.
                 if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {
                     scripts.runs.stop_all();
+                }
+                if let Some(shell) = app.try_state::<ShellCommands>() {
+                    shell.0.cancel_all();
                 }
             }
         });

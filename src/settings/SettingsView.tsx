@@ -1,4 +1,4 @@
-import { useKeybindings } from "../palette/useKeybindings";
+import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { GeneralPage } from "./GeneralPage";
 import { GitPage } from "./GitPage";
 import { pageLabel, SETTINGS_GROUPS, type SettingsPage } from "./pages";

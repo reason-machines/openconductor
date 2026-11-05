@@ -57,3 +57,15 @@ Lines trimmed; ids shortened. Messages carry no `"jsonrpc"` field.
 
 Observed beyond the schema: notifications carry a top-level `emittedAtMs`,
 and `turn/interrupt` needs the id of the turn that is actually running.
+
+## Turn start race (both versions)
+
+`turn/start` can return its result before the turn is running: in a fresh
+thread, the response arrived before `turn/started`, and a `turn/interrupt`
+sent in that gap with the correct turn id failed with
+`{"code":-32600,"message":"no active turn to interrupt"}`. On a later turn,
+`turn/started` arrived first and the same interrupt succeeded, followed by
+`turn/completed` with `status: "interrupted"`. `CodexSession::interrupt`
+therefore waits for the turn's `turn/started` before sending. The live test
+`codex_session::tests::live_codex_app_server_runs_a_turn_to_completion`
+(set `OPENCONDUCTOR_CODEX_BIN`) covers this against a real binary.
