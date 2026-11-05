@@ -34,6 +34,8 @@ pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
+pub mod recent_local_repos;
+mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod sidebar_section_commands;
 mod sidebar_workspace_commands;
@@ -358,6 +360,7 @@ pub fn run() {
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
             sidebar_repo_commands::repo_favicon,
+            recent_local_repos_commands::recent_local_repositories,
             sidebar_rename_commands::db_rename_workspace,
             sidebar_rename_commands::db_mark_user_set_branch_name,
             sidebar_workspace_commands::sidebar_workspace_changes,
