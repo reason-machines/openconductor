@@ -12,6 +12,7 @@ pub mod launch;
 pub mod layers;
 mod model;
 pub mod service;
+pub mod table_prefs;
 mod validate;
 
 #[cfg(test)]

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { autoRunAfterSetup, setAutoRunAfterSetup } from "../scripts/api";
 import { errorText } from "./api";
+import { PrefSwitchRow, Toggle } from "./controls";
 import { Row } from "./GeneralPage";
-import { ExperimentalAppPrefRows } from "./rows/AppPrefRows";
+import { GraphiteRow, ShowAgentCostRow, TabFreakModeRow } from "./rows/AppPrefRows";
 import type { Settings } from "./types";
 
 interface Props {
@@ -11,28 +12,64 @@ interface Props {
 }
 
 /**
- * Settings › More › Experimental. Conductor's tab has many more flags; built
- * here are Big terminal mode (evidence/terminal/NOTES.md) and Auto-run after
- * setup (evidence/run-scripts/NOTES.md); Show agent cost, Tab Freak Mode and
- * Graphite stack support come from conductor.db (ExperimentalAppPrefRows).
- * Turning Big terminal mode on also
- * lists the Big terminal tab in the settings navigation, as Conductor does.
+ * Settings › More › Experimental, row for row with Conductor 0.87.6's
+ * `experimental` tab (renderApp-D_fmY7hW.js registry, evidence/settings/NOTES.md
+ * "Settings pages, row for row"). Left out: "Use default internal and
+ * experimental settings" (internal builds only), and the New workspace page,
+ * Dashboard and Show sidebar resource usage rows, which their own features
+ * add (open PRs #388, #403 and #410). Turning Big terminal mode on also lists
+ * the Big terminal tab in the settings navigation, as Conductor does.
  */
 export function ExperimentalPage({ settings, save }: Props) {
   const on = settings.experimental?.experimental_big_terminal_mode === true;
+  const row = (pref: Parameters<typeof PrefSwitchRow>[0]["pref"], label: string, help?: ReactNode) => (
+    <PrefSwitchRow settings={settings} save={save} pref={pref} label={label} help={help} />
+  );
   return (
     <div className="settings-rows">
+      {row(
+        "experimental_auto_permission_mode",
+        "Auto permission mode",
+        <>
+          Turns on Claude auto mode.{" "}
+          <a href="https://code.claude.com/docs/en/glossary#auto-mode" target="_blank" rel="noopener noreferrer">
+            Learn more
+          </a>
+        </>,
+      )}
       <Row label="Big terminal mode" help="Create big terminals in the center pane with ⌘⇧T">
-        <input
-          type="checkbox"
-          role="switch"
-          aria-label="Big terminal mode"
+        <Toggle
+          label="Big terminal mode"
           checked={on}
-          onChange={(e) => save({ ...settings, experimental: { ...settings.experimental, experimental_big_terminal_mode: e.target.checked } })}
+          onChange={(checked) => save({ ...settings, experimental: { ...settings.experimental, experimental_big_terminal_mode: checked } })}
         />
       </Row>
+      <TabFreakModeRow />
+      {row("experimental_configurable_center_panel", "Split tabs", "Split the center panel and move tabs between panes.")}
+      {row("experimental_fork_to_new_tab", "Fork chat to new tab", "Fork a chat, even mid-turn, from its tab's context menu or with ⌘⌥↵.")}
+      {row(
+        "experimental_in_app_browser_preview",
+        "In-app browser preview",
+        "Open the preview button in an in-app browser tab (with the annotation overlay) instead of your external browser.",
+      )}
+      {row("experimental_legacy_file_preview_and_editing", "Use legacy file preview and editing")}
+      <ShowAgentCostRow />
+      {row("experimental_show_workspace_numbers", "Show workspace numbers")}
+      {row("internal_workspace_status_matrix", "Workspace status matrix", "Use the matrix-style workspace status indicator in Home and the sidebar.")}
+      {row("experimental_cloud_desktop", "Cloud desktop", "Show Cloud desktop tabs in cloud workspaces.")}
+      {row(
+        "local_git_forge_enabled",
+        "Add projects without GitHub",
+        "Let OpenConductor add existing local repositories even when they are not connected to GitHub.",
+      )}
       <AutoRunAfterSetupRow />
-      <ExperimentalAppPrefRows />
+      {row("voice_mode", "Voice mode", "Enables speech-to-text in the chat composer. Press Ctrl+Shift+D to start dictating.")}
+      {row(
+        "experimental_sidebar_transparency",
+        "Sidebar transparency",
+        "Use native macOS vibrancy behind the workspace sidebar. Takes effect after you restart OpenConductor.",
+      )}
+      <GraphiteRow />
     </div>
   );
 }
@@ -54,18 +91,21 @@ function AutoRunAfterSetupRow() {
     setAutoRunAfterSetup(next).then(setEnabled, (e) => setError(errorText(e)));
   };
   return (
-    <>
-      <Row label="Auto-run after setup" help="Start a repository's run script automatically after a new local workspace finishes setup.">
-        <input
-          type="checkbox"
-          role="switch"
-          aria-label="Auto-run after setup"
-          checked={enabled ?? false}
-          disabled={enabled === null}
-          onChange={(e) => change(e.target.checked)}
-        />
-      </Row>
-      {error && <p className="error small" role="alert">{error}</p>}
-    </>
+    <Row
+      label="Auto-run after setup"
+      help={
+        <>
+          Start a repository's run script automatically after a new local workspace finishes setup.
+          {error && (
+            <span className="error small" role="alert">
+              {" "}
+              {error}
+            </span>
+          )}
+        </>
+      }
+    >
+      <Toggle label="Auto-run after setup" checked={enabled ?? false} disabled={enabled === null} onChange={change} />
+    </Row>
   );
 }
