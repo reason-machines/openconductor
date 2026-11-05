@@ -17,6 +17,9 @@ import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
 import { useSetupWatch } from "./workspace/useSetupWatch";
+import { ArchiveRunningDialog } from "./components/ArchiveRunningDialog";
+import { failureToast, onArchiveEvent } from "./workspace/archive";
+import type { Action } from "./state/store";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
@@ -61,6 +64,25 @@ export default function App() {
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // Full archive (src/workspace/archive.ts): the running-agents question and
+  // what the archive reports, wherever it was started from.
+  const [archiveOverAgents, setArchiveOverAgents] = useState<Extract<Action, { type: "archiveWorkspace" }> | null>(null);
+  useEffect(
+    () =>
+      onArchiveEvent<Extract<Action, { type: "archiveWorkspace" }>>((e) => {
+        if (e.type === "agents-running") setArchiveOverAgents(e.action);
+        if (e.type === "archived") for (const n of e.result.notices) show(n.kind, n.message, { sticky: n.kind === "error" });
+        if (e.type === "failed") {
+          const t = failureToast(e.error, e.mode);
+          if (t.kind === "git-operation") {
+            show("error", t.message, { sticky: true, action: { label: "Archive", onClick: () => dispatch({ ...e.action, mode: "discardGitOperationState" }) } });
+          } else {
+            show("error", t.message, { sticky: true });
+          }
+        }
+      }),
+    [show, dispatch],
+  );
   // A `/settings...` start URL opens settings where Conductor's router would
   // (src/settings/routes.ts); the URL then follows the open settings page.
   const routeContext = (): RouteContext => ({
@@ -247,6 +269,12 @@ export default function App() {
       )}
       {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
       <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} />
+      {archiveOverAgents && (
+        <ArchiveRunningDialog
+          onClose={() => setArchiveOverAgents(null)}
+          onConfirm={() => dispatch({ ...archiveOverAgents, stopRunningAgents: true })}
+        />
+      )}
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );

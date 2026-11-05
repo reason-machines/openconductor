@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import type { WorkspaceStatusValue } from "./workspaceStatus";
@@ -10,6 +10,7 @@ import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
 import { sameRepoRecord } from "./addRepo";
+import { archiveWorkspace, emitArchiveEvent, startArchive, type ArchiveMode } from "../workspace/archive";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -30,7 +31,12 @@ export type Action =
     }
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
-  | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
+  /**
+   * Full archive (`archive_workspace`). `mode` "discardGitOperationState" is the
+   * retry from the Git-operation warning; `stopRunningAgents` the confirmed
+   * "Stop agents and archive".
+   */
+  | { type: "archiveWorkspace"; repoId: string; workspaceId: string; mode?: ArchiveMode; stopRunningAgents?: boolean }
   /** The workspace's pull request title or body changed on GitHub (`workspaces.pr_title`, `pr_description`). `prDescription` and `pr` left out keep what the row has. */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
   /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
@@ -265,14 +271,22 @@ export function useAppStore() {
     else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, demo, desktop]);
   // Writes the backend does not already record when its command runs.
+  const stateRef = useRef(state);
+  stateRef.current = state;
   const dispatch = useCallback(
     (action: Action) => {
-      rawDispatch(action);
-      if (desktop && action.type === "archiveWorkspace") {
-        invoke("db_archive_workspace", { workspaceId: action.workspaceId }).catch((err) =>
-          console.error("conductor.db: could not archive workspace", err),
-        );
+      if (action.type === "archiveWorkspace") {
+        const ws = stateRef.current.repos.find((r) => r.id === action.repoId)?.workspaces.find((w) => w.id === action.workspaceId);
+        void startArchive(action, {
+          status: ws?.status,
+          hide: () => rawDispatch(action),
+          run: desktop ? (mode) => archiveWorkspace(action.workspaceId, mode) : null,
+          reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
+          emit: emitArchiveEvent,
+        });
+        return;
       }
+      rawDispatch(action);
       // Optimistic, as in Conductor: on a failed write, reload the rows the database has.
       const rollback = (what: string) => (err: unknown) => {
         console.error(`conductor.db: could not ${what}`, err);
