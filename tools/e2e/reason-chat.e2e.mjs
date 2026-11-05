@@ -198,6 +198,9 @@ try {
   // 4. Stop.
   await send("slow");
   await waitFor("the Stop button", running);
+  // Stop once the agent runs the turn (its tool row shows), so the fake CLI
+  // counts it; a Stop before the prompt reaches Reason never sends it.
+  await waitFor('the "bash: sleep" tool row', () => chatText().then((t) => t.includes("bash: sleep")));
   await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
   await waitFor('"Stopped."', () => chatText().then((t) => t.includes("Stopped.")), 15000);
   await turnDone(4);
@@ -215,18 +218,22 @@ try {
   await turnDone(6);
   assert.equal(readWs("notes.txt"), "two\n");
   assert.equal(readWs("extra.txt"), "x\n");
+  const chat = workspace.id.replace(/[^A-Za-z0-9._-]/g, "-");
+  // Turn ids are random (`<chat>:<uuid>`); read turns 5 and 6 from their footers.
+  const turnIds = await run(`return [...document.querySelectorAll('.chat-turn-end')].map((e) => e.dataset.turnId);`);
+  const [t5, t6] = turnIds.slice(-2);
+  const key = (id) => id.slice(id.indexOf(":") + 1).replace(/[^A-Za-z0-9._-]/g, "-");
   const refs = await waitFor("turn 6's end checkpoint", () => {
     const out = execFileSync("git", ["for-each-ref", "--format=%(refname)", "refs/conductor-checkpoints/"], { cwd: workspace.path, encoding: "utf8" });
-    return out.includes("-turn-t6-end") && out.split("\n").filter(Boolean);
+    return out.includes(`-turn-${key(t6)}-end`) && out.split("\n").filter(Boolean);
   });
-  const chat = workspace.id.replace(/[^A-Za-z0-9._-]/g, "-");
-  for (const id of ["t5-start", "t5-end", "t6-start", "t6-end"]) {
+  for (const id of [`${key(t5)}-start`, `${key(t5)}-end`, `${key(t6)}-start`, `${key(t6)}-end`]) {
     assert.ok(refs.includes(`refs/conductor-checkpoints/session-${chat}-turn-${id}`), `${id} in ${refs.join(" ")}`);
   }
-  pass(`each turn saved start/end checkpoints (${refs.length} refs, e.g. session-${chat}-turn-t5-end)`);
+  pass(`each turn saved start/end checkpoints (${refs.length} refs, e.g. session-${chat}-turn-${key(t5)}-end)`);
 
-  const turn5 = '.chat-turn-end[data-turn-id$=":t5"]';
-  const lastHasMenu = await run(`return !!document.querySelector('.chat-turn-end[data-turn-id$=":t6"] button[aria-label="More actions"]');`);
+  const turn5 = `.chat-turn-end[data-turn-id="${t5}"]`;
+  const lastHasMenu = await run(`return !!document.querySelector('.chat-turn-end[data-turn-id="${t6}"] button[aria-label="More actions"]');`);
   assert.equal(lastHasMenu, false, "the last turn has no Reset chat");
   await wd("POST", `/element/${await find(`${turn5} button[aria-label="More actions"]`)}/click`, {});
   await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]`)}/click`, {});
