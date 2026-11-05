@@ -17,6 +17,7 @@ pub mod checkpoint;
 pub mod diff;
 pub mod project;
 pub mod quick_open;
+pub mod scripts;
 pub mod settings;
 pub mod spotlight;
 pub mod terminal;
@@ -105,6 +106,7 @@ pub fn run() {
                 settings::config_dir()?.join(settings::FILE_NAME),
                 agent::keychain::default_store(),
             ));
+            app.manage(scripts::service(app.handle()));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -134,6 +136,15 @@ pub fn run() {
             settings::commands::provider_status,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
+            scripts::scripts_config,
+            scripts::setup_script_start,
+            scripts::setup_script_cancel,
+            scripts::setup_script_status,
+            scripts::run_script_start,
+            scripts::run_script_stop,
+            scripts::run_script_status,
+            scripts::run_script_output,
+            scripts::archive_script_run,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")
@@ -142,6 +153,10 @@ pub fn run() {
             if let tauri::RunEvent::Exit = event {
                 if let Some(terminals) = app.try_state::<Terminals>() {
                     terminals.0.kill_all();
+                }
+                // Run scripts lead their own process groups; do not orphan them.
+                if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {
+                    scripts.runs.stop_all();
                 }
             }
         });

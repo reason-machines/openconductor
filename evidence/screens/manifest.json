@@ -1,4 +1,61 @@
 {
+  "chat--needs-permission-workspace--dark": {
+    "file": "chat--needs-permission-workspace--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "api",
+      "pause2",
+      "tallinn"
+    ],
+    "notes": "tide-api/tallinn, whose session status is needs_user_permission (no transcript seeded, so no permission card is shown).",
+    "png_sha256": "7cfa8f1b031f85587751e0379ebf6e214fdbf7948c023c82d0d5acc47797bee4",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_5b9d93dd5856f62597b0204ef6e2f52a71a53eabab16ae53749f98419515fd87",
+      "scenario_sha256": "829bdcb46c8b994419fc6e3c01cb1fe521ffc0a87d707f2c6e7c8a54c6212e55",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "chat--new-empty-session--dark": {
+    "file": "chat--new-empty-session--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "expand_tide_web",
+      "osaka"
+    ],
+    "notes": "A workspace with a session and no messages: 'New chat in /osaka', empty Changes, Run panel.",
+    "png_sha256": "2e60a203f4e69c9c29c8dd38963e7d97adc208d32378605ff0f077b8caa1721b",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_8f786b592e04048e5b7f358454cfd2359edfab8c2e8eb91b1045baf6911766b3",
+      "scenario_sha256": "4631ce3f26e0ce2ff21f36eab9e33b06220f05517c94406ce851791dedb5cc6d",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
   "chat--tool-calls-expanded--dark": {
     "file": "chat--tool-calls-expanded--dark.png",
     "route": "/",
@@ -328,6 +385,32 @@
     },
     "page_errors": 0
   },
+  "diagnostics--page--dark": {
+    "file": "diagnostics--page--dark.png",
+    "route": "/diagnostics",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "settle_more"
+    ],
+    "notes": "/diagnostics: standalone Diagnostics page (Run environment diagnostics, Copy all console logs).",
+    "png_sha256": "b0c2e071fc4107fef80ab0c2e3be476598abaa0623731babb1cc428104ffaa8e",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_7d70cebf771d66ee4c7ec33e3b83bfa7cfd97aa533c7486aa6e3029d693b7996",
+      "scenario_sha256": "0f756b4a2143045028ddc6165173944b61cd5f54fb29d5874d5a58b1ba4c34ea",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
   "diff--added-tests--dark": {
     "file": "diff--added-tests--dark.png",
     "route": "/",
@@ -523,6 +606,58 @@
     },
     "page_errors": 0
   },
+  "home--workspace-list--dark": {
+    "file": "home--workspace-list--dark.png",
+    "route": "/all-workspaces",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar"
+    ],
+    "notes": "/all-workspaces: Home with the workspace list grouped by Today / Yesterday, project and archive filters.",
+    "png_sha256": "aaaddf2d2ca66a96d60d26a49a92947b7dea81dfc6d4bb260c928a1d927aa147",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_61423f84d6a7a834d7c62d966a29cf89e325a978dcc6750cfbb3546a4c23c2bf",
+      "scenario_sha256": "09fddda56233346e35e97d9692f57a1bc4322c2ef598ac20d55705d2c5c50ae4",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "home--workspace-list--light": {
+    "file": "home--workspace-list--light.png",
+    "route": "/all-workspaces",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar"
+    ],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "3140d5c0adea25ab5de9eddc95102b2e1400ecaa784f651ebf934613e05dbd9c",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_920f7f24361ef409f752ce6329fe962f021eb588d3ccf185a3370d477d54130d",
+      "scenario_sha256": "a3cd267230df846555aa48a76f1c84cffe135963d4356745d9e6d31932fe3306",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
   "menu--account--dark": {
     "file": "menu--account--dark.png",
     "route": "/",
@@ -605,6 +740,147 @@
     },
     "page_errors": 0
   },
+  "menu--workspace-set-status--dark": {
+    "file": "menu--workspace-set-status--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "expand_tide_web",
+      "context",
+      "pause1",
+      "status"
+    ],
+    "notes": "Context menu > Set status submenu: Backlog, In progress (checked), In review, Done, Canceled.",
+    "png_sha256": "95329b245c24d371017e1220165821e8f0295357377ea117c0bae7b5894114e0",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_b9bd3b370195660e6ce30ef9787aa1697ac0523ecee4a0b7738844da54f352b8",
+      "scenario_sha256": "fae2ccb358eee0a40af425d0b744254113585a6a2783636e87797effd5fc8e90",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "modal--clone-github-repo--dark": {
+    "file": "modal--clone-github-repo--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_github"
+    ],
+    "notes": "Home > Open GitHub project: 'Clone GitHub repo' dialog (URL + location).",
+    "png_sha256": "8a60f9b64f523a0f9970aa1b3bc1dd2eca00d49527a7d01ae511fa27c0773fd7",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_26a68b7e02cb37cbf2983c5ab8957ecf51d1cf1311decb2493eab250054bc20f",
+      "scenario_sha256": "50c5bf6b24a819146590815dfaa55a52bb189cf4c301d859a501e99a3db2bf24",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "modal--create-project--dark": {
+    "file": "modal--create-project--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "quick"
+    ],
+    "notes": "Home > Quick start: 'Create project' dialog with Empty / Next.js / gstack templates.",
+    "png_sha256": "38764213bc779a4f189eb0e6646cd19b63cf31e17d86db940cc1a63bae646187",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_2028ebfad2721bb4e5c939f352ec57ba4a8db613f07395aa94f784a055f93b9b",
+      "scenario_sha256": "a48700ffd686e7f1a9df806096b486a6725105c44d67f78eeecc24d49e6de225",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "modal--create-project--light": {
+    "file": "modal--create-project--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "quick"
+    ],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "766eb77b5a7c9220ed2c6f04a77b7212e62aacf70e5d298b2b4aa5c8c0495e93",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_105887382839208b2bc266645c5a0d89778eb202640b3619ac2fe22ec5835b92",
+      "scenario_sha256": "d94ea92aff18f0f821f3fa0655d79e21692ab2bae2f0433e4de6d02b99320e93",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "modal--rename-workspace--dark": {
+    "file": "modal--rename-workspace--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "expand_tide_web",
+      "context",
+      "pause1",
+      "rename"
+    ],
+    "notes": "Workspace context menu > Rename: 'Rename workspace' dialog with 'Also rename branch'.",
+    "png_sha256": "8eff83c34eaec0474e27e3edc35142165d7ccfd8b8b81f5fa54f95c45698d26f",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_b88abfd6c1ef4a4717a2b3b9200aa814617ef62b2ef9d2e978bd9d5e01dc2494",
+      "scenario_sha256": "733f3891da86c26f0f18fc06f4d7c4839b8ba41efdd956fa9d070ed9e83ce43c",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
   "onboarding--sign-up-opening-browser--dark": {
     "file": "onboarding--sign-up-opening-browser--dark.png",
     "route": "/",
@@ -672,6 +948,32 @@
       "rea_version": "rea-agents 6.7.0",
       "evidence_id": "ev_0eae8d69b88224337124e0ef5e5e71721c69a99992ea4df71be94357dd4762c5",
       "scenario_sha256": "89b156047b466a4a9551ad693688656ad70d18053c499612a892b0b5b74b5c76",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "routines--suggested--dark": {
+    "file": "routines--suggested--dark.png",
+    "route": "/routines",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar"
+    ],
+    "notes": "/routines (also /automations): Routines page with suggested routines.",
+    "png_sha256": "c9d692166bb1774e8cc412a0bf71c78e68524d9e352931ec87d5335c0879354b",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_2b9b3a8bb2837d69d352e367921cc098838e54035dc6ba1cef3f54af18c86c68",
+      "scenario_sha256": "c699def8a60ca7916956284ce359fe9df3d424670cf37378773734d9ed325cd5",
       "browser": "Chromium 155.0.8059.84"
     },
     "page_errors": 0
@@ -1022,6 +1324,36 @@
     },
     "page_errors": 0
   },
+  "sidebar--after-archive--dark": {
+    "file": "sidebar--after-archive--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "expand_tide_web",
+      "context",
+      "pause1",
+      "archive"
+    ],
+    "notes": "Context menu > Archive: the workspace leaves the sidebar list (tide-web 3 to 2). No toast captured.",
+    "png_sha256": "6f7621baff2a0c17ce53ed340a200d395bcbf87a81861f0ac43909105da21a70",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_5ebfbbbde7aa2668ad467cea873d92541402a20dd1c9dd6ea49f93946fc40a22",
+      "scenario_sha256": "d1d54e1b034b7ed51e2e6fdac804aac2194b53a373640f0bb661940803535719",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
   "sidebar--repos-collapsed--dark": {
     "file": "sidebar--repos-collapsed--dark.png",
     "route": "/",
@@ -1098,6 +1430,36 @@
       "rea_version": "rea-agents 6.7.0",
       "evidence_id": "ev_b3b14cb58ba331ce889a6fee0dfd136ecb42e422911e451c51dc8e736250dfaa",
       "scenario_sha256": "c119a54fff001e32499687d550f96925fad888979e3316a1a77bc6ec4e3fecd6",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "toast--copied-link--dark": {
+    "file": "toast--copied-link--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "expand_tide_web",
+      "context",
+      "pause1",
+      "copy"
+    ],
+    "notes": "Context menu > Copy link: 'Copied link' toast, bottom centre.",
+    "png_sha256": "4b2ba96a3b62764812d348c4d6f4ab1755b4247101fe580b9177f52577d089aa",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_f64f363c440563cc61bf2fb7e3301801708c6d38df4655991b085e72a7d72cd3",
+      "scenario_sha256": "bc313b5e805b2200a6b37296bf4ea2e3738240ac0853459e97d284d37ecb1513",
       "browser": "Chromium 155.0.8059.84"
     },
     "page_errors": 0
