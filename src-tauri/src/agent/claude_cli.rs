@@ -146,6 +146,10 @@ pub struct ClaudeLaunch {
     /// Plugins loaded for this session only (`--plugin-dir`); starts with
     /// the bundled OpenConductor skill when the app has one.
     pub plugin_dirs: Vec<PathBuf>,
+    /// `--effort` (`low`, `medium`, `high`, `xhigh`, `max`); the CLI default when unset.
+    pub effort: Option<String>,
+    /// Settings JSON passed with `--settings` (for example `outputStyle`, `fastMode`).
+    pub settings: Option<serde_json::Value>,
 }
 
 impl ClaudeLaunch {
@@ -161,6 +165,8 @@ impl ClaudeLaunch {
             add_dirs: Vec::new(),
             append_system_prompt: None,
             plugin_dirs: BUNDLED_PLUGIN_DIR.get().cloned().into_iter().collect(),
+            effort: None,
+            settings: None,
         }
     }
 
@@ -194,6 +200,12 @@ impl ClaudeLaunch {
         }
         for dir in &self.plugin_dirs {
             args.extend(["--plugin-dir".into(), dir.display().to_string()]);
+        }
+        if let Some(effort) = &self.effort {
+            args.extend(["--effort".into(), effort.clone()]);
+        }
+        if let Some(settings) = &self.settings {
+            args.extend(["--settings".into(), settings.to_string()]);
         }
         args
     }

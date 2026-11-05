@@ -8,6 +8,7 @@
 //! - `diff/`       diff viewer: git changes, unified diff parser
 //! - `quick_open/` quick open file index and fuzzy matching
 //! - `reason_acp/` the Reason agent over ACP; its commands are `reason_chat`
+//! - `claude_chat/` Claude Code chats with the signed-in `claude` CLI
 //! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //!   (`spotlight_commands.rs` is its IPC layer)
 //! - `settings/`   settings.toml and the Keychain-backed secret store
@@ -18,11 +19,14 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod bin_source_markers;
 pub mod bundled_bin;
 pub mod checkpoint;
 mod checkpoint_commands;
+pub mod claude_chat;
 pub mod create_project;
 pub mod db;
+pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
 mod sidebar_repo_commands;
@@ -172,7 +176,7 @@ fn save_repo_scripts(
 #[serde(rename_all = "camelCase")]
 struct BranchPrefixInfo {
     branch_prefix_type: settings::BranchPrefixType,
-    branch_prefix_custom: Option<String>,
+    branch_prefix: Option<String>,
     github_username: Option<String>,
 }
 
@@ -195,7 +199,7 @@ async fn branch_prefix_settings() -> BranchPrefixInfo {
         .filter(|login| !login.is_empty());
     BranchPrefixInfo {
         branch_prefix_type: git.branch_prefix_type,
-        branch_prefix_custom: git.branch_prefix_custom,
+        branch_prefix: git.branch_prefix,
         github_username,
     }
 }
@@ -232,6 +236,7 @@ pub fn run() {
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
+            app.manage(db::open_cache(&data_dir));
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
             // Conductor's sidecar opens its session event outbox at start and
@@ -255,6 +260,7 @@ pub fn run() {
             app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
+            app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
             app.manage(settings::service::SettingsService::new(
@@ -267,6 +273,7 @@ pub fn run() {
             app.manage(scripts);
             app.manage(spotlight);
             spawn_push_upstream_backfill(app.handle().clone());
+            e2e::install(app.handle());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -292,6 +299,7 @@ pub fn run() {
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
+            persistence_commands::db_repo_prompt,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
             sidebar_workspace_commands::db_set_workspace_pinned,
@@ -311,6 +319,8 @@ pub fn run() {
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,
             turn_checkpoint_commands::checkpoint_turn_changes,
+            diff::comment_commands::diff_comments_sync_github,
+            diff::comment_commands::diff_comment_resolve_github,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
@@ -318,6 +328,11 @@ pub fn run() {
             reason_chat::reason_prompt,
             reason_chat::reason_cancel,
             reason_chat::reason_list_sessions,
+            claude_chat::commands::claude_cli_path,
+            claude_chat::commands::claude_open_chat,
+            claude_chat::commands::claude_prompt,
+            claude_chat::commands::claude_cancel,
+            e2e::e2e_report,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,
             terminal_commands::pty_resize,
@@ -345,7 +360,10 @@ pub fn run() {
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
             settings::commands::get_settings,
+            settings::effective::repo_settings_effective,
+            settings::effective::repo_settings_set_local,
             settings::commands::update_settings,
+            settings::commands::get_repo_settings,
             settings::commands::provider_status,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
@@ -373,6 +391,8 @@ pub fn run() {
             scripts::run_script_status,
             scripts::run_script_output,
             scripts::archive_script_run,
+            scripts::auto_run_after_setup_get,
+            scripts::auto_run_after_setup_set,
             spotlight_commands::spotlight_start,
             spotlight_commands::spotlight_stop,
             spotlight_commands::spotlight_status,
