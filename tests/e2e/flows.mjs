@@ -109,6 +109,11 @@ export const flows = [
     async run(wd, ctx) {
       if (!ctx.worktree) throw new Error("needs the diff flow's worktree");
       const inRoot = join(ctx.repo, "e2e-diff.txt");
+      // The toggle writes the root's own local settings file, which the workspace
+      // lacks. Spotlight must leave it alone: not delete it while syncing, not
+      // put back an older copy on Stop.
+      const settings = join(ctx.repo, ".conductor", "settings.local.toml");
+      const spotlightSetting = () => (existsSync(settings) ? readFileSync(settings, "utf8").match(/^spotlight_testing = (true|false)$/m)?.[1] ?? "unset" : "no file");
       const refs = () => git(ctx.repo, "for-each-ref", "--format=%(refname)", "refs/conductor-checkpoints").toString().split("\n").filter(Boolean);
       const buttonText = () => wd.execute("return document.querySelector('.scripts-actions .btn-primary, .scripts-actions .btn-stop')?.textContent.trim() ?? null;", []);
       if (existsSync(inRoot)) throw new Error("e2e-diff.txt is already in the repository root");
@@ -116,6 +121,7 @@ export const flows = [
       const [toggle] = await wd.waitFor("the spotlight testing toggle", () => wd.findAll(".spotlight-toggle input:not([disabled])").then((ids) => ids.length && ids));
       await wd.click(toggle);
       await wd.waitFor("Run Spotlight", async () => (await buttonText())?.endsWith("Run Spotlight"));
+      if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after turning it on, want true`);
       const [start] = await wd.findAll(".scripts-actions .btn-primary");
       await wd.click(start);
 
@@ -126,17 +132,22 @@ export const flows = [
       }
       if (!existsSync(join(ctx.worktree, "e2e-diff.txt"))) throw new Error("saving the checkpoint removed e2e-diff.txt from the worktree");
       await wd.waitFor("Stop Spotlight", async () => (await buttonText())?.endsWith("Stop Spotlight"));
+      if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} while syncing, want true (the sync must not touch the root's own settings)`);
 
       const [stop] = await wd.findAll(".scripts-actions .btn-stop");
       await wd.click(stop);
       await wd.waitFor("the repository root restored from pre-spotlight", async () => !existsSync(inRoot), 60000);
       await wd.waitFor("the pre-spotlight ref dropped", async () => !refs().includes("refs/conductor-checkpoints/pre-spotlight"));
-      const status = git(ctx.repo, "status", "--porcelain", "--untracked-files=all").toString().split("\n").filter((l) => l && !l.includes(".conductor/"));
-      if (status.length) throw new Error(`repository root not back to its own state: ${JSON.stringify(status)}`);
+      const status = git(ctx.repo, "status", "--porcelain", "--untracked-files=all").toString().split("\n").filter(Boolean);
+      const want = ["?? .conductor/settings.local.toml"];
+      if (JSON.stringify(status) !== JSON.stringify(want)) throw new Error(`repository root status ${JSON.stringify(status)}, want ${JSON.stringify(want)}`);
+      if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after Stop, want true`);
 
       // Turn spotlight testing back off for later flows.
       const [again] = await wd.findAll(".spotlight-toggle input:checked:not([disabled])");
-      if (again) await wd.click(again);
+      if (!again) throw new Error("no checked spotlight testing toggle to turn off");
+      await wd.click(again);
+      await wd.waitFor("spotlight_testing = false in .conductor/settings.local.toml", async () => spotlightSetting() === "false");
     },
   },
   {
