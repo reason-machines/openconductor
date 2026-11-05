@@ -7,11 +7,13 @@
 // ?theme=dark|light, ?tools=expanded opens the "N tool calls, M messages" summary,
 // ?running=1 keeps the turn running, ?cancelled=1 stops it early,
 // ?agent=claude|codex|reason picks which agent's wire shape the same turn arrives in
-// (the rows must look the same for all three).
+// (the rows must look the same for all three), ?files=N gives the turn N changed-file chips
+// instead of the reference's two (?more=K clicks "+N more" K times).
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Transcript } from "../../src/features/chat/Transcript.tsx";
-import { FileBadge } from "../../src/features/chat/ToolRows.tsx";
+import { TurnChanges } from "../../src/features/chat/TurnChanges.tsx";
+import { turnChanges } from "../../src/features/diff/useTurnChanges.ts";
 import { applyChatEvents, emptyTranscript } from "../../src/features/chat/reducer.ts";
 import type { Block, ChatEvent, ChatMessage } from "../../src/features/chat/types.ts";
 import { LISBON, lisbonBlocks, type FixtureAgent } from "./lisbon.ts";
@@ -39,25 +41,25 @@ const events: ChatEvent[] = [
 const r = applyChatEvents(emptyTranscript(S), events);
 if (!r.ok) throw new Error(JSON.stringify(r.error));
 
-const chips = (
-  <div className="chat-turn-changes" role="group" aria-label="Files changed in this turn">
-    {LISBON.changes.map((f) => (
-      <FileBadge key={f.path} path={f.path} className="chat-turn-chip">
-        <span className="oc-chip-counts">
-          <span className="a">+{f.additions}</span>
-          <span className="d">-{f.deletions}</span>
-        </span>
-      </FileBadge>
-    ))}
-  </div>
+const paths = ["src/lib/auth.ts", "src/lib/auth.test.ts", "src/routes/login.ts", "src/routes/dashboard.tsx", "src/lib/session.ts", "docs/auth.md", "src/middleware.ts", "CHANGELOG.md"];
+const fileCount = Number(params.get("files") ?? 0);
+const files =
+  fileCount > 0
+    ? paths.slice(0, fileCount).map((path, i) => ({ path, additions: [1, 14, 3, 22, 6, 9, 2, 4][i]!, deletions: [1, 0, 2, 5, 0, 1, 2, 0][i]! }))
+    : LISBON.changes;
+const turnRef = (turnId: string) => ({ sessionId: S, turnId });
+turnChanges.record(
+  turnRef(T),
+  files.map((f) => ({ path: f.path, old_path: null, status: "modified", binary: false, additions: f.additions, deletions: f.deletions })),
 );
+const turnFooter = (turnId: string) => <TurnChanges turn={turnRef(turnId)} worktree={null} onOpenFile={() => undefined} />;
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <div style={{ position: "fixed", inset: 0, background: "var(--bg)" }}>
       <section className="chat" style={{ position: "absolute", left: 256, top: 80, width: 789, bottom: 0, display: "flex", flexDirection: "column", border: 0 }}>
         <div className="chat-scroll">
-          <Transcript transcript={r.transcript} workspacePath={LISBON.workspacePath} turnFooter={() => chips} onResetChat={() => undefined} now={() => LISBON.startedAt + 3600_000} />
+          <Transcript transcript={r.transcript} workspacePath={LISBON.workspacePath} turnFooter={turnFooter} onResetChat={() => undefined} now={() => LISBON.startedAt + 3600_000} />
         </div>
       </section>
     </div>
@@ -66,4 +68,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
 if (params.get("tools") === "expanded") {
   setTimeout(() => document.querySelector<HTMLButtonElement>('.chat-tool-summary-row[aria-expanded="false"]')?.click(), 100);
+}
+for (let i = 0; i < Number(params.get("more") ?? 0); i++) {
+  setTimeout(() => document.querySelector<HTMLButtonElement>(".chat-turn-chip.more")?.click(), 150 + i * 50);
 }

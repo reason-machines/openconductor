@@ -10,7 +10,7 @@ import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./v
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
 import { Markdown } from "./markdown.ts";
 import { ConductorToolRow, Lucide, ToolIcon } from "./ToolRows.tsx";
-import { footerTime } from "./turnFooter.ts";
+import { turnTime } from "./turnTime.ts";
 import { openUrl } from "../../backend.ts";
 import "./chat.css";
 
@@ -157,12 +157,12 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
 /** Conductor's turn footer: duration · end time, copy and More actions, then the turn's changed files. */
 function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const { onRetry, onResetChat, resetDisabled, turnFooter } = ctx;
-  const when = footerTime(row.startedAt, row.endedAt, ctx.now());
+  const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
       {when ? (
-        <span className="oc-turn-time" title={row.startedAt && row.endedAt ? `${new Date(row.startedAt).toLocaleTimeString()} → ${new Date(row.endedAt).toLocaleTimeString()}` : undefined}>
-          {when}
+        <span className="chat-turn-time oc-turn-time" title={when.range}>
+          {when.label}
         </span>
       ) : null}
       {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
@@ -257,7 +257,7 @@ function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
         return (
           <Fragment key={item.summary.id}>
             <SummaryRow summary={item.summary} open={open} onToggle={block.running ? undefined : () => ctx.summaries.toggle(item.summary.id, open)} />
-            {open ? item.parts.map((p) => <Part key={p.key} part={p.part} ctx={ctx} />) : null}
+            {open ? item.parts.map((p) => <Part key={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
           </Fragment>
         );
       })}
@@ -287,11 +287,11 @@ function SummaryRow({ summary, open, onToggle }: { summary: ToolSummary; open: b
 }
 
 /** `preview`: the turn's final text; Conductor mutes every other text (`ROo` `muted: !isPreviewMessage`). */
-function Part({ part, preview = false, ctx }: { part: PartView; preview?: boolean; ctx: RowContext }) {
+function Part({ part, preview = false, group, ctx }: { part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
   switch (part.kind) {
     case "text":
       return (
-        <div className="chat-msg chat-assistant oc-msg-assistant" data-message-role="assistant">
+        <div className="chat-msg chat-assistant oc-msg-assistant" data-message-role="assistant" data-tool-group={group}>
           <div className="oc-assistant-col">
             <div className="oc-text-wrap">
               <Markdown
@@ -306,12 +306,12 @@ function Part({ part, preview = false, ctx }: { part: PartView; preview?: boolea
         </div>
       );
     case "thinking":
-      return <ThinkingRow id={`thinking:${part.text.slice(0, 32)}`} text={part.text} streaming={part.streaming} ctx={ctx} />;
+      return <ThinkingRow id={`thinking:${part.text.slice(0, 32)}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
     case "tool": {
       const { call } = part;
       return (
         // data-tool-input: the block's input as the agent reported it (paths marked local or cloud), for e2e checks.
-        <div className={`chat-tool oc-tool-wrap status-${call.status}`} data-tool-input={JSON.stringify(call.input ?? null)}>
+        <div className={`chat-tool oc-tool-wrap status-${call.status}`} data-tool-group={group} data-tool-input={JSON.stringify(call.input ?? null)}>
           <ConductorToolRow
             tool={call.tool}
             status={call.status}
@@ -329,10 +329,10 @@ function Part({ part, preview = false, ctx }: { part: PartView; preview?: boolea
 }
 
 /** `ppo`: a thinking block as a row, its text as a muted chip; open while it streams. */
-function ThinkingRow({ id, text, streaming, ctx }: { id: string; text: string; streaming: boolean; ctx: RowContext }) {
+function ThinkingRow({ id, text, streaming, group, ctx }: { id: string; text: string; streaming: boolean; group?: string; ctx: RowContext }) {
   const open = streaming || ctx.isOpen(id);
   return (
-    <div className="chat-thinking oc-tool-wrap">
+    <div className="chat-thinking oc-tool-wrap" data-tool-group={group}>
       <div className="oc-tool">
         <div className="oc-tool-head opens" role="button" aria-expanded={open} onClick={() => ctx.onToggle(id)}>
           <div className="oc-tool-icon-slot">

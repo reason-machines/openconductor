@@ -149,16 +149,21 @@ export function refreshOutdated(comments: DiffComment[], files: FileDiff[]): Dif
   });
 }
 
-/** Any comment not yet sent to the agent, on lines still in the diff and not resolved: the reference's
- *  header flag for "Add all comments to chat" (renderApp `Wus`: `state === "pending"`, not outdated, not resolved). */
-export function hasPendingComments(comments: Pick<DiffComment, "state" | "is_outdated" | "is_resolved">[]): boolean {
-  return comments.some((c) => c.state === "pending" && !c.is_outdated && !c.is_resolved);
+/** A comment "Add all comments to chat" sends: saved, not yet in the chat, neither resolved nor outdated,
+ *  with text. GitHub and PR-level comments count, as in Conductor's addAllGithubCommentsToChat. */
+function isPendingForAgent(c: DiffComment): boolean {
+  return c.state === "pending" && !c.is_resolved && !c.is_outdated && c.body.length > 0;
 }
 
-/** Comments "Add all comments to chat" sends: saved, not yet in the chat, neither resolved
- *  nor outdated. GitHub and PR-level comments count, as in Conductor's addAllGithubCommentsToChat. */
+/** The header flag for "Add all comments to chat" (the reference's renderApp `Wus`: pending, not outdated,
+ *  not resolved). Uses `pendingForAgent`'s filter, so the button never shows with nothing to send. */
+export function hasPendingComments(comments: DiffComment[]): boolean {
+  return comments.some(isPendingForAgent);
+}
+
+/** Comments "Add all comments to chat" sends. */
 export function pendingForAgent(comments: DiffComment[]): DiffComment[] {
-  return comments.filter((c) => c.state === "pending" && !c.is_resolved && !c.is_outdated && c.body.length > 0);
+  return comments.filter(isPendingForAgent);
 }
 
 /** Conductor's chip name for a comment attachment: `file.ts +12`, `file.ts +12-14`, the file,
@@ -260,6 +265,15 @@ export type CommentSource = "remote" | "agent-local" | "user-local";
 
 export function commentSource(c: Pick<DiffComment, "remote_url" | "author">): CommentSource {
   return c.remote_url ? "remote" : c.author ? "agent-local" : "user-local";
+}
+
+/** Whether a comment card offers Delete. Conductor picks the card by state (renderApp 0.87.6 near byte
+ *  9412604): a comment that is pending or ready_for_review, or sits in a composer, gets the card whose Delete
+ *  is for the user's own comments only (`kVo`); any other state gets the card whose Delete is on every
+ *  comment, GitHub included (`TVo`). Ours has one non-pending state, `sent`. Delete removes the local row
+ *  only; GitHub sync puts a remote comment back while it is still on the PR. */
+export function canDeleteComment(c: Pick<DiffComment, "remote_url" | "author" | "state">): boolean {
+  return commentSource(c) === "user-local" || c.state !== "pending";
 }
 
 /** A thread synced from a GitHub review thread (resolvable on GitHub). */

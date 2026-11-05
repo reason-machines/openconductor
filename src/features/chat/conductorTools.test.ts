@@ -3,7 +3,6 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { conductorTools, editCounts, genericSummary, grepMatches, lineCounts, mcpLabel, readContent, readLabel, splitPatch, unwrapShell } from "./conductorTools.ts";
 import { lisbonBlocks, type FixtureAgent } from "../../../tools/chat/lisbon.ts";
-import { formatDuration, formatEndTime } from "./turnFooter.ts";
 
 const calls = (agent: FixtureAgent) =>
   lisbonBlocks(agent)
@@ -61,6 +60,7 @@ test("Codex: a file change gives one Write/Edit/rm per file (Conductor's Jst)", 
 test("Codex: MCP tool calls are mcp__server__tool with their arguments", () => {
   assert.deepEqual(conductorTools("x", { server: "linear", tool: "get_issue", arguments: { id: "ENG-1" } }), [{ name: "mcp__linear__get_issue", input: { id: "ENG-1" } }]);
   assert.equal(mcpLabel("mcp__linear__get_issue"), "Get issue");
+  assert.deepEqual(conductorTools("Search the web: tauri", { query: "tauri" }), [{ name: "WebSearch", input: { query: "tauri" } }]);
   assert.equal(mcpLabel("mcp__linear__linear-search_docs"), "Search docs");
 });
 
@@ -88,14 +88,4 @@ test("row text: Read lines, Grep matches, generic summary", () => {
 test("line counts follow a line diff", () => {
   assert.deepEqual(lineCounts("a\nb\nc", "a\nB\nc\nd"), { added: 2, removed: 1 });
   assert.deepEqual(lineCounts("", "x\ny\n"), { added: 2, removed: 0 });
-});
-
-test("turn footer: duration and end time as Conductor formats them ($Pt, SDo)", () => {
-  assert.equal(formatDuration(480_000), "8m, 0s");
-  assert.equal(formatDuration(42_900), "42s");
-  const end = new Date(2026, 10, 5, 10, 37).getTime();
-  assert.equal(formatEndTime(end, new Date(2026, 10, 5, 18, 0).getTime()), "10:37 AM");
-  assert.equal(formatEndTime(end, new Date(2026, 10, 7, 9, 0).getTime()), "Thu 10:37 AM");
-  assert.equal(formatEndTime(end, new Date(2026, 11, 1).getTime()), "Nov 5, 10:37 AM");
-  assert.equal(formatEndTime(end, new Date(2027, 0, 2).getTime()), "Nov 5, 2026, 10:37 AM");
 });

@@ -52,7 +52,7 @@ export type RowView =
       retryPrompt?: string;
       /** "Reset chat" applies: the turn has an agent reply and is not the chat's last turn. */
       canReset: boolean;
-      /** When the turn started and ended (RFC 3339), for the footer's duration and time. */
+      /** ISO times the turn started and ended, for the footer's "8m, 0s · 10:37 AM". */
       startedAt?: string;
       endedAt?: string;
     };

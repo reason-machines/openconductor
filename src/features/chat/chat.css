@@ -143,12 +143,16 @@
 .oc-icon-action-svg { width: 14px; height: 14px; }
 .oc-text-action { font-size: 12px; color: var(--oc-muted-fg); padding: 2px 6px; border-radius: 5px; }
 .oc-text-action:hover { background: var(--oc-accent); color: var(--oc-accent-fg); }
-.chat-turn-changes { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
-.chat-turn-chip { flex: none; max-width: 240px; }
+/* Conductor (`vDo`): the first chips share the footer row and shrink instead of wrapping (flex-1 min-w-0
+   max-w-fit overflow-hidden); revealed chips and "+N more" wrap, on their own line once revealed (basis-full). */
+.chat-turn-changes { display: flex; flex: 1 1 0; align-items: center; gap: 8px; min-width: 0; max-width: fit-content; overflow: hidden; }
+.chat-turn-changes-more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.chat-turn-changes-more.revealed { flex-basis: 100%; }
+.chat-turn-chip { flex: 0 1 auto; min-width: 0; }
+.chat-turn-chip.more { padding: 0 4px; tab-size: 4; font-variant-numeric: tabular-nums; }
 .oc-chip-counts { display: flex; flex: none; align-items: center; gap: 4px; font: 500 10px/12px var(--font-mono); letter-spacing: 0.04em; }
 .oc-chip-counts .a { color: var(--oc-git-green); }
 .oc-chip-counts .d { color: var(--oc-git-red); }
-.chat-turn-chip.more { color: var(--oc-muted-fg); }
 
 /* Conductor: a stopped prompt's "Cancelled" caption (mt-0.5 text-xs muted) and the outline "Interrupted by user" badge. */
 .chat-cancelled { margin-top: 2px; font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); }

@@ -160,7 +160,7 @@ function fromReason(input: Record<string, unknown>, blockName: string): Conducto
 }
 
 /** Codex items (codex.ts keeps the item's own input), as Conductor's sidecar maps them. */
-function fromCodex(input: Record<string, unknown>): ConductorTool[] | undefined {
+function fromCodex(input: Record<string, unknown>, blockName: string): ConductorTool[] | undefined {
   const command = str(input.command);
   if (command !== undefined && (input.cwd !== undefined || Array.isArray(input.commandActions))) {
     const actions = Array.isArray(input.commandActions) ? input.commandActions.filter(isRecord) : [];
@@ -188,6 +188,7 @@ function fromCodex(input: Record<string, unknown>): ConductorTool[] | undefined 
       return { name: "Edit", input: { file_path: path, old_string: patch.oldString, new_string: patch.newString } };
     });
   }
+  if (blockName.startsWith("Search the web: ") && typeof input.query === "string") return [{ name: "WebSearch", input: { query: input.query } }];
   if (str(input.server) && str(input.tool)) return [{ name: `mcp__${input.server}__${input.tool}`, input: isRecord(input.arguments) ? input.arguments : {} }];
   return undefined;
 }
@@ -199,7 +200,7 @@ function fromCodex(input: Record<string, unknown>): ConductorTool[] | undefined 
 export function conductorTools(blockName: string, input: unknown): ConductorTool[] {
   if (isRecord(input)) {
     if (typeof input.kind === "string" && Array.isArray(input.paths)) return fromReason(input, blockName);
-    const codex = fromCodex(input);
+    const codex = fromCodex(input, blockName);
     if (codex && codex.length > 0) return codex;
     return [{ name: blockName, input }];
   }

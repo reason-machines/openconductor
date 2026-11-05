@@ -200,3 +200,39 @@ export function headStatusLabel(q: ChatQueue): string | null {
   if (q.status === "cancelling") return "Waiting for cancellation";
   return "Queued";
 }
+
+/** A queue edit from the composer's queue panel. */
+export type QueueAction =
+  | { kind: "delete"; id: string }
+  | { kind: "steer"; id: string }
+  | { kind: "edit"; id: string }
+  | { kind: "cancelEdit" }
+  | { kind: "saveEdit"; text: string; steer: boolean }
+  | { kind: "move"; id: string; by: -1 | 1 }
+  | { kind: "reorder"; ids: string[] }
+  | { kind: "pause" }
+  | { kind: "resume" };
+
+/** The next queue (and effects) for a queue-panel action. */
+export function actionStep(q: ChatQueue, action: QueueAction): QueueStep | ChatQueue {
+  switch (action.kind) {
+    case "delete":
+      return remove(q, action.id);
+    case "steer":
+      return steerQueued(q, action.id);
+    case "edit":
+      return beginEdit(q, action.id);
+    case "cancelEdit":
+      return cancelEdit(q);
+    case "saveEdit":
+      return saveEdit(q, action.text, action.steer);
+    case "move":
+      return move(q, action.id, action.by);
+    case "reorder":
+      return reorder(q, action.ids);
+    case "pause":
+      return pause(q);
+    case "resume":
+      return resume(q);
+  }
+}
