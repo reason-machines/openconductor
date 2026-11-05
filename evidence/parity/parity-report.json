@@ -1,7 +1,7 @@
 {
  "ref": "origin/main",
- "sha": "a0139339c52b4f013655b1af12c86828f24967c7",
- "source_files_scanned": 667,
+ "sha": "f21d2dbf24bbf4476b2d1324f873d421bcb13f98",
+ "source_files_scanned": 674,
  "reference": {
   "conductor_version": "0.87.6",
   "keybindings_source": {
@@ -13,10 +13,10 @@
  },
  "overall": {
   "total": 419,
-  "matched": 296,
-  "partial": 104,
-  "missing": 19,
-  "parity_pct": 83.1
+  "matched": 299,
+  "partial": 103,
+  "missing": 17,
+  "parity_pct": 83.7
  },
  "areas": {
   "settings": {
@@ -72,10 +72,10 @@
   },
   "shortcuts": {
    "total": 172,
-   "matched": 71,
-   "partial": 101,
+   "matched": 72,
+   "partial": 100,
    "missing": 0,
-   "parity_pct": 70.6,
+   "parity_pct": 70.9,
    "groups": {
     "General": {
      "total": 30,
@@ -100,10 +100,10 @@
     },
     "Chat": {
      "total": 51,
-     "matched": 11,
-     "partial": 40,
+     "matched": 12,
+     "partial": 39,
      "missing": 0,
-     "parity_pct": 60.8
+     "parity_pct": 61.8
     },
     "Workspace": {
      "total": 37,
@@ -137,10 +137,10 @@
   },
   "persistence": {
    "total": 44,
-   "matched": 43,
+   "matched": 44,
    "partial": 0,
-   "missing": 1,
-   "parity_pct": 97.7,
+   "missing": 0,
+   "parity_pct": 100.0,
    "groups": {
     "conductor.db table": {
      "total": 18,
@@ -158,19 +158,19 @@
     },
     "app data store": {
      "total": 19,
-     "matched": 18,
+     "matched": 19,
      "partial": 0,
-     "missing": 1,
-     "parity_pct": 94.7
+     "missing": 0,
+     "parity_pct": 100.0
     }
    }
   },
   "packaging": {
    "total": 78,
-   "matched": 63,
+   "matched": 64,
    "partial": 0,
-   "missing": 15,
-   "parity_pct": 80.8,
+   "missing": 14,
+   "parity_pct": 82.1,
    "groups": {
     "Info.plist key": {
      "total": 20,
@@ -202,10 +202,10 @@
     },
     "linked system library": {
      "total": 22,
-     "matched": 16,
+     "matched": 17,
      "partial": 0,
-     "missing": 6,
-     "parity_pct": 72.7
+     "missing": 5,
+     "parity_pct": 77.3
     },
     "tauri stack": {
      "total": 1,
@@ -255,7 +255,7 @@
   "conductor_max_migration_version": 142
  },
  "packaging_meta": {
-  "source": "REA on CI-built OpenConductor.app (run 42062149395, commit d8b3b2e0f931): inspect-plist ev_eaeabb2489ff9054b990f484a5698c70e075e48d90e080ab5d0325a11036acc6, inspect-signature ev_e0e58206439cd9eb37bb1332705e4f671744b37c21f29034bb27ab7c84bd569f, trace-dylib-resolution ev_0a1ccf8e5f717183f189ca714a7a7242209e3d0843cde118a92deacb1cfdfa71",
+  "source": "REA on CI-built OpenConductor.app (run 42078522125, commit a0139339c52b): inspect-plist ev_24d70a5c52631966168446d59986c4d9639b5562e1e3c6db24ee46aef69aa0a1, inspect-signature ev_a580b04788ef91f8c90e82cde450f003f9d2fa392ee777444401c394433890a3, trace-dylib-resolution ev_a5dd134419135f6a3259946a89dc3f5e9bf2da213feb2583d19900235d703817",
   "evidence_commit_is_target": false,
   "evidence_commit_is_ancestor": true,
   "extra_plist_keys": [
@@ -468,10 +468,10 @@
     ],
     "rebuild": {
      "total": 22,
-     "matched": 16,
+     "matched": 17,
      "partial": 0,
-     "missing": 6,
-     "parity_pct": 72.7
+     "missing": 5,
+     "parity_pct": 77.3
     }
    },
    {
@@ -1009,10 +1009,10 @@
    "result": "fail",
    "parity": {
     "total": 51,
-    "matched": 11,
-    "partial": 40,
+    "matched": 12,
+    "partial": 39,
     "missing": 0,
-    "parity_pct": 60.8
+    "parity_pct": 61.8
    },
    "gaps": [
     {
@@ -1128,11 +1128,6 @@
     {
      "group": "Chat",
      "id": "chat.linkLinear",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.addAttachment",
      "status": "declared"
     },
     {
@@ -1526,21 +1521,15 @@
    "area": "persistence",
    "parent_obligation": "agent.binaries",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 1,
-    "matched": 0,
+    "matched": 1,
     "partial": 0,
-    "missing": 1,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "app data store",
-     "id": "agent-binaries",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "persistence.bin-source-markers",
@@ -1653,10 +1642,10 @@
    "result": "fail",
    "parity": {
     "total": 22,
-    "matched": 16,
+    "matched": 17,
     "partial": 0,
-    "missing": 6,
-    "parity_pct": 72.7
+    "missing": 5,
+    "parity_pct": 77.3
    },
    "gaps": [
     {
@@ -1677,11 +1666,6 @@
     {
      "group": "linked system library",
      "id": "CoreText",
-     "status": "missing"
-    },
-    {
-     "group": "linked system library",
-     "id": "OSAKit",
      "status": "missing"
     },
     {
@@ -3451,8 +3435,8 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.addAttachment",
-   "status": "declared",
-   "detail": "meta+u; no handler references this id"
+   "status": "matched",
+   "detail": "meta+u"
   },
   {
    "area": "shortcuts",
@@ -4130,7 +4114,7 @@
    "area": "persistence",
    "group": "app data store",
    "id": "agent-binaries",
-   "status": "missing",
+   "status": "matched",
    "detail": "agent-binaries/ with .meta sha256"
   },
   {
@@ -4425,7 +4409,7 @@
    "group": "linked system library",
    "id": "CloudKit",
    "status": "missing",
-   "detail": ""
+   "detail": "link_only: Conductor's MacOS/conductor links CloudKit (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_cloud_kit), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced)."
   },
   {
    "area": "packaging",
@@ -4439,7 +4423,7 @@
    "group": "linked system library",
    "id": "CoreData",
    "status": "missing",
-   "detail": ""
+   "detail": "link_only: Conductor's MacOS/conductor links CoreData (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_core_data), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced)."
   },
   {
    "area": "packaging",
@@ -4460,7 +4444,7 @@
    "group": "linked system library",
    "id": "CoreImage",
    "status": "missing",
-   "detail": ""
+   "detail": "link_only: Conductor's MacOS/conductor links CoreImage (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_core_image), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced)."
   },
   {
    "area": "packaging",
@@ -4474,7 +4458,7 @@
    "group": "linked system library",
    "id": "CoreText",
    "status": "missing",
-   "detail": ""
+   "detail": "link_only: Conductor's MacOS/conductor links CoreText (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_core_text), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced)."
   },
   {
    "area": "packaging",
@@ -4494,7 +4478,7 @@
    "area": "packaging",
    "group": "linked system library",
    "id": "OSAKit",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -4523,7 +4507,7 @@
    "group": "linked system library",
    "id": "UserNotifications",
    "status": "missing",
-   "detail": ""
+   "detail": "not_built: Conductor drives UNUserNotificationCenter itself through objc2-user-notifications (17 symbols): it requests authorization, sets its own NotificationCenterDelegate class as the delegate, posts UNNotificationRequests with a title, body and userInfo, and reads a clicked notification's actionIdentifier (imports UNNotificationDefaultActionIdentifier) and userInfo, so it reacts to clicks on its notifications. OpenConductor posts notifications only through tauri-plugin-notification and does not link UserNotifications or handle clicks. What Conductor does on a click is not established."
   },
   {
    "area": "packaging",
