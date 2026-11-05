@@ -1,0 +1,112 @@
+{
+ "subject": {
+  "name": "conductor",
+  "digest": {
+   "sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d"
+  },
+  "local_path": "/Users/sven/code/conductor-rea-work/Conductor.app/Contents/MacOS/conductor",
+  "format": "mach-o",
+  "architecture": "arm64"
+ },
+ "source": {
+  "operation": "inspect_macho",
+  "evidence_id": "ev_4b8fc20547e64ebd8da6a894b3fc417f2129e318fb5a43cf58645c6b81ab5e48",
+  "record_sha256": "b315e7d5231e95cee4a3a64507f5e04351b96a1330f98accb8a900039fcf8c19",
+  "imports_exhaustive": false,
+  "imports_limitations": [
+   "dyld_info textual imports may omit chained or toolchain-unsupported metadata."
+  ],
+  "exports_limitations": [
+   "Merged nm/dyld_info results may be incomplete for stripped binaries."
+  ]
+ },
+ "tool": "tools/macho_framework_use.py",
+ "libraries": [
+  {
+   "name": "OSAKit",
+   "path": "/System/Library/Frameworks/OSAKit.framework/Versions/A/OSAKit",
+   "load_command": "LC_LOAD_DYLIB",
+   "imported_symbols": [
+    "_OSAScriptErrorMessageKey",
+    "_OSAScriptErrorRangeKey"
+   ],
+   "objc2_crate": "objc2_osa_kit",
+   "objc2_methods": [
+    "OSALanguage::languageForName",
+    "OSALanguageInstance::languageInstanceWithLanguage",
+    "OSAScript::compileAndReturnError",
+    "OSAScript::executeAndReturnError",
+    "OSAScript::initWithSource_fromURL_languageInstance_usingStorageOptions"
+   ],
+   "objc2_crate_symbols": 8,
+   "use": "called"
+  },
+  {
+   "name": "UserNotifications",
+   "path": "/System/Library/Frameworks/UserNotifications.framework/Versions/A/UserNotifications",
+   "load_command": "LC_LOAD_DYLIB",
+   "imported_symbols": [
+    "_UNNotificationDefaultActionIdentifier"
+   ],
+   "objc2_crate": "objc2_user_notifications",
+   "objc2_methods": [
+    "UNMutableNotificationContent::new",
+    "UNMutableNotificationContent::setBody",
+    "UNMutableNotificationContent::setTitle",
+    "UNMutableNotificationContent::setUserInfo",
+    "UNNotification::request",
+    "UNNotificationContent::userInfo",
+    "UNNotificationRequest::content",
+    "UNNotificationRequest::requestWithIdentifier_content_trigger",
+    "UNNotificationResponse::actionIdentifier",
+    "UNNotificationResponse::notification",
+    "UNUserNotificationCenter::addNotificationRequest_withCompletionHandler",
+    "UNUserNotificationCenter::currentNotificationCenter",
+    "UNUserNotificationCenter::requestAuthorizationWithOptions_completionHandler",
+    "UNUserNotificationCenter::setDelegate"
+   ],
+   "objc2_crate_symbols": 17,
+   "use": "called"
+  },
+  {
+   "name": "CoreData",
+   "path": "/System/Library/Frameworks/CoreData.framework/Versions/A/CoreData",
+   "load_command": "LC_LOAD_DYLIB",
+   "imported_symbols": [],
+   "objc2_crate": "objc2_core_data",
+   "objc2_methods": [],
+   "objc2_crate_symbols": 0,
+   "use": "link_only"
+  },
+  {
+   "name": "CoreText",
+   "path": "/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText",
+   "load_command": "LC_LOAD_DYLIB",
+   "imported_symbols": [],
+   "objc2_crate": "objc2_core_text",
+   "objc2_methods": [],
+   "objc2_crate_symbols": 0,
+   "use": "link_only"
+  },
+  {
+   "name": "CoreImage",
+   "path": "/System/Library/Frameworks/CoreImage.framework/Versions/A/CoreImage",
+   "load_command": "LC_LOAD_DYLIB",
+   "imported_symbols": [],
+   "objc2_crate": "objc2_core_image",
+   "objc2_methods": [],
+   "objc2_crate_symbols": 0,
+   "use": "link_only"
+  },
+  {
+   "name": "CloudKit",
+   "path": "/System/Library/Frameworks/CloudKit.framework/Versions/A/CloudKit",
+   "load_command": "LC_LOAD_DYLIB",
+   "imported_symbols": [],
+   "objc2_crate": "objc2_cloud_kit",
+   "objc2_methods": [],
+   "objc2_crate_symbols": 0,
+   "use": "link_only"
+  }
+ ]
+}

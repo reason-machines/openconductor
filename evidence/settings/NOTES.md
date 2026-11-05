@@ -609,3 +609,30 @@ sets only the code view's foreground and background, not token colors. The sideb
   so every claim above comes from text search plus reading minified code, not from an REA trace.
 - Minified exports: hooks are re-exported under two-letter aliases (`p5t as og`, imported as `oEr`), which
   REA's JavaScript semantic analysis does not resolve across chunks; we followed them by hand.
+
+### Appearance keys in the settings table
+
+Conductor stores these six keys in `conductor.db`'s `settings` table, not in `settings.toml`. REA source:
+the REA-extracted `index-BGEQ8YjU.js` and `renderApp-D_fmY7hW.js` on `sven m5 max`, key names and code
+only.
+
+| Key | Registry declaration (no `fileKey` = settings table) | Reader hook | Setter (`updateSetting` -> `INSERT OR REPLACE INTO settings`) |
+| --- | --- | --- | --- |
+| `zoom_level_v2` | `Pe("zoom_level_v2")`, `zoom_level_v2:Me()` | `C5t`: `parseFloat(data)`, else 1 | `m6t`: `t.toString()` |
+| `mono_font` | `Pe("mono_font")`, `mono_font:Me()` | `m5t`: `data ?? "Geist Mono"` | `Xzt` (debounced) |
+| `low_contrast_dark_mode` | `Te("low_contrast_dark_mode",!1)`, `xe()` | `us(...)` | `L6t`: `t.toString()` |
+| `code_theme` | `yl("code_theme",_N,"default")`, `_l(_N)` | `us(...)`, `Dgi` | `F6t` |
+| `colored_sidebar_diffs` | `Te("colored_sidebar_diffs",!1)`, `xe()` | `us(...)` in the sidebar row | `D6t`: `t.toString()` |
+| `file_ligatures_enabled` | `Te("file_ligatures_enabled")`, `xe()` | `v5t`: unset = on | `Jzt`: `t.toString()` |
+
+File-backed keys use `Me({fileKey: ...})` / `xe({fileKey: ...})` instead (for example
+`default_model: Me({fileKey:"models.default"})`), and only those go through the file writer `NN`.
+
+OpenConductor follows this through `src-tauri/src/settings/db_backed.rs`. The settings service overlays
+the table's values on `get_settings`, writes changed values to the table on save (an empty font deletes
+the row), and leaves these keys out of `settings.toml`. At startup, values an older build wrote to
+`[appearance]` move into the table. A row the table already has wins. Then the keys are dropped from
+the file. The frontend still sees them as `settings.appearance.*`, so the Appearance page, the diff
+viewer and the sidebar are unchanged. `terminal_font_family`, `terminal_font_size` and `color_vision`
+are also non-file-backed in Conductor (`Pe`/`yl` without `fileKey`), but they belong to the terminal
+and diff areas and stay in `[appearance]` for now.
