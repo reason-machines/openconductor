@@ -15,6 +15,11 @@
 //   5-6. two turns that write files; each saved start/end checkpoints
 //   7. "Reset chat" on turn 5   "Reset chat?" says 2 changed; Reset deletes
 //                        turn 6 and restores turn 5's files
+//   8. "permission"      Reason asks session/request_permission: the chat shows
+//                        "Approve tool use", the session is needs_user_permission
+//                        in conductor.db, the sidebar row and the Home list show
+//                        "Needs permission"; Allow resumes the turn and the
+//                        status goes back to idle
 //   The Session runs Settings' default model (set before the chat opens).
 //
 // Usage (under a display, e.g. xvfb-run):
@@ -312,6 +317,42 @@ try {
   pass(`the fake CLI saw one Session: ${sessions.join(", ")}`);
   assert.equal(stored["sess-1"].config?.model, "byok:anthropic:claude-opus-5-5", JSON.stringify(stored["sess-1"]));
   pass("the Session runs Settings' default model: session/set_config_option model=byok:anthropic:claude-opus-5-5");
+
+  // 8. A permission request (parity: sidebar.ws-status, home.status-overview).
+  const statusesOf = (css) => run(`return [...document.querySelectorAll(arguments[0])].map((e) => ({ status: e.dataset.status, label: e.getAttribute("aria-label") }));`, css);
+  const sidebarStatus = () => statusesOf('[data-testid="workspace-status-icon"]');
+  const homeStatus = () => statusesOf('[data-testid="home-workspace-status"]');
+  const storedStatuses = () =>
+    runAsync(`const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke("session_statuses").then(done, (e) => done({ error: String(e) }));`);
+  const needsPermission = (list) => list.some((i) => i.status === "needs-user-permission" && i.label === "Needs permission");
+  await send("permission");
+  const card = await waitFor("the permission card", () => run(`const c = document.querySelector('[data-testid="chat-permission-request"]'); return c ? c.innerText : null;`));
+  assert.match(card, /Approve tool use/);
+  assert.match(card, /bash: rm -rf build/);
+  await waitFor("Needs permission on the sidebar row", async () => needsPermission(await sidebarStatus()));
+  const storedRows = await waitFor("needs_user_permission in conductor.db", async () => {
+    const rows = await storedStatuses();
+    return Array.isArray(rows) && rows.some((r) => r.chatId === workspace.id && r.status === "needs_user_permission") && rows;
+  });
+  await screenshot("status-needs-permission-chat");
+  pass(`Reason's permission request shows "Approve tool use", the sidebar row says Needs permission, conductor.db holds ${JSON.stringify(storedRows)}`);
+
+  await run(`const b = [...document.querySelectorAll(".sb-row")].find((e) => e.querySelector(".sb-row-label")?.textContent.trim() === "Home"); b.click(); return true;`);
+  await waitFor("Needs permission on the Home row", async () => needsPermission(await homeStatus()));
+  await screenshot("status-needs-permission-home");
+  pass("the Home list shows the workspace's Needs permission status in place of its time");
+
+  await run(`document.querySelector('[data-testid="workspace-status-icon"][data-status="needs-user-permission"]').closest("button").click(); return true;`);
+  await wd("POST", `/element/${await waitFor("the Allow button", () => find('.chat-permission button[data-kind="allow_once"]'))}/click`, {});
+  await waitFor('"permission: allow"', () => chatText().then((t) => t.includes("permission: allow")));
+  await turnDone(8);
+  await waitFor("the sidebar row to leave Needs permission", async () => !needsPermission(await sidebarStatus()));
+  await waitFor("conductor.db to drop the status", async () => {
+    const rows = await storedStatuses();
+    return Array.isArray(rows) && !rows.some((r) => r.chatId === workspace.id);
+  });
+  assert.equal(await run(`return document.querySelectorAll('[data-testid="chat-permission-request"]').length;`), 0);
+  pass('Allow answers the request: the turn replies "permission: allow" and the status is idle again');
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {
