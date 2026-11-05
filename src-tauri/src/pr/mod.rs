@@ -29,6 +29,8 @@
 //!   PR's failed jobs (Checks tab).
 //! * [`review_comments`]: the PR's GitHub review threads and comments as
 //!   `diff_comments` rows, and resolving a thread on GitHub.
+//! * `workspace_sync`: store a lookup's derived status and PR title / body
+//!   in `conductor.db`.
 
 pub mod api;
 pub mod checks;
@@ -50,6 +52,9 @@ pub mod model;
 pub mod prompt;
 pub mod review_comments;
 pub mod runs;
+/// Store a lookup's derived status and PR title/body on the workspace row.
+#[cfg(not(pr_harness))]
+pub mod workspace_sync;
 
 #[cfg(test)]
 mod api_tests;

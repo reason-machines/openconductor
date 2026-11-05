@@ -43,8 +43,8 @@ export async function ensureRepository(path: string): Promise<RepositoryDto> {
 }
 
 /**
- * Clones `url` into `<parentDir>/<name>` (the backend suffixes `-2`, `-3`, ...
- * when taken) and registers it like add_repository. Each progress line goes
+ * Clones `url` into `<parentDir>/<name>` (the backend suffixes `-v1`, `-v2`, ...
+ * when taken, as Conductor does) and registers it like add_repository. Each progress line goes
  * to `onProgress` as it arrives. The browser stand-in waits briefly, emits a
  * few lines and returns a fake checkout; `fail-` URLs reject with the
  * backend's exit-code message so the error state can be tried without the
@@ -161,8 +161,8 @@ export async function loadBranchPrefix(): Promise<BranchPrefixInfo> {
     const q = new URLSearchParams(window.location.search);
     const custom = q.get("prefix");
     return custom === null
-      ? { branchPrefixType: "github_username", branchPrefixCustom: null, githubUsername: q.get("ghuser") }
-      : { branchPrefixType: custom ? "custom" : "none", branchPrefixCustom: custom || null, githubUsername: q.get("ghuser") };
+      ? { branchPrefixType: "github_username", branchPrefix: null, githubUsername: q.get("ghuser") }
+      : { branchPrefixType: custom ? "custom" : "none", branchPrefix: custom || null, githubUsername: q.get("ghuser") };
   }
   return invoke<BranchPrefixInfo>("branch_prefix_settings");
 }

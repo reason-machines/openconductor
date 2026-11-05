@@ -1,7 +1,7 @@
 {
   "schema": "openconductor.parity-verdicts.v1",
   "ref": "origin/main",
-  "verified_at": "2026-11-05 (main 0e2531b; sidebar items touched by #278 re-read on 0e2531b, others on 85e00bb with no later change to their code)",
+  "verified_at": "2026-11-05 (main 4d72807: home.* re-read after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-name and sidebar.ws-status after #327, #344, #375, #379; sidebar.ws-status, ws-name and ws-branch after #337 on 1cedef0; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
   "method": "Read on main: src/, src-tauri/src/, crates/. 'backend' = logic or a command exists and is tested, but no UI path reaches it.",
   "items": {
     "sidebar.home-entry": {
@@ -13,12 +13,12 @@
       "why": "Repos from conductor.db (reposFromDb in src/state/persisted.ts) render as collapsible groups with nested workspace rows (Sidebar.tsx, toggleRepo); collapsed ids persist in UI prefs."
     },
     "sidebar.repo-order": {
-      "verdict": "partial",
-      "why": "The sidebar lists repos in conductor.db order (db_list_repos -> openconductor_db repos::list, display_order then created_at). No UI or registered command reorders them."
+      "verdict": "implemented",
+      "why": "Repos drag to reorder in Sidebar.tsx (draggable rows, onDrop; order logic in src/state/repoOrder.ts, tested). The store calls the registered db_reorder_repos (sidebar_repo_commands.rs, #283), which writes repos.display_order, and db_list_repos reads it back in that order."
     },
     "sidebar.repo-hide": {
-      "verdict": "backend",
-      "why": "repos::set_hidden in the now-linked openconductor-db crate is tested and reposFromDb drops hidden rows, but no hide/unhide command is registered in lib.rs and there is no UI or show-hidden toggle."
+      "verdict": "implemented",
+      "why": "The repo menu has Hide repository / Unhide repository, and the list ends with a Show hidden repositories toggle (Sidebar.tsx, visibleRepos). The store calls the registered db_set_repo_hidden (sidebar_repo_commands.rs, #283), which writes repos.hidden."
     },
     "sidebar.repo-icon": {
       "verdict": "backend",
@@ -30,27 +30,27 @@
     },
     "sidebar.ws-name": {
       "verdict": "partial",
-      "why": "workspaceLabel uses user-set name, then PR title, then prettified branch, and WorkspaceView now keeps prTitle in step with GitHub (setWorkspacePr via usePullRequest). renameWorkspace accepts userSet, but no rename dialog calls it and reposFromDb does not map user_set_workspace_name."
+      "why": "#344's pr_sync_workspace (src-tauri/src/pr/workspace_sync.rs, workspaces::set_pr_metadata) stores pr_title/pr_description after each PR lookup; list_workspaces returns them and reposFromDb maps prTitle, so a row keeps its PR title after a restart. It still updates only once the workspace has been opened and its PR read. Still partial: no rename dialog sets user_set_workspace_name on main (sidebar.rename; #315 adds it, not merged)."
     },
     "sidebar.ws-branch": {
       "verdict": "implemented",
-      "why": "The row label is the prettified branch (workspaceLabel, unless it equals the target branch) with a branch icon, and the tooltip shows the raw branch; REA capture matches the reference rows."
+      "why": "The row label is the prettified branch (workspaceLabel, unless it equals the target branch) and the tooltip shows the raw branch; since #337 the leading icon is the row status icon, which is the branch icon (Ready) for a workspace with a remote and no PR, as in the reference rows."
     },
     "sidebar.ws-status": {
       "verdict": "partial",
-      "why": "src/state/workspaceStatus.ts models effective status as manual, then derived, then in-progress, with a Set status submenu, and reposFromDb maps both columns. The row's status icon still renders the old idle/working model (SidebarWorkspaceRow.tsx STATUS_LABEL on ws.status), and the manual status is not written to conductor.db."
+      "why": "Judged against Conductor's row-icon chain. rowStatus.ts and RowStatusIcon.tsx are on main and SidebarWorkspaceRow uses them. #344 persists derived_status (setWorkspaceDerivedStatus) but the icon never reads it; the PR rules read only ws.pr, which only the open WorkspaceView's onLookup sets (rowPrOf) and which is not stored, so PR states never reach other rows or survive a restart. Session status is still only working/idle, so the needs-* and waiting states never show."
     },
     "sidebar.ws-diffstat": {
-      "verdict": "partial",
-      "why": "Sidebar.tsx renders +/- counts (coloured on the active row), but reposFromDb sets them to 0/0, so the desktop app never shows them (only ?demo=1 and localStorage seeds do); no setting to colour unselected rows."
+      "verdict": "implemented",
+      "why": "Each row shows +/- counts from the registered sidebar_workspace_changes (merge base with the target branch, committed and uncommitted, lockfiles skipped as in Conductor's FPt; useRowDiffStat.ts, sidebarDiffStat.ts), fetched for on-screen or active rows. Unselected rows are muted unless the colored_sidebar_diffs setting is on (styles.css data-colored-sidebar-diffs, AppearancePage.tsx)."
     },
     "sidebar.ws-unread": {
       "verdict": "partial",
-      "why": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it; reposFromDb maps unread from conductor.db. Changes are not written back (no set_unread command), and there is no jump-to-next-unread-workspace command."
+      "why": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it. Changes are now written through the registered db_set_workspace_unread (sidebarPersist.ts) and reposFromDb maps workspaces.unread back. There is still no jump-to-next-unread-workspace command."
     },
     "sidebar.ws-pinned": {
-      "verdict": "partial",
-      "why": "Pin/unpin from the row menu or P, and a Pinned group above My workspaces (src/state/sidebarOrder.ts, SidebarSections.tsx); reposFromDb maps pinned_at from conductor.db. Pins are local state only: no command writes set_pinned_at, so a desktop reload from the DB drops them."
+      "verdict": "implemented",
+      "why": "Pin/unpin from the row menu or P, and a Pinned group above My workspaces (src/state/sidebarOrder.ts, SidebarSections.tsx). In the desktop app the store writes each change through the registered db_set_workspace_pinned (sidebarPersist.ts, sidebar_workspace_commands.rs), which sets workspaces.pinned_at; reposFromDb maps it back on reload."
     },
     "sidebar.sections": {
       "verdict": "missing",
@@ -62,7 +62,7 @@
     },
     "sidebar.ws-numbers": {
       "verdict": "partial",
-      "why": "workspace.switchTo1..9 are handled in PaletteHost.tsx over sidebarOrder; rows never show numbers and there is no setting to show them."
+      "why": "workspace.switchTo1..9 switch rows over sidebarOrder, and holding the switch modifier for 500 ms shows 1..9 in place of the first nine rows' icons (src/state/shortcutHint.ts, SidebarWorkspaceRow.tsx). The workspaces.number column is not shown and there is no setting to show numbers."
     },
     "sidebar.ws-next-prev": {
       "verdict": "implemented",
@@ -113,12 +113,12 @@
       "why": "Visibility persists in the desktop UI prefs key in localStorage (UiPrefs in src/state/persisted.ts), not as a setting; the width matches the 256 default but is a fixed CSS value, not a persisted setting."
     },
     "home.route": {
-      "verdict": "partial",
-      "why": "Home is the default screen from the selection state in src/state/store.ts, but there is no router or '/' route: App.tsx only checks the start path for /create and /settings."
+      "verdict": "implemented",
+      "why": "Since #322 the selection has a {kind: 'root'} entry for '/': the store starts there (startSelection, src/state/selectors.ts) unless a workspace was open, and removing or archiving the open workspace or its repository falls back to it, as Conductor's '/' (Wls) does. A start path of /all-workspaces opens the Home list, and #381 adds /first-run-onboarding before it (main.tsx FirstRunGate). There is no URL router: routes are selection kinds, which a window with no address bar does not expose."
     },
     "home.org-states": {
-      "verdict": "missing",
-      "why": "No organization concept, no blank loading state on Home and no cloud redirect."
+      "verdict": "n/a",
+      "why": "Not applicable locally. REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest; evidence/screens/first-run-onboarding.md, #381): Wls (@2,118,579) returns null while so()/rl loads the signed-in user's organizations from Conductor's cloud API and redirects to /all-workspaces when fc(org) is 'cloud'. OpenConductor has no account and no organizations, so there is no organization load and no cloud organization; the local startup wait shows FirstRunGate's loader before Home, as Bxa does."
     },
     "home.layout": {
       "verdict": "implemented",
@@ -141,40 +141,40 @@
       "why": "CloneGitHubRepoDialog.tsx takes a URL and a location with a Browse picker and calls the registered clone_repository; progress streams over a Channel into a log and errors map through cloneErrorMessage (src/state/cloneDialog.ts); the clone is recorded in conductor.db."
     },
     "home.new-project": {
-      "verdict": "partial",
-      "why": "Quick start opens CreateProjectDialog.tsx -> registered create_new_project (create_project.rs): git init with a first commit or create-next-app, private GitHub repo, add_repository. The GitHub repo cannot be skipped, and no real first workspace is created (App.tsx onCreated adds an in-memory placeholder under a client-side repo id)."
+      "verdict": "implemented",
+      "why": "Quick start (CreateProjectDialog.tsx -> create_new_project) runs git init with a first commit or create-next-app, creates the private GitHub repo, registers the project with add_repository, then since #350 creates the real first workspace through create_workspace and starts the repository's setup script (src/home/createFirstWorkspace.ts, tested in firstWorkspace.test.ts) and opens it under the backend repo id. As in Conductor's gbi (@2,103,713, evidence/screens/create-project.md) the GitHub step cannot be skipped. Not run end to end in the packaged app."
     },
     "home.duplicate-repo": {
       "verdict": "partial",
-      "why": "Open project and the Add-repository menu refuse an existing repo (REPO_EXISTS from findExistingRepo); the Clone dialog does no duplicate check (clone_repository picks a unique folder name and the store silently drops the duplicate)."
+      "why": "Clone now matches (#343): the Clone dialog result is added under its backend id and a second clone of an added remote becomes its own project in a <name>-v1 folder (sameRepoRecord, src/state/addRepo.ts, tested; naming::bump since #379), as Conductor's g2t/C2t do. Open project still differs: App.tsx openProject refuses an already-added folder with REPO_EXISTS (findExistingRepo), and add_repository returns the existing id for a known path, while Conductor inserts a second repos row for the same folder named <name>-v1 (evidence/screens/duplicate-repo.md)."
     },
     "home.no-repo-guard": {
       "verdict": "implemented",
       "why": "With no repositories, CreateWorkspaceDialog.tsx explains a repository is needed and offers an Add repository menu (Open project or Clone repo)."
     },
     "home.status-overview": {
-      "verdict": "missing",
-      "why": "HomeScreen.tsx shows only the wordmark and cards: no workspace list, status matrix or mine-vs-all filter."
+      "verdict": "partial",
+      "why": "#322 adds the Home list (AllWorkspaces.tsx, src/home/allWorkspaces.ts): grouped by last activity with counts, unread rows semibold, diff stat and a short relative time. The status column shows only 'working' (a spinner): our session status has only working/idle, so Conductor's other active statuses (needs plan response, needs permission, needs input, cancelling, waiting) never show, the same gap as sidebar.ws-status. The status-matrix toggle (internal_workspace_status_matrix, Settings > Experimental @10,701,242) and mine-vs-all (team organization sidebar, 'My workspaces' @10,055,740) are not built; #322 records them as cloud-only."
     },
     "home.dashboard-routes": {
-      "verdict": "missing",
-      "why": "No /dashboard or /all-workspaces screens and no router."
+      "verdict": "partial",
+      "why": "/all-workspaces is implemented by #322: the sidebar Home row, nav.home and the palette open AllWorkspaces, and a start path of /all-workspaces opens it. /dashboard is missing: REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest) shows route lta (@11,520,499) and a sidebar 'Dashboard' row (@10,029,038) shown when the dashboard_enabled setting is on (default 'false' in the index chunk's settings defaults); the rebuild has neither the route nor the setting."
     },
     "home.recent": {
       "verdict": "partial",
-      "why": "The command palette keeps an in-memory most-recent-first list of visited workspaces (PaletteHost.tsx, cap 8); Home shows no recents and the list is not persisted."
+      "why": "Re-read with REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest): 'Recent workspaces' is the command palette's All-tab heading with an empty query (m_a @10,909,908), not a Home list. Conductor keeps recentWorkspaceIds (most recent first, cap XOt = 5, recordViewedWorkspace) in its persisted UI store (partialize includes recentWorkspaceIds, index chunk @3,121,897), so the list survives a restart. Ours (src/palette/PaletteHost.tsx) shows the same heading and order but keeps up to 8 ids in React state only, so it is empty after a restart and holds 3 more than Conductor."
     },
     "home.repo-search": {
       "verdict": "partial",
-      "why": "The palette's Projects tab filters repositories by name (src/palette/search/model.ts projectResults); there is no search field in the repository list or the Add-repository menu."
+      "why": "Re-anchored after REA on Conductor 0.87.6 (renderApp-D_fmY7hW.js, sha256 matches the manifest): Home and the Add-repository menu have no repo search; 'Search repositories...' is the cloud GitHub repo picker (mfa, @10,435,221). Local narrowing is the palette Projects tab and the section header's Filter by project submenu (pra @10,019,058: shown when repositories.length > 1, All projects then each repo, All deletes sidebar_repo_filter). The rebuild has the palette Projects tab (src/palette/search/model.ts projectResults) but no Filter by project on main. #354 is merged: the tested logic and submenu (src/home/repoFilter.ts, useRepoFilter.ts, ProjectFilterSubmenu.tsx) are on main but nothing mounts them. The mount is in sidebar PR #315 (not merged); it keeps the filter in localStorage rather than Conductor's sidebar_repo_filter settings row, which will score as a difference."
     },
     "home.recents": {
       "verdict": "implemented",
       "why": "CloneGitHubRepoDialog.tsx loads recent repos through the registered github_recent_repos (cached 2 min), shows three skeleton rows in a role=status region with a screen-reader label while loading, renders nothing when empty, and fills the URL on click."
     },
     "home.first-run": {
-      "verdict": "missing",
-      "why": "No onboarding screen, first-run check or onboarding route; only hidden onboarding.* keybinding registry entries."
+      "verdict": "implemented",
+      "why": "#381: FirstRunGate (src/onboarding/FirstRunGate.tsx, mounted around App in main.tsx) reads first_time_onboarding_step from the settings table (onboarding_commands.rs, crates/openconductor-db onboarding.rs) and shows /first-run-onboarding on a fresh install with no repositories, as Conductor's Pya/Bxa do (evidence/screens/first-run-onboarding.md); Continue writes 999 and DONE and goes to '/'. Three slides with titles and descriptions, ArrowDown and Enter. By design: no Conductor account (always 'Continue'), placeholder media instead of Conductor's videos, no analytics. Covered by tests/e2e/first-run.e2e.mjs and firstRun.test.ts."
     },
     "home.persist": {
       "verdict": "implemented",
@@ -201,8 +201,8 @@
       "why": "Branch tab of CreateFromPicker.tsx with search, loading, empty and error states over list_branches (createFrom.ts statusLine, dedupeBranches)."
     },
     "create.worktree": {
-      "verdict": "partial",
-      "why": "create_workspace runs git worktree add on its own branch, but the location is fixed at <app data>/workspaces/<repo slug> (WorkspaceManager::workspaces_dir); no setting or UI changes it."
+      "verdict": "implemented",
+      "why": "#375 adds the conductor_root_path setting: WorkspaceManager::with_root and workspaces_dir put workspaces under <root>/workspaces/<repo slug> (archive records and default clones under the same root). Settings > Advanced RootPathRow (Browse, 'Change root path?', change_conductor_root, which forgets repos, saves and restarts) and Repo settings > Misc 'Workspaces path' (repo_workspaces_path) make it reachable. #379 brings the -v1/-v2 name bump (naming::bump). Deliberate difference: with no setting the root is the app data directory, not Conductor's ~/conductor."
     },
     "create.branch-prefix": {
       "verdict": "implemented",
@@ -226,7 +226,7 @@
     },
     "create.initializing": {
       "verdict": "partial",
-      "why": "The dialog steps through creating, detecting-setup and running-setup (createFlow.ts reduceProgress) and create_workspace writes an initializing row, but the sidebar gets the workspace only after the worktree exists: no initializing row or view, no initialization log."
+      "why": "#327 adds a pendingLaunches store (src/workspace/pendingLaunches.ts, a port of Conductor's Y5e with the 120 s expiry): CreateWorkspaceDialog adds a launch on submit and removes it when the create finishes or fails, and RepoWorkspaceList/PendingWorkspaceRow (Sidebar.tsx) show an inert 'Untitled' row with a spinner ('Creating workspace...'), also in a collapsed group. Still no initializing workspace view and no initialization log, and the loader is a CSS spinner rather than Conductor's sprite."
     },
     "create.failure": {
       "verdict": "implemented",
@@ -245,8 +245,8 @@
       "why": "The schema has a number column but no create path, persistence function or UI assigns or shows one."
     },
     "create.autostart-run": {
-      "verdict": "partial",
-      "why": "oc-scripts is linked and after a create-dialog setup ScriptService::after_setup calls should_auto_run and starts the run script; the option is only settable in the repo scripts config file: no UI sets it and save_repo_scripts does not write it."
+      "verdict": "implemented",
+      "why": "Settings > Experimental 'Auto-run after setup' (ExperimentalPage.tsx) calls auto_run_after_setup_get/_set (registered in lib.rs), which write [scripts] auto_run_after_setup to the user settings.toml the oc-scripts loader reads (config/user.rs, #324); after a completed setup ScriptService::after_setup -> should_auto_run starts the default run script, a failed setup never auto-runs, and a repo layer still overrides (crates/scripts service tests). User scope, default off, as in Conductor 0.87.6 (REA IRt/fQe, evidence/run-scripts/NOTES.md). Not run end to end in the packaged app."
     },
     "sidebar.top-bar": {
       "verdict": "implemented",

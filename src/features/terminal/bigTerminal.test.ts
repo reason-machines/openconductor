@@ -91,3 +91,14 @@ test("⌘⇧T does nothing while the mode is off, else opens a tab running the p
   assert.deepEqual(bigTabRequest({ enabled: true, preset: "none", customCommands: [] }), { command: undefined });
   assert.deepEqual(bigTabRequest({ enabled: true, preset: "custom:a", customCommands: [{ id: "a", command: "htop" }] }), { command: "htop" });
 });
+
+test("⌘⇧T follows Claude Code tool approvals and the executable paths from settings", () => {
+  const base = { enabled: true, customCommands: [] };
+  assert.deepEqual(bigTabRequest({ ...base, preset: "claude", requiresToolApprovals: true }), { command: "claude" });
+  assert.deepEqual(bigTabRequest({ ...base, preset: "claude", executablePaths: { claude: "/opt/my claude" } }), {
+    command: "'/opt/my claude' --dangerously-skip-permissions",
+  });
+  assert.deepEqual(bigTabRequest({ ...base, preset: "codex", requiresToolApprovals: true, executablePaths: { codex: " /x/codex " } }), {
+    command: `'/x/codex' -c model_reasoning_effort="high"`,
+  });
+});
