@@ -5,7 +5,7 @@
 //! stdio://`, a JSON-RPC server on stdin and stdout (see
 //! `evidence/providers/README.md`). Approval and sandbox are not flags: they
 //! go in each `thread/start` and `thread/resume` request
-//! (`codex_rpc`). The values below are the ones the app-server
+//! ([`super::codex_rpc`]). The values below are the ones the app-server
 //! schema accepts in Codex 0.156.1, the version the reference app downloads,
 //! and in 0.166.0 (`evidence/providers/codex-app-server.md`).
 
