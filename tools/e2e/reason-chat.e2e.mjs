@@ -177,8 +177,9 @@ try {
   // Conductor's empty first chat (x9s) and a model, not Codex, on the picker chip.
   const intro = await waitFor("the empty chat's intro", () => chatText().then((t) => t && t.includes("You’re in a new copy of") && t));
   assert.ok(intro.includes("called e2e"), intro);
-  const modelChip = await run("return document.querySelector(\"[data-testid='composer-model-button']\")?.title ?? null;");
-  assert.ok(modelChip && modelChip !== "Codex", `the chat runs a model on Reason: ${modelChip}`);
+  // The picker renders once the default model has loaded from Settings, a moment after the intro.
+  const modelChip = await waitFor("the model on the picker chip", () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.title || null;"));
+  assert.ok(modelChip !== "Codex", `the chat runs a model on Reason: ${modelChip}`);
   await screenshot("reason-0-empty-chat");
   pass(`the desktop chat opens on Conductor's empty state ("${intro.split("\n")[0]}") with ${modelChip} on the picker`);
 
