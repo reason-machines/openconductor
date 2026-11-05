@@ -150,6 +150,9 @@ pub struct ClaudeLaunch {
     pub effort: Option<String>,
     /// Settings JSON passed with `--settings` (for example `outputStyle`, `fastMode`).
     pub settings: Option<serde_json::Value>,
+    /// `--chrome`: Claude in Chrome ("Use Claude Code with Chrome",
+    /// the `chrome_mode_enabled` app preference).
+    pub chrome: bool,
 }
 
 impl ClaudeLaunch {
@@ -166,6 +169,7 @@ impl ClaudeLaunch {
             append_system_prompt: None,
             plugin_dirs: BUNDLED_PLUGIN_DIR.get().cloned().into_iter().collect(),
             effort: None,
+            chrome: false,
             settings: None,
         }
     }
@@ -206,6 +210,9 @@ impl ClaudeLaunch {
         }
         if let Some(settings) = &self.settings {
             args.extend(["--settings".into(), settings.to_string()]);
+        }
+        if self.chrome {
+            args.push("--chrome".into());
         }
         args
     }
@@ -257,6 +264,14 @@ mod tests {
         }
         assert!("yolo".parse::<PermissionMode>().is_err());
         assert_eq!(PermissionMode::default(), PermissionMode::Default);
+    }
+
+    #[test]
+    fn chrome_mode_adds_the_chrome_flag_only_when_on() {
+        let mut launch = ClaudeLaunch::new("/w", LaunchEnv::new());
+        assert!(!launch.args().iter().any(|a| a == "--chrome"));
+        launch.chrome = true;
+        assert_eq!(launch.args().last().map(String::as_str), Some("--chrome"));
     }
 
     #[test]

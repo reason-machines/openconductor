@@ -21,6 +21,7 @@
 
 pub mod agent;
 pub mod agent_binaries;
+pub mod agent_options;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
@@ -50,6 +51,7 @@ pub mod menu;
 pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
+pub mod open_in;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
@@ -349,6 +351,9 @@ pub fn run() {
             workspace::commands::rename_workspace_branch,
             workspace_archive_commands::archive_workspace,
             workspace_archive_commands::unarchive_workspace,
+            workspace_archive_commands::delete_workspace,
+            workspace_archive_commands::reveal_unarchive_conflict,
+            workspace_archive_commands::clear_unarchive_conflict,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_repo_prompt,
@@ -432,8 +437,14 @@ pub fn run() {
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
             app_prefs::commands::get_app_prefs,
+            agent_options::agent_system_binary,
+            agent_options::agent_config_file,
+            agent_options::open_agent_config,
+            agent_options::acp_agent_status,
             app_prefs::commands::set_app_pref,
             app_prefs::commands::record_open_in,
+            open_in::commands::open_in_apps,
+            open_in::commands::open_in_app,
             app_prefs::commands::client_instance_id,
             app_prefs::commands::graphite_cli_installed,
             resource_usage::commands::get_resource_usage,

@@ -6,7 +6,9 @@ import {
   RUNNING_AGENTS_DIALOG,
   blockedByAgents,
   emitArchiveEvent,
+  directoryExistsToast,
   failureToast,
+  restoreDialogCopy,
   onArchiveEvent,
   startArchive,
   startUnarchive,
@@ -43,15 +45,16 @@ test("a git operation in safe mode offers the discard retry; after it, the plain
   const err = { code: "WorkspaceArchiveBlockedByGitOperationError", message: "OpenConductor can't safely archive this workspace because a Git operation is in progress." };
   assert.deepEqual(failureToast(err, "safe"), { kind: "git-operation", message: GIT_OPERATION_WARNING });
   assert.deepEqual(failureToast(err), { kind: "git-operation", message: GIT_OPERATION_WARNING });
-  assert.deepEqual(failureToast(err, "discardGitOperationState"), { kind: "error", message: err.message });
+  assert.deepEqual(failureToast(err, "discardGitOperationState"), { kind: "error", message: err.message, deleteLabel: "Delete anyway" });
   assert.equal(GIT_OPERATION_WARNING, "Because a Git operation (merge, rebase, cherry-pick, or revert) is in progress, archiving may lose some of your work.");
 });
 
 test("a missing directory reads as a corrupted workspace; anything else shows its message", () => {
-  assert.deepEqual(failureToast({ code: "WORKSPACE_CORRUPTED", message: "Workspace directory not found" }), { kind: "error", message: CORRUPTED_MESSAGE });
-  assert.deepEqual(failureToast({ code: "ArchiveFailed", message: "Failed to archive ws: boom" }), { kind: "error", message: "Failed to archive ws: boom" });
-  assert.deepEqual(failureToast(new Error("ipc down")), { kind: "error", message: "ipc down" });
-  assert.deepEqual(failureToast("plain"), { kind: "error", message: "plain" });
+  assert.deepEqual(failureToast({ code: "WORKSPACE_CORRUPTED", message: "Workspace directory not found" }), { kind: "error", message: CORRUPTED_MESSAGE, deleteLabel: "Delete permanently" });
+  assert.equal(CORRUPTED_MESSAGE, "Archiving failed. This workspace might be corrupted. Delete permanently?");
+  assert.deepEqual(failureToast({ code: "ArchiveFailed", message: "Failed to archive ws: boom" }), { kind: "error", message: "Failed to archive ws: boom", deleteLabel: "Delete anyway" });
+  assert.deepEqual(failureToast(new Error("ipc down")), { kind: "error", message: "ipc down", deleteLabel: "Delete anyway" });
+  assert.deepEqual(failureToast("plain"), { kind: "error", message: "plain", deleteLabel: "Delete anyway" });
 });
 
 test("archive events reach every listener until it unsubscribes", () => {
@@ -154,4 +157,33 @@ test("outside the desktop app unarchive only shows the row", async () => {
   const h = unarchiveHarness(null);
   await startUnarchive("w", h.deps);
   assert.deepEqual(h.log, ["show"]);
+});
+
+test("an unarchive blocked by an existing folder gets Conductor's directory-exists toast", () => {
+  const err = { code: "UnarchiveDirectoryExists", message: "Can't unarchive: /w/ws already exists", path: "/w/ws", directoryName: "ws" };
+  assert.deepEqual(directoryExistsToast(err), {
+    title: "Failed to unarchive: ws",
+    description: "The folder at /w/ws already exists.",
+    clearLabel: "Clear & unarchive",
+    openLabel: "Open in Finder",
+    copyLabel: "Copy path",
+    path: "/w/ws",
+  });
+  assert.equal(directoryExistsToast({ code: "ArchiveFailed", message: "x" }), null);
+  assert.equal(directoryExistsToast(new Error("x")), null);
+});
+
+test("the restore dialog uses Conductor's copy for each scenario", () => {
+  assert.deepEqual(restoreDialogCopy("branchTaken", "sven/ws"), {
+    title: "Restore to new branch?",
+    body: "This workspace was last on sven/ws, but that branch is being used by another workspace.",
+  });
+  assert.deepEqual(restoreDialogCopy("branchDiverged", "sven/ws"), {
+    title: "Restore to new branch?",
+    body: "This workspace was last on sven/ws, but someone updated that branch in the meantime. Restore to a new branch to preserve your work.",
+  });
+  assert.deepEqual(restoreDialogCopy("branchDeleted", "sven/ws"), {
+    title: "Restore to new branch?",
+    body: "This workspace was last on sven/ws, but that branch has been deleted or renamed.",
+  });
 });
