@@ -12,6 +12,7 @@ use tauri::async_runtime::spawn_blocking;
 use super::api::{self, CreatePrPrompt, LookupRequest, LookupResult};
 use super::gh::{MergeMethod, MergeMethodCache};
 use super::header::{header_state, HeaderInputs, HeaderState};
+use super::list::{OpenIssue, OpenPr};
 use super::prompt::create_pr_prompt;
 
 fn merge_methods() -> &'static MergeMethodCache {
@@ -33,6 +34,20 @@ pub async fn pr_lookup(
 ) -> Result<Vec<LookupResult>, String> {
     blocking(move || api::lookup_prs(&api::gh_in(&repo_path), &requests, api::git_current_branch))
         .await
+}
+
+/// Open PRs, newest-updated first, for the "Create from..." picker.
+/// Errors starting `no_github:` (gh missing or signed out) and `no_remote:`
+/// (no GitHub remote) map to the picker's setup states.
+#[tauri::command]
+pub async fn pr_list_open(repo_path: String) -> Result<Vec<OpenPr>, String> {
+    blocking(move || api::list_open_prs(&api::gh_in(&repo_path))).await
+}
+
+/// Open GitHub issues, newest-updated first; errors as [`pr_list_open`].
+#[tauri::command]
+pub async fn gh_issue_list_open(repo_path: String) -> Result<Vec<OpenIssue>, String> {
+    blocking(move || api::list_open_issues(&api::gh_in(&repo_path))).await
 }
 
 /// What the workspace header's PR control shows.
