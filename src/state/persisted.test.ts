@@ -60,3 +60,18 @@ test("sidebar: pin, unread and status columns reach the workspace", () => {
   assert.deepEqual([oslo.unread, oslo.manualStatus, oslo.derivedStatus], [true, "done", "in-review"]);
   assert.deepEqual([lima.pinnedAt, lima.unread, lima.manualStatus, lima.derivedStatus], [undefined, undefined, undefined, undefined]);
 });
+
+test("sidebar: a user-set workspace name is shown as is", async () => {
+  const { workspaceLabel } = await import("../components/sidebarLabel.ts");
+  const [r] = reposFromDb(
+    [repo("a")],
+    [ws("a", "oslo", "ready", { workspaceName: "Fix login", userSetWorkspaceName: true, branch: "sven/oslo" }), ws("a", "lima", "ready", { workspaceName: "lima", branch: "sven/fix-the-thing" })],
+    [],
+  );
+  const [oslo, lima] = r.workspaces;
+  assert.equal(oslo.userSetWorkspaceName, true);
+  assert.equal(lima.userSetWorkspaceName, undefined);
+  const label = (w: typeof oslo) => workspaceLabel({ name: w.name, branch: w.branch, prTitle: w.prTitle, userSetWorkspaceName: w.userSetWorkspaceName, targetBranch: "main" });
+  assert.equal(label(oslo), "Fix login");
+  assert.notEqual(label(lima), "lima");
+});

@@ -79,15 +79,15 @@ test("cities are reused with a version suffix once all are taken", () => {
   for (const n of names.slice(1)) assert.match(n, /^(oslo|nuuk)-v\d+$/);
 });
 
-test("branch prefix follows branch_prefix_type and branch_prefix_custom", () => {
+test("branch prefix follows branch_prefix_type and branch_prefix", () => {
   assert.equal(resolveBranchPrefix({ branch_prefix_type: "none" }, "sven"), "");
   assert.equal(resolveBranchPrefix({ branch_prefix_type: "github_username" }, "SvenM"), "svenm/");
   assert.equal(resolveBranchPrefix({}, "sven"), "sven/");
   assert.equal(resolveBranchPrefix({}, null), "");
   // Stored custom values carry a trailing slash after the migration; both forms work.
-  assert.equal(resolveBranchPrefix({ branch_prefix_type: "custom", branch_prefix_custom: "feat/" }), "feat/");
-  assert.equal(resolveBranchPrefix({ branch_prefix_type: "custom", branch_prefix_custom: "team/ui" }), "team/ui/");
-  assert.equal(resolveBranchPrefix({ branch_prefix_type: "custom", branch_prefix_custom: "  " }), "");
+  assert.equal(resolveBranchPrefix({ branch_prefix_type: "custom", branch_prefix: "feat/" }), "feat/");
+  assert.equal(resolveBranchPrefix({ branch_prefix_type: "custom", branch_prefix: "team/ui" }), "team/ui/");
+  assert.equal(resolveBranchPrefix({ branch_prefix_type: "custom", branch_prefix: "  " }), "");
   assert.equal(applyBranchPrefix("sven/", "oslo"), "sven/oslo");
   assert.equal(applyBranchPrefix("sven/", "sven/oslo"), "sven/oslo");
   assert.equal(applyBranchPrefix("", "oslo"), "oslo");
@@ -191,10 +191,10 @@ test("backend prefix info resolves to the branch prefix", () => {
     const { settings, githubUsername } = prefixSettingsFromInfo(info);
     return resolveBranchPrefix(settings, githubUsername);
   };
-  assert.equal(resolve({ branchPrefixType: "github_username", branchPrefixCustom: null, githubUsername: "svemyh" }), "svemyh/");
-  assert.equal(resolve({ branchPrefixType: "github_username", branchPrefixCustom: null, githubUsername: null }), "");
+  assert.equal(resolve({ branchPrefixType: "github_username", branchPrefix: null, githubUsername: "svemyh" }), "svemyh/");
+  assert.equal(resolve({ branchPrefixType: "github_username", branchPrefix: null, githubUsername: null }), "");
   // settings.toml stores the custom prefix without the trailing slash.
-  assert.equal(resolve({ branchPrefixType: "custom", branchPrefixCustom: "sven", githubUsername: "svemyh" }), "sven/");
-  assert.equal(resolve({ branchPrefixType: "custom", branchPrefixCustom: "team/sven/", githubUsername: null }), "team/sven/");
-  assert.equal(resolve({ branchPrefixType: "none", branchPrefixCustom: "sven", githubUsername: "svemyh" }), "");
+  assert.equal(resolve({ branchPrefixType: "custom", branchPrefix: "sven", githubUsername: "svemyh" }), "sven/");
+  assert.equal(resolve({ branchPrefixType: "custom", branchPrefix: "team/sven/", githubUsername: null }), "team/sven/");
+  assert.equal(resolve({ branchPrefixType: "none", branchPrefix: "sven", githubUsername: "svemyh" }), "");
 });
