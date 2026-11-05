@@ -23,6 +23,8 @@ pub mod updates;
 #[cfg(test)]
 mod cli_tests;
 #[cfg(test)]
+mod provider_tests;
+#[cfg(test)]
 mod tests;
 #[cfg(test)]
 mod updates_tests;

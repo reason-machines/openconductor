@@ -42,6 +42,7 @@ const MOCK_FILES = {
   "/__mock/sql-wasm.js": path.join(here, "node_modules/sql.js/dist/sql-wasm.js"),
   "/__mock/sql-wasm.wasm": path.join(here, "node_modules/sql.js/dist/sql-wasm.wasm"),
   "/__mock/fixtures.js": path.join(here, "fixtures.js"),
+  "/__mock/seed-data.js": path.join(here, "seed-data.js"),
   "/__mock/seed.js": path.join(here, "seed.js"),
   "/__mock/tauri-mock.js": path.join(here, "tauri-mock.js"),
   "/__mock/conductor.schema.sql": path.join(repoRoot, "evidence/sqlite/conductor.schema.sql"),
@@ -61,6 +62,7 @@ function indexHtml(scenario) {
     `<meta http-equiv="Content-Security-Policy" content="connect-src 'self' data: blob:">\n` +
     `<script>window.__OC_SCENARIO__=${JSON.stringify(scenario)};</script>\n` +
     `<script src="/__mock/sql-wasm.js"></script>\n` +
+    `<script src="/__mock/seed-data.js"></script>\n` +
     `<script src="/__mock/seed.js"></script>\n` +
     `<script src="/__mock/fixtures.js"></script>\n` +
     `<script src="/__mock/tauri-mock.js"></script>\n`;
