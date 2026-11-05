@@ -166,14 +166,15 @@ impl Shared {
     }
 }
 
-/// Answers each request `cancelled` (when the agent is still there) and
-/// reports it resolved.
+/// Reports each request resolved, then answers it `cancelled` (when the
+/// agent is still there). Resolved goes first: once answered, the agent may
+/// end the turn before this thread runs again.
 fn cancel_asks(asks: Vec<(String, Ask)>, sink: &Sink, respond: bool) {
     for (id, ask) in asks {
+        sink(&ask.chat, ProviderEvent::InteractionResolved { id });
         if respond {
             let _ = ask.responder.respond(&ask.rpc_id, Ok(cancelled_outcome()));
         }
-        sink(&ask.chat, ProviderEvent::InteractionResolved { id });
     }
 }
 
@@ -365,8 +366,9 @@ impl ReasonProvider {
             let ask = s.asks.remove(id).expect("ask");
             (ask, result)
         };
-        let sent = ask.responder.respond(&ask.rpc_id, Ok(result));
+        // Resolved first, as in `cancel_asks`.
         (self.sink)(chat, ProviderEvent::InteractionResolved { id: id.into() });
+        let sent = ask.responder.respond(&ask.rpc_id, Ok(result));
         sent.map_err(|e| format!("Could not answer Reason: {e}"))
     }
 

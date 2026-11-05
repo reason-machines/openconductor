@@ -159,10 +159,13 @@ impl ClaudeRunner {
         }
         let asks = live.state.lock().unwrap().take_asks();
         for (id, (tool, input)) in asks {
+            (self.sink)(
+                chat_id,
+                ProviderEvent::InteractionResolved { id: id.clone() },
+            );
             if let Ok(d) = interact::decision(&tool, &input, &Answer::Cancel) {
-                let _ = session.answer_permission(id.clone(), d);
+                let _ = session.answer_permission(id, d);
             }
-            (self.sink)(chat_id, ProviderEvent::InteractionResolved { id });
         }
     }
 
@@ -183,15 +186,16 @@ impl ClaudeRunner {
             .ok_or_else(|| format!("No request {id} is waiting in this chat."))?;
         let decision = interact::decision(&tool, &input, answer)?;
         live.state.lock().unwrap().asks.remove(id);
+        // Resolved before the answer: the agent may end the turn right after it.
+        (self.sink)(
+            chat_id,
+            ProviderEvent::InteractionResolved { id: id.into() },
+        );
         let sent = live
             .session
             .lock()
             .unwrap()
             .answer_permission(id.to_owned(), decision);
-        (self.sink)(
-            chat_id,
-            ProviderEvent::InteractionResolved { id: id.into() },
-        );
         sent.map_err(|e| format!("Could not answer Claude Code: {e}"))
     }
 
