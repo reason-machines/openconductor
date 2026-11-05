@@ -6,7 +6,8 @@
 //! the source is the merge base for "All changes" or HEAD for "Uncommitted".
 //! A file the source has is restored in both the worktree and the index. A
 //! file the source lacks (added or untracked) is deleted and unstaged. A
-//! rename restores the old path and removes the new one.
+//! rename restores the old path and removes the new one. The per-turn view
+//! refuses, as Conductor's does.
 
 use super::git::{base_commit, git, git_exit_code, DiffError, Scope};
 use serde::Deserialize;
@@ -73,6 +74,12 @@ fn remove(repo: &Path, path: &str) -> Result<(), DiffError> {
 
 /// Discard every change to one file relative to the scope's base.
 pub fn discard_file(repo: &Path, req: &DiscardRequest) -> Result<(), DiffError> {
+    // As in the reference app, the per-turn view has no discard yet.
+    if matches!(req.scope, Scope::Turn { .. }) {
+        return Err(DiffError::Unsupported(
+            "discarding changes from a single turn",
+        ));
+    }
     let path = checked(&req.path)?;
     let old = req.old_path.as_deref().map(checked).transpose()?;
     let source = base_commit(repo, &req.scope)?;

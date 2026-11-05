@@ -1,30 +1,26 @@
-// parity:pr.create:ui parity:pr.merge:ui
+// parity:pr.create:ui parity:pr.merge:ui parity:pr.review-actions:ui
 // The workspace header's PR control: Create PR (asks the agent to commit,
 // push and run `gh pr create`), Merge (gh pr merge with the repository's
-// preferred method), or the PR's current state, which opens it on GitHub.
+// preferred method, named in the tooltip), Ready for review on a draft,
+// Approve PR, or the PR's current state, which opens it on GitHub.
 import { useEffect, useRef, useState } from "react";
-import { openUrl } from "../../backend.ts";
-import { createPrPrompt, mergePr } from "./api.ts";
 import { prControl } from "./control.ts";
+import type { PrActions } from "./usePrActions.ts";
 import type { PullRequest } from "./usePullRequest.ts";
 import "./pr.css";
 
 interface Props {
   pullRequest: PullRequest;
+  actions: PrActions;
   worktree: string | null;
-  branch: string;
-  targetBranch: string;
-  /** Sends a message to the workspace's agent. */
-  sendToAgent: (text: string) => void;
-  notify?: (kind: "info" | "error", message: string) => void;
 }
 
-export function PrControl({ pullRequest, worktree, branch, targetBranch, sendToAgent, notify }: Props) {
-  const { header, pr, git, refresh } = pullRequest;
-  const [busy, setBusy] = useState<null | "creating" | "merging">(null);
+export function PrControl({ pullRequest, actions, worktree }: Props) {
+  const { header, pr } = pullRequest;
+  const { busy } = actions;
   const [menu, setMenu] = useState(false);
   const menuRef = useRef<HTMLSpanElement>(null);
-  const control = prControl(header, pr);
+  const control = prControl(header, pr, actions.method);
 
   useEffect(() => {
     if (!menu) return;
@@ -33,75 +29,72 @@ export function PrControl({ pullRequest, worktree, branch, targetBranch, sendToA
     return () => document.removeEventListener("mousedown", close);
   }, [menu]);
 
-  // A new header state means the last action took effect (or was replaced).
-  useEffect(() => setBusy((b) => (b === "creating" && header?.action.type !== "create_pr" ? null : b)), [header]);
-
   if (!control || !worktree) return null;
 
-  async function create(draft: boolean) {
-    setMenu(false);
-    setBusy("creating");
-    try {
-      const text = await createPrPrompt({ branch, remote: git?.remote ?? "origin", targetBranch, draft });
-      sendToAgent(text);
-    } catch (e) {
-      notify?.("error", `Couldn't start the PR: ${String(e)}`);
-    } finally {
-      setBusy(null);
-    }
-  }
-
-  async function merge() {
-    if (!pr || !worktree) return;
-    setBusy("merging");
-    try {
-      await mergePr(worktree, pr.number);
-      notify?.("info", `Merged PR #${pr.number}`);
-    } catch (e) {
-      notify?.("error", `Merge failed: ${e instanceof Error ? e.message : String(e)}`);
-    } finally {
-      setBusy(null);
-      await refresh();
-    }
-  }
-
   const tone = `pr-control tone-${control.tone}`;
-  if (control.intent === "create") {
-    return (
-      <span className={`${tone} pr-split`} ref={menuRef}>
-        <button className="btn btn-small btn-primary" title={control.title} disabled={busy !== null} onClick={() => void create(false)}>
-          {busy === "creating" ? "Creating…" : control.label}
-        </button>
-        <button className="btn btn-small btn-primary pr-caret" aria-label="More ways to create a PR" aria-expanded={menu} disabled={busy !== null} onClick={() => setMenu((m) => !m)}>
-          ▾
-        </button>
-        {menu && (
-          <div className="pr-menu" role="menu">
-            <button role="menuitem" onClick={() => void create(true)}>
-              Create draft PR
-            </button>
-          </div>
-        )}
-      </span>
-    );
-  }
-  if (control.intent === "merge") {
-    return (
-      <span className={tone}>
-        {pr && (
-          <button className="btn btn-small pr-link" title={`Open PR #${pr.number} on GitHub`} onClick={() => void openUrl(pr.url)}>
-            #{pr.number}
-          </button>
-        )}
-        <button className="btn btn-small btn-merge" title={control.title} disabled={busy !== null} onClick={() => void merge()}>
-          {busy === "merging" ? "Merging…" : control.label}
-        </button>
-      </span>
-    );
-  }
-  return (
-    <button className={`btn btn-small ${tone}`} title={pr ? `${control.title}. Open PR #${pr.number} on GitHub` : control.title} disabled={!pr} onClick={() => pr && void openUrl(pr.url)}>
-      <span className="pr-dot" /> {control.label}
+  const prLink = pr && (
+    <button className="btn btn-small pr-link" title={`Open PR #${pr.number} on GitHub`} onClick={actions.openOnGitHub}>
+      #{pr.number}
     </button>
   );
+
+  switch (control.intent) {
+    case "create":
+      return (
+        <span className={`${tone} pr-split`} ref={menuRef}>
+          <button className="btn btn-small btn-primary" title={control.title} disabled={busy !== null} onClick={() => void actions.create(false)}>
+            {busy === "creating" ? "Creating…" : control.label}
+          </button>
+          <button className="btn btn-small btn-primary pr-caret" aria-label="More ways to create a PR" aria-expanded={menu} disabled={busy !== null} onClick={() => setMenu((m) => !m)}>
+            ▾
+          </button>
+          {menu && (
+            <div className="pr-menu" role="menu">
+              <button
+                role="menuitem"
+                onClick={() => {
+                  setMenu(false);
+                  void actions.create(true);
+                }}
+              >
+                Create draft PR
+              </button>
+            </div>
+          )}
+        </span>
+      );
+    case "merge":
+      return (
+        <span className={tone}>
+          {prLink}
+          <button className="btn btn-small btn-merge" title={control.title} disabled={busy !== null} onClick={() => void actions.merge()}>
+            {busy === "merging" ? "Merging…" : control.label}
+          </button>
+        </span>
+      );
+    case "ready":
+      return (
+        <span className={tone}>
+          {prLink}
+          <button className="btn btn-small" title={control.title} disabled={busy !== null} onClick={() => void actions.markReady()}>
+            {busy === "marking-ready" ? "Marking ready…" : control.label}
+          </button>
+        </span>
+      );
+    case "approve":
+      return (
+        <span className={tone}>
+          {prLink}
+          <button className="btn btn-small btn-approve" title={control.title} disabled={busy !== null} onClick={() => void actions.approve()}>
+            {busy === "approving" ? "Approving…" : control.label}
+          </button>
+        </span>
+      );
+    case "status":
+      return (
+        <button className={`btn btn-small ${tone}`} title={pr ? `${control.title}. Open PR #${pr.number} on GitHub` : control.title} disabled={!pr} onClick={actions.openOnGitHub}>
+          <span className="pr-dot" /> {control.label}
+        </button>
+      );
+  }
 }

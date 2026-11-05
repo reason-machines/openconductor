@@ -2,7 +2,8 @@
 //!
 //! Module ownership (one owner per path, see evidence/README.md):
 //! - `workspace/`  workspace lifecycle (worktrees, setup/run scripts)
-//! - `checkpoint/` checkpoints and revert
+//! - `checkpoint/` checkpoints and revert; `turn_checkpoint.rs` takes them
+//!   around each chat turn (`turn_checkpoint_commands.rs` is the IPC layer)
 //! - `agent/`      agent runner, providers and BYOK settings
 //! - `diff/`       diff viewer: git changes, unified diff parser
 //! - `quick_open/` quick open file index and fuzzy matching
@@ -20,22 +21,28 @@
 pub mod agent;
 pub mod bundled_bin;
 pub mod checkpoint;
+mod checkpoint_commands;
 pub mod claude_chat;
 pub mod create_project;
 pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
+mod sidebar_repo_commands;
+mod sidebar_workspace_commands;
 pub mod diff;
+pub mod draft_attachments;
 pub mod github_repo;
 pub mod menu;
 pub mod pr;
+mod local_storage_commands;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
 pub mod reason_chat;
 pub mod scripts;
 pub mod settings;
+pub mod sidecar_stores;
 pub mod spotlight;
 mod spotlight_commands;
 pub mod terminal;
@@ -43,6 +50,10 @@ mod terminal_commands;
 pub mod terminal_history;
 pub mod terminal_output;
 mod terminal_output_commands;
+#[cfg(all(test, unix))]
+mod test_exe;
+pub mod turn_checkpoint;
+mod turn_checkpoint_commands;
 pub mod workspace;
 
 use serde::Serialize;
@@ -218,9 +229,25 @@ pub fn run() {
             let data_dir = app.path().app_data_dir()?;
             // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
+            // Conductor sweeps draft-attachments/ dirs older than 30 days at start.
+            draft_attachments::sweep_at_startup(&data_dir);
             let db = db::open(&data_dir)?;
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
+            // Conductor's sidecar opens its session event outbox at start and
+            // carries on without it if that fails (sidecar_stores/).
+            match sidecar_stores::outbox::SessionEventOutbox::open(&sidecar_stores::outbox_root(&data_dir)) {
+                Ok(outbox) => {
+                    app.manage(outbox);
+                }
+                Err(e) => eprintln!(
+                    "Session event outbox is unavailable; continuing without durable backup delivery: {e}"
+                ),
+            }
+            app.manage(sidecar_stores::completions::SlashCommandSnapshotStore::new(
+                &sidecar_stores::completions_dir(&data_dir),
+            ));
+            app.manage(local_storage_commands::state(&data_dir));
             let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
@@ -267,14 +294,25 @@ pub fn run() {
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
+            sidebar_repo_commands::db_set_repo_hidden,
+            sidebar_repo_commands::db_reorder_repos,
+            sidebar_workspace_commands::db_set_workspace_pinned,
+            sidebar_workspace_commands::db_set_workspace_unread,
+            sidebar_workspace_commands::db_set_workspace_manual_status,
+            sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
+            checkpoint_commands::checkpoint_save,
+            checkpoint_commands::checkpoint_exists,
+            checkpoint_commands::checkpoint_restore,
+            checkpoint_commands::checkpoint_changed_count,
             diff::comment_commands::diff_comments_list,
             diff::comment_commands::diff_comment_add,
             diff::comment_commands::diff_comment_edit,
             diff::comment_commands::diff_comment_delete,
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,
+            turn_checkpoint_commands::checkpoint_turn_changes,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
@@ -305,6 +343,9 @@ pub fn run() {
             terminal_commands::pty_load_terminal_history,
             terminal_commands::pty_delete_terminal_history,
             terminal_commands::pty_delete_workspace_terminal_history,
+            local_storage_commands::local_storage_get_entry,
+            local_storage_commands::local_storage_set_entry,
+            local_storage_commands::local_storage_remove_entry,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
@@ -320,7 +361,10 @@ pub fn run() {
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
             pr::commands::pr_merge,
+            pr::commands::pr_merge_method,
             pr::commands::pr_set_auto_merge,
+            pr::checks_commands::pr_check_log,
+            pr::checks_commands::pr_rerun_failed_checks,
             pr::commands::pr_mark_ready,
             pr::commands::pr_edit,
             pr::commands::pr_retarget,
@@ -340,6 +384,12 @@ pub fn run() {
             spotlight_commands::spotlight_testing_get,
             spotlight_commands::spotlight_testing_set,
             terminal_output_commands::get_terminal_output,
+            draft_attachments::commands::draft_attachment_write,
+            draft_attachments::commands::draft_attachment_resolve,
+            draft_attachments::commands::draft_attachment_remove,
+            draft_attachments::commands::draft_attachment_upload,
+            draft_attachments::commands::draft_attachments_materialize,
+            draft_attachments::commands::materialize_local_path_attachment,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")
