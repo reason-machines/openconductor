@@ -132,6 +132,10 @@ export async function saveRepoScripts(repoRoot: string, scripts: RepoScripts): P
 /** Native folder picker; returns null when cancelled or outside Tauri. */
 export async function pickFolder(title: string): Promise<string | null> {
   if (!inTauri()) return null;
+  // E2E seam: WebDriver cannot drive the native picker and Tauri locks
+  // __TAURI_INTERNALS__.invoke, so tests/e2e sets the folder to "pick" here.
+  const e2ePick = (window as { __OC_E2E_PICK_FOLDER__?: string }).__OC_E2E_PICK_FOLDER__;
+  if (e2ePick !== undefined) return e2ePick || null;
   const { open } = await import("@tauri-apps/plugin-dialog");
   const picked = await open({ directory: true, multiple: false, title });
   return typeof picked === "string" ? picked : null;
