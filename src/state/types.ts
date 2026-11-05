@@ -31,6 +31,8 @@ export interface Workspace {
   /** Status the user set from the row menu; wins over the derived one. */
   manualStatus?: WorkspaceStatusValue;
   derivedStatus?: WorkspaceStatusValue;
+  /** `workspaces.number`, given on creation and shown as `W-<n>`; null for workspaces from before numbering. */
+  number?: number | null;
 }
 
 export interface Repo {
@@ -45,6 +47,8 @@ export interface Repo {
   collapsed?: boolean;
   /** `repos.hidden`: left out of the sidebar unless "show hidden" is on. */
   hidden?: boolean;
+  /** `repos.icon`: "emoji:<e>", an uploaded data:image URL, or a bundled icon name (src/state/repoIcon.ts). */
+  icon?: string | null;
 }
 
 export type Selection = { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };

@@ -26,3 +26,5 @@ pub use parse::{parse_unified, ParseError};
 mod git_tests;
 #[cfg(test)]
 mod parse_tests;
+#[cfg(test)]
+mod turn_tests;

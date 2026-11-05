@@ -8,6 +8,8 @@ import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { createPortal } from "react-dom";
 import { HelpMenu } from "./HelpMenu";
+import { RepoIcon } from "./RepoIcon";
+import { RepoIconDialog } from "./RepoIconDialog";
 import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
@@ -41,6 +43,8 @@ interface Props {
   /* sidebar: workspace row menu callbacks (rename dialog, archive flow) */
   onRenameWorkspace?: RowCallbacks["onRename"];
   onArchiveWorkspace?: RowCallbacks["onArchive"];
+  /** Shows an error toast (icon upload failures). */
+  onError?: (message: string) => void;
 }
 
 function NavRow({ icon, label, shortcut, active, onClick }: { icon: JSX.Element; label: string; shortcut: string; active?: boolean; onClick: () => void }) {
@@ -121,7 +125,7 @@ function HeaderMenu({ label, items, className, contextAt, onContextClose }: { la
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onError }: Props) {
   const rows = useWorkspaceRows(state, dispatch, { onRename: onRenameWorkspace, onArchive: onArchiveWorkspace });
   const pinned = pinnedEntries(state);
   const sel = state.selection;
@@ -131,6 +135,8 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
   const [showHidden, setShowHidden] = useState(false);
   const [repoContext, setRepoContext] = useState<{ repoId: string; x: number; y: number } | null>(null);
   const closeRepoContext = useCallback(() => setRepoContext(null), []);
+  const [iconRepoId, setIconRepoId] = useState<string | null>(null);
+  const iconRepo = iconRepoId ? state.repos.find((r) => r.id === iconRepoId) : undefined;
   const [dragRepoId, setDragRepoId] = useState<string | null>(null);
   const [dropRepoId, setDropRepoId] = useState<string | null>(null);
   const listed = visibleRepos(state.repos, showHidden);
@@ -242,7 +248,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
               >
                 <div className="sb-repo-main">
                   <span className="sb-repo-lead">
-                    <span className="sb-repo-initial" aria-hidden>{repo.name.charAt(0).toUpperCase()}</span>
+                    <RepoIcon repo={repo} />
                     <span className="sb-repo-chevron" aria-hidden>{repo.collapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}</span>
                   </span>
                   <span className="sb-repo-name" data-hidden={repo.hidden || undefined}>{repo.name}</span>
@@ -266,6 +272,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
                 onContextClose={closeRepoContext}
                 items={[
                   { label: "Create workspace", shortcut: repoContext?.repoId === repo.id && sel.kind === "workspace" && sel.repoId === repo.id ? hint("workspace.create") : undefined, onSelect: () => onOpenDialog("create", repo.id) },
+                  { label: "Change icon…", onSelect: () => setIconRepoId(repo.id) },
                   { label: repo.hidden ? "Unhide repository" : "Hide repository", onSelect: () => dispatch({ type: "setRepoHidden", repoId: repo.id, hidden: !repo.hidden }) },
                 ]}
               />
@@ -299,6 +306,14 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
           </button>
         </div>
       </div>
+      {iconRepo && (
+        <RepoIconDialog
+          repo={iconRepo}
+          onChange={(icon) => dispatch({ type: "setRepoIcon", repoId: iconRepo.id, icon })}
+          onClose={() => setIconRepoId(null)}
+          onError={(message) => onError?.(message)}
+        />
+      )}
     </aside>
   );
 }

@@ -24,7 +24,7 @@ export type Action =
   | {
       type: "addWorkspace";
       repoId: string;
-      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName">;
+      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number">;
     }
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
@@ -36,6 +36,8 @@ export type Action =
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
   /** Sidebar drag and drop: the full repo id list in its new order (`repos.display_order`). */
   | { type: "reorderRepos"; ids: string[] }
+  /** Change repository icon (`repos.icon`); null falls back to favicon, avatar, initial. */
+  | { type: "setRepoIcon"; repoId: string; icon: string | null }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] }
@@ -128,6 +130,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos: setRepoHidden(state.repos, action.repoId, action.hidden) };
     case "reorderRepos":
       return { ...state, repos: orderRepos(state.repos, action.ids) };
+    case "setRepoIcon":
+      return { ...state, repos: state.repos.map((r) => (r.id === action.repoId ? { ...r, icon: action.icon } : r)) };
     case "reset":
       return action.state;
     case "hydrate": {
@@ -235,6 +239,9 @@ export function useAppStore() {
       };
       if (desktop && action.type === "setRepoHidden") {
         invoke("db_set_repo_hidden", { repoId: action.repoId, hidden: action.hidden }).catch(rollback("hide repository"));
+      }
+      if (desktop && action.type === "setRepoIcon") {
+        invoke("db_set_repo_icon", { repoId: action.repoId, icon: action.icon }).catch(rollback("change repository icon"));
       }
       if (desktop && action.type === "reorderRepos") {
         invoke("db_reorder_repos", { ids: action.ids }).catch(rollback("reorder repositories"));

@@ -215,3 +215,9 @@ export async function folderExists(path: string): Promise<boolean> {
   if (!inTauri()) return true;
   return inspectProjectFolder(path).then((f) => f.isDir, () => false);
 }
+
+/** A favicon found in the repository at `rootPath`, as a data URL (`repo_favicon`); null outside Tauri. */
+export async function repoFavicon(rootPath: string): Promise<string | null> {
+  if (!inTauri()) return null;
+  return invoke<string | null>("repo_favicon", { rootPath });
+}
