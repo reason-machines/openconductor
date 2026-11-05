@@ -3,8 +3,9 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react
 import "./diff.css";
 import { loadWorkspaceDiff } from "./api.ts";
 import { FileDiffView, STATUS_LETTER, type LineAnchor } from "./FileDiffView";
+import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { step } from "./nav.ts";
-import { DEFAULT_VIEW_OPTIONS, type DiffViewOptions, type FileDiff } from "./types.ts";
+import { DEFAULT_VIEW_OPTIONS, type DiffScope, type DiffViewOptions, type FileDiff } from "./types.ts";
 import { isViewed, loadViewed, pruneViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
 
 export interface DiffViewerProps {
@@ -17,6 +18,8 @@ export interface DiffViewerProps {
   actions?: (files: FileDiff[]) => ReactNode;
   onLineClick?: (file: FileDiff, anchor: LineAnchor) => void;
   annotations?: (file: FileDiff, anchor: LineAnchor) => ReactNode;
+  /** Called with the loaded files and the scope they were loaded for. */
+  onLoaded?: (files: FileDiff[], scope: DiffScope) => void;
 }
 
 type Load = { state: "loading" } | { state: "error"; message: string } | { state: "ready"; files: FileDiff[] };
@@ -43,7 +46,7 @@ function Seg<T extends string>({ value, options, onChange }: { value: T; options
   );
 }
 
-export function DiffViewer({ workspaceId, worktree, baseBranch, actions, onLineClick, annotations }: DiffViewerProps) {
+export function DiffViewer({ workspaceId, worktree, baseBranch, actions, onLineClick, annotations, onLoaded }: DiffViewerProps) {
   const [opts, setOpts] = useState<DiffViewOptions>(initialOptions);
   const [load, setLoad] = useState<Load>({ state: "loading" });
   const [viewed, setViewedMap] = useState<ViewedMap>(() => loadViewed(localStorage, workspaceId));
@@ -83,14 +86,16 @@ export function DiffViewer({ workspaceId, worktree, baseBranch, actions, onLineC
   );
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLElement && e.target.closest("input, textarea, [contenteditable]")) return;
-      if (e.key === "]") goTo(step(current, files.length, 1));
-      else if (e.key === "[") goTo(step(current, files.length, -1));
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [current, files.length, goTo]);
+    if (load.state === "ready") onLoaded?.(load.files, opts.scope);
+  }, [load, opts.scope, onLoaded]);
+
+  // Keys come from the registry (diff.nextFile = ArrowDown, diff.previousFile = ArrowUp,
+  // diff.toggleViewed = Ctrl+V), so user overrides apply and bare arrows stay out of text fields.
+  useKeybindings({
+    "diff.nextFile": () => goTo(step(current, files.length, 1)),
+    "diff.previousFile": () => goTo(step(current, files.length, -1)),
+    "diff.toggleViewed": () => current >= 0 && current < files.length && setViewed(toggleViewed(viewed, files[current])),
+  });
 
   const totals = files.reduce((t, f) => ({ a: t.a + f.additions, d: t.d + f.deletions }), { a: 0, d: 0 });
 

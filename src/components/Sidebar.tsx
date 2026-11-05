@@ -3,7 +3,22 @@ import type { AppState, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
-import { ChevronIcon, HomeIcon, LogoMark, PlusIcon } from "./Icons";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, PlusIcon, SearchIcon, SidebarIcon } from "./Icons";
+import { COMMANDS } from "../keybindings/registry";
+import { glyphs } from "../keybindings/shortcut";
+
+/** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
+function hint(commandId: string): string {
+  const c = COMMANDS.find((cmd) => cmd.id === commandId);
+  return c ? glyphs(c.key) : "";
+}
+
+export interface NavControls {
+  canBack: boolean;
+  canForward: boolean;
+  onBack: () => void;
+  onForward: () => void;
+}
 
 const STATUS_LABEL: Record<Workspace["status"], string> = {
   idle: "Idle",
@@ -18,27 +33,63 @@ interface Props {
   onOpenDialog: (d: DialogKind, repoId?: string) => void;
   onOpenProject: () => void;
   onOpenSettings: () => void;
+  onSearch: () => void;
+  nav: NavControls;
   info: AppInfo | null;
+  /** Local computer label; Conductor shows "<name>'s Mac", or "My Mac" with no user name. */
+  computerName?: string;
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, info }: Props) {
+function NavRow({ icon, label, shortcut, active, onClick }: { icon: JSX.Element; label: string; shortcut: string; active?: boolean; onClick: () => void }) {
+  return (
+    <button type="button" className="sb-row" data-active={active ? "true" : undefined} title={shortcut ? `${label} (${shortcut})` : label} onClick={onClick}>
+      <span className="sb-row-icon">{icon}</span>
+      <span className="sb-row-label">{label}</span>
+      {shortcut && <kbd className="sb-row-hint">{shortcut}</kbd>}
+    </button>
+  );
+}
+
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onSearch, nav, info, computerName = "My Mac" }: Props) {
   const sel = state.selection;
   return (
     <aside className="sidebar" aria-label="Repositories and workspaces">
-      <div className="sidebar-drag" data-tauri-drag-region />
-      <div className="sidebar-brand">
-        <LogoMark />
-        <span>OpenConductor</span>
-      </div>
+      {/* Top bar: drag region with the sidebar toggle, back/forward at the top right. */}
+      <div className="sb-header">
+        <div className="sb-topbar" data-tauri-drag-region>
+          <button
+            type="button"
+            className="sb-toggle"
+            aria-label="Toggle left sidebar"
+            title={`Toggle left sidebar (${hint("view.toggleLeftSidebar")})`}
+            onClick={() => dispatch({ type: "toggleSidebar" })}
+          >
+            <SidebarIcon size={16} />
+          </button>
+        </div>
+        <div className="sb-history">
+          <button type="button" className="sb-icon-btn" aria-label="Go back" title={`Go back (${hint("nav.back")})`} disabled={!nav.canBack} onClick={nav.onBack}>
+            <ArrowLeftIcon size={12} />
+          </button>
+          <button type="button" className="sb-icon-btn" aria-label="Go forward" title={`Go forward (${hint("nav.forward")})`} disabled={!nav.canForward} onClick={nav.onForward}>
+            <ArrowRightIcon size={12} />
+          </button>
+        </div>
 
-      <button className={`nav-item ${sel.kind === "home" ? "active" : ""}`} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })}>
-        <HomeIcon size={15} />
-        <span>Home</span>
-      </button>
-      <button className="nav-item" onClick={() => onOpenDialog("create")} title="New workspace (⌘N)">
-        <PlusIcon size={15} />
-        <span>New workspace</span>
-      </button>
+        <div className="sb-primary">
+          {/* Computer switcher. Only the local computer exists for now, so the menu is not built yet. */}
+          <div className="sb-row sb-computer" title={computerName}>
+            <span className="sb-row-icon">
+              <span className="sb-avatar" aria-hidden>{computerName.charAt(0).toUpperCase()}</span>
+            </span>
+            <span className="sb-computer-name">{computerName}</span>
+            <ChevronDownIcon size={12} />
+          </div>
+          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
+          <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
+          <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={hint("toggleCommandPalette")} onClick={onSearch} />
+        </div>
+      </div>
 
       <div className="sidebar-section-header">
         <span>Repositories</span>

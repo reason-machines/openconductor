@@ -71,6 +71,12 @@ pub enum WorkspaceError {
     Initializing(String),
     /// The operation needs an active worktree, but the workspace is archived or missing.
     NotActive(String),
+    /// `clone_repository`: no folder name can be derived from the URL.
+    InvalidCloneUrl(String),
+    /// `clone_repository`: the clone destination is already taken.
+    DestinationExists(PathBuf),
+    /// `clone_repository`: `git clone` failed; git's stderr, trimmed.
+    CloneFailed(String),
 }
 
 impl fmt::Display for WorkspaceError {
@@ -91,6 +97,9 @@ impl fmt::Display for WorkspaceError {
             WorkspaceError::UnknownRepository(id) => write!(f, "unknown repository: {id}"),
             WorkspaceError::Initializing(n) => write!(f, "workspace {n} is still initializing; try again when it is ready"),
             WorkspaceError::NotActive(n) => write!(f, "workspace {n} is archived or missing"),
+            WorkspaceError::InvalidCloneUrl(u) => write!(f, "cannot derive a repository name from {u:?}"),
+            WorkspaceError::DestinationExists(p) => write!(f, "destination already exists: {}", p.display()),
+            WorkspaceError::CloneFailed(stderr) => f.write_str(stderr),
         }
     }
 }
