@@ -117,8 +117,21 @@ async function screenshot(name) {
 const chatText = () => run("const el = document.querySelector('.chat-scroll'); return el ? el.innerText : null;");
 const running = () => run("return !!document.querySelector('.composer button[title=\"Stop the agent\"]');");
 
+/** What has the keyboard, for failure messages: the composer, a terminal, or another element. */
+const focusedElement = () =>
+  run(`const a = document.activeElement;
+    if (!a || a === document.body) return "body";
+    if (a.closest(".composer")) return "composer " + a.tagName.toLowerCase();
+    if (a.closest(".terminal-panel")) return "terminal " + a.className;
+    return a.tagName.toLowerCase() + (a.className ? "." + a.className : "");`);
+const composerValue = () => run("const t = document.querySelector('.composer textarea'); return t ? t.value : null;");
+
 async function send(text) {
   await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  // Send is disabled while the box is empty: a click then does nothing and the
+  // turn never shows, so say where the typed text went instead of timing out later.
+  const typed = await composerValue();
+  assert.equal(typed, text, `the composer holds what was typed; focus is on ${await focusedElement()}`);
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
@@ -166,6 +179,20 @@ try {
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
   const placeholder = await waitFor("the Reason chat panel", () => chatText().then((t) => t && t.includes("Reason runs this chat") && t));
   pass(`the desktop chat panel runs Reason: "${placeholder.split("\n").find((l) => l.includes("Reason runs"))}"`);
+
+  // The workspace opens its first terminal on its own (a PTY spawn, so it lands
+  // a moment later). Its arrival must not take the keyboard from the chat box:
+  // keys typed there would go to the shell and Send would stay disabled.
+  const terminalFirst = await run(`document.querySelector('.composer textarea').focus(); return !!document.querySelector('.terminal-panel .xterm');`);
+  await waitFor("the workspace's terminal", () => run("return !!document.querySelector('.terminal-panel .xterm');"));
+  await sleep(500);
+  const focus = await focusedElement();
+  assert.equal(focus, "composer textarea", `the terminal that opened with the workspace took focus from the chat box (${focus})`);
+  pass(
+    terminalFirst
+      ? "the chat box keeps focus (the terminal was already open when it was focused)"
+      : "the chat box keeps focus when the workspace's terminal opens after it",
+  );
 
   // 1. A local path: in the workspace folder under HOME.
   await send("local");
@@ -292,6 +319,11 @@ try {
   if (sessionUrl) {
     await screenshot("failure").catch(() => {});
     await chatText().then((t) => console.error(`chat text:\n${t}`)).catch(() => {});
+    await focusedElement().then((f) => console.error(`focus: ${f}`)).catch(() => {});
+    await composerValue().then((v) => console.error(`composer: ${JSON.stringify(v)}`)).catch(() => {});
+    await run("const r = document.querySelector('.terminal-panel .xterm-rows'); return r ? r.innerText : null;")
+      .then((t) => console.error(`terminal text:\n${t}`))
+      .catch(() => {});
   }
   process.exitCode = 1;
 } finally {
