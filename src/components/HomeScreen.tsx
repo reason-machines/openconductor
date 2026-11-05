@@ -14,7 +14,7 @@ interface Props {
   repos: Repo[];
   sidebarVisible: boolean;
   dispatch: Dispatch<Action>;
-  onOpenDialog: (d: DialogKind) => void;
+  onOpenDialog: (d: DialogKind, repoId?: string) => void;
 }
 
 function EntryCard({ icon, label, onClick }: { icon: ReactNode; label: string; onClick: () => void }) {

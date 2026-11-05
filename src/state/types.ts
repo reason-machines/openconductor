@@ -10,6 +10,8 @@ export interface Workspace {
   /** Lines added/removed versus the base branch; filled by the backend later. */
   diff: { added: number; removed: number };
   createdAt: number;
+  /** Worktree path, once the backend created it. */
+  path?: string;
 }
 
 export interface Repo {

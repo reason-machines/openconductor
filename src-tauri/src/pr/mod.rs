@@ -10,14 +10,18 @@
 //! * [`checks`]: collapse check re-runs and summarize passing / pending /
 //!   failing.
 //! * [`info`]: normalized PR info and the workspace status it implies.
+//! * [`merge_eligibility`]: when the merge button may be offered.
 
 pub mod checks;
 pub mod info;
+pub mod merge_eligibility;
 pub mod model;
 
 #[cfg(test)]
 mod checks_tests;
 #[cfg(test)]
 mod info_tests;
+#[cfg(test)]
+mod merge_eligibility_tests;
 #[cfg(test)]
 mod tests;

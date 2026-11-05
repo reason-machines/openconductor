@@ -246,6 +246,29 @@
       return typeof f === "function" ? f(args, { emit, dbs }) : f;
     }
     switch (cmd) {
+      case "rpc_to_sidecar": {
+        // JSON-RPC to the Bun sidecar. Requests (with an id) get a reply on the
+        // rpc_from_sidecar event, payload {line}; result from fixtures.sidecar.
+        let msg;
+        try {
+          msg = JSON.parse(args.line);
+        } catch (e) {
+          return null;
+        }
+        if (msg && msg.id !== undefined && msg.method) {
+          const handler = (fixtures.sidecar || {})[msg.method];
+          let reply;
+          try {
+            const result = typeof handler === "function" ? handler(msg.params, { emit, dbs }) : handler;
+            reply = { jsonrpc: "2.0", id: msg.id, result: result === undefined ? null : result };
+          } catch (e) {
+            reply = { jsonrpc: "2.0", id: msg.id, error: { code: -32000, message: String(e) } };
+          }
+          if (handler === undefined) unhandled["sidecar:" + msg.method] = (unhandled["sidecar:" + msg.method] || 0) + 1;
+          setTimeout(() => emit("rpc_from_sidecar", { line: JSON.stringify(reply) }), 5);
+        }
+        return null;
+      }
       case "plugin:event|listen": {
         const id = nextEventId++;
         listeners.set(id, { event: args.event, handler: args.handler });
@@ -313,6 +336,7 @@
     try {
       const result = await handle(cmd, args || {}, options);
       entry.ok = true;
+      if (Array.isArray(result)) entry.rows = result.length;
       return result;
     } catch (e) {
       entry.error = String(e && e.message ? e.message : e);
@@ -338,7 +362,7 @@
     try {
       realFetch("/__mock/log?scenario=" + encodeURIComponent(scenarioName), {
         method: "POST",
-        body: JSON.stringify({ unhandled, vfs, log: log.map((e) => ({ cmd: e.cmd, args: e.args, error: e.error })) }),
+        body: JSON.stringify({ unhandled, vfs, shell: window.__OC_SHELL_LOG__, log: log.map((e) => ({ cmd: e.cmd, args: e.args, error: e.error, rows: e.rows })) }),
       });
     } catch (e) {}
   }, 1000);

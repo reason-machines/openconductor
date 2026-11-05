@@ -1,4 +1,87 @@
 {
+  "chat--tool-calls-expanded--dark": {
+    "file": "chat--tool-calls-expanded--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "expand_tools"
+    ],
+    "notes": "The '4 tool calls, 2 messages' group expanded: Grep, Read, Edit and Bash rows with intermediate assistant text.",
+    "png_sha256": "95c1b84177755cb3db2965e303ee7f0259c2a1161d627525030a09c6bcb021f6",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_712ed72d44a360150f8f26578e482c9e346263349cce34469a39f571c64f70ec",
+      "scenario_sha256": "ab2271f1d1bb43fb1680710ea857e8a1f1cb2d80b9d3cac015f8ae32328c159f",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "chat--transcript-collapsed-tools--dark": {
+    "file": "chat--transcript-collapsed-tools--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace"
+    ],
+    "notes": "Workspace open: chat transcript with tool calls collapsed, composer, right panel with Changes (2 files) and Run tab. 'Couldn't load PR info' appears because GitHub is unreachable in the harness.",
+    "png_sha256": "38ce9dcde099c30eedd8454927c17c3cb46bc8a2f7d9e6e50a0ebcf0ccd6b9bb",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_c20cb6598e801de6db9e95edad28259736021781be7b4e4a4e1b8fd8ff4b750a",
+      "scenario_sha256": "538d8d09b2e9d7d3b1c31866bc12e4e17e3d6a565315e06b81f8d9eb2f80ac04",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "chat--transcript-collapsed-tools--light": {
+    "file": "chat--transcript-collapsed-tools--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace"
+    ],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "4a45461fe9344bf253e577ff50df3eb5e33f1995f6e1321eb7e716e6960e5694",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_06c2df4ccb977b20afdcd66767662700ed50cd0ccdf426e663739aeccb0ab42f",
+      "scenario_sha256": "4c12b58f70a463d1bdd98b1c5caae73e7cf7935aef697ad025604ef9e0bc0458",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
   "home--empty-signed-in--dark": {
     "file": "home--empty-signed-in--dark.png",
     "route": "/",
@@ -112,6 +195,86 @@
       "rea_version": "rea-agents 6.7.0",
       "evidence_id": "ev_0eae8d69b88224337124e0ef5e5e71721c69a99992ea4df71be94357dd4762c5",
       "scenario_sha256": "89b156047b466a4a9551ad693688656ad70d18053c499612a892b0b5b74b5c76",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "sidebar--repos-collapsed--dark": {
+    "file": "sidebar--repos-collapsed--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [],
+    "notes": "Populated sidebar: three repos with workspace counts, Home in the main area.",
+    "png_sha256": "b989166d3e925686cdace8631929cfa4c020bde4b759a9c7ad1af44f73fd511c",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_4b3012b3d853839a0ff1a82f227f93747ceec86df6d8eb0be31f5f6c2177abdf",
+      "scenario_sha256": "c9c9888e94f26e92c86b8d495595fc380fc9209b2e0e1cef03dd3ce7ff133c65",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "sidebar--repos-expanded--dark": {
+    "file": "sidebar--repos-expanded--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "pause",
+      "expand_tide_api"
+    ],
+    "notes": "Two repos expanded: workspace rows (branch-derived names, unread rows in bold, diff stats on the row with changes).",
+    "png_sha256": "42c832f03baf1ff94ed0488f5704766ce07ee3046e9d08f67947147ca7410be6",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_e159e8c2d24510e7e94f324aa912204a083298dcb689067cb5be44702bd156d9",
+      "scenario_sha256": "c69a1a7b683e62a9a3324c79252486605a8b1315165c46c7426b6df0c617b186",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "sidebar--repos-expanded--light": {
+    "file": "sidebar--repos-expanded--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "pause",
+      "expand_tide_api"
+    ],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "e8a2ac9e3991db16d478cd58ab564bafe1b03f134873d96824a4688ac3bf19e0",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_b3b14cb58ba331ce889a6fee0dfd136ecb42e422911e451c51dc8e736250dfaa",
+      "scenario_sha256": "c119a54fff001e32499687d550f96925fad888979e3316a1a77bc6ec4e3fecd6",
       "browser": "Chromium 155.0.8059.84"
     },
     "page_errors": 0
