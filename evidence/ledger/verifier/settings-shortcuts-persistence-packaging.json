@@ -3,16 +3,16 @@
  "generated_by": "tools/parity_check.py check",
  "target": {
   "ref": "origin/main",
-  "sha": "6050c01c51d9903edec1234c5785b157dafe5676"
+  "sha": "187fc420092c632856b44536a7c7853b34c0e260"
  },
  "result_meaning": "pass = every item that evidences the obligation is matched on the target (static); fail = at least one item is partial, declared or missing. Static presence, not runtime behavior.",
  "areas": {
   "settings": {
    "total": 125,
    "matched": 53,
-   "partial": 13,
-   "missing": 59,
-   "parity_pct": 47.6
+   "partial": 15,
+   "missing": 57,
+   "parity_pct": 48.4
   },
   "shortcuts": {
    "total": 172,
@@ -39,9 +39,9 @@
  "overall": {
   "total": 419,
   "matched": 202,
-  "partial": 128,
-  "missing": 89,
-  "parity_pct": 63.5
+  "partial": 130,
+  "missing": 87,
+  "parity_pct": 63.7
  },
  "evidence": {
   "report": "evidence/parity/parity-report.json",
@@ -67,9 +67,9 @@
    "parity": {
     "total": 80,
     "matched": 29,
-    "partial": 10,
-    "missing": 41,
-    "parity_pct": 42.5
+    "partial": 12,
+    "missing": 39,
+    "parity_pct": 43.8
    }
   },
   {
@@ -93,9 +93,9 @@
    "parity": {
     "total": 13,
     "matched": 0,
-    "partial": 4,
-    "missing": 9,
-    "parity_pct": 15.4
+    "partial": 6,
+    "missing": 7,
+    "parity_pct": 23.1
    }
   },
   {
@@ -507,9 +507,9 @@
    "parity": {
     "total": 14,
     "matched": 0,
-    "partial": 4,
-    "missing": 10,
-    "parity_pct": 14.3
+    "partial": 6,
+    "missing": 8,
+    "parity_pct": 21.4
    },
    "gaps": [
     {
@@ -520,12 +520,12 @@
     {
      "group": "user settings.toml",
      "id": "models.claude_code.personality",
-     "status": "missing"
+     "status": "declared"
     },
     {
      "group": "user settings.toml",
      "id": "models.claude_code.review_effort_level",
-     "status": "missing"
+     "status": "declared"
     },
     {
      "group": "user settings.toml",

@@ -1,7 +1,7 @@
 {
  "ref": "origin/main",
- "sha": "6050c01c51d9903edec1234c5785b157dafe5676",
- "source_files_scanned": 502,
+ "sha": "187fc420092c632856b44536a7c7853b34c0e260",
+ "source_files_scanned": 517,
  "reference": {
   "conductor_version": "0.87.6",
   "keybindings_source": {
@@ -14,24 +14,24 @@
  "overall": {
   "total": 419,
   "matched": 202,
-  "partial": 128,
-  "missing": 89,
-  "parity_pct": 63.5
+  "partial": 130,
+  "missing": 87,
+  "parity_pct": 63.7
  },
  "areas": {
   "settings": {
    "total": 125,
    "matched": 53,
-   "partial": 13,
-   "missing": 59,
-   "parity_pct": 47.6,
+   "partial": 15,
+   "missing": 57,
+   "parity_pct": 48.4,
    "groups": {
     "user settings.toml": {
      "total": 43,
      "matched": 12,
-     "partial": 7,
-     "missing": 24,
-     "parity_pct": 36.0
+     "partial": 9,
+     "missing": 22,
+     "parity_pct": 38.4
     },
     "repo settings.toml": {
      "total": 32,
@@ -275,9 +275,9 @@
     "rebuild": {
      "total": 80,
      "matched": 29,
-     "partial": 10,
-     "missing": 41,
-     "parity_pct": 42.5
+     "partial": 12,
+     "missing": 39,
+     "parity_pct": 43.8
     }
    },
    {
@@ -307,9 +307,9 @@
     "rebuild": {
      "total": 13,
      "matched": 0,
-     "partial": 4,
-     "missing": 9,
-     "parity_pct": 15.4
+     "partial": 6,
+     "missing": 7,
+     "parity_pct": 23.1
     }
    },
    {
@@ -867,9 +867,9 @@
    "parity": {
     "total": 14,
     "matched": 0,
-    "partial": 4,
-    "missing": 10,
-    "parity_pct": 14.3
+    "partial": 6,
+    "missing": 8,
+    "parity_pct": 21.4
    },
    "gaps": [
     {
@@ -880,12 +880,12 @@
     {
      "group": "user settings.toml",
      "id": "models.claude_code.personality",
-     "status": "missing"
+     "status": "declared"
     },
     {
      "group": "user settings.toml",
      "id": "models.claude_code.review_effort_level",
-     "status": "missing"
+     "status": "declared"
     },
     {
      "group": "user settings.toml",
@@ -2412,14 +2412,14 @@
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.claude_code.personality",
-   "status": "missing",
+   "status": "declared",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.claude_code.review_effort_level",
-   "status": "missing",
+   "status": "declared",
    "detail": "string"
   },
   {

@@ -5,16 +5,20 @@
 //! stream to the window as [`wire::EVENT`] with the payloads in
 //! [`wire::event_json`]. The UI flow:
 //!
-//! 1. `reason_open_chat(chatId, cwd, sessionId?)` when a Reason chat is
-//!    shown; pass the Session id saved from its `sessionStarted` event so
-//!    a chat reopened after a restart resumes its Session.
-//! 2. `reason_prompt(chatId, text, turn?)` for the first message and every
-//!    follow-up; it resolves with the turn's end once the turn is over. With
-//!    `turn: { sessionId, turnId }` the chat folder is checkpointed as
-//!    `session-<sessionId>-turn-<turnId>-start|end` before and after the turn
-//!    ([`crate::turn_checkpoint`]) and the result carries `turnChanges`, the
-//!    files the turn changed (absent when a checkpoint was skipped or the
-//!    turn touched more than 200 files).
+//! 1. `reason_open_chat(chatId, cwd, sessionId?, config?)` when a Reason
+//!    chat is shown; pass the Session id saved from its `sessionStarted`
+//!    event so a chat reopened after a restart resumes its Session.
+//!    `config` (`[{ id, value }]`, e.g. `model`, `reasoning_effort`) is set
+//!    on the Session when it is created; one Reason does not offer comes
+//!    back as a `notice` event.
+//! 2. `reason_prompt(chatId, text, attachments?, turn?)` for the first
+//!    message and every follow-up; it resolves with the turn's end once the
+//!    turn is over. `attachments` (`[{ name, text }]`) go to Reason as
+//!    embedded files after the text. With `turn: { sessionId, turnId }` the
+//!    chat folder is checkpointed as `session-<sessionId>-turn-<turnId>-start|end`
+//!    before and after the turn ([`crate::turn_checkpoint`]) and the result
+//!    carries `turnChanges`, the files the turn changed (absent when a
+//!    checkpoint was skipped or the turn touched more than 200 files).
 //! 3. `reason_cancel(chatId)` for Stop.
 
 use std::collections::HashMap;
@@ -26,9 +30,23 @@ use serde_json::Value;
 use tauri::{AppHandle, Emitter, State};
 
 use crate::reason_acp::cli::{find_reason_cli, LaunchConfig};
-use crate::reason_acp::provider::{ProviderEvent, ReasonProvider, Sink};
+use crate::reason_acp::provider::{Attachment, ConfigChoice, ProviderEvent, ReasonProvider, Sink};
 use crate::reason_acp::wire;
 use crate::turn_checkpoint::{around_turn, TurnTarget};
+
+/// JS `{ id, value }`: one Session config option.
+#[derive(Debug, Deserialize)]
+pub struct ConfigArg {
+    pub id: String,
+    pub value: String,
+}
+
+/// JS `{ name, text }`: one attachment sent with a prompt.
+#[derive(Debug, Deserialize)]
+pub struct AttachmentArg {
+    pub name: String,
+    pub text: String,
+}
 
 #[derive(Default)]
 pub struct ReasonChats {
@@ -80,10 +98,17 @@ pub fn reason_open_chat(
     chat_id: String,
     cwd: String,
     session_id: Option<String>,
+    config: Option<Vec<ConfigArg>>,
 ) -> Result<(), String> {
     let provider = state.provider(&app)?;
     let cwd = PathBuf::from(cwd);
     provider.open_chat(&chat_id, &cwd, session_id);
+    let config = config.unwrap_or_default().into_iter();
+    let config = config.map(|c| ConfigChoice {
+        id: c.id,
+        value: c.value,
+    });
+    provider.set_config(&chat_id, config.collect());
     state.cwds.lock().unwrap().insert(chat_id, cwd);
     Ok(())
 }
@@ -105,9 +130,18 @@ pub async fn reason_prompt(
     state: State<'_, ReasonChats>,
     chat_id: String,
     text: String,
+    attachments: Option<Vec<AttachmentArg>>,
     turn: Option<TurnArg>,
 ) -> Result<Value, String> {
     let provider = state.provider(&app)?;
+    let attachments: Vec<Attachment> = attachments
+        .unwrap_or_default()
+        .into_iter()
+        .map(|a| Attachment {
+            name: a.name,
+            text: a.text,
+        })
+        .collect();
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
     let (end, changes) = tauri::async_runtime::spawn_blocking(move || {
         let target = match (&cwd, &turn) {
@@ -118,7 +152,9 @@ pub async fn reason_prompt(
             }),
             _ => None,
         };
-        around_turn(target, || provider.prompt(&chat_id, &text))
+        around_turn(target, || {
+            provider.prompt_with(&chat_id, &text, &attachments)
+        })
     })
     .await
     .map_err(|e| e.to_string())?;
