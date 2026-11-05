@@ -65,6 +65,18 @@ export function readSaved(store: KeyValue): Saved {
   return out;
 }
 
+/** Forget `workspaceId`'s saved tabs (workspace archived or its repository removed). */
+export function removeWorkspace(store: KeyValue, workspaceId: string) {
+  const saved = readSaved(store);
+  if (!(workspaceId in saved)) return;
+  delete saved[workspaceId];
+  try {
+    store.setItem(TABS_STORAGE_KEY, JSON.stringify(saved));
+  } catch {
+    // Unavailable storage: nothing was saved for it either.
+  }
+}
+
 /** Save one workspace's tabs, keeping every other workspace's as stored. */
 export function writeWorkspace(store: KeyValue, workspaceId: string, state: TabsState, cwdOf: (id: string) => string | undefined) {
   const saved = readSaved(store);
@@ -124,7 +136,9 @@ export interface Timers {
  * Saves per terminal, at most once per `delay` and never two at once for the
  * same terminal. `schedule` coalesces bursts of output into one save at most
  * `delay` later; `flush` saves now (exit, clear); `cancel` drops a pending
- * save (tab closed).
+ * save; `drop` cancels and then runs `after` (deleting the saved session of a
+ * closed tab) once a save already running has finished, so that save cannot
+ * write the session back after it was deleted.
  */
 export class PersistThrottle {
   private pending = new Map<string, unknown>();
@@ -155,6 +169,11 @@ export class PersistThrottle {
     return this.run(id);
   }
 
+  drop(id: string, after: () => Promise<unknown>): Promise<void> {
+    this.cancel(id);
+    return this.run(id, after);
+  }
+
   cancel(id: string) {
     const h = this.pending.get(id);
     if (h !== undefined) this.timers.clear(h);
@@ -163,8 +182,11 @@ export class PersistThrottle {
 
   isPending = (id: string) => this.pending.has(id);
 
-  private run(id: string): Promise<void> {
-    const next = (this.chains.get(id) ?? Promise.resolve()).then(() => this.save(id)).catch(() => {});
+  private run(id: string, step: () => Promise<unknown> = () => this.save(id)): Promise<void> {
+    const next = (this.chains.get(id) ?? Promise.resolve())
+      .then(step)
+      .then(() => {})
+      .catch(() => {});
     this.chains.set(id, next);
     void next.then(() => {
       if (this.chains.get(id) === next) this.chains.delete(id);
