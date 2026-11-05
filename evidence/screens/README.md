@@ -52,6 +52,18 @@ Pixel references of Conductor's screens for OpenConductor verifiers. Reference e
 | [onboarding--sign-up-opening-browser--dark.png](onboarding--sign-up-opening-browser--dark.png) | dark | `signed-out` | click_sign_up | After clicking Sign up: the button reads 'Opening browser...' (plugin:opener\|open_url is swallowed by the mock). | `fbe4a4c0b898` |
 | [onboarding--signed-out--dark.png](onboarding--signed-out--dark.png) | dark | `signed-out` | load | Empty DB and empty keychain: signed-out first screen. | `e7d4963fcb50` |
 | [onboarding--signed-out--light.png](onboarding--signed-out--light.png) | light | `signed-out` | load | Same as dark, light theme. | `121afaa0bebc` |
+| [settings--account--dark.png](settings--account--dark.png) | dark | `populated` | wait_sidebar → open_settings → pause → open_account | Settings > Account. | `a4767853051d` |
+| [settings--advanced--dark.png](settings--advanced--dark.png) | dark | `populated` | wait_sidebar → open_settings → pause → open_advanced | Settings > Advanced. | `b235164ce007` |
+| [settings--agents--dark.png](settings--agents--dark.png) | dark | `populated` | wait_sidebar → open_settings → pause → open_agents | Settings > Agents. | `c7ef9e91c0ea` |
+| [settings--appearance--dark.png](settings--appearance--dark.png) | dark | `populated` | wait_sidebar → open_settings → pause → open_appearance | Settings > Appearance. | `bcff78cc9faf` |
+| [settings--appearance--light.png](settings--appearance--light.png) | light | `populated` | wait_sidebar → open_settings → pause → open_appearance | Settings > Appearance, light theme. | `71a1335f746a` |
+| [settings--default-models--dark.png](settings--default-models--dark.png) | dark | `populated` | wait_sidebar → open_settings → pause → open_default_models | Settings > Default models. | `757c677b462d` |
+| [settings--environment--dark.png](settings--environment--dark.png) | dark | `populated` | wait_sidebar → open_settings → pause → open_environment | Settings > Environment. | `1c9d4d200be0` |
+| [settings--experimental--dark.png](settings--experimental--dark.png) | dark | `populated` | wait_sidebar → open_settings → pause → open_experimental | Settings > Experimental. | `0c5049d1fcd7` |
+| [settings--general--dark.png](settings--general--dark.png) | dark | `populated` | wait_sidebar → open_settings → pause | Settings > General. | `36d92bb913d2` |
+| [settings--general--light.png](settings--general--light.png) | light | `populated` | wait_sidebar → open_settings → pause | Settings > General, light theme. | `2e9543073bd9` |
+| [settings--git--dark.png](settings--git--dark.png) | dark | `populated` | wait_sidebar → open_settings → pause → open_git | Settings > Git. | `ebcb00933d01` |
+| [settings--search--dark.png](settings--search--dark.png) | dark | `populated` | wait_sidebar → open_settings → pause → search | Settings search with the query 'branch'. | `ed79d6de4604` |
 | [sidebar--repos-collapsed--dark.png](sidebar--repos-collapsed--dark.png) | dark | `populated` | load | Populated sidebar: three repos with workspace counts, Home in the main area. | `b989166d3e92` |
 | [sidebar--repos-expanded--dark.png](sidebar--repos-expanded--dark.png) | dark | `populated` | expand_tide_web → pause → expand_tide_api | Two repos expanded: workspace rows (branch-derived names, unread rows in bold, diff stats on the row with changes). | `42c832f03baf` |
 | [sidebar--repos-expanded--light.png](sidebar--repos-expanded--light.png) | light | `populated` | expand_tide_web → pause → expand_tide_api | Same as dark, light theme. | `e8a2ac9e3991` |

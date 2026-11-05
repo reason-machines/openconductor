@@ -7,6 +7,8 @@ import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
 import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
+import { loadBranchPrefix } from "./workspace/api";
+import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
 import { QuickOpenDialog, QUICK_OPEN_DIALOG_ID } from "./components/QuickOpenDialog";
 import { resolveCommand } from "./keybindings/resolve";
@@ -76,6 +78,13 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, [quickOpen, dialog, canQuickOpen]);
 
+  const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
+  // Re-read each time the dialog opens so a settings change applies to the next create.
+  useEffect(() => {
+    if (dialog !== "create") return;
+    loadBranchPrefix().then((info) => setPrefix(prefixSettingsFromInfo(info))).catch(() => {});
+  }, [dialog]);
+
   useEffect(() => {
     appInfo().then(setInfo).catch(() => setInfo(null));
     const onKey = (e: KeyboardEvent) => {
@@ -105,8 +114,8 @@ export default function App() {
         <CreateWorkspaceDialog
           repos={state.repos}
           initialRepoId={createRepoId}
-          prefixSettings={{}}
-          githubUsername={null}
+          prefixSettings={prefix.settings}
+          githubUsername={prefix.githubUsername}
           onClose={() => setDialog(null)}
           onAddRepository={() => {
             setDialog(null);

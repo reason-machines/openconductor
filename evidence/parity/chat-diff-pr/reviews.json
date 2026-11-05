@@ -1,0 +1,229 @@
+{
+ "reviewed_at": "884f1f7",
+ "obligation_issues": {
+  "chat": "https://github.com/reason-machines/openconductor/issues/139",
+  "diff": "https://github.com/reason-machines/openconductor/issues/140",
+  "pr": "https://github.com/reason-machines/openconductor/issues/141"
+ },
+ "weights": {
+  "implemented": 1.0,
+  "partial": 0.5,
+  "unwired": 0.25,
+  "backend-only": 0.25,
+  "missing": 0.0
+ },
+ "levels": {
+  "implemented": "Works in the running app and matches the reference evidence.",
+  "partial": "Reachable in the running app but incomplete against the reference.",
+  "unwired": "UI and/or backend exist but the running app never reaches them with real data.",
+  "backend-only": "Logic exists and is tested, but no command or UI in the app reaches it (includes modules not declared in src-tauri/src/lib.rs).",
+  "missing": "Absent, or schema columns only."
+ },
+ "features": {
+  "chat.session-stream": {
+   "verdict": "backend-only",
+   "why": "Agent runner and stream parser exist (src-tauri/src/agent/claude_cli.rs, claude_stream.rs), but no Tauri command starts a session and src-tauri/src/chat/ is not declared in lib.rs, so it is not compiled into the app. The transcript only shows a local placeholder reply (screen ours-chat--transcript).",
+   "obligation": "Register a command that starts a Claude Code session in the workspace worktree, declare the chat module in lib.rs, and stream its events into the Transcript reducer."
+  },
+  "chat.markdown": {
+   "verdict": "missing",
+   "why": "Transcript renders message text pre-wrapped (Transcript.tsx header comment). The reference screen renders inline code chips and bullet lists.",
+   "obligation": "Render assistant text as markdown with inline code, lists and highlighted code blocks."
+  },
+  "chat.tool-calls": {
+   "verdict": "unwired",
+   "why": "Transcript.tsx has collapsible tool rows and a keep-expanded prop, but no agent events reach it, so the running app never shows a tool row. The reference shows a '4 tool calls, 2 messages' group with per-tool rows.",
+   "obligation": "Feed agent tool_use/tool_result events into the transcript and group consecutive tool calls under one collapsible header as in chat--tool-calls-expanded."
+  },
+  "chat.composer-send": {
+   "verdict": "partial",
+   "why": "The composer is in the app and Enter sends, but only into a local placeholder transcript. There is no send-key setting. Against the reference, the model chip, attach button, '⌘L to focus' hint and 'Next unread' are missing.",
+   "obligation": "Send composer messages to the agent session; add the send-key setting and the reference composer controls (model chip, attach, focus hint)."
+  },
+  "chat.queue": {
+   "verdict": "missing",
+   "why": "Schema only (queue_order, queue_paused_at in crates/openconductor-db). The app does not use that crate, and there is no queue logic or UI.",
+   "obligation": "Queue messages while a turn runs, with edit, delete, reorder, steer, pause and resume."
+  },
+  "chat.cancel": {
+   "verdict": "backend-only",
+   "why": "agent/claude_cli.rs runner kills the process on drop; no command or UI stops a turn or marks cancelled messages.",
+   "obligation": "Add a stop control and command that interrupts the running turn and marks its messages cancelled."
+  },
+  "chat.attachments": {
+   "verdict": "missing",
+   "why": "Schema only (attachments.is_draft). No materialize command and no composer attachment UI.",
+   "obligation": "Draft attachments in the composer (files, images, terminal output) that materialize on send."
+  },
+  "chat.model-picker": {
+   "verdict": "missing",
+   "why": "Only a favorite_models table and settings keys; parity_check lists default_model as declared but not read. No picker UI; the reference composer has an 'Opus 5 High' chip and picker (menu--model-picker).",
+   "obligation": "Add the composer model picker with favorites and per-session effort level, persisted per session."
+  },
+  "chat.plan-mode": {
+   "verdict": "backend-only",
+   "why": "PermissionMode::Plan exists in agent/claude_cli.rs launch args; nothing in the app sets it or shows a plan approval.",
+   "obligation": "Expose plan mode in the composer and show the plan approval step."
+  },
+  "chat.context-usage": {
+   "verdict": "missing",
+   "why": "Nothing beyond schema columns.",
+   "obligation": "Show context window usage and compaction state per session."
+  },
+  "chat.message-actions": {
+   "verdict": "unwired",
+   "why": "Transcript.tsx has copy and retry buttons for agent messages, which never arrive in the running app. There is no edit-and-resend or fork. The reference footer also shows duration, time and changed-file chips.",
+   "obligation": "Wire the existing copy and retry actions to real agent turns; add edit-and-resend, fork, and the turn footer (duration, time, changed files)."
+  },
+  "chat.tabs": {
+   "verdict": "missing",
+   "why": "Schema only. The reference shows session tabs with a '+' above the transcript; ours has one chat panel.",
+   "obligation": "Multiple chat sessions per workspace as tabs with titles, '+' and unread counts."
+  },
+  "chat.revert-checkpoint": {
+   "verdict": "backend-only",
+   "why": "src-tauri/src/checkpoint/ has save and restore with tests, but it is not declared in lib.rs, and no command or UI exists.",
+   "obligation": "Compile the checkpoint module into the app, take a checkpoint per turn, and add a revert-to-turn action with confirmation."
+  },
+  "chat.speech": {
+   "verdict": "missing",
+   "why": "Nothing.",
+   "obligation": "Dictation into the composer."
+  },
+  "chat.find": {
+   "verdict": "missing",
+   "why": "Nothing.",
+   "obligation": "Find in the chat transcript."
+  },
+  "diff.changes-list": {
+   "verdict": "unwired",
+   "why": "The diff_workspace command is registered and DiffViewer lists files, but WorkspaceView.tsx:119 passes worktree={null}, so inside Tauri the panel can only show \"This workspace has no worktree on disk yet\". Files show only in browser sample mode. The reference puts the list in the right panel under a 'N files changed' header, with per-file revert.",
+   "obligation": "Pass the workspace worktree path to DiffViewer, and move the changed-files list to the right panel ('N files changed', per-file stats and actions) as in diff--file-unified."
+  },
+  "diff.file-render": {
+   "verdict": "unwired",
+   "why": "FileDiffView renders hunks, but with sample data only (see changes-list). Against the reference: no syntax highlighting, no collapsed 'N unmodified lines' rows, lines wrap in a ~300 px column, and the diff is not opened as a main-area tab.",
+   "obligation": "Open a file diff as a tab in the main area with syntax highlighting, collapsed unmodified-line rows and no line wrap; add the 'Entire file' view (diff--entire-file)."
+  },
+  "diff.split-unified": {
+   "verdict": "unwired",
+   "why": "The toggle works in browser sample mode (screen ours-diff--file-split), but there is no data in the app. The reference uses icon toggles for unified, split and entire file in the file toolbar.",
+   "obligation": "Keep the toggle; add the entire-file mode and icon toolbar once the viewer is wired to real data."
+  },
+  "diff.virtualized": {
+   "verdict": "missing",
+   "why": "The parity tag on FileDiffView is wrong: it renders every row of every file. Collapsing viewed files is not virtualization.",
+   "obligation": "Virtualize the file list and long diffs, and remove the incorrect parity:diff.virtualized tag."
+  },
+  "diff.whitespace": {
+   "verdict": "unwired",
+   "why": "Backend passes -w and the UI has the toggle; unreachable in the app until the worktree is passed.",
+   "obligation": "Wire to real data (see changes-list)."
+  },
+  "diff.viewed": {
+   "verdict": "unwired",
+   "why": "Viewed checkbox and localStorage fingerprint persistence exist; unreachable in the app until the worktree is passed. The reference also has 'Next unread'.",
+   "obligation": "Wire to real data; add next-unread navigation."
+  },
+  "diff.navigation": {
+   "verdict": "unwired",
+   "why": "DiffViewer hard-codes ] and [ for next and previous file instead of using the keybinding registry entries. Comment navigation (stepComment in nav.ts) is not used by any component.",
+   "obligation": "Bind file and comment navigation to the registry's diff keybindings and wire stepComment."
+  },
+  "diff.turn-changes": {
+   "verdict": "missing",
+   "why": "Nothing.",
+   "obligation": "Show the changes made in a selected agent turn."
+  },
+  "diff.discard": {
+   "verdict": "missing",
+   "why": "Nothing. The reference has per-file revert icons in the changes list and file toolbar.",
+   "obligation": "Discard one file or all changes after confirmation."
+  },
+  "diff.comments-inline": {
+   "verdict": "backend-only",
+   "why": "comments.ts has the thread model and edit/delete. DiffViewer accepts onLineClick and annotations, but WorkspaceView passes neither, and there is no persistence to diff_comments and no command.",
+   "obligation": "Render the comment composer and threads in the diff, and persist them through a command into diff_comments."
+  },
+  "diff.comments-to-chat": {
+   "verdict": "backend-only",
+   "why": "formatForAgent and pendingForAgent exist in comments.ts; no UI action or chat attachment path.",
+   "obligation": "Add 'add comments to chat' that attaches pending comments to the composer and marks them sent."
+  },
+  "diff.comments-github": {
+   "verdict": "missing",
+   "why": "Only local resolved/outdated helpers; nothing fetches PR review comments.",
+   "obligation": "Sync PR review comments from GitHub with resolved, outdated and suggestion state."
+  },
+  "diff.edit-in-viewer": {
+   "verdict": "missing",
+   "why": "Nothing.",
+   "obligation": "Edit a file from the diff viewer."
+  },
+  "diff.appearance": {
+   "verdict": "backend-only",
+   "why": "diff.css defines --oc-diff-* variables and a protanopia palette, but no setting sets the font, ligatures, theme or palette (no data-palette in any component).",
+   "obligation": "Add diff font, ligature, syntax theme and colour-vision settings that set these variables."
+  },
+  "pr.create": {
+   "verdict": "backend-only",
+   "why": "create_pr_prompt in src-tauri/src/pr/prompt.rs is tested, but the pr module is not declared in lib.rs; no command or UI.",
+   "obligation": "Compile the pr module into the app and add the Create PR action in the workspace header that runs the create-PR prompt and persists title and description."
+  },
+  "pr.custom-prompts": {
+   "verdict": "missing",
+   "why": "Columns only; settings prompts.* keys are missing in the settings parity report.",
+   "obligation": "Per-repository custom prompts UI and settings keys."
+  },
+  "pr.status": {
+   "verdict": "backend-only",
+   "why": "header_state and derived_status (pr/header.rs, info.rs) are tested but not compiled into the app. The reference header shows the PR info area (offline: 'Couldn't load PR info').",
+   "obligation": "Add a PR lookup command and the right-panel PR header with its states."
+  },
+  "pr.checks": {
+   "verdict": "backend-only",
+   "why": "summarize and dedupe_latest (pr/checks.rs) are tested but not compiled in. The reference has a Checks tab in the right panel.",
+   "obligation": "Add the Checks tab: list, logs and re-run failed, using checks::summarize."
+  },
+  "pr.merge": {
+   "verdict": "backend-only",
+   "why": "gh.rs has merge, enable/disable auto-merge and allowed_merge_method, and merge_eligibility.rs has can_merge. None is compiled in and there is no UI. The code-layer probe missed this code.",
+   "obligation": "Expose merge, merge-method choice and automerge as commands and header actions gated on can_merge."
+  },
+  "pr.archive-on-merge": {
+   "verdict": "backend-only",
+   "why": "should_archive_after_merge (pr/prompt.rs) is not compiled in; git.archive_on_merge is missing from settings.",
+   "obligation": "Add the archive-on-merge setting and act on it when the PR merges."
+  },
+  "pr.commit-push": {
+   "verdict": "missing",
+   "why": "Nothing.",
+   "obligation": "Commit and push all workspace changes."
+  },
+  "pr.review-actions": {
+   "verdict": "backend-only",
+   "why": "gh.rs has approve, mark_ready, edit and retarget; not compiled in, no UI. The code-layer probe missed this code.",
+   "obligation": "Expose approve, mark ready, edit title and change base as commands and header actions."
+  },
+  "pr.ai-review": {
+   "verdict": "backend-only",
+   "why": "buildReviewPrompt (src/features/diff/review.ts) and a review_model setting exist; no Review action. The reference has a 'Review' button in the right panel.",
+   "obligation": "Add the Review action that starts an agent review with the review model and prompt."
+  },
+  "pr.resolve-conflicts": {
+   "verdict": "missing",
+   "why": "Nothing.",
+   "obligation": "Resolve merge conflicts with the agent; block actions during a rebase or merge."
+  },
+  "pr.workspace-from-pr": {
+   "verdict": "missing",
+   "why": "create_workspace can check out an existing branch (create-workspace area), but there is no PR search and no create-from-PR.",
+   "obligation": "Create a workspace from a PR with PR search."
+  },
+  "pr.stack": {
+   "verdict": "missing",
+   "why": "Nothing.",
+   "obligation": "View and merge a stack of dependent PRs."
+  }
+ }
+}
