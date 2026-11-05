@@ -29,8 +29,8 @@ export type Action =
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
-  /** The workspace's pull request title changed on GitHub (`workspaces.pr_title`). */
-  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null }
+  /** The workspace's pull request title or body changed on GitHub (`workspaces.pr_title`, `pr_description`). */
+  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription: string | null }
   | { type: "toggleSidebar" }
   /** Sidebar repo menu: Hide / Unhide repository (`repos.hidden`). */
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
@@ -113,7 +113,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos };
     }
     case "setWorkspacePr": {
-      const set = (w: Workspace): Workspace => (w.id === action.workspaceId && (w.prTitle ?? null) !== action.prTitle ? { ...w, prTitle: action.prTitle } : w);
+      const changed = (w: Workspace) => (w.prTitle ?? null) !== action.prTitle || (w.prDescription ?? null) !== action.prDescription;
+      const set = (w: Workspace): Workspace => (w.id === action.workspaceId && changed(w) ? { ...w, prTitle: action.prTitle, prDescription: action.prDescription } : w);
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
     }

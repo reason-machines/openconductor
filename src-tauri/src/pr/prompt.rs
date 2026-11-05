@@ -99,6 +99,25 @@ pub fn create_pr_prompt(r: &CreatePrRequest) -> String {
     out
 }
 
+/// Where the repository's PR template may live, relative to the workspace
+/// checkout, in the order the reference tries them (index @ ~3,210,900,
+/// `hNt`): the first file that exists is the template.
+pub const PR_TEMPLATE_PATHS: [&str; 3] = [
+    "pull_request_template.md",
+    ".github/pull_request_template.md",
+    "docs/pull_request_template.md",
+];
+
+/// The repository's PR template, read from the workspace checkout; `None`
+/// when no template file exists or the first one found can't be read.
+pub fn find_pr_template(workspace: &std::path::Path) -> Option<String> {
+    PR_TEMPLATE_PATHS
+        .iter()
+        .map(|p| workspace.join(p))
+        .find(|p| p.is_file())
+        .and_then(|p| std::fs::read_to_string(p).ok())
+}
+
 /// After a successful merge, archive the workspace only when the
 /// repository's `archive_on_merge` setting is exactly `"true"`, the
 /// workspace runs locally, and it is not already archived.

@@ -17,7 +17,11 @@ export async function gitState(workspacePath: string, targetBranch: string): Pro
 }
 
 export async function headerState(inputs: HeaderInputs): Promise<HeaderState | null> {
-  if (!isTauri()) return demo().header;
+  if (!isTauri()) {
+    const h = demo().header;
+    // Like the Rust rule, the changes-requested state carries the caller's pending-comment flag.
+    return h?.action.type === "changes_requested" ? { ...h, action: { ...h.action, hasPendingComments: inputs.hasPendingComments } } : h;
+  }
   return invoke<HeaderState | null>("pr_header_state", { inputs });
 }
 
@@ -41,13 +45,27 @@ export async function resolveConflictsPrompt(workspacePath: string, targetBranch
   return invoke<string>("pr_resolve_conflicts_prompt", { workspacePath, targetBranch, custom });
 }
 
-/** The repository's `custom_prompt_resolve_merge_conflicts` (conductor.db); null when unset or not in the database yet. */
-export async function repoResolveConflictsPrompt(repoId: string): Promise<string | null> {
+/** Conductor's prompt types for a repository's custom prompts (`db_repo_prompt`). */
+export type RepoPromptType = "createPR" | "fixErrors" | "resolveMergeConflicts";
+
+/** One of the repository's custom prompts from conductor.db; null when unset or not in the database yet. */
+export async function repoPrompt(repoId: string, prompt: RepoPromptType): Promise<string | null> {
   if (!isTauri()) return null;
   try {
-    return await invoke<string | null>("db_repo_prompt", { repoId, prompt: "resolveMergeConflicts" });
+    return await invoke<string | null>("db_repo_prompt", { repoId, prompt });
   } catch (e) {
-    console.warn("pr: no repository resolve-conflicts prompt", e);
+    console.warn(`pr: no repository ${prompt} prompt`, e);
+    return null;
+  }
+}
+
+/** The repository's PR template from the workspace checkout, for Create PR; null when it has none. */
+export async function prTemplate(workspacePath: string): Promise<string | null> {
+  if (!isTauri()) return null;
+  try {
+    return await invoke<string | null>("pr_template", { workspacePath });
+  } catch (e) {
+    console.warn("pr: couldn't read the PR template", e);
     return null;
   }
 }

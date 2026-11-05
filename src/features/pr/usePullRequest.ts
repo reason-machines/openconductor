@@ -7,7 +7,7 @@ import { gitState, headerState, lookupPr } from "./api.ts";
 import { getSettings } from "../../settings/api.ts";
 import { SETTINGS_CHANGED } from "../../settings/appearance.ts";
 import { DEFAULT_PR_SETTINGS, prSettings, type PrSettings } from "./prSettings.ts";
-import type { GitState, HeaderState, PrInfo, PrLookup, WorkspacePrStatus } from "./types.ts";
+import type { GitState, HeaderInputs, HeaderState, PrInfo, PrLookup, WorkspacePrStatus } from "./types.ts";
 
 /** How often an open workspace re-reads its PR (GitHub rate limits apply). */
 export const POLL_MS = 30_000;
@@ -18,6 +18,8 @@ export interface PullRequestArgs {
   branch: string;
   targetBranch: string;
   agentWorking: boolean;
+  /** The workspace's diff has unsent comments (changes requested then offers "Add all comments to chat"). */
+  hasPendingComments?: boolean;
   /** Called with each lookup and the one before it (null the first time). */
   onLookup?: (next: PrLookup, previous: PrLookup | null) => void;
   /** Called with each lookup's derived workspace status and the PR it came from (null without one). */
@@ -34,7 +36,7 @@ export interface PullRequest {
   refresh: () => Promise<void>;
 }
 
-export function usePullRequest({ worktree, branch, targetBranch, agentWorking, onLookup, onDerivedStatus }: PullRequestArgs): PullRequest {
+export function usePullRequest({ worktree, branch, targetBranch, agentWorking, hasPendingComments = false, onLookup, onDerivedStatus }: PullRequestArgs): PullRequest {
   const [lookup, setLookup] = useState<PrLookup | null>(null);
   const [git, setGit] = useState<GitState | null>(null);
   const [header, setHeader] = useState<HeaderState | null>(null);
@@ -46,6 +48,10 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
   onDerivedRef.current = onDerivedStatus;
   const agentRef = useRef(agentWorking);
   agentRef.current = agentWorking;
+  const pendingRef = useRef(hasPendingComments);
+  pendingRef.current = hasPendingComments;
+  /** The last header inputs, so a comment change re-derives the header without another lookup. */
+  const inputsRef = useRef<HeaderInputs | null>(null);
   const generation = useRef(0);
   const settings = usePrSettings();
   const optionalChecksBlock = settings.optionalChecksBlock;
@@ -65,7 +71,7 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
       const previous = last.current;
       const next = result.lookup ?? previous;
       last.current = next;
-      const h = await headerState({
+      const inputs: HeaderInputs = {
         pr: next,
         canCreatePr: g.canCreatePr,
         hasRemote: g.hasRemote,
@@ -74,12 +80,14 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
         hasUncommitted: g.hasUncommitted,
         agentWorking: agentRef.current,
         upstream: g.upstream,
-        hasPendingComments: false,
+        hasPendingComments: pendingRef.current,
         optionalChecksBlock,
-      });
+      };
+      const h = await headerState(inputs);
       if (gen !== generation.current) return;
       setGit(g);
       setLookup(next);
+      inputsRef.current = inputs;
       setHeader(h);
       setError(null);
       if (result.lookup) onLookupRef.current?.(result.lookup, previous);
@@ -93,6 +101,7 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
   useEffect(() => {
     generation.current++;
     last.current = null;
+    inputsRef.current = null;
     setLookup(null);
     setGit(null);
     setHeader(null);
@@ -106,6 +115,19 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
   useEffect(() => {
     void refresh();
   }, [agentWorking, refresh]);
+
+  // Sending or adding a diff comment changes only the header, so re-derive it from the last inputs.
+  useEffect(() => {
+    const inputs = inputsRef.current;
+    if (!inputs || inputs.hasPendingComments === hasPendingComments) return;
+    const next = { ...inputs, hasPendingComments };
+    inputsRef.current = next;
+    const gen = generation.current;
+    headerState(next).then(
+      (h) => gen === generation.current && inputsRef.current === next && setHeader(h),
+      (e: unknown) => gen === generation.current && setError(String(e)),
+    );
+  }, [hasPendingComments]);
 
   const pr = lookup?.kind === "found" ? lookup.info : null;
   return { lookup, pr, git, header, settings, error, refresh };

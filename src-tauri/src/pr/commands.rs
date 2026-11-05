@@ -15,8 +15,8 @@ use super::git_state::{read_git_state, GitState};
 use super::header::{header_state, HeaderInputs, HeaderState};
 use super::list::{OpenIssue, OpenPr};
 use super::prompt::{
-    commit_and_push_prompt, create_pr_prompt, pull_rebase_enabled, resolve_merge_conflicts_prompt,
-    ResolveConflictsRequest,
+    commit_and_push_prompt, create_pr_prompt, find_pr_template, pull_rebase_enabled,
+    resolve_merge_conflicts_prompt, ResolveConflictsRequest,
 };
 
 fn merge_methods() -> &'static MergeMethodCache {
@@ -73,6 +73,12 @@ pub fn pr_header_state(inputs: HeaderInputs) -> Option<HeaderState> {
 #[tauri::command]
 pub fn pr_create_prompt(request: CreatePrPrompt) -> String {
     create_pr_prompt(&request.as_request())
+}
+
+/// The repository's PR template from the workspace checkout, for Create PR.
+#[tauri::command]
+pub async fn pr_template(workspace_path: String) -> Result<Option<String>, String> {
+    blocking(move || Ok(find_pr_template(std::path::Path::new(&workspace_path)))).await
 }
 
 /// The message behind "Commit and push" (header and `git.commitAndPush`).

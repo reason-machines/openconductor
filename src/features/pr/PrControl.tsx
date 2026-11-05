@@ -13,10 +13,9 @@ import "./pr.css";
 interface Props {
   pullRequest: PullRequest;
   actions: PrActions;
-  worktree: string | null;
 }
 
-export function PrControl({ pullRequest, actions, worktree }: Props) {
+export function PrControl({ pullRequest, actions }: Props) {
   const { header, pr } = pullRequest;
   const { busy } = actions;
   const [menu, setMenu] = useState(false);
@@ -30,7 +29,8 @@ export function PrControl({ pullRequest, actions, worktree }: Props) {
     return () => document.removeEventListener("mousedown", close);
   }, [menu]);
 
-  if (!control || !worktree) return null;
+  // Without a worktree the desktop app has no header state; the browser preview shows its demo PR.
+  if (!control) return null;
 
   const tone = `pr-control tone-${control.tone}`;
   const prLink = pr && (
@@ -127,6 +127,15 @@ export function PrControl({ pullRequest, actions, worktree }: Props) {
         </span>
       );
     }
+    case "add_comments_to_chat":
+      return (
+        <span className={tone}>
+          {prLink}
+          <button className="btn btn-small" title={control.title} disabled={busy !== null} onClick={actions.addCommentsToChat}>
+            {control.label}
+          </button>
+        </span>
+      );
     case "status":
       return (
         <button className={`btn btn-small ${tone}`} title={pr ? `${control.title}. Open PR #${pr.number} on GitHub` : control.title} disabled={!pr} onClick={actions.openOnGitHub}>

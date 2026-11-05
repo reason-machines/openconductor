@@ -210,6 +210,10 @@ pub struct WorkspaceRow {
     pub workspace_path: Option<String>,
     pub pinned_at: Option<String>,
     pub unread: bool,
+    /// The PR's title and body as last stored (`pr_title`, `pr_description`):
+    /// the sidebar label and Create PR's title / description.
+    pub pr_title: Option<String>,
+    pub pr_description: Option<String>,
     /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
     pub number: Option<i64>,
     pub created_at: String,
@@ -251,6 +255,8 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 workspace_path: w.workspace_path,
                 pinned_at: w.pinned_at,
                 unread: w.unread,
+                pr_title: w.pr_title,
+                pr_description: w.pr_description,
                 number: w.number,
                 created_at: w.created_at,
                 repository_id: w.repository_id,

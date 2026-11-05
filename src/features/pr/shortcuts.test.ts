@@ -44,3 +44,15 @@ test("git.commitAndPush acts only while the header offers Commit and push", () =
   assert.equal(commitShortcutApplies({ tone: "no_pr", action: { type: "create_pr" } }, false), false);
   assert.equal(commitShortcutApplies(null, false), false);
 });
+
+test("canMerge agrees with the Rust can_merge on every shared case", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const table = JSON.parse(await readFile(new URL("../../../src-tauri/src/pr/fixtures/can_merge_cases.json", import.meta.url), "utf8")) as {
+    base: PrInfo;
+    cases: { name: string; patch: Partial<PrInfo>; optionalChecksBlock: boolean; canMerge: boolean }[];
+  };
+  assert.ok(table.cases.length >= 15, "the shared table lost cases");
+  for (const c of table.cases) {
+    assert.equal(canMerge({ ...table.base, ...c.patch }, c.optionalChecksBlock), c.canMerge, c.name);
+  }
+});

@@ -77,3 +77,11 @@ test("merge conflicts offer Resolve against the PR's base branch", () => {
   assert.match(c!.title, /#42 has merge conflicts with main/);
   assert.equal(prControl({ tone: "out_of_sync", action: { type: "merge_conflicts" } }, null)?.intent, "status");
 });
+
+test("changes requested offers Add all comments to chat only while the diff has unsent comments", () => {
+  const withPending = at({ type: "changes_requested", hasPendingComments: true });
+  assert.deepEqual([withPending?.intent, withPending?.label], ["add_comments_to_chat", "Add all comments to chat"]);
+  assert.match(withPending!.title, /PR #42/);
+  const without = at({ type: "changes_requested", hasPendingComments: false });
+  assert.deepEqual([without?.intent, without?.label], ["status", "Changes requested"]);
+});

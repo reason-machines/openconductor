@@ -19,6 +19,8 @@ export type Intent =
   /** Checks are pending: let GitHub merge once they pass (gh pr merge --auto), or stop that. */
   | "enable_automerge"
   | "disable_automerge"
+  /** Changes requested and the diff has unsent comments: put them all into the chat. */
+  | "add_comments_to_chat"
   /** Plain status; clicking opens the PR on GitHub when there is one. */
   | "status";
 
@@ -72,7 +74,10 @@ export function prControl(state: HeaderState | null, pr: PrInfo | null, opts: Co
         ? { intent: "resolve_conflicts", label: "Resolve", title: `PR ${num} has merge conflicts with ${pr.baseRefName}. Ask the agent to resolve them`, tone }
         : status("Merge conflicts", "The PR conflicts with its base branch");
     case "changes_requested":
-      return status("Changes requested", a.hasPendingComments ? "A reviewer requested changes; you have unsent review comments" : "A reviewer requested changes");
+      // As in the reference: with unsent diff comments the header's only action is "Add all comments to chat".
+      return a.hasPendingComments
+        ? { intent: "add_comments_to_chat", label: "Add all comments to chat", title: `A reviewer requested changes on ${pr ? `PR ${num}` : "the PR"}. Put your unsent diff comments into the chat`, tone }
+        : status("Changes requested", "A reviewer requested changes");
     case "draft_pr":
       return pr
         ? { intent: "ready", label: "Ready for review", title: `Take draft PR ${num} out of draft`, tone }

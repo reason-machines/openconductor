@@ -30,6 +30,9 @@ export interface DbWorkspaceRow {
   workspacePath: string | null;
   pinnedAt: string | null;
   unread: boolean;
+  /** The PR's title and body as last stored (`pr_title`, `pr_description`). */
+  prTitle: string | null;
+  prDescription: string | null;
   /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
   number: number | null;
   createdAt: string;
@@ -80,6 +83,8 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             unread: w.unread || undefined,
             manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
             derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
+            prTitle: w.prTitle ?? null,
+            prDescription: w.prDescription ?? null,
             number: w.number ?? null,
           }),
         ),

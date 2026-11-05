@@ -8,7 +8,7 @@ const repo = (id: string, extra: Partial<DbRepoRow> = {}): DbRepoRow => ({
 });
 const ws = (repositoryId: string, dir: string, state = "ready", extra: Partial<DbWorkspaceRow> = {}): DbWorkspaceRow => ({
   id: `${repositoryId}/${dir}`, repositoryId, directoryName: dir, workspaceName: null, branch: dir, placeholderBranchName: null,
-  state, derivedStatus: null, manualStatus: null, workspacePath: `/data/${dir}`, pinnedAt: null, unread: false, number: null,
+  state, derivedStatus: null, manualStatus: null, workspacePath: `/data/${dir}`, pinnedAt: null, unread: false, prTitle: null, prDescription: null, number: null,
   createdAt: "2026-11-05 12:00:00", ...extra,
 });
 

@@ -359,6 +359,7 @@ pub fn run() {
             pr::commands::pr_git_state,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
+            pr::commands::pr_template,
             pr::commands::pr_commit_and_push_prompt,
             pr::commands::pr_resolve_conflicts_prompt,
             pr::commands::pr_merge,

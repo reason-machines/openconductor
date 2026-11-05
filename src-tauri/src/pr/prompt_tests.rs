@@ -1,6 +1,7 @@
 use super::prompt::{
-    commit_and_push_prompt, create_pr_prompt, pull_rebase_enabled, resolve_merge_conflicts_prompt,
-    should_archive_after_merge, CreatePrRequest, ResolveConflictsRequest,
+    commit_and_push_prompt, create_pr_prompt, find_pr_template, pull_rebase_enabled,
+    resolve_merge_conflicts_prompt, should_archive_after_merge, CreatePrRequest,
+    ResolveConflictsRequest,
 };
 
 fn base() -> CreatePrRequest<'static> {
@@ -168,4 +169,34 @@ fn resolve_conflicts_appends_repository_instructions_last() {
         .expect("custom section");
     assert!(steps.contains("Merge the remote `main`"));
     assert!(custom.ends_with("Prefer our side for lockfiles."));
+}
+
+#[test]
+fn pr_template_is_the_first_file_found_in_reference_order() {
+    let dir = std::env::temp_dir().join(format!("pr-template-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(dir.join(".github")).unwrap();
+    std::fs::create_dir_all(dir.join("docs")).unwrap();
+    assert_eq!(find_pr_template(&dir), None, "no template file");
+
+    std::fs::write(dir.join("docs/pull_request_template.md"), "docs").unwrap();
+    assert_eq!(find_pr_template(&dir).as_deref(), Some("docs"));
+    std::fs::write(dir.join(".github/pull_request_template.md"), "github").unwrap();
+    assert_eq!(
+        find_pr_template(&dir).as_deref(),
+        Some("github"),
+        ".github before docs/"
+    );
+    std::fs::write(dir.join("pull_request_template.md"), "root").unwrap();
+    assert_eq!(
+        find_pr_template(&dir).as_deref(),
+        Some("root"),
+        "the root file wins"
+    );
+
+    // A directory with the template's name is not a template.
+    std::fs::remove_file(dir.join("pull_request_template.md")).unwrap();
+    std::fs::create_dir(dir.join("pull_request_template.md")).unwrap();
+    assert_eq!(find_pr_template(&dir).as_deref(), Some("github"));
+    let _ = std::fs::remove_dir_all(&dir);
 }

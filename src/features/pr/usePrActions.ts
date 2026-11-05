@@ -5,7 +5,8 @@
 // does after every PR write (index @ ~715,300, ~719,500, ~724,300).
 import { useCallback, useEffect, useRef, useState } from "react";
 import { openUrl } from "../../backend.ts";
-import { approvePr, commitAndPushPrompt, createPrPrompt, markReady, mergeMethod, mergePr, repoResolveConflictsPrompt, resolveConflictsPrompt, setAutoMerge } from "./api.ts";
+import { approvePr, commitAndPushPrompt, createPrPrompt, markReady, mergeMethod, mergePr, repoPrompt, resolveConflictsPrompt, setAutoMerge } from "./api.ts";
+import { createPrRequest } from "./createPr.ts";
 import type { PullRequest } from "./usePullRequest.ts";
 import type { MergeMethod } from "./types.ts";
 
@@ -19,7 +20,12 @@ export interface PrActionsArgs {
   worktree: string | null;
   branch: string;
   targetBranch: string;
+  /** The workspace's stored PR title and description (`pr_title`, `pr_description`); Create PR uses them verbatim. */
+  prTitle?: string | null;
+  prDescription?: string | null;
   sendToAgent: (text: string) => void;
+  /** Put the diff's unsent comments into the chat composer (the review comments' "Add all to chat"). */
+  addCommentsToChat?: () => void;
   notify?: Notify;
 }
 
@@ -37,12 +43,14 @@ export interface PrActions {
   approve: () => Promise<void>;
   /** Turn GitHub auto-merge on (repository method) or off. */
   automerge: (enabled: boolean) => Promise<void>;
+  /** Changes requested: put the diff's unsent comments into the chat. */
+  addCommentsToChat: () => void;
   openOnGitHub: () => void;
 }
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e));
 
-export function usePrActions({ pullRequest, repoId, worktree, branch, targetBranch, sendToAgent, notify }: PrActionsArgs): PrActions {
+export function usePrActions({ pullRequest, repoId, worktree, branch, targetBranch, prTitle, prDescription, sendToAgent, addCommentsToChat, notify }: PrActionsArgs): PrActions {
   const { pr, git, header, refresh } = pullRequest;
   const [busy, setBusy] = useState<Busy>(null);
   const busyRef = useRef<Busy>(null);
@@ -85,10 +93,13 @@ export function usePrActions({ pullRequest, repoId, worktree, branch, targetBran
     (draft: boolean) =>
       run(
         "creating",
-        async () => sendToAgent(await createPrPrompt({ branch, remote: git?.remote ?? "origin", targetBranch, draft })),
+        async () => {
+          const request = await createPrRequest({ branch, remote: git?.remote ?? "origin", targetBranch, draft, worktree, repoId, title: prTitle, description: prDescription });
+          sendToAgent(await createPrPrompt(request));
+        },
         "Couldn't start the PR",
       ),
-    [run, sendToAgent, branch, git?.remote, targetBranch],
+    [run, sendToAgent, branch, git?.remote, targetBranch, worktree, repoId, prTitle, prDescription],
   );
 
   const commitAndPush = useCallback(
@@ -102,7 +113,7 @@ export function usePrActions({ pullRequest, repoId, worktree, branch, targetBran
     if (!worktree) return;
     await run(
       "resolving",
-      async () => sendToAgent(await resolveConflictsPrompt(worktree, conflictTarget, await repoResolveConflictsPrompt(repoId))),
+      async () => sendToAgent(await resolveConflictsPrompt(worktree, conflictTarget, await repoPrompt(repoId, "resolveMergeConflicts"))),
       "Couldn't ask the agent to resolve the conflicts",
     );
   }, [run, sendToAgent, worktree, conflictTarget, repoId]);
@@ -162,5 +173,7 @@ export function usePrActions({ pullRequest, repoId, worktree, branch, targetBran
     if (pr?.url) void openUrl(pr.url);
   }, [pr?.url]);
 
-  return { busy, method, create, commitAndPush, resolveConflicts, merge, markReady: ready, approve, automerge, openOnGitHub };
+  const addComments = useCallback(() => addCommentsToChat?.(), [addCommentsToChat]);
+
+  return { busy, method, create, commitAndPush, resolveConflicts, merge, markReady: ready, approve, automerge, addCommentsToChat: addComments, openOnGitHub };
 }
