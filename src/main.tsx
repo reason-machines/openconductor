@@ -4,6 +4,7 @@ import App from "./App";
 import { KeybindingsProvider } from "./keybindings/KeybindingsProvider";
 import { getSettings } from "./settings/api";
 import { overridesRaw } from "./settings/keybindingOverrides";
+import "./fonts.css";
 import "./styles.css";
 
 const loadOverrides = async () => overridesRaw(await getSettings());

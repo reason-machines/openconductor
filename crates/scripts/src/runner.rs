@@ -200,6 +200,28 @@ impl RunManager {
         !targets.is_empty()
     }
 
+    /// Stop every run of the repository's workspaces, waiting ones included.
+    /// Returns the workspaces that had something to stop, sorted. Spotlight
+    /// starts with this, as the reference starts it without run-script
+    /// concurrency.
+    pub fn stop_repository(&self, repo_id: &str) -> Vec<String> {
+        let mut workspaces: Vec<String> = {
+            let inner = self.lock();
+            inner
+                .states
+                .iter()
+                .filter(|(k, s)| {
+                    **s != RunState::Stopped && inner.repos.get(*k).is_some_and(|r| r == repo_id)
+                })
+                .map(|(k, _)| k.0.clone())
+                .collect()
+        };
+        workspaces.sort();
+        workspaces.dedup();
+        workspaces.retain(|ws| self.stop(ws, None));
+        workspaces
+    }
+
     /// Setup of `workspace_id` ended: start the run that was waiting for it.
     pub fn setup_finished(&self, workspace_id: &str) -> io::Result<bool> {
         let Some(req) = self.lock().waiting.remove(workspace_id) else {

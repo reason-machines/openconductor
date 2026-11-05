@@ -1,6 +1,5 @@
 import { useState, type Dispatch, type FormEvent, type ReactNode } from "react";
 import type { Action } from "../state/store";
-import { repoNameFromGithub } from "../state/names";
 import { CloseIcon } from "./Icons";
 
 export type DialogKind = "clone" | "quickstart" | "create";
@@ -24,42 +23,6 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
 interface DialogProps {
   onClose: () => void;
   dispatch: Dispatch<Action>;
-}
-
-export function CloneDialog({ onClose, dispatch }: DialogProps) {
-  const [url, setUrl] = useState("");
-  const parsed = repoNameFromGithub(url);
-  const invalid = url.trim().length > 0 && !parsed;
-
-  function submit(e: FormEvent) {
-    e.preventDefault();
-    if (!parsed) return;
-    dispatch({
-      type: "addRepo",
-      repo: { name: parsed.name, path: "", remote: `https://github.com/${parsed.owner}/${parsed.name}`, defaultBranch: "main" },
-    });
-    onClose();
-  }
-
-  return (
-    <Modal title="Open GitHub project" onClose={onClose}>
-      <form onSubmit={submit} className="modal-body">
-        <label className="field">
-          <span>Repository</span>
-          <input autoFocus value={url} onChange={(e) => setUrl(e.target.value)} placeholder="owner/name or https://github.com/owner/name" aria-invalid={invalid} />
-        </label>
-        {invalid ? (
-          <p className="error small">Enter a GitHub URL, git@github.com:owner/name, or owner/name.</p>
-        ) : (
-          <p className="muted small">{parsed ? `Will clone ${parsed.owner}/${parsed.name}.` : "Cloning runs in the workspace backend (pending); this adds the repo to the sidebar."}</p>
-        )}
-        <div className="modal-actions">
-          <button type="button" className="btn" onClick={onClose}>Cancel</button>
-          <button type="submit" className="btn btn-primary" disabled={!parsed}>Clone</button>
-        </div>
-      </form>
-    </Modal>
-  );
 }
 
 const TEMPLATES = [

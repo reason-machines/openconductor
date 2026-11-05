@@ -31,6 +31,7 @@ pub mod spotlight;
 mod spotlight_commands;
 pub mod terminal;
 mod terminal_commands;
+pub mod terminal_history;
 pub mod workspace;
 
 use serde::Serialize;
@@ -155,9 +156,14 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_window_state::Builder::new().build())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_sql::Builder::new().build())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             app.manage(db::open(&data_dir)?);
+            app.manage(terminal_commands::history_state(&data_dir));
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
@@ -218,6 +224,8 @@ pub fn run() {
             terminal_commands::pty_write_mirror,
             terminal_commands::pty_resize_mirror,
             terminal_commands::pty_delete_mirror,
+            terminal_commands::pty_persist_terminal_history,
+            terminal_commands::pty_load_terminal_history,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
