@@ -1,19 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { CloseIcon } from "./Icons";
+import { toastTimeout, type ToastItem } from "./toastTiming";
 
-export interface ToastItem {
-  id: number;
-  kind: "error" | "info";
-  message: string;
-}
+export type { ToastItem };
 
 let nextId = 1;
 
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const dismiss = useCallback((id: number) => setToasts((t) => t.filter((x) => x.id !== id)), []);
-  const show = useCallback((kind: ToastItem["kind"], message: string) => {
-    setToasts((t) => [...t, { id: nextId++, kind, message }]);
+  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean }) => {
+    setToasts((t) => [...t, { id: nextId++, kind, message, sticky: opts?.sticky }]);
   }, []);
   return { toasts, show, dismiss };
 }
@@ -21,7 +18,9 @@ export function useToasts() {
 function Toast({ toast, onDismiss }: { toast: ToastItem; onDismiss: () => void }) {
   const [copied, setCopied] = useState(false);
   useEffect(() => {
-    const t = setTimeout(onDismiss, toast.kind === "error" ? 8000 : 4000);
+    const ms = toastTimeout(toast);
+    if (ms === null) return;
+    const t = setTimeout(onDismiss, ms);
     return () => clearTimeout(t);
   }, [toast, onDismiss]);
 

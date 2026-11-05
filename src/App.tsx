@@ -156,6 +156,7 @@ export default function App() {
             setDialog(null);
             void openProject();
           }}
+          onWarning={(message) => show("error", message, { sticky: true })}
           dispatch={dispatch}
         />
       )}
