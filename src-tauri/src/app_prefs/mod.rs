@@ -43,6 +43,9 @@ pub struct AppPrefs {
     /// The sidebar's "Filter by project" repository id; `None` is all
     /// projects.
     pub sidebar_repo_filter: Option<String>,
+    /// "Use Claude Code with Chrome": Claude Code chats start with
+    /// `--chrome` (the reference sidecar's `extraArgs: { chrome: null }`).
+    pub chrome_mode_enabled: bool,
 }
 
 /// `"true"` / `"false"`, anything else (or no row) is `default`.
@@ -120,6 +123,9 @@ impl AppPrefs {
             last_seen_announcement: text(rows, keys::LAST_SEEN_ANNOUNCEMENT),
             roundhouse_client_user_id: text(rows, keys::ROUNDHOUSE_CLIENT_USER_ID),
             sidebar_repo_filter: text(rows, keys::SIDEBAR_REPO_FILTER),
+            // The reference reads it as `=== "true"`.
+            chrome_mode_enabled: rows.get(keys::CHROME_MODE_ENABLED).map(String::as_str)
+                == Some("true"),
         }
     }
 }
@@ -145,6 +151,7 @@ pub enum AppPrefUpdate {
     /// A repository id narrows the sidebar; `null` ("All projects") deletes
     /// the row (the reference's `z6t`).
     SidebarRepoFilter(Option<String>),
+    ChromeModeEnabled(bool),
 }
 
 /// What an update does to the table.
@@ -190,6 +197,7 @@ impl AppPrefUpdate {
             }
             SidebarRepoFilter(Some(id)) => Ok(Write::Set(keys::SIDEBAR_REPO_FILTER, id.clone())),
             SidebarRepoFilter(None) => Ok(Write::Delete(keys::SIDEBAR_REPO_FILTER)),
+            ChromeModeEnabled(v) => b(keys::CHROME_MODE_ENABLED, *v),
         }
     }
 }

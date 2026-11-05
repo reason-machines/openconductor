@@ -218,3 +218,16 @@ fn sidebar_repo_filter_is_a_raw_id_and_all_projects_deletes_it() {
         assert_eq!(p.sidebar_repo_filter, None);
     });
 }
+
+#[test]
+fn chrome_mode_reads_only_true_and_writes_text() {
+    assert!(!AppPrefs::from_rows(&HashMap::new()).chrome_mode_enabled);
+    assert!(AppPrefs::from_rows(&rows(&[("chrome_mode_enabled", "true")])).chrome_mode_enabled);
+    assert!(!AppPrefs::from_rows(&rows(&[("chrome_mode_enabled", "1")])).chrome_mode_enabled);
+    let u: AppPrefUpdate =
+        serde_json::from_str(r#"{"key":"chrome_mode_enabled","value":true}"#).unwrap();
+    assert_eq!(
+        u.encode().unwrap(),
+        Write::Set("chrome_mode_enabled", "true".into())
+    );
+}
