@@ -30,6 +30,7 @@ use tauri::{AppHandle, Manager, State};
 use super::git::BranchRef;
 use super::service::{CreateWorkspaceRequest, RepositoryInfo, WorkspaceService};
 use super::{Created, Workspace, WorkspaceState};
+use crate::settings::service::SettingsService;
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -75,6 +76,8 @@ pub struct CreatedWorkspaceDto {
     pub base_commit: String,
     pub fetched: bool,
     pub copied_files: Vec<String>,
+    /// Set when the "Set upstream on plain git push" setting could not be applied.
+    pub upstream_warning: Option<String>,
 }
 
 #[tauri::command]
@@ -146,7 +149,7 @@ pub async fn branch_name_is_taken(
 /// into a local `branchName` (no upstream) and checked out.
 #[tauri::command]
 pub async fn create_workspace(
-    service: State<'_, WorkspaceService>,
+    app: AppHandle,
     repository_id: String,
     branch_name: Option<String>,
     directory_name: Option<String>,
@@ -154,6 +157,7 @@ pub async fn create_workspace(
     existing_branch: Option<bool>,
     pr_number: Option<u64>,
 ) -> Result<CreatedWorkspaceDto, String> {
+    let service = app.state::<WorkspaceService>();
     let req = CreateWorkspaceRequest {
         repository_id: repository_id.clone(),
         branch_name,
@@ -161,6 +165,12 @@ pub async fn create_workspace(
         base_branch,
         existing_branch: existing_branch.unwrap_or(false),
         pr_number,
+        // Unreadable settings fall back to Conductor's default (on).
+        push_auto_setup_remote: app
+            .state::<SettingsService>()
+            .get()
+            .map(|s| s.git.worktree_push_auto_setup_remote)
+            .unwrap_or(true),
     };
     service.create_workspace(&req).map(|c| created_dto(&repository_id, c)).map_err(|e| e.to_string())
 }
@@ -227,5 +237,6 @@ fn created_dto(repository_id: &str, c: Created) -> CreatedWorkspaceDto {
         base_commit: c.base_commit,
         fetched: c.fetched,
         copied_files: c.copied_files.into_iter().map(|p| p.display().to_string()).collect(),
+        upstream_warning: c.upstream_warning,
     }
 }
