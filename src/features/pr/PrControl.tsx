@@ -1,8 +1,9 @@
-// parity:pr.create:ui parity:pr.merge:ui parity:pr.review-actions:ui
+// parity:pr.create:ui parity:pr.merge:ui parity:pr.review-actions:ui parity:pr.commit-push:ui parity:pr.resolve-conflicts:ui
 // The workspace header's PR control: Create PR (asks the agent to commit,
-// push and run `gh pr create`), Merge (gh pr merge with the repository's
+// push and run `gh pr create`), Commit and push (uncommitted changes, an
+// agent message), Resolve (merge conflicts, an agent message), Merge (gh pr merge with the repository's
 // preferred method, named in the tooltip), Ready for review on a draft,
-// Approve PR, or the PR's current state, which opens it on GitHub.
+// Approve PR, Automerge while checks run (with the setting on), or the PR's current state, which opens it on GitHub.
 import { useEffect, useRef, useState } from "react";
 import { prControl } from "./control.ts";
 import type { PrActions } from "./usePrActions.ts";
@@ -12,15 +13,14 @@ import "./pr.css";
 interface Props {
   pullRequest: PullRequest;
   actions: PrActions;
-  worktree: string | null;
 }
 
-export function PrControl({ pullRequest, actions, worktree }: Props) {
+export function PrControl({ pullRequest, actions }: Props) {
   const { header, pr } = pullRequest;
   const { busy } = actions;
   const [menu, setMenu] = useState(false);
   const menuRef = useRef<HTMLSpanElement>(null);
-  const control = prControl(header, pr, actions.method);
+  const control = prControl(header, pr, { method: actions.method, automerge: pullRequest.settings.automerge });
 
   useEffect(() => {
     if (!menu) return;
@@ -29,7 +29,8 @@ export function PrControl({ pullRequest, actions, worktree }: Props) {
     return () => document.removeEventListener("mousedown", close);
   }, [menu]);
 
-  if (!control || !worktree) return null;
+  // Without a worktree the desktop app has no header state; the browser preview shows its demo PR.
+  if (!control) return null;
 
   const tone = `pr-control tone-${control.tone}`;
   const prLink = pr && (
@@ -63,6 +64,27 @@ export function PrControl({ pullRequest, actions, worktree }: Props) {
           )}
         </span>
       );
+    case "commit_and_push":
+      return (
+        <span className={tone}>
+          {prLink}
+          <button className="btn btn-small" title={control.title} disabled={busy !== null} onClick={() => void actions.commitAndPush()}>
+            {busy === "committing" ? "Asking agent…" : control.label}
+          </button>
+        </span>
+      );
+    case "resolve_conflicts":
+      return (
+        <span className={tone}>
+          {prLink}
+          <span className="pr-pending" title={control.title}>
+            <span className="pr-dot" /> Merge conflicts
+          </span>
+          <button className="btn btn-small" title={control.title} disabled={busy !== null} onClick={() => void actions.resolveConflicts()}>
+            {busy === "resolving" ? "Asking agent…" : control.label}
+          </button>
+        </span>
+      );
     case "merge":
       return (
         <span className={tone}>
@@ -87,6 +109,30 @@ export function PrControl({ pullRequest, actions, worktree }: Props) {
           {prLink}
           <button className="btn btn-small btn-approve" title={control.title} disabled={busy !== null} onClick={() => void actions.approve()}>
             {busy === "approving" ? "Approving…" : control.label}
+          </button>
+        </span>
+      );
+    case "enable_automerge":
+    case "disable_automerge": {
+      const enable = control.intent === "enable_automerge";
+      const pending = prControl(header, pr);
+      return (
+        <span className={tone}>
+          <span className="pr-pending" title={pending?.title}>
+            <span className="pr-dot" /> {pending?.label}
+          </span>
+          <button className="btn btn-small" title={control.title} disabled={busy !== null} onClick={() => void actions.automerge(enable)}>
+            {busy === "automerge" ? (enable ? "Turning on…" : "Cancelling…") : control.label}
+          </button>
+        </span>
+      );
+    }
+    case "add_comments_to_chat":
+      return (
+        <span className={tone}>
+          {prLink}
+          <button className="btn btn-small" title={control.title} disabled={busy !== null} onClick={actions.addCommentsToChat}>
+            {control.label}
           </button>
         </span>
       );

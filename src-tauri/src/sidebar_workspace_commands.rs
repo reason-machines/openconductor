@@ -103,7 +103,7 @@ pub fn workspace_changes(
     base: String,
 ) -> Result<Vec<FileChange>, String> {
     let req = DiffRequest {
-        scope: Scope::All { base },
+        scope: Scope::All { base, remote: None },
         ignore_whitespace: false,
         path: None,
         context_lines: Some(0),

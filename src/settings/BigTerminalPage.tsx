@@ -1,3 +1,4 @@
+import { executablePaths } from "./agentSettings";
 import { useEffect, useState } from "react";
 import type { Settings } from "./types";
 import {
@@ -46,7 +47,12 @@ export function BigTerminalPage({ settings, save }: Props) {
         </div>
         <div role="radiogroup" aria-label="New tab preset" className="preset-list">
           {PRESET_OPTIONS.map((o) => {
-            const command = bigTerminalCommand({ preset: o.value, customCommands, requiresToolApprovals: false });
+            const command = bigTerminalCommand({
+              preset: o.value,
+              customCommands,
+              requiresToolApprovals: settings.tool_approvals_enabled === true,
+              executablePaths: executablePaths(settings),
+            });
             return (
               <label key={o.value} className={`preset-option${preset === o.value ? " selected" : ""}`}>
                 <input type="radio" name="big-terminal-preset" className="sr-only" value={o.value} checked={preset === o.value} onChange={() => write({ preset: o.value, customCommands })} />

@@ -103,14 +103,15 @@ workspace-creation service) and `renderApp-D_fmY7hW.js` (the rows).
   has no value. Nothing is shown: `cre` logs its skip warning and `zYe` logs thrown errors
   ("Failed to configure Git push upstream settings for workspace <id>: ...").
 - The rebuild runs `WorkspaceService::configure_push_upstream_for_existing` on a background
-  thread from app setup when the user setting is on (or settings cannot be read, matching
-  Conductor's "not false" check). It covers every active workspace of every registered
-  repository, skips archived and missing ones and repositories that can no longer be listed,
-  and logs each workspace it could not configure to stderr. Divergence: the setting is read
-  once at user scope, since repo-local overrides are not built.
+  thread from app setup. It covers every active workspace of every registered repository,
+  skips archived and missing ones and repositories that can no longer be listed, and logs
+  each workspace it could not configure to stderr. Each workspace uses its effective value
+  (user, repository, workspace and local settings files, see "Prompts, git flags and
+  environment"), as `lre` does; unreadable settings count as on, Conductor's "not false".
 - Delete branch on archive (with "Warning: archived workspaces will be unrecoverable" when
-  on) and Archive on merge are stored but have no row yet: no command archives a workspace
-  yet, so nothing would read them. Repo-local overrides of all three are not built.
+  on) and Archive on merge are stored and resolve per repository, but nothing consumes them
+  yet: the app's archive only marks the database row (`db_archive_workspace`) and keeps the
+  worktree, and no in-app merge archives.
 
 ## REA gaps hit (settings pages)
 
@@ -245,5 +246,353 @@ a `/settings/repos...` start URL is resolved again once they are loaded. Diverge
 - Repo Git shows the base branch and remote read-only (Conductor lets you change both); repo
   Scripts shows the resolved setup, run and archive scripts read-only; repo Actions has Use
   spotlight testing (General preferences, `custom_prompt_general`, comes with the prompts keys);
-  repo Misc shows the root path only (no icon, workspaces path or Remove repository yet).
+  repo Misc shows the root path and the workspaces path (no icon or Remove repository yet).
+  Advanced has the root directory row (`advanced:conductor-root`) and Scrollback limit.
 - Settings search (`vUi` keywords per tab) is not built.
+
+## Models and providers (settings.toml.models, settings.toml.providers)
+
+Sources, read on `sven m5 max` on 2026-11-05 with REA's extracted frontend
+(`~/code/conductor-rea-work/frontend/dist/assets`, `index-BGEQ8YjU.js`, `renderApp-D_fmY7hW.js`),
+`main_strings.txt` (strings of the Conductor binary) and the agent CLIs Conductor bundles in
+`~/Library/Application Support/com.conductor.app/agent-binaries` (Claude Code 2.1.284, Codex 0.156.1).
+Key names, defaults and enums only; no user values were read.
+
+- Setting key to file key table (`index`, `oZ`): `default_model` -> `models.default`,
+  `review_model` -> `models.review`, `default_fast_mode` / `review_fast_mode` / `default_plan_mode`
+  -> `models.*`, `default_codex_thinking_level` / `review_codex_thinking_level` ->
+  `models.codex.{default,review}_thinking_level`, `default_codex_personality` ->
+  `models.codex.personality`, `default_claude_personality` -> `models.claude_code.personality`,
+  `default_claude_effort_level` / `review_claude_effort_level` ->
+  `models.claude_code.{default,review}_effort_level`, `codex_tool_approval_policy` ->
+  `models.codex.tool_approval_policy`, `visible_provider_models` -> `models.visible_provider_models`,
+  `claude_executable_path` -> `claude_code_executable_path`, and `codex_executable_path`,
+  `opencode_executable_path`, `claude_provider`, `codex_provider`, `bedrock_region`,
+  `vertex_project_id`, `ssh_key_path`, `tool_approvals_enabled` under their own names at top level.
+  Every `models.*` key except `models.visible_provider_models` has `workspaceConfigurable: false`,
+  as has `tool_approvals_enabled`; the provider, executable, region, project and SSH keys default to
+  workspace configurable. OpenConductor's `settings::layers::REPO_KEYS` is that list.
+- Defaults and enums (`wN` registry): `default_fast_mode` false, `tool_approvals_enabled` false,
+  `codex_tool_approval_policy` `default` (`default`, `always_approve`), `default_claude_personality`
+  `default` (`default`, `proactive`, `concise`, `explanatory`, `learning`); the session schema's
+  Codex personality is `none`, `friendly`, `pragmatic` and its thinking levels `none`, `low`,
+  `medium`, `high`, `xhigh`, `max`, `ultra`. The others have no default.
+- `claude_provider` (renderApp providers page): `custom` when the user picks API key, `default`
+  for the CLI login; a binary migration rewrites the removed `openai` to `default`. `codex_provider`:
+  `custom`, `chatgpt_sign_in`, anything else normalised to `default` (`TBe`).
+- Launch (`Ohe` in index): reads `claude_executable_path`, `claude_provider`, `codex_executable_path`,
+  `codex_provider` for the workspace (`getSettingForWorkspace`, else repo, else user), passes a path
+  only for a local host and only when set, and strips `ANTHROPIC_API_KEY`/`ANTHROPIC_AUTH_TOKEN`
+  (Codex: `CODEX_API_KEY`, `AI_GATEWAY_API_KEY`, `OPENAI_BASE_URL`) unless the provider is `custom`.
+  OpenCode runs as `<opencode_executable_path or opencode> acp`. Blank paths count as unset (`qx`).
+- `bedrock_region` and `vertex_project_id` are registered and file-backed but no 0.87.6 code reads
+  them (3 hits each in index, all registry); Bedrock and Vertex are chosen with
+  `CLAUDE_CODE_USE_BEDROCK` / `CLAUDE_CODE_USE_VERTEX` environment variables. A binary migration
+  turned the old `vertex_project_id` into `CLAUDE_CODE_USE_VERTEX=true` plus
+  `ANTHROPIC_VERTEX_PROJECT_ID`.
+- `tool_approvals_enabled`: chats require approval when it or the account's
+  `requiresToolApprovals` is set; the Big terminal presets switch from
+  `claude --dangerously-skip-permissions` to `claude` (`GN` / `kBe`). `codex_tool_approval_policy =
+  always_approve` answers every Codex tool approval with `always_allow`.
+- `ultracode` as a Claude effort, from definition to argv (Conductor 0.87.6, read 2026-11-05 on
+  sven m5 max; scans in `out/settings/ultracode.txt`, `ultracode-launch.txt`, `runtime-effort.txt`
+  in the REA work folder):
+  1. Defined: `Wv = ["low","medium","high","xhigh","max","ultracode"]` with label `Ultracode` and
+     description "Ultracode runs at extra-high effort with dynamic workflow orchestration."
+     (`index-BGEQ8YjU.js` @294871); `agentParams.effortLevel` for Claude is `KXe`, the same six
+     (@1079353). The session config's `thinkingLevel` enum has no `ultracode` (`pE` @143413), only
+     `none`..`ultra` plus a separate `ultracode: boolean`.
+  2. Frontend session config: `roe(t) { return t==="ultracode" ? "xhigh" : t }` and
+     `fit(t)` = `agentParams.effortLevel==="ultracode" ? true : undefined`; `Gd` builds
+     `thinkingLevel: roe(...)`, `ultracode: thinkingLevel==="ultracode" ? true : undefined`
+     (@1375824, @1377977). `ioe` maps `xhigh` + `ultracode` back to `ultracode` for display.
+  3. Sidecar, `Contents/Resources/bin/.internal/conductor-runtime` (Bun-compiled Mach-O, 76 MB,
+     sha256 `5723ead4...6eac0d`): `ly7` returns `"xhigh"` for Claude `effortLevel === "ultracode"`
+     and `dy7` returns `ultracode: true` (@75245342), the same mapping as `roe` / `fit`.
+  4. Sidecar launch builder: the Agent SDK query options are `effort: oB4(B.thinkingLevel)` (`oB4`:
+     `none` -> unset, `ultra` -> `max`, else unchanged, so `xhigh` stays `xhigh`) and
+     `settings: qB5(B)`, where `qB5` collects `outputStyle`, `fastMode` and `ultracode: true`
+     (@66285521, @66239283). The SDK's argv builder pushes `--effort <options.effort>` (@66167585)
+     and puts `settings` (JSON-serialized by `B8` when it is an object, @65501644) into its
+     extra-args map, which becomes `--settings <json>` (`ve6`, @65477838).
+  5. Claude Code's settings schema, embedded in the same binary, documents `ultracode`: "Enable
+     ultracode for the session: standing dynamic-workflow orchestration at any effort level.
+     Session-scoped, typically provided via --settings or the apply_flag_settings control
+     request" (@65371553).
+  So a Conductor `ultracode` chat runs `claude --effort xhigh --settings '{"ultracode":true,...}'`.
+  OpenConductor's `claude_launch` does the same: `EffortLevel::cli_value` gives `xhigh` and
+  `ultracode: true` joins `outputStyle` / `fastMode` in `--settings` (test
+  `ultracode_parses_round_trips_and_launches_as_xhigh`). Not observed in a running process: no
+  `ultracode` chat was started to capture the sidecar's actual argv.
+- The sidecar also sends Claude `thinking` (`HB5`: `--thinking adaptive` for adaptive models, else
+  `--max-thinking-tokens <budget>`, `--thinking disabled` for `none`) and always
+  `permissionMode: "bypassPermissions"`, answering approvals in-process. OpenConductor's launch
+  builder passes neither yet; recorded here, not changed in this PR.
+- With no `models.review`, a review runs on Conductor's built-in Claude default `opus-5-1m`, not
+  `models.default` (evidence/pr/ai-review.md); `settings::launch::REVIEW_FALLBACK_MODEL`.
+- `visible_provider_models` is a JSON string, an object keyed by provider (`claude`, `codex`,
+  `cursor`, `opencode`, `pi`) of `provider:model` ids; bad JSON or entries are ignored (`hee`).
+- Bundled CLIs: `claude --help` lists `--effort <level>` (low, medium, high, xhigh, max) and
+  `--settings <file-or-json>`; its strings hold the `outputStyle` and `fastMode` settings and the
+  built-in output styles Explanatory, Learning, Proactive and Concise. Codex's strings hold a
+  `Personality` enum `friendly`/`pragmatic`, `model_reasoning_effort`, `service_tier` and `fast`.
+
+OpenConductor (`src-tauri/src/settings/model.rs`, `launch.rs`, `layers.rs`):
+
+- Every key above parses from `settings.toml` under Conductor's path, round-trips, and is validated
+  (paths single-line; provider, region and project without whitespace; enums exact).
+- Provider precedence, highest first: `[providers.<agent>]` (ours), then `claude_provider` /
+  `codex_provider`, then the CLI login. A repository or managed layer that sets the top-level key
+  replaces a lower `[providers.<agent>]` table. `claude_provider = "custom"` is the Anthropic API
+  with the Keychain key; `bedrock` / `vertex` are OpenConductor values that use `bedrock_region` /
+  `vertex_project_id` (Vertex region `global`), because Conductor 0.87.6 has no reader for those
+  keys. `codex_provider = "custom"` is the OpenAI API; `chatgpt_sign_in` and `default` are Codex's
+  login.
+- `settings::launch::claude_launch` / `codex_launch` / `opencode_acp_command` build the agent
+  command from settings: executable path, provider env, model (`opus-5-5-1m` -> `--model
+  claude-opus-5-5[1m]`, Conductor's mapping), `--effort`, `--settings
+  {"outputStyle", "fastMode"}`, `--permission-mode plan` for a new chat with plan mode on, else
+  `default` with tool approvals on and `bypassPermissions` with them off; Codex `-c model`,
+  `model_reasoning_effort` (`max` and `ultra` run as `xhigh`, Codex's top level), `personality`,
+  `service_tier="fast"`. `Settings::codex_auto_approval` answers Codex approvals for
+  `always_approve`.
+- `get_repo_settings` (Tauri) merges user < repo shared (from `origin/<default branch>`) < repo local
+  < managed through `oc_scripts::config::load_layers`; repository files set only `REPO_KEYS`.
+
+Consumers still missing: no chat runner calls `claude_launch` / `codex_launch` yet (the
+new-workspace dialog's first session is "agent runtime pending"), so the model, effort, output
+style, fast and plan mode keys reach a real agent only once it does; nothing in the rebuild uses
+`ssh_key_path` (no cloud workspaces). Codex plan mode (Conductor's `collaborationMode: plan` per
+turn) is not passed. Not verified against a running agent: apart from `--effort` and `--settings`
+(read from Conductor's sidecar above), the CLI option mapping is from the bundled binaries' help
+and strings.
+
+### REA gaps hit (models and providers)
+
+- Conductor's sidecar, which turns the session config (`claudePersonality`, `effortLevel`,
+  `fastMode`, `personality`) into Claude Agent SDK and Codex options, is not in REA's extracted
+  artifacts: `grep -c` of `outputStyle`, `effortLevel`, `fastMode`, `claudePersonality` in
+  `main_strings.txt` is 0, and no sidecar JS exists outside `frontend/dist` in the work folder.
+  It is the Bun-compiled `Contents/Resources/bin/.internal/conductor-runtime`, whose embedded JS
+  REA's app extraction skipped. REA 6.7.0 has no Bun standalone-binary command (`rea --help` has
+  `inspect-go-binary` and `inspect-rust-binary`; `analyze-javascript-application` takes only ASAR or
+  a directory). REA bug: `rea extract-artifact <conductor-runtime>` fails with
+  `integrity_mismatch` ("Regular artifact entry is missing from inventory: slices/arm64"), and
+  still fails the same way with `--integrity-policy record-and-continue`, the retry its own
+  remediation recommends. The sidecar was read with a bounded Python `mmap` search of the binary
+  instead; the `ultracode` / `--effort` / `--settings` chain above comes from there.
+- Minified names differ between chunks (`pni`, `hni`, `XA` in renderApp are `XN`, `TBe`, `qx` in
+  index); REA's frontend analysis gives no cross-chunk symbol map, so definitions were found by
+  grepping each chunk.
+- One `devices_exec` call is capped at 60 s: `strings | grep -E '.{0,120}...'` over the 55 MB Claude
+  binary timed out twice; dumping strings to `out/cli/` in the background, then fixed-string greps,
+  worked.
+
+## Prompts, git flags and environment
+
+Source: REA-extracted frontend on `sven m5 max` (`~/code/conductor-rea-work/frontend/dist/assets`,
+`index-BGEQ8YjU.js` and `renderApp-D_fmY7hW.js`, the bundles hashed in the sections above) and
+the sidecar bundle inside `Conductor.app/Contents/Resources/bin/.internal/conductor-runtime`,
+read on 2026-11-05 with byte searches (python `re` over the files). Everything quoted is data.
+
+### Setting keys and file keys
+
+Conductor's settings table maps each setting key to a settings.toml path (`Me`/`xe` with
+`fileKey`, index offset ~286 k): `custom_prompt_general` → `prompts.general`,
+`custom_prompt_code_review` → `prompts.code_review`, `custom_prompt_create_pr` →
+`prompts.create_pr`, `custom_prompt_fix_errors` → `prompts.fix_errors`,
+`custom_prompt_rename_branch` → `prompts.rename_branch`,
+`custom_prompt_resolve_merge_conflicts` → `prompts.resolve_merge_conflicts`,
+`branch_prefix_custom` → `git.branch_prefix`, `branch_prefix_type` → `git.branch_prefix_type`,
+`delete_branch_on_archive` / `archive_on_merge` / `worktree_push_auto_setup_remote` →
+`git.*`, `environment_variable_files` → `environment_variable_files`, and
+`open_url_template` → `preview_urls` (`BLe`). None sets `workspaceConfigurable: false`, so
+each is valid in user and repository files. `environment_variables` is not a setting key: it
+is read straight from the files (see Environment).
+
+The rebuild stored the custom prefix as `git.branch_prefix_custom`. It now writes Conductor's
+`git.branch_prefix` and reads `branch_prefix_custom` when a file has no `branch_prefix`
+(`settings::model::GitFile`, and the same alias in `oc_scripts::config::effective`). One
+trailing `/` is now accepted in the prefix: Conductor's own placeholder is `e.g. feature/ or
+myname-`, and such a file used to fail validation.
+
+### Layers and precedence
+
+`getSettingForWorkspaceV2(key, {host, mainWorktreePath, selectedWorkspacePath})` resolves a
+key through the layers `TZ` builds (index offset ~320 k), lowest first: user
+`~/.conductor/settings.toml` (source root = home), repository shared
+`<main>/.conductor/settings.{json,toml}`, workspace shared
+`<workspace>/.conductor/settings.{json,toml}` (only when the workspace is not the main
+checkout), repository local `<main>/.conductor/settings.local.{json,toml}`; the managed file
+(`settings.managed`, `h$e`) is merged on top. Every JSON file is read before every TOML file
+(`for (const n of ["json","toml"]) for (const r of layers)`). A value replaces a lower one;
+values that fail the key's schema are dropped per file (`zE` → `droppedSettings`), so the next
+lower valid value wins. Edits from the settings rows go to the repository local file
+(`{scope:"workspace-template", locality:"local"}`); writing the shared file is refused
+("Shared repository settings are read-only in Conductor. Edit the settings file directly.").
+
+The rebuild resolves these keys in `oc_scripts::config::effective` (`load_effective`) with
+the same layer list and drop rule. Its user layer is the app's own
+`$OPENCONDUCTOR_HOME/settings.toml` (`settings::effective::paths`), and repository shared
+files are read from the working tree, as `TZ` does. Edits go through
+`set_local_value` (IPC `repo_settings_set_local`), which accepts only these keys and prunes
+tables a removal empties, like Conductor's `tZ`.
+
+### Prompts
+
+- Each action reads the effective workspace value (`tPt` → `getSettingForWorkspaceV2`), so a
+  repository value replaces the user's; they are not appended. Cloud workspaces instead read
+  the organization's shared and personal prompts from the server (`bg` → `GV`), which is the
+  `/settings/organization/prompts` page ("Applied to your chats in this organization,
+  alongside shared prompts.").
+- Where each one goes (`wg` prompt builders, index offset ~2.49 M): code review `gue`,
+  create PR `hue`, fix errors `mue` ("Fix the failing CI actions. I've attached the failure
+  logs."), resolve conflicts `vue` (after the forge's rebase/merge instruction), branch rename
+  `fue` (the model prompt that names the branch from the first message). Each appends `_g`:
+  a blank value adds nothing; otherwise a block saying the user's preferences take precedence
+  over the defaults, then `<user-preferences>` … `</user-preferences>`.
+- `general` is not a system prompt: for the first message of a new chat the app sends
+  `firstMessage.generalPreferences` and the runtime (`conductor-runtime`, `nQ4` / `lU6`)
+  appends `\n<user-preferences>\n{general}\n</user-preferences>` to that first message,
+  after its own `<system_instruction>` context block.
+- UI: repository Settings › Actions has six rows (`S6e` and the General row, scopes
+  `["workspace"]`): Code review / Create PR / Fix errors / Resolve conflicts / Branch rename
+  preferences, then General preferences ("Add custom instructions sent to the agent at the
+  start of every new chat.", placeholder "Add custom instructions for all agents working in
+  this repo.", no Preview). Each is a textarea that saves trimmed text on blur, shows a
+  "Customized" badge when set, and a "Preview" dialog of the full prompt (`getPromptPreview`).
+  There is no user-scope prompts row: user values come from the user file only.
+- Migration: `repo_custom_prompt_file_migration_complete` (settings table) guards a one-time
+  move of the old `repos.custom_prompt_*` columns into each repository's shared settings file
+  (`iIt`/`oIt`), after which the columns are set to NULL. The rebuild never had those columns,
+  so there is nothing to migrate; the flag is not used.
+
+### Git flags
+
+`branch_prefix_type` and the custom prefix are read at user scope only (`C2`:
+`getSettingForUserV2("branch_prefix_type")`, `getSetting("branch_prefix_custom")` with `//+`
+collapsed to `/`), even though repository files may contain them. The three flags resolve
+per workspace (`lre` → `getSettingForWorkspaceV2(C0, …) !== false` for push upstream).
+
+### Preview URLs
+
+`preview_urls` is an array of `{ name?, url }` (`sLe`/`nLe`: entries with other keys are
+dropped; a string value is parsed as JSON, else taken as one URL). Repository Settings › Misc
+row "Preview URLs" edits it: the first URL is the default, others appear in the Open menu, and
+`$CONDUCTOR_PORT` / `$((CONDUCTOR_PORT + 1..9))` are expanded.
+
+### Environment
+
+`wLe` / `SLe` / `Px` (index offset ~273 k) build the variables per context (`local`, `cloud`),
+layer by layer in the order above:
+
+1. `environment_variable_files` (every layer): an array of paths, or one per line. A path is
+   used as is when absolute, `~` and `~/…` expand to home, otherwise it resolves against the
+   settings file's folder when that file exists, else against the layer's root (repository
+   or home) (`ALe`). Missing files are logged and skipped. Each file is parsed as dotenv
+   (`RLe`): blank and `#` lines skipped, optional `export `, `NAME=value` with
+   `^[A-Za-z_][A-Za-z0-9_]*$`, double quotes with `\n` `\r` `\t` escapes, single quotes literal,
+   unquoted values end at a ` #`. Variables apply to local and cloud.
+2. `environment_variables` (repository and workspace layers only, `s.workspace`): top-level
+   string entries apply to both contexts, `.local` and `.cloud` to one. `"<none>"` deletes the
+   variable from lower layers; `"conductor-keychain"` reads the value from the Keychain
+   (`file-env:<scope>:<key>`); non-string values are skipped.
+3. Managed `environment_variables.local` / `.cloud` override everything (`getManagedEnvVars`).
+
+Stored variables from the Environment page's own table (`env_vars`) are layered over the
+file values unless the file pins the key (`xz`). Consumers (`ng(…, {context:"local"})`): the
+setup script's env (offset ~1.01 M), terminals (`{...shellEnv, ...settingsEnv, ...}`, offset
+~2.93 M) and agent launches (offset ~2.97 M, which drop `ANTHROPIC_API_KEY` /
+`ANTHROPIC_AUTH_TOKEN` unless `claude_provider` is `custom`).
+
+The rebuild implements 1–3 in `oc_scripts::config::effective` (`resolve_effective`,
+`parse_dotenv`, `resolve_env_file`). Divergence: `"conductor-keychain"` values are skipped
+with a warning (the rebuild has no per-variable Keychain store); the `env_vars` table is not
+built.
+
+### Consumers in the rebuild
+
+| Key | Consumer | Status |
+| --- | --- | --- |
+| `prompts.code_review` | Review button (`buildReviewPrompt`, appended after the default as `gue` + `_g`) | wired, via `useRepoSettings` |
+| `prompts.create_pr` | `pr_create_prompt` (appended when the caller gives no instructions) | wired; no Create PR button calls the command yet |
+| `prompts.general` | first message of a new Reason chat (`sendReason`, `<user-preferences>` block as `lU6`) | wired |
+| `prompts.fix_errors` | Fix errors action | missing: no Fix errors button or CI-log flow |
+| `prompts.resolve_merge_conflicts` | Resolve conflicts action | missing: the header computes the conflict state but has no action |
+| `prompts.rename_branch` | model-generated branch name | missing: the rebuild names branches with a local heuristic (`branchNameFromMessage`), no model call |
+| `git.worktree_push_auto_setup_remote` | `create_workspace` and the startup backfill | wired, effective per repository / workspace |
+| `git.branch_prefix`, `git.branch_prefix_type` | Create-workspace naming | user scope, as Conductor's `C2` |
+| `git.archive_on_merge`, `git.delete_branch_on_archive` | archive | missing (see "Git flags: archive and push upstream") |
+| `preview_urls` | terminal panel Open URLs | missing: the terminal panel has no Open URL control |
+| `environment_variable_files`, `environment_variables.*` | setup / run / archive scripts (`ScriptService::set_settings_env`), terminals (`pty_spawn`) | wired; local context |
+| same | agent launches | missing: Claude/Codex launches are not built, and Reason runs one ACP process for every chat, so a per-workspace environment cannot reach it |
+
+`create_workspace` resolves the push-upstream flag for the repository root before the
+worktree exists, so a value in the new workspace's own `.conductor/settings.toml` is not
+seen at creation (Conductor reads it with the new worktree path); the startup backfill does
+see it.
+
+### REA gaps (prompts, git, environment)
+
+- No REA command maps a settings key to its consumers: `rea trace-javascript-semantics` with
+  literal seeds misses UI strings and Tauri `invoke` names (see "REA gaps hit (settings
+  pages)"), so every consumer above was found by byte search in the extracted bundle.
+- `rea trace-javascript-semantics` on the analyzed frontend (`ev_b733d967…`) with seed
+  `{kind: "literal", value: "custom_prompt_general"}`, direction `callers`, run on
+  2026-11-05 (`out/trace_js_semantics_custom_prompt_general.json`), exited 0 in 83 s with
+  `status: partial`, 0 seed nodes, 0 nodes, 0 relations and the same 935 unknowns as the
+  earlier literal traces. A setting key used as an argument (`getSettingForWorkspaceV2(
+  "custom_prompt_rename_branch", …)`) or as an object value (the `Vxt` map) is not a seed
+  REA can resolve.
+- The sidecar runtime is a compiled single-file binary (`conductor-runtime`, 76 MB); REA's
+  JavaScript extractors were not run on it, so `nQ4` / `lU6` / `pQ4` were read with a raw
+  byte search. Its embedded JS is plain text, which is why that worked.
+- The published repository JSON schema (`settings.repo.schema.json`) lists
+  `environment_variables.local/.cloud` but not the top-level shared entries that `SLe` reads;
+  the bundle, not the schema, is the source for those.
+
+## App preferences in the settings table
+
+Source: REA-extracted frontend on `sven m5 max` (`~/code/conductor-rea-work/frontend/dist/assets`,
+`index-BGEQ8YjU.js` and `renderApp-D_fmY7hW.js`), read with `grep -lwF` and a context dump of every
+occurrence of each key, 2026-11-06. Key names and code only; no values were read from Conductor's
+`conductor.db` or `settings.toml`.
+
+Conductor's settings registry (`index-*.js`, `Te`/`Pe`/`yl` declarations and the `oZ` type map) marks
+each key file-backed (`Me({fileKey})`, lives in `settings.toml`) or non-file-backed (`Me()`/`xe()`,
+lives in the `settings` table). Every key below is non-file-backed, so OpenConductor stores it in
+`conductor.db` through `crates/openconductor-db/src/app_settings.rs` and decodes it in
+`src-tauri/src/app_prefs/` (typed `get_app_prefs`, `set_app_pref`, `record_open_in`,
+`client_instance_id`, `graphite_cli_installed`; no untyped key/value command).
+
+| Key | Default and encoding (REA source) | Consumer in OpenConductor |
+| --- | --- | --- |
+| `code_theme` | `yl("code_theme", _N, "default")`; `_N` = default, catppuccin-latte, -macchiato, -mocha, dracula, nord, tokyo-night, gruvbox-dark, solarized-dark; labels from `zPt` | Appearance row and diff highlighting built by the diff area (`DiffAppearanceRows.tsx`), stored in `settings.toml` `[appearance]` for now |
+| `colored_sidebar_diffs` | `Te(...,!1)`; `"true"`/`"false"`; sidebar row mutes counts unless selected or on (`eea`) | Appearance row and sidebar colors built in `AppearancePage.tsx` / `appearance.ts`, stored in `settings.toml` `[appearance]` for now |
+| `file_ligatures_enabled` | unset reads as on (`v5t`: `data ? data==="true" : true`) | Appearance row built by the diff area, stored in `settings.toml` `[appearance]` for now |
+| `garry_mode` | `Te(...,!1)`; toggled by `toggleGarryMode` | General row; `Transcript expandToolsByDefault`; ⌃O in `App.tsx` |
+| `experimental_show_agent_cost` | `Te(...,!1)`; read as `value==="true"` (or internal users unless `"false"`, `Y$e`) | Experimental row |
+| `experimental_tab_freak_mode` | `Te(...,!1)`; limit `iFt` = 10 on, 5 off, counting chats + terminals + browser (`oFt`) | Experimental row; terminal "+" and `startTab` limit |
+| `graphite_disabled` | `Te("graphite_disabled")`; disabled only when `"true"` (`ZUt`, `D9t`); row checked = gt installed && !disabled, reset writes `true` | Experimental row with "Install gt to enable." |
+| `default_open_in`, `open_in_mru_order` | MRU is a JSON string array of `app|local` / `app|remote`, newest first (`qzt`, `Hzt`, `UBe`, `HBe`); effective default = MRU[0] without suffix, else `default_open_in` (`l5t`) | `record_open_in` command |
+| `left_panel_visible`, `right_panel_visible` | unset reads as shown (`h5t`, `d5t`); written as `t.toString()`; zen mode sets both to `!left && !right` | `App.tsx` sidebar (`panelPrefs.tsx`), `WorkspaceView` right panel, ⌥⌘B, ⌘. |
+| `left_panel_width` | `parseInt`, default 256 (`mBe`); written `Math.round(w)`; drag range 192 to 480 (`Zsa`, `eoa`), saved on commit | `.app` `--sidebar-width` and a drag handle |
+| `onboarding_step`, `first_time_onboarding_step` | `parseInt(?? "0")`, `parseInt(?? "1")`; 999 = done (`_5t`) | stored and exposed only |
+| `last_clone_directory` | plain path, deleted when the data folder moves | clone and quick-start dialogs (`backend.ts`), localStorage value moved over once |
+| `last_seen_announcement` | announcement id; banner hidden when it equals the latest id (`Ena`) | stored and exposed only |
+| `client_instance_id` | `crypto.randomUUID()` stored on first read (`uue`) | `client_instance_id` command |
+| `roundhouse_client_user_id` | cloud sign-in user id; get/update/delete (`sWe`, `nWe`, `rWe`) | stored and exposed only |
+
+Missing consumers: the rebuild has no cloud workspaces (agent cost, Roundhouse), no "Open in" menu
+(MRU is recorded by `record_open_in` but nothing calls it yet), no onboarding, no announcements banner,
+no Graphite stack UI (only the toggle and the `gt` check), and no syntax highlighter, so a code theme
+sets only the code view's foreground and background, not token colors. The sidebar flag in localStorage
+(`UiPrefs.sidebarVisible`) is not migrated: the table cannot tell "unset" from "shown".
+
+### REA gaps (app preferences slice)
+
+- `grep -l` with a quoted-key regex through `devices_exec` (zsh, nested quotes) matched nothing; plain
+  `grep -lwF` worked. Not an REA bug, but REA has no "find setting key" query over the extracted bundle,
+  so every claim above comes from text search plus reading minified code, not from an REA trace.
+- Minified exports: hooks are re-exported under two-letter aliases (`p5t as og`, imported as `oEr`), which
+  REA's JavaScript semantic analysis does not resolve across chunks; we followed them by hand.
