@@ -31,4 +31,14 @@ Other windowed lists in the bundle: the All files tree (a windowed tree with 28 
 
 ## OpenConductor
 
-`src/features/diff/FileDiffView.tsx` renders the file as the single item of a Pierre `CodeView` with the options above, including `layout`, and bumps the item's version when its comment anchors change. It does not yet pass `enableLineSelection` / range comments, `unsafeCSS` or the wrap setting, and it does not run Pierre's Shiki worker pool, so highlighting runs on the main thread.
+`src/features/diff/FileDiffView.tsx` renders the file as the single item of a Pierre `CodeView` with the options above, including `layout`, and bumps the item's version when its comment anchors change. It does not yet pass `enableLineSelection` / range comments, `unsafeCSS` or the wrap setting. Highlighting runs off the main thread: `src/features/diff/DiffWorkerPool.tsx` wraps the app root in Pierre's `WorkerPoolContextProvider` as Conductor does (see below).
+
+## Worker pool
+
+Conductor (renderApp chunk of 0.87.6, functions `tJr` and `eJr`) wraps its app root, above the router, in Pierre's `WorkerPoolContextProvider` with:
+
+- `poolOptions`: `{workerFactory, poolSize: 2}`, where the factory is `new Worker("/assets/worker-C5Xpc1Wy.js", {type: "module", name})`, Pierre's worker script bundled by Vite;
+- `highlighterOptions`: `{theme: {dark, light}, useTokenTransformer: true, preferredHighlighter: "shiki-wasm", langs: ["typescript", "tsx", "javascript", "jsx", "css", "html", "json", "markdown", "python", "rust"]}`, the theme coming from the `code_theme` setting;
+- a child component that calls `pool.setRenderOptions({theme: {dark, light}})` whenever the code theme changes.
+
+OpenConductor's `DiffWorkerPool` uses the same pool size, worker script, highlighter options and theme sync, following the Code theme setting through `useDiffTheme`. Vite builds it as `new Worker("/assets/worker-….js", {type: "module", name})` with `worker.format: "es"`. In a browser check of the built app, both workers initialized at startup, opening a file sent its `file` and `diff` render requests to the workers and got highlighted tokens back. Pierre still loads a main-thread highlighter, which it uses for the plain-text first paint and as a fallback when a worker fails.

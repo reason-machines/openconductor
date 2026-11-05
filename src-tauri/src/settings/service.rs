@@ -212,9 +212,11 @@ mod tests {
     #[test]
     fn status_and_disconnect_follow_conductors_top_level_provider() {
         let (svc, store) = service();
-        let mut s = Settings::default();
-        s.claude_provider = Some("custom".into());
-        svc.update(s).unwrap();
+        svc.update(Settings {
+            claude_provider: Some("custom".into()),
+            ..Settings::default()
+        })
+        .unwrap();
         let status = svc.provider_status(AgentKind::Claude).unwrap();
         assert_eq!((status.kind, status.ready), ("anthropic_api", false));
         store
