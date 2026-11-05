@@ -129,7 +129,8 @@ function load(): AppState {
   }
   if (inTauri()) {
     // Repos arrive from conductor.db after mount; collapsed ids wait on placeholder rows.
-    const prefs = parsePrefs(localStorage.getItem(PREFS_KEY));
+    // First run after the switch: keep the selection and layout the old shell state had.
+    const prefs = parsePrefs(localStorage.getItem(PREFS_KEY) ?? legacyPrefs(localStorage.getItem(STORAGE_KEY)));
     const repos = prefs.collapsed.map((id) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed: true }));
     return { repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible };
   }
@@ -140,6 +141,16 @@ function load(): AppState {
     /* ignore corrupt state */
   }
   return EMPTY;
+}
+
+/** UI prefs carried over from the pre-database shell state, as `PREFS_KEY` JSON. */
+function legacyPrefs(raw: string | null): string | null {
+  if (!raw) return null;
+  try {
+    return JSON.stringify(prefsOf(JSON.parse(raw) as AppState));
+  } catch {
+    return null;
+  }
 }
 
 /** Repos and workspaces from conductor.db, in sidebar order. */

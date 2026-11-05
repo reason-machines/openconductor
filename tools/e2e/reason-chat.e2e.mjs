@@ -55,26 +55,8 @@ chmodSync(join(bin, "reason"), 0o755);
 
 const env = { ...process.env, HOME: home, PATH: `${bin}:${process.env.PATH}` };
 delete env.REASON_CLI;
-
-// The sidebar reads repos and workspaces from conductor.db in the app-data
-// folder (XDG_DATA_HOME/<identifier> on Linux). Create the database with the
-// app's own migrations, then seed the repo and workspace rows before the app
-// starts, so the first load already has them.
-const dataHome = join(home, ".local", "share");
-env.XDG_DATA_HOME = dataHome;
-const dbPath = join(dataHome, "com.reasonmachines.openconductor", "conductor.db");
-mkdirSync(dirname(dbPath), { recursive: true });
-execFileSync("cargo", ["run", "--locked", "-q", "--manifest-path", join(repoRoot, "crates/openconductor-db/Cargo.toml"), "--example", "migrate", "--", dbPath], {
-  stdio: "inherit",
-  env: { ...process.env, CARGO_TARGET_DIR: join(repoRoot, "src-tauri/target") },
-});
-execFileSync("python3", ["-c", `
-import sqlite3, sys
-db = sqlite3.connect(sys.argv[1])
-db.execute("INSERT INTO repos (id, name, root_path, default_branch) VALUES ('repo-e2e', 'proj', ?, 'main')", (sys.argv[2],))
-db.execute("INSERT INTO workspaces (local_id, repository_id, directory_name, workspace_name, branch, state, workspace_path, user_set_workspace_name, user_set_branch_name) VALUES ('ws-e2e', 'repo-e2e', 'e2e', 'e2e', 'main', 'active', ?, 1, 1)", (sys.argv[2],))
-db.commit()
-`, dbPath, project]);
+// The app data folder (conductor.db, worktrees) must be under the fresh HOME too.
+delete env.XDG_DATA_HOME;
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
 const driverExited = new Promise((r) => driver.on("exit", r));
 
@@ -103,6 +85,8 @@ async function find(css) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const run = (script, ...args) => wd("POST", "/execute/sync", { script, args });
+/** Runs `script` in the page; it calls the last argument with its result. */
+const runAsync = (script, ...args) => wd("POST", "/execute/async", { script, args });
 
 async function waitFor(what, fn, timeoutMs = 30000) {
   const end = Date.now() + timeoutMs;
@@ -157,21 +141,21 @@ try {
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
 
-  // Select the seeded repo and workspace (their rows are in conductor.db, seeded above).
-  const state = {
-    repos: [
-      {
-        id: "repo-e2e", name: "proj", path: project, defaultBranch: "main",
-        workspaces: [{
-          id: "ws-e2e", name: "e2e", branch: "main", status: "idle", diff: { added: 0, removed: 0 }, createdAt: 0,
-          path: project, placeholderBranchName: null, userSetWorkspaceName: true, userSetBranchName: true,
-        }],
-      },
-    ],
-    selection: { kind: "workspace", repoId: "repo-e2e", workspaceId: "ws-e2e" },
-  };
+  // Seed one repo with one workspace through the real backend: the sidebar lists
+  // what conductor.db holds, so the repo is added and a worktree created like the UI does.
   await waitFor("the app to load", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
-  await run("localStorage.setItem('openconductor.shell.v1', arguments[0]); localStorage.setItem('openconductor.shell.prefs.v1', arguments[1]); location.reload();", JSON.stringify(state), JSON.stringify({ selection: state.selection, collapsed: [] }));
+  const seeded = await runAsync(
+    `const done = arguments[arguments.length - 1];
+     const invoke = window.__TAURI_INTERNALS__.invoke;
+     invoke("add_repository", { path: arguments[0] })
+       .then((repo) => invoke("create_workspace", { repositoryId: repo.id, branchName: "e2e", directoryName: "e2e", baseBranch: null, existingBranch: false, prNumber: null }))
+       .then((created) => done({ workspace: created.workspace }), (err) => done({ error: String(err) }));`,
+    project,
+  );
+  assert.ok(seeded?.workspace, `seeding failed: ${JSON.stringify(seeded)}`);
+  const workspace = seeded.workspace;
+  const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
+  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
   const placeholder = await waitFor("the Reason chat panel", () => chatText().then((t) => t && t.includes("Reason runs this chat") && t));
   pass(`the desktop chat panel runs Reason: "${placeholder.split("\n").find((l) => l.includes("Reason runs"))}"`);
 
@@ -183,7 +167,7 @@ try {
   });
   assert.equal(local.place, "local", JSON.stringify(local));
   assert.equal(local.relative, "a.txt");
-  assert.equal(local.raw, join(project, "a.txt"));
+  assert.equal(local.raw, join(workspace.path, "a.txt"));
   assert.ok(local.raw.startsWith(home + "/"), `${local.raw} is under HOME ${home}`);
   await turnDone(1);
   pass(`turn 1 tool row is local: ${local.raw} (relative ${local.relative})`);
