@@ -6,6 +6,7 @@ import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
 import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
+import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
@@ -16,16 +17,19 @@ import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
 import { PaletteHost } from "./palette/PaletteHost";
-import { useKeybindings } from "./keybindings/KeybindingsProvider";
+import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
 import { SettingsView } from "./settings/SettingsView";
 import { pageFromPath, type SettingsPage } from "./settings/pages";
 import { applyTheme } from "./settings/useSettings";
 import { getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
+import { useNavHistory } from "./state/useNavHistory";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
+  const nav = useNavHistory(state, dispatch);
+  const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
   // `/create` (or `?dialog=create`) opens the Create-workspace dialog directly.
   const initialDialog = window.location.pathname === "/create" ? "create" : (new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
   const [dialog, setDialog] = useState<DialogKind | null>(initialDialog);
@@ -71,14 +75,16 @@ export default function App() {
       if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
       if (outcome.kind === "needsGitHubRepo") return setGithubRepo({ path: outcome.path, name: outcome.name, needsGitInit: outcome.needsGitInit });
       const registered = await addRepository(outcome.path);
+      if (findExistingRepo(state.repos, { path: registered.root, remote: outcome.remote })) return show("error", REPO_EXISTS);
       dispatch({ type: "addRepo", repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
     } catch (err) {
       show("error", failedToAddMessage(err));
     }
-  }, [dispatch, show]);
+  }, [dispatch, show, state.repos]);
   const [quickOpen, setQuickOpen] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const { overrides } = useKeybindingOverrides();
   const toggleShortcuts = useCallback(() => setShortcutsOpen((open) => !open), []);
   useEffect(() => {
     if (!inTauri()) return;
@@ -97,6 +103,8 @@ export default function App() {
   useKeybindings({
     "openKeyboardShortcuts": toggleShortcuts,
     "openSettings": openSettings,
+    "nav.back": nav.onBack,
+    "nav.forward": nav.onForward,
     "view.toggleLeftSidebar": () => dispatch({ type: "toggleSidebar" }),
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
     "workspace.create": () => setDialog("create"),
@@ -117,7 +125,7 @@ export default function App() {
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} info={info} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
@@ -158,8 +166,8 @@ export default function App() {
           onError={(message) => show("error", createFailedMessage(message))}
         />
       )}
-      {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} />}
-      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
+      {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
+      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} />
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );

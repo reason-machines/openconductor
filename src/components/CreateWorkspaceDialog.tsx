@@ -22,6 +22,9 @@ import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import type { SourceState } from "../workspace/createFrom";
 import { CreateFromPicker } from "./CreateFromPicker";
+import { getSettings } from "../settings/api";
+import { newChatModel } from "../settings/models";
+import { AddRepositoryMenu } from "./AddRepositoryMenu";
 
 interface Props {
   repos: Repo[];
@@ -34,6 +37,7 @@ interface Props {
   dispatch: Dispatch<Action>;
 }
 
+// Until settings load; then the first chat uses Settings › Default models.
 const AGENT = { agent: "claude", model: "opus", effort: "high" };
 
 function suggestName(repo: Repo | undefined, branches: string[] = []): GeneratedName | null {
@@ -54,7 +58,39 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
   const [progress, send] = useReducer(reduceProgress, { step: "idle" });
   const repo = repos.find((r) => r.id === draft.repoId);
   const prefix = useMemo(() => resolveBranchPrefix(prefixSettings, githubUsername), [prefixSettings, githubUsername]);
-  const busy = progress.step === "creating" || progress.step === "detecting_setup";
+  const [cloning, setCloning] = useState(false);
+  const busy = progress.step === "creating" || progress.step === "detecting_setup" || cloning;
+  // A freshly cloned repo gets its id in the store; select it once it shows up.
+  const [pendingRepoPath, setPendingRepoPath] = useState<string | null>(null);
+  useEffect(() => {
+    const added = pendingRepoPath ? repos.find((r) => r.path === pendingRepoPath) : undefined;
+    if (!added) return;
+    setPendingRepoPath(null);
+    chooseRepo(added.id);
+  }, [repos, pendingRepoPath]);
+
+  const addRepository = (label: string, primary = false) => (
+    <AddRepositoryMenu
+      repos={repos}
+      label={label}
+      primary={primary}
+      disabled={busy}
+      onOpenProject={onAddRepository}
+      onBusyChange={setCloning}
+      onCloned={(cloned, source) => {
+        dispatch({ type: "addRepo", repo: { name: source.name, path: cloned.root, remote: source.url, defaultBranch: cloned.defaultBranch } });
+        setPendingRepoPath(cloned.root);
+      }}
+    />
+  );
+
+  useEffect(() => {
+    let live = true;
+    getSettings().then((s) => live && setDraft((d) => ({ ...d, ...newChatModel(s) })), () => undefined);
+    return () => {
+      live = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!repo?.path) return setBranchSrc({ status: "ready", items: [{ name: repo?.defaultBranch ?? "main", remote: null, commit: "", isHead: true, committedAt: 0 }] });
@@ -154,8 +190,8 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
         <div className="modal-body">
           <p className="muted">Add a repository first. Each workspace is a git worktree of one repository.</p>
           <div className="modal-actions">
-            <button className="btn" onClick={onClose}>Cancel</button>
-            <button className="btn btn-primary" onClick={onAddRepository}>Add repository</button>
+            <button className="btn" onClick={onClose} disabled={busy}>Cancel</button>
+            {addRepository("Add repository", true)}
           </div>
         </div>
       </Modal>
@@ -195,7 +231,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
                   <option key={r.id} value={r.id}>{r.name}</option>
                 ))}
               </select>
-              <button type="button" className="btn btn-small" onClick={onAddRepository} disabled={busy}>Add…</button>
+              {addRepository("Add…")}
             </div>
             {errors.repo && <span className="error small">{errors.repo}</span>}
           </label>
