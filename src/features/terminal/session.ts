@@ -24,6 +24,7 @@ import { PersistThrottle, readSaved, removeWorkspace, restoreCwds, restoreOutput
 import { FIND_COMMAND, LINE_EDIT_BYTES, terminalCommandFor } from "./shortcuts.ts";
 import { currentTerminalFont, onTerminalFont, TERMINAL_LINE_HEIGHT } from "./font.ts";
 import { currentScrollbackRows, onScrollbackRows } from "./scrollback.ts";
+import { applySegments, emptyShellState, splitMarks, type ShellState } from "./shellIntegration.ts";
 import { bigTabRequest } from "./bigTerminal.ts";
 
 interface Live {
@@ -40,6 +41,9 @@ interface Live {
   startedAt: string;
   endedAt?: string;
   hasReceivedUserInput: boolean;
+  /** Shell integration: output decoded as a stream, marks stripped and tracked. */
+  decoder: TextDecoder;
+  shell: ShellState;
 }
 
 const live = new Map<string, Live>();
@@ -122,10 +126,16 @@ function route(e: PtyEvent) {
   if (!l) return;
   if (e.kind === "data") {
     const n = e.data.length;
-    l.term.write(e.data, () => l.ack.rendered(n));
+    const { sanitized, segments } = splitMarks(l.decoder.decode(e.data, { stream: true }));
+    if (applySegments(l.shell, segments)) dispatch(l.workspaceId, { type: "program", id: e.id, runningProgram: l.shell.runningProgram });
+    // Bytes that were only marks are acked at once, as in the reference.
+    if (sanitized.length > 0) l.term.write(sanitized, () => l.ack.rendered(n));
+    else l.ack.rendered(n);
     persist.schedule(e.id);
     return;
   }
+  // Ready and exit both forget tracked commands, as in the reference.
+  l.shell = emptyShellState();
   if (e.kind === "exit") {
     l.ack.flush();
     l.endedAt = new Date().toISOString();
@@ -228,6 +238,8 @@ async function startTab(
     initialCommand,
     startedAt: record?.startedAt ?? new Date().toISOString(),
     hasReceivedUserInput: record?.hasReceivedUserInput ?? false,
+    decoder: new TextDecoder(),
+    shell: emptyShellState(),
   });
   term.attachCustomKeyEventHandler((e) => {
     const command = e.type === "keydown" ? terminalCommandFor(e) : undefined;
