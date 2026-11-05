@@ -102,7 +102,8 @@
 .oc-comment { padding: 8px 10px; border-bottom: 1px solid var(--border); }
 .oc-comment-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; }
 .oc-comment-meta .spacer, .oc-composer-bar .spacer { flex: 1; }
-.oc-comment-body { margin-top: 4px; font-size: 13px; white-space: pre-wrap; overflow-wrap: break-word; }
+.oc-comment-body { margin-top: 4px; font-size: 13px; overflow-wrap: break-word; }
+.oc-comment-body > :last-child { margin-bottom: 0; }
 .oc-tag { font-size: 11px; padding: 0 6px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
 .oc-link { background: none; border: 0; padding: 0; color: var(--muted); cursor: pointer; font-size: 12px; }
 .oc-link:hover { color: inherit; text-decoration: underline; }

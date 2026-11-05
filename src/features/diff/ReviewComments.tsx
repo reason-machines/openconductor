@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { commentStoreFor } from "./commentsApi.ts";
 import {
-  bodyParts,
+  canDeleteComment,
   commentSource,
   commentTags,
   fileThreads,
@@ -24,7 +24,6 @@ import {
   prThreads,
   refreshOutdated,
   sideOf,
-  suggestionRows,
   threadKey,
   threadsAt,
   threadsOf,
@@ -33,6 +32,9 @@ import {
 } from "./comments.ts";
 import type { GithubSyncReport } from "./commentStore.ts";
 import "./comments-github.css";
+import "../chat/chat.css";
+import { openUrl } from "../../backend.ts";
+import { CommentMarkdown } from "./commentMarkdown.ts";
 import { revealLine, type LineAnchor, type LineRange } from "./FileDiffView";
 import { commentTargets, stepComment } from "./nav.ts";
 import type { DiffScope, FileDiff } from "./types.ts";
@@ -101,27 +103,8 @@ function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }
   );
 }
 
-/** A ```suggestion block on GitHub, shown as the change it proposes. */
-function SuggestedChange({ base, code }: { base: string; code: string }) {
-  return (
-    <div className="oc-suggestion">
-      <div className="oc-suggestion-head">Suggested change</div>
-      {suggestionRows(base, code).map((r, i) => (
-        <div key={i} className={`oc-suggestion-row ${r.kind}`}>
-          <span className="sign">{r.kind === "del" ? "-" : "+"}</span>
-          {r.text}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function CommentBody({ c }: { c: DiffComment }) {
-  return (
-    <div className="oc-comment-body">
-      {bodyParts(c.body, c.suggestion_base_code).map((p, i) => (p.kind === "text" ? <span key={i}>{p.text}</span> : <SuggestedChange key={i} base={c.suggestion_base_code ?? ""} code={p.code} />))}
-    </div>
-  );
+  return <CommentMarkdown body={c.body} suggestionBaseCode={c.suggestion_base_code} onOpenLink={(href) => void openUrl(href)} />;
 }
 
 /** Avatar and login of a comment's GitHub author. */
@@ -132,6 +115,12 @@ function GithubCommentAuthor({ c }: { c: DiffComment }) {
       <strong>{c.author ? `@${c.author}` : "GitHub"}</strong>
     </span>
   );
+}
+
+/** Confirmation for Delete. A GitHub comment only leaves this workspace: it stays on the PR and comes back with the next sync. */
+function deletePrompt(c: DiffComment): string {
+  if (commentSource(c) === "remote") return "Delete this GitHub comment here? It stays on the pull request and comes back the next time comments sync.";
+  return c.reply_to_comment_id ? "Delete this reply?" : "Delete this comment and its replies?";
 }
 
 function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
@@ -160,14 +149,14 @@ function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
           </a>
         )}
         {source === "user-local" && (
-          <>
-            <button className="oc-link" onClick={() => setEditing(true)}>
-              Edit
-            </button>
-            <button className="oc-link" onClick={() => window.confirm(c.reply_to_comment_id ? "Delete this reply?" : "Delete this comment and its replies?") && void ops.remove(c)}>
-              Delete
-            </button>
-          </>
+          <button className="oc-link" onClick={() => setEditing(true)}>
+            Edit
+          </button>
+        )}
+        {canDeleteComment(c) && (
+          <button className="oc-link" onClick={() => window.confirm(deletePrompt(c)) && void ops.remove(c)}>
+            Delete
+          </button>
         )}
       </div>
       <CommentBody c={c} />

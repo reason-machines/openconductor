@@ -213,6 +213,14 @@ export function commentSource(c: Pick<DiffComment, "remote_url" | "author">): Co
   return c.remote_url ? "remote" : c.author ? "agent-local" : "user-local";
 }
 
+/** Whether a comment card offers Delete. As in the reference (renderApp 0.87.6): while a comment is pending,
+ *  its card (`kVo`) offers Delete only for the user's own comments; once it has left pending, the other
+ *  card (`TVo`) offers it for every source, GitHub included. Ours has one non-pending state, `sent`.
+ *  Delete removes the local row only; GitHub sync puts a remote comment back while it is still on the PR. */
+export function canDeleteComment(c: Pick<DiffComment, "remote_url" | "author" | "state">): boolean {
+  return commentSource(c) === "user-local" || c.state !== "pending";
+}
+
 /** A thread synced from a GitHub review thread (resolvable on GitHub). */
 export function isRemoteThread(t: Thread): boolean {
   return commentSource(t.root) === "remote" && t.root.thread_id !== null;
@@ -231,27 +239,6 @@ export function fileThreads(threads: Thread[], path: string): Thread[] {
 /** Tags shown on a comment: resolved wins over outdated, as in the reference. */
 export function commentTags(c: Pick<DiffComment, "is_resolved" | "is_outdated">): ("Resolved" | "Outdated")[] {
   return c.is_resolved ? ["Resolved"] : c.is_outdated ? ["Outdated"] : [];
-}
-
-export type BodyPart = { kind: "text"; text: string } | { kind: "suggestion"; code: string };
-
-const SUGGESTION = /^```suggestion[^\n]*\n([\s\S]*?)^```[ \t]*$/gm;
-
-/** Split a comment body into text and ```suggestion blocks. Without the original code
- *  (`suggestion_base_code`) a suggestion cannot be shown as a change and stays text. */
-export function bodyParts(body: string, suggestionBaseCode: string | null): BodyPart[] {
-  if (suggestionBaseCode === null) return [{ kind: "text", text: body }];
-  const parts: BodyPart[] = [];
-  let at = 0;
-  for (const m of body.matchAll(SUGGESTION)) {
-    const before = body.slice(at, m.index).replace(/\n$/, "");
-    if (before.trim()) parts.push({ kind: "text", text: before });
-    parts.push({ kind: "suggestion", code: m[1].replace(/\n$/, "") });
-    at = m.index + m[0].length;
-  }
-  const rest = body.slice(at).replace(/^\n/, "");
-  if (rest.trim() || parts.length === 0) parts.push({ kind: "text", text: rest });
-  return parts;
 }
 
 export interface SuggestionRow {

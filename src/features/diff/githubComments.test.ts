@@ -1,7 +1,7 @@
 // Run: node --experimental-strip-types --test src/features/diff/*.test.ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { bodyParts, commentSource, commentTags, fileThreads, isRemoteThread, pendingForAgent, prThreads, suggestionRows, threadsAt, threadsOf, type DiffComment } from "./comments.ts";
+import { canDeleteComment, commentSource, commentTags, fileThreads, isRemoteThread, pendingForAgent, prThreads, suggestionRows, threadsAt, threadsOf, type DiffComment } from "./comments.ts";
 
 const base: DiffComment = {
   id: "c",
@@ -62,19 +62,6 @@ test("resolved wins over outdated; neither goes to the agent; PR comments never 
   assert.deepEqual(pendingForAgent(cs).map((c) => c.id), ["live"]);
 });
 
-test("suggestion blocks become changes only when the original code is known", () => {
-  const body = "Rename it:\n```suggestion\nconst total = 1;\n```\nThanks";
-  assert.deepEqual(bodyParts(body, null), [{ kind: "text", text: body }]);
-  assert.deepEqual(bodyParts(body, "const sum = 1;"), [
-    { kind: "text", text: "Rename it:" },
-    { kind: "suggestion", code: "const total = 1;" },
-    { kind: "text", text: "Thanks" },
-  ]);
-  assert.deepEqual(bodyParts("```suggestion\n```", "x"), [{ kind: "suggestion", code: "" }]);
-  assert.deepEqual(bodyParts("plain", "x"), [{ kind: "text", text: "plain" }]);
-  assert.deepEqual(bodyParts("```ts\ncode\n```", "x"), [{ kind: "text", text: "```ts\ncode\n```" }]);
-});
-
 test("suggestion rows: old lines removed, new lines added; empty means delete", () => {
   assert.deepEqual(suggestionRows("a\nb", "c"), [
     { kind: "del", text: "a" },
@@ -82,4 +69,13 @@ test("suggestion rows: old lines removed, new lines added; empty means delete", 
     { kind: "add", text: "c" },
   ]);
   assert.deepEqual(suggestionRows("a", ""), [{ kind: "del", text: "a" }]);
+});
+
+test("Delete: always on your own comments; on GitHub and agent comments once they are no longer pending", () => {
+  assert.equal(canDeleteComment(base), true);
+  assert.equal(canDeleteComment({ ...base, state: "sent" }), true);
+  assert.equal(canDeleteComment(gh({})), false);
+  assert.equal(canDeleteComment(gh({ state: "sent" })), true);
+  assert.equal(canDeleteComment({ ...base, author: "agent" }), false);
+  assert.equal(canDeleteComment({ ...base, author: "agent", state: "sent" }), true);
 });

@@ -77,6 +77,24 @@ python slices of the bundle text around those offsets. REA was used for a
   suggestion means delete).
 - Actions: Resolve only for remote comments with a thread id ("Resolving..."
   while pending); Edit only for user-local; Delete; add-to-chat.
+- Delete, re-read 2026-11-05 (Conductor 0.87.6, renderApp sha256
+  `5199d392…` bytes 9412300-9419900; index sha256 `b5b01f33…` bytes
+  2294900-2296800 and 3060976): a comment in state pending or
+  ready_for_review, or one sitting in a composer, uses one card that offers
+  Edit and Delete only for user-local comments. Any other state uses a second
+  card that offers Delete for every source, GitHub included, with Edit still
+  user-local only. Delete is `DELETE FROM diff_comments WHERE id = ?` (that
+  row only, no confirmation). There is also a separate Hide / Show toggle in
+  the comments panel (`state = 'hidden'`, which the sync's upsert leaves
+  alone); we have no comments panel and did not port it.
+- Sync keeps no tombstone (`INSERT OR IGNORE`, index bytes 2290032 and
+  2292478), so a deleted GitHub comment returns, pending, on the next sync
+  while it is still on the PR.
+- Body markdown (renderApp bytes 9420917-9423700): react-markdown with
+  remark-gfm, remark-breaks and a plugin that links file paths, then
+  rehype-raw and rehype-sanitize with hast-util-sanitize's default schema
+  plus `sub`, `sup`, `details`, `summary`; a `code` override draws a
+  `suggestion` fence as the Suggested change when the base code is known.
 - List rows show a "Resolved" tag (resolved, or state reviewed) and an
   "Outdated" tag only when not resolved. A detail header has "View on GitHub".
 - Resolve runs `resolveReviewThread` through gh, requires GitHub to confirm
@@ -102,8 +120,10 @@ python slices of the bundle text around those offsets. REA was used for a
 - Frontend: `comments.ts` (source, tags, suggestion parsing, PR-level and
   file-level thread selection; tests in `githubComments.test.ts`),
   `commentsApi.ts`, `ReviewComments.tsx` (author/avatar, Resolved/Outdated,
-  View on GitHub, Suggested change, Resolve on GitHub; no reply/edit/delete on
-  GitHub comments), `DiffViewer.tsx` (`notes` slot above the file),
+  View on GitHub, Suggested change, Resolve on GitHub; no reply or edit on
+  GitHub comments; Delete on them once they are no longer pending, through
+  `canDeleteComment` in comments.ts, with a confirmation that says the comment
+  comes back on the next sync, #389), `DiffViewer.tsx` (`notes` slot above the file),
   `comments-github.css`.
 
 ## Divergences
@@ -116,8 +136,13 @@ python slices of the bundle text around those offsets. REA was used for a
 - Location for the old side is stored as our `base`, not the reference's
   `original` (our store's existing enum). Reading a reference database row
   with `original` is not handled yet by our store.
-- Comment bodies are shown as plain text (we have no markdown renderer in the
-  diff viewer yet); only ```` ```suggestion ```` blocks are rendered.
+- Comment bodies render as markdown (`src/features/diff/commentMarkdown.ts`,
+  #389): the chat's remark plugins and components, raw HTML through
+  rehype-raw and rehype-sanitize with the default schema plus sub / sup /
+  details / summary (the reference's `MMi` setup in renderApp 0.87.6), and
+  ```` ```suggestion ```` fences drawn by the `code` component. Not ported:
+  the reference's remark plugin that links file paths in the text, and its
+  dedent of indented code blocks.
 - Where comments show: inline under their end line (as local comments do);
   outdated threads without a line and whole-file comments above the file's
   diff; PR-level comments in a collapsible "N comments on the pull request"
@@ -151,3 +176,10 @@ python slices of the bundle text around those offsets. REA was used for a
   The input files are ~185 MB each because the whole application Evidence is
   inlined; there is no way to pass the Evidence by id or path, which makes
   every new seed a large rewrite. See `evidence/rea/rea-invocations.tsv`.
+- 2026-11-05 (#389): `trace-javascript-semantics` on the index-only
+  application Evidence (`ev_ed84d75c…`) seeded with the literal
+  `DELETE FROM diff_comments WHERE id = ?` and with `hideComment`, direction
+  callers: both exit 0 in ~13 s with `status: partial` and 0 seed matches.
+  SQL text and method names inside class bodies are not reachable as seeds,
+  so the Delete and Hide behaviour above comes from bounded bundle reads
+  (rows `comments_*` in `evidence/rea/rea-invocations.tsv`).
