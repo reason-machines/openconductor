@@ -31,6 +31,7 @@ Mutation check (by hand, once): ignoring the flow gate fails `flow_control_pause
 
 ## Our choices where the reference is not observable
 
+- IPC ([`terminal_commands.rs`](../../src-tauri/src/terminal_commands.rs), payloads in [`wire.rs`](../../src-tauri/src/terminal/wire.rs)): the reference's `pty_spawn`, `pty_write`, `pty_resize`, `pty_kill`, `pty_ack_bytes`, plus our `pty_read_history`, `pty_clear_history`, `pty_list`. Events go out on one `pty-event` channel tagged `kind: ready | data | exit` with the terminal id; data is base64 so a UTF-8 sequence split across reads arrives intact. The app kills every terminal on exit.
 - Watermarks: 512 KiB high, 128 KiB low. Default history: 1 MiB. The reference values were not recovered.
 - `TERM=xterm-256color`, `COLORTERM=truecolor`; default program is the user's login shell (`$SHELL`, else passwd).
 - An exited terminal stays readable (history, exit status) until `kill`; writes to it fail with `NotRunning`.
@@ -40,7 +41,7 @@ Mutation check (by hand, once): ignoring the flow gate fails `flow_control_pause
 
 - `pty_screen_text` / `pty_screen_snapshot` (alacritty_terminal grid), `pty_persist_terminal_history` / `pty_load_terminal_history`, mirrors.
 - `run_script` / `run_script_mode` and `execute_shell_command[_cancellable]` / `cancel_shell_command`.
-- Tauri command wiring and the frontend panel (tabs, xterm renderer), which depend on the app shell landing.
+- The frontend panel (tabs, xterm renderer) and run-script output.
 
 ## REA gaps
 
