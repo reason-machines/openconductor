@@ -31,6 +31,8 @@ pub struct Settings {
     pub models: Models,
     pub providers: Providers,
     pub advanced: Advanced,
+    pub experimental: Experimental,
+    pub terminal: Terminal,
     #[serde(flatten)]
     pub extra: toml::Table,
 }
@@ -45,6 +47,8 @@ impl Default for Settings {
             models: Models::default(),
             providers: Providers::default(),
             advanced: Advanced::default(),
+            experimental: Experimental::default(),
+            terminal: Terminal::default(),
             extra: toml::Table::new(),
         }
     }
@@ -62,6 +66,38 @@ pub struct Advanced {
     pub terminal_scrollback_limit_bytes: Option<u64>,
     #[serde(flatten)]
     pub extra: toml::Table,
+}
+
+/// Conductor's Experimental tab (Settings › More › Experimental). Key names
+/// are Conductor's setting keys.
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Experimental {
+    /// "Big terminal mode": ⌘⇧T opens a terminal running the Big terminal preset.
+    pub experimental_big_terminal_mode: bool,
+    #[serde(flatten)]
+    pub extra: toml::Table,
+}
+
+/// Conductor's "Big terminal" settings tab (tab id `terminal`).
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Terminal {
+    /// A built-in preset (`claude`, `codex`, ...) or `custom:<id>`; `None`
+    /// means Conductor's default, Claude. Unknown values are kept; the
+    /// frontend reads them as Claude, as Conductor does.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub big_terminal_preset: Option<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub big_terminal_custom_commands: Vec<BigTerminalCustomCommand>,
+    #[serde(flatten)]
+    pub extra: toml::Table,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct BigTerminalCustomCommand {
+    pub id: String,
+    pub command: String,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]

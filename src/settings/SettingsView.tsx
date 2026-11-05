@@ -6,7 +6,9 @@ import { DefaultModelsPage } from "./DefaultModelsPage";
 import { GeneralPage } from "./GeneralPage";
 import { GitPage } from "./GitPage";
 import { KeyBindingsPage } from "./KeyBindingsPage";
-import { pageLabel, SETTINGS_GROUPS, type SettingsPage } from "./pages";
+import { BigTerminalPage } from "./BigTerminalPage";
+import { ExperimentalPage } from "./ExperimentalPage";
+import { pageLabel, settingsGroups, type SettingsPage } from "./pages";
 import { useSettings } from "./useSettings";
 
 interface Props {
@@ -25,9 +27,9 @@ export function SettingsView({ page, onNavigate, onClose }: Props) {
     <div className="settings">
       <nav className="settings-nav" aria-label="Settings pages">
         <div className="sidebar-drag" data-tauri-drag-region />
-        {SETTINGS_GROUPS.map((g) => (
-          <div key={g.title} className="settings-group">
-            <div className="settings-group-title">{g.title}</div>
+        {settingsGroups(settings?.experimental?.experimental_big_terminal_mode === true).map((g) => (
+          <div key={g.title || g.pages[0]?.id} className="settings-group">
+            {g.title && <div className="settings-group-title">{g.title}</div>}
             {g.pages.map((p) => (
               <button
                 key={p.id}
@@ -63,6 +65,10 @@ export function SettingsView({ page, onNavigate, onClose }: Props) {
           <AgentsPage settings={settings} reload={reload} />
         ) : page === "appearance" ? (
           <AppearancePage settings={settings} save={save} />
+        ) : page === "experimental" ? (
+          <ExperimentalPage settings={settings} save={save} />
+        ) : page === "terminal" ? (
+          <BigTerminalPage settings={settings} save={save} />
         ) : page === "advanced" ? (
           <AdvancedPage settings={settings} save={save} />
         ) : page === "git" ? (
