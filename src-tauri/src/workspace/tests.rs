@@ -715,6 +715,26 @@ fn service_reads_a_registry_without_names_and_bumps_past_workspace_folders() {
 }
 
 #[test]
+fn ensure_repository_twice_on_one_folder_adds_no_project() {
+    use super::service::WorkspaceService;
+    let f = fixture();
+    let svc = WorkspaceService::new(&f.tmp.path().join("svc")).unwrap();
+    // An unregistered folder: the first lookup registers it, the second finds it.
+    let first = svc.ensure_repository(None, &f.repo).unwrap();
+    assert_eq!(svc.repositories().len(), 1);
+    let second = svc.ensure_repository(None, &f.repo).unwrap();
+    assert_eq!((second.id.as_str(), svc.repositories().len()), (first.id.as_str(), 1));
+    // With a `-v1` copy on the folder, lookups by id or by folder add nothing.
+    let copy = svc.add_repository(&f.repo).unwrap();
+    let before = svc.repositories().len();
+    assert_eq!(svc.ensure_repository(Some(&copy.id), &f.repo).unwrap().id, copy.id);
+    assert_eq!(svc.ensure_repository(Some(&copy.id), &f.repo).unwrap().id, copy.id);
+    assert_eq!(svc.ensure_repository(None, &f.repo).unwrap().id, first.id);
+    assert_eq!(svc.ensure_repository(None, &f.repo).unwrap().id, first.id);
+    assert_eq!(svc.repositories().len(), before);
+}
+
+#[test]
 fn service_registers_repositories_and_creates_from_form_fields() {
     use super::service::{CreateWorkspaceRequest, WorkspaceService};
     let f = fixture();

@@ -458,6 +458,7 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
       {open && (
         <BranchPicker
           base={target.branch}
+          repoId={repo.id}
           repoPath={repo.path}
           defaultBranch={repo.defaultBranch}
           onPick={(b) => {

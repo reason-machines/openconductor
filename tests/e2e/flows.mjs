@@ -326,12 +326,18 @@ export const flows = [
       await wd.waitFor("e2e-demo-v1 in the sidebar", async () => (await textsOf(wd, ".sb-repo-name")).includes("e2e-demo-v1")).catch(async (e) => {
         throw new Error(`${e.message}; sidebar ${JSON.stringify(await textsOf(wd, ".sb-repo-name"))}`);
       });
+      // Exactly two projects on the folder, whatever their names: the
+      // create-workspace flow and the branch lookups must not have
+      // registered hidden extra copies (#401 once saw e2e-demo-v3 here).
       const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_repos');", []);
-      const demo = rows.filter((r) => r.name === "e2e-demo" || r.name === "e2e-demo-v1");
-      const roots = new Set(demo.map((r) => r.rootPath));
-      if (demo.length !== 2 || roots.size !== 1 || new Set(demo.map((r) => r.id)).size !== 2) {
-        throw new Error(`want two repos rows on one folder, got ${JSON.stringify(demo.map((r) => [r.id, r.name, r.rootPath]))}`);
+      const root = rows.find((r) => r.name === "e2e-demo")?.rootPath;
+      const demo = rows.filter((r) => r.rootPath === root);
+      const names = demo.map((r) => r.name).sort();
+      if (!root || demo.length !== 2 || new Set(demo.map((r) => r.id)).size !== 2 || names.join() !== "e2e-demo,e2e-demo-v1") {
+        throw new Error(`want two repos rows on one folder (e2e-demo, e2e-demo-v1), got ${JSON.stringify(demo.map((r) => [r.id, r.name, r.rootPath]))}`);
       }
+      const shown = (await textsOf(wd, ".sb-repo-name")).filter((n) => /^e2e-demo(-v\d+)?$/.test(n)).sort();
+      if (shown.join() !== "e2e-demo,e2e-demo-v1") throw new Error(`want the sidebar to show e2e-demo and e2e-demo-v1, got ${JSON.stringify(shown)}`);
     },
   },
 ];
