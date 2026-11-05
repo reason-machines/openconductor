@@ -1,0 +1,276 @@
+{
+  "ref": "origin/main",
+  "sha": "dd13f1ce7563",
+  "items": [
+    {
+      "id": "acp.module",
+      "title": "reason_acp (ACP client and provider) and reason_chat are modules of the app",
+      "parent": "agent.session-run",
+      "authority": "static",
+      "status": "matched",
+      "probes": [
+        {
+          "file": "src-tauri/src/lib.rs",
+          "pattern": "^pub mod reason_acp;",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/lib.rs",
+          "pattern": "^pub mod reason_chat;",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/lib.rs",
+          "pattern": "ReasonChats::default\\(\\)",
+          "matched": true,
+          "file_exists": true
+        }
+      ]
+    },
+    {
+      "id": "acp.commands",
+      "title": "Tauri commands reason_cli_path, reason_open_chat, reason_prompt, reason_cancel, reason_list_sessions registered",
+      "parent": "agent.session-run",
+      "authority": "static",
+      "status": "matched",
+      "probes": [
+        {
+          "file": "src-tauri/src/lib.rs",
+          "pattern": "reason_chat::reason_cli_path\\b",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/lib.rs",
+          "pattern": "reason_chat::reason_open_chat\\b",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/lib.rs",
+          "pattern": "reason_chat::reason_prompt\\b",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/lib.rs",
+          "pattern": "reason_chat::reason_cancel\\b",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/lib.rs",
+          "pattern": "reason_chat::reason_list_sessions\\b",
+          "matched": true,
+          "file_exists": true
+        }
+      ]
+    },
+    {
+      "id": "acp.agent-kind",
+      "title": "Reason agent kind that signs in through the reason CLI (reason_login, no API key)",
+      "parent": "agent.providers",
+      "authority": "CI test",
+      "status": "matched",
+      "probes": [
+        {
+          "file": "src-tauri/src/agent/reason.rs",
+          "pattern": "\"reason_login\"",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/agent/byok.rs",
+          "pattern": "AgentKind::Reason => ProviderConfig::ReasonLogin",
+          "matched": true,
+          "file_exists": true
+        }
+      ]
+    },
+    {
+      "id": "acp.settings-slot",
+      "title": "providers.reason settings slot, validated like the other agents",
+      "parent": "agent.providers",
+      "authority": "CI test",
+      "status": "matched",
+      "probes": [
+        {
+          "file": "src-tauri/src/settings/model.rs",
+          "pattern": "pub reason: Option<ProviderConfig>",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/settings/tests.rs",
+          "pattern": "providers\\.reason",
+          "matched": true,
+          "file_exists": true
+        }
+      ]
+    },
+    {
+      "id": "acp.paths",
+      "title": "Tool paths marked local (workspace folder) or cloud (a Session's /repo checkout) with the same relative path",
+      "parent": "agent.session-run",
+      "authority": "CI test",
+      "status": "matched",
+      "probes": [
+        {
+          "file": "src-tauri/src/reason_acp/updates.rs",
+          "pattern": "pub fn map_path",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/reason_acp/provider_tests.rs",
+          "pattern": "fn reports_and_cloud_paths_are_told_apart",
+          "matched": true,
+          "file_exists": true
+        }
+      ]
+    },
+    {
+      "id": "acp.chat-adapter",
+      "title": "Chat adapter turns Reason events into the transcript; its frontend tests run in CI",
+      "parent": "agent.session-run",
+      "authority": "CI test",
+      "status": "matched",
+      "probes": [
+        {
+          "file": "src/features/chat/reason.test.ts",
+          "pattern": "one chat shows a local home path, then a cloud /repo path in a follow-up",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": ".github/workflows/ci.yml",
+          "pattern": "node --test \"src/\\*\\*/\\*\\.test\\.ts\"",
+          "matched": true,
+          "file_exists": true
+        }
+      ]
+    },
+    {
+      "id": "acp.chat-panel",
+      "title": "The desktop chat panel sends every message to Reason and shows Stop while a turn runs",
+      "parent": "agent.message-queue",
+      "authority": "static",
+      "status": "matched",
+      "probes": [
+        {
+          "file": "src/components/WorkspaceView.tsx",
+          "pattern": "sendReason\\(workspace\\.id, cwd, text\\)",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src/components/WorkspaceView.tsx",
+          "pattern": "stopReason\\(workspace\\.id\\)",
+          "matched": true,
+          "file_exists": true
+        }
+      ]
+    },
+    {
+      "id": "acp.resume",
+      "title": "One Reason Session per workspace; it resumes after an app restart or a CLI crash",
+      "parent": "agent.message-queue",
+      "authority": "CI test",
+      "status": "matched",
+      "probes": [
+        {
+          "file": "src/features/chat/reasonChat.ts",
+          "pattern": "openconductor\\.reason\\.session\\.",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/reason_acp/provider_tests.rs",
+          "pattern": "fn a_stored_session_resumes_after_restart_and_after_a_crash",
+          "matched": true,
+          "file_exists": true
+        }
+      ]
+    },
+    {
+      "id": "acp.live-cli",
+      "title": "The real reason CLI starts and answers initialize, required in CI on macOS and Linux",
+      "parent": "agent.session-run",
+      "authority": "CI live (real CLI, no sign-in)",
+      "status": "matched",
+      "probes": [
+        {
+          "file": ".github/workflows/reason-acp.yml",
+          "pattern": "REASON_ACP_REQUIRE_LIVE: \"1\"",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": ".github/workflows/reason-acp.yml",
+          "pattern": "reasonmachines\\.com/install\\.sh",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/reason_acp/cli_tests.rs",
+          "pattern": "fn live_cli_answers_initialize",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "src-tauri/src/reason_acp/cli_tests.rs",
+          "pattern": "fn dyld_variables_are_not_passed_to_reason",
+          "matched": true,
+          "file_exists": true
+        }
+      ]
+    },
+    {
+      "id": "acp.e2e",
+      "title": "End-to-end through the built app: local path, cloud /repo follow-up, third turn in the same Session, Stop",
+      "parent": "agent.session-run",
+      "authority": "CI e2e (fake CLI)",
+      "status": "matched",
+      "probes": [
+        {
+          "file": ".github/workflows/e2e.yml",
+          "pattern": "tools/e2e/reason-chat\\.e2e\\.mjs",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "tools/e2e/reason-chat.e2e.mjs",
+          "pattern": "send\\(\"cloud\"\\)",
+          "matched": true,
+          "file_exists": true
+        },
+        {
+          "file": "tools/reason-acp/fake_reason_acp.py",
+          "pattern": "cmd == \"local\"",
+          "matched": true,
+          "file_exists": true
+        }
+      ]
+    },
+    {
+      "id": "acp.signed-in",
+      "title": "Signed-in reason CLI on a Mac: one chat shows a home-folder path locally, then a cloud /repo path, then a follow-up",
+      "parent": "agent.session-run",
+      "authority": "runtime",
+      "status": "missing",
+      "probes": [
+        {
+          "file": "evidence/reason-acp/signed-in-run.json",
+          "pattern": "\"result\":\\s*\"pass\"",
+          "matched": false,
+          "file_exists": false
+        }
+      ]
+    }
+  ],
+  "matched": 10,
+  "total": 11,
+  "parity": 90.9
+}

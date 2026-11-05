@@ -39,7 +39,20 @@ export interface RepositoryDto {
 
 /** Register a local checkout with the workspace service (`add_repository`). */
 export async function addRepository(path: string): Promise<RepositoryDto> {
+  if (!inTauri()) {
+    const root = path.replace(/\/+$/, "");
+    return { id: root, name: root.split("/").pop() ?? root, root, defaultBranch: "main" };
+  }
   return invoke<RepositoryDto>("add_repository", { path });
+}
+
+/** Open a web page in the default browser (tauri-plugin-opener's `open_url`). */
+export async function openUrl(url: string): Promise<void> {
+  if (!inTauri()) {
+    window.open(url, "_blank", "noopener");
+    return;
+  }
+  await invoke("plugin:opener|open_url", { url });
 }
 
 // Outside Tauri these return demo data so the dialog can be tried in a browser.

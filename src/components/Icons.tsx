@@ -26,4 +26,13 @@ export const LogoMark = ({ size = 20 }: P) => (
 );
 export const ArrowLeftIcon = ({ size }: P) => (<svg {...base(size)}><path d="M19 12H5M12 19l-7-7 7-7" /></svg>);
 export const ArrowRightIcon = ({ size }: P) => (<svg {...base(size)}><path d="M5 12h14M12 5l7 7-7 7" /></svg>);
+export const MoreIcon = ({ size }: P) => (<svg {...base(size)}><circle cx="5" cy="12" r="1" /><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /></svg>);
 export const ChevronDownIcon = ({ size }: P) => (<svg {...base(size)}><path d="m6 9 6 6 6-6" /></svg>);
+export const FileCodeIcon = ({ size }: P) => (<svg {...base(size)}><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M10 12.5 8.5 14l1.5 1.5M14 12.5l1.5 1.5-1.5 1.5" /></svg>);
+/** A plain circled "N" standing in for the Next.js template mark. */
+export const NextMarkIcon = ({ size = 16 }: P) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+    <circle cx="12" cy="12" r="10" fill="currentColor" />
+    <path d="M9 16.5v-9l7.5 10M15 7.5v5.5" fill="none" stroke="var(--bg)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);

@@ -122,6 +122,18 @@ fn bad_values_are_rejected_on_load() {
             "appearance.mono_font",
         ),
         (
+            "[appearance]\nterminal_font_family = \"Fira}\"",
+            "appearance.terminal_font_family",
+        ),
+        (
+            "[appearance]\nterminal_font_size = 9",
+            "appearance.terminal_font_size",
+        ),
+        (
+            "[appearance]\nterminal_font_size = 21",
+            "appearance.terminal_font_size",
+        ),
+        (
             "[providers.claude]\nkind = \"codex_login\"",
             "providers.claude: codex_login is a codex provider",
         ),
@@ -152,6 +164,8 @@ fn appearance_round_trips_and_defaults_when_missing() {
     s.appearance.zoom_level_v2 = 1.1;
     s.appearance.low_contrast_dark_mode = true;
     s.appearance.mono_font = Some("iA Writer Mono".into());
+    s.appearance.terminal_font_family = Some("FiraCode Nerd Font".into());
+    s.appearance.terminal_font_size = 15;
     save(&path, &s).unwrap();
     assert_eq!(load(&path).unwrap().appearance, s.appearance);
     for zoom in [0.5, 0.7, 3.0] {
