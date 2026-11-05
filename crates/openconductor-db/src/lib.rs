@@ -25,6 +25,13 @@ pub use sqlx::sqlite::SqlitePool;
 
 pub mod app_settings;
 pub mod diff_comments;
+pub mod env_vars;
+pub mod favorite_models;
+pub mod iso_time;
+pub mod maintenance;
+pub mod navigation;
+pub mod outbox;
+pub mod port_forwards;
 pub mod repos;
 pub mod terminal_sessions;
 pub mod workspaces;
