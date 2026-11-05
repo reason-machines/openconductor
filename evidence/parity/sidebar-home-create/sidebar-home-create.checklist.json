@@ -359,7 +359,7 @@
         ]
       },
       "detect": [
-        "Digit[1-9]|key\\s*===?\\s*['\"][1-9]|(Cmd|Mod|Meta)\\+[1-9]|switch_?to_?workspace",
+        "Digit[1-9]|key\\s*===?\\s*['\"][1-9]|(Cmd|Mod|Meta)\\+[1-9]|switch_?to_?workspace|workspace\\.switchTo",
         "workspace_?number|workspaceNumber|show_?workspace_?numbers"
       ]
     },
@@ -374,7 +374,7 @@
         ]
       },
       "detect": [
-        "next_?workspace|nextWorkspace",
+        "next_?workspace|nextWorkspace|workspace\\.(next|previous)\\b|stepWorkspace",
         "prev(ious)?_?workspace|prevWorkspace|previousWorkspace"
       ]
     },
@@ -390,7 +390,7 @@
         ]
       },
       "detect": [
-        "(search|filter)_?workspaces?|workspace_?(search|filter)"
+        "(search|filter)_?workspaces?|workspace_?(search|filter)|tokensMatch\\(q,\\s*\\[w\\.name"
       ]
     },
     {
@@ -870,7 +870,7 @@
         ]
       },
       "detect": [
-        "recent_?workspaces|recentWorkspaces"
+        "recent_?workspaces|recentWorkspaces|RECENT_LIMIT|setRecents"
       ]
     },
     {
@@ -976,7 +976,7 @@
         ]
       },
       "detect": [
-        "create_?workspace_?page|CreateWorkspacePage|NewWorkspacePage|path:\\s*\"/create\"",
+        "create_?workspace_?page|CreateWorkspacePage|NewWorkspacePage|path:\\s*\"/create\"|CreateWorkspaceDialog",
         "new_?workspace_?composer|NewWorkspaceComposer|create\\w{0,30}composer"
       ]
     },

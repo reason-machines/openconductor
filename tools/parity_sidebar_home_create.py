@@ -5,6 +5,8 @@ Usage:
   parity_sidebar_home_create.py validate [--checklist F]          check every evidence ref resolves
   parity_sidebar_home_create.py pin      [--checklist F]          (re)write copy-catalog hash pins
   parity_sidebar_home_create.py score    [--checklist F] [--ref GITREF | --tree DIR] [--json OUT] [--md OUT]
+  parity_sidebar_home_create.py obligations [--checklist F] [--ref GITREF | --tree DIR] [--json OUT] [--md OUT]
+                                          builder obligations for every item whose verdict is not implemented
 
 Conductor strings are referenced by copy-catalog index only; pins hold a sha256
 prefix per index so a regenerated catalog fails validation instead of silently
@@ -24,8 +26,10 @@ ROOT = Path(__file__).resolve().parent.parent
 EV = ROOT / "evidence"
 DEFAULT_CHECKLIST = EV / "parity" / "sidebar-home-create" / "sidebar-home-create.checklist.json"
 SOURCE_DIRS = ("src/", "src-tauri/src/", "src-tauri/migrations/", "migrations/", "crates/")
-# Registries declare Conductor commands without implementing them; they are not features.
-EXCLUDE_DIRS = ("src/keybindings/", "src/palette/")
+# src/keybindings/ is binding machinery (registry of Conductor command ids, override
+# storage, dispatch); naming a command there is not a feature. Handlers that act on a
+# binding live elsewhere (e.g. src/palette/PaletteHost.tsx) and do count.
+EXCLUDE_DIRS = ("src/keybindings/",)
 SOURCE_EXT = (".ts", ".tsx", ".js", ".jsx", ".rs", ".sql", ".css")
 TEST_PATH = re.compile(r"(^|/)(tests?|__tests__)(/|\.rs$)|\.(test|spec)\.[jt]sx?$|_tests?\.rs$")
 VERDICT_WEIGHT = {"implemented": 1.0, "partial": 0.5, "backend": 0.25, "missing": 0.0}
@@ -227,9 +231,101 @@ def to_md(res: dict) -> str:
     return "\n".join(out) + "\n"
 
 
+# Which builder owns an item. First matching prefix wins; `also` lists builders whose work
+# the item depends on (for example the DB crate must be linked before pins persist).
+OWNERS = [
+    ("create.setup-script", "create-workspace", ["setup-and-run-scripts"]),
+    ("create.autostart-run", "setup-and-run-scripts", ["create-workspace"]),
+    ("create.in-section", "create-workspace", ["sidebar"]),
+    ("create.", "create-workspace", []),
+    ("home.persist", "persistence", ["home"]),
+    ("home.colors", "home", ["theme"]),
+    ("home.", "home", []),
+    ("sidebar.search", "sidebar", ["search-and-palette"]),
+    ("sidebar.ws-numbers", "sidebar", ["keyboard-shortcuts"]),
+    ("sidebar.repo-order", "sidebar", ["persistence"]),
+    ("sidebar.repo-hide", "sidebar", ["persistence"]),
+    ("sidebar.repo-icon", "sidebar", ["persistence"]),
+    ("sidebar.ws-pinned", "sidebar", ["persistence"]),
+    ("sidebar.ws-unread", "sidebar", ["persistence"]),
+    ("sidebar.ws-status", "sidebar", ["persistence"]),
+    ("sidebar.sections", "sidebar", ["persistence"]),
+    ("sidebar.colors", "sidebar", ["theme"]),
+    ("sidebar.", "sidebar", []),
+]
+DONE_WHEN = {
+    "missing": "a user can reach the feature in the app and it behaves as the cited evidence describes",
+    "backend": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
+    "partial": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+}
+
+
+def owner(item_id: str) -> tuple[str, list[str]]:
+    for prefix, own, also in OWNERS:
+        if item_id.startswith(prefix):
+            return own, also
+    return "unassigned", []
+
+
+def obligations(res: dict, checklist: Path) -> dict:
+    """One builder obligation per item whose human verdict is not `implemented`."""
+    items = {i["id"]: i for i in load(checklist)["items"]}
+    rank = {"missing": 0, "backend": 1, "partial": 2}
+    rows = []
+    for r in res["items"]:
+        if r["verdict"] == "implemented":
+            continue
+        own, also = owner(r["id"])
+        ev = items[r["id"]].get("evidence", {})
+        rows.append({
+            "obligation_id": f"parity.{r['id']}",
+            "item": r["id"],
+            "area": r["area"],
+            "owner": own,
+            "depends_on_builders": also,
+            "feature": r["feature"],
+            "verdict": r["verdict"],
+            "gap": r["why"],
+            "done_when": DONE_WHEN.get(r["verdict"], "re-verify"),
+            "ledger_obligations": ev.get("ledger", []),
+            "evidence": {k: v for k, v in ev.items() if k != "ledger"},
+            "status": "open",
+        })
+    rows.sort(key=lambda o: (o["owner"], rank.get(o["verdict"], 9), o["item"]))
+    by_owner: dict[str, int] = {}
+    for o in rows:
+        by_owner[o["owner"]] = by_owner.get(o["owner"], 0) + 1
+    return {
+        "schema": "openconductor.builder-obligations.v1",
+        "ref": res["ref"],
+        "verdicts_verified_at": res.get("verdicts_verified_at"),
+        "verdict_parity_pct": res.get("verdict_parity_pct"),
+        "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
+        "open": len(rows),
+        "by_owner": dict(sorted(by_owner.items())),
+        "obligations": rows,
+    }
+
+
+def obligations_md(ob: dict) -> str:
+    out = [f"# Builder obligations: sidebar, Home and Create workspace", "",
+           f"Generated by `tools/parity_sidebar_home_create.py obligations` from the verdicts read on `{ob['ref']}` "
+           f"({ob['verdicts_verified_at']}). Verified parity {ob['verdict_parity_pct']}%. {ob['open']} open.", "",
+           ob["rule"], "", "| Owner | Open |", "|---|---|"]
+    out += [f"| {k} | {v} |" for k, v in ob["by_owner"].items()]
+    cur = None
+    for o in ob["obligations"]:
+        if o["owner"] != cur:
+            cur = o["owner"]
+            out += ["", f"## {cur}", "", "| Obligation | Verdict | Feature | Gap | Also needs | Ledger |", "|---|---|---|---|---|---|"]
+        out.append(f"| `{o['obligation_id']}` | {o['verdict']} | {o['feature']} | {o['gap']} | "
+                   f"{', '.join(o['depends_on_builders']) or '-'} | {', '.join(o['ledger_obligations']) or '-'} |")
+    return "\n".join(out) + "\n"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["validate", "pin", "score"])
+    ap.add_argument("cmd", choices=["validate", "pin", "score", "obligations"])
     ap.add_argument("--checklist", type=Path, default=DEFAULT_CHECKLIST)
     ap.add_argument("--ref")
     ap.add_argument("--tree", type=Path)
@@ -246,6 +342,18 @@ def main() -> int:
         print(f"pinned {pin(a.checklist)} copy indices")
         return 0
     res = score(a.checklist, a.ref, a.tree)
+    if a.cmd == "obligations":
+        if "verdict_parity_pct" not in res:
+            print("no verdicts file next to the checklist", file=sys.stderr)
+            return 1
+        ob = obligations(res, a.checklist)
+        if a.json:
+            a.json.write_text(json.dumps(ob, indent=1) + "\n")
+        md = obligations_md(ob)
+        if a.md:
+            a.md.write_text(md)
+        print(md)
+        return 0
     if a.json:
         a.json.write_text(json.dumps(res, indent=1) + "\n")
     md = to_md(res)
