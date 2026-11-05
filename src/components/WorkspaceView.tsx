@@ -87,7 +87,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   useEffect(() => {
     if (main) onRunningChange?.(running);
   }, [main, running, onRunningChange]);
-  // Garry Mode: tool calls start expanded (Conductor's `garry_mode`, toggled with ⌃O).
+  // Garry Mode (Conductor's `garry_mode`, "Don't collapse tool calls", toggled with ⌃O): tool
+  // groups stay open after the turn ends and tool calls start expanded.
   const garryMode = useAppPrefs().garry_mode;
 
   useEffect(() => {
@@ -164,6 +165,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           <Transcript
             transcript={transcript}
             expandToolsByDefault={garryMode}
+            dontCollapseToolCalls={garryMode}
             onRetry={(prompt) => submit(prompt, "queue")}
             // Conductor: workspace with a path, not archived; disabled while the agent works.
             onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
