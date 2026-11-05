@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { accountMenuModel, computerLabel, personIcon } from "./accountMenu.ts";
+import { accountMenuModel, computerLabel, personIcon } from "./accountMenuModel.ts";
 
 test("the personal organization reads as the person's Mac, or My Mac without a name", () => {
   assert.equal(computerLabel("Ada Lovelace"), "Ada Lovelace's Mac");

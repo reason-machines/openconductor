@@ -1,11 +1,11 @@
 // The sidebar's top row and its Account menu (Conductor 0.87.6 `oOt` →
 // `zna` @9,957,506 in the decoded renderApp-D_fmY7hW.js): a button labelled
 // "Account menu" with the avatar, "<name>'s Mac" and a chevron, opening a
-// 260 px menu aligned to its left edge. The model is in accountMenu.ts.
+// 260 px menu aligned to its left edge. The model is in accountMenuModel.ts.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { ChevronDownIcon, SettingsIcon, UserIcon } from "./Icons";
-import { accountMenuModel, type LocalAccount } from "./accountMenu";
+import { accountMenuModel, type LocalAccount } from "./accountMenuModel";
 
 const NO_ACCOUNT: LocalAccount = { name: "", email: null };
 

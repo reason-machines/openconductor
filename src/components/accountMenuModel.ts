@@ -7,7 +7,7 @@
 // personal organization reads "<name>'s Mac", other organizations their own
 // names. OpenConductor has no Conductor account or organizations, so the
 // only organization is the personal one, and the person is the local user
-// (`local_account`). Pure: unit tested in accountMenu.test.ts.
+// (`local_account`). Pure: unit tested in accountMenuModel.test.ts.
 
 /** What `local_account` returns. */
 export interface LocalAccount {
