@@ -2,14 +2,16 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`66a892a`, 2026-11-05)
+## Result on main (`962f017`, 2026-11-05)
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `df07012` | `4b9dc87` | `d8b3b2e` |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Sidebar | 33 | 20 | 9 | 1 | 3 | 0 | **75.0%** | 70.5% | 65.9% | 65.9% |
-| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 85.3% | 62.5% |
-| Create workspace | 17 | 14 | 2 | 0 | 1 | 0 | **88.2%** | 88.2% | 82.4% | 79.4% |
-| **All** | 68 | 47 | 15 | 1 | 4 | 1 | **81.7%** | 79.5% | 75.0% | 68.4% |
+| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Sidebar | 33 | 21 | 9 | 1 | 2 | 0 | **78.0%** | 75.0% | 70.5% | 65.9% | 65.9% |
+| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 85.3% | 62.5% |
+| Create workspace | 17 | 14 | 2 | 0 | 1 | 0 | **88.2%** | 88.2% | 88.2% | 82.4% | 79.4% |
+| **All** | 68 | 48 | 15 | 1 | 3 | 1 | **83.2%** | 81.7% | 79.5% | 75.0% | 68.4% |
+
+`sidebar.drag-to-section` is implemented by #412 (`93e4881`). Re-read against unmerged PR #400 (head `6e038d3`, Copy link and Cmd+Shift+C), `sidebar.ws-actions` becomes implemented once it merges: sidebar 79.5%, all items 84.0%. Until then it stays partial on main.
 
 **Since `df07012`.** Read on `66a892a`. Merges: #370 (sidebar sections, row status from every chat, 5-minute PR lookup for on-screen rows, Conductor's label rule), `407e222` (#271, #365: chat model/effort and queue keys; no item here), #384 (evidence only), #345 and #386 (settings rows and settings in conductor.db; no item here).
 
