@@ -363,6 +363,7 @@ pub fn run() {
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,
             settings::commands::update_settings,
+            settings::commands::get_repo_settings,
             settings::commands::provider_status,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
