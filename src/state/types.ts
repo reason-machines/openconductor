@@ -49,7 +49,12 @@ export interface Repo {
   hidden?: boolean;
 }
 
-export type Selection = { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
+/**
+ * `root` is Conductor's `/` route: the wordmark and the three entry cards, shown at
+ * start and when the open workspace goes away. `home` is its `/all-workspaces`
+ * route, the workspace list that the sidebar Home row and nav.home open.
+ */
+export type Selection = { kind: "root" } | { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
 
 export interface AppState {
   repos: Repo[];
