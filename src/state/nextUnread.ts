@@ -33,6 +33,15 @@ export function byRecentUpdate(a: Candidate, b: Candidate): number {
   return bu - au || b.createdAt - a.createdAt || a.id.localeCompare(b.id);
 }
 
+/**
+ * A user message at `at` is workspace activity: `updatedAt` moves forward to it,
+ * never back (Conductor's setSessionUpdatedAt, index-BGEQ8YjU.js @1,066,404,
+ * which also updates its cached workspace). Assistant output is not activity.
+ */
+export function withActivity(w: Workspace, at: number): Workspace {
+  return at > (w.updatedAt ?? w.createdAt) ? { ...w, updatedAt: at } : w;
+}
+
 /** The first unread candidate in Qre order, leaving out `skipId`. */
 export function pickNextUnread<T extends Candidate>(items: readonly T[], skipId?: string | null): T | undefined {
   return items.filter((c) => c.unread && c.id !== skipId).sort(byRecentUpdate)[0];

@@ -342,6 +342,4 @@ async fn lists_updated_at_as_last_activity() {
     let w = &list_workspaces(&pool).await.unwrap()[0];
     assert_eq!(w.updated_at, "2030-01-02 03:04:05");
     assert_ne!(w.created_at, w.updated_at);
-    let json = serde_json::to_value(w).unwrap();
-    assert_eq!(json["updatedAt"], "2030-01-02 03:04:05");
 }

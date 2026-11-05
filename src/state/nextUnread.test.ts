@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { byRecentUpdate, nextUnreadWorkspace, pickNextUnread } from "./nextUnread.ts";
+import { byRecentUpdate, nextUnreadWorkspace, pickNextUnread, withActivity } from "./nextUnread.ts";
 import type { AppState, Workspace } from "./types.ts";
 
 const ws = (id: string, createdAt: number, extra: Partial<Workspace> = {}): Workspace => ({
@@ -62,4 +62,14 @@ test("pickNextUnread works on any unread-flagged list (chats once they carry unr
   ];
   assert.equal(pickNextUnread(chats)?.id, "c3");
   assert.equal(pickNextUnread(chats, "c3")?.id, "c1");
+});
+
+test("a sent message moves its workspace up the next-unread order, never back", () => {
+  const older = ws("older", 100, { unread: true });
+  const newer = ws("newer", 200, { unread: true });
+  assert.equal(pickId(stateWith({ r: [older, newer] })), "newer");
+  const sent = withActivity(older, 300);
+  assert.equal(sent.updatedAt, 300);
+  assert.equal(pickId(stateWith({ r: [sent, newer] })), "older");
+  assert.equal(withActivity(sent, 250), sent);
 });
