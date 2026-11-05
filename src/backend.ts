@@ -1,9 +1,10 @@
 // Thin bridge to the Rust side. Every call degrades gracefully in a plain
 // browser (vite dev / preview) so the shell can be developed without Tauri.
-import { invoke, isTauri } from "@tauri-apps/api/core";
+import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import type { FileMatch } from "./spotlight/quickOpen";
 import type { GitHubOwners } from "./state/githubRepoDialog";
 import type { GitProtocol, RecentRepo } from "./state/cloneDialog";
+import { STEP, targetPath, type TemplateId } from "./state/createProject";
 
 export interface AppInfo {
   name: string;
@@ -65,6 +66,48 @@ export interface GitHubRepoCreateRequest {
 export async function githubRepoCreate(request: GitHubRepoCreateRequest): Promise<{ githubUrl: string; originRemoteUrl: string }> {
   if (!inTauri()) throw new Error("creating a repo needs the desktop app");
   return invoke("github_repo_create", { request });
+}
+
+export interface CreateProjectRequest {
+  parentDir: string;
+  slug: string;
+  template: TemplateId;
+}
+
+export interface CreatedProject {
+  path: string;
+  githubUrl: string;
+  originRemoteUrl: string;
+  defaultBranch: string;
+}
+
+export type CreateProgress = { kind: "step"; text: string } | { kind: "line"; text: string };
+
+/**
+ * Scaffold and publish a new project (`create_new_project`). Outside Tauri it
+ * plays the template's steps; a slug containing "fail" fails after the first.
+ */
+export async function createNewProject(
+  request: CreateProjectRequest,
+  onProgress: (p: CreateProgress) => void = () => {},
+): Promise<CreatedProject> {
+  if (!inTauri()) {
+    const demo: CreateProgress[] =
+      request.template === "nextjs"
+        ? [{ kind: "step", text: STEP.createNext }, { kind: "line", text: "Creating a new Next.js app..." }]
+        : [{ kind: "step", text: STEP.createDirectory }, { kind: "step", text: STEP.gitInit }];
+    for (const p of demo) {
+      onProgress(p);
+      await new Promise((r) => setTimeout(r, 200));
+      if (/fail/.test(request.slug)) throw new Error("Failed to initialize Git: demo failure");
+    }
+    onProgress({ kind: "step", text: STEP.githubRepo });
+    const path = targetPath(request.parentDir, request.slug);
+    return { path, githubUrl: `https://github.com/you/${request.slug}`, originRemoteUrl: `git@github.com:you/${request.slug}.git`, defaultBranch: "main" };
+  }
+  const channel = new Channel<CreateProgress>();
+  channel.onmessage = onProgress;
+  return invoke<CreatedProject>("create_new_project", { request, onProgress: channel });
 }
 
 /** Native folder picker; returns null when cancelled or outside Tauri. */

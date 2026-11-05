@@ -1,6 +1,6 @@
 //! Rules a settings value must satisfy before it is saved or used.
 
-use super::{BranchPrefixType, Settings, SettingsError};
+use super::{BranchPrefixType, Settings, SettingsError, ZOOM_MAX, ZOOM_MIN};
 use crate::agent::AgentKind;
 
 /// Checks cross-field rules serde cannot express.
@@ -21,6 +21,22 @@ pub fn validate(s: &Settings) -> Result<(), SettingsError> {
                         .into(),
                 )
             }
+        }
+    }
+    let zoom = s.appearance.zoom_level_v2;
+    let percent = zoom * 100.0;
+    if !(ZOOM_MIN..=ZOOM_MAX).contains(&zoom)
+        || (percent - (percent / 10.0).round() * 10.0).abs() > 1e-6
+    {
+        return invalid(format!(
+            "appearance.zoom_level_v2 {zoom} must be 0.5 to 3.0 in 0.1 steps"
+        ));
+    }
+    if let Some(font) = s.appearance.mono_font.as_deref() {
+        if !valid_font_family(font) {
+            return invalid(format!(
+                "appearance.mono_font {font:?} is not a usable font name"
+            ));
         }
     }
     if s.models.default.trim().is_empty() {
@@ -51,6 +67,16 @@ pub fn validate(s: &Settings) -> Result<(), SettingsError> {
         }
     }
     Ok(())
+}
+
+/// A font family name the UI can quote into CSS: not blank, at most 100
+/// characters, and none of the characters that would end the CSS string.
+fn valid_font_family(f: &str) -> bool {
+    !f.trim().is_empty()
+        && f.chars().count() <= 100
+        && !f
+            .chars()
+            .any(|c| c.is_control() || "\"'\\;{}<>".contains(c))
 }
 
 /// A conservative subset of `git check-ref-format` for one path component.

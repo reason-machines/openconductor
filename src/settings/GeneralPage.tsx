@@ -1,31 +1,16 @@
 import type { ReactNode } from "react";
 import { withField } from "./model";
-import type { Settings, SoundType, Theme } from "./types";
+import type { Settings, SoundType } from "./types";
 
 interface Props {
   settings: Settings;
   save: (next: Settings) => void;
 }
 
-const THEMES: { value: Theme; label: string }[] = [
-  { value: "system", label: "Match system" },
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-];
-
 export function GeneralPage({ settings, save }: Props) {
   const g = settings.general;
   return (
     <div className="settings-rows">
-      <Row label="Theme" help="Light, dark, or follow macOS.">
-        <select value={g.theme} onChange={(e) => save(withField(settings, "general", "theme", e.target.value as Theme))}>
-          {THEMES.map((t) => (
-            <option key={t.value} value={t.value}>
-              {t.label}
-            </option>
-          ))}
-        </select>
-      </Row>
       <Row label="Notifications" help="Post a macOS notification when an agent finishes or needs you.">
         <input
           type="checkbox"
