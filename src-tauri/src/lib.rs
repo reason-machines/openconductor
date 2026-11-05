@@ -17,6 +17,8 @@
 pub mod agent;
 pub mod checkpoint;
 pub mod db;
+pub mod persistence;
+mod persistence_commands;
 pub mod diff;
 pub mod github_repo;
 pub mod menu;
@@ -157,8 +159,12 @@ pub fn run() {
         .plugin(tauri_plugin_window_state::Builder::new().build())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
-            app.manage(db::open(&data_dir)?);
-            app.manage(workspace::service::WorkspaceService::new(data_dir)?);
+            let db = db::open(&data_dir)?;
+            let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
+            // Deletes workspaces left initializing, imports pre-database repositories.
+            persistence_commands::startup(&db, &workspaces)?;
+            app.manage(db);
+            app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
             app.manage(Terminals::new(app.handle().clone()));
@@ -189,6 +195,9 @@ pub fn run() {
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
+            persistence_commands::db_list_repos,
+            persistence_commands::db_list_workspaces,
+            persistence_commands::db_archive_workspace,
             diff::commands::diff_workspace,
             diff::comment_commands::diff_comments_list,
             diff::comment_commands::diff_comment_add,
