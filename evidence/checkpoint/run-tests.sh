@@ -28,6 +28,12 @@ path = "$module"
 [workspace]
 EOF
 
+if command -v rustfmt >/dev/null 2>&1; then
+  rustfmt --edition 2021 --check "$module"
+else
+  echo "note: rustfmt not installed; format check skipped" >&2
+fi
+
 cd "$harness"
 RUSTFLAGS="${RUSTFLAGS:-} -D warnings" cargo test "$@"
 if cargo clippy --version >/dev/null 2>&1; then
