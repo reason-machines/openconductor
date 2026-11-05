@@ -3,7 +3,7 @@
 // the PR control can be tried in a browser.
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { demo } from "./demo.ts";
-import type { CreatePrPrompt, GitState, HeaderInputs, HeaderState, LookupRequest, LookupResult, MergeMethod } from "./types.ts";
+import type { CreatePrPrompt, GitState, HeaderInputs, HeaderState, LookupRequest, LookupResult, MergeMethod, WorkspacePrStatus, WorkspaceSync } from "./types.ts";
 
 export async function lookupPr(repoPath: string, request: LookupRequest): Promise<LookupResult> {
   if (!isTauri()) return demo().lookup;
@@ -53,4 +53,9 @@ export async function approvePr(repoPath: string, number: number, headOid: strin
 export async function setAutoMerge(repoPath: string, number: number, enabled: boolean, method?: MergeMethod): Promise<void> {
   if (!isTauri()) return;
   await invoke("pr_set_auto_merge", { repoPath, number, enabled, method: method ?? null });
+}
+
+/** Store a lookup's derived status, and the found PR's title and body, on the workspace row (desktop app only). */
+export async function syncWorkspace(workspaceId: string, derivedStatus: WorkspacePrStatus, title: string | null, body: string | null): Promise<WorkspaceSync> {
+  return invoke<WorkspaceSync>("pr_sync_workspace", { workspaceId, derivedStatus, title, body });
 }

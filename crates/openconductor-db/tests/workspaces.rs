@@ -251,3 +251,34 @@ async fn list_for_session_and_delete() {
         .unwrap());
     assert_eq!(workspaces::list(&pool).await.unwrap().len(), 1);
 }
+
+#[tokio::test]
+async fn pr_metadata_round_trips_and_clears() {
+    let pool = setup().await;
+    workspaces::insert(&pool, &new_ws("a", WorkspaceState::Ready))
+        .await
+        .unwrap();
+    let meta = |pool: SqlitePool| async move {
+        let w = workspaces::get(&pool, "a")
+            .await
+            .unwrap()
+            .unwrap()
+            .workspace;
+        (w.pr_title, w.pr_description)
+    };
+    workspaces::set_pr_metadata(&pool, "a", Some("Add thing"), Some("Body"))
+        .await
+        .unwrap();
+    assert_eq!(
+        meta(pool.clone()).await,
+        (Some("Add thing".into()), Some("Body".into()))
+    );
+    workspaces::set_pr_metadata(&pool, "a", None, None)
+        .await
+        .unwrap();
+    assert_eq!(meta(pool.clone()).await, (None, None));
+    assert!(matches!(
+        workspaces::set_pr_metadata(&pool, "nope", Some("t"), None).await,
+        Err(Error::NotFound)
+    ));
+}

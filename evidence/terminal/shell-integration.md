@@ -41,7 +41,26 @@ Builder obligation `persistence.terminal-shell-integration` (parent `term.pty`):
 - Applied in the backend's `pty_spawn` rather than built by the webview, since our terminals' env is assembled there. Only `Program::LoginShell` terminals get it: an explicit argv is not an interactive shell.
 - Home is `$HOME`, else the passwd entry. The user shell is `$SHELL`, else the passwd entry, the same lookup `portable-pty` uses to start the shell. Conductor asks its own `userShell` query, whose source was not read.
 - No agent path-override shims in `CONDUCTOR_PATH_PREFIX`. We have no Claude or Codex executable-path settings yet.
-- Not yet built: the frontend side, which strips the marks and tracks the running program and completed commands. Until then the marks reach xterm.js, which ignores unknown OSC sequences, and the backend screen, which ignores them too. The missing-prompt-mark warning is also not built.
+- The backend screen (`alacritty_terminal`) still receives the marks and ignores them, as an unknown OSC.
+
+## Frontend: stripping the marks and tracking commands
+
+Read on Sven's Mac from `index-BGEQ8YjU.js` by byte offset: the parser `xkt` and mark decoder `Pkt` (2753941-2755300), the tracker `lbt` / `ubt` / `dbt` (2563449-2566300), the controller's `handleData` call (2767724-2768700), its `ready` and exit resets (2766600-2766900, 2765866), the missing-prompt warning `bkt` / `ebt` (2750942); in `renderApp-D_fmY7hW.js`, the tab label `b9i` (6905469) and its callers (6907136, 8400404).
+
+| Reference | Ours | Tests |
+|---|---|---|
+| Each output chunk is split into text and marks: `ESC]633;Conductor;` up to the first BEL or `ESC\`; `Prompt`, `ProgramStart;<id>;<program>[;<command>]` (an empty command is dropped, the command keeps its own `;`), `CommandDone;<id>`. A mark with no terminator in the same chunk, or one that does not parse, passes through as text; marks split across chunks are not reassembled | [`shellIntegration.ts`](../../src/features/terminal/shellIntegration.ts) `splitMarks`, `parseMark`; [`session.ts`](../../src/features/terminal/session.ts) `route` writes only the remaining text to xterm and acks every byte, marks included (the reference acks a chunk that was only marks at once) | [`shellIntegration.test.ts`](../../src/features/terminal/shellIntegration.test.ts) |
+| Tracking: `ProgramStart` finishes any running command, starts a new one (command defaults to the program) and sets `runningProgram`, clearing `completedCommandMarkerId`; `CommandDone` sets the completed marker and finishes the command with that id; `Prompt` finishes the running command, clears `runningProgram` and records that a prompt mark was seen. The running command keeps its last 1 MiB of output (cut at a character), the last 5 finished commands are kept with `completedAt`. Ready and exit forget it all | `applySegments`, `appendOutput`; `Live.shell`, reset on `ready` and `exit` | same file |
+| Tab label `Terminal N`, plus ` (<program>)` while `runningProgram` is set | [`TerminalPanel.tsx`](../../src/features/terminal/TerminalPanel.tsx) via `tabLabel`; `runningProgram` on the tab ([`tabs.ts`](../../src/features/terminal/tabs.ts), action `program`, cleared on `ready` and `exit`) | [`terminal-shell-integration.e2e.mjs`](../../tests/e2e/terminal-shell-integration.e2e.mjs): a fake shell printing the zsh hooks' marks; label during `watch` and back after Ctrl+C and after a finished command; no mark text on screen; a UTF-8 character split across chunks draws whole; acked bytes equal emitted bytes |
+
+Differences:
+
+- Output is decoded with one streaming `TextDecoder` per terminal before the marks are cut out; xterm used to decode the bytes itself. The reference's data arrives as strings already.
+- Our tab's base title is our own counter (`Terminal N`, not reused), not the reference's index-based `Terminal` / `Terminal N`; only the program suffix is the reference's.
+- Finished commands and the running command's output are tracked but nothing reads them yet (the reference feeds them to its terminal-output and run-script views).
+- Not built: the warning after 8 KiB of output with no prompt mark (`Shell integration enabled but no OSC 633 prompt marker observed after N bytes…`). The reference logs it only when the session has `commandDetection` on; our webview is not told whether `pty_spawn` applied the integration (it does for zsh login shells only), so it cannot tell a bash tab from a broken zsh hook.
+
+Mutation check (by hand, once): dropping the tracker's dispatch fails the e2e label check; decoding without `stream: true` fails its split-character check.
 
 ## REA
 

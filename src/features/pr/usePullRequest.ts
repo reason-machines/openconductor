@@ -2,11 +2,12 @@
 // header state derived from both, refreshed on a timer, when the agent
 // finishes a turn, and after PR actions.
 import { useCallback, useEffect, useRef, useState } from "react";
+import { isTauri } from "@tauri-apps/api/core";
 import { gitState, headerState, lookupPr } from "./api.ts";
 import { getSettings } from "../../settings/api.ts";
 import { SETTINGS_CHANGED } from "../../settings/appearance.ts";
 import { DEFAULT_PR_SETTINGS, prSettings, type PrSettings } from "./prSettings.ts";
-import type { GitState, HeaderState, PrInfo, PrLookup } from "./types.ts";
+import type { GitState, HeaderState, PrInfo, PrLookup, WorkspacePrStatus } from "./types.ts";
 
 /** How often an open workspace re-reads its PR (GitHub rate limits apply). */
 export const POLL_MS = 30_000;
@@ -19,6 +20,8 @@ export interface PullRequestArgs {
   agentWorking: boolean;
   /** Called with each lookup and the one before it (null the first time). */
   onLookup?: (next: PrLookup, previous: PrLookup | null) => void;
+  /** Called with each lookup's derived workspace status and the PR it came from (null without one). */
+  onDerivedStatus?: (status: WorkspacePrStatus, pr: PrInfo | null) => void;
 }
 
 export interface PullRequest {
@@ -31,7 +34,7 @@ export interface PullRequest {
   refresh: () => Promise<void>;
 }
 
-export function usePullRequest({ worktree, branch, targetBranch, agentWorking, onLookup }: PullRequestArgs): PullRequest {
+export function usePullRequest({ worktree, branch, targetBranch, agentWorking, onLookup, onDerivedStatus }: PullRequestArgs): PullRequest {
   const [lookup, setLookup] = useState<PrLookup | null>(null);
   const [git, setGit] = useState<GitState | null>(null);
   const [header, setHeader] = useState<HeaderState | null>(null);
@@ -39,6 +42,8 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
   const last = useRef<PrLookup | null>(null);
   const onLookupRef = useRef(onLookup);
   onLookupRef.current = onLookup;
+  const onDerivedRef = useRef(onDerivedStatus);
+  onDerivedRef.current = onDerivedStatus;
   const agentRef = useRef(agentWorking);
   agentRef.current = agentWorking;
   const generation = useRef(0);
@@ -46,13 +51,15 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
   const optionalChecksBlock = settings.optionalChecksBlock;
 
   const refresh = useCallback(async () => {
-    if (!worktree) return;
+    // The browser preview answers from demo data (api.ts), so it needs no worktree.
+    const path = worktree || (isTauri() ? null : "demo");
+    if (!path) return;
     const gen = generation.current;
     try {
       const prNumber = last.current?.kind === "found" ? last.current.info.number : null;
       const [g, result] = await Promise.all([
-        gitState(worktree, targetBranch),
-        lookupPr(worktree, { workspacePath: worktree, localBranch: branch, workspaceBranch: branch, prNumber }),
+        gitState(path, targetBranch),
+        lookupPr(path, { workspacePath: path, localBranch: branch, workspaceBranch: branch, prNumber }),
       ]);
       if (gen !== generation.current) return;
       const previous = last.current;
@@ -76,6 +83,7 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
       setHeader(h);
       setError(null);
       if (result.lookup) onLookupRef.current?.(result.lookup, previous);
+      if (result.lookup && result.derivedStatus) onDerivedRef.current?.(result.derivedStatus, result.lookup.kind === "found" ? result.lookup.info : null);
     } catch (e) {
       if (gen === generation.current) setError(String(e));
     }
