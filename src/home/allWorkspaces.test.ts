@@ -7,6 +7,7 @@ import {
   emptyAction,
   groupByDate,
   homeRows,
+  homeShowsStatus,
   matchWorkspace,
   parseFilters,
   projectFilterLabel,
@@ -125,4 +126,13 @@ test("saved filters drop unknown projects and bad values", () => {
   assert.deepEqual(parseFilters(JSON.stringify({ archiveFilter: "nope" }), ids), DEFAULT_FILTERS);
   assert.deepEqual(parseFilters("{bad", ids), DEFAULT_FILTERS);
   assert.deepEqual(parseFilters(null, ids), DEFAULT_FILTERS);
+});
+
+test("a row shows its agent's status instead of its time, never a PR or branch status", () => {
+  for (const s of ["needs-plan-response", "needs-user-permission", "needs-user-input", "working", "cancelling", "waiting", "setting-up", "failed"] as const) {
+    assert.equal(homeShowsStatus(s), true, s);
+  }
+  for (const s of ["unstarted", "merged", "open-pr", "draft-pr", "checks-failing", "checks-pending", "branch", "local"] as const) {
+    assert.equal(homeShowsStatus(s), false, s);
+  }
 });

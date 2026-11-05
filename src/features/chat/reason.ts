@@ -12,9 +12,12 @@
 //   the same repository-relative path.
 // - A notice (e.g. a requested model Reason does not offer) is a system
 //   message.
+// - An interaction (a permission, plan or question the agent waits on) is
+//   not transcript content; reasonChat.ts keeps it beside the transcript.
 // Pure: no Tauri, no React, so `reason.test.ts` covers it.
 
 import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
+import type { InteractionRequest } from "./interactions.ts";
 
 export interface ReasonPath {
   raw: string;
@@ -47,6 +50,9 @@ export type ReasonPayload = { chatId: string } & (
   | { type: "error"; code: string | null; status: number | null; message: string }
   | ReasonTool
   | { type: "turnEnded"; end: ReasonTurnEnd }
+  /** The agent waits for the user (interactions.ts); not part of the transcript. */
+  | { type: "interaction"; id: string; request: InteractionRequest }
+  | { type: "interactionResolved"; id: string }
 );
 
 /** Sender recorded on reports; Reason does not say which Session sent one. */
@@ -220,6 +226,9 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
     case "error":
     case "userReplay":
     case "title":
+    // Waiting interactions are chat state, kept beside the transcript (reasonChat.ts).
+    case "interaction":
+    case "interactionResolved":
       return { state, events: [] };
   }
 }

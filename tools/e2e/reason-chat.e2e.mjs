@@ -15,6 +15,9 @@
 //   5-6. two turns that write files; each saved start/end checkpoints
 //   7. "Reset chat" on turn 5   "Reset chat?" says 2 changed; Reset deletes
 //                        turn 6 and restores turn 5's files
+//   8. "permission"      the fake asks session/request_permission: the card
+//                        shows, the sidebar row is "needs-user-permission",
+//                        and "Always allow" goes back as allow-always
 //   The Session runs Settings' default model (set before the chat opens).
 //
 // Usage (under a display, e.g. xvfb-run):
@@ -285,6 +288,26 @@ try {
   pass(`the fake CLI saw one Session: ${sessions.join(", ")}`);
   assert.equal(stored["sess-1"].config?.model, "byok:anthropic:claude-opus-5-5", JSON.stringify(stored["sess-1"]));
   pass("the Session runs Settings' default model: session/set_config_option model=byok:anthropic:claude-opus-5-5");
+
+  // 7. A permission request (session/request_permission): the card, "Needs
+  // permission" on the sidebar row, then the chosen option goes back to Reason.
+  const rowStatus = () =>
+    run(`const e = document.querySelector('[data-testid="left-sidebar-workspace-item"][data-active] [data-testid="workspace-status-icon"]'); return e ? e.dataset.status : null;`);
+  await send("permission");
+  await waitFor("the permission card", () => run(`return !!document.querySelector('.interaction-card[data-kind="permission"]');`));
+  await waitFor('the row status "needs-user-permission"', async () => (await rowStatus()) === "needs-user-permission");
+  const card = await run(`return document.querySelector('.interaction-card[data-kind="permission"]').innerText;`);
+  assert.match(card, /Do you want to run this command\?/);
+  assert.match(card, /bash: rm -rf build/);
+  assert.match(card, /Always allow/);
+  await screenshot("reason-chat-permission");
+  pass('a permission request shows "Do you want to run this command?" and the row needs permission');
+  await run(`[...document.querySelectorAll('.interaction-option')].find((b) => b.textContent.includes('Always allow')).click(); return true;`);
+  await waitFor('"permission: selected allow-always"', () => chatText().then((t) => t.includes("permission: selected allow-always")));
+  await turnDone(7);
+  await waitFor("the row status to leave needs-user-permission", async () => !String(await rowStatus()).startsWith("needs-"));
+  assert.equal(await run(`return !!document.querySelector('.interaction-card');`), false);
+  pass('"Always allow" went back to Reason as allow-always and the row left needs-user-permission');
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {

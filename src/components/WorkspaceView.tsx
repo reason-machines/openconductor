@@ -3,8 +3,9 @@ import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
+import { answerInteraction, chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { InteractionCard } from "../features/chat/InteractionCard.tsx";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
@@ -91,7 +92,10 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
-  const [{ transcript, queue }, setSnapshot] = useState<ChatSnapshot>(() => chatSnapshot(chatId));
+  const [{ transcript, queue, interactions }, setSnapshot] = useState<ChatSnapshot>(() => chatSnapshot(chatId));
+  // The oldest request the agent waits on; a plan turns the composer into plan feedback.
+  const waiting = interactions[0];
+  const planWaiting = waiting?.request.kind === "plan" ? waiting : undefined;
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
   const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
@@ -173,7 +177,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
-  }, [transcript]);
+  }, [transcript, waiting]);
 
   // Attachments (a review request, revert notes) go to Reason as embedded files and show by name.
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
@@ -283,14 +287,20 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           onClose={() => setResetTurn(null)}
         />
       ) : null}
+      {waiting ? (
+        <div className="interaction-wrap">
+          <InteractionCard interaction={waiting} onAnswer={(answer) => answerInteraction(chatId, waiting.id, answer)} onStop={() => stopChat(chatId)} />
+        </div>
+      ) : null}
       <Composer
         draft={draft}
         setDraft={setDraft}
         inputRef={inputRef}
-        placeholder={`Ask the agent to work in ${workspace.name}…`}
+        // Conductor: while a plan waits, the message box asks for changes to it.
+        placeholder={planWaiting ? "Enter your plan adjustments here..." : `Ask the agent to work in ${workspace.name}…`}
         queue={queue}
         canSteer={REASON_CAN_STEER}
-        onSubmit={onSubmit}
+        onSubmit={planWaiting ? (text) => answerInteraction(chatId, planWaiting.id, { kind: "plan", approved: false, feedback: text }) : onSubmit}
         onStop={() => stopChat(chatId)}
         onQueue={(action) => queueAction(chatId, action)}
         onAttachFiles={(files) => void attachFiles(files)}

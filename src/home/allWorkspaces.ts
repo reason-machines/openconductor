@@ -6,12 +6,15 @@
 //     directory, repo or "#<pr>"; "12", "w12" or "w-12" match workspace W-12);
 //   - filters: `nFi` (project filter label, archive filter labels) and the
 //     archive/project predicate in `UJo`;
-//   - row time: `BPt` over `SS` (date-fns formatDistance, shortened).
+//   - row time: `BPt` over `SS` (date-fns formatDistance, shortened);
+//   - row status column (`vJo`): the row's status icon when `aWt` holds (not
+//     a PR/branch status, not unstarted), else the relative time.
 // Conductor-only parts we leave out: owner filter and pinned group (cloud
 // organizations only), cost column and the status-matrix setting.
 
 import type { Repo, Workspace } from "../state/types";
 import { workspaceLabel } from "../components/sidebarLabel.ts";
+import type { RowStatus } from "../state/rowStatus.ts";
 
 export type ArchiveFilter = "active" | "all" | "archived";
 
@@ -316,4 +319,15 @@ export function saveFilters(f: HomeFilters): void {
   } catch {
     /* storage unavailable */
   }
+}
+
+/** PR and branch statuses (`AXo`): the row shows its time instead of these. */
+const GIT_STATUSES: ReadonlySet<RowStatus> = new Set<RowStatus>(["merged", "merge-queued", "ready-to-merge", "draft-pr", "merge-conflict", "checks-failing", "checks-pending", "open-pr", "local", "branch"]);
+
+/**
+ * Whether a Home row shows its status icon instead of its time (`aWt`):
+ * setting up, failed, an agent working, cancelling, waiting or needing the user.
+ */
+export function homeShowsStatus(status: RowStatus): boolean {
+  return !GIT_STATUSES.has(status) && status !== "unstarted";
 }

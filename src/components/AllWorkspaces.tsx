@@ -15,6 +15,7 @@ import {
   emptyAction,
   groupByDate,
   homeRows,
+  homeShowsStatus,
   loadFilters,
   projectFilterLabel,
   reposWithWorkspaces,
@@ -27,6 +28,9 @@ import {
   type HomeRow,
 } from "../home/allWorkspaces";
 import { effectiveShortcuts } from "../keybindings/overrides";
+import { RowStatusIcon } from "./RowStatusIcon";
+import { aggregateSessions, rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
+import { useWorkspaceSessionStatus } from "../features/chat/useWorkspaceSession";
 import { glyphs } from "../keybindings/shortcut";
 
 interface Props {
@@ -90,6 +94,9 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
 function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRepoIcon: boolean; active: boolean; now: number; onOpen: () => void }) {
   const { workspace: ws, repo, archived, matches } = row;
   const tone = archived ? "is-archived" : ws.unread ? "is-unread" : "";
+  // The sidebar row's status (setup, then the workspace's chats, then the PR); Home shows the non-git ones.
+  const session = aggregateSessions([useWorkspaceSessionStatus(ws.id), ws.status === "working" ? "working" : "idle"]);
+  const status = rowStatus({ workspaceState: ws.state, session, pr: ws.pr });
   return (
     <div
       role="option"
@@ -122,8 +129,10 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
             <span className="allws-archived" title="Archived" aria-label="Archived">
               <ArchiveIcon size={14} />
             </span>
-          ) : ws.status === "working" ? (
-            <span className="allws-working" title="Working" aria-label="Working" />
+          ) : homeShowsStatus(status) ? (
+            <span className="allws-status" data-testid="home-workspace-status" data-status={status} data-color={rowStatusColor(status)} role="img" title={rowStatusLabel(status)} aria-label={rowStatusLabel(status)}>
+              <RowStatusIcon status={status} />
+            </span>
           ) : (
             shortRelativeTime(row.lastActiveAt, now)
           )}

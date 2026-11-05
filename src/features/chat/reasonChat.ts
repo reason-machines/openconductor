@@ -12,7 +12,13 @@
 //
 // Outside the desktop app (the Vite preview) a stand-in agent answers each
 // prompt after a short delay with a note that no agent runs there, so the
-// queue and Stop can be exercised in a browser.
+// queue and Stop can be exercised in a browser. The prompts "permission",
+// "plan" and "question" make it wait on that interaction instead, so the
+// cards and the session statuses they raise can be tried there too.
+//
+// While the agent waits on the user (a permission, a plan or questions;
+// interactions.ts) the chat's session status is `needs_user_permission`,
+// `needs_plan_response` or `needs_user_input`; `answerInteraction` answers.
 //
 // Entry and exit points: `chat()` creates a chat's state; `apply()` is the only
 // place transcript events land; `setQueue()` the only place the queue changes.
@@ -28,6 +34,8 @@ import { restoreCheckpoint, turnCheckpointRef } from "./checkpoints.ts";
 import { applyReasonPayload, cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
+import { addInteraction, chatSessionStatus, resolveInteraction, type Interaction, type InteractionAnswer, type InteractionRequest } from "./interactions.ts";
+import type { SessionStatus } from "../../state/rowStatus.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import { turnChanges } from "../diff/useTurnChanges.ts";
 import type { FileChange } from "../diff/types.ts";
@@ -57,12 +65,15 @@ function savedConfig(chatId: string): ReasonConfig[] | null {
 export interface ChatSnapshot {
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
+  /** What the agent waits on the user for, oldest first. */
+  interactions: readonly Interaction[];
 }
 
 interface Chat {
   state: ReasonChatState;
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
+  interactions: readonly Interaction[];
   cwd: string | null;
   /** Repository the chat's workspace belongs to, for its effective `prompts.general`. */
   repoPath: string | null;
@@ -95,6 +106,7 @@ function chat(chatId: string): Chat {
       state: reasonChat(chatId),
       transcript: emptyTranscript(chatId),
       queue: Q.emptyQueue(),
+      interactions: [],
       cwd: null,
       repoPath: null,
       opened: false,
@@ -143,7 +155,7 @@ function stored(c: Chat): ChatSaver | undefined {
   return saver;
 }
 
-const snapshot = (c: Chat): ChatSnapshot => ({ transcript: c.transcript, queue: c.queue });
+const snapshot = (c: Chat): ChatSnapshot => ({ transcript: c.transcript, queue: c.queue, interactions: c.interactions });
 const notify = (c: Chat) => {
   const s = snapshot(c);
   for (const fn of c.listeners) fn(s);
@@ -164,21 +176,30 @@ function apply(c: Chat, step: Step) {
   // A turn that ended moves the queue on: the next queued message may start.
   for (const e of step.events) {
     if (e.type !== "turn_status" || e.status === "running") continue;
+    // Nothing can wait on the user once no turn runs.
+    if (openTurns(c.state) === 0 && c.interactions.length > 0) setInteractions(c, []);
     setQueue(c, Q.turnEnded(c.queue, e.status, openTurns(c.state) > 0));
   }
+}
+
+function setInteractions(c: Chat, list: readonly Interaction[]) {
+  if (list === c.interactions) return;
+  c.interactions = list;
+  notify(c);
+  publishStatus(c);
 }
 
 // Every chat's session status (Conductor's `sessions.status`), so a sidebar
 // row can show its workspace's agent while that workspace is not open: chats
 // keep running here after their view unmounts. Closed (hidden) chats drop out,
 // as Conductor folds only a workspace's visible sessions.
-let statuses: ReadonlyMap<string, Q.SessionStatus> = new Map();
+let statuses: ReadonlyMap<string, SessionStatus> = new Map();
 const hiddenChats = new Set<string>();
 const statusListeners = new Set<() => void>();
 
 function publishStatus(c: Chat) {
   const id = c.state.chatId;
-  const status = hiddenChats.has(id) ? undefined : c.queue.status;
+  const status = hiddenChats.has(id) ? undefined : chatSessionStatus(c.queue.status, c.interactions);
   if (statuses.get(id) === status) return;
   const next = new Map(statuses);
   if (status === undefined) next.delete(id);
@@ -188,7 +209,7 @@ function publishStatus(c: Chat) {
 }
 
 /** Chat id → session status of every visible chat; a new map on each change. */
-export const chatStatuses = (): ReadonlyMap<string, Q.SessionStatus> => statuses;
+export const chatStatuses = (): ReadonlyMap<string, SessionStatus> => statuses;
 
 export function subscribeChatStatuses(fn: () => void): () => void {
   statusListeners.add(fn);
@@ -230,7 +251,10 @@ function run(c: Chat, effect: Q.Effect) {
 function ensureListening(): Promise<unknown> {
   listening ??= listen<ReasonPayload>(EVENT, ({ payload }) => {
     const c = chats.get(payload.chatId);
-    if (c) apply(c, applyReasonPayload(c.state, payload));
+    if (!c) return;
+    if (payload.type === "interaction") return setInteractions(c, addInteraction(c.interactions, { id: payload.id, request: payload.request }));
+    if (payload.type === "interactionResolved") return setInteractions(c, resolveInteraction(c.interactions, payload.id));
+    apply(c, applyReasonPayload(c.state, payload));
   });
   return listening;
 }
@@ -381,6 +405,19 @@ export function configureReasonDefault(chatId: string, config: Promise<ReasonCon
   c.configured = true;
 }
 
+/**
+ * Answers what the agent waits on (`interactionResolved` follows from the
+ * backend). The card goes at once; a failed answer is logged, as the request
+ * is gone either way (Reason answered it cancelled, or the turn ended).
+ */
+export function answerInteraction(chatId: string, id: string, answer: InteractionAnswer): void {
+  const c = chat(chatId);
+  if (!c.interactions.some((i) => i.id === id)) return;
+  setInteractions(c, resolveInteraction(c.interactions, id));
+  if (!reasonAvailable()) return preview.answer(c, id, answer);
+  invoke("reason_respond", { chatId, id, answer }).catch((e) => console.warn("reason chat: answer not sent", e));
+}
+
 /** Stop. A second Stop while the first is pending asks Reason to stop hard. */
 export function stopChat(chatId: string): void {
   const c = chat(chatId);
@@ -427,13 +464,71 @@ export function queueAction(chatId: string, action: QueueAction): void {
 // then replies that no agent runs here. A follow-up supersedes the running
 // prompt, as Reason does.
 const PREVIEW_TURN_MS = 2500;
+/** Prompts the stand-in answers by waiting on the user. */
+const PREVIEW_ASKS: Record<string, InteractionRequest> = {
+  permission: {
+    kind: "permission",
+    tool: "execute",
+    title: "bash: rm -rf build",
+    input: { command: "rm -rf build" },
+    options: [
+      { id: "allow", label: "Yes", kind: "allow_once" },
+      { id: "always", label: "Always allow bash", kind: "allow_always" },
+      { id: "deny", label: "No", kind: "reject_once" },
+    ],
+  },
+  plan: {
+    kind: "plan",
+    plan: "## Plan\n\n1. Add the session status to every chat.\n2. Show it on the sidebar row and on Home.\n3. Test each status end to end.",
+  },
+  question: {
+    kind: "question",
+    questions: [
+      {
+        header: "Database",
+        question: "Which database should the cache use?",
+        multiSelect: false,
+        options: [
+          { label: "SQLite", description: "One file next to conductor.db" },
+          { label: "Postgres", description: "A server the team already runs" },
+        ],
+      },
+      { header: "Extras", question: "Which extras should ship with it?", multiSelect: true, options: [{ label: "Search", description: null }, { label: "Export", description: null }] },
+    ],
+  },
+};
+
+function previewSummary(answer: InteractionAnswer): string {
+  switch (answer.kind) {
+    case "option":
+      return `option ${answer.optionId}`;
+    case "plan":
+      return answer.approved ? "plan approved" : `keep planning${answer.feedback ? `: ${answer.feedback}` : ""}`;
+    case "answers":
+      return answer.answers.map((a) => a.join(", ") || "(skipped)").join("; ");
+    case "cancel":
+      return "dismissed";
+  }
+}
+
 const preview = {
   timers: new Map<string, ReturnType<typeof setTimeout>[]>(),
+  asks: 0,
   prompt(c: Chat, text: string) {
     const chatId = c.state.chatId;
     const pending = this.timers.get(chatId) ?? [];
     // Supersede: the earlier prompt ends now and this one carries on.
-    if (pending.length > 0) apply(c, applyReasonPayload(c.state, { chatId, type: "turnEnded", end: { outcome: "superseded" } }));
+    if (pending.length > 0 || c.interactions.length > 0) apply(c, applyReasonPayload(c.state, { chatId, type: "turnEnded", end: { outcome: "superseded" } }));
+    setInteractions(c, []);
+    const ask = PREVIEW_ASKS[text.trim().toLowerCase()];
+    if (ask) {
+      const t = setTimeout(() => {
+        this.timers.set(chatId, (this.timers.get(chatId) ?? []).filter((x) => x !== t));
+        setInteractions(c, addInteraction(c.interactions, { id: `preview-${++this.asks}`, request: ask }));
+      }, 300);
+      this.timers.set(chatId, [t]);
+      return;
+    }
     const t = setTimeout(() => {
       this.timers.set(chatId, (this.timers.get(chatId) ?? []).filter((x) => x !== t));
       apply(c, applyReasonPayload(c.state, { chatId, type: "text", text: `Browser preview: no agent runs here, so "${text.slice(0, 60)}" was not sent. Reason runs chats in the desktop app.` }));
@@ -441,10 +536,16 @@ const preview = {
     }, PREVIEW_TURN_MS);
     this.timers.set(chatId, [t]);
   },
+  answer(c: Chat, _id: string, answer: InteractionAnswer) {
+    const chatId = c.state.chatId;
+    apply(c, applyReasonPayload(c.state, { chatId, type: "text", text: `Browser preview: you answered with ${previewSummary(answer)}.` }));
+    if (c.interactions.length === 0) apply(c, applyReasonPayload(c.state, { chatId, type: "turnEnded", end: { outcome: "completed" } }));
+  },
   cancel(c: Chat) {
     const chatId = c.state.chatId;
     for (const t of this.timers.get(chatId) ?? []) clearTimeout(t);
     this.timers.set(chatId, []);
+    setInteractions(c, []);
     apply(c, applyReasonPayload(c.state, { chatId, type: "turnEnded", end: { outcome: "cancelled" } }));
   },
 };
