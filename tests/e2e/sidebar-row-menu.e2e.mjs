@@ -97,3 +97,32 @@ test("row menu: read/unread, pin into the Pinned group, status, keys, archive", 
   assert.equal(await harbor.count(), 0);
   await page.close();
 });
+
+test("holding Cmd shows 1..9 on the visible rows, and Cmd+N opens that row", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${base}/?demo=1`);
+  await row(page, "Quiet harbor").waitFor();
+  const hints = () => page.locator('.sb-ws-hint[data-state="visible"]').allTextContents();
+  const names = () => page.locator(`${ROW} .sb-ws-name`).allTextContents();
+
+  await page.keyboard.down("Meta");
+  assert.deepEqual(await hints(), [], "hints wait 500 ms");
+  await page.waitForTimeout(700);
+  const shown = await hints();
+  assert.deepEqual(shown, (await names()).map((_, i) => String(i + 1)));
+  assert.equal(await page.locator(".sb-ws-hint").first().getAttribute("aria-label"), "Switch with Command-1");
+  await page.keyboard.press("2");
+  await page.keyboard.up("Meta");
+  assert.deepEqual(await hints(), []);
+  const second = (await names())[1];
+  assert.equal(await row(page, second).getAttribute("aria-current"), "page");
+
+  // As in Conductor, pointer events hide them only once the modifier is no longer held.
+  await page.keyboard.down("Meta");
+  await page.waitForTimeout(700);
+  await page.mouse.move(600, 400);
+  assert.ok((await hints()).length > 0);
+  await page.keyboard.up("Meta");
+  assert.deepEqual(await hints(), []);
+  await page.close();
+});

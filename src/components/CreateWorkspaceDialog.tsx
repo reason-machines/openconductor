@@ -20,6 +20,7 @@ import { scriptsConfig, startSetup } from "../scripts/api";
 import { workspaceRef } from "../scripts/model";
 import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
+import { addPendingLaunch, removePendingLaunch } from "../workspace/pendingLaunches";
 import type { SourceState } from "../workspace/createFrom";
 import { CreateFromPicker } from "./CreateFromPicker";
 import { getSettings } from "../settings/api";
@@ -133,6 +134,9 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
     send({ type: "submit" });
+    // The sidebar shows an "Untitled" initializing row in this repo until the workspace is added or fails.
+    const pendingId = crypto.randomUUID();
+    addPendingLaunch(pendingId, repo.id);
     try {
       if (!repo.path) throw new Error("This repository has no local checkout yet.");
       const backendRepo = await ensureRepository(repo.path);
@@ -163,6 +167,8 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
       }
     } catch (err) {
       send({ type: "create_failed", error: `${FAILED_TO_CREATE}: ${errorText(err)}` });
+    } finally {
+      removePendingLaunch(pendingId);
     }
   }
 

@@ -45,6 +45,8 @@ export interface Repo {
   defaultBranch: string;
   workspaces: Workspace[];
   collapsed?: boolean;
+  /** `repos.hidden`: left out of the sidebar unless "show hidden" is on. */
+  hidden?: boolean;
 }
 
 export type Selection = { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
