@@ -3,7 +3,7 @@
  "generated_by": "tools/parity_check.py check",
  "target": {
   "ref": "origin/main",
-  "sha": "a0139339c52b4f013655b1af12c86828f24967c7"
+  "sha": "274ac804c49b3b6a4a55c7bfddf0bd7bb7b890a4"
  },
  "result_meaning": "pass = every item that evidences the obligation is matched on the target (static); fail = at least one item is partial, declared or missing. Static presence, not runtime behavior.",
  "areas": {
@@ -16,32 +16,32 @@
   },
   "shortcuts": {
    "total": 172,
-   "matched": 71,
-   "partial": 101,
+   "matched": 74,
+   "partial": 98,
    "missing": 0,
-   "parity_pct": 70.6
+   "parity_pct": 71.5
   },
   "persistence": {
    "total": 44,
-   "matched": 43,
+   "matched": 44,
    "partial": 0,
-   "missing": 1,
-   "parity_pct": 97.7
+   "missing": 0,
+   "parity_pct": 100.0
   },
   "packaging": {
    "total": 78,
-   "matched": 63,
+   "matched": 64,
    "partial": 0,
-   "missing": 15,
-   "parity_pct": 80.8
+   "missing": 14,
+   "parity_pct": 82.1
   }
  },
  "overall": {
   "total": 419,
-  "matched": 296,
-  "partial": 104,
-  "missing": 19,
-  "parity_pct": 83.1
+  "matched": 301,
+  "partial": 101,
+  "missing": 17,
+  "parity_pct": 83.9
  },
  "evidence": {
   "report": "evidence/parity/parity-report.json",
@@ -50,7 +50,7 @@
    "cache": "ev_202d2f9fcbf5be8a97cec7b5c27cfa0b7722d0b3e095404e9ac0b0923904aabf",
    "rebuild": "PRAGMA table_info"
   },
-  "packaging": "REA on CI-built OpenConductor.app (run 42062149395, commit d8b3b2e0f931): inspect-plist ev_eaeabb2489ff9054b990f484a5698c70e075e48d90e080ab5d0325a11036acc6, inspect-signature ev_e0e58206439cd9eb37bb1332705e4f671744b37c21f29034bb27ab7c84bd569f, trace-dylib-resolution ev_0a1ccf8e5f717183f189ca714a7a7242209e3d0843cde118a92deacb1cfdfa71",
+  "packaging": "REA on CI-built OpenConductor.app (run 42078522125, commit a0139339c52b): inspect-plist ev_24d70a5c52631966168446d59986c4d9639b5562e1e3c6db24ee46aef69aa0a1, inspect-signature ev_a580b04788ef91f8c90e82cde450f003f9d2fa392ee777444401c394433890a3, trace-dylib-resolution ev_a5dd134419135f6a3259946a89dc3f5e9bf2da213feb2583d19900235d703817",
   "shortcuts": {
    "app": "Conductor.app v0.87.6",
    "chunk": "index-BGEQ8YjU.js",
@@ -222,10 +222,10 @@
    "result": "fail",
    "parity": {
     "total": 22,
-    "matched": 16,
+    "matched": 17,
     "partial": 0,
-    "missing": 6,
-    "parity_pct": 72.7
+    "missing": 5,
+    "parity_pct": 77.3
    }
   },
   {
@@ -649,10 +649,10 @@
    "result": "fail",
    "parity": {
     "total": 51,
-    "matched": 11,
-    "partial": 40,
+    "matched": 12,
+    "partial": 39,
     "missing": 0,
-    "parity_pct": 60.8
+    "parity_pct": 61.8
    },
    "gaps": [
     {
@@ -772,11 +772,6 @@
     },
     {
      "group": "Chat",
-     "id": "chat.addAttachment",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
      "id": "chat.openModelPicker",
      "status": "declared"
     },
@@ -866,10 +861,10 @@
    "result": "fail",
    "parity": {
     "total": 37,
-    "matched": 12,
-    "partial": 25,
+    "matched": 13,
+    "partial": 24,
     "missing": 0,
-    "parity_pct": 66.2
+    "parity_pct": 67.6
    },
    "gaps": [
     {
@@ -915,11 +910,6 @@
     {
      "group": "Workspace",
      "id": "workspace.openInMenu",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.copyLink",
      "status": "declared"
     },
     {
@@ -1008,17 +998,12 @@
    "result": "fail",
    "parity": {
     "total": 8,
-    "matched": 6,
-    "partial": 2,
+    "matched": 7,
+    "partial": 1,
     "missing": 0,
-    "parity_pct": 87.5
+    "parity_pct": 93.8
    },
    "gaps": [
-    {
-     "group": "Code review",
-     "id": "editor.saveFile",
-     "status": "declared"
-    },
     {
      "group": "Code review",
      "id": "editor.openSearch",
@@ -1166,21 +1151,15 @@
    "area": "persistence",
    "parent_obligation": "agent.binaries",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 1,
-    "matched": 0,
+    "matched": 1,
     "partial": 0,
-    "missing": 1,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "app data store",
-     "id": "agent-binaries",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "persistence.bin-source-markers",
@@ -1293,10 +1272,10 @@
    "result": "fail",
    "parity": {
     "total": 22,
-    "matched": 16,
+    "matched": 17,
     "partial": 0,
-    "missing": 6,
-    "parity_pct": 72.7
+    "missing": 5,
+    "parity_pct": 77.3
    },
    "gaps": [
     {
@@ -1317,11 +1296,6 @@
     {
      "group": "linked system library",
      "id": "CoreText",
-     "status": "missing"
-    },
-    {
-     "group": "linked system library",
-     "id": "OSAKit",
      "status": "missing"
     },
     {

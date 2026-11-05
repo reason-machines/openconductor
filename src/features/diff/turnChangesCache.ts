@@ -132,13 +132,16 @@ export function createTurnChangesStore(storage: Pick<Storage, "getItem" | "setIt
 
 /** Under a finished turn: all files when there are at most 3, else the first 2 and a button. */
 export const TURN_CHIPS_SHOWN = 3;
-/** Each "Show N more changed files" click reveals this many. */
+/** Each "+N more" click reveals this many. */
 export const TURN_CHIPS_STEP = 3;
 
 export interface ChipLayout {
-  shown: FileChange[];
+  /** On the footer row: every file when there are at most 3, else the first 2. */
+  first: FileChange[];
+  /** Revealed by "+N more" clicks; they wrap onto their own line. */
+  revealed: FileChange[];
   hidden: FileChange[];
-  /** Label of the "show more" button, or null when every file is shown. */
+  /** The "+N more" button's tooltip and aria-label ("Show 3 more changed files"), or null when every file is shown. */
   more: string | null;
   /** Lines added and removed in the hidden files. */
   hiddenTotals: { additions: number; deletions: number };
@@ -146,11 +149,12 @@ export interface ChipLayout {
 
 /** Which chips show after `expanded` clicks on "show more". */
 export function chipLayout(files: FileChange[], expanded: number): ChipLayout {
-  const first = files.length <= TURN_CHIPS_SHOWN ? files.length : TURN_CHIPS_SHOWN - 1;
-  const count = Math.min(files.length, first + expanded * TURN_CHIPS_STEP);
-  const shown = files.slice(0, count);
+  const firstCount = files.length <= TURN_CHIPS_SHOWN ? files.length : TURN_CHIPS_SHOWN - 1;
+  const count = Math.min(files.length, firstCount + expanded * TURN_CHIPS_STEP);
+  const first = files.slice(0, firstCount);
+  const revealed = files.slice(firstCount, count);
   const hidden = files.slice(count);
   const next = Math.min(TURN_CHIPS_STEP, hidden.length);
   const hiddenTotals = hidden.reduce((t, f) => ({ additions: t.additions + f.additions, deletions: t.deletions + f.deletions }), { additions: 0, deletions: 0 });
-  return { shown, hidden, more: next === 0 ? null : `Show ${next} more changed ${next === 1 ? "file" : "files"}`, hiddenTotals };
+  return { first, revealed, hidden, more: next === 0 ? null : `Show ${next} more changed ${next === 1 ? "file" : "files"}`, hiddenTotals };
 }

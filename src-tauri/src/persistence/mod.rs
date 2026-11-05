@@ -147,30 +147,6 @@ pub async fn set_target_branch(pool: &SqlitePool, local_id: &str, branch: &str) 
     workspaces::set_target_branch(pool, local_id, Some(branch)).await
 }
 
-/// Bring an archived workspace back: `ready`, since archiving keeps the
-/// worktree. Errors when it is not archived.
-pub async fn unarchive(pool: &SqlitePool, local_id: &str) -> Result<()> {
-    if !workspaces::unarchive(pool, local_id).await? {
-        return Err(openconductor_db::Error::NotFound);
-    }
-    workspaces::set_state(pool, local_id, WorkspaceState::Ready).await
-}
-
-/// Mark a workspace archived, keeping its branch.
-pub async fn archive(pool: &SqlitePool, local_id: &str) -> Result<()> {
-    let w = workspaces::get(pool, local_id)
-        .await?
-        .ok_or(openconductor_db::Error::NotFound)?
-        .workspace;
-    workspaces::archive(
-        pool,
-        local_id,
-        w.branch.as_deref().unwrap_or_default(),
-        None,
-    )
-    .await
-}
-
 async fn insert_workspace(
     pool: &SqlitePool,
     w: &KnownWorkspace,

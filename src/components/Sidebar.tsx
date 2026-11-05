@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type Dispatch, type ReactNode, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type Dispatch, type PointerEvent, type ReactNode, type RefObject } from "react";
 import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
@@ -18,6 +18,8 @@ import { SidebarGroup } from "./SidebarSections";
 import { pinnedEntries, repoGroupWorkspaces, sectionEntries, type SidebarSection } from "../state/sidebarOrder";
 import { newId } from "../state/names";
 import { SectionDialog, type SectionDialogMode } from "./SectionDialog";
+import { useSidebarDrag, type WorkspaceRef } from "./useSidebarDrag";
+import { DROP_ATTR, reorderIndicator, reorderToIndex, workspaceDropAction, type DropTarget } from "../state/navigationSections";
 import { ProjectFilterSubmenu } from "./home/ProjectFilterSubmenu";
 import { useRepoFilter } from "../home/useRepoFilter";
 import { filterRepoGroups } from "../home/repoFilter";
@@ -50,6 +52,7 @@ interface Props {
   /* sidebar: workspace row menu callbacks (rename dialog, archive flow) */
   onRenameWorkspace?: RowCallbacks["onRename"];
   onArchiveWorkspace?: RowCallbacks["onArchive"];
+  onCopyWorkspaceLink?: RowCallbacks["onCopyLink"];
   /** Shows an error toast (icon upload failures). */
   onError?: (message: string) => void;
 }
@@ -141,20 +144,31 @@ function HeaderMenu({ label, items, className, contextAt, onContextClose }: { la
  * collapsed and the hover chevron; its "..." / right-click menu (`oBi`); the
  * section's rows, or "Drag a workspace here" when it has none.
  */
-function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow }: {
+function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isDropTarget, isDragging, indicator, isFirst, onHeaderPointerDown }: {
   group: SidebarSection;
   collapsed: boolean;
   onToggle: () => void;
   menuItems: MenuEntry[];
   renderRow: (entry: SidebarSection["entries"][number]) => JSX.Element;
+  /* Drag and drop (useSidebarDrag.tsx, Conductor's `Yia`): */
+  /** A dragged row is over this section (`Dea`): accent fill. */
+  isDropTarget: boolean;
+  /** This section is being dragged (`Aea`): half opacity. */
+  isDragging: boolean;
+  /** Reorder line above this section, or below the last one (`Iea`). */
+  indicator: "above" | "below" | undefined;
+  isFirst: boolean;
+  /** Pressing the header may start a section reorder (`Cea`). */
+  onHeaderPointerDown: (e: PointerEvent<HTMLButtonElement>) => void;
 }) {
   const { section, entries } = group;
   const [contextAt, setContextAt] = useState<{ x: number; y: number } | null>(null);
   const closeContext = useCallback(() => setContextAt(null), []);
   return (
-    <div className="sb-nav-section" data-navigation-section-drop-id={section.id}>
+    <div className="sb-nav-section" data-navigation-section-drop-id={section.id} data-drop-target={isDropTarget || undefined} data-dragging={isDragging || undefined}>
+      {indicator && <div className="sb-nav-section-indicator" data-position={indicator} data-first={isFirst || undefined} aria-hidden />}
       <div className="sb-section-header" onContextMenu={(e) => { e.preventDefault(); setContextAt({ x: e.clientX, y: e.clientY }); }}>
-        <button type="button" className="sb-section-toggle" aria-expanded={!collapsed} onClick={onToggle}>
+        <button type="button" className="sb-section-toggle" aria-expanded={!collapsed} onClick={onToggle} onPointerDown={onHeaderPointerDown}>
           {section.emoji !== undefined && <span className="sb-section-emoji" aria-hidden>{section.emoji}</span>}
           <span className="sb-section-label">{section.name}</span>
           {collapsed && <span className="sb-group-count">{entries.length}</span>}
@@ -180,7 +194,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow }: {
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onError }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
@@ -188,11 +202,27 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
   // Conductor keeps each section's collapse under `section-<id>`; ours lasts for the session.
   const [collapsedSections, setCollapsedSections] = useState<ReadonlySet<string>>(new Set());
   const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
+  // Drag rows onto a section, Pinned or My workspaces, and section headers to reorder (Conductor's `esa`).
+  const scrollRoot = useRef<HTMLElement>(null);
+  const onDropWorkspace = (ws: WorkspaceRef, target: DropTarget) => {
+    const action = workspaceDropAction(state.sections ?? [], ws.id, ws.pinned, target);
+    if (action?.kind === "assign") dispatch({ type: "assignSection", workspaceId: ws.id, sectionId: action.sectionId });
+    else if (action?.kind === "unassign") dispatch({ type: "assignSection", workspaceId: ws.id, sectionId: null });
+    else if (action) dispatch({ type: "setWorkspacePinned", repoId: ws.repoId, workspaceId: ws.id, pinned: action.kind === "pin" });
+  };
+  const onDropSection = (sectionId: string, target: DropTarget) => {
+    const toIndex = reorderToIndex(state.sections ?? [], sectionId, target);
+    if (toIndex !== undefined) dispatch({ type: "reorderSection", sectionId, toIndex });
+  };
+  const drag = useSidebarDrag({ sections: state.sections ?? [], enabled: true, scrollRoot, onDropWorkspace, onDropSection });
+  const dropTarget = drag.dragging?.target;
   const rows = useWorkspaceRows(state, dispatch, {
     onRename: onRenameWorkspace ?? openRename,
     onArchive: onArchiveWorkspace,
+    onCopyLink: onCopyWorkspaceLink,
     onNewSection: (ws) => setSectionDialog({ mode: "create", workspaceIdToMove: ws.id }),
     collapsedSections,
+    onRowPointerDown: (e, repoId, ws) => drag.workspacePointerDown(e, { repoId, id: ws.id, pinned: typeof ws.pinnedAt === "number" }),
   });
   const { sections, sectioned } = sectionEntries(state);
   const pinned = pinnedEntries(state, sectioned);
@@ -290,18 +320,23 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
         </div>
       </div>
 
-      <nav className="repo-list">
+      <nav className="repo-list" ref={scrollRoot}>
         {pinned.length > 0 && (
-          <SidebarGroup label="Pinned" count={pinned.length}>
+          <SidebarGroup label="Pinned" count={pinned.length} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
             {pinned.map(row)}
           </SidebarGroup>
         )}
         {sections.length > 0 && (
           <section className="sb-nav-sections" aria-label="Sections" data-navigation-sections-section="">
-            {sections.map((group) => (
+            {sections.map((group, i) => (
               <NavSectionGroup
                 key={group.section.id}
                 group={group}
+                isDropTarget={dropTarget?.type === "section" && dropTarget.sectionId === group.section.id}
+                isDragging={drag.dragging?.gesture.kind === "section" && drag.dragging.gesture.sectionId === group.section.id}
+                indicator={reorderIndicator(dropTarget, i, i === sections.length - 1)}
+                isFirst={i === 0}
+                onHeaderPointerDown={(e) => drag.sectionPointerDown(e, group.section.id)}
                 collapsed={collapsedSections.has(group.section.id)}
                 onToggle={() => toggleSection(group.section.id)}
                 menuItems={sectionMenu(group.section.id)}
@@ -310,6 +345,8 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
             ))}
           </section>
         )}
+        {/* My workspaces takes rows dragged out of a section or off Pinned (Conductor's `Gra`, `data-workspace-unsectioned-drop`). */}
+        <section className="sb-my-workspaces" aria-label="My workspaces" data-drop-target={dropTarget?.type === "unsectioned" || undefined} {...{ [DROP_ATTR.unsectioned]: "" }}>
         {/* "My workspaces" section header (Conductor's `lBi`): label, hover chevron, "..." menu with Add project. */}
         <div className="sb-section-header">
           <button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed} onClick={() => setGroupCollapsed(!groupCollapsed)}>
@@ -408,7 +445,9 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
             )}
           </div>
         )}
+        </section>
       </nav>
+      {drag.overlay}
       {rows.menu}
       {sectionDialog && (
         <SectionDialog
