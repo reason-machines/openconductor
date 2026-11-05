@@ -1,5 +1,8 @@
 //! Agent runner and provider abstraction.
 //!
+//! * [`claude`] - Claude Code providers: its own login, and an Anthropic API
+//!   key or auth token, optionally through a gateway with model overrides.
+//! * [`claude_cloud`] - Claude Code on Bedrock, Vertex AI and Foundry.
 //! * [`env`] - [`AgentKind`] and [`LaunchEnv`], the environment an agent
 //!   process is launched with. A launch clears every inherited variable that
 //!   would route the agent elsewhere before setting its own.
@@ -14,6 +17,8 @@
 //! `evidence/providers/README.md`. The module is tested standalone with
 //! `tools/agent/run-rust-tests.sh`.
 
+pub mod claude;
+pub mod claude_cloud;
 pub mod env;
 pub mod provider;
 pub mod secret;
