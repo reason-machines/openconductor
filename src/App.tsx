@@ -35,6 +35,7 @@ import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { useWorkspaceDeepLinks } from "./workspace/useWorkspaceDeepLinks";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
 
 export default function App() {
@@ -47,6 +48,8 @@ export default function App() {
     prevState.current = state;
   }, [state]);
   const nav = useNavHistory(state, dispatch);
+  // openconductor://workspace?id=<id> (Copy link) selects that workspace.
+  useWorkspaceDeepLinks(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
   const sidebarWidth = useSidebarWidth();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
