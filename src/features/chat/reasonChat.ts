@@ -17,7 +17,8 @@
 
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
+import { applyChatEvents, emptyTranscript, truncateAfterTurn, type ChatTranscript } from "./reducer.ts";
+import { restoreCheckpoint, saveTurnCheckpoint } from "./checkpoints.ts";
 import { applyReasonPayload, failTurn, newestTurn, openTurns, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 
@@ -116,18 +117,39 @@ async function prompt(c: Chat, text: string): Promise<void> {
   apply(c, startTurn(c.state, text));
   const turnId = newestTurn(c.state)!;
   if (!reasonAvailable()) return preview.prompt(c, text);
+  // `submitChat` sets the folder before any effect runs.
+  const cwd = c.cwd ?? "";
   try {
     await ensureListening();
     if (!c.opened) {
-      await invoke("reason_open_chat", { chatId, cwd: c.cwd, sessionId: localStorage.getItem(sessionKey(chatId)) });
+      await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)) });
       c.opened = true;
     }
+    // Conductor snapshots the workspace around every turn so "Reset chat"
+    // can bring the files back (features/chat/checkpoints.ts).
+    await saveTurnCheckpoint(invoke, cwd, chatId, turnId, "start");
     // Resolves after the turn's `turnEnded` event; a rejection means the
     // turn never started (no CLI, no process), so no event will end it.
     await invoke("reason_prompt", { chatId, text });
   } catch (e) {
     apply(c, failTurn(c.state, turnId, String(e)));
+    return;
   }
+  await saveTurnCheckpoint(invoke, cwd, chatId, turnId, "end");
+}
+
+/**
+ * "Reset chat" to `turnId`: with `resetFiles`, restore the workspace to the
+ * turn's end checkpoint first; only when that worked, delete the later
+ * messages. The Reason Session itself is not rewound: ACP has no way to drop
+ * turns from a Session, so the agent still remembers the deleted ones.
+ */
+export async function resetReasonChat(chatId: string, cwd: string, turnId: string, resetFiles: boolean): Promise<void> {
+  const c = chat(chatId);
+  if (c.transcript.activeTurn !== null) throw new Error("Stop the agent before resetting the chat.");
+  await restoreCheckpoint(invoke, cwd, chatId, turnId, resetFiles);
+  c.transcript = truncateAfterTurn(c.transcript, turnId);
+  notify(c);
 }
 
 export function chatSnapshot(chatId: string): ChatSnapshot {

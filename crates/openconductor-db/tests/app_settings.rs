@@ -14,6 +14,38 @@ async fn get_is_none_until_set_and_set_replaces() {
 }
 
 #[tokio::test]
+async fn deprecated_keys_drop_out_of_active_until_written_again() {
+    let pool = open_in_memory().await.unwrap();
+    app_settings::set(&pool, "a", "1").await.unwrap();
+    app_settings::set(&pool, "b", "2").await.unwrap();
+    app_settings::deprecate(&pool, "a").await.unwrap();
+    app_settings::deprecate(&pool, "missing").await.unwrap();
+    assert_eq!(
+        app_settings::active(&pool).await.unwrap(),
+        [("b".to_string(), "2".to_string())]
+    );
+    // The value is kept, and a write replaces the row, clearing the mark.
+    assert_eq!(
+        app_settings::get(&pool, "a").await.unwrap().as_deref(),
+        Some("1")
+    );
+    app_settings::set(&pool, "a", "3").await.unwrap();
+    let mut active = app_settings::active(&pool).await.unwrap();
+    active.sort();
+    assert_eq!(
+        active,
+        [
+            ("a".to_string(), "3".to_string()),
+            ("b".to_string(), "2".to_string())
+        ]
+    );
+
+    app_settings::delete(&pool, "a").await.unwrap();
+    app_settings::delete(&pool, "a").await.unwrap();
+    assert_eq!(app_settings::get(&pool, "a").await.unwrap(), None);
+}
+
+#[tokio::test]
 async fn clear_spotlight_testing_nulls_only_that_column() {
     let pool = open_in_memory().await.unwrap();
     let repo = NewRepo {

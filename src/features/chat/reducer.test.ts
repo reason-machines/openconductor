@@ -124,3 +124,24 @@ test("turn status keeps start and end times", () => {
   const untimed = apply([status("t2", "running"), status("t2", "completed")]);
   assert.deepEqual(untimed.turns.t2, { status: "completed" });
 });
+
+test("truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses", async () => {
+  const { truncateAfterTurn } = await import("./reducer.ts");
+  const m = (id: string, turnId: string, role: ChatMessage["role"]) => ({ ...msg(id, role, [{ type: "text", text: id }]), turnId });
+  const t = apply([
+    upsert(m("u1", "t1", "user")),
+    upsert(m("a1", "t1", "assistant")),
+    status("t1", "completed"),
+    upsert(m("u2", "t2", "user")),
+    upsert(m("a2", "t2", "assistant")),
+    status("t2", "completed"),
+    upsert(m("u3", "t3", "user")),
+    upsert(m("a3", "t3", "assistant")),
+    status("t3", "cancelled"),
+  ]);
+  const r = truncateAfterTurn(t, "t2");
+  assert.deepEqual(r.messages.map((x) => x.id), ["u1", "a1", "u2", "a2"]);
+  assert.deepEqual(Object.keys(r.turns).sort(), ["t1", "t2"]);
+  assert.equal(r.activeTurn, null);
+  assert.equal(truncateAfterTurn(t, "nope"), t);
+});

@@ -125,3 +125,21 @@ export function applyChatEvents(t: ChatTranscript, events: ChatEvent[]): ApplyRe
   }
   return { ok: true, transcript: cur };
 }
+
+/**
+ * "Reset chat" to `turnId`: drops every message after that turn's last one,
+ * and the statuses of turns that no longer have messages (Conductor's
+ * `deleteMessagesAfterWatermark`). Unknown turn: unchanged.
+ */
+export function truncateAfterTurn(t: ChatTranscript, turnId: string): ChatTranscript {
+  let last = -1;
+  t.messages.forEach((m, i) => {
+    if (m.turnId === turnId) last = i;
+  });
+  if (last < 0) return t;
+  const messages = t.messages.slice(0, last + 1);
+  const kept = new Set(messages.map((m) => m.turnId));
+  const turns = Object.fromEntries(Object.entries(t.turns).filter(([id]) => kept.has(id)));
+  const activeTurn = t.activeTurn !== null && kept.has(t.activeTurn) ? t.activeTurn : null;
+  return { ...t, messages, turns, activeTurn };
+}

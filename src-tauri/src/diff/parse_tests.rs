@@ -193,3 +193,14 @@ fn bad_marker_is_an_error() {
 fn empty_patch_has_no_files() {
     assert!(parse_unified("").unwrap().is_empty());
 }
+
+#[test]
+fn trailing_tab_after_a_name_with_spaces_is_not_part_of_the_path() {
+    // git writes "--- a/my file.txt\t" for names containing a space.
+    let patch = "diff --git a/my file.txt b/my file.txt\n--- a/my file.txt\t\n+++ b/my file.txt\t\n@@ -1 +1 @@\n-a\n+b\n\
+diff --git a/new file.rs b/new file.rs\nnew file mode 100644\n--- /dev/null\n+++ b/new file.rs\t\n@@ -0,0 +1 @@\n+x\n";
+    let files = parse_unified(patch).unwrap();
+    assert_eq!(files[0].path, "my file.txt");
+    assert_eq!(files[0].old_path, None);
+    assert_eq!(files[1].path, "new file.rs");
+}

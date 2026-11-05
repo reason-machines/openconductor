@@ -4,22 +4,13 @@ import assert from "node:assert/strict";
 import {
   PERSIST_DELAY_MS,
   PersistThrottle,
-  TABS_STORAGE_KEY,
-  readSaved,
-  removeWorkspace,
   restoreCwds,
   restoreOutput,
-  writeWorkspace,
   type HistoryRecord,
-  type KeyValue,
   type Timers,
 } from "./restore.ts";
 import { emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs.ts";
 
-const memory = (init: Record<string, string> = {}): KeyValue & { data: Record<string, string> } => {
-  const data = { ...init };
-  return { data, getItem: (k) => data[k] ?? null, setItem: (k, v) => void (data[k] = v) };
-};
 const run = (actions: TabsAction[], s: TabsState = emptyTabs()) => actions.reduce(tabsReducer, s);
 
 const record = (over: Partial<HistoryRecord> = {}): HistoryRecord => ({
@@ -36,44 +27,6 @@ const record = (over: Partial<HistoryRecord> = {}): HistoryRecord => ({
   alternateScreen: false,
   bracketedPaste: true,
   ...over,
-});
-
-test("a workspace's tabs round-trip through storage, leaving other workspaces alone", () => {
-  const store = memory();
-  const a = run([{ type: "open", id: "a1" }, { type: "open", id: "a2" }, { type: "select", id: "a1" }]);
-  const b = run([{ type: "open", id: "b1" }]);
-  writeWorkspace(store, "A", a, () => "/a");
-  writeWorkspace(store, "B", b, () => "/b");
-  writeWorkspace(store, "A", run([{ type: "close", id: "a2" }], a), () => "/a");
-
-  assert.deepEqual(readSaved(store), {
-    A: { tabs: [{ id: "a1", title: "Terminal 1", cwd: "/a" }], activeId: "a1", next: 3 },
-    B: { tabs: [{ id: "b1", title: "Terminal 1", cwd: "/b" }], activeId: "b1", next: 2 },
-  });
-
-  // Closing a workspace's last tab drops its entry.
-  writeWorkspace(store, "B", run([{ type: "close", id: "b1" }], b), () => "/b");
-  assert.deepEqual(Object.keys(readSaved(store)), ["A"]);
-});
-
-test("tabs with no live terminal are not saved", () => {
-  const store = memory();
-  writeWorkspace(store, "A", run([{ type: "open", id: "a1" }, { type: "open", id: "gone" }]), (id) => (id === "a1" ? "/a" : undefined));
-  assert.deepEqual(readSaved(store).A.tabs.map((t) => t.id), ["a1"]);
-});
-
-test("unreadable or malformed saved tabs read as none, keeping the valid parts", () => {
-  assert.deepEqual(readSaved(memory({ [TABS_STORAGE_KEY]: "{not json" })), {});
-  assert.deepEqual(readSaved(memory({ [TABS_STORAGE_KEY]: "[1,2]" })), {});
-  const saved = readSaved(
-    memory({
-      [TABS_STORAGE_KEY]: JSON.stringify({
-        A: { tabs: [{ id: "x", title: "T", cwd: "/" }, { id: 3 }, null], activeId: "missing", next: -1 },
-        B: { tabs: "nope" },
-      }),
-    }),
-  );
-  assert.deepEqual(saved, { A: { tabs: [{ id: "x", title: "T", cwd: "/" }], activeId: "x", next: 2 } });
 });
 
 test("restored tabs keep their titles, active tab and counter", () => {
@@ -212,19 +165,4 @@ test("a failed drop step does not reject and does not stop later saves", async (
   });
   await p.flush("a");
   assert.deepEqual(saves, ["a"]);
-});
-
-test("removeWorkspace forgets one workspace's tabs and keeps the others", () => {
-  const store = memory();
-  store.setItem(
-    TABS_STORAGE_KEY,
-    JSON.stringify({
-      w1: { tabs: [{ id: "t1", title: "Terminal 1", cwd: "/a" }], activeId: "t1", next: 2 },
-      w2: { tabs: [{ id: "t2", title: "Terminal 1", cwd: "/b" }], activeId: "t2", next: 2 },
-    }),
-  );
-  removeWorkspace(store, "w1");
-  assert.deepEqual(Object.keys(readSaved(store)), ["w2"]);
-  removeWorkspace(store, "missing");
-  assert.deepEqual(Object.keys(readSaved(store)), ["w2"]);
 });
