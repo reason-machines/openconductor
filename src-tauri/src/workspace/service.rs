@@ -36,6 +36,8 @@ pub struct CreateWorkspaceRequest {
     /// Check out `branch_name` (local, or tracking `origin/<branch_name>`)
     /// instead of creating it; see [`CreateOptions::existing_branch`].
     pub existing_branch: bool,
+    /// PR whose head `branch_name` is; see [`CreateOptions::pr_number`].
+    pub pr_number: Option<u64>,
 }
 
 #[derive(Debug)]
@@ -117,6 +119,7 @@ impl WorkspaceService {
             branch_name: non_empty(&req.branch_name),
             base_branch: non_empty(&req.base_branch),
             existing_branch: req.existing_branch,
+            pr_number: req.pr_number,
             fetch: true,
             ..Default::default()
         };

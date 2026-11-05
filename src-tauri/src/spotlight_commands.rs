@@ -8,7 +8,12 @@ use std::sync::Arc;
 use serde::Serialize;
 use tauri::{AppHandle, Emitter, State};
 
+use oc_scripts::config::SettingsPaths;
+use oc_scripts::service::ScriptService;
+
+use crate::db::Db;
 use crate::spotlight::service::{SpotlightEvent, SpotlightService};
+use crate::spotlight::setting::{self, SpotlightTesting, SpotlightTestingChange};
 
 /// Event name the frontend listens on.
 pub const EVENT: &str = "spotlight://event";
@@ -81,6 +86,47 @@ pub async fn spotlight_status(
             active: workspace_id.is_some(),
             workspace_id,
         })
+    })
+    .await
+}
+
+async fn repo_target(db: &Db, repo_id: &str) -> Result<setting::RepoTarget, String> {
+    let user_dir = SettingsPaths::default_user_dir().ok_or("cannot locate the home directory")?;
+    setting::target(&db.0, repo_id, user_dir).await
+}
+
+/// The repository's effective `spotlight_testing` setting.
+#[tauri::command]
+pub async fn spotlight_testing_get(
+    db: State<'_, Db>,
+    repo_id: String,
+) -> Result<SpotlightTesting, String> {
+    let target = repo_target(&db, &repo_id).await?;
+    blocking(move || setting::read(&target.paths)).await
+}
+
+/// Turn Spotlight testing on or off for a repository: write it to the
+/// repository's local settings file, then stop every run process of its
+/// workspaces and its Spotlight session, so the next Run starts in the new
+/// mode (the reference's toggle does the same).
+#[tauri::command]
+pub async fn spotlight_testing_set(
+    db: State<'_, Db>,
+    scripts: State<'_, ScriptService>,
+    spotlight: State<'_, Spotlight>,
+    repo_id: String,
+    enabled: bool,
+) -> Result<SpotlightTestingChange, String> {
+    let target = repo_target(&db, &repo_id).await?;
+    let scripts = scripts.inner().clone();
+    let spotlight = spotlight.inner().clone();
+    blocking(move || {
+        setting::apply(
+            &target,
+            enabled,
+            |workspace_id| scripts.runs.stop(workspace_id, None),
+            |root| spotlight.stop(root),
+        )
     })
     .await
 }

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   FAILED_TO_CREATE,
   buildCreateRequest,
+  prBranchName,
   newDraft,
   progressLabel,
   reduceProgress,
@@ -149,10 +150,26 @@ test("create from a PR or branch asks create_workspace to check that branch out"
     directoryName: "oslo",
     baseBranch: "fix/login",
     existingBranch: true,
+    prNumber: 12,
   });
   const fromBranch = buildCreateRequest(selectFrom(draft(), { kind: "branch", name: "feature/x" }), "sven/");
   assert.ok(fromBranch.ok);
   const args = toCreateWorkspaceArgs(fromBranch.request);
   assert.equal(args.branchName, "feature/x");
   assert.equal(args.existingBranch, true);
+  assert.equal("prNumber" in args, false);
+});
+
+test("a fork PR is checked out as <owner>/<branch> and sends its PR number", () => {
+  const fork = { kind: "pr" as const, number: 31, title: "Fork fix", headBranch: "main", baseBranch: "release", headOwner: "octocat", crossRepository: true };
+  assert.equal(prBranchName(fork), "octocat/main");
+  assert.equal(prBranchName({ ...fork, crossRepository: false }), "main");
+  assert.equal(prBranchName({ ...fork, headOwner: " " }), "main");
+  const r = buildCreateRequest(selectFrom(draft(), fork), "sven/");
+  assert.ok(r.ok);
+  const args = toCreateWorkspaceArgs(r.request);
+  assert.equal(args.branchName, "octocat/main");
+  assert.equal(args.baseBranch, "octocat/main");
+  assert.equal(args.existingBranch, true);
+  assert.equal(args.prNumber, fork.number);
 });

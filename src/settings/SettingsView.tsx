@@ -2,6 +2,7 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { DefaultModelsPage } from "./DefaultModelsPage";
 import { GeneralPage } from "./GeneralPage";
 import { GitPage } from "./GitPage";
+import { KeyBindingsPage } from "./KeyBindingsPage";
 import { pageLabel, SETTINGS_GROUPS, type SettingsPage } from "./pages";
 import { useSettings } from "./useSettings";
 
@@ -51,6 +52,8 @@ export function SettingsView({ page, onNavigate, onClose }: Props) {
         )}
         {!settings ? (
           <p className="muted">Loading…</p>
+        ) : page === "key-bindings" ? (
+          <KeyBindingsPage settings={settings} save={save} />
         ) : page === "models" ? (
           <DefaultModelsPage settings={settings} save={save} />
         ) : page === "git" ? (
