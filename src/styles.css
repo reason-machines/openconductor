@@ -208,3 +208,22 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .qo-tag { margin-left: auto; color: var(--muted); font-size: 11px; }
 .qo-empty { padding: 18px 16px; color: var(--muted); font-size: 13px; }
 .qo-hint { border-top: 1px solid var(--border); padding: 6px 12px; color: var(--muted); font-size: 11px; }
+
+/* Terminal panel */
+.terminal-panel { display: flex; flex-direction: column; height: 260px; min-height: 120px; border-top: 1px solid var(--border); background: var(--panel); }
+.term-tabs { display: flex; align-items: center; gap: 2px; padding: 4px 8px; border-bottom: 1px solid var(--border); }
+.term-tab { display: flex; align-items: center; gap: 6px; padding: 3px 6px 3px 10px; border-radius: 6px; color: var(--muted); cursor: default; font-size: 12px; }
+.term-tab:hover { background: var(--hover); }
+.term-tab.active { background: var(--active); color: var(--text); }
+.term-x, .term-icon { color: var(--muted); border-radius: 4px; padding: 0 5px; line-height: 18px; }
+.term-x:hover, .term-icon:hover:not(:disabled) { background: var(--hover); color: var(--text); }
+.term-icon:disabled { opacity: 0.4; }
+.term-spacer { flex: 1; }
+.term-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+.term-dot.running { background: var(--add); }
+.term-dot.exited { background: var(--del); }
+.term-body { flex: 1; min-height: 0; padding: 4px 0 0 8px; overflow: hidden; }
+.term-host, .term-host .xterm { height: 100%; }
+.term-host .xterm-viewport { background-color: var(--panel) !important; }
+.term-error { padding: 8px 12px; color: var(--del); font-size: 12px; }
+.term-empty { padding: 12px; font-size: 12px; }
