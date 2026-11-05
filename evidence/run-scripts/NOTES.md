@@ -45,6 +45,7 @@ re-check a claim; the code itself is not copied here.
 - Run states: `starting`, `waiting_for_setup`, `running`, `stopping`, `stopped`, keyed by workspace and run-script id. Starting a run script first stops every run process of that workspace. While the workspace is `setting_up`, the start is queued as `waiting_for_setup`. With `nonconcurrent`, starting kills run processes of the repository's other workspaces. The last transcript is kept after exit. (S4 @~2922000)
 - Auto-run after setup: only when `auto_run_after_setup` is on and a run script exists, and setup completed (or there is no setup script); it starts the default run script. (S4 @~1015000, @2935251)
 - Run history: the last 20 run-script ids per workspace and the active one. (S4 @2876158)
+- Auto-run toggle (re-read 2026-11-05 on sven m5 max, REA 6.7.0 `analyze-javascript-application`, evidence `ev_564ed9bf…`, S4 sha256 `b5b01f33…`): a Settings › Experimental row, `settingKey: "auto_run_after_setup"`, `scopes: ["user"]`, title "Auto-run after setup", default `false` (S4 settings defaults `@277671`), file key `scripts.auto_run_after_setup` (`@286068`). `IRt` (REA function node, chars 2934394-2935667) reads it through every layer (`getSettingForWorkspaceV2`) once a local workspace's setup state is `completed` or `idle`, and gates on `fQe` (REA node, chars 1015511-1015646): toggle on and a run script, then setup `completed`, or `idle` with no setup script. A `failed` or `cancelled` setup never auto-runs. OpenConductor: the Experimental row (`src/settings/ExperimentalPage.tsx`) calls `auto_run_after_setup_get`/`_set`, which write `[scripts] auto_run_after_setup` to the user layer the scripts loader reads (`~/.conductor/settings.toml`, `crates/scripts/src/config/user.rs`); a repository layer that sets the key still wins.
 
 ## Our choices where the evidence is silent
 
@@ -57,6 +58,7 @@ re-check a claim; the code itself is not copied here.
 
 - The Tauri `pty_spawn`/`pty_kill` handlers in `MacOS/conductor` are not bound to Rust functions (the Ghidra provider is blocked, see the REA test report), so the signal used to stop a run script is not verified. We send SIGTERM to the process group, then SIGKILL after a grace period.
 - REA `analyze-javascript-application` does not model Tauri `invoke` or Zustand stores, so every frontend claim above comes from reading S4 by offset, not from REA findings.
+- REA 6.7.0 `analyze-javascript-application` on `index-BGEQ8YjU.js` + `renderApp-D_fmY7hW.js` (auto-run toggle read): the analyzer worker ran out of its default 1 GiB heap on `renderApp-D_fmY7hW.js`, so the settings row (`scopes: ["user"]`) was not in REA's graph and was read by offset. The semantic graph keeps no string literals (`auto_run_after_setup` occurs 0 times in the 76 MB Evidence) and its unknowns hit the retention ceiling (coverage `partial`, truncated). REA found `IRt` and `fQe` as function nodes, but its source ranges are character offsets, which drift a few bytes from S4 byte offsets.
 
 ## Where each behavior lives
 
