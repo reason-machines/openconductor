@@ -13,7 +13,8 @@
 //! * [`merge_eligibility`]: when the merge button may be offered.
 //! * [`header`]: what the workspace header's git/PR control shows.
 //! * [`gh`]: run `gh` from a checkout or against `owner/name`; typed
-//!   GraphQL variables; the repository's preferred merge method.
+//!   GraphQL variables; the repository's preferred merge method; merge
+//!   (squash / merge / rebase), auto-merge, ready, edit, retarget, approve.
 //! * [`prompt`]: the create-PR message sent to the agent, and the
 //!   archive-on-merge rule.
 

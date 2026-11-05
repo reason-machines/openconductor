@@ -56,6 +56,10 @@ pub fn run() {
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(Terminals::new(app.handle().clone()));
+            app.manage(settings::service::SettingsService::new(
+                settings::config_dir()?.join(settings::FILE_NAME),
+                agent::keychain::default_store(),
+            ));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -67,6 +71,7 @@ pub fn run() {
             workspace::commands::branch_name_is_taken,
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
+            workspace::commands::rename_workspace_branch,
             diff::commands::diff_workspace,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
@@ -78,6 +83,11 @@ pub fn run() {
             terminal_commands::pty_read_history,
             terminal_commands::pty_clear_history,
             terminal_commands::pty_list,
+            settings::commands::get_settings,
+            settings::commands::update_settings,
+            settings::commands::provider_status,
+            settings::commands::connect_provider,
+            settings::commands::disconnect_provider,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")

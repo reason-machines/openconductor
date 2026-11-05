@@ -17,6 +17,7 @@
 //!     workspace::commands::branch_name_is_taken,
 //!     workspace::commands::create_workspace,
 //!     workspace::commands::list_workspaces,
+//!     workspace::commands::rename_workspace_branch,
 //! ])
 //! ```
 
@@ -137,6 +138,23 @@ pub async fn list_workspaces(
         .manager()
         .list(&root)
         .map(|ws| ws.into_iter().map(|w| workspace_dto(&repository_id, w)).collect())
+        .map_err(|e| e.to_string())
+}
+
+/// JS: `invoke("rename_workspace_branch", { workspaceId, branchName })`, where
+/// `workspaceId` is `WorkspaceDto.id`. Fails if the branch is taken or the
+/// workspace is still initializing; the directory name is unchanged.
+#[tauri::command]
+pub async fn rename_workspace_branch(
+    service: State<'_, WorkspaceService>,
+    workspace_id: String,
+    branch_name: String,
+) -> Result<WorkspaceDto, String> {
+    let (repository_id, _) = workspace_id.rsplit_once('/').unwrap_or(("", ""));
+    let repository_id = repository_id.to_string();
+    service
+        .rename_workspace_branch(&workspace_id, &branch_name)
+        .map(|w| workspace_dto(&repository_id, w))
         .map_err(|e| e.to_string())
 }
 

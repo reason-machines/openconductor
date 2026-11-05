@@ -2,10 +2,12 @@
 //! shell), either from the repository's directory, letting `gh` resolve the
 //! repository from its remote, or against an explicit `owner/name`.
 
+use std::collections::HashMap;
 use std::fmt;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::sync::Mutex;
 
 use serde::{Deserialize, Serialize};
 
@@ -221,5 +223,131 @@ impl<R: Runner> Gh<R> {
         .into_iter()
         .find_map(|(allowed, m)| allowed.then_some(m))
         .ok_or(GhError::MergeMethodUnknown)
+    }
+}
+
+/// PR actions. Each maps to one `gh` call; failures carry `gh`'s stderr.
+impl<R: Runner> Gh<R> {
+    /// `gh pr <sub> <number> ...`, adding `--repo` for explicit addressing.
+    fn pr(
+        &self,
+        action: &'static str,
+        sub: &str,
+        number: u64,
+        rest: &[&str],
+    ) -> Result<(), GhError> {
+        let mut args = vec!["pr".to_string(), sub.to_string(), number.to_string()];
+        args.extend(rest.iter().map(|s| s.to_string()));
+        if let Addressing::Repo { owner, name } = &self.addressing {
+            args.extend(["--repo".to_string(), format!("{owner}/{name}")]);
+        }
+        self.exec(action, args).map(drop)
+    }
+
+    pub fn merge(&self, number: u64, method: MergeMethod) -> Result<(), GhError> {
+        self.pr("Merging the PR", "merge", number, &[method.flag()])
+    }
+
+    pub fn enable_auto_merge(&self, number: u64, method: MergeMethod) -> Result<(), GhError> {
+        self.pr(
+            "Turning on auto-merge",
+            "merge",
+            number,
+            &[method.flag(), "--auto"],
+        )
+    }
+
+    pub fn disable_auto_merge(&self, number: u64) -> Result<(), GhError> {
+        self.pr(
+            "Turning off auto-merge",
+            "merge",
+            number,
+            &["--disable-auto"],
+        )
+    }
+
+    pub fn mark_ready(&self, number: u64) -> Result<(), GhError> {
+        self.pr("Marking the PR ready for review", "ready", number, &[])
+    }
+
+    /// Change the title and/or body; `None` leaves a field as is.
+    pub fn edit(
+        &self,
+        number: u64,
+        title: Option<&str>,
+        body: Option<&str>,
+    ) -> Result<(), GhError> {
+        let mut rest = Vec::new();
+        if let Some(t) = title {
+            rest.extend(["--title", t]);
+        }
+        if let Some(b) = body {
+            rest.extend(["--body", b]);
+        }
+        self.pr("Updating the PR", "edit", number, &rest)
+    }
+
+    pub fn retarget(&self, number: u64, base: &str) -> Result<(), GhError> {
+        self.pr(
+            "Changing the PR's base branch",
+            "edit",
+            number,
+            &["--base", base],
+        )
+    }
+
+    /// Approve the PR at a specific head commit (REST reviews API), so an
+    /// approval never lands on commits the viewer has not seen.
+    pub fn approve(&self, number: u64, head_oid: &str) -> Result<(), GhError> {
+        let repo = match &self.addressing {
+            Addressing::Cwd(_) => "{owner}/{repo}".to_string(),
+            Addressing::Repo { owner, name } => format!("{owner}/{name}"),
+        };
+        let args = vec![
+            "api".to_string(),
+            format!("repos/{repo}/pulls/{number}/reviews"),
+            "-f".to_string(),
+            "event=APPROVE".to_string(),
+            "-f".to_string(),
+            format!("commit_id={head_oid}"),
+        ];
+        self.exec("Approving the PR", args).map(drop)
+    }
+}
+
+/// Per-repository cache of the allowed merge method. Failures are not
+/// cached, so the next attempt asks GitHub again.
+#[derive(Default)]
+pub struct MergeMethodCache {
+    by_repo: Mutex<HashMap<String, MergeMethod>>,
+}
+
+impl MergeMethodCache {
+    pub fn get_or_fetch(
+        &self,
+        repo_id: &str,
+        fetch: impl FnOnce() -> Result<MergeMethod, GhError>,
+    ) -> Result<MergeMethod, GhError> {
+        if let Some(m) = self
+            .by_repo
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .get(repo_id)
+        {
+            return Ok(*m);
+        }
+        let m = fetch()?;
+        self.by_repo
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .insert(repo_id.to_string(), m);
+        Ok(m)
+    }
+
+    pub fn forget(&self, repo_id: &str) {
+        self.by_repo
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .remove(repo_id);
     }
 }
