@@ -137,8 +137,8 @@ the same SQL). The `cargo` parity test checks the real migrator on every CI run.
   `rea-test-report.md`).
 - `cache.db` query shapes: `analyze-javascript-application` on the
   3.5 MB `index-BGEQ8YjU.js` chunk alone (`--source-path`, 8 GiB heap)
-  failed with `provider_timeout` at its default 300 s budget (442 s wall),
-  and the partial Evidence holds none of the SQL literals, so the statements
+  failed with `provider_timeout` at its default 300 s budget (442 s wall)
+  and again at `--analysis-timeout-ms 900000` (990 s wall), and the partial Evidence holds none of the SQL literals, so the statements
   were read by slicing the chunk text around the table names
   (`evidence/rea/rea-invocations.tsv`, `cache_db_*` rows). The navigation
   statements live in the 30 MB `renderApp` chunk, where the analyzer is
