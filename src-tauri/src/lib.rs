@@ -5,17 +5,20 @@
 //! - `checkpoint/` checkpoints and revert
 //! - `agent/`      agent runner, providers and BYOK settings
 //! - `diff/`       diff viewer: git changes, unified diff parser
-//! - `quick_open/` quick open file index and fuzzy matching (Spotlight)
+//! - `quick_open/` quick open file index and fuzzy matching
+//! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //! - `settings/`   settings.toml and the Keychain-backed secret store
 //! - `terminal/`   PTY terminals (`terminal_commands.rs` is its IPC layer)
 //!
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod checkpoint;
 pub mod diff;
 pub mod project;
 pub mod quick_open;
 pub mod settings;
+pub mod spotlight;
 pub mod terminal;
 mod terminal_commands;
 pub mod workspace;
