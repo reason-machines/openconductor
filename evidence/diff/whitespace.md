@@ -41,3 +41,23 @@ read (`evidence/rea/rea-invocations.tsv`, `diff_whitespace_bundle_read`).
 - Not changed here: the changes-list checkbox ("Hide whitespace") lives in
   `ChangesList.tsx`, owned by the twin builder; Conductor's label there is
   "Hide whitespace changes" in a View options menu.
+
+## File toolbar copy, re-read 2026-11-05 (#140 follow-up)
+
+Same bundle, bounded reads by byte offset (REA gap as above, logged as
+`diff_toolbar_copy_bundle_read`).
+
+- With the Pierre renderer, the file toolbar shows the whitespace control only
+  inside a "View options" icon button (aria-label and tooltip "View options").
+  It opens a non-modal menu, aligned to the button's end, of checkbox items:
+  "Hide whitespace changes" when whitespace is offered and "Wrap lines" when
+  wrapping is offered; with neither, the button is not rendered. The bare
+  whitespace icon toggle above belongs to the non-Pierre toolbar path.
+  OpenConductor: `ViewOptionsMenu` in `Whitespace.tsx`, mounted from
+  `DiffTab`; the Changes list's "Hide whitespace" checkbox is removed. Wrap
+  lines is left to the diff.appearance work (the `textWrap` prop).
+- Layout toggles are labelled "Unified view", "Split view" and "Entire file"
+  (`LAYOUT_TITLE` in `DiffViewer.tsx`).
+- The viewed control is a ghost button showing an icon and "Viewed"; its
+  tooltip is "Mark as viewed" or, once viewed, "Mark as not viewed", followed
+  by the `diff.toggleViewed` shortcut (`ViewedToggle` in `FileDiffView.tsx`).

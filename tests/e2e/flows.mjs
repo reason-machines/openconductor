@@ -1,6 +1,6 @@
 // Flows run in order against one app session. Each throws on failure.
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -137,6 +137,27 @@ export const flows = [
       // Turn spotlight testing back off for later flows.
       const [again] = await wd.findAll(".spotlight-toggle input:checked:not([disabled])");
       if (again) await wd.click(again);
+    },
+  },
+  {
+    // The workspace's terminal panel runs a real login shell in the repository
+    // checkout. The typed line never contains "42", so seeing oc-term-42 proves
+    // the shell evaluated it, and pwd shows where the shell started.
+    name: "terminal",
+    async run(wd, ctx) {
+      if (!ctx.repo) throw new Error("needs the add-repo flow's repository");
+      const rows = () => wd.execute("return document.querySelector('.terminal-panel .xterm-rows')?.textContent ?? null;", []);
+      const [screen] = await wd.waitFor("a terminal in the workspace's terminal panel", () => wd.findAll(".terminal-panel .xterm-screen").then((ids) => ids.length && ids), 60000);
+      await wd.click(screen);
+      await wd.keys("echo oc-term-$((6*7)); pwd\uE007");
+      const cwds = [...new Set([ctx.repo, realpathSync(ctx.repo)])];
+      const text = await wd.waitFor("the shell's output", async () => {
+        const t = ((await rows()) ?? "").replace(/\u00a0/g, " ");
+        return t.includes("oc-term-42") && cwds.some((c) => t.includes(c)) && t;
+      }).catch(async (e) => {
+        throw new Error(`${e.message}; terminal shows ${JSON.stringify(((await rows()) ?? "").replace(/\u00a0/g, " ").trim().slice(-400))}`);
+      });
+      if (!text.includes("echo oc-term-$((6*7)); pwd")) throw new Error("the typed command is not echoed in the terminal");
     },
   },
 ];

@@ -71,6 +71,33 @@ fn set_executable(_: &Path) -> io::Result<()> {
     Ok(())
 }
 
+/// Where the shell shims in `bin/` find the app binary they exec in tool
+/// mode (`tool_cli.rs`), like Conductor's shims exec
+/// `bin/.internal/conductor-runtime`.
+pub const EXE_LINK: &str = ".internal/openconductor";
+
+/// Point `<bin_dir>/.internal/openconductor` at `exe`, replacing a link to
+/// an older location (the app was moved or updated). Returns whether it
+/// changed anything.
+#[cfg(unix)]
+pub fn link_exe(bin_dir: &Path, exe: &Path) -> io::Result<bool> {
+    let link = bin_dir.join(EXE_LINK);
+    if fs::read_link(&link).is_ok_and(|target| target == exe) {
+        return Ok(false);
+    }
+    fs::create_dir_all(link.parent().expect("EXE_LINK has a parent"))?;
+    let tmp = link.with_file_name(".openconductor.partial");
+    let _ = fs::remove_file(&tmp);
+    std::os::unix::fs::symlink(exe, &tmp)?;
+    fs::rename(&tmp, &link)?;
+    Ok(true)
+}
+
+#[cfg(not(unix))]
+pub fn link_exe(_: &Path, _: &Path) -> io::Result<bool> {
+    Ok(false)
+}
+
 /// Install the bundled tools and remember `$APPDATA/bin` for [`gh_path`].
 /// Failure is logged, not fatal: `gh` then falls back to PATH.
 pub fn install_at_startup(resource_dir: &Path, app_data_dir: &Path) {
@@ -81,6 +108,11 @@ pub fn install_at_startup(resource_dir: &Path, app_data_dir: &Path) {
             }
         }
         Err(e) => eprintln!("[bundled-bin] install failed: {e}"),
+    }
+    match std::env::current_exe().and_then(|exe| link_exe(&app_data_dir.join("bin"), &exe)) {
+        Ok(true) => eprintln!("[bundled-bin] linked {EXE_LINK}"),
+        Ok(false) => {}
+        Err(e) => eprintln!("[bundled-bin] link {EXE_LINK} failed: {e}"),
     }
     let _ = INSTALLED_BIN.set(app_data_dir.join("bin"));
 }
@@ -156,6 +188,20 @@ mod tests {
         assert_eq!(install(&res, &data).unwrap(), vec![data.join("bin/gh")]);
         assert_eq!(fs::read_to_string(data.join("bin/gh")).unwrap(), "gh-binary-v2");
         assert!(!data.join("bin/.gh.partial").exists());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn exe_link_follows_the_app() {
+        let tmp = TempDir::new("link");
+        let bin = tmp.path().join("bin");
+        let old = tmp.path().join("old/openconductor");
+        let new = tmp.path().join("new/openconductor");
+        assert!(link_exe(&bin, &old).unwrap());
+        assert_eq!(fs::read_link(bin.join(EXE_LINK)).unwrap(), old);
+        assert!(!link_exe(&bin, &old).unwrap(), "same target: unchanged");
+        assert!(link_exe(&bin, &new).unwrap());
+        assert_eq!(fs::read_link(bin.join(EXE_LINK)).unwrap(), new);
     }
 
     #[test]

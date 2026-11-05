@@ -10,6 +10,9 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { processFile, type CodeViewItem, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
 import { CodeView, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
 import { WhitespaceOnly } from "./Whitespace";
+import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
+import { effectiveShortcuts } from "../../keybindings/overrides.ts";
+import { glyphs } from "../../keybindings/shortcut.ts";
 import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
 import type { CommentSide } from "./comments.ts";
@@ -183,12 +186,29 @@ export function FileDiffView(props: Props) {
           </button>
         )}
         {tools}
-        <label title="Mark this file as viewed">
-          <input type="checkbox" checked={viewed} onChange={onToggleViewed} /> Viewed
-        </label>
+        <ViewedToggle viewed={viewed} onToggle={onToggleViewed} />
       </header>
       {!viewed && body}
     </section>
+  );
+}
+
+/** Conductor's viewed toggle tooltip, which says what a click does. */
+export const viewedLabel = (viewed: boolean): string => (viewed ? "Mark as not viewed" : "Mark as viewed");
+
+/** Conductor's ghost "Viewed" button: a check box icon and the word, tooltip with the toggle's shortcut. */
+function ViewedToggle({ viewed, onToggle }: { viewed: boolean; onToggle: () => void }) {
+  const { overrides } = useKeybindingOverrides();
+  const key = effectiveShortcuts("diff.toggleViewed", overrides)[0];
+  const label = viewedLabel(viewed);
+  return (
+    <button type="button" className="oc-viewed" aria-pressed={viewed} aria-label={label} title={key ? `${label} (${glyphs(key)})` : label} onClick={onToggle}>
+      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" />
+        {viewed && <path d="M5.5 8.2l1.8 1.8 3.4-4" />}
+      </svg>
+      Viewed
+    </button>
   );
 }
 

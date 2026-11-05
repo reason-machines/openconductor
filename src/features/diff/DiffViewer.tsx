@@ -5,7 +5,7 @@
 import type { ReactNode } from "react";
 import "./diff.css";
 import { DiscardDialog } from "./DiscardDialog";
-import { WhitespaceToggle } from "./Whitespace";
+import { ViewOptionsMenu } from "./Whitespace";
 import { FileDiffView, type LineAnchor } from "./FileDiffView";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
@@ -26,7 +26,8 @@ const LAYOUT_ICON: Record<DiffLayout, ReactNode> = {
     </>
   ),
 };
-const LAYOUT_TITLE: Record<DiffLayout, string> = { unified: "Unified diff", split: "Split diff", file: "Entire file" };
+// Conductor's labels for its three file-toolbar layout toggles (REA, 0.87.6).
+export const LAYOUT_TITLE: Record<DiffLayout, string> = { unified: "Unified view", split: "Split view", file: "Entire file" };
 
 function LayoutToggle({ value, onChange }: { value: DiffLayout; onChange: (v: DiffLayout) => void }) {
   return (
@@ -76,12 +77,12 @@ export function DiffTab({ diff, onLineClick, anchors, annotations }: DiffTabProp
           anchors={anchors?.(f)}
           annotations={annotations && ((a) => annotations(f, a))}
           loadFull={() => diff.loadFull(f)}
-          onDiscard={() => diff.askDiscard(f)}
+          onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
           onShowWhitespace={() => update({ ignoreWhitespace: false })}
           tools={
             <>
-              <WhitespaceToggle hidden={opts.ignoreWhitespace} onChange={(ignoreWhitespace) => update({ ignoreWhitespace })} />
               <LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />
+              <ViewOptionsMenu whitespace={{ hidden: opts.ignoreWhitespace, onChange: (ignoreWhitespace) => update({ ignoreWhitespace }) }} />
             </>
           }
         />

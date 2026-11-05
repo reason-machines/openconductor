@@ -1,4 +1,4 @@
-// parity:diff.changes-list:ui parity:diff.discard:ui parity:diff.whitespace:ui parity:diff.viewed:ui
+// parity:diff.changes-list:ui parity:diff.discard:ui parity:diff.whitespace:ui parity:diff.viewed:ui parity:diff.turn-changes:ui
 // Right panel of the diff viewer: scope and whitespace options, the
 // "N files changed" header and one row per changed file with its stats and a
 // per-file discard. The selected file opens in DiffViewer.tsx's DiffTab.
@@ -27,16 +27,17 @@ export interface ChangesListProps {
   actions?: (files: FileDiff[]) => ReactNode;
 }
 
-/** Right panel: scope and whitespace options, "N files changed" and one row per file. */
+/** Right panel: scope option, "N files changed" and one row per file. */
 export function ChangesList({ diff, actions }: ChangesListProps) {
   const { opts, update, load, files, totals, current } = diff;
   return (
     <div className="oc-diff oc-diff-list">
       <div className="oc-diff-toolbar">
-        <Seg value={opts.scope} options={[["all", "All changes"], ["uncommitted", "Uncommitted"]]} onChange={(scope) => update({ scope })} />
-        <label title="Hide changes that only touch whitespace">
-          <input type="checkbox" checked={opts.ignoreWhitespace} onChange={(e) => update({ ignoreWhitespace: e.target.checked })} /> Hide whitespace
-        </label>
+        <Seg
+          value={diff.turn ? "turn" : opts.scope}
+          options={diff.turn ? [["all", "All changes"], ["uncommitted", "Uncommitted"], ["turn", "Turn"]] : [["all", "All changes"], ["uncommitted", "Uncommitted"]]}
+          onChange={(scope) => scope !== "turn" && update({ scope })}
+        />
         <span className="spacer" />
         {load.state === "ready" && files.length > 0 && (
           <span className="muted">
@@ -57,8 +58,8 @@ export function ChangesList({ diff, actions }: ChangesListProps) {
       )}
       {load.state === "ready" && files.length === 0 && (
         <div className="placeholder small">
-          <p>{opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>
-          <p className="muted">Changes the agent makes show up here.</p>
+          <p>{diff.turn ? "No changes in selected turn." : opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>
+          {!diff.turn && <p className="muted">Changes the agent makes show up here.</p>}
         </div>
       )}
       {load.state === "ready" && files.length > 0 && (
@@ -82,9 +83,11 @@ export function ChangesList({ diff, actions }: ChangesListProps) {
                   <span className="d">-{f.deletions}</span>
                 </span>
               </button>
-              <button className="icon-btn oc-discard" onClick={() => diff.askDiscard(f)} title="Discard changes" aria-label={`Discard changes to ${f.path}`}>
-                <RevertIcon />
-              </button>
+              {diff.canDiscard && (
+                <button className="icon-btn oc-discard" onClick={() => diff.askDiscard(f)} title="Discard changes" aria-label={`Discard changes to ${f.path}`}>
+                  <RevertIcon />
+                </button>
+              )}
             </div>
           ))}
         </nav>

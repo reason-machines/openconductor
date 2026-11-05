@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { prControl } from "./control.ts";
+import { mergeMethodText, prControl } from "./control.ts";
 import { DEMO_SCENARIOS } from "./demo.ts";
 import type { HeaderState, PrInfo } from "./types.ts";
 
@@ -16,9 +16,26 @@ test("create and merge are the actionable intents", () => {
   const merge = at({ type: "ready_to_merge", optionalFailed: 0 }, "in_sync");
   assert.deepEqual([merge?.intent, merge?.label, merge?.title], ["merge", "Merge", "Merge PR #42"]);
   assert.match(at({ type: "ready_to_merge", optionalFailed: 2 })!.title, /2 optional checks failed/);
-  for (const action of [{ type: "merged" }, { type: "draft_pr" }, { type: "blocked" }] as const) {
+  for (const action of [{ type: "merged" }, { type: "blocked" }, { type: "review_required" }] as const) {
     assert.equal(at(action)?.intent, "status");
   }
+});
+
+test("a draft offers Ready for review and a requested review offers Approve PR", () => {
+  const ready = at({ type: "draft_pr" });
+  assert.deepEqual([ready?.intent, ready?.label], ["ready", "Ready for review"]);
+  const approve = at({ type: "approve_pr" });
+  assert.deepEqual([approve?.intent, approve?.label], ["approve", "Approve PR"]);
+  // Without PR info there is nothing to act on.
+  assert.equal(prControl({ tone: "out_of_sync", action: { type: "approve_pr" } }, null)?.intent, "status");
+});
+
+test("the merge tooltip names the repository's merge method", () => {
+  const ready = { tone: "in_sync", action: { type: "ready_to_merge", optionalFailed: 0 } } as const;
+  assert.equal(prControl(ready, pr, "squash")?.title, "Squash and merge PR #42");
+  assert.equal(prControl(ready, pr, "rebase")?.title, "Rebase and merge PR #42");
+  assert.equal(prControl(ready, pr, "merge")?.title, "Merge PR #42");
+  assert.equal(mergeMethodText("merge"), null);
 });
 
 test("check counts read naturally", () => {
