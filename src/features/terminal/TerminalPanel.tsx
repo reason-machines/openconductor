@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import "@xterm/xterm/css/xterm.css";
 import { canOpen } from "./tabs";
-import { attachTab, clearTab, closeTab, getTabs, openTab, selectTab, subscribeTabs } from "./session";
+import { attachTab, clearTab, closeTab, getTabs, openTab, restoreWorkspaceTabs, selectTab, subscribeTabs } from "./session";
 import { FindBar, useTerminalFind } from "./FindBar";
 
 interface Props {
@@ -48,12 +48,14 @@ export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {
     }
   }
 
-  // The first time a workspace's panel is shown, give it one terminal.
+  // The first time a workspace's panel is shown, reopen the tabs it had last
+  // launch, or give it one terminal.
   useEffect(() => {
-    if (state.tabs.length === 0 && !autoOpened.current.has(workspaceId)) {
-      autoOpened.current.add(workspaceId);
-      void newTab();
-    }
+    if (autoOpened.current.has(workspaceId)) return;
+    autoOpened.current.add(workspaceId);
+    void restoreWorkspaceTabs(workspaceId, cwd, initialCommand).then((has) => {
+      if (!has) void newTab();
+    });
   }, [workspaceId]);
 
   const active = state.tabs.find((t) => t.id === state.activeId) ?? null;

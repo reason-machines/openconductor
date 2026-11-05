@@ -32,6 +32,8 @@ Nothing here was observed running. These rows come from reading code and scripts
 | One run-panel process per workspace: `startProcess` kills the workspace's current process first, so starting Spotlight stops its run script and starting a script ends its Spotlight session | `ScriptsPanel` `toggleSpotlightRun` / `startScript` | browser stand-in check in PR |
 | Spotlight starts with `allowRunScriptConcurrency: false`, so starting it kills the run scripts of every workspace of the repository, waiting ones included | `RunManager::stop_repository`, called first by `spotlight_start` | `stop_repository_stops_every_workspace_of_that_repo_only` |
 | Setting row text: title `Use spotlight testing`, description `Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.`; disabled while the repo-local layer cannot be written | `SPOTLIGHT_SETTING_*`, `toggleBlocked` | `the toggle is blocked without a checkout, while loading, and when managed` |
+| Auto-run after setup (`IRt`, called when a workspace leaves `setting_up`; third read on sven m5 max, 2026-11-05, bundle under `~/code/conductor-rea-work/frontend/dist/assets/`): once a local workspace's setup completes, or it has no setup script, with `auto_run_after_setup` on and a default run script, it starts Spotlight when the workspace's effective `spotlight_testing` is on and the run script otherwise. Spotlight still needs a run script (`fQe` gates on it first), starts with no run-script concurrency, and a failure is only logged. A run queued during setup (`waitingProcesses`) starts instead of the auto-run | `ScriptService::after_setup` with `spotlight::auto_run::hook` (same `start_session` as `spotlight_start`) | `spotlight_takes_the_auto_runs_place_when_the_hook_starts_it`, `a_run_queued_during_setup_starts_instead_of_the_auto_run`, `on_stops_the_repositorys_runs_and_spotlights_the_workspace` |
+| Legacy column migration (`lIt` / `uIt` / `u2`, run on launch from `V8t`; fourth read on sven m5 max, 2026-11-05, `index-BGEQ8YjU.js` under `~/code/conductor-rea-work/frontend/dist/assets/`): once per install (settings flag), every repository whose `repos.spotlight_testing` is `1` gets `spotlight_testing = true` written to `<root>/.conductor/settings.local.toml` unless that local file already sets the key (`aN`: source is a repo-scoped local file), then the column is set to NULL. `0` and NULL rows are untouched | `spotlight::migrate::run`, called from `spotlight_commands::migrate_legacy_setting` in `setup` before anything reads the setting | `on_moves_to_the_local_file_and_clears_the_column_once`, `off_and_null_are_left_alone`, `a_local_file_that_sets_the_key_wins` |
 
 ## Deliberate differences
 
@@ -43,6 +45,7 @@ Nothing here was observed running. These rows come from reading code and scripts
 - The toggle is refused when the managed layer sets the key (`toggle_is_refused_when_managed_settings_set_it`). The reference disables the row when its repo-local configuration has no `setValue`; when that happens was not traced further.
 - `clearWorkspaceRuns` also drops the stopped runs' logs and history; ours only stops them.
 - Writing `settings.local.toml` keeps every key but not comments, and a file that does not parse is reported and left alone.
+- The legacy column migration moves only `spotlight_testing`, under its own flag `repo_local_settings_spotlight_testing_migration_complete`. The reference's pass also moves `file_include_globs` under `repo_local_settings_file_migration_complete`; ours still reads that column when creating workspaces, so it stays, and a later move of it is not skipped by our flag. A repository that fails (no root path, missing root, unparsable local file) keeps its column and the flag stays unset so the next launch retries; the reference stops at the first failure. The reference also symlinks the local file into each workspace (`workspacePathsToSymlink`); ours does not, as for every write of that file.
 - Only the top-level `.gitignore` is applied (watchexec also reads nested ignore files). A change to a file ignored only by a nested file still syncs, and that sync copies nothing new.
 
 - The "Use spotlight testing" toggle sits in the Run tab, not in a repository settings page (Actions tab), because OpenConductor has no repository settings pages yet. It has no "Learn how" link; the description is its tooltip.
@@ -53,8 +56,6 @@ Nothing here was observed running. These rows come from reading code and scripts
 
 - Moving the toggle into a repository settings page (Actions tab) with its "Learn how" link to `conductor.build/docs/reference/scripts/spotlight-testing`, once those pages exist.
 - `getTerminalOutput` source `spotlight` (agents reading Spotlight output).
-- Auto-run after setup: with the setting on, the reference starts Spotlight instead of the run script (`isSpotlight: a`, no run-script concurrency).
-- Migrating a legacy `repos.spotlight_testing = 1` row into `settings.local.toml`, as the reference's one-time migration does. Ours reads only the settings files.
 - Remote (cloud workspace) Spotlight file sync. It is out of scope for local-only OpenConductor.
 
 ## REA gaps hit
