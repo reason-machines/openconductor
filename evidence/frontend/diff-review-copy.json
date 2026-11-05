@@ -1,0 +1,833 @@
+{
+ "source": "Conductor.app v0.87.6 embedded frontend (untrusted reference data, not for verbatim reuse)",
+ "search_terms": [
+  "diff",
+  "comment",
+  "review",
+  "split",
+  "unified",
+  "changes",
+  "resolve",
+  "outdated",
+  "suggestion",
+  "viewed",
+  "hunk",
+  "stage",
+  "discard"
+ ],
+ "copy_strings_total": 262,
+ "copy_by_term": {
+  "diff": [
+   "Allows to specify individual spacing values for graph elements that shall be different from the value specified for the element's parent.",
+   "Attachment adapter returned a different attachment ID",
+   "Cannot change canvas after worker instance is already created with a different canvas.",
+   "Colored sidebar diffs",
+   "Could not apply document change for partial diff",
+   "Could not update render cache for partial diff",
+   "Diff data not loaded",
+   "Diff rendering warning OS detection",
+   "Dismiss diff rendering warning",
+   "Edit in diff viewer",
+   "Failed to load file diff",
+   "Failed to parse inline diff",
+   "Failed to read file diff from local storage",
+   "Failed to remove file diff from local storage",
+   "Failed to set the icon. Try a different image.",
+   "Failed to write file diff to local storage",
+   "File diff preconditions are unavailable",
+   "Font used for code and diffs",
+   "Font used for code and diffs.",
+   "Full diff",
+   "Go to next comment in diff",
+   "Go to next file in diff",
+   "Go to previous comment in diff",
+   "Go to previous file in diff",
+   "It belongs to a different organization.",
+   "Missing mock file diff load",
+   "No diff available",
+   "Open diff",
+   "Open diff view",
+   "Patch did not contain exactly one file diff",
+   "Roundhouse returned a different cloud attachment ID",
+   "Roundhouse returned a different cloud attachment path",
+   "Syntax highlighting theme for code and diffs.",
+   "The opposite of the opposite may not be a reference different from this one",
+   "The type of an edge. This is usually used for UML class diagrams, where associations must be handled differently from generalizations.",
+   "Theme optimized for color vision differences.",
+   "Use font ligatures in file editors and diffs.",
+   "Workspace diff"
+  ],
+  "comment": [
+   "Add a comment for the AI",
+   "Add all comments to chat",
+   "Cannot add a review comment without a workspace",
+   "Cannot add an inactive review comment to chat",
+   "Cannot remove a review comment without a session",
+   "Close comment view",
+   "Code review comments",
+   "Collapse comment",
+   "Comment Box",
+   "Comment Comment Spacing",
+   "Comment Node Spacing",
+   "Comment not found",
+   "Comment resolved on GitHub",
+   "Comments",
+   "Connect GitHub to clone repos, create PRs, load comments and more.",
+   "Could not find comment for attachment",
+   "Could not find review comment",
+   "Could not find review comment workspace",
+   "Delete comment",
+   "Discard comment?",
+   "Edit comment",
+   "End of comment missing",
+   "Expand comment",
+   "Failed to add comment to chat",
+   "Failed to add comments to chat",
+   "Failed to fetch PR comments",
+   "Failed to resolve comment on GitHub",
+   "Failed to rewrite review comment attachment",
+   "Failed to save comment",
+   "Failed to upload review comment attachment",
+   "Find a small commented TODO and implement it.",
+   "Go to next comment in diff",
+   "Go to previous comment in diff",
+   "Hide comment",
+   "Loading comment...",
+   "Next comment",
+   "No comment body",
+   "Open comment",
+   "Open comment on GitHub",
+   "Previous comment",
+   "Review comment attachment upload skipped",
+   "Review comment attachment write destination resolved",
+   "Review comment attachment write succeeded",
+   "Review comment lookup is not configured",
+   "Review comments",
+   "Review, comment, and merge from Conductor.",
+   "Show comment",
+   "Synced GitHub PR comments",
+   "This comment was created locally in Conductor by the user. It is not a GitHub review thread.",
+   "This comment was left on GitHub.",
+   "This comment was left on a file.",
+   "This comment was left on the base branch.",
+   "This comment was left on the modified branch.",
+   "This comment was left on the pull request itself, not on a file.",
+   "This comment will be lost.",
+   "Unable to load comment",
+   "Your changes to this comment will be lost."
+  ],
+  "review": [
+   "A pull request has been created to migrate your settings. Review and merge it to complete the migration.",
+   "Add custom instructions sent to the agent when you click the Review button.",
+   "Cannot add a review comment without a workspace",
+   "Cannot add an inactive review comment to chat",
+   "Cannot read copied cloud review attachment",
+   "Cannot remove a review comment without a session",
+   "Click to review and approve the plan.",
+   "Code review",
+   "Code review comments",
+   "Code review preferences",
+   "Could not find review comment",
+   "Could not find review comment workspace",
+   "Could not persist refreshed review attachment",
+   "Could not persist restored review attachment",
+   "Could not refresh every review attachment",
+   "Custom instructions for the Review, Create PR, and Resolve conflicts buttons.",
+   "Failed to rewrite review comment attachment",
+   "Failed to upload review comment attachment",
+   "Get an AI code review",
+   "In review",
+   "PR review required",
+   "Please review the changes in this workspace",
+   "Previews of review attachments are not supported",
+   "Ready for review",
+   "Review attachment refresh is not configured",
+   "Review attachment upload failed",
+   "Review changes and create PRs",
+   "Review comment attachment upload skipped",
+   "Review comment attachment write destination resolved",
+   "Review comment attachment write succeeded",
+   "Review comment lookup is not configured",
+   "Review comments",
+   "Review model",
+   "Review plan",
+   "Review recent PRs",
+   "Review request.md",
+   "Review system health and find the top three easy wins.",
+   "Review the provider setup, then refresh.",
+   "Review your usage settings in ChatGPT.",
+   "Review, comment, and merge from Conductor.",
+   "Start review",
+   "This comment was created locally in Conductor by the user. It is not a GitHub review thread.",
+   "Waiting for PR review"
+  ],
+  "split": [
+   "Edge splitting",
+   "Split graph",
+   "Split tab",
+   "Split tabs",
+   "Split the center panel and move tabs between panes.",
+   "Split view",
+   "Unzipping Layer Split"
+  ],
+  "unified": [
+   "Unified Canadian Aboriginal Syllabics",
+   "Unified view"
+  ],
+  "changes": [
+   "All changes",
+   "Back to all changes",
+   "Changes",
+   "Changes appear here.",
+   "Changes continue syncing in the background while the switch is on.",
+   "Commit all changes",
+   "Commit and push all changes",
+   "Couldn't load file changes",
+   "Discard access changes?",
+   "Discard all changes to",
+   "Discard changes",
+   "Discard changes?",
+   "Discard file changes?",
+   "Do you want to make these changes?",
+   "Expect breaking changes.",
+   "Failed to clear workspace changes after git write",
+   "Failed to discard attachment changes.",
+   "Failed to hydrate persisted workspace changes",
+   "Failed to read turn changes from local storage",
+   "Failed to refresh remote workspace Git changes",
+   "Failed to refresh scheduled workspace changes",
+   "Failed to refresh workspace changes after git write",
+   "Failed to write turn changes to local storage",
+   "File changes synced to local",
+   "Finish rebasing or merging to see changes",
+   "Git command failed while fetching file changes",
+   "Hide whitespace changes",
+   "Historical changes",
+   "Invalid JSON representation of ChangeSet",
+   "No changes in selected turn",
+   "No changes in this file",
+   "No changes to this file.",
+   "No file changes yet",
+   "No uncommitted changes",
+   "No uncommitted changes yet",
+   "Only whitespace changes found",
+   "PR changes requested",
+   "Please review the changes in this workspace",
+   "Pulled latest changes. You're up to date!",
+   "Reconnect GitHub in Settings to keep pushing changes.",
+   "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
+   "Restart the agent process. Useful to pick up config changes.",
+   "Review changes and create PRs",
+   "Run tests or a development server to test changes in this workspace",
+   "Save or discard changes before continuing",
+   "See changes",
+   "Shell command failed while fetching file changes",
+   "Show changes",
+   "Show uncommitted changes",
+   "Show whitespace changes",
+   "Shows changes that have not been committed.",
+   "Sync your changes to the repository root.",
+   "Test your changes here.",
+   "This cloud computer has changes that need a new snapshot. If you leave now, your draft changes will be lost.",
+   "This directory has uncommitted changes. Commit or stash them before removing it.",
+   "This file has been modified. Click to view the latest changes.",
+   "Tool approval changes take effect the next time Conductor starts.",
+   "Unbuilt changes",
+   "Uncommitted changes",
+   "Unsaved Changes",
+   "Unsaved changes",
+   "View newer changes",
+   "You have unsaved changes to workspace access.",
+   "You have unsaved changes. If you leave this cloud project, your draft changes will be lost.",
+   "Your changes to this comment will be lost."
+  ],
+  "resolve": [
+   "Add custom instructions sent to the agent when you click the Resolve conflicts button.",
+   "Auth ready wait resolved",
+   "Cannot resolve the active plan turn",
+   "Comment resolved on GitHub",
+   "Composer mention view model resolver is not configured",
+   "Could not resolve every attachment for this edit",
+   "Could not resolve every attachment for this message",
+   "Could not resolve host",
+   "Could not resolve the workspace",
+   "Custom instructions for the Review, Create PR, and Resolve conflicts buttons.",
+   "Edit hold used before its token resolved",
+   "Endpoint resolver failed",
+   "Endpoint resolver returned",
+   "Failed to resolve attachment file source",
+   "Failed to resolve comment on GitHub",
+   "Failed to resolve display message for cloud send",
+   "Failed to resolve merge conflicts",
+   "Failed to resolve remote file sync direct info request",
+   "Failed to resolve runLocalCommand RPC",
+   "Failed to resolve target branch",
+   "Failed to resolve the Roundhouse client base URL",
+   "Failed to resolve workspace for Claude token usage telemetry",
+   "Failed to resolve workspace for remote Git refresh",
+   "Failed to resolve workspace path for draft attachments",
+   "Resolve",
+   "Resolve branch incompatibility with remote",
+   "Resolve conflicts",
+   "Resolve conflicts preferences",
+   "Resolved",
+   "Resolved Layout Algorithm",
+   "Resolved remote Spotlight file sync start args",
+   "Resolved remote workspace file sync start args",
+   "Resolved workspace settings",
+   "Review comment attachment write destination resolved",
+   "Skipping resolved replayed local command RPC",
+   "To resolve, sign in to Claude. Conductor will validate the login automatically.",
+   "Unable to resolve platform.",
+   "Unable to resolve the default favorite",
+   "Workspace attachment storage resolved"
+  ],
+  "outdated": [
+   "Outdated",
+   "Sync files is off. Local files may be outdated."
+  ],
+  "suggestion": [
+   "Failed to load local suggestion results",
+   "Failed to load remote suggestion results",
+   "Thanks for your suggestion."
+  ],
+  "viewed": [
+   "Mark as not viewed",
+   "Mark as viewed",
+   "Toggle file as viewed",
+   "Viewed"
+  ],
+  "hunk": [],
+  "stage": [
+   "Cannot stage access for an unknown organization member",
+   "Cannot stage an unknown group access grant",
+   "Cloud composer attachments require bytes, a staged file, or a cloud asset",
+   "Desktop composer attachments require a staged file or cloud asset",
+   "Failed to delete incomplete staged attachment",
+   "Failed to remove cancelled staged attachment",
+   "Failed to remove staged attachment after upload",
+   "Failed to remove staged draft attachment",
+   "Failed to write staged draft attachment",
+   "Materializing staged draft attachment",
+   "No unmerged paths found to stage",
+   "Removed staged draft attachment",
+   "Removed staged draft attachment after materialization",
+   "Removing staged draft attachment",
+   "Removing staged draft attachment after materialization",
+   "Skipped removing absent staged draft attachment",
+   "Writing staged draft attachment",
+   "Wrote staged draft attachment"
+  ],
+  "discard": [
+   "An attachment on this message couldn't be delivered. Retry the message or discard it.",
+   "Could not discard edited attachments",
+   "Discard",
+   "Discard IP data",
+   "Discard access changes?",
+   "Discard all changes to",
+   "Discard changes",
+   "Discard changes?",
+   "Discard comment?",
+   "Discard file changes?",
+   "Discarding unreadable Codex ChatGPT proxy tokens",
+   "Discarding unreadable local storage store",
+   "Failed to discard attachment changes.",
+   "Failed to discard copied composer attachment",
+   "Failed to discard superseded queued attachments",
+   "Save or discard changes before continuing"
+  ]
+ },
+ "css_custom_properties": [
+  "--diffs-dark-bg",
+  "--status-in-review",
+  "--status-in-review-hover",
+  "--toast-height-resolved"
+ ],
+ "css_selectors_with_tokens": [
+  "diffs-container"
+ ],
+ "css_class_names": [
+  "hljs-comment",
+  "text-status-in-review"
+ ],
+ "js_identifiers_and_attributes": [
+  "AmbientAndDiffuse",
+  "AntiDifference",
+  "BlockComment",
+  "BottomSideComments",
+  "CapitalDifferentialD",
+  "DateDiff",
+  "DateDifference",
+  "DateTimeDiff",
+  "DiffHunksRenderer",
+  "FileDiff",
+  "GeoGridDirectionDifference",
+  "GetIssueRepositorySuggestions",
+  "GraphDifference",
+  "ImageDifference",
+  "InlineComment",
+  "InlinePierreDiff",
+  "LineComment",
+  "MacOsDiffRenderingWarning",
+  "MergeDifferences",
+  "NoChanges",
+  "PullRequestReviewThread",
+  "RegionDifference",
+  "RegionSymmetricDifference",
+  "SpecialComment",
+  "SymmetricDifference",
+  "TimeDiff",
+  "TimerDiff",
+  "TopSideComments",
+  "VirtualizedFileDiff",
+  "WorkTimeDiff",
+  "data-diff",
+  "data-diff-span",
+  "data-diff-type",
+  "data-diffs-code-view-footer",
+  "data-diffs-code-view-header",
+  "data-diffs-header",
+  "data-diffs-scrollbar-measure",
+  "diff-comment",
+  "diff-comment-input",
+  "diff-line"
+ ],
+ "diff_libraries_and_themes": [
+  "pierre-dark",
+  "pierre-dark-CyvmCCZW",
+  "pierre-dark-protanopia-deuteranopia",
+  "pierre-dark-protanopia-deuteranopia-Rgc0TwpF",
+  "pierre-dark-soft",
+  "pierre-dark-soft-BHGpRqa4",
+  "pierre-dark-tritanopia",
+  "pierre-dark-tritanopia-Beq2gCRQ",
+  "pierre-dark-vibrant",
+  "pierre-dark-vibrant-BWBVywrn",
+  "pierre-light",
+  "pierre-light-480U9XYS",
+  "pierre-light-protanopia-deuteranopia",
+  "pierre-light-protanopia-deuteranopia-CaVOBURG",
+  "pierre-light-soft",
+  "pierre-light-soft-CVdyfjmI",
+  "pierre-light-tritanopia",
+  "pierre-light-tritanopia-B4_gpKOM",
+  "pierre-light-vibrant",
+  "pierre-light-vibrant-DdTDNdfJ"
+ ],
+ "js_injected_css_custom_properties": {
+  "--diff-filter": [
+   "index-BGEQ8YjU.js"
+  ],
+  "--diffs-added-dark": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-added-light": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-addition-base": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-addition-color": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-addition-color-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-annotation-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-annotation-min-height": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-addition": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-addition-emphasis": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-addition-emphasis-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-addition-number-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-addition-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-buffer": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-buffer-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-caret": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-caret-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-context": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-context-gutter": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-context-gutter-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-context-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-deletion": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-deletion-emphasis": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-deletion-emphasis-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-deletion-number-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-deletion-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-hover-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-selection-number-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-selection-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-separator": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-bg-separator-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-caret-highlight-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-code-grid": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-column-content-width": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-column-number-width": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-column-width": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-computed-decoration-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-computed-diff-line-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-computed-editor-active-line-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-computed-hovered-line-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-computed-selected-line-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-dark": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-dark-addition-color": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-dark-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-dark-deletion-color": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-dark-modified-color": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-decoration-bar-color": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-decoration-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-deleted-dark": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-deleted-light": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-deletion-base": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-deletion-color": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-deletion-color-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-diff-line-mix-target": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-edit-prediction-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-edit-prediction-deletion-color": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-edit-prediction-spacer-height": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-active-line-source-mix": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-bracket-match-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-bracket-match-border": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-cursor-fg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-edit-prediction-deletion-fg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-edit-prediction-fg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-error-fg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-hint-fg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-info-fg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-line-highlight-border": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-match-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-match-highlight-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-selection-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-editor-warning-fg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-fg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-fg-conflict-marker": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-fg-conflict-marker-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-fg-number": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-fg-number-addition-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-fg-number-deletion-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-fg-number-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-font-fallback": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-font-family": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-font-features": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-font-size": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-gap-block": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-gap-fallback": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-gap-inline": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-gap-style": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-grid-number-column-width": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-header-font-fallback": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-header-font-family": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-hover-mix-target": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-light": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-light-addition-color": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-light-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-light-deletion-color": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-light-modified-color": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-line-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-line-height": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-marker-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-marker-contrast": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-min-number-column-width": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-min-number-column-width-default": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-mixer": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-modified-base": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-modified-color": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-modified-color-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-modified-dark": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-modified-light": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-overflow-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-popover-gap": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-scrollbar-gutter": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-scrollbar-gutter-fallback": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-scrollbar-gutter-measured": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-scrollbar-gutter-override": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-search-icon-radius": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-search-icon-size": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-selection-base": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-selection-corner-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-selection-emphasis-mix-target": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-selection-mix-target": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-selection-number-fg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-tab-size": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-token-dark": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-token-dark-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-token-dark-font-style": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-token-dark-font-weight": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-token-dark-text-decoration": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-token-light": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-token-light-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-token-light-font-style": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-token-light-font-weight": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-token-light-text-decoration": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-warning-dark": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-warning-light": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-widget-bg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-widget-border": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-widget-fg": [
+   "renderApp-D_fmY7hW.js"
+  ],
+  "--diffs-widget-shadow": [
+   "renderApp-D_fmY7hW.js"
+  ]
+ }
+}
