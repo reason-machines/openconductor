@@ -7,6 +7,7 @@ import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { DiffViewer } from "../features/diff/DiffViewer";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
+import { ScriptsPanel } from "./ScriptsPanel";
 
 interface Props {
   repo: Repo;
@@ -158,7 +159,10 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
       </header>
       <div className="ws-split">
         <ChatPanel repo={repo} workspace={workspace} dispatch={dispatch} />
-        <DiffPanel workspace={workspace} repo={repo} />
+        <div className="ws-right">
+          <DiffPanel workspace={workspace} repo={repo} />
+          <ScriptsPanel repo={repo} workspace={workspace} />
+        </div>
       </div>
     </div>
   );
