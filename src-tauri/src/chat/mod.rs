@@ -23,6 +23,7 @@ mod transcript;
 mod tests;
 
 pub use model::{
-    format_rfc3339_millis, now_rfc3339, Block, ChatEvent, ChatMessage, Role, TurnStatus,
+    format_rfc3339_millis, now_rfc3339, Block, ChatEvent, ChatMessage, MessageOrigin, Role,
+    TurnStatus,
 };
 pub use transcript::{ApplyError, Transcript};
