@@ -3,11 +3,13 @@
 // and the "All changes" tab in the main area: the loaded files, view options,
 // viewed marks, the selected file and the file waiting for discard. A chat
 // turn can be selected instead of the scope option: then only what that turn
-// changed is shown (its start versus end checkpoint), and discard is off.
+// changed is shown (its start versus end checkpoint); there only the context
+// menu offers discard, against the "All changes" base (target.ts).
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { discardFileChanges, loadWorkspaceDiff, WHOLE_FILE_CONTEXT } from "./api.ts";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { nextUnread, step } from "./nav.ts";
+import { discardScope, type DiffTarget, type DiscardSource } from "./target.ts";
 import type { TurnRef } from "./turnChangesCache.ts";
 import { DEFAULT_VIEW_OPTIONS, type DiffScope, type DiffViewOptions, type FileDiff } from "./types.ts";
 import { isViewed, loadViewed, pruneViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
@@ -28,20 +30,23 @@ export interface WorkspaceDiffArgs {
   workspaceId: string;
   /** Worktree folder; null while the workspace has none on disk. */
   worktree: string | null;
-  /** Branch the workspace is compared against for "All changes". */
-  baseBranch: string;
+  /** The workspace's target branch (and remote) that "All changes" is compared against. */
+  target: DiffTarget;
   /** Called with the loaded files and the scope they were loaded for. */
   onLoaded?: (files: FileDiff[], scope: DiffScope) => void;
   /** Called when a file is picked from the list or by keyboard (opens the diff tab). */
   onOpen?: () => void;
 }
 
-export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, onOpen }: WorkspaceDiffArgs) {
+export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remote }, onLoaded, onOpen }: WorkspaceDiffArgs) {
+  // Rebuilt from primitives so the effects below key on its value, not its identity.
+  const target = useMemo<DiffTarget>(() => ({ branch, remote }), [branch, remote]);
   const [opts, setOpts] = useState<DiffViewOptions>(initialOptions);
   const [load, setLoad] = useState<DiffLoad>({ state: "loading" });
   const [viewed, setViewedMap] = useState<ViewedMap>(() => loadViewed(localStorage, workspaceId));
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
-  const [discarding, setDiscarding] = useState<FileDiff | null>(null);
+  // The file waiting for the discard confirmation and the scope it will be restored from.
+  const [pending, setPending] = useState<{ file: FileDiff; scope: DiffScope } | null>(null);
   // The selected chat turn; not saved, unlike `opts`.
   const [turn, setTurn] = useState<TurnRef | null>(null);
 
@@ -54,11 +59,11 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
 
   const refresh = useCallback(() => {
     setLoad({ state: "loading" });
-    loadWorkspaceDiff(worktree, baseBranch, opts, { turn }).then(
+    loadWorkspaceDiff(worktree, target, opts, { turn }).then(
       (files) => setLoad({ state: "ready", files }),
       (e: unknown) => setLoad({ state: "error", message: String(e) }),
     );
-  }, [worktree, baseBranch, opts, turn]);
+  }, [worktree, target, opts, turn]);
 
   useEffect(refresh, [refresh]);
   useEffect(() => {
@@ -108,14 +113,25 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
   // The file alone with whole-file context: Pierre builds the full old and new
   // files from it when an "N unmodified lines" row is expanded.
   const loadFull = (f: FileDiff) =>
-    loadWorkspaceDiff(worktree, baseBranch, opts, { path: f.path, contextLines: WHOLE_FILE_CONTEXT, turn }).then(([full]) => {
+    loadWorkspaceDiff(worktree, target, opts, { path: f.path, contextLines: WHOLE_FILE_CONTEXT, turn }).then(([full]) => {
       if (!full) throw new Error(`${f.path} has no changes any more.`);
       return full;
     });
 
-  const discard = (f: FileDiff) => discardFileChanges(worktree, baseBranch, opts, f).then(refresh);
-  // Conductor has no discard in the per-turn view either.
-  const canDiscard = turn === null;
+  // parity:diff.discard:ui
+  // Revert icons (list row, file header) use the view's scope and are hidden in
+  // the per-turn view; the context menu always uses "All changes" (target.ts).
+  const canDiscard = discardScope("view", opts.scope, turn !== null) !== null;
+  /** Ask to discard `f` (null closes the dialog); `from` decides the base it is restored from. */
+  const askDiscard = (f: FileDiff | null, from: DiscardSource = "view") => {
+    const scope = f && discardScope(from, opts.scope, turn !== null);
+    setPending(f && scope ? { file: f, scope } : null);
+  };
+  const discard = (f: FileDiff) => {
+    const scope = pending?.file.path === f.path ? pending.scope : discardScope("view", opts.scope, turn !== null);
+    if (!scope) return Promise.reject(new Error("Discard is not available in the turn view."));
+    return discardFileChanges(worktree, target, scope, f).then(refresh);
+  };
 
   const unread = nextUnread(current, files.length, (i) => isViewed(viewed, files[i]));
   const totals = files.reduce((t, f) => ({ a: t.a + f.additions, d: t.d + f.deletions }), { a: 0, d: 0 });
@@ -144,8 +160,9 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
     /** Next file not marked viewed after the selected one, or -1. */
     unread,
     loadFull,
-    discarding,
-    askDiscard: setDiscarding,
+    /** The file waiting for the discard confirmation. */
+    discarding: pending?.file ?? null,
+    askDiscard,
     discard,
     canDiscard,
   };

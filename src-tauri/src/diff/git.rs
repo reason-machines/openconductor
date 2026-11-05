@@ -16,8 +16,15 @@ const EMPTY_TREE: &str = "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Scope {
-    /// Working tree versus the merge base of HEAD and `base` (e.g. `origin/main`).
-    All { base: String },
+    /// Working tree versus the merge base of HEAD and `base`. With `remote`,
+    /// `base` is the workspace's target branch name and the merge base is
+    /// taken with `refs/remotes/<remote>/<base>` (falling back to the local
+    /// branch when the remote has no such ref), see [`target_ref`].
+    All {
+        base: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        remote: Option<String>,
+    },
     /// Working tree versus HEAD.
     Uncommitted,
     /// What one agent turn changed: the turn's start checkpoint versus its
@@ -181,6 +188,29 @@ fn operation_in_progress(repo: &Path) -> Result<Option<&'static str>, DiffError>
     Ok(None)
 }
 
+// parity:diff.changes-list:backend
+/// The ref "All changes" is compared against. Conductor diffs a GitHub
+/// workspace against `refs/remotes/<remote>/<target branch>` and a local-only
+/// repo against the bare branch name (evidence/diff/target-ref.md); here the
+/// remote ref is used when it exists, otherwise the branch as given.
+pub fn target_ref(repo: &Path, branch: &str, remote: Option<&str>) -> Result<String, DiffError> {
+    let Some(remote) = remote.filter(|r| !r.is_empty()) else {
+        return Ok(branch.to_string());
+    };
+    let remote_ref = format!("refs/remotes/{remote}/{branch}");
+    let verify = format!("{remote_ref}^{{commit}}");
+    let found = git(
+        repo,
+        &["rev-parse", "--verify", "--quiet", &verify],
+        &[0, 1],
+    )?;
+    Ok(if found.trim().is_empty() {
+        branch.to_string()
+    } else {
+        remote_ref
+    })
+}
+
 pub(super) fn base_commit(repo: &Path, scope: &Scope) -> Result<String, DiffError> {
     let head = git(repo, &["rev-parse", "--verify", "--quiet", "HEAD"], &[0, 1])?;
     if head.trim().is_empty() {
@@ -188,9 +218,12 @@ pub(super) fn base_commit(repo: &Path, scope: &Scope) -> Result<String, DiffErro
     }
     match scope {
         Scope::Uncommitted => Ok(head.trim().to_string()),
-        Scope::All { base } => Ok(git(repo, &["merge-base", "HEAD", base], &[0])?
-            .trim()
-            .to_string()),
+        Scope::All { base, remote } => {
+            let target = target_ref(repo, base, remote.as_deref())?;
+            Ok(git(repo, &["merge-base", "HEAD", &target], &[0])?
+                .trim()
+                .to_string())
+        }
         Scope::Turn {
             session_id,
             turn_id,
