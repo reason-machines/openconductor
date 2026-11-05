@@ -109,6 +109,11 @@ impl WorkspaceService {
         git::list_branches(&self.repository_root(repository_id)?)
     }
 
+    /// See [`git::branch_name_is_taken`].
+    pub fn branch_name_is_taken(&self, repository_id: &str, branch: &str) -> Result<bool, WorkspaceError> {
+        git::branch_name_is_taken(&self.repository_root(repository_id)?, branch)
+    }
+
     fn save(&self, repos: &BTreeMap<String, PathBuf>) -> Result<(), WorkspaceError> {
         if let Some(dir) = self.registry_file.parent() {
             std::fs::create_dir_all(dir)?;
