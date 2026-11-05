@@ -34,6 +34,11 @@ test("carries the workspace number from conductor.db", () => {
   assert.deepEqual(r.workspaces.map((w) => w.number), [7, null]);
 });
 
+test("carries the workspace's intended target branch for the diff", () => {
+  const [r] = reposFromDb([repo("a")], [ws("a", "oslo", "ready", { intendedTargetBranch: "develop" }), ws("a", "lima")], []);
+  assert.deepEqual(r.workspaces.map((w) => w.targetBranch), ["develop", null]);
+});
+
 test("selection falls back to home when its workspace is gone", () => {
   const repos = reposFromDb([repo("a")], [ws("a", "oslo")], []);
   const keep = { kind: "workspace" as const, repoId: "a", workspaceId: "a/oslo" };

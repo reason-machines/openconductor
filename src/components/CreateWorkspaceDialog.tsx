@@ -147,6 +147,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
         name: directoryName,
         branch: branchName,
         path,
+        targetBranch: built.request.targetBranch,
         placeholderBranchName: naming.placeholder_branch_name === null ? null : branchName,
         userSetWorkspaceName: naming.user_set_workspace_name,
         userSetBranchName: naming.user_set_branch_name,

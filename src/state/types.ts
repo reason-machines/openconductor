@@ -17,6 +17,8 @@ export interface Workspace {
   updatedAt?: number;
   /** Worktree path, once the backend created it. */
   path?: string;
+  /** `intended_target_branch`: where the work merges back; "All changes" is diffed against it. */
+  targetBranch?: string | null;
   /** `placeholder_branch_name`: the city branch, until the first message renames it. */
   placeholderBranchName?: string | null;
   /** `user_set_workspace_name` / `user_set_branch_name`: block the auto-rename. */

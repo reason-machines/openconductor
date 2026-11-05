@@ -25,7 +25,7 @@ export type Action =
   | {
       type: "addWorkspace";
       repoId: string;
-      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number">;
+      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "targetBranch" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number">;
     }
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }

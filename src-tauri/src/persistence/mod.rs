@@ -210,6 +210,8 @@ pub struct WorkspaceRow {
     pub derived_status: Option<String>,
     pub manual_status: Option<String>,
     pub workspace_path: Option<String>,
+    /// `intended_target_branch`: the branch the work merges into; "All changes" diffs against it.
+    pub intended_target_branch: Option<String>,
     pub pinned_at: Option<String>,
     pub unread: bool,
     /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
@@ -252,6 +254,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 derived_status: w.derived_status,
                 manual_status: w.manual_status,
                 workspace_path: w.workspace_path,
+                intended_target_branch: w.intended_target_branch,
                 pinned_at: w.pinned_at,
                 unread: w.unread,
                 number: w.number,

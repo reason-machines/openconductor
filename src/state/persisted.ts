@@ -30,6 +30,8 @@ export interface DbWorkspaceRow {
   derivedStatus: string | null;
   manualStatus: string | null;
   workspacePath: string | null;
+  /** `intended_target_branch`; absent from rows of an older backend. */
+  intendedTargetBranch?: string | null;
   pinnedAt: string | null;
   unread: boolean;
   /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
@@ -77,6 +79,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             createdAt: sqliteTime(w.createdAt),
             path: w.workspacePath ?? undefined,
             placeholderBranchName: w.placeholderBranchName,
+            targetBranch: w.intendedTargetBranch ?? null,
             /* sidebar: pin, unread and status columns */
             pinnedAt: w.pinnedAt ? sqliteTime(w.pinnedAt) : undefined,
             unread: w.unread || undefined,
