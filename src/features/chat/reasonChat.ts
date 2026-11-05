@@ -8,8 +8,10 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, truncateAfterTurn, type ChatTranscript } from "./reducer.ts";
-import { restoreCheckpoint, saveTurnCheckpoint } from "./checkpoints.ts";
-import { applyReasonPayload, failTurn, newestTurn, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
+import { restoreCheckpoint, turnCheckpointRef } from "./checkpoints.ts";
+import { applyReasonPayload, failTurn, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
+import { turnChanges } from "../diff/useTurnChanges.ts";
+import type { FileChange } from "../diff/types.ts";
 
 /** One Reason Session config option (`model`, `reasoning_effort`). */
 export interface ReasonConfig {
@@ -79,28 +81,35 @@ export function configureReason(chatId: string, config: ReasonConfig[]): void {
   chat(chatId).config = config;
 }
 
-/** Sends the first message or a follow-up; `cwd` is the workspace folder. Attachments go as embedded files. */
+/**
+ * Sends the first message or a follow-up; `cwd` is the workspace folder.
+ * Attachments go as embedded files. The backend checkpoints `cwd` before and
+ * after the turn under this turn's id and answers with the files the turn
+ * changed, which go to the turn-changes cache for the chips under the turn.
+ */
 export async function sendReason(chatId: string, cwd: string, text: string, attachments: PromptAttachment[] = []): Promise<void> {
   const c = chat(chatId);
-  apply(c, startTurn(c.state, text, new Date(), attachments));
-  const turnId = newestTurn(c.state)!;
+  // A random turn id, so a turn's checkpoints and cached changes never
+  // collide with a turn from an earlier app run.
+  const turnId = `${chatId}:${crypto.randomUUID()}`;
+  apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
   try {
     await ensureListening();
     if (!c.opened) {
       await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)), config: c.config });
       c.opened = true;
     }
-    // Conductor snapshots the workspace around every turn so "Reset chat"
-    // can bring the files back (features/chat/checkpoints.ts).
-    await saveTurnCheckpoint(invoke, cwd, chatId, turnId, "start");
-    // Resolves after the turn's `turnEnded` event; a rejection means the
-    // turn never started (no CLI, no process), so no event will end it.
-    await invoke("reason_prompt", { chatId, text, attachments });
+    // Conductor snapshots the workspace around every turn: the backend saves
+    // the `start` and `end` checkpoints (features/chat/checkpoints.ts names
+    // them, so "Reset chat" finds them) and answers with the files the turn
+    // changed. Resolves after the turn's `turnEnded` event; a rejection means
+    // the turn never started (no CLI, no process), so no event will end it.
+    const turn = turnCheckpointRef(chatId, turnId);
+    const end = await invoke<{ turnChanges?: FileChange[] }>("reason_prompt", { chatId, text, attachments, turn });
+    if (end.turnChanges) turnChanges.record(turn, end.turnChanges);
   } catch (e) {
     apply(c, failTurn(c.state, turnId, String(e)));
-    return;
   }
-  await saveTurnCheckpoint(invoke, cwd, chatId, turnId, "end");
 }
 
 /**

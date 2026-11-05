@@ -11,14 +11,14 @@
 //!    `config` (`[{ id, value }]`, e.g. `model`, `reasoning_effort`) is set
 //!    on the Session when it is created; one Reason does not offer comes
 //!    back as a `notice` event.
-//! 2. `reason_prompt(chatId, text, attachments?, turnId?)` for the first
+//! 2. `reason_prompt(chatId, text, attachments?, turn?)` for the first
 //!    message and every follow-up; it resolves with the turn's end once the
 //!    turn is over. `attachments` (`[{ name, text }]`) go to Reason as
-//!    embedded files after the text. With a `turnId` the chat folder is
-//!    checkpointed before and after the turn ([`crate::turn_checkpoint`])
-//!    and the result carries `turnChanges`, the files the turn changed
-//!    (absent when a checkpoint was skipped or the turn touched more than
-//!    200 files).
+//!    embedded files after the text. With `turn: { sessionId, turnId }` the
+//!    chat folder is checkpointed as `session-<sessionId>-turn-<turnId>-start|end`
+//!    before and after the turn ([`crate::turn_checkpoint`]) and the result
+//!    carries `turnChanges`, the files the turn changed (absent when a
+//!    checkpoint was skipped or the turn touched more than 200 files).
 //! 3. `reason_cancel(chatId)` for Stop.
 
 use std::collections::HashMap;
@@ -113,9 +113,17 @@ pub fn reason_open_chat(
     Ok(())
 }
 
+/// Names one turn's checkpoints: the frontend's `turnCheckpointRef`, the
+/// ref-safe chat id and turn id (the same ids "Reset chat" restores).
+#[derive(Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct TurnArg {
+    pub session_id: String,
+    pub turn_id: String,
+}
+
 /// Runs one turn; events arrive meanwhile. Resolves with the turn's end
-/// (`{ outcome, message?, turnChanges? }`). `turn_id` names the turn's
-/// checkpoints (`session-<chatId>-turn-<turnId>-start` / `-end`).
+/// (`{ outcome, message?, turnChanges? }`).
 #[tauri::command]
 pub async fn reason_prompt(
     app: AppHandle,
@@ -123,7 +131,7 @@ pub async fn reason_prompt(
     chat_id: String,
     text: String,
     attachments: Option<Vec<AttachmentArg>>,
-    turn_id: Option<String>,
+    turn: Option<TurnArg>,
 ) -> Result<Value, String> {
     let provider = state.provider(&app)?;
     let attachments: Vec<Attachment> = attachments
@@ -136,11 +144,11 @@ pub async fn reason_prompt(
         .collect();
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
     let (end, changes) = tauri::async_runtime::spawn_blocking(move || {
-        let target = match (&cwd, &turn_id) {
-            (Some(workspace), Some(turn_id)) => Some(TurnTarget {
+        let target = match (&cwd, &turn) {
+            (Some(workspace), Some(turn)) => Some(TurnTarget {
                 workspace,
-                session_id: &chat_id,
-                turn_id,
+                session_id: &turn.session_id,
+                turn_id: &turn.turn_id,
             }),
             _ => None,
         };

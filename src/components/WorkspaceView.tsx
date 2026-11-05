@@ -7,8 +7,10 @@ import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { reasonAvailable, reasonTranscript, resetReasonChat, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
-import { changedSinceTurn } from "../features/chat/checkpoints.ts";
+import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
+import { TurnChanges } from "../features/chat/TurnChanges.tsx";
+import type { TurnRef } from "../features/diff/turnChangesCache.ts";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
 import type { DiffScope, FileDiff } from "../features/diff/types";
@@ -75,9 +77,11 @@ interface ChatPanelProps extends Props {
   content: ReactNode | null;
   /** The agent started or finished a turn. */
   onRunningChange?: (running: boolean) => void;
+  /** A file chip under a finished turn: open that file's changes from the turn. */
+  openTurnFile: (turn: TurnRef, path: string) => void;
 }
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -124,15 +128,21 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
       return;
     }
+    // One finished turn per message, so its footer (and sample turn changes) show.
     const shown = [text, ...attachments.map((a) => attachmentLine(a.name))].join("\n\n");
-    const next = withMessages(load(), [
-      textMessage(chatId, "user", shown),
-      textMessage(chatId, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."),
-    ]);
+    const user = textMessage(chatId, "user", shown);
+    const reply = { ...textMessage(chatId, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."), turnId: user.turnId };
+    const done = applyChatEvents(withMessages(load(), [user, reply]), [{ type: "turn_status", sessionId: chatId, turnId: user.turnId, status: "completed" }]);
+    const next = done.ok ? done.transcript : withMessages(load(), [user, reply]);
     transcripts.set(chatId, next);
     setTranscript(next);
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
+
+  const turnFooter = (turnId: string) => {
+    const turn = turnCheckpointRef(chatId, turnId);
+    return <TurnChanges turn={turn} worktree={workspace.path ?? null} onOpenFile={(path) => openTurnFile(turn, path)} />;
+  };
 
   // The diff viewer adds review comments to the composer of the chat shown; the PR control sends.
   bridge.current = {
@@ -177,6 +187,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             // Conductor: workspace with a path, not archived; disabled while the agent works.
             onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
+            turnFooter={turnFooter}
           />
         )}
         <div ref={endRef} />
@@ -219,6 +230,10 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
 
 function RightPanel({ diff, actions, pr, worktree, review }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null; review: ReactNode }) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
+  // Picking a turn's file in the chat shows that turn's changes list.
+  useEffect(() => {
+    if (diff.turn) setTab("changes");
+  }, [diff.turn]);
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
   return (
@@ -428,6 +443,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           review={activeReview}
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
+          openTurnFile={diff.openTurnFile}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
           content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
         />

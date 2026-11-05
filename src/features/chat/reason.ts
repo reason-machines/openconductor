@@ -87,9 +87,12 @@ export interface PromptAttachment {
 /** Line the transcript shows for an attachment; the agent gets the file itself. */
 export const attachmentLine = (name: string) => `Attached: ${name}`;
 
-/** The user's prompt: a new turn, running. Attachments show by name. */
-export function startTurn(state: ReasonChatState, text: string, now = new Date(), attachments: PromptAttachment[] = []): Step {
-  const turnId = `${state.chatId}:t${state.next}`;
+/**
+ * The user's prompt: a new turn, running. Pass `turnId` to name the turn's
+ * checkpoints (letters, digits, `.`, `_`, `-`); the default is only unique
+ * within one app run. Attachments show by name.
+ */
+export function startTurn(state: ReasonChatState, text: string, now = new Date(), turnId = `${state.chatId}:t${state.next}`, attachments: PromptAttachment[] = []): Step {
   const blocks: Block[] = [{ type: "text", text }, ...attachments.map((a): Block => ({ type: "text", text: attachmentLine(a.name) }))];
   const user = message(state, turnId, `${turnId}:user`, "user", blocks, now);
   return {
