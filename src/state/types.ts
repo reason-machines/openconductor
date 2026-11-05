@@ -31,6 +31,8 @@ export interface Workspace {
   /** Status the user set from the row menu; wins over the derived one. */
   manualStatus?: WorkspaceStatusValue;
   derivedStatus?: WorkspaceStatusValue;
+  /** `workspaces.number`, given on creation and shown as `W-<n>`; null for workspaces from before numbering. */
+  number?: number | null;
 }
 
 export interface Repo {

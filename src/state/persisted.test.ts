@@ -8,7 +8,7 @@ const repo = (id: string, extra: Partial<DbRepoRow> = {}): DbRepoRow => ({
 });
 const ws = (repositoryId: string, dir: string, state = "ready", extra: Partial<DbWorkspaceRow> = {}): DbWorkspaceRow => ({
   id: `${repositoryId}/${dir}`, repositoryId, directoryName: dir, workspaceName: null, branch: dir, placeholderBranchName: null,
-  state, derivedStatus: null, manualStatus: null, workspacePath: `/data/${dir}`, pinnedAt: null, unread: false,
+  state, derivedStatus: null, manualStatus: null, workspacePath: `/data/${dir}`, pinnedAt: null, unread: false, number: null,
   createdAt: "2026-11-05 12:00:00", ...extra,
 });
 
@@ -26,6 +26,11 @@ test("maps rows in database order and drops hidden repos and archived workspaces
   assert.deepEqual([w.name, w.branch, w.path, w.status], ["oslo", "oslo", "/data/oslo", "idle"]);
   assert.equal(w.createdAt, Date.UTC(2026, 10, 5, 12, 0, 0));
   assert.equal(repos[1].path, "/src/a");
+});
+
+test("carries the workspace number from conductor.db", () => {
+  const [r] = reposFromDb([repo("a")], [ws("a", "oslo", "ready", { number: 7 }), ws("a", "lima")], []);
+  assert.deepEqual(r.workspaces.map((w) => w.number), [7, null]);
 });
 
 test("selection falls back to home when its workspace is gone", () => {
