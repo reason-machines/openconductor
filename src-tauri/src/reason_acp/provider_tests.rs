@@ -8,11 +8,18 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
+/// The fake agent script. The harness crate sets `REASON_ACP_REPO_ROOT`;
+/// in the app crate the repository is the manifest's parent.
+fn fake_agent() -> PathBuf {
+    let root = std::env::var("REASON_ACP_REPO_ROOT")
+        .unwrap_or_else(|_| concat!(env!("CARGO_MANIFEST_DIR"), "/..").into());
+    PathBuf::from(root).join("tools/reason-acp/fake_reason_acp.py")
+}
+
 type Log = Arc<Mutex<Vec<(String, ProviderEvent)>>>;
 
 fn provider(name: &str) -> (Arc<ReasonProvider>, Log, PathBuf) {
-    let root = std::env::var("REASON_ACP_REPO_ROOT").expect("run via run-rust-tests.sh");
-    let fake = PathBuf::from(root).join("tools/reason-acp/fake_reason_acp.py");
+    let fake = fake_agent();
     let home = std::env::temp_dir().join(format!("reason-acp-prov-{name}-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&home);
     std::fs::create_dir_all(home.join("project")).unwrap();
@@ -148,8 +155,7 @@ fn reports_and_cloud_paths_are_told_apart() {
 }
 
 fn provider_in(home: PathBuf) -> (Arc<ReasonProvider>, Log, PathBuf) {
-    let root = std::env::var("REASON_ACP_REPO_ROOT").unwrap();
-    let fake = PathBuf::from(root).join("tools/reason-acp/fake_reason_acp.py");
+    let fake = fake_agent();
     let log: Log = Arc::default();
     let sink = log.clone();
     let p = ReasonProvider::new(

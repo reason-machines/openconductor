@@ -3,7 +3,8 @@ import type { Action } from "../state/store";
 import type { AppState } from "../state/types";
 import type { DialogKind } from "../components/Dialogs";
 import { CommandPalette } from "./CommandPalette.tsx";
-import { useKeybindings, type BindingHandlers } from "./useKeybindings.ts";
+import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
+import type { CommandHandlers } from "../keybindings/bind.ts";
 import { paletteDataFromState, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import type { ResultItem } from "./search/model.ts";
 
@@ -15,11 +16,13 @@ interface Props {
   onOpenDialog: (kind: DialogKind) => void;
   /** Native folder picker flow for adding a project. */
   onOpenProject: () => void;
+  /** Open state lives in App so the sidebar's Search row can open the palette too. */
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 /** Owns the palette's open state, recent workspaces and the app's global shortcuts. */
-export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject }: Props) {
-  const [open, setOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
+export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open, onOpenChange }: Props) {
   const [recents, setRecents] = useState<string[]>([]);
   const sel = state.selection;
   const selectedId = sel.kind === "workspace" ? sel.workspaceId : null;
@@ -45,9 +48,9 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject }: Pr
     "previous-workspace": () => go(stepWorkspace(state, -1)),
   };
 
-  // Cmd+N (workspace.create) stays with App's own handler, which opens the Create-workspace dialog.
-  const handlers: BindingHandlers = {
-    toggleCommandPalette: () => setOpen((o) => !o),
+  // Cmd+N (workspace.create) is bound in App, which owns the Create-workspace dialog.
+  const handlers: CommandHandlers = {
+    toggleCommandPalette: () => onOpenChange(!open),
     "nav.home": actions["go-home"],
     "workspace.archive": actions["archive-workspace"],
     "workspace.next": actions["next-workspace"],
@@ -71,5 +74,5 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject }: Pr
   }
 
   if (!open) return null;
-  return <CommandPalette data={data} onSelect={onSelect} onClose={() => setOpen(false)} />;
+  return <CommandPalette data={data} onSelect={onSelect} onClose={() => onOpenChange(false)} />;
 }

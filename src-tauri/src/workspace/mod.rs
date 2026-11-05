@@ -65,12 +65,22 @@ pub enum WorkspaceError {
     BranchNotFound(String),
     /// `existing_branch` names a branch already checked out in another worktree.
     BranchCheckedOut { branch: String, path: PathBuf },
+    /// `existing_branch` with `pr_number`: the branch is neither local nor on
+    /// `origin`, and fetching `pull/<number>/head` failed too.
+    PullRequestNotFound { number: u64, branch: String, stderr: String },
     /// No repository is registered under this id.
     UnknownRepository(String),
     /// The workspace is still being created; see [`WorkspaceManager::mark_initializing`].
     Initializing(String),
     /// The operation needs an active worktree, but the workspace is archived or missing.
     NotActive(String),
+    /// `clone_repository`: no folder name can be derived from the URL.
+    InvalidCloneUrl(String),
+    /// `clone_repository`: the target folder is missing and is not the default
+    /// clone directory (which is created on demand).
+    TargetMissing(PathBuf),
+    /// `clone_repository`: `git clone` failed; see [`git::clone`] for the text.
+    CloneFailed(String),
 }
 
 impl fmt::Display for WorkspaceError {
@@ -88,9 +98,19 @@ impl fmt::Display for WorkspaceError {
             WorkspaceError::BranchCheckedOut { branch, path } => {
                 write!(f, "branch {branch} is already checked out at {}", path.display())
             }
+            WorkspaceError::PullRequestNotFound { number, branch, stderr } => {
+                write!(f, "branch not found locally or on origin, and pull request #{number} could not be fetched into {branch}")?;
+                if !stderr.is_empty() {
+                    write!(f, ": {stderr}")?;
+                }
+                Ok(())
+            }
             WorkspaceError::UnknownRepository(id) => write!(f, "unknown repository: {id}"),
             WorkspaceError::Initializing(n) => write!(f, "workspace {n} is still initializing; try again when it is ready"),
             WorkspaceError::NotActive(n) => write!(f, "workspace {n} is archived or missing"),
+            WorkspaceError::InvalidCloneUrl(u) => write!(f, "cannot derive a repository name from {u:?}"),
+            WorkspaceError::TargetMissing(p) => write!(f, "Target directory does not exist: {}", p.display()),
+            WorkspaceError::CloneFailed(msg) => f.write_str(msg),
         }
     }
 }
@@ -142,6 +162,11 @@ pub struct CreateOptions {
     /// exists (and is not checked out elsewhere), otherwise a new local branch
     /// tracking `origin/<branch_name>`. `base_branch` is ignored.
     pub existing_branch: bool,
+    /// With `existing_branch`: the pull request whose head `branch_name` is.
+    /// When the branch is neither local nor on `origin` (a PR from a fork),
+    /// `pull/<pr_number>/head` is fetched into a new local `branch_name`
+    /// without upstream and checked out. Needs `fetch`.
+    pub pr_number: Option<u64>,
     /// Base branch; defaults to the repository's default branch.
     pub base_branch: Option<String>,
     /// Fetch `origin/<base>` first so the workspace starts from the latest
@@ -282,10 +307,23 @@ impl WorkspaceManager {
                     let spec = format!("+refs/heads/{b}:refs/remotes/{remote_ref}");
                     fetched = git::git(&root, ["fetch", "--quiet", "origin", &spec]).is_ok();
                 }
-                if !git::ref_exists(&root, &remote_ref) {
+                if git::ref_exists(&root, &remote_ref) {
+                    (remote_ref, Checkout::Track)
+                } else if let (Some(n), true) = (opts.pr_number, opts.fetch && git::remote_exists(&root, "origin")) {
+                    // A fork's branch is not on origin; GitHub serves every PR's head as pull/<n>/head.
+                    let spec = format!("pull/{n}/head:refs/heads/{b}");
+                    match git::git(&root, ["fetch", "--quiet", "origin", &spec]) {
+                        Ok(_) => {}
+                        Err(WorkspaceError::Git { stderr, .. }) => {
+                            return Err(WorkspaceError::PullRequestNotFound { number: n, branch: b.to_string(), stderr });
+                        }
+                        Err(e) => return Err(e),
+                    }
+                    fetched = true;
+                    (b.to_string(), Checkout::Local)
+                } else {
                     return Err(WorkspaceError::BranchNotFound(b.to_string()));
                 }
-                (remote_ref, Checkout::Track)
             }
         } else {
             if let Some(b) = explicit_branch {

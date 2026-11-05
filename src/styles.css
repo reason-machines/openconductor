@@ -1,7 +1,7 @@
 :root {
-  --bg: #f7f7f5;
+  /* App background: Conductor's --background (evidence/frontend/css-tokens.json, :root,.light). */
+  --bg: #ffffff;
   --panel: #ffffff;
-  --sidebar: #eeeeeb;
   --border: #e1e0dc;
   --text: #1f2328;
   --muted: #6b6f76;
@@ -16,8 +16,17 @@
   --secondary: #efefec;
   --secondary-hover: rgba(239, 239, 236, 0.8);
   --secondary-text: #3d4147;
+  /* Sidebar tokens, values from Conductor's --sidebar-* custom properties
+     (evidence/frontend/css-tokens.json, :root,.light). */
+  --sidebar-width: 256px;
+  --sidebar-background: #fafaf9;
+  --sidebar-foreground: #14100fb3;
+  --sidebar-muted-foreground: #14100f99;
+  --sidebar-accent: #14100f0d;
+  --sidebar-accent-foreground: #14100fcc;
+  --sidebar-border: #14100f1a;
   /* Left inset that clears the macOS traffic lights when the sidebar is hidden. */
-  --traffic-lights-clearance: 64px;
+  --traffic-lights-clearance: 66px;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
   font-size: 13px;
   color: var(--text);
@@ -25,10 +34,9 @@
   -webkit-font-smoothing: antialiased;
 }
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #17191d;
+  :root:not([data-theme="light"]) {
+    --bg: #141110;
     --panel: #1d2025;
-    --sidebar: #121417;
     --border: #2b2f36;
     --text: #e6e7e9;
     --muted: #8b9099;
@@ -41,7 +49,37 @@
     --secondary: #24272d;
     --secondary-hover: rgba(36, 39, 45, 0.8);
     --secondary-text: #c9ccd1;
+    /* evidence/frontend/css-tokens.json, .dark */
+    --sidebar-background: #211e1c;
+    --sidebar-foreground: #ffffffe6;
+    --sidebar-muted-foreground: #ffffff99;
+    --sidebar-accent: #ffffff0d;
+    --sidebar-accent-foreground: #ffffffe6;
+    --sidebar-border: #ffffff1a;
   }
+}
+:root[data-theme="dark"] {
+  --bg: #141110;
+  --panel: #1d2025;
+  --border: #2b2f36;
+  --text: #e6e7e9;
+  --muted: #8b9099;
+  --hover: rgba(255, 255, 255, 0.05);
+  --active: rgba(255, 255, 255, 0.09);
+  --accent: #5b82f0;
+  --add: #3fb950;
+  --del: #f85149;
+  --amber: #e8b04b;
+  --secondary: #24272d;
+  --secondary-hover: rgba(36, 39, 45, 0.8);
+  --secondary-text: #c9ccd1;
+  /* evidence/frontend/css-tokens.json, .dark */
+  --sidebar-background: #211e1c;
+  --sidebar-foreground: #ffffffe6;
+  --sidebar-muted-foreground: #ffffff99;
+  --sidebar-accent: #ffffff0d;
+  --sidebar-accent-foreground: #ffffffe6;
+  --sidebar-border: #ffffff1a;
 }
 
 * { box-sizing: border-box; }
@@ -55,16 +93,44 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .add { color: var(--add); }
 .del { color: var(--del); }
 
-.app { display: grid; grid-template-columns: 248px 1fr; height: 100vh; overflow: hidden; }
+.app { display: grid; grid-template-columns: var(--sidebar-width) 1fr; height: 100vh; overflow: hidden; background: var(--bg); }
 .app.sidebar-hidden { grid-template-columns: 1fr; }
 
 /* Sidebar */
-.sidebar { background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; min-height: 0; padding: 0 8px; }
-.sidebar-drag { height: 28px; flex: none; }
-.sidebar-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; padding: 4px 8px 12px; }
-.nav-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; text-align: left; width: 100%; }
-.nav-item:hover, .repo-toggle:hover, .ws-item:hover, .icon-btn:hover { background: var(--hover); }
-.nav-item.active, .ws-item.active { background: var(--active); font-weight: 500; }
+/* Conductor's <aside>: border-r border-sidebar-border bg-sidebar-background/60 text-sidebar-foreground,
+   so the fill is the sidebar token at 60% over the app background. */
+.sidebar { background: color-mix(in srgb, var(--sidebar-background) 60%, transparent); color: var(--sidebar-foreground); border-right: 1px solid var(--sidebar-border); display: flex; flex-direction: column; min-height: 0; min-width: 0; font-size: 14px; line-height: 20px; }
+
+/* Sidebar header, after Conductor's sidebar root and nav group in the decoded renderApp chunk:
+   a 32px drag row (pt-2) whose toggle clears the traffic lights, back/forward at top-2 right-3.5,
+   then the computer switcher and Home / Create / Search rows (px-1.5 py-1.5 gap-2 rounded-md,
+   size-4 icon box, gap-0.5 between rows) above a border-b. */
+.sb-header { position: relative; flex: none; }
+.sb-topbar { display: flex; align-items: center; height: 32px; padding: 8px 0 0 calc(16px + var(--traffic-lights-clearance) + min(4px, var(--traffic-lights-clearance))); }
+.sb-toggle { display: inline-flex; padding: 0; color: var(--muted); transition: color 0.15s; }
+.sb-toggle:hover { color: var(--text); }
+.sb-history { position: absolute; top: 8px; right: 14px; z-index: 1; display: flex; align-items: center; gap: 8px; }
+.sb-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; color: var(--sidebar-muted-foreground); }
+.sb-icon-btn:hover:not(:disabled) { color: var(--sidebar-foreground); background: var(--sidebar-accent); }
+.sb-icon-btn:disabled { cursor: default; }
+.sb-primary { display: flex; flex-direction: column; gap: 2px; padding: 6px; border-bottom: 1px solid var(--sidebar-border); }
+.sb-row { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; padding: 6px; border-radius: 6px; text-align: left; cursor: pointer; }
+.sb-row:hover, .sb-row[data-active="true"] { background: var(--sidebar-accent); }
+.sb-row-icon { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex: none; color: var(--sidebar-muted-foreground); }
+.sb-row-icon svg { margin-bottom: 1px; }
+.sb-row-label { color: var(--sidebar-muted-foreground); }
+.sb-row-hint { margin-left: auto; font: inherit; font-size: 12px; color: var(--sidebar-muted-foreground); opacity: 0; }
+.sb-row:hover .sb-row-hint, .sb-row:focus-visible .sb-row-hint { opacity: 1; }
+.sb-computer { cursor: default; }
+.sb-computer:hover { background: none; }
+.sb-avatar { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 999px; background: var(--sidebar-accent); color: var(--sidebar-muted-foreground); font-size: 10px; font-weight: 500; line-height: 1; }
+.sb-computer-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--sidebar-accent-foreground); }
+.sb-computer svg { flex: none; color: var(--sidebar-muted-foreground); }
+
+/* Workspace list and footer (restyled in the following sidebar PRs). */
+.repo-list, .sidebar-section-header, .sidebar-footer { margin: 0 8px; }
+.repo-toggle:hover, .ws-item:hover, .icon-btn:hover { background: var(--hover); }
+.ws-item.active { background: var(--active); font-weight: 500; }
 .sidebar-section-header { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 16px 8px 4px; }
 .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 5px; color: var(--muted); }
 .repo-list { overflow-y: auto; flex: 1; min-height: 0; padding-bottom: 8px; }
@@ -83,7 +149,7 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .status-dot.working { background: var(--amber); opacity: 1; animation: pulse 1.4s ease-in-out infinite; }
 .status-dot.needs-review { background: var(--add); opacity: 1; }
 @keyframes pulse { 50% { opacity: 0.35; } }
-.sidebar-footer { color: var(--muted); font-size: 11px; padding: 8px; border-top: 1px solid var(--border); }
+.sidebar-footer { color: var(--muted); font-size: 11px; padding: 8px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 
 /* Main */
 .main { min-width: 0; min-height: 0; background: var(--bg); }
@@ -132,6 +198,7 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .composer:focus-within { border-color: var(--accent); }
 .composer textarea { width: 100%; border: 0; outline: 0; resize: none; padding: 10px 12px; background: transparent; }
 .composer-bar { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px 8px 12px; font-size: 11px; }
+.composer-actions { display: flex; gap: 6px; }
 
 .placeholder { margin: auto; text-align: center; max-width: 380px; color: var(--text); line-height: 1.5; }
 .placeholder h3 { margin: 0 0 6px; font-size: 15px; }
@@ -173,6 +240,9 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .field select { flex: 1; min-width: 0; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); font: inherit; color: inherit; font-weight: 400; }
 .field select[aria-invalid="true"] { border-color: var(--del); }
 .field code { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.github-repo-notice { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.github-repo-notice p { flex: 1 1 100%; }
+.field select:disabled, .field input:disabled { opacity: 0.6; }
 .rarity { margin-left: 8px; padding: 1px 6px; border-radius: 999px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; background: var(--hover); color: var(--muted); }
 .rarity-uncommon { color: var(--add); }
 .rarity-rare { color: var(--accent); }
@@ -209,6 +279,22 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .qo-empty { padding: 18px 16px; color: var(--muted); font-size: 13px; }
 .qo-hint { border-top: 1px solid var(--border); padding: 6px 12px; color: var(--muted); font-size: 11px; }
 
+/* Settings */
+.settings { display: grid; grid-template-columns: 220px 1fr; height: 100vh; overflow: hidden; }
+.settings-nav { background: var(--sidebar); border-right: 1px solid var(--border); padding: 8px; overflow-y: auto; }
+.settings-group { margin-top: 12px; display: flex; flex-direction: column; gap: 1px; }
+.settings-group-title { color: var(--muted); font-size: 11px; font-weight: 500; padding: 4px 8px; }
+.settings-page { overflow-y: auto; padding: 28px 40px; max-width: 760px; }
+.settings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.settings-header h1 { font-size: 18px; font-weight: 600; margin: 0; }
+.settings-rows { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); }
+.settings-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 12px 16px; }
+.settings-row + .settings-row { border-top: 1px solid var(--border); }
+.settings-row-label { font-weight: 500; margin-bottom: 2px; }
+.settings-row-control { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.settings-row-control select, .settings-row-control input[type="text"], .settings-row-control input[type="password"] { font: inherit; color: inherit; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); min-width: 180px; }
+.settings-row-control input[aria-invalid="true"] { border-color: var(--del); }
+
 /* Terminal panel */
 .terminal-panel { display: flex; flex-direction: column; height: 260px; min-height: 120px; border-top: 1px solid var(--border); background: var(--panel); }
 .term-tabs { display: flex; align-items: center; gap: 2px; padding: 4px 8px; border-bottom: 1px solid var(--border); }
@@ -222,7 +308,18 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .term-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
 .term-dot.running { background: var(--add); }
 .term-dot.exited { background: var(--del); }
-.term-body { flex: 1; min-height: 0; padding: 4px 0 0 8px; overflow: hidden; }
+.term-body { position: relative; flex: 1; min-height: 0; padding: 4px 0 0 8px; overflow: hidden; }
+.term-mount { height: 100%; }
+/* Find in terminal: the reference's floating bar (top-2 right-4, w-96, rounded-lg, shadow-lg). */
+.term-find { position: absolute; top: 8px; right: 16px; z-index: 50; display: flex; align-items: center; gap: 12px; width: 384px; max-width: calc(100% - 32px); padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--sidebar, var(--panel)); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.25), 0 4px 6px -4px rgb(0 0 0 / 0.25); }
+.term-find-icon { display: flex; color: var(--muted); flex-shrink: 0; }
+.term-find input { flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: var(--text); font-size: 14px; }
+.term-find input::placeholder { color: var(--muted); }
+.term-find-count { white-space: nowrap; font-size: 14px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.term-find-buttons { display: flex; align-items: center; gap: 4px; }
+.term-find-buttons button { display: flex; padding: 2px; color: var(--muted); }
+.term-find-buttons button:hover:not(:disabled) { color: var(--text); }
+.term-find-buttons button:disabled { cursor: not-allowed; opacity: 0.4; }
 .term-host, .term-host .xterm { height: 100%; }
 .term-host .xterm-viewport { background-color: var(--panel) !important; }
 .term-error { padding: 8px 12px; color: var(--del); font-size: 12px; }
@@ -242,4 +339,57 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .ks-or { font-size: 12px; color: var(--muted); }
 .ks-keys kbd { min-width: 20px; padding: 1px 5px; border: 1px solid var(--border); border-radius: 4px; font: inherit; font-size: 12px; text-align: center; }
 .ks-dim { opacity: 0.5; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.kb-page { display: flex; flex-direction: column; gap: 24px; }
+.kb-search { margin: 0; }
+.kb-group h3 { margin: 0 0 8px; font-size: 14px; font-weight: 500; color: var(--muted); }
+.kb-row { padding: 8px 16px; }
+.kb-recorder { min-width: 120px; min-height: 28px; display: inline-flex; justify-content: flex-end; align-items: center; padding: 2px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: inherit; font: inherit; font-size: 12px; cursor: pointer; }
+.kb-recorder:disabled { opacity: 0.5; cursor: default; }
+.kb-recorder.recording { border-color: var(--accent, currentColor); color: var(--muted); }
+.kb-fixed { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
 .ks-empty { padding: 32px 0; text-align: center; font-size: 14px; color: var(--muted); }
+.settings-radios { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.settings-radio { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.settings-radio-detail { margin-left: 24px; display: flex; flex-direction: column; gap: 4px; }
+.settings-radio-detail p { margin: 0; }
+.settings-radio-detail input[type="text"] { font: inherit; color: inherit; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); min-width: 220px; }
+.settings-radio-detail input[aria-invalid="true"] { border-color: var(--del); }
+
+/* Run / Setup scripts panel (src/components/ScriptsPanel.tsx) */
+.ws-right { display: grid; grid-template-rows: minmax(0, 1fr) minmax(180px, 38%); min-height: 0; border-left: 1px solid var(--border); }
+.scripts { display: flex; flex-direction: column; min-height: 0; background: var(--panel); border-top: 1px solid var(--border); }
+.scripts-tabs { align-items: center; padding-bottom: 4px; }
+.scripts-actions { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+.scripts-actions select { font: inherit; font-size: 12px; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--panel); color: var(--text); }
+.scripts-actions .btn { color: var(--text); padding: 4px 10px; border: 1px solid var(--border); }
+.scripts-actions .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.scripts-actions .btn-stop { background: #b4483c; border-color: #b4483c; color: #fff; }
+.setup-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-left: 4px; background: var(--border); vertical-align: middle; }
+.setup-dot.running { background: #e8b04b; }
+.setup-dot.completed { background: #4f9d69; }
+.setup-dot.failed { background: #b4483c; }
+.scripts-meta { display: flex; gap: 10px; align-items: center; padding: 6px 12px; font-size: 12px; color: var(--muted); }
+.scripts-meta code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scripts-output { flex: 1; margin: 0; padding: 8px 12px 12px; overflow: auto; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; color: var(--text); }
+.scripts-error { padding: 6px 12px; font-size: 12px; color: #b4483c; }
+
+/* Create workspace: Add repository (Open project / Clone repo) */
+.add-repo { position: relative; display: flex; }
+.add-repo-pop { position: absolute; top: 100%; right: 0; z-index: 25; margin-top: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); padding: 6px; display: flex; flex-direction: column; gap: 6px; font-weight: 400; }
+.add-repo-menu { min-width: 160px; }
+.add-repo-menu button { text-align: left; padding: 6px 8px; border: 0; border-radius: 6px; background: none; color: inherit; font: inherit; cursor: pointer; }
+.add-repo-menu button:hover, .add-repo-menu button:focus-visible { background: var(--hover, rgba(127, 127, 127, 0.12)); outline: 0; }
+.add-repo-clone { width: min(380px, calc(100vw - 64px)); padding: 8px; }
+.add-repo-clone input { min-width: 0; }
+/* In the dialog the clone box spans the repository + base branch row; the menu stays under "Add…". */
+.create-row { position: relative; }
+.create-row .add-repo { position: static; }
+.create-row .add-repo-pop { left: 0; right: 0; width: auto; }
+.create-row .add-repo-menu { left: auto; right: calc(50% + 6px); }
+.settings-agents { display: flex; flex-direction: column; gap: 24px; }
+.settings-agent-header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.settings-agent-header h2 { font-size: 14px; font-weight: 600; margin: 0; }
+.settings-agent-status { font-size: 12px; color: var(--muted); }
+.settings-agent-status.warn { color: var(--del); }
+.settings-agent-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }

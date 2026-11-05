@@ -1,26 +1,35 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAppStore } from "./state/store";
 import { isSidebarVisible } from "./state/selectors";
-import { isToggleLeftSidebar, isTypingTarget } from "./state/shortcuts";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
 import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
+import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
-import { QuickOpenDialog, QUICK_OPEN_DIALOG_ID } from "./components/QuickOpenDialog";
-import { resolveCommand } from "./keybindings/resolve";
+import { useSetupWatch } from "./workspace/useSetupWatch";
+import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
+import { createFailedMessage } from "./state/githubRepoDialog";
+import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
 import { PaletteHost } from "./palette/PaletteHost";
-import { useKeybindings } from "./palette/useKeybindings";
+import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
+import { SettingsView } from "./settings/SettingsView";
+import { pageFromPath, type SettingsPage } from "./settings/pages";
+import { applyTheme } from "./settings/useSettings";
+import { getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
+import { useNavHistory } from "./state/useNavHistory";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
+  const nav = useNavHistory(state, dispatch);
+  const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
   // `/create` (or `?dialog=create`) opens the Create-workspace dialog directly.
   const initialDialog = window.location.pathname === "/create" ? "create" : (new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
   const [dialog, setDialog] = useState<DialogKind | null>(initialDialog);
@@ -31,6 +40,30 @@ export default function App() {
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
   const { toasts, show, dismiss } = useToasts();
+  // A setup script the create flow started reports its failure here, after the dialog closed.
+  useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // `/settings` or `/settings/user/<page>` starts on that settings page.
+  const [settingsPage, setSettingsPage] = useState<SettingsPage | null>(() => pageFromPath(window.location.pathname));
+  const openSettings = useCallback(() => setSettingsPage((p) => p ?? "general"), []);
+  const closeSettings = useCallback(() => setSettingsPage(null), []);
+
+  // Apply the saved theme at startup; the settings page applies later changes.
+  useEffect(() => {
+    getSettings().then((s) => applyTheme(s.general.theme), () => undefined);
+  }, []);
+
+
+  // "Create a private GitHub repo?" for a picked folder without git or origin.
+  // `?dialog=github-repo` opens it with a sample folder in a plain browser.
+  const [githubRepo, setGithubRepo] = useState<GitHubRepoTarget | null>(() =>
+    !inTauri() && new URLSearchParams(window.location.search).get("dialog") === "github-repo"
+      ? { path: "/Users/you/code/My Notes", name: "My Notes", needsGitInit: true }
+      : null,
+  );
+  const addCreatedRepo = useCallback(async (target: GitHubRepoTarget, remote: string) => {
+    const registered = await addRepository(target.path);
+    dispatch({ type: "addRepo", repo: { name: target.name, path: registered.root, remote, defaultBranch: registered.defaultBranch } });
+  }, [dispatch]);
 
   // Open project: native picker straight away, then the backend folder checks.
   const openProject = useCallback(async () => {
@@ -40,36 +73,24 @@ export default function App() {
       if (!path) return;
       const outcome = decideOpenProject(path, await inspectProjectFolder(path));
       if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
-      if (outcome.kind === "needsGitHubRepo") {
-        // The "Create a private GitHub repo?" dialog lands in the next PR.
-        return show("info", outcome.needsGitInit ? `${outcome.name} is not a git repository yet.` : `${outcome.name} has no origin remote yet.`);
-      }
+      if (outcome.kind === "needsGitHubRepo") return setGithubRepo({ path: outcome.path, name: outcome.name, needsGitInit: outcome.needsGitInit });
       const registered = await addRepository(outcome.path);
+      if (findExistingRepo(state.repos, { path: registered.root, remote: outcome.remote })) return show("error", REPO_EXISTS);
       dispatch({ type: "addRepo", repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
     } catch (err) {
       show("error", failedToAddMessage(err));
     }
-  }, [dispatch, show]);
+  }, [dispatch, show, state.repos]);
   const [quickOpen, setQuickOpen] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const { overrides } = useKeybindingOverrides();
   const toggleShortcuts = useCallback(() => setShortcutsOpen((open) => !open), []);
-  useKeybindings({ openKeyboardShortcuts: toggleShortcuts });
   useEffect(() => {
     if (!inTauri()) return;
     const unlisten = listen("open_keyboard_shortcuts_dialog", toggleShortcuts);
     return () => void unlisten.then((off) => off());
   }, [toggleShortcuts]);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.repeat || !isToggleLeftSidebar(e, isTypingTarget(document.activeElement as HTMLElement | null))) return;
-      e.preventDefault();
-      dispatch({ type: "toggleSidebar" });
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [dispatch]);
 
   const sel = state.selection;
   const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
@@ -78,17 +99,16 @@ export default function App() {
   const canQuickOpen = !!workspace && workspace.status !== "archived";
   const workspacePath = workspace?.path || repo?.path || (inTauri() ? null : "/demo");
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const typing = isTypingTarget(document.activeElement as HTMLElement | null);
-      const ctx = { activeDialogId: quickOpen ? QUICK_OPEN_DIALOG_ID : dialog, typing, inTerminal: false };
-      if (resolveCommand(e, ctx, ["nav.quickOpen"]) !== "nav.quickOpen") return;
-      e.preventDefault();
-      setQuickOpen((open) => !open && canQuickOpen);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [quickOpen, dialog, canQuickOpen]);
+  // Every app-shell shortcut goes through the one dispatcher (src/keybindings).
+  useKeybindings({
+    "openKeyboardShortcuts": toggleShortcuts,
+    "openSettings": openSettings,
+    "nav.back": nav.onBack,
+    "nav.forward": nav.onForward,
+    "view.toggleLeftSidebar": () => dispatch({ type: "toggleSidebar" }),
+    "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
+    "workspace.create": () => setDialog("create"),
+  });
 
   const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
   // Re-read each time the dialog opens so a settings change applies to the next create.
@@ -99,20 +119,13 @@ export default function App() {
 
   useEffect(() => {
     appInfo().then(setInfo).catch(() => setInfo(null));
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "n") {
-        e.preventDefault();
-        setDialog("create");
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  if (settingsPage) return <SettingsView page={settingsPage} onNavigate={setSettingsPage} onClose={closeSettings} />;
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} info={info} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
@@ -144,8 +157,17 @@ export default function App() {
           onOpen={(path, mode) => show("info", `${mode === "diff" ? "Diff of" : "Opened"} ${path} (file viewer not built yet)`)}
         />
       )}
-      {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} />}
-      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
+      {githubRepo && (
+        <GitHubRepoDialog
+          target={githubRepo}
+          onClose={() => setGithubRepo(null)}
+          onOpenSettings={openSettings}
+          onCreated={(remote) => addCreatedRepo(githubRepo, remote)}
+          onError={(message) => show("error", createFailedMessage(message))}
+        />
+      )}
+      {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
+      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} />
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );

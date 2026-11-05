@@ -17,6 +17,7 @@ use super::claude_cloud::{Bedrock, Foundry, Vertex};
 use super::codex::{CodexGateway, CodexLogin, CursorApi, OpenAiApi, OpencodeLogin};
 use super::env::{AgentKind, LaunchEnv};
 use super::provider::{check_secret, Provider, ProviderError};
+use super::reason::ReasonLogin;
 use super::secret::{SecretStore, SecretString};
 
 /// A configured provider, tagged by its [`Provider::kind`].
@@ -33,6 +34,7 @@ pub enum ProviderConfig {
     CodexGateway(CodexGateway),
     CursorApi(CursorApi),
     OpencodeLogin(OpencodeLogin),
+    ReasonLogin(ReasonLogin),
 }
 
 impl ProviderConfig {
@@ -48,6 +50,7 @@ impl ProviderConfig {
             ProviderConfig::CodexGateway(p) => p,
             ProviderConfig::CursorApi(p) => p,
             ProviderConfig::OpencodeLogin(p) => p,
+            ProviderConfig::ReasonLogin(p) => p,
         }
     }
 
@@ -59,6 +62,7 @@ impl ProviderConfig {
             AgentKind::Codex => ProviderConfig::CodexLogin(CodexLogin {}),
             AgentKind::Cursor => ProviderConfig::CursorApi(CursorApi {}),
             AgentKind::Opencode => ProviderConfig::OpencodeLogin(OpencodeLogin {}),
+            AgentKind::Reason => ProviderConfig::ReasonLogin(ReasonLogin {}),
         }
     }
 
@@ -197,6 +201,7 @@ mod tests {
             r#"{"kind":"codex_gateway","gateway":"open_router"}"#,
             r#"{"kind":"cursor_api"}"#,
             r#"{"kind":"opencode_login"}"#,
+            r#"{"kind":"reason_login"}"#,
         ];
         for json in all {
             let config = parse(json);

@@ -24,6 +24,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - name: Frontend unit tests
+        run: node --test "src/**/*.test.ts"
       - run: npm run build
 
   app:

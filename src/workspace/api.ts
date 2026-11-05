@@ -1,7 +1,7 @@
 // Bridge to the workspace lifecycle commands (src-tauri/src/workspace/commands.rs).
 // Outside Tauri (vite dev, screenshots) each call has a local stand-in so the
 // Create-workspace dialog still runs end to end.
-import { invoke } from "@tauri-apps/api/core";
+import { Channel, invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../backend";
 import type { CreateFrom, CreateWorkspaceArgs } from "./createFlow";
 import type { SourceState } from "./createFrom";
@@ -36,6 +36,42 @@ export async function ensureRepository(path: string): Promise<RepositoryDto> {
   return invoke<RepositoryDto>("add_repository", { path });
 }
 
+/**
+ * Clones `url` into `<parentDir>/<name>` (the backend suffixes `-2`, `-3`, ...
+ * when taken) and registers it like add_repository. Each progress line goes
+ * to `onProgress` as it arrives. The browser stand-in waits briefly, emits a
+ * few lines and returns a fake checkout; `fail-` URLs reject with the
+ * backend's exit-code message so the error state can be tried without the
+ * desktop app.
+ */
+export async function cloneRepository(
+  url: string,
+  parentDir: string,
+  name: string,
+  onProgress: (line: string) => void = () => {},
+): Promise<RepositoryDto> {
+  if (!inTauri()) {
+    for (const line of ["Creating directory structure...", "Cloning repository...", `Cloning into '${name}'...`]) {
+      onProgress(line);
+      await new Promise((r) => setTimeout(r, 200));
+    }
+    if (/fail-/.test(url)) {
+      throw new Error("Git clone failed with code 128\n\nSTDOUT:\n\n\nSTDERR:\nfatal: repository not found");
+    }
+    const root = `${parentDir.replace(/\/+$/, "")}/${name}`;
+    return { id: root, name, root, defaultBranch: "main" };
+  }
+  const channel = new Channel<string>();
+  channel.onmessage = onProgress;
+  return invoke<RepositoryDto>("clone_repository", { url, parentDir, onProgress: channel });
+}
+
+/** Folder the clone dialog falls back to when no saved location exists. */
+export async function defaultCloneDirectory(): Promise<string> {
+  if (!inTauri()) return "~/openconductor/repos";
+  return invoke<string>("default_clone_directory");
+}
+
 /** Local branches first, newest first. The browser stand-in lists only the default branch. */
 export async function listBranches(repoId: string, defaultBranch: string): Promise<BranchDto[]> {
   if (!inTauri()) return [{ name: defaultBranch, remote: null, commit: "", isHead: true, committedAt: 0 }];
@@ -62,6 +98,7 @@ export async function createWorkspace(args: CreateWorkspaceArgs): Promise<Create
 const SAMPLE_PRS: CreateFrom[] = [
   { kind: "pr", number: 128, title: "Fix login redirect loop", headBranch: "fix/login-redirect", baseBranch: "main" },
   { kind: "pr", number: 121, title: "Add dark mode toggle", headBranch: "feat/dark-mode", baseBranch: "main" },
+  { kind: "pr", number: 117, title: "Fix typo in README", headBranch: "main", baseBranch: "main", headOwner: "octocat", crossRepository: true },
 ];
 const SAMPLE_ISSUES: CreateFrom[] = [
   { kind: "issue", provider: "github", key: "#42", title: "Crash when opening an empty repo", body: "Steps: add a repo with no commits." },

@@ -245,6 +245,52 @@ fn existing_branch_tracks_remote_only_branch_after_fetch() {
 }
 
 #[test]
+fn existing_branch_with_pr_number_fetches_fork_head_from_pull_ref() {
+    let f = fixture();
+    let origin = f.tmp.path().join("origin.git");
+    sh(f.tmp.path(), &["init", "-q", "--bare", "-b", "main", origin.to_str().unwrap()]);
+    sh(&f.repo, &["remote", "add", "origin", origin.to_str().unwrap()]);
+    sh(&f.repo, &["push", "-q", "origin", "main"]);
+    // A fork's PR head is not a branch on origin; GitHub exposes it as refs/pull/<n>/head.
+    let fork = f.tmp.path().join("fork");
+    sh(f.tmp.path(), &["clone", "-q", origin.to_str().unwrap(), fork.to_str().unwrap()]);
+    sh(&fork, &["checkout", "-q", "-b", "bob/fix"]);
+    let tip = commit_file(&fork, "fix.txt", "fix\n", "fork fix");
+    sh(&fork, &["push", "-q", "origin", "HEAD:refs/pull/7/head"]);
+
+    // Without prNumber the branch is not found, as before.
+    assert!(matches!(f.mgr.create(&f.repo, &existing("bob/fix")), Err(WorkspaceError::BranchNotFound(_))));
+
+    let c = f.mgr.create(&f.repo, &CreateOptions { pr_number: Some(7), ..existing("bob/fix") }).unwrap();
+    let ws = &c.workspace;
+    assert!(c.fetched);
+    assert_eq!((c.base_ref.as_str(), c.base_commit.as_str()), ("bob/fix", tip.as_str()));
+    assert_eq!((ws.name.as_str(), ws.branch.as_str()), ("fix", "bob/fix"));
+    assert_eq!(sh(&ws.path, &["symbolic-ref", "--short", "HEAD"]), "bob/fix");
+    assert_eq!(sh(&ws.path, &["rev-parse", "HEAD"]), tip);
+    assert!(ws.path.join("fix.txt").is_file());
+    let upstream = Command::new("git").arg("-C").arg(&ws.path).args(["rev-parse", "--abbrev-ref", "@{upstream}"]).output().unwrap();
+    assert!(!upstream.status.success(), "no upstream for a fork PR branch");
+    assert_eq!(sh(&f.repo, &["symbolic-ref", "--short", "HEAD"]), "main");
+
+    // A PR that does not exist reports the PR number and git's error.
+    let missing = f.mgr.create(&f.repo, &CreateOptions { pr_number: Some(99), ..existing("carol/none") });
+    match missing {
+        Err(e @ WorkspaceError::PullRequestNotFound { number: 99, .. }) => {
+            assert!(e.to_string().starts_with("branch not found locally or on origin, and pull request #99"), "{e}");
+        }
+        other => panic!("expected PullRequestNotFound, got {other:?}"),
+    }
+    assert!(!git::branch_exists(&f.repo, "carol/none"));
+
+    // A same-repo PR (branch on origin) still tracks origin/<branch>, prNumber or not.
+    sh(&fork, &["push", "-q", "origin", "bob/fix:dave/same-repo"]);
+    let c = f.mgr.create(&f.repo, &CreateOptions { pr_number: Some(8), ..existing("dave/same-repo") }).unwrap();
+    assert_eq!(c.base_ref, "origin/dave/same-repo");
+    assert_eq!(sh(&c.workspace.path, &["rev-parse", "--abbrev-ref", "@{upstream}"]), "origin/dave/same-repo");
+}
+
+#[test]
 fn files_to_copy_default_env_glob_only_copies_gitignored() {
     let f = fixture();
     commit_file(&f.repo, ".gitignore", ".env\n.env.local\nnode_modules/\n", "ignore");
@@ -700,4 +746,78 @@ fn service_renames_workspace_branch_by_workspace_id() {
     assert_eq!(svc.manager().list(&f.repo).unwrap()[0].branch, "sven/add-tests");
     assert!(matches!(svc.rename_workspace_branch("nope/lisbon", "x"), Err(WorkspaceError::UnknownRepository(_))));
     assert!(matches!(svc.rename_workspace_branch("no-slash", "x"), Err(WorkspaceError::NotFound(_))));
+}
+
+#[test]
+fn repo_name_from_url_takes_last_segment_without_dot_git() {
+    let cases = [
+        ("https://github.com/owner/name", Some("name")),
+        ("https://github.com/owner/name.git", Some("name")),
+        ("https://github.com/owner/name/", Some("name")),
+        ("git@github.com:owner/name.git", Some("name")),
+        ("git@host:name.git", Some("name")),
+        ("ssh://git@host:2222/owner/name.git/", Some("name")),
+        ("/Users/sven/src/my-app", Some("my-app")),
+        ("  ../my-app.git  ", Some("my-app")),
+        ("", None),
+        ("https://", None),
+        ("..", None),
+    ];
+    for (url, want) in cases {
+        assert_eq!(naming::repo_name_from_url(url).as_deref(), want, "{url:?}");
+    }
+}
+
+#[test]
+fn clone_repository_streams_progress_and_picks_a_unique_name() {
+    use super::service::WorkspaceService;
+    let f = fixture();
+    let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
+    let parent = f.tmp.path().join("clones");
+    std::fs::create_dir_all(&parent).unwrap();
+    let url = f.repo.display().to_string();
+    let mut lines = Vec::new();
+
+    let r = svc.clone_repository(&url, &parent, &mut |l| lines.push(l.to_string())).unwrap();
+    assert_eq!((r.id.as_str(), r.name.as_str(), r.default_branch.as_str()), ("my-app", "My App", "main"));
+    assert_eq!(r.root, parent.join("My App"));
+    assert!(r.root.join("README.md").exists());
+    assert_eq!(lines[..2], ["Creating directory structure...", "Cloning repository..."]);
+    assert!(lines.iter().any(|l| l.starts_with("Cloning into")), "{lines:?}");
+    assert_eq!(lines[lines.len() - 2..], ["Detecting default branch...", "Saving repository information..."]);
+
+    let again = svc.clone_repository(&url, &parent, &mut |_| {}).unwrap();
+    assert_eq!(again.root, parent.join("My App-2"));
+    assert_eq!(svc.repositories().len(), 2);
+}
+
+#[test]
+fn clone_repository_creates_only_the_default_dir_and_reports_exit_code() {
+    use super::service::WorkspaceService;
+    let f = fixture();
+    let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
+    let url = f.repo.display().to_string();
+
+    let elsewhere = f.tmp.path().join("missing");
+    match svc.clone_repository(&url, &elsewhere, &mut |_| {}) {
+        Err(e @ WorkspaceError::TargetMissing(_)) => {
+            assert_eq!(e.to_string(), format!("Target directory does not exist: {}", elsewhere.display()));
+        }
+        other => panic!("expected TargetMissing, got {other:?}"),
+    }
+    assert!(!elsewhere.exists());
+
+    let default = svc.default_clone_dir();
+    let mut lines = Vec::new();
+    let r = svc.clone_repository(&url, &default, &mut |l| lines.push(l.to_string())).unwrap();
+    assert_eq!(r.root, default.join("My App"));
+    assert_eq!(lines[1], format!("Creating default directory: {}", default.display()));
+
+    let missing = f.tmp.path().join("no-such-repo");
+    let msg = svc.clone_repository(&missing.display().to_string(), &default, &mut |_| {}).unwrap_err().to_string();
+    assert!(msg.starts_with("Git clone failed with code 128\n\nSTDOUT:\n"), "{msg}");
+    assert!(msg.contains("STDERR:\n") && msg.contains("does not exist"), "{msg}");
+    assert!(!default.join("no-such-repo").exists());
+    assert_eq!(svc.repositories().len(), 1);
+    assert!(matches!(svc.clone_repository("https://", &default, &mut |_| {}), Err(WorkspaceError::InvalidCloneUrl(_))));
 }

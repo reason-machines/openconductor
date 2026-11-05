@@ -1,7 +1,9 @@
 # Pull requests: reference behavior vs our implementation
 
 Implementation: [`src-tauri/src/pr/`](../../src-tauri/src/pr/mod.rs) (serde + serde_json, shells out to `gh`).
-Tests: `src-tauri/src/pr/tests.rs`, run with [`run-tests.sh`](run-tests.sh) until the Tauri crate declares `mod pr;`. CI runs it on Linux and macOS (rustfmt check, tests, clippy `-D warnings`).
+Tests: `src-tauri/src/pr/*_tests.rs`, run with [`run-tests.sh`](run-tests.sh) (built with `--cfg pr_harness`, which leaves out `commands.rs`); the Tauri crate declares `pub mod pr;` and registers `pr::commands::*` in `lib.rs`, so CI's Tauri job builds the commands.
+
+Commands (JS names camelCase args): `pr_lookup(repoPath, requests)`, `pr_header_state(inputs)`, `pr_create_prompt(request)`, `pr_merge(repoPath, number, method?)`, `pr_set_auto_merge(repoPath, number, enabled, method?)`, `pr_mark_ready`, `pr_edit(repoPath, number, title?, body?)`, `pr_retarget(repoPath, number, base)`, `pr_approve(repoPath, number, headOid)`, `pr_list_open(repoPath)`, `gh_issue_list_open(repoPath)`. CI runs it on Linux and macOS (rustfmt check, tests, clippy `-D warnings`).
 
 ## Evidence used
 
@@ -25,6 +27,7 @@ Both match the asset manifest's decoded sizes. Locations below are byte offsets 
 | Archive-on-merge after a merge | index @ ~669,500 |
 | Workspace `derived_status` from PR state, PR title/body sync | index @ ~3,165,500 to ~3,167,500 |
 | Create-PR agent prompt | index @ ~2,494,000 |
+| Create-from picker lists: open PRs via REST `repos/{repo}/pulls?state=open&per_page=50` sorted by `updated_at` descending; open issues via `repos/{repo}/issues?state=open&per_page=50&sort=updated&direction=desc`, dropping entries with `pull_request` | renderApp @ ~160,300 to ~164,300 |
 | Workspace header state machine, merge-button eligibility, merge queue titles | renderApp @ ~2,194,000 and ~2,206,000 to ~2,212,000 |
 
 ## Matched
@@ -66,6 +69,7 @@ Both match the asset manifest's decoded sizes. Locations below are byte offsets 
 - The header returns an action plus the numbers its label needs (`HeaderAction`, `Tone`); label text is left to the UI and written by us. Stacked-PR states (stack needs a rebase, stack merge) and the non-GitHub local-git forge's synthesized merge state are not modelled yet.
 - Timestamps are parsed by our own RFC 3339 parser (`checks::parse_timestamp_ms`) rather than the JS `Date.parse`; GitHub only sends `...Z` UTC timestamps, which both read the same.
 - Unknown GitHub enum values (a new `mergeStateStatus`, permission or queue state) deserialize to `Unknown` / `Other` instead of failing the response; the reference's schema validation rejects the whole response.
+- Create-from lists (`list`): the reference calls the GitHub REST API with its own OAuth token; we run `gh pr list` / `gh issue list --state open --limit 100 --json ...` in the checkout (100 rather than 50, as the picker asked), sort newest-updated first like the reference, and tag failures `no_github:` (gh missing, exit 4, `gh auth login`, HTTP 401) or `no_remote:` (no remotes, no GitHub-host remote, not a git repository) using gh 2.23's wording. Search-as-you-type over all open PRs/issues and by-number lookup (the reference's `search/issues` and `pulls/{n}` calls) are not built.
 
 ## REA gaps hit
 

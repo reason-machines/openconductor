@@ -13,7 +13,17 @@ import {
 
 /** What a workspace is created from, chosen in the "Create from..." picker. */
 export type CreateFrom =
-  | { kind: "pr"; number: number; title: string; headBranch: string; baseBranch: string }
+  | {
+      kind: "pr";
+      number: number;
+      title: string;
+      headBranch: string;
+      baseBranch: string;
+      /** Owner of the repository the PR's head branch lives in (`headRepositoryOwner.login`). */
+      headOwner?: string;
+      /** True when the head branch is on a fork (`isCrossRepository`), not on origin. */
+      crossRepository?: boolean;
+    }
   | { kind: "branch"; name: string }
   | { kind: "issue"; provider: "github" | "linear"; key: string; title: string; url?: string; body?: string };
 
@@ -97,7 +107,7 @@ export function buildCreateRequest(
   if (!base.ok) errors.baseBranch = base.error;
 
   let branch: string | undefined;
-  if (draft.from?.kind === "pr") branch = draft.from.headBranch;
+  if (draft.from?.kind === "pr") branch = prBranchName(draft.from);
   if (draft.from?.kind === "branch") branch = draft.from.name;
   if (branch !== undefined) {
     const check = validateBranchName(branch);
@@ -125,6 +135,16 @@ export function buildCreateRequest(
   };
 }
 
+/**
+ * Local branch a PR is checked out on. A fork PR's head branch often shares a
+ * name with an origin branch (a fork's `main`), which `create_workspace` would
+ * check out instead of the PR, so fork PRs get `<owner>/<branch>`.
+ */
+export function prBranchName(pr: Extract<CreateFrom, { kind: "pr" }>): string {
+  const owner = pr.headOwner?.trim();
+  return pr.crossRepository && owner ? `${owner}/${pr.headBranch}` : pr.headBranch;
+}
+
 // ---------------------------------------------------------------------------
 // Lifecycle: initializing -> setting_up -> ready
 
@@ -135,22 +155,22 @@ export type CreateProgress =
   | { step: "idle" }
   | { step: "creating" }
   | { step: "detecting_setup"; workspaceId: string }
-  | { step: "running_setup"; workspaceId: string; log: string[] }
-  | { step: "setup_failed"; workspaceId: string; exitCode: number | null; log: string[] }
-  | { step: "ready"; workspaceId: string; ranSetup: boolean }
+  /**
+   * The dialog's last step. When `setupStarted`, the setup script now runs in
+   * the backend (scripts crate); its log and outcome live in the workspace's
+   * Setup tab and `setupWatch`, not here.
+   */
+  | { step: "ready"; workspaceId: string; setupStarted: boolean }
   | { step: "failed"; error: string };
 
 export type CreateEvent =
   | { type: "submit" }
   | { type: "created"; workspaceId: string }
   | { type: "create_failed"; error?: string }
-  | { type: "setup_detected"; hasScript: boolean }
-  | { type: "setup_output"; line: string }
-  | { type: "setup_exited"; exitCode: number | null }
-  | { type: "retry_setup" };
+  /** `scripts_config` answered; `started` is what `setup_script_start` returned (false with no script). */
+  | { type: "setup_detected"; started: boolean };
 
 export const FAILED_TO_CREATE = "Failed to create workspace";
-const LOG_LIMIT = 500;
 
 export function progressLabel(p: CreateProgress): string {
   switch (p.step) {
@@ -160,16 +180,14 @@ export function progressLabel(p: CreateProgress): string {
       return "Creating workspace...";
     case "detecting_setup":
       return "Detecting setup script...";
-    case "running_setup":
-      return "Running setup script...";
-    case "setup_failed":
-      return "Setup script failed";
     case "ready":
-      return "Ready";
+      return p.setupStarted ? RUNNING_SETUP : "Ready";
     case "failed":
       return p.error;
   }
 }
+
+export const RUNNING_SETUP = "Running setup script...";
 
 /** The `workspaces.state` that matches a progress step. */
 export function workspaceState(p: CreateProgress): WorkspaceState | null {
@@ -177,12 +195,10 @@ export function workspaceState(p: CreateProgress): WorkspaceState | null {
     case "creating":
       return "initializing";
     case "detecting_setup":
-    case "running_setup":
       return "setting_up";
     case "ready":
-    case "setup_failed":
-      // A failed setup script leaves a usable workspace; the failure is shown, not fatal.
-      return "ready";
+      // A started setup script keeps the workspace in setting_up until setupFinished.
+      return p.setupStarted ? "setting_up" : "ready";
     case "failed":
       return "failed";
     case "idle":
@@ -200,19 +216,7 @@ export function reduceProgress(p: CreateProgress, e: CreateEvent): CreateProgres
     case "create_failed":
       return p.step === "creating" ? { step: "failed", error: e.error?.trim() || FAILED_TO_CREATE } : p;
     case "setup_detected":
-      if (p.step !== "detecting_setup") return p;
-      return e.hasScript
-        ? { step: "running_setup", workspaceId: p.workspaceId, log: [] }
-        : { step: "ready", workspaceId: p.workspaceId, ranSetup: false };
-    case "setup_output":
-      return p.step === "running_setup" ? { ...p, log: [...p.log, e.line].slice(-LOG_LIMIT) } : p;
-    case "setup_exited":
-      if (p.step !== "running_setup") return p;
-      return e.exitCode === 0
-        ? { step: "ready", workspaceId: p.workspaceId, ranSetup: true }
-        : { step: "setup_failed", workspaceId: p.workspaceId, exitCode: e.exitCode, log: p.log };
-    case "retry_setup":
-      return p.step === "setup_failed" ? { step: "running_setup", workspaceId: p.workspaceId, log: [] } : p;
+      return p.step === "detecting_setup" ? { step: "ready", workspaceId: p.workspaceId, setupStarted: e.started } : p;
   }
 }
 
@@ -227,13 +231,18 @@ export interface CreateWorkspaceArgs {
    * of `origin/<branchName>`) instead of creating it from `baseBranch` (#106).
    */
   existingBranch: boolean;
+  /**
+   * The PR being checked out. When the branch is neither local nor on origin
+   * (a fork PR), the backend fetches `pull/<prNumber>/head` into it (#197).
+   */
+  prNumber?: number;
 }
 
 /**
  * Maps a request onto `create_workspace`. Create from a PR or branch sends
  * `existingBranch: true`, so the backend checks that branch out rather than
- * refusing it as taken. A fork PR's branch is not on origin and comes back as
- * "branch not found locally or on origin".
+ * refusing it as taken. A PR also sends `prNumber`, so a fork PR's head is
+ * fetched from `pull/<N>/head`.
  */
 export function toCreateWorkspaceArgs(r: CreateRequest): CreateWorkspaceArgs {
   return {
@@ -242,5 +251,6 @@ export function toCreateWorkspaceArgs(r: CreateRequest): CreateWorkspaceArgs {
     directoryName: r.naming.workspace_name,
     baseBranch: r.startPoint,
     existingBranch: r.existingBranch,
+    ...(r.from?.kind === "pr" ? { prNumber: r.from.number } : {}),
   };
 }

@@ -6,7 +6,10 @@
 
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
-use std::process::{Command, Output};
+use std::io::Read;
+use std::process::{Command, Output, Stdio};
+use std::sync::mpsc;
+use std::thread;
 
 use super::WorkspaceError;
 
@@ -53,6 +56,79 @@ where
             stderr: String::from_utf8_lossy(&out.stderr).trim().to_string(),
         })
     }
+}
+
+/// `git clone --progress -- <url> <dest>`, run from `dest`'s parent (which
+/// must exist). Every non-empty output line, split on `\n` and on git's `\r`
+/// progress updates, goes to `on_line` as it arrives. A non-zero exit fails
+/// with "Git clone failed with code <n>", a blank line, then the captured
+/// `STDOUT:` and `STDERR:` sections (as Conductor's clone step does).
+pub fn clone(url: &str, dest: &Path, on_line: &mut dyn FnMut(&str)) -> Result<(), WorkspaceError> {
+    let parent = dest.parent().unwrap_or(Path::new("."));
+    let mut child = Command::new("git")
+        .arg("-C")
+        .arg(parent)
+        .args(["clone", "--progress", "--"])
+        .arg(url)
+        .arg(dest)
+        .env("GIT_TERMINAL_PROMPT", "0")
+        .env("GIT_EDITOR", "true")
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .map_err(WorkspaceError::Io)?;
+    let (tx, rx) = mpsc::channel();
+    let stdout = child.stdout.take().map(|r| spawn_line_reader(r, false, tx.clone()));
+    let stderr = child.stderr.take().map(|r| spawn_line_reader(r, true, tx));
+    let (mut out, mut err) = (Vec::new(), Vec::new());
+    for (is_err, line) in rx {
+        on_line(&line);
+        if is_err { &mut err } else { &mut out }.push(line);
+    }
+    for reader in [stdout, stderr].into_iter().flatten() {
+        let _ = reader.join();
+    }
+    let status = child.wait().map_err(WorkspaceError::Io)?;
+    if status.success() {
+        return Ok(());
+    }
+    let code = status.code().map_or_else(|| "unknown".to_string(), |c| c.to_string());
+    Err(WorkspaceError::CloneFailed(format!(
+        "Git clone failed with code {code}\n\nSTDOUT:\n{}\n\nSTDERR:\n{}",
+        out.join("\n"),
+        err.join("\n")
+    )))
+}
+
+/// Read `r` to the end on a thread, sending each trimmed non-empty line
+/// (split on `\n` or `\r`) tagged with `is_err`.
+fn spawn_line_reader(
+    mut r: impl Read + Send + 'static,
+    is_err: bool,
+    tx: mpsc::Sender<(bool, String)>,
+) -> thread::JoinHandle<()> {
+    thread::spawn(move || {
+        let mut buf = [0u8; 4096];
+        let mut line = Vec::new();
+        let flush = |line: &mut Vec<u8>| {
+            let text = String::from_utf8_lossy(line).trim().to_string();
+            line.clear();
+            if !text.is_empty() {
+                let _ = tx.send((is_err, text));
+            }
+        };
+        while let Ok(n @ 1..) = r.read(&mut buf) {
+            for &b in &buf[..n] {
+                if b == b'\n' || b == b'\r' {
+                    flush(&mut line);
+                } else {
+                    line.push(b);
+                }
+            }
+        }
+        flush(&mut line);
+    })
 }
 
 /// `true` when `git <args>` exits 0 (used for existence checks).

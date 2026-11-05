@@ -131,16 +131,17 @@ export function createKeyListeners({ dispatcher, activeDialogId, track, now = Da
 export type KeyListeners = ReturnType<typeof createKeyListeners>;
 
 export interface ListenerTarget {
-  addEventListener(type: string, listener: (e: never) => void, capture?: boolean): void;
-  removeEventListener(type: string, listener: (e: never) => void, capture?: boolean): void;
+  addEventListener(type: string, listener: (e: Event) => void, capture?: boolean): void;
+  removeEventListener(type: string, listener: (e: Event) => void, capture?: boolean): void;
 }
 
 /** Attach the listeners to `window` the way Conductor does; returns the remover. */
 export function installKeyListeners(target: ListenerTarget, l: KeyListeners): () => void {
-  const wiring: [string, (e: never) => void, boolean][] = [
-    ["keydown", l.keydownCapture, true],
-    ["keydown", l.keydownBubble, false],
-    ["keyup", l.keyupCapture, true],
+  const key = (fn: (e: ListenerEvent) => void) => (e: Event) => fn(e as KeyboardEvent);
+  const wiring: [string, (e: Event) => void, boolean][] = [
+    ["keydown", key(l.keydownCapture), true],
+    ["keydown", key(l.keydownBubble), false],
+    ["keyup", key(l.keyupCapture), true],
     ["compositionstart", l.inputCapture, true],
     ["beforeinput", l.inputCapture, true],
   ];
