@@ -2,6 +2,14 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
+## Sidebar re-read on main (`5045114`, 2026-11-05)
+
+The 33 sidebar items were re-read on `5045114`; Home and Create verdicts are unchanged from `884f1f7`. Sidebar parity is **54.5%** (12 implemented, 9 partial, 6 backend only, 6 missing), all areas **52.9%**, 45 builder obligations open (21 sidebar).
+
+- Closed: `top-bar`, `primary-nav`, `workspaces-group`, `ws-branch`, `search`, `footer-actions`, `colors`.
+- Moved up: `computer-switcher` (missing to partial: the row exists, no name, no menu), `ws-unread` (backend to partial: unread rows render semibold, nothing sets them).
+- `colors` was measured again with REA `capture-browser-scenario` and `compare-web-screenshots` (threshold 24) through `tools/sidebar-screens/`: the sidebar region (x<256) differs by 0.90% dark / 0.88% light populated, 0.62% collapsed and 0.61% / 0.59% on empty Home. Evidence IDs are in [screens/rea-compare-5045114.json](screens/rea-compare-5045114.json).
+
 ## Result on main (`884f1f7`, 2026-11-05)
 
 | Area | Items | Implemented | Partial | Backend only | Missing | Verified parity | Previous (`d846158`) |

@@ -1,26 +1,26 @@
 {
  "ref": "origin/main",
- "source_files": 137,
- "detector_parity_pct": 64.0,
+ "source_files": 241,
+ "detector_parity_pct": 70.6,
  "areas": {
   "sidebar": {
    "items": 33,
-   "implemented": 12,
-   "partial": 13,
-   "missing": 8,
-   "parity_pct": 56.1,
-   "verdict_implemented": 5,
-   "verdict_partial": 10,
-   "verdict_backend": 7,
-   "verdict_missing": 11,
-   "verdict_parity_pct": 35.6
+   "implemented": 17,
+   "partial": 9,
+   "missing": 7,
+   "parity_pct": 65.2,
+   "verdict_implemented": 12,
+   "verdict_partial": 9,
+   "verdict_backend": 6,
+   "verdict_missing": 6,
+   "verdict_parity_pct": 54.5
   },
   "home": {
    "items": 18,
-   "implemented": 9,
-   "partial": 4,
+   "implemented": 11,
+   "partial": 2,
    "missing": 5,
-   "parity_pct": 61.1,
+   "parity_pct": 66.7,
    "verdict_implemented": 4,
    "verdict_partial": 7,
    "verdict_backend": 0,
@@ -29,10 +29,10 @@
   },
   "create": {
    "items": 17,
-   "implemented": 12,
-   "partial": 4,
+   "implemented": 13,
+   "partial": 3,
    "missing": 1,
-   "parity_pct": 82.4,
+   "parity_pct": 85.3,
    "verdict_implemented": 7,
    "verdict_partial": 6,
    "verdict_backend": 2,
@@ -66,7 +66,7 @@
    "id": "sidebar.top-bar",
    "area": "sidebar",
    "feature": "Sidebar top bar with a sidebar toggle button and back/forward history arrows",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "toggle_?(left_?)?sidebar|toggleSidebar",
@@ -75,17 +75,17 @@
     },
     {
      "pattern": "go_?back|goBack|history\\.back|navigate\\(-1\\)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/state/history.ts"
     },
     {
      "pattern": "go_?forward|goForward|history\\.forward",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/state/history.ts"
     }
    ],
-   "verdict": "missing",
-   "why": "No in-sidebar toggle button (toggle is keyboard-only, plus a Home button when hidden) and no back/forward navigation; the reference shows all three at the top of the sidebar.",
+   "verdict": "implemented",
+   "why": "Sidebar header (Sidebar.tsx) has the toggle button (view.toggleLeftSidebar) and back/forward arrows wired to useNavHistory (src/state/useNavHistory.ts, history.ts with tests), disabled at either end; REA capture on 5045114 places all three where the reference does.",
    "recheck": false
   },
   {
@@ -100,15 +100,15 @@
      "file": null
     }
    ],
-   "verdict": "missing",
-   "why": "Sidebar starts with our logo and name; the reference starts with a computer/account switcher.",
-   "recheck": false
+   "verdict": "partial",
+   "why": "Computer row with initial avatar, name and chevron is rendered (Sidebar.tsx), but App.tsx never passes a computer name so it always reads 'My Mac' (reference: \"<user>'s Mac\"), and the row opens no menu.",
+   "recheck": true
   },
   {
    "id": "sidebar.primary-nav",
    "area": "sidebar",
    "feature": "Primary nav rows Home, Create and Search above the workspace list",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "HomeIcon|>Home<",
@@ -118,16 +118,16 @@
     {
      "pattern": "(nav|sidebar)\\w*.{0,60}create|CreateNav|create_?nav",
      "matched": true,
-     "file": "src/components/Sidebar.tsx"
+     "file": "src-tauri/src/persistence/mod.rs"
     },
     {
      "pattern": "(nav|sidebar)\\w*.{0,60}search|SearchNav|search_?nav",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "Home and 'New workspace' rows (Sidebar.tsx); no Search row. The reference labels the second row Create.",
+   "verdict": "implemented",
+   "why": "Home, Create and Search rows with shortcut hints (Sidebar.tsx NavRow): Home selects home, Create opens the create dialog, Search opens the command palette.",
    "recheck": false
   },
   {
@@ -144,7 +144,7 @@
     {
      "pattern": "(collapsed|aria-expanded|toggleRepo|collapse_?repo)",
      "matched": true,
-     "file": "src/components/CreateFromPicker.tsx"
+     "file": "src/components/AddRepositoryMenu.tsx"
     }
    ],
    "verdict": "implemented",
@@ -163,9 +163,9 @@
      "file": null
     }
    ],
-   "verdict": "missing",
-   "why": "We show an uppercase 'Repositories' header with a '+'; the reference shows a sentence-case 'my workspaces' label.",
-   "recheck": false
+   "verdict": "implemented",
+   "why": "Sentence-case 'My workspaces' section header with hover chevron and '...' menu (Add project\u2026) replaces the uppercase Repositories header (Sidebar.tsx).",
+   "recheck": true
   },
   {
    "id": "sidebar.repo-order",
@@ -187,7 +187,7 @@
    "id": "sidebar.repo-hide",
    "area": "sidebar",
    "feature": "Hide and unhide a repository, with a toggle to show hidden ones",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "repo\\.hidden|repos\\.hidden|hidden_?repo|hide_?repo|hideRepo|\\bhidden\\s+INTEGER",
@@ -196,8 +196,8 @@
     },
     {
      "pattern": "show_?hidden|unhide",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/persistence/mod.rs"
     }
    ],
    "verdict": "backend",
@@ -218,7 +218,7 @@
     {
      "pattern": "(emoji|favicon)",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0006_add_navigation_section_emoji_to_cache.sql"
     }
    ],
    "verdict": "backend",
@@ -279,8 +279,8 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "partial",
-   "why": "Branch appears only in the row tooltip.",
+   "verdict": "implemented",
+   "why": "Rows show the branch-style title from workspaceLabel (src/components/sidebarLabel.ts, Conductor's display-name rule with tests): PR title, else the prettified branch; the raw branch is in the row tooltip.",
    "recheck": false
   },
   {
@@ -353,12 +353,12 @@
     },
     {
      "pattern": "next_?unread",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/features/diff/nav.ts"
     }
    ],
-   "verdict": "backend",
-   "why": "crates/openconductor-db workspaces::set_unread (tested); crate not linked into the app; no unread styling or next-unread command.",
+   "verdict": "partial",
+   "why": "Unread rows render semibold (data-unread, styles.css) as in the reference, but nothing sets Workspace.unread in the app and there is no mark-as-read/unread action or next-unread command; DB setter workspaces::set_unread is not linked.",
    "recheck": false
   },
   {
@@ -391,12 +391,12 @@
     {
      "pattern": "navigation_?sections?|nav_?section",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0004_create_navigation_sections_cache.sql"
     },
     {
      "pattern": "(move_?to_?section|moveToSection|section_?membership)",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0004_create_navigation_sections_cache.sql"
     }
    ],
    "verdict": "missing",
@@ -473,8 +473,8 @@
      "file": "src/palette/search/model.ts"
     }
    ],
-   "verdict": "partial",
-   "why": "Workspaces are searchable from the command palette (src/palette/search/model.ts, Cmd+K) by name, branch and repo; the sidebar has no Search row to reach it.",
+   "verdict": "implemented",
+   "why": "Sidebar Search row opens the command palette, whose workspace search covers name, branch and repo (src/palette/search/model.ts).",
    "recheck": false
   },
   {
@@ -563,7 +563,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Toggle works via Cmd+B and '[' (src/state/shortcuts.ts, App.tsx); the sidebar is a fixed 248px column with no resize.",
+   "why": "Left sidebar toggles from the in-sidebar button, Cmd+B and '[' (App.tsx); the sidebar is a fixed 256px column with no drag-to-resize, and there is no right-sidebar toggle.",
    "recheck": false
   },
   {
@@ -586,21 +586,21 @@
    "id": "sidebar.footer-actions",
    "area": "sidebar",
    "feature": "Sidebar footer with help and settings icon buttons",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "HelpIcon|help_?button|open_?help|openHelp",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/HelpMenu.tsx"
     },
     {
      "pattern": "SettingsIcon|open_?settings|openSettings",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/App.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "Footer shows app name, version and platform text; the reference shows help and settings icon buttons.",
+   "verdict": "implemented",
+   "why": "Footer with help menu (HelpMenu.tsx, helpMenuItems.ts with tests) and settings icon buttons (Sidebar.tsx), matching the reference position in the REA capture.",
    "recheck": false
   },
   {
@@ -623,21 +623,21 @@
    "id": "sidebar.colors",
    "area": "sidebar",
    "feature": "Sidebar background, border and width match the reference screens in light and dark",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "--sidebar(-background)?\\s*:",
      "matched": true,
-     "file": "src/styles.css"
+     "file": "src/settings/appearance.css"
     },
     {
      "pattern": "(256px|left_?panel_?width)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/styles.css"
     }
    ],
-   "verdict": "missing",
-   "why": "Measured on REA captures at 1440x900: sidebar edge at x=248 vs 256; dark sidebar #121417 vs #1c1817; light sidebar #eeeeeb vs #fcfcfb. REA compare-web-screenshots (threshold 24): 3.1% (dark) / 5.4% (light) of sidebar pixels differ.",
+   "verdict": "implemented",
+   "why": "Conductor --sidebar-* tokens, 256px width, 60% fill and border (styles.css). REA compare-web-screenshots on 5045114 captures, threshold 24, sidebar region x<256: 0.90% dark / 0.88% light (populated), 0.62% collapsed, 0.61%/0.59% empty Home.",
    "recheck": false
   },
   {
@@ -686,7 +686,7 @@
     {
      "pattern": "recent_?(local_?)?repos|recentRepos|recents",
      "matched": true,
-     "file": "src/components/QuickOpenDialog.tsx"
+     "file": "src-tauri/src/github_repo.rs"
     }
    ],
    "verdict": "missing",
@@ -711,7 +711,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Visibility persists inside the localStorage app state, not as a setting; width is fixed (248px vs evidence default 256).",
+   "why": "Width is now the 256px default but fixed; visibility persists inside the localStorage app state (sidebarVisible), not as a setting, and the width is not persisted.",
    "recheck": true
   },
   {
@@ -796,7 +796,7 @@
     {
      "pattern": "--secondary\\s*:",
      "matched": true,
-     "file": "src/styles.css"
+     "file": "src/settings/appearance.css"
     }
    ],
    "verdict": "missing",
@@ -843,7 +843,7 @@
     {
      "pattern": "(detect_?default_?branch|symbolic-ref|rev-parse --abbrev-ref|remote show)",
      "matched": true,
-     "file": "src-tauri/src/workspace/git.rs"
+     "file": "src-tauri/src/create_project.rs"
     }
    ],
    "verdict": "implemented",
@@ -859,17 +859,17 @@
     {
      "pattern": "needs_?git_?init|needsGitInit|\\.git\\b.{0,40}(exists|is_dir)",
      "matched": true,
-     "file": "src-tauri/src/project.rs"
+     "file": "src-tauri/src/github_repo.rs"
     },
     {
      "pattern": "remote\\s+get-url|\"get-url\"",
      "matched": true,
-     "file": "src-tauri/src/project.rs"
+     "file": "src-tauri/src/github_repo.rs"
     },
     {
      "pattern": "file://",
      "matched": true,
-     "file": "src/state/openProject.ts"
+     "file": "src-tauri/src/terminal/screen.rs"
     }
    ],
    "verdict": "partial",
@@ -885,7 +885,7 @@
     {
      "pattern": "clone_?(repo|repository|dialog)|CloneDialog|cloneRepo",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/lib.rs"
     },
     {
      "pattern": "remote_?url|remoteUrl|github\\.com",
@@ -895,7 +895,7 @@
     {
      "pattern": "git\\s+clone|\"clone\"\\s*,",
      "matched": true,
-     "file": "src/palette/fromAppState.ts"
+     "file": "src-tauri/src/workspace/commands.rs"
     }
    ],
    "verdict": "partial",
@@ -906,12 +906,12 @@
    "id": "home.new-project",
    "area": "home",
    "feature": "Create a new project: local folder, git init, optional private GitHub repo, then a first workspace",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "new_?project|create_?project|quick_?start|quickstart",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/create_project.rs"
     },
     {
      "pattern": "git_?init|init_?repo|initRepo|\"init\"\\s*[,\\]]",
@@ -920,8 +920,8 @@
     },
     {
      "pattern": "gh\\s+repo\\s+create|\"repo\",\\s*\"create\"",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/github_repo.rs"
     }
    ],
    "verdict": "partial",
@@ -937,7 +937,7 @@
     {
      "pattern": "(repo|repository).{0,40}already (added|exists)|already (added|exists).{0,40}repo|duplicate_?repo|existing.{0,40}(path|remote)",
      "matched": true,
-     "file": "src/state/store.ts"
+     "file": "src-tauri/src/github_repo.rs"
     }
    ],
    "verdict": "partial",
@@ -1033,22 +1033,22 @@
    "id": "home.recents",
    "area": "home",
    "feature": "Clone dialog shows recent repositories with loading placeholders and a screen-reader status",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "recent_?repos|recentRepos",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/github_repo.rs"
     },
     {
      "pattern": "(aria-busy|sr-only|role=\"status\")",
      "matched": true,
-     "file": "src/components/CreateFromPicker.tsx"
+     "file": "src/components/AddRepositoryMenu.tsx"
     }
    ],
    "verdict": "missing",
    "why": "Clone dialog has no recent repositories (detector hit is CreateFromPicker's status line).",
-   "recheck": false
+   "recheck": true
   },
   {
    "id": "home.first-run",
@@ -1212,12 +1212,12 @@
     {
      "pattern": "branch_?prefix_?type|branchPrefixType",
      "matched": true,
-     "file": "src-tauri/src/settings/model.rs"
+     "file": "src-tauri/src/lib.rs"
     },
     {
      "pattern": "branch_?prefix_?custom|branchPrefixCustom",
      "matched": true,
-     "file": "src-tauri/src/settings/model.rs"
+     "file": "src-tauri/src/lib.rs"
     }
    ],
    "verdict": "partial",
@@ -1338,7 +1338,7 @@
     {
      "pattern": "(failed to create|create.*fail|initialization_?failed)",
      "matched": true,
-     "file": "src/components/CreateWorkspaceDialog.tsx"
+     "file": "src-tauri/src/create_project.rs"
     },
     {
      "pattern": "(cleanup|clean_?up).{0,40}(incomplete|initializ)",
@@ -1359,7 +1359,7 @@
     {
      "pattern": "(create_?in_?section|section_?id.{0,60}create|create.{0,60}section_?id)",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0004_create_navigation_sections_cache.sql"
     }
    ],
    "verdict": "missing",
@@ -1370,7 +1370,7 @@
    "id": "create.first-message",
    "area": "create",
    "feature": "Draft the first agent message, then create the workspace and send it",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "first_?message|initial_?message|initialMessage|firstMessage",
@@ -1379,8 +1379,8 @@
     },
     {
      "pattern": "(start|create)_?(first_?)?session|startSession|createSession",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/spotlight/auto_run.rs"
     }
    ],
    "verdict": "partial",
@@ -1426,6 +1426,6 @@
   }
  ],
  "verdicts_ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 884f1f7)",
- "verdict_parity_pct": 43.8
+ "verdicts_verified_at": "2026-11-05 (sidebar items re-read on main 5045114; home and create items as read on 884f1f7)",
+ "verdict_parity_pct": 52.9
 }

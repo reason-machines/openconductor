@@ -108,8 +108,34 @@ fn ignore_whitespace_drops_whitespace_only_hunks() {
     let mut hidden = req(Scope::Uncommitted);
     hidden.ignore_whitespace = true;
     let hidden = workspace_diff(&r, &hidden).unwrap();
-    // The file stays listed with no hunks: "only whitespace changes".
-    assert!(hidden.files.iter().all(|f| f.hunks.is_empty()));
+    // The file stays listed, with its counts, and no hunks: "only whitespace changes".
+    assert_eq!(hidden.files.len(), 1, "{:?}", hidden.files);
+    assert_eq!(hidden.files[0].path, "a.py");
+    assert_eq!(
+        (hidden.files[0].additions, hidden.files[0].deletions),
+        (1, 1)
+    );
+    assert!(hidden.files[0].hunks.is_empty());
+}
+
+#[test]
+fn ignore_whitespace_keeps_real_changes_and_lists_every_file() {
+    let r = repo();
+    write(&r, "a.py", "def f():\n    return 1\n");
+    write(&r, "b.py", "x = 1\ny = 2\n");
+    commit(&r, "base");
+    write(&r, "a.py", "def f():\n\treturn 1\n");
+    write(&r, "b.py", "x = 1\ny  =  3\n");
+    write(&r, "new.txt", "fresh\n");
+    let mut hidden = req(Scope::Uncommitted);
+    hidden.ignore_whitespace = true;
+    let d = workspace_diff(&r, &hidden).unwrap();
+    let paths: Vec<_> = d.files.iter().map(|f| f.path.as_str()).collect();
+    assert_eq!(paths, ["a.py", "b.py", "new.txt"]);
+    assert!(d.files[0].hunks.is_empty());
+    // b.py has a real change mixed with whitespace: its hunk stays.
+    assert_eq!(d.files[1].hunks.len(), 1);
+    assert_eq!(d.files[2].hunks.len(), 1);
 }
 
 #[test]

@@ -1,16 +1,16 @@
 {
  "schema": "openconductor.builder-obligations.v1",
  "ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 884f1f7)",
- "verdict_parity_pct": 43.8,
+ "verdicts_verified_at": "2026-11-05 (sidebar items re-read on main 5045114; home and create items as read on 884f1f7)",
+ "verdict_parity_pct": 52.9,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 52,
+ "open": 45,
  "by_owner": {
   "create-workspace": 9,
   "home": 13,
   "persistence": 1,
   "setup-and-run-scripts": 1,
-  "sidebar": 28
+  "sidebar": 21
  },
  "obligations": [
   {
@@ -588,48 +588,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.colors",
-   "item": "sidebar.colors",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "theme"
-   ],
-   "feature": "Sidebar background, border and width match the reference screens in light and dark",
-   "verdict": "missing",
-   "gap": "Measured on REA captures at 1440x900: sidebar edge at x=248 vs 256; dark sidebar #121417 vs #1c1817; light sidebar #eeeeeb vs #fcfcfb. REA compare-web-screenshots (threshold 24): 3.1% (dark) / 5.4% (light) of sidebar pixels differ.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "files": [
-     "evidence/screens/home--empty-signed-in--dark.png",
-     "evidence/screens/home--empty-signed-in--light.png",
-     "evidence/frontend/css-tokens.json"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.computer-switcher",
-   "item": "sidebar.computer-switcher",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Computer/account switcher at the top of the sidebar (initial avatar, name, chevron)",
-   "verdict": "missing",
-   "gap": "Sidebar starts with our logo and name; the reference starts with a computer/account switcher.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "files": [
-     "evidence/screens/home--empty-signed-in--dark.png",
-     "evidence/screens/home--empty-signed-in--light.png",
-     "evidence/screens/manifest.json"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.drag-to-section",
    "item": "sidebar.drag-to-section",
    "area": "sidebar",
@@ -643,26 +601,6 @@
    "evidence": {
     "copy": [
      1289
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.footer-actions",
-   "item": "sidebar.footer-actions",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Sidebar footer with help and settings icon buttons",
-   "verdict": "missing",
-   "gap": "Footer shows app name, version and platform text; the reference shows help and settings icon buttons.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "files": [
-     "evidence/screens/home--empty-signed-in--dark.png",
-     "evidence/screens/home--empty-signed-in--light.png",
-     "evidence/screens/manifest.json"
     ]
    },
    "status": "open"
@@ -727,26 +665,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.top-bar",
-   "item": "sidebar.top-bar",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Sidebar top bar with a sidebar toggle button and back/forward history arrows",
-   "verdict": "missing",
-   "gap": "No in-sidebar toggle button (toggle is keyboard-only, plus a Home button when hidden) and no back/forward navigation; the reference shows all three at the top of the sidebar.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "files": [
-     "evidence/screens/home--empty-signed-in--dark.png",
-     "evidence/screens/home--empty-signed-in--light.png",
-     "evidence/screens/manifest.json"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.transparency",
    "item": "sidebar.transparency",
    "area": "sidebar",
@@ -765,28 +683,6 @@
     ],
     "ipc": [
      "experimental_sidebar_transparency"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.workspaces-group",
-   "item": "sidebar.workspaces-group",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Workspace list grouped under a sentence-case 'my workspaces' label rather than an uppercase repositories header",
-   "verdict": "missing",
-   "gap": "We show an uppercase 'Repositories' header with a '+'; the reference shows a sentence-case 'my workspaces' label.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     2767
-    ],
-    "files": [
-     "evidence/screens/home--empty-signed-in--dark.png",
-     "evidence/screens/home--empty-signed-in--light.png"
     ]
    },
    "status": "open"
@@ -957,32 +853,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.ws-unread",
-   "item": "sidebar.ws-unread",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "persistence"
-   ],
-   "feature": "Unread marker, mark-as-unread action and jump-to-next-unread command",
-   "verdict": "backend",
-   "gap": "crates/openconductor-db workspaces::set_unread (tested); crate not linked into the app; no unread styling or next-unread command.",
-   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     2595,
-     2054,
-     2832,
-     1534
-    ],
-    "schema": [
-     "workspaces.unread"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.archive",
    "item": "sidebar.archive",
    "area": "sidebar",
@@ -1016,14 +886,14 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.primary-nav",
-   "item": "sidebar.primary-nav",
+   "obligation_id": "parity.sidebar.computer-switcher",
+   "item": "sidebar.computer-switcher",
    "area": "sidebar",
    "owner": "sidebar",
    "depends_on_builders": [],
-   "feature": "Primary nav rows Home, Create and Search above the workspace list",
+   "feature": "Computer/account switcher at the top of the sidebar (initial avatar, name, chevron)",
    "verdict": "partial",
-   "gap": "Home and 'New workspace' rows (Sidebar.tsx); no Search row. The reference labels the second row Create.",
+   "gap": "Computer row with initial avatar, name and chevron is rendered (Sidebar.tsx), but App.tsx never passes a computer name so it always reads 'My Mac' (reference: \"<user>'s Mac\"), and the row opens no menu.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -1031,10 +901,6 @@
      "evidence/screens/home--empty-signed-in--dark.png",
      "evidence/screens/home--empty-signed-in--light.png",
      "evidence/screens/manifest.json"
-    ],
-    "routes": [
-     "/",
-     "/create"
     ]
    },
    "status": "open"
@@ -1047,7 +913,7 @@
    "depends_on_builders": [],
    "feature": "Resizable sidebar and show/hide toggles for left and right sidebars",
    "verdict": "partial",
-   "gap": "Toggle works via Cmd+B and '[' (src/state/shortcuts.ts, App.tsx); the sidebar is a fixed 248px column with no resize.",
+   "gap": "Left sidebar toggles from the in-sidebar button, Cmd+B and '[' (App.tsx); the sidebar is a fixed 256px column with no drag-to-resize, and there is no right-sidebar toggle.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [
     "ui.window-chrome"
@@ -1067,28 +933,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.search",
-   "item": "sidebar.search",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "search-and-palette"
-   ],
-   "feature": "Search/filter workspaces",
-   "verdict": "partial",
-   "gap": "Workspaces are searchable from the command palette (src/palette/search/model.ts, Cmd+K) by name, branch and repo; the sidebar has no Search row to reach it.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     3833,
-     2919,
-     2992
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.visibility-settings",
    "item": "sidebar.visibility-settings",
    "area": "sidebar",
@@ -1096,7 +940,7 @@
    "depends_on_builders": [],
    "feature": "Left sidebar visibility and width persisted as settings (default visible, width 256)",
    "verdict": "partial",
-   "gap": "Visibility persists inside the localStorage app state, not as a setting; width is fixed (248px vs evidence default 256).",
+   "gap": "Width is now the 256px default but fixed; visibility persists inside the localStorage app state (sidebarVisible), not as a setting, and the width is not persisted.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -1108,25 +952,6 @@
     ],
     "files": [
      "evidence/screens/home.md"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.ws-branch",
-   "item": "sidebar.ws-branch",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Workspace branch visible from the sidebar row",
-   "verdict": "partial",
-   "gap": "Branch appears only in the row tooltip.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "schema": [
-     "workspaces.branch",
-     "workspaces.user_set_branch_name"
     ]
    },
    "status": "open"
@@ -1218,6 +1043,32 @@
     "schema": [
      "workspaces.derived_status",
      "workspaces.manual_status"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.ws-unread",
+   "item": "sidebar.ws-unread",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "persistence"
+   ],
+   "feature": "Unread marker, mark-as-unread action and jump-to-next-unread command",
+   "verdict": "partial",
+   "gap": "Unread rows render semibold (data-unread, styles.css) as in the reference, but nothing sets Workspace.unread in the app and there is no mark-as-read/unread action or next-unread command; DB setter workspaces::set_unread is not linked.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     2595,
+     2054,
+     2832,
+     1534
+    ],
+    "schema": [
+     "workspaces.unread"
     ]
    },
    "status": "open"
