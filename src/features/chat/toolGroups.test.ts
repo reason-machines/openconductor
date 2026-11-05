@@ -8,7 +8,7 @@ import type { Block, ChatEvent, ChatMessage } from "./types.ts";
 
 const text = (t: string): PartView => ({ kind: "text", text: t, streaming: false });
 const thinking = (t: string): PartView => ({ kind: "thinking", text: t, streaming: false });
-const tool = (id: string, name: string, status: ToolStatus = "done"): PartView => ({ kind: "tool", call: { id, name, input: {}, status } });
+const tool = (id: string, name: string, status: ToolStatus = "done"): PartView => ({ kind: "tool", call: { id, name, input: {}, tool: { name, input: {} }, status } });
 const keyed = (parts: PartView[]) => parts.map((part, i) => ({ key: `k${i}`, part }));
 const shape = (parts: PartView[], hasFinal = true) =>
   groupParts(keyed(parts), "m1", hasFinal).map((g) => (g.kind === "summary" ? `[${summaryLabel(g.summary)}]` : g.part.kind === "tool" ? g.part.call.name : `"${g.part.text}"`));
