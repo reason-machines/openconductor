@@ -16,6 +16,10 @@
 //
 // Entry and exit points: `chat()` creates a chat's state; `apply()` is the only
 // place transcript events land; `setQueue()` the only place the queue changes.
+//
+// In the desktop app each chat's transcript is kept in `conductor.db`
+// (persist.ts): `stored()` loads it once when the chat is first used and
+// saves every later change.
 
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -23,8 +27,11 @@ import { applyChatEvents, emptyTranscript, truncateAfterTurn, type ChatTranscrip
 import { restoreCheckpoint, turnCheckpointRef } from "./checkpoints.ts";
 import { applyReasonPayload, cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
+import { ChatSaver, restoreEvents } from "./persist.ts";
 import { turnChanges } from "../diff/useTurnChanges.ts";
 import type { FileChange } from "../diff/types.ts";
+import { repoSettingsEffective } from "../../settings/repoSettings.ts";
+import { withGeneralPreferences } from "../../settings/prompts.ts";
 
 /** One Reason Session config option (`model`, `reasoning_effort`). */
 export interface ReasonConfig {
@@ -45,6 +52,8 @@ interface Chat {
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
   cwd: string | null;
+  /** Repository the chat's workspace belongs to, for its effective `prompts.general`. */
+  repoPath: string | null;
   opened: boolean;
   /** Options for the Session `session/new` creates; the first prompt waits for them. */
   config: ReasonConfig[] | Promise<ReasonConfig[]>;
@@ -69,10 +78,37 @@ export const REASON_CAN_STEER = true;
 function chat(chatId: string): Chat {
   let c = chats.get(chatId);
   if (!c) {
-    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, opened: false, config: [], configured: false, unsent: new Set(), stopped: new Set(), listeners: new Set() };
+    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, repoPath: null, opened: false, config: [], configured: false, unsent: new Set(), stopped: new Set(), listeners: new Set() };
     chats.set(chatId, c);
   }
+  stored(c);
   return c;
+}
+
+const savers = new Map<string, ChatSaver>();
+
+/** The chat's saver; the first call loads the stored transcript into an untouched chat. */
+function stored(c: Chat): ChatSaver | undefined {
+  if (!reasonAvailable()) return undefined;
+  const chatId = c.state.chatId;
+  let saver = savers.get(chatId);
+  if (saver) return saver;
+  saver = new ChatSaver((batch) => invoke("chat_messages_save", { chatId, ...batch, agentSessionId: localStorage.getItem(sessionKey(chatId)) }));
+  savers.set(chatId, saver);
+  const s = saver;
+  invoke<{ messages: string[]; agentSessionId: string | null }>("chat_messages_load", { chatId })
+    .then(({ messages, agentSessionId }) => {
+      if (agentSessionId && !localStorage.getItem(sessionKey(chatId))) localStorage.setItem(sessionKey(chatId), agentSessionId);
+      // A chat that already has messages (a prompt sent while loading) keeps them; the stored rows stay for the next open.
+      if (messages.length === 0 || c.transcript.messages.length > 0) return;
+      const r = applyChatEvents(c.transcript, restoreEvents(chatId, messages));
+      if (!r.ok) return console.warn("chat: stored transcript not applied", r.error);
+      c.transcript = r.transcript;
+      s.loaded(c.transcript);
+      notify(c);
+    })
+    .catch((e) => console.warn("chat: stored transcript not loaded", e));
+  return saver;
 }
 
 const snapshot = (c: Chat): ChatSnapshot => ({ transcript: c.transcript, queue: c.queue });
@@ -91,6 +127,7 @@ function apply(c: Chat, step: Step) {
     return;
   }
   c.transcript = r.transcript;
+  savers.get(c.state.chatId)?.update(c.transcript);
   notify(c);
   // A turn that ended moves the queue on: the next queued message may start.
   for (const e of step.events) {
@@ -135,10 +172,14 @@ function ensureListening(): Promise<unknown> {
  * Opens a turn in the transcript and sends the prompt; Reason steers it into
  * a running turn. The backend checkpoints the workspace before and after the
  * turn under this turn's id and answers with the files the turn changed, which
- * go to the turn-changes cache for the chips under the turn.
+ * go to the turn-changes cache for the chips under the turn. The first message
+ * of a new chat also carries the repository's effective `prompts.general`, as
+ * Conductor appends its general preferences to a new session's first message;
+ * the transcript shows only what the user typed.
  */
 async function prompt(c: Chat, text: string, attachments: PromptAttachment[]): Promise<void> {
   const chatId = c.state.chatId;
+  const isNewChat = !c.opened && !localStorage.getItem(sessionKey(chatId)) && !c.transcript.messages.some((m) => m.role === "user");
   // A random turn id, so a turn's checkpoints and cached changes never
   // collide with a turn from an earlier app run.
   const turnId = `${chatId}:${crypto.randomUUID()}`;
@@ -164,12 +205,23 @@ async function prompt(c: Chat, text: string, attachments: PromptAttachment[]): P
     // changed. Resolves after the turn's `turnEnded` event; a rejection means
     // the turn never started (no CLI, no process), so no event will end it.
     const turn = turnCheckpointRef(chatId, turnId);
-    const end = await invoke<{ turnChanges?: FileChange[] }>("reason_prompt", { chatId, text, attachments, turn });
+    const agentText = isNewChat && c.repoPath ? await withGeneral(text, c.repoPath, cwd) : text;
+    const end = await invoke<{ turnChanges?: FileChange[] }>("reason_prompt", { chatId, text: agentText, attachments, turn });
     if (end.turnChanges) turnChanges.record(turn, end.turnChanges);
   } catch (e) {
     c.unsent.delete(turnId);
     c.stopped.delete(turnId);
     apply(c, failTurn(c.state, turnId, String(e)));
+  }
+}
+
+async function withGeneral(text: string, repoPath: string, cwd: string): Promise<string> {
+  try {
+    const settings = await repoSettingsEffective(repoPath, cwd);
+    return withGeneralPreferences(text, settings.prompts.general?.value);
+  } catch (e) {
+    console.warn("reason chat: general preferences not applied", e);
+    return text;
   }
 }
 
@@ -184,6 +236,7 @@ export async function resetReasonChat(chatId: string, cwd: string, turnId: strin
   if (c.transcript.activeTurn !== null) throw new Error("Stop the agent before resetting the chat.");
   await restoreCheckpoint(invoke, cwd, chatId, turnId, resetFiles);
   c.transcript = truncateAfterTurn(c.transcript, turnId);
+  savers.get(chatId)?.update(c.transcript);
   notify(c);
 }
 
@@ -199,18 +252,20 @@ export function subscribeChat(chatId: string, fn: (s: ChatSnapshot) => void): ()
 
 /**
  * The composer's Send: starts a turn, steers the running one, or queues, per
- * `mode`. `cwd` is the workspace folder. Attachments go as embedded files and
- * show by name.
+ * `mode`. `cwd` is the workspace folder; `repoPath` its repository, whose
+ * `prompts.general` goes with a new chat's first message. Attachments go as
+ * embedded files and show by name.
  */
-export function submitChat(chatId: string, cwd: string, text: string, mode: Q.SendMode, attachments: readonly PromptAttachment[] = []): void {
+export function submitChat(chatId: string, cwd: string, text: string, mode: Q.SendMode, attachments: readonly PromptAttachment[] = [], repoPath?: string): void {
   const c = chat(chatId);
   c.cwd = cwd;
+  if (repoPath) c.repoPath = repoPath;
   setQueue(c, Q.submit(c.queue, text, mode, new Date(), attachments));
 }
 
 /** The first message or a Retry: starts when idle, else waits in the queue. */
-export function sendReason(chatId: string, cwd: string, text: string, attachments: readonly PromptAttachment[] = []): void {
-  submitChat(chatId, cwd, text, "queue", attachments);
+export function sendReason(chatId: string, cwd: string, text: string, attachments: readonly PromptAttachment[] = [], repoPath?: string): void {
+  submitChat(chatId, cwd, text, "queue", attachments, repoPath);
 }
 
 /**

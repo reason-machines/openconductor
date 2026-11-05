@@ -57,3 +57,36 @@ What the reference app (Conductor v0.87.6) does when a workspace is created, the
 REA, renderApp chunk (read as data): `Y5e` is a `pendingLaunches` store. `addPendingLaunch` replaces any entry with the same `localWorkspaceId`, stamps `startedAt`, and a 120 s timer drops it unless it was re-added; `removePendingLaunch` runs when creation finishes or fails. The repository group `Dra` takes `pendingWorkspaceIds` and renders `(!collapsed || pending.length > 0)`: pending rows first (`Ora`), then the workspaces only when expanded. `Ora` is an inert row (`pointer-events-none`, `role="status"`, `aria-label="Creating workspace..."`, `displayName: "Untitled"`, status `setting-up`, `isSetupActive`).
 
 Ours: `src/workspace/pendingLaunches.ts` (same add/replace, 120 s expiry, remove), `PendingWorkspaceRow.tsx` (`RepoWorkspaceList` in the sidebar repo group), and the create dialog adds a launch on submit and removes it once the workspace is added or creation fails. Conductor's loader is an animated sprite (`setting-up-loader`); ours is a 14 px spinner in the same muted colour.
+
+## Root directory (create.worktree)
+
+REA: the decoded frontend (`renderApp` and `index` chunks pulled from
+`/Applications/Conductor.app`) read with byte offsets.
+
+- Setting `conductor_root_path` (index chunk ~2,255,075, `P_`): when unset the
+  root is `<home>/conductor`. Clones default to `<root>/repos` (`Yce`),
+  workspaces to `<root>/workspaces` (`uI`), archived contexts to
+  `<root>/archived-contexts`. A storage-v3 repository's workspaces directory
+  is `<workspaces root>/<repo name>` (`Ffe`, ~3,329,057), shown read-only as
+  "Workspaces path" in repo settings › Misc (`misc:workspaces-path`,
+  renderApp ~10,809,878).
+- Settings › Advanced opens with "Conductor root directory"
+  (`advanced:conductor-root`): a read-only text field and Browse. A different
+  folder opens "Change root path?" with the old and new paths and a
+  destructive "Remove all and change" button (renderApp ~10,892,738).
+- `changeRootPath` (renderApp ~10,541,944): stop runs, setups and sessions,
+  `DELETE FROM attachments`, `diff_comments`, `session_messages`, `sessions`,
+  `workspaces`, `repos`; save the setting, delete `last_clone_directory`,
+  `mkdir -p "<new>/repos" "<new>/workspaces" "<new>/archived-contexts"`,
+  then reload and go to `/` with "Conductor root path changed successfully".
+
+Ours (`src-tauri/src/root_path_commands.rs`, `WorkspaceManager::with_root`,
+`src/settings/RootPathRow.tsx`): the same setting key, layout, rows, dialog
+copy and wipe (`openconductor_db::maintenance::forget_repositories`, plus the
+repository registry). Deliberate differences: the default root is the app
+data directory, so OpenConductor never shares `~/conductor` with an installed
+Conductor; the directories are created before the wipe, so an unwritable
+root changes nothing; archive records live in `<root>/archived`; the app
+restarts on the new root instead of reloading in place, because the
+workspace service reads the root at startup.
+

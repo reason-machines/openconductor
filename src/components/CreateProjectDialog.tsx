@@ -43,7 +43,7 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
   useEffect(() => {
     let live = true;
     (async () => {
-      const saved = lastCloneDirectory();
+      const saved = await lastCloneDirectory();
       const exists = saved ? await folderExists(saved) : false;
       const fallback = await defaultCloneDirectory().catch(() => "");
       if (live) setParent((cur) => cur || initialLocation(saved, exists, fallback));

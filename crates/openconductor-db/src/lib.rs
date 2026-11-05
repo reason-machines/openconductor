@@ -29,6 +29,7 @@ pub use scope::Scope;
 pub mod app_settings;
 pub mod attachments;
 pub mod cache;
+pub mod chat_messages;
 pub mod diff_comments;
 pub mod env_vars;
 pub mod favorite_models;

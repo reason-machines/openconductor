@@ -655,6 +655,39 @@ fn parses_branch_refs_with_slashed_remote_names() {
 }
 
 #[test]
+fn root_setting_moves_workspaces_archives_and_default_clones() {
+    use super::service::{CreateWorkspaceRequest, WorkspaceService};
+    let f = fixture();
+    let data = f.tmp.path().join("svc");
+    let root = f.tmp.path().join("oc-root");
+    let svc = WorkspaceService::new(&data).unwrap().with_root(&root);
+    assert_eq!(svc.manager().root(), root.as_path());
+    assert_eq!(svc.default_clone_dir(), root.join("repos"));
+    let r = svc.add_repository(&f.repo).unwrap();
+    assert!(data.join("repositories.tsv").is_file(), "registry stays in the data dir");
+    assert_eq!(svc.manager().workspaces_dir(&f.repo), root.join("workspaces/my-app"));
+
+    let req = CreateWorkspaceRequest { repository_id: r.id.clone(), directory_name: Some("oslo".into()), ..Default::default() };
+    let ws = svc.create_workspace(&req).unwrap().workspace;
+    assert_eq!(ws.path, root.join("workspaces/my-app/oslo"));
+    assert!(ws.path.join("README.md").is_file());
+    svc.manager().archive(&f.repo, "oslo", &Default::default()).unwrap();
+    assert!(root.join("archived/my-app/oslo.ws").is_file());
+    assert!(!data.join("workspaces").exists() && !data.join("archived").exists());
+
+    // Without the setting everything stays under the data dir.
+    let plain = WorkspaceService::new(&data).unwrap();
+    assert_eq!(plain.default_clone_dir(), data.join("repos"));
+    assert_eq!(plain.manager().workspaces_dir(&f.repo), data.join("workspaces/my-app"));
+
+    // A root change forgets every repository, also after a restart.
+    svc.forget_repositories().unwrap();
+    assert!(svc.repositories().is_empty());
+    assert!(WorkspaceService::new(&data).unwrap().repositories().is_empty());
+    assert!(f.repo.join("README.md").is_file(), "files stay on disk");
+}
+
+#[test]
 fn service_registers_repositories_and_creates_from_form_fields() {
     use super::service::{CreateWorkspaceRequest, WorkspaceService};
     let f = fixture();
@@ -895,16 +928,23 @@ fn service_backfills_push_upstream_for_existing_active_workspaces() {
     svc.add_repository(&gone).unwrap();
     std::fs::remove_dir_all(&gone).unwrap();
 
-    assert_eq!(svc.configure_push_upstream_for_existing(), vec![]);
+    assert_eq!(svc.configure_push_upstream_for_existing(|_, _| true), vec![]);
     assert_eq!(config_get(&tokyo.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("true"));
     assert_eq!(config_get(&lisbon.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("false"));
     assert_eq!(config_get(&f.repo, &["--get", "push.autoSetupRemote"]), None);
     // Running it again changes nothing.
-    assert_eq!(svc.configure_push_upstream_for_existing(), vec![]);
+    assert_eq!(svc.configure_push_upstream_for_existing(|_, _| true), vec![]);
 
     // Shared core.worktree makes it unsafe: each unconfigured workspace reports the warning.
     let paris = create("paris");
+    // A workspace whose effective setting is off is left alone.
+    let rome = create("rome");
+    let not_rome = |_: &std::path::Path, ws: &std::path::Path| !ws.ends_with("rome");
+    assert_eq!(svc.configure_push_upstream_for_existing(not_rome), vec![]);
+    assert_eq!(config_get(&rome.path, &["--worktree", "--get", "push.autoSetupRemote"]), None);
+    assert_eq!(config_get(&paris.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("true"));
+    sh(&paris.path, &["config", "--worktree", "--unset", "push.autoSetupRemote"]);
     sh(&f.repo, &["config", "core.worktree", f.repo.to_str().unwrap()]);
-    assert_eq!(svc.configure_push_upstream_for_existing(), vec![(format!("{id}/paris"), git::PUSH_UPSTREAM_WARNING)]);
+    assert_eq!(svc.configure_push_upstream_for_existing(not_rome), vec![(format!("{id}/paris"), git::PUSH_UPSTREAM_WARNING)]);
     assert_eq!(config_get(&paris.path, &["--worktree", "--get", "push.autoSetupRemote"]), None);
 }
