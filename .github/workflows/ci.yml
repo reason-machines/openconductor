@@ -140,6 +140,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m py_compile tools/*.py
+      - name: Parity checklist anchors resolve in REA evidence
+        run: python tools/parity_chat_diff_pr.py --check-anchors --out-dir "$RUNNER_TEMP/parity"
       - name: Packaging reference matches the REA evidence bundle
         run: |
           python tools/packaging_ref.py
