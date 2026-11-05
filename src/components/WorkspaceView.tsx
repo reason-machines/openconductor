@@ -9,6 +9,7 @@ import { DiffViewer } from "../features/diff/DiffViewer";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
+import { ScriptsPanel } from "./ScriptsPanel";
 
 interface Props {
   repo: Repo;
@@ -118,7 +119,7 @@ function DiffPanel({ workspace, repo }: { workspace: Workspace; repo: Repo }) {
         </button>
       </div>
       {tab === "changes" ? (
-        <DiffViewer workspaceId={workspace.id} worktree={null} baseBranch={repo.defaultBranch} />
+        <DiffViewer workspaceId={workspace.id} worktree={workspace.path ?? null} baseBranch={repo.defaultBranch} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -165,7 +166,10 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
       </header>
       <div className="ws-split">
         <ChatPanel repo={repo} workspace={workspace} dispatch={dispatch} />
-        <DiffPanel workspace={workspace} repo={repo} />
+        <div className="ws-right">
+          <DiffPanel workspace={workspace} repo={repo} />
+          <ScriptsPanel repo={repo} workspace={workspace} />
+        </div>
       </div>
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
       {showTerminal && <TerminalPanel workspaceId={workspace.id} cwd={repo.path} />}

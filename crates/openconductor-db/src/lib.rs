@@ -12,7 +12,10 @@ use std::str::FromStr;
 use std::time::Duration;
 
 use sqlx::migrate::Migrator;
-use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePool, SqlitePoolOptions};
+use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePoolOptions};
+
+/// Connection pool returned by [`open`]; re-exported so callers need no `sqlx` dependency.
+pub use sqlx::sqlite::SqlitePool;
 
 pub mod diff_comments;
 pub mod repos;

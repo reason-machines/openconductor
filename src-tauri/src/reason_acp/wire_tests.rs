@@ -1,0 +1,78 @@
+use super::provider::{ProviderEvent, TurnEnd};
+use super::updates::{map_path, AgentEvent, ReasonError, ToolRow, ToolStatus};
+use super::wire::event_json;
+use serde_json::json;
+use std::path::Path;
+
+#[test]
+fn every_payload_names_its_chat_and_type() {
+    let started = ProviderEvent::SessionStarted {
+        session_id: "s-1".into(),
+    };
+    assert_eq!(
+        event_json("c", &started),
+        json!({ "chatId": "c", "type": "sessionStarted", "sessionId": "s-1" })
+    );
+    let text = ProviderEvent::Agent(AgentEvent::Text("hi".into()));
+    assert_eq!(
+        event_json("c", &text),
+        json!({ "chatId": "c", "type": "text", "text": "hi" })
+    );
+    let report = ProviderEvent::Agent(AgentEvent::Report("child done".into()));
+    assert_eq!(event_json("c", &report)["type"], "report");
+}
+
+#[test]
+fn turn_ends_carry_an_outcome_and_failures_a_message() {
+    let ended = |end| event_json("c", &ProviderEvent::TurnEnded(end))["end"].clone();
+    assert_eq!(ended(TurnEnd::Completed), json!({ "outcome": "completed" }));
+    assert_eq!(
+        ended(TurnEnd::Superseded),
+        json!({ "outcome": "superseded" })
+    );
+    assert_eq!(
+        ended(TurnEnd::Failed(
+            "Reason request failed (404 device_not_found)".into()
+        )),
+        json!({ "outcome": "failed", "message": "Reason request failed (404 device_not_found)" })
+    );
+}
+
+#[test]
+fn errors_keep_code_and_status() {
+    let err = ProviderEvent::Agent(AgentEvent::Error(ReasonError {
+        code: Some("device_not_found".into()),
+        status: Some(404),
+        message: "Reason request failed (404 device_not_found)".into(),
+    }));
+    let v = event_json("c", &err);
+    assert_eq!(v["type"], "error");
+    assert_eq!(v["code"], "device_not_found");
+    assert_eq!(v["status"], 404);
+}
+
+#[test]
+fn tool_paths_say_local_or_cloud_with_the_same_relative_path() {
+    let cwd = Path::new("/Users/sven/project");
+    let cloud = "/home/runner/.reason/workspace/sessions/child-1/repo/src/a.rs";
+    let row = ToolRow {
+        id: "t1".into(),
+        title: "Edit".into(),
+        kind: "edit".into(),
+        status: ToolStatus::Completed,
+        output: None,
+        diffs: Vec::new(),
+        locations: vec![
+            map_path("/Users/sven/project/src/a.rs", cwd),
+            map_path(cloud, cwd),
+        ],
+    };
+    let v = event_json("c", &ProviderEvent::Agent(AgentEvent::Tool(row)));
+    assert_eq!(v["status"], "completed");
+    let locs = v["locations"].as_array().unwrap();
+    assert_eq!(locs[0]["place"], "local");
+    assert_eq!(locs[1]["place"], "cloud");
+    assert_eq!(locs[1]["sessionId"], "child-1");
+    assert_eq!(locs[0]["relative"], "src/a.rs");
+    assert_eq!(locs[1]["relative"], "src/a.rs");
+}
