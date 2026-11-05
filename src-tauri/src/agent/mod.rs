@@ -3,6 +3,9 @@
 //! * [`env`] - [`AgentKind`] and [`LaunchEnv`], the environment an agent
 //!   process is launched with. A launch clears every inherited variable that
 //!   would route the agent elsewhere before setting its own.
+//! * [`provider`] - the [`Provider`] trait: how an agent CLI is pointed at a
+//!   model backend and authenticated, producing a [`LaunchEnv`] from its
+//!   options and secrets.
 //! * [`secret`] - [`SecretStore`], where provider API keys and tokens live
 //!   (the macOS Keychain in the app, memory in tests), and [`SecretString`],
 //!   which never prints its value.
@@ -12,7 +15,9 @@
 //! `tools/agent/run-rust-tests.sh`.
 
 pub mod env;
+pub mod provider;
 pub mod secret;
 
 pub use env::{AgentKind, LaunchEnv};
+pub use provider::{Provider, ProviderError};
 pub use secret::{MemorySecretStore, SecretStore, SecretString};
