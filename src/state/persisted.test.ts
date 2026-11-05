@@ -8,24 +8,30 @@ const repo = (id: string, extra: Partial<DbRepoRow> = {}): DbRepoRow => ({
 });
 const ws = (repositoryId: string, dir: string, state = "ready", extra: Partial<DbWorkspaceRow> = {}): DbWorkspaceRow => ({
   id: `${repositoryId}/${dir}`, repositoryId, directoryName: dir, workspaceName: null, branch: dir, placeholderBranchName: null,
-  state, derivedStatus: null, manualStatus: null, workspacePath: `/data/${dir}`, pinnedAt: null, unread: false,
+  state, derivedStatus: null, manualStatus: null, workspacePath: `/data/${dir}`, pinnedAt: null, unread: false, number: null,
   createdAt: "2026-11-05 12:00:00", ...extra,
 });
 
-test("maps rows in database order and drops hidden repos and archived workspaces", () => {
+test("maps rows in database order, marks hidden repos and drops archived workspaces", () => {
   const repos = reposFromDb(
     [repo("b"), repo("a"), repo("gone", { hidden: true })],
     [ws("a", "oslo"), ws("a", "lima", "archived"), ws("b", "rome", "initializing"), ws("gone", "x")],
     ["a"],
   );
-  assert.deepEqual(repos.map((r) => r.id), ["b", "a"]);
-  assert.deepEqual(repos.map((r) => r.workspaces.map((w) => w.id)), [["b/rome"], ["a/oslo"]]);
+  assert.deepEqual(repos.map((r) => r.id), ["b", "a", "gone"]);
+  assert.deepEqual(repos.map((r) => r.hidden), [undefined, undefined, true]);
+  assert.deepEqual(repos.map((r) => r.workspaces.map((w) => w.id)), [["b/rome"], ["a/oslo"], ["gone/x"]]);
   assert.equal(repos[1].collapsed, true);
   assert.equal(repos[0].collapsed, undefined);
   const w = repos[1].workspaces[0];
   assert.deepEqual([w.name, w.branch, w.path, w.status], ["oslo", "oslo", "/data/oslo", "idle"]);
   assert.equal(w.createdAt, Date.UTC(2026, 10, 5, 12, 0, 0));
   assert.equal(repos[1].path, "/src/a");
+});
+
+test("carries the workspace number from conductor.db", () => {
+  const [r] = reposFromDb([repo("a")], [ws("a", "oslo", "ready", { number: 7 }), ws("a", "lima")], []);
+  assert.deepEqual(r.workspaces.map((w) => w.number), [7, null]);
 });
 
 test("selection falls back to home when its workspace is gone", () => {

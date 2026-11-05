@@ -239,3 +239,4 @@ mod kill_group;
 mod screen;
 mod screen_live;
 mod shell_exec;
+mod shell_integration;
