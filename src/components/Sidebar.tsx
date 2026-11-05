@@ -42,7 +42,7 @@ export interface NavControls {
 interface Props {
   state: AppState;
   dispatch: Dispatch<Action>;
-  onOpenDialog: (d: DialogKind, repoId?: string) => void;
+  onOpenDialog: (d: DialogKind, repoId?: string, sectionId?: string) => void;
   onOpenProject: () => void;
   /** A Recents row of the add-repository menu: add that folder as Open project would. */
   onAddProjectAt?: (path: string) => void;
@@ -247,7 +247,9 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   };
   const sectionMenu = (sectionId: string): MenuEntry[] => {
     const s = state.sections?.find((x) => x.id === sectionId);
+    // Conductor's section menu (oBi): Create workspace, Edit section, New section…, then Delete section.
     return [
+      { label: "Create workspace", onSelect: () => onOpenDialog("create", undefined, sectionId) },
       { label: "Edit section", onSelect: () => s && setSectionDialog({ mode: "edit", sectionId, name: s.name, emoji: s.emoji }) },
       { label: "New section…", onSelect: () => setSectionDialog({ mode: "create", beforeSectionId: sectionId }) },
       "-",
