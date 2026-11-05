@@ -1,5 +1,6 @@
-//! `archive_workspace`: the full archive behind the Archive button, the
-//! palette, the sidebar row menu and archive on merge. A thin wrapper over
+//! `archive_workspace` and `unarchive_workspace`: the full archive behind the
+//! Archive button, the palette, the sidebar row menu and archive on merge,
+//! and the unarchive behind the archive-on-merge toast. A thin wrapper over
 //! [`crate::workspace_archive::flow`]; behavior and evidence live there and
 //! in `evidence/archive/NOTES.md`.
 
@@ -9,7 +10,7 @@ use tauri::State;
 use crate::db::Db;
 use crate::workspace::service::WorkspaceService;
 use crate::workspace_archive::flow::{
-    self, ArchiveFailureDto, ArchiveResultDto, Deps, InFlightArchives,
+    self, ArchiveFailureDto, ArchiveResultDto, Deps, InFlightArchives, UnarchiveResultDto,
 };
 
 /// JS: `invoke("archive_workspace", { workspaceId, mode })`, `mode` `"safe"`
