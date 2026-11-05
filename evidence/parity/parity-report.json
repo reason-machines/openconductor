@@ -1,7 +1,7 @@
 {
  "ref": "origin/main",
- "sha": "50451147f71faf9a409e39fbbc7f4f7dbb512a71",
- "source_files_scanned": 377,
+ "sha": "8229113e0d621bd070bcf2be55726307b59ccdf1",
+ "source_files_scanned": 486,
  "reference": {
   "conductor_version": "0.87.6",
   "keybindings_source": {
@@ -13,32 +13,32 @@
  },
  "overall": {
   "total": 419,
-  "matched": 168,
-  "partial": 136,
-  "missing": 115,
-  "parity_pct": 56.3
+  "matched": 199,
+  "partial": 128,
+  "missing": 92,
+  "parity_pct": 62.8
  },
  "areas": {
   "settings": {
    "total": 125,
-   "matched": 33,
-   "partial": 17,
-   "missing": 75,
-   "parity_pct": 33.2,
+   "matched": 53,
+   "partial": 13,
+   "missing": 59,
+   "parity_pct": 47.6,
    "groups": {
     "user settings.toml": {
      "total": 43,
-     "matched": 9,
-     "partial": 9,
-     "missing": 25,
-     "parity_pct": 31.4
+     "matched": 12,
+     "partial": 7,
+     "missing": 24,
+     "parity_pct": 36.0
     },
     "repo settings.toml": {
      "total": 32,
-     "matched": 9,
-     "partial": 5,
-     "missing": 18,
-     "parity_pct": 35.9
+     "matched": 12,
+     "partial": 3,
+     "missing": 17,
+     "parity_pct": 42.2
     },
     "settings table key (deprecated)": {
      "total": 3,
@@ -49,10 +49,10 @@
     },
     "settings table key": {
      "total": 26,
-     "matched": 4,
+     "matched": 7,
      "partial": 1,
-     "missing": 21,
-     "parity_pct": 17.3
+     "missing": 18,
+     "parity_pct": 28.8
     },
     "settings file": {
      "total": 5,
@@ -63,19 +63,19 @@
     },
     "settings route": {
      "total": 16,
-     "matched": 5,
+     "matched": 16,
      "partial": 0,
-     "missing": 11,
-     "parity_pct": 31.2
+     "missing": 0,
+     "parity_pct": 100.0
     }
    }
   },
   "shortcuts": {
    "total": 172,
-   "matched": 53,
-   "partial": 119,
+   "matched": 57,
+   "partial": 115,
    "missing": 0,
-   "parity_pct": 65.4,
+   "parity_pct": 66.6,
    "groups": {
     "General": {
      "total": 30,
@@ -107,10 +107,10 @@
     },
     "Workspace": {
      "total": 37,
-     "matched": 6,
-     "partial": 31,
+     "matched": 10,
+     "partial": 27,
      "missing": 0,
-     "parity_pct": 58.1
+     "parity_pct": 63.5
     },
     "Code review": {
      "total": 8,
@@ -137,10 +137,10 @@
   },
   "persistence": {
    "total": 44,
-   "matched": 27,
+   "matched": 32,
    "partial": 0,
-   "missing": 17,
-   "parity_pct": 61.4,
+   "missing": 12,
+   "parity_pct": 72.7,
    "groups": {
     "conductor.db table": {
      "total": 18,
@@ -158,19 +158,19 @@
     },
     "app data store": {
      "total": 19,
-     "matched": 2,
+     "matched": 7,
      "partial": 0,
-     "missing": 17,
-     "parity_pct": 10.5
+     "missing": 12,
+     "parity_pct": 36.8
     }
    }
   },
   "packaging": {
    "total": 78,
-   "matched": 55,
+   "matched": 57,
    "partial": 0,
-   "missing": 23,
-   "parity_pct": 70.5,
+   "missing": 21,
+   "parity_pct": 73.1,
    "groups": {
     "Info.plist key": {
      "total": 20,
@@ -223,10 +223,10 @@
     },
     "bundled resource": {
      "total": 15,
-     "matched": 2,
+     "matched": 4,
      "partial": 0,
-     "missing": 13,
-     "parity_pct": 13.3
+     "missing": 11,
+     "parity_pct": 26.7
     },
     "frontend": {
      "total": 1,
@@ -242,13 +242,13 @@
   "conductor_rebuild": {
    "migrations": 5,
    "errors": [],
-   "schema_source": "PRAGMA table_info"
+   "schema_source": "REA inspect-sqlite-database ev_02af573adb470ffa100b978bb11e6cedc86c2c5cb6aad972384859fd89f5490f"
   },
   "conductor_reference": "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e",
   "cache_rebuild": {
    "migrations": 6,
    "errors": [],
-   "schema_source": "PRAGMA table_info"
+   "schema_source": "REA inspect-sqlite-database ev_f53d41f875b277c4f9772ebf5048c9ea0a45018e60b1cde20b4d50d08719c284"
   },
   "cache_reference": "ev_202d2f9fcbf5be8a97cec7b5c27cfa0b7722d0b3e095404e9ac0b0923904aabf",
   "conductor_migration_rows": 139,
@@ -274,10 +274,10 @@
     ],
     "rebuild": {
      "total": 80,
-     "matched": 23,
-     "partial": 14,
-     "missing": 43,
-     "parity_pct": 37.5
+     "matched": 29,
+     "partial": 10,
+     "missing": 41,
+     "parity_pct": 42.5
     }
    },
    {
@@ -355,10 +355,10 @@
     ],
     "rebuild": {
      "total": 11,
-     "matched": 0,
+     "matched": 1,
      "partial": 0,
-     "missing": 11,
-     "parity_pct": 0.0
+     "missing": 10,
+     "parity_pct": 9.1
     }
    },
    {
@@ -484,10 +484,10 @@
     ],
     "rebuild": {
      "total": 12,
-     "matched": 1,
+     "matched": 3,
      "partial": 0,
-     "missing": 11,
-     "parity_pct": 8.3
+     "missing": 9,
+     "parity_pct": 25.0
     }
    },
    {
@@ -648,71 +648,15 @@
    "area": "settings",
    "parent_obligation": "ui.routes",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 16,
-    "matched": 5,
+    "matched": 16,
     "partial": 0,
-    "missing": 11,
-    "parity_pct": 31.2
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "settings route",
-     "id": "/settings/cloud/setup",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/organization/computer",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/organization/environment",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/organization/mcp",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/organization/prompts",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/organization/repositories/$owner/$repo",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/organization/repositories/$owner/$repo/git",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/organization/repositories/$owner/$repo/scripts",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/repos",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/user",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/user/account",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "settings.app-preferences",
@@ -723,25 +667,15 @@
    "result": "fail",
    "parity": {
     "total": 29,
-    "matched": 5,
+    "matched": 8,
     "partial": 3,
-    "missing": 21,
-    "parity_pct": 22.4
+    "missing": 18,
+    "parity_pct": 32.8
    },
    "gaps": [
     {
      "group": "settings table key",
      "id": "client_instance_id",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "code_theme",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "colored_sidebar_diffs",
      "status": "missing"
     },
     {
@@ -772,11 +706,6 @@
     {
      "group": "settings table key",
      "id": "file_backed_settings_migration_complete",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "file_ligatures_enabled",
      "status": "missing"
     },
     {
@@ -861,9 +790,9 @@
    "parity": {
     "total": 12,
     "matched": 0,
-    "partial": 0,
-    "missing": 12,
-    "parity_pct": 0.0
+    "partial": 2,
+    "missing": 10,
+    "parity_pct": 8.3
    },
    "gaps": [
     {
@@ -884,7 +813,7 @@
     {
      "group": "user settings.toml",
      "id": "prompts.general",
-     "status": "missing"
+     "status": "declared"
     },
     {
      "group": "user settings.toml",
@@ -914,7 +843,7 @@
     {
      "group": "repo settings.toml",
      "id": "prompts.general",
-     "status": "missing"
+     "status": "declared"
     },
     {
      "group": "repo settings.toml",
@@ -1111,50 +1040,20 @@
    "result": "fail",
    "parity": {
     "total": 10,
-    "matched": 2,
-    "partial": 8,
+    "matched": 8,
+    "partial": 2,
     "missing": 0,
-    "parity_pct": 60.0
+    "parity_pct": 90.0
    },
    "gaps": [
     {
      "group": "user settings.toml",
-     "id": "git.archive_on_merge",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "git.branch_prefix",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "git.delete_branch_on_archive",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "git.worktree_push_auto_setup_remote",
-     "status": "declared"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "git.archive_on_merge",
-     "status": "declared"
-    },
-    {
-     "group": "repo settings.toml",
      "id": "git.branch_prefix",
      "status": "declared"
     },
     {
      "group": "repo settings.toml",
-     "id": "git.delete_branch_on_archive",
-     "status": "declared"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "git.worktree_push_auto_setup_remote",
+     "id": "git.branch_prefix",
      "status": "declared"
     }
    ]
@@ -1723,10 +1622,10 @@
    "result": "fail",
    "parity": {
     "total": 37,
-    "matched": 6,
-    "partial": 31,
+    "matched": 10,
+    "partial": 27,
     "missing": 0,
-    "parity_pct": 58.1
+    "parity_pct": 63.5
    },
    "gaps": [
     {
@@ -1801,11 +1700,6 @@
     },
     {
      "group": "Workspace",
-     "id": "workspace.switchTo1",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
      "id": "workspace.switchTo2",
      "status": "declared"
     },
@@ -1846,11 +1740,6 @@
     },
     {
      "group": "Workspace",
-     "id": "git.createPR",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
      "id": "git.commitAndPush",
      "status": "declared"
     },
@@ -1861,17 +1750,7 @@
     },
     {
      "group": "Workspace",
-     "id": "git.mergePR",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
      "id": "git.fixErrors",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "git.openInGitHub",
      "status": "declared"
     },
     {
@@ -1976,10 +1855,10 @@
    "result": "fail",
    "parity": {
     "total": 11,
-    "matched": 0,
+    "matched": 1,
     "partial": 0,
-    "missing": 11,
-    "parity_pct": 0.0
+    "missing": 10,
+    "parity_pct": 9.1
    },
    "gaps": [
     {
@@ -2029,11 +1908,6 @@
     },
     {
      "group": "app data store",
-     "id": "local-storage:terminal",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
      "id": "local-storage:turn-changes-cache",
      "status": "missing"
     }
@@ -2061,21 +1935,15 @@
    "area": "persistence",
    "parent_obligation": "agent.attachments",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 1,
-    "matched": 0,
+    "matched": 1,
     "partial": 0,
-    "missing": 1,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "app data store",
-     "id": "draft-attachments",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "persistence.sidecar-stores",
@@ -2083,26 +1951,15 @@
    "area": "persistence",
    "parent_obligation": "proc.sidecar",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 2,
-    "matched": 0,
+    "matched": 2,
     "partial": 0,
-    "missing": 2,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "app data store",
-     "id": "sidecar-outbox",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "sidecar-completions",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "persistence.terminal-shell-integration",
@@ -2110,21 +1967,15 @@
    "area": "persistence",
    "parent_obligation": "term.pty",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 1,
-    "matched": 0,
+    "matched": 1,
     "partial": 0,
-    "missing": 1,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "app data store",
-     "id": "terminal-shell-integration",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "persistence.agent-binaries",
@@ -2361,10 +2212,10 @@
    "result": "fail",
    "parity": {
     "total": 12,
-    "matched": 1,
+    "matched": 3,
     "partial": 0,
-    "missing": 11,
-    "parity_pct": 8.3
+    "missing": 9,
+    "parity_pct": 25.0
    },
    "gaps": [
     {
@@ -2399,17 +2250,7 @@
     },
     {
      "group": "bundled resource",
-     "id": "bin/checkpointer.sh",
-     "status": "missing"
-    },
-    {
-     "group": "bundled resource",
      "id": "bin/conductor",
-     "status": "missing"
-    },
-    {
-     "group": "bundled resource",
-     "id": "bin/git-busy-check.sh",
      "status": "missing"
     },
     {
@@ -2545,7 +2386,7 @@
    "area": "settings",
    "group": "user settings.toml",
    "id": "git.archive_on_merge",
-   "status": "declared",
+   "status": "matched",
    "detail": "boolean"
   },
   {
@@ -2566,14 +2407,14 @@
    "area": "settings",
    "group": "user settings.toml",
    "id": "git.delete_branch_on_archive",
-   "status": "declared",
+   "status": "matched",
    "detail": "boolean"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "git.worktree_push_auto_setup_remote",
-   "status": "declared",
+   "status": "matched",
    "detail": "boolean"
   },
   {
@@ -2706,7 +2547,7 @@
    "area": "settings",
    "group": "user settings.toml",
    "id": "prompts.general",
-   "status": "missing",
+   "status": "declared",
    "detail": "string"
   },
   {
@@ -2860,7 +2701,7 @@
    "area": "settings",
    "group": "repo settings.toml",
    "id": "git.archive_on_merge",
-   "status": "declared",
+   "status": "matched",
    "detail": "boolean"
   },
   {
@@ -2881,14 +2722,14 @@
    "area": "settings",
    "group": "repo settings.toml",
    "id": "git.delete_branch_on_archive",
-   "status": "declared",
+   "status": "matched",
    "detail": "boolean"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "git.worktree_push_auto_setup_remote",
-   "status": "declared",
+   "status": "matched",
    "detail": "boolean"
   },
   {
@@ -2937,7 +2778,7 @@
    "area": "settings",
    "group": "repo settings.toml",
    "id": "prompts.general",
-   "status": "missing",
+   "status": "declared",
    "detail": "string"
   },
   {
@@ -3028,14 +2869,14 @@
    "area": "settings",
    "group": "settings table key",
    "id": "code_theme",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "colored_sidebar_diffs",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -3084,7 +2925,7 @@
    "area": "settings",
    "group": "settings table key",
    "id": "file_ligatures_enabled",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -3259,77 +3100,77 @@
    "area": "settings",
    "group": "settings route",
    "id": "/settings/cloud/setup",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings route",
    "id": "/settings/organization/computer",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings route",
    "id": "/settings/organization/environment",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings route",
    "id": "/settings/organization/mcp",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings route",
    "id": "/settings/organization/prompts",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings route",
    "id": "/settings/organization/repositories/$owner/$repo",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings route",
    "id": "/settings/organization/repositories/$owner/$repo/git",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings route",
    "id": "/settings/organization/repositories/$owner/$repo/scripts",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings route",
    "id": "/settings/repos",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings route",
    "id": "/settings/user",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings route",
    "id": "/settings/user/account",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -3798,8 +3639,8 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.switchTo1",
-   "status": "declared",
-   "detail": "meta+1; no handler references this id"
+   "status": "matched",
+   "detail": "meta+1"
   },
   {
    "area": "shortcuts",
@@ -4225,8 +4066,8 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "git.createPR",
-   "status": "declared",
-   "detail": "meta+shift+p; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+p"
   },
   {
    "area": "shortcuts",
@@ -4246,8 +4087,8 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "git.mergePR",
-   "status": "declared",
-   "detail": "meta+shift+m; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+m"
   },
   {
    "area": "shortcuts",
@@ -4260,8 +4101,8 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "git.openInGitHub",
-   "status": "declared",
-   "detail": "meta+shift+g; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+g"
   },
   {
    "area": "shortcuts",
@@ -4757,28 +4598,28 @@
    "area": "persistence",
    "group": "app data store",
    "id": "draft-attachments",
-   "status": "missing",
+   "status": "matched",
    "detail": "draft-attachments/ directory"
   },
   {
    "area": "persistence",
    "group": "app data store",
    "id": "sidecar-outbox",
-   "status": "missing",
+   "status": "matched",
    "detail": "sidecar-v2-session-event-outbox/"
   },
   {
    "area": "persistence",
    "group": "app data store",
    "id": "sidecar-completions",
-   "status": "missing",
+   "status": "matched",
    "detail": "sidecar-v2-completions/"
   },
   {
    "area": "persistence",
    "group": "app data store",
    "id": "terminal-shell-integration",
-   "status": "missing",
+   "status": "matched",
    "detail": "terminal-shell-integration/"
   },
   {
@@ -4862,7 +4703,7 @@
    "area": "persistence",
    "group": "app data store",
    "id": "local-storage:terminal",
-   "status": "missing",
+   "status": "matched",
    "detail": "local-storage.subsystem.terminal.json"
   },
   {
@@ -5352,7 +5193,7 @@
    "area": "packaging",
    "group": "bundled resource",
    "id": "bin/checkpointer.sh",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -5373,7 +5214,7 @@
    "area": "packaging",
    "group": "bundled resource",
    "id": "bin/git-busy-check.sh",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
