@@ -43,6 +43,9 @@ pub struct AppPrefs {
     /// The sidebar's "Filter by project" repository id; `None` is all
     /// projects.
     pub sidebar_repo_filter: Option<String>,
+    /// Experimental "Dashboard": shows the sidebar's Dashboard row and the
+    /// `/dashboard` workspace board. Off unless the row says `"true"`.
+    pub dashboard_enabled: bool,
 }
 
 /// `"true"` / `"false"`, anything else (or no row) is `default`.
@@ -120,6 +123,7 @@ impl AppPrefs {
             last_seen_announcement: text(rows, keys::LAST_SEEN_ANNOUNCEMENT),
             roundhouse_client_user_id: text(rows, keys::ROUNDHOUSE_CLIENT_USER_ID),
             sidebar_repo_filter: text(rows, keys::SIDEBAR_REPO_FILTER),
+            dashboard_enabled: flag(rows, keys::DASHBOARD_ENABLED, false),
         }
     }
 }
@@ -145,6 +149,8 @@ pub enum AppPrefUpdate {
     /// A repository id narrows the sidebar; `null` ("All projects") deletes
     /// the row (the reference's `z6t`).
     SidebarRepoFilter(Option<String>),
+    /// The Experimental "Dashboard" switch (the reference's `eGt`).
+    DashboardEnabled(bool),
 }
 
 /// What an update does to the table.
@@ -190,6 +196,7 @@ impl AppPrefUpdate {
             }
             SidebarRepoFilter(Some(id)) => Ok(Write::Set(keys::SIDEBAR_REPO_FILTER, id.clone())),
             SidebarRepoFilter(None) => Ok(Write::Delete(keys::SIDEBAR_REPO_FILTER)),
+            DashboardEnabled(v) => b(keys::DASHBOARD_ENABLED, *v),
         }
     }
 }

@@ -5,6 +5,8 @@ const base = (size = 16, strokeWidth = 1.8) => ({ width: size, height: size, vie
 export const FolderIcon = ({ size }: P) => (<svg {...base(size)}><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>);
 export const CloudIcon = ({ size }: P) => (<svg {...base(size)}><path d="M7 18a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z" /><path d="M12 11v6m-3-3 3 3 3-3" /></svg>);
 export const SparkIcon = ({ size }: P) => (<svg {...base(size)}><path d="M12 3c.6 4.8 2.2 6.4 7 7-4.8.6-6.4 2.2-7 7-.6-4.8-2.2-6.4-7-7 4.8-.6 6.4-2.2 7-7z" /></svg>);
+/** Lucide-style "layout-grid": four rounded squares (Conductor's Dashboard row icon). */
+export const LayoutGridIcon = ({ size }: P) => (<svg {...base(size)}><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /></svg>);
 export const HomeIcon = ({ size }: P) => (<svg {...base(size)}><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" /></svg>);
 export const SidebarIcon = ({ size }: P) => (<svg {...base(size)}><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></svg>);
 export const PlusIcon = ({ size }: P) => (<svg {...base(size)}><path d="M12 5v14M5 12h14" /></svg>);

@@ -223,15 +223,15 @@ function load(): AppState {
     // First run after the switch: keep the selection and layout the old shell state had.
     const prefs = parsePrefs(localStorage.getItem(PREFS_KEY) ?? legacyPrefs(localStorage.getItem(STORAGE_KEY)));
     const repos = prefs.collapsed.map((id) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed: true }));
-    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname);
+    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname, window.location.search);
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return startSelection(JSON.parse(raw) as AppState, window.location.pathname);
+    if (raw) return startSelection(JSON.parse(raw) as AppState, window.location.pathname, window.location.search);
   } catch {
     /* ignore corrupt state */
   }
-  return startSelection(EMPTY, window.location.pathname);
+  return startSelection(EMPTY, window.location.pathname, window.location.search);
 }
 
 /** UI prefs carried over from the pre-database shell state, as `PREFS_KEY` JSON. */

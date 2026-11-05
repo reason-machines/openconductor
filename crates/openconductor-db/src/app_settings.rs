@@ -121,6 +121,9 @@ pub mod keys {
     /// Repository id the sidebar is narrowed to ("Filter by project"); no
     /// row means all projects.
     pub const SIDEBAR_REPO_FILTER: &str = "sidebar_repo_filter";
+    /// Experimental "Dashboard": the sidebar's Dashboard row and the
+    /// `/dashboard` board; unset means off (`_z.dashboard_enabled = "false"`).
+    pub const DASHBOARD_ENABLED: &str = "dashboard_enabled";
 }
 
 #[cfg(test)]

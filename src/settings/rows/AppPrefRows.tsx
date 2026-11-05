@@ -7,6 +7,7 @@ import { Row } from "../GeneralPage";
 import { setAppPref, useAppPrefs, type AppPrefUpdate } from "../appPrefs";
 import { effectiveShortcuts } from "../../keybindings/overrides";
 import { glyphs } from "../../keybindings/shortcut";
+import { setDashboardEnabled, useDashboardEnabled } from "../../home/useDashboardEnabled";
 
 function save(update: AppPrefUpdate): void {
   setAppPref(update).catch((err) => console.warn(`could not save ${update.key}`, err));
@@ -52,9 +53,10 @@ function useGraphiteInstalled(): boolean | null {
   return installed;
 }
 
-/** Experimental: Show agent cost, Tab Freak Mode, Graphite stack support. */
+/** Experimental: Show agent cost, Tab Freak Mode, Dashboard, Graphite stack support. */
 export function ExperimentalAppPrefRows() {
   const p = useAppPrefs();
+  const dashboard = useDashboardEnabled();
   const gt = useGraphiteInstalled();
   const graphiteHelp = [
     "Detect Graphite stacks for the active local workspace and show stack-aware UI in the git panel. Cloud workspaces are unaffected. When off, OpenConductor never runs the gt CLI.",
@@ -78,6 +80,10 @@ export function ExperimentalAppPrefRows() {
           checked={p.experimental_tab_freak_mode}
           onChange={(value) => save({ key: "experimental_tab_freak_mode", value })}
         />
+      </Row>
+      {/* Conductor lists Dashboard after Auto-run after setup and before Graphite (renderApp settings registry @10,656,997). */}
+      <Row label="Dashboard" help="Show the dashboard and workspace sidebar.">
+        <Switch label="Dashboard" checked={dashboard.enabled} disabled={!dashboard.ready} onChange={setDashboardEnabled} />
       </Row>
       <Row label="Graphite stack support" help={graphiteHelp}>
         <Switch

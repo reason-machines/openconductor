@@ -3,7 +3,7 @@ import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, MoreIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { createPortal } from "react-dom";
@@ -18,6 +18,7 @@ import { SidebarGroup } from "./SidebarSections";
 import { pinnedEntries, repoGroupWorkspaces } from "../state/sidebarOrder";
 import { ProjectFilterSubmenu } from "./home/ProjectFilterSubmenu";
 import { useRepoFilter } from "../home/useRepoFilter";
+import { useDashboardEnabled } from "../home/useDashboardEnabled";
 import { filterRepoGroups } from "../home/repoFilter";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
@@ -142,6 +143,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
   const renamingWs = renaming && state.repos.find((r) => r.id === renaming.repoId)?.workspaces.find((w) => w.id === renaming.workspaceId);
   const pinned = pinnedEntries(state);
   const sel = state.selection;
+  const dashboardEnabled = useDashboardEnabled().enabled;
   // Conductor persists this per collapse key; ours lasts for the session.
   const [groupCollapsed, setGroupCollapsed] = useState(false);
   // Conductor keeps "show hidden repositories" in component state, so it resets on reload.
@@ -201,6 +203,10 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
             <span className="sb-computer-name">{computerName}</span>
             <ChevronDownIcon size={12} />
           </div>
+          {/* "Dashboard" (Conductor's `Aia` @10,029,038): shown while the Experimental setting is on, above Home. */}
+          {dashboardEnabled && (
+            <NavRow icon={<LayoutGridIcon size={12} />} label="Dashboard" shortcut="" active={sel.kind === "dashboard"} onClick={() => dispatch({ type: "select", selection: { kind: "dashboard" } })} />
+          )}
           <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
           <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
           <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={hint("toggleCommandPalette")} onClick={onSearch} />
