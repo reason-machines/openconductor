@@ -226,6 +226,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     const first = main && !before.messages.some((m) => m.role === "user");
     if (useCodex) submitCodex(chatId, cwd, text, attached);
     else submitChat(chatId, cwd, text, mode, attached, repo.path || undefined);
+    dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
