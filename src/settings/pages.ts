@@ -2,13 +2,14 @@
 // (/settings/user/<id>, evidence/settings/NOTES.md); pages are listed here
 // only once they are built.
 
-export type SettingsPage = "general" | "git";
+export type SettingsPage = "general" | "models" | "git";
 
 export const SETTINGS_GROUPS: { title: string; pages: { id: SettingsPage; label: string }[] }[] = [
   {
     title: "Personal",
     pages: [
       { id: "general", label: "General" },
+      { id: "models", label: "Default models" },
       { id: "git", label: "Git" },
     ],
   },
