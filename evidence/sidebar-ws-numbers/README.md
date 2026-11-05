@@ -42,10 +42,10 @@ card (`lZo`, ~9,886,544, cloud hosts only) and the Home search matcher (`kJo`, a
 
 ## OpenConductor
 
-- `experimental_show_workspace_numbers` is an app preference in `conductor.db`
-  (`crates/openconductor-db/src/app_settings.rs`, `src-tauri/src/app_prefs`), decoded
-  `"true"` → on, anything else off; written `"true"` / `"false"`.
-- Settings › Experimental row "Show workspace numbers" (no description).
+- `experimental_show_workspace_numbers` and its Settings › Experimental row "Show workspace
+  numbers" come from #438 (`src/settings/prefs.ts`, `src-tauri/src/settings/table_prefs.rs`,
+  `src/settings/ExperimentalPage.tsx`). Code outside Settings reads it with
+  `src/settings/useBoolPref.ts`.
 - Home rows, the ⌘K palette's workspace rows and the workspace header show `W-<n>` when on.
   The header badge runs the existing Copy link (`src/workspace/link.ts`).
 - Not built: the inline workspace link chip (`m9e`; OpenConductor has no such chip), the

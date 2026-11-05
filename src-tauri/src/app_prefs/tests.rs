@@ -246,29 +246,14 @@ fn sidebar_resource_usage_is_an_off_by_default_flag() {
 }
 
 #[test]
-fn show_workspace_numbers_is_an_off_by_default_flag() {
-    // `Te("experimental_show_workspace_numbers", !1)`, hook `_zt` reads
-    // `data === "true"` (index-BGEQ8YjU.js); the settings row writes
-    // `value.toString()` (renderApp-D_fmY7hW.js).
-    let on = |v: &str| {
-        AppPrefs::from_rows(&rows(&[("experimental_show_workspace_numbers", v)]))
-            .experimental_show_workspace_numbers
-    };
-    assert!(!AppPrefs::from_rows(&HashMap::new()).experimental_show_workspace_numbers);
-    assert!(on("true"));
-    assert!(!on("false"));
-    assert!(!on("1"));
+fn chrome_mode_reads_only_true_and_writes_text() {
+    assert!(!AppPrefs::from_rows(&HashMap::new()).chrome_mode_enabled);
+    assert!(AppPrefs::from_rows(&rows(&[("chrome_mode_enabled", "true")])).chrome_mode_enabled);
+    assert!(!AppPrefs::from_rows(&rows(&[("chrome_mode_enabled", "1")])).chrome_mode_enabled);
     let u: AppPrefUpdate =
-        serde_json::from_str(r#"{"key":"experimental_show_workspace_numbers","value":true}"#)
-            .unwrap();
+        serde_json::from_str(r#"{"key":"chrome_mode_enabled","value":true}"#).unwrap();
     assert_eq!(
         u.encode().unwrap(),
-        Write::Set("experimental_show_workspace_numbers", "true".into())
-    );
-    assert_eq!(
-        AppPrefUpdate::ExperimentalShowWorkspaceNumbers(false)
-            .encode()
-            .unwrap(),
-        Write::Set("experimental_show_workspace_numbers", "false".into())
+        Write::Set("chrome_mode_enabled", "true".into())
     );
 }

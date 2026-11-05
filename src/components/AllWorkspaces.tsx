@@ -28,7 +28,7 @@ import {
 } from "../home/allWorkspaces";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs } from "../keybindings/shortcut";
-import { useAppPrefs } from "../settings/appPrefs";
+import { useBoolPref } from "../settings/useBoolPref";
 import { workspaceNumberLabel } from "../state/workspaceNumber";
 
 interface Props {
@@ -168,7 +168,7 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
   const [activeIndex, setActiveIndex] = useState(0);
   const sentinel = useRef<HTMLDivElement>(null);
   const now = Date.now();
-  const showNumbers = useAppPrefs().experimental_show_workspace_numbers;
+  const showNumbers = useBoolPref("experimental_show_workspace_numbers");
 
   useEffect(() => setLimit(PAGE_SIZE), [query, filters]);
 

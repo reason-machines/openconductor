@@ -193,3 +193,86 @@ fn the_service_works_from_inside_the_async_runtime() {
     let got = tauri::async_runtime::block_on(async { svc.get().map(|s| s.appearance) });
     assert_eq!(got.unwrap().zoom_level_v2, 1.0);
 }
+
+#[test]
+fn table_prefs_round_trip_through_the_table_not_the_file() {
+    let path = temp_file();
+    let (svc, pool) = with_db(path.clone());
+    let mut s = svc.get().unwrap();
+    assert!(
+        s.general.extra.get("not_absolutely_right").is_none(),
+        "unset keys stay absent"
+    );
+    s.general
+        .extra
+        .insert("not_absolutely_right".into(), toml::Value::Boolean(true));
+    s.git.extra.insert(
+        "pull_request_open_target".into(),
+        toml::Value::String("graphite".into()),
+    );
+    s.extra
+        .insert("automerge_enabled".into(), toml::Value::Boolean(true));
+    svc.update(s).unwrap();
+
+    let t = table(&pool);
+    assert_eq!(t["not_absolutely_right"], "true");
+    assert_eq!(t["pull_request_open_target"], "graphite");
+    assert_eq!(t["automerge_enabled"], "true");
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        !text.contains("not_absolutely_right")
+            && !text.contains("pull_request_open_target")
+            && !text.contains("automerge_enabled"),
+        "{text}"
+    );
+    let back = svc.get().unwrap();
+    assert_eq!(
+        back.general.extra.get("not_absolutely_right"),
+        Some(&toml::Value::Boolean(true))
+    );
+    assert_eq!(
+        back.extra.get("automerge_enabled"),
+        Some(&toml::Value::Boolean(true))
+    );
+
+    let mut bad = back.clone();
+    bad.experimental
+        .extra
+        .insert("voice_mode".into(), toml::Value::String("on".into()));
+    assert!(svc.update(bad).is_err(), "a wrong type is refused");
+    assert!(!table(&pool).contains_key("voice_mode"));
+}
+
+#[test]
+fn table_prefs_in_an_older_file_move_to_the_table() {
+    let path = temp_file();
+    fs::write(
+        &path,
+        "automerge_enabled = true\ntreat_optional_checks_as_blocking = true\n\n[experimental]\nexperimental_big_terminal_mode = true\nvoice_mode = true\n",
+    )
+    .unwrap();
+    let (svc, pool) = with_db(path.clone());
+    tauri::async_runtime::block_on(app_settings::set(
+        &pool,
+        "treat_optional_checks_as_blocking",
+        "false",
+    ))
+    .unwrap();
+    let mut moved = svc.move_appearance_to_db().unwrap();
+    moved.sort();
+    assert_eq!(moved, vec!["automerge_enabled", "voice_mode"]);
+    let t = table(&pool);
+    assert_eq!(
+        t["treat_optional_checks_as_blocking"], "false",
+        "the table wins"
+    );
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        text.contains("experimental_big_terminal_mode = true"),
+        "{text}"
+    );
+    assert!(
+        !text.contains("voice_mode") && !text.contains("automerge"),
+        "{text}"
+    );
+}

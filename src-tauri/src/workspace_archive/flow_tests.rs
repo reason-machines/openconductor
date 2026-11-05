@@ -89,6 +89,12 @@ impl Env {
         archive_workspace(&deps, "repo/ws", mode).await
     }
     async fn unarchive(&self) -> Result<UnarchiveResultDto, ArchiveFailureDto> {
+        self.unarchive_with(false).await
+    }
+    async fn unarchive_with(
+        &self,
+        use_new_branch: bool,
+    ) -> Result<UnarchiveResultDto, ArchiveFailureDto> {
         let setting = |_: &Path, _: &Path| false;
         let deps = Deps {
             pool: &self.pool,
@@ -97,7 +103,7 @@ impl Env {
             delete_branch_on_archive: &setting,
             in_flight: &self.in_flight,
         };
-        unarchive_workspace(&deps, "repo/ws").await
+        unarchive_workspace(&deps, "repo/ws", use_new_branch).await
     }
     async fn row(&self) -> workspaces::Workspace {
         workspaces::get(&self.pool, "repo/ws")
@@ -253,28 +259,65 @@ async fn unarchive_recreates_the_worktree_with_its_work_and_marks_the_row_ready(
     let record = e.f.tmp.0.join("root/archived/repo/ws.ws");
     assert!(record.exists() && !e.f.ws().exists() && !e.f.branch_exists("sven/ws"));
 
+    // The branch was deleted on archive: Conductor's restore dialog first,
+    // nothing changed.
     let r = e.unarchive().await.unwrap();
+    assert!(!r.restored && r.scenario == Some("branchDeleted"), "{r:?}");
+    assert!(!e.f.ws().exists());
+    assert_eq!(e.row().await.state, WorkspaceState::Archived);
+
+    // "Restore to new branch": `sven/ws-v1` at the archive commit, stored on the row.
+    let r = e.unarchive_with(true).await.unwrap();
     assert!(
-        r.restored && r.recreated_branch && r.restored_changes,
+        r.restored && r.recreated_branch && r.restored_changes && r.scenario.is_none(),
         "{r:?}"
     );
-    assert_eq!(r.branch.as_deref(), Some("sven/ws"));
+    assert_eq!(r.branch.as_deref(), Some("sven/ws-v1"));
     assert!(r.notices.is_empty());
     assert_eq!(
         fs::read_to_string(e.f.ws().join("wip.txt")).unwrap(),
         "unsaved\n"
     );
-    assert_eq!(g(e.f.ws(), &["branch", "--show-current"]), "sven/ws");
+    assert_eq!(g(e.f.ws(), &["branch", "--show-current"]), "sven/ws-v1");
     assert_eq!(e.row().await.state, WorkspaceState::Ready);
+    assert_eq!(e.row().await.branch.as_deref(), Some("sven/ws-v1"));
     assert!(!record.exists());
 
     // A directory in the way leaves the row archived.
     assert!(e.archive(None, false).await.unwrap().archived);
     fs::create_dir_all(e.f.ws()).unwrap();
     let err = e.unarchive().await.unwrap_err();
+    assert_eq!(err.code, "UnarchiveDirectoryExists");
     assert_eq!(
         err.message,
         format!("Can't unarchive: {} already exists", e.f.ws().display())
     );
+    assert_eq!(err.path.as_deref(), Some(e.f.ws().to_str().unwrap()));
+    assert_eq!(err.directory_name.as_deref(), Some("ws"));
     assert_eq!(e.row().await.state, WorkspaceState::Archived);
+
+    // "Clear & unarchive": the folder goes, then the unarchive runs.
+    assert_eq!(
+        unarchive_conflict_path(&e.pool, "repo/ws").await.unwrap(),
+        e.f.ws()
+    );
+    clear_unarchive_conflict(&e.pool, "repo/ws").await.unwrap();
+    assert!(!e.f.ws().exists());
+    assert!(unarchive_conflict_path(&e.pool, "repo/ws").await.is_err());
+    assert!(e.unarchive().await.unwrap().restored);
+    // Not archived any more: the conflict commands refuse.
+    assert!(clear_unarchive_conflict(&e.pool, "repo/ws").await.is_err());
+}
+
+#[tokio::test]
+async fn delete_workspace_drops_the_row_and_the_folder() {
+    let e = env("flow-delete", "").await;
+    assert!(e.f.ws().exists());
+    delete_workspace(&e.pool, "repo/ws").await.unwrap();
+    assert!(workspaces::get(&e.pool, "repo/ws").await.unwrap().is_none());
+    assert!(!e.f.ws().exists());
+    assert!(!g(e.f.repo(), &["worktree", "list"]).contains("workspaces/ws"));
+    // The branch and the repository stay.
+    assert!(e.f.branch_exists("sven/ws"));
+    assert!(delete_workspace(&e.pool, "repo/ws").await.is_err());
 }

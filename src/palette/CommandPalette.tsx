@@ -4,6 +4,9 @@ import { glyphs } from "../keybindings/shortcut.ts";
 import { buildResults, cycleTab, emptyText, placeholderFor, TABS, type PaletteData, type PaletteTab, type ResultItem } from "./search/model.ts";
 import { COMMAND_PALETTE_DIALOG_ID, moveActive, paletteCommandFor } from "./state.ts";
 import { workspaceNumberLabel } from "../state/workspaceNumber.ts";
+import { VIEW_ARCHIVED_ACTION } from "./fromAppState.ts";
+import { ARCHIVE_FILTERS, ARCHIVE_FILTER_LABEL, ARCHIVE_FILTER_TEXT, UNARCHIVE_LABEL, type ArchiveFilter } from "../workspace/archivedList.ts";
+import { ArchiveIcon } from "../components/Icons";
 import "./palette.css";
 
 export interface CommandPaletteProps {
@@ -14,7 +17,11 @@ export interface CommandPaletteProps {
   initialTab?: PaletteTab;
   /** Experimental "Show workspace numbers": W-<n> before each workspace's name. */
   showWorkspaceNumbers?: boolean;
+  /** Initial "Archived workspaces" filter of the Workspaces tab. */
+  initialArchiveFilter?: ArchiveFilter;
   onSelect: (item: ResultItem) => void;
+  /** The button on an archived workspace's row. */
+  onUnarchive?: (workspaceId: string) => void;
   onClose: () => void;
 }
 
@@ -37,13 +44,14 @@ function shortcutFor(item: ResultItem, overrides: Overrides): string | null {
   return key ? glyphs(key) : null;
 }
 
-export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", showWorkspaceNumbers = false, onSelect, onClose }: CommandPaletteProps) {
+export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter = "active", showWorkspaceNumbers = false, onSelect, onUnarchive, onClose }: CommandPaletteProps) {
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
+  const [archiveFilter, setArchiveFilter] = useState<ArchiveFilter>(initialArchiveFilter);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const groups = useMemo(() => buildResults(tab, query, data), [tab, query, data]);
+  const groups = useMemo(() => buildResults(tab, query, data, archiveFilter), [tab, query, data, archiveFilter]);
   const flat = useMemo(() => groups.flatMap((g) => g.items), [groups]);
 
   useEffect(() => setActive(0), [tab, query]);
@@ -53,6 +61,13 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
 
   function choose(item: ResultItem | undefined) {
     if (!item) return;
+    // Conductor: switch to the Workspaces tab showing archived ones too, and stay open.
+    if (item.kind === "action" && item.action.id === VIEW_ARCHIVED_ACTION) {
+      setTab("workspaces");
+      setArchiveFilter("all");
+      setQuery("");
+      return;
+    }
     onSelect(item);
     onClose();
   }
@@ -86,6 +101,18 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
               {t.label}
             </button>
           ))}
+          {tab === "workspaces" && (
+            <label className="palette-archive-filter">
+              <ArchiveIcon size={14} />
+              <select aria-label={ARCHIVE_FILTER_LABEL} value={archiveFilter} onChange={(e) => setArchiveFilter(e.target.value as ArchiveFilter)}>
+                {ARCHIVE_FILTERS.map((f) => (
+                  <option key={f} value={f}>
+                    {ARCHIVE_FILTER_TEXT[f]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
         <input
           className="palette-input"
@@ -109,11 +136,13 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
                 const i = ++index;
                 const { title, detail } = itemLabel(item);
                 const shortcut = shortcutFor(item, overrides);
+                const archived = item.kind === "workspace" && !!item.workspace.archived;
                 return (
                   <div
                     key={item.id}
                     role="option"
                     aria-selected={i === active}
+                    data-archived={archived || undefined}
                     className={i === active ? "palette-item active" : "palette-item"}
                     onMouseMove={() => i !== active && setActive(i)}
                     onMouseDown={(e) => e.preventDefault()}
@@ -126,6 +155,21 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
                     <span className="palette-title">{title}</span>
                     {detail && <span className="palette-detail">{detail}</span>}
                     {shortcut && <kbd className="palette-kbd">{shortcut}</kbd>}
+                    {archived && onUnarchive && item.kind === "workspace" && (
+                      <button
+                        type="button"
+                        className="palette-unarchive"
+                        aria-label={UNARCHIVE_LABEL}
+                        title={UNARCHIVE_LABEL}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onUnarchive(item.workspace.id);
+                          onClose();
+                        }}
+                      >
+                        <ArchiveIcon size={14} />
+                      </button>
+                    )}
                   </div>
                 );
               })}
