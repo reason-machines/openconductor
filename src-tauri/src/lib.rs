@@ -15,6 +15,8 @@
 pub mod agent;
 pub mod checkpoint;
 pub mod diff;
+pub mod github_repo;
+pub mod menu;
 pub mod project;
 pub mod quick_open;
 pub mod scripts;
@@ -51,6 +53,30 @@ fn inspect_project_folder(path: String) -> project::FolderInspection {
     project::inspect_folder(std::path::Path::new(&path))
 }
 
+/// Runs a blocking `gh`/`git` call off the async runtime's worker threads.
+async fn blocking<T: Send + 'static>(
+    f: impl FnOnce() -> Result<T, String> + Send + 'static,
+) -> Result<T, String> {
+    tauri::async_runtime::spawn_blocking(f)
+        .await
+        .map_err(|e| e.to_string())?
+}
+
+/// Owners for the "Create a private GitHub repo?" dialog (see `github_repo`).
+#[tauri::command]
+async fn github_repo_owners() -> Result<github_repo::Owners, String> {
+    blocking(|| github_repo::GitHub::default().owners()).await
+}
+
+/// Whether `owner/repo_name` is free on GitHub (see `github_repo`).
+#[tauri::command]
+async fn github_repo_availability(
+    owner: String,
+    repo_name: String,
+) -> Result<github_repo::Availability, String> {
+    blocking(move || github_repo::GitHub::default().availability(&owner, &repo_name)).await
+}
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct BranchPrefixInfo {
@@ -85,7 +111,12 @@ async fn branch_prefix_settings() -> BranchPrefixInfo {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let builder = tauri::Builder::default();
+    // Conductor is macOS-only; elsewhere keep Tauri's no-menu default.
+    #[cfg(target_os = "macos")]
+    let builder = builder.menu(menu::build);
+    builder
+        .on_menu_event(|app, event| menu::handle_event(app, event.id().as_ref()))
         // Same plugin set as Conductor 0.87.6 (see Cargo.toml). Capabilities grant only the
         // commands its frontend calls (capabilities/default.json).
         .plugin(tauri_plugin_deep_link::init())
@@ -114,6 +145,8 @@ pub fn run() {
             app_info,
             inspect_project_folder,
             branch_prefix_settings,
+            github_repo_owners,
+            github_repo_availability,
             workspace::commands::add_repository,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
