@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { HELP_ITEMS, nextIndex, versionLine } from "./helpMenu.ts";
+import { HELP_ITEMS, nextIndex, versionLine } from "./helpMenuItems.ts";
 
 test("items follow Conductor's order", () => {
   assert.deepEqual(HELP_ITEMS.map((i) => i.label), ["Keyboard shortcuts", "Docs", "Best practices", "Changelog", "Send feedback"]);

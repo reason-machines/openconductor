@@ -15,7 +15,7 @@ import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/n
 import { Toaster, useToasts } from "./components/Toast";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
-import { FEEDBACK_URL } from "./components/helpMenu";
+import { FEEDBACK_URL } from "./components/helpMenuItems";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
