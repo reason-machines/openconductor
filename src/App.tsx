@@ -18,6 +18,7 @@ import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
+import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
@@ -86,6 +87,8 @@ export default function App() {
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // Archive on merge for workspaces that are not open (the open one reports through its own PR lookup).
+  useArchiveOnMergeWatcher({ repos: state.repos, openWorkspaceId: state.selection.kind === "workspace" ? state.selection.workspaceId : null, dispatch, notify: show });
   // A `/settings...` start URL opens settings where Conductor's router would
   // (src/settings/routes.ts); the URL then follows the open settings page.
   const routeContext = (): RouteContext => ({
