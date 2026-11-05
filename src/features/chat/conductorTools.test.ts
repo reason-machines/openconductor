@@ -89,3 +89,115 @@ test("line counts follow a line diff", () => {
   assert.deepEqual(lineCounts("a\nb\nc", "a\nB\nc\nd"), { added: 2, removed: 1 });
   assert.deepEqual(lineCounts("", "x\ny\n"), { added: 2, removed: 0 });
 });
+
+// ---- The rest of Conductor's row kinds (REA: renderApp-D_fmY7hW.js D1o/P1o, Tpo ... Kpo) ----
+import {
+  askUserState,
+  backgroundStatus,
+  collabCall,
+  isTypedSubagent,
+  lastTwoSegments,
+  parseTask,
+  parseTaskList,
+  scheduleWakeupLabel,
+  sendMessageLabel,
+  skillLabel,
+  slashCommandLabel,
+  subagentDescription,
+  taskUpdateLabel,
+  terminalOutput,
+  toolKind,
+} from "./conductorTools.ts";
+
+test("every kind in Conductor's registry resolves by name or prefix (D1o, P1o)", () => {
+  const cases: Record<string, string> = {
+    AskUserQuestion: "ask-user-question",
+    mcp__conductor__AskUserQuestion: "ask-user-question",
+    EnterPlanMode: "enter-plan-mode",
+    ExitPlanMode: "exit-plan-mode",
+    Skill: "skill",
+    SlashCommand: "slash-command",
+    Thinking: "thinking",
+    TaskCreate: "task-create",
+    TaskGet: "task-get",
+    TaskList: "task-list",
+    TaskUpdate: "task-update",
+    Teammate: "teammate",
+    SendMessage: "send-message",
+    ScheduleWakeup: "schedule-wakeup",
+    ImageGeneration: "image-generation",
+    mcp__conductor__DiffComment: "diff-comment",
+    mcp__conductor__GetDiffComments: "get-diff-comments",
+    mcp__conductor__GetTerminalOutput: "get-terminal-output",
+    mcp__conductor__GetWorkspaceDiff: "get-workspace-diff",
+    mcp__conductor__RunLocalCommand: "run-local-command",
+    mcp__node_repl__js: "node-repl-js",
+    collab__spawn_agent: "codex-collab",
+    mcp__context7__get_library_docs: "context7-mcp",
+    mcp__linear__get_issue: "linear-mcp",
+    mcp__github__get_pr: "other",
+  };
+  for (const [name, kind] of Object.entries(cases)) assert.equal(toolKind(name), kind, name);
+});
+
+test("Skill and SlashCommand labels (_po, Cpo)", () => {
+  assert.equal(skillLabel("pstack:poteto-mode"), "Poteto Mode");
+  assert.equal(slashCommandLabel("/review:pr-comments"), "Pr Comments");
+  assert.equal(slashCommandLabel(""), "Slash Command");
+});
+
+test("a sub-agent row needs a type other than general-purpose (bpo vs Ypo)", () => {
+  assert.equal(isTypedSubagent({ subagent_type: "Explore" }), true);
+  assert.equal(isTypedSubagent({ subagent_type: "general-purpose" }), false);
+  assert.equal(isTypedSubagent({ description: "x" }), false);
+  assert.equal(subagentDescription("Find the bug (opus)", "opus"), "Find the bug");
+});
+
+test("AskUserQuestion results (Tpo)", () => {
+  assert.deepEqual(askUserState(2, "User responses:\n1. Yes\n2. Blue", false), { state: "answered", answers: ["Yes", "Blue"] });
+  assert.deepEqual(askUserState(1, "User cancelled the question", false), { state: "cancelled" });
+  assert.deepEqual(askUserState(1, "boom", false), { state: "failed", text: "boom" });
+  assert.deepEqual(askUserState(1, undefined, false), { state: "waiting" });
+});
+
+test("task results parse from JSON and from Claude Code's text (epo, jki)", () => {
+  assert.deepEqual(parseTaskList("#1 [completed] Write tests\n#2 [pending] Ship [blocked by #1]"), [
+    { id: "1", status: "completed", subject: "Write tests" },
+    { id: "2", status: "pending", subject: "Ship" },
+  ]);
+  assert.deepEqual(parseTaskList('{"tasks":[{"id":"3","status":"in_progress"}]}'), [{ id: "3", status: "in_progress" }]);
+  assert.deepEqual(parseTask("Task #4 [pending]: Do it\nDescription: more\nOwner: me"), { id: "4", status: "pending", subject: "Do it", description: "more", owner: "me" });
+  assert.deepEqual(taskUpdateLabel({ status: "completed" }), { label: "Task completed" });
+  assert.deepEqual(taskUpdateLabel({ addBlockedBy: ["1", "2"] }), { label: "Task dependency added", note: "Blocked by tasks #1, #2" });
+});
+
+test("terminal output, background status and file names (Dpo, R0o, xZe)", () => {
+  assert.deepEqual(terminalOutput({ source: "run", maxLines: 50 }, '[{"type":"text","text":"a"},{"type":"text","text":"b"}]'), { text: "a\nb", note: "Source: run \u00b7 50 lines" });
+  assert.equal(backgroundStatus("<status>running</status>"), "running");
+  assert.equal(lastTwoSegments("src/a/b.ts"), "a/b.ts");
+});
+
+test("swarm messages and wake-ups (qpo, Spo)", () => {
+  assert.deepEqual(sendMessageLabel({ recipient: "ana", summary: "hi" }), { label: "Send message to swarm", summary: "@ana \u2014 hi" });
+  assert.equal(sendMessageLabel({ type: "plan_approval_response", approve: true }).label, "Approved plan");
+  const at = (ms: number) => String(ms);
+  assert.equal(scheduleWakeupLabel({ delaySeconds: 120 }, undefined, undefined, 0, at), "Scheduling wake-up");
+  assert.equal(scheduleWakeupLabel({ delaySeconds: 120 }, "ok (in 90s)", 1000, 2000, at), "Waiting until 91000");
+  assert.equal(scheduleWakeupLabel({ delaySeconds: 10 }, "ok", 0, 100_000, at), "Waited until 60000");
+  assert.equal(scheduleWakeupLabel({ stop: true }, "ok", 0, 0, at), "Stopped scheduled wake-ups");
+});
+
+test("Codex collaboration calls (_0o)", () => {
+  const spawning = collabCall("collab__spawnAgent", { receiver_thread_ids: ["019a-77b2-ffff"], agent_nickname: "scout", agent_role: "explorer", prompt: "look  around", model: "gpt-5" }, undefined, false);
+  assert.equal(spawning.status, "inProgress");
+  assert.equal(spawning.action, "Spawning");
+  assert.equal(spawning.agents[0]!.name, "scout");
+  assert.equal(spawning.agents[0]!.role, "Explorer");
+  assert.equal(spawning.prompt, "look around");
+  const waited = collabCall("collab__wait", { receiver_thread_ids: ["019a-77b2-ffff", "019b-1"] }, '{"status":"completed","agentsStates":{"019b-1":{"status":"errored","message":"bad"}}}', false);
+  assert.equal(waited.action, "Finished waiting for");
+  assert.equal(waited.countLabel, "2 agents");
+  assert.equal(waited.agents[0]!.name, "019a-77b2");
+  assert.equal(waited.agents[1]!.state, "Error - bad");
+  assert.equal(waited.listAgents, true);
+});
