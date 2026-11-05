@@ -161,6 +161,29 @@ to the webview. It logs `Failed to emit keyboard shortcuts dialog event: ` on er
 and `Warning: Could not add Keyboard Shortcuts menu item` if the item cannot be added.
 These strings come from `MacOS/conductor`.
 
+The same string run (0.87.6, `strings -a` on `MacOS/conductor`, re-read
+2026-11-05) holds every item Conductor adds, in this order, each followed by its
+own `Warning: Could not add <label> menu item`:
+
+- `Check for Updates`; `Settings...` with `CmdOrCtrl+,`; `custom_quit` with `Cmd+Q`.
+- `toggle_left_sidebar` "Toggle Left Sidebar", `toggle_right_sidebar` "Toggle Right Sidebar".
+- Help: `keyboard_shortcuts` "Keyboard Shortcuts" (no accelerator), `documentation`,
+  `best_practices` "Best Practices", `changelog` "Changelog", `send_feedback` with
+  `CmdOrCtrl+Alt+f`, `submit_a_prompt` "Submit a Prompt...", `diagnostics`
+  "Diagnostics...", `debug` with `CmdOrCtrl+Alt+i`.
+- The events they emit: `open_diagnostics_page`, `open_submit_prompt_dialog`,
+  `open_changelog_url`, `open_best_practices_url`, `open_feedback_dialog`,
+  `open_keyboard_shortcuts_dialog`, `open_documentation_url`.
+
+The binary also holds Tauri's `__tauri_help_menu__` and `__tauri_window_menu__`
+ids, consistent with appending to Tauri's default menu. Which submenu each
+non-Help item joins, and which event each id emits beyond `keyboard_shortcuts`,
+is inferred from string order, not decompiled code (see REA gaps). ⌥⌘/ is
+handled by the webview dispatcher, not a menu accelerator.
+
+OpenConductor: `src-tauri/src/menu.rs` appends Keyboard Shortcuts to the default
+Help submenu on macOS and emits `open_keyboard_shortcuts_dialog` on click.
+
 ## Key-bindings page (`/settings/user/key-bindings`)
 
 - Gated by `internal_settings_enabled` (or dev mode). Without it, the route
@@ -180,11 +203,45 @@ These strings come from `MacOS/conductor`.
   These are commands with `configurable:false`, plus the four send-key commands,
   which the message-send setting controls instead.
 
+Detail from the page (`lEa`) and row recorder (`rEa`) in `renderApp-D_fmY7hW.js`
+(sha256 `5199d392…`, from offset 11,218,000), modelled in `src/keybindings/editor.ts`:
+
+- Search uses the shared multi-field ranker (`WZ`, threshold 0.5) over
+  title, category, command id and a key text built per key part: `meta` gives
+  "command cmd ⌘", `ctrl` "control ctrl ⌃", `alt` "option alt ⌥", `shift`
+  "shift ⇧", any other part itself plus its glyph.
+- "Type shortcut" starts only when the box is empty, no typed shortcut is
+  showing, and the key is a modifier. It takes exclusive key capture; the box
+  shows the held modifier glyphs. The first recordable key sets the box to its
+  glyphs ("⌘K") and filters to rows with a key that fires on that press. Typing
+  in the box or blurring it leaves the mode. A query with no matches shows
+  nothing: there is no empty-state text.
+- Both recorders ignore repeats and IME composition, show held modifiers, and
+  treat a bare Escape as cancel. A modifier keydown also clears a shown
+  conflict. A recorded shortcut saves as a one-key override, and the row stops
+  recording before the save resolves. Blurring the row button cancels.
+- The row button's accessible name is "Change shortcut for <title>. Current
+  shortcuts: <Command+K or ...>." and, while recording, "Recording shortcut for
+  <title>. Press modifiers and a key." or "... Held modifiers: Command+Option.
+  Press a key.", also announced in a polite live region. The conflict line has
+  `role="alert"` and id `keybinding-conflict-<commandId>`.
+- Recorder buttons are disabled while overrides are loading. Queued messages
+  default to off, so the opposite follow-up row is hidden until that flag loads.
+
 ## REA gaps
 
 - `analyze-javascript-application` finds no IPC operations: it does not model
   Tauri `invoke` or `listen`. The registry and event wiring were located by
   string search on the decoded bundle, sliced by brace matching, and evaluated
   with stub constructors (`tools/keybindings_extract.mjs`).
+- The key-bindings page and recorder were read by byte offset in the decoded
+  `renderApp` chunk. REA has no view that addresses a minified JavaScript
+  function by name or offset, and its earlier `analyze-javascript-application`
+  run on the index chunk (90 MB of JSON) holds none of these strings.
 - No component tree: the bundle is minified and has no source maps. Component
   behaviour above comes from reading the minified React output.
+- `rea execute-rizin-command` on Sven's Mac fails with `capability_unavailable`
+  (rizin not installed, ENOENT), and `rea function` on the menu-event closure
+  `conductor_lib::run` at `0x100498360` fails with `provider_unavailable`: Ghidra,
+  Hopper, IDA and Kuna are all unconfigured there (no Java runtime). So the menu
+  builder was not decompiled; the native menu table above is from the string table.

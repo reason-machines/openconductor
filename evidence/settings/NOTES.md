@@ -38,3 +38,67 @@ returns only connection status, never secret values, to the frontend.
   native decompiler, which was blocked in Wave 0 (`evidence/rea/*.error.json`).
 - The Mac went offline while the traces ran. The traces had already finished and their
   outputs were intact, so we didn't rerun anything.
+
+## Settings pages
+
+Source: `evidence/settings/settings-registry.json`, pulled on 2026-11-05 from Conductor's
+frontend bundle (`renderApp-D_fmY7hW.js`, sha256 in the file) inside the REA-extracted Tauri
+assets on `sven m5 max`. Conductor registers every settings row in one registry with `tab`,
+`settingKey`, `scopes`, `title` and `description`; the file lists the rows a regex over those
+registrations found.
+
+- Navigation (`jWt` in the bundle): Personal = General, Account, Appearance, Default models
+  (`models`), Git, Ports; Agents & environment = Agents (`providers`), Environment;
+  Repositories = Scripts, Actions, Misc; More = Experimental, Advanced.
+- So the "Agents" page is the `providers` route, and Theme lives on Appearance, not General.
+  Our General page carries Theme until an Appearance page exists (divergence).
+- Git, user scope: Git identity (cloud only), Open pull requests in (GitHub, Linear,
+  Graphite), Branch name prefix, Rename workspace when branch is named, Delete branch on
+  archive, Archive on merge, Automerge, Treat optional checks as blocking, Set upstream on
+  plain git push, Use GitHub stacked PRs.
+- Branch name prefix: radios "GitHub username" (with ` (<login>)` when known), "Custom" and
+  "None". Custom shows an input with placeholder `e.g. feature/ or myname-`, saves on blur
+  and shows `Preview: <prefix>tokyo`.
+
+OpenConductor's Git page shows only Branch name prefix, the one Git row whose setting our
+code reads (`src/workspace/naming.ts`). Divergences: Conductor joins the custom prefix to the
+name as a raw string (`myname-tokyo`); our naming slugifies each `/` part and joins with `/`,
+so a trailing `/` is dropped on save and the preview comes from our real resolver.
+
+## REA gaps hit (settings pages)
+
+- `rea trace-javascript-semantics` with a literal seed `"Branch name prefix"` (a UI string in
+  a settings-row registration) exited 0 in 33 s with `status: partial`, 0 seed nodes, 0 nodes
+  and the same 935 unknowns as the keychain traces. So literal seeds miss plain UI strings
+  too, not only Tauri `invoke` names; REA could not place the row in its module. The registry
+  above was read from the shipped bundle instead.
+- REA has no extractor for app-defined registries such as this settings-row table; the copy
+  catalog gives the strings alphabetically with no page, key or scope.
+
+## Default models
+
+Source: Conductor's `renderApp-D_fmY7hW.js` (same bundle as above), read on `sven m5 max`
+on 2026-11-05.
+
+- Rows on the `models` tab: Default model ("Model for new chats"; rendered as a "Loadout"
+  model picker with effort and fast mode per model), Codex personality, Claude output style
+  ("Choose which output style to apply to new chats. Existing chats do not change."), Review
+  model, and Default to plan mode in new chats.
+- Model catalog per agent (the bundle's `ZHe` table), in Conductor's order:
+  - claude: fable-5-1, fable-5, opus-5-5-1m, opus-5-1m, opus-4-8-1m, opus-4-8, opus-4-7-1m,
+    opus-4-7, opus-4-6-1m, sonnet-5-5-1m, sonnet-5-1m, sonnet-4-6-1m, sonnet-4-6, haiku-4-5
+  - codex: gpt-5.5, gpt-5.4, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna, gpt-5.3-codex-spark,
+    gpt-5.3-codex, gpt-5.2-codex, gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-daybreak-blue-latest
+  - cursor: auto, composer-2.5, grok-4.7, grok-4.6, grok-4.5
+  - accepted Claude aliases: opus-1m, opus, sonnet, haiku
+- Fallback model per agent: claude opus-5-1m, codex gpt-5.6-sol, cursor composer-2.5.
+- Effort levels per agent: claude low..max; codex none, low..max, ultra; cursor low..xhigh.
+
+OpenConductor's Default models page shows only Default model, as a plain select grouped by
+agent, because the only reader is the new-workspace dialog's first chat
+(`src/settings/models.ts` `newChatModel`). No agent launch consumes it yet (the dialog's
+first session is "agent runtime pending"). Divergences: no loadout picker, no per-model
+effort or fast mode; display names are derived from ids (`opus-5-5-1m` is "Opus 5.5 (1M)")
+because the bundle holds no labels for them; our stored default stays `opus` (a Conductor
+alias) rather than Conductor's `opus-5-1m` fallback. Not built: Codex personality, Claude
+output style, Review model, Default to plan mode.

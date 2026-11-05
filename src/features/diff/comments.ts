@@ -141,11 +141,16 @@ export function pendingForAgent(comments: DiffComment[]): DiffComment[] {
   return comments.filter((c) => c.state === "pending" && !c.is_resolved && !c.is_outdated && c.body.length > 0);
 }
 
-/** Text handed to the agent composer: location, the commented code, then the note. */
+/** Text handed to the agent composer: location, the commented code, then the note.
+ *  A reply that follows its thread's earlier comment is quoted as a reply, without repeating the code. */
 export function formatForAgent(comments: DiffComment[], files: FileDiff[]): string {
   const byPath = new Map(files.map((f) => [f.path, f]));
+  const seen = new Set<string>();
   return comments
     .map((c) => {
+      const key = c.thread_id ?? c.id;
+      if (seen.has(key)) return `> Reply: ${c.body}`;
+      seen.add(key);
       const end = c.end_line_number ?? c.line_number;
       if (c.file_level) return `${c.file_path}:\n${c.body}`;
       const range = end === c.line_number ? `line ${c.line_number}` : `lines ${c.line_number}-${end}`;
@@ -174,4 +179,14 @@ export function deleteComment(comments: DiffComment[], id: string): DiffComment[
 
 export function setResolved(comments: DiffComment[], id: string, resolved: boolean, now: number): DiffComment[] {
   return comments.map((c) => (c.id === id ? { ...c, is_resolved: resolved, updated_at: now } : c));
+}
+
+/** Thread a comment belongs to: a reply's `thread_id`, or a root's own id. */
+export function threadKey(c: Pick<DiffComment, "id" | "thread_id">): string {
+  return c.thread_id ?? c.id;
+}
+
+/** Resolve or reopen a whole thread, as the Rust store's `set_thread_resolved` does. */
+export function setThreadResolved(comments: DiffComment[], threadId: string, resolved: boolean, now: number): DiffComment[] {
+  return comments.map((c) => (threadKey(c) === threadId ? { ...c, is_resolved: resolved, updated_at: now } : c));
 }

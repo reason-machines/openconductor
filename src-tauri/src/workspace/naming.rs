@@ -45,6 +45,16 @@ pub fn branch_for(prefix: Option<&str>, name: &str) -> String {
     }
 }
 
+/// Folder name `git clone` would pick for `url`: its last path segment
+/// without a trailing `.git`. Handles https, `git@host:owner/name` and local
+/// paths; `None` when nothing usable is left.
+pub fn repo_name_from_url(url: &str) -> Option<String> {
+    let trimmed = url.trim().trim_end_matches(['/', '\\']);
+    let trimmed = trimmed.strip_suffix(".git").unwrap_or(trimmed).trim_end_matches(['/', '\\']);
+    let name = trimmed.rsplit(['/', '\\', ':']).next()?;
+    (!name.is_empty() && name != "." && name != "..").then(|| name.to_string())
+}
+
 /// Make `base` unique against `taken` by appending `-2`, `-3`, ...
 pub fn uniquify(base: &str, taken: impl Fn(&str) -> bool) -> String {
     if !taken(base) {

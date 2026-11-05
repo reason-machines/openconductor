@@ -65,6 +65,8 @@ test("agent text quotes the commented code; sent and resolved comments are not p
   assert.equal(formatForAgent([c], [file]), "src/a.ts lines 2-3:\n```\nnext();\nmore();\n```\ntighten this");
   const del = newLocalComment({ ...base, id: "d", side: "old", start: 2 });
   assert.match(formatForAgent([del], [file]), /^src\/a\.ts line 2 \(removed code\):/);
+  const reply = newLocalComment({ ...base, id: "r", side: "new", start: 2, end: 3, body: "and rename it", replyTo: c });
+  assert.equal(formatForAgent([c, reply], [file]), "src/a.ts lines 2-3:\n```\nnext();\nmore();\n```\ntighten this\n> Reply: and rename it".replace("\n> Reply", "\n\n> Reply"));
   assert.deepEqual(pendingForAgent(markSent([c], new Set(["a"]), 5)), []);
   assert.deepEqual(pendingForAgent(setResolved([c], "a", true, 5)), []);
 });

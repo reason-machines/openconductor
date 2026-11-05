@@ -1,4 +1,5 @@
 // Pure helpers for the settings UI (no React, no Tauri) so node --test covers them.
+import { applyBranchPrefix, resolveBranchPrefix } from "../workspace/naming.ts";
 import type { Settings } from "./types";
 
 type Section = "general" | "git" | "models";
@@ -32,20 +33,24 @@ export function branchPrefixError(prefix: string): string | null {
     p.includes("//") ||
     p.includes("@{") ||
     /[\u0000-\u001f\u007f-\u009f ~^:?*[\\]/.test(p);
-  return bad ? "Use letters, numbers, - and /; no spaces, .., or a trailing / or .lock." : null;
+  return bad ? "Use letters, numbers, - and /; no spaces, \"..\", or a trailing . or .lock." : null;
 }
 
-/** What a new workspace branch called `name` would look like. */
-export function branchPreview(s: Settings, githubUser: string | null, name = "my-feature"): string {
-  switch (s.git.branch_prefix_type) {
-    case "github_username":
-      return githubUser ? `${githubUser}/${name}` : `<github-user>/${name}`;
-    case "custom":
-      return `${(s.git.branch_prefix_custom ?? "").trim().replace(/\/+$/, "") || "<prefix>"}/${name}`;
-    case "none":
-      return name;
-  }
+/**
+ * The branch a new workspace called `name` gets, computed by the same
+ * resolver the Create-workspace flow uses, so the preview never disagrees
+ * with the branch actually created.
+ */
+export function branchPreview(s: Settings, githubUser: string | null, name = "tokyo"): string {
+  return applyBranchPrefix(resolveBranchPrefix(s.git, githubUser), name);
 }
+
+/**
+ * The Custom prefix as the backend stores it. Conductor's own hint suggests
+ * `feature/`; our naming adds the `/` itself and the backend refuses a
+ * trailing one, so it is dropped here instead of being rejected.
+ */
+export const normalizeCustomPrefix = (v: string): string => v.trim().replace(/\/+$/, "");
 
 /** Only http(s) URLs are accepted for provider base URL overrides. */
 export const baseUrlError = (v: string): string | null =>
