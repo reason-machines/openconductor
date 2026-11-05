@@ -142,23 +142,47 @@ const DIFF_FLAGS: [&str; 5] = [
 ];
 
 /// Load the workspace diff described by `req`.
+///
+/// With `ignore_whitespace`, the files and their counts come from the plain
+/// diff and only the hunks from `git diff -w`: `-w` leaves whitespace-only
+/// files out entirely, and Conductor keeps them listed ("Only whitespace
+/// changes found"), so such a file is returned with no hunks.
 pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, DiffError> {
     if let Some(op) = operation_in_progress(repo)? {
         return Err(DiffError::OperationInProgress(op));
     }
     let base = base_commit(repo, &req.scope)?;
-    let ws = if req.ignore_whitespace {
-        Some("-w")
-    } else {
-        None
-    };
+    let mut files = diff_files(repo, &base, req, None)?;
+    if req.ignore_whitespace {
+        let mut hunks: std::collections::HashMap<String, Vec<_>> =
+            diff_files(repo, &base, req, Some("-w"))?
+                .into_iter()
+                .map(|f| (f.path, f.hunks))
+                .collect();
+        for f in &mut files {
+            f.hunks = hunks.remove(&f.path).unwrap_or_default();
+        }
+    }
+    Ok(WorkspaceDiff {
+        base_commit: base,
+        files,
+    })
+}
+
+/// Tracked changes against `base` plus untracked files, sorted by path.
+fn diff_files(
+    repo: &Path,
+    base: &str,
+    req: &DiffRequest,
+    ws: Option<&str>,
+) -> Result<Vec<FileDiff>, DiffError> {
     let context = req.context_lines.map(|n| format!("-U{n}"));
 
     let mut args: Vec<&str> = vec!["diff"];
     args.extend(DIFF_FLAGS);
     args.extend(ws);
     args.extend(context.as_deref());
-    args.push(&base);
+    args.push(base);
     args.push("--");
     args.extend(req.path.as_deref());
     let mut files = parse_unified(&git(repo, &args, &[0])?).map_err(DiffError::Parse)?;
@@ -180,10 +204,7 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
         }
     }
     files.sort_by(|a, b| a.path.cmp(&b.path));
-    Ok(WorkspaceDiff {
-        base_commit: base,
-        files,
-    })
+    Ok(files)
 }
 
 /// The changes list: every changed file with its counts, without hunks.

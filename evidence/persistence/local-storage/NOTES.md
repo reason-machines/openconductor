@@ -57,15 +57,16 @@ Other subsystems seen, not in the 11 (they use `entryFile`): `terminal-history` 
 
 | Part | Where | Tests |
 |---|---|---|
-| Store: index, `subsystemStore` and plain `entryFile` storage, `setEntry` steps 1-6, remove, list, discard-unreadable, 0600 atomic writes, 0700 entry dirs | [`store.rs`](../../../src-tauri/src/local_storage/store.rs) | [`store_tests.rs`](../../../src-tauri/src/local_storage/store_tests.rs) via [`run-tests.sh`](run-tests.sh) (CI job "Persistence crate") |
-| IPC `local_storage_{get_entry,list_entries,get_subsystem,list_subsystems,set_entry,remove_entry,remove_subsystem}` | [`commands.rs`](../../../src-tauri/src/local_storage/commands.rs) | argument shape test; app build in CI |
+| Store: the `subsystemStore` half (index record, `setEntry` steps 1-3, 5-6, `getEntry`, `removeEntry`, `listEntries`, `removeSubsystem`, discard-unreadable, 0600 atomic writes), sharing one process-wide lock on `local-storage.metadata.json` with the encrypted `terminal-history` entries | `SubsystemStore` in [`history_store.rs`](../../../src-tauri/src/terminal/history_store.rs) (the Terminal area's, extended here with `list_entries` / `remove_subsystem`) | `subsystem_store_*` tests there, via [`tools/terminal/run-rust-tests.sh`](../../../tools/terminal/run-rust-tests.sh) |
+| IPC `local_storage_{get_entry,set_entry,remove_entry,list_entries,remove_subsystem}` | [`local_storage_commands.rs`](../../../src-tauri/src/local_storage_commands.rs) | argument shape tests; app build in CI |
 
 Differences from the reference:
 
 - The backend writes the files (Conductor's frontend writes them through the fs plugin). Content crosses IPC as JSON text, so sizes and stored bytes match `JSON.stringify`.
 - Writes go to disk on each call instead of a 100 ms batch; the order (content, then index) is the same, so a crash leaves at worst an unlisted entry, as in the reference.
 - Object keys in the index and store files are written sorted (serde_json), not in insertion order. Readers parse JSON, so only the bytes differ.
-- Encrypted subsystems are refused here; `terminal-history` stays with `src-tauri/src/terminal/history_store.rs`. Both write `local-storage.metadata.json` from the same process with separate locks; they still need one lock.
+- The plain-store commands refuse encrypted and `entryFile` subsystems (`entryStorageMismatch`); `terminal-history` is written only by `LocalStorage` in the same file, under the same lock.
+- `setEntry`'s `onlyIfMissing` (step 4) and a caller-chosen `entryStorage` are not taken; every caller here uses `subsystemStore`.
 - Protection migration between encrypted and unencrypted storage (only used by `terminal-history`) is not built.
 
 ## REA

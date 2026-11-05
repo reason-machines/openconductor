@@ -25,6 +25,10 @@
 //!
 //! The key is 32 bytes; the reference keeps it as base64 under the secret
 //! `local-storage-entry-encryption-key-v1`. Getting it is the caller's job.
+//!
+//! [`SubsystemStore`] is the format's plain half (`subsystemStore` storage),
+//! used for the terminal panel's tab list. Both halves share the index and
+//! one process-wide lock.
 
 use std::collections::BTreeMap;
 use std::fmt;
@@ -59,6 +63,8 @@ const ENTRY_KIND: &str = "conductor-local-storage-entry";
 const FORMAT_VERSION: u32 = 1;
 const IV_LEN: usize = 12;
 const ENTRY_FILE: &str = "entryFile";
+/// `entryStorage` of a subsystem kept in one plain file ([`SubsystemStore`]).
+pub const SUBSYSTEM_STORE: &str = "subsystemStore";
 const ENCRYPTED: &str = "encrypted";
 
 #[derive(Debug)]
@@ -76,6 +82,8 @@ pub enum StoreError {
     StorageMismatch,
     /// The index lists the entry but its file is gone.
     MissingContent,
+    /// The content given is not JSON text.
+    NotJsonSerializable,
 }
 
 impl fmt::Display for StoreError {
@@ -88,6 +96,7 @@ impl fmt::Display for StoreError {
             StoreError::SubsystemFull => f.write_str("subsystemFull"),
             StoreError::StorageMismatch => f.write_str("entryStorageMismatch"),
             StoreError::MissingContent => f.write_str("missing local storage entry content"),
+            StoreError::NotJsonSerializable => f.write_str("notJsonSerializable"),
         }
     }
 }
@@ -108,6 +117,17 @@ pub struct EntryMeta {
     pub id: String,
     pub size: u64,
     pub last_updated_at: String,
+}
+
+/// One entry from [`SubsystemStore::list_entries`]: its index metadata and
+/// JSON text.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ListedEntry {
+    pub id: String,
+    pub size: u64,
+    pub last_updated_at: String,
+    pub content: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -138,11 +158,11 @@ struct Aad<'a> {
 }
 
 /// Encrypted `entryFile` local storage rooted at the app data folder.
-/// Operations on one store are serialized, like the reference's queue.
+/// Operations are serialized with every other local-storage operation in
+/// the process (see [`index_lock`]), like the reference's queue.
 pub struct LocalStorage {
     root: PathBuf,
     cipher: Aes256Gcm,
-    lock: Mutex<()>,
 }
 
 impl LocalStorage {
@@ -150,7 +170,6 @@ impl LocalStorage {
         LocalStorage {
             root: root.into(),
             cipher: Aes256Gcm::new(Key::<Aes256Gcm>::from_slice(key)),
-            lock: Mutex::new(()),
         }
     }
 
@@ -173,7 +192,7 @@ impl LocalStorage {
         if size > size_limit {
             return Err(StoreError::EntryTooLarge);
         }
-        let _guard = self.lock.lock().unwrap_or_else(|p| p.into_inner());
+        let _guard = index_lock();
         let mut index = self.read_index()?;
         let existing = match index.get(subsystem) {
             Some(v) => Some(parse_record(v)?),
@@ -252,7 +271,7 @@ impl LocalStorage {
 
     /// The value stored under `id`, or `None` when the index has no such entry.
     pub fn get_entry(&self, subsystem: &str, id: &str) -> StoreResult<Option<String>> {
-        let _guard = self.lock.lock().unwrap_or_else(|p| p.into_inner());
+        let _guard = index_lock();
         let index = self.read_index()?;
         let Some(record) = index.get(subsystem).map(parse_record).transpose()? else {
             return Ok(None);
@@ -281,7 +300,7 @@ impl LocalStorage {
 
     /// Remove `id` from the index and delete its file. Missing entries are fine.
     pub fn remove_entry(&self, subsystem: &str, id: &str) -> StoreResult<()> {
-        let _guard = self.lock.lock().unwrap_or_else(|p| p.into_inner());
+        let _guard = index_lock();
         let mut index = self.read_index()?;
         let Some(mut record) = index.get(subsystem).map(parse_record).transpose()? else {
             return Ok(());
@@ -304,7 +323,7 @@ impl LocalStorage {
 
     /// Ids the index lists for `subsystem`.
     pub fn entry_ids(&self, subsystem: &str) -> StoreResult<Vec<String>> {
-        let _guard = self.lock.lock().unwrap_or_else(|p| p.into_inner());
+        let _guard = index_lock();
         let index = self.read_index()?;
         Ok(match index.get(subsystem).map(parse_record).transpose()? {
             Some(r) => r.entries.into_iter().map(|e| e.id).collect(),
@@ -376,18 +395,281 @@ impl LocalStorage {
     }
 
     fn read_index(&self) -> StoreResult<BTreeMap<String, Value>> {
-        match fs::read_to_string(self.root.join(METADATA_FILE)) {
-            Ok(text) => serde_json::from_str(&text)
-                .map_err(|e| StoreError::Corrupt(format!("{METADATA_FILE}: {e}"))),
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(BTreeMap::new()),
-            Err(e) => Err(e.into()),
-        }
+        read_index(&self.root)
     }
 
     fn write_index(&self, index: &BTreeMap<String, Value>) -> StoreResult<()> {
+        write_index(&self.root, index)
+    }
+}
+
+/// Plain `subsystemStore` local storage: every entry of a subsystem lives in
+/// one file, `local-storage.subsystem.<enc(subsystem)>.json`, a JSON object
+/// mapping each id to the entry's JSON text (`JSON.stringify` of the value),
+/// written atomically with mode 0600. The reference's `terminal` subsystem
+/// (the terminal panel's tab list, 100 MiB limit) is kept this way. The
+/// index entry has no `protection`; sizes, eviction and the
+/// `entryTooLarge` / `subsystemFull` failures are as for [`LocalStorage`].
+pub struct SubsystemStore {
+    root: PathBuf,
+}
+
+impl SubsystemStore {
+    pub fn new(root: impl Into<PathBuf>) -> Self {
+        SubsystemStore { root: root.into() }
+    }
+
+    /// The file holding every entry of `subsystem`.
+    pub fn store_path(&self, subsystem: &str) -> PathBuf {
+        self.root.join(format!(
+            "local-storage.subsystem.{}.json",
+            encode_uri_component(subsystem)
+        ))
+    }
+
+    /// Store `content`, an entry's JSON text, under `id`. The store file is
+    /// written before the index, as the reference flushes them; if the index
+    /// write fails the store file is put back.
+    pub fn set_entry(
+        &self,
+        subsystem: &str,
+        size_limit: u64,
+        id: &str,
+        content: &str,
+    ) -> StoreResult<()> {
+        if serde_json::from_str::<serde::de::IgnoredAny>(content).is_err() {
+            return Err(StoreError::NotJsonSerializable);
+        }
+        let size = content.len() as u64;
+        if size > size_limit {
+            return Err(StoreError::EntryTooLarge);
+        }
+        let _guard = index_lock();
+        let mut index = read_index(&self.root)?;
+        let existing = self.record(&index, subsystem)?;
+        let previous_size = existing
+            .as_ref()
+            .and_then(|r| r.entries.iter().find(|e| e.id == id))
+            .map_or(0, |e| e.size);
+        let mut entries: Vec<EntryMeta> = existing
+            .as_ref()
+            .map(|r| r.entries.iter().filter(|e| e.id != id).cloned().collect())
+            .unwrap_or_default();
+        entries.push(EntryMeta {
+            id: id.to_owned(),
+            size,
+            last_updated_at: iso_now(),
+        });
+        let mut total = existing
+            .as_ref()
+            .map_or(0, |r| r.total_size)
+            .saturating_sub(previous_size)
+            + size;
+        let mut evicted = Vec::new();
+        while total > size_limit {
+            let Some(pos) = oldest_other(&entries, id) else {
+                break;
+            };
+            let gone = entries.remove(pos);
+            total = total.saturating_sub(gone.size);
+            evicted.push(gone.id);
+        }
+        if total > size_limit {
+            return Err(StoreError::SubsystemFull);
+        }
+
+        let path = self.store_path(subsystem);
+        let previous = fs::read(&path).ok();
+        let mut store = parse_store(previous.as_deref());
+        store.insert(id.to_owned(), Value::String(content.to_owned()));
+        for gone in &evicted {
+            store.remove(gone);
+        }
         fs::create_dir_all(&self.root)?;
-        let text = serde_json::to_string(index).expect("index serializes");
-        write_atomic(&self.root.join(METADATA_FILE), text.as_bytes())
+        write_atomic(
+            &path,
+            serde_json::to_string(&store)
+                .expect("store serializes")
+                .as_bytes(),
+        )?;
+        let record = SubsystemRecord {
+            subsystem: subsystem.to_owned(),
+            size_limit,
+            total_size: total,
+            entry_storage: SUBSYSTEM_STORE.to_owned(),
+            protection: None,
+            entries,
+        };
+        index.insert(
+            subsystem.to_owned(),
+            serde_json::to_value(&record).expect("record serializes"),
+        );
+        if let Err(e) = write_index(&self.root, &index) {
+            match previous {
+                Some(bytes) => drop(write_atomic(&path, &bytes)),
+                None => drop(fs::remove_file(&path)),
+            }
+            return Err(e);
+        }
+        Ok(())
+    }
+
+    /// The JSON text stored under `id`, or `None` when the index has no such
+    /// entry. An unreadable store file reads as empty, as in the reference.
+    pub fn get_entry(&self, subsystem: &str, id: &str) -> StoreResult<Option<String>> {
+        let _guard = index_lock();
+        let index = read_index(&self.root)?;
+        let Some(record) = self.record(&index, subsystem)? else {
+            return Ok(None);
+        };
+        if !record.entries.iter().any(|e| e.id == id) {
+            return Ok(None);
+        }
+        let bytes = match fs::read(self.store_path(subsystem)) {
+            Ok(b) => Some(b),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => None,
+            Err(e) => return Err(e.into()),
+        };
+        match parse_store(bytes.as_deref()).remove(id) {
+            Some(Value::String(s)) => Ok(Some(s)),
+            Some(_) => Err(StoreError::Corrupt(
+                "Invalid local storage entry content".into(),
+            )),
+            None => Err(StoreError::MissingContent),
+        }
+    }
+
+    /// Remove `id` from the index, then from the store file. Missing entries are fine.
+    pub fn remove_entry(&self, subsystem: &str, id: &str) -> StoreResult<()> {
+        let _guard = index_lock();
+        let mut index = read_index(&self.root)?;
+        let Some(mut record) = self.record(&index, subsystem)? else {
+            return Ok(());
+        };
+        let Some(pos) = record.entries.iter().position(|e| e.id == id) else {
+            return Ok(());
+        };
+        let gone = record.entries.remove(pos);
+        record.total_size = record.total_size.saturating_sub(gone.size);
+        index.insert(
+            subsystem.to_owned(),
+            serde_json::to_value(&record).expect("record serializes"),
+        );
+        write_index(&self.root, &index)?;
+        let path = self.store_path(subsystem);
+        let mut store = parse_store(fs::read(&path).ok().as_deref());
+        if store.remove(id).is_some() {
+            write_atomic(
+                &path,
+                serde_json::to_string(&store)
+                    .expect("store serializes")
+                    .as_bytes(),
+            )?;
+        }
+        Ok(())
+    }
+
+    /// Every indexed entry of `subsystem` with its JSON text, in index order
+    /// (the reference's `listEntries`). An entry the index lists but the
+    /// store file lacks is an error, as there.
+    pub fn list_entries(&self, subsystem: &str) -> StoreResult<Vec<ListedEntry>> {
+        let _guard = index_lock();
+        let index = read_index(&self.root)?;
+        let Some(record) = self.record(&index, subsystem)? else {
+            return Ok(Vec::new());
+        };
+        let bytes = match fs::read(self.store_path(subsystem)) {
+            Ok(b) => Some(b),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => None,
+            Err(e) => return Err(e.into()),
+        };
+        let mut store = parse_store(bytes.as_deref());
+        record
+            .entries
+            .into_iter()
+            .map(|meta| match store.remove(&meta.id) {
+                Some(Value::String(content)) => Ok(ListedEntry {
+                    id: meta.id,
+                    size: meta.size,
+                    last_updated_at: meta.last_updated_at,
+                    content,
+                }),
+                Some(_) => Err(StoreError::Corrupt(
+                    "Invalid local storage entry content".into(),
+                )),
+                None => Err(StoreError::MissingContent),
+            })
+            .collect()
+    }
+
+    /// Drop `subsystem` from the index, then delete its store file (the
+    /// reference's `removeSubsystem`). A missing subsystem is fine.
+    pub fn remove_subsystem(&self, subsystem: &str) -> StoreResult<()> {
+        let _guard = index_lock();
+        let mut index = read_index(&self.root)?;
+        self.record(&index, subsystem)?;
+        if index.remove(subsystem).is_some() {
+            write_index(&self.root, &index)?;
+        }
+        match fs::remove_file(self.store_path(subsystem)) {
+            Err(e) if e.kind() != std::io::ErrorKind::NotFound => Err(e.into()),
+            _ => Ok(()),
+        }
+    }
+
+    /// The subsystem's index record. The encrypted terminal history and any
+    /// subsystem the index keeps as entry files are refused.
+    fn record(
+        &self,
+        index: &BTreeMap<String, Value>,
+        subsystem: &str,
+    ) -> StoreResult<Option<SubsystemRecord>> {
+        if subsystem == SUBSYSTEM {
+            return Err(StoreError::StorageMismatch);
+        }
+        let record = index.get(subsystem).map(parse_record).transpose()?;
+        if record
+            .as_ref()
+            .is_some_and(|r| r.entry_storage != SUBSYSTEM_STORE || r.protection.is_some())
+        {
+            return Err(StoreError::StorageMismatch);
+        }
+        Ok(record)
+    }
+}
+
+/// One lock for every local-storage operation in the process: the encrypted
+/// entry files and the plain subsystem stores share `local-storage.metadata.json`.
+fn index_lock() -> std::sync::MutexGuard<'static, ()> {
+    static LOCK: Mutex<()> = Mutex::new(());
+    LOCK.lock().unwrap_or_else(|p| p.into_inner())
+}
+
+fn read_index(root: &Path) -> StoreResult<BTreeMap<String, Value>> {
+    match fs::read_to_string(root.join(METADATA_FILE)) {
+        Ok(text) => serde_json::from_str(&text)
+            .map_err(|e| StoreError::Corrupt(format!("{METADATA_FILE}: {e}"))),
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(BTreeMap::new()),
+        Err(e) => Err(e.into()),
+    }
+}
+
+fn write_index(root: &Path, index: &BTreeMap<String, Value>) -> StoreResult<()> {
+    fs::create_dir_all(root)?;
+    let text = serde_json::to_string(index).expect("index serializes");
+    write_atomic(&root.join(METADATA_FILE), text.as_bytes())
+}
+
+/// A subsystem store file's object; a missing or unreadable file is empty
+/// (the reference discards an unreadable store and logs it).
+fn parse_store(bytes: Option<&[u8]>) -> serde_json::Map<String, Value> {
+    match bytes.map(serde_json::from_slice::<Value>) {
+        Some(Ok(Value::Object(m))) => m,
+        Some(_) => {
+            eprintln!("Discarding unreadable local storage store");
+            serde_json::Map::new()
+        }
+        None => serde_json::Map::new(),
     }
 }
 
@@ -471,7 +753,15 @@ fn write_atomic(path: &Path, bytes: &[u8]) -> StoreResult<()> {
         B64.encode(nonce).replace(['/', '+', '='], "_")
     ));
     let result = (|| {
-        let mut f = fs::File::create(&tmp)?;
+        // Mode 0600, as the reference writes every local-storage file.
+        let mut options = fs::OpenOptions::new();
+        options.write(true).create(true).truncate(true);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::OpenOptionsExt;
+            options.mode(0o600);
+        }
+        let mut f = options.open(&tmp)?;
         f.write_all(bytes)?;
         f.sync_all()?;
         fs::rename(&tmp, path)
@@ -687,6 +977,224 @@ mod tests {
         assert!(matches!(
             store.get_entry(SUBSYSTEM, "a"),
             Err(StoreError::MissingContent)
+        ));
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    // What the reference's frontend stores for a one-tab panel: zustand's
+    // persisted string, `JSON.stringify`-ed as the entry content (made with node).
+    const TABS_ID: &str = "terminal-panel-tabs-v1";
+    const TABS_CONTENT: &str = r#""{\"state\":{\"terminals\":[{\"id\":\"term-1\",\"cwd\":\"/r/ü \\\"q\\\"\",\"localWorkspaceId\":\"w1\",\"startingCommandRan\":false}],\"workspaceTerminals\":[[\"w1\",[\"term-1\"]]],\"activeTabPerWorkspace\":[[\"w1\",\"term-1\"]],\"lastTabKind\":\"terminal\"},\"version\":2}""#;
+    const TABS_STORE_FILE: &str = r#"{"terminal-panel-tabs-v1":"\"{\\\"state\\\":{\\\"terminals\\\":[{\\\"id\\\":\\\"term-1\\\",\\\"cwd\\\":\\\"/r/ü \\\\\\\"q\\\\\\\"\\\",\\\"localWorkspaceId\\\":\\\"w1\\\",\\\"startingCommandRan\\\":false}],\\\"workspaceTerminals\\\":[[\\\"w1\\\",[\\\"term-1\\\"]]],\\\"activeTabPerWorkspace\\\":[[\\\"w1\\\",\\\"term-1\\\"]],\\\"lastTabKind\\\":\\\"terminal\\\"},\\\"version\\\":2}\""}"#;
+    const TABS_LIMIT: u64 = 100 * 1024 * 1024;
+
+    #[test]
+    fn subsystem_store_writes_the_reference_files() {
+        let root = temp_root("store-files");
+        let store = SubsystemStore::new(&root);
+        store
+            .set_entry("terminal", TABS_LIMIT, TABS_ID, TABS_CONTENT)
+            .unwrap();
+        let path = store.store_path("terminal");
+        assert_eq!(path, root.join("local-storage.subsystem.terminal.json"));
+        assert_eq!(fs::read_to_string(&path).unwrap(), TABS_STORE_FILE);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            assert_eq!(
+                fs::metadata(&path).unwrap().permissions().mode() & 0o777,
+                0o600
+            );
+        }
+        let index: Value =
+            serde_json::from_str(&fs::read_to_string(root.join(METADATA_FILE)).unwrap()).unwrap();
+        let rec = index["terminal"].as_object().unwrap();
+        assert_eq!(
+            rec.keys().collect::<Vec<_>>(),
+            [
+                "entries",
+                "entryStorage",
+                "sizeLimit",
+                "subsystem",
+                "totalSize"
+            ],
+            "no protection key, as in the reference's record"
+        );
+        assert_eq!(rec["entryStorage"], "subsystemStore");
+        assert_eq!(rec["sizeLimit"], TABS_LIMIT);
+        // Sizes are UTF-8 bytes of the JSON text (TextEncoder), not UTF-16 units.
+        assert_eq!(rec["totalSize"], 274);
+        assert_eq!(rec["entries"][0]["id"], TABS_ID);
+        assert_eq!(rec["entries"][0]["size"], 274);
+        assert_eq!(
+            store.get_entry("terminal", TABS_ID).unwrap().as_deref(),
+            Some(TABS_CONTENT)
+        );
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn subsystem_store_reads_a_file_the_reference_wrote() {
+        let root = temp_root("store-read");
+        fs::create_dir_all(&root).unwrap();
+        fs::write(
+            root.join("local-storage.subsystem.terminal.json"),
+            TABS_STORE_FILE,
+        )
+        .unwrap();
+        fs::write(
+            root.join(METADATA_FILE),
+            r#"{"terminal":{"subsystem":"terminal","sizeLimit":104857600,"totalSize":274,"entryStorage":"subsystemStore","entries":[{"id":"terminal-panel-tabs-v1","size":274,"lastUpdatedAt":"2026-10-26T14:14:00.000Z"}]}}"#,
+        )
+        .unwrap();
+        let store = SubsystemStore::new(&root);
+        let text = store.get_entry("terminal", TABS_ID).unwrap().unwrap();
+        let zustand: String = serde_json::from_str(&text).unwrap();
+        let v: Value = serde_json::from_str(&zustand).unwrap();
+        assert_eq!(v["version"], 2);
+        assert_eq!(v["state"]["terminals"][0]["cwd"], "/r/ü \"q\"");
+        assert_eq!(store.get_entry("terminal", "other").unwrap(), None);
+        assert_eq!(store.get_entry("route-user-state", TABS_ID).unwrap(), None);
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn subsystem_store_shares_the_index_with_entry_files() {
+        let root = temp_root("store-shared");
+        let history = LocalStorage::new(&root, &key());
+        let tabs = SubsystemStore::new(&root);
+        history
+            .set_entry(SUBSYSTEM, SIZE_LIMIT, "s1", "screen")
+            .unwrap();
+        tabs.set_entry("terminal", TABS_LIMIT, TABS_ID, "\"x\"")
+            .unwrap();
+        history.remove_entry(SUBSYSTEM, "s1").unwrap();
+        history
+            .set_entry(SUBSYSTEM, SIZE_LIMIT, "s2", "screen")
+            .unwrap();
+        assert_eq!(
+            tabs.get_entry("terminal", TABS_ID).unwrap().as_deref(),
+            Some("\"x\"")
+        );
+        assert_eq!(history.entry_ids(SUBSYSTEM).unwrap(), ["s2"]);
+        // Neither half takes over the other's subsystem.
+        assert!(matches!(
+            tabs.set_entry(SUBSYSTEM, SIZE_LIMIT, "s3", "\"x\""),
+            Err(StoreError::StorageMismatch)
+        ));
+        assert!(matches!(
+            history.set_entry("terminal", TABS_LIMIT, TABS_ID, "x"),
+            Err(StoreError::StorageMismatch)
+        ));
+        // Writes from many threads all land in the one index.
+        std::thread::scope(|s| {
+            for i in 0..8 {
+                let (h, t) = (&history, &tabs);
+                s.spawn(move || {
+                    h.set_entry(SUBSYSTEM, SIZE_LIMIT, &format!("h{i}"), "x")
+                        .unwrap();
+                    t.set_entry("terminal", TABS_LIMIT, &format!("t{i}"), "1")
+                        .unwrap();
+                });
+            }
+        });
+        assert_eq!(history.entry_ids(SUBSYSTEM).unwrap().len(), 9);
+        for i in 0..8 {
+            assert_eq!(
+                tabs.get_entry("terminal", &format!("t{i}"))
+                    .unwrap()
+                    .as_deref(),
+                Some("1")
+            );
+        }
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn subsystem_store_evicts_removes_and_refuses() {
+        let root = temp_root("store-evict");
+        let store = SubsystemStore::new(&root);
+        store.set_entry("s", 6, "a", "111").unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(3));
+        store.set_entry("s", 6, "b", "222").unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(3));
+        store.set_entry("s", 6, "c", "333").unwrap();
+        assert_eq!(store.get_entry("s", "a").unwrap(), None);
+        let file: Value =
+            serde_json::from_str(&fs::read_to_string(store.store_path("s")).unwrap()).unwrap();
+        assert_eq!(file, serde_json::json!({"b": "222", "c": "333"}));
+        assert!(matches!(
+            store.set_entry("s", 6, "d", "1234567"),
+            Err(StoreError::EntryTooLarge)
+        ));
+        assert!(matches!(
+            store.set_entry("s", 6, "d", "{nope"),
+            Err(StoreError::NotJsonSerializable)
+        ));
+
+        store.remove_entry("s", "b").unwrap();
+        store.remove_entry("s", "b").unwrap();
+        let file: Value =
+            serde_json::from_str(&fs::read_to_string(store.store_path("s")).unwrap()).unwrap();
+        assert_eq!(file, serde_json::json!({"c": "333"}));
+        let index: Value =
+            serde_json::from_str(&fs::read_to_string(root.join(METADATA_FILE)).unwrap()).unwrap();
+        assert_eq!(index["s"]["totalSize"], 3);
+
+        // An unreadable store file reads as empty; the listed entry is then missing.
+        fs::write(store.store_path("s"), "not json").unwrap();
+        assert!(matches!(
+            store.get_entry("s", "c"),
+            Err(StoreError::MissingContent)
+        ));
+        store.set_entry("s", 6, "c", "4").unwrap();
+        assert_eq!(store.get_entry("s", "c").unwrap().as_deref(), Some("4"));
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn subsystem_store_lists_and_removes_subsystems() {
+        let root = temp_root("store-list");
+        let store = SubsystemStore::new(&root);
+        assert_eq!(store.list_entries("s").unwrap(), Vec::new());
+        store.set_entry("s", 100, "a", "\"x\"").unwrap();
+        store.set_entry("s", 100, "b", "[1]").unwrap();
+        store.set_entry("s", 100, "a", "2").unwrap();
+        store.set_entry("other", 100, "k", "true").unwrap();
+        let listed = store.list_entries("s").unwrap();
+        let got: Vec<_> = listed
+            .iter()
+            .map(|e| (e.id.as_str(), e.size, e.content.as_str()))
+            .collect();
+        // Index order: a rewritten entry moves to the end, as setEntry appends it.
+        assert_eq!(got, [("b", 3, "[1]"), ("a", 1, "2")]);
+        assert_eq!(listed[0].last_updated_at.len(), 24);
+        let wire = serde_json::to_value(&listed[1]).unwrap();
+        assert_eq!(wire["lastUpdatedAt"], listed[1].last_updated_at.as_str());
+        assert_eq!(wire["id"], "a");
+        assert_eq!(wire["size"], 1);
+        assert_eq!(wire["content"], "2");
+
+        // Listed content that is gone is an error, as in the reference.
+        let file = fs::read_to_string(store.store_path("s")).unwrap();
+        fs::write(store.store_path("s"), r#"{"a":"2"}"#).unwrap();
+        assert!(matches!(
+            store.list_entries("s"),
+            Err(StoreError::MissingContent)
+        ));
+        fs::write(store.store_path("s"), file).unwrap();
+
+        store.remove_subsystem("s").unwrap();
+        store.remove_subsystem("s").unwrap();
+        assert!(!store.store_path("s").exists());
+        let index: Value =
+            serde_json::from_str(&fs::read_to_string(root.join(METADATA_FILE)).unwrap()).unwrap();
+        assert!(index.get("s").is_none());
+        assert_eq!(index["other"]["totalSize"], 4);
+        assert_eq!(store.get_entry("other", "k").unwrap().as_deref(), Some("true"));
+        assert!(matches!(
+            store.remove_subsystem(SUBSYSTEM),
+            Err(StoreError::StorageMismatch)
         ));
         let _ = fs::remove_dir_all(&root);
     }
