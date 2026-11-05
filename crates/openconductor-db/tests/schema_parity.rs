@@ -11,24 +11,6 @@ use sqlx::Row;
 
 const REFERENCE_DDL: &str = include_str!("../../../evidence/sqlite/conductor.schema.sql");
 
-/// Reference tables whose migrations have not landed yet; their tables and
-/// indexes are left out of the comparison. Shrinks to empty as they land.
-const NOT_YET_MIGRATED: &[&str] = &[
-    "attachments",
-    "diff_comments",
-    "terminal_sessions",
-    "port_forwards",
-    "env_vars",
-    "symlinks_pending_deletion",
-    "migration_rollbacks",
-    "session_messages_outbox",
-    "session_messages_outbox_state",
-    "session_assets_outbox",
-    "navigation_sections",
-    "navigation_section_memberships",
-    "favorite_models",
-];
-
 /// Normalised description of one schema object, keyed by object name.
 type Schema = BTreeMap<String, String>;
 
@@ -51,9 +33,6 @@ async fn describe(pool: &SqlitePool) -> Schema {
         let name: String = object.get("name");
         let table: String = object.get("tbl_name");
         let sql: Option<String> = object.get("sql");
-        if NOT_YET_MIGRATED.contains(&table.as_str()) {
-            continue;
-        }
         let description = match kind.as_str() {
             "table" => {
                 let columns = sqlx::query(
