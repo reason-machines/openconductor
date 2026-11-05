@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type Dispatch, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type Dispatch, type ReactNode, type RefObject } from "react";
 import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
@@ -13,8 +13,12 @@ import { RepoIconDialog } from "./RepoIconDialog";
 import { RenameWorkspaceDialog } from "./RenameWorkspaceDialog";
 import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
+import { RepoWorkspaceList } from "./PendingWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
 import { pinnedEntries, repoGroupWorkspaces } from "../state/sidebarOrder";
+import { ProjectFilterSubmenu } from "./home/ProjectFilterSubmenu";
+import { useRepoFilter } from "../home/useRepoFilter";
+import { filterRepoGroups } from "../home/repoFilter";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
 function hint(commandId: string): string {
@@ -59,8 +63,10 @@ function NavRow({ icon, label, shortcut, active, onClick }: { icon: JSX.Element;
 }
 
 interface MenuItem { label: string; onSelect: () => void; shortcut?: string; destructive?: boolean }
-/** A menu entry, or "-" for a separator line. */
-type MenuEntry = MenuItem | "-";
+/** A custom entry, such as a submenu, rendered with the menu's close function. */
+interface MenuNode { key: string; render: (close: () => void) => ReactNode }
+/** A menu entry, a custom node, or "-" for a separator line. */
+type MenuEntry = MenuItem | MenuNode | "-";
 
 /** Menu panel shared by the hover "..." trigger and the right-click context menu. */
 function MenuPanel({ items, close, at }: { items: MenuEntry[]; close: () => void; at?: { x: number; y: number } }) {
@@ -69,6 +75,8 @@ function MenuPanel({ items, close, at }: { items: MenuEntry[]; close: () => void
       {items.map((item, i) =>
         item === "-" ? (
           <div key={`sep-${i}`} role="separator" className="sb-menu-sep" />
+        ) : "render" in item ? (
+          <div key={item.key} role="none">{item.render(close)}</div>
         ) : (
           <button
             key={item.label}
@@ -144,7 +152,12 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
   const iconRepo = iconRepoId ? state.repos.find((r) => r.id === iconRepoId) : undefined;
   const [dragRepoId, setDragRepoId] = useState<string | null>(null);
   const [dropRepoId, setDropRepoId] = useState<string | null>(null);
-  const listed = visibleRepos(state.repos, showHidden);
+  // "Filter by project" (Conductor's `pra`, setting `sidebar_repo_filter`). Repos arrive from
+  // conductor.db after the first render (before that, only path-less placeholders for collapsed
+  // repos), so a stale filter is cleared only once real repos have loaded.
+  const [repoFilter, setRepoFilter] = useRepoFilter(state.repos, state.repos.some((r) => r.path !== ""));
+  // The filter narrows the repo groups only; Pinned keeps every repo's rows (`hBi`).
+  const listed = filterRepoGroups(visibleRepos(state.repos, showHidden), repoFilter);
   // Dragging is off with a single listed repo, as in Conductor.
   const canDrag = listed.length > 1;
   const dropOn = (targetId: string) => {
@@ -198,7 +211,13 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
         {pinned.length > 0 && (
           <SidebarGroup label="Pinned" count={pinned.length}>
             {pinned.map(({ repoId, workspace }) => (
-              <SidebarWorkspaceRow key={workspace.id} workspace={workspace} targetBranch={state.repos.find((r) => r.id === repoId)?.defaultBranch ?? ""} {...rows.rowProps(repoId, workspace)} />
+              <SidebarWorkspaceRow
+                key={workspace.id}
+                workspace={workspace}
+                targetBranch={state.repos.find((r) => r.id === repoId)?.defaultBranch ?? ""}
+                hasRemote={Boolean(state.repos.find((r) => r.id === repoId)?.remote)}
+                {...rows.rowProps(repoId, workspace)}
+              />
             ))}
           </SidebarGroup>
         )}
@@ -211,7 +230,10 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
               {groupCollapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}
             </span>
           </button>
-          <HeaderMenu label="My workspaces" className="sb-section-menu" items={[{ label: "Add project…", onSelect: onOpenProject }]} />
+          <HeaderMenu label="My workspaces" className="sb-section-menu" items={[
+            { label: "Add project…", onSelect: onOpenProject },
+            { key: "filter-by-project", render: (close) => <ProjectFilterSubmenu repos={state.repos} filter={repoFilter} onChange={setRepoFilter} onClose={close} /> },
+          ]} />
         </div>
         {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
         {!groupCollapsed && (
@@ -282,14 +304,11 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
                 ]}
               />
             </div>
-            {!repo.collapsed && (
-              <div className="sb-ws-list">
-                {repo.workspaces.length === 0 && <p className="ws-empty">No workspaces</p>}
-                {repoGroupWorkspaces(repo.workspaces).map((ws) => (
-                  <SidebarWorkspaceRow key={ws.id} workspace={ws} targetBranch={repo.defaultBranch} {...rows.rowProps(repo.id, ws)} />
-                ))}
-              </div>
-            )}
+            <RepoWorkspaceList repoId={repo.id} collapsed={!!repo.collapsed} isEmpty={repo.workspaces.length === 0} empty={<p className="ws-empty">No workspaces</p>}>
+              {repoGroupWorkspaces(repo.workspaces).map((ws) => (
+                <SidebarWorkspaceRow key={ws.id} workspace={ws} targetBranch={repo.defaultBranch} hasRemote={Boolean(repo.remote)} {...rows.rowProps(repo.id, ws)} />
+              ))}
+            </RepoWorkspaceList>
           </div>
             ))}
             {hasHiddenRepos(state.repos) && (

@@ -1,4 +1,5 @@
 import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
+import type { RowPr } from "./rowStatus.ts";
 
 export type WorkspaceStatus = "idle" | "working" | "needs-review" | "archived";
 
@@ -35,6 +36,10 @@ export interface Workspace {
   derivedStatus?: WorkspaceStatusValue;
   /** `workspaces.number`, given on creation and shown as `W-<n>`; null for workspaces from before numbering. */
   number?: number | null;
+  /** `workspaces.state` (initializing, setting_up, ready, failed, ...): the row shows setup and failure. */
+  state?: string;
+  /** The workspace's pull request as last read from GitHub; drives the row's status icon. */
+  pr?: RowPr | null;
 }
 
 export interface Repo {
@@ -53,7 +58,12 @@ export interface Repo {
   icon?: string | null;
 }
 
-export type Selection = { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
+/**
+ * `root` is Conductor's `/` route: the wordmark and the three entry cards, shown at
+ * start and when the open workspace goes away. `home` is its `/all-workspaces`
+ * route, the workspace list that the sidebar Home row and nav.home open.
+ */
+export type Selection = { kind: "root" } | { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
 
 export interface AppState {
   repos: Repo[];
