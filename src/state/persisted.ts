@@ -70,12 +70,14 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
       defaultBranch: r.defaultBranch,
       collapsed: folded.has(r.id) || undefined,
       hidden: r.hidden || undefined,
+      icon: r.icon,
       workspaces: workspaces
         .filter((w) => w.repositoryId === r.id && !HIDDEN_STATES.has(w.state))
         .map(
           (w): Workspace => ({
             id: w.id,
             name: w.workspaceName ?? w.directoryName,
+            directoryName: w.directoryName,
             branch: w.branch,
             status: "idle",
             diff: { added: 0, removed: 0 },

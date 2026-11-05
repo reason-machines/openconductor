@@ -1,14 +1,14 @@
 {
  "schema": "openconductor.builder-obligations.v1",
  "ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 4d72807: home.* re-read after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-name and sidebar.ws-status after #327, #344, #375, #379; sidebar.ws-status, ws-name and ws-branch after #337 on 1cedef0; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 75.0,
+ "verdicts_verified_at": "2026-11-05 (main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 79.5,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 26,
+ "open": 22,
  "by_owner": {
-  "create-workspace": 4,
-  "home": 5,
-  "sidebar": 17
+  "create-workspace": 3,
+  "home": 4,
+  "sidebar": 15
  },
  "obligations": [
   {
@@ -28,27 +28,6 @@
     "copy": [
      1057,
      4975
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.create.number",
-   "item": "create.number",
-   "area": "create",
-   "owner": "create-workspace",
-   "depends_on_builders": [],
-   "feature": "Assign a per-workspace number on creation",
-   "verdict": "missing",
-   "gap": "The schema has a number column but no create path, persistence function or UI assigns or shows one.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     1692
-    ],
-    "schema": [
-     "workspaces.number"
     ]
    },
    "status": "open"
@@ -89,7 +68,7 @@
    "depends_on_builders": [],
    "feature": "Full-screen create-workspace page with its own composer and tab navigation",
    "verdict": "partial",
-   "gap": "Create is still a modal (CreateWorkspaceDialog.tsx) with a prompt box, create-from picker, repo and base-branch selects and a name field, not the reference's full-screen composer with tabs; agent, model and effort come from Settings \u203a Default models with no picker in the composer.",
+   "gap": "Create is still a modal (CreateWorkspaceDialog.tsx) with a prompt box, create-from picker, repo and base-branch selects and a name field, not the reference's full-screen composer with tabs; agent, model and effort come from Settings \u203a Default models with no picker in the composer. Re-read on 0f82f19: unchanged. PR #388 (Conductor's composer and the full-screen /create page behind Settings > Experimental > New workspace page) is open, not merged, so it is not scored.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -162,28 +141,6 @@
    "evidence": {
     "copy": [
      3459
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.home.repo-search",
-   "item": "home.repo-search",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [
-    "sidebar"
-   ],
-   "feature": "Narrow the repository list by project: the sidebar section header's Filter by project submenu (All projects, then each repository; shown with more than one repository; stored in sidebar_repo_filter) and the palette Projects tab (Search projects...). Home and the Add-repository menu have no repo search",
-   "verdict": "partial",
-   "gap": "Re-anchored after REA on Conductor 0.87.6 (renderApp-D_fmY7hW.js, sha256 matches the manifest): Home and the Add-repository menu have no repo search; 'Search repositories...' is the cloud GitHub repo picker (mfa, @10,435,221). Local narrowing is the palette Projects tab and the section header's Filter by project submenu (pra @10,019,058: shown when repositories.length > 1, All projects then each repo, All deletes sidebar_repo_filter). The rebuild has the palette Projects tab (src/palette/search/model.ts projectResults) but no Filter by project on main. #354 is merged: the tested logic and submenu (src/home/repoFilter.ts, useRepoFilter.ts, ProjectFilterSubmenu.tsx) are on main but nothing mounts them. The mount is in sidebar PR #315 (not merged); it keeps the filter in localStorage rather than Conductor's sidebar_repo_filter settings row, which will score as a difference.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     1917,
-     134,
-     3822
     ]
    },
    "status": "open"
@@ -317,7 +274,7 @@
    "depends_on_builders": [],
    "feature": "Browse archived workspaces and unarchive one",
    "verdict": "backend",
-   "gap": "WorkspaceManager::restore and openconductor_db workspaces::unarchive exist, but no command is registered in lib.rs and there is no archived list or unarchive UI.",
+   "gap": "#366 (df07012) registers db_unarchive_workspace (persistence_commands.rs: workspaces::unarchive, then state ready), but only the archive-on-merge toast's Unarchive reaches it (useArchiveOnMerge.ts -> restoreWorkspace). There is still no archived workspaces list, so a workspace archived any other way, or after the toast closes, cannot be restored from the UI. WorkspaceManager::restore is still unused.",
    "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
    "ledger_obligations": [],
    "evidence": {
@@ -327,58 +284,6 @@
      4680,
      4679,
      4568
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.rename",
-   "item": "sidebar.rename",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Rename a workspace (local only), optionally also renaming the branch",
-   "verdict": "backend",
-   "gap": "rename_workspace_branch now also records the rename in conductor.db (on_branch_renamed), but only the automatic first-message rename calls it; no user-facing or local-only rename.",
-   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     3533,
-     1382,
-     148,
-     2355,
-     458,
-     3532
-    ],
-    "cli": [
-     "workspace rename"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.repo-icon",
-   "item": "sidebar.repo-icon",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "persistence"
-   ],
-   "feature": "Per-repository icon (icon, emoji, favicon or uploaded image) next to the repo name",
-   "verdict": "backend",
-   "gap": "repos::set_icon exists in the linked crate and db_list_repos returns icon, but Sidebar.tsx only shows the repo initial; no icon command or picker.",
-   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     486,
-     3556,
-     3251,
-     4070
-    ],
-    "schema": [
-     "repos.icon"
     ]
    },
    "status": "open"
@@ -517,7 +422,7 @@
    "depends_on_builders": [],
    "feature": "Workspace actions menu on a row (copy info, rename, archive, pin, section)",
    "verdict": "partial",
-   "gap": "Right-clicking a row opens WorkspaceActionsMenu.tsx (#278) with mark read/unread (R), pin/unpin (P), a Set status submenu and Archive. Rename stays hidden until a rename dialog exists, and there is no copy-info or move-to-section item.",
+   "gap": "Right-clicking a row opens WorkspaceActionsMenu.tsx with mark read/unread (R), pin/unpin (P), Set status, Archive and, since #315, Rename (opens the Rename workspace dialog). Still missing: Copy link (Cmd+Shift+C) and Move to section, which the menu file notes as not built (no URL scheme, no sections).",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -537,7 +442,7 @@
    "depends_on_builders": [],
    "feature": "Workspace row shows the workspace name, distinguishing user-set from generated names",
    "verdict": "partial",
-   "gap": "#344's pr_sync_workspace (src-tauri/src/pr/workspace_sync.rs, workspaces::set_pr_metadata) stores pr_title/pr_description after each PR lookup; list_workspaces returns them and reposFromDb maps prTitle, so a row keeps its PR title after a restart. It still updates only once the workspace has been opened and its PR read. Still partial: no rename dialog sets user_set_workspace_name on main (sidebar.rename; #315 adds it, not merged).",
+   "gap": "Rename now sets user_set_workspace_name (#315: RenameWorkspaceDialog -> db_rename_workspace with userSet true), reposFromDb maps it and workspaceLabel (src/components/sidebarLabel.ts) shows a user-set name first, then the saved PR title (#344), then the prettified branch unless it is the target branch, then the directory name. REA on Conductor's $V (renderApp-D_fmY7hW.js @2,153,907) shows two differences left: (1) after a user-set name Conductor shows any stored workspace_name before the PR title even when it is not user-set ('if(e)return e'); ours skips a non-user-set workspace_name and goes to the PR title; (2) Conductor strips the configured branch prefix before prettifying (pGe({branch, branchPrefix}) via zce); workspaceLabel accepts no prefix, so a branch like 'sven/dark-mode' shows 'Sven/dark mode' instead of 'Dark mode'. The PR title also still refreshes only after the workspace is opened and its PR read.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {

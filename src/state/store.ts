@@ -29,18 +29,25 @@ export type Action =
       workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "targetBranch" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number">;
     }
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
-  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
+  /** `keepPlaceholder`: a name-only rename from the Rename dialog leaves `placeholder_branch_name` alone. */
+  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean; keepPlaceholder?: boolean }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
   /** The workspace's pull request title or body changed on GitHub (`workspaces.pr_title`, `pr_description`). `prDescription` and `pr` left out keep what the row has. */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
   /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
   | { type: "setWorkspaceWorking"; repoId: string; workspaceId: string; working: boolean }
+  /** Unarchive from the archive-on-merge toast: put the workspace back where it was. */
+  | { type: "restoreWorkspace"; repoId: string; workspace: Workspace }
+  /** The target-branch picker saved `intended_target_branch` (useTargetBranch writes the row). */
+  | { type: "setWorkspaceTargetBranch"; repoId: string; workspaceId: string; branch: string }
   | { type: "toggleSidebar" }
   /** Sidebar repo menu: Hide / Unhide repository (`repos.hidden`). */
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
   /** Sidebar drag and drop: the full repo id list in its new order (`repos.display_order`). */
   | { type: "reorderRepos"; ids: string[] }
   | { type: "setSidebarVisible"; visible: boolean }
+  /** Change repository icon (`repos.icon`); null falls back to favicon, avatar, initial. */
+  | { type: "setRepoIcon"; repoId: string; icon: string | null }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] }
@@ -109,7 +116,7 @@ export function reducer(state: AppState, action: Action): AppState {
               ...w,
               name: action.name ?? w.name,
               branch: action.branch ?? w.branch,
-              placeholderBranchName: null,
+              ...(action.keepPlaceholder ? {} : { placeholderBranchName: null }),
               ...(action.userSet && action.name !== undefined ? { userSetWorkspaceName: true } : {}),
               ...(action.userSet && action.branch !== undefined ? { userSetBranchName: true } : {}),
             };
@@ -133,6 +140,14 @@ export function reducer(state: AppState, action: Action): AppState {
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
     }
+    case "restoreWorkspace": {
+      const repos = state.repos.map((r) =>
+        r.id === action.repoId && !r.workspaces.some((w) => w.id === action.workspace.id) ? { ...r, workspaces: [...r.workspaces, action.workspace] } : r,
+      );
+      return { ...state, repos };
+    }
+    case "setWorkspaceTargetBranch":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, targetBranch: action.branch }));
     case "archiveWorkspace": {
       const repos = state.repos.map((r) =>
         r.id === action.repoId ? { ...r, workspaces: r.workspaces.filter((w) => w.id !== action.workspaceId) } : r,
@@ -148,6 +163,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos: orderRepos(state.repos, action.ids) };
     case "setSidebarVisible":
       return isSidebarVisible(state) === action.visible ? state : { ...state, sidebarVisible: action.visible };
+    case "setRepoIcon":
+      return { ...state, repos: state.repos.map((r) => (r.id === action.repoId ? { ...r, icon: action.icon } : r)) };
     case "reset":
       return action.state;
     case "hydrate": {
@@ -278,8 +295,14 @@ export function useAppStore() {
         console.error(`conductor.db: could not ${what}`, err);
         loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined);
       };
+      if (desktop && action.type === "restoreWorkspace") {
+        invoke("db_unarchive_workspace", { workspaceId: action.workspace.id }).catch(rollback("unarchive workspace"));
+      }
       if (desktop && action.type === "setRepoHidden") {
         invoke("db_set_repo_hidden", { repoId: action.repoId, hidden: action.hidden }).catch(rollback("hide repository"));
+      }
+      if (desktop && action.type === "setRepoIcon") {
+        invoke("db_set_repo_icon", { repoId: action.repoId, icon: action.icon }).catch(rollback("change repository icon"));
       }
       if (desktop && action.type === "reorderRepos") {
         invoke("db_reorder_repos", { ids: action.ids }).catch(rollback("reorder repositories"));

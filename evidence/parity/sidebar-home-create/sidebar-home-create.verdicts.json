@@ -1,7 +1,7 @@
 {
   "schema": "openconductor.parity-verdicts.v1",
   "ref": "origin/main",
-  "verified_at": "2026-11-05 (main 4d72807: home.* re-read after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-name and sidebar.ws-status after #327, #344, #375, #379; sidebar.ws-status, ws-name and ws-branch after #337 on 1cedef0; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+  "verified_at": "2026-11-05 (main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
   "method": "Read on main: src/, src-tauri/src/, crates/. 'backend' = logic or a command exists and is tested, but no UI path reaches it.",
   "items": {
     "sidebar.home-entry": {
@@ -21,8 +21,8 @@
       "why": "The repo menu has Hide repository / Unhide repository, and the list ends with a Show hidden repositories toggle (Sidebar.tsx, visibleRepos). The store calls the registered db_set_repo_hidden (sidebar_repo_commands.rs, #283), which writes repos.hidden."
     },
     "sidebar.repo-icon": {
-      "verdict": "backend",
-      "why": "repos::set_icon exists in the linked crate and db_list_repos returns icon, but Sidebar.tsx only shows the repo initial; no icon command or picker."
+      "verdict": "implemented",
+      "why": "#315 (0f82f19): RepoIcon (src/components/RepoIcon.tsx, rules in src/state/repoIcon.ts) replaces the initial in the sidebar repo header and follows Conductor's U9 order: emoji, stored image or bundled icon name, a favicon found in the repo, the GitHub owner's avatar, then the initial. Change icon (RepoIconDialog.tsx, from the repo menu or right-click) has Icons (Conductor's 238 names), Emoji, Favicon and Upload tabs, search and Reset. db_set_repo_icon (registered in lib.rs) writes repos.icon through openconductor_db::repos::set_icon; repo_favicon checks Conductor's 28 favicon paths in order. Known difference: the Emoji tab is a curated subset because REA could not extract Conductor's runtime-loaded emoji dataset (REA gap recorded in #315)."
     },
     "sidebar.add-repo": {
       "verdict": "implemented",
@@ -30,7 +30,7 @@
     },
     "sidebar.ws-name": {
       "verdict": "partial",
-      "why": "#344's pr_sync_workspace (src-tauri/src/pr/workspace_sync.rs, workspaces::set_pr_metadata) stores pr_title/pr_description after each PR lookup; list_workspaces returns them and reposFromDb maps prTitle, so a row keeps its PR title after a restart. It still updates only once the workspace has been opened and its PR read. Still partial: no rename dialog sets user_set_workspace_name on main (sidebar.rename; #315 adds it, not merged)."
+      "why": "Rename now sets user_set_workspace_name (#315: RenameWorkspaceDialog -> db_rename_workspace with userSet true), reposFromDb maps it and workspaceLabel (src/components/sidebarLabel.ts) shows a user-set name first, then the saved PR title (#344), then the prettified branch unless it is the target branch, then the directory name. REA on Conductor's $V (renderApp-D_fmY7hW.js @2,153,907) shows two differences left: (1) after a user-set name Conductor shows any stored workspace_name before the PR title even when it is not user-set ('if(e)return e'); ours skips a non-user-set workspace_name and goes to the PR title; (2) Conductor strips the configured branch prefix before prettifying (pGe({branch, branchPrefix}) via zce); workspaceLabel accepts no prefix, so a branch like 'sven/dark-mode' shows 'Sven/dark mode' instead of 'Dark mode'. The PR title also still refreshes only after the workspace is opened and its PR read."
     },
     "sidebar.ws-branch": {
       "verdict": "implemented",
@@ -73,8 +73,8 @@
       "why": "The sidebar Search row opens the command palette (onSearch -> setPaletteOpen in App.tsx), which searches workspaces by name, branch and repo (src/palette/search/model.ts)."
     },
     "sidebar.rename": {
-      "verdict": "backend",
-      "why": "rename_workspace_branch now also records the rename in conductor.db (on_branch_renamed), but only the automatic first-message rename calls it; no user-facing or local-only rename."
+      "verdict": "implemented",
+      "why": "#315 (0f82f19): row menu Rename opens RenameWorkspaceDialog (Sidebar.tsx). It calls db_rename_workspace (sidebar_rename_commands.rs, registered in lib.rs), which follows Conductor's renameWorkspace (index-BGEQ8YjU.js @1,050,054): refuses an initializing workspace, a directory name another workspace of the repo uses and an invalid name; for a ready worktree it leaves the worktree in place, adds a sibling symlink recorded as secondary_directory_name and queues the old link in symlinks_pending_deletion; otherwise it rewrites directory_name and workspace_path. workspace_name and user_set_workspace_name = 1 are saved (workspace_rename.rs). The remembered Also rename branch checkbox renames the branch through rename_workspace_branch and sets user_set_branch_name (db_mark_user_set_branch_name). Not built: the CLI 'workspace rename' (no CLI in the rebuild)."
     },
     "sidebar.archive": {
       "verdict": "partial",
@@ -82,7 +82,7 @@
     },
     "sidebar.archived-view": {
       "verdict": "backend",
-      "why": "WorkspaceManager::restore and openconductor_db workspaces::unarchive exist, but no command is registered in lib.rs and there is no archived list or unarchive UI."
+      "why": "#366 (df07012) registers db_unarchive_workspace (persistence_commands.rs: workspaces::unarchive, then state ready), but only the archive-on-merge toast's Unarchive reaches it (useArchiveOnMerge.ts -> restoreWorkspace). There is still no archived workspaces list, so a workspace archived any other way, or after the toast closes, cannot be restored from the UI. WorkspaceManager::restore is still unused."
     },
     "sidebar.resize-toggle": {
       "verdict": "partial",
@@ -98,7 +98,7 @@
     },
     "sidebar.ws-actions": {
       "verdict": "partial",
-      "why": "Right-clicking a row opens WorkspaceActionsMenu.tsx (#278) with mark read/unread (R), pin/unpin (P), a Set status submenu and Archive. Rename stays hidden until a rename dialog exists, and there is no copy-info or move-to-section item."
+      "why": "Right-clicking a row opens WorkspaceActionsMenu.tsx with mark read/unread (R), pin/unpin (P), Set status, Archive and, since #315, Rename (opens the Rename workspace dialog). Still missing: Copy link (Cmd+Shift+C) and Move to section, which the menu file notes as not built (no URL scheme, no sections)."
     },
     "sidebar.empty-state": {
       "verdict": "implemented",
@@ -165,8 +165,8 @@
       "why": "Re-read with REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest): 'Recent workspaces' is the command palette's All-tab heading with an empty query (m_a @10,909,908), not a Home list. Conductor keeps recentWorkspaceIds (most recent first, cap XOt = 5, recordViewedWorkspace) in its persisted UI store (partialize includes recentWorkspaceIds, index chunk @3,121,897), so the list survives a restart. Ours (src/palette/PaletteHost.tsx) shows the same heading and order but keeps up to 8 ids in React state only, so it is empty after a restart and holds 3 more than Conductor."
     },
     "home.repo-search": {
-      "verdict": "partial",
-      "why": "Re-anchored after REA on Conductor 0.87.6 (renderApp-D_fmY7hW.js, sha256 matches the manifest): Home and the Add-repository menu have no repo search; 'Search repositories...' is the cloud GitHub repo picker (mfa, @10,435,221). Local narrowing is the palette Projects tab and the section header's Filter by project submenu (pra @10,019,058: shown when repositories.length > 1, All projects then each repo, All deletes sidebar_repo_filter). The rebuild has the palette Projects tab (src/palette/search/model.ts projectResults) but no Filter by project on main. #354 is merged: the tested logic and submenu (src/home/repoFilter.ts, useRepoFilter.ts, ProjectFilterSubmenu.tsx) are on main but nothing mounts them. The mount is in sidebar PR #315 (not merged); it keeps the filter in localStorage rather than Conductor's sidebar_repo_filter settings row, which will score as a difference."
+      "verdict": "implemented",
+      "why": "#315 (0f82f19) mounts #354's Filter by project submenu (ProjectFilterSubmenu) in the My workspaces section header menu (Sidebar.tsx), and filterRepoGroups narrows the repo groups while Pinned keeps every repo's rows, as Conductor's pra/hBi do (renderApp-D_fmY7hW.js @10,019,058). The submenu renders nothing with one repository or none, offers All projects then each repository, and a stale filter is cleared once repos load. In the desktop app the choice is saved as conductor.db settings key sidebar_repo_filter (raw repository id; All projects deletes the row) through useAppPrefs/set_app_pref (src-tauri/src/app_prefs, openconductor_db::app_settings::keys::SIDEBAR_REPO_FILTER), matching Conductor's z6t updateSetting/deleteSetting (index-BGEQ8YjU.js @420,066, REA by sidebar builder 0c122c06). Only the browser build, which has no database, falls back to localStorage. The palette Projects tab (projectResults, Search projects...) was already built. Home and the Add-repository menu have no repo search, as in Conductor."
     },
     "home.recents": {
       "verdict": "implemented",
@@ -186,7 +186,7 @@
     },
     "create.page": {
       "verdict": "partial",
-      "why": "Create is still a modal (CreateWorkspaceDialog.tsx) with a prompt box, create-from picker, repo and base-branch selects and a name field, not the reference's full-screen composer with tabs; agent, model and effort come from Settings › Default models with no picker in the composer."
+      "why": "Create is still a modal (CreateWorkspaceDialog.tsx) with a prompt box, create-from picker, repo and base-branch selects and a name field, not the reference's full-screen composer with tabs; agent, model and effort come from Settings › Default models with no picker in the composer. Re-read on 0f82f19: unchanged. PR #388 (Conductor's composer and the full-screen /create page behind Settings > Experimental > New workspace page) is open, not merged, so it is not scored."
     },
     "create.from-ref": {
       "verdict": "implemented",
@@ -241,8 +241,8 @@
       "why": "seedTranscript queues the first message and ChatPanel sends it with sendReason over the registered reason_open_chat / reason_prompt (#194), starting the workspace's first agent session; it also drives the rename. The draft's model and effort are not passed to the chat."
     },
     "create.number": {
-      "verdict": "missing",
-      "why": "The schema has a number column but no create path, persistence function or UI assigns or shows one."
+      "verdict": "implemented",
+      "why": "#305 (9883bb3; its squash title says evidence, but it carries the code; the earlier 'evidence only' reading was wrong): begin_workspace numbers the initializing row with workspaces::next_number (MAX(number)+1 across repositories, crates/openconductor-db/src/workspaces.rs) and finish_workspace keeps it, or assigns one if the row was a leftover; create_workspace returns it (CreatedWorkspaceDto.number), and db_list_workspaces/reposFromDb carry Workspace.number, which the Home list matches as W-<n>. Archived rows keep their number, so none is reused. Conductor's server assigns the number instead (evidence/create-workspace/README.md); a local rule is the only option without it. Covered by persistence test each_new_workspace_gets_the_next_number_across_repositories. Showing W-<n> on rows is sidebar.ws-numbers, scored there."
     },
     "create.autostart-run": {
       "verdict": "implemented",
