@@ -4,6 +4,8 @@ import { destroyWorkspaceTerminals } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
+import { AllWorkspaces } from "./components/AllWorkspaces";
+import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
 import type { DialogKind } from "./components/Dialogs";
 import { CreateProjectDialog } from "./components/CreateProjectDialog";
@@ -180,6 +182,8 @@ export default function App() {
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
+        ) : sel.kind === "home" ? (
+          <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
         ) : (
           <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}
@@ -187,7 +191,8 @@ export default function App() {
       {dialog === "clone" && (
         <CloneGitHubRepoDialog
           onClose={() => setDialog(null)}
-          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", id: inTauri() ? cloned.id : undefined, repo: { name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
+          // The backend names the folder uniquely; a second clone of one remote is its own project (Conductor: `<name>-v1`).
+          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", id: inTauri() ? cloned.id : undefined, repo: { name: cloned.name || name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
         />
       )}
       {dialog === "quickstart" && (
