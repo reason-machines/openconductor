@@ -1,12 +1,13 @@
 use std::cell::RefCell;
 
-use openconductor_db::cache::favorite_models::{self, NewFavorite};
-use openconductor_db::cache::navigation::{self, NavigationSection, Persisted};
+use openconductor_db::cache::now_iso;
 use openconductor_db::cache::pending_messages::{self, PendingMessage, PendingSnapshot};
 use openconductor_db::cache::session_messages::{self, CachedMessage, CatchUp};
 use openconductor_db::cache::session_state::{self, PrimaryWatermark, CACHE_VERSION};
-use openconductor_db::cache::{iso_from_millis, now_iso, parse_millis, Scope};
-use openconductor_db::{open_cache, open_cache_in_memory, SqlitePool};
+use openconductor_db::navigation::{self, Layout, LayoutSection};
+use openconductor_db::{
+    favorite_models, iso_time, open_cache, open_cache_in_memory, Scope, SqlitePool,
+};
 
 const T1: &str = "2026-11-05T10:00:00.000Z";
 const T2: &str = "2026-11-05T11:00:00.000Z";
@@ -58,17 +59,10 @@ async fn ids(pool: &SqlitePool) -> Vec<String> {
 }
 
 #[test]
-fn times_match_to_iso_string() {
-    assert_eq!(
-        iso_from_millis(1_793_872_836_859),
-        "2026-11-05T10:00:36.859Z"
-    );
-    assert_eq!(
-        parse_millis("2026-11-05T10:00:36.859Z"),
-        Some(1_793_872_836_859)
-    );
-    assert_eq!(parse_millis("not a date"), None);
-    assert!(now_iso().ends_with('Z'));
+fn now_is_an_iso_time() {
+    let now = now_iso();
+    assert!(now.ends_with('Z') && now.len() == 24, "{now}");
+    assert!(iso_time::to_millis(&now).is_some());
 }
 
 #[tokio::test]
@@ -213,7 +207,7 @@ async fn settled_pages_past_page_size() {
         let sent = if i % 2 == 0 {
             T1.to_string()
         } else {
-            iso_from_millis(i)
+            iso_time::from_millis(i)
         };
         session_messages::upsert(
             &pool,
@@ -453,16 +447,16 @@ async fn pending_snapshot_of_other_version_is_cleared() {
     assert_eq!(pending_messages::load(&pool, "s").await.unwrap(), None);
 }
 
-fn scope(host: &str) -> Scope {
+fn hosted(host: &str) -> Scope {
     Scope {
-        hosting_server_url: host.into(),
+        hosting_server_url: Some(host.into()),
         organization_id: "org".into(),
         user_id: "me".into(),
     }
 }
 
-fn section(id: &str, name: &str, workspaces: &[&str]) -> NavigationSection {
-    NavigationSection {
+fn section(id: &str, name: &str, workspaces: &[&str]) -> LayoutSection {
+    LayoutSection {
         id: id.into(),
         name: name.into(),
         emoji: None,
@@ -471,156 +465,101 @@ fn section(id: &str, name: &str, workspaces: &[&str]) -> NavigationSection {
 }
 
 #[tokio::test]
-async fn navigation_round_trips_per_scope() {
+async fn cache_navigation_is_scoped_by_hosting_server() {
     let pool = open_cache_in_memory().await.unwrap();
-    let a = scope("https://a.example");
-    assert_eq!(navigation::read(&pool, &a).await.unwrap(), None);
+    let a = hosted("https://a.example");
+    assert_eq!(navigation::read_layout(&pool, &a).await.unwrap(), None);
     let mut first = section("s1", "Focus", &["w1", "w2"]);
     first.emoji = Some("x".into());
-    let value = Persisted {
+    let layout = Layout {
         sections: vec![first, section("s2", "Later", &[])],
-        updated_at: parse_millis(T1).unwrap(),
+        updated_at: iso_time::to_millis(T1).unwrap(),
     };
-    assert!(navigation::write(&pool, &a, &value).await.unwrap());
+    assert!(navigation::write_layout(&pool, &a, &layout).await.unwrap());
     // Members written together share created_at and come back in (random)
     // membership id order, as in the reference: compare them as sets.
-    let mut back = navigation::read(&pool, &a).await.unwrap().unwrap();
+    let mut back = navigation::read_layout(&pool, &a).await.unwrap().unwrap();
     for s in &mut back.sections {
         s.workspace_ids.sort();
     }
-    assert_eq!(back, value);
-    // Another hosting server sees nothing.
-    assert_eq!(
-        navigation::read(&pool, &scope("https://b.example"))
-            .await
-            .unwrap(),
-        None
-    );
-    navigation::delete(&pool, &a).await.unwrap();
-    assert_eq!(navigation::read(&pool, &a).await.unwrap(), None);
-    let (_, members) = navigation::rows(&pool, &a).await.unwrap();
-    assert!(members.is_empty());
+    assert_eq!(back, layout);
+    let (rows, members) = navigation::read(&pool, &a).await.unwrap();
+    assert!(rows.iter().all(
+        |r| r.hosting_server_url.as_deref() == Some("https://a.example") && r.icon_name.is_none()
+    ));
+    assert_eq!(members.len(), 2);
+
+    // Another hosting server, same organization and user, sees nothing.
+    let b = hosted("https://b.example");
+    assert_eq!(navigation::read_layout(&pool, &b).await.unwrap(), None);
+    // An older layout is refused.
+    let stale = Layout {
+        sections: vec![],
+        updated_at: iso_time::to_millis(T1).unwrap() - 1,
+    };
+    assert!(!navigation::write_layout(&pool, &a, &stale).await.unwrap());
+    navigation::delete_layout(&pool, &a).await.unwrap();
+    assert_eq!(navigation::read_layout(&pool, &a).await.unwrap(), None);
+    assert!(navigation::read(&pool, &a).await.unwrap().1.is_empty());
 }
 
 #[tokio::test]
-async fn navigation_write_keeps_unchanged_rows_and_refuses_older_values() {
+async fn cache_favorite_models_are_scoped_by_hosting_server() {
     let pool = open_cache_in_memory().await.unwrap();
-    let a = scope("https://a.example");
-    let t1 = parse_millis(T1).unwrap();
-    let t2 = parse_millis(T2).unwrap();
-    let v1 = Persisted {
-        sections: vec![
-            section("s1", "One", &["w1", "w2"]),
-            section("s2", "Two", &["w3"]),
-        ],
-        updated_at: t1,
-    };
-    navigation::write(&pool, &a, &v1).await.unwrap();
-    let (_, before) = navigation::rows(&pool, &a).await.unwrap();
-
-    // s1 unchanged (members reordered), s2 renamed, s3 added, w3 moved.
-    let v2 = Persisted {
-        sections: vec![
-            section("s1", "One", &["w2", "w1"]),
-            section("s2", "Second", &[]),
-            section("s3", "Three", &["w3"]),
-        ],
-        updated_at: t2,
-    };
-    assert!(navigation::write(&pool, &a, &v2).await.unwrap());
-    let (sections, after) = navigation::rows(&pool, &a).await.unwrap();
-    let by_id = |id: &str| sections.iter().find(|s| s.id == id).unwrap().clone();
-    assert_eq!(by_id("s1").updated_at, T1);
-    assert_eq!(by_id("s1").created_at, T1);
-    assert_eq!(by_id("s2").updated_at, T2);
-    assert_eq!(by_id("s2").created_at, T1);
-    assert_eq!(by_id("s3").created_at, T2);
-    assert_eq!(by_id("s3").sort_order, 2);
-    let id_of = |rows: &[navigation::MembershipRow], s: &str, w: &str| {
-        rows.iter()
-            .find(|m| m.section_id == s && m.workspace_id == w)
-            .map(|m| m.id.clone())
-    };
-    assert_eq!(id_of(&after, "s1", "w1"), id_of(&before, "s1", "w1"));
-    assert_eq!(id_of(&after, "s2", "w3"), None);
-    assert!(id_of(&after, "s3", "w3").is_some());
-    assert_eq!(after.len(), 3);
-    assert_eq!(
-        navigation::read(&pool, &a)
-            .await
-            .unwrap()
-            .unwrap()
-            .updated_at,
-        t2
-    );
-
-    // Older than what is stored: nothing written.
-    let stale = Persisted {
-        sections: vec![],
-        updated_at: t1,
-    };
-    assert!(!navigation::write(&pool, &a, &stale).await.unwrap());
-    assert_eq!(navigation::rows(&pool, &a).await.unwrap().0.len(), 3);
-
-    // An empty, current value clears the scope.
-    let empty = Persisted {
-        sections: vec![],
-        updated_at: t2,
-    };
-    assert!(navigation::write(&pool, &a, &empty).await.unwrap());
-    assert_eq!(navigation::read(&pool, &a).await.unwrap(), None);
-}
-
-fn fav(id: &str, cfg: &str) -> NewFavorite {
-    NewFavorite {
-        id: id.into(),
-        configuration: cfg.into(),
-    }
-}
-
-#[tokio::test]
-async fn favorite_models_replace_in_order_keeping_created_at() {
-    let pool = open_cache_in_memory().await.unwrap();
-    let a = scope("https://a.example");
-    let b = scope("https://b.example");
+    let a = hosted("https://a.example");
+    let b = hosted("https://b.example");
+    let fav = |id: &str, cfg: &str| (id.to_string(), cfg.to_string());
+    let t1 = iso_time::to_millis(T1).unwrap();
+    let t2 = iso_time::to_millis(T2).unwrap();
     favorite_models::replace(
         &pool,
         &a,
         &[fav("m1", "{\"model\":\"x\"}"), fav("m2", "{}")],
-        T1,
+        t1,
     )
     .await
     .unwrap();
-    favorite_models::replace(&pool, &b, &[fav("m9", "{}")], T1)
+    favorite_models::replace(&pool, &b, &[fav("m9", "{}")], t1)
         .await
         .unwrap();
     favorite_models::replace(
         &pool,
         &a,
         &[fav("m3", "{}"), fav("m1", "{\"model\":\"y\"}")],
-        T2,
+        t2,
     )
     .await
     .unwrap();
-    let list = favorite_models::list(&pool, &a).await.unwrap();
-    let got: Vec<_> = list
-        .iter()
-        .map(|f| {
-            (
-                f.id.as_str(),
-                f.configuration.as_str(),
-                f.created_at.as_deref(),
-            )
-        })
+    let got: Vec<_> = favorite_models::list(&pool, &a)
+        .await
+        .unwrap()
+        .into_iter()
+        .map(|f| (f.id, f.configuration, f.created_at))
         .collect();
     assert_eq!(
         got,
         [
-            ("m3", "{}", Some(T2)),
-            ("m1", "{\"model\":\"y\"}", Some(T1))
+            ("m3".to_string(), "{}".to_string(), T2.to_string()),
+            (
+                "m1".to_string(),
+                "{\"model\":\"y\"}".to_string(),
+                T1.to_string()
+            ),
         ]
     );
     assert_eq!(favorite_models::list(&pool, &b).await.unwrap().len(), 1);
-    favorite_models::replace(&pool, &a, &[], T2).await.unwrap();
+    let host: Vec<Option<String>> =
+        sqlx::query_scalar("SELECT DISTINCT hosting_server_url FROM favorite_models ORDER BY 1")
+            .fetch_all(&pool)
+            .await
+            .unwrap();
+    assert_eq!(
+        host,
+        [
+            Some("https://a.example".to_string()),
+            Some("https://b.example".to_string())
+        ]
+    );
+    favorite_models::replace(&pool, &a, &[], t2).await.unwrap();
     assert!(favorite_models::list(&pool, &a).await.unwrap().is_empty());
 }

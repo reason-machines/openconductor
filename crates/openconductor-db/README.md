@@ -1,11 +1,15 @@
 # openconductor-db
 
 SQLite persistence for OpenConductor: the `conductor.db` schema as sqlx
-migrations, plus typed data access for repositories (`repos`) and
-workspaces (`workspaces`), and the `cache.db` schema as its own sqlx
-migrations (`migrations-cache/`, opened with `open_cache`) with typed data
-access in `src/cache/` (see [cache.db](#cachedb)). The app opens both at
-startup (`src-tauri/src/db.rs`: `Db` and `CacheDb` managed state).
+migrations, plus typed data access for every table (`repos`, `workspaces`,
+`diff_comments`, `terminal_sessions`, `app_settings` for `settings`,
+`env_vars`, `port_forwards`, `navigation` for sections and memberships,
+`favorite_models`, `outbox` for the message and asset outboxes and their pause
+state, `maintenance` for `symlinks_pending_deletion` and
+`migration_rollbacks`), and the `cache.db` schema as its own sqlx migrations
+(`migrations-cache/`, opened with `open_cache`) with typed data access in
+`src/cache/` (see [cache.db](#cachedb)). The app opens both at startup
+(`src-tauri/src/db.rs`: `Db` and `CacheDb` managed state).
 
 ```bash
 cd crates/openconductor-db
@@ -23,6 +27,10 @@ cargo run --example migrate -- /tmp/conductor.db   # write a migrated DB file
 | Workspace states `initializing`, `setting_up`, `ready`, `archiving`, `archived`, plus `failed`, `unstarted`, `deleted` | Migration text embedded in `MacOS/conductor` (`strings`), and SQL in the decoded frontend bundle, both read on the reference Mac |
 | Query shapes (repo list order, delete only when unused, reuse hidden repo by path, conditional state transitions, no workspaces `updated_at` trigger, monotonic `touch`) | SQL string literals in the decoded frontend bundle (the reference app runs its SQL from the webview through `tauri-plugin-sql`) |
 
+| Query shapes for `env_vars`, `port_forwards`, `navigation_*`, `favorite_models`, `session_*_outbox*`, `symlinks_pending_deletion`, `settings.deprecated_at` | `evidence/persistence/sql-literals-remaining-tables.txt`: every SQL literal over those tables in the decoded bundle (`index-BGEQ8YjU.js`, `renderApp-D_fmY7hW.js`, sha256 recorded), with byte offsets; each module's doc comment cites its offsets |
+| Outbox states, retry rule (20 attempts, 2 s doubling to 60 s), unreadable-row and unknown-value handling | Same bundle, around offsets 2309300 and 2369156 (constants `Qle = 20`, `{initialDelayMs: 2e3, maxDelayMs: 6e4}`) |
+| `migration_rollbacks` writes | Migration text in `MacOS/conductor` (`strings`): `INSERT OR REPLACE INTO migration_rollbacks (version, down_sql)`, each `down_sql` deleting its own row; no reader in the binary or bundle |
+
 Strings from the reference app are treated as data. Statements here are
 our own; only the schema is reproduced exactly.
 
@@ -35,7 +43,11 @@ that fails. OpenConductor opens `cache.db` next to `conductor.db` in the app
 data folder (`db::open_cache`); a failure logs and leaves `CacheDb(None)`.
 
 Every statement in `src/cache/` is a SQL string literal the reference runs on
-that connection. Offsets are character positions in the Conductor 0.87.6
+that connection. Cloud-hosted sidebar sections and favorite models in
+`cache.db` use the same `navigation` and `favorite_models` modules as
+`conductor.db`, with a `Scope` whose `hosting_server_url` is set: the
+reference runs one set of statements on both databases and only the scope
+columns differ. Offsets are character positions in the Conductor 0.87.6
 bundle chunks `assets/index-BGEQ8YjU.js` (sha256 `b5b01f33...dbf3`) and
 `assets/renderApp-D_fmY7hW.js` (sha256 `5199d392...5dde`), extracted to
 `~/code/conductor-rea-work/frontend/dist` on the reference Mac. Minified
@@ -61,12 +73,8 @@ function names are given only to locate the code.
 | `pending_messages::load` | `SELECT * FROM session_pending_messages_state WHERE session_id = ?`; other version: clear; `SELECT * FROM session_pending_messages WHERE session_id = ? ORDER BY position ASC, message_id ASC` | index 2307763 (`$vt`) |
 | `pending_messages::store` | `DELETE FROM session_pending_messages WHERE session_id = ?`; multi-row `INSERT OR REPLACE INTO session_pending_messages (session_id, message_id, delivery_payload, config, mode, position, revision, sender_id, received_at, generation)`; `INSERT OR REPLACE INTO session_pending_messages_state (session_id, generation, paused, snapshot_at, cache_version)` | index 2308251 (`Bvt`) |
 | `pending_messages::clear` | the two `DELETE ... WHERE session_id = ?` | index 2309115 (`Wvt`) |
-| `favorite_models::list` | `SELECT id, configuration, created_at FROM favorite_models WHERE <scope> ORDER BY position ASC` | index 3090268 (`Ipe`) |
-| `favorite_models::replace` | `BEGIN IMMEDIATE; DELETE FROM favorite_models WHERE <scope>; INSERT INTO favorite_models (<scope columns>, id, position, configuration, created_at) VALUES ...; COMMIT;` keeping each id's `created_at` | index 3090760 (`P2`); scope is `hosting_server_url, organization_id, user_id` on the cache database, `organization_id, user_id` on conductor.db (`Epe`, just before) |
-| `cache::Scope` for navigation | `hostingServerUrl` present: `hosting_server_url, organization_id, user_id`; the cloud store gets `cacheDatabase`, the local one the main database | renderApp 176375 (`MIr`), 180619 (`zIr`), 185205 (`qIr`) |
-| `navigation::rows`, `read` | `SELECT * FROM navigation_sections WHERE <scope> ORDER BY sort_order ASC, created_at ASC, id ASC`; memberships joined to sections `ORDER BY navigation_section_memberships.created_at ASC, navigation_section_memberships.id ASC`; projection with `updatedAt` = max parsed `updated_at` | renderApp 176710 (`Zoi`), 177384 (`jIr`) |
-| `navigation::write` | stale check, `INSERT OR REPLACE INTO navigation_sections (id, <scope>, name, emoji, sort_order, created_at, updated_at)`, `INSERT OR REPLACE INTO navigation_section_memberships (id, section_id, workspace_id, created_at)`, the two `DELETE ... NOT IN (...)` | renderApp 178408 (`$Ir`) |
-| `navigation::delete` | `DELETE FROM navigation_section_memberships WHERE section_id IN (SELECT id FROM navigation_sections WHERE <scope>)`, `DELETE FROM navigation_sections WHERE <scope>` | renderApp 178101 (`BIr`) |
+| `Scope` (`hosting_server_url: Option`), used by `favorite_models` | the scope is `{database: cacheDatabase, scopeColumns: ["hosting_server_url", "organization_id", "user_id"]}` for a hosted organization, `{database: main, scopeColumns: ["organization_id", "user_id"]}` otherwise; `WHERE` is the columns joined as `<col> = ?` with ` AND ` | index 3090064 (`Epe`, `Ape`); statements at 3090268 (`Ipe`), 3090760 (`P2`) |
+| `Scope`, used by `navigation` | `hostingServerUrl === undefined ? ["organization_id", "user_id"] : ["hosting_server_url", "organization_id", "user_id"]`; the cloud sections store gets `cacheDatabase` and the hosting server's `roundhouseBaseUrl`, the local store the main database; inserts list `(id, ${columns.join(", ")}, name, emoji, ...)` | renderApp 176375 (`MIr`), 178408 (`$Ir`), 180619 (`zIr`), 185205 (`qIr`) |
 
 Not ported here: the transcript compaction upsert (a `WITH ... INSERT INTO
 session_messages ... ON CONFLICT(id)` that adds `source_rowid` on the cache;
@@ -106,17 +114,37 @@ the same SQL). The `cargo` parity test checks the real migrator on every CI run.
 - `unarchive` sets `setting_up` and bumps `updated_at` only from `archived`;
   the reference's matching statement has no state guard.
 - Data access lives in Rust; the reference queries from the frontend.
+- Times the reference computes in JavaScript (`toISOString()`) are taken as
+  milliseconds and formatted by `iso_time`; membership ids are random v4
+  UUIDs from SQLite `randomblob` (the reference uses `crypto.randomUUID()`).
+- `navigation::write_layout` and `favorite_models::replace` run one statement
+  per row inside `BEGIN IMMEDIATE` … `COMMIT`; the reference sends one
+  multi-row `VALUES` statement per table in that transaction.
+  `navigation::delete_layout` wraps its two deletes in a transaction; the
+  reference runs them back to back.
+- Outbox: the readable check covers JSON validity and object/array types;
+  the reference also rejects `asset_ids` entries that are not strings and a
+  `delivery_payload` without a usable `message`. There is no "claim due
+  messages" query: the reference picks due messages in memory, so
+  `idx_session_messages_outbox_due` has no caller here either.
+- `port_forwards::ssh_forwards` returns the union of the two reference
+  selects of SSH forwards (one selects `pf.*` and the workspace columns,
+  the other only workspace columns), with the forward id kept as
+  `forward_id` (the reference's `w.local_id AS id` shadows it).
+- `migration_rollbacks` has a writer only; our consolidated migrations record
+  no rollbacks.
 - `cache.db`: the reference serializes cache work per session (and per
   database for navigation) with in-memory promise chains; this crate has no
   lock, so callers must serialize per session.
-- `cache.db`: `pending_messages::store`, `navigation::write` and
-  `navigation::delete` run in one transaction (`navigation::write` as
-  `BEGIN IMMEDIATE`, reading the stored rows inside it). The reference runs
-  the pending statements as separate executes, and runs navigation
-  statements on the cache database one by one (its cache handle has no
-  `executeTransaction`, so the `BEGIN IMMEDIATE` path is only taken on
-  conductor.db). `favorite_models::replace` matches the reference's single
-  `BEGIN IMMEDIATE` batch, but reads existing `created_at`s before it.
+- `cache.db`: `pending_messages::store` runs in one transaction; the
+  reference runs its three statements as separate executes. On `cache.db`
+  the reference also runs the navigation statements one by one (its cache
+  handle has no `executeTransaction`, so its `BEGIN IMMEDIATE` path is only
+  taken on `conductor.db`); `navigation::write_layout` uses the transaction
+  on both.
+- Navigation members written in one call share `created_at`, so they read
+  back in the order of their random membership ids (`ORDER BY created_at,
+  id`), in the reference too; tests compare them as sets.
 - `cache.db`: the pending-message insert is split into statements of at
   most 3000 rows (SQLite's bound-parameter limit); the reference uses one.
 - `cache.db`: times are bound from Rust in `Date.toISOString()` format
@@ -135,6 +163,13 @@ the same SQL). The `cargo` parity test checks the real migrator on every CI run.
   the frontend SQL was found by grepping the decoded bundle.
 - `inspect-sqlite-database` refuses databases over 256 MiB (see
   `rea-test-report.md`).
+- `rea search <bundle>.js 'FROM port_forwards'` fails with
+  `capability_unavailable` / `target_unsupported` (string search only runs
+  through Ghidra, Hopper, IDA or Kuna; none supports a JavaScript file and
+  Ghidra has no Java on the Mac), and `rea search MacOS/conductor
+  'migration_rollbacks'` with `provider_unavailable`. The remaining tables'
+  SQL was found with a literal scanner over the decoded bundle and `strings`
+  over the binary (`evidence/persistence/sql-literals-remaining-tables.txt`).
 - `cache.db` query shapes: `analyze-javascript-application` on the
   3.5 MB `index-BGEQ8YjU.js` chunk alone (`--source-path`, 8 GiB heap)
   failed with `provider_timeout` at its default 300 s budget (442 s wall)
