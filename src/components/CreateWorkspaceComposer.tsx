@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useState, type Dispatch, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState, type Dispatch, type FormEvent, type KeyboardEvent } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import { seedTranscript } from "./WorkspaceView";
@@ -33,6 +33,8 @@ import { AddRepositoryMenu } from "./AddRepositoryMenu";
 import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs, matchesEvent } from "../keybindings/shortcut";
+import type { NavSection } from "../state/navigationSections";
+import { CREATE_IN_SECTION, SECTION_ASSIGN_FAILED, canCreateIn, sectionChoice } from "../workspace/createInSection";
 
 /**
  * Where the repo / branch / create-from row sits (Conductor's `eyebrowVariant`):
@@ -55,6 +57,10 @@ export interface CreateWorkspaceComposerProps {
   /** A non-fatal issue while creating the workspace; the workspace still opens. */
   onWarning: (message: string) => void;
   dispatch: Dispatch<Action>;
+  /** The sidebar's sections, for "Create in section". */
+  sections?: readonly NavSection[];
+  /** The section the composer was opened from (its menu's Create workspace). */
+  initialSectionId?: string;
 }
 
 /** Conductor's composer placeholder for a new workspace (`oya` -> `Hji`). */
@@ -83,7 +89,14 @@ export function CreateWorkspaceComposer({
   onAddRepository,
   onWarning,
   dispatch,
+  sections = [],
+  initialSectionId,
 }: CreateWorkspaceComposerProps) {
+  const choice = sectionChoice(sections, initialSectionId);
+  // The create outlives a render; check the section against the latest list when assigning.
+  const sectionsRef = useRef(sections);
+  sectionsRef.current = sections;
+  const [sectionMenuOpen, setSectionMenuOpen] = useState(false);
   const startRepo = repos.find((r) => r.id === initialRepoId) ?? repos[0];
   const [settings, setSettings] = useState<Settings | null>(null);
   const [draft, setDraft] = useState<CreateDraft>(() =>
@@ -169,9 +182,9 @@ export function CreateWorkspaceComposer({
     setDraft((d) => ({ ...d, ...next }));
   }
 
-  async function submit(e?: FormEvent) {
+  async function submit(e?: FormEvent, sectionId: string | undefined = choice.sectionId) {
     e?.preventDefault();
-    if (busy || !repo) return;
+    if (busy || !repo || !canCreateIn(sectionsRef.current, sectionId)) return;
     const built = buildCreateRequest(draft, prefix);
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
@@ -205,6 +218,11 @@ export function CreateWorkspaceComposer({
         seedTranscript(id, firstSession.message);
       }
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
+      if (sectionId !== undefined) {
+        // Assigning also unpins it (store `assignSection`); a section deleted meanwhile keeps the workspace unsectioned.
+        if (canCreateIn(sectionsRef.current, sectionId)) dispatch({ type: "assignSection", workspaceId: id, sectionId });
+        else onWarning(SECTION_ASSIGN_FAILED);
+      }
       onClose();
       // ...and renames a placeholder city workspace after it.
       if (firstSession) {
@@ -320,17 +338,54 @@ export function CreateWorkspaceComposer({
         />
         <div className="create-card-bar">
           <ModelControls value={draft} settings={settings} disabled={busy} onChange={chooseLaunch} />
-          <button
-            type="submit"
-            className="btn btn-primary btn-small create-submit"
-            aria-label="Create"
-            title={`Create workspace ${submitHint}`}
-            disabled={busy || !repo}
-            data-primary-action
-          >
-            <span aria-hidden="true">{busy ? "Creating…" : "Create"}</span>
-            <kbd aria-hidden="true">{submitHint}</kbd>
-          </button>
+          <div className="create-split" role="group" aria-label="Create workspace">
+            <button
+              type="submit"
+              className="btn btn-primary btn-small create-submit"
+              aria-label={choice.label}
+              title={`${choice.sectionId === undefined ? "Create workspace" : choice.label} ${submitHint}`}
+              data-split={choice.menu ? "true" : undefined}
+              disabled={busy || !repo}
+              data-primary-action
+            >
+              <span aria-hidden="true">{busy ? "Creating…" : choice.label}</span>
+              <kbd aria-hidden="true">{submitHint}</kbd>
+            </button>
+            {choice.menu && (
+              <button
+                type="button"
+                className="btn btn-primary btn-small create-split-toggle"
+                aria-label={CREATE_IN_SECTION}
+                title={CREATE_IN_SECTION}
+                aria-haspopup="menu"
+                aria-expanded={sectionMenuOpen}
+                disabled={busy || !repo}
+                onClick={() => setSectionMenuOpen((o) => !o)}
+              >
+                ▾
+              </button>
+            )}
+            {choice.menu && sectionMenuOpen && (
+              <div className="sb-menu create-split-menu" role="menu">
+                <div className="create-split-heading">{CREATE_IN_SECTION}</div>
+                {choice.menu.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    role="menuitem"
+                    className="sb-menu-item"
+                    disabled={busy}
+                    onClick={() => {
+                      setSectionMenuOpen(false);
+                      void submit(undefined, s.id);
+                    }}
+                  >
+                    <span>{s.emoji && <span aria-hidden="true" className="create-split-emoji">{s.emoji}</span>}{s.name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
       {(error || status) && (

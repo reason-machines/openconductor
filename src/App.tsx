@@ -48,7 +48,7 @@ export default function App() {
   const [state, storeDispatch] = useAppStore();
   // The full-screen create page (`/create`) fills the main area until a
   // selection or a created workspace replaces it.
-  const [createPage, setCreatePage] = useState<{ repoId: string | null } | null>(() => (window.location.pathname === "/create" ? { repoId: null } : null));
+  const [createPage, setCreatePage] = useState<{ repoId: string | null; sectionId?: string } | null>(() => (window.location.pathname === "/create" ? { repoId: null } : null));
   const dispatch = useCallback(
     (action: Action) => {
       if (action.type === "select" || action.type === "addWorkspace") setCreatePage(null);
@@ -76,16 +76,18 @@ export default function App() {
   // `/create` opens the full-screen create page; `?dialog=create` the dialog.
   const [dialog, setDialog] = useState<DialogKind | null>(() => new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
   const [createRepoId, setCreateRepoId] = useState<string | null>(null);
-  const openDialog = (d: DialogKind, repoId?: string) => {
+  const [createSectionId, setCreateSectionId] = useState<string | undefined>(undefined);
+  const openDialog = (d: DialogKind, repoId?: string, sectionId?: string) => {
     const id = repoId ?? (state.selection.kind === "workspace" ? state.selection.repoId : null);
     // Like Conductor's `g5`: the page when Experimental › New workspace page is on, else the dialog.
     if (d === "create" && prefs.experimental_new_workspace_page) {
       setDialog(null);
       // Off the current workspace, as Conductor's route change does; Back returns to it.
       if (state.selection.kind !== "root") storeDispatch({ type: "select", selection: { kind: "root" } });
-      return setCreatePage({ repoId: id });
+      return setCreatePage({ repoId: id, sectionId });
     }
     setCreateRepoId(id);
+    setCreateSectionId(sectionId);
     setDialog(d);
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
@@ -272,6 +274,8 @@ export default function App() {
             key={JSON.stringify(createPage)}
             repos={state.repos}
             initialRepoId={createPage.repoId}
+            sections={state.sections ?? []}
+            initialSectionId={createPage.sectionId}
             prefixSettings={prefix.settings}
             githubUsername={prefix.githubUsername}
             sidebarVisible={isSidebarVisible(state)}
@@ -310,6 +314,8 @@ export default function App() {
         <CreateWorkspaceDialog
           repos={state.repos}
           initialRepoId={createRepoId}
+          sections={state.sections ?? []}
+          initialSectionId={createSectionId}
           prefixSettings={prefix.settings}
           githubUsername={prefix.githubUsername}
           onClose={() => setDialog(null)}
