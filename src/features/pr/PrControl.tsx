@@ -2,7 +2,7 @@
 // The workspace header's PR control: Create PR (asks the agent to commit,
 // push and run `gh pr create`), Merge (gh pr merge with the repository's
 // preferred method, named in the tooltip), Ready for review on a draft,
-// Approve PR, or the PR's current state, which opens it on GitHub.
+// Approve PR, Automerge while checks run (with the setting on), or the PR's current state, which opens it on GitHub.
 import { useEffect, useRef, useState } from "react";
 import { prControl } from "./control.ts";
 import type { PrActions } from "./usePrActions.ts";
@@ -20,7 +20,7 @@ export function PrControl({ pullRequest, actions, worktree }: Props) {
   const { busy } = actions;
   const [menu, setMenu] = useState(false);
   const menuRef = useRef<HTMLSpanElement>(null);
-  const control = prControl(header, pr, actions.method);
+  const control = prControl(header, pr, { method: actions.method, automerge: pullRequest.settings.automerge });
 
   useEffect(() => {
     if (!menu) return;
@@ -90,6 +90,21 @@ export function PrControl({ pullRequest, actions, worktree }: Props) {
           </button>
         </span>
       );
+    case "enable_automerge":
+    case "disable_automerge": {
+      const enable = control.intent === "enable_automerge";
+      const pending = prControl(header, pr);
+      return (
+        <span className={tone}>
+          <span className="pr-pending" title={pending?.title}>
+            <span className="pr-dot" /> {pending?.label}
+          </span>
+          <button className="btn btn-small" title={control.title} disabled={busy !== null} onClick={() => void actions.automerge(enable)}>
+            {busy === "automerge" ? (enable ? "Turning on…" : "Cancelling…") : control.label}
+          </button>
+        </span>
+      );
+    }
     case "status":
       return (
         <button className={`btn btn-small ${tone}`} title={pr ? `${control.title}. Open PR #${pr.number} on GitHub` : control.title} disabled={!pr} onClick={actions.openOnGitHub}>

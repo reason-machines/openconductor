@@ -1,47 +1,46 @@
 {
  "ledger_id": "rol_ba2a4881609d4eec7a8be78f1d5035ba6cd0f218c0073f39a66ceafade50e29c",
- "reviewed_at": "6244791",
- "head": "1afce585",
+ "reviewed_at": "a693ae8",
+ "head": "e96d05d",
  "areas": {
   "chat": {
    "label": "Chat: agent transcript, composer, queue, attachments, models, turn controls",
    "features": 15,
-   "parity_pct": 25.0,
+   "parity_pct": 26.7,
    "code_layer_pct": 50.0,
    "strict_parity_pct": 0.0,
    "by_verdict": {
-    "partial": 6,
-    "unwired": 2,
+    "partial": 7,
+    "unwired": 1,
     "backend-only": 1,
     "missing": 6
    },
    "verified": 0,
-   "needs_rereview": 7
+   "needs_rereview": 3
   },
   "diff": {
    "label": "Diff viewer: changed files, file diff rendering, navigation, inline and GitHub review comments",
    "features": 14,
-   "parity_pct": 46.4,
-   "code_layer_pct": 84.5,
+   "parity_pct": 67.9,
+   "code_layer_pct": 89.3,
    "strict_parity_pct": 0.0,
    "by_verdict": {
-    "implemented": 2,
-    "partial": 9,
-    "missing": 3
+    "implemented": 7,
+    "partial": 5,
+    "missing": 2
    },
    "verified": 0,
-   "needs_rereview": 12
+   "needs_rereview": 11
   },
   "pr": {
    "label": "PR area: create, status, checks, merge, review and conflict flows",
    "features": 12,
-   "parity_pct": 33.3,
+   "parity_pct": 39.6,
    "code_layer_pct": 59.7,
    "strict_parity_pct": 0.0,
    "by_verdict": {
-    "partial": 6,
-    "unwired": 2,
-    "backend-only": 2,
+    "partial": 9,
+    "unwired": 1,
     "missing": 2
    },
    "verified": 0,
@@ -50,8 +49,8 @@
  },
  "total": {
   "features": 41,
-  "parity_pct": 34.8,
-  "code_layer_pct": 64.6,
+  "parity_pct": 44.5,
+  "code_layer_pct": 66.3,
   "strict_parity_pct": 0.0
  },
  "features": [
@@ -63,8 +62,8 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "The ChatPanel composer calls sendReason (src/features/chat/reasonChat.ts), invoking the registered reason_open_chat and reason_prompt; reason-chat-event chunks go through applyReasonPayload into Transcript, so a real agent turn streams end-to-end. The reference (ledger agent.session-run, sessions.claude_session_id) runs Claude Code or Codex, but agent/claude_session.rs and codex_session.rs still have no registered command. Nothing writes sessions or session_messages: the transcript lives in an in-memory map and only the Reason session id is kept in localStorage, so a reopened chat comes back empty (#272).",
-   "obligation": "Run composer turns on the workspace's chosen agent (Claude Code or Codex through a registered start/stream command, Reason kept as one provider) and persist sessions and session_messages (claude_session_id, full_message) so the transcript reloads.",
+   "why": "sendReason (reasonChat.ts:90) invokes the registered reason_open_chat and reason_prompt and streams events; #301 adds review chats as separate Reason Sessions and surfaces unoffered config as a notice. Still Reason-only (no Claude Code/Codex command), the transcript is an in-memory Map, and the main chat sends config [] because configureReason is called only for review chats (ReviewButton.tsx:74), so #271 stays open.",
+   "obligation": "Run the main chat on the selected agent, model and effort (#271), and persist sessions and session_messages so transcripts survive a restart.",
    "layers_required": [
     "data",
     "backend",
@@ -132,7 +131,7 @@
    "status": "partial",
    "score": 0.5,
    "code_score": 1.0,
-   "needs_rereview": true,
+   "needs_rereview": false,
    "why": "Reason tool_call / tool_call_update events (reason_acp/updates.rs -> reason.ts) reach Transcript.tsx ToolRow as collapsible per-tool rows. Transcript accepts expandToolsByDefault (view.ts isToolExpanded) but WorkspaceView never passes it and no settings page has the keep-expanded toggle; there is no grouped 'N tool calls, M messages' header as in chat--tool-calls-expanded.",
    "obligation": "Group consecutive tool calls and intermediate text under one collapsible 'N tool calls, M messages' header, and add the keep-expanded setting wired to expandToolsByDefault.",
    "layers_required": [
@@ -268,11 +267,11 @@
    "id": "chat.attachments",
    "area": "chat",
    "title": "Draft attachments in the composer (files, images, terminal output) that materialize on send",
-   "status": "unwired",
-   "score": 0.25,
+   "status": "partial",
+   "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "lib.rs now declares draft_attachments, sweeps old drafts at startup and registers draft_attachment_write/resolve/remove/upload, draft_attachments_materialize and materialize_local_path_attachment; src/features/draft-attachments/api.ts and staging.ts wrap them. Nothing outside that folder imports them: the composer has no attach button, drop or paste handler, chat.addAttachment has no handler, sendReason sends text only, and attachments.is_draft is never written.",
+   "why": "#301 sends attachments to reason_prompt as ACP resource blocks (provider.rs:442) and shows 'Attached: <name>' lines; sources are only the discard revert note and the review prompt. draftAttachmentsApi is imported by nothing; no attach button, Cmd+U, file/image/paste, and attachments.is_draft is never written.",
    "obligation": "Mount draft attachments in the composer (attach button, Cmd+U, drag/paste of files, images and terminal output) on draftAttachmentsApi, show chips, and materialize them on send into the prompt, recorded with attachments.is_draft.",
    "layers_required": [
     "data",
@@ -347,7 +346,7 @@
    "status": "backend-only",
    "score": 0.25,
    "code_score": 0.5,
-   "needs_rereview": true,
+   "needs_rereview": false,
    "why": "PermissionMode::Plan exists only in agent/claude_cli.rs launch args, and no registered command launches Claude. chat.togglePlanMode and chat.approvePlan are keybinding registry entries with no handler, and no plan approval UI exists. Default to plan mode is explicitly omitted from DefaultModelsPage.",
    "obligation": "Add a plan-mode toggle to the composer (Shift+Tab), pass it to the agent launch, and show the plan review/approve step in the transcript.",
    "layers_required": [
@@ -405,8 +404,8 @@
    "status": "partial",
    "score": 0.5,
    "code_score": 0.5,
-   "needs_rereview": true,
-   "why": "Transcript.tsx shows 'Copy message' on user and assistant messages; failed or cancelled turn footers add 'Copy final message' and Retry (resend through sendReason). Turn footers now have a '...' TurnMenu holding only Reset chat. There is no edit-and-resend, no 'Fork chat' and no fork command, and the footer lacks the reference's duration, time and changed-files chips.",
+   "needs_rereview": false,
+   "why": "Copy, Copy final message, Retry and Reset chat unchanged; finished turns now show TurnChanges file chips that open the turn's diff. Edit-and-resend, Fork chat and the duration/time chips are still missing.",
    "obligation": "Add edit-and-resend and 'Fork chat' (a registered fork command creating a session from a turn), plus the footer's duration, time and changed-files chips.",
    "layers_required": [
     "backend",
@@ -468,8 +467,8 @@
    "status": "partial",
    "score": 0.5,
    "code_score": 1.0,
-   "needs_rereview": true,
-   "why": "checkpoint_commands.rs adds the registered checkpoint_save, checkpoint_exists, checkpoint_restore and checkpoint_changed_count (#267/#297). sendReason saves session-<chat>-turn-<n>-start/-end around each turn, and a non-last turn's TurnMenu 'Reset chat' opens ResetChatDialog ('Later messages will be deleted.', 'Also reset files' with an 'N changed' count, Reset Cmd+Enter), which calls restoreCheckpoint and truncateAfterTurn. The truncation is in-memory only, the Reason session is not rewound (the agent keeps deleted turns in context), and turn ids restart at t1 after a restart so --force saves overwrite earlier checkpoint refs.",
+   "needs_rereview": false,
+   "why": "Checkpoints moved to the backend (turn_checkpoint::around_turn in reason_prompt) and turn ids are now chatId:uuid, removing the cross-run ref collision. Reset chat still truncates only the in-memory transcript; nothing is persisted and the agent session is not rewound.",
    "obligation": "Persist turns in session_messages (turn_id) and delete messages after the watermark in storage, rewind or re-seed the agent session, use stable unique turn ids for checkpoint refs, and apply checkpointing to the Claude Code and Codex runners.",
    "layers_required": [
     "backend",
@@ -556,7 +555,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "WorkspaceView's RightPanel renders ChangesList (split out in #264), fed by useWorkspaceDiff over the registered diff_workspace command: 'N files changed', status letters, +/- counts and per-file revert on real data. 'All changes' still diffs against merge-base HEAD <repo.defaultBranch> instead of the workspace's target ref (evidence/diff/discard.md), and workspace.showUncommittedChanges is bound nowhere.",
+   "why": "ChangesList is mounted with real diff_workspace data and now has a context menu (View, Copy path, Copy relative path, Discard). 'All changes' still diffs against repo.defaultBranch (WorkspaceView.tsx:316) instead of the workspace target ref, and workspace.showUncommittedChanges is bound nowhere.",
    "obligation": "Diff 'All changes' against the workspace target ref (origin/<target branch>) and bind workspace.showUncommittedChanges to open the list in Uncommitted scope.",
    "layers_required": [
     "backend",
@@ -646,12 +645,12 @@
    "id": "diff.split-unified",
    "area": "diff",
    "title": "Toggle split and unified diff layouts",
-   "status": "partial",
-   "score": 0.5,
+   "status": "implemented",
+   "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "LayoutToggle in DiffViewer.tsx switches unified, split (Pierre diffStyle) and entire file, persisted in localStorage openconductor.diff.options. LAYOUT_TITLE reads 'Unified diff' / 'Split diff' where the reference copy is 'Unified view' / 'Split view' (evidence/frontend/diff-review-copy.json).",
-   "obligation": "Use Conductor's 'Unified view' / 'Split view' labels.",
+   "why": "#331 changed LAYOUT_TITLE to Conductor's 'Unified view' / 'Split view' / 'Entire file' (DiffViewer.tsx:30), closing the only gap. LayoutToggle drives Pierre diffStyle and persists in openconductor.diff.options.",
+   "obligation": "",
    "layers_required": [
     "ui"
    ],
@@ -678,7 +677,7 @@
    "status": "implemented",
    "score": 1.0,
    "code_score": 1.0,
-   "needs_rereview": true,
+   "needs_rereview": false,
    "why": "Since #282 FileDiffView renders the open file as the single item of a Pierre CodeView in a fixed-height .oc-code-view scroller, so only rows near the viewport render and revealLine scrolls unrendered lines into view. That is what evidence/frontend/pierre-diff-options.md records for Conductor (one-item CodeView per open file). The same evidence shows no windowing on Conductor's Changes list, so the unvirtualized ChangesList matches (inferred from the bundle).",
    "obligation": "",
    "layers_required": [
@@ -701,12 +700,12 @@
    "id": "diff.whitespace",
    "area": "diff",
    "title": "Show or hide whitespace-only changes",
-   "status": "partial",
-   "score": 0.5,
+   "status": "implemented",
+   "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "#270 is fixed (in #291): git.rs workspace_diff takes the file list and counts from the plain diff and only hunks from git diff -w, and git_tests.rs asserts the whitespace-only file stays listed with counts (1,1). FileDiffView shows 'Only whitespace changes found' with 'Show whitespace changes', and the file toolbar uses Conductor's 'Hide/Show whitespace changes' labels. The ChangesList control is still a plain 'Hide whitespace' checkbox instead of the 'View options' menu item (evidence/diff/whitespace.md).",
-   "obligation": "Replace the ChangesList 'Hide whitespace' checkbox with Conductor's 'View options' menu item 'Hide whitespace changes' on the same flag.",
+   "why": "#331 removed the ChangesList checkbox; DiffTab mounts ViewOptionsMenu (DiffViewer.tsx:89-92) with checkbox items 'Hide whitespace changes' and 'Wrap lines' (Whitespace.tsx:33,42-83) on the same ignoreWhitespace flag, matching evidence/diff/whitespace.md:45-56. The #270 fix and the WhitespaceOnly state are intact.",
+   "obligation": "",
    "layers_required": [
     "backend",
     "ui"
@@ -740,12 +739,12 @@
    "id": "diff.viewed",
    "area": "diff",
    "title": "Mark files as viewed",
-   "status": "partial",
-   "score": 0.5,
+   "status": "implemented",
+   "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "Viewed marks are stored by fingerprint in localStorage (viewed.ts); the FileDiffView Viewed checkbox collapses the body, diff.toggleViewed is bound, and ChangesList shows 'N/M viewed' with 'Next unread'. Conductor's toggle copy is 'Mark as viewed' / 'Mark as not viewed'; ours is a static 'Viewed' checkbox.",
-   "obligation": "Use Conductor's 'Mark as viewed' / 'Mark as not viewed' labels.",
+   "why": "#331 replaced the checkbox with ViewedToggle (FileDiffView.tsx:211,219-235): a ghost button, aria-pressed, tooltip 'Mark as viewed' / 'Mark as not viewed' plus the diff.toggleViewed shortcut (evidence/diff/whitespace.md:60-62). Fingerprinted marks, N/M count and 'Next unread' unchanged.",
+   "obligation": "",
    "layers_required": [
     "ui"
    ],
@@ -771,12 +770,12 @@
    "id": "diff.navigation",
    "area": "diff",
    "title": "Keyboard navigation to the next/previous file and comment in a diff",
-   "status": "partial",
-   "score": 0.5,
+   "status": "implemented",
+   "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "Keyboard navigation works: diff.nextFile/previousFile in useWorkspaceDiff and diff.nextComment/previousComment in ReviewComments.tsx step across files (nav.ts) and scroll with revealLine. The floating 'Previous comment' / 'Next comment' buttons Conductor shows over the diff (evidence/diff/comment-navigation.md) exist as CommentNav / useCommentNavigation in CommentNav.tsx (#276) but nothing imports them; #291 reused #276's title but carried the #270 fix, so the mount never landed.",
-   "obligation": "Mount <CommentNav> with useCommentNavigation(CodeView handle, item id, anchors) in FileDiffView's .oc-code-scroll box, refreshed from the CodeView post-render callback.",
+   "why": "#304 mounted the floating buttons: FileDiffView.tsx:90 calls useCommentNavigation, :161 renders CommentNav, :136 refreshes counts after render. CommentNav shows 'Previous comment'/'Next comment' with counts only when count > 0 and binds diff.previousComment/nextComment at higher priority (evidence/diff/comment-navigation.md). File navigation unchanged.",
+   "obligation": "",
    "layers_required": [
     "keybinding",
     "ui"
@@ -807,12 +806,12 @@
    "id": "diff.turn-changes",
    "area": "diff",
    "title": "Show the changes made in a selected agent turn, cached locally",
-   "status": "missing",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "There is no TurnChanges UI, no turn-diff command and no turn-changes local-storage cache. The checkpoint module (save/get/restore) is used only by spotlight. The reference has 'No changes in selected turn' and the turn-changes-cache local storage.",
-   "obligation": "Show the changes made in a selected agent turn (diff between turn checkpoints), cached locally.",
+   "why": "reason_prompt wraps the turn in around_turn and returns turnChanges (reason_chat.rs:121-127), with checkpoint_turn_changes (lib.rs:314) as fallback; TurnChanges chips under each finished turn open the file in Turn scope and an empty turn shows 'No changes in selected turn.'. Turn ids are random per run so restored turns lose chips, the cache is webview localStorage not db.local-storage, and the chip layout shows 2 + more where evidence says the first 3.",
+   "obligation": "Persist turn ids with the transcript, move the cache to the db.local-storage subsystem, and settle the 2-vs-3 chip count against REA evidence.",
    "layers_required": [
     "backend",
     "ui"
@@ -850,8 +849,8 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "Per-file discard works end to end: discard.rs discard_file behind the registered diff_discard_file, revert icons in ChangesList and the FileDiffView header, one DiscardDialog mounted via DiffDiscardHost, list refresh afterwards (no duplicate copies from the earlier re-lands). Conductor also attaches a 'user undid the changes to <file>' context note to the active chat and has a 'Discard changes' file context-menu entry (evidence/diff/discard.md); both are absent.",
-   "obligation": "Attach Conductor's undo context note to the active chat after a discard and add the 'Discard changes' file context-menu entry.",
+   "why": "The revert note reaches the composer after a discard and since #301 goes to Reason as an embedded attachment. The context-menu 'Discard changes' still calls diff.askDiscard unconditionally (ChangesList.tsx:123), even in the turn view where canDiscard is false, and discards against the current scope (useWorkspaceDiff.ts:116) instead of always 'All changes'.",
+   "obligation": "Make the context-menu discard always use 'All changes' and hide or refuse it while a turn is selected.",
    "layers_required": [
     "backend",
     "ui"
@@ -884,12 +883,12 @@
    "id": "diff.comments-inline",
    "area": "diff",
    "title": "Add, edit and delete inline comments on a line or line range",
-   "status": "partial",
-   "score": 0.5,
+   "status": "implemented",
+   "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "Pierre's gutter utility (enableGutterUtility / onGutterUtilityClick) opens the composer; threads render as CodeView annotations with reply, edit, delete and resolve, persisted through the registered diff_comment_* commands into diff_comments. New comments are single-line only: the handler keeps Math.min(start, end), enableLineSelection / controlledSelection are not passed, and end_line_number is never set.",
-   "obligation": "Pass enableLineSelection / controlledSelection to Pierre and save the selected range as line_number / end_line_number.",
+   "why": "#330 passes enableGutterUtility, enableLineSelection and controlled selectedLines to CodeView (FileDiffView.tsx:106-128,157-158); the selected range opens the composer and is saved as line_number/end_line_number through the registered diff_comment_add (ReviewComments.tsx:247,278; comments.ts:69-75), as evidence/diff/wrap-lines-and-range-comments.md describes.",
+   "obligation": "",
    "layers_required": [
     "data",
     "command",
@@ -935,8 +934,8 @@
    "score": 0.5,
    "code_score": 0.5,
    "needs_rereview": true,
-   "why": "'Add N comments to chat' and per-thread 'Add to chat' call ReviewComments toChat, which inserts formatForAgent(...) text through ChatBridge and marks comments sent with diff_comments_mark_sent. Conductor attaches comments as composer attachments (attachments.comment_id) with 'Add all comments to chat'; nothing uses comment_id or the new draft-attachments path.",
-   "obligation": "Attach review comments as composer attachment rows with comment_id via draft attachments, using the 'Add all comments to chat' copy.",
+   "why": "toChat still pastes formatForAgent text and calls diff_comments_mark_sent (ReviewComments.tsx:191-194); the button reads 'Add N comments to chat'. #301 added a composer attachment path (sendReason takes PromptAttachment[]) that comments do not use, and inserts now go to whichever chat is showing, including a review chat (WorkspaceView.tsx:366).",
+   "obligation": "Attach comments as composer attachments carrying comment_id instead of pasting text, use 'Add all comments to chat', and decide whether they go to the workspace chat rather than a visible review chat.",
    "layers_required": [
     "backend",
     "ui"
@@ -964,8 +963,8 @@
    "title": "Sync PR review comments from GitHub with resolved, outdated and suggestion state",
    "status": "missing",
    "score": 0.0,
-   "code_score": 0.333,
-   "needs_rereview": false,
+   "code_score": 1.0,
+   "needs_rereview": true,
    "why": "Only the schema columns and DTO fields exist (`remote_url`, `is_outdated`, `is_resolved`, `suggestion_base_code` in comment_commands.rs `CommentDto` and the db crate), plus a GitHub link and an 'Outdated' tag in `CommentItem`. `refreshOutdated` is purely local. Nothing in src-tauri fetches PR review comments (no `pulls/{n}/comments` or `reviewThreads`).",
    "obligation": "Sync PR review comments from GitHub into diff_comments with resolved, outdated and suggestion state, and show them in the diff.",
    "layers_required": [
@@ -974,17 +973,24 @@
     "ui"
    ],
    "layers_present": [
-    "data"
-   ],
-   "missing_layers": [
+    "data",
     "backend",
     "ui"
    ],
+   "missing_layers": [],
    "hits": {
     "data": [
      "crates/openconductor-db/migrations/0002_attachments_and_diff_comments.sql",
      "src/features/diff/comments.ts",
-     "src-tauri/src/diff/comment_commands.rs"
+     "src-tauri/src/diff/comment_commands.rs",
+     "src-tauri/src/pr/review_comments.rs"
+    ],
+    "backend": [
+     "src-tauri/src/pr/review_comments.rs"
+    ],
+    "ui": [
+     "src/features/diff/ReviewComments.tsx",
+     "src/features/diff/comments-github.css"
     ]
    },
    "anchors": [
@@ -1024,9 +1030,9 @@
    "status": "partial",
    "score": 0.5,
    "code_score": 1.0,
-   "needs_rereview": true,
-   "why": "#292 adds Settings > Appearance rows (DiffAppearanceRows.tsx): 'Accessible colors' (color_vision -> Pierre addition/deletion color overrides), 'Code theme' (nine themes with a Pierre preview) and 'Code ligatures', persisted via get_settings / update_settings; the open diff and worker pool follow the theme through useDiffTheme. Conductor's wrap-lines setting is missing: FileDiffView hard-codes overflow 'scroll' where the reference passes 'wrap' (evidence/frontend/pierre-diff-options.md).",
-   "obligation": "Add the wrap-lines setting and pass overflow: 'wrap' to the diff CodeView when it is on.",
+   "needs_rereview": false,
+   "why": "Code theme (useDiffTheme), fonts, ligatures and color_vision are in place; #331 moved 'Wrap lines' into View options. wrapLines is still stored in the localStorage diff options (types.ts:47-51), not Conductor's wrap_lines settings row.",
+   "obligation": "Store wrap lines as the wrap_lines setting (default true) through get_settings/update_settings.",
    "layers_required": [
     "ui"
    ],
@@ -1055,8 +1061,8 @@
    "status": "partial",
    "score": 0.5,
    "code_score": 1.0,
-   "needs_rereview": false,
-   "why": "WorkspaceView.tsx renders PrControl; usePrActions.create sends the output of the registered pr_create_prompt (createPrPrompt in src/features/pr/api.ts) to the workspace agent through chat.send, 'Create draft PR' sets draft=true, and git.createPR runs when createShortcutApplies allows it, matching the agent-message flow in evidence/pr/NOTES.md. The request carries only {branch, remote, targetBranch, draft}: the PR template and custom_prompt_create_pr are never sent, and pr_title / pr_description are never written to the DB (only an in-memory prTitle via setWorkspacePr).",
+   "needs_rereview": true,
+   "why": "usePrActions.create (usePrActions.ts:80) sends only {branch, remote, targetBranch, draft} to the registered pr_create_prompt; the createPR custom prompt (now readable via db_repo_prompt) and the PR template are not passed, and pr_title/pr_description are not written to conductor.db.",
    "obligation": "Read the repo's custom_prompt_create_pr and PR template and pass them to pr_create_prompt. Save the PR title and body to workspaces.pr_title and pr_description through a registered command when the lookup finds the PR.",
    "layers_required": [
     "data",
@@ -1100,12 +1106,12 @@
    "id": "pr.custom-prompts",
    "area": "pr",
    "title": "Per-repository prompts for create PR, code review, fix errors, resolve conflicts, rename branch",
-   "status": "backend-only",
-   "score": 0.25,
+   "status": "partial",
+   "score": 0.5,
    "code_score": 0.5,
-   "needs_rereview": true,
-   "why": "crates/openconductor-db/src/repos.rs reads and writes custom_prompt_create_pr, code_review, fix_errors, resolve_merge_conflicts and rename_branch through repos::settings and update_settings, and crates/openconductor-db/tests/repos.rs tests this. create_pr_prompt and useReviewComments both take a custom-instructions argument. No registered command reads repo settings for the UI, WorkspaceView passes `undefined` as customReviewPrompt, and there is no per-repository prompts UI.",
-   "obligation": "Register get and update repo-settings commands for the custom_prompt_* fields, add the per-repository Prompts settings UI, and pass the stored prompts into create-PR, review, fix-errors, resolve-conflicts and rename.",
+   "needs_rereview": false,
+   "why": "#301 registered db_repo_prompt (persistence_commands.rs; lib.rs:296), reading all six custom_prompt_* kinds; the running app reads codeReview for the Review button (reviewApi.ts:9). There is no UI to edit any prompt, and createPR, fixErrors, resolveMergeConflicts, renameBranch and general are read nowhere.",
+   "obligation": "Add per-repo prompt editing through a registered write command, and read createPR, fixErrors, resolveMergeConflicts and renameBranch in their flows.",
    "layers_required": [
     "data",
     "ui"
@@ -1168,12 +1174,12 @@
    "id": "pr.checks",
    "area": "pr",
    "title": "CI checks list with logs, re-run failed, and optional-checks policy",
-   "status": "unwired",
-   "score": 0.25,
+   "status": "partial",
+   "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "#268 registered pr::checks_commands::pr_check_log and pr_rerun_failed_checks (runs.rs: job log, BlobNotFound annotations fallback, gh run rerun --failed, tested in runs_tests.rs), but nothing in src/ invokes either. There is no checks list, log view or Re-run failed button; real check data appears only as header summary chips ('N/M checks failed', 'Checks running').",
-   "obligation": "Add the right-panel Checks list from pr_lookup's rollup (failing first, then pending; name, link, duration per NOTES), a log view on pr_check_log, a Re-run failed button on pr_rerun_failed_checks, and the optional-checks-blocking setting.",
+   "why": "The Checks tab is mounted in RightPanel (WorkspaceView.tsx:244-251) with live pr_lookup rollup data; checks/api.ts calls the registered pr_check_log and pr_rerun_failed_checks (lib.rs:362-363), and ChecksTab re-runs and fetches logs. The 'Treat optional checks as blocking' setting is saved but never read (usePullRequest.ts:65 hard-codes optionalChecksBlock: false), and 'Fix errors' is not built.",
+   "obligation": "Read treat_optional_checks_as_blocking in usePullRequest; add 'Fix errors' sending failing logs to the agent; show Re-run whenever a failing check has a details URL (evidence/pr/NOTES.md:32).",
    "layers_required": [
     "backend",
     "ui"
@@ -1206,7 +1212,7 @@
    "status": "partial",
    "score": 0.5,
    "code_score": 0.5,
-   "needs_rereview": false,
+   "needs_rereview": true,
    "why": "On ready_to_merge PrControl shows Merge, calling the registered pr_merge through usePrActions.merge; the tooltip names the repo merge method from pr_merge_method, git.mergePR works through mergeShortcutApplies, and queued_to_merge shows 'In merge queue', matching NOTES (the reference has no method menu either). Automerge has no UI: api.ts setAutoMerge wraps pr_set_auto_merge but nothing calls it. The optional-checks-as-blocking setting does not exist. shortcuts.ts canMerge re-implements Rust merge_eligibility::can_merge by hand and can drift.",
    "obligation": "Add the automerge control calling pr_set_auto_merge and the 'treat optional checks as blocking' setting, feeding header_state and the merge shortcut; use the Rust eligibility result for the shortcut.",
    "layers_required": [
@@ -1236,12 +1242,12 @@
    "id": "pr.archive-on-merge",
    "area": "pr",
    "title": "Archive the workspace when its PR merges",
-   "status": "backend-only",
-   "score": 0.25,
+   "status": "partial",
+   "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": true,
-   "why": "prompt::should_archive_after_merge is still called only from tests; settings git.archive_on_merge exists but GitPage.tsx has no row for it; usePrActions.merge only notifies and refreshes after pr_merge, and nothing reacts to a lookup reporting isMerged.",
-   "obligation": "Add the 'Archive on merge' row to Settings > Git, and after a successful pr_merge or a lookup reporting merged, check should_archive_after_merge and archive through the archive flow.",
+   "why": "Settings > Git has an 'Archive on merge' row (GitPage.tsx:101-109); useArchiveOnMerge (WorkspaceView.tsx:320-328, usePullRequest.ts:72) archives through the registered db_archive_workspace when mergedTransition/archiveDecision agree. Only the open workspace is watched, there is no per-repo override, the toast has no Open PR/Unarchive, and db_archive_workspace only flips the row (no archive_commit, worktree kept).",
+   "obligation": "Watch every workspace's PR state, add the per-repo override, toast actions, full archive (archive_commit + worktree cleanup) and the stacked-PR exception.",
    "layers_required": [
     "backend",
     "ui"
@@ -1297,7 +1303,7 @@
    "status": "unwired",
    "score": 0.25,
    "code_score": 0.5,
-   "needs_rereview": false,
+   "needs_rereview": true,
    "why": "`pr_approve` (REST review pinned to head_oid), `pr_mark_ready`, `pr_edit` and `pr_retarget` are registered in lib.rs and wrap gh.rs, which matches NOTES. No `invoke` of any of them exists in src/, and there is no UI for approve, mark ready, edit title or change base.",
    "obligation": "Add the header and PR-menu actions Approve (when header_state offers it), Mark ready, Edit title and Change base branch, calling the registered commands and refreshing pr_lookup afterwards.",
    "layers_required": [
@@ -1330,9 +1336,9 @@
    "status": "partial",
    "score": 0.5,
    "code_score": 0.667,
-   "needs_rereview": true,
-   "why": "Unchanged since d91540c. ReviewComments.tsx's Review button and workspace.showReview send buildReviewPrompt (src/features/diff/review.ts) into the workspace chat via reason_prompt. WorkspaceView.tsx calls useReviewComments(workspace.id, chat, undefined, ...), so custom_prompt_code_review is never applied, and settings models.review / review thinking level are only validated, never used to run a review session.",
-   "obligation": "Start the review as its own agent session with settings.models.review and the review thinking level, passing the repo's custom_prompt_code_review.",
+   "needs_rereview": false,
+   "why": "The Review button is mounted in the right-panel tab strip (WorkspaceView.tsx:270,474) with Edit before sending and Cmd+Shift+R; it reads custom_prompt_code_review through the registered db_repo_prompt (lib.rs:296), picks models.review or opus-5-1m with the review effort, and opens a 'Review N' chat sending 'Review request.md' as an attachment through reason_open_chat config / reason_prompt attachments (#301). Review still shows on the Checks tab, there is no detached-HEAD refusal or read-only gating, findings are chat text not inline diff comments, and review tabs are lost on restart.",
+   "obligation": "Hide Review on the Checks tab, refuse on detached HEAD, gate read-only workspaces, land findings as inline diff comments, persist review tabs.",
    "layers_required": [
     "data",
     "backend",
@@ -1366,7 +1372,7 @@
    "status": "partial",
    "score": 0.5,
    "code_score": 0.5,
-   "needs_rereview": true,
+   "needs_rereview": false,
    "why": "diff::git::workspace_diff returns OperationInProgress ('a merge is in progress; finish it to see changes'), and useWorkspaceDiff shows that message, so the diff is blocked during a merge or rebase. This matches the 'finish rebasing or merging to see changes' anchor. There is no Resolve conflicts action or prompt: header.rs MergeConflicts is unused by the UI, and custom_prompt_resolve_merge_conflicts is never read. No other PR actions are blocked during an operation.",
    "obligation": "Add the Resolve conflicts header action, shown when header_state returns MergeConflicts or a merge or rebase is in progress, that sends the resolve-conflicts prompt (with the repo custom prompt) to the agent, and block the other git and PR actions while the operation runs.",
    "layers_required": [
@@ -1446,5 +1452,5 @@
   }
  ],
  "broken_anchors": [],
- "implementation_files_scanned": 381
+ "implementation_files_scanned": 389
 }
