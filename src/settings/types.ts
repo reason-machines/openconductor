@@ -74,6 +74,19 @@ export interface Settings {
     terminal_scrollback_limit_bytes?: number | null;
     [extra: string]: unknown;
   };
+  /** Conductor's Experimental keys. */
+  experimental?: {
+    /** "Big terminal mode": ⌘⇧T opens a terminal running the Big terminal preset. */
+    experimental_big_terminal_mode?: boolean;
+    [extra: string]: unknown;
+  };
+  /** Conductor's "Big terminal" settings tab (id `terminal`). */
+  terminal?: {
+    /** A built-in preset or `custom:<id>`; absent or unknown means Claude. */
+    big_terminal_preset?: string | null;
+    big_terminal_custom_commands?: { id: string; command: string }[];
+    [extra: string]: unknown;
+  };
   [extra: string]: unknown;
 }
 
