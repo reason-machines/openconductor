@@ -3,7 +3,7 @@
    colour-vision palettes only swap variables. Categories follow the diff
    tokens in evidence/frontend/diff-review-copy.json; names and values are ours. */
 .oc-diff {
-  --oc-diff-font: ui-monospace, "SF Mono", Menlo, monospace;
+  --oc-diff-font: var(--font-mono);
   --oc-diff-font-size: 12px;
   --oc-diff-line-height: 18px;
   --oc-diff-bg: var(--panel);
@@ -80,4 +80,4 @@
 .oc-code mark.addition { background: var(--oc-diff-bg-addition-emphasis); color: inherit; border-radius: 2px; }
 .oc-code mark.deletion { background: var(--oc-diff-bg-deletion-emphasis); color: inherit; border-radius: 2px; }
 .oc-code tr.hunk td { background: var(--oc-diff-bg-separator); color: var(--muted); padding: 2px 8px; }
-.oc-code tr.annotation td { background: var(--oc-diff-annotation-bg); padding: 6px 10px; white-space: normal; font-family: -apple-system, system-ui, sans-serif; }
+.oc-code tr.annotation td { background: var(--oc-diff-annotation-bg); padding: 6px 10px; white-space: normal; font-family: var(--font-sans); }

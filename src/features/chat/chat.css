@@ -22,7 +22,7 @@
 .chat-tool-head { display: flex; align-items: center; gap: 8px; width: 100%; padding: 5px 8px; text-align: left; min-width: 0; }
 .chat-tool-head:hover { background: var(--hover); }
 .chat-tool-name { font-weight: 600; flex: none; }
-.chat-tool-summary { color: var(--muted); font-family: ui-monospace, "SF Mono", Menlo, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.chat-tool-summary { color: var(--muted); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .chat-tool-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--muted); }
 .chat-tool.status-running .chat-tool-dot { background: var(--amber); animation: pulse 1.4s ease-in-out infinite; }
 .chat-tool.status-done .chat-tool-dot { background: var(--add); }
