@@ -13,6 +13,7 @@ import { TurnChanges } from "../features/chat/TurnChanges.tsx";
 import type { TurnRef } from "../features/diff/turnChangesCache.ts";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
+import { showUncommittedChanges, TARGET_REMOTE, targetBranch } from "../features/diff/target";
 import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
@@ -236,6 +237,14 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
   useEffect(() => {
     if (diff.turn) setTab("changes");
   }, [diff.turn]);
+  // parity:diff.changes-list:ui Cmd+Alt+U: the Changes tab in Uncommitted scope, or back to All changes.
+  useKeybindings({
+    "workspace.showUncommittedChanges": () => {
+      const next = showUncommittedChanges(tab, diff.opts.scope, diff.turn !== null);
+      setTab(next.tab);
+      diff.update({ scope: next.scope });
+    },
+  });
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
   return (
@@ -412,7 +421,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   // The review hook needs the loaded files and the diff needs the hook's reveal, so loads go through a ref.
   const loaded = useRef<((files: FileDiff[], scope: DiffScope) => void) | null>(null);
   const onLoaded = useCallback((files: FileDiff[], scope: DiffScope) => loaded.current?.(files, scope), []);
-  const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, baseBranch: intendedTarget, onLoaded, onOpen: openDiffTab });
+  // "All changes" is diffed against the open PR's base, else the workspace's target branch (onLookup fills prBase).
+  const [prBase, setPrBase] = useState<{ base: string; merged: boolean } | null>(null);
+  useEffect(() => setPrBase(null), [workspace.id]);
+  const diffTarget = { branch: targetBranch({ prBase: prBase?.base ?? null, prMerged: prBase?.merged ?? false, intended: workspace.targetBranch, fallback: repo.defaultBranch }), remote: TARGET_REMOTE };
+  const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, target: diffTarget, onLoaded, onOpen: openDiffTab });
   // Inserts go to the chat shown; sends (e.g. Create PR) go to the workspace's own chat, switching to it.
   const shownChat = useRef<string>(workspace.id);
   const chat = useMemo<ChatBridge>(
@@ -450,6 +463,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
       } else {
         dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: prTitle.current, pr: null });
       }
+      setPrBase(next.kind === "found" ? { base: next.info.baseRefName, merged: next.info.isMerged } : null);
       archiveOnMerge(next, previous);
     },
     [dispatch, repo.id, workspace.id, archiveOnMerge],

@@ -224,6 +224,8 @@ pub struct WorkspaceRow {
     pub derived_status: Option<String>,
     pub manual_status: Option<String>,
     pub workspace_path: Option<String>,
+    /// `intended_target_branch`: the branch the work merges into; "All changes" diffs against it.
+    pub intended_target_branch: Option<String>,
     pub pinned_at: Option<String>,
     pub unread: bool,
     /// The PR's title and body as last stored (`pr_title`, `pr_description`):
@@ -232,9 +234,6 @@ pub struct WorkspaceRow {
     pub pr_description: Option<String>,
     /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
     pub number: Option<i64>,
-    /// `workspaces.intended_target_branch`: the branch the work merges into,
-    /// set at creation and by the target-branch picker.
-    pub intended_target_branch: Option<String>,
     pub created_at: String,
 }
 
@@ -273,12 +272,12 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 derived_status: w.derived_status,
                 manual_status: w.manual_status,
                 workspace_path: w.workspace_path,
+                intended_target_branch: w.intended_target_branch,
                 pinned_at: w.pinned_at,
                 unread: w.unread,
                 pr_title: w.pr_title,
                 pr_description: w.pr_description,
                 number: w.number,
-                intended_target_branch: w.intended_target_branch,
                 created_at: w.created_at,
                 repository_id: w.repository_id,
                 id: w.local_id,

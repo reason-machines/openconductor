@@ -30,6 +30,8 @@ export interface DbWorkspaceRow {
   derivedStatus: string | null;
   manualStatus: string | null;
   workspacePath: string | null;
+  /** `intended_target_branch`; absent from rows of an older backend. */
+  intendedTargetBranch?: string | null;
   pinnedAt: string | null;
   unread: boolean;
   /** The PR's title and body as last stored (`pr_title`, `pr_description`). */
@@ -37,8 +39,6 @@ export interface DbWorkspaceRow {
   prDescription: string | null;
   /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
   number: number | null;
-  /** `intended_target_branch`. */
-  intendedTargetBranch: string | null;
   createdAt: string;
 }
 
@@ -82,6 +82,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             createdAt: sqliteTime(w.createdAt),
             path: w.workspacePath ?? undefined,
             placeholderBranchName: w.placeholderBranchName,
+            targetBranch: w.intendedTargetBranch ?? null,
             /* sidebar: pin, unread and status columns */
             pinnedAt: w.pinnedAt ? sqliteTime(w.pinnedAt) : undefined,
             unread: w.unread || undefined,
@@ -92,7 +93,6 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             number: w.number ?? null,
             state: w.state,
             userSetWorkspaceName: w.userSetWorkspaceName || undefined,
-            targetBranch: w.intendedTargetBranch ?? null,
           }),
         ),
     }));
