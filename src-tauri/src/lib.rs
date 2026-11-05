@@ -166,6 +166,7 @@ pub fn run() {
             github_repo_availability,
             github_repo_create,
             workspace::commands::add_repository,
+            workspace::commands::clone_repository,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
             workspace::commands::branch_name_is_taken,

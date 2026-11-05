@@ -701,3 +701,59 @@ fn service_renames_workspace_branch_by_workspace_id() {
     assert!(matches!(svc.rename_workspace_branch("nope/lisbon", "x"), Err(WorkspaceError::UnknownRepository(_))));
     assert!(matches!(svc.rename_workspace_branch("no-slash", "x"), Err(WorkspaceError::NotFound(_))));
 }
+
+#[test]
+fn repo_name_from_url_takes_last_segment_without_dot_git() {
+    let cases = [
+        ("https://github.com/owner/name", Some("name")),
+        ("https://github.com/owner/name.git", Some("name")),
+        ("https://github.com/owner/name/", Some("name")),
+        ("git@github.com:owner/name.git", Some("name")),
+        ("git@host:name.git", Some("name")),
+        ("ssh://git@host:2222/owner/name.git/", Some("name")),
+        ("/Users/sven/src/my-app", Some("my-app")),
+        ("  ../my-app.git  ", Some("my-app")),
+        ("", None),
+        ("https://", None),
+        ("..", None),
+    ];
+    for (url, want) in cases {
+        assert_eq!(naming::repo_name_from_url(url).as_deref(), want, "{url:?}");
+    }
+}
+
+#[test]
+fn clone_repository_clones_registers_and_refuses_existing_destination() {
+    use super::service::WorkspaceService;
+    let f = fixture();
+    let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
+    let parent = f.tmp.path().join("clones");
+    std::fs::create_dir_all(&parent).unwrap();
+    let url = f.repo.display().to_string();
+
+    let r = svc.clone_repository(&url, &parent).unwrap();
+    assert_eq!((r.id.as_str(), r.name.as_str(), r.default_branch.as_str()), ("my-app", "My App", "main"));
+    assert_eq!(r.root, parent.join("My App"));
+    assert!(r.root.join("README.md").exists());
+    assert_eq!(svc.repositories().len(), 1);
+
+    match svc.clone_repository(&url, &parent) {
+        Err(e @ WorkspaceError::DestinationExists(_)) => {
+            assert_eq!(e.to_string(), format!("destination already exists: {}", parent.join("My App").display()));
+        }
+        other => panic!("expected DestinationExists, got {other:?}"),
+    }
+
+    let missing = f.tmp.path().join("no-such-repo");
+    match svc.clone_repository(&missing.display().to_string(), &parent) {
+        Err(e @ WorkspaceError::CloneFailed(_)) => {
+            let msg = e.to_string();
+            assert!(msg.contains("does not exist") || msg.starts_with("fatal:"), "{msg}");
+            assert!(!msg.contains("Cloning into"), "{msg}");
+        }
+        other => panic!("expected CloneFailed, got {other:?}"),
+    }
+    assert!(!parent.join("no-such-repo").exists());
+    assert_eq!(svc.repositories().len(), 1);
+    assert!(matches!(svc.clone_repository("https://", &parent), Err(WorkspaceError::InvalidCloneUrl(_))));
+}
