@@ -8,9 +8,10 @@
 //! 1. `reason_open_chat(chatId, cwd, sessionId?)` when a Reason chat is
 //!    shown; pass the Session id saved from its `sessionStarted` event so
 //!    a chat reopened after a restart resumes its Session.
-//! 2. `reason_prompt(chatId, text, turnId?)` for the first message and every
+//! 2. `reason_prompt(chatId, text, turn?)` for the first message and every
 //!    follow-up; it resolves with the turn's end once the turn is over. With
-//!    a `turnId` the chat folder is checkpointed before and after the turn
+//!    `turn: { sessionId, turnId }` the chat folder is checkpointed as
+//!    `session-<sessionId>-turn-<turnId>-start|end` before and after the turn
 //!    ([`crate::turn_checkpoint`]) and the result carries `turnChanges`, the
 //!    files the turn changed (absent when a checkpoint was skipped or the
 //!    turn touched more than 200 files).
@@ -20,6 +21,7 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 
+use serde::Deserialize;
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, State};
 
@@ -86,25 +88,33 @@ pub fn reason_open_chat(
     Ok(())
 }
 
+/// Names one turn's checkpoints: the frontend's `turnCheckpointRef`, the
+/// ref-safe chat id and turn id (the same ids "Reset chat" restores).
+#[derive(Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct TurnArg {
+    pub session_id: String,
+    pub turn_id: String,
+}
+
 /// Runs one turn; events arrive meanwhile. Resolves with the turn's end
-/// (`{ outcome, message?, turnChanges? }`). `turn_id` names the turn's
-/// checkpoints (`session-<chatId>-turn-<turnId>-start` / `-end`).
+/// (`{ outcome, message?, turnChanges? }`).
 #[tauri::command]
 pub async fn reason_prompt(
     app: AppHandle,
     state: State<'_, ReasonChats>,
     chat_id: String,
     text: String,
-    turn_id: Option<String>,
+    turn: Option<TurnArg>,
 ) -> Result<Value, String> {
     let provider = state.provider(&app)?;
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
     let (end, changes) = tauri::async_runtime::spawn_blocking(move || {
-        let target = match (&cwd, &turn_id) {
-            (Some(workspace), Some(turn_id)) => Some(TurnTarget {
+        let target = match (&cwd, &turn) {
+            (Some(workspace), Some(turn)) => Some(TurnTarget {
                 workspace,
-                session_id: &chat_id,
-                turn_id,
+                session_id: &turn.session_id,
+                turn_id: &turn.turn_id,
             }),
             _ => None,
         };
