@@ -1,6 +1,7 @@
 //! Rules a settings value must satisfy before it is saved or used.
 
 use super::{BranchPrefixType, Settings, SettingsError};
+use crate::agent::AgentKind;
 
 /// Checks cross-field rules serde cannot express.
 pub fn validate(s: &Settings) -> Result<(), SettingsError> {
@@ -32,19 +33,21 @@ pub fn validate(s: &Settings) -> Result<(), SettingsError> {
     {
         return invalid("models.review must not be empty when set".into());
     }
-    for (key, url) in [
-        (
-            "providers.anthropic_base_url",
-            &s.providers.anthropic_base_url,
-        ),
-        ("providers.openai_base_url", &s.providers.openai_base_url),
-    ] {
-        if let Some(u) = url {
-            if !(u.starts_with("https://") || u.starts_with("http://"))
-                || u.contains(char::is_whitespace)
-            {
-                return invalid(format!("{key} must be an http(s) URL"));
-            }
+    for agent in AgentKind::ALL {
+        let Some(config) = s.providers.get(agent) else {
+            continue;
+        };
+        let provider = config.provider();
+        let key = format!("providers.{}", agent.as_str());
+        if provider.agent() != agent {
+            return invalid(format!(
+                "{key}: {} is a {} provider",
+                provider.kind(),
+                provider.agent().as_str()
+            ));
+        }
+        if let Err(e) = provider.check_options() {
+            return invalid(format!("{key}: {e}"));
         }
     }
     Ok(())
