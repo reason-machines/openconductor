@@ -2,14 +2,20 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`274ac80`, 2026-11-05)
+## Result on main (`99edc40`, 2026-11-05)
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `962f017` | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Sidebar | 33 | 22 | 8 | 1 | 2 | 0 | **79.5%** | 78.0% | 75.0% | 70.5% | 65.9% | 65.9% |
-| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 88.2% | 85.3% | 62.5% |
-| Create workspace | 17 | 14 | 2 | 0 | 1 | 0 | **88.2%** | 88.2% | 88.2% | 88.2% | 82.4% | 79.4% |
-| **All** | 68 | 49 | 14 | 1 | 3 | 1 | **84.0%** | 83.2% | 81.7% | 79.5% | 75.0% | 68.4% |
+| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `274ac80` | `962f017` | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Sidebar | 33 | 25 | 5 | 1 | 2 | 0 | **84.1%** | 79.5% | 78.0% | 75.0% | 70.5% | 65.9% | 65.9% |
+| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 85.3% | 62.5% |
+| Create workspace | 17 | 14 | 2 | 0 | 1 | 0 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 82.4% | 79.4% |
+| **All** | 68 | 52 | 11 | 1 | 3 | 1 | **86.2%** | 84.0% | 83.2% | 81.7% | 79.5% | 75.0% | 68.4% |
+
+**Since `274ac80`.** Read on `99edc40`. Merges: #423 (`99edc40`, sidebar add-repository menu, rail and native sidebar menu items), and #415, #418 and #422 (evidence, diff theme and chat; no item here).
+
+- `sidebar.add-menu` partial to implemented (#423): "Add project…" in the My workspaces header menu, and ⌥⌘A, open the add-repository popover (Conductor's `wra`) with the shared body `Gji`: Open project, Open GitHub project, Quick start, then "Recents" with a spinner row while loading. Recents come from `recent_local_repos.rs`, a port of Conductor's `MQo` script (zsh history `cd` targets plus `.git` directories under fixed roots, newest first, at most 8), minus folders already added; a Recents row adds its folder through Open project's checks.
+- `sidebar.resize-toggle` partial to implemented (#423): the old verdict was stale, since the rail has resized and saved `left_panel_width` since #332. #423 matches Conductor's rail `Nta` (drag previews, release saves, cancel reverts, double-click resets to 256, 40% window cap) and adds View > Toggle Left Sidebar / Toggle Right Sidebar beside ⌘B and ⌥⌘B. REA gap: which submenu Conductor puts those items in was not decompiled.
+- `sidebar.visibility-settings` partial to implemented (stale since #332): `left_panel_visible`, `left_panel_width` and `right_panel_visible` are rows in conductor.db's settings table, as in Conductor.
 
 **Since `962f017`.** Read on `274ac80`. Merges: #400 (`be4f789`, Copy link), #391 (`274ac80`, full workspace archive and unarchive), #411 and #395 (evidence only).
 
