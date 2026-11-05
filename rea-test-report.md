@@ -46,3 +46,4 @@ Conductor-derived data is treated as untrusted; Sven's running Conductor (pid 90
 9. Building a ledger or bundle from loose Evidence records requires private canonical ordering; CLI `--schema` hides workflow input schemas.
 10. `trace-javascript-semantics` literal seeds miss literals present in budget-truncated files.
 11. Environment, not REA: Screen Recording and Accessibility are not granted to the REA host on this Mac, which blocks all native UI capture.
+12. Packaging (see `evidence/packaging/README.md`): `inspect-signature` on an `.app` inspects only the main executable (no bundle seal, sealed resources or nested code, no trust validation) and gives the signing timestamp as a local string with no time zone; no REA command covers notarization or Gatekeeper assessment.
