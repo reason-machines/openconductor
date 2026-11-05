@@ -5,7 +5,10 @@ import { ArchiveIcon, BranchIcon, SendIcon } from "./Icons";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "../features/chat/reducer.ts";
 import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { reasonAvailable, reasonTranscript, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
+import { reasonAvailable, reasonTranscript, resetReasonChat, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
+import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
+import { changedSinceTurn } from "../features/chat/checkpoints.ts";
+import { invoke } from "@tauri-apps/api/core";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
 import type { DiffScope, FileDiff } from "../features/diff/types";
@@ -68,6 +71,8 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   const load = () => (reason ? reasonTranscript(workspace.id) : (transcripts.get(workspace.id) ?? emptyTranscript(workspace.id)));
   const [transcript, setTranscript] = useState<ChatTranscript>(load);
   const [draft, setDraft] = useState("");
+  /** The turn whose "Reset chat?" dialog is open. */
+  const [resetTurn, setResetTurn] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const running = transcript.activeTurn !== null;
@@ -76,6 +81,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   useEffect(() => {
     setTranscript(load());
     setDraft("");
+    setResetTurn(null);
     if (!reason) return;
     const unsubscribe = subscribeReason(workspace.id, setTranscript);
     const first = firstPrompts.get(workspace.id);
@@ -137,10 +143,23 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
             <p className="muted">{reason ? "Reason runs this chat: one Reason Session per workspace." : "Browser preview: messages stay in a local transcript."}</p>
           </div>
         ) : (
-          <Transcript transcript={transcript} onRetry={(prompt) => sendText(prompt)} />
+          <Transcript
+            transcript={transcript}
+            onRetry={(prompt) => sendText(prompt)}
+            // Conductor: workspace with a path, not archived; disabled while the agent works.
+            onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
+            resetDisabled={running}
+          />
         )}
         <div ref={endRef} />
       </div>
+      {resetTurn !== null ? (
+        <ResetChatDialog
+          loadChangedCount={() => changedSinceTurn(invoke, cwd, workspace.id, resetTurn)}
+          onConfirm={(resetFiles) => resetReasonChat(workspace.id, cwd, resetTurn, resetFiles)}
+          onClose={() => setResetTurn(null)}
+        />
+      ) : null}
       <form className="composer" onSubmit={send}>
         <textarea
           ref={inputRef}
