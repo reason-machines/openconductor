@@ -50,6 +50,7 @@ pub mod menu;
 pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
+pub mod open_in;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
@@ -435,6 +436,8 @@ pub fn run() {
             app_prefs::commands::get_app_prefs,
             app_prefs::commands::set_app_pref,
             app_prefs::commands::record_open_in,
+            open_in::commands::open_in_apps,
+            open_in::commands::open_in_app,
             app_prefs::commands::client_instance_id,
             app_prefs::commands::graphite_cli_installed,
             resource_usage::commands::get_resource_usage,
