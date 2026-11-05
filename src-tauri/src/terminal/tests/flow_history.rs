@@ -1,5 +1,5 @@
+use super::super::manager::READ_CHUNK;
 use super::*;
-use crate::manager::READ_CHUNK;
 
 #[test]
 fn flow_control_pauses_until_acked() {

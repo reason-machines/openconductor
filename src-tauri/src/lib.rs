@@ -6,6 +6,7 @@
 //! - `agent/`      agent runner, providers and BYOK settings
 //! - `quick_open/` quick open file index and fuzzy matching (Spotlight)
 //! - `settings/`   settings.toml and the Keychain-backed secret store
+//! - `terminal/`   PTY terminals (`terminal_commands.rs` is its IPC layer)
 //!
 //! Those modules are added here once their owners land them.
 
@@ -13,10 +14,13 @@ pub mod agent;
 pub mod project;
 pub mod quick_open;
 pub mod settings;
+pub mod terminal;
+mod terminal_commands;
 pub mod workspace;
 
 use serde::Serialize;
 use tauri::Manager;
+use terminal_commands::Terminals;
 
 #[derive(Serialize)]
 struct AppInfo {
@@ -49,6 +53,7 @@ pub fn run() {
             let data_dir = app.path().app_data_dir()?;
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());
+            app.manage(Terminals::new(app.handle().clone()));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -62,7 +67,23 @@ pub fn run() {
             workspace::commands::list_workspaces,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
+            terminal_commands::pty_spawn,
+            terminal_commands::pty_write,
+            terminal_commands::pty_resize,
+            terminal_commands::pty_kill,
+            terminal_commands::pty_ack_bytes,
+            terminal_commands::pty_read_history,
+            terminal_commands::pty_clear_history,
+            terminal_commands::pty_list,
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running OpenConductor");
+        .build(tauri::generate_context!())
+        .expect("error while building OpenConductor")
+        .run(|app, event| {
+            // Shells and their children must not outlive the app.
+            if let tauri::RunEvent::Exit = event {
+                if let Some(terminals) = app.try_state::<Terminals>() {
+                    terminals.0.kill_all();
+                }
+            }
+        });
 }
