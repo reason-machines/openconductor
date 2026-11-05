@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAppStore } from "./state/store";
+import { isSidebarVisible } from "./state/selectors";
+import { isToggleLeftSidebar, isTypingTarget } from "./state/shortcuts";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
@@ -13,6 +15,16 @@ export default function App() {
   const [info, setInfo] = useState<AppInfo | null>(null);
 
   useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat || !isToggleLeftSidebar(e, isTypingTarget(document.activeElement as HTMLElement | null))) return;
+      e.preventDefault();
+      dispatch({ type: "toggleSidebar" });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [dispatch]);
+
+  useEffect(() => {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
@@ -21,13 +33,13 @@ export default function App() {
   const workspace = sel.kind === "workspace" ? repo?.workspaces.find((w) => w.id === sel.workspaceId) : undefined;
 
   return (
-    <div className="app">
-      <Sidebar state={state} dispatch={dispatch} onOpenDialog={setDialog} info={info} />
+    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={setDialog} info={info} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
         ) : (
-          <HomeScreen repos={state.repos} dispatch={dispatch} onOpenDialog={setDialog} />
+          <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={setDialog} />
         )}
       </main>
       {dialog === "open" && <OpenProjectDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
