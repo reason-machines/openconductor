@@ -338,6 +338,7 @@ pub fn run() {
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
             pr::commands::pr_merge,
+            pr::commands::pr_merge_method,
             pr::commands::pr_set_auto_merge,
             pr::checks_commands::pr_check_log,
             pr::checks_commands::pr_rerun_failed_checks,
