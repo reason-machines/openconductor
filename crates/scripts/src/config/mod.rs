@@ -15,6 +15,7 @@
 //! Tables merge key by key; any other value from a higher layer replaces the
 //! lower one. Evidence: `evidence/run-scripts/NOTES.md`.
 
+mod load;
 #[cfg(test)]
 mod tests;
 
@@ -23,6 +24,8 @@ use std::fmt;
 
 use serde::Serialize;
 use toml::{Table, Value};
+
+pub use load::{load, load_layers, SettingsPaths, SharedSource, SETTINGS_DIR};
 
 /// A settings layer, in ascending precedence.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
