@@ -25,6 +25,9 @@
   --sidebar-accent: #14100f0d;
   --sidebar-accent-foreground: #14100fcc;
   --sidebar-border: #14100f1a;
+  /* Repo initial badge: Conductor's bg-muted / text-muted-foreground. */
+  --repo-initial-bg: #fafaf9;
+  --repo-initial-fg: #8e8885;
   /* Left inset that clears the macOS traffic lights when the sidebar is hidden. */
   --traffic-lights-clearance: 66px;
   font-family: var(--font-sans);
@@ -56,6 +59,8 @@
     --sidebar-accent: #ffffff0d;
     --sidebar-accent-foreground: #ffffffe6;
     --sidebar-border: #ffffff1a;
+    --repo-initial-bg: #211e1c;
+    --repo-initial-fg: #a5a09c;
   }
 }
 :root[data-theme="dark"] {
@@ -80,6 +85,8 @@
   --sidebar-accent: #ffffff0d;
   --sidebar-accent-foreground: #ffffffe6;
   --sidebar-border: #ffffff1a;
+  --repo-initial-bg: #211e1c;
+  --repo-initial-fg: #a5a09c;
 }
 
 * { box-sizing: border-box; }
@@ -128,23 +135,66 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-computer svg { flex: none; color: var(--sidebar-muted-foreground); }
 
 /* Workspace list and footer (restyled in the following sidebar PRs). */
-.repo-list, .sidebar-section-header, .sidebar-footer { margin: 0 8px; }
-.repo-toggle:hover, .ws-item:hover, .icon-btn:hover { background: var(--hover); }
-.ws-item.active { background: var(--active); font-weight: 500; }
-.sidebar-section-header { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 16px 8px 4px; }
+.sidebar-footer { margin: 0 8px; }
+.icon-btn:hover { background: var(--hover); }
+/* "My workspaces" header, after Conductor's `lBi`: text-xs font-semibold muted/70, px-1.5 py-1.5,
+   a w-6 spacer under the hover "..." trigger (right-[26px]) and a chevron shown on hover.
+   The reference puts the label 6px from the sidebar edge, so it hangs into the list's left padding. */
+.sb-section-header { position: relative; margin: 2px 0 0 -6px; }
+.sb-section-toggle { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; padding: 6px; border-radius: 6px; text-align: left; }
+.sb-section-header:hover .sb-section-toggle, .sb-section-header:has([data-open]) .sb-section-toggle { background: var(--sidebar-accent); }
+.sb-section-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; font-weight: 600; color: color-mix(in srgb, var(--sidebar-muted-foreground) 70%, transparent); }
+.sb-section-spacer { width: 24px; flex: none; }
+.sb-section-chevron { display: flex; flex: none; color: var(--sidebar-muted-foreground); }
+.sb-section-chevron:not([data-collapsed]) { opacity: 0; }
+.sb-section-header:hover .sb-section-chevron, .sb-section-header:focus-within .sb-section-chevron { opacity: 1; }
+.sb-section-menu { right: 26px; }
+/* Hover "..." trigger and its menu (Conductor's `Aet`: size-6, muted, visible on header hover or while open). */
+.sb-menu-anchor { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; }
+.sb-menu-trigger { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; color: var(--sidebar-muted-foreground); opacity: 0; }
+.sb-section-header:hover .sb-menu-trigger, .sb-repo:hover .sb-menu-trigger, .sb-menu-anchor[data-open] .sb-menu-trigger, .sb-menu-trigger:focus-visible { opacity: 1; }
+.sb-menu-trigger:hover { color: var(--sidebar-foreground); }
+.sb-menu { position: absolute; right: 0; top: calc(100% + 4px); min-width: 180px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.sb-menu-item { display: block; width: 100%; padding: 6px 8px; border-radius: 4px; text-align: left; font-size: 13px; color: var(--text); white-space: nowrap; }
+.sb-menu-item:hover, .sb-menu-item:focus-visible { background: var(--hover); }
 .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 5px; color: var(--muted); }
-.repo-list { overflow-y: auto; flex: 1; min-height: 0; padding-bottom: 8px; }
-.sidebar-empty { color: var(--muted); padding: 4px 8px; margin: 0; line-height: 1.5; }
-.repo-row { display: flex; align-items: center; }
-.repo-row .repo-add { opacity: 0; }
-.repo-row:hover .repo-add { opacity: 1; }
-.repo-toggle { flex: 1; display: flex; align-items: center; gap: 4px; padding: 5px 6px; border-radius: 6px; text-align: left; min-width: 0; font-weight: 600; }
-.repo-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ws-list { list-style: none; margin: 0 0 4px; padding: 0 0 0 14px; }
-.ws-empty { color: var(--muted); padding: 4px 8px; font-size: 12px; }
-.ws-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 5px 8px; border-radius: 6px; text-align: left; }
-.ws-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ws-diff { font-family: var(--font-mono); font-size: 11px; }
+.repo-list { overflow-y: auto; flex: 1; min-height: 0; padding: 0 6px 12px; }
+.sidebar-empty { color: var(--sidebar-muted-foreground); padding: 12px 6px 4px; margin: 0; line-height: 20px; }
+/* Repo group header, after Conductor's `Dra`: py-1.5 px-1.5 mt-0.5 mb-1 rounded-md, the repo icon
+   (initial badge) swapped for a chevron on hover, semibold muted name, a mono count while collapsed,
+   a w-9 slot under the hover "..." (right-9) and an always-visible size-6 "+". */
+.sb-repo-groups { display: flex; flex-direction: column; gap: 4px; margin-top: 2px; }
+.sb-repo { position: relative; }
+.sb-repo-header { display: flex; align-items: center; justify-content: space-between; width: 100%; min-width: 0; padding: 6px; margin: 2px 0 4px; border-radius: 6px; cursor: pointer; }
+.sb-repo:hover .sb-repo-header, .sb-repo:has([data-open]) .sb-repo-header { background: var(--sidebar-accent); }
+.sb-repo-header:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.sb-repo-main { display: flex; flex: 1; min-width: 0; align-items: center; gap: 8px; overflow: hidden; }
+.sb-repo-lead { position: relative; display: flex; flex: none; }
+.sb-repo-initial { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; background: var(--repo-initial-bg); color: var(--repo-initial-fg); font-size: 10px; font-weight: 500; line-height: 1; }
+.sb-repo-chevron { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; visibility: hidden; color: var(--sidebar-muted-foreground); }
+.sb-repo:hover .sb-repo-initial { visibility: hidden; }
+.sb-repo:hover .sb-repo-chevron { visibility: visible; }
+.sb-repo-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: var(--sidebar-muted-foreground); }
+.sb-repo-count { flex: none; font-family: var(--font-mono); font-size: 11px; line-height: 14px; color: var(--sidebar-muted-foreground); }
+.sb-repo-spacer { width: 36px; flex: none; }
+.sb-repo-add { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex: none; border-radius: 6px; color: var(--sidebar-muted-foreground); }
+.sb-repo-add:hover { color: var(--text); background: var(--sidebar-accent); }
+.sb-repo-menu { right: 36px; top: 20px; }
+.ws-empty { color: var(--sidebar-muted-foreground); margin: 0; padding: 4px 6px 4px 26px; font-size: 12px; }
+/* Workspace rows, after Conductor's `wFi`: py-2 pr-1.5 pl-5 rounded-md, hover and selected bg-sidebar-accent,
+   a size-4 leading status icon (mt-0.5 mr-0.5; the branch icon, size-3.5 muted, for a plain branch),
+   name font-450 muted, or semibold accent-foreground when unread, and a text-2xs px-1 diff that is
+   muted on unselected rows. The reference rows are 40px apart. */
+.sb-ws-list { display: flex; flex-direction: column; gap: 4px; }
+.sb-ws { display: flex; align-items: center; gap: 6px; width: calc(100% - 2px); min-width: 0; padding: 8px 6px 8px 20px; border-radius: 6px; text-align: left; color: var(--sidebar-foreground); cursor: pointer; }
+.sb-ws:hover, .sb-ws[data-active] { background: var(--sidebar-accent); }
+.sb-ws-status { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-right: 2px; flex: none; color: var(--sidebar-muted-foreground); }
+.sb-ws-status.working svg { animation: pulse 1.4s ease-in-out infinite; }
+.sb-ws-status.needs-review { color: var(--add); }
+.sb-ws-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 450; color: var(--sidebar-muted-foreground); }
+.sb-ws[data-unread] .sb-ws-name { font-weight: 600; color: var(--sidebar-accent-foreground); }
+.sb-ws-diff { flex: none; padding: 2px 4px; font-family: var(--font-mono); font-size: 11px; line-height: 14px; }
+.sb-ws:not([data-active]) .sb-ws-diff span { color: var(--sidebar-muted-foreground); }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex: none; opacity: 0.6; display: inline-block; }
 .status-dot.working { background: var(--amber); opacity: 1; animation: pulse 1.4s ease-in-out infinite; }
 .status-dot.needs-review { background: var(--add); opacity: 1; }
