@@ -127,6 +127,8 @@ export function useAppPrefs(): AppPrefs {
 /** Conductor's sidebar drag range (`Zsa = 192`, `eoa = 480`). */
 export const SIDEBAR_MIN_WIDTH = 192;
 export const SIDEBAR_MAX_WIDTH = 480;
+/** The rail's double-click target and the unset setting's value (`mBe = 256`, `yta = 256`). */
+export const SIDEBAR_DEFAULT_WIDTH = DEFAULT_APP_PREFS.left_panel_width;
 
 export function clampSidebarWidth(width: number): number {
   if (!Number.isFinite(width)) return DEFAULT_APP_PREFS.left_panel_width;

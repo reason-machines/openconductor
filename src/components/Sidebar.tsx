@@ -23,6 +23,8 @@ import { DROP_ATTR, reorderIndicator, reorderToIndex, workspaceDropAction, type 
 import { ProjectFilterSubmenu } from "./home/ProjectFilterSubmenu";
 import { useRepoFilter } from "../home/useRepoFilter";
 import { filterRepoGroups } from "../home/repoFilter";
+import { SidebarAddRepositoryMenu } from "./AddRepositoryMenu";
+import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { AccountMenu } from "./AccountMenu";
 import { ResourceUsagePill } from "./ResourceUsagePill";
 import type { WorkspaceRef as UsageWorkspace } from "./resourceUsage";
@@ -45,6 +47,8 @@ interface Props {
   dispatch: Dispatch<Action>;
   onOpenDialog: (d: DialogKind, repoId?: string) => void;
   onOpenProject: () => void;
+  /** A Recents row of the add-repository menu: add that folder as Open project would. */
+  onAddProjectAt?: (path: string) => void;
   onOpenSettings: () => void;
   onOpenShortcuts: () => void;
   onSearch: () => void;
@@ -195,7 +199,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
@@ -265,6 +269,11 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
   const [iconRepoId, setIconRepoId] = useState<string | null>(null);
   const iconRepo = iconRepoId ? state.repos.find((r) => r.id === iconRepoId) : undefined;
   const [dragRepoId, setDragRepoId] = useState<string | null>(null);
+  // The add-repository popover (Conductor's `wra`): "Add project…" opens it on the next
+  // frame, after the header menu closes (`yra`); ⌥⌘A (`nav.addRepository`) opens it too.
+  const [addMenuOpen, setAddMenuOpen] = useState(false);
+  const addMenuAnchor = useRef<HTMLSpanElement>(null);
+  useKeybindings({ "nav.addRepository": () => setAddMenuOpen(true) });
   const [dropRepoId, setDropRepoId] = useState<string | null>(null);
   // "Filter by project" (Conductor's `pra`, setting `sidebar_repo_filter`). Repos arrive from
   // conductor.db after the first render (before that, only path-less placeholders for collapsed
@@ -356,10 +365,21 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
             </span>
           </button>
           <HeaderMenu label="My workspaces" className="sb-section-menu" items={[
-            { label: "Add project…", onSelect: onOpenProject },
+            { label: "Add project…", onSelect: () => requestAnimationFrame(() => setAddMenuOpen(true)) },
             { label: "New section…", onSelect: () => setSectionDialog({ mode: "create" }) },
             { key: "filter-by-project", render: (close) => <ProjectFilterSubmenu repos={state.repos} filter={repoFilter} onChange={setRepoFilter} onClose={close} /> },
           ]} />
+          <span ref={addMenuAnchor} className="sb-add-menu-anchor" aria-hidden />
+          <SidebarAddRepositoryMenu
+            open={addMenuOpen}
+            onOpenChange={setAddMenuOpen}
+            anchorRef={addMenuAnchor}
+            repos={state.repos}
+            onOpenProject={onOpenProject}
+            onOpenGitHubProject={() => onOpenDialog("clone")}
+            onQuickStart={() => onOpenDialog("quickstart")}
+            onAddProjectAt={(path) => onAddProjectAt?.(path)}
+          />
         </div>
         {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
         {!groupCollapsed && (
