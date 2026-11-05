@@ -5,7 +5,15 @@
 export type Theme = "system" | "light" | "dark";
 export type SoundType = "default" | "none";
 export type BranchPrefixType = "github_username" | "custom" | "none";
-export type ThinkingLevel = "minimal" | "low" | "medium" | "high" | "xhigh";
+/** Codex reasoning effort; Conductor's levels plus our earlier `minimal`. */
+export type ThinkingLevel = "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max" | "ultra";
+/** Claude Code `--effort`. */
+export type EffortLevel = "low" | "medium" | "high" | "xhigh" | "max";
+/** "Claude output style" (`models.claude_code.personality`). */
+export type ClaudePersonality = "default" | "proactive" | "concise" | "explanatory" | "learning";
+/** "Codex personality" (`models.codex.personality`); unset is Codex's own (pragmatic). */
+export type CodexPersonality = "none" | "friendly" | "pragmatic";
+export type CodexToolApprovalPolicy = "default" | "always_approve";
 
 /** `agent::AgentKind`. */
 export type AgentKind = "claude" | "codex" | "cursor" | "opencode" | "reason";
@@ -40,6 +48,19 @@ export const DEFAULT_PROVIDER: Record<AgentKind, ProviderKind> = {
 
 export interface Settings {
   $schema: string;
+  /** Conductor's top-level provider keys: `custom` (API key) or `default` (CLI login); Codex also `chatgpt_sign_in`. */
+  claude_provider?: string | null;
+  codex_provider?: string | null;
+  bedrock_region?: string | null;
+  vertex_project_id?: string | null;
+  /** Advanced › executable paths; blank means the agent on PATH. */
+  claude_code_executable_path?: string | null;
+  codex_executable_path?: string | null;
+  opencode_executable_path?: string | null;
+  /** Advanced › "SSH private key path". */
+  ssh_key_path?: string | null;
+  /** Account › "Claude Code tool approvals"; off by default. */
+  tool_approvals_enabled?: boolean;
   general: { theme: Theme; send_native_notification: boolean; sound_type: SoundType; [extra: string]: unknown };
   /** Conductor's Appearance keys; zoom is a fraction (1 = 100%). */
   appearance: {
@@ -64,7 +85,25 @@ export interface Settings {
     review?: string | null;
     default_thinking_enabled: boolean;
     review_thinking_enabled: boolean;
-    codex: { default_thinking_level: ThinkingLevel; review_thinking_level: ThinkingLevel; [extra: string]: unknown };
+    default_fast_mode?: boolean;
+    /** Absent means the same as new chats. */
+    review_fast_mode?: boolean | null;
+    default_plan_mode?: boolean;
+    /** Conductor's JSON string `{"opencode": ["opencode:<id>"], ...}`. */
+    visible_provider_models?: string | null;
+    claude_code?: {
+      default_effort_level?: EffortLevel | null;
+      review_effort_level?: EffortLevel | null;
+      personality?: ClaudePersonality;
+      [extra: string]: unknown;
+    };
+    codex: {
+      default_thinking_level: ThinkingLevel;
+      review_thinking_level: ThinkingLevel;
+      personality?: CodexPersonality | null;
+      tool_approval_policy?: CodexToolApprovalPolicy;
+      [extra: string]: unknown;
+    };
     [extra: string]: unknown;
   };
   providers: { [agent in AgentKind]?: ProviderConfig | null } & { [extra: string]: unknown };

@@ -103,7 +103,7 @@ impl SettingsService {
     pub fn provider_status(&self, agent: AgentKind) -> Result<ProviderStatus, ServiceError> {
         let settings = self.get()?;
         Ok(byok::status(
-            &settings.providers.effective(agent),
+            &settings.provider_for(agent),
             self.store.as_ref(),
         ))
     }
@@ -135,15 +135,21 @@ impl SettingsService {
     }
 
     /// Deletes the secrets of `agent`'s provider and returns it to its CLI
-    /// login.
+    /// login: the `[providers]` entry and Conductor's top-level
+    /// `claude_provider` / `codex_provider` are both cleared.
     pub fn disconnect(&self, agent: AgentKind) -> Result<ProviderStatus, ServiceError> {
         let _guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
         let mut settings = load(&self.path)?;
-        byok::disconnect(&settings.providers.effective(agent), self.store.as_ref())?;
+        byok::disconnect(&settings.provider_for(agent), self.store.as_ref())?;
         settings.providers.set(agent, None);
+        match agent {
+            AgentKind::Claude => settings.claude_provider = None,
+            AgentKind::Codex => settings.codex_provider = None,
+            _ => {}
+        }
         save(&self.path, &settings)?;
         Ok(byok::status(
-            &settings.providers.effective(agent),
+            &settings.provider_for(agent),
             self.store.as_ref(),
         ))
     }
@@ -201,6 +207,24 @@ mod tests {
         bad.models.default = String::new();
         assert!(svc.update(bad).is_err());
         assert_eq!(svc.get().unwrap(), good);
+    }
+
+    #[test]
+    fn status_and_disconnect_follow_conductors_top_level_provider() {
+        let (svc, store) = service();
+        let mut s = Settings::default();
+        s.claude_provider = Some("custom".into());
+        svc.update(s).unwrap();
+        let status = svc.provider_status(AgentKind::Claude).unwrap();
+        assert_eq!((status.kind, status.ready), ("anthropic_api", false));
+        store
+            .set(keys::ANTHROPIC_API_KEY, &SecretString::new("sk-ant-x"))
+            .unwrap();
+        assert!(svc.provider_status(AgentKind::Claude).unwrap().ready);
+        let after = svc.disconnect(AgentKind::Claude).unwrap();
+        assert_eq!(after.kind, "claude_login");
+        assert_eq!(store.get(keys::ANTHROPIC_API_KEY).unwrap(), None);
+        assert_eq!(svc.get().unwrap().claude_provider, None);
     }
 
     #[test]

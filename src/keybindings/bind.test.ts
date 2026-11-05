@@ -82,3 +82,17 @@ test("activeDialogIdFromDom: the last tagged dialog, else any modal, else none",
   assert.equal(activeDialogIdFromDom(doc([], true)), "dialog");
   assert.equal(activeDialogIdFromDom(doc([], false)), null);
 });
+
+test("a higher-priority binding runs first and passes the key on by returning false", () => {
+  const d = createDispatcher();
+  const ran: string[] = [];
+  let fileHasComment = true;
+  bindCommands(d, { "diff.nextComment": () => void ran.push("across files") });
+  bindCommands(d, { "diff.nextComment": () => (ran.push("in file"), fileHasComment) }, {}, { priority: 101 });
+  const j = key("j", { code: "KeyJ", metaKey: true, altKey: true });
+  d.dispatch(j, idle);
+  assert.deepEqual(ran, ["in file"]);
+  fileHasComment = false;
+  d.dispatch(j, idle);
+  assert.deepEqual(ran, ["in file", "in file", "across files"]);
+});
