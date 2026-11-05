@@ -229,6 +229,8 @@ pub fn run() {
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
             // Conductor sweeps draft-attachments/ dirs older than 30 days at start.
             draft_attachments::sweep_at_startup(&data_dir);
+            // Claude sessions load the bundled agent skill (Resources/conductor-skill).
+            agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
@@ -337,6 +339,8 @@ pub fn run() {
             local_storage_commands::local_storage_get_entry,
             local_storage_commands::local_storage_set_entry,
             local_storage_commands::local_storage_remove_entry,
+            local_storage_commands::local_storage_list_entries,
+            local_storage_commands::local_storage_remove_subsystem,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,

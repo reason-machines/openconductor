@@ -76,7 +76,7 @@ export function DiffTab({ diff, onLineClick, anchors, annotations }: DiffTabProp
           anchors={anchors?.(f)}
           annotations={annotations && ((a) => annotations(f, a))}
           loadFull={() => diff.loadFull(f)}
-          onDiscard={() => diff.askDiscard(f)}
+          onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
           onShowWhitespace={() => update({ ignoreWhitespace: false })}
           tools={
             <>
