@@ -21,6 +21,7 @@ pub mod agent;
 pub mod bundled_bin;
 pub mod checkpoint;
 mod checkpoint_commands;
+mod chat_store_commands;
 pub mod create_project;
 pub mod db;
 pub mod persistence;
@@ -319,6 +320,8 @@ pub fn run() {
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
             reason_chat::reason_open_chat,
+            chat_store_commands::chat_messages_save,
+            chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
             reason_chat::reason_cancel,
             reason_chat::reason_list_sessions,

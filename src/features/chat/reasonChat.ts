@@ -16,6 +16,10 @@
 //
 // Entry and exit points: `chat()` creates a chat's state; `apply()` is the only
 // place transcript events land; `setQueue()` the only place the queue changes.
+//
+// In the desktop app each chat's transcript is kept in `conductor.db`
+// (persist.ts): `stored()` loads it once when the chat is first used and
+// saves every later change.
 
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -23,6 +27,7 @@ import { applyChatEvents, emptyTranscript, truncateAfterTurn, type ChatTranscrip
 import { restoreCheckpoint, turnCheckpointRef } from "./checkpoints.ts";
 import { applyReasonPayload, cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
+import { ChatSaver, restoreEvents } from "./persist.ts";
 import { turnChanges } from "../diff/useTurnChanges.ts";
 import type { FileChange } from "../diff/types.ts";
 
@@ -69,7 +74,34 @@ function chat(chatId: string): Chat {
     c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, opened: false, config: [], unsent: new Set(), stopped: new Set(), listeners: new Set() };
     chats.set(chatId, c);
   }
+  stored(c);
   return c;
+}
+
+const savers = new Map<string, ChatSaver>();
+
+/** The chat's saver; the first call loads the stored transcript into an untouched chat. */
+function stored(c: Chat): ChatSaver | undefined {
+  if (!reasonAvailable()) return undefined;
+  const chatId = c.state.chatId;
+  let saver = savers.get(chatId);
+  if (saver) return saver;
+  saver = new ChatSaver((batch) => invoke("chat_messages_save", { chatId, ...batch, agentSessionId: localStorage.getItem(sessionKey(chatId)) }));
+  savers.set(chatId, saver);
+  const s = saver;
+  invoke<{ messages: string[]; agentSessionId: string | null }>("chat_messages_load", { chatId })
+    .then(({ messages, agentSessionId }) => {
+      if (agentSessionId && !localStorage.getItem(sessionKey(chatId))) localStorage.setItem(sessionKey(chatId), agentSessionId);
+      // A chat that already has messages (a prompt sent while loading) keeps them; the stored rows stay for the next open.
+      if (messages.length === 0 || c.transcript.messages.length > 0) return;
+      const r = applyChatEvents(c.transcript, restoreEvents(chatId, messages));
+      if (!r.ok) return console.warn("chat: stored transcript not applied", r.error);
+      c.transcript = r.transcript;
+      s.loaded(c.transcript);
+      notify(c);
+    })
+    .catch((e) => console.warn("chat: stored transcript not loaded", e));
+  return saver;
 }
 
 const snapshot = (c: Chat): ChatSnapshot => ({ transcript: c.transcript, queue: c.queue });
@@ -88,6 +120,7 @@ function apply(c: Chat, step: Step) {
     return;
   }
   c.transcript = r.transcript;
+  savers.get(c.state.chatId)?.update(c.transcript);
   notify(c);
   // A turn that ended moves the queue on: the next queued message may start.
   for (const e of step.events) {
@@ -180,6 +213,7 @@ export async function resetReasonChat(chatId: string, cwd: string, turnId: strin
   if (c.transcript.activeTurn !== null) throw new Error("Stop the agent before resetting the chat.");
   await restoreCheckpoint(invoke, cwd, chatId, turnId, resetFiles);
   c.transcript = truncateAfterTurn(c.transcript, turnId);
+  savers.get(chatId)?.update(c.transcript);
   notify(c);
 }
 
