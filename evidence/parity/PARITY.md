@@ -16,7 +16,7 @@ Other areas, scored by their own checkers (not counted in "all four"):
 
 | Area | Items | Matched | Partial | Missing | Parity | Target | Report |
 |---|---|---|---|---|---|---|---|
-| Reason agent over ACP | 11 | 10 | 0 | 1 | **90.9%** | `dd13f1ce7563` | [`reason-acp/PARITY.md`](reason-acp/PARITY.md) (`tools/parity_reason_acp.py`) |
+| Reason agent over ACP | 11 | 11 | 0 | 0 | **100.0%** | `59ac0ba1f830` | [`reason-acp/PARITY.md`](reason-acp/PARITY.md) (`tools/parity_reason_acp.py`) |
 
 ## Settings
 
