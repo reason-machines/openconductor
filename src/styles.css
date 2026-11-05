@@ -1,7 +1,7 @@
 :root {
-  --bg: #f7f7f5;
+  /* App background: Conductor's --background (evidence/frontend/css-tokens.json, :root,.light). */
+  --bg: #ffffff;
   --panel: #ffffff;
-  --sidebar: #eeeeeb;
   --border: #e1e0dc;
   --text: #1f2328;
   --muted: #6b6f76;
@@ -16,6 +16,15 @@
   --secondary: #efefec;
   --secondary-hover: rgba(239, 239, 236, 0.8);
   --secondary-text: #3d4147;
+  /* Sidebar tokens, values from Conductor's --sidebar-* custom properties
+     (evidence/frontend/css-tokens.json, :root,.light). */
+  --sidebar-width: 256px;
+  --sidebar-background: #fafaf9;
+  --sidebar-foreground: #14100fb3;
+  --sidebar-muted-foreground: #14100f99;
+  --sidebar-accent: #14100f0d;
+  --sidebar-accent-foreground: #14100fcc;
+  --sidebar-border: #14100f1a;
   /* Left inset that clears the macOS traffic lights when the sidebar is hidden. */
   --traffic-lights-clearance: 64px;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
@@ -26,9 +35,8 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #17191d;
+    --bg: #141110;
     --panel: #1d2025;
-    --sidebar: #121417;
     --border: #2b2f36;
     --text: #e6e7e9;
     --muted: #8b9099;
@@ -41,12 +49,18 @@
     --secondary: #24272d;
     --secondary-hover: rgba(36, 39, 45, 0.8);
     --secondary-text: #c9ccd1;
+    /* evidence/frontend/css-tokens.json, .dark */
+    --sidebar-background: #211e1c;
+    --sidebar-foreground: #ffffffe6;
+    --sidebar-muted-foreground: #ffffff99;
+    --sidebar-accent: #ffffff0d;
+    --sidebar-accent-foreground: #ffffffe6;
+    --sidebar-border: #ffffff1a;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #17191d;
+  --bg: #141110;
   --panel: #1d2025;
-  --sidebar: #121417;
   --border: #2b2f36;
   --text: #e6e7e9;
   --muted: #8b9099;
@@ -59,6 +73,13 @@
   --secondary: #24272d;
   --secondary-hover: rgba(36, 39, 45, 0.8);
   --secondary-text: #c9ccd1;
+  /* evidence/frontend/css-tokens.json, .dark */
+  --sidebar-background: #211e1c;
+  --sidebar-foreground: #ffffffe6;
+  --sidebar-muted-foreground: #ffffff99;
+  --sidebar-accent: #ffffff0d;
+  --sidebar-accent-foreground: #ffffffe6;
+  --sidebar-border: #ffffff1a;
 }
 
 * { box-sizing: border-box; }
@@ -72,11 +93,13 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .add { color: var(--add); }
 .del { color: var(--del); }
 
-.app { display: grid; grid-template-columns: 248px 1fr; height: 100vh; overflow: hidden; }
+.app { display: grid; grid-template-columns: var(--sidebar-width) 1fr; height: 100vh; overflow: hidden; background: var(--bg); }
 .app.sidebar-hidden { grid-template-columns: 1fr; }
 
 /* Sidebar */
-.sidebar { background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; min-height: 0; padding: 0 8px; }
+/* Conductor's <aside>: border-r border-sidebar-border bg-sidebar-background/60 text-sidebar-foreground,
+   so the fill is the sidebar token at 60% over the app background. */
+.sidebar { background: color-mix(in srgb, var(--sidebar-background) 60%, transparent); color: var(--sidebar-foreground); border-right: 1px solid var(--sidebar-border); display: flex; flex-direction: column; min-height: 0; min-width: 0; padding: 0 8px; }
 .sidebar-drag { height: 28px; flex: none; }
 .sidebar-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; padding: 4px 8px 12px; }
 .nav-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; text-align: left; width: 100%; }
