@@ -222,14 +222,25 @@ export interface CreateWorkspaceArgs {
   branchName: string;
   directoryName: string;
   baseBranch: string;
+  /**
+   * Check out `branchName` as it is (the local branch, or a local tracking copy
+   * of `origin/<branchName>`) instead of creating it from `baseBranch` (#106).
+   */
+  existingBranch: boolean;
 }
 
 /**
- * Maps a request onto `create_workspace`. For a PR or branch the start point is
- * that branch; the backend refuses a branch that already exists locally
- * ("branch already exists: X"), so checking out an existing local branch still
- * needs backend support.
+ * Maps a request onto `create_workspace`. Create from a PR or branch sends
+ * `existingBranch: true`, so the backend checks that branch out rather than
+ * refusing it as taken. A fork PR's branch is not on origin and comes back as
+ * "branch not found locally or on origin".
  */
 export function toCreateWorkspaceArgs(r: CreateRequest): CreateWorkspaceArgs {
-  return { repositoryId: r.repoId, branchName: r.naming.branch, directoryName: r.naming.workspace_name, baseBranch: r.startPoint };
+  return {
+    repositoryId: r.repoId,
+    branchName: r.naming.branch,
+    directoryName: r.naming.workspace_name,
+    baseBranch: r.startPoint,
+    existingBranch: r.existingBranch,
+  };
 }
