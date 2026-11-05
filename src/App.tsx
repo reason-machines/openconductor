@@ -32,6 +32,7 @@ import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { useArchiveFlow } from "./workspace/useArchiveFlow";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
@@ -54,6 +55,8 @@ export default function App() {
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
   const { toasts, show, dismiss } = useToasts();
+  // Archive (row menu, header, palette, Cmd+Shift+A, archive on merge) and unarchive go through one flow.
+  const archive = useArchiveFlow(state, dispatch, show);
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
   // A `/settings...` start URL opens settings where Conductor's router would
@@ -176,10 +179,10 @@ export default function App() {
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onArchiveWorkspace={(repoId, ws) => archive.requestArchive(repoId, ws.id)} />}
       <main className="main">
         {repo && workspace ? (
-          <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
+          <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} archive={archive} />
         ) : (
           <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}
@@ -232,7 +235,8 @@ export default function App() {
         />
       )}
       {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
-      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} />
+      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} onArchive={archive.requestArchive} onUnarchive={archive.unarchive} />
+      {archive.dialog}
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );

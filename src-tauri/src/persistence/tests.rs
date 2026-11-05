@@ -97,7 +97,7 @@ async fn create_lifecycle_initializing_then_ready() {
         ("sven/fix-login", None)
     );
 
-    archive(&pool, "app/oslo").await.unwrap();
+    workspaces::archive(&pool, "app/oslo", "sven/fix-login", Some("abc123")).await.unwrap();
     assert_eq!(list_workspaces(&pool).await.unwrap()[0].state, "archived");
 }
 
@@ -119,7 +119,7 @@ async fn finish_replaces_a_stale_row_with_the_same_id() {
     finish_workspace(&pool, &ws("app", "oslo"), None, None)
         .await
         .unwrap();
-    archive(&pool, "app/oslo").await.unwrap();
+    workspaces::archive(&pool, "app/oslo", "oslo", None).await.unwrap();
     finish_workspace(&pool, &ws("app", "oslo"), None, None)
         .await
         .unwrap();

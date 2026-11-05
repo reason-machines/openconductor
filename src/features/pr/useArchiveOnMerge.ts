@@ -15,6 +15,8 @@ export interface ArchiveOnMergeArgs {
   notify?: (kind: "info" | "error", message: string) => void;
   /** Reads `git.archive_on_merge`; the settings file by default. */
   readSetting?: () => Promise<boolean>;
+  /** Archives through the backend (src/workspace/useArchiveFlow); rejects on failure. Defaults to the store action. */
+  archive?: (target: { repoId: string; workspaceId: string }) => Promise<void>;
 }
 
 const readArchiveOnMerge = async () => (await getSettings()).git.archive_on_merge === true;
@@ -27,12 +29,14 @@ export function useArchiveOnMerge(args: ArchiveOnMergeArgs): (next: PrLookup, pr
     const merged = mergedTransition(next, previous);
     if (!merged) return;
     void (async () => {
-      const { repo, workspace, dispatch, agentWorking, notify, readSetting = readArchiveOnMerge } = latest.current;
+      const { repo, workspace, dispatch, agentWorking, notify, readSetting = readArchiveOnMerge, archive } = latest.current;
       try {
         const decision = archiveDecision({ enabled: await readSetting(), archived: workspace.status === "archived", agentWorking });
         if (decision === "agent-running") notify?.("error", AGENT_RUNNING_MESSAGE);
         if (decision !== "archive") return;
-        dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id });
+        const target = { repoId: repo.id, workspaceId: workspace.id };
+        if (archive) await archive(target);
+        else dispatch({ type: "archiveWorkspace", ...target });
         notify?.("info", archivedMessage(merged.number));
       } catch (e) {
         notify?.("error", archiveFailedMessage(e instanceof Error ? e.message : String(e)));

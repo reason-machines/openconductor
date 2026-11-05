@@ -223,11 +223,7 @@ export function useAppStore() {
   const dispatch = useCallback(
     (action: Action) => {
       rawDispatch(action);
-      if (desktop && action.type === "archiveWorkspace") {
-        invoke("db_archive_workspace", { workspaceId: action.workspaceId }).catch((err) =>
-          console.error("conductor.db: could not archive workspace", err),
-        );
-      }
+      // archiveWorkspace is recorded by the backend's archive_workspace (src/workspace/useArchiveFlow.tsx).
       // Optimistic, as in Conductor: on a failed write, reload the rows the database has.
       const rollback = (what: string) => (err: unknown) => {
         console.error(`conductor.db: could not ${what}`, err);

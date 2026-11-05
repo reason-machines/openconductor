@@ -57,6 +57,8 @@ pub mod tool_cli;
 pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
+pub mod workspace_archive;
+mod workspace_archive_commands;
 
 use serde::Serialize;
 
@@ -298,7 +300,8 @@ pub fn run() {
             workspace::commands::rename_workspace_branch,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
-            persistence_commands::db_archive_workspace,
+            workspace_archive_commands::archive_workspace,
+            workspace_archive_commands::unarchive_workspace,
             persistence_commands::db_repo_prompt,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,

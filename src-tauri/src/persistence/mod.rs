@@ -142,21 +142,6 @@ pub async fn record_rename(pool: &SqlitePool, local_id: &str, branch: &str) -> R
     workspaces::rename_branch(pool, local_id, branch, None).await
 }
 
-/// Mark a workspace archived, keeping its branch.
-pub async fn archive(pool: &SqlitePool, local_id: &str) -> Result<()> {
-    let w = workspaces::get(pool, local_id)
-        .await?
-        .ok_or(openconductor_db::Error::NotFound)?
-        .workspace;
-    workspaces::archive(
-        pool,
-        local_id,
-        w.branch.as_deref().unwrap_or_default(),
-        None,
-    )
-    .await
-}
-
 async fn insert_workspace(
     pool: &SqlitePool,
     w: &KnownWorkspace,

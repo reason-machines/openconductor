@@ -25,6 +25,7 @@ import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
 import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest";
 import { useArchiveOnMerge } from "../features/pr/useArchiveOnMerge";
+import type { ArchiveFlow } from "../workspace/useArchiveFlow";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
 import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
@@ -36,6 +37,8 @@ interface Props {
   workspace: Workspace;
   dispatch: Dispatch<Action>;
   notify?: (kind: "info" | "error", message: string) => void;
+  /** App's archive flow (src/workspace/useArchiveFlow); without it Archive only updates the store. */
+  archive?: Pick<ArchiveFlow, "requestArchive" | "archiveQuietly">;
 }
 
 // The chat runs Reason in the desktop app (one Reason Session per chat,
@@ -292,7 +295,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
   archived: "Archived",
 };
 
-export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
+export function WorkspaceView({ repo, workspace, dispatch, notify, archive }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
   const chatBridge = useRef<(ChatBridge & ComposerAttach) | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
@@ -331,7 +334,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   );
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
   const [agentWorking, setAgentWorking] = useState(false);
-  const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
+  const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify, archive: archive?.archiveQuietly });
   // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub, then archive on merge.
   const onLookup = useCallback(
     (next: PrLookup, previous: PrLookup | null) => {
@@ -402,7 +405,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
             Terminal
           </button>
-          <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
+          <button className="btn btn-small" title="Archive workspace" onClick={() => (archive ? archive.requestArchive(repo.id, workspace.id) : dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id }))}>
             <ArchiveIcon size={14} /> Archive
           </button>
         </div>

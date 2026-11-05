@@ -48,13 +48,6 @@ pub async fn db_list_workspaces(db: State<'_, Db>) -> Result<Vec<WorkspaceRow>, 
     store::list_workspaces(&db.0).await.map_err(|e| e.to_string())
 }
 
-/// JS: `invoke("db_archive_workspace", { workspaceId })`: mark the row
-/// archived so it stays out of the sidebar after a restart.
-#[tauri::command]
-pub async fn db_archive_workspace(db: State<'_, Db>, workspace_id: String) -> Result<(), String> {
-    store::archive(&db.0, &workspace_id).await.map_err(|e| e.to_string())
-}
-
 /// JS: `invoke("db_repo_prompt", { repoId, prompt })`: one of the
 /// repository's custom prompts, by Conductor's prompt type (`codeReview`,
 /// `createPR`, `fixErrors`, `resolveMergeConflicts`, `renameBranch`,
