@@ -68,6 +68,25 @@ export interface Settings {
     [extra: string]: unknown;
   };
   providers: { [agent in AgentKind]?: ProviderConfig | null } & { [extra: string]: unknown };
+  /** Conductor's Advanced keys; older builds may not send the section. */
+  advanced?: {
+    /** Approximate terminal output to keep, in bytes; absent means 10 MB. */
+    terminal_scrollback_limit_bytes?: number | null;
+    [extra: string]: unknown;
+  };
+  /** Conductor's Experimental keys. */
+  experimental?: {
+    /** "Big terminal mode": ⌘⇧T opens a terminal running the Big terminal preset. */
+    experimental_big_terminal_mode?: boolean;
+    [extra: string]: unknown;
+  };
+  /** Conductor's "Big terminal" settings tab (id `terminal`). */
+  terminal?: {
+    /** A built-in preset or `custom:<id>`; absent or unknown means Claude. */
+    big_terminal_preset?: string | null;
+    big_terminal_custom_commands?: { id: string; command: string }[];
+    [extra: string]: unknown;
+  };
   [extra: string]: unknown;
 }
 

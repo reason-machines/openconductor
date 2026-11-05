@@ -1,6 +1,6 @@
 {
-  "ref": "origin/main",
-  "sha": "dd13f1ce7563",
+  "ref": "HEAD",
+  "sha": "59ac0ba1f830",
   "items": [
     {
       "id": "acp.module",
@@ -259,18 +259,18 @@
       "title": "Signed-in reason CLI on a Mac: one chat shows a home-folder path locally, then a cloud /repo path, then a follow-up",
       "parent": "agent.session-run",
       "authority": "runtime",
-      "status": "missing",
+      "status": "matched",
       "probes": [
         {
           "file": "evidence/reason-acp/signed-in-run.json",
           "pattern": "\"result\":\\s*\"pass\"",
-          "matched": false,
-          "file_exists": false
+          "matched": true,
+          "file_exists": true
         }
       ]
     }
   ],
-  "matched": 10,
+  "matched": 11,
   "total": 11,
-  "parity": 90.9
+  "parity": 100.0
 }
