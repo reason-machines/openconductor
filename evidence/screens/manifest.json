@@ -676,6 +676,352 @@
     },
     "page_errors": 0
   },
+  "settings--account--dark": {
+    "file": "settings--account--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause",
+      "open_account"
+    ],
+    "notes": "Settings > Account.",
+    "png_sha256": "a4767853051d6977a404e3ec699ba4edc58ff9a998e64861da289f0559a05489",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_67b49932ae8122818c87f0032ca9e5f09a98662d436ad99966c76dc8a8798c26",
+      "scenario_sha256": "e58074e8dd8f25b29d86f3acc2423088fe3e4c2bb0b8c6235bac81cf70e2947f",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "settings--advanced--dark": {
+    "file": "settings--advanced--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause",
+      "open_advanced"
+    ],
+    "notes": "Settings > Advanced.",
+    "png_sha256": "b235164ce00791d7a66b5795bac171f6f710698cf3ef87b67555340c20812f13",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_8bd1f4177f31d603a6da1ddacf1b5bc45bb0c5eb00713f93a414a0ddfccd2242",
+      "scenario_sha256": "2ea81a80073344eac23df5dbf3bc5e1c60ea63ab3d5796ad1a355956a2a9a789",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "settings--agents--dark": {
+    "file": "settings--agents--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause",
+      "open_agents"
+    ],
+    "notes": "Settings > Agents.",
+    "png_sha256": "c7ef9e91c0ea8e8a50f34f89dedbec2477d26a4148b4b5a5e63e81166ebde6f1",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_4a46d37e8b7979599c05ee94702e4aa3c0eb21cda56e5aaa0239ccb3c54e593b",
+      "scenario_sha256": "74d3c0afaf2ca832838ffed5303fb358d44f149fea1c8989f404fe0b9f79e9f0",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "settings--appearance--dark": {
+    "file": "settings--appearance--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause",
+      "open_appearance"
+    ],
+    "notes": "Settings > Appearance.",
+    "png_sha256": "bcff78cc9faf9c1199e65ab4bc866e369cdff414fece907f55940dd69095230f",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_1b7227d953b20054868f65e937e7fc14cb064a53561e4b289fc9baecb0fe415d",
+      "scenario_sha256": "988b59dcea9e4d182663cc4e363f447c66dc7e98b9063b86689aed645b7b3250",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "settings--appearance--light": {
+    "file": "settings--appearance--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause",
+      "open_appearance"
+    ],
+    "notes": "Settings > Appearance, light theme.",
+    "png_sha256": "71a1335f746a2bbcca51bb712ecab43a0433434f3f6d9fd2efffe97572c81180",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_d59b4bd24be449a63ddb3f4f8d9711e7bd7d0a13075be6225c83f5204d677982",
+      "scenario_sha256": "d600299f528b5ee018b0f8ce44b6d412da68db57a8caf1cec070b78d0668fba3",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "settings--default-models--dark": {
+    "file": "settings--default-models--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause",
+      "open_default_models"
+    ],
+    "notes": "Settings > Default models.",
+    "png_sha256": "757c677b462db702108364449a1beec84bb8b142bfc101c8683447167f4fe404",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_d639329adcf49fa8bcd653c432c3d7ec3dd84eeaf5e3911494ee499bddbb052a",
+      "scenario_sha256": "807e5c654641bc79128534849bced9a42ab9d301c00d51db02d8c50622c569f6",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "settings--environment--dark": {
+    "file": "settings--environment--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause",
+      "open_environment"
+    ],
+    "notes": "Settings > Environment.",
+    "png_sha256": "1c9d4d200be0714772d43966edd998a394931e1baf3465e643d67dd5dac4b608",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_a88965fa318861b3b35d0104dd273cd931dca7784c8b6a87a21ccc992396a2ae",
+      "scenario_sha256": "f39c28ad81c5ebdba4fb4661ddd5cd4169f8a439521d04b7eeb9722d48b78e73",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "settings--experimental--dark": {
+    "file": "settings--experimental--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause",
+      "open_experimental"
+    ],
+    "notes": "Settings > Experimental.",
+    "png_sha256": "0c5049d1fcd74b57c830a58fcd973135f71b2402933748f018b52c99b37757f1",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_4cf1790d3f52c3f34a696761ea2a96b4d89acf45da77075c73283a6c8b9d21f4",
+      "scenario_sha256": "749b62020863d69933473f843be2efb24735563e9ff76bbed3c848743a4001a1",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "settings--general--dark": {
+    "file": "settings--general--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause"
+    ],
+    "notes": "Settings > General.",
+    "png_sha256": "36d92bb913d2b2f46759b205530a7e23fa4d4c327f7685ae46ddc2b9d75933dc",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_b032595846c42c27e3be553c925c0399e687b1801f0e5771782246a4b27d5f31",
+      "scenario_sha256": "9a2cc31e7cf4a08a2a6cdb61ee03280ae459a73ebf2ca47728ef4eb495bd572d",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "settings--general--light": {
+    "file": "settings--general--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause"
+    ],
+    "notes": "Settings > General, light theme.",
+    "png_sha256": "2e9543073bd9bfe6ecf11e01e0d4f91e2bd40fddadc0a087ba76f58316797521",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_1f26154ed724c43ca52225ece0962cb78cfc452149a7e26b420e5bda40585025",
+      "scenario_sha256": "92aed34a3ee0843efa64b3d6f077f1728ad4bd0c3705a96e6329787a45b5b27c",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "settings--git--dark": {
+    "file": "settings--git--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause",
+      "open_git"
+    ],
+    "notes": "Settings > Git.",
+    "png_sha256": "ebcb00933d01b2adb21ca19042d3f8a0bca140e33ed32a0ce58ac25f33dd022b",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_140fb887aeafd006688ba0e6f90c139f52164e433ad914af4d319534d3bc36b4",
+      "scenario_sha256": "04242d45f869f156aa9735a33d6bee3aadd66bca57eaf100170cd6747e010a0a",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "settings--search--dark": {
+    "file": "settings--search--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "wait_sidebar",
+      "open_settings",
+      "pause",
+      "search"
+    ],
+    "notes": "Settings search with the query 'branch'.",
+    "png_sha256": "ed79d6de4604ed18504578ee89818616368f472133e1539283b0efb016f13e4c",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_7dad12e85933a9a1b378a8032f0c4acca99ad6b8539dc299be4c9344f44d625a",
+      "scenario_sha256": "e746e6194e347aa9aeae258da205146a40a1fe8a8a009257e13c4fe6ffa609af",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
   "sidebar--repos-collapsed--dark": {
     "file": "sidebar--repos-collapsed--dark.png",
     "route": "/",

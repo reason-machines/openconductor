@@ -3,7 +3,6 @@ import type { Action } from "../state/store";
 import type { AppState } from "../state/types";
 import type { DialogKind } from "../components/Dialogs";
 import { CommandPalette } from "./CommandPalette.tsx";
-import { DEFAULT_BINDINGS } from "./keybindings/defaults.ts";
 import { useKeybindings, type BindingHandlers } from "./useKeybindings.ts";
 import { paletteDataFromState, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import type { ResultItem } from "./search/model.ts";
@@ -55,7 +54,7 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject }: Pr
     "workspace.previous": actions["previous-workspace"],
   };
   for (let i = 1; i <= 9; i++) handlers[`workspace.switchTo${i}`] = () => go(sidebarOrder(state)[i - 1]);
-  useKeybindings(DEFAULT_BINDINGS, handlers);
+  useKeybindings(handlers);
 
   function onSelect(item: ResultItem) {
     if (item.kind === "workspace") {
@@ -72,5 +71,5 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject }: Pr
   }
 
   if (!open) return null;
-  return <CommandPalette data={data} bindings={DEFAULT_BINDINGS} onSelect={onSelect} onClose={() => setOpen(false)} />;
+  return <CommandPalette data={data} onSelect={onSelect} onClose={() => setOpen(false)} />;
 }

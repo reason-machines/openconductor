@@ -1,19 +1,19 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { moveActive, paletteCommandFor } from "./state.ts";
-import { DEFAULT_BINDINGS } from "./keybindings/defaults.ts";
-import { applyOverrides } from "./keybindings/routing.ts";
-import { chord, type KeyInput } from "./keybindings/chord.ts";
+import { logical } from "../keybindings/types.ts";
+import type { KeyEventLike } from "../keybindings/shortcut.ts";
 
-const key = (k: string, mods: Partial<KeyInput> = {}): KeyInput => ({
+const key = (k: string, mods: Partial<KeyEventLike> = {}): KeyEventLike => ({
   key: k,
+  code: "",
   metaKey: false,
   ctrlKey: false,
   altKey: false,
   shiftKey: false,
   ...mods,
 });
-const cmdFor = (e: KeyInput) => paletteCommandFor(e, DEFAULT_BINDINGS);
+const cmdFor = (e: KeyEventLike) => paletteCommandFor(e);
 
 test("arrows, Enter and Escape drive the list", () => {
   assert.equal(cmdFor(key("ArrowDown")), "next-item");
@@ -33,7 +33,7 @@ test("Tab and Shift+Tab switch tabs; Cmd+K closes; letters type", () => {
 });
 
 test("rebinding the palette toggle changes what closes it", () => {
-  const defs = applyOverrides(DEFAULT_BINDINGS, { toggleCommandPalette: [chord("p", "meta", "shift")] });
+  const defs = { toggleCommandPalette: [logical("p", ["meta", "shift"])] };
   assert.equal(paletteCommandFor(key("k", { metaKey: true }), defs), null);
   assert.equal(paletteCommandFor(key("p", { metaKey: true, shiftKey: true }), defs), "close");
 });

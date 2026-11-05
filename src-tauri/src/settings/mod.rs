@@ -5,7 +5,9 @@
 //! written on the first save. Saves are atomic (temp file + rename) and
 //! validated, so a bad value from the UI never reaches disk.
 
+pub mod commands;
 mod model;
+pub mod service;
 mod validate;
 
 #[cfg(test)]

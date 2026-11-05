@@ -1,14 +1,13 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { formatChord } from "./keybindings/chord.ts";
-import type { BindingDef } from "./keybindings/routing.ts";
-import { COMMAND_PALETTE_DIALOG_ID } from "./keybindings/defaults.ts";
+import { effectiveShortcuts, type Overrides } from "../keybindings/overrides.ts";
+import { glyphs } from "../keybindings/shortcut.ts";
 import { buildResults, cycleTab, emptyText, placeholderFor, TABS, type PaletteData, type PaletteTab, type ResultItem } from "./search/model.ts";
-import { moveActive, paletteCommandFor } from "./state.ts";
+import { COMMAND_PALETTE_DIALOG_ID, moveActive, paletteCommandFor } from "./state.ts";
 import "./palette.css";
 
 export interface CommandPaletteProps {
   data: PaletteData;
-  bindings: readonly BindingDef[];
+  overrides?: Overrides;
   /** Projects tab is hidden for team organisations. */
   showProjects?: boolean;
   initialTab?: PaletteTab;
@@ -29,13 +28,13 @@ function itemLabel(item: ResultItem): { title: string; detail?: string } {
   }
 }
 
-function shortcutFor(item: ResultItem, bindings: readonly BindingDef[]): string | null {
+function shortcutFor(item: ResultItem, overrides: Overrides): string | null {
   if (item.kind !== "action" || !item.action.bindingId) return null;
-  const key = bindings.find((b) => b.id === item.action.bindingId)?.keys[0];
-  return key ? formatChord(key) : null;
+  const key = effectiveShortcuts(item.action.bindingId, overrides)[0];
+  return key ? glyphs(key) : null;
 }
 
-export function CommandPalette({ data, bindings, showProjects = true, initialTab = "all", onSelect, onClose }: CommandPaletteProps) {
+export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", onSelect, onClose }: CommandPaletteProps) {
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
@@ -56,7 +55,7 @@ export function CommandPalette({ data, bindings, showProjects = true, initialTab
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-    const cmd = paletteCommandFor(e.nativeEvent, bindings);
+    const cmd = paletteCommandFor(e.nativeEvent, overrides);
     if (cmd === null) return;
     e.preventDefault();
     e.stopPropagation();
@@ -106,7 +105,7 @@ export function CommandPalette({ data, bindings, showProjects = true, initialTab
               {g.items.map((item) => {
                 const i = ++index;
                 const { title, detail } = itemLabel(item);
-                const shortcut = shortcutFor(item, bindings);
+                const shortcut = shortcutFor(item, overrides);
                 return (
                   <div
                     key={item.id}
