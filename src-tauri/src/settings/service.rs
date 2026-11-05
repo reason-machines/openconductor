@@ -110,8 +110,8 @@ impl SettingsService {
         ))
     }
 
-    /// The environment `agent` is launched with: its provider's variables
-    /// and secrets, with every inherited routing variable cleared.
+    /// The environment to launch `agent` with: its configured provider (its
+    /// CLI login if unset) and that provider's secrets.
     pub fn launch_env(&self, agent: AgentKind) -> Result<LaunchEnv, String> {
         let settings = self.get().map_err(|e| e.to_string())?;
         settings

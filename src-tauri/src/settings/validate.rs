@@ -10,21 +10,30 @@ use crate::agent::AgentKind;
 pub fn validate(s: &Settings) -> Result<(), SettingsError> {
     let invalid = |m: String| Err(SettingsError::Invalid(m));
     if s.git.branch_prefix_type == BranchPrefixType::Custom {
-        match s.git.branch_prefix_custom.as_deref().map(str::trim) {
+        match s.git.branch_prefix.as_deref().map(str::trim) {
             Some(p) if !p.is_empty() => {
                 if !valid_branch_prefix(p) {
                     return invalid(format!(
-                        "git.branch_prefix_custom {p:?} is not a valid branch prefix"
+                        "git.branch_prefix {p:?} is not a valid branch prefix"
                     ));
                 }
             }
             _ => {
                 return invalid(
-                    "git.branch_prefix_custom is required when branch_prefix_type = \"custom\""
-                        .into(),
+                    "git.branch_prefix is required when branch_prefix_type = \"custom\"".into(),
                 )
             }
         }
+    }
+    if let Some(i) = s.preview_urls.iter().position(|u| u.url.trim().is_empty()) {
+        return invalid(format!("preview_urls[{i}].url must not be empty"));
+    }
+    if let Some(i) = s
+        .environment_variable_files
+        .iter()
+        .position(|f| f.trim().is_empty())
+    {
+        return invalid(format!("environment_variable_files[{i}] must not be empty"));
     }
     let zoom = s.appearance.zoom_level_v2;
     let percent = zoom * 100.0;
@@ -96,8 +105,11 @@ fn valid_font_family(f: &str) -> bool {
 }
 
 /// A conservative subset of `git check-ref-format` for one path component.
+/// One trailing `/` is allowed: Conductor's own example is `feature/`.
 fn valid_branch_prefix(p: &str) -> bool {
-    !p.starts_with(['.', '/', '-'])
+    let p = p.strip_suffix('/').unwrap_or(p);
+    !p.is_empty()
+        && !p.starts_with(['.', '/', '-'])
         && !p.ends_with(['.', '/'])
         && !p.ends_with(".lock")
         && !p.contains("..")

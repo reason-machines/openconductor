@@ -6,6 +6,7 @@
 //! validated, so a bad value from the UI never reaches disk.
 
 pub mod commands;
+pub mod effective;
 mod model;
 pub mod service;
 mod validate;
