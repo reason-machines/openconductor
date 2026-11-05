@@ -2,7 +2,8 @@
 //!
 //! Module ownership (one owner per path, see evidence/README.md):
 //! - `workspace/`  workspace lifecycle (worktrees, setup/run scripts)
-//! - `checkpoint/` checkpoints and revert
+//! - `checkpoint/` checkpoints and revert; `turn_checkpoint.rs` takes them
+//!   around each chat turn (`turn_checkpoint_commands.rs` is the IPC layer)
 //! - `agent/`      agent runner, providers and BYOK settings
 //! - `diff/`       diff viewer: git changes, unified diff parser
 //! - `quick_open/` quick open file index and fuzzy matching
@@ -47,6 +48,8 @@ pub mod terminal_output;
 mod terminal_output_commands;
 #[cfg(all(test, unix))]
 mod test_exe;
+pub mod turn_checkpoint;
+mod turn_checkpoint_commands;
 pub mod workspace;
 
 use serde::Serialize;
@@ -300,6 +303,7 @@ pub fn run() {
             diff::comment_commands::diff_comment_delete,
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,
+            turn_checkpoint_commands::checkpoint_turn_changes,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
