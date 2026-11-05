@@ -1,7 +1,7 @@
 {
  "ref": "origin/main",
- "sha": "1cedef0ffcc516a5269a5f38eb49cb6f80c95399",
- "source_files_scanned": 549,
+ "sha": "4b9dc87d3eb156dd19cf34a433c64357512669f1",
+ "source_files_scanned": 613,
  "reference": {
   "conductor_version": "0.87.6",
   "keybindings_source": {
@@ -13,18 +13,18 @@
  },
  "overall": {
   "total": 419,
-  "matched": 255,
-  "partial": 117,
-  "missing": 47,
-  "parity_pct": 74.8
+  "matched": 281,
+  "partial": 110,
+  "missing": 28,
+  "parity_pct": 80.2
  },
  "areas": {
   "settings": {
    "total": 125,
-   "matched": 104,
+   "matched": 119,
    "partial": 3,
-   "missing": 18,
-   "parity_pct": 84.4,
+   "missing": 3,
+   "parity_pct": 96.4,
    "groups": {
     "user settings.toml": {
      "total": 43,
@@ -49,10 +49,10 @@
     },
     "settings table key": {
      "total": 26,
-     "matched": 7,
+     "matched": 22,
      "partial": 1,
-     "missing": 18,
-     "parity_pct": 28.8
+     "missing": 3,
+     "parity_pct": 86.5
     },
     "settings file": {
      "total": 5,
@@ -72,24 +72,24 @@
   },
   "shortcuts": {
    "total": 172,
-   "matched": 58,
-   "partial": 114,
+   "matched": 65,
+   "partial": 107,
    "missing": 0,
-   "parity_pct": 66.9,
+   "parity_pct": 68.9,
    "groups": {
     "General": {
      "total": 30,
-     "matched": 8,
-     "partial": 22,
+     "matched": 11,
+     "partial": 19,
      "missing": 0,
-     "parity_pct": 63.3
+     "parity_pct": 68.3
     },
     "View": {
      "total": 7,
-     "matched": 5,
-     "partial": 2,
+     "matched": 7,
+     "partial": 0,
      "missing": 0,
-     "parity_pct": 85.7
+     "parity_pct": 100.0
     },
     "Navigation": {
      "total": 20,
@@ -107,10 +107,10 @@
     },
     "Workspace": {
      "total": 37,
-     "matched": 10,
-     "partial": 27,
+     "matched": 12,
+     "partial": 25,
      "missing": 0,
-     "parity_pct": 63.5
+     "parity_pct": 66.2
     },
     "Code review": {
      "total": 8,
@@ -167,17 +167,17 @@
   },
   "packaging": {
    "total": 78,
-   "matched": 60,
+   "matched": 64,
    "partial": 0,
-   "missing": 18,
-   "parity_pct": 76.9,
+   "missing": 14,
+   "parity_pct": 82.1,
    "groups": {
     "Info.plist key": {
      "total": 20,
-     "matched": 19,
+     "matched": 20,
      "partial": 0,
-     "missing": 1,
-     "parity_pct": 95.0
+     "missing": 0,
+     "parity_pct": 100.0
     },
     "deep link": {
      "total": 1,
@@ -188,10 +188,10 @@
     },
     "entitlement": {
      "total": 3,
-     "matched": 2,
+     "matched": 3,
      "partial": 0,
-     "missing": 1,
-     "parity_pct": 66.7
+     "missing": 0,
+     "parity_pct": 100.0
     },
     "signing": {
      "total": 2,
@@ -216,17 +216,17 @@
     },
     "tauri plugin": {
      "total": 13,
-     "matched": 12,
+     "matched": 13,
      "partial": 0,
-     "missing": 1,
-     "parity_pct": 92.3
+     "missing": 0,
+     "parity_pct": 100.0
     },
     "bundled resource": {
      "total": 15,
-     "matched": 7,
+     "matched": 8,
      "partial": 0,
-     "missing": 8,
-     "parity_pct": 46.7
+     "missing": 7,
+     "parity_pct": 53.3
     },
     "frontend": {
      "total": 1,
@@ -242,20 +242,20 @@
   "conductor_rebuild": {
    "migrations": 5,
    "errors": [],
-   "schema_source": "PRAGMA table_info"
+   "schema_source": "REA inspect-sqlite-database ev_19fffea4f69f3d74dfb4d41ad2179b9d1e61172535a4b36bf530b3ea4b220672"
   },
   "conductor_reference": "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e",
   "cache_rebuild": {
    "migrations": 6,
    "errors": [],
-   "schema_source": "PRAGMA table_info"
+   "schema_source": "REA inspect-sqlite-database ev_010134444958a8fc22146f85380264db06764a41f7ccfbf662e13ada43c6124c"
   },
   "cache_reference": "ev_202d2f9fcbf5be8a97cec7b5c27cfa0b7722d0b3e095404e9ac0b0923904aabf",
   "conductor_migration_rows": 139,
   "conductor_max_migration_version": 142
  },
  "packaging_meta": {
-  "source": "REA on CI-built OpenConductor.app (run 42043310601, commit 60f4dfbe7f41): inspect-plist ev_7f4d79dd9b47cd4ec5be806d5acc42adb6fc165f1f0a20dbea35954687cba83d, inspect-signature ev_b2fb66f77d27799b0a898f355a657589bcad728e515029a0f3a744e50378b1e3, trace-dylib-resolution ev_ace6de9edd393dbec394ce2745859a387aabbc80929341b93ce603713b51c8c0",
+  "source": "REA on CI-built OpenConductor.app (run 42062149395, commit d8b3b2e0f931): inspect-plist ev_eaeabb2489ff9054b990f484a5698c70e075e48d90e080ab5d0325a11036acc6, inspect-signature ev_e0e58206439cd9eb37bb1332705e4f671744b37c21f29034bb27ab7c84bd569f, trace-dylib-resolution ev_0a1ccf8e5f717183f189ca714a7a7242209e3d0843cde118a92deacb1cfdfa71",
   "evidence_commit_is_target": false,
   "evidence_commit_is_ancestor": true,
   "extra_plist_keys": [
@@ -404,10 +404,10 @@
     ],
     "rebuild": {
      "total": 21,
-     "matched": 20,
+     "matched": 21,
      "partial": 0,
-     "missing": 1,
-     "parity_pct": 95.2
+     "missing": 0,
+     "parity_pct": 100.0
     }
    },
    {
@@ -420,10 +420,10 @@
     ],
     "rebuild": {
      "total": 5,
-     "matched": 3,
+     "matched": 4,
      "partial": 0,
-     "missing": 2,
-     "parity_pct": 60.0
+     "missing": 1,
+     "parity_pct": 80.0
     }
    },
    {
@@ -436,10 +436,10 @@
     ],
     "rebuild": {
      "total": 14,
-     "matched": 13,
+     "matched": 14,
      "partial": 0,
-     "missing": 1,
-     "parity_pct": 92.9
+     "missing": 0,
+     "parity_pct": 100.0
     }
    },
    {
@@ -484,10 +484,10 @@
     ],
     "rebuild": {
      "total": 12,
-     "matched": 4,
+     "matched": 5,
      "partial": 0,
-     "missing": 8,
-     "parity_pct": 33.3
+     "missing": 7,
+     "parity_pct": 41.7
     }
    },
    {
@@ -532,10 +532,10 @@
     ],
     "rebuild": {
      "total": 1,
-     "matched": 0,
+     "matched": 1,
      "partial": 0,
-     "missing": 1,
-     "parity_pct": 0.0
+     "missing": 0,
+     "parity_pct": 100.0
     }
    }
   ],
@@ -667,17 +667,12 @@
    "result": "fail",
    "parity": {
     "total": 29,
-    "matched": 8,
+    "matched": 23,
     "partial": 3,
-    "missing": 18,
-    "parity_pct": 32.8
+    "missing": 3,
+    "parity_pct": 84.5
    },
    "gaps": [
-    {
-     "group": "settings table key",
-     "id": "client_instance_id",
-     "status": "missing"
-    },
     {
      "group": "settings table key (deprecated)",
      "id": "default_codex_thinking_level",
@@ -690,67 +685,7 @@
     },
     {
      "group": "settings table key",
-     "id": "default_open_in",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "experimental_show_agent_cost",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "experimental_tab_freak_mode",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
      "id": "file_backed_settings_migration_complete",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "first_time_onboarding_step",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "garry_mode",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "graphite_disabled",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "last_clone_directory",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "last_seen_announcement",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "left_panel_visible",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "left_panel_width",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "onboarding_step",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "open_in_mru_order",
      "status": "missing"
     },
     {
@@ -767,16 +702,6 @@
      "group": "settings table key",
      "id": "review_codex_thinking_level",
      "status": "declared"
-    },
-    {
-     "group": "settings table key",
-     "id": "right_panel_visible",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "roundhouse_client_user_id",
-     "status": "missing"
     }
    ]
   },
@@ -869,10 +794,10 @@
    "result": "fail",
    "parity": {
     "total": 30,
-    "matched": 8,
-    "partial": 22,
+    "matched": 11,
+    "partial": 19,
     "missing": 0,
-    "parity_pct": 63.3
+    "parity_pct": 68.3
    },
    "gaps": [
     {
@@ -917,22 +842,7 @@
     },
     {
      "group": "General",
-     "id": "toggleGarryMode",
-     "status": "declared"
-    },
-    {
-     "group": "General",
      "id": "routine.save",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "onboarding.nextSlide",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "onboarding.continue",
      "status": "declared"
     },
     {
@@ -993,26 +903,15 @@
    "area": "shortcuts",
    "parent_obligation": null,
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 7,
-    "matched": 5,
-    "partial": 2,
+    "matched": 7,
+    "partial": 0,
     "missing": 0,
-    "parity_pct": 85.7
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "View",
-     "id": "view.toggleRightSidebar",
-     "status": "declared"
-    },
-    {
-     "group": "View",
-     "id": "view.toggleZenMode",
-     "status": "declared"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "keys.wire.navigation",
@@ -1357,10 +1256,10 @@
    "result": "fail",
    "parity": {
     "total": 37,
-    "matched": 10,
-    "partial": 27,
+    "matched": 12,
+    "partial": 25,
     "missing": 0,
-    "parity_pct": 63.5
+    "parity_pct": 66.2
    },
    "gaps": [
     {
@@ -1475,22 +1374,12 @@
     },
     {
      "group": "Workspace",
-     "id": "git.commitAndPush",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
      "id": "git.pull",
      "status": "declared"
     },
     {
      "group": "Workspace",
      "id": "git.fixErrors",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.showUncommittedChanges",
      "status": "declared"
     },
     {
@@ -1788,26 +1677,15 @@
    "area": "packaging",
    "parent_obligation": "agent.speech",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 2,
-    "matched": 0,
+    "matched": 2,
     "partial": 0,
-    "missing": 2,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "Info.plist key",
-     "id": "NSMicrophoneUsageDescription",
-     "status": "missing"
-    },
-    {
-     "group": "entitlement",
-     "id": "com.apple.security.device.audio-input",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "pkg.bundle.plist",
@@ -1900,21 +1778,15 @@
    "area": "packaging",
    "parent_obligation": "app.updater",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 1,
-    "matched": 0,
+    "matched": 1,
     "partial": 0,
-    "missing": 1,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-updater",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "pkg.tauri-plugins",
@@ -1941,10 +1813,10 @@
    "result": "fail",
    "parity": {
     "total": 12,
-    "matched": 4,
+    "matched": 5,
     "partial": 0,
-    "missing": 8,
-    "parity_pct": 33.3
+    "missing": 7,
+    "parity_pct": 41.7
    },
    "gaps": [
     {
@@ -1975,11 +1847,6 @@
     {
      "group": "bundled resource",
      "id": "bin/.internal/sidecar",
-     "status": "missing"
-    },
-    {
-     "group": "bundled resource",
-     "id": "bin/spotlighter.sh",
      "status": "missing"
     },
     {
@@ -2575,7 +2442,7 @@
    "area": "settings",
    "group": "settings table key",
    "id": "client_instance_id",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -2610,21 +2477,21 @@
    "area": "settings",
    "group": "settings table key",
    "id": "default_open_in",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "experimental_show_agent_cost",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "experimental_tab_freak_mode",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -2645,49 +2512,49 @@
    "area": "settings",
    "group": "settings table key",
    "id": "first_time_onboarding_step",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "garry_mode",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "graphite_disabled",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "last_clone_directory",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "last_seen_announcement",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "left_panel_visible",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "left_panel_width",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -2708,14 +2575,14 @@
    "area": "settings",
    "group": "settings table key",
    "id": "onboarding_step",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "open_in_mru_order",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -2750,14 +2617,14 @@
    "area": "settings",
    "group": "settings table key",
    "id": "right_panel_visible",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
    "area": "settings",
    "group": "settings table key",
    "id": "roundhouse_client_user_id",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -3030,8 +2897,8 @@
    "area": "shortcuts",
    "group": "General",
    "id": "toggleGarryMode",
-   "status": "declared",
-   "detail": "ctrl+o; no handler references this id"
+   "status": "matched",
+   "detail": "ctrl+o"
   },
   {
    "area": "shortcuts",
@@ -3044,8 +2911,8 @@
    "area": "shortcuts",
    "group": "View",
    "id": "view.toggleRightSidebar",
-   "status": "declared",
-   "detail": "meta+alt+B (KeyB) | ]; no handler references this id"
+   "status": "matched",
+   "detail": "meta+alt+B (KeyB) | ]"
   },
   {
    "area": "shortcuts",
@@ -3058,8 +2925,8 @@
    "area": "shortcuts",
    "group": "View",
    "id": "view.toggleZenMode",
-   "status": "declared",
-   "detail": "meta+.; no handler references this id"
+   "status": "matched",
+   "detail": "meta+."
   },
   {
    "area": "shortcuts",
@@ -3786,8 +3653,8 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "git.commitAndPush",
-   "status": "declared",
-   "detail": "meta+shift+y; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+y"
   },
   {
    "area": "shortcuts",
@@ -3828,8 +3695,8 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.showUncommittedChanges",
-   "status": "declared",
-   "detail": "meta+alt+U (KeyU); no handler references this id"
+   "status": "matched",
+   "detail": "meta+alt+U (KeyU)"
   },
   {
    "area": "shortcuts",
@@ -3989,15 +3856,15 @@
    "area": "shortcuts",
    "group": "General",
    "id": "onboarding.nextSlide",
-   "status": "declared",
-   "detail": "ArrowDown; no handler references this id"
+   "status": "matched",
+   "detail": "ArrowDown"
   },
   {
    "area": "shortcuts",
    "group": "General",
    "id": "onboarding.continue",
-   "status": "declared",
-   "detail": "Enter; no handler references this id"
+   "status": "matched",
+   "detail": "Enter"
   },
   {
    "area": "shortcuts",
@@ -4563,7 +4430,7 @@
    "area": "packaging",
    "group": "Info.plist key",
    "id": "NSMicrophoneUsageDescription",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -4591,7 +4458,7 @@
    "area": "packaging",
    "group": "entitlement",
    "id": "com.apple.security.device.audio-input",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -4850,7 +4717,7 @@
    "area": "packaging",
    "group": "tauri plugin",
    "id": "tauri-plugin-updater",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {
@@ -4934,7 +4801,7 @@
    "area": "packaging",
    "group": "bundled resource",
    "id": "bin/spotlighter.sh",
-   "status": "missing",
+   "status": "matched",
    "detail": ""
   },
   {

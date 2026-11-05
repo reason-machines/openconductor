@@ -16,6 +16,7 @@ import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
+import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
@@ -25,6 +26,8 @@ import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
 import { PaletteHost } from "./palette/PaletteHost";
 import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
+import { PRIORITY } from "./keybindings/dispatcher";
+import { copyWorkspaceLink } from "./workspace/link";
 import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
 import { keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
@@ -61,6 +64,8 @@ export default function App() {
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // Archive on merge for workspaces that are not open (the open one reports through its own PR lookup).
+  useArchiveOnMergeWatcher({ repos: state.repos, openWorkspaceId: state.selection.kind === "workspace" ? state.selection.workspaceId : null, dispatch, notify: show });
   // A `/settings...` start URL opens settings where Conductor's router would
   // (src/settings/routes.ts); the URL then follows the open settings page.
   const routeContext = (): RouteContext => ({
@@ -169,6 +174,17 @@ export default function App() {
     "workspace.create": () => setDialog("create"),
   });
 
+  const copyLink = useCallback(
+    (workspaceId: string) => void copyWorkspaceLink(workspaceId).then(({ kind, message }) => show(kind, message)),
+    [show],
+  );
+  // Conductor binds ⌘⇧C in the open workspace (`Dlo`) with `Olo`: dialog
+  // priority, global, also while typing, not in the terminal.
+  useKeybindings(
+    { "workspace.copyLink": workspace ? () => copyLink(workspace.id) : undefined },
+    { priority: PRIORITY.DIALOG, isGlobal: true, enableOnInputFocus: true, enableOnTerminalFocus: false },
+  );
+
   const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
   // Re-read each time the dialog opens so a settings change applies to the next create.
   useEffect(() => {
@@ -185,7 +201,7 @@ export default function App() {
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onError={(message) => show("error", message)} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />

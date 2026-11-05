@@ -10,7 +10,9 @@ import { ChevronIcon } from "./Icons";
 // separator, Archive (⌘⇧A, shown on the selected row) / Unarchive.
 // R and P act on the row while the menu is open
 // (workspace.contextMenu.toggleRead / togglePin).
-// Not built here: Move to section (no sections yet) and Copy link (no URL scheme).
+// Copy link (`XV`) copies openconductor://workspace?id=<id> (src/workspace/link.ts);
+// its ⌘⇧C hint shows only on the open workspace's row (`de = NCi(n)`).
+// Not built here: Move to section (no sections yet).
 
 export interface WorkspaceActions {
   toggleRead: () => void;
@@ -18,6 +20,8 @@ export interface WorkspaceActions {
   setStatus: (status: WorkspaceStatusValue) => void;
   /** Absent until the rename dialog exists; the item is hidden. */
   rename?: () => void;
+  /** Absent when nobody handles it; the item is hidden. */
+  copyLink?: () => void;
   archive: () => void;
 }
 
@@ -130,6 +134,12 @@ export function WorkspaceActionsMenu({ workspace, selected, at, actions, onClose
       {actions.rename && (
         <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.rename)}>
           <span className="sb-ctx-label">Rename</span>
+        </button>
+      )}
+      {actions.copyLink && (
+        <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.copyLink)}>
+          <span className="sb-ctx-label">Copy link</span>
+          {selected && <kbd className="sb-ctx-kbd">⌘⇧C</kbd>}
         </button>
       )}
       <div className="sb-ctx-sep" role="separator" />

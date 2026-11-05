@@ -84,6 +84,8 @@ export interface RowCallbacks {
   onRename?: (repoId: string, ws: Workspace) => void;
   /** Archive flow; defaults to the store's archiveWorkspace. */
   onArchive?: (repoId: string, ws: Workspace) => void;
+  /** Copy link; the menu hides the item until one is passed. */
+  onCopyLink?: (ws: Workspace) => void;
 }
 
 const SWITCH_MODIFIERS = COMMANDS.find((c) => c.id === "workspace.switchTo1")?.key.modifiers ?? ["meta"];
@@ -137,7 +139,7 @@ type MenuTarget = { repoId: string; workspaceId: string; x: number; y: number };
  * `rowProps(repoId, ws)` gives select (which also clears unread, as opening a
  * workspace's session does in Conductor) and right-click.
  */
-export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { onRename, onArchive }: RowCallbacks = {}) {
+export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { onRename, onArchive, onCopyLink }: RowCallbacks = {}) {
   const [menu, setMenu] = useState<MenuTarget | null>(null);
   const sel = state.selection;
   const close = useCallback(() => setMenu(null), []);
@@ -176,6 +178,7 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
           togglePin: () => dispatch({ type: "setWorkspacePinned", ...ids, pinned: typeof ws.pinnedAt !== "number" }),
           setStatus: (status) => dispatch({ type: "setWorkspaceStatus", ...ids, status }),
           rename: onRename && (() => onRename(repo.id, ws)),
+          copyLink: onCopyLink && (() => onCopyLink(ws)),
           archive: () => (onArchive ? onArchive(repo.id, ws) : dispatch({ type: "archiveWorkspace", ...ids })),
         }}
       />

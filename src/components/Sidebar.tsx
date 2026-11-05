@@ -48,6 +48,7 @@ interface Props {
   /* sidebar: workspace row menu callbacks (rename dialog, archive flow) */
   onRenameWorkspace?: RowCallbacks["onRename"];
   onArchiveWorkspace?: RowCallbacks["onArchive"];
+  onCopyWorkspaceLink?: RowCallbacks["onCopyLink"];
   /** Shows an error toast (icon upload failures). */
   onError?: (message: string) => void;
 }
@@ -134,11 +135,11 @@ function HeaderMenu({ label, items, className, contextAt, onContextClose }: { la
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onError }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
-  const rows = useWorkspaceRows(state, dispatch, { onRename: onRenameWorkspace ?? openRename, onArchive: onArchiveWorkspace });
+  const rows = useWorkspaceRows(state, dispatch, { onRename: onRenameWorkspace ?? openRename, onArchive: onArchiveWorkspace, onCopyLink: onCopyWorkspaceLink });
   const renamingWs = renaming && state.repos.find((r) => r.id === renaming.repoId)?.workspaces.find((w) => w.id === renaming.workspaceId);
   const pinned = pinnedEntries(state);
   const sel = state.selection;
