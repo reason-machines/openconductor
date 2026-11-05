@@ -49,6 +49,10 @@ Both match the asset manifest's decoded sizes. Locations below are byte offsets 
 | Archive on merge: only when the repository setting `archive_on_merge` is `"true"`, the workspace is local, and it is not already archived | `prompt::should_archive_after_merge` | `archive_on_merge_rule` |
 | `gh` runs either inside a checkout (letting `gh` resolve the repository; GraphQL `owner` / `repo` passed as `{owner}` / `{repo}` placeholders) or against an explicit `owner/name` (owner may contain slashes; last `/` splits) | `gh::Addressing`, `Gh::repo_vars` | `repo_addressing_parses_owner_and_name`, `allowed_merge_method_prefers_squash_then_rebase_then_merge` |
 | Merge method comes from the repository's `squashMergeAllowed` / `rebaseMergeAllowed` / `mergeCommitAllowed`, first allowed of squash, rebase, merge; a failed or unparsable query, or none allowed, is an error asking to check GitHub access | `Gh::allowed_merge_method`, `GhError::MergeMethodUnknown` | same test |
+| Merge: `gh pr merge <n> --squash|--merge|--rebase`; auto-merge on: same plus `--auto`; off: `gh pr merge <n> --disable-auto`; ready: `gh pr ready <n>`; edit: `gh pr edit <n> [--title t] [--body b]`; retarget: `gh pr edit <n> --base <branch>`; `--repo owner/name` added for explicit addressing | `Gh::merge`, `enable_auto_merge`, `disable_auto_merge`, `mark_ready`, `edit`, `retarget` | `pr_commands_from_checkout_run_in_it_without_repo_flag`, `explicit_repo_adds_repo_flag_and_no_cwd`, `edit_passes_title_and_body_as_single_arguments` |
+| Approve: `gh api repos/<owner>/<repo>/pulls/<n>/reviews -f event=APPROVE -f commit_id=<head>`, pinned to the head the viewer saw | `Gh::approve` | `approve_pins_the_reviewed_commit` |
+| The allowed merge method is cached per repository; a failed lookup is not cached | `MergeMethodCache` | `merge_method_cache_keeps_successes_only` |
+| A failed `gh` call surfaces its stderr | `GhError::Failed` | `failures_carry_gh_stderr` |
 
 ## Deliberate differences
 
