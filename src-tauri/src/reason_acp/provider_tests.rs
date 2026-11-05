@@ -146,7 +146,7 @@ fn reports_and_cloud_paths_are_told_apart() {
     assert_eq!(p.prompt("chat", "cloud"), TurnEnd::Completed);
     let log = log.lock().unwrap();
     let row = log.iter().find_map(|(_, e)| match e {
-        ProviderEvent::Agent(AgentEvent::Tool(r)) => Some(r.clone()),
+        ProviderEvent::Agent(AgentEvent::Tool(r)) => Some((**r).clone()),
         _ => None,
     });
     let diff = &row.unwrap().diffs[0];
