@@ -19,6 +19,12 @@ runs exited 0 in about 2 minutes and returned:
 
 So REA did not locate any caller of these commands, and these traces don't show
 their arguments, key names, or the Keychain service or account names Conductor uses.
+On the Rust side, `evidence/ipc/ipc-rust-bindings.json` (#93) binds `set_keychain_setting`
+to `conductor_lib::keychain_settings::set_keychain_setting` (fn at `0x1007ddd84`). All three
+command strings are referenced from closures in `conductor_lib::run`, which is the handler
+registration. `get_` and `delete_` have no local handler symbol, so they were probably inlined
+into a `keychain_settings` module. The service and account strings are not yet bound.
+
 OpenConductor uses its own names (`agent::keychain::KeychainSecretStore`) and
 returns only connection status, never secret values, to the frontend.
 
