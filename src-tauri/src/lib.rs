@@ -252,6 +252,7 @@ pub fn run() {
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
             diff::commands::diff_workspace,
+            diff::commands::diff_discard_file,
             diff::comment_commands::diff_comments_list,
             diff::comment_commands::diff_comment_add,
             diff::comment_commands::diff_comment_edit,

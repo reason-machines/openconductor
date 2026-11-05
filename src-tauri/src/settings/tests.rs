@@ -257,3 +257,42 @@ fn scrollback_limit_is_optional_and_round_trips_in_advanced() {
     );
     assert_eq!(load(&path).unwrap().advanced, s.advanced);
 }
+
+#[test]
+fn big_terminal_settings_are_optional_and_round_trip() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[general]\ntheme = \"dark\"").unwrap();
+    let loaded = load(&path).unwrap();
+    assert_eq!(loaded.experimental, Experimental::default());
+    assert_eq!(loaded.terminal, Terminal::default());
+    let mut s = Settings::default();
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(!text.contains("big_terminal_preset"), "{text}");
+    assert!(!text.contains("big_terminal_custom_commands"), "{text}");
+    s.experimental.experimental_big_terminal_mode = true;
+    s.terminal.big_terminal_preset = Some("custom:a1".into());
+    s.terminal.big_terminal_custom_commands = vec![
+        BigTerminalCustomCommand {
+            id: "a1".into(),
+            command: "my-agent --flag".into(),
+        },
+        BigTerminalCustomCommand {
+            id: "b2".into(),
+            command: String::new(),
+        },
+    ];
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        text.contains("[experimental]\nexperimental_big_terminal_mode = true"),
+        "{text}"
+    );
+    assert!(
+        text.contains("big_terminal_preset = \"custom:a1\""),
+        "{text}"
+    );
+    let back = load(&path).unwrap();
+    assert_eq!(back.experimental, s.experimental);
+    assert_eq!(back.terminal, s.terminal);
+}

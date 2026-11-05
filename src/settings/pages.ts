@@ -2,7 +2,7 @@
 // (/settings/user/<id>, evidence/settings/NOTES.md); pages are listed here
 // only once they are built.
 
-export type SettingsPage = "general" | "appearance" | "models" | "git" | "key-bindings" | "providers" | "advanced";
+export type SettingsPage = "general" | "appearance" | "models" | "git" | "key-bindings" | "providers" | "experimental" | "advanced" | "terminal";
 
 export const SETTINGS_GROUPS: { title: string; pages: { id: SettingsPage; label: string }[] }[] = [
   {
@@ -17,11 +17,24 @@ export const SETTINGS_GROUPS: { title: string; pages: { id: SettingsPage; label:
     ],
   },
   { title: "Agents & environment", pages: [{ id: "providers", label: "Agents" }] },
-  // Conductor's "More" group also holds Experimental, not built yet.
-  { title: "More", pages: [{ id: "advanced", label: "Advanced" }] },
+  {
+    title: "More",
+    pages: [
+      { id: "experimental", label: "Experimental" },
+      { id: "advanced", label: "Advanced" },
+    ],
+  },
 ];
 
-const PAGES = SETTINGS_GROUPS.flatMap((g) => g.pages);
+/** Conductor's "Big terminal" tab: listed after every group, only while Big terminal mode is on. */
+export const BIG_TERMINAL_PAGE: { id: SettingsPage; label: string } = { id: "terminal", label: "Big terminal" };
+
+/** The page list to show; the Big terminal tab joins as its own untitled group when the mode is on. */
+export function settingsGroups(bigTerminalEnabled: boolean): typeof SETTINGS_GROUPS {
+  return bigTerminalEnabled ? [...SETTINGS_GROUPS, { title: "", pages: [BIG_TERMINAL_PAGE] }] : SETTINGS_GROUPS;
+}
+
+const PAGES = [...SETTINGS_GROUPS.flatMap((g) => g.pages), BIG_TERMINAL_PAGE];
 
 export const pageLabel = (page: SettingsPage): string => PAGES.find((p) => p.id === page)?.label ?? "";
 

@@ -1,7 +1,8 @@
-// parity:diff.changes-list:ui parity:diff.whitespace:ui parity:diff.split-unified:ui parity:diff.viewed:ui parity:diff.navigation:ui
+// parity:diff.changes-list:ui parity:diff.discard:ui parity:diff.whitespace:ui parity:diff.split-unified:ui parity:diff.viewed:ui parity:diff.navigation:ui
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import "./diff.css";
-import { loadWorkspaceDiff, WHOLE_FILE_CONTEXT } from "./api.ts";
+import { discardFileChanges, loadWorkspaceDiff, WHOLE_FILE_CONTEXT } from "./api.ts";
+import { DiscardDialog, RevertIcon } from "./DiscardDialog";
 import { FileDiffView, STATUS_LETTER, type LineAnchor } from "./FileDiffView";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { nextUnread, step } from "./nav.ts";
@@ -84,6 +85,7 @@ export function DiffViewer({ workspaceId, worktree, baseBranch, actions, onLineC
   const [current, setCurrent] = useState(-1);
   // Files whose unmodified lines were expanded: reloaded alone with full context.
   const [expanded, setExpanded] = useState<Record<string, FileDiff>>({});
+  const [discarding, setDiscarding] = useState<FileDiff | null>(null);
 
   const update = (patch: Partial<DiffViewOptions>) => {
     const next = { ...opts, ...patch };
@@ -185,14 +187,19 @@ export function DiffViewer({ workspaceId, worktree, baseBranch, actions, onLineC
               </span>
             </div>
             {files.map((f, i) => (
-              <button key={f.path} className={`oc-change${isViewed(viewed, f) ? " viewed" : ""}`} aria-current={i === current} onClick={() => goTo(i)} title={f.path}>
-                <span className={`oc-status ${f.status}`}>{STATUS_LETTER[f.status]}</span>
-                <span className="name">{f.path}</span>
-                <span className="oc-count">
-                  <span className="a">+{f.additions}</span>
-                  <span className="d">-{f.deletions}</span>
-                </span>
-              </button>
+              <div key={f.path} className="oc-change-row">
+                <button className={`oc-change${isViewed(viewed, f) ? " viewed" : ""}`} aria-current={i === current} onClick={() => goTo(i)} title={f.path}>
+                  <span className={`oc-status ${f.status}`}>{STATUS_LETTER[f.status]}</span>
+                  <span className="name">{f.path}</span>
+                  <span className="oc-count">
+                    <span className="a">+{f.additions}</span>
+                    <span className="d">-{f.deletions}</span>
+                  </span>
+                </button>
+                <button className="icon-btn oc-discard" onClick={() => setDiscarding(f)} title="Discard changes" aria-label={`Discard changes to ${f.path}`}>
+                  <RevertIcon />
+                </button>
+              </div>
             ))}
           </nav>
           <div className="oc-files">
@@ -207,6 +214,7 @@ export function DiffViewer({ workspaceId, worktree, baseBranch, actions, onLineC
                 onLineClick={onLineClick && ((a) => onLineClick(f, a))}
                 annotations={annotations && ((a) => annotations(f, a))}
                 onExpand={expanded[f.path] ? undefined : () => expand(f)}
+                onDiscard={() => setDiscarding(f)}
               />
             ))}
             {unread >= 0 && (
@@ -216,6 +224,13 @@ export function DiffViewer({ workspaceId, worktree, baseBranch, actions, onLineC
             )}
           </div>
         </>
+      )}
+      {discarding && (
+        <DiscardDialog
+          file={discarding}
+          onClose={() => setDiscarding(null)}
+          onConfirm={() => discardFileChanges(worktree, baseBranch, opts, discarding).then(refresh)}
+        />
       )}
     </div>
   );
