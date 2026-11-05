@@ -8,20 +8,27 @@
 //! writer of both. The commands take the reference's `getEntry` / `setEntry`
 //! / `removeEntry` arguments, with `content` as the entry's JSON text
 //! (`JSON.stringify` of the value), and `setEntry` answers with its
-//! `{success}` / `{success: false, reason}` result.
+//! `{success}` / `{success: false, reason}` result. `listEntries` and
+//! `removeSubsystem` take `{subsystem}`.
 
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
 use tauri::State;
 
-use crate::terminal::history_store::{StoreError, SubsystemStore};
+use crate::terminal::history_store::{ListedEntry, StoreError, SubsystemStore};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EntryArgs {
     pub subsystem: String,
     pub id: String,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SubsystemArgs {
+    pub subsystem: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -111,6 +118,37 @@ pub async fn local_storage_remove_entry(
     .await
 }
 
+/// Every entry of the subsystem as `{id, size, lastUpdatedAt, content}`,
+/// `content` being the entry's JSON text (the reference's `listEntries`).
+#[tauri::command]
+pub async fn local_storage_list_entries(
+    store: State<'_, Store>,
+    args: SubsystemArgs,
+) -> Result<Vec<ListedEntry>, String> {
+    let store = Arc::clone(&store);
+    blocking(move || {
+        store
+            .list_entries(&args.subsystem)
+            .map_err(|e| e.to_string())
+    })
+    .await
+}
+
+/// Drop the subsystem's index record and store file (the reference's `removeSubsystem`).
+#[tauri::command]
+pub async fn local_storage_remove_subsystem(
+    store: State<'_, Store>,
+    args: SubsystemArgs,
+) -> Result<(), String> {
+    let store = Arc::clone(&store);
+    blocking(move || {
+        store
+            .remove_subsystem(&args.subsystem)
+            .map_err(|e| e.to_string())
+    })
+    .await
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -145,5 +183,7 @@ mod tests {
         assert_eq!(a.content, "\"x\"");
         let g: EntryArgs = serde_json::from_str(r#"{"subsystem":"terminal","id":"t"}"#).unwrap();
         assert_eq!((g.subsystem.as_str(), g.id.as_str()), ("terminal", "t"));
+        let s: SubsystemArgs = serde_json::from_str(r#"{"subsystem":"composer-drafts"}"#).unwrap();
+        assert_eq!(s.subsystem, "composer-drafts");
     }
 }

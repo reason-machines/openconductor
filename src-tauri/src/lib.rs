@@ -337,6 +337,8 @@ pub fn run() {
             local_storage_commands::local_storage_get_entry,
             local_storage_commands::local_storage_set_entry,
             local_storage_commands::local_storage_remove_entry,
+            local_storage_commands::local_storage_list_entries,
+            local_storage_commands::local_storage_remove_subsystem,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
