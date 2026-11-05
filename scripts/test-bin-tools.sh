@@ -43,6 +43,14 @@ pub mod bundled_bin;
 pub mod checkpoint;
 #[path = "$src/tool_cli.rs"]
 pub mod tool_cli;
+/// spotlighter needs the app's spotlight watcher (notify, ignore); its own
+/// tests run in the app crate. Here it only proves the shim reaches tool mode.
+pub mod tool_spotlighter {
+    pub fn main(_cwd: &std::path::Path) -> i32 {
+        eprintln!("harness: spotlighter stub");
+        3
+    }
+}
 EOF
 cat > "$harness/src/main.rs" <<'EOF'
 fn main() {
@@ -73,13 +81,13 @@ expect() { # expect <name> <want> <got>
 # Layout 1: installed into $APPDATA/bin.
 appbin="$tmp/appdata/bin"
 mkdir -p "$appbin/.internal"
-cp "$shims/checkpointer.sh" "$shims/git-busy-check.sh" "$appbin/"
+cp "$shims/checkpointer.sh" "$shims/git-busy-check.sh" "$shims/spotlighter.sh" "$appbin/"
 ln -s "$exe" "$appbin/.internal/openconductor"
 
 # Layout 2: the app bundle, no .internal link.
 bundle="$tmp/OpenConductor.app/Contents"
 mkdir -p "$bundle/Resources/bin" "$bundle/MacOS"
-cp "$shims/checkpointer.sh" "$shims/git-busy-check.sh" "$bundle/Resources/bin/"
+cp "$shims/checkpointer.sh" "$shims/git-busy-check.sh" "$shims/spotlighter.sh" "$bundle/Resources/bin/"
 cp "$exe" "$bundle/MacOS/openconductor"
 
 ws="$tmp/ws"
@@ -104,6 +112,10 @@ for bin in "$appbin" "$bundle/Resources/bin"; do
   out="$("$bin/git-busy-check.sh" "$tmp/missing")"; code=$?
   set -e
   expect "$label: busy check bad path" "2 error: bad path" "$code $out"
+  set +e
+  out="$("$bin/spotlighter.sh" 2>&1)"; code=$?
+  set -e
+  expect "$label: spotlighter reaches tool mode" "3 harness: spotlighter stub" "$code $out"
 done
 
 # Mid-merge: save is a silent 101 and the busy check names the operation.

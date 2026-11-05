@@ -1,4 +1,12 @@
-use openconductor_db::{favorite_models, iso_time, open_in_memory};
+use openconductor_db::{favorite_models, iso_time, open_in_memory, Scope};
+
+fn scope(organization_id: &str, user_id: &str) -> Scope {
+    Scope {
+        hosting_server_url: None,
+        organization_id: organization_id.into(),
+        user_id: user_id.into(),
+    }
+}
 
 fn favs(items: &[(&str, &str)]) -> Vec<(String, String)> {
     items
@@ -13,14 +21,13 @@ const T2: i64 = T1 + 1_000;
 #[tokio::test]
 async fn replace_orders_by_position_and_keeps_created_at() {
     let pool = open_in_memory().await.unwrap();
-    assert!(favorite_models::list(&pool, "org", "u")
+    assert!(favorite_models::list(&pool, &scope("org", "u"))
         .await
         .unwrap()
         .is_empty());
     favorite_models::replace(
         &pool,
-        "org",
-        "u",
+        &scope("org", "u"),
         &favs(&[
             ("opus", r#"{"model":"opus"}"#),
             ("gpt", r#"{"model":"gpt"}"#),
@@ -31,15 +38,16 @@ async fn replace_orders_by_position_and_keeps_created_at() {
     .unwrap();
     favorite_models::replace(
         &pool,
-        "org",
-        "u",
+        &scope("org", "u"),
         &favs(&[("new", "{}"), ("gpt", r#"{"model":"gpt","fast":true}"#)]),
         T2,
     )
     .await
     .unwrap();
 
-    let list = favorite_models::list(&pool, "org", "u").await.unwrap();
+    let list = favorite_models::list(&pool, &scope("org", "u"))
+        .await
+        .unwrap();
     assert_eq!(
         list.iter().map(|f| f.id.as_str()).collect::<Vec<_>>(),
         ["new", "gpt"]
@@ -63,27 +71,27 @@ async fn replace_orders_by_position_and_keeps_created_at() {
 #[tokio::test]
 async fn replace_is_scoped_and_empty_clears() {
     let pool = open_in_memory().await.unwrap();
-    favorite_models::replace(&pool, "org", "u", &favs(&[("a", "{}")]), T1)
+    favorite_models::replace(&pool, &scope("org", "u"), &favs(&[("a", "{}")]), T1)
         .await
         .unwrap();
-    favorite_models::replace(&pool, "org", "v", &favs(&[("b", "{}")]), T1)
+    favorite_models::replace(&pool, &scope("org", "v"), &favs(&[("b", "{}")]), T1)
         .await
         .unwrap();
-    favorite_models::replace(&pool, "org", "u", &[], T2)
+    favorite_models::replace(&pool, &scope("org", "u"), &[], T2)
         .await
         .unwrap();
-    assert!(favorite_models::list(&pool, "org", "u")
+    assert!(favorite_models::list(&pool, &scope("org", "u"))
         .await
         .unwrap()
         .is_empty());
     assert_eq!(
-        favorite_models::list(&pool, "org", "v")
+        favorite_models::list(&pool, &scope("org", "v"))
             .await
             .unwrap()
             .len(),
         1
     );
-    assert!(favorite_models::list(&pool, "other", "v")
+    assert!(favorite_models::list(&pool, &scope("other", "v"))
         .await
         .unwrap()
         .is_empty());
@@ -92,7 +100,7 @@ async fn replace_is_scoped_and_empty_clears() {
 #[tokio::test]
 async fn failed_replace_rolls_back() {
     let pool = open_in_memory().await.unwrap();
-    favorite_models::replace(&pool, "org", "u", &favs(&[("a", "{}")]), T1)
+    favorite_models::replace(&pool, &scope("org", "u"), &favs(&[("a", "{}")]), T1)
         .await
         .unwrap();
     sqlx::query(
@@ -103,11 +111,13 @@ async fn failed_replace_rolls_back() {
     .await
     .unwrap();
     assert!(
-        favorite_models::replace(&pool, "org", "u", &favs(&[("b", "{}")]), T2)
+        favorite_models::replace(&pool, &scope("org", "u"), &favs(&[("b", "{}")]), T2)
             .await
             .is_err()
     );
-    let list = favorite_models::list(&pool, "org", "u").await.unwrap();
+    let list = favorite_models::list(&pool, &scope("org", "u"))
+        .await
+        .unwrap();
     assert_eq!(list.len(), 1, "the delete was rolled back");
     assert_eq!(list[0].id, "a");
 }

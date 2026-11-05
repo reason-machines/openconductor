@@ -1,7 +1,7 @@
 // Run: node --test "src/**/*.test.ts"
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { checkpointId, parseResetFilesPreference, restoreCheckpoint, saveTurnCheckpoint, turnKey, type Invoke } from "./checkpoints.ts";
+import { checkpointId, parseResetFilesPreference, restoreCheckpoint, turnCheckpointRef, turnKey, type Invoke } from "./checkpoints.ts";
 
 function fakeInvoke(responses: Record<string, unknown>) {
   const calls: [string, Record<string, unknown>][] = [];
@@ -21,14 +21,11 @@ test("checkpoint ids follow Conductor's session-<session>-turn-<turn>-<start|end
   assert.equal(checkpointId("a b", "a b:t1", "end"), "session-a-b-turn-t1-end");
 });
 
-test("saving passes the id to checkpoint_save and never throws", async () => {
-  const ok = fakeInvoke({ checkpoint_save: { saved: true } });
-  await saveTurnCheckpoint(ok.invoke, "/w", "ws1", "ws1:t1", "start");
-  assert.deepEqual(ok.calls, [["checkpoint_save", { workspacePath: "/w", checkpointId: "session-ws1-turn-t1-start" }]]);
-  const failing = fakeInvoke({ checkpoint_save: new Error("boom") });
-  await saveTurnCheckpoint(failing.invoke, "/w", "ws1", "ws1:t1", "end");
-  const skipped = fakeInvoke({ checkpoint_save: { saved: false, skipped: "merge in progress" } });
-  await saveTurnCheckpoint(skipped.invoke, "/w", "ws1", "ws1:t1", "end");
+test("the ref sent to the backend names the same checkpoints Reset chat looks for", () => {
+  const ref = turnCheckpointRef("a b", "a b:0f6c-uuid");
+  assert.deepEqual(ref, { sessionId: "a-b", turnId: "0f6c-uuid" });
+  // The backend's id is session-<sessionId>-turn-<turnId>-<point> (src-tauri/src/diff/git.rs).
+  assert.equal(`session-${ref.sessionId}-turn-${ref.turnId}-end`, checkpointId("a b", "a b:0f6c-uuid", "end"));
 });
 
 test("reset with files checks the end checkpoint exists, then restores it", async () => {
