@@ -52,6 +52,7 @@ interface Props {
   /* sidebar: workspace row menu callbacks (rename dialog, archive flow) */
   onRenameWorkspace?: RowCallbacks["onRename"];
   onArchiveWorkspace?: RowCallbacks["onArchive"];
+  onCopyWorkspaceLink?: RowCallbacks["onCopyLink"];
   /** Shows an error toast (icon upload failures). */
   onError?: (message: string) => void;
 }
@@ -193,7 +194,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onError }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
@@ -218,6 +219,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
   const rows = useWorkspaceRows(state, dispatch, {
     onRename: onRenameWorkspace ?? openRename,
     onArchive: onArchiveWorkspace,
+    onCopyLink: onCopyWorkspaceLink,
     onNewSection: (ws) => setSectionDialog({ mode: "create", workspaceIdToMove: ws.id }),
     collapsedSections,
     onRowPointerDown: (e, repoId, ws) => drag.workspacePointerDown(e, { repoId, id: ws.id, pinned: typeof ws.pinnedAt === "number" }),

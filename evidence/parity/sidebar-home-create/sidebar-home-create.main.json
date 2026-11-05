@@ -1,6 +1,6 @@
 {
  "ref": "origin/main",
- "source_files": 429,
+ "source_files": 443,
  "detector_parity_pct": 86.0,
  "areas": {
   "sidebar": {
@@ -9,12 +9,12 @@
    "partial": 7,
    "missing": 2,
    "parity_pct": 83.3,
-   "verdict_implemented": 20,
+   "verdict_implemented": 21,
    "verdict_partial": 9,
    "verdict_backend": 1,
-   "verdict_missing": 3,
+   "verdict_missing": 2,
    "verdict_na": 0,
-   "verdict_parity_pct": 75.0
+   "verdict_parity_pct": 78.0
   },
   "home": {
    "items": 18,
@@ -428,9 +428,9 @@
      "file": "src/components/Sidebar.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "Still missing on 66a892a: the only drag and drop in the sidebar reorders repository groups (sb-repo-header draggable / dropOn). Workspace rows are not draggable and sections are not drop targets; #370 added sections but moves a workspace only through the row menu's Move to section.",
-   "recheck": true
+   "verdict": "implemented",
+   "why": "#412 on 93e4881: useSidebarDrag.tsx (wired in Sidebar.tsx) is a pointer drag after Conductor's controller `esa` (renderApp-D_fmY7hW.js, elementFromPoint hit test at byte 10,091,139, re-checked in the decoded bundle): a press becomes a drag after 5 px; a workspace row drops onto a section, onto Pinned or onto My workspaces, and a drop that leaves it where it is is no target; a section header drags to reorder sections (reorderSection, Conductor's bY); Escape, blur and pointercancel abort, the click ending a drag is swallowed, and the list edge-scrolls 4-16 px a frame. Pinning unassigns the workspace from its section as Conductor's pin mutation does. Drops go through the store's section actions, which #370 persists to conductor.db's navigation_sections tables. Rows inside a section stay newest first, as in Conductor (usa), so there is no row order to drag. Pure drop rules tested in navigationSectionsDrag.test.ts; not exercised end to end in the desktop app by the verifier.",
+   "recheck": false
   },
   {
    "id": "sidebar.ws-numbers",
@@ -666,7 +666,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "On 66a892a the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status \u25b8, Move to section \u25b8 (#370: every section, New section\u2026, Remove from section), Rename (#315) and Archive. Still missing: Copy link (Cmd+Shift+C); WorkspaceActionsMenu.tsx notes it is not built because there is no URL scheme.",
+   "why": "Still partial on main 962f017: the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status \u25b8, Move to section \u25b8 (#370), Rename (#315) and Archive; Copy link (Cmd+Shift+C) is missing. PR #400 (head 6e038d3, all 15 checks green, unmerged under the merge hold) adds it: Copy link in the row menu with the \u2318\u21e7C hint on the open workspace's row, \u2318\u21e7C bound at dialog priority, global, also while typing and not in the terminal (Conductor's Olo), copying openconductor://workspace?id=<id> with the 'Copied link' / 'Failed to copy link' toasts (Conductor's XV and $$; 'Failed to copy link' re-checked at renderApp byte 742,768). Re-read against #400's head this becomes implemented once it merges; the copied link opens nothing until app.deep-link (unowned) handles openconductor:// URLs.",
    "recheck": false
   },
   {
@@ -882,7 +882,7 @@
     {
      "pattern": "file://",
      "matched": true,
-     "file": "src-tauri/src/reason_acp/provider.rs"
+     "file": "src-tauri/src/agent_binaries.rs"
     }
    ],
    "verdict": "implemented",
@@ -1449,6 +1449,6 @@
   }
  ],
  "verdicts_ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 81.7
+ "verdicts_verified_at": "2026-11-05 (main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 83.2
 }
