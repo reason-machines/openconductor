@@ -311,3 +311,9 @@ pub async fn delete_if_initializing(pool: &SqlitePool, local_id: &str) -> Result
     let q = sqlx::query("DELETE FROM workspaces WHERE local_id = ? AND state = 'initializing'");
     Ok(exec(q.bind(local_id), pool).await? > 0)
 }
+
+/// Delete a workspace row whatever its state. False when there was none.
+pub async fn delete(pool: &SqlitePool, local_id: &str) -> Result<bool> {
+    let q = sqlx::query("DELETE FROM workspaces WHERE local_id = ?");
+    Ok(exec(q.bind(local_id), pool).await? > 0)
+}
