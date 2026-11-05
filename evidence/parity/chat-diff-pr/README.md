@@ -24,11 +24,12 @@ tools/rea_compare_main.sh origin/main                   # needs REA (npm rea-age
 ## Validation of the checker
 
 - Every anchor resolves on main (`--check-anchors` exits 0).
-- Positive control: on the unmerged `feat/app-shell` branch, the checker picks up the shell's chat panel (`chat.session-stream`, ui layer). On main it picks up only the checkpoint crate's `restore` (`chat.revert-checkpoint`, backend layer).
+- Positive control: the checker picks up the app shell's placeholder chat panel and composer (ui layers), the chat message model's streaming, tool-use and cancelled-state types (`src-tauri/src/chat/`), and the checkpoint crate's `restore`. It does not count prose matches such as the word "marked" in a comment, because markdown requires a real import.
 
 ## REA notes
 
 - `compare-application-versions` matches by node identity, content digest, source map or structural fingerprint. A clean-room rebuild therefore stays near 0 matched even at full feature parity. Use it as a shipped-surface overlap measure, not as the parity number.
+- On main @ c60d406, REA pairs 3 nodes by semantic key only: the renderer, the root HTML artifact and a local-storage node. That is shell-level overlap, not chat, diff or PR features.
 - Conductor's frontend Evidence is budget-truncated (1,876 limitations), so REA classifies every OpenConductor-only node as `unknown` ("opposite graph is incomplete") instead of `added`.
 - `rea <workflow> --schema` still shows only `inputJson: string` in 6.8.0. The real input schema (`left`, `right`) is only in MCP `tools/list`.
 - No REA tool compares features across two different implementations: by route, IPC command, persisted column or UI state. `features.json` fills that gap by hand.

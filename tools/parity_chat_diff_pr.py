@@ -55,6 +55,8 @@ def implementation_files() -> list[Path]:
         parts = p.relative_to(ROOT).parts
         if parts[0] in EXCLUDED_TOP or any(x in EXCLUDED_TOP for x in parts):
             continue
+        if p.name == "tests.rs" or p.name.endswith(("_test.rs", ".test.ts", ".test.tsx")):
+            continue
         out.append(p)
     return out
 
@@ -188,7 +190,7 @@ def render(spec, areas, total, results, broken, nfiles, ev, rea) -> str:
              "Do not edit by hand; rerun the tool after main changes.\n")
     L.append(f"Reference: REA evidence on main (ledger `{ev.ledger_id[:20]}...`, SQLite schema, IPC candidates, "
              "REA-derived copy catalogs). Implementation files scanned on this checkout: "
-             f"**{nfiles}** (everything outside `evidence/`, `tools/`, `.github/`).\n")
+             f"**{nfiles}** (everything outside `evidence/`, `tools/`, `.github/`; test files excluded).\n")
     L.append("## Parity\n")
     L.append("| Area | Features | Parity (code layers present) | Strict parity (verified) | Absent | Partial | Verified |")
     L.append("|---|---|---|---|---|---|---|")

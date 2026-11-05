@@ -4,10 +4,10 @@
   "chat": {
    "label": "Chat: agent transcript, composer, queue, attachments, models, turn controls",
    "features": 15,
-   "parity_pct": 2.2,
+   "parity_pct": 14.4,
    "strict_parity_pct": 0.0,
-   "absent": 14,
-   "partial": 1,
+   "absent": 10,
+   "partial": 5,
    "verified": 0
   },
   "diff": {
@@ -31,7 +31,7 @@
  },
  "total": {
   "features": 41,
-  "parity_pct": 0.8,
+  "parity_pct": 5.3,
   "strict_parity_pct": 0.0
  },
  "features": [
@@ -39,22 +39,31 @@
    "id": "chat.session-stream",
    "area": "chat",
    "title": "Start an agent session in a workspace and stream its messages into the transcript",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.5,
    "layers_required": [
     "data",
     "backend",
     "command",
     "ui"
    ],
-   "layers_present": [],
-   "missing_layers": [
-    "data",
+   "layers_present": [
     "backend",
-    "command",
     "ui"
    ],
-   "hits": {},
+   "missing_layers": [
+    "data",
+    "command"
+   ],
+   "hits": {
+    "backend": [
+     "src-tauri/src/chat/model.rs",
+     "src-tauri/src/chat/transcript.rs"
+    ],
+    "ui": [
+     "src/components/WorkspaceView.tsx"
+    ]
+   },
    "anchors": [
     "ledger `agent.session-run` (blocked)",
     "IPC `rpc_to_sidecar`",
@@ -84,16 +93,24 @@
    "id": "chat.tool-calls",
    "area": "chat",
    "title": "Show agent tool calls as collapsible rows with a setting to keep them expanded",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.5,
    "layers_required": [
+    "data",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "data"
+   ],
    "missing_layers": [
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "data": [
+     "src-tauri/src/chat/mod.rs",
+     "src-tauri/src/chat/model.rs"
+    ]
+   },
    "anchors": [
     "copy /collapse tool calls/ (1 hit)"
    ]
@@ -102,18 +119,23 @@
    "id": "chat.composer-send",
    "area": "chat",
    "title": "Composer that sends a message, with a configurable send key",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.5,
    "layers_required": [
     "command",
     "ui"
    ],
-   "layers_present": [],
-   "missing_layers": [
-    "command",
+   "layers_present": [
     "ui"
    ],
-   "hits": {},
+   "missing_layers": [
+    "command"
+   ],
+   "hits": {
+    "ui": [
+     "src/components/WorkspaceView.tsx"
+    ]
+   },
    "anchors": [
     "copy /key combination sends messages/ (1 hit)",
     "ledger `agent.session-run` (blocked)"
@@ -149,18 +171,25 @@
    "id": "chat.cancel",
    "area": "chat",
    "title": "Stop a running turn and mark cancelled messages",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.333,
    "layers_required": [
+    "data",
     "backend",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "data"
+   ],
    "missing_layers": [
     "backend",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "data": [
+     "src-tauri/src/chat/model.rs"
+    ]
+   },
    "anchors": [
     "schema `session_messages.cancelled_at`",
     "copy /request cancelled/ (1 hit)"
@@ -929,5 +958,5 @@
   }
  ],
  "broken_anchors": [],
- "implementation_files_scanned": 4
+ "implementation_files_scanned": 30
 }

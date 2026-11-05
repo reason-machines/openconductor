@@ -1,21 +1,21 @@
 {
  "tool": "rea compare-application-versions",
  "rea_version": "6.8.0",
- "evidence_id": "ev_25ae8fd39f0736f0f47720c9ff6a09f98d847b144ec827b2f2d588295cbf4dff",
- "comparison_id": "javc_53c410be57e0c0fe790e2d04cd565b43a6007d2bc5fd7f23722ba6deea7a7d46",
+ "evidence_id": "ev_43a296742debe40d735519fcaa7e9139f09cbd7f1625c5f82661fdf14c702926",
+ "comparison_id": "javc_14c5aceeb2c79a5651e98722189385f1e667c7df9f43c58137423b39cbaa3163",
  "left_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
  "left_graph_id": "jag_b1cc2a059f7e5d7508bbb0f74a17f2de392aeddb3010d35350777e61c4c100b7",
  "left_subject": "Conductor.app v0.87.6 embedded frontend (dist)",
- "right_evidence_id": "ev_18b904529520f09e07113028d2f160969f2e798d6532df62a9e953bec5c3d331",
- "right_graph_id": "jag_cce315385b19bfcdc236c940a3724aea80ffe4cf6eb4728f6f3299a38109f0dd",
- "right_commit": "92e2066883d0aa624fcf2d79fca0035d18ad449a",
- "right_subject": "reason-machines/openconductor main (git archive)",
+ "right_evidence_id": "ev_738285d2b906fee5852dbc60496fd8b95c784f38e436054ebd1be80ce582f5d7",
+ "right_graph_id": "jag_bfdb1b636f5e4d6d2103d53ec387b2e6cc35d3719ff110b99ad9c2ccaa3d5446",
+ "right_commit": "c60d4063d6191239d069833e3d54f82d891cbce3",
+ "right_subject": "reason-machines/openconductor (git archive)",
  "summary": {
   "unchanged": 0,
   "added": 0,
-  "removed": 7090,
-  "changed": 0,
-  "unknown": 1915
+  "removed": 0,
+  "changed": 1,
+  "unknown": 9165
  },
  "matching": {
   "exact_node_identity": 0,
@@ -23,9 +23,9 @@
   "exact_module_source_digest": 0,
   "source_map_identity": 0,
   "structural_fingerprint": 0,
-  "semantic_key": 0,
+  "semantic_key": 3,
   "ambiguous": 0,
-  "unmatched": 9005
+  "unmatched": 9163
  },
  "left_statistics": {
   "relevant_files": 1908,
@@ -34,9 +34,9 @@
   "findings": 15557
  },
  "right_statistics": {
-  "relevant_files": 27,
-  "parsed_javascript_files": 1,
-  "visited_ast_nodes": 74,
-  "findings": 3
+  "relevant_files": 47,
+  "parsed_javascript_files": 15,
+  "visited_ast_nodes": 8387,
+  "findings": 219
  }
 }
