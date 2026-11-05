@@ -19,7 +19,7 @@ import { CloseIcon, KeyboardIcon, SearchIcon } from "./Icons";
 
 export const KEYBOARD_SHORTCUTS_DIALOG_ID = "keyboard-shortcuts-dialog";
 
-function Keys({ shortcut }: { shortcut: Shortcut }) {
+export function Keys({ shortcut }: { shortcut: Shortcut }) {
   return (
     <span className="ks-keys" aria-label={spoken([shortcut])}>
       {shortcutParts(shortcut).map((part, i) => (

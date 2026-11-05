@@ -12,6 +12,7 @@
 //! })
 //! .invoke_handler(tauri::generate_handler![
 //!     workspace::commands::add_repository,
+//!     workspace::commands::clone_repository,
 //!     workspace::commands::list_repositories,
 //!     workspace::commands::list_branches,
 //!     workspace::commands::branch_name_is_taken,
@@ -77,6 +78,19 @@ pub struct CreatedWorkspaceDto {
 #[tauri::command]
 pub async fn add_repository(service: State<'_, WorkspaceService>, path: String) -> Result<RepositoryDto, String> {
     service.add_repository(path.as_ref()).map(repo_dto).map_err(|e| e.to_string())
+}
+
+/// JS: `invoke("clone_repository", { url, parentDir })`: `git clone <url>
+/// <parentDir>/<name>` (name = last URL segment without `.git`), then
+/// registered like `add_repository`. Errors: "destination already exists:
+/// <path>", or git's stderr.
+#[tauri::command]
+pub async fn clone_repository(
+    service: State<'_, WorkspaceService>,
+    url: String,
+    parent_dir: String,
+) -> Result<RepositoryDto, String> {
+    service.clone_repository(&url, parent_dir.as_ref()).map(repo_dto).map_err(|e| e.to_string())
 }
 
 #[tauri::command]

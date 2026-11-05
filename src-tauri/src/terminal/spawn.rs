@@ -123,6 +123,7 @@ pub enum TerminalError {
     DuplicateId(String),
     NotFound(String),
     NotRunning(String),
+    MirrorNotFound(String),
     Spawn(String),
     Io(std::io::Error),
 }
@@ -139,6 +140,8 @@ impl fmt::Display for TerminalError {
             Self::DuplicateId(id) => write!(f, "terminal {id} already exists"),
             Self::NotFound(id) => write!(f, "no terminal {id}"),
             Self::NotRunning(id) => write!(f, "terminal {id} has exited"),
+            // The reference's wording.
+            Self::MirrorNotFound(id) => write!(f, "PTY mirror not found: {id}"),
             Self::Spawn(e) => write!(f, "failed to start terminal: {e}"),
             Self::Io(e) => write!(f, "terminal I/O error: {e}"),
         }

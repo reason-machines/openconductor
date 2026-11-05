@@ -11,6 +11,8 @@ use portable_pty::{native_pty_system, ChildKiller, MasterPty, PtySize};
 
 use super::flow::FlowGate;
 use super::kill;
+use super::mirror::Mirrors;
+use super::screen::{ScreenSnapshot, ScreenState, DEFAULT_SCROLLBACK_LINES};
 use super::scrollback::Scrollback;
 use super::spawn::{
     build_command, check_size, EventSink, ExitInfo, PtyEvent, Result, SpawnRequest, TerminalError,
@@ -35,6 +37,8 @@ pub(crate) struct Session {
     pub(crate) killer: Mutex<Box<dyn ChildKiller + Send + Sync>>,
     flow: Arc<FlowGate>,
     scrollback: Arc<Mutex<Scrollback>>,
+    /// What the terminal shows, fed the same bytes as the renderer.
+    screen: Arc<Mutex<ScreenState>>,
     life: Arc<(Mutex<Lifecycle>, Condvar)>,
 }
 
@@ -55,6 +59,7 @@ impl Session {
 
 pub struct PtyManager {
     sessions: Mutex<HashMap<String, Arc<Session>>>,
+    mirrors: Mirrors,
     sink: Arc<dyn EventSink>,
     next_id: AtomicU64,
 }
@@ -63,6 +68,7 @@ impl PtyManager {
     pub fn new(sink: impl EventSink) -> Self {
         Self {
             sessions: Mutex::new(HashMap::new()),
+            mirrors: Mirrors::default(),
             sink: Arc::new(sink),
             next_id: AtomicU64::new(1),
         }
@@ -96,6 +102,11 @@ impl PtyManager {
             writer: Mutex::new(writer),
             flow: Arc::new(FlowGate::new(req.flow)),
             scrollback: Arc::new(Mutex::new(Scrollback::new(req.scrollback_limit))),
+            screen: Arc::new(Mutex::new(ScreenState::new(
+                req.cols,
+                req.rows,
+                DEFAULT_SCROLLBACK_LINES,
+            ))),
             life: Arc::new((Mutex::new(Lifecycle::default()), Condvar::new())),
         });
         {
@@ -117,7 +128,7 @@ impl PtyManager {
         thread::Builder::new()
             .name(format!("pty-read-{id}"))
             .spawn(move || {
-                read_loop(reader, &rid, &s.flow, &s.scrollback, &*sink);
+                read_loop(reader, &rid, &s, &*sink);
                 let (lock, cv) = &*s.life;
                 lock.lock().unwrap().reader_done = true;
                 cv.notify_all();
@@ -202,7 +213,9 @@ impl PtyManager {
                 pixel_width: 0,
                 pixel_height: 0,
             })
-            .map_err(|e| TerminalError::Io(std::io::Error::other(e.to_string())))
+            .map_err(|e| TerminalError::Io(std::io::Error::other(e.to_string())))?;
+        s.screen.lock().unwrap().resize(cols, rows);
+        Ok(())
     }
 
     /// The renderer has processed `n` more bytes of output.
@@ -220,6 +233,67 @@ impl PtyManager {
     pub fn clear_history(&self, id: &str) -> Result<()> {
         self.get(id)?.scrollback.lock().unwrap().clear();
         Ok(())
+    }
+
+    /// The last `max_lines` rows of a terminal's or mirror's screen
+    /// (`pty_screen_text`).
+    pub fn screen_text(&self, id: &str, max_lines: usize) -> Result<String> {
+        Ok(self.screen(id)?.lock().unwrap().text(max_lines))
+    }
+
+    /// A restorable snapshot of a terminal's or mirror's screen
+    /// (`pty_screen_snapshot`).
+    pub fn screen_snapshot(&self, id: &str) -> Result<ScreenSnapshot> {
+        Ok(self.screen(id)?.lock().unwrap().snapshot())
+    }
+
+    /// Feed output into a mirror, or into a terminal's screen without
+    /// sending it to the program (`pty_write_mirror`).
+    pub fn write_mirror(&self, id: &str, data: &[u8]) -> Result<()> {
+        let screen = match self.get(id) {
+            Ok(s) => s.screen.clone(),
+            Err(_) => self.mirrors.get(id)?,
+        };
+        screen.lock().unwrap().write(data);
+        Ok(())
+    }
+
+    /// Start a screen with no program behind it (`pty_create_mirror`).
+    /// Creating an id that exists starts it over blank.
+    pub fn create_mirror(
+        &self,
+        id: &str,
+        cols: u16,
+        rows: u16,
+        max_buffered_bytes: Option<usize>,
+    ) -> Result<()> {
+        check_size(cols, rows)?;
+        if self.sessions.lock().unwrap().contains_key(id) {
+            return Err(TerminalError::DuplicateId(id.to_owned()));
+        }
+        self.mirrors.create(id, cols, rows, max_buffered_bytes);
+        Ok(())
+    }
+
+    pub fn resize_mirror(&self, id: &str, cols: u16, rows: u16) -> Result<()> {
+        check_size(cols, rows)?;
+        self.mirrors.get(id)?.lock().unwrap().resize(cols, rows);
+        Ok(())
+    }
+
+    pub fn delete_mirror(&self, id: &str) -> Result<()> {
+        self.mirrors.delete(id)
+    }
+
+    pub fn mirror_ids(&self) -> Vec<String> {
+        self.mirrors.ids()
+    }
+
+    fn screen(&self, id: &str) -> Result<Arc<Mutex<ScreenState>>> {
+        match self.get(id) {
+            Ok(s) => Ok(s.screen.clone()),
+            Err(not_found) => self.mirrors.get(id).map_err(|_| not_found),
+        }
     }
 
     pub fn pid(&self, id: &str) -> Result<Option<u32>> {
@@ -276,16 +350,10 @@ impl Drop for PtyManager {
     }
 }
 
-fn read_loop(
-    mut reader: Box<dyn Read + Send>,
-    id: &str,
-    flow: &FlowGate,
-    scrollback: &Mutex<Scrollback>,
-    sink: &dyn EventSink,
-) {
+fn read_loop(mut reader: Box<dyn Read + Send>, id: &str, s: &Session, sink: &dyn EventSink) {
     let mut buf = vec![0u8; READ_CHUNK];
     loop {
-        if !flow.wait_ready() {
+        if !s.flow.wait_ready() {
             return;
         }
         let n = match reader.read(&mut buf) {
@@ -296,8 +364,9 @@ fn read_loop(
             Err(_) => return,
         };
         let chunk = buf[..n].to_vec();
-        scrollback.lock().unwrap().push(&chunk);
-        flow.sent(n);
+        s.scrollback.lock().unwrap().push(&chunk);
+        s.screen.lock().unwrap().write(&chunk);
+        s.flow.sent(n);
         sink.emit(PtyEvent::Data {
             id: id.to_owned(),
             data: chunk,

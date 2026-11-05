@@ -20,6 +20,7 @@ pub mod db;
 pub mod diff;
 pub mod github_repo;
 pub mod menu;
+pub mod pr;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
@@ -166,6 +167,7 @@ pub fn run() {
             github_repo_availability,
             github_repo_create,
             workspace::commands::add_repository,
+            workspace::commands::clone_repository,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
             workspace::commands::branch_name_is_taken,
@@ -194,6 +196,12 @@ pub fn run() {
             terminal_commands::pty_read_history,
             terminal_commands::pty_clear_history,
             terminal_commands::pty_list,
+            terminal_commands::pty_screen_text,
+            terminal_commands::pty_screen_snapshot,
+            terminal_commands::pty_create_mirror,
+            terminal_commands::pty_write_mirror,
+            terminal_commands::pty_resize_mirror,
+            terminal_commands::pty_delete_mirror,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
@@ -202,6 +210,15 @@ pub fn run() {
             settings::commands::provider_status,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
+            pr::commands::pr_lookup,
+            pr::commands::pr_header_state,
+            pr::commands::pr_create_prompt,
+            pr::commands::pr_merge,
+            pr::commands::pr_set_auto_merge,
+            pr::commands::pr_mark_ready,
+            pr::commands::pr_edit,
+            pr::commands::pr_retarget,
+            pr::commands::pr_approve,
             scripts::scripts_config,
             scripts::setup_script_start,
             scripts::setup_script_cancel,

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type Dispatch, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type Dispatch, type FormEvent, type MutableRefObject } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon, SendIcon } from "./Icons";
@@ -6,10 +6,13 @@ import { applyChatEvents, emptyTranscript, type ChatTranscript } from "../featur
 import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { DiffViewer } from "../features/diff/DiffViewer";
+import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { ScriptsPanel } from "./ScriptsPanel";
+import { useCreateSetupRunning } from "../workspace/useSetupWatch";
+import { RUNNING_SETUP } from "../workspace/createFlow";
 
 interface Props {
   repo: Repo;
@@ -35,11 +38,12 @@ export function seedTranscript(workspaceId: string, text: string) {
   transcripts.set(workspaceId, withMessages(emptyTranscript(workspaceId), [textMessage(workspaceId, "user", text)]));
 }
 
-function ChatPanel({ repo, workspace, dispatch }: Props) {
+function ChatPanel({ repo, workspace, dispatch, bridge }: Props & { bridge: MutableRefObject<ChatBridge | null> }) {
   const load = () => transcripts.get(workspace.id) ?? emptyTranscript(workspace.id);
   const [transcript, setTranscript] = useState<ChatTranscript>(load);
   const [draft, setDraft] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setTranscript(load());
@@ -60,6 +64,15 @@ function ChatPanel({ repo, workspace, dispatch }: Props) {
     setTranscript(next);
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
+
+  // The diff viewer adds review comments to the composer and sends Review prompts.
+  bridge.current = {
+    insert: (text) => {
+      setDraft((d) => (d.trim() ? `${d.trimEnd()}\n\n${text}` : text));
+      inputRef.current?.focus();
+    },
+    send: sendText,
+  };
 
   function send(e: FormEvent) {
     e.preventDefault();
@@ -87,6 +100,7 @@ function ChatPanel({ repo, workspace, dispatch }: Props) {
       </div>
       <form className="composer" onSubmit={send}>
         <textarea
+          ref={inputRef}
           value={draft}
           placeholder={`Ask the agent to work in ${workspace.name}…`}
           onChange={(e) => setDraft(e.target.value)}
@@ -106,8 +120,10 @@ function ChatPanel({ repo, workspace, dispatch }: Props) {
   );
 }
 
-function DiffPanel({ workspace, repo }: { workspace: Workspace; repo: Repo }) {
+function DiffPanel({ workspace, repo, bridge }: { workspace: Workspace; repo: Repo; bridge: MutableRefObject<ChatBridge | null> }) {
   const [tab, setTab] = useState<"changes" | "files">("changes");
+  const chat = useMemo<ChatBridge>(() => ({ insert: (t) => bridge.current?.insert(t), send: (t) => bridge.current?.send(t) }), [bridge]);
+  const review = useReviewComments(workspace.id, chat);
   return (
     <section className="diff" aria-label="Changes">
       <div className="tabs" role="tablist">
@@ -119,7 +135,7 @@ function DiffPanel({ workspace, repo }: { workspace: Workspace; repo: Repo }) {
         </button>
       </div>
       {tab === "changes" ? (
-        <DiffViewer workspaceId={workspace.id} worktree={workspace.path ?? null} baseBranch={repo.defaultBranch} />
+        <DiffViewer workspaceId={workspace.id} worktree={workspace.path ?? null} baseBranch={repo.defaultBranch} {...review} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -140,6 +156,8 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 
 export function WorkspaceView({ repo, workspace, dispatch }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
+  const chatBridge = useRef<ChatBridge | null>(null);
+  const settingUp = useCreateSetupRunning(workspace.id);
   useKeybindings({ "view.toggleTerminalPanel": () => setShowTerminal((v) => !v) });
   return (
     <div className="workspace">
@@ -154,6 +172,11 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
           <span className={`chip status ${workspace.status}`}>
             <span className={`status-dot ${workspace.status}`} /> {STATUS_TEXT[workspace.status]}
           </span>
+          {settingUp && (
+            <span className="chip status setting-up" role="status">
+              <span className="status-dot working" /> {RUNNING_SETUP}
+            </span>
+          )}
         </div>
         <div className="ws-actions">
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
@@ -165,9 +188,9 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
         </div>
       </header>
       <div className="ws-split">
-        <ChatPanel repo={repo} workspace={workspace} dispatch={dispatch} />
+        <ChatPanel repo={repo} workspace={workspace} dispatch={dispatch} bridge={chatBridge} />
         <div className="ws-right">
-          <DiffPanel workspace={workspace} repo={repo} />
+          <DiffPanel workspace={workspace} repo={repo} bridge={chatBridge} />
           <ScriptsPanel repo={repo} workspace={workspace} />
         </div>
       </div>
