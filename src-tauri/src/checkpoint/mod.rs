@@ -347,6 +347,47 @@ pub fn restore(workspace: &Path, id: &str) -> Result<(), CheckpointError> {
     Ok(())
 }
 
+/// One side of `checkpointer diff`: a saved checkpoint or the current files.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum DiffSide<'a> {
+    Checkpoint(&'a str),
+    Current,
+}
+
+/// Resolve both sides of a checkpoint diff to git objects (reference
+/// `checkpointer diff`): a checkpoint becomes its ref, `Current` a transient
+/// tree of the full working tree (seeded from HEAD, honoring .gitignore).
+/// Returns the workspace root and the two objects to pass to `git diff`.
+pub fn diff_objects(
+    workspace: &Path,
+    left: &str,
+    right: DiffSide<'_>,
+) -> Result<(PathBuf, String, String), CheckpointError> {
+    let root = workspace_root(workspace)?;
+    let git = Git::new(&root);
+    let resolve = |id: &str| -> Result<String, CheckpointError> {
+        let reference = ref_name(id);
+        match git.verify(&reference)? {
+            Some(_) => Ok(reference),
+            None => Err(CheckpointError::NotFound(id.to_string())),
+        }
+    };
+    let a = resolve(left)?;
+    let b = match right {
+        DiffSide::Checkpoint(id) => resolve(id)?,
+        DiffSide::Current => {
+            let tmp = TempIndexDir::create(&root, "chkpt-cur")?;
+            let tmp_git = Git::new(&root).env("GIT_INDEX_FILE", tmp.index_path());
+            if let Some(head) = git.verify("HEAD")? {
+                tmp_git.run(["read-tree", &head])?;
+            }
+            tmp_git.run(["add", "-A", "--", "."])?;
+            tmp_git.run(["write-tree"])?
+        }
+    };
+    Ok((root, a, b))
+}
+
 /// Temporary index directory under the worktree's git dir, removed on drop.
 /// Leftovers from killed processes are pruned by later runs once they are
 /// over an hour old and their recorded owner pid is gone.

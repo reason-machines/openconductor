@@ -36,6 +36,7 @@ The checker compares the bundle with `src-tauri/tauri.conf.json` and with REA's 
 - Folder-access prompts for Desktop, Documents and Downloads, for repositories stored there.
 - Entitlements `com.apple.security.cs.allow-jit` and `com.apple.security.cs.allow-unsigned-executable-memory`, which the WebKit JavaScript engine needs under the hardened runtime.
 - Icon from `src-tauri/icons/icon.svg`; regenerate every size with `scripts/gen-icons.sh`.
+- `Contents/Resources/bin/`, copied into `$APPDATA/bin/` at startup like Conductor's: the pinned `gh`, and `checkpointer.sh` and `git-busy-check.sh`. The two scripts are shims (`src-tauri/resources/bin-tools/`) that run the app binary in tool mode (`openconductor --tool <name>`), so they reuse the native checkpoint code and keep the command line, output and exit codes of Conductor's scripts. In `$APPDATA/bin/`, `.internal/openconductor` links to the running app binary. Test them without building the app with `scripts/test-bin-tools.sh`.
 
 ## CI
 

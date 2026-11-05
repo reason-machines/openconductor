@@ -40,6 +40,7 @@ mod terminal_commands;
 pub mod terminal_history;
 pub mod terminal_output;
 mod terminal_output_commands;
+pub mod tool_cli;
 pub mod workspace;
 
 use serde::Serialize;
