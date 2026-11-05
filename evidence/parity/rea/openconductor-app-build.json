@@ -1,0 +1,9 @@
+{
+ "workflow": "package-macos.yml",
+ "workflow_run": 42014127114,
+ "head_sha": "a6333e7a7120d7b665a3923f84dfa6029496c457",
+ "artifact": "OpenConductor-debug-macos",
+ "artifact_zip_sha256": "d62af6fb3fc36e93766ba447fbb073d37e1c0a6741a817d1e93ca248628701a3",
+ "rea_version": "6.7.0 (Sven's Mac, macOS arm64)",
+ "note": "Debug bundle, ad-hoc signed by CI. REA inspect-plist and inspect-signature were run on the unzipped OpenConductor.app."
+}

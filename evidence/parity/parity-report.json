@@ -1,0 +1,3579 @@
+{
+ "ref": "origin/main",
+ "sha": "d23b4e9d70426e6ff56a1770f7e114fbbe9354a6",
+ "source_files_scanned": 120,
+ "reference": {
+  "conductor_version": "0.87.6",
+  "keybindings_source": {
+   "app": "Conductor.app v0.87.6",
+   "chunk": "index-BGEQ8YjU.slice.js",
+   "sha256": "a4ad08f155797da29d12bacd6e8f53e305987def241631b2130f60e3173b6778",
+   "note": "Derived data. Strings are untrusted third-party text, kept only to match behaviour."
+  }
+ },
+ "overall": {
+  "total": 419,
+  "matched": 101,
+  "partial": 166,
+  "missing": 152,
+  "parity_pct": 43.9
+ },
+ "areas": {
+  "settings": {
+   "total": 125,
+   "matched": 17,
+   "partial": 20,
+   "missing": 88,
+   "parity_pct": 21.6,
+   "groups": {
+    "user settings.toml": {
+     "total": 43,
+     "matched": 6,
+     "partial": 10,
+     "missing": 27,
+     "parity_pct": 25.6
+    },
+    "repo settings.toml": {
+     "total": 32,
+     "matched": 6,
+     "partial": 6,
+     "missing": 20,
+     "parity_pct": 28.1
+    },
+    "settings table key (deprecated)": {
+     "total": 3,
+     "matched": 0,
+     "partial": 3,
+     "missing": 0,
+     "parity_pct": 50.0
+    },
+    "settings table key": {
+     "total": 26,
+     "matched": 0,
+     "partial": 1,
+     "missing": 25,
+     "parity_pct": 1.9
+    },
+    "settings file": {
+     "total": 5,
+     "matched": 5,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
+    },
+    "settings route": {
+     "total": 16,
+     "matched": 0,
+     "partial": 0,
+     "missing": 16,
+     "parity_pct": 0.0
+    }
+   }
+  },
+  "shortcuts": {
+   "total": 172,
+   "matched": 25,
+   "partial": 146,
+   "missing": 1,
+   "parity_pct": 57.0,
+   "groups": {
+    "General": {
+     "total": 30,
+     "matched": 6,
+     "partial": 24,
+     "missing": 0,
+     "parity_pct": 60.0
+    },
+    "View": {
+     "total": 7,
+     "matched": 3,
+     "partial": 4,
+     "missing": 0,
+     "parity_pct": 71.4
+    },
+    "Navigation": {
+     "total": 20,
+     "matched": 5,
+     "partial": 15,
+     "missing": 0,
+     "parity_pct": 62.5
+    },
+    "Chat": {
+     "total": 51,
+     "matched": 0,
+     "partial": 51,
+     "missing": 0,
+     "parity_pct": 50.0
+    },
+    "Workspace": {
+     "total": 37,
+     "matched": 4,
+     "partial": 33,
+     "missing": 0,
+     "parity_pct": 55.4
+    },
+    "Code review": {
+     "total": 8,
+     "matched": 0,
+     "partial": 8,
+     "missing": 0,
+     "parity_pct": 50.0
+    },
+    "Terminal": {
+     "total": 12,
+     "matched": 1,
+     "partial": 11,
+     "missing": 0,
+     "parity_pct": 54.2
+    },
+    "feature": {
+     "total": 7,
+     "matched": 6,
+     "partial": 0,
+     "missing": 1,
+     "parity_pct": 85.7
+    }
+   }
+  },
+  "persistence": {
+   "total": 44,
+   "matched": 19,
+   "partial": 0,
+   "missing": 25,
+   "parity_pct": 43.2,
+   "groups": {
+    "conductor.db table": {
+     "total": 18,
+     "matched": 18,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
+    },
+    "cache.db table": {
+     "total": 7,
+     "matched": 0,
+     "partial": 0,
+     "missing": 7,
+     "parity_pct": 0.0
+    },
+    "app data store": {
+     "total": 19,
+     "matched": 1,
+     "partial": 0,
+     "missing": 18,
+     "parity_pct": 5.3
+    }
+   }
+  },
+  "packaging": {
+   "total": 78,
+   "matched": 40,
+   "partial": 0,
+   "missing": 38,
+   "parity_pct": 51.3,
+   "groups": {
+    "Info.plist key": {
+     "total": 20,
+     "matched": 18,
+     "partial": 0,
+     "missing": 2,
+     "parity_pct": 90.0
+    },
+    "deep link": {
+     "total": 1,
+     "matched": 1,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
+    },
+    "entitlement": {
+     "total": 3,
+     "matched": 2,
+     "partial": 0,
+     "missing": 1,
+     "parity_pct": 66.7
+    },
+    "signing": {
+     "total": 2,
+     "matched": 1,
+     "partial": 0,
+     "missing": 1,
+     "parity_pct": 50.0
+    },
+    "linked system library": {
+     "total": 22,
+     "matched": 14,
+     "partial": 0,
+     "missing": 8,
+     "parity_pct": 63.6
+    },
+    "tauri stack": {
+     "total": 1,
+     "matched": 1,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
+    },
+    "tauri plugin": {
+     "total": 13,
+     "matched": 1,
+     "partial": 0,
+     "missing": 12,
+     "parity_pct": 7.7
+    },
+    "bundled resource": {
+     "total": 15,
+     "matched": 1,
+     "partial": 0,
+     "missing": 14,
+     "parity_pct": 6.7
+    },
+    "frontend": {
+     "total": 1,
+     "matched": 1,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
+    }
+   }
+  }
+ },
+ "persistence_meta": {
+  "conductor_rebuild": {
+   "migrations": 5,
+   "errors": [],
+   "schema_source": "REA inspect-sqlite-database ev_8d72a626079d751733c94e5ccb252025aa7657a24222e7dfffde7b4207893e62"
+  },
+  "conductor_reference": "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e",
+  "cache_rebuild": {
+   "migrations": 0,
+   "errors": [],
+   "schema_source": "PRAGMA table_info"
+  },
+  "cache_reference": "ev_202d2f9fcbf5be8a97cec7b5c27cfa0b7722d0b3e095404e9ac0b0923904aabf",
+  "conductor_migration_rows": 139,
+  "conductor_max_migration_version": 142
+ },
+ "packaging_meta": {
+  "source": "REA on CI-built OpenConductor.app (run 42014127114, commit a6333e7a7120): inspect-plist ev_cbddeff2f3dd3917a2c4ab3bd847f13da5af14738ee672a643ad19e103c47169, inspect-signature ev_b871dc58321ea22c6b36060715edb027356b5ce0579df69801e5080b5db8b12a, trace-dylib-resolution ev_f2719e00910525e67bd6ee7042b186d131c6c0c955c75086bf4922d7d8040e4a",
+  "evidence_commit_is_target": false,
+  "evidence_commit_is_ancestor": true,
+  "extra_plist_keys": [
+   "LSApplicationCategoryType"
+  ]
+ },
+ "ledger": {
+  "rows": [
+   {
+    "area": "settings",
+    "id": "db.settings-toml",
+    "title": "User settings in ~/.conductor/settings.toml with published JSON schema",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "fetch/derive settings schema"
+    ],
+    "rebuild": {
+     "total": 80,
+     "matched": 17,
+     "partial": 16,
+     "missing": 47,
+     "parity_pct": 31.2
+    }
+   },
+   {
+    "area": "settings",
+    "id": "agent.providers",
+    "title": "Provider credentials (Anthropic API key, Claude provider, Vertex, Codex ChatGPT) in keychain settings",
+    "ledger_status": "unknown",
+    "next_evidence": [
+     "Ghidra binding of the Rust #[tauri::command] handler"
+    ],
+    "rebuild": {
+     "total": 7,
+     "matched": 0,
+     "partial": 2,
+     "missing": 5,
+     "parity_pct": 14.3
+    }
+   },
+   {
+    "area": "settings",
+    "id": "agent.models",
+    "title": "Model picker, favorite models, thinking/effort levels, review model",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+    ],
+    "rebuild": {
+     "total": 13,
+     "matched": 0,
+     "partial": 4,
+     "missing": 9,
+     "parity_pct": 15.4
+    }
+   },
+   {
+    "area": "persistence",
+    "id": "db.conductor-schema",
+    "title": "conductor.db schema: repos, workspaces, sessions, session_messages, diff_comments, settings, env_vars, port_forwards, navigation sections (142 sqlx migrations)",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "schema diff of rebuild DB"
+    ],
+    "rebuild": {
+     "total": 18,
+     "matched": 18,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
+    }
+   },
+   {
+    "area": "persistence",
+    "id": "db.cache-schema",
+    "title": "cache.db mirror of session_messages plus client cache state and pending-message queue",
+    "ledger_status": "blocked",
+    "next_evidence": [
+     "schema diff of rebuild cache DB"
+    ],
+    "rebuild": {
+     "total": 7,
+     "matched": 0,
+     "partial": 0,
+     "missing": 7,
+     "parity_pct": 0.0
+    }
+   },
+   {
+    "area": "persistence",
+    "id": "db.local-storage",
+    "title": "Encrypted file-backed local storage subsystems (composer drafts, terminal, route state, model picker, turn-changes cache)",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "format of local-storage.entries files",
+     "Ghidra binding of the Rust #[tauri::command] handler"
+    ],
+    "rebuild": {
+     "total": 11,
+     "matched": 0,
+     "partial": 0,
+     "missing": 11,
+     "parity_pct": 0.0
+    }
+   },
+   {
+    "area": "persistence",
+    "id": "ws.checkpoints",
+    "title": "Turn checkpoints as git commits under refs/conductor-checkpoints/<id> (save/restore/diff)",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "run checkpointer.sh in a scratch repo under capture-process"
+    ],
+    "rebuild": {
+     "total": 1,
+     "matched": 1,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
+    }
+   },
+   {
+    "area": "persistence",
+    "id": "ui.window-chrome",
+    "title": "Window vibrancy, traffic-light position, sidebars, dock badge, window state persistence",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "Ghidra binding of the Rust #[tauri::command] handler",
+     "native UI capture (needs Screen Recording + Accessibility for the REA host)"
+    ],
+    "rebuild": {
+     "total": 1,
+     "matched": 0,
+     "partial": 0,
+     "missing": 1,
+     "parity_pct": 0.0
+    }
+   },
+   {
+    "area": "packaging",
+    "id": "pkg.bundle",
+    "title": "App bundle layout, Info.plist identity, URL scheme and usage strings",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "rebuild bundle and diff Info.plist keys"
+    ],
+    "rebuild": {
+     "total": 21,
+     "matched": 19,
+     "partial": 0,
+     "missing": 2,
+     "parity_pct": 90.5
+    }
+   },
+   {
+    "area": "packaging",
+    "id": "pkg.signing",
+    "title": "Hardened runtime with JIT, unsigned-executable-memory and audio-input entitlements",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "codesign -d of our build"
+    ],
+    "rebuild": {
+     "total": 5,
+     "matched": 3,
+     "partial": 0,
+     "missing": 2,
+     "parity_pct": 60.0
+    }
+   },
+   {
+    "area": "packaging",
+    "id": "pkg.tauri-stack",
+    "title": "Tauri 2.11.1 shell with wry 0.55.1/tao 0.35.2 and 13 tauri plugins",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "cargo tree of rebuild matches plugin set"
+    ],
+    "rebuild": {
+     "total": 14,
+     "matched": 2,
+     "partial": 0,
+     "missing": 12,
+     "parity_pct": 14.3
+    }
+   },
+   {
+    "area": "packaging",
+    "id": "pkg.embedded-frontend",
+    "title": "React/Vite frontend embedded as Tauri asset table (2,902 brotli assets)",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "asset manifest of rebuild"
+    ],
+    "rebuild": {
+     "total": 1,
+     "matched": 1,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
+    }
+   },
+   {
+    "area": "packaging",
+    "id": "pkg.dylibs",
+    "title": "Linked system frameworks and dylib load paths (WebKit, AppKit, Security)",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "trace-dylib-resolution on our build"
+    ],
+    "rebuild": {
+     "total": 22,
+     "matched": 14,
+     "partial": 0,
+     "missing": 8,
+     "parity_pct": 63.6
+    }
+   },
+   {
+    "area": "packaging",
+    "id": "pkg.first-run-bootstrap",
+    "title": "First run copies bundled bin/ toolchain into App Support and writes ~/.conductor/settings.toml",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "capture-process of rebuild first run, compare filesystem effects"
+    ],
+    "rebuild": {
+     "total": 12,
+     "matched": 0,
+     "partial": 0,
+     "missing": 12,
+     "parity_pct": 0.0
+    }
+   },
+   {
+    "area": "packaging",
+    "id": "agent.conductor-skill",
+    "title": "Ship a Claude Code plugin/skill that teaches agents the conductor CLI",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "diff our skill package"
+    ],
+    "rebuild": {
+     "total": 2,
+     "matched": 0,
+     "partial": 0,
+     "missing": 2,
+     "parity_pct": 0.0
+    }
+   },
+   {
+    "area": "packaging",
+    "id": "app.deep-link",
+    "title": "Deep links via registered URL scheme",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "open URL scheme against rebuild"
+    ],
+    "rebuild": {
+     "total": 1,
+     "matched": 1,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
+    }
+   },
+   {
+    "area": "packaging",
+    "id": "app.updater",
+    "title": "Auto-update via tauri-plugin-updater (check, download, install)",
+    "ledger_status": "unowned",
+    "next_evidence": [
+     "updater endpoint URL from binary strings"
+    ],
+    "rebuild": {
+     "total": 1,
+     "matched": 0,
+     "partial": 0,
+     "missing": 1,
+     "parity_pct": 0.0
+    }
+   }
+  ],
+  "generated_persistence_obligations": 15,
+  "summary": {
+   "total": 274,
+   "required": 274,
+   "verified": 0,
+   "required_open": 274,
+   "by_status": [
+    {
+     "key": "unowned",
+     "count": 255
+    },
+    {
+     "key": "characterized",
+     "count": 0
+    },
+    {
+     "key": "implemented",
+     "count": 0
+    },
+    {
+     "key": "verified",
+     "count": 0
+    },
+    {
+     "key": "contradicted",
+     "count": 0
+    },
+    {
+     "key": "blocked",
+     "count": 11
+    },
+    {
+     "key": "out-of-scope",
+     "count": 0
+    },
+    {
+     "key": "unknown",
+     "count": 8
+    }
+   ],
+   "by_application_layer": [
+    {
+     "key": "cli",
+     "count": 2
+    },
+    {
+     "key": "protocol",
+     "count": 69
+    },
+    {
+     "key": "electron",
+     "count": 0
+    },
+    {
+     "key": "persistence",
+     "count": 19
+    },
+    {
+     "key": "process",
+     "count": 13
+    },
+    {
+     "key": "runtime",
+     "count": 11
+    },
+    {
+     "key": "packaging",
+     "count": 4
+    },
+    {
+     "key": "native-abi",
+     "count": 1
+    },
+    {
+     "key": "application",
+     "count": 155
+    },
+    {
+     "key": "other",
+     "count": 0
+    }
+   ],
+   "by_evidence_authority": [
+    {
+     "key": "candidate",
+     "count": 221
+    },
+    {
+     "key": "observed",
+     "count": 2
+    },
+    {
+     "key": "reviewed",
+     "count": 51
+    },
+    {
+     "key": "unknown",
+     "count": 0
+    }
+   ]
+  }
+ },
+ "items": [
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "bedrock_region",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "claude_code_executable_path",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "claude_provider",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "codex_executable_path",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "codex_provider",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "enterprise_data_privacy",
+   "status": "matched",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "environment_variable_files",
+   "status": "missing",
+   "detail": "array"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "file_include_globs",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "git.archive_on_merge",
+   "status": "missing",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "git.branch_prefix",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "git.branch_prefix_type",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "git.delete_branch_on_archive",
+   "status": "missing",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "git.worktree_push_auto_setup_remote",
+   "status": "missing",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.claude_code.default_effort_level",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.claude_code.personality",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.claude_code.review_effort_level",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.codex.default_thinking_level",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.codex.personality",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.codex.review_thinking_level",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.codex.tool_approval_policy",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.default",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.default_fast_mode",
+   "status": "missing",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.default_plan_mode",
+   "status": "missing",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.review",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.review_fast_mode",
+   "status": "missing",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "models.visible_provider_models",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "opencode_executable_path",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "preview_urls",
+   "status": "missing",
+   "detail": "array"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "prompts.code_review",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "prompts.create_pr",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "prompts.fix_errors",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "prompts.general",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "prompts.rename_branch",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "prompts.resolve_merge_conflicts",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "scripts.archive",
+   "status": "matched",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "scripts.auto_run_after_setup",
+   "status": "matched",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "scripts.run",
+   "status": "matched",
+   "detail": "anyOf"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "scripts.run_mode",
+   "status": "matched",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "scripts.setup",
+   "status": "matched",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "spotlight_testing",
+   "status": "declared",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "ssh_key_path",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "tool_approvals_enabled",
+   "status": "missing",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "user settings.toml",
+   "id": "vertex_project_id",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "bedrock_region",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "claude_code_executable_path",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "claude_provider",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "codex_executable_path",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "codex_provider",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "enterprise_data_privacy",
+   "status": "matched",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "environment_variable_files",
+   "status": "missing",
+   "detail": "array"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "environment_variables.local",
+   "status": "missing",
+   "detail": "object"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "environment_variables.cloud",
+   "status": "missing",
+   "detail": "object"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "file_include_globs",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "git.archive_on_merge",
+   "status": "missing",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "git.branch_prefix",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "git.branch_prefix_type",
+   "status": "declared",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "git.delete_branch_on_archive",
+   "status": "missing",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "git.worktree_push_auto_setup_remote",
+   "status": "missing",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "models.visible_provider_models",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "opencode_executable_path",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "preview_urls",
+   "status": "missing",
+   "detail": "array"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "prompts.code_review",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "prompts.create_pr",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "prompts.fix_errors",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "prompts.general",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "prompts.rename_branch",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "prompts.resolve_merge_conflicts",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "scripts.archive",
+   "status": "matched",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "scripts.auto_run_after_setup",
+   "status": "matched",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "scripts.run",
+   "status": "matched",
+   "detail": "anyOf"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "scripts.run_mode",
+   "status": "matched",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "scripts.setup",
+   "status": "matched",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "spotlight_testing",
+   "status": "declared",
+   "detail": "boolean"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "ssh_key_path",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "repo settings.toml",
+   "id": "vertex_project_id",
+   "status": "missing",
+   "detail": "string"
+  },
+  {
+   "area": "settings",
+   "group": "settings table key (deprecated)",
+   "id": "branch_prefix_type",
+   "status": "declared",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "client_instance_id",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "code_theme",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "colored_sidebar_diffs",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key (deprecated)",
+   "id": "default_codex_thinking_level",
+   "status": "declared",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key (deprecated)",
+   "id": "default_model",
+   "status": "declared",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "default_open_in",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "experimental_show_agent_cost",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "experimental_tab_freak_mode",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "file_backed_settings_migration_complete",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "file_ligatures_enabled",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "first_time_onboarding_step",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "garry_mode",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "graphite_disabled",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "last_clone_directory",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "last_seen_announcement",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "left_panel_visible",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "left_panel_width",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "low_contrast_dark_mode",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "mono_font",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "onboarding_step",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "open_in_mru_order",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "repo_conductor_config_file_migration_v2_complete",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "repo_custom_prompt_file_migration_complete",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "repo_local_settings_file_migration_complete",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "review_codex_thinking_level",
+   "status": "declared",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "right_panel_visible",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "roundhouse_client_user_id",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings table key",
+   "id": "zoom_level_v2",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings file",
+   "id": "user-settings-toml",
+   "status": "matched",
+   "detail": "~/.conductor/settings.toml"
+  },
+  {
+   "area": "settings",
+   "group": "settings file",
+   "id": "repo-settings-toml",
+   "status": "matched",
+   "detail": ".conductor/settings.toml"
+  },
+  {
+   "area": "settings",
+   "group": "settings file",
+   "id": "repo-settings-local-toml",
+   "status": "matched",
+   "detail": ".conductor/settings.local.toml"
+  },
+  {
+   "area": "settings",
+   "group": "settings file",
+   "id": "legacy-conductor-json",
+   "status": "matched",
+   "detail": "conductor.json"
+  },
+  {
+   "area": "settings",
+   "group": "settings file",
+   "id": "schema-stamp",
+   "status": "matched",
+   "detail": "$schema = settings.schema.json / settings.repo.schema.json"
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/cloud/setup",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/organization/computer",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/organization/environment",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/organization/mcp",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/organization/prompts",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/organization/repositories/$owner/$repo",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/organization/repositories/$owner/$repo/git",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/organization/repositories/$owner/$repo/scripts",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/repos",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/user",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/user/account",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/user/general",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/user/git",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/user/models",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "settings",
+   "group": "settings route",
+   "id": "/settings/user/providers",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "toggleCommandPalette",
+   "status": "matched",
+   "detail": "meta+k"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "commandPalette.nextTab",
+   "status": "matched",
+   "detail": "Tab"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "commandPalette.previousTab",
+   "status": "matched",
+   "detail": "shift+Tab"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "toggleTheme",
+   "status": "matched",
+   "detail": "meta+alt+T (KeyT)"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "openKeyboardShortcuts",
+   "status": "matched",
+   "detail": "meta+alt+/ (Slash)"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "openSettings",
+   "status": "matched",
+   "detail": "meta+,"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "quitApplication",
+   "status": "declared",
+   "detail": "meta+q; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "settings.search",
+   "status": "declared",
+   "detail": "meta+f; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "settings.close",
+   "status": "declared",
+   "detail": "Escape; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "dialog.primaryAction",
+   "status": "declared",
+   "detail": "meta+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "diagnostics.close",
+   "status": "declared",
+   "detail": "meta+Escape; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "sendFeedback",
+   "status": "declared",
+   "detail": "meta+alt+F (KeyF); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "openDebugTools",
+   "status": "declared",
+   "detail": "meta+alt+I (KeyI); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "openSidecarLogs",
+   "status": "declared",
+   "detail": "meta+shift+l; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "openAppLogViewer",
+   "status": "declared",
+   "detail": "meta+shift+i; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "native.preventSelectAll",
+   "status": "declared",
+   "detail": "meta+a; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "toggleGarryMode",
+   "status": "declared",
+   "detail": "ctrl+o; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "View",
+   "id": "view.toggleLeftSidebar",
+   "status": "matched",
+   "detail": "meta+b | ["
+  },
+  {
+   "area": "shortcuts",
+   "group": "View",
+   "id": "view.toggleRightSidebar",
+   "status": "matched",
+   "detail": "meta+alt+B (KeyB) | ]"
+  },
+  {
+   "area": "shortcuts",
+   "group": "View",
+   "id": "view.toggleTerminalPanel",
+   "status": "declared",
+   "detail": "meta+j; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "View",
+   "id": "view.toggleZenMode",
+   "status": "matched",
+   "detail": "meta+."
+  },
+  {
+   "area": "shortcuts",
+   "group": "View",
+   "id": "view.zoomIn",
+   "status": "declared",
+   "detail": "meta++ | meta+=; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "View",
+   "id": "view.zoomOut",
+   "status": "declared",
+   "detail": "meta+-; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "View",
+   "id": "view.resetZoom",
+   "status": "declared",
+   "detail": "meta+0; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "nav.back",
+   "status": "matched",
+   "detail": "meta+["
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "nav.forward",
+   "status": "matched",
+   "detail": "meta+]"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "nav.home",
+   "status": "matched",
+   "detail": "meta+shift+h"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "nav.previousTab",
+   "status": "declared",
+   "detail": "ctrl+shift+Tab | meta+shift+[ (BracketLeft) | meta+alt+ArrowLeft; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "nav.nextTab",
+   "status": "declared",
+   "detail": "ctrl+Tab | meta+shift+] (BracketRight) | meta+alt+ArrowRight; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "nav.closeTab",
+   "status": "declared",
+   "detail": "meta+w; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "nav.reopenTab",
+   "status": "declared",
+   "detail": "meta+shift+t; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "nav.newTab",
+   "status": "declared",
+   "detail": "meta+t; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "nav.splitTab",
+   "status": "declared",
+   "detail": "meta+d; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "nav.quickOpen",
+   "status": "matched",
+   "detail": "meta+p"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "nav.searchInFiles",
+   "status": "matched",
+   "detail": "meta+shift+f"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "nav.addRepository",
+   "status": "declared",
+   "detail": "meta+alt+A (KeyA); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "org.switchTo1",
+   "status": "declared",
+   "detail": "ctrl+1; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "org.switchTo2",
+   "status": "declared",
+   "detail": "ctrl+2; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "org.switchTo3",
+   "status": "declared",
+   "detail": "ctrl+3; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "org.switchTo4",
+   "status": "declared",
+   "detail": "ctrl+4; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "org.switchTo5",
+   "status": "declared",
+   "detail": "ctrl+5; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "org.switchTo6",
+   "status": "declared",
+   "detail": "ctrl+6; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "org.switchTo7",
+   "status": "declared",
+   "detail": "ctrl+7; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "org.switchTo8",
+   "status": "declared",
+   "detail": "ctrl+8; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Navigation",
+   "id": "org.switchTo9",
+   "status": "declared",
+   "detail": "ctrl+9; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.create",
+   "status": "matched",
+   "detail": "meta+n"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.createFromPRBranchIssue",
+   "status": "declared",
+   "detail": "meta+shift+n; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.addToBacklogFromComposer",
+   "status": "declared",
+   "detail": "alt+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.startUnstartedWorkspace",
+   "status": "declared",
+   "detail": "meta+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.createFromPRBranchIssue.nextTab",
+   "status": "declared",
+   "detail": "Tab; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.createFromPRBranchIssue.previousTab",
+   "status": "declared",
+   "detail": "shift+Tab; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.toggleCreateFrom",
+   "status": "declared",
+   "detail": "meta+i; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.archive",
+   "status": "matched",
+   "detail": "meta+shift+a"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.openInApp",
+   "status": "declared",
+   "detail": "meta+o; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.openRemoteInApp",
+   "status": "declared",
+   "detail": "meta+alt+O (KeyO); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.openInMenu",
+   "status": "declared",
+   "detail": "meta+shift+o; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.copyLink",
+   "status": "declared",
+   "detail": "meta+shift+c; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.toggleRun",
+   "status": "declared",
+   "detail": "meta+r; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.togglePortForwarding",
+   "status": "declared",
+   "detail": "meta+y; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.toggleFileEdit",
+   "status": "declared",
+   "detail": "meta+e; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.contextMenu.toggleRead",
+   "status": "declared",
+   "detail": "r; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.contextMenu.togglePin",
+   "status": "declared",
+   "detail": "p; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.switchTo1",
+   "status": "declared",
+   "detail": "meta+1; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.switchTo2",
+   "status": "declared",
+   "detail": "meta+2; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.switchTo3",
+   "status": "declared",
+   "detail": "meta+3; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.switchTo4",
+   "status": "declared",
+   "detail": "meta+4; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.switchTo5",
+   "status": "declared",
+   "detail": "meta+5; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.switchTo6",
+   "status": "declared",
+   "detail": "meta+6; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.switchTo7",
+   "status": "declared",
+   "detail": "meta+7; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.switchTo8",
+   "status": "declared",
+   "detail": "meta+8; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.switchTo9",
+   "status": "declared",
+   "detail": "meta+9; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.previous",
+   "status": "matched",
+   "detail": "meta+alt+ArrowUp"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.next",
+   "status": "matched",
+   "detail": "meta+alt+ArrowDown"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.newLine",
+   "status": "declared",
+   "detail": "shift+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.submitMessage",
+   "status": "declared",
+   "detail": "Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.submitOppositeFollowUp",
+   "status": "declared",
+   "detail": "meta+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.queueEdit.save",
+   "status": "declared",
+   "detail": "Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.queueEdit.saveAndSteer",
+   "status": "declared",
+   "detail": "meta+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.queue.editMessage",
+   "status": "declared",
+   "detail": "e; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.queue.deleteMessage",
+   "status": "declared",
+   "detail": "Backspace; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.queue.steerMessage",
+   "status": "declared",
+   "detail": "Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.composer.pasteFilePaths",
+   "status": "declared",
+   "detail": "meta+shift+v; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.planResponse.submit",
+   "status": "declared",
+   "detail": "meta+shift+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.queueEdit.cancel",
+   "status": "declared",
+   "detail": "Escape; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.goal.save",
+   "status": "declared",
+   "detail": "meta+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.previous",
+   "status": "declared",
+   "detail": "ArrowLeft; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.next",
+   "status": "declared",
+   "detail": "ArrowRight; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.selectOption1",
+   "status": "declared",
+   "detail": "1; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.selectOption2",
+   "status": "declared",
+   "detail": "2; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.selectOption3",
+   "status": "declared",
+   "detail": "3; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.selectOption4",
+   "status": "declared",
+   "detail": "4; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.selectOption5",
+   "status": "declared",
+   "detail": "5; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.selectOption6",
+   "status": "declared",
+   "detail": "6; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.selectOption7",
+   "status": "declared",
+   "detail": "7; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.selectOption8",
+   "status": "declared",
+   "detail": "8; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.selectOption9",
+   "status": "declared",
+   "detail": "9; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.focusOther",
+   "status": "declared",
+   "detail": "0; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.question.submit",
+   "status": "declared",
+   "detail": "Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.focus",
+   "status": "declared",
+   "detail": "meta+l; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.togglePlanMode",
+   "status": "declared",
+   "detail": "shift+Tab; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.approvePlan",
+   "status": "declared",
+   "detail": "meta+shift+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.approveToolCall",
+   "status": "declared",
+   "detail": "Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.autoAcceptToolCall",
+   "status": "declared",
+   "detail": "meta+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.denyToolCall",
+   "status": "declared",
+   "detail": "Backspace; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.cancel",
+   "status": "declared",
+   "detail": "meta+shift+Backspace; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.linkLinear",
+   "status": "declared",
+   "detail": "meta+i; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.addAttachment",
+   "status": "declared",
+   "detail": "meta+u; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.openModelPicker",
+   "status": "declared",
+   "detail": "meta+/; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.toggleFastMode",
+   "status": "declared",
+   "detail": "meta+shift+e; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.toggleThinking",
+   "status": "declared",
+   "detail": "meta+shift+/; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.selectLoadout1",
+   "status": "declared",
+   "detail": "meta+ctrl+1 (Digit1); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.selectLoadout2",
+   "status": "declared",
+   "detail": "meta+ctrl+2 (Digit2); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.selectLoadout3",
+   "status": "declared",
+   "detail": "meta+ctrl+3 (Digit3); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.selectLoadout4",
+   "status": "declared",
+   "detail": "meta+ctrl+4 (Digit4); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.selectLoadout5",
+   "status": "declared",
+   "detail": "meta+ctrl+5 (Digit5); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.nextAttention",
+   "status": "declared",
+   "detail": "meta+alt+L (KeyL); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.search",
+   "status": "declared",
+   "detail": "meta+f; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.searchNext",
+   "status": "declared",
+   "detail": "meta+g; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.searchPrevious",
+   "status": "declared",
+   "detail": "meta+shift+g; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.scrollToMatch",
+   "status": "declared",
+   "detail": "meta+alt+J (KeyJ); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.copyTextConcise",
+   "status": "declared",
+   "detail": "meta+alt+C (KeyC); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.forkToNewTab",
+   "status": "declared",
+   "detail": "meta+alt+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Chat",
+   "id": "chat.toggleSpeechToText",
+   "status": "declared",
+   "detail": "ctrl+shift+d; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "git.createPR",
+   "status": "declared",
+   "detail": "meta+shift+p; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "git.commitAndPush",
+   "status": "declared",
+   "detail": "meta+shift+y; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "git.pull",
+   "status": "declared",
+   "detail": "meta+shift+l; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "git.mergePR",
+   "status": "declared",
+   "detail": "meta+shift+m; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "git.fixErrors",
+   "status": "declared",
+   "detail": "meta+shift+x; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "git.openInGitHub",
+   "status": "declared",
+   "detail": "meta+shift+g; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.showReview",
+   "status": "declared",
+   "detail": "meta+shift+r; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "workspace.showUncommittedChanges",
+   "status": "declared",
+   "detail": "meta+alt+U (KeyU); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "routine.save",
+   "status": "declared",
+   "detail": "meta+s; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Code review",
+   "id": "editor.saveFile",
+   "status": "declared",
+   "detail": "meta+s; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Code review",
+   "id": "editor.openSearch",
+   "status": "declared",
+   "detail": "meta+f; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Code review",
+   "id": "diff.open",
+   "status": "declared",
+   "detail": "meta+shift+d; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Code review",
+   "id": "diff.previousFile",
+   "status": "declared",
+   "detail": "ArrowUp; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Code review",
+   "id": "diff.nextFile",
+   "status": "declared",
+   "detail": "ArrowDown; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Code review",
+   "id": "diff.previousComment",
+   "status": "declared",
+   "detail": "meta+alt+K (KeyK); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Code review",
+   "id": "diff.nextComment",
+   "status": "declared",
+   "detail": "meta+alt+J (KeyJ); no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Code review",
+   "id": "diff.toggleViewed",
+   "status": "declared",
+   "detail": "ctrl+v; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.newTab",
+   "status": "declared",
+   "detail": "meta+t; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.newBigTab",
+   "status": "declared",
+   "detail": "meta+shift+t; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.closeTab",
+   "status": "declared",
+   "detail": "meta+w; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.openLocalhost",
+   "status": "declared",
+   "detail": "meta+shift+b; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.search",
+   "status": "declared",
+   "detail": "meta+f; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.insertNewline",
+   "status": "declared",
+   "detail": "shift+Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.clearScrollback",
+   "status": "matched",
+   "detail": "meta+k"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.deleteLine",
+   "status": "declared",
+   "detail": "meta+Backspace; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.moveLineStart",
+   "status": "declared",
+   "detail": "meta+ArrowLeft; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.moveLineEnd",
+   "status": "declared",
+   "detail": "meta+ArrowRight; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.moveWordLeft",
+   "status": "declared",
+   "detail": "alt+ArrowLeft; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Terminal",
+   "id": "terminal.moveWordRight",
+   "status": "declared",
+   "detail": "alt+ArrowRight; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "Workspace",
+   "id": "fileEditor.search",
+   "status": "declared",
+   "detail": "meta+f; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "onboarding.nextSlide",
+   "status": "declared",
+   "detail": "ArrowDown; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "onboarding.continue",
+   "status": "declared",
+   "detail": "Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "onboarding.cloud.continue",
+   "status": "declared",
+   "detail": "Enter; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "menu.selectItem1",
+   "status": "declared",
+   "detail": "1; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "menu.selectItem2",
+   "status": "declared",
+   "detail": "2; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "menu.selectItem3",
+   "status": "declared",
+   "detail": "3; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "menu.selectItem4",
+   "status": "declared",
+   "detail": "4; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "menu.selectItem5",
+   "status": "declared",
+   "detail": "5; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "menu.selectItem6",
+   "status": "declared",
+   "detail": "6; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "menu.selectItem7",
+   "status": "declared",
+   "detail": "7; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "menu.selectItem8",
+   "status": "declared",
+   "detail": "8; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "General",
+   "id": "menu.selectItem9",
+   "status": "declared",
+   "detail": "9; no handler references this id"
+  },
+  {
+   "area": "shortcuts",
+   "group": "feature",
+   "id": "keybinding-registry",
+   "status": "matched",
+   "detail": "a registry of bindings with id, default key, category, configurable flag"
+  },
+  {
+   "area": "shortcuts",
+   "group": "feature",
+   "id": "override-storage",
+   "status": "matched",
+   "detail": "overrides persisted under settings key keybinding_overrides_v1"
+  },
+  {
+   "area": "shortcuts",
+   "group": "feature",
+   "id": "legacy-aliases",
+   "status": "matched",
+   "detail": "4 legacy override ids mapped to current ids"
+  },
+  {
+   "area": "shortcuts",
+   "group": "feature",
+   "id": "conflict-scopes",
+   "status": "matched",
+   "detail": "conflict detection within 7 scope groups"
+  },
+  {
+   "area": "shortcuts",
+   "group": "feature",
+   "id": "shortcuts-dialog",
+   "status": "matched",
+   "detail": "keyboard shortcuts dialog / search (open_keyboard_shortcuts_dialog)"
+  },
+  {
+   "area": "shortcuts",
+   "group": "feature",
+   "id": "key-bindings-route",
+   "status": "missing",
+   "detail": "/key-bindings route"
+  },
+  {
+   "area": "shortcuts",
+   "group": "feature",
+   "id": "submit-modes",
+   "status": "matched",
+   "detail": "composer send-key presets enter / cmd-enter (message_send_key)"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "repos",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "workspaces",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "session_messages",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "settings",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "sessions",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "attachments",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "diff_comments",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "symlinks_pending_deletion",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "migration_rollbacks",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "terminal_sessions",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "port_forwards",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "env_vars",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "session_messages_outbox",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "session_messages_outbox_state",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "session_assets_outbox",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "navigation_sections",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "navigation_section_memberships",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "conductor.db table",
+   "id": "favorite_models",
+   "status": "matched",
+   "detail": "columns match"
+  },
+  {
+   "area": "persistence",
+   "group": "cache.db table",
+   "id": "session_messages",
+   "status": "missing",
+   "detail": "18 columns"
+  },
+  {
+   "area": "persistence",
+   "group": "cache.db table",
+   "id": "client_cache_session_state",
+   "status": "missing",
+   "detail": "9 columns"
+  },
+  {
+   "area": "persistence",
+   "group": "cache.db table",
+   "id": "session_pending_messages_state",
+   "status": "missing",
+   "detail": "5 columns"
+  },
+  {
+   "area": "persistence",
+   "group": "cache.db table",
+   "id": "session_pending_messages",
+   "status": "missing",
+   "detail": "10 columns"
+  },
+  {
+   "area": "persistence",
+   "group": "cache.db table",
+   "id": "navigation_sections",
+   "status": "missing",
+   "detail": "9 columns"
+  },
+  {
+   "area": "persistence",
+   "group": "cache.db table",
+   "id": "navigation_section_memberships",
+   "status": "missing",
+   "detail": "4 columns"
+  },
+  {
+   "area": "persistence",
+   "group": "cache.db table",
+   "id": "favorite_models",
+   "status": "missing",
+   "detail": "7 columns"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "checkpoint-refs",
+   "status": "matched",
+   "detail": "refs/conductor-checkpoints/<id> git refs"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "window-state",
+   "status": "missing",
+   "detail": ".window-state.json (tauri-plugin-window-state)"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "draft-attachments",
+   "status": "missing",
+   "detail": "draft-attachments/ directory"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "sidecar-outbox",
+   "status": "missing",
+   "detail": "sidecar-v2-session-event-outbox/"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "sidecar-completions",
+   "status": "missing",
+   "detail": "sidecar-v2-completions/"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "terminal-shell-integration",
+   "status": "missing",
+   "detail": "terminal-shell-integration/"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "agent-binaries",
+   "status": "missing",
+   "detail": "agent-binaries/ with .meta sha256"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "bin-source-markers",
+   "status": "missing",
+   "detail": ".bin-source-markers.json"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "local-storage:browser-local-storage",
+   "status": "missing",
+   "detail": "local-storage.subsystem.browser-local-storage.json"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "local-storage:claude-context-windows",
+   "status": "missing",
+   "detail": "local-storage.subsystem.claude-context-windows.json"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "local-storage:composer-drafts",
+   "status": "missing",
+   "detail": "local-storage.subsystem.composer-drafts.json"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "local-storage:dispatcher-state",
+   "status": "missing",
+   "detail": "local-storage.subsystem.dispatcher-state.json"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "local-storage:model-picker-configs-v1",
+   "status": "missing",
+   "detail": "local-storage.subsystem.model-picker-configs-v1.json"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "local-storage:opencode-model-discovery-v1",
+   "status": "missing",
+   "detail": "local-storage.subsystem.opencode-model-discovery-v1.json"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "local-storage:pre-workspace-completions-v1",
+   "status": "missing",
+   "detail": "local-storage.subsystem.pre-workspace-completions-v1.json"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "local-storage:route-user-state",
+   "status": "missing",
+   "detail": "local-storage.subsystem.route-user-state.json"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "local-storage:run-script-history",
+   "status": "missing",
+   "detail": "local-storage.subsystem.run-script-history.json"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "local-storage:terminal",
+   "status": "missing",
+   "detail": "local-storage.subsystem.terminal.json"
+  },
+  {
+   "area": "persistence",
+   "group": "app data store",
+   "id": "local-storage:turn-changes-cache",
+   "status": "missing",
+   "detail": "local-storage.subsystem.turn-changes-cache.json"
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CFBundleDevelopmentRegion",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CFBundleDisplayName",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CFBundleExecutable",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CFBundleIconFile",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CFBundleIdentifier",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CFBundleInfoDictionaryVersion",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CFBundleName",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CFBundlePackageType",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CFBundleShortVersionString",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CFBundleURLTypes",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CFBundleVersion",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "CSResourcesFileMapped",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "LSMinimumSystemVersion",
+   "status": "matched",
+   "detail": "value differs: '12.0' vs '10.13'"
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "LSRequiresCarbon",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "NSDesktopFolderUsageDescription",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "NSDocumentsFolderUsageDescription",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "NSDownloadsFolderUsageDescription",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "NSHighResolutionCapable",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "Info.plist key",
+   "id": "NSMicrophoneUsageDescription",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "deep link",
+   "id": "url-scheme",
+   "status": "matched",
+   "detail": "rebuild ['openconductor']; Conductor registers 1 scheme (name differs by design)"
+  },
+  {
+   "area": "packaging",
+   "group": "entitlement",
+   "id": "com.apple.security.cs.allow-jit",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "entitlement",
+   "id": "com.apple.security.cs.allow-unsigned-executable-memory",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "entitlement",
+   "id": "com.apple.security.device.audio-input",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "signing",
+   "id": "hardened-runtime",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "signing",
+   "id": "developer-id-signature",
+   "status": "missing",
+   "detail": "Conductor: Developer ID with team id and secure timestamp; rebuild: ad-hoc or unsigned"
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "AppKit",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "ApplicationServices",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "Carbon",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "CloudKit",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "ColorSync",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "CoreData",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "CoreFoundation",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "CoreGraphics",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "CoreImage",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "CoreServices",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "CoreText",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "CoreVideo",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "Foundation",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "OSAKit",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "QuartzCore",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "Security",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "SystemConfiguration",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "UserNotifications",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "WebKit",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "libSystem.B.dylib",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "libiconv.2.dylib",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "linked system library",
+   "id": "libobjc.A.dylib",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri stack",
+   "id": "tauri 2.11.1",
+   "status": "matched",
+   "detail": "rebuild requirement: 2"
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-clipboard-manager",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-deep-link",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-dialog",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-fs",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-http",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-notification",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-opener",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-os",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-shell",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-sql",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-store",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-updater",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "tauri plugin",
+   "id": "tauri-plugin-window-state",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/.internal/actions",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/.internal/agent-launcher",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/.internal/conductor-runtime",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/.internal/internal",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/.internal/logger",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/.internal/sidecar",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/checkpointer.sh",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/conductor",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/gh",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/git-busy-check.sh",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/spotlighter.sh",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "bin/watchexec",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "conductor-skill/.claude-plugin/plugin.json",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "conductor-skill/skills/conductor/SKILL.md",
+   "status": "missing",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "bundled resource",
+   "id": "icon.icns",
+   "status": "matched",
+   "detail": ""
+  },
+  {
+   "area": "packaging",
+   "group": "frontend",
+   "id": "embedded-frontend",
+   "status": "matched",
+   "detail": "reference: 2902 embedded assets"
+  }
+ ]
+}
