@@ -66,6 +66,13 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   }, [worktree, target, opts, turn]);
 
   useEffect(refresh, [refresh]);
+  // After a save from the diff viewer: reload without the loading state, so the open editor stays mounted.
+  const reloadQuietly = useCallback(() => {
+    loadWorkspaceDiff(worktree, target, opts, { turn }).then(
+      (files) => setLoad({ state: "ready", files }),
+      () => {},
+    );
+  }, [worktree, target, opts, turn]);
   useEffect(() => {
     setViewedMap(loadViewed(localStorage, workspaceId));
     setSelectedPath(null);
@@ -142,6 +149,9 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     load,
     files,
     refresh,
+    reloadQuietly,
+    /** Worktree folder the diff is read from (null while the workspace has none). */
+    worktree,
     totals,
     /** Index of the selected file in `files`, or -1. */
     current,
