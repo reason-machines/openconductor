@@ -1280,7 +1280,7 @@
         ]
       },
       "detect": [
-        "workspace_?number|workspaceNumber|(ws|workspace)\\.number\\b"
+        "workspace_?number|workspaceNumber|(ws|workspace)\\.number\\b|next_number"
       ]
     },
     {

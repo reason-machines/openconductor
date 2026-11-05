@@ -102,11 +102,14 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .add { color: var(--add); }
 .del { color: var(--del); }
 
-.app { display: grid; grid-template-columns: var(--sidebar-width) 1fr; height: 100vh; overflow: hidden; background: var(--bg); }
+/* The sidebar is `--sidebar-width` wide but never more than 40% of the window (Conductor's aside: max-w-[40%]). */
+.app { display: grid; grid-template-columns: min(var(--sidebar-width), 40%) 1fr; height: 100vh; overflow: hidden; background: var(--bg); }
 .app.sidebar-hidden { grid-template-columns: 1fr; }
 .app { position: relative; }
-.sidebar-resizer { position: absolute; top: 0; bottom: 0; left: calc(var(--sidebar-width) - 3px); width: 6px; cursor: col-resize; z-index: 5; touch-action: none; }
-.sidebar-resizer:hover, .sidebar-resizer.dragging { background: color-mix(in srgb, var(--sidebar-border) 80%, transparent); }
+/* Conductor's rail (`Nta`): absolute inset-y-0 right-0 w-2 translate-x-1/2 cursor-col-resize bg-transparent,
+   inside the overflow-hidden aside, so only its inner 4px take the pointer. No hover or drag highlight. */
+.sidebar-resizer { position: absolute; top: 0; bottom: 0; left: calc(min(var(--sidebar-width), 40%) - 4px); width: 4px; padding: 0; border: 0; background: transparent; outline: none; cursor: col-resize; z-index: 30; touch-action: none; }
+.app:has(.sidebar-resizer[data-dragging]) { cursor: col-resize; user-select: none; }
 
 /* Sidebar */
 /* Conductor's <aside>: border-r border-sidebar-border bg-sidebar-background/60 text-sidebar-foreground,
@@ -631,6 +634,18 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-nav-section .sb-section-label { flex: 0 1 auto; font-weight: 500; }
 .sb-section-emoji { display: flex; width: 16px; height: 16px; flex: none; align-items: center; justify-content: center; font-size: 12px; line-height: 1; }
 .sb-section-empty { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 5px 0 6px; font-size: 13px; color: color-mix(in srgb, var(--sidebar-muted-foreground) 50%, transparent); }
+/* Drag and drop (Conductor's `Yia` / `esa`): accent fill under a dragged row, half opacity on a dragged section,
+   a 2px ring-colored line where a section would land (-5px outside it, flush at the top of the first), and the ghost. */
+.sb-group[data-drop-target], .sb-nav-section[data-drop-target], .sb-my-workspaces[data-drop-target] { border-radius: 6px; background: var(--sidebar-accent); }
+.sb-nav-section { position: relative; }
+.sb-nav-section[data-dragging] { opacity: 0.5; }
+.sb-nav-section-indicator { position: absolute; left: 0; right: 0; z-index: 10; height: 2px; border-radius: 999px; background: var(--accent); pointer-events: none; }
+.sb-nav-section-indicator[data-position="above"] { top: -5px; }
+.sb-nav-section-indicator[data-position="above"][data-first] { top: 0; }
+.sb-nav-section-indicator[data-position="below"] { bottom: -5px; }
+.sb-drag-ghost { position: fixed; left: 0; top: 0; z-index: 50; opacity: 0.9; pointer-events: none; border-radius: 6px; background: var(--sidebar-background); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 0 0 1px var(--sidebar-border); }
+.sb-drag-ghost > * { width: 100%; margin: 0; }
+.sb-drag-ghost .sb-section-label { flex: 0 1 auto; font-weight: 500; }
 .section-dialog-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .section-emoji-btn { display: flex; width: 34px; height: 34px; flex: none; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); font-size: 16px; line-height: 1; }
 .section-emoji-btn:hover { background: var(--hover); }
@@ -678,3 +693,19 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .rename-ws-branch:has(input:disabled) { opacity: 0.6; }
 .rename-ws-dialog .btn-ghost { background: transparent; border-color: transparent; }
 .rename-ws-dialog .btn-ghost:hover { background: var(--hover); }
+
+/* Sidebar add-repository menu (Conductor's `wra` popover around `Gji`): w-80 rounded-lg p-1
+   popover; rows px-2.5 py-2 text-sm rounded-md gap-2 with 16px icons; then a my-1 separator,
+   "Recents" (px-2.5 pt-1.5 pb-1 text-xs muted) and text-xs rows with 14px muted folder icons. */
+.sb-add-menu-anchor { position: absolute; right: 24px; top: 100%; width: 0; height: 0; pointer-events: none; }
+.add-menu { position: fixed; z-index: 50; width: 320px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); color: var(--text); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.add-menu-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 6px; text-align: left; font-size: 14px; line-height: 20px; color: inherit; background: none; border: 0; }
+.add-menu-item:hover, .add-menu-item:focus { outline: none; background: var(--hover); }
+.add-menu-icon-secondary { display: inline-flex; color: var(--secondary-text); }
+.add-menu-sep { height: 1px; margin: 4px 0; background: var(--border); }
+.add-menu-label { padding: 6px 10px 4px; font-size: 12px; line-height: 16px; color: var(--muted); }
+.add-menu-item.add-menu-recent { padding: 6px 10px; font-size: 12px; line-height: 16px; }
+.add-menu-recent-icon { display: inline-flex; flex: none; color: var(--muted); }
+.add-menu-recent-path { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.add-menu-loading { padding: 6px 10px; color: var(--muted); }
+.add-menu-spinner { white-space: pre; }

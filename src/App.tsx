@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useAppStore, type Action } from "./state/store";
+import { useAppStore } from "./state/store";
 import { destroyWorkspaceTerminals } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
@@ -20,6 +20,9 @@ import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/n
 import { Toaster, useToasts } from "./components/Toast";
 import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
+import { ArchiveRunningDialog } from "./components/ArchiveRunningDialog";
+import { failureToast, onArchiveEvent, unarchiveFailedMessage } from "./workspace/archive";
+import type { Action } from "./state/store";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
@@ -28,6 +31,8 @@ import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
 import { PaletteHost } from "./palette/PaletteHost";
 import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
+import { PRIORITY } from "./keybindings/dispatcher";
+import { copyWorkspaceLink } from "./workspace/link";
 import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
 import { keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
@@ -89,6 +94,27 @@ export default function App() {
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
   // Archive on merge for workspaces that are not open (the open one reports through its own PR lookup).
   useArchiveOnMergeWatcher({ repos: state.repos, openWorkspaceId: state.selection.kind === "workspace" ? state.selection.workspaceId : null, dispatch, notify: show });
+  // Full archive (src/workspace/archive.ts): the running-agents question and
+  // what the archive reports, wherever it was started from.
+  const [archiveOverAgents, setArchiveOverAgents] = useState<Extract<Action, { type: "archiveWorkspace" }> | null>(null);
+  useEffect(
+    () =>
+      onArchiveEvent<Action>((e) => {
+        if (e.type === "agents-running" && e.action.type === "archiveWorkspace") setArchiveOverAgents(e.action);
+        if (e.type === "archived" || e.type === "unarchived") for (const n of e.result.notices) show(n.kind, n.message, { sticky: n.kind === "error" });
+        if (e.type === "unarchive-failed") show("error", unarchiveFailedMessage(e.error), { sticky: true });
+        if (e.type === "failed" && e.action.type === "archiveWorkspace") {
+          const retry = { ...e.action, mode: "discardGitOperationState" as const };
+          const t = failureToast(e.error, e.mode);
+          if (t.kind === "git-operation") {
+            show("error", t.message, { sticky: true, action: { label: "Archive", onClick: () => dispatch(retry) } });
+          } else {
+            show("error", t.message, { sticky: true });
+          }
+        }
+      }),
+    [show, dispatch],
+  );
   // A `/settings...` start URL opens settings where Conductor's router would
   // (src/settings/routes.ts); the URL then follows the open settings page.
   const routeContext = (): RouteContext => ({
@@ -143,10 +169,12 @@ export default function App() {
   }, [dispatch]);
 
   // Open project: native picker straight away, then the backend folder checks.
-  const openProject = useCallback(async () => {
+  // A Recents row of the sidebar add menu runs the same checks on its folder
+  // (Conductor's `Jgi` mutation, called with or without a path).
+  const addProject = useCallback(async (picked?: string) => {
     if (!inTauri()) return show("info", "Open project needs the desktop app.");
     try {
-      const path = await pickFolder("Select project directory");
+      const path = picked ?? (await pickFolder("Select project directory"));
       if (!path) return;
       const outcome = decideOpenProject(path, await inspectProjectFolder(path));
       if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
@@ -161,6 +189,8 @@ export default function App() {
       show("error", failedToAddMessage(err));
     }
   }, [dispatch, show, state.repos]);
+  const openProject = useCallback(() => void addProject(), [addProject]);
+  const addProjectAt = useCallback((path: string) => void addProject(path), [addProject]);
   const [quickOpen, setQuickOpen] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -171,6 +201,15 @@ export default function App() {
     const unlisten = listen("open_keyboard_shortcuts_dialog", toggleShortcuts);
     return () => void unlisten.then((off) => off());
   }, [toggleShortcuts]);
+  // View > Toggle Left / Right Sidebar in the native menu (src-tauri/src/menu.rs).
+  useEffect(() => {
+    if (!inTauri()) return;
+    const offs = [
+      listen("toggle_left_sidebar", () => dispatch({ type: "toggleSidebar" })),
+      listen("toggle_right_sidebar", toggleRightPanel),
+    ];
+    return () => offs.forEach((off) => void off.then((f) => f()));
+  }, [dispatch]);
 
   const sel = state.selection;
   const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
@@ -197,6 +236,17 @@ export default function App() {
     "workspace.create": () => openDialog("create"),
   });
 
+  const copyLink = useCallback(
+    (workspaceId: string) => void copyWorkspaceLink(workspaceId).then(({ kind, message }) => show(kind, message)),
+    [show],
+  );
+  // Conductor binds ⌘⇧C in the open workspace (`Dlo`) with `Olo`: dialog
+  // priority, global, also while typing, not in the terminal.
+  useKeybindings(
+    { "workspace.copyLink": workspace ? () => copyLink(workspace.id) : undefined },
+    { priority: PRIORITY.DIALOG, isGlobal: true, enableOnInputFocus: true, enableOnTerminalFocus: false },
+  );
+
   const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
   // Re-read each time the dialog or page opens so a settings change applies to the next create.
   const creating = dialog === "create" || createPage !== null;
@@ -214,7 +264,7 @@ export default function App() {
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onError={(message) => show("error", message)} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} />}
       <main className="main">
         {createPage ? (
           <CreateWorkspacePage
@@ -290,6 +340,12 @@ export default function App() {
       )}
       {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
       <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} />
+      {archiveOverAgents && (
+        <ArchiveRunningDialog
+          onClose={() => setArchiveOverAgents(null)}
+          onConfirm={() => dispatch({ ...archiveOverAgents, stopRunningAgents: true })}
+        />
+      )}
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );
