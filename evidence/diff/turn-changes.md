@@ -65,7 +65,7 @@ All REA runs and the fallbacks are rows `turn_*` in
 
 ## OpenConductor
 
-Backend (this PR):
+Backend (#279, plus the `turn` argument change in the frontend PR):
 - [`src-tauri/src/diff/git.rs`](../../src-tauri/src/diff/git.rs): `Scope::Turn
   { session_id, turn_id }` diffs the start checkpoint commit against the end
   one (`git diff <start> <end>`, same flags as the other scopes, `-w` and
@@ -76,9 +76,14 @@ Backend (this PR):
   `around_turn` saves start, runs the turn, saves end (`--force` semantics),
   then lists the turn's files unless over 200. Skips and failures are logged
   and never fail the turn.
-- `reason_prompt(chatId, text, turnId?)` runs inside `around_turn` in the
-  chat's folder (remembered from `reason_open_chat`); the result gains
-  `turnChanges`. The session part of the id is our chat id (the workspace id).
+- `reason_prompt(chatId, text, turn?)` with `turn: { sessionId, turnId }`
+  runs inside `around_turn` in the chat's folder (remembered from
+  `reason_open_chat`); the result gains `turnChanges`. The frontend builds
+  `turn` with `turnCheckpointRef` (features/chat/checkpoints.ts): the
+  ref-safe chat id and the turn id without its chat prefix, the same ids
+  "Reset chat" (#297) restores. Turn ids are random UUIDs, so a turn never
+  reuses an earlier app run's checkpoints or cached changes. The backend is
+  the only saver; the frontend no longer calls `checkpoint_save` itself.
 - Command `checkpoint_turn_changes` ([`turn_checkpoint_commands.rs`](../../src-tauri/src/turn_checkpoint_commands.rs));
   save / exists / restore / changed-count commands came separately in #267
   (`checkpoint_commands.rs`).
@@ -86,7 +91,22 @@ Backend (this PR):
   with a tab; the parser kept it (paths like `new file.rs\t`, or a bogus
   `old_path` for modified files). It is now stripped.
 
-Tests: `src-tauri/src/diff/turn_tests.rs` (refs made with plain git, run by
+Frontend:
+- [`turnChangesCache.ts`](../../src/features/diff/turnChangesCache.ts): the
+  turn-changes cache (key `[sessionId, turnId]`, file list only, 5 MB entry
+  limit, logged storage errors, shared in-flight loads, failed loads not
+  cached) and the chip layout; [`useTurnChanges.ts`](../../src/features/diff/useTurnChanges.ts)
+  holds the app-wide store (fed by `reason_prompt`'s `turnChanges`, else
+  `checkpoint_turn_changes`).
+- [`TurnChanges.tsx`](../../src/features/chat/TurnChanges.tsx): chips under
+  each finished turn (all when ≤ 3, else 2 plus "Show N more changed files",
+  3 more per click); a chip opens the file in the "All changes" tab with the
+  turn selected.
+- `useWorkspaceDiff`: a selected turn overrides the scope option (not saved);
+  the changes list shows a "Turn" segment while one is selected, "No changes
+  in selected turn." when empty, and no discard buttons.
+
+Tests: `src/features/diff/turnChangesCache.test.ts`, `src-tauri/src/diff/turn_tests.rs` (refs made with plain git, run by
 `tools/diff/run-rust-tests.sh`) and `src-tauri/src/turn_checkpoint/tests.rs`
 (real `checkpoint::save`, run by `cargo test` in `src-tauri`).
 
@@ -101,6 +121,10 @@ Tests: `src-tauri/src/diff/turn_tests.rs` (refs made with plain git, run by
 - The turn-changes cache lives in the webview's `localStorage`, not in
   Conductor's encrypted file-backed local-storage subsystem
   (`db.local-storage` is not built yet).
+- Turns replayed from a resumed Reason Session get fresh ids, so they show
+  no chips (Conductor keeps turn ids in its database).
+- The scope control is a segment, not Conductor's dropdown, and only offers
+  "Turn" while a turn is selected (picked from the chat).
 - No "files changed since this turn" count and no revert-to-checkpoint UI
   yet.
 - Not checked in the running macOS app.

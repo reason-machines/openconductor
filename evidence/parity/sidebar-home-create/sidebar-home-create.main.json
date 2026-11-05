@@ -1,6 +1,6 @@
 {
- "ref": "8229113",
- "source_files": 315,
+ "ref": "origin/main",
+ "source_files": 336,
  "detector_parity_pct": 77.2,
  "areas": {
   "sidebar": {
@@ -33,11 +33,11 @@
    "partial": 3,
    "missing": 1,
    "parity_pct": 85.3,
-   "verdict_implemented": 11,
-   "verdict_partial": 4,
+   "verdict_implemented": 12,
+   "verdict_partial": 3,
    "verdict_backend": 0,
    "verdict_missing": 2,
-   "verdict_parity_pct": 76.5
+   "verdict_parity_pct": 79.4
   }
  },
  "items": [
@@ -879,7 +879,7 @@
     {
      "pattern": "file://",
      "matched": true,
-     "file": "src-tauri/src/terminal/screen.rs"
+     "file": "src-tauri/src/reason_acp/provider.rs"
     }
    ],
    "verdict": "implemented",
@@ -1435,12 +1435,12 @@
      "file": "crates/scripts/src/config/mod.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "oc-scripts is linked and after a create-dialog setup ScriptService::after_setup calls should_auto_run and starts the run script; the option is only settable in the repo scripts config file: no UI sets it and save_repo_scripts does not write it.",
+   "verdict": "implemented",
+   "why": "Settings > Experimental 'Auto-run after setup' (ExperimentalPage.tsx) calls auto_run_after_setup_get/_set (registered in lib.rs), which write [scripts] auto_run_after_setup to the user settings.toml the oc-scripts loader reads (config/user.rs, #324); after a completed setup ScriptService::after_setup -> should_auto_run starts the default run script, a failed setup never auto-runs, and a repo layer still overrides (crates/scripts service tests). User scope, default off, as in Conductor 0.87.6 (REA IRt/fQe, evidence/run-scripts/NOTES.md). Not run end to end in the packaged app.",
    "recheck": false
   }
  ],
  "verdicts_ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, #278 items on 0e2531b, others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 67.6
+ "verdicts_verified_at": "2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, create.autostart-run re-read after #324 on 7e75c2d, #278 items on 0e2531b, others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 68.4
 }

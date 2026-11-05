@@ -1,10 +1,10 @@
-Scored `8229113`: 315 source files. Detector parity **77.2%**. Verified parity **67.6%** (verdicts read on `origin/main`, 2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, #278 items on 0e2531b, others on 85e00bb with no later change to their code)).
+Scored `origin/main`: 336 source files. Detector parity **77.2%**. Verified parity **68.4%** (verdicts read on `origin/main`, 2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, create.autostart-run re-read after #324 on 7e75c2d, #278 items on 0e2531b, others on 85e00bb with no later change to their code)).
 
 | Area | Items | Implemented | Partial | Backend only | Missing | Verified parity | Detector parity |
 |---|---|---|---|---|---|---|---|
 | sidebar | 33 | 16 | 10 | 3 | 4 | 65.9% | 77.3% |
 | home | 18 | 9 | 4 | 1 | 4 | 62.5% | 69.4% |
-| create | 17 | 11 | 4 | 0 | 2 | 76.5% | 85.3% |
+| create | 17 | 12 | 3 | 0 | 2 | 79.4% | 85.3% |
 
 | ID | Verdict | Detector | Feature | Finding |
 |---|---|---|---|---|
@@ -75,4 +75,4 @@ Scored `8229113`: 315 source files. Detector parity **77.2%**. Verified parity *
 | `create.in-section` | missing (recheck) | implemented | Create a workspace directly inside a sidebar section | No user sections; the single My workspaces group's menu only offers Add project. |
 | `create.first-message` | implemented | implemented | Draft the first agent message, then create the workspace and send it | seedTranscript queues the first message and ChatPanel sends it with sendReason over the registered reason_open_chat / reason_prompt (#194), starting the workspace's first agent session; it also drives the rename. The draft's model and effort are not passed to the chat. |
 | `create.number` | missing | missing | Assign a per-workspace number on creation | The schema has a number column but no create path, persistence function or UI assigns or shows one. |
-| `create.autostart-run` | partial | implemented | Optionally start the run script automatically after setup | oc-scripts is linked and after a create-dialog setup ScriptService::after_setup calls should_auto_run and starts the run script; the option is only settable in the repo scripts config file: no UI sets it and save_repo_scripts does not write it. |
+| `create.autostart-run` | implemented | implemented | Optionally start the run script automatically after setup | Settings > Experimental 'Auto-run after setup' (ExperimentalPage.tsx) calls auto_run_after_setup_get/_set (registered in lib.rs), which write [scripts] auto_run_after_setup to the user settings.toml the oc-scripts loader reads (config/user.rs, #324); after a completed setup ScriptService::after_setup -> should_auto_run starts the default run script, a failed setup never auto-runs, and a repo layer still overrides (crates/scripts service tests). User scope, default off, as in Conductor 0.87.6 (REA IRt/fQe, evidence/run-scripts/NOTES.md). Not run end to end in the packaged app. |

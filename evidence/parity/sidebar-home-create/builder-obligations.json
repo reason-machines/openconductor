@@ -1,14 +1,13 @@
 {
  "schema": "openconductor.builder-obligations.v1",
- "ref": "8229113",
- "verdicts_verified_at": "2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, #278 items on 0e2531b, others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 67.6,
+ "ref": "origin/main",
+ "verdicts_verified_at": "2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, create.autostart-run re-read after #324 on 7e75c2d, #278 items on 0e2531b, others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 68.4,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 32,
+ "open": 31,
  "by_owner": {
   "create-workspace": 5,
   "home": 9,
-  "setup-and-run-scripts": 1,
   "sidebar": 17
  },
  "obligations": [
@@ -322,30 +321,6 @@
     ],
     "copy": [
      2135
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.create.autostart-run",
-   "item": "create.autostart-run",
-   "area": "create",
-   "owner": "setup-and-run-scripts",
-   "depends_on_builders": [
-    "create-workspace"
-   ],
-   "feature": "Optionally start the run script automatically after setup",
-   "verdict": "partial",
-   "gap": "oc-scripts is linked and after a create-dialog setup ScriptService::after_setup calls should_auto_run and starts the run script; the option is only settable in the repo scripts config file: no UI sets it and save_repo_scripts does not write it.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     4186
-    ],
-    "schema": [
-     "repos.run_script",
-     "repos.run_script_mode"
     ]
    },
    "status": "open"

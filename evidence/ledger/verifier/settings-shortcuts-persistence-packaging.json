@@ -3,16 +3,16 @@
  "generated_by": "tools/parity_check.py check",
  "target": {
   "ref": "origin/main",
-  "sha": "8229113e0d621bd070bcf2be55726307b59ccdf1"
+  "sha": "7e75c2dd3a5397c838f7de6ee848ff7f3e933241"
  },
  "result_meaning": "pass = every item that evidences the obligation is matched on the target (static); fail = at least one item is partial, declared or missing. Static presence, not runtime behavior.",
  "areas": {
   "settings": {
    "total": 125,
    "matched": 53,
-   "partial": 13,
-   "missing": 59,
-   "parity_pct": 47.6
+   "partial": 15,
+   "missing": 57,
+   "parity_pct": 48.4
   },
   "shortcuts": {
    "total": 172,
@@ -30,25 +30,25 @@
   },
   "packaging": {
    "total": 78,
-   "matched": 57,
+   "matched": 60,
    "partial": 0,
-   "missing": 21,
-   "parity_pct": 73.1
+   "missing": 18,
+   "parity_pct": 76.9
   }
  },
  "overall": {
   "total": 419,
-  "matched": 199,
-  "partial": 128,
-  "missing": 92,
-  "parity_pct": 62.8
+  "matched": 202,
+  "partial": 130,
+  "missing": 87,
+  "parity_pct": 63.7
  },
  "evidence": {
   "report": "evidence/parity/parity-report.json",
   "persistence": {
    "conductor": "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e",
    "cache": "ev_202d2f9fcbf5be8a97cec7b5c27cfa0b7722d0b3e095404e9ac0b0923904aabf",
-   "rebuild": "REA inspect-sqlite-database ev_02af573adb470ffa100b978bb11e6cedc86c2c5cb6aad972384859fd89f5490f"
+   "rebuild": "REA inspect-sqlite-database ev_1f26e08ab3eac8c19a130f381d929e1ab4fa1073e35c8a4f374c45199a580693"
   },
   "packaging": "REA on CI-built OpenConductor.app (run 42043310601, commit 60f4dfbe7f41): inspect-plist ev_7f4d79dd9b47cd4ec5be806d5acc42adb6fc165f1f0a20dbea35954687cba83d, inspect-signature ev_b2fb66f77d27799b0a898f355a657589bcad728e515029a0f3a744e50378b1e3, trace-dylib-resolution ev_ace6de9edd393dbec394ce2745859a387aabbc80929341b93ce603713b51c8c0",
   "shortcuts": {
@@ -67,9 +67,9 @@
    "parity": {
     "total": 80,
     "matched": 29,
-    "partial": 10,
-    "missing": 41,
-    "parity_pct": 42.5
+    "partial": 12,
+    "missing": 39,
+    "parity_pct": 43.8
    }
   },
   {
@@ -93,9 +93,9 @@
    "parity": {
     "total": 13,
     "matched": 0,
-    "partial": 4,
-    "missing": 9,
-    "parity_pct": 15.4
+    "partial": 6,
+    "missing": 7,
+    "parity_pct": 23.1
    }
   },
   {
@@ -235,23 +235,23 @@
    "result": "fail",
    "parity": {
     "total": 12,
-    "matched": 3,
+    "matched": 4,
     "partial": 0,
-    "missing": 9,
-    "parity_pct": 25.0
+    "missing": 8,
+    "parity_pct": 33.3
    }
   },
   {
    "obligation_id": "agent.conductor-skill",
    "area": "packaging",
    "ledger_status": "unowned",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 2,
-    "matched": 0,
+    "matched": 2,
     "partial": 0,
-    "missing": 2,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    }
   },
   {
@@ -507,9 +507,9 @@
    "parity": {
     "total": 14,
     "matched": 0,
-    "partial": 4,
-    "missing": 10,
-    "parity_pct": 14.3
+    "partial": 6,
+    "missing": 8,
+    "parity_pct": 21.4
    },
    "gaps": [
     {
@@ -520,12 +520,12 @@
     {
      "group": "user settings.toml",
      "id": "models.claude_code.personality",
-     "status": "missing"
+     "status": "declared"
     },
     {
      "group": "user settings.toml",
      "id": "models.claude_code.review_effort_level",
-     "status": "missing"
+     "status": "declared"
     },
     {
      "group": "user settings.toml",
@@ -1852,10 +1852,10 @@
    "result": "fail",
    "parity": {
     "total": 12,
-    "matched": 3,
+    "matched": 4,
     "partial": 0,
-    "missing": 9,
-    "parity_pct": 25.0
+    "missing": 8,
+    "parity_pct": 33.3
    },
    "gaps": [
     {
@@ -1890,11 +1890,6 @@
     },
     {
      "group": "bundled resource",
-     "id": "bin/conductor",
-     "status": "missing"
-    },
-    {
-     "group": "bundled resource",
      "id": "bin/spotlighter.sh",
      "status": "missing"
     },
@@ -1911,26 +1906,15 @@
    "area": "packaging",
    "parent_obligation": "agent.conductor-skill",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 2,
-    "matched": 0,
+    "matched": 2,
     "partial": 0,
-    "missing": 2,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "bundled resource",
-     "id": "conductor-skill/.claude-plugin/plugin.json",
-     "status": "missing"
-    },
-    {
-     "group": "bundled resource",
-     "id": "conductor-skill/skills/conductor/SKILL.md",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "pkg.resources",

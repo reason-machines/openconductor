@@ -1,7 +1,7 @@
 {
   "schema": "openconductor.parity-verdicts.v1",
   "ref": "origin/main",
-  "verified_at": "2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, #278 items on 0e2531b, others on 85e00bb with no later change to their code)",
+  "verified_at": "2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, create.autostart-run re-read after #324 on 7e75c2d, #278 items on 0e2531b, others on 85e00bb with no later change to their code)",
   "method": "Read on main: src/, src-tauri/src/, crates/. 'backend' = logic or a command exists and is tested, but no UI path reaches it.",
   "items": {
     "sidebar.home-entry": {
@@ -245,8 +245,8 @@
       "why": "The schema has a number column but no create path, persistence function or UI assigns or shows one."
     },
     "create.autostart-run": {
-      "verdict": "partial",
-      "why": "oc-scripts is linked and after a create-dialog setup ScriptService::after_setup calls should_auto_run and starts the run script; the option is only settable in the repo scripts config file: no UI sets it and save_repo_scripts does not write it."
+      "verdict": "implemented",
+      "why": "Settings > Experimental 'Auto-run after setup' (ExperimentalPage.tsx) calls auto_run_after_setup_get/_set (registered in lib.rs), which write [scripts] auto_run_after_setup to the user settings.toml the oc-scripts loader reads (config/user.rs, #324); after a completed setup ScriptService::after_setup -> should_auto_run starts the default run script, a failed setup never auto-runs, and a repo layer still overrides (crates/scripts service tests). User scope, default off, as in Conductor 0.87.6 (REA IRt/fQe, evidence/run-scripts/NOTES.md). Not run end to end in the packaged app."
     },
     "sidebar.top-bar": {
       "verdict": "implemented",
