@@ -4,12 +4,18 @@
 //! - `workspace/`  workspace lifecycle (worktrees, setup/run scripts)
 //! - `checkpoint/` checkpoints and revert
 //! - `agent/`      agent runner, providers and BYOK settings
+//! - `terminal/`   PTY terminals (`terminal_commands.rs` is its IPC layer)
 //!
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod terminal;
+mod terminal_commands;
+pub mod workspace;
 
 use serde::Serialize;
+use tauri::Manager;
+use terminal_commands::Terminals;
 
 #[derive(Serialize)]
 struct AppInfo {
@@ -32,7 +38,37 @@ fn app_info() -> AppInfo {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(tauri::generate_handler![app_info])
-        .run(tauri::generate_context!())
-        .expect("error while running OpenConductor");
+        .setup(|app| {
+            let data_dir = app.path().app_data_dir()?;
+            app.manage(workspace::service::WorkspaceService::new(data_dir)?);
+            app.manage(Terminals::new(app.handle().clone()));
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![
+            app_info,
+            workspace::commands::add_repository,
+            workspace::commands::list_repositories,
+            workspace::commands::list_branches,
+            workspace::commands::branch_name_is_taken,
+            workspace::commands::create_workspace,
+            workspace::commands::list_workspaces,
+            terminal_commands::pty_spawn,
+            terminal_commands::pty_write,
+            terminal_commands::pty_resize,
+            terminal_commands::pty_kill,
+            terminal_commands::pty_ack_bytes,
+            terminal_commands::pty_read_history,
+            terminal_commands::pty_clear_history,
+            terminal_commands::pty_list,
+        ])
+        .build(tauri::generate_context!())
+        .expect("error while building OpenConductor")
+        .run(|app, event| {
+            // Shells and their children must not outlive the app.
+            if let tauri::RunEvent::Exit = event {
+                if let Some(terminals) = app.try_state::<Terminals>() {
+                    terminals.0.kill_all();
+                }
+            }
+        });
 }

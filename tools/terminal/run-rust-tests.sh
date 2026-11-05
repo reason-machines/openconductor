@@ -2,8 +2,8 @@
 # Build and test src-tauri/src/terminal/ as a standalone crate.
 #
 # The module depends only on portable-pty (the version the reference app
-# links) and libc, so it is tested on its own before the Tauri crate wires
-# it in. The harness crate is generated in a temp dir; nothing in the repo
+# links), libc, and serde/base64 for its IPC payloads, so it is tested on
+# its own. The harness crate is generated in a temp dir; nothing in the repo
 # changes.
 #
 # Usage: tools/terminal/run-rust-tests.sh [extra cargo test args]
@@ -29,6 +29,11 @@ path = "$module"
 [dependencies]
 portable-pty = "=0.9.0"
 libc = "0.2"
+base64 = "0.21"
+serde = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+serde_json = "1"
 
 [workspace]
 EOF
