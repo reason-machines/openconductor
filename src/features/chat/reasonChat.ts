@@ -19,7 +19,7 @@ import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, truncateAfterTurn, type ChatTranscript } from "./reducer.ts";
 import { restoreCheckpoint, saveTurnCheckpoint } from "./checkpoints.ts";
-import { applyReasonPayload, failTurn, newestTurn, openTurns, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
+import { applyReasonPayload, cancelUnsent, failTurn, newestTurn, openTurns, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 
 const EVENT = "reason-chat-event";
@@ -36,6 +36,10 @@ interface Chat {
   queue: Q.ChatQueue;
   cwd: string | null;
   opened: boolean;
+  /** Turns shown as running whose prompt has not reached Reason yet. */
+  unsent: Set<string>;
+  /** Unsent turns the user stopped: they end cancelled instead of being sent. */
+  stopped: Set<string>;
   listeners: Set<(s: ChatSnapshot) => void>;
 }
 
@@ -51,7 +55,7 @@ export const REASON_CAN_STEER = true;
 function chat(chatId: string): Chat {
   let c = chats.get(chatId);
   if (!c) {
-    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, opened: false, listeners: new Set() };
+    c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, opened: false, unsent: new Set(), stopped: new Set(), listeners: new Set() };
     chats.set(chatId, c);
   }
   return c;
@@ -97,6 +101,8 @@ function run(c: Chat, effect: Q.Effect) {
       void prompt(c, effect.text);
       return;
     case "cancel":
+      // Reason cancels only a prompt it has; one still on its way is stopped here.
+      for (const turnId of c.unsent) c.stopped.add(turnId);
       if (reasonAvailable()) void invoke("reason_cancel", { chatId: c.state.chatId });
       else preview.cancel(c);
       return;
@@ -119,6 +125,9 @@ async function prompt(c: Chat, text: string): Promise<void> {
   if (!reasonAvailable()) return preview.prompt(c, text);
   // `submitChat` sets the folder before any effect runs.
   const cwd = c.cwd ?? "";
+  // Stop is shown from here on, but Reason only learns of the turn at
+  // `reason_prompt`; a Stop before that is held in `c.stopped`.
+  c.unsent.add(turnId);
   try {
     await ensureListening();
     if (!c.opened) {
@@ -128,10 +137,14 @@ async function prompt(c: Chat, text: string): Promise<void> {
     // Conductor snapshots the workspace around every turn so "Reset chat"
     // can bring the files back (features/chat/checkpoints.ts).
     await saveTurnCheckpoint(invoke, cwd, chatId, turnId, "start");
+    c.unsent.delete(turnId);
+    if (c.stopped.delete(turnId)) return apply(c, cancelUnsent(c.state, turnId));
     // Resolves after the turn's `turnEnded` event; a rejection means the
     // turn never started (no CLI, no process), so no event will end it.
     await invoke("reason_prompt", { chatId, text });
   } catch (e) {
+    c.unsent.delete(turnId);
+    c.stopped.delete(turnId);
     apply(c, failTurn(c.state, turnId, String(e)));
     return;
   }

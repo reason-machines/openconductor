@@ -98,11 +98,16 @@ export function newestTurn(state: ReasonChatState): string | undefined {
 
 /** A turn whose prompt call failed, so no `turnEnded` will come for it. */
 export function failTurn(state: ReasonChatState, turnId: string, error: string, now = new Date()): Step {
-  if (!state.open.some((t) => t.turnId === turnId)) return { state, events: [] };
-  return {
-    state: { ...state, open: state.open.filter((t) => t.turnId !== turnId) },
-    events: [{ type: "turn_status", sessionId: state.chatId, turnId, status: "failed", error, at: now.toISOString() }],
-  };
+  return closeTurn(state, turnId, { outcome: "failed", message: error }, now);
+}
+
+/**
+ * A turn stopped before its prompt reached Reason (the Stop came while the
+ * chat was opening or the start checkpoint was being saved): Reason never
+ * heard of it, so no `turnEnded` will come for it.
+ */
+export function cancelUnsent(state: ReasonChatState, turnId: string, now = new Date()): Step {
+  return closeTurn(state, turnId, { outcome: "cancelled" }, now);
 }
 
 /** Turns still open after this one: a steered follow-up keeps the session working. */
@@ -122,15 +127,20 @@ export function turnStatus(end: ReasonTurnEnd): { status: TurnStatus; error?: st
 }
 
 function closeOldest(state: ReasonChatState, end: ReasonTurnEnd, now: Date): Step {
-  const [oldest, ...rest] = state.open;
-  if (!oldest) return { state, events: [] };
+  const oldest = state.open[0];
+  return oldest ? closeTurn(state, oldest.turnId, end, now) : { state, events: [] };
+}
+
+function closeTurn(state: ReasonChatState, turnId: string, end: ReasonTurnEnd, now: Date): Step {
+  const turn = state.open.find((t) => t.turnId === turnId);
+  if (!turn) return { state, events: [] };
   const s = turnStatus(end);
   const at = now.toISOString();
   const events: ChatEvent[] = [];
   // A stopped turn's prompt is marked cancelled, as Conductor's `session_messages.cancelled_at`.
-  if (s.status === "cancelled") events.push({ type: "upsert", message: { ...oldest.user, cancelledAt: at } });
-  events.push({ type: "turn_status", sessionId: state.chatId, turnId: oldest.turnId, status: s.status, ...(s.error !== undefined ? { error: s.error } : {}), at });
-  return { state: { ...state, open: rest }, events };
+  if (s.status === "cancelled") events.push({ type: "upsert", message: { ...turn.user, cancelledAt: at } });
+  events.push({ type: "turn_status", sessionId: state.chatId, turnId, status: s.status, ...(s.error !== undefined ? { error: s.error } : {}), at });
+  return { state: { ...state, open: state.open.filter((t) => t !== turn) }, events };
 }
 
 function toolInput(t: ReasonTool): unknown {

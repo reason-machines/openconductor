@@ -3,7 +3,7 @@
 // src-tauri/src/reason_acp/wire_tests.rs) through the transcript to rows.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applyReasonPayload, failTurn, newestTurn, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type ReasonPath } from "./reason.ts";
+import { applyReasonPayload, cancelUnsent, failTurn, newestTurn, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type ReasonPath } from "./reason.ts";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import { buildRows } from "./view.ts";
 import type { ChatEvent } from "./types.ts";
@@ -158,4 +158,17 @@ test("a stopped turn marks its prompt cancelled and records start and end times"
   assert.deepEqual(status, { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "cancelled", at: t1.toISOString() });
   const done = applyReasonPayload(startTurn(reasonChat(CHAT), "x", t0).state, { chatId: CHAT, type: "turnEnded", end: { outcome: "completed" } }, t1);
   assert.equal(done.events.length, 1);
+});
+
+test("a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running", () => {
+  const t0 = new Date("2026-11-05T10:00:00.000Z");
+  const t1 = new Date("2026-11-05T10:00:01.000Z");
+  const running = startTurn(reasonChat(CHAT), "running job", t0).state;
+  const both = startTurn(running, "steer", t0).state;
+  const step = cancelUnsent(both, `${CHAT}:t2`, t1);
+  assert.deepEqual(step.state.open.map((t) => t.turnId), [`${CHAT}:t1`]);
+  const [upsert, status] = step.events;
+  assert.ok(upsert?.type === "upsert" && upsert.message.id === `${CHAT}:t2:user` && upsert.message.cancelledAt === t1.toISOString());
+  assert.deepEqual(status, { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t2`, status: "cancelled", at: t1.toISOString() });
+  assert.deepEqual(cancelUnsent(step.state, `${CHAT}:t2`, t1).events, []);
 });
