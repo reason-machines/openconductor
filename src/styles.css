@@ -559,3 +559,12 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-status-dot.status-in-review { color: #16a249; }
 .sb-status-dot.status-done { color: #cca694; background: currentColor; }
 .sb-status-dot.status-canceled { color: #a5a09c; background: currentColor; }
+
+/* sidebar: Cmd+1..9 hints. Conductor's v6e/uea: a 16px leading box; the icon fades
+   and scales to 90% while the number (text-[11px] font-medium) fades in. */
+.sb-ws-lead { position: relative; display: flex; width: 16px; height: 16px; margin-right: 2px; flex: none; }
+.sb-ws-lead .sb-ws-status { margin-right: 0; transition: opacity 150ms cubic-bezier(0.23, 1, 0.32, 1), scale 150ms cubic-bezier(0.23, 1, 0.32, 1); }
+.sb-ws-lead[data-hint] .sb-ws-status { opacity: 0; scale: 0.9; transition-duration: 100ms; }
+.sb-ws-hint { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; line-height: 1; color: var(--sidebar-foreground); opacity: 0; scale: 0.9; pointer-events: none; transition: opacity 100ms cubic-bezier(0.23, 1, 0.32, 1), scale 100ms cubic-bezier(0.23, 1, 0.32, 1); }
+.sb-ws-hint[data-state="visible"] { opacity: 1; scale: 1; transition-duration: 150ms; }
+@media (prefers-reduced-motion: reduce) { .sb-ws-hint, .sb-ws-lead .sb-ws-status { scale: 1; } }
