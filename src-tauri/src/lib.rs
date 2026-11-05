@@ -234,6 +234,9 @@ pub fn run() {
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
             app.manage(db::open_cache(&data_dir));
+            // Conductor's settings-file migrations: file-backed rows, then repository files.
+            let user_settings = settings::config_dir()?.join(settings::FILE_NAME);
+            app_prefs::migrate::at_startup(&db.0, &user_settings);
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
             // Conductor's sidecar opens its session event outbox at start and

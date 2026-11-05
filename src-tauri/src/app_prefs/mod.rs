@@ -5,9 +5,14 @@
 //! typed update variant, encoded the way its setters write it (booleans as
 //! `"true"` / `"false"`, numbers as decimal text).
 //!
-//! `commands` is the IPC layer.
+//! `commands` is the IPC layer; `migrate` holds the reference's one-time
+//! migrations of `settings` rows and legacy `repos` columns into settings
+//! files.
 
 pub mod commands;
+pub mod migrate;
+#[cfg(test)]
+mod migrate_tests;
 
 #[cfg(test)]
 mod tests;

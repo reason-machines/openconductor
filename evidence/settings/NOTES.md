@@ -292,3 +292,30 @@ sets only the code view's foreground and background, not token colors. The sideb
   so every claim above comes from text search plus reading minified code, not from an REA trace.
 - Minified exports: hooks are re-exported under two-letter aliases (`p5t as og`, imported as `oEr`), which
   REA's JavaScript semantic analysis does not resolve across chunks; we followed them by hand.
+
+### One-time migrations into settings files
+
+Source: the same `index-BGEQ8YjU.js`: `n$e` (file-backed rows), `aIt`/`cIt` (repository config v2),
+`iIt`/`oIt` (custom prompts), `u2` (repository write), `l2` (legacy values), `U_` (legacy
+`conductor.json` parse), `aN` (a local layer already sets the key), `V8t` (order: `aIt`, `iIt`, `lIt`).
+Implemented in `src-tauri/src/app_prefs/migrate.rs`, run at startup before the spotlight (`lIt`) migration.
+
+- `file_backed_settings_migration_complete`: each live row whose key the registry declares with a
+  `fileKey` (43 keys, table in `migrate.rs`: `default_model` -> `models.default`,
+  `default_codex_thinking_level` -> `models.codex.default_thinking_level`,
+  `review_codex_thinking_level` -> `models.codex.review_thinking_level`, ...) is written to the user
+  `settings.toml` when no user layer sets it, then every such row gets `deprecated_at = now`; the flag
+  is set last. Booleans (`xe`) are written as TOML booleans. Ours also skips a value the rebuild's
+  settings model rejects (for example an unknown thinking level) instead of writing a file it cannot
+  load; the row is still deprecated and keeps its value. An unparseable user file stops the migration
+  for this launch (Conductor's write would fail the same way).
+- `repo_conductor_config_file_migration_v2_complete`: per repository, `scripts.setup`, `scripts.run`,
+  `scripts.archive` (legacy `conductor_config` JSON first, else the `repos` columns),
+  `scripts.run_mode` (only `concurrent`/`nonconcurrent`) and `enterprise_data_privacy` (JSON only) go
+  to `<root>/.conductor/settings.local.toml`, skipping keys that file already sets. Columns are kept.
+- `repo_custom_prompt_file_migration_complete`: `custom_prompt_*` -> `prompts.*` in the same file, then
+  the six columns are set to NULL.
+- Divergences: Conductor also symlinks the local file into each workspace (`workspacePathsToSymlink`)
+  and runs `migrateLegacyRunScripts`; neither exists in the rebuild yet. A repository whose root is
+  missing is reported and the flag stays unset, so it is retried next launch (Conductor's write throws
+  and aborts the whole pass).

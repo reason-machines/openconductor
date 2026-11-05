@@ -206,6 +206,23 @@ pub async fn update_settings(pool: &SqlitePool, id: &str, s: &RepoSettings) -> R
     exec_one(query, pool).await
 }
 
+/// Clear the legacy `custom_prompt_*` columns once the prompts live in the
+/// repository's settings file, as the reference's custom prompt file
+/// migration does (`oIt`).
+pub async fn clear_custom_prompts(pool: &SqlitePool, id: &str) -> Result<()> {
+    exec_one(
+        sqlx::query(
+            "UPDATE repos SET custom_prompt_code_review = NULL, custom_prompt_create_pr = NULL, \
+             custom_prompt_fix_errors = NULL, custom_prompt_resolve_merge_conflicts = NULL, \
+             custom_prompt_rename_branch = NULL, custom_prompt_general = NULL, \
+             updated_at = datetime('now') WHERE id = ?",
+        )
+        .bind(id),
+        pool,
+    )
+    .await
+}
+
 /// Clear the legacy `spotlight_testing` column (set it to NULL) once its
 /// value lives in the repository's settings file, as the reference's
 /// repo-local settings file migration does.
