@@ -4,12 +4,13 @@ import type { AppState, Repo, Selection, Workspace } from "./types";
 import type { WorkspaceStatusValue } from "./workspaceStatus";
 import type { RowPr } from "./rowStatus";
 import { newId, workspaceName } from "./names";
-import { isSidebarVisible } from "./selectors";
+import { isSidebarVisible, startSelection } from "./selectors";
 import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
 import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, sectionsFromDb, type DbNavSection, type NavSection } from "./navigationSections";
+import { sameRepoRecord } from "./addRepo";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -65,7 +66,7 @@ function updateWorkspace(state: AppState, repoId: string, workspaceId: string, f
   return { ...state, repos };
 }
 
-const EMPTY: AppState = { repos: [], selection: { kind: "home" } };
+const EMPTY: AppState = { repos: [], selection: { kind: "root" } };
 
 function makeWorkspace(repo: Repo): Workspace {
   const taken = new Set(repo.workspaces.map((w) => w.name));
@@ -78,8 +79,7 @@ export function reducer(state: AppState, action: Action): AppState {
     case "select":
       return { ...state, selection: action.selection };
     case "addRepo": {
-      const existing = state.repos.find((r) => (action.repo.path && r.path === action.repo.path) || (action.repo.remote && r.remote === action.repo.remote));
-      if (existing) return state;
+      if (sameRepoRecord(state.repos, { id: action.id, path: action.repo.path })) return state;
       if (action.id) {
         const repo: Repo = { ...action.repo, id: action.id, workspaces: [] };
         return { ...state, repos: [...state.repos.filter((r) => r.id !== action.id), repo] };
@@ -91,7 +91,7 @@ export function reducer(state: AppState, action: Action): AppState {
     }
     case "removeRepo": {
       const repos = state.repos.filter((r) => r.id !== action.repoId);
-      const sel = state.selection.kind === "workspace" && state.selection.repoId === action.repoId ? { kind: "home" as const } : state.selection;
+      const sel = state.selection.kind === "workspace" && state.selection.repoId === action.repoId ? { kind: "root" as const } : state.selection;
       return { ...state, repos, selection: sel };
     }
     case "toggleRepo":
@@ -141,7 +141,7 @@ export function reducer(state: AppState, action: Action): AppState {
       const repos = state.repos.map((r) =>
         r.id === action.repoId ? { ...r, workspaces: r.workspaces.filter((w) => w.id !== action.workspaceId) } : r,
       );
-      const sel = state.selection.kind === "workspace" && state.selection.workspaceId === action.workspaceId ? { kind: "home" as const } : state.selection;
+      const sel = state.selection.kind === "workspace" && state.selection.workspaceId === action.workspaceId ? { kind: "root" as const } : state.selection;
       return { ...state, repos, selection: sel };
     }
     case "toggleSidebar":
@@ -223,6 +223,7 @@ function load(): AppState {
   if (params.get("demo") === "1") {
     const s = demoState();
     if (params.get("view") === "home") s.selection = { kind: "home" };
+    if (params.get("view") === "root") s.selection = { kind: "root" };
     if (params.get("sidebar") === "0") s.sidebarVisible = false;
     return s;
   }
@@ -231,15 +232,15 @@ function load(): AppState {
     // First run after the switch: keep the selection and layout the old shell state had.
     const prefs = parsePrefs(localStorage.getItem(PREFS_KEY) ?? legacyPrefs(localStorage.getItem(STORAGE_KEY)));
     const repos = prefs.collapsed.map((id) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed: true }));
-    return { repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible };
+    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname);
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as AppState;
+    if (raw) return startSelection(JSON.parse(raw) as AppState, window.location.pathname);
   } catch {
     /* ignore corrupt state */
   }
-  return EMPTY;
+  return startSelection(EMPTY, window.location.pathname);
 }
 
 /** UI prefs carried over from the pre-database shell state, as `PREFS_KEY` JSON. */
