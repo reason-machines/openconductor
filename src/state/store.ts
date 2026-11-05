@@ -276,6 +276,8 @@ const demoPr = (over: Partial<RowPr>): RowPr => ({
 export function demoState(): AppState {
   const ws = (name: string, status: Workspace["status"], added: number, removed: number): Workspace => ({
     id: newId(), name, branch: name, status, diff: { added, removed }, createdAt: Date.now(),
+    // A worktree path so the right panel's All files tab has a tree (demo files outside Tauri).
+    path: `/Users/you/conductor/workspaces/openconductor/${name}`,
   });
   const repos: Repo[] = [
     {
