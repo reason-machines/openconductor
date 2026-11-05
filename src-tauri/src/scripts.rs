@@ -19,13 +19,17 @@ pub fn service(app: &AppHandle) -> ScriptService {
         .map(std::path::PathBuf::from)
         .unwrap_or_default();
     let emitter = app.clone();
-    ScriptService::new(
+    let service = ScriptService::new(
         home.join(".conductor"),
         std::env::temp_dir(),
         std::sync::Arc::new(move |event: ScriptEvent| {
             let _ = emitter.emit(EVENT, event);
         }),
-    )
+    );
+    // Scripts get the workspace's settings environment, with this app's
+    // user settings file as the user layer.
+    service.set_settings_env(crate::settings::effective::script_env_hook());
+    service
 }
 
 #[derive(Debug, Clone, Serialize)]

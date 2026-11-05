@@ -62,7 +62,7 @@
   "source": "Command scopes 2-5 of the decoded ACL.",
   "ours": "Conductor's 25 URL patterns verbatim (#212 granted any http/https host)."
  },
- "updater": "Not registered here; it needs an update signing key and endpoint.",
+ "updater": "Registered (tauri-plugin-updater, updater:default = check, download, install, download_and_install, the four commands Conductor's frontend calls). Endpoint: latest.json on this repository's latest GitHub release. The public key is empty in tauri.conf.json and baked in from OPENCONDUCTOR_UPDATER_PUBKEY at build time; with no key, installs fail signature verification.",
  "rea_second_search": {
   "command": "rea search Conductor.app/Contents/MacOS/conductor --pattern='exec-(zsh|bash|open)|^(/bin/|/usr/bin/)?(zsh|bash|open)$|https?://(\\*|[a-z0-9.*-]+/\\*\\*)|requireLiteralLeadingDot' --mode regex --case-sensitive=false --provider ghidra --snapshot snap/conductor-search.snap --format json",
   "machine": "sven m5 max",

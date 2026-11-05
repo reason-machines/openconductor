@@ -49,7 +49,7 @@ Aggregate reads only: `ls` of the data folders, `sqlite3 ...conductor.db?immutab
 ## Our choices where the evidence is silent (unverified against the app)
 
 - Layout: `<data_dir>/workspaces/<repo-slug>/<name>`; archive records in `<data_dir>/archived/<repo-slug>/<name>.ws`. The reference app's default workspace location is a user setting (SKILL.md) whose default value we have not read.
-- Naming: slugified user name or a word from our own tree-name list; collisions get `-2`, `-3`. Branch is `<prefix>/<name>` with an optional prefix. The reference app's generator and default prefix are not verified.
+- Naming: slugified user name or a word from our own tree-name list; collisions get `-v1`, `-v2` (and an existing `-vN` counts up), matching the reference app's bump function used for repo, workspace directory and branch names. Branch is `<prefix>/<name>` with an optional prefix. The reference app's generator and default prefix are not verified.
 - New branches are created with `--no-track` so they do not track the base branch.
 - Archive refuses dirty or busy worktrees unless `force`; it runs the archive script, removes the worktree and keeps the branch. Restore re-adds the worktree on the kept branch. Delete force-removes the worktree and deletes the branch. The reference app's exact archive/delete policy is not verified.
 - Port blocks are ten wide, starting at a caller-supplied base; the reference app's base port is not verified.

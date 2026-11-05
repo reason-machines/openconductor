@@ -19,10 +19,12 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
 pub mod checkpoint;
 mod checkpoint_commands;
+mod chat_store_commands;
 pub mod claude_chat;
 pub mod create_project;
 pub mod db;
@@ -55,6 +57,7 @@ mod terminal_output_commands;
 #[cfg(all(test, unix))]
 mod test_exe;
 pub mod tool_cli;
+pub mod tool_spotlighter;
 pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
@@ -63,17 +66,18 @@ use serde::Serialize;
 
 /// Once per launch, apply "Set upstream on plain git push" to existing
 /// workspaces in the background, as Conductor does after its first workspace
-/// load. Failures are only logged.
+/// load. Each workspace uses its effective `git.worktree_push_auto_setup_remote`
+/// (user, repository and workspace settings files); unreadable settings count
+/// as on, Conductor's "not false" check. Failures are only logged.
 fn spawn_push_upstream_backfill(app: tauri::AppHandle) {
     std::thread::spawn(move || {
-        let settings = app.state::<settings::service::SettingsService>();
-        match settings.get() {
-            Ok(s) if !s.git.worktree_push_auto_setup_remote => return,
-            Ok(_) => {}
-            Err(e) => eprintln!("Failed to read settings for Git push upstream backfill: {e}"),
-        }
         let workspaces = app.state::<workspace::service::WorkspaceService>();
-        for (id, warning) in workspaces.configure_push_upstream_for_existing() {
+        let enabled = |root: &std::path::Path, ws: &std::path::Path| {
+            settings::effective::resolve(root, Some(ws))
+                .map(|e| e.git.worktree_push_auto_setup_remote.value)
+                .unwrap_or(true)
+        };
+        for (id, warning) in workspaces.configure_push_upstream_for_existing(enabled) {
             eprintln!("Failed to configure Git push upstream settings for workspace {id}: {warning}");
         }
     });
@@ -205,6 +209,19 @@ async fn branch_prefix_settings() -> BranchPrefixInfo {
     }
 }
 
+/// Conductor links tauri-plugin-updater and its frontend calls check, download, install and
+/// download_and_install. A release build bakes in its minisign public key from
+/// OPENCONDUCTOR_UPDATER_PUBKEY; without one the key in tauri.conf.json stays empty, so the
+/// plugin can check the endpoint but every install fails signature verification.
+fn updater_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R, tauri_plugin_updater::Config>
+{
+    let builder = tauri_plugin_updater::Builder::new();
+    match option_env!("OPENCONDUCTOR_UPDATER_PUBKEY") {
+        Some(key) if !key.is_empty() => builder.pubkey(key).build(),
+        _ => builder.build(),
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = tauri::Builder::default();
@@ -228,6 +245,7 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_sql::Builder::new().build())
+        .plugin(updater_plugin())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
@@ -333,6 +351,8 @@ pub fn run() {
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
             reason_chat::reason_open_chat,
+            chat_store_commands::chat_messages_save,
+            chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
             reason_chat::reason_cancel,
             reason_chat::reason_list_sessions,
@@ -367,6 +387,11 @@ pub fn run() {
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
+            app_prefs::commands::get_app_prefs,
+            app_prefs::commands::set_app_pref,
+            app_prefs::commands::record_open_in,
+            app_prefs::commands::client_instance_id,
+            app_prefs::commands::graphite_cli_installed,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,
