@@ -296,3 +296,28 @@ fn big_terminal_settings_are_optional_and_round_trip() {
     assert_eq!(back.experimental, s.experimental);
     assert_eq!(back.terminal, s.terminal);
 }
+
+#[test]
+fn diff_appearance_settings_default_and_round_trip() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[appearance]\nzoom_level_v2 = 1.0").unwrap();
+    let loaded = load(&path).unwrap();
+    assert!(loaded.appearance.file_ligatures_enabled);
+    assert_eq!(loaded.appearance.color_vision, ColorVision::Default);
+    assert_eq!(loaded.appearance.code_theme, CodeTheme::Default);
+
+    let mut s = Settings::default();
+    s.appearance.file_ligatures_enabled = false;
+    s.appearance.color_vision = ColorVision::ProtanopiaDeuteranopia;
+    s.appearance.code_theme = CodeTheme::TokyoNight;
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(text.contains("file_ligatures_enabled = false"), "{text}");
+    assert!(text.contains("color_vision = \"protanopia-deuteranopia\""), "{text}");
+    assert!(text.contains("code_theme = \"tokyo-night\""), "{text}");
+    assert_eq!(load(&path).unwrap().appearance, s.appearance);
+
+    fs::write(&path, "[appearance]\ncode_theme = \"neon\"").unwrap();
+    let err = load(&path).unwrap_err().to_string();
+    assert!(err.contains("unknown variant"), "{err}");
+}

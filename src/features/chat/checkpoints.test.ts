@@ -1,0 +1,62 @@
+// Run: node --test "src/**/*.test.ts"
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { checkpointId, parseResetFilesPreference, restoreCheckpoint, saveTurnCheckpoint, turnKey, type Invoke } from "./checkpoints.ts";
+
+function fakeInvoke(responses: Record<string, unknown>) {
+  const calls: [string, Record<string, unknown>][] = [];
+  const invoke: Invoke = async (cmd, args) => {
+    calls.push([cmd, args]);
+    const r = responses[cmd];
+    if (r instanceof Error) throw r;
+    return r;
+  };
+  return { invoke, calls };
+}
+
+test("checkpoint ids follow Conductor's session-<session>-turn-<turn>-<start|end> and are ref-safe", () => {
+  assert.equal(checkpointId("ws1", "ws1:t3", "start"), "session-ws1-turn-t3-start");
+  assert.equal(checkpointId("ws1", "ws1:t3", "end"), "session-ws1-turn-t3-end");
+  assert.equal(turnKey("ws1", "other:t9"), "other-t9");
+  assert.equal(checkpointId("a b", "a b:t1", "end"), "session-a-b-turn-t1-end");
+});
+
+test("saving passes the id to checkpoint_save and never throws", async () => {
+  const ok = fakeInvoke({ checkpoint_save: { saved: true } });
+  await saveTurnCheckpoint(ok.invoke, "/w", "ws1", "ws1:t1", "start");
+  assert.deepEqual(ok.calls, [["checkpoint_save", { workspacePath: "/w", checkpointId: "session-ws1-turn-t1-start" }]]);
+  const failing = fakeInvoke({ checkpoint_save: new Error("boom") });
+  await saveTurnCheckpoint(failing.invoke, "/w", "ws1", "ws1:t1", "end");
+  const skipped = fakeInvoke({ checkpoint_save: { saved: false, skipped: "merge in progress" } });
+  await saveTurnCheckpoint(skipped.invoke, "/w", "ws1", "ws1:t1", "end");
+});
+
+test("reset with files checks the end checkpoint exists, then restores it", async () => {
+  const f = fakeInvoke({ checkpoint_exists: true, checkpoint_restore: null });
+  await restoreCheckpoint(f.invoke, "/w", "ws1", "ws1:t2", true);
+  assert.deepEqual(
+    f.calls.map(([c, a]) => [c, a.checkpointId]),
+    [
+      ["checkpoint_exists", "session-ws1-turn-t2-end"],
+      ["checkpoint_restore", "session-ws1-turn-t2-end"],
+    ],
+  );
+});
+
+test("a missing checkpoint fails with Conductor's message and restores nothing", async () => {
+  const f = fakeInvoke({ checkpoint_exists: false });
+  await assert.rejects(restoreCheckpoint(f.invoke, "/w", "ws1", "ws1:t2", true), /^Error: Checkpoint not found for this turn$/);
+  assert.deepEqual(f.calls.map(([c]) => c), ["checkpoint_exists"]);
+});
+
+test("reset without files touches no checkpoint", async () => {
+  const f = fakeInvoke({});
+  await restoreCheckpoint(f.invoke, "/w", "ws1", "ws1:t2", false);
+  assert.deepEqual(f.calls, []);
+});
+
+test("Also reset files defaults to on", () => {
+  assert.equal(parseResetFilesPreference(null), true);
+  assert.equal(parseResetFilesPreference("true"), true);
+  assert.equal(parseResetFilesPreference("false"), false);
+});

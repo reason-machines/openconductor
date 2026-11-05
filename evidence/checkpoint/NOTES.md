@@ -48,7 +48,7 @@ Mutation check (done once, by hand): removing `clean -fd`, removing the fresh-st
 
 - **Follow-up PR**: `diff <a> <b|current>` (reference behavior), per-workspace `list`/`list_all`, `delete`, and the cross-worktree restore test.
 
-- **How the app drives checkpoints** (per agent turn? before/after tool calls? which ids? stored in its database?). Not visible in the scripts; needs the main-binary analysis. The bundled skill only links to the vendor's checkpoints docs page, which was not read.
+- **How the app drives checkpoints**: now read from the bundled sidecar and frontend (start and end of every chat turn, ids `session-<session>-turn-<turn>-start|end`, saved with `--force`, 60 s timeout). See [evidence/diff/turn-changes.md](../diff/turn-changes.md); ours is `src-tauri/src/turn_checkpoint.rs`.
 - **Timeouts**: the script says the app sends SIGTERM when a save times out and traps TERM/INT to exit 143 after cleanup. We have no timeout or cancellation; the temp dir is still removed on drop and pruned later if the process is killed.
 - **Retention/cleanup of old checkpoint refs**: nothing in the scripts deletes refs; unknown whether the app does.
 - **Spotlight** (watchexec loop that saves `cp-spotlight-<epoch>-<pid>` with `--force` and restores into the root checkout on every change, logging to `/tmp/…-spotlight-<pid>.log`): the checkpoint primitives it needs work (cross-worktree restore is tested), but the watcher itself is not implemented here.
