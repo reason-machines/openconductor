@@ -10,7 +10,7 @@ import { useKeybindingOverrides, useKeybindings } from "../../keybindings/Keybin
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
 import { canSteerNow, headStatusLabel, resolveSendMode, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
-import type { QueueAction } from "./reasonChat.ts";
+import type { QueueAction } from "./chatRuntime.ts";
 import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
 import "./queue.css";
 
