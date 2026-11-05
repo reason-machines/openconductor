@@ -2,7 +2,7 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`1944b98`, 2026-11-05)
+## Result on main (`8da9edf`, 2026-11-05)
 
 | Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `9930339` | `f6c05d7` | `99edc40` | `274ac80` | `962f017` | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -10,6 +10,10 @@ Verifier output for the sidebar, Home and Create-workspace areas. Each item is s
 | Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 85.3% | 62.5% |
 | Create workspace | 17 | 15 | 2 | 0 | 0 | 0 | **94.1%** | 94.1% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 82.4% | 79.4% |
 | **All** | 68 | 56 | 10 | 0 | 1 | 1 | **91.0%** | 90.7% | 86.9% | 86.2% | 84.0% | 83.2% | 81.7% | 79.5% | 75.0% | 68.4% |
+
+**Since `1944b98`.** Read on `8da9edf`. Merges: #438 (`8da9edf`, Settings pages row for row), #432, #455, #445, #459 and evidence-only #442, #454, #458. No score changes.
+
+- `sidebar.transparency` stays missing and `sidebar.ws-numbers` stays partial. #438 adds Conductor's Experimental toggles "Sidebar transparency" and "Show workspace numbers" and stores them, so the detector now flags both as implemented, but no code reads either value: there is no vibrancy code (Conductor reads the key in its theme setup, renderApp @439,002) and no row shows `workspaces.number`. Owners: transparency 0cf7315e, ws-numbers e26c55fa.
 
 **Since `9930339`.** Read on `1944b98`. Merges: #431 (`93f1846`, Go to next unread; `ws-unread` stays partial, see #444), #437 (`1944b98`, archived workspaces list and read-only archived view), and #439, #441, #427, #452 and #444 (no item here).
 

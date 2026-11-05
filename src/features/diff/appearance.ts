@@ -11,7 +11,7 @@ import { codeThemeFrom, type CodeTheme } from "./codeThemes.ts";
 export type ColorVision = "default" | "protanopia-deuteranopia" | "tritanopia";
 export const COLOR_VISIONS: ReadonlyArray<{ value: ColorVision; label: string }> = [
   { value: "default", label: "Default" },
-  { value: "protanopia-deuteranopia", label: "Protanopia / deuteranopia" },
+  { value: "protanopia-deuteranopia", label: "Deuteranopia / Protanopia" },
   { value: "tritanopia", label: "Tritanopia" },
 ];
 
