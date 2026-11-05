@@ -152,8 +152,11 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
 
 type Composing = LineAnchor & { path: string };
 
-/** Props for DiffViewer that add review comments and the Review button. */
-export function useReviewComments(workspaceId: string, chat: ChatBridge, customReviewPrompt?: string | null) {
+/**
+ * Review comments and the Review button for the diff views. `reveal` opens a
+ * file in the diff tab, so comment navigation can move to another file.
+ */
+export function useReviewComments(workspaceId: string, chat: ChatBridge, customReviewPrompt?: string | null, reveal?: (path: string) => void) {
   const store = useMemo(() => commentStoreFor(workspaceId), [workspaceId]);
   const [stored, setStored] = useState<DiffComment[]>([]);
   const [files, setFiles] = useState<FileDiff[]>([]);
@@ -223,8 +226,13 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, customR
     const t = stepComment(commentTargets(comments, files), focused, dir);
     if (!t) return;
     setFocused(t.id);
-    const el = document.getElementById(`oc-comment-${t.id}`) ?? document.getElementById(`oc-file-${encodeURIComponent(files[t.fileIndex].path)}`);
-    el?.scrollIntoView({ block: "center" });
+    const path = files[t.fileIndex].path;
+    reveal?.(path);
+    // The diff tab shows one file: let it render the revealed file before scrolling.
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`oc-comment-${t.id}`) ?? document.getElementById(`oc-file-${encodeURIComponent(path)}`);
+      el?.scrollIntoView({ block: "center" });
+    });
   };
 
   useKeybindings({
