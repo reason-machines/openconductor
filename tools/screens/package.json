@@ -1,0 +1,8 @@
+{
+  "name": "openconductor-screens-harness",
+  "private": true,
+  "type": "module",
+  "description": "Serves Conductor's extracted frontend with a mocked Tauri IPC so REA can capture reference screenshots.",
+  "scripts": { "serve": "node server.mjs" },
+  "dependencies": { "sql.js": "1.12.0" }
+}
