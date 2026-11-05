@@ -247,6 +247,140 @@ a `/settings/repos...` start URL is resolved again once they are loaded. Diverge
   spotlight testing (General preferences, `custom_prompt_general`, comes with the prompts keys);
   repo Misc shows the root path only (no icon, workspaces path or Remove repository yet).
 - Settings search (`vUi` keywords per tab) is not built.
+## Prompts, git flags and environment
+
+Source: REA-extracted frontend on `sven m5 max` (`~/code/conductor-rea-work/frontend/dist/assets`,
+`index-BGEQ8YjU.js` and `renderApp-D_fmY7hW.js`, the bundles hashed in the sections above) and
+the sidecar bundle inside `Conductor.app/Contents/Resources/bin/.internal/conductor-runtime`,
+read on 2026-11-05 with byte searches (python `re` over the files). Everything quoted is data.
+
+### Setting keys and file keys
+
+Conductor's settings table maps each setting key to a settings.toml path (`Me`/`xe` with
+`fileKey`, index offset ~286 k): `custom_prompt_general` → `prompts.general`,
+`custom_prompt_code_review` → `prompts.code_review`, `custom_prompt_create_pr` →
+`prompts.create_pr`, `custom_prompt_fix_errors` → `prompts.fix_errors`,
+`custom_prompt_rename_branch` → `prompts.rename_branch`,
+`custom_prompt_resolve_merge_conflicts` → `prompts.resolve_merge_conflicts`,
+`branch_prefix_custom` → `git.branch_prefix`, `branch_prefix_type` → `git.branch_prefix_type`,
+`delete_branch_on_archive` / `archive_on_merge` / `worktree_push_auto_setup_remote` →
+`git.*`, `environment_variable_files` → `environment_variable_files`, and
+`open_url_template` → `preview_urls` (`BLe`). None sets `workspaceConfigurable: false`, so
+each is valid in user and repository files. `environment_variables` is not a setting key: it
+is read straight from the files (see Environment).
+
+The rebuild stored the custom prefix as `git.branch_prefix_custom`. It now writes Conductor's
+`git.branch_prefix` and reads `branch_prefix_custom` when a file has no `branch_prefix`
+(`settings::model::GitFile`, and the same alias in `oc_scripts::config::effective`). One
+trailing `/` is now accepted in the prefix: Conductor's own placeholder is `e.g. feature/ or
+myname-`, and such a file used to fail validation.
+
+### Layers and precedence
+
+`getSettingForWorkspaceV2(key, {host, mainWorktreePath, selectedWorkspacePath})` resolves a
+key through the layers `TZ` builds (index offset ~320 k), lowest first: user
+`~/.conductor/settings.toml` (source root = home), repository shared
+`<main>/.conductor/settings.{json,toml}`, workspace shared
+`<workspace>/.conductor/settings.{json,toml}` (only when the workspace is not the main
+checkout), repository local `<main>/.conductor/settings.local.{json,toml}`; the managed file
+(`settings.managed`, `h$e`) is merged on top. Every JSON file is read before every TOML file
+(`for (const n of ["json","toml"]) for (const r of layers)`). A value replaces a lower one;
+values that fail the key's schema are dropped per file (`zE` → `droppedSettings`), so the next
+lower valid value wins. Edits from the settings rows go to the repository local file
+(`{scope:"workspace-template", locality:"local"}`); writing the shared file is refused
+("Shared repository settings are read-only in Conductor. Edit the settings file directly.").
+
+The rebuild resolves these keys in `oc_scripts::config::effective` (`load_effective`) with
+the same layer list and drop rule. Its user layer is the app's own
+`$OPENCONDUCTOR_HOME/settings.toml` (`settings::effective::paths`), and repository shared
+files are read from the working tree, as `TZ` does. Edits go through
+`set_local_value` (IPC `repo_settings_set_local`), which accepts only these keys and prunes
+tables a removal empties, like Conductor's `tZ`.
+
+### Prompts
+
+- Each action reads the effective workspace value (`tPt` → `getSettingForWorkspaceV2`), so a
+  repository value replaces the user's; they are not appended. Cloud workspaces instead read
+  the organization's shared and personal prompts from the server (`bg` → `GV`), which is the
+  `/settings/organization/prompts` page ("Applied to your chats in this organization,
+  alongside shared prompts.").
+- Where each one goes (`wg` prompt builders, index offset ~2.49 M): code review `gue`,
+  create PR `hue`, fix errors `mue` ("Fix the failing CI actions. I've attached the failure
+  logs."), resolve conflicts `vue` (after the forge's rebase/merge instruction), branch rename
+  `fue` (the model prompt that names the branch from the first message). Each appends `_g`:
+  a blank value adds nothing; otherwise a block saying the user's preferences take precedence
+  over the defaults, then `<user-preferences>` … `</user-preferences>`.
+- `general` is not a system prompt: for the first message of a new chat the app sends
+  `firstMessage.generalPreferences` and the runtime (`conductor-runtime`, `nQ4` / `lU6`)
+  appends `\n<user-preferences>\n{general}\n</user-preferences>` to that first message,
+  after its own `<system_instruction>` context block.
+- UI: repository Settings › Actions has six rows (`S6e` and the General row, scopes
+  `["workspace"]`): Code review / Create PR / Fix errors / Resolve conflicts / Branch rename
+  preferences, then General preferences ("Add custom instructions sent to the agent at the
+  start of every new chat.", placeholder "Add custom instructions for all agents working in
+  this repo.", no Preview). Each is a textarea that saves trimmed text on blur, shows a
+  "Customized" badge when set, and a "Preview" dialog of the full prompt (`getPromptPreview`).
+  There is no user-scope prompts row: user values come from the user file only.
+- Migration: `repo_custom_prompt_file_migration_complete` (settings table) guards a one-time
+  move of the old `repos.custom_prompt_*` columns into each repository's shared settings file
+  (`iIt`/`oIt`), after which the columns are set to NULL. The rebuild never had those columns,
+  so there is nothing to migrate; the flag is not used.
+
+### Git flags
+
+`branch_prefix_type` and the custom prefix are read at user scope only (`C2`:
+`getSettingForUserV2("branch_prefix_type")`, `getSetting("branch_prefix_custom")` with `//+`
+collapsed to `/`), even though repository files may contain them. The three flags resolve
+per workspace (`lre` → `getSettingForWorkspaceV2(C0, …) !== false` for push upstream).
+
+### Preview URLs
+
+`preview_urls` is an array of `{ name?, url }` (`sLe`/`nLe`: entries with other keys are
+dropped; a string value is parsed as JSON, else taken as one URL). Repository Settings › Misc
+row "Preview URLs" edits it: the first URL is the default, others appear in the Open menu, and
+`$CONDUCTOR_PORT` / `$((CONDUCTOR_PORT + 1..9))` are expanded.
+
+### Environment
+
+`wLe` / `SLe` / `Px` (index offset ~273 k) build the variables per context (`local`, `cloud`),
+layer by layer in the order above:
+
+1. `environment_variable_files` (every layer): an array of paths, or one per line. A path is
+   used as is when absolute, `~` and `~/…` expand to home, otherwise it resolves against the
+   settings file's folder when that file exists, else against the layer's root (repository
+   or home) (`ALe`). Missing files are logged and skipped. Each file is parsed as dotenv
+   (`RLe`): blank and `#` lines skipped, optional `export `, `NAME=value` with
+   `^[A-Za-z_][A-Za-z0-9_]*$`, double quotes with `\n` `\r` `\t` escapes, single quotes literal,
+   unquoted values end at a ` #`. Variables apply to local and cloud.
+2. `environment_variables` (repository and workspace layers only, `s.workspace`): top-level
+   string entries apply to both contexts, `.local` and `.cloud` to one. `"<none>"` deletes the
+   variable from lower layers; `"conductor-keychain"` reads the value from the Keychain
+   (`file-env:<scope>:<key>`); non-string values are skipped.
+3. Managed `environment_variables.local` / `.cloud` override everything (`getManagedEnvVars`).
+
+Stored variables from the Environment page's own table (`env_vars`) are layered over the
+file values unless the file pins the key (`xz`). Consumers (`ng(…, {context:"local"})`): the
+setup script's env (offset ~1.01 M), terminals (`{...shellEnv, ...settingsEnv, ...}`, offset
+~2.93 M) and agent launches (offset ~2.97 M, which drop `ANTHROPIC_API_KEY` /
+`ANTHROPIC_AUTH_TOKEN` unless `claude_provider` is `custom`).
+
+The rebuild implements 1–3 in `oc_scripts::config::effective` (`resolve_effective`,
+`parse_dotenv`, `resolve_env_file`). Divergence: `"conductor-keychain"` values are skipped
+with a warning (the rebuild has no per-variable Keychain store); the `env_vars` table is not
+built.
+
+### REA gaps (prompts, git, environment)
+
+- No REA command maps a settings key to its consumers: `rea trace-javascript-semantics` with
+  literal seeds misses UI strings and Tauri `invoke` names (see "REA gaps hit (settings
+  pages)"), so every consumer above was found by byte search in the extracted bundle.
+- The sidecar runtime is a compiled single-file binary (`conductor-runtime`, 76 MB); REA's
+  JavaScript extractors were not run on it, so `nQ4` / `lU6` / `pQ4` were read with a raw
+  byte search. Its embedded JS is plain text, which is why that worked.
+- The published repository JSON schema (`settings.repo.schema.json`) lists
+  `environment_variables.local/.cloud` but not the top-level shared entries that `SLe` reads;
+  the bundle, not the schema, is the source for those.
+
 ## App preferences in the settings table
 
 Source: REA-extracted frontend on `sven m5 max` (`~/code/conductor-rea-work/frontend/dist/assets`,

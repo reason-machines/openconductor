@@ -192,8 +192,18 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-ws { display: flex; align-items: center; gap: 6px; width: calc(100% - 2px); min-width: 0; padding: 8px 6px 8px 20px; border-radius: 6px; text-align: left; color: var(--sidebar-foreground); cursor: pointer; }
 .sb-ws:hover, .sb-ws[data-active] { background: var(--sidebar-accent); }
 .sb-ws-status { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-right: 2px; flex: none; color: var(--sidebar-muted-foreground); }
-.sb-ws-status.working svg { animation: pulse 1.4s ease-in-out infinite; }
-.sb-ws-status.needs-review { color: var(--add); }
+/* Row status colours: Conductor's dWt (destructive, purple, in-progress, git green, highlight, checks pending). */
+.sb-ws-status[data-color="destructive"] { color: var(--del); }
+.sb-ws-status[data-color="merged"] { color: #a855f7; }
+.sb-ws-status[data-color="in-progress"] { color: #d29922; }
+.sb-ws-status[data-color="ready"] { color: var(--add); }
+.sb-ws-status[data-color="conflict"] { color: #d29922; opacity: 0.8; }
+.sb-ws-status[data-color="checks-pending"] { color: #d29922; }
+.sb-ws-loader circle { animation: sb-ws-dot 1.2s ease-in-out infinite; opacity: 0.35; }
+.sb-ws-loader circle:nth-child(2) { animation-delay: 0.2s; }
+.sb-ws-loader circle:nth-child(3) { animation-delay: 0.4s; }
+@keyframes sb-ws-dot { 0%, 100% { opacity: 0.35; } 40% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .sb-ws-loader circle { animation: none; opacity: 0.8; } }
 .sb-ws-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 450; color: var(--sidebar-muted-foreground); }
 .sb-ws[data-unread] .sb-ws-name { font-weight: 600; color: var(--sidebar-accent-foreground); }
 /* sidebar: ws-diffstat. Conductor's ID with compactCounts: flex gap-1, + then -, each only when > 0.

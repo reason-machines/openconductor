@@ -2,6 +2,7 @@ import { useCallback, useEffect, useReducer } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import type { WorkspaceStatusValue } from "./workspaceStatus";
+import type { RowPr } from "./rowStatus";
 import { newId, workspaceName } from "./names";
 import { isSidebarVisible } from "./selectors";
 import { inTauri } from "../backend";
@@ -30,7 +31,9 @@ export type Action =
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
   /** The workspace's pull request title changed on GitHub (`workspaces.pr_title`). */
-  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null }
+  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; pr?: RowPr | null }
+  /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
+  | { type: "setWorkspaceWorking"; repoId: string; workspaceId: string; working: boolean }
   | { type: "toggleSidebar" }
   /** Sidebar repo menu: Hide / Unhide repository (`repos.hidden`). */
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
@@ -112,7 +115,13 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos };
     }
     case "setWorkspacePr": {
-      const set = (w: Workspace): Workspace => (w.id === action.workspaceId && (w.prTitle ?? null) !== action.prTitle ? { ...w, prTitle: action.prTitle } : w);
+      const set = (w: Workspace): Workspace => {
+        if (w.id !== action.workspaceId) return w;
+        const titleSame = (w.prTitle ?? null) === action.prTitle;
+        const prSame = action.pr === undefined || JSON.stringify(w.pr ?? null) === JSON.stringify(action.pr);
+        if (titleSame && prSame) return w;
+        return { ...w, prTitle: action.prTitle, ...(action.pr === undefined ? {} : { pr: action.pr }) };
+      };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
     }
@@ -135,7 +144,13 @@ export function reducer(state: AppState, action: Action): AppState {
       return action.state;
     case "hydrate": {
       const collapsed = new Set(state.repos.filter((r) => r.collapsed).map((r) => r.id));
-      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined }));
+      // conductor.db has no PR or agent activity: keep what the open workspaces reported.
+      const live = new Map(state.repos.flatMap((r) => r.workspaces).map((w) => [w.id, w]));
+      const keepLive = (w: Workspace): Workspace => {
+        const old = live.get(w.id);
+        return old ? { ...w, status: old.status, ...(old.pr !== undefined ? { pr: old.pr } : {}) } : w;
+      };
+      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined, workspaces: r.workspaces.map(keepLive) }));
       return { ...state, repos, selection: validSelection(state.selection, repos) };
     }
     case "setWorkspaceUnread":
@@ -144,8 +159,18 @@ export function reducer(state: AppState, action: Action): AppState {
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
     case "setWorkspaceStatus":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, manualStatus: action.status }));
+    case "setWorkspaceWorking": {
+      const status: Workspace["status"] = action.working ? "working" : "idle";
+      const ws = state.repos.find((r) => r.id === action.repoId)?.workspaces.find((w) => w.id === action.workspaceId);
+      if (!ws || ws.status === status) return state;
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, status }));
+    }
   }
 }
+
+const demoPr = (over: Partial<RowPr>): RowPr => ({
+  number: 1, isMerged: false, isDraft: false, inMergeQueue: false, mergeState: "BLOCKED", checks: "passing", failingChecks: 0, viewerCanMerge: true, ...over,
+});
 
 /** Sample data for screenshots and demos: open the app with `?demo=1`. */
 export function demoState(): AppState {
@@ -155,7 +180,13 @@ export function demoState(): AppState {
   const repos: Repo[] = [
     {
       id: newId(), name: "openconductor", path: "~/code/openconductor", remote: "https://github.com/example/openconductor", defaultBranch: "main",
-      workspaces: [ws("amber-falcon", "working", 128, 14), ws("quiet-harbor", "needs-review", 42, 7), ws("lunar-reef", "idle", 0, 0)],
+      workspaces: [
+        ws("amber-falcon", "working", 128, 14),
+        { ...ws("quiet-harbor", "idle", 42, 7), pr: demoPr({ number: 12, mergeState: "CLEAN" }) },
+        { ...ws("copper-wren", "idle", 18, 2), pr: demoPr({ number: 14, checks: "failing", failingChecks: 1 }) },
+        { ...ws("misty-larch", "idle", 6, 0), pr: demoPr({ number: 9, isMerged: true }) },
+        ws("lunar-reef", "working", 0, 0),
+      ],
     },
     { id: newId(), name: "api-server", path: "~/code/api-server", defaultBranch: "main", workspaces: [ws("brisk-otter", "idle", 3, 1)] },
     { id: newId(), name: "design-system", path: "~/code/design-system", defaultBranch: "develop", workspaces: [] },
