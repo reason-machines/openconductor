@@ -1,0 +1,54 @@
+//! OpenConductor persistence: the SQLite schema (as sqlx migrations) and
+//! typed data access over it.
+//!
+//! The schema is recreated from the reference app's `conductor.db`
+//! (`evidence/sqlite/conductor.schema.sql`); `tests/schema_parity.rs` fails
+//! when a migrated database differs from it. Migrations are embedded at
+//! compile time from `migrations/` and recorded in `_sqlx_migrations`, the
+//! same bookkeeping table the reference uses (it links sqlx-sqlite 0.8.6).
+
+use std::path::Path;
+use std::str::FromStr;
+use std::time::Duration;
+
+use sqlx::migrate::Migrator;
+use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePool, SqlitePoolOptions};
+
+/// Every schema migration, embedded from `migrations/`.
+pub static MIGRATOR: Migrator = sqlx::migrate!("./migrations");
+
+/// Errors from opening or migrating a database.
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error(transparent)]
+    Sqlx(#[from] sqlx::Error),
+    #[error(transparent)]
+    Migrate(#[from] sqlx::migrate::MigrateError),
+}
+
+pub type Result<T, E = Error> = std::result::Result<T, E>;
+
+/// Open (creating if missing) the database file at `path` in WAL mode and
+/// bring it up to the latest schema.
+pub async fn open(path: impl AsRef<Path>) -> Result<SqlitePool> {
+    let options = SqliteConnectOptions::new()
+        .filename(path)
+        .create_if_missing(true)
+        .journal_mode(SqliteJournalMode::Wal)
+        .busy_timeout(Duration::from_secs(5));
+    let pool = SqlitePoolOptions::new().connect_with(options).await?;
+    MIGRATOR.run(&pool).await?;
+    Ok(pool)
+}
+
+/// A migrated, private in-memory database on a single connection (each
+/// connection to `:memory:` is its own database). For tests and tools.
+pub async fn open_in_memory() -> Result<SqlitePool> {
+    let options = SqliteConnectOptions::from_str("sqlite::memory:")?;
+    let pool = SqlitePoolOptions::new()
+        .max_connections(1)
+        .connect_with(options)
+        .await?;
+    MIGRATOR.run(&pool).await?;
+    Ok(pool)
+}
