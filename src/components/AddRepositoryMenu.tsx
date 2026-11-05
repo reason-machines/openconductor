@@ -7,14 +7,13 @@ import {
   CLONE_PLACEHOLDER,
   CLONING,
   INVALID_CLONE_URL,
-  REPO_EXISTS,
   cloneFailedMessage,
-  findExistingRepo,
   parseCloneUrl,
   type CloneSource,
 } from "../workspace/repoPicker";
 
 interface Props {
+  /** Unused: a remote that is already added is cloned again as a new project, like Conductor (evidence/screens/duplicate-repo.md). */
   repos: Repo[];
   disabled?: boolean;
   /** Label of the closed button: "Add…" next to the picker, "Add repository" when there are none. */
@@ -31,7 +30,7 @@ type Mode = { kind: "closed" } | { kind: "menu" } | { kind: "clone"; status: "id
 const BROWSER_CLONE_PARENT = "~/code";
 
 /** "Add repository" in the create dialog: Open project, or Clone repo from a pasted URL. */
-export function AddRepositoryMenu({ repos, disabled, label, primary, onOpenProject, onCloned, onBusyChange }: Props) {
+export function AddRepositoryMenu({ disabled, label, primary, onOpenProject, onCloned, onBusyChange }: Props) {
   const [mode, setMode] = useState<Mode>({ kind: "closed" });
   const [url, setUrl] = useState("");
   const cloning = mode.kind === "clone" && mode.status === "cloning";
@@ -45,13 +44,11 @@ export function AddRepositoryMenu({ repos, disabled, label, primary, onOpenProje
     if (cloning) return;
     const source = parseCloneUrl(url);
     if (!source) return setMode({ kind: "clone", status: "idle", error: INVALID_CLONE_URL });
-    if (findExistingRepo(repos, { remote: source.url })) return setMode({ kind: "clone", status: "idle", error: REPO_EXISTS });
     const parent = inTauri() ? await pickFolder(CLONE_DESTINATION_TITLE) : BROWSER_CLONE_PARENT;
     if (!parent) return;
     setCloning(true);
     try {
       const repo = await cloneRepository(source.url, parent, source.name);
-      if (findExistingRepo(repos, { path: repo.root })) return setCloning(false, REPO_EXISTS);
       onBusyChange?.(false);
       setMode({ kind: "closed" });
       setUrl("");

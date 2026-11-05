@@ -1,6 +1,8 @@
 // Headless end-to-end run of the debug OpenConductor build through tauri-driver.
 // Env: OC_APP (path to the debug binary), TAURI_DRIVER (default "tauri-driver"),
 // E2E_OUT (artifacts dir, default "e2e-artifacts").
+// After each flow it saves <flow>.png; a screenshot that fails or passes its 20 s
+// bound (WebDriver.screenshot) is reported in results.json, not skipped silently.
 import { spawn } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
@@ -31,7 +33,16 @@ try {
       results.push({ flow: flow.name, status: "fail", ms: Date.now() - started, error: String(e?.message ?? e) });
       console.log(`FAIL ${flow.name}: ${e?.message ?? e}`);
     }
-    await wd.screenshot().then((png) => writeFile(join(out, `${flow.name}.png`), png)).catch(() => undefined);
+    const shotStarted = Date.now();
+    await wd
+      .screenshot()
+      .then((png) => writeFile(join(out, `${flow.name}.png`), png))
+      .catch((e) => {
+        results.at(-1).screenshot = String(e?.message ?? e);
+        console.log(`no ${flow.name}.png: ${e?.message ?? e}`);
+      });
+    const shotMs = Date.now() - shotStarted;
+    if (shotMs > 2000) console.log(`${flow.name}.png took ${shotMs} ms`);
   }
 } catch (e) {
   failed++;

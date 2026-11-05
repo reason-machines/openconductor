@@ -66,9 +66,21 @@ pub fn pr_header_state(inputs: HeaderInputs) -> Option<HeaderState> {
     header_state(&inputs)
 }
 
-/// The message that asks the workspace's agent to open the PR.
+/// The message that asks the workspace's agent to open the PR. Without
+/// explicit `customInstructions`, the effective `prompts.create_pr` (user,
+/// repository and workspace settings files) is appended, as Conductor's
+/// Create PR action reads it per workspace.
 #[tauri::command]
-pub fn pr_create_prompt(request: CreatePrPrompt) -> String {
+pub fn pr_create_prompt(mut request: CreatePrPrompt) -> String {
+    if request.custom_instructions.is_none() {
+        if let Some(root) = request.repo_path.as_deref() {
+            let ws = request.workspace_path.as_deref().map(std::path::Path::new);
+            request.custom_instructions =
+                crate::settings::effective::resolve(std::path::Path::new(root), ws)
+                    .ok()
+                    .and_then(|e| e.prompts.create_pr.map(|p| p.value));
+        }
+    }
     create_pr_prompt(&request.as_request())
 }
 

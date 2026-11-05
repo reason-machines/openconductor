@@ -33,6 +33,7 @@ import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
 import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
+import { useAppPrefs } from "../settings/appPrefs";
 
 interface Props {
   repo: Repo;
@@ -113,6 +114,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   useEffect(() => {
     if (main) onRunningChange?.(running);
   }, [main, running, onRunningChange]);
+  // Garry Mode: tool calls start expanded (Conductor's `garry_mode`, toggled with ⌃O).
+  const garryMode = useAppPrefs().garry_mode;
 
   useEffect(() => {
     setAgent(savedAgent(chatId));
@@ -144,7 +147,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
       if (reason && savedAgent(chatId) === "codex") submitCodex(chatId, cwd, first);
-      else sendReason(workspace.id, cwd, first);
+      else sendReason(workspace.id, cwd, first, [], repo.path || undefined);
     }
   }, [chatId]);
 
@@ -159,7 +162,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     const before = useCodex ? codexSnapshot(chatId).transcript : chatSnapshot(chatId).transcript;
     const first = main && !before.messages.some((m) => m.role === "user");
     if (useCodex) submitCodex(chatId, cwd, text, attached);
-    else submitChat(chatId, cwd, text, mode, attached);
+    else submitChat(chatId, cwd, text, mode, attached, repo.path || undefined);
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
@@ -211,6 +214,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         ) : (
           <Transcript
             transcript={transcript}
+            expandToolsByDefault={garryMode}
             onRetry={(prompt) => submit(prompt, "queue")}
             // Conductor: workspace with a path, not archived; disabled while the agent works.
             // Reset chat and turn changes come from Reason turn checkpoints; Codex turns have none yet.
@@ -483,6 +487,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
   const activeTab = showDiff ? "diff" : (activeReview?.chatId ?? "chat");
   shownChat.current = activeReview?.chatId ?? workspace.id;
+  // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
+  const rightPanelVisible = useAppPrefs().right_panel_visible;
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region>
@@ -512,7 +518,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           </button>
         </div>
       </header>
-      <div className="ws-split">
+      <div className={`ws-split${rightPanelVisible ? "" : " right-hidden"}`}>
         <ChatPanel
           repo={repo}
           workspace={workspace}
@@ -525,17 +531,19 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
           content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} /> : null}
         />
-        <div className="ws-right">
-          <RightPanel
-            diff={diff}
-            actions={review.actions}
-            pr={pullRequest}
-            worktree={workspace.path ?? null}
-            review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
-            repo={repo}
-          />
-          <ScriptsPanel repo={repo} workspace={workspace} />
-        </div>
+        {rightPanelVisible && (
+          <div className="ws-right">
+            <RightPanel
+              diff={diff}
+              actions={review.actions}
+              pr={pullRequest}
+              worktree={workspace.path ?? null}
+              review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
+              repo={repo}
+            />
+            <ScriptsPanel repo={repo} workspace={workspace} />
+          </div>
+        )}
       </div>
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
       <DiffDiscardHost diff={diff} onDiscarded={(f) => chatBridge.current?.attach(revertedNote(f.path))} />

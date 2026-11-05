@@ -10,6 +10,7 @@ import { createPortal } from "react-dom";
 import { HelpMenu } from "./HelpMenu";
 import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
+import { RepoWorkspaceList } from "./PendingWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
 import { pinnedEntries, repoGroupWorkspaces } from "../state/sidebarOrder";
 
@@ -276,14 +277,11 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
                 ]}
               />
             </div>
-            {!repo.collapsed && (
-              <div className="sb-ws-list">
-                {repo.workspaces.length === 0 && <p className="ws-empty">No workspaces</p>}
-                {repoGroupWorkspaces(repo.workspaces).map((ws) => (
-                  <SidebarWorkspaceRow key={ws.id} workspace={ws} targetBranch={repo.defaultBranch} hasRemote={Boolean(repo.remote)} {...rows.rowProps(repo.id, ws)} />
-                ))}
-              </div>
-            )}
+            <RepoWorkspaceList repoId={repo.id} collapsed={!!repo.collapsed} isEmpty={repo.workspaces.length === 0} empty={<p className="ws-empty">No workspaces</p>}>
+              {repoGroupWorkspaces(repo.workspaces).map((ws) => (
+                <SidebarWorkspaceRow key={ws.id} workspace={ws} targetBranch={repo.defaultBranch} hasRemote={Boolean(repo.remote)} {...rows.rowProps(repo.id, ws)} />
+              ))}
+            </RepoWorkspaceList>
           </div>
             ))}
             {hasHiddenRepos(state.repos) && (

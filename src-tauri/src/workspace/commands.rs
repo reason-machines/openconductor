@@ -32,7 +32,6 @@ use crate::db::Db;
 use crate::persistence_commands as persistence;
 use super::service::{CreateWorkspaceRequest, RepositoryInfo, WorkspaceService};
 use super::{Created, Workspace, WorkspaceState};
-use crate::settings::service::SettingsService;
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -187,12 +186,13 @@ pub async fn create_workspace(
         base_branch,
         existing_branch: existing_branch.unwrap_or(false),
         pr_number,
-        // Unreadable settings fall back to Conductor's default (on).
-        push_auto_setup_remote: app
-            .state::<SettingsService>()
-            .get()
-            .map(|s| s.git.worktree_push_auto_setup_remote)
-            .unwrap_or(true),
+        // The repository's effective `git.worktree_push_auto_setup_remote`;
+        // unreadable settings fall back to Conductor's default (on).
+        push_auto_setup_remote: service
+            .repository_root(&repository_id)
+            .ok()
+            .and_then(|root| crate::settings::effective::resolve(&root, None).ok())
+            .is_none_or(|e| e.git.worktree_push_auto_setup_remote.value),
     };
     match service.create_workspace(&req) {
         Ok(created) => {

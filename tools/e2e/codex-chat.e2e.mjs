@@ -112,7 +112,11 @@ const running = () => run("return !!document.querySelector('.composer button[tit
 const approvalButtons = () => run("return [...document.querySelectorAll('.codex-approval button')].map((b) => b.textContent);");
 const clickApproval = (label) =>
   run("const b = [...document.querySelectorAll('.codex-approval button')].find((b) => b.textContent === arguments[0]); if (!b) return false; b.click(); return true;", label);
-const toolNames = () => run("return [...document.querySelectorAll('.chat-tool-name')].map((n) => n.textContent);");
+/** Opens every collapsed "N tool calls" summary (tool rows fold into it once a turn ends), then reads each row's tool name. */
+const toolNames = () =>
+  run(`for (const b of document.querySelectorAll('.chat-tool-summary-row[aria-expanded="false"]')) b.click(); return true;`).then(() =>
+    run("return [...document.querySelectorAll('.chat-tool-name')].map((n) => n.textContent);"),
+  );
 const requests = () =>
   readFileSync(join(home, "codex-fake.jsonl"), "utf8")
     .trim()
