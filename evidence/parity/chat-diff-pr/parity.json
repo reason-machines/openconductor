@@ -1,7 +1,7 @@
 {
  "ledger_id": "rol_ba2a4881609d4eec7a8be78f1d5035ba6cd0f218c0073f39a66ceafade50e29c",
- "reviewed_at": "0fe9eb8e",
- "head": "f836dac0",
+ "reviewed_at": "99edc403",
+ "head": "f9f8bcd7",
  "areas": {
   "chat": {
    "label": "Chat: agent transcript, composer, queue, attachments, models, turn controls",
@@ -110,7 +110,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "#339: Transcript.tsx Part renders assistant text through markdown.ts Markdown (react-markdown + remark-gfm + remark-breaks, lowlight highlighting capped at 100k chars, code blocks with Copy, inline-code URLs as links, escaped raw HTML, links via openUrl). Code-level verdict: the browser-build capture has no assistant message, so the rendering is not shown in screens/. Thinking blocks and user text stay plain. Re-read at a0139339: markdown.ts unchanged; Transcript.tsx:245 still renders assistant text through Markdown. #378 reuses the renderer for diff comments. Code-level; the browser build's sample chat has no assistant reply.",
    "obligation": "Render assistant text blocks as markdown with inline code, lists and syntax-highlighted code blocks.",
    "layers_required": [
@@ -173,7 +173,7 @@
    "score": 0.5,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "Composer.tsx and queue.ts unchanged since 1cedef0. #376: the first message of a new chat gets the effective prompts.general (reasonChat.ts withGeneral via the registered repo_settings_effective). Still no followUpMode passed from WorkspaceView, no model chip, attach button or focus hint, and the selected model and effort never reach the main chat (#271). Re-read at a0139339: Drafts now persist in the composer-drafts local-storage subsystem (WorkspaceView.tsx:136-168, composerDrafts.ts, local_storage_* registered at lib.rs:405-409); Up at the start focuses the last queued message (Composer.tsx:64-68). No followUpMode, model chip, attach button or Cmd+L hint. New bugs: switching chat tabs clears the stored draft (setDraft('') at WorkspaceView.tsx:110, then the save effect at :163 calls clear), and drafts are keyed by workspace.id so review-chat text lands in the main chat's draft. Re-read at 1e73a260: #387 adds an attach button with a hidden multi-file input (Composer.tsx:133-148), Cmd+U via chat.addAttachment (:59), paste (:68, :123) and drop on the form (:111-120). Still no followUpMode passed, no model chip, no Cmd+L focus hint, no send-key or Follow-up behavior setting.",
    "obligation": "Key drafts by chatId and don't clear the stored draft on a tab switch. Add the send-key and Follow-up behavior settings and pass followUpMode in. Add the model chip/picker, attach button and focus hint.",
    "layers_required": [
@@ -210,7 +210,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "New in #303: queue.ts (submit :89, drain :77, turnEnded :108, where a failed turn pauses a non-empty queue, pause/resume :121-128, saveEdit/steerQueued :148/:184, move/reorder) is run by reasonChat.ts setQueue/run (:99-121). Composer QueuePanel (:112) and QueueRow (:157) render a 'Queue paused'/'Queued' header with Pause/Resume, Collapse, and per-row \u2191/\u2193, Edit (Save / Save and steer), Steer and Delete. These are reachable in the app, and the queue behaviour (evidence/chat-queue/README.md) matches. Gaps: the queue lives only in the in-memory Chat (reasonChat.ts:46), and nothing writes queue_order or queue_paused_at, so it is lost on restart. Reorder is buttons, not drag. The chat.queue.* and chat.queueEdit.* keybindings (registry.ts:30) still have no handlers; the edit textarea hard-codes Enter and Escape (Composer.tsx:168-173). Re-read at a0139339: #365 adds drag reorder (Composer.tsx:165-176, queueKeys.ts dropOrder) and binds chat.queue.* / chat.queueEdit.* keys. Still lost on restart: next_queue_order/clear_queue_order have no callers outside openconductor-db; queue_order and queue_paused_at never written. Re-read at 1e73a260: #387 did not change this logic. Drag reorder works; nothing reads or writes queue_order or queue_paused_at, so the queue is lost on restart.",
    "obligation": "Persist queued messages (session_messages.queue_order) and pause state (sessions.queue_paused_at) through chat_messages_save, and restore them in stored().",
    "layers_required": [
@@ -253,7 +253,7 @@
    "score": 1.0,
    "code_score": 0.333,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "Stop calls the registered reason_cancel (a Stop before the prompt is sent is held for that turn). #339: a stopped prompt shows 'Cancelled' and its turn footer an 'Interrupted by user' badge (Transcript.tsx, view.ts cancelledAt); the e2e waits for the badge. #371: cancelled_at is saved to session_messages and reloaded, and a turn left running at quit reloads as cancelled. Implemented for the Reason runner the app uses; claude_cancel is registered but uncalled. Re-read at 1e73a260: Unchanged verdict. A Stop pressed while the stored transcript is still loading is now handled: the turn is marked unsent before the load wait (reasonChat.ts:258, :260) and cancelled at :277. Side effect: the user message appears only after the load finishes (startTurn at :266).",
    "obligation": "Render the cancelled-message state ('Interrupted by user' badge driven by cancelledAt) and persist session_messages.cancelled_at. Wire Stop to the Claude Code and Codex runners once they exist.",
    "layers_required": [
@@ -289,8 +289,8 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
-   "why": "Re-read at 247d5a1: unchanged (#369 is rustfmt only; #315/#345/#386 only add settings and sidebar commands to lib.rs). The only attachment sources are the revert note after a discard (WorkspaceView.tsx bridge.attach) and the review prompt, sent as resource blocks with reason_prompt. Nothing outside src/features/draft-attachments imports draftAttachmentsApi; no attach button, \u2318U, or file/image/paste/drag input. Re-read at a0139339: New app-generated sources only: review comments attach as markdown deduped by commentId (ReviewComments.tsx:360, chatAttachment.ts), and Fix errors sends check logs as attachments (fixErrors.ts:72). draftAttachmentsApi is still imported only inside src/features/draft-attachments: no attach button, Cmd+U, file/image/paste/drag; composer drafts don't save attachments. Re-read at 1e73a260: #387 adds real composer input: attachFiles (WorkspaceView.tsx:202) checks 25 MB and stages files with draft_attachment_write under .context/attachments/<id>/<name> (composerAttachments.ts); removing a chip deletes the staged copy (:222); send uploads with draft_attachment_upload (:228-243); the agent gets UTF-8 text, or a path note for binaries/files over 512 KB. Still missing: images as image blocks, terminal-output attachments, attachments.is_draft, attachments in drafts, chips on sent messages (shows 'Attached: <path>' text, reason.ts:90). Likely bug: tauri.conf.json leaves dragDropEnabled on, so OS file drops probably never reach onDrop. Staged files are not removed on tab switch (WorkspaceView.tsx:115). Re-read at 145d9593: Unchanged. lib.rs changes are the archive commands (#391); no composer or draft_attachments change.",
+   "reviewed_at": "99edc403",
+   "why": "Re-read at 247d5a1: unchanged (#369 is rustfmt only; #315/#345/#386 only add settings and sidebar commands to lib.rs). The only attachment sources are the revert note after a discard (WorkspaceView.tsx bridge.attach) and the review prompt, sent as resource blocks with reason_prompt. Nothing outside src/features/draft-attachments imports draftAttachmentsApi; no attach button, \u2318U, or file/image/paste/drag input. Re-read at a0139339: New app-generated sources only: review comments attach as markdown deduped by commentId (ReviewComments.tsx:360, chatAttachment.ts), and Fix errors sends check logs as attachments (fixErrors.ts:72). draftAttachmentsApi is still imported only inside src/features/draft-attachments: no attach button, Cmd+U, file/image/paste/drag; composer drafts don't save attachments. Re-read at 1e73a260: #387 adds real composer input: attachFiles (WorkspaceView.tsx:202) checks 25 MB and stages files with draft_attachment_write under .context/attachments/<id>/<name> (composerAttachments.ts); removing a chip deletes the staged copy (:222); send uploads with draft_attachment_upload (:228-243); the agent gets UTF-8 text, or a path note for binaries/files over 512 KB. Still missing: images as image blocks, terminal-output attachments, attachments.is_draft, attachments in drafts, chips on sent messages (shows 'Attached: <path>' text, reason.ts:90). Likely bug: tauri.conf.json leaves dragDropEnabled on, so OS file drops probably never reach onDrop. Staged files are not removed on tab switch (WorkspaceView.tsx:115). Re-read at 145d9593: Unchanged. lib.rs changes are the archive commands (#391); no composer or draft_attachments change. Re-read at 99edc403: unchanged; #423 only registers recent_local_repositories (sidebar) in lib.rs.",
    "obligation": "Send images as image blocks, add terminal-output attachments, write attachments.is_draft, keep attachments in composer drafts, show sent attachments as chips, remove staged files on tab switch, and make OS file drops work (dragDropEnabled false or onDragDropEvent with materialize_local_path_attachment).",
    "layers_required": [
     "data",
@@ -333,7 +333,7 @@
    "score": 0.5,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "Settings \u203a Default models (settings/DefaultModelsPage.tsx) saves models.default, and CreateWorkspaceDialog builds firstSession {agent, model, effort} from it. seedTranscript and sendReason forward only the message text, so the chosen model and effort never reach a running agent. There is no composer picker like menu--model-picker's 'Opus 5 High' chip, no favorites, and no per-session effort, and chat.openModelPicker has no handler. Re-read at 1cedef0: #285 adds settings::launch (claude_launch/codex_launch map models.default/models.review and effort to CLI args), tested but called only from launch_tests.rs. The Reason chat still opens with config [], so the chosen model and effort still never reach the agent (#271). Re-read at a0139339: Moved unwired -> partial (#365): the model and effort now reach the running agent for new main chats (chatModel.ts sessionConfig/defaultChatConfig, WorkspaceView.tsx:120, CreateWorkspaceDialog.tsx:164, reasonChat.ts:231; provider.rs session/set_config_option after session/new). Still missing: the stock 'opus' alias maps to no model id (chatModel.test.ts asserts defaultChatConfig(DEFAULT_SETTINGS) is []), effort is hard-coded 'high' for dialog-created workspaces (CreateWorkspaceDialog.tsx:46), config is not re-applied on session/resume, no composer ModelPicker/favorites/per-session effort, chat.openModelPicker has no handler, sessions.claude_effort_level/codex_thinking_level never written. Re-read at 1e73a260: One of four #271 gaps half fixed: dialog effort now comes from models.claude_code.default_effort_level / models.codex.default_thinking_level (CreateWorkspaceDialog.tsx:100, defaultEffortSetting), but falls back to 'high' when unset (:47), so on stock settings dialog chats send high and other chats send no effort. Still open: opus/sonnet aliases map to no model id (diff/review.ts:130), no re-apply on session/resume, no composer ModelPicker, sessions effort columns never written.",
    "obligation": "Add the composer model picker (Cmd+/, chat.openModelPicker) with favorite_models and per-session effort, applied to a live Session with set_config_option and persisted to sessions (model, claude_effort_level, codex_thinking_level). Map the Claude aliases to real model ids, and take the dialog's effort from settings or an effort control.",
    "layers_required": [
@@ -368,7 +368,7 @@
    "score": 0.25,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "PermissionMode::Plan exists only in agent/claude_cli.rs launch args, and no registered command launches Claude. chat.togglePlanMode and chat.approvePlan are keybinding registry entries with no handler, and no plan approval UI exists. Default to plan mode is explicitly omitted from DefaultModelsPage. Re-read at 1cedef0: #285's settings::launch::claude_launch sets permission mode, model, --effort and --settings from settings.toml, but it is called only from settings/launch_tests.rs; claude_chat does not use it and no UI toggles plan mode.",
    "obligation": "Add a plan-mode toggle to the composer (Shift+Tab), pass it to the agent launch, and show the plan review/approve step in the transcript.",
    "layers_required": [
@@ -403,7 +403,7 @@
    "score": 0.0,
    "code_score": 0.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "No code reads or shows context usage or compaction. reason_acp/updates.rs parse_update explicitly returns None for usage updates, and sessions.context_used_percent and is_compacting are schema only.",
    "obligation": "Show a per-session context window usage meter and compaction state, fed by agent usage events.",
    "layers_required": [
@@ -462,7 +462,7 @@
    "score": 0.0,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "MainTabs in WorkspaceView.tsx renders one chat tab titled with the workspace name (plus the 'All changes' diff tab), and the chat id is the workspace id. There is no '+', and no multiple sessions or per-session titles. Workspace.unread is read by Sidebar.tsx but nothing sets it.",
    "obligation": "Support several chat sessions per workspace as tabs, with a '+' button, session titles and unread counts, backed by sessions rows.",
    "layers_required": [
@@ -495,7 +495,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "#371: resetReasonChat restores through checkpoint_exists/checkpoint_restore, truncates the transcript, and ChatSaver's diffForSave deletes the dropped turns from session_messages. Reloaded turns keep their chatId:uuid turn ids, so checkpoints are found after a restart. The Reason Session is still not rewound (ACP cannot drop turns), so the agent remembers the deleted turns. Re-read at a0139339: Unchanged: resetReasonChat (reasonChat.ts:269-276) restores via checkpoint_exists/checkpoint_restore and truncates the saved transcript; the Reason Session is not rewound or re-seeded. Re-read at 1e73a260: Moved partial -> implemented for the Reason chat (#387). resetReasonChat (reasonChat.ts:312-326) restores the checkpoint, truncates the transcript, clears the stored Session id and calls ChatSaver.rewind, which sets sessions.claude_session_id = NULL and records resume_session_at in the same transaction (chat_messages.rs, chat_store_commands.rs rewind_to). The next prompt opens a new Session with the chat's options and attaches the kept conversation as 'Earlier conversation.md' (rewind.ts:48). Limits: text-only re-seed (no tool output, truncated past 200k chars) instead of resuming at the message; a quick quit before the debounced DB write can restore the old Session id; Claude Code/Codex checkpointing waits on those runners.",
    "obligation": "Persist turns in session_messages (turn_id), delete messages after the watermark in storage, rewind or re-seed the agent session after a reset, and apply checkpointing to the Claude Code and Codex runners.",
    "layers_required": [
@@ -537,7 +537,7 @@
    "score": 0.0,
    "code_score": 0.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "No dictation or speech code exists in src/ or src-tauri/src (ledger agent.speech).",
    "obligation": "Add speech-to-text dictation into the composer.",
    "layers_required": [
@@ -562,7 +562,7 @@
    "score": 0.0,
    "code_score": 0.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "The only find bar is features/terminal/FindBar.tsx, which covers terminals. chat.search, searchNext and searchPrevious exist only as keybinding registry entries with no handler, and the transcript has no find UI.",
    "obligation": "Add find-in-transcript (top-level messages) bound to chat.search, with next/previous match navigation.",
    "layers_required": [
@@ -585,7 +585,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "#373: 'All changes' is diffed against the workspace's target ref: target.ts targetBranch picks the open unmerged PR's base (from onLookup), else intended_target_branch (now carried by db_list_workspaces and mapped in persisted.ts), else the repo default; diff/git.rs resolves refs/remotes/origin/<branch> when present and takes the merge base with it. workspace.showUncommittedChanges (\u2318\u2325U) is bound in RightPanel and toggles Changes/Uncommitted \u2194 All changes, matching evidence/diff/target-ref.md. Remaining differences: remote is always 'origin' (repos.remote never filled), no Graphite stack parent. Code-level; native app not run. Re-read at a0139339: Unchanged since #373; RightPanel binding at WorkspaceView.tsx:289-295. Re-read at 1e73a260: Unchanged; #362 only adds reloadQuietly and exposes worktree in useWorkspaceDiff.ts.",
    "obligation": "",
    "layers_required": [
@@ -634,7 +634,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "FileDiffView.tsx unchanged: Pierre CodeView themed by useDiffTheme (#356 follows the Code theme), worker pool, hunks from diff_workspace. WrapLines.tsx deletion only removes the dead WrapToggle; wrap comes from the View options menu. Re-read at a0139339: FileDiffView.tsx untouched; diff_workspace now takes a DiffTarget (api.ts:27-37). Re-read at 1e73a260: Unchanged; the read-only Pierre CodeView path is the same, editable files get an edit:true item in EditProvider (FileDiffView.tsx:114-117, :188-194).",
    "obligation": "",
    "layers_required": [
@@ -682,7 +682,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "No change: LAYOUT_TITLE still reads 'Unified view' / 'Split view' / 'Entire file' (DiffViewer.tsx:30) and LayoutToggle still drives Pierre diffStyle. Re-read at 1e73a260: Unchanged; editing is only available in the Entire file layout (editable.ts:9).",
    "obligation": "",
    "layers_required": [
@@ -712,7 +712,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "Since #282 FileDiffView renders the open file as the single item of a Pierre CodeView in a fixed-height .oc-code-view scroller, so only rows near the viewport render and revealLine scrolls unrendered lines into view. That is what evidence/frontend/pierre-diff-options.md records for Conductor (one-item CodeView per open file). The same evidence shows no windowing on Conductor's Changes list, so the unvirtualized ChangesList matches (inferred from the bundle). Re-read at 1e73a260: Unchanged; still one CodeView item per open file (FileDiffView.tsx:180), Code keyed by edit generation (:224).",
    "obligation": "",
    "layers_required": [
@@ -739,7 +739,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "No change: ViewOptionsMenu is still mounted in DiffTab (DiffViewer.tsx:92) with the 'Hide whitespace changes' / 'Wrap lines' items (Whitespace.tsx:33-34). The #270 file-list fix and the WhitespaceOnly state are intact. Re-read at 1e73a260: Unchanged; hiding whitespace disables editing (editable.ts:9), correctly.",
    "obligation": "",
    "layers_required": [
@@ -780,7 +780,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "No change: ViewedToggle is still mounted at FileDiffView.tsx:211 (defined at :222), with the 'Mark as viewed' / 'Mark as not viewed' tooltip and diff.toggleViewed. Re-read at 1e73a260: Unchanged; ViewedToggle at FileDiffView.tsx:247, new unsaved dot at :245.",
    "obligation": "",
    "layers_required": [
@@ -812,7 +812,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "Unchanged: useCommentNavigation and the mounted CommentNav give floating Previous/Next comment buttons with counts; diff.nextFile/previousFile and nextComment/previousComment keybindings intact. Re-read at a0139339: useCommentNavigation/CommentNav still mounted (FileDiffView.tsx:93, :164); nav.ts untouched. Re-read at 1e73a260: Unchanged; Cmd+S is handled only on the editor container (FileDiffView.tsx:120-126).",
    "obligation": "",
    "layers_required": [
@@ -929,7 +929,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "Unchanged: enableLineSelection with a controlled range; threads persisted through the registered diff_comment_add/edit/delete/resolve/list. Only addition is the read-only hasPendingComments helper (comments.ts). Re-read at a0139339: Old-side comments now stored as 'original' (comments.ts locationOf; Location::parse accepts legacy 'base' in comment_commands.rs) and migrateLocations rewrites older rows (commentsApi.ts, commentStore.ts). Re-read at 1e73a260: Unchanged; comments are not moved when edited lines shift (gap tracked under diff.edit-in-viewer).",
    "obligation": "",
    "layers_required": [
@@ -1012,7 +1012,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "Unchanged: pr/review_comments.rs sync via the registered diff_comments_sync_github and diff_comment_resolve_github. Bodies render as plain spans or SuggestedChange, not markdown (chat/markdown.ts exists since #339). Delete is local-only; no 'Add all GitHub comments to chat', no resolve success/failure messages, no PR-level comments without a file open. Re-read at a0139339: Moved partial -> implemented (#378 and follow-ups): bodies render as sanitized markdown through CommentMarkdown reusing the chat renderer (commentMarkdown.ts, ReviewComments.tsx:131); remote comments get a local-only 'Delete comment' (ReviewComments.tsx:178), which the reference also does (comments-to-chat.md:31, re-synced on next fetch); resolve shows the reference toasts via notify (App.tsx:194, WorkspaceView.tsx:501); diff_comments_sync_github and diff_comment_resolve_github registered (lib.rs:371-372). Difference kept: sync runs on a 120 s timer rather than inside the PR fetch.",
    "obligation": "",
    "layers_required": [
@@ -1058,7 +1058,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "There is no editor in the diff tab and no file-write command. The reference copy 'Edit in diff viewer' appears nowhere in src. Re-read at 1e73a260: Moved missing -> partial (#362). In the Entire file layout the open file becomes a Pierre Editor (FileDiffView.tsx:114-117, :191; EditInViewer.ts:18) with per-worktree drafts that remount on disk changes (EditInViewer.ts:35-76). Cmd+S (editor.saveFile, registry.ts:172) calls the registered diff_write_file (lib.rs:363), which writes via temp file + rename, keeps permissions, and refuses symlinks and paths resolving outside the worktree (write_file.rs:24-74); the diff then reloads quietly. Unsaved dot and 'Failed to save file' error shown (FileDiffView.tsx:245, :250). Missing: editing in unified/split, persisted drafts, moving comments with edited lines, a 'Failed to open editor' boundary. Bugs: in a turn view the editor starts from the turn's end checkpoint (git.rs:34) and Cmd+S writes it over newer changes; unsaved edits are dropped when the file changes on disk (EditInViewer.ts:69-74), while Conductor remounts only with no draft pending; reloadQuietly can overwrite a newer load.",
    "obligation": "Disable editing (or start from the worktree file) while a turn is selected; keep unsaved drafts when the file changes on disk; persist drafts; move comments with edited lines; support editing in unified/split; add the 'Failed to open editor' boundary; guard reloadQuietly against stale responses.",
    "layers_required": [
@@ -1086,7 +1086,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "Code theme (useDiffTheme), fonts, ligatures and color_vision are in place; #331 moved 'Wrap lines' into View options. wrapLines is still stored in the localStorage diff options (types.ts:47-51), not Conductor's wrap_lines settings row. Re-read at 1e73a260: Unchanged; wrapLines still in localStorage view options (types.ts:47-51), not the wrap_lines setting.",
    "obligation": "Store wrap lines as the wrap_lines setting (default true) through get_settings/update_settings.",
    "layers_required": [
@@ -1118,7 +1118,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "usePrActions.create builds its request with createPrRequest (createPr.ts), which calls the registered pr_template and db_repo_prompt('createPR') and passes workspace prTitle/prDescription to pr_create_prompt. The lookup now saves title and body via pr_sync_workspace -> workspaces::set_pr_metadata and db_list_workspaces reloads them. Gap: #376's prompts.create_pr settings-file fallback in pr_create_prompt only runs with repo_path set, and createPrRequest never sends repoPath/workspacePath. Re-read at a0139339: createPr.ts:34-48 sends pr_template, db_repo_prompt('createPR') and the stored title/description to pr_create_prompt but never repoPath/workspacePath, so the settings-file fallback at pr/commands.rs:78-85 never runs. New user-facing bug: Settings > Actions 'Create PR' row (PromptRows.tsx:32, RepoSettingsPage.tsx:129, repo_settings_set_local) saves a prompt that Create PR ignores. Re-read at 145d9593: Unchanged. #391 only removed db_archive_workspace/db_unarchive_workspace from persistence/mod.rs; createPr.ts still sends no repoPath/workspacePath, so prompts.create_pr in Settings > Actions is still ignored.",
    "obligation": "Send repoPath and workspacePath from createPrRequest so prompts.create_pr is applied, and decide which wins between the conductor.db createPR prompt and the settings file (Review lets the settings file win).",
    "layers_required": [
@@ -1170,7 +1170,7 @@
    "score": 0.5,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "#301 registered db_repo_prompt (persistence_commands.rs; lib.rs:296), reading all six custom_prompt_* kinds; the running app reads codeReview for the Review button (reviewApi.ts:9). There is no UI to edit any prompt, and createPR, fixErrors, resolveMergeConflicts, renameBranch and general are read nowhere. Re-read at a0139339: Gap smaller: Settings > Actions rows (Code review, Create PR, General) save to the repo's local settings file via repo_settings_set_local (lib.rs:420). Code review and General are read; Create PR is not. Fix errors, Resolve conflicts and Branch rename have no row and read only conductor.db (db_repo_prompt). Re-read at 145d9593: Unchanged. persistence_commands.rs only lost the two archive commands (#391).",
    "obligation": "Make Create PR read prompts.create_pr. Add rows for Fix errors, Resolve conflicts and Branch rename, and have their flows read the effective settings value as well as conductor.db, as Code review does.",
    "layers_required": [
@@ -1204,7 +1204,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "usePullRequest polls the registered pr_lookup, pr_git_state and pr_header_state with the real hasPendingComments (review.hasPending) and optionalChecksBlock (usePrSettings); PrControl labels every header state (draft, review required, changes requested, merged, 'Loading PR\u2026'). #344's useWorkspacePrSync -> pr_sync_workspace stores derivedStatus with the reference's clear-manual-status rule (workspaces::set_derived_status). Only the open workspace is polled, which is all the header needs. Code-level; not run in the macOS app.",
    "obligation": "Store pr_lookup's derivedStatus (and PR title/description) per workspace, poll every workspace in a batch, and feed the real pending-comment flag and optional-checks-blocking setting into header_state.",
    "layers_required": [
@@ -1240,7 +1240,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "Changed: c1436d2 (#309) made usePullRequest.ts:45-71 read treat_optional_checks_as_blocking through usePrSettings (getSettings, re-read on SETTINGS_CHANGED) and pass it to pr_header_state. WorkspaceView.tsx:373 now passes it to mergeShortcutApplies, and the Settings \u203a Git row is at GitPage.tsx:123-131. ChecksTab is still mounted from RightPanel (WorkspaceView.tsx:231), and checks/api.ts:15 and :24 call pr_check_log and pr_rerun_failed_checks (both registered, lib.rs:365-366). 'Fix errors' is still missing, and Re-run still shows only for Actions-job URLs (checks.ts:66-67), while NOTES:32 shows it for any failing check with a details URL. Re-read at a0139339: Gap smaller (#366): Fix errors in ChecksTab.tsx:103-117/:141-145 shows when a failing check has a details URL (fixErrors.ts:23), fetches Actions logs with pr_check_log, adds db_repo_prompt fixErrors and sends attachments to the workspace chat (WorkspaceView.tsx:493-500), matching evidence/pr/NOTES.md:33. The Re-run rule (Actions jobs only) matches the corrected NOTES:32, so that gap is closed. Still missing: the header 'Fix errors' action and a git.fixErrors (Cmd+Shift+X) handler (registry.ts:167; NOTES:88).",
    "obligation": "Add the header 'Fix errors' action and handle git.fixErrors (Cmd+Shift+X) by calling the same fixErrors flow when checks are failing.",
    "layers_required": [
@@ -1277,7 +1277,7 @@
    "score": 1.0,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "Merge, Automerge and Cancel automerge in PrControl call the registered pr_merge, pr_merge_method and pr_set_auto_merge; git.mergePR goes through mergeShortcutApplies. The TS canMerge (shortcuts.ts) and Rust merge_eligibility::can_merge now share src-tauri/src/pr/fixtures/can_merge_cases.json in their tests, so they cannot drift silently.",
    "obligation": "",
    "layers_required": [
@@ -1311,8 +1311,8 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
-   "why": "Unchanged: onLookup (WorkspaceView.tsx) archives only the open workspace through db_archive_workspace, which only flips the row's state. pr_sync_workspace now writes derived_status 'done' on merge but does not archive. Missing: watch every workspace, per-repo override, toast Open PR/Unarchive, full archive (archive_commit + worktree cleanup), stacked-PR exception. Re-read at a0139339: Gap smaller (#366): useArchiveOnMergeWatcher (useArchiveOnMerge.ts:94-139, App.tsx:66) polls pr_lookup every 60 s for every non-archived workspace; per-repo override via repo_archive_on_merge (lib.rs:345); the toast offers Open PR and Unarchive (db_unarchive_workspace, lib.rs:344). Still missing: full archive (archive_commit, worktree removal); the archive write is fire-and-forget (store.ts:351-355) so the success toast shows even on failure; only the main chat counts as a running agent (useArchiveOnMerge.ts:126); no merge/rebase busy check; no stack exception. Re-read at 1e73a260: No change; #387/#362 touched no PR file (WorkspaceView.tsx additions are in ChatPanel). Last pass's bugs remain: 'archived' toast before db_archive_workspace is awaited (store.ts:351-354, useArchiveOnMerge.ts:52-60); only the main chat counts as a running agent (useArchiveOnMerge.ts:126, WorkspaceView.tsx:105-107); no merge/rebase check (busy_state only in workspace/mod.rs). New minor: Unarchive restores the workspace object captured before archiving (useArchiveOnMerge.ts:56). Re-read at 145d9593: Gap smaller (#391): every archive, including archive on merge, now goes through store.ts startArchive -> the registered archive_workspace (flow.rs): checkpoint, archive_commit, archive script, worktree removal, optional branch deletion; the toast's Unarchive runs unarchive_workspace (worktree re-added, uncommitted work restored, setup rerun). A merge or rebase in progress now refuses the archive (mod.rs:229-231, WorkspaceArchiveBlockedByGitOperationError) and failures show as sticky toasts (App.tsx:75-90). Still wrong: archiveAfterMerge (useArchiveOnMerge.ts:51-58) shows 'PR #N merged and workspace archived' right after dispatch, before archive_workspace resolves, so a refused or failed archive shows both the success toast and the error; Conductor's mGe awaits e.workspace.archiveWorkspace before toastSuccess (index-BGEQ8YjU.js @669,286, read on Sven's Mac). Only the main chat counts as a running agent. No stacked-PR exception ('Workspace kept for the rest of the stack', same offset).",
+   "reviewed_at": "99edc403",
+   "why": "Unchanged: onLookup (WorkspaceView.tsx) archives only the open workspace through db_archive_workspace, which only flips the row's state. pr_sync_workspace now writes derived_status 'done' on merge but does not archive. Missing: watch every workspace, per-repo override, toast Open PR/Unarchive, full archive (archive_commit + worktree cleanup), stacked-PR exception. Re-read at a0139339: Gap smaller (#366): useArchiveOnMergeWatcher (useArchiveOnMerge.ts:94-139, App.tsx:66) polls pr_lookup every 60 s for every non-archived workspace; per-repo override via repo_archive_on_merge (lib.rs:345); the toast offers Open PR and Unarchive (db_unarchive_workspace, lib.rs:344). Still missing: full archive (archive_commit, worktree removal); the archive write is fire-and-forget (store.ts:351-355) so the success toast shows even on failure; only the main chat counts as a running agent (useArchiveOnMerge.ts:126); no merge/rebase busy check; no stack exception. Re-read at 1e73a260: No change; #387/#362 touched no PR file (WorkspaceView.tsx additions are in ChatPanel). Last pass's bugs remain: 'archived' toast before db_archive_workspace is awaited (store.ts:351-354, useArchiveOnMerge.ts:52-60); only the main chat counts as a running agent (useArchiveOnMerge.ts:126, WorkspaceView.tsx:105-107); no merge/rebase check (busy_state only in workspace/mod.rs). New minor: Unarchive restores the workspace object captured before archiving (useArchiveOnMerge.ts:56). Re-read at 145d9593: Gap smaller (#391): every archive, including archive on merge, now goes through store.ts startArchive -> the registered archive_workspace (flow.rs): checkpoint, archive_commit, archive script, worktree removal, optional branch deletion; the toast's Unarchive runs unarchive_workspace (worktree re-added, uncommitted work restored, setup rerun). A merge or rebase in progress now refuses the archive (mod.rs:229-231, WorkspaceArchiveBlockedByGitOperationError) and failures show as sticky toasts (App.tsx:75-90). Still wrong: archiveAfterMerge (useArchiveOnMerge.ts:51-58) shows 'PR #N merged and workspace archived' right after dispatch, before archive_workspace resolves, so a refused or failed archive shows both the success toast and the error; Conductor's mGe awaits e.workspace.archiveWorkspace before toastSuccess (index-BGEQ8YjU.js @669,286, read on Sven's Mac). Only the main chat counts as a running agent. No stacked-PR exception ('Workspace kept for the rest of the stack', same offset). Re-read at 99edc403: unchanged; #423 only registers recent_local_repositories (sidebar) in lib.rs.",
    "obligation": "Await archive_workspace before the success toast (Conductor's mGe) and show only the failure when it rejects. Count review chats as running agents, and add the stacked-PR exception.",
    "layers_required": [
     "backend",
@@ -1349,7 +1349,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "#344: header::header_state returns CommitAndPush on uncommitted changes; control.ts maps it to a 'Commit and push' button and git.commitAndPush (\u2318\u21e7Y, gated by commitShortcutApplies). Both send the registered pr_commit_and_push_prompt ('Commit and push all changes') to the workspace agent via chat.send, matching evidence/pr/NOTES.md (agent instruction, no git command in the app). Code-level; not run in the macOS app. Re-read at a0139339: Unchanged; git.commitAndPush at WorkspaceView.tsx:562-564 still sends pr_commit_and_push_prompt (lib.rs:433) to the agent. Re-read at 1e73a260: Unchanged; git.commitAndPush still gated by commitShortcutApplies (WorkspaceView.tsx:614-615), pr_commit_and_push_prompt registered (lib.rs:437). #387's attachment staging is only in ChatPanel's onSubmit.",
    "obligation": "Implement a commit-and-push-all command, or the agent prompt the reference uses, and wire it to the header CommitAndPush action and the git.commitAndPush keybinding.",
    "layers_required": [
@@ -1385,7 +1385,7 @@
    "score": 1.0,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "Unchanged since a693ae8: Ready for review and Approve PR call the registered pr_mark_ready and pr_approve; PrHeader inside the Checks tab calls pr_edit and pr_retarget. No separate PR tab, and no per-workspace target branch (intended_target_branch) that triggers a retarget. Re-read at a0139339: Moved partial -> implemented (#366): a main-area PR tab (PrTab.tsx:21-39, opened from the 'PR #N' header chip at WorkspaceView.tsx:589-593) holds PrHeader (pr_edit) and the checks; a per-workspace target branch (useTargetBranch.ts:41-75) retargets an open PR with pr_retarget and saves intended_target_branch via db_set_workspace_target_branch (lib.rs:343), reachable from the header TargetChip and the PR header picker. Approve and Mark ready call pr_approve/pr_mark_ready. Out of scope here: the PR tab's Activity timeline and pr.stack.",
    "obligation": "",
    "layers_required": [
@@ -1422,7 +1422,7 @@
    "score": 0.5,
    "code_score": 0.667,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "#376: useReviewChats.start uses reviewPreferences (effective prompts.code_review from repo_settings_effective, falling back to db_repo_prompt 'codeReview') and opens a 'Review N' chat on the review model via reason_open_chat/reason_prompt. Still shown on the Checks tab, no detached-HEAD refusal or read-only gating, findings arrive as chat text not inline diff comments, review tabs are in-memory only. Re-read at a0139339: Closing a review tab now calls hideChat. Review still shows on the Checks tab (WorkspaceView.tsx:310), no detached-HEAD/read-only gating, findings arrive as chat text, review tabs only in the in-memory tabsByWorkspace map.",
    "obligation": "Hide Review on the Checks tab, refuse on detached HEAD, gate read-only workspaces, land findings as inline diff comments, persist review tabs.",
    "layers_required": [
@@ -1459,7 +1459,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "#344: on merge_conflicts (DIRTY) PrControl shows Resolve, and resolveConflicts sends the registered pr_resolve_conflicts_prompt (reads pull.rebase: rebase with --force-with-lease or merge; targets baseRefName or targetBranch; appends db_repo_prompt('resolveMergeConflicts')), matching NOTES.md. Diff shows the operation-in-progress message. Gap: the header Archive has no busy check during a merge or rebase (workspace::git::busy_state is unreachable from the UI); the reference gates Spotlight and archive. Re-read at a0139339: Resolve still sends pr_resolve_conflicts_prompt (lib.rs:434). The header Archive button (WorkspaceView.tsx:608) and the new archive-on-merge paths (useArchiveOnMerge.ts:46-61) archive without checking workspace::git::busy_state, against NOTES.md:140. Re-read at 145d9593: Gap closed (#391): every archive path (header Archive, sidebar menu, palette, archive on merge) dispatches archiveWorkspace -> archive_workspace, whose checkpoint save returns Busy (exit 101) during a merge, rebase, cherry-pick or revert and refuses in safe mode (workspace_archive/mod.rs:229-231); App.tsx shows Conductor's sticky 'Because a Git operation (merge, rebase, cherry-pick, or revert) is in progress, archiving may lose some of your work.' with an Archive button that retries in discardGitOperationState mode. The copy is in Conductor 0.87.6 index-BGEQ8YjU.js (1 hit, read on Sven's Mac). Resolve still sends pr_resolve_conflicts_prompt.",
    "obligation": "None for this feature.",
    "layers_required": [
@@ -1497,7 +1497,7 @@
    "score": 0.5,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "App.tsx mounts CreateWorkspaceDialog, whose CreateFromPicker has a 'Pull requests' tab filled by the registered pr_list_open (bundled gh, list.rs), and gh_issue_list_open fills the Issues tab. Choosing a PR sends existingBranch and prNumber to create_workspace, which fetches pull/<n>/head for forks. Search only filters the first 100 open PRs on the client (createFrom.ts `matches`). A pasted PR outside that list gives 'Could not load that pull request', because NOTES confirms the reference's server-side search/issues and pulls/{n} lookup were not built.",
    "obligation": "Add search-as-you-type over all PRs (gh search prs or search/issues) and by-number or URL lookup (gh pr view), then create the workspace from the result and link it to the PR.",
    "layers_required": [
@@ -1528,7 +1528,7 @@
    "score": 0.0,
    "code_score": 0.0,
    "needs_rereview": false,
-   "reviewed_at": "0fe9eb8e",
+   "reviewed_at": "99edc403",
    "why": "src-tauri and src/ have no stack model, merge-stack command or stack UI. NOTES lists stacked-PR header states and the stack exception to archive-on-merge as not modelled.",
    "obligation": "Model dependent PR stacks (fetch stack fields), show the stack view, and implement merge-stack with its failure state.",
    "layers_required": [
@@ -1547,5 +1547,5 @@
   }
  ],
  "broken_anchors": [],
- "implementation_files_scanned": 514
+ "implementation_files_scanned": 517
 }
