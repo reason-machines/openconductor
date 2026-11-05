@@ -15,10 +15,17 @@
 //!   retries it.
 //!
 //! [`watch`] runs [`sync_once`] at start and after each file change.
+//! [`service`] keeps one session per repository root and reports each step
+//! as an event for the UI. [`setting`] is the per-repository
+//! `spotlight_testing` toggle.
 //!
 //! Everything goes through [`crate::checkpoint`], whose refs are shared by
 //! every worktree of a repository.
 
+pub mod service;
+pub mod setting;
+#[cfg(test)]
+mod setting_tests;
 #[cfg(test)]
 mod tests;
 pub mod watch;

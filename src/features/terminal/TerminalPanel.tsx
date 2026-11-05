@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import "@xterm/xterm/css/xterm.css";
 import { canOpen } from "./tabs";
 import { attachTab, clearTab, closeTab, getTabs, openTab, selectTab, subscribeTabs } from "./session";
+import { FindBar, useTerminalFind } from "./FindBar";
 
 interface Props {
   workspaceId: string;
@@ -13,9 +14,16 @@ interface Props {
 
 function TerminalHost({ id }: { id: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const find = useTerminalFind(id);
   useEffect(() => (ref.current ? attachTab(id, ref.current) : undefined), [id]);
-  // data-terminal tells the shortcut dispatcher that focus is in a terminal.
-  return <div className="term-body" data-terminal ref={ref} />;
+  // data-terminal tells the shortcut dispatcher that focus is in a terminal;
+  // the find bar sits outside it so typing there is ordinary text input.
+  return (
+    <div className="term-body">
+      <FindBar find={find} />
+      <div className="term-mount" data-terminal ref={ref} />
+    </div>
+  );
 }
 
 export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {

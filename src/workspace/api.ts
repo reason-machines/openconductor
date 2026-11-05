@@ -36,6 +36,21 @@ export async function ensureRepository(path: string): Promise<RepositoryDto> {
   return invoke<RepositoryDto>("add_repository", { path });
 }
 
+/**
+ * Clones `url` into `<parentDir>/<name>` and registers it like add_repository.
+ * The browser stand-in waits briefly and returns a fake checkout; `fail-` URLs
+ * reject so the error state can be tried without the desktop app.
+ */
+export async function cloneRepository(url: string, parentDir: string, name: string): Promise<RepositoryDto> {
+  if (!inTauri()) {
+    await new Promise((r) => setTimeout(r, 600));
+    if (/fail-/.test(url)) throw new Error("git clone exited with status 128");
+    const root = `${parentDir.replace(/\/+$/, "")}/${name}`;
+    return { id: root, name, root, defaultBranch: "main" };
+  }
+  return invoke<RepositoryDto>("clone_repository", { url, parentDir });
+}
+
 /** Local branches first, newest first. The browser stand-in lists only the default branch. */
 export async function listBranches(repoId: string, defaultBranch: string): Promise<BranchDto[]> {
   if (!inTauri()) return [{ name: defaultBranch, remote: null, commit: "", isHead: true, committedAt: 0 }];

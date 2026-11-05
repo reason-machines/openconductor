@@ -1,9 +1,9 @@
-import type { Dispatch } from "react";
+import { useEffect, useRef, useState, type Dispatch } from "react";
 import type { AppState, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, PlusIcon, SearchIcon, SidebarIcon } from "./Icons";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, MoreIcon, PlusIcon, SearchIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 
@@ -50,8 +50,46 @@ function NavRow({ icon, label, shortcut, active, onClick }: { icon: JSX.Element;
   );
 }
 
+interface MenuItem { label: string; onSelect: () => void }
+
+/** Hover "..." trigger and its menu on a section or repo header (Conductor's `Aet`). */
+function HeaderMenu({ label, items, className }: { label: string; items: MenuItem[]; className: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: MouseEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent ? e.key === "Escape" : !ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    document.addEventListener("keydown", close);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("keydown", close);
+    };
+  }, [open]);
+  return (
+    <div ref={ref} className={`sb-menu-anchor ${className}`} data-open={open || undefined}>
+      <button type="button" className="sb-menu-trigger" aria-label={`${label} actions`} aria-haspopup="menu" aria-expanded={open} onClick={(e) => { e.stopPropagation(); setOpen(!open); }}>
+        <MoreIcon size={14} />
+      </button>
+      {open && (
+        <div className="sb-menu" role="menu">
+          {items.map((item) => (
+            <button key={item.label} type="button" role="menuitem" className="sb-menu-item" onClick={() => { setOpen(false); item.onSelect(); }}>
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onSearch, nav, info, computerName = "My Mac" }: Props) {
   const sel = state.selection;
+  // Conductor persists this per collapse key; ours lasts for the session.
+  const [groupCollapsed, setGroupCollapsed] = useState(false);
   return (
     <aside className="sidebar" aria-label="Repositories and workspaces">
       {/* Top bar: drag region with the sidebar toggle, back/forward at the top right. */}
@@ -91,16 +129,20 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
         </div>
       </div>
 
-      <div className="sidebar-section-header">
-        <span>Repositories</span>
-        <button className="icon-btn" title="Add repository" aria-label="Add repository" onClick={onOpenProject}>
-          <PlusIcon size={14} />
-        </button>
-      </div>
-
       <nav className="repo-list">
-        {state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
-        {state.repos.map((repo) => (
+        {/* "My workspaces" section header (Conductor's `lBi`): label, hover chevron, "..." menu with Add project. */}
+        <div className="sb-section-header">
+          <button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed} onClick={() => setGroupCollapsed(!groupCollapsed)}>
+            <span className="sb-section-label">My workspaces</span>
+            <span className="sb-section-spacer" aria-hidden />
+            <span className="sb-section-chevron" data-collapsed={groupCollapsed || undefined}>
+              {groupCollapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}
+            </span>
+          </button>
+          <HeaderMenu label="My workspaces" className="sb-section-menu" items={[{ label: "Add project…", onSelect: onOpenProject }]} />
+        </div>
+        {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
+        {!groupCollapsed && state.repos.map((repo) => (
           <div key={repo.id} className="repo">
             <div className="repo-row">
               <button className="repo-toggle" onClick={() => dispatch({ type: "toggleRepo", repoId: repo.id })} aria-expanded={!repo.collapsed}>

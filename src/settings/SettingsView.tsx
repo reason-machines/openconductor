@@ -1,4 +1,5 @@
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
+import { DefaultModelsPage } from "./DefaultModelsPage";
 import { GeneralPage } from "./GeneralPage";
 import { GitPage } from "./GitPage";
 import { pageLabel, SETTINGS_GROUPS, type SettingsPage } from "./pages";
@@ -50,6 +51,8 @@ export function SettingsView({ page, onNavigate, onClose }: Props) {
         )}
         {!settings ? (
           <p className="muted">Loading…</p>
+        ) : page === "models" ? (
+          <DefaultModelsPage settings={settings} save={save} />
         ) : page === "git" ? (
           <GitPage settings={settings} save={save} />
         ) : (

@@ -2,6 +2,7 @@
 // browser (vite dev / preview) so the shell can be developed without Tauri.
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import type { FileMatch } from "./spotlight/quickOpen";
+import type { GitHubOwners } from "./state/githubRepoDialog";
 
 export interface AppInfo {
   name: string;
@@ -37,6 +38,32 @@ export interface RepositoryDto {
 /** Register a local checkout with the workspace service (`add_repository`). */
 export async function addRepository(path: string): Promise<RepositoryDto> {
   return invoke<RepositoryDto>("add_repository", { path });
+}
+
+// Outside Tauri these return demo data so the dialog can be tried in a browser.
+/** Owners for the GitHub repo dialog (`github_repo_owners`). */
+export async function githubRepoOwners(): Promise<GitHubOwners> {
+  if (!inTauri()) return { owners: [{ login: "you", kind: "user" }, { login: "acme", kind: "org" }], orgsError: null };
+  return invoke<GitHubOwners>("github_repo_owners");
+}
+
+/** Whether `owner/repoName` is free on GitHub (`github_repo_availability`). */
+export async function githubRepoAvailability(owner: string, repoName: string): Promise<"available" | "taken"> {
+  if (!inTauri()) return repoName === "taken" ? "taken" : "available";
+  return invoke<"available" | "taken">("github_repo_availability", { owner, repoName });
+}
+
+export interface GitHubRepoCreateRequest {
+  owner: string;
+  repoPath: string;
+  repositoryName: string;
+  existingOriginUrl?: string;
+}
+
+/** Publish a folder as a new private repo (`github_repo_create`). */
+export async function githubRepoCreate(request: GitHubRepoCreateRequest): Promise<{ githubUrl: string; originRemoteUrl: string }> {
+  if (!inTauri()) throw new Error("creating a repo needs the desktop app");
+  return invoke("github_repo_create", { request });
 }
 
 /** Native folder picker; returns null when cancelled or outside Tauri. */

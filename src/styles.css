@@ -128,12 +128,31 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .sb-computer svg { flex: none; color: var(--sidebar-muted-foreground); }
 
 /* Workspace list and footer (restyled in the following sidebar PRs). */
-.repo-list, .sidebar-section-header, .sidebar-footer { margin: 0 8px; }
+.sidebar-footer { margin: 0 8px; }
 .repo-toggle:hover, .ws-item:hover, .icon-btn:hover { background: var(--hover); }
 .ws-item.active { background: var(--active); font-weight: 500; }
-.sidebar-section-header { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 16px 8px 4px; }
+/* "My workspaces" header, after Conductor's `lBi`: text-xs font-semibold muted/70, px-1.5 py-1.5,
+   a w-6 spacer under the hover "..." trigger (right-[26px]) and a chevron shown on hover.
+   The reference puts the label 6px from the sidebar edge, so it hangs into the list's left padding. */
+.sb-section-header { position: relative; margin: 2px 0 0 -6px; }
+.sb-section-toggle { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; padding: 6px; border-radius: 6px; text-align: left; }
+.sb-section-header:hover .sb-section-toggle, .sb-section-header:has([data-open]) .sb-section-toggle { background: var(--sidebar-accent); }
+.sb-section-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; font-weight: 600; color: color-mix(in srgb, var(--sidebar-muted-foreground) 70%, transparent); }
+.sb-section-spacer { width: 24px; flex: none; }
+.sb-section-chevron { display: flex; flex: none; color: var(--sidebar-muted-foreground); }
+.sb-section-chevron:not([data-collapsed]) { opacity: 0; }
+.sb-section-header:hover .sb-section-chevron, .sb-section-header:focus-within .sb-section-chevron { opacity: 1; }
+.sb-section-menu { right: 26px; }
+/* Hover "..." trigger and its menu (Conductor's `Aet`: size-6, muted, visible on header hover or while open). */
+.sb-menu-anchor { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; }
+.sb-menu-trigger { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; color: var(--sidebar-muted-foreground); opacity: 0; }
+.sb-section-header:hover .sb-menu-trigger, .sb-repo:hover .sb-menu-trigger, .sb-menu-anchor[data-open] .sb-menu-trigger, .sb-menu-trigger:focus-visible { opacity: 1; }
+.sb-menu-trigger:hover { color: var(--sidebar-foreground); }
+.sb-menu { position: absolute; right: 0; top: calc(100% + 4px); min-width: 180px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.sb-menu-item { display: block; width: 100%; padding: 6px 8px; border-radius: 4px; text-align: left; font-size: 13px; color: var(--text); white-space: nowrap; }
+.sb-menu-item:hover, .sb-menu-item:focus-visible { background: var(--hover); }
 .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 5px; color: var(--muted); }
-.repo-list { overflow-y: auto; flex: 1; min-height: 0; padding-bottom: 8px; }
+.repo-list { overflow-y: auto; flex: 1; min-height: 0; padding: 0 6px 12px; }
 .sidebar-empty { color: var(--muted); padding: 4px 8px; margin: 0; line-height: 1.5; }
 .repo-row { display: flex; align-items: center; }
 .repo-row .repo-add { opacity: 0; }
@@ -239,6 +258,9 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .field select { flex: 1; min-width: 0; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); font: inherit; color: inherit; font-weight: 400; }
 .field select[aria-invalid="true"] { border-color: var(--del); }
 .field code { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.github-repo-notice { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.github-repo-notice p { flex: 1 1 100%; }
+.field select:disabled, .field input:disabled { opacity: 0.6; }
 .rarity { margin-left: 8px; padding: 1px 6px; border-radius: 999px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; background: var(--hover); color: var(--muted); }
 .rarity-uncommon { color: var(--add); }
 .rarity-rare { color: var(--accent); }
@@ -304,7 +326,18 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .term-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
 .term-dot.running { background: var(--add); }
 .term-dot.exited { background: var(--del); }
-.term-body { flex: 1; min-height: 0; padding: 4px 0 0 8px; overflow: hidden; }
+.term-body { position: relative; flex: 1; min-height: 0; padding: 4px 0 0 8px; overflow: hidden; }
+.term-mount { height: 100%; }
+/* Find in terminal: the reference's floating bar (top-2 right-4, w-96, rounded-lg, shadow-lg). */
+.term-find { position: absolute; top: 8px; right: 16px; z-index: 50; display: flex; align-items: center; gap: 12px; width: 384px; max-width: calc(100% - 32px); padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--sidebar, var(--panel)); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.25), 0 4px 6px -4px rgb(0 0 0 / 0.25); }
+.term-find-icon { display: flex; color: var(--muted); flex-shrink: 0; }
+.term-find input { flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: var(--text); font-size: 14px; }
+.term-find input::placeholder { color: var(--muted); }
+.term-find-count { white-space: nowrap; font-size: 14px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.term-find-buttons { display: flex; align-items: center; gap: 4px; }
+.term-find-buttons button { display: flex; padding: 2px; color: var(--muted); }
+.term-find-buttons button:hover:not(:disabled) { color: var(--text); }
+.term-find-buttons button:disabled { cursor: not-allowed; opacity: 0.4; }
 .term-host, .term-host .xterm { height: 100%; }
 .term-host .xterm-viewport { background-color: var(--panel) !important; }
 .term-error { padding: 8px 12px; color: var(--del); font-size: 12px; }
@@ -349,3 +382,17 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .scripts-meta code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scripts-output { flex: 1; margin: 0; padding: 8px 12px 12px; overflow: auto; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; color: var(--text); }
 .scripts-error { padding: 6px 12px; font-size: 12px; color: #b4483c; }
+
+/* Create workspace: Add repository (Open project / Clone repo) */
+.add-repo { position: relative; display: flex; }
+.add-repo-pop { position: absolute; top: 100%; right: 0; z-index: 25; margin-top: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); padding: 6px; display: flex; flex-direction: column; gap: 6px; font-weight: 400; }
+.add-repo-menu { min-width: 160px; }
+.add-repo-menu button { text-align: left; padding: 6px 8px; border: 0; border-radius: 6px; background: none; color: inherit; font: inherit; cursor: pointer; }
+.add-repo-menu button:hover, .add-repo-menu button:focus-visible { background: var(--hover, rgba(127, 127, 127, 0.12)); outline: 0; }
+.add-repo-clone { width: min(380px, calc(100vw - 64px)); padding: 8px; }
+.add-repo-clone input { min-width: 0; }
+/* In the dialog the clone box spans the repository + base branch row; the menu stays under "Add…". */
+.create-row { position: relative; }
+.create-row .add-repo { position: static; }
+.create-row .add-repo-pop { left: 0; right: 0; width: auto; }
+.create-row .add-repo-menu { left: auto; right: calc(50% + 6px); }

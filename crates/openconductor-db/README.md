@@ -2,7 +2,8 @@
 
 SQLite persistence for OpenConductor: the `conductor.db` schema as sqlx
 migrations, plus typed data access for repositories (`repos`) and
-workspaces (`workspaces`).
+workspaces (`workspaces`), and the `cache.db` schema as its own sqlx
+migrations (`migrations-cache/`, opened with `open_cache`).
 
 ```bash
 cd crates/openconductor-db
@@ -15,6 +16,7 @@ cargo run --example migrate -- /tmp/conductor.db   # write a migrated DB file
 | What | Source |
 | --- | --- |
 | Tables, columns, defaults, indexes, triggers | `evidence/sqlite/conductor.schema.sql` (DDL from an APFS clone of the live DB); `tests/schema_parity.rs` compares a migrated DB to it |
+| `cache.db` tables, columns, indexes and its 6 migrations (version, description) | `evidence/sqlite/cache.schema.sql` and `rea-inspect-sqlite-cache-migrations.json`; `tests/schema_parity.rs` checks both against `CACHE_MIGRATOR` |
 | sqlx 0.8.6 and `_sqlx_migrations` | `evidence/sqlite/README.md` (`sqlx-sqlite-0.8.6` panic paths in the binary; REA `inspect-sqlite-database` of `_sqlx_migrations`) |
 | Workspace states `initializing`, `setting_up`, `ready`, `archiving`, `archived`, plus `failed`, `unstarted`, `deleted` | Migration text embedded in `MacOS/conductor` (`strings`), and SQL in the decoded frontend bundle, both read on the reference Mac |
 | Query shapes (repo list order, delete only when unused, reuse hidden repo by path, conditional state transitions, no workspaces `updated_at` trigger, monotonic `touch`) | SQL string literals in the decoded frontend bundle (the reference app runs its SQL from the webview through `tauri-plugin-sql`) |
@@ -43,6 +45,9 @@ the same SQL). The `cargo` parity test checks the real migrator on every CI run.
 
 - One migration per area instead of the reference's 142 incremental ones.
   Version numbers are ours, so this migrator cannot open a reference DB.
+- `cache.db` keeps the reference's six migration versions and descriptions.
+  Migration 2 ("drop obsolete session tool cache") is a no-op: the dropped
+  table's name is not in the evidence and never existed here.
 - `DEPRECATED_*` columns exist only for schema parity; nothing uses them.
 - New repos get `display_order = max + 1`; the reference reads
   `MAX(display_order)` before inserting, but the increment is assumed.

@@ -17,7 +17,10 @@ export const LINE_EDIT_BYTES: Readonly<Record<string, string>> = {
 
 export const TAB_COMMANDS = ["terminal.newTab", "terminal.newBigTab", "terminal.closeTab", "terminal.clearScrollback"] as const;
 
-const COMMANDS: readonly string[] = [...TAB_COMMANDS, ...Object.keys(LINE_EDIT_BYTES)];
+/** Opens the find bar over the focused terminal. */
+export const FIND_COMMAND = "terminal.search";
+
+const COMMANDS: readonly string[] = [...TAB_COMMANDS, FIND_COMMAND, ...Object.keys(LINE_EDIT_BYTES)];
 const IN_TERMINAL: FocusContext = { activeDialogId: null, typing: false, inTerminal: true };
 
 /** The terminal command a key press inside a terminal runs, if any. */
