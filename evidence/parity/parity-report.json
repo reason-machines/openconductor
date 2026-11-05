@@ -1,7 +1,7 @@
 {
  "ref": "origin/main",
- "sha": "7e75c2dd3a5397c838f7de6ee848ff7f3e933241",
- "source_files_scanned": 517,
+ "sha": "1cedef0ffcc516a5269a5f38eb49cb6f80c95399",
+ "source_files_scanned": 549,
  "reference": {
   "conductor_version": "0.87.6",
   "keybindings_source": {
@@ -13,32 +13,32 @@
  },
  "overall": {
   "total": 419,
-  "matched": 202,
-  "partial": 130,
-  "missing": 87,
-  "parity_pct": 63.7
+  "matched": 255,
+  "partial": 117,
+  "missing": 47,
+  "parity_pct": 74.8
  },
  "areas": {
   "settings": {
    "total": 125,
-   "matched": 53,
-   "partial": 15,
-   "missing": 57,
-   "parity_pct": 48.4,
+   "matched": 104,
+   "partial": 3,
+   "missing": 18,
+   "parity_pct": 84.4,
    "groups": {
     "user settings.toml": {
      "total": 43,
-     "matched": 12,
-     "partial": 9,
-     "missing": 22,
-     "parity_pct": 38.4
+     "matched": 43,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
     },
     "repo settings.toml": {
      "total": 32,
-     "matched": 12,
-     "partial": 3,
-     "missing": 17,
-     "parity_pct": 42.2
+     "matched": 32,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
     },
     "settings table key (deprecated)": {
      "total": 3,
@@ -72,10 +72,10 @@
   },
   "shortcuts": {
    "total": 172,
-   "matched": 57,
-   "partial": 115,
+   "matched": 58,
+   "partial": 114,
    "missing": 0,
-   "parity_pct": 66.6,
+   "parity_pct": 66.9,
    "groups": {
     "General": {
      "total": 30,
@@ -100,10 +100,10 @@
     },
     "Chat": {
      "total": 51,
-     "matched": 4,
-     "partial": 47,
+     "matched": 5,
+     "partial": 46,
      "missing": 0,
-     "parity_pct": 53.9
+     "parity_pct": 54.9
     },
     "Workspace": {
      "total": 37,
@@ -137,10 +137,10 @@
   },
   "persistence": {
    "total": 44,
-   "matched": 32,
+   "matched": 33,
    "partial": 0,
-   "missing": 12,
-   "parity_pct": 72.7,
+   "missing": 11,
+   "parity_pct": 75.0,
    "groups": {
     "conductor.db table": {
      "total": 18,
@@ -158,10 +158,10 @@
     },
     "app data store": {
      "total": 19,
-     "matched": 7,
+     "matched": 8,
      "partial": 0,
-     "missing": 12,
-     "parity_pct": 36.8
+     "missing": 11,
+     "parity_pct": 42.1
     }
    }
   },
@@ -242,13 +242,13 @@
   "conductor_rebuild": {
    "migrations": 5,
    "errors": [],
-   "schema_source": "REA inspect-sqlite-database ev_1f26e08ab3eac8c19a130f381d929e1ab4fa1073e35c8a4f374c45199a580693"
+   "schema_source": "REA inspect-sqlite-database ev_a602a8cde0e92b0a9c4021bb5924e641473d70544c49d09a01a6f98bca64e55b"
   },
   "conductor_reference": "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e",
   "cache_rebuild": {
    "migrations": 6,
    "errors": [],
-   "schema_source": "REA inspect-sqlite-database ev_fe765a9135c41f31e2a45ab4c215be33b5d069306929f142d92d0789c994adb0"
+   "schema_source": "REA inspect-sqlite-database ev_11233dfee5a5d51c82465a2f3a9498d091380b116386bc1fcd1516abd307cf08"
   },
   "cache_reference": "ev_202d2f9fcbf5be8a97cec7b5c27cfa0b7722d0b3e095404e9ac0b0923904aabf",
   "conductor_migration_rows": 139,
@@ -274,10 +274,10 @@
     ],
     "rebuild": {
      "total": 80,
-     "matched": 29,
-     "partial": 12,
-     "missing": 39,
-     "parity_pct": 43.8
+     "matched": 80,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
     }
    },
    {
@@ -290,10 +290,10 @@
     ],
     "rebuild": {
      "total": 7,
-     "matched": 0,
-     "partial": 1,
-     "missing": 6,
-     "parity_pct": 7.1
+     "matched": 7,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
     }
    },
    {
@@ -306,10 +306,10 @@
     ],
     "rebuild": {
      "total": 13,
-     "matched": 0,
-     "partial": 6,
-     "missing": 7,
-     "parity_pct": 23.1
+     "matched": 13,
+     "partial": 0,
+     "missing": 0,
+     "parity_pct": 100.0
     }
    },
    {
@@ -786,76 +786,15 @@
    "area": "settings",
    "parent_obligation": "pr.agent-prompts",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 12,
-    "matched": 0,
-    "partial": 2,
-    "missing": 10,
-    "parity_pct": 8.3
+    "matched": 12,
+    "partial": 0,
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "user settings.toml",
-     "id": "prompts.code_review",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "prompts.create_pr",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "prompts.fix_errors",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "prompts.general",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "prompts.rename_branch",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "prompts.resolve_merge_conflicts",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "prompts.code_review",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "prompts.create_pr",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "prompts.fix_errors",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "prompts.general",
-     "status": "declared"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "prompts.rename_branch",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "prompts.resolve_merge_conflicts",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "settings.toml.models",
@@ -863,86 +802,15 @@
    "area": "settings",
    "parent_obligation": "agent.models",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 14,
-    "matched": 0,
-    "partial": 6,
-    "missing": 8,
-    "parity_pct": 21.4
+    "matched": 14,
+    "partial": 0,
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "user settings.toml",
-     "id": "models.claude_code.default_effort_level",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.claude_code.personality",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.claude_code.review_effort_level",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.codex.default_thinking_level",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.codex.personality",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.codex.review_thinking_level",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.codex.tool_approval_policy",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.default",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.default_fast_mode",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.default_plan_mode",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.review",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.review_fast_mode",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "models.visible_provider_models",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "models.visible_provider_models",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "settings.toml.providers",
@@ -950,86 +818,15 @@
    "area": "settings",
    "parent_obligation": "agent.providers",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 14,
-    "matched": 0,
-    "partial": 2,
-    "missing": 12,
-    "parity_pct": 7.1
+    "matched": 14,
+    "partial": 0,
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "user settings.toml",
-     "id": "bedrock_region",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "claude_code_executable_path",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "claude_provider",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "codex_executable_path",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "codex_provider",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "opencode_executable_path",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "vertex_project_id",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "bedrock_region",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "claude_code_executable_path",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "claude_provider",
-     "status": "declared"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "codex_executable_path",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "codex_provider",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "opencode_executable_path",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "vertex_project_id",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "settings.toml.git",
@@ -1037,26 +834,15 @@
    "area": "settings",
    "parent_obligation": "db.settings-toml",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 10,
-    "matched": 8,
-    "partial": 2,
+    "matched": 10,
+    "partial": 0,
     "missing": 0,
-    "parity_pct": 90.0
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "user settings.toml",
-     "id": "git.branch_prefix",
-     "status": "declared"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "git.branch_prefix",
-     "status": "declared"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "settings.toml.workspace",
@@ -1064,61 +850,15 @@
    "area": "settings",
    "parent_obligation": "db.settings-toml",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 25,
-    "matched": 16,
+    "matched": 25,
     "partial": 0,
-    "missing": 9,
-    "parity_pct": 64.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "user settings.toml",
-     "id": "environment_variable_files",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "preview_urls",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "ssh_key_path",
-     "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "tool_approvals_enabled",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "environment_variable_files",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "environment_variables.local",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "environment_variables.cloud",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "preview_urls",
-     "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "ssh_key_path",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "keys.wire.general",
@@ -1370,10 +1110,10 @@
    "result": "fail",
    "parity": {
     "total": 51,
-    "matched": 4,
-    "partial": 47,
+    "matched": 5,
+    "partial": 46,
     "missing": 0,
-    "parity_pct": 53.9
+    "parity_pct": 54.9
    },
    "gaps": [
     {
@@ -1514,11 +1254,6 @@
     {
      "group": "Chat",
      "id": "chat.denyToolCall",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.cancel",
      "status": "declared"
     },
     {
@@ -2005,21 +1740,15 @@
    "area": "persistence",
    "parent_obligation": "pkg.first-run-bootstrap",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 1,
-    "matched": 0,
+    "matched": 1,
     "partial": 0,
-    "missing": 1,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "app data store",
-     "id": "bin-source-markers",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "persistence.checkpoint-refs",
@@ -2314,35 +2043,35 @@
    "area": "settings",
    "group": "user settings.toml",
    "id": "bedrock_region",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "claude_code_executable_path",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "claude_provider",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "codex_executable_path",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "codex_provider",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
@@ -2356,7 +2085,7 @@
    "area": "settings",
    "group": "user settings.toml",
    "id": "environment_variable_files",
-   "status": "missing",
+   "status": "matched",
    "detail": "array"
   },
   {
@@ -2377,7 +2106,7 @@
    "area": "settings",
    "group": "user settings.toml",
    "id": "git.branch_prefix",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
@@ -2405,147 +2134,147 @@
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.claude_code.default_effort_level",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.claude_code.personality",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.claude_code.review_effort_level",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.codex.default_thinking_level",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.codex.personality",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.codex.review_thinking_level",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.codex.tool_approval_policy",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.default",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.default_fast_mode",
-   "status": "missing",
+   "status": "matched",
    "detail": "boolean"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.default_plan_mode",
-   "status": "missing",
+   "status": "matched",
    "detail": "boolean"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.review",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.review_fast_mode",
-   "status": "missing",
+   "status": "matched",
    "detail": "boolean"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "models.visible_provider_models",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "opencode_executable_path",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "preview_urls",
-   "status": "missing",
+   "status": "matched",
    "detail": "array"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "prompts.code_review",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "prompts.create_pr",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "prompts.fix_errors",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "prompts.general",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "prompts.rename_branch",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "prompts.resolve_merge_conflicts",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
@@ -2594,56 +2323,56 @@
    "area": "settings",
    "group": "user settings.toml",
    "id": "ssh_key_path",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "tool_approvals_enabled",
-   "status": "missing",
+   "status": "matched",
    "detail": "boolean"
   },
   {
    "area": "settings",
    "group": "user settings.toml",
    "id": "vertex_project_id",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "bedrock_region",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "claude_code_executable_path",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "claude_provider",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "codex_executable_path",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "codex_provider",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
@@ -2657,21 +2386,21 @@
    "area": "settings",
    "group": "repo settings.toml",
    "id": "environment_variable_files",
-   "status": "missing",
+   "status": "matched",
    "detail": "array"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "environment_variables.local",
-   "status": "missing",
+   "status": "matched",
    "detail": "object"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "environment_variables.cloud",
-   "status": "missing",
+   "status": "matched",
    "detail": "object"
   },
   {
@@ -2692,7 +2421,7 @@
    "area": "settings",
    "group": "repo settings.toml",
    "id": "git.branch_prefix",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
@@ -2720,63 +2449,63 @@
    "area": "settings",
    "group": "repo settings.toml",
    "id": "models.visible_provider_models",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "opencode_executable_path",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "preview_urls",
-   "status": "missing",
+   "status": "matched",
    "detail": "array"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "prompts.code_review",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "prompts.create_pr",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "prompts.fix_errors",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "prompts.general",
-   "status": "declared",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "prompts.rename_branch",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "prompts.resolve_merge_conflicts",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
@@ -2825,14 +2554,14 @@
    "area": "settings",
    "group": "repo settings.toml",
    "id": "ssh_key_path",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
    "area": "settings",
    "group": "repo settings.toml",
    "id": "vertex_project_id",
-   "status": "missing",
+   "status": "matched",
    "detail": "string"
   },
   {
@@ -3917,8 +3646,8 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.cancel",
-   "status": "declared",
-   "detail": "meta+shift+Backspace; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+Backspace"
   },
   {
    "area": "shortcuts",
@@ -4617,7 +4346,7 @@
    "area": "persistence",
    "group": "app data store",
    "id": "bin-source-markers",
-   "status": "missing",
+   "status": "matched",
    "detail": ".bin-source-markers.json"
   },
   {

@@ -1,7 +1,7 @@
 {
   "schema": "openconductor.parity-verdicts.v1",
   "ref": "origin/main",
-  "verified_at": "2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, create.autostart-run re-read after #324 on 7e75c2d, #278 items on 0e2531b, others on 85e00bb with no later change to their code)",
+  "verified_at": "2026-11-05 (main 1cedef0; sidebar.ws-status, ws-name and ws-branch re-read after #337 on 1cedef0, sidebar items touched by #283, #288, #293, #312 re-read on 8229113, create.autostart-run after #324 on 7e75c2d, #278 items on 0e2531b, others on 85e00bb with no later change to their code)",
   "method": "Read on main: src/, src-tauri/src/, crates/. 'backend' = logic or a command exists and is tested, but no UI path reaches it.",
   "items": {
     "sidebar.home-entry": {
@@ -30,15 +30,15 @@
     },
     "sidebar.ws-name": {
       "verdict": "partial",
-      "why": "workspaceLabel uses user-set name, then PR title, then prettified branch, and WorkspaceView now keeps prTitle in step with GitHub (setWorkspacePr via usePullRequest). renameWorkspace accepts userSet, but no rename dialog calls it and reposFromDb does not map user_set_workspace_name."
+      "why": "workspaceLabel uses user-set name, then PR title, then prettified branch. After #337 reposFromDb maps workspaces.user_set_workspace_name, so a name typed in the create form (initialNaming writes the flag) survives a restart. Still partial: no rename dialog sets it (see sidebar.rename), and reposFromDb does not map workspaces.pr_title, so after a restart a row shows its branch until the workspace is opened and its PR re-read."
     },
     "sidebar.ws-branch": {
       "verdict": "implemented",
-      "why": "The row label is the prettified branch (workspaceLabel, unless it equals the target branch) with a branch icon, and the tooltip shows the raw branch; REA capture matches the reference rows."
+      "why": "The row label is the prettified branch (workspaceLabel, unless it equals the target branch) and the tooltip shows the raw branch; since #337 the leading icon is the row status icon, which is the branch icon (Ready) for a workspace with a remote and no PR, as in the reference rows."
     },
     "sidebar.ws-status": {
       "verdict": "partial",
-      "why": "Re-defined after REA on Conductor 0.87.6 (renderApp-D_fmY7hW.js, sha256 matches the manifest). The row SFi (@9,882,147) takes its icon from aFi(id).status (@9,782,483): oWt (@9,780,356) maps workspaces.state first (EXo: unstarted, initializing/setting_up -> setting-up, failed), then the sessions' aggregated status (nTr @75,194, order needs_plan_response, needs_user_permission, needs_user_input, working, cancelling, waiting, error, idle; only the first six map to an icon), then PR rules (merged, merge-queued, ready-to-merge via RXo, draft-pr, merge-conflict on DIRTY, checks-failing, open-pr), else branch when there is a remote, local otherwise. Icons are WXo (@9,788,432), labels xze. With static visuals an active status (setting-up, working, cancelling, waiting) shows the git status instead. dWt colours only the left PR bar (fWt), not the icon. manualStatus ?? derivedStatus only buckets the status-grouped sidebar (@10,028,481). On main the row icon still keys on ws.status (idle, working, needs-review, archived in SidebarWorkspaceRow.tsx STATUS_LABEL), so none of the workspace-state, waiting-on-user or PR states reach it. PR #337 implements this chain in src/state/rowStatus.ts with tests; implemented once it merges and the row renders it."
+      "why": "After #337 (read on 1cedef0) the row draws its icon from rowStatus (src/state/rowStatus.ts, RowStatusIcon.tsx), a port of Conductor's oWt chain: workspaces.state (now mapped by reposFromDb) first, then the session status, then the PR rules (merged, merge-queued, ready-to-merge, draft, DIRTY, checks failing, open PR), else branch or local. Still partial: SidebarWorkspaceRow passes only working or idle as the session status, set by the open WorkspaceView (setWorkspaceWorking), so needs-plan-response, needs-permission, needs-input, cancelling and waiting never reach a row, and other workspaces' agents are never shown. The PR is known only for workspaces opened this run (conductor.db keeps no PR state). Static visuals is not honoured, and rowStatusColor is put on the icon although Conductor's dWt colours only the left PR bar. Reference (REA on 0.87.6, renderApp-D_fmY7hW.js, sha256 matches the manifest): SFi (@9,882,147) takes its icon from aFi(id).status (@9,782,483); oWt (@9,780,356); EXo; nTr (@75,194); WXo (@9,788,432); xze; manualStatus ?? derivedStatus only groups the status sidebar (@10,028,481)."
     },
     "sidebar.ws-diffstat": {
       "verdict": "implemented",
