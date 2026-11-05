@@ -20,6 +20,7 @@ test("tab shortcuts resolve inside the terminal", () => {
   assert.equal(terminalCommandFor(key("T", { metaKey: true, shiftKey: true })), "terminal.newBigTab");
   assert.equal(terminalCommandFor(key("w", { metaKey: true })), "terminal.closeTab");
   assert.equal(terminalCommandFor(key("k", { metaKey: true })), "terminal.clearScrollback");
+  assert.equal(terminalCommandFor(key("f", { metaKey: true })), "terminal.search");
 });
 
 test("line-editing shortcuts resolve to commands that send shell bytes", () => {
@@ -38,12 +39,12 @@ test("line-editing shortcuts resolve to commands that send shell bytes", () => {
 });
 
 test("ordinary typing reaches the shell untouched", () => {
-  for (const e of [key("k"), key("t"), key("Enter"), key("ArrowLeft"), key("Backspace"), key("c", { ctrlKey: true }), key("w", { ctrlKey: true })])
+  for (const e of [key("k"), key("t"), key("f"), key("f", { ctrlKey: true }), key("Enter"), key("ArrowLeft"), key("Backspace"), key("c", { ctrlKey: true }), key("w", { ctrlKey: true })])
     assert.equal(terminalCommandFor(e), undefined, JSON.stringify(e));
 });
 
 test("every command the terminal handles is in the registry", () => {
   const ids = new Set(COMMANDS.map((c) => c.id));
-  for (const id of [...Object.keys(LINE_EDIT_BYTES), "terminal.newTab", "terminal.newBigTab", "terminal.closeTab", "terminal.clearScrollback"])
+  for (const id of [...Object.keys(LINE_EDIT_BYTES), "terminal.newTab", "terminal.newBigTab", "terminal.closeTab", "terminal.clearScrollback", "terminal.search"])
     assert.ok(ids.has(id), id);
 });
