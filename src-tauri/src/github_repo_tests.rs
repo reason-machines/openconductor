@@ -1,6 +1,6 @@
 use super::*;
+use crate::test_exe::write_executable;
 use std::fs;
-use std::os::unix::fs::PermissionsExt;
 use std::path::PathBuf;
 
 /// A `gh` stand-in in a scratch dir: `api user` prints a login, `api user/orgs`
@@ -23,8 +23,7 @@ fn fake_gh(name: &str, orgs: Option<&str>) -> (GitHub, PathBuf) {
          *) exit 2 ;;\nesac\n"
     );
     let path = dir.join("gh");
-    fs::write(&path, script).unwrap();
-    fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+    write_executable(&path, &script, 0o755);
     let gh = GitHub {
         gh: path.display().to_string(),
     };
@@ -107,8 +106,7 @@ fn create_fixture(name: &str, create_fails: bool) -> (GitHub, PathBuf) {
          *) exit 2 ;;\nesac\n"
     );
     let path = root.join("gh");
-    fs::write(&path, script).unwrap();
-    fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+    write_executable(&path, &script, 0o755);
     let gh = GitHub {
         gh: path.display().to_string(),
     };
@@ -211,8 +209,7 @@ fn scripted_gh(name: &str, body: &str) -> (GitHub, PathBuf) {
     let _ = fs::remove_dir_all(&dir);
     fs::create_dir_all(&dir).unwrap();
     let path = dir.join("gh");
-    fs::write(&path, format!("#!/bin/sh\n{body}\n")).unwrap();
-    fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+    write_executable(&path, &format!("#!/bin/sh\n{body}\n"), 0o755);
     let gh = GitHub {
         gh: path.display().to_string(),
     };

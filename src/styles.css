@@ -2,7 +2,7 @@
   /* App background: Conductor's --background (evidence/frontend/css-tokens.json, :root,.light). */
   --bg: #ffffff;
   --panel: #ffffff;
-  --border: #e1e0dc;
+  --border: #eae8e6;
   --text: #1f2328;
   --muted: #6b6f76;
   --hover: rgba(0, 0, 0, 0.05);
@@ -13,9 +13,11 @@
   --del: #cf222e;
   --amber: #c98a1b;
   --radius: 8px;
-  --secondary: #efefec;
-  --secondary-hover: rgba(239, 239, 236, 0.8);
-  --secondary-text: #3d4147;
+  /* Card fill, border and card text: Conductor's --secondary, --border, --secondary-foreground
+     (evidence/frontend/css-tokens.json `:root,.light` and `.dark`; home.colors). */
+  --secondary: #fafaf9;
+  --secondary-hover: rgba(250, 250, 249, 0.8);
+  --secondary-text: #2c2826;
   /* Sidebar tokens, values from Conductor's --sidebar-* custom properties
      (evidence/frontend/css-tokens.json, :root,.light). */
   --sidebar-width: 256px;
@@ -40,7 +42,7 @@
   :root:not([data-theme="light"]) {
     --bg: #141110;
     --panel: #1d2025;
-    --border: #2b2f36;
+    --border: #ffffff1a;
     --text: #e6e7e9;
     --muted: #8b9099;
     --hover: rgba(255, 255, 255, 0.05);
@@ -49,9 +51,9 @@
     --add: #3fb950;
     --del: #f85149;
     --amber: #e8b04b;
-    --secondary: #24272d;
-    --secondary-hover: rgba(36, 39, 45, 0.8);
-    --secondary-text: #c9ccd1;
+    --secondary: #211e1c;
+    --secondary-hover: rgba(33, 30, 28, 0.8);
+    --secondary-text: #f3f2f1;
     /* evidence/frontend/css-tokens.json, .dark */
     --sidebar-background: #211e1c;
     --sidebar-foreground: #ffffffe6;
@@ -66,7 +68,7 @@
 :root[data-theme="dark"] {
   --bg: #141110;
   --panel: #1d2025;
-  --border: #2b2f36;
+  --border: #ffffff1a;
   --text: #e6e7e9;
   --muted: #8b9099;
   --hover: rgba(255, 255, 255, 0.05);
@@ -75,9 +77,9 @@
   --add: #3fb950;
   --del: #f85149;
   --amber: #e8b04b;
-  --secondary: #24272d;
-  --secondary-hover: rgba(36, 39, 45, 0.8);
-  --secondary-text: #c9ccd1;
+  --secondary: #211e1c;
+  --secondary-hover: rgba(33, 30, 28, 0.8);
+  --secondary-text: #f3f2f1;
   /* evidence/frontend/css-tokens.json, .dark */
   --sidebar-background: #211e1c;
   --sidebar-foreground: #ffffffe6;
@@ -235,7 +237,7 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .home-card:hover { background: var(--secondary-hover); }
 .home-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .home-card-icon { display: flex; }
-.home-card-label { font-size: 13px; }
+.home-card-label { font-size: 14px; line-height: 20px; }
 @keyframes home-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .home-cards-wrap { animation: none; } }
 
@@ -515,3 +517,26 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .create-project-template-icon { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); }
 .create-project-template-label { font-size: 13px; font-weight: 500; }
 .create-project-template-desc { font-size: 10px; font-weight: 400; color: var(--muted); text-align: center; }
+
+/* sidebar: workspace row menu, Pinned group, status dots.
+   Menu after Conductor's context menu (min-w-[200px], items with a trailing kbd hint);
+   status colours are Conductor's --status-* tokens (evidence/frontend/css-tokens.json). */
+.sb-ws[data-menu-open] { background: var(--sidebar-accent); }
+.sb-group { margin-bottom: 4px; }
+.sb-group-count { flex: none; font-size: 12px; color: var(--sidebar-muted-foreground); }
+.sb-group-list .sb-ws { padding-left: 6px; }
+.sb-ctx-menu { position: fixed; z-index: 1000; min-width: 200px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); font-size: 13px; }
+.sb-ctx-sub { position: relative; }
+.sb-ctx-submenu { position: absolute; left: calc(100% + 4px); top: -5px; min-width: 176px; }
+.sb-ctx-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 4px; text-align: left; color: var(--text); white-space: nowrap; }
+.sb-ctx-item:hover, .sb-ctx-item:focus-visible, .sb-ctx-item[aria-expanded="true"] { background: var(--hover); outline: none; }
+.sb-ctx-label { flex: 1; min-width: 0; }
+.sb-ctx-kbd { margin-left: auto; font: inherit; font-size: 12px; color: var(--muted); }
+.sb-ctx-check { margin-left: auto; color: var(--muted); }
+.sb-ctx-sep { height: 1px; margin: 4px -4px; background: var(--border); }
+.sb-status-dot { width: 10px; height: 10px; flex: none; border-radius: 999px; border: 1.5px solid currentColor; }
+.sb-status-dot.status-backlog { color: #8e8885; border-style: dashed; }
+.sb-status-dot.status-in-progress { color: #e0bb00; }
+.sb-status-dot.status-in-review { color: #16a249; }
+.sb-status-dot.status-done { color: #cca694; background: currentColor; }
+.sb-status-dot.status-canceled { color: #a5a09c; background: currentColor; }

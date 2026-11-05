@@ -1,6 +1,6 @@
 use super::*;
 use oc_scripts::config::{load, SettingsPaths, SharedSource};
-use std::os::unix::fs::PermissionsExt;
+use crate::test_exe::write_executable;
 use std::path::PathBuf;
 
 /// A scratch dir with a `gh` stand-in whose `repo create` adds a local bare
@@ -37,8 +37,7 @@ fn fixture(name: &str, create_fails: bool, npx_body: &str) -> (Creator, PathBuf)
 
 fn script(dir: &Path, name: &str, body: &str) -> PathBuf {
     let path = dir.join(name);
-    fs::write(&path, body).unwrap();
-    fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+    write_executable(&path, body, 0o755);
     path
 }
 

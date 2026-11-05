@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useReducer } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
+import type { WorkspaceStatusValue } from "./workspaceStatus";
 import { newId, workspaceName } from "./names";
 import { isSidebarVisible } from "./selectors";
 import { inTauri } from "../backend";
@@ -23,14 +24,24 @@ export type Action =
       repoId: string;
       workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName">;
     }
-  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string }
+  /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
+  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
   /** The workspace's pull request title changed on GitHub (`workspaces.pr_title`). */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null }
   | { type: "toggleSidebar" }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
-  | { type: "hydrate"; repos: Repo[] };
+  | { type: "hydrate"; repos: Repo[] }
+  /* sidebar: row actions (unread, pin, status) */
+  | { type: "setWorkspaceUnread"; repoId: string; workspaceId: string; unread: boolean }
+  | { type: "setWorkspacePinned"; repoId: string; workspaceId: string; pinned: boolean; at?: number }
+  | { type: "setWorkspaceStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue };
+
+function updateWorkspace(state: AppState, repoId: string, workspaceId: string, fn: (w: Workspace) => Workspace): AppState {
+  const repos = state.repos.map((r) => (r.id !== repoId ? r : { ...r, workspaces: r.workspaces.map((w) => (w.id === workspaceId ? fn(w) : w)) }));
+  return { ...state, repos };
+}
 
 const EMPTY: AppState = { repos: [], selection: { kind: "home" } };
 
@@ -82,7 +93,14 @@ export function reducer(state: AppState, action: Action): AppState {
       const rename = (w: Workspace): Workspace =>
         w.id !== action.workspaceId
           ? w
-          : { ...w, name: action.name ?? w.name, branch: action.branch ?? w.branch, placeholderBranchName: null };
+          : {
+              ...w,
+              name: action.name ?? w.name,
+              branch: action.branch ?? w.branch,
+              placeholderBranchName: null,
+              ...(action.userSet && action.name !== undefined ? { userSetWorkspaceName: true } : {}),
+              ...(action.userSet && action.branch !== undefined ? { userSetBranchName: true } : {}),
+            };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(rename) } : r));
       return { ...state, repos };
     }
@@ -107,6 +125,12 @@ export function reducer(state: AppState, action: Action): AppState {
       const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined }));
       return { ...state, repos, selection: validSelection(state.selection, repos) };
     }
+    case "setWorkspaceUnread":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, unread: action.unread || undefined }));
+    case "setWorkspacePinned":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
+    case "setWorkspaceStatus":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, manualStatus: action.status }));
   }
 }
 

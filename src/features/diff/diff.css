@@ -76,7 +76,6 @@
 .oc-diff-list .oc-change { padding: 5px 8px; border-radius: 6px; font-size: 13px; }
 .oc-diff-tab .oc-file { border-radius: 0; border-width: 0 0 1px; margin-bottom: 0; content-visibility: visible; }
 .oc-files { overflow: auto; min-width: 0; padding: 8px 12px 40px; }
-.oc-diff-tab .oc-files { padding: 0 0 40px; }
 .oc-next-unread { position: sticky; bottom: 12px; display: block; width: fit-content; margin: 0 0 0 auto; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15); }
 .oc-file { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; content-visibility: auto; contain-intrinsic-size: auto 200px; }
 .oc-file-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--oc-diff-bg-gutter); border-bottom: 1px solid var(--border); font-size: 12px; }
@@ -84,8 +83,15 @@
 .oc-file-header label { display: inline-flex; gap: 4px; align-items: center; color: var(--muted); }
 .oc-file-note { padding: 10px 12px; color: var(--muted); font-size: 12px; }
 
-/* Pierre draws the code; it never wraps (overflow: scroll), as in Conductor's diff tab. */
+/* Pierre draws the code; it never wraps (overflow: scroll), as in Conductor's diff tab.
+   In the tab the file fills the height under its header, and Pierre's CodeView is the
+   scroller, so it can render only the rows near the viewport. */
 .oc-code-scroll { min-width: 0; font-family: var(--oc-diff-font); }
+.oc-code-view { height: 100%; overflow: auto; }
+.oc-diff-tab .oc-files { display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+.oc-diff-tab .oc-file { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: visible; }
+.oc-diff-tab .oc-file[data-viewed] { flex: 0 0 auto; }
+.oc-diff-tab .oc-code-scroll { position: relative; flex: 1; min-height: 0; }
 .oc-code-scroll .oc-threads { padding: 6px 10px; font-family: var(--font-sans); white-space: normal; }
 
 /* parity:diff.comments-inline:ui  Review comment threads and composer. */
@@ -106,3 +112,8 @@
 .oc-composer textarea:focus { outline: none; }
 .btn.oc-btn-danger, .btn.oc-btn-danger:hover { background: var(--del); border-color: var(--del); color: #fff; }
 .btn.oc-btn-danger .muted { color: inherit; opacity: 0.7; }
+/* Whitespace-only file while whitespace is hidden (Whitespace.tsx). */
+.oc-whitespace-only { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 32px 12px; text-align: center; }
+.oc-whitespace-only p { margin: 0; font-size: 13px; font-weight: 500; }
+.oc-whitespace-only .link-btn { background: none; border: 0; padding: 0; font: inherit; font-size: 12px; color: var(--muted); text-decoration: underline; cursor: pointer; }
+.oc-whitespace-only .link-btn:hover { color: var(--text); }
