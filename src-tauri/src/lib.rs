@@ -15,6 +15,7 @@
 pub mod agent;
 pub mod checkpoint;
 pub mod diff;
+pub mod pr;
 pub mod project;
 pub mod quick_open;
 pub mod scripts;
@@ -136,6 +137,15 @@ pub fn run() {
             settings::commands::provider_status,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
+            pr::commands::pr_lookup,
+            pr::commands::pr_header_state,
+            pr::commands::pr_create_prompt,
+            pr::commands::pr_merge,
+            pr::commands::pr_set_auto_merge,
+            pr::commands::pr_mark_ready,
+            pr::commands::pr_edit,
+            pr::commands::pr_retarget,
+            pr::commands::pr_approve,
             scripts::scripts_config,
             scripts::setup_script_start,
             scripts::setup_script_cancel,

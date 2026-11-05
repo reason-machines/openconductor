@@ -41,4 +41,4 @@ oc-scripts = { path = "../crates/scripts" }
 security-framework = "3"
 
 [lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ["cfg(workspace_std_only)", "cfg(quick_open_std_only)", "cfg(diff_std_only)"] }
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(workspace_std_only)", "cfg(quick_open_std_only)", "cfg(diff_std_only)", "cfg(pr_harness)"] }
