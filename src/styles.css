@@ -193,8 +193,10 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-ws-status.needs-review { color: var(--add); }
 .sb-ws-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 450; color: var(--sidebar-muted-foreground); }
 .sb-ws[data-unread] .sb-ws-name { font-weight: 600; color: var(--sidebar-accent-foreground); }
-.sb-ws-diff { flex: none; padding: 2px 4px; font-family: var(--font-mono); font-size: 11px; line-height: 14px; }
-.sb-ws:not([data-active]) .sb-ws-diff span { color: var(--sidebar-muted-foreground); }
+/* sidebar: ws-diffstat. Conductor's ID with compactCounts: flex gap-1, + then -, each only when > 0.
+   Unselected rows are muted unless Settings > Appearance > Colored sidebar diffs is on. */
+.sb-ws-diff { flex: none; display: flex; align-items: center; gap: 4px; padding: 2px 4px; font-family: var(--font-mono); font-size: 11px; line-height: 14px; }
+:root:not([data-colored-sidebar-diffs]) .sb-ws:not([data-active]) .sb-ws-diff span { color: var(--sidebar-muted-foreground); }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex: none; opacity: 0.6; display: inline-block; }
 .status-dot.working { background: var(--amber); opacity: 1; animation: pulse 1.4s ease-in-out infinite; }
 .status-dot.needs-review { background: var(--add); opacity: 1; }
@@ -276,6 +278,15 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .tabs { display: flex; gap: 4px; padding: 8px 12px 0; border-bottom: 1px solid var(--border); }
 .tabs button { padding: 6px 10px; border-bottom: 2px solid transparent; color: var(--muted); font-weight: 500; }
 .tabs button.active { color: var(--text); border-bottom-color: var(--accent); }
+.tabs-end { margin-left: auto; display: flex; align-items: center; padding-bottom: 4px; }
+.review-action { display: inline-flex; align-items: center; gap: 6px; }
+.review-action .error { color: #d14343; font-size: 12px; }
+.tabs .review-button { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border: 1px solid transparent; border-radius: 6px; color: var(--accent); font-weight: 500; }
+.tabs .review-button:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.review-menu { position: fixed; z-index: 60; width: 180px; box-sizing: border-box; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.review-menu button { display: block; width: 100%; padding: 6px 10px; border: 0; border-radius: 5px; text-align: left; color: var(--text); font-weight: 400; }
+.review-menu button:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.review-chat-info { padding: 8px 16px; font-size: 12px; border-bottom: 1px dashed var(--border); }
 .tab-count { margin-left: 4px; font-size: 11px; color: var(--muted); }
 .chat-scroll[hidden] { display: none; }
 .main-tabs { padding-top: 6px; }

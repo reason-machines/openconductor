@@ -1,10 +1,12 @@
-// parity:diff.changes-list:ui parity:diff.discard:ui parity:diff.whitespace:ui parity:diff.viewed:ui
+// parity:diff.changes-list:ui parity:diff.discard:ui parity:diff.whitespace:ui parity:diff.viewed:ui parity:diff.turn-changes:ui
 // Right panel of the diff viewer: scope and whitespace options, the
 // "N files changed" header and one row per changed file with its stats and a
-// per-file discard. The selected file opens in DiffViewer.tsx's DiffTab.
-import type { ReactNode } from "react";
+// per-file discard, plus Conductor's file context menu (FileContextMenu.tsx).
+// The selected file opens in DiffViewer.tsx's DiffTab.
+import { useCallback, useState, type ReactNode } from "react";
 import "./diff.css";
 import { RevertIcon } from "./DiscardDialog";
+import { FileContextMenu } from "./FileContextMenu";
 import { STATUS_LETTER } from "./FileDiffView";
 import type { FileDiff } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
@@ -25,15 +27,28 @@ export interface ChangesListProps {
   diff: WorkspaceDiff;
   /** Extra toolbar content (comment and review actions). */
   actions?: (files: FileDiff[]) => ReactNode;
+  /** Worktree folder, for the context menu's absolute "Copy path". */
+  worktree?: string | null;
+}
+
+function copy(text: string) {
+  void navigator.clipboard?.writeText(text).catch(() => undefined);
 }
 
 /** Right panel: scope and whitespace options, "N files changed" and one row per file. */
-export function ChangesList({ diff, actions }: ChangesListProps) {
+export function ChangesList({ diff, actions, worktree }: ChangesListProps) {
   const { opts, update, load, files, totals, current } = diff;
+  const [menu, setMenu] = useState<{ index: number; x: number; y: number } | null>(null);
+  const closeMenu = useCallback(() => setMenu(null), []);
+  const menuFile = menu ? files[menu.index] : undefined;
   return (
     <div className="oc-diff oc-diff-list">
       <div className="oc-diff-toolbar">
-        <Seg value={opts.scope} options={[["all", "All changes"], ["uncommitted", "Uncommitted"]]} onChange={(scope) => update({ scope })} />
+        <Seg
+          value={diff.turn ? "turn" : opts.scope}
+          options={diff.turn ? [["all", "All changes"], ["uncommitted", "Uncommitted"], ["turn", "Turn"]] : [["all", "All changes"], ["uncommitted", "Uncommitted"]]}
+          onChange={(scope) => scope !== "turn" && update({ scope })}
+        />
         <label title="Hide changes that only touch whitespace">
           <input type="checkbox" checked={opts.ignoreWhitespace} onChange={(e) => update({ ignoreWhitespace: e.target.checked })} /> Hide whitespace
         </label>
@@ -57,8 +72,8 @@ export function ChangesList({ diff, actions }: ChangesListProps) {
       )}
       {load.state === "ready" && files.length === 0 && (
         <div className="placeholder small">
-          <p>{opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>
-          <p className="muted">Changes the agent makes show up here.</p>
+          <p>{diff.turn ? "No changes in selected turn." : opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>
+          {!diff.turn && <p className="muted">Changes the agent makes show up here.</p>}
         </div>
       )}
       {load.state === "ready" && files.length > 0 && (
@@ -73,7 +88,14 @@ export function ChangesList({ diff, actions }: ChangesListProps) {
             </span>
           </div>
           {files.map((f, i) => (
-            <div key={f.path} className="oc-change-row">
+            <div
+              key={f.path}
+              className="oc-change-row"
+              onContextMenu={(e) => {
+                e.preventDefault();
+                setMenu({ index: i, x: e.clientX, y: e.clientY });
+              }}
+            >
               <button className={`oc-change${diff.isViewed(f) ? " viewed" : ""}`} aria-current={i === current} onClick={() => diff.open(i)} title={`Open ${f.path}`}>
                 <span className="name">{f.path}</span>
                 <span className={`oc-status ${f.status}`}>{STATUS_LETTER[f.status]}</span>
@@ -82,12 +104,28 @@ export function ChangesList({ diff, actions }: ChangesListProps) {
                   <span className="d">-{f.deletions}</span>
                 </span>
               </button>
-              <button className="icon-btn oc-discard" onClick={() => diff.askDiscard(f)} title="Discard changes" aria-label={`Discard changes to ${f.path}`}>
-                <RevertIcon />
-              </button>
+              {diff.canDiscard && (
+                <button className="icon-btn oc-discard" onClick={() => diff.askDiscard(f)} title="Discard changes" aria-label={`Discard changes to ${f.path}`}>
+                  <RevertIcon />
+                </button>
+              )}
             </div>
           ))}
         </nav>
+      )}
+      {menu && menuFile && (
+        <FileContextMenu
+          key={menuFile.path}
+          path={menuFile.path}
+          at={menu}
+          onClose={closeMenu}
+          actions={{
+            view: () => diff.open(menu.index),
+            copyPath: worktree ? () => copy(`${worktree.replace(/\/+$/, "")}/${menuFile.path}`) : undefined,
+            copyRelativePath: () => copy(menuFile.path),
+            discard: () => diff.askDiscard(menuFile),
+          }}
+        />
       )}
     </div>
   );

@@ -126,3 +126,38 @@ test("holding Cmd shows 1..9 on the visible rows, and Cmd+N opens that row", asy
   assert.deepEqual(await hints(), []);
   await page.close();
 });
+
+test("diff stats: muted on unselected rows unless Colored sidebar diffs is on", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${base}/?demo=1`);
+  await row(page, "Quiet harbor").waitFor();
+  const stats = page.locator(`${ROW}:not([data-active]) [data-testid="workspace-diff-stat"] .add`);
+  assert.ok((await stats.count()) > 0, "the demo has unselected rows with changes");
+  const colors = () =>
+    page.evaluate(() => {
+      const add = document.querySelector('[data-testid="left-sidebar-workspace-item"]:not([data-active]) [data-testid="workspace-diff-stat"] .add');
+      const muted = getComputedStyle(document.documentElement).getPropertyValue("--sidebar-muted-foreground").trim();
+      const probe = document.createElement("span");
+      probe.style.color = muted;
+      document.body.append(probe);
+      const mutedRgb = getComputedStyle(probe).color;
+      probe.remove();
+      return { add: getComputedStyle(add).color, muted: mutedRgb, text: add.textContent };
+    });
+  const off = await colors();
+  assert.match(off.text, /^\+(\d+|\d+(\.\d)?k|✱✱)$/);
+  assert.equal(off.add, off.muted, "default (off): unselected rows use the muted color");
+
+  await page.evaluate(() => {
+    const key = "openconductor.settings.preview";
+    const s = JSON.parse(localStorage.getItem(key) ?? "{}");
+    s.appearance = { ...(s.appearance ?? { zoom_level_v2: 1, low_contrast_dark_mode: false }), colored_sidebar_diffs: true };
+    localStorage.setItem(key, JSON.stringify(s));
+  });
+  await page.reload();
+  await row(page, "Quiet harbor").waitFor();
+  await page.waitForFunction(() => document.documentElement.dataset.coloredSidebarDiffs === "");
+  const on = await colors();
+  assert.notEqual(on.add, on.muted, "on: unselected rows keep the green");
+  await page.close();
+});

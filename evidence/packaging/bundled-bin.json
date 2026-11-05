@@ -33,15 +33,16 @@
   },
   "openconductor": {
     "bundled": {
-      "bin/gh": "scripts/fetch-bundled-tools.sh (pinned, both hashes checked) + src-tauri/tauri.bundle.conf.json; installed into $APPDATA/bin at startup by src-tauri/src/bundled_bin.rs; every gh caller resolves $OPENCONDUCTOR_GH, then $APPDATA/bin/gh, then PATH"
+      "bin/gh": "scripts/fetch-bundled-tools.sh (pinned, both hashes checked) + src-tauri/tauri.bundle.conf.json; installed into $APPDATA/bin at startup by src-tauri/src/bundled_bin.rs; every gh caller resolves $OPENCONDUCTOR_GH, then $APPDATA/bin/gh, then PATH",
+      "bin/checkpointer.sh": "src-tauri/resources/bin-tools/checkpointer.sh: shim that execs the app binary in tool mode (`openconductor --tool checkpointer`, src-tauri/src/tool_cli.rs) over the native src-tauri/src/checkpoint; same command line, output and exit codes (0/1/101/102/103) as Conductor's script",
+      "bin/git-busy-check.sh": "src-tauri/resources/bin-tools/git-busy-check.sh: shim into `openconductor --tool git-busy-check` (checkpoint/busy.rs); prints clean | busy:<kind>, exit 2 for a bad path or non-repo",
+      "bin/.internal/openconductor": "symlink to the running app binary, written into $APPDATA/bin at startup by bundled_bin::link_exe; the shims exec it, as Conductor's shims exec bin/.internal/conductor-runtime",
+      "conductor-skill/": "src-tauri/resources/conductor-skill: OpenConductor's own Claude Code plugin (openconductor, skill conductor), written from OpenConductor's code, not copied from Conductor; shipped to Contents/Resources/conductor-skill and passed to every ClaudeLaunch with --plugin-dir (agent/claude_cli.rs)"
     },
     "not_bundled": {
       "bin/watchexec": "spotlight watches natively (src-tauri/src/spotlight/watch.rs); Conductor's build also differs from the upstream release",
-      "bin/checkpointer.sh": "implemented natively in src-tauri/src/checkpoint",
       "bin/spotlighter.sh": "implemented natively in src-tauri/src/spotlight",
-      "bin/git-busy-check.sh": "implemented natively (checkpoint/busy.rs)",
-      "bin/conductor, bin/.internal/*": "shims that exec conductor-runtime, Conductor's Bun-compiled agent runtime; no OpenConductor counterpart yet",
-      "conductor-skill/": "agent-facing skill; belongs with the agent runtime"
+      "bin/conductor, bin/.internal/*": "shims that exec conductor-runtime, Conductor's Bun-compiled agent runtime; no OpenConductor counterpart yet"
     }
   }
 }
