@@ -291,6 +291,8 @@ export const flows = [
           throw new Error(`${e.message}; saw ${JSON.stringify(await read())}`);
         });
 
+      const ROWS = '[data-testid="left-sidebar-workspace-item"]';
+      const selectedRow = await wd.execute("return [...document.querySelectorAll(arguments[0])].findIndex((b) => b.getAttribute('aria-current') === 'page');", [ROWS]);
       try {
         await setStatus("needs_user_permission");
         await waitShown("Needs permission on the sidebar row", sidebarIcons, "needs-user-permission", "Needs permission");
@@ -320,6 +322,9 @@ export const flows = [
         if (!row.some((t) => /^(now|\d+(m|h|d|mo|y))$/.test(t))) throw new Error(`no last-activity time on Home: ${JSON.stringify(row)}`);
       } finally {
         await setStatus("idle").catch(() => {});
+        // Leave the app where the flows before left it: the workspace's view, which later flows use.
+        await wd.execute("document.querySelectorAll(arguments[0])[arguments[1]]?.click();", [ROWS, selectedRow]).catch(() => {});
+        await wd.waitFor("the workspace view again", async () => (await wd.findAll(".workspace")).length > 0).catch(() => {});
       }
     },
   },
