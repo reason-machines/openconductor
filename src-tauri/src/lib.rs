@@ -40,6 +40,7 @@ pub mod github_repo;
 pub mod menu;
 pub mod pr;
 mod local_storage_commands;
+mod onboarding_commands;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
@@ -329,6 +330,8 @@ pub fn run() {
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
             persistence_commands::db_repo_prompt,
+            onboarding_commands::db_first_run_onboarding_step,
+            onboarding_commands::db_finish_first_run_onboarding,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
             sidebar_workspace_commands::db_set_workspace_pinned,
@@ -409,6 +412,9 @@ pub fn run() {
             pr::commands::pr_git_state,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
+            pr::commands::pr_template,
+            pr::commands::pr_commit_and_push_prompt,
+            pr::commands::pr_resolve_conflicts_prompt,
             pr::commands::pr_merge,
             pr::commands::pr_merge_method,
             pr::commands::pr_set_auto_merge,
@@ -418,6 +424,7 @@ pub fn run() {
             pr::commands::pr_edit,
             pr::commands::pr_retarget,
             pr::commands::pr_approve,
+            pr::workspace_sync::pr_sync_workspace,
             scripts::scripts_config,
             scripts::setup_script_start,
             scripts::setup_script_cancel,

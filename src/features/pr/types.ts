@@ -68,6 +68,13 @@ export interface LookupRequest {
   prNumber?: number | null;
 }
 
+/** What `pr_sync_workspace` wrote to the workspace row. */
+export interface WorkspaceSync {
+  /** The derived status was stored and the manual status cleared. */
+  statusChanged: boolean;
+  metadataChanged: boolean;
+}
+
 export interface LookupResult {
   /** null when it could not be determined this time; keep the previous one. */
   lookup: PrLookup | null;
