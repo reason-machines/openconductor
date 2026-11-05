@@ -1,43 +1,43 @@
 {
  "ref": "origin/main",
- "source_files": 137,
- "detector_parity_pct": 64.0,
+ "source_files": 243,
+ "detector_parity_pct": 72.8,
  "areas": {
   "sidebar": {
    "items": 33,
-   "implemented": 12,
-   "partial": 13,
-   "missing": 8,
-   "parity_pct": 56.1,
-   "verdict_implemented": 5,
+   "implemented": 17,
+   "partial": 11,
+   "missing": 5,
+   "parity_pct": 68.2,
+   "verdict_implemented": 12,
    "verdict_partial": 10,
-   "verdict_backend": 7,
-   "verdict_missing": 11,
-   "verdict_parity_pct": 35.6
+   "verdict_backend": 6,
+   "verdict_missing": 5,
+   "verdict_parity_pct": 56.1
   },
   "home": {
    "items": 18,
-   "implemented": 9,
-   "partial": 4,
-   "missing": 5,
-   "parity_pct": 61.1,
-   "verdict_implemented": 4,
-   "verdict_partial": 7,
+   "implemented": 11,
+   "partial": 3,
+   "missing": 4,
+   "parity_pct": 69.4,
+   "verdict_implemented": 8,
+   "verdict_partial": 6,
    "verdict_backend": 0,
-   "verdict_missing": 7,
-   "verdict_parity_pct": 41.7
+   "verdict_missing": 4,
+   "verdict_parity_pct": 61.1
   },
   "create": {
    "items": 17,
-   "implemented": 12,
-   "partial": 4,
+   "implemented": 13,
+   "partial": 3,
    "missing": 1,
-   "parity_pct": 82.4,
-   "verdict_implemented": 7,
-   "verdict_partial": 6,
-   "verdict_backend": 2,
+   "parity_pct": 85.3,
+   "verdict_implemented": 11,
+   "verdict_partial": 4,
+   "verdict_backend": 0,
    "verdict_missing": 2,
-   "verdict_parity_pct": 61.8
+   "verdict_parity_pct": 76.5
   }
  },
  "items": [
@@ -59,14 +59,14 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Sidebar Home row (Sidebar.tsx) and the nav.home binding, handled in src/palette/PaletteHost.tsx (go-home) through the keybinding dispatcher.",
+   "why": "The Home row in Sidebar.tsx selects Home, and PaletteHost.tsx handles nav.home (go-home) through the keybinding dispatcher.",
    "recheck": false
   },
   {
    "id": "sidebar.top-bar",
    "area": "sidebar",
    "feature": "Sidebar top bar with a sidebar toggle button and back/forward history arrows",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "toggle_?(left_?)?sidebar|toggleSidebar",
@@ -75,40 +75,45 @@
     },
     {
      "pattern": "go_?back|goBack|history\\.back|navigate\\(-1\\)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/state/history.ts"
     },
     {
      "pattern": "go_?forward|goForward|history\\.forward",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/state/history.ts"
     }
    ],
-   "verdict": "missing",
-   "why": "No in-sidebar toggle button (toggle is keyboard-only, plus a Home button when hidden) and no back/forward navigation; the reference shows all three at the top of the sidebar.",
+   "verdict": "implemented",
+   "why": "The Sidebar.tsx top bar has a toggle button (toggleSidebar) and back/forward arrows driven by useNavHistory (src/state/useNavHistory.ts, history.ts), disabled at the ends; nav.back/nav.forward use the same handlers. REA capture matches the reference layout.",
    "recheck": false
   },
   {
    "id": "sidebar.computer-switcher",
    "area": "sidebar",
    "feature": "Computer/account switcher at the top of the sidebar (initial avatar, name, chevron)",
-   "status": "missing",
+   "status": "partial",
    "detectors": [
     {
      "pattern": "computer_?switcher|ComputerSwitcher|org_?switcher|OrgSwitcher|account_?switcher|AccountSwitcher",
      "matched": false,
      "file": null
+    },
+    {
+     "pattern": "sb-computer\\b|computerName",
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "Sidebar starts with our logo and name; the reference starts with a computer/account switcher.",
+   "verdict": "partial",
+   "why": "Sidebar.tsx renders a computer row with initial avatar, name and chevron, but App.tsx never passes computerName (always the default name) and clicking it opens no switcher menu.",
    "recheck": false
   },
   {
    "id": "sidebar.primary-nav",
    "area": "sidebar",
    "feature": "Primary nav rows Home, Create and Search above the workspace list",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "HomeIcon|>Home<",
@@ -118,16 +123,16 @@
     {
      "pattern": "(nav|sidebar)\\w*.{0,60}create|CreateNav|create_?nav",
      "matched": true,
-     "file": "src/components/Sidebar.tsx"
+     "file": "src-tauri/src/persistence/mod.rs"
     },
     {
      "pattern": "(nav|sidebar)\\w*.{0,60}search|SearchNav|search_?nav",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "Home and 'New workspace' rows (Sidebar.tsx); no Search row. The reference labels the second row Create.",
+   "verdict": "implemented",
+   "why": "Home, Create (opens the create dialog) and Search (opens the command palette) rows with shortcut hints above the workspace list (Sidebar.tsx); REA capture matches the reference.",
    "recheck": false
   },
   {
@@ -144,27 +149,32 @@
     {
      "pattern": "(collapsed|aria-expanded|toggleRepo|collapse_?repo)",
      "matched": true,
-     "file": "src/components/CreateFromPicker.tsx"
+     "file": "src/components/AddRepositoryMenu.tsx"
     }
    ],
    "verdict": "implemented",
-   "why": "Repos render as collapsible groups with nested workspace rows (Sidebar.tsx, store toggleRepo).",
+   "why": "Repos from conductor.db (reposFromDb in src/state/persisted.ts) render as collapsible groups with nested workspace rows (Sidebar.tsx, toggleRepo); collapsed ids persist in UI prefs.",
    "recheck": false
   },
   {
    "id": "sidebar.workspaces-group",
    "area": "sidebar",
    "feature": "Workspace list grouped under a sentence-case 'my workspaces' label rather than an uppercase repositories header",
-   "status": "missing",
+   "status": "partial",
    "detectors": [
     {
      "pattern": "my_?workspaces|myWorkspaces",
      "matched": false,
      "file": null
+    },
+    {
+     "pattern": "sb-section-label",
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "We show an uppercase 'Repositories' header with a '+'; the reference shows a sentence-case 'my workspaces' label.",
+   "verdict": "implemented",
+   "why": "Sentence-case 'My workspaces' section header with a hover menu replaces the uppercase Repositories header (Sidebar.tsx). Its collapsed state is not persisted.",
    "recheck": false
   },
   {
@@ -179,15 +189,15 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "backend",
-   "why": "crates/openconductor-db/src/repos.rs lists repos by display_order, created_at and appends new ones at the end, but the app does not depend on that crate and the sidebar renders insertion order from localStorage.",
+   "verdict": "partial",
+   "why": "The sidebar lists repos in conductor.db order (db_list_repos -> openconductor_db repos::list, display_order then created_at). No UI or registered command reorders them.",
    "recheck": false
   },
   {
    "id": "sidebar.repo-hide",
    "area": "sidebar",
    "feature": "Hide and unhide a repository, with a toggle to show hidden ones",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "repo\\.hidden|repos\\.hidden|hidden_?repo|hide_?repo|hideRepo|\\bhidden\\s+INTEGER",
@@ -196,12 +206,12 @@
     },
     {
      "pattern": "show_?hidden|unhide",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/persistence/mod.rs"
     }
    ],
    "verdict": "backend",
-   "why": "crates/openconductor-db repos::set_hidden and find_reusable_hidden (tested), but the app does not depend on that crate; no hide/unhide UI.",
+   "why": "repos::set_hidden in the now-linked openconductor-db crate is tested and reposFromDb drops hidden rows, but no hide/unhide command is registered in lib.rs and there is no UI or show-hidden toggle.",
    "recheck": false
   },
   {
@@ -218,11 +228,11 @@
     {
      "pattern": "(emoji|favicon)",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0006_add_navigation_section_emoji_to_cache.sql"
     }
    ],
    "verdict": "backend",
-   "why": "crates/openconductor-db repos::set_icon (tested); not linked into the app and no icon UI.",
+   "why": "repos::set_icon exists in the linked crate and db_list_repos returns icon, but Sidebar.tsx only shows the repo initial; no icon command or picker.",
    "recheck": false
   },
   {
@@ -238,7 +248,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Sidebar '+' runs the Open-project flow in App.tsx: native folder picker, inspect_project_folder, add_repository, then the row is added with the backend's default branch.",
+   "why": "The My workspaces menu (HeaderMenu in Sidebar.tsx) runs openProject in App.tsx: folder picker, inspect_project_folder, add_repository, which now records the repo in conductor.db (on_repository_added).",
    "recheck": false
   },
   {
@@ -259,7 +269,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Row shows the name; user_set_workspace_name / user_set_branch_name are now modelled (src/state/types.ts) but no user rename sets them, and rows show a name where the reference shows the branch-style title.",
+   "why": "workspaceLabel (src/components/sidebarLabel.ts) applies user-set name, then PR title, then prettified branch, but reposFromDb never maps user_set_workspace_name or a PR title from conductor.db and no user rename sets the flag, so rows always show the branch-derived label.",
    "recheck": false
   },
   {
@@ -279,8 +289,8 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "partial",
-   "why": "Branch appears only in the row tooltip.",
+   "verdict": "implemented",
+   "why": "The row label is the prettified branch (workspaceLabel, unless it equals the target branch) with a branch icon, and the tooltip shows the raw branch; REA capture matches the reference rows.",
    "recheck": false
   },
   {
@@ -306,7 +316,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Status dot uses our own idle/working/needs-review/archived model, not derived/manual status with in-progress default (src/state/types.ts).",
+   "why": "Rows show a status icon, but reposFromDb hardcodes status idle and ignores derivedStatus/manualStatus from db_list_workspaces; no derived/manual status, in-progress default or override UI.",
    "recheck": false
   },
   {
@@ -332,7 +342,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "+/- counts render from stored placeholder numbers; not computed from git, no colour setting.",
+   "why": "Sidebar.tsx renders +/- counts (coloured on the active row), but reposFromDb sets them to 0/0, so the desktop app never shows them (only ?demo=1 and localStorage seeds do); no setting to colour unselected rows.",
    "recheck": false
   },
   {
@@ -353,12 +363,12 @@
     },
     {
      "pattern": "next_?unread",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/features/diff/nav.ts"
     }
    ],
    "verdict": "backend",
-   "why": "crates/openconductor-db workspaces::set_unread (tested); crate not linked into the app; no unread styling or next-unread command.",
+   "why": "workspaces::set_unread is in the linked crate and Sidebar.tsx/styles.css style data-unread, but reposFromDb drops the unread field, nothing sets it, and there is no mark-as-unread action or next-unread command.",
    "recheck": false
   },
   {
@@ -379,7 +389,7 @@
     }
    ],
    "verdict": "backend",
-   "why": "crates/openconductor-db workspaces::set_pinned_at (tested); crate not linked into the app; no pinned group or pin action.",
+   "why": "workspaces::set_pinned_at is in the linked crate and db_list_workspaces returns pinnedAt; the frontend ignores it and there is no pin action, command or pinned group.",
    "recheck": false
   },
   {
@@ -391,16 +401,16 @@
     {
      "pattern": "navigation_?sections?|nav_?section",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0004_create_navigation_sections_cache.sql"
     },
     {
      "pattern": "(move_?to_?section|moveToSection|section_?membership)",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0004_create_navigation_sections_cache.sql"
     }
    ],
    "verdict": "missing",
-   "why": "No sections UI or commands; navigation_sections only in crates/openconductor-db/migrations/0005_navigation_and_favorites.sql (unwired).",
+   "why": "Only the fixed My workspaces header; no crate code or Tauri command touches navigation_sections and there is no create/rename/delete/move UI.",
    "recheck": true
   },
   {
@@ -416,7 +426,7 @@
     }
    ],
    "verdict": "missing",
-   "why": "No drag and drop.",
+   "why": "No drag and drop in src and no user sections to drop onto.",
    "recheck": false
   },
   {
@@ -437,7 +447,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "workspace.switchTo1..9 are handled in PaletteHost.tsx over sidebarOrder (fromAppState.ts); rows never show numbers and there is no setting to show them.",
+   "why": "workspace.switchTo1..9 are handled in PaletteHost.tsx over sidebarOrder; rows never show numbers and there is no setting to show them.",
    "recheck": false
   },
   {
@@ -458,7 +468,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "workspace.next / workspace.previous handled in PaletteHost.tsx via stepWorkspace (wraps, sidebar order; tested in fromAppState.test.ts).",
+   "why": "workspace.next / workspace.previous handled in PaletteHost.tsx through stepWorkspace (wraps, sidebar order).",
    "recheck": false
   },
   {
@@ -473,8 +483,8 @@
      "file": "src/palette/search/model.ts"
     }
    ],
-   "verdict": "partial",
-   "why": "Workspaces are searchable from the command palette (src/palette/search/model.ts, Cmd+K) by name, branch and repo; the sidebar has no Search row to reach it.",
+   "verdict": "implemented",
+   "why": "The sidebar Search row opens the command palette (onSearch -> setPaletteOpen in App.tsx), which searches workspaces by name, branch and repo (src/palette/search/model.ts).",
    "recheck": false
   },
   {
@@ -495,7 +505,7 @@
     }
    ],
    "verdict": "backend",
-   "why": "rename_workspace_branch command (src-tauri workspace) and the automatic first-message rename call it; no user-facing rename action.",
+   "why": "rename_workspace_branch now also records the rename in conductor.db (on_branch_renamed), but only the automatic first-message rename calls it; no user-facing or local-only rename.",
    "recheck": false
   },
   {
@@ -507,7 +517,7 @@
     {
      "pattern": "archive_?workspace|archiveWorkspace",
      "matched": true,
-     "file": "src/components/WorkspaceView.tsx"
+     "file": "src-tauri/src/lib.rs"
     },
     {
      "pattern": "archive_?commit|archiveCommit",
@@ -521,7 +531,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Archive from WorkspaceView and the palette (workspace.archive) only removes the localStorage row: no confirmation, no git-busy check, no call to WorkspaceManager::archive.",
+   "why": "Archive from WorkspaceView and the palette now calls db_archive_workspace, so it survives restart, but there is no confirmation, no git-busy check, no WorkspaceManager::archive call and no archive commit.",
    "recheck": false
   },
   {
@@ -542,7 +552,7 @@
     }
    ],
    "verdict": "backend",
-   "why": "WorkspaceManager::restore exists (src-tauri/src/workspace/mod.rs); no command, no UI.",
+   "why": "WorkspaceManager::restore and openconductor_db workspaces::unarchive exist, but no command is registered in lib.rs and there is no archived list or unarchive UI.",
    "recheck": false
   },
   {
@@ -563,7 +573,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Toggle works via Cmd+B and '[' (src/state/shortcuts.ts, App.tsx); the sidebar is a fixed 248px column with no resize.",
+   "why": "The left sidebar toggles from the top-bar button and Cmd+B; the width is a fixed 256px CSS variable with no resize handle, and no right-sidebar toggle is wired.",
    "recheck": false
   },
   {
@@ -579,28 +589,28 @@
     }
    ],
    "verdict": "missing",
-   "why": "Footer shows app name/version only.",
+   "why": "The footer holds only the help and settings buttons; no CPU/memory readout or backend for one.",
    "recheck": false
   },
   {
    "id": "sidebar.footer-actions",
    "area": "sidebar",
    "feature": "Sidebar footer with help and settings icon buttons",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "HelpIcon|help_?button|open_?help|openHelp",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/HelpMenu.tsx"
     },
     {
      "pattern": "SettingsIcon|open_?settings|openSettings",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/App.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "Footer shows app name, version and platform text; the reference shows help and settings icon buttons.",
+   "verdict": "implemented",
+   "why": "Footer HelpMenu (src/components/HelpMenu.tsx, helpMenuItems.ts) and a Settings icon button that opens settings; REA capture matches the reference footer.",
    "recheck": false
   },
   {
@@ -616,28 +626,28 @@
     }
    ],
    "verdict": "missing",
-   "why": "No vibrancy/transparency.",
+   "why": "No vibrancy or transparency setting or window effect; the sidebar is a CSS color-mix fill (styles.css).",
    "recheck": false
   },
   {
    "id": "sidebar.colors",
    "area": "sidebar",
    "feature": "Sidebar background, border and width match the reference screens in light and dark",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "--sidebar(-background)?\\s*:",
      "matched": true,
-     "file": "src/styles.css"
+     "file": "src/settings/appearance.css"
     },
     {
      "pattern": "(256px|left_?panel_?width)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/styles.css"
     }
    ],
-   "verdict": "missing",
-   "why": "Measured on REA captures at 1440x900: sidebar edge at x=248 vs 256; dark sidebar #121417 vs #1c1817; light sidebar #eeeeeb vs #fcfcfb. REA compare-web-screenshots (threshold 24): 3.1% (dark) / 5.4% (light) of sidebar pixels differ.",
+   "verdict": "implemented",
+   "why": "Measured on REA captures at 1440x900 on 85e00bb: sidebar edge at x=255 in both, sidebar fill #1c1817 dark / #fcfcfb light and main #141110 / #ffffff identical to the reference. REA compare-web-screenshots (t=24): 0.6-0.9% of sidebar pixels differ (was 3.1-5.4%), from text and data only.",
    "recheck": false
   },
   {
@@ -653,7 +663,7 @@
     }
    ],
    "verdict": "missing",
-   "why": "No row context menu or actions menu.",
+   "why": "Workspace rows have no context or actions menu; the only hover menus are on the section header and repo header.",
    "recheck": false
   },
   {
@@ -669,7 +679,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Muted single-line empty state matches evidence/screens/home.md.",
+   "why": "With no repos, Sidebar.tsx shows a muted one-line empty state under My workspaces (matches the REA empty-Home capture).",
    "recheck": false
   },
   {
@@ -686,11 +696,11 @@
     {
      "pattern": "recent_?(local_?)?repos|recentRepos|recents",
      "matched": true,
-     "file": "src/components/QuickOpenDialog.tsx"
+     "file": "src-tauri/src/github_repo.rs"
     }
    ],
-   "verdict": "missing",
-   "why": "'+' goes straight to the folder picker; no menu with the three Home actions and no recents (the detector hit is QuickOpen's recent files).",
+   "verdict": "partial",
+   "why": "The My workspaces hover menu offers only Add project; the three Home actions and not-yet-added recent local repos are missing (AddRepositoryMenu.tsx is used only inside CreateWorkspaceDialog).",
    "recheck": false
   },
   {
@@ -711,7 +721,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Visibility persists inside the localStorage app state, not as a setting; width is fixed (248px vs evidence default 256).",
+   "why": "Visibility persists in the desktop UI prefs key in localStorage (UiPrefs in src/state/persisted.ts), not as a setting; the width matches the 256 default but is a fixed CSS value, not a persisted setting.",
    "recheck": true
   },
   {
@@ -732,7 +742,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Home is the default screen, but there is no router or '/' route (selection state in src/state/store.ts).",
+   "why": "Home is the default screen from the selection state in src/state/store.ts, but there is no router or '/' route: App.tsx only checks the start path for /create and /settings.",
    "recheck": false
   },
   {
@@ -753,7 +763,7 @@
     }
    ],
    "verdict": "missing",
-   "why": "No organization concept; no loading or cloud redirect state.",
+   "why": "No organization concept, no blank loading state on Home and no cloud redirect.",
    "recheck": false
   },
   {
@@ -779,7 +789,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Matches evidence/screens: three label-only cards in a 1-to-3 grid sit at the reference position (y 368-495; x offset 4 px from the narrower sidebar), wordmark centered above, drag region, fade-in. Differences: card icons for GitHub (cloud vs globe) and Quick start (sparkle vs folder-plus); the wordmark is our own brand by design.",
+   "why": "HomeScreen.tsx: centred wordmark above three label-only cards in a 1-to-3 grid, drag region, fade-in; REA capture puts wordmark and cards at the reference positions (cards y 368-495). Differences: GitHub card cloud vs globe icon, Quick start sparkle vs folder-plus; the wordmark is our own brand by design.",
    "recheck": false
   },
   {
@@ -796,11 +806,11 @@
     {
      "pattern": "--secondary\\s*:",
      "matched": true,
-     "file": "src/styles.css"
+     "file": "src/settings/appearance.css"
     }
    ],
-   "verdict": "missing",
-   "why": "Measured: dark main #17191d vs #141110, dark card #24272d vs #211e1c; light main #f7f7f5 vs #ffffff, light card #efefec vs #fafaf9. Every pixel differs at threshold 0 (REA compare-web-screenshots).",
+   "verdict": "partial",
+   "why": "Measured on REA captures on 85e00bb: main background now matches (#141110 dark, #ffffff light). Entry cards still use --secondary: #24272d vs #211e1c dark, #efefec vs #fafaf9 light.",
    "recheck": false
   },
   {
@@ -821,7 +831,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Toggle shown only when the sidebar is hidden, with tooltip and shortcut hint (HomeScreen.tsx).",
+   "why": "HomeScreen.tsx shows the toggle only while the sidebar is hidden, with tooltip and shortcut hint, offset past the traffic lights.",
    "recheck": false
   },
   {
@@ -843,11 +853,11 @@
     {
      "pattern": "(detect_?default_?branch|symbolic-ref|rev-parse --abbrev-ref|remote show)",
      "matched": true,
-     "file": "src-tauri/src/workspace/git.rs"
+     "file": "src-tauri/src/create_project.rs"
     }
    ],
    "verdict": "implemented",
-   "why": "Open project card: native picker, inspect_project_folder (src-tauri/src/project.rs), add_repository; default branch comes from the backend.",
+   "why": "Open project card: native pickFolder, inspect_project_folder, add_repository (registered); default branch from the backend.",
    "recheck": false
   },
   {
@@ -859,21 +869,21 @@
     {
      "pattern": "needs_?git_?init|needsGitInit|\\.git\\b.{0,40}(exists|is_dir)",
      "matched": true,
-     "file": "src-tauri/src/project.rs"
+     "file": "src-tauri/src/github_repo.rs"
     },
     {
      "pattern": "remote\\s+get-url|\"get-url\"",
      "matched": true,
-     "file": "src-tauri/src/project.rs"
+     "file": "src-tauri/src/github_repo.rs"
     },
     {
      "pattern": "file://",
      "matched": true,
-     "file": "src/state/openProject.ts"
+     "file": "src-tauri/src/terminal/screen.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Folder checks and decision are real (project.rs, src/state/openProject.ts with tests): file:// remote on success and error toasts. The no-.git / no-origin cases only show an info toast; the init / create-GitHub-repo dialog is not built.",
+   "verdict": "implemented",
+   "why": "decideOpenProject (src/state/openProject.ts) sends a folder with no .git or no origin to GitHubRepoDialog, whose registered github_repo_create (github_repo.rs) runs git init when needed and publishes; otherwise it adds with a file:// remote; errors in a toast. There is no non-GitHub setting (always behaves as off).",
    "recheck": false
   },
   {
@@ -885,7 +895,7 @@
     {
      "pattern": "clone_?(repo|repository|dialog)|CloneDialog|cloneRepo",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/lib.rs"
     },
     {
      "pattern": "remote_?url|remoteUrl|github\\.com",
@@ -895,23 +905,23 @@
     {
      "pattern": "git\\s+clone|\"clone\"\\s*,",
      "matched": true,
-     "file": "src/palette/fromAppState.ts"
+     "file": "src-tauri/src/workspace/commands.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Dialog parses GitHub URLs but performs no clone and has no destination picker or progress.",
+   "verdict": "implemented",
+   "why": "CloneGitHubRepoDialog.tsx takes a URL and a location with a Browse picker and calls the registered clone_repository; progress streams over a Channel into a log and errors map through cloneErrorMessage (src/state/cloneDialog.ts); the clone is recorded in conductor.db.",
    "recheck": false
   },
   {
    "id": "home.new-project",
    "area": "home",
    "feature": "Create a new project: local folder, git init, optional private GitHub repo, then a first workspace",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "new_?project|create_?project|quick_?start|quickstart",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/create_project.rs"
     },
     {
      "pattern": "git_?init|init_?repo|initRepo|\"init\"\\s*[,\\]]",
@@ -920,12 +930,12 @@
     },
     {
      "pattern": "gh\\s+repo\\s+create|\"repo\",\\s*\"create\"",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/github_repo.rs"
     }
    ],
    "verdict": "partial",
-   "why": "Quick start dialog with placeholder templates; no git init, no GitHub repo, no first workspace on disk.",
+   "why": "Quick start opens CreateProjectDialog.tsx -> registered create_new_project (create_project.rs): git init with a first commit or create-next-app, private GitHub repo, add_repository. The GitHub repo cannot be skipped, and no real first workspace is created (App.tsx onCreated adds an in-memory placeholder under a client-side repo id).",
    "recheck": false
   },
   {
@@ -937,11 +947,11 @@
     {
      "pattern": "(repo|repository).{0,40}already (added|exists)|already (added|exists).{0,40}repo|duplicate_?repo|existing.{0,40}(path|remote)",
      "matched": true,
-     "file": "src/state/store.ts"
+     "file": "src-tauri/src/github_repo.rs"
     }
    ],
    "verdict": "partial",
-   "why": "Store silently ignores a duplicate path/remote; no already-exists message. Backend add_repository returns the existing id.",
+   "why": "Open project and the Add-repository menu refuse an existing repo (REPO_EXISTS from findExistingRepo); the Clone dialog does no duplicate check (clone_repository picks a unique folder name and the store silently drops the duplicate).",
    "recheck": false
   },
   {
@@ -957,7 +967,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "With no repository the create dialog explains that a repository is needed and offers Add repository (CreateWorkspaceDialog.tsx).",
+   "why": "With no repositories, CreateWorkspaceDialog.tsx explains a repository is needed and offers an Add repository menu (Open project or Clone repo).",
    "recheck": false
   },
   {
@@ -973,7 +983,7 @@
     }
    ],
    "verdict": "missing",
-   "why": "Home shows no workspace list or statuses.",
+   "why": "HomeScreen.tsx shows only the wordmark and cards: no workspace list, status matrix or mine-vs-all filter.",
    "recheck": false
   },
   {
@@ -994,7 +1004,7 @@
     }
    ],
    "verdict": "missing",
-   "why": "No /dashboard or /all-workspaces screens.",
+   "why": "No /dashboard or /all-workspaces screens and no router.",
    "recheck": false
   },
   {
@@ -1010,44 +1020,49 @@
     }
    ],
    "verdict": "partial",
-   "why": "The command palette keeps a most-recent-first list of visited workspaces (PaletteHost.tsx, in memory only); Home shows no recents.",
+   "why": "The command palette keeps an in-memory most-recent-first list of visited workspaces (PaletteHost.tsx, cap 8); Home shows no recents and the list is not persisted.",
    "recheck": false
   },
   {
    "id": "home.repo-search",
    "area": "home",
    "feature": "Search the repository list",
-   "status": "missing",
+   "status": "partial",
    "detectors": [
     {
      "pattern": "(search|filter)_?repo",
      "matched": false,
      "file": null
+    },
+    {
+     "pattern": "projectResults",
+     "matched": true,
+     "file": "src/palette/search/model.ts"
     }
    ],
-   "verdict": "missing",
-   "why": "No repository search.",
+   "verdict": "partial",
+   "why": "The palette's Projects tab filters repositories by name (src/palette/search/model.ts projectResults); there is no search field in the repository list or the Add-repository menu.",
    "recheck": false
   },
   {
    "id": "home.recents",
    "area": "home",
    "feature": "Clone dialog shows recent repositories with loading placeholders and a screen-reader status",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "recent_?repos|recentRepos",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/github_repo.rs"
     },
     {
      "pattern": "(aria-busy|sr-only|role=\"status\")",
      "matched": true,
-     "file": "src/components/CreateFromPicker.tsx"
+     "file": "src/components/AddRepositoryMenu.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "Clone dialog has no recent repositories (detector hit is CreateFromPicker's status line).",
+   "verdict": "implemented",
+   "why": "CloneGitHubRepoDialog.tsx loads recent repos through the registered github_recent_repos (cached 2 min), shows three skeleton rows in a role=status region with a screen-reader label while loading, renders nothing when empty, and fills the URL on click.",
    "recheck": false
   },
   {
@@ -1063,7 +1078,7 @@
     }
    ],
    "verdict": "missing",
-   "why": "No onboarding.",
+   "why": "No onboarding screen, first-run check or onboarding route; only hidden onboarding.* keybinding registry entries.",
    "recheck": false
   },
   {
@@ -1083,8 +1098,8 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "partial",
-   "why": "UI state lives in localStorage; backend keeps a TSV repo registry; the Conductor-shaped SQLite schema in crates/openconductor-db is not used by the app.",
+   "verdict": "implemented",
+   "why": "In the desktop app the sidebar and Home load repos and workspaces from conductor.db through db_list_repos / db_list_workspaces (persistence_commands.rs); localStorage keeps only UI prefs; add, clone, create, rename and archive write rows. Gaps: remote_url is never written, and Quick start / palette placeholder workspaces are not saved.",
    "recheck": false
   },
   {
@@ -1100,7 +1115,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Cmd+N, the sidebar 'New workspace' row, each repo's '+' and the palette action all open the create dialog (App.tsx, Sidebar.tsx, PaletteHost.tsx).",
+   "why": "Cmd+N, the sidebar Create row, each repo's + and New workspace menu item (Sidebar.tsx), and the palette action all open CreateWorkspaceDialog.",
    "recheck": false
   },
   {
@@ -1121,7 +1136,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Create is a modal form (CreateWorkspaceDialog.tsx) with a prompt box, repo and branch selects and a name field. The reference is a composer: repo chip, prompt, model/effort picker and Create button (REA compare at t=24: 7.6% dark, 89% light differ).",
+   "why": "Create is still a modal (CreateWorkspaceDialog.tsx) with a prompt box, create-from picker, repo and base-branch selects and a name field, not the reference's full-screen composer with tabs; agent, model and effort come from Settings \u203a Default models with no picker in the composer.",
    "recheck": false
   },
   {
@@ -1136,8 +1151,8 @@
      "file": "src/components/CreateFromPicker.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "Create-from picker with PR, branch and issue tabs (CreateFromPicker.tsx, createFrom.ts); branches come from list_branches, but PRs and issues report unavailable in the desktop app (no GitHub/Linear listing command).",
+   "verdict": "implemented",
+   "why": "CreateFromPicker.tsx PR, branch and issue tabs; PRs and GitHub issues come from the registered pr_list_open and gh_issue_list_open (#203), a PR passes prNumber so fork heads are fetched (#197), an issue seeds the first message. Not covered: Linear issues, lookup beyond the 100 loaded items.",
    "recheck": false
   },
   {
@@ -1158,7 +1173,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Base-branch select fed by list_branches, defaulting to the repo default branch; passed to create_workspace.",
+   "why": "Base-branch select fed by list_branches, defaulting to the repo default branch, passed to create_workspace and written to conductor.db as initialization_parent_branch / intended_target_branch (#224).",
    "recheck": false
   },
   {
@@ -1179,7 +1194,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Branch tab in the create-from picker with search, loading, empty and error states over list_branches (CreateFromPicker.tsx, createFrom.ts statusLine).",
+   "why": "Branch tab of CreateFromPicker.tsx with search, loading, empty and error states over list_branches (createFrom.ts statusLine, dedupeBranches).",
    "recheck": false
   },
   {
@@ -1199,8 +1214,8 @@
      "file": "src-tauri/src/workspace/mod.rs"
     }
    ],
-   "verdict": "implemented",
-   "why": "The dialog calls create_workspace, which runs git worktree add on its own branch under the data dir (src-tauri/src/workspace/mod.rs).",
+   "verdict": "partial",
+   "why": "create_workspace runs git worktree add on its own branch, but the location is fixed at <app data>/workspaces/<repo slug> (WorkspaceManager::workspaces_dir); no setting or UI changes it.",
    "recheck": false
   },
   {
@@ -1212,16 +1227,16 @@
     {
      "pattern": "branch_?prefix_?type|branchPrefixType",
      "matched": true,
-     "file": "src-tauri/src/settings/model.rs"
+     "file": "src-tauri/src/lib.rs"
     },
     {
      "pattern": "branch_?prefix_?custom|branchPrefixCustom",
      "matched": true,
-     "file": "src-tauri/src/settings/model.rs"
+     "file": "src-tauri/src/lib.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "resolveBranchPrefix is applied in the dialog, but App.tsx passes empty prefix settings and no GitHub username, so the prefix is always none; no settings UI.",
+   "verdict": "implemented",
+   "why": "Settings \u203a Git (GitPage.tsx) edits branch_prefix_type / branch_prefix_custom; App.tsx reads the registered branch_prefix_settings (with the gh username) each time the dialog opens and the dialog applies resolveBranchPrefix.",
    "recheck": false
   },
   {
@@ -1242,7 +1257,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "City-name placeholder with rarity badge (naming.ts) in the dialog; after the first message renameAfterFirstMessage renames workspace and branch via rename_workspace_branch.",
+   "why": "City placeholder with rarity badge (naming.ts); after the first message renameAfterFirstMessage renames workspace and branch via rename_workspace_branch. No rename-on-branch toggle (always on), and placeholder_branch_name is not stored.",
    "recheck": false
   },
   {
@@ -1263,7 +1278,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "buildCreateRequest validates name, repo, base branch and source and shows field errors; create_workspace rejects invalid branch names (git.rs).",
+   "why": "buildCreateRequest (createFlow.ts) validates name, repo, base branch and source with per-field errors; create_workspace rejects invalid branch names (git.rs).",
    "recheck": false
   },
   {
@@ -1279,7 +1294,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "create_workspace copies .worktreeinclude / globs / .env* files (files_to_copy.rs), now reached from the dialog.",
+   "why": "The create path resolves .worktreeinclude / include globs / .env* through files_to_copy.rs and copies them into each new worktree; initialization_files_copied is not written to conductor.db.",
    "recheck": false
   },
   {
@@ -1299,8 +1314,8 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "backend",
-   "why": "The dialog reports no setup script; create_workspace never runs one. WorkspaceManager::run_setup and crates/scripts setup lifecycle exist but are not called (crates/scripts is not an app dependency).",
+   "verdict": "implemented",
+   "why": "After create_workspace, CreateWorkspaceDialog's startSetupScript calls scripts_config then setup_script_start, registered in lib.rs over the now-linked oc-scripts ScriptService; the workspace shows running-setup and the Setup tab (ScriptsPanel.tsx) shows output and the log path.",
    "recheck": false
   },
   {
@@ -1326,7 +1341,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "The dialog shows createFlow progress (creating, failed) while create_workspace runs; there is no initializing workspace row or view, and setup steps are skipped.",
+   "why": "The dialog steps through creating, detecting-setup and running-setup (createFlow.ts reduceProgress) and create_workspace writes an initializing row, but the sidebar gets the workspace only after the worktree exists: no initializing row or view, no initialization log.",
    "recheck": false
   },
   {
@@ -1338,7 +1353,7 @@
     {
      "pattern": "(failed to create|create.*fail|initialization_?failed)",
      "matched": true,
-     "file": "src/components/CreateWorkspaceDialog.tsx"
+     "file": "src-tauri/src/create_project.rs"
     },
     {
      "pattern": "(cleanup|clean_?up).{0,40}(incomplete|initializ)",
@@ -1346,8 +1361,8 @@
      "file": null
     }
    ],
-   "verdict": "partial",
-   "why": "Failure text is shown in the dialog; no setup log, and no startup cleanup of incomplete workspaces (workspaces::delete_if_initializing exists only in the unlinked DB crate).",
+   "verdict": "implemented",
+   "why": "A failed create shows the backend error in the dialog and on_create_failed drops the pending row; a failed setup raises a toast pointing to the Setup log (setupWatch.ts); startup runs delete_incomplete -> delete_if_initializing (#224). No initialization_log_path for worktree failures.",
    "recheck": false
   },
   {
@@ -1359,18 +1374,18 @@
     {
      "pattern": "(create_?in_?section|section_?id.{0,60}create|create.{0,60}section_?id)",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0004_create_navigation_sections_cache.sql"
     }
    ],
    "verdict": "missing",
-   "why": "No sections.",
+   "why": "No user sections; the single My workspaces group's menu only offers Add project.",
    "recheck": true
   },
   {
    "id": "create.first-message",
    "area": "create",
    "feature": "Draft the first agent message, then create the workspace and send it",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "first_?message|initial_?message|initialMessage|firstMessage",
@@ -1379,12 +1394,12 @@
     },
     {
      "pattern": "(start|create)_?(first_?)?session|startSession|createSession",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/spotlight/auto_run.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "The first message seeds the workspace transcript and drives the rename (CreateWorkspaceDialog.tsx, firstMessage.ts); no agent session is started.",
+   "verdict": "implemented",
+   "why": "seedTranscript queues the first message and ChatPanel sends it with sendReason over the registered reason_open_chat / reason_prompt (#194), starting the workspace's first agent session; it also drives the rename. The draft's model and effort are not passed to the chat.",
    "recheck": false
   },
   {
@@ -1400,7 +1415,7 @@
     }
    ],
    "verdict": "missing",
-   "why": "No workspace numbers.",
+   "why": "The schema has a number column but no create path, persistence function or UI assigns or shows one.",
    "recheck": false
   },
   {
@@ -1420,12 +1435,12 @@
      "file": "crates/scripts/src/config/mod.rs"
     }
    ],
-   "verdict": "backend",
-   "why": "crates/scripts runner::should_auto_run (tested) decides auto-run after setup, but setup never runs on create and the crate is not an app dependency.",
+   "verdict": "partial",
+   "why": "oc-scripts is linked and after a create-dialog setup ScriptService::after_setup calls should_auto_run and starts the run script; the option is only settable in the repo scripts config file: no UI sets it and save_repo_scripts does not write it.",
    "recheck": false
   }
  ],
  "verdicts_ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 884f1f7)",
- "verdict_parity_pct": 43.8
+ "verdicts_verified_at": "2026-11-05 (main 85e00bb)",
+ "verdict_parity_pct": 62.5
 }

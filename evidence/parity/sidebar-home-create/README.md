@@ -2,79 +2,73 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`884f1f7`, 2026-11-05)
+## Result on main (`85e00bb`, 2026-11-05)
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Verified parity | Previous (`d846158`) |
+| Area | Items | Implemented | Partial | Backend only | Missing | Verified parity | Previous (`884f1f7`) |
 |---|---|---|---|---|---|---|---|
-| Sidebar | 33 | 5 | 10 | 7 | 11 | **35.6%** | 22.7% |
-| Home | 18 | 4 | 7 | 0 | 7 | **41.7%** | 31.9% |
-| Create workspace | 17 | 7 | 6 | 2 | 2 | **61.8%** | 20.6% |
-| **All** | 68 | 16 | 23 | 9 | 20 | **43.8%** | 24.6% |
+| Sidebar | 33 | 12 | 10 | 6 | 5 | **56.1%** | 35.6% |
+| Home | 18 | 8 | 6 | 0 | 4 | **61.1%** | 41.7% |
+| Create workspace | 17 | 11 | 4 | 0 | 2 | **76.5%** | 61.8% |
+| **All** | 68 | 31 | 20 | 6 | 11 | **62.5%** | 43.8% |
 
-Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (52 open).
+Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (37 open, was 52).
 
-**What changed since `d846158`.**
+23 verdicts changed: 21 up, 2 down.
 
-- **Create workspace is now wired to the backend.** `CreateWorkspaceDialog.tsx` calls `add_repository`, `list_branches` and `create_workspace`. It shows the city-name placeholder and validation errors, and it renames the workspace after the first message through `rename_workspace_branch`. Cmd+N, the sidebar row, each repo's "+" and the palette all open it.
-- **Open project is real.** The sidebar "+" and the Home card use the native picker, then `inspect_project_folder` (`src-tauri/src/project.rs`) and `add_repository`. Errors appear as toasts.
-- **Palette handlers cover sidebar navigation.** `PaletteHost.tsx` handles go-home, next and previous workspace, Cmd+1..9 and workspace search.
-- **The DB crate gained workspace setters, but it is still not linked into the app.** `crates/openconductor-db` now has pin, unread, manual and derived status, archive and unarchive, hidden and icon setters. `src-tauri/Cargo.toml` does not depend on it, so these count as backend only.
+**What changed since `884f1f7`.**
+
+- **The sidebar now has the reference structure** (#240, #248, #251): toggle and back/forward arrows, a computer row, Home, Create and Search rows, a sentence-case section header, branch-style row titles with a branch icon, and a help and settings footer. `top-bar`, `primary-nav`, `workspaces-group`, `ws-branch`, `search` and `footer-actions` are now implemented.
+- **Sidebar colours and width match.** The REA captures give the same sidebar fill, main background and edge (x=255) as the reference in both themes. Only 0.6 to 0.9% of sidebar pixels differ at threshold 24, from text and seed data.
+- **conductor.db is the source of truth in the desktop app** (#224). `crates/openconductor-db` is linked. The sidebar and Home load from `db_list_repos` and `db_list_workspaces`. Add, clone, create, rename and archive write rows, and startup removes incomplete workspaces. `home.persist` and `create.failure` are now implemented. `repo-order` went from backend only to partial.
+- **Create runs setup and starts the agent.** The dialog calls `scripts_config` and `setup_script_start`, which run on the now-linked `oc-scripts`, and shows the setup log. The first message is sent to Reason (#194). PR and issue lists come from `pr_list_open` and `gh_issue_list_open` (#203). Settings › Git feeds the branch prefix. `setup-script`, `first-message`, `from-ref` and `branch-prefix` are now implemented.
+- **Home's project flows are real.** Clone runs `clone_repository` with streamed progress and recent repositories (#230, #189). A folder with no `.git` or no origin opens a dialog that runs git init and creates the GitHub repo (`github_repo_create`). Quick start runs `create_new_project`.
+- **Two verdicts went down after a closer read.** `create.worktree` dropped to partial: the workspaces directory is fixed and no setting changes it. `create.autostart-run` dropped to partial: auto-run works now, but only the repo scripts config file can turn it on.
 
 **Still the main gaps.**
 
-- Setup never runs on create.
-- The sidebar and Home still read the localStorage shell state, not `list_workspaces` or the DB.
-- Archive deletes a localStorage row with no confirmation.
-- The sidebar structure and colours still differ from the reference.
+- Sidebar row state is dropped between the DB and the UI: `reposFromDb` hardcodes status idle and 0/0 diff stats, and drops unread, pinned and the user-set name.
+- There are no workspace actions: no row menu, no user rename, no pin, no hide, no archived view and no safe archive.
+- Home has no workspace overview, no dashboard routes and no first run.
 
 ## Screen comparison (REA)
 
-Captured on this machine with REA 6.8.0 `capture-browser-scenario` (Chromium 155, 1440x900, same locale and timezone as the references) on the Vite build of `884f1f7`. Compared with `compare-web-screenshots`. All Evidence IDs are in [screens/rea-compare-884f1f7.json](screens/rea-compare-884f1f7.json). The populated captures seed the shell's localStorage with 3 repositories and 6 workspaces shaped like the reference fixture.
+Captured on this machine with REA 6.8.0 `capture-browser-scenario` (Chromium, 1440x900, same locale and timezone as the references) on the Vite build of `85e00bb`, using `tools/sidebar-screens/capture.mjs`. Compared with `compare-web-screenshots` through `tools/sidebar-screens/compare.py`. The comparison Evidence IDs are in [screens/rea-compare-85e00bb.json](screens/rea-compare-85e00bb.json). The populated captures seed localStorage with 3 repositories and 6 workspaces shaped like the reference fixture (the browser build has no Tauri, so it still reads localStorage).
 
-| Pair (reference vs ours) | Changed pixels, threshold 0 | Threshold 24 | Comparison Evidence (t=24) |
-|---|---|---|---|
-| Populated sidebar, dark: `sidebar--repos-expanded--dark` vs [ours](screens/ours-sidebar-populated-dark.png) | 100% | 4.36% | `ev_3accc141…` |
-| Populated sidebar, light: `sidebar--repos-expanded--light` vs [ours](screens/ours-sidebar-populated-light.png) | 100% | 4.39% | `ev_d67f80ba…` |
-| Create, dark: `create-workspace--from-repo--dark` vs [ours](screens/ours-create-dialog-dark.png) | 100% | 7.62% | `ev_90c92854…` |
-| Create, light: `create-workspace--no-repo--light` vs [ours](screens/ours-create-dialog-light.png) | 100% | 89.09% | `ev_78687f2f…` |
-| Empty Home, dark: `home--empty-signed-in--dark` vs ours | 100% | 3.73% | `ev_e74c2b2e…` |
+| Pair (reference vs ours) | Whole frame, t=24 | Sidebar x<256, t=24 | Previous whole frame (`884f1f7`) | Capture Evidence |
+|---|---|---|---|---|
+| `sidebar--repos-expanded--dark` vs [ours](screens/ours-sidebar-populated-dark.png) | 2.96% | 0.90% | 4.36% | `ev_e34eff35…` |
+| `sidebar--repos-expanded--light` vs [ours](screens/ours-sidebar-populated-light.png) | 2.84% | 0.88% | 4.39% | `ev_dd1cd0e1…` |
+| `sidebar--repos-collapsed--dark` vs ours | 2.91% | 0.62% | - | `ev_6f7be96e…` |
+| `home--empty-signed-in--dark` vs [ours](screens/ours-home-empty-dark.png) | 2.86% | 0.61% | 3.73% | `ev_38e6e38d…` |
+| `home--empty-signed-in--light` vs [ours](screens/ours-home-empty-light.png) | 2.74% | 0.59% | - | `ev_33702559…` |
 
-What the captures show:
+Pixel samples from the same captures:
 
-- **Populated sidebar.** The reference has, from top to bottom:
-  1. A toggle and back/forward arrows.
-  2. A computer switcher.
-  3. Home, Create and Search rows.
-  4. A "My workspaces" label.
-  5. Repo rows with an initial avatar, a count and hover "..." / "+" actions.
-  6. Workspace rows with a branch icon and the branch-style title, with unread rows bold.
-  7. A help and settings footer.
+| Point | Reference | Ours |
+|---|---|---|
+| Sidebar fill, dark / light | #1c1817 / #fcfcfb | #1c1817 / #fcfcfb |
+| Main background, dark / light | #141110 / #ffffff | #141110 / #ffffff |
+| Home entry card, dark / light | #211e1c / #fafaf9 | #24272d / #efefec |
+| Sidebar right edge | x=255 | x=255 |
 
-  Ours has the logo, Home and "New workspace" rows, an uppercase "Repositories" header, chevron repo rows, workspace rows with a status dot and short name, and a version footer. The diff stat on a row matches (+15 -1). The sidebar edge is at x=248 vs 256.
-- **Create.** The reference is a centred composer with:
-  - a repo chip and a "..." menu
-  - a prompt area
-  - a model and effort picker
-  - an attach button and a Create button
+What is left in the frames:
 
-  Ours is a titled modal form with a prompt box, Create from, Repository, Base branch and Workspace name fields, and Cancel/Create buttons.
-
-  In light theme the reference dims the whole window to mid-grey behind the composer and ours uses a light scrim. That causes most of the 89%. The light reference is also the no-repo state, while ours has repositories, so the layout comparison there is approximate.
-- **Colours.** These are unchanged since the last pass. Ours are cool greys (dark sidebar #121417, main #17191d). The reference uses warm near-blacks (#1c1817, #141110).
+- **Sidebar.** The row order, icons, section header, footer and spacing line up with the reference. The remaining differences are the computer name (we always show the default name) and how long titles truncate next to the diff stat.
+- **Home.** The wordmark and the cards sit at the same positions. The card fill is still our cool grey, and the GitHub and Quick start card icons differ. The wordmark is our own brand by design.
+- **Create.** It was not re-captured in this pass, because `shots.json` has no create scenario. The create screens in [screens/](screens) are still from `884f1f7`. `create.page` is scored from code: it is still a modal form, not the reference composer.
 
 ## Gap list, by priority
 
 The full list, with the owner of each item, is in [builder-obligations.md](builder-obligations.md).
 
-1. **Run setup on create, and show it** (owner: create-workspace, with setup-and-run-scripts). Call the setup lifecycle from `crates/scripts` after `create_workspace`, and keep its log. Show initializing and setting-up states on the new workspace. Respect `auto_run_after_setup`. Clean up incomplete workspaces on start. Items: `create.setup-script`, `create.initializing`, `create.failure`, `create.autostart-run`.
-2. **Load the sidebar and Home from the backend** (owner: sidebar and home, with persistence). Link `crates/openconductor-db` into the app. Read repositories and workspaces from it, or from `list_workspaces`, instead of localStorage. This lifts 7 backend-only sidebar items at once: `repo-hide`, `repo-icon`, `repo-order`, `ws-pinned`, `ws-unread`, `rename`, `archived-view`.
-3. **Rebuild the sidebar to the reference structure** (owner: sidebar): `sidebar.top-bar`, `computer-switcher`, `primary-nav` (add Search), `workspaces-group`, `footer-actions`, `colors` (256 px width, warm tokens), row titles and icons (`ws-name`, `ws-branch`).
-4. **Make archive safe** (owner: sidebar). Call `WorkspaceManager::archive` through a command, with confirmation and the git-busy refusal. Add an archived view with restore (`sidebar.archive`, `sidebar.archived-view`).
-5. **Match the create composer** (owner: create-workspace). Use the reference layout and the dimmed backdrop, with a model and effort picker. List PRs and issues so Create from works in the desktop app. Read the branch-prefix settings. Start the agent session with the first message. Items: `create.page`, `create.from-ref`, `create.branch-prefix`, `create.first-message`.
-6. **Finish Open project** (owner: home). Add the init / create-GitHub-repo dialog for folders with no `.git` or no origin (`home.open-project-flow`). Add a real clone with progress (`home.clone-github`). Make quick start do a git init and create the first workspace (`home.new-project`).
-7. **Use the workspace status model** (owner: sidebar): derived status plus a manual override (`sidebar.ws-status`).
-8. **Add the remaining sidebar features** (owner: sidebar): sections and drag, workspace numbers shown in rows, the row actions menu, the add menu with recents, resizing and its persisted width, transparency, footer usage.
-9. **Add the remaining Home features** (owner: home): routes, dashboard, recents on Home and in the clone dialog, repo search, first run, the theme colours.
+1. **Map the DB row state into the sidebar** (owner: sidebar, with persistence). `reposFromDb` (src/state/persisted.ts) should map `derivedStatus`/`manualStatus`, `unread`, `pinnedAt`, `user_set_workspace_name` and the PR title. The DB should supply real diff stats. Items: `ws-status`, `ws-unread`, `ws-pinned`, `ws-name`, `ws-diffstat`.
+2. **Add workspace and repo actions** (owner: sidebar). Register commands over the linked crate and add a row actions menu with rename, pin, mark unread and archive. Archive needs a confirmation, the git-busy refusal and `WorkspaceManager::archive`. Add an archived view with restore, and repo hide and icon. Items: `ws-actions`, `rename`, `archive`, `archived-view`, `repo-hide`, `repo-icon`, `repo-order`.
+3. **Sections** (owner: sidebar, with create-workspace): `navigation_sections` commands and UI, drag to a section, and create inside a section. Items: `sections`, `drag-to-section`, `create.in-section`.
+4. **Home overview and routes** (owner: home): workspace status overview, dashboard and all-workspaces routes, a '/' route, and first run. Items: `status-overview`, `dashboard-routes`, `route`, `first-run`, `org-states`.
+5. **Finish Home flows** (owner: home). Quick start should create a real first workspace under the registered repo id, and the GitHub repo should be optional. Clone should refuse a duplicate. Home should get recents and a repo search field, and the card fill should match. Items: `new-project`, `duplicate-repo`, `recent`, `repo-search`, `colors`.
+6. **Create composer and initializing state** (owner: create-workspace). Build the reference composer with a model and effort picker. Show an initializing sidebar row while the worktree is created. Add a workspaces-directory setting and workspace numbers. Items: `page`, `initializing`, `worktree`, `number`.
+7. **Remaining sidebar chrome** (owner: sidebar): the computer switcher menu and name, the add menu with the Home actions and recents, resize with a persisted width, a visibility setting, numbers shown in rows, transparency, and footer usage.
+8. **Auto-run after setup toggle** (owner: setup-and-run-scripts): a UI for `auto_run_after_setup`, and `save_repo_scripts` writing it.
 
 ## Files
 
@@ -100,7 +94,7 @@ The full list, with the owner of each item, is in [builder-obligations.md](build
 3. Update its verdict.
 4. Run `python tools/parity_sidebar_home_create.py obligations --ref origin/main --json evidence/parity/sidebar-home-create/builder-obligations.json --md evidence/parity/sidebar-home-create/builder-obligations.md`.
 
-Detectors only test presence. For example, a schema column in the unwired DB crate counts as a match. The score comes from the verdicts. On `884f1f7`, the 3 remaining `(recheck)` flags match only schema in the unlinked DB crate (`sidebar.sections`, `create.in-section`) or a detector that finds no settings key (`sidebar.visibility-settings`, where the verdict credits the persisted toggle).
+Detectors only test presence. For example, a schema column in the unwired DB crate counts as a match. The score comes from the verdicts. On `85e00bb`, 3 `(recheck)` flags remain. `sidebar.sections` and `create.in-section` match only the `navigation_sections` migration, which no code uses. `sidebar.visibility-settings` has a detector that finds no settings key, and its verdict credits the persisted toggle. This pass added detectors for the computer row, the section header and the palette's project search, so those no longer raise false flags.
 
 ## REA use and gaps found
 
@@ -124,6 +118,10 @@ Detectors only test presence. For example, a schema column in the unwired DB cra
   - REA reports only `execution_failure` and `cleanup_incomplete`, with "Run `rea doctor`", and drops the browser's stderr.
   - Running it with `TMPDIR=/tmp/t` works.
   - REA could surface the browser's exit reason, or use a short profile directory.
+- **REA gaps re-checked on `85e00bb` (rea-agents 6.8.0).**
+  - The long-TMPDIR capture failure is now a hang. With this Session's 91-character TMPDIR, `capture-browser-scenario` for one Home shot had not returned when `timeout 120` fired, and the process tree outlived the timeout until the sandbox killed it after 200 s. With `TMPDIR=/tmp/t`, the same shot finished in 18 s. The likely cause is unchanged: Chromium's singleton socket path is longer than the Unix socket limit. The previous pass got a fast `execution_failure`; this one got no result and no error at all.
+  - `compare-web-screenshots` still has no region or mask option. The sidebar split in the table above is computed with Pillow on the same PNGs.
+  - `inspect-sqlite-database` (for `tools/parity_check.py --rea`) was run with Node.js 24.22.2 from nodejs.org, because the machine's Node.js 22.23.4 is below the version the tool really needs (gap 1 in [../README.md](../README.md)).
 - **Reference coverage.**
   - The references are Chromium renders, not WKWebView.
   - PR #81 and PR #115 added populated-sidebar, create and menu references, so this pass scores sidebar and create layout.
