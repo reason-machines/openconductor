@@ -1191,7 +1191,10 @@ mod tests {
             serde_json::from_str(&fs::read_to_string(root.join(METADATA_FILE)).unwrap()).unwrap();
         assert!(index.get("s").is_none());
         assert_eq!(index["other"]["totalSize"], 4);
-        assert_eq!(store.get_entry("other", "k").unwrap().as_deref(), Some("true"));
+        assert_eq!(
+            store.get_entry("other", "k").unwrap().as_deref(),
+            Some("true")
+        );
         assert!(matches!(
             store.remove_subsystem(SUBSYSTEM),
             Err(StoreError::StorageMismatch)
