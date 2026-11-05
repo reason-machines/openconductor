@@ -191,14 +191,17 @@ export default function App() {
       {dialog === "clone" && (
         <CloneGitHubRepoDialog
           onClose={() => setDialog(null)}
-          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", id: inTauri() ? cloned.id : undefined, repo: { name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
+          // The backend names the folder uniquely; a second clone of one remote is its own project (Conductor: `<name>-v1`).
+          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", id: inTauri() ? cloned.id : undefined, repo: { name: cloned.name || name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
         />
       )}
       {dialog === "quickstart" && (
         <CreateProjectDialog
           onClose={() => setDialog(null)}
-          onCreated={(created, githubUrl) => {
-            dispatch({ type: "addRepo", repo: created });
+          onRepoAdded={({ id, ...repo }) => dispatch({ type: "addRepo", id, repo })}
+          onCreated={(repoId, first, githubUrl) => {
+            dispatch({ type: "addWorkspace", repoId, workspace: first.workspace });
+            for (const warning of first.warnings) show("error", warning, { sticky: true });
             show("info", SUCCESS_TOAST, { action: { label: OPEN_IN_GITHUB, onClick: () => void openUrl(githubUrl) } });
           }}
         />
