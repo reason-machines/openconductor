@@ -39,6 +39,7 @@ pub mod github_repo;
 pub mod menu;
 pub mod pr;
 mod local_storage_commands;
+mod onboarding_commands;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
@@ -326,6 +327,8 @@ pub fn run() {
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
             persistence_commands::db_repo_prompt,
+            onboarding_commands::db_first_run_onboarding_step,
+            onboarding_commands::db_finish_first_run_onboarding,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
             sidebar_workspace_commands::db_set_workspace_pinned,

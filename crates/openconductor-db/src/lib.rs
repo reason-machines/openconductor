@@ -36,6 +36,7 @@ pub mod favorite_models;
 pub mod iso_time;
 pub mod maintenance;
 pub mod navigation;
+pub mod onboarding;
 pub mod outbox;
 pub mod port_forwards;
 pub mod repos;
