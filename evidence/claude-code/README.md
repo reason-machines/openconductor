@@ -16,7 +16,7 @@ instructions.
   work as for Reason. The composer's agent picker
   (`src/features/chat/agents.ts`) switches a workspace's own chat between
   Reason and Claude Code and remembers the pick per workspace; each agent
-  has its own chat id (`claude-<workspace id>` for Claude Code), so their
+  has its own chat id (`<workspace id>:claude` for Claude Code, which still counts toward the workspace's sidebar status), so their
   stored transcripts, saved sessions and checkpoints never mix. Review
   chats always run Reason.
 - Claude Code does not steer: a message sent during a turn waits in the

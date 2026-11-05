@@ -9,9 +9,10 @@
 // process, and the next prompt resumes the same Claude session
 // (`claude --resume`).
 //
-// A workspace's Claude chat has its own chat id (`claudeChatId`), so its
-// stored transcript, saved session and turn checkpoints never mix with the
-// workspace's Reason chat.
+// A workspace's Claude chat has its own chat id (`claudeChatId`,
+// `<workspace id>:claude`), so its stored transcript, saved session and turn
+// checkpoints never mix with the workspace's Reason chat, while its status
+// still counts toward the workspace's (state/workspaceSessions.ts).
 
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -29,7 +30,7 @@ const sessionKey = (chatId: string) => `openconductor.claude.session.${chatId}`;
 export const claudeAvailable = (): boolean => isTauri();
 
 /** The id of a workspace's Claude Code chat. */
-export const claudeChatId = (workspaceId: string): string => `claude-${workspaceId}`;
+export const claudeChatId = (workspaceId: string): string => `${workspaceId}:claude`;
 
 /** Claude Code queues follow-ups instead of steering the running turn. */
 export const CLAUDE_CAN_STEER = false;
