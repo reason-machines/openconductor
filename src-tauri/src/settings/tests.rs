@@ -85,3 +85,42 @@ fn first_save_writes_schema_and_sections() {
         assert!(text.contains(section), "missing {section}: {text}");
     }
 }
+
+#[test]
+fn bad_values_are_rejected_on_load() {
+    let dir = temp_dir();
+    for (body, needle) in [
+        ("[general]\ntheme = \"purple\"", "unknown variant"),
+        (
+            "[git]\nbranch_prefix_type = \"custom\"",
+            "branch_prefix_custom is required",
+        ),
+        ("[models]\ndefault = \"  \"", "models.default"),
+        (
+            "[providers]\nanthropic_base_url = \"ftp://x\"",
+            "anthropic_base_url",
+        ),
+        ("not toml [", "failed to parse"),
+    ] {
+        let path = dir.join(FILE_NAME);
+        fs::write(&path, body).unwrap();
+        let err = load(&path).unwrap_err().to_string();
+        assert!(err.contains(needle), "{body:?}: {err}");
+    }
+}
+
+#[test]
+fn invalid_settings_are_not_written() {
+    let path = temp_dir().join(FILE_NAME);
+    save(&path, &Settings::default()).unwrap();
+    let before = fs::read_to_string(&path).unwrap();
+    let mut s = Settings::default();
+    s.git.branch_prefix_type = BranchPrefixType::Custom;
+    for bad in ["", "a..b", "-x", "a b", "x.lock", "a/"] {
+        s.git.branch_prefix_custom = Some(bad.into());
+        assert!(save(&path, &s).is_err(), "{bad:?} accepted");
+    }
+    assert_eq!(fs::read_to_string(&path).unwrap(), before);
+    s.git.branch_prefix_custom = Some("team/sven".into());
+    save(&path, &s).unwrap();
+}
