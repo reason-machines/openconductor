@@ -229,6 +229,8 @@ pub struct WorkspaceRow {
     pub initialization_log_path: Option<String>,
     pub initialization_files_copied: Option<i64>,
     pub created_at: String,
+    /// `workspaces.updated_at`: last activity, the sidebar's and next-unread's sort key.
+    pub updated_at: String,
 }
 
 pub async fn list_repos(pool: &SqlitePool) -> Result<Vec<RepoRow>> {
@@ -275,6 +277,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 initialization_log_path: w.initialization_log_path,
                 initialization_files_copied: w.initialization_files_copied,
                 created_at: w.created_at,
+                updated_at: w.updated_at,
                 repository_id: w.repository_id,
                 id: w.local_id,
             }

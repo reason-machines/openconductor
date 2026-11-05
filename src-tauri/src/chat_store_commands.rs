@@ -2,8 +2,17 @@
 //! (`openconductor_db::chat_messages`, issue #272): the frontend sends each
 //! batch of changed and dropped messages (src/features/chat/persist.ts) and
 //! reads the chat back when it opens.
+//!
+//! A batch with a user message also moves the chat's workspace's
+//! `updated_at` forward to that message's `created_at` (Conductor's
+//! `addUserMessage` -> `setSessionUpdatedAt`, index-BGEQ8YjU.js @1,181,136 and
+//! @1,066,404): the last-activity order the sidebar and Go to next unread
+//! sort by. Assistant output does not move it, as in Conductor, whose
+//! migration 85 dropped the workspaces trigger "so only enqueue and unarchive
+//! bump it".
 
 use openconductor_db::chat_messages::{self as store, Batch, StoredMessage};
+use openconductor_db::{workspaces, Error};
 use serde::{Deserialize, Serialize};
 use tauri::State as Managed;
 
@@ -67,7 +76,21 @@ pub async fn chat_messages_save(
     };
     store::save(&db.0, &chat_id, &batch)
         .await
-        .map_err(|e| e.to_string())
+        .map_err(|e| e.to_string())?;
+    let Some(at) = store::latest_user_message_at(&batch) else {
+        return Ok(());
+    };
+    match workspaces::touch(&db.0, workspace_of_chat(&chat_id), at).await {
+        // A chat whose workspace has no row (not persisted yet) has nothing to move.
+        Ok(()) | Err(Error::NotFound) => Ok(()),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+/// The workspace a chat belongs to: the main chat's id is the workspace id and
+/// a review chat's is `<workspace id>:review:<n>` (src/state/workspaceSessions.ts).
+fn workspace_of_chat(chat_id: &str) -> &str {
+    chat_id.split(":review:").next().unwrap_or(chat_id)
 }
 
 #[tauri::command]
@@ -82,4 +105,15 @@ pub async fn chat_messages_load(
         messages: loaded.messages,
         agent_session_id: loaded.agent_session_id,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::workspace_of_chat;
+
+    #[test]
+    fn a_review_chat_belongs_to_its_workspace() {
+        assert_eq!(workspace_of_chat("app/oslo"), "app/oslo");
+        assert_eq!(workspace_of_chat("app/oslo:review:2"), "app/oslo");
+    }
 }
