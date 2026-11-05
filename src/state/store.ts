@@ -31,8 +31,8 @@ export type Action =
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
-  /** The workspace's pull request title changed on GitHub (`workspaces.pr_title`). */
-  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; pr?: RowPr | null }
+  /** The workspace's pull request title or body changed on GitHub (`workspaces.pr_title`, `pr_description`). `prDescription` and `pr` left out keep what the row has. */
+  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
   /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
   | { type: "setWorkspaceWorking"; repoId: string; workspaceId: string; working: boolean }
   | { type: "toggleSidebar" }
@@ -40,13 +40,16 @@ export type Action =
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
   /** Sidebar drag and drop: the full repo id list in its new order (`repos.display_order`). */
   | { type: "reorderRepos"; ids: string[] }
+  | { type: "setSidebarVisible"; visible: boolean }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] }
   /* sidebar: row actions (unread, pin, status) */
   | { type: "setWorkspaceUnread"; repoId: string; workspaceId: string; unread: boolean }
   | { type: "setWorkspacePinned"; repoId: string; workspaceId: string; pinned: boolean; at?: number }
-  | { type: "setWorkspaceStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue };
+  | { type: "setWorkspaceStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue }
+  /** A PR lookup derived a new status (`workspaces.derived_status`); like the reference, it drops the manual status. */
+  | { type: "setWorkspaceDerivedStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue };
 
 function updateWorkspace(state: AppState, repoId: string, workspaceId: string, fn: (w: Workspace) => Workspace): AppState {
   const repos = state.repos.map((r) => (r.id !== repoId ? r : { ...r, workspaces: r.workspaces.map((w) => (w.id === workspaceId ? fn(w) : w)) }));
@@ -117,9 +120,15 @@ export function reducer(state: AppState, action: Action): AppState {
       const set = (w: Workspace): Workspace => {
         if (w.id !== action.workspaceId) return w;
         const titleSame = (w.prTitle ?? null) === action.prTitle;
+        const descriptionSame = action.prDescription === undefined || (w.prDescription ?? null) === action.prDescription;
         const prSame = action.pr === undefined || JSON.stringify(w.pr ?? null) === JSON.stringify(action.pr);
-        if (titleSame && prSame) return w;
-        return { ...w, prTitle: action.prTitle, ...(action.pr === undefined ? {} : { pr: action.pr }) };
+        if (titleSame && descriptionSame && prSame) return w;
+        return {
+          ...w,
+          prTitle: action.prTitle,
+          ...(action.prDescription === undefined ? {} : { prDescription: action.prDescription }),
+          ...(action.pr === undefined ? {} : { pr: action.pr }),
+        };
       };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
@@ -137,6 +146,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos: setRepoHidden(state.repos, action.repoId, action.hidden) };
     case "reorderRepos":
       return { ...state, repos: orderRepos(state.repos, action.ids) };
+    case "setSidebarVisible":
+      return isSidebarVisible(state) === action.visible ? state : { ...state, sidebarVisible: action.visible };
     case "reset":
       return action.state;
     case "hydrate": {
@@ -162,6 +173,8 @@ export function reducer(state: AppState, action: Action): AppState {
       if (!ws || ws.status === status) return state;
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, status }));
     }
+    case "setWorkspaceDerivedStatus":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, derivedStatus: action.status, manualStatus: undefined }));
   }
 }
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { autoRunAfterSetup, setAutoRunAfterSetup } from "../scripts/api";
 import { errorText } from "./api";
 import { Row } from "./GeneralPage";
+import { ExperimentalAppPrefRows } from "./rows/AppPrefRows";
 import type { Settings } from "./types";
 
 interface Props {
@@ -12,7 +13,9 @@ interface Props {
 /**
  * Settings › More › Experimental. Conductor's tab has many more flags; built
  * here are Big terminal mode (evidence/terminal/NOTES.md) and Auto-run after
- * setup (evidence/run-scripts/NOTES.md). Turning Big terminal mode on also
+ * setup (evidence/run-scripts/NOTES.md); Show agent cost, Tab Freak Mode and
+ * Graphite stack support come from conductor.db (ExperimentalAppPrefRows).
+ * Turning Big terminal mode on also
  * lists the Big terminal tab in the settings navigation, as Conductor does.
  */
 export function ExperimentalPage({ settings, save }: Props) {
@@ -29,6 +32,7 @@ export function ExperimentalPage({ settings, save }: Props) {
         />
       </Row>
       <AutoRunAfterSetupRow />
+      <ExperimentalAppPrefRows />
     </div>
   );
 }

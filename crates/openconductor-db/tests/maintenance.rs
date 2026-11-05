@@ -59,3 +59,37 @@ async fn rollback_sql_is_recorded_and_deletes_itself() {
         .unwrap();
     assert_eq!(left, 0);
 }
+
+#[tokio::test]
+async fn forget_repositories_empties_repos_workspaces_and_chats_only() {
+    let pool = open_in_memory().await.unwrap();
+    for sql in [
+        "INSERT INTO repos (id, name, root_path) VALUES ('app', 'app', '/src/app')",
+        "INSERT INTO workspaces (id, repository_id, directory_name) VALUES ('w1', 'app', 'lisbon')",
+        "INSERT INTO sessions (id) VALUES ('s1')",
+        "INSERT INTO session_messages (id, session_id) VALUES ('m1', 's1')",
+        "INSERT INTO settings (key, value) VALUES ('conductor_root_path', '/old')",
+    ] {
+        sqlx::query(sql).execute(&pool).await.unwrap();
+    }
+    maintenance::forget_repositories(&pool).await.unwrap();
+    for table in [
+        "attachments",
+        "diff_comments",
+        "session_messages",
+        "sessions",
+        "workspaces",
+        "repos",
+    ] {
+        let n: i64 = sqlx::query_scalar(&format!("SELECT COUNT(*) FROM {table}"))
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert_eq!(n, 0, "{table} emptied");
+    }
+    let kept: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM settings")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(kept, 1, "settings kept");
+}
