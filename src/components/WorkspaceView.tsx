@@ -44,6 +44,7 @@ import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
 import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
+import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
 
 interface Props {
@@ -59,6 +60,9 @@ interface Props {
 // lifecycle, Stop and the follow-up queue live in `features/chat/queue.ts`.
 /** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
+
+/** Wait after the last keystroke before the composer draft is saved. */
+const DRAFT_SAVE_DELAY_MS = 300;
 
 /** Queues the Create-workspace dialog's first message for the new workspace's chat. */
 export function seedTranscript(workspaceId: string, text: string) {
@@ -122,6 +126,45 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     }
     return unsubscribe;
   }, [chatId]);
+
+  // The draft is kept between launches (`composer-drafts`, keyed by the chat
+  // session, which is the workspace): loaded when the workspace opens, saved
+  // after typing pauses and when the workspace changes; an empty draft is
+  // removed.
+  const draftLoadedFor = useRef<string | null>(null);
+  const pendingDraft = useRef<{ id: string; text: string } | null>(null);
+  const flushDraft = useCallback(() => {
+    const p = pendingDraft.current;
+    pendingDraft.current = null;
+    if (p) void (p.text === "" ? composerDrafts().clear(p.id) : composerDrafts().save(p.id, p.text));
+  }, []);
+  useEffect(() => {
+    let live = true;
+    draftLoadedFor.current = null;
+    const id = workspace.id;
+    composerDrafts()
+      .load(id)
+      .then(
+        (saved) => {
+          if (!live) return;
+          draftLoadedFor.current = id;
+          if (saved) setDraft((d) => (d === "" ? saved : d));
+        },
+        () => {
+          if (live) draftLoadedFor.current = id;
+        },
+      );
+    return () => {
+      live = false;
+      flushDraft();
+    };
+  }, [workspace.id, flushDraft]);
+  useEffect(() => {
+    if (draftLoadedFor.current !== workspace.id) return;
+    pendingDraft.current = { id: workspace.id, text: draft };
+    const timer = setTimeout(flushDraft, DRAFT_SAVE_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [draft, workspace.id, flushDraft]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
