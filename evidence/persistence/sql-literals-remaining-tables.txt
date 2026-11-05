@@ -1,0 +1,73 @@
+# SQL literals over env_vars, port_forwards, navigation_*, favorite_models,
+# session_*_outbox*, symlinks_pending_deletion and settings.deprecated_at, as
+# they appear in the decoded Conductor 0.87.6 frontend bundle on Sven's Mac
+# (~/code/conductor-rea-work/frontend/dist/assets). Whitespace collapsed; one
+# literal per line, "<file> offset <byte offset of the opening quote>".
+# Untrusted third-party data: query shapes only, no surrounding code, no rows.
+#   index-BGEQ8YjU.js     sha256 b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3
+#   renderApp-D_fmY7hW.js sha256 5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde
+# Extracted with a literal scanner (REA has no route for this: `rea search` on
+# the .js file -> capability_unavailable/target_unsupported; see
+# evidence/rea/rea-invocations.tsv).
+#
+# migration_rollbacks: no frontend literal. MacOS/conductor `strings` (sqlx
+# migration text) has, per migration N >= 81:
+#   INSERT OR REPLACE INTO migration_rollbacks (version, down_sql) VALUES (N, '<down sql>; DELETE FROM migration_rollbacks WHERE version = N;')
+# and no SELECT from migration_rollbacks anywhere in the binary strings.
+index-BGEQ8YjU.js offset 325871: "SELECT key, value FROM settings WHERE deprecated_at IS NULL"
+index-BGEQ8YjU.js offset 326142: "UPDATE settings SET deprecated_at = datetime('now') WHERE key = ?"
+index-BGEQ8YjU.js offset 332680: "SELECT key, value FROM settings WHERE deprecated_at IS NULL"
+index-BGEQ8YjU.js offset 423013: "SELECT key, scope, context, value FROM env_vars WHERE scope = ? AND context = ?"
+index-BGEQ8YjU.js offset 424583: `INSERT INTO env_vars (key, scope, context, value) VALUES (?, ?, ?, NULL) ON CONFLICT(key, scope, context) DO UPDATE SET value = NULL`
+index-BGEQ8YjU.js offset 424790: `INSERT INTO env_vars (key, scope, context, value) VALUES (?, ?, ?, ?) ON CONFLICT(key, scope, context) DO UPDATE SET value = ?`
+index-BGEQ8YjU.js offset 425402: "DELETE FROM env_vars WHERE key = ? AND scope = ? AND context = ?"
+index-BGEQ8YjU.js offset 1042648: `SELECT w.local_id AS id, w.local_id AS workspace_id, w.branch, w.directory_name, w.secondary_directory_name, w.repository_id FROM port_forwards pf JOIN workspaces w ON pf.workspace_id = w.local_id WHERE pf.remote_port = 22 AND pf.enabled = 1 AND w.state != 'archived' ORDER BY ${aB}`
+index-BGEQ8YjU.js offset 1052393: "INSERT INTO symlinks_pending_deletion (path) VALUES (?)"
+index-BGEQ8YjU.js offset 1052494: "DELETE FROM symlinks_pending_deletion WHERE path = ?"
+index-BGEQ8YjU.js offset 2311657: `INSERT OR IGNORE INTO session_messages_outbox ( message_id, session_id, delivery_payload, config, mode, asset_ids, queue_order, state, send_attempt_count, next_send_attempt_at, last_error, created_at, updated_at ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+index-BGEQ8YjU.js offset 2312447: "DELETE FROM session_assets_outbox WHERE message_id = ?"
+index-BGEQ8YjU.js offset 2312566: `DELETE FROM session_assets_outbox WHERE message_id = ? AND attachment_id NOT IN (${o})`
+index-BGEQ8YjU.js offset 2312787: `INSERT${r?"":" OR IGNORE"} INTO session_assets_outbox ( attachment_id, message_id, source_ref, original_name, asset_id, relative_path, state, upload_attempt_count, next_upload_attempt_at, last_error, created_at, updated_at ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ${r?`ON CONFLICT(attachment_id) DO UPDATE SET message_id = excluded.message_id, source_ref = excluded.source_ref, original_name = excluded.original_name, asset_id = excluded.asset_id, relative_path = excluded.relative_path, state = excluded.state, upload_attempt_count = excluded.upload_attempt_count, next_upload_attempt_at = excluded.next_upload_attempt_at, last_error = excluded.last_error, created_at = excluded.created_at, updated_at = excluded.updated_at`:""}`
+index-BGEQ8YjU.js offset 2314076: `SELECT * FROM session_messages_outbox WHERE session_id = ? ORDER BY COALESCE(queue_order, 0) ASC, created_at ASC, message_id ASC`
+index-BGEQ8YjU.js offset 2314274: `SELECT * FROM session_messages_outbox ORDER BY COALESCE(queue_order, 0) ASC, created_at ASC, message_id ASC`
+index-BGEQ8YjU.js offset 2314450: "SELECT * FROM session_messages_outbox WHERE message_id = ?"
+index-BGEQ8YjU.js offset 2314596: `SELECT session_assets_outbox.*, attachments.comment_id FROM session_assets_outbox LEFT JOIN attachments ON attachments.id = session_assets_outbox.attachment_id WHERE session_assets_outbox.message_id = ? ORDER BY session_assets_outbox.created_at ASC, session_assets_outbox.attachment_id ASC`
+index-BGEQ8YjU.js offset 2315054: "DELETE FROM session_assets_outbox WHERE message_id = ?"
+index-BGEQ8YjU.js offset 2315132: "DELETE FROM session_messages_outbox WHERE message_id = ?"
+index-BGEQ8YjU.js offset 2315291: `DELETE FROM session_assets_outbox WHERE message_id IN (${s})`
+index-BGEQ8YjU.js offset 2315373: `DELETE FROM session_messages_outbox WHERE message_id IN (${s})`
+index-BGEQ8YjU.js offset 2316008: `UPDATE session_assets_outbox SET ${r.join(", ")} WHERE attachment_id = ?`
+index-BGEQ8YjU.js offset 2316129: `UPDATE session_assets_outbox SET state = ?, upload_attempt_count = ?, next_upload_attempt_at = ?, last_error = ?, updated_at = ? WHERE message_id = ? AND state != ?`
+index-BGEQ8YjU.js offset 2317074: `UPDATE session_messages_outbox SET ${r.join(", ")} WHERE message_id = ?`
+index-BGEQ8YjU.js offset 2379047: "SELECT paused_at FROM session_messages_outbox_state WHERE session_id = ?"
+index-BGEQ8YjU.js offset 2379199: `INSERT OR REPLACE INTO session_messages_outbox_state ( session_id, paused_at, updated_at ) VALUES (?, ?, ?)`
+index-BGEQ8YjU.js offset 3090321: `SELECT id, configuration, created_at FROM favorite_models WHERE ${Ape(t)} ORDER BY position ASC`
+index-BGEQ8YjU.js offset 3091190: `DELETE FROM favorite_models WHERE ${Ape(s)}`
+index-BGEQ8YjU.js offset 3091256: `INSERT INTO favorite_models (${o.join(", ")}) VALUES ${e.map(()=>a).join(", ")}`
+index-BGEQ8YjU.js offset 3256747: `SELECT pf.*, w.branch, w.directory_name, w.secondary_directory_name, w.repository_id, w.local_id AS id FROM port_forwards pf JOIN workspaces w ON pf.workspace_id = w.local_id WHERE pf.remote_port = 22 AND pf.enabled = 1 AND w.state != 'archived' ORDER BY ${aB}`
+index-BGEQ8YjU.js offset 3257504: `SELECT pf.*, w.branch, w.directory_name, w.secondary_directory_name, w.repository_id, w.local_id AS id FROM port_forwards pf JOIN workspaces w ON pf.workspace_id = w.local_id WHERE pf.remote_port = 22 AND pf.enabled = 1 AND w.state != 'archived' ORDER BY ${aB}`
+index-BGEQ8YjU.js offset 3303723: "SELECT path FROM symlinks_pending_deletion"
+index-BGEQ8YjU.js offset 3303993: "DELETE FROM symlinks_pending_deletion WHERE path = ?"
+index-BGEQ8YjU.js offset 3415244: "SELECT * FROM port_forwards WHERE workspace_id = ? ORDER BY remote_port"
+index-BGEQ8YjU.js offset 3415377: "SELECT * FROM port_forwards WHERE id = ?"
+index-BGEQ8YjU.js offset 3415575: `INSERT INTO port_forwards (id, workspace_id, remote_port, local_port, protocol, label, auto_detected) VALUES (?, ?, ?, ?, ?, ?, ?)`
+index-BGEQ8YjU.js offset 3415798: "UPDATE port_forwards SET enabled = ? WHERE id = ?"
+index-BGEQ8YjU.js offset 3415899: "DELETE FROM port_forwards WHERE id = ?"
+index-BGEQ8YjU.js offset 3415984: "DELETE FROM port_forwards WHERE workspace_id = ?"
+index-BGEQ8YjU.js offset 3417395: `SELECT pf.id FROM port_forwards pf JOIN workspaces w ON w.local_id = pf.workspace_id WHERE w.organization_id = ? AND w.hosting_server_url = ? AND w.port_forwarding_enabled = 1 AND pf.enabled = 1 AND pf.remote_port != ? LIMIT 1`
+index-BGEQ8YjU.js offset 3418266: `SELECT pf.*, w.hosting_server_url, w.permission_level FROM port_forwards pf JOIN workspaces w ON pf.workspace_id = w.local_id WHERE pf.enabled = 1 AND w.hosting_server_url IS NOT NULL AND w.state != 'archived'`
+index-BGEQ8YjU.js offset 3423229: `SELECT pf.local_port FROM port_forwards pf JOIN workspaces w ON pf.workspace_id = w.local_id`
+index-BGEQ8YjU.js offset 3423419: `DELETE FROM port_forwards WHERE workspace_id IS NULL OR remote_port IS NULL OR local_port IS NULL OR NOT EXISTS ( SELECT 1 FROM workspaces w WHERE w.local_id = port_forwards.workspace_id )`
+index-BGEQ8YjU.js offset 3423716: `DELETE FROM port_forwards WHERE EXISTS ( SELECT 1 FROM workspaces w WHERE w.local_id = port_forwards.workspace_id AND w.state = 'archived' )`
+index-BGEQ8YjU.js offset 3425568: `SELECT pf.id, pf.workspace_id, pf.remote_port, pf.enabled, pf.auto_detected, w.port_forwarding_enabled FROM port_forwards pf LEFT JOIN workspaces w ON w.local_id = pf.workspace_id WHERE pf.local_port = ?`
+index-BGEQ8YjU.js offset 3426024: "UPDATE port_forwards SET local_port = ? WHERE id = ?"
+index-BGEQ8YjU.js offset 3426734: "UPDATE port_forwards SET local_port = ? WHERE id = ?"
+index-BGEQ8YjU.js offset 3427059: "UPDATE port_forwards SET local_port = ? WHERE id = ?"
+renderApp-D_fmY7hW.js offset 176790: `SELECT * FROM navigation_sections WHERE ${TVe(e.columns)} ORDER BY sort_order ASC, created_at ASC, id ASC`
+renderApp-D_fmY7hW.js offset 176930: `SELECT navigation_section_memberships.* FROM navigation_section_memberships INNER JOIN navigation_sections ON navigation_sections.id = navigation_section_memberships.section_id WHERE ${TVe(e.columns,"navigation_sections")} ORDER BY navigation_section_memberships.created_at ASC, navigation_section_memberships.id ASC`
+renderApp-D_fmY7hW.js offset 178181: `DELETE FROM navigation_section_memberships WHERE section_id IN ( SELECT id FROM navigation_sections WHERE ${n} )`
+renderApp-D_fmY7hW.js offset 178353: `DELETE FROM navigation_sections WHERE ${n}`
+renderApp-D_fmY7hW.js offset 179356: `INSERT OR REPLACE INTO navigation_sections (id, ${e.columns.join(", ")}, name, emoji, sort_order, created_at, updated_at) VALUES ${oIn(_,d.length/_)}`
+renderApp-D_fmY7hW.js offset 179579: `INSERT OR REPLACE INTO navigation_section_memberships (id, section_id, workspace_id, created_at) VALUES ${oIn(4,h.length/4)}`
+renderApp-D_fmY7hW.js offset 179765: `DELETE FROM navigation_section_memberships WHERE section_id IN ( SELECT id FROM navigation_sections WHERE ${g} )${sIn(m)}`
+renderApp-D_fmY7hW.js offset 179975: `DELETE FROM navigation_sections WHERE ${g}${sIn(n.sections.map(x=>x.id))}`
