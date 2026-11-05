@@ -373,7 +373,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     }),
     [workspace.id],
   );
-  const review = useReviewComments(workspace.id, chat, diff.openPath);
+  const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
   // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub, then archive on merge.
@@ -463,7 +463,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
-          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} /> : null}
+          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} /> : null}
         />
         <div className="ws-right">
           <RightPanel
