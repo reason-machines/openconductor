@@ -68,6 +68,13 @@ test("probeFocus: input in path, outermost contenteditable, terminal, recorder",
   assert.deepEqual(probeFocus(ev("a", { path: [{}, null, "x"] })), { field: undefined, inTerminal: false, recording: false });
 });
 
+test("probeFocus: a data-keybinding-local list reads its own plain keys, like a text field", () => {
+  const list = el("OL", { dataset: { keybindingLocal: "true" } });
+  assert.equal(probeFocus(ev("ArrowUp", { path: [el("LI"), list, el("BODY")] })).field, list);
+  const input = el("TEXTAREA");
+  assert.equal(probeFocus(ev("a", { path: [input, list] })).field, input, "a text field inside it still wins");
+});
+
 test("a matching shortcut runs, stops propagation and sends telemetry", () => {
   const s = setup("settings");
   s.add("openKeyboardShortcuts", physical("Slash", "/", ["meta", "alt"]), { isGlobal: true });

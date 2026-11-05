@@ -3,8 +3,10 @@ import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { chatSnapshot, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
+import { chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { defaultChatConfig } from "../features/chat/chatModel.ts";
+import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
 import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
@@ -17,7 +19,7 @@ import { showUncommittedChanges, TARGET_REMOTE, targetBranch } from "../features
 import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
-import { addAttachment, revertedNote, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
+import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
 
 /** Sends a message with attached text files from the chat shown (Fix errors). */
 interface AttachedSend {
@@ -110,6 +112,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       inputRef.current?.focus();
     }
     const unsubscribe = subscribeChat(chatId, setSnapshot);
+    // The workspace's chat runs the default model unless the New workspace dialog picked one.
+    if (main) configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
     if (pendingMessage?.kind === "send") submit(pendingMessage.text, "queue", pendingMessage.attachments);
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
@@ -428,8 +432,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, target: diffTarget, onLoaded, onOpen: openDiffTab });
   // Inserts go to the chat shown; sends (e.g. Create PR) go to the workspace's own chat, switching to it.
   const shownChat = useRef<string>(workspace.id);
-  const chat = useMemo<ChatBridge>(
+  // Review comments attach to the workspace's own chat, even while a review chat is shown.
+  const attach = useWorkspaceChatAttach(workspace.id, shownChat, chatBridge, useCallback(() => setMainTab("chat"), []));
+  const chat = useMemo<ChatBridge & ComposerAttach>(
     () => ({
+      attach,
       insert: (t) => chatBridge.current?.insert(t),
       send: (t) => {
         if (shownChat.current === workspace.id) return chatBridge.current?.send(t);
@@ -437,7 +444,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         setMainTab("chat");
       },
     }),
-    [workspace.id],
+    [workspace.id, attach],
   );
   // Fix errors goes to the workspace's own chat with its log files attached, and shows that chat.
   const sendToChat = useCallback(
@@ -448,7 +455,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     },
     [workspace.id],
   );
-  const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
+  const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
   // Keep the sidebar's PR title and body (`workspaces.pr_title`, `pr_description`) in step with GitHub, then archive on merge.

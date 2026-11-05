@@ -134,7 +134,7 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, h
 }
 
 /** The PR settings, re-read when settings change elsewhere in the app. */
-function usePrSettings(): PrSettings {
+export function usePrSettings(): PrSettings {
   const [value, setValue] = useState<PrSettings>(DEFAULT_PR_SETTINGS);
   useEffect(() => {
     const load = () => void getSettings().then((s) => setValue(prSettings(s)), () => setValue(DEFAULT_PR_SETTINGS));
