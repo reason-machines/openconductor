@@ -52,7 +52,7 @@ function useGraphiteInstalled(): boolean | null {
   return installed;
 }
 
-/** Experimental: Show agent cost, Tab Freak Mode, Graphite stack support. */
+/** Experimental: Show agent cost, Tab Freak Mode, Show sidebar resource usage, Graphite stack support. */
 export function ExperimentalAppPrefRows() {
   const p = useAppPrefs();
   const gt = useGraphiteInstalled();
@@ -77,6 +77,14 @@ export function ExperimentalAppPrefRows() {
           label="Tab Freak Mode"
           checked={p.experimental_tab_freak_mode}
           onChange={(value) => save({ key: "experimental_tab_freak_mode", value })}
+        />
+      </Row>
+      {/* Conductor's `sidebar_resource_usage` row (renderApp settings registry, experimental tab). */}
+      <Row label="Show sidebar resource usage" help="Shows CPU and memory usage in the workspace sidebar footer.">
+        <Switch
+          label="Show sidebar resource usage"
+          checked={p.sidebar_resource_usage}
+          onChange={(value) => save({ key: "sidebar_resource_usage", value })}
         />
       </Row>
       <Row label="Graphite stack support" help={graphiteHelp}>
