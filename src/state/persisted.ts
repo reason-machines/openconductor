@@ -70,6 +70,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
           (w): Workspace => ({
             id: w.id,
             name: w.workspaceName ?? w.directoryName,
+            directoryName: w.directoryName,
             branch: w.branch,
             status: "idle",
             diff: { added: 0, removed: 0 },

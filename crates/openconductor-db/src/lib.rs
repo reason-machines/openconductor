@@ -39,6 +39,7 @@ pub mod port_forwards;
 pub mod repos;
 mod scope;
 pub mod terminal_sessions;
+pub mod workspace_rename;
 pub mod workspaces;
 
 /// Every schema migration, embedded from `migrations/`.

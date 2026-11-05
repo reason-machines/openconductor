@@ -221,3 +221,18 @@ export async function repoFavicon(rootPath: string): Promise<string | null> {
   if (!inTauri()) return null;
   return invoke<string | null>("repo_favicon", { rootPath });
 }
+
+/**
+ * Sidebar Rename workspace: record the new directory name (sibling symlink for a ready worktree)
+ * and `workspace_name` in conductor.db (src-tauri/src/sidebar_rename_commands.rs).
+ */
+export async function renameWorkspaceRecord(workspaceId: string, newDirectoryName: string, workspaceName: string | null): Promise<void> {
+  if (!inTauri()) return;
+  await invoke("db_rename_workspace", { workspaceId, newDirectoryName, workspaceName, userSet: true });
+}
+
+/** After a branch rename the user asked for: block later automatic branch renames. */
+export async function markUserSetBranchName(workspaceId: string): Promise<void> {
+  if (!inTauri()) return;
+  await invoke("db_mark_user_set_branch_name", { workspaceId });
+}

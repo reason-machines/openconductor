@@ -10,6 +10,7 @@ import { createPortal } from "react-dom";
 import { HelpMenu } from "./HelpMenu";
 import { RepoIcon } from "./RepoIcon";
 import { RepoIconDialog } from "./RepoIconDialog";
+import { RenameWorkspaceDialog } from "./RenameWorkspaceDialog";
 import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
@@ -126,7 +127,11 @@ function HeaderMenu({ label, items, className, contextAt, onContextClose }: { la
 }
 
 export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onError }: Props) {
-  const rows = useWorkspaceRows(state, dispatch, { onRename: onRenameWorkspace, onArchive: onArchiveWorkspace });
+  // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
+  const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
+  const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
+  const rows = useWorkspaceRows(state, dispatch, { onRename: onRenameWorkspace ?? openRename, onArchive: onArchiveWorkspace });
+  const renamingWs = renaming && state.repos.find((r) => r.id === renaming.repoId)?.workspaces.find((w) => w.id === renaming.workspaceId);
   const pinned = pinnedEntries(state);
   const sel = state.selection;
   // Conductor persists this per collapse key; ours lasts for the session.
@@ -306,6 +311,16 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
           </button>
         </div>
       </div>
+      {renaming && renamingWs && (
+        <RenameWorkspaceDialog
+          key={renamingWs.id}
+          repoId={renaming.repoId}
+          workspace={renamingWs}
+          dispatch={dispatch}
+          onClose={() => setRenaming(null)}
+          onError={(message) => onError?.(message)}
+        />
+      )}
       {iconRepo && (
         <RepoIconDialog
           repo={iconRepo}

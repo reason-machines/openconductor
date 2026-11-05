@@ -6,6 +6,8 @@ export interface Workspace {
   id: string;
   /** Short display name for the workspace (also its worktree folder name). */
   name: string;
+  /** `workspaces.directory_name`: the worktree folder; `name` is `workspace_name` when one is stored. */
+  directoryName?: string;
   /** Git branch checked out in this workspace's worktree. */
   branch: string;
   status: WorkspaceStatus;
