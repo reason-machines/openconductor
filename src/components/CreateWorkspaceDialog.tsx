@@ -22,6 +22,8 @@ import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import type { SourceState } from "../workspace/createFrom";
 import { CreateFromPicker } from "./CreateFromPicker";
+import { getSettings } from "../settings/api";
+import { newChatModel } from "../settings/models";
 
 interface Props {
   repos: Repo[];
@@ -34,6 +36,7 @@ interface Props {
   dispatch: Dispatch<Action>;
 }
 
+// Until settings load; then the first chat uses Settings › Default models.
 const AGENT = { agent: "claude", model: "opus", effort: "high" };
 
 function suggestName(repo: Repo | undefined, branches: string[] = []): GeneratedName | null {
@@ -55,6 +58,14 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
   const repo = repos.find((r) => r.id === draft.repoId);
   const prefix = useMemo(() => resolveBranchPrefix(prefixSettings, githubUsername), [prefixSettings, githubUsername]);
   const busy = progress.step === "creating" || progress.step === "detecting_setup";
+
+  useEffect(() => {
+    let live = true;
+    getSettings().then((s) => live && setDraft((d) => ({ ...d, ...newChatModel(s) })), () => undefined);
+    return () => {
+      live = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!repo?.path) return setBranchSrc({ status: "ready", items: [{ name: repo?.defaultBranch ?? "main", remote: null, commit: "", isHead: true, committedAt: 0 }] });

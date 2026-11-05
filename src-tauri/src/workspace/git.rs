@@ -55,6 +55,20 @@ where
     }
 }
 
+/// `git clone -- <url> <dest>`, run from `dest`'s parent (which must exist).
+/// On failure the error carries git's stderr without its "Cloning into" line.
+pub fn clone(url: &str, dest: &Path) -> Result<(), WorkspaceError> {
+    let parent = dest.parent().unwrap_or(Path::new("."));
+    let args: [&OsStr; 4] = ["clone".as_ref(), "--".as_ref(), url.as_ref(), dest.as_os_str()];
+    let out = git_raw(parent, args)?;
+    if out.status.success() {
+        return Ok(());
+    }
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    let msg: Vec<&str> = stderr.lines().filter(|l| !l.starts_with("Cloning into ")).collect();
+    Err(WorkspaceError::CloneFailed(msg.join("\n").trim().to_string()))
+}
+
 /// `true` when `git <args>` exits 0 (used for existence checks).
 pub fn git_ok<I, S>(dir: &Path, args: I) -> bool
 where

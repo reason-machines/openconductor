@@ -81,3 +81,20 @@
 .oc-code mark.deletion { background: var(--oc-diff-bg-deletion-emphasis); color: inherit; border-radius: 2px; }
 .oc-code tr.hunk td { background: var(--oc-diff-bg-separator); color: var(--muted); padding: 2px 8px; }
 .oc-code tr.annotation td { background: var(--oc-diff-annotation-bg); padding: 6px 10px; white-space: normal; font-family: var(--font-sans); }
+
+/* parity:diff.comments-inline:ui  Review comment threads and composer. */
+.oc-threads { display: flex; flex-direction: column; gap: 8px; word-break: normal; }
+.oc-thread, .oc-composer { border: 1px solid var(--border); border-radius: 6px; background: var(--panel); max-width: 720px; }
+.oc-thread[data-focused] { outline: 2px solid var(--accent); outline-offset: 1px; }
+.oc-thread.resolved { opacity: 0.85; }
+.oc-comment { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+.oc-comment-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.oc-comment-meta .spacer, .oc-composer-bar .spacer { flex: 1; }
+.oc-comment-body { margin-top: 4px; font-size: 13px; white-space: pre-wrap; overflow-wrap: break-word; }
+.oc-tag { font-size: 11px; padding: 0 6px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
+.oc-link { background: none; border: 0; padding: 0; color: var(--muted); cursor: pointer; font-size: 12px; }
+.oc-link:hover { color: inherit; text-decoration: underline; }
+.oc-thread-bar, .oc-composer-bar { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: 12px; }
+.oc-thread-collapsed { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 6px 10px; font-size: 12px; cursor: pointer; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.oc-composer textarea { display: block; width: 100%; box-sizing: border-box; border: 0; border-radius: 6px 6px 0 0; padding: 8px 10px; resize: vertical; font: inherit; font-size: 13px; background: transparent; color: inherit; }
+.oc-composer textarea:focus { outline: none; }
