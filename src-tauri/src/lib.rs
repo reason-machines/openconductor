@@ -360,6 +360,7 @@ pub fn run() {
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
+            diff::commands::diff_write_file,
             checkpoint_commands::checkpoint_save,
             checkpoint_commands::checkpoint_exists,
             checkpoint_commands::checkpoint_restore,
