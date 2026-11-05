@@ -140,8 +140,22 @@ test("Stop ends the turn cancelled with the prompt offered again; a failed call 
   assert.ok(end.kind === "turn_end" && end.status === "cancelled" && end.retryPrompt === "long job");
 
   let state = startTurn(reasonChat(CHAT), "hi").state;
-  const step = failTurn(state, newestTurn(state)!, "The Reason CLI was not found.");
+  const when = new Date("2026-11-05T10:00:00.000Z");
+  const step = failTurn(state, newestTurn(state)!, "The Reason CLI was not found.", when);
   state = step.state;
   assert.equal(state.open.length, 0);
-  assert.deepEqual(step.events[0], { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "failed", error: "The Reason CLI was not found." });
+  assert.deepEqual(step.events[0], { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "failed", error: "The Reason CLI was not found.", at: when.toISOString() });
+});
+
+test("a stopped turn marks its prompt cancelled and records start and end times", () => {
+  const t0 = new Date("2026-11-05T10:00:00.000Z");
+  const t1 = new Date("2026-11-05T10:00:07.000Z");
+  const started = startTurn(reasonChat(CHAT), "long job", t0);
+  const ended = applyReasonPayload(started.state, { chatId: CHAT, type: "turnEnded", end: { outcome: "cancelled" } }, t1);
+  assert.deepEqual(started.events[1], { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "running", at: t0.toISOString() });
+  const [upsert, status] = ended.events;
+  assert.ok(upsert?.type === "upsert" && upsert.message.role === "user" && upsert.message.cancelledAt === t1.toISOString());
+  assert.deepEqual(status, { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "cancelled", at: t1.toISOString() });
+  const done = applyReasonPayload(startTurn(reasonChat(CHAT), "x", t0).state, { chatId: CHAT, type: "turnEnded", end: { outcome: "completed" } }, t1);
+  assert.equal(done.events.length, 1);
 });

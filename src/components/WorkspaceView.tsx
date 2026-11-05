@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type FormEvent, type MutableRefObject, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
-import { ArchiveIcon, BranchIcon, SendIcon } from "./Icons";
-import { applyChatEvents, emptyTranscript, type ChatTranscript } from "../features/chat/reducer.ts";
-import type { ChatMessage } from "../features/chat/types.ts";
+import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { reasonAvailable, reasonTranscript, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
+import { chatSnapshot, queueAction, REASON_CAN_STEER, reasonAvailable, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
+import { Composer } from "../features/chat/Composer.tsx";
+import type { SendMode } from "../features/chat/queue.ts";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
 import type { DiffScope, FileDiff } from "../features/diff/types";
@@ -27,29 +27,15 @@ interface Props {
   notify?: (kind: "info" | "error", message: string) => void;
 }
 
-// In the desktop app the chat runs Reason (one Reason Session per workspace,
-// `features/chat/reasonChat.ts`). The browser preview keeps a local transcript.
-const transcripts = new Map<string, ChatTranscript>();
-/** The Create-workspace dialog's first message, sent to Reason when the chat opens. */
+// The chat runs Reason in the desktop app (one Reason Session per workspace,
+// `features/chat/reasonChat.ts`); the browser preview uses a stand-in agent.
+// Turn lifecycle, Stop and the follow-up queue live in `features/chat/queue.ts`.
+/** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
 
-function textMessage(workspaceId: string, role: ChatMessage["role"], text: string): ChatMessage {
-  const id = `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-  return { id, sessionId: workspaceId, turnId: id, role, createdAt: new Date().toISOString(), blocks: [{ type: "text", text }] };
-}
-
-function withMessages(t: ChatTranscript, messages: ChatMessage[]): ChatTranscript {
-  const r = applyChatEvents(t, messages.map((message) => ({ type: "upsert", message })));
-  return r.ok ? r.transcript : t;
-}
-
-/** Puts the Create-workspace dialog's first message at the top of the new workspace's chat. */
+/** Queues the Create-workspace dialog's first message for the new workspace's chat. */
 export function seedTranscript(workspaceId: string, text: string) {
-  if (reasonAvailable()) {
-    firstPrompts.set(workspaceId, text);
-    return;
-  }
-  transcripts.set(workspaceId, withMessages(emptyTranscript(workspaceId), [textMessage(workspaceId, "user", text)]));
+  firstPrompts.set(workspaceId, text);
 }
 
 interface ChatPanelProps extends Props {
@@ -65,8 +51,7 @@ interface ChatPanelProps extends Props {
 function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunningChange }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
-  const load = () => (reason ? reasonTranscript(workspace.id) : (transcripts.get(workspace.id) ?? emptyTranscript(workspace.id)));
-  const [transcript, setTranscript] = useState<ChatTranscript>(load);
+  const [{ transcript, queue }, setSnapshot] = useState<ChatSnapshot>(() => chatSnapshot(workspace.id));
   const [draft, setDraft] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -74,14 +59,13 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   useEffect(() => onRunningChange?.(running), [running, onRunningChange]);
 
   useEffect(() => {
-    setTranscript(load());
+    setSnapshot(chatSnapshot(workspace.id));
     setDraft("");
-    if (!reason) return;
-    const unsubscribe = subscribeReason(workspace.id, setTranscript);
+    const unsubscribe = subscribeChat(workspace.id, setSnapshot);
     const first = firstPrompts.get(workspace.id);
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      void sendReason(workspace.id, cwd, first);
+      sendReason(workspace.id, cwd, first);
     }
     return unsubscribe;
   }, [workspace.id]);
@@ -90,19 +74,9 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
     endRef.current?.scrollIntoView({ block: "end" });
   }, [transcript]);
 
-  function sendText(text: string) {
+  function submit(text: string, mode: SendMode) {
     const first = !transcript.messages.some((m) => m.role === "user");
-    if (reason) {
-      void sendReason(workspace.id, cwd, text);
-      if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
-      return;
-    }
-    const next = withMessages(transcript, [
-      textMessage(workspace.id, "user", text),
-      textMessage(workspace.id, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."),
-    ]);
-    transcripts.set(workspace.id, next);
-    setTranscript(next);
+    submitChat(workspace.id, cwd, text, mode);
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
@@ -112,16 +86,8 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
       setDraft((d) => (d.trim() ? `${d.trimEnd()}\n\n${text}` : text));
       inputRef.current?.focus();
     },
-    send: sendText,
+    send: (text) => submit(text, "queue"),
   };
-
-  function send(e: FormEvent) {
-    e.preventDefault();
-    const text = draft.trim();
-    if (!text) return;
-    sendText(text);
-    setDraft("");
-  }
 
   return (
     <section className="chat" aria-label="Chat">
@@ -134,38 +100,24 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
             <p>
               Messages you send here will run an agent inside <code>{workspace.name}</code>'s worktree on branch <code>{workspace.branch}</code>.
             </p>
-            <p className="muted">{reason ? "Reason runs this chat: one Reason Session per workspace." : "Browser preview: messages stay in a local transcript."}</p>
+            <p className="muted">{reason ? "Reason runs this chat: one Reason Session per workspace." : "Browser preview: a stand-in agent answers; Reason runs chats in the desktop app."}</p>
           </div>
         ) : (
-          <Transcript transcript={transcript} onRetry={(prompt) => sendText(prompt)} />
+          <Transcript transcript={transcript} onRetry={(prompt) => submit(prompt, "queue")} />
         )}
         <div ref={endRef} />
       </div>
-      <form className="composer" onSubmit={send}>
-        <textarea
-          ref={inputRef}
-          value={draft}
-          placeholder={`Ask the agent to work in ${workspace.name}…`}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) send(e);
-          }}
-          rows={3}
-        />
-        <div className="composer-bar">
-          <span className="muted">Enter to send, Shift+Enter for a new line</span>
-          <span className="composer-actions">
-            {running ? (
-              <button className="btn btn-small" type="button" title="Stop the agent" onClick={() => stopReason(workspace.id)}>
-                Stop
-              </button>
-            ) : null}
-            <button className="btn btn-primary btn-small" type="submit" disabled={!draft.trim()}>
-              <SendIcon size={14} /> Send
-            </button>
-          </span>
-        </div>
-      </form>
+      <Composer
+        draft={draft}
+        setDraft={setDraft}
+        inputRef={inputRef}
+        placeholder={`Ask the agent to work in ${workspace.name}…`}
+        queue={queue}
+        canSteer={REASON_CAN_STEER}
+        onSubmit={submit}
+        onStop={() => stopChat(workspace.id)}
+        onQueue={(action) => queueAction(workspace.id, action)}
+      />
     </section>
   );
 }
