@@ -66,7 +66,7 @@ for (const shot of shots) {
       ...(shot.actions ?? []),
       { step_id: "final_settle", action: "wait_for_timeout", duration_ms: shot.final_settle_ms ?? 800 },
     ],
-    capture: { at_end: ["screenshot", "url"], events: ["console", "page-errors"] },
+    capture: { at_end: shot.dom ? ["screenshot", "url", "dom"] : ["screenshot", "url"], events: ["console", "page-errors"] },
   };
   const inputFile = path.join(process.env.TMPDIR ?? "/tmp", `rea-shot-${shot.name}.json`);
   fs.writeFileSync(inputFile, JSON.stringify(input, null, 2));

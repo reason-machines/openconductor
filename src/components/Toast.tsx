@@ -9,8 +9,8 @@ let nextId = 1;
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const dismiss = useCallback((id: number) => setToasts((t) => t.filter((x) => x.id !== id)), []);
-  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean; action?: ToastAction; secondaryAction?: ToastAction }) => {
-    setToasts((t) => [...t, { id: nextId++, kind, message, sticky: opts?.sticky, action: opts?.action, secondaryAction: opts?.secondaryAction }]);
+  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean; action?: ToastAction; secondaryAction?: ToastAction; description?: string; extraActions?: ToastAction[] }) => {
+    setToasts((t) => [...t, { id: nextId++, kind, message, sticky: opts?.sticky, action: opts?.action, secondaryAction: opts?.secondaryAction, description: opts?.description, extraActions: opts?.extraActions }]);
   }, []);
   return { toasts, show, dismiss };
 }
@@ -31,13 +31,19 @@ function Toast({ toast, onDismiss }: { toast: ToastItem; onDismiss: () => void }
 
   return (
     <div className={`toast toast-${toast.kind}`} role={toast.kind === "error" ? "alert" : "status"}>
-      <span className="toast-message">{toast.message}</span>
+      <span className="toast-message">
+        {toast.message}
+        {toast.description && <span className="toast-description">{toast.description}</span>}
+      </span>
       {toast.action && (
         <button className="btn btn-small" onClick={() => { toast.action?.onClick(); onDismiss(); }}>{toast.action.label}</button>
       )}
       {toast.secondaryAction && (
         <button className="btn btn-small" onClick={() => { toast.secondaryAction?.onClick(); onDismiss(); }}>{toast.secondaryAction.label}</button>
       )}
+      {toast.extraActions?.map((a) => (
+        <button key={a.label} className="btn btn-small" onClick={a.onClick}>{a.label}</button>
+      ))}
       {toast.kind === "error" && (
         <button className="btn btn-small" onClick={copy}>{copied ? "Copied" : "Copy"}</button>
       )}
