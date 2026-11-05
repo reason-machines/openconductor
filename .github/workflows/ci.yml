@@ -37,3 +37,20 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m py_compile tools/*.py
+
+  chat:
+    name: Chat package typecheck + test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/chat
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/chat/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
