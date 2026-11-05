@@ -76,7 +76,7 @@ pub struct HeaderState {
 }
 
 /// Remote tracking state of the workspace branch.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct UpstreamSync {
     pub branch_exists: bool,
