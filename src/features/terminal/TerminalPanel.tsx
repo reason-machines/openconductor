@@ -3,6 +3,7 @@ import "@xterm/xterm/css/xterm.css";
 import { canOpen } from "./tabs";
 import { attachTab, clearTab, closeTab, getTabs, openTab, restoreWorkspaceTabs, selectTab, subscribeTabs } from "./session";
 import { FindBar, useTerminalFind } from "./FindBar";
+import { tabLabel } from "./shellIntegration";
 
 interface Props {
   workspaceId: string;
@@ -66,7 +67,7 @@ export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {
         {state.tabs.map((t) => (
           <div key={t.id} role="tab" aria-selected={t.id === state.activeId} className={`term-tab${t.id === state.activeId ? " active" : ""}`} onClick={() => selectTab(workspaceId, t.id)}>
             <span className={`term-dot ${t.status}`} />
-            <span>{t.title}</span>
+            <span>{tabLabel(t.title, t.runningProgram)}</span>
             <button className="term-x" aria-label="Close terminal" title="Close terminal" onClick={(e) => (e.stopPropagation(), closeTab(workspaceId, t.id))}>
               ×
             </button>
