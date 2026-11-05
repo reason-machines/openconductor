@@ -1,5 +1,6 @@
 // parity:diff.file-render:ui parity:diff.split-unified:ui parity:diff.viewed:ui
 import type { ReactNode } from "react";
+import { RevertIcon } from "./DiscardDialog";
 import { fileLines, gapBefore, splitRows, unifiedRows, type Span } from "./rows.ts";
 import type { CommentSide } from "./comments.ts";
 import type { DiffLayout, DiffLine, FileDiff } from "./types.ts";
@@ -21,6 +22,8 @@ interface Props {
   annotations?: (anchor: LineAnchor) => ReactNode;
   /** Show the hidden unmodified lines (loads this file with full context). */
   onExpand?: () => void;
+  /** Ask to discard this file's changes (opens the confirmation). */
+  onDiscard?: () => void;
 }
 
 function Text({ text, span, kind }: { text: string; span?: Span; kind: DiffLine["kind"] }) {
@@ -43,7 +46,7 @@ const COLUMNS: Record<DiffLayout, string[]> = {
   file: ["num", "code"],
 };
 
-export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleViewed, onLineClick, annotations, onExpand }: Props) {
+export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleViewed, onLineClick, annotations, onExpand, onDiscard }: Props) {
   const cols = COLUMNS[layout].length;
   // Either number of a row comments on that row's anchor (a context line anchors on the new side),
   // so the composer opens where its annotation row is rendered.
@@ -143,6 +146,11 @@ export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleV
           <span className="a">+{file.additions}</span>
           <span className="d">-{file.deletions}</span>
         </span>
+        {onDiscard && (
+          <button className="icon-btn oc-discard" onClick={onDiscard} title="Discard changes" aria-label={`Discard changes to ${file.path}`}>
+            <RevertIcon />
+          </button>
+        )}
         <label title="Mark this file as viewed">
           <input type="checkbox" checked={viewed} onChange={onToggleViewed} /> Viewed
         </label>
