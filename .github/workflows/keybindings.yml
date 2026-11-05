@@ -25,3 +25,7 @@ jobs:
         run: node tools/keybindings_gen.mjs --check
       - name: Unit tests
         run: node --experimental-strip-types --test src/keybindings/*.test.ts
+      - name: Build
+        run: npm run build
+      - name: End-to-end shortcuts (real key presses in the runner's Chrome)
+        run: npm run test:e2e

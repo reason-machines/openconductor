@@ -32,6 +32,9 @@ portable-pty = "=0.9.0"
 alacritty_terminal = "=0.26.0"
 libc = "0.2"
 base64 = "0.21"
+# terminal history entries (terminal/history_store.rs): AES-256-GCM, SHA-256 long names
+aes-gcm = "0.10"
+sha2 = "0.10"
 # quick_open/ (same crates Conductor links for its file picker)
 ignore = "0.4.25"
 notify = "8"

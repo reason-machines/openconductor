@@ -4,7 +4,7 @@
 import { Channel, invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../backend";
 import type { CreateFrom, CreateWorkspaceArgs } from "./createFlow";
-import type { SourceState } from "./createFrom";
+import { issueToFrom, listErrorState, prToFrom, type OpenIssueDto, type OpenPrDto, type SourceState } from "./createFrom";
 import type { BranchPrefixInfo } from "./naming";
 
 export interface RepositoryDto {
@@ -93,8 +93,7 @@ export async function createWorkspace(args: CreateWorkspaceArgs): Promise<Create
   return invoke<CreatedWorkspaceDto>("create_workspace", { ...args });
 }
 
-// No backend command lists PRs or issues yet (no GitHub or Linear integration),
-// so the desktop app reports them as not set up; the browser uses samples.
+// The browser stand-in has no gh, so it lists samples (one fork PR among them).
 const SAMPLE_PRS: CreateFrom[] = [
   { kind: "pr", number: 128, title: "Fix login redirect loop", headBranch: "fix/login-redirect", baseBranch: "main" },
   { kind: "pr", number: 121, title: "Add dark mode toggle", headBranch: "feat/dark-mode", baseBranch: "main" },
@@ -105,14 +104,31 @@ const SAMPLE_ISSUES: CreateFrom[] = [
   { kind: "issue", provider: "linear", key: "ENG-7", title: "Keyboard shortcut for new workspace" },
 ];
 
-export async function listPullRequests(): Promise<SourceState<CreateFrom>> {
-  if (inTauri()) return { status: "unavailable", reason: "no_github" };
-  return { status: "ready", items: SAMPLE_PRS };
+/**
+ * Open PRs of the repository checked out at `repoPath`, newest-updated first
+ * (`pr_list_open`, via gh). Without a local checkout there is no remote to ask.
+ */
+export async function listPullRequests(repoPath: string | null): Promise<SourceState<CreateFrom>> {
+  if (!inTauri()) return { status: "ready", items: SAMPLE_PRS };
+  if (!repoPath) return { status: "unavailable", reason: "no_remote" };
+  try {
+    const prs = await invoke<OpenPrDto[]>("pr_list_open", { repoPath });
+    return { status: "ready", items: prs.map(prToFrom) };
+  } catch (e) {
+    return listErrorState(e);
+  }
 }
 
-export async function listIssues(): Promise<SourceState<CreateFrom>> {
-  if (inTauri()) return { status: "unavailable", reason: "no_github" };
-  return { status: "ready", items: SAMPLE_ISSUES };
+/** Open GitHub issues (`gh_issue_list_open`). Linear has no backend yet, so it is not listed. */
+export async function listIssues(repoPath: string | null): Promise<SourceState<CreateFrom>> {
+  if (!inTauri()) return { status: "ready", items: SAMPLE_ISSUES };
+  if (!repoPath) return { status: "unavailable", reason: "no_remote" };
+  try {
+    const issues = await invoke<OpenIssueDto[]>("gh_issue_list_open", { repoPath });
+    return { status: "ready", items: issues.map(issueToFrom) };
+  } catch (e) {
+    return listErrorState(e);
+  }
 }
 
 /**
