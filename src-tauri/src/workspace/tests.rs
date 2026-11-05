@@ -895,16 +895,23 @@ fn service_backfills_push_upstream_for_existing_active_workspaces() {
     svc.add_repository(&gone).unwrap();
     std::fs::remove_dir_all(&gone).unwrap();
 
-    assert_eq!(svc.configure_push_upstream_for_existing(), vec![]);
+    assert_eq!(svc.configure_push_upstream_for_existing(|_, _| true), vec![]);
     assert_eq!(config_get(&tokyo.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("true"));
     assert_eq!(config_get(&lisbon.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("false"));
     assert_eq!(config_get(&f.repo, &["--get", "push.autoSetupRemote"]), None);
     // Running it again changes nothing.
-    assert_eq!(svc.configure_push_upstream_for_existing(), vec![]);
+    assert_eq!(svc.configure_push_upstream_for_existing(|_, _| true), vec![]);
 
     // Shared core.worktree makes it unsafe: each unconfigured workspace reports the warning.
     let paris = create("paris");
+    // A workspace whose effective setting is off is left alone.
+    let rome = create("rome");
+    let not_rome = |_: &std::path::Path, ws: &std::path::Path| !ws.ends_with("rome");
+    assert_eq!(svc.configure_push_upstream_for_existing(not_rome), vec![]);
+    assert_eq!(config_get(&rome.path, &["--worktree", "--get", "push.autoSetupRemote"]), None);
+    assert_eq!(config_get(&paris.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("true"));
+    sh(&paris.path, &["config", "--worktree", "--unset", "push.autoSetupRemote"]);
     sh(&f.repo, &["config", "core.worktree", f.repo.to_str().unwrap()]);
-    assert_eq!(svc.configure_push_upstream_for_existing(), vec![(format!("{id}/paris"), git::PUSH_UPSTREAM_WARNING)]);
+    assert_eq!(svc.configure_push_upstream_for_existing(not_rome), vec![(format!("{id}/paris"), git::PUSH_UPSTREAM_WARNING)]);
     assert_eq!(config_get(&paris.path, &["--worktree", "--get", "push.autoSetupRemote"]), None);
 }

@@ -100,7 +100,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      sendReason(workspace.id, cwd, first);
+      sendReason(workspace.id, cwd, first, [], repo.path || undefined);
     }
     return unsubscribe;
   }, [chatId]);
@@ -112,7 +112,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Attachments (a review request, revert notes) go to Reason as embedded files and show by name.
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
     const first = main && !chatSnapshot(chatId).transcript.messages.some((m) => m.role === "user");
-    submitChat(chatId, cwd, text, mode, attached);
+    submitChat(chatId, cwd, text, mode, attached, repo.path || undefined);
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
