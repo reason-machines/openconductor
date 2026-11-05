@@ -1,0 +1,33 @@
+name: Chat
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src-tauri/src/chat/**"
+      - "src/features/chat/**"
+      - "tools/chat/**"
+      - ".github/workflows/chat.yml"
+  pull_request:
+    paths:
+      - "src-tauri/src/chat/**"
+      - "src/features/chat/**"
+      - "tools/chat/**"
+      - ".github/workflows/chat.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: Chat Rust test + clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: rustfmt
+        run: rustfmt --edition 2021 --check src-tauri/src/chat/*.rs
+      - name: Test chat module
+        run: bash tools/chat/run-rust-tests.sh

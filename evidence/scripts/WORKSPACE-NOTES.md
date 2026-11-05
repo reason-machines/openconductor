@@ -31,6 +31,21 @@ The copies were made by the recon Session (branch `reason/conductor-recon-with-r
 | Checkpoint refs live in `refs/conductor-checkpoints/`; `checkpointer.sh` refuses when the git toplevel is not the workspace root (exit 103) | `checkpointer.sh` | not here; checkpoint child owns it. Our worktrees are always their own toplevel, which that check needs |
 | Spotlight syncs a workspace into `CONDUCTOR_ROOT_PATH` with watchexec | `spotlighter.sh` | not implemented here |
 
+## Confirmed on the installed app (2026-11-05, sven m5 max, read-only)
+
+Aggregate reads only: `ls` of the data folders, `sqlite3 ...conductor.db?immutable=1` counts and setting keys, key names of `~/.conductor/settings.toml` (values redacted except the one quoted). No message content was read.
+
+| Fact | How observed | Module status |
+| --- | --- | --- |
+| Workspaces live at `~/conductor/workspaces/<repo-dir-name>/<directory_name>`; the repo itself can live anywhere (here `~/reasonmachines/<repo>`) | `ls ~/conductor/workspaces`, a worktree's `.git` file | ours: `<data_dir>/workspaces/<repo-slug>/<name>` (same shape, different root) |
+| The worktree's git admin name keeps the name it was created with after the folder is renamed (folder `arxiv-paper-adoption-review`, admin dir `worktrees/baghdad-v1`) | worktree `.git` file | rename not implemented yet |
+| `workspaces.state` is `ready` (24) or `archived` (660) | `select state,count(*)` | ours: `active` / `archived` / `missing` |
+| Every archived row has `archive_commit` (660/660) | count | archive records `commit=` and restore recreates a deleted branch from it |
+| Every row has `placeholder_branch_name` and `initialization_parent_branch` (684/684) | counts | create returns `base_ref`; placeholder rename not implemented |
+| Collision suffix is `-vN` (76/684 directory names end `-v<digit>`) | count | frontend naming (#16); backend uses names verbatim when given |
+| Branch prefix setting `[git] branch_prefix_type = "github_username"` | settings.toml key | frontend (#16) |
+| UI copy: "Delete branch on archive" / "Delete the local branch when archiving a workspace."; "Conductor can't safely archive this workspace because a Git operation is in progress."; "Cannot rehydrate workspace without branch information" | `evidence/frontend/copy-catalog.json` | `ArchiveOptions.delete_branch`; busy refusal ignores `force`; restore errors when neither branch nor archive commit exists |
+
 ## Our choices where the evidence is silent (unverified against the app)
 
 - Layout: `<data_dir>/workspaces/<repo-slug>/<name>`; archive records in `<data_dir>/archived/<repo-slug>/<name>.ws`. The reference app's default workspace location is a user setting (SKILL.md) whose default value we have not read.
@@ -42,7 +57,8 @@ The copies were made by the recon Session (branch `reason/conductor-recon-with-r
 
 ## REA gaps hit
 
-- This lifecycle work ran without device or REA access to the Mac, so every claim above comes from the bundled text scripts and skill only, not from REA analysis of `MacOS/conductor` or `conductor-runtime`. To verify next with REA on the main binary: default workspace root, name generator and word source, branch prefix default, archive/delete behavior with dirty trees, base port allocation, and whether the archive script runs before or after the worktree is removed.
+- 2026-11-05: `sven m5 max` went offline mid-session (device_offline) before the frontend chunk could be re-extracted, so the archive flow's exact order (script vs. worktree removal) and what happens to uncommitted changes on archive are still unread. `sqlite3 -readonly` on the live `conductor.db` fails with "unable to open database file (14)" (WAL); `?immutable=1` works.
+- Earlier: this lifecycle work ran without device or REA access to the Mac, so every claim above comes from the bundled text scripts and skill only, not from REA analysis of `MacOS/conductor` or `conductor-runtime`. To verify next with REA on the main binary: default workspace root, name generator and word source, branch prefix default, archive/delete behavior with dirty trees, base port allocation, and whether the archive script runs before or after the worktree is removed.
 
 ## Running the tests
 
