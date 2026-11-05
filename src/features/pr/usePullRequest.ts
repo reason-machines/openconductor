@@ -3,9 +3,6 @@
 // finishes a turn, and after PR actions.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { gitState, headerState, lookupPr } from "./api.ts";
-import { getSettings } from "../../settings/api.ts";
-import { SETTINGS_CHANGED } from "../../settings/appearance.ts";
-import { DEFAULT_PR_SETTINGS, prSettings, type PrSettings } from "./prSettings.ts";
 import type { GitState, HeaderState, PrInfo, PrLookup } from "./types.ts";
 
 /** How often an open workspace re-reads its PR (GitHub rate limits apply). */
@@ -26,7 +23,6 @@ export interface PullRequest {
   pr: PrInfo | null;
   git: GitState | null;
   header: HeaderState | null;
-  settings: PrSettings;
   error: string | null;
   refresh: () => Promise<void>;
 }
@@ -42,8 +38,6 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
   const agentRef = useRef(agentWorking);
   agentRef.current = agentWorking;
   const generation = useRef(0);
-  const settings = usePrSettings();
-  const optionalChecksBlock = settings.optionalChecksBlock;
 
   const refresh = useCallback(async () => {
     if (!worktree) return;
@@ -68,7 +62,7 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
         agentWorking: agentRef.current,
         upstream: g.upstream,
         hasPendingComments: false,
-        optionalChecksBlock,
+        optionalChecksBlock: false,
       });
       if (gen !== generation.current) return;
       setGit(g);
@@ -79,7 +73,7 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
     } catch (e) {
       if (gen === generation.current) setError(String(e));
     }
-  }, [worktree, branch, targetBranch, optionalChecksBlock]);
+  }, [worktree, branch, targetBranch]);
 
   // A different workspace or branch starts from scratch.
   useEffect(() => {
@@ -100,17 +94,5 @@ export function usePullRequest({ worktree, branch, targetBranch, agentWorking, o
   }, [agentWorking, refresh]);
 
   const pr = lookup?.kind === "found" ? lookup.info : null;
-  return { lookup, pr, git, header, settings, error, refresh };
-}
-
-/** The PR settings, re-read when settings change elsewhere in the app. */
-function usePrSettings(): PrSettings {
-  const [value, setValue] = useState<PrSettings>(DEFAULT_PR_SETTINGS);
-  useEffect(() => {
-    const load = () => void getSettings().then((s) => setValue(prSettings(s)), () => setValue(DEFAULT_PR_SETTINGS));
-    load();
-    window.addEventListener(SETTINGS_CHANGED, load);
-    return () => window.removeEventListener(SETTINGS_CHANGED, load);
-  }, []);
-  return value;
+  return { lookup, pr, git, header, error, refresh };
 }

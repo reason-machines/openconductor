@@ -32,12 +32,6 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
-      # rust-cache restores target/ after checkout, so artifacts of the path crates
-      # (crates/scripts, crates/openconductor-db) look newer than their changed sources
-      # and Cargo reuses them stale. Rebuild them every run.
-      - name: Rebuild path crates
-        working-directory: src-tauri
-        run: cargo clean -p oc-scripts -p openconductor-db
       - run: npm ci
       - name: Build and sign (ad-hoc, hardened runtime)
         run: scripts/package-macos.sh --identity -

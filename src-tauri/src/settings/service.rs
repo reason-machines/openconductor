@@ -16,9 +16,7 @@ use serde::Deserialize;
 
 use super::{load, save, validate, Settings, SettingsError};
 use crate::agent::byok::{self, ByokError};
-use crate::agent::{
-    AgentKind, LaunchEnv, ProviderConfig, ProviderStatus, SecretStore, SecretString,
-};
+use crate::agent::{AgentKind, ProviderConfig, ProviderStatus, SecretStore, SecretString};
 
 #[derive(Debug)]
 pub enum ServiceError {
@@ -105,20 +103,9 @@ impl SettingsService {
     pub fn provider_status(&self, agent: AgentKind) -> Result<ProviderStatus, ServiceError> {
         let settings = self.get()?;
         Ok(byok::status(
-            &settings.provider_for(agent),
+            &settings.providers.effective(agent),
             self.store.as_ref(),
         ))
-    }
-
-    /// The environment to launch `agent` with: its configured provider (its
-    /// CLI login if unset) and that provider's secrets.
-    pub fn launch_env(&self, agent: AgentKind) -> Result<LaunchEnv, String> {
-        let settings = self.get().map_err(|e| e.to_string())?;
-        settings
-            .providers
-            .effective(agent)
-            .launch_env(self.store.as_ref())
-            .map_err(|e| e.to_string())
     }
 
     /// Switches `agent` to `config`, storing `secrets` for it. The settings
@@ -148,21 +135,15 @@ impl SettingsService {
     }
 
     /// Deletes the secrets of `agent`'s provider and returns it to its CLI
-    /// login: the `[providers]` entry and Conductor's top-level
-    /// `claude_provider` / `codex_provider` are both cleared.
+    /// login.
     pub fn disconnect(&self, agent: AgentKind) -> Result<ProviderStatus, ServiceError> {
         let _guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
         let mut settings = load(&self.path)?;
-        byok::disconnect(&settings.provider_for(agent), self.store.as_ref())?;
+        byok::disconnect(&settings.providers.effective(agent), self.store.as_ref())?;
         settings.providers.set(agent, None);
-        match agent {
-            AgentKind::Claude => settings.claude_provider = None,
-            AgentKind::Codex => settings.codex_provider = None,
-            _ => {}
-        }
         save(&self.path, &settings)?;
         Ok(byok::status(
-            &settings.provider_for(agent),
+            &settings.providers.effective(agent),
             self.store.as_ref(),
         ))
     }
@@ -220,26 +201,6 @@ mod tests {
         bad.models.default = String::new();
         assert!(svc.update(bad).is_err());
         assert_eq!(svc.get().unwrap(), good);
-    }
-
-    #[test]
-    fn status_and_disconnect_follow_conductors_top_level_provider() {
-        let (svc, store) = service();
-        svc.update(Settings {
-            claude_provider: Some("custom".into()),
-            ..Settings::default()
-        })
-        .unwrap();
-        let status = svc.provider_status(AgentKind::Claude).unwrap();
-        assert_eq!((status.kind, status.ready), ("anthropic_api", false));
-        store
-            .set(keys::ANTHROPIC_API_KEY, &SecretString::new("sk-ant-x"))
-            .unwrap();
-        assert!(svc.provider_status(AgentKind::Claude).unwrap().ready);
-        let after = svc.disconnect(AgentKind::Claude).unwrap();
-        assert_eq!(after.kind, "claude_login");
-        assert_eq!(store.get(keys::ANTHROPIC_API_KEY).unwrap(), None);
-        assert_eq!(svc.get().unwrap().claude_provider, None);
     }
 
     #[test]

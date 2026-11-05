@@ -17,30 +17,12 @@ Prompts are commands: "echo: TEXT" (reply split mid-word, prefixed with the
 turn number), "slow" (a running tool until session/cancel), "report" (a
 mid-turn user_message_chunk), "local" (a diff in the session's working folder),
 "cloud" (a diff under a cloud checkout), "write: a.txt=one;b.txt=two" (write
-files in the session's folder), "crash" (exit without answering),
-"config" (replies "model=M effort=E"), "attachments" (replies with each
-embedded resource as "NAME: TEXT", NAME the last part of its uri).
-
-session/new reports configOptions `model` and `reasoning_effort` like
-Reason does; session/set_config_option with a value an option does not
-offer resets it to "default" without an error, as Reason does.
+files in the session's folder), "crash" (exit without answering).
 """
 import json
 import os
 import sys
 import threading
-import urllib.parse
-
-OPTIONS = {
-    "model": ("Model", ["default", "byok:anthropic:claude-opus-5-5", "byok:openai-codex:gpt-5.6-sol"]),
-    "reasoning_effort": ("Reasoning", ["default", "low", "medium", "high", "xhigh", "max"]),
-}
-
-
-def config_options(config):
-    return [{"id": k, "name": name, "type": "select", "currentValue": config.get(k, "default"),
-             "options": [{"value": v, "name": v} for v in values]}
-            for k, (name, values) in OPTIONS.items()]
 
 HOME = os.path.realpath(os.getcwd())
 STATE = os.path.join(HOME, "state.json")
@@ -77,24 +59,16 @@ def save(state):
         json.dump(state, f)
 
 
-def begin(rid, p):
-    """Registers the prompt before its thread starts, so a session/cancel
-    read right after it always finds it (the thread may run later)."""
+def prompt(rid, p):
     sid = p["sessionId"]
     if sid not in opened:
-        send({"id": rid, "error": {"code": -32002, "message": f"Resource not found: {sid}"}})
-        return None
+        return send({"id": rid, "error": {"code": -32002, "message": f"Resource not found: {sid}"}})
     prev = running.pop(sid, None)
     if prev:
         send({"id": prev[0], "result": {"stopReason": "cancelled"}})
         prev[1].set()
     cancel = threading.Event()
     running[sid] = (rid, cancel)
-    return cancel
-
-
-def prompt(rid, p, cancel):
-    sid = p["sessionId"]
     state = load()
     session = state["sessions"][sid]
     session["turns"] += 1
@@ -129,13 +103,6 @@ def prompt(rid, p, cancel):
         diff = {"type": "diff", "path": CLOUD + "/a.txt", "oldText": None, "newText": "hi"}
         update(sid, sessionUpdate="tool_call", toolCallId="tool:2", title="write: a.txt",
                kind="edit", status="completed", content=[diff])
-    elif cmd == "config":
-        c = session.get("config", {})
-        text(sid, "agent_message_chunk", f"model={c.get('model', 'default')} effort={c.get('reasoning_effort', 'default')}")
-    elif cmd == "attachments":
-        parts = [f"{urllib.parse.unquote(b['resource']['uri'].rsplit('/', 1)[-1])}: {b['resource']['text']}"
-                 for b in p["prompt"] if b.get("type") == "resource"]
-        text(sid, "agent_message_chunk", " | ".join(parts))
     elif cmd.startswith("write: "):
         # "write: a.txt=one;b.txt=two" writes files in the chat's folder, like
         # an agent editing the workspace (the checkpoint e2e resets them).
@@ -165,17 +132,7 @@ def handle(msg):
         state["sessions"][sid] = {"cwd": p["cwd"], "turns": 0, "title": None}
         save(state)
         opened.add(sid)
-        send({"id": rid, "result": {"sessionId": sid, "configOptions": config_options({})}})
-    elif method == "session/set_config_option":
-        state = load()
-        session = state["sessions"].get(p["sessionId"])
-        if session is None or p["sessionId"] not in opened:
-            return send({"id": rid, "error": {"code": -32002, "message": "Resource not found"}})
-        values = OPTIONS.get(p["configId"], (None, []))[1]
-        config = session.setdefault("config", {})
-        config[p["configId"]] = p["value"] if p["value"] in values else "default"
-        save(state)
-        send({"id": rid, "result": {"configOptions": config_options(config)}})
+        send({"id": rid, "result": {"sessionId": sid}})
     elif method == "session/resume":
         if p["sessionId"] in load()["sessions"]:
             opened.add(p["sessionId"])
@@ -187,9 +144,7 @@ def handle(msg):
                  for k, v in load()["sessions"].items()]
         send({"id": rid, "result": {"sessions": items}})
     elif method == "session/prompt":
-        cancel = begin(rid, p)
-        if cancel is not None:
-            threading.Thread(target=prompt, args=(rid, p, cancel), daemon=True).start()
+        threading.Thread(target=prompt, args=(rid, p), daemon=True).start()
     elif method == "session/cancel":
         entry = running.get(p.get("sessionId"))
         if entry:

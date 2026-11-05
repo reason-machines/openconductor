@@ -202,8 +202,6 @@ pub struct WorkspaceRow {
     pub repository_id: String,
     pub directory_name: String,
     pub workspace_name: Option<String>,
-    /// `workspaces.user_set_workspace_name`: show `workspace_name` as is.
-    pub user_set_workspace_name: bool,
     pub branch: String,
     pub placeholder_branch_name: Option<String>,
     pub state: &'static str,
@@ -245,7 +243,6 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
             WorkspaceRow {
                 directory_name: w.directory_name.unwrap_or_default(),
                 workspace_name: w.workspace_name,
-                user_set_workspace_name: w.user_set_workspace_name,
                 branch: w.branch.unwrap_or_default(),
                 placeholder_branch_name: w.placeholder_branch_name,
                 state: state_name(w.state),

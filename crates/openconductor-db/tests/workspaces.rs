@@ -251,28 +251,3 @@ async fn list_for_session_and_delete() {
         .unwrap());
     assert_eq!(workspaces::list(&pool).await.unwrap().len(), 1);
 }
-
-#[tokio::test]
-async fn user_set_workspace_name_is_read() {
-    let pool = setup().await;
-    workspaces::insert(&pool, &new_ws("a", WorkspaceState::Ready))
-        .await
-        .unwrap();
-    let w = workspaces::get(&pool, "a")
-        .await
-        .unwrap()
-        .unwrap()
-        .workspace;
-    assert!(!w.user_set_workspace_name);
-    sqlx::query("UPDATE workspaces SET workspace_name = 'Mine', user_set_workspace_name = 1")
-        .execute(&pool)
-        .await
-        .unwrap();
-    let w = workspaces::get(&pool, "a")
-        .await
-        .unwrap()
-        .unwrap()
-        .workspace;
-    assert!(w.user_set_workspace_name);
-    assert_eq!(w.workspace_name.as_deref(), Some("Mine"));
-}

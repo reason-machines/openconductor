@@ -21,8 +21,6 @@ export interface DbWorkspaceRow {
   repositoryId: string;
   directoryName: string;
   workspaceName: string | null;
-  /** `workspaces.user_set_workspace_name`: the sidebar shows workspaceName as is. */
-  userSetWorkspaceName?: boolean;
   branch: string;
   placeholderBranchName: string | null;
   /** Schema value: initializing, setting_up, ready, archiving, archived, failed, ... */
@@ -83,8 +81,6 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
             derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
             number: w.number ?? null,
-            state: w.state,
-            userSetWorkspaceName: w.userSetWorkspaceName || undefined,
           }),
         ),
     }));

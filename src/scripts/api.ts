@@ -56,18 +56,6 @@ export async function stopRun(workspaceId: string, scriptId: string | null): Pro
   return invoke<boolean>("run_script_stop", { workspaceId, scriptId });
 }
 
-/** Settings › Experimental "Auto-run after setup" (user scope, off by default). */
-export async function autoRunAfterSetup(): Promise<boolean> {
-  if (!inTauri()) return browser.config.autoRunAfterSetup;
-  return invoke<boolean>("auto_run_after_setup_get");
-}
-
-/** Turn "Auto-run after setup" on or off; resolves to the value read back. */
-export async function setAutoRunAfterSetup(enabled: boolean): Promise<boolean> {
-  if (!inTauri()) return (browser.config.autoRunAfterSetup = enabled);
-  return invoke<boolean>("auto_run_after_setup_set", { enabled });
-}
-
 // ---- browser stand-in -------------------------------------------------------
 
 const DEMO_SCRIPT = (id: string, label: string, command: string, isDefault: boolean, icon: string) => ({
@@ -109,8 +97,6 @@ const browser = {
           const last = { workspaceId: id, state: "completed" as const, exitCode: 0, logPath: `/tmp/conductor-setup-${id}.log`, log };
           this.setup.set(id, { state: "completed", log, last });
           this.emit({ type: "setupFinished", ...last });
-          const dev = this.config.run.find((r) => r.default);
-          if (this.config.autoRunAfterSetup && dev) this.startRun(id, dev.id);
         }
       }, 250 * (i + 1)),
     );

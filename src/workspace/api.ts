@@ -161,8 +161,8 @@ export async function loadBranchPrefix(): Promise<BranchPrefixInfo> {
     const q = new URLSearchParams(window.location.search);
     const custom = q.get("prefix");
     return custom === null
-      ? { branchPrefixType: "github_username", branchPrefix: null, githubUsername: q.get("ghuser") }
-      : { branchPrefixType: custom ? "custom" : "none", branchPrefix: custom || null, githubUsername: q.get("ghuser") };
+      ? { branchPrefixType: "github_username", branchPrefixCustom: null, githubUsername: q.get("ghuser") }
+      : { branchPrefixType: custom ? "custom" : "none", branchPrefixCustom: custom || null, githubUsername: q.get("ghuser") };
   }
   return invoke<BranchPrefixInfo>("branch_prefix_settings");
 }

@@ -18,7 +18,7 @@ pub struct CreatePrRequest<'a> {
     pub description: Option<&'a str>,
     /// The repository's PR template, used when no description was given.
     pub template: Option<&'a str>,
-    /// The effective `prompts.create_pr` ("Create PR preferences").
+    /// Repository setting "custom instructions for Create PR".
     pub custom_instructions: Option<&'a str>,
 }
 
@@ -92,7 +92,7 @@ pub fn create_pr_prompt(r: &CreatePrRequest) -> String {
     }
     if let Some(c) = present(r.custom_instructions) {
         out.push_str(&format!(
-            "\n\n## User preferences\n\nThese come from the Create PR preferences setting and take precedence over the steps above:\n\n{}",
+            "\n\n## Repository instructions\n\nThese come from the repository's settings and take precedence over the steps above:\n\n{}",
             c.trim()
         ));
     }

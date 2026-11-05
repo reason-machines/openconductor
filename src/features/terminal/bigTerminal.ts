@@ -122,10 +122,6 @@ export interface BigTerminalConfig {
   enabled: boolean;
   preset: BigTerminalPreset;
   customCommands: CustomCommand[];
-  /** Account › "Claude Code tool approvals" (`tool_approvals_enabled`). */
-  requiresToolApprovals?: boolean;
-  /** Advanced › executable paths. */
-  executablePaths?: ExecutablePaths;
 }
 
 /** Removing the selected custom command moves the selection to the first one left, else Claude. */
@@ -150,12 +146,6 @@ export function setBigTerminal(config: BigTerminalConfig): void {
  */
 export function bigTabRequest(config: BigTerminalConfig = current): { command: string | undefined } | null {
   if (!config.enabled) return null;
-  return {
-    command: bigTerminalCommand({
-      preset: config.preset,
-      customCommands: config.customCommands,
-      requiresToolApprovals: config.requiresToolApprovals === true,
-      executablePaths: config.executablePaths,
-    }),
-  };
+  // Our settings have no tool-approval switch and no executable paths yet, so neither applies.
+  return { command: bigTerminalCommand({ preset: config.preset, customCommands: config.customCommands, requiresToolApprovals: false }) };
 }

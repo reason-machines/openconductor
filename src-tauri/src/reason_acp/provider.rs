@@ -8,23 +8,12 @@
 //!   the earlier prompt with `cancelled`; that turn ends
 //!   [`TurnEnd::Superseded`], not `Cancelled`.
 //! * Stop sends `session/cancel`; the prompt then ends `cancelled`. A
-//!   second Stop sends it again, which Reason treats as a hard stop. A
-//!   prompt announced with [`ReasonProvider::expect_prompt`] but not sent
-//!   yet (the app saves the start checkpoint first) is stopped too: it ends
-//!   `cancelled` without being sent.
+//!   second Stop sends it again, which Reason treats as a hard stop.
 //! * After the app or the agent restarts, a chat with a stored id is
 //!   reattached with `session/resume` (no history replay; the app keeps its
 //!   own transcript) before its next prompt.
 //! * An error Reason sends as reply text (see [`super::updates`]) ends the
 //!   turn as [`TurnEnd::Failed`] even though the prompt says `end_turn`.
-//! * A chat can ask for Session config options (`model`,
-//!   `reasoning_effort`) with [`ReasonProvider::set_config`]. They are set
-//!   with `session/set_config_option` right after `session/new`, only when
-//!   the Session offers the value: Reason resets a value it does not offer
-//!   to its default without an error, so the provider checks first and
-//!   sends a [`ProviderEvent::Notice`] instead.
-//! * A prompt can carry attachments, sent as embedded `resource` blocks
-//!   after the text (Reason advertises `embeddedContext`).
 
 use super::cli::{AgentProcess, LaunchConfig};
 use super::rpc::{CallError, Incoming, Responder, RpcConnection, RpcError};
@@ -45,25 +34,6 @@ pub enum ProviderEvent {
     },
     Agent(AgentEvent),
     TurnEnded(TurnEnd),
-    /// Something the app should tell the user about the chat, e.g. that a
-    /// requested model is not offered and Reason's default runs instead.
-    Notice(String),
-}
-
-/// A Session config option to set when the chat's Session is created.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ConfigChoice {
-    /// The option's id, e.g. `model` or `reasoning_effort`.
-    pub id: String,
-    pub value: String,
-}
-
-/// Text sent along with a prompt as an embedded resource.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Attachment {
-    /// File name shown to the agent, e.g. `Review request.md`.
-    pub name: String,
-    pub text: String,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -95,11 +65,6 @@ struct Chat {
     turn: Option<Turn>,
     /// Reason said the Session runs on Reason cloud (see `computer_is_cloud`).
     on_cloud: bool,
-    /// Config options to set when the Session is created.
-    config: Vec<ConfigChoice>,
-    /// Prompts announced by `expect_prompt` and not sent yet, with whether
-    /// a Stop came for them meanwhile.
-    pending: HashMap<u64, bool>,
 }
 
 #[derive(Default)]
@@ -117,7 +82,6 @@ struct Shared {
     /// Reason Session id to chat id.
     by_session: HashMap<String, String>,
     next_turn: u64,
-    next_ticket: u64,
 }
 
 struct Agent {
@@ -165,63 +129,15 @@ impl ReasonProvider {
         );
     }
 
-    /// Config options for the chat's Session, applied when `session/new`
-    /// creates it; a chat whose Session already exists keeps its options.
-    pub fn set_config(&self, chat: &str, config: Vec<ConfigChoice>) {
-        if let Some(c) = self.shared.lock().unwrap().chats.get_mut(chat) {
-            c.config = config;
-        }
-    }
-
     /// Sends `text` and blocks until the turn ends; events stream to the
     /// sink meanwhile. Call it from a worker thread.
     pub fn prompt(&self, chat: &str, text: &str) -> TurnEnd {
-        self.prompt_with(chat, text, &[])
-    }
-
-    /// [`Self::prompt`] with attachments sent after the text.
-    pub fn prompt_with(&self, chat: &str, text: &str, attachments: &[Attachment]) -> TurnEnd {
-        self.prompt_expected(chat, text, attachments, None)
-    }
-
-    /// Announces a prompt that is about to be sent after other work (the
-    /// app saves the turn's start checkpoint first): a Stop meanwhile ends
-    /// that prompt `cancelled` instead of being lost. Pass the ticket to
-    /// [`Self::prompt_expected`]. `None` for a chat that is not open.
-    pub fn expect_prompt(&self, chat: &str) -> Option<u64> {
-        let mut s = self.shared.lock().unwrap();
-        s.next_ticket += 1;
-        let ticket = s.next_ticket;
-        s.chats.get_mut(chat)?.pending.insert(ticket, false);
-        Some(ticket)
-    }
-
-    /// [`Self::prompt_with`] for a prompt announced with
-    /// [`Self::expect_prompt`].
-    pub fn prompt_expected(
-        &self,
-        chat: &str,
-        text: &str,
-        attachments: &[Attachment],
-        ticket: Option<u64>,
-    ) -> TurnEnd {
-        let end = self.run_prompt(chat, text, attachments, ticket);
-        if let Some(t) = ticket {
-            if let Some(c) = self.shared.lock().unwrap().chats.get_mut(chat) {
-                c.pending.remove(&t);
-            }
-        }
+        let end = self.run_prompt(chat, text);
         (self.sink)(chat, ProviderEvent::TurnEnded(end.clone()));
         end
     }
 
-    fn run_prompt(
-        &self,
-        chat: &str,
-        text: &str,
-        attachments: &[Attachment],
-        ticket: Option<u64>,
-    ) -> TurnEnd {
+    fn run_prompt(&self, chat: &str, text: &str) -> TurnEnd {
         let (conn, session_id) = match self.ensure_session(chat) {
             Ok(v) => v,
             Err(e) => return TurnEnd::Failed(e),
@@ -233,10 +149,6 @@ impl ReasonProvider {
             let Some(c) = s.chats.get_mut(chat) else {
                 return TurnEnd::Failed("unknown chat".into());
             };
-            // Stopped before it was sent: Reason never hears of it.
-            if ticket.and_then(|t| c.pending.remove(&t)) == Some(true) {
-                return TurnEnd::Cancelled;
-            }
             if let Some(prev) = &mut c.turn {
                 prev.superseded = true;
             }
@@ -246,12 +158,8 @@ impl ReasonProvider {
             });
             seq
         };
-        let cwd = {
-            let s = self.shared.lock().unwrap();
-            s.chats.get(chat).map(|c| c.cwd.clone()).unwrap_or_default()
-        };
         let params = json!({ "sessionId": session_id,
-            "prompt": prompt_blocks(text, attachments, &cwd) });
+            "prompt": [{ "type": "text", "text": text }] });
         let result = conn.call("session/prompt", params, None);
 
         let mut s = self.shared.lock().unwrap();
@@ -289,9 +197,6 @@ impl ReasonProvider {
             let Some(c) = s.chats.get_mut(chat) else {
                 return;
             };
-            for stopped in c.pending.values_mut() {
-                *stopped = true;
-            }
             let Some(turn) = &mut c.turn else {
                 return;
             };
@@ -332,15 +237,10 @@ impl ReasonProvider {
     /// The chat's Session, open in the running agent process.
     fn ensure_session(&self, chat: &str) -> Result<(Arc<RpcConnection>, String), String> {
         let (conn, generation) = self.ensure_agent()?;
-        let (cwd, known, open_in, config) = {
+        let (cwd, known, open_in) = {
             let s = self.shared.lock().unwrap();
             let c = s.chats.get(chat).ok_or("unknown chat")?;
-            (
-                c.cwd.clone(),
-                c.session_id.clone(),
-                c.open_in,
-                c.config.clone(),
-            )
+            (c.cwd.clone(), c.session_id.clone(), c.open_in)
         };
         let base = json!({ "cwd": cwd, "mcpServers": [] });
         let id = match known {
@@ -363,20 +263,6 @@ impl ReasonProvider {
                         session_id: id.clone(),
                     },
                 );
-                let (set, mut notices) = plan_config(&v["configOptions"], &config);
-                for choice in set {
-                    let params = json!({ "sessionId": id, "configId": choice.id,
-                        "value": choice.value });
-                    if let Err(e) = conn.call("session/set_config_option", params, SETUP_TIMEOUT) {
-                        notices.push(format!(
-                            "Could not set {} to {}: {e}. Reason's default is used.",
-                            choice.id, choice.value
-                        ));
-                    }
-                }
-                for n in notices {
-                    (self.sink)(chat, ProviderEvent::Notice(n));
-                }
                 id
             }
         };
@@ -440,73 +326,6 @@ fn explain(e: ReasonError, cwd: &Path) -> String {
         ),
         _ => e.message,
     }
-}
-
-/// Which wanted options to set, given the `configOptions` a new Session
-/// reports, and a notice for each one it cannot take: no such option, or a
-/// value the option does not offer (Reason would silently reset it).
-pub fn plan_config(options: &Value, wanted: &[ConfigChoice]) -> (Vec<ConfigChoice>, Vec<String>) {
-    let mut set = Vec::new();
-    let mut notices = Vec::new();
-    let options = options.as_array().map(Vec::as_slice).unwrap_or_default();
-    for w in wanted {
-        let Some(opt) = options.iter().find(|o| o["id"] == w.id.as_str()) else {
-            notices.push(format!(
-                "Reason has no \"{}\" option, so {} was not applied.",
-                w.id, w.value
-            ));
-            continue;
-        };
-        let name = opt["name"].as_str().unwrap_or(&w.id);
-        if opt["currentValue"] == w.value.as_str() {
-            continue;
-        }
-        let offered = opt["options"]
-            .as_array()
-            .map(Vec::as_slice)
-            .unwrap_or_default();
-        if offered.iter().any(|o| o["value"] == w.value.as_str()) {
-            set.push(w.clone());
-        } else {
-            notices.push(format!(
-                "Reason does not offer {} \"{}\" for this chat, so it uses Reason's default.",
-                name.to_lowercase(),
-                w.value
-            ));
-        }
-    }
-    (set, notices)
-}
-
-/// The `session/prompt` content: the text, then each attachment as an
-/// embedded resource named as a file in the chat's folder.
-pub fn prompt_blocks(text: &str, attachments: &[Attachment], cwd: &Path) -> Value {
-    let mut blocks = vec![json!({ "type": "text", "text": text })];
-    for a in attachments {
-        let mime = if a.name.ends_with(".md") {
-            "text/markdown"
-        } else {
-            "text/plain"
-        };
-        blocks.push(json!({ "type": "resource", "resource": {
-            "uri": file_uri(&cwd.join(&a.name)), "mimeType": mime, "text": a.text } }));
-    }
-    Value::Array(blocks)
-}
-
-/// `file://` URI of an absolute path, percent-encoding all but unreserved
-/// characters and `/`.
-fn file_uri(path: &Path) -> String {
-    let mut out = String::from("file://");
-    for b in path.to_string_lossy().bytes() {
-        match b {
-            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'.' | b'_' | b'~' | b'/' => {
-                out.push(b as char)
-            }
-            _ => out.push_str(&format!("%{b:02X}")),
-        }
-    }
-    out
 }
 
 fn error_text(v: &Value) -> String {

@@ -109,7 +109,7 @@ fn parse_by_extension(layer: Layer, origin: &str, text: &str) -> Result<LayerSou
     }
 }
 
-pub(super) fn read_optional(path: &Path) -> Result<Option<String>, ConfigError> {
+fn read_optional(path: &Path) -> Result<Option<String>, ConfigError> {
     match fs::read_to_string(path) {
         Ok(t) => Ok(Some(t)),
         Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(None),

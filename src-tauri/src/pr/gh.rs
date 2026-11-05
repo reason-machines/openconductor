@@ -131,7 +131,7 @@ pub struct Gh<R: Runner> {
 }
 
 impl<R: Runner> Gh<R> {
-    pub(super) fn cwd(&self) -> Option<&Path> {
+    fn cwd(&self) -> Option<&Path> {
         match &self.addressing {
             Addressing::Cwd(dir) => Some(dir),
             Addressing::Repo { .. } => None,

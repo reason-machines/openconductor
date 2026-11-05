@@ -2,42 +2,31 @@
 // One changed file in the "All changes" tab. The code is drawn by Pierre's
 // diff library with the options Conductor's diff tab passes it (REA, 0.87.6):
 // no Pierre file header (ours carries Viewed and discard), Pierre themes,
-// "line-info-basic" separators expanding 20 lines per click, lines wrapped or
-// scrolled by the Wrap lines toggle (the wrap_lines setting, on by default),
-// number-column hover, and a comment started from the gutter button or by
-// dragging across line numbers, the picked lines highlighted while it is
-// written (enableLineSelection with a controlled selection).
+// "line-info-basic" separators expanding 20 lines per click, no wrapping,
+// number-column hover and a gutter button that starts a comment.
 // Like Conductor, the file is one item of a Pierre CodeView, which renders only
 // the rows in and near the viewport, so a long diff stays cheap to show.
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { processFile, type CodeViewItem, type CodeViewLineSelection, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
+import { processFile, type CodeViewItem, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
 import { CodeView, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
 import { WhitespaceOnly } from "./Whitespace";
-import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
-import { effectiveShortcuts } from "../../keybindings/overrides.ts";
-import { glyphs } from "../../keybindings/shortcut.ts";
 import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
 import type { CommentSide } from "./comments.ts";
-import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, type LineRange, codeViewItem, fromPierreSide, lineTarget, loadedFiles, rangeOf, selectionOf, toPatch } from "./pierre.ts";
+import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, codeViewItem, fromPierreSide, lineTarget, loadedFiles, toPatch } from "./pierre.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import { useDiffTheme } from "./useDiffTheme.ts";
 
 export type LineAnchor = Anchor;
-export type { LineRange };
 
 interface Props {
   file: FileDiff;
   layout: DiffLayout;
   ignoreWhitespace: boolean;
-  /** Wrap long lines instead of scrolling them sideways. */
-  wrapLines: boolean;
   viewed: boolean;
   onToggleViewed: () => void;
-  /** The gutter button on a line, or a drag across line numbers, starts a comment on those lines. */
-  onLineClick?: (range: LineRange) => void;
-  /** Lines a comment is being written on, kept highlighted until it is saved or cancelled. */
-  selected?: LineRange | null;
+  /** The gutter button on a line starts a comment there. */
+  onLineClick?: (anchor: LineAnchor) => void;
   /** Lines that have something rendered under them (comment threads, the composer). */
   anchors?: LineAnchor[];
   /** What to render under an anchored line. */
@@ -80,7 +69,7 @@ export function revealLine(path: string, anchor: LineAnchor): boolean {
   return reveal !== undefined;
 }
 
-function Code({ file, layout, ignoreWhitespace, wrapLines, onLineClick, selected = null, anchors = [], annotations, loadFull }: Props) {
+function Code({ file, layout, ignoreWhitespace, onLineClick, anchors = [], annotations, loadFull }: Props) {
   const themeType = useThemeType();
   const theme = useDiffTheme();
   const view = useRef<CodeViewHandle<LineAnchor, undefined> | null>(null);
@@ -104,31 +93,19 @@ function Code({ file, layout, ignoreWhitespace, wrapLines, onLineClick, selected
   const canLoad = loadFull !== undefined;
   const item = useCodeViewItem(file, meta, layout, anchors);
   const fileSide: CommentSide = item.type === "file" && file.status === "deleted" ? "old" : "new";
-  const wholeFile = layout === "file";
-
-  // Pierre shows the selection we hand it: follow its drags, and the parent's comment range once one is open.
-  const [selection, setSelection] = useState<CodeViewLineSelection | null>(null);
-  const selectedKey = selected ? `${selected.side}:${selected.start}:${selected.line}` : "";
-  useEffect(() => {
-    setSelection(selected ? { id: file.path, range: selectionOf(selected, wholeFile) } : null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedKey, file.path, wholeFile]);
 
   const options = useMemo<CodeViewReactOptions<LineAnchor, undefined>>(
     () => ({
       disableFileHeader: true,
       layout: CODE_VIEW_LAYOUT,
-      overflow: wrapLines ? "wrap" : "scroll",
+      overflow: "scroll",
       theme,
       themeType,
       lineHoverHighlight: "number",
       enableGutterUtility: clickable,
-      enableLineSelection: clickable,
-      onGutterUtilityClick: clickable ? (r: SelectedLineRange) => latest.current.onLineClick?.(rangeOf(r, wholeFile ? fileSide : fromPierreSide(r.side))) : undefined,
-      onLineSelectionEnd: clickable
-        ? (r: SelectedLineRange | null) => {
-            if (r) latest.current.onLineClick?.(rangeOf(r, wholeFile ? fileSide : fromPierreSide(r.side)));
-          }
+      onGutterUtilityClick: clickable
+        ? (r: SelectedLineRange) =>
+            latest.current.onLineClick?.({ side: layout === "file" ? fileSide : fromPierreSide(r.side), line: Math.min(r.start, r.end) })
         : undefined,
       diffStyle: layout === "split" ? "split" : "unified",
       hunkSeparators: "line-info-basic",
@@ -138,7 +115,7 @@ function Code({ file, layout, ignoreWhitespace, wrapLines, onLineClick, selected
       // Rows (and comment heights) settle after a render: re-count the comments then.
       onPostRender: () => refreshNav.current(),
     }),
-    [theme, themeType, clickable, canLoad, layout, wholeFile, fileSide, ignoreWhitespace, wrapLines],
+    [theme, themeType, clickable, canLoad, layout, fileSide, ignoreWhitespace],
   );
 
   useEffect(() => {
@@ -157,8 +134,6 @@ function Code({ file, layout, ignoreWhitespace, wrapLines, onLineClick, selected
         className="oc-code-view"
         items={[item]}
         options={options}
-        selectedLines={selection}
-        onSelectedLinesChange={setSelection}
         renderAnnotation={(...[a]) => annotations?.(a.metadata!)}
       />
       <CommentNav previousCount={nav.previousCount} nextCount={nav.nextCount} navigate={nav.navigate} />
@@ -208,29 +183,12 @@ export function FileDiffView(props: Props) {
           </button>
         )}
         {tools}
-        <ViewedToggle viewed={viewed} onToggle={onToggleViewed} />
+        <label title="Mark this file as viewed">
+          <input type="checkbox" checked={viewed} onChange={onToggleViewed} /> Viewed
+        </label>
       </header>
       {!viewed && body}
     </section>
-  );
-}
-
-/** Conductor's viewed toggle tooltip, which says what a click does. */
-export const viewedLabel = (viewed: boolean): string => (viewed ? "Mark as not viewed" : "Mark as viewed");
-
-/** Conductor's ghost "Viewed" button: a check box icon and the word, tooltip with the toggle's shortcut. */
-function ViewedToggle({ viewed, onToggle }: { viewed: boolean; onToggle: () => void }) {
-  const { overrides } = useKeybindingOverrides();
-  const key = effectiveShortcuts("diff.toggleViewed", overrides)[0];
-  const label = viewedLabel(viewed);
-  return (
-    <button type="button" className="oc-viewed" aria-pressed={viewed} aria-label={label} title={key ? `${label} (${glyphs(key)})` : label} onClick={onToggle}>
-      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" />
-        {viewed && <path d="M5.5 8.2l1.8 1.8 3.4-4" />}
-      </svg>
-      Viewed
-    </button>
   );
 }
 
