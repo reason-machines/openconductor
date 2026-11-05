@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type FormEvent, type MutableRefObject, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
-import { ArchiveIcon, BranchIcon, SendIcon } from "./Icons";
-import { applyChatEvents, emptyTranscript, type ChatTranscript } from "../features/chat/reducer.ts";
-import type { ChatMessage } from "../features/chat/types.ts";
+import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { reasonAvailable, reasonTranscript, resetReasonChat, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
+import { chatSnapshot, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat.ts";
+import { Composer } from "../features/chat/Composer.tsx";
+import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
 import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
@@ -16,8 +16,13 @@ import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorksp
 import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
-import { attachmentLine } from "../features/chat/reason.ts";
 import { addAttachment, revertedNote, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
+
+/** Sends a message with attached text files from the chat shown (Fix errors). */
+interface AttachedSend {
+  sendWith(text: string, attachments: TextAttachment[]): void;
+}
+type ShownChatBridge = ChatBridge & ComposerAttach & AttachedSend;
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
@@ -39,30 +44,16 @@ interface Props {
   notify?: (kind: "info" | "error", message: string) => void;
 }
 
-// In the desktop app the chat runs Reason (one Reason Session per chat,
+// The chat runs Reason in the desktop app (one Reason Session per chat,
 // `features/chat/reasonChat.ts`): the workspace's own chat has the workspace
-// id, review chats their own. The browser preview keeps a local transcript.
-const transcripts = new Map<string, ChatTranscript>();
-/** The Create-workspace dialog's first message, sent to Reason when the chat opens. */
+// id, review chats their own. The browser preview uses a stand-in agent. Turn
+// lifecycle, Stop and the follow-up queue live in `features/chat/queue.ts`.
+/** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
 
-function textMessage(workspaceId: string, role: ChatMessage["role"], text: string): ChatMessage {
-  const id = `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-  return { id, sessionId: workspaceId, turnId: id, role, createdAt: new Date().toISOString(), blocks: [{ type: "text", text }] };
-}
-
-function withMessages(t: ChatTranscript, messages: ChatMessage[]): ChatTranscript {
-  const r = applyChatEvents(t, messages.map((message) => ({ type: "upsert", message })));
-  return r.ok ? r.transcript : t;
-}
-
-/** Puts the Create-workspace dialog's first message at the top of the new workspace's chat. */
+/** Queues the Create-workspace dialog's first message for the new workspace's chat. */
 export function seedTranscript(workspaceId: string, text: string) {
-  if (reasonAvailable()) {
-    firstPrompts.set(workspaceId, text);
-    return;
-  }
-  transcripts.set(workspaceId, withMessages(emptyTranscript(workspaceId), [textMessage(workspaceId, "user", text)]));
+  firstPrompts.set(workspaceId, text);
 }
 
 interface ChatPanelProps extends Props {
@@ -70,7 +61,7 @@ interface ChatPanelProps extends Props {
   chatId: string;
   /** Set for a review chat. */
   review?: ReviewTab;
-  bridge: MutableRefObject<(ChatBridge & ComposerAttach) | null>;
+  bridge: MutableRefObject<ShownChatBridge | null>;
   /** The main area's tab strip. */
   tabs: ReactNode;
   /** Shown instead of the transcript while another tab (the diff) is active; the composer stays. */
@@ -85,8 +76,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
-  const load = () => (reason ? reasonTranscript(chatId) : (transcripts.get(chatId) ?? emptyTranscript(chatId)));
-  const [transcript, setTranscript] = useState<ChatTranscript>(load);
+  const [{ transcript, queue }, setSnapshot] = useState<ChatSnapshot>(() => chatSnapshot(chatId));
   const [draft, setDraft] = useState("");
   // Text files the diff viewer attached (the revert note after a discard); they go out with the next message.
   const [attachments, setAttachments] = useState<TextAttachment[]>([]);
@@ -101,7 +91,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   }, [main, running, onRunningChange]);
 
   useEffect(() => {
-    setTranscript(load());
+    setSnapshot(chatSnapshot(chatId));
     setDraft("");
     setAttachments([]);
     setResetTurn(null);
@@ -110,12 +100,12 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       setDraft(pendingMessage.text);
       inputRef.current?.focus();
     }
-    const unsubscribe = reason ? subscribeReason(chatId, setTranscript) : undefined;
-    if (pendingMessage?.kind === "send") sendText(pendingMessage.text, pendingMessage.attachments);
-    const first = main && reason ? firstPrompts.get(workspace.id) : undefined;
+    const unsubscribe = subscribeChat(chatId, setSnapshot);
+    if (pendingMessage?.kind === "send") submit(pendingMessage.text, "queue", pendingMessage.attachments);
+    const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      void sendReason(workspace.id, cwd, first);
+      sendReason(workspace.id, cwd, first);
     }
     return unsubscribe;
   }, [chatId]);
@@ -125,21 +115,9 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   }, [transcript]);
 
   // Attachments (a review request, revert notes) go to Reason as embedded files and show by name.
-  function sendText(text: string, attached: readonly TextAttachment[] = []) {
-    const first = main && !load().messages.some((m) => m.role === "user");
-    if (reason) {
-      void sendReason(chatId, cwd, text, [...attached]);
-      if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
-      return;
-    }
-    // One finished turn per message, so its footer (and sample turn changes) show.
-    const shown = [text, ...attached.map((a) => attachmentLine(a.name))].join("\n\n");
-    const user = textMessage(chatId, "user", shown);
-    const reply = { ...textMessage(chatId, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."), turnId: user.turnId };
-    const done = applyChatEvents(withMessages(load(), [user, reply]), [{ type: "turn_status", sessionId: chatId, turnId: user.turnId, status: "completed" }]);
-    const next = done.ok ? done.transcript : withMessages(load(), [user, reply]);
-    transcripts.set(chatId, next);
-    setTranscript(next);
+  function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
+    const first = main && !chatSnapshot(chatId).transcript.messages.some((m) => m.role === "user");
+    submitChat(chatId, cwd, text, mode, attached);
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
@@ -154,16 +132,13 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       setDraft((d) => (d.trim() ? `${d.trimEnd()}\n\n${text}` : text));
       inputRef.current?.focus();
     },
-    send: (text) => sendText(text),
+    send: (text) => submit(text, "queue"),
+    sendWith: (text, attached) => submit(text, "queue", attached),
     attach: (a) => setAttachments((list) => addAttachment(list, a)),
   };
 
-  function send(e: FormEvent) {
-    e.preventDefault();
-    const text = draft.trim();
-    if (!text) return;
-    sendText(text, attachments);
-    setDraft("");
+  function onSubmit(text: string, mode: SendMode) {
+    submit(text, mode, attachments);
     setAttachments([]);
   }
 
@@ -184,12 +159,12 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             <p>
               Messages you send here will run an agent inside <code>{workspace.name}</code>'s worktree on branch <code>{workspace.branch}</code>.
             </p>
-            <p className="muted">{reason ? "Reason runs this chat: one Reason Session per workspace." : "Browser preview: messages stay in a local transcript."}</p>
+            <p className="muted">{reason ? "Reason runs this chat: one Reason Session per workspace." : "Browser preview: a stand-in agent answers; Reason runs chats in the desktop app."}</p>
           </div>
         ) : (
           <Transcript
             transcript={transcript}
-            onRetry={(prompt) => sendText(prompt)}
+            onRetry={(prompt) => submit(prompt, "queue")}
             // Conductor: workspace with a path, not archived; disabled while the agent works.
             onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
@@ -205,48 +180,48 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           onClose={() => setResetTurn(null)}
         />
       ) : null}
-      <form className="composer" onSubmit={send}>
-        {attachments.length > 0 && (
-          <div className="composer-attachments" aria-label="Attachments">
-            {attachments.map((a) => (
-              <span key={a.name} className="chip composer-attachment" title={a.text}>
-                {a.name}
-                <button type="button" className="composer-attachment-remove" aria-label={`Remove ${a.name}`} onClick={() => setAttachments((list) => list.filter((x) => x.name !== a.name))}>
-                  ×
-                </button>
-              </span>
-            ))}
-          </div>
-        )}
-        <textarea
-          ref={inputRef}
-          value={draft}
-          placeholder={`Ask the agent to work in ${workspace.name}…`}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) send(e);
-          }}
-          rows={3}
-        />
-        <div className="composer-bar">
-          <span className="muted">Enter to send, Shift+Enter for a new line</span>
-          <span className="composer-actions">
-            {running ? (
-              <button className="btn btn-small" type="button" title="Stop the agent" onClick={() => stopReason(chatId)}>
-                Stop
-              </button>
-            ) : null}
-            <button className="btn btn-primary btn-small" type="submit" disabled={!draft.trim()}>
-              <SendIcon size={14} /> Send
-            </button>
-          </span>
-        </div>
-      </form>
+      <Composer
+        draft={draft}
+        setDraft={setDraft}
+        inputRef={inputRef}
+        placeholder={`Ask the agent to work in ${workspace.name}…`}
+        queue={queue}
+        canSteer={REASON_CAN_STEER}
+        onSubmit={onSubmit}
+        onStop={() => stopChat(chatId)}
+        onQueue={(action) => queueAction(chatId, action)}
+        attachments={
+          attachments.length > 0 ? (
+            <div className="composer-attachments" aria-label="Attachments">
+              {attachments.map((a) => (
+                <span key={a.name} className="chip composer-attachment" title={a.text}>
+                  {a.name}
+                  <button type="button" className="composer-attachment-remove" aria-label={`Remove ${a.name}`} onClick={() => setAttachments((list) => list.filter((x) => x.name !== a.name))}>
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          ) : null
+        }
+      />
     </section>
   );
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, repo }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null; review: ReactNode; repo: Repo }) {
+interface RightPanelProps {
+  diff: WorkspaceDiff;
+  actions: () => ReactNode;
+  pr: PullRequest;
+  worktree: string | null;
+  review: ReactNode;
+  repo: Repo;
+  /** Fix errors: send to the workspace's own chat. */
+  sendToChat: (text: string, attachments: TextAttachment[]) => void;
+  readOnly: boolean;
+}
+
+function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -272,7 +247,16 @@ function RightPanel({ diff, actions, pr, worktree, review, repo }: { diff: Works
       {tab === "changes" ? (
         <ChangesList diff={diff} actions={actions} worktree={worktree} />
       ) : tab === "checks" ? (
-        <ChecksTab worktree={worktree} pr={pr.pr} refresh={pr.refresh} repoPath={repo.path} defaultBranch={repo.defaultBranch} />
+        <ChecksTab
+          worktree={worktree}
+          pr={pr.pr}
+          refresh={pr.refresh}
+          repoPath={repo.path}
+          defaultBranch={repo.defaultBranch}
+          repoId={repo.id}
+          sendToChat={sendToChat}
+          readOnly={readOnly}
+        />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -338,7 +322,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 
 export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
-  const chatBridge = useRef<(ChatBridge & ComposerAttach) | null>(null);
+  const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
   const [diffOpen, setDiffOpen] = useState(false);
@@ -371,6 +355,15 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         setMainTab("chat");
       },
     }),
+    [workspace.id],
+  );
+  // Fix errors goes to the workspace's own chat with its log files attached, and shows that chat.
+  const sendToChat = useCallback(
+    (text: string, attachments: TextAttachment[]) => {
+      if (shownChat.current === workspace.id && chatBridge.current) chatBridge.current.sendWith(text, attachments);
+      else queuePending(workspace.id, { kind: "send", text, attachments });
+      setMainTab("chat");
+    },
     [workspace.id],
   );
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
@@ -413,9 +406,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "git.createPR": () => {
       if (createShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.create(false);
     },
-    // Optional checks are not treated as blocking until that setting exists.
     "git.mergePR": () => {
-      if (mergeShortcutApplies(pullRequest.pr, false, prActions.busy === "merging")) void prActions.merge();
+      if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
     },
     "git.openInGitHub": prActions.openOnGitHub,
   });
@@ -473,6 +465,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
             worktree={workspace.path ?? null}
             review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
             repo={repo}
+            sendToChat={sendToChat}
+            readOnly={workspace.status === "archived"}
           />
           <ScriptsPanel repo={repo} workspace={workspace} />
         </div>

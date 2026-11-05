@@ -1,14 +1,16 @@
 // parity:pr.checks:ui
 // Checks tab of the right panel (ledger `pr.checks`): the PR's CI checks,
 // failing first, with a failing GitHub Actions job's log on click and
-// "Re-run" for failed jobs. Data comes from the workspace's PR lookup
+// "Re-run" for failed jobs, and "Fix errors", which sends the failing logs to
+// the workspace's chat (`fixErrors.ts`). Data comes from the workspace's PR lookup
 // (`usePullRequest`); after a re-run the jobs show as running until the next
 // lookup.
 import { isTauri } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import { openUrl } from "../../../backend";
 import type { Check, ChecksSummary, PrInfo } from "../types";
-import { checkLog, rerunFailedChecks, type CheckLog } from "./api";
+import { checkLog, repoFixErrorsPrompt, rerunFailedChecks, type CheckLog } from "./api";
+import { canFixErrors, FIX_ERRORS_MESSAGE, fixErrorsAttachments, type FixErrorsAttachment } from "./fixErrors";
 import { canRerun, checkDuration, checkLink, checkName, checkState, isActionsJob, isFailing, markRerunning, rerunUrls, sortChecks, STATE_LABEL, type CheckState } from "./checks";
 import { DEMO_CHECKS, DEMO_PR, demoChecksEnabled } from "./demo";
 import { PrHeader } from "../edit/PrHeader";
@@ -22,6 +24,12 @@ interface Props {
   /** Source checkout and default branch of the repository, for the base-branch picker. */
   repoPath: string;
   defaultBranch: string;
+  /** Repository id, for its fix-errors prompt. */
+  repoId: string;
+  /** Sends a message with attachments to the workspace's own chat; unset when there is none. */
+  sendToChat?: (text: string, attachments: FixErrorsAttachment[]) => void;
+  /** An archived workspace: Re-run and Fix errors are disabled. */
+  readOnly?: boolean;
 }
 
 const ICON: Record<CheckState, string> = { running: "◌", failed: "✕", passed: "✓", skipped: "⤼", neutral: "–", pending: "•" };
@@ -52,12 +60,13 @@ function LogView({ log }: { log: LogState }) {
   return <pre className="check-log">{log.log.logs}</pre>;
 }
 
-export function ChecksTab({ worktree, pr, refresh, repoPath, defaultBranch }: Props) {
+export function ChecksTab({ worktree, pr, refresh, repoPath, defaultBranch, repoId, sendToChat, readOnly = false }: Props) {
   const demo = !isTauri() && demoChecksEnabled();
   const live: ChecksSummary | null = demo ? DEMO_CHECKS : (pr?.status?.checks ?? null);
   // A re-run's optimistic state, dropped when the next lookup arrives.
   const [override, setOverride] = useState<ChecksSummary | null>(null);
   const [rerunning, setRerunning] = useState(false);
+  const [fixing, setFixing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const [logs, setLogs] = useState<Record<string, LogState>>({});
@@ -97,6 +106,22 @@ export function ChecksTab({ worktree, pr, refresh, repoPath, defaultBranch }: Pr
     }
   };
 
+  const fixErrors = async () => {
+    if (!sendToChat || (!worktree && !demo)) return;
+    setFixing(true);
+    setError(null);
+    try {
+      // As in Conductor, a log that cannot be fetched is left out rather than failing the request.
+      const fetched = await Promise.all(failing.map((c) => (isActionsJob(c) ? checkLog(worktree ?? "", c).catch(() => null) : Promise.resolve(null))));
+      const custom = await repoFixErrorsPrompt(repoId);
+      sendToChat(FIX_ERRORS_MESSAGE, fixErrorsAttachments(fetched, custom));
+    } catch (e) {
+      setError(`Failed to fix checks: ${e instanceof Error ? e.message : String(e)}`);
+    } finally {
+      setFixing(false);
+    }
+  };
+
   const toggleLog = (c: Check) => {
     const key = c.detailsUrl as string;
     if (open === key) return setOpen(null);
@@ -114,11 +139,18 @@ export function ChecksTab({ worktree, pr, refresh, repoPath, defaultBranch }: Pr
       {header}
       <div className="checks-head">
         <span className="checks-title">Checks</span>
-        {canRerun(failing) && (
-          <button className="btn btn-small btn-ghost" title="Re-run failed checks" disabled={rerunning} onClick={() => void rerun()}>
-            {rerunning ? "Re-running…" : "Re-run"}
-          </button>
-        )}
+        <span className="checks-actions">
+          {canRerun(failing) && (
+            <button className="btn btn-small btn-ghost" title="Re-run failed checks" disabled={readOnly || rerunning} onClick={() => void rerun()}>
+              {rerunning ? "Re-running…" : "Re-run"}
+            </button>
+          )}
+          {sendToChat && canFixErrors(failing) && (
+            <button className="btn btn-small btn-ghost" title="Send the failing logs to the agent" disabled={readOnly || fixing} aria-busy={fixing} onClick={() => void fixErrors()}>
+              {fixing ? "Fixing…" : "Fix errors"}
+            </button>
+          )}
+        </span>
       </div>
       {error && <p className="error small checks-error" role="alert">{error}</p>}
       <ul className="checks-list">
