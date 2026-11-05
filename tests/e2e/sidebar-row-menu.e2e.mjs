@@ -182,3 +182,25 @@ test("row status icon follows the agent, then the PR, then the branch", async ()
   assert.match(await row(page, "Copper wren").getAttribute("title"), /Checks failing$/);
   await page.close();
 });
+
+test("row status: a workspace's agent keeps showing on its row after you leave it", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${base}/?demo=1`);
+  const icon = (label) => row(page, label).getByTestId("workspace-status-icon");
+  await row(page, "Brisk otter").click();
+  assert.equal(await icon("Brisk otter").getAttribute("data-status"), "local");
+  // The browser preview's stand-in agent works for 2.5 s per prompt.
+  const input = page.locator(".composer textarea, textarea[placeholder]").first();
+  await input.fill("look around");
+  await input.press("Enter");
+  await page.waitForFunction(() => document.querySelector('[aria-label^="Stop the agent"]') !== null);
+  await row(page, "Quiet harbor").click();
+  // Brisk otter is no longer open, but its chat is still running.
+  assert.deepEqual([await icon("Brisk otter").getAttribute("data-status"), await icon("Brisk otter").getAttribute("aria-label")], ["working", "Working"]);
+  await page.waitForFunction(
+    (sel) => [...document.querySelectorAll(sel)].some((r) => r.textContent.includes("Brisk otter") && r.querySelector('[data-testid="workspace-status-icon"]').dataset.status === "local"),
+    '[data-testid="left-sidebar-workspace-item"]',
+    { timeout: 10_000 },
+  );
+  await page.close();
+});

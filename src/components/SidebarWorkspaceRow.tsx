@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, type Dispatch, type MouseEvent } from
 import type { AppState, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { RowStatusIcon } from "./RowStatusIcon";
-import { rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
+import { aggregateSessions, rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
 import { workspaceLabel } from "./sidebarLabel";
 import { WorkspaceActionsMenu } from "./WorkspaceActionsMenu";
 import { COMMANDS } from "../keybindings/registry";
@@ -11,6 +11,10 @@ import { sidebarEntries } from "../state/sidebarOrder";
 import { sectionOf } from "../state/navigationSections";
 import { compactCount } from "../state/sidebarDiffStat";
 import { useRowDiffStat } from "./useRowDiffStat";
+import { useWorkspaceSessionStatus } from "../features/chat/useWorkspaceSession";
+import { applyRowLookup, useRowPrPoll } from "../features/pr/sidebarPrPoller";
+import { usePrSettings } from "../features/pr/usePullRequest";
+import type { LookupResult } from "../features/pr/types";
 
 interface Props {
   workspace: Workspace;
@@ -27,14 +31,21 @@ interface Props {
   shortcutNumber?: number;
   /** The number replaces the icon while the switch modifier is held. */
   showShortcutHint?: boolean;
+  /** The repository's folder, for the row's background PR lookup. */
+  repoPath?: string;
+  /** A background PR lookup for this row came back. */
+  onPrLookup?: (r: LookupResult) => void;
 }
 
 /** One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat. */
-export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint }: Props) {
+export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup }: Props) {
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
   const label = workspaceLabel({ name: ws.name, branch: ws.branch, prTitle: ws.prTitle, userSetWorkspaceName: ws.userSetWorkspaceName, targetBranch });
-  const { ref, stat } = useRowDiffStat(ws, targetBranch, active);
-  const status = rowStatus({ workspaceState: ws.state, session: ws.status === "working" ? "working" : "idle", pr: ws.pr, hasRemote });
+  const { ref, stat, onScreen } = useRowDiffStat(ws, targetBranch, active);
+  useRowPrPoll({ ws, repoPath, onScreen, active, onResult: (r) => onPrLookup?.(r) });
+  // Every chat of the workspace, open or not, plus what the open view reports (and the demo's "working").
+  const session = aggregateSessions([useWorkspaceSessionStatus(ws.id), ws.status === "working" ? "working" : "idle"]);
+  const status = rowStatus({ workspaceState: ws.state, session, pr: ws.pr, hasRemote });
   const statusLabel = rowStatusLabel(status);
   return (
     <button
@@ -148,8 +159,11 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
   const close = useCallback(() => setMenu(null), []);
   const hintsVisible = useShortcutHints();
   const numbers = hintNumbers(sidebarEntries(state, { visibleOnly: true, collapsedSections }).map((e) => e.workspace.id));
+  const { optionalChecksBlock } = usePrSettings();
 
   const rowProps = (repoId: string, ws: Workspace) => ({
+    repoPath: state.repos.find((r) => r.id === repoId)?.path || undefined,
+    onPrLookup: (r: LookupResult) => applyRowLookup(dispatch, repoId, ws, r, optionalChecksBlock),
     active: sel.kind === "workspace" && sel.workspaceId === ws.id,
     menuOpen: menu?.workspaceId === ws.id,
     shortcutNumber: numbers.get(ws.id),
