@@ -25,6 +25,7 @@ pub mod persistence;
 mod persistence_commands;
 pub mod diff;
 pub mod github_repo;
+pub mod local_storage;
 pub mod menu;
 pub mod pr;
 pub mod project;
@@ -218,6 +219,7 @@ pub fn run() {
             let db = db::open(&data_dir)?;
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
+            app.manage(local_storage::commands::state(&data_dir));
             let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
@@ -329,6 +331,13 @@ pub fn run() {
             spotlight_commands::spotlight_testing_get,
             spotlight_commands::spotlight_testing_set,
             terminal_output_commands::get_terminal_output,
+            local_storage::commands::local_storage_get_entry,
+            local_storage::commands::local_storage_list_entries,
+            local_storage::commands::local_storage_get_subsystem,
+            local_storage::commands::local_storage_list_subsystems,
+            local_storage::commands::local_storage_set_entry,
+            local_storage::commands::local_storage_remove_entry,
+            local_storage::commands::local_storage_remove_subsystem,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")

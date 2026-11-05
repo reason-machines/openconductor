@@ -142,6 +142,8 @@ jobs:
       - run: cargo clippy --all-targets -- -D warnings
       - name: App persistence module (src-tauri/src/persistence) build, test and clippy
         run: bash ../../evidence/persistence/run-tests.sh
+      - name: Local-storage store (src-tauri/src/local_storage/store.rs) build, test and clippy
+        run: bash ../../evidence/persistence/local-storage/run-tests.sh
 
   tools:
     name: Evidence tools compile
