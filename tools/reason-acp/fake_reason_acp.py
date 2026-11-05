@@ -16,7 +16,8 @@ behaviours the provider has to handle (see src-tauri/src/reason_acp/):
 Prompts are commands: "echo: TEXT" (reply split mid-word, prefixed with the
 turn number), "slow" (a running tool until session/cancel), "report" (a
 mid-turn user_message_chunk), "local" (a diff in the session's working folder),
-"cloud" (a diff under a cloud checkout), "crash" (exit without answering).
+"cloud" (a diff under a cloud checkout), "write: a.txt=one;b.txt=two" (write
+files in the session's folder), "crash" (exit without answering).
 """
 import json
 import os
@@ -102,6 +103,16 @@ def prompt(rid, p):
         diff = {"type": "diff", "path": CLOUD + "/a.txt", "oldText": None, "newText": "hi"}
         update(sid, sessionUpdate="tool_call", toolCallId="tool:2", title="write: a.txt",
                kind="edit", status="completed", content=[diff])
+    elif cmd.startswith("write: "):
+        # "write: a.txt=one;b.txt=two" writes files in the chat's folder, like
+        # an agent editing the workspace (the checkpoint e2e resets them).
+        names = []
+        for spec in cmd[7:].split(";"):
+            name, _, content = spec.partition("=")
+            with open(os.path.join(cwd, name), "w") as f:
+                f.write(content + "\n")
+            names.append(name)
+        text(sid, "agent_message_chunk", f"turn {session['turns']} wrote {' '.join(names)}")
     elif cmd == "crash":
         os._exit(3)
     if running.get(sid, (None,))[0] == rid:

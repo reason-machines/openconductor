@@ -8,6 +8,8 @@ use openconductor_db::{workspaces, SqlitePool};
 use tauri::State;
 
 use crate::db::Db;
+use crate::diff::git::{list_changes, DiffRequest, Scope};
+use crate::diff::model::FileChange;
 
 /// Conductor's workspace status values (`uJn` order).
 pub const STATUSES: [&str; 5] = ["backlog", "in-progress", "in-review", "done", "canceled"];
@@ -92,10 +94,89 @@ pub async fn db_set_workspace_manual_status(
         .map_err(|e| e.to_string())
 }
 
+/// The changed files behind a sidebar row's +/- counts: every file changed
+/// since the merge base with `base` (committed and uncommitted), with counts
+/// and no hunks. The row sums them, skipping lockfiles, as Conductor's `FPt`
+/// does (src/state/sidebarDiffStat.ts).
+pub fn workspace_changes(
+    worktree: &std::path::Path,
+    base: String,
+) -> Result<Vec<FileChange>, String> {
+    let req = DiffRequest {
+        scope: Scope::All { base },
+        ignore_whitespace: false,
+        path: None,
+        context_lines: Some(0),
+    };
+    list_changes(worktree, &req).map_err(|e| e.to_string())
+}
+
+/// `invoke("sidebar_workspace_changes", { repo, base })`.
+#[tauri::command]
+pub async fn sidebar_workspace_changes(
+    repo: String,
+    base: String,
+) -> Result<Vec<FileChange>, String> {
+    let worktree = std::path::PathBuf::from(repo);
+    if !worktree.is_dir() {
+        return Err(format!("worktree not found: {}", worktree.display()));
+    }
+    tauri::async_runtime::spawn_blocking(move || workspace_changes(&worktree, base))
+        .await
+        .map_err(|e| format!("diff stat task failed: {e}"))?
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::persistence::{self as store, KnownRepo, KnownWorkspace};
+
+    #[test]
+    fn workspace_changes_cover_commits_and_the_working_tree() {
+        use std::process::Command;
+        let dir = std::env::temp_dir().join(format!("oc-sidebar-diffstat-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let git = |args: &[&str]| {
+            let out = Command::new("git")
+                .arg("-C")
+                .arg(&dir)
+                .args(args)
+                .output()
+                .unwrap();
+            assert!(
+                out.status.success(),
+                "git {args:?}: {}",
+                String::from_utf8_lossy(&out.stderr)
+            );
+        };
+        git(&["init", "-q", "-b", "main"]);
+        git(&["config", "user.name", "t"]);
+        git(&["config", "user.email", "t@example.invalid"]);
+        git(&["config", "commit.gpgsign", "false"]);
+        std::fs::write(dir.join("a.txt"), "1\n2\n3\n").unwrap();
+        git(&["add", "-A"]);
+        git(&["commit", "-q", "-m", "base"]);
+        git(&["checkout", "-q", "-b", "feature"]);
+        std::fs::write(dir.join("a.txt"), "1\nTWO\n3\n4\n").unwrap();
+        std::fs::write(dir.join("Cargo.lock"), "x\ny\n").unwrap();
+        git(&["add", "-A"]);
+        git(&["commit", "-q", "-m", "work"]);
+        std::fs::write(dir.join("new.txt"), "n\n").unwrap();
+
+        let mut files = workspace_changes(&dir, "main".into()).unwrap();
+        files.sort_by(|a, b| a.path.cmp(&b.path));
+        let counts: Vec<(&str, u32, u32)> = files
+            .iter()
+            .map(|f| (f.path.as_str(), f.additions, f.deletions))
+            .collect();
+        assert_eq!(
+            counts,
+            vec![("Cargo.lock", 2, 0), ("a.txt", 2, 1), ("new.txt", 1, 0)]
+        );
+        assert!(workspace_changes(&dir, "no-such-branch".into()).is_err());
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 
     #[test]
     fn sqlite_datetime_matches_sqlite_text() {

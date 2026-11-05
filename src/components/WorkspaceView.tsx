@@ -7,8 +7,10 @@ import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { reasonAvailable, reasonTranscript, resetReasonChat, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
-import { changedSinceTurn } from "../features/chat/checkpoints.ts";
+import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
+import { TurnChanges } from "../features/chat/TurnChanges.tsx";
+import type { TurnRef } from "../features/diff/turnChangesCache.ts";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
 import type { DiffScope, FileDiff } from "../features/diff/types";
@@ -19,7 +21,9 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { ScriptsPanel } from "./ScriptsPanel";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
-import { usePullRequest } from "../features/pr/usePullRequest";
+import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest";
+import { useArchiveOnMerge } from "../features/pr/useArchiveOnMerge";
+import { ChecksTab } from "../features/pr/checks/ChecksTab";
 import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
 import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
@@ -65,9 +69,11 @@ interface ChatPanelProps extends Props {
   content: ReactNode | null;
   /** The agent started or finished a turn. */
   onRunningChange?: (running: boolean) => void;
+  /** A file chip under a finished turn: open that file's changes from the turn. */
+  openTurnFile: (turn: TurnRef, path: string) => void;
 }
 
-function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunningChange }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunningChange, openTurnFile }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const load = () => (reason ? reasonTranscript(workspace.id) : (transcripts.get(workspace.id) ?? emptyTranscript(workspace.id)));
@@ -105,14 +111,20 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
       if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
       return;
     }
-    const next = withMessages(transcript, [
-      textMessage(workspace.id, "user", text),
-      textMessage(workspace.id, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."),
-    ]);
+    // One finished turn per message, so its footer (and sample turn changes) show.
+    const user = textMessage(workspace.id, "user", text);
+    const reply = { ...textMessage(workspace.id, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."), turnId: user.turnId };
+    const done = applyChatEvents(withMessages(transcript, [user, reply]), [{ type: "turn_status", sessionId: workspace.id, turnId: user.turnId, status: "completed" }]);
+    const next = done.ok ? done.transcript : withMessages(transcript, [user, reply]);
     transcripts.set(workspace.id, next);
     setTranscript(next);
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
+
+  const turnFooter = (turnId: string) => {
+    const turn = turnCheckpointRef(workspace.id, turnId);
+    return <TurnChanges turn={turn} worktree={workspace.path ?? null} onOpenFile={(path) => openTurnFile(turn, path)} />;
+  };
 
   // The diff viewer adds review comments to the composer and sends Review prompts.
   bridge.current = {
@@ -151,6 +163,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
             // Conductor: workspace with a path, not archived; disabled while the agent works.
             onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
+            turnFooter={turnFooter}
           />
         )}
         <div ref={endRef} />
@@ -191,9 +204,14 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   );
 }
 
-function RightPanel({ diff, actions }: { diff: WorkspaceDiff; actions: () => ReactNode }) {
-  const [tab, setTab] = useState<"changes" | "files">("changes");
+function RightPanel({ diff, actions, pr, worktree }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null }) {
+  const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
+  // Picking a turn's file in the chat shows that turn's changes list.
+  useEffect(() => {
+    if (diff.turn) setTab("changes");
+  }, [diff.turn]);
   const count = diff.load.state === "ready" ? diff.files.length : null;
+  const checksStatus = pr.pr?.status?.checks.status ?? null;
   return (
     <section className="diff" aria-label="Changes">
       <div className="tabs" role="tablist">
@@ -203,9 +221,14 @@ function RightPanel({ diff, actions }: { diff: WorkspaceDiff; actions: () => Rea
         <button role="tab" aria-selected={tab === "changes"} className={tab === "changes" ? "active" : ""} onClick={() => setTab("changes")}>
           Changes {count ? <span className="tab-count">{count}</span> : null}
         </button>
+        <button role="tab" aria-selected={tab === "checks"} className={tab === "checks" ? "active" : ""} onClick={() => setTab("checks")}>
+          Checks {checksStatus ? <span className={`checks-dot ${checksStatus}`} aria-label={checksStatus} /> : null}
+        </button>
       </div>
       {tab === "changes" ? (
         <ChangesList diff={diff} actions={actions} />
+      ) : tab === "checks" ? (
+        <ChecksTab worktree={worktree} pr={pr.pr} refresh={pr.refresh} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -275,12 +298,14 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const chat = useMemo<ChatBridge>(() => ({ insert: (t) => chatBridge.current?.insert(t), send: (t) => chatBridge.current?.send(t) }), []);
   const review = useReviewComments(workspace.id, chat, undefined, diff.openPath);
   const [agentWorking, setAgentWorking] = useState(false);
-  // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub.
+  const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
+  // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub, then archive on merge.
   const onLookup = useCallback(
-    (next: PrLookup) => {
+    (next: PrLookup, previous: PrLookup | null) => {
       if (next.kind === "found") dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title });
+      archiveOnMerge(next, previous);
     },
-    [dispatch, repo.id, workspace.id],
+    [dispatch, repo.id, workspace.id, archiveOnMerge],
   );
   const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, onLookup });
   const prActions = usePrActions({
@@ -345,11 +370,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           dispatch={dispatch}
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
+          openTurnFile={diff.openTurnFile}
           tabs={<MainTabs title={workspace.name} active={showDiff ? "diff" : "chat"} diffOpen={diffOpen} onSelect={setMainTab} onCloseDiff={closeDiffTab} />}
           content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
         />
         <div className="ws-right">
-          <RightPanel diff={diff} actions={review.actions} />
+          <RightPanel diff={diff} actions={review.actions} pr={pullRequest} worktree={workspace.path ?? null} />
           <ScriptsPanel repo={repo} workspace={workspace} />
         </div>
       </div>
