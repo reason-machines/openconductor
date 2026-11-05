@@ -532,19 +532,6 @@ worktree exists, so a value in the new workspace's own `.conductor/settings.toml
 seen at creation (Conductor reads it with the new worktree path); the startup backfill does
 see it.
 
-### Settings rows
-
-Row components live in `src/settings/rows/` and are mounted by the page owner:
-`RepoActionsRows` (repository Actions: Code review, Create PR and General preferences, with
-Conductor's titles, descriptions, "Customized" badge and placeholder `vzi`), `RepoGitRows`
-(repository Git: Set upstream on plain git push), `RepoEnvironmentRows` (repository
-Environment: env files with "N variables loaded", variables per context with their source,
-add and remove) and `UserEnvironmentRows` (user Environment: env files). Following this
-repository's rule of showing only rows whose setting is read, Fix errors, Resolve conflicts
-and Branch rename preferences, Delete branch on archive, Archive on merge and Preview URLs
-have no row yet. Not built: the prompt Preview dialog (`getPromptPreview`), Keychain-stored
-variable values, and Conductor's per-variable copy button.
-
 ### REA gaps (prompts, git, environment)
 
 - No REA command maps a settings key to its consumers: `rea trace-javascript-semantics` with
