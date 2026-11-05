@@ -24,18 +24,18 @@ export function GitPage({ settings, save }: Props) {
   // The backend refuses `custom` without a prefix, so choosing Custom stays
   // local (input shown, nothing saved) until a valid prefix is entered.
   const [type, setLocalType] = useState<BranchPrefixType>(git.branch_prefix_type);
-  const [custom, setCustom] = useState(git.branch_prefix_custom ?? "");
+  const [custom, setCustom] = useState(git.branch_prefix ?? "");
   const customError = type === "custom" ? branchPrefixError(normalizeCustomPrefix(custom)) : null;
 
   useEffect(() => {
     loadBranchPrefix().then((info) => setGithubUser(info.githubUsername), () => setGithubUser(null));
   }, []);
   useEffect(() => setLocalType(git.branch_prefix_type), [git.branch_prefix_type]);
-  useEffect(() => setCustom(git.branch_prefix_custom ?? ""), [git.branch_prefix_custom]);
+  useEffect(() => setCustom(git.branch_prefix ?? ""), [git.branch_prefix]);
 
   const withCustom = (value: string): Settings => ({
     ...settings,
-    git: { ...git, branch_prefix_type: "custom", branch_prefix_custom: blankToNull(value) },
+    git: { ...git, branch_prefix_type: "custom", branch_prefix: blankToNull(value) },
   });
 
   const choose = (next: BranchPrefixType) => {
@@ -47,7 +47,7 @@ export function GitPage({ settings, save }: Props) {
   const commitCustom = () => {
     const value = normalizeCustomPrefix(custom);
     if (branchPrefixError(value) !== null) return;
-    if (git.branch_prefix_type === "custom" && value === (git.branch_prefix_custom ?? "")) return;
+    if (git.branch_prefix_type === "custom" && value === (git.branch_prefix ?? "")) return;
     save(withCustom(value));
   };
 

@@ -4,7 +4,7 @@
 //! `[models]`, `[models.codex]` with a `$schema` key, see
 //! `evidence/runtime/README.md`) and the setting keys its frontend passes to
 //! the backend (`evidence/ipc/frontend-invoke-candidates.json`:
-//! `branch_prefix_type`, `branch_prefix_custom`, `default_model`,
+//! `branch_prefix_type`, `branch_prefix`, `default_model`,
 //! `review_model`, `default_codex_thinking_level`,
 //! `review_codex_thinking_level`, `default_thinking_enabled`,
 //! `review_thinking_enabled`, `send_native_notification`,
@@ -59,6 +59,13 @@ pub struct Settings {
     /// Account › "Claude Code tool approvals": agents ask before running
     /// tools. Off by default, as in Conductor, so agents run without asking.
     pub tool_approvals_enabled: bool,
+    /// The terminal panel's Open URLs; the first is the default. Conductor's
+    /// `preview_urls` (setting key `open_url_template`).
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub preview_urls: Vec<PreviewUrl>,
+    /// dotenv files whose variables agents, terminals and scripts get.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub environment_variable_files: Vec<String>,
     pub general: General,
     pub appearance: Appearance,
     pub git: Git,
@@ -67,6 +74,7 @@ pub struct Settings {
     pub advanced: Advanced,
     pub experimental: Experimental,
     pub terminal: Terminal,
+    pub prompts: Prompts,
     #[serde(flatten)]
     pub extra: toml::Table,
 }
@@ -84,6 +92,8 @@ impl Default for Settings {
             opencode_executable_path: None,
             ssh_key_path: None,
             tool_approvals_enabled: false,
+            preview_urls: Vec::new(),
+            environment_variable_files: Vec::new(),
             general: General::default(),
             appearance: Appearance::default(),
             git: Git::default(),
@@ -92,9 +102,34 @@ impl Default for Settings {
             advanced: Advanced::default(),
             experimental: Experimental::default(),
             terminal: Terminal::default(),
+            prompts: Prompts::default(),
             extra: toml::Table::new(),
         }
     }
+}
+
+pub use oc_scripts::config::PreviewUrl;
+
+/// Custom instructions per action, Conductor's `[prompts]` (setting keys
+/// `custom_prompt_<name>`). Repository settings files override each one;
+/// the effective value is resolved by `oc_scripts::config::load_effective`.
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Prompts {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub general: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code_review: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub create_pr: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fix_errors: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rename_branch: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resolve_merge_conflicts: Option<String>,
+    #[serde(flatten)]
+    pub extra: toml::Table,
 }
 
 /// Conductor's Advanced tab (Settings › More › Advanced). Key names are
@@ -268,18 +303,21 @@ pub enum BranchPrefixType {
     /// `<github-username>/<name>`.
     #[default]
     GithubUsername,
-    /// `<branch_prefix_custom>/<name>`.
+    /// `<branch_prefix>/<name>`.
     Custom,
     /// `<name>`.
     None,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(default)]
+#[serde(default, from = "GitFile")]
 pub struct Git {
     pub branch_prefix_type: BranchPrefixType,
+    /// Custom prefix, Conductor's `git.branch_prefix` (setting key
+    /// `branch_prefix_custom`). Files written by earlier rebuilds name it
+    /// `branch_prefix_custom`; that name is read when this one is absent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub branch_prefix_custom: Option<String>,
+    pub branch_prefix: Option<String>,
     /// Delete the local branch when a workspace is archived (Conductor default: off).
     pub delete_branch_on_archive: bool,
     /// Archive a local workspace after its PR is merged in the app (default: off).
@@ -291,11 +329,60 @@ pub struct Git {
     pub extra: toml::Table,
 }
 
+/// [`Git`] as read from a file: also takes the old `branch_prefix_custom`.
+#[derive(Deserialize, Default)]
+#[serde(default)]
+struct GitFile {
+    #[serde(flatten)]
+    git: GitFields,
+    branch_prefix_custom: Option<String>,
+}
+
+#[derive(Deserialize)]
+#[serde(default)]
+struct GitFields {
+    branch_prefix_type: BranchPrefixType,
+    branch_prefix: Option<String>,
+    delete_branch_on_archive: bool,
+    archive_on_merge: bool,
+    worktree_push_auto_setup_remote: bool,
+    #[serde(flatten)]
+    extra: toml::Table,
+}
+
+impl Default for GitFields {
+    fn default() -> Self {
+        let g = Git::default();
+        Self {
+            branch_prefix_type: g.branch_prefix_type,
+            branch_prefix: g.branch_prefix,
+            delete_branch_on_archive: g.delete_branch_on_archive,
+            archive_on_merge: g.archive_on_merge,
+            worktree_push_auto_setup_remote: g.worktree_push_auto_setup_remote,
+            extra: g.extra,
+        }
+    }
+}
+
+impl From<GitFile> for Git {
+    fn from(f: GitFile) -> Self {
+        let g = f.git;
+        Git {
+            branch_prefix_type: g.branch_prefix_type,
+            branch_prefix: g.branch_prefix.or(f.branch_prefix_custom),
+            delete_branch_on_archive: g.delete_branch_on_archive,
+            archive_on_merge: g.archive_on_merge,
+            worktree_push_auto_setup_remote: g.worktree_push_auto_setup_remote,
+            extra: g.extra,
+        }
+    }
+}
+
 impl Default for Git {
     fn default() -> Self {
         Self {
             branch_prefix_type: BranchPrefixType::default(),
-            branch_prefix_custom: None,
+            branch_prefix: None,
             delete_branch_on_archive: false,
             archive_on_merge: false,
             worktree_push_auto_setup_remote: true,

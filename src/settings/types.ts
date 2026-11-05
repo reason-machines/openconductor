@@ -79,7 +79,7 @@ export interface Settings {
   };
   git: {
     branch_prefix_type: BranchPrefixType;
-    branch_prefix_custom?: string | null;
+    branch_prefix?: string | null;
     delete_branch_on_archive: boolean;
     archive_on_merge: boolean;
     worktree_push_auto_setup_remote: boolean;
@@ -124,6 +124,12 @@ export interface Settings {
     experimental_big_terminal_mode?: boolean;
     [extra: string]: unknown;
   };
+  /** The terminal panel's Open URLs (Conductor's `preview_urls`); the first is the default. */
+  preview_urls?: PreviewUrl[];
+  /** dotenv files whose variables agents, terminals and scripts get. */
+  environment_variable_files?: string[];
+  /** Custom instructions per action (Conductor's `[prompts]`); repository files override each. */
+  prompts?: Partial<Record<PromptKind, string | null>> & { [extra: string]: unknown };
   /** Conductor's "Big terminal" settings tab (id `terminal`). */
   terminal?: {
     /** A built-in preset or `custom:<id>`; absent or unknown means Claude. */
@@ -132,6 +138,16 @@ export interface Settings {
     [extra: string]: unknown;
   };
   [extra: string]: unknown;
+}
+
+/** `[prompts]` keys, in Conductor's order. */
+export type PromptKind = "general" | "code_review" | "create_pr" | "fix_errors" | "rename_branch" | "resolve_merge_conflicts";
+export const PROMPT_KINDS: PromptKind[] = ["general", "code_review", "create_pr", "fix_errors", "resolve_merge_conflicts", "rename_branch"];
+
+/** One `preview_urls` entry. */
+export interface PreviewUrl {
+  name?: string | null;
+  url: string;
 }
 
 /** One secret for `connect_provider`. Write-only: the backend never returns values. */
