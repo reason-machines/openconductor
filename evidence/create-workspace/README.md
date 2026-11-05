@@ -33,3 +33,5 @@ What the reference app (Conductor v0.87.6) does when a workspace is created, the
 ## Code
 
 - `src/workspace/naming.ts`: pure naming logic, tested by `src/workspace/naming.test.ts` (`node --test "src/**/*.test.ts"`).
+- `src/workspace/createFrom.ts`: create-from picker logic (tab order, search, pasted GitHub/Linear references, status lines), tested by `src/workspace/createFrom.test.ts`. Picker states follow `frontend/copy-catalog.json` ("Loading pull requests...", "No pull requests found", "Add a GitHub repository remote to include pull requests", "Set up GitHub in settings to include pull requests", "Linear integration required", "Linear issue not found", "Could not load that pull request").
+- No backend lists PRs or issues yet; the desktop app shows the "Set up GitHub" state and the browser uses samples. Creating from an existing branch or PR head needs `create_workspace` to check out an existing branch (today it returns "branch already exists").

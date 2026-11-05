@@ -148,6 +148,59 @@
   for (const [, repo, dir, branch] of ws) vfs[`${rootOf[repo]}/${dir}/.git`] = `gitdir: ${rootOf[repo]}/.git/worktrees/${dir}\n`;
 
   // Data for the fake git in fixtures.js: worktrees per repo and one diff.
+  // Before/after contents of the two changed files in "lisbon" (invented code).
+  const AUTH_BEFORE = [
+    'import { getSession } from "./session";',
+    "",
+    "export type Session = { userId: string; expiresAt: number };",
+    "",
+    "export async function currentSession(): Promise<Session | null> {",
+    "  return (await getSession()) ?? null;",
+    "}",
+    "",
+    "export function redirectTo(session) {",
+    '  if (session) return "/dashboard";',
+    '  return "/login";',
+    "}",
+    "",
+  ].join("\n");
+  const AUTH_AFTER = AUTH_BEFORE.replace('  if (session) return "/dashboard";', '  if (session && session.expiresAt > Date.now()) return "/dashboard";');
+  const TEST_BEFORE = [
+    'import { describe, expect, it } from "vitest";',
+    'import { redirectTo } from "./auth";',
+    "",
+    'describe("redirectTo", () => {',
+    '  it("sends signed-out users to /login", () => {',
+    '    expect(redirectTo(null)).toBe("/login");',
+    "  });",
+    "});",
+    "",
+  ].join("\n");
+  const TEST_AFTER = TEST_BEFORE.replace(
+    "  });\n});",
+    [
+      "  });",
+      "",
+      '  it("sends expired sessions to /login", () => {',
+      "    const expired = { expiresAt: Date.now() - 1000 };",
+      '    expect(redirectTo(expired)).toBe("/login");',
+      "  });",
+      "",
+      '  it("sends live sessions to the dashboard", () => {',
+      "    const live = { expiresAt: Date.now() + 60_000 };",
+      '    expect(redirectTo(live)).toBe("/dashboard");',
+      "  });",
+      "",
+      '  it("treats a missing expiry as expired", () => {',
+      '    expect(redirectTo({})).toBe("/login");',
+      "  });",
+      "});",
+    ].join("\n"),
+  );
+  const LISBON = "/Users/demo/code/tide-web/lisbon";
+  vfs[`${LISBON}/src/lib/auth.ts`] = AUTH_AFTER;
+  vfs[`${LISBON}/src/lib/auth.test.ts`] = TEST_AFTER;
+
   const git = {
     repos: Object.fromEntries(
       repos.map((r) => [
@@ -160,6 +213,7 @@
     ),
     diffs: {
       "/Users/demo/code/tide-web/lisbon": {
+        base: { "src/lib/auth.ts": AUTH_BEFORE, "src/lib/auth.test.ts": TEST_BEFORE },
         files: [
           { path: "src/lib/auth.ts", added: 1, removed: 1 },
           { path: "src/lib/auth.test.ts", added: 14, removed: 0 },
