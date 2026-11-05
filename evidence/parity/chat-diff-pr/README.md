@@ -24,7 +24,7 @@ tools/rea_compare_main.sh origin/main                   # needs REA (npm rea-age
 ## Validation of the checker
 
 - Every anchor resolves on main (`--check-anchors` exits 0).
-- Positive control: the checker picks up the app shell's placeholder chat panel and composer (ui layers), the chat message model's streaming, tool-use and cancelled-state types (`src-tauri/src/chat/`), and the checkpoint crate's `restore`. It does not count prose matches such as the word "marked" in a comment, because markdown requires a real import.
+- Probe review (main @ 22cd8f8): every match was read by hand. The checker counts the SQLite migrations in `crates/openconductor-db`, the chat model (`src-tauri/src/chat/`), the PR model and checks summary (`src-tauri/src/pr/`), the checkpoint crate's `restore`, and the shell's placeholder chat panel and composer. Keybinding registry entries count only as a separate `keybinding` layer, never as UI. Test files are excluded. Markdown counts only with a real import. These rules removed four false positives: the word "marked" in a comment, `CreateProgress`, a type file counted as UI, and registry entries counted as diff UI.
 
 ## REA notes
 

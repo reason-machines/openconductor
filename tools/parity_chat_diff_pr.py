@@ -27,12 +27,13 @@ EVIDENCE = ROOT / "evidence"
 
 # Implementation files probed per layer. Evidence, tools and docs never count.
 EXCLUDED_TOP = {"evidence", "tools", ".git", ".github", "node_modules", "target", "dist"}
-CODE_SUFFIXES = {".rs", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".css", ".sql", ".svelte", ".vue"}
+CODE_SUFFIXES = {".rs", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".css", ".sql", ".svelte", ".vue", ".json"}
 LAYER_SUFFIXES = {
     "data": {".sql", ".rs", ".ts"},
     "backend": {".rs", ".ts", ".js", ".mjs"},
     "command": {".rs", ".ts", ".js", ".mjs"},
     "ui": {".ts", ".tsx", ".js", ".jsx", ".css", ".svelte", ".vue"},
+    "keybinding": {".ts", ".tsx", ".json"},
 }
 
 
@@ -42,6 +43,8 @@ def layer_of(path: Path) -> set[str]:
         return {"data", "backend", "command"}
     if rel.startswith(("sidecar/", "server/", "runtime/")):
         return {"data", "backend", "command"}
+    if "/keybindings/" in f"/{rel}":
+        return {"keybinding"}
     if "migrations/" in rel or rel.endswith(".sql"):
         return {"data"}
     return {"ui"}
@@ -55,7 +58,7 @@ def implementation_files() -> list[Path]:
         parts = p.relative_to(ROOT).parts
         if parts[0] in EXCLUDED_TOP or any(x in EXCLUDED_TOP for x in parts):
             continue
-        if p.name == "tests.rs" or p.name.endswith(("_test.rs", ".test.ts", ".test.tsx")):
+        if p.name == "tests.rs" or p.name.endswith(("_test.rs", "_tests.rs", ".test.ts", ".test.tsx")):
             continue
         out.append(p)
     return out

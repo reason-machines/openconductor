@@ -9,7 +9,8 @@
     "data": "Persistence: SQLite DDL or migrations for the columns the feature needs",
     "backend": "Rust (src-tauri) or sidecar logic that performs the feature",
     "command": "Tauri command or sidecar RPC that exposes the backend to the UI",
-    "ui": "Frontend component or view the user interacts with"
+    "ui": "Frontend component or view the user interacts with",
+    "keybinding": "Entry in the keybinding registry (src/keybindings/); never counted as ui"
   },
   "notes": [
     "Titles are our own descriptions. Anchors point into REA evidence on main and are checked to still resolve; copy anchors are short regexes we wrote, matched against the REA-derived copy catalogs, never Conductor text reused as product copy.",
@@ -26,7 +27,7 @@
      "layers": {"ui": ["from\\s+['\"](react-markdown|marked|markdown-it|remark-gfm|micromark)['\"]"]}},
     {"id": "chat.tool-calls", "area": "chat", "title": "Show agent tool calls as collapsible rows with a setting to keep them expanded",
      "anchors": [{"copy": "collapse tool calls"}],
-     "layers": {"data": ["\\bToolUse\\b", "\\btool_use\\b"], "ui": ["\\bToolCall\\w*\\b", "\\btool_use\\b"]}},
+     "layers": {"data": ["\\bToolUse\\b", "\\btool_use\\b"], "ui": ["\\bToolCall\\w*\\b"]}},
     {"id": "chat.composer-send", "area": "chat", "title": "Composer that sends a message, with a configurable send key",
      "anchors": [{"copy": "key combination sends messages"}, {"ledger": "agent.session-run"}],
      "layers": {"command": ["fn\\s+\\w*send_message\\w*\\s*\\("], "ui": ["\\bComposer\\b", "className=\"composer\""]}},
@@ -84,7 +85,7 @@
      "layers": {"ui": ["\\b(viewedFiles|markViewed|isViewed)\\b"]}},
     {"id": "diff.navigation", "area": "diff", "title": "Keyboard navigation to the next/previous file and comment in a diff",
      "anchors": [{"copy": "next file in diff"}, {"copy": "next comment in diff"}],
-     "layers": {"ui": ["\\b(nextFile|prevFile|previousFile|nextComment|previousComment)\\b"]}},
+     "layers": {"keybinding": ["diff\\.(next|previous)(File|Comment)"], "ui": ["\\b(nextFile|prevFile|previousFile|nextComment|previousComment)\\b"]}},
     {"id": "diff.turn-changes", "area": "diff", "title": "Show the changes made in a selected agent turn, cached locally",
      "anchors": [{"copy": "changes in selected turn"}, {"copy": "turn changes"}, {"ledger": "ws.checkpoints"}, {"ledger": "db.local-storage"}],
      "layers": {"backend": ["fn\\s+\\w*(diff_checkpoint|turn_changes|checkpoint_diff)\\w*\\s*\\("], "ui": ["\\bTurnChanges\\b"]}},
@@ -109,7 +110,7 @@
 
     {"id": "pr.create", "area": "pr", "title": "Create a pull request or draft PR from a workspace, persisting title and description",
      "anchors": [{"ledger": "pr.create"}, {"schema": "workspaces.pr_title"}, {"schema": "workspaces.pr_description"}, {"copy": "create draft pr"}],
-     "layers": {"data": ["\\bpr_title\\b"], "backend": ["\\bgh\\b[^\\n]*pr\\W+create|pulls\\b[^\\n]*POST"], "command": ["#\\[tauri::command\\][^;{]*fn\\s+\\w*create_pr\\w*"], "ui": ["\\bCreatePr\\w*\\b|\\bCreatePullRequest\\w*\\b"]}},
+     "layers": {"data": ["\\bpr_title\\b"], "backend": ["\\bgh\\b[^\\n]*pr\\W+create|pulls\\b[^\\n]*POST"], "command": ["#\\[tauri::command\\][^;{]*fn\\s+\\w*create_pr\\w*"], "ui": ["\\bCreatePr(Button|Dialog|Panel|Flow|Form)?\\b|\\bCreatePullRequest\\w*\\b"]}},
     {"id": "pr.custom-prompts", "area": "pr", "title": "Per-repository prompts for create PR, code review, fix errors, resolve conflicts, rename branch",
      "anchors": [{"ledger": "pr.agent-prompts"}, {"schema": "repos.custom_prompt_create_pr"}, {"schema": "repos.custom_prompt_fix_errors"}, {"ipc": "custom_prompt_code_review"}],
      "layers": {"data": ["\\bcustom_prompt_create_pr\\b"], "ui": ["\\b(CustomPrompts?|PromptSettings)\\b"]}},
@@ -133,7 +134,7 @@
      "layers": {"backend": ["\\bpr\\W+(ready|review|edit)\\b|markPullRequestReadyForReview"], "ui": ["\\b(approvePr|markReady|editPrTitle)\\b"]}},
     {"id": "pr.ai-review", "area": "pr", "title": "Start an AI code review with a configurable review model",
      "anchors": [{"ipc": "review_model"}, {"copy": "get an ai code review"}],
-     "layers": {"backend": ["\\breview_model\\b"], "ui": ["\\b(StartReview|AiReview|CodeReview)\\b"]}},
+     "layers": {"data": ["\\breview_model\\b"], "backend": ["fn\\s+\\w*(start_review|code_review|ai_review)\\w*\\s*\\("], "ui": ["\\b(StartReview|AiReview|CodeReview)\\b"]}},
     {"id": "pr.resolve-conflicts", "area": "pr", "title": "Resolve merge conflicts with the agent; block actions while a merge or rebase is in progress",
      "anchors": [{"copy": "resolve conflicts"}, {"copy": "finish rebasing or merging to see changes"}, {"ipc": "custom_prompt_resolve_merge_conflicts"}],
      "layers": {"backend": ["\\bresolve_merge_conflicts\\b|\\bcustom_prompt_resolve_merge_conflicts\\b"], "ui": ["\\bResolveConflicts\\b"]}},

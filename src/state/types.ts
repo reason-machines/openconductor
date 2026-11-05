@@ -29,4 +29,6 @@ export type Selection = { kind: "home" } | { kind: "workspace"; repoId: string; 
 export interface AppState {
   repos: Repo[];
   selection: Selection;
+  /** Left sidebar shown; absent in older saved state, which means shown. */
+  sidebarVisible?: boolean;
 }

@@ -4,34 +4,34 @@
   "chat": {
    "label": "Chat: agent transcript, composer, queue, attachments, models, turn controls",
    "features": 15,
-   "parity_pct": 14.4,
+   "parity_pct": 27.2,
    "strict_parity_pct": 0.0,
-   "absent": 10,
-   "partial": 5,
+   "absent": 6,
+   "partial": 9,
    "verified": 0
   },
   "diff": {
    "label": "Diff viewer: changed files, file diff rendering, navigation, inline and GitHub review comments",
    "features": 14,
-   "parity_pct": 0.0,
+   "parity_pct": 8.3,
    "strict_parity_pct": 0.0,
-   "absent": 14,
-   "partial": 0,
+   "absent": 11,
+   "partial": 3,
    "verified": 0
   },
   "pr": {
    "label": "PR area: create, status, checks, merge, review and conflict flows",
    "features": 12,
-   "parity_pct": 0.0,
+   "parity_pct": 17.4,
    "strict_parity_pct": 0.0,
-   "absent": 12,
-   "partial": 0,
+   "absent": 7,
+   "partial": 5,
    "verified": 0
   }
  },
  "total": {
   "features": 41,
-  "parity_pct": 5.3,
+  "parity_pct": 17.9,
   "strict_parity_pct": 0.0
  },
  "features": [
@@ -40,7 +40,7 @@
    "area": "chat",
    "title": "Start an agent session in a workspace and stream its messages into the transcript",
    "status": "partial",
-   "score": 0.5,
+   "score": 0.75,
    "layers_required": [
     "data",
     "backend",
@@ -48,14 +48,17 @@
     "ui"
    ],
    "layers_present": [
+    "data",
     "backend",
     "ui"
    ],
    "missing_layers": [
-    "data",
     "command"
    ],
    "hits": {
+    "data": [
+     "crates/openconductor-db/migrations/0001_core.sql"
+    ],
     "backend": [
      "src-tauri/src/chat/model.rs",
      "src-tauri/src/chat/transcript.rs"
@@ -145,20 +148,26 @@
    "id": "chat.queue",
    "area": "chat",
    "title": "Queue messages while a turn runs: edit, delete, reorder, steer, pause and resume the queue",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.333,
    "layers_required": [
     "data",
     "backend",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "data"
+   ],
    "missing_layers": [
-    "data",
     "backend",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "data": [
+     "crates/openconductor-db/migrations/0001_core.sql",
+     "crates/openconductor-db/migrations/0004_outboxes.sql"
+    ]
+   },
    "anchors": [
     "ledger `agent.message-queue` (blocked)",
     "schema `session_messages.queue_order`",
@@ -187,6 +196,7 @@
    ],
    "hits": {
     "data": [
+     "crates/openconductor-db/migrations/0001_core.sql",
      "src-tauri/src/chat/model.rs"
     ]
    },
@@ -199,20 +209,25 @@
    "id": "chat.attachments",
    "area": "chat",
    "title": "Draft attachments in the composer (files, images, terminal output) that materialize on send",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.333,
    "layers_required": [
     "data",
     "command",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "data"
+   ],
    "missing_layers": [
-    "data",
     "command",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "data": [
+     "crates/openconductor-db/migrations/0002_attachments_and_diff_comments.sql"
+    ]
+   },
    "anchors": [
     "ledger `agent.attachments` (unowned)",
     "schema `attachments.is_draft`",
@@ -224,18 +239,23 @@
    "id": "chat.model-picker",
    "area": "chat",
    "title": "Model picker with favorites and per-session thinking/effort level",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.5,
    "layers_required": [
     "data",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "data"
+   ],
    "missing_layers": [
-    "data",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "data": [
+     "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+    ]
+   },
    "anchors": [
     "ledger `agent.models` (unowned)",
     "schema `favorite_models`",
@@ -314,18 +334,23 @@
    "id": "chat.tabs",
    "area": "chat",
    "title": "Several chat sessions per workspace as tabs, with titles and unread counts",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.5,
    "layers_required": [
     "data",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "data"
+   ],
    "missing_layers": [
-    "data",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "data": [
+     "crates/openconductor-db/migrations/0001_core.sql"
+    ]
+   },
    "anchors": [
     "schema `sessions.title`",
     "schema `sessions.unread_count`",
@@ -525,16 +550,23 @@
    "id": "diff.navigation",
    "area": "diff",
    "title": "Keyboard navigation to the next/previous file and comment in a diff",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.5,
    "layers_required": [
+    "keybinding",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "keybinding"
+   ],
    "missing_layers": [
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "keybinding": [
+     "src/keybindings/registry.ts"
+    ]
+   },
    "anchors": [
     "copy /next file in diff/ (2 hits)",
     "copy /next comment in diff/ (3 hits)"
@@ -588,20 +620,25 @@
    "id": "diff.comments-inline",
    "area": "diff",
    "title": "Add, edit and delete inline comments on a line or line range",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.333,
    "layers_required": [
     "data",
     "command",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "data"
+   ],
    "missing_layers": [
-    "data",
     "command",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "data": [
+     "crates/openconductor-db/migrations/0002_attachments_and_diff_comments.sql"
+    ]
+   },
    "anchors": [
     "ledger `diff.comments` (blocked)",
     "schema `diff_comments.line_number`",
@@ -634,20 +671,25 @@
    "id": "diff.comments-github",
    "area": "diff",
    "title": "Sync PR review comments from GitHub with resolved, outdated and suggestion state",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.333,
    "layers_required": [
     "data",
     "backend",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "data"
+   ],
    "missing_layers": [
-    "data",
     "backend",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "data": [
+     "crates/openconductor-db/migrations/0002_attachments_and_diff_comments.sql"
+    ]
+   },
    "anchors": [
     "schema `diff_comments.is_resolved`",
     "schema `diff_comments.is_outdated`",
@@ -697,22 +739,27 @@
    "id": "pr.create",
    "area": "pr",
    "title": "Create a pull request or draft PR from a workspace, persisting title and description",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.25,
    "layers_required": [
     "data",
     "backend",
     "command",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "data"
+   ],
    "missing_layers": [
-    "data",
     "backend",
     "command",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "data": [
+     "crates/openconductor-db/migrations/0001_core.sql"
+    ]
+   },
    "anchors": [
     "ledger `pr.create` (blocked)",
     "schema `workspaces.pr_title`",
@@ -724,18 +771,23 @@
    "id": "pr.custom-prompts",
    "area": "pr",
    "title": "Per-repository prompts for create PR, code review, fix errors, resolve conflicts, rename branch",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.5,
    "layers_required": [
     "data",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "data"
+   ],
    "missing_layers": [
-    "data",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "data": [
+     "crates/openconductor-db/migrations/0001_core.sql"
+    ]
+   },
    "anchors": [
     "ledger `pr.agent-prompts` (unowned)",
     "schema `repos.custom_prompt_create_pr`",
@@ -747,18 +799,23 @@
    "id": "pr.status",
    "area": "pr",
    "title": "PR status in the workspace header (draft, open, review required, changes requested, merged)",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.5,
    "layers_required": [
     "backend",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "backend"
+   ],
    "missing_layers": [
-    "backend",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "backend": [
+     "src-tauri/src/pr/model.rs"
+    ]
+   },
    "anchors": [
     "copy /pr changes requested/ (2 hits)",
     "copy /draft pr open/ (1 hit)",
@@ -769,18 +826,23 @@
    "id": "pr.checks",
    "area": "pr",
    "title": "CI checks list with logs, re-run failed, and optional-checks policy",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.5,
    "layers_required": [
     "backend",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "backend"
+   ],
    "missing_layers": [
-    "backend",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "backend": [
+     "src-tauri/src/pr/model.rs"
+    ]
+   },
    "anchors": [
     "copy /re-run failed checks/ (1 hit)",
     "copy /failed to fetch check logs/ (1 hit)",
@@ -876,18 +938,25 @@
    "id": "pr.ai-review",
    "area": "pr",
    "title": "Start an AI code review with a configurable review model",
-   "status": "absent",
-   "score": 0.0,
+   "status": "partial",
+   "score": 0.333,
    "layers_required": [
+    "data",
     "backend",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "data"
+   ],
    "missing_layers": [
     "backend",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "data": [
+     "src-tauri/src/settings/model.rs"
+    ]
+   },
    "anchors": [
     "IPC `review_model`",
     "copy /get an ai code review/ (2 hits)"
@@ -958,5 +1027,5 @@
   }
  ],
  "broken_anchors": [],
- "implementation_files_scanned": 30
+ "implementation_files_scanned": 86
 }
