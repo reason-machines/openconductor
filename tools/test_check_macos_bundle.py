@@ -16,6 +16,7 @@ import check_macos_bundle as cmb  # noqa: E402
 
 CONF = json.loads(cmb.TAURI_CONF.read_text())
 REF_KEYS = json.loads(cmb.REFERENCE.read_text())["info_plist"]["keys"]
+BUNDLED = list(json.loads(cmb.BUNDLE_CONF.read_text())["bundle"]["resources"].values())
 DIVERGENT = json.loads(cmb.DIVERGENCES.read_text())["info_plist"]
 
 
@@ -44,7 +45,7 @@ def good_info():
 
 
 class CheckBundle(unittest.TestCase):
-    def run_check(self, info, exe=True, icon=True):
+    def run_check(self, info, exe=True, icon=True, tools=True):
         with tempfile.TemporaryDirectory() as tmp:
             app = pathlib.Path(tmp, "OpenConductor.app")
             (app / "Contents/MacOS").mkdir(parents=True)
@@ -56,6 +57,12 @@ class CheckBundle(unittest.TestCase):
                 p.chmod(0o755)
             if icon:
                 (app / "Contents/Resources/icon.icns").write_bytes(b"icns")
+            if tools:
+                for target in BUNDLED:
+                    p = app / "Contents/Resources" / target
+                    p.parent.mkdir(parents=True, exist_ok=True)
+                    p.write_text("#!/bin/sh\n")
+                    p.chmod(0o755)
             report = pathlib.Path(tmp, "report.json")
             with contextlib.redirect_stdout(io.StringIO()):
                 code = cmb.main([str(app), "--skip-codesign", "--report", str(report)])
@@ -87,6 +94,10 @@ class CheckBundle(unittest.TestCase):
 
     def test_missing_executable_and_icon_fail(self):
         self.assertEqual(self.run_check(good_info(), exe=False, icon=False)[1], ["executable", "icon"])
+
+    def test_missing_bundled_tool_fails(self):
+        self.assertEqual(BUNDLED, ["bin/gh"])
+        self.assertEqual(self.run_check(good_info(), tools=False)[1], ["resource:bin/gh"])
 
 
 if __name__ == "__main__":

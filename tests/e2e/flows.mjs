@@ -1,6 +1,6 @@
 // Flows run in order against one app session. Each throws on failure.
 import { execFileSync } from "node:child_process";
-import { mkdtempSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -60,7 +60,9 @@ export const flows = [
     name: "create-workspace",
     async run(wd, ctx) {
       if (!ctx.repo) throw new Error("needs the add-repo flow's repo");
-      const worktrees = () => (git(ctx.repo, "worktree", "list", "--porcelain").toString().match(/^worktree /gm) ?? []).length;
+      const worktreePaths = () => git(ctx.repo, "worktree", "list", "--porcelain").toString().match(/^worktree .+$/gm)?.map((l) => l.slice(9)) ?? [];
+      const worktrees = () => worktreePaths().length;
+      const pathsBefore = worktreePaths();
       const namesBefore = await textsOf(wd, ".sb-ws-name");
       const treesBefore = worktrees();
       const [add] = await wd.findAll('.sb-repo-add[aria-label="Create workspace in e2e-demo"]');
@@ -77,6 +79,64 @@ export const flows = [
       // The backend made a real git worktree off the fixture repo.
       const trees = worktrees();
       if (trees !== treesBefore + 1) throw new Error(`git worktree list has ${trees} entries, want ${treesBefore + 1} (sidebar: ${JSON.stringify(names)})`);
+      ctx.worktree = worktreePaths().find((p) => !pathsBefore.includes(p));
+    },
+  },
+  {
+    name: "diff",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
+      // A new, untracked file in the selected workspace's worktree, as an agent would write it.
+      writeFileSync(join(ctx.worktree, "e2e-diff.txt"), "one\ntwo\nthree\n");
+      const [reload] = await wd.waitFor("the Changes panel", () => wd.findAll('.oc-diff-toolbar button[title="Reload changes"]').then((ids) => ids.length && ids));
+      await wd.click(reload);
+      const rows = await wd.waitFor("e2e-diff.txt in Changed files", async () => {
+        const r = await wd.execute(
+          "return Array.from(document.querySelectorAll('.oc-change'), (e) => [e.querySelector('.name')?.textContent.trim(), e.querySelector('.oc-count .a')?.textContent.trim()]);",
+          [],
+        );
+        return r.some(([name]) => name === "e2e-diff.txt") ? r : null;
+      });
+      const [, added] = rows.find(([name]) => name === "e2e-diff.txt");
+      if (added !== "+3") throw new Error(`e2e-diff.txt shows ${added} added lines, want +3 (rows: ${JSON.stringify(rows)})`);
+    },
+  },
+  {
+    // Checkpoints reach the UI through Spotlight: Run saves the repository root as
+    // the `pre-spotlight` checkpoint, then saves the workspace and restores that
+    // checkpoint into the root; Stop restores `pre-spotlight` and drops its ref.
+    name: "checkpoint",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the diff flow's worktree");
+      const inRoot = join(ctx.repo, "e2e-diff.txt");
+      const refs = () => git(ctx.repo, "for-each-ref", "--format=%(refname)", "refs/conductor-checkpoints").toString().split("\n").filter(Boolean);
+      const buttonText = () => wd.execute("return document.querySelector('.scripts-actions .btn-primary, .scripts-actions .btn-stop')?.textContent.trim() ?? null;", []);
+      if (existsSync(inRoot)) throw new Error("e2e-diff.txt is already in the repository root");
+
+      const [toggle] = await wd.waitFor("the spotlight testing toggle", () => wd.findAll(".spotlight-toggle input:not([disabled])").then((ids) => ids.length && ids));
+      await wd.click(toggle);
+      await wd.waitFor("Run Spotlight", async () => (await buttonText())?.endsWith("Run Spotlight"));
+      const [start] = await wd.findAll(".scripts-actions .btn-primary");
+      await wd.click(start);
+
+      await wd.waitFor("the workspace's file synced into the repository root", async () => existsSync(inRoot) && readFileSync(inRoot, "utf8") === "one\ntwo\nthree\n", 60000);
+      const during = refs();
+      if (!during.includes("refs/conductor-checkpoints/pre-spotlight") || !during.some((r) => /\/cp-spotlight-\d+-\d+$/.test(r))) {
+        throw new Error(`checkpoint refs while syncing: ${JSON.stringify(during)}, want pre-spotlight and cp-spotlight-<epoch>-<pid>`);
+      }
+      if (!existsSync(join(ctx.worktree, "e2e-diff.txt"))) throw new Error("saving the checkpoint removed e2e-diff.txt from the worktree");
+      await wd.waitFor("Stop Spotlight", async () => (await buttonText())?.endsWith("Stop Spotlight"));
+
+      const [stop] = await wd.findAll(".scripts-actions .btn-stop");
+      await wd.click(stop);
+      await wd.waitFor("the repository root restored from pre-spotlight", async () => !existsSync(inRoot), 60000);
+      await wd.waitFor("the pre-spotlight ref dropped", async () => !refs().includes("refs/conductor-checkpoints/pre-spotlight"));
+      const status = git(ctx.repo, "status", "--porcelain", "--untracked-files=all").toString().split("\n").filter((l) => l && !l.includes(".conductor/"));
+      if (status.length) throw new Error(`repository root not back to its own state: ${JSON.stringify(status)}`);
+
+      // Turn spotlight testing back off for later flows.
+      const [again] = await wd.findAll(".spotlight-toggle input:checked:not([disabled])");
+      if (again) await wd.click(again);
     },
   },
 ];

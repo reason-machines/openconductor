@@ -12,7 +12,7 @@ The REA ledger above is the obligation list as built from Conductor; it is not r
 
 | Record | Areas | Target | Parity | REA ledger obligations pass / fail | Builder obligations open |
 |---|---|---|---|---|---|
-| [`verifier/settings-shortcuts-persistence-packaging.md`](verifier/settings-shortcuts-persistence-packaging.md) (`.json`) | settings 23.6%, shortcuts 55.5%, persistence 43.2%, packaging 53.8% | main `c15cf35` | 44.4% | 4 / 13 | 30 of 35 |
+| [`verifier/settings-shortcuts-persistence-packaging.md`](verifier/settings-shortcuts-persistence-packaging.md) (`.json`) | settings 33.2%, shortcuts 65.4%, persistence 61.4%, packaging 70.5% | main `5045114` | 56.3% | 6 / 11 | 26 of 35 |
 | [`../parity/reason-acp/PARITY.md`](../parity/reason-acp/PARITY.md) (`parity.json`, `tools/parity_reason_acp.py`) | Reason agent over ACP: 11 items under `agent.session-run`, `agent.providers`, `agent.message-queue` | `59ac0ba` | 100.0% | not scored (OpenConductor's own items; Conductor has no Reason agent) | none (`acp.signed-in`: [signed-in Mac run](../reason-acp/signed-in-run.md)) |
 
 A builder obligation is a slice of a failing feature that one builder can own. Every failing item belongs to exactly one, and each names its parent REA ledger obligation (keybindings have none: REA's JavaScript analysis did not return the registry, so the ledger has no keybinding obligation). `pass` is static presence on main, not observed runtime behavior.
