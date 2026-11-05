@@ -769,37 +769,55 @@ fn repo_name_from_url_takes_last_segment_without_dot_git() {
 }
 
 #[test]
-fn clone_repository_clones_registers_and_refuses_existing_destination() {
+fn clone_repository_streams_progress_and_picks_a_unique_name() {
     use super::service::WorkspaceService;
     let f = fixture();
     let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
     let parent = f.tmp.path().join("clones");
     std::fs::create_dir_all(&parent).unwrap();
     let url = f.repo.display().to_string();
+    let mut lines = Vec::new();
 
-    let r = svc.clone_repository(&url, &parent).unwrap();
+    let r = svc.clone_repository(&url, &parent, &mut |l| lines.push(l.to_string())).unwrap();
     assert_eq!((r.id.as_str(), r.name.as_str(), r.default_branch.as_str()), ("my-app", "My App", "main"));
     assert_eq!(r.root, parent.join("My App"));
     assert!(r.root.join("README.md").exists());
-    assert_eq!(svc.repositories().len(), 1);
+    assert_eq!(lines[..2], ["Creating directory structure...", "Cloning repository..."]);
+    assert!(lines.iter().any(|l| l.starts_with("Cloning into")), "{lines:?}");
+    assert_eq!(lines[lines.len() - 2..], ["Detecting default branch...", "Saving repository information..."]);
 
-    match svc.clone_repository(&url, &parent) {
-        Err(e @ WorkspaceError::DestinationExists(_)) => {
-            assert_eq!(e.to_string(), format!("destination already exists: {}", parent.join("My App").display()));
+    let again = svc.clone_repository(&url, &parent, &mut |_| {}).unwrap();
+    assert_eq!(again.root, parent.join("My App-2"));
+    assert_eq!(svc.repositories().len(), 2);
+}
+
+#[test]
+fn clone_repository_creates_only_the_default_dir_and_reports_exit_code() {
+    use super::service::WorkspaceService;
+    let f = fixture();
+    let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
+    let url = f.repo.display().to_string();
+
+    let elsewhere = f.tmp.path().join("missing");
+    match svc.clone_repository(&url, &elsewhere, &mut |_| {}) {
+        Err(e @ WorkspaceError::TargetMissing(_)) => {
+            assert_eq!(e.to_string(), format!("Target directory does not exist: {}", elsewhere.display()));
         }
-        other => panic!("expected DestinationExists, got {other:?}"),
+        other => panic!("expected TargetMissing, got {other:?}"),
     }
+    assert!(!elsewhere.exists());
+
+    let default = svc.default_clone_dir();
+    let mut lines = Vec::new();
+    let r = svc.clone_repository(&url, &default, &mut |l| lines.push(l.to_string())).unwrap();
+    assert_eq!(r.root, default.join("My App"));
+    assert_eq!(lines[1], format!("Creating default directory: {}", default.display()));
 
     let missing = f.tmp.path().join("no-such-repo");
-    match svc.clone_repository(&missing.display().to_string(), &parent) {
-        Err(e @ WorkspaceError::CloneFailed(_)) => {
-            let msg = e.to_string();
-            assert!(msg.contains("does not exist") || msg.starts_with("fatal:"), "{msg}");
-            assert!(!msg.contains("Cloning into"), "{msg}");
-        }
-        other => panic!("expected CloneFailed, got {other:?}"),
-    }
-    assert!(!parent.join("no-such-repo").exists());
+    let msg = svc.clone_repository(&missing.display().to_string(), &default, &mut |_| {}).unwrap_err().to_string();
+    assert!(msg.starts_with("Git clone failed with code 128\n\nSTDOUT:\n"), "{msg}");
+    assert!(msg.contains("STDERR:\n") && msg.contains("does not exist"), "{msg}");
+    assert!(!default.join("no-such-repo").exists());
     assert_eq!(svc.repositories().len(), 1);
-    assert!(matches!(svc.clone_repository("https://", &parent), Err(WorkspaceError::InvalidCloneUrl(_))));
+    assert!(matches!(svc.clone_repository("https://", &default, &mut |_| {}), Err(WorkspaceError::InvalidCloneUrl(_))));
 }
