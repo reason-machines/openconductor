@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useAppStore } from "./state/store";
+import { useAppStore, type Action } from "./state/store";
 import { destroyWorkspaceTerminals } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
@@ -12,6 +12,8 @@ import { CreateProjectDialog } from "./components/CreateProjectDialog";
 import { OPEN_IN_GITHUB, SUCCESS_TOAST } from "./state/createProject";
 import { CloneGitHubRepoDialog } from "./components/CloneGitHubRepoDialog";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
+import { CreateWorkspacePage } from "./components/CreateWorkspacePage";
+import { useAppPrefs } from "./settings/appPrefs";
 import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
@@ -37,7 +39,23 @@ import { useNavHistory } from "./state/useNavHistory";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
 
 export default function App() {
-  const [state, dispatch] = useAppStore();
+  const [state, storeDispatch] = useAppStore();
+  // The full-screen create page (`/create`) fills the main area until a
+  // selection or a created workspace replaces it.
+  const [createPage, setCreatePage] = useState<{ repoId: string | null } | null>(() => (window.location.pathname === "/create" ? { repoId: null } : null));
+  const dispatch = useCallback(
+    (action: Action) => {
+      if (action.type === "select" || action.type === "addWorkspace") setCreatePage(null);
+      storeDispatch(action);
+    },
+    [storeDispatch],
+  );
+  const prefs = useAppPrefs();
+  // A `/create` start URL shows no workspace as current, like the reference's route.
+  useEffect(() => {
+    if (createPage && state.selection.kind === "workspace") storeDispatch({ type: "select", selection: { kind: "root" } });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // A workspace that leaves the app (archived, or its repository removed)
   // takes its terminals and their saved history with it, as in Conductor.
   const prevState = useRef(state);
@@ -49,12 +67,19 @@ export default function App() {
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
   const sidebarWidth = useSidebarWidth();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
-  // `/create` (or `?dialog=create`) opens the Create-workspace dialog directly.
-  const initialDialog = window.location.pathname === "/create" ? "create" : (new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
-  const [dialog, setDialog] = useState<DialogKind | null>(initialDialog);
+  // `/create` opens the full-screen create page; `?dialog=create` the dialog.
+  const [dialog, setDialog] = useState<DialogKind | null>(() => new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
   const [createRepoId, setCreateRepoId] = useState<string | null>(null);
   const openDialog = (d: DialogKind, repoId?: string) => {
-    setCreateRepoId(repoId ?? (state.selection.kind === "workspace" ? state.selection.repoId : null));
+    const id = repoId ?? (state.selection.kind === "workspace" ? state.selection.repoId : null);
+    // Like Conductor's `g5`: the page when Experimental › New workspace page is on, else the dialog.
+    if (d === "create" && prefs.experimental_new_workspace_page) {
+      setDialog(null);
+      // Off the current workspace, as Conductor's route change does; Back returns to it.
+      if (state.selection.kind !== "root") storeDispatch({ type: "select", selection: { kind: "root" } });
+      return setCreatePage({ repoId: id });
+    }
+    setCreateRepoId(id);
     setDialog(d);
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
@@ -166,15 +191,16 @@ export default function App() {
     "view.toggleZenMode": () => toggleZenMode(isSidebarVisible(state), dispatch),
     "toggleGarryMode": toggleGarryMode,
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
-    "workspace.create": () => setDialog("create"),
+    "workspace.create": () => openDialog("create"),
   });
 
   const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
-  // Re-read each time the dialog opens so a settings change applies to the next create.
+  // Re-read each time the dialog or page opens so a settings change applies to the next create.
+  const creating = dialog === "create" || createPage !== null;
   useEffect(() => {
-    if (dialog !== "create") return;
+    if (!creating) return;
     loadBranchPrefix().then((info) => setPrefix(prefixSettingsFromInfo(info))).catch(() => {});
-  }, [dialog]);
+  }, [creating]);
 
   useEffect(() => {
     appInfo().then(setInfo).catch(() => setInfo(null));
@@ -187,7 +213,21 @@ export default function App() {
       {isSidebarVisible(state) && sidebarWidth.resizer}
       {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} />}
       <main className="main">
-        {repo && workspace ? (
+        {createPage ? (
+          <CreateWorkspacePage
+            // A new page for each open, so its draft starts fresh.
+            key={JSON.stringify(createPage)}
+            repos={state.repos}
+            initialRepoId={createPage.repoId}
+            prefixSettings={prefix.settings}
+            githubUsername={prefix.githubUsername}
+            sidebarVisible={isSidebarVisible(state)}
+            onClose={() => setCreatePage(null)}
+            onAddRepository={() => void openProject()}
+            onWarning={(message) => show("error", message, { sticky: true })}
+            dispatch={dispatch}
+          />
+        ) : repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />

@@ -52,7 +52,7 @@ function useGraphiteInstalled(): boolean | null {
   return installed;
 }
 
-/** Experimental: Show agent cost, Tab Freak Mode, Graphite stack support. */
+/** Experimental: New workspace page, Show agent cost, Tab Freak Mode, Graphite stack support. */
 export function ExperimentalAppPrefRows() {
   const p = useAppPrefs();
   const gt = useGraphiteInstalled();
@@ -65,6 +65,13 @@ export function ExperimentalAppPrefRows() {
     .join(" ");
   return (
     <>
+      <Row label="New workspace page" help="Full-screen workspace creation">
+        <Switch
+          label="New workspace page"
+          checked={p.experimental_new_workspace_page}
+          onChange={(value) => save({ key: "experimental_new_workspace_page", value })}
+        />
+      </Row>
       <Row label="Show agent cost" help="Show estimated agent costs for cloud workspaces.">
         <Switch
           label="Show agent cost"

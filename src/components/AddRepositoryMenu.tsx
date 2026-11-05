@@ -1,5 +1,4 @@
 import { useState } from "react";
-import type { Repo } from "../state/types";
 import { inTauri, pickFolder } from "../backend";
 import { cloneRepository, type RepositoryDto } from "../workspace/api";
 import {
@@ -13,8 +12,6 @@ import {
 } from "../workspace/repoPicker";
 
 interface Props {
-  /** Unused: a remote that is already added is cloned again as a new project, like Conductor (evidence/screens/duplicate-repo.md). */
-  repos: Repo[];
   disabled?: boolean;
   /** Label of the closed button: "Add…" next to the picker, "Add repository" when there are none. */
   label: string;
