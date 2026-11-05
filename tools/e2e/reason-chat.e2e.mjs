@@ -198,6 +198,9 @@ try {
   // 4. Stop.
   await send("slow");
   await waitFor("the Stop button", running);
+  // Stop once the agent runs the turn (its tool row shows), so the fake CLI
+  // counts it; a Stop before the prompt reaches Reason never sends it.
+  await waitFor('the "bash: sleep" tool row', () => chatText().then((t) => t.includes("bash: sleep")));
   await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
   await waitFor('"Stopped."', () => chatText().then((t) => t.includes("Stopped.")), 15000);
   await turnDone(4);
@@ -207,26 +210,44 @@ try {
   // 5-6. Checkpoints: two turns that edit files, then "Reset chat" back to turn 5.
   const wsFile = (name) => join(workspace.path, name);
   const readWs = (name) => (existsSync(wsFile(name)) ? readFileSync(wsFile(name), "utf8") : null);
+  // Turn ids are random (`<chat>:<uuid>`), so each turn's id is read from its
+  // end row, and its checkpoints are named by that id (turnCheckpointRef).
+  const chat = workspace.id.replace(/[^A-Za-z0-9._-]/g, "-");
+  const turnKey = (id) => id.slice(id.indexOf(":") + 1).replace(/[^A-Za-z0-9._-]/g, "-");
+  const checkpointRefs = () =>
+    execFileSync("git", ["for-each-ref", "--format=%(refname)", "refs/conductor-checkpoints/"], { cwd: workspace.path, encoding: "utf8" })
+      .split("\n")
+      .filter(Boolean);
+  const turnIds = () => run(`return [...document.querySelectorAll('.chat-turn-end')].map((e) => e.dataset.turnId);`);
+  // Waits for turn n's end row and end checkpoint: the checkpoint is saved after
+  // the turn is shown as ended, so the next turn starts once it is in place.
+  const settled = async (n) => {
+    await turnDone(n);
+    const ids = await turnIds();
+    const id = ids[ids.length - 1];
+    await waitFor(`turn ${n}'s end checkpoint`, () => checkpointRefs().includes(`refs/conductor-checkpoints/session-${chat}-turn-${turnKey(id)}-end`));
+    return id;
+  };
+
   await send("write: notes.txt=one");
   await waitFor('"turn 5 wrote notes.txt"', () => chatText().then((t) => t.includes("turn 5 wrote notes.txt")));
-  await turnDone(5);
+  const id5 = await settled(5);
   await send("write: notes.txt=two;extra.txt=x");
   await waitFor('"turn 6 wrote"', () => chatText().then((t) => t.includes("turn 6 wrote notes.txt extra.txt")));
-  await turnDone(6);
+  const id6 = await settled(6);
   assert.equal(readWs("notes.txt"), "two\n");
   assert.equal(readWs("extra.txt"), "x\n");
-  const refs = await waitFor("turn 6's end checkpoint", () => {
-    const out = execFileSync("git", ["for-each-ref", "--format=%(refname)", "refs/conductor-checkpoints/"], { cwd: workspace.path, encoding: "utf8" });
-    return out.includes("-turn-t6-end") && out.split("\n").filter(Boolean);
-  });
-  const chat = workspace.id.replace(/[^A-Za-z0-9._-]/g, "-");
-  for (const id of ["t5-start", "t5-end", "t6-start", "t6-end"]) {
-    assert.ok(refs.includes(`refs/conductor-checkpoints/session-${chat}-turn-${id}`), `${id} in ${refs.join(" ")}`);
+  const refs = checkpointRefs();
+  for (const id of [id5, id6]) {
+    for (const point of ["start", "end"]) {
+      const ref = `refs/conductor-checkpoints/session-${chat}-turn-${turnKey(id)}-${point}`;
+      assert.ok(refs.includes(ref), `${ref} in ${refs.join(" ")}`);
+    }
   }
-  pass(`each turn saved start/end checkpoints (${refs.length} refs, e.g. session-${chat}-turn-t5-end)`);
+  pass(`turns 5 and 6 each saved start/end checkpoints (${refs.length} refs in the workspace)`);
 
-  const turn5 = '.chat-turn-end[data-turn-id$=":t5"]';
-  const lastHasMenu = await run(`return !!document.querySelector('.chat-turn-end[data-turn-id$=":t6"] button[aria-label="More actions"]');`);
+  const turn5 = `.chat-turn-end[data-turn-id="${id5}"]`;
+  const lastHasMenu = await run(`return !!document.querySelector('.chat-turn-end[data-turn-id="${id6}"] button[aria-label="More actions"]');`);
   assert.equal(lastHasMenu, false, "the last turn has no Reset chat");
   await wd("POST", `/element/${await find(`${turn5} button[aria-label="More actions"]`)}/click`, {});
   await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]`)}/click`, {});
