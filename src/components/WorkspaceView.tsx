@@ -5,7 +5,10 @@ import { ArchiveIcon, BranchIcon, SendIcon } from "./Icons";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "../features/chat/reducer.ts";
 import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { reasonAvailable, reasonTranscript, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
+import { reasonAvailable, reasonTranscript, resetReasonChat, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
+import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
+import { changedSinceTurn } from "../features/chat/checkpoints.ts";
+import { invoke } from "@tauri-apps/api/core";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
 import type { DiffScope, FileDiff } from "../features/diff/types";
@@ -16,11 +19,15 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { ScriptsPanel } from "./ScriptsPanel";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
+import { usePullRequest } from "../features/pr/usePullRequest";
+import { PrControl } from "../features/pr/PrControl";
+import type { PrLookup } from "../features/pr/types";
 
 interface Props {
   repo: Repo;
   workspace: Workspace;
   dispatch: Dispatch<Action>;
+  notify?: (kind: "info" | "error", message: string) => void;
 }
 
 // In the desktop app the chat runs Reason (one Reason Session per workspace,
@@ -54,21 +61,27 @@ interface ChatPanelProps extends Props {
   tabs: ReactNode;
   /** Shown instead of the transcript while another tab (the diff) is active; the composer stays. */
   content: ReactNode | null;
+  /** The agent started or finished a turn. */
+  onRunningChange?: (running: boolean) => void;
 }
 
-function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunningChange }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const load = () => (reason ? reasonTranscript(workspace.id) : (transcripts.get(workspace.id) ?? emptyTranscript(workspace.id)));
   const [transcript, setTranscript] = useState<ChatTranscript>(load);
   const [draft, setDraft] = useState("");
+  /** The turn whose "Reset chat?" dialog is open. */
+  const [resetTurn, setResetTurn] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const running = transcript.activeTurn !== null;
+  useEffect(() => onRunningChange?.(running), [running, onRunningChange]);
 
   useEffect(() => {
     setTranscript(load());
     setDraft("");
+    setResetTurn(null);
     if (!reason) return;
     const unsubscribe = subscribeReason(workspace.id, setTranscript);
     const first = firstPrompts.get(workspace.id);
@@ -130,10 +143,23 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content }: ChatPan
             <p className="muted">{reason ? "Reason runs this chat: one Reason Session per workspace." : "Browser preview: messages stay in a local transcript."}</p>
           </div>
         ) : (
-          <Transcript transcript={transcript} onRetry={(prompt) => sendText(prompt)} />
+          <Transcript
+            transcript={transcript}
+            onRetry={(prompt) => sendText(prompt)}
+            // Conductor: workspace with a path, not archived; disabled while the agent works.
+            onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
+            resetDisabled={running}
+          />
         )}
         <div ref={endRef} />
       </div>
+      {resetTurn !== null ? (
+        <ResetChatDialog
+          loadChangedCount={() => changedSinceTurn(invoke, cwd, workspace.id, resetTurn)}
+          onConfirm={(resetFiles) => resetReasonChat(workspace.id, cwd, resetTurn, resetFiles)}
+          onClose={() => setResetTurn(null)}
+        />
+      ) : null}
       <form className="composer" onSubmit={send}>
         <textarea
           ref={inputRef}
@@ -220,7 +246,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
   archived: "Archived",
 };
 
-export function WorkspaceView({ repo, workspace, dispatch }: Props) {
+export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
   const chatBridge = useRef<ChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
@@ -246,6 +272,15 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, baseBranch: repo.defaultBranch, onLoaded, onOpen: openDiffTab });
   const chat = useMemo<ChatBridge>(() => ({ insert: (t) => chatBridge.current?.insert(t), send: (t) => chatBridge.current?.send(t) }), []);
   const review = useReviewComments(workspace.id, chat, undefined, diff.openPath);
+  const [agentWorking, setAgentWorking] = useState(false);
+  // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub.
+  const onLookup = useCallback(
+    (next: PrLookup) => {
+      if (next.kind === "found") dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title });
+    },
+    [dispatch, repo.id, workspace.id],
+  );
+  const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, onLookup });
   loaded.current = review.onLoaded;
 
   const switchTab = () => diffOpen && setMainTab((t) => (t === "chat" ? "diff" : "chat"));
@@ -276,6 +311,14 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
           )}
         </div>
         <div className="ws-actions">
+          <PrControl
+            pullRequest={pullRequest}
+            worktree={workspace.path ?? null}
+            branch={workspace.branch}
+            targetBranch={repo.defaultBranch}
+            sendToAgent={(text) => chat.send(text)}
+            notify={notify}
+          />
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
             Terminal
           </button>
@@ -290,8 +333,9 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
           workspace={workspace}
           dispatch={dispatch}
           bridge={chatBridge}
+          onRunningChange={setAgentWorking}
           tabs={<MainTabs title={workspace.name} active={showDiff ? "diff" : "chat"} diffOpen={diffOpen} onSelect={setMainTab} onCloseDiff={closeDiffTab} />}
-          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} annotations={review.annotations} /> : null}
+          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
         />
         <div className="ws-right">
           <RightPanel diff={diff} actions={review.actions} />

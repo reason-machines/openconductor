@@ -1,0 +1,32 @@
+[
+  {
+    "shot": "home--empty-signed-in--dark",
+    "whole_changed": 0.0286,
+    "sidebar_changed": 0.0061,
+    "rea_evidence": "ev_7cf6b298581560180d2ce25b305e0d2abcd1dbfe756df37ef67fd41fe1222dec"
+  },
+  {
+    "shot": "home--empty-signed-in--light",
+    "whole_changed": 0.0274,
+    "sidebar_changed": 0.0059,
+    "rea_evidence": "ev_ac4a5e2829bd6dbead10b11148939cf07f9e170d267f88c7eff8a4e8c7754e4a"
+  },
+  {
+    "shot": "sidebar--repos-collapsed--dark",
+    "whole_changed": 0.0291,
+    "sidebar_changed": 0.0062,
+    "rea_evidence": "ev_88eaad7085e885a406b9ed11de2442584c0578bf80f664b3328cb8e4b354a6dc"
+  },
+  {
+    "shot": "sidebar--repos-expanded--dark",
+    "whole_changed": 0.0296,
+    "sidebar_changed": 0.009,
+    "rea_evidence": "ev_36aa9c4173a01e8a455f7b041e2888a119073acaa84e737044b89636f9dee086"
+  },
+  {
+    "shot": "sidebar--repos-expanded--light",
+    "whole_changed": 0.0284,
+    "sidebar_changed": 0.0088,
+    "rea_evidence": "ev_e2cb485ffb0b544cb0d84aa8abcc40a953ade87a4af9e2eaabd4629515c53a32"
+  }
+]

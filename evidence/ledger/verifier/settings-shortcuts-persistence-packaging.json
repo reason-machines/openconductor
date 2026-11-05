@@ -3,54 +3,54 @@
  "generated_by": "tools/parity_check.py check",
  "target": {
   "ref": "origin/main",
-  "sha": "c15cf35ffb686ee1e5f3e904d8b1c6052a5d4c17"
+  "sha": "50451147f71faf9a409e39fbbc7f4f7dbb512a71"
  },
  "result_meaning": "pass = every item that evidences the obligation is matched on the target (static); fail = at least one item is partial, declared or missing. Static presence, not runtime behavior.",
  "areas": {
   "settings": {
    "total": 125,
-   "matched": 21,
+   "matched": 33,
    "partial": 17,
-   "missing": 87,
-   "parity_pct": 23.6
+   "missing": 75,
+   "parity_pct": 33.2
   },
   "shortcuts": {
    "total": 172,
-   "matched": 20,
-   "partial": 151,
-   "missing": 1,
-   "parity_pct": 55.5
+   "matched": 53,
+   "partial": 119,
+   "missing": 0,
+   "parity_pct": 65.4
   },
   "persistence": {
    "total": 44,
-   "matched": 19,
+   "matched": 27,
    "partial": 0,
-   "missing": 25,
-   "parity_pct": 43.2
+   "missing": 17,
+   "parity_pct": 61.4
   },
   "packaging": {
    "total": 78,
-   "matched": 42,
+   "matched": 55,
    "partial": 0,
-   "missing": 36,
-   "parity_pct": 53.8
+   "missing": 23,
+   "parity_pct": 70.5
   }
  },
  "overall": {
   "total": 419,
-  "matched": 102,
-  "partial": 168,
-  "missing": 149,
-  "parity_pct": 44.4
+  "matched": 168,
+  "partial": 136,
+  "missing": 115,
+  "parity_pct": 56.3
  },
  "evidence": {
   "report": "evidence/parity/parity-report.json",
   "persistence": {
    "conductor": "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e",
    "cache": "ev_202d2f9fcbf5be8a97cec7b5c27cfa0b7722d0b3e095404e9ac0b0923904aabf",
-   "rebuild": "REA inspect-sqlite-database ev_02bc0d05f6b02ff496b5450c97f86077243dfea21300c7fca6c61c28f972c58a"
+   "rebuild": "PRAGMA table_info"
   },
-  "packaging": "REA on CI-built OpenConductor.app (run 42021844898, commit 884f1f78ed0f): inspect-plist ev_02ba1bde9476dc28c2542a2e6cba1321495bcc294aa63cdd627f36e83e327faf, inspect-signature ev_d1528a163f40accf91d32a1168c72920b095dbfec7a5aa15207ddf7968ed0132, trace-dylib-resolution ev_8a8bba06ad34c2eeaf1ac519e0176efac010f4bd67edf4f0be8b2d9813e54262",
+  "packaging": "REA on CI-built OpenConductor.app (run 42043310601, commit 60f4dfbe7f41): inspect-plist ev_7f4d79dd9b47cd4ec5be806d5acc42adb6fc165f1f0a20dbea35954687cba83d, inspect-signature ev_b2fb66f77d27799b0a898f355a657589bcad728e515029a0f3a744e50378b1e3, trace-dylib-resolution ev_ace6de9edd393dbec394ce2745859a387aabbc80929341b93ce603713b51c8c0",
   "shortcuts": {
    "app": "Conductor.app v0.87.6",
    "chunk": "index-BGEQ8YjU.js",
@@ -66,10 +66,10 @@
    "result": "fail",
    "parity": {
     "total": 80,
-    "matched": 19,
+    "matched": 23,
     "partial": 14,
-    "missing": 47,
-    "parity_pct": 32.5
+    "missing": 43,
+    "parity_pct": 37.5
    }
   },
   {
@@ -115,13 +115,13 @@
    "obligation_id": "db.cache-schema",
    "area": "persistence",
    "ledger_status": "blocked",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 7,
-    "matched": 0,
+    "matched": 7,
     "partial": 0,
-    "missing": 7,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    }
   },
   {
@@ -154,13 +154,13 @@
    "obligation_id": "ui.window-chrome",
    "area": "persistence",
    "ledger_status": "unowned",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 1,
-    "matched": 0,
+    "matched": 1,
     "partial": 0,
-    "missing": 1,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    }
   },
   {
@@ -196,10 +196,10 @@
    "result": "fail",
    "parity": {
     "total": 14,
-    "matched": 2,
+    "matched": 13,
     "partial": 0,
-    "missing": 12,
-    "parity_pct": 14.3
+    "missing": 1,
+    "parity_pct": 92.9
    }
   },
   {
@@ -222,10 +222,10 @@
    "result": "fail",
    "parity": {
     "total": 22,
-    "matched": 15,
+    "matched": 16,
     "partial": 0,
-    "missing": 7,
-    "parity_pct": 68.2
+    "missing": 6,
+    "parity_pct": 72.7
    }
   },
   {
@@ -235,10 +235,10 @@
    "result": "fail",
    "parity": {
     "total": 12,
-    "matched": 0,
+    "matched": 1,
     "partial": 0,
-    "missing": 12,
-    "parity_pct": 0.0
+    "missing": 11,
+    "parity_pct": 8.3
    }
   },
   {
@@ -291,17 +291,12 @@
    "result": "fail",
    "parity": {
     "total": 16,
-    "matched": 1,
+    "matched": 5,
     "partial": 0,
-    "missing": 15,
-    "parity_pct": 6.2
+    "missing": 11,
+    "parity_pct": 31.2
    },
    "gaps": [
-    {
-     "group": "settings route",
-     "id": "/settings",
-     "status": "missing"
-    },
     {
      "group": "settings route",
      "id": "/settings/cloud/setup",
@@ -356,21 +351,6 @@
      "group": "settings route",
      "id": "/settings/user/account",
      "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/user/general",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/user/git",
-     "status": "missing"
-    },
-    {
-     "group": "settings route",
-     "id": "/settings/user/models",
-     "status": "missing"
     }
    ]
   },
@@ -383,10 +363,10 @@
    "result": "fail",
    "parity": {
     "total": 29,
-    "matched": 1,
+    "matched": 5,
     "partial": 3,
-    "missing": 25,
-    "parity_pct": 8.6
+    "missing": 21,
+    "parity_pct": 22.4
    },
    "gaps": [
     {
@@ -476,16 +456,6 @@
     },
     {
      "group": "settings table key",
-     "id": "low_contrast_dark_mode",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "mono_font",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
      "id": "onboarding_step",
      "status": "missing"
     },
@@ -506,11 +476,6 @@
     },
     {
      "group": "settings table key",
-     "id": "repo_local_settings_file_migration_complete",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
      "id": "review_codex_thinking_level",
      "status": "declared"
     },
@@ -522,11 +487,6 @@
     {
      "group": "settings table key",
      "id": "roundhouse_client_user_id",
-     "status": "missing"
-    },
-    {
-     "group": "settings table key",
-     "id": "zoom_level_v2",
      "status": "missing"
     }
    ]
@@ -792,9 +752,9 @@
    "parity": {
     "total": 10,
     "matched": 2,
-    "partial": 4,
-    "missing": 4,
-    "parity_pct": 40.0
+    "partial": 8,
+    "missing": 0,
+    "parity_pct": 60.0
    },
    "gaps": [
     {
@@ -810,12 +770,12 @@
     {
      "group": "user settings.toml",
      "id": "git.delete_branch_on_archive",
-     "status": "missing"
+     "status": "declared"
     },
     {
      "group": "user settings.toml",
      "id": "git.worktree_push_auto_setup_remote",
-     "status": "missing"
+     "status": "declared"
     },
     {
      "group": "repo settings.toml",
@@ -830,12 +790,12 @@
     {
      "group": "repo settings.toml",
      "id": "git.delete_branch_on_archive",
-     "status": "missing"
+     "status": "declared"
     },
     {
      "group": "repo settings.toml",
      "id": "git.worktree_push_auto_setup_remote",
-     "status": "missing"
+     "status": "declared"
     }
    ]
   },
@@ -848,10 +808,10 @@
    "result": "fail",
    "parity": {
     "total": 25,
-    "matched": 12,
-    "partial": 4,
+    "matched": 16,
+    "partial": 0,
     "missing": 9,
-    "parity_pct": 56.0
+    "parity_pct": 64.0
    },
    "gaps": [
     {
@@ -861,18 +821,8 @@
     },
     {
      "group": "user settings.toml",
-     "id": "file_include_globs",
-     "status": "declared"
-    },
-    {
-     "group": "user settings.toml",
      "id": "preview_urls",
      "status": "missing"
-    },
-    {
-     "group": "user settings.toml",
-     "id": "spotlight_testing",
-     "status": "declared"
     },
     {
      "group": "user settings.toml",
@@ -901,18 +851,8 @@
     },
     {
      "group": "repo settings.toml",
-     "id": "file_include_globs",
-     "status": "declared"
-    },
-    {
-     "group": "repo settings.toml",
      "id": "preview_urls",
      "status": "missing"
-    },
-    {
-     "group": "repo settings.toml",
-     "id": "spotlight_testing",
-     "status": "declared"
     },
     {
      "group": "repo settings.toml",
@@ -930,10 +870,10 @@
    "result": "fail",
    "parity": {
     "total": 30,
-    "matched": 3,
-    "partial": 27,
+    "matched": 8,
+    "partial": 22,
     "missing": 0,
-    "parity_pct": 55.0
+    "parity_pct": 63.3
    },
    "gaps": [
     {
@@ -943,27 +883,7 @@
     },
     {
      "group": "General",
-     "id": "openKeyboardShortcuts",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "openSettings",
-     "status": "declared"
-    },
-    {
-     "group": "General",
      "id": "quitApplication",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "settings.search",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "settings.close",
      "status": "declared"
     },
     {
@@ -974,11 +894,6 @@
     {
      "group": "General",
      "id": "diagnostics.close",
-     "status": "declared"
-    },
-    {
-     "group": "General",
-     "id": "sendFeedback",
      "status": "declared"
     },
     {
@@ -1082,17 +997,12 @@
    "result": "fail",
    "parity": {
     "total": 7,
-    "matched": 0,
-    "partial": 7,
+    "matched": 5,
+    "partial": 2,
     "missing": 0,
-    "parity_pct": 50.0
+    "parity_pct": 85.7
    },
    "gaps": [
-    {
-     "group": "View",
-     "id": "view.toggleLeftSidebar",
-     "status": "declared"
-    },
     {
      "group": "View",
      "id": "view.toggleRightSidebar",
@@ -1100,27 +1010,7 @@
     },
     {
      "group": "View",
-     "id": "view.toggleTerminalPanel",
-     "status": "declared"
-    },
-    {
-     "group": "View",
      "id": "view.toggleZenMode",
-     "status": "declared"
-    },
-    {
-     "group": "View",
-     "id": "view.zoomIn",
-     "status": "declared"
-    },
-    {
-     "group": "View",
-     "id": "view.zoomOut",
-     "status": "declared"
-    },
-    {
-     "group": "View",
-     "id": "view.resetZoom",
      "status": "declared"
     }
    ]
@@ -1134,32 +1024,12 @@
    "result": "fail",
    "parity": {
     "total": 20,
-    "matched": 2,
-    "partial": 18,
+    "matched": 6,
+    "partial": 14,
     "missing": 0,
-    "parity_pct": 55.0
+    "parity_pct": 65.0
    },
    "gaps": [
-    {
-     "group": "Navigation",
-     "id": "nav.back",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "nav.forward",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "nav.previousTab",
-     "status": "declared"
-    },
-    {
-     "group": "Navigation",
-     "id": "nav.nextTab",
-     "status": "declared"
-    },
     {
      "group": "Navigation",
      "id": "nav.closeTab",
@@ -1493,10 +1363,10 @@
    "result": "fail",
    "parity": {
     "total": 37,
-    "matched": 5,
-    "partial": 32,
+    "matched": 6,
+    "partial": 31,
     "missing": 0,
-    "parity_pct": 56.8
+    "parity_pct": 58.1
    },
    "gaps": [
     {
@@ -1646,11 +1516,6 @@
     },
     {
      "group": "Workspace",
-     "id": "workspace.showReview",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
      "id": "workspace.showUncommittedChanges",
      "status": "declared"
     },
@@ -1670,10 +1535,10 @@
    "result": "fail",
    "parity": {
     "total": 8,
-    "matched": 0,
-    "partial": 8,
+    "matched": 6,
+    "partial": 2,
     "missing": 0,
-    "parity_pct": 50.0
+    "parity_pct": 87.5
    },
    "gaps": [
     {
@@ -1684,36 +1549,6 @@
     {
      "group": "Code review",
      "id": "editor.openSearch",
-     "status": "declared"
-    },
-    {
-     "group": "Code review",
-     "id": "diff.open",
-     "status": "declared"
-    },
-    {
-     "group": "Code review",
-     "id": "diff.previousFile",
-     "status": "declared"
-    },
-    {
-     "group": "Code review",
-     "id": "diff.nextFile",
-     "status": "declared"
-    },
-    {
-     "group": "Code review",
-     "id": "diff.previousComment",
-     "status": "declared"
-    },
-    {
-     "group": "Code review",
-     "id": "diff.nextComment",
-     "status": "declared"
-    },
-    {
-     "group": "Code review",
-     "id": "diff.toggleViewed",
      "status": "declared"
     }
    ]
@@ -1727,70 +1562,15 @@
    "result": "fail",
    "parity": {
     "total": 12,
-    "matched": 0,
-    "partial": 12,
+    "matched": 11,
+    "partial": 1,
     "missing": 0,
-    "parity_pct": 50.0
+    "parity_pct": 95.8
    },
    "gaps": [
     {
      "group": "Terminal",
-     "id": "terminal.newTab",
-     "status": "declared"
-    },
-    {
-     "group": "Terminal",
-     "id": "terminal.newBigTab",
-     "status": "declared"
-    },
-    {
-     "group": "Terminal",
-     "id": "terminal.closeTab",
-     "status": "declared"
-    },
-    {
-     "group": "Terminal",
      "id": "terminal.openLocalhost",
-     "status": "declared"
-    },
-    {
-     "group": "Terminal",
-     "id": "terminal.search",
-     "status": "declared"
-    },
-    {
-     "group": "Terminal",
-     "id": "terminal.insertNewline",
-     "status": "declared"
-    },
-    {
-     "group": "Terminal",
-     "id": "terminal.clearScrollback",
-     "status": "declared"
-    },
-    {
-     "group": "Terminal",
-     "id": "terminal.deleteLine",
-     "status": "declared"
-    },
-    {
-     "group": "Terminal",
-     "id": "terminal.moveLineStart",
-     "status": "declared"
-    },
-    {
-     "group": "Terminal",
-     "id": "terminal.moveLineEnd",
-     "status": "declared"
-    },
-    {
-     "group": "Terminal",
-     "id": "terminal.moveWordLeft",
-     "status": "declared"
-    },
-    {
-     "group": "Terminal",
-     "id": "terminal.moveWordRight",
      "status": "declared"
     }
    ]
@@ -1801,21 +1581,15 @@
    "area": "shortcuts",
    "parent_obligation": null,
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 7,
-    "matched": 6,
+    "matched": 7,
     "partial": 0,
-    "missing": 1,
-    "parity_pct": 85.7
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "feature",
-     "id": "key-bindings-route",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "db.cache-schema.tables",
@@ -1823,51 +1597,15 @@
    "area": "persistence",
    "parent_obligation": "db.cache-schema",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 7,
-    "matched": 0,
+    "matched": 7,
     "partial": 0,
-    "missing": 7,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "cache.db table",
-     "id": "session_messages",
-     "status": "missing"
-    },
-    {
-     "group": "cache.db table",
-     "id": "client_cache_session_state",
-     "status": "missing"
-    },
-    {
-     "group": "cache.db table",
-     "id": "session_pending_messages_state",
-     "status": "missing"
-    },
-    {
-     "group": "cache.db table",
-     "id": "session_pending_messages",
-     "status": "missing"
-    },
-    {
-     "group": "cache.db table",
-     "id": "navigation_sections",
-     "status": "missing"
-    },
-    {
-     "group": "cache.db table",
-     "id": "navigation_section_memberships",
-     "status": "missing"
-    },
-    {
-     "group": "cache.db table",
-     "id": "favorite_models",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "db.local-storage.stores",
@@ -1947,21 +1685,15 @@
    "area": "persistence",
    "parent_obligation": "ui.window-chrome",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 1,
-    "matched": 0,
+    "matched": 1,
     "partial": 0,
-    "missing": 1,
-    "parity_pct": 0.0
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "app data store",
-     "id": "window-state",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "persistence.draft-attachments",
@@ -2184,10 +1916,10 @@
    "result": "fail",
    "parity": {
     "total": 22,
-    "matched": 15,
+    "matched": 16,
     "partial": 0,
-    "missing": 7,
-    "parity_pct": 68.2
+    "missing": 6,
+    "parity_pct": 72.7
    },
    "gaps": [
     {
@@ -2213,11 +1945,6 @@
     {
      "group": "linked system library",
      "id": "OSAKit",
-     "status": "missing"
-    },
-    {
-     "group": "linked system library",
-     "id": "SystemConfiguration",
      "status": "missing"
     },
     {
@@ -2255,71 +1982,15 @@
    "area": "packaging",
    "parent_obligation": "pkg.tauri-stack",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 13,
-    "matched": 2,
+    "matched": 13,
     "partial": 0,
-    "missing": 11,
-    "parity_pct": 15.4
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-clipboard-manager",
-     "status": "missing"
-    },
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-deep-link",
-     "status": "missing"
-    },
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-fs",
-     "status": "missing"
-    },
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-http",
-     "status": "missing"
-    },
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-notification",
-     "status": "missing"
-    },
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-opener",
-     "status": "missing"
-    },
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-os",
-     "status": "missing"
-    },
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-shell",
-     "status": "missing"
-    },
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-sql",
-     "status": "missing"
-    },
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-store",
-     "status": "missing"
-    },
-    {
-     "group": "tauri plugin",
-     "id": "tauri-plugin-window-state",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "pkg.bundled-bin",
@@ -2330,10 +2001,10 @@
    "result": "fail",
    "parity": {
     "total": 12,
-    "matched": 0,
+    "matched": 1,
     "partial": 0,
-    "missing": 12,
-    "parity_pct": 0.0
+    "missing": 11,
+    "parity_pct": 8.3
    },
    "gaps": [
     {
@@ -2374,11 +2045,6 @@
     {
      "group": "bundled resource",
      "id": "bin/conductor",
-     "status": "missing"
-    },
-    {
-     "group": "bundled resource",
-     "id": "bin/gh",
      "status": "missing"
     },
     {
