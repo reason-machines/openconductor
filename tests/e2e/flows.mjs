@@ -33,6 +33,18 @@ function textsOf(wd, css) {
 
 export const flows = [
   {
+    // A fresh conductor.db has no repositories and no onboarding step, so the
+    // first-run onboarding comes first; Continue writes the step and opens Home.
+    name: "first-run",
+    async run(wd) {
+      await wd.waitFor("the first-run onboarding", async () => (await wd.findAll(".onb")).length > 0);
+      await clickByText(wd, ".onb-continue", "Continue");
+      await wd.waitFor("Home after onboarding", async () => (await wd.findAll(".home")).length > 0);
+      const step = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_first_run_onboarding_step');", []);
+      if (step !== "999") throw new Error(`first_time_onboarding_step ${JSON.stringify(step)}, want "999"`);
+    },
+  },
+  {
     name: "home",
     async run(wd) {
       await wd.waitFor("the Home screen", async () => (await wd.findAll(".home")).length > 0);

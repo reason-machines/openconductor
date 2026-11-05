@@ -27,9 +27,10 @@ import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest"
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
+import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
-import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
+import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
 import { useAppPrefs } from "../settings/appPrefs";
 
@@ -337,7 +338,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
-  // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub, then archive on merge.
+  // Keep the sidebar's PR title and body (`workspaces.pr_title`, `pr_description`) in step with GitHub, then archive on merge.
   // The row's status icon reads the PR too (merged, checks failing, ready to merge, ...).
   const optionalChecksBlock = useRef(false);
   const prTitle = useRef(workspace.prTitle ?? null);
@@ -345,7 +346,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const onLookup = useCallback(
     (next: PrLookup, previous: PrLookup | null) => {
       if (next.kind === "found") {
-        dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title, pr: rowPrOf(next.info, optionalChecksBlock.current) });
+        dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title, prDescription: next.info.body ?? null, pr: rowPrOf(next.info, optionalChecksBlock.current) });
       } else {
         dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: prTitle.current, pr: null });
       }
@@ -353,7 +354,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     },
     [dispatch, repo.id, workspace.id, archiveOnMerge],
   );
-  const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, onLookup });
+  const onDerivedStatus = useWorkspacePrSync({ repoId: repo.id, workspace, dispatch });
+  const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, hasPendingComments: review.hasPending, onLookup, onDerivedStatus });
   optionalChecksBlock.current = pullRequest.settings.optionalChecksBlock;
   useEffect(() => {
     dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: agentWorking });
@@ -362,10 +364,14 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   useEffect(() => () => dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: false }), [dispatch, repo.id, workspace.id]);
   const prActions = usePrActions({
     pullRequest,
+    repoId: repo.id,
     worktree: workspace.path ?? null,
     branch: workspace.branch,
     targetBranch: repo.defaultBranch,
+    prTitle: workspace.prTitle,
+    prDescription: workspace.prDescription,
     sendToAgent: chat.send,
+    addCommentsToChat: review.addAllToChat,
     notify,
   });
   loaded.current = review.onLoaded;
@@ -387,6 +393,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "workspace.showReview": () => canReview && void reviews.start(),
     "git.createPR": () => {
       if (createShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.create(false);
+    },
+    "git.commitAndPush": () => {
+      if (commitShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.commitAndPush();
     },
     "git.mergePR": () => {
       if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
@@ -419,7 +428,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           )}
         </div>
         <div className="ws-actions">
-          <PrControl pullRequest={pullRequest} actions={prActions} worktree={workspace.path ?? null} />
+          <PrControl pullRequest={pullRequest} actions={prActions} />
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
             Terminal
           </button>
