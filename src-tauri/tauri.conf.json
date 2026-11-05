@@ -42,8 +42,15 @@
     "resources": {
       "resources/bin-tools/checkpointer.sh": "bin/checkpointer.sh",
       "resources/bin-tools/git-busy-check.sh": "bin/git-busy-check.sh",
+      "resources/bin-tools/spotlighter.sh": "bin/spotlighter.sh",
       "resources/conductor-skill/.claude-plugin/plugin.json": "conductor-skill/.claude-plugin/plugin.json",
       "resources/conductor-skill/skills/conductor/SKILL.md": "conductor-skill/skills/conductor/SKILL.md"
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "",
+      "endpoints": ["https://github.com/reason-machines/openconductor/releases/latest/download/latest.json"]
     }
   }
 }

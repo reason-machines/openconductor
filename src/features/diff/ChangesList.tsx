@@ -120,7 +120,8 @@ export function ChangesList({ diff, actions, worktree }: ChangesListProps) {
             view: () => diff.open(menu.index),
             copyPath: worktree ? () => copy(`${worktree.replace(/\/+$/, "")}/${menuFile.path}`) : undefined,
             copyRelativePath: () => copy(menuFile.path),
-            discard: () => diff.askDiscard(menuFile),
+            // Always against the "All changes" base, also in the Uncommitted and turn views (target.ts).
+            discard: () => diff.askDiscard(menuFile, "menu"),
           }}
         />
       )}

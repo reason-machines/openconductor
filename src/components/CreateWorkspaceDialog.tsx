@@ -3,6 +3,8 @@ import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import { Modal } from "./Dialogs";
 import { seedTranscript } from "./WorkspaceView";
+import { configureReason } from "../features/chat/reasonChat";
+import { sessionConfig } from "../features/chat/chatModel";
 import { RARITY_LABEL, generateWorkspaceNames, resolveBranchPrefix, type BranchPrefixSettings, type GeneratedName } from "../workspace/naming";
 import {
   FAILED_TO_CREATE,
@@ -20,6 +22,7 @@ import { scriptsConfig, startSetup } from "../scripts/api";
 import { workspaceRef } from "../scripts/model";
 import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
+import { addPendingLaunch, removePendingLaunch } from "../workspace/pendingLaunches";
 import type { SourceState } from "../workspace/createFrom";
 import { CreateFromPicker } from "./CreateFromPicker";
 import { getSettings } from "../settings/api";
@@ -29,7 +32,7 @@ import { AddRepositoryMenu } from "./AddRepositoryMenu";
 interface Props {
   repos: Repo[];
   initialRepoId: string | null;
-  /** `branch_prefix_type` / `branch_prefix_custom` settings. */
+  /** `branch_prefix_type` / `branch_prefix` settings. */
   prefixSettings: BranchPrefixSettings;
   githubUsername: string | null;
   onClose: () => void;
@@ -133,6 +136,9 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
     if (!built.ok) return setErrors(built.errors);
     setErrors({});
     send({ type: "submit" });
+    // The sidebar shows an "Untitled" initializing row in this repo until the workspace is added or fails.
+    const pendingId = crypto.randomUUID();
+    addPendingLaunch(pendingId, repo.id);
     try {
       if (!repo.path) throw new Error("This repository has no local checkout yet.");
       const backendRepo = await ensureRepository(repo.path);
@@ -147,13 +153,17 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
         name: directoryName,
         branch: branchName,
         path,
+        targetBranch: built.request.targetBranch,
         placeholderBranchName: naming.placeholder_branch_name === null ? null : branchName,
         userSetWorkspaceName: naming.user_set_workspace_name,
         userSetBranchName: naming.user_set_branch_name,
         number: created.number ?? null,
       };
       // The first message opens the workspace's first chat session (agent runtime pending).
-      if (firstSession) seedTranscript(id, firstSession.message);
+      if (firstSession) {
+        configureReason(id, sessionConfig(firstSession.model, firstSession.effort));
+        seedTranscript(id, firstSession.message);
+      }
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
       onClose();
       // ...and renames a placeholder city workspace after it.
@@ -163,6 +173,8 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
       }
     } catch (err) {
       send({ type: "create_failed", error: `${FAILED_TO_CREATE}: ${errorText(err)}` });
+    } finally {
+      removePendingLaunch(pendingId);
     }
   }
 

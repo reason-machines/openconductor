@@ -27,18 +27,24 @@ pub use sqlx::sqlite::SqlitePool;
 pub use scope::Scope;
 
 pub mod app_settings;
+pub mod attachments;
 pub mod cache;
+pub mod chat_messages;
 pub mod diff_comments;
 pub mod env_vars;
 pub mod favorite_models;
 pub mod iso_time;
 pub mod maintenance;
 pub mod navigation;
+pub mod onboarding;
 pub mod outbox;
 pub mod port_forwards;
 pub mod repos;
 mod scope;
+pub mod session_messages;
+pub mod sessions;
 pub mod terminal_sessions;
+pub mod workspace_rename;
 pub mod workspaces;
 
 /// Every schema migration, embedded from `migrations/`.

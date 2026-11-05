@@ -48,9 +48,9 @@ test("row menu: read/unread, pin into the Pinned group, status, keys, archive", 
   const harbor = row(page, "Quiet harbor");
   await harbor.waitFor();
 
-  // Conductor's order for a local workspace; Rename is hidden until the rename dialog is wired.
+  // Conductor's order for a local workspace.
   await harbor.click({ button: "right" });
-  assert.deepEqual(await menuItems(page), ["Mark as unread", "Pin", "Set status", "Archive"]);
+  assert.deepEqual(await menuItems(page), ["Mark as unread", "Pin", "Set status", "Rename", "Archive"]);
   assert.equal(await harbor.getAttribute("data-menu-open"), "true");
   await page.keyboard.press("Escape");
   assert.equal(await menu(page).count(), 0);
@@ -159,5 +159,26 @@ test("diff stats: muted on unselected rows unless Colored sidebar diffs is on", 
   await page.waitForFunction(() => document.documentElement.dataset.coloredSidebarDiffs === "");
   const on = await colors();
   assert.notEqual(on.add, on.muted, "on: unselected rows keep the green");
+  await page.close();
+});
+
+test("row status icon follows the agent, then the PR, then the branch", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${base}/?demo=1`);
+  await row(page, "Quiet harbor").waitFor();
+  const icon = (label) => row(page, label).getByTestId("workspace-status-icon");
+  const status = async (label) => [await icon(label).getAttribute("data-status"), await icon(label).getAttribute("aria-label"), await icon(label).getAttribute("data-color")];
+  assert.deepEqual(await status("Lunar reef"), ["working", "Working", "muted"]);
+  assert.equal(await icon("Lunar reef").locator(".sb-ws-loader").count(), 1);
+  assert.deepEqual(await status("Quiet harbor"), ["ready-to-merge", "Ready to merge", "ready"]);
+  assert.deepEqual(await status("Copper wren"), ["checks-failing", "Checks failing", "destructive"]);
+  assert.deepEqual(await status("Misty larch"), ["merged", "Merged", "merged"]);
+  // No PR: "Ready" on a repo with a remote, "Local workspace" without one. Amber falcon is
+  // open, and the open workspace reports its agent as idle, over the demo's "working".
+  assert.deepEqual(await status("Amber falcon"), ["branch", "Ready", "muted"]);
+  assert.deepEqual(await status("Brisk otter"), ["local", "Local workspace", "muted"]);
+  const rgb = (label) => icon(label).evaluate((el) => getComputedStyle(el).color);
+  assert.notEqual(await rgb("Copper wren"), await rgb("Amber falcon"), "checks failing is coloured");
+  assert.match(await row(page, "Copper wren").getAttribute("title"), /Checks failing$/);
   await page.close();
 });
