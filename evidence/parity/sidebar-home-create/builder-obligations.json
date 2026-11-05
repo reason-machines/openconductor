@@ -1,14 +1,14 @@
 {
  "schema": "openconductor.builder-obligations.v1",
  "ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 81.7,
+ "verdicts_verified_at": "2026-11-05 (main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 83.2,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 20,
+ "open": 19,
  "by_owner": {
   "create-workspace": 3,
   "home": 4,
-  "sidebar": 13
+  "sidebar": 12
  },
  "obligations": [
   {
@@ -162,24 +162,6 @@
      5007,
      137,
      2767
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.drag-to-section",
-   "item": "sidebar.drag-to-section",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Drag a workspace row onto a section",
-   "verdict": "missing",
-   "gap": "Still missing on 66a892a: the only drag and drop in the sidebar reorders repository groups (sb-repo-header draggable / dropOn). Workspace rows are not draggable and sections are not drop targets; #370 added sections but moves a workspace only through the row menu's Move to section.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     1289
     ]
    },
    "status": "open"
@@ -382,7 +364,7 @@
    "depends_on_builders": [],
    "feature": "Workspace actions menu on a row (copy info, rename, archive, pin, section)",
    "verdict": "partial",
-   "gap": "On 66a892a the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status \u25b8, Move to section \u25b8 (#370: every section, New section\u2026, Remove from section), Rename (#315) and Archive. Still missing: Copy link (Cmd+Shift+C); WorkspaceActionsMenu.tsx notes it is not built because there is no URL scheme.",
+   "gap": "Still partial on main 962f017: the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status \u25b8, Move to section \u25b8 (#370), Rename (#315) and Archive; Copy link (Cmd+Shift+C) is missing. PR #400 (head 6e038d3, all 15 checks green, unmerged under the merge hold) adds it: Copy link in the row menu with the \u2318\u21e7C hint on the open workspace's row, \u2318\u21e7C bound at dialog priority, global, also while typing and not in the terminal (Conductor's Olo), copying openconductor://workspace?id=<id> with the 'Copied link' / 'Failed to copy link' toasts (Conductor's XV and $$; 'Failed to copy link' re-checked at renderApp byte 742,768). Re-read against #400's head this becomes implemented once it merges; the copied link opens nothing until app.deep-link (unowned) handles openconductor:// URLs.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {

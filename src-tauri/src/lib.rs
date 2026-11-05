@@ -67,6 +67,8 @@ pub mod tool_spotlighter;
 pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
+pub mod workspace_archive;
+mod workspace_archive_commands;
 
 use serde::Serialize;
 
@@ -290,6 +292,7 @@ pub fn run() {
             let settings_pool = db.0.clone();
             app.manage(db);
             app.manage(workspaces);
+            app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
@@ -337,14 +340,14 @@ pub fn run() {
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
+            workspace_archive_commands::archive_workspace,
+            workspace_archive_commands::unarchive_workspace,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
-            persistence_commands::db_archive_workspace,
             persistence_commands::db_repo_prompt,
             onboarding_commands::db_first_run_onboarding_step,
             onboarding_commands::db_finish_first_run_onboarding,
             persistence_commands::db_set_workspace_target_branch,
-            persistence_commands::db_unarchive_workspace,
             archive_on_merge_commands::repo_archive_on_merge,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
