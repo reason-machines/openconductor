@@ -79,8 +79,9 @@ Backend (this PR):
 - `reason_prompt(chatId, text, turnId?)` runs inside `around_turn` in the
   chat's folder (remembered from `reason_open_chat`); the result gains
   `turnChanges`. The session part of the id is our chat id (the workspace id).
-- Commands: `checkpoint_save`, `checkpoint_get`, `checkpoint_restore`,
-  `checkpoint_turn_changes` ([`turn_checkpoint_commands.rs`](../../src-tauri/src/turn_checkpoint_commands.rs)).
+- Command `checkpoint_turn_changes` ([`turn_checkpoint_commands.rs`](../../src-tauri/src/turn_checkpoint_commands.rs));
+  save / exists / restore / changed-count commands came separately in #267
+  (`checkpoint_commands.rs`).
 - Parser fix found on the way: git ends `---`/`+++` names that contain a space
   with a tab; the parser kept it (paths like `new file.rs\t`, or a bogus
   `old_path` for modified files). It is now stripped.
@@ -101,5 +102,5 @@ Tests: `src-tauri/src/diff/turn_tests.rs` (refs made with plain git, run by
   Conductor's encrypted file-backed local-storage subsystem
   (`db.local-storage` is not built yet).
 - No "files changed since this turn" count and no revert-to-checkpoint UI
-  yet; `checkpoint_restore` exists as a command only.
+  yet.
 - Not checked in the running macOS app.
