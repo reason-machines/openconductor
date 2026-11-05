@@ -12,6 +12,9 @@ import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
 import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
+import { ChatEmptyState } from "../features/chat/ChatEmptyState.tsx";
+import { lastUserMessageAt, type OtherChat } from "../features/chat/chatEmptyState.ts";
+import type { ChatAgent } from "../features/chat/chatAgentChoice.ts";
 import { commandSet, isKnownCommand, parseSlashCommand } from "../features/chat/slashCommands.ts";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
@@ -48,6 +51,7 @@ import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest"
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
+import { AllFilesTree } from "../features/files/AllFilesTree";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
 import { BranchPicker } from "../features/pr/edit/BranchPicker";
@@ -105,10 +109,25 @@ interface ChatPanelProps extends Props {
   openFile?: (path: string) => void;
   /** Opens a forked chat tab on `config` with `draft` in its composer; returns its chat id. */
   forkToNewTab: (title: string, config: ConfigChoice[], draft: { text: string; attachments: TextAttachment[] }) => string;
+  /** Every chat tab of the workspace (its own chat and the review and fork tabs), for the empty chat's transcript chips. */
+  chatTabs: readonly { chatId: string; title: string }[];
+}
+
+/** Conductor's "Branched <branch> from <remote>/<parent>": the workspace's target branch, on origin for a cloned repo. */
+function branchedFrom(repo: Repo, workspace: Workspace): string | null {
+  const base = workspace.targetBranch ?? repo.defaultBranch;
+  if (!base) return null;
+  return repo.remote ? `origin/${base}` : base;
+}
+
+/** Another chat tab of the workspace, with its last user message, for the empty chat's transcript chips. */
+function otherChat(chatId: string, title: string, reason: boolean): OtherChat {
+  const agent = reason && savedAgent(chatId) === "codex" ? "codex" : "reason";
+  const messages = (agent === "codex" ? codexSnapshot(chatId) : chatSnapshot(chatId)).transcript.messages;
+  return { chatId, title, agent, lastUserMessageAt: lastUserMessageAt(messages) };
 }
 
 // Which agent runs a chat; each keeps its own transcript.
-type ChatAgent = "reason" | "codex";
 const agentKey = (chatId: string) => `openconductor.agent.${chatId}`;
 const savedAgent = (chatId: string): ChatAgent => (localStorage.getItem(agentKey(chatId)) === "codex" ? "codex" : "reason");
 
@@ -130,7 +149,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onSessionStatusChange, openTurnFile, openFile, forkToNewTab }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onSessionStatusChange, openTurnFile, openFile, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -412,19 +431,20 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           </div>
         )}
         {transcript.messages.length === 0 ? (
-          <div className="placeholder">
-            <h3>Chat with the agent</h3>
-            <p>
-              Messages you send here will run an agent inside <code>{workspace.name}</code>'s worktree on branch <code>{workspace.branch}</code>.
-            </p>
-            <p className="muted">
-              {!reason
-                ? "Browser preview: a stand-in agent answers; Reason runs chats in the desktop app."
-                : codex
-                  ? "Codex runs this chat with your signed-in codex CLI, in this workspace's folder."
-                  : "Reason runs this chat: one Reason Session per workspace."}
-            </p>
-          </div>
+          <ChatEmptyState
+            repoName={repo.name}
+            directoryName={workspace.directoryName ?? workspace.name}
+            state={workspace.state}
+            branch={workspace.branch}
+            branchedFrom={branchedFrom(repo, workspace)}
+            otherChats={chatTabs.filter((t) => t.chatId !== chatId).map((t) => otherChat(t.chatId, t.title, reason))}
+            onAttachTranscript={(c) => {
+              // Conductor: "Transcript of <title>.md", or "No messages in this chat".
+              const text = forkTranscript((c.agent === "codex" ? codexSnapshot(c.chatId) : chatSnapshot(c.chatId)).transcript);
+              if (text === null) return setAttachError("No messages in this chat");
+              setAttachments((list) => addAttachment(list, { name: forkAttachmentName(c.title), text }));
+            }}
+          />
         ) : (
           <Transcript
             transcript={transcript}
@@ -474,35 +494,35 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         onQueue={(action) => (codex ? codexQueueAction : queueAction)(chatId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
         controls={
-          reason ? (
-            <>
-              <select className="agent-select" aria-label="Agent" value={agent} disabled={running} onChange={(e) => chooseAgent(e.target.value as ChatAgent)}>
-                <option value="reason">Reason</option>
-                <option value="codex">Codex</option>
-              </select>
-              {codex ? (
-                <select
-                  className="agent-select codex-access"
-                  aria-label="Codex access"
-                  value={access}
-                  disabled={running}
-                  onChange={(e) => {
-                    const next = e.target.value as CodexAccess;
-                    setAccess(next);
-                    void setCodexAccess(chatId, next);
-                  }}
-                >
-                  {(Object.keys(CODEX_ACCESS) as CodexAccess[]).map((k) => (
-                    <option key={k} value={k}>
-                      {CODEX_ACCESS[k].label}
-                    </option>
-                  ))}
-                </select>
-              ) : null}
-            </>
+          // Codex's access mode; the agent itself is picked in the model picker.
+          codex ? (
+            <select
+              className="agent-select codex-access"
+              aria-label="Codex access"
+              value={access}
+              disabled={running}
+              onChange={(e) => {
+                const next = e.target.value as CodexAccess;
+                setAccess(next);
+                void setCodexAccess(chatId, next);
+              }}
+            >
+              {(Object.keys(CODEX_ACCESS) as CodexAccess[]).map((k) => (
+                <option key={k} value={k}>
+                  {CODEX_ACCESS[k].label}
+                </option>
+              ))}
+            </select>
           ) : null
         }
-        picker={main && !codex ? <ChatModelPicker chatId={chatId} /> : review ? <span className="oc-review-model">{review.modelLabel}</span> : null}
+        picker={
+          review ? (
+            <span className="oc-review-model">{review.modelLabel}</span>
+          ) : (
+            // A review chat keeps its model. The agent changes only between turns.
+            <ChatModelPicker chatId={chatId} agent={codex ? "codex" : "reason"} onAgentChange={reason && !running ? chooseAgent : undefined} />
+          )
+        }
         slashCommands={codex ? CODEX_SLASH_COMMANDS : SLASH_COMMANDS}
         onCommand={(text) => {
           // Reason runs as an ACP agent and Codex here through its app server: Conductor's built-in commands are not wired for either yet.
@@ -547,9 +567,10 @@ interface RightPanelProps {
   /** Fix errors: send to the workspace's own chat. */
   sendToChat: (text: string, attachments: TextAttachment[]) => void;
   readOnly: boolean;
+  notify?: ArchiveNotify;
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly }: RightPanelProps) {
+function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly, notify }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -592,11 +613,7 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
           readOnly={readOnly}
         />
       ) : (
-        <div className="diff-body">
-          <div className="placeholder small">
-            <p>File tree of the worktree will appear here.</p>
-          </div>
-        </div>
+        <AllFilesTree worktree={worktree} notify={notify} />
       )}
     </section>
   );
@@ -900,6 +917,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           openTurnFile={diff.openTurnFile}
           openFile={diff.openPath}
           forkToNewTab={reviews.fork}
+          chatTabs={[{ chatId: workspace.id, title: workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
           content={
             showDiff ? (
@@ -930,6 +948,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               repo={repo}
               sendToChat={sendToChat}
               readOnly={workspace.status === "archived"}
+              notify={notify}
             />
             <ScriptsPanel repo={repo} workspace={workspace} />
           </div>
