@@ -27,7 +27,7 @@ pub mod workspace;
 
 use serde::Serialize;
 use tauri::Manager;
-use terminal_commands::Terminals;
+use terminal_commands::{ShellCommands, Terminals};
 
 #[derive(Serialize)]
 struct AppInfo {
@@ -103,6 +103,7 @@ pub fn run() {
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(Terminals::new(app.handle().clone()));
+            app.manage(ShellCommands::default());
             app.manage(settings::service::SettingsService::new(
                 settings::config_dir()?.join(settings::FILE_NAME),
                 agent::keychain::default_store(),
@@ -132,6 +133,9 @@ pub fn run() {
             terminal_commands::pty_read_history,
             terminal_commands::pty_clear_history,
             terminal_commands::pty_list,
+            terminal_commands::execute_shell_command,
+            terminal_commands::execute_shell_command_cancellable,
+            terminal_commands::cancel_shell_command,
             settings::commands::get_settings,
             settings::commands::update_settings,
             settings::commands::provider_status,
@@ -167,6 +171,9 @@ pub fn run() {
                 // Run scripts lead their own process groups; do not orphan them.
                 if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {
                     scripts.runs.stop_all();
+                }
+                if let Some(shell) = app.try_state::<ShellCommands>() {
+                    shell.0.cancel_all();
                 }
             }
         });
