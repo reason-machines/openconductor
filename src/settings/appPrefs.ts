@@ -9,6 +9,8 @@ export interface AppPrefs {
   garry_mode: boolean;
   experimental_show_agent_cost: boolean;
   experimental_tab_freak_mode: boolean;
+  /** Experimental "Show workspace numbers": `W-<n>` beside workspace names; off by default. */
+  experimental_show_workspace_numbers: boolean;
   graphite_disabled: boolean;
   default_open_in: string | null;
   open_in_mru_order: string[];
@@ -33,6 +35,7 @@ export type AppPrefUpdate =
         | "garry_mode"
         | "experimental_show_agent_cost"
         | "experimental_tab_freak_mode"
+        | "experimental_show_workspace_numbers"
         | "graphite_disabled"
         | "left_panel_visible"
         | "right_panel_visible"
@@ -48,6 +51,7 @@ export const DEFAULT_APP_PREFS: AppPrefs = {
   garry_mode: false,
   experimental_show_agent_cost: false,
   experimental_tab_freak_mode: false,
+  experimental_show_workspace_numbers: false,
   graphite_disabled: false,
   default_open_in: null,
   open_in_mru_order: [],

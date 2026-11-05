@@ -59,3 +59,13 @@ test("workspace actions appear only with a workspace selected", () => {
   assert.ok(headings(state).includes("Workspace actions"));
   assert.ok(!headings({ ...state, selection: { kind: "home" } }).includes("Workspace actions"));
 });
+
+test("palette workspace entries carry workspaces.number for the W-<n> column", () => {
+  const numbered: AppState = {
+    ...state,
+    repos: [{ ...state.repos[0]!, workspaces: [{ ...w("a", 1), number: 12 }, w("b", 2)] }],
+  };
+  const byId = new Map(paletteDataFromState(numbered, []).workspaces.map((e) => [e.id, e.number]));
+  assert.equal(byId.get("a"), 12);
+  assert.equal(byId.get("b"), null);
+});

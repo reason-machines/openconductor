@@ -28,6 +28,8 @@ import {
 } from "../home/allWorkspaces";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs } from "../keybindings/shortcut";
+import { useAppPrefs } from "../settings/appPrefs";
+import { workspaceNumberLabel } from "../state/workspaceNumber";
 
 interface Props {
   repos: Repo[];
@@ -87,9 +89,24 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
   );
 }
 
-function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRepoIcon: boolean; active: boolean; now: number; onOpen: () => void }) {
+function Row({
+  row,
+  showRepoIcon,
+  showNumber,
+  active,
+  now,
+  onOpen,
+}: {
+  row: HomeRow;
+  showRepoIcon: boolean;
+  showNumber: boolean;
+  active: boolean;
+  now: number;
+  onOpen: () => void;
+}) {
   const { workspace: ws, repo, archived, matches } = row;
   const tone = archived ? "is-archived" : ws.unread ? "is-unread" : "";
+  const label = workspaceNumberLabel(ws.number);
   return (
     <div
       role="option"
@@ -103,6 +120,12 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
         {showRepoIcon && (
           <span className="allws-repo-initial" title={repo.name} aria-hidden>
             {repo.name.charAt(0).toUpperCase()}
+          </span>
+        )}
+        {/* "Show workspace numbers" (Conductor's `_Jo`): a fixed-width W-<n> column, empty for unnumbered rows. */}
+        {showNumber && (
+          <span className={`allws-number${archived ? " is-archived" : ""}`}>
+            {label !== null && <Highlight match={matches?.number} fallback={label} />}
           </span>
         )}
         <span className={`allws-name ${tone}`}>
@@ -145,6 +168,7 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
   const [activeIndex, setActiveIndex] = useState(0);
   const sentinel = useRef<HTMLDivElement>(null);
   const now = Date.now();
+  const showNumbers = useAppPrefs().experimental_show_workspace_numbers;
 
   useEffect(() => setLimit(PAGE_SIZE), [query, filters]);
 
@@ -272,6 +296,7 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
                         key={row.workspace.id}
                         row={row}
                         showRepoIcon={filters.projects.length === 0}
+                        showNumber={showNumbers}
                         active={i === activeIndex}
                         now={now}
                         onOpen={() => open(row)}

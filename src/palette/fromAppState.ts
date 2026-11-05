@@ -50,7 +50,7 @@ export function paletteDataFromState(state: AppState, recentIds: readonly string
       const r0 = rank.get(w.id);
       // Recently visited workspaces sort above the rest; others by creation time.
       const lastActiveAt = r0 === undefined ? w.createdAt : Number.MAX_SAFE_INTEGER - r0;
-      return { id: w.id, name: w.name, branch: w.branch, repoName: r.name, lastActiveAt, archived: w.status === "archived" };
+      return { id: w.id, name: w.name, branch: w.branch, repoName: r.name, lastActiveAt, archived: w.status === "archived", number: w.number ?? null };
     }),
   );
   const activeWorkspaceId = state.selection.kind === "workspace" ? state.selection.workspaceId : null;

@@ -7,6 +7,7 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
 import { paletteDataFromState, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import type { ResultItem } from "./search/model.ts";
+import { useAppPrefs } from "../settings/appPrefs.ts";
 
 const RECENT_LIMIT = 8;
 
@@ -32,6 +33,7 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   }, [selectedId]);
 
   const data = useMemo(() => paletteDataFromState(state, recents), [state, recents]);
+  const showWorkspaceNumbers = useAppPrefs().experimental_show_workspace_numbers;
 
   const go = (ref: WorkspaceRef | undefined) =>
     ref && dispatch({ type: "select", selection: { kind: "workspace", repoId: ref.repoId, workspaceId: ref.workspace.id } });
@@ -74,5 +76,5 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   }
 
   if (!open) return null;
-  return <CommandPalette data={data} onSelect={onSelect} onClose={() => onOpenChange(false)} />;
+  return <CommandPalette data={data} showWorkspaceNumbers={showWorkspaceNumbers} onSelect={onSelect} onClose={() => onOpenChange(false)} />;
 }

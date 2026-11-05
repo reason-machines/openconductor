@@ -50,12 +50,15 @@ import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } fr
 import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
+import { workspaceNumberLabel } from "../state/workspaceNumber";
 
 interface Props {
   repo: Repo;
   workspace: Workspace;
   dispatch: Dispatch<Action>;
   notify?: ArchiveNotify;
+  /** Copy link (`XV`), which the header's W-<n> badge runs. */
+  onCopyLink?: () => void;
 }
 
 // The chat runs Reason in the desktop app (one Reason Session per chat,
@@ -573,7 +576,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
   archived: "Archived",
 };
 
-export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
+export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
@@ -716,7 +719,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const prNumber = pullRequest.pr?.number ?? null;
   shownChat.current = activeReview?.chatId ?? workspace.id;
   // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
-  const rightPanelVisible = useAppPrefs().right_panel_visible;
+  const prefs = useAppPrefs();
+  const rightPanelVisible = prefs.right_panel_visible;
+  const numberLabel = prefs.experimental_show_workspace_numbers ? workspaceNumberLabel(workspace.number) : null;
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region>
@@ -724,6 +729,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           <span className="crumb">{repo.name}</span>
           <span className="crumb-sep">/</span>
           <strong>{workspace.name}</strong>
+          {/* "Show workspace numbers": Conductor's header badge (`Plo`), a W-<n> button whose click is Copy link. */}
+          {numberLabel && (
+            <button type="button" className="ws-number" title="Copy link" aria-label={`Copy link to ${numberLabel}`} onClick={onCopyLink} disabled={!onCopyLink}>
+              {numberLabel}
+            </button>
+          )}
           <span className="chip">
             <BranchIcon size={12} /> {workspace.branch}
           </span>

@@ -26,6 +26,10 @@ pub struct AppPrefs {
     pub garry_mode: bool,
     pub experimental_show_agent_cost: bool,
     pub experimental_tab_freak_mode: bool,
+    /// Experimental "Show workspace numbers" (the reference's
+    /// `Te("experimental_show_workspace_numbers", !1)`, read as
+    /// `data === "true"` by `_zt`): `W-<n>` beside workspace names.
+    pub experimental_show_workspace_numbers: bool,
     pub graphite_disabled: bool,
     /// The app "Open in" uses first: the most recent entry of
     /// `open_in_mru_order` without its `|local` / `|remote` suffix, else
@@ -99,6 +103,11 @@ impl AppPrefs {
             garry_mode: flag(rows, keys::GARRY_MODE, false),
             experimental_show_agent_cost: flag(rows, keys::EXPERIMENTAL_SHOW_AGENT_COST, false),
             experimental_tab_freak_mode: flag(rows, keys::EXPERIMENTAL_TAB_FREAK_MODE, false),
+            experimental_show_workspace_numbers: flag(
+                rows,
+                keys::EXPERIMENTAL_SHOW_WORKSPACE_NUMBERS,
+                false,
+            ),
             // Only the exact text "true" turns Graphite off.
             graphite_disabled: rows.get(keys::GRAPHITE_DISABLED).map(String::as_str)
                 == Some("true"),
@@ -135,6 +144,8 @@ pub enum AppPrefUpdate {
     GarryMode(bool),
     ExperimentalShowAgentCost(bool),
     ExperimentalTabFreakMode(bool),
+    /// Written as `"true"` / `"false"` (the reference's settings row).
+    ExperimentalShowWorkspaceNumbers(bool),
     GraphiteDisabled(bool),
     LeftPanelVisible(bool),
     RightPanelVisible(bool),
@@ -170,6 +181,7 @@ impl AppPrefUpdate {
             GarryMode(v) => b(keys::GARRY_MODE, *v),
             ExperimentalShowAgentCost(v) => b(keys::EXPERIMENTAL_SHOW_AGENT_COST, *v),
             ExperimentalTabFreakMode(v) => b(keys::EXPERIMENTAL_TAB_FREAK_MODE, *v),
+            ExperimentalShowWorkspaceNumbers(v) => b(keys::EXPERIMENTAL_SHOW_WORKSPACE_NUMBERS, *v),
             GraphiteDisabled(v) => b(keys::GRAPHITE_DISABLED, *v),
             LeftPanelVisible(v) => b(keys::LEFT_PANEL_VISIBLE, *v),
             RightPanelVisible(v) => b(keys::RIGHT_PANEL_VISIBLE, *v),

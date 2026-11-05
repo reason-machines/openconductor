@@ -52,7 +52,7 @@ function useGraphiteInstalled(): boolean | null {
   return installed;
 }
 
-/** Experimental: Show agent cost, Tab Freak Mode, Show sidebar resource usage, Graphite stack support. */
+/** Experimental: Show agent cost, Show workspace numbers, Tab Freak Mode, Show sidebar resource usage, Graphite stack support. */
 export function ExperimentalAppPrefRows() {
   const p = useAppPrefs();
   const gt = useGraphiteInstalled();
@@ -70,6 +70,14 @@ export function ExperimentalAppPrefRows() {
           label="Show agent cost"
           checked={p.experimental_show_agent_cost}
           onChange={(value) => save({ key: "experimental_show_agent_cost", value })}
+        />
+      </Row>
+      {/* Conductor's row has no description (renderApp settings registry, experimental tab). */}
+      <Row label="Show workspace numbers">
+        <Switch
+          label="Show workspace numbers"
+          checked={p.experimental_show_workspace_numbers}
+          onChange={(value) => save({ key: "experimental_show_workspace_numbers", value })}
         />
       </Row>
       <Row label="Tab Freak Mode" help="Allow up to 10 chat and terminal tabs per workspace.">

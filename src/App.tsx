@@ -243,7 +243,7 @@ export default function App() {
       {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} />}
       <main className="main">
         {repo && workspace ? (
-          <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
+          <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} onCopyLink={() => copyLink(workspace.id)} />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
         ) : (
