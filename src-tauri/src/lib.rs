@@ -23,6 +23,7 @@ pub mod create_project;
 pub mod db;
 pub mod persistence;
 mod persistence_commands;
+mod sidebar_workspace_commands;
 pub mod diff;
 pub mod github_repo;
 pub mod menu;
@@ -40,6 +41,8 @@ mod terminal_commands;
 pub mod terminal_history;
 pub mod terminal_output;
 mod terminal_output_commands;
+#[cfg(all(test, unix))]
+mod test_exe;
 pub mod workspace;
 
 use serde::Serialize;
@@ -262,6 +265,9 @@ pub fn run() {
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
+            sidebar_workspace_commands::db_set_workspace_pinned,
+            sidebar_workspace_commands::db_set_workspace_unread,
+            sidebar_workspace_commands::db_set_workspace_manual_status,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
             diff::comment_commands::diff_comments_list,
@@ -306,6 +312,7 @@ pub fn run() {
             pr::commands::pr_lookup,
             pr::commands::pr_list_open,
             pr::commands::gh_issue_list_open,
+            pr::commands::pr_git_state,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
             pr::commands::pr_merge,

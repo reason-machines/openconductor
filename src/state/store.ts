@@ -6,6 +6,7 @@ import { newId, workspaceName } from "./names";
 import { isSidebarVisible } from "./selectors";
 import { inTauri } from "../backend";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
+import { sidebarWrite } from "./sidebarPersist";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -27,6 +28,8 @@ export type Action =
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
+  /** The workspace's pull request title changed on GitHub (`workspaces.pr_title`). */
+  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null }
   | { type: "toggleSidebar" }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
@@ -100,6 +103,11 @@ export function reducer(state: AppState, action: Action): AppState {
               ...(action.userSet && action.branch !== undefined ? { userSetBranchName: true } : {}),
             };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(rename) } : r));
+      return { ...state, repos };
+    }
+    case "setWorkspacePr": {
+      const set = (w: Workspace): Workspace => (w.id === action.workspaceId && (w.prTitle ?? null) !== action.prTitle ? { ...w, prTitle: action.prTitle } : w);
+      const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
     }
     case "archiveWorkspace": {
@@ -211,6 +219,8 @@ export function useAppStore() {
           console.error("conductor.db: could not archive workspace", err),
         );
       }
+      const write = desktop ? sidebarWrite(action) : undefined;
+      if (write) invoke(write.command, write.args).catch((err) => console.error(`conductor.db: ${write.command} failed`, err));
     },
     [desktop],
   );

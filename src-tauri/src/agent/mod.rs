@@ -58,6 +58,12 @@ pub mod keychain;
 pub mod provider;
 pub mod reason;
 pub mod secret;
+// Mounted here as well as at the crate root because tools/agent/run-rust-tests.sh
+// builds this module as a crate of its own.
+#[cfg(all(test, unix))]
+#[allow(clippy::duplicate_mod)]
+#[path = "../test_exe.rs"]
+mod test_exe;
 
 pub use byok::{ProviderConfig, ProviderStatus};
 pub use claude_cli::{ClaudeLaunch, PermissionMode};

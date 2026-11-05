@@ -3,7 +3,7 @@
 Implementation: [`src-tauri/src/pr/`](../../src-tauri/src/pr/mod.rs) (serde + serde_json, shells out to `gh`).
 Tests: `src-tauri/src/pr/*_tests.rs`, run with [`run-tests.sh`](run-tests.sh) (built with `--cfg pr_harness`, which leaves out `commands.rs`); the Tauri crate declares `pub mod pr;` and registers `pr::commands::*` in `lib.rs`, so CI's Tauri job builds the commands.
 
-Commands (JS names camelCase args): `pr_lookup(repoPath, requests)`, `pr_header_state(inputs)`, `pr_create_prompt(request)`, `pr_merge(repoPath, number, method?)`, `pr_set_auto_merge(repoPath, number, enabled, method?)`, `pr_mark_ready`, `pr_edit(repoPath, number, title?, body?)`, `pr_retarget(repoPath, number, base)`, `pr_approve(repoPath, number, headOid)`, `pr_list_open(repoPath)`, `gh_issue_list_open(repoPath)`. CI runs it on Linux and macOS (rustfmt check, tests, clippy `-D warnings`).
+Commands (JS names camelCase args): `pr_lookup(repoPath, requests)`, `pr_git_state(workspacePath, targetBranch)`, `pr_header_state(inputs)`, `pr_create_prompt(request)`, `pr_merge(repoPath, number, method?)`, `pr_set_auto_merge(repoPath, number, enabled, method?)`, `pr_mark_ready`, `pr_edit(repoPath, number, title?, body?)`, `pr_retarget(repoPath, number, base)`, `pr_approve(repoPath, number, headOid)`, `pr_list_open(repoPath)`, `gh_issue_list_open(repoPath)`. CI runs it on Linux and macOS (rustfmt check, tests, clippy `-D warnings`).
 
 ## Evidence used
 
@@ -70,6 +70,25 @@ Both match the asset manifest's decoded sizes. Locations below are byte offsets 
 - Timestamps are parsed by our own RFC 3339 parser (`checks::parse_timestamp_ms`) rather than the JS `Date.parse`; GitHub only sends `...Z` UTC timestamps, which both read the same.
 - Unknown GitHub enum values (a new `mergeStateStatus`, permission or queue state) deserialize to `Unknown` / `Other` instead of failing the response; the reference's schema validation rejects the whole response.
 - Create-from lists (`list`): the reference calls the GitHub REST API with its own OAuth token; we run `gh pr list` / `gh issue list --state open --limit 100 --json ...` in the checkout (100 rather than 50, as the picker asked), sort newest-updated first like the reference, and tag failures `no_github:` (gh missing, exit 4, `gh auth login`, HTTP 401) or `no_remote:` (no remotes, no GitHub-host remote, not a git repository) using gh 2.23's wording. Search-as-you-type over all open PRs/issues and by-number lookup (the reference's `search/issues` and `pulls/{n}` calls) are not built.
+
+## Workspace header control (pr.create, pr.merge)
+
+Frontend: [`src/features/pr/`](../../src/features/pr/) — `usePullRequest` polls `pr_git_state` + `pr_lookup` every 30 s, when the agent starts or finishes a turn and after a merge, then asks `pr_header_state` which action to show; `PrControl` renders it in the workspace header (`WorkspaceView.tsx`).
+
+| Reference behavior | Ours | Test / check |
+|---|---|---|
+| Create PR is a message to the workspace's agent, with a draft variant (renderApp header, index create-PR prompt @ ~2,494,000) | `PrControl` "Create PR" button and "Create draft PR" menu item send `pr_create_prompt({branch, remote, targetBranch, draft})` through the chat bridge | browser preview: the prompt lands in the transcript |
+| Header inputs: uncommitted work, branch differs from target, remote, GitHub forge, upstream ahead / behind | `pr::git_state::read_git_state` (`git status --porcelain=v2 --branch`, `git remote`, `git rev-list --count <remote>/<target>..HEAD`) | `git_state_tests::*` (real scratch repo with a bare remote) |
+| Merge runs `gh pr merge` with the repository's preferred method, refreshes PR info after, and reports "Merge failed: <message>" on error (index @ ~715,300) | `PrControl.merge` → `pr_merge`, then `refresh()`; error toast "Merge failed: …", success toast "Merged PR #N" | browser preview: toast after Merge |
+| PR title is copied to the workspace (`pr_title`) when it changes; the sidebar row shows it | `setWorkspacePr` store action from `onLookup` | browser preview: sidebar row shows the PR title |
+| Labels | `control.ts` (our wording) | `control.test.ts` |
+
+Differences: the upstream counts as diverged when it is both ahead and behind (our rule; the reference's sync check was not located). The reference sets `isMerged` optimistically while merging; we disable the button and re-read the PR. Automerge has no button yet (`pr_set_auto_merge` is wrapped in `api.ts`). Commit-and-push, pull, push, approve and fix-checks states show as status chips that open the PR rather than running the action.
+
+REA, Conductor v0.87.6 on Sven's Mac (REA 6.7.0):
+
+- `rea search index-BGEQ8YjU.js --pattern=archive_on_merge`: `capability_unavailable` (`target_unsupported`); `search` only accepts binaries for the Ghidra / Hopper / IDA / Kuna providers, so there is no REA string search over a JavaScript chunk.
+- `rea analyze-javascript-application` on a folder holding only `index-BGEQ8YjU.js`: exit 0 in 214 s, Evidence `ev_ed84d75ccb95a40cc1e33f548754ea751c7b2923f173806870054005b3164fd5` (59 MB; 1,381 modules, 65 endpoints, 15 storage nodes). The literals behind merge, automerge and archive-on-merge (`archive_on_merge`, `Merge failed`, `Failed to enable automerge`, `--disable-auto`, `squashMergeAllowed`) occur 0 times in it; only `mergeStateStatus` (11) does. These behaviors therefore come from reading the byte-identical chunk at the offsets above.
 
 ## REA gaps hit
 

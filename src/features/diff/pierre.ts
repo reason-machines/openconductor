@@ -4,12 +4,14 @@
 // and the diff tab passes the options below (REA, renderApp chunk of 0.87.6).
 // Our backend returns parsed hunks, so they are turned back into a git patch
 // for Pierre to parse, and into full file contents for expanding gaps.
-import type { AnnotationSide, FileContents } from "@pierre/diffs";
+import type { AnnotationSide, CodeViewItem, CodeViewLineScrollTarget, FileContents, FileDiffMetadata } from "@pierre/diffs";
 import type { CommentSide } from "./comments.ts";
-import type { DiffLine, FileDiff } from "./types.ts";
+import type { DiffLayout, DiffLine, FileDiff } from "./types.ts";
 
 /** Pierre themes Conductor defaults to (`{dark:"pierre-dark",light:"pierre-light"}` in its bundle). */
 export const PIERRE_THEME = { dark: "pierre-dark", light: "pierre-light" } as const;
+/** Spacing Conductor's diff tab gives its CodeView: no top padding, 8 px below and between items. */
+export const CODE_VIEW_LAYOUT = { paddingTop: 0, paddingBottom: 8, gap: 8 } as const;
 /** Lines one click on an "N unmodified lines" row reveals in Conductor's diff tab. */
 export const EXPANSION_LINE_COUNT = 20;
 
@@ -68,3 +70,40 @@ export function loadedFiles(file: FileDiff): { oldFile: FileContents; newFile: F
 
 export const toPierreSide = (side: CommentSide): AnnotationSide => (side === "old" ? "deletions" : "additions");
 export const fromPierreSide = (side: AnnotationSide | undefined): CommentSide => (side === "deletions" ? "old" : "new");
+
+/**
+ * The file as the single item of the diff tab's CodeView (Conductor builds the
+ * same one-item list): its diff, or for the entire-file layout the file as it
+ * is now (as it was, for a deleted file). Anchored lines become annotations.
+ */
+/** A line something is rendered under (a comment thread, the composer). */
+export interface Anchor {
+  side: CommentSide;
+  line: number;
+}
+
+export function codeViewItem(file: FileDiff, meta: FileDiffMetadata | undefined, layout: DiffLayout, anchors: Anchor[], version: number): CodeViewItem<Anchor> {
+  if (layout === "file" || !meta) {
+    const c = fullContents(file);
+    const side: CommentSide = c.new === null ? "old" : "new";
+    return {
+      id: file.path,
+      type: "file",
+      file: { name: file.path, contents: c.new ?? c.old ?? "" },
+      annotations: anchors.filter((a) => a.side === side).map((a) => ({ lineNumber: a.line, metadata: a })),
+      version,
+    };
+  }
+  return {
+    id: file.path,
+    type: "diff",
+    fileDiff: meta,
+    annotations: anchors.map((a) => ({ side: toPierreSide(a.side), lineNumber: a.line, metadata: a })),
+    version,
+  };
+}
+
+/** Where CodeView scrolls to show an anchored line, centred, in the item of `path`. */
+export function lineTarget(path: string, anchor: Anchor, wholeFile: boolean): CodeViewLineScrollTarget {
+  return { type: "line", id: path, lineNumber: anchor.line, ...(wholeFile ? {} : { side: toPierreSide(anchor.side) }), align: "center" };
+}
