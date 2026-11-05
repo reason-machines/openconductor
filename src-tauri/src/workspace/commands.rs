@@ -118,10 +118,13 @@ pub async fn branch_name_is_taken(
     service.branch_name_is_taken(&repository_id, &branch_name).map_err(|e| e.to_string())
 }
 
-/// JS: `invoke("create_workspace", { repositoryId, branchName, directoryName, baseBranch, existingBranch })`.
+/// JS: `invoke("create_workspace", { repositoryId, branchName, directoryName, baseBranch, existingBranch, prNumber })`.
 /// `branchName`, `directoryName` and `baseBranch` may be null or empty.
 /// `existingBranch: true` checks out `branchName` (the local branch, or a new
 /// one tracking `origin/<branchName>`) instead of creating it from the base.
+/// `prNumber` (optional) adds a last resort for PRs from forks: when the
+/// branch is neither local nor on origin, `pull/<prNumber>/head` is fetched
+/// into a local `branchName` (no upstream) and checked out.
 #[tauri::command]
 pub async fn create_workspace(
     service: State<'_, WorkspaceService>,
@@ -130,6 +133,7 @@ pub async fn create_workspace(
     directory_name: Option<String>,
     base_branch: Option<String>,
     existing_branch: Option<bool>,
+    pr_number: Option<u64>,
 ) -> Result<CreatedWorkspaceDto, String> {
     let req = CreateWorkspaceRequest {
         repository_id: repository_id.clone(),
@@ -137,6 +141,7 @@ pub async fn create_workspace(
         directory_name,
         base_branch,
         existing_branch: existing_branch.unwrap_or(false),
+        pr_number,
     };
     service.create_workspace(&req).map(|c| created_dto(&repository_id, c)).map_err(|e| e.to_string())
 }
