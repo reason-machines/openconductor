@@ -86,6 +86,8 @@ jobs:
         run: bash evidence/pr/run-tests.sh
       - name: Quick open module build, test and clippy
         run: bash evidence/quick_open/run-tests.sh
+      - name: Settings module build, test, clippy and rustfmt
+        run: bash scripts/test-settings.sh
 
   scripts:
     name: Scripts crate build + test (${{ matrix.os }})
@@ -138,6 +140,10 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m py_compile tools/*.py
+      - name: Packaging reference matches the REA evidence bundle
+        run: |
+          python tools/packaging_ref.py
+          git diff --exit-code evidence/packaging/conductor-reference.json
 
   frontend-unit:
     name: Frontend unit tests (node --test)

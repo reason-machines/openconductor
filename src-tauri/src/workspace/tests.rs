@@ -167,6 +167,26 @@ fn create_fetches_origin_and_starts_from_remote_without_moving_root() {
 }
 
 #[test]
+fn branch_name_is_taken_checks_local_remote_and_path_conflicts() {
+    let f = fixture();
+    let origin = f.tmp.path().join("origin.git");
+    sh(f.tmp.path(), &["init", "-q", "--bare", "-b", "main", origin.to_str().unwrap()]);
+    sh(&f.repo, &["remote", "add", "origin", origin.to_str().unwrap()]);
+    sh(&f.repo, &["push", "-q", "origin", "main:sven/remote-only"]);
+    sh(&f.repo, &["fetch", "-q", "origin"]);
+    sh(&f.repo, &["branch", "sven/tokyo"]);
+    let taken = |b: &str| git::branch_name_is_taken(&f.repo, b).unwrap();
+    assert!(taken("main") && taken("sven/tokyo"));
+    assert!(taken("sven/remote-only"), "remote-tracking branches count");
+    assert!(taken("sven/tokyo/x") && taken("sven"), "ref path conflicts count");
+    assert!(!taken("sven/tokyo-v1") && !taken("osaka"));
+
+    // create refuses an explicit branch that exists only on the remote.
+    let opts = CreateOptions { branch_name: Some("sven/remote-only".into()), ..Default::default() };
+    assert!(matches!(f.mgr.create(&f.repo, &opts), Err(WorkspaceError::BranchExists(_))));
+}
+
+#[test]
 fn files_to_copy_default_env_glob_only_copies_gitignored() {
     let f = fixture();
     commit_file(&f.repo, ".gitignore", ".env\n.env.local\nnode_modules/\n", "ignore");
@@ -264,6 +284,40 @@ fn archive_refuses_dirty_or_busy_then_keeps_branch_and_restores() {
 }
 
 #[test]
+fn archive_records_commit_and_restore_recreates_a_deleted_branch() {
+    let f = fixture();
+    let ws = f.mgr.create(&f.repo, &named("tokyo")).unwrap().workspace;
+    let committed = commit_file(&ws.path, "work.txt", "done\n", "work");
+
+    let opts = ArchiveOptions { delete_branch: true, ..Default::default() };
+    let a = f.mgr.archive(&f.repo, "tokyo", &opts).unwrap();
+    assert_eq!(a.workspace.head.as_deref(), Some(committed.as_str()));
+    assert!(!git::branch_exists(&f.repo, "tokyo"), "delete_branch removes the local branch");
+    let listed = f.mgr.get(&f.repo, "tokyo").unwrap();
+    assert_eq!((listed.state, listed.head.as_deref()), (WorkspaceState::Archived, Some(committed.as_str())));
+
+    let r = f.mgr.restore(&f.repo, "tokyo").unwrap();
+    assert_eq!(r.state, WorkspaceState::Active);
+    assert_eq!(r.branch, "tokyo");
+    assert_eq!(r.head.as_deref(), Some(committed.as_str()));
+    assert_eq!(sh(&f.repo, &["rev-parse", "refs/heads/tokyo"]), committed);
+    assert_eq!(std::fs::read_to_string(r.path.join("work.txt")).unwrap(), "done\n");
+}
+
+#[test]
+fn restore_without_branch_or_archive_commit_is_not_found() {
+    let f = fixture();
+    f.mgr.create(&f.repo, &named("osaka")).unwrap();
+    f.mgr.archive(&f.repo, "osaka", &ArchiveOptions::default()).unwrap();
+    // A record from before archive commits were stored, whose branch is gone.
+    let record = f.mgr.data_dir().join("archived").join(WorkspaceManager::repo_slug(&f.repo)).join("osaka.ws");
+    std::fs::write(&record, "branch=osaka\n").unwrap();
+    sh(&f.repo, &["branch", "-D", "osaka"]);
+    assert_eq!(f.mgr.get(&f.repo, "osaka").unwrap().head, None);
+    assert!(matches!(f.mgr.restore(&f.repo, "osaka"), Err(WorkspaceError::NotFound(_))));
+}
+
+#[test]
 fn archive_runs_archive_script_in_workspace_with_env() {
     let f = fixture();
     let ws = f.mgr.create(&f.repo, &named("scripted")).unwrap().workspace;
@@ -274,7 +328,7 @@ fn archive_runs_archive_script_in_workspace_with_env() {
     );
     let a = f
         .mgr
-        .archive(&f.repo, "scripted", &ArchiveOptions { archive_script: Some(script), force: false })
+        .archive(&f.repo, "scripted", &ArchiveOptions { archive_script: Some(script), ..Default::default() })
         .unwrap();
     assert!(a.script.as_ref().unwrap().success());
     let line = std::fs::read_to_string(&marker).unwrap();
@@ -369,6 +423,11 @@ fn busy_state_matches_git_busy_check_script() {
     assert_eq!(git::busy_state(&ws.path).unwrap(), BusyState::Merge);
     assert!(matches!(
         f.mgr.archive(&f.repo, "busy", &ArchiveOptions::default()),
+        Err(WorkspaceError::Busy(BusyState::Merge))
+    ));
+    // `force` only overrides dirty trees, never an operation in progress.
+    assert!(matches!(
+        f.mgr.archive(&f.repo, "busy", &ArchiveOptions { force: true, ..Default::default() }),
         Err(WorkspaceError::Busy(BusyState::Merge))
     ));
     sh(&ws.path, &["merge", "--abort"]);
