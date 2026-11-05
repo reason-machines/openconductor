@@ -152,6 +152,7 @@ jobs:
         run: |
           python tools/parity_sidebar_home_create.py validate
           python tools/parity_sidebar_home_create.py score --tree . > /dev/null
+          python tools/parity_sidebar_home_create.py obligations --tree . > /dev/null
 
   frontend-unit:
     name: Frontend unit tests (node --test)
