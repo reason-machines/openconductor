@@ -21,6 +21,8 @@ pub mod bundled_bin;
 pub mod checkpoint;
 pub mod create_project;
 pub mod db;
+pub mod persistence;
+mod persistence_commands;
 pub mod diff;
 pub mod github_repo;
 pub mod menu;
@@ -215,9 +217,12 @@ pub fn run() {
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
             let db = db::open(&data_dir)?;
             spotlight_commands::migrate_legacy_setting(&db);
-            app.manage(db);
             app.manage(terminal_commands::history_state(&data_dir));
-            app.manage(workspace::service::WorkspaceService::new(data_dir)?);
+            let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
+            // Deletes workspaces left initializing, imports pre-database repositories.
+            persistence_commands::startup(&db, &workspaces)?;
+            app.manage(db);
+            app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
             app.manage(Terminals::new(app.handle().clone()));
@@ -254,6 +259,9 @@ pub fn run() {
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
+            persistence_commands::db_list_repos,
+            persistence_commands::db_list_workspaces,
+            persistence_commands::db_archive_workspace,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
             diff::comment_commands::diff_comments_list,
@@ -302,6 +310,7 @@ pub fn run() {
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
             pr::commands::pr_merge,
+            pr::commands::pr_merge_method,
             pr::commands::pr_set_auto_merge,
             pr::commands::pr_mark_ready,
             pr::commands::pr_edit,

@@ -18,6 +18,8 @@ import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
 import { usePullRequest } from "../features/pr/usePullRequest";
 import { PrControl } from "../features/pr/PrControl";
+import { usePrActions } from "../features/pr/usePrActions";
+import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
 
 interface Props {
@@ -262,6 +264,14 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     [dispatch, repo.id, workspace.id],
   );
   const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, onLookup });
+  const prActions = usePrActions({
+    pullRequest,
+    worktree: workspace.path ?? null,
+    branch: workspace.branch,
+    targetBranch: repo.defaultBranch,
+    sendToAgent: chat.send,
+    notify,
+  });
   loaded.current = review.onLoaded;
 
   const switchTab = () => diffOpen && setMainTab((t) => (t === "chat" ? "diff" : "chat"));
@@ -270,6 +280,14 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "diff.open": () => (diff.current < 0 && diff.files.length > 0 ? diff.open(0) : openDiffTab()),
     "nav.nextTab": switchTab,
     "nav.previousTab": switchTab,
+    "git.createPR": () => {
+      if (createShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.create(false);
+    },
+    // Optional checks are not treated as blocking until that setting exists.
+    "git.mergePR": () => {
+      if (mergeShortcutApplies(pullRequest.pr, false, prActions.busy === "merging")) void prActions.merge();
+    },
+    "git.openInGitHub": prActions.openOnGitHub,
   });
   const showDiff = diffOpen && mainTab === "diff";
   return (
@@ -292,14 +310,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           )}
         </div>
         <div className="ws-actions">
-          <PrControl
-            pullRequest={pullRequest}
-            worktree={workspace.path ?? null}
-            branch={workspace.branch}
-            targetBranch={repo.defaultBranch}
-            sendToAgent={(text) => chat.send(text)}
-            notify={notify}
-          />
+          <PrControl pullRequest={pullRequest} actions={prActions} worktree={workspace.path ?? null} />
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
             Terminal
           </button>
@@ -316,7 +327,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
           tabs={<MainTabs title={workspace.name} active={showDiff ? "diff" : "chat"} diffOpen={diffOpen} onSelect={setMainTab} onCloseDiff={closeDiffTab} />}
-          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} annotations={review.annotations} /> : null}
+          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
         />
         <div className="ws-right">
           <RightPanel diff={diff} actions={review.actions} />

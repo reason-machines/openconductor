@@ -1,9 +1,16 @@
 // parity:diff.file-render:ui parity:diff.split-unified:ui parity:diff.viewed:ui
-import type { ReactNode } from "react";
+// One changed file in the "All changes" tab. The code is drawn by Pierre's
+// diff library with the options Conductor's diff tab passes it (REA, 0.87.6):
+// no Pierre file header (ours carries Viewed and discard), Pierre themes,
+// "line-info-basic" separators expanding 20 lines per click, no wrapping,
+// number-column hover and a gutter button that starts a comment.
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { processFile, type DiffLineAnnotation, type LineAnnotation, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
+import { File as PierreFile, FileDiff as PierreFileDiff } from "@pierre/diffs/react";
 import { RevertIcon } from "./DiscardDialog";
-import { fileLines, gapBefore, splitRows, unifiedRows, type Span } from "./rows.ts";
 import type { CommentSide } from "./comments.ts";
-import type { DiffLayout, DiffLine, FileDiff } from "./types.ts";
+import { EXPANSION_LINE_COUNT, PIERRE_THEME, fromPierreSide, fullContents, loadedFiles, toPatch, toPierreSide } from "./pierre.ts";
+import type { DiffLayout, FileDiff } from "./types.ts";
 
 export interface LineAnchor {
   side: CommentSide;
@@ -16,56 +23,84 @@ interface Props {
   ignoreWhitespace: boolean;
   viewed: boolean;
   onToggleViewed: () => void;
-  /** Clicking a line number starts a comment there. */
+  /** The gutter button on a line starts a comment there. */
   onLineClick?: (anchor: LineAnchor) => void;
-  /** Rows rendered under a line (comment threads, the comment composer). */
+  /** Lines that have something rendered under them (comment threads, the composer). */
+  anchors?: LineAnchor[];
+  /** What to render under an anchored line. */
   annotations?: (anchor: LineAnchor) => ReactNode;
-  /** Show the hidden unmodified lines (loads this file with full context). */
-  onExpand?: () => void;
+  /** This file loaded with whole-file context, for expanding unmodified lines. */
+  loadFull?: () => Promise<FileDiff>;
   /** Ask to discard this file's changes (opens the confirmation). */
   onDiscard?: () => void;
   /** Extra header controls, before the Viewed checkbox (the layout toggle). */
   tools?: ReactNode;
 }
 
-function Text({ text, span, kind }: { text: string; span?: Span; kind: DiffLine["kind"] }) {
-  if (!span || kind === "context") return <>{text}</>;
+/** The app theme as Pierre's themeType: `data-theme` on the root, or the system setting when absent. */
+function useThemeType(): ThemeTypes {
+  const read = (): ThemeTypes => {
+    const t = document.documentElement.dataset.theme;
+    return t === "light" || t === "dark" ? t : "system";
+  };
+  const [type, setType] = useState<ThemeTypes>(read);
+  useEffect(() => {
+    const obs = new MutationObserver(() => setType(read()));
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => obs.disconnect();
+  }, []);
+  return type;
+}
+
+const anchorOfRange = (r: SelectedLineRange): LineAnchor => ({ side: fromPierreSide(r.side), line: Math.min(r.start, r.end) });
+
+function Code({ file, layout, ignoreWhitespace, onLineClick, anchors = [], annotations, loadFull }: Props) {
+  const themeType = useThemeType();
+  // Pierre upgrades this object in place when it loads the full file, so keep it per file.
+  const meta = useMemo(() => processFile(toPatch(file), { isGitDiff: true }), [file]);
+  const interaction = {
+    enableGutterUtility: onLineClick !== undefined,
+    lineHoverHighlight: "number" as const,
+    onGutterUtilityClick: onLineClick && ((r: SelectedLineRange) => onLineClick(anchorOfRange(r))),
+  };
+  const base = { disableFileHeader: true, overflow: "scroll" as const, theme: PIERRE_THEME, themeType, ...interaction };
+
+  if (layout === "file") {
+    // The file as it is now (as it was, for a deleted file), loaded with whole-file context.
+    const c = fullContents(file);
+    const side: CommentSide = c.new === null ? "old" : "new";
+    const lineAnnotations: LineAnnotation<LineAnchor>[] = anchors.filter((a) => a.side === side).map((a) => ({ lineNumber: a.line, metadata: a }));
+    return (
+      <PierreFile<LineAnchor>
+        file={{ name: file.path, contents: c.new ?? c.old ?? "" }}
+        options={{ ...base, onGutterUtilityClick: onLineClick && ((r: SelectedLineRange) => onLineClick({ side, line: Math.min(r.start, r.end) })) }}
+        lineAnnotations={lineAnnotations}
+        renderAnnotation={(a) => annotations?.(a.metadata)}
+      />
+    );
+  }
+
+  if (!meta) return <div className="oc-file-note">This diff couldn't be displayed.</div>;
+  const lineAnnotations: DiffLineAnnotation<LineAnchor>[] = anchors.map((a) => ({ side: toPierreSide(a.side), lineNumber: a.line, metadata: a }));
   return (
-    <>
-      {text.slice(0, span[0])}
-      <mark className={kind}>{text.slice(span[0], span[1])}</mark>
-      {text.slice(span[1])}
-    </>
+    <PierreFileDiff<LineAnchor>
+      fileDiff={meta}
+      options={{
+        ...base,
+        diffStyle: layout === "split" ? "split" : "unified",
+        hunkSeparators: "line-info-basic",
+        expansionLineCount: EXPANSION_LINE_COUNT,
+        loadDiffFiles: loadFull && (async () => loadedFiles(await loadFull())),
+        parseDiffOptions: ignoreWhitespace ? { ignoreWhitespace: true } : undefined,
+      }}
+      lineAnnotations={lineAnnotations}
+      renderAnnotation={(a) => annotations?.(a.metadata)}
+    />
   );
 }
 
-const sign = (l: DiffLine) => (l.kind === "addition" ? "+" : l.kind === "deletion" ? "-" : " ");
-const anchorOf = (l: DiffLine): LineAnchor => (l.kind === "deletion" ? { side: "old", line: l.old_line! } : { side: "new", line: l.new_line! });
-
-const COLUMNS: Record<DiffLayout, string[]> = {
-  unified: ["num", "num", "sign", "code"],
-  split: ["num", "sign", "code", "num", "sign", "code"],
-  file: ["num", "code"],
-};
-
-export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleViewed, onLineClick, annotations, onExpand, onDiscard, tools }: Props) {
-  const cols = COLUMNS[layout].length;
-  // Either number of a row comments on that row's anchor (a context line anchors on the new side),
-  // so the composer opens where its annotation row is rendered.
-  const num = (n: number | null, line: DiffLine | null) => (
-    <td className="num" onClick={n !== null && line && onLineClick ? () => onLineClick(anchorOf(line)) : undefined}>
-      {n ?? ""}
-    </td>
-  );
-  const note = (anchor: LineAnchor | null, key: string) => {
-    const content = anchor && annotations?.(anchor);
-    return content ? (
-      <tr className="annotation" key={key}>
-        <td colSpan={cols}>{content}</td>
-      </tr>
-    ) : null;
-  };
-
+export function FileDiffView(props: Props) {
+  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools } = props;
   let body: ReactNode;
   if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
   else if (file.hunks.length === 0)
@@ -73,66 +108,7 @@ export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleV
   else
     body = (
       <div className="oc-code-scroll">
-        <table className={`oc-code ${layout}`}>
-          <colgroup>
-            {COLUMNS[layout].map((c, i) => (
-              <col key={i} className={c} />
-            ))}
-          </colgroup>
-          <tbody>
-            {file.hunks.map((h, hi) => {
-              // Unchanged lines git left out above this hunk, instead of a raw @@ header.
-              const hidden = gapBefore(file.hunks, hi);
-              const gap = hidden > 0 && (
-                <tr className="gap" key={`g${hi}`} title={`@@ -${h.old_start},${h.old_lines} +${h.new_start},${h.new_lines} @@ ${h.section}`.trim()}>
-                  <td colSpan={cols}>
-                    <button className="oc-gap" onClick={onExpand} disabled={!onExpand} aria-label={`Show ${hidden} unmodified lines`}>
-                      <span className="chev" aria-hidden>
-                        ⌃
-                      </span>
-                      {hidden} unmodified {hidden === 1 ? "line" : "lines"}
-                    </button>
-                  </td>
-                </tr>
-              );
-              let rows: ReactNode[];
-              if (layout === "file")
-                rows = fileLines(file, h).flatMap((l, li) => [
-                  <tr className="plain" key={`${hi}-${li}`}>
-                    {num(file.status === "deleted" ? l.old_line : l.new_line, l)}
-                    <td className="code">{l.text}</td>
-                  </tr>,
-                  note(anchorOf(l), `${hi}-${li}-n`),
-                ]);
-              else if (layout === "unified")
-                rows = unifiedRows(h).flatMap((r, ri) => [
-                  <tr className={r.line.kind} key={`${hi}-${ri}`}>
-                    {num(r.line.old_line, r.line)}
-                    {num(r.line.new_line, r.line)}
-                    <td className="sign">{sign(r.line)}</td>
-                    <td className="code">
-                      <Text text={r.line.text} span={r.emphasis} kind={r.line.kind} />
-                    </td>
-                  </tr>,
-                  note(anchorOf(r.line), `${hi}-${ri}-n`),
-                ]);
-              else
-                rows = splitRows(h).flatMap((r, ri) => [
-                  <tr key={`${hi}-${ri}`}>
-                    {num(r.left?.old_line ?? null, r.left ?? null)}
-                    <td className="sign">{r.left ? sign(r.left) : ""}</td>
-                    <td className={`code ${r.left ? r.left.kind : "pad"}`}>{r.left && <Text text={r.left.text} span={r.leftEmphasis} kind={r.left.kind} />}</td>
-                    {num(r.right?.new_line ?? null, r.right ?? null)}
-                    <td className="sign">{r.right ? sign(r.right) : ""}</td>
-                    <td className={`code ${r.right ? r.right.kind : "pad"}`}>{r.right && <Text text={r.right.text} span={r.rightEmphasis} kind={r.right.kind} />}</td>
-                  </tr>,
-                  r.left && r.left.kind === "deletion" ? note(anchorOf(r.left), `${hi}-${ri}-l`) : null,
-                  note(r.right ? anchorOf(r.right) : null, `${hi}-${ri}-r`),
-                ]);
-              return [gap, ...rows];
-            })}
-          </tbody>
-        </table>
+        <Code {...props} />
       </div>
     );
 

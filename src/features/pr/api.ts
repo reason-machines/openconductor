@@ -32,6 +32,24 @@ export async function mergePr(repoPath: string, number: number, method?: MergeMe
   return invoke<MergeMethod>("pr_merge", { repoPath, number, method: method ?? null });
 }
 
+/** The method Merge uses for this repository (for the button's tooltip). */
+export async function mergeMethod(repoPath: string): Promise<MergeMethod> {
+  if (!isTauri()) return "squash";
+  return invoke<MergeMethod>("pr_merge_method", { repoPath });
+}
+
+/** Take a draft PR out of draft (`gh pr ready`). */
+export async function markReady(repoPath: string, number: number): Promise<void> {
+  if (!isTauri()) return;
+  await invoke("pr_mark_ready", { repoPath, number });
+}
+
+/** Approve at `headOid`, the head commit the viewer saw. */
+export async function approvePr(repoPath: string, number: number, headOid: string): Promise<void> {
+  if (!isTauri()) return;
+  await invoke("pr_approve", { repoPath, number, headOid });
+}
+
 export async function setAutoMerge(repoPath: string, number: number, enabled: boolean, method?: MergeMethod): Promise<void> {
   if (!isTauri()) return;
   await invoke("pr_set_auto_merge", { repoPath, number, enabled, method: method ?? null });
