@@ -1,5 +1,5 @@
 {
- "ref": "origin/main",
+ "ref": "8229113",
  "source_files": 315,
  "detector_parity_pct": 77.2,
  "areas": {
@@ -22,10 +22,10 @@
    "missing": 4,
    "parity_pct": 69.4,
    "verdict_implemented": 9,
-   "verdict_partial": 5,
-   "verdict_backend": 0,
+   "verdict_partial": 4,
+   "verdict_backend": 1,
    "verdict_missing": 4,
-   "verdict_parity_pct": 63.9
+   "verdict_parity_pct": 62.5
   },
   "create": {
    "items": 17,
@@ -941,7 +941,7 @@
   {
    "id": "home.duplicate-repo",
    "area": "home",
-   "feature": "Refuse adding a repository that is already added",
+   "feature": "Adding an already-added repository again (Clone or Open project) makes a new project: no duplicate check, a new repos row, and Clone picks a unique folder (name-v1, name-v2)",
    "status": "implemented",
    "detectors": [
     {
@@ -950,8 +950,8 @@
      "file": "src-tauri/src/github_repo.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Open project and the Add-repository menu refuse an existing repo (REPO_EXISTS from findExistingRepo); the Clone dialog does no duplicate check (clone_repository picks a unique folder name and the store silently drops the duplicate).",
+   "verdict": "backend",
+   "why": "Conductor 0.87.6 never compares Clone or Open project against added repos (REA, decoded index chunk, createRepo; repos has no unique constraint in conductor.schema.sql), so a second add becomes its own project. The rebuild does the opposite in every UI path: Open project and the Add-repository menu refuse with REPO_EXISTS (findExistingRepo, App.tsx and AddRepositoryMenu.tsx), and the Home Clone dialog result is dropped by the store. Only clone_repository matches: it picks a unique folder name and is tested (clone_repository_streams_progress_and_picks_a_unique_name). Fix in progress from Home builder c709d09b.",
    "recheck": false
   },
   {
@@ -1442,5 +1442,5 @@
  ],
  "verdicts_ref": "origin/main",
  "verdicts_verified_at": "2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, #278 items on 0e2531b, others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 68.0
+ "verdict_parity_pct": 67.6
 }

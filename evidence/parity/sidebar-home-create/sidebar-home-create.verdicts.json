@@ -145,8 +145,8 @@
       "why": "Quick start opens CreateProjectDialog.tsx -> registered create_new_project (create_project.rs): git init with a first commit or create-next-app, private GitHub repo, add_repository. The GitHub repo cannot be skipped, and no real first workspace is created (App.tsx onCreated adds an in-memory placeholder under a client-side repo id)."
     },
     "home.duplicate-repo": {
-      "verdict": "partial",
-      "why": "Open project and the Add-repository menu refuse an existing repo (REPO_EXISTS from findExistingRepo); the Clone dialog does no duplicate check (clone_repository picks a unique folder name and the store silently drops the duplicate)."
+      "verdict": "backend",
+      "why": "Conductor 0.87.6 never compares Clone or Open project against added repos (REA, decoded index chunk, createRepo; repos has no unique constraint in conductor.schema.sql), so a second add becomes its own project. The rebuild does the opposite in every UI path: Open project and the Add-repository menu refuse with REPO_EXISTS (findExistingRepo, App.tsx and AddRepositoryMenu.tsx), and the Home Clone dialog result is dropped by the store. Only clone_repository matches: it picks a unique folder name and is tested (clone_repository_streams_progress_and_picks_a_unique_name). Fix in progress from Home builder c709d09b."
     },
     "home.no-repo-guard": {
       "verdict": "implemented",

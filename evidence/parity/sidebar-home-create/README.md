@@ -7,9 +7,9 @@ Verifier output for the sidebar, Home and Create-workspace areas. Each item is s
 | Area | Items | Implemented | Partial | Backend only | Missing | Verified parity | `0e2531b` (#289) | Previous |
 |---|---|---|---|---|---|---|---|---|
 | Sidebar | 33 | 16 | 10 | 3 | 4 | **65.9%** | 59.1% | 54.5% (`5045114`, #261) |
-| Home | 18 | 9 | 5 | 0 | 4 | **63.9%** | 63.9% | 41.7% (`884f1f7`) |
+| Home | 18 | 9 | 4 | 1 | 4 | **62.5%** | 63.9% | 41.7% (`884f1f7`) |
 | Create workspace | 17 | 11 | 4 | 0 | 2 | **76.5%** | 76.5% | 61.8% (`884f1f7`) |
-| **All** | 68 | 36 | 19 | 3 | 10 | **68.0%** | 64.7% | 52.9% |
+| **All** | 68 | 36 | 18 | 4 | 10 | **67.6%** | 64.7% | 52.9% |
 
 **Since `0e2531b` (#289).** Four sidebar merges landed: #283 (hide/unhide repositories, show-hidden toggle, drag to reorder, repo menu) and the row-menu series #288, #293 and #312. Their items were re-read on `8229113`:
 
@@ -18,6 +18,7 @@ Verifier output for the sidebar, Home and Create-workspace areas. Each item is s
 - `ws-pinned` partial to implemented: pins are now written through `db_set_workspace_pinned` (`sidebarPersist.ts`) and read back on reload.
 - `ws-diffstat` partial to implemented: row counts come from the registered `sidebar_workspace_changes`, and unselected rows stay muted unless `colored_sidebar_diffs` is on.
 - Still partial, with new detail: `ws-unread` is now saved (`db_set_workspace_unread`) but has no jump-to-next-unread command; `ws-status` saves the manual status (`db_set_workspace_manual_status`) but the row icon still ignores it; `ws-numbers` shows 1..9 hints while the switch modifier is held (`shortcutHint.ts`) but not the `workspaces.number` column.
+- `home.duplicate-repo` re-worded and partial to backend only. Home builder c93ae9dd's REA read of Conductor 0.87.6 (decoded index chunk, `createRepo`) shows Clone and Open project never check for an already-added repo: a second add inserts a new `repos` row and Clone picks a unique folder (`name-v1`). The real `conductor.schema.sql` agrees: `repos` has no unique constraint on `remote_url` or `root_path`. "This repository already exists." is the GitHub repo-name check, so that copy reference was dropped. The old wording ("refuse a duplicate") was wrong. Against the corrected wording the rebuild diverges in every UI path (`REPO_EXISTS` refusal in Open project and the Add-repository menu, store drops the Clone result); only the tested `clone_repository` unique-folder logic matches.
 - #305 is create-workspace evidence only (workspace numbering), so `create.number` stays missing.
 
 Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (32 open; 36 on `0e2531b`, 45 before).
@@ -75,7 +76,7 @@ The full list, with the owner of each item, is in [builder-obligations.md](build
 2. **Finish workspace and repo actions** (owner: sidebar). Add a rename dialog, then copy info and move to section in the row menu. Archive needs a confirmation, the git-busy refusal and `WorkspaceManager::archive`. Add an archived view with restore, and repo hide and icon. Items: `ws-actions`, `rename`, `archive`, `archived-view`, `repo-hide`, `repo-icon`, `repo-order`.
 3. **Sections** (owner: sidebar, with create-workspace): `navigation_sections` commands and UI, drag to a section, and create inside a section. Items: `sections`, `drag-to-section`, `create.in-section`.
 4. **Home overview and routes** (owner: home): workspace status overview, dashboard and all-workspaces routes, a '/' route, and first run. Items: `status-overview`, `dashboard-routes`, `route`, `first-run`, `org-states`.
-5. **Finish Home flows** (owner: home). Quick start should create a real first workspace under the registered repo id, and the GitHub repo should be optional. Clone should refuse a duplicate. Home should get recents and a repo search field,. Items: `new-project`, `duplicate-repo`, `recent`, `repo-search`.
+5. **Finish Home flows** (owner: home). Quick start should create a real first workspace under the registered repo id, and the GitHub repo should be optional. Adding an already-added repo again should make a new project, as Conductor does, instead of being refused or dropped. Home should get recents and a repo search field. Items: `new-project`, `duplicate-repo`, `recent`, `repo-search`.
 6. **Create composer and initializing state** (owner: create-workspace). Build the reference composer with a model and effort picker. Show an initializing sidebar row while the worktree is created. Add a workspaces-directory setting and workspace numbers. Items: `page`, `initializing`, `worktree`, `number`.
 7. **Remaining sidebar chrome** (owner: sidebar): the computer switcher menu and name, the add menu with the Home actions and recents, resize with a persisted width, a visibility setting, numbers shown in rows, transparency, and footer usage.
 8. **Auto-run after setup toggle** (owner: setup-and-run-scripts): a UI for `auto_run_after_setup`, and `save_repo_scripts` writing it.

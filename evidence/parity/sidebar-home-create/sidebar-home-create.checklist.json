@@ -802,11 +802,12 @@
     {
       "id": "home.duplicate-repo",
       "area": "home",
-      "feature": "Refuse adding a repository that is already added",
+      "feature": "Adding an already-added repository again (Clone or Open project) makes a new project: no duplicate check, a new repos row, and Clone picks a unique folder (name-v1, name-v2)",
       "evidence": {
-        "copy": [
-          4557
-        ]
+       "schema": [
+        "repos.remote_url",
+        "repos.root_path"
+       ]
       },
       "detect": [
         "(repo|repository).{0,40}already (added|exists)|already (added|exists).{0,40}repo|duplicate_?repo|existing.{0,40}(path|remote)"
