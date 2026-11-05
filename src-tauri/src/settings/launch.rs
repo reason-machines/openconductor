@@ -32,13 +32,17 @@ use crate::agent::{
 pub enum Purpose {
     /// A new chat: `models.default`, default effort, output style, plan mode.
     Chat,
-    /// A code review: `models.review` (else the default), review effort.
+    /// A code review: `models.review` (else [`REVIEW_FALLBACK_MODEL`]), review effort.
     Review,
 }
 
 /// Vertex region when `claude_provider = "vertex"`: Claude Code's `global`
 /// endpoint, since Conductor's settings carry no Vertex region.
 pub const VERTEX_DEFAULT_REGION: &str = "global";
+
+/// Conductor's review model when `models.review` is unset: its built-in
+/// Claude default, not `models.default` (evidence/pr/ai-review.md).
+pub const REVIEW_FALLBACK_MODEL: &str = "opus-5-1m";
 
 fn nonblank(v: &Option<String>) -> Option<&str> {
     v.as_deref().map(str::trim).filter(|v| !v.is_empty())
@@ -138,7 +142,7 @@ impl Settings {
     pub fn model_for(&self, purpose: Purpose) -> &str {
         match purpose {
             Purpose::Chat => &self.models.default,
-            Purpose::Review => nonblank(&self.models.review).unwrap_or(&self.models.default),
+            Purpose::Review => nonblank(&self.models.review).unwrap_or(REVIEW_FALLBACK_MODEL),
         }
     }
 
@@ -195,7 +199,7 @@ pub fn claude_launch(
         Purpose::Chat => cc.default_effort_level,
         Purpose::Review => cc.review_effort_level.or(cc.default_effort_level),
     };
-    launch.effort = effort.map(|e| e.as_str().to_string());
+    launch.effort = effort.map(|e| e.cli_value().to_string());
     let mut extra = serde_json::Map::new();
     if let (Purpose::Chat, Some(style)) = (purpose, cc.personality.output_style()) {
         extra.insert("outputStyle".into(), json!(style));

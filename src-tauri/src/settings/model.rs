@@ -336,7 +336,8 @@ impl ThinkingLevel {
     }
 }
 
-/// Claude Code effort (`claude --effort`): Conductor's `low` to `max`.
+/// Claude Code effort: Conductor's `low` to `max`, plus `ultracode`
+/// ("Ultracode runs at extra-high effort with dynamic workflow orchestration").
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum EffortLevel {
@@ -345,6 +346,7 @@ pub enum EffortLevel {
     High,
     Xhigh,
     Max,
+    Ultracode,
 }
 
 impl EffortLevel {
@@ -355,6 +357,16 @@ impl EffortLevel {
             EffortLevel::High => "high",
             EffortLevel::Xhigh => "xhigh",
             EffortLevel::Max => "max",
+            EffortLevel::Ultracode => "ultracode",
+        }
+    }
+
+    /// The `claude --effort` value: Conductor runs `ultracode` as `xhigh`
+    /// (its `roe`); the workflow orchestration half has no CLI flag.
+    pub fn cli_value(self) -> &'static str {
+        match self {
+            EffortLevel::Ultracode => "xhigh",
+            other => other.as_str(),
         }
     }
 }

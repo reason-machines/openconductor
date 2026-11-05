@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Row } from "./GeneralPage";
 import { withField } from "./model";
-import { AGENT_LABEL, agentForModel, CLAUDE_ALIASES, MODEL_CATALOG, modelLabel, type ModelAgent } from "./models";
+import { AGENT_DEFAULT_MODEL, AGENT_LABEL, agentForModel, CLAUDE_ALIASES, MODEL_CATALOG, modelLabel, type ModelAgent } from "./models";
 import {
-  CLAUDE_EFFORT_LEVELS,
   CLAUDE_OUTPUT_STYLES,
   CODEX_PERSONALITIES,
   CODEX_THINKING_LEVELS,
@@ -12,7 +11,10 @@ import {
   withAgentModel,
   withVisibleModels,
 } from "./agentSettings";
-import type { ClaudePersonality, CodexPersonality, EffortLevel, Settings, ThinkingLevel } from "./types";
+import { CLAUDE_EFFORT_LEVELS, type ClaudeEffortLevel, type ClaudePersonality, type CodexPersonality, type Settings, type ThinkingLevel } from "./types";
+
+/** Conductor's review model when none is chosen: its Claude default, not the chat default (features/diff/review.ts). */
+const REVIEW_FALLBACK = AGENT_DEFAULT_MODEL.claude;
 
 interface Props {
   settings: Settings;
@@ -75,10 +77,10 @@ export function DefaultModelsPage({ settings, save }: Props) {
           <ModelSelect
             label="Review model"
             value={m.review ?? ""}
-            sameAsDefault
+            unsetLabel={`Default (${modelLabel(REVIEW_FALLBACK)})`}
             onChange={(v) => save(withField(settings, "models", "review", v === "" ? null : v))}
           />
-          <EffortSelect settings={settings} save={save} purpose="review" model={m.review ?? m.default} />
+          <EffortSelect settings={settings} save={save} purpose="review" model={m.review || REVIEW_FALLBACK} />
           <FastMode
             label="Review fast mode"
             checked={m.review_fast_mode ?? m.default_fast_mode === true}
@@ -103,18 +105,19 @@ export function DefaultModelsPage({ settings, save }: Props) {
 function ModelSelect({
   label,
   value,
-  sameAsDefault = false,
+  unsetLabel,
   onChange,
 }: {
   label: string;
   value: string;
-  sameAsDefault?: boolean;
+  /** Offer an empty choice with this label (the setting is removed). */
+  unsetLabel?: string;
   onChange: (v: string) => void;
 }) {
   const known = value === "" || agentForModel(value) !== null;
   return (
     <select aria-label={label} value={value} onChange={(e) => onChange(e.target.value)}>
-      {sameAsDefault && <option value="">Same as default model</option>}
+      {unsetLabel && <option value="">{unsetLabel}</option>}
       {!known && <option value={value}>{value}</option>}
       {(Object.keys(MODEL_CATALOG) as ModelAgent[]).map((agent) => (
         <optgroup key={agent} label={AGENT_LABEL[agent]}>
@@ -150,7 +153,7 @@ function EffortSelect({
       <select
         aria-label={purpose === "default" ? "Default effort" : "Review effort"}
         value={value}
-        onChange={(e) => save(withAgentModel(settings, "claude_code", field, e.target.value === "" ? null : (e.target.value as EffortLevel)))}
+        onChange={(e) => save(withAgentModel(settings, "claude_code", field, e.target.value === "" ? null : (e.target.value as ClaudeEffortLevel)))}
       >
         <option value="">{purpose === "review" ? "Same as default" : "Claude Code default"}</option>
         {CLAUDE_EFFORT_LEVELS.map((l) => (

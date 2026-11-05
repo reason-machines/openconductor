@@ -5,8 +5,8 @@ import type { Settings } from "./types";
 import { setTerminalFont, terminalFontFrom } from "../features/terminal/font.ts";
 import { scrollbackRows, setScrollbackRows } from "../features/terminal/scrollback.ts";
 import { customCommandsFrom, presetFrom, setBigTerminal } from "../features/terminal/bigTerminal.ts";
-import { executablePaths } from "./agentSettings.ts";
 import { applyDiffAppearance } from "../features/diff/appearance.ts";
+import { executablePaths } from "./agentSettings.ts";
 
 /** Conductor's zoom steps: 50% to 300% in 10% steps, 100% by default. */
 export const ZOOM_PERCENTS: readonly number[] = Array.from({ length: (300 - 50) / 10 + 1 }, (_, i) => 50 + i * 10);

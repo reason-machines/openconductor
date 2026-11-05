@@ -247,6 +247,7 @@ a `/settings/repos...` start URL is resolved again once they are loaded. Diverge
   spotlight testing (General preferences, `custom_prompt_general`, comes with the prompts keys);
   repo Misc shows the root path only (no icon, workspaces path or Remove repository yet).
 - Settings search (`vUi` keywords per tab) is not built.
+
 ## Models and providers (settings.toml.models, settings.toml.providers)
 
 Sources, read on `sven m5 max` on 2026-11-05 with REA's extracted frontend
@@ -291,6 +292,15 @@ Key names, defaults and enums only; no user values were read.
   `requiresToolApprovals` is set; the Big terminal presets switch from
   `claude --dangerously-skip-permissions` to `claude` (`GN` / `kBe`). `codex_tool_approval_policy =
   always_approve` answers every Codex tool approval with `always_allow`.
+- Claude effort levels (`Wv` in index, `KXe` in the session schema): `low`, `medium`, `high`,
+  `xhigh`, `max`, `ultracode` ("Ultracode runs at extra-high effort with dynamic workflow
+  orchestration."). A session runs `ultracode` as effort `xhigh` (`roe`) with a separate
+  `ultracode: true` flag for the sidecar (`fit`). OpenConductor launches it as `--effort xhigh`; the
+  orchestration flag has no CLI equivalent. Read on 2026-11-05 with a bounded Python scan of
+  `index-BGEQ8YjU.js` (`out/settings/ultracode.txt`); a `grep -oE` with context over the bundle hit
+  the 60 s `devices_exec` cap twice.
+- With no `models.review`, a review runs on Conductor's built-in Claude default `opus-5-1m`, not
+  `models.default` (evidence/pr/ai-review.md); `settings::launch::REVIEW_FALLBACK_MODEL`.
 - `visible_provider_models` is a JSON string, an object keyed by provider (`claude`, `codex`,
   `cursor`, `opencode`, `pi`) of `provider:model` ids; bad JSON or entries are ignored (`hee`).
 - Bundled CLIs: `claude --help` lists `--effort <level>` (low, medium, high, xhigh, max) and

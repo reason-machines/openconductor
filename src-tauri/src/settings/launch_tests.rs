@@ -398,3 +398,32 @@ fn model_ids_map_to_agents_and_claude_cli_names() {
     assert_eq!(claude_cli_model("opus-1m"), "opus[1m]");
     assert_eq!(claude_cli_model("haiku"), "haiku");
 }
+
+#[test]
+fn ultracode_parses_round_trips_and_launches_as_xhigh() {
+    let s = parse("[models.claude_code]\ndefault_effort_level = \"ultracode\"\n");
+    assert_eq!(
+        s.models.claude_code.default_effort_level,
+        Some(EffortLevel::Ultracode)
+    );
+    let back: Settings = toml::from_str(&toml::to_string(&s).unwrap()).unwrap();
+    assert_eq!(
+        back.models.claude_code.default_effort_level,
+        Some(EffortLevel::Ultracode)
+    );
+    let chat = launch::claude_launch(
+        &s,
+        Path::new("/w"),
+        &MemorySecretStore::new(),
+        Purpose::Chat,
+    )
+    .unwrap();
+    assert_eq!(flag(&chat.args(), "--effort"), Some("xhigh"));
+}
+
+#[test]
+fn review_without_a_review_model_uses_conductors_claude_fallback() {
+    let s = parse("[models]\ndefault = \"gpt-5.5\"\n");
+    assert_eq!(s.model_for(Purpose::Chat), "gpt-5.5");
+    assert_eq!(s.model_for(Purpose::Review), launch::REVIEW_FALLBACK_MODEL);
+}

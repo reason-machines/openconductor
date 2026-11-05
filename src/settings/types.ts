@@ -8,8 +8,6 @@ export type SoundType = "default" | "none";
 export type BranchPrefixType = "github_username" | "custom" | "none";
 /** Codex reasoning effort; Conductor's levels plus our earlier `minimal`. */
 export type ThinkingLevel = "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max" | "ultra";
-/** Claude Code `--effort`. */
-export type EffortLevel = "low" | "medium" | "high" | "xhigh" | "max";
 /** "Claude output style" (`models.claude_code.personality`). */
 export type ClaudePersonality = "default" | "proactive" | "concise" | "explanatory" | "learning";
 /** "Codex personality" (`models.codex.personality`); unset is Codex's own (pragmatic). */
@@ -99,8 +97,8 @@ export interface Settings {
     /** Conductor's JSON string `{"opencode": ["opencode:<id>"], ...}`. */
     visible_provider_models?: string | null;
     claude_code?: {
-      default_effort_level?: EffortLevel | null;
-      review_effort_level?: EffortLevel | null;
+      default_effort_level?: ClaudeEffortLevel | null;
+      review_effort_level?: ClaudeEffortLevel | null;
       personality?: ClaudePersonality;
       [extra: string]: unknown;
     };
@@ -152,6 +150,10 @@ export interface ProviderStatus {
   /** Why it is not ready, safe to display. */
   problem?: string;
 }
+
+/** Conductor's Claude effort levels (`models.claude_code.{default,review}_effort_level`); `ultracode` runs as `--effort xhigh`. */
+export const CLAUDE_EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max", "ultracode"] as const;
+export type ClaudeEffortLevel = (typeof CLAUDE_EFFORT_LEVELS)[number];
 
 export const DEFAULT_SETTINGS: Settings = {
   $schema: "https://openconductor.dev/schemas/settings.schema.json",

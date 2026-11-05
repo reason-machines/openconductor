@@ -8,7 +8,6 @@ import type {
   ClaudePersonality,
   CodexPersonality,
   CodexToolApprovalPolicy,
-  EffortLevel,
   Settings,
   ThinkingLevel,
 } from "./types";
@@ -29,7 +28,6 @@ export const CODEX_PERSONALITIES: readonly { value: CodexPersonality; label: str
   { value: "none", label: "None", description: "No personality instructions" },
 ];
 
-export const CLAUDE_EFFORT_LEVELS: readonly EffortLevel[] = ["low", "medium", "high", "xhigh", "max"];
 export const CODEX_THINKING_LEVELS: readonly ThinkingLevel[] = ["none", "low", "medium", "high", "xhigh", "max", "ultra"];
 
 export const CODEX_TOOL_APPROVALS: readonly { value: CodexToolApprovalPolicy; label: string }[] = [
