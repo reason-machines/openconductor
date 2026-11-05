@@ -66,17 +66,18 @@ use serde::Serialize;
 
 /// Once per launch, apply "Set upstream on plain git push" to existing
 /// workspaces in the background, as Conductor does after its first workspace
-/// load. Failures are only logged.
+/// load. Each workspace uses its effective `git.worktree_push_auto_setup_remote`
+/// (user, repository and workspace settings files); unreadable settings count
+/// as on, Conductor's "not false" check. Failures are only logged.
 fn spawn_push_upstream_backfill(app: tauri::AppHandle) {
     std::thread::spawn(move || {
-        let settings = app.state::<settings::service::SettingsService>();
-        match settings.get() {
-            Ok(s) if !s.git.worktree_push_auto_setup_remote => return,
-            Ok(_) => {}
-            Err(e) => eprintln!("Failed to read settings for Git push upstream backfill: {e}"),
-        }
         let workspaces = app.state::<workspace::service::WorkspaceService>();
-        for (id, warning) in workspaces.configure_push_upstream_for_existing() {
+        let enabled = |root: &std::path::Path, ws: &std::path::Path| {
+            settings::effective::resolve(root, Some(ws))
+                .map(|e| e.git.worktree_push_auto_setup_remote.value)
+                .unwrap_or(true)
+        };
+        for (id, warning) in workspaces.configure_push_upstream_for_existing(enabled) {
             eprintln!("Failed to configure Git push upstream settings for workspace {id}: {warning}");
         }
     });

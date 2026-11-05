@@ -171,13 +171,21 @@ impl WorkspaceService {
     /// workspace of every registered repository. A worktree that already has a
     /// `push.autoSetupRemote` value is left alone. Returns `(workspace id,
     /// warning)` for each workspace it could not configure; a repository that
-    /// can no longer be listed is skipped.
-    pub fn configure_push_upstream_for_existing(&self) -> Vec<(String, &'static str)> {
+    /// can no longer be listed is skipped. `enabled(repo_root, workspace)` is
+    /// the workspace's effective `git.worktree_push_auto_setup_remote`;
+    /// workspaces where it is off are skipped.
+    pub fn configure_push_upstream_for_existing(
+        &self,
+        enabled: impl Fn(&std::path::Path, &std::path::Path) -> bool,
+    ) -> Vec<(String, &'static str)> {
         let roots: Vec<PathBuf> = self.repos.lock().expect("registry lock").values().cloned().collect();
         let mut failed = Vec::new();
         for root in roots {
             let Ok(list) = self.manager.list(&root) else { continue };
-            for ws in list.into_iter().filter(|w| w.state == WorkspaceState::Active) {
+            for ws in list
+                .into_iter()
+                .filter(|w| w.state == WorkspaceState::Active && enabled(&w.repo_root, &w.path))
+            {
                 if let Some(warning) = git::configure_push_upstream(&ws.repo_root, &ws.path) {
                     failed.push((ws.id, warning));
                 }

@@ -103,14 +103,15 @@ workspace-creation service) and `renderApp-D_fmY7hW.js` (the rows).
   has no value. Nothing is shown: `cre` logs its skip warning and `zYe` logs thrown errors
   ("Failed to configure Git push upstream settings for workspace <id>: ...").
 - The rebuild runs `WorkspaceService::configure_push_upstream_for_existing` on a background
-  thread from app setup when the user setting is on (or settings cannot be read, matching
-  Conductor's "not false" check). It covers every active workspace of every registered
-  repository, skips archived and missing ones and repositories that can no longer be listed,
-  and logs each workspace it could not configure to stderr. Divergence: the setting is read
-  once at user scope, since repo-local overrides are not built.
+  thread from app setup. It covers every active workspace of every registered repository,
+  skips archived and missing ones and repositories that can no longer be listed, and logs
+  each workspace it could not configure to stderr. Each workspace uses its effective value
+  (user, repository, workspace and local settings files, see "Prompts, git flags and
+  environment"), as `lre` does; unreadable settings count as on, Conductor's "not false".
 - Delete branch on archive (with "Warning: archived workspaces will be unrecoverable" when
-  on) and Archive on merge are stored but have no row yet: no command archives a workspace
-  yet, so nothing would read them. Repo-local overrides of all three are not built.
+  on) and Archive on merge are stored and resolve per repository, but nothing consumes them
+  yet: the app's archive only marks the database row (`db_archive_workspace`) and keeps the
+  worktree, and no in-app merge archives.
 
 ## REA gaps hit (settings pages)
 
@@ -509,11 +510,40 @@ The rebuild implements 1–3 in `oc_scripts::config::effective` (`resolve_effect
 with a warning (the rebuild has no per-variable Keychain store); the `env_vars` table is not
 built.
 
+### Consumers in the rebuild
+
+| Key | Consumer | Status |
+| --- | --- | --- |
+| `prompts.code_review` | Review button (`buildReviewPrompt`, appended after the default as `gue` + `_g`) | wired, via `useRepoSettings` |
+| `prompts.create_pr` | `pr_create_prompt` (appended when the caller gives no instructions) | wired; no Create PR button calls the command yet |
+| `prompts.general` | first message of a new Reason chat (`sendReason`, `<user-preferences>` block as `lU6`) | wired |
+| `prompts.fix_errors` | Fix errors action | missing: no Fix errors button or CI-log flow |
+| `prompts.resolve_merge_conflicts` | Resolve conflicts action | missing: the header computes the conflict state but has no action |
+| `prompts.rename_branch` | model-generated branch name | missing: the rebuild names branches with a local heuristic (`branchNameFromMessage`), no model call |
+| `git.worktree_push_auto_setup_remote` | `create_workspace` and the startup backfill | wired, effective per repository / workspace |
+| `git.branch_prefix`, `git.branch_prefix_type` | Create-workspace naming | user scope, as Conductor's `C2` |
+| `git.archive_on_merge`, `git.delete_branch_on_archive` | archive | missing (see "Git flags: archive and push upstream") |
+| `preview_urls` | terminal panel Open URLs | missing: the terminal panel has no Open URL control |
+| `environment_variable_files`, `environment_variables.*` | setup / run / archive scripts (`ScriptService::set_settings_env`), terminals (`pty_spawn`) | wired; local context |
+| same | agent launches | missing: Claude/Codex launches are not built, and Reason runs one ACP process for every chat, so a per-workspace environment cannot reach it |
+
+`create_workspace` resolves the push-upstream flag for the repository root before the
+worktree exists, so a value in the new workspace's own `.conductor/settings.toml` is not
+seen at creation (Conductor reads it with the new worktree path); the startup backfill does
+see it.
+
 ### REA gaps (prompts, git, environment)
 
 - No REA command maps a settings key to its consumers: `rea trace-javascript-semantics` with
   literal seeds misses UI strings and Tauri `invoke` names (see "REA gaps hit (settings
   pages)"), so every consumer above was found by byte search in the extracted bundle.
+- `rea trace-javascript-semantics` on the analyzed frontend (`ev_b733d967…`) with seed
+  `{kind: "literal", value: "custom_prompt_general"}`, direction `callers`, run on
+  2026-11-05 (`out/trace_js_semantics_custom_prompt_general.json`), exited 0 in 83 s with
+  `status: partial`, 0 seed nodes, 0 nodes, 0 relations and the same 935 unknowns as the
+  earlier literal traces. A setting key used as an argument (`getSettingForWorkspaceV2(
+  "custom_prompt_rename_branch", …)`) or as an object value (the `Vxt` map) is not a seed
+  REA can resolve.
 - The sidecar runtime is a compiled single-file binary (`conductor-runtime`, 76 MB); REA's
   JavaScript extractors were not run on it, so `nQ4` / `lU6` / `pQ4` were read with a raw
   byte search. Its embedded JS is plain text, which is why that worked.
