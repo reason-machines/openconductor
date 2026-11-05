@@ -6,6 +6,7 @@
 //! agents run them from `$APPDATA/bin` (`evidence/packaging/bundled-bin.json`).
 //! OpenConductor implements both natively (`checkpoint/`), so its
 //! `resources/bin-tools/*.sh` are shims that exec this binary in tool mode.
+//! `bin/spotlighter.sh` runs [`crate::tool_spotlighter`] the same way.
 //! The command line, output and exit codes are the reference scripts', so a
 //! caller written for Conductor's tools works unchanged.
 
@@ -28,6 +29,11 @@ pub fn dispatch(args: impl IntoIterator<Item = OsString>) -> Option<i32> {
     }
     let rest: Vec<String> = it.map(|a| a.to_string_lossy().into_owned()).collect();
     let cwd = std::env::current_dir().unwrap_or_else(|_| ".".into());
+    // Long-running and writes stdout from its watch thread, so it must not
+    // run under the stdout lock taken below.
+    if rest.first().map(String::as_str) == Some("spotlighter") {
+        return Some(crate::tool_spotlighter::main(&cwd));
+    }
     let (mut out, mut err) = (std::io::stdout().lock(), std::io::stderr().lock());
     let code = run(&rest, &cwd, &mut out, &mut err);
     let _ = out.flush();

@@ -14,10 +14,11 @@ import { glyphs } from "../../keybindings/shortcut.ts";
 import { getSettings } from "../../settings/api";
 import { DEFAULT_SETTINGS } from "../../settings/types";
 import type { Repo, Workspace } from "../../state/types";
-import { configureReason } from "../chat/reasonChat.ts";
+import { configureReason, hideChat } from "../chat/reasonChat.ts";
 import type { PromptAttachment } from "../chat/reason.ts";
 import { buildReviewPrompt, REVIEW_ATTACHMENT, REVIEW_MESSAGE, reviewDraft, reviewModel, reviewTabTitle } from "./review.ts";
 import { repoReviewPrompt } from "./reviewApi.ts";
+import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 
 export interface ReviewTab {
   chatId: string;
@@ -67,7 +68,7 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
     async (editBeforeSending = false) => {
       setError(null);
       try {
-        const [settings, custom] = await Promise.all([getSettings().catch(() => DEFAULT_SETTINGS), repoReviewPrompt(repo.id)]);
+        const [settings, custom] = await Promise.all([getSettings().catch(() => DEFAULT_SETTINGS), reviewPreferences(repo.id, repo.path, workspace.path)]);
         const prompt = buildReviewPrompt({ remote: "origin", targetBranch: repo.defaultBranch, custom });
         const model = reviewModel(settings);
         const chatId = `${workspace.id}:review:${Date.now().toString(36)}-${++seq}`;
@@ -83,12 +84,36 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
         setError(`Failed to start review: ${e instanceof Error ? e.message : String(e)}`);
       }
     },
-    [repo.id, repo.defaultBranch, workspace.id, save, onOpen],
+    [repo.id, repo.path, repo.defaultBranch, workspace.id, workspace.path, save, onOpen],
   );
 
-  const close = useCallback((chatId: string) => save((tabsByWorkspace.get(workspace.id) ?? []).filter((t) => t.chatId !== chatId)), [workspace.id, save]);
+  const close = useCallback(
+    (chatId: string) => {
+      // A closed review no longer counts toward the workspace's sidebar status (Conductor folds visible sessions only).
+      hideChat(chatId);
+      save((tabsByWorkspace.get(workspace.id) ?? []).filter((t) => t.chatId !== chatId));
+    },
+    [workspace.id, save],
+  );
 
   return { tabs, start, close, error };
+}
+
+/**
+ * The review instructions' repository preferences: the effective
+ * `prompts.code_review` (user, then repository settings files), else the
+ * repository's `custom_prompt_code_review` in conductor.db.
+ */
+async function reviewPreferences(repoId: string, repoPath: string, workspacePath: string | undefined): Promise<string | null> {
+  if (repoPath) {
+    try {
+      const fromSettings = (await repoSettingsEffective(repoPath, workspacePath)).prompts.code_review?.value;
+      if (fromSettings?.trim()) return fromSettings;
+    } catch (e) {
+      console.warn("review: settings prompt not read", e);
+    }
+  }
+  return repoReviewPrompt(repoId);
 }
 
 const MENU_WIDTH = 180;

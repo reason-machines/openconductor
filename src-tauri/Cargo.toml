@@ -29,8 +29,11 @@ tauri-plugin-fs = { version = "2", features = ["watch"] }
 tauri-plugin-http = "2"
 tauri-plugin-shell = "2"
 tauri-plugin-sql = { version = "2", features = ["sqlite"] }
+tauri-plugin-updater = "2"
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+# preserve_order: local-storage records keep the reference's key order (terminal/history_store.rs)
+serde_json = { version = "1", features = ["preserve_order"] }
+uuid = { version = "1", features = ["v4"] }
 portable-pty = "=0.9.0"
 # terminal screen state (terminal/screen.rs); the version Conductor links
 alacritty_terminal = "=0.26.0"
@@ -58,4 +61,4 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 security-framework = "3"
 
 [lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ["cfg(workspace_std_only)", "cfg(quick_open_std_only)", "cfg(diff_std_only)", "cfg(pr_harness)", "cfg(draft_attachments_std_only)"] }
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(workspace_std_only)", "cfg(quick_open_std_only)", "cfg(diff_std_only)", "cfg(pr_harness)", "cfg(draft_attachments_std_only)", "cfg(agent_binaries_std_only)"] }

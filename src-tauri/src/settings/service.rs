@@ -6,17 +6,26 @@
 //! commands never interleave and an invalid change leaves the file as it was.
 //! Provider secrets go to the [`SecretStore`] only; nothing here returns one.
 //!
+//! With a database ([`SettingsService::with_db`]), the appearance keys
+//! Conductor keeps in `conductor.db`'s `settings` table ([`db_backed`]) are
+//! read from and written to that table and left out of the file.
+//!
 //! [`MemorySecretStore`]: crate::agent::MemorySecretStore
 
+use std::collections::HashMap;
 use std::fmt;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
 use serde::Deserialize;
 
-use super::{load, save, validate, Settings, SettingsError};
+use openconductor_db::{app_settings, SqlitePool};
+
+use super::{db_backed, load, save, save_table, validate, Settings, SettingsError};
 use crate::agent::byok::{self, ByokError};
-use crate::agent::{AgentKind, ProviderConfig, ProviderStatus, SecretStore, SecretString};
+use crate::agent::{
+    AgentKind, LaunchEnv, ProviderConfig, ProviderStatus, SecretStore, SecretString,
+};
 
 #[derive(Debug)]
 pub enum ServiceError {
@@ -27,6 +36,8 @@ pub enum ServiceError {
         agent: AgentKind,
         kind: &'static str,
     },
+    /// Reading or writing `conductor.db`'s settings table failed.
+    Db(String),
 }
 
 impl fmt::Display for ServiceError {
@@ -37,6 +48,7 @@ impl fmt::Display for ServiceError {
             ServiceError::WrongAgent { agent, kind } => {
                 write!(f, "{kind} is not a provider for {agent}")
             }
+            ServiceError::Db(e) => write!(f, "settings table: {e}"),
         }
     }
 }
@@ -72,6 +84,21 @@ pub struct SettingsService {
     path: PathBuf,
     store: Arc<dyn SecretStore>,
     lock: Mutex<()>,
+    db: Option<SqlitePool>,
+}
+
+/// Run a database future to completion from synchronous code, on a helper
+/// thread so it also works when the caller is inside the async runtime.
+fn run_db<T: Send>(f: impl std::future::Future<Output = T> + Send) -> T {
+    std::thread::scope(|s| {
+        s.spawn(|| tauri::async_runtime::block_on(f))
+            .join()
+            .expect("settings table thread panicked")
+    })
+}
+
+fn db_err(e: openconductor_db::Error) -> ServiceError {
+    ServiceError::Db(e.to_string())
 }
 
 impl SettingsService {
@@ -80,7 +107,90 @@ impl SettingsService {
             path,
             store,
             lock: Mutex::new(()),
+            db: None,
         }
+    }
+
+    /// Keep the table-backed appearance keys in `pool`'s `settings` table.
+    pub fn with_db(mut self, pool: SqlitePool) -> Self {
+        self.db = Some(pool);
+        self
+    }
+
+    fn table_rows(pool: &SqlitePool) -> Result<HashMap<String, String>, ServiceError> {
+        Ok(run_db(app_settings::active(pool))
+            .map_err(db_err)?
+            .into_iter()
+            .collect())
+    }
+
+    /// The file's settings with the table's appearance values on top.
+    fn read(&self) -> Result<Settings, ServiceError> {
+        let mut settings = load(&self.path)?;
+        if let Some(pool) = &self.db {
+            db_backed::overlay(&mut settings.appearance, &Self::table_rows(pool)?);
+        }
+        Ok(settings)
+    }
+
+    /// Validate, write changed table-backed values to the table, and the rest
+    /// to the file.
+    fn persist(&self, settings: &Settings) -> Result<(), ServiceError> {
+        let Some(pool) = &self.db else {
+            return Ok(save(&self.path, settings)?);
+        };
+        validate(settings)?;
+        let current = Self::table_rows(pool)?;
+        for (key, value) in db_backed::changes(&settings.appearance, &current) {
+            run_db(async {
+                match &value {
+                    Some(v) => app_settings::set(pool, key, v).await,
+                    None => app_settings::delete(pool, key).await,
+                }
+            })
+            .map_err(db_err)?;
+        }
+        let mut table =
+            toml::Table::try_from(settings).map_err(|e| SettingsError::Invalid(e.to_string()))?;
+        db_backed::strip(&mut table);
+        Ok(save_table(&self.path, &table)?)
+    }
+
+    /// Once, at startup: move table-backed appearance keys an older build
+    /// wrote to the file into the table (a row the table already has wins),
+    /// then drop them from the file. Returns the keys moved.
+    pub fn move_appearance_to_db(&self) -> Result<Vec<&'static str>, ServiceError> {
+        let Some(pool) = &self.db else {
+            return Ok(Vec::new());
+        };
+        let _guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
+        let raw = match std::fs::read_to_string(&self.path) {
+            Ok(text) => text
+                .parse::<toml::Table>()
+                .map_err(|e| SettingsError::Parse(self.path.clone(), e.to_string()))?,
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+            Err(e) => return Err(SettingsError::Io(self.path.clone(), e).into()),
+        };
+        let in_file = db_backed::in_file(&raw);
+        if in_file.is_empty() {
+            return Ok(Vec::new());
+        }
+        let from_file = load(&self.path)?;
+        let current = Self::table_rows(pool)?;
+        let mut moved = Vec::new();
+        for (key, value) in db_backed::rows(&from_file.appearance) {
+            if !in_file.contains(&key) || current.contains_key(key) {
+                continue;
+            }
+            if let Some(v) = value {
+                run_db(app_settings::set(pool, key, &v)).map_err(db_err)?;
+                moved.push(key);
+            }
+        }
+        let mut stripped = raw;
+        db_backed::strip(&mut stripped);
+        save_table(&self.path, &stripped)?;
+        Ok(moved)
     }
 
     pub fn path(&self) -> &Path {
@@ -89,13 +199,13 @@ impl SettingsService {
 
     pub fn get(&self) -> Result<Settings, ServiceError> {
         let _guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
-        Ok(load(&self.path)?)
+        self.read()
     }
 
     /// Replaces the whole file with `settings` and returns what was saved.
     pub fn update(&self, settings: Settings) -> Result<Settings, ServiceError> {
         let _guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
-        save(&self.path, &settings)?;
+        self.persist(&settings)?;
         Ok(settings)
     }
 
@@ -103,9 +213,20 @@ impl SettingsService {
     pub fn provider_status(&self, agent: AgentKind) -> Result<ProviderStatus, ServiceError> {
         let settings = self.get()?;
         Ok(byok::status(
-            &settings.providers.effective(agent),
+            &settings.provider_for(agent),
             self.store.as_ref(),
         ))
+    }
+
+    /// The environment to launch `agent` with: its configured provider (its
+    /// CLI login if unset) and that provider's secrets.
+    pub fn launch_env(&self, agent: AgentKind) -> Result<LaunchEnv, String> {
+        let settings = self.get().map_err(|e| e.to_string())?;
+        settings
+            .providers
+            .effective(agent)
+            .launch_env(self.store.as_ref())
+            .map_err(|e| e.to_string())
     }
 
     /// Switches `agent` to `config`, storing `secrets` for it. The settings
@@ -122,7 +243,7 @@ impl SettingsService {
             return Err(ServiceError::WrongAgent { agent, kind });
         }
         let _guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
-        let mut settings = load(&self.path)?;
+        let mut settings = self.read()?;
         settings.providers.set(agent, Some(config.clone()));
         validate(&settings)?;
         let secrets: Vec<(&str, SecretString)> = secrets
@@ -130,20 +251,26 @@ impl SettingsService {
             .map(|s| (s.key.as_str(), SecretString::new(s.value.clone())))
             .collect();
         let status = byok::connect(&config, &secrets, self.store.as_ref())?;
-        save(&self.path, &settings)?;
+        self.persist(&settings)?;
         Ok(status)
     }
 
     /// Deletes the secrets of `agent`'s provider and returns it to its CLI
-    /// login.
+    /// login: the `[providers]` entry and Conductor's top-level
+    /// `claude_provider` / `codex_provider` are both cleared.
     pub fn disconnect(&self, agent: AgentKind) -> Result<ProviderStatus, ServiceError> {
         let _guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
-        let mut settings = load(&self.path)?;
-        byok::disconnect(&settings.providers.effective(agent), self.store.as_ref())?;
+        let mut settings = self.read()?;
+        byok::disconnect(&settings.provider_for(agent), self.store.as_ref())?;
         settings.providers.set(agent, None);
-        save(&self.path, &settings)?;
+        match agent {
+            AgentKind::Claude => settings.claude_provider = None,
+            AgentKind::Codex => settings.codex_provider = None,
+            _ => {}
+        }
+        self.persist(&settings)?;
         Ok(byok::status(
-            &settings.providers.effective(agent),
+            &settings.provider_for(agent),
             self.store.as_ref(),
         ))
     }
@@ -201,6 +328,26 @@ mod tests {
         bad.models.default = String::new();
         assert!(svc.update(bad).is_err());
         assert_eq!(svc.get().unwrap(), good);
+    }
+
+    #[test]
+    fn status_and_disconnect_follow_conductors_top_level_provider() {
+        let (svc, store) = service();
+        svc.update(Settings {
+            claude_provider: Some("custom".into()),
+            ..Settings::default()
+        })
+        .unwrap();
+        let status = svc.provider_status(AgentKind::Claude).unwrap();
+        assert_eq!((status.kind, status.ready), ("anthropic_api", false));
+        store
+            .set(keys::ANTHROPIC_API_KEY, &SecretString::new("sk-ant-x"))
+            .unwrap();
+        assert!(svc.provider_status(AgentKind::Claude).unwrap().ready);
+        let after = svc.disconnect(AgentKind::Claude).unwrap();
+        assert_eq!(after.kind, "claude_login");
+        assert_eq!(store.get(keys::ANTHROPIC_API_KEY).unwrap(), None);
+        assert_eq!(svc.get().unwrap().claude_provider, None);
     }
 
     #[test]

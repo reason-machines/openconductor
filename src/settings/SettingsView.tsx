@@ -105,9 +105,9 @@ function UserPage({
 }) {
   switch (page) {
     case "account":
-      return <AccountPage />;
+      return <AccountPage settings={settings} save={save} />;
     case "environment":
-      return <EnvironmentPage />;
+      return <EnvironmentPage settings={settings} save={save} />;
     case "key-bindings":
       return <KeyBindingsPage settings={settings} save={save} />;
     case "models":
