@@ -1,7 +1,7 @@
 {
  "ref": "origin/main",
- "sha": "e4d2c201843a82469f089832bd0e55812bed1136",
- "source_files_scanned": 491,
+ "sha": "6050c01c51d9903edec1234c5785b157dafe5676",
+ "source_files_scanned": 502,
  "reference": {
   "conductor_version": "0.87.6",
   "keybindings_source": {
