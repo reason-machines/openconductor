@@ -5,12 +5,14 @@
 //! - `checkpoint/` checkpoints and revert
 //! - `agent/`      agent runner, providers and BYOK settings
 //! - `quick_open/` quick open file index and fuzzy matching (Spotlight)
+//! - `settings/`   settings.toml and the Keychain-backed secret store
 //!
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
 pub mod project;
 pub mod quick_open;
+pub mod settings;
 pub mod workspace;
 
 use serde::Serialize;
