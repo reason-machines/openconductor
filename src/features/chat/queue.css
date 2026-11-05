@@ -1,5 +1,5 @@
 /* Follow-up queue above the composer, and the composer's Stop state. */
-.composer-wrap { margin: 0 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+.composer-wrap { margin: 0; display: flex; flex-direction: column; gap: 6px; }
 .composer-wrap .composer { margin: 0; }
 .composer-stop kbd { font: inherit; font-size: 10px; opacity: 0.7; margin-left: 4px; }
 .composer-stop[data-state="cancelling"] { opacity: 0.75; }

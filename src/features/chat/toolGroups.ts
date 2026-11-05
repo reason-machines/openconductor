@@ -32,7 +32,8 @@ export interface KeyedPart {
   part: PartView;
 }
 
-export type GroupedPart = ({ kind: "part" } & KeyedPart) | { kind: "summary"; summary: ToolSummary; parts: KeyedPart[] };
+/** `preview`: the turn's final text, which Conductor draws in full colour; other text is muted. */
+export type GroupedPart = ({ kind: "part"; preview?: boolean } & KeyedPart) | { kind: "summary"; summary: ToolSummary; parts: KeyedPart[] };
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
@@ -92,7 +93,7 @@ export function groupParts(parts: KeyedPart[], keyPrefix: string, hasFinalText =
   items.forEach((part, i) => {
     if (i === preview) {
       flush();
-      out.push({ kind: "part", ...part });
+      out.push({ kind: "part", ...part, preview: true });
       return;
     }
     if (batch.length === 0) batchStart = i;

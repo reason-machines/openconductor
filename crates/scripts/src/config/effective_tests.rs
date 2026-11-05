@@ -444,3 +444,31 @@ fn local_writes_set_and_remove_only_known_keys() {
         );
     }
 }
+
+#[test]
+fn stored_variables_replace_user_file_values_but_not_repository_ones() {
+    let f = Fixture::new();
+    write(
+        &f.home.join(".env.user"),
+        "FROM_USER_FILE=file\nUNTOUCHED=keep\n",
+    );
+    write(
+        &f.user.join("settings.toml"),
+        "environment_variable_files = [\"~/.env.user\"]\n",
+    );
+    write(
+        &f.root.join(".conductor/settings.toml"),
+        "[environment_variables]\nREPO_PINNED = \"repo\"\n",
+    );
+    let e = f.load();
+    let stored = [
+        ("FROM_USER_FILE", "stored"),
+        ("REPO_PINNED", "stored"),
+        ("ONLY_STORED", "s"),
+    ];
+    let vars = e.env.vars_with_stored(EnvContext::Local, stored);
+    assert_eq!(vars["FROM_USER_FILE"], "stored");
+    assert_eq!(vars["REPO_PINNED"], "repo");
+    assert_eq!(vars["ONLY_STORED"], "s");
+    assert_eq!(vars["UNTOUCHED"], "keep");
+}

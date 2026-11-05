@@ -1,0 +1,246 @@
+{
+  "tool": "rea-agents: capture-browser-scenario + compare-web-screenshots",
+  "browser": "Chromium headless, 1440x900, scale 1, en-US, UTC",
+  "column": {
+    "x": 256,
+    "y": 80,
+    "w": 789
+  },
+  "max_ratio_24": 0.005,
+  "results": [
+    {
+      "name": "transcript-collapsed--claude--dark",
+      "reference": "evidence/screens/chat--transcript-collapsed-tools--dark.png",
+      "crop": {
+        "x": 256,
+        "y": 80,
+        "w": 789,
+        "h": 300
+      },
+      "ours_sha256": "eed4d2d6df3aa83f2c7971fd6fedc9de2e22567cdeaf0f58cec20dd9916ed9eb",
+      "capture_evidence_id": "ev_093e6c6c0092437614d53969947dc271cf465de15ef183a0f61121c0868f380f",
+      "page_errors": 0,
+      "compare": {
+        "threshold_0": {
+          "evidence_id": "ev_bed70da191b9d88353ba3797e7c455125dfbcce02eda674ca3cfb9971d44e183",
+          "changed_pixels": 420,
+          "changed_ratio": 0.0017743979721166034
+        },
+        "threshold_24": {
+          "evidence_id": "ev_e56fbf5f4915c90fed70abf7a9fbdf3675f268cf407066a1e6b5410600ff00e9",
+          "changed_pixels": 206,
+          "changed_ratio": 0.0008702999577524293
+        }
+      },
+      "pass": true
+    },
+    {
+      "name": "transcript-collapsed--claude--light",
+      "reference": "evidence/screens/chat--transcript-collapsed-tools--light.png",
+      "crop": {
+        "x": 256,
+        "y": 80,
+        "w": 789,
+        "h": 300
+      },
+      "ours_sha256": "2ccafdff09df29fd3985ebdef18ac113be3167a58db19f63a63b8e0538734164",
+      "capture_evidence_id": "ev_ba26ead378f202bb61112d94d54fb07cf06ca2274b5a12c095a611a8be3b6209",
+      "page_errors": 0,
+      "compare": {
+        "threshold_0": {
+          "evidence_id": "ev_19d425d9aa28dfab4cc924e5a2227273b00e0e04dbb80158c9d165e33f768077",
+          "changed_pixels": 414,
+          "changed_ratio": 0.0017490494296577947
+        },
+        "threshold_24": {
+          "evidence_id": "ev_5f787b80fc569f5c91043549d4179cd4b8c1e428ff4434c5cf79deea0fb8b6a4",
+          "changed_pixels": 174,
+          "changed_ratio": 0.0007351077313054499
+        }
+      },
+      "pass": true
+    },
+    {
+      "name": "tool-calls-expanded--claude--dark",
+      "reference": "evidence/screens/chat--tool-calls-expanded--dark.png",
+      "crop": {
+        "x": 256,
+        "y": 80,
+        "w": 789,
+        "h": 540
+      },
+      "ours_sha256": "6b795d2c6742a333b9b73b490381210fe9a3facef1c1ff9a0ab25a2949f2a2b4",
+      "capture_evidence_id": "ev_89defbfdd4cbad73745e4d91f2457e0e78a2f782b42ed3ecb11f07ec0626cdd4",
+      "page_errors": 0,
+      "compare": {
+        "threshold_0": {
+          "evidence_id": "ev_852cc119b7e1b4e3e91a80a57f0de312d9987b969a1be0c6110f1e3c07f610da",
+          "changed_pixels": 686,
+          "changed_ratio": 0.0016101018635872881
+        },
+        "threshold_24": {
+          "evidence_id": "ev_b2eca7afb0a3aeae85cbb358e166c2b9a2d3c393580e8e229fd29db9f693907f",
+          "changed_pixels": 360,
+          "changed_ratio": 0.0008449514152936206
+        }
+      },
+      "pass": true
+    },
+    {
+      "name": "transcript-collapsed--codex--dark",
+      "reference": "evidence/screens/chat--transcript-collapsed-tools--dark.png",
+      "crop": {
+        "x": 256,
+        "y": 80,
+        "w": 789,
+        "h": 300
+      },
+      "ours_sha256": "eed4d2d6df3aa83f2c7971fd6fedc9de2e22567cdeaf0f58cec20dd9916ed9eb",
+      "capture_evidence_id": "ev_d131e75042fbfa56ff72d4a75c98a283b2e2339545e77da42961105db59085cf",
+      "page_errors": 0,
+      "compare": {
+        "threshold_0": {
+          "evidence_id": "ev_bed70da191b9d88353ba3797e7c455125dfbcce02eda674ca3cfb9971d44e183",
+          "changed_pixels": 420,
+          "changed_ratio": 0.0017743979721166034
+        },
+        "threshold_24": {
+          "evidence_id": "ev_e56fbf5f4915c90fed70abf7a9fbdf3675f268cf407066a1e6b5410600ff00e9",
+          "changed_pixels": 206,
+          "changed_ratio": 0.0008702999577524293
+        }
+      },
+      "pass": true
+    },
+    {
+      "name": "transcript-collapsed--codex--light",
+      "reference": "evidence/screens/chat--transcript-collapsed-tools--light.png",
+      "crop": {
+        "x": 256,
+        "y": 80,
+        "w": 789,
+        "h": 300
+      },
+      "ours_sha256": "2ccafdff09df29fd3985ebdef18ac113be3167a58db19f63a63b8e0538734164",
+      "capture_evidence_id": "ev_87d73c25eb607a980eda0c6b21d0a1fc32795f05178e9dfac583075907d5466f",
+      "page_errors": 0,
+      "compare": {
+        "threshold_0": {
+          "evidence_id": "ev_19d425d9aa28dfab4cc924e5a2227273b00e0e04dbb80158c9d165e33f768077",
+          "changed_pixels": 414,
+          "changed_ratio": 0.0017490494296577947
+        },
+        "threshold_24": {
+          "evidence_id": "ev_5f787b80fc569f5c91043549d4179cd4b8c1e428ff4434c5cf79deea0fb8b6a4",
+          "changed_pixels": 174,
+          "changed_ratio": 0.0007351077313054499
+        }
+      },
+      "pass": true
+    },
+    {
+      "name": "tool-calls-expanded--codex--dark",
+      "reference": "evidence/screens/chat--tool-calls-expanded--dark.png",
+      "crop": {
+        "x": 256,
+        "y": 80,
+        "w": 789,
+        "h": 540
+      },
+      "ours_sha256": "915b3fd0db8b78a371e5333559f1d1c2c608ae09c6d523753f7acb02cc25b34e",
+      "capture_evidence_id": "ev_fe9f70489e38f8f7fea82b3ba21a33dbd327ec7dc8fc69718b59a97aedeb41b9",
+      "page_errors": 0,
+      "compare": {
+        "threshold_0": {
+          "evidence_id": "ev_fd36108eb56a82e5b49516af8497784ca63bfa7b25d404b03d945505622776be",
+          "changed_pixels": 5297,
+          "changed_ratio": 0.012432521241139746
+        },
+        "threshold_24": {
+          "evidence_id": "ev_934cb6177b73183d4e35adf6b6be9d58e332fce25af1eff67f2709e40ff3e9b8",
+          "changed_pixels": 2097,
+          "changed_ratio": 0.00492184199408534
+        }
+      },
+      "pass": true
+    },
+    {
+      "name": "transcript-collapsed--reason--dark",
+      "reference": "evidence/screens/chat--transcript-collapsed-tools--dark.png",
+      "crop": {
+        "x": 256,
+        "y": 80,
+        "w": 789,
+        "h": 300
+      },
+      "ours_sha256": "eed4d2d6df3aa83f2c7971fd6fedc9de2e22567cdeaf0f58cec20dd9916ed9eb",
+      "capture_evidence_id": "ev_6b6c20903c89e62c7eeb24e766e1458e5fa5121152393f1e51fd27f00ae5f10d",
+      "page_errors": 0,
+      "compare": {
+        "threshold_0": {
+          "evidence_id": "ev_bed70da191b9d88353ba3797e7c455125dfbcce02eda674ca3cfb9971d44e183",
+          "changed_pixels": 420,
+          "changed_ratio": 0.0017743979721166034
+        },
+        "threshold_24": {
+          "evidence_id": "ev_e56fbf5f4915c90fed70abf7a9fbdf3675f268cf407066a1e6b5410600ff00e9",
+          "changed_pixels": 206,
+          "changed_ratio": 0.0008702999577524293
+        }
+      },
+      "pass": true
+    },
+    {
+      "name": "transcript-collapsed--reason--light",
+      "reference": "evidence/screens/chat--transcript-collapsed-tools--light.png",
+      "crop": {
+        "x": 256,
+        "y": 80,
+        "w": 789,
+        "h": 300
+      },
+      "ours_sha256": "2ccafdff09df29fd3985ebdef18ac113be3167a58db19f63a63b8e0538734164",
+      "capture_evidence_id": "ev_9672acc72b8ee415fb8d41811f2943fd238d1d9e1c63d8484baad8b34f0325ee",
+      "page_errors": 0,
+      "compare": {
+        "threshold_0": {
+          "evidence_id": "ev_19d425d9aa28dfab4cc924e5a2227273b00e0e04dbb80158c9d165e33f768077",
+          "changed_pixels": 414,
+          "changed_ratio": 0.0017490494296577947
+        },
+        "threshold_24": {
+          "evidence_id": "ev_5f787b80fc569f5c91043549d4179cd4b8c1e428ff4434c5cf79deea0fb8b6a4",
+          "changed_pixels": 174,
+          "changed_ratio": 0.0007351077313054499
+        }
+      },
+      "pass": true
+    },
+    {
+      "name": "tool-calls-expanded--reason--dark",
+      "reference": "evidence/screens/chat--tool-calls-expanded--dark.png",
+      "crop": {
+        "x": 256,
+        "y": 80,
+        "w": 789,
+        "h": 540
+      },
+      "ours_sha256": "6b795d2c6742a333b9b73b490381210fe9a3facef1c1ff9a0ab25a2949f2a2b4",
+      "capture_evidence_id": "ev_4a3ca2b366ebf951cb6a8eb7339ca47e0a3830950b2365d9db068f66dec8297f",
+      "page_errors": 0,
+      "compare": {
+        "threshold_0": {
+          "evidence_id": "ev_852cc119b7e1b4e3e91a80a57f0de312d9987b969a1be0c6110f1e3c07f610da",
+          "changed_pixels": 686,
+          "changed_ratio": 0.0016101018635872881
+        },
+        "threshold_24": {
+          "evidence_id": "ev_b2eca7afb0a3aeae85cbb358e166c2b9a2d3c393580e8e229fd29db9f693907f",
+          "changed_pixels": 360,
+          "changed_ratio": 0.0008449514152936206
+        }
+      },
+      "pass": true
+    }
+  ]
+}
