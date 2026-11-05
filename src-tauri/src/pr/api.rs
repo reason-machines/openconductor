@@ -12,7 +12,15 @@ use super::info::{derived_status, PrLookup, WorkspaceStatus};
 use super::list::{OpenIssue, OpenPr};
 use super::prompt::CreatePrRequest;
 
-/// `gh` to run: `$OPENCONDUCTOR_GH` when set (a bundled copy), else `gh` on PATH.
+/// `gh` to run: `$OPENCONDUCTOR_GH`, else the bundled copy, else `gh` on PATH
+/// (see [`crate::bundled_bin::gh_path`]).
+#[cfg(not(pr_harness))]
+pub fn gh_path() -> PathBuf {
+    crate::bundled_bin::gh_path()
+}
+
+/// The standalone harness has no app bundle: `$OPENCONDUCTOR_GH`, else PATH.
+#[cfg(pr_harness)]
 pub fn gh_path() -> PathBuf {
     std::env::var_os("OPENCONDUCTOR_GH").map_or_else(|| PathBuf::from("gh"), PathBuf::from)
 }

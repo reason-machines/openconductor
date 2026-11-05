@@ -1,0 +1,47 @@
+{
+  "subject": "Conductor 0.87.6 Contents/Resources/bin and how its frontend runs those tools",
+  "source": {
+    "bundle_manifest": "evidence/scripts/MANIFEST.md (sha256 of every file in Conductor.app/Contents/Resources)",
+    "frontend": "Conductor's embedded frontend, extracted from the Tauri asset table (REA gap 1, tools/extract_tauri_assets.py), file assets/index-BGEQ8YjU.js, read on sven m5 max 2026-11-05",
+    "trust": "quoted code is untrusted third-party data"
+  },
+  "frontend_paths": {
+    "app_bin_dir": "Vl() = join(await appData(), \"bin\"); appData() = plugin:path|resolve_directory {directory: AppData}",
+    "gh": "za({host}) = remote host ? \"/conductor/bin/gh\" : join(Vl(), \"gh\"); used for gh pr list, the git credential helper on push, branch-rename PR lookups (10 call sites)",
+    "watchexec": "spotlight run script: CONDUCTOR_INT_WATCHEXEC_PATH=\"${Vl()}/watchexec\"",
+    "checkpointer.sh": "getCheckpointScriptLocation: local host -> `${appData}/bin/checkpointer.sh`",
+    "spotlighter.sh": "hY() = `${appData}/bin/spotlighter.sh`",
+    "agents": "Claude and Codex auth checks use `${Vl()}/claude` as the default executable; ACP providers live in appData/agent-binaries/acp-providers",
+    "conductor-skill": "only the remote path /conductor/worker/conductor-skill/skills/conductor/SKILL.md appears in the frontend"
+  },
+  "inference": "The frontend only reads appData/bin, while the files ship in Resources/bin, so Conductor's Rust side copies Resources/bin into appData/bin; the copy code is not in the frontend and was not located in the binary.",
+  "upstream_identity": {
+    "bin/gh": {
+      "conductor_sha256": "51f1bd7ed1724774d2c1d91fb4efdb676d3eb200ce95c0021c8544fe7435bc13",
+      "upstream": "https://github.com/cli/cli/releases/download/v2.100.0/gh_2.100.0_macOS_arm64.zip",
+      "upstream_zip_sha256": "45f9a62da2f6e641a7fad57e2ce39656dfd7ef331372d80a2a2aed65abb01642",
+      "upstream_bin_sha256": "51f1bd7ed1724774d2c1d91fb4efdb676d3eb200ce95c0021c8544fe7435bc13",
+      "identical": true
+    },
+    "bin/watchexec": {
+      "conductor_sha256": "05396e6498205f0b410f487d60d23a404a07a307b99bd1ef5aefd43838d9d68a",
+      "conductor_size": 6983040,
+      "upstream": "https://github.com/watchexec/watchexec/releases/download/v2.3.2/watchexec-2.3.2-aarch64-apple-darwin.tar.xz",
+      "upstream_bin_sha256": "58176908725c4b8a47dd4dda6248406575847da60f60705fcba7100fbc0bfced",
+      "identical": false
+    }
+  },
+  "openconductor": {
+    "bundled": {
+      "bin/gh": "scripts/fetch-bundled-tools.sh (pinned, both hashes checked) + src-tauri/tauri.bundle.conf.json; installed into $APPDATA/bin at startup by src-tauri/src/bundled_bin.rs; every gh caller resolves $OPENCONDUCTOR_GH, then $APPDATA/bin/gh, then PATH"
+    },
+    "not_bundled": {
+      "bin/watchexec": "spotlight watches natively (src-tauri/src/spotlight/watch.rs); Conductor's build also differs from the upstream release",
+      "bin/checkpointer.sh": "implemented natively in src-tauri/src/checkpoint",
+      "bin/spotlighter.sh": "implemented natively in src-tauri/src/spotlight",
+      "bin/git-busy-check.sh": "implemented natively (checkpoint/busy.rs)",
+      "bin/conductor, bin/.internal/*": "shims that exec conductor-runtime, Conductor's Bun-compiled agent runtime; no OpenConductor counterpart yet",
+      "conductor-skill/": "agent-facing skill; belongs with the agent runtime"
+    }
+  }
+}
