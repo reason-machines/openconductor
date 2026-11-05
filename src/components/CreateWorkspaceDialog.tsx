@@ -27,6 +27,7 @@ import type { SourceState } from "../workspace/createFrom";
 import { CreateFromPicker } from "./CreateFromPicker";
 import { getSettings } from "../settings/api";
 import { newChatModel } from "../settings/models";
+import { defaultEffortSetting } from "../features/chat/chatModel";
 import { AddRepositoryMenu } from "./AddRepositoryMenu";
 
 interface Props {
@@ -91,7 +92,15 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
 
   useEffect(() => {
     let live = true;
-    getSettings().then((s) => live && setDraft((d) => ({ ...d, ...newChatModel(s) })), () => undefined);
+    getSettings().then(
+      (s) =>
+        live &&
+        setDraft((d) => {
+          const chosen = newChatModel(s);
+          return { ...d, ...chosen, effort: defaultEffortSetting(s, chosen.agent) ?? d.effort };
+        }),
+      () => undefined,
+    );
     return () => {
       live = false;
     };
@@ -159,7 +168,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
         userSetBranchName: naming.user_set_branch_name,
         number: created.number ?? null,
       };
-      // The first message opens the workspace's first chat session (agent runtime pending).
+      // The first message opens the workspace's first chat session on the model and effort picked here.
       if (firstSession) {
         configureReason(id, sessionConfig(firstSession.model, firstSession.effort));
         seedTranscript(id, firstSession.message);

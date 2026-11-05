@@ -25,6 +25,8 @@ import { withGeneralPreferences } from "../../settings/prompts.ts";
 
 const EVENT = "claude-chat-event";
 const sessionKey = (chatId: string) => `openconductor.claude.session.${chatId}`;
+/** Claude Code chats have no picked options yet; the key is the runtime's slot for them. */
+const configKey = (chatId: string) => `openconductor.claude.config.${chatId}`;
 
 /** Claude Code chats need the desktop app (the `claude` CLI runs there). */
 export const claudeAvailable = (): boolean => isTauri();
@@ -39,12 +41,18 @@ export const claudeBackend: ChatBackend<null> = {
   canSteer: CLAUDE_CAN_STEER,
   defaultConfig: null,
   sessionKey,
+  configKey,
+  // No options to read back: a Claude Code chat always starts on the default.
+  parseConfig: () => null,
   listen: (deliver) => listen<ReasonPayload>(EVENT, ({ payload }) => deliver(payload.chatId, (s) => applyReasonPayload(s, payload))),
   async open(chatId, cwd, sessionId) {
     await invoke("claude_open_chat", { chatId, cwd, sessionId });
   },
   // Attachments go in the message as named blocks (stream-json input takes
   // text), after the repository's general preferences on a first message.
+  // After Reset chat deleted turns, the runtime opens a new Claude session
+  // and the first attachment is the kept conversation ("Earlier
+  // conversation.md"), so it reaches Claude the same way.
   async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath }) {
     const withPrefs = firstMessage && repoPath ? await withGeneral(text, repoPath, cwd) : text;
     return invoke("claude_prompt", { chatId, text: withAttachments(withPrefs, attachments), turn });
