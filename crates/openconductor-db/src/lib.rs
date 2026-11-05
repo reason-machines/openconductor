@@ -24,8 +24,11 @@ use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePoolOptions};
 pub use sqlx::sqlite::SqlitePool;
 
 pub mod app_settings;
+pub mod attachments;
 pub mod diff_comments;
 pub mod repos;
+pub mod session_messages;
+pub mod sessions;
 pub mod terminal_sessions;
 pub mod workspaces;
 
