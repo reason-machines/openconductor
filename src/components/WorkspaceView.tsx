@@ -4,7 +4,7 @@ import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { configureReason, configureReasonDefault, reasonAvailable, reasonChatConfig } from "../features/chat/reasonChat.ts";
-import { CHAT_AGENT_IDS, CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
+import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
 import type { ChatSnapshot } from "../features/chat/chatRuntime.ts";
 import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
 import { forkToNewWorkspace } from "../features/chat/forkWorkspace.ts";
@@ -459,39 +459,35 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
         controls={
-          reason ? (
-            <>
-              {/* Locked while a turn runs or messages wait, so queued messages never move to another agent. */}
-              <select className="agent-select" aria-label="Agent" value={agentId} disabled={queue.status !== "idle" || queue.items.length > 0} onChange={(e) => pickAgent(e.target.value as ChatAgentId)}>
-                {CHAT_AGENT_IDS.map((id) => (
-                  <option key={id} value={id}>
-                    {CHAT_AGENTS[id].label}
-                  </option>
-                ))}
-              </select>
-              {codex ? (
-                <select
-                  className="agent-select codex-access"
-                  aria-label="Codex access"
-                  value={access}
-                  disabled={running}
-                  onChange={(e) => {
-                    const next = e.target.value as CodexAccess;
-                    setAccess(next);
-                    void setCodexAccess(chatId, next);
-                  }}
-                >
-                  {(Object.keys(CODEX_ACCESS) as CodexAccess[]).map((k) => (
-                    <option key={k} value={k}>
-                      {CODEX_ACCESS[k].label}
-                    </option>
-                  ))}
-                </select>
-              ) : null}
-            </>
+          // Codex's access mode; the agent itself is picked in the model picker.
+          codex ? (
+            <select
+              className="agent-select codex-access"
+              aria-label="Codex access"
+              value={access}
+              disabled={running}
+              onChange={(e) => {
+                const next = e.target.value as CodexAccess;
+                setAccess(next);
+                void setCodexAccess(chatId, next);
+              }}
+            >
+              {(Object.keys(CODEX_ACCESS) as CodexAccess[]).map((k) => (
+                <option key={k} value={k}>
+                  {CODEX_ACCESS[k].label}
+                </option>
+              ))}
+            </select>
           ) : null
         }
-        picker={main && !codex ? <ChatModelPicker chatId={chatId} /> : review ? <span className="oc-review-model">{review.modelLabel}</span> : null}
+        picker={
+          review ? (
+            <span className="oc-review-model">{review.modelLabel}</span>
+          ) : (
+            // A review chat keeps its model. The agent changes only while no turn runs and no message waits, so queued messages never move to another agent.
+            <ChatModelPicker chatId={chatId} agent={agentId} onAgentChange={reason && queue.status === "idle" && queue.items.length === 0 ? pickAgent : undefined} />
+          )
+        }
         slashCommands={codex ? CODEX_SLASH_COMMANDS : SLASH_COMMANDS}
         onCommand={(text) => {
           // Reason runs as an ACP agent and Codex here through its app server: Conductor's built-in commands are not wired for either yet.

@@ -97,12 +97,15 @@
     report.workspace = { name: text(q(".ws-title strong")), branch: text(q(".ws-title .chip")) };
     step("workspace created", report.workspace);
 
-    const picker = await waitFor("the agent picker", () => q('select[aria-label="Agent"]'));
-    setValue(picker, "claude");
-    await waitFor("Claude Code selected", () => q('select[aria-label="Agent"]').value === "claude");
-    report.agentLabel = text(picker.selectedOptions[0]);
+    // The agent is picked in the composer's model picker, as in Conductor: "Claude Code" is listed after the models.
+    const chip = await waitFor("the model picker", () => q("[data-testid='composer-model-button']"));
+    chip.click();
+    const entry = await waitFor("Claude Code in the model picker", () => qa(".oc-model-menu .oc-model-item").find((b) => text(b) === "Claude Code"));
+    entry.click();
+    await waitFor("Claude Code on the picker chip", () => text(q("[data-testid='composer-model-button']")).includes("Claude Code"));
+    report.agentLabel = "Claude Code";
     report.emptyStateNote = text(q(".chat .placeholder .muted"));
-    step("agent picked", { agent: picker.value, label: report.agentLabel });
+    step("agent picked", { agent: "claude", label: report.agentLabel });
 
     for (const [i, turn] of cfg.turns.entries()) {
       const endsBefore = qa(".chat-turn-end").length;
