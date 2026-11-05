@@ -8,7 +8,7 @@ const repo = (id: string, extra: Partial<DbRepoRow> = {}): DbRepoRow => ({
 });
 const ws = (repositoryId: string, dir: string, state = "ready", extra: Partial<DbWorkspaceRow> = {}): DbWorkspaceRow => ({
   id: `${repositoryId}/${dir}`, repositoryId, directoryName: dir, workspaceName: null, branch: dir, placeholderBranchName: null,
-  state, derivedStatus: null, manualStatus: null, workspacePath: `/data/${dir}`, pinnedAt: null, unread: false, number: null,
+  state, derivedStatus: null, manualStatus: null, workspacePath: `/data/${dir}`, pinnedAt: null, unread: false, prTitle: null, prDescription: null, number: null,
   createdAt: "2026-11-05 12:00:00", ...extra,
 });
 
@@ -32,6 +32,11 @@ test("maps rows in database order, marks hidden repos and drops archived workspa
 test("carries the workspace number from conductor.db", () => {
   const [r] = reposFromDb([repo("a")], [ws("a", "oslo", "ready", { number: 7 }), ws("a", "lima")], []);
   assert.deepEqual(r.workspaces.map((w) => w.number), [7, null]);
+});
+
+test("carries the workspace's intended target branch for the diff", () => {
+  const [r] = reposFromDb([repo("a")], [ws("a", "oslo", "ready", { intendedTargetBranch: "develop" }), ws("a", "lima")], []);
+  assert.deepEqual(r.workspaces.map((w) => w.targetBranch), ["develop", null]);
 });
 
 test("selection falls back to home when its workspace is gone", () => {
@@ -59,4 +64,19 @@ test("sidebar: pin, unread and status columns reach the workspace", () => {
   assert.equal(oslo.pinnedAt, Date.UTC(2026, 10, 5, 12, 0, 0));
   assert.deepEqual([oslo.unread, oslo.manualStatus, oslo.derivedStatus], [true, "done", "in-review"]);
   assert.deepEqual([lima.pinnedAt, lima.unread, lima.manualStatus, lima.derivedStatus], [undefined, undefined, undefined, undefined]);
+});
+
+test("sidebar: a user-set workspace name is shown as is", async () => {
+  const { workspaceLabel } = await import("../components/sidebarLabel.ts");
+  const [r] = reposFromDb(
+    [repo("a")],
+    [ws("a", "oslo", "ready", { workspaceName: "Fix login", userSetWorkspaceName: true, branch: "sven/oslo" }), ws("a", "lima", "ready", { workspaceName: "lima", branch: "sven/fix-the-thing" })],
+    [],
+  );
+  const [oslo, lima] = r.workspaces;
+  assert.equal(oslo.userSetWorkspaceName, true);
+  assert.equal(lima.userSetWorkspaceName, undefined);
+  const label = (w: typeof oslo) => workspaceLabel({ name: w.name, branch: w.branch, prTitle: w.prTitle, userSetWorkspaceName: w.userSetWorkspaceName, targetBranch: "main" });
+  assert.equal(label(oslo), "Fix login");
+  assert.notEqual(label(lima), "lima");
 });

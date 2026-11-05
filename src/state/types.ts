@@ -1,4 +1,5 @@
 import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
+import type { RowPr } from "./rowStatus.ts";
 
 export type WorkspaceStatus = "idle" | "working" | "needs-review" | "archived";
 
@@ -16,6 +17,8 @@ export interface Workspace {
   updatedAt?: number;
   /** Worktree path, once the backend created it. */
   path?: string;
+  /** `intended_target_branch`: where the work merges back; "All changes" is diffed against it. */
+  targetBranch?: string | null;
   /** `placeholder_branch_name`: the city branch, until the first message renames it. */
   placeholderBranchName?: string | null;
   /** `user_set_workspace_name` / `user_set_branch_name`: block the auto-rename. */
@@ -23,6 +26,8 @@ export interface Workspace {
   userSetBranchName?: boolean;
   /** Title of the workspace's pull request; the sidebar row shows it in place of the branch. */
   prTitle?: string | null;
+  /** Body of the workspace's pull request (`pr_description`); Create PR uses it verbatim. */
+  prDescription?: string | null;
   /** Unread agent output; the sidebar row's name turns semibold. */
   unread?: boolean;
   /* sidebar: pin and status (Conductor's pinned_at, manual_status, derived_status) */
@@ -33,6 +38,10 @@ export interface Workspace {
   derivedStatus?: WorkspaceStatusValue;
   /** `workspaces.number`, given on creation and shown as `W-<n>`; null for workspaces from before numbering. */
   number?: number | null;
+  /** `workspaces.state` (initializing, setting_up, ready, failed, ...): the row shows setup and failure. */
+  state?: string;
+  /** The workspace's pull request as last read from GitHub; drives the row's status icon. */
+  pr?: RowPr | null;
 }
 
 export interface Repo {

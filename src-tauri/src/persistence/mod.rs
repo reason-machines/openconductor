@@ -202,14 +202,22 @@ pub struct WorkspaceRow {
     pub repository_id: String,
     pub directory_name: String,
     pub workspace_name: Option<String>,
+    /// `workspaces.user_set_workspace_name`: show `workspace_name` as is.
+    pub user_set_workspace_name: bool,
     pub branch: String,
     pub placeholder_branch_name: Option<String>,
     pub state: &'static str,
     pub derived_status: Option<String>,
     pub manual_status: Option<String>,
     pub workspace_path: Option<String>,
+    /// `intended_target_branch`: the branch the work merges into; "All changes" diffs against it.
+    pub intended_target_branch: Option<String>,
     pub pinned_at: Option<String>,
     pub unread: bool,
+    /// The PR's title and body as last stored (`pr_title`, `pr_description`):
+    /// the sidebar label and Create PR's title / description.
+    pub pr_title: Option<String>,
+    pub pr_description: Option<String>,
     /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
     pub number: Option<i64>,
     pub created_at: String,
@@ -243,14 +251,18 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
             WorkspaceRow {
                 directory_name: w.directory_name.unwrap_or_default(),
                 workspace_name: w.workspace_name,
+                user_set_workspace_name: w.user_set_workspace_name,
                 branch: w.branch.unwrap_or_default(),
                 placeholder_branch_name: w.placeholder_branch_name,
                 state: state_name(w.state),
                 derived_status: w.derived_status,
                 manual_status: w.manual_status,
                 workspace_path: w.workspace_path,
+                intended_target_branch: w.intended_target_branch,
                 pinned_at: w.pinned_at,
                 unread: w.unread,
+                pr_title: w.pr_title,
+                pr_description: w.pr_description,
                 number: w.number,
                 created_at: w.created_at,
                 repository_id: w.repository_id,
