@@ -77,6 +77,53 @@ async fn null_columns_read_as_empty() {
     assert!(!s.alternate_screen && !s.bracketed_paste && !s.has_received_user_input);
 }
 
+#[tokio::test]
+async fn delete_removes_only_that_row() {
+    let pool = open_in_memory().await.unwrap();
+    terminal_sessions::upsert(&pool, &session("s1"))
+        .await
+        .unwrap();
+    terminal_sessions::upsert(&pool, &session("s2"))
+        .await
+        .unwrap();
+    terminal_sessions::delete(&pool, "s1").await.unwrap();
+    // Deleting a row that is not there is not an error.
+    terminal_sessions::delete(&pool, "s1").await.unwrap();
+    assert_eq!(terminal_sessions::get(&pool, "s1").await.unwrap(), None);
+    assert!(terminal_sessions::get(&pool, "s2").await.unwrap().is_some());
+    assert_eq!(sqlx_count(&pool).await, 1);
+}
+
+#[tokio::test]
+async fn lists_session_ids_overall_and_per_workspace() {
+    let pool = open_in_memory().await.unwrap();
+    let other = TerminalSession {
+        workspace_id: "w2".into(),
+        ..session("s3")
+    };
+    for s in [session("s1"), session("s2"), other] {
+        terminal_sessions::upsert(&pool, &s).await.unwrap();
+    }
+    let mut all = terminal_sessions::session_ids(&pool).await.unwrap();
+    all.sort();
+    assert_eq!(all, ["s1", "s2", "s3"]);
+    let mut w1 = terminal_sessions::session_ids_for_workspace(&pool, "w1")
+        .await
+        .unwrap();
+    w1.sort();
+    assert_eq!(w1, ["s1", "s2"]);
+    assert_eq!(
+        terminal_sessions::session_ids_for_workspace(&pool, "w2")
+            .await
+            .unwrap(),
+        ["s3"]
+    );
+    assert!(terminal_sessions::session_ids_for_workspace(&pool, "none")
+        .await
+        .unwrap()
+        .is_empty());
+}
+
 async fn sqlx_count(pool: &openconductor_db::SqlitePool) -> i64 {
     sqlx::query_scalar("SELECT COUNT(*) FROM terminal_sessions")
         .fetch_one(pool)

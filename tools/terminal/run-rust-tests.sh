@@ -41,7 +41,7 @@ serde_json = "1"
 aes-gcm = "0.10"
 sha2 = "0.10"
 openconductor-db = { path = "$repo_root/crates/openconductor-db" }
-tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros"] }
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "sync"] }
 
 [workspace]
 EOF
