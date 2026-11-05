@@ -396,12 +396,12 @@ fn read_lines<R: Read + Send + 'static>(
 #[cfg(all(test, unix))]
 mod tests {
     use std::fs;
-    use std::os::unix::fs::PermissionsExt;
     use std::path::PathBuf;
     use std::sync::atomic::{AtomicU32, Ordering};
 
     use super::super::codex_cli::{ApprovalPolicy, CodexPolicy, SandboxMode};
     use super::super::codex_events::{ServerRequest, TurnStatus};
+    use super::super::test_exe::write_executable;
     use super::super::{AgentKind, LaunchEnv};
     use super::*;
 
@@ -450,8 +450,7 @@ done
         ));
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("codex");
-        fs::write(&path, body).unwrap();
-        fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+        write_executable(&path, body, 0o755);
         path
     }
 

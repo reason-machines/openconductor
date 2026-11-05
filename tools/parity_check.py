@@ -363,9 +363,10 @@ def pragma_schema(conn):
 
 
 def build_rebuild_db(tree, path, db):
-    """Apply the rebuild's migrations for one database. Migration directories with "cache" in their
-    path belong to cache.db; every other migrations/ directory belongs to conductor.db."""
-    migrations = sorted(p for p in tree.paths if re.search(r"(^|/)migrations/.*\.sql$", p)
+    """Apply the rebuild's migrations for one database. Migration directories (migrations/,
+    migrations-cache/, ...) with "cache" in their path belong to cache.db; every other one belongs
+    to conductor.db."""
+    migrations = sorted(p for p in tree.paths if re.search(r"(^|/)migrations[^/]*/[^/]*\.sql$", p)
                         and not p.startswith("evidence/") and not p.endswith(".down.sql")
                         and (("cache" in os.path.dirname(p).lower()) == (db == "cache")))
     conn = sqlite3.connect(path)

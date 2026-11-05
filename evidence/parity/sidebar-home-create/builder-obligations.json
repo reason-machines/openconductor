@@ -1,13 +1,13 @@
 {
  "schema": "openconductor.builder-obligations.v1",
  "ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 85e00bb)",
- "verdict_parity_pct": 62.5,
+ "verdicts_verified_at": "2026-11-05 (main 0e2531b; sidebar items touched by #278 re-read on 0e2531b, others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 64.7,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 37,
+ "open": 36,
  "by_owner": {
   "create-workspace": 5,
-  "home": 10,
+  "home": 9,
   "setup-and-run-scripts": 1,
   "sidebar": 21
  },
@@ -217,28 +217,6 @@
      5007,
      137,
      2767
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.home.colors",
-   "item": "home.colors",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [
-    "theme"
-   ],
-   "feature": "Home background and entry-card fill match the reference screens in light and dark",
-   "verdict": "partial",
-   "gap": "Measured on REA captures on 85e00bb: main background now matches (#141110 dark, #ffffff light). Entry cards still use --secondary: #24272d vs #211e1c dark, #efefec vs #fafaf9 light.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "files": [
-     "evidence/screens/home--empty-signed-in--dark.png",
-     "evidence/screens/home--empty-signed-in--light.png",
-     "evidence/frontend/css-tokens.json"
     ]
    },
    "status": "open"
@@ -472,26 +450,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.ws-actions",
-   "item": "sidebar.ws-actions",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Workspace actions menu on a row (copy info, rename, archive, pin, section)",
-   "verdict": "missing",
-   "gap": "Workspace rows have no context or actions menu; the only hover menus are on the section header and repo header.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     4970,
-     954,
-     899
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.archived-view",
    "item": "sidebar.archived-view",
    "area": "sidebar",
@@ -587,57 +545,6 @@
     ],
     "schema": [
      "repos.icon"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.ws-pinned",
-   "item": "sidebar.ws-pinned",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "persistence"
-   ],
-   "feature": "Pin workspaces into a pinned group at the top",
-   "verdict": "backend",
-   "gap": "workspaces::set_pinned_at is in the linked crate and db_list_workspaces returns pinnedAt; the frontend ignores it and there is no pin action, command or pinned group.",
-   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     3263,
-     1863,
-     1864
-    ],
-    "schema": [
-     "workspaces.pinned_at"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.ws-unread",
-   "item": "sidebar.ws-unread",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "persistence"
-   ],
-   "feature": "Unread marker, mark-as-unread action and jump-to-next-unread command",
-   "verdict": "backend",
-   "gap": "workspaces::set_unread is in the linked crate and Sidebar.tsx/styles.css style data-unread, but reposFromDb drops the unread field, nothing sets it, and there is no mark-as-unread action or next-unread command.",
-   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     2595,
-     2054,
-     2832,
-     1534
-    ],
-    "schema": [
-     "workspaces.unread"
     ]
    },
    "status": "open"
@@ -789,6 +696,26 @@
    "status": "open"
   },
   {
+   "obligation_id": "parity.sidebar.ws-actions",
+   "item": "sidebar.ws-actions",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [],
+   "feature": "Workspace actions menu on a row (copy info, rename, archive, pin, section)",
+   "verdict": "partial",
+   "gap": "Right-clicking a row opens WorkspaceActionsMenu.tsx (#278) with mark read/unread (R), pin/unpin (P), a Set status submenu and Archive. Rename stays hidden until a rename dialog exists, and there is no copy-info or move-to-section item.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     4970,
+     954,
+     899
+    ]
+   },
+   "status": "open"
+  },
+  {
    "obligation_id": "parity.sidebar.ws-diffstat",
    "item": "sidebar.ws-diffstat",
    "area": "sidebar",
@@ -815,7 +742,7 @@
    "depends_on_builders": [],
    "feature": "Workspace row shows the workspace name, distinguishing user-set from generated names",
    "verdict": "partial",
-   "gap": "workspaceLabel (src/components/sidebarLabel.ts) applies user-set name, then PR title, then prettified branch, but reposFromDb never maps user_set_workspace_name or a PR title from conductor.db and no user rename sets the flag, so rows always show the branch-derived label.",
+   "gap": "workspaceLabel uses user-set name, then PR title, then prettified branch, and WorkspaceView now keeps prTitle in step with GitHub (setWorkspacePr via usePullRequest). renameWorkspace accepts userSet, but no rename dialog calls it and reposFromDb does not map user_set_workspace_name.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -853,6 +780,31 @@
    "status": "open"
   },
   {
+   "obligation_id": "parity.sidebar.ws-pinned",
+   "item": "sidebar.ws-pinned",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "persistence"
+   ],
+   "feature": "Pin workspaces into a pinned group at the top",
+   "verdict": "partial",
+   "gap": "Pin/unpin from the row menu or P, and a Pinned group above My workspaces (src/state/sidebarOrder.ts, SidebarSections.tsx); reposFromDb maps pinned_at from conductor.db. Pins are local state only: no command writes set_pinned_at, so a desktop reload from the DB drops them.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     3263,
+     1863,
+     1864
+    ],
+    "schema": [
+     "workspaces.pinned_at"
+    ]
+   },
+   "status": "open"
+  },
+  {
    "obligation_id": "parity.sidebar.ws-status",
    "item": "sidebar.ws-status",
    "area": "sidebar",
@@ -862,7 +814,7 @@
    ],
    "feature": "Status indicator from a derived status with optional manual override (default in-progress)",
    "verdict": "partial",
-   "gap": "Rows show a status icon, but reposFromDb hardcodes status idle and ignores derivedStatus/manualStatus from db_list_workspaces; no derived/manual status, in-progress default or override UI.",
+   "gap": "src/state/workspaceStatus.ts models effective status as manual, then derived, then in-progress, with a Set status submenu, and reposFromDb maps both columns. The row's status icon still renders the old idle/working model (SidebarWorkspaceRow.tsx STATUS_LABEL on ws.status), and the manual status is not written to conductor.db.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [
     "ws.status-archive"
@@ -875,6 +827,32 @@
     "schema": [
      "workspaces.derived_status",
      "workspaces.manual_status"
+    ]
+   },
+   "status": "open"
+  },
+  {
+   "obligation_id": "parity.sidebar.ws-unread",
+   "item": "sidebar.ws-unread",
+   "area": "sidebar",
+   "owner": "sidebar",
+   "depends_on_builders": [
+    "persistence"
+   ],
+   "feature": "Unread marker, mark-as-unread action and jump-to-next-unread command",
+   "verdict": "partial",
+   "gap": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it; reposFromDb maps unread from conductor.db. Changes are not written back (no set_unread command), and there is no jump-to-next-unread-workspace command.",
+   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
+   "ledger_obligations": [],
+   "evidence": {
+    "copy": [
+     2595,
+     2054,
+     2832,
+     1534
+    ],
+    "schema": [
+     "workspaces.unread"
     ]
    },
    "status": "open"

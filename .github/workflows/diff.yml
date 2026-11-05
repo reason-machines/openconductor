@@ -48,5 +48,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+      # pierre.test.ts parses patches with @pierre/diffs, so the dependencies are needed.
+      - run: npm ci
       - name: node --test (type-stripped)
         run: node --experimental-strip-types --test src/features/diff/*.test.ts

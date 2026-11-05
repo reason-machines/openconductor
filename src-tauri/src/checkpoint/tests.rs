@@ -582,3 +582,40 @@ fn utc_formatting() {
     assert_eq!(iso_utc(at(4_102_444_799)), "2099-12-31T23:59:59Z");
     assert_eq!(compact_utc(at(1_735_787_045)), "20250102T030405Z");
 }
+
+#[test]
+fn changed_since_lists_paths_that_differ_from_current_files() {
+    let t = repo_with_commit("changed-since");
+    let ws = t.path();
+    write(ws, ".gitignore", "*.log\n");
+    write(ws, "untracked.txt", "u\n");
+    save(ws, &named("end")).unwrap();
+    // Matching state: nothing changed, and nothing in the workspace moved.
+    let before = status(ws);
+    assert_eq!(changed_since(ws, "end").unwrap(), Vec::<String>::new());
+    assert_eq!(status(ws), before);
+
+    write(ws, "a.txt", "edited\n"); // modified
+    fs::remove_file(ws.join("untracked.txt")).unwrap(); // gone
+    write(ws, "new dir/ünï.txt", "n\n"); // added, unquoted path
+    write(ws, "noise.log", "ignored\n"); // ignored: not counted
+    g(ws, &["add", "a.txt"]); // staging does not matter
+    let mut got = changed_since(ws, "end").unwrap();
+    got.sort();
+    assert_eq!(got, vec!["a.txt", "new dir/ünï.txt", "untracked.txt"]);
+    // Still read-only: the real index keeps the staged edit.
+    assert_eq!(g(ws, &["diff", "--cached", "--name-only"]), "a.txt");
+
+    // Restoring brings the count back to zero.
+    restore(ws, "end").unwrap();
+    assert_eq!(changed_since(ws, "end").unwrap(), Vec::<String>::new());
+}
+
+#[test]
+fn changed_since_unknown_checkpoint_is_not_found() {
+    let t = repo_with_commit("changed-since-missing");
+    match changed_since(t.path(), "nope") {
+        Err(CheckpointError::NotFound(id)) => assert_eq!(id, "nope"),
+        other => panic!("expected NotFound, got {other:?}"),
+    }
+}

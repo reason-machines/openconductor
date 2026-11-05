@@ -1,19 +1,19 @@
 {
  "ref": "origin/main",
- "source_files": 243,
- "detector_parity_pct": 72.8,
+ "source_files": 269,
+ "detector_parity_pct": 74.3,
  "areas": {
   "sidebar": {
    "items": 33,
-   "implemented": 17,
+   "implemented": 18,
    "partial": 11,
-   "missing": 5,
-   "parity_pct": 68.2,
+   "missing": 4,
+   "parity_pct": 71.2,
    "verdict_implemented": 12,
-   "verdict_partial": 10,
-   "verdict_backend": 6,
-   "verdict_missing": 5,
-   "verdict_parity_pct": 56.1
+   "verdict_partial": 13,
+   "verdict_backend": 4,
+   "verdict_missing": 4,
+   "verdict_parity_pct": 59.1
   },
   "home": {
    "items": 18,
@@ -21,11 +21,11 @@
    "partial": 3,
    "missing": 4,
    "parity_pct": 69.4,
-   "verdict_implemented": 8,
-   "verdict_partial": 6,
+   "verdict_implemented": 9,
+   "verdict_partial": 5,
    "verdict_backend": 0,
    "verdict_missing": 4,
-   "verdict_parity_pct": 61.1
+   "verdict_parity_pct": 63.9
   },
   "create": {
    "items": 17,
@@ -269,7 +269,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "workspaceLabel (src/components/sidebarLabel.ts) applies user-set name, then PR title, then prettified branch, but reposFromDb never maps user_set_workspace_name or a PR title from conductor.db and no user rename sets the flag, so rows always show the branch-derived label.",
+   "why": "workspaceLabel uses user-set name, then PR title, then prettified branch, and WorkspaceView now keeps prTitle in step with GitHub (setWorkspacePr via usePullRequest). renameWorkspace accepts userSet, but no rename dialog calls it and reposFromDb does not map user_set_workspace_name.",
    "recheck": false
   },
   {
@@ -316,7 +316,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Rows show a status icon, but reposFromDb hardcodes status idle and ignores derivedStatus/manualStatus from db_list_workspaces; no derived/manual status, in-progress default or override UI.",
+   "why": "src/state/workspaceStatus.ts models effective status as manual, then derived, then in-progress, with a Set status submenu, and reposFromDb maps both columns. The row's status icon still renders the old idle/working model (SidebarWorkspaceRow.tsx STATUS_LABEL on ws.status), and the manual status is not written to conductor.db.",
    "recheck": false
   },
   {
@@ -367,8 +367,8 @@
      "file": "src/features/diff/nav.ts"
     }
    ],
-   "verdict": "backend",
-   "why": "workspaces::set_unread is in the linked crate and Sidebar.tsx/styles.css style data-unread, but reposFromDb drops the unread field, nothing sets it, and there is no mark-as-unread action or next-unread command.",
+   "verdict": "partial",
+   "why": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it; reposFromDb maps unread from conductor.db. Changes are not written back (no set_unread command), and there is no jump-to-next-unread-workspace command.",
    "recheck": false
   },
   {
@@ -388,8 +388,8 @@
      "file": "crates/openconductor-db/src/workspaces.rs"
     }
    ],
-   "verdict": "backend",
-   "why": "workspaces::set_pinned_at is in the linked crate and db_list_workspaces returns pinnedAt; the frontend ignores it and there is no pin action, command or pinned group.",
+   "verdict": "partial",
+   "why": "Pin/unpin from the row menu or P, and a Pinned group above My workspaces (src/state/sidebarOrder.ts, SidebarSections.tsx); reposFromDb maps pinned_at from conductor.db. Pins are local state only: no command writes set_pinned_at, so a desktop reload from the DB drops them.",
    "recheck": false
   },
   {
@@ -647,23 +647,23 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Measured on REA captures at 1440x900 on 85e00bb: sidebar edge at x=255 in both, sidebar fill #1c1817 dark / #fcfcfb light and main #141110 / #ffffff identical to the reference. REA compare-web-screenshots (t=24): 0.6-0.9% of sidebar pixels differ (was 3.1-5.4%), from text and data only.",
+   "why": "Measured on REA captures at 1440x900 on 0e2531b: sidebar edge at x=255 in both, sidebar fill #1c1817 dark / #fcfcfb light and main #141110 / #ffffff identical to the reference. REA compare-web-screenshots (t=24): 0.6-0.9% of sidebar pixels differ (was 3.1-5.4%), from text and data only.",
    "recheck": false
   },
   {
    "id": "sidebar.ws-actions",
    "area": "sidebar",
    "feature": "Workspace actions menu on a row (copy info, rename, archive, pin, section)",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "(context_?menu|onContextMenu|workspace_?actions)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/SidebarWorkspaceRow.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "Workspace rows have no context or actions menu; the only hover menus are on the section header and repo header.",
+   "verdict": "partial",
+   "why": "Right-clicking a row opens WorkspaceActionsMenu.tsx (#278) with mark read/unread (R), pin/unpin (P), a Set status submenu and Archive. Rename stays hidden until a rename dialog exists, and there is no copy-info or move-to-section item.",
    "recheck": false
   },
   {
@@ -809,8 +809,8 @@
      "file": "src/settings/appearance.css"
     }
    ],
-   "verdict": "partial",
-   "why": "Measured on REA captures on 85e00bb: main background now matches (#141110 dark, #ffffff light). Entry cards still use --secondary: #24272d vs #211e1c dark, #efefec vs #fafaf9 light.",
+   "verdict": "implemented",
+   "why": "Measured on REA captures on 0e2531b after #269: main background (#141110 dark, #ffffff light), entry-card fill (#211e1c / #fafaf9) and card border (#373433 / #eae8e6) are pixel-identical to the reference at the sampled points.",
    "recheck": false
   },
   {
@@ -1441,6 +1441,6 @@
   }
  ],
  "verdicts_ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 85e00bb)",
- "verdict_parity_pct": 62.5
+ "verdicts_verified_at": "2026-11-05 (main 0e2531b; sidebar items touched by #278 re-read on 0e2531b, others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 64.7
 }

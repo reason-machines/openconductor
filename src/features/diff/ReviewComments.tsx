@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { commentStoreFor } from "./commentsApi.ts";
 import { formatForAgent, newLocalComment, pendingForAgent, refreshOutdated, sideOf, threadKey, threadsAt, threadsOf, type DiffComment, type Thread } from "./comments.ts";
-import type { LineAnchor } from "./FileDiffView";
+import { revealLine, type LineAnchor } from "./FileDiffView";
 import { commentTargets, stepComment } from "./nav.ts";
 import { buildReviewPrompt } from "./review.ts";
 import type { DiffScope, FileDiff } from "./types.ts";
@@ -228,8 +228,11 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, customR
     setFocused(t.id);
     const path = files[t.fileIndex].path;
     reveal?.(path);
-    // The diff tab shows one file: let it render the revealed file before scrolling.
+    const root = comments.find((c) => c.id === t.id);
+    // The diff tab shows one file: let it render the revealed file, then have its
+    // virtualized view scroll the comment's line into the rendered window.
     requestAnimationFrame(() => {
+      if (root && revealLine(path, { side: sideOf(root), line: t.line })) return;
       const el = document.getElementById(`oc-comment-${t.id}`) ?? document.getElementById(`oc-file-${encodeURIComponent(path)}`);
       el?.scrollIntoView({ block: "center" });
     });
@@ -242,6 +245,18 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, customR
   });
 
   const onLineClick = (file: FileDiff, anchor: LineAnchor) => setComposing({ path: file.path, ...anchor });
+
+  // Lines with something rendered under them: each thread's last line, and the open composer.
+  const anchors = (file: FileDiff): LineAnchor[] => {
+    const out = new Map<string, LineAnchor>();
+    for (const t of threads) {
+      if (t.root.file_path !== file.path || t.root.file_level) continue;
+      const a = { side: sideOf(t.root), line: t.root.end_line_number ?? t.root.line_number };
+      out.set(`${a.side}:${a.line}`, a);
+    }
+    if (composing?.path === file.path) out.set(`${composing.side}:${composing.line}`, { side: composing.side, line: composing.line });
+    return [...out.values()];
+  };
 
   const annotations = (file: FileDiff, anchor: LineAnchor): ReactNode => {
     const here = threadsAt(threads, file.path, anchor.side, anchor.line);
@@ -291,5 +306,5 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, customR
     setScope(s);
   }, []);
 
-  return { onLineClick, annotations, actions, onLoaded };
+  return { onLineClick, anchors, annotations, actions, onLoaded };
 }
