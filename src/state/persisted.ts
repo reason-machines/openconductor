@@ -30,6 +30,8 @@ export interface DbWorkspaceRow {
   workspacePath: string | null;
   pinnedAt: string | null;
   unread: boolean;
+  /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
+  number: number | null;
   createdAt: string;
 }
 
@@ -78,6 +80,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             unread: w.unread || undefined,
             manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
             derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
+            number: w.number ?? null,
           }),
         ),
     }));
