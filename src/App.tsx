@@ -60,8 +60,10 @@ export default function App() {
   const initialDialog = window.location.pathname === "/create" ? "create" : (new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
   const [dialog, setDialog] = useState<DialogKind | null>(initialDialog);
   const [createRepoId, setCreateRepoId] = useState<string | null>(null);
-  const openDialog = (d: DialogKind, repoId?: string) => {
+  const [createSectionId, setCreateSectionId] = useState<string | undefined>(undefined);
+  const openDialog = (d: DialogKind, repoId?: string, sectionId?: string) => {
     setCreateRepoId(repoId ?? (state.selection.kind === "workspace" ? state.selection.repoId : null));
+    setCreateSectionId(sectionId);
     setDialog(d);
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
@@ -280,6 +282,8 @@ export default function App() {
         <CreateWorkspaceDialog
           repos={state.repos}
           initialRepoId={createRepoId}
+          sections={state.sections ?? []}
+          initialSectionId={createSectionId}
           prefixSettings={prefix.settings}
           githubUsername={prefix.githubUsername}
           onClose={() => setDialog(null)}
