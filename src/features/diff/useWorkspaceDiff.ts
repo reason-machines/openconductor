@@ -38,8 +38,6 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
   const [load, setLoad] = useState<DiffLoad>({ state: "loading" });
   const [viewed, setViewedMap] = useState<ViewedMap>(() => loadViewed(localStorage, workspaceId));
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
-  // Files whose unmodified lines were expanded: reloaded alone with full context.
-  const [expanded, setExpanded] = useState<Record<string, FileDiff>>({});
   const [discarding, setDiscarding] = useState<FileDiff | null>(null);
 
   const update = (patch: Partial<DiffViewOptions>) => {
@@ -50,7 +48,6 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
 
   const refresh = useCallback(() => {
     setLoad({ state: "loading" });
-    setExpanded({});
     loadWorkspaceDiff(worktree, baseBranch, opts).then(
       (files) => setLoad({ state: "ready", files }),
       (e: unknown) => setLoad({ state: "error", message: String(e) }),
@@ -65,7 +62,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
 
   const files = useMemo(() => (load.state === "ready" ? load.files : []), [load]);
   const current = selectedPath === null ? -1 : files.findIndex((f) => f.path === selectedPath);
-  const selected = current >= 0 ? (expanded[files[current].path] ?? files[current]) : null;
+  const selected = current >= 0 ? files[current] : null;
 
   useEffect(() => {
     if (load.state === "ready") onLoaded?.(load.files, opts.scope);
@@ -95,11 +92,13 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
     "diff.toggleViewed": () => current >= 0 && setViewed(toggleViewed(viewed, files[current])),
   });
 
-  const expand = (f: FileDiff) =>
-    loadWorkspaceDiff(worktree, baseBranch, opts, { path: f.path, contextLines: WHOLE_FILE_CONTEXT }).then(
-      ([full]) => full && setExpanded((m) => ({ ...m, [f.path]: full })),
-      () => undefined,
-    );
+  // The file alone with whole-file context: Pierre builds the full old and new
+  // files from it when an "N unmodified lines" row is expanded.
+  const loadFull = (f: FileDiff) =>
+    loadWorkspaceDiff(worktree, baseBranch, opts, { path: f.path, contextLines: WHOLE_FILE_CONTEXT }).then(([full]) => {
+      if (!full) throw new Error(`${f.path} has no changes any more.`);
+      return full;
+    });
 
   const discard = (f: FileDiff) => discardFileChanges(worktree, baseBranch, opts, f).then(refresh);
 
@@ -115,9 +114,8 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
     totals,
     /** Index of the selected file in `files`, or -1. */
     current,
-    /** The selected file, with full context when its unmodified lines were expanded. */
+    /** The selected file. */
     selected,
-    isExpanded: (f: FileDiff) => f.path in expanded,
     open,
     openPath,
     isViewed: (f: FileDiff) => isViewed(viewed, f),
@@ -125,7 +123,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
     viewedCount: viewedCount(viewed, files),
     /** Next file not marked viewed after the selected one, or -1. */
     unread,
-    expand,
+    loadFull,
     discarding,
     askDiscard: setDiscarding,
     discard,

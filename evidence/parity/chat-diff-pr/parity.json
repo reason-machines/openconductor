@@ -1,7 +1,7 @@
 {
  "ledger_id": "rol_ba2a4881609d4eec7a8be78f1d5035ba6cd0f218c0073f39a66ceafade50e29c",
- "reviewed_at": "85e00bb",
- "head": "85e00bb",
+ "reviewed_at": "d91540c",
+ "head": "ad5139c",
  "areas": {
   "chat": {
    "label": "Chat: agent transcript, composer, queue, attachments, models, turn controls",
@@ -21,12 +21,12 @@
   "diff": {
    "label": "Diff viewer: changed files, file diff rendering, navigation, inline and GitHub review comments",
    "features": 14,
-   "parity_pct": 39.3,
+   "parity_pct": 42.9,
    "code_layer_pct": 70.2,
    "strict_parity_pct": 0.0,
    "by_verdict": {
-    "implemented": 1,
-    "partial": 9,
+    "implemented": 2,
+    "partial": 8,
     "missing": 4
    },
    "verified": 0,
@@ -50,7 +50,7 @@
  },
  "total": {
   "features": 41,
-  "parity_pct": 29.3,
+  "parity_pct": 30.5,
   "code_layer_pct": 46.9,
   "strict_parity_pct": 0.0
  },
@@ -575,12 +575,12 @@
    "id": "diff.file-render",
    "area": "diff",
    "title": "Render a file diff with syntax highlighting (reference uses the Pierre diff renderer)",
-   "status": "partial",
-   "score": 0.5,
+   "status": "implemented",
+   "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "why": "`DiffTab` opens the picked file in an 'All changes' main-area tab. `FileDiffView` shows real hunks with 'N unmodified lines' gap rows that expand through a `WHOLE_FILE_CONTEXT` reload, highlights the changed part of each line (rows.ts `changedSpans`), never wraps lines (`white-space: pre` plus horizontal scroll) and has an entire-file layout. There is no syntax highlighting anywhere: no highlighter in package.json or src. The reference renders with Pierre diffs and a code theme.",
-   "obligation": "Add syntax highlighting to unified, split and entire-file rows, keeping the intra-line emphasis.",
+   "why": "Since #262 FileDiffView.tsx draws each file with Pierre's @pierre/diffs FileDiff (the renderer REA found in Conductor 0.87.6's renderApp chunk, evidence/frontend/pierre-diff-options.md): Shiki syntax highlighting with the pierre-dark/pierre-light themes, 'line-info-basic' separators ('N unmodified lines') expanding 20 lines via loadDiffFiles, intra-line emphasis and no wrapping, on real hunks from the registered diff_workspace (pierre.ts toPatch). The REA capture ours-diff--file-unified at 85e00bb+#262 matches diff--file-unified in layout, colours and separators. Only nit: the header shows a status letter where the reference shows a file-type icon chip.",
+   "obligation": "",
    "layers_required": [
     "ui"
    ],
@@ -598,7 +598,7 @@
      "src/features/diff/api.ts",
      "src/features/diff/comments.ts",
      "src/features/diff/nav.ts",
-     "src/features/diff/rows.ts",
+     "src/features/diff/pierre.ts",
      "src/features/diff/types.ts",
      "src/features/diff/useWorkspaceDiff.ts",
      "src/features/diff/viewed.ts"
@@ -618,7 +618,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "why": "`LayoutToggle` (DiffViewer.tsx) gives icon toggles for unified, split and entire file in the file header. The choice persists in localStorage `openconductor.diff.options` and renders real data through rows.ts `unifiedRows`/`splitRows`/`fileLines`. The only gap is copy: our tooltips read 'Unified diff'/'Split diff', while the reference copy is 'Unified view'/'Split view' (evidence/frontend/diff-review-copy.json).",
+   "why": "LayoutToggle (DiffViewer.tsx) switches unified, split (Pierre diffStyle) and entire file (Pierre File) on real data; the choice persists in localStorage openconductor.diff.options, and the REA split capture renders both sides. The remaining gap is copy: tooltips read 'Unified diff'/'Split diff', the reference copy is 'Unified view'/'Split view' (evidence/frontend/diff-review-copy.json).",
    "obligation": "Use Conductor's 'Unified view' / 'Split view' labels on the layout toggles.",
    "layers_required": [
     "ui"
@@ -631,7 +631,6 @@
     "ui": [
      "src/features/diff/DiffViewer.tsx",
      "src/features/diff/FileDiffView.tsx",
-     "src/features/diff/rows.ts",
      "src/features/diff/types.ts"
     ]
    },
@@ -648,8 +647,8 @@
    "score": 0.0,
    "code_score": 0.0,
    "needs_rereview": false,
-   "why": "`ChangesList` maps every file, and `FileDiffView` renders every row of the selected file. The only nod to virtualization is `content-visibility: auto` on `.oc-file` (diff.css:81), and there is no virtualization library. The incorrect `parity:diff.virtualized` tag has been removed.",
-   "obligation": "Virtualize the changed-files list and the rows of long file diffs.",
+   "why": "ChangesList maps every file and FileDiffView renders one Pierre FileDiff per file. Conductor uses Pierre's CodeView with Virtualizer/VirtualizedFileDiff (evidence/frontend/pierre-diff-options.md); #262 says itself it uses FileDiff 'until virtualization lands'. Only content-visibility: auto on .oc-file.",
+   "obligation": "Render the diff tab through Pierre's CodeView with its Virtualizer (one diff item per file) and virtualize the changed-files list.",
    "layers_required": [
     "ui"
    ],
@@ -670,7 +669,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "why": "The 'Hide whitespace' checkbox sets `ignore_whitespace`, and git.rs `workspace_diff` passes `-w` for tracked and untracked files. With `-w`, git leaves whitespace-only files out entirely (checked with git 2.39 in /tmp), so they vanish from the list. FileDiffView's 'Only whitespace changed in this file.' can never appear with real data. Reference copy: 'Hide whitespace changes' / 'Show whitespace changes' / 'Only whitespace changes found'.",
+   "why": "'Hide whitespace' sets ignore_whitespace; git.rs workspace_diff passes -w, so whitespace-only files disappear from the list entirely (git 2.39 checked in /tmp) and FileDiffView's 'Only whitespace changed in this file.' never shows with real data. #262 also passes Pierre parseDiffOptions {ignoreWhitespace:true} as Conductor does, but the files are already gone. Reference copy: 'Hide whitespace changes' / 'Show whitespace changes' / 'Only whitespace changes found'. The test ignore_whitespace_drops_whitespace_only_hunks passes vacuously on an empty list.",
    "obligation": "Keep whitespace-only files in the list when whitespace is hidden (list files without -w, take hunks with -w) and show 'Only whitespace changes found', using the reference toggle labels.",
    "layers_required": [
     "backend",
@@ -833,8 +832,8 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "why": "Clicking a line number opens the composer (`FileDiffView` `num` \u2192 `useReviewComments.onLineClick`). Threads render as annotation rows with reply, edit, delete and resolve, persisted through the registered `diff_comments_list`, `diff_comment_add`, `diff_comment_edit`, `diff_comment_delete` and `diff_comment_resolve` into conductor.db `diff_comments` (migration 0002). New comments are always single-line: `newLocalComment` is called without `end`, and there is no shift-click or drag selection, although the reference schema has `end_line_number`.",
-   "obligation": "Let users select a line range (shift-click or drag on line numbers) and save it as line_number/end_line_number.",
+   "why": "Pierre's gutter button (enableGutterUtility, onGutterUtilityClick) opens the composer; threads render as Pierre line annotations with reply, edit, delete and resolve, persisted through the registered diff_comment_* commands into conductor.db diff_comments. anchorOfRange keeps only min(start,end) and enableLineSelection is not passed, so comments are single-line although Conductor enables line selection and the schema has end_line_number.",
+   "obligation": "Pass enableLineSelection/controlledSelection to Pierre and save the selected range as line_number/end_line_number.",
    "layers_required": [
     "data",
     "command",
@@ -970,8 +969,8 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "why": "The Mono Font row in Settings \u203a Appearance (AppearancePage.tsx) saves `appearance.mono_font`. `applyAppearance` sets `--font-mono`, which `--oc-diff-font` uses (diff.css:6), matching the reference row 'Mono Font: Font used for code and diffs.' The reference rows 'Code ligatures' (`file_ligatures_enabled`), 'Code theme' and 'Accessible colors' (evidence/settings/settings-registry.json) are not built. The protanopia/tritanopia palettes in diff.css:39-40 are never selected because nothing sets `data-palette`.",
-   "obligation": "Add the Code ligatures, Code theme and Accessible colors settings and apply them to the diff (font-variant-ligatures, highlighter theme, data-palette).",
+   "why": "Settings > Appearance Mono Font sets --font-mono, which the diff uses. Pierre ships the colour-vision theme variants Conductor offers, but the theme is fixed to pierre-dark/pierre-light (pierre.ts PIERRE_THEME) and the reference rows 'Code ligatures', 'Code theme', 'Accessible colors' and the wrap-lines setting (Pierre overflow 'wrap') are not built; the data-palette rules in diff.css are dead.",
+   "obligation": "Add Code theme, Accessible colors (Pierre colour-vision themes), Code ligatures and Wrap lines settings and pass them to Pierre (theme, overflow).",
    "layers_required": [
     "ui"
    ],

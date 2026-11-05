@@ -127,11 +127,12 @@ export function ChangesList({ diff, actions }: ChangesListProps) {
 export interface DiffTabProps {
   diff: WorkspaceDiff;
   onLineClick?: (file: FileDiff, anchor: LineAnchor) => void;
+  anchors?: (file: FileDiff) => LineAnchor[];
   annotations?: (file: FileDiff, anchor: LineAnchor) => ReactNode;
 }
 
 /** Main-area "All changes" tab: the file picked in the changes list, with its toolbar. */
-export function DiffTab({ diff, onLineClick, annotations }: DiffTabProps) {
+export function DiffTab({ diff, onLineClick, anchors, annotations }: DiffTabProps) {
   const { opts, update, selected, files, load } = diff;
   if (!selected) {
     return (
@@ -154,8 +155,9 @@ export function DiffTab({ diff, onLineClick, annotations }: DiffTabProps) {
           viewed={diff.isViewed(f)}
           onToggleViewed={() => diff.toggleViewed(f)}
           onLineClick={onLineClick && ((a) => onLineClick(f, a))}
+          anchors={anchors?.(f)}
           annotations={annotations && ((a) => annotations(f, a))}
-          onExpand={diff.isExpanded(f) ? undefined : () => void diff.expand(f)}
+          loadFull={() => diff.loadFull(f)}
           onDiscard={() => diff.askDiscard(f)}
           tools={<LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />}
         />
