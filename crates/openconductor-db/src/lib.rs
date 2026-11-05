@@ -27,6 +27,7 @@ pub use sqlx::sqlite::SqlitePool;
 pub use scope::Scope;
 
 pub mod app_settings;
+pub mod attachments;
 pub mod cache;
 pub mod chat_messages;
 pub mod diff_comments;
@@ -39,6 +40,8 @@ pub mod outbox;
 pub mod port_forwards;
 pub mod repos;
 mod scope;
+pub mod session_messages;
+pub mod sessions;
 pub mod terminal_sessions;
 pub mod workspaces;
 
