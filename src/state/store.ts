@@ -9,6 +9,7 @@ import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
+import { withActivity } from "./nextUnread";
 import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, reorderSection, sectionOf, sectionsFromDb, withoutWorkspace, type DbNavSection, type NavSection } from "./navigationSections";
 import { sameRepoRecord } from "./addRepo";
 import { archiveWorkspace, deleteWorkspace, emitArchiveEvent, startArchive, startUnarchive, rememberBrowserArchived, stopWorkspaceAgents, takeBrowserArchived, unarchiveWorkspace, workspaceAgentStatus, type ArchiveMode } from "../workspace/archive";
@@ -76,6 +77,8 @@ export type Action =
   | { type: "setWorkspaceUnread"; repoId: string; workspaceId: string; unread: boolean }
   | { type: "setWorkspacePinned"; repoId: string; workspaceId: string; pinned: boolean; at?: number }
   | { type: "setWorkspaceStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue }
+  /** The user sent a message at `at`: last activity moves forward (chat_messages_save writes the same to conductor.db). */
+  | { type: "touchWorkspace"; repoId: string; workspaceId: string; at: number }
   /* sidebar: user sections (navigationSections.ts) */
   | { type: "createSection"; section: NavSection; beforeSectionId?: string }
   | { type: "editSection"; sectionId: string; name: string; emoji?: string }
@@ -230,6 +233,8 @@ export function reducer(state: AppState, action: Action): AppState {
     }
     case "setWorkspaceStatus":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, manualStatus: action.status }));
+    case "touchWorkspace":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => withActivity(w, action.at));
     case "createSection":
       return withSections(state, createSection(state.sections ?? [], action.section, action.beforeSectionId));
     case "editSection":

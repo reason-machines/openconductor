@@ -8,6 +8,7 @@ import { VIEW_ARCHIVED_LABEL, type ArchivedWorkspace } from "../workspace/archiv
 /** Handled inside the palette: it switches tabs instead of closing. */
 export const VIEW_ARCHIVED_ACTION = "view-archived-workspaces";
 import { sidebarEntries } from "../state/sidebarOrder.ts";
+import { nextUnreadWorkspace } from "../state/nextUnread.ts";
 
 export interface WorkspaceRef {
   repoId: string;
@@ -40,6 +41,8 @@ export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   { id: "add-project", title: "Open project", group: "actions", keywords: ["add", "repository", "folder"] },
   { id: "clone-project", title: "Open GitHub project", group: "actions", keywords: ["clone", "repository"] },
   { id: "quick-start", title: "Quick start", group: "actions", keywords: ["new", "project"] },
+  // Conductor lists it first under Navigation, only while something is unread (renderApp @10,916,846).
+  { id: "go-to-next-unread", title: "Go to next unread", group: "navigation", bindingId: "chat.nextAttention", keywords: ["go", "to", "next", "unread", "attention", "chat", "session"] },
   { id: "go-home", title: "Go to Home", group: "navigation", bindingId: "nav.home" },
   { id: "next-workspace", title: "Next workspace", group: "navigation", bindingId: "workspace.next" },
   { id: "previous-workspace", title: "Previous workspace", group: "navigation", bindingId: "workspace.previous" },
@@ -72,7 +75,7 @@ export function paletteDataFromState(state: AppState, recentIds: readonly string
   return {
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
-    actions: PALETTE_ACTIONS,
+    actions: nextUnreadWorkspace(state, { skipSelected: false }) ? PALETTE_ACTIONS : PALETTE_ACTIONS.filter((a) => a.id !== "go-to-next-unread"),
     settings: [],
     recentWorkspaceIds: recentIds.filter((id) => known.has(id)),
     activeWorkspaceId,

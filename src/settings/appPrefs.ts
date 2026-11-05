@@ -22,6 +22,8 @@ export interface AppPrefs {
   roundhouse_client_user_id: string | null;
   /** The sidebar's "Filter by project" repository id; null is all projects. */
   sidebar_repo_filter: string | null;
+  /** Experimental "Show sidebar resource usage"; off by default. */
+  sidebar_resource_usage: boolean;
 }
 
 /** One typed write: `{ key: "garry_mode", value: true }`. */
@@ -33,7 +35,8 @@ export type AppPrefUpdate =
         | "experimental_tab_freak_mode"
         | "graphite_disabled"
         | "left_panel_visible"
-        | "right_panel_visible";
+        | "right_panel_visible"
+        | "sidebar_resource_usage";
       value: boolean;
     }
   | { key: "left_panel_width" | "onboarding_step" | "first_time_onboarding_step"; value: number }
@@ -57,6 +60,7 @@ export const DEFAULT_APP_PREFS: AppPrefs = {
   last_seen_announcement: null,
   roundhouse_client_user_id: null,
   sidebar_repo_filter: null,
+  sidebar_resource_usage: false,
 };
 
 /** The state an update leads to, for the optimistic copy and the browser fallback. */

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "menu--open-in--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      { "step_id": "expand_tide_web", "action": "click", "locator": { "kind": "css", "selector": "text=tide-web" }, "timeout_ms": 5000 },
+      { "step_id": "open_workspace", "action": "click", "locator": { "kind": "css", "selector": "text=Ada/fix login redirect" }, "timeout_ms": 5000 },
+      { "step_id": "pause", "action": "wait_for_timeout", "duration_ms": 2500 },
+      { "step_id": "open_menu", "action": "click", "locator": { "kind": "css", "selector": "button.rounded-l-none.px-2" }, "timeout_ms": 5000 }
+    ],
+    "final_settle_ms": 1200,
+    "notes": "Header Open button's chevron: 'Open in' menu with the apps of a Mac that has Cursor, VS Code, Zed, Xcode and Ghostty: Finder (⌘O, 1), Cursor 2, VS Code 3, Zed 4, Xcode 5, Ghostty 6, Terminal 7, Copy path 8."
+  },
+  {
+    "name": "menu--open-in--light",
+    "scenario": "populated",
+    "theme": "light",
+    "settle_ms": 6000,
+    "actions": [
+      { "step_id": "expand_tide_web", "action": "click", "locator": { "kind": "css", "selector": "text=tide-web" }, "timeout_ms": 5000 },
+      { "step_id": "open_workspace", "action": "click", "locator": { "kind": "css", "selector": "text=Ada/fix login redirect" }, "timeout_ms": 5000 },
+      { "step_id": "pause", "action": "wait_for_timeout", "duration_ms": 2500 },
+      { "step_id": "open_menu", "action": "click", "locator": { "kind": "css", "selector": "button.rounded-l-none.px-2" }, "timeout_ms": 5000 }
+    ],
+    "final_settle_ms": 1200,
+    "notes": "Same as dark, light theme."
+  }
+]

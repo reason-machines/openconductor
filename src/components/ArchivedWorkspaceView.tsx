@@ -8,7 +8,8 @@
 import { useEffect, useState, type Dispatch } from "react";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript";
-import { chatSnapshot, subscribeChat, type ChatSnapshot } from "../features/chat/reasonChat";
+import { chatSnapshot, subscribeChat } from "../features/chat/reasonChat";
+import type { ChatSnapshot } from "../features/chat/chatRuntime";
 import type { Action } from "../state/store";
 import type { Repo, Workspace } from "../state/types";
 import { ARCHIVED_BANNER, onArchiveEvent } from "../workspace/archive";

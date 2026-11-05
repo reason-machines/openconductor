@@ -8,6 +8,7 @@ import type { CommandHandlers } from "../keybindings/bind.ts";
 import { paletteDataFromState, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import type { ResultItem } from "./search/model.ts";
 import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
+import { nextUnreadWorkspace } from "../state/nextUnread.ts";
 
 const RECENT_LIMIT = 8;
 
@@ -52,6 +53,14 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   const go = (ref: WorkspaceRef | undefined) =>
     ref && dispatch({ type: "select", selection: { kind: "workspace", repoId: ref.repoId, workspaceId: ref.workspace.id } });
   const activeRepoId = sel.kind === "workspace" ? sel.repoId : state.repos[0]?.id;
+  // Opening the workspace clears its unread flag, as clicking its row does.
+  const goUnread = (skipSelected: boolean): boolean => {
+    const ref = nextUnreadWorkspace(state, { skipSelected });
+    if (!ref) return false;
+    go(ref);
+    dispatch({ type: "setWorkspaceUnread", repoId: ref.repoId, workspaceId: ref.workspace.id, unread: false });
+    return true;
+  };
 
   const actions: Record<string, () => void> = {
     "archive-workspace": () => sel.kind === "workspace" && dispatch({ type: "archiveWorkspace", repoId: sel.repoId, workspaceId: sel.workspaceId }),
@@ -62,6 +71,7 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
     "go-home": () => dispatch({ type: "select", selection: { kind: "home" } }),
     "next-workspace": () => go(stepWorkspace(state, 1)),
     "previous-workspace": () => go(stepWorkspace(state, -1)),
+    "go-to-next-unread": () => void goUnread(false),
   };
 
   // Cmd+N (workspace.create) is bound in App, which owns the Create-workspace dialog.
@@ -71,6 +81,9 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
     "workspace.archive": actions["archive-workspace"],
     "workspace.next": actions["next-workspace"],
     "workspace.previous": actions["previous-workspace"],
+    // Cmd+Alt+L. Conductor registers it in the workspace chat view (g1o @7,571,704), so it is
+    // live only while a workspace is open, and it keeps the key even when nothing is unread.
+    "chat.nextAttention": () => void (sel.kind === "workspace" && goUnread(true)),
   };
   for (let i = 1; i <= 9; i++) handlers[`workspace.switchTo${i}`] = () => go(shortcutOrder(state)[i - 1]);
   useKeybindings(handlers);
