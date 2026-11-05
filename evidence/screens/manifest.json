@@ -82,6 +82,155 @@
     },
     "page_errors": 0
   },
+  "diff--added-tests--dark": {
+    "file": "diff--added-tests--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_test_diff"
+    ],
+    "notes": "Changes panel > src/lib/auth.test.ts: an all-additions hunk (+14).",
+    "png_sha256": "7b30e5e65cd74498b28d4b8367588fdecca5f3dc7268146632359690e48cbd90",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_17438533d7b36d2af21d0bc40149a10fd8d3d79b2c9b122fdefca5793a1eb85b",
+      "scenario_sha256": "ccd4684d4d39c58b1cf27ea0945b015fbda434db3e99c2340b1d96045df3b602",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "diff--entire-file--dark": {
+    "file": "diff--entire-file--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_auth_diff",
+      "pause2",
+      "entire_file"
+    ],
+    "notes": "Same file as 'Entire file' (raw view).",
+    "png_sha256": "ae6998ed1ba360d1355bf0331e648d70499c5954e3fce5d4e5ab2bbd9133c7fe",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_6a65b9ed288a7a6c7f9d2b177ecfbc72321bead7f9a11e3f88c8570fbe8feb3e",
+      "scenario_sha256": "637ca35a47a3aaf993923f361a617ffe172219fbaaa56b71165a62351a4494e2",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "diff--file-split--dark": {
+    "file": "diff--file-split--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_auth_diff",
+      "pause2",
+      "split_view"
+    ],
+    "notes": "Same file in split view (old left, new right).",
+    "png_sha256": "f370059147479bab8dbf6493c36ebe80ad7b98871239626e251132e61030745d",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_417034d200467144240433f0dbbb45e0d48ac50208a6a44ac832c0db7947f0c7",
+      "scenario_sha256": "1bebef8fbab14e6585ccad5abb1ca9b6624b1e57ae88e6c82917800bfda587e9",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "diff--file-unified--dark": {
+    "file": "diff--file-unified--dark.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_auth_diff"
+    ],
+    "notes": "Changes panel > src/lib/auth.ts: unified diff tab with collapsed unmodified lines, one removed and one added line, Viewed checkbox.",
+    "png_sha256": "4cb12cfd05dced8a95762682d7e0cb41d16b710a919b3bac0fea00918086f61e",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_06b4101b8ce2f27f6e56019a53e1c31fd4769c7fca73e6259afbaa3d5ee65566",
+      "scenario_sha256": "baaeee178da839205a30568c107216f8a11eca0488642eb507a53ebc5781876b",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "diff--file-unified--light": {
+    "file": "diff--file-unified--light.png",
+    "route": "/",
+    "host": "conductor.localhost",
+    "scenario": "populated",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "expand_tide_web",
+      "open_workspace",
+      "pause",
+      "open_auth_diff"
+    ],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "93c09c5ab3237a2dee48520c1d1b068220e0320e117783d4a37c1a4a6e2942fb",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_5dd3160eb4fc16e9c4c7ad3b244944e07d46b90d2e12e7b038bef5acba928793",
+      "scenario_sha256": "ea26b14beb11db507897e2a63abcef4b3b53eca00eaeddc8e02bd564b799a81e",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
   "home--empty-signed-in--dark": {
     "file": "home--empty-signed-in--dark.png",
     "route": "/",

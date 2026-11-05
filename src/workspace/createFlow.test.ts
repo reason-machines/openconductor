@@ -158,5 +158,28 @@ test("setup log is capped", () => {
 test("requests map onto create_workspace arguments", () => {
   const r = buildCreateRequest(draft(), "sven/");
   assert.ok(r.ok);
-  assert.deepEqual(toCreateWorkspaceArgs(r.request), { repositoryId: "r1", branchName: "sven/oslo", directoryName: "oslo", baseBranch: "develop" });
+  assert.deepEqual(toCreateWorkspaceArgs(r.request), {
+    repositoryId: "r1",
+    branchName: "sven/oslo",
+    directoryName: "oslo",
+    baseBranch: "develop",
+    existingBranch: false,
+  });
+});
+
+test("create from a PR or branch asks create_workspace to check that branch out", () => {
+  const fromPr = buildCreateRequest(selectFrom(draft(), pr), "sven/");
+  assert.ok(fromPr.ok);
+  assert.deepEqual(toCreateWorkspaceArgs(fromPr.request), {
+    repositoryId: "r1",
+    branchName: "fix/login",
+    directoryName: "oslo",
+    baseBranch: "fix/login",
+    existingBranch: true,
+  });
+  const fromBranch = buildCreateRequest(selectFrom(draft(), { kind: "branch", name: "feature/x" }), "sven/");
+  assert.ok(fromBranch.ok);
+  const args = toCreateWorkspaceArgs(fromBranch.request);
+  assert.equal(args.branchName, "feature/x");
+  assert.equal(args.existingBranch, true);
 });

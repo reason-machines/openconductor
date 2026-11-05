@@ -15,6 +15,7 @@ use sqlx::migrate::Migrator;
 use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePool, SqlitePoolOptions};
 
 pub mod repos;
+pub mod workspaces;
 
 /// Every schema migration, embedded from `migrations/`.
 pub static MIGRATOR: Migrator = sqlx::migrate!("./migrations");
