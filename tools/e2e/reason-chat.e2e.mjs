@@ -174,8 +174,14 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
-  const placeholder = await waitFor("the Reason chat panel", () => chatText().then((t) => t && t.includes("Reason runs this chat") && t));
-  pass(`the desktop chat panel runs Reason: "${placeholder.split("\n").find((l) => l.includes("Reason runs"))}"`);
+  // Conductor's empty first chat (x9s) and a model, not Codex, on the picker chip.
+  const intro = await waitFor("the empty chat's intro", () => chatText().then((t) => t && t.includes("You’re in a new copy of") && t));
+  assert.ok(intro.includes("called e2e"), intro);
+  // The picker renders once the default model has loaded from Settings, a moment after the intro.
+  const modelChip = await waitFor("the model on the picker chip", () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.title || null;"));
+  assert.ok(modelChip !== "Codex", `the chat runs a model on Reason: ${modelChip}`);
+  await screenshot("reason-0-empty-chat");
+  pass(`the desktop chat opens on Conductor's empty state ("${intro.split("\n")[0]}") with ${modelChip} on the picker`);
 
   // The workspace opens its first terminal on its own (a PTY spawn, so it lands
   // a moment later). Its arrival must not take the keyboard from the chat box:

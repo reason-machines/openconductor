@@ -12,6 +12,8 @@ import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
 import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
+import { ChatEmptyState } from "../features/chat/ChatEmptyState.tsx";
+import { lastUserMessageAt, type OtherChat } from "../features/chat/chatEmptyState.ts";
 import type { ChatAgent } from "../features/chat/chatAgentChoice.ts";
 import { commandSet, isKnownCommand, parseSlashCommand } from "../features/chat/slashCommands.ts";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
@@ -104,6 +106,22 @@ interface ChatPanelProps extends Props {
   openFile?: (path: string) => void;
   /** Opens a forked chat tab on `config` with `draft` in its composer; returns its chat id. */
   forkToNewTab: (title: string, config: ConfigChoice[], draft: { text: string; attachments: TextAttachment[] }) => string;
+  /** Every chat tab of the workspace (its own chat and the review and fork tabs), for the empty chat's transcript chips. */
+  chatTabs: readonly { chatId: string; title: string }[];
+}
+
+/** Conductor's "Branched <branch> from <remote>/<parent>": the workspace's target branch, on origin for a cloned repo. */
+function branchedFrom(repo: Repo, workspace: Workspace): string | null {
+  const base = workspace.targetBranch ?? repo.defaultBranch;
+  if (!base) return null;
+  return repo.remote ? `origin/${base}` : base;
+}
+
+/** Another chat tab of the workspace, with its last user message, for the empty chat's transcript chips. */
+function otherChat(chatId: string, title: string, reason: boolean): OtherChat {
+  const agent = reason && savedAgent(chatId) === "codex" ? "codex" : "reason";
+  const messages = (agent === "codex" ? codexSnapshot(chatId) : chatSnapshot(chatId)).transcript.messages;
+  return { chatId, title, agent, lastUserMessageAt: lastUserMessageAt(messages) };
 }
 
 // Which agent runs a chat; each keeps its own transcript.
@@ -128,7 +146,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, forkToNewTab }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -408,19 +426,20 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           </div>
         )}
         {transcript.messages.length === 0 ? (
-          <div className="placeholder">
-            <h3>Chat with the agent</h3>
-            <p>
-              Messages you send here will run an agent inside <code>{workspace.name}</code>'s worktree on branch <code>{workspace.branch}</code>.
-            </p>
-            <p className="muted">
-              {!reason
-                ? "Browser preview: a stand-in agent answers; Reason runs chats in the desktop app."
-                : codex
-                  ? "Codex runs this chat with your signed-in codex CLI, in this workspace's folder."
-                  : "Reason runs this chat: one Reason Session per workspace."}
-            </p>
-          </div>
+          <ChatEmptyState
+            repoName={repo.name}
+            directoryName={workspace.directoryName ?? workspace.name}
+            state={workspace.state}
+            branch={workspace.branch}
+            branchedFrom={branchedFrom(repo, workspace)}
+            otherChats={chatTabs.filter((t) => t.chatId !== chatId).map((t) => otherChat(t.chatId, t.title, reason))}
+            onAttachTranscript={(c) => {
+              // Conductor: "Transcript of <title>.md", or "No messages in this chat".
+              const text = forkTranscript((c.agent === "codex" ? codexSnapshot(c.chatId) : chatSnapshot(c.chatId)).transcript);
+              if (text === null) return setAttachError("No messages in this chat");
+              setAttachments((list) => addAttachment(list, { name: forkAttachmentName(c.title), text }));
+            }}
+          />
         ) : (
           <Transcript
             transcript={transcript}
@@ -890,6 +909,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           openTurnFile={diff.openTurnFile}
           openFile={diff.openPath}
           forkToNewTab={reviews.fork}
+          chatTabs={[{ chatId: workspace.id, title: workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
           content={
             showDiff ? (
