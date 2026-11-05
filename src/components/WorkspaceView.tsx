@@ -7,6 +7,11 @@ import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { DiffViewer } from "../features/diff/DiffViewer";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
+import { TerminalPanel } from "../features/terminal/TerminalPanel";
+import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
+import { ScriptsPanel } from "./ScriptsPanel";
+import { useCreateSetupRunning } from "../workspace/useSetupWatch";
+import { RUNNING_SETUP } from "../workspace/createFlow";
 
 interface Props {
   repo: Repo;
@@ -136,6 +141,9 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 };
 
 export function WorkspaceView({ repo, workspace, dispatch }: Props) {
+  const [showTerminal, setShowTerminal] = useState(true);
+  const settingUp = useCreateSetupRunning(workspace.id);
+  useKeybindings({ "view.toggleTerminalPanel": () => setShowTerminal((v) => !v) });
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region>
@@ -149,8 +157,16 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
           <span className={`chip status ${workspace.status}`}>
             <span className={`status-dot ${workspace.status}`} /> {STATUS_TEXT[workspace.status]}
           </span>
+          {settingUp && (
+            <span className="chip status setting-up" role="status">
+              <span className="status-dot working" /> {RUNNING_SETUP}
+            </span>
+          )}
         </div>
         <div className="ws-actions">
+          <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
+            Terminal
+          </button>
           <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
             <ArchiveIcon size={14} /> Archive
           </button>
@@ -158,8 +174,13 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
       </header>
       <div className="ws-split">
         <ChatPanel repo={repo} workspace={workspace} dispatch={dispatch} />
-        <DiffPanel workspace={workspace} repo={repo} />
+        <div className="ws-right">
+          <DiffPanel workspace={workspace} repo={repo} />
+          <ScriptsPanel repo={repo} workspace={workspace} />
+        </div>
       </div>
+      {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
+      {showTerminal && <TerminalPanel workspaceId={workspace.id} cwd={repo.path} />}
     </div>
   );
 }

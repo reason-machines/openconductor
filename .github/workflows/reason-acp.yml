@@ -5,11 +5,13 @@ on:
     branches: [main]
     paths:
       - "src-tauri/src/reason_acp/**"
+      - "src-tauri/src/reason_chat.rs"
       - "tools/reason-acp/**"
       - ".github/workflows/reason-acp.yml"
   pull_request:
     paths:
       - "src-tauri/src/reason_acp/**"
+      - "src-tauri/src/reason_chat.rs"
       - "tools/reason-acp/**"
       - ".github/workflows/reason-acp.yml"
 
@@ -30,6 +32,6 @@ jobs:
         with:
           components: clippy, rustfmt
       - name: rustfmt
-        run: rustfmt --edition 2021 --check src-tauri/src/reason_acp/*.rs
+        run: rustfmt --edition 2021 --check src-tauri/src/reason_acp/*.rs src-tauri/src/reason_chat.rs
       - name: Test reason_acp module
         run: bash tools/reason-acp/run-rust-tests.sh

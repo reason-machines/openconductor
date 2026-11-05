@@ -141,9 +141,13 @@ When a handler runs or a repeat is swallowed, the event is also stopped
   That gives 104 rows, grouped under `categoryOrder` headings. Each row is the
   title on the left and its effective shortcuts on the right, joined by "or",
   each part in a `<kbd>`.
-- A non-empty query fuzzy-matches title and category (fuzzysort, threshold 0.5).
-  Results are sorted by best score with the title match highlighted. With no
-  results it shows `No shortcuts found for "<query>"`.
+- A non-empty query fuzzy-matches title and category with the bundled fuzzysort
+  3.1.0 (its accent stripping identifies the version), threshold 0.5. Per row,
+  a field scoring under 0.5 is skipped and the best remaining field wins; rows
+  sort by that score, ties in registry order. Only a title match is highlighted
+  (matched characters normal, the rest `opacity-50`); a row found by its category
+  shows its plain title. With no results it shows `No shortcuts found for "<query>"`.
+  Source: the `WZ` search helper and `u2` highlighter in `renderApp-D_fmY7hW.js`.
 - Opened by the shortcut, the command palette entry "Show keyboard shortcuts",
   a "Keyboard shortcuts" popover menu item, and the native event
   `open_keyboard_shortcuts_dialog`. The shortcut and the native event both
