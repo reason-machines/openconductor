@@ -34,6 +34,7 @@ pub mod reason_acp;
 pub mod reason_chat;
 pub mod scripts;
 pub mod settings;
+pub mod sidecar_stores;
 pub mod spotlight;
 mod spotlight_commands;
 pub mod terminal;
@@ -221,6 +222,19 @@ pub fn run() {
             let db = db::open(&data_dir)?;
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
+            // Conductor's sidecar opens its session event outbox at start and
+            // carries on without it if that fails (sidecar_stores/).
+            match sidecar_stores::outbox::SessionEventOutbox::open(&sidecar_stores::outbox_root(&data_dir)) {
+                Ok(outbox) => {
+                    app.manage(outbox);
+                }
+                Err(e) => eprintln!(
+                    "Session event outbox is unavailable; continuing without durable backup delivery: {e}"
+                ),
+            }
+            app.manage(sidecar_stores::completions::SlashCommandSnapshotStore::new(
+                &sidecar_stores::completions_dir(&data_dir),
+            ));
             let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
