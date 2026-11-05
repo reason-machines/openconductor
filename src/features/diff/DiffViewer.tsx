@@ -1,10 +1,11 @@
-// parity:diff.discard:ui parity:diff.split-unified:ui parity:diff.viewed:ui parity:diff.navigation:ui parity:diff.file-render:ui
+// parity:diff.discard:ui parity:diff.whitespace:ui parity:diff.split-unified:ui parity:diff.viewed:ui parity:diff.navigation:ui parity:diff.file-render:ui
 // The diff viewer in two places, as in Conductor: the changed-files list in the
 // right panel, and the selected file in an "All changes" tab in the main area.
 // Both read one useWorkspaceDiff state. The list is in ChangesList.tsx.
 import type { ReactNode } from "react";
 import "./diff.css";
 import { DiscardDialog } from "./DiscardDialog";
+import { WhitespaceToggle } from "./Whitespace";
 import { FileDiffView, type LineAnchor } from "./FileDiffView";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
@@ -76,7 +77,13 @@ export function DiffTab({ diff, onLineClick, anchors, annotations }: DiffTabProp
           annotations={annotations && ((a) => annotations(f, a))}
           loadFull={() => diff.loadFull(f)}
           onDiscard={() => diff.askDiscard(f)}
-          tools={<LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />}
+          onShowWhitespace={() => update({ ignoreWhitespace: false })}
+          tools={
+            <>
+              <WhitespaceToggle hidden={opts.ignoreWhitespace} onChange={(ignoreWhitespace) => update({ ignoreWhitespace })} />
+              <LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />
+            </>
+          }
         />
         {diff.unread >= 0 && diff.unread !== diff.current && (
           <button className="btn btn-small oc-next-unread" onClick={() => diff.open(diff.unread)} title="Open the next file not marked as viewed">
@@ -88,9 +95,12 @@ export function DiffTab({ diff, onLineClick, anchors, annotations }: DiffTabProp
   );
 }
 
-/** The discard confirmation, shown once for whichever view asked for it. */
-export function DiffDiscardHost({ diff }: { diff: WorkspaceDiff }) {
+/**
+ * The discard confirmation, shown once for whichever view asked for it.
+ * `onDiscarded` runs after a successful discard (WorkspaceView attaches Conductor's revert note to the chat).
+ */
+export function DiffDiscardHost({ diff, onDiscarded }: { diff: WorkspaceDiff; onDiscarded?: (f: FileDiff) => void }) {
   const f = diff.discarding;
   if (!f) return null;
-  return <DiscardDialog file={f} onClose={() => diff.askDiscard(null)} onConfirm={() => diff.discard(f)} />;
+  return <DiscardDialog file={f} onClose={() => diff.askDiscard(null)} onConfirm={() => diff.discard(f).then(() => onDiscarded?.(f))} />;
 }

@@ -10,6 +10,7 @@ import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffView
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
 import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
+import { addAttachment, revertedNote, withAttachments, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
@@ -53,7 +54,7 @@ export function seedTranscript(workspaceId: string, text: string) {
 }
 
 interface ChatPanelProps extends Props {
-  bridge: MutableRefObject<ChatBridge | null>;
+  bridge: MutableRefObject<(ChatBridge & ComposerAttach) | null>;
   /** The main area's tab strip. */
   tabs: ReactNode;
   /** Shown instead of the transcript while another tab (the diff) is active; the composer stays. */
@@ -68,6 +69,8 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   const load = () => (reason ? reasonTranscript(workspace.id) : (transcripts.get(workspace.id) ?? emptyTranscript(workspace.id)));
   const [transcript, setTranscript] = useState<ChatTranscript>(load);
   const [draft, setDraft] = useState("");
+  // Text files the diff viewer attached (the revert note after a discard); they go out with the next message.
+  const [attachments, setAttachments] = useState<TextAttachment[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const running = transcript.activeTurn !== null;
@@ -76,6 +79,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   useEffect(() => {
     setTranscript(load());
     setDraft("");
+    setAttachments([]);
     if (!reason) return;
     const unsubscribe = subscribeReason(workspace.id, setTranscript);
     const first = firstPrompts.get(workspace.id);
@@ -90,15 +94,16 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
     endRef.current?.scrollIntoView({ block: "end" });
   }, [transcript]);
 
-  function sendText(text: string) {
+  function sendText(text: string, attached: readonly TextAttachment[] = []) {
     const first = !transcript.messages.some((m) => m.role === "user");
+    const message = withAttachments(text, attached);
     if (reason) {
-      void sendReason(workspace.id, cwd, text);
+      void sendReason(workspace.id, cwd, message);
       if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
       return;
     }
     const next = withMessages(transcript, [
-      textMessage(workspace.id, "user", text),
+      textMessage(workspace.id, "user", message),
       textMessage(workspace.id, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."),
     ]);
     transcripts.set(workspace.id, next);
@@ -113,14 +118,16 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
       inputRef.current?.focus();
     },
     send: sendText,
+    attach: (a) => setAttachments((list) => addAttachment(list, a)),
   };
 
   function send(e: FormEvent) {
     e.preventDefault();
     const text = draft.trim();
     if (!text) return;
-    sendText(text);
+    sendText(text, attachments);
     setDraft("");
+    setAttachments([]);
   }
 
   return (
@@ -142,6 +149,18 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
         <div ref={endRef} />
       </div>
       <form className="composer" onSubmit={send}>
+        {attachments.length > 0 && (
+          <div className="composer-attachments" aria-label="Attachments">
+            {attachments.map((a) => (
+              <span key={a.name} className="chip composer-attachment" title={a.text}>
+                {a.name}
+                <button type="button" className="composer-attachment-remove" aria-label={`Remove ${a.name}`} onClick={() => setAttachments((list) => list.filter((x) => x.name !== a.name))}>
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
         <textarea
           ref={inputRef}
           value={draft}
@@ -170,7 +189,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   );
 }
 
-function RightPanel({ diff, actions }: { diff: WorkspaceDiff; actions: () => ReactNode }) {
+function RightPanel({ diff, actions, worktree }: { diff: WorkspaceDiff; actions: () => ReactNode; worktree: string | null }) {
   const [tab, setTab] = useState<"changes" | "files">("changes");
   const count = diff.load.state === "ready" ? diff.files.length : null;
   return (
@@ -184,7 +203,7 @@ function RightPanel({ diff, actions }: { diff: WorkspaceDiff; actions: () => Rea
         </button>
       </div>
       {tab === "changes" ? (
-        <ChangesList diff={diff} actions={actions} />
+        <ChangesList diff={diff} actions={actions} worktree={worktree} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -229,7 +248,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 
 export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
-  const chatBridge = useRef<ChatBridge | null>(null);
+  const chatBridge = useRef<(ChatBridge & ComposerAttach) | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
   const [diffOpen, setDiffOpen] = useState(false);
@@ -319,12 +338,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
         />
         <div className="ws-right">
-          <RightPanel diff={diff} actions={review.actions} />
+          <RightPanel diff={diff} actions={review.actions} worktree={workspace.path ?? null} />
           <ScriptsPanel repo={repo} workspace={workspace} />
         </div>
       </div>
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
-      <DiffDiscardHost diff={diff} />
+      <DiffDiscardHost diff={diff} onDiscarded={(f) => chatBridge.current?.attach(revertedNote(f.path))} />
       {showTerminal && <TerminalPanel workspaceId={workspace.id} cwd={repo.path} />}
     </div>
   );

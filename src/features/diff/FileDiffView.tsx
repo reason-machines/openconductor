@@ -9,6 +9,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { processFile, type CodeViewItem, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
 import { CodeView, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
+import { WhitespaceOnly } from "./Whitespace";
 import { RevertIcon } from "./DiscardDialog";
 import type { CommentSide } from "./comments.ts";
 import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, codeViewItem, fromPierreSide, lineTarget, loadedFiles, toPatch } from "./pierre.ts";
@@ -35,6 +36,8 @@ interface Props {
   onDiscard?: () => void;
   /** Extra header controls, before the Viewed checkbox (the layout toggle). */
   tools?: ReactNode;
+  /** Turn hidden whitespace back on (the whitespace-only empty state's link). */
+  onShowWhitespace?: () => void;
 }
 
 /** The app theme as Pierre's themeType: `data-theme` on the root, or the system setting when absent. */
@@ -135,11 +138,11 @@ function useCodeViewItem(file: FileDiff, meta: ReturnType<typeof processFile>, l
 }
 
 export function FileDiffView(props: Props) {
-  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools } = props;
+  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools, onShowWhitespace } = props;
   let body: ReactNode;
   if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
   else if (file.hunks.length === 0)
-    body = <div className="oc-file-note">{ignoreWhitespace ? "Only whitespace changed in this file." : "No content changes in this file."}</div>;
+    body = ignoreWhitespace ? <WhitespaceOnly onShow={onShowWhitespace} /> : <div className="oc-file-note">No content changes in this file.</div>;
   else
     body = (
       <div className="oc-code-scroll">
