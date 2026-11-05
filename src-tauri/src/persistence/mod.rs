@@ -132,6 +132,20 @@ pub async fn finish_workspace(
     Ok(number)
 }
 
+/// The worktree exists (Conductor's `qYe`): store the `git worktree add` log
+/// and the tracked-file count as the row passes through `setting_up`.
+/// Conductor keeps the row there until setup ends; ours tracks setup in the
+/// scripts backend (`setup_script_status`), so the row goes on to `ready`.
+pub async fn record_initialization(
+    pool: &SqlitePool,
+    local_id: &str,
+    init_log: Option<&str>,
+    files_copied: i64,
+) -> Result<()> {
+    workspaces::begin_setup(pool, local_id, init_log, files_copied).await?;
+    workspaces::finish_setup(pool, local_id).await.map(drop)
+}
+
 /// Creating the worktree failed: drop its `initializing` row.
 pub async fn abandon_workspace(pool: &SqlitePool, local_id: &str) -> Result<bool> {
     workspaces::delete_if_initializing(pool, local_id).await

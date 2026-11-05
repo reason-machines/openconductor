@@ -172,13 +172,27 @@ pub async fn on_create_started(
     store::begin_workspace(&db.0, &pending, Some(parent_branch)).await.ok().map(|_| pending.id)
 }
 
-/// The worktree exists: its row becomes `ready`; returns its number. A
-/// database error is logged, not returned: the worktree was created and the UI
-/// must show it (without a number).
-pub async fn on_create_finished(db: &Db, repository_id: &str, w: &Workspace, parent_branch: &str) -> Option<i64> {
+/// The worktree exists: its row becomes `ready` with the initialization log
+/// and tracked-file count recorded on the way (`record_initialization`);
+/// returns its number. A database error is logged, not returned: the worktree
+/// was created and the UI must show it (without a number).
+pub async fn on_create_finished(
+    db: &Db,
+    repository_id: &str,
+    w: &Workspace,
+    parent_branch: &str,
+    init_log: Option<&str>,
+    files_copied: i64,
+) -> Option<i64> {
     let row = known_workspace(repository_id, w);
     match store::finish_workspace(&db.0, &row, Some(parent_branch), None).await {
-        Ok(number) => Some(number),
+        Ok(number) => {
+            log_err(
+                "record initialization log",
+                store::record_initialization(&db.0, &row.id, init_log, files_copied).await,
+            );
+            Some(number)
+        }
         Err(e) => {
             log_err("record workspace", Err(e));
             None

@@ -324,3 +324,31 @@ async fn imported_workspaces_have_no_number() {
         .unwrap();
     assert_eq!(numbers(&pool).await, [("app/oslo".to_string(), None)]);
 }
+
+#[tokio::test]
+async fn record_initialization_stores_the_log_and_file_count_and_ends_ready() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    begin_workspace(&pool, &ws("app", "oslo"), Some("main"))
+        .await
+        .unwrap();
+    finish_workspace(&pool, &ws("app", "oslo"), Some("main"), None)
+        .await
+        .unwrap();
+    record_initialization(&pool, "app/oslo", Some("/tmp/conductor-1-abc.log"), 42)
+        .await
+        .unwrap();
+    let w = workspaces::get(&pool, "app/oslo")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert_eq!(w.state, WorkspaceState::Ready);
+    assert_eq!(
+        w.initialization_log_path.as_deref(),
+        Some("/tmp/conductor-1-abc.log")
+    );
+    assert_eq!(w.initialization_files_copied, Some(42));
+    // An unknown workspace is an error, not a silent no-op.
+    assert!(record_initialization(&pool, "app/nope", None, 0).await.is_err());
+}
