@@ -11,6 +11,8 @@
 //!   (`spotlight_commands.rs` is its IPC layer)
 //! - `settings/`   settings.toml and the Keychain-backed secret store
 //! - `terminal/`   PTY terminals (`terminal_commands.rs` is its IPC layer)
+//! - `terminal_output.rs` reads Spotlight, run-script or terminal output
+//!   back for agents (`terminal_output_commands.rs` is its IPC layer)
 //!
 //! Those modules are added here once their owners land them.
 
@@ -33,6 +35,8 @@ mod spotlight_commands;
 pub mod terminal;
 mod terminal_commands;
 pub mod terminal_history;
+pub mod terminal_output;
+mod terminal_output_commands;
 pub mod workspace;
 
 use serde::Serialize;
@@ -122,6 +126,15 @@ async fn create_new_project(
     .await
 }
 
+/// Save a repository's setup and run scripts to its local settings layer.
+#[tauri::command]
+fn save_repo_scripts(
+    repo_root: String,
+    scripts: create_project::RepoScripts,
+) -> Result<(), String> {
+    create_project::save_local_scripts(std::path::Path::new(&repo_root), &scripts)
+}
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct BranchPrefixInfo {
@@ -209,6 +222,7 @@ pub fn run() {
             github_recent_repos,
             github_git_protocol,
             create_new_project,
+            save_repo_scripts,
             workspace::commands::add_repository,
             workspace::commands::clone_repository,
             workspace::commands::default_clone_directory,
@@ -281,6 +295,7 @@ pub fn run() {
             spotlight_commands::spotlight_status,
             spotlight_commands::spotlight_testing_get,
             spotlight_commands::spotlight_testing_set,
+            terminal_output_commands::get_terminal_output,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")

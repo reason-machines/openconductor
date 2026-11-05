@@ -1,18 +1,23 @@
 //! Home "Create project" (Quick start): make the project folder from a
-//! template and publish it as a private GitHub repo. Registering the project and creating its first
+//! template, publish it as a private GitHub repo, and save the Next.js
+//! template's scripts. Registering the project and creating its first
 //! workspace stay in the frontend, as in the reference app
 //! (evidence/screens/create-project.md).
 
 use std::fs;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, ErrorKind, Write};
 use std::path::Path;
 use std::process::{Command, Stdio};
 use std::sync::mpsc;
 
-use oc_scripts::config::shell_quote;
+use oc_scripts::config::{shell_quote, SETTINGS_DIR};
 use serde::{Deserialize, Serialize};
+use toml::{Table, Value};
 
 use crate::github_repo::{CreateRequest, GitHub};
+
+/// The repository-local settings layer the scripts are saved to.
+pub const LOCAL_SETTINGS_FILE: &str = "settings.local.toml";
 
 /// Prepended to `PATH` for create-next-app, as the reference app does.
 pub const EXTRA_PATH: [&str; 6] = [
@@ -56,6 +61,15 @@ pub struct Created {
 pub enum Progress {
     Step(String),
     Line(String),
+}
+
+/// Scripts saved on the new repository (`[scripts]` in the local layer).
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RepoScripts {
+    pub setup: String,
+    pub run: String,
+    pub run_mode: String,
 }
 
 /// Programs, injectable for tests.
@@ -182,6 +196,47 @@ impl Creator {
         }
         Ok(())
     }
+}
+
+/// Save `setup`, `run` and `run_mode` under `[scripts]` in
+/// `<root>/.conductor/settings.local.toml`, keeping its other keys. A file
+/// that does not parse is reported and left alone.
+pub fn save_local_scripts(repo_root: &Path, scripts: &RepoScripts) -> Result<(), String> {
+    let dir = repo_root.join(SETTINGS_DIR);
+    let path = dir.join(LOCAL_SETTINGS_FILE);
+    let mut table = match fs::read_to_string(&path) {
+        Ok(text) => text
+            .parse::<Table>()
+            .map_err(|e| format!("could not parse {}: {e}", path.display()))?,
+        Err(e) if e.kind() == ErrorKind::NotFound => Table::new(),
+        Err(e) => return Err(format!("could not read {}: {e}", path.display())),
+    };
+    let section = table
+        .entry("scripts")
+        .or_insert_with(|| Value::Table(Table::new()));
+    let Value::Table(section) = section else {
+        return Err(format!("{}: `scripts` is not a table", path.display()));
+    };
+    for (key, value) in [
+        ("setup", &scripts.setup),
+        ("run", &scripts.run),
+        ("run_mode", &scripts.run_mode),
+    ] {
+        section.insert(key.into(), Value::String(value.clone()));
+    }
+    let text = toml::to_string(&table).map_err(|e| e.to_string())?;
+    fs::create_dir_all(&dir).map_err(|e| format!("{}: {e}", dir.display()))?;
+    let tmp = dir.join(format!(".{LOCAL_SETTINGS_FILE}.{}.tmp", std::process::id()));
+    let write = || -> std::io::Result<()> {
+        let mut f = fs::File::create(&tmp)?;
+        f.write_all(text.as_bytes())?;
+        f.sync_all()?;
+        fs::rename(&tmp, &path)
+    };
+    write().map_err(|e| {
+        let _ = fs::remove_file(&tmp);
+        format!("{}: {e}", path.display())
+    })
 }
 
 struct Out {

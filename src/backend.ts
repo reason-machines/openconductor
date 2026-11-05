@@ -4,7 +4,7 @@ import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import type { FileMatch } from "./spotlight/quickOpen";
 import type { GitHubOwners } from "./state/githubRepoDialog";
 import type { GitProtocol, RecentRepo } from "./state/cloneDialog";
-import { STEP, targetPath, type TemplateId } from "./state/createProject";
+import { STEP, targetPath, type RepoScripts, type TemplateId } from "./state/createProject";
 
 export interface AppInfo {
   name: string;
@@ -39,7 +39,20 @@ export interface RepositoryDto {
 
 /** Register a local checkout with the workspace service (`add_repository`). */
 export async function addRepository(path: string): Promise<RepositoryDto> {
+  if (!inTauri()) {
+    const root = path.replace(/\/+$/, "");
+    return { id: root, name: root.split("/").pop() ?? root, root, defaultBranch: "main" };
+  }
   return invoke<RepositoryDto>("add_repository", { path });
+}
+
+/** Open a web page in the default browser (tauri-plugin-opener's `open_url`). */
+export async function openUrl(url: string): Promise<void> {
+  if (!inTauri()) {
+    window.open(url, "_blank", "noopener");
+    return;
+  }
+  await invoke("plugin:opener|open_url", { url });
 }
 
 // Outside Tauri these return demo data so the dialog can be tried in a browser.
@@ -108,6 +121,12 @@ export async function createNewProject(
   const channel = new Channel<CreateProgress>();
   channel.onmessage = onProgress;
   return invoke<CreatedProject>("create_new_project", { request, onProgress: channel });
+}
+
+/** Save a repo's setup and run scripts to `<root>/.conductor/settings.local.toml`. */
+export async function saveRepoScripts(repoRoot: string, scripts: RepoScripts): Promise<void> {
+  if (!inTauri()) return;
+  await invoke("save_repo_scripts", { repoRoot, scripts });
 }
 
 /** Native folder picker; returns null when cancelled or outside Tauri. */
