@@ -136,6 +136,14 @@ impl ClaudeSession {
         self.events.try_iter().collect()
     }
 
+    /// Hands the event stream to the caller (a reader thread), so writes
+    /// never wait on a reader. Afterwards [`Self::next_event`] and
+    /// [`Self::pending_events`] return nothing.
+    pub fn take_events(&mut self) -> Receiver<SessionEvent> {
+        let (_closed, empty) = mpsc::channel();
+        std::mem::replace(&mut self.events, empty)
+    }
+
     /// Closes stdin: the CLI finishes its current turn and exits.
     pub fn close_stdin(&mut self) {
         self.stdin = None;
