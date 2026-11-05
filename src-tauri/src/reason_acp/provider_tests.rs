@@ -110,6 +110,20 @@ fn stop_cancels_and_a_follow_up_supersedes_a_running_turn() {
 }
 
 #[test]
+fn a_stop_before_the_turn_is_registered_ends_it_unsent() {
+    // The Stop button shows as soon as a turn starts, so a Stop can land
+    // while the turn's start checkpoint still runs. It must not be dropped.
+    let (p, log, home) = provider("early-stop");
+    p.open_chat("chat", &home, None);
+    p.cancel("chat");
+    assert_eq!(p.prompt("chat", "echo: never"), TurnEnd::Cancelled);
+    assert_eq!(reply(&log), "", "the prompt was not sent to Reason");
+    // The Stop applied to that one turn only.
+    assert_eq!(p.prompt("chat", "echo: next"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "turn 1: next");
+}
+
+#[test]
 fn a_stored_session_resumes_after_restart_and_after_a_crash() {
     let (p, log, home) = provider("resume");
     p.open_chat("chat", &home, None);

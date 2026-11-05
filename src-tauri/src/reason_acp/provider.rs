@@ -90,6 +90,9 @@ struct Chat {
     /// Agent process generation the Session is open in.
     open_in: Option<u64>,
     turn: Option<Turn>,
+    /// A Stop that came before the turn was registered (its checkpoints or
+    /// Session setup still run); the next prompt ends at once.
+    stop_pending: bool,
     /// Reason said the Session runs on Reason cloud (see `computer_is_cloud`).
     on_cloud: bool,
     /// Config options to set when the Session is created.
@@ -196,10 +199,24 @@ impl ReasonProvider {
             }
             c.turn = Some(Turn {
                 seq,
+                stop_requested: std::mem::take(&mut c.stop_pending),
                 ..Turn::default()
             });
             seq
         };
+        // A Stop that landed before the prompt was sent ends the turn unsent.
+        {
+            let mut s = self.shared.lock().unwrap();
+            let stopped = s
+                .chats
+                .get(chat)
+                .and_then(|c| c.turn.as_ref())
+                .is_some_and(|t| t.seq == seq && t.stop_requested);
+            if stopped {
+                s.chats.get_mut(chat).expect("chat").turn = None;
+                return TurnEnd::Cancelled;
+            }
+        }
         let cwd = {
             let s = self.shared.lock().unwrap();
             s.chats.get(chat).map(|c| c.cwd.clone()).unwrap_or_default()
@@ -218,11 +235,15 @@ impl ReasonProvider {
                 ..Turn::default()
             },
         };
+        c.stop_pending = false;
         match result {
             Ok(v) => match v["stopReason"].as_str().unwrap_or("end_turn") {
                 "cancelled" if turn.superseded && !turn.stop_requested => TurnEnd::Superseded,
                 "cancelled" => TurnEnd::Cancelled,
                 "error" => TurnEnd::Failed(error_text(&v["error"])),
+                // Stop was pressed while the prompt ran: the turn is stopped
+                // even if the agent finished it first.
+                _ if turn.stop_requested => TurnEnd::Cancelled,
                 _ => match turn.error {
                     Some(e) => TurnEnd::Failed(explain(e, &c.cwd)),
                     None => TurnEnd::Completed,
@@ -236,17 +257,22 @@ impl ReasonProvider {
         }
     }
 
-    /// Stops the chat's running turn. Safe to call when nothing runs.
+    /// Stops the chat's running turn. A Stop that comes before the turn is
+    /// registered waits for it (the Stop button shows as soon as a turn
+    /// starts, before its start checkpoint and Session setup).
     pub fn cancel(&self, chat: &str) {
         let session_id = {
             let mut s = self.shared.lock().unwrap();
             let Some(c) = s.chats.get_mut(chat) else {
                 return;
             };
-            let Some(turn) = &mut c.turn else {
-                return;
-            };
-            turn.stop_requested = true;
+            match &mut c.turn {
+                Some(turn) => turn.stop_requested = true,
+                None => {
+                    c.stop_pending = true;
+                    return;
+                }
+            }
             c.session_id.clone()
         };
         let conn = self.agent.lock().unwrap().as_ref().map(|a| a.conn.clone());
