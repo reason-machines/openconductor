@@ -15,7 +15,8 @@ import { ChevronIcon } from "./Icons";
 // a check on the current one, which is disabled), a separator when there are
 // sections, "New section…" (creates one holding this workspace) and
 // "Remove from section" when it is in one.
-// Not built here: Copy link (no URL scheme).
+// Copy link (`XV`) copies openconductor://workspace?id=<id> (src/workspace/link.ts);
+// its ⌘⇧C hint shows only on the open workspace's row (`de = NCi(n)`).
 
 export interface WorkspaceActions {
   toggleRead: () => void;
@@ -23,6 +24,8 @@ export interface WorkspaceActions {
   setStatus: (status: WorkspaceStatusValue) => void;
   /** Absent until the rename dialog exists; the item is hidden. */
   rename?: () => void;
+  /** Absent when nobody handles it; the item is hidden. */
+  copyLink?: () => void;
   archive: () => void;
   moveToSection: (sectionId: string) => void;
   /** Opens the New section dialog with this workspace to move. */
@@ -189,6 +192,12 @@ export function WorkspaceActionsMenu({ workspace, selected, at, actions, section
       {actions.rename && (
         <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.rename)}>
           <span className="sb-ctx-label">Rename</span>
+        </button>
+      )}
+      {actions.copyLink && (
+        <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.copyLink)}>
+          <span className="sb-ctx-label">Copy link</span>
+          {selected && <kbd className="sb-ctx-kbd">⌘⇧C</kbd>}
         </button>
       )}
       <div className="sb-ctx-sep" role="separator" />

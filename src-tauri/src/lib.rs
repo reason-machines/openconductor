@@ -19,6 +19,7 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod agent_binaries;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
@@ -33,6 +34,8 @@ pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
+pub mod recent_local_repos;
+mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod sidebar_section_commands;
 mod sidebar_workspace_commands;
@@ -259,6 +262,8 @@ pub fn run() {
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
             // Conductor sweeps draft-attachments/ dirs older than 30 days at start.
             draft_attachments::sweep_at_startup(&data_dir);
+            // Conductor's binary_manager: agent-binaries/ with .meta sha256 files.
+            app.manage(agent_binaries::commands::manager(app.handle(), &data_dir));
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
@@ -289,6 +294,7 @@ pub fn run() {
             let settings_pool = db.0.clone();
             app.manage(db);
             app.manage(workspaces);
+            app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
@@ -336,10 +342,10 @@ pub fn run() {
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
-            persistence_commands::db_list_repos,
-            persistence_commands::db_list_workspaces,
             workspace_archive_commands::archive_workspace,
             workspace_archive_commands::unarchive_workspace,
+            persistence_commands::db_list_repos,
+            persistence_commands::db_list_workspaces,
             persistence_commands::db_repo_prompt,
             onboarding_commands::db_first_run_onboarding_step,
             onboarding_commands::db_finish_first_run_onboarding,
@@ -354,11 +360,13 @@ pub fn run() {
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
             sidebar_repo_commands::repo_favicon,
+            recent_local_repos_commands::recent_local_repositories,
             sidebar_rename_commands::db_rename_workspace,
             sidebar_rename_commands::db_mark_user_set_branch_name,
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
+            diff::commands::diff_write_file,
             checkpoint_commands::checkpoint_save,
             checkpoint_commands::checkpoint_exists,
             checkpoint_commands::checkpoint_restore,
@@ -467,6 +475,9 @@ pub fn run() {
             draft_attachments::commands::draft_attachment_upload,
             draft_attachments::commands::draft_attachments_materialize,
             draft_attachments::commands::materialize_local_path_attachment,
+            agent_binaries::commands::get_agent_binary_state,
+            agent_binaries::commands::request_agent_binary_download,
+            agent_binaries::commands::cancel_agent_binary_download,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")

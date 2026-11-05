@@ -3,7 +3,6 @@
 // 50-result cap follow evidence/search-palette/README.md.
 
 import { filterScore, tokensMatch } from "./score.ts";
-import { matchesArchiveFilter, type ArchiveFilter } from "../../workspace/archiveRules.ts";
 
 export type PaletteTab = "all" | "workspaces" | "projects" | "actions" | "settings";
 export type ActionGroupId = "workspace-actions" | "actions" | "navigation" | "settings" | "open-in";
@@ -106,10 +105,10 @@ export interface PaletteData {
 
 const byRecency = (a: WorkspaceEntry, b: WorkspaceEntry) => b.lastActiveAt - a.lastActiveAt;
 
-function workspaceResults(data: PaletteData, query: string, archiveFilter: ArchiveFilter = "active"): ResultItem[] {
+function workspaceResults(data: PaletteData, query: string): ResultItem[] {
   const q = query.trim();
   return data.workspaces
-    .filter((w) => matchesArchiveFilter(!!w.archived, archiveFilter) && (q === "" || tokensMatch(q, [w.name, w.branch, w.repoName])))
+    .filter((w) => !w.archived && (q === "" || tokensMatch(q, [w.name, w.branch, w.repoName])))
     .sort(byRecency)
     .slice(0, RESULT_CAP)
     .map((w) => ({ kind: "workspace", id: `workspace:${w.id}`, workspace: w }));
@@ -153,16 +152,12 @@ function group(id: string, heading: string, items: ResultItem[]): ResultGroup[] 
   return items.length > 0 ? [{ id, heading, items }] : [];
 }
 
-/**
- * Grouped results for a tab and query, in display order. `archiveFilter` is
- * the Workspaces tab's "Archived workspaces" filter; other tabs never list
- * archived workspaces.
- */
-export function buildResults(tab: PaletteTab, query: string, data: PaletteData, archiveFilter: ArchiveFilter = "active"): ResultGroup[] {
+/** Grouped results for a tab and query, in display order. */
+export function buildResults(tab: PaletteTab, query: string, data: PaletteData): ResultGroup[] {
   const empty = query.trim() === "";
   switch (tab) {
     case "workspaces":
-      return group("workspaces", "Workspaces", workspaceResults(data, query, archiveFilter));
+      return group("workspaces", "Workspaces", workspaceResults(data, query));
     case "projects":
       return group("projects", "Projects", projectResults(data, query));
     case "actions":

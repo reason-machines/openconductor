@@ -88,7 +88,7 @@ function fakeBackend(shellState) {
         case "db_list_workspaces":
           return shellState.repos.flatMap((r) => r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path ?? null, pinnedAt: null, unread: false, createdAt: "2026-01-01T00:00:00Z" })));
         case "archive_workspace":
-          return { archiveCommit: null, warnings: [] };
+          return { archived: true, branch: null, archiveCommit: null, notices: [] };
         case "get_settings":
           return structuredClone(settings);
         case "update_settings": {

@@ -150,6 +150,8 @@ jobs:
       - run: cargo clippy --all-targets -- -D warnings
       - name: App persistence module (src-tauri/src/persistence) build, test and clippy
         run: bash ../../evidence/persistence/run-tests.sh
+      - name: Agent binaries store (src-tauri/src/agent_binaries.rs) build, test and clippy
+        run: bash ../../evidence/persistence/agent-binaries/run-tests.sh
 
   tools:
     name: Evidence tools compile

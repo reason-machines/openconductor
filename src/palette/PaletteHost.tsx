@@ -7,7 +7,6 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
 import { paletteDataFromState, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import type { ResultItem } from "./search/model.ts";
-import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 
 const RECENT_LIMIT = 8;
 
@@ -20,14 +19,10 @@ interface Props {
   /** Open state lives in App so the sidebar's Search row can open the palette too. */
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** App's archive flow; without it Archive only updates the store. */
-  onArchive?: (repoId: string, workspaceId: string) => void;
-  /** Unarchive from the Workspaces tab's archived rows (`unarchive_workspace`). */
-  onUnarchive?: (workspaceId: string) => void | Promise<void>;
 }
 
 /** Owns the palette's open state, recent workspaces and the app's global shortcuts. */
-export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open, onOpenChange, onArchive, onUnarchive }: Props) {
+export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open, onOpenChange }: Props) {
   const [recents, setRecents] = useState<string[]>([]);
   const sel = state.selection;
   const selectedId = sel.kind === "workspace" ? sel.workspaceId : null;
@@ -36,31 +31,14 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
     if (selectedId) setRecents((r) => [selectedId, ...r.filter((id) => id !== selectedId)].slice(0, RECENT_LIMIT));
   }, [selectedId]);
 
-  // Archived workspaces live in conductor.db, not in the sidebar state: read them each time the palette opens.
-  const [archived, setArchived] = useState<ArchivedWorkspace[]>([]);
-  useEffect(() => {
-    if (!open) return;
-    let live = true;
-    listArchivedWorkspaces().then(
-      (rows) => live && setArchived(rows),
-      (err) => console.error("conductor.db: could not list archived workspaces", err),
-    );
-    return () => {
-      live = false;
-    };
-  }, [open, state.repos]);
-  const data = useMemo(() => paletteDataFromState(state, recents, archived), [state, recents, archived]);
+  const data = useMemo(() => paletteDataFromState(state, recents), [state, recents]);
 
   const go = (ref: WorkspaceRef | undefined) =>
     ref && dispatch({ type: "select", selection: { kind: "workspace", repoId: ref.repoId, workspaceId: ref.workspace.id } });
   const activeRepoId = sel.kind === "workspace" ? sel.repoId : state.repos[0]?.id;
 
   const actions: Record<string, () => void> = {
-    "archive-workspace": () => {
-      if (sel.kind !== "workspace") return;
-      if (onArchive) onArchive(sel.repoId, sel.workspaceId);
-      else dispatch({ type: "archiveWorkspace", repoId: sel.repoId, workspaceId: sel.workspaceId });
-    },
+    "archive-workspace": () => sel.kind === "workspace" && dispatch({ type: "archiveWorkspace", repoId: sel.repoId, workspaceId: sel.workspaceId }),
     "new-workspace": () => (activeRepoId ? onOpenDialog("create") : onOpenProject()),
     "add-project": () => onOpenProject(),
     "clone-project": () => onOpenDialog("clone"),
@@ -82,10 +60,7 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   useKeybindings(handlers);
 
   function onSelect(item: ResultItem) {
-    // An archived workspace has no worktree to open: unarchive it, which opens it.
-    if (item.kind === "workspace" && item.workspace.archived) {
-      void onUnarchive?.(item.workspace.id);
-    } else if (item.kind === "workspace") {
+    if (item.kind === "workspace") {
       const ref = sidebarOrder(state).find((w) => w.workspace.id === item.workspace.id);
       go(ref);
     } else if (item.kind === "project") {
@@ -99,5 +74,5 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   }
 
   if (!open) return null;
-  return <CommandPalette data={data} onSelect={onSelect} onUnarchive={onUnarchive ? (id) => void onUnarchive(id) : undefined} onClose={() => onOpenChange(false)} />;
+  return <CommandPalette data={data} onSelect={onSelect} onClose={() => onOpenChange(false)} />;
 }

@@ -20,6 +20,8 @@ import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
 import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
+import { attachmentPath, promptText, randomDir, rejectReason, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
+import { draftAttachmentsApi } from "../features/draft-attachments/api.ts";
 
 /** Sends a message with attached text files from the chat shown (Fix errors). */
 interface AttachedSend {
@@ -35,7 +37,6 @@ import { RUNNING_SETUP } from "../workspace/createFlow";
 import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest";
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
-import type { ArchiveFlow } from "../workspace/useArchiveFlow";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
@@ -53,8 +54,6 @@ interface Props {
   workspace: Workspace;
   dispatch: Dispatch<Action>;
   notify?: ArchiveNotify;
-  /** App's archive flow (src/workspace/useArchiveFlow); without it Archive only updates the store. */
-  archive?: Pick<ArchiveFlow, "requestArchive" | "archiveQuietly" | "unarchive">;
 }
 
 // The chat runs Reason in the desktop app (one Reason Session per chat,
@@ -94,8 +93,9 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   const main = chatId === workspace.id;
   const [{ transcript, queue }, setSnapshot] = useState<ChatSnapshot>(() => chatSnapshot(chatId));
   const [draft, setDraft] = useState("");
-  // Text files the diff viewer attached (the revert note after a discard); they go out with the next message.
-  const [attachments, setAttachments] = useState<TextAttachment[]>([]);
+  // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
+  const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
+  const [attachError, setAttachError] = useState<string | null>(null);
   /** The turn whose "Reset chat?" dialog is open. */
   const [resetTurn, setResetTurn] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -105,13 +105,15 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   useEffect(() => {
     if (main) onRunningChange?.(running);
   }, [main, running, onRunningChange]);
-  // Garry Mode: tool calls start expanded (Conductor's `garry_mode`, toggled with ⌃O).
+  // Garry Mode (Conductor's `garry_mode`, "Don't collapse tool calls", toggled with ⌃O): tool
+  // groups stay open after the turn ends and tool calls start expanded.
   const garryMode = useAppPrefs().garry_mode;
 
   useEffect(() => {
     setSnapshot(chatSnapshot(chatId));
     setDraft("");
     setAttachments([]);
+    setAttachError(null);
     setResetTurn(null);
     const pendingMessage = takePendingMessage(chatId);
     if (pendingMessage?.kind === "draft") {
@@ -196,9 +198,49 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     attach: (a) => setAttachments((list) => addAttachment(list, a)),
   };
 
-  function onSubmit(text: string, mode: SendMode) {
-    submit(text, mode, attachments);
+  /** Stages each file (Conductor's draft attachments); it reaches the workspace when the message is sent. */
+  async function attachFiles(files: File[]) {
+    setAttachError(null);
+    for (const file of files) {
+      const why = rejectReason(file);
+      if (why) {
+        setAttachError(why);
+        continue;
+      }
+      try {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const relativePath = attachmentPath(file.name, randomDir());
+        if (reason) await draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath, data: bytes });
+        const a: ComposerAttachment = { name: relativePath, label: file.name, text: promptText(bytes, relativePath), ...(reason ? { staged: relativePath } : {}) };
+        setAttachments((list) => addAttachment(list, a));
+      } catch (e) {
+        setAttachError(`Failed to attach ${file.name}: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    }
+  }
+
+  function removeAttachment(a: ComposerAttachment) {
+    setAttachments((list) => list.filter((x) => x.name !== a.name));
+    if (a.staged) draftAttachmentsApi.remove({ localWorkspaceId: workspace.id, relativePath: a.staged }).catch((e) => console.warn("chat: staged attachment not removed", e));
+  }
+
+  /** Copies staged files into the workspace (`.context/attachments/…`), then sends. */
+  async function onSubmit(text: string, mode: SendMode) {
+    const sending = attachments;
     setAttachments([]);
+    setAttachError(null);
+    const failed: string[] = [];
+    for (const a of sending) {
+      if (!a.staged) continue;
+      try {
+        await draftAttachmentsApi.uploadToWorkspace({ localWorkspaceId: workspace.id, relativePath: a.staged, workspacePath: cwd });
+      } catch (e) {
+        console.warn("chat: attachment not copied into the workspace", e);
+        failed.push(a.label ?? a.name);
+      }
+    }
+    if (failed.length > 0) setAttachError(`Not copied into the workspace (sent inline only): ${failed.join(", ")}`);
+    submit(text, mode, sending.map(({ name, text }) => ({ name, text })));
   }
 
   return (
@@ -224,6 +266,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           <Transcript
             transcript={transcript}
             expandToolsByDefault={garryMode}
+            dontCollapseToolCalls={garryMode}
             onRetry={(prompt) => submit(prompt, "queue")}
             // Conductor: workspace with a path, not archived; disabled while the agent works.
             onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
@@ -250,17 +293,23 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         onSubmit={onSubmit}
         onStop={() => stopChat(chatId)}
         onQueue={(action) => queueAction(chatId, action)}
+        onAttachFiles={(files) => void attachFiles(files)}
         attachments={
-          attachments.length > 0 ? (
+          attachments.length > 0 || attachError ? (
             <div className="composer-attachments" aria-label="Attachments">
               {attachments.map((a) => (
-                <span key={a.name} className="chip composer-attachment" title={a.text}>
-                  {a.name}
-                  <button type="button" className="composer-attachment-remove" aria-label={`Remove ${a.name}`} onClick={() => setAttachments((list) => list.filter((x) => x.name !== a.name))}>
+                <span key={a.name} className="chip composer-attachment" title={a.staged ?? a.text}>
+                  {a.label ?? a.name}
+                  <button type="button" className="composer-attachment-remove" aria-label={`Remove ${a.label ?? a.name}`} onClick={() => removeAttachment(a)}>
                     ×
                   </button>
                 </span>
               ))}
+              {attachError ? (
+                <span className="error small" role="alert">
+                  {attachError}
+                </span>
+              ) : null}
             </div>
           ) : null
         }
@@ -434,7 +483,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
   archived: "Archived",
 };
 
-export function WorkspaceView({ repo, workspace, dispatch, notify, archive }: Props) {
+export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
@@ -503,7 +552,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, archive }: Pr
   );
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
   const [agentWorking, setAgentWorking] = useState(false);
-  const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify, archive: archive?.archiveQuietly, unarchive: archive?.unarchive });
+  const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
   // Keep the sidebar's PR title and body (`workspaces.pr_title`, `pr_description`) in step with GitHub, then archive on merge.
   // The row's status icon reads the PR too (merged, checks failing, ready to merge, ...).
   const optionalChecksBlock = useRef(false);
@@ -608,7 +657,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, archive }: Pr
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
             Terminal
           </button>
-          <button className="btn btn-small" title="Archive workspace" onClick={() => (archive ? archive.requestArchive(repo.id, workspace.id) : dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id }))}>
+          <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
             <ArchiveIcon size={14} /> Archive
           </button>
         </div>

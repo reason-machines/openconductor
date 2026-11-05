@@ -32,7 +32,7 @@ async function repoArchiveOnMerge(repoId: string): Promise<boolean | null> {
   }
 }
 
-type AfterMerge = {
+interface AfterMerge {
   repo: Repo;
   workspace: Workspace;
   merged: { number: number; url: string };
@@ -41,41 +41,26 @@ type AfterMerge = {
   notify?: ArchiveNotify;
   /** Reads `git.archive_on_merge` from the user settings; the settings file by default. */
   readSetting?: () => Promise<boolean>;
-} & ArchiveCalls;
-
-/**
- * The app's archive flow (src/workspace/useArchiveFlow.tsx): `archive`
- * checkpoints and removes the worktree through the backend and rejects on
- * failure; `unarchive` restores it. Without them only the store changes.
- */
-export interface ArchiveCalls {
-  archive?: (target: { repoId: string; workspaceId: string }) => Promise<void>;
-  unarchive?: (workspaceId: string) => void | Promise<void>;
 }
 
-export async function archiveAfterMerge({ repo, workspace, merged, dispatch, agentWorking, notify, readSetting = readUserSetting, archive, unarchive }: AfterMerge): Promise<void> {
+export async function archiveAfterMerge({ repo, workspace, merged, dispatch, agentWorking, notify, readSetting = readUserSetting }: AfterMerge): Promise<void> {
   try {
     const [user, override] = await Promise.all([readSetting(), repoArchiveOnMerge(repo.id)]);
     const decision = archiveDecision({ enabled: archiveOnMergeEnabled(user, override), archived: workspace.status === "archived", agentWorking });
     if (decision === "agent-running") notify?.("error", AGENT_RUNNING_MESSAGE);
     if (decision !== "archive") return;
-    const target = { repoId: repo.id, workspaceId: workspace.id };
-    if (archive) await archive(target);
-    else dispatch({ type: "archiveWorkspace", ...target });
+    dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id });
     const buttons = archivedToastActions(merged);
     notify?.("info", archivedMessage(merged.number), {
       action: buttons.action ? { label: "Open PR", onClick: () => void openUrl(merged.url) } : undefined,
-      secondaryAction: {
-        label: "Unarchive",
-        onClick: () => (unarchive ? void unarchive(workspace.id) : dispatch({ type: "restoreWorkspace", repoId: repo.id, workspace })),
-      },
+      secondaryAction: { label: "Unarchive", onClick: () => dispatch({ type: "restoreWorkspace", repoId: repo.id, workspace }) },
     });
   } catch (e) {
     notify?.("error", archiveFailedMessage(e instanceof Error ? e.message : String(e)));
   }
 }
 
-export interface ArchiveOnMergeArgs extends ArchiveCalls {
+export interface ArchiveOnMergeArgs {
   repo: Repo;
   workspace: Workspace;
   dispatch: Dispatch<Action>;
@@ -97,7 +82,7 @@ export function useArchiveOnMerge(args: ArchiveOnMergeArgs): (next: PrLookup, pr
 /** How often the watcher looks up the PRs of workspaces that are not open. */
 export const WATCH_INTERVAL_MS = 60_000;
 
-interface WatcherArgs extends ArchiveCalls {
+interface WatcherArgs {
   repos: Repo[];
   /** The open workspace; its own lookup reports to the tracker. */
   openWorkspaceId: string | null;
@@ -137,9 +122,9 @@ export function useArchiveOnMergeWatcher(args: WatcherArgs): void {
           if (!lookup) return;
           const merged = observeLookup(workspace.id, lookup);
           if (!merged) return;
-          const { dispatch, notify, archive, unarchive } = latest.current;
+          const { dispatch, notify } = latest.current;
           const agentWorking = chatSnapshot(workspace.id).transcript.activeTurn !== null;
-          void archiveAfterMerge({ repo, workspace, merged, dispatch, agentWorking, notify, archive, unarchive });
+          void archiveAfterMerge({ repo, workspace, merged, dispatch, agentWorking, notify });
         });
       }
     };

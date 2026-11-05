@@ -59,12 +59,3 @@ test("workspace actions appear only with a workspace selected", () => {
   assert.ok(headings(state).includes("Workspace actions"));
   assert.ok(!headings({ ...state, selection: { kind: "home" } }).includes("Workspace actions"));
 });
-
-test("archived workspaces from conductor.db join the palette data after the active ones; View archived workspaces is a Navigation action", () => {
-  const data = paletteDataFromState(state, [], [{ id: "r2/z", repoId: "r2", name: "zurich", branch: "b-z", createdAt: 5 }, { id: "gone/x", repoId: "gone", name: "x", branch: "x", createdAt: 6 }]);
-  const all = buildResults("workspaces", "", data, "all")[0].items.map((i) => i.id.split(":")[1]);
-  assert.deepEqual(all, ["c", "b", "a", "r2/z"]);
-  assert.deepEqual(data.workspaces.find((x) => x.id === "r2/z"), { id: "r2/z", name: "zurich", branch: "b-z", repoName: "api", lastActiveAt: 5 - Number.MAX_SAFE_INTEGER / 2, archived: true });
-  const nav = buildResults("actions", "archived", data).find((g) => g.id === "navigation");
-  assert.deepEqual(nav?.items.map((i) => i.id), ["action:view-archived-workspaces"]);
-});

@@ -97,12 +97,3 @@ test("Projects, Actions and Settings tabs", () => {
   assert.deepEqual(ids("settings", "appear"), ["Settings: appearance.theme"]);
   assert.deepEqual(ids("projects", "nothing"), []);
 });
-
-test("Workspaces tab archive filter: hiding archived by default, showing all, only archived; other tabs never list them", () => {
-  const ws = (f?: Parameters<typeof buildResults>[3]) => buildResults("workspaces", "", data, f)[0].items.map((i) => i.id.split(":")[1]);
-  assert.deepEqual(ws(), ["w2", "w3", "w1"]);
-  assert.deepEqual(ws("active"), ["w2", "w3", "w1"]);
-  assert.deepEqual(ws("all"), ["w2", "w3", "w1", "w4"]);
-  assert.deepEqual(ws("archived"), ["w4"]);
-  assert.ok(!ids("all", "lima").some((g) => g.includes("w4")));
-});
