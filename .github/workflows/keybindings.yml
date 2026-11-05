@@ -17,6 +17,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+      - run: npm ci
       - name: Extractor and generator parse
         run: node --check tools/keybindings_extract.mjs && node --check tools/keybindings_gen.mjs
       - name: Generated registry is up to date

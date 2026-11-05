@@ -15,6 +15,15 @@
 //! * [`claude_cloud`] - Claude Code on Bedrock, Vertex AI and Foundry.
 //! * [`codex`] - Codex (login, OpenAI API key, OpenRouter / Vercel AI
 //!   Gateway), Cursor and OpenCode providers.
+//! * [`codex_cli`] - launching Codex: [`codex_cli::CodexPolicy`] (approval
+//!   policy and sandbox, or inherit) and the `codex app-server` command line.
+//! * [`codex_rpc`] - the JSON-RPC requests the app sends a running `codex
+//!   app-server`: handshake, threads, turns and approval answers.
+//! * [`codex_events`] - what the app-server sends back: responses, approval
+//!   requests and turn notifications.
+//! * [`codex_session`] - a running `codex app-server`: JSON-RPC calls that
+//!   wait for their response, approval answers, and the notifications in
+//!   between; killed on drop.
 //! * [`env`] - [`AgentKind`] and [`LaunchEnv`], the environment an agent
 //!   process is launched with. A launch clears every inherited variable that
 //!   would route the agent elsewhere before setting its own.
@@ -23,6 +32,8 @@
 //! * [`provider`] - the [`Provider`] trait: how an agent CLI is pointed at a
 //!   model backend and authenticated, producing a [`LaunchEnv`] from its
 //!   options and secrets.
+//! * [`reason`] - Reason, signed in with its own CLI (`reason login`); it
+//!   runs over ACP (`crate::reason_acp`), not stream-json.
 //! * [`secret`] - [`SecretStore`], where provider API keys and tokens live
 //!   (the macOS Keychain in the app, memory in tests), and [`SecretString`],
 //!   which never prints its value.
@@ -38,9 +49,14 @@ pub mod claude_cloud;
 pub mod claude_session;
 pub mod claude_stream;
 pub mod codex;
+pub mod codex_cli;
+pub mod codex_events;
+pub mod codex_rpc;
+pub mod codex_session;
 pub mod env;
 pub mod keychain;
 pub mod provider;
+pub mod reason;
 pub mod secret;
 
 pub use byok::{ProviderConfig, ProviderStatus};

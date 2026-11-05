@@ -15,10 +15,15 @@
 //! * [`gh`]: run `gh` from a checkout or against `owner/name`; typed
 //!   GraphQL variables; the repository's preferred merge method; merge
 //!   (squash / merge / rebase), auto-merge, ready, edit, retarget, approve.
+//! * [`fetch`]: batched GraphQL lookup of each workspace branch's PR.
+//! * [`api`]: the operations the Tauri commands run (lookup, merge,
+//!   auto-merge, create-PR prompt), free of `tauri` so they are testable.
 //! * [`prompt`]: the create-PR message sent to the agent, and the
 //!   archive-on-merge rule.
 
+pub mod api;
 pub mod checks;
+pub mod fetch;
 pub mod gh;
 pub mod header;
 pub mod info;
@@ -27,7 +32,11 @@ pub mod model;
 pub mod prompt;
 
 #[cfg(test)]
+mod api_tests;
+#[cfg(test)]
 mod checks_tests;
+#[cfg(test)]
+mod fetch_tests;
 #[cfg(test)]
 mod gh_tests;
 #[cfg(test)]

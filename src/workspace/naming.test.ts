@@ -9,6 +9,7 @@ import {
   generateWorkspaceNames,
   initialNaming,
   pickCity,
+  prefixSettingsFromInfo,
   planFirstMessageRename,
   resolveBranchPrefix,
   seededRng,
@@ -183,4 +184,17 @@ test("renamed branch stays unique and a renamed-away placeholder is left alone",
   assert.equal(planFirstMessageRename(moved, { ...base, generated: "x", autoRenameWorkspace: false }).branch, undefined);
   // Empty generation changes nothing.
   assert.deepEqual(planFirstMessageRename(ws, { ...base, generated: "!!!", autoRenameWorkspace: true }), {});
+});
+
+test("backend prefix info resolves to the branch prefix", () => {
+  const resolve = (info: Parameters<typeof prefixSettingsFromInfo>[0]) => {
+    const { settings, githubUsername } = prefixSettingsFromInfo(info);
+    return resolveBranchPrefix(settings, githubUsername);
+  };
+  assert.equal(resolve({ branchPrefixType: "github_username", branchPrefixCustom: null, githubUsername: "svemyh" }), "svemyh/");
+  assert.equal(resolve({ branchPrefixType: "github_username", branchPrefixCustom: null, githubUsername: null }), "");
+  // settings.toml stores the custom prefix without the trailing slash.
+  assert.equal(resolve({ branchPrefixType: "custom", branchPrefixCustom: "sven", githubUsername: "svemyh" }), "sven/");
+  assert.equal(resolve({ branchPrefixType: "custom", branchPrefixCustom: "team/sven/", githubUsername: null }), "team/sven/");
+  assert.equal(resolve({ branchPrefixType: "none", branchPrefixCustom: "sven", githubUsername: "svemyh" }), "");
 });

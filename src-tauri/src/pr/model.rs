@@ -6,9 +6,9 @@
 //! do not know deserialize to an `Other`/`Unknown` variant instead of
 //! failing the whole batch.
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum MergeStateStatus {
     Clean,
@@ -49,7 +49,7 @@ impl ViewerPermission {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ReviewDecision {
     Approved,
@@ -57,7 +57,7 @@ pub enum ReviewDecision {
     ReviewRequired,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum MergeQueueState {
     AwaitingChecks,
@@ -107,7 +107,8 @@ pub struct Named {
 
 /// A check normalized from [`RawCheck`]: the workflow name is lifted out of
 /// the check suite when the check run does not carry it directly.
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Check {
     pub conclusion: Option<String>,
     pub status: Option<String>,

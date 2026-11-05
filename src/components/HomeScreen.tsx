@@ -5,7 +5,10 @@ import type { DialogKind } from "./Dialogs";
 import { CloudIcon, FolderIcon, SidebarIcon, SparkIcon } from "./Icons";
 import { Wordmark } from "./Wordmark";
 import { activeWorkspaceCount } from "../state/selectors";
-import { TOGGLE_LEFT_SIDEBAR_HINT } from "../state/shortcuts";
+import { effectiveShortcuts } from "../keybindings/overrides";
+import { glyphs } from "../keybindings/shortcut";
+
+const TOGGLE_LEFT_SIDEBAR_HINT = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
 
 // Layout follows evidence/screens/home.md: wordmark, three entry cards, and a sidebar
 // toggle only while the sidebar is hidden. The repository list lives in the sidebar.

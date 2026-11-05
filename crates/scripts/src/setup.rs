@@ -37,6 +37,7 @@ pub enum SetupState {
 
 /// What a finished (or interrupted) setup left behind.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct SetupOutcome {
     pub workspace_id: String,
     pub state: SetupState,
