@@ -90,7 +90,9 @@ test("navigation wraps and orders comments by file then line", () => {
 
 test("review prompt uses the repo override when set and names the scope", () => {
   assert.ok(buildReviewPrompt("all").startsWith(DEFAULT_REVIEW_PROMPT));
-  assert.equal(buildReviewPrompt("uncommitted", "  Check perf. "), "Check perf.\n\nOnly the uncommitted changes are in scope.");
+  const custom = buildReviewPrompt("uncommitted", "  Check perf. ");
+  assert.ok(custom.startsWith(`${DEFAULT_REVIEW_PROMPT}\n\nOnly the uncommitted changes are in scope.\n\n`), custom);
+  assert.ok(custom.endsWith("<user-preferences>\nCheck perf.\n</user-preferences>"), custom);
 });
 
 test("stored values match the REA-observed diff_comments values", () => {

@@ -228,3 +228,42 @@ command = "echo lint"
     );
     assert!(calls.lock().unwrap().is_empty());
 }
+
+#[test]
+fn scripts_get_the_settings_environment_without_overriding_conductor_vars() {
+    let f = fixture(
+        r#"
+environment_variable_files = ["app.env"]
+[environment_variables.local]
+FROM_TABLE = "table"
+CONDUCTOR_PORT = "1"
+[scripts]
+setup = "echo env=$FROM_FILE/$FROM_TABLE/$CONDUCTOR_PORT"
+"#,
+    );
+    fs::write(
+        f.ws.repo_root.join(".conductor/app.env"),
+        "FROM_FILE=file\n",
+    )
+    .unwrap();
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    wait_for("setup output", || {
+        f.events.lock().unwrap().iter().any(|e| {
+            matches!(e, ScriptEvent::Output { kind: "setup", chunk, .. } if chunk.contains("env=file/table/55000"))
+        })
+    });
+}
+
+#[test]
+fn the_app_can_supply_the_settings_environment() {
+    let f = fixture("[scripts]\nsetup = \"echo hook=$HOOKED\"\n");
+    f.svc.set_settings_env(Arc::new(|ws: &WorkspaceRef| {
+        BTreeMap::from([("HOOKED".to_string(), ws.workspace_name.clone())])
+    }));
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    wait_for("setup output", || {
+        f.events.lock().unwrap().iter().any(|e| {
+            matches!(e, ScriptEvent::Output { kind: "setup", chunk, .. } if chunk.contains("hook=tokyo"))
+        })
+    });
+}

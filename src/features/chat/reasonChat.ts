@@ -10,6 +10,8 @@ import { restoreCheckpoint, turnCheckpointRef } from "./checkpoints.ts";
 import { applyReasonPayload, failTurn, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 import { turnChanges } from "../diff/useTurnChanges.ts";
 import type { FileChange } from "../diff/types.ts";
+import { repoSettingsEffective } from "../../settings/repoSettings.ts";
+import { withGeneralPreferences } from "../../settings/prompts.ts";
 
 const EVENT = "reason-chat-event";
 const sessionKey = (chatId: string) => `openconductor.reason.session.${chatId}`;
@@ -71,10 +73,14 @@ export function subscribeReason(chatId: string, fn: (t: ChatTranscript) => void)
  * Sends the first message or a follow-up; `cwd` is the workspace folder. The
  * backend checkpoints `cwd` before and after the turn under this turn's id
  * and answers with the files the turn changed, which go to the turn-changes
- * cache for the chips under the turn.
+ * cache for the chips under the turn. The first message of a new chat also
+ * carries the repository's effective `prompts.general` (resolved for
+ * `repoPath` and `cwd`), as Conductor appends its general preferences to a
+ * new session's first message; the transcript shows only what the user typed.
  */
-export async function sendReason(chatId: string, cwd: string, text: string): Promise<void> {
+export async function sendReason(chatId: string, cwd: string, text: string, repoPath?: string): Promise<void> {
   const c = chat(chatId);
+  const isNewChat = !c.opened && !localStorage.getItem(sessionKey(chatId)) && !c.transcript.messages.some((m) => m.role === "user");
   // A random turn id, so a turn's checkpoints and cached changes never
   // collide with a turn from an earlier app run.
   const turnId = `${chatId}:${crypto.randomUUID()}`;
@@ -91,10 +97,21 @@ export async function sendReason(chatId: string, cwd: string, text: string): Pro
     // changed. Resolves after the turn's `turnEnded` event; a rejection means
     // the turn never started (no CLI, no process), so no event will end it.
     const turn = turnCheckpointRef(chatId, turnId);
-    const end = await invoke<{ turnChanges?: FileChange[] }>("reason_prompt", { chatId, text, turn });
+    const agentText = isNewChat && repoPath ? await withGeneral(text, repoPath, cwd) : text;
+    const end = await invoke<{ turnChanges?: FileChange[] }>("reason_prompt", { chatId, text: agentText, turn });
     if (end.turnChanges) turnChanges.record(turn, end.turnChanges);
   } catch (e) {
     apply(c, failTurn(c.state, turnId, String(e)));
+  }
+}
+
+async function withGeneral(text: string, repoPath: string, cwd: string): Promise<string> {
+  try {
+    const settings = await repoSettingsEffective(repoPath, cwd);
+    return withGeneralPreferences(text, settings.prompts.general?.value);
+  } catch (e) {
+    console.warn("reason chat: general preferences not applied", e);
+    return text;
   }
 }
 

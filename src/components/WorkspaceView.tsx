@@ -28,6 +28,7 @@ import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
 import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
+import { useRepoSettings } from "../settings/useRepoSettings";
 
 interface Props {
   repo: Repo;
@@ -95,7 +96,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
     const first = firstPrompts.get(workspace.id);
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      void sendReason(workspace.id, cwd, first);
+      void sendReason(workspace.id, cwd, first, repo.path);
     }
     return unsubscribe;
   }, [workspace.id]);
@@ -107,7 +108,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   function sendText(text: string) {
     const first = !transcript.messages.some((m) => m.role === "user");
     if (reason) {
-      void sendReason(workspace.id, cwd, text);
+      void sendReason(workspace.id, cwd, text, repo.path);
       if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
       return;
     }
@@ -296,7 +297,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const onLoaded = useCallback((files: FileDiff[], scope: DiffScope) => loaded.current?.(files, scope), []);
   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, baseBranch: repo.defaultBranch, onLoaded, onOpen: openDiffTab });
   const chat = useMemo<ChatBridge>(() => ({ insert: (t) => chatBridge.current?.insert(t), send: (t) => chatBridge.current?.send(t) }), []);
-  const review = useReviewComments(workspace.id, chat, undefined, diff.openPath);
+  // `prompts.code_review` as the repository and user settings files resolve it.
+  const repoSettings = useRepoSettings(repo.path || undefined, workspace.path);
+  const review = useReviewComments(workspace.id, chat, repoSettings?.prompts.code_review?.value, diff.openPath);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
   // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub, then archive on merge.
