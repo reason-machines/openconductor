@@ -1,0 +1,270 @@
+[
+  {
+    "type": "threadStarted",
+    "threadId": "01a1ac70-f888-73d3-baad-00c29b49ceaa",
+    "resumed": false,
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "notice",
+    "message": "`[features].codex_hooks` is deprecated. Use `[features].hooks` instead.",
+    "willRetry": false,
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "notice",
+    "message": "Under-development features enabled: context_management. Under-development features are incomplete and may behave unpredictably. To suppress this warning, set `suppress_unstable_features_warning = true` in /Users/sven/.codex/config.toml.",
+    "willRetry": false,
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "turnStarted",
+    "turnId": "01a1ac70-fecd-7150-b3a9-1606bb3c51d2",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": "I",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": "’ll",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": " create",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": " `",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": "hello",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": ".txt",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": "`",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": " and",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": " run",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": " `",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": "cat",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": " hello",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": ".txt",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": "`",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": " to",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": " verify",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": " its",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": " contents",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "delta": ".\n",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "message",
+    "itemId": "msg_0d02917ee1add855016aeca8345a1887d185bc785a811af5b9",
+    "text": "I’ll create `hello.txt` and run `cat hello.txt` to verify its contents.\n",
+    "phase": "commentary",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "tool",
+    "id": "exec-c12eb757-2f47-4e32-b676-2c9a104999e9",
+    "kind": "commandExecution",
+    "title": "printf '%s\n' 'hello from codex' > hello.txt\ncat hello.txt",
+    "status": "running",
+    "input": {
+      "command": "/bin/zsh -lc \"printf '%s\n' 'hello from codex' > hello.txt\ncat hello.txt\"",
+      "cwd": "/private/var/folders/p1/1vbvmfjs5rq23wljr0ynmrw40000gn/T/oc-codex-ipc-92968/ws"
+    },
+    "output": null,
+    "exitCode": null,
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "approval",
+    "requestId": 0,
+    "kind": "command",
+    "itemId": "exec-c12eb757-2f47-4e32-b676-2c9a104999e9",
+    "command": "/bin/zsh -lc \"printf '%s\n' 'hello from codex' > hello.txt\ncat hello.txt\"",
+    "cwd": "/private/var/folders/p1/1vbvmfjs5rq23wljr0ynmrw40000gn/T/oc-codex-ipc-92968/ws",
+    "reason": null,
+    "decisions": [
+      "accept",
+      "cancel"
+    ],
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "approvalResolved",
+    "requestId": 0,
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "tool",
+    "id": "exec-c12eb757-2f47-4e32-b676-2c9a104999e9",
+    "kind": "commandExecution",
+    "title": "printf '%s\n' 'hello from codex' > hello.txt\ncat hello.txt",
+    "status": "completed",
+    "input": {
+      "command": "/bin/zsh -lc \"printf '%s\n' 'hello from codex' > hello.txt\ncat hello.txt\"",
+      "cwd": "/private/var/folders/p1/1vbvmfjs5rq23wljr0ynmrw40000gn/T/oc-codex-ipc-92968/ws"
+    },
+    "output": "hello from codex\n",
+    "exitCode": 0,
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d1865fe47d1add7016aeca8398ee887d1837cc5cdca3b1e69",
+    "delta": "hello",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d1865fe47d1add7016aeca8398ee887d1837cc5cdca3b1e69",
+    "delta": " from",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d1865fe47d1add7016aeca8398ee887d1837cc5cdca3b1e69",
+    "delta": " cod",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_0d1865fe47d1add7016aeca8398ee887d1837cc5cdca3b1e69",
+    "delta": "ex",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "message",
+    "itemId": "msg_0d1865fe47d1add7016aeca8398ee887d1837cc5cdca3b1e69",
+    "text": "hello from codex",
+    "phase": "final_answer",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "turnEnded",
+    "outcome": "completed",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "turnStarted",
+    "turnId": "01a1ac71-22d9-72e0-888a-977cd6b8fb6f",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_042e975d6fb47d86016aeca83f6cf487d1b91b329742aac7f6",
+    "delta": "hello",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_042e975d6fb47d86016aeca83f6cf487d1b91b329742aac7f6",
+    "delta": " from",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_042e975d6fb47d86016aeca83f6cf487d1b91b329742aac7f6",
+    "delta": " cod",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "text",
+    "itemId": "msg_042e975d6fb47d86016aeca83f6cf487d1b91b329742aac7f6",
+    "delta": "ex",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "message",
+    "itemId": "msg_042e975d6fb47d86016aeca83f6cf487d1b91b329742aac7f6",
+    "text": "hello from codex",
+    "phase": "final_answer",
+    "chatId": "ws-e2e"
+  },
+  {
+    "type": "turnEnded",
+    "outcome": "completed",
+    "chatId": "ws-e2e"
+  }
+]
