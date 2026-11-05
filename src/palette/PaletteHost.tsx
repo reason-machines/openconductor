@@ -7,7 +7,7 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
 import { paletteDataFromState, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import type { ResultItem } from "./search/model.ts";
-import { nextUnreadWorkspace } from "../state/nextUnread.ts";
+import { openNextUnread } from "../state/nextUnread.ts";
 
 const RECENT_LIMIT = 8;
 
@@ -37,14 +37,7 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   const go = (ref: WorkspaceRef | undefined) =>
     ref && dispatch({ type: "select", selection: { kind: "workspace", repoId: ref.repoId, workspaceId: ref.workspace.id } });
   const activeRepoId = sel.kind === "workspace" ? sel.repoId : state.repos[0]?.id;
-  // Opening the workspace clears its unread flag, as clicking its row does.
-  const goUnread = (skipSelected: boolean): boolean => {
-    const ref = nextUnreadWorkspace(state, { skipSelected });
-    if (!ref) return false;
-    go(ref);
-    dispatch({ type: "setWorkspaceUnread", repoId: ref.repoId, workspaceId: ref.workspace.id, unread: false });
-    return true;
-  };
+  const goUnread = (skipSelected: boolean): boolean => openNextUnread(state, dispatch, { skipSelected });
 
   const actions: Record<string, () => void> = {
     "archive-workspace": () => sel.kind === "workspace" && dispatch({ type: "archiveWorkspace", repoId: sel.repoId, workspaceId: sel.workspaceId }),

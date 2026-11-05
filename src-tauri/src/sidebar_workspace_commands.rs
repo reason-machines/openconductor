@@ -4,7 +4,7 @@
 //! in its frontend, REA-extracted, read as data); the setters live in
 //! `openconductor_db::workspaces`.
 
-use openconductor_db::{workspaces, SqlitePool};
+use openconductor_db::{iso_time, workspaces, SqlitePool};
 use tauri::State;
 
 use crate::db::Db;
@@ -79,6 +79,27 @@ pub async fn db_set_workspace_unread(
     workspaces::set_unread(&db.0, &workspace_id, unread)
         .await
         .map_err(|e| e.to_string())
+}
+
+/// JS: `invoke("db_touch_workspace", { workspaceId, at })`, `at` in ms since
+/// the epoch: the user sent a message, so `workspaces.updated_at` moves forward
+/// to it (never back), as Conductor's `setSessionUpdatedAt` does on every
+/// enqueue (index-BGEQ8YjU.js @1,066,404). Codex sends reach the database only
+/// this way; a workspace without a row has nothing to move.
+#[tauri::command]
+pub async fn db_touch_workspace(
+    db: State<'_, Db>,
+    workspace_id: String,
+    at: i64,
+) -> Result<(), String> {
+    touch(&db.0, &workspace_id, at).await
+}
+
+async fn touch(pool: &SqlitePool, workspace_id: &str, at: i64) -> Result<(), String> {
+    match workspaces::touch(pool, workspace_id, &iso_time::from_millis(at)).await {
+        Ok(()) | Err(openconductor_db::Error::NotFound) => Ok(()),
+        Err(e) => Err(e.to_string()),
+    }
 }
 
 /// JS: `invoke("db_set_workspace_manual_status", { workspaceId, status })`.
@@ -248,5 +269,47 @@ mod tests {
             (row.pinned_at, row.unread, row.manual_status),
             (None, false, None)
         );
+    }
+
+    #[tokio::test]
+    async fn touch_moves_last_activity_forward_only() {
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        let repo = KnownRepo {
+            id: "app".into(),
+            name: "app".into(),
+            root: "/src/app".into(),
+            default_branch: "main".into(),
+        };
+        let ws = KnownWorkspace {
+            id: "app/oslo".into(),
+            repository_id: "app".into(),
+            directory_name: "oslo".into(),
+            branch: "oslo".into(),
+            path: "/data/workspaces/app/oslo".into(),
+            archived: false,
+        };
+        store::record_repository(&pool, &repo).await.unwrap();
+        store::finish_workspace(&pool, &ws, Some("main"), None)
+            .await
+            .unwrap();
+        let updated_at = |pool: SqlitePool| async move {
+            store::list_workspaces(&pool)
+                .await
+                .unwrap()
+                .into_iter()
+                .find(|w| w.id == "app/oslo")
+                .unwrap()
+                .updated_at
+        };
+
+        // 2100-01-01T00:00:00.000Z: after the row's creation time.
+        let later = 4_102_444_800_000;
+        touch(&pool, "app/oslo", later).await.unwrap();
+        assert_eq!(updated_at(pool.clone()).await, "2100-01-01T00:00:00.000Z");
+        // An older send does not move it back.
+        touch(&pool, "app/oslo", later - 86_400_000).await.unwrap();
+        assert_eq!(updated_at(pool.clone()).await, "2100-01-01T00:00:00.000Z");
+        // A workspace with no row is not an error.
+        touch(&pool, "app/none", later).await.unwrap();
     }
 }

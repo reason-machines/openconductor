@@ -8,6 +8,7 @@ import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import * as Q from "./queue.ts";
+import { chatWantsAttention, turnSettled } from "./attention.ts";
 import { answered, applyCodexPayload, codexChat, failTurn, newestTurn, startTurn, type CodexApproval, type CodexChatState, type CodexDecision, type CodexPayload, type Step } from "./codex.ts";
 
 const EVENT = "codex-chat-event";
@@ -82,7 +83,10 @@ function publish(c: Chat, next: Partial<CodexSnapshot>) {
 
 function apply(c: Chat, step: Step) {
   const approvalsChanged = step.state.approvals !== c.state.approvals;
+  // A new approval request is a wait on the user (Conductor's `_p` on needs_user_permission).
+  const asked = step.state.approvals.some((a) => !c.state.approvals.some((b) => b.requestId === a.requestId));
   c.state = step.state;
+  if (asked) chatWantsAttention(c.state.chatId);
   if (step.threadId) localStorage.setItem(threadKey(c.state.chatId), step.threadId);
   if (step.events.length === 0) {
     if (approvalsChanged) publish(c, {});
@@ -98,6 +102,7 @@ function apply(c: Chat, step: Step) {
   for (const e of step.events) {
     if (e.type !== "turn_status" || e.status === "running") continue;
     setQueue(c, Q.turnEnded(c.view.queue, e.status));
+    if (turnSettled(e.status, c.view.queue)) chatWantsAttention(c.state.chatId);
   }
 }
 

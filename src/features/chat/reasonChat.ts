@@ -28,6 +28,7 @@ import { restoreCheckpoint, turnCheckpointRef } from "./checkpoints.ts";
 import { applyReasonPayload, cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
+import { chatWantsAttention, turnSettled } from "./attention.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import { turnChanges } from "../diff/useTurnChanges.ts";
 import type { FileChange } from "../diff/types.ts";
@@ -165,6 +166,7 @@ function apply(c: Chat, step: Step) {
   for (const e of step.events) {
     if (e.type !== "turn_status" || e.status === "running") continue;
     setQueue(c, Q.turnEnded(c.queue, e.status, openTurns(c.state) > 0));
+    if (turnSettled(e.status, c.queue)) chatWantsAttention(c.state.chatId);
   }
 }
 

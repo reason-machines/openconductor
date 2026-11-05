@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
-import { ArchiveIcon, BranchIcon } from "./Icons";
+import { ArchiveIcon, BranchIcon, ChevronIcon } from "./Icons";
+import { clearManuallyUnread, readOnView, setShownChat } from "../state/autoUnread";
+import { useWindowFocused } from "../state/useAutoUnread";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat } from "../features/chat/reasonChat.ts";
 import { Composer } from "../features/chat/Composer.tsx";
@@ -56,6 +58,8 @@ interface Props {
   workspace: Workspace;
   dispatch: Dispatch<Action>;
   notify?: ArchiveNotify;
+  /** Opens the next unread workspace; unset when nothing else is unread (the composer's "Next unread" button). */
+  onNextUnread?: () => void;
 }
 
 // The chat runs Reason in the desktop app (one Reason Session per chat,
@@ -112,7 +116,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, onNextUnread }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -345,6 +349,16 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           ))}
         </div>
       ) : null}
+      {onNextUnread ? (
+        // parity:sidebar.ws-unread — Conductor's g1o (renderApp @7,528,638): a small outline
+        // "Next unread" button with a chevron, 40px above the composer's right edge.
+        <div className="next-unread-anchor">
+          <button type="button" className="btn btn-small next-unread" onClick={onNextUnread}>
+            <span>Next unread</span>
+            <ChevronIcon size={12} />
+          </button>
+        </div>
+      ) : null}
       <Composer
         draft={draft}
         setDraft={setDraft}
@@ -574,7 +588,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
   archived: "Archived",
 };
 
-export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
+export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
@@ -716,6 +730,18 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const activeTab = showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const prNumber = pullRequest.pr?.number ?? null;
   shownChat.current = activeReview?.chatId ?? workspace.id;
+  // The chat whose transcript is on screen (none while the diff or PR tab is open): auto-unread
+  // skips it while the window has focus, and an unread workspace shown that way is read.
+  const transcriptShown = showDiff || showPr ? null : shownChat.current;
+  const focused = useWindowFocused();
+  useEffect(() => {
+    setShownChat(transcriptShown);
+    return () => setShownChat(null);
+  }, [transcriptShown]);
+  useEffect(() => clearManuallyUnread(workspace.id), [workspace.id]);
+  useEffect(() => {
+    if (readOnView(workspace, { shownChatId: transcriptShown, focused })) dispatch({ type: "setWorkspaceUnread", repoId: repo.id, workspaceId: workspace.id, unread: false });
+  }, [workspace, transcriptShown, focused, dispatch, repo.id]);
   // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
   const rightPanelVisible = useAppPrefs().right_panel_visible;
   return (
@@ -763,6 +789,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
+          // Conductor hides the button once the workspace's PR is merged (g1o's `hidden`, `mIo` isMerged).
+          onNextUnread={prBase?.merged ? undefined : onNextUnread}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
           content={
             showDiff ? (
