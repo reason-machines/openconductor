@@ -84,6 +84,8 @@ jobs:
         run: bash evidence/checkpoint/run-tests.sh
       - name: PR module build, test and clippy
         run: bash evidence/pr/run-tests.sh
+      - name: Quick open module build, test and clippy
+        run: bash evidence/quick_open/run-tests.sh
       - name: Settings module build, test, clippy and rustfmt
         run: bash scripts/test-settings.sh
 
