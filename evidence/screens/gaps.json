@@ -6,5 +6,21 @@
   {
     "screen": "Settings > Repositories > <repo>",
     "reason": "Clicking a repository row in the settings nav only shows its hover state; the page body stays on General in the harness. Not investigated further (likely needs repo config reads the mock doesn't answer)."
+  },
+  {
+    "screen": "Keyboard shortcuts dialog",
+    "reason": "Cmd+/ (openKeyboardShortcuts, physical Slash + meta in the keybinding registry) sent through REA press on body did not open it in headless Chromium; the help button has no stable locator."
+  },
+  {
+    "screen": "/key-bindings route",
+    "reason": "Renders the router's 'Not Found' page when loaded directly; it is likely a dialog or window route opened by the native shell, not a page."
+  },
+  {
+    "screen": "Archive toast / undo",
+    "reason": "Archiving removes the row, but no toast was visible 400 ms later; the sidebar-after-archive state is captured instead."
+  },
+  {
+    "screen": "Tool permission card, running agent, streaming reply",
+    "reason": "Needs live sidecar agent events (rpc_from_sidecar notifications), which the harness does not script yet."
   }
 ]

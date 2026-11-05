@@ -1,0 +1,461 @@
+[
+  {
+    "name": "modal--clone-github-repo--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_github",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Open GitHub project"
+        },
+        "timeout_ms": 4000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Home > Open GitHub project: 'Clone GitHub repo' dialog (URL + location)."
+  },
+  {
+    "name": "modal--create-project--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "quick",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Quick start"
+        },
+        "timeout_ms": 4000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Home > Quick start: 'Create project' dialog with Empty / Next.js / gstack templates."
+  },
+  {
+    "name": "modal--create-project--light",
+    "scenario": "populated",
+    "theme": "light",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "quick",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Quick start"
+        },
+        "timeout_ms": 4000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Same as dark, light theme."
+  },
+  {
+    "name": "modal--rename-workspace--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "context",
+        "action": "click",
+        "button": "right",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/fix login redirect"
+        },
+        "timeout_ms": 3000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 700
+      },
+      {
+        "step_id": "rename",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=menu] >> text=Rename"
+        },
+        "timeout_ms": 4000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Workspace context menu > Rename: 'Rename workspace' dialog with 'Also rename branch'."
+  },
+  {
+    "name": "menu--workspace-set-status--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "context",
+        "action": "click",
+        "button": "right",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/fix login redirect"
+        },
+        "timeout_ms": 3000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 700
+      },
+      {
+        "step_id": "status",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=menu] >> text=Set status"
+        },
+        "timeout_ms": 4000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Context menu > Set status submenu: Backlog, In progress (checked), In review, Done, Canceled."
+  },
+  {
+    "name": "toast--copied-link--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "context",
+        "action": "click",
+        "button": "right",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/fix login redirect"
+        },
+        "timeout_ms": 3000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 700
+      },
+      {
+        "step_id": "copy",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=menu] >> text=Copy link"
+        },
+        "timeout_ms": 4000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Context menu > Copy link: 'Copied link' toast, bottom centre."
+  },
+  {
+    "name": "sidebar--after-archive--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "context",
+        "action": "click",
+        "button": "right",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/fix login redirect"
+        },
+        "timeout_ms": 3000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 700
+      },
+      {
+        "step_id": "archive",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=menu] >> text=Archive"
+        },
+        "timeout_ms": 4000
+      }
+    ],
+    "final_settle_ms": 400,
+    "notes": "Context menu > Archive: the workspace leaves the sidebar list (tide-web 3 to 2). No toast captured."
+  },
+  {
+    "name": "home--workspace-list--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "/all-workspaces: Home with the workspace list grouped by Today / Yesterday, project and archive filters.",
+    "path": "/all-workspaces"
+  },
+  {
+    "name": "home--workspace-list--light",
+    "scenario": "populated",
+    "theme": "light",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Same as dark, light theme.",
+    "path": "/all-workspaces"
+  },
+  {
+    "name": "routines--suggested--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "/routines (also /automations): Routines page with suggested routines.",
+    "path": "/routines"
+  },
+  {
+    "name": "chat--new-empty-session--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "osaka",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/dark mode tokens"
+        },
+        "timeout_ms": 4000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "A workspace with a session and no messages: 'New chat in /osaka', empty Changes, Run panel."
+  },
+  {
+    "name": "chat--needs-permission-workspace--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "api",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-api"
+        },
+        "timeout_ms": 4000
+      },
+      {
+        "step_id": "pause2",
+        "action": "wait_for_timeout",
+        "duration_ms": 700
+      },
+      {
+        "step_id": "tallinn",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/rate limit headers"
+        },
+        "timeout_ms": 4000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "tide-api/tallinn, whose session status is needs_user_permission (no transcript seeded, so no permission card is shown)."
+  },
+  {
+    "name": "diagnostics--page--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "path": "/diagnostics",
+    "settle_ms": 8000,
+    "final_settle_ms": 500,
+    "actions": [
+      {
+        "step_id": "settle_more",
+        "action": "wait_for_timeout",
+        "duration_ms": 500
+      }
+    ],
+    "notes": "/diagnostics: standalone Diagnostics page (Run environment diagnostics, Copy all console logs)."
+  }
+]

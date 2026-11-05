@@ -77,3 +77,4 @@ verifier_plist_openconductor_app_884f1f7	rea inspect-plist <CI artifact OpenCond
 verifier_signature_openconductor_app_884f1f7	rea inspect-signature <CI artifact, run 42021844898>/OpenConductor.app --json	0	4	2893	
 verifier_dylib_openconductor_app_884f1f7	rea trace-dylib-resolution <CI artifact, run 42021844898>/OpenConductor.app --json	0	3	14841	
 verifier_sqlite_rebuild_node24_884f1f7	npx rea-agents@6.8.0 inspect-sqlite-database <rebuild conductor.db from main 884f1f7 migrations> --schema-scope database --json (Linux, Node 24.22.2)	0	-	-	
+search_strings_create_private_github_repo	rea search /Applications/Conductor.app/Contents/MacOS/conductor "Create a private GitHub repo?" --format json	1	7	2896	provider_unavailable: no deep-analysis provider configured (ghidra not_configured, GHIDRA_INSTALL_DIR unset, no Java runtime; hopper/ida/kuna unavailable)
