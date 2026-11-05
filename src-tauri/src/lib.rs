@@ -24,6 +24,7 @@ pub mod db;
 pub mod persistence;
 mod persistence_commands;
 pub mod diff;
+pub mod draft_attachments;
 pub mod github_repo;
 pub mod menu;
 pub mod pr;
@@ -217,6 +218,8 @@ pub fn run() {
             let data_dir = app.path().app_data_dir()?;
             // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
+            // Conductor sweeps draft-attachments/ dirs older than 30 days at start.
+            draft_attachments::sweep_at_startup(&data_dir);
             let db = db::open(&data_dir)?;
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
@@ -332,6 +335,12 @@ pub fn run() {
             spotlight_commands::spotlight_testing_get,
             spotlight_commands::spotlight_testing_set,
             terminal_output_commands::get_terminal_output,
+            draft_attachments::commands::draft_attachment_write,
+            draft_attachments::commands::draft_attachment_resolve,
+            draft_attachments::commands::draft_attachment_remove,
+            draft_attachments::commands::draft_attachment_upload,
+            draft_attachments::commands::draft_attachments_materialize,
+            draft_attachments::commands::materialize_local_path_attachment,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")
