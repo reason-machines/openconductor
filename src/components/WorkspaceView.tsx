@@ -16,11 +16,15 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { ScriptsPanel } from "./ScriptsPanel";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
+import { usePullRequest } from "../features/pr/usePullRequest";
+import { PrControl } from "../features/pr/PrControl";
+import type { PrLookup } from "../features/pr/types";
 
 interface Props {
   repo: Repo;
   workspace: Workspace;
   dispatch: Dispatch<Action>;
+  notify?: (kind: "info" | "error", message: string) => void;
 }
 
 // In the desktop app the chat runs Reason (one Reason Session per workspace,
@@ -54,9 +58,11 @@ interface ChatPanelProps extends Props {
   tabs: ReactNode;
   /** Shown instead of the transcript while another tab (the diff) is active; the composer stays. */
   content: ReactNode | null;
+  /** The agent started or finished a turn. */
+  onRunningChange?: (running: boolean) => void;
 }
 
-function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunningChange }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const load = () => (reason ? reasonTranscript(workspace.id) : (transcripts.get(workspace.id) ?? emptyTranscript(workspace.id)));
@@ -65,6 +71,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content }: ChatPan
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const running = transcript.activeTurn !== null;
+  useEffect(() => onRunningChange?.(running), [running, onRunningChange]);
 
   useEffect(() => {
     setTranscript(load());
@@ -220,7 +227,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
   archived: "Archived",
 };
 
-export function WorkspaceView({ repo, workspace, dispatch }: Props) {
+export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
   const chatBridge = useRef<ChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
@@ -246,6 +253,15 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, baseBranch: repo.defaultBranch, onLoaded, onOpen: openDiffTab });
   const chat = useMemo<ChatBridge>(() => ({ insert: (t) => chatBridge.current?.insert(t), send: (t) => chatBridge.current?.send(t) }), []);
   const review = useReviewComments(workspace.id, chat, undefined, diff.openPath);
+  const [agentWorking, setAgentWorking] = useState(false);
+  // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub.
+  const onLookup = useCallback(
+    (next: PrLookup) => {
+      if (next.kind === "found") dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title });
+    },
+    [dispatch, repo.id, workspace.id],
+  );
+  const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, onLookup });
   loaded.current = review.onLoaded;
 
   const switchTab = () => diffOpen && setMainTab((t) => (t === "chat" ? "diff" : "chat"));
@@ -276,6 +292,14 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
           )}
         </div>
         <div className="ws-actions">
+          <PrControl
+            pullRequest={pullRequest}
+            worktree={workspace.path ?? null}
+            branch={workspace.branch}
+            targetBranch={repo.defaultBranch}
+            sendToAgent={(text) => chat.send(text)}
+            notify={notify}
+          />
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
             Terminal
           </button>
@@ -290,6 +314,7 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
           workspace={workspace}
           dispatch={dispatch}
           bridge={chatBridge}
+          onRunningChange={setAgentWorking}
           tabs={<MainTabs title={workspace.name} active={showDiff ? "diff" : "chat"} diffOpen={diffOpen} onSelect={setMainTab} onCloseDiff={closeDiffTab} />}
           content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} annotations={review.annotations} /> : null}
         />

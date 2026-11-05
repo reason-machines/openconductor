@@ -18,6 +18,8 @@ export type Action =
     }
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
+  /** The workspace's pull request title changed on GitHub (`workspaces.pr_title`). */
+  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null }
   | { type: "toggleSidebar" }
   | { type: "reset"; state: AppState };
 
@@ -69,6 +71,11 @@ export function reducer(state: AppState, action: Action): AppState {
           ? w
           : { ...w, name: action.name ?? w.name, branch: action.branch ?? w.branch, placeholderBranchName: null };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(rename) } : r));
+      return { ...state, repos };
+    }
+    case "setWorkspacePr": {
+      const set = (w: Workspace): Workspace => (w.id === action.workspaceId && (w.prTitle ?? null) !== action.prTitle ? { ...w, prTitle: action.prTitle } : w);
+      const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
     }
     case "archiveWorkspace": {
