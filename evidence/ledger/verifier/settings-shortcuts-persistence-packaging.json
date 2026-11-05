@@ -3,7 +3,7 @@
  "generated_by": "tools/parity_check.py check",
  "target": {
   "ref": "origin/main",
-  "sha": "9c76e3ecb902adff1fc28eb06025be48996dfe35"
+  "sha": "ae3c0151314bce3fc3333e3a0244fbc80cb7fcf8"
  },
  "result_meaning": "pass = every item that evidences the obligation is matched on the target (static); fail = at least one item is partial, declared or missing. Static presence, not runtime behavior.",
  "areas": {
