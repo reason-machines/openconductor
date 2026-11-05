@@ -116,10 +116,15 @@ I recommend re-anchoring `home.repo-search` in
 - `src/home/repoFilter.ts`: the options, the radio value mapping, stale-filter
   reconciliation and repository-group filtering, as above. Tested in
   `repoFilter.test.ts`.
-- `src/home/useRepoFilter.ts`: persists the filter under
-  `openconductor.sidebar_repo_filter` in localStorage, because OpenConductor's
-  settings have no `sidebar_repo_filter` key yet. This is a gap against
-  Conductor's settings table.
+- `src/home/useRepoFilter.ts`: in the desktop app, keeps the filter in
+  conductor.db's settings table as `sidebar_repo_filter` (the repository id),
+  through the typed app preferences (`set_app_pref`,
+  `src-tauri/src/app_prefs`). "All projects" deletes the row, as `z6t` does.
+  The browser build has no database and keeps it under
+  `openconductor.sidebar_repo_filter` in localStorage.
+- `src/components/Sidebar.tsx`: mounts the submenu in the "My workspaces"
+  header menu after "Add project…" and filters the repository groups; the
+  Pinned group is not filtered.
 - `src/components/home/ProjectFilterSubmenu.tsx` + `src/home.css`: the submenu.
   Hover or click opens it, and ArrowRight/Enter opens it and focuses the
   checked item. Up/Down move through the items, ArrowLeft returns to the

@@ -20,3 +20,9 @@
 .pr-body-editor textarea { width: 100%; box-sizing: border-box; min-height: 90px; font: inherit; font-size: 12px; }
 .pr-body-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 4px; }
 .pr-title-dialog input { width: 100%; box-sizing: border-box; }
+.target-chip { display: inline-flex; align-items: center; gap: 6px; }
+.target-chip > button.chip { cursor: pointer; font-family: var(--font-mono); font-size: 11px; }
+.target-chip > button.chip:disabled { cursor: default; opacity: 0.7; }
+button.pr-chip { cursor: pointer; }
+button.pr-chip:hover { background: var(--hover); }
+.pr-tab { overflow: auto; flex: 1; min-height: 0; }
