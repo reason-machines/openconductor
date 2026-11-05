@@ -27,3 +27,4 @@ Our side: the same REA commands on `src-tauri/target/debug/bundle/macos/OpenCond
 2. `inspect-signature` reports the signing `timestamp` as a localized string with no time zone.
 3. No REA operation covers notarization or Gatekeeper (`spctl --assess`, `stapler validate`), so release readiness needs plain Apple tools.
 4. `inspect` with no disassembler configured gives `provider_unavailable` instead of a bundle summary; `inspect-artifact` plus `inspect-plist` cover it.
+5. `rea search` on `conductor-runtime` fails with `provider_unavailable` unless `GHIDRA_INSTALL_DIR` and `JAVA_HOME` are set in the environment; the error does not name either variable.

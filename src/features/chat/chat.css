@@ -49,3 +49,13 @@
 .oc-reset-files { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .oc-reset-count { font-variant-numeric: tabular-nums; }
 .oc-skeleton { display: inline-block; width: 64px; height: 14px; border-radius: 4px; background: var(--muted); opacity: 0.2; animation: pulse 1.4s ease-in-out infinite; }
+
+.chat-turn-footer { display: flex; flex-direction: column; gap: 6px; }
+.chat-turn-changes { display: flex; flex-wrap: wrap; gap: 6px; }
+.chat-turn-chip { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); font-size: 12px; line-height: 1; max-width: 240px; }
+.chat-turn-chip:hover { background: var(--hover); }
+.chat-turn-chip .name { font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.chat-turn-chip .count { flex: none; font-family: var(--font-mono); font-size: 11px; }
+.chat-turn-chip .a { color: var(--add); }
+.chat-turn-chip .d { color: var(--del); }
+.chat-turn-chip.more { color: var(--muted); }
