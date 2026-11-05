@@ -280,6 +280,7 @@ pub fn run() {
             }
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
+            let settings_pool = db.0.clone();
             app.manage(db);
             app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
@@ -287,10 +288,16 @@ pub fn run() {
             app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
-            app.manage(settings::service::SettingsService::new(
+            // Appearance keys Conductor keeps in conductor.db live in its settings table.
+            let settings_service = settings::service::SettingsService::new(
                 settings::config_dir()?.join(settings::FILE_NAME),
                 agent::keychain::default_store(),
-            ));
+            )
+            .with_db(settings_pool);
+            if let Err(e) = settings_service.move_appearance_to_db() {
+                eprintln!("Appearance settings stay in settings.toml until next launch: {e}");
+            }
+            app.manage(settings_service);
             let scripts = scripts::service(app.handle());
             let spotlight = spotlight_commands::service(app.handle());
             scripts.set_auto_run_spotlight(spotlight::auto_run::hook(spotlight.clone()));
