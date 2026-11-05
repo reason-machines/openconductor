@@ -1,4 +1,4 @@
-// parity:diff.comments-inline:command parity:diff.comments-to-chat:command parity:diff.comments-github:command
+// parity:diff.comments-inline:command parity:diff.comments-to-chat:command
 // Review comments through the diff_comment* Tauri commands
 // (src-tauri/src/diff/comment_commands.rs). Tauri maps camelCase argument
 // names to the commands' snake_case parameters; the comment object itself
@@ -6,19 +6,10 @@
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../../backend";
 import type { DiffComment } from "./comments.ts";
-import { localCommentStore, type CommentStore, type GithubSyncReport } from "./commentStore.ts";
+import { localCommentStore, type CommentStore } from "./commentStore.ts";
 
-function tauriCommentStore(workspaceId: string, workspacePath: string | null): CommentStore {
-  const github: Pick<CommentStore, "syncGithub" | "resolveOnGithub"> = workspacePath
-    ? {
-        syncGithub: () => invoke<GithubSyncReport>("diff_comments_sync_github", { workspaceId, workspacePath }),
-        resolveOnGithub: async (threadId) => {
-          await invoke("diff_comment_resolve_github", { workspacePath, threadId });
-        },
-      }
-    : {};
+function tauriCommentStore(workspaceId: string): CommentStore {
   return {
-    ...github,
     list: () => invoke<DiffComment[]>("diff_comments_list", { workspaceId }),
     add: async (comment) => {
       await invoke("diff_comment_add", { comment });
@@ -36,7 +27,6 @@ function tauriCommentStore(workspaceId: string, workspacePath: string | null): C
   };
 }
 
-/** `workspacePath` (the workspace's checkout) enables GitHub comment sync. */
-export function commentStoreFor(workspaceId: string, workspacePath: string | null = null): CommentStore {
-  return inTauri() ? tauriCommentStore(workspaceId, workspacePath) : localCommentStore(localStorage, workspaceId);
+export function commentStoreFor(workspaceId: string): CommentStore {
+  return inTauri() ? tauriCommentStore(workspaceId) : localCommentStore(localStorage, workspaceId);
 }

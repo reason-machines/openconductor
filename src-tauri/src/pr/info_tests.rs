@@ -1,9 +1,7 @@
 use serde_json::{json, Value};
 
 use super::checks::ChecksStatus;
-use super::info::{
-    derived_status, lookup_from_node, metadata_update, status_update, PrLookup, WorkspaceStatus,
-};
+use super::info::{derived_status, lookup_from_node, metadata_update, PrLookup, WorkspaceStatus};
 use super::model::{MergeStateStatus, PrNode, ViewerPermission};
 
 /// An open, mergeable PR node; `patch` overrides top-level fields.
@@ -109,13 +107,4 @@ fn metadata_is_written_only_when_changed() {
         metadata_update(info, Some("Old"), Some("Body")),
         Some(("Add thing", "Body"))
     );
-}
-
-#[test]
-fn status_is_written_only_when_it_changes() {
-    use WorkspaceStatus::*;
-    assert_eq!(status_update(Some("in-review"), InReview), None);
-    assert_eq!(status_update(Some("in-progress"), InReview), Some(InReview));
-    assert_eq!(status_update(None, InProgress), Some(InProgress));
-    assert_eq!(status_update(Some("done"), Canceled), Some(Canceled));
 }

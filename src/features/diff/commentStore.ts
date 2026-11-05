@@ -13,20 +13,6 @@ export interface CommentStore {
   /** Resolve or reopen the thread with this key (see `threadKey`). */
   resolve(threadId: string, resolved: boolean): Promise<void>;
   markSent(ids: string[]): Promise<void>;
-  /** Pull the workspace PR's comments from GitHub into the store (app only). */
-  syncGithub?(): Promise<GithubSyncReport>;
-  /** Resolve a GitHub review thread on GitHub, then here (app only). */
-  resolveOnGithub?(threadId: string): Promise<void>;
-}
-
-/** `diff_comments_sync_github`'s result. */
-export interface GithubSyncReport {
-  pr_number: number | null;
-  /** Why nothing was synced: no PR, a merged PR, or gh could not reach GitHub. */
-  skipped: string | null;
-  review_comments: number;
-  general_comments: number | null;
-  changed: number;
 }
 
 type KV = Pick<Storage, "getItem" | "setItem">;

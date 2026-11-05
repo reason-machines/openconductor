@@ -70,7 +70,7 @@ const SHOTS = [
     name: "ours-diff--file-split--dark",
     theme: "dark",
     ref: "diff--file-split--dark.png",
-    actions: [...openFile, { step_id: "split", action: "click", locator: { kind: "css", selector: "button[aria-label='Split view']" }, timeout_ms: 5000 }],
+    actions: [...openFile, { step_id: "split", action: "click", locator: { kind: "css", selector: "button[aria-label='Split diff']" }, timeout_ms: 5000 }],
   },
 ];
 

@@ -3,7 +3,7 @@
 // src-tauri/src/reason_acp/wire_tests.rs) through the transcript to rows.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applyReasonPayload, cancelUnsent, failTurn, newestTurn, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type ReasonPath } from "./reason.ts";
+import { applyReasonPayload, failTurn, newestTurn, reasonChat, startTurn, type ReasonChatState, type ReasonPayload, type ReasonPath } from "./reason.ts";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import { buildRows } from "./view.ts";
 import type { ChatEvent } from "./types.ts";
@@ -140,60 +140,10 @@ test("Stop ends the turn cancelled with the prompt offered again; a failed call 
   assert.ok(end.kind === "turn_end" && end.status === "cancelled" && end.retryPrompt === "long job");
 
   let state = startTurn(reasonChat(CHAT), "hi").state;
-  const when = new Date("2026-11-05T10:00:00.000Z");
-  const step = failTurn(state, newestTurn(state)!, "The Reason CLI was not found.", when);
+  const step = failTurn(state, newestTurn(state)!, "The Reason CLI was not found.");
   state = step.state;
   assert.equal(state.open.length, 0);
-  assert.deepEqual(step.events[0], { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "failed", error: "The Reason CLI was not found.", at: when.toISOString() });
-});
-
-test("a stopped turn marks its prompt cancelled and records start and end times", () => {
-  const t0 = new Date("2026-11-05T10:00:00.000Z");
-  const t1 = new Date("2026-11-05T10:00:07.000Z");
-  const started = startTurn(reasonChat(CHAT), "long job", t0);
-  const ended = applyReasonPayload(started.state, { chatId: CHAT, type: "turnEnded", end: { outcome: "cancelled" } }, t1);
-  assert.deepEqual(started.events[1], { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "running", at: t0.toISOString() });
-  const [upsert, status] = ended.events;
-  assert.ok(upsert?.type === "upsert" && upsert.message.role === "user" && upsert.message.cancelledAt === t1.toISOString());
-  assert.deepEqual(status, { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "cancelled", at: t1.toISOString() });
-  const done = applyReasonPayload(startTurn(reasonChat(CHAT), "x", t0).state, { chatId: CHAT, type: "turnEnded", end: { outcome: "completed" } }, t1);
-  assert.equal(done.events.length, 1);
-});
-
-test("a turn stopped before its prompt reached Reason ends cancelled, leaving earlier open turns running", () => {
-  const t0 = new Date("2026-11-05T10:00:00.000Z");
-  const t1 = new Date("2026-11-05T10:00:01.000Z");
-  const running = startTurn(reasonChat(CHAT), "running job", t0).state;
-  const both = startTurn(running, "steer", t0).state;
-  const step = cancelUnsent(both, `${CHAT}:t2`, t1);
-  assert.deepEqual(step.state.open.map((t) => t.turnId), [`${CHAT}:t1`]);
-  const [upsert, status] = step.events;
-  assert.ok(upsert?.type === "upsert" && upsert.message.id === `${CHAT}:t2:user` && upsert.message.cancelledAt === t1.toISOString());
-  assert.deepEqual(status, { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t2`, status: "cancelled", at: t1.toISOString() });
-  assert.deepEqual(cancelUnsent(step.state, `${CHAT}:t2`, t1).events, []);
-});
-
-test("a notice is a system message in the running turn", () => {
-  const s = startTurn(reasonChat("c"), "review").state;
-  const step = applyReasonPayload(s, { chatId: "c", type: "notice", text: "Reason does not offer model \"x\"" });
-  assert.equal(step.events.length, 1);
-  const ev = step.events[0];
-  assert.equal(ev.type, "upsert");
-  if (ev.type !== "upsert") return;
-  assert.equal(ev.message.role, "system");
-  assert.equal(ev.message.turnId, "c:t1");
-  assert.deepEqual(ev.message.blocks, [{ type: "text", text: "Reason does not offer model \"x\"" }]);
-});
-
-test("attachments show by name under the prompt", () => {
-  const step = startTurn(reasonChat("c"), "Review this", new Date(0), undefined, [{ name: "Review request.md", text: "long instructions" }]);
-  const ev = step.events[0];
-  assert.equal(ev.type, "upsert");
-  if (ev.type !== "upsert") return;
-  assert.deepEqual(ev.message.blocks, [
-    { type: "text", text: "Review this" },
-    { type: "text", text: "Attached: Review request.md" },
-  ]);
+  assert.deepEqual(step.events[0], { type: "turn_status", sessionId: CHAT, turnId: `${CHAT}:t1`, status: "failed", error: "The Reason CLI was not found." });
 });
 
 test("startTurn can take the turn id that names the turn's checkpoints", () => {

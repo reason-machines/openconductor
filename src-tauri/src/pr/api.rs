@@ -176,13 +176,7 @@ pub struct CreatePrPrompt {
     pub title: Option<String>,
     pub description: Option<String>,
     pub template: Option<String>,
-    /// Instructions to append; when absent, the effective
-    /// `prompts.create_pr` of `repo_path` / `workspace_path` is used.
     pub custom_instructions: Option<String>,
-    /// The repository's main checkout, for reading its settings files.
-    pub repo_path: Option<String>,
-    /// The workspace the PR is opened from.
-    pub workspace_path: Option<String>,
 }
 
 impl CreatePrPrompt {

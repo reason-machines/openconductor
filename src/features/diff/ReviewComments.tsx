@@ -1,47 +1,24 @@
-// parity:diff.comments-inline:ui parity:diff.comments-to-chat:ui parity:diff.navigation:ui parity:diff.comments-github:ui
+// parity:diff.comments-inline:ui parity:diff.comments-to-chat:ui parity:diff.review:ui parity:diff.navigation:ui
 // Inline review comments for the diff viewer: threads under the lines they
 // end on, a composer opened by clicking a line number, replies, edit, delete,
-// resolve, "add to chat", and next/previous comment through the keybinding
-// registry (diff.nextComment / diff.previousComment). The Review button lives
-// in the right panel (WorkspaceView). Conductor attaches comments to the composer as
+// resolve, "add to chat", the Review button, and next/previous comment through
+// the keybinding registry (diff.nextComment / diff.previousComment,
+// workspace.showReview). Conductor attaches comments to the composer as
 // attachments; until the agent runtime lands we insert them as text.
-// GitHub review comments on the workspace PR are synced in (commentsApi.ts,
-// diff_comments_sync_github) and shown with author, Resolved / Outdated tags,
-// suggested changes, and Resolve (on GitHub) instead of edit/delete/reply.
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { commentStoreFor } from "./commentsApi.ts";
-import {
-  bodyParts,
-  commentSource,
-  commentTags,
-  fileThreads,
-  formatForAgent,
-  isRemoteThread,
-  newLocalComment,
-  hasPendingComments,
-  pendingForAgent,
-  prThreads,
-  refreshOutdated,
-  sideOf,
-  suggestionRows,
-  threadKey,
-  threadsAt,
-  threadsOf,
-  type DiffComment,
-  type Thread,
-} from "./comments.ts";
-import type { GithubSyncReport } from "./commentStore.ts";
-import "./comments-github.css";
-import { revealLine, type LineAnchor, type LineRange } from "./FileDiffView";
+import { formatForAgent, newLocalComment, pendingForAgent, refreshOutdated, sideOf, threadKey, threadsAt, threadsOf, type DiffComment, type Thread } from "./comments.ts";
+import { revealLine, type LineAnchor } from "./FileDiffView";
 import { commentTargets, stepComment } from "./nav.ts";
+import { buildReviewPrompt } from "./review.ts";
 import type { DiffScope, FileDiff } from "./types.ts";
 
 /** How the diff viewer reaches the workspace chat. */
 export interface ChatBridge {
   /** Put text into the composer for the user to edit and send. */
   insert(text: string): void;
-  /** Send a message to the workspace's own chat right away. */
+  /** Send a message right away. */
   send(text: string): void;
 }
 
@@ -50,13 +27,8 @@ interface Ops {
   edit(c: DiffComment, body: string): Promise<boolean>;
   remove(c: DiffComment): Promise<boolean>;
   resolve(t: Thread, resolved: boolean): Promise<boolean>;
-  /** Resolve a GitHub review thread on GitHub; absent outside the app. */
-  resolveOnGithub?(t: Thread): Promise<boolean>;
   toChat(cs: DiffComment[]): Promise<boolean>;
 }
-
-/** How often the open diff re-reads the PR's GitHub comments. */
-const GITHUB_SYNC_MS = 120_000;
 
 const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? "" : "s"}`;
 
@@ -101,65 +73,27 @@ function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }
   );
 }
 
-/** A ```suggestion block on GitHub, shown as the change it proposes. */
-function SuggestedChange({ base, code }: { base: string; code: string }) {
-  return (
-    <div className="oc-suggestion">
-      <div className="oc-suggestion-head">Suggested change</div>
-      {suggestionRows(base, code).map((r, i) => (
-        <div key={i} className={`oc-suggestion-row ${r.kind}`}>
-          <span className="sign">{r.kind === "del" ? "-" : "+"}</span>
-          {r.text}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function CommentBody({ c }: { c: DiffComment }) {
-  return (
-    <div className="oc-comment-body">
-      {bodyParts(c.body, c.suggestion_base_code).map((p, i) => (p.kind === "text" ? <span key={i}>{p.text}</span> : <SuggestedChange key={i} base={c.suggestion_base_code ?? ""} code={p.code} />))}
-    </div>
-  );
-}
-
-/** Avatar and login of a comment's GitHub author. */
-function GithubCommentAuthor({ c }: { c: DiffComment }) {
-  return (
-    <span className="oc-gh-author">
-      {c.author_avatar_url ? <img src={c.author_avatar_url} alt="" /> : <span className="oc-gh-avatar" />}
-      <strong>{c.author ? `@${c.author}` : "GitHub"}</strong>
-    </span>
-  );
-}
-
 function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
   const [editing, setEditing] = useState(false);
-  const source = commentSource(c);
   if (editing) return <Composer initial={c.body} submitLabel="Save" onCancel={() => setEditing(false)} onSubmit={(b) => void ops.edit(c, b).then((ok) => ok && setEditing(false))} />;
   return (
     <div className="oc-comment">
       <div className="oc-comment-meta">
-        {source === "remote" ? <GithubCommentAuthor c={c} /> : <strong>{c.author ?? "You"}</strong>}
+        <strong>{c.author ?? "You"}</strong>
         {c.end_line_number !== null && (
           <span className="muted">
             lines {c.line_number}–{c.end_line_number}
           </span>
         )}
-        {commentTags(c).map((t) => (
-          <span key={t} className="oc-tag">
-            {t}
-          </span>
-        ))}
+        {c.is_outdated && <span className="oc-tag">Outdated</span>}
         {c.state === "sent" && <span className="oc-tag">In chat</span>}
-        <span className="spacer" />
         {c.remote_url && (
-          <a className="oc-link" href={c.remote_url} target="_blank" rel="noreferrer" title="Open this comment on GitHub">
-            View on GitHub
+          <a href={c.remote_url} target="_blank" rel="noreferrer">
+            GitHub
           </a>
         )}
-        {source === "user-local" && (
+        <span className="spacer" />
+        {!c.remote_url && (
           <>
             <button className="oc-link" onClick={() => setEditing(true)}>
               Edit
@@ -170,7 +104,7 @@ function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
           </>
         )}
       </div>
-      <CommentBody c={c} />
+      <div className="oc-comment-body">{c.body}</div>
     </div>
   );
 }
@@ -179,12 +113,7 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
   const resolved = thread.root.is_resolved;
   const [open, setOpen] = useState(!resolved);
   const [replying, setReplying] = useState(false);
-  const [resolving, setResolving] = useState(false);
   useEffect(() => setOpen(!resolved), [resolved]);
-  // GitHub threads are resolved on GitHub (there is no unresolve) and replies are not posted there.
-  // PR-level GitHub comments have no thread to resolve.
-  const remote = commentSource(thread.root) === "remote";
-  const resolveRemote = isRemoteThread(thread) ? ops.resolveOnGithub : undefined;
   const all = [thread.root, ...thread.replies];
   const pending = pendingForAgent(all);
   return (
@@ -201,40 +130,19 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
           {replying ? (
             <Composer placeholder="Reply…" submitLabel="Reply" onCancel={() => setReplying(false)} onSubmit={(b) => void ops.reply(thread.root, b).then((ok) => ok && setReplying(false))} />
           ) : (
-            (!remote || pending.length > 0 || (!resolved && resolveRemote)) && (
-              <div className="oc-thread-bar">
-                {!remote && (
-                  <button className="btn btn-small" onClick={() => setReplying(true)}>
-                    Reply
-                  </button>
-                )}
-                {pending.length > 0 && (
-                  <button className="btn btn-small" onClick={() => void ops.toChat(pending)} title="Put this thread into the chat composer">
-                    Add to chat
-                  </button>
-                )}
-                {!remote ? (
-                  <button className="btn btn-small" onClick={() => void ops.resolve(thread, !resolved)}>
-                    {resolved ? "Reopen" : "Resolve"}
-                  </button>
-                ) : (
-                  !resolved &&
-                  resolveRemote && (
-                    <button
-                      className="btn btn-small"
-                      disabled={resolving}
-                      title="Resolve this conversation on GitHub"
-                      onClick={() => {
-                        setResolving(true);
-                        void resolveRemote(thread).finally(() => setResolving(false));
-                      }}
-                    >
-                      {resolving ? "Resolving…" : "Resolve"}
-                    </button>
-                  )
-                )}
-              </div>
-            )
+            <div className="oc-thread-bar">
+              <button className="btn btn-small" onClick={() => setReplying(true)}>
+                Reply
+              </button>
+              {pending.length > 0 && (
+                <button className="btn btn-small" onClick={() => void ops.toChat(pending)} title="Put this thread into the chat composer">
+                  Add to chat
+                </button>
+              )}
+              <button className="btn btn-small" onClick={() => void ops.resolve(thread, !resolved)}>
+                {resolved ? "Reopen" : "Resolve"}
+              </button>
+            </div>
           )}
         </>
       )}
@@ -242,20 +150,20 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
   );
 }
 
-type Composing = LineRange & { path: string };
+type Composing = LineAnchor & { path: string };
 
 /**
- * Review comments for the diff views. `reveal` opens a file in the diff tab,
- * so comment navigation can move to another file.
+ * Review comments and the Review button for the diff views. `reveal` opens a
+ * file in the diff tab, so comment navigation can move to another file.
  */
-export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?: (path: string) => void, workspacePath: string | null = null) {
-  const store = useMemo(() => commentStoreFor(workspaceId, workspacePath), [workspaceId, workspacePath]);
+export function useReviewComments(workspaceId: string, chat: ChatBridge, customReviewPrompt?: string | null, reveal?: (path: string) => void) {
+  const store = useMemo(() => commentStoreFor(workspaceId), [workspaceId]);
   const [stored, setStored] = useState<DiffComment[]>([]);
   const [files, setFiles] = useState<FileDiff[]>([]);
+  const [scope, setScope] = useState<DiffScope>("all");
   const [composing, setComposing] = useState<Composing | null>(null);
   const [focused, setFocused] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [github, setGithub] = useState<{ report?: GithubSyncReport; error?: string }>({});
 
   const reload = useCallback(() => store.list().then(setStored, (e: unknown) => setError(String(e))), [store]);
   useEffect(() => {
@@ -264,29 +172,6 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?
     setFocused(null);
     void reload();
   }, [reload]);
-
-  // Pull the PR's GitHub comments when the workspace opens and every couple of minutes after.
-  useEffect(() => {
-    const sync = store.syncGithub;
-    if (!sync) return;
-    let live = true;
-    setGithub({});
-    const once = () =>
-      sync().then(
-        (report) => {
-          if (!live) return;
-          setGithub({ report });
-          if (report.changed > 0) void reload();
-        },
-        (e: unknown) => live && setGithub({ error: String(e) }),
-      );
-    void once();
-    const timer = setInterval(() => void once(), GITHUB_SYNC_MS);
-    return () => {
-      live = false;
-      clearInterval(timer);
-    };
-  }, [store, reload]);
 
   const run = (p: Promise<unknown>): Promise<boolean> =>
     p.then(
@@ -332,9 +217,10 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?
     edit: (c, body) => run(store.edit(c.id, body)),
     remove: (c) => run(store.remove(c.id)),
     resolve: (t, resolved) => run(store.resolve(threadKey(t.root), resolved)),
-    resolveOnGithub: store.resolveOnGithub && ((t) => run(store.resolveOnGithub!(threadKey(t.root)))),
     toChat,
   };
+
+  const review = () => chat.send(buildReviewPrompt(scope, customReviewPrompt));
 
   const goToComment = (dir: 1 | -1) => {
     const t = stepComment(commentTargets(comments, files), focused, dir);
@@ -355,11 +241,10 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?
   useKeybindings({
     "diff.nextComment": () => goToComment(1),
     "diff.previousComment": () => goToComment(-1),
+    "workspace.showReview": review,
   });
 
-  const onLineClick = (file: FileDiff, range: LineRange) => setComposing({ path: file.path, ...range });
-  // The composer's lines stay highlighted in the file until it is saved or cancelled.
-  const commentRange = (file: FileDiff): LineRange | null => (composing?.path === file.path ? { side: composing.side, start: composing.start, line: composing.line } : null);
+  const onLineClick = (file: FileDiff, anchor: LineAnchor) => setComposing({ path: file.path, ...anchor });
 
   // Lines with something rendered under them: each thread's last line, and the open composer.
   const anchors = (file: FileDiff): LineAnchor[] => {
@@ -375,20 +260,20 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?
 
   const annotations = (file: FileDiff, anchor: LineAnchor): ReactNode => {
     const here = threadsAt(threads, file.path, anchor.side, anchor.line);
-    const draft = composing?.path === file.path && composing.side === anchor.side && composing.line === anchor.line ? composing : null;
-    if (here.length === 0 && !draft) return null;
+    const composeHere = composing?.path === file.path && composing.side === anchor.side && composing.line === anchor.line;
+    if (here.length === 0 && !composeHere) return null;
     return (
       <div className="oc-threads">
         {here.map((t) => (
           <ThreadView key={t.root.id} thread={t} ops={ops} focused={focused === t.root.id} />
         ))}
-        {draft && (
+        {composeHere && (
           <Composer
             placeholder="Leave a comment for the agent…"
             submitLabel="Comment"
             onCancel={() => setComposing(null)}
             onSubmit={(body) =>
-              void run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() }))).then(
+              void run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: anchor.line, body, now: Date.now() }))).then(
                 (ok) => ok && setComposing(null),
               )
             }
@@ -398,50 +283,8 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?
     );
   };
 
-  /** Above a file's diff: comments on the PR itself, then threads on the file without a line. */
-  const notes = (file: FileDiff): ReactNode => {
-    const onPr = prThreads(threads);
-    const onFile = fileThreads(threads, file.path);
-    if (onPr.length === 0 && onFile.length === 0) return null;
-    return (
-      <div className="oc-file-notes">
-        {onPr.length > 0 && (
-          <details className="oc-pr-comments">
-            <summary>
-              {plural(onPr.length, "comment")} on the pull request{github.report?.pr_number ? ` #${github.report.pr_number}` : ""}
-            </summary>
-            <div className="oc-threads">
-              {onPr.map((t) => (
-                <ThreadView key={t.root.id} thread={t} ops={ops} focused={false} />
-              ))}
-            </div>
-          </details>
-        )}
-        {onFile.length > 0 && (
-          <div className="oc-threads">
-            {onFile.map((t) => (
-              <ThreadView key={t.root.id} thread={t} ops={ops} focused={focused === t.root.id} />
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  const synced = github.report && github.report.pr_number !== null && !github.report.skipped ? github.report : undefined;
-
   const actions = (): ReactNode => (
     <>
-      {github.error && (
-        <span className="error" title={github.error}>
-          GitHub comments failed
-        </span>
-      )}
-      {synced && (
-        <span className="muted" title={`Synced GitHub PR comments for #${synced.pr_number}`}>
-          PR #{synced.pr_number} comments synced
-        </span>
-      )}
       {error && (
         <span className="error" title={error}>
           Comment failed
@@ -452,16 +295,16 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?
           Add {plural(ready.length, "comment")} to chat
         </button>
       )}
+      <button className="btn btn-small" onClick={review} title="Ask the agent to review these changes">
+        Review
+      </button>
     </>
   );
 
-  const onLoaded = useCallback((loaded: FileDiff[], _scope: DiffScope) => {
+  const onLoaded = useCallback((loaded: FileDiff[], s: DiffScope) => {
     setFiles(loaded);
+    setScope(s);
   }, []);
 
-  // The PR header's "changes requested" state offers "Add all comments to chat" while any comment is unsent.
-  const hasPending = hasPendingComments(comments);
-  const addAllToChat = () => void toChat(ready);
-
-  return { onLineClick, commentRange, anchors, annotations, notes, actions, onLoaded, hasPending, addAllToChat };
+  return { onLineClick, anchors, annotations, actions, onLoaded };
 }

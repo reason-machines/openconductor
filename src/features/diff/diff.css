@@ -117,21 +117,3 @@
 .oc-whitespace-only p { margin: 0; font-size: 13px; font-weight: 500; }
 .oc-whitespace-only .link-btn { background: none; border: 0; padding: 0; font: inherit; font-size: 12px; color: var(--muted); text-decoration: underline; cursor: pointer; }
 .oc-whitespace-only .link-btn:hover { color: var(--text); }
-
-/* Composer chips for text files the diff viewer attaches (chatAttachment.ts). */
-.composer-attachments { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 10px 0; }
-.composer-attachment { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 11px; max-width: 100%; }
-.composer-attachment-remove { border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 0 2px; line-height: 1; }
-.composer-attachment-remove:hover { color: var(--text); }
-
-/* File-toolbar "View options" menu (Whitespace.tsx) and the Viewed toggle (FileDiffView.tsx). */
-.oc-view-options { position: relative; display: inline-flex; }
-.oc-view-options .icon-btn[aria-expanded="true"] { background: var(--active); color: var(--text); }
-.oc-view-options-menu { position: absolute; top: calc(100% + 4px); right: 0; z-index: 5; min-width: 200px; padding: 4px; background: var(--panel, var(--bg)); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 20px rgb(0 0 0 / 0.18); }
-.oc-view-option { display: flex; width: 100%; height: 32px; align-items: center; gap: 8px; padding: 0 8px; border-radius: 6px; font-size: 13px; color: var(--text); text-align: left; }
-.oc-view-option:hover, .oc-view-option:focus-visible { background: var(--active); }
-.oc-view-option .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.oc-view-option .check { display: inline-flex; width: 14px; }
-.oc-file-header .oc-viewed { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 6px; color: var(--muted); }
-.oc-file-header .oc-viewed:hover { background: var(--active); }
-.oc-file-header .oc-viewed[aria-pressed="true"] { color: var(--text); }

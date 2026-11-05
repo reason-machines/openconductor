@@ -1,14 +1,8 @@
 // Terminal tabs of one workspace: pure state, no PTY or DOM.
 // The panel dispatches `ready`/`exit` from pty events; ids are the PTY ids.
 
-/** Chat and terminal tabs allowed per workspace: 5, or 10 with Tab Freak Mode (Conductor's `iFt`). */
-export const tabLimit = (tabFreakMode: boolean): number => (tabFreakMode ? 10 : 5);
-
-/** Most tabs a workspace's state ever holds ("Allow up to 10 chat and terminal tabs per workspace"). */
-export const MAX_TABS = tabLimit(true);
-
-/** Each workspace has one chat tab, and it counts toward the limit. */
-export const CHAT_TABS = 1;
+/** Tabs per workspace ("Allow up to 10 chat and terminal tabs per workspace"). */
+export const MAX_TABS = 10;
 
 export type TabStatus = "starting" | "running" | "exited";
 
@@ -43,9 +37,6 @@ export type TabsAction =
 export const emptyTabs = (): TabsState => ({ tabs: [], activeId: null, next: 1 });
 
 export const canOpen = (s: TabsState): boolean => s.tabs.length < MAX_TABS;
-
-/** Whether a new terminal tab fits under the limit (Conductor's `oFt`: chats + terminals >= limit). */
-export const canOpenTerminal = (s: TabsState, tabFreakMode: boolean): boolean => CHAT_TABS + s.tabs.length < tabLimit(tabFreakMode);
 
 export function tabsReducer(s: TabsState, a: TabsAction): TabsState {
   switch (a.type) {

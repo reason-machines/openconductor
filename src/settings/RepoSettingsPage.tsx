@@ -6,7 +6,6 @@ import { setSpotlightTesting, spotlightTesting } from "../spotlight/testingApi";
 import { SPOTLIGHT_SETTING_DESCRIPTION, SPOTLIGHT_SETTING_TITLE, toggleBlocked, type SpotlightTesting } from "../spotlight/testing";
 import { Row } from "./GeneralPage";
 import { errorText } from "./api";
-import { WORKSPACES_PATH_DESCRIPTION, WORKSPACES_PATH_TITLE, repoWorkspacesPath } from "./rootPath";
 import type { RepoSection } from "./routes";
 
 interface Props {
@@ -130,23 +129,10 @@ function RepoActions({ repo }: { repo: Repo }) {
 }
 
 function RepoMisc({ repo }: { repo: Repo }) {
-  // Conductor's `misc:workspaces-path`: the repository's `workspacesStoragePath`, read-only.
-  const [workspaces, setWorkspaces] = useState<string | null>(null);
-  useEffect(() => {
-    setWorkspaces(null);
-    repoWorkspacesPath(repo.id, repo.name).then(setWorkspaces, () => setWorkspaces(null));
-  }, [repo.id, repo.name]);
   return (
     <div className="settings-rows">
       <Row label="Root path" help="Do not move or delete this directory. Instead, remove the repository in OpenConductor.">
         <code aria-label="Root path">{repo.path || "No local checkout"}</code>
-      </Row>
-      <Row label={WORKSPACES_PATH_TITLE} help={WORKSPACES_PATH_DESCRIPTION}>
-        {workspaces && (
-          <code className="settings-path-value" aria-label={WORKSPACES_PATH_TITLE} title={workspaces}>
-            {workspaces}
-          </code>
-        )}
       </Row>
     </div>
   );

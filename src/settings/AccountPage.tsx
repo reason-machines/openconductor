@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { loadBranchPrefix } from "../workspace/api";
 import { Row } from "./GeneralPage";
-import { AccountAgentRows } from "./rows/AccountAgentRows";
-import type { Settings } from "./types";
 
 /**
  * Settings › Personal › Account (`/settings/user/account`). Conductor's tab
@@ -10,9 +8,9 @@ import type { Settings } from "./types";
  * Enterprise data privacy and the Claude Code / Codex tool-approval rows
  * (evidence/settings/settings-registry.json, tab `account`). OpenConductor
  * has no Conductor account: GitHub access is the GitHub CLI's login, shown
- * here read-only, followed by the tool-approval rows.
+ * here read-only. The setting rows are mounted as their builders add them.
  */
-export function AccountPage({ settings, save }: { settings: Settings; save: (next: Settings) => void }) {
+export function AccountPage() {
   const [login, setLogin] = useState<string | null | undefined>(undefined);
   useEffect(() => {
     loadBranchPrefix().then((info) => setLogin(info.githubUsername), () => setLogin(null));
@@ -24,7 +22,6 @@ export function AccountPage({ settings, save }: { settings: Settings; save: (nex
           {login === undefined ? "Checking…" : login ? `Signed in as ${login}` : "Not signed in"}
         </span>
       </Row>
-      <AccountAgentRows settings={settings} save={save} />
     </div>
   );
 }

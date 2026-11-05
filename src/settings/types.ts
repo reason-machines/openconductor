@@ -6,13 +6,7 @@ import type { CodeTheme } from "../features/diff/codeThemes.ts";
 export type Theme = "system" | "light" | "dark";
 export type SoundType = "default" | "none";
 export type BranchPrefixType = "github_username" | "custom" | "none";
-/** Codex reasoning effort; Conductor's levels plus our earlier `minimal`. */
-export type ThinkingLevel = "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max" | "ultra";
-/** "Claude output style" (`models.claude_code.personality`). */
-export type ClaudePersonality = "default" | "proactive" | "concise" | "explanatory" | "learning";
-/** "Codex personality" (`models.codex.personality`); unset is Codex's own (pragmatic). */
-export type CodexPersonality = "none" | "friendly" | "pragmatic";
-export type CodexToolApprovalPolicy = "default" | "always_approve";
+export type ThinkingLevel = "minimal" | "low" | "medium" | "high" | "xhigh";
 
 /** `agent::AgentKind`. */
 export type AgentKind = "claude" | "codex" | "cursor" | "opencode" | "reason";
@@ -47,19 +41,6 @@ export const DEFAULT_PROVIDER: Record<AgentKind, ProviderKind> = {
 
 export interface Settings {
   $schema: string;
-  /** Conductor's top-level provider keys: `custom` (API key) or `default` (CLI login); Codex also `chatgpt_sign_in`. */
-  claude_provider?: string | null;
-  codex_provider?: string | null;
-  bedrock_region?: string | null;
-  vertex_project_id?: string | null;
-  /** Advanced › executable paths; blank means the agent on PATH. */
-  claude_code_executable_path?: string | null;
-  codex_executable_path?: string | null;
-  opencode_executable_path?: string | null;
-  /** Advanced › "SSH private key path". */
-  ssh_key_path?: string | null;
-  /** Account › "Claude Code tool approvals"; off by default. */
-  tool_approvals_enabled?: boolean;
   general: { theme: Theme; send_native_notification: boolean; sound_type: SoundType; [extra: string]: unknown };
   /** Conductor's Appearance keys; zoom is a fraction (1 = 100%). */
   appearance: {
@@ -79,7 +60,7 @@ export interface Settings {
   };
   git: {
     branch_prefix_type: BranchPrefixType;
-    branch_prefix?: string | null;
+    branch_prefix_custom?: string | null;
     delete_branch_on_archive: boolean;
     archive_on_merge: boolean;
     worktree_push_auto_setup_remote: boolean;
@@ -90,25 +71,7 @@ export interface Settings {
     review?: string | null;
     default_thinking_enabled: boolean;
     review_thinking_enabled: boolean;
-    default_fast_mode?: boolean;
-    /** Absent means the same as new chats. */
-    review_fast_mode?: boolean | null;
-    default_plan_mode?: boolean;
-    /** Conductor's JSON string `{"opencode": ["opencode:<id>"], ...}`. */
-    visible_provider_models?: string | null;
-    claude_code?: {
-      default_effort_level?: ClaudeEffortLevel | null;
-      review_effort_level?: ClaudeEffortLevel | null;
-      personality?: ClaudePersonality;
-      [extra: string]: unknown;
-    };
-    codex: {
-      default_thinking_level: ThinkingLevel;
-      review_thinking_level: ThinkingLevel;
-      personality?: CodexPersonality | null;
-      tool_approval_policy?: CodexToolApprovalPolicy;
-      [extra: string]: unknown;
-    };
+    codex: { default_thinking_level: ThinkingLevel; review_thinking_level: ThinkingLevel; [extra: string]: unknown };
     [extra: string]: unknown;
   };
   providers: { [agent in AgentKind]?: ProviderConfig | null } & { [extra: string]: unknown };
@@ -124,12 +87,6 @@ export interface Settings {
     experimental_big_terminal_mode?: boolean;
     [extra: string]: unknown;
   };
-  /** The terminal panel's Open URLs (Conductor's `preview_urls`); the first is the default. */
-  preview_urls?: PreviewUrl[];
-  /** dotenv files whose variables agents, terminals and scripts get. */
-  environment_variable_files?: string[];
-  /** Custom instructions per action (Conductor's `[prompts]`); repository files override each. */
-  prompts?: Partial<Record<PromptKind, string | null>> & { [extra: string]: unknown };
   /** Conductor's "Big terminal" settings tab (id `terminal`). */
   terminal?: {
     /** A built-in preset or `custom:<id>`; absent or unknown means Claude. */
@@ -138,16 +95,6 @@ export interface Settings {
     [extra: string]: unknown;
   };
   [extra: string]: unknown;
-}
-
-/** `[prompts]` keys, in Conductor's order. */
-export type PromptKind = "general" | "code_review" | "create_pr" | "fix_errors" | "rename_branch" | "resolve_merge_conflicts";
-export const PROMPT_KINDS: PromptKind[] = ["general", "code_review", "create_pr", "fix_errors", "resolve_merge_conflicts", "rename_branch"];
-
-/** One `preview_urls` entry. */
-export interface PreviewUrl {
-  name?: string | null;
-  url: string;
 }
 
 /** One secret for `connect_provider`. Write-only: the backend never returns values. */
@@ -166,10 +113,6 @@ export interface ProviderStatus {
   /** Why it is not ready, safe to display. */
   problem?: string;
 }
-
-/** Conductor's Claude effort levels (`models.claude_code.{default,review}_effort_level`); `ultracode` runs as `--effort xhigh`. */
-export const CLAUDE_EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max", "ultracode"] as const;
-export type ClaudeEffortLevel = (typeof CLAUDE_EFFORT_LEVELS)[number];
 
 export const DEFAULT_SETTINGS: Settings = {
   $schema: "https://openconductor.dev/schemas/settings.schema.json",

@@ -115,8 +115,8 @@ Deliberate differences:
    was started on the Mac at 2026-11-05T15:26Z
    (`~/code/conductor-rea-work/draft_attach_trace.sh`, output
    `out/ghidra_trace_materialize_local_path_attachment.json`) while two other
-   Ghidra runs were using the CPU. It failed (see gap 3), so the copy + `mkdir -p`
-   behaviour is still inferred from the strings (`Failed to copy`, `the source path is
+   Ghidra runs were using the CPU. Until it lands, the copy + `mkdir -p`
+   behaviour is inferred from the strings (`Failed to copy`, `the source path is
    neither a regular file nor a symlink to a regular file`, which is std's
    `fs::copy` error) and from the draft flow writing into
    `.context/attachments/<new dir>/` that nothing else creates.
@@ -125,23 +125,3 @@ Deliberate differences:
    (`analyze-javascript-application`) hits its parent result budget on this
    bundle (`resource_constraint`, seen in the existing trace outputs) and has no
    "show source around offset N" operation.
-3. **Ghidra trace timed out under contention (REA 6.7.0, Ghidra 12.1.4).** The
-   gap 1 run (`rea trace ... --query=materialize_local_path_attachment
-   --provider ghidra --format json`, no `--snapshot`) exited 1 after 3649 s
-   (`draft_attach_trace.log`: start 2026-11-05T15:26:09Z, done 16:26:58Z). The
-   57 KB JSON is an error, not a result: `code: provider_timeout`,
-   `category: timeout`, "Ghidra did not finish importing and analyzing the
-   target within its 3600000 ms startup deadline
-   (REA_GHIDRA_STARTUP_TIMEOUT_MS)", `details.operation: search_strings`,
-   `configured_jvm_max_heap: 2G`, target sha256
-   `0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d`. Up to
-   four other Ghidra runs shared the Mac during that hour. REA's remediation is
-   a larger `REA_GHIDRA_STARTUP_TIMEOUT_MS` or `REA_GHIDRA_DISABLED_ANALYZERS`.
-   Gaps in REA itself: the deadline is fixed per call, every `trace` call
-   re-imports and re-analyses the 70 MB binary in a fresh temp project, and the
-   timeout is reported as `retryable: true` even though an unchanged retry under
-   the same load would hit the same deadline. Whether `--snapshot` (used by the
-   other trace runs on the Mac; `snap/conductor-trace.snap` is only 123 KB, so
-   probably not a cached Ghidra project) shortens the import is unverified.
-   Next route: rerun the query with `REA_GHIDRA_STARTUP_TIMEOUT_MS=7200000` once
-   the Mac's Ghidra queue is clear.

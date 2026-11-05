@@ -15,16 +15,12 @@
 //! Tables merge key by key; any other value from a higher layer replaces the
 //! lower one. Evidence: `evidence/run-scripts/NOTES.md`.
 
-mod effective;
-#[cfg(test)]
-mod effective_tests;
 mod load;
 mod run;
 #[cfg(test)]
 mod run_tests;
 #[cfg(test)]
 mod tests;
-mod user;
 
 use std::collections::BTreeSet;
 use std::fmt;
@@ -32,18 +28,11 @@ use std::fmt;
 use serde::Serialize;
 use toml::{Table, Value};
 
-pub use effective::{
-    env_file_entries, is_local_writable, load_effective, load_effective_layers, parse_dotenv,
-    parse_preview_urls, resolve_effective, resolve_env_file, set_local_value, EffectiveLayer,
-    EffectivePaths, EffectiveSettings, EnvContext, EnvFileStatus, EnvSource, EnvVar, GitFlags,
-    PreviewUrl, PromptKind, Prompts, ResolvedEnv, KEYCHAIN_VALUE, UNSET_VALUE,
-};
 pub use load::{load, load_layers, SettingsPaths, SharedSource, SETTINGS_DIR};
 pub use run::{
     available, default_script, is_icon_name, label_for, normalize_id, shell_quote, Location,
     RunScript, DEFAULT_ICON, LEGACY_RUN_ID,
 };
-pub use user::{set_user_auto_run_after_setup, user_auto_run_after_setup};
 
 /// A settings layer, in ascending precedence.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]

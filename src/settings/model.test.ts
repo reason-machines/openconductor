@@ -25,7 +25,7 @@ test("branch prefix rules match the backend's", () => {
 });
 
 test("branch preview is the branch the Create-workspace flow would make", () => {
-  const custom = (v: string) => withField(withField(DEFAULT_SETTINGS, "git", "branch_prefix_type", "custom"), "git", "branch_prefix", v);
+  const custom = (v: string) => withField(withField(DEFAULT_SETTINGS, "git", "branch_prefix_type", "custom"), "git", "branch_prefix_custom", v);
   assert.equal(branchPreview(custom("team"), "sven"), "team/tokyo");
   assert.equal(branchPreview(custom("team/sven"), null, "x"), "team/sven/x");
   assert.equal(branchPreview(DEFAULT_SETTINGS, "SvenM", "x"), "svenm/x");

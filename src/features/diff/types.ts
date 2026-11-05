@@ -44,8 +44,6 @@ export interface DiffViewOptions {
   layout: DiffLayout;
   /** Hide changes that only touch whitespace (git diff -w). */
   ignoreWhitespace: boolean;
-  /** Wrap long lines in the diff tab (Conductor's wrap_lines setting, on by default). */
-  wrapLines: boolean;
 }
 
-export const DEFAULT_VIEW_OPTIONS: DiffViewOptions = { scope: "all", layout: "unified", ignoreWhitespace: false, wrapLines: true };
+export const DEFAULT_VIEW_OPTIONS: DiffViewOptions = { scope: "all", layout: "unified", ignoreWhitespace: false };

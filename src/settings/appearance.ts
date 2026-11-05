@@ -6,7 +6,6 @@ import { setTerminalFont, terminalFontFrom } from "../features/terminal/font.ts"
 import { scrollbackRows, setScrollbackRows } from "../features/terminal/scrollback.ts";
 import { customCommandsFrom, presetFrom, setBigTerminal } from "../features/terminal/bigTerminal.ts";
 import { applyDiffAppearance } from "../features/diff/appearance.ts";
-import { executablePaths } from "./agentSettings.ts";
 
 /** Conductor's zoom steps: 50% to 300% in 10% steps, 100% by default. */
 export const ZOOM_PERCENTS: readonly number[] = Array.from({ length: (300 - 50) / 10 + 1 }, (_, i) => 50 + i * 10);
@@ -78,8 +77,6 @@ export function applyAppearance(s: Settings): void {
     enabled: s.experimental?.experimental_big_terminal_mode === true,
     preset: presetFrom(s.terminal?.big_terminal_preset),
     customCommands: customCommandsFrom(s.terminal?.big_terminal_custom_commands),
-    requiresToolApprovals: s.tool_approvals_enabled === true,
-    executablePaths: executablePaths(s),
   });
 }
 

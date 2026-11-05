@@ -7,22 +7,18 @@ import {
   templateScripts, validateCreate, type TemplateId,
 } from "../state/createProject";
 import type { Repo } from "../state/types";
-import { createFirstWorkspace, type FirstWorkspaceResult } from "../home/createFirstWorkspace";
 import { FileCodeIcon, NextMarkIcon } from "./Icons";
 import { Modal } from "./Dialogs";
 
 // "Create project" (Home → Quick start), per evidence/screens/create-project.md.
 // gstack stays out of TEMPLATES until the user decides on it.
 
-/** The registered project: its backend id (`add_repository`) plus what the sidebar shows. */
-export type CreatedRepo = Omit<Repo, "workspaces">;
+export type CreatedRepo = Omit<Repo, "id" | "workspaces">;
 
 interface Props {
   onClose: () => void;
-  /** The project is registered ("Adding project..." done); add it under its backend id. */
-  onRepoAdded: (repo: CreatedRepo) => void;
-  /** The first workspace exists; add and open it, then show the success toast. */
-  onCreated: (repoId: string, first: FirstWorkspaceResult, githubUrl: string) => void;
+  /** Adds the project and its first workspace, then shows the success toast. */
+  onCreated: (repo: CreatedRepo, githubUrl: string) => void;
 }
 
 const TEMPLATE_ICONS: Record<TemplateId, () => JSX.Element> = {
@@ -30,7 +26,7 @@ const TEMPLATE_ICONS: Record<TemplateId, () => JSX.Element> = {
   nextjs: () => <NextMarkIcon size={20} />,
 };
 
-export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) {
+export function CreateProjectDialog({ onClose, onCreated }: Props) {
   const [name, setName] = useState(DEFAULT_PROJECT_NAME);
   const [parent, setParent] = useState("");
   const [template, setTemplate] = useState<TemplateId>("empty");
@@ -43,7 +39,7 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
   useEffect(() => {
     let live = true;
     (async () => {
-      const saved = await lastCloneDirectory();
+      const saved = lastCloneDirectory();
       const exists = saved ? await folderExists(saved) : false;
       const fallback = await defaultCloneDirectory().catch(() => "");
       if (live) setParent((cur) => cur || initialLocation(saved, exists, fallback));
@@ -76,16 +72,13 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
       );
       setStep(STEP.addProject);
       const registered = await addRepository(created.path);
-      // Registered without an automatic workspace; Quick start creates the first one itself.
-      onRepoAdded({ id: registered.id, name: slug, path: registered.root, remote: created.originRemoteUrl, defaultBranch: created.defaultBranch });
       const scripts = templateScripts(template);
       if (scripts) await saveRepoScripts(registered.root, scripts);
       setStep(STEP.createWorkspace);
-      const first = await createFirstWorkspace({ id: registered.id, root: registered.root, defaultBranch: created.defaultBranch });
       saveLastCloneDirectory(parentDir);
       setName("");
       setStep(null);
-      onCreated(registered.id, first, created.githubUrl);
+      onCreated({ name: slug, path: registered.root, remote: created.originRemoteUrl, defaultBranch: created.defaultBranch }, created.githubUrl);
       onClose();
     } catch (err) {
       setError(createFailedMessage(err));

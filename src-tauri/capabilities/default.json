@@ -54,7 +54,6 @@
     },
     "process:allow-exit",
     "process:allow-restart",
-    "updater:default",
     "fs:allow-copy-file",
     "fs:allow-exists",
     "fs:allow-fstat",

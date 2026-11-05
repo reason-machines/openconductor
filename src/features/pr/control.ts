@@ -6,21 +6,12 @@ import type { HeaderState, MergeMethod, PrInfo } from "./types.ts";
 export type Intent =
   /** Ask the workspace's agent to open a PR (menu offers a draft). */
   | "create"
-  /** Ask the agent to commit and push all changes (⌘⇧Y). */
-  | "commit_and_push"
-  /** Ask the agent to rebase onto or merge the base branch and resolve conflicts. */
-  | "resolve_conflicts"
   /** Merge now with the repository's preferred method. */
   | "merge"
   /** Take the draft PR out of draft. */
   | "ready"
   /** Approve the PR at the head commit shown. */
   | "approve"
-  /** Checks are pending: let GitHub merge once they pass (gh pr merge --auto), or stop that. */
-  | "enable_automerge"
-  | "disable_automerge"
-  /** Changes requested and the diff has unsent comments: put them all into the chat. */
-  | "add_comments_to_chat"
   /** Plain status; clicking opens the PR on GitHub when there is one. */
   | "status";
 
@@ -41,14 +32,7 @@ export function mergeMethodText(method: MergeMethod | null): string | null {
   return null;
 }
 
-export interface ControlOptions {
-  /** The repository's merge method, once known (Merge tooltip). */
-  method?: MergeMethod | null;
-  /** The "Automerge" setting. */
-  automerge?: boolean;
-}
-
-export function prControl(state: HeaderState | null, pr: PrInfo | null, opts: ControlOptions = {}): Control | null {
+export function prControl(state: HeaderState | null, pr: PrInfo | null, method: MergeMethod | null = null): Control | null {
   if (!state) return null;
   const tone = state.tone;
   const num = pr ? `#${pr.number}` : "";
@@ -62,7 +46,7 @@ export function prControl(state: HeaderState | null, pr: PrInfo | null, opts: Co
     case "loading_pr":
       return status("Loading PR…");
     case "commit_and_push":
-      return { intent: "commit_and_push", label: "Commit and push", title: "Ask the agent to commit and push all changes (⌘⇧Y)", tone };
+      return status("Uncommitted changes", "Commit and push the workspace's changes to update the PR");
     case "incompatible":
       return status("Branch diverged", "The local branch and its remote branch have different histories");
     case "pull":
@@ -70,14 +54,9 @@ export function prControl(state: HeaderState | null, pr: PrInfo | null, opts: Co
     case "push":
       return status(`Push ${a.ahead}`, `This workspace has ${plural(a.ahead, "commit")} not pushed yet`);
     case "merge_conflicts":
-      return pr
-        ? { intent: "resolve_conflicts", label: "Resolve", title: `PR ${num} has merge conflicts with ${pr.baseRefName}. Ask the agent to resolve them`, tone }
-        : status("Merge conflicts", "The PR conflicts with its base branch");
+      return status("Merge conflicts", `PR ${num} conflicts with its base branch`);
     case "changes_requested":
-      // As in the reference: with unsent diff comments the header's only action is "Add all comments to chat".
-      return a.hasPendingComments
-        ? { intent: "add_comments_to_chat", label: "Add all comments to chat", title: `A reviewer requested changes on ${pr ? `PR ${num}` : "the PR"}. Put your unsent diff comments into the chat`, tone }
-        : status("Changes requested", "A reviewer requested changes");
+      return status("Changes requested", a.hasPendingComments ? "A reviewer requested changes; you have unsent review comments" : "A reviewer requested changes");
     case "draft_pr":
       return pr
         ? { intent: "ready", label: "Ready for review", title: `Take draft PR ${num} out of draft`, tone }
@@ -88,12 +67,6 @@ export function prControl(state: HeaderState | null, pr: PrInfo | null, opts: Co
       return status(label, `${plural(a.failed, "check")} failed${pending}`);
     }
     case "checks_pending":
-      // As in the reference: only with the setting on, a PR, and merge rights not ruled out.
-      if (opts.automerge && pr && pr.viewerCanMerge !== false) {
-        return pr.isAutoMergeEnabled
-          ? { intent: "disable_automerge", label: "Cancel automerge", title: `PR ${num} merges once its checks pass; click to cancel`, tone }
-          : { intent: "enable_automerge", label: "Automerge", title: `Merge PR ${num} automatically once its checks pass`, tone };
-      }
       return status("Checks running", `${plural(a.pending, "check")} still running`);
     case "approve_pr":
       return pr
@@ -105,7 +78,7 @@ export function prControl(state: HeaderState | null, pr: PrInfo | null, opts: Co
       return status("Merge blocked", "Branch protection blocks merging this PR");
     case "ready_to_merge": {
       const optional = a.optionalFailed > 0 ? ` (${plural(a.optionalFailed, "optional check")} failed)` : "";
-      const how = mergeMethodText(opts.method ?? null) ?? "Merge";
+      const how = mergeMethodText(method) ?? "Merge";
       return { intent: "merge", label: "Merge", title: `${how} PR ${num}${optional}`.trim(), tone };
     }
     case "unable_to_merge":

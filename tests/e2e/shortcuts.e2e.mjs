@@ -42,8 +42,6 @@ after(async () => {
 
 async function openApp(path = "/") {
   const context = await browser.newContext();
-  // Past the first-run onboarding (tests/e2e/first-run.e2e.mjs covers it).
-  await context.addInitScript(() => localStorage.setItem("openconductor.firstRunOnboardingStep", "999"));
   const page = await context.newPage();
   const errors = [];
   page.on("pageerror", (err) => errors.push(err.message));

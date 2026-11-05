@@ -1,5 +1,0 @@
-/* Initializing row (Conductor's `Ora`: pointer-events-none, status "setting-up"). */
-.sb-ws.sb-ws-pending { pointer-events: none; cursor: default; }
-.sb-ws-loader { width: 14px; height: 14px; box-sizing: border-box; border: 1.5px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: sb-ws-loader-spin 0.9s linear infinite; }
-@keyframes sb-ws-loader-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .sb-ws-loader { animation-duration: 2.4s; } }

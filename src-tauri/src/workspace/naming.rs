@@ -55,27 +55,15 @@ pub fn repo_name_from_url(url: &str) -> Option<String> {
     (!name.is_empty() && name != "." && name != "..").then(|| name.to_string())
 }
 
-/// Next candidate after a taken name, as in the reference app: `x` becomes
-/// `x-v1`, and `x-vN` becomes `x-v(N+1)`.
-pub fn bump(name: &str) -> String {
-    if let Some(i) = name.rfind("-v") {
-        let (stem, digits) = (&name[..i], &name[i + 2..]);
-        if !stem.is_empty() && !digits.is_empty() && digits.bytes().all(|b| b.is_ascii_digit()) {
-            if let Ok(n) = digits.parse::<u64>() {
-                return format!("{stem}-v{}", n.saturating_add(1));
-            }
-        }
-    }
-    format!("{name}-v1")
-}
-
-/// Make `base` unique against `taken` by bumping it (`-v1`, `-v2`, ...).
+/// Make `base` unique against `taken` by appending `-2`, `-3`, ...
 pub fn uniquify(base: &str, taken: impl Fn(&str) -> bool) -> String {
-    let mut name = base.to_string();
-    while taken(&name) {
-        name = bump(&name);
+    if !taken(base) {
+        return base.to_string();
     }
-    name
+    (2..)
+        .map(|n| format!("{base}-{n}"))
+        .find(|c| !taken(c))
+        .expect("unbounded range")
 }
 
 /// Pick an unused word from the list (seeded by time), falling back to a

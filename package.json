@@ -18,13 +18,8 @@
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/xterm": "^6.0.0",
     "fuzzysort": "3.1.0",
-    "lowlight": "^3.3.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-markdown": "^9.1.0",
-    "remark-breaks": "^4.0.0",
-    "remark-gfm": "^4.0.1",
-    "unist-util-visit": "^5.2.0"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.0.0",

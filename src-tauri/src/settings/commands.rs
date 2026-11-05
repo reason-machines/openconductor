@@ -50,18 +50,3 @@ pub fn disconnect_provider(
 ) -> Result<ProviderStatus, String> {
     service.disconnect(agent).map_err(|e| e.to_string())
 }
-
-/// Effective settings for one repository: the user file with its
-/// `.conductor/settings.toml` (read from `origin/<default branch>`),
-/// `.conductor/settings.local.toml` and the managed file applied
-/// ([`super::layers::for_repo`]).
-#[tauri::command]
-pub async fn get_repo_settings(
-    db: State<'_, crate::db::Db>,
-    repo_id: String,
-) -> Result<Settings, String> {
-    let user_dir = super::config_dir().map_err(|e| e.to_string())?;
-    let target = crate::spotlight::setting::target(&db.0, &repo_id, user_dir.clone()).await?;
-    super::layers::for_repo(&user_dir, &target.root, target.paths.shared_from)
-        .map_err(|e| e.to_string())
-}

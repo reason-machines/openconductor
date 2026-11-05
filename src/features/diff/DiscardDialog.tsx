@@ -45,7 +45,7 @@ export function DiscardDialog({ file, onConfirm, onClose }: Props) {
         }}
       >
         <p>
-          Discard all changes to <span className="oc-discard-path">{file.path}</span>? This action cannot be undone.
+          Discard all changes to <span className="oc-discard-path">{file.path}</span>? This can't be undone.
         </p>
         {error && <p className="error small">Couldn't discard: {error}</p>}
         <div className="modal-actions">

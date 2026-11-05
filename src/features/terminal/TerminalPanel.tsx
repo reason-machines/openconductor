@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import "@xterm/xterm/css/xterm.css";
-import { canOpenTerminal } from "./tabs";
-import { useAppPrefs } from "../../settings/appPrefs";
+import { canOpen } from "./tabs";
 import { attachTab, clearTab, closeTab, getTabs, openTab, restoreWorkspaceTabs, selectTab, subscribeTabs } from "./session";
 import { FindBar, useTerminalFind } from "./FindBar";
 import { tabLabel } from "./shellIntegration";
@@ -61,7 +60,6 @@ export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {
   }, [workspaceId]);
 
   const active = state.tabs.find((t) => t.id === state.activeId) ?? null;
-  const tabFreakMode = useAppPrefs().experimental_tab_freak_mode;
 
   return (
     <section className="terminal-panel" aria-label="Terminal panel">
@@ -75,7 +73,7 @@ export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {
             </button>
           </div>
         ))}
-        <button className="term-icon" aria-label="New terminal tab" title="New terminal tab" disabled={busy || !canOpenTerminal(state, tabFreakMode)} onClick={() => void newTab()}>
+        <button className="term-icon" aria-label="New terminal tab" title="New terminal tab" disabled={busy || !canOpen(state)} onClick={() => void newTab()}>
           +
         </button>
         <span className="term-spacer" />

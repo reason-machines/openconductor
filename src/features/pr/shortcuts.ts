@@ -1,4 +1,4 @@
-// parity:pr.merge:keybinding parity:pr.create:keybinding parity:pr.commit-push:keybinding
+// parity:pr.merge:keybinding parity:pr.create:keybinding
 // When the workspace's PR shortcuts act (reference: renderApp @ ~2,299,100
 // to ~2,300,500). Merge mirrors `merge_eligibility::can_merge` plus the
 // reference's extra guards (no merge-queue entry, no merge already running).
@@ -21,9 +21,4 @@ export function mergeShortcutApplies(pr: PrInfo | null, optionalChecksBlock: boo
 /** git.createPR: only while the header offers Create PR (no PR yet, branch has changes). */
 export function createShortcutApplies(header: HeaderState | null, busy: boolean): boolean {
   return !busy && header?.action.type === "create_pr";
-}
-
-/** git.commitAndPush: only while the header offers Commit and push (reference renderApp @ ~2,299,300). */
-export function commitShortcutApplies(header: HeaderState | null, busy: boolean): boolean {
-  return !busy && header?.action.type === "commit_and_push";
 }

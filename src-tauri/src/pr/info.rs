@@ -170,14 +170,6 @@ pub fn derived_status(lookup: &PrLookup) -> WorkspaceStatus {
     }
 }
 
-/// The status to store when the derived one differs from the stored
-/// `workspaces.derived_status` (a missing value counts as different). The
-/// reference writes only on a change, because the write also clears the
-/// user's manual status (index chunk `OQe`, REA-extracted, read as data).
-pub fn status_update(stored: Option<&str>, derived: WorkspaceStatus) -> Option<WorkspaceStatus> {
-    (stored != Some(derived.as_str())).then_some(derived)
-}
-
 /// PR title and body to store on the workspace (`pr_title`,
 /// `pr_description`) when they differ from what is stored.
 pub fn metadata_update<'a>(

@@ -18,7 +18,6 @@ pub fn event_json(chat: &str, ev: &ProviderEvent) -> Value {
         }
         ProviderEvent::TurnEnded(end) => json!({ "type": "turnEnded", "end": turn_end_json(end) }),
         ProviderEvent::Agent(a) => agent_json(a),
-        ProviderEvent::Notice(t) => json!({ "type": "notice", "text": t }),
     };
     v["chatId"] = json!(chat);
     v

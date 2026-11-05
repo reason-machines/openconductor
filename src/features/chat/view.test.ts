@@ -144,19 +144,3 @@ test("Reset chat applies to every turn with a reply except the chat's last", () 
     ["t3", false], // the last turn
   ]);
 });
-
-test("a stopped turn's prompt is marked cancelled (Conductor's \"Cancelled\" caption); others are not", () => {
-  const rows = buildRows(
-    apply([
-      status("t1", "running"),
-      upsert(msg("u1", "user", [text("slow")], { cancelledAt: "2026-11-05T10:00:05.000Z" })),
-      status("t1", "cancelled"),
-      status("t2", "running"),
-      upsert(msg("u2", "user", [text("next")], { turnId: "t2" })),
-    ]),
-  );
-  const users = rows.filter((r) => r.kind === "user");
-  assert.deepEqual(users.map((r) => r.kind === "user" && r.cancelled), [true, false]);
-  const end = rows.find((r) => r.kind === "turn_end");
-  assert.equal(end?.kind === "turn_end" && end.status, "cancelled");
-});

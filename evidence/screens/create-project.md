@@ -106,67 +106,12 @@ in `zsh` on macOS and `bash` elsewhere.
 
 `src/components/CreateProjectDialog.tsx` is the dialog (Home → Quick start and the
 palette's quick-start command). After `create_new_project` it shows "Adding
-project..." (`add_repository`; the store adds the repo under the backend id it
-returns, with no workspace; then `save_repo_scripts` for Next.js) and "Creating
-workspace..." (`src/home/createFirstWorkspace.ts`: `create_workspace` with a
-generated city name on the default branch, then the setup script, as the New
-workspace dialog does), saves the parent folder to the clone dialog's last
-location, opens the new workspace and shows the "Project created." toast with
-"Open in GitHub" (tauri-plugin-opener's `open_url`). Differences: no onboarding
-step is advanced (OpenConductor has no onboarding yet); a failed workspace create
-shows only the dialog error, not also Conductor's separate "Failed to create
-workspace: …" toast.
-
-## First workspace (re-read 2026-11-05 for `parity.home.new-project`)
-
-Read from the decoded chunks on the shared cloud computer (sha256 of
-`renderApp-D_fmY7hW.js` `5199d392…1dde` and `index-BGEQ8YjU.js` `b5b01f33…dbf3`,
-both equal to `evidence/frontend/tauri-assets-manifest.json`). Index-chunk names
-were resolved through the renderApp import (offset ~55,103) and the index export
-list: `vYe` = `c0` = `tQt`, `W4r` = `cP` = `a2t`, `dZ` = `aL` = `Cfe`,
-`P4r` = `c1` = `$5t`.
-
-| Chunk | Offset | Minified | What it shows |
-| --- | --- | --- | --- |
-| renderApp | 2,103,713 | `gbi` | Quick start calls `vYe(…, {autoCreateWorkspace:!1})`: the repo is registered without the automatic workspace |
-| renderApp | 2,107,124 | `gbi` | "Creating GitHub repo..." then `await W4r({repoPath, repositoryName})`, unconditionally |
-| renderApp | 2,107,379 | `gbi` | "Adding project..." `E.mutateAsync({remoteUrl, mainWorktreePath, defaultBranch})` returns the registered repo `ae` |
-| renderApp | 2,107,669 | `gbi` | "Creating workspace..." `I.mutateAsync({repositoryId: ae.id, initialPrompt: gstack ? "/office-hours" : undefined, hostingServerUrl})`, then navigates to `/repository/$repositoryId/workspace/$localWorkspaceId` with `ae.id` and the new workspace |
-| index | 3,344,467 | `tQt` | `createRepo` mutation; `autoCreateWorkspace` defaults to true; when true, `onSuccess` creates a workspace with `{repositoryId, hostingServerUrl}` and opens it ("Failed to create first workspace" on error) |
-| index | 3,292,299 | `Cfe` | `createWorkspaceWithSetup` mutation, the same one New workspace uses; error toast "Failed to create workspace: <message>" |
-| index | 1,025,292 | `zj` | `createWorkspaceWithSetup` body: Quick start passes no `workspaceName`, `branchMode` or `targetBranch`, so naming and base branch fall to `ure`'s defaults (the same as a plain New workspace) |
-| index | 3,325,185 | `a2t` | GitHub repo creation: `gh repo create <owner/name> --private --source=. --remote=origin`, push, read origin and URL; every failure throws |
-| renderApp | 1,795,118 | `Jgi` | Open project: `vYe()` with the default, so an opened folder also gets an automatic first workspace; a folder without origin is accepted only when `$5t` is on |
-| index | 398,605 | `$5t` | That setting: `local_git_forge_enabled` (or a second flag) |
-
-So Conductor's first workspace is a real one made by the same create path as New
-workspace, under the registered repository id, with the default name and branch.
-
-**The GitHub repo step is not skippable in Conductor's Quick start.** `gbi` calls
-`W4r` with no condition and no option in the dialog; `a2t` throws on any `gh`
-failure, and `gbi` then deletes the folder it made. The only way Conductor adds a
-project without a GitHub repo is Open project on a folder without an origin while
-`local_git_forge_enabled` is on. OpenConductor keeps the step mandatory to match;
-the obligation text "optional private GitHub repo" does not hold for Quick start.
-
-### Captures (REA `capture-browser-scenario`, browser mode, 1440×900 dark)
-
-Home → Quick start → Create on main showed a client-side placeholder workspace
-("This workspace has no worktree yet"); on this branch it shows the workspace
-`create_workspace` returned (the browser stand-in), opened, with the toast.
-Evidence ids: before `ev_a989856a…6351`, after `ev_d016f9c3…76e4`.
-
-### REA gaps hit
-
-- `analyze-javascript-application` still cannot parse the 11.6 MB renderApp chunk
-  (heap ceiling, see `home.md`), so the reads above are offset-anchored Python
-  reads of the decoded chunks.
-- New: REA 6.7.0 `capture-browser-scenario` on a Reason cloud computer fails with
-  a generic `execution_failure` ("Run `rea doctor`…") plus `cleanup_incomplete`,
-  even for a one-step scenario, when `TMPDIR` is long: Chromium aborts with
-  `FATAL … Socket path too long` for its `SingletonSocket`. REA does not surface
-  the browser's stderr, and `rea doctor` does not flag it. Workaround:
-  `TMPDIR=/tmp/t`.
+project..." (`add_repository`, then `save_repo_scripts` for Next.js) and "Creating
+workspace..." (the store's `addRepo`, which adds and selects the first workspace),
+saves the parent folder to the clone dialog's last location, and shows the "Project
+created." toast with "Open in GitHub" (tauri-plugin-opener's `open_url`).
+Differences: no onboarding step is advanced (OpenConductor has no onboarding yet),
+and the first workspace is the store's local one, not a backend worktree.
 
 ## REA
 

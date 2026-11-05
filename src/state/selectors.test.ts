@@ -27,11 +27,3 @@ test("removedWorkspaceIds lists workspaces archived or gone with their repositor
   assert.deepEqual(removedWorkspaceIds(prev, { ...prev, repos: [r("r1", [w("a")]), r("r2", [w("c")])] }), ["b"]);
   assert.deepEqual(removedWorkspaceIds(prev, { ...prev, repos: [r("r1", [w("a"), w("b"), w("d")])] }), ["c"]);
 });
-
-test("the app opens at / unless a workspace was open or the path is /all-workspaces", async () => {
-  const { startSelection } = await import("./selectors.ts");
-  const ws = { kind: "workspace" as const, repoId: "r", workspaceId: "w" };
-  assert.deepEqual(startSelection({ repos: [], selection: { kind: "home" } }, "/").selection, { kind: "root" });
-  assert.deepEqual(startSelection({ repos: [], selection: ws }, "/").selection, ws);
-  assert.deepEqual(startSelection({ repos: [], selection: ws }, "/all-workspaces").selection, { kind: "home" });
-});

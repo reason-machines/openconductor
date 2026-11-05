@@ -31,8 +31,7 @@ export type PartView =
 export type ReportOrigin = Extract<MessageOrigin, { kind: "session" } | { kind: "api_key" }>;
 
 export type RowView =
-  /** `cancelled`: the prompt's turn was stopped (Conductor's `cancelled_at`), shown as a "Cancelled" caption. */
-  | { kind: "user"; key: string; message: ChatMessage; text: string; cancelled: boolean }
+  | { kind: "user"; key: string; message: ChatMessage; text: string }
   | { kind: "report"; key: string; message: ChatMessage; origin: ReportOrigin; text: string }
   | { kind: "system"; key: string; message: ChatMessage; text: string }
   | { kind: "assistant"; key: string; message: ChatMessage; parts: PartView[]; streaming: boolean }
@@ -151,7 +150,7 @@ export function buildRows(t: ChatTranscript): RowView[] {
         break;
       case "user":
         // Tool-result carriers have no text of their own.
-        if (text.length > 0) rows.push({ kind: "user", key: m.id, message: m, text, cancelled: m.cancelledAt !== undefined });
+        if (text.length > 0) rows.push({ kind: "user", key: m.id, message: m, text });
         break;
       case "system":
         if (text.length > 0) rows.push({ kind: "system", key: m.id, message: m, text });

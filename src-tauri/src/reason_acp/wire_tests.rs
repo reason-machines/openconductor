@@ -76,36 +76,3 @@ fn tool_paths_say_local_or_cloud_with_the_same_relative_path() {
     assert_eq!(locs[0]["relative"], "src/a.rs");
     assert_eq!(locs[1]["relative"], "src/a.rs");
 }
-
-#[test]
-fn a_notice_is_its_own_payload() {
-    let n = ProviderEvent::Notice("Reason does not offer model \"x\"".into());
-    assert_eq!(
-        event_json("c", &n),
-        json!({ "chatId": "c", "type": "notice", "text": "Reason does not offer model \"x\"" })
-    );
-}
-
-#[test]
-fn prompt_blocks_put_attachments_after_the_text_as_file_resources() {
-    use super::provider::{prompt_blocks, Attachment};
-    let a = Attachment {
-        name: "Review request.md".into(),
-        text: "# Review".into(),
-    };
-    let v = prompt_blocks("Please review", &[a], Path::new("/Users/me/ws é"));
-    assert_eq!(v[0], json!({ "type": "text", "text": "Please review" }));
-    assert_eq!(
-        v[1],
-        json!({ "type": "resource", "resource": {
-            "uri": "file:///Users/me/ws%20%C3%A9/Review%20request.md",
-            "mimeType": "text/markdown", "text": "# Review" } })
-    );
-    assert_eq!(
-        prompt_blocks("hi", &[], Path::new("/x"))
-            .as_array()
-            .unwrap()
-            .len(),
-        1
-    );
-}

@@ -18,32 +18,28 @@
 //!   memberships and sections of this scope that the layout no longer has.
 //! - delete ([`delete_layout`]): the scope's memberships, then its sections.
 //!
-//! The same statements serve both databases, as in the reference: a
-//! [`Scope`] without `hosting_server_url` reads and writes `conductor.db`
-//! (`organization_id = ? AND user_id = ?`); one with it reads and writes
-//! `cache.db`'s cloud-hosted copy (`hosting_server_url = ? AND
-//! organization_id = ? AND user_id = ?`, renderApp `MIr` / `zIr`). The
-//! reference never writes `icon_name` (a `conductor.db`-only column), so a
-//! write leaves it NULL.
+//! In `conductor.db` the scope is `organization_id = ? AND user_id = ?` (the
+//! reference adds `hosting_server_url` only for its `cache.db` copy). The
+//! reference never writes `icon_name`, so a write leaves it NULL.
 
 use sqlx::{Connection, SqliteConnection, SqlitePool};
 
 use crate::{iso_time, Result};
 
-pub use crate::scope::Scope;
+/// The organization and user whose sidebar this is.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Scope {
+    pub organization_id: String,
+    pub user_id: String,
+}
 
 /// One `navigation_sections` row.
 #[derive(Debug, Clone, PartialEq, Eq, sqlx::FromRow)]
 pub struct Section {
     pub id: String,
-    /// `cache.db` only; `None` on `conductor.db`.
-    #[sqlx(default)]
-    pub hosting_server_url: Option<String>,
     pub organization_id: String,
     pub user_id: String,
     pub name: String,
-    /// `conductor.db` only; `None` on `cache.db`.
-    #[sqlx(default)]
     pub icon_name: Option<String>,
     pub sort_order: i64,
     pub created_at: String,
@@ -67,9 +63,6 @@ pub struct LayoutSection {
     pub id: String,
     pub name: String,
     pub emoji: Option<String>,
-    /// Members in membership `created_at`, then id order. Members added in
-    /// one write share `created_at`, so they read back in the order of their
-    /// random ids, as in the reference.
     pub workspace_ids: Vec<String>,
 }
 
@@ -81,6 +74,8 @@ pub struct Layout {
     pub updated_at: i64,
 }
 
+const SCOPE: &str = "organization_id = ? AND user_id = ?";
+
 /// The scope's sections and their memberships, in the reference's order.
 pub async fn read(pool: &SqlitePool, scope: &Scope) -> Result<(Vec<Section>, Vec<Membership>)> {
     let mut conn = pool.acquire().await?;
@@ -91,30 +86,26 @@ async fn read_on(
     conn: &mut SqliteConnection,
     scope: &Scope,
 ) -> Result<(Vec<Section>, Vec<Membership>)> {
-    let sql = format!(
-        "SELECT * FROM navigation_sections WHERE {} \
-         ORDER BY sort_order ASC, created_at ASC, id ASC",
-        scope.condition(None)
-    );
-    let mut q = sqlx::query_as::<_, Section>(&sql);
-    for v in scope.values() {
-        q = q.bind(v);
-    }
-    let sections = q.fetch_all(&mut *conn).await?;
-    let sql = format!(
+    let sections = sqlx::query_as::<_, Section>(&format!(
+        "SELECT * FROM navigation_sections WHERE {SCOPE} \
+         ORDER BY sort_order ASC, created_at ASC, id ASC"
+    ))
+    .bind(&scope.organization_id)
+    .bind(&scope.user_id)
+    .fetch_all(&mut *conn)
+    .await?;
+    let memberships = sqlx::query_as::<_, Membership>(
         "SELECT navigation_section_memberships.* FROM navigation_section_memberships \
          INNER JOIN navigation_sections \
          ON navigation_sections.id = navigation_section_memberships.section_id \
-         WHERE {} \
+         WHERE navigation_sections.organization_id = ? AND navigation_sections.user_id = ? \
          ORDER BY navigation_section_memberships.created_at ASC, \
          navigation_section_memberships.id ASC",
-        scope.condition(Some("navigation_sections"))
-    );
-    let mut q = sqlx::query_as::<_, Membership>(&sql);
-    for v in scope.values() {
-        q = q.bind(v);
-    }
-    let memberships = q.fetch_all(&mut *conn).await?;
+    )
+    .bind(&scope.organization_id)
+    .bind(&scope.user_id)
+    .fetch_all(&mut *conn)
+    .await?;
     Ok((sections, memberships))
 }
 
@@ -202,25 +193,21 @@ async fn write_layout_on(
             Some(o) if unchanged => o.updated_at.as_str(),
             _ => now.as_str(),
         };
-        let columns = scope.columns();
-        let sql = format!(
+        sqlx::query(
             "INSERT OR REPLACE INTO navigation_sections \
-             (id, {}, name, emoji, sort_order, created_at, updated_at) \
-             VALUES (?, {}, ?, ?, ?, ?, ?)",
-            columns.join(", "),
-            vec!["?"; columns.len()].join(", ")
-        );
-        let mut q = sqlx::query(&sql).bind(&section.id);
-        for v in scope.values() {
-            q = q.bind(v);
-        }
-        q.bind(&section.name)
-            .bind(&section.emoji)
-            .bind(position)
-            .bind(created_at)
-            .bind(updated_at)
-            .execute(&mut *conn)
-            .await?;
+             (id, organization_id, user_id, name, emoji, sort_order, created_at, updated_at) \
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        )
+        .bind(&section.id)
+        .bind(&scope.organization_id)
+        .bind(&scope.user_id)
+        .bind(&section.name)
+        .bind(&section.emoji)
+        .bind(position)
+        .bind(created_at)
+        .bind(updated_at)
+        .execute(&mut *conn)
+        .await?;
         for workspace_id in &section.workspace_ids {
             let existing = memberships
                 .iter()
@@ -245,27 +232,23 @@ async fn write_layout_on(
     let section_ids: Vec<&str> = layout.sections.iter().map(|s| s.id.as_str()).collect();
     let sql = format!(
         "DELETE FROM navigation_section_memberships WHERE section_id IN ( \
-         SELECT id FROM navigation_sections WHERE {} ){}",
-        scope.condition(None),
+         SELECT id FROM navigation_sections WHERE {SCOPE} ){}",
         not_in(kept_memberships.len())
     );
-    let mut q = sqlx::query(&sql);
-    for v in scope.values() {
-        q = q.bind(v);
-    }
+    let mut q = sqlx::query(&sql)
+        .bind(&scope.organization_id)
+        .bind(&scope.user_id);
     for id in &kept_memberships {
         q = q.bind(id);
     }
     q.execute(&mut *conn).await?;
     let sql = format!(
-        "DELETE FROM navigation_sections WHERE {}{}",
-        scope.condition(None),
+        "DELETE FROM navigation_sections WHERE {SCOPE}{}",
         not_in(section_ids.len())
     );
-    let mut q = sqlx::query(&sql);
-    for v in scope.values() {
-        q = q.bind(v);
-    }
+    let mut q = sqlx::query(&sql)
+        .bind(&scope.organization_id)
+        .bind(&scope.user_id);
     for id in &section_ids {
         q = q.bind(*id);
     }
@@ -277,22 +260,19 @@ async fn write_layout_on(
 pub async fn delete_layout(pool: &SqlitePool, scope: &Scope) -> Result<()> {
     let mut conn = pool.acquire().await?;
     let mut tx = conn.begin().await?;
-    let condition = scope.condition(None);
-    let sql = format!(
+    sqlx::query(&format!(
         "DELETE FROM navigation_section_memberships WHERE section_id IN ( \
-         SELECT id FROM navigation_sections WHERE {condition} )"
-    );
-    let mut q = sqlx::query(&sql);
-    for v in scope.values() {
-        q = q.bind(v);
-    }
-    q.execute(&mut *tx).await?;
-    let sql = format!("DELETE FROM navigation_sections WHERE {condition}");
-    let mut q = sqlx::query(&sql);
-    for v in scope.values() {
-        q = q.bind(v);
-    }
-    q.execute(&mut *tx).await?;
+         SELECT id FROM navigation_sections WHERE {SCOPE} )"
+    ))
+    .bind(&scope.organization_id)
+    .bind(&scope.user_id)
+    .execute(&mut *tx)
+    .await?;
+    sqlx::query(&format!("DELETE FROM navigation_sections WHERE {SCOPE}"))
+        .bind(&scope.organization_id)
+        .bind(&scope.user_id)
+        .execute(&mut *tx)
+        .await?;
     tx.commit().await?;
     Ok(())
 }

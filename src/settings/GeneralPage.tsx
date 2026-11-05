@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { withField } from "./model";
-import { GeneralAppPrefRows } from "./rows/AppPrefRows";
 import type { Settings, SoundType } from "./types";
 
 interface Props {
@@ -30,7 +29,6 @@ export function GeneralPage({ settings, save }: Props) {
           <option value="none">Off</option>
         </select>
       </Row>
-      <GeneralAppPrefRows />
     </div>
   );
 }

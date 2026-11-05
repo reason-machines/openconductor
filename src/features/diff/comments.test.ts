@@ -3,6 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { deleteComment, formatForAgent, markSent, newLocalComment, pendingForAgent, refreshOutdated, setResolved, threadsAt, threadsOf } from "./comments.ts";
 import { commentTargets, step, stepComment } from "./nav.ts";
+import { buildReviewPrompt, DEFAULT_REVIEW_PROMPT } from "./review.ts";
 import type { FileDiff } from "./types.ts";
 
 const file: FileDiff = {
@@ -85,6 +86,11 @@ test("navigation wraps and orders comments by file then line", () => {
   assert.deepEqual(targets.map((t) => t.id), ["b", "early", "late"]);
   assert.equal(stepComment(targets, "late", 1)?.id, "b");
   assert.equal(stepComment(targets, null, -1)?.id, "late");
+});
+
+test("review prompt uses the repo override when set and names the scope", () => {
+  assert.ok(buildReviewPrompt("all").startsWith(DEFAULT_REVIEW_PROMPT));
+  assert.equal(buildReviewPrompt("uncommitted", "  Check perf. "), "Check perf.\n\nOnly the uncommitted changes are in scope.");
 });
 
 test("stored values match the REA-observed diff_comments values", () => {

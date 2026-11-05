@@ -1,12 +1,11 @@
 //! Workspace lifecycle on git worktrees.
 //!
-//! A workspace is a git worktree on its own branch, created under the root
-//! directory (the `conductor_root_path` setting, default the app data
-//! directory; Conductor's default is `~/conductor`):
+//! A workspace is a git worktree on its own branch, created under the app
+//! data directory:
 //!
 //! ```text
-//! <root>/workspaces/<repo-slug>/<name>     active worktree
-//! <root>/archived/<repo-slug>/<name>.ws    archive record (branch, archive commit)
+//! <data_dir>/workspaces/<repo-slug>/<name>     active worktree
+//! <data_dir>/archived/<repo-slug>/<name>.ws    archive record (branch, archive commit)
 //! ```
 //!
 //! Lifecycle: [`WorkspaceManager::create`] -> setup script ->
@@ -211,13 +210,10 @@ pub struct Archived {
     pub script: Option<ScriptOutput>,
 }
 
-/// Owns the on-disk layout under the root directory.
+/// Owns the on-disk layout under the app data directory.
 #[derive(Debug, Clone)]
 pub struct WorkspaceManager {
     data_dir: PathBuf,
-    /// Where workspaces, archive records and default clones live; the app
-    /// data directory unless the `conductor_root_path` setting names another.
-    root: PathBuf,
     /// Worktree paths still being set up. In memory only, so a crash never
     /// leaves a workspace stuck as initializing.
     initializing: Arc<Mutex<HashSet<PathBuf>>>,
@@ -239,20 +235,8 @@ impl Drop for InitializingGuard {
 const ARCHIVE_EXT: &str = "ws";
 
 impl WorkspaceManager {
-    /// Rooted at `data_dir` until [`Self::with_root`] names another root.
     pub fn new(data_dir: impl Into<PathBuf>) -> Self {
-        let data_dir = data_dir.into();
-        Self { root: data_dir.clone(), data_dir, initializing: Arc::default() }
-    }
-
-    /// Keep workspaces, archive records and default clones under `root`.
-    pub fn with_root(mut self, root: impl Into<PathBuf>) -> Self {
-        self.root = root.into();
-        self
-    }
-
-    pub fn root(&self) -> &Path {
-        &self.root
+        Self { data_dir: data_dir.into(), initializing: Arc::default() }
     }
 
     /// Mark the workspace at `path` as initializing (worktree creation, setup
@@ -277,14 +261,12 @@ impl WorkspaceManager {
         if s.is_empty() { "repo".into() } else { s }
     }
 
-    /// A repository's workspaces directory, `<root>/workspaces/<repo slug>`
-    /// (Conductor's repo settings show it as "Workspaces path").
-    pub fn workspaces_dir(&self, repo_root: &Path) -> PathBuf {
-        self.root.join("workspaces").join(Self::repo_slug(repo_root))
+    fn workspaces_dir(&self, repo_root: &Path) -> PathBuf {
+        self.data_dir.join("workspaces").join(Self::repo_slug(repo_root))
     }
 
     fn archive_dir(&self, repo_root: &Path) -> PathBuf {
-        self.root.join("archived").join(Self::repo_slug(repo_root))
+        self.data_dir.join("archived").join(Self::repo_slug(repo_root))
     }
 
     fn archive_record(&self, repo_root: &Path, name: &str) -> PathBuf {

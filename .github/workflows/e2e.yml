@@ -33,12 +33,6 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
-      # rust-cache restores target/ after checkout, so artifacts of the path crates
-      # (crates/scripts, crates/openconductor-db) look newer than their changed sources
-      # and Cargo reuses them stale. Rebuild them every run.
-      - name: Rebuild path crates
-        working-directory: src-tauri
-        run: cargo clean -p oc-scripts -p openconductor-db
       - run: npm ci
       - name: Build the app (debug, no bundle)
         run: npx tauri build --debug --no-bundle
@@ -55,7 +49,6 @@ jobs:
           path: ${{ runner.temp }}/e2e-screens
           retention-days: 14
       - name: Configure git identity
-        if: always()
         run: |
           git config --global user.name "CI"
           git config --global user.email "ci@example.invalid"

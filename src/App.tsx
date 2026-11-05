@@ -4,8 +4,6 @@ import { destroyWorkspaceTerminals } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
-import { AllWorkspaces } from "./components/AllWorkspaces";
-import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
 import type { DialogKind } from "./components/Dialogs";
 import { CreateProjectDialog } from "./components/CreateProjectDialog";
@@ -34,7 +32,6 @@ import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
-import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
@@ -46,8 +43,6 @@ export default function App() {
     prevState.current = state;
   }, [state]);
   const nav = useNavHistory(state, dispatch);
-  useSidebarVisiblePref(isSidebarVisible(state), dispatch);
-  const sidebarWidth = useSidebarWidth();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
   // `/create` (or `?dialog=create`) opens the Create-workspace dialog directly.
   const initialDialog = window.location.pathname === "/create" ? "create" : (new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
@@ -162,9 +157,6 @@ export default function App() {
     "nav.back": nav.onBack,
     "nav.forward": nav.onForward,
     "view.toggleLeftSidebar": () => dispatch({ type: "toggleSidebar" }),
-    "view.toggleRightSidebar": toggleRightPanel,
-    "view.toggleZenMode": () => toggleZenMode(isSidebarVisible(state), dispatch),
-    "toggleGarryMode": toggleGarryMode,
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
     "workspace.create": () => setDialog("create"),
   });
@@ -183,14 +175,11 @@ export default function App() {
   if (settingsLocation) return <SettingsView location={settingsLocation} repos={state.repos} onNavigate={navigateSettings} onClose={closeSettings} />;
 
   return (
-    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
-      {isSidebarVisible(state) && sidebarWidth.resizer}
+    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
       {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
-        ) : sel.kind === "home" ? (
-          <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
         ) : (
           <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}
@@ -198,17 +187,14 @@ export default function App() {
       {dialog === "clone" && (
         <CloneGitHubRepoDialog
           onClose={() => setDialog(null)}
-          // The backend names the folder uniquely; a second clone of one remote is its own project (Conductor: `<name>-v1`).
-          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", id: inTauri() ? cloned.id : undefined, repo: { name: cloned.name || name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
+          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", id: inTauri() ? cloned.id : undefined, repo: { name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
         />
       )}
       {dialog === "quickstart" && (
         <CreateProjectDialog
           onClose={() => setDialog(null)}
-          onRepoAdded={({ id, ...repo }) => dispatch({ type: "addRepo", id, repo })}
-          onCreated={(repoId, first, githubUrl) => {
-            dispatch({ type: "addWorkspace", repoId, workspace: first.workspace });
-            for (const warning of first.warnings) show("error", warning, { sticky: true });
+          onCreated={(created, githubUrl) => {
+            dispatch({ type: "addRepo", repo: created });
             show("info", SUCCESS_TOAST, { action: { label: OPEN_IN_GITHUB, onClick: () => void openUrl(githubUrl) } });
           }}
         />
