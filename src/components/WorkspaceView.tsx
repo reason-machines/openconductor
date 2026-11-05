@@ -7,8 +7,10 @@ import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { reasonAvailable, reasonTranscript, resetReasonChat, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
-import { changedSinceTurn } from "../features/chat/checkpoints.ts";
+import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
+import { TurnChanges } from "../features/chat/TurnChanges.tsx";
+import type { TurnRef } from "../features/diff/turnChangesCache.ts";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
 import type { DiffScope, FileDiff } from "../features/diff/types";
@@ -67,9 +69,11 @@ interface ChatPanelProps extends Props {
   content: ReactNode | null;
   /** The agent started or finished a turn. */
   onRunningChange?: (running: boolean) => void;
+  /** A file chip under a finished turn: open that file's changes from the turn. */
+  openTurnFile: (turn: TurnRef, path: string) => void;
 }
 
-function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunningChange }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunningChange, openTurnFile }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const load = () => (reason ? reasonTranscript(workspace.id) : (transcripts.get(workspace.id) ?? emptyTranscript(workspace.id)));
@@ -107,14 +111,20 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
       if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
       return;
     }
-    const next = withMessages(transcript, [
-      textMessage(workspace.id, "user", text),
-      textMessage(workspace.id, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."),
-    ]);
+    // One finished turn per message, so its footer (and sample turn changes) show.
+    const user = textMessage(workspace.id, "user", text);
+    const reply = { ...textMessage(workspace.id, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."), turnId: user.turnId };
+    const done = applyChatEvents(withMessages(transcript, [user, reply]), [{ type: "turn_status", sessionId: workspace.id, turnId: user.turnId, status: "completed" }]);
+    const next = done.ok ? done.transcript : withMessages(transcript, [user, reply]);
     transcripts.set(workspace.id, next);
     setTranscript(next);
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
+
+  const turnFooter = (turnId: string) => {
+    const turn = turnCheckpointRef(workspace.id, turnId);
+    return <TurnChanges turn={turn} worktree={workspace.path ?? null} onOpenFile={(path) => openTurnFile(turn, path)} />;
+  };
 
   // The diff viewer adds review comments to the composer and sends Review prompts.
   bridge.current = {
@@ -153,6 +163,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
             // Conductor: workspace with a path, not archived; disabled while the agent works.
             onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
+            turnFooter={turnFooter}
           />
         )}
         <div ref={endRef} />
@@ -195,6 +206,10 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
 
 function RightPanel({ diff, actions, pr, worktree }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null }) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
+  // Picking a turn's file in the chat shows that turn's changes list.
+  useEffect(() => {
+    if (diff.turn) setTab("changes");
+  }, [diff.turn]);
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
   return (
@@ -355,6 +370,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           dispatch={dispatch}
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
+          openTurnFile={diff.openTurnFile}
           tabs={<MainTabs title={workspace.name} active={showDiff ? "diff" : "chat"} diffOpen={diffOpen} onSelect={setMainTab} onCloseDiff={closeDiffTab} />}
           content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
         />
