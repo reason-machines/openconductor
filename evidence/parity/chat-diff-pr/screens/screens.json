@@ -8,7 +8,7 @@
       "reference": "evidence/screens/chat--transcript-collapsed-tools--dark.png",
       "theme": "dark",
       "png_sha256": "46846a8f0c7e9d52d75be4a125051ca3981ee0365f400254b878768fa1f6f98b",
-      "capture_evidence_id": "ev_1886dc016aa85a90c89582c3042e25ffbc8793b1aaa95bda75b479aaab3c4ef9",
+      "capture_evidence_id": "ev_adbc27d2984c382bbf18631593b508af098c70b19327d0e1803b2322438b4c5d",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
@@ -29,7 +29,7 @@
       "reference": "evidence/screens/chat--transcript-collapsed-tools--light.png",
       "theme": "light",
       "png_sha256": "427f2090ef8d90e7ce82eacd549ed05c8c9f44a2d59cb3743bf3e0cb228ae107",
-      "capture_evidence_id": "ev_d686e50d59ac0eba2acdd73c154c97d74dfdbd66674201cdd9caef3496198050",
+      "capture_evidence_id": "ev_2a179e4cd3bd0a92a7dd22ad91bd43d3026e19243e5771fd842d8fd8ba6f638d",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
@@ -50,7 +50,7 @@
       "reference": "evidence/screens/diff--file-unified--dark.png",
       "theme": "dark",
       "png_sha256": "01c8826c33950a59a9b978ecc38914d0d97a8870f9511ec1bf7527ecfd838db8",
-      "capture_evidence_id": "ev_90e880ea23676bfc28a3561ded37d9d49e4411feb911ed9b31fe695fe880000d",
+      "capture_evidence_id": "ev_c8100874c48ea58bcb202633269282d1394ab30a14c37fde9e6f2023881af5f3",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
@@ -71,7 +71,7 @@
       "reference": "evidence/screens/diff--file-unified--light.png",
       "theme": "light",
       "png_sha256": "4bee8a3f2ff54618fc8ea811670aa9e09934ba129ad34cf1c54460448df0bc18",
-      "capture_evidence_id": "ev_c850fdd8be6414ea407f7f02d160e635dd40f556e9b20c30fdec5beef6e1ecf6",
+      "capture_evidence_id": "ev_9d19dd08fd393c56868b5da1b81e97220d23ed4eaa8d62c46e5514b850d6c5e9",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
@@ -92,7 +92,7 @@
       "reference": "evidence/screens/diff--file-split--dark.png",
       "theme": "dark",
       "png_sha256": "6f9bc00e8689fc20f2f6d6195e8f3610208178420e0a84fc4de10691940e9cd4",
-      "capture_evidence_id": "ev_b9b4552ea55f70911fad7c828a8a2d74a6854f58efc8bdf03e063a4e51ba3aac",
+      "capture_evidence_id": "ev_c6bff5d4fd33dc8000debc7fd8ac171a9c08abe3e1f1e5d56f207bb01a989ca7",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
