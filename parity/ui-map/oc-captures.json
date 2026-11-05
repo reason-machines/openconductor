@@ -5467,12 +5467,15 @@
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-actions.png",
-  "png_sha256": "bec4615991580f9e4a759ee5d3b3719d6dcf4e38af8d7f0d8a9380147f8062b6",
+  "png_sha256": "4bc9cd80c72f931f944224392ae3d18a473885d365d4742e342168518665b5e8",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Use spotlight testing",
     "Action preferences",
     "Code review preferences prompt",
@@ -5498,8 +5501,8 @@
     "Repositories",
     "T",
     "tide-web",
-    "Environment",
     "Git",
+    "Environment",
     "Scripts",
     "Actions",
     "Misc",
@@ -5519,9 +5522,7 @@
     "Create PR preferences",
     "Add custom instructions sent to the agent when you click the Create PR button.",
     "General preferences",
-    "Add custom instructions sent to the agent at the start of every new chat.",
-    "Settings file:",
-    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
+    "Add custom instructions sent to the agent at the start of every new chat."
    ],
    "url": "tauri://localhost/settings/repos/tide-web/actions",
    "viewport": [
@@ -5529,18 +5530,21 @@
     820
    ]
   },
-  "ms": 5865
+  "ms": 6163
  },
  "settings-repo-environment": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-environment.png",
-  "png_sha256": "ee6e6aafe37cbe4fad99fb1908fb0dea6b21083c47d3efe9ea61a1047c009132",
+  "png_sha256": "45424e458fae114d0c0ff8f4760288813265d2852e574373d781e9f46ef06d33",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Environment variable files",
     "~/.env",
     "Variable name",
@@ -5565,8 +5569,8 @@
     "Repositories",
     "T",
     "tide-web",
-    "Environment",
     "Git",
+    "Environment",
     "Scripts",
     "Actions",
     "Misc",
@@ -5583,9 +5587,7 @@
     "Environment variables",
     "Variables for local workspaces and for cloud workspaces of this repository. Use an empty value to set a variable to an empty string.",
     "No variables yet.",
-    "Add variable",
-    "Settings file:",
-    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
+    "Add variable"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/environment",
    "viewport": [
@@ -5593,20 +5595,27 @@
     820
    ]
   },
-  "ms": 6338
+  "ms": 7284
  },
  "settings-repo-git": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-git.png",
-  "png_sha256": "d9c5e9d280bae0d72acf6278becf29eb3479d3df49d3bc0746722c55c214bcd2",
+  "png_sha256": "154048ed9ff1409e4be585be9c4fa2adff1a2d9d635615d1b8537966da66f559",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Base branch",
+    "Changing this in OpenConductor is not supported yet",
     "Remote origin",
+    "Changing this in OpenConductor is not supported yet",
+    "Delete branch on archive",
+    "Archive on merge",
     "Set upstream on plain git push"
    ],
    "roles": [],
@@ -5625,8 +5634,8 @@
     "Repositories",
     "T",
     "tide-web",
-    "Environment",
     "Git",
+    "Environment",
     "Scripts",
     "Actions",
     "Misc",
@@ -5640,14 +5649,21 @@
     "Git",
     "Branch new workspaces from",
     "Each workspace is an isolated copy of your codebase.",
-    "main",
+    "origin/main",
     "Remote origin",
     "Where should we push, pull, and create PRs?",
     "origin",
+    "Delete branch on archive",
+    "Delete the local branch when archiving a workspace.",
+    "To delete the remote branch,",
+    "configure it on GitHub",
+    ".",
+    "Archive on merge",
+    "Automatically archive a workspace after merging its PR in OpenConductor",
     "Set upstream on plain git push",
-    "Configure new workspaces so plain git push sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream. Currently from default.",
-    "Settings file:",
-    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
+    "Configure new OpenConductor workspaces so plain",
+    "git push",
+    "sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream."
    ],
    "url": "tauri://localhost/settings/repos/tide-web/git",
    "viewport": [
@@ -5655,18 +5671,21 @@
     820
    ]
   },
-  "ms": 6469
+  "ms": 6369
  },
  "settings-repo-misc": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-misc.png",
-  "png_sha256": "8aaaa0443aecaf63de6bd1e5c4939552e107e376eeef5e3e7d9ee2885342ccc3",
+  "png_sha256": "65d92c863358f0879bbafcd7ce9ec8c3b7b62b1e5b261a2deaebb38e5009aa44",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Root path",
     "Workspaces path",
     "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web"
@@ -5687,8 +5706,8 @@
     "Repositories",
     "T",
     "tide-web",
-    "Environment",
     "Git",
+    "Environment",
     "Scripts",
     "Actions",
     "Misc",
@@ -5706,9 +5725,7 @@
     "/tmp/oc-uimap-run/repos/tide-web",
     "Workspaces path",
     "Do not move or delete the workspace subdirectories. Instead, archive workspaces in OpenConductor.",
-    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web",
-    "Settings file:",
-    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/misc",
    "viewport": [
@@ -5716,18 +5733,21 @@
     820
    ]
   },
-  "ms": 6777
+  "ms": 6540
  },
  "settings-repo-scripts": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-scripts.png",
-  "png_sha256": "4071ce6d01193670abb54b480c5e05dc1688c9f53a901f4bd927560290ec498f",
+  "png_sha256": "354cd2fab9b475392355bd9a59039a44726e11d7eac7d693f1693e255756a596",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Repository scripts"
    ],
    "roles": [],
@@ -5746,8 +5766,8 @@
     "Repositories",
     "T",
     "tide-web",
-    "Environment",
     "Git",
+    "Environment",
     "Scripts",
     "Actions",
     "Misc",
@@ -5767,9 +5787,7 @@
     "None",
     "Archive script",
     "Runs when a workspace is archived.",
-    "None",
-    "Settings file:",
-    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
+    "None"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/scripts",
    "viewport": [
@@ -5777,7 +5795,7 @@
     820
    ]
   },
-  "ms": 6287
+  "ms": 6368
  },
  "settings-search": {
   "status": "step-failed",

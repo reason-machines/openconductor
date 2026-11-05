@@ -9,8 +9,8 @@ import { errorText } from "./api";
 import { WORKSPACES_PATH_DESCRIPTION, WORKSPACES_PATH_TITLE, repoWorkspacesPath } from "./rootPath";
 import type { RepoSection } from "./routes";
 import { RepoActionsRows } from "./rows/PromptRows";
-import { RepoEnvironmentRows } from "./rows/EnvironmentRows";
 import { RepoGitRows } from "./rows/RepoGitRows";
+import { RepoEnvironmentPage } from "./RepoEnvironmentPage";
 
 interface Props {
   repo: Repo;
@@ -26,8 +26,8 @@ interface Props {
  * shown; see evidence/settings/NOTES.md, "Settings routes".
  */
 export function RepoSettingsPage({ repo, section }: Props) {
-  // Conductor's `uti`: the repository scope edits the main checkout's local settings file.
-  const file = repo.path ? `${repo.path.replace(/\/+$/, "")}/.conductor/settings.local.toml` : null;
+  // Conductor's `uti`: the repository scope edits the main checkout's
+  // `.conductor/settings.local.toml`; like Conductor, the page does not print the path.
   return (
     <div className="settings-section">
       {section === "environment" && <RepoEnvironment repo={repo} />}
@@ -35,30 +35,16 @@ export function RepoSettingsPage({ repo, section }: Props) {
       {section === "scripts" && <RepoScripts repo={repo} />}
       {section === "actions" && <RepoActions repo={repo} />}
       {section === "misc" && <RepoMisc repo={repo} />}
-      {file && <p className="muted small">Settings file: {file}</p>}
     </div>
   );
 }
 
 function RepoEnvironment({ repo }: { repo: Repo }) {
-  if (!repo.path) return <p className="muted small">This repository has no local checkout, so its environment settings cannot be edited.</p>;
-  return <RepoEnvironmentRows repoPath={repo.path} />;
+  return <RepoEnvironmentPage repo={repo} />;
 }
 
 function RepoGit({ repo }: { repo: Repo }) {
-  return (
-    <>
-      <div className="settings-rows">
-        <Row label="Branch new workspaces from" help="Each workspace is an isolated copy of your codebase.">
-          <code aria-label="Base branch">{repo.defaultBranch || "main"}</code>
-        </Row>
-        <Row label="Remote origin" help="Where should we push, pull, and create PRs?">
-          <code aria-label="Remote origin">{repo.remote || "origin"}</code>
-        </Row>
-      </div>
-      {repo.path && <RepoGitRows repoPath={repo.path} />}
-    </>
-  );
+  return <RepoGitRows repo={repo} />;
 }
 
 function RepoScripts({ repo }: { repo: Repo }) {

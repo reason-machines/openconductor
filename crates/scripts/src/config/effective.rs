@@ -227,6 +227,18 @@ pub struct ResolvedEnv {
     pub local: BTreeMap<String, EnvVar>,
     pub cloud: BTreeMap<String, EnvVar>,
     pub files: Vec<EnvFileStatus>,
+    /// Names a settings file unsets with `"<none>"`, per context, with the
+    /// layer that unset them last. The reference keeps these as "defined
+    /// sources" (`envVarDefinedSourcesByContext`): a repository tombstone
+    /// also hides a variable stored on the Environment page (`xz`, `nGt`).
+    pub unset: UnsetVars,
+}
+
+/// See [`ResolvedEnv::unset`].
+#[derive(Debug, Clone, Default, PartialEq, Serialize)]
+pub struct UnsetVars {
+    pub local: BTreeMap<String, Layer>,
+    pub cloud: BTreeMap<String, Layer>,
 }
 
 impl ResolvedEnv {
@@ -254,14 +266,19 @@ impl ResolvedEnv {
             EnvContext::Local => &self.local,
             EnvContext::Cloud => &self.cloud,
         };
+        let unset = match context {
+            EnvContext::Local => &self.unset.local,
+            EnvContext::Cloud => &self.unset.cloud,
+        };
+        let repo_layer =
+            |l: &Layer| matches!(l, Layer::RepoShared | Layer::RepoLocal | Layer::Managed);
         let mut out = self.vars(context);
         for (key, value) in stored {
-            let pinned = map.get(key).is_some_and(|v| {
-                matches!(
-                    v.source.layer,
-                    Layer::RepoShared | Layer::RepoLocal | Layer::Managed
-                )
-            });
+            let pinned = map
+                .get(key)
+                .map(|v| &v.source.layer)
+                .or_else(|| unset.get(key))
+                .is_some_and(repo_layer);
             if !pinned {
                 out.insert(key.to_string(), value.to_string());
             }
@@ -273,6 +290,13 @@ impl ResolvedEnv {
         match context {
             EnvContext::Local => &mut self.local,
             EnvContext::Cloud => &mut self.cloud,
+        }
+    }
+
+    fn unset_map(&mut self, context: EnvContext) -> &mut BTreeMap<String, Layer> {
+        match context {
+            EnvContext::Local => &mut self.unset.local,
+            EnvContext::Cloud => &mut self.unset.cloud,
         }
     }
 }
@@ -682,6 +706,7 @@ fn apply_env_files(l: &EffectiveLayer, env: &mut ResolvedEnv) {
                 env_file: Some(path.display().to_string()),
             };
             for ctx in [EnvContext::Local, EnvContext::Cloud] {
+                env.unset_map(ctx).remove(&name);
                 env.map(ctx).insert(
                     name.clone(),
                     EnvVar {
@@ -739,7 +764,9 @@ fn apply_env_table(
         for ctx in contexts {
             if value == UNSET_VALUE {
                 env.map(*ctx).remove(name);
+                env.unset_map(*ctx).insert(name.to_string(), l.source.layer);
             } else {
+                env.unset_map(*ctx).remove(name);
                 env.map(*ctx).insert(
                     name.to_string(),
                     EnvVar {

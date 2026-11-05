@@ -5,28 +5,8 @@ import { Modal } from "../components/Dialogs";
 import { errorText } from "./api";
 import { CloseIcon, FolderIcon, PlusIcon } from "./icons";
 import type { Settings } from "./types";
+import { DOCUMENTED_VARS as DOCUMENTED } from "./documentedVars.ts";
 
-/** Conductor's `R$i`: variables its environment panel documents. */
-const DOCUMENTED: { name: string; description: string }[] = [
-  { name: "HTTP_PROXY", description: "Routes HTTP requests through a proxy." },
-  { name: "HTTPS_PROXY", description: "Routes HTTPS requests through a proxy." },
-  { name: "NO_PROXY", description: "Skips the proxy for matching hosts and domains." },
-  { name: "ANTHROPIC_API_KEY", description: "Authenticates Claude Code with the Anthropic API." },
-  { name: "ANTHROPIC_BASE_URL", description: "Overrides the Anthropic API base URL." },
-  { name: "ANTHROPIC_AUTH_TOKEN", description: "Sets the Anthropic auth token used by Claude Code." },
-  { name: "CLAUDE_CODE_USE_BEDROCK", description: "Switches Claude Code to Amazon Bedrock credentials." },
-  { name: "AWS_REGION", description: "Selects the AWS region for Bedrock requests." },
-  { name: "AWS_PROFILE", description: "Uses a named AWS profile for Bedrock credentials." },
-  { name: "CLAUDE_CODE_USE_VERTEX", description: "Switches Claude Code to Vertex AI credentials." },
-  { name: "ANTHROPIC_VERTEX_PROJECT_ID", description: "Selects the GCP project for Vertex AI requests." },
-  { name: "GOOGLE_APPLICATION_CREDENTIALS", description: "Points Claude Code at a Google service account file for Vertex AI." },
-  { name: "CODEX_API_KEY", description: "Authenticates Codex with an API key instead of the local CLI login." },
-  { name: "CURSOR_API_KEY", description: "Authenticates Cursor with a Cursor API key." },
-  { name: "OPENAI_BASE_URL", description: "Overrides the base URL used for Codex API requests." },
-  { name: "AI_GATEWAY_API_KEY", description: "Authenticates Codex with the Vercel AI Gateway." },
-  { name: "OPENAI_ORG", description: "Associates Codex API requests with an OpenAI organization." },
-  { name: "OPENAI_PROJECT", description: "Associates Codex API requests with an OpenAI project." },
-];
 
 export interface StoredVar {
   key: string;

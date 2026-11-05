@@ -1,6 +1,7 @@
 // Browser stand-in for Tauri 2's IPC (window.__TAURI_INTERNALS__) used to render
 // Conductor's frontend outside the app. Synthetic data only: no real tokens, and
-// every network call made through plugin:http fails or returns a fixture.
+// every network call made through plugin:http fails or returns a fixture
+// (HTTP_FIXTURES).
 //
 // Inputs (set by earlier scripts): window.__OC_SCENARIO__, window.__OC_SEED__,
 // window.__OC_FIXTURES__. Debug output: window.__OC_IPC_LOG__ (every call),
@@ -229,6 +230,24 @@
     get_or_create_local_storage_encryption_key: "c3ludGhldGljLWhhcm5lc3Mta2V5LW5vdC1yZWFs",
   };
 
+  // The only network answers the harness gives, keyed "METHOD url". Without
+  // an organization list Conductor's repository settings routes see
+  // organizationsError and redirect to /settings/user/general (fHi in
+  // renderApp); an empty list is a signed-in user with no organizations, so
+  // those routes render as they do for a local-only account.
+  // Roundhouse calls first trade the API token for an access token
+  // (/auth/exchange, schema {accessToken, accessTokenExpiresAt, refreshToken}).
+  const HTTP_FIXTURES = {
+    "POST https://api.conductor.build/auth/exchange": {
+      accessToken: "oc-harness-fake-access-token",
+      accessTokenExpiresAt: "2099-01-01T00:00:00.000Z",
+      refreshToken: "oc-harness-fake-refresh-token",
+    },
+    "GET https://api.conductor.build/organizations": { organizations: [] },
+  };
+  const httpResponses = new Map();
+  let nextHttpRid = 1;
+
   async function handle(cmd, args, options) {
     if (cmd.startsWith("plugin:sql|")) {
       await ready;
@@ -322,8 +341,37 @@
         return (String(args.path).match(/\.([^./]+)$/) || [])[1] ?? "";
       case "plugin:path|is_absolute":
         return String(args.path).startsWith("/");
-      case "plugin:http|fetch":
-        throw "network disabled in the screenshot harness";
+      case "plugin:http|fetch": {
+        const { method, url } = args.clientConfig || {};
+        const body = HTTP_FIXTURES[`${method} ${url}`];
+        if (body === undefined) {
+          console.warn(`[oc-mock] refused plugin:http ${method} ${url}`);
+          throw "network disabled in the screenshot harness";
+        }
+        const rid = nextHttpRid++;
+        httpResponses.set(rid, { url, bytes: Array.from(new TextEncoder().encode(JSON.stringify(body))) });
+        return rid;
+      }
+      case "plugin:http|fetch_send": {
+        const r = httpResponses.get(args.rid);
+        if (r === undefined) throw "unknown http request";
+        return { status: 200, statusText: "OK", url: r.url, headers: [["content-type", "application/json"]], rid: args.rid };
+      }
+      case "plugin:http|fetch_read_body": {
+        // Conductor's plugin-http client reads the body from a Channel: each
+        // message is the chunk plus one trailing byte, 1 meaning end of body.
+        const r = httpResponses.get(args.rid);
+        httpResponses.delete(args.rid);
+        const id = args.streamChannel && args.streamChannel.id;
+        if (r !== undefined && id !== undefined) {
+          runCallback(id, { message: [...r.bytes, 0], index: 0 });
+          runCallback(id, { message: [1], index: 1 });
+        }
+        return null;
+      }
+      case "plugin:http|fetch_cancel":
+        httpResponses.delete(args.rid);
+        return null;
       case "list_file_tree":
         // The right panel's All files tab: { name, path, is_directory } under
         // directoryPath, at most maxDepth levels deep (null: all).

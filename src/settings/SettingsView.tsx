@@ -17,7 +17,23 @@ import { RepoSettingsPage } from "./RepoSettingsPage";
 import { REPO_SECTIONS, REPO_SECTION_LABELS, sameLocation, type SettingsLocation } from "./routes";
 import type { Settings } from "./types";
 import { useSettings } from "./useSettings";
-import { AgentIcon, BackIcon, ChipIcon, DriveIcon, FlaskIcon, GitIcon, KeyboardIcon, KeyIcon, PaletteIcon, SlidersIcon, TerminalIcon, UserCircleIcon } from "./icons";
+import {
+  AgentIcon,
+  BackIcon,
+  ChipIcon,
+  DriveIcon,
+  FlaskIcon,
+  GitIcon,
+  KeyboardIcon,
+  KeyIcon,
+  PaletteIcon,
+  PointerClickIcon,
+  ScriptIcon,
+  SlidersHorizontalIcon,
+  SlidersIcon,
+  TerminalIcon,
+  UserCircleIcon,
+} from "./icons";
 import "./settings.css";
 
 interface Props {
@@ -79,7 +95,7 @@ export function SettingsView({ location, repos, onNavigate, onClose }: Props) {
       </nav>
       <section className="settings-page">
         <div className="settings-page-inner">
-          {!(location.scope === "user" && SELF_HEADED.includes(location.page)) && (
+          {!(location.scope === "user" ? SELF_HEADED.includes(location.page) : location.section === "environment") && (
             <header className="settings-header">
               <div>
                 <h1>{title}</h1>
@@ -168,6 +184,7 @@ function RepositoriesNav({
             <button
               className={`nav-item settings-repo ${open ? "open" : ""}`}
               aria-expanded={open}
+              aria-label={r.name}
               onClick={() => onNavigate({ scope: "repo", repoId: r.id, section: "environment" })}
             >
               <span className="settings-repo-initial" aria-hidden>
@@ -177,7 +194,7 @@ function RepositoriesNav({
             </button>
             {open && (
               <div className="settings-repo-sections">
-                {REPO_SECTIONS.map((s) => navButton({ scope: "repo", repoId: r.id, section: s }, REPO_SECTION_LABELS[s]))}
+                {REPO_SECTIONS.map((s) => navButton({ scope: "repo", repoId: r.id, section: s }, REPO_SECTION_LABELS[s], "nav-item", REPO_SECTION_ICONS[s]))}
               </div>
             )}
           </div>
@@ -213,6 +230,14 @@ const PAGE_HEADERS: Partial<Record<SettingsPage, { description: ReactNode }>> = 
       </>
     ),
   },
+};
+/** Conductor's repository tab icons: the Git and Environment pages' own, then file-code, mouse-pointer-click, sliders-horizontal. */
+const REPO_SECTION_ICONS: Record<(typeof REPO_SECTIONS)[number], ReactNode> = {
+  git: <GitIcon />,
+  environment: <KeyIcon />,
+  scripts: <ScriptIcon />,
+  actions: <PointerClickIcon />,
+  misc: <SlidersHorizontalIcon />,
 };
 const REPO_HEADERS: Partial<Record<(typeof REPO_SECTIONS)[number], { description: ReactNode }>> = {
   actions: { description: "Configure action-specific behavior and instructions for this repository." },

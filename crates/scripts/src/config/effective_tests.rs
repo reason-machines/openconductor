@@ -472,3 +472,35 @@ fn stored_variables_replace_user_file_values_but_not_repository_ones() {
     assert_eq!(vars["ONLY_STORED"], "s");
     assert_eq!(vars["UNTOUCHED"], "keep");
 }
+
+#[test]
+fn a_repository_unset_also_hides_a_stored_variable() {
+    let f = Fixture::new();
+    write(
+        &f.root.join(".conductor/settings.local.toml"),
+        "[environment_variables]\nSTORED = \"<none>\"\n",
+    );
+    let e = f.load();
+    assert_eq!(e.env.unset.local.get("STORED"), Some(&Layer::RepoLocal));
+    let vars = e
+        .env
+        .vars_with_stored(EnvContext::Local, [("STORED", "s"), ("OTHER", "o")]);
+    assert!(!vars.contains_key("STORED"), "{vars:?}");
+    assert_eq!(vars["OTHER"], "o");
+}
+
+#[test]
+fn a_later_layer_setting_a_variable_clears_its_unset() {
+    let f = Fixture::new();
+    write(
+        &f.root.join(".conductor/settings.toml"),
+        "[environment_variables]\nX = \"<none>\"\n",
+    );
+    write(
+        &f.root.join(".conductor/settings.local.toml"),
+        "[environment_variables]\nX = \"local\"\n",
+    );
+    let e = f.load();
+    assert!(e.env.unset.local.is_empty());
+    assert_eq!(e.env.local["X"].value, "local");
+}
