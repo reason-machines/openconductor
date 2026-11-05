@@ -1,0 +1,23 @@
+name: workspace-tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  workspace:
+    name: Workspace lifecycle tests (rustc --test)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build tests (deny warnings)
+        working-directory: src-tauri/src/workspace
+        run: rustc --edition 2021 -D warnings --cfg workspace_std_only --test mod.rs -o "$RUNNER_TEMP/workspace-tests"
+      - name: Run tests
+        # From the repo root so the busy-state test can compare with evidence/scripts/bin/git-busy-check.sh.
+        run: '"$RUNNER_TEMP/workspace-tests"'

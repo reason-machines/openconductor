@@ -54,4 +54,4 @@ Mutation check (done once, by hand): removing `clean -fd`, removing the fresh-st
 - **Spotlight** (watchexec loop that saves `cp-spotlight-<epoch>-<pid>` with `--force` and restores into the root checkout on every change, logging to `/tmp/…-spotlight-<pid>.log`): the checkpoint primitives it needs work (cross-worktree restore is tested), but the watcher itself is not implemented here.
 - **Concurrency**: two saves with the default id in the same second collide (`AlreadyExists`), as in the script. No locking beyond git's own ref locks.
 - **macOS**: tests ran on Linux (git 2.39.5). Not yet run on macOS; physical-path comparison uses `fs::canonicalize`, the script uses `pwd -P`.
-- **Lint**: `rustfmt` and `clippy` were not available on the build machine; code compiles warning-free with `-D warnings`.
+- **Lint**: `rustfmt --check`, `clippy -D warnings` and the tests run in CI (`.github/workflows/ci.yml`, Linux and macOS) on every PR, and in `run-tests.sh` locally when the tools are installed.
