@@ -52,6 +52,7 @@ fn req(scope: Scope) -> DiffRequest {
         scope,
         ignore_whitespace: false,
         path: None,
+        context_lines: None,
     }
 }
 
@@ -164,4 +165,143 @@ fn unknown_base_is_a_git_error() {
     )
     .unwrap_err();
     assert!(e.to_string().contains("merge-base"), "{e}");
+}
+
+#[test]
+fn context_lines_widens_hunks_to_the_whole_file() {
+    let r = repo();
+    let before: String = (1..=20).map(|i| format!("line {i}\n")).collect();
+    write(&r, "long.txt", &before);
+    commit(&r, "base");
+    write(&r, "long.txt", &before.replace("line 10\n", "line ten\n"));
+
+    let default = workspace_diff(&r, &req(Scope::Uncommitted)).unwrap();
+    let h = &default.files[0].hunks[0];
+    assert_eq!((h.new_start, h.new_lines), (7, 7));
+
+    let whole = workspace_diff(
+        &r,
+        &DiffRequest {
+            context_lines: Some(u32::MAX >> 1),
+            ..req(Scope::Uncommitted)
+        },
+    )
+    .unwrap();
+    let hunks = &whole.files[0].hunks;
+    assert_eq!(hunks.len(), 1);
+    assert_eq!((hunks[0].new_start, hunks[0].new_lines), (1, 20));
+}
+
+mod discard {
+    use super::super::discard::{discard_file, DiscardRequest};
+    use super::*;
+
+    fn discard(
+        r: &Path,
+        scope: Scope,
+        path: &str,
+        old_path: Option<&str>,
+    ) -> Result<(), DiffError> {
+        discard_file(
+            r,
+            &DiscardRequest {
+                scope,
+                path: path.into(),
+                old_path: old_path.map(Into::into),
+            },
+        )
+    }
+
+    fn read(r: &Path, path: &str) -> Option<String> {
+        fs::read_to_string(r.join(path)).ok()
+    }
+
+    /// Branch `feature` off `main` with one committed edit, one committed
+    /// new file, then uncommitted edits on top.
+    fn branch_repo() -> PathBuf {
+        let r = repo();
+        write(&r, "keep.txt", "base\n");
+        write(&r, "old name.txt", "same\n");
+        commit(&r, "base");
+        sh(&r, &["checkout", "-q", "-b", "feature"]);
+        write(&r, "keep.txt", "committed\n");
+        write(&r, "new.txt", "new\n");
+        commit(&r, "work");
+        write(&r, "keep.txt", "uncommitted\n");
+        r
+    }
+
+    fn paths(r: &Path, scope: Scope) -> Vec<String> {
+        list_changes(r, &req(scope))
+            .unwrap()
+            .into_iter()
+            .map(|f| f.path)
+            .collect()
+    }
+
+    #[test]
+    fn all_changes_restores_the_merge_base_version() {
+        let r = branch_repo();
+        sh(&r, &["add", "keep.txt"]);
+        discard(&r, all(), "keep.txt", None).unwrap();
+        assert_eq!(read(&r, "keep.txt").as_deref(), Some("base\n"));
+        assert_eq!(paths(&r, all()), vec!["new.txt"]);
+    }
+
+    #[test]
+    fn uncommitted_restores_head_and_keeps_committed_work() {
+        let r = branch_repo();
+        discard(&r, Scope::Uncommitted, "keep.txt", None).unwrap();
+        assert_eq!(read(&r, "keep.txt").as_deref(), Some("committed\n"));
+        assert!(paths(&r, Scope::Uncommitted).is_empty());
+    }
+
+    #[test]
+    fn files_missing_from_the_base_are_deleted_and_unstaged() {
+        let r = branch_repo();
+        write(&r, "dir/untracked.txt", "u\n");
+        write(&r, "staged.txt", "s\n");
+        sh(&r, &["add", "staged.txt"]);
+        discard(&r, all(), "new.txt", None).unwrap();
+        discard(&r, Scope::Uncommitted, "dir/untracked.txt", None).unwrap();
+        discard(&r, Scope::Uncommitted, "staged.txt", None).unwrap();
+        for p in ["new.txt", "dir/untracked.txt", "staged.txt"] {
+            assert_eq!(read(&r, p), None, "{p} should be gone");
+        }
+        // new.txt was committed on the branch, so against HEAD it now reads as deleted.
+        assert_eq!(paths(&r, all()), vec!["keep.txt"]);
+        assert_eq!(paths(&r, Scope::Uncommitted), vec!["keep.txt", "new.txt"]);
+    }
+
+    #[test]
+    fn a_rename_restores_the_old_path_and_drops_the_new_one() {
+        let r = branch_repo();
+        sh(&r, &["mv", "old name.txt", "new name.txt"]);
+        discard(&r, Scope::Uncommitted, "new name.txt", Some("old name.txt")).unwrap();
+        assert_eq!(read(&r, "old name.txt").as_deref(), Some("same\n"));
+        assert_eq!(read(&r, "new name.txt"), None);
+        assert_eq!(paths(&r, Scope::Uncommitted), vec!["keep.txt"]);
+    }
+
+    #[test]
+    fn unborn_branch_deletes_the_file() {
+        let r = repo();
+        write(&r, "x.txt", "x\n");
+        sh(&r, &["add", "x.txt"]);
+        discard(&r, Scope::Uncommitted, "x.txt", None).unwrap();
+        assert_eq!(read(&r, "x.txt"), None);
+        assert!(paths(&r, Scope::Uncommitted).is_empty());
+    }
+
+    #[test]
+    fn paths_outside_the_worktree_are_refused() {
+        let r = branch_repo();
+        for bad in ["../escape.txt", "/etc/hosts", "", "a/../../b"] {
+            let e = discard(&r, Scope::Uncommitted, bad, None).unwrap_err();
+            assert!(matches!(e, DiffError::InvalidPath(_)), "{bad}: {e}");
+        }
+        let e = discard(&r, Scope::Uncommitted, "keep.txt", Some("../x")).unwrap_err();
+        assert!(matches!(e, DiffError::InvalidPath(_)));
+        assert_eq!(read(&r, "keep.txt").as_deref(), Some("uncommitted\n"));
+    }
 }

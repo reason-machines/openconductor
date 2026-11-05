@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Main window capabilities. Plugin grants follow the plugin commands Conductor 0.87.6's frontend calls (evidence/packaging/conductor-plugin-commands.json).",
+  "description": "Main window capabilities. Plugin grants follow the plugin commands Conductor 0.87.6's frontend calls (evidence/packaging/conductor-plugin-commands.json); opener, fs, shell and http scopes are Conductor's resolved ACL as decoded from its binary (evidence/packaging/conductor-plugin-scopes.json).",
   "windows": [
     "main"
   ],
@@ -13,17 +13,253 @@
     "clipboard-manager:allow-write-html",
     "deep-link:allow-get-current",
     "notification:allow-is-permission-granted",
-    "opener:allow-open-url",
+    "opener:allow-default-urls",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "linear://*"
+        },
+        {
+          "url": "vscode://*"
+        },
+        {
+          "url": "slack://*"
+        },
+        {
+          "url": "figma://*"
+        },
+        {
+          "url": "notion://*"
+        },
+        {
+          "url": "raycast://*"
+        },
+        {
+          "url": "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+        }
+      ]
+    },
     "opener:allow-reveal-item-in-dir",
     {
       "identifier": "opener:allow-open-path",
       "allow": [
         {
-          "path": "$HOME/**"
+          "path": "**/*"
+        },
+        {
+          "path": "**/.conductor/**/*"
         }
       ]
     },
     "process:allow-exit",
-    "process:allow-restart"
+    "process:allow-restart",
+    "fs:allow-copy-file",
+    "fs:allow-exists",
+    "fs:allow-fstat",
+    "fs:allow-ftruncate",
+    "fs:allow-mkdir",
+    "fs:allow-open",
+    "fs:allow-read",
+    "fs:allow-read-dir",
+    "fs:allow-read-file",
+    "fs:allow-read-text-file",
+    "fs:allow-remove",
+    "fs:allow-rename",
+    "fs:allow-seek",
+    "fs:allow-stat",
+    "fs:allow-unwatch",
+    "fs:allow-watch",
+    "fs:allow-write",
+    "fs:allow-write-file",
+    "fs:allow-write-text-file",
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        {
+          "path": "**/*"
+        },
+        {
+          "path": "**/.*"
+        },
+        {
+          "path": "**/.*/**"
+        },
+        {
+          "path": "**/*/.git"
+        },
+        {
+          "path": "**/*/.conductor"
+        },
+        {
+          "path": "**/*/.context"
+        },
+        {
+          "path": "**/*/.context/**"
+        },
+        {
+          "path": "**/*/.github"
+        },
+        {
+          "path": "**/*/.github/**"
+        },
+        {
+          "path": "$HOME/.claude.json"
+        },
+        {
+          "path": "$HOME/.claude/*"
+        },
+        {
+          "path": "$HOME/.claude/**"
+        },
+        {
+          "path": "$HOME/.claude/commands"
+        },
+        {
+          "path": "$HOME/.claude/commands/*"
+        },
+        {
+          "path": "$HOME/.claude/commands/**/*"
+        },
+        {
+          "path": "$HOME/.claude/agents"
+        },
+        {
+          "path": "$HOME/.claude/agents/*"
+        },
+        {
+          "path": "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+        }
+      ]
+    },
+    {
+      "identifier": "http:allow-fetch",
+      "allow": [
+        {
+          "url": "https://app.conductor.build/*"
+        },
+        {
+          "url": "https://stage-app.conductor.build/*"
+        },
+        {
+          "url": "https://conductor.build/*"
+        },
+        {
+          "url": "https://app.chorus.sh/*"
+        },
+        {
+          "url": "http://localhost:*/*"
+        },
+        {
+          "url": "http://127.0.0.1:*/*"
+        },
+        {
+          "url": "https://api.github.com/*"
+        },
+        {
+          "url": "https://github.com/user-attachments/*"
+        },
+        {
+          "url": "https://private-user-images.githubusercontent.com/*"
+        },
+        {
+          "url": "https://api.linear.app/graphql"
+        },
+        {
+          "url": "https://platform.claude.com/v1/oauth/token"
+        },
+        {
+          "url": "https://api.conductor.build/*"
+        },
+        {
+          "url": "https://conductor-roundhouse.fly.dev/*"
+        },
+        {
+          "url": "https://stage-api.conductor.build/*"
+        },
+        {
+          "url": "https://statuspage.incident.io/*"
+        },
+        {
+          "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-public-staging/*"
+        },
+        {
+          "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-public-prod/*"
+        },
+        {
+          "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-user-staging/*"
+        },
+        {
+          "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-user-prod/*"
+        },
+        {
+          "url": "https://sb-*.vercel.run/*"
+        },
+        {
+          "url": "wss://sb-*.vercel.run/*"
+        },
+        {
+          "url": "https://*.ngrok-free.dev/*"
+        },
+        {
+          "url": "wss://*.ngrok-free.dev/*"
+        },
+        {
+          "url": "https://*.ngrok.dev/*"
+        },
+        {
+          "url": "wss://*.ngrok.dev/*"
+        }
+      ]
+    },
+    "http:allow-fetch-cancel",
+    "http:allow-fetch-read-body",
+    "http:allow-fetch-send",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "exec-zsh",
+          "cmd": "/bin/zsh",
+          "args": true
+        },
+        {
+          "name": "exec-bash",
+          "cmd": "/bin/bash",
+          "args": true
+        },
+        {
+          "name": "exec-open",
+          "cmd": "open",
+          "args": [
+            {
+              "validator": ".*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "exec-zsh",
+          "cmd": "/bin/zsh",
+          "args": true
+        },
+        {
+          "name": "exec-bash",
+          "cmd": "/bin/bash",
+          "args": true
+        }
+      ]
+    },
+    "shell:allow-kill",
+    "shell:allow-stdin-write",
+    "shell:allow-open",
+    "sql:allow-close",
+    "sql:allow-execute",
+    "sql:allow-load",
+    "sql:allow-select"
   ]
 }

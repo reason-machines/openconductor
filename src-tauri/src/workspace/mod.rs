@@ -65,6 +65,9 @@ pub enum WorkspaceError {
     BranchNotFound(String),
     /// `existing_branch` names a branch already checked out in another worktree.
     BranchCheckedOut { branch: String, path: PathBuf },
+    /// `existing_branch` with `pr_number`: the branch is neither local nor on
+    /// `origin`, and fetching `pull/<number>/head` failed too.
+    PullRequestNotFound { number: u64, branch: String, stderr: String },
     /// No repository is registered under this id.
     UnknownRepository(String),
     /// The workspace is still being created; see [`WorkspaceManager::mark_initializing`].
@@ -73,9 +76,10 @@ pub enum WorkspaceError {
     NotActive(String),
     /// `clone_repository`: no folder name can be derived from the URL.
     InvalidCloneUrl(String),
-    /// `clone_repository`: the clone destination is already taken.
-    DestinationExists(PathBuf),
-    /// `clone_repository`: `git clone` failed; git's stderr, trimmed.
+    /// `clone_repository`: the target folder is missing and is not the default
+    /// clone directory (which is created on demand).
+    TargetMissing(PathBuf),
+    /// `clone_repository`: `git clone` failed; see [`git::clone`] for the text.
     CloneFailed(String),
 }
 
@@ -94,12 +98,19 @@ impl fmt::Display for WorkspaceError {
             WorkspaceError::BranchCheckedOut { branch, path } => {
                 write!(f, "branch {branch} is already checked out at {}", path.display())
             }
+            WorkspaceError::PullRequestNotFound { number, branch, stderr } => {
+                write!(f, "branch not found locally or on origin, and pull request #{number} could not be fetched into {branch}")?;
+                if !stderr.is_empty() {
+                    write!(f, ": {stderr}")?;
+                }
+                Ok(())
+            }
             WorkspaceError::UnknownRepository(id) => write!(f, "unknown repository: {id}"),
             WorkspaceError::Initializing(n) => write!(f, "workspace {n} is still initializing; try again when it is ready"),
             WorkspaceError::NotActive(n) => write!(f, "workspace {n} is archived or missing"),
             WorkspaceError::InvalidCloneUrl(u) => write!(f, "cannot derive a repository name from {u:?}"),
-            WorkspaceError::DestinationExists(p) => write!(f, "destination already exists: {}", p.display()),
-            WorkspaceError::CloneFailed(stderr) => f.write_str(stderr),
+            WorkspaceError::TargetMissing(p) => write!(f, "Target directory does not exist: {}", p.display()),
+            WorkspaceError::CloneFailed(msg) => f.write_str(msg),
         }
     }
 }
@@ -151,6 +162,11 @@ pub struct CreateOptions {
     /// exists (and is not checked out elsewhere), otherwise a new local branch
     /// tracking `origin/<branch_name>`. `base_branch` is ignored.
     pub existing_branch: bool,
+    /// With `existing_branch`: the pull request whose head `branch_name` is.
+    /// When the branch is neither local nor on `origin` (a PR from a fork),
+    /// `pull/<pr_number>/head` is fetched into a new local `branch_name`
+    /// without upstream and checked out. Needs `fetch`.
+    pub pr_number: Option<u64>,
     /// Base branch; defaults to the repository's default branch.
     pub base_branch: Option<String>,
     /// Fetch `origin/<base>` first so the workspace starts from the latest
@@ -158,6 +174,9 @@ pub struct CreateOptions {
     pub fetch: bool,
     /// `file_include_globs` from repository settings.
     pub file_include_globs: Option<Vec<String>>,
+    /// Set `push.autoSetupRemote` in the new worktree's config
+    /// (`git.worktree_push_auto_setup_remote`, see [`git::configure_push_upstream`]).
+    pub push_auto_setup_remote: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -169,6 +188,8 @@ pub struct Created {
     /// Whether the `origin` fetch succeeded (false when skipped or offline).
     pub fetched: bool,
     pub copied_files: Vec<PathBuf>,
+    /// Set when `push_auto_setup_remote` was asked for but could not be applied.
+    pub upstream_warning: Option<String>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -291,10 +312,23 @@ impl WorkspaceManager {
                     let spec = format!("+refs/heads/{b}:refs/remotes/{remote_ref}");
                     fetched = git::git(&root, ["fetch", "--quiet", "origin", &spec]).is_ok();
                 }
-                if !git::ref_exists(&root, &remote_ref) {
+                if git::ref_exists(&root, &remote_ref) {
+                    (remote_ref, Checkout::Track)
+                } else if let (Some(n), true) = (opts.pr_number, opts.fetch && git::remote_exists(&root, "origin")) {
+                    // A fork's branch is not on origin; GitHub serves every PR's head as pull/<n>/head.
+                    let spec = format!("pull/{n}/head:refs/heads/{b}");
+                    match git::git(&root, ["fetch", "--quiet", "origin", &spec]) {
+                        Ok(_) => {}
+                        Err(WorkspaceError::Git { stderr, .. }) => {
+                            return Err(WorkspaceError::PullRequestNotFound { number: n, branch: b.to_string(), stderr });
+                        }
+                        Err(e) => return Err(e),
+                    }
+                    fetched = true;
+                    (b.to_string(), Checkout::Local)
+                } else {
                     return Err(WorkspaceError::BranchNotFound(b.to_string()));
                 }
-                (remote_ref, Checkout::Track)
             }
         } else {
             if let Some(b) = explicit_branch {
@@ -374,9 +408,14 @@ impl WorkspaceManager {
         let source = files_to_copy::resolve_source(&root, opts.file_include_globs.as_deref());
         let files = files_to_copy::files_to_copy(&root, &source)?;
         let copied_files = files_to_copy::copy_files(&root, &path, &files)?;
+        let upstream_warning = if opts.push_auto_setup_remote {
+            git::configure_push_upstream(&root, &path).map(str::to_string)
+        } else {
+            None
+        };
 
         let workspace = self.make(&root, &name, branch, WorkspaceState::Active, Some(base_commit.clone()));
-        Ok(Created { workspace, base_ref, base_commit, fetched, copied_files })
+        Ok(Created { workspace, base_ref, base_commit, fetched, copied_files, upstream_warning })
     }
 
     /// Active (and missing) workspaces from `git worktree list`, plus archived

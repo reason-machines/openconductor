@@ -53,6 +53,19 @@ pub enum ScriptEvent {
 
 pub type EventSink = Arc<dyn Fn(ScriptEvent) + Send + Sync>;
 
+/// Starts Spotlight in place of the default run script when auto-run after
+/// setup fires. The app sets it (Spotlight lives in the app crate). Given the
+/// workspace and the settings paths it resolves against, it returns `None`
+/// when the repository has `spotlight_testing` off, so the run script starts,
+/// and `Some(result)` when Spotlight took the run's place. The reference's
+/// auto-run (`IRt`) starts Spotlight with `isSpotlight` set to the setting and
+/// no run-script concurrency.
+pub type AutoRunSpotlight = Arc<
+    dyn Fn(&ScriptService, &WorkspaceRef, &SettingsPaths) -> Option<Result<(), String>>
+        + Send
+        + Sync,
+>;
+
 #[derive(Clone)]
 pub struct ScriptService {
     conductor_dir: PathBuf,
@@ -62,6 +75,7 @@ pub struct ScriptService {
     base_env: Arc<OnceLock<BTreeMap<String, String>>>,
     events: EventSink,
     counter: Arc<AtomicU64>,
+    auto_run_spotlight: Arc<OnceLock<AutoRunSpotlight>>,
 }
 
 impl ScriptService {
@@ -75,6 +89,7 @@ impl ScriptService {
             base_env: Arc::default(),
             events,
             counter: Arc::default(),
+            auto_run_spotlight: Arc::default(),
         }
     }
 
@@ -84,14 +99,24 @@ impl ScriptService {
         self
     }
 
-    pub fn config(&self, ws: &WorkspaceRef) -> Result<ResolvedScripts, String> {
-        config::load(&SettingsPaths {
+    /// Let `hook` start Spotlight in place of the run script after setup.
+    /// Only the first call takes effect.
+    pub fn set_auto_run_spotlight(&self, hook: AutoRunSpotlight) {
+        let _ = self.auto_run_spotlight.set(hook);
+    }
+
+    /// The settings files a workspace's settings resolve against.
+    pub fn settings_paths(&self, ws: &WorkspaceRef) -> SettingsPaths {
+        SettingsPaths {
             user_dir: self.conductor_dir.clone(),
             repo_root: ws.repo_root.clone(),
             workspace: Some(ws.workspace_path.clone()),
             shared_from: SharedSource::GitRef(format!("origin/{}", ws.default_branch)),
-        })
-        .map_err(|e| e.to_string())
+        }
+    }
+
+    pub fn config(&self, ws: &WorkspaceRef) -> Result<ResolvedScripts, String> {
+        config::load(&self.settings_paths(ws)).map_err(|e| e.to_string())
     }
 
     /// Start the setup script. `Ok(false)`: there is none, or it already runs.
@@ -111,7 +136,11 @@ impl ScriptService {
         let done = Box::new(move |outcome: SetupOutcome| {
             let state = outcome.state;
             (this.events)(ScriptEvent::SetupFinished(outcome));
-            let _ = this.runs.setup_finished(&ws2.workspace_id);
+            // A run queued while setup ran starts instead of the auto-run, as
+            // in the reference; a queued run that fails to start counts too.
+            if !matches!(this.runs.setup_finished(&ws2.workspace_id), Ok(false)) {
+                return;
+            }
             if let Ok(cfg) = this.config(&ws2) {
                 this.after_setup(&ws2, &cfg, state);
             }
@@ -122,15 +151,32 @@ impl ScriptService {
             .map_err(|e| e.to_string())
     }
 
+    /// Auto-run after setup. The reference requires a run script even when
+    /// Spotlight starts in its place.
     fn after_setup(&self, ws: &WorkspaceRef, cfg: &ResolvedScripts, state: SetupState) {
         let has_run = default_script(&cfg.run, Location::Local).is_some();
-        if should_auto_run(
+        if !should_auto_run(
             cfg.auto_run_after_setup,
             has_run,
             cfg.setup.is_some(),
             state,
         ) {
-            let _ = self.start_run(ws, None);
+            return;
+        }
+        let spotlight = self
+            .auto_run_spotlight
+            .get()
+            .and_then(|hook| hook(self, ws, &self.settings_paths(ws)));
+        match spotlight {
+            None => {
+                let _ = self.start_run(ws, None);
+            }
+            // The reference only logs a failed auto-run.
+            Some(Err(e)) => eprintln!(
+                "auto-run after setup: Spotlight did not start for workspace {}: {e}",
+                ws.workspace_id
+            ),
+            Some(Ok(())) => {}
         }
     }
 

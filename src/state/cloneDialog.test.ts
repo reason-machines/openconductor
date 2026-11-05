@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   CLONE_LOG_LIMIT,
   appendLog,
+  cloneTargetName,
   canClone,
   cloneButtonLabel,
   cloneErrorMessage,
@@ -93,4 +94,12 @@ test("clone errors map to repo-not-found, HTTPS auth, SSH key, or the raw messag
   assert.equal(map("Authentication failed", "https://github.com/acme/web"), "Couldn't clone repo: Authentication failed");
   // "not found" without exit code 128 is not mapped.
   assert.equal(map("host not found", https), "Couldn't clone repo: host not found");
+});
+
+test("cloneTargetName takes the last path segment without .git", () => {
+  assert.equal(cloneTargetName("https://github.com/acme/web.git"), "web");
+  assert.equal(cloneTargetName("git@github.com:acme/web.git"), "web");
+  assert.equal(cloneTargetName("git@github.com:web"), "web");
+  assert.equal(cloneTargetName("https://github.com/acme/web/"), "web");
+  assert.equal(cloneTargetName(".."), "repo");
 });

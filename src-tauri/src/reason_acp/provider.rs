@@ -17,7 +17,7 @@
 
 use super::cli::{AgentProcess, LaunchConfig};
 use super::rpc::{CallError, Incoming, Responder, RpcConnection, RpcError};
-use super::updates::{parse_update, AgentEvent, ReasonError, UpdateContext};
+use super::updates::{computer_is_cloud, parse_update, AgentEvent, ReasonError, UpdateContext};
 use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -63,6 +63,8 @@ struct Chat {
     /// Agent process generation the Session is open in.
     open_in: Option<u64>,
     turn: Option<Turn>,
+    /// Reason said the Session runs on Reason cloud (see `computer_is_cloud`).
+    on_cloud: bool,
 }
 
 #[derive(Default)]
@@ -345,10 +347,14 @@ fn updates_handler(shared: Arc<Mutex<Shared>>, sink: Sink) -> super::rpc::Handle
                 let chat_id = s.by_session.get(sid).cloned();
                 chat_id.and_then(|id| {
                     let c = s.chats.get_mut(&id)?;
+                    if let Some(cloud) = computer_is_cloud(&params["update"]) {
+                        c.on_cloud = cloud;
+                    }
                     let ctx = UpdateContext {
                         cwd: &c.cwd,
                         turn_running: c.turn.is_some(),
                         in_text: c.turn.as_ref().is_some_and(|t| t.in_text),
+                        cloud_session: c.session_id.as_deref().filter(|_| c.on_cloud),
                     };
                     let ev = parse_update(&params["update"], ctx)?;
                     if let Some(t) = &mut c.turn {

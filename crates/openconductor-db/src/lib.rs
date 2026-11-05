@@ -23,8 +23,10 @@ use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePoolOptions};
 /// Connection pool returned by [`open`]; re-exported so callers need no `sqlx` dependency.
 pub use sqlx::sqlite::SqlitePool;
 
+pub mod app_settings;
 pub mod diff_comments;
 pub mod repos;
+pub mod terminal_sessions;
 pub mod workspaces;
 
 /// Every schema migration, embedded from `migrations/`.

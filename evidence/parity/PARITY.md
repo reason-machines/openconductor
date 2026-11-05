@@ -12,6 +12,12 @@ Scoring: matched = 1, partial/declared = 0.5, missing = 0, equal weight per item
 | packaging | 78 | 42 | 0 | 36 | **53.8%** |
 | all four | 419 | 102 | 168 | 149 | **44.4%** |
 
+Other areas, scored by their own checkers (not counted in "all four"):
+
+| Area | Items | Matched | Partial | Missing | Parity | Target | Report |
+|---|---|---|---|---|---|---|---|
+| Reason agent over ACP | 11 | 11 | 0 | 0 | **100.0%** | `59ac0ba1f830` | [`reason-acp/PARITY.md`](reason-acp/PARITY.md) (`tools/parity_reason_acp.py`) |
+
 ## Settings
 
 | Group | Items | Matched | Partial | Parity |

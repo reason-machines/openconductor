@@ -1,6 +1,7 @@
-// parity:diff.file-render:ui parity:diff.split-unified:ui parity:diff.viewed:ui parity:diff.virtualized:ui
+// parity:diff.file-render:ui parity:diff.split-unified:ui parity:diff.viewed:ui
 import type { ReactNode } from "react";
-import { splitRows, unifiedRows, type Span } from "./rows.ts";
+import { RevertIcon } from "./DiscardDialog";
+import { fileLines, gapBefore, splitRows, unifiedRows, type Span } from "./rows.ts";
 import type { CommentSide } from "./comments.ts";
 import type { DiffLayout, DiffLine, FileDiff } from "./types.ts";
 
@@ -19,6 +20,10 @@ interface Props {
   onLineClick?: (anchor: LineAnchor) => void;
   /** Rows rendered under a line (comment threads, the comment composer). */
   annotations?: (anchor: LineAnchor) => ReactNode;
+  /** Show the hidden unmodified lines (loads this file with full context). */
+  onExpand?: () => void;
+  /** Ask to discard this file's changes (opens the confirmation). */
+  onDiscard?: () => void;
 }
 
 function Text({ text, span, kind }: { text: string; span?: Span; kind: DiffLine["kind"] }) {
@@ -35,8 +40,14 @@ function Text({ text, span, kind }: { text: string; span?: Span; kind: DiffLine[
 const sign = (l: DiffLine) => (l.kind === "addition" ? "+" : l.kind === "deletion" ? "-" : " ");
 const anchorOf = (l: DiffLine): LineAnchor => (l.kind === "deletion" ? { side: "old", line: l.old_line! } : { side: "new", line: l.new_line! });
 
-export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleViewed, onLineClick, annotations }: Props) {
-  const cols = layout === "split" ? 6 : 4;
+const COLUMNS: Record<DiffLayout, string[]> = {
+  unified: ["num", "num", "sign", "code"],
+  split: ["num", "sign", "code", "num", "sign", "code"],
+  file: ["num", "code"],
+};
+
+export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleViewed, onLineClick, annotations, onExpand, onDiscard }: Props) {
+  const cols = COLUMNS[layout].length;
   // Either number of a row comments on that row's anchor (a context line anchors on the new side),
   // so the composer opens where its annotation row is rendered.
   const num = (n: number | null, line: DiffLine | null) => (
@@ -59,21 +70,40 @@ export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleV
     body = <div className="oc-file-note">{ignoreWhitespace ? "Only whitespace changed in this file." : "No content changes in this file."}</div>;
   else
     body = (
-      <table className={`oc-code ${layout}`}>
-        <colgroup>
-          {(layout === "split" ? ["num", "sign", "code", "num", "sign", "code"] : ["num", "num", "sign", "code"]).map((c, i) => (
-            <col key={i} className={c} />
-          ))}
-        </colgroup>
-        <tbody>
-          {file.hunks.map((h, hi) => [
-            <tr className="hunk" key={`h${hi}`}>
-              <td colSpan={cols}>
-                @@ -{h.old_start},{h.old_lines} +{h.new_start},{h.new_lines} @@ {h.section}
-              </td>
-            </tr>,
-            ...(layout === "unified"
-              ? unifiedRows(h).flatMap((r, ri) => [
+      <div className="oc-code-scroll">
+        <table className={`oc-code ${layout}`}>
+          <colgroup>
+            {COLUMNS[layout].map((c, i) => (
+              <col key={i} className={c} />
+            ))}
+          </colgroup>
+          <tbody>
+            {file.hunks.map((h, hi) => {
+              // Unchanged lines git left out above this hunk, instead of a raw @@ header.
+              const hidden = gapBefore(file.hunks, hi);
+              const gap = hidden > 0 && (
+                <tr className="gap" key={`g${hi}`} title={`@@ -${h.old_start},${h.old_lines} +${h.new_start},${h.new_lines} @@ ${h.section}`.trim()}>
+                  <td colSpan={cols}>
+                    <button className="oc-gap" onClick={onExpand} disabled={!onExpand} aria-label={`Show ${hidden} unmodified lines`}>
+                      <span className="chev" aria-hidden>
+                        ⌃
+                      </span>
+                      {hidden} unmodified {hidden === 1 ? "line" : "lines"}
+                    </button>
+                  </td>
+                </tr>
+              );
+              let rows: ReactNode[];
+              if (layout === "file")
+                rows = fileLines(file, h).flatMap((l, li) => [
+                  <tr className="plain" key={`${hi}-${li}`}>
+                    {num(file.status === "deleted" ? l.old_line : l.new_line, l)}
+                    <td className="code">{l.text}</td>
+                  </tr>,
+                  note(anchorOf(l), `${hi}-${li}-n`),
+                ]);
+              else if (layout === "unified")
+                rows = unifiedRows(h).flatMap((r, ri) => [
                   <tr className={r.line.kind} key={`${hi}-${ri}`}>
                     {num(r.line.old_line, r.line)}
                     {num(r.line.new_line, r.line)}
@@ -83,8 +113,9 @@ export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleV
                     </td>
                   </tr>,
                   note(anchorOf(r.line), `${hi}-${ri}-n`),
-                ])
-              : splitRows(h).flatMap((r, ri) => [
+                ]);
+              else
+                rows = splitRows(h).flatMap((r, ri) => [
                   <tr key={`${hi}-${ri}`}>
                     {num(r.left?.old_line ?? null, r.left ?? null)}
                     <td className="sign">{r.left ? sign(r.left) : ""}</td>
@@ -95,10 +126,12 @@ export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleV
                   </tr>,
                   r.left && r.left.kind === "deletion" ? note(anchorOf(r.left), `${hi}-${ri}-l`) : null,
                   note(r.right ? anchorOf(r.right) : null, `${hi}-${ri}-r`),
-                ])),
-          ])}
-        </tbody>
-      </table>
+                ]);
+              return [gap, ...rows];
+            })}
+          </tbody>
+        </table>
+      </div>
     );
 
   return (
@@ -113,6 +146,11 @@ export function FileDiffView({ file, layout, ignoreWhitespace, viewed, onToggleV
           <span className="a">+{file.additions}</span>
           <span className="d">-{file.deletions}</span>
         </span>
+        {onDiscard && (
+          <button className="icon-btn oc-discard" onClick={onDiscard} title="Discard changes" aria-label={`Discard changes to ${file.path}`}>
+            <RevertIcon />
+          </button>
+        )}
         <label title="Mark this file as viewed">
           <input type="checkbox" checked={viewed} onChange={onToggleViewed} /> Viewed
         </label>

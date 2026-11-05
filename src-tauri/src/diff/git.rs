@@ -31,6 +31,10 @@ pub struct DiffRequest {
     /// Limit to one file (the file being opened); `None` loads every file.
     #[serde(default)]
     pub path: Option<String>,
+    /// Unchanged lines around each change (`-U<n>`); `None` keeps git's default of 3.
+    /// The entire-file view and "expand unmodified lines" ask for the whole file.
+    #[serde(default)]
+    pub context_lines: Option<u32>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq, Eq)]
@@ -50,6 +54,8 @@ pub enum DiffError {
     },
     Parse(ParseError),
     Io(std::io::Error),
+    /// A path that is absolute or leaves the worktree (`..`).
+    InvalidPath(String),
 }
 
 impl fmt::Display for DiffError {
@@ -61,20 +67,30 @@ impl fmt::Display for DiffError {
             DiffError::Git { args, stderr } => write!(f, "git {args} failed: {}", stderr.trim()),
             DiffError::Parse(e) => write!(f, "could not parse git diff: {e}"),
             DiffError::Io(e) => write!(f, "could not run git: {e}"),
+            DiffError::InvalidPath(p) => write!(f, "not a path inside the worktree: {p}"),
         }
     }
 }
 
 impl std::error::Error for DiffError {}
 
-fn git(repo: &Path, args: &[&str], ok_codes: &[i32]) -> Result<String, DiffError> {
-    let out = Command::new("git")
+fn run(repo: &Path, args: &[&str]) -> Result<std::process::Output, DiffError> {
+    Command::new("git")
         .arg("-C")
         .arg(repo)
         .args(["-c", "core.quotePath=false"])
         .args(args)
         .output()
-        .map_err(DiffError::Io)?;
+        .map_err(DiffError::Io)
+}
+
+/// Exit code of a git command whose output is not needed (`cat-file -e`).
+pub(super) fn git_exit_code(repo: &Path, args: &[&str]) -> Result<i32, DiffError> {
+    Ok(run(repo, args)?.status.code().unwrap_or(-1))
+}
+
+pub(super) fn git(repo: &Path, args: &[&str], ok_codes: &[i32]) -> Result<String, DiffError> {
+    let out = run(repo, args)?;
     if !ok_codes.contains(&out.status.code().unwrap_or(-1)) {
         return Err(DiffError::Git {
             args: args.join(" "),
@@ -104,7 +120,7 @@ fn operation_in_progress(repo: &Path) -> Result<Option<&'static str>, DiffError>
     Ok(None)
 }
 
-fn base_commit(repo: &Path, scope: &Scope) -> Result<String, DiffError> {
+pub(super) fn base_commit(repo: &Path, scope: &Scope) -> Result<String, DiffError> {
     let head = git(repo, &["rev-parse", "--verify", "--quiet", "HEAD"], &[0, 1])?;
     if head.trim().is_empty() {
         return Ok(EMPTY_TREE.to_string());
@@ -136,10 +152,12 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
     } else {
         None
     };
+    let context = req.context_lines.map(|n| format!("-U{n}"));
 
     let mut args: Vec<&str> = vec!["diff"];
     args.extend(DIFF_FLAGS);
     args.extend(ws);
+    args.extend(context.as_deref());
     args.push(&base);
     args.push("--");
     args.extend(req.path.as_deref());
@@ -151,6 +169,7 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
         let mut args: Vec<&str> = vec!["diff", "--no-index"];
         args.extend(DIFF_FLAGS);
         args.extend(ws);
+        args.extend(context.as_deref());
         args.extend(["--", "/dev/null", path]);
         // --no-index exits 1 when the files differ, which is always the case here.
         for mut f in parse_unified(&git(repo, &args, &[0, 1])?).map_err(DiffError::Parse)? {

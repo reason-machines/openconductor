@@ -1,6 +1,6 @@
 //! Finding the CLI, the argument list and a real spawn of a fake `reason`.
 
-use super::cli::{find_reason_cli, AgentProcess, LaunchConfig, LaunchError};
+use super::cli::{find_reason_cli, refused_env, AgentProcess, LaunchConfig, LaunchError};
 use super::test_exe::write_executable;
 use std::fs;
 use std::io::{BufRead, BufReader};
@@ -109,6 +109,20 @@ read _"#,
 }
 
 #[test]
+fn dyld_variables_are_not_passed_to_reason() {
+    let vars = [
+        ("DYLD_FALLBACK_LIBRARY_PATH", "/target/debug/deps"),
+        ("DYLD_LIBRARY_PATH", "/x"),
+        ("LD_LIBRARY_PATH", "/y"),
+        ("PATH", "/usr/bin"),
+        ("HOME", "/Users/me"),
+    ]
+    .map(|(k, v)| (k.into(), v.into()));
+    let refused = refused_env(vars.into_iter());
+    assert_eq!(refused, ["DYLD_FALLBACK_LIBRARY_PATH", "DYLD_LIBRARY_PATH"]);
+}
+
+#[test]
 fn path_gets_the_cli_folder_for_a_bare_gui_path() {
     let root = temp_dir("path");
     let cli = script(&root.join("bin"), r#"printf '%s\n' "$PATH""#, 0o755);
@@ -122,19 +136,34 @@ fn path_gets_the_cli_folder_for_a_bare_gui_path() {
 }
 
 /// Against a real CLI: `REASON_CLI=$(command -v reason) run-rust-tests.sh`.
-/// `initialize` needs no sign-in; everything after it does.
+/// `initialize` needs no sign-in; everything after it does. CI installs the
+/// CLI and sets `REASON_ACP_REQUIRE_LIVE=1`, so a missing CLI fails there
+/// instead of skipping.
 #[test]
 fn live_cli_answers_initialize() {
     let Some(cli) = std::env::var_os("REASON_CLI") else {
+        assert!(
+            std::env::var_os("REASON_ACP_REQUIRE_LIVE").is_none(),
+            "REASON_ACP_REQUIRE_LIVE is set but REASON_CLI is not"
+        );
         return;
     };
     let cfg = LaunchConfig::new(PathBuf::from(cli)).unwrap();
-    let (_process, stdin, stdout) = AgentProcess::spawn(&cfg, &std::env::temp_dir()).unwrap();
+    let (mut process, stdin, stdout) = AgentProcess::spawn(&cfg, &std::env::temp_dir()).unwrap();
     let conn = super::rpc::RpcConnection::start(stdout, stdin, Box::new(|_, _| {}));
     let params = serde_json::json!({"protocolVersion": 1, "clientCapabilities": {}});
-    let init = conn
-        .call("initialize", params, Some(Duration::from_secs(30)))
-        .unwrap();
+    let init = match conn.call("initialize", params, Some(Duration::from_secs(30))) {
+        Ok(v) => v,
+        Err(e) => {
+            // Give the stderr thread a moment to drain what the CLI logged.
+            std::thread::sleep(Duration::from_millis(500));
+            panic!(
+                "initialize failed: {e:?}; running: {}; stderr:\n{}",
+                process.is_running(),
+                process.stderr_tail().join("\n")
+            );
+        }
+    };
     assert_eq!(init["agentInfo"]["name"], "reason");
     let caps = &init["agentCapabilities"];
     assert_eq!(caps["loadSession"], true);

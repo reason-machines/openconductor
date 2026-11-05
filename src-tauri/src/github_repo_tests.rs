@@ -202,3 +202,53 @@ fn existing_upstream_blocks_moving_origin() {
     assert_eq!(origin, "https://gitlab.com/acme/demo.git");
     fs::remove_dir_all(root).unwrap();
 }
+
+/// A `gh` that runs `body` (a shell snippet) for every call.
+fn scripted_gh(name: &str, body: &str) -> (GitHub, PathBuf) {
+    let dir = std::env::temp_dir().join(format!("oc-ghrepo-{name}-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&dir);
+    fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("gh");
+    write_executable(&path, &format!("#!/bin/sh\n{body}\n"), 0o755);
+    let gh = GitHub {
+        gh: path.display().to_string(),
+    };
+    (gh, dir)
+}
+
+#[test]
+fn recent_repos_parse_the_api_shape_and_report_errors() {
+    let json = r#"[{"id":7,"full_name":"acme/web","description":null,"clone_url":"https://github.com/acme/web.git","ssh_url":"git@github.com:acme/web.git","owner":{"avatar_url":"https://a/1","login":"acme"},"private":true}]"#;
+    let body = format!("[ \"$1 $2\" = \"api {RECENT_REPOS_PATH}\" ] || exit 9\necho '{json}'");
+    let (gh, dir) = scripted_gh("recent", &body);
+    let repos = gh.recent_repos().unwrap();
+    assert_eq!(repos.len(), 1);
+    assert_eq!(repos[0].full_name, "acme/web");
+    assert_eq!(repos[0].description, None);
+    assert_eq!(repos[0].owner.avatar_url, "https://a/1");
+    fs::remove_dir_all(dir).unwrap();
+
+    let (gh, dir) = scripted_gh("recent-err", "echo 'HTTP 401: Bad credentials' >&2; exit 1");
+    assert_eq!(
+        gh.recent_repos(),
+        Err("GitHub API error: HTTP 401: Bad credentials".into())
+    );
+    fs::remove_dir_all(dir).unwrap();
+}
+
+#[test]
+fn git_protocol_is_ssh_only_when_gh_says_so() {
+    let (gh, dir) = scripted_gh(
+        "proto-ssh",
+        "[ \"$*\" = \"config get git_protocol\" ] && echo ssh",
+    );
+    assert_eq!(gh.git_protocol(), "ssh");
+    fs::remove_dir_all(dir).unwrap();
+    let (gh, dir) = scripted_gh("proto-https", "echo https");
+    assert_eq!(gh.git_protocol(), "https");
+    fs::remove_dir_all(dir).unwrap();
+    let missing = GitHub {
+        gh: "/nonexistent/gh".into(),
+    };
+    assert_eq!(missing.git_protocol(), "https");
+}

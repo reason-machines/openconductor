@@ -8,6 +8,7 @@ import {
   branchToFrom,
   dedupeBranches,
   fromLabel,
+  listErrorState,
   matches,
   nextTab,
   parseRef,
@@ -21,13 +22,15 @@ import { listIssues, listPullRequests } from "../workspace/api";
 interface Props {
   value: CreateFrom | null;
   branches: SourceState<BranchItem>;
+  /** Local checkout of the chosen repository; PRs and issues are listed through it. */
+  repoPath: string | null;
   disabled?: boolean;
   error?: string;
   onChange: (from: CreateFrom | null) => void;
 }
 
 /** "Create from..." button and its PR / branch / issue picker. */
-export function CreateFromPicker({ value, branches, disabled, error, onChange }: Props) {
+export function CreateFromPicker({ value, branches, repoPath, disabled, error, onChange }: Props) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<FromTab>("pr");
   const [query, setQuery] = useState("");
@@ -38,9 +41,15 @@ export function CreateFromPicker({ value, branches, disabled, error, onChange }:
 
   useEffect(() => {
     if (!open) return;
-    listPullRequests().then(setPrs, (e) => setPrs({ status: "error", message: String(e) }));
-    listIssues().then(setIssues, (e) => setIssues({ status: "error", message: String(e) }));
-  }, [open]);
+    let live = true;
+    setPrs({ status: "loading" });
+    setIssues({ status: "loading" });
+    listPullRequests(repoPath).then((s) => live && setPrs(s), (e) => live && setPrs(listErrorState(e)));
+    listIssues(repoPath).then((s) => live && setIssues(s), (e) => live && setIssues(listErrorState(e)));
+    return () => {
+      live = false;
+    };
+  }, [open, repoPath]);
 
   const source: SourceState<CreateFrom> =
     tab === "pr" ? prs : tab === "issue" ? issues : branches.status === "ready" ? { status: "ready", items: dedupeBranches(branches.items).map(branchToFrom) } : branches;

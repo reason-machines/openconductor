@@ -1,0 +1,71 @@
+{
+  "item": "acp.signed-in",
+  "result": "pass",
+  "ranOn": "sven m5 max (macOS, arm64)",
+  "reasonCli": {
+    "path": "/Users/sven/.local/bin/reason",
+    "version": "0.2.683",
+    "workspace": "reason-tests (Reason Tests)"
+  },
+  "command": "/Users/sven/.local/bin/reason --workspace reason-tests acp -y",
+  "providerPath": "OpenConductor src-tauri/src/reason_acp at 572b886 (before #242 changed cloud path mapping in updates.rs), built as a standalone crate like tools/reason-acp/run-rust-tests.sh and driven by a small binary through LaunchConfig::workspace -> ReasonProvider open_chat/prompt/cancel/list_sessions; no --model flag, so the Workspace default model",
+  "chatCwd": "/Users/sven/oc-acp-signed-in-406cd7ca-chat",
+  "sessionId": "9d64f0cf-08f5-41ca-8ddd-0e5d1a13c4ca",
+  "sessionTitle": "Run pwd locally and on Reason cloud",
+  "pwd": {
+    "local": {
+      "path": "/Users/sven/oc-acp-signed-in-406cd7ca-chat",
+      "source": "tool row 'bash: pwd' (kind execute, status completed) output in turn 1",
+      "homeFolder": true
+    },
+    "cloud": {
+      "path": "/home/runner/.reason/workspace/sessions/1bc6d51d-b794-4b1a-8897-26b1cda680a2/repo",
+      "source": "reply of child Session 1bc6d51d-b794-4b1a-8897-26b1cda680a2 ('pwd on cloud', outcome success) that the agent started with sessions_create on a Reason cloud computer; relayed in the 'codemode: sessions_create, agents_wait' tool row and a report event in turn 1",
+      "childSessionId": "1bc6d51d-b794-4b1a-8897-26b1cda680a2",
+      "endsInRepo": true
+    }
+  },
+  "turns": [
+    {
+      "n": 1,
+      "prompt": "run pwd on this computer and on a Reason cloud computer",
+      "started": "2026-11-05T13:59:00Z",
+      "ended": "2026-11-05T13:59:33Z",
+      "outcome": "completed",
+      "reply": "I ran `pwd` on both computers:\n\n- **This Mac (sven m5 max):** `/Users/sven/oc-acp-signed-in-406cd7ca-chat`\n- **Reason cloud computer (Cloud computer 1), through a short child Session:** `/home/runner/.reason/workspace/sessions/1bc6d51d-b794-4b1a-8897-26b1cda680a2/repo`"
+    },
+    {
+      "n": 2,
+      "kind": "follow-up in the same Session",
+      "prompt": "Thanks. Repeat the two paths, one per line, labelled local and cloud. Then run `sleep 120` on this computer.",
+      "started": "2026-11-05T13:59:33Z",
+      "ended": "2026-11-05T13:59:47Z",
+      "outcome": "cancelled",
+      "reply": "local: /Users/sven/oc-acp-signed-in-406cd7ca-chat\ncloud: /home/runner/.reason/workspace/sessions/1bc6d51d-b794-4b1a-8897-26b1cda680a2/repo\n\nRunning `sleep 120` on this Mac now.",
+      "stop": {
+        "pressedAt": "2026-11-05T13:59:45Z",
+        "trigger": "follow-up started its sleep command",
+        "method": "ReasonProvider::cancel -> session/cancel",
+        "toolRow": "'bash: sleep 120; echo \"exit $?\"' went running -> failed with '[Stopped by the user before this call finished. No output was captured before the stop.]'",
+        "finalText": "Stopped. Send a message to continue.",
+        "turnEnd": "cancelled"
+      }
+    }
+  ],
+  "checks": {
+    "signedInWorkspace": true,
+    "homeFolderPathLocally": true,
+    "cloudRepoPath": true,
+    "followUpSameSession": true,
+    "stopEndsTurnCancelled": true
+  },
+  "limits": [
+    "The cloud pwd is the child Session's reported reply relayed to this Session, not a tool row of this Session itself.",
+    "Run driven through the provider module directly, not through the desktop app's chat panel UI."
+  ],
+  "supersedes": {
+    "pr": "#242",
+    "commit": "e15ac90",
+    "why": "that run used the CLI's default Workspace (no --workspace, so Reason Engineering) and a write/read prompt with no cloud pwd; this run uses --workspace reason-tests and the acp.signed-in prompt (pwd here and on a Reason cloud computer, a follow-up, then Stop)"
+  }
+}
