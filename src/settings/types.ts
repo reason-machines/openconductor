@@ -42,7 +42,15 @@ export interface Settings {
   $schema: string;
   general: { theme: Theme; send_native_notification: boolean; sound_type: SoundType; [extra: string]: unknown };
   /** Conductor's Appearance keys; zoom is a fraction (1 = 100%). */
-  appearance: { zoom_level_v2: number; low_contrast_dark_mode: boolean; mono_font?: string | null; [extra: string]: unknown };
+  appearance: {
+    zoom_level_v2: number;
+    low_contrast_dark_mode: boolean;
+    mono_font?: string | null;
+    terminal_font_family?: string | null;
+    /** Whole px, 10 to 20; 12 by default. */
+    terminal_font_size?: number;
+    [extra: string]: unknown;
+  };
   git: {
     branch_prefix_type: BranchPrefixType;
     branch_prefix_custom?: string | null;
@@ -83,7 +91,7 @@ export interface ProviderStatus {
 export const DEFAULT_SETTINGS: Settings = {
   $schema: "https://openconductor.dev/schemas/settings.schema.json",
   general: { theme: "system", send_native_notification: true, sound_type: "default" },
-  appearance: { zoom_level_v2: 1, low_contrast_dark_mode: false },
+  appearance: { zoom_level_v2: 1, low_contrast_dark_mode: false, terminal_font_size: 12 },
   git: {
     branch_prefix_type: "github_username",
     delete_branch_on_archive: false,

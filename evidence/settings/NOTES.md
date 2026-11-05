@@ -203,4 +203,6 @@ zoom anywhere in the app. Divergences and gaps:
   string (quotes, `\`, `;`, braces, `<>`) are refused, in the UI and in `validate`.
 - The App zoom help text does not name the shortcuts, since overrides can change them.
 - Not built: Colored sidebar diffs, Code ligatures, Accessible colors, Code theme,
-  Markdown Style, Terminal font. The terminal keeps its own font.
+  Markdown Style.
+- Terminal font (`terminal_font_family`, `terminal_font_size`) is built by the terminal
+  area; see `evidence/terminal/NOTES.md`.
