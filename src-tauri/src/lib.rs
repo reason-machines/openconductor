@@ -19,6 +19,7 @@
 pub mod agent;
 pub mod bundled_bin;
 pub mod checkpoint;
+mod checkpoint_commands;
 pub mod create_project;
 pub mod db;
 pub mod persistence;
@@ -266,6 +267,10 @@ pub fn run() {
             persistence_commands::db_archive_workspace,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
+            checkpoint_commands::checkpoint_save,
+            checkpoint_commands::checkpoint_exists,
+            checkpoint_commands::checkpoint_restore,
+            checkpoint_commands::checkpoint_changed_count,
             diff::comment_commands::diff_comments_list,
             diff::comment_commands::diff_comment_add,
             diff::comment_commands::diff_comment_edit,
