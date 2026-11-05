@@ -53,9 +53,13 @@ Both match the asset manifest's decoded sizes. Locations below are byte offsets 
 | Approve: `gh api repos/<owner>/<repo>/pulls/<n>/reviews -f event=APPROVE -f commit_id=<head>`, pinned to the head the viewer saw | `Gh::approve` | `approve_pins_the_reviewed_commit` |
 | The allowed merge method is cached per repository; a failed lookup is not cached | `MergeMethodCache` | `merge_method_cache_keeps_successes_only` |
 | A failed `gh` call surfaces its stderr | `GhError::Failed` | `failures_carry_gh_stderr` |
+| One GraphQL call per batch of workspaces (at most 5) with aliases `pr<i>ByBranch` (`pullRequests(first: 5, headRefName, states: [OPEN, MERGED], orderBy CREATED_AT DESC)`, skipped when a PR number is known) and `pr<i>ByNumber` (`pullRequest(number)`, included when known), plus `viewerPermission` | `fetch::build_query`, `fetch_prs` | `query_has_aliases_and_skip_include_per_workspace`, `requests_are_batched_and_errors_surface` |
+| By branch: the newest OPEN PR by created then updated time (merged PRs are ignored); by number: that PR, merged included, unless the workspace tracks a different upstream branch than the PR's head | `fetch::select` | `by_branch_picks_newest_open_and_ignores_merged`, `pinned_number_is_followed_including_merged_unless_upstream_differs` |
+| A closed PR counts (workspace canceled) only when its head is the workspace's local branch and `git branch --show-current` still shows the workspace branch; otherwise no PR; unknown when the branch can't be read | `fetch::resolve` | `closed_pr_counts_only_while_its_branch_is_checked_out` |
 
 ## Deliberate differences
 
+- The batch size is fixed at 5; the reference halves it adaptively when GraphQL cost or rate limits bite. Deployments and stack fields are not selected yet.
 - `gh` is run as an argv list, never through a shell string, so titles, bodies and branch names need no escaping. GraphQL string variables use `-f` (raw) so `gh` never turns a branch or owner like `123`, `true` or `@file` into a number, boolean or file read; only the `{owner}` / `{repo}` placeholders use `-F`, the only form `gh` expands. Allowed merge methods are parsed from JSON by us instead of `--jq`.
 - The create-PR message is our own wording. A draft request adds `--draft` to the `gh pr create` line; the reference only says a draft was requested. The reference's "keep the workspace while a stack still has open PRs" exception to archive-on-merge is not modelled (no stacks yet).
 - The header returns an action plus the numbers its label needs (`HeaderAction`, `Tone`); label text is left to the UI and written by us. Stacked-PR states (stack needs a rebase, stack merge) and the non-GitHub local-git forge's synthesized merge state are not modelled yet.
