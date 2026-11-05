@@ -3,6 +3,8 @@ import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import { Modal } from "./Dialogs";
 import { seedTranscript } from "./WorkspaceView";
+import { configureReason } from "../features/chat/reasonChat";
+import { sessionConfig } from "../features/chat/chatModel";
 import { RARITY_LABEL, generateWorkspaceNames, resolveBranchPrefix, type BranchPrefixSettings, type GeneratedName } from "../workspace/naming";
 import {
   FAILED_TO_CREATE,
@@ -25,7 +27,7 @@ import type { SourceState } from "../workspace/createFrom";
 import { CreateFromPicker } from "./CreateFromPicker";
 import { getSettings } from "../settings/api";
 import { newChatModel } from "../settings/models";
-import { defaultEffortSetting } from "../features/chat/sessionModel.ts";
+import { defaultEffortSetting } from "../features/chat/chatModel";
 import { AddRepositoryMenu } from "./AddRepositoryMenu";
 
 interface Props {
@@ -166,8 +168,11 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
         userSetBranchName: naming.user_set_branch_name,
         number: created.number ?? null,
       };
-      // The first message opens the workspace's first chat session, on the model and effort picked here.
-      if (firstSession) seedTranscript(id, firstSession.message, firstSession);
+      // The first message opens the workspace's first chat session on the model and effort picked here.
+      if (firstSession) {
+        configureReason(id, sessionConfig(firstSession.model, firstSession.effort));
+        seedTranscript(id, firstSession.message);
+      }
       dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
       onClose();
       // ...and renames a placeholder city workspace after it.

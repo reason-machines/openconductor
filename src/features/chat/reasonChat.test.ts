@@ -139,7 +139,7 @@ test("the chat's Session is created with its model and effort, waiting for optio
   handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
   const ends = promptsEndOnDemand();
   const settings = deferred<{ id: string; value: string }[]>();
-  rc.configureReason(chatId, settings.promise, { fallback: true });
+  rc.configureReasonDefault(chatId, settings.promise);
 
   rc.submitChat(chatId, "/w", "hello", "queue");
   await tick();
@@ -153,13 +153,13 @@ test("the chat's Session is created with its model and effort, waiting for optio
   ends.shift()!();
 });
 
-test("a chat's own options win over the Settings defaults and are kept for later", async () => {
+test("a chat's picked options win over the Settings defaults and are kept for a later Session", async () => {
   const chatId = "config-2";
   handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
   const ends = promptsEndOnDemand();
   const own = [{ id: "model", value: "byok:openai-codex:gpt-5.6-sol" }];
   rc.configureReason(chatId, own);
-  rc.configureReason(chatId, [{ id: "model", value: "byok:anthropic:claude-opus-5" }], { fallback: true });
+  rc.configureReasonDefault(chatId, Promise.resolve([{ id: "model", value: "byok:anthropic:claude-opus-5" }]));
 
   rc.submitChat(chatId, "/w", "hello", "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");

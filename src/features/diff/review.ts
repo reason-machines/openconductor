@@ -7,10 +7,7 @@
 // and wins over them. The instruction text below is our own.
 // Pure: no Tauri, no React, so `review.test.ts` covers it.
 
-import { AGENT_DEFAULT_MODEL } from "../../settings/models.ts";
-import { sessionModel, type SessionModel } from "../chat/sessionModel.ts";
-
-export { reasonModelId, type ConfigChoice } from "../chat/sessionModel.ts";
+import { agentForModel, AGENT_DEFAULT_MODEL, CLAUDE_ALIASES, modelLabel } from "../../settings/models.ts";
 import type { Settings } from "../../settings/types.ts";
 
 /** The user message of a review chat; the instructions go along as an attachment. */
@@ -94,12 +91,58 @@ ${own}
 /** Conductor's review model when `review_model` is unset (its built-in default, not the chat default). */
 export const REVIEW_MODEL_FALLBACK = AGENT_DEFAULT_MODEL.claude;
 
-/** Model, effort and Session options of a review chat. */
-export type ReviewModel = SessionModel;
+/** Reasoning levels a Reason Session offers (`reasoning_effort`). */
+const REASON_EFFORTS = ["minimal", "low", "medium", "high", "xhigh", "max"];
+
+/** One Reason Session config option, as `reason_open_chat` takes it. */
+export interface ConfigChoice {
+  id: string;
+  value: string;
+}
+
+export interface ReviewModel {
+  /** The configured review model (a Conductor model id, or a Reason model id). */
+  model: string;
+  /** Reason's id for it, or null when Reason has no match and its default runs. */
+  reasonModel: string | null;
+  /** Reasoning level for the review, or null for Reason's default. */
+  effort: string | null;
+  /** Options for the review chat's Session. */
+  config: ConfigChoice[];
+  /** Readable name, e.g. "Opus 5". */
+  label: string;
+}
 
 /** The review model setting with Conductor's fallback. */
 export function reviewModelSetting(settings: Settings): string {
   return settings.models.review?.trim() || REVIEW_MODEL_FALLBACK;
+}
+
+/**
+ * Reason's model id for a Conductor model id: Claude models run as
+ * `byok:anthropic:claude-<name>` (Reason has no separate 1M-context ids),
+ * Codex models as `byok:openai-codex:<id>`. An id that already names a
+ * Reason model (`provider:model` or `provider/model`) is kept. Claude
+ * aliases (`opus`, ...), Cursor and unknown ids have no fixed Reason id.
+ */
+export function reasonModelId(model: string): string | null {
+  if (model.includes(":") || model.includes("/")) return model;
+  if (CLAUDE_ALIASES.includes(model)) return null;
+  switch (agentForModel(model)) {
+    case "claude":
+      return `byok:anthropic:claude-${model.replace(/-1m$/, "")}`;
+    case "codex":
+      return `byok:openai-codex:${model}`;
+    default:
+      return null;
+  }
+}
+
+/** Reason's reasoning level for a Conductor effort setting; `ultracode` is beyond Reason's top level. */
+export function reasonEffort(level: unknown): string | null {
+  if (typeof level !== "string") return null;
+  if (level === "ultracode") return "max";
+  return REASON_EFFORTS.includes(level) ? level : null;
 }
 
 /**
@@ -109,9 +152,20 @@ export function reviewModelSetting(settings: Settings): string {
  * `models.codex.review_thinking_level` for Codex.
  */
 export function reviewModel(settings: Settings): ReviewModel {
-  return sessionModel(reviewModelSetting(settings), (agent) =>
-    agent === "claude" ? settings.models.claude_code?.review_effort_level : agent === "codex" ? settings.models.codex.review_thinking_level : null,
-  );
+  const model = reviewModelSetting(settings);
+  const reasonModel = reasonModelId(model);
+  const agent = agentForModel(model) ?? (reasonModel?.includes("openai-codex") ? "codex" : reasonModel?.includes("anthropic") ? "claude" : null);
+  const effort =
+    agent === "claude"
+      ? reasonEffort(settings.models.claude_code?.review_effort_level)
+      : agent === "codex"
+        ? reasonEffort(settings.models.codex.review_thinking_level)
+        : null;
+  const config: ConfigChoice[] = [];
+  if (reasonModel) config.push({ id: "model", value: reasonModel });
+  if (effort) config.push({ id: "reasoning_effort", value: effort });
+  const label = agentForModel(model) ? modelLabel(model) : model;
+  return { model, reasonModel, effort, config, label };
 }
 
 /** Tab title of the n-th review chat in a workspace (1-based). */

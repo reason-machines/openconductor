@@ -42,7 +42,7 @@ export interface ReasonConfig {
 
 const EVENT = "reason-chat-event";
 const sessionKey = (chatId: string) => `openconductor.reason.session.${chatId}`;
-/** The chat's own Session options (`configureReason`), kept for a Session it opens later (after Reset chat). */
+/** The chat's picked Session options (`configureReason`), kept for a Session it opens later (after Reset chat). */
 const configKey = (chatId: string) => `openconductor.reason.config.${chatId}`;
 
 function savedConfig(chatId: string): ReasonConfig[] | null {
@@ -67,10 +67,10 @@ interface Chat {
   /** Repository the chat's workspace belongs to, for its effective `prompts.general`. */
   repoPath: string | null;
   opened: boolean;
-  /** Options for the chat's next new Session; `prompt` waits for them. */
-  config: Promise<ReasonConfig[]>;
-  /** The options were chosen for this chat, not defaults from Settings. */
-  ownConfig: boolean;
+  /** Options for the Session `session/new` creates (the first, or the one after Reset chat); the first prompt waits for them. */
+  config: ReasonConfig[] | Promise<ReasonConfig[]>;
+  /** The chat's options were picked (New workspace dialog, review model) or defaulted, so the default does not replace them. */
+  configured: boolean;
   /** Turns shown as running whose prompt has not reached Reason yet. */
   unsent: Set<string>;
   /** Unsent turns the user stopped: they end cancelled instead of being sent. */
@@ -98,8 +98,8 @@ function chat(chatId: string): Chat {
       cwd: null,
       repoPath: null,
       opened: false,
-      config: Promise.resolve(saved ?? []),
-      ownConfig: saved !== null,
+      config: saved ?? [],
+      configured: saved !== null,
       unsent: new Set(),
       stopped: new Set(),
       listeners: new Set(),
@@ -234,7 +234,8 @@ async function prompt(c: Chat, text: string, attachments: PromptAttachment[]): P
   try {
     await ensureListening();
     if (!c.opened) {
-      await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)), config: await c.config });
+      const config = await c.config;
+      await invoke("reason_open_chat", { chatId, cwd, sessionId: localStorage.getItem(sessionKey(chatId)), config });
       c.opened = true;
     }
     c.unsent.delete(turnId);
@@ -318,29 +319,31 @@ export function sendReason(chatId: string, cwd: string, text: string, attachment
 }
 
 /**
- * Session options (model, reasoning effort) for the chat's next new Session:
- * its first, or the one after "Reset chat". A Session that already exists
- * keeps its own. The chat's first prompt waits for a pending `config`. The
- * chat's own options are kept across restarts; `fallback` options (the
- * defaults from Settings) apply only to a chat that has none of its own.
+ * Session options for the chat's next new Session: its first, or the one
+ * after Reset chat. A Session that already exists keeps its own. Picked
+ * options are kept across restarts, so a Session opened after a reset still
+ * runs on them.
  */
-export function configureReason(chatId: string, config: ReasonConfig[] | Promise<ReasonConfig[]>, opts: { fallback?: boolean } = {}): void {
+export function configureReason(chatId: string, config: ReasonConfig[]): void {
   const c = chat(chatId);
-  if (opts.fallback && c.ownConfig) return;
-  const pending = Promise.resolve(config).catch((e: unknown) => {
-    console.warn("reason chat: Session options not read; Reason's defaults apply", e);
-    return [];
-  });
-  c.config = pending;
-  if (opts.fallback) return;
-  c.ownConfig = true;
-  void pending.then((list) => {
-    try {
-      localStorage.setItem(configKey(chatId), JSON.stringify(list));
-    } catch (e) {
-      console.warn("reason chat: Session options not saved", e);
-    }
-  });
+  c.config = config;
+  c.configured = true;
+  try {
+    localStorage.setItem(configKey(chatId), JSON.stringify(config));
+  } catch (e) {
+    console.warn("reason chat: Session options not saved", e);
+  }
+}
+
+/**
+ * The options a chat starts with when none were picked (the default model);
+ * the first prompt waits for them, and a failed lookup leaves Reason's default.
+ */
+export function configureReasonDefault(chatId: string, config: Promise<ReasonConfig[]>): void {
+  const c = chat(chatId);
+  if (c.configured || c.opened) return;
+  c.config = config.catch(() => []);
+  c.configured = true;
 }
 
 /** Stop. A second Stop while the first is pending asks Reason to stop hard. */

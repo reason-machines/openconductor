@@ -172,3 +172,49 @@ fn graphite_cli_is_found_on_path() {
             || std::path::Path::new("/usr/local/bin/gt").is_file()
     );
 }
+
+#[test]
+fn sidebar_repo_filter_is_a_raw_id_and_all_projects_deletes_it() {
+    // `z6t` (index-BGEQ8YjU.js @420,066): updateSetting with the id, or
+    // deleteSetting when the filter is cleared.
+    assert_eq!(
+        AppPrefUpdate::SidebarRepoFilter(Some("repo-1".into()))
+            .encode()
+            .unwrap(),
+        Write::Set("sidebar_repo_filter", "repo-1".into())
+    );
+    assert_eq!(
+        AppPrefUpdate::SidebarRepoFilter(None).encode().unwrap(),
+        Write::Delete("sidebar_repo_filter")
+    );
+    assert!(AppPrefUpdate::SidebarRepoFilter(Some(" ".into()))
+        .encode()
+        .is_err());
+    let u: AppPrefUpdate =
+        serde_json::from_str(r#"{"key":"sidebar_repo_filter","value":null}"#).unwrap();
+    assert_eq!(u, AppPrefUpdate::SidebarRepoFilter(None));
+    assert_eq!(AppPrefs::from_rows(&HashMap::new()).sidebar_repo_filter, None);
+
+    tauri::async_runtime::block_on(async {
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        let write = |u: AppPrefUpdate| {
+            let pool = pool.clone();
+            async move {
+                match u.encode().unwrap() {
+                    Write::Set(k, v) => openconductor_db::app_settings::set(&pool, k, &v)
+                        .await
+                        .unwrap(),
+                    Write::Delete(k) => openconductor_db::app_settings::delete(&pool, k)
+                        .await
+                        .unwrap(),
+                }
+            }
+        };
+        write(AppPrefUpdate::SidebarRepoFilter(Some("repo-1".into()))).await;
+        let p = commands::load(&pool).await.unwrap();
+        assert_eq!(p.sidebar_repo_filter.as_deref(), Some("repo-1"));
+        write(AppPrefUpdate::SidebarRepoFilter(None)).await;
+        let p = commands::load(&pool).await.unwrap();
+        assert_eq!(p.sidebar_repo_filter, None);
+    });
+}
