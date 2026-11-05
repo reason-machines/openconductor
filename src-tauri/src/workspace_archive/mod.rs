@@ -21,9 +21,13 @@
 //!    worktree (`Vpe` @ ~3,205,035), and delete the branch when "Delete
 //!    branch on archive" is on, never the repository's default branch.
 //!
-//! The core is std-only (git CLI and [`crate::checkpoint`]) so it is tested
-//! without Tauri; `workspace_archive_commands.rs` wires it to the database
-//! and script service.
+//! The git steps here are std-only (git CLI and [`crate::checkpoint`]);
+//! [`flow`] runs all four steps against `conductor.db` and the script
+//! service, without Tauri, so the whole archive is tested
+//! (`tools/archive/run-rust-tests.sh`). `workspace_archive_commands.rs` is
+//! the Tauri command over [`flow`].
+
+pub mod flow;
 
 #[cfg(test)]
 mod tests;
@@ -155,10 +159,16 @@ pub enum NoticeKind {
 
 impl Notice {
     pub fn info(message: impl Into<String>) -> Self {
-        Self { kind: NoticeKind::Info, message: message.into() }
+        Self {
+            kind: NoticeKind::Info,
+            message: message.into(),
+        }
     }
     pub fn error(message: impl Into<String>) -> Self {
-        Self { kind: NoticeKind::Error, message: message.into() }
+        Self {
+            kind: NoticeKind::Error,
+            message: message.into(),
+        }
     }
 }
 
@@ -176,7 +186,13 @@ pub fn archive_head_ref(local_id: &str) -> String {
 
 fn ref_component(id: &str) -> String {
     id.chars()
-        .map(|c| if c.is_ascii_alphanumeric() || matches!(c, '.' | '_' | '-') { c } else { '-' })
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || matches!(c, '.' | '_' | '-') {
+                c
+            } else {
+                '-'
+            }
+        })
         .collect()
 }
 
@@ -188,7 +204,9 @@ pub fn prepare(t: &ArchiveTarget, mode: ArchiveMode) -> Result<Prepared, Archive
     if path.as_os_str().is_empty() || !path.exists() {
         return Err(ArchiveError::Corrupted);
     }
-    let fail = |m: &dyn fmt::Display| ArchiveError::Failed(format!("Failed to archive {}: {m}", t.directory_name));
+    let fail = |m: &dyn fmt::Display| {
+        ArchiveError::Failed(format!("Failed to archive {}: {m}", t.directory_name))
+    };
     let id = checkpoint_id(&t.local_id);
     match save(path, &id) {
         Ok(()) => {}
@@ -198,7 +216,9 @@ pub fn prepare(t: &ArchiveTarget, mode: ArchiveMode) -> Result<Prepared, Archive
             stage_unmerged(path, true).map_err(|e| fail(&e))?;
             match save(path, &id) {
                 Ok(()) => {}
-                Err(CheckpointError::Busy(_)) => return Err(ArchiveError::Failed(MERGE_IN_PROGRESS_MESSAGE.into())),
+                Err(CheckpointError::Busy(_)) => {
+                    return Err(ArchiveError::Failed(MERGE_IN_PROGRESS_MESSAGE.into()))
+                }
                 Err(CheckpointError::UnresolvedConflicts) => {
                     return Err(ArchiveError::Failed(UNRESOLVED_CONFLICTS_MESSAGE.into()))
                 }
@@ -213,7 +233,9 @@ pub fn prepare(t: &ArchiveTarget, mode: ArchiveMode) -> Result<Prepared, Archive
             discard_git_operation_state(path).map_err(|e| fail(&e))?;
             match save(path, &id) {
                 Ok(()) => {}
-                Err(CheckpointError::Busy(_)) => return Err(ArchiveError::Failed(DISCARD_FAILED_MESSAGE.into())),
+                Err(CheckpointError::Busy(_)) => {
+                    return Err(ArchiveError::Failed(DISCARD_FAILED_MESSAGE.into()))
+                }
                 Err(CheckpointError::UnresolvedConflicts) => {
                     return Err(ArchiveError::Failed(UNRESOLVED_CONFLICTS_MESSAGE.into()))
                 }
@@ -225,18 +247,34 @@ pub fn prepare(t: &ArchiveTarget, mode: ArchiveMode) -> Result<Prepared, Archive
     }
 
     // `ensureLocalBranch`: the checked-out branch, else the stored one.
-    let current = git(path, ["branch", "--show-current"]).ok().filter(|b| !b.is_empty());
+    let current = git(path, ["branch", "--show-current"])
+        .ok()
+        .filter(|b| !b.is_empty());
     let persisted_branch = current.clone().unwrap_or_else(|| t.branch.clone());
 
-    let archive_commit = git(path, ["rev-parse", "HEAD"]).ok().filter(|c| !c.is_empty());
+    let archive_commit = git(path, ["rev-parse", "HEAD"])
+        .ok()
+        .filter(|c| !c.is_empty());
     if let Some(commit) = &archive_commit {
         git(path, ["update-ref", &archive_head_ref(&t.local_id), commit]).map_err(|e| fail(&e))?;
     }
-    Ok(Prepared { persisted_branch, branch_to_delete: current, archive_commit, checkpoint_id: id })
+    Ok(Prepared {
+        persisted_branch,
+        branch_to_delete: current,
+        archive_commit,
+        checkpoint_id: id,
+    })
 }
 
 fn save(path: &Path, id: &str) -> Result<(), CheckpointError> {
-    checkpoint::save(path, &SaveOptions { id: Some(id.to_string()), force: true }).map(|_| ())
+    checkpoint::save(
+        path,
+        &SaveOptions {
+            id: Some(id.to_string()),
+            force: true,
+        },
+    )
+    .map(|_| ())
 }
 
 /// `git add -u` the unmerged paths. With `require_some`, finding none is an
@@ -248,7 +286,11 @@ fn stage_unmerged(path: &Path, require_some: bool) -> Result<(), String> {
     }
     let paths: Vec<&str> = out.1.split('\0').filter(|p| !p.is_empty()).collect();
     if paths.is_empty() {
-        return if require_some { Err("No unmerged paths found to stage".into()) } else { Ok(()) };
+        return if require_some {
+            Err("No unmerged paths found to stage".into())
+        } else {
+            Ok(())
+        };
     }
     let mut args = vec!["add", "-u", "--"];
     args.extend(paths);
@@ -292,7 +334,12 @@ fn git_path(path: &Path, name: &str) -> Result<PathBuf, String> {
 /// wrong is returned as notices, as Conductor shows toasts and carries on.
 /// `root_dir` is the root directory (`conductor_root_path`), `None` to keep
 /// `.context` with the worktree.
-pub fn teardown(t: &ArchiveTarget, p: &Prepared, delete_branch: bool, root_dir: Option<&Path>) -> Vec<Notice> {
+pub fn teardown(
+    t: &ArchiveTarget,
+    p: &Prepared,
+    delete_branch: bool,
+    root_dir: Option<&Path>,
+) -> Vec<Notice> {
     let mut notices = Vec::new();
     if let Some(root) = root_dir {
         // Conductor only logs this failure.
@@ -324,7 +371,10 @@ pub fn archive_context_folder(
     if !src.exists() {
         return Ok(None);
     }
-    let dest = root.join(ARCHIVED_CONTEXTS_DIR).join(repo_name).join(directory_name);
+    let dest = root
+        .join(ARCHIVED_CONTEXTS_DIR)
+        .join(repo_name)
+        .join(directory_name);
     if let Some(parent) = dest.parent() {
         std::fs::create_dir_all(parent)?;
     }
@@ -338,13 +388,19 @@ pub fn archive_context_folder(
 /// `Vpe`: `git worktree remove --force --force`; when that fails, delete the
 /// directory and prune. The error is the toast text.
 pub fn remove_worktree(repo_root: &Path, workspace: &Path) -> Result<(), String> {
-    let args: [&OsStr; 5] =
-        ["worktree".as_ref(), "remove".as_ref(), "--force".as_ref(), "--force".as_ref(), workspace.as_os_str()];
+    let args: [&OsStr; 5] = [
+        "worktree".as_ref(),
+        "remove".as_ref(),
+        "--force".as_ref(),
+        "--force".as_ref(),
+        workspace.as_os_str(),
+    ];
     if git(repo_root, args).is_ok() {
         return Ok(());
     }
     if workspace.exists() {
-        std::fs::remove_dir_all(workspace).map_err(|e| format!("Failed to remove directory: {e}"))?;
+        std::fs::remove_dir_all(workspace)
+            .map_err(|e| format!("Failed to remove directory: {e}"))?;
     }
     git(repo_root, ["worktree", "prune"]).map(|_| ()).map_err(|e| {
         format!(
@@ -356,11 +412,15 @@ pub fn remove_worktree(repo_root: &Path, workspace: &Path) -> Result<(), String>
 /// "Delete branch on archive": `git branch -D`, skipping the default branch.
 pub fn delete_local_branch(repo_root: &Path, branch: &str, default_branch: &str) -> Option<Notice> {
     if branch == default_branch {
-        return Some(Notice::info(format!("Skipped deleting \"{branch}\" because it is the repo default branch.")));
+        return Some(Notice::info(format!(
+            "Skipped deleting \"{branch}\" because it is the repo default branch."
+        )));
     }
     match git(repo_root, ["branch", "-D", branch]) {
         Ok(_) => None,
-        Err(e) => Some(Notice::error(format!("Failed to delete branch \"{branch}\": {e}"))),
+        Err(e) => Some(Notice::error(format!(
+            "Failed to delete branch \"{branch}\": {e}"
+        ))),
     }
 }
 
@@ -396,6 +456,10 @@ where
         Ok(stdout.trim().to_string())
     } else {
         let e = stderr.trim();
-        Err(if e.is_empty() { stdout.trim().to_string() } else { e.to_string() })
+        Err(if e.is_empty() {
+            stdout.trim().to_string()
+        } else {
+            e.to_string()
+        })
     }
 }

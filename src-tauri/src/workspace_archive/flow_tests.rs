@@ -1,0 +1,232 @@
+//! The whole archive against a real `conductor.db` (in memory), the script
+//! service and a repository with a worktree.
+
+use std::collections::BTreeMap;
+use std::fs;
+use std::sync::Arc;
+
+use openconductor_db::repos::{self, NewRepo};
+use openconductor_db::workspaces::{self, NewWorkspace, WorkspaceState};
+
+use super::super::tests::{g, write, Fixture};
+use super::*;
+
+struct Env {
+    f: Fixture,
+    pool: SqlitePool,
+    scripts: ScriptService,
+    manager: WorkspaceManager,
+    in_flight: InFlightArchives,
+}
+
+/// The fixture's worktree as a `ready` row, with `settings` as the
+/// repository's `.conductor/settings.local.toml`.
+async fn env(tag: &str, settings: &str) -> Env {
+    let f = Fixture::new(tag);
+    write(f.repo(), ".conductor/settings.local.toml", settings);
+    let pool = openconductor_db::open_in_memory().await.unwrap();
+    repos::insert(
+        &pool,
+        &NewRepo {
+            id: "repo".into(),
+            name: "repo".into(),
+            root_path: f.repo().display().to_string(),
+            remote_url: None,
+            remote: None,
+            default_branch: Some("main".into()),
+            hidden: false,
+        },
+    )
+    .await
+    .unwrap();
+    workspaces::insert(
+        &pool,
+        &NewWorkspace {
+            local_id: "repo/ws".into(),
+            repository_id: "repo".into(),
+            directory_name: "ws".into(),
+            workspace_name: None,
+            branch: "sven/ws".into(),
+            placeholder_branch_name: None,
+            state: WorkspaceState::Ready,
+            initialization_parent_branch: Some("main".into()),
+            intended_target_branch: None,
+            workspace_path: Some(f.ws().display().to_string()),
+        },
+    )
+    .await
+    .unwrap();
+    let scripts = ScriptService::new(
+        f.tmp.0.join("home/.conductor"),
+        f.tmp.0.join("logs"),
+        Arc::new(|_| {}),
+    )
+    .with_base_env(BTreeMap::from([("PATH".into(), "/usr/bin:/bin".into())]));
+    let manager = WorkspaceManager::new(f.tmp.0.join("data")).with_root(f.tmp.0.join("root"));
+    Env {
+        f,
+        pool,
+        scripts,
+        manager,
+        in_flight: InFlightArchives::default(),
+    }
+}
+
+impl Env {
+    async fn archive(
+        &self,
+        mode: Option<&str>,
+        delete_branch: bool,
+    ) -> Result<ArchiveResultDto, ArchiveFailureDto> {
+        let setting = move |_: &Path, _: &Path| delete_branch;
+        let deps = Deps {
+            pool: &self.pool,
+            scripts: &self.scripts,
+            manager: &self.manager,
+            delete_branch_on_archive: &setting,
+            in_flight: &self.in_flight,
+        };
+        archive_workspace(&deps, "repo/ws", mode).await
+    }
+    async fn row(&self) -> workspaces::Workspace {
+        workspaces::get(&self.pool, "repo/ws")
+            .await
+            .unwrap()
+            .unwrap()
+            .workspace
+    }
+}
+
+#[tokio::test]
+async fn archive_runs_the_script_records_the_row_and_removes_the_worktree() {
+    let log = "archive-script.log";
+    // The script runs in the worktree, with the workspace's env, before removal.
+    let e = env(
+        "flow-full",
+        &format!("[scripts]\narchive = \"pwd > ../{log}; ls a.txt >> ../{log}; echo $CONDUCTOR_WORKSPACE_NAME >> ../{log}\"\n"),
+    )
+    .await;
+    let head = g(e.f.ws(), &["rev-parse", "HEAD"]);
+    write(e.f.ws(), "wip.txt", "unsaved\n");
+
+    let r = e.archive(None, true).await.unwrap();
+    assert!(r.archived);
+    assert_eq!(r.archive_commit.as_deref(), Some(head.as_str()));
+    assert_eq!(r.branch.as_deref(), Some("sven/ws"));
+    assert!(r.notices.is_empty(), "{:?}", r.notices);
+
+    let script_log = fs::read_to_string(e.f.tmp.0.join("workspaces").join(log)).unwrap();
+    assert_eq!(script_log, format!("{}\na.txt\nws\n", e.f.ws().display()));
+
+    let row = e.row().await;
+    assert_eq!(row.state, WorkspaceState::Archived);
+    assert_eq!(row.archive_commit.as_deref(), Some(head.as_str()));
+    assert_eq!(row.branch.as_deref(), Some("sven/ws"));
+
+    assert!(!e.f.ws().exists());
+    assert!(
+        !e.f.branch_exists("sven/ws"),
+        "delete_branch_on_archive is on"
+    );
+    assert_eq!(
+        g(
+            e.f.repo(),
+            &[
+                "show",
+                "refs/conductor-checkpoints/conductor-archive-repo-ws:wip.txt"
+            ]
+        ),
+        "unsaved"
+    );
+    let record = fs::read_to_string(e.f.tmp.0.join("root/archived/repo/ws.ws")).unwrap();
+    assert_eq!(record, format!("branch=sven/ws\ncommit={head}\n"));
+
+    // Archiving again is a no-op, as Conductor's early return for archived rows.
+    let again = e.archive(None, true).await.unwrap();
+    assert!(!again.archived);
+    assert_eq!(again.archive_commit.as_deref(), Some(head.as_str()));
+}
+
+#[tokio::test]
+async fn a_failing_archive_script_is_reported_and_the_archive_goes_on() {
+    let e = env("flow-script", "[scripts]\narchive = \"exit 3\"\n").await;
+    let r = e.archive(None, false).await.unwrap();
+    assert!(r.archived);
+    assert_eq!(r.notices.len(), 1);
+    assert_eq!(
+        (r.notices[0].kind, r.notices[0].message.as_str()),
+        ("error", "Archive script failed (exit code 3)")
+    );
+    assert_eq!(e.row().await.state, WorkspaceState::Archived);
+    assert!(!e.f.ws().exists());
+    assert!(
+        e.f.branch_exists("sven/ws"),
+        "delete_branch_on_archive is off"
+    );
+}
+
+#[tokio::test]
+async fn a_git_operation_blocks_safe_mode_without_changing_anything() {
+    let e = env("flow-merge", "").await;
+    e.f.conflicting_merge();
+    let err = e.archive(None, false).await.unwrap_err();
+    assert_eq!(err.code, "WorkspaceArchiveBlockedByGitOperationError");
+    assert_eq!(err.message, super::super::GIT_OPERATION_MESSAGE);
+    assert_eq!(e.row().await.state, WorkspaceState::Ready);
+    assert!(e.f.ws().exists());
+
+    let r = e
+        .archive(Some("discardGitOperationState"), false)
+        .await
+        .unwrap();
+    assert!(r.archived);
+    assert!(!e.f.ws().exists());
+}
+
+#[tokio::test]
+async fn a_missing_directory_is_workspace_corrupted_and_unknown_ids_fail() {
+    let e = env("flow-missing", "").await;
+    fs::remove_dir_all(e.f.ws()).unwrap();
+    let err = e.archive(None, false).await.unwrap_err();
+    assert_eq!(
+        (err.code, err.message.as_str()),
+        ("WORKSPACE_CORRUPTED", "Workspace directory not found")
+    );
+    assert_eq!(e.row().await.state, WorkspaceState::Ready);
+
+    let setting = |_: &Path, _: &Path| false;
+    let deps = Deps {
+        pool: &e.pool,
+        scripts: &e.scripts,
+        manager: &e.manager,
+        delete_branch_on_archive: &setting,
+        in_flight: &e.in_flight,
+    };
+    let err = archive_workspace(&deps, "repo/nope", None)
+        .await
+        .unwrap_err();
+    assert_eq!(
+        (err.code, err.message.as_str()),
+        ("ArchiveFailed", "Workspace not found")
+    );
+    let err = archive_workspace(&deps, "repo/ws", Some("bogus"))
+        .await
+        .unwrap_err();
+    assert_eq!(err.message, "unknown archive mode: bogus");
+}
+
+#[tokio::test]
+async fn a_second_archive_while_one_runs_returns_at_once() {
+    // The archive script holds the first archive open.
+    let e = env("flow-dedupe", "[scripts]\narchive = \"sleep 1\"\n").await;
+    let (first, second) = tokio::join!(e.archive(None, false), async {
+        let pause = || std::thread::sleep(std::time::Duration::from_millis(200));
+        tokio::task::spawn_blocking(pause).await.unwrap();
+        e.archive(None, false).await
+    });
+    assert!(first.unwrap().archived);
+    let second = second.unwrap();
+    assert!(!second.archived);
+    assert_eq!(second.archive_commit, None);
+    assert_eq!(e.row().await.state, WorkspaceState::Archived);
+}

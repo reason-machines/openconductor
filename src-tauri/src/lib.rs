@@ -62,6 +62,8 @@ pub mod tool_spotlighter;
 pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
+pub mod workspace_archive;
+mod workspace_archive_commands;
 
 use serde::Serialize;
 
@@ -282,6 +284,7 @@ pub fn run() {
             persistence_commands::startup(&db, &workspaces)?;
             app.manage(db);
             app.manage(workspaces);
+            app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
@@ -323,6 +326,7 @@ pub fn run() {
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
+            workspace_archive_commands::archive_workspace,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,

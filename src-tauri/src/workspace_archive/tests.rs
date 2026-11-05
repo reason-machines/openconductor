@@ -7,12 +7,15 @@ use std::process::Command;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-struct TempDir(PathBuf);
+pub(super) struct TempDir(pub(super) PathBuf);
 
 impl TempDir {
     fn new(tag: &str) -> Self {
         static N: AtomicU64 = AtomicU64::new(0);
-        let nanos = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let nanos = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
         let p = std::env::temp_dir().join(format!(
             "archive-test-{tag}-{}-{nanos}-{}",
             std::process::id(),
@@ -29,7 +32,7 @@ impl Drop for TempDir {
     }
 }
 
-fn git_out(dir: &Path, args: &[&str]) -> std::process::Output {
+pub(super) fn git_out(dir: &Path, args: &[&str]) -> std::process::Output {
     Command::new("git")
         .current_dir(dir)
         .args(args)
@@ -46,13 +49,17 @@ fn git_out(dir: &Path, args: &[&str]) -> std::process::Output {
         .unwrap()
 }
 
-fn g(dir: &Path, args: &[&str]) -> String {
+pub(super) fn g(dir: &Path, args: &[&str]) -> String {
     let out = git_out(dir, args);
-    assert!(out.status.success(), "git {args:?}: {}", String::from_utf8_lossy(&out.stderr));
+    assert!(
+        out.status.success(),
+        "git {args:?}: {}",
+        String::from_utf8_lossy(&out.stderr)
+    );
     String::from_utf8_lossy(&out.stdout).trim().to_string()
 }
 
-fn write(dir: &Path, rel: &str, content: &str) {
+pub(super) fn write(dir: &Path, rel: &str, content: &str) {
     let p = dir.join(rel);
     fs::create_dir_all(p.parent().unwrap()).unwrap();
     fs::write(p, content).unwrap();
@@ -60,13 +67,13 @@ fn write(dir: &Path, rel: &str, content: &str) {
 
 /// A repository on `main` with one commit and a worktree `ws` on branch
 /// `sven/ws`, laid out as `<tmp>/repo` and `<tmp>/workspaces/ws`.
-struct Fixture {
-    tmp: TempDir,
-    target: ArchiveTarget,
+pub(super) struct Fixture {
+    pub(super) tmp: TempDir,
+    pub(super) target: ArchiveTarget,
 }
 
 impl Fixture {
-    fn new(tag: &str) -> Self {
+    pub(super) fn new(tag: &str) -> Self {
         let tmp = TempDir::new(tag);
         let repo = tmp.0.join("repo");
         fs::create_dir_all(&repo).unwrap();
@@ -78,7 +85,18 @@ impl Fixture {
         g(&repo, &["commit", "-q", "-m", "init"]);
         let ws = tmp.0.join("workspaces").join("ws");
         fs::create_dir_all(ws.parent().unwrap()).unwrap();
-        g(&repo, &["worktree", "add", "-q", "-b", "sven/ws", ws.to_str().unwrap(), "main"]);
+        g(
+            &repo,
+            &[
+                "worktree",
+                "add",
+                "-q",
+                "-b",
+                "sven/ws",
+                ws.to_str().unwrap(),
+                "main",
+            ],
+        );
         let target = ArchiveTarget {
             local_id: "repo/ws".into(),
             directory_name: "ws".into(),
@@ -90,18 +108,28 @@ impl Fixture {
         };
         Fixture { tmp, target }
     }
-    fn repo(&self) -> &Path {
+    pub(super) fn repo(&self) -> &Path {
         &self.target.repo_root
     }
-    fn ws(&self) -> &Path {
+    pub(super) fn ws(&self) -> &Path {
         &self.target.workspace_path
     }
-    fn branch_exists(&self, b: &str) -> bool {
-        git_out(self.repo(), &["show-ref", "--verify", "--quiet", &format!("refs/heads/{b}")]).status.success()
+    pub(super) fn branch_exists(&self, b: &str) -> bool {
+        git_out(
+            self.repo(),
+            &[
+                "show-ref",
+                "--verify",
+                "--quiet",
+                &format!("refs/heads/{b}"),
+            ],
+        )
+        .status
+        .success()
     }
     /// Commit on `sven/ws` and on `main` touching the same line, then merge
     /// main into the worktree so it stops with a conflict.
-    fn conflicting_merge(&self) {
+    pub(super) fn conflicting_merge(&self) {
         write(self.ws(), "a.txt", "ws\n");
         g(self.ws(), &["commit", "-q", "-am", "ws side"]);
         write(self.repo(), "a.txt", "main\n");
@@ -116,9 +144,15 @@ impl Fixture {
 fn ids_map_slashes_for_checkpoint_and_archive_head() {
     assert_eq!(checkpoint_id("repo/ws"), "conductor-archive-repo-ws");
     assert_eq!(checkpoint_id("5f3c-uuid"), "conductor-archive-5f3c-uuid");
-    assert_eq!(archive_head_ref("repo/ws"), "refs/conductor-archive-heads/repo-ws");
+    assert_eq!(
+        archive_head_ref("repo/ws"),
+        "refs/conductor-archive-heads/repo-ws"
+    );
     assert_eq!(ArchiveMode::parse(None), Ok(ArchiveMode::Safe));
-    assert_eq!(ArchiveMode::parse(Some("discardGitOperationState")), Ok(ArchiveMode::DiscardGitOperationState));
+    assert_eq!(
+        ArchiveMode::parse(Some("discardGitOperationState")),
+        Ok(ArchiveMode::DiscardGitOperationState)
+    );
     assert!(ArchiveMode::parse(Some("nope")).is_err());
 }
 
@@ -135,13 +169,25 @@ fn full_archive_saves_dirty_state_records_commit_removes_worktree_and_keeps_bran
     assert_eq!(p.branch_to_delete.as_deref(), Some("sven/ws"));
     assert_eq!(p.archive_commit.as_deref(), Some(head.as_str()));
     // Archive commit kept reachable under refs/conductor-archive-heads.
-    assert_eq!(g(f.repo(), &["rev-parse", "refs/conductor-archive-heads/repo-ws"]), head);
+    assert_eq!(
+        g(
+            f.repo(),
+            &["rev-parse", "refs/conductor-archive-heads/repo-ws"]
+        ),
+        head
+    );
     // Uncommitted and untracked work is in the checkpoint, not lost.
     let cp = "refs/conductor-checkpoints/conductor-archive-repo-ws";
     assert_eq!(g(f.repo(), &["show", &format!("{cp}:a.txt")]), "edited");
-    assert_eq!(g(f.repo(), &["show", &format!("{cp}:new.txt")]), "untracked");
+    assert_eq!(
+        g(f.repo(), &["show", &format!("{cp}:new.txt")]),
+        "untracked"
+    );
     // prepare touches nothing in the worktree.
-    assert_eq!(fs::read_to_string(f.ws().join("a.txt")).unwrap(), "edited\n");
+    assert_eq!(
+        fs::read_to_string(f.ws().join("a.txt")).unwrap(),
+        "edited\n"
+    );
 
     let root = f.tmp.0.join("root");
     let notices = teardown(&f.target, &p, false, Some(&root));
@@ -161,14 +207,31 @@ fn delete_branch_on_archive_deletes_the_branch_but_never_the_default_branch() {
     assert!(!f.ws().exists());
     assert!(!f.branch_exists("sven/ws"));
     // The archive head still reaches the commit, so unarchive can recreate it.
-    assert!(git_out(f.repo(), &["rev-parse", "--verify", "refs/conductor-archive-heads/repo-ws"]).status.success());
+    assert!(git_out(
+        f.repo(),
+        &[
+            "rev-parse",
+            "--verify",
+            "refs/conductor-archive-heads/repo-ws"
+        ]
+    )
+    .status
+    .success());
 
     let n = delete_local_branch(f.repo(), "main", "main").unwrap();
-    assert_eq!(n, Notice::info("Skipped deleting \"main\" because it is the repo default branch."));
+    assert_eq!(
+        n,
+        Notice::info("Skipped deleting \"main\" because it is the repo default branch.")
+    );
     assert!(f.branch_exists("main"));
     let n = delete_local_branch(f.repo(), "no-such", "main").unwrap();
     assert_eq!(n.kind, NoticeKind::Error);
-    assert!(n.message.starts_with("Failed to delete branch \"no-such\": "), "{}", n.message);
+    assert!(
+        n.message
+            .starts_with("Failed to delete branch \"no-such\": "),
+        "{}",
+        n.message
+    );
 }
 
 #[test]
@@ -181,12 +244,18 @@ fn missing_directory_is_workspace_corrupted() {
     assert_eq!(e.to_string(), "Workspace directory not found");
     assert_eq!(e.code(), "WORKSPACE_CORRUPTED");
     t.workspace_path = PathBuf::new();
-    assert_eq!(prepare(&t, ArchiveMode::Safe).unwrap_err(), ArchiveError::Corrupted);
+    assert_eq!(
+        prepare(&t, ArchiveMode::Safe).unwrap_err(),
+        ArchiveError::Corrupted
+    );
     // A directory that is not a git worktree.
     let plain = f.tmp.0.join("plain");
     fs::create_dir_all(&plain).unwrap();
     t.workspace_path = plain;
-    assert_eq!(prepare(&t, ArchiveMode::Safe).unwrap_err(), ArchiveError::Corrupted);
+    assert_eq!(
+        prepare(&t, ArchiveMode::Safe).unwrap_err(),
+        ArchiveError::Corrupted
+    );
 }
 
 #[test]
@@ -194,7 +263,11 @@ fn merge_in_progress_blocks_safe_mode_and_discard_mode_clears_it() {
     let f = Fixture::new("merge");
     f.conflicting_merge();
     let merge_head = PathBuf::from(g(f.ws(), &["rev-parse", "--git-path", "MERGE_HEAD"]));
-    let merge_head = if merge_head.is_absolute() { merge_head } else { f.ws().join(merge_head) };
+    let merge_head = if merge_head.is_absolute() {
+        merge_head
+    } else {
+        f.ws().join(merge_head)
+    };
     assert!(merge_head.exists());
 
     let e = prepare(&f.target, ArchiveMode::Safe).unwrap_err();
@@ -207,7 +280,13 @@ fn merge_in_progress_blocks_safe_mode_and_discard_mode_clears_it() {
     assert!(!merge_head.exists());
     assert!(g(f.ws(), &["diff", "--name-only", "--diff-filter=U"]).is_empty());
     // The conflicted file, markers and all, is in the checkpoint.
-    let saved = g(f.repo(), &["show", "refs/conductor-checkpoints/conductor-archive-repo-ws:a.txt"]);
+    let saved = g(
+        f.repo(),
+        &[
+            "show",
+            "refs/conductor-checkpoints/conductor-archive-repo-ws:a.txt",
+        ],
+    );
     assert!(saved.contains("<<<<<<<"), "{saved}");
     assert_eq!(p.persisted_branch, "sven/ws");
 }
@@ -218,7 +297,11 @@ fn abandoned_conflict_residue_is_staged_then_saved() {
     f.conflicting_merge();
     // Drop the merge state but keep the unmerged index entries.
     let merge_head = PathBuf::from(g(f.ws(), &["rev-parse", "--git-path", "MERGE_HEAD"]));
-    let merge_head = if merge_head.is_absolute() { merge_head } else { f.ws().join(merge_head) };
+    let merge_head = if merge_head.is_absolute() {
+        merge_head
+    } else {
+        f.ws().join(merge_head)
+    };
     fs::remove_file(merge_head).unwrap();
     assert!(!g(f.ws(), &["diff", "--name-only", "--diff-filter=U"]).is_empty());
 
@@ -254,9 +337,14 @@ fn context_folder_replaces_an_older_archived_copy() {
     let root = f.tmp.0.join("root");
     write(&root, "archived-contexts/repo/ws/old.md", "old\n");
     write(f.ws(), ".context/new.md", "new\n");
-    let dest = archive_context_folder(f.ws(), &root, "repo", "ws").unwrap().unwrap();
+    let dest = archive_context_folder(f.ws(), &root, "repo", "ws")
+        .unwrap()
+        .unwrap();
     assert!(dest.join("new.md").exists());
     assert!(!dest.join("old.md").exists());
     assert!(!f.ws().join(".context").exists());
-    assert_eq!(archive_context_folder(f.ws(), &root, "repo", "ws").unwrap(), None);
+    assert_eq!(
+        archive_context_folder(f.ws(), &root, "repo", "ws").unwrap(),
+        None
+    );
 }
