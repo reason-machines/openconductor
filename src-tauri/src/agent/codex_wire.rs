@@ -124,10 +124,18 @@ impl TurnEnd {
 )]
 pub enum Payload {
     /// The thread this chat runs on; save it to resume after a restart.
-    ThreadStarted { thread_id: String, resumed: bool },
-    TurnStarted { turn_id: String },
+    ThreadStarted {
+        thread_id: String,
+        resumed: bool,
+    },
+    TurnStarted {
+        turn_id: String,
+    },
     /// A chunk of the reply message `item_id`.
-    Text { item_id: String, delta: String },
+    Text {
+        item_id: String,
+        delta: String,
+    },
     /// The whole reply message `item_id` (replaces its chunks).
     /// `phase` is Codex's `commentary` or `final_answer`.
     Message {
@@ -136,18 +144,32 @@ pub enum Payload {
         phase: Option<String>,
     },
     /// A chunk of the reasoning summary `item_id`.
-    Thought { item_id: String, delta: String },
+    Thought {
+        item_id: String,
+        delta: String,
+    },
     /// The whole reasoning summary `item_id` (replaces its chunks).
-    ThoughtDone { item_id: String, text: String },
+    ThoughtDone {
+        item_id: String,
+        text: String,
+    },
     Tool(Tool),
     /// Live output of a running command.
-    ToolOutput { id: String, delta: String },
+    ToolOutput {
+        id: String,
+        delta: String,
+    },
     Approval(Approval),
     /// The approval is answered (here or by Codex itself).
-    ApprovalResolved { request_id: RequestId },
+    ApprovalResolved {
+        request_id: RequestId,
+    },
     /// Something to show in the chat that is not reply text: a retry, a
     /// warning, a request the app declined.
-    Notice { message: String, will_retry: bool },
+    Notice {
+        message: String,
+        will_retry: bool,
+    },
     /// The prompt is over. Exactly one per prompt.
     TurnEnded {
         #[serde(flatten)]
@@ -244,7 +266,11 @@ fn tool(item: &Value, started: bool) -> Option<Tool> {
             item.pointer("/error/message")
                 .and_then(Value::as_str)
                 .map(str::to_owned)
-                .or_else(|| item.get("result").filter(|r| !r.is_null()).map(Value::to_string)),
+                .or_else(|| {
+                    item.get("result")
+                        .filter(|r| !r.is_null())
+                        .map(Value::to_string)
+                }),
             None,
         ),
         "dynamicToolCall" => (
@@ -256,17 +282,15 @@ fn tool(item: &Value, started: bool) -> Option<Tool> {
             None,
         ),
         "webSearch" => (
-            format!("Search the web: {}", text(item, "query").unwrap_or_default()),
+            format!(
+                "Search the web: {}",
+                text(item, "query").unwrap_or_default()
+            ),
             json!({ "query": item.get("query") }),
             None,
             None,
         ),
-        "plan" => (
-            "Plan".to_owned(),
-            Value::Null,
-            text(item, "text"),
-            None,
-        ),
+        "plan" => ("Plan".to_owned(), Value::Null, text(item, "text"), None),
         _ => (kind.clone(), item.clone(), None, None),
     };
     Some(Tool {
@@ -381,10 +405,12 @@ fn notification_payloads(n: &Notification) -> Vec<Payload> {
             will_retry: *will_retry,
         }],
         Notification::Other { method, params } => match method.as_str() {
-            "item/reasoning/summaryTextDelta" => match (text(params, "itemId"), text(params, "delta")) {
-                (Some(item_id), Some(delta)) => vec![Payload::Thought { item_id, delta }],
-                _ => vec![],
-            },
+            "item/reasoning/summaryTextDelta" => {
+                match (text(params, "itemId"), text(params, "delta")) {
+                    (Some(item_id), Some(delta)) => vec![Payload::Thought { item_id, delta }],
+                    _ => vec![],
+                }
+            }
             "item/commandExecution/outputDelta" => {
                 match (text(params, "itemId"), text(params, "delta")) {
                     (Some(id), Some(delta)) => vec![Payload::ToolOutput { id, delta }],
@@ -471,7 +497,10 @@ mod tests {
         let Payload::Tool(t) = only(one(declined)) else {
             panic!("one tool row")
         };
-        assert_eq!((t.title.as_str(), t.status), ("rm -rf /", ToolStatus::Declined));
+        assert_eq!(
+            (t.title.as_str(), t.status),
+            ("rm -rf /", ToolStatus::Declined)
+        );
     }
 
     #[test]
@@ -491,7 +520,8 @@ mod tests {
         };
         assert_eq!(a.kind, ApprovalKind::FileChange);
         assert_eq!(a.decisions.len(), 4, "no list: every schema decision");
-        let resolved = r#"{"method":"serverRequest/resolved","params":{"threadId":"t1","requestId":1}}"#;
+        let resolved =
+            r#"{"method":"serverRequest/resolved","params":{"threadId":"t1","requestId":1}}"#;
         assert_eq!(
             one(resolved),
             [Payload::ApprovalResolved {

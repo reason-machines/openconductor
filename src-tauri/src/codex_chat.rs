@@ -140,12 +140,7 @@ pub async fn codex_open_chat(
         let _ = app.emit(EVENT, event_json(&chat, &payload));
     });
     let runner = Arc::new(CodexRunner::start(config, sink));
-    state
-        .chats
-        .lock()
-        .unwrap()
-        .entry(chat_id)
-        .or_insert(runner);
+    state.chats.lock().unwrap().entry(chat_id).or_insert(runner);
     Ok(())
 }
 
@@ -163,7 +158,10 @@ pub async fn codex_prompt(
     let runner = state.get(&chat_id)?;
     let effort = effort.or_else(|| {
         let level = settings.get().ok()?.models.codex.default_thinking_level;
-        serde_json::to_value(level).ok()?.as_str().map(str::to_owned)
+        serde_json::to_value(level)
+            .ok()?
+            .as_str()
+            .map(str::to_owned)
     });
     let end = runner.prompt(text, model, effort);
     tauri::async_runtime::spawn_blocking(move || {
@@ -226,13 +224,18 @@ mod tests {
 
     #[test]
     fn prompt_arguments_parse_from_the_frontend_shapes() {
-        let policy: CodexPolicy =
-            serde_json::from_value(serde_json::json!({"approvalPolicy": "never", "sandbox": "read-only"}))
-                .unwrap();
-        assert_eq!(policy, CodexPolicy::new(ApprovalPolicy::Never, SandboxMode::ReadOnly));
+        let policy: CodexPolicy = serde_json::from_value(
+            serde_json::json!({"approvalPolicy": "never", "sandbox": "read-only"}),
+        )
+        .unwrap();
+        assert_eq!(
+            policy,
+            CodexPolicy::new(ApprovalPolicy::Never, SandboxMode::ReadOnly)
+        );
         let id: RequestId = serde_json::from_value(serde_json::json!(0)).unwrap();
         assert_eq!(id, RequestId::Int(0));
-        let d: ApprovalDecision = serde_json::from_value(serde_json::json!("acceptForSession")).unwrap();
+        let d: ApprovalDecision =
+            serde_json::from_value(serde_json::json!("acceptForSession")).unwrap();
         assert_eq!(d, ApprovalDecision::AcceptForSession);
     }
 }

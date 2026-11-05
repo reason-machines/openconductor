@@ -316,7 +316,10 @@ impl Worker {
                 if matches!(e, CallError::Closed { .. } | CallError::Io(_)) {
                     self.session = None;
                 }
-                self.finish(prompt, TurnEnd::failed(format!("Codex did not start the turn: {e}")));
+                self.finish(
+                    prompt,
+                    TurnEnd::failed(format!("Codex did not start the turn: {e}")),
+                );
             }
         }
     }
@@ -471,7 +474,8 @@ done
     fn runner(config: RunnerConfig) -> (CodexRunner, Seen) {
         let seen: Seen = Arc::default();
         let s = seen.clone();
-        let sink: Sink = Arc::new(move |p| s.lock().unwrap().push(serde_json::to_value(p).unwrap()));
+        let sink: Sink =
+            Arc::new(move |p| s.lock().unwrap().push(serde_json::to_value(p).unwrap()));
         (CodexRunner::start(config, sink), seen)
     }
 
@@ -506,7 +510,10 @@ done
     fn a_prompt_runs_through_approval_to_its_end() {
         let exe = script();
         let (r, seen) = runner(config(&exe, None));
-        assert!(!exe.with_extension("stdin").exists(), "no process before a prompt");
+        assert!(
+            !exe.with_extension("stdin").exists(),
+            "no process before a prompt"
+        );
         let end = r.prompt("make hello.txt", None, Some("high".into()));
         let approval = wait_for(&seen, "approval", 0);
         assert_eq!(approval["decisions"], json!(["accept", "cancel"]));
@@ -521,7 +528,14 @@ done
             .collect();
         assert_eq!(
             kinds,
-            ["threadStarted", "turnStarted", "approval", "tool", "text", "turnEnded"]
+            [
+                "threadStarted",
+                "turnStarted",
+                "approval",
+                "tool",
+                "text",
+                "turnEnded"
+            ]
         );
         let s = sent(&exe);
         assert_eq!(s[2]["params"]["approvalPolicy"], "on-request");
@@ -550,7 +564,10 @@ done
         assert_eq!(first.recv_timeout(WAIT).unwrap(), TurnEnd::cancelled());
         let s = sent(&exe);
         let interrupt = s.iter().find(|v| v["method"] == "turn/interrupt").unwrap();
-        assert_eq!(interrupt["params"], json!({"threadId": "t-new", "turnId": "u1"}));
+        assert_eq!(
+            interrupt["params"],
+            json!({"threadId": "t-new", "turnId": "u1"})
+        );
         assert_eq!(
             s.iter().filter(|v| v["method"] == "turn/start").count(),
             1,
@@ -579,7 +596,10 @@ done
             json!({"type": "threadStarted", "threadId": "t-new", "resumed": false})
         );
         let notice = wait_for(&seen, "notice", 0);
-        assert!(notice["message"].as_str().unwrap().contains("t-gone"), "{notice}");
+        assert!(
+            notice["message"].as_str().unwrap().contains("t-gone"),
+            "{notice}"
+        );
     }
 
     #[test]
@@ -587,7 +607,10 @@ done
         let exe = script();
         let (r, seen) = runner(config(&exe, None));
         let end = r.prompt("ask me", None, None);
-        assert_eq!(end.recv_timeout(WAIT).unwrap(), TurnEnd::failed("needed input"));
+        assert_eq!(
+            end.recv_timeout(WAIT).unwrap(),
+            TurnEnd::failed("needed input")
+        );
         let reply = sent(&exe).into_iter().find(|v| v["id"] == 77).unwrap();
         assert_eq!(reply["error"]["code"], -32601);
         assert!(wait_for(&seen, "notice", 0)["message"]
@@ -654,6 +677,13 @@ done
         eprintln!("live end: {end:?}");
         assert_eq!(end.outcome, Outcome::Completed, "{end:?}");
         let message = wait_for(&seen, "message", 0);
-        assert!(message["text"].as_str().unwrap().to_lowercase().contains("pong"), "{message}");
+        assert!(
+            message["text"]
+                .as_str()
+                .unwrap()
+                .to_lowercase()
+                .contains("pong"),
+            "{message}"
+        );
     }
 }
