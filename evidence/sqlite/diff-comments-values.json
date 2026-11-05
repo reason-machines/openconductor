@@ -1,0 +1,17 @@
+{
+  "subject": "Conductor diff_comments: observed values of state, location and file_level",
+  "method": "REA inspect_sqlite_database on a column-only snapshot (state, location, file_level; no comment bodies or paths) taken from ~/Library/Application Support/com.conductor.app/conductor.db on Sven's Mac. The full database plus WAL (7,077,396,480 bytes) exceeds REA's 256 MiB offline snapshot budget, so REA refused it with resource_constraint and its remediation asks for a smaller snapshot.",
+  "rea_version": "6.7.0",
+  "evidence_id": "ev_444e698b44364d0859121671ce87ea5b31453c61cd33667a067913c30864937f",
+  "snapshot_sha256": "26bc07a471072b6830d5d9ee8cd4ad70defd07140f15d5a1604bf5ff48da609d",
+  "rows": {"returned": 1508, "row_limit": 5000, "truncated": false},
+  "counts": [
+    {"state": "pending", "location": "file", "file_level": 1, "rows": 1460},
+    {"state": "pending", "location": "modified", "file_level": 0, "rows": 46},
+    {"state": "pending", "location": "modified", "file_level": 1, "rows": 2}
+  ],
+  "not_observed": ["any state other than pending", "an old-side location value (OpenConductor uses base, inferred)"],
+  "rea_gaps": [
+    "inspect_sqlite_database has no column/row projection on the source file, so a large app database needs an out-of-band subset copy before REA can read it; that copy is not REA-attested against the source."
+  ]
+}
