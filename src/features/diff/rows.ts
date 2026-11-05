@@ -1,7 +1,7 @@
 // parity:diff.split-unified:ui parity:diff.file-render:ui
 // Turns hunks into render rows for the unified and split layouts, and finds
 // the changed span inside a modified line so it can be emphasised.
-import type { DiffLine, Hunk } from "./types.ts";
+import type { DiffLine, FileDiff, Hunk } from "./types.ts";
 
 /** A [start, end) character range inside a line's text. */
 export type Span = [number, number];
@@ -86,4 +86,24 @@ export function splitRows(hunk: Hunk): SplitRow[] {
     }
   }
   return rows;
+}
+
+/**
+ * Unchanged lines hidden above hunk `i`: between the file start (or the previous
+ * hunk's end) and where this hunk starts. Rendered as an "N unmodified lines" row.
+ */
+export function gapBefore(hunks: Hunk[], i: number): number {
+  const h = hunks[i];
+  if (i === 0) return Math.max(0, h.new_start - 1);
+  const prev = hunks[i - 1];
+  return Math.max(0, h.new_start - (prev.new_start + prev.new_lines));
+}
+
+/**
+ * Entire-file view: the file as it is now (context and added lines), or as it
+ * was for a deleted file. Load it with full context so no gaps remain.
+ */
+export function fileLines(file: FileDiff, hunk: Hunk): DiffLine[] {
+  const drop = file.status === "deleted" ? "addition" : "deletion";
+  return hunk.lines.filter((l) => l.kind !== drop);
 }

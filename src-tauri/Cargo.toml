@@ -35,6 +35,8 @@ base64 = "0.21"
 # terminal history entries (terminal/history_store.rs): AES-256-GCM, SHA-256 long names
 aes-gcm = "0.10"
 sha2 = "0.10"
+# spawn_blocking for terminal history file I/O (already linked through tauri)
+tokio = { version = "1", features = ["rt"] }
 # quick_open/ (same crates Conductor links for its file picker)
 ignore = "0.4.25"
 notify = "8"

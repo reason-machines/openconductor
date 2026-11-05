@@ -31,6 +31,7 @@ pub mod spotlight;
 mod spotlight_commands;
 pub mod terminal;
 mod terminal_commands;
+pub mod terminal_history;
 pub mod workspace;
 
 use serde::Serialize;
@@ -82,6 +83,18 @@ async fn github_repo_availability(
     repo_name: String,
 ) -> Result<github_repo::Availability, String> {
     blocking(move || github_repo::GitHub::default().availability(&owner, &repo_name)).await
+}
+
+/// "Recent repos" for the clone dialog (see `github_repo::RECENT_REPOS_PATH`).
+#[tauri::command]
+async fn github_recent_repos() -> Result<Vec<github_repo::RecentRepo>, String> {
+    blocking(|| github_repo::GitHub::default().recent_repos()).await
+}
+
+/// `ssh` or `https`, from `gh config get git_protocol`.
+#[tauri::command]
+async fn github_git_protocol() -> Result<String, String> {
+    blocking(|| Ok(github_repo::GitHub::default().git_protocol().to_string())).await
 }
 
 /// Publish a local folder as a new private GitHub repo (see `github_repo`).
@@ -146,6 +159,7 @@ pub fn run() {
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             app.manage(db::open(&data_dir)?);
+            app.manage(terminal_commands::history_state(&data_dir));
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
@@ -166,8 +180,11 @@ pub fn run() {
             github_repo_owners,
             github_repo_availability,
             github_repo_create,
+            github_recent_repos,
+            github_git_protocol,
             workspace::commands::add_repository,
             workspace::commands::clone_repository,
+            workspace::commands::default_clone_directory,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
             workspace::commands::branch_name_is_taken,
@@ -202,6 +219,8 @@ pub fn run() {
             terminal_commands::pty_write_mirror,
             terminal_commands::pty_resize_mirror,
             terminal_commands::pty_delete_mirror,
+            terminal_commands::pty_persist_terminal_history,
+            terminal_commands::pty_load_terminal_history,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
@@ -211,6 +230,8 @@ pub fn run() {
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
             pr::commands::pr_lookup,
+            pr::commands::pr_list_open,
+            pr::commands::gh_issue_list_open,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
             pr::commands::pr_merge,

@@ -13,6 +13,7 @@
 //! .invoke_handler(tauri::generate_handler![
 //!     workspace::commands::add_repository,
 //!     workspace::commands::clone_repository,
+//!     workspace::commands::default_clone_directory,
 //!     workspace::commands::list_repositories,
 //!     workspace::commands::list_branches,
 //!     workspace::commands::branch_name_is_taken,
@@ -23,7 +24,8 @@
 //! ```
 
 use serde::Serialize;
-use tauri::State;
+use tauri::ipc::Channel;
+use tauri::{AppHandle, Manager, State};
 
 use super::git::BranchRef;
 use super::service::{CreateWorkspaceRequest, RepositoryInfo, WorkspaceService};
@@ -80,17 +82,34 @@ pub async fn add_repository(service: State<'_, WorkspaceService>, path: String) 
     service.add_repository(path.as_ref()).map(repo_dto).map_err(|e| e.to_string())
 }
 
-/// JS: `invoke("clone_repository", { url, parentDir })`: `git clone <url>
-/// <parentDir>/<name>` (name = last URL segment without `.git`), then
-/// registered like `add_repository`. Errors: "destination already exists:
-/// <path>", or git's stderr.
+/// JS: `invoke("clone_repository", { url, parentDir, onProgress })` where
+/// `onProgress` is a `Channel<string>` that receives each progress line.
+/// Clones into `<parentDir>/<name>` (made unique), runs off the async
+/// runtime, then registers like `add_repository`. Errors: "Target directory
+/// does not exist: <path>", or "Git clone failed with code <n>" plus output.
 #[tauri::command]
 pub async fn clone_repository(
-    service: State<'_, WorkspaceService>,
+    app: AppHandle,
     url: String,
     parent_dir: String,
+    on_progress: Channel<String>,
 ) -> Result<RepositoryDto, String> {
-    service.clone_repository(&url, parent_dir.as_ref()).map(repo_dto).map_err(|e| e.to_string())
+    tauri::async_runtime::spawn_blocking(move || {
+        let service = app.state::<WorkspaceService>();
+        let mut send = |line: &str| {
+            let _ = on_progress.send(line.to_string());
+        };
+        service.clone_repository(&url, parent_dir.as_ref(), &mut send).map(repo_dto).map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+/// JS: `invoke("default_clone_directory")`: the folder the clone dialog
+/// falls back to when no saved location exists (created on first clone).
+#[tauri::command]
+pub fn default_clone_directory(service: State<'_, WorkspaceService>) -> String {
+    service.default_clone_dir().display().to_string()
 }
 
 #[tauri::command]
@@ -118,10 +137,13 @@ pub async fn branch_name_is_taken(
     service.branch_name_is_taken(&repository_id, &branch_name).map_err(|e| e.to_string())
 }
 
-/// JS: `invoke("create_workspace", { repositoryId, branchName, directoryName, baseBranch, existingBranch })`.
+/// JS: `invoke("create_workspace", { repositoryId, branchName, directoryName, baseBranch, existingBranch, prNumber })`.
 /// `branchName`, `directoryName` and `baseBranch` may be null or empty.
 /// `existingBranch: true` checks out `branchName` (the local branch, or a new
 /// one tracking `origin/<branchName>`) instead of creating it from the base.
+/// `prNumber` (optional) adds a last resort for PRs from forks: when the
+/// branch is neither local nor on origin, `pull/<prNumber>/head` is fetched
+/// into a local `branchName` (no upstream) and checked out.
 #[tauri::command]
 pub async fn create_workspace(
     service: State<'_, WorkspaceService>,
@@ -130,6 +152,7 @@ pub async fn create_workspace(
     directory_name: Option<String>,
     base_branch: Option<String>,
     existing_branch: Option<bool>,
+    pr_number: Option<u64>,
 ) -> Result<CreatedWorkspaceDto, String> {
     let req = CreateWorkspaceRequest {
         repository_id: repository_id.clone(),
@@ -137,6 +160,7 @@ pub async fn create_workspace(
         directory_name,
         base_branch,
         existing_branch: existing_branch.unwrap_or(false),
+        pr_number,
     };
     service.create_workspace(&req).map(|c| created_dto(&repository_id, c)).map_err(|e| e.to_string())
 }

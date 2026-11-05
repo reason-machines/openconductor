@@ -52,6 +52,7 @@ fn req(scope: Scope) -> DiffRequest {
         scope,
         ignore_whitespace: false,
         path: None,
+        context_lines: None,
     }
 }
 
@@ -164,4 +165,29 @@ fn unknown_base_is_a_git_error() {
     )
     .unwrap_err();
     assert!(e.to_string().contains("merge-base"), "{e}");
+}
+
+#[test]
+fn context_lines_widens_hunks_to_the_whole_file() {
+    let r = repo();
+    let before: String = (1..=20).map(|i| format!("line {i}\n")).collect();
+    write(&r, "long.txt", &before);
+    commit(&r, "base");
+    write(&r, "long.txt", &before.replace("line 10\n", "line ten\n"));
+
+    let default = workspace_diff(&r, &req(Scope::Uncommitted)).unwrap();
+    let h = &default.files[0].hunks[0];
+    assert_eq!((h.new_start, h.new_lines), (7, 7));
+
+    let whole = workspace_diff(
+        &r,
+        &DiffRequest {
+            context_lines: Some(u32::MAX >> 1),
+            ..req(Scope::Uncommitted)
+        },
+    )
+    .unwrap();
+    let hunks = &whole.files[0].hunks;
+    assert_eq!(hunks.len(), 1);
+    assert_eq!((hunks[0].new_start, hunks[0].new_lines), (1, 20));
 }

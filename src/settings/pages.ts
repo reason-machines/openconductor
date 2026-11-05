@@ -2,7 +2,7 @@
 // (/settings/user/<id>, evidence/settings/NOTES.md); pages are listed here
 // only once they are built.
 
-export type SettingsPage = "general" | "models" | "git" | "key-bindings";
+export type SettingsPage = "general" | "models" | "git" | "key-bindings" | "providers";
 
 export const SETTINGS_GROUPS: { title: string; pages: { id: SettingsPage; label: string }[] }[] = [
   {
@@ -15,6 +15,7 @@ export const SETTINGS_GROUPS: { title: string; pages: { id: SettingsPage; label:
       { id: "key-bindings", label: "Keyboard shortcuts" },
     ],
   },
+  { title: "Agents & environment", pages: [{ id: "providers", label: "Agents" }] },
 ];
 
 const PAGES = SETTINGS_GROUPS.flatMap((g) => g.pages);
