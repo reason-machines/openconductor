@@ -246,29 +246,14 @@ fn sidebar_resource_usage_is_an_off_by_default_flag() {
 }
 
 #[test]
-fn sidebar_transparency_is_an_off_by_default_flag() {
-    // `Te("experimental_sidebar_transparency", !1)` and the Settings row's
-    // `f6({key: "experimental_sidebar_transparency", value: i.toString()})`
-    // (index-BGEQ8YjU.js, renderApp-D_fmY7hW.js): "true" / "false", false when unset.
-    let read = |v: &str| {
-        AppPrefs::from_rows(&rows(&[("experimental_sidebar_transparency", v)]))
-            .experimental_sidebar_transparency
-    };
-    assert!(!AppPrefs::from_rows(&HashMap::new()).experimental_sidebar_transparency);
-    assert!(read("true"));
-    assert!(!read("false"));
-    assert!(!read("1"));
+fn chrome_mode_reads_only_true_and_writes_text() {
+    assert!(!AppPrefs::from_rows(&HashMap::new()).chrome_mode_enabled);
+    assert!(AppPrefs::from_rows(&rows(&[("chrome_mode_enabled", "true")])).chrome_mode_enabled);
+    assert!(!AppPrefs::from_rows(&rows(&[("chrome_mode_enabled", "1")])).chrome_mode_enabled);
     let u: AppPrefUpdate =
-        serde_json::from_str(r#"{"key":"experimental_sidebar_transparency","value":true}"#)
-            .unwrap();
+        serde_json::from_str(r#"{"key":"chrome_mode_enabled","value":true}"#).unwrap();
     assert_eq!(
         u.encode().unwrap(),
-        Write::Set("experimental_sidebar_transparency", "true".into())
-    );
-    assert_eq!(
-        AppPrefUpdate::ExperimentalSidebarTransparency(false)
-            .encode()
-            .unwrap(),
-        Write::Set("experimental_sidebar_transparency", "false".into())
+        Write::Set("chrome_mode_enabled", "true".into())
     );
 }

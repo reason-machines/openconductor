@@ -45,6 +45,16 @@ impl ClaudeChats {
                     // No permission prompt UI yet: the agent works in the
                     // workspace's own worktree without asking.
                     launch.permission_mode = PermissionMode::BypassPermissions;
+                    // "Use Claude Code with Chrome" (Settings › Agents): the
+                    // reference sidecar adds `extraArgs: { chrome: null }`.
+                    // The launcher runs on a blocking thread (claude_prompt's
+                    // spawn_blocking), so it can wait on the database.
+                    launch.chrome = settings_app
+                        .try_state::<crate::db::Db>()
+                        .and_then(|db| {
+                            tauri::async_runtime::block_on(crate::app_prefs::commands::load(&db.0)).ok()
+                        })
+                        .is_some_and(|p| p.chrome_mode_enabled);
                     Ok(launch)
                 });
                 let emit_app = app.clone();

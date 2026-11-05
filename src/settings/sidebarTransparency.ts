@@ -2,12 +2,12 @@
 // Its theme provider (renderApp-D_fmY7hW.js) toggles `sidebar-transparency` on <html>
 // and calls `update_window_vibrancy({ isDarkMode, enabled })` each time it applies the
 // theme; styles.css then lets html, body, #root and the app shell show the window's
-// native vibrancy through the sidebar's 60% fill. The window itself is created
-// transparent only when the setting was on at launch (src-tauri/src/sidebar_transparency.rs),
-// which is why the setting "Takes effect after you restart".
+// native vibrancy through the sidebar's 60% fill. Here applyAppearance (appearance.ts),
+// our theme step, passes the stored setting to setSidebarTransparency at startup and on
+// every settings save. The window itself is created transparent only when the setting
+// was on at launch (src-tauri/src/sidebar_transparency.rs), which is why the setting
+// "Takes effect after you restart".
 import { invoke, isTauri } from "@tauri-apps/api/core";
-import { useEffect } from "react";
-import { useAppPrefs } from "./appPrefs.ts";
 
 /** The class Conductor puts on the document root while the setting is on. */
 export const SIDEBAR_TRANSPARENCY_CLASS = "sidebar-transparency";
@@ -33,26 +33,29 @@ export function applySidebarTransparency(root: HTMLElement, enabled: boolean, is
   );
 }
 
-/** Keeps the root class and window vibrancy in step with the setting and the light/dark mode. */
-export function useSidebarTransparency(): void {
-  const enabled = useAppPrefs().experimental_sidebar_transparency;
-  useEffect(() => {
-    const root = document.documentElement;
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    let last: boolean | null = null;
-    const apply = () => {
-      const dark = resolveDark(root.dataset.theme, media.matches);
-      if (dark === last) return;
-      last = dark;
-      applySidebarTransparency(root, enabled, dark);
-    };
-    apply();
-    const obs = new MutationObserver(apply);
-    obs.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
-    media.addEventListener("change", apply);
-    return () => {
-      obs.disconnect();
-      media.removeEventListener("change", apply);
-    };
-  }, [enabled]);
+let enabled = false;
+let applied: string | null = null;
+let listening = false;
+
+function sync(): void {
+  const root = document.documentElement;
+  const dark = resolveDark(root.dataset.theme, window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const key = `${enabled}:${dark}`;
+  if (key === applied) return;
+  applied = key;
+  applySidebarTransparency(root, enabled, dark);
+}
+
+/**
+ * Keeps the root class and window vibrancy in step with the stored setting and the
+ * light/dark mode; call after `data-theme` is set. Re-applies when the system
+ * appearance changes, which matters while the theme follows the system.
+ */
+export function setSidebarTransparency(on: boolean): void {
+  enabled = on;
+  if (!listening) {
+    listening = true;
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", sync);
+  }
+  sync();
 }

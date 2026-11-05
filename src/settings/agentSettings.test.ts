@@ -51,12 +51,14 @@ test("settings push tool approvals and executable paths into the big terminal", 
     claude_code_executable_path: "/opt/claude",
     experimental: { experimental_big_terminal_mode: true },
   };
-  const g = globalThis as { document?: unknown };
-  g.document = { documentElement: { style: { setProperty() {}, removeProperty() {} }, dataset: {} } };
+  const g = globalThis as { document?: unknown; window?: unknown };
+  g.document = { documentElement: { style: { setProperty() {}, removeProperty() {} }, dataset: {}, classList: { toggle() {} } } };
+  g.window = { matchMedia: () => ({ matches: false, addEventListener() {} }) };
   try {
     applyAppearance(s);
   } finally {
     delete g.document;
+    delete g.window;
   }
   assert.equal(currentBigTerminal().requiresToolApprovals, true);
   assert.deepEqual(bigTabRequest(), { command: "'/opt/claude'" });

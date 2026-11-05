@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { pickFolder } from "../backend";
 import { Modal } from "../components/Dialogs";
 import { Row } from "./GeneralPage";
+import { FolderIcon } from "./icons";
 import { errorText } from "./api";
 import {
   CHANGE_BODY,
@@ -52,10 +53,20 @@ export function RootPathRow() {
 
   return (
     <>
-      <Row label={ROOT_TITLE} help={`${ROOT_DESCRIPTION} ${ROOT_WARNING}`}>
-        <span className="settings-inline">
-          <input type="text" aria-label={ROOT_TITLE} readOnly value={root ?? ""} className="settings-path" />
-          <button type="button" className="btn" onClick={() => void browse()}>
+      <Row
+        label={ROOT_TITLE}
+        help={
+          <>
+            <p>{ROOT_DESCRIPTION}</p>
+            <p>{ROOT_WARNING}</p>
+          </>
+        }
+        stacked
+      >
+        <span className="settings-field-wrap">
+          <input type="text" aria-label={ROOT_TITLE} readOnly value={root ?? ""} className="settings-field" />
+          <button type="button" className="btn settings-outline" onClick={() => void browse()}>
+            <FolderIcon />
             Browse
           </button>
         </span>

@@ -1,13 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { DEFAULT_APP_PREFS, applyUpdate } from "./appPrefs.ts";
+import { BOOL_PREFS, boolPref, withBoolPref } from "./prefs.ts";
+import type { Settings } from "./types";
 import { SIDEBAR_TRANSPARENCY_CLASS, applySidebarTransparency, resolveDark, vibrancyArgs } from "./sidebarTransparency.ts";
 
-test("Sidebar transparency is off by default and saves as its own key", () => {
-  assert.equal(DEFAULT_APP_PREFS.experimental_sidebar_transparency, false);
-  const on = applyUpdate(DEFAULT_APP_PREFS, { key: "experimental_sidebar_transparency", value: true });
-  assert.equal(on.experimental_sidebar_transparency, true);
-  assert.deepEqual({ ...on, experimental_sidebar_transparency: false }, DEFAULT_APP_PREFS);
+test("Sidebar transparency is an off-by-default Experimental setting", () => {
+  assert.deepEqual(BOOL_PREFS.experimental_sidebar_transparency, { section: "experimental", default: false });
+  const s = { experimental: {} } as unknown as Settings;
+  assert.equal(boolPref(s, "experimental_sidebar_transparency"), false);
+  assert.equal(boolPref(withBoolPref(s, "experimental_sidebar_transparency", true), "experimental_sidebar_transparency"), true);
 });
 
 test("dark is the explicit theme, else the system setting", () => {

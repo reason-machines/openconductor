@@ -1,3 +1,4 @@
+import { Fragment, type ReactNode } from "react";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import type { Repo } from "../state/types";
 import { AccountPage } from "./AccountPage";
@@ -16,6 +17,8 @@ import { RepoSettingsPage } from "./RepoSettingsPage";
 import { REPO_SECTIONS, REPO_SECTION_LABELS, sameLocation, type SettingsLocation } from "./routes";
 import type { Settings } from "./types";
 import { useSettings } from "./useSettings";
+import { AgentIcon, BackIcon, ChipIcon, DriveIcon, FlaskIcon, GitIcon, KeyboardIcon, KeyIcon, PaletteIcon, SlidersIcon, TerminalIcon, UserCircleIcon } from "./icons";
+import "./settings.css";
 
 interface Props {
   location: SettingsLocation;
@@ -35,8 +38,8 @@ export function SettingsView({ location, repos, onNavigate, onClose }: Props) {
   useKeybindings({ "settings.close": onClose });
 
   const repo = location.scope === "repo" ? repos.find((r) => r.id === location.repoId) : undefined;
-  const title = location.scope === "user" ? pageLabel(location.page) : `${repo?.name ?? "Repository"} · ${REPO_SECTION_LABELS[location.section]}`;
-  const navButton = (to: SettingsLocation, label: string, className = "nav-item") => {
+  const title = location.scope === "user" ? pageLabel(location.page) : REPO_SECTION_LABELS[location.section];
+  const navButton = (to: SettingsLocation, label: string, className = "nav-item", icon?: ReactNode) => {
     const active = sameLocation(to, location);
     return (
       <button
@@ -45,48 +48,62 @@ export function SettingsView({ location, repos, onNavigate, onClose }: Props) {
         aria-current={active ? "page" : undefined}
         onClick={() => onNavigate(to)}
       >
-        {label}
+        {icon}
+        <span>{label}</span>
       </button>
     );
   };
+  const header = location.scope === "user" ? PAGE_HEADERS[location.page] : REPO_HEADERS[location.section];
 
   return (
     <div className="settings">
       <nav className="settings-nav" aria-label="Settings pages">
         <div className="sidebar-drag" data-tauri-drag-region />
+        <div className="settings-nav-top">
+          <button className="settings-back" title="Esc" onClick={onClose}>
+            <BackIcon />
+            Back
+          </button>
+        </div>
         {settingsGroups(settings?.experimental?.experimental_big_terminal_mode === true).map((g) => (
-          <div key={g.title || g.pages[0]?.id} className="settings-group">
-            {g.title && <div className="settings-group-title">{g.title}</div>}
-            {g.pages.map((p) => navButton({ scope: "user", page: p.id }, p.label))}
+          <Fragment key={g.title || g.pages[0]?.id}>
+            <div className="settings-group">
+              {g.title && <div className="settings-group-title">{g.title}</div>}
+              {g.pages.map((p) => navButton({ scope: "user", page: p.id }, p.label, "nav-item", PAGE_ICONS[p.id]))}
+            </div>
             {g.title === "Agents & environment" && (
               <RepositoriesNav repos={repos} location={location} onNavigate={onNavigate} navButton={navButton} />
             )}
-          </div>
+          </Fragment>
         ))}
       </nav>
       <section className="settings-page">
-        <header className="settings-header">
-          <h1>{title}</h1>
-          <button className="btn btn-small" title="Esc" onClick={onClose}>
-            Back
-          </button>
-        </header>
-        {error && (
-          <p className="error small" role="alert">
-            {error}
-          </p>
-        )}
-        {location.scope === "repo" ? (
-          repo ? (
-            <RepoSettingsPage repo={repo} section={location.section} />
+        <div className="settings-page-inner">
+          {!(location.scope === "user" && SELF_HEADED.includes(location.page)) && (
+            <header className="settings-header">
+              <div>
+                <h1>{title}</h1>
+                {header?.description && <p>{header.description}</p>}
+              </div>
+            </header>
+          )}
+          {error && (
+            <p className="error small" role="alert">
+              {error}
+            </p>
+          )}
+          {location.scope === "repo" ? (
+            repo ? (
+              <RepoSettingsPage repo={repo} section={location.section} />
+            ) : (
+              <p className="muted">This repository is no longer in OpenConductor.</p>
+            )
+          ) : !settings ? (
+            <p className="muted">Loading…</p>
           ) : (
-            <p className="muted">This repository is no longer in OpenConductor.</p>
-          )
-        ) : !settings ? (
-          <p className="muted">Loading…</p>
-        ) : (
-          <UserPage page={location.page} settings={settings} save={save} reload={reload} />
-        )}
+            <UserPage page={location.page} settings={settings} save={save} reload={reload} />
+          )}
+        </div>
       </section>
     </div>
   );
@@ -113,7 +130,7 @@ function UserPage({
     case "models":
       return <DefaultModelsPage settings={settings} save={save} />;
     case "providers":
-      return <AgentsPage settings={settings} reload={reload} />;
+      return <AgentsPage settings={settings} reload={reload} save={save} />;
     case "appearance":
       return <AppearancePage settings={settings} save={save} />;
     case "experimental":
@@ -138,10 +155,10 @@ function RepositoriesNav({
   repos: Repo[];
   location: SettingsLocation;
   onNavigate: (location: SettingsLocation) => void;
-  navButton: (to: SettingsLocation, label: string, className?: string) => JSX.Element;
+  navButton: (to: SettingsLocation, label: string, className?: string, icon?: ReactNode) => JSX.Element;
 }) {
   return (
-    <div className="settings-repos" aria-label="Repositories" role="group">
+    <div className="settings-group settings-repos" aria-label="Repositories" role="group">
       <div className="settings-group-title">Repositories</div>
       {repos.length === 0 && <div className="settings-repos-empty muted small">None</div>}
       {repos.map((r) => {
@@ -153,7 +170,10 @@ function RepositoriesNav({
               aria-expanded={open}
               onClick={() => onNavigate({ scope: "repo", repoId: r.id, section: "environment" })}
             >
-              {r.name}
+              <span className="settings-repo-initial" aria-hidden>
+                {r.name.slice(0, 1).toUpperCase()}
+              </span>
+              <span>{r.name}</span>
             </button>
             {open && (
               <div className="settings-repo-sections">
@@ -166,3 +186,35 @@ function RepositoriesNav({
     </div>
   );
 }
+
+const PAGE_ICONS: Record<SettingsPage, ReactNode> = {
+  general: <SlidersIcon />,
+  account: <UserCircleIcon />,
+  appearance: <PaletteIcon />,
+  "key-bindings": <KeyboardIcon />,
+  models: <ChipIcon />,
+  git: <GitIcon />,
+  providers: <AgentIcon />,
+  environment: <KeyIcon />,
+  experimental: <FlaskIcon />,
+  advanced: <DriveIcon />,
+  terminal: <TerminalIcon />,
+};
+
+/** Pages that draw their own header (Conductor's environment panel has an "Add" action beside its title). */
+const SELF_HEADED: readonly SettingsPage[] = ["environment"];
+
+/** Conductor's `_Sa` page headers: a description under the title where it has one. */
+const PAGE_HEADERS: Partial<Record<SettingsPage, { description: ReactNode }>> = {
+  experimental: {
+    description: (
+      <>
+        Experimental features that are under development. <strong>Expect breaking changes.</strong>
+      </>
+    ),
+  },
+};
+const REPO_HEADERS: Partial<Record<(typeof REPO_SECTIONS)[number], { description: ReactNode }>> = {
+  actions: { description: "Configure action-specific behavior and instructions for this repository." },
+  misc: { description: "Repository paths and workspace file behavior." },
+};
