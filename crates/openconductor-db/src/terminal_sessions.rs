@@ -68,3 +68,33 @@ pub async fn get(pool: &SqlitePool, session_id: &str) -> Result<Option<TerminalS
     .fetch_optional(pool)
     .await?)
 }
+
+/// Delete the row for `session_id`; a missing row is fine. The reference's
+/// statement: `DELETE FROM terminal_sessions WHERE session_id = ?`.
+pub async fn delete(pool: &SqlitePool, session_id: &str) -> Result<()> {
+    let q = sqlx::query("DELETE FROM terminal_sessions WHERE session_id = ?").bind(session_id);
+    exec(q, pool).await.map(|_| ())
+}
+
+/// Every saved session's id (`SELECT session_id FROM terminal_sessions`).
+pub async fn session_ids(pool: &SqlitePool) -> Result<Vec<String>> {
+    Ok(
+        sqlx::query_scalar("SELECT session_id FROM terminal_sessions")
+            .fetch_all(pool)
+            .await?,
+    )
+}
+
+/// The ids of `workspace_id`'s saved sessions
+/// (`SELECT session_id FROM terminal_sessions WHERE workspace_id = ?`).
+pub async fn session_ids_for_workspace(
+    pool: &SqlitePool,
+    workspace_id: &str,
+) -> Result<Vec<String>> {
+    Ok(
+        sqlx::query_scalar("SELECT session_id FROM terminal_sessions WHERE workspace_id = ?")
+            .bind(workspace_id)
+            .fetch_all(pool)
+            .await?,
+    )
+}

@@ -48,6 +48,12 @@
 
 .oc-changes { border-right: 1px solid var(--border); overflow-y: auto; padding: 4px 0; font-size: 12px; }
 .oc-changes-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 10px 6px; color: var(--muted); }
+.oc-change-row { display: flex; align-items: center; }
+.oc-change-row .oc-change { flex: 1; min-width: 0; width: auto; }
+.oc-change-row .oc-discard { flex-shrink: 0; opacity: 0; margin-right: 4px; }
+.oc-change-row:hover .oc-discard, .oc-change-row .oc-discard:focus-visible { opacity: 1; }
+.oc-file-header .oc-discard { color: var(--muted); }
+.oc-discard-path { font-family: var(--oc-diff-font); font-weight: 600; word-break: break-all; }
 .oc-change { display: flex; align-items: center; gap: 6px; width: 100%; padding: 3px 10px; text-align: left; }
 .oc-change:hover { background: var(--hover); }
 .oc-change[aria-current="true"] { background: var(--active); }
@@ -109,3 +115,5 @@
 .oc-thread-collapsed { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 6px 10px; font-size: 12px; cursor: pointer; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .oc-composer textarea { display: block; width: 100%; box-sizing: border-box; border: 0; border-radius: 6px 6px 0 0; padding: 8px 10px; resize: vertical; font: inherit; font-size: 13px; background: transparent; color: inherit; }
 .oc-composer textarea:focus { outline: none; }
+.btn.oc-btn-danger, .btn.oc-btn-danger:hover { background: var(--del); border-color: var(--del); color: #fff; }
+.btn.oc-btn-danger .muted { color: inherit; opacity: 0.7; }

@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "./state/store";
-import { isSidebarVisible } from "./state/selectors";
+import { destroyWorkspaceTerminals } from "./features/terminal/session";
+import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
@@ -15,6 +16,7 @@ import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/n
 import { Toaster, useToasts } from "./components/Toast";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
+import { FEEDBACK_URL } from "./components/helpMenuItems";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
@@ -32,6 +34,13 @@ import { useNavHistory } from "./state/useNavHistory";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
+  // A workspace that leaves the app (archived, or its repository removed)
+  // takes its terminals and their saved history with it, as in Conductor.
+  const prevState = useRef(state);
+  useEffect(() => {
+    for (const id of removedWorkspaceIds(prevState.current, state)) void destroyWorkspaceTerminals(id);
+    prevState.current = state;
+  }, [state]);
   const nav = useNavHistory(state, dispatch);
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
   // `/create` (or `?dialog=create`) opens the Create-workspace dialog directly.
@@ -107,6 +116,7 @@ export default function App() {
   useKeybindings({
     "openKeyboardShortcuts": toggleShortcuts,
     "openSettings": openSettings,
+    "sendFeedback": () => void openUrl(FEEDBACK_URL),
     "view.zoomIn": () => void changeZoom("in").catch((e) => show("error", errorText(e))),
     "view.zoomOut": () => void changeZoom("out").catch((e) => show("error", errorText(e))),
     "view.resetZoom": () => void changeZoom("reset").catch((e) => show("error", errorText(e))),

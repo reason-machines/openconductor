@@ -1,6 +1,6 @@
 // Flows run in order against one app session. Each throws on failure.
 import { execFileSync } from "node:child_process";
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -60,7 +60,9 @@ export const flows = [
     name: "create-workspace",
     async run(wd, ctx) {
       if (!ctx.repo) throw new Error("needs the add-repo flow's repo");
-      const worktrees = () => (git(ctx.repo, "worktree", "list", "--porcelain").toString().match(/^worktree /gm) ?? []).length;
+      const worktreePaths = () => git(ctx.repo, "worktree", "list", "--porcelain").toString().match(/^worktree .+$/gm)?.map((l) => l.slice(9)) ?? [];
+      const worktrees = () => worktreePaths().length;
+      const pathsBefore = worktreePaths();
       const namesBefore = await textsOf(wd, ".sb-ws-name");
       const treesBefore = worktrees();
       const [add] = await wd.findAll('.sb-repo-add[aria-label="Create workspace in e2e-demo"]');
@@ -77,6 +79,26 @@ export const flows = [
       // The backend made a real git worktree off the fixture repo.
       const trees = worktrees();
       if (trees !== treesBefore + 1) throw new Error(`git worktree list has ${trees} entries, want ${treesBefore + 1} (sidebar: ${JSON.stringify(names)})`);
+      ctx.worktree = worktreePaths().find((p) => !pathsBefore.includes(p));
+    },
+  },
+  {
+    name: "diff",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
+      // A new, untracked file in the selected workspace's worktree, as an agent would write it.
+      writeFileSync(join(ctx.worktree, "e2e-diff.txt"), "one\ntwo\nthree\n");
+      const [reload] = await wd.waitFor("the Changes panel", () => wd.findAll('.oc-diff-toolbar button[title="Reload changes"]').then((ids) => ids.length && ids));
+      await wd.click(reload);
+      const rows = await wd.waitFor("e2e-diff.txt in Changed files", async () => {
+        const r = await wd.execute(
+          "return Array.from(document.querySelectorAll('.oc-change'), (e) => [e.querySelector('.name')?.textContent.trim(), e.querySelector('.oc-count .a')?.textContent.trim()]);",
+          [],
+        );
+        return r.some(([name]) => name === "e2e-diff.txt") ? r : null;
+      });
+      const [, added] = rows.find(([name]) => name === "e2e-diff.txt");
+      if (added !== "+3") throw new Error(`e2e-diff.txt shows ${added} added lines, want +3 (rows: ${JSON.stringify(rows)})`);
     },
   },
 ];

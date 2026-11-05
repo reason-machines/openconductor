@@ -9,6 +9,8 @@ import {
   onPtyEvent,
   ptyAckBytes,
   ptyClearHistory,
+  ptyDeleteTerminalHistory,
+  ptyDeleteWorkspaceTerminalHistory,
   ptyKill,
   ptyLoadTerminalHistory,
   ptyPersistTerminalHistory,
@@ -18,7 +20,7 @@ import {
   ptyWriteMirror,
 } from "./pty";
 import { canOpen, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs";
-import { PersistThrottle, readSaved, restoreCwds, restoreOutput, writeWorkspace, type HistoryRecord } from "./restore";
+import { PersistThrottle, readSaved, removeWorkspace, restoreCwds, restoreOutput, writeWorkspace, type HistoryRecord } from "./restore";
 import { FIND_COMMAND, LINE_EDIT_BYTES, terminalCommandFor } from "./shortcuts.ts";
 import { currentTerminalFont, onTerminalFont, TERMINAL_LINE_HEIGHT } from "./font.ts";
 import { currentScrollbackRows, onScrollbackRows } from "./scrollback.ts";
@@ -250,6 +252,8 @@ async function startTab(
   } catch (err) {
     dispose(id);
     dispatch(workspaceId, { type: "close", id });
+    // A restored tab that cannot start is gone from the list, so its saved screen goes too.
+    if (restore) void forget(id);
     throw err;
   }
   return id;
@@ -317,10 +321,38 @@ export function clearTab(id: string) {
 }
 
 export function closeTab(workspaceId: string, id: string) {
-  persist.cancel(id);
   void ptyKill(id).catch(() => {});
   dispose(id);
   dispatch(workspaceId, { type: "close", id });
+  void forget(id);
+}
+
+/**
+ * Delete tab `id`'s saved session, as the reference does for every terminal
+ * that leaves its tab stores; after any save already running, so that save
+ * cannot bring it back.
+ */
+const forget = (id: string): Promise<void> => persist.drop(id, () => ptyDeleteTerminalHistory(id));
+
+/**
+ * End every terminal of `workspaceId` and delete what was saved for it: its
+ * tab list and every saved session, including ones from earlier launches that
+ * were never restored in this one. The reference does this when a workspace
+ * is archived or its repository removed (`destroyAllWorkspaceTerminalInstances`).
+ */
+export async function destroyWorkspaceTerminals(workspaceId: string): Promise<void> {
+  const ids = getTabs(workspaceId).tabs.map((t) => t.id);
+  for (const id of ids) {
+    void ptyKill(id).catch(() => {});
+    dispose(id);
+  }
+  tabsByWorkspace.delete(workspaceId);
+  hydrated.delete(workspaceId);
+  const store = storage();
+  if (store) removeWorkspace(store, workspaceId);
+  subscribers.forEach((f) => f());
+  await Promise.all(ids.map(forget));
+  await ptyDeleteWorkspaceTerminalHistory(workspaceId).catch(() => {});
 }
 
 function dispose(id: string) {

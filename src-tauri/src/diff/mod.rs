@@ -13,6 +13,7 @@ pub mod commands;
 /// Tauri commands over the `diff_comments` store; also excluded from the harness.
 #[cfg(not(diff_std_only))]
 pub mod comment_commands;
+pub mod discard;
 pub mod git;
 pub mod model;
 pub mod parse;
