@@ -6,12 +6,16 @@
 //!
 //! * [`rpc`]: newline-delimited JSON-RPC 2.0 transport with in-order
 //!   dispatch of notifications before the responses that follow them.
+//! * [`cli`]: finding the `reason` binary and starting `reason acp`.
 //!
 //! The module depends on `std`, `serde` and `serde_json` only, so it builds
 //! and tests on its own (`tools/reason-acp/run-rust-tests.sh`) before the
 //! Tauri crate wires it into commands.
 
+pub mod cli;
 pub mod rpc;
 
+#[cfg(test)]
+mod cli_tests;
 #[cfg(test)]
 mod tests;

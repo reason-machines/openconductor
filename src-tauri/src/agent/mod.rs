@@ -3,6 +3,8 @@
 //! * [`claude`] - Claude Code providers: its own login, and an Anthropic API
 //!   key or auth token, optionally through a gateway with model overrides.
 //! * [`claude_cloud`] - Claude Code on Bedrock, Vertex AI and Foundry.
+//! * [`codex`] - Codex (login, OpenAI API key, OpenRouter / Vercel AI
+//!   Gateway), Cursor and OpenCode providers.
 //! * [`env`] - [`AgentKind`] and [`LaunchEnv`], the environment an agent
 //!   process is launched with. A launch clears every inherited variable that
 //!   would route the agent elsewhere before setting its own.
@@ -19,6 +21,7 @@
 
 pub mod claude;
 pub mod claude_cloud;
+pub mod codex;
 pub mod env;
 pub mod provider;
 pub mod secret;
