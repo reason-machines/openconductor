@@ -61,7 +61,8 @@ fn conductor_json_maps_legacy_keys() {
     let r = resolve(&[l]);
     assert_eq!(r.setup.unwrap().value, "npm i");
     assert_eq!(r.archive.unwrap().value, "rm -rf tmp");
-    assert_eq!(r.run, Some(Value::String("npm run dev".into())));
+    assert_eq!(r.run[0].id, "run");
+    assert_eq!(r.run[0].command, "npm run dev");
     assert_eq!(r.run_mode, RunMode::Nonconcurrent);
 }
 
