@@ -22,6 +22,7 @@ import { PersistThrottle, readSaved, restoreCwds, restoreOutput, writeWorkspace,
 import { FIND_COMMAND, LINE_EDIT_BYTES, terminalCommandFor } from "./shortcuts.ts";
 import { currentTerminalFont, onTerminalFont, TERMINAL_LINE_HEIGHT } from "./font.ts";
 import { currentScrollbackRows, onScrollbackRows } from "./scrollback.ts";
+import { bigTabRequest } from "./bigTerminal.ts";
 
 interface Live {
   workspaceId: string;
@@ -30,7 +31,7 @@ interface Live {
   host: HTMLDivElement;
   ack: AckBatcher;
   opened: boolean;
-  /** Spawn settings, reused by a new tab opened from this one. */
+  /** Spawn settings, reused by a new tab opened from this one (the panel's command, not a big terminal's). */
   cwd: string;
   initialCommand?: string;
   /** Saved-history fields (`pty_persist_terminal_history`). */
@@ -167,7 +168,18 @@ async function restoreOnce(workspaceId: string, cwd: string, initialCommand?: st
   dispatch(workspaceId, { type: "restored", activeId: saved?.activeId ?? null, next: saved?.next ?? 1 });
 }
 
-async function startTab(workspaceId: string, cwd: string, initialCommand?: string, restore?: { id: string; title: string }): Promise<string> {
+/**
+ * `initialCommand` is the panel's auto-run command, kept for tabs opened from
+ * this one; `run` overrides what this tab alone runs (a big terminal's preset,
+ * `undefined` command for a plain shell).
+ */
+async function startTab(
+  workspaceId: string,
+  cwd: string,
+  initialCommand?: string,
+  restore?: { id: string; title: string },
+  run?: { command: string | undefined },
+): Promise<string> {
   if (!canOpen(getTabs(workspaceId))) throw new Error("Tab limit reached for this workspace.");
   listening ??= onPtyEvent(route);
   await listening;
@@ -233,7 +245,7 @@ async function startTab(workspaceId: string, cwd: string, initialCommand?: strin
   dispatch(workspaceId, { type: "open", id, title: restore?.title });
   try {
     await spawnIn(restore ? restoreCwds(record, cwd) : [cwd], (dir) =>
-      ptySpawn({ id, cwd: dir, cols: term.cols, rows: term.rows, initialCommand }),
+      ptySpawn({ id, cwd: dir, cols: term.cols, rows: term.rows, initialCommand: run ? run.command : initialCommand }),
     );
   } catch (err) {
     dispose(id);
@@ -287,8 +299,12 @@ function runTerminalCommand(id: string, command: string) {
     subscribers.forEach((f) => f());
   }
   else if (command === "terminal.closeTab") closeTab(l.workspaceId, id);
-  else if (command === "terminal.newTab" || command === "terminal.newBigTab")
-    void openTab(l.workspaceId, l.cwd, l.initialCommand).catch(() => {});
+  else if (command === "terminal.newTab") void openTab(l.workspaceId, l.cwd, l.initialCommand).catch(() => {});
+  else if (command === "terminal.newBigTab") {
+    // Conductor opens a center-pane terminal; we have no center tabs, so it is a panel tab (NOTES.md).
+    const big = bigTabRequest();
+    if (big) void startTab(l.workspaceId, l.cwd, l.initialCommand, undefined, big).catch(() => {});
+  }
 }
 
 export function clearTab(id: string) {
