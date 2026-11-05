@@ -26,6 +26,8 @@ export interface TranscriptProps {
   onResetChat?: (turnId: string) => void;
   /** "Fork to new tab" in every finished turn's More actions menu. */
   onForkToNewTab?: (turnId: string) => void;
+  /** "Fork to new workspace" in the same menu, for a workspace on this machine. */
+  onForkToNewWorkspace?: (turnId: string) => void;
   /** The fork items are shown but disabled, e.g. while a fork is being made. */
   forkDisabled?: boolean;
   /** The footer hover's first line, "Opus 5.5 via Reason" (Conductor's `kDo`). */
@@ -54,6 +56,7 @@ export function Transcript({
   onOpenFile,
   now = Date.now,
   onForkToNewTab,
+  onForkToNewWorkspace,
   forkDisabled = false,
   turnAgent,
 }: TranscriptProps) {
@@ -77,6 +80,7 @@ export function Transcript({
     onOpenFile,
     now,
     onForkToNewTab,
+    onForkToNewWorkspace,
     forkDisabled,
     turnAgent,
   };
@@ -137,6 +141,7 @@ interface RowContext {
   onOpenFile?: (path: string) => void;
   now: () => number;
   onForkToNewTab?: (turnId: string) => void;
+  onForkToNewWorkspace?: (turnId: string) => void;
   forkDisabled: boolean;
   turnAgent?: string;
 }
@@ -171,8 +176,9 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
 
 /** Conductor's turn footer: duration · end time, copy and More actions, then the turn's changed files. */
 function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
-  const { onRetry, onResetChat, resetDisabled, turnFooter, onForkToNewTab, forkDisabled, turnAgent } = ctx;
+  const { onRetry, onResetChat, resetDisabled, turnFooter, onForkToNewTab, onForkToNewWorkspace, forkDisabled, turnAgent } = ctx;
   const fork = onForkToNewTab ? () => onForkToNewTab(row.turnId) : undefined;
+  const forkWorkspace = onForkToNewWorkspace ? () => onForkToNewWorkspace(row.turnId) : undefined;
   const reset = row.canReset && onResetChat ? () => onResetChat(row.turnId) : undefined;
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
@@ -191,15 +197,32 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
             Retry
           </button>
         ) : null}
-        {fork || reset ? <TurnMenu onFork={fork} forkDisabled={forkDisabled} onReset={reset} resetDisabled={resetDisabled} /> : null}
+        {fork || forkWorkspace || reset ? (
+          <TurnMenu onFork={fork} onForkWorkspace={forkWorkspace} forkDisabled={forkDisabled} onReset={reset} resetDisabled={resetDisabled} />
+        ) : null}
       </span>
       {turnFooter?.(row.turnId)}
     </div>
   );
 }
 
-/** Conductor's turn footer "More actions" menu: "Fork to new tab" on every turn, "Reset chat" on turns that can be reset. */
-function TurnMenu({ onFork, forkDisabled, onReset, resetDisabled }: { onFork?: () => void; forkDisabled: boolean; onReset?: () => void; resetDisabled: boolean }) {
+/**
+ * Conductor's turn footer "More actions" menu: "Fork to new tab" and "Fork to
+ * new workspace" on every turn, "Reset chat" on turns that can be reset.
+ */
+function TurnMenu({
+  onFork,
+  onForkWorkspace,
+  forkDisabled,
+  onReset,
+  resetDisabled,
+}: {
+  onFork?: () => void;
+  onForkWorkspace?: () => void;
+  forkDisabled: boolean;
+  onReset?: () => void;
+  resetDisabled: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
@@ -227,6 +250,20 @@ function TurnMenu({ onFork, forkDisabled, onReset, resetDisabled }: { onFork?: (
               }}
             >
               <ForkIcon /> Fork to new tab
+            </button>
+          ) : null}
+          {onForkWorkspace ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="chat-menu-item"
+              disabled={forkDisabled}
+              onClick={() => {
+                setOpen(false);
+                onForkWorkspace();
+              }}
+            >
+              <WorkspaceForkIcon /> Fork to new workspace
             </button>
           ) : null}
           {onReset ? (
@@ -257,6 +294,15 @@ function ForkIcon() {
       <circle cx="12" cy="3" r="1.5" />
       <circle cx="8" cy="13" r="1.5" />
       <path d="M4 4.5v1.5a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.5M8 8v3.5" />
+    </svg>
+  );
+}
+
+function WorkspaceForkIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M1.75 4.25a1 1 0 0 1 1-1h3l1.5 1.5h5.5a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1z" />
+      <path d="M8 7.25v3.5M6.25 9h3.5" />
     </svg>
   );
 }

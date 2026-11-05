@@ -71,6 +71,7 @@ function Fixture() {
             turnAgent={turnAgentLabel("byok:anthropic:claude-opus-5-5", "Reason")}
             onResetChat={() => undefined}
             onForkToNewTab={(turnId) => (fork ? setForked(forkTranscript(r.transcript, turnId)) : undefined)}
+            onForkToNewWorkspace={(turnId) => (fork ? setForked(forkTranscript(r.transcript, turnId)) : undefined)}
             now={() => LISBON.startedAt + 3600_000}
           />
           {forked !== null ? (
