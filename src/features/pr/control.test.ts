@@ -32,9 +32,9 @@ test("a draft offers Ready for review and a requested review offers Approve PR",
 
 test("the merge tooltip names the repository's merge method", () => {
   const ready = { tone: "in_sync", action: { type: "ready_to_merge", optionalFailed: 0 } } as const;
-  assert.equal(prControl(ready, pr, "squash")?.title, "Squash and merge PR #42");
-  assert.equal(prControl(ready, pr, "rebase")?.title, "Rebase and merge PR #42");
-  assert.equal(prControl(ready, pr, "merge")?.title, "Merge PR #42");
+  assert.equal(prControl(ready, pr, { method: "squash" })?.title, "Squash and merge PR #42");
+  assert.equal(prControl(ready, pr, { method: "rebase" })?.title, "Rebase and merge PR #42");
+  assert.equal(prControl(ready, pr, { method: "merge" })?.title, "Merge PR #42");
   assert.equal(mergeMethodText("merge"), null);
 });
 
@@ -51,4 +51,14 @@ test("sync and PR states carry the PR number and commit counts", () => {
   assert.equal(at({ type: "pull", behind: 1 })?.title, "Remote branch has 1 commit this workspace does not");
   assert.match(at({ type: "queued_to_merge", state: "AWAITING_CHECKS" })!.title, /awaiting checks/);
   assert.equal(prControl({ tone: "no_pr", action: { type: "draft_pr" } }, null)?.label, "Draft PR");
+});
+
+test("automerge is offered for pending checks only with the setting and merge rights", () => {
+  const pending = { tone: "out_of_sync", action: { type: "checks_pending", pending: 2 } } as const;
+  assert.equal(prControl(pending, pr)?.intent, "status");
+  assert.equal(prControl(pending, pr, { automerge: true })?.intent, "enable_automerge");
+  assert.equal(prControl(pending, { ...pr, isAutoMergeEnabled: true }, { automerge: true })?.intent, "disable_automerge");
+  assert.equal(prControl(pending, { ...pr, viewerCanMerge: false }, { automerge: true })?.intent, "status");
+  assert.equal(prControl(pending, { ...pr, viewerCanMerge: null }, { automerge: true })?.intent, "enable_automerge");
+  assert.equal(prControl(pending, null, { automerge: true })?.intent, "status");
 });

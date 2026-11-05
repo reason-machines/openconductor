@@ -110,20 +110,6 @@ fn stop_cancels_and_a_follow_up_supersedes_a_running_turn() {
 }
 
 #[test]
-fn a_stop_before_the_turn_is_registered_ends_it_unsent() {
-    // The Stop button shows as soon as a turn starts, so a Stop can land
-    // while the turn's start checkpoint still runs. It must not be dropped.
-    let (p, log, home) = provider("early-stop");
-    p.open_chat("chat", &home, None);
-    p.cancel("chat");
-    assert_eq!(p.prompt("chat", "echo: never"), TurnEnd::Cancelled);
-    assert_eq!(reply(&log), "", "the prompt was not sent to Reason");
-    // The Stop applied to that one turn only.
-    assert_eq!(p.prompt("chat", "echo: next"), TurnEnd::Completed);
-    assert_eq!(reply(&log), "turn 1: next");
-}
-
-#[test]
 fn a_stored_session_resumes_after_restart_and_after_a_crash() {
     let (p, log, home) = provider("resume");
     p.open_chat("chat", &home, None);
@@ -239,4 +225,36 @@ fn attachments_go_to_reason_as_embedded_files() {
         TurnEnd::Completed
     );
     assert_eq!(reply(&log), "Review request.md: the prompt");
+}
+
+#[test]
+fn a_stop_before_an_announced_prompt_is_sent_cancels_it_unsent() {
+    let (p, log, home) = provider("stop-unsent");
+    p.open_chat("chat", &home.join("project"), None);
+    // The app announces the prompt, then saves the start checkpoint; Stop lands in between.
+    let ticket = p.expect_prompt("chat");
+    assert!(ticket.is_some());
+    p.cancel("chat");
+    let started = Instant::now();
+    assert_eq!(
+        p.prompt_expected("chat", "slow", &[], ticket),
+        TurnEnd::Cancelled
+    );
+    assert!(
+        started.elapsed() < Duration::from_secs(5),
+        "the stopped prompt was sent and ran"
+    );
+    assert!(log
+        .lock()
+        .unwrap()
+        .iter()
+        .any(|(_, e)| *e == ProviderEvent::TurnEnded(TurnEnd::Cancelled)));
+    // Reason never saw it, and a Stop with nothing pending does not carry over.
+    p.cancel("chat");
+    let next = p.expect_prompt("chat");
+    assert_eq!(
+        p.prompt_expected("chat", "echo: next", &[], next),
+        TurnEnd::Completed
+    );
+    assert_eq!(reply(&log), "turn 1: next");
 }

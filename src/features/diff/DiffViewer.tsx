@@ -50,10 +50,12 @@ export interface DiffTabProps {
   commentRange?: (file: FileDiff) => LineRange | null;
   anchors?: (file: FileDiff) => LineAnchor[];
   annotations?: (file: FileDiff, anchor: LineAnchor) => ReactNode;
+  /** Shown above the file: PR-level and whole-file comments. */
+  notes?: (file: FileDiff) => ReactNode;
 }
 
 /** Main-area "All changes" tab: the file picked in the changes list, with its toolbar. */
-export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations }: DiffTabProps) {
+export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations, notes }: DiffTabProps) {
   const { opts, update, selected, files, load } = diff;
   if (!selected) {
     return (
@@ -68,6 +70,7 @@ export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations 
   return (
     <div className="oc-diff oc-diff-tab">
       <div className="oc-files">
+        {notes?.(f)}
         <FileDiffView
           key={selected.path}
           file={selected}
