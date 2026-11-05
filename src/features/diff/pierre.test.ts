@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { processFile } from "@pierre/diffs";
-import { codeViewItem, fullContents, lineTarget, loadedFiles, toPatch, fromPierreSide, toPierreSide } from "./pierre.ts";
+import { codeViewItem, fullContents, lineTarget, loadedFiles, rangeOf, selectionOf, toPatch, fromPierreSide, toPierreSide } from "./pierre.ts";
 import type { FileDiff } from "./types.ts";
 
 const modified: FileDiff = {
@@ -124,4 +124,14 @@ test("a deleted file in the entire-file layout shows its old contents and old-si
 test("a comment jump scrolls to its line, on its side in a diff and without a side in the entire file", () => {
   assert.deepEqual(lineTarget("src/a.ts", { side: "old", line: 7 }, false), { type: "line", id: "src/a.ts", lineNumber: 7, side: "deletions", align: "center" });
   assert.deepEqual(lineTarget("src/a.ts", { side: "old", line: 7 }, true), { type: "line", id: "src/a.ts", lineNumber: 7, align: "center" });
+});
+
+test("a line selection becomes a comment range, lower line first, on the side it started", () => {
+  assert.deepEqual(rangeOf({ start: 14, end: 9, side: "deletions", endSide: "additions" }, "old"), { side: "old", start: 9, line: 14 });
+  assert.deepEqual(rangeOf({ start: 4, end: 4 }, "new"), { side: "new", start: 4, line: 4 });
+});
+
+test("a comment range maps back to Pierre's selection, with no side in the entire-file view", () => {
+  assert.deepEqual(selectionOf({ side: "old", start: 3, line: 7 }, false), { start: 3, end: 7, side: "deletions", endSide: "deletions" });
+  assert.deepEqual(selectionOf({ side: "new", start: 3, line: 7 }, true), { start: 3, end: 7 });
 });
