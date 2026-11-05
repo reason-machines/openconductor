@@ -287,6 +287,9 @@ try {
   // turns before the last also have "Reset chat". Opens the turn's menu with
   // real clicks, reads its items, and leaves it open.
   const openMenu = async (turn) => {
+    // The menu opens upward from its button (.chat-menu: bottom: 100%), so a
+    // turn near the top of the transcript would put it past the scroller's edge.
+    await run(`document.querySelector(arguments[0]).scrollIntoView({ block: "center" }); return true;`, turn);
     await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
     return waitFor(`${turn}'s menu`, () =>
       run(`const m = document.querySelector('${turn} .chat-menu'); return m ? [...m.querySelectorAll('[role="menuitem"]')].map((b) => b.innerText.trim()) : null;`),
