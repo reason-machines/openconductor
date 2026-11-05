@@ -26,14 +26,17 @@ pub enum AgentKind {
     Codex,
     Cursor,
     Opencode,
+    /// Reason over ACP (`crate::reason_acp`), not a stream-json CLI.
+    Reason,
 }
 
 impl AgentKind {
-    pub const ALL: [AgentKind; 4] = [
+    pub const ALL: [AgentKind; 5] = [
         AgentKind::Claude,
         AgentKind::Codex,
         AgentKind::Cursor,
         AgentKind::Opencode,
+        AgentKind::Reason,
     ];
 
     pub fn as_str(self) -> &'static str {
@@ -42,6 +45,7 @@ impl AgentKind {
             AgentKind::Codex => "codex",
             AgentKind::Cursor => "cursor",
             AgentKind::Opencode => "opencode",
+            AgentKind::Reason => "reason",
         }
     }
 
@@ -76,6 +80,8 @@ impl AgentKind {
             ],
             AgentKind::Cursor => &[vars::CURSOR_API_KEY],
             AgentKind::Opencode => &[],
+            // Reason routes through its own signed-in CLI.
+            AgentKind::Reason => &[],
         }
     }
 }

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { baseUrlError, blankToNull, branchPrefixError, branchPreview, withField } from "./model.ts";
+import { baseUrlError, blankToNull, branchPrefixError, branchPreview, normalizeCustomPrefix, withField } from "./model.ts";
 import { DEFAULT_SETTINGS, type Settings } from "./types.ts";
 
 test("withField changes one field and keeps everything else, unknown keys included", () => {
@@ -24,12 +24,21 @@ test("branch prefix rules match the backend's", () => {
     assert.notEqual(branchPrefixError(bad), null, JSON.stringify(bad));
 });
 
-test("branch preview follows the prefix type", () => {
-  const custom = withField(withField(DEFAULT_SETTINGS, "git", "branch_prefix_type", "custom"), "git", "branch_prefix_custom", "team/");
-  assert.equal(branchPreview(custom, "sven"), "team/my-feature");
-  assert.equal(branchPreview(DEFAULT_SETTINGS, "sven", "x"), "sven/x");
-  assert.equal(branchPreview(DEFAULT_SETTINGS, null, "x"), "<github-user>/x");
+test("branch preview is the branch the Create-workspace flow would make", () => {
+  const custom = (v: string) => withField(withField(DEFAULT_SETTINGS, "git", "branch_prefix_type", "custom"), "git", "branch_prefix_custom", v);
+  assert.equal(branchPreview(custom("team"), "sven"), "team/tokyo");
+  assert.equal(branchPreview(custom("team/sven"), null, "x"), "team/sven/x");
+  assert.equal(branchPreview(DEFAULT_SETTINGS, "SvenM", "x"), "svenm/x");
+  assert.equal(branchPreview(DEFAULT_SETTINGS, null, "x"), "x", "no username known: no prefix, as the dialog does");
   assert.equal(branchPreview(withField(DEFAULT_SETTINGS, "git", "branch_prefix_type", "none"), "sven", "x"), "x");
+});
+
+test("custom prefixes drop the trailing slash the backend refuses", () => {
+  assert.equal(normalizeCustomPrefix(" feature/ "), "feature");
+  assert.equal(normalizeCustomPrefix("team/sven//"), "team/sven");
+  assert.equal(branchPrefixError(normalizeCustomPrefix("feature/")), null);
+  assert.equal(normalizeCustomPrefix("/"), "");
+  assert.notEqual(branchPrefixError(normalizeCustomPrefix("/")), null);
 });
 
 test("base URLs must be http(s) when set", () => {
