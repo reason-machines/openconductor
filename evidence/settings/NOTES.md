@@ -247,3 +247,48 @@ a `/settings/repos...` start URL is resolved again once they are loaded. Diverge
   spotlight testing (General preferences, `custom_prompt_general`, comes with the prompts keys);
   repo Misc shows the root path only (no icon, workspaces path or Remove repository yet).
 - Settings search (`vUi` keywords per tab) is not built.
+## App preferences in the settings table
+
+Source: REA-extracted frontend on `sven m5 max` (`~/code/conductor-rea-work/frontend/dist/assets`,
+`index-BGEQ8YjU.js` and `renderApp-D_fmY7hW.js`), read with `grep -lwF` and a context dump of every
+occurrence of each key, 2026-11-06. Key names and code only; no values were read from Conductor's
+`conductor.db` or `settings.toml`.
+
+Conductor's settings registry (`index-*.js`, `Te`/`Pe`/`yl` declarations and the `oZ` type map) marks
+each key file-backed (`Me({fileKey})`, lives in `settings.toml`) or non-file-backed (`Me()`/`xe()`,
+lives in the `settings` table). Every key below is non-file-backed, so OpenConductor stores it in
+`conductor.db` through `crates/openconductor-db/src/app_settings.rs` and decodes it in
+`src-tauri/src/app_prefs/` (typed `get_app_prefs`, `set_app_pref`, `record_open_in`,
+`client_instance_id`, `graphite_cli_installed`; no untyped key/value command).
+
+| Key | Default and encoding (REA source) | Consumer in OpenConductor |
+| --- | --- | --- |
+| `code_theme` | `yl("code_theme", _N, "default")`; `_N` = default, catppuccin-latte, -macchiato, -mocha, dracula, nord, tokyo-night, gruvbox-dark, solarized-dark; labels from `zPt` | Appearance row and diff highlighting built by the diff area (`DiffAppearanceRows.tsx`), stored in `settings.toml` `[appearance]` for now |
+| `colored_sidebar_diffs` | `Te(...,!1)`; `"true"`/`"false"`; sidebar row mutes counts unless selected or on (`eea`) | Appearance row and sidebar colors built in `AppearancePage.tsx` / `appearance.ts`, stored in `settings.toml` `[appearance]` for now |
+| `file_ligatures_enabled` | unset reads as on (`v5t`: `data ? data==="true" : true`) | Appearance row built by the diff area, stored in `settings.toml` `[appearance]` for now |
+| `garry_mode` | `Te(...,!1)`; toggled by `toggleGarryMode` | General row; `Transcript expandToolsByDefault`; ⌃O in `App.tsx` |
+| `experimental_show_agent_cost` | `Te(...,!1)`; read as `value==="true"` (or internal users unless `"false"`, `Y$e`) | Experimental row |
+| `experimental_tab_freak_mode` | `Te(...,!1)`; limit `iFt` = 10 on, 5 off, counting chats + terminals + browser (`oFt`) | Experimental row; terminal "+" and `startTab` limit |
+| `graphite_disabled` | `Te("graphite_disabled")`; disabled only when `"true"` (`ZUt`, `D9t`); row checked = gt installed && !disabled, reset writes `true` | Experimental row with "Install gt to enable." |
+| `default_open_in`, `open_in_mru_order` | MRU is a JSON string array of `app|local` / `app|remote`, newest first (`qzt`, `Hzt`, `UBe`, `HBe`); effective default = MRU[0] without suffix, else `default_open_in` (`l5t`) | `record_open_in` command |
+| `left_panel_visible`, `right_panel_visible` | unset reads as shown (`h5t`, `d5t`); written as `t.toString()`; zen mode sets both to `!left && !right` | `App.tsx` sidebar (`panelPrefs.tsx`), `WorkspaceView` right panel, ⌥⌘B, ⌘. |
+| `left_panel_width` | `parseInt`, default 256 (`mBe`); written `Math.round(w)`; drag range 192 to 480 (`Zsa`, `eoa`), saved on commit | `.app` `--sidebar-width` and a drag handle |
+| `onboarding_step`, `first_time_onboarding_step` | `parseInt(?? "0")`, `parseInt(?? "1")`; 999 = done (`_5t`) | stored and exposed only |
+| `last_clone_directory` | plain path, deleted when the data folder moves | clone and quick-start dialogs (`backend.ts`), localStorage value moved over once |
+| `last_seen_announcement` | announcement id; banner hidden when it equals the latest id (`Ena`) | stored and exposed only |
+| `client_instance_id` | `crypto.randomUUID()` stored on first read (`uue`) | `client_instance_id` command |
+| `roundhouse_client_user_id` | cloud sign-in user id; get/update/delete (`sWe`, `nWe`, `rWe`) | stored and exposed only |
+
+Missing consumers: the rebuild has no cloud workspaces (agent cost, Roundhouse), no "Open in" menu
+(MRU is recorded by `record_open_in` but nothing calls it yet), no onboarding, no announcements banner,
+no Graphite stack UI (only the toggle and the `gt` check), and no syntax highlighter, so a code theme
+sets only the code view's foreground and background, not token colors. The sidebar flag in localStorage
+(`UiPrefs.sidebarVisible`) is not migrated: the table cannot tell "unset" from "shown".
+
+### REA gaps (app preferences slice)
+
+- `grep -l` with a quoted-key regex through `devices_exec` (zsh, nested quotes) matched nothing; plain
+  `grep -lwF` worked. Not an REA bug, but REA has no "find setting key" query over the extracted bundle,
+  so every claim above comes from text search plus reading minified code, not from an REA trace.
+- Minified exports: hooks are re-exported under two-letter aliases (`p5t as og`, imported as `oEr`), which
+  REA's JavaScript semantic analysis does not resolve across chunks; we followed them by hand.

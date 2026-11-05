@@ -26,6 +26,7 @@ import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
 import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
+import { useAppPrefs } from "../settings/appPrefs";
 
 interface Props {
   repo: Repo;
@@ -81,6 +82,8 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const running = transcript.activeTurn !== null;
   useEffect(() => onRunningChange?.(running), [running, onRunningChange]);
+  // Garry Mode: tool calls start expanded (Conductor's `garry_mode`, toggled with ⌃O).
+  const garryMode = useAppPrefs().garry_mode;
 
   useEffect(() => {
     setTranscript(load());
@@ -149,6 +152,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
         ) : (
           <Transcript
             transcript={transcript}
+            expandToolsByDefault={garryMode}
             onRetry={(prompt) => sendText(prompt)}
             // Conductor: workspace with a path, not archived; disabled while the agent works.
             onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
@@ -319,6 +323,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "git.openInGitHub": prActions.openOnGitHub,
   });
   const showDiff = diffOpen && mainTab === "diff";
+  // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
+  const rightPanelVisible = useAppPrefs().right_panel_visible;
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region>
@@ -348,7 +354,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           </button>
         </div>
       </header>
-      <div className="ws-split">
+      <div className={`ws-split${rightPanelVisible ? "" : " right-hidden"}`}>
         <ChatPanel
           repo={repo}
           workspace={workspace}
@@ -358,10 +364,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           tabs={<MainTabs title={workspace.name} active={showDiff ? "diff" : "chat"} diffOpen={diffOpen} onSelect={setMainTab} onCloseDiff={closeDiffTab} />}
           content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
         />
-        <div className="ws-right">
-          <RightPanel diff={diff} actions={review.actions} pr={pullRequest} worktree={workspace.path ?? null} />
-          <ScriptsPanel repo={repo} workspace={workspace} />
-        </div>
+        {rightPanelVisible && (
+          <div className="ws-right">
+            <RightPanel diff={diff} actions={review.actions} pr={pullRequest} worktree={workspace.path ?? null} />
+            <ScriptsPanel repo={repo} workspace={workspace} />
+          </div>
+        )}
       </div>
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
       <DiffDiscardHost diff={diff} />

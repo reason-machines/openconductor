@@ -1,4 +1,5 @@
 import { Row } from "./GeneralPage";
+import { ExperimentalAppPrefRows } from "./rows/AppPrefRows";
 import type { Settings } from "./types";
 
 interface Props {
@@ -7,8 +8,9 @@ interface Props {
 }
 
 /**
- * Settings › More › Experimental. Conductor's tab has many more flags; only
- * Big terminal mode is built (evidence/terminal/NOTES.md). Turning it on also
+ * Settings › More › Experimental. Conductor's tab has many more flags; Big
+ * terminal mode is built (evidence/terminal/NOTES.md), and Show agent cost, Tab
+ * Freak Mode and Graphite stack support come from conductor.db (ExperimentalAppPrefRows). Turning it on also
  * lists the Big terminal tab in the settings navigation, as Conductor does.
  */
 export function ExperimentalPage({ settings, save }: Props) {
@@ -24,6 +26,7 @@ export function ExperimentalPage({ settings, save }: Props) {
           onChange={(e) => save({ ...settings, experimental: { ...settings.experimental, experimental_big_terminal_mode: e.target.checked } })}
         />
       </Row>
+      <ExperimentalAppPrefRows />
     </div>
   );
 }

@@ -18,6 +18,7 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod app_prefs;
 pub mod bundled_bin;
 pub mod checkpoint;
 mod checkpoint_commands;
@@ -344,6 +345,11 @@ pub fn run() {
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
+            app_prefs::commands::get_app_prefs,
+            app_prefs::commands::set_app_pref,
+            app_prefs::commands::record_open_in,
+            app_prefs::commands::client_instance_id,
+            app_prefs::commands::graphite_cli_installed,
             settings::commands::get_settings,
             settings::commands::update_settings,
             settings::commands::provider_status,

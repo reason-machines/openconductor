@@ -36,6 +36,7 @@ export type Action =
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
   /** Sidebar drag and drop: the full repo id list in its new order (`repos.display_order`). */
   | { type: "reorderRepos"; ids: string[] }
+  | { type: "setSidebarVisible"; visible: boolean }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] }
@@ -128,6 +129,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos: setRepoHidden(state.repos, action.repoId, action.hidden) };
     case "reorderRepos":
       return { ...state, repos: orderRepos(state.repos, action.ids) };
+    case "setSidebarVisible":
+      return isSidebarVisible(state) === action.visible ? state : { ...state, sidebarVisible: action.visible };
     case "reset":
       return action.state;
     case "hydrate": {
