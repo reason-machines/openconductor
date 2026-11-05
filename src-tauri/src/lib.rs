@@ -190,8 +190,11 @@ pub fn run() {
                 settings::config_dir()?.join(settings::FILE_NAME),
                 agent::keychain::default_store(),
             ));
-            app.manage(scripts::service(app.handle()));
-            app.manage(spotlight_commands::service(app.handle()));
+            let scripts = scripts::service(app.handle());
+            let spotlight = spotlight_commands::service(app.handle());
+            scripts.set_auto_run_spotlight(spotlight::auto_run::hook(spotlight.clone()));
+            app.manage(scripts);
+            app.manage(spotlight);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
