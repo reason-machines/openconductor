@@ -278,11 +278,29 @@ try {
   }
   pass(`turns 5 and 6 each saved start/end checkpoints (${refs.length} refs in the workspace)`);
 
+  // Every finished turn has a More actions menu ("Fork to new tab"); only
+  // turns before the last also have "Reset chat". Opens the turn's menu with
+  // real clicks, reads its items, and leaves it open.
+  const openMenu = async (turn) => {
+    await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
+    return waitFor(`${turn}'s menu`, () =>
+      run(`const m = document.querySelector('${turn} .chat-menu'); return m ? [...m.querySelectorAll('[role="menuitem"]')].map((b) => b.innerText.trim()) : null;`),
+    );
+  };
+  const closeMenu = async (turn) => {
+    await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
+    await waitFor(`${turn}'s menu to close`, () => run(`return !document.querySelector('${turn} .chat-menu');`));
+  };
   const turn5 = `.chat-turn-end[data-turn-id="${id5}"]`;
-  const lastHasMenu = await run(`return !!document.querySelector('.chat-turn-end[data-turn-id="${id6}"] button[aria-label="More actions"]');`);
-  assert.equal(lastHasMenu, false, "the last turn has no Reset chat");
-  await wd("POST", `/element/${await find(`${turn5} button[aria-label="More actions"]`)}/click`, {});
-  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]`)}/click`, {});
+  const turn6 = `.chat-turn-end[data-turn-id="${id6}"]`;
+  const lastItems = await openMenu(turn6);
+  assert.deepEqual(lastItems, ["Fork to new tab"], "the last turn has no Reset chat");
+  await closeMenu(turn6);
+  const turn5Items = await openMenu(turn5);
+  assert.deepEqual(turn5Items, ["Fork to new tab", "Reset chat"], "turn 5 has Fork to new tab and Reset chat");
+  pass('the last turn\'s menu has only "Fork to new tab"; turn 5\'s also has "Reset chat"');
+  const resetItem = turn5Items.indexOf("Reset chat") + 1;
+  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]:nth-child(${resetItem})`)}/click`, {});
   const dialog = await waitFor('"Reset chat?" with "2 changed"', () =>
     run(`const d = document.querySelector('.modal[aria-label="Reset chat?"]'); return d && d.innerText.includes("changed") ? d.innerText : null;`),
   );
@@ -301,8 +319,8 @@ try {
   assert.ok(after.includes("turn 3: follow-up"), "earlier turns stay");
   assert.equal(readWs("notes.txt"), "one\n");
   assert.equal(readWs("extra.txt"), null);
-  const turn5Menu = await run(`return !!document.querySelector('${turn5} button[aria-label="More actions"]');`);
-  assert.equal(turn5Menu, false, "turn 5 is now the last turn");
+  assert.deepEqual(await openMenu(turn5), ["Fork to new tab"], "turn 5 is now the last turn: no Reset chat");
+  await closeMenu(turn5);
   await screenshot("reason-chat-after-reset");
   pass("Reset deleted turn 6 and restored the files: notes.txt is back to one, extra.txt is gone");
 
