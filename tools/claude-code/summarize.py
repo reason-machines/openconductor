@@ -80,7 +80,7 @@ def main(out):
         "started": report.get("started"),
         "ended": report.get("ended"),
         "workspace": report.get("workspace"),
-        "agentPicker": {"label": report.get("agentLabel"), "emptyStateNote": report.get("emptyStateNote")},
+        "agentPicker": {"label": report.get("agentLabel"), "emptyState": report.get("emptyState")},
         "claudeSessionIds": sessions,
         "savedSessions": report.get("savedSessions"),
         "turns": turns,

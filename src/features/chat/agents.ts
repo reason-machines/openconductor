@@ -19,8 +19,6 @@ export interface ChatAgent extends Pick<ChatRuntime<unknown>, "canSteer" | "snap
   label: string;
   /** The agent's chat id for a chat shown under `chatId` (Claude Code's is `<chatId>:claude`). */
   chatId(chatId: string): string;
-  /** The empty chat's note on who runs it. */
-  note: string;
 }
 
 export const CHAT_AGENTS: Record<ChatAgentId, ChatAgent> = {
@@ -35,7 +33,6 @@ export const CHAT_AGENTS: Record<ChatAgentId, ChatAgent> = {
     queueAction,
     reset: resetReasonChat,
     chatId: (id) => id,
-    note: "Reason runs this chat: one Reason Session per workspace.",
   },
   codex: {
     id: "codex",
@@ -48,7 +45,6 @@ export const CHAT_AGENTS: Record<ChatAgentId, ChatAgent> = {
     stop: stopCodex,
     queueAction: codexQueueAction,
     chatId: (id) => id,
-    note: "Codex runs this chat with your signed-in codex CLI, in this workspace's folder.",
   },
   claude: {
     id: "claude",
@@ -61,7 +57,6 @@ export const CHAT_AGENTS: Record<ChatAgentId, ChatAgent> = {
     queueAction: claudeRuntime.queueAction,
     reset: claudeRuntime.reset,
     chatId: claudeChatId,
-    note: "Claude Code runs this chat with your signed-in claude CLI.",
   },
 };
 

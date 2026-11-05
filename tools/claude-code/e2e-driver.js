@@ -104,7 +104,7 @@
     entry.click();
     await waitFor("Claude Code on the picker chip", () => text(q("[data-testid='composer-model-button']")).includes("Claude Code"));
     report.agentLabel = "Claude Code";
-    report.emptyStateNote = text(q(".chat .placeholder .muted"));
+    report.emptyState = text(q(".chat .oc-chat-empty"));
     step("agent picked", { agent: "claude", label: report.agentLabel });
 
     for (const [i, turn] of cfg.turns.entries()) {
