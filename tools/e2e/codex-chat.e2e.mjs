@@ -160,7 +160,7 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
-  await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("Reason runs this chat")));
+  await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   const cliPath = await runAsync("const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke('codex_cli_path').then(done, (e) => done('error: ' + e));");
   assert.equal(cliPath, join(bin, "codex"));
@@ -173,8 +173,9 @@ try {
   );
   await screenshot("codex-0-model-picker");
   await run("[...document.querySelectorAll('.oc-model-menu .oc-model-item')].find((b) => b.textContent.trim() === 'Codex').click();");
-  const placeholder = await waitFor("the Codex chat panel", () => chatText().then((t) => t && t.includes("Codex runs this chat") && t));
-  pass(`agent menu switches the chat to Codex: "${placeholder.split("\n").find((l) => l.includes("Codex runs"))}"`);
+  await waitFor("Codex on the picker chip", () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.title === 'Codex' || null;"));
+  await waitFor("the Codex access menu", () => run("return !!document.querySelector('.codex-access') || null;"));
+  pass("the model picker switches the chat to Codex: the chip reads Codex and the access menu shows");
   const access = await run("const s = document.querySelector('.codex-access'); return s && [s.value, [...s.options].map((o) => o.textContent)];");
   assert.deepEqual(access, ["full", ["Full access", "Ask first", "Read only"]], "Conductor's default: full access");
   // Ask first, so Codex asks before running the command.
