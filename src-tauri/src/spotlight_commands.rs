@@ -33,6 +33,24 @@ pub fn service(app: &AppHandle) -> Spotlight {
     )))
 }
 
+/// Move the legacy `repos.spotlight_testing` column into each repository's
+/// local settings file, once (see `spotlight::migrate`). Runs at startup
+/// before anything reads the setting, as the reference runs its settings
+/// file migrations on launch. A failure is logged and retried next launch;
+/// it never stops the app.
+pub fn migrate_legacy_setting(db: &Db) {
+    match tauri::async_runtime::block_on(crate::spotlight::migrate::run(&db.0)) {
+        Ok(report) => {
+            for (repo, error) in report.failed {
+                eprintln!(
+                    "spotlight_testing migration: repository {repo} left for next launch: {error}"
+                );
+            }
+        }
+        Err(error) => eprintln!("spotlight_testing migration failed: {error}"),
+    }
+}
+
 async fn blocking<T: Send + 'static>(
     f: impl FnOnce() -> Result<T, String> + Send + 'static,
 ) -> Result<T, String> {
