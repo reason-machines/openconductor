@@ -57,6 +57,41 @@ pub fn local_env(
     }
 }
 
+/// The repository checkout `dir` belongs to: the main worktree for a
+/// workspace (`git rev-parse --git-common-dir`), or `None` outside git.
+pub fn repo_root_of(dir: &Path) -> Option<PathBuf> {
+    let out = std::process::Command::new("git")
+        .arg("-C")
+        .arg(dir)
+        .args(["rev-parse", "--path-format=absolute", "--git-common-dir"])
+        .env_remove("GIT_DIR")
+        .env_remove("GIT_WORK_TREE")
+        .output()
+        .ok()
+        .filter(|o| o.status.success())?;
+    let common = PathBuf::from(String::from_utf8(out.stdout).ok()?.trim());
+    match common.file_name() {
+        Some(name) if name == ".git" => common.parent().map(Path::to_path_buf),
+        _ => None, // a bare repository has no checkout to read settings from
+    }
+}
+
+/// [`local_env`] for a process started in `dir` (a terminal), when `dir` is
+/// inside a repository checkout; nothing otherwise.
+pub fn local_env_for_dir(dir: &Path) -> std::collections::BTreeMap<String, String> {
+    match repo_root_of(dir) {
+        Some(root) => local_env(&root, Some(dir)),
+        None => Default::default(),
+    }
+}
+
+/// The settings environment hook for `oc_scripts`' script service.
+pub fn script_env_hook() -> oc_scripts::service::SettingsEnv {
+    std::sync::Arc::new(|ws: &oc_scripts::service::WorkspaceRef| {
+        local_env(&ws.repo_root, Some(&ws.workspace_path))
+    })
+}
+
 /// `repo_settings_effective`: what the repository settings rows show.
 #[tauri::command]
 pub async fn repo_settings_effective(
@@ -116,6 +151,89 @@ fn json_to_toml(v: serde_json::Value) -> Result<toml::Value, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn git(dir: &Path, args: &[&str]) {
+        let ok = std::process::Command::new("git")
+            .arg("-C")
+            .arg(dir)
+            .args(args)
+            .status()
+            .unwrap()
+            .success();
+        assert!(ok, "git {args:?}");
+    }
+
+    #[test]
+    fn repo_root_of_a_worktree_is_the_main_checkout() {
+        let tmp = std::env::temp_dir().join(format!("oc-effective-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&tmp);
+        let (main, ws) = (tmp.join("main"), tmp.join("ws"));
+        std::fs::create_dir_all(&main).unwrap();
+        git(&main, &["init", "-q", "-b", "main"]);
+        git(
+            &main,
+            &[
+                "-c",
+                "user.name=t",
+                "-c",
+                "user.email=t@t",
+                "commit",
+                "-q",
+                "--allow-empty",
+                "-m",
+                "x",
+            ],
+        );
+        git(
+            &main,
+            &["worktree", "add", "-q", ws.to_str().unwrap(), "-b", "w"],
+        );
+        let canon = |p: &Path| p.canonicalize().unwrap();
+        assert_eq!(repo_root_of(&ws).map(|p| canon(&p)), Some(canon(&main)));
+        assert_eq!(
+            repo_root_of(&main.join(".git")).map(|p| canon(&p)),
+            Some(canon(&main))
+        );
+        assert_eq!(repo_root_of(&tmp), None);
+
+        std::fs::create_dir_all(main.join(".conductor")).unwrap();
+        std::fs::write(
+            main.join(".conductor/settings.local.toml"),
+            "[environment_variables.local]\nTERM_VAR = \"from-settings\"\n",
+        )
+        .unwrap();
+        let env = local_env_for_dir(&ws);
+        assert_eq!(
+            env.get("TERM_VAR").map(String::as_str),
+            Some("from-settings")
+        );
+        let _ = std::fs::remove_dir_all(&tmp);
+    }
+
+    #[test]
+    fn create_pr_prompt_appends_the_effective_create_pr_instructions() {
+        let root = std::env::temp_dir().join(format!("oc-create-pr-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
+        std::fs::create_dir_all(root.join(".conductor")).unwrap();
+        std::fs::write(
+            root.join(".conductor/settings.local.toml"),
+            "[prompts]\ncreate_pr = \"Link the Linear issue.\"\n",
+        )
+        .unwrap();
+        let request = |custom: Option<&str>| crate::pr::api::CreatePrPrompt {
+            branch: "sven/x".into(),
+            remote: "origin".into(),
+            target_branch: "main".into(),
+            custom_instructions: custom.map(str::to_string),
+            repo_path: Some(root.display().to_string()),
+            ..Default::default()
+        };
+        let p = crate::pr::commands::pr_create_prompt(request(None));
+        assert!(p.ends_with("steps above:\n\nLink the Linear issue."), "{p}");
+        let p = crate::pr::commands::pr_create_prompt(request(Some("Explicit.")));
+        assert!(p.ends_with("Explicit.") && !p.contains("Linear"), "{p}");
+        let _ = std::fs::remove_dir_all(&root);
+    }
 
     #[test]
     fn json_values_map_to_toml() {
