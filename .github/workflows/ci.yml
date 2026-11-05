@@ -27,6 +27,8 @@ jobs:
           git config --global user.email "ci@example.invalid"
       - name: Checkpoint module build, test and clippy
         run: bash evidence/checkpoint/run-tests.sh
+      - name: Settings module build, test, clippy and rustfmt
+        run: bash scripts/test-settings.sh
 
   tools:
     name: Evidence tools compile
