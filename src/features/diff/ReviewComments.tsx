@@ -32,7 +32,7 @@ import {
 } from "./comments.ts";
 import type { GithubSyncReport } from "./commentStore.ts";
 import "./comments-github.css";
-import { revealLine, type LineAnchor } from "./FileDiffView";
+import { revealLine, type LineAnchor, type LineRange } from "./FileDiffView";
 import { commentTargets, stepComment } from "./nav.ts";
 import { buildReviewPrompt } from "./review.ts";
 import type { DiffScope, FileDiff } from "./types.ts";
@@ -242,7 +242,7 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
   );
 }
 
-type Composing = LineAnchor & { path: string };
+type Composing = LineRange & { path: string };
 
 /**
  * Review comments and the Review button for the diff views. `reveal` opens a
@@ -361,7 +361,9 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, customR
     "workspace.showReview": review,
   });
 
-  const onLineClick = (file: FileDiff, anchor: LineAnchor) => setComposing({ path: file.path, ...anchor });
+  const onLineClick = (file: FileDiff, range: LineRange) => setComposing({ path: file.path, ...range });
+  // The composer's lines stay highlighted in the file until it is saved or cancelled.
+  const commentRange = (file: FileDiff): LineRange | null => (composing?.path === file.path ? { side: composing.side, start: composing.start, line: composing.line } : null);
 
   // Lines with something rendered under them: each thread's last line, and the open composer.
   const anchors = (file: FileDiff): LineAnchor[] => {
@@ -377,20 +379,20 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, customR
 
   const annotations = (file: FileDiff, anchor: LineAnchor): ReactNode => {
     const here = threadsAt(threads, file.path, anchor.side, anchor.line);
-    const composeHere = composing?.path === file.path && composing.side === anchor.side && composing.line === anchor.line;
-    if (here.length === 0 && !composeHere) return null;
+    const draft = composing?.path === file.path && composing.side === anchor.side && composing.line === anchor.line ? composing : null;
+    if (here.length === 0 && !draft) return null;
     return (
       <div className="oc-threads">
         {here.map((t) => (
           <ThreadView key={t.root.id} thread={t} ops={ops} focused={focused === t.root.id} />
         ))}
-        {composeHere && (
+        {draft && (
           <Composer
             placeholder="Leave a comment for the agent…"
             submitLabel="Comment"
             onCancel={() => setComposing(null)}
             onSubmit={(body) =>
-              void run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: anchor.line, body, now: Date.now() }))).then(
+              void run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() }))).then(
                 (ok) => ok && setComposing(null),
               )
             }
@@ -465,5 +467,5 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, customR
     setScope(s);
   }, []);
 
-  return { onLineClick, anchors, annotations, notes, actions, onLoaded };
+  return { onLineClick, commentRange, anchors, annotations, notes, actions, onLoaded };
 }
