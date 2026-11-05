@@ -150,6 +150,10 @@ jobs:
         run: python -m unittest tools/test_check_macos_bundle.py
       - name: Parity checker runs on this tree (settings, shortcuts, persistence, packaging)
         run: python tools/parity_check.py check --ref HEAD --out-dir "$RUNNER_TEMP/parity-ssp"
+      - name: Sidebar/Home/create parity references resolve and the checker runs
+        run: |
+          python tools/parity_sidebar_home_create.py validate
+          python tools/parity_sidebar_home_create.py score --tree . > /dev/null
 
   frontend-unit:
     name: Frontend unit tests (node --test)
