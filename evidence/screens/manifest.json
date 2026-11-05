@@ -1,0 +1,119 @@
+{
+  "home--empty-signed-in--dark": {
+    "file": "home--empty-signed-in--dark.png",
+    "route": "/",
+    "scenario": "signed-in",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [],
+    "notes": "Cached synthetic user, no repos: empty Home and sidebar ('Add a project to get started.').",
+    "png_sha256": "4d977d971125bf90ee6f44daf816aabb9a9f251efa298ea36ad5d0a3053ff4fb",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_8e31e2c106a33120b2fb086179ca6de1035604d81212856ec8c51311653cfa70",
+      "scenario_sha256": "ef843b6ea627a3a328fd1eee305727c1deb2ca5137ae66e31f084a1d7465dba6",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "home--empty-signed-in--light": {
+    "file": "home--empty-signed-in--light.png",
+    "route": "/",
+    "scenario": "signed-in",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "fa68c6c73f2b6c531b569e6b70333ef6bb354953b64634eabc05da5d860fdc57",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_24e623814c28c90837d086fb00b98f19a8110ed5a16b60da506adad0f5b07791",
+      "scenario_sha256": "9aa1ff540bf97d782436d257e7cf51ebedd30703d395501b45a25358331eb32f",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "onboarding--sign-up-opening-browser--dark": {
+    "file": "onboarding--sign-up-opening-browser--dark.png",
+    "route": "/",
+    "scenario": "signed-out",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [
+      "click_sign_up"
+    ],
+    "notes": "After clicking Sign up: the button reads 'Opening browser...' (plugin:opener|open_url is swallowed by the mock).",
+    "png_sha256": "fbe4a4c0b898331dd218e401de49a29dd4c019c55d6716da3555e3e8728e7ae3",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_891ca5d616b9606560d6b5051c50a7b9fc99e5e7547e549f9bed3666b033d51c",
+      "scenario_sha256": "2ee1bb832de08e15445fdd277e71208df4e4dbe33414f34ef02f89d8ea6b0e0f",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "onboarding--signed-out--dark": {
+    "file": "onboarding--signed-out--dark.png",
+    "route": "/",
+    "scenario": "signed-out",
+    "theme": "dark",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [],
+    "notes": "Empty DB and empty keychain: signed-out first screen.",
+    "png_sha256": "e7d4963fcb5083113621959ba101641359cbc3301daf8bc64dd11076b7561440",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_a0f1fa197dc1d95cf164bf991870ffa884c76a9b2713a5591601bbdca428eba7",
+      "scenario_sha256": "4eb7c0d0c12bc824b83b78b5ed8adec1f2100f2a37c9971e510e9a151a3098c8",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  },
+  "onboarding--signed-out--light": {
+    "file": "onboarding--signed-out--light.png",
+    "route": "/",
+    "scenario": "signed-out",
+    "theme": "light",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1
+    },
+    "actions": [],
+    "notes": "Same as dark, light theme.",
+    "png_sha256": "121afaa0bebcddbf56b09e6201aa503c1faa67a54b88b2234ae04b855b31e3cd",
+    "rea": {
+      "tool": "capture_browser_scenario",
+      "command": "rea capture-browser-scenario <input.json> --format json",
+      "rea_version": "rea-agents 6.7.0",
+      "evidence_id": "ev_0eae8d69b88224337124e0ef5e5e71721c69a99992ea4df71be94357dd4762c5",
+      "scenario_sha256": "89b156047b466a4a9551ad693688656ad70d18053c499612a892b0b5b74b5c76",
+      "browser": "Chromium 155.0.8059.84"
+    },
+    "page_errors": 0
+  }
+}
