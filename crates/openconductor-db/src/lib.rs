@@ -14,6 +14,7 @@ use std::time::Duration;
 use sqlx::migrate::Migrator;
 use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePool, SqlitePoolOptions};
 
+pub mod diff_comments;
 pub mod repos;
 pub mod workspaces;
 
