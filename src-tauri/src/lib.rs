@@ -24,6 +24,7 @@ pub mod create_project;
 pub mod db;
 pub mod persistence;
 mod persistence_commands;
+mod sidebar_workspace_commands;
 pub mod diff;
 pub mod github_repo;
 pub mod menu;
@@ -279,6 +280,9 @@ pub fn run() {
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
+            sidebar_workspace_commands::db_set_workspace_pinned,
+            sidebar_workspace_commands::db_set_workspace_unread,
+            sidebar_workspace_commands::db_set_workspace_manual_status,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
             checkpoint_commands::checkpoint_save,
