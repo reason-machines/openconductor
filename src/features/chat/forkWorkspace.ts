@@ -15,6 +15,11 @@
 //    turn ended.
 // 4. The source's `.context` folder (attachments, plans, notes) is copied in.
 //
+// When step 3 fails (the workspace cannot be created or restored) the new
+// workspace and branch are removed again and the error is thrown. Conductor
+// restores inside its own create step (`createWorkspaceWithSetup` with a
+// `checkpointId`); what it leaves when that fails was not read (fork.md).
+//
 // The caller attaches the transcript to the new chat's composer (not sent),
 // opens it on the source chat's options and adds the workspace. Conductor also
 // copies its workspace notes; we have no workspace notes.
@@ -83,6 +88,19 @@ async function shell(invoke: Invoke, command: string, cwd: string): Promise<Shel
   return (await invoke("execute_shell_command", { request: { command, cwd } })) as ShellOutput;
 }
 
+/**
+ * Removes a half-made fork: the workspace (row, folder, worktree registration:
+ * `delete_workspace`), then the branch made for it. A failed step is logged;
+ * the fork's own error is what the user sees.
+ */
+async function rollBack(invoke: Invoke, repoRoot: string, branch: string, workspaceId: string | null): Promise<void> {
+  if (workspaceId) {
+    await Promise.resolve(invoke("delete_workspace", { workspaceId })).catch((e: unknown) => console.warn("fork: workspace not removed", e));
+  }
+  const removed = await shell(invoke, `git branch -D ${quote(branch)}`, repoRoot).catch((e: unknown) => ({ stdout: "", stderr: String(e), exitCode: 1 }));
+  if (removed.exitCode !== 0) console.warn("fork: branch not removed", removed.stderr);
+}
+
 export async function forkToNewWorkspace(deps: ForkWorkspaceDeps, input: ForkWorkspaceInput): Promise<ForkedWorkspace> {
   const { invoke } = deps;
   const source = input.workspacePath;
@@ -100,15 +118,24 @@ export async function forkToNewWorkspace(deps: ForkWorkspaceDeps, input: ForkWor
   const made = await shell(invoke, `git branch ${quote(branch)} ${quote(current)}`, input.repoRoot);
   if (made.exitCode !== 0) throw new Error(made.stderr || made.stdout || "Failed to fork chat");
 
-  const created = await deps.createWorkspace({
-    repositoryId: input.repositoryId,
-    branchName: branch,
-    directoryName: input.directoryName,
-    baseBranch: input.targetBranch,
-    existingBranch: true,
-  });
+  // From here a failure undoes what the fork made, so no workspace is left
+  // that the sidebar never shows: the caller adds the workspace only once the
+  // fork returns.
+  let created: CreatedWorkspaceDto | null = null;
+  try {
+    created = await deps.createWorkspace({
+      repositoryId: input.repositoryId,
+      branchName: branch,
+      directoryName: input.directoryName,
+      baseBranch: input.targetBranch,
+      existingBranch: true,
+    });
+    await invoke("checkpoint_restore", { workspacePath: created.workspace.path, checkpointId: checkpoint });
+  } catch (e) {
+    await rollBack(invoke, input.repoRoot, branch, created?.workspace.id ?? null);
+    throw e;
+  }
   const dest = created.workspace.path;
-  await invoke("checkpoint_restore", { workspacePath: dest, checkpointId: checkpoint });
 
   // Conductor copies `.context` only when the new workspace has one too; ours
   // has none yet, so the folder is made. A failed copy does not undo the fork.

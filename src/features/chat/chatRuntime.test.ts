@@ -12,7 +12,7 @@ type Config = string[];
 function fakeBackend() {
   let deliver: Deliver = () => assert.fail("event before listen");
   const prompts: { req: PromptRequest; end: (r?: { turnChanges?: FileChange[] }) => void }[] = [];
-  const calls = { listen: 0, open: [] as { chatId: string; cwd: string; sessionId: string | null; config: Config }[], cancel: [] as boolean[] };
+  const calls = { listen: 0, open: [] as { chatId: string; cwd: string; sessionId: string | null; config: Config }[], reconfigure: [] as { chatId: string; config: Config }[], cancel: [] as boolean[] };
   const backend: ChatBackend<Config> = {
     canSteer: true,
     defaultConfig: ["default"],
@@ -25,6 +25,9 @@ function fakeBackend() {
     },
     async open(chatId, cwd, sessionId, config) {
       calls.open.push({ chatId, cwd, sessionId, config });
+    },
+    reconfigure(chatId, config) {
+      calls.reconfigure.push({ chatId, config });
     },
     prompt(req) {
       return new Promise((resolve) => prompts.push({ req, end: (r = {}) => resolve(r) }));
@@ -99,6 +102,32 @@ test("a queued message is prompted once the running turn ends", async () => {
   await settle();
   assert.equal(rt.snapshot("c1").queue.status, "idle");
   assert.equal(rt.snapshot("c1").transcript.activeTurn, null);
+});
+
+test("a pick in a chat whose session is open goes to that session; before it opens, open carries it", async () => {
+  const f = fakeBackend();
+  const h = fakeHost();
+  const rt = createChatRuntime(f.backend, h.host);
+  rt.configure("c1", ["model=a"]);
+  assert.deepEqual(f.calls.reconfigure, [], "no session yet: the pick waits for open");
+
+  rt.submit("c1", "/ws", "first", "queue");
+  await settle();
+  assert.deepEqual(f.calls.open.map((o) => o.config), [["model=a"]]);
+  f.emit({ chatId: "c1", type: "sessionStarted", sessionId: "agent-1" });
+  f.prompts[0]!.end();
+  f.emit({ chatId: "c1", type: "turnEnded", end: { outcome: "completed" } });
+  await settle();
+
+  // Conductor switches the running session's model (reconcileSessionConfig);
+  // the chip and the agent agree without a Reset chat.
+  rt.configure("c1", ["model=b"]);
+  assert.deepEqual(f.calls.reconfigure, [{ chatId: "c1", config: ["model=b"] }]);
+  rt.submit("c1", "/ws", "second", "queue");
+  await settle();
+  assert.equal(f.calls.open.length, 1, "the same session continues");
+  assert.equal(f.prompts.length, 2);
+  assert.deepEqual(await rt.config("c1"), ["model=b"]);
 });
 
 test("a steered follow-up goes to the backend while the turn runs", async () => {
