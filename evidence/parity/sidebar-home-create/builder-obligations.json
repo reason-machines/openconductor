@@ -61,7 +61,7 @@
    "depends_on_builders": [],
    "feature": "Initializing state with progress while the workspace is created",
    "verdict": "partial",
-   "gap": "#327 adds a pendingLaunches store (src/workspace/pendingLaunches.ts, a port of Conductor's Y5e with the 120 s expiry): CreateWorkspaceDialog adds a launch on submit and removes it when the create finishes or fails, and RepoWorkspaceList/PendingWorkspaceRow (Sidebar.tsx) show an inert 'Untitled' row with a spinner ('Creating workspace...'), also in a collapsed group. Still no initializing workspace view and no initialization log, and the loader is a CSS spinner rather than Conductor's sprite.",
+   "gap": "#327 adds a pendingLaunches store (src/workspace/pendingLaunches.ts, a port of Conductor's Y5e with the 120 s expiry): CreateWorkspaceDialog adds a launch on submit and removes it when the create finishes or fails, and RepoWorkspaceList/PendingWorkspaceRow (Sidebar.tsx) show an inert 'Untitled' row with a spinner ('Creating workspace...'), also in a collapsed group. #399 logs git worktree add to a Conductor-style $TMPDIR/conductor-<ms>-<rand>.log (init_log.rs), stores it as initialization_log_path with initialization_files_copied, and shows non-fatal initialization issues as a persistent toast with View logs. Still no initializing workspace view, and the loader is a CSS spinner rather than Conductor's sprite.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
