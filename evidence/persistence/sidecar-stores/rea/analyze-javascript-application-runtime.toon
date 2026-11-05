@@ -1,0 +1,621 @@
+evidence_id: ev_3f6cc3f454f301afcf6b2fe267eb82122ae27752e2f85569ad58a74da91a1216
+subject:
+  name: runtime-src
+  digest:
+    sha256: f396bab3997f537f67b9223feda83bc46146cf40ff6d2d02770b3ad44a75c1fd
+  local_path: /Users/sven/code/conductor-rea-work/persist-rea/runtime-src
+  format: directory
+  architecture: null
+provider:
+  id: rea-javascript-application
+  name: REA JavaScript application analyzer
+  version: "1"
+analysis_profile: null
+predicate_type: rea.javascript-application-analysis
+operation: analyze_javascript_application
+parameters:
+  format: auto
+  integrity_policy: fail
+raw_result: null
+normalized_result:
+  input_path: /Users/sven/code/conductor-rea-work/persist-rea/runtime-src
+  format: directory
+  root_artifact_sha256: f396bab3997f537f67b9223feda83bc46146cf40ff6d2d02770b3ad44a75c1fd
+  inventory_manifest_id: agm_70bd5518923290b1e52c7998762a5c3941ec6ffb0d1f646bbd31040bd5f3c251
+  inventory_graph_sha256: 8efc97053b7797e6dc3d626638d7df1d0870d2afeb15eadb6ec076fbe017ed5e
+  integrity_contradictions: []
+  graph:
+    schema: JavaScriptApplicationGraph
+    root_node_ids[1]: jag_node_8b783519a58ad7495e8324fb75fefa31031490bc9d33161235a402e25722908a
+    nodes[3]:
+      - node_id: jag_node_4f9844ac3841c9dbbdf0417c621a1c011f66dedeabfd1fd451d1a7a142b1b647
+        kind: javascript-asset
+        identity:
+          strategy: content-digest
+          stability: global-exact
+          sha256: f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+        observations[1]:
+          - label: conductor-runtime.js
+            source_map_reference: null
+            properties:
+              path: conductor-runtime.js
+              bytes: 13025924
+              inventory_artifact_id: art_6f729c13a7b18846dcb8ab2567c2c11b40d0510b2c724f959ea9d4f8fc170c9e
+              unpacked: false
+              file_kind: javascript
+              text_status: included
+              parse_status: skipped
+              json_parse_status: null
+              json_top_level_keys: []
+              omitted_json_top_level_keys: 0
+              vendor_markers: []
+            evidence:
+              authority: artifact-bytes
+              state: observed
+              confidence: exact
+              artifact:
+                available: true
+                artifact_id: art_f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+                sha256: f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+              location:
+                available: true
+                value:
+                  kind: artifact-path
+                  path: conductor-runtime.js
+              extractor:
+                name: rea-javascript-artifact-reconstruction
+                version: "1"
+                operation: inventory-relevant-file
+                executable_sha256: null
+              coverage:
+                status: complete
+                truncated: false
+                omitted_count: 0
+                limits: []
+              limitations: []
+              evidence_ids: []
+            observation_id: jag_observation_4d8096f6230aafeeb2af6de17dbbcafb960926b656511d3fc6e771c5d86a4b9f
+            identifier_strategy:
+              strategy: semantic-content-sha256
+              stability: observation-exact
+      - node_id: jag_node_56127d61353c63bb87ea51ce08cdb1148c9b88ee796f7252422762ce9737ee14
+        kind: unknown
+        identity:
+          strategy: artifact-local-key
+          stability: artifact-version
+          artifact_sha256: f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+          namespace: static-parse-scope
+          key: "analyze-javascript-source:conductor-runtime.js"
+        observations[1]:
+          - label: conductor-runtime.js parse scope
+            source_map_reference: null
+            properties:
+              analysis_status: interrupted
+              path: conductor-runtime.js
+              operation: analyze-javascript-source
+              limitation: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+              analysis_failure:
+                code: resource_constraint
+                category: resource_constraint
+                message: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static
+                retryable: false
+                remediation:
+                  action: Review the reported worker memory limits and available host memory. Retry with sufficient memory or a smaller artifact; REA retains tighter inherited limits.
+                details:
+                  operation: analyze_javascript_application
+                  resource: memory
+                  reason: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static
+                  reported_limits:
+                    worker_old_space_mb: 1024
+                    worker_heap_limit_bytes: 1098907648
+                    worker_timeout_ms: 300000
+                  captured_output:
+                    stdout: ""
+                    stderr: "\n<--- Last few GCs --->\n\n[26670:0xb63c00000]   101830 ms: Scavenge 1015.8 (1025.4) -> 1012.0 (1025.4) MB, pooled: 0.0 MB, 5.60 / 0.00 ms (average mu = 0.370, current mu = 0.384) allocation failure; \n[26670:0xb63c00000]   107623 ms: Incremental Mark-Compact (reduce) 1018.5 (1028.2) -> 1009.9 (1019.2) MB, pooled: 0.0 MB, 5291.65 / 0.00 ms (+ 468.7 ms in 105 steps since start of marking, biggest step 100.1 ms, walltime since start of marking 5793 ms) (a\nFATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory\n----- Native stack trace -----\n\n 1: 0x106c52c70 node::(anonymous namespace)::DefaultAbortHandler(char const*, char const*) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n 2: 0x106c54500 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n 3: 0x105ef7154 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n 4: 0x1060a9450 v8::internal::Heap::StartIncrementalMarking(v8::base::Flags<v8::internal::GCFlag, unsigned char, unsigned char>, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags, v8::internal::GarbageCollector, char const*) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n 5: 0x1060a91fc v8::internal::Heap::CompleteArrayBufferSweeping() [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n 6: 0x1060a830c v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags, v8::internal::PerformHeapLimitCheck, v8::internal::PerformIneffectiveMarkCompactCheck) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n 7: 0x1060a18b0 v8::internal::HeapAllocator::CollectGarbageAndRetryAllocation(v8::base::FunctionRef<bool ()>, v8::internal::AllocationType) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n 8: 0x1060a171c v8::internal::HeapAllocator::RetryCustomAllocate(v8::base::FunctionRef<bool ()>, v8::internal::AllocationType) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n 9: 0x1060a16c4 v8::internal::HeapAllocator::RetryCustomAllocateOrFail(v8::base::FunctionRef<bool ()>, v8::internal::AllocationType) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n10: 0x1060913d8 v8::internal::Factory::NewFillerObject(int, v8::internal::AllocationAlignment, v8::internal::AllocationType, v8::internal::AllocationOrigin) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n11: 0x106360880 v8::internal::Runtime_AllocateInYoungGeneration(int, unsigned long*, v8::internal::Isolate*) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n12: 0x105ae0cac Builtins_CEntry_Return1_ArgvOnStack_NoBuiltinExit [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n13: 0x123882ffc \n14: 0x123781db4 \n15: 0x1238a7004 \n16: 0x105a7e22c Builtins_GeneratorPrototypeNext [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n17: 0x1237f7be4 \n18: 0x105a7e22c Builtins_GeneratorPrototypeNext [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n19: 0x1237eda88 \n20: 0x105a7e22c Builtins_GeneratorPrototypeNext [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n21: 0x123995364 \n22: 0x105a7e22c Builtins_GeneratorPrototypeNext [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n23: 0x1237e20bc \n24: 0x105a7e22c Builtins_GeneratorPrototypeNext [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n25: 0x1238f83d4 \n26: 0x105a7e22c Builtins_GeneratorPrototypeNext [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n27: 0x123748c88 \n28: 0x105a7b764 Builtins_AsyncFunctionAwaitResolveClosure [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n29: 0x105b59458 Builtins_PromiseFulfillReactionJob [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n30: 0x105a6a904 Builtins_RunMicrotasks [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n31: 0x105a3a678 Builtins_JSRunMicrotasksEntry [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n32: 0x10601f990 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n33: 0x106020190 v8::internal::(anonymous namespace)::InvokeWithTryCatch(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n34: 0x106048074 v8::internal::MicrotaskQueue::PerformCheckpointInternal(v8::Isolate*) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n35: 0x105c23888 node::InternalCallbackScope::Close() [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n36: 0x105c23e90 node::InternalMakeCallback(node::Environment*, v8::Local<v8::Object>, v8::Local<v8::Object>, v8::Local<v8::Function>, int, v8::Local<v8::Value>*, node::async_context, v8::Local<v8::Value>) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n37: 0x105c24368 node::InternalMakeCallback(v8::Isolate*, v8::Local<v8::Object>, v8::Local<v8::Function>, int, v8::Local<v8::Value>*, node::async_context, v8::Local<v8::Value>) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n38: 0x105c9ad6c node::Environment::CheckImmediate(uv_check_s*) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n39: 0x10236024c uv__run_check [/opt/homebrew/Cellar/libuv/1.52.1/lib/libuv.1.0.0.dylib]\n40: 0x10235ab94 uv_run [/opt/homebrew/Cellar/libuv/1.52.1/lib/libuv.1.0.0.dylib]\n41: 0x105c24608 node::SpinEventLoopInternal(node::Environment*) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n42: 0x105d51664 node::NodeMainInstance::Run(node::ExitCode*, node::Environment*) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n43: 0x105d513b8 node::NodeMainInstance::Run() [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n44: 0x105cc3f30 node::Start(int, char**) [/opt/homebrew/Cellar/node/26.8.1/lib/libnode.147.dylib]\n45: 0x187b4bda4 start [/usr/lib/dyld]\n"
+                    truncated: false
+                    stderr_bytes: 5970
+                    exit_code: null
+                    signal: SIGABRT
+            evidence:
+              authority: ast-static-analysis
+              state: unavailable
+              confidence: unknown
+              artifact:
+                available: true
+                artifact_id: art_f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+                sha256: f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+              location:
+                available: true
+                value:
+                  kind: artifact-path
+                  path: conductor-runtime.js
+              extractor:
+                name: rea-javascript-artifact-reconstruction
+                version: "1"
+                operation: analyze-javascript-source
+                executable_sha256: null
+              coverage:
+                status: partial
+                truncated: false
+                omitted_count: null
+                limits[2]{name,value,unit}:
+                  javascript_analysis_worker_heap_limit_bytes,1098907648,bytes
+                  javascript_analysis_worker_timeout_ms,300000,milliseconds
+              limitations[1]: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+              evidence_ids: []
+            observation_id: jag_observation_0a00808616e2bdaaa22c58cf429c95da956680cc448a8a35823d21bea0645565
+            identifier_strategy:
+              strategy: semantic-content-sha256
+              stability: observation-exact
+      - node_id: jag_node_8b783519a58ad7495e8324fb75fefa31031490bc9d33161235a402e25722908a
+        kind: artifact
+        identity:
+          strategy: content-digest
+          stability: global-exact
+          sha256: f396bab3997f537f67b9223feda83bc46146cf40ff6d2d02770b3ad44a75c1fd
+        observations[1]:
+          - label: artifact root
+            source_map_reference: null
+            properties:
+              format: directory
+              bytes: 0
+              inventory_manifest_id: agm_70bd5518923290b1e52c7998762a5c3941ec6ffb0d1f646bbd31040bd5f3c251
+              inventory_graph_sha256: 8efc97053b7797e6dc3d626638d7df1d0870d2afeb15eadb6ec076fbe017ed5e
+              inventory_artifact_id: art_d4d2732d2fe0e4044822cba2fbadc598676475f944729c97c1247c735cbd336f
+            evidence:
+              authority: artifact-bytes
+              state: observed
+              confidence: exact
+              artifact:
+                available: true
+                artifact_id: art_f396bab3997f537f67b9223feda83bc46146cf40ff6d2d02770b3ad44a75c1fd
+                sha256: f396bab3997f537f67b9223feda83bc46146cf40ff6d2d02770b3ad44a75c1fd
+              location:
+                available: true
+                value:
+                  kind: artifact-path
+                  path: artifact-root
+              extractor:
+                name: rea-javascript-artifact-reconstruction
+                version: "1"
+                operation: inventory-root
+                executable_sha256: null
+              coverage:
+                status: complete
+                truncated: false
+                omitted_count: 0
+                limits: []
+              limitations[1]: artifact-root is a path-independent alias; the application result retains the canonical local input path.
+              evidence_ids: []
+            observation_id: jag_observation_d4c37fba9ef1b236151b01e544516ba39312bb6c8ac8bde526297b05001423c6
+            identifier_strategy:
+              strategy: semantic-content-sha256
+              stability: observation-exact
+    edges[2]:
+      - source_node_id: jag_node_4f9844ac3841c9dbbdf0417c621a1c011f66dedeabfd1fd451d1a7a142b1b647
+        target_node_id: jag_node_56127d61353c63bb87ea51ce08cdb1148c9b88ee796f7252422762ce9737ee14
+        relation: contains
+        properties:
+          scope: unavailable-static-analysis
+        evidence:
+          authority: artifact-bytes
+          state: observed
+          confidence: exact
+          artifact:
+            available: true
+            artifact_id: art_f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+            sha256: f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+          extractor:
+            name: rea-javascript-artifact-reconstruction
+            version: "1"
+            operation: associate-unavailable-parse-scope
+            executable_sha256: null
+          coverage:
+            status: complete
+            truncated: false
+            omitted_count: 0
+            limits: []
+          limitations: []
+          evidence_ids: []
+        edge_id: jag_edge_1a3e73c7b792a80554d50daac07e56a9b23b1addc235c7e0a244222d4031fd21
+        identifier_strategy:
+          strategy: semantic-content-sha256
+          stability: relationship-exact
+      - source_node_id: jag_node_8b783519a58ad7495e8324fb75fefa31031490bc9d33161235a402e25722908a
+        target_node_id: jag_node_4f9844ac3841c9dbbdf0417c621a1c011f66dedeabfd1fd451d1a7a142b1b647
+        relation: contains
+        properties:
+          path: conductor-runtime.js
+        evidence:
+          authority: artifact-bytes
+          state: observed
+          confidence: exact
+          artifact:
+            available: true
+            artifact_id: art_f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+            sha256: f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+          extractor:
+            name: rea-javascript-artifact-reconstruction
+            version: "1"
+            operation: inventory-file
+            executable_sha256: null
+          coverage:
+            status: complete
+            truncated: false
+            omitted_count: 0
+            limits: []
+          limitations: []
+          evidence_ids: []
+        edge_id: jag_edge_c77fee0730b26d18918033ec25e0526b171805460461ca15f607ef9b63fc858f
+        identifier_strategy:
+          strategy: semantic-content-sha256
+          stability: relationship-exact
+    coverage:
+      status: partial
+      truncated: false
+      omitted_count: null
+      limits[2]{name,value,unit}:
+        javascript_analysis_worker_heap_limit_bytes,1098907648,bytes
+        javascript_analysis_worker_timeout_ms,300000,milliseconds
+    limitations[7]: CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.,Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.,JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.,"Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.,Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code.,"conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+    graph_id: jag_ea3d995e6f0dd09271b43922688461b0246c482f8f476305c02d427a22ec62d9
+  summary:
+    browser_windows: 0
+    explicit_web_preferences: 0
+    preload_entrypoints: 0
+    context_bridge_apis: 0
+    exposed_api_members: 0
+    ipc:
+      operations: 0
+      literal_channels: 0
+      dynamic_channel_operations: 0
+      renderer_transmissions: 0
+      renderer_listeners: 0
+      main_handlers: 0
+      paired_renderer_transmissions: 0
+      ambiguous_renderer_transmissions: 0
+      unpaired_literal_renderer_transmissions: 0
+    sender_validation_observations: 0
+    utility_processes: 0
+    resolved_utility_entrypoints: 0
+    native_addon_bindings: 0
+    resolved_native_addon_bindings: 0
+  statistics:
+    relevant_files: 1
+    nested_asar_containers: 0
+    text_bytes_read: 13025924
+    invalid_utf8_files: 0
+    parsed_javascript_files: 0
+    skipped_javascript_files: 1
+    visited_ast_nodes: 0
+    findings: 0
+    modules: 0
+    parse_failures: 0
+  limitations[7]: CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.,Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.,JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.,"Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.,Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code.,"conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+  semantic_graph:
+    schema: JavaScriptSemanticRelationGraph
+    root_artifact_sha256: f396bab3997f537f67b9223feda83bc46146cf40ff6d2d02770b3ad44a75c1fd
+    application_graph_id: jag_ea3d995e6f0dd09271b43922688461b0246c482f8f476305c02d427a22ec62d9
+    root_node_ids[1]: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+    evidence_contexts[2]:
+      - authority: ast-static-analysis
+        state: observed
+        confidence: exact
+        artifact:
+          available: true
+          artifact_id: art_f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+          sha256: f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+        extractor:
+          name: rea-javascript-semantic-analysis
+          version: "1"
+          operation: analyze_javascript_application
+          executable_sha256: null
+        coverage:
+          status: complete
+          truncated: false
+          omitted_count: 0
+          limits: []
+        limitations: []
+        evidence_ids: []
+        context_id: jsrg_evidence_3898a15325f53d2326839c16346ab38805813e6f52c9eba57995523768f54f5e
+      - authority: unknown
+        state: unknown
+        confidence: unknown
+        artifact:
+          available: true
+          artifact_id: art_f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+          sha256: f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+        extractor:
+          name: rea-javascript-semantic-analysis
+          version: "1"
+          operation: analyze_javascript_application
+          executable_sha256: null
+        coverage:
+          status: partial
+          truncated: false
+          omitted_count: null
+          limits[2]{name,value,unit}:
+            javascript_analysis_worker_heap_limit_bytes,1098907648,bytes
+            javascript_analysis_worker_timeout_ms,300000,milliseconds
+        limitations[1]: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        evidence_ids: []
+        context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+    nodes[1]:
+      - kind: module
+        identity:
+          artifact_sha256: f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab
+          module_path: conductor-runtime.js
+          source_range: null
+          role_key: module
+        function_node_id: null
+        application_node_ids[2]: jag_node_4f9844ac3841c9dbbdf0417c621a1c011f66dedeabfd1fd451d1a7a142b1b647,jag_node_56127d61353c63bb87ea51ce08cdb1148c9b88ee796f7252422762ce9737ee14
+        label: conductor-runtime.js
+        properties:
+        evidence:
+          context_id: jsrg_evidence_3898a15325f53d2326839c16346ab38805813e6f52c9eba57995523768f54f5e
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+    relations: []
+    fingerprints: []
+    unknowns[12]:
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: configuration
+        relation_kinds[5]: defaults,overrides,reads-argv,reads-config,reads-environment
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_1425b2bab0f121edb931a9db49c42f6ce0e4c5ad5c38e489fb060e9b25d9a03b
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: call-flow
+        relation_kinds[3]: argument-to-parameter,calls,returns-to-call
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_16654f6d7e6bf0c973601037a77111d9fdbf5d76e1740f01b1a46847fad81bb3
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: closure
+        relation_kinds[1]: captures
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_3ac2ef7e06e1d964a109cf38528ccbd3e328947fa2f493d6465ac9e5be6c0c2f
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: data-flow
+        relation_kinds[4]: aliases,defines,reads,writes
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_477c8ffe40764986d6dc08b6584da05a98a36aecba31bd513b63fd7f9bc3df48
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: promise-ownership
+        relation_kinds[7]: aggregates,awaits,chains,creates-promise,detaches-task,owns,returns-task
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_50b68f7d78488892b6dc10ef2fc4be87b0e7607f559ead54810db68929c8f3db
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: resource-lifecycle
+        relation_kinds[2]: acquires,releases
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_8283e9c0bc5ce1efa14fefa08e0215fb14a964537285f98803f84afa9d50943d
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: timer
+        relation_kinds[2]: cancels-timer,schedules-timer
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_9df85e698406835582dac5f91accebc38f8cea42dd2662fad2f9fa1020a77b15
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: boundary
+        relation_kinds[3]: coerces,parses,validates
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_b780ed9210750094f314e81c82e086ed431acf3edeaf30db46932fef169b5d32
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: event
+        relation_kinds[3]: dispatches-candidate,registers-listener,removes-listener
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_c4f184f275f9e6aa5cd1138b57ddcfc10230cead690645b87bad0913b72173fa
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: object-flow
+        relation_kinds[4]: destructures,reads-property,spreads,writes-property
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_dd962f8be635d34987114203596568eaa51f6bc45173aaf32d73b86cd6dbb8e8
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: child-process
+        relation_kinds[7]: connects-stdio,forwards-signal,listens-error,listens-exit,spawns,supplies-argv,supplies-env
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_f0be51b7e34b0c66f8fe1465a06f1700392dba6c1a5fc81d2b5cfa3fd6e5427d
+      - node_id: jsrg_node_06194692724fbbe0c8073b4c89d858020af60abf42da735df74980c3614dfb9a
+        family: request
+        relation_kinds[3]: constructs-request,consumed-by,supplies-request-field
+        reason: resource-limit
+        detail: "conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+        candidate_node_ids: []
+        evidence:
+          context_id: jsrg_evidence_abed2a345ba51df9501333465632712ac7366be1375869d311aae041c8fe62fa
+          location:
+            available: true
+            value:
+              kind: artifact-path
+              path: conductor-runtime.js
+        unknown_id: jsrg_unknown_f5fcef611219db4daaf25073341c55cc71f83a2e5805b7f824274b3107bc825e
+    coverage:
+      status: partial
+      truncated: true
+      omitted_nodes: null
+      omitted_relations: null
+      limits[2]{name,value,unit}:
+        javascript_analysis_worker_heap_limit_bytes,1098907648,bytes
+        javascript_analysis_worker_timeout_ms,300000,milliseconds
+      families[12]:
+        - family: boundary
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_b780ed9210750094f314e81c82e086ed431acf3edeaf30db46932fef169b5d32
+        - family: call-flow
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_16654f6d7e6bf0c973601037a77111d9fdbf5d76e1740f01b1a46847fad81bb3
+        - family: child-process
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_f0be51b7e34b0c66f8fe1465a06f1700392dba6c1a5fc81d2b5cfa3fd6e5427d
+        - family: closure
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_3ac2ef7e06e1d964a109cf38528ccbd3e328947fa2f493d6465ac9e5be6c0c2f
+        - family: configuration
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_1425b2bab0f121edb931a9db49c42f6ce0e4c5ad5c38e489fb060e9b25d9a03b
+        - family: data-flow
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_477c8ffe40764986d6dc08b6584da05a98a36aecba31bd513b63fd7f9bc3df48
+        - family: event
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_c4f184f275f9e6aa5cd1138b57ddcfc10230cead690645b87bad0913b72173fa
+        - family: object-flow
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_dd962f8be635d34987114203596568eaa51f6bc45173aaf32d73b86cd6dbb8e8
+        - family: promise-ownership
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_50b68f7d78488892b6dc10ef2fc4be87b0e7607f559ead54810db68929c8f3db
+        - family: request
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_f5fcef611219db4daaf25073341c55cc71f83a2e5805b7f824274b3107bc825e
+        - family: resource-lifecycle
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_8283e9c0bc5ce1efa14fefa08e0215fb14a964537285f98803f84afa9d50943d
+        - family: timer
+          status: partial
+          retained_relations: 0
+          omitted_relations: null
+          unknown_ids[1]: jsrg_unknown_9df85e698406835582dac5f91accebc38f8cea42dd2662fad2f9fa1020a77b15
+    limitations[11]: Boundary extraction covers unshadowed JSON/global coercions plus parse and validation method candidates.,"Child-process extraction covers asynchronous node:child_process creation, literal argv/env/stdio options, exit/error listeners, and kill signals.","Configuration extraction covers process.env, process.argv, node:fs reads, and direct logical defaults.","Event extraction covers EventEmitter-style literal registrations, removals, and dispatch candidates; dynamic names remain unknown.",Function fingerprints are static candidates; equal digests can remain ambiguous and do not prove behavioral equivalence.,Local data flow does not claim control-flow-sensitive reaching definitions or arbitrary dynamic property resolution.,"Promise ownership covers explicit unshadowed Promise construction, static factories, aggregation, chaining, and await syntax only.","Request extraction covers fetch, WebSocket, node:http/node:https construction, direct option fields, and exact local response consumers.",Resource extraction covers built-in filesystem/network acquisition and exact local close/destroy/end handles.,The semantic graph contains static syntax observations and conservative relationship candidates; it does not claim runtime execution.,"Timer extraction covers global or node:timers scheduling and exact local-handle cancellation."
+    graph_id: jsrg_b416790b25c2b4f9f8d342bad784a714d2e360dcba189878227c6f2e47da47f2
+confidence: derived
+authority: shipped-artifact
+environment: null
+limitations[7]: CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.,Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.,JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.,"Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.,Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code.,"conductor-runtime.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing conductor-runtime.js during static"
+relationship_coverage: null
+locations[1]{kind,path}:
+  artifact-path,artifact-root
+evidence_links: []

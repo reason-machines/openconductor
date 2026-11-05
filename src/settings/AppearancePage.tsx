@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BUILTIN_MONO, MONO_FONTS, monoFontError, monoFontStack, withAppearance, zoomPercent, ZOOM_PERCENTS } from "./appearance";
 import { Row } from "./GeneralPage";
 import { TerminalFontRows } from "./TerminalFont";
+import { DiffColorRows, DiffLigaturesRow } from "../features/diff/DiffAppearanceRows";
 import { withField } from "./model";
 import type { Settings, Theme } from "./types";
 
@@ -22,8 +23,8 @@ const CUSTOM = "custom";
 /**
  * Settings › Appearance: Conductor's Theme, Low-contrast dark mode, App zoom
  * Mono Font and Terminal font rows, with its titles and descriptions
- * (evidence/settings/settings-registry.json). Its other Appearance rows
- * (code theme, accessible colors, ligatures, ...) are not built yet.
+ * (evidence/settings/settings-registry.json); Accessible colors, Code theme
+ * and Code ligatures come from the diff feature (DiffAppearanceRows.tsx).
  */
 export function AppearancePage({ settings, save }: Props) {
   const a = settings.appearance;
@@ -86,6 +87,7 @@ export function AppearancePage({ settings, save }: Props) {
           ))}
         </select>
       </Row>
+      <DiffColorRows settings={settings} save={save} />
       <Row label="Mono Font" help="Font used for code and diffs.">
         <select aria-label="Mono Font" value={fontChoice} onChange={(e) => chooseFont(e.target.value)}>
           <option value={BUILTIN}>System default</option>
@@ -121,6 +123,7 @@ export function AppearancePage({ settings, save }: Props) {
         <div>const greeting = 'Hello, World!';</div>
         <div>function sum(a, b) {"{ return a + b; }"}</div>
       </div>
+      <DiffLigaturesRow settings={settings} save={save} />
       <TerminalFontRows settings={settings} save={save} />
     </div>
   );
