@@ -3,10 +3,11 @@ import type { AppState, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
-import { ArrowLeftIcon, ArrowRightIcon, BranchIcon, ChevronDownIcon, ChevronIcon, HelpIcon, HomeIcon, MoreIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
+import { ArrowLeftIcon, ArrowRightIcon, BranchIcon, ChevronDownIcon, ChevronIcon, HomeIcon, MoreIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { byRecentActivity, workspaceLabel } from "./sidebarLabel";
+import { HelpMenu } from "./HelpMenu";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
 function hint(commandId: string): string {
@@ -88,7 +89,7 @@ function HeaderMenu({ label, items, className }: { label: string; items: MenuIte
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, computerName = "My Mac" }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac" }: Props) {
   const sel = state.selection;
   // Conductor persists this per collapse key; ours lasts for the session.
   const [groupCollapsed, setGroupCollapsed] = useState(false);
@@ -223,9 +224,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
       {/* Footer, after Conductor's `Nna`: px-4 py-3, top border, help and settings icons (h-4 w-4, stroke 1.5) gap-5 at the right. */}
       <div className="sb-footer">
         <div className="sb-footer-actions">
-          <button type="button" className="sb-footer-btn" aria-label="Help" title="Help" onClick={onOpenShortcuts}>
-            <HelpIcon size={16} strokeWidth={1.5} />
-          </button>
+          <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} />
           <button type="button" className="sb-footer-btn" aria-label="Settings" title={`Settings (${hint("openSettings")})`} onClick={onOpenSettings}>
             <SettingsIcon size={16} strokeWidth={1.5} />
           </button>

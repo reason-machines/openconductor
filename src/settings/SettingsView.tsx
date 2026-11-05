@@ -1,4 +1,5 @@
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
+import { AdvancedPage } from "./AdvancedPage";
 import { AgentsPage } from "./AgentsPage";
 import { AppearancePage } from "./AppearancePage";
 import { DefaultModelsPage } from "./DefaultModelsPage";
@@ -62,6 +63,8 @@ export function SettingsView({ page, onNavigate, onClose }: Props) {
           <AgentsPage settings={settings} reload={reload} />
         ) : page === "appearance" ? (
           <AppearancePage settings={settings} save={save} />
+        ) : page === "advanced" ? (
+          <AdvancedPage settings={settings} save={save} />
         ) : page === "git" ? (
           <GitPage settings={settings} save={save} />
         ) : (

@@ -30,6 +30,7 @@ pub struct Settings {
     pub git: Git,
     pub models: Models,
     pub providers: Providers,
+    pub advanced: Advanced,
     #[serde(flatten)]
     pub extra: toml::Table,
 }
@@ -43,9 +44,24 @@ impl Default for Settings {
             git: Git::default(),
             models: Models::default(),
             providers: Providers::default(),
+            advanced: Advanced::default(),
             extra: toml::Table::new(),
         }
     }
+}
+
+/// Conductor's Advanced tab (Settings › More › Advanced). Key names are
+/// Conductor's setting keys.
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Advanced {
+    /// Approximate terminal output to keep, in bytes; `None` means
+    /// Conductor's 10 MB. Any value is accepted here: the terminal clamps it
+    /// to 1 MB to 1 GB when it reads it, as Conductor does.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terminal_scrollback_limit_bytes: Option<u64>,
+    #[serde(flatten)]
+    pub extra: toml::Table,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
