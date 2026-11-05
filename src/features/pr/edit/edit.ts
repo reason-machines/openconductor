@@ -39,15 +39,6 @@ export function prEditErrorMessage(err: unknown): string {
   return `Failed to update PR on GitHub: ${message}`;
 }
 
-export type RetargetPlan = { kind: "skip" } | { kind: "retarget"; number: number; base: string };
-
-/** Conductor retargets only an open, unmerged PR whose base differs from the new target. */
-export function planRetarget(pr: { number: number; baseRefName: string; isMerged: boolean } | null, base: string): RetargetPlan {
-  const target = base.trim();
-  if (!pr || pr.isMerged || !target || pr.baseRefName === target) return { kind: "skip" };
-  return { kind: "retarget", number: pr.number, base: target };
-}
-
 export function retargetErrorMessage(err: unknown): string {
   return `Failed to change the PR's base branch: ${messageOf(err)}`;
 }

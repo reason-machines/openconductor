@@ -3,7 +3,8 @@ import type { AppState, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { RowStatusIcon } from "./RowStatusIcon";
 import { aggregateSessions, rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
-import { workspaceLabel } from "./sidebarLabel";
+import { labelTargetBranch, workspaceLabel } from "./sidebarLabel";
+import { useBranchPrefix } from "./useBranchPrefix";
 import { WorkspaceActionsMenu } from "./WorkspaceActionsMenu";
 import { COMMANDS } from "../keybindings/registry";
 import { HINT_DELAY_MS, hintLabel, hintNumbers, holdsExactly } from "../state/shortcutHint";
@@ -18,7 +19,7 @@ import type { LookupResult } from "../features/pr/types";
 
 interface Props {
   workspace: Workspace;
-  /** Branch the workspace merges into; a branch equal to it is not used as the title. */
+  /** Branch the row's diff stat is counted against. */
   targetBranch: string;
   /** The repo has a remote: a workspace without a PR shows "Ready" (branch) rather than "Local workspace". */
   hasRemote?: boolean;
@@ -35,12 +36,22 @@ interface Props {
   repoPath?: string;
   /** A background PR lookup for this row came back. */
   onPrLookup?: (r: LookupResult) => void;
+  /** Branch prefix stripped from the label's prettified branch. */
+  branchPrefix?: string;
 }
 
 /** One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat. */
-export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup }: Props) {
+export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix }: Props) {
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
-  const label = workspaceLabel({ name: ws.name, branch: ws.branch, prTitle: ws.prTitle, userSetWorkspaceName: ws.userSetWorkspaceName, targetBranch });
+  const label = workspaceLabel({
+    name: ws.name,
+    workspaceName: ws.workspaceName,
+    branchPrefix,
+    branch: ws.branch,
+    prTitle: ws.prTitle,
+    userSetWorkspaceName: ws.userSetWorkspaceName,
+    targetBranch: labelTargetBranch(ws.targetBranch),
+  });
   const { ref, stat, onScreen } = useRowDiffStat(ws, targetBranch, active);
   useRowPrPoll({ ws, repoPath, onScreen, active, onResult: (r) => onPrLookup?.(r) });
   // Every chat of the workspace, open or not, plus what the open view reports (and the demo's "working").
@@ -160,9 +171,11 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
   const hintsVisible = useShortcutHints();
   const numbers = hintNumbers(sidebarEntries(state, { visibleOnly: true, collapsedSections }).map((e) => e.workspace.id));
   const { optionalChecksBlock } = usePrSettings();
+  const branchPrefix = useBranchPrefix();
 
   const rowProps = (repoId: string, ws: Workspace) => ({
     repoPath: state.repos.find((r) => r.id === repoId)?.path || undefined,
+    branchPrefix,
     onPrLookup: (r: LookupResult) => applyRowLookup(dispatch, repoId, ws, r, optionalChecksBlock),
     active: sel.kind === "workspace" && sel.workspaceId === ws.id,
     menuOpen: menu?.workspaceId === ws.id,
