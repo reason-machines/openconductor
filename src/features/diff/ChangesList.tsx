@@ -35,7 +35,7 @@ function copy(text: string) {
   void navigator.clipboard?.writeText(text).catch(() => undefined);
 }
 
-/** Right panel: scope and whitespace options, "N files changed" and one row per file. */
+/** Right panel: scope option, "N files changed" and one row per file. */
 export function ChangesList({ diff, actions, worktree }: ChangesListProps) {
   const { opts, update, load, files, totals, current } = diff;
   const [menu, setMenu] = useState<{ index: number; x: number; y: number } | null>(null);
@@ -49,9 +49,6 @@ export function ChangesList({ diff, actions, worktree }: ChangesListProps) {
           options={diff.turn ? [["all", "All changes"], ["uncommitted", "Uncommitted"], ["turn", "Turn"]] : [["all", "All changes"], ["uncommitted", "Uncommitted"]]}
           onChange={(scope) => scope !== "turn" && update({ scope })}
         />
-        <label title="Hide changes that only touch whitespace">
-          <input type="checkbox" checked={opts.ignoreWhitespace} onChange={(e) => update({ ignoreWhitespace: e.target.checked })} /> Hide whitespace
-        </label>
         <span className="spacer" />
         {load.state === "ready" && files.length > 0 && (
           <span className="muted">

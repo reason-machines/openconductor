@@ -5,9 +5,8 @@
 import type { ReactNode } from "react";
 import "./diff.css";
 import { DiscardDialog } from "./DiscardDialog";
-import { WhitespaceToggle } from "./Whitespace";
+import { ViewOptionsMenu } from "./Whitespace";
 import { FileDiffView, type LineAnchor, type LineRange } from "./FileDiffView";
-import { WrapToggle } from "./WrapLines";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
 export { ChangesList, type ChangesListProps } from "./ChangesList";
@@ -27,7 +26,8 @@ const LAYOUT_ICON: Record<DiffLayout, ReactNode> = {
     </>
   ),
 };
-const LAYOUT_TITLE: Record<DiffLayout, string> = { unified: "Unified diff", split: "Split diff", file: "Entire file" };
+// Conductor's labels for its three file-toolbar layout toggles (REA, 0.87.6).
+export const LAYOUT_TITLE: Record<DiffLayout, string> = { unified: "Unified view", split: "Split view", file: "Entire file" };
 
 function LayoutToggle({ value, onChange }: { value: DiffLayout; onChange: (v: DiffLayout) => void }) {
   return (
@@ -88,9 +88,11 @@ export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations,
           onShowWhitespace={() => update({ ignoreWhitespace: false })}
           tools={
             <>
-              <WhitespaceToggle hidden={opts.ignoreWhitespace} onChange={(ignoreWhitespace) => update({ ignoreWhitespace })} />
-              {!f.binary && <WrapToggle wrap={opts.wrapLines} onChange={(wrapLines) => update({ wrapLines })} />}
               <LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />
+              <ViewOptionsMenu
+                whitespace={{ hidden: opts.ignoreWhitespace, onChange: (ignoreWhitespace) => update({ ignoreWhitespace }) }}
+                textWrap={f.binary ? undefined : { wrapLines: opts.wrapLines, onChange: (wrapLines) => update({ wrapLines }) }}
+              />
             </>
           }
         />
