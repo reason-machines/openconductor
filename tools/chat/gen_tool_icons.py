@@ -17,7 +17,9 @@ src = open(sys.argv[1]).read()
 
 LUCIDE = ["terminal", "file-text", "search", "file-search", "file-pen", "square-check-big", "globe", "file-code",
           "bot", "brain", "chevron-down", "chevron-right", "plus", "minus", "circle-check", "ellipsis", "circle-x",
-          "copy", "check", "wrench", "clock", "circle"]
+          "copy", "check", "wrench", "clock", "circle", "message-square-more", "file-diff", "message-square",
+          "messages-square", "laptop", "image", "clipboard-list", "biceps-flexed", "slash", "users", "send", "radio",
+          "circle-alert", "trash-2", "message-circle"]
 FILES = ["typescript", "react", "javascript", "json", "markdown", "css", "python", "rust", "html", "yaml", "bash",
          "go", "settings", "file-text", "file-image", "file-code", "file"]
 
