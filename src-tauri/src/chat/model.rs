@@ -5,8 +5,9 @@
 //!
 //! Columns follow Conductor's `session_messages` table (see
 //! `evidence/sqlite/conductor.schema.sql`): `id`, `session_id`, `turn_id`,
-//! `role`, `created_at`, `model`, `cancelled_at`, and `full_message` (the
-//! structured content, our `blocks`).
+//! `role`, `created_at`, `model`, `cancelled_at`, `sender_session_id`,
+//! `sender_api_key_name`, and `full_message` (the structured content, our
+//! `blocks`).
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -76,11 +77,51 @@ pub struct ChatMessage {
     pub model: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cancelled_at: Option<String>,
+    /// Set when another session sent this message (e.g. a child session's
+    /// report). Such a message is input to the turn, not something the user
+    /// typed, and the UI must never render it as the user's own message.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sender_session_id: Option<String>,
+    /// Set when the message arrived through an API key rather than the app.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sender_api_key_name: Option<String>,
     #[serde(default)]
     pub blocks: Vec<Block>,
 }
 
+/// Who a message came from, for rendering. Derived from `role` and the
+/// sender columns; never stored.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum MessageOrigin<'a> {
+    /// Typed by the person using the app.
+    User,
+    Assistant,
+    System,
+    /// Sent by another session, such as a child session reporting back.
+    Session(&'a str),
+    /// Sent through a named API key.
+    ApiKey(&'a str),
+}
+
 impl ChatMessage {
+    /// A user-role message counts as the user's own only when no other
+    /// session or API key sent it. A session sender wins over an API key.
+    pub fn origin(&self) -> MessageOrigin<'_> {
+        match self.role {
+            Role::Assistant => MessageOrigin::Assistant,
+            Role::System => MessageOrigin::System,
+            Role::User => {
+                if let Some(id) = self.sender_session_id.as_deref() {
+                    MessageOrigin::Session(id)
+                } else if let Some(name) = self.sender_api_key_name.as_deref() {
+                    MessageOrigin::ApiKey(name)
+                } else {
+                    MessageOrigin::User
+                }
+            }
+        }
+    }
+
     /// Concatenated text blocks; what Conductor keeps in the plain
     /// `session_messages.content` column next to the structured message.
     pub fn plain_text(&self) -> String {
