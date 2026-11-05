@@ -369,6 +369,8 @@ pub fn run() {
             scripts::run_script_status,
             scripts::run_script_output,
             scripts::archive_script_run,
+            scripts::auto_run_after_setup_get,
+            scripts::auto_run_after_setup_set,
             spotlight_commands::spotlight_start,
             spotlight_commands::spotlight_stop,
             spotlight_commands::spotlight_status,
