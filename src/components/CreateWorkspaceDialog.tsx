@@ -3,7 +3,6 @@ import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import { Modal } from "./Dialogs";
 import { seedTranscript } from "./WorkspaceView";
-import { newId } from "../state/names";
 import { RARITY_LABEL, generateWorkspaceNames, resolveBranchPrefix, type BranchPrefixSettings, type GeneratedName } from "../workspace/naming";
 import {
   FAILED_TO_CREATE,
@@ -17,6 +16,7 @@ import {
   type DraftErrors,
 } from "../workspace/createFlow";
 import { createWorkspace, ensureRepository, errorText, listBranches, type BranchDto } from "../workspace/api";
+import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import type { SourceState } from "../workspace/createFrom";
 import { CreateFromPicker } from "./CreateFromPicker";
 
@@ -99,12 +99,26 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
       send({ type: "created", workspaceId: created.workspace.id });
       // No setup-script command in the backend yet: detection finds none.
       send({ type: "setup_detected", hasScript: false });
-      const id = newId();
+      const { id, directoryName, branchName, path } = created.workspace;
+      const { naming, firstSession } = built.request;
+      const ws = {
+        id,
+        name: directoryName,
+        branch: branchName,
+        path,
+        placeholderBranchName: naming.placeholder_branch_name === null ? null : branchName,
+        userSetWorkspaceName: naming.user_set_workspace_name,
+        userSetBranchName: naming.user_set_branch_name,
+      };
       // The first message opens the workspace's first chat session (agent runtime pending).
-      if (built.request.firstSession) seedTranscript(id, built.request.firstSession.message);
-      const { directoryName, branchName, path } = created.workspace;
-      dispatch({ type: "addWorkspace", repoId: repo.id, workspace: { id, name: directoryName, branch: branchName, path } });
+      if (firstSession) seedTranscript(id, firstSession.message);
+      dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
       onClose();
+      // ...and renames a placeholder city workspace after it.
+      if (firstSession) {
+        const full = { ...ws, status: "idle" as const, diff: { added: 0, removed: 0 }, createdAt: Date.now() };
+        void renameAfterFirstMessage(repo, full, firstSession.message, dispatch);
+      }
     } catch (err) {
       send({ type: "create_failed", error: `${FAILED_TO_CREATE}: ${errorText(err)}` });
     }

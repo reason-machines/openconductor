@@ -2,16 +2,20 @@
 // tabs, and how the active row moves. Kept out of the component so it runs
 // under `node --test`.
 
-import type { KeyInput } from "./keybindings/chord.ts";
-import { resolveBinding, type BindingDef, type FocusContext } from "./keybindings/routing.ts";
-import { COMMAND_PALETTE_DIALOG_ID } from "./keybindings/defaults.ts";
+import type { FocusContext } from "../keybindings/dispatcher.ts";
+import type { Overrides } from "../keybindings/overrides.ts";
+import { resolveCommand } from "../keybindings/resolve.ts";
+import type { KeyEventLike } from "../keybindings/shortcut.ts";
+
+export const COMMAND_PALETTE_DIALOG_ID = "command-palette-dialog";
 
 export type PaletteCommand = "next-item" | "prev-item" | "first-item" | "last-item" | "select" | "close" | "next-tab" | "prev-tab";
 
-const PALETTE_FOCUS: FocusContext = { openDialogId: COMMAND_PALETTE_DIALOG_ID, focus: "input" };
+const PALETTE_FOCUS: FocusContext = { activeDialogId: COMMAND_PALETTE_DIALOG_ID, typing: true, inTerminal: false };
+const PALETTE_COMMANDS = ["commandPalette.nextTab", "commandPalette.previousTab", "toggleCommandPalette"];
 
 /** Map a keydown inside the palette input to a palette command, or null to let it type. */
-export function paletteCommandFor(e: KeyInput, bindings: readonly BindingDef[]): PaletteCommand | null {
+export function paletteCommandFor(e: KeyEventLike, overrides: Overrides = {}): PaletteCommand | null {
   const plain = !e.metaKey && !e.ctrlKey && !e.altKey;
   if (plain && !e.shiftKey) {
     if (e.key === "ArrowDown") return "next-item";
@@ -28,7 +32,7 @@ export function paletteCommandFor(e: KeyInput, bindings: readonly BindingDef[]):
     if (e.key === "n") return "next-item";
     if (e.key === "p") return "prev-item";
   }
-  switch (resolveBinding(bindings, e, PALETTE_FOCUS)?.id) {
+  switch (resolveCommand(e, PALETTE_FOCUS, PALETTE_COMMANDS, { overrides })) {
     case "commandPalette.nextTab":
       return "next-tab";
     case "commandPalette.previousTab":
