@@ -3,10 +3,19 @@ use serde_json::{json, Value};
 use super::header::{header_state, HeaderAction as A, HeaderInputs, Tone, UpstreamSync};
 use super::info::{lookup_from_node, PrLookup};
 use super::info_tests::node;
+use super::merge_eligibility::can_merge;
 use super::model::{MergeQueueState, ViewerPermission};
 
 fn pr(patch: Value) -> PrLookup {
     lookup_from_node(node(patch), Some(ViewerPermission::Write))
+}
+
+fn failing_check(details: bool) -> Value {
+    let mut c = json!({"name": "test", "status": "COMPLETED", "conclusion": "FAILURE"});
+    if details {
+        c["detailsUrl"] = json!("https://ci/1");
+    }
+    json!({"target": {"statusCheckRollup": {"contexts": {"nodes": [c]}}}})
 }
 
 fn with_pr(lookup: &PrLookup) -> HeaderInputs {
@@ -111,4 +120,111 @@ fn forge_without_pr_creation() {
         ..Default::default()
     };
     assert_eq!(action(&i), None);
+}
+
+#[test]
+fn review_and_draft_states() {
+    let p = pr(json!({"mergeStateStatus": "BLOCKED", "reviewDecision": "CHANGES_REQUESTED"}));
+    let i = HeaderInputs {
+        has_pending_comments: true,
+        ..with_pr(&p)
+    };
+    assert_eq!(
+        action(&i),
+        Some(A::ChangesRequested {
+            has_pending_comments: true
+        })
+    );
+    let p = pr(json!({"isDraft": true, "mergeStateStatus": "DRAFT"}));
+    assert_eq!(header_state(&with_pr(&p)).unwrap().tone, Tone::NoPr);
+    assert_eq!(action(&with_pr(&p)), Some(A::DraftPr));
+    let p = pr(json!({"mergeStateStatus": "BLOCKED", "reviewDecision": "REVIEW_REQUIRED"}));
+    assert_eq!(
+        action(&with_pr(&p)),
+        Some(A::ApprovePr),
+        "write access, not author, not reviewed"
+    );
+    let p = pr(
+        json!({"mergeStateStatus": "BLOCKED", "reviewDecision": "REVIEW_REQUIRED",
+        "viewerLatestReview": {"commit": {"oid": "head1"}}}),
+    );
+    assert_eq!(
+        action(&with_pr(&p)),
+        Some(A::ReviewRequired),
+        "already reviewed this head"
+    );
+    let p = pr(
+        json!({"mergeStateStatus": "BLOCKED", "reviewDecision": "REVIEW_REQUIRED",
+        "viewerDidAuthor": true}),
+    );
+    assert_eq!(
+        action(&with_pr(&p)),
+        Some(A::ReviewRequired),
+        "authors cannot approve"
+    );
+    let p = pr(json!({"mergeStateStatus": "BLOCKED"}));
+    assert_eq!(action(&with_pr(&p)), Some(A::Blocked));
+}
+
+#[test]
+fn failing_and_pending_checks() {
+    let p = pr(json!({"mergeStateStatus": "BLOCKED", "headRef": failing_check(true)}));
+    let want = A::ChecksFailing {
+        failed: 1,
+        total: Some(1),
+        pending: 0,
+        fixable: true,
+    };
+    assert_eq!(action(&with_pr(&p)), Some(want));
+    let p = pr(
+        json!({"mergeStateStatus": "BLOCKED", "headRef": {"target": {"statusCheckRollup":
+        {"contexts": {"nodes": [{"name": "t", "status": "QUEUED"}]}}}}}),
+    );
+    assert_eq!(action(&with_pr(&p)), Some(A::ChecksPending { pending: 1 }));
+}
+
+#[test]
+fn optional_check_failures_still_allow_merge_unless_blocking() {
+    let p = pr(json!({"mergeStateStatus": "UNSTABLE", "headRef": failing_check(false)}));
+    let mut i = with_pr(&p);
+    assert_eq!(action(&i), Some(A::ReadyToMerge { optional_failed: 1 }));
+    assert!(can_merge(p.info().unwrap(), false));
+    i.optional_checks_block = true;
+    assert!(!can_merge(p.info().unwrap(), true));
+    let want = A::ChecksFailing {
+        failed: 1,
+        total: Some(1),
+        pending: 0,
+        fixable: false,
+    };
+    assert_eq!(action(&i), Some(want));
+}
+
+#[test]
+fn mergeability_outcomes() {
+    let p = pr(json!({}));
+    assert_eq!(header_state(&with_pr(&p)).unwrap().tone, Tone::InSync);
+    assert_eq!(
+        action(&with_pr(&p)),
+        Some(A::ReadyToMerge { optional_failed: 0 })
+    );
+    let p = pr(json!({"mergeStateStatus": "UNKNOWN"}));
+    assert_eq!(
+        action(&with_pr(&p)),
+        Some(A::LoadingPr),
+        "GitHub still computing"
+    );
+    let p = pr(json!({"mergeStateStatus": "BEHIND"}));
+    assert_eq!(action(&with_pr(&p)), Some(A::UnableToMerge));
+    let read_only = lookup_from_node(node(json!({})), Some(ViewerPermission::Read));
+    assert_eq!(
+        action(&with_pr(&read_only)),
+        None,
+        "no merge control without write access"
+    );
+    let loading = HeaderInputs {
+        loading: true,
+        ..with_pr(&p)
+    };
+    assert_eq!(action(&loading), Some(A::LoadingPr));
 }

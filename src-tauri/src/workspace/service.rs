@@ -12,7 +12,7 @@ use std::sync::Mutex;
 
 use super::git::{self, BranchRef};
 use super::naming;
-use super::{CreateOptions, Created, WorkspaceError, WorkspaceManager};
+use super::{CreateOptions, Created, Workspace, WorkspaceError, WorkspaceManager};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RepositoryInfo {
@@ -116,6 +116,14 @@ impl WorkspaceService {
     /// See [`git::branch_name_is_taken`].
     pub fn branch_name_is_taken(&self, repository_id: &str, branch: &str) -> Result<bool, WorkspaceError> {
         git::branch_name_is_taken(&self.repository_root(repository_id)?, branch)
+    }
+
+    /// Rename the branch of workspace `<repositoryId>/<directoryName>`; see
+    /// [`WorkspaceManager::rename_branch`].
+    pub fn rename_workspace_branch(&self, workspace_id: &str, branch: &str) -> Result<Workspace, WorkspaceError> {
+        let (repository_id, name) =
+            workspace_id.rsplit_once('/').ok_or_else(|| WorkspaceError::NotFound(workspace_id.to_string()))?;
+        self.manager.rename_branch(&self.repository_root(repository_id)?, name, branch)
     }
 
     fn save(&self, repos: &BTreeMap<String, PathBuf>) -> Result<(), WorkspaceError> {
