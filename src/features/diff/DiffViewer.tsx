@@ -5,9 +5,8 @@
 import type { ReactNode } from "react";
 import "./diff.css";
 import { DiscardDialog } from "./DiscardDialog";
-import { WhitespaceToggle } from "./Whitespace";
+import { ViewOptionsMenu } from "./Whitespace";
 import { FileDiffView, type LineAnchor, type LineRange } from "./FileDiffView";
-import { WrapToggle } from "./WrapLines";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
 export { ChangesList, type ChangesListProps } from "./ChangesList";
@@ -27,7 +26,8 @@ const LAYOUT_ICON: Record<DiffLayout, ReactNode> = {
     </>
   ),
 };
-const LAYOUT_TITLE: Record<DiffLayout, string> = { unified: "Unified diff", split: "Split diff", file: "Entire file" };
+// Conductor's labels for its three file-toolbar layout toggles (REA, 0.87.6).
+export const LAYOUT_TITLE: Record<DiffLayout, string> = { unified: "Unified view", split: "Split view", file: "Entire file" };
 
 function LayoutToggle({ value, onChange }: { value: DiffLayout; onChange: (v: DiffLayout) => void }) {
   return (
@@ -50,10 +50,12 @@ export interface DiffTabProps {
   commentRange?: (file: FileDiff) => LineRange | null;
   anchors?: (file: FileDiff) => LineAnchor[];
   annotations?: (file: FileDiff, anchor: LineAnchor) => ReactNode;
+  /** Shown above the file: PR-level and whole-file comments. */
+  notes?: (file: FileDiff) => ReactNode;
 }
 
 /** Main-area "All changes" tab: the file picked in the changes list, with its toolbar. */
-export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations }: DiffTabProps) {
+export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations, notes }: DiffTabProps) {
   const { opts, update, selected, files, load } = diff;
   if (!selected) {
     return (
@@ -68,6 +70,7 @@ export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations 
   return (
     <div className="oc-diff oc-diff-tab">
       <div className="oc-files">
+        {notes?.(f)}
         <FileDiffView
           key={selected.path}
           file={selected}
@@ -85,9 +88,11 @@ export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations 
           onShowWhitespace={() => update({ ignoreWhitespace: false })}
           tools={
             <>
-              <WhitespaceToggle hidden={opts.ignoreWhitespace} onChange={(ignoreWhitespace) => update({ ignoreWhitespace })} />
-              {!f.binary && <WrapToggle wrap={opts.wrapLines} onChange={(wrapLines) => update({ wrapLines })} />}
               <LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />
+              <ViewOptionsMenu
+                whitespace={{ hidden: opts.ignoreWhitespace, onChange: (ignoreWhitespace) => update({ ignoreWhitespace }) }}
+                textWrap={f.binary ? undefined : { wrapLines: opts.wrapLines, onChange: (wrapLines) => update({ wrapLines }) }}
+              />
             </>
           }
         />
