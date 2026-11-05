@@ -14,7 +14,8 @@ interface Props {
 function TerminalHost({ id }: { id: string }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => (ref.current ? attachTab(id, ref.current) : undefined), [id]);
-  return <div className="term-body" ref={ref} />;
+  // data-terminal tells the shortcut dispatcher that focus is in a terminal.
+  return <div className="term-body" data-terminal ref={ref} />;
 }
 
 export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {

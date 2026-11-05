@@ -26,6 +26,8 @@ Ledger obligations: `term.pty` (spawn, write, resize, kill, flow control, histor
 | Working directory errors (copy) | `CwdMissing`, `CwdNotDirectory`, checked before spawning | `spawn::tests::refuses_bad_working_directory_size_and_argv` |
 | Auto-run command for a new terminal tab (copy) | `SpawnRequest::initial_command`, typed and followed by Enter | `tests::flow_history::initial_command_runs_in_the_new_terminal` |
 | Approximate scrollback limit, clear scrollback (copy) | bounded byte history, trimmed forward to a line start; `clear_history` | `tests::flow_history::history_is_bounded_and_clearable`, `scrollback::tests::*` |
+| Terminal panel with tabs, "New terminal tab", "Close terminal", "Toggle terminal panel", up to 10 tabs per workspace (copy) | [`TerminalPanel.tsx`](../../src/features/terminal/TerminalPanel.tsx): one xterm per tab kept alive while hidden ([`session.ts`](../../src/features/terminal/session.ts)), rendered bytes acked in batches | [`terminal.test.ts`](../../src/features/terminal/terminal.test.ts) (tab model, event parsing, ack batching) |
+| Terminal shortcuts from the keybinding registry: `terminal.newTab`, `newBigTab`, `closeTab`, `clearScrollback`, the hidden line-editing ones, and `view.toggleTerminalPanel` | resolved inside xterm before the shell sees the key ([`shortcuts.ts`](../../src/features/terminal/shortcuts.ts)); the panel sets `data-terminal` so the global dispatcher knows focus is in a terminal | [`shortcuts.test.ts`](../../src/features/terminal/shortcuts.test.ts) |
 
 Mutation check (by hand, once): ignoring the flow gate fails `flow_control_pauses_until_acked`; signalling only the child pid instead of the process group fails `kill_escalates_when_hangup_is_ignored` (its background job ignores SIGHUP, so only a group SIGKILL stops it); dropping the SIGKILL escalation fails the same test.
 
@@ -35,13 +37,16 @@ Mutation check (by hand, once): ignoring the flow gate fails `flow_control_pause
 - Watermarks: 512 KiB high, 128 KiB low. Default history: 1 MiB. The reference values were not recovered.
 - `TERM=xterm-256color`, `COLORTERM=truecolor`; default program is the user's login shell (`$SHELL`, else passwd).
 - An exited terminal stays readable (history, exit status) until `kill`; writes to it fail with `NotRunning`.
+- Line-editing shortcuts send the bytes readline and zsh bind to the same motion: Cmd+Left `^A`, Cmd+Right `^E`, Cmd+Backspace `^U`, Option+Left/Right `Esc b`/`Esc f`, Shift+Enter `Esc Enter` (a literal newline in zsh and agent CLIs). The reference's bytes were not recovered.
+- Until workspaces carry their worktree path, new terminals open in the repository checkout.
 - If a background job keeps the PTY open after the main process exits, the exit event is sent after a 1 s drain grace and any later output still arrives.
 
 ## Not done yet (later PRs)
 
 - `pty_screen_text` / `pty_screen_snapshot` (alacritty_terminal grid), `pty_persist_terminal_history` / `pty_load_terminal_history`, mirrors.
 - `run_script` / `run_script_mode` and `execute_shell_command[_cancellable]` / `cancel_shell_command`.
-- The frontend panel (tabs, xterm renderer) and run-script output.
+- Run-script output in the panel: waits on the `run_script` Tauri commands over the scripts runner in `crates/scripts` (another builder's area).
+- `terminal.search` (Find in terminal) and `terminal.openLocalhost`.
 
 ## REA gaps
 

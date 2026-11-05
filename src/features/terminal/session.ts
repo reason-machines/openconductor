@@ -7,6 +7,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { AckBatcher, type PtyEvent } from "./events";
 import { onPtyEvent, ptyAckBytes, ptyClearHistory, ptyKill, ptyResize, ptySpawn, ptyWrite } from "./pty";
 import { canOpen, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs";
+import { LINE_EDIT_BYTES, terminalCommandFor } from "./shortcuts.ts";
 
 interface Live {
   workspaceId: string;
@@ -15,6 +16,9 @@ interface Live {
   host: HTMLDivElement;
   ack: AckBatcher;
   opened: boolean;
+  /** Spawn settings, reused by a new tab opened from this one. */
+  cwd: string;
+  initialCommand?: string;
 }
 
 const live = new Map<string, Live>();
@@ -77,7 +81,16 @@ export async function openTab(workspaceId: string, cwd: string, initialCommand?:
   host.className = "term-host";
   const ack = new AckBatcher((n) => void ptyAckBytes(id, n).catch(() => {}));
   // Registered before spawning so the first output is not dropped.
-  live.set(id, { workspaceId, term, fit, host, ack, opened: false });
+  live.set(id, { workspaceId, term, fit, host, ack, opened: false, cwd, initialCommand });
+  term.attachCustomKeyEventHandler((e) => {
+    const command = e.type === "keydown" ? terminalCommandFor(e) : undefined;
+    if (command === undefined) return true;
+    // Cancelling keydown also drops its keypress; stopping it keeps window shortcuts out.
+    e.preventDefault();
+    e.stopPropagation();
+    runTerminalCommand(id, command);
+    return false;
+  });
   term.onData((d) => void ptyWrite(id, d).catch(() => {}));
   term.onResize(({ cols, rows }) => void ptyResize(id, cols, rows).catch(() => {}));
   dispatch(workspaceId, { type: "open", id });
@@ -111,6 +124,17 @@ export function attachTab(id: string, container: HTMLElement): () => void {
     ro.disconnect();
     l.host.remove();
   };
+}
+
+function runTerminalCommand(id: string, command: string) {
+  const l = live.get(id);
+  if (!l) return;
+  const bytes = LINE_EDIT_BYTES[command];
+  if (bytes !== undefined) void ptyWrite(id, bytes).catch(() => {});
+  else if (command === "terminal.clearScrollback") clearTab(id);
+  else if (command === "terminal.closeTab") closeTab(l.workspaceId, id);
+  else if (command === "terminal.newTab" || command === "terminal.newBigTab")
+    void openTab(l.workspaceId, l.cwd, l.initialCommand).catch(() => {});
 }
 
 export function clearTab(id: string) {

@@ -8,6 +8,7 @@ import { Transcript } from "../features/chat/Transcript.tsx";
 import { DiffViewer } from "../features/diff/DiffViewer";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
+import { useKeybindings } from "../palette/useKeybindings.ts";
 
 interface Props {
   repo: Repo;
@@ -138,6 +139,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 
 export function WorkspaceView({ repo, workspace, dispatch }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
+  useKeybindings({ "view.toggleTerminalPanel": () => setShowTerminal((v) => !v) });
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region>
