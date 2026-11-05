@@ -100,3 +100,13 @@ export function GraphiteRow() {
     </Row>
   );
 }
+
+/** Experimental › Show sidebar resource usage (Conductor's `sidebar_resource_usage`). */
+export function SidebarResourceUsageRow() {
+  const p = useAppPrefs();
+  return (
+    <Row label="Show sidebar resource usage" help="Shows CPU and memory usage in the workspace sidebar footer.">
+      <Switch label="Show sidebar resource usage" checked={p.sidebar_resource_usage} onChange={(value) => save({ key: "sidebar_resource_usage", value })} />
+    </Row>
+  );
+}

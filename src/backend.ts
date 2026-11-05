@@ -185,6 +185,16 @@ export async function githubRecentRepos(): Promise<RecentRepo[]> {
   return invoke<RecentRepo[]>("github_recent_repos");
 }
 
+// Sidebar add-repository menu "Recents". In a plain browser a short delay and
+// demo folders stand in, so the loading row and the list can both be seen.
+const DEMO_RECENT_LOCAL_REPOS = ["/Users/you/code/openconductor", "/Users/you/code/notes", "/Users/you/Developer/acme-web"];
+
+/** Up to 8 local checkouts worked in lately, newest first (`recent_local_repositories`). */
+export async function recentLocalRepositories(): Promise<string[]> {
+  if (!inTauri()) return new Promise((resolve) => setTimeout(() => resolve(DEMO_RECENT_LOCAL_REPOS), 600));
+  return invoke<string[]>("recent_local_repositories");
+}
+
 /** `gh config get git_protocol`, as "ssh" or "https" (`github_git_protocol`). */
 export async function githubGitProtocol(): Promise<GitProtocol> {
   if (!inTauri()) return "https";

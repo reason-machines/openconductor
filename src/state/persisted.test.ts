@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { nextUnreadWorkspace } from "./nextUnread.ts";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted.ts";
 
 const repo = (id: string, extra: Partial<DbRepoRow> = {}): DbRepoRow => ({
@@ -84,4 +85,18 @@ test("sidebar: a user-set workspace name is shown as is", async () => {
   const label = (w: typeof oslo) => workspaceLabel({ name: w.name, branch: w.branch, prTitle: w.prTitle, userSetWorkspaceName: w.userSetWorkspaceName, targetBranch: "main" });
   assert.equal(label(oslo), "Fix login");
   assert.notEqual(label(lima), "lima");
+});
+
+test("loads updated_at, so Go to next unread picks the most recently active row", () => {
+  const repos = reposFromDb(
+    [repo("a")],
+    [
+      ws("a", "newer-created", "ready", { unread: true, createdAt: "2026-11-05 12:00:00", updatedAt: "2026-11-05 12:00:00" }),
+      ws("a", "older-active", "ready", { unread: true, createdAt: "2026-11-01 09:00:00", updatedAt: "2026-11-05 18:00:00" }),
+      ws("a", "old-backend", "ready", { createdAt: "2026-11-02 09:00:00" }),
+    ],
+    [],
+  );
+  assert.deepEqual(repos[0].workspaces.map((w) => w.updatedAt), [Date.UTC(2026, 10, 5, 12), Date.UTC(2026, 10, 5, 18), undefined]);
+  assert.equal(nextUnreadWorkspace({ selection: { kind: "home" }, repos }, { skipSelected: true })?.workspace.id, "a/older-active");
 });

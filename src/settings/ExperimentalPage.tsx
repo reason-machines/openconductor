@@ -3,7 +3,7 @@ import { autoRunAfterSetup, setAutoRunAfterSetup } from "../scripts/api";
 import { errorText } from "./api";
 import { PrefSwitchRow, Toggle } from "./controls";
 import { Row } from "./GeneralPage";
-import { GraphiteRow, ShowAgentCostRow, TabFreakModeRow } from "./rows/AppPrefRows";
+import { GraphiteRow, ShowAgentCostRow, SidebarResourceUsageRow, TabFreakModeRow } from "./rows/AppPrefRows";
 import type { Settings } from "./types";
 
 interface Props {
@@ -16,8 +16,8 @@ interface Props {
  * `experimental` tab (renderApp-D_fmY7hW.js registry, evidence/settings/NOTES.md
  * "Settings pages, row for row"). Left out: "Use default internal and
  * experimental settings" (internal builds only), and the New workspace page,
- * Dashboard and Show sidebar resource usage rows, which their own features
- * add (open PRs #388, #403 and #410). Turning Big terminal mode on also lists
+ * Dashboard rows, which their own features add (open PRs #388 and #403).
+ * Turning Big terminal mode on also lists
  * the Big terminal tab in the settings navigation, as Conductor does.
  */
 export function ExperimentalPage({ settings, save }: Props) {
@@ -64,6 +64,7 @@ export function ExperimentalPage({ settings, save }: Props) {
       )}
       <AutoRunAfterSetupRow />
       {row("voice_mode", "Voice mode", "Enables speech-to-text in the chat composer. Press Ctrl+Shift+D to start dictating.")}
+      <SidebarResourceUsageRow />
       {row(
         "experimental_sidebar_transparency",
         "Sidebar transparency",

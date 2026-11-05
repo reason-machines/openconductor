@@ -42,3 +42,14 @@ export const NextMarkIcon = ({ size = 16 }: P) => (
     <path d="M9 16.5v-9l7.5 10M15 7.5v5.5" fill="none" stroke="var(--bg)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
+export const GlobeIcon = ({ size }: P) => (<svg {...base(size)}><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z" /></svg>);
+export const FolderPlusIcon = ({ size }: P) => (<svg {...base(size)}><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><path d="M12 10.5v5M9.5 13h5" /></svg>);
+/* sidebar: resource usage pill and Account menu icons */
+export const ChipIcon = ({ size }: P) => (<svg {...base(size)}><rect x="6" y="2" width="12" height="20" rx="2" /><path d="M10 6h4M10 18h4M2 7h4M2 12h4M2 17h4M18 7h4M18 12h4M18 17h4" /></svg>);
+export const TerminalIcon = ({ size }: P) => (<svg {...base(size)}><path d="m4 17 6-6-6-6M12 19h8" /></svg>);
+export const LayersIcon = ({ size }: P) => (<svg {...base(size)}><path d="m12 3 9 5-9 5-9-5z" /><path d="m3 13 9 5 9-5" /></svg>);
+export const ListTreeIcon = ({ size }: P) => (<svg {...base(size)}><path d="M21 12h-8M21 6H8M21 18h-8M3 6v4a2 2 0 0 0 2 2h3M3 10v6a2 2 0 0 0 2 2h3" /></svg>);
+export const CopyIcon = ({ size }: P) => (<svg {...base(size)}><rect x="8" y="8" width="13" height="13" rx="2" /><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2" /></svg>);
+export const CheckIcon = ({ size }: P) => (<svg {...base(size)}><path d="M20 6 9 17l-5-5" /></svg>);
+export const ChevronUpIcon = ({ size }: P) => (<svg {...base(size)}><path d="m18 15-6-6-6 6" /></svg>);
+export const UserIcon = ({ size }: P) => (<svg {...base(size)}><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></svg>);

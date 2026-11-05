@@ -2,6 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  actionStep,
   beginEdit,
   cancelEdit,
   canSteerNow,
@@ -188,4 +189,19 @@ test("a queued message keeps its attachments until it sends", () => {
   assert.deepEqual(s.queue.items[0]!.attachments, [file]);
   s = turnEnded(s.queue, "completed");
   assert.deepEqual(s.effects, [{ kind: "start", text: "with a file", attachments: [file] }]);
+});
+
+test("queue-panel actions run through actionStep (shared by the Reason and Codex chats)", () => {
+  let q = submit(emptyQueue(), "first", "queue").queue;
+  q = submit(q, "second", "queue").queue;
+  q = submit(q, "third", "queue").queue;
+  assert.deepEqual(q.items.map((m) => m.text), ["second", "third"]);
+  const moved = actionStep(q, { kind: "move", id: q.items[1]!.id, by: -1 });
+  assert.ok(!("effects" in moved));
+  assert.deepEqual(moved.items.map((m) => m.text), ["third", "second"]);
+  const idle = turnEnded(moved, "completed");
+  assert.deepEqual(idle.effects, [{ kind: "start", text: "third", attachments: [] }]);
+  const del = actionStep(idle.queue, { kind: "delete", id: idle.queue.items[0]!.id });
+  assert.ok("effects" in del);
+  assert.deepEqual(del.queue.items, []);
 });
