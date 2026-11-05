@@ -194,6 +194,21 @@ export function resolveBranchPrefix(settings: BranchPrefixSettings, githubUserna
   return cleaned ? `${cleaned}/` : "";
 }
 
+/** What the backend's `branch_prefix_settings` command returns. */
+export interface BranchPrefixInfo {
+  branchPrefixType: string;
+  branchPrefixCustom: string | null;
+  githubUsername: string | null;
+}
+
+/** Splits the backend reply into the dialog's settings and username. */
+export function prefixSettingsFromInfo(info: BranchPrefixInfo): { settings: BranchPrefixSettings; githubUsername: string | null } {
+  return {
+    settings: { branch_prefix_type: info.branchPrefixType, branch_prefix_custom: info.branchPrefixCustom },
+    githubUsername: info.githubUsername,
+  };
+}
+
 /** `prefix` + `name`, skipping the prefix when `name` already starts with it. */
 export function applyBranchPrefix(prefix: string, name: string): string {
   if (!prefix || name.startsWith(prefix)) return name;

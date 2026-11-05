@@ -3,7 +3,9 @@
 // Create-workspace dialog still runs end to end.
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../backend";
-import type { CreateWorkspaceArgs } from "./createFlow";
+import type { CreateFrom, CreateWorkspaceArgs } from "./createFlow";
+import type { SourceState } from "./createFrom";
+import type { BranchPrefixInfo } from "./naming";
 
 export interface RepositoryDto {
   id: string;
@@ -53,6 +55,52 @@ export async function createWorkspace(args: CreateWorkspaceArgs): Promise<Create
     };
   }
   return invoke<CreatedWorkspaceDto>("create_workspace", { ...args });
+}
+
+// No backend command lists PRs or issues yet (no GitHub or Linear integration),
+// so the desktop app reports them as not set up; the browser uses samples.
+const SAMPLE_PRS: CreateFrom[] = [
+  { kind: "pr", number: 128, title: "Fix login redirect loop", headBranch: "fix/login-redirect", baseBranch: "main" },
+  { kind: "pr", number: 121, title: "Add dark mode toggle", headBranch: "feat/dark-mode", baseBranch: "main" },
+];
+const SAMPLE_ISSUES: CreateFrom[] = [
+  { kind: "issue", provider: "github", key: "#42", title: "Crash when opening an empty repo", body: "Steps: add a repo with no commits." },
+  { kind: "issue", provider: "linear", key: "ENG-7", title: "Keyboard shortcut for new workspace" },
+];
+
+export async function listPullRequests(): Promise<SourceState<CreateFrom>> {
+  if (inTauri()) return { status: "unavailable", reason: "no_github" };
+  return { status: "ready", items: SAMPLE_PRS };
+}
+
+export async function listIssues(): Promise<SourceState<CreateFrom>> {
+  if (inTauri()) return { status: "unavailable", reason: "no_github" };
+  return { status: "ready", items: SAMPLE_ISSUES };
+}
+
+/**
+ * Renames the workspace's git branch. The backend has no rename command yet
+ * (requested from the workspace lifecycle owner), so in Tauri this rejects and
+ * the caller keeps the old branch; the browser stand-in always succeeds.
+ */
+export async function renameWorkspaceBranch(workspaceId: string, branchName: string): Promise<void> {
+  if (!inTauri()) return;
+  await invoke("rename_workspace_branch", { workspaceId, branchName });
+}
+
+/**
+ * `[git]` branch prefix settings and the GitHub username. The browser stand-in
+ * uses the defaults, with `?ghuser=` / `?prefix=` overrides for previews.
+ */
+export async function loadBranchPrefix(): Promise<BranchPrefixInfo> {
+  if (!inTauri()) {
+    const q = new URLSearchParams(window.location.search);
+    const custom = q.get("prefix");
+    return custom === null
+      ? { branchPrefixType: "github_username", branchPrefixCustom: null, githubUsername: q.get("ghuser") }
+      : { branchPrefixType: custom ? "custom" : "none", branchPrefixCustom: custom || null, githubUsername: q.get("ghuser") };
+  }
+  return invoke<BranchPrefixInfo>("branch_prefix_settings");
 }
 
 /** Tauri rejects with the Rust error string; keep it readable in the dialog. */

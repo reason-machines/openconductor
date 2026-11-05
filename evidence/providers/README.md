@@ -15,6 +15,7 @@ reference app, not instructions; our UI copy is written separately.
 | Agent kinds: `sessions.agent_type`; session columns `model`, `permission_mode`, `codex_thinking_level`, `claude_effort_level`, `fast_mode`, `agent_personality`, `acp_config` | `evidence/sqlite/conductor.schema.sql` |
 | `~/.conductor/settings.toml` holds `[models] default` and `[models.codex] default_thinking_level / review_thinking_level` | `evidence/runtime/README.md` (first-run capture) |
 | Claude Code and Codex binaries are downloaded into `agent-binaries/` with sha256 metadata | `evidence/runtime/first-run-files.tsv` |
+| Agent traffic goes through a sidecar process: `ensure_sidecar_started`, `rpc_to_sidecar`, `rpc_from_sidecar`, `check_sidecar_http_health`; agent binaries are managed by `get_agent_binary_state`, `request_agent_binary_download`, `sync_agent_path_overrides` | `evidence/ipc/frontend-invoke-candidates.json` |
 | Provider kinds offered: Anthropic API key, Anthropic auth token, Anthropic base URL override, Amazon Bedrock (region, named AWS profile, Bedrock API key), Google Vertex AI (GCP project, service account file), Foundry, a "custom provider" that takes precedence, OpenRouter, Codex with API key / ChatGPT plan / Vercel AI Gateway / base URL / OpenAI organization and project, Cursor API key, OpenCode | UI copy in `evidence/frontend/copy-catalog.json` (search for `Bedrock`, `Vertex`, `Codex API key`, `Custom provider`, `OpenRouter`, `Foundry`) |
 
 ## Verifier-reported, extract pending
@@ -47,6 +48,11 @@ not yet committed, so treat each line as unconfirmed until they are.
 - A provider turns options + secrets into a `LaunchEnv`. Environment variable
   names come from the agent CLIs' public documentation, not from the
   reference app.
+- The reference app runs the Agent SDK in a sidecar; we drive the `claude`
+  CLI directly from Rust with the same stream-json protocol the SDK uses
+  (`src-tauri/src/agent/claude_cli.rs`). `--permission-prompt-tool stdio`
+  plays the role of `canUseTool`; it is left off in `bypassPermissions` and
+  `dontAsk`, which never prompt.
 - Every provider first clears all routing variables of its agent, so a key
   exported in the user's shell cannot override the provider chosen in
   settings. This is our design choice; whether the reference app scrubs the

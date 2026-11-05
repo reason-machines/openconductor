@@ -11,7 +11,12 @@ export type Action =
   | { type: "removeRepo"; repoId: string }
   | { type: "toggleRepo"; repoId: string }
   | { type: "newWorkspace"; repoId: string }
-  | { type: "addWorkspace"; repoId: string; workspace: { id: string; name: string; branch: string; path?: string } }
+  | {
+      type: "addWorkspace";
+      repoId: string;
+      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName">;
+    }
+  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
   | { type: "toggleSidebar" }
   | { type: "reset"; state: AppState };
@@ -57,6 +62,14 @@ export function reducer(state: AppState, action: Action): AppState {
       const ws: Workspace = { ...action.workspace, status: "idle", diff: { added: 0, removed: 0 }, createdAt: Date.now() };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, collapsed: false, workspaces: [...r.workspaces, ws] } : r));
       return { repos, selection: { kind: "workspace", repoId: action.repoId, workspaceId: ws.id } };
+    }
+    case "renameWorkspace": {
+      const rename = (w: Workspace): Workspace =>
+        w.id !== action.workspaceId
+          ? w
+          : { ...w, name: action.name ?? w.name, branch: action.branch ?? w.branch, placeholderBranchName: null };
+      const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(rename) } : r));
+      return { ...state, repos };
     }
     case "archiveWorkspace": {
       const repos = state.repos.map((r) =>

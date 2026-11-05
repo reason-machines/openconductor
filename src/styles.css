@@ -145,9 +145,6 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 
 .chat { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--border); }
 .chat-scroll { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-.msg { max-width: 82%; padding: 9px 12px; border-radius: 10px; line-height: 1.45; white-space: pre-wrap; }
-.msg-user { align-self: flex-end; background: var(--accent); color: var(--accent-text); }
-.msg-system { align-self: flex-start; background: var(--panel); border: 1px dashed var(--border); color: var(--muted); }
 .composer { margin: 0 16px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--panel); }
 .composer:focus-within { border-color: var(--accent); }
 .composer textarea { width: 100%; border: 0; outline: 0; resize: none; padding: 10px 12px; background: transparent; }
@@ -198,9 +195,33 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .rarity-rare { color: var(--accent); }
 .rarity-legendary { color: var(--amber); }
 .create-hint { margin-right: auto; align-self: center; }
+.create-from { position: relative; }
+.create-from-btn { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.create-from-panel { position: absolute; top: 100%; left: 0; right: 0; z-index: 20; margin-top: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.create-from-tabs { display: flex; gap: 4px; }
+.create-from-tabs button { padding: 3px 8px; border-radius: 5px; color: var(--muted); font-size: 12px; }
+.create-from-tabs button.active { background: var(--hover); color: inherit; font-weight: 600; }
+.create-from-panel ul { list-style: none; margin: 0; padding: 0; max-height: 180px; overflow-y: auto; }
+.create-from-panel li { padding: 5px 8px; border-radius: 5px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.create-from-panel li.active { background: var(--hover); }
+.create-from-status, .create-from-hint { margin: 2px 4px; }
 
 /* Toasts (bottom-right stack) */
 .toaster { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; flex-direction: column; gap: 8px; max-width: 420px; }
 .toast { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); font-size: 13px; }
 .toast-error { border-color: var(--del); }
 .toast-message { flex: 1; overflow-wrap: anywhere; }
+
+/* Quick open (⌘P). Pinned near the top like the reference's picker. */
+.qo-backdrop { place-items: start center; padding-top: 8px; }
+.qo { width: min(672px, calc(100vw - 48px)); overflow: hidden; display: flex; flex-direction: column; max-height: min(520px, calc(100vh - 32px)); }
+.qo-input { border: 0; border-bottom: 1px solid var(--border); background: transparent; color: inherit; font: inherit; font-size: 15px; padding: 12px 16px; outline: none; }
+.qo-list { list-style: none; margin: 0; padding: 6px; overflow-y: auto; }
+.qo-row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; cursor: default; white-space: nowrap; min-width: 0; }
+.qo-row[data-selected="true"] { background: var(--hover, rgba(127, 127, 127, 0.14)); }
+.qo-row mark { background: none; color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.qo-name { flex: none; }
+.qo-dir { color: var(--muted); overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+.qo-tag { margin-left: auto; color: var(--muted); font-size: 11px; }
+.qo-empty { padding: 18px 16px; color: var(--muted); font-size: 13px; }
+.qo-hint { border-top: 1px solid var(--border); padding: 6px 12px; color: var(--muted); font-size: 11px; }

@@ -75,6 +75,64 @@ it fires on the pressed event or is equivalent to the recorded shortcut. So
 re-recording Cmd+K for the palette reports "Clear terminal scrollback"
 (`renderApp-D_fmY7hW.js`, the recorder's keydown handler).
 
+## Dispatcher
+
+From `renderApp-D_fmY7hW.js` on Sven's Mac (a zustand store with
+`register`/`unregister`/`dispatch`; window keydown listener in the capture phase,
+plus a bubble-phase one for a bare Escape that nothing else took).
+
+- Priorities: LOW 10, NORMAL 50, HIGH 100, TERMINAL 150, DIALOG 200.
+- Ignored: keys while a `[data-keybinding-recorder-active="true"]` element is in
+  the event path, and lone Meta/Control/Alt/Shift.
+- Focus: typing means an INPUT or TEXTAREA in the event path, or a
+  contenteditable element; terminal means the target is inside `[data-terminal]`.
+- Backspace outside a text field is always `preventDefault`ed. A bare Escape
+  while typing (not in a terminal) blurs the field and stops there.
+- A handler fires when its scope is focused, the key and modifiers match, and
+  `when` allows it: terminal focus needs `enableOnTerminalFocus`;
+  `requireTerminalFocus` needs terminal focus; a shortcut without modifiers needs
+  `allowWhileTyping` or `requireTerminalFocus` while typing or in a terminal;
+  `isGlobal` then passes; otherwise typing needs `enableOnInputFocus`; listed
+  `enableOnDialogIds` need that dialog open, and unlisted handlers need no dialog.
+- A held-key repeat runs only handlers with `allowRepeat`; with none, the event
+  is swallowed.
+- Order: priority, then more modifiers first. A callback returning `false`
+  passes to the next. The first that takes it sends `keyboard_shortcut_used`
+  with `keybinding_id`, plus `active_dialog_id` and `telemetry_context` when set.
+
+## Registration (`oi` hook)
+
+From `renderApp-D_fmY7hW.js`: components bind a command with
+`oi(commandId, callback, options)`. It registers one handler per effective
+shortcut (overrides applied) with `when` merged as: the enclosing dialog's id
+(`enableOnDialogIds`), then the command's registry `when`, then `options`.
+Missing flags default to `enableOnInputFocus: true`, `enableOnTerminalFocus: true`,
+`isGlobal: false`, `requireTerminalFocus: false`, `allowWhileTyping: false`,
+priority NORMAL. `options.enabled === false` registers nothing. Workspace
+navigation passes `{telemetryContext: "workspace-navigation"}`. Ours:
+`bindingsFor` and `resolveCommand` in `src/keybindings/resolve.ts`.
+
+## Window listeners
+
+From the same chunk (the component that mounts the dispatcher, next to the
+`vd` priority table). It adds five `window` listeners:
+
+- `keydown`, capture phase: an installed key capture takes the event first;
+  otherwise a bare Escape is skipped here and everything else is dispatched.
+- `keydown`, bubble phase: a bare Escape that no one `preventDefault`ed is
+  dispatched, so dialogs and popovers handle Escape before the global handlers.
+- `keyup`, capture phase: goes to an installed key capture.
+- `compositionstart` and `beforeinput`, capture phase: `preventDefault` while a
+  key capture is installed, or within 50 ms after a handler took an Option chord
+  without Command or Control (so ⌥T does not also type †).
+
+A key capture (`{ onKeyDown, onKeyUp }`) is exclusive: installing one replaces
+the last, and its remover only clears it if it is still current. While it is
+installed every keydown and keyup is `preventDefault`ed, stopped and handed to it.
+The shortcut recorder and the key-bindings page's "Type shortcut" search use it.
+When a handler runs or a repeat is swallowed, the event is also stopped
+(`stopImmediatePropagation`) and the Option-chord timer starts.
+
 ## Help dialog (`openKeyboardShortcuts`, default ⌥⌘/)
 
 - Title "Keyboard shortcuts" with an icon, and a search input "Search shortcuts...".
