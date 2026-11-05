@@ -3,8 +3,9 @@
 // types, copy and UI decisions are in archiveModel.ts.
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../backend";
-import { chatStatuses, stopChat } from "../features/chat/reasonChat";
-import { chatAgentStatuses } from "../features/chat/chatStatus";
+import { chatStatuses } from "../features/chat/chatRuntime.ts";
+import { chatAgentStatuses } from "../features/chat/chatStatus.ts";
+import { stopChat } from "../features/chat/reasonChat";
 import { stopCodex } from "../features/chat/codexChat";
 import { workspaceOfChat, workspaceSessionStatus } from "../state/workspaceSessions";
 import type { ArchiveMode, ArchiveResult, UnarchiveResult } from "./archiveModel.ts";

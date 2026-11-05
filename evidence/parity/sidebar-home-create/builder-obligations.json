@@ -1,37 +1,16 @@
 {
  "schema": "openconductor.builder-obligations.v1",
  "ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 86.2,
+ "verdicts_verified_at": "2026-11-05 (main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 90.7,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 15,
+ "open": 11,
  "by_owner": {
-  "create-workspace": 3,
+  "create-workspace": 2,
   "home": 4,
-  "sidebar": 8
+  "sidebar": 5
  },
  "obligations": [
-  {
-   "obligation_id": "parity.create.in-section",
-   "item": "create.in-section",
-   "area": "create",
-   "owner": "create-workspace",
-   "depends_on_builders": [
-    "sidebar"
-   ],
-   "feature": "Create a workspace directly inside a sidebar section",
-   "verdict": "missing",
-   "gap": "No user sections; the single My workspaces group's menu only offers Add project.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     1057,
-     4975
-    ]
-   },
-   "status": "open"
-  },
   {
    "obligation_id": "parity.create.initializing",
    "item": "create.initializing",
@@ -167,25 +146,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.footer-usage",
-   "item": "sidebar.footer-usage",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Optional CPU/memory usage readout in the sidebar footer",
-   "verdict": "missing",
-   "gap": "The footer holds only the help and settings buttons; no CPU/memory readout or backend for one.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     4061,
-     4071
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.transparency",
    "item": "sidebar.transparency",
    "area": "sidebar",
@@ -216,7 +176,7 @@
    "depends_on_builders": [],
    "feature": "Browse archived workspaces and unarchive one",
    "verdict": "backend",
-   "gap": "#391 (274ac80) replaces db_unarchive_workspace with unarchive_workspace (checkpoint, worktree, .context and branch restored, setup rerun), and restoreWorkspace runs it through startUnarchive. Only the archive-on-merge toast's Unarchive dispatches restoreWorkspace (useArchiveOnMerge.ts); there is still no archived-workspaces list, so a workspace archived from the row menu, WorkspaceView or the palette, or after the toast closes, cannot be restored from the UI.",
+   "gap": "#391 (274ac80) replaces db_unarchive_workspace with unarchive_workspace (checkpoint, worktree, .context and branch restored, setup rerun), and restoreWorkspace runs it through startUnarchive. Only the archive-on-merge toast's Unarchive dispatches restoreWorkspace (useArchiveOnMerge.ts); there is still no archived-workspaces list. #397's title promises archived workspaces in the palette with Unarchive, and its first commit (753f691) had them (CommandPalette, PaletteHost, palette search model), but the merge onto #391's backend dropped them: the squash aa32456 touches only store.ts and src/workspace/archive*. On f6c05d7 the palette still filters archived workspaces out (search/model.ts), reposFromDb leaves archived rows out of state (persisted.ts HIDDEN_STATES), so Home's 'Only archived' filter is empty too, and a workspace archived from the row menu, WorkspaceView or the palette, or after the toast closes, cannot be restored from the UI.",
    "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
    "ledger_obligations": [],
    "evidence": {
@@ -226,59 +186,6 @@
      4680,
      4679,
      4568
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.archive",
-   "item": "sidebar.archive",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Archive with confirmation, refusing while a git operation is in progress, recording an archive commit",
-   "verdict": "partial",
-   "gap": "#391 (274ac80) replaces the row-only db_archive_workspace with archive_workspace (src-tauri/src/workspace_archive/, flow.rs), which the row menu, WorkspaceView, the palette and archive on merge all reach through startArchive (store.ts). It follows Conductor's dYe/mYe (index-BGEQ8YjU.js @ ~966,478 / ~969,254): checkpoint conductor-archive-<id>, refuse in safe mode while a merge/rebase/cherry-pick/revert is in progress with the sticky warning and Archive retry (discardGitOperationState), archive commit = HEAD kept under refs/conductor-archive-heads/<id>, row state/branch/archive_commit, archive script, .context move, worktree removal and delete_branch_on_archive. Conductor asks before archiving only when an agent is running, and ArchiveRunningDialog asks the same. Gap: 'Stop agents and archive' archives but does not cancel the running chat turn (Conductor cancels each session, Z$ / cancelSession), per evidence/archive/NOTES.md. Not run in the desktop app.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [
-    "ws.status-archive",
-    "ws.git-busy"
-   ],
-   "evidence": {
-    "copy": [
-     219,
-     223,
-     224,
-     786,
-     2723,
-     4222
-    ],
-    "schema": [
-     "workspaces.state",
-     "workspaces.archive_commit"
-    ],
-    "cli": [
-     "workspace archive"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.computer-switcher",
-   "item": "sidebar.computer-switcher",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Computer/account switcher at the top of the sidebar (initial avatar, name, chevron)",
-   "verdict": "partial",
-   "gap": "Sidebar.tsx renders a computer row with initial avatar, name and chevron, but App.tsx never passes computerName (always the default name) and clicking it opens no switcher menu.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "files": [
-     "evidence/screens/home--empty-signed-in--dark.png",
-     "evidence/screens/home--empty-signed-in--light.png",
-     "evidence/screens/manifest.json"
     ]
    },
    "status": "open"

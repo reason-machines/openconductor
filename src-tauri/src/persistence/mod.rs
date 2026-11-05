@@ -211,6 +211,8 @@ pub struct WorkspaceRow {
     /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
     pub number: Option<i64>,
     pub created_at: String,
+    /// `workspaces.updated_at`: last activity, the sidebar's and next-unread's sort key.
+    pub updated_at: String,
 }
 
 pub async fn list_repos(pool: &SqlitePool) -> Result<Vec<RepoRow>> {
@@ -255,6 +257,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 pr_description: w.pr_description,
                 number: w.number,
                 created_at: w.created_at,
+                updated_at: w.updated_at,
                 repository_id: w.repository_id,
                 id: w.local_id,
             }

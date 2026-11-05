@@ -48,6 +48,7 @@ g.__TAURI_INTERNALS__ = {
 };
 
 const rc = await import("./reasonChat.ts");
+const { chatStatuses } = await import("./chatRuntime.ts");
 
 function emit(payload: Record<string, unknown>) {
   for (const fn of callbacks.values()) fn({ event: "reason-chat-event", payload });
@@ -217,22 +218,22 @@ test("a permission request sets the chat's status until it is answered, and the 
   const ends = promptsEndOnDemand();
   rc.submitChat(chatId, "/w", "delete the build", "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
-  assert.equal(rc.chatStatuses().get(chatId), "working");
+  assert.equal(chatStatuses().get(chatId), "working");
 
   const request = { kind: "permission", tool: "execute", title: "bash: rm -rf build", input: null, options: [{ id: "a", label: "Allow", kind: "allow_once" }] };
   emit({ chatId, type: "interaction", id: "perm-1", request });
-  assert.equal(rc.chatStatuses().get(chatId), "needs_user_permission");
+  assert.equal(chatStatuses().get(chatId), "needs_user_permission");
   assert.deepEqual(rc.chatSnapshot(chatId).interactions, [{ id: "perm-1", request }]);
 
   rc.answerInteraction(chatId, "perm-1", { kind: "option", optionId: "a" });
-  assert.equal(rc.chatStatuses().get(chatId), "working", "the card goes at once");
+  assert.equal(chatStatuses().get(chatId), "working", "the card goes at once");
   assert.deepEqual(callsOf("reason_respond", chatId).map((c) => c.args), [{ chatId, id: "perm-1", answer: { kind: "option", optionId: "a" } }]);
   emit({ chatId, type: "interactionResolved", id: "perm-1" });
   assert.deepEqual(rc.chatSnapshot(chatId).interactions, []);
   rc.answerInteraction(chatId, "perm-1", { kind: "cancel" });
   assert.equal(callsOf("reason_respond", chatId).length, 1, "an answered request is not answered twice");
   ends.shift()!();
-  await until(() => rc.chatStatuses().get(chatId) === "idle", "idle");
+  await until(() => chatStatuses().get(chatId) === "idle", "idle");
 });
 
 test("questions and plans raise needs_user_input and needs_plan_response; the turn's end drops what still waits", async () => {
@@ -242,12 +243,12 @@ test("questions and plans raise needs_user_input and needs_plan_response; the tu
   rc.submitChat(chatId, "/w", "plan it", "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
   emit({ chatId, type: "interaction", id: "q1", request: { kind: "question", questions: [] } });
-  assert.equal(rc.chatStatuses().get(chatId), "needs_user_input");
+  assert.equal(chatStatuses().get(chatId), "needs_user_input");
   emit({ chatId, type: "interaction", id: "p1", request: { kind: "plan", plan: "1." } });
-  assert.equal(rc.chatStatuses().get(chatId), "needs_plan_response", "a plan outranks a question");
+  assert.equal(chatStatuses().get(chatId), "needs_plan_response", "a plan outranks a question");
   emit({ chatId, type: "interactionResolved", id: "p1" });
-  assert.equal(rc.chatStatuses().get(chatId), "needs_user_input");
+  assert.equal(chatStatuses().get(chatId), "needs_user_input");
   ends.shift()!();
-  await until(() => rc.chatStatuses().get(chatId) === "idle", "idle");
+  await until(() => chatStatuses().get(chatId) === "idle", "idle");
   assert.deepEqual(rc.chatSnapshot(chatId).interactions, []);
 });
