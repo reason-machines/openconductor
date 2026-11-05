@@ -45,7 +45,12 @@ export class WebDriver {
 
   async findAll(css) {
     const els = await this.#call("POST", this.#s("/elements"), { using: "css selector", value: css });
-    return els.map((e) => e[ELEMENT]);
+    // W3C key, else the legacy JSON Wire `ELEMENT` key older WebKitWebDriver builds return.
+    return els.map((e) => {
+      const id = e[ELEMENT] ?? e.ELEMENT ?? Object.values(e)[0];
+      if (typeof id !== "string") throw new Error(`unrecognised element reference ${JSON.stringify(e)}`);
+      return id;
+    });
   }
 
   text(id) {
