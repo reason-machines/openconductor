@@ -1,5 +1,5 @@
 // Home's workspace list (Conductor's /all-workspaces route, which its sidebar
-// Home row and the nav.home command open). Pure logic, read with REA from the
+// Home row and the nav.home command open; ours open the wordmark screen). Pure logic, read with REA from the
 // decoded renderApp chunk of Conductor 0.87.6 (see evidence/screens/home.md):
 //   - date groups: `jJo` (bucket) and `FJo`/`BJo` (labels, order);
 //   - search: `pFi`/`AJo`/`kJo` (every query word must occur in name, branch,

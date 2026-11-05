@@ -1,5 +1,5 @@
 // Home with workspaces: Conductor's /all-workspaces screen (`UJo`), which its
-// sidebar Home row and nav.home open. Header "Home" + Create workspace, a
+// sidebar Home row and nav.home open (ours open the wordmark screen instead). Header "Home" + Create workspace, a
 // search box with project and archive filters, then rows grouped by day.
 // Logic and evidence: src/home/allWorkspaces.ts.
 

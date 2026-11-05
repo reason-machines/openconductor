@@ -13,7 +13,9 @@
 // root-light-1344 (the "/" screen in the 1344x1091 px window of
 // evidence/screens/native/conductor-main.png, which Conductor drew at 110% zoom:
 // a 1222x992 CSS viewport at device scale 1.1, with GitHub remotes so the
-// sidebar shows owner avatars; for parity/side-by-side/home.png).
+// sidebar shows owner avatars), and home-row-light-1344 (the same window, reached
+// by clicking the sidebar Home row from an open workspace; for
+// parity/side-by-side/home.png).
 import { spawn } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -76,6 +78,11 @@ const shots = [
   ] },
   { name: "root-dark", theme: "dark", selection: { kind: "root" } },
   { name: "root-light-1344", theme: "light", selection: { kind: "root" }, viewport: { width: 1222, height: 992 }, scale: 1.1, remotes: true },
+  // Same window, but it starts in workspace osaka and clicks the sidebar Home row,
+  // which opens the wordmark screen (Sven's brief for #483; Conductor opens /all-workspaces).
+  { name: "home-row-light-1344", theme: "light", selection: { kind: "workspace", repoId: "r-web", workspaceId: "osaka" }, viewport: { width: 1222, height: 992 }, scale: 1.1, remotes: true, actions: [
+    { step_id: "click_sidebar_home", action: "click", locator: { kind: "css", selector: '.sb-primary button.sb-row[title^="Home"]' } },
+  ] },
 ].filter((s) => only.length === 0 || only.includes(s.name));
 
 fs.mkdirSync(outDir, { recursive: true });

@@ -324,7 +324,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
 
         <div className="sb-primary">
           <AccountMenu onOpenSettings={onOpenSettings} />
-          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} active={state.selection.kind === "home"} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
+          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} active={state.selection.kind === "root"} onClick={() => dispatch({ type: "select", selection: { kind: "root" } })} />
           <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
           <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={hint("toggleCommandPalette")} onClick={onSearch} />
         </div>
