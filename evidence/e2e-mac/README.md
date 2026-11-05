@@ -59,3 +59,7 @@ One more obligation came out of the run: `chat`, `checkpoint`, `pr` and `reason_
 1. Unlock "sven m5 max" and keep it unlocked (or awake with the display on).
 2. Turn on Accessibility and Screen & System Audio Recording for Reason's background worker in System Settings > Privacy & Security.
 3. Build the current `main` the same way, add `~/oc-e2e/testrepo`, and walk the 12 flows with a screenshot each. Re-check the boxes in issue #150.
+
+## Codex
+
+The Codex app-server provider was run end to end against the signed-in `codex` on this Mac on 2026-11-05; see [codex.md](codex.md).
