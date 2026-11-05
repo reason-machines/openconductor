@@ -9,6 +9,7 @@ import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
+import { sameRepoRecord } from "./addRepo";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -39,6 +40,7 @@ export type Action =
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
   /** Sidebar drag and drop: the full repo id list in its new order (`repos.display_order`). */
   | { type: "reorderRepos"; ids: string[] }
+  | { type: "setSidebarVisible"; visible: boolean }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] }
@@ -65,8 +67,7 @@ export function reducer(state: AppState, action: Action): AppState {
     case "select":
       return { ...state, selection: action.selection };
     case "addRepo": {
-      const existing = state.repos.find((r) => (action.repo.path && r.path === action.repo.path) || (action.repo.remote && r.remote === action.repo.remote));
-      if (existing) return state;
+      if (sameRepoRecord(state.repos, { id: action.id, path: action.repo.path })) return state;
       if (action.id) {
         const repo: Repo = { ...action.repo, id: action.id, workspaces: [] };
         return { ...state, repos: [...state.repos.filter((r) => r.id !== action.id), repo] };
@@ -137,6 +138,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos: setRepoHidden(state.repos, action.repoId, action.hidden) };
     case "reorderRepos":
       return { ...state, repos: orderRepos(state.repos, action.ids) };
+    case "setSidebarVisible":
+      return isSidebarVisible(state) === action.visible ? state : { ...state, sidebarVisible: action.visible };
     case "reset":
       return action.state;
     case "hydrate": {
