@@ -2,9 +2,12 @@
 //!
 //! The settings file lives at `$OPENCONDUCTOR_HOME/settings.toml`, default
 //! `~/.openconductor/settings.toml`. A missing file means defaults; it is
-//! written on the first save. Saves are atomic (temp file + rename).
+//! written on the first save. Saves are atomic (temp file + rename) and
+//! validated, so a bad value from the UI never reaches disk.
 
+pub mod keychain;
 mod model;
+mod validate;
 
 #[cfg(test)]
 mod tests;
@@ -15,6 +18,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 pub use model::*;
+pub use validate::validate;
 
 pub const FILE_NAME: &str = "settings.toml";
 
@@ -50,7 +54,7 @@ pub fn config_dir() -> Result<PathBuf, SettingsError> {
         .ok_or(SettingsError::NoHome)
 }
 
-/// Reads settings at `path`; a missing file yields defaults.
+/// Reads and validates settings at `path`; a missing file yields defaults.
 pub fn load(path: &Path) -> Result<Settings, SettingsError> {
     let text = match fs::read_to_string(path) {
         Ok(t) => t,
@@ -59,11 +63,13 @@ pub fn load(path: &Path) -> Result<Settings, SettingsError> {
     };
     let settings: Settings = toml::from_str(&text)
         .map_err(|e| SettingsError::Parse(path.to_path_buf(), e.to_string()))?;
+    validate(&settings)?;
     Ok(settings)
 }
 
-/// Atomically writes `settings` to `path`.
+/// Validates and atomically writes `settings` to `path`.
 pub fn save(path: &Path, settings: &Settings) -> Result<(), SettingsError> {
+    validate(settings)?;
     let text =
         toml::to_string_pretty(settings).map_err(|e| SettingsError::Invalid(e.to_string()))?;
     let dir = path.parent().unwrap_or_else(|| Path::new("."));

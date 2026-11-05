@@ -60,6 +60,18 @@ fn kill_releases_a_paused_reader() {
 }
 
 #[test]
+fn initial_command_runs_in_the_new_terminal() {
+    let ev = Events::default();
+    let m = PtyManager::new(ev.sink());
+    let mut req = SpawnRequest::argv(std::env::temp_dir(), vec!["/bin/sh"]);
+    req.initial_command = Some("echo AUTO_$((40+2)); exit 7".into());
+    let id = m.spawn(req).unwrap();
+    assert_eq!(ev.wait_exit(&id).0, 7);
+    // The echoed input shows the expression, the output its value.
+    assert!(ev.output(&id).contains("AUTO_42"), "{:?}", ev.output(&id));
+}
+
+#[test]
 fn history_is_bounded_and_clearable() {
     let ev = Events::default();
     let m = PtyManager::new(ev.sink());
@@ -79,16 +91,4 @@ fn history_is_bounded_and_clearable() {
     assert!(hist.trim_end().ends_with("line-199"));
     m.clear_history(&id).unwrap();
     assert!(m.history(&id).unwrap().is_empty());
-}
-
-#[test]
-fn initial_command_runs_in_the_new_terminal() {
-    let ev = Events::default();
-    let m = PtyManager::new(ev.sink());
-    let mut req = SpawnRequest::argv(std::env::temp_dir(), vec!["/bin/sh"]);
-    req.initial_command = Some("echo AUTO_$((40+2)); exit 7".into());
-    let id = m.spawn(req).unwrap();
-    assert_eq!(ev.wait_exit(&id).0, 7);
-    // The echoed input shows the expression, the output its value.
-    assert!(ev.output(&id).contains("AUTO_42"), "{:?}", ev.output(&id));
 }

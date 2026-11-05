@@ -42,7 +42,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, info }: Props) {
       </div>
 
       <nav className="repo-list">
-        {state.repos.length === 0 && <p className="sidebar-empty">No repositories yet. Open a project from Home.</p>}
+        {state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
         {state.repos.map((repo) => (
           <div key={repo.id} className="repo">
             <div className="repo-row">

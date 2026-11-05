@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from "react";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import { newId, workspaceName } from "./names";
+import { isSidebarVisible } from "./selectors";
 
 const STORAGE_KEY = "openconductor.shell.v1";
 
@@ -11,6 +12,7 @@ export type Action =
   | { type: "toggleRepo"; repoId: string }
   | { type: "newWorkspace"; repoId: string }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
+  | { type: "toggleSidebar" }
   | { type: "reset"; state: AppState };
 
 const EMPTY: AppState = { repos: [], selection: { kind: "home" } };
@@ -31,12 +33,12 @@ export function reducer(state: AppState, action: Action): AppState {
       const repo: Repo = { ...action.repo, id: newId(), workspaces: [] };
       const ws = makeWorkspace(repo);
       repo.workspaces.push(ws);
-      return { repos: [...state.repos, repo], selection: { kind: "workspace", repoId: repo.id, workspaceId: ws.id } };
+      return { ...state, repos: [...state.repos, repo], selection: { kind: "workspace", repoId: repo.id, workspaceId: ws.id } };
     }
     case "removeRepo": {
       const repos = state.repos.filter((r) => r.id !== action.repoId);
       const sel = state.selection.kind === "workspace" && state.selection.repoId === action.repoId ? { kind: "home" as const } : state.selection;
-      return { repos, selection: sel };
+      return { ...state, repos, selection: sel };
     }
     case "toggleRepo":
       return { ...state, repos: state.repos.map((r) => (r.id === action.repoId ? { ...r, collapsed: !r.collapsed } : r)) };
@@ -48,15 +50,17 @@ export function reducer(state: AppState, action: Action): AppState {
         selection = { kind: "workspace", repoId: r.id, workspaceId: ws.id };
         return { ...r, collapsed: false, workspaces: [...r.workspaces, ws] };
       });
-      return { repos, selection };
+      return { ...state, repos, selection };
     }
     case "archiveWorkspace": {
       const repos = state.repos.map((r) =>
         r.id === action.repoId ? { ...r, workspaces: r.workspaces.filter((w) => w.id !== action.workspaceId) } : r,
       );
       const sel = state.selection.kind === "workspace" && state.selection.workspaceId === action.workspaceId ? { kind: "home" as const } : state.selection;
-      return { repos, selection: sel };
+      return { ...state, repos, selection: sel };
     }
+    case "toggleSidebar":
+      return { ...state, sidebarVisible: !isSidebarVisible(state) };
     case "reset":
       return action.state;
   }
@@ -83,6 +87,7 @@ function load(): AppState {
   if (params.get("demo") === "1") {
     const s = demoState();
     if (params.get("view") === "home") s.selection = { kind: "home" };
+    if (params.get("sidebar") === "0") s.sidebarVisible = false;
     return s;
   }
   try {
