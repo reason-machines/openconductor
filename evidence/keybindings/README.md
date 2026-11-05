@@ -100,6 +100,27 @@ plus a bubble-phase one for a bare Escape that nothing else took).
   passes to the next. The first that takes it sends `keyboard_shortcut_used`
   with `keybinding_id`, plus `active_dialog_id` and `telemetry_context` when set.
 
+## Window listeners
+
+From the same chunk (the component that mounts the dispatcher, next to the
+`vd` priority table). It adds five `window` listeners:
+
+- `keydown`, capture phase: an installed key capture takes the event first;
+  otherwise a bare Escape is skipped here and everything else is dispatched.
+- `keydown`, bubble phase: a bare Escape that no one `preventDefault`ed is
+  dispatched, so dialogs and popovers handle Escape before the global handlers.
+- `keyup`, capture phase: goes to an installed key capture.
+- `compositionstart` and `beforeinput`, capture phase: `preventDefault` while a
+  key capture is installed, or within 50 ms after a handler took an Option chord
+  without Command or Control (so ⌥T does not also type †).
+
+A key capture (`{ onKeyDown, onKeyUp }`) is exclusive: installing one replaces
+the last, and its remover only clears it if it is still current. While it is
+installed every keydown and keyup is `preventDefault`ed, stopped and handed to it.
+The shortcut recorder and the key-bindings page's "Type shortcut" search use it.
+When a handler runs or a repeat is swallowed, the event is also stopped
+(`stopImmediatePropagation`) and the Option-chord timer starts.
+
 ## Help dialog (`openKeyboardShortcuts`, default ⌥⌘/)
 
 - Title "Keyboard shortcuts" with an icon, and a search input "Search shortcuts...".
