@@ -12,12 +12,15 @@
 //! * [`info`]: normalized PR info and the workspace status it implies.
 //! * [`merge_eligibility`]: when the merge button may be offered.
 //! * [`header`]: what the workspace header's git/PR control shows.
+//! * [`prompt`]: the create-PR message sent to the agent, and the
+//!   archive-on-merge rule.
 
 pub mod checks;
 pub mod header;
 pub mod info;
 pub mod merge_eligibility;
 pub mod model;
+pub mod prompt;
 
 #[cfg(test)]
 mod checks_tests;
@@ -27,5 +30,7 @@ mod header_tests;
 mod info_tests;
 #[cfg(test)]
 mod merge_eligibility_tests;
+#[cfg(test)]
+mod prompt_tests;
 #[cfg(test)]
 mod tests;
