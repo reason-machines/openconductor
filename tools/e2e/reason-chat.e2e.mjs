@@ -58,7 +58,7 @@ delete env.REASON_CLI;
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
 const driverExited = new Promise((r) => driver.on("exit", r));
 
-const W3C_ELEMENT = "element-6066-11e4-a52e-4a6b5c3a2a0b";
+const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
 let sessionUrl = null;
 
@@ -71,6 +71,14 @@ async function wd(method, path, body) {
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(`${method} ${path}: ${res.status} ${JSON.stringify(json.value ?? json)}`);
   return json.value;
+}
+
+/** Finds one element and returns its WebDriver id (W3C key, or the legacy JSON Wire "ELEMENT"). */
+async function find(css) {
+  const el = await wd("POST", "/element", { using: "css selector", value: css });
+  const id = el?.[W3C_ELEMENT] ?? el?.ELEMENT;
+  if (!id) throw new Error(`no element id for ${css}: ${JSON.stringify(el)}`);
+  return id;
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -102,10 +110,8 @@ const chatText = () => run("const el = document.querySelector('.chat-scroll'); r
 const running = () => run("return !!document.querySelector('.composer button[title=\"Stop the agent\"]');");
 
 async function send(text) {
-  const box = await wd("POST", "/element", { using: "css selector", value: ".composer textarea" });
-  await wd("POST", `/element/${box[W3C_ELEMENT]}/value`, { text });
-  const button = await wd("POST", "/element", { using: "css selector", value: ".composer button[type=submit]" });
-  await wd("POST", `/element/${button[W3C_ELEMENT]}/click`, {});
+  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
 /** Expands every tool row and returns each row's tool input. */
@@ -185,8 +191,7 @@ try {
   // 4. Stop.
   await send("slow");
   await waitFor("the Stop button", running);
-  const stop = await wd("POST", "/element", { using: "css selector", value: '.composer button[title="Stop the agent"]' });
-  await wd("POST", `/element/${stop[W3C_ELEMENT]}/click`, {});
+  await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
   await waitFor('"Stopped."', () => chatText().then((t) => t.includes("Stopped.")), 15000);
   await turnDone(4);
   pass('Stop ends the running turn: "Stopped."');
