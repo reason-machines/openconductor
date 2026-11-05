@@ -1,8 +1,9 @@
 // Flows run in order against one app session. Each throws on failure.
 
-async function textsOf(wd, css) {
-  const ids = await wd.findAll(css);
-  return Promise.all(ids.map((id) => wd.text(id)));
+// textContent, not WebDriver's visible text: the Home cards fade in, and visible
+// text reads "" until the animation finishes.
+function textsOf(wd, css) {
+  return wd.execute("return Array.from(document.querySelectorAll(arguments[0]), (e) => e.textContent.trim());", [css]);
 }
 
 export const flows = [

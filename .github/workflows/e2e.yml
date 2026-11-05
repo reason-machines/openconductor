@@ -47,6 +47,9 @@ jobs:
         env:
           OC_APP: src-tauri/target/debug/openconductor
           E2E_OUT: e2e-artifacts
+          # WebKitGTK on a GPU-less Xvfb paints nothing (blank screenshots, CSS animations stuck) without these.
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
         run: xvfb-run --auto-servernum --server-args="-screen 0 1440x900x24" node tests/e2e/run.mjs
       - name: Upload screenshots and results
         if: always()
