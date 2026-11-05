@@ -115,6 +115,18 @@ impl ScriptService {
         }
     }
 
+    /// The user-scope "Auto-run after setup" toggle (off by default).
+    pub fn auto_run_after_setup(&self) -> Result<bool, String> {
+        config::user_auto_run_after_setup(&self.conductor_dir)
+    }
+
+    /// Turn auto-run after setup on or off for every repository that does
+    /// not set it itself. Returns the user value read back.
+    pub fn set_auto_run_after_setup(&self, enabled: bool) -> Result<bool, String> {
+        config::set_user_auto_run_after_setup(&self.conductor_dir, enabled)?;
+        self.auto_run_after_setup()
+    }
+
     pub fn config(&self, ws: &WorkspaceRef) -> Result<ResolvedScripts, String> {
         config::load(&self.settings_paths(ws)).map_err(|e| e.to_string())
     }
