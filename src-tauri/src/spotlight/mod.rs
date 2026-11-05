@@ -19,11 +19,16 @@
 //! as an event for the UI. [`setting`] is the per-repository
 //! `spotlight_testing` toggle. [`auto_run`] starts Spotlight in place of the
 //! run script when auto-run after setup fires with that toggle on.
+//! [`migrate`] moves the legacy `repos.spotlight_testing` column into the
+//! local settings file once, at startup.
 //!
 //! Everything goes through [`crate::checkpoint`], whose refs are shared by
 //! every worktree of a repository.
 
 pub mod auto_run;
+pub mod migrate;
+#[cfg(test)]
+mod migrate_tests;
 pub mod service;
 pub mod setting;
 #[cfg(test)]

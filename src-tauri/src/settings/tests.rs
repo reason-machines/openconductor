@@ -237,3 +237,23 @@ fn git_flags_use_conductor_defaults_and_round_trip() {
     );
     assert_eq!(load(&path).unwrap().git, s.git);
 }
+
+#[test]
+fn scrollback_limit_is_optional_and_round_trips_in_advanced() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[general]\ntheme = \"dark\"").unwrap();
+    assert_eq!(load(&path).unwrap().advanced, Advanced::default());
+    let mut s = Settings::default();
+    save(&path, &s).unwrap();
+    assert!(!fs::read_to_string(&path)
+        .unwrap()
+        .contains("terminal_scrollback_limit_bytes"));
+    s.advanced.terminal_scrollback_limit_bytes = Some(25_000_000);
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        text.contains("[advanced]\nterminal_scrollback_limit_bytes = 25000000"),
+        "{text}"
+    );
+    assert_eq!(load(&path).unwrap().advanced, s.advanced);
+}
