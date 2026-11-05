@@ -52,6 +52,7 @@ import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
 import { useWorkspaceSession } from "../features/chat/useWorkspaceSession";
 import { chatSessionStatus, hasActiveTurn, isBusyStatus, rowStatus, rowStatusLabel, type SessionStatus } from "../state/rowStatus";
+import { OpenInButton } from "../features/openIn/OpenInButton";
 
 interface Props {
   repo: Repo;
@@ -754,6 +755,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           )}
         </div>
         <div className="ws-actions">
+          {workspace.status !== "archived" && <OpenInButton path={workspace.path ?? null} notify={notify} />}
           <PrControl pullRequest={pullRequest} actions={prActions} />
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
             Terminal

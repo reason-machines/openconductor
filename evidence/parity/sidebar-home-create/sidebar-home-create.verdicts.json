@@ -1,7 +1,7 @@
 {
   "schema": "openconductor.parity-verdicts.v1",
   "ref": "origin/main",
-  "verified_at": "2026-11-05 (main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+  "verified_at": "2026-11-05 (main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
   "method": "Read on main: src/, src-tauri/src/, crates/. 'backend' = logic or a command exists and is tested, but no UI path reaches it.",
   "items": {
     "sidebar.home-entry": {
@@ -46,7 +46,7 @@
     },
     "sidebar.ws-unread": {
       "verdict": "partial",
-      "why": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it. Changes are now written through the registered db_set_workspace_unread (sidebarPersist.ts) and reposFromDb maps workspaces.unread back. There is still no jump-to-next-unread-workspace command."
+      "why": "#431 on 93f1846: Go to next unread (chat.nextAttention, Cmd+Alt+L; first under the palette's Navigation while something is unread) opens unread workspaces in Conductor's Qre order (updatedAt, then createdAt, then id; index-BGEQ8YjU.js @1,128,168), with Cmd+Alt+L skipping the open workspace and archived workspaces never counted (src/state/nextUnread.ts, palette/fromAppState.ts, PaletteHost.tsx). db_list_workspaces returns updated_at and chat_messages_save moves it forward on a user message through workspaces::touch, as Conductor's setSessionUpdatedAt does (index @1,066,404; migration 85 drops the trigger). Row menu toggles unread (R), unread rows render semibold and opening a row clears it, written through db_set_workspace_unread. Still partial: nothing sets unread by itself (Conductor's applyTurnCompletionTails @1,529,959 and markUnreadIfNotViewing @1,500,167), unread is per workspace rather than per chat (sessions.unread_count), there is no Next unread button over the composer (renderApp g1o, char @7,530,225), and Codex sends do not persist the updated_at bump. #443 (open) covers the composer button, Codex persistence and auto-unread on turn end and Codex approvals; per-chat unread and plan/question waits would remain."
     },
     "sidebar.ws-pinned": {
       "verdict": "implemented",
@@ -89,8 +89,8 @@
       "why": "The rail (useSidebarWidth, panelPrefs.tsx) has resized the left sidebar since #332, clamped to 192–480 and saved as left_panel_width; #423 (99edc40) brings it to Conductor's Nta (@ 9,970,616): primary-button drag previews without saving, release saves, a cancelled pointer reverts, double-click resets to 256 and saves, and the aside is capped at 40% of the window. Left toggles: top-bar button, ⌘B (view.toggleLeftSidebar) and the native View > Toggle Left Sidebar item; right: ⌥⌘B (view.toggleRightSidebar, right_panel_visible) and View > Toggle Right Sidebar (menu.rs emits toggle_left_sidebar / toggle_right_sidebar, App.tsx listens, as Conductor's lva/ova @ 10,931,680). REA gap: which submenu Conductor appends the two items to was not decompiled; they go in View here. Not run in the desktop app."
     },
     "sidebar.footer-usage": {
-      "verdict": "missing",
-      "why": "The footer holds only the help and settings buttons; no CPU/memory readout or backend for one."
+      "verdict": "implemented",
+      "why": "#410 on 9930339: Settings › Experimental 'Show sidebar resource usage' (sidebar_resource_usage in conductor.db settings, default off, AppPrefRows.tsx) shows ResourceUsagePill in the sidebar's top bar beside back/forward, where Conductor mounts it (renderApp Isa/bna @9,942,220), despite the setting text saying footer. The pill hides under 200 px of sidebar and goes icon-only under 260 px, polls the registered get_resource_usage every 2 s, and opens the Resources popover (qta @9,933,654): include terminals, group by workspace, tree/flat, copy, CPU/Memory totals, sortable Name/CPU/Mem table, Show all past 7 rows. Inferred, not decompiled: which processes Conductor samples, its label rules and redaction (evidence/sidebar-resource-usage/NOTES.md)."
     },
     "sidebar.transparency": {
       "verdict": "missing",
@@ -233,8 +233,8 @@
       "why": "A failed create shows the backend error in the dialog and on_create_failed drops the pending row; a failed setup raises a toast pointing to the Setup log (setupWatch.ts); startup runs delete_incomplete -> delete_if_initializing (#224). No initialization_log_path for worktree failures."
     },
     "create.in-section": {
-      "verdict": "missing",
-      "why": "No user sections; the single My workspaces group's menu only offers Add project."
+      "verdict": "implemented",
+      "why": "#419 on d353535: a section's header menu starts with 'Create workspace' (Conductor's oBi @10,005,110), which opens the create dialog with that section; its Create button reads 'Create in <name>'. Opened without a section while sections exist, Create splits with a 'Create in section' menu listing every section (iQo @9,711,015). After the create the workspace is assigned to the section and unpinned (assignSection, persisted with the sections layout); a section deleted meanwhile keeps the workspace and warns with Conductor's SECTION_ASSIGN_FAILED text (src/workspace/createInSection.ts, tested)."
     },
     "create.first-message": {
       "verdict": "implemented",
@@ -253,8 +253,8 @@
       "why": "The Sidebar.tsx top bar has a toggle button (toggleSidebar) and back/forward arrows driven by useNavHistory (src/state/useNavHistory.ts, history.ts), disabled at the ends; nav.back/nav.forward use the same handlers. REA capture matches the reference layout."
     },
     "sidebar.computer-switcher": {
-      "verdict": "partial",
-      "why": "Sidebar.tsx renders a computer row with initial avatar, name and chevron, but App.tsx never passes computerName (always the default name) and clicking it opens no switcher menu."
+      "verdict": "implemented",
+      "why": "#410 on 9930339: AccountMenu.tsx replaces the static row: an 'Account menu' button with the initial avatar, \"<name>'s Mac\" (or 'My Mac') from the registered local_account (macOS full name or git user.name) and a chevron, opening a 260 px menu with the git email heading and Settings, as Conductor's zna @9,957,506 does for a single personal organization. Conductor's organization list, Create organization, Upgrade to Pro and Log out need its cloud account and are left out; Conductor also hides the row with nobody signed in, while ours always shows the local user."
     },
     "sidebar.primary-nav": {
       "verdict": "implemented",
