@@ -52,7 +52,7 @@ function useGraphiteInstalled(): boolean | null {
   return installed;
 }
 
-/** Experimental: Show agent cost, Tab Freak Mode, Show sidebar resource usage, Graphite stack support. */
+/** Experimental: Show agent cost, Tab Freak Mode, Show sidebar resource usage, Sidebar transparency, Graphite stack support. */
 export function ExperimentalAppPrefRows() {
   const p = useAppPrefs();
   const gt = useGraphiteInstalled();
@@ -85,6 +85,17 @@ export function ExperimentalAppPrefRows() {
           label="Show sidebar resource usage"
           checked={p.sidebar_resource_usage}
           onChange={(value) => save({ key: "sidebar_resource_usage", value })}
+        />
+      </Row>
+      {/* Conductor's `experimental_sidebar_transparency` row, between resource usage and Graphite. */}
+      <Row
+        label="Sidebar transparency"
+        help="Use native macOS vibrancy behind the workspace sidebar. Takes effect after you restart OpenConductor."
+      >
+        <Switch
+          label="Sidebar transparency"
+          checked={p.experimental_sidebar_transparency}
+          onChange={(value) => save({ key: "experimental_sidebar_transparency", value })}
         />
       </Row>
       <Row label="Graphite stack support" help={graphiteHelp}>

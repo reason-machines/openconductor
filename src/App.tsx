@@ -36,6 +36,7 @@ import { USER_PAGES } from "./settings/pages";
 import { keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
 import { changeZoom } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
+import { useSidebarTransparency } from "./settings/sidebarTransparency";
 import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
@@ -131,6 +132,8 @@ export default function App() {
   useEffect(() => {
     getSettings().then(applyAppearance, () => undefined);
   }, []);
+  // Experimental "Sidebar transparency": root class and native window vibrancy.
+  useSidebarTransparency();
 
 
   // "Create a private GitHub repo?" for a picked folder without git or origin.
