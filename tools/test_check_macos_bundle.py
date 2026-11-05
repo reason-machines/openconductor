@@ -38,14 +38,14 @@ def good_info():
                            "CFBundleURLSchemes": ["openconductor"]}],
     )
     for key in cmb.FOLDER_KEYS:
-        ours[key] = "OpenConductor needs this folder."
+        ours[key] = "OpenConductor needs this."
     for key in DIVERGENT:
         ours.pop(key, None)
     return ours
 
 
 class CheckBundle(unittest.TestCase):
-    def run_check(self, info, exe=True, icon=True, tools=True):
+    def run_check(self, info, exe=True, icon=True, tools=True, divergences=None):
         with tempfile.TemporaryDirectory() as tmp:
             app = pathlib.Path(tmp, "OpenConductor.app")
             (app / "Contents/MacOS").mkdir(parents=True)
@@ -65,7 +65,10 @@ class CheckBundle(unittest.TestCase):
                     p.chmod(0o755)
             report = pathlib.Path(tmp, "report.json")
             with contextlib.redirect_stdout(io.StringIO()):
-                code = cmb.main([str(app), "--skip-codesign", "--report", str(report)])
+                args = [str(app), "--skip-codesign", "--report", str(report)]
+                if divergences:
+                    args += ["--divergences", str(divergences)]
+                code = cmb.main(args)
             failed = [c["check"] for c in json.loads(report.read_text())["checks"] if not c["ok"]]
             return code, failed
 
@@ -77,9 +80,20 @@ class CheckBundle(unittest.TestCase):
         del info["NSHighResolutionCapable"]
         self.assertEqual(self.run_check(info), (1, ["parity:NSHighResolutionCapable"]))
 
+    def test_microphone_prompt_is_required(self):
+        info = good_info()
+        del info["NSMicrophoneUsageDescription"]
+        self.assertEqual(self.run_check(info)[1],
+                         ["prompt:NSMicrophoneUsageDescription", "parity:NSMicrophoneUsageDescription"])
+
     def test_listed_divergence_may_be_absent(self):
-        self.assertNotIn("NSMicrophoneUsageDescription", good_info())
-        self.assertEqual(self.run_check(good_info())[0], 0)
+        info = good_info()
+        del info["NSMicrophoneUsageDescription"]
+        with tempfile.TemporaryDirectory() as tmp:
+            div = pathlib.Path(tmp, "divergences.json")
+            div.write_text(json.dumps({"info_plist": {"NSMicrophoneUsageDescription": "test"}}))
+            _, failed = self.run_check(info, divergences=div)
+        self.assertEqual(failed, ["prompt:NSMicrophoneUsageDescription"])
 
     def test_wrong_identifier_and_missing_scheme_fail(self):
         info = good_info()

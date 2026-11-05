@@ -80,6 +80,8 @@ pub struct CreatedWorkspaceDto {
     pub copied_files: Vec<String>,
     /// Set when the "Set upstream on plain git push" setting could not be applied.
     pub upstream_warning: Option<String>,
+    /// `workspaces.number` given on creation (`W-<n>`); null if conductor.db could not record it.
+    pub number: Option<i64>,
 }
 
 #[tauri::command]
@@ -194,8 +196,8 @@ pub async fn create_workspace(
     };
     match service.create_workspace(&req) {
         Ok(created) => {
-            persistence::on_create_finished(&db, &repository_id, &created.workspace, &parent).await;
-            Ok(created_dto(&repository_id, created))
+            let number = persistence::on_create_finished(&db, &repository_id, &created.workspace, &parent).await;
+            Ok(CreatedWorkspaceDto { number, ..created_dto(&repository_id, created) })
         }
         Err(e) => {
             persistence::on_create_failed(&db, pending).await;
@@ -267,5 +269,6 @@ fn created_dto(repository_id: &str, c: Created) -> CreatedWorkspaceDto {
         fetched: c.fetched,
         copied_files: c.copied_files.into_iter().map(|p| p.display().to_string()).collect(),
         upstream_warning: c.upstream_warning,
+        number: None,
     }
 }

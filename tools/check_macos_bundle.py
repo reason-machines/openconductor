@@ -36,6 +36,7 @@ FOLDER_KEYS = (
     "NSDesktopFolderUsageDescription",
     "NSDocumentsFolderUsageDescription",
     "NSDownloadsFolderUsageDescription",
+    "NSMicrophoneUsageDescription",
 )
 
 
