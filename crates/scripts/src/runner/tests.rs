@@ -103,6 +103,36 @@ fn nonconcurrent_stops_other_workspaces_of_the_same_repo_only() {
 }
 
 #[test]
+fn stop_repository_stops_every_workspace_of_that_repo_only() {
+    let tmp = tempfile::tempdir().unwrap();
+    let m = RunManager::default();
+    m.start(
+        req(tmp.path(), "w1", "r", "dev", LONG, true),
+        SetupState::Idle,
+    )
+    .unwrap();
+    m.start(
+        req(tmp.path(), "w3", "r", "dev", LONG, true),
+        SetupState::Running,
+    )
+    .unwrap();
+    m.start(
+        req(tmp.path(), "x1", "other", "dev", LONG, true),
+        SetupState::Idle,
+    )
+    .unwrap();
+    assert_eq!(m.state("w3", "dev"), RunState::WaitingForSetup);
+
+    assert_eq!(m.stop_repository("r"), ["w1", "w3"]);
+    assert_eq!(m.state("w1", "dev"), RunState::Stopped);
+    assert_eq!(m.state("w3", "dev"), RunState::Stopped);
+    assert!(!m.setup_finished("w3").unwrap(), "the wait is dropped");
+    assert_eq!(m.state("x1", "dev"), RunState::Running);
+    assert!(m.stop_repository("r").is_empty(), "nothing left to stop");
+    m.stop_all();
+}
+
+#[test]
 fn waits_for_setup_then_starts() {
     let tmp = tempfile::tempdir().unwrap();
     let m = RunManager::default();
