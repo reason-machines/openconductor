@@ -20,7 +20,9 @@ import {
   ptyWriteMirror,
 } from "./pty";
 import { canOpen, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs";
-import { PersistThrottle, readSaved, removeWorkspace, restoreCwds, restoreOutput, writeWorkspace, type HistoryRecord } from "./restore";
+import { PersistThrottle, restoreCwds, restoreOutput, type HistoryRecord } from "./restore";
+import { subsystemStorage } from "./localStorage";
+import { TABS_SIZE_LIMIT, TABS_SUBSYSTEM, TabListStore, savedWorkspace } from "./tabList";
 import { FIND_COMMAND, LINE_EDIT_BYTES, terminalCommandFor } from "./shortcuts.ts";
 import { currentTerminalFont, onTerminalFont, TERMINAL_LINE_HEIGHT } from "./font.ts";
 import { currentScrollbackRows, onScrollbackRows } from "./scrollback.ts";
@@ -51,7 +53,12 @@ const EMPTY = emptyTabs();
 let listening: Promise<() => void> | null = null;
 /** Workspaces whose saved tabs were restored this launch; only these write the tab list. */
 const hydrated = new Set<string>();
-const storage = (): Storage | undefined => (typeof localStorage === "undefined" ? undefined : localStorage);
+/** The saved tab list, in the reference's `terminal` local-storage subsystem. */
+const tabList = new TabListStore(
+  subsystemStorage(TABS_SUBSYSTEM, TABS_SIZE_LIMIT),
+  typeof localStorage === "undefined" ? undefined : localStorage,
+  (e) => console.error("Failed to save or load the terminal tab list", e),
+);
 
 // Tab id doubles as the PTY id and the saved session's id.
 const persist = new PersistThrottle(async (id) => {
@@ -106,8 +113,7 @@ function dispatch(workspaceId: string, a: TabsAction) {
 }
 
 function saveTabs(workspaceId: string, state: TabsState) {
-  const store = storage();
-  if (store && hydrated.has(workspaceId)) writeWorkspace(store, workspaceId, state, (id) => live.get(id)?.cwd);
+  if (hydrated.has(workspaceId)) void tabList.setWorkspace(workspaceId, savedWorkspace(state, (id) => live.get(id)?.cwd), "terminal");
 }
 
 export const getFindRequests = (id: string): number => findRequests.get(id) ?? 0;
@@ -160,8 +166,7 @@ export function restoreWorkspaceTabs(workspaceId: string, cwd: string, initialCo
 const restoring = new Map<string, Promise<void>>();
 
 async function restoreOnce(workspaceId: string, cwd: string, initialCommand?: string): Promise<void> {
-  const store = storage();
-  const saved = store ? readSaved(store)[workspaceId] : undefined;
+  const saved = await tabList.workspace(workspaceId);
   for (const tab of saved?.tabs ?? []) {
     if (live.has(tab.id)) continue;
     await startTab(workspaceId, cwd, initialCommand, { id: tab.id, title: tab.title }).catch(() => {});
@@ -348,8 +353,7 @@ export async function destroyWorkspaceTerminals(workspaceId: string): Promise<vo
   }
   tabsByWorkspace.delete(workspaceId);
   hydrated.delete(workspaceId);
-  const store = storage();
-  if (store) removeWorkspace(store, workspaceId);
+  void tabList.setWorkspace(workspaceId, undefined);
   subscribers.forEach((f) => f());
   await Promise.all(ids.map(forget));
   await ptyDeleteWorkspaceTerminalHistory(workspaceId).catch(() => {});

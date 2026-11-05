@@ -168,6 +168,25 @@ function fakeBackend(shellState) {
           save(d);
           return ids.length;
         }
+        // The backend's subsystemStore (src-tauri/src/local_storage_commands.rs).
+        case "local_storage_get_entry": {
+          const e = disk().localStorage?.[args.args.subsystem]?.[args.args.id];
+          return e ? e.content : null;
+        }
+        case "local_storage_set_entry": {
+          const a = args.args;
+          JSON.parse(a.content);
+          const d = disk();
+          ((d.localStorage ??= {})[a.subsystem] ??= {})[a.id] = { sizeLimit: a.sizeLimit, content: a.content };
+          save(d);
+          return { success: true };
+        }
+        case "local_storage_remove_entry": {
+          const d = disk();
+          delete d.localStorage?.[args.args.subsystem]?.[args.args.id];
+          save(d);
+          return;
+        }
         case "pty_ack_bytes":
         case "pty_kill":
         case "pty_clear_history":
@@ -182,6 +201,11 @@ function fakeBackend(shellState) {
 }
 
 const disk = (page) => page.evaluate(() => JSON.parse(localStorage.getItem("__fake_backend_disk") ?? "null"));
+/** The saved tab list as the backend keeps it: entry content -> zustand string -> record. */
+const savedTabs = async (page) => {
+  const e = (await disk(page))?.localStorage?.terminal?.["terminal-panel-tabs-v1"];
+  return e && { sizeLimit: e.sizeLimit, record: JSON.parse(JSON.parse(e.content)) };
+};
 const screenText = (page) => page.locator(".term-mount .xterm-rows").innerText();
 const tabTitles = (page) => page.locator(".term-tab span:not(.term-dot)").allInnerTexts();
 
@@ -225,6 +249,21 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
   assert.equal(before.history[first].localWorkspaceId, "w1");
   assert.equal(before.history[first].hasReceivedUserInput, true);
   assert.equal(before.history[first].endedAt, null);
+
+  // The tab list is kept by the backend in the reference's `terminal` subsystem, in its zustand shape.
+  const tabs = await savedTabs(page);
+  assert.equal(tabs.sizeLimit, 100 * 1024 * 1024);
+  assert.equal(tabs.record.version, 2);
+  assert.deepEqual(tabs.record.state.workspaceTerminals, [["w1", [first, second]]]);
+  assert.deepEqual(tabs.record.state.activeTabPerWorkspace, [["w1", first]]);
+  assert.deepEqual(
+    tabs.record.state.terminals.map((t) => [t.id, t.localWorkspaceId, t.title]),
+    [
+      [first, "w1", "Terminal 1"],
+      [second, "w1", "Terminal 2"],
+    ],
+  );
+  assert.equal(await page.evaluate(() => localStorage.getItem("terminal-panel-tabs-v1")), null, "nothing in the webview's localStorage");
 
   // Relaunch.
   await page.reload();
@@ -281,9 +320,41 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
   await page.waitForFunction(() => (JSON.parse(localStorage.getItem("__fake_backend_disk")).workspaceDeletes ?? []).includes("w1"), null, { timeout: 5000 });
   const archived = await disk(page);
   assert.deepEqual(archived.history, {});
-  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem("terminal-panel-tabs-v1") ?? "{}").w1), undefined);
+  assert.deepEqual((await savedTabs(page)).record.state.workspaceTerminals, [], "the workspace's tab list is gone");
   assert.equal(await page.locator(".term-tab").count(), 0);
 
+  assert.deepEqual(errors, []);
+  await context.close();
+});
+
+test("a tab list saved in the webview's localStorage by an earlier build moves to the backend", async () => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const errors = [];
+  page.on("pageerror", (err) => errors.push(err.message));
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem("seeded")) return;
+    sessionStorage.setItem("seeded", "1");
+    localStorage.setItem(
+      "terminal-panel-tabs-v1",
+      JSON.stringify({ w1: { tabs: [{ id: "old-1", title: "Terminal 2", cwd: "/repo" }, { id: "old-2", title: "Terminal 5", cwd: "/repo" }], activeId: "old-2", next: 6 } }),
+    );
+  });
+  await page.addInitScript(fakeBackend, SHELL_STATE);
+  await page.goto(base + "/");
+  await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
+  assert.deepEqual(await tabTitles(page), ["Terminal 2", "Terminal 5"]);
+  assert.equal(await page.locator(".term-tab.active span:not(.term-dot)").innerText(), "Terminal 5");
+  await page.waitForFunction(() => localStorage.getItem("terminal-panel-tabs-v1") === null, null, { timeout: 5000 });
+  const tabs = await savedTabs(page);
+  assert.deepEqual(tabs.record.state.workspaceTerminals, [["w1", ["old-1", "old-2"]]]);
+
+  // The next launch reads the backend's copy; the counter carried over.
+  await page.reload();
+  await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
+  await page.getByRole("button", { name: "New terminal tab" }).click();
+  await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 3);
+  assert.deepEqual(await tabTitles(page), ["Terminal 2", "Terminal 5", "Terminal 6"]);
   assert.deepEqual(errors, []);
   await context.close();
 });
