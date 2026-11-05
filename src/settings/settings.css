@@ -31,7 +31,8 @@
     --s-input: #fff3;
     --s-switch-on: #eae8e6;
     --s-switch-knob-on: #2c2826;
-    --s-switch-off: #2c2826;
+    /* Conductor dark off switch: #43403f track, #2c2826 knob (sampled from its repo Git page). */
+    --s-switch-off: #43403f;
     --s-hover: #ffffff0a;
     --s-active: #ffffff0d;
     --s-card: #211e1c;
@@ -45,7 +46,7 @@
   --s-input: #fff3;
   --s-switch-on: #eae8e6;
   --s-switch-knob-on: #2c2826;
-  --s-switch-off: #2c2826;
+  --s-switch-off: #43403f;
   --s-hover: #ffffff0a;
   --s-active: #ffffff0d;
   --s-card: #211e1c;
@@ -66,7 +67,7 @@
 .settings .settings-nav .nav-item.active { background: var(--s-active); opacity: 1; font-weight: 500; }
 .settings .settings-repos { margin-top: 18px; gap: 4px; }
 .settings .settings-repo-initial { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; background: var(--repo-initial-bg); color: var(--repo-initial-fg); font-size: 10px; font-weight: 600; flex-shrink: 0; }
-.settings .settings-repo-sections { margin-left: 18px; border-left: 1px solid var(--s-border); padding-left: 6px; }
+.settings .settings-repo-sections { margin: 4px 0 0 16px; border-left: 1px solid var(--s-border); padding-left: 8px; display: flex; flex-direction: column; gap: 4px; }
 
 /* Page */
 .settings .settings-page { padding: 64px 40px 80px; max-width: none; }
@@ -111,10 +112,10 @@
 }
 .settings .settings-rows input[type="checkbox"][role="switch"]::after {
   content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%;
-  background: var(--s-switch-knob-on); opacity: 0.55; transition: transform 0.15s, opacity 0.15s;
+  background: var(--s-switch-knob-on); transition: transform 0.15s;
 }
 .settings .settings-rows input[type="checkbox"][role="switch"]:checked { background: var(--s-switch-on); }
-.settings .settings-rows input[type="checkbox"][role="switch"]:checked::after { transform: translateX(20px); opacity: 1; }
+.settings .settings-rows input[type="checkbox"][role="switch"]:checked::after { transform: translateX(20px); }
 .settings .settings-rows input[type="checkbox"][role="switch"]:disabled { opacity: 0.5; cursor: not-allowed; }
 .settings .settings-rows input[type="checkbox"][role="switch"]:focus-visible { outline: 2px solid var(--s-muted); outline-offset: 2px; }
 .settings .btn.settings-outline { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid var(--s-input); border-radius: 6px; background: transparent; color: var(--s-fg); font-size: 14px; font-weight: 500; }
@@ -191,3 +192,7 @@
 .settings-env-dialog { display: flex; flex-direction: column; gap: 12px; }
 .settings-env-dialog-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500; }
 .settings-env-dialog-field .settings-field { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: inherit; font-family: var(--font-mono); font-size: 12px; resize: vertical; }
+
+/* Conductor's branch / remote picker trigger (`text-sm border px-2`, up-down chevron). */
+.settings .settings-picker { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; border: 1px solid var(--s-border); border-radius: 6px; font-size: 14px; line-height: 20px; color: var(--s-fg); cursor: default; }
+.settings .settings-picker svg { opacity: 0.7; }
