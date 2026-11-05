@@ -4,6 +4,7 @@
 //! - `workspace/`  workspace lifecycle (worktrees, setup/run scripts)
 //! - `checkpoint/` checkpoints and revert
 //! - `agent/`      agent runner, providers and BYOK settings
+//! - `diff/`       diff viewer: git changes, unified diff parser
 //! - `quick_open/` quick open file index and fuzzy matching (Spotlight)
 //! - `settings/`   settings.toml and the Keychain-backed secret store
 //! - `terminal/`   PTY terminals (`terminal_commands.rs` is its IPC layer)
@@ -11,6 +12,7 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod diff;
 pub mod project;
 pub mod quick_open;
 pub mod settings;
@@ -45,6 +47,38 @@ fn inspect_project_folder(path: String) -> project::FolderInspection {
     project::inspect_folder(std::path::Path::new(&path))
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct BranchPrefixInfo {
+    branch_prefix_type: settings::BranchPrefixType,
+    branch_prefix_custom: Option<String>,
+    github_username: Option<String>,
+}
+
+/// `[git]` branch prefix settings plus the GitHub username for the
+/// `github_username` prefix type, for the Create-workspace dialog. A missing or
+/// unreadable settings file falls back to defaults; the username comes from the
+/// local `gh` config (no network) and is null when `gh` has none.
+#[tauri::command]
+async fn branch_prefix_settings() -> BranchPrefixInfo {
+    let git = settings::config_dir()
+        .and_then(|dir| settings::load(&dir.join(settings::FILE_NAME)))
+        .map(|s| s.git)
+        .unwrap_or_default();
+    let github_username = std::process::Command::new("gh")
+        .args(["config", "get", "-h", "github.com", "user"])
+        .output()
+        .ok()
+        .filter(|out| out.status.success())
+        .map(|out| String::from_utf8_lossy(&out.stdout).trim().to_string())
+        .filter(|login| !login.is_empty());
+    BranchPrefixInfo {
+        branch_prefix_type: git.branch_prefix_type,
+        branch_prefix_custom: git.branch_prefix_custom,
+        github_username,
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -59,12 +93,14 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             app_info,
             inspect_project_folder,
+            branch_prefix_settings,
             workspace::commands::add_repository,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
             workspace::commands::branch_name_is_taken,
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
+            diff::commands::diff_workspace,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             terminal_commands::pty_spawn,

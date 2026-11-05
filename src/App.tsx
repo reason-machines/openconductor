@@ -7,9 +7,11 @@ import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
 import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
+import { loadBranchPrefix } from "./workspace/api";
+import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
 import { QuickOpenDialog, QUICK_OPEN_DIALOG_ID } from "./components/QuickOpenDialog";
-import { DEFAULT_BINDINGS, resolveBinding } from "./palette";
+import { resolveCommand } from "./keybindings/resolve";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { PaletteHost } from "./palette/PaletteHost";
@@ -67,14 +69,21 @@ export default function App() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const typing = isTypingTarget(document.activeElement as HTMLElement | null);
-      const ctx = { openDialogId: quickOpen ? QUICK_OPEN_DIALOG_ID : dialog, focus: typing ? ("input" as const) : ("none" as const) };
-      if (resolveBinding(DEFAULT_BINDINGS, e, ctx)?.id !== "nav.quickOpen") return;
+      const ctx = { activeDialogId: quickOpen ? QUICK_OPEN_DIALOG_ID : dialog, typing, inTerminal: false };
+      if (resolveCommand(e, ctx, ["nav.quickOpen"]) !== "nav.quickOpen") return;
       e.preventDefault();
       setQuickOpen((open) => !open && canQuickOpen);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [quickOpen, dialog, canQuickOpen]);
+
+  const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
+  // Re-read each time the dialog opens so a settings change applies to the next create.
+  useEffect(() => {
+    if (dialog !== "create") return;
+    loadBranchPrefix().then((info) => setPrefix(prefixSettingsFromInfo(info))).catch(() => {});
+  }, [dialog]);
 
   useEffect(() => {
     appInfo().then(setInfo).catch(() => setInfo(null));
@@ -105,8 +114,8 @@ export default function App() {
         <CreateWorkspaceDialog
           repos={state.repos}
           initialRepoId={createRepoId}
-          prefixSettings={{}}
-          githubUsername={null}
+          prefixSettings={prefix.settings}
+          githubUsername={prefix.githubUsername}
           onClose={() => setDialog(null)}
           onAddRepository={() => {
             setDialog(null);
