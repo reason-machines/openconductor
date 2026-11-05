@@ -48,8 +48,13 @@ drag region (`data-tauri-drag-region`). Children in order:
    non-archived workspace (count = workspaces with `state !== "archived"`,
    `index` chunk `I8t`); otherwise the cards are identical.
 4. **Footer row**, `flex justify-center gap-4 mt-6`, holding only the
-   "cities visited" button, which renders nothing until a workspace name matches a
-   city. Not part of our Home.
+   "cities visited" button (`Xrs`): a ghost `sm` button with Lucide `tickets-plane`
+   and "<n>/<total> cities visited", where n counts distinct city names among the
+   workspaces' original directory names (`-vN` stripped) and total is the size of
+   Conductor's city list (385 in the reference screenshot). It renders nothing
+   while n is 0 and opens the "Conductor Passport" world map. OpenConductor shows
+   the line as text with its own city list (src/home/citiesVisited.ts); there is
+   no world map.
 5. Dialog hosts: clone ("Open GitHub project"), quick start and one more dialog are
    mounted from Home so they can open over it.
 
@@ -114,5 +119,11 @@ No description text and no keyboard hint on the cards.
   above still come from reading the decoded chunk directly. A way around this
   would be to split the chunk into per-module files before analysis; that is
   not done yet.
-- No live screenshot of Conductor's Home: native UI capture is blocked by TCC
-  (`evidence/runtime/README.md`).
+- Live screenshot: `evidence/screens/native/conductor-main.png` (1344x1091 px,
+  light theme, 110% zoom: the 256 px sidebar is 281 px), taken on "sven m5 max".
+  REA could not take it itself: `rea observe-native-ui` (6.7.0) on Conductor's
+  window fails with `screen-recording-denied`, also with `--screenshot false`.
+- Sidebar **Home** (`Aia`, renderApp @9,983,233) and the `nav.home` command
+  (@10,882,903) both navigate to `/all-workspaces` (`UJo`, the workspace list
+  headed "Home"); the row is active only on that route. The wordmark screen above
+  is the `/` route only; no sidebar item opens it.

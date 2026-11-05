@@ -2,16 +2,18 @@ import type { Dispatch, ReactNode } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
-import { CloudIcon, FolderIcon, SidebarIcon, SparkIcon } from "./Icons";
+import { FolderIcon, FolderPlusIcon, GlobeIcon, SidebarIcon, TicketsPlaneIcon } from "./Icons";
 import { Wordmark } from "./Wordmark";
 import { activeWorkspaceCount } from "../state/selectors";
+import { citiesVisited } from "../home/citiesVisited";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs } from "../keybindings/shortcut";
 
 const TOGGLE_LEFT_SIDEBAR_HINT = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
 
-// Layout follows evidence/screens/home.md: wordmark, three entry cards, and a sidebar
-// toggle only while the sidebar is hidden. The repository list lives in the sidebar.
+// Layout follows evidence/screens/home.md (Conductor's `Gls`): wordmark, three entry
+// cards, the "cities visited" line, and a sidebar toggle only while the sidebar is
+// hidden. The repository list lives in the sidebar.
 
 interface Props {
   repos: Repo[];
@@ -27,6 +29,22 @@ function EntryCard({ icon, label, onClick }: { icon: ReactNode; label: string; o
       <span className="home-card-icon">{icon}</span>
       <span className="home-card-label">{label}</span>
     </button>
+  );
+}
+
+/**
+ * Conductor's `Xrs`: "<n>/<total> cities visited", nothing while no workspace is
+ * named after a city. Conductor's button opens its world-map "Passport" dialog,
+ * which OpenConductor does not have, so this is plain text.
+ */
+function CitiesVisited({ repos }: { repos: Repo[] }) {
+  const { visited, total } = citiesVisited(repos);
+  if (visited === 0) return null;
+  return (
+    <span className="home-cities">
+      <TicketsPlaneIcon size={16} />
+      {visited}/{total} cities visited
+    </span>
   );
 }
 
@@ -51,9 +69,12 @@ export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOp
       <div className={`home-cards-wrap ${hasWorkspaces ? "has-workspaces" : ""}`}>
         <div className="home-cards">
           <EntryCard icon={<FolderIcon size={16} />} label="Open project" onClick={onOpenProject} />
-          <EntryCard icon={<CloudIcon size={16} />} label="Open GitHub project" onClick={() => onOpenDialog("clone")} />
-          <EntryCard icon={<SparkIcon size={16} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
+          <EntryCard icon={<GlobeIcon size={16} />} label="Open GitHub project" onClick={() => onOpenDialog("clone")} />
+          <EntryCard icon={<FolderPlusIcon size={16} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
         </div>
+      </div>
+      <div className="home-footer">
+        <CitiesVisited repos={repos} />
       </div>
     </div>
   );

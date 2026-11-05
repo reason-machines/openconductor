@@ -9,7 +9,11 @@
 // It serves dist/ itself on PORT (default 4391) for the run, with an SPA fallback.
 //
 // Shots: list-dark, list-light, list-search (query "set"), list-archived-empty
-// (Only archived, nothing archived), root-dark (the "/" entry cards).
+// (Only archived, nothing archived), root-dark (the "/" entry cards), and
+// root-light-1344 (the "/" screen in the 1344x1091 px window of
+// evidence/screens/native/conductor-main.png, which Conductor drew at 110% zoom:
+// a 1222x992 CSS viewport at device scale 1.1, with GitHub remotes so the
+// sidebar shows owner avatars; for parity/side-by-side/home.png).
 import { spawn } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -40,18 +44,19 @@ const ws = (id, branch, minutesAgo, extra = {}) => ({
   id, name: id, branch, status: "idle", diff: { added: 0, removed: 0 },
   createdAt: now - minutesAgo * MIN - 1000, updatedAt: now - minutesAgo * MIN, ...extra,
 });
-const state = (selection) => ({
+const remote = (owner, on) => (on ? { remote: `https://github.com/${owner}/repo.git` } : {});
+const state = (selection, remotes = false) => ({
   repos: [
-    { id: "r-web", name: "tide-web", path: "/code/tide-web", defaultBranch: "main", workspaces: [
+    { id: "r-web", name: "tide-web", path: "/code/tide-web", defaultBranch: "main", ...remote("reason-machines", remotes), workspaces: [
       ws("osaka", "osaka", 8, { diff: { added: 15, removed: 1 } }),
       ws("lisbon", "lisbon", 17),
       ws("quito", "cursor-pagination", 26 * 60, { prTitle: "Cursor pagination for /events" }),
     ] },
-    { id: "r-api", name: "tide-api", path: "/code/tide-api", defaultBranch: "main", workspaces: [
+    { id: "r-api", name: "tide-api", path: "/code/tide-api", defaultBranch: "main", ...remote("github", remotes), workspaces: [
       ws("tallinn", "tallinn", 11, { unread: true }),
       ws("lima", "add-search-to-settings", 120, { unread: true }),
     ] },
-    { id: "r-dot", name: "dotfiles", path: "/code/dotfiles", defaultBranch: "main", workspaces: [ws("bergen", "bergen", 300)] },
+    { id: "r-dot", name: "dotfiles", path: "/code/dotfiles", defaultBranch: "main", ...remote("tauri-apps", remotes), workspaces: [ws("bergen", "bergen", 300)] },
   ],
   selection,
   sidebarVisible: true,
@@ -70,6 +75,7 @@ const shots = [
     { step_id: "only_archived", action: "click", locator: { kind: "css", selector: ".allws-menu-pop [role=menuitemcheckbox]:nth-child(3)" } },
   ] },
   { name: "root-dark", theme: "dark", selection: { kind: "root" } },
+  { name: "root-light-1344", theme: "light", selection: { kind: "root" }, viewport: { width: 1222, height: 992 }, scale: 1.1, remotes: true },
 ].filter((s) => only.length === 0 || only.includes(s.name));
 
 fs.mkdirSync(outDir, { recursive: true });
@@ -78,10 +84,10 @@ for (const shot of shots) {
   const input = {
     browser: { mode: "launch", executable_path: CHROMIUM, headless: true },
     start_url: { url: `${BASE}${shot.selection.kind === "home" ? "/all-workspaces" : "/"}` },
-    environment: { viewport: { width: 1440, height: 900, device_scale_factor: 1 }, color_scheme: shot.theme, locale: "en-US", timezone: "UTC" },
+    environment: { viewport: { ...(shot.viewport ?? { width: 1440, height: 900 }), device_scale_factor: shot.scale ?? 1 }, color_scheme: shot.theme, locale: "en-US", timezone: "UTC" },
     storage: {
       local_storage: [{ origin, entries: [
-        { name: "openconductor.shell.v1", value: { source: "literal", value: JSON.stringify(state(shot.selection)) } },
+        { name: "openconductor.shell.v1", value: { source: "literal", value: JSON.stringify(state(shot.selection, shot.remotes)) } },
         { name: "openconductor.home.filters.v1", value: { source: "literal", value: JSON.stringify({ projects: [], archiveFilter: "active" }) } },
       ] }],
     },

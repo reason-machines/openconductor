@@ -324,7 +324,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
 
         <div className="sb-primary">
           <AccountMenu onOpenSettings={onOpenSettings} />
-          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
+          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} active={state.selection.kind === "home"} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
           <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
           <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={hint("toggleCommandPalette")} onClick={onSearch} />
         </div>
@@ -481,6 +481,9 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
 
       {/* Footer, after Conductor's `Nna`: px-4 py-3, top border, help and settings icons (h-4 w-4, stroke 1.5) gap-5 at the right. */}
       <div className="sb-footer">
+        {/* Conductor's `Nna` shows the account's plan; with no paid entitlement that is a dashed "FREE" badge.
+            Conductor's badge opens its pricing page; OpenConductor has none, so it is not a button. */}
+        <span className="sb-plan-badge">FREE</span>
         <div className="sb-footer-actions">
           <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} />
           <button type="button" className="sb-footer-btn" aria-label="Settings" title={`Settings (${hint("openSettings")})`} onClick={onOpenSettings}>

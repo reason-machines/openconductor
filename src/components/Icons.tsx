@@ -44,6 +44,8 @@ export const NextMarkIcon = ({ size = 16 }: P) => (
   </svg>
 );
 export const GlobeIcon = ({ size }: P) => (<svg {...base(size)}><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z" /></svg>);
+// A ticket with a plane on it, for Home's "cities visited" line (Conductor shows Lucide's tickets-plane there).
+export const TicketsPlaneIcon = ({ size }: P) => (<svg {...base(size)}><path d="M3 9.5V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1.5a2.5 2.5 0 0 0 0 5V16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1.5a2.5 2.5 0 0 0 0-5z" /><path d="m8 13.5 4.5-3M9 10.5l1 1M11.5 13l1 1" /><path d="M21 9v8a3 3 0 0 1-3 3H7" /></svg>);
 export const FolderPlusIcon = ({ size }: P) => (<svg {...base(size)}><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><path d="M12 10.5v5M9.5 13h5" /></svg>);
 /* sidebar: resource usage pill and Account menu icons */
 export const ChipIcon = ({ size }: P) => (<svg {...base(size)}><rect x="6" y="2" width="12" height="20" rx="2" /><path d="M10 6h4M10 18h4M2 7h4M2 12h4M2 17h4M18 7h4M18 12h4M18 17h4" /></svg>);
