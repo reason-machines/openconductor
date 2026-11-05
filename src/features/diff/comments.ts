@@ -136,15 +136,21 @@ export function refreshOutdated(comments: DiffComment[], files: FileDiff[]): Dif
   });
 }
 
-/** Any comment not yet sent to the agent, on lines still in the diff and not resolved: the reference's
- *  header flag for "Add all comments to chat" (renderApp `Wus`: `state === "pending"`, not outdated, not resolved). */
-export function hasPendingComments(comments: Pick<DiffComment, "state" | "is_outdated" | "is_resolved">[]): boolean {
-  return comments.some((c) => c.state === "pending" && !c.is_outdated && !c.is_resolved);
+/** A comment "add all comments to chat" would send: not yet sent, not resolved, on lines still in the diff,
+ *  with a body and a file. PR-level GitHub comments have no file and stay out. */
+function isPendingForAgent(c: DiffComment): boolean {
+  return c.state === "pending" && !c.is_resolved && !c.is_outdated && c.body.length > 0 && c.file_path !== "";
 }
 
-/** Comments that "add all comments to chat" would send. PR-level GitHub comments have no file and stay out. */
+/** The header flag for "Add all comments to chat" (the reference's renderApp `Wus`: pending, not outdated,
+ *  not resolved). Uses the same filter as `pendingForAgent`, so the button never shows with nothing to send. */
+export function hasPendingComments(comments: DiffComment[]): boolean {
+  return comments.some(isPendingForAgent);
+}
+
+/** Comments that "add all comments to chat" would send. */
 export function pendingForAgent(comments: DiffComment[]): DiffComment[] {
-  return comments.filter((c) => c.state === "pending" && !c.is_resolved && !c.is_outdated && c.body.length > 0 && c.file_path !== "");
+  return comments.filter(isPendingForAgent);
 }
 
 /** Text handed to the agent composer: location, the commented code, then the note.
