@@ -18,13 +18,16 @@ import {
 } from "./archiveModel.ts";
 
 test("a working agent blocks archive until the user confirms", () => {
-  for (const s of ["working", "cancelling", "waiting"]) {
-    assert.equal(blockedByAgents(["idle", s], undefined), true, s);
-    assert.equal(blockedByAgents([s], true), false, s);
+  assert.equal(blockedByAgents("working", undefined), true);
+  assert.equal(blockedByAgents("working", true), false);
+  for (const s of ["idle", "needs-review", "archived", undefined]) assert.equal(blockedByAgents(s, undefined), false);
+});
+
+test("cancelling and waiting sessions block archive too, as in Conductor's dYe", () => {
+  for (const s of ["cancelling", "waiting"]) {
+    assert.equal(blockedByAgents(s, undefined), true);
+    assert.equal(blockedByAgents(s, true), false);
   }
-  // Waiting on the user is not a running agent (Conductor's `vfe`).
-  for (const s of ["idle", "error", "needs_user_input", "needs_user_permission", "needs_plan_response"]) assert.equal(blockedByAgents([s], undefined), false, s);
-  assert.equal(blockedByAgents([], undefined), false);
 });
 
 test("the running-agents dialog uses Conductor's copy", () => {
@@ -66,8 +69,9 @@ function harness(status: string | undefined, run: ((mode: ArchiveMode) => Promis
   const log: string[] = [];
   const events: ArchiveEvent<Act>[] = [];
   const deps = {
-    statuses: status === undefined ? [] : [status],
+    status,
     hide: () => log.push("hide"),
+    stopAgents: () => log.push("stop"),
     run: run && ((mode: ArchiveMode) => (log.push(`run:${mode}`), run(mode))),
     reload: () => log.push("reload"),
     emit: (e: ArchiveEvent<Act>) => events.push(e),
@@ -84,13 +88,13 @@ test("startArchive asks instead of archiving over a running agent, and archives 
   assert.deepEqual(h.events, [{ type: "agents-running", action: { id: "w" } }]);
   const c = harness("working", async () => OK);
   await startArchive({ id: "w", stopRunningAgents: true }, c.deps);
-  assert.deepEqual(c.log, ["hide", "run:safe"]);
+  assert.deepEqual(c.log, ["hide", "stop", "run:safe"]);
 });
 
 test("startArchive hides the row first, then reports the result with its notices", async () => {
   const h = harness("idle", async () => OK);
   await startArchive({ id: "w" }, h.deps);
-  assert.deepEqual(h.log, ["hide", "run:safe"]);
+  assert.deepEqual(h.log, ["hide", "stop", "run:safe"]);
   assert.deepEqual(h.events, [{ type: "archived", action: { id: "w" }, result: OK }]);
 });
 
@@ -98,14 +102,14 @@ test("startArchive brings the row back and reports a failure with the mode it ra
   const err = { code: "WorkspaceArchiveBlockedByGitOperationError", message: "x" };
   const h = harness("idle", async () => Promise.reject(err));
   await startArchive({ id: "w", mode: "discardGitOperationState" }, h.deps);
-  assert.deepEqual(h.log, ["hide", "run:discardGitOperationState", "reload"]);
+  assert.deepEqual(h.log, ["hide", "stop", "run:discardGitOperationState", "reload"]);
   assert.deepEqual(h.events, [{ type: "failed", action: { id: "w", mode: "discardGitOperationState" }, error: err, mode: "discardGitOperationState" }]);
 });
 
 test("outside the desktop app startArchive only hides the row", async () => {
   const h = harness(undefined, null);
   await startArchive({ id: "w" }, h.deps);
-  assert.deepEqual(h.log, ["hide"]);
+  assert.deepEqual(h.log, ["hide", "stop"]);
   assert.deepEqual(h.events, []);
 });
 

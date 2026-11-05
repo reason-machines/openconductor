@@ -35,7 +35,7 @@ test("a chat in this window wins over the workspace's status from elsewhere, whi
   assert.equal(workspaceSessionStatus(s, "ws-3"), "idle");
 });
 
-test("archive reads each chat's status, so a working review chat counts beside a main chat that needs input", () => {
+test("workspaceChatStatuses lists each chat's status, or the fallback when the window has none", () => {
   const s = new Map([["ws-1", "needs_user_input"], ["ws-1:review:1", "working"], ["ws-2", "idle"]]);
   assert.deepEqual(workspaceChatStatuses(s, "ws-1").sort(), ["needs_user_input", "working"]);
   assert.deepEqual(workspaceChatStatuses(s, "ws-3", "waiting"), ["waiting"]);

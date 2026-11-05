@@ -1,7 +1,7 @@
 // Run: node --experimental-strip-types --test src/features/diff/*.test.ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { attachmentName, attachmentText, bodyParts, commentSource, commentTags, fileThreads, isRemoteThread, pendingForAgent, prThreads, suggestionRows, threadsAt, threadsOf, type DiffComment } from "./comments.ts";
+import { attachmentName, attachmentText, bodyParts, canDeleteComment, commentSource, commentTags, fileThreads, isRemoteThread, pendingForAgent, prThreads, suggestionRows, threadsAt, threadsOf, type DiffComment } from "./comments.ts";
 
 const base: DiffComment = {
   id: "c",
@@ -98,4 +98,13 @@ test("suggestion rows: old lines removed, new lines added; empty means delete", 
     { kind: "add", text: "c" },
   ]);
   assert.deepEqual(suggestionRows("a", ""), [{ kind: "del", text: "a" }]);
+});
+
+test("Delete: always on your own comments; on GitHub and agent comments once they are no longer pending", () => {
+  assert.equal(canDeleteComment(base), true);
+  assert.equal(canDeleteComment({ ...base, state: "sent" }), true);
+  assert.equal(canDeleteComment(gh({})), false);
+  assert.equal(canDeleteComment(gh({ state: "sent" })), true);
+  assert.equal(canDeleteComment({ ...base, author: "agent" }), false);
+  assert.equal(canDeleteComment({ ...base, author: "agent", state: "sent" }), true);
 });
