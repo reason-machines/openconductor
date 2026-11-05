@@ -8,6 +8,7 @@ import type { CommandHandlers } from "../keybindings/bind.ts";
 import { paletteDataFromState, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import type { ResultItem } from "./search/model.ts";
 import { loadRecentWorkspaceIds, recordViewedWorkspace, saveRecentWorkspaceIds } from "./recentWorkspaces.ts";
+import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 import { nextUnreadWorkspace } from "../state/nextUnread.ts";
 
 interface Props {
@@ -32,7 +33,22 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   }, [selectedId]);
   useEffect(() => saveRecentWorkspaceIds(recents), [recents]);
 
-  const data = useMemo(() => paletteDataFromState(state, recents), [state, recents]);
+  // parity:sidebar.archived-view: archived workspaces are not in the sidebar
+  // state; read them from conductor.db each time the palette opens.
+  const [archived, setArchived] = useState<ArchivedWorkspace[]>([]);
+  useEffect(() => {
+    if (!open) return;
+    let live = true;
+    listArchivedWorkspaces().then(
+      (rows) => live && setArchived(rows),
+      (err) => console.error("conductor.db: could not list archived workspaces", err),
+    );
+    return () => {
+      live = false;
+    };
+  }, [open, state.repos]);
+  const data = useMemo(() => paletteDataFromState(state, recents, archived), [state, recents, archived]);
+  const archivedById = (id: string) => archived.find((a) => a.id === id);
 
   const go = (ref: WorkspaceRef | undefined) =>
     ref && dispatch({ type: "select", selection: { kind: "workspace", repoId: ref.repoId, workspaceId: ref.workspace.id } });
@@ -73,7 +89,11 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   useKeybindings(handlers);
 
   function onSelect(item: ResultItem) {
-    if (item.kind === "workspace") {
+    const gone = item.kind === "workspace" && item.workspace.archived ? archivedById(item.workspace.id) : undefined;
+    if (gone) {
+      // An archived workspace opens read-only, with Unarchive.
+      dispatch({ type: "openArchivedWorkspace", repoId: gone.repoId, workspace: gone.workspace });
+    } else if (item.kind === "workspace") {
       const ref = sidebarOrder(state).find((w) => w.workspace.id === item.workspace.id);
       go(ref);
     } else if (item.kind === "project") {
@@ -87,5 +107,9 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   }
 
   if (!open) return null;
-  return <CommandPalette data={data} onSelect={onSelect} onClose={() => onOpenChange(false)} />;
+  const unarchive = (id: string) => {
+    const a = archivedById(id);
+    if (a) dispatch({ type: "unarchiveWorkspace", repoId: a.repoId, workspaceId: a.id });
+  };
+  return <CommandPalette data={data} onSelect={onSelect} onUnarchive={unarchive} onClose={() => onOpenChange(false)} />;
 }
