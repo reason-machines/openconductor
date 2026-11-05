@@ -2,10 +2,16 @@
 // (/settings/user/<id>, evidence/settings/NOTES.md); pages are listed here
 // only once they are built.
 
-export type SettingsPage = "general";
+export type SettingsPage = "general" | "git";
 
 export const SETTINGS_GROUPS: { title: string; pages: { id: SettingsPage; label: string }[] }[] = [
-  { title: "Personal", pages: [{ id: "general", label: "General" }] },
+  {
+    title: "Personal",
+    pages: [
+      { id: "general", label: "General" },
+      { id: "git", label: "Git" },
+    ],
+  },
 ];
 
 const PAGES = SETTINGS_GROUPS.flatMap((g) => g.pages);

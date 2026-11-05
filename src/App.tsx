@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAppStore } from "./state/store";
 import { isSidebarVisible } from "./state/selectors";
-import { isToggleLeftSidebar, isTypingTarget } from "./state/shortcuts";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
@@ -10,21 +9,23 @@ import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
-import { QuickOpenDialog, QUICK_OPEN_DIALOG_ID } from "./components/QuickOpenDialog";
-import { resolveCommand } from "./keybindings/resolve";
+import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { PaletteHost } from "./palette/PaletteHost";
+import { useKeybindings } from "./keybindings/KeybindingsProvider";
 import { SettingsView } from "./settings/SettingsView";
 import { pageFromPath, type SettingsPage } from "./settings/pages";
 import { applyTheme } from "./settings/useSettings";
 import { getSettings } from "./settings/api";
-import { useKeybindings } from "./palette/useKeybindings";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
+import { useNavHistory } from "./state/useNavHistory";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
+  const nav = useNavHistory(state, dispatch);
+  const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
   // `/create` (or `?dialog=create`) opens the Create-workspace dialog directly.
   const initialDialog = window.location.pathname === "/create" ? "create" : (new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
   const [dialog, setDialog] = useState<DialogKind | null>(initialDialog);
@@ -68,22 +69,11 @@ export default function App() {
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const toggleShortcuts = useCallback(() => setShortcutsOpen((open) => !open), []);
-  useKeybindings({ openKeyboardShortcuts: toggleShortcuts, openSettings });
   useEffect(() => {
     if (!inTauri()) return;
     const unlisten = listen("open_keyboard_shortcuts_dialog", toggleShortcuts);
     return () => void unlisten.then((off) => off());
   }, [toggleShortcuts]);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.repeat || !isToggleLeftSidebar(e, isTypingTarget(document.activeElement as HTMLElement | null))) return;
-      e.preventDefault();
-      dispatch({ type: "toggleSidebar" });
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [dispatch]);
 
   const sel = state.selection;
   const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
@@ -92,17 +82,16 @@ export default function App() {
   const canQuickOpen = !!workspace && workspace.status !== "archived";
   const workspacePath = workspace?.path || repo?.path || (inTauri() ? null : "/demo");
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const typing = isTypingTarget(document.activeElement as HTMLElement | null);
-      const ctx = { activeDialogId: quickOpen ? QUICK_OPEN_DIALOG_ID : dialog, typing, inTerminal: false };
-      if (resolveCommand(e, ctx, ["nav.quickOpen"]) !== "nav.quickOpen") return;
-      e.preventDefault();
-      setQuickOpen((open) => !open && canQuickOpen);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [quickOpen, dialog, canQuickOpen]);
+  // Every app-shell shortcut goes through the one dispatcher (src/keybindings).
+  useKeybindings({
+    "openKeyboardShortcuts": toggleShortcuts,
+    "openSettings": openSettings,
+    "nav.back": nav.onBack,
+    "nav.forward": nav.onForward,
+    "view.toggleLeftSidebar": () => dispatch({ type: "toggleSidebar" }),
+    "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
+    "workspace.create": () => setDialog("create"),
+  });
 
   const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
   // Re-read each time the dialog opens so a settings change applies to the next create.
@@ -113,21 +102,13 @@ export default function App() {
 
   useEffect(() => {
     appInfo().then(setInfo).catch(() => setInfo(null));
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "n") {
-        e.preventDefault();
-        setDialog("create");
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   if (settingsPage) return <SettingsView page={settingsPage} onNavigate={setSettingsPage} onClose={closeSettings} />;
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} info={info} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
@@ -160,7 +141,7 @@ export default function App() {
         />
       )}
       {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} />}
-      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
+      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} />
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );

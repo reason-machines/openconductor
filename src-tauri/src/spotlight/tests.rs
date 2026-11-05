@@ -4,10 +4,10 @@ use super::*;
 use std::fs;
 use std::sync::atomic::{AtomicU64, Ordering};
 
-struct Fixture {
+pub(super) struct Fixture {
     base: PathBuf,
-    root: PathBuf,
-    ws: PathBuf,
+    pub(super) root: PathBuf,
+    pub(super) ws: PathBuf,
 }
 
 impl Drop for Fixture {
@@ -40,12 +40,12 @@ fn write(dir: &Path, rel: &str, body: &str) {
     fs::write(dir.join(rel), body).unwrap();
 }
 
-fn read(dir: &Path, rel: &str) -> Option<String> {
+pub(super) fn read(dir: &Path, rel: &str) -> Option<String> {
     fs::read_to_string(dir.join(rel)).ok()
 }
 
 /// Root on `main` with one commit, plus a worktree on `feature`.
-fn fixture() -> Fixture {
+pub(super) fn fixture() -> Fixture {
     static N: AtomicU64 = AtomicU64::new(0);
     let base = std::env::temp_dir().join(format!(
         "spotlight-test-{}-{}",

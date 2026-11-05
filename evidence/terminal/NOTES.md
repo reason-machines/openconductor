@@ -29,6 +29,8 @@ Ledger obligations: `term.pty` (spawn, write, resize, kill, flow control, histor
 | Terminal panel with tabs, "New terminal tab", "Close terminal", "Toggle terminal panel", up to 10 tabs per workspace (copy) | [`TerminalPanel.tsx`](../../src/features/terminal/TerminalPanel.tsx): one xterm per tab kept alive while hidden ([`session.ts`](../../src/features/terminal/session.ts)), rendered bytes acked in batches | [`terminal.test.ts`](../../src/features/terminal/terminal.test.ts) (tab model, event parsing, ack batching) |
 | Terminal shortcuts from the keybinding registry: `terminal.newTab`, `newBigTab`, `closeTab`, `clearScrollback`, the hidden line-editing ones, and `view.toggleTerminalPanel` | resolved inside xterm before the shell sees the key ([`shortcuts.ts`](../../src/features/terminal/shortcuts.ts)); the panel sets `data-terminal` so the global dispatcher knows focus is in a terminal | [`shortcuts.test.ts`](../../src/features/terminal/shortcuts.test.ts) |
 
+| `execute_shell_command`, `execute_shell_command_cancellable`, `cancel_shell_command` (frontend invoke candidates; the binary runs them as `tokio` blocking tasks) | [`shell_exec.rs`](../../src-tauri/src/terminal/shell_exec.rs) `ShellRunner`, exposed by the three Tauri commands of the same names on `spawn_blocking`; cancel sends SIGTERM to the command's process group, then SIGKILL after 2 s; the app cancels every running command on exit | `tests::shell_exec::*` |
+
 Mutation check (by hand, once): ignoring the flow gate fails `flow_control_pauses_until_acked`; signalling only the child pid instead of the process group fails `kill_escalates_when_hangup_is_ignored` (its background job ignores SIGHUP, so only a group SIGKILL stops it); dropping the SIGKILL escalation fails the same test.
 
 ## Our choices where the reference is not observable
@@ -40,12 +42,13 @@ Mutation check (by hand, once): ignoring the flow gate fails `flow_control_pause
 - Line-editing shortcuts send the bytes readline and zsh bind to the same motion: Cmd+Left `^A`, Cmd+Right `^E`, Cmd+Backspace `^U`, Option+Left/Right `Esc b`/`Esc f`, Shift+Enter `Esc Enter` (a literal newline in zsh and agent CLIs). The reference's bytes were not recovered.
 - Until workspaces carry their worktree path, new terminals open in the repository checkout.
 - If a background job keeps the PTY open after the main process exits, the exit event is sent after a 1 s drain grace and any later output still arrives.
+- Shell commands: arguments `{ request: { command, cwd?, env? } }` (plus `id` for the cancellable one), result `{ stdout, stderr, exitCode, signal, cancelled, truncated }`. They run as `/bin/sh -c` with stdin closed, keep 8 MiB per stream, and return 0.5 s after the shell exits even if a background job holds the pipes. None of these shapes or limits were recovered from the reference.
 
 ## Not done yet (later PRs)
 
 - `pty_screen_text` / `pty_screen_snapshot` (alacritty_terminal grid), `pty_persist_terminal_history` / `pty_load_terminal_history`, mirrors.
-- `run_script` / `run_script_mode` and `execute_shell_command[_cancellable]` / `cancel_shell_command`.
-- Run-script output in the panel: waits on the `run_script` Tauri commands over the scripts runner in `crates/scripts` (another builder's area).
+- `run_script` / `run_script_mode`: main now has the scripts builder's `run_script_start` / `run_script_output` family; whether those cover the reference's two commands is that area's call.
+- Run-script output in the panel: now unblocked by those commands; not started.
 - `terminal.search` (Find in terminal) and `terminal.openLocalhost`.
 
 ## REA gaps

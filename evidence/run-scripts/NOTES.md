@@ -57,3 +57,28 @@ re-check a claim; the code itself is not copied here.
 
 - The Tauri `pty_spawn`/`pty_kill` handlers in `MacOS/conductor` are not bound to Rust functions (the Ghidra provider is blocked, see the REA test report), so the signal used to stop a run script is not verified. We send SIGTERM to the process group, then SIGKILL after a grace period.
 - REA `analyze-javascript-application` does not model Tauri `invoke` or Zustand stores, so every frontend claim above comes from reading S4 by offset, not from REA findings.
+
+## Where each behavior lives
+
+| Behavior | Code |
+| --- | --- |
+| Settings layers, TOML over JSON, legacy `conductor.json`, managed keys | `crates/scripts/src/config/{mod,load}.rs` |
+| Run-script entries (ids, merge, args, cwd, hide, availability, legacy `run`/`tasks`) | `crates/scripts/src/config/run.rs` |
+| `CONDUCTOR_*` env per script kind, `$VAR` cwd expansion | `crates/scripts/src/env.rs` |
+| Ten-port blocks from 55000 | `crates/scripts/src/ports.rs` |
+| Script file, zsh/bash, process group, TERM then KILL | `crates/scripts/src/launch.rs` |
+| Login-shell env capture | `crates/scripts/src/shell_env.rs` |
+| Setup lifecycle and `conductor-setup-<id>.log` | `crates/scripts/src/setup.rs` |
+| Run states, waiting for setup, nonconcurrent, history, auto-run rule | `crates/scripts/src/runner.rs` |
+| Per-workspace entry point, archive script | `crates/scripts/src/service.rs` |
+| Tauri commands and the `scripts://event` event | `src-tauri/src/scripts.rs` |
+| Run and Setup panel | `src/components/ScriptsPanel.tsx`, `src/scripts/` |
+
+## Not done yet
+
+- Scripts settings page (`/settings/organization/repositories/$owner/$repo/scripts`): edit setup and run scripts, add, rename, hide and delete run scripts, script scope (local or shared file), import, managed-key locks in the UI.
+- Starting setup when a workspace is created, and the `setting_up` to `ready` transition, belong to the workspace lifecycle; it should call `setup_script_start` after `create_workspace`. The workspace archive flow should call `archive_script_run` before removing the worktree. `src-tauri/src/workspace/scripts.rs` duplicates part of this crate and should delegate to it.
+- `workspaces.setup_log_path` is not persisted yet (no database layer is wired to this crate).
+- Shared environment variables (`environment_variables` settings) are not passed to scripts.
+- Output is a pipe, not a PTY; scripts that check for a TTY print less color than in the reference.
+- Setup and run script detection ("Detecting setup script") is not implemented.
