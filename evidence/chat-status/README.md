@@ -37,6 +37,9 @@ UI, from the renderApp chunk:
 |---|---|---|---|
 | Reason over ACP (`reason acp`) | `session/request_permission` | `needs_user_permission` | `reason_respond` → `{ outcome: selected, optionId }`; Stop or turn end → `cancelled` |
 | Claude Code (`claude_chat`, stream-json `can_use_tool`) | `ExitPlanMode` / `AskUserQuestion` / any tool | `needs_plan_response` / `needs_user_input` / `needs_user_permission` | `claude_respond` → allow (with `answers` for questions) or deny with the user's feedback |
+| Codex (`codex_chat`, app-server approval requests; #360) | a command or file-change approval | `needs_user_permission` (Conductor routes Codex approvals through `TOOL_APPROVAL` unless `codex_tool_approval_policy` is `always_approve`) | its own approval card (#360) |
+
+Each agent publishes its status for a chat to one registry (`src/features/chat/chatStatus.ts`); a chat that ran both shows the more urgent one. "Stop agents and archive" now stops every agent of the workspace whose turn still runs, a needs-* one included.
 
 The Claude chat runs in `default` permission mode when Account › "Claude Code tool approvals" (`tool_approvals_enabled`) is on, else `bypassPermissions` as before.
 

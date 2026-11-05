@@ -55,9 +55,14 @@ export const GIT_OPERATION_WARNING =
   "Because a Git operation (merge, rebase, cherry-pick, or revert) is in progress, archiving may lose some of your work.";
 export const CORRUPTED_MESSAGE = "Archiving failed. This workspace might be corrupted.";
 
-/** Conductor's `vfe`: a session that is working, cancelling or waiting blocks archive. */
+/**
+ * Conductor's `dYe` (index-BGEQ8YjU.js @ ~966,533): any of the workspace's
+ * visible sessions working, cancelling or waiting blocks archive. `status` is
+ * the fold over every chat of the workspace (main, background and review
+ * chats: `workspaceSessionStatus`), not only the open view's main chat.
+ */
 export function blockedByAgents(status: string | undefined, stopRunningAgents: boolean | undefined): boolean {
-  return status === "working" && !stopRunningAgents;
+  return (status === "working" || status === "cancelling" || status === "waiting") && !stopRunningAgents;
 }
 
 export type FailureToast =
@@ -88,6 +93,12 @@ export interface ArchiveStartDeps<A> {
   status: string | undefined;
   /** Hide the row (the store's reducer), optimistically. */
   hide: () => void;
+  /**
+   * Stop every chat turn running in the workspace. Conductor's `Z$` cancels all
+   * of the workspace's sessions during the archive (index @ ~974,853); the chats
+   * run in this frontend, so they are stopped here, before the backend call.
+   */
+  stopAgents: () => void;
   /** Run the archive; `null` outside the desktop app, where hiding is all there is. */
   run: ((mode: ArchiveMode) => Promise<ArchiveResult>) | null;
   /** Reload rows from conductor.db, bringing back a row whose archive failed. */
@@ -109,6 +120,7 @@ export async function startArchive<A extends { mode?: ArchiveMode; stopRunningAg
     return;
   }
   d.hide();
+  d.stopAgents();
   if (!d.run) return;
   const mode = action.mode ?? "safe";
   try {

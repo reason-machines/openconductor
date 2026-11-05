@@ -3,6 +3,10 @@
 // types, copy and UI decisions are in archiveModel.ts.
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../backend";
+import { chatStatuses, stopChat } from "../features/chat/reasonChat";
+import { chatAgentStatuses } from "../features/chat/chatStatus";
+import { stopCodex } from "../features/chat/codexChat";
+import { workspaceOfChat, workspaceSessionStatus } from "../state/workspaceSessions";
 import type { ArchiveMode, ArchiveResult, UnarchiveResult } from "./archiveModel.ts";
 
 export * from "./archiveModel.ts";
@@ -18,4 +22,24 @@ export async function archiveWorkspace(workspaceId: string, mode: ArchiveMode = 
 export async function unarchiveWorkspace(workspaceId: string): Promise<UnarchiveResult> {
   if (!inTauri()) return { restored: true, branch: null, recreatedBranch: false, restoredChanges: false, notices: [] };
   return invoke<UnarchiveResult>("unarchive_workspace", { workspaceId });
+}
+
+/** The workspace's session status over all its chats (main, background, review), for `blockedByAgents`. */
+export function workspaceAgentStatus(workspaceId: string): string {
+  return workspaceSessionStatus(chatStatuses(), workspaceId);
+}
+
+/**
+ * "Stop agents and archive": stop the running turn of every chat in the
+ * workspace, including one waiting on the user (a needs-* status is a turn
+ * that still runs).
+ */
+export function stopWorkspaceAgents(workspaceId: string): void {
+  for (const chatId of chatStatuses().keys()) {
+    if (workspaceOfChat(chatId) !== workspaceId) continue;
+    for (const [agent, status] of chatAgentStatuses(chatId)) {
+      if (status === "idle" || status === "error") continue;
+      (agent === "codex" ? stopCodex : stopChat)(chatId);
+    }
+  }
 }

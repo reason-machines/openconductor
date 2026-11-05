@@ -8,6 +8,7 @@
 //! - `diff/`       diff viewer: git changes, unified diff parser
 //! - `quick_open/` quick open file index and fuzzy matching
 //! - `reason_acp/` the Reason agent over ACP; its commands are `reason_chat`
+//! - `codex_chat.rs` chats run by Codex (`agent::codex_runner`)
 //! - `claude_chat/` Claude Code chats with the signed-in `claude` CLI
 //! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //!   (`spotlight_commands.rs` is its IPC layer)
@@ -26,6 +27,7 @@ pub mod bundled_bin;
 pub mod checkpoint;
 mod checkpoint_commands;
 mod chat_store_commands;
+pub mod codex_chat;
 pub mod claude_chat;
 pub mod create_project;
 pub mod archive_on_merge;
@@ -34,6 +36,8 @@ pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
+pub mod recent_local_repos;
+mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod sidebar_section_commands;
 mod sidebar_workspace_commands;
@@ -295,6 +299,7 @@ pub fn run() {
             app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
+            app.manage(codex_chat::CodexChats::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
@@ -358,6 +363,7 @@ pub fn run() {
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
             sidebar_repo_commands::repo_favicon,
+            recent_local_repos_commands::recent_local_repositories,
             sidebar_rename_commands::db_rename_workspace,
             sidebar_rename_commands::db_mark_user_set_branch_name,
             sidebar_workspace_commands::sidebar_workspace_changes,
@@ -387,6 +393,12 @@ pub fn run() {
             reason_chat::reason_cancel,
             reason_chat::reason_respond,
             reason_chat::reason_list_sessions,
+            codex_chat::codex_cli_path,
+            codex_chat::codex_open_chat,
+            codex_chat::codex_prompt,
+            codex_chat::codex_cancel,
+            codex_chat::codex_answer,
+            codex_chat::codex_close_chat,
             claude_chat::commands::claude_cli_path,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
@@ -485,6 +497,10 @@ pub fn run() {
             if let tauri::RunEvent::Exit = event {
                 if let Some(terminals) = app.try_state::<Terminals>() {
                     terminals.0.kill_all();
+                }
+                // Each Codex chat runs its own app-server.
+                if let Some(codex) = app.try_state::<codex_chat::CodexChats>() {
+                    codex.close_all();
                 }
                 // Run scripts lead their own process groups; do not orphan them.
                 if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {
