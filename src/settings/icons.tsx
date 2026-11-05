@@ -34,3 +34,4 @@ export const LogOutIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M
 export const GitHubMarkIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M9 19c-4 1.5-4-2-6-2.5M15 21v-3.5a3 3 0 0 0-.9-2.4c3-.3 6-1.5 6-6.6a5.2 5.2 0 0 0-1.4-3.6 4.8 4.8 0 0 0-.1-3.6s-1.1-.3-3.7 1.4a12.6 12.6 0 0 0-6.7 0C5.6 1 4.5 1.3 4.5 1.3a4.8 4.8 0 0 0-.1 3.6A5.2 5.2 0 0 0 3 8.5c0 5.1 3 6.3 6 6.6a3 3 0 0 0-.9 2.4V21" /></svg>);
 export const LinkIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></svg>);
 export const RefreshIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M20 11a8 8 0 0 0-14.9-3.5M4 4v4h4M4 13a8 8 0 0 0 14.9 3.5M20 20v-4h-4" /></svg>);
+export const CloseIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M6 6l12 12M18 6 6 18" /></svg>);

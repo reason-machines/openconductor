@@ -12,6 +12,7 @@ pub mod launch;
 pub mod layers;
 mod model;
 pub mod service;
+pub mod stored_env;
 pub mod table_prefs;
 mod validate;
 

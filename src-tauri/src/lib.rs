@@ -288,6 +288,7 @@ pub fn run() {
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
             let settings_pool = db.0.clone();
+            settings::stored_env::install(db.0.clone());
             app.manage(db);
             app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
@@ -422,6 +423,10 @@ pub fn run() {
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,
+            settings::stored_env::env_vars_list,
+            settings::stored_env::env_vars_set,
+            settings::stored_env::env_vars_delete,
+            settings::stored_env::env_files_loaded,
             settings::commands::update_settings,
             settings::commands::get_repo_settings,
             settings::commands::provider_status,
