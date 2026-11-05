@@ -42,6 +42,15 @@ impl Session {
     fn exit_info(&self) -> Option<ExitInfo> {
         self.life.0.lock().unwrap().exit.clone()
     }
+
+    pub(crate) fn wait_exit(&self, timeout: Duration) -> Option<ExitInfo> {
+        let (lock, cv) = &*self.life;
+        let guard = lock.lock().unwrap();
+        let (guard, _) = cv
+            .wait_timeout_while(guard, timeout, |l| l.exit.is_none())
+            .unwrap();
+        guard.exit.clone()
+    }
 }
 
 pub struct PtyManager {
