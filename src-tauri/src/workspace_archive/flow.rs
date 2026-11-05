@@ -5,7 +5,7 @@
 //!
 //! The "agents still running" check (`WorkspaceHasRunningSessionsError`)
 //! happens in the frontend before this is called, as in Conductor's archive
-//! mutation (index @ ~3,300,400): only the UI knows which chats are working.
+//! mutation (index @ ~3,299,721): only the UI knows which chats are working.
 
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};

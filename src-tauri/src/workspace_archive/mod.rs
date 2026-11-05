@@ -5,7 +5,7 @@
 //! Conductor's `archiveWorkspace` (@ ~1,063,549) calls `dYe` (@ ~966,478),
 //! which runs, in order:
 //!
-//! 1. [`prepare`] (`mYe` @ ~969,300): refuse a missing directory
+//! 1. [`prepare`] (`mYe` @ ~969,254): refuse a missing directory
 //!    ([`ArchiveError::Corrupted`]); save the whole worktree as checkpoint
 //!    `conductor-archive-<id>` (`checkpointer.sh save --force`), clearing
 //!    abandoned conflict residue (exit 102) or, in
@@ -13,10 +13,10 @@
 //!    operation (exit 101); read the local branch; record `HEAD` as the
 //!    archive commit under `refs/conductor-archive-heads/<id>` (`vYe`).
 //! 2. The caller marks the row archived with `branch` and `archive_commit`
-//!    (`SYe` @ ~976,240).
+//!    (`SYe` @ ~976,156).
 //! 3. The caller stops the workspace's processes and runs the archive script
-//!    (`Z$`, `wYe` @ ~975,700); a failing script is reported, not fatal.
-//! 4. [`teardown`] (`_Ye` @ ~973,300): move `.context` to
+//!    (`Z$`, `wYe` @ ~975,286); a failing script is reported, not fatal.
+//! 4. [`teardown`] (`_Ye` @ ~973,236): move `.context` to
 //!    `<root>/archived-contexts/<repo>/<dir>` (`Bmt` @ ~2,268,138), remove the
 //!    worktree (`Vpe` @ ~3,205,035), and delete the branch when "Delete
 //!    branch on archive" is on, never the repository's default branch.
@@ -297,7 +297,7 @@ fn stage_unmerged(path: &Path, require_some: bool) -> Result<(), String> {
     git(path, args).map(|_| ())
 }
 
-/// `yYe` @ ~970,900: stage unmerged paths, then remove the state files of a
+/// `yYe` @ ~972,309: stage unmerged paths, then remove the state files of a
 /// merge, cherry-pick, revert or rebase so the worktree is no longer busy.
 fn discard_git_operation_state(path: &Path) -> Result<(), String> {
     stage_unmerged(path, false)?;

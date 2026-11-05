@@ -1,6 +1,6 @@
 // parity:sidebar.archive:ui
 // Full archive (src-tauri/src/workspace_archive_commands.rs): its types and the
-// UI decisions around it, as Conductor 0.87.6's archive mutation (index-BGEQ8YjU.js @ ~3,300,400):
+// UI decisions around it, as Conductor 0.87.6's archive mutation (index-BGEQ8YjU.js @ ~3,299,721):
 // - agents still running: ask first ("Archive workspace?"), then archive with
 //   `stopRunningAgents` (Conductor's WorkspaceHasRunningSessionsError);
 // - a Git operation in progress: a sticky warning with an "Archive" button that
@@ -30,7 +30,7 @@ export interface ArchiveFailure {
   message: string;
 }
 
-/** Conductor's `archive-running-workspace` dialog copy (renderApp @ ~10,888,900). */
+/** Conductor's `archive-running-workspace` dialog copy (renderApp @ ~10,888,626). */
 export const RUNNING_AGENTS_DIALOG = {
   title: "Archive workspace?",
   description: "Agents are still running in this workspace. Archiving will stop them and end any in-progress work.",

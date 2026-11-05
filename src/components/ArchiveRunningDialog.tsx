@@ -1,5 +1,5 @@
 // parity:sidebar.archive:ui
-// Conductor's `archive-running-workspace` dialog (renderApp @ ~10,888,900):
+// Conductor's `archive-running-workspace` dialog (renderApp @ ~10,888,626):
 // shown when Archive is chosen while an agent is still running.
 import { Modal } from "./Dialogs";
 import { RUNNING_AGENTS_DIALOG as COPY } from "../workspace/archive";
