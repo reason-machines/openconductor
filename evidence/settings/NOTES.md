@@ -65,6 +65,53 @@ code reads (`src/workspace/naming.ts`). Divergences: Conductor joins the custom 
 name as a raw string (`myname-tokyo`); our naming slugifies each `/` part and joins with `/`,
 so a trailing `/` is dropped on save and the preview comes from our real resolver.
 
+### Git flags: archive and push upstream
+
+Source: the same REA-extracted assets, `index-BGEQ8YjU.js` (settings defaults and the
+workspace-creation service) and `renderApp-D_fmY7hW.js` (the rows).
+
+- Defaults in the settings table: `delete_branch_on_archive` false, `archive_on_merge`
+  unset (the row reads it as false), `worktree_push_auto_setup_remote` unset and treated as
+  on (the row defaults to `true`; repo scope is on unless the value is `"false"`). All three
+  are user and workspace (repo-local) scoped; the rebuild stores the user values under
+  `[git]` in `settings.toml`.
+- Push upstream, run on each new workspace unless the setting is `false`: if
+  `git config --worktree --get push.autoSetupRemote` already has a value, nothing changes.
+  Otherwise, when shared config sets `core.worktree` or `core.bare = true`, it writes
+  nothing and warns ("Couldn't configure Git push upstream settings. PR info may be less
+  reliable until this branch has an upstream.") unless `push.autoSetupRemote` is already
+  true. Else it runs `git config extensions.worktreeConfig true` in the main repository and
+  `git config --worktree push.autoSetupRemote true` in the new worktree; a failure gives
+  the same warning and the workspace is still created.
+- The rebuild does the same in `workspace::git::configure_push_upstream`, called by
+  `create_workspace` when `git.worktree_push_auto_setup_remote` is on, and returns the
+  warning as `upstreamWarning` on the created workspace. The Git page shows the "Set
+  upstream on plain git push" row.
+- Conductor passes the warning up as the create step's `auxiliaryFailureMessage` (joined
+  with other non-fatal issues, such as a failed `.worktreeinclude` copy, by a space) and shows
+  it with `notifications.workspaceError({ message, localWorkspaceId, duration: Infinity })`,
+  an error toast that stays until dismissed, with a "View logs" action when the create step
+  wrote an initialization log (`index-BGEQ8YjU.js`, sha256 `b5b01f33…dbf3`). The rebuild's
+  Create-workspace dialog shows `upstreamWarning` as a sticky error toast the same way. Not
+  built: the "View logs" action (we write no initialization log).
+- Startup backfill: once per app run, after the first workspace list load
+  (`configureGitPushAutoSetupRemoteForLoadedWorkspaces`, guarded by
+  `hasBackfilledGitPushAutoSetupRemote`), Conductor's `zYe` walks every loaded workspace
+  and skips archived ones, ones with no path, remote hosts and folders that no longer exist.
+  For each workspace whose setting is not `false` (`lre`, workspace-scoped), `RYe` applies
+  the same steps as creation only when `git config --worktree --get push.autoSetupRemote`
+  has no value. Nothing is shown: `cre` logs its skip warning and `zYe` logs thrown errors
+  ("Failed to configure Git push upstream settings for workspace <id>: ...").
+- The rebuild runs `WorkspaceService::configure_push_upstream_for_existing` on a background
+  thread from app setup when the user setting is on (or settings cannot be read, matching
+  Conductor's "not false" check). It covers every active workspace of every registered
+  repository, skips archived and missing ones and repositories that can no longer be listed,
+  and logs each workspace it could not configure to stderr. Divergence: the setting is read
+  once at user scope, since repo-local overrides are not built.
+- Delete branch on archive (with "Warning: archived workspaces will be unrecoverable" when
+  on) and Archive on merge are stored but have no row yet: no command archives a workspace
+  yet, so nothing would read them. Repo-local overrides of all three are not built.
+
 ## REA gaps hit (settings pages)
 
 - `rea trace-javascript-semantics` with a literal seed `"Branch name prefix"` (a UI string in
@@ -156,4 +203,6 @@ zoom anywhere in the app. Divergences and gaps:
   string (quotes, `\`, `;`, braces, `<>`) are refused, in the UI and in `validate`.
 - The App zoom help text does not name the shortcuts, since overrides can change them.
 - Not built: Colored sidebar diffs, Code ligatures, Accessible colors, Code theme,
-  Markdown Style, Terminal font. The terminal keeps its own font.
+  Markdown Style.
+- Terminal font (`terminal_font_family`, `terminal_font_size`) is built by the terminal
+  area; see `evidence/terminal/NOTES.md`.

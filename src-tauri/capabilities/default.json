@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Main window capabilities. Plugin grants follow the plugin commands Conductor 0.87.6's frontend calls (evidence/packaging/conductor-plugin-commands.json); fs, shell, sql and http scopes follow evidence/packaging/conductor-plugin-scopes.json.",
+  "description": "Main window capabilities. Plugin grants follow the plugin commands Conductor 0.87.6's frontend calls (evidence/packaging/conductor-plugin-commands.json); opener, fs, shell and http scopes are Conductor's resolved ACL as decoded from its binary (evidence/packaging/conductor-plugin-scopes.json).",
   "windows": [
     "main"
   ],
@@ -13,13 +13,42 @@
     "clipboard-manager:allow-write-html",
     "deep-link:allow-get-current",
     "notification:allow-is-permission-granted",
-    "opener:allow-open-url",
+    "opener:allow-default-urls",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "linear://*"
+        },
+        {
+          "url": "vscode://*"
+        },
+        {
+          "url": "slack://*"
+        },
+        {
+          "url": "figma://*"
+        },
+        {
+          "url": "notion://*"
+        },
+        {
+          "url": "raycast://*"
+        },
+        {
+          "url": "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+        }
+      ]
+    },
     "opener:allow-reveal-item-in-dir",
     {
       "identifier": "opener:allow-open-path",
       "allow": [
         {
-          "path": "$HOME/**"
+          "path": "**/*"
+        },
+        {
+          "path": "**/.conductor/**/*"
         }
       ]
     },
@@ -48,7 +77,13 @@
       "identifier": "fs:scope",
       "allow": [
         {
-          "path": "$HOME/**"
+          "path": "**/*"
+        },
+        {
+          "path": "**/.*"
+        },
+        {
+          "path": "**/.*/**"
         },
         {
           "path": "**/*/.git"
@@ -58,6 +93,9 @@
         },
         {
           "path": "**/*/.context"
+        },
+        {
+          "path": "**/*/.context/**"
         },
         {
           "path": "**/*/.github"
@@ -70,6 +108,9 @@
         },
         {
           "path": "$HOME/.claude/*"
+        },
+        {
+          "path": "$HOME/.claude/**"
         },
         {
           "path": "$HOME/.claude/commands"
@@ -95,16 +136,79 @@
       "identifier": "http:allow-fetch",
       "allow": [
         {
-          "url": "https://*"
+          "url": "https://app.conductor.build/*"
         },
         {
-          "url": "https://*:*"
+          "url": "https://stage-app.conductor.build/*"
         },
         {
-          "url": "http://*"
+          "url": "https://conductor.build/*"
         },
         {
-          "url": "http://*:*"
+          "url": "https://app.chorus.sh/*"
+        },
+        {
+          "url": "http://localhost:*/*"
+        },
+        {
+          "url": "http://127.0.0.1:*/*"
+        },
+        {
+          "url": "https://api.github.com/*"
+        },
+        {
+          "url": "https://github.com/user-attachments/*"
+        },
+        {
+          "url": "https://private-user-images.githubusercontent.com/*"
+        },
+        {
+          "url": "https://api.linear.app/graphql"
+        },
+        {
+          "url": "https://platform.claude.com/v1/oauth/token"
+        },
+        {
+          "url": "https://api.conductor.build/*"
+        },
+        {
+          "url": "https://conductor-roundhouse.fly.dev/*"
+        },
+        {
+          "url": "https://stage-api.conductor.build/*"
+        },
+        {
+          "url": "https://statuspage.incident.io/*"
+        },
+        {
+          "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-public-staging/*"
+        },
+        {
+          "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-public-prod/*"
+        },
+        {
+          "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-user-staging/*"
+        },
+        {
+          "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-user-prod/*"
+        },
+        {
+          "url": "https://sb-*.vercel.run/*"
+        },
+        {
+          "url": "wss://sb-*.vercel.run/*"
+        },
+        {
+          "url": "https://*.ngrok-free.dev/*"
+        },
+        {
+          "url": "wss://*.ngrok-free.dev/*"
+        },
+        {
+          "url": "https://*.ngrok.dev/*"
+        },
+        {
+          "url": "wss://*.ngrok.dev/*"
         }
       ]
     },
@@ -117,29 +221,19 @@
         {
           "name": "exec-zsh",
           "cmd": "/bin/zsh",
-          "args": [
-            "-c",
-            {
-              "validator": "[\\s\\S]*"
-            }
-          ]
+          "args": true
         },
         {
           "name": "exec-bash",
           "cmd": "/bin/bash",
-          "args": [
-            "-c",
-            {
-              "validator": "[\\s\\S]*"
-            }
-          ]
+          "args": true
         },
         {
           "name": "exec-open",
-          "cmd": "/usr/bin/open",
+          "cmd": "open",
           "args": [
             {
-              "validator": "[\\s\\S]+"
+              "validator": ".*"
             }
           ]
         }
@@ -151,31 +245,12 @@
         {
           "name": "exec-zsh",
           "cmd": "/bin/zsh",
-          "args": [
-            "-c",
-            {
-              "validator": "[\\s\\S]*"
-            }
-          ]
+          "args": true
         },
         {
           "name": "exec-bash",
           "cmd": "/bin/bash",
-          "args": [
-            "-c",
-            {
-              "validator": "[\\s\\S]*"
-            }
-          ]
-        },
-        {
-          "name": "exec-open",
-          "cmd": "/usr/bin/open",
-          "args": [
-            {
-              "validator": "[\\s\\S]+"
-            }
-          ]
+          "args": true
         }
       ]
     },

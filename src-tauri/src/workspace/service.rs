@@ -12,7 +12,7 @@ use std::sync::Mutex;
 
 use super::git::{self, BranchRef};
 use super::naming;
-use super::{CreateOptions, Created, Workspace, WorkspaceError, WorkspaceManager};
+use super::{CreateOptions, Created, Workspace, WorkspaceError, WorkspaceManager, WorkspaceState};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RepositoryInfo {
@@ -38,6 +38,8 @@ pub struct CreateWorkspaceRequest {
     pub existing_branch: bool,
     /// PR whose head `branch_name` is; see [`CreateOptions::pr_number`].
     pub pr_number: Option<u64>,
+    /// User setting `git.worktree_push_auto_setup_remote`.
+    pub push_auto_setup_remote: bool,
 }
 
 #[derive(Debug)]
@@ -142,9 +144,30 @@ impl WorkspaceService {
             existing_branch: req.existing_branch,
             pr_number: req.pr_number,
             fetch: true,
+            push_auto_setup_remote: req.push_auto_setup_remote,
             ..Default::default()
         };
         self.manager.create(&root, &opts)
+    }
+
+    /// Conductor's startup backfill (`zYe`): apply "Set upstream on plain git
+    /// push" ([`git::configure_push_upstream`]) to every existing active
+    /// workspace of every registered repository. A worktree that already has a
+    /// `push.autoSetupRemote` value is left alone. Returns `(workspace id,
+    /// warning)` for each workspace it could not configure; a repository that
+    /// can no longer be listed is skipped.
+    pub fn configure_push_upstream_for_existing(&self) -> Vec<(String, &'static str)> {
+        let roots: Vec<PathBuf> = self.repos.lock().expect("registry lock").values().cloned().collect();
+        let mut failed = Vec::new();
+        for root in roots {
+            let Ok(list) = self.manager.list(&root) else { continue };
+            for ws in list.into_iter().filter(|w| w.state == WorkspaceState::Active) {
+                if let Some(warning) = git::configure_push_upstream(&ws.repo_root, &ws.path) {
+                    failed.push((ws.id, warning));
+                }
+            }
+        }
+        failed
     }
 
     /// Local, then remote-tracking branches, newest first.

@@ -15,8 +15,8 @@ behaviours the provider has to handle (see src-tauri/src/reason_acp/):
 
 Prompts are commands: "echo: TEXT" (reply split mid-word, prefixed with the
 turn number), "slow" (a running tool until session/cancel), "report" (a
-mid-turn user_message_chunk), "cloud" (a diff under a cloud checkout),
-"crash" (exit without answering).
+mid-turn user_message_chunk), "local" (a diff in the session's working folder),
+"cloud" (a diff under a cloud checkout), "crash" (exit without answering).
 """
 import json
 import os
@@ -94,6 +94,10 @@ def prompt(rid, p):
     elif cmd == "report":
         text(sid, "user_message_chunk", "Child report: done")
         text(sid, "agent_message_chunk", "ok")
+    elif cmd == "local":
+        diff = {"type": "diff", "path": session["cwd"].rstrip("/") + "/a.txt", "oldText": None, "newText": "hi"}
+        update(sid, sessionUpdate="tool_call", toolCallId="tool:3", title="write: a.txt",
+               kind="edit", status="completed", content=[diff])
     elif cmd == "cloud":
         diff = {"type": "diff", "path": CLOUD + "/a.txt", "oldText": None, "newText": "hi"}
         update(sid, sessionUpdate="tool_call", toolCallId="tool:2", title="write: a.txt",

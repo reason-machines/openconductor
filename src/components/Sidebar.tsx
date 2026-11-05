@@ -1,11 +1,12 @@
-import type { Dispatch } from "react";
+import { useEffect, useRef, useState, type Dispatch } from "react";
 import type { AppState, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, PlusIcon, SearchIcon, SidebarIcon } from "./Icons";
+import { ArrowLeftIcon, ArrowRightIcon, BranchIcon, ChevronDownIcon, ChevronIcon, HelpIcon, HomeIcon, MoreIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
+import { byRecentActivity, workspaceLabel } from "./sidebarLabel";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
 function hint(commandId: string): string {
@@ -33,6 +34,7 @@ interface Props {
   onOpenDialog: (d: DialogKind, repoId?: string) => void;
   onOpenProject: () => void;
   onOpenSettings: () => void;
+  onOpenShortcuts: () => void;
   onSearch: () => void;
   nav: NavControls;
   info: AppInfo | null;
@@ -50,8 +52,46 @@ function NavRow({ icon, label, shortcut, active, onClick }: { icon: JSX.Element;
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onSearch, nav, info, computerName = "My Mac" }: Props) {
+interface MenuItem { label: string; onSelect: () => void }
+
+/** Hover "..." trigger and its menu on a section or repo header (Conductor's `Aet`). */
+function HeaderMenu({ label, items, className }: { label: string; items: MenuItem[]; className: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: MouseEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent ? e.key === "Escape" : !ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    document.addEventListener("keydown", close);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("keydown", close);
+    };
+  }, [open]);
+  return (
+    <div ref={ref} className={`sb-menu-anchor ${className}`} data-open={open || undefined}>
+      <button type="button" className="sb-menu-trigger" aria-label={`${label} actions`} aria-haspopup="menu" aria-expanded={open} onClick={(e) => { e.stopPropagation(); setOpen(!open); }}>
+        <MoreIcon size={14} />
+      </button>
+      {open && (
+        <div className="sb-menu" role="menu">
+          {items.map((item) => (
+            <button key={item.label} type="button" role="menuitem" className="sb-menu-item" onClick={() => { setOpen(false); item.onSelect(); }}>
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, computerName = "My Mac" }: Props) {
   const sel = state.selection;
+  // Conductor persists this per collapse key; ours lasts for the session.
+  const [groupCollapsed, setGroupCollapsed] = useState(false);
   return (
     <aside className="sidebar" aria-label="Repositories and workspaces">
       {/* Top bar: drag region with the sidebar toggle, back/forward at the top right. */}
@@ -91,60 +131,105 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
         </div>
       </div>
 
-      <div className="sidebar-section-header">
-        <span>Repositories</span>
-        <button className="icon-btn" title="Add repository" aria-label="Add repository" onClick={onOpenProject}>
-          <PlusIcon size={14} />
-        </button>
-      </div>
-
       <nav className="repo-list">
-        {state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
-        {state.repos.map((repo) => (
-          <div key={repo.id} className="repo">
-            <div className="repo-row">
-              <button className="repo-toggle" onClick={() => dispatch({ type: "toggleRepo", repoId: repo.id })} aria-expanded={!repo.collapsed}>
-                <ChevronIcon size={12} open={!repo.collapsed} />
-                <span className="repo-name">{repo.name}</span>
-              </button>
-              <button className="icon-btn repo-add" title={`New workspace in ${repo.name}`} aria-label={`New workspace in ${repo.name}`} onClick={() => onOpenDialog("create", repo.id)}>
-                <PlusIcon size={13} />
-              </button>
+        {/* "My workspaces" section header (Conductor's `lBi`): label, hover chevron, "..." menu with Add project. */}
+        <div className="sb-section-header">
+          <button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed} onClick={() => setGroupCollapsed(!groupCollapsed)}>
+            <span className="sb-section-label">My workspaces</span>
+            <span className="sb-section-spacer" aria-hidden />
+            <span className="sb-section-chevron" data-collapsed={groupCollapsed || undefined}>
+              {groupCollapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}
+            </span>
+          </button>
+          <HeaderMenu label="My workspaces" className="sb-section-menu" items={[{ label: "Add project…", onSelect: onOpenProject }]} />
+        </div>
+        {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
+        {!groupCollapsed && (
+          <div className="sb-repo-groups">
+            {state.repos.map((repo) => (
+          <div key={repo.id} className="sb-repo-group">
+            <div className="sb-repo">
+              <div
+                className="sb-repo-header"
+                role="button"
+                tabIndex={0}
+                aria-expanded={!repo.collapsed}
+                onClick={() => dispatch({ type: "toggleRepo", repoId: repo.id })}
+                onKeyDown={(e) => {
+                  if (e.target !== e.currentTarget || (e.key !== "Enter" && e.key !== " ")) return;
+                  e.preventDefault();
+                  dispatch({ type: "toggleRepo", repoId: repo.id });
+                }}
+              >
+                <div className="sb-repo-main">
+                  <span className="sb-repo-lead">
+                    <span className="sb-repo-initial" aria-hidden>{repo.name.charAt(0).toUpperCase()}</span>
+                    <span className="sb-repo-chevron" aria-hidden>{repo.collapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}</span>
+                  </span>
+                  <span className="sb-repo-name">{repo.name}</span>
+                  {repo.collapsed && repo.workspaces.length > 0 && <span className="sb-repo-count">{repo.workspaces.length}</span>}
+                </div>
+                <span className="sb-repo-spacer" aria-hidden />
+                <button
+                  type="button"
+                  className="sb-repo-add"
+                  title="Create workspace"
+                  aria-label={`Create workspace in ${repo.name}`}
+                  onClick={(e) => { e.stopPropagation(); onOpenDialog("create", repo.id); }}
+                >
+                  <PlusIcon size={16} />
+                </button>
+              </div>
+              <HeaderMenu label={repo.name} className="sb-repo-menu" items={[{ label: "New workspace", onSelect: () => onOpenDialog("create", repo.id) }]} />
             </div>
             {!repo.collapsed && (
-              <ul className="ws-list">
-                {repo.workspaces.length === 0 && <li className="ws-empty">No workspaces</li>}
-                {repo.workspaces.map((ws) => {
+              <div className="sb-ws-list">
+                {repo.workspaces.length === 0 && <p className="ws-empty">No workspaces</p>}
+                {byRecentActivity(repo.workspaces).map((ws) => {
                   const active = sel.kind === "workspace" && sel.workspaceId === ws.id;
+                  const label = workspaceLabel({ name: ws.name, branch: ws.branch, prTitle: ws.prTitle, userSetWorkspaceName: ws.userSetWorkspaceName, targetBranch: repo.defaultBranch });
                   return (
-                    <li key={ws.id}>
-                      <button
-                        className={`ws-item ${active ? "active" : ""}`}
-                        onClick={() => dispatch({ type: "select", selection: { kind: "workspace", repoId: repo.id, workspaceId: ws.id } })}
-                        title={`${ws.branch} · ${STATUS_LABEL[ws.status]}`}
-                      >
-                        <span className={`status-dot ${ws.status}`} aria-label={STATUS_LABEL[ws.status]} />
-                        <span className="ws-name">{ws.name}</span>
-                        {(ws.diff.added > 0 || ws.diff.removed > 0) && (
-                          <span className="ws-diff">
-                            <span className="add">+{ws.diff.added}</span> <span className="del">-{ws.diff.removed}</span>
-                          </span>
-                        )}
-                      </button>
-                    </li>
+                    <button
+                      key={ws.id}
+                      type="button"
+                      className="sb-ws"
+                      data-testid="left-sidebar-workspace-item"
+                      data-active={active || undefined}
+                      data-unread={ws.unread || undefined}
+                      aria-current={active ? "page" : undefined}
+                      onClick={() => dispatch({ type: "select", selection: { kind: "workspace", repoId: repo.id, workspaceId: ws.id } })}
+                      title={`${label} · ${ws.branch} · ${STATUS_LABEL[ws.status]}`}
+                    >
+                      <span className={`sb-ws-status ${ws.status}`} role="img" aria-label={STATUS_LABEL[ws.status]}>
+                        <BranchIcon size={14} />
+                      </span>
+                      <span className="sb-ws-name">{label}</span>
+                      {(ws.diff.added > 0 || ws.diff.removed > 0) && (
+                        <span className="sb-ws-diff">
+                          <span className="add">+{ws.diff.added}</span> <span className="del">-{ws.diff.removed}</span>
+                        </span>
+                      )}
+                    </button>
                   );
                 })}
-              </ul>
+              </div>
             )}
           </div>
-        ))}
+            ))}
+          </div>
+        )}
       </nav>
 
-      <div className="sidebar-footer">
-        <span>{info ? `${info.name} ${info.version} · ${info.platform}` : "OpenConductor"}</span>
-        <button className="btn btn-small" title="Settings (⌘,)" onClick={onOpenSettings}>
-          Settings
-        </button>
+      {/* Footer, after Conductor's `Nna`: px-4 py-3, top border, help and settings icons (h-4 w-4, stroke 1.5) gap-5 at the right. */}
+      <div className="sb-footer">
+        <div className="sb-footer-actions">
+          <button type="button" className="sb-footer-btn" aria-label="Help" title="Help" onClick={onOpenShortcuts}>
+            <HelpIcon size={16} strokeWidth={1.5} />
+          </button>
+          <button type="button" className="sb-footer-btn" aria-label="Settings" title={`Settings (${hint("openSettings")})`} onClick={onOpenSettings}>
+            <SettingsIcon size={16} strokeWidth={1.5} />
+          </button>
+        </div>
       </div>
     </aside>
   );

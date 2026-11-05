@@ -42,8 +42,23 @@ export interface Settings {
   $schema: string;
   general: { theme: Theme; send_native_notification: boolean; sound_type: SoundType; [extra: string]: unknown };
   /** Conductor's Appearance keys; zoom is a fraction (1 = 100%). */
-  appearance: { zoom_level_v2: number; low_contrast_dark_mode: boolean; mono_font?: string | null; [extra: string]: unknown };
-  git: { branch_prefix_type: BranchPrefixType; branch_prefix_custom?: string | null; [extra: string]: unknown };
+  appearance: {
+    zoom_level_v2: number;
+    low_contrast_dark_mode: boolean;
+    mono_font?: string | null;
+    terminal_font_family?: string | null;
+    /** Whole px, 10 to 20; 12 by default. */
+    terminal_font_size?: number;
+    [extra: string]: unknown;
+  };
+  git: {
+    branch_prefix_type: BranchPrefixType;
+    branch_prefix_custom?: string | null;
+    delete_branch_on_archive: boolean;
+    archive_on_merge: boolean;
+    worktree_push_auto_setup_remote: boolean;
+    [extra: string]: unknown;
+  };
   models: {
     default: string;
     review?: string | null;
@@ -53,6 +68,25 @@ export interface Settings {
     [extra: string]: unknown;
   };
   providers: { [agent in AgentKind]?: ProviderConfig | null } & { [extra: string]: unknown };
+  /** Conductor's Advanced keys; older builds may not send the section. */
+  advanced?: {
+    /** Approximate terminal output to keep, in bytes; absent means 10 MB. */
+    terminal_scrollback_limit_bytes?: number | null;
+    [extra: string]: unknown;
+  };
+  /** Conductor's Experimental keys. */
+  experimental?: {
+    /** "Big terminal mode": ⌘⇧T opens a terminal running the Big terminal preset. */
+    experimental_big_terminal_mode?: boolean;
+    [extra: string]: unknown;
+  };
+  /** Conductor's "Big terminal" settings tab (id `terminal`). */
+  terminal?: {
+    /** A built-in preset or `custom:<id>`; absent or unknown means Claude. */
+    big_terminal_preset?: string | null;
+    big_terminal_custom_commands?: { id: string; command: string }[];
+    [extra: string]: unknown;
+  };
   [extra: string]: unknown;
 }
 
@@ -76,8 +110,13 @@ export interface ProviderStatus {
 export const DEFAULT_SETTINGS: Settings = {
   $schema: "https://openconductor.dev/schemas/settings.schema.json",
   general: { theme: "system", send_native_notification: true, sound_type: "default" },
-  appearance: { zoom_level_v2: 1, low_contrast_dark_mode: false },
-  git: { branch_prefix_type: "github_username" },
+  appearance: { zoom_level_v2: 1, low_contrast_dark_mode: false, terminal_font_size: 12 },
+  git: {
+    branch_prefix_type: "github_username",
+    delete_branch_on_archive: false,
+    archive_on_merge: false,
+    worktree_push_auto_setup_remote: true,
+  },
   models: {
     default: "opus",
     default_thinking_enabled: true,

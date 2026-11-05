@@ -821,3 +821,90 @@ fn clone_repository_creates_only_the_default_dir_and_reports_exit_code() {
     assert_eq!(svc.repositories().len(), 1);
     assert!(matches!(svc.clone_repository("https://", &default, &mut |_| {}), Err(WorkspaceError::InvalidCloneUrl(_))));
 }
+
+/// `git config <args>` in `dir`, or `None` when the key is unset.
+fn config_get(dir: &Path, args: &[&str]) -> Option<String> {
+    let out = git::git_raw(dir, [&["config"], args].concat()).unwrap();
+    out.status.success().then(|| String::from_utf8_lossy(&out.stdout).trim().to_string())
+}
+
+#[test]
+fn push_auto_setup_remote_is_set_in_the_new_worktree_only() {
+    let f = fixture();
+    let opts = CreateOptions { push_auto_setup_remote: true, ..named("tokyo") };
+    let c = f.mgr.create(&f.repo, &opts).unwrap();
+    assert_eq!(c.upstream_warning, None);
+    let ws = &c.workspace.path;
+    assert_eq!(config_get(ws, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("true"));
+    assert_eq!(config_get(&f.repo, &["--get", "extensions.worktreeConfig"]).as_deref(), Some("true"));
+    // The main checkout and other workspaces do not inherit it.
+    assert_eq!(config_get(&f.repo, &["--get", "push.autoSetupRemote"]), None);
+    let other = f.mgr.create(&f.repo, &named("lisbon")).unwrap().workspace;
+    assert_eq!(config_get(&other.path, &["--get", "push.autoSetupRemote"]), None);
+}
+
+#[test]
+fn push_auto_setup_remote_off_writes_no_config() {
+    let f = fixture();
+    let c = f.mgr.create(&f.repo, &named("tokyo")).unwrap();
+    assert_eq!(c.upstream_warning, None);
+    assert_eq!(config_get(&c.workspace.path, &["--get", "push.autoSetupRemote"]), None);
+    assert_eq!(config_get(&f.repo, &["--get", "extensions.worktreeConfig"]), None);
+}
+
+#[test]
+fn push_auto_setup_remote_keeps_an_explicit_worktree_value() {
+    let f = fixture();
+    let ws = f.mgr.create(&f.repo, &named("tokyo")).unwrap().workspace;
+    sh(&f.repo, &["config", "extensions.worktreeConfig", "true"]);
+    sh(&ws.path, &["config", "--worktree", "push.autoSetupRemote", "false"]);
+    assert_eq!(git::configure_push_upstream(&f.repo, &ws.path), None);
+    assert_eq!(config_get(&ws.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("false"));
+}
+
+#[test]
+fn push_auto_setup_remote_skips_shared_core_worktree() {
+    let f = fixture();
+    let ws = f.mgr.create(&f.repo, &named("tokyo")).unwrap().workspace;
+    sh(&f.repo, &["config", "core.worktree", f.repo.to_str().unwrap()]);
+    assert_eq!(git::configure_push_upstream(&f.repo, &ws.path), Some(git::PUSH_UPSTREAM_WARNING));
+    assert_eq!(config_get(&f.repo, &["--get", "extensions.worktreeConfig"]), None);
+    // Already true through shared config: nothing to warn about.
+    sh(&f.repo, &["config", "push.autoSetupRemote", "true"]);
+    assert_eq!(git::configure_push_upstream(&f.repo, &ws.path), None);
+}
+
+#[test]
+fn service_backfills_push_upstream_for_existing_active_workspaces() {
+    use super::service::{CreateWorkspaceRequest, WorkspaceService};
+    let f = fixture();
+    let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
+    let id = svc.add_repository(&f.repo).unwrap().id;
+    let create = |name: &str| {
+        let req = CreateWorkspaceRequest { repository_id: id.clone(), directory_name: Some(name.into()), ..Default::default() };
+        svc.create_workspace(&req).unwrap().workspace
+    };
+    let (tokyo, lisbon, _oslo) = (create("tokyo"), create("lisbon"), create("oslo"));
+    sh(&f.repo, &["config", "extensions.worktreeConfig", "true"]);
+    sh(&lisbon.path, &["config", "--worktree", "push.autoSetupRemote", "false"]);
+    svc.manager().archive(&f.repo, "oslo", &ArchiveOptions::default()).unwrap();
+    // A registered repository that is gone is skipped, not an error.
+    let gone = f.tmp.path().join("gone");
+    std::fs::create_dir_all(&gone).unwrap();
+    sh(&gone, &["init", "-q", "-b", "main"]);
+    svc.add_repository(&gone).unwrap();
+    std::fs::remove_dir_all(&gone).unwrap();
+
+    assert_eq!(svc.configure_push_upstream_for_existing(), vec![]);
+    assert_eq!(config_get(&tokyo.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("true"));
+    assert_eq!(config_get(&lisbon.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("false"));
+    assert_eq!(config_get(&f.repo, &["--get", "push.autoSetupRemote"]), None);
+    // Running it again changes nothing.
+    assert_eq!(svc.configure_push_upstream_for_existing(), vec![]);
+
+    // Shared core.worktree makes it unsafe: each unconfigured workspace reports the warning.
+    let paris = create("paris");
+    sh(&f.repo, &["config", "core.worktree", f.repo.to_str().unwrap()]);
+    assert_eq!(svc.configure_push_upstream_for_existing(), vec![(format!("{id}/paris"), git::PUSH_UPSTREAM_WARNING)]);
+    assert_eq!(config_get(&paris.path, &["--worktree", "--get", "push.autoSetupRemote"]), None);
+}

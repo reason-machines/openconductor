@@ -174,6 +174,9 @@ pub struct CreateOptions {
     pub fetch: bool,
     /// `file_include_globs` from repository settings.
     pub file_include_globs: Option<Vec<String>>,
+    /// Set `push.autoSetupRemote` in the new worktree's config
+    /// (`git.worktree_push_auto_setup_remote`, see [`git::configure_push_upstream`]).
+    pub push_auto_setup_remote: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -185,6 +188,8 @@ pub struct Created {
     /// Whether the `origin` fetch succeeded (false when skipped or offline).
     pub fetched: bool,
     pub copied_files: Vec<PathBuf>,
+    /// Set when `push_auto_setup_remote` was asked for but could not be applied.
+    pub upstream_warning: Option<String>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -403,9 +408,14 @@ impl WorkspaceManager {
         let source = files_to_copy::resolve_source(&root, opts.file_include_globs.as_deref());
         let files = files_to_copy::files_to_copy(&root, &source)?;
         let copied_files = files_to_copy::copy_files(&root, &path, &files)?;
+        let upstream_warning = if opts.push_auto_setup_remote {
+            git::configure_push_upstream(&root, &path).map(str::to_string)
+        } else {
+            None
+        };
 
         let workspace = self.make(&root, &name, branch, WorkspaceState::Active, Some(base_commit.clone()));
-        Ok(Created { workspace, base_ref, base_commit, fetched, copied_files })
+        Ok(Created { workspace, base_ref, base_commit, fetched, copied_files, upstream_warning })
     }
 
     /// Active (and missing) workspaces from `git worktree list`, plus archived

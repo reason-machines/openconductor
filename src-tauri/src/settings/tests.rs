@@ -122,6 +122,18 @@ fn bad_values_are_rejected_on_load() {
             "appearance.mono_font",
         ),
         (
+            "[appearance]\nterminal_font_family = \"Fira}\"",
+            "appearance.terminal_font_family",
+        ),
+        (
+            "[appearance]\nterminal_font_size = 9",
+            "appearance.terminal_font_size",
+        ),
+        (
+            "[appearance]\nterminal_font_size = 21",
+            "appearance.terminal_font_size",
+        ),
+        (
             "[providers.claude]\nkind = \"codex_login\"",
             "providers.claude: codex_login is a codex provider",
         ),
@@ -152,6 +164,8 @@ fn appearance_round_trips_and_defaults_when_missing() {
     s.appearance.zoom_level_v2 = 1.1;
     s.appearance.low_contrast_dark_mode = true;
     s.appearance.mono_font = Some("iA Writer Mono".into());
+    s.appearance.terminal_font_family = Some("FiraCode Nerd Font".into());
+    s.appearance.terminal_font_size = 15;
     save(&path, &s).unwrap();
     assert_eq!(load(&path).unwrap().appearance, s.appearance);
     for zoom in [0.5, 0.7, 3.0] {
@@ -199,4 +213,86 @@ fn provider_configs_round_trip_per_agent() {
     assert!(!fs::read_to_string(&path)
         .unwrap()
         .contains("[providers.claude]"));
+}
+
+#[test]
+fn git_flags_use_conductor_defaults_and_round_trip() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[git]\nbranch_prefix_type = \"none\"").unwrap();
+    let git = load(&path).unwrap().git;
+    assert!(
+        !git.delete_branch_on_archive
+            && !git.archive_on_merge
+            && git.worktree_push_auto_setup_remote
+    );
+    let mut s = Settings::default();
+    s.git.delete_branch_on_archive = true;
+    s.git.archive_on_merge = true;
+    s.git.worktree_push_auto_setup_remote = false;
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        text.contains("worktree_push_auto_setup_remote = false"),
+        "{text}"
+    );
+    assert_eq!(load(&path).unwrap().git, s.git);
+}
+
+#[test]
+fn scrollback_limit_is_optional_and_round_trips_in_advanced() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[general]\ntheme = \"dark\"").unwrap();
+    assert_eq!(load(&path).unwrap().advanced, Advanced::default());
+    let mut s = Settings::default();
+    save(&path, &s).unwrap();
+    assert!(!fs::read_to_string(&path)
+        .unwrap()
+        .contains("terminal_scrollback_limit_bytes"));
+    s.advanced.terminal_scrollback_limit_bytes = Some(25_000_000);
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        text.contains("[advanced]\nterminal_scrollback_limit_bytes = 25000000"),
+        "{text}"
+    );
+    assert_eq!(load(&path).unwrap().advanced, s.advanced);
+}
+
+#[test]
+fn big_terminal_settings_are_optional_and_round_trip() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[general]\ntheme = \"dark\"").unwrap();
+    let loaded = load(&path).unwrap();
+    assert_eq!(loaded.experimental, Experimental::default());
+    assert_eq!(loaded.terminal, Terminal::default());
+    let mut s = Settings::default();
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(!text.contains("big_terminal_preset"), "{text}");
+    assert!(!text.contains("big_terminal_custom_commands"), "{text}");
+    s.experimental.experimental_big_terminal_mode = true;
+    s.terminal.big_terminal_preset = Some("custom:a1".into());
+    s.terminal.big_terminal_custom_commands = vec![
+        BigTerminalCustomCommand {
+            id: "a1".into(),
+            command: "my-agent --flag".into(),
+        },
+        BigTerminalCustomCommand {
+            id: "b2".into(),
+            command: String::new(),
+        },
+    ];
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        text.contains("[experimental]\nexperimental_big_terminal_mode = true"),
+        "{text}"
+    );
+    assert!(
+        text.contains("big_terminal_preset = \"custom:a1\""),
+        "{text}"
+    );
+    let back = load(&path).unwrap();
+    assert_eq!(back.experimental, s.experimental);
+    assert_eq!(back.terminal, s.terminal);
 }

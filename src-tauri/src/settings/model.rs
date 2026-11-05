@@ -30,6 +30,9 @@ pub struct Settings {
     pub git: Git,
     pub models: Models,
     pub providers: Providers,
+    pub advanced: Advanced,
+    pub experimental: Experimental,
+    pub terminal: Terminal,
     #[serde(flatten)]
     pub extra: toml::Table,
 }
@@ -43,9 +46,58 @@ impl Default for Settings {
             git: Git::default(),
             models: Models::default(),
             providers: Providers::default(),
+            advanced: Advanced::default(),
+            experimental: Experimental::default(),
+            terminal: Terminal::default(),
             extra: toml::Table::new(),
         }
     }
+}
+
+/// Conductor's Advanced tab (Settings › More › Advanced). Key names are
+/// Conductor's setting keys.
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Advanced {
+    /// Approximate terminal output to keep, in bytes; `None` means
+    /// Conductor's 10 MB. Any value is accepted here: the terminal clamps it
+    /// to 1 MB to 1 GB when it reads it, as Conductor does.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terminal_scrollback_limit_bytes: Option<u64>,
+    #[serde(flatten)]
+    pub extra: toml::Table,
+}
+
+/// Conductor's Experimental tab (Settings › More › Experimental). Key names
+/// are Conductor's setting keys.
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Experimental {
+    /// "Big terminal mode": ⌘⇧T opens a terminal running the Big terminal preset.
+    pub experimental_big_terminal_mode: bool,
+    #[serde(flatten)]
+    pub extra: toml::Table,
+}
+
+/// Conductor's "Big terminal" settings tab (tab id `terminal`).
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Terminal {
+    /// A built-in preset (`claude`, `codex`, ...) or `custom:<id>`; `None`
+    /// means Conductor's default, Claude. Unknown values are kept; the
+    /// frontend reads them as Claude, as Conductor does.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub big_terminal_preset: Option<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub big_terminal_custom_commands: Vec<BigTerminalCustomCommand>,
+    #[serde(flatten)]
+    pub extra: toml::Table,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct BigTerminalCustomCommand {
+    pub id: String,
+    pub command: String,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
@@ -99,12 +151,21 @@ pub struct Appearance {
     /// Font family for code and diffs; `None` keeps the built-in stack.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mono_font: Option<String>,
+    /// Terminal font family, put in front of the terminal's fallback stack;
+    /// `None` keeps the stack. Conductor's `terminal_font_family`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terminal_font_family: Option<String>,
+    /// Terminal font size in px, [`TERMINAL_FONT_SIZE_MIN`] to
+    /// [`TERMINAL_FONT_SIZE_MAX`] (Conductor's slider), 12 by default.
+    pub terminal_font_size: u32,
     #[serde(flatten)]
     pub extra: toml::Table,
 }
 
 pub const ZOOM_MIN: f64 = 0.5;
 pub const ZOOM_MAX: f64 = 3.0;
+pub const TERMINAL_FONT_SIZE_MIN: u32 = 10;
+pub const TERMINAL_FONT_SIZE_MAX: u32 = 20;
 
 impl Default for Appearance {
     fn default() -> Self {
@@ -112,6 +173,8 @@ impl Default for Appearance {
             zoom_level_v2: 1.0,
             low_contrast_dark_mode: false,
             mono_font: None,
+            terminal_font_family: None,
+            terminal_font_size: 12,
             extra: toml::Table::new(),
         }
     }
@@ -130,14 +193,34 @@ pub enum BranchPrefixType {
     None,
 }
 
-#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Git {
     pub branch_prefix_type: BranchPrefixType,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub branch_prefix_custom: Option<String>,
+    /// Delete the local branch when a workspace is archived (Conductor default: off).
+    pub delete_branch_on_archive: bool,
+    /// Archive a local workspace after its PR is merged in the app (default: off).
+    pub archive_on_merge: bool,
+    /// Set `push.autoSetupRemote` in each new workspace's worktree config so
+    /// a plain `git push` sets the upstream (Conductor default: on).
+    pub worktree_push_auto_setup_remote: bool,
     #[serde(flatten)]
     pub extra: toml::Table,
+}
+
+impl Default for Git {
+    fn default() -> Self {
+        Self {
+            branch_prefix_type: BranchPrefixType::default(),
+            branch_prefix_custom: None,
+            delete_branch_on_archive: false,
+            archive_on_merge: false,
+            worktree_push_auto_setup_remote: true,
+            extra: toml::Table::new(),
+        }
+    }
 }
 
 /// Reasoning effort for Codex models (Codex CLI `model_reasoning_effort`).
