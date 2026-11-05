@@ -105,6 +105,10 @@ function chat(chatId: string): Chat {
       listeners: new Set(),
     };
     chats.set(chatId, c);
+    // List the new chat (idle) so its workspace's row follows this window's agent, not a
+    // status from elsewhere. After the current render: listeners re-render other rows.
+    const created = c;
+    queueMicrotask(() => publishStatus(created));
   }
   stored(c);
   return c;

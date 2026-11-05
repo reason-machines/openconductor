@@ -26,3 +26,11 @@ test("the row shows a closed workspace's agent: working and cancelling reach the
   assert.equal(rowStatus({ workspaceState: "ready", session: workspaceSessionStatus(s, "ws-2"), hasRemote: true }), "cancelling");
   assert.equal(rowStatus({ workspaceState: "ready", session: workspaceSessionStatus(s, "ws-3"), hasRemote: true }), "branch");
 });
+
+test("a chat in this window wins over the workspace's status from elsewhere, which fills in when there is none", () => {
+  const s = new Map([["ws-1", "idle"], ["ws-2:review:1", "waiting"]]);
+  assert.equal(workspaceSessionStatus(s, "ws-1", "working"), "idle");
+  assert.equal(workspaceSessionStatus(s, "ws-2", "needs_user_input"), "waiting");
+  assert.equal(workspaceSessionStatus(s, "ws-3", "needs_user_permission"), "needs_user_permission");
+  assert.equal(workspaceSessionStatus(s, "ws-3"), "idle");
+});

@@ -109,7 +109,8 @@ test("holding Cmd shows 1..9 on the visible rows, and Cmd+N opens that row", asy
   assert.deepEqual(await hints(), [], "hints wait 500 ms");
   await page.waitForTimeout(700);
   const shown = await hints();
-  assert.deepEqual(shown, (await names()).map((_, i) => String(i + 1)));
+  // Only the first nine rows get a number (Cmd+1..9); the demo has more.
+  assert.deepEqual(shown, (await names()).slice(0, 9).map((_, i) => String(i + 1)));
   assert.equal(await page.locator(".sb-ws-hint").first().getAttribute("aria-label"), "Switch with Command-1");
   await page.keyboard.press("2");
   await page.keyboard.up("Meta");

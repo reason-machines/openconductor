@@ -18,8 +18,9 @@ Where the app shows them:
 | Composer | `lTo`, send-mode rules | A turn is in flight for working, needs_*, cancelling (not waiting). |
 
 OpenConductor: the sidebar row (`rowStatus`), Home (`homeRowStatus`, the `vJo` rule) and the workspace
-header read `useWorkspaceSession`, which folds every chat's status in this window (`chatStatuses`, the
-`aFi` hook) with `Workspace.sessionStatus` (statuses from elsewhere: the demo today). `hasActiveTurn` is
+header read `useWorkspaceSession`: every chat's status in this window (`chatStatuses`, the `aFi` hook),
+or `Workspace.sessionStatus` (statuses from elsewhere: the demo today) when the window has no chat for
+the workspace. `hasActiveTurn` is
 `lTo`. The chat runtime only produces working, cancelling, error and idle so far: Reason's ACP session has no
 permission, question, plan or background-task events, so nothing sets needs_* or waiting yet.
 Chat tabs and the board card are not built.
