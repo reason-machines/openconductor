@@ -11,11 +11,12 @@
 // the rows in and near the viewport, so a long diff stays cheap to show.
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { processFile, type CodeViewItem, type CodeViewLineSelection, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
-import { CodeView, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
+import { CodeView, EditProvider, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
 import { WhitespaceOnly } from "./Whitespace";
 import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
-import { glyphs } from "../../keybindings/shortcut.ts";
+import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
+import { createEditor, type FileEdit } from "./EditInViewer.ts";
 import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
 import type { CommentSide } from "./comments.ts";
@@ -50,6 +51,8 @@ interface Props {
   tools?: ReactNode;
   /** Turn hidden whitespace back on (the whitespace-only empty state's link). */
   onShowWhitespace?: () => void;
+  /** Make the entire-file view an editor (EditInViewer.ts); absent where the file can't be edited. */
+  edit?: FileEdit;
 }
 
 /** The app theme as Pierre's themeType: `data-theme` on the root, or the system setting when absent. */
@@ -80,7 +83,7 @@ export function revealLine(path: string, anchor: LineAnchor): boolean {
   return reveal !== undefined;
 }
 
-function Code({ file, layout, ignoreWhitespace, wrapLines, onLineClick, selected = null, anchors = [], annotations, loadFull }: Props) {
+function Code({ file, layout, ignoreWhitespace, wrapLines, onLineClick, selected = null, anchors = [], annotations, loadFull, edit }: Props) {
   const themeType = useThemeType();
   const theme = useDiffTheme();
   const view = useRef<CodeViewHandle<LineAnchor, undefined> | null>(null);
@@ -102,7 +105,25 @@ function Code({ file, layout, ignoreWhitespace, wrapLines, onLineClick, selected
   latest.current = { onLineClick, loadFull };
   const clickable = onLineClick !== undefined;
   const canLoad = loadFull !== undefined;
-  const item = useCodeViewItem(file, meta, layout, anchors);
+  const shown = useCodeViewItem(file, meta, layout, anchors);
+  // Editing (Conductor's EditablePierreFile): the file item with `edit: true`, starting from the draft.
+  // Pierre's edit session keeps its own document across item updates; a new `generation` remounts it.
+  const editing = edit !== undefined && shown.type === "file";
+  const latestEdit = useRef(edit);
+  latestEdit.current = edit;
+  const item = useMemo<CodeViewItem<LineAnchor>>(
+    () => (editing && shown.type === "file" ? { ...shown, file: { ...shown.file, contents: latestEdit.current!.current() }, edit: true } : shown),
+    [shown, editing],
+  );
+  const onEditChange = useCallback((e: { file: { contents: string } }) => latestEdit.current?.onChange(e.file.contents), []);
+  const { overrides } = useKeybindingOverrides();
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    // Only the save shortcut: other keys belong to the editor, CommentNav and the comment box.
+    if (!editing || !effectiveShortcuts("editor.saveFile", overrides).some((s) => matchesEvent(s, e.nativeEvent))) return;
+    e.preventDefault();
+    const contents = view.current?.getEditor(file.path)?.getFile()?.contents ?? latestEdit.current!.current();
+    latestEdit.current!.onSave(contents);
+  };
   const fileSide: CommentSide = item.type === "file" && file.status === "deleted" ? "old" : "new";
   const wholeFile = layout === "file";
 
@@ -150,21 +171,35 @@ function Code({ file, layout, ignoreWhitespace, wrapLines, onLineClick, selected
   }, [file.path, layout]);
 
   if (!meta && layout !== "file") return <div className="oc-file-note">This diff couldn't be displayed.</div>;
+  const code = (
+    <CodeView<LineAnchor>
+      ref={attach}
+      className="oc-code-view"
+      items={[item]}
+      options={options}
+      selectedLines={selection}
+      onSelectedLinesChange={setSelection}
+      onItemEditChange={editing ? onEditChange : undefined}
+      onItemEditComplete={editing ? acceptEdit : undefined}
+      renderAnnotation={(...[a]) => annotations?.(a.metadata!)}
+    />
+  );
   return (
     <>
-      <CodeView<LineAnchor>
-        ref={attach}
-        className="oc-code-view"
-        items={[item]}
-        options={options}
-        selectedLines={selection}
-        onSelectedLinesChange={setSelection}
-        renderAnnotation={(...[a]) => annotations?.(a.metadata!)}
-      />
+      {editing ? (
+        <div className="oc-code-edit" onKeyDown={onKeyDown}>
+          <EditProvider createEditor={createEditor}>{code}</EditProvider>
+        </div>
+      ) : (
+        code
+      )}
       <CommentNav previousCount={nav.previousCount} nextCount={nav.nextCount} navigate={nav.navigate} />
     </>
   );
 }
+
+/** An ended edit session keeps its text, as Conductor's onItemEditComplete accepts it. */
+const acceptEdit = () => "accept" as const;
 
 /** The one CodeView item, rebuilt (with a bumped version) only when the file, layout or anchors change. */
 function useCodeViewItem(file: FileDiff, meta: ReturnType<typeof processFile>, layout: DiffLayout, anchors: LineAnchor[]): CodeViewItem<LineAnchor> {
@@ -178,7 +213,7 @@ function useCodeViewItem(file: FileDiff, meta: ReturnType<typeof processFile>, l
 }
 
 export function FileDiffView(props: Props) {
-  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools, onShowWhitespace } = props;
+  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools, onShowWhitespace, edit } = props;
   let body: ReactNode;
   if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
   else if (file.hunks.length === 0)
@@ -186,7 +221,7 @@ export function FileDiffView(props: Props) {
   else
     body = (
       <div className="oc-code-scroll">
-        <Code {...props} />
+        <Code key={edit?.generation ?? 0} {...props} />
       </div>
     );
 
@@ -207,9 +242,15 @@ export function FileDiffView(props: Props) {
             <RevertIcon />
           </button>
         )}
+        {edit?.dirty && <span className="oc-unsaved" role="img" aria-label="Unsaved changes" title="Unsaved changes" />}
         {tools}
         <ViewedToggle viewed={viewed} onToggle={onToggleViewed} />
       </header>
+      {edit?.error && (
+        <div className="oc-file-note oc-save-error" role="alert">
+          {edit.error}
+        </div>
+      )}
       {!viewed && body}
     </section>
   );
