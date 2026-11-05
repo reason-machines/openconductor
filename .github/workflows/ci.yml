@@ -28,6 +28,27 @@ jobs:
       - name: Checkpoint module build, test and clippy
         run: bash evidence/checkpoint/run-tests.sh
 
+  db:
+    name: Persistence crate (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    defaults:
+      run:
+        working-directory: crates/openconductor-db
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --check
+      - run: cargo test
+        env:
+          RUSTFLAGS: -D warnings
+      - run: cargo clippy --all-targets -- -D warnings
+
   tools:
     name: Evidence tools compile
     runs-on: ubuntu-latest
