@@ -9,11 +9,14 @@ import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
+import { useSetupWatch } from "./workspace/useSetupWatch";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
+import { createFailedMessage } from "./state/githubRepoDialog";
+import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
 import { PaletteHost } from "./palette/PaletteHost";
-import { useKeybindings } from "./keybindings/KeybindingsProvider";
+import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
 import { SettingsView } from "./settings/SettingsView";
 import { pageFromPath, type SettingsPage } from "./settings/pages";
 import { applyTheme } from "./settings/useSettings";
@@ -33,6 +36,8 @@ export default function App() {
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
   const { toasts, show, dismiss } = useToasts();
+  // A setup script the create flow started reports its failure here, after the dialog closed.
+  useSetupWatch(useCallback((message: string) => show("error", message), [show]));
   // `/settings` or `/settings/user/<page>` starts on that settings page.
   const [settingsPage, setSettingsPage] = useState<SettingsPage | null>(() => pageFromPath(window.location.pathname));
   const openSettings = useCallback(() => setSettingsPage((p) => p ?? "general"), []);
@@ -44,6 +49,18 @@ export default function App() {
   }, []);
 
 
+  // "Create a private GitHub repo?" for a picked folder without git or origin.
+  // `?dialog=github-repo` opens it with a sample folder in a plain browser.
+  const [githubRepo, setGithubRepo] = useState<GitHubRepoTarget | null>(() =>
+    !inTauri() && new URLSearchParams(window.location.search).get("dialog") === "github-repo"
+      ? { path: "/Users/you/code/My Notes", name: "My Notes", needsGitInit: true }
+      : null,
+  );
+  const addCreatedRepo = useCallback(async (target: GitHubRepoTarget, remote: string) => {
+    const registered = await addRepository(target.path);
+    dispatch({ type: "addRepo", repo: { name: target.name, path: registered.root, remote, defaultBranch: registered.defaultBranch } });
+  }, [dispatch]);
+
   // Open project: native picker straight away, then the backend folder checks.
   const openProject = useCallback(async () => {
     if (!inTauri()) return show("info", "Open project needs the desktop app.");
@@ -52,10 +69,7 @@ export default function App() {
       if (!path) return;
       const outcome = decideOpenProject(path, await inspectProjectFolder(path));
       if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
-      if (outcome.kind === "needsGitHubRepo") {
-        // The "Create a private GitHub repo?" dialog lands in the next PR.
-        return show("info", outcome.needsGitInit ? `${outcome.name} is not a git repository yet.` : `${outcome.name} has no origin remote yet.`);
-      }
+      if (outcome.kind === "needsGitHubRepo") return setGithubRepo({ path: outcome.path, name: outcome.name, needsGitInit: outcome.needsGitInit });
       const registered = await addRepository(outcome.path);
       dispatch({ type: "addRepo", repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
     } catch (err) {
@@ -65,6 +79,7 @@ export default function App() {
   const [quickOpen, setQuickOpen] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const { overrides } = useKeybindingOverrides();
   const toggleShortcuts = useCallback(() => setShortcutsOpen((open) => !open), []);
   useEffect(() => {
     if (!inTauri()) return;
@@ -135,7 +150,16 @@ export default function App() {
           onOpen={(path, mode) => show("info", `${mode === "diff" ? "Diff of" : "Opened"} ${path} (file viewer not built yet)`)}
         />
       )}
-      {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} />}
+      {githubRepo && (
+        <GitHubRepoDialog
+          target={githubRepo}
+          onClose={() => setGithubRepo(null)}
+          onOpenSettings={openSettings}
+          onCreated={(remote) => addCreatedRepo(githubRepo, remote)}
+          onError={(message) => show("error", createFailedMessage(message))}
+        />
+      )}
+      {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
       <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>

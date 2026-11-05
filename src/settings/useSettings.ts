@@ -22,7 +22,7 @@ export function useSettings() {
   }, []);
 
   const save = useCallback(
-    async (next: Settings) => {
+    async (next: Settings): Promise<boolean> => {
       const prev = settings;
       setSettings(next);
       applyTheme(next.general.theme);
@@ -30,10 +30,12 @@ export function useSettings() {
         const stored = await updateSettings(next);
         setSettings(stored);
         setError(null);
+        return true;
       } catch (e) {
         setSettings(prev);
         if (prev) applyTheme(prev.general.theme);
         setError(errorText(e));
+        return false;
       }
     },
     [settings],

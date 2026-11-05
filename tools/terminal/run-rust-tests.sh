@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Build and test src-tauri/src/terminal/ as a standalone crate.
 #
-# The module depends only on portable-pty (the version the reference app
-# links), libc, and serde/base64 for its IPC payloads, so it is tested on
+# The module depends only on portable-pty and alacritty_terminal (the
+# versions the reference app links), libc, and serde/base64 for its IPC payloads, so it is tested on
 # its own. The harness crate is generated in a temp dir; nothing in the repo
 # changes.
 #
@@ -28,6 +28,7 @@ path = "lib.rs"
 
 [dependencies]
 portable-pty = "=0.9.0"
+alacritty_terminal = "=0.26.0"
 libc = "0.2"
 base64 = "0.21"
 serde = { version = "1", features = ["derive"] }

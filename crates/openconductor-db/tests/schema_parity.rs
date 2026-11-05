@@ -1,7 +1,8 @@
 //! A freshly migrated database must have exactly the reference schema:
 //! the same tables with the same columns (order, declared type, NOT NULL,
 //! default, primary key), the same indexes (columns, uniqueness, partial
-//! WHERE clause) and the same triggers.
+//! WHERE clause) and the same triggers. This holds for both databases the
+//! reference keeps: `conductor.db` and `cache.db`.
 
 use std::collections::BTreeMap;
 use std::str::FromStr;
@@ -10,6 +11,18 @@ use sqlx::sqlite::{SqliteConnectOptions, SqlitePool, SqlitePoolOptions};
 use sqlx::Row;
 
 const REFERENCE_DDL: &str = include_str!("../../../evidence/sqlite/conductor.schema.sql");
+const REFERENCE_CACHE_DDL: &str = include_str!("../../../evidence/sqlite/cache.schema.sql");
+
+/// Reference `cache.db` `_sqlx_migrations` rows (version, description), from
+/// `evidence/sqlite/rea-inspect-sqlite-cache-migrations.json`.
+const REFERENCE_CACHE_MIGRATIONS: [(i64, &str); 6] = [
+    (1, "create session cache"),
+    (2, "drop obsolete session tool cache"),
+    (3, "create session pending messages mirror"),
+    (4, "create navigation sections cache"),
+    (5, "create favorite models cache"),
+    (6, "add navigation section emoji to cache"),
+];
 
 /// Normalised description of one schema object, keyed by object name.
 type Schema = BTreeMap<String, String>;
@@ -97,17 +110,15 @@ async fn memory_pool() -> SqlitePool {
         .unwrap()
 }
 
-#[tokio::test]
-async fn migrated_schema_matches_reference() {
+/// Fail unless `migrated` has exactly the schema `reference_ddl` creates.
+async fn assert_matches_reference(reference_ddl: &str, migrated: &SqlitePool) {
     let reference = memory_pool().await;
-    sqlx::raw_sql(REFERENCE_DDL)
+    sqlx::raw_sql(reference_ddl)
         .execute(&reference)
         .await
         .unwrap();
     let expected = describe(&reference).await;
-
-    let migrated = openconductor_db::open_in_memory().await.unwrap();
-    let actual = describe(&migrated).await;
+    let actual = describe(migrated).await;
 
     let missing: Vec<_> = expected
         .keys()
@@ -125,6 +136,52 @@ async fn migrated_schema_matches_reference() {
     for (key, want) in &expected {
         assert_eq!(&actual[key], want, "{key} differs from the reference");
     }
+}
+
+#[tokio::test]
+async fn migrated_schema_matches_reference() {
+    let migrated = openconductor_db::open_in_memory().await.unwrap();
+    assert_matches_reference(REFERENCE_DDL, &migrated).await;
+}
+
+#[tokio::test]
+async fn migrated_cache_schema_matches_reference() {
+    let migrated = openconductor_db::open_cache_in_memory().await.unwrap();
+    assert_matches_reference(REFERENCE_CACHE_DDL, &migrated).await;
+}
+
+#[tokio::test]
+async fn cache_migrations_match_reference_versions_and_descriptions() {
+    let pool = openconductor_db::open_cache_in_memory().await.unwrap();
+    openconductor_db::CACHE_MIGRATOR.run(&pool).await.unwrap();
+    let applied: Vec<(i64, String)> = sqlx::query_as(
+        "SELECT version, description FROM _sqlx_migrations WHERE success = 1 ORDER BY version",
+    )
+    .fetch_all(&pool)
+    .await
+    .unwrap();
+    let expected: Vec<(i64, String)> = REFERENCE_CACHE_MIGRATIONS
+        .iter()
+        .map(|(v, d)| (*v, d.to_string()))
+        .collect();
+    assert_eq!(applied, expected);
+}
+
+#[tokio::test]
+async fn open_cache_creates_a_wal_database_file() {
+    let dir = std::env::temp_dir().join(format!("ocdb-cache-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("cache.db");
+    let _ = std::fs::remove_file(&path);
+    let pool = openconductor_db::open_cache(&path).await.unwrap();
+    let mode: String = sqlx::query_scalar("PRAGMA journal_mode")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(mode, "wal");
+    pool.close().await;
+    assert!(path.exists());
+    std::fs::remove_dir_all(&dir).unwrap();
 }
 
 #[tokio::test]

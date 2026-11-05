@@ -15,6 +15,7 @@ export const FileIcon = ({ size }: P) => (<svg {...base(size)}><path d="M14 3H7a
 export const KeyboardIcon = ({ size }: P) => (<svg {...base(size)}><rect x="2" y="6" width="20" height="12" rx="2" /><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10" /></svg>);
 export const SearchIcon = ({ size }: P) => (<svg {...base(size)}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>);
 export const CloseIcon = ({ size }: P) => (<svg {...base(size)}><path d="M6 6l12 12M18 6 6 18" /></svg>);
+export const LockIcon = ({ size }: P) => (<svg {...base(size)} aria-hidden><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>);
 export const ArchiveIcon = ({ size }: P) => (<svg {...base(size)}><rect x="3" y="4" width="18" height="4" rx="1" /><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4" /></svg>);
 export const LogoMark = ({ size = 20 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
