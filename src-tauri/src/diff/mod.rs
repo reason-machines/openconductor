@@ -5,5 +5,6 @@
 //! evidence/sqlite/conductor.schema.sql.
 
 pub mod model;
+pub mod paths;
 
 pub use model::{DiffLine, FileChange, FileDiff, FileStatus, Hunk, LineKind};
