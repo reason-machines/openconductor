@@ -123,10 +123,16 @@ fn path_gets_the_cli_folder_for_a_bare_gui_path() {
 }
 
 /// Against a real CLI: `REASON_CLI=$(command -v reason) run-rust-tests.sh`.
-/// `initialize` needs no sign-in; everything after it does.
+/// `initialize` needs no sign-in; everything after it does. CI installs the
+/// CLI and sets `REASON_ACP_REQUIRE_LIVE=1`, so a missing CLI fails there
+/// instead of skipping.
 #[test]
 fn live_cli_answers_initialize() {
     let Some(cli) = std::env::var_os("REASON_CLI") else {
+        assert!(
+            std::env::var_os("REASON_ACP_REQUIRE_LIVE").is_none(),
+            "REASON_ACP_REQUIRE_LIVE is set but REASON_CLI is not"
+        );
         return;
     };
     let cfg = LaunchConfig::new(PathBuf::from(cli)).unwrap();
