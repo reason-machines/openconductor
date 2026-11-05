@@ -25,6 +25,8 @@
 //! * `commands`: the `#[tauri::command]` wrappers registered in `lib.rs`.
 //! * [`prompt`]: the create-PR message sent to the agent, and the
 //!   archive-on-merge rule.
+//! * [`review_comments`]: the PR's GitHub review threads and comments as
+//!   `diff_comments` rows, and resolving a thread on GitHub.
 
 pub mod api;
 pub mod checks;
@@ -41,6 +43,7 @@ pub mod list;
 pub mod merge_eligibility;
 pub mod model;
 pub mod prompt;
+pub mod review_comments;
 
 #[cfg(test)]
 mod api_tests;
@@ -62,5 +65,7 @@ mod list_tests;
 mod merge_eligibility_tests;
 #[cfg(test)]
 mod prompt_tests;
+#[cfg(test)]
+mod review_comments_tests;
 #[cfg(test)]
 mod tests;

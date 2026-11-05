@@ -252,7 +252,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const onLoaded = useCallback((files: FileDiff[], scope: DiffScope) => loaded.current?.(files, scope), []);
   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, baseBranch: repo.defaultBranch, onLoaded, onOpen: openDiffTab });
   const chat = useMemo<ChatBridge>(() => ({ insert: (t) => chatBridge.current?.insert(t), send: (t) => chatBridge.current?.send(t) }), []);
-  const review = useReviewComments(workspace.id, chat, undefined, diff.openPath);
+  const review = useReviewComments(workspace.id, chat, undefined, diff.openPath, workspace.path ?? null);
   const [agentWorking, setAgentWorking] = useState(false);
   // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub.
   const onLookup = useCallback(
@@ -316,7 +316,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
           tabs={<MainTabs title={workspace.name} active={showDiff ? "diff" : "chat"} diffOpen={diffOpen} onSelect={setMainTab} onCloseDiff={closeDiffTab} />}
-          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
+          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} notes={review.notes} /> : null}
         />
         <div className="ws-right">
           <RightPanel diff={diff} actions={review.actions} />
