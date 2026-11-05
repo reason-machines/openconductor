@@ -1,0 +1,472 @@
+{
+ "agent_binary_progress": [
+  "index-BGEQ8YjU.js"
+ ],
+ "anthropic_api_key": [
+  "index-BGEQ8YjU.js"
+ ],
+ "api_key": [
+  "index-BGEQ8YjU.js"
+ ],
+ "archive_script": [
+  "index-BGEQ8YjU.js"
+ ],
+ "asset_id": [
+  "index-BGEQ8YjU.js"
+ ],
+ "asset_ids": [
+  "index-BGEQ8YjU.js"
+ ],
+ "binary_verification_errors": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "branch_prefix_custom": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "branch_prefix_type": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "cancel_shell_command": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "check_for_updates": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "check_sidecar_http_health": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "claude_provider": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "cleanup_remote_file_sync": [
+  "index-BGEQ8YjU.js"
+ ],
+ "client_instance_id": [
+  "index-BGEQ8YjU.js"
+ ],
+ "configure_app_logger_external_logging_disabled": [
+  "index-BGEQ8YjU.js"
+ ],
+ "configure_app_logger_persistence": [
+  "index-BGEQ8YjU.js"
+ ],
+ "configure_http_proxy": [
+  "index-BGEQ8YjU.js"
+ ],
+ "configure_sentry_external_logging_disabled": [
+  "index-BGEQ8YjU.js"
+ ],
+ "configure_sidecar_inspect": [
+  "index-BGEQ8YjU.js"
+ ],
+ "configure_sidecar_internal_user": [
+  "index-BGEQ8YjU.js"
+ ],
+ "configure_verbose_logging": [
+  "index-BGEQ8YjU.js"
+ ],
+ "custom_prompt_code_review": [
+  "index-BGEQ8YjU.js"
+ ],
+ "custom_prompt_create_pr": [
+  "index-BGEQ8YjU.js"
+ ],
+ "custom_prompt_fix_errors": [
+  "index-BGEQ8YjU.js"
+ ],
+ "custom_prompt_general": [
+  "index-BGEQ8YjU.js"
+ ],
+ "custom_prompt_rename_branch": [
+  "index-BGEQ8YjU.js"
+ ],
+ "custom_prompt_resolve_merge_conflicts": [
+  "index-BGEQ8YjU.js"
+ ],
+ "default_codex_thinking_level": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "default_model": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "default_thinking_enabled": [
+  "index-BGEQ8YjU.js"
+ ],
+ "delete_keychain_setting": [
+  "index-BGEQ8YjU.js"
+ ],
+ "delivery_payload": [
+  "index-BGEQ8YjU.js"
+ ],
+ "disable_external_logging": [
+  "index-BGEQ8YjU.js"
+ ],
+ "ensure_app_actions_started": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "ensure_app_logger_started": [
+  "index-BGEQ8YjU.js"
+ ],
+ "ensure_sidecar_started": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "enterprise_data_privacy": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "execute_shell_command": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "execute_shell_command_cancellable": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "experimental_sidebar_transparency": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "export_app_logs": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "file_include_globs": [
+  "index-BGEQ8YjU.js"
+ ],
+ "find_available_local_port": [
+  "index-BGEQ8YjU.js"
+ ],
+ "fuzzy_filter_files": [
+  "index-BGEQ8YjU.js"
+ ],
+ "fuzzy_match_files": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "get_agent_binary_state": [
+  "index-BGEQ8YjU.js"
+ ],
+ "get_app_logger_connection": [
+  "index-BGEQ8YjU.js"
+ ],
+ "get_binary_verification_errors": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "get_db_uri": [
+  "index-BGEQ8YjU.js"
+ ],
+ "get_file_metadata": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "get_keychain_setting": [
+  "index-BGEQ8YjU.js"
+ ],
+ "get_or_create_local_storage_encryption_key": [
+  "index-BGEQ8YjU.js"
+ ],
+ "get_resource_usage": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "get_sidecar_log_path": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "graphite_disabled": [
+  "index-BGEQ8YjU.js"
+ ],
+ "grep_workspace": [
+  "index-BGEQ8YjU.js"
+ ],
+ "http_proxy": [
+  "index-BGEQ8YjU.js"
+ ],
+ "internal_settings_enabled": [
+  "index-BGEQ8YjU.js"
+ ],
+ "is_not": [
+  "index-BGEQ8YjU.js"
+ ],
+ "keyboard_shortcut": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "last_error": [
+  "index-BGEQ8YjU.js"
+ ],
+ "list_file_tree": [
+  "index-BGEQ8YjU.js"
+ ],
+ "list_port_forwards": [
+  "index-BGEQ8YjU.js"
+ ],
+ "manual_update_status": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "materialize_local_path_attachment": [
+  "index-BGEQ8YjU.js"
+ ],
+ "native_http_fetch": [
+  "index-BGEQ8YjU.js"
+ ],
+ "native_http_fetch_cancel": [
+  "index-BGEQ8YjU.js"
+ ],
+ "native_http_upload_cancel": [
+  "index-BGEQ8YjU.js"
+ ],
+ "native_http_upload_file": [
+  "index-BGEQ8YjU.js"
+ ],
+ "next_send_attempt_at": [
+  "index-BGEQ8YjU.js"
+ ],
+ "next_upload_attempt_at": [
+  "index-BGEQ8YjU.js"
+ ],
+ "open_best_practices_url": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "open_changelog_url": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "open_devtools": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "open_diagnostics_page": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "open_documentation_url": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "open_feedback_dialog": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "open_keyboard_shortcuts_dialog": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "open_settings_page": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "open_submit_prompt_dialog": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "poll_app_action": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "prefetch_agent_binaries_from_updater_endpoint": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "pty_ack_bytes": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_create_mirror": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_delete_mirror": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_kill": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_load_terminal_history": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_persist_terminal_history": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_resize": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_resize_mirror": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_screen_snapshot": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_screen_text": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_spawn": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_write": [
+  "index-BGEQ8YjU.js"
+ ],
+ "pty_write_mirror": [
+  "index-BGEQ8YjU.js"
+ ],
+ "queue_order": [
+  "index-BGEQ8YjU.js"
+ ],
+ "quit_app": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "quit_requested": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "raw_websocket_close": [
+  "index-BGEQ8YjU.js"
+ ],
+ "raw_websocket_open": [
+  "index-BGEQ8YjU.js"
+ ],
+ "raw_websocket_ping": [
+  "index-BGEQ8YjU.js"
+ ],
+ "raw_websocket_send_text": [
+  "index-BGEQ8YjU.js"
+ ],
+ "redownload_agent_binary": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "reject_port_forward_token": [
+  "index-BGEQ8YjU.js"
+ ],
+ "reject_remote_file_sync_direct_info": [
+  "index-BGEQ8YjU.js"
+ ],
+ "relative_path": [
+  "index-BGEQ8YjU.js"
+ ],
+ "remove_agent_binary": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "request_agent_binary_download": [
+  "index-BGEQ8YjU.js"
+ ],
+ "resolve_port_forward_token": [
+  "index-BGEQ8YjU.js"
+ ],
+ "resolve_remote_file_sync_direct_info": [
+  "index-BGEQ8YjU.js"
+ ],
+ "review_codex_thinking_level": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "review_model": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "review_thinking_enabled": [
+  "index-BGEQ8YjU.js"
+ ],
+ "roundhouse_client_user_id": [
+  "index-BGEQ8YjU.js"
+ ],
+ "rpc_from_sidecar": [
+  "index-BGEQ8YjU.js"
+ ],
+ "rpc_to_sidecar": [
+  "index-BGEQ8YjU.js"
+ ],
+ "run_script": [
+  "index-BGEQ8YjU.js"
+ ],
+ "run_script_mode": [
+  "index-BGEQ8YjU.js"
+ ],
+ "send_attempt_count": [
+  "index-BGEQ8YjU.js"
+ ],
+ "send_native_notification": [
+  "index-BGEQ8YjU.js"
+ ],
+ "set_agent_binary_failure_injection": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "set_dock_badge": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "set_enabled": [
+  "index-BGEQ8YjU.js"
+ ],
+ "set_keychain_setting": [
+  "index-BGEQ8YjU.js"
+ ],
+ "set_posthog_user_context": [
+  "index-BGEQ8YjU.js"
+ ],
+ "set_quit_handler_ready": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "set_remote_file_sync_foreground": [
+  "index-BGEQ8YjU.js"
+ ],
+ "setting_up": [
+  "index-BGEQ8YjU.js"
+ ],
+ "setup_script": [
+  "index-BGEQ8YjU.js"
+ ],
+ "sidecar_inspect": [
+  "index-BGEQ8YjU.js"
+ ],
+ "sound_type": [
+  "index-BGEQ8YjU.js"
+ ],
+ "spotlight_testing": [
+  "index-BGEQ8YjU.js"
+ ],
+ "start_port_forward": [
+  "index-BGEQ8YjU.js"
+ ],
+ "start_remote_file_sync": [
+  "index-BGEQ8YjU.js"
+ ],
+ "stop_port_forward": [
+  "index-BGEQ8YjU.js"
+ ],
+ "stop_remote_file_sync": [
+  "index-BGEQ8YjU.js"
+ ],
+ "submit_app_action_result": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "submit_app_logs": [
+  "index-BGEQ8YjU.js"
+ ],
+ "sync_agent_path_overrides": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "toggle_left_sidebar": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "toggle_right_sidebar": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "tool_result": [
+  "index-BGEQ8YjU.js"
+ ],
+ "trigger_remote_file_sync": [
+  "index-BGEQ8YjU.js"
+ ],
+ "update_traffic_light_position": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "update_window_vibrancy": [
+  "index-BGEQ8YjU.js",
+  "renderApp-D_fmY7hW.js"
+ ],
+ "updated_at": [
+  "index-BGEQ8YjU.js"
+ ],
+ "upload_attempt_count": [
+  "index-BGEQ8YjU.js"
+ ],
+ "vertex_project_id": [
+  "index-BGEQ8YjU.js"
+ ],
+ "write_encoded_image_to_clipboard": [
+  "renderApp-D_fmY7hW.js"
+ ],
+ "write_file_async": [
+  "index-BGEQ8YjU.js"
+ ]
+}
