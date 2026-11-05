@@ -18,6 +18,11 @@ const outDir = path.resolve(process.env.OUT_DIR ?? path.join(repoRoot, "evidence
 const PORT = Number(process.env.PORT ?? 4317);
 const REA = process.env.REA ?? path.join(process.env.HOME, ".npm-global/bin/rea");
 const CHROMIUM = process.env.CHROMIUM ?? "/usr/bin/chromium";
+// Default host is conductor.localhost (loopback in Chromium). Virtuoso Message
+// List, bundled in Conductor, treats "localhost" as a dev environment and
+// replaces the chat transcript with an expired-license banner; shots can set
+// host: "localhost" to show that state.
+const HOST = process.env.HOST_NAME ?? "conductor.localhost";
 const LOG_DIR = process.env.LOG_DIR ?? path.join(process.env.TMPDIR ?? "/tmp", "oc-ipc-logs");
 
 const [shotsFile, ...only] = process.argv.slice(2);
@@ -48,7 +53,7 @@ for (const shot of shots) {
   const query = new URLSearchParams({ oc_scenario: shot.scenario ?? "signed-in", oc_theme: theme });
   const input = {
     browser: { mode: "launch", executable_path: CHROMIUM, headless: true },
-    start_url: { url: `http://localhost:${PORT}${shot.path ?? "/"}?${query}` },
+    start_url: { url: `http://${shot.host ?? HOST}:${PORT}${shot.path ?? "/"}?${query}` },
     environment: {
       viewport: { width: shot.viewport?.width ?? 1440, height: shot.viewport?.height ?? 900, device_scale_factor: 1 },
       color_scheme: theme,
@@ -91,6 +96,7 @@ for (const shot of shots) {
   manifest[shot.name] = {
     file: `${shot.name}.png`,
     route: shot.path ?? "/",
+    host: shot.host ?? HOST,
     scenario: shot.scenario ?? "signed-in",
     theme,
     viewport: input.environment.viewport,

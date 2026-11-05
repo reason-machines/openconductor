@@ -1,0 +1,36 @@
+[
+  {"name": "sidebar--repos-collapsed--dark", "scenario": "populated", "theme": "dark", "settle_ms": 6000,
+   "notes": "Populated sidebar: three repos with workspace counts, Home in the main area."},
+  {"name": "sidebar--repos-expanded--dark", "scenario": "populated", "theme": "dark", "settle_ms": 6000,
+   "actions": [
+     {"step_id": "expand_tide_web", "action": "click", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000},
+     {"step_id": "pause", "action": "wait_for_timeout", "duration_ms": 600},
+     {"step_id": "expand_tide_api", "action": "click", "locator": {"kind": "css", "selector": "text=tide-api"}, "timeout_ms": 5000}],
+   "notes": "Two repos expanded: workspace rows (branch-derived names, unread rows in bold, diff stats on the row with changes)."},
+  {"name": "sidebar--repos-expanded--light", "scenario": "populated", "theme": "light", "settle_ms": 6000,
+   "actions": [
+     {"step_id": "expand_tide_web", "action": "click", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000},
+     {"step_id": "pause", "action": "wait_for_timeout", "duration_ms": 600},
+     {"step_id": "expand_tide_api", "action": "click", "locator": {"kind": "css", "selector": "text=tide-api"}, "timeout_ms": 5000}],
+   "notes": "Same as dark, light theme."},
+  {"name": "chat--transcript-collapsed-tools--dark", "scenario": "populated", "theme": "dark", "settle_ms": 6000,
+   "actions": [
+     {"step_id": "expand_tide_web", "action": "click", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000},
+     {"step_id": "open_workspace", "action": "click", "locator": {"kind": "css", "selector": "text=Ada/fix login redirect"}, "timeout_ms": 5000}],
+   "final_settle_ms": 3000,
+   "notes": "Workspace open: chat transcript with tool calls collapsed, composer, right panel with Changes (2 files) and Run tab. 'Couldn't load PR info' appears because GitHub is unreachable in the harness."},
+  {"name": "chat--transcript-collapsed-tools--light", "scenario": "populated", "theme": "light", "settle_ms": 6000,
+   "actions": [
+     {"step_id": "expand_tide_web", "action": "click", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000},
+     {"step_id": "open_workspace", "action": "click", "locator": {"kind": "css", "selector": "text=Ada/fix login redirect"}, "timeout_ms": 5000}],
+   "final_settle_ms": 3000,
+   "notes": "Same as dark, light theme."},
+  {"name": "chat--tool-calls-expanded--dark", "scenario": "populated", "theme": "dark", "settle_ms": 6000,
+   "actions": [
+     {"step_id": "expand_tide_web", "action": "click", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000},
+     {"step_id": "open_workspace", "action": "click", "locator": {"kind": "css", "selector": "text=Ada/fix login redirect"}, "timeout_ms": 5000},
+     {"step_id": "pause", "action": "wait_for_timeout", "duration_ms": 2000},
+     {"step_id": "expand_tools", "action": "click", "locator": {"kind": "css", "selector": "text=4 tool calls, 2 messages"}, "timeout_ms": 5000}],
+   "final_settle_ms": 1500,
+   "notes": "The '4 tool calls, 2 messages' group expanded: Grep, Read, Edit and Bash rows with intermediate assistant text."}
+]
