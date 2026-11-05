@@ -11,8 +11,9 @@ import { processFile, type CodeViewItem, type SelectedLineRange, type ThemeTypes
 import { CodeView, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
 import { RevertIcon } from "./DiscardDialog";
 import type { CommentSide } from "./comments.ts";
-import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, PIERRE_THEME, codeViewItem, fromPierreSide, lineTarget, loadedFiles, toPatch } from "./pierre.ts";
+import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, codeViewItem, fromPierreSide, lineTarget, loadedFiles, toPatch } from "./pierre.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
+import { useDiffTheme } from "./useDiffTheme.ts";
 
 export type LineAnchor = Anchor;
 
@@ -66,6 +67,7 @@ export function revealLine(path: string, anchor: LineAnchor): boolean {
 
 function Code({ file, layout, ignoreWhitespace, onLineClick, anchors = [], annotations, loadFull }: Props) {
   const themeType = useThemeType();
+  const theme = useDiffTheme();
   const view = useRef<CodeViewHandle<LineAnchor, undefined>>(null);
   // Pierre upgrades this object in place when it loads the full file, so keep it per file.
   const meta = useMemo(() => processFile(toPatch(file), { isGitDiff: true }), [file]);
@@ -84,7 +86,7 @@ function Code({ file, layout, ignoreWhitespace, onLineClick, anchors = [], annot
       disableFileHeader: true,
       layout: CODE_VIEW_LAYOUT,
       overflow: "scroll",
-      theme: PIERRE_THEME,
+      theme,
       themeType,
       lineHoverHighlight: "number",
       enableGutterUtility: clickable,
@@ -98,7 +100,7 @@ function Code({ file, layout, ignoreWhitespace, onLineClick, anchors = [], annot
       loadDiffFiles: canLoad ? async () => loadedFiles(await latest.current.loadFull!()) : undefined,
       parseDiffOptions: ignoreWhitespace ? { ignoreWhitespace: true } : undefined,
     }),
-    [themeType, clickable, canLoad, layout, fileSide, ignoreWhitespace],
+    [theme, themeType, clickable, canLoad, layout, fileSide, ignoreWhitespace],
   );
 
   useEffect(() => {
