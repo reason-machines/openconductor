@@ -2,6 +2,7 @@
 
 SQLite persistence for OpenConductor: the `conductor.db` schema as sqlx
 migrations, plus typed data access for every table (`repos`, `workspaces`,
+`sessions`, `session_messages`, `attachments`,
 `diff_comments`, `terminal_sessions`, `app_settings` for `settings`,
 `env_vars`, `port_forwards`, `navigation` for sections and memberships,
 `favorite_models`, `outbox` for the message and asset outboxes and their pause
@@ -26,6 +27,7 @@ cargo run --example migrate -- /tmp/conductor.db   # write a migrated DB file
 | sqlx 0.8.6 and `_sqlx_migrations` | `evidence/sqlite/README.md` (`sqlx-sqlite-0.8.6` panic paths in the binary; REA `inspect-sqlite-database` of `_sqlx_migrations`) |
 | Workspace states `initializing`, `setting_up`, `ready`, `archiving`, `archived`, plus `failed`, `unstarted`, `deleted` | Migration text embedded in `MacOS/conductor` (`strings`), and SQL in the decoded frontend bundle, both read on the reference Mac |
 | Query shapes (repo list order, delete only when unused, reuse hidden repo by path, conditional state transitions, no workspaces `updated_at` trigger, monotonic `touch`) | SQL string literals in the decoded frontend bundle (the reference app runs its SQL from the webview through `tauri-plugin-sql`) |
+| `sessions`, `session_messages`, `attachments` query shapes, value sets and JS-side ordering, one row per Rust function | `evidence/sqlite/sessions-messages-attachments-queries.md` (SQL literals from `assets/index-BGEQ8YjU.js` of Conductor 0.87.6) |
 
 | Query shapes for `env_vars`, `port_forwards`, `navigation_*`, `favorite_models`, `session_*_outbox*`, `symlinks_pending_deletion`, `settings.deprecated_at` | `evidence/persistence/sql-literals-remaining-tables.txt`: every SQL literal over those tables in the decoded bundle (`index-BGEQ8YjU.js`, `renderApp-D_fmY7hW.js`, sha256 recorded), with byte offsets; each module's doc comment cites its offsets |
 | Outbox states, retry rule (20 attempts, 2 s doubling to 60 s), unreadable-row and unknown-value handling | Same bundle, around offsets 2309300 and 2369156 (constants `Qle = 20`, `{initialDelayMs: 2e3, maxDelayMs: 6e4}`) |
@@ -152,6 +154,24 @@ the same SQL). The `cargo` parity test checks the real migrator on every CI run.
   watermark from the caller instead of querying `conductor.db` themselves.
 - `cache.db`: no command reads the cache yet; `CacheDb` is managed state
   for the transcript and sidebar code that will.
+- `sessions::list_for_workspace` sorts in SQL with `julianday()` what the
+  reference sorts in JS on parsed dates; id ties use byte order where the
+  reference uses `localeCompare`.
+- `sessions::set_agent_and_model` takes the reference statement with its
+  optional `${u}` suffix empty; what the suffix adds was not read.
+- Session rows with an unknown or NULL `status` fail to decode, as the
+  reference decoder throws; `agent_type` outside `claude/codex/cursor/acp`
+  likewise.
+- No `cancelled_at` writer: no 0.87.6 statement sets it (see the evidence
+  file), so a cancel path is left to whoever finds one.
+  `is_resumable_message` is stored (1 or NULL) and decoded, never filtered.
+- The reference reads and writes `sessions.notes` (`UPDATE sessions SET
+  notes = ? WHERE id = ?`), but the reference DB schema has no such column;
+  not implemented.
+- `session_messages` keyset paging (`(sent_at, rowid) > (?, ?) LIMIT ?`)
+  runs only against the `cache.db` mirror in the reference; it is not here.
+- Transcript search (`LOWER(content) LIKE`) and session title search are not
+  covered yet.
 
 ## REA gaps
 
@@ -161,6 +181,11 @@ the same SQL). The `cargo` parity test checks the real migrator on every CI run.
 - REA `analyze-javascript-application` Evidence has no string literals, and
   `trace-javascript-semantics` literal seeds miss budget-truncated files, so
   the frontend SQL was found by grepping the decoded bundle.
+- `rea search <bundle>.js session_messages` fails with
+  `capability_unavailable` (`target_unsupported`: only the native providers
+  ghidra, hopper, ida, kuna are candidates, none take a JS file), so the
+  sessions, messages and attachments SQL was read with `perl` over the
+  decoded bundle.
 - `inspect-sqlite-database` refuses databases over 256 MiB (see
   `rea-test-report.md`).
 - `rea search <bundle>.js 'FROM port_forwards'` fails with
