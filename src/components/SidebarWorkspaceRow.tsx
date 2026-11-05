@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState, type Dispatch, type MouseEvent } from "react";
 import type { AppState, Workspace } from "../state/types";
 import type { Action } from "../state/store";
-import { BranchIcon } from "./Icons";
+import { RowStatusIcon } from "./RowStatusIcon";
+import { rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
 import { workspaceLabel } from "./sidebarLabel";
 import { WorkspaceActionsMenu } from "./WorkspaceActionsMenu";
 import { COMMANDS } from "../keybindings/registry";
@@ -10,17 +11,12 @@ import { sidebarEntries } from "../state/sidebarOrder";
 import { compactCount } from "../state/sidebarDiffStat";
 import { useRowDiffStat } from "./useRowDiffStat";
 
-const STATUS_LABEL: Record<Workspace["status"], string> = {
-  idle: "Idle",
-  working: "Working",
-  "needs-review": "Ready for review",
-  archived: "Archived",
-};
-
 interface Props {
   workspace: Workspace;
   /** Branch the workspace merges into; a branch equal to it is not used as the title. */
   targetBranch: string;
+  /** The repo has a remote: a workspace without a PR shows "Ready" (branch) rather than "Local workspace". */
+  hasRemote?: boolean;
   active: boolean;
   onSelect: () => void;
   /** Right-click: opens the workspace actions menu. */
@@ -33,10 +29,12 @@ interface Props {
 }
 
 /** One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat. */
-export function SidebarWorkspaceRow({ workspace: ws, targetBranch, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint }: Props) {
+export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint }: Props) {
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
   const label = workspaceLabel({ name: ws.name, branch: ws.branch, prTitle: ws.prTitle, userSetWorkspaceName: ws.userSetWorkspaceName, targetBranch });
   const { ref, stat } = useRowDiffStat(ws, targetBranch, active);
+  const status = rowStatus({ workspaceState: ws.state, session: ws.status === "working" ? "working" : "idle", pr: ws.pr, hasRemote });
+  const statusLabel = rowStatusLabel(status);
   return (
     <button
       ref={ref}
@@ -50,11 +48,19 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, active, onSel
       aria-current={active ? "page" : undefined}
       onClick={onSelect}
       onContextMenu={onContextMenu}
-      title={`${label} · ${ws.branch} · ${STATUS_LABEL[ws.status]}`}
+      title={`${label} · ${ws.branch} · ${statusLabel}`}
     >
       <span className="sb-ws-lead" data-testid="workspace-leading-visual" data-hint={hint || undefined}>
-        <span className={`sb-ws-status ${ws.status}`} role="img" aria-label={STATUS_LABEL[ws.status]} aria-hidden={hint || undefined}>
-          <BranchIcon size={14} />
+        <span
+          className="sb-ws-status"
+          data-testid="workspace-status-icon"
+          data-status={status}
+          data-color={rowStatusColor(status)}
+          role="img"
+          aria-label={statusLabel}
+          aria-hidden={hint || undefined}
+        >
+          <RowStatusIcon status={status} />
         </span>
         {shortcutNumber !== undefined && (
           <span className="sb-ws-hint" aria-label={hintLabel(shortcutNumber)} aria-hidden={!hint} data-state={hint ? "visible" : "hidden"}>

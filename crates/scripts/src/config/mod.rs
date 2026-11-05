@@ -24,6 +24,7 @@ mod run;
 mod run_tests;
 #[cfg(test)]
 mod tests;
+mod user;
 
 use std::collections::BTreeSet;
 use std::fmt;
@@ -42,6 +43,7 @@ pub use run::{
     available, default_script, is_icon_name, label_for, normalize_id, shell_quote, Location,
     RunScript, DEFAULT_ICON, LEGACY_RUN_ID,
 };
+pub use user::{set_user_auto_run_after_setup, user_auto_run_after_setup};
 
 /// A settings layer, in ascending precedence.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
