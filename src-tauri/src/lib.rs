@@ -19,6 +19,7 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod bin_source_markers;
 pub mod bundled_bin;
 pub mod checkpoint;
 mod checkpoint_commands;
@@ -175,7 +176,7 @@ fn save_repo_scripts(
 #[serde(rename_all = "camelCase")]
 struct BranchPrefixInfo {
     branch_prefix_type: settings::BranchPrefixType,
-    branch_prefix_custom: Option<String>,
+    branch_prefix: Option<String>,
     github_username: Option<String>,
 }
 
@@ -198,7 +199,7 @@ async fn branch_prefix_settings() -> BranchPrefixInfo {
         .filter(|login| !login.is_empty());
     BranchPrefixInfo {
         branch_prefix_type: git.branch_prefix_type,
-        branch_prefix_custom: git.branch_prefix_custom,
+        branch_prefix: git.branch_prefix,
         github_username,
     }
 }
@@ -359,6 +360,8 @@ pub fn run() {
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
             settings::commands::get_settings,
+            settings::effective::repo_settings_effective,
+            settings::effective::repo_settings_set_local,
             settings::commands::update_settings,
             settings::commands::provider_status,
             settings::commands::connect_provider,

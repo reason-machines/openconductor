@@ -12,7 +12,7 @@
 //   the cities and weights below are our own.
 // - The bundle carries Common / Uncommon / Rare / Legendary labels; we use them
 //   as rarity tiers for city names.
-// - Branch prefix settings are `branch_prefix_type` and `branch_prefix_custom`;
+// - Branch prefix settings are `branch_prefix_type` and `branch_prefix`;
 //   a migration appends a trailing slash to stored custom prefixes.
 //
 // Everything here is deterministic given an `Rng`, so it is unit tested
@@ -171,7 +171,7 @@ export type BranchPrefixType = "github_username" | "custom" | "none";
 
 export interface BranchPrefixSettings {
   branch_prefix_type?: string | null;
-  branch_prefix_custom?: string | null;
+  branch_prefix?: string | null;
 }
 
 /**
@@ -183,7 +183,7 @@ export function resolveBranchPrefix(settings: BranchPrefixSettings, githubUserna
   const type = settings.branch_prefix_type ?? "github_username";
   let raw = "";
   if (type === "none") raw = "";
-  else if (type === "custom") raw = settings.branch_prefix_custom ?? "";
+  else if (type === "custom") raw = settings.branch_prefix ?? "";
   else raw = githubUsername ?? "";
   const cleaned = raw
     .trim()
@@ -197,14 +197,14 @@ export function resolveBranchPrefix(settings: BranchPrefixSettings, githubUserna
 /** What the backend's `branch_prefix_settings` command returns. */
 export interface BranchPrefixInfo {
   branchPrefixType: string;
-  branchPrefixCustom: string | null;
+  branchPrefix: string | null;
   githubUsername: string | null;
 }
 
 /** Splits the backend reply into the dialog's settings and username. */
 export function prefixSettingsFromInfo(info: BranchPrefixInfo): { settings: BranchPrefixSettings; githubUsername: string | null } {
   return {
-    settings: { branch_prefix_type: info.branchPrefixType, branch_prefix_custom: info.branchPrefixCustom },
+    settings: { branch_prefix_type: info.branchPrefixType, branch_prefix: info.branchPrefix },
     githubUsername: info.githubUsername,
   };
 }
