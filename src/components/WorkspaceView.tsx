@@ -341,7 +341,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   );
 }
 
-function RightPanel({ diff, actions, pr, worktree, review }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null; review: ReactNode }) {
+function RightPanel({ diff, actions, pr, worktree, review, repo }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null; review: ReactNode; repo: Repo }) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -367,7 +367,7 @@ function RightPanel({ diff, actions, pr, worktree, review }: { diff: WorkspaceDi
       {tab === "changes" ? (
         <ChangesList diff={diff} actions={actions} worktree={worktree} />
       ) : tab === "checks" ? (
-        <ChecksTab worktree={worktree} pr={pr.pr} refresh={pr.refresh} />
+        <ChecksTab worktree={worktree} pr={pr.pr} refresh={pr.refresh} repoPath={repo.path} defaultBranch={repo.defaultBranch} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -468,7 +468,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     }),
     [workspace.id],
   );
-  const review = useReviewComments(workspace.id, chat, diff.openPath);
+  const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
   // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub, then archive on merge.
@@ -508,9 +508,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "git.createPR": () => {
       if (createShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.create(false);
     },
-    // Optional checks are not treated as blocking until that setting exists.
     "git.mergePR": () => {
-      if (mergeShortcutApplies(pullRequest.pr, false, prActions.busy === "merging")) void prActions.merge();
+      if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
     },
     "git.openInGitHub": prActions.openOnGitHub,
   });
@@ -558,7 +557,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
-          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} /> : null}
+          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} /> : null}
         />
         <div className="ws-right">
           <RightPanel
@@ -567,6 +566,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
             pr={pullRequest}
             worktree={workspace.path ?? null}
             review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
+            repo={repo}
           />
           <ScriptsPanel repo={repo} workspace={workspace} />
         </div>

@@ -316,6 +316,8 @@ pub fn run() {
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,
             turn_checkpoint_commands::checkpoint_turn_changes,
+            diff::comment_commands::diff_comments_sync_github,
+            diff::comment_commands::diff_comment_resolve_github,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
