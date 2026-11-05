@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { commentStoreFor } from "./commentsApi.ts";
 import { formatForAgent, newLocalComment, pendingForAgent, refreshOutdated, sideOf, threadKey, threadsAt, threadsOf, type DiffComment, type Thread } from "./comments.ts";
-import type { LineAnchor } from "./FileDiffView";
+import { revealLine, type LineAnchor } from "./FileDiffView";
 import { commentTargets, stepComment } from "./nav.ts";
 import { buildReviewPrompt } from "./review.ts";
 import type { DiffScope, FileDiff } from "./types.ts";
@@ -228,8 +228,11 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, customR
     setFocused(t.id);
     const path = files[t.fileIndex].path;
     reveal?.(path);
-    // The diff tab shows one file: let it render the revealed file before scrolling.
+    const root = comments.find((c) => c.id === t.id);
+    // The diff tab shows one file: let it render the revealed file, then have its
+    // virtualized view scroll the comment's line into the rendered window.
     requestAnimationFrame(() => {
+      if (root && revealLine(path, { side: sideOf(root), line: t.line })) return;
       const el = document.getElementById(`oc-comment-${t.id}`) ?? document.getElementById(`oc-file-${encodeURIComponent(path)}`);
       el?.scrollIntoView({ block: "center" });
     });

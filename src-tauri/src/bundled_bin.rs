@@ -85,6 +85,11 @@ pub fn install_at_startup(resource_dir: &Path, app_data_dir: &Path) {
     let _ = INSTALLED_BIN.set(app_data_dir.join("bin"));
 }
 
+/// `$APPDATA/bin` once [`install_at_startup`] has run.
+pub fn installed_bin_dir() -> Option<&'static Path> {
+    INSTALLED_BIN.get().map(PathBuf::as_path)
+}
+
 /// `gh` to run: `$OPENCONDUCTOR_GH` when set, else the installed bundled copy
 /// in `$APPDATA/bin`, else `gh` on PATH.
 pub fn gh_path() -> PathBuf {

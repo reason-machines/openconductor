@@ -94,7 +94,9 @@ export function sampleDiff(opts: DiffViewOptions): FileDiff[] {
     [40, 41, "function notFound() {", " function notFound() {\n-  return new Response(\"missing\", { status: 404 });\n+  return new Response(\"not found\", { status: 404 });\n }"],
   ]);
   const added = file("src/server/ready.ts", "added", [[0, 1, "", "+export function ready() {\n+  return new Response(\"ready\");\n+}"]]);
-  const spaced = file("README.md", "modified", opts.ignoreWhitespace ? [] : [[3, 3, "", " ## Usage\n-Run  the server with `npm start`.\n+Run the server with `npm start`."]]);
+  // Like the backend: hidden whitespace keeps the file and its counts, drops its hunks.
+  const spacedFull = file("README.md", "modified", [[3, 3, "", " ## Usage\n-Run  the server with `npm start`.\n+Run the server with `npm start`."]]);
+  const spaced = opts.ignoreWhitespace ? { ...spacedFull, hunks: [] } : spacedFull;
   const files = opts.scope === "all" ? [spaced, added, committed] : [spaced, added];
   return files.sort((a, b) => a.path.localeCompare(b.path));
 }
