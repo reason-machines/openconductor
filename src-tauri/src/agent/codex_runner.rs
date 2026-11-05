@@ -386,7 +386,7 @@ impl Worker {
 mod tests {
     use std::fs;
     use std::os::unix::fs::PermissionsExt;
-    use std::path::PathBuf;
+    use std::path::{Path, PathBuf};
     use std::sync::atomic::{AtomicU32, Ordering};
     use std::sync::Mutex;
     use std::time::Instant;
@@ -446,6 +446,8 @@ done
             std::process::id(),
             N.fetch_add(1, Ordering::Relaxed)
         ));
+        // PIDs repeat across sandboxes: start from an empty folder.
+        let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("codex");
         fs::write(&path, FAKE).unwrap();
@@ -453,9 +455,9 @@ done
         path
     }
 
-    fn config(exe: &PathBuf, resume: Option<&str>) -> RunnerConfig {
+    fn config(exe: &Path, resume: Option<&str>) -> RunnerConfig {
         let mut launch = CodexLaunch::new(exe.parent().unwrap(), LaunchEnv::new());
-        launch.executable = exe.clone();
+        launch.executable = exe.to_path_buf();
         RunnerConfig {
             launch,
             thread: ThreadOptions {
@@ -498,7 +500,7 @@ done
         panic!("no {kind} #{nth}; saw {:?}", seen.lock().unwrap());
     }
 
-    fn sent(exe: &PathBuf) -> Vec<Value> {
+    fn sent(exe: &Path) -> Vec<Value> {
         fs::read_to_string(exe.with_extension("stdin"))
             .unwrap_or_default()
             .lines()

@@ -314,6 +314,7 @@ mod tests {
     fn finds_codex_on_path_then_in_local_bin() {
         use std::os::unix::fs::PermissionsExt;
         let root = std::env::temp_dir().join(format!("oc-find-codex-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
         let (on_path, home) = (root.join("bin"), root.join("home"));
         std::fs::create_dir_all(&on_path).unwrap();
         std::fs::create_dir_all(home.join(".local/bin")).unwrap();

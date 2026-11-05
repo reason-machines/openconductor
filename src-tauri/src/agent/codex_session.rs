@@ -455,6 +455,8 @@ done
             std::process::id(),
             N.fetch_add(1, Ordering::Relaxed)
         ));
+        // PIDs repeat across sandboxes: start from an empty folder.
+        let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("codex");
         fs::write(&path, body).unwrap();
