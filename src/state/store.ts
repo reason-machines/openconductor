@@ -8,6 +8,7 @@ import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
+import { sameRepoRecord } from "./addRepo";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -62,8 +63,7 @@ export function reducer(state: AppState, action: Action): AppState {
     case "select":
       return { ...state, selection: action.selection };
     case "addRepo": {
-      const existing = state.repos.find((r) => (action.repo.path && r.path === action.repo.path) || (action.repo.remote && r.remote === action.repo.remote));
-      if (existing) return state;
+      if (sameRepoRecord(state.repos, { id: action.id, path: action.repo.path })) return state;
       if (action.id) {
         const repo: Repo = { ...action.repo, id: action.id, workspaces: [] };
         return { ...state, repos: [...state.repos.filter((r) => r.id !== action.id), repo] };

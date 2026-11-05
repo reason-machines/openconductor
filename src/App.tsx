@@ -187,7 +187,8 @@ export default function App() {
       {dialog === "clone" && (
         <CloneGitHubRepoDialog
           onClose={() => setDialog(null)}
-          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", id: inTauri() ? cloned.id : undefined, repo: { name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
+          // The backend names the folder uniquely; a second clone of one remote is its own project (Conductor: `<name>-v1`).
+          onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", id: inTauri() ? cloned.id : undefined, repo: { name: cloned.name || name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
         />
       )}
       {dialog === "quickstart" && (
