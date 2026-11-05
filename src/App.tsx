@@ -118,10 +118,12 @@ export default function App() {
   }, [dispatch]);
 
   // Open project: native picker straight away, then the backend folder checks.
-  const openProject = useCallback(async () => {
+  // A Recents row of the sidebar add menu runs the same checks on its folder
+  // (Conductor's `Jgi` mutation, called with or without a path).
+  const addProject = useCallback(async (picked?: string) => {
     if (!inTauri()) return show("info", "Open project needs the desktop app.");
     try {
-      const path = await pickFolder("Select project directory");
+      const path = picked ?? (await pickFolder("Select project directory"));
       if (!path) return;
       const outcome = decideOpenProject(path, await inspectProjectFolder(path));
       if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
@@ -136,6 +138,8 @@ export default function App() {
       show("error", failedToAddMessage(err));
     }
   }, [dispatch, show, state.repos]);
+  const openProject = useCallback(() => void addProject(), [addProject]);
+  const addProjectAt = useCallback((path: string) => void addProject(path), [addProject]);
   const [quickOpen, setQuickOpen] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -146,6 +150,15 @@ export default function App() {
     const unlisten = listen("open_keyboard_shortcuts_dialog", toggleShortcuts);
     return () => void unlisten.then((off) => off());
   }, [toggleShortcuts]);
+  // View > Toggle Left / Right Sidebar in the native menu (src-tauri/src/menu.rs).
+  useEffect(() => {
+    if (!inTauri()) return;
+    const offs = [
+      listen("toggle_left_sidebar", () => dispatch({ type: "toggleSidebar" })),
+      listen("toggle_right_sidebar", toggleRightPanel),
+    ];
+    return () => offs.forEach((off) => void off.then((f) => f()));
+  }, [dispatch]);
 
   const sel = state.selection;
   const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
@@ -188,7 +201,7 @@ export default function App() {
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onError={(message) => show("error", message)} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onError={(message) => show("error", message)} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
