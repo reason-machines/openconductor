@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { loadBranchPrefix } from "../workspace/api";
+import { PrefSwitchRow, Select, Toggle } from "./controls";
 import { Row } from "./GeneralPage";
+import { enumPref, withEnumPref } from "./prefs";
 import { blankToNull, branchPrefixError, branchPreview, normalizeCustomPrefix, withField } from "./model";
 import type { BranchPrefixType, Settings } from "./types";
 
@@ -10,13 +12,12 @@ interface Props {
 }
 
 /**
- * Settings › Git. Conductor's user-scope Git tab has more rows (Open pull
- * requests in, Delete branch on archive, Archive on merge, Automerge, ...);
- * only rows whose setting something here reads are shown
- * (evidence/settings/NOTES.md, "Settings pages"). `delete_branch_on_archive`
- * is stored but gets a row once archiving deletes branches. Conductor keeps
- * Automerge and "Treat optional checks as blocking" outside settings.toml's
- * sections; here they are top-level keys (default off).
+ * Settings › Personal › Git, row for row with Conductor 0.87.6's user-scope
+ * `git` tab (renderApp-D_fmY7hW.js registry, evidence/settings/NOTES.md
+ * "Settings pages, row for row"). "Git identity" shows only for a cloud
+ * organization and "Branch new workspaces from" / "Remote origin" only in a
+ * repository's Git section, so a local user's page starts at "Open pull
+ * requests in".
  */
 export function GitPage({ settings, save }: Props) {
   const git = settings.git;
@@ -60,7 +61,20 @@ export function GitPage({ settings, save }: Props) {
 
   return (
     <div className="settings-rows">
-      <Row label="Branch name prefix" help="Prefix for new workspace branch names.">
+      <Row label="Open pull requests in" stacked>
+        <Select
+          label="Open pull requests in"
+          width={180}
+          value={enumPref(settings, "pull_request_open_target")}
+          options={[
+            { value: "github", label: "GitHub" },
+            { value: "linear", label: "Linear" },
+            { value: "graphite", label: "Graphite" },
+          ]}
+          onChange={(v) => save(withEnumPref(settings, "pull_request_open_target", v))}
+        />
+      </Row>
+      <Row label="Branch name prefix" help="Prefix for new workspace branch names." stacked>
         <div className="settings-radios" role="radiogroup" aria-label="Branch name prefix">
           {option("github_username", githubUser ? `GitHub username (${githubUser})` : "GitHub username")}
           {option("custom", "Custom")}
@@ -68,9 +82,10 @@ export function GitPage({ settings, save }: Props) {
             <div className="settings-radio-detail">
               <input
                 type="text"
+                className="settings-field"
                 aria-label="Custom branch prefix"
                 aria-invalid={customError !== null}
-                placeholder="e.g. feature/ or myname"
+                placeholder="e.g. feature/ or myname-"
                 value={custom}
                 onChange={(e) => setCustom(e.target.value)}
                 onBlur={commitCustom}
@@ -79,58 +94,90 @@ export function GitPage({ settings, save }: Props) {
               {customError ? (
                 <p className="error small">{customError}</p>
               ) : (
-                <p className="muted small">Preview: {branchPreview(withCustom(normalizeCustomPrefix(custom)), githubUser)}</p>
+                <p className="settings-row-detail">Preview: {branchPreview(withCustom(normalizeCustomPrefix(custom)), githubUser)}</p>
               )}
             </div>
           )}
           {option("none", "None")}
         </div>
       </Row>
+      <PrefSwitchRow
+        settings={settings}
+        save={save}
+        pref="auto_rename_workspace_on_branch_name_set"
+        label="Rename workspace when branch is named"
+        help="Automatically rename workspaces from their placeholder city name to the branch name generated from the first message."
+      />
+      <Row
+        label="Delete branch on archive"
+        help={
+          <>
+            <p>Delete the local branch when archiving a workspace.</p>
+            <p>
+              To delete the remote branch,{" "}
+              <a
+                href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-the-automatic-deletion-of-branches"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                configure it on GitHub
+              </a>
+              .
+            </p>
+          </>
+        }
+        control={
+          <Toggle
+            label="Delete branch on archive"
+            checked={git.delete_branch_on_archive}
+            onChange={(on) => save(withField(settings, "git", "delete_branch_on_archive", on))}
+          />
+        }
+      >
+        {git.delete_branch_on_archive && <div className="settings-row-danger">Warning: archived workspaces will be unrecoverable</div>}
+      </Row>
+      <Row label="Archive on merge" help="Automatically archive a workspace after merging its PR in OpenConductor">
+        <Toggle label="Archive on merge" checked={git.archive_on_merge} onChange={(on) => save(withField(settings, "git", "archive_on_merge", on))} />
+      </Row>
+      <PrefSwitchRow
+        settings={settings}
+        save={save}
+        pref="automerge_enabled"
+        label="Automerge"
+        help="Show an automerge button in the git panel when checks are pending. Requires automerge to be enabled in your GitHub repository settings. Automerge is not supported for stacked pull requests."
+      />
+      <PrefSwitchRow
+        settings={settings}
+        save={save}
+        pref="treat_optional_checks_as_blocking"
+        label="Treat optional checks as blocking"
+        help="Hide the merge button when any check has failed, including checks GitHub considers optional."
+      />
       <Row
         label="Set upstream on plain git push"
-        help="Configure new workspaces so plain git push sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream."
+        help={
+          <>
+            Configure new OpenConductor workspaces so plain <code>git push</code> sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream.
+          </>
+        }
       >
-        <input
-          type="checkbox"
-          role="switch"
-          aria-label="Set upstream on plain git push"
+        <Toggle
+          label="Set upstream on plain git push"
           checked={git.worktree_push_auto_setup_remote}
-          onChange={(e) => save(withField(settings, "git", "worktree_push_auto_setup_remote", e.target.checked))}
+          onChange={(on) => save(withField(settings, "git", "worktree_push_auto_setup_remote", on))}
         />
       </Row>
-      <Row label="Archive on merge" help="Archive a workspace automatically once its pull request is merged.">
-        <input
-          type="checkbox"
-          role="switch"
-          aria-label="Archive on merge"
-          checked={git.archive_on_merge}
-          onChange={(e) => save(withField(settings, "git", "archive_on_merge", e.target.checked))}
-        />
-      </Row>
-      <Row
-        label="Automerge"
-        help="Offer an automerge button while a pull request's checks are still running. The GitHub repository must allow automerge."
-      >
-        <input
-          type="checkbox"
-          role="switch"
-          aria-label="Automerge"
-          checked={settings.automerge_enabled === true}
-          onChange={(e) => save({ ...settings, automerge_enabled: e.target.checked })}
-        />
-      </Row>
-      <Row
-        label="Treat optional checks as blocking"
-        help="Hide the merge button when any check failed, even checks GitHub does not require."
-      >
-        <input
-          type="checkbox"
-          role="switch"
-          aria-label="Treat optional checks as blocking"
-          checked={settings.treat_optional_checks_as_blocking === true}
-          onChange={(e) => save({ ...settings, treat_optional_checks_as_blocking: e.target.checked })}
-        />
-      </Row>
+      <PrefSwitchRow
+        settings={settings}
+        save={save}
+        pref="github_stacked_prs_enabled"
+        label="Use GitHub stacked PRs"
+        help={
+          <>
+            Instruct agents that they can use <code>gh stack</code> for PR stacking.
+          </>
+        }
+      />
     </div>
   );
 }

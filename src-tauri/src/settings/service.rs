@@ -21,7 +21,7 @@ use serde::Deserialize;
 
 use openconductor_db::{app_settings, SqlitePool};
 
-use super::{db_backed, load, save, save_table, validate, Settings, SettingsError};
+use super::{db_backed, load, save, save_table, table_prefs, validate, Settings, SettingsError};
 use crate::agent::byok::{self, ByokError};
 use crate::agent::{
     AgentKind, LaunchEnv, ProviderConfig, ProviderStatus, SecretStore, SecretString,
@@ -128,7 +128,9 @@ impl SettingsService {
     fn read(&self) -> Result<Settings, ServiceError> {
         let mut settings = load(&self.path)?;
         if let Some(pool) = &self.db {
-            db_backed::overlay(&mut settings.appearance, &Self::table_rows(pool)?);
+            let rows = Self::table_rows(pool)?;
+            db_backed::overlay(&mut settings.appearance, &rows);
+            table_prefs::overlay(&mut settings, &rows);
         }
         Ok(settings)
     }
@@ -141,7 +143,11 @@ impl SettingsService {
         };
         validate(settings)?;
         let current = Self::table_rows(pool)?;
-        for (key, value) in db_backed::changes(&settings.appearance, &current) {
+        let prefs = table_prefs::changes(settings, &current).map_err(SettingsError::Invalid)?;
+        for (key, value) in db_backed::changes(&settings.appearance, &current)
+            .into_iter()
+            .chain(prefs.into_iter().map(|(k, v)| (k, Some(v))))
+        {
             run_db(async {
                 match &value {
                     Some(v) => app_settings::set(pool, key, v).await,
@@ -153,12 +159,14 @@ impl SettingsService {
         let mut table =
             toml::Table::try_from(settings).map_err(|e| SettingsError::Invalid(e.to_string()))?;
         db_backed::strip(&mut table);
+        table_prefs::strip(&mut table);
         Ok(save_table(&self.path, &table)?)
     }
 
-    /// Once, at startup: move table-backed appearance keys an older build
-    /// wrote to the file into the table (a row the table already has wins),
-    /// then drop them from the file. Returns the keys moved.
+    /// Once, at startup: move table-backed keys (appearance and
+    /// [`table_prefs`]) an older build wrote to the file into the table (a
+    /// row the table already has wins), then drop them from the file.
+    /// Returns the keys moved.
     pub fn move_appearance_to_db(&self) -> Result<Vec<&'static str>, ServiceError> {
         let Some(pool) = &self.db else {
             return Ok(Vec::new());
@@ -172,7 +180,7 @@ impl SettingsService {
             Err(e) => return Err(SettingsError::Io(self.path.clone(), e).into()),
         };
         let in_file = db_backed::in_file(&raw);
-        if in_file.is_empty() {
+        if in_file.is_empty() && !table_prefs::file_has_any(&raw) {
             return Ok(Vec::new());
         }
         let from_file = load(&self.path)?;
@@ -187,8 +195,15 @@ impl SettingsService {
                 moved.push(key);
             }
         }
+        for (key, value) in table_prefs::in_file(&raw) {
+            if !current.contains_key(key) {
+                run_db(app_settings::set(pool, key, &value)).map_err(db_err)?;
+                moved.push(key);
+            }
+        }
         let mut stripped = raw;
         db_backed::strip(&mut stripped);
+        table_prefs::strip(&mut stripped);
         save_table(&self.path, &stripped)?;
         Ok(moved)
     }
