@@ -55,7 +55,8 @@
         ]
       },
       "detect": [
-        "computer_?switcher|ComputerSwitcher|org_?switcher|OrgSwitcher|account_?switcher|AccountSwitcher"
+        "computer_?switcher|ComputerSwitcher|org_?switcher|OrgSwitcher|account_?switcher|AccountSwitcher",
+        "sb-computer\\b|computerName"
       ]
     },
     {
@@ -113,7 +114,8 @@
         ]
       },
       "detect": [
-        "my_?workspaces|myWorkspaces"
+        "my_?workspaces|myWorkspaces",
+        "sb-section-label"
       ]
     },
     {
@@ -885,7 +887,8 @@
         ]
       },
       "detect": [
-        "(search|filter)_?repo"
+        "(search|filter)_?repo",
+        "projectResults"
       ]
     },
     {

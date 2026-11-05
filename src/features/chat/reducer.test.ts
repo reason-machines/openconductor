@@ -116,3 +116,32 @@ test("a session report arriving mid-turn leaves the active turn running", () => 
   assert.deepEqual(t.turns["t1"], { status: "running" });
   assert.deepEqual(messageOrigin(t.messages[0]!), { kind: "session", sessionId: "child-1" });
 });
+
+test("turn status keeps start and end times", () => {
+  const at = (turnId: string, s: TurnStatus, when: string): ChatEvent => ({ type: "turn_status", sessionId: "s1", turnId, status: s, at: when });
+  const t = apply([at("t1", "running", "2026-11-05T10:00:00.000Z"), at("t1", "completed", "2026-11-05T10:00:05.000Z"), at("t1", "failed", "2026-11-05T10:00:09.000Z")]);
+  assert.deepEqual(t.turns.t1, { status: "failed", startedAt: "2026-11-05T10:00:00.000Z", endedAt: "2026-11-05T10:00:05.000Z" });
+  const untimed = apply([status("t2", "running"), status("t2", "completed")]);
+  assert.deepEqual(untimed.turns.t2, { status: "completed" });
+});
+
+test("truncateAfterTurn keeps the turn and everything before it, and drops later turns' statuses", async () => {
+  const { truncateAfterTurn } = await import("./reducer.ts");
+  const m = (id: string, turnId: string, role: ChatMessage["role"]) => ({ ...msg(id, role, [{ type: "text", text: id }]), turnId });
+  const t = apply([
+    upsert(m("u1", "t1", "user")),
+    upsert(m("a1", "t1", "assistant")),
+    status("t1", "completed"),
+    upsert(m("u2", "t2", "user")),
+    upsert(m("a2", "t2", "assistant")),
+    status("t2", "completed"),
+    upsert(m("u3", "t3", "user")),
+    upsert(m("a3", "t3", "assistant")),
+    status("t3", "cancelled"),
+  ]);
+  const r = truncateAfterTurn(t, "t2");
+  assert.deepEqual(r.messages.map((x) => x.id), ["u1", "a1", "u2", "a2"]);
+  assert.deepEqual(Object.keys(r.turns).sort(), ["t1", "t2"]);
+  assert.equal(r.activeTurn, null);
+  assert.equal(truncateAfterTurn(t, "nope"), t);
+});

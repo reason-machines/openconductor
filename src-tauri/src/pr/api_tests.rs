@@ -2,7 +2,9 @@ use std::path::Path;
 
 use serde_json::json;
 
-use super::api::{lookup_prs, merge_pr, set_auto_merge, CreatePrPrompt, LookupRequest};
+use super::api::{
+    lookup_prs, merge_pr, preferred_merge_method, set_auto_merge, CreatePrPrompt, LookupRequest,
+};
 use super::gh::{MergeMethod, MergeMethodCache};
 use super::gh_tests::{gh_cwd, Fake};
 use super::header::{header_state, HeaderInputs};
@@ -67,6 +69,11 @@ fn merge_uses_explicit_method_or_cached_preference() {
     assert_eq!(
         merge_pr(&gh, &cache, "/repo", 5, None),
         Ok(MergeMethod::Rebase)
+    );
+    assert_eq!(
+        preferred_merge_method(&gh, &cache, "/repo"),
+        Ok(MergeMethod::Rebase),
+        "the tooltip reads the same cached method"
     );
     assert_eq!(f.last_args(), vec!["pr", "merge", "5", "--rebase"]);
     set_auto_merge(&gh, &cache, "/repo", 5, true, None).unwrap();

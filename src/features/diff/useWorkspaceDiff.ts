@@ -1,11 +1,14 @@
-// parity:diff.changes-list:ui parity:diff.viewed:ui parity:diff.navigation:ui
+// parity:diff.changes-list:ui parity:diff.viewed:ui parity:diff.navigation:ui parity:diff.turn-changes:ui
 // One workspace's diff state, shared by the changes list in the right panel
 // and the "All changes" tab in the main area: the loaded files, view options,
-// viewed marks, the selected file and the file waiting for discard.
+// viewed marks, the selected file and the file waiting for discard. A chat
+// turn can be selected instead of the scope option: then only what that turn
+// changed is shown (its start versus end checkpoint), and discard is off.
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { discardFileChanges, loadWorkspaceDiff, WHOLE_FILE_CONTEXT } from "./api.ts";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { nextUnread, step } from "./nav.ts";
+import type { TurnRef } from "./turnChangesCache.ts";
 import { DEFAULT_VIEW_OPTIONS, type DiffScope, type DiffViewOptions, type FileDiff } from "./types.ts";
 import { isViewed, loadViewed, pruneViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
 
@@ -39,25 +42,29 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
   const [viewed, setViewedMap] = useState<ViewedMap>(() => loadViewed(localStorage, workspaceId));
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [discarding, setDiscarding] = useState<FileDiff | null>(null);
+  // The selected chat turn; not saved, unlike `opts`.
+  const [turn, setTurn] = useState<TurnRef | null>(null);
 
   const update = (patch: Partial<DiffViewOptions>) => {
     const next = { ...opts, ...patch };
     localStorage.setItem(OPTIONS_KEY, JSON.stringify(next));
     setOpts(next);
+    if (patch.scope) setTurn(null);
   };
 
   const refresh = useCallback(() => {
     setLoad({ state: "loading" });
-    loadWorkspaceDiff(worktree, baseBranch, opts).then(
+    loadWorkspaceDiff(worktree, baseBranch, opts, { turn }).then(
       (files) => setLoad({ state: "ready", files }),
       (e: unknown) => setLoad({ state: "error", message: String(e) }),
     );
-  }, [worktree, baseBranch, opts]);
+  }, [worktree, baseBranch, opts, turn]);
 
   useEffect(refresh, [refresh]);
   useEffect(() => {
     setViewedMap(loadViewed(localStorage, workspaceId));
     setSelectedPath(null);
+    setTurn(null);
   }, [workspaceId]);
 
   const files = useMemo(() => (load.state === "ready" ? load.files : []), [load]);
@@ -83,6 +90,12 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
     [files, onOpen],
   );
   const openPath = (path: string) => open(files.findIndex((f) => f.path === path));
+  /** Switch to one turn's changes and open `path` there (a file chip under the turn). */
+  const openTurnFile = (ref: TurnRef, path: string) => {
+    if (turn?.sessionId !== ref.sessionId || turn?.turnId !== ref.turnId) setTurn(ref);
+    setSelectedPath(path);
+    onOpen?.();
+  };
 
   // Keys come from the registry (diff.nextFile = ArrowDown, diff.previousFile = ArrowUp,
   // diff.toggleViewed = Ctrl+V), so user overrides apply and bare arrows stay out of text fields.
@@ -95,12 +108,14 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
   // The file alone with whole-file context: Pierre builds the full old and new
   // files from it when an "N unmodified lines" row is expanded.
   const loadFull = (f: FileDiff) =>
-    loadWorkspaceDiff(worktree, baseBranch, opts, { path: f.path, contextLines: WHOLE_FILE_CONTEXT }).then(([full]) => {
+    loadWorkspaceDiff(worktree, baseBranch, opts, { path: f.path, contextLines: WHOLE_FILE_CONTEXT, turn }).then(([full]) => {
       if (!full) throw new Error(`${f.path} has no changes any more.`);
       return full;
     });
 
   const discard = (f: FileDiff) => discardFileChanges(worktree, baseBranch, opts, f).then(refresh);
+  // Conductor has no discard in the per-turn view either.
+  const canDiscard = turn === null;
 
   const unread = nextUnread(current, files.length, (i) => isViewed(viewed, files[i]));
   const totals = files.reduce((t, f) => ({ a: t.a + f.additions, d: t.d + f.deletions }), { a: 0, d: 0 });
@@ -118,6 +133,11 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
     selected,
     open,
     openPath,
+    /** The chat turn whose changes are shown, or null for `opts.scope`. */
+    turn,
+    openTurnFile,
+    /** Back to `opts.scope`. */
+    clearTurn: () => setTurn(null),
     isViewed: (f: FileDiff) => isViewed(viewed, f),
     toggleViewed: (f: FileDiff) => setViewed(toggleViewed(viewed, f)),
     viewedCount: viewedCount(viewed, files),
@@ -127,6 +147,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, baseBranch, onLoaded, 
     discarding,
     askDiscard: setDiscarding,
     discard,
+    canDiscard,
   };
 }
 

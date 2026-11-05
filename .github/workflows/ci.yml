@@ -94,6 +94,8 @@ jobs:
           git config --global user.email "ci@example.invalid"
       - name: Checkpoint module build, test and clippy
         run: bash evidence/checkpoint/run-tests.sh
+      - name: Bundled bin/ tools (checkpointer.sh, git-busy-check.sh shims) end to end
+        run: bash scripts/test-bin-tools.sh
       - name: PR module build, test and clippy
         run: bash evidence/pr/run-tests.sh
       - name: Quick open module build, test and clippy
