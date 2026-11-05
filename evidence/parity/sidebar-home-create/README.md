@@ -2,14 +2,20 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`f6c05d7`, 2026-11-05)
+## Result on main (`9930339`, 2026-11-05)
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `99edc40` | `274ac80` | `962f017` | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Sidebar | 33 | 26 | 4 | 1 | 2 | 0 | **85.6%** | 84.1% | 79.5% | 78.0% | 75.0% | 70.5% | 65.9% | 65.9% |
-| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 85.3% | 62.5% |
-| Create workspace | 17 | 14 | 2 | 0 | 1 | 0 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 82.4% | 79.4% |
-| **All** | 68 | 53 | 10 | 1 | 3 | 1 | **86.9%** | 86.2% | 84.0% | 83.2% | 81.7% | 79.5% | 75.0% | 68.4% |
+| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `f6c05d7` | `99edc40` | `274ac80` | `962f017` | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Sidebar | 33 | 28 | 3 | 1 | 1 | 0 | **90.2%** | 85.6% | 84.1% | 79.5% | 78.0% | 75.0% | 70.5% | 65.9% | 65.9% |
+| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 85.3% | 62.5% |
+| Create workspace | 17 | 15 | 2 | 0 | 0 | 0 | **94.1%** | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 82.4% | 79.4% |
+| **All** | 68 | 56 | 9 | 1 | 1 | 1 | **90.7%** | 86.9% | 86.2% | 84.0% | 83.2% | 81.7% | 79.5% | 75.0% | 68.4% |
+
+**Since `f6c05d7`.** Read on `9930339`. Merges: #419 (`d353535`, create a workspace in a section), #410 (`9930339`, resource usage pill and Account menu), and #429 (evidence only).
+
+- `sidebar.footer-usage` missing to implemented (#410): Settings › Experimental "Show sidebar resource usage" (`sidebar_resource_usage`, default off) shows a memory pill in the sidebar's top bar beside back/forward, which is where Conductor mounts it (`Isa`/`bna`, renderApp @9,942,220), though its setting text says footer. The pill hides under 200 px of sidebar and shows only its icon under 260 px. It polls the registered `get_resource_usage` every 2 s and opens Conductor's Resources popover (`qta` @9,933,654). Inferred rather than decompiled: which processes Conductor samples, its labels and its argument redaction (`evidence/sidebar-resource-usage/NOTES.md`).
+- `sidebar.computer-switcher` partial to implemented (#410): the top row is now an "Account menu" button with the initial avatar, "`<name>`'s Mac" (or "My Mac") from the registered `local_account`, and a chevron. It opens a 260 px menu with the git email and Settings, as Conductor's `zna` (@9,957,506) does for a single personal organization. The organization list, Create organization, Upgrade to Pro and Log out depend on Conductor's cloud account and are left out.
+- `create.in-section` missing to implemented (#419): a section's header menu starts with Create workspace (Conductor's `oBi` @10,005,110), which opens the dialog with "Create in `<name>`". Opened without a section while sections exist, Create splits with a "Create in section" menu (`iQo` @9,711,015). The new workspace is assigned to the section and unpinned, and a section deleted meanwhile keeps the workspace and shows Conductor's assign-failed warning.
 
 **Since `99edc40`.** Read on `f6c05d7`. Merges: #397 (`aa32456`, archive stops the workspace's agents), and #389, #402, #360, #424 and #425 (diff, chat, evidence; no item here).
 
@@ -74,7 +80,7 @@ Verifier output for the sidebar, Home and Create-workspace areas. Each item is s
 - `home.duplicate-repo` re-worded and partial to backend only. Home builder c93ae9dd's REA read of Conductor 0.87.6 (decoded index chunk, `createRepo`) shows Clone and Open project never check for an already-added repo: a second add inserts a new `repos` row and Clone picks a unique folder (`name-v1`). The real `conductor.schema.sql` agrees: `repos` has no unique constraint on `remote_url` or `root_path`. "This repository already exists." is the GitHub repo-name check, so that copy reference was dropped. The old wording ("refuse a duplicate") was wrong. Against the corrected wording the rebuild diverges in every UI path (`REPO_EXISTS` refusal in Open project and the Add-repository menu, store drops the Clone result); only the tested `clone_repository` unique-folder logic matches.
 - #305 was read as create-workspace evidence only, so `create.number` stayed missing; corrected on `0f82f19` (it carries the numbering code).
 
-Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0; an item marked not applicable (`n/a`) is left out. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (22 open; 26 on `4b9dc87`, 31 on `d8b3b2e`, 36 on `0e2531b`, 45 before).
+Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0; an item marked not applicable (`n/a`) is left out. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (11 open; 14 on `f6c05d7`, 15 on `99edc40`, 26 on `4b9dc87`, 31 on `d8b3b2e`, 36 on `0e2531b`, 45 before).
 
 All 68 items were re-read on `85e00bb`. The diff from there to `0e2531b` was then read too, and the 6 items it touches were re-read on `0e2531b`: #278 (row menu, pins, unread, status) and #269 (Home card tokens). Compared with the last verdicts on main, 17 items changed: 16 up and 1 down.
 
