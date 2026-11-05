@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { CloseIcon } from "./Icons";
-import { toastTimeout, type ToastItem } from "./toastTiming";
+import { toastTimeout, type ToastAction, type ToastItem } from "./toastTiming";
 
-export type { ToastItem };
+export type { ToastAction, ToastItem };
 
 let nextId = 1;
 
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const dismiss = useCallback((id: number) => setToasts((t) => t.filter((x) => x.id !== id)), []);
-  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean }) => {
-    setToasts((t) => [...t, { id: nextId++, kind, message, sticky: opts?.sticky }]);
+  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean; action?: ToastAction }) => {
+    setToasts((t) => [...t, { id: nextId++, kind, message, sticky: opts?.sticky, action: opts?.action }]);
   }, []);
   return { toasts, show, dismiss };
 }
@@ -32,6 +32,9 @@ function Toast({ toast, onDismiss }: { toast: ToastItem; onDismiss: () => void }
   return (
     <div className={`toast toast-${toast.kind}`} role={toast.kind === "error" ? "alert" : "status"}>
       <span className="toast-message">{toast.message}</span>
+      {toast.action && (
+        <button className="btn btn-small" onClick={() => { toast.action?.onClick(); onDismiss(); }}>{toast.action.label}</button>
+      )}
       {toast.kind === "error" && (
         <button className="btn btn-small" onClick={copy}>{copied ? "Copied" : "Copy"}</button>
       )}
