@@ -119,7 +119,10 @@ export default function App() {
       if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
       if (outcome.kind === "needsGitHubRepo") return setGithubRepo({ path: outcome.path, name: outcome.name, needsGitInit: outcome.needsGitInit });
       const registered = await addRepository(outcome.path);
-      if (findExistingRepo(state.repos, { path: registered.root, remote: outcome.remote })) return show("error", REPO_EXISTS);
+      const existing = findExistingRepo(state.repos, { path: registered.root, remote: outcome.remote });
+      // Adding a hidden repository again unhides it (the backend's record_repository does the same).
+      if (existing?.hidden) return dispatch({ type: "setRepoHidden", repoId: existing.id, hidden: false });
+      if (existing) return show("error", REPO_EXISTS);
       dispatch({ type: "addRepo", id: registered.id, repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
     } catch (err) {
       show("error", failedToAddMessage(err));
