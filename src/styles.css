@@ -1,0 +1,48 @@
+:root {
+  --background: hsl(24 10% 7%);
+  --foreground: hsl(30 10% 92%);
+  --muted-foreground: hsl(30 5% 60%);
+  --sidebar: hsl(24 8% 10%);
+  --border: hsl(24 6% 18%);
+  --sidebar-width: 260px;
+  color-scheme: dark;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+  font-size: 14px;
+}
+
+:root.light {
+  --background: hsl(30 0% 100%);
+  --foreground: hsl(24 10% 10%);
+  --muted-foreground: hsl(24 5% 40%);
+  --sidebar: hsl(30 10% 97%);
+  --border: hsl(30 6% 88%);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body { background: var(--background); color: var(--foreground); }
+
+.app-shell { display: flex; height: 100%; }
+.app-sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-header {
+  height: 44px;
+  padding: 0 12px 0 80px; /* leave room for macOS traffic lights */
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+.brand { font-weight: 600; }
+.sidebar-body { padding: 12px; overflow: auto; flex: 1; }
+.app-main { flex: 1; display: flex; min-width: 0; }
+.empty-state { margin: auto; text-align: center; }
+.empty-state h1 { font-size: 22px; margin: 0 0 8px; }
+.muted { color: var(--muted-foreground); }
+.small { font-size: 12px; }
