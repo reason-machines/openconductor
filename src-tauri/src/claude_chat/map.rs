@@ -165,7 +165,7 @@ impl TurnMapper {
                     let name = block["name"].as_str().unwrap_or("tool");
                     let row = tool_row(tool_id, name, &block["input"], &self.cwd);
                     self.tools.insert(tool_id.to_owned(), row.clone());
-                    out.push(ProviderEvent::Agent(AgentEvent::Tool(row)));
+                    out.push(ProviderEvent::Agent(AgentEvent::Tool(Box::new(row))));
                 }
                 _ => {}
             }
@@ -189,7 +189,9 @@ impl TurnMapper {
                 ToolStatus::Completed
             };
             row.output = Some(result_text(&block["content"]));
-            out.push(ProviderEvent::Agent(AgentEvent::Tool(row.clone())));
+            out.push(ProviderEvent::Agent(AgentEvent::Tool(Box::new(
+                row.clone(),
+            ))));
         }
         out
     }

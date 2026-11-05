@@ -21,6 +21,8 @@ let failed = 0;
 
 try {
   await wd.waitFor("tauri-driver on :4444", async () => (await fetch("http://127.0.0.1:4444/status")).ok, 20000);
+  // Fixtures a flow needs before the app starts (e.g. stand-in app bundles).
+  for (const flow of flows) await flow.setup?.(ctx);
   await wd.newSession(app);
   for (const flow of flows) {
     const started = Date.now();
@@ -51,6 +53,7 @@ try {
 } finally {
   await wd.deleteSession();
   driver.kill();
+  for (const flow of flows) await Promise.resolve(flow.teardown?.(ctx)).catch((e) => console.log(`teardown ${flow.name}: ${e?.message ?? e}`));
 }
 
 await writeFile(join(out, "results.json"), JSON.stringify(results, null, 2));

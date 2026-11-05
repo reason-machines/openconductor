@@ -69,7 +69,7 @@ fn tool_paths_say_local_or_cloud_with_the_same_relative_path() {
         tool_name: None,
         raw_input: None,
     };
-    let v = event_json("c", &ProviderEvent::Agent(AgentEvent::Tool(row)));
+    let v = event_json("c", &ProviderEvent::Agent(AgentEvent::Tool(Box::new(row))));
     assert_eq!(v["status"], "completed");
     let locs = v["locations"].as_array().unwrap();
     assert_eq!(locs[0]["place"], "local");
@@ -94,7 +94,7 @@ fn tool_rows_carry_the_provider_tool_name_and_raw_input() {
         tool_name: Some("Grep".into()),
         raw_input: Some(json!({ "pattern": "redirectTo", "path": "src" })),
     };
-    let v = event_json("c", &ProviderEvent::Agent(AgentEvent::Tool(row)));
+    let v = event_json("c", &ProviderEvent::Agent(AgentEvent::Tool(Box::new(row))));
     assert_eq!(v["toolName"], "Grep");
     assert_eq!(
         v["rawInput"],

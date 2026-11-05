@@ -40,7 +40,8 @@ pub enum AgentEvent {
     /// Reasoning text to append.
     Thought(String),
     /// A tool row to insert or replace by `id`.
-    Tool(ToolRow),
+    /// Boxed: a row carries its input, which would make every event as large as the biggest row.
+    Tool(Box<ToolRow>),
     /// The Session's title changed.
     Title(String),
     /// A message from another Session (e.g. a child's report), mid-turn.
@@ -234,7 +235,9 @@ pub fn parse_update(update: &Value, ctx: UpdateContext) -> Option<AgentEvent> {
         "session_info_update" => update["title"]
             .as_str()
             .map(|t| AgentEvent::Title(t.into())),
-        "tool_call" | "tool_call_update" => Some(AgentEvent::Tool(tool_row(update, ctx)?)),
+        "tool_call" | "tool_call_update" => {
+            Some(AgentEvent::Tool(Box::new(tool_row(update, ctx)?)))
+        }
         _ => None,
     }
 }
