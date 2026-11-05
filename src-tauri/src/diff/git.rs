@@ -20,6 +20,47 @@ pub enum Scope {
     All { base: String },
     /// Working tree versus HEAD.
     Uncommitted,
+    /// What one agent turn changed: the turn's start checkpoint versus its
+    /// end checkpoint (`refs/conductor-checkpoints/session-<s>-turn-<t>-start`
+    /// and `-end`, see [`turn_checkpoint_id`]). Both snapshots hold the full
+    /// working tree, untracked files included, so nothing else is added.
+    Turn { session_id: String, turn_id: String },
+}
+
+/// Ref namespace of workspace checkpoints (same as `crate::checkpoint`,
+/// which this std-only module cannot import in its standalone harness).
+pub const CHECKPOINT_REF_NAMESPACE: &str = "refs/conductor-checkpoints";
+
+/// The two checkpoints taken around every agent turn.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TurnPoint {
+    Start,
+    End,
+}
+
+impl TurnPoint {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TurnPoint::Start => "start",
+            TurnPoint::End => "end",
+        }
+    }
+}
+
+/// Checkpoint id of one end of a turn: `session-<session>-turn-<turn>-<point>`,
+/// the scheme the reference app uses, so its refs and ours line up.
+pub fn turn_checkpoint_id(session_id: &str, turn_id: &str, point: TurnPoint) -> String {
+    format!("session-{session_id}-turn-{turn_id}-{}", point.as_str())
+}
+
+/// Session and turn ids end up in ref names and shell-free git arguments;
+/// allow only letters, digits, `.`, `_` and `-` (no leading `.` or `-`).
+pub fn valid_turn_part(s: &str) -> bool {
+    !s.is_empty()
+        && !s.starts_with(['.', '-'])
+        && !s.contains("..")
+        && s.bytes()
+            .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'.' | b'_' | b'-'))
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
@@ -56,6 +97,16 @@ pub enum DiffError {
     Io(std::io::Error),
     /// A path that is absolute or leaves the worktree (`..`).
     InvalidPath(String),
+    /// A session or turn id with characters a checkpoint id cannot hold.
+    InvalidTurn(String),
+    /// The turn's start or end checkpoint does not exist (yet).
+    TurnNotReady {
+        turn_id: String,
+        start: bool,
+        end: bool,
+    },
+    /// An action this scope does not offer.
+    Unsupported(&'static str),
 }
 
 impl fmt::Display for DiffError {
@@ -68,6 +119,16 @@ impl fmt::Display for DiffError {
             DiffError::Parse(e) => write!(f, "could not parse git diff: {e}"),
             DiffError::Io(e) => write!(f, "could not run git: {e}"),
             DiffError::InvalidPath(p) => write!(f, "not a path inside the worktree: {p}"),
+            DiffError::InvalidTurn(id) => write!(f, "invalid session or turn id: {id:?}"),
+            DiffError::Unsupported(what) => write!(f, "{what} is not supported yet"),
+            DiffError::TurnNotReady {
+                turn_id,
+                start,
+                end,
+            } => write!(
+                f,
+                "checkpoints for turn {turn_id} are not ready (start: {start}, end: {end})"
+            ),
         }
     }
 }
@@ -130,6 +191,42 @@ pub(super) fn base_commit(repo: &Path, scope: &Scope) -> Result<String, DiffErro
         Scope::All { base } => Ok(git(repo, &["merge-base", "HEAD", base], &[0])?
             .trim()
             .to_string()),
+        Scope::Turn {
+            session_id,
+            turn_id,
+        } => Ok(turn_refs(repo, session_id, turn_id)?.0),
+    }
+}
+
+/// Commit oids of a turn's start and end checkpoints.
+pub fn turn_refs(
+    repo: &Path,
+    session_id: &str,
+    turn_id: &str,
+) -> Result<(String, String), DiffError> {
+    for part in [session_id, turn_id] {
+        if !valid_turn_part(part) {
+            return Err(DiffError::InvalidTurn(part.to_string()));
+        }
+    }
+    let resolve = |point| -> Result<Option<String>, DiffError> {
+        let id = turn_checkpoint_id(session_id, turn_id, point);
+        let reference = format!("{CHECKPOINT_REF_NAMESPACE}/{id}^{{commit}}");
+        let out = git(
+            repo,
+            &["rev-parse", "--verify", "--quiet", &reference],
+            &[0, 1],
+        )?;
+        let oid = out.trim();
+        Ok((!oid.is_empty()).then(|| oid.to_string()))
+    };
+    match (resolve(TurnPoint::Start)?, resolve(TurnPoint::End)?) {
+        (Some(start), Some(end)) => Ok((start, end)),
+        (start, end) => Err(DiffError::TurnNotReady {
+            turn_id: turn_id.to_string(),
+            start: start.is_some(),
+            end: end.is_some(),
+        }),
     }
 }
 
@@ -143,6 +240,13 @@ const DIFF_FLAGS: [&str; 5] = [
 
 /// Load the workspace diff described by `req`.
 pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, DiffError> {
+    if let Scope::Turn {
+        session_id,
+        turn_id,
+    } = &req.scope
+    {
+        return turn_diff(repo, session_id, turn_id, req);
+    }
     if let Some(op) = operation_in_progress(repo)? {
         return Err(DiffError::OperationInProgress(op));
     }
@@ -182,6 +286,33 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
     files.sort_by(|a, b| a.path.cmp(&b.path));
     Ok(WorkspaceDiff {
         base_commit: base,
+        files,
+    })
+}
+
+/// One turn's changes: `git diff <start checkpoint> <end checkpoint>`, as the
+/// reference checkpointer's `diff <start> <end>` does. Both sides are saved
+/// snapshots, so a merge or rebase running now does not matter.
+fn turn_diff(
+    repo: &Path,
+    session_id: &str,
+    turn_id: &str,
+    req: &DiffRequest,
+) -> Result<WorkspaceDiff, DiffError> {
+    let (start, end) = turn_refs(repo, session_id, turn_id)?;
+    let context = req.context_lines.map(|n| format!("-U{n}"));
+    let mut args: Vec<&str> = vec!["diff"];
+    args.extend(DIFF_FLAGS);
+    if req.ignore_whitespace {
+        args.push("-w");
+    }
+    args.extend(context.as_deref());
+    args.extend([start.as_str(), end.as_str(), "--"]);
+    args.extend(req.path.as_deref());
+    let mut files = parse_unified(&git(repo, &args, &[0])?).map_err(DiffError::Parse)?;
+    files.sort_by(|a, b| a.path.cmp(&b.path));
+    Ok(WorkspaceDiff {
+        base_commit: start,
         files,
     })
 }
