@@ -8,6 +8,7 @@
 //! - `quick_open/` quick open file index and fuzzy matching
 //! - `reason_acp/` the Reason agent over ACP; its commands are `reason_chat`
 //! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
+//!   (`spotlight_commands.rs` is its IPC layer)
 //! - `settings/`   settings.toml and the Keychain-backed secret store
 //! - `terminal/`   PTY terminals (`terminal_commands.rs` is its IPC layer)
 //!
@@ -26,6 +27,7 @@ pub mod reason_chat;
 pub mod scripts;
 pub mod settings;
 pub mod spotlight;
+mod spotlight_commands;
 pub mod terminal;
 mod terminal_commands;
 pub mod workspace;
@@ -153,6 +155,7 @@ pub fn run() {
                 agent::keychain::default_store(),
             ));
             app.manage(scripts::service(app.handle()));
+            app.manage(spotlight_commands::service(app.handle()));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -163,6 +166,7 @@ pub fn run() {
             github_repo_availability,
             github_repo_create,
             workspace::commands::add_repository,
+            workspace::commands::clone_repository,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
             workspace::commands::branch_name_is_taken,
@@ -191,6 +195,12 @@ pub fn run() {
             terminal_commands::pty_read_history,
             terminal_commands::pty_clear_history,
             terminal_commands::pty_list,
+            terminal_commands::pty_screen_text,
+            terminal_commands::pty_screen_snapshot,
+            terminal_commands::pty_create_mirror,
+            terminal_commands::pty_write_mirror,
+            terminal_commands::pty_resize_mirror,
+            terminal_commands::pty_delete_mirror,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
@@ -208,6 +218,9 @@ pub fn run() {
             scripts::run_script_status,
             scripts::run_script_output,
             scripts::archive_script_run,
+            spotlight_commands::spotlight_start,
+            spotlight_commands::spotlight_stop,
+            spotlight_commands::spotlight_status,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")
@@ -223,6 +236,10 @@ pub fn run() {
                 }
                 if let Some(shell) = app.try_state::<ShellCommands>() {
                     shell.0.cancel_all();
+                }
+                // Put every spotlighted root back as it was.
+                if let Some(spotlight) = app.try_state::<spotlight_commands::Spotlight>() {
+                    spotlight.stop_all();
                 }
             }
         });
