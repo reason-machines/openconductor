@@ -13,7 +13,17 @@ import {
 
 /** What a workspace is created from, chosen in the "Create from..." picker. */
 export type CreateFrom =
-  | { kind: "pr"; number: number; title: string; headBranch: string; baseBranch: string }
+  | {
+      kind: "pr";
+      number: number;
+      title: string;
+      headBranch: string;
+      baseBranch: string;
+      /** Owner of the repository the PR's head branch lives in (`headRepositoryOwner.login`). */
+      headOwner?: string;
+      /** True when the head branch is on a fork (`isCrossRepository`), not on origin. */
+      crossRepository?: boolean;
+    }
   | { kind: "branch"; name: string }
   | { kind: "issue"; provider: "github" | "linear"; key: string; title: string; url?: string; body?: string };
 
@@ -97,7 +107,7 @@ export function buildCreateRequest(
   if (!base.ok) errors.baseBranch = base.error;
 
   let branch: string | undefined;
-  if (draft.from?.kind === "pr") branch = draft.from.headBranch;
+  if (draft.from?.kind === "pr") branch = prBranchName(draft.from);
   if (draft.from?.kind === "branch") branch = draft.from.name;
   if (branch !== undefined) {
     const check = validateBranchName(branch);
@@ -123,6 +133,16 @@ export function buildCreateRequest(
       firstSession: message ? { agent: draft.agent, model: draft.model, effort: draft.effort, message } : null,
     },
   };
+}
+
+/**
+ * Local branch a PR is checked out on. A fork PR's head branch often shares a
+ * name with an origin branch (a fork's `main`), which `create_workspace` would
+ * check out instead of the PR, so fork PRs get `<owner>/<branch>`.
+ */
+export function prBranchName(pr: Extract<CreateFrom, { kind: "pr" }>): string {
+  const owner = pr.headOwner?.trim();
+  return pr.crossRepository && owner ? `${owner}/${pr.headBranch}` : pr.headBranch;
 }
 
 // ---------------------------------------------------------------------------
@@ -211,13 +231,18 @@ export interface CreateWorkspaceArgs {
    * of `origin/<branchName>`) instead of creating it from `baseBranch` (#106).
    */
   existingBranch: boolean;
+  /**
+   * The PR being checked out. When the branch is neither local nor on origin
+   * (a fork PR), the backend fetches `pull/<prNumber>/head` into it (#197).
+   */
+  prNumber?: number;
 }
 
 /**
  * Maps a request onto `create_workspace`. Create from a PR or branch sends
  * `existingBranch: true`, so the backend checks that branch out rather than
- * refusing it as taken. A fork PR's branch is not on origin and comes back as
- * "branch not found locally or on origin".
+ * refusing it as taken. A PR also sends `prNumber`, so a fork PR's head is
+ * fetched from `pull/<N>/head`.
  */
 export function toCreateWorkspaceArgs(r: CreateRequest): CreateWorkspaceArgs {
   return {
@@ -226,5 +251,6 @@ export function toCreateWorkspaceArgs(r: CreateRequest): CreateWorkspaceArgs {
     directoryName: r.naming.workspace_name,
     baseBranch: r.startPoint,
     existingBranch: r.existingBranch,
+    ...(r.from?.kind === "pr" ? { prNumber: r.from.number } : {}),
   };
 }
