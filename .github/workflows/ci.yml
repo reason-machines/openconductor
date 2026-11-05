@@ -142,6 +142,8 @@ jobs:
         run: |
           python tools/packaging_ref.py
           git diff --exit-code evidence/packaging/conductor-reference.json
+      - name: Parity checker runs on this tree (settings, shortcuts, persistence, packaging)
+        run: python tools/parity_check.py check --ref HEAD --out-dir "$RUNNER_TEMP/parity"
 
   frontend-unit:
     name: Frontend unit tests (node --test)
