@@ -33,3 +33,7 @@ jobs:
         run: rustfmt --edition 2021 --check src-tauri/src/agent/*.rs
       - name: Test agent module
         run: bash tools/agent/run-rust-tests.sh
+      - name: Keychain round trip (macOS login Keychain)
+        if: runner.os == 'macOS'
+        timeout-minutes: 5
+        run: bash tools/agent/run-rust-tests.sh keychain -- --ignored

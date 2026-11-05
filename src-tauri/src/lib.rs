@@ -4,10 +4,13 @@
 //! - `workspace/`  workspace lifecycle (worktrees, setup/run scripts)
 //! - `checkpoint/` checkpoints and revert
 //! - `agent/`      agent runner, providers and BYOK settings
+//! - `quick_open/` quick open file index and fuzzy matching (Spotlight)
 //!
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod project;
+pub mod quick_open;
 pub mod workspace;
 
 use serde::Serialize;
@@ -30,6 +33,12 @@ fn app_info() -> AppInfo {
     }
 }
 
+/// Folder checks for Home "Open project" (see `project`).
+#[tauri::command]
+fn inspect_project_folder(path: String) -> project::FolderInspection {
+    project::inspect_folder(std::path::Path::new(&path))
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -37,16 +46,20 @@ pub fn run() {
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
+            app.manage(quick_open::commands::FileCache::default());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             app_info,
+            inspect_project_folder,
             workspace::commands::add_repository,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
             workspace::commands::branch_name_is_taken,
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
+            quick_open::commands::fuzzy_filter_files,
+            quick_open::commands::fuzzy_match_files,
         ])
         .run(tauri::generate_context!())
         .expect("error while running OpenConductor");
