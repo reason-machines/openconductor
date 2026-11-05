@@ -70,6 +70,10 @@ Two commands conflict only when both are in the same scope group. The groups are
 chat composer, queued-message edit, question card, terminal, diff). The editor
 refuses a recorded shortcut that another command in a shared group already uses.
 It shows "Already used by <title>. Type another shortcut." and keeps recording.
+The check runs over every command, hidden ones included, and a key conflicts when
+it fires on the pressed event or is equivalent to the recorded shortcut. So
+re-recording Cmd+K for the palette reports "Clear terminal scrollback"
+(`renderApp-D_fmY7hW.js`, the recorder's keydown handler).
 
 ## Help dialog (`openKeyboardShortcuts`, default ⌥⌘/)
 
