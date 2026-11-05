@@ -1,14 +1,14 @@
 {
  "schema": "openconductor.builder-obligations.v1",
  "ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 81.7,
+ "verdicts_verified_at": "2026-11-05 (main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 84.0,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 20,
+ "open": 18,
  "by_owner": {
   "create-workspace": 3,
   "home": 4,
-  "sidebar": 13
+  "sidebar": 11
  },
  "obligations": [
   {
@@ -167,24 +167,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.drag-to-section",
-   "item": "sidebar.drag-to-section",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Drag a workspace row onto a section",
-   "verdict": "missing",
-   "gap": "Still missing on 66a892a: the only drag and drop in the sidebar reorders repository groups (sb-repo-header draggable / dropOn). Workspace rows are not draggable and sections are not drop targets; #370 added sections but moves a workspace only through the row menu's Move to section.",
-   "done_when": "a user can reach the feature in the app and it behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     1289
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.footer-usage",
    "item": "sidebar.footer-usage",
    "area": "sidebar",
@@ -234,7 +216,7 @@
    "depends_on_builders": [],
    "feature": "Browse archived workspaces and unarchive one",
    "verdict": "backend",
-   "gap": "#366 (df07012) registers db_unarchive_workspace (persistence_commands.rs: workspaces::unarchive, then state ready), but only the archive-on-merge toast's Unarchive reaches it (useArchiveOnMerge.ts -> restoreWorkspace). There is still no archived workspaces list, so a workspace archived any other way, or after the toast closes, cannot be restored from the UI. WorkspaceManager::restore is still unused.",
+   "gap": "#391 (274ac80) replaces db_unarchive_workspace with unarchive_workspace (checkpoint, worktree, .context and branch restored, setup rerun), and restoreWorkspace runs it through startUnarchive. Only the archive-on-merge toast's Unarchive dispatches restoreWorkspace (useArchiveOnMerge.ts); there is still no archived-workspaces list, so a workspace archived from the row menu, WorkspaceView or the palette, or after the toast closes, cannot be restored from the UI.",
    "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
    "ledger_obligations": [],
    "evidence": {
@@ -278,7 +260,7 @@
    "depends_on_builders": [],
    "feature": "Archive with confirmation, refusing while a git operation is in progress, recording an archive commit",
    "verdict": "partial",
-   "gap": "Archive from WorkspaceView and the palette now calls db_archive_workspace, so it survives restart, but there is no confirmation, no git-busy check, no WorkspaceManager::archive call and no archive commit.",
+   "gap": "#391 (274ac80) replaces the row-only db_archive_workspace with archive_workspace (src-tauri/src/workspace_archive/, flow.rs), which the row menu, WorkspaceView, the palette and archive on merge all reach through startArchive (store.ts). It follows Conductor's dYe/mYe (index-BGEQ8YjU.js @ ~966,478 / ~969,254): checkpoint conductor-archive-<id>, refuse in safe mode while a merge/rebase/cherry-pick/revert is in progress with the sticky warning and Archive retry (discardGitOperationState), archive commit = HEAD kept under refs/conductor-archive-heads/<id>, row state/branch/archive_commit, archive script, .context move, worktree removal and delete_branch_on_archive. Conductor asks before archiving only when an agent is running, and ArchiveRunningDialog asks the same. Gap: 'Stop agents and archive' archives but does not cancel the running chat turn (Conductor cancels each session, Z$ / cancelSession), per evidence/archive/NOTES.md. Not run in the desktop app.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [
     "ws.status-archive",
@@ -370,26 +352,6 @@
     ],
     "files": [
      "evidence/screens/home.md"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.ws-actions",
-   "item": "sidebar.ws-actions",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Workspace actions menu on a row (copy info, rename, archive, pin, section)",
-   "verdict": "partial",
-   "gap": "On 66a892a the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status \u25b8, Move to section \u25b8 (#370: every section, New section\u2026, Remove from section), Rename (#315) and Archive. Still missing: Copy link (Cmd+Shift+C); WorkspaceActionsMenu.tsx notes it is not built because there is no URL scheme.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     4970,
-     954,
-     899
     ]
    },
    "status": "open"

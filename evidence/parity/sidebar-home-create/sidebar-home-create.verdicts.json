@@ -1,7 +1,7 @@
 {
   "schema": "openconductor.parity-verdicts.v1",
   "ref": "origin/main",
-  "verified_at": "2026-11-05 (main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+  "verified_at": "2026-11-05 (main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
   "method": "Read on main: src/, src-tauri/src/, crates/. 'backend' = logic or a command exists and is tested, but no UI path reaches it.",
   "items": {
     "sidebar.home-entry": {
@@ -57,8 +57,8 @@
       "why": "#370 on 66a892a: the section header menu (Edit section, New section…, Delete section) and the sidebar's 'New section…' open SectionDialog (name + emoji); the row menu's Move to section ▸ lists every section, 'New section…' (creates one holding the workspace) and 'Remove from section'. The edits are pure functions after Conductor's index-chunk _Y/SY/wY/yY/kY/V2 (src/state/navigationSections.ts, tested), the projection follows renderApp usa (first section wins, archived and hidden-repo workspaces left out, newest first), and the whole layout is read and written through db_read_navigation_sections / db_write_navigation_sections (sidebar_section_commands.rs, registered in lib.rs) into conductor.db's navigation_sections tables with Conductor's tve updatedAt stamp. Not wired: reorderSection (bY) has no UI yet; that belongs with sidebar.drag-to-section."
     },
     "sidebar.drag-to-section": {
-      "verdict": "missing",
-      "why": "Still missing on 66a892a: the only drag and drop in the sidebar reorders repository groups (sb-repo-header draggable / dropOn). Workspace rows are not draggable and sections are not drop targets; #370 added sections but moves a workspace only through the row menu's Move to section."
+      "verdict": "implemented",
+      "why": "#412 on 93e4881: useSidebarDrag.tsx (wired in Sidebar.tsx) is a pointer drag after Conductor's controller `esa` (renderApp-D_fmY7hW.js, elementFromPoint hit test at byte 10,091,139, re-checked in the decoded bundle): a press becomes a drag after 5 px; a workspace row drops onto a section, onto Pinned or onto My workspaces, and a drop that leaves it where it is is no target; a section header drags to reorder sections (reorderSection, Conductor's bY); Escape, blur and pointercancel abort, the click ending a drag is swallowed, and the list edge-scrolls 4-16 px a frame. Pinning unassigns the workspace from its section as Conductor's pin mutation does. Drops go through the store's section actions, which #370 persists to conductor.db's navigation_sections tables. Rows inside a section stay newest first, as in Conductor (usa), so there is no row order to drag. Pure drop rules tested in navigationSectionsDrag.test.ts; not exercised end to end in the desktop app by the verifier."
     },
     "sidebar.ws-numbers": {
       "verdict": "partial",
@@ -78,11 +78,11 @@
     },
     "sidebar.archive": {
       "verdict": "partial",
-      "why": "Archive from WorkspaceView and the palette now calls db_archive_workspace, so it survives restart, but there is no confirmation, no git-busy check, no WorkspaceManager::archive call and no archive commit."
+      "why": "#391 (274ac80) replaces the row-only db_archive_workspace with archive_workspace (src-tauri/src/workspace_archive/, flow.rs), which the row menu, WorkspaceView, the palette and archive on merge all reach through startArchive (store.ts). It follows Conductor's dYe/mYe (index-BGEQ8YjU.js @ ~966,478 / ~969,254): checkpoint conductor-archive-<id>, refuse in safe mode while a merge/rebase/cherry-pick/revert is in progress with the sticky warning and Archive retry (discardGitOperationState), archive commit = HEAD kept under refs/conductor-archive-heads/<id>, row state/branch/archive_commit, archive script, .context move, worktree removal and delete_branch_on_archive. Conductor asks before archiving only when an agent is running, and ArchiveRunningDialog asks the same. Gap: 'Stop agents and archive' archives but does not cancel the running chat turn (Conductor cancels each session, Z$ / cancelSession), per evidence/archive/NOTES.md. Not run in the desktop app."
     },
     "sidebar.archived-view": {
       "verdict": "backend",
-      "why": "#366 (df07012) registers db_unarchive_workspace (persistence_commands.rs: workspaces::unarchive, then state ready), but only the archive-on-merge toast's Unarchive reaches it (useArchiveOnMerge.ts -> restoreWorkspace). There is still no archived workspaces list, so a workspace archived any other way, or after the toast closes, cannot be restored from the UI. WorkspaceManager::restore is still unused."
+      "why": "#391 (274ac80) replaces db_unarchive_workspace with unarchive_workspace (checkpoint, worktree, .context and branch restored, setup rerun), and restoreWorkspace runs it through startUnarchive. Only the archive-on-merge toast's Unarchive dispatches restoreWorkspace (useArchiveOnMerge.ts); there is still no archived-workspaces list, so a workspace archived from the row menu, WorkspaceView or the palette, or after the toast closes, cannot be restored from the UI."
     },
     "sidebar.resize-toggle": {
       "verdict": "partial",
@@ -97,8 +97,8 @@
       "why": "No vibrancy or transparency setting or window effect; the sidebar is a CSS color-mix fill (styles.css)."
     },
     "sidebar.ws-actions": {
-      "verdict": "partial",
-      "why": "On 66a892a the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status ▸, Move to section ▸ (#370: every section, New section…, Remove from section), Rename (#315) and Archive. Still missing: Copy link (Cmd+Shift+C); WorkspaceActionsMenu.tsx notes it is not built because there is no URL scheme."
+      "verdict": "implemented",
+      "why": "#400 merged as be4f789 (squash of 6e038d3): the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status ▸, Move to section ▸ (#370), Rename (#315), Copy link (⌘⇧C) and Archive (WorkspaceActionsMenu.tsx). Copy link puts openconductor://workspace?id=<id> on the clipboard with the 'Copied link' / 'Failed to copy link' toasts (src/workspace/link.ts, Conductor's XV and $$); workspace.copyLink is bound to Cmd+Shift+C in keybindings/registry.ts. Out of this item: the copied link opens nothing until app.deep-link (unowned) handles openconductor:// URLs."
     },
     "sidebar.empty-state": {
       "verdict": "implemented",

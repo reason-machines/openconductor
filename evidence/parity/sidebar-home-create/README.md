@@ -2,14 +2,20 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`66a892a`, 2026-11-05)
+## Result on main (`274ac80`, 2026-11-05)
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `df07012` | `4b9dc87` | `d8b3b2e` |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Sidebar | 33 | 20 | 9 | 1 | 3 | 0 | **75.0%** | 70.5% | 65.9% | 65.9% |
-| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 85.3% | 62.5% |
-| Create workspace | 17 | 14 | 2 | 0 | 1 | 0 | **88.2%** | 88.2% | 82.4% | 79.4% |
-| **All** | 68 | 47 | 15 | 1 | 4 | 1 | **81.7%** | 79.5% | 75.0% | 68.4% |
+| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `962f017` | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Sidebar | 33 | 22 | 8 | 1 | 2 | 0 | **79.5%** | 78.0% | 75.0% | 70.5% | 65.9% | 65.9% |
+| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 88.2% | 85.3% | 62.5% |
+| Create workspace | 17 | 14 | 2 | 0 | 1 | 0 | **88.2%** | 88.2% | 88.2% | 88.2% | 82.4% | 79.4% |
+| **All** | 68 | 49 | 14 | 1 | 3 | 1 | **84.0%** | 83.2% | 81.7% | 79.5% | 75.0% | 68.4% |
+
+**Since `962f017`.** Read on `274ac80`. Merges: #400 (`be4f789`, Copy link), #391 (`274ac80`, full workspace archive and unarchive), #411 and #395 (evidence only).
+
+- `sidebar.ws-actions` partial to implemented (#400): the row menu now has every action Conductor's has, including Copy link with the ⌘⇧C hint, copying `openconductor://workspace?id=<id>` with Conductor's "Copied link" / "Failed to copy link" toasts. The copied link opens nothing until `app.deep-link` (unowned, outside this folder) handles `openconductor://` URLs.
+- `sidebar.archive` stays partial, much narrower (#391): every archive path (row menu, WorkspaceView, palette, archive on merge) runs `archive_workspace`, which checkpoints the worktree, refuses while a git operation is in progress (sticky warning with an Archive retry that discards the operation state), records the archive commit under `refs/conductor-archive-heads/<id>`, runs the archive script and removes the worktree, following Conductor's `dYe`/`mYe`. The running-agents dialog matches Conductor's only confirmation. Left: "Stop agents and archive" does not cancel the running chat turn.
+- `sidebar.archived-view` stays backend only: `unarchive_workspace` replaces `db_unarchive_workspace` and restores the worktree, checkpoint, `.context` and branch, but only the archive-on-merge toast can call it; there is still no archived-workspaces list.
 
 **Since `df07012`.** Read on `66a892a`. Merges: #370 (sidebar sections, row status from every chat, 5-minute PR lookup for on-screen rows, Conductor's label rule), `407e222` (#271, #365: chat model/effort and queue keys; no item here), #384 (evidence only), #345 and #386 (settings rows and settings in conductor.db; no item here).
 
