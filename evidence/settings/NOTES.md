@@ -206,3 +206,97 @@ zoom anywhere in the app. Divergences and gaps:
   Markdown Style.
 - Terminal font (`terminal_font_family`, `terminal_font_size`) is built by the terminal
   area; see `evidence/terminal/NOTES.md`.
+
+## Models and providers (settings.toml.models, settings.toml.providers)
+
+Sources, read on `sven m5 max` on 2026-11-05 with REA's extracted frontend
+(`~/code/conductor-rea-work/frontend/dist/assets`, `index-BGEQ8YjU.js`, `renderApp-D_fmY7hW.js`),
+`main_strings.txt` (strings of the Conductor binary) and the agent CLIs Conductor bundles in
+`~/Library/Application Support/com.conductor.app/agent-binaries` (Claude Code 2.1.284, Codex 0.156.1).
+Key names, defaults and enums only; no user values were read.
+
+- Setting key to file key table (`index`, `oZ`): `default_model` -> `models.default`,
+  `review_model` -> `models.review`, `default_fast_mode` / `review_fast_mode` / `default_plan_mode`
+  -> `models.*`, `default_codex_thinking_level` / `review_codex_thinking_level` ->
+  `models.codex.{default,review}_thinking_level`, `default_codex_personality` ->
+  `models.codex.personality`, `default_claude_personality` -> `models.claude_code.personality`,
+  `default_claude_effort_level` / `review_claude_effort_level` ->
+  `models.claude_code.{default,review}_effort_level`, `codex_tool_approval_policy` ->
+  `models.codex.tool_approval_policy`, `visible_provider_models` -> `models.visible_provider_models`,
+  `claude_executable_path` -> `claude_code_executable_path`, and `codex_executable_path`,
+  `opencode_executable_path`, `claude_provider`, `codex_provider`, `bedrock_region`,
+  `vertex_project_id`, `ssh_key_path`, `tool_approvals_enabled` under their own names at top level.
+  Every `models.*` key except `models.visible_provider_models` has `workspaceConfigurable: false`,
+  as has `tool_approvals_enabled`; the provider, executable, region, project and SSH keys default to
+  workspace configurable. OpenConductor's `settings::layers::REPO_KEYS` is that list.
+- Defaults and enums (`wN` registry): `default_fast_mode` false, `tool_approvals_enabled` false,
+  `codex_tool_approval_policy` `default` (`default`, `always_approve`), `default_claude_personality`
+  `default` (`default`, `proactive`, `concise`, `explanatory`, `learning`); the session schema's
+  Codex personality is `none`, `friendly`, `pragmatic` and its thinking levels `none`, `low`,
+  `medium`, `high`, `xhigh`, `max`, `ultra`. The others have no default.
+- `claude_provider` (renderApp providers page): `custom` when the user picks API key, `default`
+  for the CLI login; a binary migration rewrites the removed `openai` to `default`. `codex_provider`:
+  `custom`, `chatgpt_sign_in`, anything else normalised to `default` (`TBe`).
+- Launch (`Ohe` in index): reads `claude_executable_path`, `claude_provider`, `codex_executable_path`,
+  `codex_provider` for the workspace (`getSettingForWorkspace`, else repo, else user), passes a path
+  only for a local host and only when set, and strips `ANTHROPIC_API_KEY`/`ANTHROPIC_AUTH_TOKEN`
+  (Codex: `CODEX_API_KEY`, `AI_GATEWAY_API_KEY`, `OPENAI_BASE_URL`) unless the provider is `custom`.
+  OpenCode runs as `<opencode_executable_path or opencode> acp`. Blank paths count as unset (`qx`).
+- `bedrock_region` and `vertex_project_id` are registered and file-backed but no 0.87.6 code reads
+  them (3 hits each in index, all registry); Bedrock and Vertex are chosen with
+  `CLAUDE_CODE_USE_BEDROCK` / `CLAUDE_CODE_USE_VERTEX` environment variables. A binary migration
+  turned the old `vertex_project_id` into `CLAUDE_CODE_USE_VERTEX=true` plus
+  `ANTHROPIC_VERTEX_PROJECT_ID`.
+- `tool_approvals_enabled`: chats require approval when it or the account's
+  `requiresToolApprovals` is set; the Big terminal presets switch from
+  `claude --dangerously-skip-permissions` to `claude` (`GN` / `kBe`). `codex_tool_approval_policy =
+  always_approve` answers every Codex tool approval with `always_allow`.
+- `visible_provider_models` is a JSON string, an object keyed by provider (`claude`, `codex`,
+  `cursor`, `opencode`, `pi`) of `provider:model` ids; bad JSON or entries are ignored (`hee`).
+- Bundled CLIs: `claude --help` lists `--effort <level>` (low, medium, high, xhigh, max) and
+  `--settings <file-or-json>`; its strings hold the `outputStyle` and `fastMode` settings and the
+  built-in output styles Explanatory, Learning, Proactive and Concise. Codex's strings hold a
+  `Personality` enum `friendly`/`pragmatic`, `model_reasoning_effort`, `service_tier` and `fast`.
+
+OpenConductor (`src-tauri/src/settings/model.rs`, `launch.rs`, `layers.rs`):
+
+- Every key above parses from `settings.toml` under Conductor's path, round-trips, and is validated
+  (paths single-line; provider, region and project without whitespace; enums exact).
+- Provider precedence, highest first: `[providers.<agent>]` (ours), then `claude_provider` /
+  `codex_provider`, then the CLI login. A repository or managed layer that sets the top-level key
+  replaces a lower `[providers.<agent>]` table. `claude_provider = "custom"` is the Anthropic API
+  with the Keychain key; `bedrock` / `vertex` are OpenConductor values that use `bedrock_region` /
+  `vertex_project_id` (Vertex region `global`), because Conductor 0.87.6 has no reader for those
+  keys. `codex_provider = "custom"` is the OpenAI API; `chatgpt_sign_in` and `default` are Codex's
+  login.
+- `settings::launch::claude_launch` / `codex_launch` / `opencode_acp_command` build the agent
+  command from settings: executable path, provider env, model (`opus-5-5-1m` -> `--model
+  claude-opus-5-5[1m]`, Conductor's mapping), `--effort`, `--settings
+  {"outputStyle", "fastMode"}`, `--permission-mode plan` for a new chat with plan mode on, else
+  `default` with tool approvals on and `bypassPermissions` with them off; Codex `-c model`,
+  `model_reasoning_effort` (`max` and `ultra` run as `xhigh`, Codex's top level), `personality`,
+  `service_tier="fast"`. `Settings::codex_auto_approval` answers Codex approvals for
+  `always_approve`.
+- `get_repo_settings` (Tauri) merges user < repo shared (from `origin/<default branch>`) < repo local
+  < managed through `oc_scripts::config::load_layers`; repository files set only `REPO_KEYS`.
+
+Consumers still missing: no chat runner calls `claude_launch` / `codex_launch` yet (the
+new-workspace dialog's first session is "agent runtime pending"), so the model, effort, output
+style, fast and plan mode keys reach a real agent only once it does; nothing in the rebuild uses
+`ssh_key_path` (no cloud workspaces). Codex plan mode (Conductor's `collaborationMode: plan` per
+turn) is not passed. Not verified against a running agent: the CLI option mapping above is from
+the bundled binaries' help and strings, not from Conductor's sidecar (see gaps).
+
+### REA gaps hit (models and providers)
+
+- Conductor's sidecar, which turns the session config (`claudePersonality`, `effortLevel`,
+  `fastMode`, `personality`) into Claude Agent SDK and Codex options, is not in REA's extracted
+  artifacts: `grep -c` of `outputStyle`, `effortLevel`, `fastMode`, `claudePersonality` in
+  `main_strings.txt` is 0, and no sidecar JS exists outside `frontend/dist` in the work folder. The
+  CLI mapping was read from the bundled CLIs instead.
+- Minified names differ between chunks (`pni`, `hni`, `XA` in renderApp are `XN`, `TBe`, `qx` in
+  index); REA's frontend analysis gives no cross-chunk symbol map, so definitions were found by
+  grepping each chunk.
+- One `devices_exec` call is capped at 60 s: `strings | grep -E '.{0,120}...'` over the 55 MB Claude
+  binary timed out twice; dumping strings to `out/cli/` in the background, then fixed-string greps,
+  worked.

@@ -117,6 +117,10 @@ pub struct ClaudeLaunch {
     pub add_dirs: Vec<PathBuf>,
     /// Text appended to Claude Code's system prompt.
     pub append_system_prompt: Option<String>,
+    /// `--effort` (`low`, `medium`, `high`, `xhigh`, `max`); the CLI default when unset.
+    pub effort: Option<String>,
+    /// Settings JSON passed with `--settings` (for example `outputStyle`, `fastMode`).
+    pub settings: Option<serde_json::Value>,
 }
 
 impl ClaudeLaunch {
@@ -131,6 +135,8 @@ impl ClaudeLaunch {
             prompt_over_stdio: true,
             add_dirs: Vec::new(),
             append_system_prompt: None,
+            effort: None,
+            settings: None,
         }
     }
 
@@ -161,6 +167,12 @@ impl ClaudeLaunch {
         }
         if let Some(text) = &self.append_system_prompt {
             args.extend(["--append-system-prompt".into(), text.clone()]);
+        }
+        if let Some(effort) = &self.effort {
+            args.extend(["--effort".into(), effort.clone()]);
+        }
+        if let Some(settings) = &self.settings {
+            args.extend(["--settings".into(), settings.to_string()]);
         }
         args
     }

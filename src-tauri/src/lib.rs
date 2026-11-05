@@ -302,6 +302,7 @@ pub fn run() {
             terminal_commands::cancel_shell_command,
             settings::commands::get_settings,
             settings::commands::update_settings,
+            settings::commands::get_repo_settings,
             settings::commands::provider_status,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
