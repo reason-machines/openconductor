@@ -7,6 +7,8 @@ import { WorkspaceActionsMenu } from "./WorkspaceActionsMenu";
 import { COMMANDS } from "../keybindings/registry";
 import { HINT_DELAY_MS, hintLabel, hintNumbers, holdsExactly } from "../state/shortcutHint";
 import { sidebarEntries } from "../state/sidebarOrder";
+import { compactCount } from "../state/sidebarDiffStat";
+import { useRowDiffStat } from "./useRowDiffStat";
 
 const STATUS_LABEL: Record<Workspace["status"], string> = {
   idle: "Idle",
@@ -34,8 +36,10 @@ interface Props {
 export function SidebarWorkspaceRow({ workspace: ws, targetBranch, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint }: Props) {
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
   const label = workspaceLabel({ name: ws.name, branch: ws.branch, prTitle: ws.prTitle, userSetWorkspaceName: ws.userSetWorkspaceName, targetBranch });
+  const { ref, stat } = useRowDiffStat(ws, targetBranch, active);
   return (
     <button
+      ref={ref}
       type="button"
       className="sb-ws"
       data-testid="left-sidebar-workspace-item"
@@ -59,9 +63,10 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, active, onSel
         )}
       </span>
       <span className="sb-ws-name">{label}</span>
-      {(ws.diff.added > 0 || ws.diff.removed > 0) && (
-        <span className="sb-ws-diff">
-          <span className="add">+{ws.diff.added}</span> <span className="del">-{ws.diff.removed}</span>
+      {(stat.added > 0 || stat.removed > 0) && (
+        <span className="sb-ws-diff" data-testid="workspace-diff-stat">
+          {stat.added > 0 && <span className="add">+{compactCount(stat.added)}</span>}
+          {stat.removed > 0 && <span className="del">-{compactCount(stat.removed)}</span>}
         </span>
       )}
     </button>

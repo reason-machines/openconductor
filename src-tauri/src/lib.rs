@@ -49,6 +49,7 @@ pub mod terminal_output;
 mod terminal_output_commands;
 #[cfg(all(test, unix))]
 mod test_exe;
+pub mod tool_cli;
 pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
@@ -296,6 +297,7 @@ pub fn run() {
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
             sidebar_repo_commands::repo_favicon,
+            sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
             checkpoint_commands::checkpoint_save,
