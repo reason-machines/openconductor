@@ -3,7 +3,7 @@
   "status": "captured",
   "steps": 1,
   "file": "oc/all-workspaces.png",
-  "png_sha256": "f0203a0a256ee375b810c67032f73dc86a49ec19af7c065c4036ff32adb49ee3",
+  "png_sha256": "aa277e59bb0ab89eaee76bf5efaac1965a11e25458c637e1a343c871114a5c78",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -23,7 +23,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -41,7 +41,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Berlin",
+    "Osaka",
     "tide-web"
    ],
    "roles": [
@@ -59,7 +59,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -74,8 +74,8 @@
     "Today",
     "1",
     "T",
-    "Berlin",
-    "39m"
+    "Osaka",
+    "now"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -83,13 +83,13 @@
     820
    ]
   },
-  "ms": 4843
+  "ms": 4128
  },
  "create": {
   "status": "captured",
   "steps": 1,
   "file": "oc/create.png",
-  "png_sha256": "78b29a42e798d7002086a027d2939bf2a394c5d2b6680252ad2875cd42804097",
+  "png_sha256": "7c3891428c423258375df90cb863f313c547f1cd359f0aa58770ff631475d2d1",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -109,7 +109,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -128,11 +128,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -155,14 +154,6 @@
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
     "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input",
     "New workspace",
     "Close",
     "What should the agent work on? (optional)",
@@ -183,7 +174,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -194,24 +185,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -254,15 +244,6 @@
     "No run script configured",
     "Use spotlight testing",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "New workspace",
     "Create from",
     "Create from...",
@@ -272,7 +253,7 @@
     "Workspace name",
     "Common",
     "Branch",
-    "seoul",
+    "copenhagen",
     ". A placeholder name is replaced by a generated branch name after the first message.",
     "⌘↵ to create",
     "Cancel",
@@ -284,13 +265,13 @@
     820
    ]
   },
-  "ms": 5360
+  "ms": 4101
  },
  "create-repo-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/create-repo-picker.png",
-  "png_sha256": "deb90c6d14306ea9b21e53dc021e9b10f1c09ee5a43408c75af8e5754234c527",
+  "png_sha256": "c2220d4863c4db0a677962d3e391c1ee2635970b71e7a84ff8503a58c27d9c58",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -310,7 +291,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -329,11 +310,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -356,14 +336,6 @@
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
     "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input",
     "New workspace",
     "Close",
     "What should the agent work on? (optional)",
@@ -388,7 +360,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -399,24 +371,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -459,15 +430,6 @@
     "No run script configured",
     "Use spotlight testing",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "New workspace",
     "Create from",
     "Create from...",
@@ -494,13 +456,13 @@
     820
    ]
   },
-  "ms": 5723
+  "ms": 4473
  },
  "dialog-clone-github": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-clone-github.png",
-  "png_sha256": "958249151501b1208d8a71aca5b89b55c5ca0e94a1df0b615f896ed4bb3e2c48",
+  "png_sha256": "7914ec32702cf9ecd210cd61b606e8220b7d91f69b550d60e4770d39f634dff5",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -520,7 +482,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -539,11 +501,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -566,14 +527,6 @@
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
     "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input",
     "Clone GitHub repo",
     "Close",
     "https://github.com/user/repo.git",
@@ -594,7 +547,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -605,24 +558,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -665,15 +617,6 @@
     "No run script configured",
     "Use spotlight testing",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "Clone GitHub repo",
     "Clone a GitHub repository and add it as a project.",
     "Repository URL",
@@ -688,13 +631,13 @@
     820
    ]
   },
-  "ms": 9339
+  "ms": 5637
  },
  "dialog-create-project": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-create-project.png",
-  "png_sha256": "9baddaf01002f77101f2cb80ed4f4aa159f600ed9ac2a6821aadab89a2a62bd9",
+  "png_sha256": "137eb0e51021a255081adb2c8752469d2f4b411e8c36d716e783cdc84911216c",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -714,7 +657,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -733,11 +676,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -760,14 +702,6 @@
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
     "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input",
     "Create project",
     "Close",
     "my-awesome-project",
@@ -789,7 +723,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -800,24 +734,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -860,15 +793,6 @@
     "No run script configured",
     "Use spotlight testing",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "Create project",
     "Create a local folder, private GitHub repo, and first workspace.",
     "Project name",
@@ -890,13 +814,13 @@
     820
    ]
   },
-  "ms": 9204
+  "ms": 5581
  },
  "dialog-keyboard-shortcuts": {
   "status": "captured",
   "steps": 1,
   "file": "oc/dialog-keyboard-shortcuts.png",
-  "png_sha256": "572cd28a50ba6226320302c52faac5c71bdf92535ca1c0e2fa770733d61bfdf7",
+  "png_sha256": "54220e34adfbbb0c623bd82fdf3029dcb30a67f9a8a2e4e0736c2ba2f1cc60a6",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -916,7 +840,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -935,11 +859,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -966,15 +889,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [
     "menu"
@@ -991,7 +906,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -1002,24 +917,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "Opus 4.8",
     "High",
     "Opus 4.8",
@@ -1068,16 +982,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1085,13 +990,13 @@
     820
    ]
   },
-  "ms": 7657
+  "ms": 4136
  },
  "dialog-rename-workspace": {
   "status": "captured",
   "steps": 2,
   "file": "oc/dialog-rename-workspace.png",
-  "png_sha256": "4cbd32f53248efa45ce8688ab0860924a1172db0731f004f43817aeaade0d75c",
+  "png_sha256": "ef32ae5bfb504e2e9c133f6cda790ba25eb30c085ec098f2ef47387466cee148",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1111,7 +1016,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1130,11 +1035,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -1156,15 +1060,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [
     "dialog"
@@ -1181,7 +1077,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -1197,24 +1093,23 @@
     "OK",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -1256,16 +1151,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1273,13 +1159,13 @@
     820
    ]
   },
-  "ms": 6955
+  "ms": 4164
  },
  "diff-entire-file": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-entire-file.png",
-  "png_sha256": "055d7e74f8f04fb526d7a949673eee0b7fa0362235da34dbd2ce0444f415f5c2",
+  "png_sha256": "9f41b77800c17f6ddc70d2c30eddd49248ecca7e442123ab40374b39e697acb8",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1299,7 +1185,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1318,13 +1204,12 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "berlin",
+    "osaka",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
     "Discard changes",
@@ -1361,15 +1246,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [],
    "texts": [
@@ -1384,7 +1261,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -1395,16 +1272,15 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
     "All changes",
     "×",
-    "berlin",
+    "osaka",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1454,16 +1330,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1471,13 +1338,13 @@
     820
    ]
   },
-  "ms": 7639
+  "ms": 6785
  },
  "diff-split": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-split.png",
-  "png_sha256": "c9a906d8c24ee4d3b7e816b5e0c2f4de66fb75243c1d193e6256199e194138ad",
+  "png_sha256": "3f5c81f04711c339c10ecadfc1fe731745fd0f6188ea8615e6c447e73c726703",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1497,7 +1364,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1516,13 +1383,12 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "berlin",
+    "osaka",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
     "Discard changes",
@@ -1559,15 +1425,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [],
    "texts": [
@@ -1582,7 +1440,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -1593,16 +1451,15 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
     "All changes",
     "×",
-    "berlin",
+    "osaka",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1652,16 +1509,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1669,13 +1517,13 @@
     820
    ]
   },
-  "ms": 6888
+  "ms": 6796
  },
  "diff-unified": {
   "status": "captured",
   "steps": 2,
   "file": "oc/diff-unified.png",
-  "png_sha256": "6b1778a3d62277c374be6f680b2e71dba21c7ebe900f9b95acec0aeac0fb57d0",
+  "png_sha256": "07eb793b2dbc7204b9f4132c60098c8b2821ac6117b2913538d5458d4d815bc4",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1695,7 +1543,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1714,13 +1562,12 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "berlin",
+    "osaka",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
     "Discard changes",
@@ -1757,15 +1604,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [],
    "texts": [
@@ -1780,7 +1619,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -1791,16 +1630,15 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
     "All changes",
     "×",
-    "berlin",
+    "osaka",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1850,16 +1688,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1867,13 +1696,13 @@
     820
    ]
   },
-  "ms": 6650
+  "ms": 6995
  },
  "first-run-onboarding": {
   "status": "captured",
   "steps": 0,
   "file": "oc/first-run-onboarding.png",
-  "png_sha256": "509a6ab5aa0dfa6e454f5b32c5e67309d635634e67a1dde1b3113340facf556e",
+  "png_sha256": "e9909e40649bf05168436ebc83ffcde4aa6a3ddca63b6559341376c74296ed60",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1896,13 +1725,13 @@
     820
    ]
   },
-  "ms": 4599
+  "ms": 3813
  },
  "home": {
   "status": "captured",
   "steps": 1,
   "file": "oc/home.png",
-  "png_sha256": "f0203a0a256ee375b810c67032f73dc86a49ec19af7c065c4036ff32adb49ee3",
+  "png_sha256": "aa277e59bb0ab89eaee76bf5efaac1965a11e25458c637e1a343c871114a5c78",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1922,7 +1751,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1940,7 +1769,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Berlin",
+    "Osaka",
     "tide-web"
    ],
    "roles": [
@@ -1958,7 +1787,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -1973,8 +1802,8 @@
     "Today",
     "1",
     "T",
-    "Berlin",
-    "39m"
+    "Osaka",
+    "now"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1982,7 +1811,7 @@
     820
    ]
   },
-  "ms": 4187
+  "ms": 4073
  },
  "home-empty": {
   "status": "captured",
@@ -2032,13 +1861,13 @@
     820
    ]
   },
-  "ms": 5341
+  "ms": 4965
  },
  "login": {
   "status": "captured",
   "steps": 0,
   "file": "oc/login.png",
-  "png_sha256": "882f6b501d435890d7ec9d4016e240a19155cc407e94569019ddd887a3640eb6",
+  "png_sha256": "aa6b54880bc5ab91e1193f915f8826cbb3728fdf02f88a9f3bfe772265788ecb",
   "dom": {
    "labels": [
     "Slide progress"
@@ -2061,13 +1890,13 @@
     820
    ]
   },
-  "ms": 4042
+  "ms": 3826
  },
  "menu-account": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-account.png",
-  "png_sha256": "128b73ae8c27532116f4f6bd49ae3cf59c86778d243280e41e45a7f653d00aa5",
+  "png_sha256": "f81a19c66da348a15b5dd51d07d4ceba9da859dd76a3b4ca3d028db4e557e82f",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2088,7 +1917,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2107,11 +1936,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -2133,15 +1961,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [
     "menu"
@@ -2159,7 +1979,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -2170,24 +1990,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2229,16 +2048,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2246,13 +2056,13 @@
     820
    ]
   },
-  "ms": 6115
+  "ms": 3713
  },
  "menu-help": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-help.png",
-  "png_sha256": "d7d4aab39b44a644a02d92488e185b7373525563d4c3e8146a3072b500de21f3",
+  "png_sha256": "450b6c28714fb3c4b56738593140219f47d48b283f7c6c40012dc3851658eb53",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2272,7 +2082,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2292,11 +2102,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -2318,15 +2127,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [
     "menu"
@@ -2343,7 +2144,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -2362,24 +2163,23 @@
     "OpenConductor v0.1.0",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2421,16 +2221,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2438,13 +2229,13 @@
     820
    ]
   },
-  "ms": 5781
+  "ms": 3722
  },
  "menu-model-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-model-picker.png",
-  "png_sha256": "ad92f2d082b32075779cc06c09dcaef7c72ec2813ae5045ce80511fe649859e5",
+  "png_sha256": "2841b9cd073868ab56c13c622f3e784b5b5495ce7e805a113c303ad69d46bb7b",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2464,7 +2255,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2483,11 +2274,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -2502,19 +2292,19 @@
     "Send message ↵",
     "Send message ↵",
     "Changes",
+    "Get an AI code review (⌘⇧R). Right-click to edit the request first.",
     "Reload changes",
+    "Changed files",
+    "Open README.md",
+    "Discard changes to README.md",
+    "Discard changes",
+    "Open src/lib/auth.ts",
+    "Discard changes to src/lib/auth.ts",
+    "Discard changes",
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [
     "menu"
@@ -2531,7 +2321,9 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
+    "+",
+    "5",
     "T",
     "tide-api",
     "No workspaces",
@@ -2540,24 +2332,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "Opus 4.8",
     "High",
     "Opus 4.8",
@@ -2571,28 +2362,42 @@
     "Cycle effort",
     "All files",
     "Changes",
+    "2",
     "Checks",
+    "Review",
     "All changes",
     "Uncommitted",
+    "0",
+    "/",
+    "2",
+    "viewed",
     "Refresh",
-    "Couldn't load changes.",
-    "git rev-parse --git-path rebase-merge failed: fatal: not a git repository: /tmp/oc-uimap-run/repos/tide-web/.git/worktrees/berlin",
+    "2",
+    "files",
+    "changed",
+    "+",
+    "5",
+    "-",
+    "0",
+    "README.md",
+    "M",
+    "+",
+    "2",
+    "-",
+    "0",
+    "src/lib/auth.ts",
+    "U",
+    "+",
+    "3",
+    "-",
+    "0",
     "Run",
     "Setup",
     "▶",
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2600,13 +2405,13 @@
     820
    ]
   },
-  "ms": 5252
+  "ms": 5913
  },
  "menu-repo-actions": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-repo-actions.png",
-  "png_sha256": "f048d91fe4fd3f6ab854ad69513aa1fb24f6fb3376a4683fd8d84c5473c1f070",
+  "png_sha256": "20247723d5fe29a9767127b3567b5d07370088e811042d02cf6014ae5db33975",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2626,7 +2431,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2645,11 +2450,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -2671,15 +2475,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [
     "menu"
@@ -2698,7 +2494,7 @@
     "Change icon…",
     "Hide repository",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -2709,24 +2505,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2768,16 +2563,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2785,13 +2571,13 @@
     820
    ]
   },
-  "ms": 5743
+  "ms": 4245
  },
  "menu-workspace-context": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-workspace-context.png",
-  "png_sha256": "ebed8410d4e7d64f1883f06cf9465f73d0fe0fcdcfa792c1f233aff5640d4c37",
+  "png_sha256": "3ab3e3e813dad61cf4091fbaba3bfaf13182e33b6b6242347d80f87ebb4c5150",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2811,7 +2597,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2831,11 +2617,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -2857,15 +2642,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [
     "menu"
@@ -2882,7 +2659,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -2904,24 +2681,23 @@
     "⌘⇧A",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2963,16 +2739,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2980,13 +2747,13 @@
     820
    ]
   },
-  "ms": 5992
+  "ms": 3753
  },
  "menu-workspace-status": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-workspace-status.png",
-  "png_sha256": "c9964bedd477e0399ace6a076e4dc91081ed8dc8f31ad36515e37e40058c5863",
+  "png_sha256": "cc234e30ebef282cfb22792819ad765e9d4d1658f1a59837260cad1c7a965c80",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3006,7 +2773,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3027,11 +2794,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -3053,15 +2819,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [
     "menu",
@@ -3079,7 +2837,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -3107,24 +2865,23 @@
     "⌘⇧A",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3166,16 +2923,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -3183,7 +2931,7 @@
     820
    ]
   },
-  "ms": 6140
+  "ms": 4857
  },
  "needs-permission": {
   "status": "no-equivalent",
@@ -3193,7 +2941,7 @@
   "status": "captured",
   "steps": 0,
   "file": "oc/onboarding-signed-out.png",
-  "png_sha256": "ab1613bb0c698d184a29f43c68afc9b87f6e77701296c0da10d816963c9be544",
+  "png_sha256": "6414ff41479f2d4deb08d0cd2c514be544f53436a7b4793e0c9c178334b9bcad",
   "dom": {
    "labels": [
     "Slide progress"
@@ -3216,13 +2964,13 @@
     820
    ]
   },
-  "ms": 3980
+  "ms": 3796
  },
  "palette-all": {
   "status": "captured",
   "steps": 1,
   "file": "oc/palette-all.png",
-  "png_sha256": "90010460caad6805efeed95a07bf5f57e18beda6af94b24a6024d311702ecc0b",
+  "png_sha256": "83a0e38f5b439113caa3f1ff3084fdc801cbfcf1f91184d95450cab2a279da13",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3242,7 +2990,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3261,11 +3009,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -3288,14 +3035,6 @@
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
     "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input",
     "Command palette",
     "Type a command or search...",
     "Recent workspaces",
@@ -3319,7 +3058,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -3330,24 +3069,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3390,23 +3128,14 @@
     "No run script configured",
     "Use spotlight testing",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "All",
     "Workspaces",
     "Projects",
     "Actions",
     "Settings",
     "Recent workspaces",
-    "berlin",
-    "tide-web · berlin",
+    "osaka",
+    "tide-web · osaka",
     "Workspace actions",
     "Archive workspace",
     "⌘⇧A",
@@ -3431,13 +3160,13 @@
     820
    ]
   },
-  "ms": 5947
+  "ms": 4637
  },
  "palette-search": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-search.png",
-  "png_sha256": "0463d4870de0335bd295a70581905111fd0ddcb7053bd613ce860246b378bc51",
+  "png_sha256": "9207329600351218a9bab37f6650163ea6ebf47c23efd739b06af55524213611",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3457,7 +3186,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3476,11 +3205,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -3503,14 +3231,6 @@
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
     "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input",
     "Command palette",
     "Type a command or search..."
    ],
@@ -3530,7 +3250,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -3541,24 +3261,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3601,15 +3320,6 @@
     "No run script configured",
     "Use spotlight testing",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "All",
     "Workspaces",
     "Projects",
@@ -3623,13 +3333,13 @@
     820
    ]
   },
-  "ms": 6126
+  "ms": 5219
  },
  "palette-workspaces": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-workspaces.png",
-  "png_sha256": "58f140852673bdfbabcd92397c7cb459ce25dacdc048bbe1c4185d839bd8c558",
+  "png_sha256": "5f2e5d170eb963699859799ef4d3319f6c27becb15bd4dbfd51f49019378698d",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3649,7 +3359,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3668,11 +3378,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -3695,14 +3404,6 @@
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
     "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input",
     "Command palette",
     "Archived workspaces",
     "Search workspaces...",
@@ -3724,7 +3425,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -3735,24 +3436,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3795,23 +3495,14 @@
     "No run script configured",
     "Use spotlight testing",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "All",
     "Workspaces",
     "Projects",
     "Actions",
     "Settings",
     "Workspaces",
-    "berlin",
-    "tide-web · berlin"
+    "osaka",
+    "tide-web · osaka"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -3819,7 +3510,7 @@
     820
    ]
   },
-  "ms": 6576
+  "ms": 4644
  },
  "route-cloud-collab-onboarding": {
   "status": "no-equivalent",
@@ -3853,12 +3544,15 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-account.png",
-  "png_sha256": "55560f6af7ce87c2d3ba6e26bb48413096cdf19fe68610f93e4e6af7aca10ee8",
+  "png_sha256": "04aeb1c477a8942596bb2b811f7c619fd3a2bce25b29c0726daced07a1c335e2",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "GitHub account",
     "Enterprise data privacy",
     "Claude Code tool approvals",
@@ -3906,18 +3600,21 @@
     820
    ]
   },
-  "ms": 6441
+  "ms": 5643
  },
  "settings-advanced": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-advanced.png",
-  "png_sha256": "7e77a0d14c24515ff764f77b2e45df58407dc71d6bee739bc1aafdd795041912",
+  "png_sha256": "7638275b1df2d1704e008f41517be2703ec560a03905022cf44ee196e7468b0a",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "OpenConductor root directory",
     "Claude Code executable path",
     "Browse for Claude Code executable path",
@@ -3996,18 +3693,21 @@
     820
    ]
   },
-  "ms": 6244
+  "ms": 4913
  },
  "settings-appearance": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-appearance.png",
-  "png_sha256": "6bbc3ea1337ba21406c463411ab9c326c72419cbe4150d445b443fd01613b19d",
+  "png_sha256": "5e856f3a33fffeb257ba646ff3b355ae8f526b0d53fb4d01fd57d7aa0c96b383",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Theme",
     "Low-contrast dark mode",
     "App zoom",
@@ -4089,7 +3789,7 @@
     820
    ]
   },
-  "ms": 6411
+  "ms": 4949
  },
  "settings-cloud-setup": {
   "status": "no-equivalent",
@@ -4105,6 +3805,9 @@
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Environment variables"
    ],
    "roles": [],
@@ -4148,18 +3851,21 @@
     820
    ]
   },
-  "ms": 5624
+  "ms": 4997
  },
  "settings-experimental": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-experimental.png",
-  "png_sha256": "d2b11cd4bd0708175f25bed88473bd389282930793f147bfdde15e504bd186b5",
+  "png_sha256": "6c49b00ee5433df39b4f8f2c61339a0a309b6260c5a07742003c91ef37ea3fdf",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Auto permission mode",
     "Big terminal mode",
     "Tab Freak Mode",
@@ -4248,18 +3954,21 @@
     820
    ]
   },
-  "ms": 6650
+  "ms": 4988
  },
  "settings-general": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-general.png",
-  "png_sha256": "0f062e0d654e175e3084520fc86ff0b8dd17821c3170d6e0a969b2a1da72d9f3",
+  "png_sha256": "ce69745d129b767e03239f4939a0bffd83fcb7dfbae06da8ce8bebd12ab1315e",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Send messages with",
     "Follow-up behavior",
     "Agent notifications",
@@ -4342,18 +4051,21 @@
     820
    ]
   },
-  "ms": 5486
+  "ms": 5647
  },
  "settings-git": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-git.png",
-  "png_sha256": "d3bf716b21dacafccfde92fac75e835325272e86e39ccbf0107e1535f3d3d802",
+  "png_sha256": "d2598d7a482a46bfd76e8687c502a4ab203cbec534dc932dcfea40180e3b2748",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Open pull requests in",
     "Branch name prefix",
     "Rename workspace when branch is named",
@@ -4422,7 +4134,7 @@
     820
    ]
   },
-  "ms": 6053
+  "ms": 5505
  },
  "settings-internal": {
   "status": "no-equivalent",
@@ -4432,12 +4144,15 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-key-bindings.png",
-  "png_sha256": "b5849ab128d981568ddf34901c6aa26c97c5039b7eba94a14fa2151cb68557c1",
+  "png_sha256": "9b554ad89cfb178ec295e21a7ff44b65585a58da80806f1786b9a014b966dd42",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Search keyboard shortcuts...",
     "Search keyboard shortcuts...",
     "Change shortcut for Command palette. Current shortcuts: Command+K.",
@@ -5257,18 +4972,21 @@
     820
    ]
   },
-  "ms": 6081
+  "ms": 5442
  },
  "settings-models": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-models.png",
-  "png_sha256": "6385f021d543a48ac59a320288c28ee8c3b0743d3c227c7b3022ffde8e15e4c9",
+  "png_sha256": "05b245902a512112d6d638d9893fa201752a6ea1f5cfcc4bf0cff0a31801a88f",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Default model",
     "Default effort",
     "Fast mode",
@@ -5325,7 +5043,7 @@
     820
    ]
   },
-  "ms": 5688
+  "ms": 5013
  },
  "settings-org-computer": {
   "status": "no-equivalent",
@@ -5363,12 +5081,15 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-providers.png",
-  "png_sha256": "b4d16623a85b1b097af73315a7d47c649d60655663f2931f335cf252b596e5bc",
+  "png_sha256": "2ae6731b23c1aa6ef2a1af5dce03bd29fc5c8aaa419460d9294669b861082f2d",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Claude Code",
     "Claude Code provider",
     "Use Claude Code with Chrome",
@@ -5459,18 +5180,21 @@
     820
    ]
   },
-  "ms": 5615
+  "ms": 5581
  },
  "settings-repo-actions": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-actions.png",
-  "png_sha256": "fb00be2e48542cac313353d4092a64c7734f048b205c686df1f67bb02bcd507e",
+  "png_sha256": "53180aff90aad8307024be07cdc3c965156f25e0fa16137f4c7e49bafe5e0814",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Use spotlight testing",
     "Action preferences",
     "Code review preferences prompt",
@@ -5496,8 +5220,8 @@
     "Repositories",
     "T",
     "tide-web",
-    "Environment",
     "Git",
+    "Environment",
     "Scripts",
     "Actions",
     "Misc",
@@ -5517,9 +5241,7 @@
     "Create PR preferences",
     "Add custom instructions sent to the agent when you click the Create PR button.",
     "General preferences",
-    "Add custom instructions sent to the agent at the start of every new chat.",
-    "Settings file:",
-    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
+    "Add custom instructions sent to the agent at the start of every new chat."
    ],
    "url": "tauri://localhost/settings/repos/tide-web/actions",
    "viewport": [
@@ -5527,18 +5249,21 @@
     820
    ]
   },
-  "ms": 7412
+  "ms": 5456
  },
  "settings-repo-environment": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-environment.png",
-  "png_sha256": "ee6e6aafe37cbe4fad99fb1908fb0dea6b21083c47d3efe9ea61a1047c009132",
+  "png_sha256": "0e524fd841e174fbb858b9cba923fc9741430050ef44c7c650b9957939f71c44",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Environment variable files",
     "~/.env",
     "Variable name",
@@ -5563,8 +5288,8 @@
     "Repositories",
     "T",
     "tide-web",
-    "Environment",
     "Git",
+    "Environment",
     "Scripts",
     "Actions",
     "Misc",
@@ -5581,9 +5306,7 @@
     "Environment variables",
     "Variables for local workspaces and for cloud workspaces of this repository. Use an empty value to set a variable to an empty string.",
     "No variables yet.",
-    "Add variable",
-    "Settings file:",
-    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
+    "Add variable"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/environment",
    "viewport": [
@@ -5591,20 +5314,27 @@
     820
    ]
   },
-  "ms": 8027
+  "ms": 5516
  },
  "settings-repo-git": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-git.png",
-  "png_sha256": "d9c5e9d280bae0d72acf6278becf29eb3479d3df49d3bc0746722c55c214bcd2",
+  "png_sha256": "8bee88e27cb07d079b57ff18454da486bd97bef5c3f3820a30944bfb5f484612",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Base branch",
+    "Changing this in OpenConductor is not supported yet",
     "Remote origin",
+    "Changing this in OpenConductor is not supported yet",
+    "Delete branch on archive",
+    "Archive on merge",
     "Set upstream on plain git push"
    ],
    "roles": [],
@@ -5623,8 +5353,8 @@
     "Repositories",
     "T",
     "tide-web",
-    "Environment",
     "Git",
+    "Environment",
     "Scripts",
     "Actions",
     "Misc",
@@ -5638,14 +5368,21 @@
     "Git",
     "Branch new workspaces from",
     "Each workspace is an isolated copy of your codebase.",
-    "main",
+    "origin/main",
     "Remote origin",
     "Where should we push, pull, and create PRs?",
     "origin",
+    "Delete branch on archive",
+    "Delete the local branch when archiving a workspace.",
+    "To delete the remote branch,",
+    "configure it on GitHub",
+    ".",
+    "Archive on merge",
+    "Automatically archive a workspace after merging its PR in OpenConductor",
     "Set upstream on plain git push",
-    "Configure new workspaces so plain git push sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream. Currently from default.",
-    "Settings file:",
-    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
+    "Configure new OpenConductor workspaces so plain",
+    "git push",
+    "sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream."
    ],
    "url": "tauri://localhost/settings/repos/tide-web/git",
    "viewport": [
@@ -5653,18 +5390,21 @@
     820
    ]
   },
-  "ms": 6880
+  "ms": 5495
  },
  "settings-repo-misc": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-misc.png",
-  "png_sha256": "8aaaa0443aecaf63de6bd1e5c4939552e107e376eeef5e3e7d9ee2885342ccc3",
+  "png_sha256": "babd16296d5dd9c1fbe1f7ead10d1d7dfb36a0c235f0fb323450b756b0ab1caf",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Root path",
     "Workspaces path",
     "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web"
@@ -5685,8 +5425,8 @@
     "Repositories",
     "T",
     "tide-web",
-    "Environment",
     "Git",
+    "Environment",
     "Scripts",
     "Actions",
     "Misc",
@@ -5704,9 +5444,7 @@
     "/tmp/oc-uimap-run/repos/tide-web",
     "Workspaces path",
     "Do not move or delete the workspace subdirectories. Instead, archive workspaces in OpenConductor.",
-    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web",
-    "Settings file:",
-    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/misc",
    "viewport": [
@@ -5714,18 +5452,21 @@
     820
    ]
   },
-  "ms": 7891
+  "ms": 5956
  },
  "settings-repo-scripts": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-scripts.png",
-  "png_sha256": "4071ce6d01193670abb54b480c5e05dc1688c9f53a901f4bd927560290ec498f",
+  "png_sha256": "dba7570d48f2e18ce7e5ac8fd7ca63fe57c4076a18f685c1cc12d248a12cba34",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Repository scripts"
    ],
    "roles": [],
@@ -5744,8 +5485,8 @@
     "Repositories",
     "T",
     "tide-web",
-    "Environment",
     "Git",
+    "Environment",
     "Scripts",
     "Actions",
     "Misc",
@@ -5765,9 +5506,7 @@
     "None",
     "Archive script",
     "Runs when a workspace is archived.",
-    "None",
-    "Settings file:",
-    "/tmp/oc-uimap-run/repos/tide-web/.conductor/settings.local.toml"
+    "None"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/scripts",
    "viewport": [
@@ -5775,7 +5514,7 @@
     820
    ]
   },
-  "ms": 8247
+  "ms": 6293
  },
  "settings-search": {
   "status": "step-failed",
@@ -5783,12 +5522,15 @@
   "failed_step": 2,
   "error": "timed out waiting for .settings input[type=search], .settings input[placeholder]",
   "file": "oc/settings-search.png",
-  "png_sha256": "6360fa467e0b001a9480ee3d2a4e222148f0d12896b034db4d46bdc166c10e84",
+  "png_sha256": "5d5541862cdf7734d6a932e4fbf8391cce5e2307a2f955dabf989ada176214e9",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Send messages with",
     "Follow-up behavior",
     "Agent notifications",
@@ -5871,7 +5613,7 @@
     820
    ]
   },
-  "ms": 15444
+  "ms": 12673
  },
  "settings-terminal": {
   "status": "step-failed",
@@ -5879,12 +5621,15 @@
   "failed_step": 2,
   "error": "timed out waiting for .settings-nav .nav-item \"Big terminal\"",
   "file": "oc/settings-terminal.png",
-  "png_sha256": "6360fa467e0b001a9480ee3d2a4e222148f0d12896b034db4d46bdc166c10e84",
+  "png_sha256": "5d5541862cdf7734d6a932e4fbf8391cce5e2307a2f955dabf989ada176214e9",
   "dom": {
    "labels": [
     "Settings pages",
     "Esc",
     "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
     "Send messages with",
     "Follow-up behavior",
     "Agent notifications",
@@ -5967,7 +5712,7 @@
     820
    ]
   },
-  "ms": 14236
+  "ms": 12680
  },
  "sidebar-after-archive": {
   "status": "captured",
@@ -6034,13 +5779,13 @@
     820
    ]
   },
-  "ms": 6330
+  "ms": 4725
  },
  "toast-copied-link": {
   "status": "captured",
   "steps": 2,
   "file": "oc/toast-copied-link.png",
-  "png_sha256": "d21dd258a1e3eb40727080d0d8efb2f9e032187123f8cbb82192b0565b569769",
+  "png_sha256": "05ba9b7aabf854c0fc20ec357425d5ed82c5d91106c7f9dd852c35d916730dc0",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6060,7 +5805,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -6079,11 +5824,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -6106,14 +5850,6 @@
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
     "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input",
     "Dismiss"
    ],
    "roles": [
@@ -6131,7 +5867,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -6142,24 +5878,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6202,15 +5937,6 @@
     "No run script configured",
     "Use spotlight testing",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$",
     "Copied link"
    ],
    "url": "tauri://localhost",
@@ -6219,13 +5945,13 @@
     820
    ]
   },
-  "ms": 5726
+  "ms": 4440
  },
  "workspace-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-chat.png",
-  "png_sha256": "abf1a555a8625fcdc666321f194e4e54a01edcacdaafba97c8bd7ac345a01a74",
+  "png_sha256": "0706c91d872be4e56228eaa62940a53fba2cd4fa53355034112bd0ee1dce524c",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6245,7 +5971,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -6264,11 +5990,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -6290,15 +6015,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [],
    "texts": [
@@ -6313,7 +6030,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -6324,24 +6041,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6383,16 +6099,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -6400,13 +6107,13 @@
     820
    ]
   },
-  "ms": 5467
+  "ms": 4765
  },
  "workspace-new-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-new-chat.png",
-  "png_sha256": "abf1a555a8625fcdc666321f194e4e54a01edcacdaafba97c8bd7ac345a01a74",
+  "png_sha256": "0706c91d872be4e56228eaa62940a53fba2cd4fa53355034112bd0ee1dce524c",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6426,7 +6133,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -6445,11 +6152,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -6471,15 +6177,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [],
    "texts": [
@@ -6494,7 +6192,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -6505,24 +6203,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6564,16 +6261,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -6581,13 +6269,13 @@
     820
    ]
   },
-  "ms": 5486
+  "ms": 4740
  },
  "workspace-tool-calls": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-tool-calls.png",
-  "png_sha256": "abf1a555a8625fcdc666321f194e4e54a01edcacdaafba97c8bd7ac345a01a74",
+  "png_sha256": "dd9144ec8fb6916ea1a40b30f9db6203239b75832afd504d351acebddb52991f",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6607,7 +6295,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Berlin · berlin · Local workspace",
+    "Osaka · osaka · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -6626,11 +6314,10 @@
     "Open in Finder (⌘O)",
     "Open in...",
     "Open in...",
-    "Toggle terminal panel",
     "Archive workspace",
     "Chat",
     "Workspace tabs",
-    "berlin",
+    "osaka",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
@@ -6652,15 +6339,7 @@
     "Scripts",
     "Setup has not run",
     "Add a run script in the repository's .conductor/settings.toml.",
-    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
-    "Terminal panel",
-    "Close terminal",
-    "Close terminal",
-    "New terminal tab",
-    "New terminal tab",
-    "Clear terminal scrollback",
-    "Clear terminal scrollback",
-    "Terminal input"
+    "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
    ],
    "roles": [],
    "texts": [
@@ -6675,7 +6354,7 @@
     "T",
     "tide-web",
     "1",
-    "Berlin",
+    "Osaka",
     "+",
     "5",
     "T",
@@ -6686,24 +6365,23 @@
     "No workspaces",
     "tide-web",
     "/",
-    "berlin",
-    "berlin",
+    "osaka",
+    "osaka",
     "→",
     "main",
     "Idle",
-    "Terminal",
     "Archive",
-    "berlin",
+    "osaka",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "berlin",
+    "osaka",
     "Branched",
-    "berlin",
+    "osaka",
     "from",
     "main",
     "Created",
-    "berlin",
+    "osaka",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6745,16 +6423,7 @@
     "Run",
     "No run script configured",
     "Use spotlight testing",
-    "Add a run script in the repository's .conductor/settings.toml.",
-    "Terminal 1",
-    "×",
-    "+",
-    "⌫",
-    "runner@ws-74ueoc",
-    "f",
-    "4ldb7l5b",
-    "f",
-    "7dlyzjnj:/tmp/oc-uimap-run/repos/tide-web$"
+    "Add a run script in the repository's .conductor/settings.toml."
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -6762,6 +6431,6 @@
     820
    ]
   },
-  "ms": 5484
+  "ms": 4762
  }
 }
