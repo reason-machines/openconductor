@@ -30,21 +30,24 @@ import { ScriptsPanel } from "./ScriptsPanel";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
 import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest";
-import { useArchiveOnMerge } from "../features/pr/useArchiveOnMerge";
+import { rowPrOf } from "../features/pr/rowPr";
+import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
+import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
 import { BranchPicker } from "../features/pr/edit/BranchPicker";
 import { useTargetBranch, type TargetBranch } from "../features/pr/useTargetBranch";
 import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
-import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
+import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
+import { useAppPrefs } from "../settings/appPrefs";
 
 interface Props {
   repo: Repo;
   workspace: Workspace;
   dispatch: Dispatch<Action>;
-  notify?: (kind: "info" | "error", message: string) => void;
+  notify?: ArchiveNotify;
 }
 
 // The chat runs Reason in the desktop app (one Reason Session per chat,
@@ -92,6 +95,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   useEffect(() => {
     if (main) onRunningChange?.(running);
   }, [main, running, onRunningChange]);
+  // Garry Mode: tool calls start expanded (Conductor's `garry_mode`, toggled with ⌃O).
+  const garryMode = useAppPrefs().garry_mode;
 
   useEffect(() => {
     setSnapshot(chatSnapshot(chatId));
@@ -108,7 +113,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      sendReason(workspace.id, cwd, first);
+      sendReason(workspace.id, cwd, first, [], repo.path || undefined);
     }
     return unsubscribe;
   }, [chatId]);
@@ -120,7 +125,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Attachments (a review request, revert notes) go to Reason as embedded files and show by name.
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
     const first = main && !chatSnapshot(chatId).transcript.messages.some((m) => m.role === "user");
-    submitChat(chatId, cwd, text, mode, attached);
+    submitChat(chatId, cwd, text, mode, attached, repo.path || undefined);
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
@@ -167,6 +172,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         ) : (
           <Transcript
             transcript={transcript}
+            expandToolsByDefault={garryMode}
             onRetry={(prompt) => submit(prompt, "queue")}
             // Conductor: workspace with a path, not archived; disabled while the agent works.
             onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
@@ -432,22 +438,41 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
-  // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub, then archive on merge.
+  // Keep the sidebar's PR title and body (`workspaces.pr_title`, `pr_description`) in step with GitHub, then archive on merge.
+  // The row's status icon reads the PR too (merged, checks failing, ready to merge, ...).
+  const optionalChecksBlock = useRef(false);
+  const prTitle = useRef(workspace.prTitle ?? null);
+  prTitle.current = workspace.prTitle ?? null;
   const onLookup = useCallback(
     (next: PrLookup, previous: PrLookup | null) => {
-      if (next.kind === "found") dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title });
+      if (next.kind === "found") {
+        dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title, prDescription: next.info.body ?? null, pr: rowPrOf(next.info, optionalChecksBlock.current) });
+      } else {
+        dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: prTitle.current, pr: null });
+      }
       archiveOnMerge(next, previous);
     },
     [dispatch, repo.id, workspace.id, archiveOnMerge],
   );
-  const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: intendedTarget, agentWorking, onLookup });
+  const onDerivedStatus = useWorkspacePrSync({ repoId: repo.id, workspace, dispatch });
+  const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: intendedTarget, agentWorking, hasPendingComments: review.hasPending, onLookup, onDerivedStatus });
   const target = useTargetBranch({ repo, workspace, pr: pullRequest.pr, refresh: pullRequest.refresh, dispatch });
+  optionalChecksBlock.current = pullRequest.settings.optionalChecksBlock;
+  useEffect(() => {
+    dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: agentWorking });
+  }, [dispatch, repo.id, workspace.id, agentWorking]);
+  // Nothing reports a closed workspace's agent, so its row stops showing it working.
+  useEffect(() => () => dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: false }), [dispatch, repo.id, workspace.id]);
   const prActions = usePrActions({
     pullRequest,
+    repoId: repo.id,
     worktree: workspace.path ?? null,
     branch: workspace.branch,
     targetBranch: target.branch,
+    prTitle: workspace.prTitle,
+    prDescription: workspace.prDescription,
     sendToAgent: chat.send,
+    addCommentsToChat: review.addAllToChat,
     notify,
   });
   loaded.current = review.onLoaded;
@@ -470,6 +495,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "git.createPR": () => {
       if (createShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.create(false);
     },
+    "git.commitAndPush": () => {
+      if (commitShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.commitAndPush();
+    },
     "git.mergePR": () => {
       if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
     },
@@ -481,6 +509,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const activeTab = showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const prNumber = pullRequest.pr?.number ?? null;
   shownChat.current = activeReview?.chatId ?? workspace.id;
+  // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
+  const rightPanelVisible = useAppPrefs().right_panel_visible;
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region>
@@ -507,7 +537,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           )}
         </div>
         <div className="ws-actions">
-          <PrControl pullRequest={pullRequest} actions={prActions} worktree={workspace.path ?? null} />
+          <PrControl pullRequest={pullRequest} actions={prActions} />
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
             Terminal
           </button>
@@ -516,7 +546,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           </button>
         </div>
       </header>
-      <div className="ws-split">
+      <div className={`ws-split${rightPanelVisible ? "" : " right-hidden"}`}>
         <ChatPanel
           repo={repo}
           workspace={workspace}
@@ -545,19 +575,21 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
             ) : null
           }
         />
-        <div className="ws-right">
-          <RightPanel
-            diff={diff}
-            actions={review.actions}
-            pr={pullRequest}
-            worktree={workspace.path ?? null}
-            review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
-            repo={repo}
-            sendToChat={sendToChat}
-            readOnly={workspace.status === "archived"}
-          />
-          <ScriptsPanel repo={repo} workspace={workspace} />
-        </div>
+        {rightPanelVisible && (
+          <div className="ws-right">
+            <RightPanel
+              diff={diff}
+              actions={review.actions}
+              pr={pullRequest}
+              worktree={workspace.path ?? null}
+              review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
+              repo={repo}
+              sendToChat={sendToChat}
+              readOnly={workspace.status === "archived"}
+            />
+            <ScriptsPanel repo={repo} workspace={workspace} />
+          </div>
+        )}
       </div>
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
       <DiffDiscardHost diff={diff} onDiscarded={(f) => chatBridge.current?.attach(revertedNote(f.path))} />

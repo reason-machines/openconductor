@@ -99,6 +99,10 @@ async fn create_lifecycle_initializing_then_ready() {
 
     archive(&pool, "app/oslo").await.unwrap();
     assert_eq!(list_workspaces(&pool).await.unwrap()[0].state, "archived");
+
+    unarchive(&pool, "app/oslo").await.unwrap();
+    assert_eq!(list_workspaces(&pool).await.unwrap()[0].state, "ready");
+    assert!(unarchive(&pool, "app/oslo").await.is_err());
 }
 
 #[tokio::test]
@@ -114,14 +118,18 @@ async fn target_branch_is_listed_and_saved() {
             .as_deref(),
         Some("develop")
     );
-    set_target_branch(&pool, "app/oslo", "release/2").await.unwrap();
+    set_target_branch(&pool, "app/oslo", "release/2")
+        .await
+        .unwrap();
     assert_eq!(
         list_workspaces(&pool).await.unwrap()[0]
             .intended_target_branch
             .as_deref(),
         Some("release/2")
     );
-    assert!(set_target_branch(&pool, "app/missing", "main").await.is_err());
+    assert!(set_target_branch(&pool, "app/missing", "main")
+        .await
+        .is_err());
 }
 
 #[tokio::test]

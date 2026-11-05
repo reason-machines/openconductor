@@ -147,6 +147,15 @@ pub async fn set_target_branch(pool: &SqlitePool, local_id: &str, branch: &str) 
     workspaces::set_target_branch(pool, local_id, Some(branch)).await
 }
 
+/// Bring an archived workspace back: `ready`, since archiving keeps the
+/// worktree. Errors when it is not archived.
+pub async fn unarchive(pool: &SqlitePool, local_id: &str) -> Result<()> {
+    if !workspaces::unarchive(pool, local_id).await? {
+        return Err(openconductor_db::Error::NotFound);
+    }
+    workspaces::set_state(pool, local_id, WorkspaceState::Ready).await
+}
+
 /// Mark a workspace archived, keeping its branch.
 pub async fn archive(pool: &SqlitePool, local_id: &str) -> Result<()> {
     let w = workspaces::get(pool, local_id)
@@ -207,6 +216,8 @@ pub struct WorkspaceRow {
     pub repository_id: String,
     pub directory_name: String,
     pub workspace_name: Option<String>,
+    /// `workspaces.user_set_workspace_name`: show `workspace_name` as is.
+    pub user_set_workspace_name: bool,
     pub branch: String,
     pub placeholder_branch_name: Option<String>,
     pub state: &'static str,
@@ -215,6 +226,10 @@ pub struct WorkspaceRow {
     pub workspace_path: Option<String>,
     pub pinned_at: Option<String>,
     pub unread: bool,
+    /// The PR's title and body as last stored (`pr_title`, `pr_description`):
+    /// the sidebar label and Create PR's title / description.
+    pub pr_title: Option<String>,
+    pub pr_description: Option<String>,
     /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
     pub number: Option<i64>,
     /// `workspaces.intended_target_branch`: the branch the work merges into,
@@ -251,6 +266,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
             WorkspaceRow {
                 directory_name: w.directory_name.unwrap_or_default(),
                 workspace_name: w.workspace_name,
+                user_set_workspace_name: w.user_set_workspace_name,
                 branch: w.branch.unwrap_or_default(),
                 placeholder_branch_name: w.placeholder_branch_name,
                 state: state_name(w.state),
@@ -259,6 +275,8 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 workspace_path: w.workspace_path,
                 pinned_at: w.pinned_at,
                 unread: w.unread,
+                pr_title: w.pr_title,
+                pr_description: w.pr_description,
                 number: w.number,
                 intended_target_branch: w.intended_target_branch,
                 created_at: w.created_at,

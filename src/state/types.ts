@@ -1,4 +1,5 @@
 import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
+import type { RowPr } from "./rowStatus.ts";
 
 export type WorkspaceStatus = "idle" | "working" | "needs-review" | "archived";
 
@@ -23,6 +24,8 @@ export interface Workspace {
   userSetBranchName?: boolean;
   /** Title of the workspace's pull request; the sidebar row shows it in place of the branch. */
   prTitle?: string | null;
+  /** Body of the workspace's pull request (`pr_description`); Create PR uses it verbatim. */
+  prDescription?: string | null;
   /** Unread agent output; the sidebar row's name turns semibold. */
   unread?: boolean;
   /* sidebar: pin and status (Conductor's pinned_at, manual_status, derived_status) */
@@ -33,6 +36,10 @@ export interface Workspace {
   derivedStatus?: WorkspaceStatusValue;
   /** `workspaces.number`, given on creation and shown as `W-<n>`; null for workspaces from before numbering. */
   number?: number | null;
+  /** `workspaces.state` (initializing, setting_up, ready, failed, ...): the row shows setup and failure. */
+  state?: string;
+  /** The workspace's pull request as last read from GitHub; drives the row's status icon. */
+  pr?: RowPr | null;
   /** `intended_target_branch`: the branch the work merges into; the repository default when unset. */
   targetBranch?: string | null;
 }
@@ -51,7 +58,12 @@ export interface Repo {
   hidden?: boolean;
 }
 
-export type Selection = { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
+/**
+ * `root` is Conductor's `/` route: the wordmark and the three entry cards, shown at
+ * start and when the open workspace goes away. `home` is its `/all-workspaces`
+ * route, the workspace list that the sidebar Home row and nav.home open.
+ */
+export type Selection = { kind: "root" } | { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
 
 export interface AppState {
   repos: Repo[];

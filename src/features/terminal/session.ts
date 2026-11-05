@@ -19,10 +19,11 @@ import {
   ptyWrite,
   ptyWriteMirror,
 } from "./pty";
-import { canOpen, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs";
+import { canOpen, canOpenTerminal, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs";
 import { PersistThrottle, restoreCwds, restoreOutput, type HistoryRecord } from "./restore";
 import { subsystemStorage } from "./localStorage";
 import { TABS_SIZE_LIMIT, TABS_SUBSYSTEM, TabListStore, savedWorkspace } from "./tabList";
+import { getAppPrefs } from "../../settings/appPrefs";
 import { FIND_COMMAND, LINE_EDIT_BYTES, terminalCommandFor } from "./shortcuts.ts";
 import { currentTerminalFont, onTerminalFont, TERMINAL_LINE_HEIGHT } from "./font.ts";
 import { currentScrollbackRows, onScrollbackRows } from "./scrollback.ts";
@@ -197,7 +198,10 @@ async function startTab(
   restore?: { id: string; title: string },
   run?: { command: string | undefined },
 ): Promise<string> {
-  if (!canOpen(getTabs(workspaceId))) throw new Error("Tab limit reached for this workspace.");
+  // Saved tabs come back as they were; new ones respect Tab Freak Mode's limit.
+  const tabs = getTabs(workspaceId);
+  if (!canOpen(tabs) || (!restore && !canOpenTerminal(tabs, getAppPrefs().experimental_tab_freak_mode)))
+    throw new Error("Tab limit reached for this workspace.");
   listening ??= onPtyEvent(route);
   await listening;
   persistOnHide();
