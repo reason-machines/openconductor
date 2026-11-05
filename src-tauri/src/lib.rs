@@ -23,6 +23,7 @@ pub mod create_project;
 pub mod db;
 pub mod persistence;
 mod persistence_commands;
+mod sidebar_repo_commands;
 pub mod diff;
 pub mod github_repo;
 pub mod menu;
@@ -264,6 +265,8 @@ pub fn run() {
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
+            sidebar_repo_commands::db_set_repo_hidden,
+            sidebar_repo_commands::db_reorder_repos,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
             diff::comment_commands::diff_comments_list,

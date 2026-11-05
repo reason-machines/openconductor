@@ -4,6 +4,7 @@ import type { AppState, Repo, Selection, Workspace } from "./types";
 import { newId, workspaceName } from "./names";
 import { isSidebarVisible } from "./selectors";
 import { inTauri } from "../backend";
+import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
@@ -28,6 +29,10 @@ export type Action =
   /** The workspace's pull request title changed on GitHub (`workspaces.pr_title`). */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null }
   | { type: "toggleSidebar" }
+  /** Sidebar repo menu: Hide / Unhide repository (`repos.hidden`). */
+  | { type: "setRepoHidden"; repoId: string; hidden: boolean }
+  /** Sidebar drag and drop: the full repo id list in its new order (`repos.display_order`). */
+  | { type: "reorderRepos"; ids: string[] }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] };
@@ -100,6 +105,10 @@ export function reducer(state: AppState, action: Action): AppState {
     }
     case "toggleSidebar":
       return { ...state, sidebarVisible: !isSidebarVisible(state) };
+    case "setRepoHidden":
+      return { ...state, repos: setRepoHidden(state.repos, action.repoId, action.hidden) };
+    case "reorderRepos":
+      return { ...state, repos: orderRepos(state.repos, action.ids) };
     case "reset":
       return action.state;
     case "hydrate": {
@@ -193,6 +202,17 @@ export function useAppStore() {
         invoke("db_archive_workspace", { workspaceId: action.workspaceId }).catch((err) =>
           console.error("conductor.db: could not archive workspace", err),
         );
+      }
+      // Optimistic, as in Conductor: on a failed write, reload the rows the database has.
+      const rollback = (what: string) => (err: unknown) => {
+        console.error(`conductor.db: could not ${what}`, err);
+        loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined);
+      };
+      if (desktop && action.type === "setRepoHidden") {
+        invoke("db_set_repo_hidden", { repoId: action.repoId, hidden: action.hidden }).catch(rollback("hide repository"));
+      }
+      if (desktop && action.type === "reorderRepos") {
+        invoke("db_reorder_repos", { ids: action.ids }).catch(rollback("reorder repositories"));
       }
     },
     [desktop],
