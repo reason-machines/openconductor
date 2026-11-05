@@ -9,12 +9,15 @@
 // ?agent=claude|codex|reason picks which agent's wire shape the same turn arrives in
 // (the rows must look the same for all three), ?files=N gives the turn N changed-file chips
 // instead of the reference's two (?more=K clicks "+N more" K times).
+// ?fork=1 opens the turn's More actions menu and, with ?forked=1, picks "Fork to new tab" and
+// shows the transcript attachment the new tab would get.
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Transcript } from "../../src/features/chat/Transcript.tsx";
 import { TurnChanges } from "../../src/features/chat/TurnChanges.tsx";
 import { turnChanges } from "../../src/features/diff/useTurnChanges.ts";
 import { applyChatEvents, emptyTranscript } from "../../src/features/chat/reducer.ts";
+import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../../src/features/chat/fork.ts";
 import type { Block, ChatEvent, ChatMessage } from "../../src/features/chat/types.ts";
 import { LISBON, lisbonBlocks, type FixtureAgent } from "./lisbon.ts";
 import "../../src/fonts.css";
@@ -54,20 +57,48 @@ turnChanges.record(
 );
 const turnFooter = (turnId: string) => <TurnChanges turn={turnRef(turnId)} worktree={null} onOpenFile={() => undefined} />;
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <div style={{ position: "fixed", inset: 0, background: "var(--bg)" }}>
+const fork = params.get("fork") === "1";
+function Fixture() {
+  const [forked, setForked] = React.useState<string | null>(null);
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "var(--bg)", overflow: "auto" }}>
       <section className="chat" style={{ position: "absolute", left: 256, top: 80, width: 789, bottom: 0, display: "flex", flexDirection: "column", border: 0 }}>
         <div className="chat-scroll">
-          <Transcript transcript={r.transcript} workspacePath={LISBON.workspacePath} turnFooter={turnFooter} onResetChat={() => undefined} now={() => LISBON.startedAt + 3600_000} />
+          <Transcript
+            transcript={r.transcript}
+            workspacePath={LISBON.workspacePath}
+            turnFooter={turnFooter}
+            turnAgent={turnAgentLabel("byok:anthropic:claude-opus-5-5", "Reason")}
+            onResetChat={() => undefined}
+            onForkToNewTab={(turnId) => (fork ? setForked(forkTranscript(r.transcript, turnId)) : undefined)}
+            now={() => LISBON.startedAt + 3600_000}
+          />
+          {forked !== null ? (
+            <section className="fixture-fork" style={{ margin: "24px 28px" }}>
+              <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}>
+                New tab's composer attachment: {forkAttachmentName(null)}
+              </div>
+              <pre style={{ whiteSpace: "pre-wrap", fontSize: 12, padding: 12, border: "1px solid var(--border)", borderRadius: 6 }}>{forked}</pre>
+            </section>
+          ) : null}
         </div>
       </section>
     </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <Fixture />
   </React.StrictMode>,
 );
 
 if (params.get("tools") === "expanded") {
   setTimeout(() => document.querySelector<HTMLButtonElement>('.chat-tool-summary-row[aria-expanded="false"]')?.click(), 100);
+}
+if (fork) {
+  setTimeout(() => document.querySelector<HTMLButtonElement>('.chat-turn-menu button[aria-label="More actions"]')?.click(), 150);
+  if (params.get("forked") === "1") setTimeout(() => document.querySelector<HTMLButtonElement>(".chat-menu-item")?.click(), 300);
 }
 for (let i = 0; i < Number(params.get("more") ?? 0); i++) {
   setTimeout(() => document.querySelector<HTMLButtonElement>(".chat-turn-chip.more")?.click(), 150 + i * 50);
