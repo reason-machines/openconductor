@@ -49,6 +49,8 @@ jobs:
           path: ${{ runner.temp }}/e2e-screens
           retention-days: 14
       - name: Configure git identity
+        # The app flows below run even when the chat e2e fails; they need this too.
+        if: always()
         run: |
           git config --global user.name "CI"
           git config --global user.email "ci@example.invalid"

@@ -2,6 +2,7 @@
 // names match the Rust serde names; unknown keys from newer builds ride along
 // untouched because every section is spread, never rebuilt field by field.
 
+import type { CodeTheme } from "../features/diff/codeThemes.ts";
 export type Theme = "system" | "light" | "dark";
 export type SoundType = "default" | "none";
 export type BranchPrefixType = "github_username" | "custom" | "none";
@@ -45,10 +46,16 @@ export interface Settings {
   appearance: {
     zoom_level_v2: number;
     low_contrast_dark_mode: boolean;
+    /** Keep +/- colors on unselected sidebar rows; Conductor's default is off. */
+    colored_sidebar_diffs?: boolean;
     mono_font?: string | null;
     terminal_font_family?: string | null;
     /** Whole px, 10 to 20; 12 by default. */
     terminal_font_size?: number;
+    /** Font ligatures in diffs and code; on when absent. */
+    file_ligatures_enabled?: boolean;
+    color_vision?: "default" | "protanopia-deuteranopia" | "tritanopia";
+    code_theme?: CodeTheme;
     [extra: string]: unknown;
   };
   git: {
@@ -65,6 +72,8 @@ export interface Settings {
     default_thinking_enabled: boolean;
     review_thinking_enabled: boolean;
     codex: { default_thinking_level: ThinkingLevel; review_thinking_level: ThinkingLevel; [extra: string]: unknown };
+    /** Conductor's `[models.claude_code]`; `review_effort_level` is `review_claude_effort_level`. */
+    claude_code?: { review_effort_level?: ClaudeEffortLevel | null; [extra: string]: unknown };
     [extra: string]: unknown;
   };
   providers: { [agent in AgentKind]?: ProviderConfig | null } & { [extra: string]: unknown };
@@ -106,6 +115,10 @@ export interface ProviderStatus {
   /** Why it is not ready, safe to display. */
   problem?: string;
 }
+
+/** Conductor's Claude effort levels (`review_claude_effort_level`). */
+export const CLAUDE_EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max", "ultracode"] as const;
+export type ClaudeEffortLevel = (typeof CLAUDE_EFFORT_LEVELS)[number];
 
 export const DEFAULT_SETTINGS: Settings = {
   $schema: "https://openconductor.dev/schemas/settings.schema.json",

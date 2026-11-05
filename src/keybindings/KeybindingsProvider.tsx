@@ -79,7 +79,12 @@ export const useKeyCapture = (): ((c: KeyCapture) => () => void) => useKeybindin
  * Run each callback when its registry command's shortcut is pressed. The set of
  * command ids decides what is registered; callbacks may change every render.
  */
-export function useKeybindings(handlers: CommandHandlers): void {
+/**
+ * Binds registry commands to callbacks while the component is mounted.
+ * `priority` raises these handlers over others for the same keys, as
+ * Conductor's call sites do (a handler returning false passes the key on).
+ */
+export function useKeybindings(handlers: CommandHandlers, priority?: number): void {
   const { dispatcher, overrides } = useKeybindingsContext();
   const latest = useRef(handlers);
   latest.current = handlers;
@@ -90,6 +95,6 @@ export function useKeybindings(handlers: CommandHandlers): void {
   useEffect(() => {
     const proxies: CommandHandlers = {};
     for (const id of ids ? ids.split("\n") : []) proxies[id] = () => latest.current[id]?.();
-    return bindCommands(dispatcher, proxies, { overrides });
-  }, [dispatcher, overrides, ids]);
+    return bindCommands(dispatcher, proxies, { overrides }, priority === undefined ? {} : { priority });
+  }, [dispatcher, overrides, ids, priority]);
 }

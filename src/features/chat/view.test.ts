@@ -94,7 +94,7 @@ test("a mid-turn child-session report renders as a report, not user input, and t
 
 test("a finished turn ends with a footer carrying its final text; a failed turn also offers retry with the prompt", () => {
   const ok = buildRows(apply([upsert(msg("u1", "user", [text("q")])), upsert(msg("a1", "assistant", [text("first")])), upsert(msg("a2", "assistant", [text("final")])), status("t1", "completed")]));
-  assert.deepEqual(ok[ok.length - 1], { kind: "turn_end", key: "turn-end:t1", turnId: "t1", status: "completed", finalText: "final" });
+  assert.deepEqual(ok[ok.length - 1], { kind: "turn_end", key: "turn-end:t1", turnId: "t1", status: "completed", finalText: "final", canReset: false });
 
   const failed = buildRows(
     apply([
@@ -112,6 +112,7 @@ test("a finished turn ends with a footer carrying its final text; a failed turn 
     error: "rate limited",
     finalText: "partial",
     retryPrompt: "try this",
+    canReset: false,
   });
 });
 
@@ -120,4 +121,26 @@ test("a user toggle on a tool row wins over the expand-by-default setting", () =
   assert.equal(isToolExpanded("tu1", toggled, true), false);
   assert.equal(isToolExpanded("tu2", toggled, true), true);
   assert.equal(isToolExpanded("tu2", toggled, false), false);
+});
+
+test("Reset chat applies to every turn with a reply except the chat's last", () => {
+  const m = (id: string, turnId: string, role: ChatMessage["role"]) => msg(id, role, [text(id)], { turnId });
+  const rows = buildRows(
+    apply([
+      upsert(m("u1", "t1", "user")),
+      upsert(m("a1", "t1", "assistant")),
+      status("t1", "completed"),
+      upsert(m("u2", "t2", "user")),
+      status("t2", "failed", "no agent"),
+      upsert(m("u3", "t3", "user")),
+      upsert(m("a3", "t3", "assistant")),
+      status("t3", "completed"),
+    ]),
+  );
+  const ends = rows.filter((r) => r.kind === "turn_end").map((r) => (r.kind === "turn_end" ? [r.turnId, r.canReset] : null));
+  assert.deepEqual(ends, [
+    ["t1", true],
+    ["t2", false], // no reply to reset to
+    ["t3", false], // the last turn
+  ]);
 });

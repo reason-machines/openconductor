@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useReducer } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
+import type { WorkspaceStatusValue } from "./workspaceStatus";
 import { newId, workspaceName } from "./names";
 import { isSidebarVisible } from "./selectors";
 import { inTauri } from "../backend";
+import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
+import { sidebarWrite } from "./sidebarPersist";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -21,16 +24,30 @@ export type Action =
   | {
       type: "addWorkspace";
       repoId: string;
-      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName">;
+      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number">;
     }
-  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string }
+  /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
+  | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
   /** The workspace's pull request title changed on GitHub (`workspaces.pr_title`). */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null }
   | { type: "toggleSidebar" }
+  /** Sidebar repo menu: Hide / Unhide repository (`repos.hidden`). */
+  | { type: "setRepoHidden"; repoId: string; hidden: boolean }
+  /** Sidebar drag and drop: the full repo id list in its new order (`repos.display_order`). */
+  | { type: "reorderRepos"; ids: string[] }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
-  | { type: "hydrate"; repos: Repo[] };
+  | { type: "hydrate"; repos: Repo[] }
+  /* sidebar: row actions (unread, pin, status) */
+  | { type: "setWorkspaceUnread"; repoId: string; workspaceId: string; unread: boolean }
+  | { type: "setWorkspacePinned"; repoId: string; workspaceId: string; pinned: boolean; at?: number }
+  | { type: "setWorkspaceStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue };
+
+function updateWorkspace(state: AppState, repoId: string, workspaceId: string, fn: (w: Workspace) => Workspace): AppState {
+  const repos = state.repos.map((r) => (r.id !== repoId ? r : { ...r, workspaces: r.workspaces.map((w) => (w.id === workspaceId ? fn(w) : w)) }));
+  return { ...state, repos };
+}
 
 const EMPTY: AppState = { repos: [], selection: { kind: "home" } };
 
@@ -82,7 +99,14 @@ export function reducer(state: AppState, action: Action): AppState {
       const rename = (w: Workspace): Workspace =>
         w.id !== action.workspaceId
           ? w
-          : { ...w, name: action.name ?? w.name, branch: action.branch ?? w.branch, placeholderBranchName: null };
+          : {
+              ...w,
+              name: action.name ?? w.name,
+              branch: action.branch ?? w.branch,
+              placeholderBranchName: null,
+              ...(action.userSet && action.name !== undefined ? { userSetWorkspaceName: true } : {}),
+              ...(action.userSet && action.branch !== undefined ? { userSetBranchName: true } : {}),
+            };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(rename) } : r));
       return { ...state, repos };
     }
@@ -100,6 +124,10 @@ export function reducer(state: AppState, action: Action): AppState {
     }
     case "toggleSidebar":
       return { ...state, sidebarVisible: !isSidebarVisible(state) };
+    case "setRepoHidden":
+      return { ...state, repos: setRepoHidden(state.repos, action.repoId, action.hidden) };
+    case "reorderRepos":
+      return { ...state, repos: orderRepos(state.repos, action.ids) };
     case "reset":
       return action.state;
     case "hydrate": {
@@ -107,6 +135,12 @@ export function reducer(state: AppState, action: Action): AppState {
       const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined }));
       return { ...state, repos, selection: validSelection(state.selection, repos) };
     }
+    case "setWorkspaceUnread":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, unread: action.unread || undefined }));
+    case "setWorkspacePinned":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
+    case "setWorkspaceStatus":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, manualStatus: action.status }));
   }
 }
 
@@ -194,6 +228,19 @@ export function useAppStore() {
           console.error("conductor.db: could not archive workspace", err),
         );
       }
+      // Optimistic, as in Conductor: on a failed write, reload the rows the database has.
+      const rollback = (what: string) => (err: unknown) => {
+        console.error(`conductor.db: could not ${what}`, err);
+        loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined);
+      };
+      if (desktop && action.type === "setRepoHidden") {
+        invoke("db_set_repo_hidden", { repoId: action.repoId, hidden: action.hidden }).catch(rollback("hide repository"));
+      }
+      if (desktop && action.type === "reorderRepos") {
+        invoke("db_reorder_repos", { ids: action.ids }).catch(rollback("reorder repositories"));
+      }
+      const write = desktop ? sidebarWrite(action) : undefined;
+      if (write) invoke(write.command, write.args).catch((err) => console.error(`conductor.db: ${write.command} failed`, err));
     },
     [desktop],
   );
