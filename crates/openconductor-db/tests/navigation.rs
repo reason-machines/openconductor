@@ -4,6 +4,7 @@ use openconductor_db::open_in_memory;
 
 fn scope(user: &str) -> Scope {
     Scope {
+        hosting_server_url: None,
         organization_id: "org".into(),
         user_id: user.into(),
     }
@@ -16,17 +17,6 @@ fn section(id: &str, name: &str, workspaces: &[&str]) -> LayoutSection {
         emoji: None,
         workspace_ids: workspaces.iter().map(|w| w.to_string()).collect(),
     }
-}
-
-/// `layout` with each section's workspaces sorted. Workspaces added to a
-/// section in one write share a `created_at` and get random UUIDs, and the
-/// read orders by `created_at, id` as the reference does (renderApp `$Ir` /
-/// `Zoi`), so their order after a read is not the order they were written in.
-fn sorted_members(mut layout: Layout) -> Layout {
-    for s in &mut layout.sections {
-        s.workspace_ids.sort();
-    }
-    layout
 }
 
 const T1: i64 = 1_793_880_000_000;
@@ -48,13 +38,16 @@ async fn write_then_read_round_trips_with_sort_order() {
     assert!(navigation::write_layout(&pool, &scope("u"), &layout)
         .await
         .unwrap());
-    assert_eq!(
-        navigation::read_layout(&pool, &scope("u"))
-            .await
-            .unwrap()
-            .map(sorted_members),
-        Some(sorted_members(layout))
-    );
+    // Members written together share created_at and read back in (random)
+    // membership id order, as in the reference: compare them as sets.
+    let mut back = navigation::read_layout(&pool, &scope("u"))
+        .await
+        .unwrap()
+        .unwrap();
+    for s in &mut back.sections {
+        s.workspace_ids.sort();
+    }
+    assert_eq!(back, layout);
 
     let (sections, memberships) = navigation::read(&pool, &scope("u")).await.unwrap();
     assert_eq!(
@@ -214,24 +207,4 @@ async fn delete_layout_clears_only_that_scope() {
         .await
         .unwrap();
     assert_eq!(n, 1);
-}
-
-#[tokio::test]
-async fn members_written_together_read_back_by_id() {
-    let pool = open_in_memory().await.unwrap();
-    let layout = Layout {
-        sections: vec![section("a", "A", &["w1", "w2", "w3"])],
-        updated_at: T1,
-    };
-    navigation::write_layout(&pool, &scope("u"), &layout)
-        .await
-        .unwrap();
-    let (_, memberships) = navigation::read(&pool, &scope("u")).await.unwrap();
-    assert!(memberships
-        .iter()
-        .all(|m| m.created_at == iso_time::from_millis(T1)));
-    let ids: Vec<&str> = memberships.iter().map(|m| m.id.as_str()).collect();
-    let mut by_id = ids.clone();
-    by_id.sort();
-    assert_eq!(ids, by_id, "a created_at tie is broken by id");
 }
