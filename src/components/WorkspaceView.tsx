@@ -7,6 +7,8 @@ import { chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, re
 import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
+import { commandSet, isKnownCommand, parseSlashCommand } from "../features/chat/slashCommands.ts";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
@@ -65,6 +67,9 @@ interface Props {
 // `features/chat/reasonChat.ts`): the workspace's own chat has the workspace
 // id, review chats their own. The browser preview uses a stand-in agent. Turn
 // lifecycle, Stop and the follow-up queue live in `features/chat/queue.ts`.
+/** The "/" menu for a Reason chat: Reason runs as an ACP agent, so only its own commands (none reported yet). */
+const SLASH_COMMANDS = commandSet({ agent: "acp" });
+const CODEX_SLASH_COMMANDS = commandSet({ agent: "codex" });
 /** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
 
@@ -401,7 +406,6 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         draft={draft}
         setDraft={setDraft}
         inputRef={inputRef}
-        placeholder={`Ask the agent to work in ${workspace.name}…`}
         queue={queue}
         canSteer={codex ? CODEX_CAN_STEER : REASON_CAN_STEER}
         onSubmit={onSubmit}
@@ -437,6 +441,17 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             </>
           ) : null
         }
+        picker={main && !codex ? <ChatModelPicker chatId={chatId} /> : review ? <span className="oc-review-model">{review.modelLabel}</span> : null}
+        slashCommands={codex ? CODEX_SLASH_COMMANDS : SLASH_COMMANDS}
+        onCommand={(text) => {
+          // Reason runs as an ACP agent and Codex here through its app server: Conductor's built-in commands are not wired for either yet.
+          const commands = codex ? CODEX_SLASH_COMMANDS : SLASH_COMMANDS;
+          const cmd = parseSlashCommand(text, isKnownCommand);
+          if (!cmd || commands.some((c) => c.name === cmd.name && c.effect === "agent")) return false;
+          const who = codex ? "Codex" : "Reason";
+          setAttachError(cmd.name === "plan" ? "Plan mode is not available in this chat." : `/${cmd.name} is not available for ${who}.`);
+          return true;
+        }}
         attachments={
           attachments.length > 0 || attachError ? (
             <div className="composer-attachments" aria-label="Attachments">
