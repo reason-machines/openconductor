@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Test the bundle's bin/ tools end to end without building the Tauri app.
 #
-# checkpoint/, tool_cli.rs and bundled_bin.rs use only std and the git CLI,
+# checkpoint/, tool_cli.rs, bundled_bin.rs and bin_source_markers.rs use only
+# std, serde and the git CLI,
 # so a throwaway crate compiles them with a minimal `openconductor` main that
 # does what src-tauri/src/main.rs does in tool mode. The script runs their
 # unit tests, then runs the real shims from src-tauri/resources/bin-tools/
@@ -34,9 +35,15 @@ path = "src/lib.rs"
 name = "openconductor"
 path = "src/main.rs"
 
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
 [workspace]
 EOF
 cat > "$harness/src/lib.rs" <<EOF
+#[path = "$src/bin_source_markers.rs"]
+pub mod bin_source_markers;
 #[path = "$src/bundled_bin.rs"]
 pub mod bundled_bin;
 #[path = "$src/checkpoint/mod.rs"]
