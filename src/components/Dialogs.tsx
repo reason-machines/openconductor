@@ -1,10 +1,9 @@
 import { useState, type Dispatch, type FormEvent, type ReactNode } from "react";
 import type { Action } from "../state/store";
-import { basename, repoNameFromGithub } from "../state/names";
-import { inTauri, pickFolder } from "../backend";
+import { repoNameFromGithub } from "../state/names";
 import { CloseIcon } from "./Icons";
 
-export type DialogKind = "open" | "clone" | "quickstart" | "create";
+export type DialogKind = "clone" | "quickstart" | "create";
 
 export function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
   return (
@@ -25,47 +24,6 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
 interface DialogProps {
   onClose: () => void;
   dispatch: Dispatch<Action>;
-}
-
-export function OpenProjectDialog({ onClose, dispatch }: DialogProps) {
-  const [path, setPath] = useState("");
-  const tauri = inTauri();
-
-  async function browse() {
-    const picked = await pickFolder("Choose a git repository");
-    if (picked) setPath(picked);
-  }
-
-  function submit(e: FormEvent) {
-    e.preventDefault();
-    const p = path.trim();
-    if (!p) return;
-    dispatch({ type: "addRepo", repo: { name: basename(p), path: p, defaultBranch: "main" } });
-    onClose();
-  }
-
-  return (
-    <Modal title="Open project" onClose={onClose}>
-      <form onSubmit={submit} className="modal-body">
-        <label className="field">
-          <span>Repository folder</span>
-          <div className="field-row">
-            <input autoFocus value={path} onChange={(e) => setPath(e.target.value)} placeholder="/Users/you/code/my-repo" />
-            {tauri && (
-              <button type="button" className="btn" onClick={browse}>
-                Browse…
-              </button>
-            )}
-          </div>
-        </label>
-        <p className="muted small">The folder must be a git repository. Validation runs in the workspace backend (pending).</p>
-        <div className="modal-actions">
-          <button type="button" className="btn" onClick={onClose}>Cancel</button>
-          <button type="submit" className="btn btn-primary" disabled={!path.trim()}>Open</button>
-        </div>
-      </form>
-    </Modal>
-  );
 }
 
 export function CloneDialog({ onClose, dispatch }: DialogProps) {
