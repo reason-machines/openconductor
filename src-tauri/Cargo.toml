@@ -25,6 +25,7 @@ ignore = "0.4.25"
 nucleo-matcher = "=0.3.1"
 unicode-segmentation = "1.10"
 toml = "0.8"
+oc-scripts = { path = "../crates/scripts" }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 security-framework = "3"
