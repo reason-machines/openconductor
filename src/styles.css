@@ -128,9 +128,6 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 
 .chat { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--border); }
 .chat-scroll { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-.msg { max-width: 82%; padding: 9px 12px; border-radius: 10px; line-height: 1.45; white-space: pre-wrap; }
-.msg-user { align-self: flex-end; background: var(--accent); color: var(--accent-text); }
-.msg-system { align-self: flex-start; background: var(--panel); border: 1px dashed var(--border); color: var(--muted); }
 .composer { margin: 0 16px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--panel); }
 .composer:focus-within { border-color: var(--accent); }
 .composer textarea { width: 100%; border: 0; outline: 0; resize: none; padding: 10px 12px; background: transparent; }
@@ -191,3 +188,9 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .create-from-panel li { padding: 5px 8px; border-radius: 5px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .create-from-panel li.active { background: var(--hover); }
 .create-from-status, .create-from-hint { margin: 2px 4px; }
+
+/* Toasts (bottom-right stack) */
+.toaster { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; flex-direction: column; gap: 8px; max-width: 420px; }
+.toast { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); font-size: 13px; }
+.toast-error { border-color: var(--del); }
+.toast-message { flex: 1; overflow-wrap: anywhere; }

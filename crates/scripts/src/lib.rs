@@ -2,6 +2,7 @@
 //!
 //! * [`config`] reads the settings layers and resolves `[scripts]`.
 //! * [`env`] builds the environment a script runs with.
+//! * [`launch`] starts one script process in its own process group.
 //! * [`ports`] hands each local workspace its block of ports.
 //!
 //! Behavior follows the reference app's evidence recorded in
@@ -10,4 +11,6 @@
 
 pub mod config;
 pub mod env;
+#[cfg(unix)]
+pub mod launch;
 pub mod ports;

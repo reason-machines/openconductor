@@ -39,3 +39,14 @@ jobs:
         run: rustfmt --edition 2021 --check src-tauri/src/diff/*.rs
       - name: Test diff module
         run: bash tools/diff/run-rust-tests.sh
+
+  frontend:
+    name: Diff frontend unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: node --test (type-stripped)
+        run: node --experimental-strip-types --test src/features/diff/*.test.ts

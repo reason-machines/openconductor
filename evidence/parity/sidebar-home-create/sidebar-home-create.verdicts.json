@@ -1,0 +1,280 @@
+{
+ "schema": "openconductor.parity-verdicts.v1",
+ "ref": "origin/main",
+ "verified_at": "2026-11-05 (main d846158)",
+ "method": "Read on main: src/, src-tauri/src/, crates/. 'backend' = logic or a command exists and is tested, but no UI path reaches it.",
+ "items": {
+  "sidebar.home-entry": {
+   "verdict": "partial",
+   "why": "Sidebar Home button works (src/components/Sidebar.tsx); no go-to-Home shortcut is wired (keybinding registry declares commands only)."
+  },
+  "sidebar.repo-groups": {
+   "verdict": "implemented",
+   "why": "Repos render as collapsible groups with nested workspace rows (Sidebar.tsx, store toggleRepo)."
+  },
+  "sidebar.repo-order": {
+   "verdict": "backend",
+   "why": "crates/openconductor-db/src/repos.rs lists repos by display_order, created_at and appends new ones at the end, but the app does not depend on that crate and the sidebar renders insertion order from localStorage."
+  },
+  "sidebar.repo-hide": {
+   "verdict": "missing",
+   "why": "No hide/unhide; hidden column exists only in the unwired DB crate schema."
+  },
+  "sidebar.repo-icon": {
+   "verdict": "missing",
+   "why": "No repository icon support."
+  },
+  "sidebar.add-repo": {
+   "verdict": "partial",
+   "why": "Sidebar '+' opens the Open-project dialog, which only appends to localStorage; it does not call the registered add_repository command."
+  },
+  "sidebar.ws-name": {
+   "verdict": "partial",
+   "why": "Row shows the name; no user-set vs generated distinction (user_set_* flags not modelled in the UI)."
+  },
+  "sidebar.ws-branch": {
+   "verdict": "partial",
+   "why": "Branch appears only in the row tooltip."
+  },
+  "sidebar.ws-status": {
+   "verdict": "partial",
+   "why": "Status dot uses our own idle/working/needs-review/archived model, not derived/manual status with in-progress default (src/state/types.ts)."
+  },
+  "sidebar.ws-diffstat": {
+   "verdict": "partial",
+   "why": "+/- counts render from stored placeholder numbers; not computed from git, no colour setting."
+  },
+  "sidebar.ws-unread": {
+   "verdict": "missing",
+   "why": "No unread state, action or command; column only in the unwired DB crate."
+  },
+  "sidebar.ws-pinned": {
+   "verdict": "missing",
+   "why": "No pinning; pinned_at only in the unwired DB crate."
+  },
+  "sidebar.sections": {
+   "verdict": "missing",
+   "why": "No sections UI or commands; navigation_sections only in crates/openconductor-db/migrations/0005_navigation_and_favorites.sql (unwired)."
+  },
+  "sidebar.drag-to-section": {
+   "verdict": "missing",
+   "why": "No drag and drop."
+  },
+  "sidebar.ws-numbers": {
+   "verdict": "missing",
+   "why": "No numbers or Cmd+1..9 handler; registry entries in src/keybindings are declarations without handlers."
+  },
+  "sidebar.ws-next-prev": {
+   "verdict": "missing",
+   "why": "Declared in the keybinding registry only; no handler."
+  },
+  "sidebar.search": {
+   "verdict": "missing",
+   "why": "No workspace search."
+  },
+  "sidebar.rename": {
+   "verdict": "missing",
+   "why": "No user rename. src/workspace/naming.ts plans the automatic first-message rename only, and is not imported by the UI."
+  },
+  "sidebar.archive": {
+   "verdict": "partial",
+   "why": "UI archive (WorkspaceView) deletes the localStorage row without confirmation or busy check. Backend WorkspaceManager::archive has the busy guard and archive commit but is not a registered command."
+  },
+  "sidebar.archived-view": {
+   "verdict": "backend",
+   "why": "WorkspaceManager::restore exists (src-tauri/src/workspace/mod.rs); no command, no UI."
+  },
+  "sidebar.resize-toggle": {
+   "verdict": "partial",
+   "why": "Toggle works via Cmd+B and '[' (src/state/shortcuts.ts, App.tsx); the sidebar is a fixed 248px column with no resize."
+  },
+  "sidebar.footer-usage": {
+   "verdict": "missing",
+   "why": "Footer shows app name/version only."
+  },
+  "sidebar.transparency": {
+   "verdict": "missing",
+   "why": "No vibrancy/transparency."
+  },
+  "sidebar.ws-actions": {
+   "verdict": "missing",
+   "why": "No row context menu or actions menu."
+  },
+  "sidebar.empty-state": {
+   "verdict": "implemented",
+   "why": "Muted single-line empty state matches evidence/screens/home.md."
+  },
+  "sidebar.add-menu": {
+   "verdict": "missing",
+   "why": "'+' opens a dialog directly; no three-action menu, no recents."
+  },
+  "sidebar.visibility-settings": {
+   "verdict": "partial",
+   "why": "Visibility persists inside the localStorage app state, not as a setting; width is fixed (248px vs evidence default 256)."
+  },
+  "home.route": {
+   "verdict": "partial",
+   "why": "Home is the default screen, but there is no router or '/' route (selection state in src/state/store.ts)."
+  },
+  "home.org-states": {
+   "verdict": "missing",
+   "why": "No organization concept; no loading or cloud redirect state."
+  },
+  "home.layout": {
+   "verdict": "implemented",
+   "why": "Matches evidence/screens: three label-only cards in a 1-to-3 grid sit at the reference position (y 368-495; x offset 4 px from the narrower sidebar), wordmark centered above, drag region, fade-in. Differences: card icons for GitHub (cloud vs globe) and Quick start (sparkle vs folder-plus); the wordmark is our own brand by design."
+  },
+  "home.sidebar-toggle": {
+   "verdict": "implemented",
+   "why": "Toggle shown only when the sidebar is hidden, with tooltip and shortcut hint (HomeScreen.tsx)."
+  },
+  "home.add-local": {
+   "verdict": "partial",
+   "why": "Dialog with folder picker adds to localStorage with defaultBranch hard-coded to main; backend add_repository (git toplevel) and default_branch detection exist but are not called."
+  },
+  "home.open-project-flow": {
+   "verdict": "backend",
+   "why": "Only the backend toplevel check exists (service.rs add_repository). No .git/init dialog, origin check, file:// remote or error toast."
+  },
+  "home.clone-github": {
+   "verdict": "partial",
+   "why": "Dialog parses GitHub URLs but performs no clone and has no destination picker or progress."
+  },
+  "home.new-project": {
+   "verdict": "partial",
+   "why": "Quick start dialog with placeholder templates; no git init, no GitHub repo, no first workspace on disk."
+  },
+  "home.duplicate-repo": {
+   "verdict": "partial",
+   "why": "Store silently ignores a duplicate path/remote; no already-exists message. Backend add_repository returns the existing id."
+  },
+  "home.no-repo-guard": {
+   "verdict": "partial",
+   "why": "Sidebar empty line exists; creating a workspace with no repository is not reachable, and no Home explanation is shown."
+  },
+  "home.status-overview": {
+   "verdict": "missing",
+   "why": "Home shows no workspace list or statuses."
+  },
+  "home.dashboard-routes": {
+   "verdict": "missing",
+   "why": "No /dashboard or /all-workspaces screens."
+  },
+  "home.recent": {
+   "verdict": "missing",
+   "why": "No recent workspaces."
+  },
+  "home.repo-search": {
+   "verdict": "missing",
+   "why": "No repository search."
+  },
+  "home.recents": {
+   "verdict": "missing",
+   "why": "Clone dialog has no recent repositories."
+  },
+  "home.first-run": {
+   "verdict": "missing",
+   "why": "No onboarding."
+  },
+  "home.persist": {
+   "verdict": "partial",
+   "why": "UI state lives in localStorage; backend keeps a TSV repo registry; the Conductor-shaped SQLite schema in crates/openconductor-db is not used by the app."
+  },
+  "create.entry": {
+   "verdict": "partial",
+   "why": "Per-repo '+' instantly adds a localStorage row with an adjective-noun name; no dialog, no worktree."
+  },
+  "create.page": {
+   "verdict": "missing",
+   "why": "No create page or composer."
+  },
+  "create.from-ref": {
+   "verdict": "backend",
+   "why": "src/workspace/createFlow.ts models PR/branch/issue sources with tests; not used by the UI."
+  },
+  "create.base-branch": {
+   "verdict": "backend",
+   "why": "create_workspace accepts a base branch and fetches origin/<base> first (mod.rs create); createFlow defaults it to the repo default branch; no UI."
+  },
+  "create.branch-picker": {
+   "verdict": "backend",
+   "why": "list_branches command is registered; no picker UI."
+  },
+  "create.worktree": {
+   "verdict": "backend",
+   "why": "create_workspace runs git worktree add -b <branch> <data_dir>/workspaces/<slug>/<name> <base>; registered but never invoked by the UI."
+  },
+  "create.branch-prefix": {
+   "verdict": "backend",
+   "why": "naming.ts resolveBranchPrefix and settings keys exist; no settings UI and not wired to creation from the UI."
+  },
+  "create.placeholder-name": {
+   "verdict": "backend",
+   "why": "City names with rarity tiers and first-message rename plan (naming.ts, tested); the UI still uses src/state/names.ts adjective-noun names."
+  },
+  "create.validation": {
+   "verdict": "backend",
+   "why": "validateWorkspaceName/validateBranchName (naming.ts) and git check-ref-format (git.rs valid_branch_name); no UI surfaces errors."
+  },
+  "create.copy-files": {
+   "verdict": "backend",
+   "why": "files_to_copy.rs resolves .worktreeinclude / globs / .env* and create() copies them; only reachable through the unwired command."
+  },
+  "create.setup-script": {
+   "verdict": "backend",
+   "why": "run_setup exists but create() does not call it and no log path is kept."
+  },
+  "create.initializing": {
+   "verdict": "backend",
+   "why": "createFlow.ts progress reducer (initializing -> setting_up -> ready/failed); no UI."
+  },
+  "create.failure": {
+   "verdict": "backend",
+   "why": "Failed state modelled in createFlow.ts; no failure UI and no startup cleanup of incomplete workspaces."
+  },
+  "create.in-section": {
+   "verdict": "missing",
+   "why": "No sections."
+  },
+  "create.first-message": {
+   "verdict": "backend",
+   "why": "createFlow.ts carries the first message in the create request; no composer and no session start on create."
+  },
+  "create.number": {
+   "verdict": "missing",
+   "why": "No workspace numbers (schema column only in the unwired DB crate)."
+  },
+  "create.autostart-run": {
+   "verdict": "missing",
+   "why": "crates/scripts parses a scripts.auto_run_after_setup setting, but nothing acts on it and that crate is not an app dependency; workspace::scripts::spawn_run is never called after setup."
+  },
+  "sidebar.top-bar": {
+   "verdict": "missing",
+   "why": "No in-sidebar toggle button (toggle is keyboard-only, plus a Home button when hidden) and no back/forward navigation; the reference shows all three at the top of the sidebar."
+  },
+  "sidebar.computer-switcher": {
+   "verdict": "missing",
+   "why": "Sidebar starts with our logo and name; the reference starts with a computer/account switcher."
+  },
+  "sidebar.primary-nav": {
+   "verdict": "partial",
+   "why": "Home row only; no Create or Search rows."
+  },
+  "sidebar.workspaces-group": {
+   "verdict": "missing",
+   "why": "We show an uppercase 'Repositories' header with a '+'; the reference shows a sentence-case 'my workspaces' label."
+  },
+  "sidebar.footer-actions": {
+   "verdict": "missing",
+   "why": "Footer shows app name, version and platform text; the reference shows help and settings icon buttons."
+  },
+  "sidebar.colors": {
+   "verdict": "missing",
+   "why": "Measured on REA captures at 1440x900: sidebar edge at x=248 vs 256; dark sidebar #121417 vs #1c1817; light sidebar #eeeeeb vs #fcfcfb. REA compare-web-screenshots (threshold 24): 3.1% (dark) / 5.4% (light) of sidebar pixels differ."
+  },
+  "home.colors": {
+   "verdict": "missing",
+   "why": "Measured: dark main #17191d vs #141110, dark card #24272d vs #211e1c; light main #f7f7f5 vs #ffffff, light card #efefec vs #fafaf9. Every pixel differs at threshold 0 (REA compare-web-screenshots)."
+  }
+ }
+}
