@@ -34,7 +34,22 @@ OpenConductor: `src/features/chat/markdown.ts` (react-markdown + remark-gfm + re
 
 - Shown only when the turn is complete (`MDo` → `TDo`).
 - Duration `endTime - startTime` formatted by `$Pt(ms, {showTenths:false})`: `"{m}m, {s}s"` or `"{s}s"`; then `" · "` and the end time by `SDo`: today `h:mm AM`, within 6 days `Mon h:mm AM`, else `Nov 5, h:mm AM` (year when not this year). Hover shows agent/model, `start → end` and token counts.
+- Hover range `OX(start) → OX(end)`, each `Nov 5, 2026, 10:29 AM`. `EDo` re-renders at local midnight so "today" moves.
+- `MDo` takes `isNotComplete` from its row (the running turn), so a stopped turn is complete and keeps its time; read from the bundle, not run.
+- OpenConductor (`turnTime.ts`): the same three formatters, fed by `TurnState.startedAt`/`endedAt` (#303); the hover is a `title` with the range only (no model or token counts yet), and the label is computed at render rather than re-rendered at midnight.
 - Then "Copy final message" (icon button), a "More actions" menu (Fork to new tab, Fork to new workspace, Reset chat), and the turn's changed files: first 3 chips (or 2 plus a "+N more" button when there are more), each chip a file name with `+added -removed`.
+
+### Changed-file chips in the footer row (`vDo`, `_Do`), from renderApp
+
+Read from the decoded `renderApp-D_fmY7hW.js` (sha256 `5199d392…`, esbuild-reformatted; REA skips this chunk, rea-gaps.md 1) and `index-BGEQ8YjU.js` (sha256 `b5b01f33…`) for where the list comes from:
+- The footer (`TDo`) is one row, `@container mt-0.5 flex min-w-0 flex-wrap items-center gap-2 text-xs`: time, agent badge, Copy final message + More actions, then the chips (`vDo`). Nothing is pushed to the right.
+- The list is `useTurnChangesWithPreconditions` (`j9t`, index chunk): only once the turn is complete, `checkpointer diff session-<s>-turn-<t>-start …-end -- --name-status` and `--numstat`, cached per turn.
+- Constants: `gDi = 3` (all chips when at most 3), `hDo = 2` (else the first 2), `bDi = 3` revealed per click, `pDo = 500` (a chip over 500 changed lines has no hover diff, tooltip "Open to view preview").
+- First chips: a `flex min-w-0 max-w-fit flex-1 items-center gap-2 overflow-hidden` div, so they shrink rather than wrap. Revealed chips and the button: a `flex min-w-0 flex-wrap items-center gap-2` div that becomes `basis-full` (its own line) once anything is revealed.
+- The button: outline `xs`, file icon, `+{all hidden} more`, then the hidden files' `+added -removed` (`ID`, `showZero`); tooltip and aria-label `Show {min(3, hidden)} more changed file(s)`. It is not shown once everything is revealed.
+- Under a 480px-wide footer the first chips are hidden and the button shows the file count ("Show changed files" when none are hidden); the totals hide under 560px.
+- Clicking a chip opens the file's diff with scope `{type: "turn", sessionId, turnId}`.
+- OpenConductor (`TurnChanges.tsx`, `chipLayout` in `turnChangesCache.ts`): chips are the last items of the footer row, first chips shrink with names cut short, revealed chips and `+N more +a -d` wrap onto their own line. Not ported: the narrow-container (<480px / <560px) variants, the hover diff card, and the file icon.
 
 ## Cancelled turns (`chat.cancel` rendering), from renderApp
 

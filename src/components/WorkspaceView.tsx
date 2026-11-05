@@ -11,6 +11,8 @@ import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
+import { answerCodex, CODEX_ACCESS, codexAccess, setCodexAccess, type CodexAccess } from "../features/chat/codexChat.ts";
+import { DECISION_LABELS, type CodexApproval, type CodexDecision } from "../features/chat/codex.ts";
 import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
 import { TurnChanges } from "../features/chat/TurnChanges.tsx";
@@ -91,16 +93,37 @@ interface ChatPanelProps extends Props {
   openTurnFile: (turn: TurnRef, path: string) => void;
 }
 
+/** Codex asks before a command or patch; the turn waits for the answer. */
+function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswer: (d: CodexDecision) => void }) {
+  return (
+    <div className="codex-approval" role="alertdialog" aria-label="Codex approval">
+      <div className="codex-approval-title">{approval.kind === "command" ? "Codex wants to run a command" : "Codex wants to change files"}</div>
+      {approval.command ? <pre className="codex-approval-command">{approval.command}</pre> : null}
+      {approval.reason ? <div className="muted">{approval.reason}</div> : null}
+      <div className="codex-approval-actions">
+        {approval.decisions.map((d) => (
+          <button key={d} type="button" className={`btn btn-small${d === "accept" ? " btn-primary" : ""}`} onClick={() => onAnswer(d)}>
+            {DECISION_LABELS[d]}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
   const [picked, setPicked] = useState<Record<string, ChatAgentId>>({});
-  const agentId: ChatAgentId = reason && main ? (picked[workspace.id] ?? savedAgent(workspace.id)) : "reason";
+  const agentId: ChatAgentId = reason ? (picked[chatId] ?? savedAgent(chatId)) : "reason";
   const agent = CHAT_AGENTS[agentId];
-  /** The chat id on the agent's runtime. */
+  const codex = agentId === "codex";
+  /** The chat id on the agent's side. */
   const runId = agent.chatId(chatId);
-  const [{ transcript, queue }, setSnapshot] = useState<ChatSnapshot>(() => agent.snapshot(runId));
+  // Codex's snapshots also carry its pending approvals.
+  const [{ transcript, queue, approvals = [] }, setSnapshot] = useState<ChatSnapshot & { approvals?: CodexApproval[] }>(() => agent.snapshot(runId));
+  const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
   const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
@@ -122,6 +145,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     setDraft("");
     setAttachments([]);
     setAttachError(null);
+    setAccess(codexAccess(chatId));
   }, [chatId]);
 
   useEffect(() => {
@@ -134,7 +158,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     }
     const unsubscribe = agent.subscribe(runId, setSnapshot);
     // The workspace's Reason chat runs the default model unless the New workspace dialog picked one.
-    if (main && agentId === "reason") configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
+    if (main) configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
     if (pendingMessage?.kind === "send") submit(pendingMessage.text, "queue", pendingMessage.attachments);
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
@@ -145,8 +169,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   }, [chatId, agentId]);
 
   function pickAgent(next: ChatAgentId) {
-    saveAgent(workspace.id, next);
-    setPicked((p) => ({ ...p, [workspace.id]: next }));
+    saveAgent(chatId, next);
+    setPicked((p) => ({ ...p, [chatId]: next }));
   }
 
   // The draft is kept between launches (`composer-drafts`, keyed by the chat
@@ -286,9 +310,10 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             dontCollapseToolCalls={garryMode}
             onRetry={(prompt) => submit(prompt, "queue")}
             // Conductor: workspace with a path, not archived; disabled while the agent works.
-            onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
+            // Reset chat and turn changes come from turn checkpoints (Reason, Claude Code); Codex turns have none yet.
+            onResetChat={reason && agent.reset && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
-            turnFooter={turnFooter}
+            turnFooter={agent.reset ? turnFooter : undefined}
           />
         )}
         <div ref={endRef} />
@@ -296,9 +321,16 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       {resetTurn !== null ? (
         <ResetChatDialog
           loadChangedCount={() => changedSinceTurn(invoke, cwd, runId, resetTurn)}
-          onConfirm={(resetFiles) => agent.reset(runId, cwd, resetTurn, resetFiles)}
+          onConfirm={(resetFiles) => (agent.reset ? agent.reset(runId, cwd, resetTurn, resetFiles) : Promise.resolve())}
           onClose={() => setResetTurn(null)}
         />
+      ) : null}
+      {codex && approvals.length > 0 ? (
+        <div className="codex-approvals">
+          {approvals.map((a) => (
+            <ApprovalCard key={String(a.requestId)} approval={a} onAnswer={(d) => void answerCodex(chatId, a.requestId, d)} />
+          ))}
+        </div>
       ) : null}
       <Composer
         draft={draft}
@@ -310,18 +342,40 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         onSubmit={onSubmit}
         onStop={() => agent.stop(runId)}
         onQueue={(action) => agent.queueAction(runId, action)}
-        picker={
-          reason && main ? (
-            <select className="composer-agent" aria-label="Agent" value={agentId} disabled={queue.status !== "idle" || queue.items.length > 0} onChange={(e) => pickAgent(e.target.value as ChatAgentId)}>
-              {CHAT_AGENT_IDS.map((id) => (
-                <option key={id} value={id}>
-                  {CHAT_AGENTS[id].label}
-                </option>
-              ))}
-            </select>
+        onAttachFiles={(files) => void attachFiles(files)}
+        controls={
+          reason ? (
+            <>
+              {/* Locked while a turn runs or messages wait, so queued messages never move to another agent. */}
+              <select className="agent-select" aria-label="Agent" value={agentId} disabled={queue.status !== "idle" || queue.items.length > 0} onChange={(e) => pickAgent(e.target.value as ChatAgentId)}>
+                {CHAT_AGENT_IDS.map((id) => (
+                  <option key={id} value={id}>
+                    {CHAT_AGENTS[id].label}
+                  </option>
+                ))}
+              </select>
+              {codex ? (
+                <select
+                  className="agent-select codex-access"
+                  aria-label="Codex access"
+                  value={access}
+                  disabled={running}
+                  onChange={(e) => {
+                    const next = e.target.value as CodexAccess;
+                    setAccess(next);
+                    void setCodexAccess(chatId, next);
+                  }}
+                >
+                  {(Object.keys(CODEX_ACCESS) as CodexAccess[]).map((k) => (
+                    <option key={k} value={k}>
+                      {CODEX_ACCESS[k].label}
+                    </option>
+                  ))}
+                </select>
+              ) : null}
+            </>
           ) : null
         }
-        onAttachFiles={(files) => void attachFiles(files)}
         attachments={
           attachments.length > 0 || attachError ? (
             <div className="composer-attachments" aria-label="Attachments">

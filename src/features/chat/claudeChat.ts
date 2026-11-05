@@ -33,6 +33,7 @@ export const claudeAvailable = (): boolean => isTauri();
 
 /** The id of a workspace's Claude Code chat. */
 export const claudeChatId = (workspaceId: string): string => `${workspaceId}:claude`;
+export const isClaudeChat = (chatId: string): boolean => chatId.endsWith(":claude");
 
 /** Claude Code queues follow-ups instead of steering the running turn. */
 export const CLAUDE_CAN_STEER = false;

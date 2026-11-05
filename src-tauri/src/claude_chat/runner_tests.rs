@@ -4,7 +4,6 @@
 //! for good); `exit` exits 2 after printing to stderr.
 
 use std::fs;
-use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::{Arc, Mutex};
@@ -17,6 +16,7 @@ use super::runner::{ClaudeRunner, Launcher};
 use crate::agent::{ClaudeLaunch, LaunchEnv};
 use crate::reason_acp::provider::{ProviderEvent, Sink, TurnEnd};
 use crate::reason_acp::wire;
+use crate::test_exe::write_executable;
 
 const FAKE: &str = r#"#!/bin/sh
 printf '%s\n' "$*" >> "$0.args"
@@ -54,8 +54,7 @@ fn fake() -> PathBuf {
     ));
     fs::create_dir_all(&dir).unwrap();
     let exe = dir.join("claude");
-    fs::write(&exe, FAKE).unwrap();
-    fs::set_permissions(&exe, fs::Permissions::from_mode(0o755)).unwrap();
+    write_executable(&exe, FAKE, 0o755);
     exe
 }
 

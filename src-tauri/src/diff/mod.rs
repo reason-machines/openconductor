@@ -18,6 +18,7 @@ pub mod git;
 pub mod model;
 pub mod parse;
 pub mod paths;
+pub mod write_file;
 
 pub use model::{DiffLine, FileChange, FileDiff, FileStatus, Hunk, LineKind};
 pub use parse::{parse_unified, ParseError};
