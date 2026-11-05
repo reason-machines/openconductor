@@ -198,6 +198,9 @@ try {
   // 4. Stop.
   await send("slow");
   await waitFor("the Stop button", running);
+  // Stop once the agent runs the turn (its tool row shows), so the fake CLI
+  // counts it; a Stop before the prompt reaches Reason never sends it.
+  await waitFor('the "bash: sleep" tool row', () => chatText().then((t) => t.includes("bash: sleep")));
   await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
   await waitFor('"Stopped."', () => chatText().then((t) => t.includes("Stopped.")), 15000);
   await turnDone(4);
