@@ -6,6 +6,8 @@
 
 pub mod flow;
 pub mod scrollback;
+pub mod spawn;
 
 pub use flow::{FlowGate, FlowLimits};
 pub use scrollback::Scrollback;
+pub use spawn::{EventSink, ExitInfo, Program, PtyEvent, Result, SpawnRequest, TerminalError};
