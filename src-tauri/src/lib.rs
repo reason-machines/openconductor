@@ -6,6 +6,7 @@
 //! - `agent/`      agent runner, providers and BYOK settings
 //! - `diff/`       diff viewer: git changes, unified diff parser
 //! - `quick_open/` quick open file index and fuzzy matching
+//! - `reason_acp/` the Reason agent over ACP; its commands are `reason_chat`
 //! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //! - `settings/`   settings.toml and the Keychain-backed secret store
 //! - `terminal/`   PTY terminals (`terminal_commands.rs` is its IPC layer)
@@ -18,6 +19,8 @@ pub mod diff;
 pub mod github_repo;
 pub mod project;
 pub mod quick_open;
+pub mod reason_acp;
+pub mod reason_chat;
 pub mod scripts;
 pub mod settings;
 pub mod spotlight;
@@ -126,6 +129,7 @@ pub fn run() {
             let data_dir = app.path().app_data_dir()?;
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());
+            app.manage(reason_chat::ReasonChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
             app.manage(settings::service::SettingsService::new(
@@ -151,6 +155,11 @@ pub fn run() {
             diff::commands::diff_workspace,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
+            reason_chat::reason_cli_path,
+            reason_chat::reason_open_chat,
+            reason_chat::reason_prompt,
+            reason_chat::reason_cancel,
+            reason_chat::reason_list_sessions,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,
             terminal_commands::pty_resize,
