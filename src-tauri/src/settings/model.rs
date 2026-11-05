@@ -174,6 +174,8 @@ pub struct Providers {
     pub cursor: Option<ProviderConfig>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub opencode: Option<ProviderConfig>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<ProviderConfig>,
     #[serde(flatten)]
     pub extra: toml::Table,
 }
@@ -200,6 +202,7 @@ impl Providers {
             AgentKind::Codex => &self.codex,
             AgentKind::Cursor => &self.cursor,
             AgentKind::Opencode => &self.opencode,
+            AgentKind::Reason => &self.reason,
         }
     }
 
@@ -209,6 +212,7 @@ impl Providers {
             AgentKind::Codex => &mut self.codex,
             AgentKind::Cursor => &mut self.cursor,
             AgentKind::Opencode => &mut self.opencode,
+            AgentKind::Reason => &mut self.reason,
         }
     }
 }

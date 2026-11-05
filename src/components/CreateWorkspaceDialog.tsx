@@ -15,7 +15,10 @@ import {
   type CreateDraft,
   type DraftErrors,
 } from "../workspace/createFlow";
-import { createWorkspace, ensureRepository, errorText, listBranches, type BranchDto } from "../workspace/api";
+import { createWorkspace, ensureRepository, errorText, listBranches, type BranchDto, type CreatedWorkspaceDto, type RepositoryDto } from "../workspace/api";
+import { scriptsConfig, startSetup } from "../scripts/api";
+import { workspaceRef } from "../scripts/model";
+import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import type { SourceState } from "../workspace/createFrom";
 import { CreateFromPicker } from "./CreateFromPicker";
@@ -54,7 +57,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
   const [progress, send] = useReducer(reduceProgress, { step: "idle" });
   const repo = repos.find((r) => r.id === draft.repoId);
   const prefix = useMemo(() => resolveBranchPrefix(prefixSettings, githubUsername), [prefixSettings, githubUsername]);
-  const busy = progress.step === "creating" || progress.step === "detecting_setup" || progress.step === "running_setup";
+  const busy = progress.step === "creating" || progress.step === "detecting_setup";
 
   useEffect(() => {
     let live = true;
@@ -108,8 +111,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
       const backendRepo = await ensureRepository(repo.path);
       const created = await createWorkspace(toCreateWorkspaceArgs({ ...built.request, repoId: backendRepo.id }));
       send({ type: "created", workspaceId: created.workspace.id });
-      // No setup-script command in the backend yet: detection finds none.
-      send({ type: "setup_detected", hasScript: false });
+      send({ type: "setup_detected", started: await startSetupScript(backendRepo, created, built.request.targetBranch) });
       const { id, directoryName, branchName, path } = created.workspace;
       const { naming, firstSession } = built.request;
       const ws = {
@@ -132,6 +134,28 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
       }
     } catch (err) {
       send({ type: "create_failed", error: `${FAILED_TO_CREATE}: ${errorText(err)}` });
+    }
+  }
+
+  /**
+   * "Detecting setup script...": reads the repository's scripts config and
+   * starts its setup script in the new worktree. A setup that fails to start
+   * never blocks the workspace; the Setup tab offers Run setup.
+   */
+  async function startSetupScript(backendRepo: RepositoryDto, created: CreatedWorkspaceDto, targetBranch: string): Promise<boolean> {
+    const { id, directoryName, path } = created.workspace;
+    const ref = workspaceRef({ id: backendRepo.id, path: backendRepo.root, defaultBranch: backendRepo.defaultBranch }, { id, name: directoryName, path });
+    if (!ref) return false;
+    const workspace = { ...ref, targetBranch: targetBranch || null };
+    try {
+      if (!(await scriptsConfig(workspace)).setup) return false;
+      watchSetup(id);
+      const started = await startSetup(workspace);
+      if (!started) unwatchSetup(id);
+      return started;
+    } catch {
+      unwatchSetup(id);
+      return false;
     }
   }
 
@@ -223,7 +247,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
           )}
         </label>
         {progress.step !== "idle" && (
-          <p className={progress.step === "failed" || progress.step === "setup_failed" ? "error small" : "muted small"} role="status">
+          <p className={progress.step === "failed" ? "error small" : "muted small"} role="status">
             {progressLabel(progress)}
           </p>
         )}

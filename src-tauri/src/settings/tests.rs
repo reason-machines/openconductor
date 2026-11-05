@@ -58,6 +58,10 @@ region = "eu-west-1"
         s.providers.effective(AgentKind::Codex),
         ProviderConfig::default_for(AgentKind::Codex)
     );
+    assert_eq!(
+        s.providers.effective(AgentKind::Reason).provider().kind(),
+        "reason_login"
+    );
     s.general.theme = Theme::Dark;
     save(&path, &s).unwrap();
 
@@ -113,6 +117,10 @@ fn bad_values_are_rejected_on_load() {
             "providers.claude:",
         ),
         ("[providers.codex]\nkind = \"nope\"", "unknown variant"),
+        (
+            "[providers.reason]\nkind = \"claude_login\"",
+            "providers.reason: claude_login is a claude provider",
+        ),
         ("not toml [", "failed to parse"),
     ] {
         let path = dir.join(FILE_NAME);

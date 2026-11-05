@@ -5,7 +5,8 @@
 
 import type { AgentKind, Settings } from "./types";
 
-export type ModelAgent = Exclude<AgentKind, "opencode">;
+/** Agents with a model catalog in Conductor; other agents pick their own models. */
+export type ModelAgent = Extract<AgentKind, "claude" | "codex" | "cursor">;
 
 export const MODEL_CATALOG: Record<ModelAgent, string[]> = {
   claude: [

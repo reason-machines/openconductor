@@ -32,6 +32,8 @@
 //! * [`provider`] - the [`Provider`] trait: how an agent CLI is pointed at a
 //!   model backend and authenticated, producing a [`LaunchEnv`] from its
 //!   options and secrets.
+//! * [`reason`] - Reason, signed in with its own CLI (`reason login`); it
+//!   runs over ACP (`crate::reason_acp`), not stream-json.
 //! * [`secret`] - [`SecretStore`], where provider API keys and tokens live
 //!   (the macOS Keychain in the app, memory in tests), and [`SecretString`],
 //!   which never prints its value.
@@ -54,6 +56,7 @@ pub mod codex_session;
 pub mod env;
 pub mod keychain;
 pub mod provider;
+pub mod reason;
 pub mod secret;
 
 pub use byok::{ProviderConfig, ProviderStatus};
