@@ -162,7 +162,7 @@ pub(crate) fn check_size(cols: u16, rows: u16) -> Result<()> {
     Ok(())
 }
 
-fn check_cwd(cwd: &Path) -> Result<()> {
+pub(crate) fn check_cwd(cwd: &Path) -> Result<()> {
     match std::fs::metadata(cwd) {
         Ok(m) if m.is_dir() => Ok(()),
         Ok(_) => Err(TerminalError::CwdNotDirectory(cwd.to_owned())),
