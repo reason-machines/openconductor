@@ -84,3 +84,4 @@ rizin_px_shell_scope	rea execute-rizin-command <Conductor 0.87.6>/Contents/MacOS
 verifier_plist_openconductor_app_60f4dfb	rea inspect-plist <CI artifact OpenConductor-debug-macos, run 42043310601, main 60f4dfb>/OpenConductor.app --json	0	19	3094	
 verifier_signature_openconductor_app_60f4dfb	rea inspect-signature <CI artifact, run 42043310601>/OpenConductor.app --json	0	14	2888	
 verifier_dylib_openconductor_app_60f4dfb	rea trace-dylib-resolution <CI artifact, run 42043310601>/OpenConductor.app --json	0	2	15581	
+diff_discard_bundle_read	plain-text read of renderApp/index bundles around "Discard file changes?" and revertFile (REA analyze-javascript-application cannot parse the bundle: heap exhausted, see analyze_js_app_renderApp_16g)	0	~5	-	REA_GAP: no REA route to read one function out of a 30 MB minified bundle; fell back to text read
