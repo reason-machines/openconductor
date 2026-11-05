@@ -95,9 +95,12 @@ export function DiffTab({ diff, onLineClick, anchors, annotations }: DiffTabProp
   );
 }
 
-/** The discard confirmation, shown once for whichever view asked for it. */
-export function DiffDiscardHost({ diff }: { diff: WorkspaceDiff }) {
+/**
+ * The discard confirmation, shown once for whichever view asked for it.
+ * `onDiscarded` runs after a successful discard (WorkspaceView attaches Conductor's revert note to the chat).
+ */
+export function DiffDiscardHost({ diff, onDiscarded }: { diff: WorkspaceDiff; onDiscarded?: (f: FileDiff) => void }) {
   const f = diff.discarding;
   if (!f) return null;
-  return <DiscardDialog file={f} onClose={() => diff.askDiscard(null)} onConfirm={() => diff.discard(f)} />;
+  return <DiscardDialog file={f} onClose={() => diff.askDiscard(null)} onConfirm={() => diff.discard(f).then(() => onDiscarded?.(f))} />;
 }
