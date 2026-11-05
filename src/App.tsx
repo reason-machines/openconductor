@@ -1,24 +1,38 @@
 import { useEffect, useState } from "react";
-import { getAppInfo, type AppInfo } from "./lib/tauri";
-import { Sidebar } from "./shell/Sidebar";
+import { useAppStore } from "./state/store";
+import { Sidebar } from "./components/Sidebar";
+import { HomeScreen } from "./components/HomeScreen";
+import { WorkspaceView } from "./components/WorkspaceView";
+import { OpenProjectDialog, CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
+import { appInfo, type AppInfo } from "./backend";
 
-export function App() {
+export default function App() {
+  const [state, dispatch] = useAppStore();
+  const initialDialog = new URLSearchParams(window.location.search).get("dialog") as DialogKind | null;
+  const [dialog, setDialog] = useState<DialogKind | null>(initialDialog);
   const [info, setInfo] = useState<AppInfo | null>(null);
 
   useEffect(() => {
-    getAppInfo().then(setInfo, () => setInfo(null));
+    appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
+  const sel = state.selection;
+  const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
+  const workspace = sel.kind === "workspace" ? repo?.workspaces.find((w) => w.id === sel.workspaceId) : undefined;
+
   return (
-    <div className="app-shell">
-      <Sidebar />
-      <main className="app-main">
-        <div className="empty-state">
-          <h1>OpenConductor</h1>
-          <p>Run coding agents in parallel, each in its own workspace.</p>
-          {info && <p className="muted">v{info.version}</p>}
-        </div>
+    <div className="app">
+      <Sidebar state={state} dispatch={dispatch} onOpenDialog={setDialog} info={info} />
+      <main className="main">
+        {repo && workspace ? (
+          <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
+        ) : (
+          <HomeScreen repos={state.repos} dispatch={dispatch} onOpenDialog={setDialog} />
+        )}
       </main>
+      {dialog === "open" && <OpenProjectDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
+      {dialog === "clone" && <CloneDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
+      {dialog === "quickstart" && <QuickStartDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
     </div>
   );
 }
