@@ -4,6 +4,8 @@ import { destroyWorkspaceTerminals } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
+import { AllWorkspaces } from "./components/AllWorkspaces";
+import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
 import type { DialogKind } from "./components/Dialogs";
 import { CreateProjectDialog } from "./components/CreateProjectDialog";
@@ -180,6 +182,8 @@ export default function App() {
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
+        ) : sel.kind === "home" ? (
+          <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
         ) : (
           <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}
