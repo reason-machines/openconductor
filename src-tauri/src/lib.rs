@@ -76,6 +76,14 @@ async fn github_repo_availability(
     blocking(move || github_repo::GitHub::default().availability(&owner, &repo_name)).await
 }
 
+/// Publish a local folder as a new private GitHub repo (see `github_repo`).
+#[tauri::command]
+async fn github_repo_create(
+    request: github_repo::CreateRequest,
+) -> Result<github_repo::Created, String> {
+    blocking(move || github_repo::GitHub::default().create(&request)).await
+}
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct BranchPrefixInfo {
@@ -141,6 +149,7 @@ pub fn run() {
             branch_prefix_settings,
             github_repo_owners,
             github_repo_availability,
+            github_repo_create,
             workspace::commands::add_repository,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
