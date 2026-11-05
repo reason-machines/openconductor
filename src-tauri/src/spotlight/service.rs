@@ -11,8 +11,14 @@
 //! Starting a different workspace on a root that already has a session ends
 //! that session first (the root goes back to its own state), then starts the
 //! new one.
+//!
+//! Each workspace's session also keeps a text log, worded like the
+//! reference's `spotlighter.sh` output, so agents can read it back
+//! ([`SpotlightService::output`], source `spotlight` of
+//! `crate::terminal_output`). The log of a stopped session stays until that
+//! workspace starts again.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -104,6 +110,141 @@ impl SpotlightEvent {
 
 pub type Emit = Arc<dyn Fn(SpotlightEvent) + Send + Sync>;
 
+/// Lines kept per workspace log; older lines are dropped.
+pub const LOG_LINES: usize = 5_000;
+
+/// A workspace's Spotlight log, see [`SpotlightService::output`].
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SpotlightOutput {
+    pub text: String,
+    /// The session is still running.
+    pub live: bool,
+    pub started_at: SystemTime,
+}
+
+struct Log {
+    lines: VecDeque<String>,
+    started_at: SystemTime,
+}
+
+type Logs = Arc<Mutex<HashMap<String, Log>>>;
+
+/// The log lines for one event. `checkpoint_id` is the session's sync
+/// checkpoint. Sync lines use the reference script's wording
+/// (`evidence/scripts/bin/spotlighter.sh`); start and stop lines are ours.
+fn log_lines(event: &SpotlightEvent, checkpoint_id: &str) -> Vec<String> {
+    match event {
+        SpotlightEvent::Started {
+            repo_root,
+            leftover_restore_error,
+            ..
+        } => {
+            let mut lines = vec![format!(
+                "Spotlight started: syncing this workspace into {}",
+                repo_root.display()
+            )];
+            if let Some(e) = leftover_restore_error {
+                lines.push(format!(
+                    "Warning: could not undo an earlier Spotlight session: {e}"
+                ));
+            }
+            lines
+        }
+        SpotlightEvent::Syncing { .. } => vec![String::new(), "Starting sync...".into()],
+        SpotlightEvent::Synced { repo_root, .. } => vec![
+            format!("Saved checkpoint: {checkpoint_id}"),
+            format!(
+                "Restored checkpoint {checkpoint_id} in {}",
+                repo_root.display()
+            ),
+        ],
+        SpotlightEvent::Skipped {
+            busy: true,
+            message,
+            ..
+        } => with_message("Skipping sync: merge/rebase in progress".into(), message),
+        SpotlightEvent::Skipped { message, .. } => {
+            with_message("Skipping sync: checkpoint save failed".into(), message)
+        }
+        SpotlightEvent::SyncFailed {
+            repo_root, message, ..
+        } => {
+            let mut lines = vec![format!("Saved checkpoint: {checkpoint_id}")];
+            lines.extend(with_message(
+                format!(
+                    "Warning: checkpoint restore failed in {}",
+                    repo_root.display()
+                ),
+                &Some(message.clone()),
+            ));
+            lines
+        }
+        SpotlightEvent::Stopped {
+            repo_root,
+            restore_error: None,
+            ..
+        } => vec![format!(
+            "Spotlight stopped: {} is back to its own state",
+            repo_root.display()
+        )],
+        SpotlightEvent::Stopped {
+            repo_root,
+            restore_error: Some(e),
+            ..
+        } => vec![format!(
+            "Spotlight stopped: could not put {} back: {e}",
+            repo_root.display()
+        )],
+    }
+}
+
+fn with_message(line: String, message: &Option<String>) -> Vec<String> {
+    let mut lines = vec![line];
+    lines.extend(
+        message
+            .iter()
+            .flat_map(|m| m.lines())
+            .filter(|l| !l.trim().is_empty())
+            .map(str::to_owned),
+    );
+    lines
+}
+
+fn workspace_of(event: &SpotlightEvent) -> &str {
+    match event {
+        SpotlightEvent::Started { workspace_id, .. }
+        | SpotlightEvent::Syncing { workspace_id, .. }
+        | SpotlightEvent::Synced { workspace_id, .. }
+        | SpotlightEvent::Skipped { workspace_id, .. }
+        | SpotlightEvent::SyncFailed { workspace_id, .. }
+        | SpotlightEvent::Stopped { workspace_id, .. } => workspace_id,
+    }
+}
+
+/// Append `event` to its workspace's log; `Started` begins a new log.
+fn record(logs: &Logs, event: &SpotlightEvent, checkpoint_id: &str) {
+    let mut logs = logs.lock().unwrap_or_else(|e| e.into_inner());
+    let workspace_id = workspace_of(event);
+    if matches!(event, SpotlightEvent::Started { .. }) {
+        logs.insert(
+            workspace_id.to_string(),
+            Log {
+                lines: VecDeque::new(),
+                started_at: SystemTime::now(),
+            },
+        );
+    }
+    let Some(log) = logs.get_mut(workspace_id) else {
+        return;
+    };
+    for line in log_lines(event, checkpoint_id) {
+        if log.lines.len() == LOG_LINES {
+            log.lines.pop_front();
+        }
+        log.lines.push_back(line);
+    }
+}
+
 struct Session {
     workspace_id: String,
     // Dropping it stops the loop; keep it last so the fields above outlive it.
@@ -112,15 +253,49 @@ struct Session {
 
 pub struct SpotlightService {
     sessions: Mutex<HashMap<PathBuf, Session>>,
+    logs: Logs,
     emit: Emit,
 }
 
 impl SpotlightService {
     pub fn new(emit: Emit) -> Self {
+        let logs: Logs = Arc::default();
+        let log = logs.clone();
         Self {
             sessions: Mutex::new(HashMap::new()),
-            emit,
+            logs,
+            // Start and stop are logged here, before the UI hears them.
+            // Sync events name the session's checkpoint, so the watch
+            // callback in `start` logs those.
+            emit: Arc::new(move |event: SpotlightEvent| {
+                if matches!(
+                    event,
+                    SpotlightEvent::Started { .. } | SpotlightEvent::Stopped { .. }
+                ) {
+                    record(&log, &event, "");
+                }
+                emit(event)
+            }),
         }
+    }
+
+    /// The Spotlight log of `workspace_id`: the running session's, or the
+    /// last one's until the workspace starts Spotlight again.
+    pub fn output(&self, workspace_id: &str) -> Option<SpotlightOutput> {
+        let (text, started_at) = {
+            let logs = self.logs.lock().unwrap_or_else(|e| e.into_inner());
+            let log = logs.get(workspace_id)?;
+            (
+                log.lines.iter().cloned().collect::<Vec<_>>().join("\n"),
+                log.started_at,
+            )
+        };
+        let live = self.lock().values().any(|s| s.workspace_id == workspace_id);
+        Some(SpotlightOutput {
+            text,
+            live,
+            started_at,
+        })
     }
 
     /// The workspace spotlighted into `repo_root`, if any.
@@ -165,9 +340,16 @@ impl SpotlightService {
             .unwrap_or_default();
         let id = session_checkpoint_id(epoch, std::process::id());
         let emit = self.emit.clone();
-        let (root, ws_id) = (repo_root.to_path_buf(), workspace_id.to_string());
+        let logs = self.logs.clone();
+        let (root, ws_id, cp_id) = (
+            repo_root.to_path_buf(),
+            workspace_id.to_string(),
+            id.clone(),
+        );
         let watcher = match watch(workspace_path, repo_root, &id, move |event| {
-            emit(SpotlightEvent::from_sync(&root, &ws_id, event))
+            let event = SpotlightEvent::from_sync(&root, &ws_id, event);
+            record(&logs, &event, &cp_id);
+            emit(event)
         }) {
             Ok(w) => w,
             Err(e) => {
@@ -284,6 +466,87 @@ mod tests {
         assert_eq!(read(&f.root, "app.txt").as_deref(), Some("v1\n"));
         assert_eq!(svc.active_workspace(&f.root), None);
         assert!(!svc.stop(&f.root));
+    }
+
+    #[test]
+    fn log_reads_like_the_reference_script_and_outlives_the_session() {
+        let f = fixture();
+        let (svc, rx) = service();
+        assert_eq!(svc.output("ws-1"), None);
+        svc.start("ws-1", &f.ws, &f.root).unwrap();
+        next(&rx);
+        next(&rx);
+        next(&rx); // started, syncing, synced
+        let live = svc.output("ws-1").unwrap();
+        assert!(live.live);
+        let lines: Vec<&str> = live.text.lines().collect();
+        let root = f.root.display();
+        assert_eq!(
+            lines[0],
+            format!("Spotlight started: syncing this workspace into {root}")
+        );
+        assert_eq!(&lines[1..3], ["", "Starting sync..."]);
+        let id = lines[3].strip_prefix("Saved checkpoint: ").unwrap();
+        assert!(id.starts_with("cp-spotlight-"), "{id}");
+        assert_eq!(lines[4], format!("Restored checkpoint {id} in {root}"));
+
+        svc.stop(&f.root);
+        let stopped = svc.output("ws-1").unwrap();
+        assert!(!stopped.live);
+        assert_eq!(
+            stopped.text.lines().last().unwrap(),
+            format!("Spotlight stopped: {root} is back to its own state")
+        );
+        assert_eq!(stopped.started_at, live.started_at);
+        assert_eq!(svc.output("ws-2"), None);
+
+        // The next start begins a new log.
+        while rx.try_recv().is_ok() {}
+        svc.start("ws-1", &f.ws, &f.root).unwrap();
+        next(&rx);
+        let restarted = svc.output("ws-1").unwrap();
+        assert!(restarted.text.starts_with("Spotlight started"));
+        assert!(!restarted.text.contains("Spotlight stopped"));
+        svc.stop(&f.root);
+    }
+
+    #[test]
+    fn sync_problems_are_logged_with_the_reference_wording() {
+        let root = PathBuf::from("/r");
+        let ws = || "w".to_string();
+        let busy = SpotlightEvent::Skipped {
+            repo_root: root.clone(),
+            workspace_id: ws(),
+            busy: true,
+            message: None,
+        };
+        assert_eq!(
+            log_lines(&busy, "cp"),
+            ["Skipping sync: merge/rebase in progress"]
+        );
+        let save = SpotlightEvent::Skipped {
+            repo_root: root.clone(),
+            workspace_id: ws(),
+            busy: false,
+            message: Some("fatal: x\n\n".into()),
+        };
+        assert_eq!(
+            log_lines(&save, "cp"),
+            ["Skipping sync: checkpoint save failed", "fatal: x"]
+        );
+        let failed = SpotlightEvent::SyncFailed {
+            repo_root: root,
+            workspace_id: ws(),
+            message: "locked".into(),
+        };
+        assert_eq!(
+            log_lines(&failed, "cp"),
+            [
+                "Saved checkpoint: cp",
+                "Warning: checkpoint restore failed in /r",
+                "locked"
+            ]
+        );
     }
 
     #[test]
