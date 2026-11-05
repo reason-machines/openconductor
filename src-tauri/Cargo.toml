@@ -25,6 +25,11 @@ ignore = "0.4.25"
 nucleo-matcher = "=0.3.1"
 unicode-segmentation = "1.10"
 toml = "0.8"
+# app database (conductor.db): schema and data access
+openconductor-db = { path = "../crates/openconductor-db" }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 security-framework = "3"

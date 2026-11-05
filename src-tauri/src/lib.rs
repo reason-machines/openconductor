@@ -12,6 +12,7 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod db;
 pub mod diff;
 pub mod project;
 pub mod quick_open;
@@ -85,6 +86,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
+            app.manage(db::open(&data_dir)?);
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(Terminals::new(app.handle().clone()));
@@ -106,6 +108,12 @@ pub fn run() {
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
             diff::commands::diff_workspace,
+            diff::comment_commands::diff_comments_list,
+            diff::comment_commands::diff_comment_add,
+            diff::comment_commands::diff_comment_edit,
+            diff::comment_commands::diff_comment_delete,
+            diff::comment_commands::diff_comment_resolve,
+            diff::comment_commands::diff_comments_mark_sent,
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             terminal_commands::pty_spawn,
