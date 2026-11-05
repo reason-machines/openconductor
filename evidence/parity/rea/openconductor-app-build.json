@@ -1,9 +1,9 @@
 {
  "workflow": "package-macos.yml",
- "workflow_run": 42014127114,
- "head_sha": "a6333e7a7120d7b665a3923f84dfa6029496c457",
+ "workflow_run": 42021844898,
+ "head_sha": "884f1f78ed0f7668a934a78343466ebf688ba02c",
  "artifact": "OpenConductor-debug-macos",
- "artifact_zip_sha256": "d62af6fb3fc36e93766ba447fbb073d37e1c0a6741a817d1e93ca248628701a3",
+ "artifact_zip_sha256": "7a79655abec0076258b8191c9e2ebf5422e0a7540d7045d054d7189381d066df",
  "rea_version": "6.7.0 (Sven's Mac, macOS arm64)",
- "note": "Debug bundle, ad-hoc signed by CI. REA inspect-plist and inspect-signature were run on the unzipped OpenConductor.app."
+ "note": "Debug bundle, ad-hoc signed by CI. Downloaded with gh run download; artifact_zip_sha256 is the inner OpenConductor-debug.zip. REA inspect-plist, inspect-signature and trace-dylib-resolution were run on the unzipped OpenConductor.app."
 }

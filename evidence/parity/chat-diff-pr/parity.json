@@ -1,37 +1,55 @@
 {
  "ledger_id": "rol_ba2a4881609d4eec7a8be78f1d5035ba6cd0f218c0073f39a66ceafade50e29c",
+ "reviewed_at": "884f1f7",
+ "head": "884f1f7",
  "areas": {
   "chat": {
    "label": "Chat: agent transcript, composer, queue, attachments, models, turn controls",
    "features": 15,
-   "parity_pct": 27.2,
+   "parity_pct": 13.3,
+   "code_layer_pct": 37.2,
    "strict_parity_pct": 0.0,
-   "absent": 6,
-   "partial": 9,
-   "verified": 0
+   "by_verdict": {
+    "partial": 1,
+    "unwired": 2,
+    "backend-only": 4,
+    "missing": 8
+   },
+   "verified": 0,
+   "needs_rereview": 0
   },
   "diff": {
    "label": "Diff viewer: changed files, file diff rendering, navigation, inline and GitHub review comments",
    "features": 14,
-   "parity_pct": 8.3,
+   "parity_pct": 16.1,
+   "code_layer_pct": 67.9,
    "strict_parity_pct": 0.0,
-   "absent": 11,
-   "partial": 3,
-   "verified": 0
+   "by_verdict": {
+    "unwired": 6,
+    "backend-only": 3,
+    "missing": 5
+   },
+   "verified": 0,
+   "needs_rereview": 0
   },
   "pr": {
    "label": "PR area: create, status, checks, merge, review and conflict flows",
    "features": 12,
-   "parity_pct": 17.4,
+   "parity_pct": 14.6,
+   "code_layer_pct": 23.6,
    "strict_parity_pct": 0.0,
-   "absent": 7,
-   "partial": 5,
-   "verified": 0
+   "by_verdict": {
+    "backend-only": 7,
+    "missing": 5
+   },
+   "verified": 0,
+   "needs_rereview": 0
   }
  },
  "total": {
   "features": 41,
-  "parity_pct": 17.9,
+  "parity_pct": 14.6,
+  "code_layer_pct": 43.7,
   "strict_parity_pct": 0.0
  },
  "features": [
@@ -39,8 +57,12 @@
    "id": "chat.session-stream",
    "area": "chat",
    "title": "Start an agent session in a workspace and stream its messages into the transcript",
-   "status": "partial",
-   "score": 0.75,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.75,
+   "needs_rereview": false,
+   "why": "Agent runner and stream parser exist (src-tauri/src/agent/claude_cli.rs, claude_stream.rs), but no Tauri command starts a session and src-tauri/src/chat/ is not declared in lib.rs, so it is not compiled into the app. The transcript only shows a local placeholder reply (screen ours-chat--transcript).",
+   "obligation": "Register a command that starts a Claude Code session in the workspace worktree, declare the chat module in lib.rs, and stream its events into the Transcript reducer.",
    "layers_required": [
     "data",
     "backend",
@@ -64,7 +86,8 @@
      "src-tauri/src/chat/transcript.rs"
     ],
     "ui": [
-     "src/components/WorkspaceView.tsx"
+     "src/components/WorkspaceView.tsx",
+     "src/features/chat/Transcript.tsx"
     ]
    },
    "anchors": [
@@ -78,8 +101,12 @@
    "id": "chat.markdown",
    "area": "chat",
    "title": "Render assistant messages as markdown with highlighted code blocks",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "Transcript renders message text pre-wrapped (Transcript.tsx header comment). The reference screen renders inline code chips and bullet lists.",
+   "obligation": "Render assistant text as markdown with inline code, lists and highlighted code blocks.",
    "layers_required": [
     "ui"
    ],
@@ -96,22 +123,29 @@
    "id": "chat.tool-calls",
    "area": "chat",
    "title": "Show agent tool calls as collapsible rows with a setting to keep them expanded",
-   "status": "partial",
-   "score": 0.5,
+   "status": "unwired",
+   "score": 0.25,
+   "code_score": 1.0,
+   "needs_rereview": false,
+   "why": "Transcript.tsx has collapsible tool rows and a keep-expanded prop, but no agent events reach it, so the running app never shows a tool row. The reference shows a '4 tool calls, 2 messages' group with per-tool rows.",
+   "obligation": "Feed agent tool_use/tool_result events into the transcript and group consecutive tool calls under one collapsible header as in chat--tool-calls-expanded.",
    "layers_required": [
     "data",
     "ui"
    ],
    "layers_present": [
-    "data"
-   ],
-   "missing_layers": [
+    "data",
     "ui"
    ],
+   "missing_layers": [],
    "hits": {
     "data": [
      "src-tauri/src/chat/mod.rs",
      "src-tauri/src/chat/model.rs"
+    ],
+    "ui": [
+     "src/features/chat/Transcript.tsx",
+     "src/features/chat/view.ts"
     ]
    },
    "anchors": [
@@ -124,6 +158,10 @@
    "title": "Composer that sends a message, with a configurable send key",
    "status": "partial",
    "score": 0.5,
+   "code_score": 0.5,
+   "needs_rereview": false,
+   "why": "The composer is in the app and Enter sends, but only into a local placeholder transcript. There is no send-key setting. Against the reference, the model chip, attach button, '\u2318L to focus' hint and 'Next unread' are missing.",
+   "obligation": "Send composer messages to the agent session; add the send-key setting and the reference composer controls (model chip, attach, focus hint).",
    "layers_required": [
     "command",
     "ui"
@@ -148,8 +186,12 @@
    "id": "chat.queue",
    "area": "chat",
    "title": "Queue messages while a turn runs: edit, delete, reorder, steer, pause and resume the queue",
-   "status": "partial",
-   "score": 0.333,
+   "status": "missing",
+   "score": 0.0,
+   "code_score": 0.333,
+   "needs_rereview": false,
+   "why": "Schema only (queue_order, queue_paused_at in crates/openconductor-db). The app does not use that crate, and there is no queue logic or UI.",
+   "obligation": "Queue messages while a turn runs, with edit, delete, reorder, steer, pause and resume.",
    "layers_required": [
     "data",
     "backend",
@@ -180,8 +222,12 @@
    "id": "chat.cancel",
    "area": "chat",
    "title": "Stop a running turn and mark cancelled messages",
-   "status": "partial",
-   "score": 0.333,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.333,
+   "needs_rereview": false,
+   "why": "agent/claude_cli.rs runner kills the process on drop; no command or UI stops a turn or marks cancelled messages.",
+   "obligation": "Add a stop control and command that interrupts the running turn and marks its messages cancelled.",
    "layers_required": [
     "data",
     "backend",
@@ -209,8 +255,12 @@
    "id": "chat.attachments",
    "area": "chat",
    "title": "Draft attachments in the composer (files, images, terminal output) that materialize on send",
-   "status": "partial",
-   "score": 0.333,
+   "status": "missing",
+   "score": 0.0,
+   "code_score": 0.333,
+   "needs_rereview": false,
+   "why": "Schema only (attachments.is_draft). No materialize command and no composer attachment UI.",
+   "obligation": "Draft attachments in the composer (files, images, terminal output) that materialize on send.",
    "layers_required": [
     "data",
     "command",
@@ -239,8 +289,12 @@
    "id": "chat.model-picker",
    "area": "chat",
    "title": "Model picker with favorites and per-session thinking/effort level",
-   "status": "partial",
-   "score": 0.5,
+   "status": "missing",
+   "score": 0.0,
+   "code_score": 0.5,
+   "needs_rereview": false,
+   "why": "Only a favorite_models table and settings keys; parity_check lists default_model as declared but not read. No picker UI; the reference composer has an 'Opus 5 High' chip and picker (menu--model-picker).",
+   "obligation": "Add the composer model picker with favorites and per-session effort level, persisted per session.",
    "layers_required": [
     "data",
     "ui"
@@ -268,18 +322,28 @@
    "id": "chat.plan-mode",
    "area": "chat",
    "title": "Plan mode: enter, exit, and approve the agent's plan",
-   "status": "absent",
-   "score": 0.0,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.5,
+   "needs_rereview": false,
+   "why": "PermissionMode::Plan exists in agent/claude_cli.rs launch args; nothing in the app sets it or shows a plan approval.",
+   "obligation": "Expose plan mode in the composer and show the plan approval step.",
    "layers_required": [
     "backend",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "backend"
+   ],
    "missing_layers": [
-    "backend",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "backend": [
+     "src-tauri/src/agent/claude_cli.rs",
+     "src-tauri/src/agent/claude_stream.rs"
+    ]
+   },
    "anchors": [
     "schema `sessions.permission_mode`",
     "copy /enter plan mode/ (1 hit)",
@@ -290,8 +354,12 @@
    "id": "chat.context-usage",
    "area": "chat",
    "title": "Context window usage meter and compaction",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "Nothing beyond schema columns.",
+   "obligation": "Show context window usage and compaction state per session.",
    "layers_required": [
     "backend",
     "ui"
@@ -312,18 +380,27 @@
    "id": "chat.message-actions",
    "area": "chat",
    "title": "Per-message actions: copy, edit and resend, retry, fork the chat",
-   "status": "absent",
-   "score": 0.0,
+   "status": "unwired",
+   "score": 0.25,
+   "code_score": 0.5,
+   "needs_rereview": false,
+   "why": "Transcript.tsx has copy and retry buttons for agent messages, which never arrive in the running app. There is no edit-and-resend or fork. The reference footer also shows duration, time and changed-file chips.",
+   "obligation": "Wire the existing copy and retry actions to real agent turns; add edit-and-resend, fork, and the turn footer (duration, time, changed files).",
    "layers_required": [
     "backend",
     "ui"
    ],
-   "layers_present": [],
-   "missing_layers": [
-    "backend",
+   "layers_present": [
     "ui"
    ],
-   "hits": {},
+   "missing_layers": [
+    "backend"
+   ],
+   "hits": {
+    "ui": [
+     "src/features/chat/Transcript.tsx"
+    ]
+   },
    "anchors": [
     "copy /copy message/ (2 hits)",
     "copy /fork chat/ (3 hits)",
@@ -334,8 +411,12 @@
    "id": "chat.tabs",
    "area": "chat",
    "title": "Several chat sessions per workspace as tabs, with titles and unread counts",
-   "status": "partial",
-   "score": 0.5,
+   "status": "missing",
+   "score": 0.0,
+   "code_score": 0.5,
+   "needs_rereview": false,
+   "why": "Schema only. The reference shows session tabs with a '+' above the transcript; ours has one chat panel.",
+   "obligation": "Multiple chat sessions per workspace as tabs with titles, '+' and unread counts.",
    "layers_required": [
     "data",
     "ui"
@@ -362,8 +443,12 @@
    "id": "chat.revert-checkpoint",
    "area": "chat",
    "title": "Revert the workspace to the checkpoint taken at a turn",
-   "status": "partial",
-   "score": 0.333,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.333,
+   "needs_rereview": false,
+   "why": "src-tauri/src/checkpoint/ has save and restore with tests, but it is not declared in lib.rs, and no command or UI exists.",
+   "obligation": "Compile the checkpoint module into the app, take a checkpoint per turn, and add a revert-to-turn action with confirmation.",
    "layers_required": [
     "backend",
     "command",
@@ -391,8 +476,12 @@
    "id": "chat.speech",
    "area": "chat",
    "title": "Dictate a message with speech-to-text",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "Nothing.",
+   "obligation": "Dictation into the composer.",
    "layers_required": [
     "backend",
     "ui"
@@ -411,8 +500,12 @@
    "id": "chat.find",
    "area": "chat",
    "title": "Find text in the chat transcript",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "Nothing.",
+   "obligation": "Find in the chat transcript.",
    "layers_required": [
     "ui"
    ],
@@ -429,20 +522,35 @@
    "id": "diff.changes-list",
    "area": "diff",
    "title": "List changed files for uncommitted and all-branch changes with per-file status",
-   "status": "absent",
-   "score": 0.0,
+   "status": "unwired",
+   "score": 0.25,
+   "code_score": 1.0,
+   "needs_rereview": false,
+   "why": "The diff_workspace command is registered and DiffViewer lists files, but WorkspaceView.tsx:119 passes worktree={null}, so inside Tauri the panel can only show \"This workspace has no worktree on disk yet\". Files show only in browser sample mode. The reference puts the list in the right panel under a 'N files changed' header, with per-file revert.",
+   "obligation": "Pass the workspace worktree path to DiffViewer, and move the changed-files list to the right panel ('N files changed', per-file stats and actions) as in diff--file-unified.",
    "layers_required": [
     "backend",
     "command",
     "ui"
    ],
-   "layers_present": [],
-   "missing_layers": [
+   "layers_present": [
     "backend",
     "command",
     "ui"
    ],
-   "hits": {},
+   "missing_layers": [],
+   "hits": {
+    "backend": [
+     "src-tauri/src/diff/git.rs"
+    ],
+    "command": [
+     "src/features/diff/api.ts",
+     "src-tauri/src/diff/commands.rs"
+    ],
+    "ui": [
+     "src/features/diff/DiffViewer.tsx"
+    ]
+   },
    "anchors": [
     "copy /uncommitted changes/ (10 hits)",
     "copy /all changes/ (11 hits)",
@@ -453,16 +561,32 @@
    "id": "diff.file-render",
    "area": "diff",
    "title": "Render a file diff with syntax highlighting (reference uses the Pierre diff renderer)",
-   "status": "absent",
-   "score": 0.0,
+   "status": "unwired",
+   "score": 0.25,
+   "code_score": 1.0,
+   "needs_rereview": false,
+   "why": "FileDiffView renders hunks, but with sample data only (see changes-list). Against the reference: no syntax highlighting, no collapsed 'N unmodified lines' rows, lines wrap in a ~300 px column, and the diff is not opened as a main-area tab.",
+   "obligation": "Open a file diff as a tab in the main area with syntax highlighting, collapsed unmodified-line rows and no line wrap; add the 'Entire file' view (diff--entire-file).",
    "layers_required": [
     "ui"
    ],
-   "layers_present": [],
-   "missing_layers": [
+   "layers_present": [
     "ui"
    ],
-   "hits": {},
+   "missing_layers": [],
+   "hits": {
+    "ui": [
+     "src/components/WorkspaceView.tsx",
+     "src/features/diff/DiffViewer.tsx",
+     "src/features/diff/FileDiffView.tsx",
+     "src/features/diff/api.ts",
+     "src/features/diff/comments.ts",
+     "src/features/diff/nav.ts",
+     "src/features/diff/rows.ts",
+     "src/features/diff/types.ts",
+     "src/features/diff/viewed.ts"
+    ]
+   },
    "anchors": [
     "ledger `diff.viewer` (unowned)",
     "library `pierre`",
@@ -473,16 +597,27 @@
    "id": "diff.split-unified",
    "area": "diff",
    "title": "Toggle split and unified diff layouts",
-   "status": "absent",
-   "score": 0.0,
+   "status": "unwired",
+   "score": 0.25,
+   "code_score": 1.0,
+   "needs_rereview": false,
+   "why": "The toggle works in browser sample mode (screen ours-diff--file-split), but there is no data in the app. The reference uses icon toggles for unified, split and entire file in the file toolbar.",
+   "obligation": "Keep the toggle; add the entire-file mode and icon toolbar once the viewer is wired to real data.",
    "layers_required": [
     "ui"
    ],
-   "layers_present": [],
-   "missing_layers": [
+   "layers_present": [
     "ui"
    ],
-   "hits": {},
+   "missing_layers": [],
+   "hits": {
+    "ui": [
+     "src/features/diff/DiffViewer.tsx",
+     "src/features/diff/FileDiffView.tsx",
+     "src/features/diff/rows.ts",
+     "src/features/diff/types.ts"
+    ]
+   },
    "anchors": [
     "copy /split view/ (2 hits)",
     "copy /unified view/ (2 hits)"
@@ -492,16 +627,24 @@
    "id": "diff.virtualized",
    "area": "diff",
    "title": "Virtualize long file lists and large diffs",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 1.0,
+   "needs_rereview": false,
+   "why": "The parity tag on FileDiffView is wrong: it renders every row of every file. Collapsing viewed files is not virtualization.",
+   "obligation": "Virtualize the file list and long diffs, and remove the incorrect parity:diff.virtualized tag.",
    "layers_required": [
     "ui"
    ],
-   "layers_present": [],
-   "missing_layers": [
+   "layers_present": [
     "ui"
    ],
-   "hits": {},
+   "missing_layers": [],
+   "hits": {
+    "ui": [
+     "src/features/diff/FileDiffView.tsx"
+    ]
+   },
    "anchors": [
     "ledger `diff.viewer` (unowned)"
    ]
@@ -510,18 +653,32 @@
    "id": "diff.whitespace",
    "area": "diff",
    "title": "Show or hide whitespace-only changes",
-   "status": "absent",
-   "score": 0.0,
+   "status": "unwired",
+   "score": 0.25,
+   "code_score": 1.0,
+   "needs_rereview": false,
+   "why": "Backend passes -w and the UI has the toggle; unreachable in the app until the worktree is passed.",
+   "obligation": "Wire to real data (see changes-list).",
    "layers_required": [
     "backend",
     "ui"
    ],
-   "layers_present": [],
-   "missing_layers": [
+   "layers_present": [
     "backend",
     "ui"
    ],
-   "hits": {},
+   "missing_layers": [],
+   "hits": {
+    "backend": [
+     "src-tauri/src/diff/git.rs"
+    ],
+    "ui": [
+     "src/features/diff/DiffViewer.tsx",
+     "src/features/diff/FileDiffView.tsx",
+     "src/features/diff/api.ts",
+     "src/features/diff/types.ts"
+    ]
+   },
    "anchors": [
     "copy /hide whitespace changes/ (2 hits)",
     "copy /only whitespace changes found/ (2 hits)"
@@ -531,16 +688,26 @@
    "id": "diff.viewed",
    "area": "diff",
    "title": "Mark files as viewed",
-   "status": "absent",
-   "score": 0.0,
+   "status": "unwired",
+   "score": 0.25,
+   "code_score": 1.0,
+   "needs_rereview": false,
+   "why": "Viewed checkbox and localStorage fingerprint persistence exist; unreachable in the app until the worktree is passed. The reference also has 'Next unread'.",
+   "obligation": "Wire to real data; add next-unread navigation.",
    "layers_required": [
     "ui"
    ],
-   "layers_present": [],
-   "missing_layers": [
+   "layers_present": [
     "ui"
    ],
-   "hits": {},
+   "missing_layers": [],
+   "hits": {
+    "ui": [
+     "src/features/diff/DiffViewer.tsx",
+     "src/features/diff/FileDiffView.tsx",
+     "src/features/diff/viewed.ts"
+    ]
+   },
    "anchors": [
     "copy /mark as viewed/ (2 hits)",
     "copy /toggle file as viewed/ (2 hits)"
@@ -550,21 +717,28 @@
    "id": "diff.navigation",
    "area": "diff",
    "title": "Keyboard navigation to the next/previous file and comment in a diff",
-   "status": "partial",
-   "score": 0.5,
+   "status": "unwired",
+   "score": 0.25,
+   "code_score": 1.0,
+   "needs_rereview": false,
+   "why": "DiffViewer hard-codes ] and [ for next and previous file instead of using the keybinding registry entries. Comment navigation (stepComment in nav.ts) is not used by any component.",
+   "obligation": "Bind file and comment navigation to the registry's diff keybindings and wire stepComment.",
    "layers_required": [
     "keybinding",
     "ui"
    ],
    "layers_present": [
-    "keybinding"
-   ],
-   "missing_layers": [
+    "keybinding",
     "ui"
    ],
+   "missing_layers": [],
    "hits": {
     "keybinding": [
      "src/keybindings/registry.ts"
+    ],
+    "ui": [
+     "src/features/diff/DiffViewer.tsx",
+     "src/features/diff/nav.ts"
     ]
    },
    "anchors": [
@@ -576,8 +750,12 @@
    "id": "diff.turn-changes",
    "area": "diff",
    "title": "Show the changes made in a selected agent turn, cached locally",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "Nothing.",
+   "obligation": "Show the changes made in a selected agent turn.",
    "layers_required": [
     "backend",
     "ui"
@@ -599,8 +777,12 @@
    "id": "diff.discard",
    "area": "diff",
    "title": "Discard changes to one file or all files after confirmation",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "Nothing. The reference has per-file revert icons in the changes list and file toolbar.",
+   "obligation": "Discard one file or all changes after confirmation.",
    "layers_required": [
     "backend",
     "ui"
@@ -620,23 +802,32 @@
    "id": "diff.comments-inline",
    "area": "diff",
    "title": "Add, edit and delete inline comments on a line or line range",
-   "status": "partial",
-   "score": 0.333,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.667,
+   "needs_rereview": false,
+   "why": "comments.ts has the thread model and edit/delete. DiffViewer accepts onLineClick and annotations, but WorkspaceView passes neither, and there is no persistence to diff_comments and no command.",
+   "obligation": "Render the comment composer and threads in the diff, and persist them through a command into diff_comments.",
    "layers_required": [
     "data",
     "command",
     "ui"
    ],
    "layers_present": [
-    "data"
+    "data",
+    "ui"
    ],
    "missing_layers": [
-    "command",
-    "ui"
+    "command"
    ],
    "hits": {
     "data": [
-     "crates/openconductor-db/migrations/0002_attachments_and_diff_comments.sql"
+     "crates/openconductor-db/migrations/0002_attachments_and_diff_comments.sql",
+     "src/features/diff/comments.ts"
+    ],
+    "ui": [
+     "src/features/diff/comments.ts",
+     "src/features/diff/nav.ts"
     ]
    },
    "anchors": [
@@ -650,18 +841,27 @@
    "id": "diff.comments-to-chat",
    "area": "diff",
    "title": "Send review comments to the agent chat as attachments",
-   "status": "absent",
-   "score": 0.0,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.5,
+   "needs_rereview": false,
+   "why": "formatForAgent and pendingForAgent exist in comments.ts; no UI action or chat attachment path.",
+   "obligation": "Add 'add comments to chat' that attaches pending comments to the composer and marks them sent.",
    "layers_required": [
     "backend",
     "ui"
    ],
-   "layers_present": [],
-   "missing_layers": [
-    "backend",
+   "layers_present": [
     "ui"
    ],
-   "hits": {},
+   "missing_layers": [
+    "backend"
+   ],
+   "hits": {
+    "ui": [
+     "src/features/diff/comments.ts"
+    ]
+   },
    "anchors": [
     "schema `attachments.comment_id`",
     "copy /add all comments to chat/ (2 hits)"
@@ -671,8 +871,12 @@
    "id": "diff.comments-github",
    "area": "diff",
    "title": "Sync PR review comments from GitHub with resolved, outdated and suggestion state",
-   "status": "partial",
-   "score": 0.333,
+   "status": "missing",
+   "score": 0.0,
+   "code_score": 0.333,
+   "needs_rereview": false,
+   "why": "Only local resolved/outdated helpers; nothing fetches PR review comments.",
+   "obligation": "Sync PR review comments from GitHub with resolved, outdated and suggestion state.",
    "layers_required": [
     "data",
     "backend",
@@ -687,7 +891,8 @@
    ],
    "hits": {
     "data": [
-     "crates/openconductor-db/migrations/0002_attachments_and_diff_comments.sql"
+     "crates/openconductor-db/migrations/0002_attachments_and_diff_comments.sql",
+     "src/features/diff/comments.ts"
     ]
    },
    "anchors": [
@@ -702,8 +907,12 @@
    "id": "diff.edit-in-viewer",
    "area": "diff",
    "title": "Edit a file from the diff viewer",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "Nothing.",
+   "obligation": "Edit a file from the diff viewer.",
    "layers_required": [
     "ui"
    ],
@@ -720,16 +929,24 @@
    "id": "diff.appearance",
    "area": "diff",
    "title": "Diff font, ligatures, syntax theme and colour-vision themes",
-   "status": "absent",
-   "score": 0.0,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 1.0,
+   "needs_rereview": false,
+   "why": "diff.css defines --oc-diff-* variables and a protanopia palette, but no setting sets the font, ligatures, theme or palette (no data-palette in any component).",
+   "obligation": "Add diff font, ligature, syntax theme and colour-vision settings that set these variables.",
    "layers_required": [
     "ui"
    ],
-   "layers_present": [],
-   "missing_layers": [
+   "layers_present": [
     "ui"
    ],
-   "hits": {},
+   "missing_layers": [],
+   "hits": {
+    "ui": [
+     "src/features/diff/diff.css"
+    ]
+   },
    "anchors": [
     "copy /font used for code and diffs/ (4 hits)",
     "library `protanopia`"
@@ -739,8 +956,12 @@
    "id": "pr.create",
    "area": "pr",
    "title": "Create a pull request or draft PR from a workspace, persisting title and description",
-   "status": "partial",
+   "status": "backend-only",
    "score": 0.25,
+   "code_score": 0.5,
+   "needs_rereview": false,
+   "why": "create_pr_prompt in src-tauri/src/pr/prompt.rs is tested, but the pr module is not declared in lib.rs; no command or UI.",
+   "obligation": "Compile the pr module into the app and add the Create PR action in the workspace header that runs the create-PR prompt and persists title and description.",
    "layers_required": [
     "data",
     "backend",
@@ -748,16 +969,20 @@
     "ui"
    ],
    "layers_present": [
-    "data"
+    "data",
+    "backend"
    ],
    "missing_layers": [
-    "backend",
     "command",
     "ui"
    ],
    "hits": {
     "data": [
-     "crates/openconductor-db/migrations/0001_core.sql"
+     "crates/openconductor-db/migrations/0001_core.sql",
+     "src-tauri/src/pr/info.rs"
+    ],
+    "backend": [
+     "src-tauri/src/pr/prompt.rs"
     ]
    },
    "anchors": [
@@ -771,8 +996,12 @@
    "id": "pr.custom-prompts",
    "area": "pr",
    "title": "Per-repository prompts for create PR, code review, fix errors, resolve conflicts, rename branch",
-   "status": "partial",
-   "score": 0.5,
+   "status": "missing",
+   "score": 0.0,
+   "code_score": 0.5,
+   "needs_rereview": false,
+   "why": "Columns only; settings prompts.* keys are missing in the settings parity report.",
+   "obligation": "Per-repository custom prompts UI and settings keys.",
    "layers_required": [
     "data",
     "ui"
@@ -799,8 +1028,12 @@
    "id": "pr.status",
    "area": "pr",
    "title": "PR status in the workspace header (draft, open, review required, changes requested, merged)",
-   "status": "partial",
-   "score": 0.5,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.5,
+   "needs_rereview": false,
+   "why": "header_state and derived_status (pr/header.rs, info.rs) are tested but not compiled into the app. The reference header shows the PR info area (offline: 'Couldn't load PR info').",
+   "obligation": "Add a PR lookup command and the right-panel PR header with its states.",
    "layers_required": [
     "backend",
     "ui"
@@ -813,6 +1046,8 @@
    ],
    "hits": {
     "backend": [
+     "src-tauri/src/pr/info.rs",
+     "src-tauri/src/pr/merge_eligibility.rs",
      "src-tauri/src/pr/model.rs"
     ]
    },
@@ -826,8 +1061,12 @@
    "id": "pr.checks",
    "area": "pr",
    "title": "CI checks list with logs, re-run failed, and optional-checks policy",
-   "status": "partial",
-   "score": 0.5,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.5,
+   "needs_rereview": false,
+   "why": "summarize and dedupe_latest (pr/checks.rs) are tested but not compiled in. The reference has a Checks tab in the right panel.",
+   "obligation": "Add the Checks tab: list, logs and re-run failed, using checks::summarize.",
    "layers_required": [
     "backend",
     "ui"
@@ -853,8 +1092,12 @@
    "id": "pr.merge",
    "area": "pr",
    "title": "Merge a PR (merge, squash, rebase), merge queue and automerge",
-   "status": "absent",
-   "score": 0.0,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "gh.rs has merge, enable/disable auto-merge and allowed_merge_method, and merge_eligibility.rs has can_merge. None is compiled in and there is no UI. The code-layer probe missed this code.",
+   "obligation": "Expose merge, merge-method choice and automerge as commands and header actions gated on can_merge.",
    "layers_required": [
     "backend",
     "ui"
@@ -875,18 +1118,27 @@
    "id": "pr.archive-on-merge",
    "area": "pr",
    "title": "Archive the workspace when its PR merges",
-   "status": "absent",
-   "score": 0.0,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.5,
+   "needs_rereview": false,
+   "why": "should_archive_after_merge (pr/prompt.rs) is not compiled in; git.archive_on_merge is missing from settings.",
+   "obligation": "Add the archive-on-merge setting and act on it when the PR merges.",
    "layers_required": [
     "backend",
     "ui"
    ],
-   "layers_present": [],
+   "layers_present": [
+    "backend"
+   ],
    "missing_layers": [
-    "backend",
     "ui"
    ],
-   "hits": {},
+   "hits": {
+    "backend": [
+     "src-tauri/src/pr/prompt.rs"
+    ]
+   },
    "anchors": [
     "copy /archive on merge/ (1 hit)",
     "schema `workspaces.archive_commit`"
@@ -896,8 +1148,12 @@
    "id": "pr.commit-push",
    "area": "pr",
    "title": "Commit and push all workspace changes",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "Nothing.",
+   "obligation": "Commit and push all workspace changes.",
    "layers_required": [
     "backend",
     "ui"
@@ -916,8 +1172,12 @@
    "id": "pr.review-actions",
    "area": "pr",
    "title": "Approve, mark ready, edit title and change base branch of a PR",
-   "status": "absent",
-   "score": 0.0,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "gh.rs has approve, mark_ready, edit and retarget; not compiled in, no UI. The code-layer probe missed this code.",
+   "obligation": "Expose approve, mark ready, edit title and change base as commands and header actions.",
    "layers_required": [
     "backend",
     "ui"
@@ -938,8 +1198,12 @@
    "id": "pr.ai-review",
    "area": "pr",
    "title": "Start an AI code review with a configurable review model",
-   "status": "partial",
-   "score": 0.333,
+   "status": "backend-only",
+   "score": 0.25,
+   "code_score": 0.333,
+   "needs_rereview": false,
+   "why": "buildReviewPrompt (src/features/diff/review.ts) and a review_model setting exist; no Review action. The reference has a 'Review' button in the right panel.",
+   "obligation": "Add the Review action that starts an agent review with the review model and prompt.",
    "layers_required": [
     "data",
     "backend",
@@ -966,8 +1230,12 @@
    "id": "pr.resolve-conflicts",
    "area": "pr",
    "title": "Resolve merge conflicts with the agent; block actions while a merge or rebase is in progress",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "Nothing.",
+   "obligation": "Resolve merge conflicts with the agent; block actions during a rebase or merge.",
    "layers_required": [
     "backend",
     "ui"
@@ -988,8 +1256,12 @@
    "id": "pr.workspace-from-pr",
    "area": "pr",
    "title": "Create a workspace from an existing PR, branch or issue, with PR search",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "create_workspace can check out an existing branch (create-workspace area), but there is no PR search and no create-from-PR.",
+   "obligation": "Create a workspace from a PR with PR search.",
    "layers_required": [
     "backend",
     "ui"
@@ -1009,8 +1281,12 @@
    "id": "pr.stack",
    "area": "pr",
    "title": "View and merge a stack of dependent PRs",
-   "status": "absent",
+   "status": "missing",
    "score": 0.0,
+   "code_score": 0.0,
+   "needs_rereview": false,
+   "why": "Nothing.",
+   "obligation": "View and merge a stack of dependent PRs.",
    "layers_required": [
     "backend",
     "ui"
@@ -1027,5 +1303,5 @@
   }
  ],
  "broken_anchors": [],
- "implementation_files_scanned": 86
+ "implementation_files_scanned": 159
 }
