@@ -7,7 +7,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { AckBatcher, type PtyEvent } from "./events";
 import { onPtyEvent, ptyAckBytes, ptyClearHistory, ptyKill, ptyResize, ptySpawn, ptyWrite } from "./pty";
 import { canOpen, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs";
-import { LINE_EDIT_BYTES, terminalCommandFor } from "./shortcuts.ts";
+import { FIND_COMMAND, LINE_EDIT_BYTES, terminalCommandFor } from "./shortcuts.ts";
 
 interface Live {
   workspaceId: string;
@@ -24,6 +24,8 @@ interface Live {
 const live = new Map<string, Live>();
 const tabsByWorkspace = new Map<string, TabsState>();
 const subscribers = new Set<() => void>();
+/** Times Find in terminal was asked for, per tab; the panel opens its find bar on a change. */
+const findRequests = new Map<string, number>();
 const EMPTY = emptyTabs();
 let listening: Promise<() => void> | null = null;
 
@@ -38,6 +40,11 @@ function dispatch(workspaceId: string, a: TabsAction) {
   tabsByWorkspace.set(workspaceId, tabsReducer(getTabs(workspaceId), a));
   subscribers.forEach((f) => f());
 }
+
+export const getFindRequests = (id: string): number => findRequests.get(id) ?? 0;
+
+/** The live xterm of tab `id`, for the find bar. */
+export const terminalOf = (id: string): Terminal | undefined => live.get(id)?.term;
 
 export const selectTab = (workspaceId: string, id: string) => dispatch(workspaceId, { type: "select", id });
 
@@ -61,6 +68,9 @@ function cssVar(name: string, fallback: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
 }
 
+/** `#rrggbb` plus an alpha byte; other colour forms pass through unchanged. */
+const withAlpha = (hex: string, alpha: string) => (/^#[0-9a-f]{6}$/i.test(hex) ? hex + alpha : hex);
+
 /** Open a new tab running the login shell in `cwd`; resolves to its id. */
 export async function openTab(workspaceId: string, cwd: string, initialCommand?: string): Promise<string> {
   if (!canOpen(getTabs(workspaceId))) throw new Error("Tab limit reached for this workspace.");
@@ -73,7 +83,15 @@ export async function openTab(workspaceId: string, cwd: string, initialCommand?:
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
     fontSize: 12,
     scrollback: 5000,
-    theme: { background: cssVar("--panel", "#1d2025"), foreground: cssVar("--text", "#e6e7e9") },
+    theme: {
+      background: cssVar("--panel", "#1d2025"),
+      foreground: cssVar("--text", "#e6e7e9"),
+      // xterm's default selection is pale white, invisible on the light theme.
+      // The inactive colour matters for Find: the match is selected while the
+      // find input, not the terminal, has focus.
+      selectionBackground: withAlpha(cssVar("--accent", "#5b82f0"), "66"),
+      selectionInactiveBackground: withAlpha(cssVar("--accent", "#5b82f0"), "4d"),
+    },
   });
   const fit = new FitAddon();
   term.loadAddon(fit);
@@ -132,6 +150,10 @@ function runTerminalCommand(id: string, command: string) {
   const bytes = LINE_EDIT_BYTES[command];
   if (bytes !== undefined) void ptyWrite(id, bytes).catch(() => {});
   else if (command === "terminal.clearScrollback") clearTab(id);
+  else if (command === FIND_COMMAND) {
+    findRequests.set(id, getFindRequests(id) + 1);
+    subscribers.forEach((f) => f());
+  }
   else if (command === "terminal.closeTab") closeTab(l.workspaceId, id);
   else if (command === "terminal.newTab" || command === "terminal.newBigTab")
     void openTab(l.workspaceId, l.cwd, l.initialCommand).catch(() => {});
@@ -151,4 +173,5 @@ export function closeTab(workspaceId: string, id: string) {
 function dispose(id: string) {
   live.get(id)?.term.dispose();
   live.delete(id);
+  findRequests.delete(id);
 }
