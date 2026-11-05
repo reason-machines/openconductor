@@ -1,3 +1,7 @@
+use std::fs;
+use std::path::Path;
+use std::process::Command;
+
 use super::*;
 
 fn toml(layer: Layer, text: &str) -> LayerSource {
@@ -78,4 +82,102 @@ fn bad_values_are_dropped_with_a_warning() {
 fn parse_errors_name_the_file() {
     let err = LayerSource::from_toml(Layer::User, "u.toml", "[scripts").unwrap_err();
     assert!(err.to_string().contains("u.toml"), "{err}");
+}
+
+fn write(path: &Path, text: &str) {
+    fs::create_dir_all(path.parent().unwrap()).unwrap();
+    fs::write(path, text).unwrap();
+}
+
+fn git(dir: &Path, args: &[&str]) {
+    let ok = Command::new("git")
+        .arg("-C")
+        .arg(dir)
+        .args([
+            "-c",
+            "user.name=t",
+            "-c",
+            "user.email=t@t",
+            "-c",
+            "commit.gpgsign=false",
+        ])
+        .args(args)
+        .status()
+        .unwrap()
+        .success();
+    assert!(ok, "git {args:?}");
+}
+
+#[test]
+fn loads_files_and_reads_legacy_json_only_without_settings_toml() {
+    let tmp = tempfile::tempdir().unwrap();
+    let (home, root, ws) = (
+        tmp.path().join("home"),
+        tmp.path().join("root"),
+        tmp.path().join("ws"),
+    );
+    write(
+        &ws.join("conductor.json"),
+        r#"{"scripts":{"setup":"legacy","archive":"legacy-archive"}}"#,
+    );
+    write(
+        &home.join("conductor.json"),
+        r#"{"scripts":{"archive":"home"}}"#,
+    );
+    write(
+        &root.join(".conductor/settings.local.toml"),
+        "[scripts]\nrun_mode = \"nonconcurrent\"\n",
+    );
+    let paths = SettingsPaths {
+        user_dir: home.clone(),
+        repo_root: root.clone(),
+        workspace: Some(ws),
+        shared_from: SharedSource::WorkingTree,
+    };
+    let r = load(&paths).unwrap();
+    assert_eq!(r.setup.unwrap().value, "legacy");
+    assert_eq!(
+        r.archive.unwrap().value,
+        "legacy-archive",
+        "workspace conductor.json beats home"
+    );
+    assert_eq!(r.run_mode, RunMode::Nonconcurrent);
+
+    write(
+        &root.join(".conductor/settings.toml"),
+        "[scripts]\nsetup = \"shared\"\n",
+    );
+    let r = load(&paths).unwrap();
+    assert_eq!(r.setup.unwrap().value, "shared");
+    assert_eq!(r.archive, None);
+}
+
+#[test]
+fn shared_settings_come_from_the_git_ref() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path().join("root");
+    fs::create_dir_all(&root).unwrap();
+    git(&root, &["init", "-q", "-b", "main"]);
+    write(
+        &root.join(".conductor/settings.toml"),
+        "[scripts]\nsetup = \"committed\"\n",
+    );
+    git(&root, &["add", "."]);
+    git(&root, &["commit", "-q", "-m", "settings"]);
+    write(
+        &root.join(".conductor/settings.toml"),
+        "[scripts]\nsetup = \"uncommitted\"\n",
+    );
+    let mut paths = SettingsPaths {
+        user_dir: tmp.path().join("home"),
+        repo_root: root,
+        workspace: None,
+        shared_from: SharedSource::GitRef("main".into()),
+    };
+    assert_eq!(load(&paths).unwrap().setup.unwrap().value, "committed");
+
+    paths.shared_from = SharedSource::GitRef("origin/main".into());
+    let r = load(&paths).unwrap();
+    assert_eq!(r.setup.unwrap().value, "uncommitted");
+    assert_eq!(r.warnings.len(), 1, "{:?}", r.warnings);
 }

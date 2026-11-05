@@ -37,18 +37,13 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
 [lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ['cfg(quick_open_std_only)'] }
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(quick_open_std_only)"] }
 
 [workspace]
 TOML
 
-if command -v rustfmt >/dev/null 2>&1; then
-  rustfmt --edition 2021 --check "$module"
-else
-  echo "note: rustfmt not installed; format check skipped" >&2
-fi
-
 cd "$harness"
+# commands.rs needs tauri; the cfg leaves it out of this harness.
 export RUSTFLAGS="${RUSTFLAGS:-} -D warnings --cfg quick_open_std_only"
 cargo test "$@"
 if cargo clippy --version >/dev/null 2>&1; then

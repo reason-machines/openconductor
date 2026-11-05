@@ -11,12 +11,23 @@
 //!   `nucleo-matcher 0.3.1` (scoring), which this module also uses.
 //!
 //! The module is plain Rust with no Tauri types, so it builds and tests on its
-//! own (see evidence/quick_open/run-tests.sh).
+//! own (see evidence/quick_open/run-tests.sh). The `#[tauri::command]`
+//! wrappers live with the app crate's command table.
+
+use std::collections::HashMap;
+use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
+use std::time::{Duration, Instant};
 
 use nucleo_matcher::pattern::{CaseMatching, Normalization, Pattern};
 use nucleo_matcher::{Config, Matcher, Utf32Str};
 use serde::{Deserialize, Serialize};
 use unicode_segmentation::UnicodeSegmentation;
+
+/// `#[tauri::command]` wrappers. Excluded from the standalone test build
+/// (`--cfg quick_open_std_only`, see evidence/quick_open/run-tests.sh).
+#[cfg(not(quick_open_std_only))]
+pub mod commands;
 
 #[cfg(test)]
 mod tests;
@@ -24,6 +35,14 @@ mod tests;
 /// Most results returned for one query. Conductor's cap is not visible in the
 /// shipped frontend; this keeps the list fast to render.
 pub const MAX_RESULTS: usize = 200;
+
+/// Most files indexed per workspace, so a huge untracked tree cannot stall
+/// the picker.
+pub const MAX_INDEXED_FILES: usize = 100_000;
+
+/// How long an index stays fresh. Matches the frontend `staleTime` Conductor
+/// uses for its fuzzy-search query (15 s).
+pub const INDEX_TTL: Duration = Duration::from_secs(15);
 
 /// One file or directory in a workspace. `path` is absolute, as in Conductor.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -41,6 +60,45 @@ pub struct FuzzyMatch {
     pub score: u32,
     pub match_indices: Vec<u32>,
     pub relative_path: String,
+}
+
+/// Walks `root` the way `git ls-files --others --cached` would see it:
+/// `.gitignore`, `.git/info/exclude` and global excludes apply, `.git` itself
+/// is skipped, hidden files are kept. Output is sorted by relative path.
+pub fn index_workspace(root: &Path, limit: usize) -> std::io::Result<Vec<FileEntry>> {
+    if !root.is_dir() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            format!("workspace path is not a directory: {}", root.display()),
+        ));
+    }
+    let walker = ignore::WalkBuilder::new(root)
+        .hidden(false)
+        .git_ignore(true)
+        .git_exclude(true)
+        .git_global(true)
+        .require_git(false)
+        .parents(true)
+        .filter_entry(|e| e.file_name() != ".git")
+        .sort_by_file_path(|a, b| a.cmp(b))
+        .build();
+    let mut out = Vec::new();
+    for entry in walker {
+        let Ok(entry) = entry else { continue };
+        if entry.depth() == 0 {
+            continue;
+        }
+        let is_directory = entry.file_type().is_some_and(|t| t.is_dir());
+        out.push(FileEntry {
+            name: entry.file_name().to_string_lossy().into_owned(),
+            path: entry.path().to_string_lossy().into_owned(),
+            is_directory,
+        });
+        if out.len() >= limit {
+            break;
+        }
+    }
+    Ok(out)
 }
 
 /// Path of `file` relative to `root`, with `/` separators. Falls back to the
@@ -67,9 +125,7 @@ pub fn fuzzy_filter(
     exclude_directories: bool,
     max_results: usize,
 ) -> Vec<FuzzyMatch> {
-    let candidates = files
-        .iter()
-        .filter(|f| !(exclude_directories && f.is_directory));
+    let candidates = files.iter().filter(|f| !(exclude_directories && f.is_directory));
     let query = query.trim();
     if query.is_empty() {
         return candidates
@@ -133,13 +189,54 @@ fn utf16_offsets(text: &str, indices: &[u32]) -> Vec<u32> {
         .collect()
 }
 
+type IndexMap = HashMap<PathBuf, (Instant, Arc<Vec<FileEntry>>)>;
+
+/// Per-workspace file index cache, the state behind `fileCache`.
+#[derive(Default)]
+pub struct FileIndexCache {
+    entries: Mutex<IndexMap>,
+}
+
+impl FileIndexCache {
+    /// Returns the workspace index, re-walking it when older than `ttl`.
+    pub fn get(&self, root: &Path, ttl: Duration) -> std::io::Result<Arc<Vec<FileEntry>>> {
+        if let Some((at, files)) = self.lock().get(root) {
+            if at.elapsed() < ttl {
+                return Ok(Arc::clone(files));
+            }
+        }
+        let files = Arc::new(index_workspace(root, MAX_INDEXED_FILES)?);
+        self.lock()
+            .insert(root.to_path_buf(), (Instant::now(), Arc::clone(&files)));
+        Ok(files)
+    }
+
+    /// Drops a workspace's index, e.g. after a file is created or deleted.
+    pub fn invalidate(&self, root: &Path) {
+        self.lock().remove(root);
+    }
+
+    fn lock(&self) -> std::sync::MutexGuard<'_, IndexMap> {
+        self.entries.lock().unwrap_or_else(|e| e.into_inner())
+    }
+}
+
+/// Body of the `fuzzy_filter_files` command.
+pub fn fuzzy_filter_files(
+    cache: &FileIndexCache,
+    workspace_path: &str,
+    query: &str,
+    exclude_directories: bool,
+) -> Result<Vec<FuzzyMatch>, String> {
+    let files = cache
+        .get(Path::new(workspace_path), INDEX_TTL)
+        .map_err(|e| e.to_string())?;
+    Ok(fuzzy_filter(&files, workspace_path, query, exclude_directories, MAX_RESULTS))
+}
+
 /// Body of the `fuzzy_match_files` command: rank a caller-supplied list (used
 /// for remote workspaces and @-mentions, where Rust cannot walk the tree).
 /// Paths are matched as given.
-pub fn fuzzy_match_files(
-    files: &[FileEntry],
-    query: &str,
-    exclude_directories: bool,
-) -> Vec<FuzzyMatch> {
+pub fn fuzzy_match_files(files: &[FileEntry], query: &str, exclude_directories: bool) -> Vec<FuzzyMatch> {
     fuzzy_filter(files, "", query, exclude_directories, MAX_RESULTS)
 }
