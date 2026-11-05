@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { AppState, Workspace } from "../state/types.ts";
-import { paletteDataFromState, sidebarOrder, stepWorkspace } from "./fromAppState.ts";
+import { paletteDataFromState, shortcutOrder, sidebarOrder, stepWorkspace } from "./fromAppState.ts";
 import { buildResults } from "./search/model.ts";
 
 const w = (id: string, createdAt: number): Workspace => ({
@@ -20,16 +20,28 @@ const state: AppState = {
   selection: { kind: "workspace", repoId: "r1", workspaceId: "b" },
 };
 
-test("sidebar order spans repos in order", () => {
+test("sidebar order spans repos in order, newest first inside a repo, as the sidebar shows them", () => {
   assert.deepEqual(
     sidebarOrder(state).map((x) => x.workspace.id),
-    ["a", "b", "c"],
+    ["b", "a", "c"],
   );
 });
 
+test("Cmd+1..9 order puts Pinned first and skips collapsed repos", () => {
+  const s: AppState = {
+    ...state,
+    repos: [
+      { ...state.repos[0], workspaces: [w("a", 1), { ...w("b", 2), pinnedAt: 5 }] },
+      { ...state.repos[1], collapsed: true },
+    ],
+  };
+  assert.deepEqual(shortcutOrder(s).map((x) => x.workspace.id), ["b", "a"]);
+  assert.deepEqual(sidebarOrder(s).map((x) => x.workspace.id), ["b", "a", "c"]);
+});
+
 test("stepping wraps and starts at the ends when nothing is selected", () => {
-  assert.equal(stepWorkspace(state, 1)?.workspace.id, "c");
-  assert.equal(stepWorkspace({ ...state, selection: { kind: "workspace", repoId: "r2", workspaceId: "c" } }, 1)?.workspace.id, "a");
+  assert.equal(stepWorkspace(state, 1)?.workspace.id, "a");
+  assert.equal(stepWorkspace({ ...state, selection: { kind: "workspace", repoId: "r2", workspaceId: "c" } }, 1)?.workspace.id, "b");
   assert.equal(stepWorkspace({ ...state, selection: { kind: "home" } }, -1)?.workspace.id, "c");
   assert.equal(stepWorkspace({ repos: [], selection: { kind: "home" } }, 1), undefined);
 });
