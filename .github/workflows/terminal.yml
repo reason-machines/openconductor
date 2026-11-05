@@ -1,0 +1,33 @@
+name: Terminal
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src-tauri/src/terminal/**"
+      - "tools/terminal/**"
+      - ".github/workflows/terminal.yml"
+  pull_request:
+    paths:
+      - "src-tauri/src/terminal/**"
+      - "tools/terminal/**"
+      - ".github/workflows/terminal.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: Terminal Rust test + clippy + rustfmt (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: Test terminal module (real PTYs)
+        run: bash tools/terminal/run-rust-tests.sh
