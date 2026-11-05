@@ -15,6 +15,10 @@
 //! Tables merge key by key; any other value from a higher layer replaces the
 //! lower one. Evidence: `evidence/run-scripts/NOTES.md`.
 
+mod load;
+mod run;
+#[cfg(test)]
+mod run_tests;
 #[cfg(test)]
 mod tests;
 
@@ -23,6 +27,12 @@ use std::fmt;
 
 use serde::Serialize;
 use toml::{Table, Value};
+
+pub use load::{load, load_layers, SettingsPaths, SharedSource, SETTINGS_DIR};
+pub use run::{
+    available, default_script, is_icon_name, label_for, normalize_id, shell_quote, Location,
+    RunScript, DEFAULT_ICON, LEGACY_RUN_ID,
+};
 
 /// A settings layer, in ascending precedence.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
@@ -174,8 +184,8 @@ pub struct ResolvedScripts {
     pub archive: Option<Sourced<String>>,
     pub run_mode: RunMode,
     pub auto_run_after_setup: bool,
-    /// Merged `scripts.run` value (a table, or a legacy string).
-    pub run: Option<Value>,
+    /// Run scripts, legacy `run` first, then in first-seen order.
+    pub run: Vec<RunScript>,
     /// Dotted key paths the managed layer sets; the UI locks them.
     pub managed_keys: BTreeSet<String>,
     /// Values that were ignored, with the reason.
@@ -227,6 +237,7 @@ pub fn resolve(layers: &[LayerSource]) -> ResolvedScripts {
     for l in ordered.iter().filter(|l| l.layer == Layer::Managed) {
         collect_leaf_paths(&l.table, "", &mut out.managed_keys);
     }
+    out.run = run::resolve_run(&ordered, &mut out.warnings);
     let Some(scripts) = merged.get("scripts").and_then(Value::as_table) else {
         return out;
     };
@@ -270,7 +281,6 @@ pub fn resolve(layers: &[LayerSource]) -> ResolvedScripts {
             v.type_str()
         )),
     }
-    out.run = scripts.get("run").cloned();
     out
 }
 

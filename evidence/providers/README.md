@@ -39,7 +39,11 @@ not yet committed, so treat each line as unconfirmed until they are.
 
 - Settings store only the provider choice and non-secret options; secrets go
   to a `SecretStore` (Keychain on macOS) under fixed keys
-  (`src-tauri/src/agent/secret.rs`).
+  (`src-tauri/src/agent/secret.rs`). On macOS that store is the login
+  Keychain via `security-framework`, the crate the reference app links: one
+  generic password item per key, service `com.reasonmachines.openconductor`
+  (our bundle identifier), account = the key (`src-tauri/src/agent/keychain.rs`).
+  It never reads the reference app's items.
 - A provider turns options + secrets into a `LaunchEnv`. Environment variable
   names come from the agent CLIs' public documentation, not from the
   reference app.

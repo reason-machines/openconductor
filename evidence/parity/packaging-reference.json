@@ -1,0 +1,83 @@
+{
+ "sources": {
+  "plist": "REA inspect-plist ev_c77ec9523dc61828b58e75ed7ca3b604968f34b09d35fe4980eb0abcb5ed8358 via evidence/packaging/conductor-reference.json",
+  "signature": "REA inspect-signature ev_9ebab8fc7c5cd30c23019a9566921c83f641615843814d1169ce1d6e5a62a11d via evidence/packaging/conductor-reference.json",
+  "crates": "evidence/ipc/rust-crates-from-paths.txt",
+  "resources": "evidence/scripts/MANIFEST.md"
+ },
+ "plist_keys": [
+  "CFBundleDevelopmentRegion",
+  "CFBundleDisplayName",
+  "CFBundleExecutable",
+  "CFBundleIconFile",
+  "CFBundleIdentifier",
+  "CFBundleInfoDictionaryVersion",
+  "CFBundleName",
+  "CFBundlePackageType",
+  "CFBundleShortVersionString",
+  "CFBundleURLTypes",
+  "CFBundleVersion",
+  "CSResourcesFileMapped",
+  "LSMinimumSystemVersion",
+  "LSRequiresCarbon",
+  "NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac",
+  "NSDesktopFolderUsageDescription",
+  "NSDocumentsFolderUsageDescription",
+  "NSDownloadsFolderUsageDescription",
+  "NSHighResolutionCapable",
+  "NSMicrophoneUsageDescription"
+ ],
+ "plist_values": {
+  "CFBundleInfoDictionaryVersion": "6.0",
+  "CFBundlePackageType": "APPL",
+  "CSResourcesFileMapped": true,
+  "LSMinimumSystemVersion": "10.13",
+  "LSRequiresCarbon": true,
+  "NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac": true,
+  "NSHighResolutionCapable": true
+ },
+ "url_scheme_count": 1,
+ "signing": {
+  "kind": "developer-id",
+  "hardened_runtime": true
+ },
+ "entitlements": [
+  "com.apple.security.cs.allow-jit",
+  "com.apple.security.cs.allow-unsigned-executable-memory",
+  "com.apple.security.device.audio-input"
+ ],
+ "tauri_version": "2.11.1",
+ "tauri_plugins": [
+  "tauri-plugin-clipboard-manager",
+  "tauri-plugin-deep-link",
+  "tauri-plugin-dialog",
+  "tauri-plugin-fs",
+  "tauri-plugin-http",
+  "tauri-plugin-notification",
+  "tauri-plugin-opener",
+  "tauri-plugin-os",
+  "tauri-plugin-shell",
+  "tauri-plugin-sql",
+  "tauri-plugin-store",
+  "tauri-plugin-updater",
+  "tauri-plugin-window-state"
+ ],
+ "resources": [
+  "Resources/bin/.internal/actions",
+  "Resources/bin/.internal/agent-launcher",
+  "Resources/bin/.internal/conductor-runtime",
+  "Resources/bin/.internal/internal",
+  "Resources/bin/.internal/logger",
+  "Resources/bin/.internal/sidecar",
+  "Resources/bin/checkpointer.sh",
+  "Resources/bin/conductor",
+  "Resources/bin/gh",
+  "Resources/bin/git-busy-check.sh",
+  "Resources/bin/spotlighter.sh",
+  "Resources/bin/watchexec",
+  "Resources/conductor-skill/.claude-plugin/plugin.json",
+  "Resources/conductor-skill/skills/conductor/SKILL.md",
+  "Resources/icon.icns"
+ ],
+ "embedded_frontend_assets": 2902
+}
