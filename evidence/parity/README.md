@@ -1,6 +1,6 @@
 # Parity: settings, shortcuts, persistence, packaging
 
-`tools/parity_check.py` scores a git ref of this repository against the Conductor 0.87.6 evidence for four areas and writes [`PARITY.md`](PARITY.md) and [`parity-report.json`](parity-report.json). The report in this directory is for `origin/main` at the commit named in its first line.
+`tools/parity_check.py` scores a git ref of this repository against the Conductor 0.87.6 evidence for four areas and writes [`PARITY.md`](PARITY.md) and [`parity-report.json`](parity-report.json), plus the ledger record [`evidence/ledger/verifier/settings-shortcuts-persistence-packaging.md`](../ledger/verifier/settings-shortcuts-persistence-packaging.md) (pass/fail per REA ledger obligation and the builder obligations every failing item is filed under). The report in this directory is for `origin/main` at the commit named in its first line. The checker exits non-zero when a failing item has no builder obligation in `BUILDER_OBLIGATIONS`.
 
 ```bash
 # Full run: REA inspects the rebuild's SQLite schema too (needs Node.js 24.15+ for REA's SQLite reader).
@@ -21,6 +21,12 @@ Each item is `matched` (1), `partial` or `declared` (0.5) or `missing` (0). Item
 | Shortcuts | 165 bindings plus 7 features (registry, override storage `keybinding_overrides_v1`, legacy aliases, conflict scopes, shortcuts dialog, `/key-bindings` route, send-key presets) | `evidence/keybindings/keybindings.json` (PR #23). An independent extractor run over the full `index-BGEQ8YjU.js` chunk agreed on all 165 ids, primary keys, `configurable` flags, categories and additional-key counts. | `matched`: registered with Conductor's default key and named by code outside the registry and tests. `declared`: registered with the right key, no handler names it. `partial`: registered with a different key. |
 | Persistence | 18 `conductor.db` and 7 `cache.db` tables, 19 app-data stores (checkpoint refs, window state, local-storage subsystems, outboxes) | REA `inspect-sqlite-database` Evidence in `evidence/sqlite/` | Applies the rebuild's `migrations/*.sql` to an empty DB (directories with `cache` in the path build `cache.db`), then compares REA's schema record of that DB column by column: name, declared type, not-null, primary key. |
 | Packaging | 20 Info.plist keys, URL scheme, 3 entitlements, hardened runtime, Developer ID signing, 22 linked system libraries, Tauri major version, 13 Tauri plugins, 15 bundled resources, embedded frontend | `evidence/packaging/conductor-reference.json` (REA inspect-plist and inspect-signature, strings reduced to type and length) and `conductor-dylibs.json` (REA trace-dylib-resolution) | REA inspect-plist, inspect-signature and trace-dylib-resolution on the CI-built `OpenConductor.app` (`rea/`, build named in `rea/openconductor-app-build.json`); plugins, resources and frontend from the tree. Without a built-app record it falls back to the bundle config. |
+
+## Changes since the first report (`d23b4e9` to `c15cf35`)
+
+- Shortcuts 57.0% to 55.5%: #120 removed a second keybinding registry (`src/palette/keybindings/defaults.ts`). It was the only code outside `src/keybindings/` naming 10 bindings (`openSettings`, `nav.back`, `view.toggleZenMode`, ...), so the first report counted them as handled. No handler ever referenced them; those were false matches. Five other bindings gained real handlers (`chat.submitMessage`, `chat.newLine`, ...).
+- Settings 21.6% to 23.6%: `/settings/user/providers` exists now, and #134 reads `git.branch_prefix_type` from user and repo `settings.toml`. #109 replaced the top-level provider keys (`bedrock_region`, `vertex_*`, `*_base_url`) with `[providers.<agent>]` tables, so the rebuild no longer reads Conductor's `bedrock_region`; filed under `settings.toml.providers`.
+- Packaging 51.3% to 53.8%: REA records refreshed on the CI build of `884f1f7` (run 42021844898; no packaging file changed between it and `c15cf35`); it adds the one-time-code autofill Info.plist key and links `Security`.
 
 ## Limits
 

@@ -1,0 +1,516 @@
+[
+  {
+    "name": "settings--general--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > General."
+  },
+  {
+    "name": "settings--account--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_account",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Account\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Account."
+  },
+  {
+    "name": "settings--appearance--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_appearance",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Appearance\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Appearance."
+  },
+  {
+    "name": "settings--default-models--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_default_models",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Default models\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Default models."
+  },
+  {
+    "name": "settings--git--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_git",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Git\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Git."
+  },
+  {
+    "name": "settings--agents--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_agents",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Agents\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Agents."
+  },
+  {
+    "name": "settings--environment--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_environment",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Environment\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Environment."
+  },
+  {
+    "name": "settings--experimental--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_experimental",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Experimental\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Experimental."
+  },
+  {
+    "name": "settings--advanced--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_advanced",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Advanced\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Advanced."
+  },
+  {
+    "name": "settings--general--light",
+    "scenario": "populated",
+    "theme": "light",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > General, light theme."
+  },
+  {
+    "name": "settings--appearance--light",
+    "scenario": "populated",
+    "theme": "light",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_appearance",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Appearance\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Appearance, light theme."
+  },
+  {
+    "name": "settings--search--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "search",
+        "action": "fill",
+        "locator": {
+          "kind": "css",
+          "selector": "input[placeholder='Search settings']"
+        },
+        "value": {
+          "source": "literal",
+          "value": "branch"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings search with the query 'branch'."
+  }
+]

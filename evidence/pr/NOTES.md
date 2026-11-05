@@ -59,6 +59,7 @@ Both match the asset manifest's decoded sizes. Locations below are byte offsets 
 
 ## Deliberate differences
 
+- Wire format to the frontend (camelCase fields): `PrLookup` is `{kind: "none"|"closed"|"found", info?}`, header actions are `{type: "ready_to_merge", ...}`, tones and workspace statuses are strings (`out_of_sync`, `in-review`). The viewer's latest review is `{commitOid}` rather than a nested option so "reviewed, commit unknown" survives JSON.
 - The batch size is fixed at 5; the reference halves it adaptively when GraphQL cost or rate limits bite. Deployments and stack fields are not selected yet.
 - `gh` is run as an argv list, never through a shell string, so titles, bodies and branch names need no escaping. GraphQL string variables use `-f` (raw) so `gh` never turns a branch or owner like `123`, `true` or `@file` into a number, boolean or file read; only the `{owner}` / `{repo}` placeholders use `-F`, the only form `gh` expands. Allowed merge methods are parsed from JSON by us instead of `--jq`.
 - The create-PR message is our own wording. A draft request adds `--draft` to the `gh pr create` line; the reference only says a draft was requested. The reference's "keep the workspace while a stack still has open PRs" exception to archive-on-merge is not modelled (no stacks yet).

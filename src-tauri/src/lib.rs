@@ -5,17 +5,20 @@
 //! - `checkpoint/` checkpoints and revert
 //! - `agent/`      agent runner, providers and BYOK settings
 //! - `diff/`       diff viewer: git changes, unified diff parser
-//! - `quick_open/` quick open file index and fuzzy matching (Spotlight)
+//! - `quick_open/` quick open file index and fuzzy matching
+//! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //! - `settings/`   settings.toml and the Keychain-backed secret store
 //! - `terminal/`   PTY terminals (`terminal_commands.rs` is its IPC layer)
 //!
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod checkpoint;
 pub mod diff;
 pub mod project;
 pub mod quick_open;
 pub mod settings;
+pub mod spotlight;
 pub mod terminal;
 mod terminal_commands;
 pub mod workspace;
@@ -82,7 +85,17 @@ async fn branch_prefix_settings() -> BranchPrefixInfo {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        // Same plugin set as Conductor 0.87.6 (see Cargo.toml). Capabilities grant only the
+        // commands its frontend calls (capabilities/default.json).
+        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_os::init())
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_store::Builder::new().build())
+        .plugin(tauri_plugin_window_state::Builder::new().build())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             app.manage(workspace::service::WorkspaceService::new(data_dir)?);

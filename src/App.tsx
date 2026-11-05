@@ -19,6 +19,9 @@ import { SettingsView } from "./settings/SettingsView";
 import { pageFromPath, type SettingsPage } from "./settings/pages";
 import { applyTheme } from "./settings/useSettings";
 import { getSettings } from "./settings/api";
+import { useKeybindings } from "./palette/useKeybindings";
+import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
+import { listen } from "@tauri-apps/api/event";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
@@ -42,16 +45,6 @@ export default function App() {
     getSettings().then((s) => applyTheme(s.general.theme), () => undefined);
   }, []);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const typing = isTypingTarget(document.activeElement as HTMLElement | null);
-      if (e.repeat || resolveCommand(e, { activeDialogId: null, typing, inTerminal: false }, ["openSettings"]) !== "openSettings") return;
-      e.preventDefault();
-      openSettings();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [openSettings]);
 
   // Open project: native picker straight away, then the backend folder checks.
   const openProject = useCallback(async () => {
@@ -72,6 +65,15 @@ export default function App() {
     }
   }, [dispatch, show]);
   const [quickOpen, setQuickOpen] = useState(false);
+  // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const toggleShortcuts = useCallback(() => setShortcutsOpen((open) => !open), []);
+  useKeybindings({ openKeyboardShortcuts: toggleShortcuts, openSettings });
+  useEffect(() => {
+    if (!inTauri()) return;
+    const unlisten = listen("open_keyboard_shortcuts_dialog", toggleShortcuts);
+    return () => void unlisten.then((off) => off());
+  }, [toggleShortcuts]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -157,6 +159,7 @@ export default function App() {
           onOpen={(path, mode) => show("info", `${mode === "diff" ? "Diff of" : "Opened"} ${path} (file viewer not built yet)`)}
         />
       )}
+      {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} />}
       <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>

@@ -1,6 +1,4 @@
-import { useEffect } from "react";
-import { resolveCommand } from "../keybindings/resolve";
-import { isTypingTarget } from "../state/shortcuts";
+import { useKeybindings } from "../palette/useKeybindings";
 import { GeneralPage } from "./GeneralPage";
 import { pageLabel, SETTINGS_GROUPS, type SettingsPage } from "./pages";
 import { useSettings } from "./useSettings";
@@ -15,17 +13,7 @@ interface Props {
 export function SettingsView({ page, onNavigate, onClose }: Props) {
   const { settings, error, save } = useSettings();
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.defaultPrevented) return;
-      const typing = isTypingTarget(document.activeElement as HTMLElement | null);
-      if (resolveCommand(e, { activeDialogId: null, typing, inTerminal: false }, ["settings.close"]) !== "settings.close") return;
-      e.preventDefault();
-      onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  useKeybindings({ "settings.close": onClose });
 
   return (
     <div className="settings">
