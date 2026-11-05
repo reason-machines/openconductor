@@ -10,7 +10,8 @@ import { openUrl } from "../../../backend";
 import type { Check, ChecksSummary, PrInfo } from "../types";
 import { checkLog, rerunFailedChecks, type CheckLog } from "./api";
 import { canRerun, checkDuration, checkLink, checkName, checkState, isActionsJob, isFailing, markRerunning, rerunUrls, sortChecks, STATE_LABEL, type CheckState } from "./checks";
-import { DEMO_CHECKS, demoChecksEnabled } from "./demo";
+import { DEMO_CHECKS, DEMO_PR, demoChecksEnabled } from "./demo";
+import { PrHeader } from "../edit/PrHeader";
 import "./checks.css";
 
 interface Props {
@@ -18,6 +19,9 @@ interface Props {
   worktree: string | null;
   pr: PrInfo | null;
   refresh: () => Promise<void>;
+  /** Source checkout and default branch of the repository, for the base-branch picker. */
+  repoPath: string;
+  defaultBranch: string;
 }
 
 const ICON: Record<CheckState, string> = { running: "◌", failed: "✕", passed: "✓", skipped: "⤼", neutral: "–", pending: "•" };
@@ -48,7 +52,7 @@ function LogView({ log }: { log: LogState }) {
   return <pre className="check-log">{log.log.logs}</pre>;
 }
 
-export function ChecksTab({ worktree, pr, refresh }: Props) {
+export function ChecksTab({ worktree, pr, refresh, repoPath, defaultBranch }: Props) {
   const demo = !isTauri() && demoChecksEnabled();
   const live: ChecksSummary | null = demo ? DEMO_CHECKS : (pr?.status?.checks ?? null);
   // A re-run's optimistic state, dropped when the next lookup arrives.
@@ -68,11 +72,13 @@ export function ChecksTab({ worktree, pr, refresh }: Props) {
   const checks = summary?.checks ? sortChecks(summary.checks) : [];
   const now = useNow(checks.some((c) => checkState(c) === "running"));
 
-  if (!pr && !demo) {
+  const shownPr = pr ?? (demo ? DEMO_PR : null);
+  if (!shownPr) {
     return <div className="placeholder small"><p>No pull request for this branch yet.</p><p>Checks appear here once it has one.</p></div>;
   }
-  if (pr?.isMerged && !demo) return <div className="placeholder small"><p>PR #{pr.number} is merged.</p></div>;
-  if (checks.length === 0) return <div className="placeholder small"><p>No checks reported for this pull request.</p></div>;
+  const header = <PrHeader pr={shownPr} worktree={demo ? "demo" : worktree} repoPath={repoPath} defaultBranch={defaultBranch} refresh={refresh} />;
+  if (pr?.isMerged && !demo) return <div className="checks">{header}<div className="placeholder small"><p>PR #{pr.number} is merged.</p></div></div>;
+  if (checks.length === 0) return <div className="checks">{header}<div className="placeholder small"><p>No checks reported for this pull request.</p></div></div>;
 
   const failing = summary?.failing ?? [];
   const rerun = async () => {
@@ -105,6 +111,7 @@ export function ChecksTab({ worktree, pr, refresh }: Props) {
 
   return (
     <div className="checks" aria-label="Checks">
+      {header}
       <div className="checks-head">
         <span className="checks-title">Checks</span>
         {canRerun(failing) && (

@@ -5,8 +5,8 @@
 import type { ReactNode } from "react";
 import "./diff.css";
 import { DiscardDialog } from "./DiscardDialog";
-import { WhitespaceToggle } from "./Whitespace";
-import { FileDiffView, type LineAnchor } from "./FileDiffView";
+import { ViewOptionsMenu } from "./Whitespace";
+import { FileDiffView, type LineAnchor, type LineRange } from "./FileDiffView";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
 export { ChangesList, type ChangesListProps } from "./ChangesList";
@@ -26,7 +26,8 @@ const LAYOUT_ICON: Record<DiffLayout, ReactNode> = {
     </>
   ),
 };
-const LAYOUT_TITLE: Record<DiffLayout, string> = { unified: "Unified diff", split: "Split diff", file: "Entire file" };
+// Conductor's labels for its three file-toolbar layout toggles (REA, 0.87.6).
+export const LAYOUT_TITLE: Record<DiffLayout, string> = { unified: "Unified view", split: "Split view", file: "Entire file" };
 
 function LayoutToggle({ value, onChange }: { value: DiffLayout; onChange: (v: DiffLayout) => void }) {
   return (
@@ -44,13 +45,17 @@ function LayoutToggle({ value, onChange }: { value: DiffLayout; onChange: (v: Di
 
 export interface DiffTabProps {
   diff: WorkspaceDiff;
-  onLineClick?: (file: FileDiff, anchor: LineAnchor) => void;
+  onLineClick?: (file: FileDiff, range: LineRange) => void;
+  /** Lines a comment is being written on in `file`, if any. */
+  commentRange?: (file: FileDiff) => LineRange | null;
   anchors?: (file: FileDiff) => LineAnchor[];
   annotations?: (file: FileDiff, anchor: LineAnchor) => ReactNode;
+  /** Shown above the file: PR-level and whole-file comments. */
+  notes?: (file: FileDiff) => ReactNode;
 }
 
 /** Main-area "All changes" tab: the file picked in the changes list, with its toolbar. */
-export function DiffTab({ diff, onLineClick, anchors, annotations }: DiffTabProps) {
+export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations, notes }: DiffTabProps) {
   const { opts, update, selected, files, load } = diff;
   if (!selected) {
     return (
@@ -65,23 +70,29 @@ export function DiffTab({ diff, onLineClick, anchors, annotations }: DiffTabProp
   return (
     <div className="oc-diff oc-diff-tab">
       <div className="oc-files">
+        {notes?.(f)}
         <FileDiffView
           key={selected.path}
           file={selected}
           layout={opts.layout}
           ignoreWhitespace={opts.ignoreWhitespace}
+          wrapLines={opts.wrapLines}
           viewed={diff.isViewed(f)}
           onToggleViewed={() => diff.toggleViewed(f)}
-          onLineClick={onLineClick && ((a) => onLineClick(f, a))}
+          onLineClick={onLineClick && ((r) => onLineClick(f, r))}
+          selected={commentRange?.(f)}
           anchors={anchors?.(f)}
           annotations={annotations && ((a) => annotations(f, a))}
           loadFull={() => diff.loadFull(f)}
-          onDiscard={() => diff.askDiscard(f)}
+          onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
           onShowWhitespace={() => update({ ignoreWhitespace: false })}
           tools={
             <>
-              <WhitespaceToggle hidden={opts.ignoreWhitespace} onChange={(ignoreWhitespace) => update({ ignoreWhitespace })} />
               <LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />
+              <ViewOptionsMenu
+                whitespace={{ hidden: opts.ignoreWhitespace, onChange: (ignoreWhitespace) => update({ ignoreWhitespace }) }}
+                textWrap={f.binary ? undefined : { wrapLines: opts.wrapLines, onChange: (wrapLines) => update({ wrapLines }) }}
+              />
             </>
           }
         />
@@ -95,9 +106,12 @@ export function DiffTab({ diff, onLineClick, anchors, annotations }: DiffTabProp
   );
 }
 
-/** The discard confirmation, shown once for whichever view asked for it. */
-export function DiffDiscardHost({ diff }: { diff: WorkspaceDiff }) {
+/**
+ * The discard confirmation, shown once for whichever view asked for it.
+ * `onDiscarded` runs after a successful discard (WorkspaceView attaches Conductor's revert note to the chat).
+ */
+export function DiffDiscardHost({ diff, onDiscarded }: { diff: WorkspaceDiff; onDiscarded?: (f: FileDiff) => void }) {
   const f = diff.discarding;
   if (!f) return null;
-  return <DiscardDialog file={f} onClose={() => diff.askDiscard(null)} onConfirm={() => diff.discard(f)} />;
+  return <DiscardDialog file={f} onClose={() => diff.askDiscard(null)} onConfirm={() => diff.discard(f).then(() => onDiscarded?.(f))} />;
 }

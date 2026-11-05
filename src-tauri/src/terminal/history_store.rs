@@ -119,6 +119,17 @@ pub struct EntryMeta {
     pub last_updated_at: String,
 }
 
+/// One entry from [`SubsystemStore::list_entries`]: its index metadata and
+/// JSON text.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ListedEntry {
+    pub id: String,
+    pub size: u64,
+    pub last_updated_at: String,
+    pub content: String,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct SubsystemRecord {
@@ -558,6 +569,54 @@ impl SubsystemStore {
         Ok(())
     }
 
+    /// Every indexed entry of `subsystem` with its JSON text, in index order
+    /// (the reference's `listEntries`). An entry the index lists but the
+    /// store file lacks is an error, as there.
+    pub fn list_entries(&self, subsystem: &str) -> StoreResult<Vec<ListedEntry>> {
+        let _guard = index_lock();
+        let index = read_index(&self.root)?;
+        let Some(record) = self.record(&index, subsystem)? else {
+            return Ok(Vec::new());
+        };
+        let bytes = match fs::read(self.store_path(subsystem)) {
+            Ok(b) => Some(b),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => None,
+            Err(e) => return Err(e.into()),
+        };
+        let mut store = parse_store(bytes.as_deref());
+        record
+            .entries
+            .into_iter()
+            .map(|meta| match store.remove(&meta.id) {
+                Some(Value::String(content)) => Ok(ListedEntry {
+                    id: meta.id,
+                    size: meta.size,
+                    last_updated_at: meta.last_updated_at,
+                    content,
+                }),
+                Some(_) => Err(StoreError::Corrupt(
+                    "Invalid local storage entry content".into(),
+                )),
+                None => Err(StoreError::MissingContent),
+            })
+            .collect()
+    }
+
+    /// Drop `subsystem` from the index, then delete its store file (the
+    /// reference's `removeSubsystem`). A missing subsystem is fine.
+    pub fn remove_subsystem(&self, subsystem: &str) -> StoreResult<()> {
+        let _guard = index_lock();
+        let mut index = read_index(&self.root)?;
+        self.record(&index, subsystem)?;
+        if index.remove(subsystem).is_some() {
+            write_index(&self.root, &index)?;
+        }
+        match fs::remove_file(self.store_path(subsystem)) {
+            Err(e) if e.kind() != std::io::ErrorKind::NotFound => Err(e.into()),
+            _ => Ok(()),
+        }
+    }
+
     /// The subsystem's index record. The encrypted terminal history and any
     /// subsystem the index keeps as entry files are refused.
     fn record(
@@ -950,14 +1009,16 @@ mod tests {
         let index: Value =
             serde_json::from_str(&fs::read_to_string(root.join(METADATA_FILE)).unwrap()).unwrap();
         let rec = index["terminal"].as_object().unwrap();
+        // The reference's key order (it builds the record as an object
+        // literal); serde_json keeps it because the app enables preserve_order.
         assert_eq!(
             rec.keys().collect::<Vec<_>>(),
             [
-                "entries",
-                "entryStorage",
-                "sizeLimit",
                 "subsystem",
-                "totalSize"
+                "sizeLimit",
+                "totalSize",
+                "entryStorage",
+                "entries"
             ],
             "no protection key, as in the reference's record"
         );
@@ -1090,6 +1151,56 @@ mod tests {
         ));
         store.set_entry("s", 6, "c", "4").unwrap();
         assert_eq!(store.get_entry("s", "c").unwrap().as_deref(), Some("4"));
+        let _ = fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn subsystem_store_lists_and_removes_subsystems() {
+        let root = temp_root("store-list");
+        let store = SubsystemStore::new(&root);
+        assert_eq!(store.list_entries("s").unwrap(), Vec::new());
+        store.set_entry("s", 100, "a", "\"x\"").unwrap();
+        store.set_entry("s", 100, "b", "[1]").unwrap();
+        store.set_entry("s", 100, "a", "2").unwrap();
+        store.set_entry("other", 100, "k", "true").unwrap();
+        let listed = store.list_entries("s").unwrap();
+        let got: Vec<_> = listed
+            .iter()
+            .map(|e| (e.id.as_str(), e.size, e.content.as_str()))
+            .collect();
+        // Index order: a rewritten entry moves to the end, as setEntry appends it.
+        assert_eq!(got, [("b", 3, "[1]"), ("a", 1, "2")]);
+        assert_eq!(listed[0].last_updated_at.len(), 24);
+        let wire = serde_json::to_value(&listed[1]).unwrap();
+        assert_eq!(wire["lastUpdatedAt"], listed[1].last_updated_at.as_str());
+        assert_eq!(wire["id"], "a");
+        assert_eq!(wire["size"], 1);
+        assert_eq!(wire["content"], "2");
+
+        // Listed content that is gone is an error, as in the reference.
+        let file = fs::read_to_string(store.store_path("s")).unwrap();
+        fs::write(store.store_path("s"), r#"{"a":"2"}"#).unwrap();
+        assert!(matches!(
+            store.list_entries("s"),
+            Err(StoreError::MissingContent)
+        ));
+        fs::write(store.store_path("s"), file).unwrap();
+
+        store.remove_subsystem("s").unwrap();
+        store.remove_subsystem("s").unwrap();
+        assert!(!store.store_path("s").exists());
+        let index: Value =
+            serde_json::from_str(&fs::read_to_string(root.join(METADATA_FILE)).unwrap()).unwrap();
+        assert!(index.get("s").is_none());
+        assert_eq!(index["other"]["totalSize"], 4);
+        assert_eq!(
+            store.get_entry("other", "k").unwrap().as_deref(),
+            Some("true")
+        );
+        assert!(matches!(
+            store.remove_subsystem(SUBSYSTEM),
+            Err(StoreError::StorageMismatch)
+        ));
         let _ = fs::remove_dir_all(&root);
     }
 
