@@ -9,7 +9,7 @@ use std::fmt;
 
 use serde_json::Value;
 
-use super::codex_rpc::RequestId;
+use super::codex_rpc::{ApprovalDecision, RequestId};
 
 /// Where a turn stands.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -42,6 +42,9 @@ pub enum ServerRequest {
         command: Option<String>,
         cwd: Option<String>,
         reason: Option<String>,
+        /// `availableDecisions` the server offers (the strings we can send;
+        /// object-valued choices are skipped). Empty when it lists none.
+        decisions: Vec<ApprovalDecision>,
     },
     /// May this patch be applied?
     FileChangeApproval {
@@ -50,6 +53,7 @@ pub enum ServerRequest {
         turn_id: String,
         item_id: String,
         reason: Option<String>,
+        decisions: Vec<ApprovalDecision>,
     },
     /// Anything else (user input, MCP elicitation, auth refresh, ...).
     Other {
@@ -198,6 +202,18 @@ impl ServerMessage {
     }
 }
 
+/// The string entries of `availableDecisions`. Codex 0.166.0 sends this
+/// list (e.g. `["accept", {"acceptWithExecpolicyAmendment": ...}, "cancel"]`)
+/// although its generated schema does not declare it.
+fn decisions(p: &Value) -> Vec<ApprovalDecision> {
+    p.get("availableDecisions")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(|d| serde_json::from_value(d.clone()).ok())
+        .collect()
+}
+
 fn server_request(id: RequestId, method: &str, p: Value) -> Result<ServerRequest, ParseError> {
     Ok(match method {
         "item/commandExecution/requestApproval" => ServerRequest::CommandApproval {
@@ -207,6 +223,7 @@ fn server_request(id: RequestId, method: &str, p: Value) -> Result<ServerRequest
             command: opt_text(&p, "command"),
             cwd: opt_text(&p, "cwd"),
             reason: opt_text(&p, "reason"),
+            decisions: decisions(&p),
             id,
         },
         "item/fileChange/requestApproval" => ServerRequest::FileChangeApproval {
@@ -214,6 +231,7 @@ fn server_request(id: RequestId, method: &str, p: Value) -> Result<ServerRequest
             turn_id: text(&p, "turnId")?,
             item_id: text(&p, "itemId")?,
             reason: opt_text(&p, "reason"),
+            decisions: decisions(&p),
             id,
         },
         _ => ServerRequest::Other {
@@ -387,6 +405,17 @@ mod tests {
         assert_eq!(
             sent(&approval_line(&id, ApprovalDecision::AcceptForSession)),
             json!({"id": "srv-7", "result": {"decision": "acceptForSession"}})
+        );
+        let live = r#"{"id":0,"method":"item/commandExecution/requestApproval","params":{"kind":"command","threadId":"t1","turnId":"u1","itemId":"exec-1","startedAtMs":1,"command":"/bin/zsh -lc 'cat hello.txt'","cwd":"/ws","availableDecisions":["accept",{"acceptWithExecpolicyAmendment":{"execpolicy_amendment":["cat","hello.txt"]}},"cancel"]}}"#;
+        let ServerMessage::Request(ServerRequest::CommandApproval { id, decisions, .. }) =
+            ServerMessage::parse(live).unwrap()
+        else {
+            panic!("not a command approval")
+        };
+        assert_eq!(id, RequestId::Int(0));
+        assert_eq!(
+            decisions,
+            [ApprovalDecision::Accept, ApprovalDecision::Cancel]
         );
         let patch = r#"{"id":9,"method":"item/fileChange/requestApproval","params":{"threadId":"t1","turnId":"u1","itemId":"i3","startedAtMs":1}}"#;
         let ServerMessage::Request(ServerRequest::FileChangeApproval { id, .. }) =

@@ -21,7 +21,8 @@ use serde_json::Value;
 use super::codex_cli::CodexLaunch;
 use super::codex_events::{thread_id, Notification, ServerMessage, Turn};
 use super::codex_rpc::{
-    approval_line, initialized_line, ApprovalDecision, ClientRequest, RequestId, ThreadOptions,
+    approval_line, error_line, initialized_line, ApprovalDecision, ClientRequest, RequestId,
+    ThreadOptions,
 };
 
 /// Something the process printed, in the order each stream produced it.
@@ -297,6 +298,12 @@ impl CodexSession {
     /// Answers a command or file-change approval request.
     pub fn answer(&mut self, id: &RequestId, decision: ApprovalDecision) -> io::Result<()> {
         self.write(&approval_line(id, decision))
+    }
+
+    /// Answers a server request the app does not handle with an error, so
+    /// the turn does not wait on it forever.
+    pub fn reject(&mut self, id: &RequestId, code: i64, message: &str) -> io::Result<()> {
+        self.write(&error_line(id, code, message))
     }
 
     /// Waits up to `timeout` for the next event; `None` on timeout or once

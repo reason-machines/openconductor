@@ -168,6 +168,11 @@ pub fn approval_line(id: &RequestId, decision: ApprovalDecision) -> String {
     line(json!({ "id": id, "result": { "decision": decision } }))
 }
 
+/// A JSON-RPC error answer to a server request the app does not handle.
+pub fn error_line(id: &RequestId, code: i64, message: &str) -> String {
+    line(json!({ "id": id, "error": { "code": code, "message": message } }))
+}
+
 fn line(v: Value) -> String {
     let mut s = v.to_string();
     s.push('\n');

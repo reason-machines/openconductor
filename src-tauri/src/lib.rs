@@ -7,6 +7,7 @@
 //! - `diff/`       diff viewer: git changes, unified diff parser
 //! - `quick_open/` quick open file index and fuzzy matching
 //! - `reason_acp/` the Reason agent over ACP; its commands are `reason_chat`
+//! - `codex_chat.rs` chats run by Codex (`agent::codex_runner`)
 //! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //!   (`spotlight_commands.rs` is its IPC layer)
 //! - `settings/`   settings.toml and the Keychain-backed secret store
@@ -19,6 +20,7 @@
 pub mod agent;
 pub mod bundled_bin;
 pub mod checkpoint;
+pub mod codex_chat;
 pub mod create_project;
 pub mod db;
 pub mod persistence;
@@ -225,6 +227,7 @@ pub fn run() {
             app.manage(workspaces);
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
+            app.manage(codex_chat::CodexChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
             app.manage(settings::service::SettingsService::new(
@@ -277,6 +280,12 @@ pub fn run() {
             reason_chat::reason_prompt,
             reason_chat::reason_cancel,
             reason_chat::reason_list_sessions,
+            codex_chat::codex_cli_path,
+            codex_chat::codex_open_chat,
+            codex_chat::codex_prompt,
+            codex_chat::codex_cancel,
+            codex_chat::codex_answer,
+            codex_chat::codex_close_chat,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,
             terminal_commands::pty_resize,
@@ -337,6 +346,10 @@ pub fn run() {
             if let tauri::RunEvent::Exit = event {
                 if let Some(terminals) = app.try_state::<Terminals>() {
                     terminals.0.kill_all();
+                }
+                // Each Codex chat runs its own app-server.
+                if let Some(codex) = app.try_state::<codex_chat::CodexChats>() {
+                    codex.close_all();
                 }
                 // Run scripts lead their own process groups; do not orphan them.
                 if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {

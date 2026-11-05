@@ -16,7 +16,9 @@ use serde::Deserialize;
 
 use super::{load, save, validate, Settings, SettingsError};
 use crate::agent::byok::{self, ByokError};
-use crate::agent::{AgentKind, ProviderConfig, ProviderStatus, SecretStore, SecretString};
+use crate::agent::{
+    AgentKind, LaunchEnv, ProviderConfig, ProviderStatus, SecretStore, SecretString,
+};
 
 #[derive(Debug)]
 pub enum ServiceError {
@@ -106,6 +108,17 @@ impl SettingsService {
             &settings.providers.effective(agent),
             self.store.as_ref(),
         ))
+    }
+
+    /// The environment `agent` is launched with: its provider's variables
+    /// and secrets, with every inherited routing variable cleared.
+    pub fn launch_env(&self, agent: AgentKind) -> Result<LaunchEnv, String> {
+        let settings = self.get().map_err(|e| e.to_string())?;
+        settings
+            .providers
+            .effective(agent)
+            .launch_env(self.store.as_ref())
+            .map_err(|e| e.to_string())
     }
 
     /// Switches `agent` to `config`, storing `secrets` for it. The settings

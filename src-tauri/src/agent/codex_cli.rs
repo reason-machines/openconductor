@@ -9,8 +9,9 @@
 //! schema accepts in Codex 0.156.1, the version the reference app downloads,
 //! and in 0.166.0 (`evidence/providers/codex-app-server.md`).
 
+use std::ffi::OsStr;
 use std::fmt;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
 
@@ -194,6 +195,41 @@ impl CodexLaunch {
     }
 }
 
+/// Where `codex` is installed when `PATH` misses it: its own installer's
+/// `~/.local/bin` (added by the caller), Homebrew, `/usr/local/bin`.
+const FALLBACK_DIRS: [&str; 2] = ["/opt/homebrew/bin", "/usr/local/bin"];
+
+/// The first executable `codex` on `path_var`, then `~/.local/bin`, then
+/// Homebrew and `/usr/local/bin`. Relative `PATH` entries are skipped. An
+/// app opened from Finder gets a minimal `PATH`, so callers pass the login
+/// shell's.
+pub fn find_codex_cli(path_var: Option<&OsStr>, home: Option<&Path>) -> Option<PathBuf> {
+    let mut dirs: Vec<PathBuf> = path_var
+        .map(|p| std::env::split_paths(p).collect())
+        .unwrap_or_default();
+    if let Some(home) = home {
+        dirs.push(home.join(".local/bin"));
+    }
+    dirs.extend(FALLBACK_DIRS.iter().map(PathBuf::from));
+    dirs.into_iter()
+        .filter(|d| d.is_absolute())
+        .map(|d| d.join("codex"))
+        .find(|p| is_executable(p))
+}
+
+#[cfg(unix)]
+fn is_executable(p: &Path) -> bool {
+    use std::os::unix::fs::PermissionsExt;
+    p.metadata()
+        .map(|m| m.is_file() && m.permissions().mode() & 0o111 != 0)
+        .unwrap_or(false)
+}
+
+#[cfg(not(unix))]
+fn is_executable(p: &Path) -> bool {
+    p.is_file()
+}
+
 #[cfg(test)]
 mod tests {
     use super::super::env::vars;
@@ -271,5 +307,31 @@ mod tests {
             .find(|(k, _)| *k == vars::CODEX_API_KEY)
             .and_then(|(_, v)| v);
         assert_eq!(key.map(|v| v.to_string_lossy()), Some("sk-test-123".into()));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn finds_codex_on_path_then_in_local_bin() {
+        use std::os::unix::fs::PermissionsExt;
+        let root = std::env::temp_dir().join(format!("oc-find-codex-{}", std::process::id()));
+        let (on_path, home) = (root.join("bin"), root.join("home"));
+        std::fs::create_dir_all(&on_path).unwrap();
+        std::fs::create_dir_all(home.join(".local/bin")).unwrap();
+        let local = home.join(".local/bin/codex");
+        std::fs::write(&local, "#!/bin/sh\n").unwrap();
+        std::fs::set_permissions(&local, std::fs::Permissions::from_mode(0o755)).unwrap();
+        // Not executable: skipped.
+        std::fs::write(on_path.join("codex"), "").unwrap();
+        let path = std::env::join_paths([PathBuf::from("rel"), on_path.clone()]).unwrap();
+        assert_eq!(find_codex_cli(Some(&path), Some(&home)), Some(local));
+        std::fs::set_permissions(
+            on_path.join("codex"),
+            std::fs::Permissions::from_mode(0o755),
+        )
+        .unwrap();
+        assert_eq!(
+            find_codex_cli(Some(&path), Some(&home)),
+            Some(on_path.join("codex"))
+        );
     }
 }
