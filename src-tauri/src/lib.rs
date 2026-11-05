@@ -84,6 +84,18 @@ async fn github_repo_availability(
     blocking(move || github_repo::GitHub::default().availability(&owner, &repo_name)).await
 }
 
+/// "Recent repos" for the clone dialog (see `github_repo::RECENT_REPOS_PATH`).
+#[tauri::command]
+async fn github_recent_repos() -> Result<Vec<github_repo::RecentRepo>, String> {
+    blocking(|| github_repo::GitHub::default().recent_repos()).await
+}
+
+/// `ssh` or `https`, from `gh config get git_protocol`.
+#[tauri::command]
+async fn github_git_protocol() -> Result<String, String> {
+    blocking(|| Ok(github_repo::GitHub::default().git_protocol().to_string())).await
+}
+
 /// Publish a local folder as a new private GitHub repo (see `github_repo`).
 #[tauri::command]
 async fn github_repo_create(
@@ -166,8 +178,11 @@ pub fn run() {
             github_repo_owners,
             github_repo_availability,
             github_repo_create,
+            github_recent_repos,
+            github_git_protocol,
             workspace::commands::add_repository,
             workspace::commands::clone_repository,
+            workspace::commands::default_clone_directory,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
             workspace::commands::branch_name_is_taken,
@@ -196,6 +211,12 @@ pub fn run() {
             terminal_commands::pty_read_history,
             terminal_commands::pty_clear_history,
             terminal_commands::pty_list,
+            terminal_commands::pty_screen_text,
+            terminal_commands::pty_screen_snapshot,
+            terminal_commands::pty_create_mirror,
+            terminal_commands::pty_write_mirror,
+            terminal_commands::pty_resize_mirror,
+            terminal_commands::pty_delete_mirror,
             terminal_commands::execute_shell_command,
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
@@ -225,6 +246,8 @@ pub fn run() {
             spotlight_commands::spotlight_start,
             spotlight_commands::spotlight_stop,
             spotlight_commands::spotlight_status,
+            spotlight_commands::spotlight_testing_get,
+            spotlight_commands::spotlight_testing_set,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")

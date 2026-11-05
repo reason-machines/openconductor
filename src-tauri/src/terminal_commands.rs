@@ -8,7 +8,8 @@ use std::sync::Arc;
 use tauri::{AppHandle, Emitter, State};
 
 use crate::terminal::{
-    wire, PtyEvent, PtyManager, ShellOutput, ShellRequest, ShellRunner, SpawnArgs, WireEvent,
+    wire, CreateMirrorArgs, IdArgs, PtyEvent, PtyManager, ResizeMirrorArgs, ScreenSnapshot,
+    ScreenTextArgs, ShellOutput, ShellRequest, ShellRunner, SpawnArgs, WireEvent, WriteMirrorArgs,
 };
 
 /// Managed state: the app's terminals.
@@ -77,6 +78,66 @@ pub async fn pty_clear_history(state: State<'_, Terminals>, id: String) -> CmdRe
 #[tauri::command]
 pub async fn pty_list(state: State<'_, Terminals>) -> CmdResult<Vec<String>> {
     Ok(state.0.ids())
+}
+
+// Screens and mirrors take one `args` object, as the reference's webview
+// sends them. `id` is a terminal or a mirror.
+
+/// The last `maxLines` rows of a terminal's or mirror's screen.
+#[tauri::command]
+pub async fn pty_screen_text(
+    state: State<'_, Terminals>,
+    args: ScreenTextArgs,
+) -> CmdResult<String> {
+    state.0.screen_text(&args.id, args.max_lines()).map_err(err)
+}
+
+/// A snapshot a renderer restores by writing `rehydrateSequences`, then
+/// `snapshotAnsi`.
+#[tauri::command]
+pub async fn pty_screen_snapshot(
+    state: State<'_, Terminals>,
+    args: IdArgs,
+) -> CmdResult<ScreenSnapshot> {
+    state.0.screen_snapshot(&args.id).map_err(err)
+}
+
+/// A screen with no program behind it (the reference's remote terminals).
+#[tauri::command]
+pub async fn pty_create_mirror(
+    state: State<'_, Terminals>,
+    args: CreateMirrorArgs,
+) -> CmdResult<()> {
+    let max = args.max_buffered_bytes();
+    state
+        .0
+        .create_mirror(&args.id, args.cols, args.rows, max)
+        .map_err(err)
+}
+
+/// Feed output text into a mirror, or into a terminal's screen only.
+#[tauri::command]
+pub async fn pty_write_mirror(state: State<'_, Terminals>, args: WriteMirrorArgs) -> CmdResult<()> {
+    state
+        .0
+        .write_mirror(&args.id, args.data.as_bytes())
+        .map_err(err)
+}
+
+#[tauri::command]
+pub async fn pty_resize_mirror(
+    state: State<'_, Terminals>,
+    args: ResizeMirrorArgs,
+) -> CmdResult<()> {
+    state
+        .0
+        .resize_mirror(&args.id, args.cols, args.rows)
+        .map_err(err)
+}
+
+#[tauri::command]
+pub async fn pty_delete_mirror(state: State<'_, Terminals>, args: IdArgs) -> CmdResult<()> {
+    state.0.delete_mirror(&args.id).map_err(err)
 }
 
 /// Managed state: one-shot shell commands that can still be cancelled.
