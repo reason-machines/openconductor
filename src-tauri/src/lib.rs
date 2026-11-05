@@ -122,6 +122,15 @@ async fn create_new_project(
     .await
 }
 
+/// Save a repository's setup and run scripts to its local settings layer.
+#[tauri::command]
+fn save_repo_scripts(
+    repo_root: String,
+    scripts: create_project::RepoScripts,
+) -> Result<(), String> {
+    create_project::save_local_scripts(std::path::Path::new(&repo_root), &scripts)
+}
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct BranchPrefixInfo {
@@ -207,6 +216,7 @@ pub fn run() {
             github_recent_repos,
             github_git_protocol,
             create_new_project,
+            save_repo_scripts,
             workspace::commands::add_repository,
             workspace::commands::clone_repository,
             workspace::commands::default_clone_directory,
