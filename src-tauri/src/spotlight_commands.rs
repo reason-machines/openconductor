@@ -12,6 +12,7 @@ use oc_scripts::config::SettingsPaths;
 use oc_scripts::service::ScriptService;
 
 use crate::db::Db;
+use crate::spotlight::auto_run;
 use crate::spotlight::service::{SpotlightEvent, SpotlightService};
 use crate::spotlight::setting::{self, SpotlightTesting, SpotlightTestingChange};
 
@@ -65,8 +66,14 @@ pub async fn spotlight_start(
     let spotlight = spotlight.inner().clone();
     let scripts = scripts.inner().clone();
     blocking(move || {
-        scripts.runs.stop_repository(&repo_id);
-        spotlight.start(&workspace_id, &workspace_path, &repo_root)
+        auto_run::start_session(
+            &spotlight,
+            &scripts,
+            &repo_id,
+            &workspace_id,
+            &workspace_path,
+            &repo_root,
+        )
     })
     .await
 }
