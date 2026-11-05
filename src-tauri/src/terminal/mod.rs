@@ -12,6 +12,8 @@
 //! * [`flow`]: output stops once `FlowLimits::high` bytes are unacked and
 //!   resumes when `pty_ack_bytes` brings it down to `FlowLimits::low`.
 //! * [`scrollback`]: bounded history for late renderers to replay.
+//! * [`screen`]: an `alacritty_terminal` grid of what the terminal shows,
+//!   read back as text or as a restorable ANSI snapshot.
 //! * `kill`: hangs up the process group, then SIGKILL after a grace period.
 //! * [`wire`]: `pty_spawn` arguments and the events the webview receives.
 //! * [`shell_exec`]: one-shot `/bin/sh -c` commands, optionally cancellable
@@ -24,6 +26,7 @@
 pub mod flow;
 mod kill;
 mod manager;
+pub mod screen;
 pub mod scrollback;
 pub mod shell_exec;
 pub mod spawn;
@@ -34,6 +37,7 @@ mod tests;
 
 pub use flow::{FlowGate, FlowLimits};
 pub use manager::PtyManager;
+pub use screen::{ScreenSnapshot, ScreenState, TerminalModes};
 pub use scrollback::Scrollback;
 pub use shell_exec::{ShellOutput, ShellRequest, ShellRunner};
 pub use spawn::{EventSink, ExitInfo, Program, PtyEvent, Result, SpawnRequest, TerminalError};

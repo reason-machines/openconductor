@@ -1,0 +1,1221 @@
+{
+ "source": "Conductor.app frontend renderApp-D_fmY7hW.js (REA-extracted Tauri assets)",
+ "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+ "extraction": "regex over setting-row registrations: tab, settingKey, scopes, title, description; rows registered through other call shapes are not included",
+ "rows": [
+  {
+   "tab": "account",
+   "key": null,
+   "id": "account:identity-integrations",
+   "scopes": [
+    "user"
+   ],
+   "title": "Account and integrations",
+   "desc": "Your Conductor account, billing, GitHub access, and Linear connection."
+  },
+  {
+   "tab": "account",
+   "key": "enterprise_data_privacy",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Enterprise data privacy",
+   "desc": "Disable features requiring external AI providers, such as AI generated chat titles, as well as custom MCP servers."
+  },
+  {
+   "tab": "account",
+   "key": "tool_approvals_enabled",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Claude Code tool approvals",
+   "desc": "Require manual approval before agents can run tools."
+  },
+  {
+   "tab": "account",
+   "key": "codex_tool_approval_policy",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Codex tool approvals",
+   "desc": null
+  },
+  {
+   "tab": "account",
+   "key": null,
+   "id": "account:sign-out",
+   "scopes": [
+    "user"
+   ],
+   "title": "Sign out",
+   "desc": "Sign out of your Conductor account."
+  },
+  {
+   "tab": "advanced",
+   "key": null,
+   "id": "advanced:conductor-root",
+   "scopes": [
+    "user"
+   ],
+   "title": "Conductor root directory",
+   "desc": "Where Conductor stores repositories and workspaces. This should be an empty directory that you don't modify directly."
+  },
+  {
+   "tab": "advanced",
+   "key": "claude_executable_path",
+   "id": "advanced:claude_executable_path",
+   "scopes": [
+    "user"
+   ],
+   "title": "Claude Code executable path",
+   "desc": "Override the bundled Claude Code executable with a custom one. Leave empty to use the bundled version (recommended)."
+  },
+  {
+   "tab": "advanced",
+   "key": "codex_executable_path",
+   "id": "advanced:codex_executable_path",
+   "scopes": [
+    "user"
+   ],
+   "title": "Codex executable path",
+   "desc": "Override the bundled Codex executable with a custom one. Leave empty to use the bundled version (recommended)."
+  },
+  {
+   "tab": "advanced",
+   "key": "opencode_executable_path",
+   "id": "advanced:opencode_executable_path",
+   "scopes": [
+    "user"
+   ],
+   "title": "OpenCode executable path",
+   "desc": "Override the bundled OpenCode executable with a custom one. Leave empty to use the bundled version (recommended)."
+  },
+  {
+   "tab": "advanced",
+   "key": "ssh_key_path",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "SSH private key path",
+   "desc": "Use your own SSH key for cloud workspace access. Leave empty to auto-generate a key."
+  },
+  {
+   "tab": "advanced",
+   "key": "internal_remote_local_execution_mcp",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Remote execution MCP",
+   "desc": "Let remote agents request approved one-shot commands on this Mac. Each command still requires your approval."
+  },
+  {
+   "tab": "advanced",
+   "key": "always_allow_local_execution",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Always allow local commands",
+   "desc": "Run local commands from remote agents without asking. Turned on when you choose Yes always on a local command approval."
+  },
+  {
+   "tab": "advanced",
+   "key": "auto_sync_files_in_new_cloud_workspaces",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Enable file sync in new cloud workspaces",
+   "desc": "Start syncing when you open a local terminal or run a local task. Sync files can still be turned on per workspace."
+  },
+  {
+   "tab": "advanced",
+   "key": "worktree_push_auto_setup_remote",
+   "id": "advanced:worktree_push_auto_setup_remote",
+   "scopes": [
+    "user"
+   ],
+   "title": "Set upstream on plain git push",
+   "desc": "Configure new Conductor workspaces so plain git push sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream."
+  },
+  {
+   "tab": "advanced",
+   "key": "terminal_scrollback_limit_bytes",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Scrollback limit",
+   "desc": "Approximate terminal output to keep."
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_auto_permission_mode",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Auto permission mode",
+   "desc": "Turns on Claude auto mode."
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_big_terminal_mode",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Big terminal mode",
+   "desc": "Create big terminals in the center pane with ⌘⇧T"
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_new_workspace_page",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "New workspace page",
+   "desc": "Full-screen workspace creation"
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_tab_freak_mode",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Tab Freak Mode",
+   "desc": "Allow up to 10 chat and terminal tabs per workspace."
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_configurable_center_panel",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Split tabs",
+   "desc": "Split the center panel and move tabs between panes."
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_fork_to_new_tab",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Fork chat to new tab",
+   "desc": "Fork a chat, even mid-turn, from its tab's context menu or with ⌘⌥↵."
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_in_app_browser_preview",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "In-app browser preview",
+   "desc": "Open the preview button in an in-app browser tab (with the annotation overlay) instead of your external browser."
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_legacy_file_preview_and_editing",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Use legacy file preview and editing",
+   "desc": null
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_show_agent_cost",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Show agent cost",
+   "desc": "Show estimated agent costs for cloud workspaces."
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_show_workspace_numbers",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Show workspace numbers",
+   "desc": null
+  },
+  {
+   "tab": "experimental",
+   "key": "internal_workspace_status_matrix",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Workspace status matrix",
+   "desc": "Use the matrix-style workspace status indicator in Home and the sidebar."
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_cloud_desktop",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Cloud desktop",
+   "desc": "Show Cloud desktop tabs in cloud workspaces."
+  },
+  {
+   "tab": "experimental",
+   "key": "local_git_forge_enabled",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Add projects without GitHub",
+   "desc": "Let Conductor add existing local repositories even when they are not connected to GitHub."
+  },
+  {
+   "tab": "experimental",
+   "key": "auto_run_after_setup",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Auto-run after setup",
+   "desc": "Start a repository's run script automatically after a new local workspace finishes setup."
+  },
+  {
+   "tab": "experimental",
+   "key": "dashboard_enabled",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Dashboard",
+   "desc": "Show the dashboard and workspace sidebar."
+  },
+  {
+   "tab": "experimental",
+   "key": "voice_mode",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Voice mode",
+   "desc": "Enables speech-to-text in the chat composer. Press Ctrl+Shift+D to start dictating."
+  },
+  {
+   "tab": "experimental",
+   "key": "sidebar_resource_usage",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Show sidebar resource usage",
+   "desc": "Shows CPU and memory usage in the workspace sidebar footer."
+  },
+  {
+   "tab": "experimental",
+   "key": "experimental_sidebar_transparency",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Sidebar transparency",
+   "desc": "Use native macOS vibrancy behind the workspace sidebar. Takes effect after you restart Conductor."
+  },
+  {
+   "tab": "experimental",
+   "key": "graphite_disabled",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Graphite stack support",
+   "desc": "Detect Graphite stacks for the active local workspace and show stack-aware UI in the git panel. Cloud workspaces are unaffected. When off, Conductor never runs the gt CLI."
+  },
+  {
+   "tab": "general",
+   "key": "message_send_key",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Send messages with",
+   "desc": "Choose which key combination sends messages"
+  },
+  {
+   "tab": "general",
+   "key": "default_message_send_mode",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Follow-up behavior",
+   "desc": "Queue messages to send after the agent finishes, or steer the agent mid-turn."
+  },
+  {
+   "tab": "general",
+   "key": "notifications_enabled",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Agent notifications",
+   "desc": "Get notified when an agent finishes working."
+  },
+  {
+   "tab": "general",
+   "key": "mention_notifications_enabled",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "@ notifications",
+   "desc": "Get notified when a teammate mentions you."
+  },
+  {
+   "tab": "general",
+   "key": "sound_type",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Completion sound",
+   "desc": "Choose what plays when AI finishes working in a chat."
+  },
+  {
+   "tab": "general",
+   "key": null,
+   "id": "general:full-disk-access",
+   "scopes": [
+    "user"
+   ],
+   "title": "Full disk access permissions",
+   "desc": "To let agents work without repeated folder permission prompts."
+  },
+  {
+   "tab": "general",
+   "key": "auto_convert_long_text",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Auto-convert long text",
+   "desc": "Convert pasted text over 5000 characters into text attachments"
+  },
+  {
+   "tab": "general",
+   "key": "not_absolutely_right",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "I'm not absolutely right, thank you very much",
+   "desc": null
+  },
+  {
+   "tab": "general",
+   "key": "always_show_context_wheel",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Always show context usage",
+   "desc": "Always show context usage. By default, it is only shown when more than 70% is used."
+  },
+  {
+   "tab": "general",
+   "key": "caffeinate_while_agents_running",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Caffeinate while agents are running",
+   "desc": "Prevent your Mac from sleeping while an agent is actively working. Shuts off below 10% battery."
+  },
+  {
+   "tab": "general",
+   "key": null,
+   "id": "general:workspace-api-access",
+   "scopes": [
+    "user"
+   ],
+   "title": "Workspace API access",
+   "desc": "Give new workspaces access to the Conductor API"
+  },
+  {
+   "tab": "general",
+   "key": "auto_restart_on_update_when_idle",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Restart automatically on update",
+   "desc": null
+  },
+  {
+   "tab": "general",
+   "key": "mcp_status_indicator_enabled",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Show MCP status in chat",
+   "desc": "Show a per-session MCP server status indicator in the composer."
+  },
+  {
+   "tab": "general",
+   "key": "garry_mode",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Don't collapse tool calls (Garry Mode)",
+   "desc": "Show all tool calls expanded by default instead of collapsed."
+  },
+  {
+   "tab": "general",
+   "key": null,
+   "id": "general:sync-agent-configs",
+   "scopes": [
+    "user"
+   ],
+   "title": "Sync agent configs",
+   "desc": "Copy skills, slash commands, and MCP servers between Claude Code and Codex."
+  },
+  {
+   "tab": "git",
+   "key": null,
+   "id": "git:user-identity",
+   "scopes": [
+    "user"
+   ],
+   "title": "Git identity",
+   "desc": "Name and email used for commits in cloud workspaces."
+  },
+  {
+   "tab": "git",
+   "key": null,
+   "id": "git:default-branch",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Branch new workspaces from",
+   "desc": "Each workspace is an isolated copy of your codebase."
+  },
+  {
+   "tab": "git",
+   "key": null,
+   "id": "git:remote-origin",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Remote origin",
+   "desc": "Where should we push, pull, and create PRs?"
+  },
+  {
+   "tab": "git",
+   "key": "pull_request_open_target",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Open pull requests in",
+   "desc": null
+  },
+  {
+   "tab": "git",
+   "key": "branch_prefix_type",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Branch name prefix",
+   "desc": "Prefix for new workspace branch names."
+  },
+  {
+   "tab": "git",
+   "key": "auto_rename_workspace_on_branch_name_set",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Rename workspace when branch is named",
+   "desc": "Automatically rename workspaces from their placeholder city name to the branch name generated from the first message."
+  },
+  {
+   "tab": "git",
+   "key": "delete_branch_on_archive",
+   "id": null,
+   "scopes": [
+    "user",
+    "workspace"
+   ],
+   "title": "Delete branch on archive",
+   "desc": "Delete the local branch when archiving a workspace. To delete the remote branch, configure it on GitHub."
+  },
+  {
+   "tab": "git",
+   "key": "archive_on_merge",
+   "id": null,
+   "scopes": [
+    "user",
+    "workspace"
+   ],
+   "title": "Archive on merge",
+   "desc": "Automatically archive a workspace after merging its PR in Conductor"
+  },
+  {
+   "tab": "git",
+   "key": "automerge_enabled",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Automerge",
+   "desc": "Show an automerge button in the git panel when checks are pending. Requires automerge to be enabled in your GitHub repository settings. Automerge is not supported for stacked pull requests."
+  },
+  {
+   "tab": "git",
+   "key": "treat_optional_checks_as_blocking",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Treat optional checks as blocking",
+   "desc": "Hide the merge button when any check has failed, including checks GitHub considers optional."
+  },
+  {
+   "tab": "git",
+   "key": "worktree_push_auto_setup_remote",
+   "id": null,
+   "scopes": [
+    "user",
+    "workspace"
+   ],
+   "title": "Set upstream on plain git push",
+   "desc": "Configure new Conductor workspaces so plain git push sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream."
+  },
+  {
+   "tab": "git",
+   "key": "github_stacked_prs_enabled",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Use GitHub stacked PRs",
+   "desc": "Instruct agents that they can use `gh stack` for PR stacking."
+  },
+  {
+   "tab": "ports",
+   "key": null,
+   "id": "ports:exclusive-port-forwarding",
+   "scopes": [
+    "user"
+   ],
+   "title": "Exclusive port forwarding",
+   "desc": "Turning on port forwarding in one workspace turns it off everywhere else"
+  },
+  {
+   "tab": "ports",
+   "key": null,
+   "id": "ports:forwarding-strategy",
+   "scopes": [
+    "user"
+   ],
+   "title": "Forwarding strategies",
+   "desc": "How new forwards choose their local port. Existing forwards keep their ports."
+  },
+  {
+   "tab": "ports",
+   "key": null,
+   "id": "ports:local-port-range",
+   "scopes": [
+    "user"
+   ],
+   "title": "Local port range",
+   "desc": "Used for forwards that don't match their remote port number."
+  },
+  {
+   "tab": "ports",
+   "key": null,
+   "id": "ports:manual-overrides",
+   "scopes": [
+    "user"
+   ],
+   "title": "Manual overrides",
+   "desc": null
+  },
+  {
+   "tab": "internal",
+   "key": "internal_workspace_tabs",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Use workspace tabs",
+   "desc": "Show open workspaces as browser-style tabs across the top of the window, after a fixed Home tab. Only applies in team organizations."
+  },
+  {
+   "tab": "internal",
+   "key": "internal_claude_initial_permission_mode",
+   "id": "internal:claude-initial-permission-mode",
+   "scopes": [
+    "user"
+   ],
+   "title": "Initial Claude permission mode",
+   "desc": "Set the native Claude permission mode for new local Claude sessions. Inherit preserves the existing Conductor behavior."
+  },
+  {
+   "tab": "internal",
+   "key": "internal_codex_initial_permission_config",
+   "id": "internal:codex-initial-permission-config",
+   "scopes": [
+    "user"
+   ],
+   "title": "Initial Codex approval policy and sandbox",
+   "desc": "Set native Codex approval policy and sandbox values for new local Codex sessions. Inherit preserves the existing Conductor behavior."
+  },
+  {
+   "tab": "internal",
+   "key": null,
+   "id": "internal:sidecar-http-health",
+   "scopes": [
+    "user"
+   ],
+   "title": "Sidecar HTTP health",
+   "desc": null
+  },
+  {
+   "tab": "internal",
+   "key": null,
+   "id": "internal:build-commit",
+   "scopes": [
+    "user"
+   ],
+   "title": "Build commit",
+   "desc": "The commit this build was made from."
+  },
+  {
+   "tab": "internal",
+   "key": null,
+   "id": "internal:log-viewer",
+   "scopes": [
+    "user"
+   ],
+   "title": "Log viewer",
+   "desc": "Open the app log viewer for this Conductor instance."
+  },
+  {
+   "tab": "internal",
+   "key": null,
+   "id": "internal:app-logger-token",
+   "scopes": [
+    "user"
+   ],
+   "title": "App logger token",
+   "desc": null
+  },
+  {
+   "tab": "internal",
+   "key": null,
+   "id": "internal:onboarding",
+   "scopes": [
+    "user"
+   ],
+   "title": "Onboarding",
+   "desc": "Open the real onboarding flows the way new users see them. Anything you change inside them is saved."
+  },
+  {
+   "tab": "internal",
+   "key": null,
+   "id": "internal:new-member-simulation",
+   "scopes": [
+    "user"
+   ],
+   "title": "New member onboarding state",
+   "desc": "Treat a shared org's membership as not onboarded: the org switcher shows the switch callout, and switching to the org shows new member onboarding. Cleared on relaunch. Reset forgets which orgs' callouts were dismissed on this Mac."
+  },
+  {
+   "tab": "internal",
+   "key": "internal_terminal_render_debug_log",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Terminal render debug log",
+   "desc": "Log raw terminal input/output and renderer events through the app logger."
+  },
+  {
+   "tab": "internal",
+   "key": "internal_frame_drop_logging",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Frame drop logging",
+   "desc": "Log any frame that takes more than 200ms to render through the app logger, to help diagnose UI freezes. Will prevent app from going idle, might increase battery + CPU usage."
+  },
+  {
+   "tab": "internal",
+   "key": "internal_remote_file_sync_mode",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Cloud file sync trigger",
+   "desc": "Choose whether cloud file sync polls or waits for workspace change signals."
+  },
+  {
+   "tab": "internal",
+   "key": "internal_cloud_workspaces_independent_of_local_repos",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Keep cloud workspaces independent from local repositories",
+   "desc": "Prevent cloud workspaces from attaching to matching repositories on this Mac."
+  },
+  {
+   "tab": "internal",
+   "key": "internal_request_metadata",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Request metadata",
+   "desc": "Show requested and returned model/runtime metadata in the context hover card and turn tooltips."
+  },
+  {
+   "tab": "internal",
+   "key": "internal_claude_token_usage_tracking",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Claude token usage tracking",
+   "desc": "Track Claude token usage totals, show them in context usage, and log turn totals to Honeycomb."
+  },
+  {
+   "tab": "internal",
+   "key": "internal_verbose_logging",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Verbose logging",
+   "desc": "Enable extra diagnostic logs in the frontend, Rust host, and sidecar."
+  },
+  {
+   "tab": "internal",
+   "key": "internal_tauri_http_proxy_url",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Tauri HTTP proxy",
+   "desc": "Route native Tauri HTTP requests through a local proxy. Applies immediately to requests made through the shared Tauri fetch wrapper. Leave blank to disable."
+  },
+  {
+   "tab": "internal",
+   "key": "internal_sidecar_exp_session_log",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Save workspace session logs",
+   "desc": "Persist frontend-ingested session events on disk."
+  },
+  {
+   "tab": "internal",
+   "key": null,
+   "id": "internal:crash-test",
+   "scopes": [
+    "user"
+   ],
+   "title": "Crash test",
+   "desc": "Trigger a crash to validate error reporting in Sentry."
+  },
+  {
+   "tab": "internal",
+   "key": null,
+   "id": "internal:error-reporting-test",
+   "scopes": [
+    "user"
+   ],
+   "title": "Error reporting test",
+   "desc": "Trigger logged, request-scoped, and async errors in Roundhouse and a ready cloud workspace."
+  },
+  {
+   "tab": "internal",
+   "key": null,
+   "id": "internal:agent-binaries",
+   "scopes": [
+    "user"
+   ],
+   "title": "Agent binaries",
+   "desc": "Re-download the pinned Claude / Codex binary, and inject artificial failures to exercise the retry UI. Failure counts are in-memory only — they reset on app restart."
+  },
+  {
+   "tab": "internal",
+   "key": null,
+   "id": "internal:feature-flags",
+   "scopes": [
+    "user"
+   ],
+   "title": "Feature flags",
+   "desc": "Feature flags received from PostHog for the current user. Toggle to override locally."
+  },
+  {
+   "tab": "models",
+   "key": "default_model",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Default model",
+   "desc": "Model for new chats"
+  },
+  {
+   "tab": "models",
+   "key": "default_codex_personality",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Codex personality",
+   "desc": null
+  },
+  {
+   "tab": "models",
+   "key": "default_claude_personality",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Claude output style",
+   "desc": "Choose which output style to apply to new chats. Existing chats do not change."
+  },
+  {
+   "tab": "models",
+   "key": "review_model",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Review model",
+   "desc": null
+  },
+  {
+   "tab": "models",
+   "key": "default_plan_mode",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Default to plan mode in new chats",
+   "desc": null
+  },
+  {
+   "tab": "organization-preferences",
+   "key": null,
+   "id": "organization-preferences:pr-workspace-link",
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "Include link to workspace in PR description",
+   "desc": null
+  },
+  {
+   "tab": "actions",
+   "key": "spotlight_testing",
+   "id": null,
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Use spotlight testing",
+   "desc": "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root."
+  },
+  {
+   "tab": "actions",
+   "key": "custom_prompt_general",
+   "id": null,
+   "scopes": [
+    "workspace"
+   ],
+   "title": "General preferences",
+   "desc": "Add custom instructions sent to the agent at the start of every new chat."
+  },
+  {
+   "tab": "misc",
+   "key": null,
+   "id": "misc:icon",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Icon",
+   "desc": "Shown next to the repository name in the sidebar."
+  },
+  {
+   "tab": "misc",
+   "key": null,
+   "id": "misc:root-path",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Root path",
+   "desc": "Do not move or delete this directory. Instead, remove the repository in Conductor."
+  },
+  {
+   "tab": "misc",
+   "key": null,
+   "id": "misc:workspaces-path",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Workspaces path",
+   "desc": "Do not move or delete the workspace subdirectories. Instead, archive workspaces in Conductor."
+  },
+  {
+   "tab": "misc",
+   "key": null,
+   "id": "misc:preview-url",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Preview URLs",
+   "desc": "Set the terminal panel's Open URLs. The first URL is the default; additional URLs appear in its menu. Supports Conductor variables such as $CONDUCTOR_PORT. Use $((CONDUCTOR_PORT + 1)) through $((CONDUCTOR_PORT + 9)) for other allocated ports. Leave blank to detect a URL from output."
+  },
+  {
+   "tab": "misc",
+   "key": "file_include_globs",
+   "id": null,
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Files to copy",
+   "desc": "Conductor will automatically copy these file paths in each new workspace."
+  },
+  {
+   "tab": "misc",
+   "key": null,
+   "id": "misc:remove-repository",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Remove repository",
+   "desc": "Remove this repository and its workspaces from Conductor."
+  },
+  {
+   "tab": "appearance",
+   "key": "colored_sidebar_diffs",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Colored sidebar diffs",
+   "desc": "Always show line change colors in the sidebar, even for unselected workspaces."
+  },
+  {
+   "tab": "appearance",
+   "key": "file_ligatures_enabled",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Code ligatures",
+   "desc": "Use font ligatures in file editors and diffs."
+  },
+  {
+   "tab": "appearance",
+   "key": null,
+   "id": "appearance:theme",
+   "scopes": [
+    "user"
+   ],
+   "title": "Theme",
+   "desc": "Switch between light, dark, and system appearance."
+  },
+  {
+   "tab": "appearance",
+   "key": "low_contrast_dark_mode",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Low-contrast dark mode",
+   "desc": "Soften the app's colors when using the dark theme."
+  },
+  {
+   "tab": "appearance",
+   "key": "zoom_level_v2",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "App zoom",
+   "desc": "Adjust the size of the Conductor interface."
+  },
+  {
+   "tab": "appearance",
+   "key": "color_vision",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Accessible colors",
+   "desc": "Theme optimized for color vision differences."
+  },
+  {
+   "tab": "appearance",
+   "key": "code_theme",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Code theme",
+   "desc": "Syntax highlighting theme for code and diffs."
+  },
+  {
+   "tab": "appearance",
+   "key": "mono_font",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Mono Font",
+   "desc": "Font used for code and diffs."
+  },
+  {
+   "tab": "appearance",
+   "key": "markdown_style",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Markdown Style",
+   "desc": "Rendering style for markdown files."
+  },
+  {
+   "tab": "appearance",
+   "key": null,
+   "id": "appearance:terminal",
+   "scopes": [
+    "user"
+   ],
+   "title": "Terminal font",
+   "desc": "Font family and size for the terminal."
+  },
+  {
+   "tab": "appearance",
+   "key": null,
+   "id": "appearance-panel",
+   "scopes": [
+    "user"
+   ],
+   "title": "Appearance settings",
+   "desc": "Theme, typography, color, and editor appearance."
+  },
+  {
+   "tab": "providers",
+   "key": "chrome_mode_enabled",
+   "id": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Use Claude Code with Chrome",
+   "desc": null
+  },
+  {
+   "tab": "environment",
+   "key": null,
+   "id": "environment-panel",
+   "scopes": [
+    "user",
+    "workspace"
+   ],
+   "title": "Environment settings",
+   "desc": "Environment variables, files, and preview URLs."
+  },
+  {
+   "tab": "scripts",
+   "key": null,
+   "id": "scripts-panel",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Repository scripts",
+   "desc": "Setup and run scripts for the selected repository."
+  },
+  {
+   "tab": "terminal",
+   "key": null,
+   "id": "terminal-panel",
+   "scopes": [
+    "user"
+   ],
+   "title": "Big terminal settings",
+   "desc": "Configure the experimental center-pane terminal."
+  },
+  {
+   "tab": "organization-members",
+   "key": null,
+   "id": "organization-members-panel",
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "Organization members",
+   "desc": "Manage organization membership."
+  },
+  {
+   "tab": "organization-computer",
+   "key": null,
+   "id": "organization-computer-panel",
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "Cloud computer",
+   "desc": "Configure the organization's cloud computer."
+  },
+  {
+   "tab": "organization-environment",
+   "key": null,
+   "id": "organization-environment-panel",
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "Environment",
+   "desc": "Configure personal and shared cloud environment variables."
+  },
+  {
+   "tab": "organization-prompts",
+   "key": null,
+   "id": "organization-prompts-panel",
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "Prompts",
+   "desc": "Custom instructions for the Review, Create PR, and Resolve conflicts buttons."
+  },
+  {
+   "tab": "organization-mcp-servers",
+   "key": null,
+   "id": "organization-mcp-servers-panel",
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "MCPs",
+   "desc": "Configure MCP servers for cloud workspaces."
+  }
+ ]
+}

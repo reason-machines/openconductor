@@ -10,15 +10,17 @@
 //! * [`updates`]: `session/update` to provider events, error notices sent
 //!   as text, and local/cloud path mapping.
 //! * [`provider`]: one Reason Session per chat; follow-up, Stop, resume.
+//! * [`wire`]: provider events as the JSON the chat UI receives.
 //!
 //! The module depends on `std`, `serde` and `serde_json` only, so it builds
-//! and tests on its own (`tools/reason-acp/run-rust-tests.sh`) before the
-//! Tauri crate wires it into commands.
+//! and tests on its own (`tools/reason-acp/run-rust-tests.sh`). The Tauri
+//! commands over it are in `crate::reason_chat`.
 
 pub mod cli;
 pub mod provider;
 pub mod rpc;
 pub mod updates;
+pub mod wire;
 
 #[cfg(test)]
 mod cli_tests;
@@ -28,3 +30,5 @@ mod provider_tests;
 mod tests;
 #[cfg(test)]
 mod updates_tests;
+#[cfg(test)]
+mod wire_tests;

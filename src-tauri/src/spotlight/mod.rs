@@ -14,11 +14,14 @@
 //!   ref. If that restore fails the ref is kept, so the next [`begin`]
 //!   retries it.
 //!
+//! [`watch`] runs [`sync_once`] at start and after each file change.
+//!
 //! Everything goes through [`crate::checkpoint`], whose refs are shared by
 //! every worktree of a repository.
 
 #[cfg(test)]
 mod tests;
+pub mod watch;
 
 use std::fmt;
 use std::path::{Path, PathBuf};
