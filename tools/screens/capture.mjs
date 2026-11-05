@@ -24,6 +24,7 @@ const CHROMIUM = process.env.CHROMIUM ?? "/usr/bin/chromium";
 // host: "localhost" to show that state.
 const HOST = process.env.HOST_NAME ?? "conductor.localhost";
 const LOG_DIR = process.env.LOG_DIR ?? path.join(process.env.TMPDIR ?? "/tmp", "oc-ipc-logs");
+const REA_VERSION = spawnSync(REA, ["--version"], { encoding: "utf8", env: { ...process.env, NODE_NO_WARNINGS: "1" } }).stdout?.trim().split("\n").pop() || "unknown";
 
 const [shotsFile, ...only] = process.argv.slice(2);
 const shots = JSON.parse(fs.readFileSync(path.resolve(shotsFile), "utf8")).filter(
@@ -106,7 +107,7 @@ for (const shot of shots) {
     rea: {
       tool: "capture_browser_scenario",
       command: `rea capture-browser-scenario <input.json> --format json`,
-      rea_version: "rea-agents 6.7.0",
+      rea_version: `rea-agents ${REA_VERSION}`,
       evidence_id: evidence.evidence_id,
       scenario_sha256: evidence.parameters?.scenario_sha256,
       browser: `${evidence.normalized_result?.browser?.product} ${evidence.normalized_result?.browser?.version}`,

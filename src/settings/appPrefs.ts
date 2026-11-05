@@ -22,6 +22,8 @@ export interface AppPrefs {
   roundhouse_client_user_id: string | null;
   /** The sidebar's "Filter by project" repository id; null is all projects. */
   sidebar_repo_filter: string | null;
+  /** Experimental "Show sidebar resource usage"; off by default. */
+  sidebar_resource_usage: boolean;
   /** "Use Claude Code with Chrome" (Settings › Agents › Claude Code): Claude Code chats start with `--chrome`. */
   chrome_mode_enabled: boolean;
 }
@@ -36,6 +38,7 @@ export type AppPrefUpdate =
         | "graphite_disabled"
         | "left_panel_visible"
         | "right_panel_visible"
+        | "sidebar_resource_usage"
         | "chrome_mode_enabled";
       value: boolean;
     }
@@ -60,6 +63,7 @@ export const DEFAULT_APP_PREFS: AppPrefs = {
   last_seen_announcement: null,
   roundhouse_client_user_id: null,
   sidebar_repo_filter: null,
+  sidebar_resource_usage: false,
   chrome_mode_enabled: false,
 };
 
@@ -127,6 +131,8 @@ export function useAppPrefs(): AppPrefs {
 /** Conductor's sidebar drag range (`Zsa = 192`, `eoa = 480`). */
 export const SIDEBAR_MIN_WIDTH = 192;
 export const SIDEBAR_MAX_WIDTH = 480;
+/** The rail's double-click target and the unset setting's value (`mBe = 256`, `yta = 256`). */
+export const SIDEBAR_DEFAULT_WIDTH = DEFAULT_APP_PREFS.left_panel_width;
 
 export function clampSidebarWidth(width: number): number {
   if (!Number.isFinite(width)) return DEFAULT_APP_PREFS.left_panel_width;

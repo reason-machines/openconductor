@@ -23,6 +23,11 @@ import { DROP_ATTR, reorderIndicator, reorderToIndex, workspaceDropAction, type 
 import { ProjectFilterSubmenu } from "./home/ProjectFilterSubmenu";
 import { useRepoFilter } from "../home/useRepoFilter";
 import { filterRepoGroups } from "../home/repoFilter";
+import { SidebarAddRepositoryMenu } from "./AddRepositoryMenu";
+import { useKeybindings } from "../keybindings/KeybindingsProvider";
+import { AccountMenu } from "./AccountMenu";
+import { ResourceUsagePill } from "./ResourceUsagePill";
+import type { WorkspaceRef as UsageWorkspace } from "./resourceUsage";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
 function hint(commandId: string): string {
@@ -40,18 +45,19 @@ export interface NavControls {
 interface Props {
   state: AppState;
   dispatch: Dispatch<Action>;
-  onOpenDialog: (d: DialogKind, repoId?: string) => void;
+  onOpenDialog: (d: DialogKind, repoId?: string, sectionId?: string) => void;
   onOpenProject: () => void;
+  /** A Recents row of the add-repository menu: add that folder as Open project would. */
+  onAddProjectAt?: (path: string) => void;
   onOpenSettings: () => void;
   onOpenShortcuts: () => void;
   onSearch: () => void;
   nav: NavControls;
   info: AppInfo | null;
-  /** Local computer label; Conductor shows "<name>'s Mac", or "My Mac" with no user name. */
-  computerName?: string;
   /* sidebar: workspace row menu callbacks (rename dialog, archive flow) */
   onRenameWorkspace?: RowCallbacks["onRename"];
   onArchiveWorkspace?: RowCallbacks["onArchive"];
+  onCopyWorkspaceLink?: RowCallbacks["onCopyLink"];
   /** Shows an error toast (icon upload failures). */
   onError?: (message: string) => void;
 }
@@ -193,7 +199,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onError }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
@@ -218,6 +224,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
   const rows = useWorkspaceRows(state, dispatch, {
     onRename: onRenameWorkspace ?? openRename,
     onArchive: onArchiveWorkspace,
+    onCopyLink: onCopyWorkspaceLink,
     onNewSection: (ws) => setSectionDialog({ mode: "create", workspaceIdToMove: ws.id }),
     collapsedSections,
     onRowPointerDown: (e, repoId, ws) => drag.workspacePointerDown(e, { repoId, id: ws.id, pinned: typeof ws.pinnedAt === "number" }),
@@ -241,7 +248,9 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
   };
   const sectionMenu = (sectionId: string): MenuEntry[] => {
     const s = state.sections?.find((x) => x.id === sectionId);
+    // Conductor's section menu (oBi): Create workspace, Edit section, New section…, then Delete section.
     return [
+      { label: "Create workspace", onSelect: () => onOpenDialog("create", undefined, sectionId) },
       { label: "Edit section", onSelect: () => s && setSectionDialog({ mode: "edit", sectionId, name: s.name, emoji: s.emoji }) },
       { label: "New section…", onSelect: () => setSectionDialog({ mode: "create", beforeSectionId: sectionId }) },
       "-",
@@ -262,6 +271,11 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
   const [iconRepoId, setIconRepoId] = useState<string | null>(null);
   const iconRepo = iconRepoId ? state.repos.find((r) => r.id === iconRepoId) : undefined;
   const [dragRepoId, setDragRepoId] = useState<string | null>(null);
+  // The add-repository popover (Conductor's `wra`): "Add project…" opens it on the next
+  // frame, after the header menu closes (`yra`); ⌥⌘A (`nav.addRepository`) opens it too.
+  const [addMenuOpen, setAddMenuOpen] = useState(false);
+  const addMenuAnchor = useRef<HTMLSpanElement>(null);
+  useKeybindings({ "nav.addRepository": () => setAddMenuOpen(true) });
   const [dropRepoId, setDropRepoId] = useState<string | null>(null);
   // "Filter by project" (Conductor's `pra`, setting `sidebar_repo_filter`). Repos arrive from
   // conductor.db after the first render (before that, only path-less placeholders for collapsed
@@ -271,6 +285,10 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
   const listed = filterRepoGroups(visibleRepos(state.repos, showHidden), repoFilter);
   // Dragging is off with a single listed repo, as in Conductor.
   const canDrag = listed.length > 1;
+  // Workspaces the usage popover can group processes under (by cwd).
+  const usageWorkspaces: UsageWorkspace[] = state.repos.flatMap((r) =>
+    r.workspaces.flatMap((w) => (w.path ? [{ localId: w.id, directoryName: w.directoryName ?? w.name, workspacePath: w.path }] : [])),
+  );
   const dropOn = (targetId: string) => {
     if (dragRepoId && dragRepoId !== targetId) {
       const ids = moveRepo(state.repos.map((r) => r.id), dragRepoId, targetId);
@@ -295,6 +313,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
           </button>
         </div>
         <div className="sb-history">
+          <ResourceUsagePill workspaces={usageWorkspaces} />
           <button type="button" className="sb-icon-btn" aria-label="Go back" title={`Go back (${hint("nav.back")})`} disabled={!nav.canBack} onClick={nav.onBack}>
             <ArrowLeftIcon size={12} />
           </button>
@@ -304,14 +323,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
         </div>
 
         <div className="sb-primary">
-          {/* Computer switcher. Only the local computer exists for now, so the menu is not built yet. */}
-          <div className="sb-row sb-computer" title={computerName}>
-            <span className="sb-row-icon">
-              <span className="sb-avatar" aria-hidden>{computerName.charAt(0).toUpperCase()}</span>
-            </span>
-            <span className="sb-computer-name">{computerName}</span>
-            <ChevronDownIcon size={12} />
-          </div>
+          <AccountMenu onOpenSettings={onOpenSettings} />
           <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
           <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
           <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={hint("toggleCommandPalette")} onClick={onSearch} />
@@ -355,10 +367,21 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
             </span>
           </button>
           <HeaderMenu label="My workspaces" className="sb-section-menu" items={[
-            { label: "Add project…", onSelect: onOpenProject },
+            { label: "Add project…", onSelect: () => requestAnimationFrame(() => setAddMenuOpen(true)) },
             { label: "New section…", onSelect: () => setSectionDialog({ mode: "create" }) },
             { key: "filter-by-project", render: (close) => <ProjectFilterSubmenu repos={state.repos} filter={repoFilter} onChange={setRepoFilter} onClose={close} /> },
           ]} />
+          <span ref={addMenuAnchor} className="sb-add-menu-anchor" aria-hidden />
+          <SidebarAddRepositoryMenu
+            open={addMenuOpen}
+            onOpenChange={setAddMenuOpen}
+            anchorRef={addMenuAnchor}
+            repos={state.repos}
+            onOpenProject={onOpenProject}
+            onOpenGitHubProject={() => onOpenDialog("clone")}
+            onQuickStart={() => onOpenDialog("quickstart")}
+            onAddProjectAt={(path) => onAddProjectAt?.(path)}
+          />
         </div>
         {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
         {!groupCollapsed && (

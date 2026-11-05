@@ -151,8 +151,8 @@ pub fn open_target(file: &ConfigFile) -> Option<PathBuf> {
 #[tauri::command]
 pub fn open_agent_config(app: AppHandle, agent: OptionAgent) -> Result<(), String> {
     let file = agent_config_file(agent).ok_or("This agent has no config file.")?;
-    let target = open_target(&file)
-        .ok_or_else(|| format!("{} does not exist yet.", file.directory_path))?;
+    let target =
+        open_target(&file).ok_or_else(|| format!("{} does not exist yet.", file.directory_path))?;
     app.opener()
         .open_path(target.display().to_string(), None::<&str>)
         .map_err(|e| e.to_string())
@@ -318,7 +318,11 @@ mod tests {
         let home = tmp.path().join("home");
         let installed = exe(&home.join(".opencode/bin"), "opencode");
         assert_eq!(
-            find_system_binary(OptionAgent::Opencode, Some(OsStr::new("relative")), Some(&home)),
+            find_system_binary(
+                OptionAgent::Opencode,
+                Some(OsStr::new("relative")),
+                Some(&home)
+            ),
             Some(installed)
         );
         // A non-executable file does not count.
@@ -351,7 +355,10 @@ mod tests {
         let file = config_file(OptionAgent::Codex, tmp.path()).unwrap();
         assert_eq!(open_target(&file), None);
         fs::create_dir_all(&file.directory_path).unwrap();
-        assert_eq!(open_target(&file), Some(PathBuf::from(&file.directory_path)));
+        assert_eq!(
+            open_target(&file),
+            Some(PathBuf::from(&file.directory_path))
+        );
         fs::write(&file.file_path, "").unwrap();
         assert_eq!(open_target(&file), Some(PathBuf::from(&file.file_path)));
     }
@@ -376,7 +383,10 @@ mod tests {
     fn a_real_version_run_reads_stdout() {
         let tmp = tempdir();
         let p = exe(tmp.path(), "opencode");
-        assert_eq!(run_version(&p, Duration::from_secs(5)).unwrap().trim(), "2.0.5");
+        assert_eq!(
+            run_version(&p, Duration::from_secs(5)).unwrap().trim(),
+            "2.0.5"
+        );
     }
 
     #[test]

@@ -147,30 +147,6 @@ pub async fn set_target_branch(pool: &SqlitePool, local_id: &str, branch: &str) 
     workspaces::set_target_branch(pool, local_id, Some(branch)).await
 }
 
-/// Bring an archived workspace back: `ready`, since archiving keeps the
-/// worktree. Errors when it is not archived.
-pub async fn unarchive(pool: &SqlitePool, local_id: &str) -> Result<()> {
-    if !workspaces::unarchive(pool, local_id).await? {
-        return Err(openconductor_db::Error::NotFound);
-    }
-    workspaces::set_state(pool, local_id, WorkspaceState::Ready).await
-}
-
-/// Mark a workspace archived, keeping its branch.
-pub async fn archive(pool: &SqlitePool, local_id: &str) -> Result<()> {
-    let w = workspaces::get(pool, local_id)
-        .await?
-        .ok_or(openconductor_db::Error::NotFound)?
-        .workspace;
-    workspaces::archive(
-        pool,
-        local_id,
-        w.branch.as_deref().unwrap_or_default(),
-        None,
-    )
-    .await
-}
-
 async fn insert_workspace(
     pool: &SqlitePool,
     w: &KnownWorkspace,
@@ -235,6 +211,8 @@ pub struct WorkspaceRow {
     /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
     pub number: Option<i64>,
     pub created_at: String,
+    /// `workspaces.updated_at`: last activity, the sidebar's and next-unread's sort key.
+    pub updated_at: String,
 }
 
 pub async fn list_repos(pool: &SqlitePool) -> Result<Vec<RepoRow>> {
@@ -279,6 +257,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 pr_description: w.pr_description,
                 number: w.number,
                 created_at: w.created_at,
+                updated_at: w.updated_at,
                 repository_id: w.repository_id,
                 id: w.local_id,
             }

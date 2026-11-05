@@ -96,26 +96,24 @@ function Row({ row, isOpen, onToggle, summaries, onRetry, onResetChat, resetDisa
     case "turn_end": {
       const time = turnTime(row.startedAt, row.endedAt);
       return (
-        <div className="chat-turn-footer">
-          {turnFooter?.(row.turnId)}
-          <div className={`chat-turn-end status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
-            {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
-            {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
-            {time ? (
-              <span className="chat-turn-time" title={time.range}>
-                {time.label}
-              </span>
-            ) : null}
-            <span className="chat-turn-actions">
-              {row.finalText ? <CopyButton text={row.finalText} label="Copy final message" /> : null}
-              {row.retryPrompt && onRetry ? (
-                <button type="button" className="chat-action" onClick={() => onRetry(row.retryPrompt!, row.turnId)}>
-                  Retry
-                </button>
-              ) : null}
-              {row.canReset && onResetChat ? <TurnMenu disabled={resetDisabled} onResetChat={() => onResetChat(row.turnId)} /> : null}
+        <div className={`chat-turn-end status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
+          {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
+          {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
+          {time ? (
+            <span className="chat-turn-time" title={time.range}>
+              {time.label}
             </span>
-          </div>
+          ) : null}
+          <span className="chat-turn-actions">
+            {row.finalText ? <CopyButton text={row.finalText} label="Copy final message" /> : null}
+            {row.retryPrompt && onRetry ? (
+              <button type="button" className="chat-action" onClick={() => onRetry(row.retryPrompt!, row.turnId)}>
+                Retry
+              </button>
+            ) : null}
+            {row.canReset && onResetChat ? <TurnMenu disabled={resetDisabled} onResetChat={() => onResetChat(row.turnId)} /> : null}
+          </span>
+          {turnFooter?.(row.turnId)}
         </div>
       );
     }

@@ -187,3 +187,8 @@
 .oc-agent-badge.problem { color: var(--oc-destructive); border-color: color-mix(in srgb, var(--oc-destructive) 40%, transparent); background: color-mix(in srgb, var(--oc-destructive) 10%, transparent); }
 .oc-agent-badge.muted { color: var(--muted); border-color: var(--border); background: var(--hover); }
 .oc-agent-badge-version { margin-left: 6px; font-family: var(--font-mono, ui-monospace, monospace); opacity: 0.8; }
+
+/* Inside a boxed .settings-rows list the card is one more row; standing alone (Conductor's tab column) it keeps its own border. */
+.settings-rows > .oc-agent-config { border: 0; border-top: 1px solid var(--border); border-radius: 0; }
+/* Under Advanced the executable path is a settings row of its own (`Al`: border-t pt-5). */
+.oc-agent-advanced-body > .settings-row.oc-agent-exec { border-top: 1px solid var(--border); padding: 20px 0 0; }
