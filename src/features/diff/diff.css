@@ -67,7 +67,16 @@
 .oc-count .a { color: var(--oc-diff-addition); }
 .oc-count .d { color: var(--oc-diff-deletion); margin-left: 4px; }
 
+/* Right panel: toolbar over the list. Main-area tab: one file filling the tab. */
+.oc-diff.oc-diff-list, .oc-diff.oc-diff-tab { grid-template-columns: minmax(0, 1fr); }
+.oc-diff.oc-diff-tab { grid-template-rows: minmax(0, 1fr); position: relative; }
+.oc-diff-tab .oc-next-unread { position: absolute; right: 16px; bottom: 12px; margin: 0; }
+.oc-diff-list .oc-changes { border-right: 0; }
+.oc-diff-list .oc-change-row { margin: 0 4px; border-radius: 6px; }
+.oc-diff-list .oc-change { padding: 5px 8px; border-radius: 6px; font-size: 13px; }
+.oc-diff-tab .oc-file { border-radius: 0; border-width: 0 0 1px; margin-bottom: 0; content-visibility: visible; }
 .oc-files { overflow: auto; min-width: 0; padding: 8px 12px 40px; }
+.oc-diff-tab .oc-files { padding: 0 0 40px; }
 .oc-next-unread { position: sticky; bottom: 12px; display: block; width: fit-content; margin: 0 0 0 auto; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15); }
 .oc-file { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; content-visibility: auto; contain-intrinsic-size: auto 200px; }
 .oc-file-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--oc-diff-bg-gutter); border-bottom: 1px solid var(--border); font-size: 12px; }
