@@ -368,6 +368,64 @@ fn only_differing_files_are_rewritten() {
     assert_eq!(m, old, "unchanged file untouched");
 }
 
+/// The kept file is never removed, not even to be written back: a hard link
+/// made before the restore still shares its inode afterwards.
+#[cfg(unix)]
+#[test]
+fn restore_keeping_never_removes_or_rewrites_the_kept_file() {
+    use std::os::unix::fs::MetadataExt;
+    const KEPT: &str = ".conductor/settings.local.toml";
+    let kept = Path::new(KEPT);
+    let t = repo_with_commit("keep");
+    let ws = t.path();
+    let link = ws.join(".git").join("kept-link");
+    let same_file = |link: &Path| {
+        let a = fs::metadata(ws.join(KEPT)).unwrap();
+        let b = fs::metadata(link).unwrap();
+        a.ino() == b.ino() && a.dev() == b.dev()
+    };
+
+    // Absent from the checkpoint: a plain restore removes it.
+    save(ws, &named("without")).unwrap();
+    write(ws, KEPT, "spotlight_testing = true\n");
+    write(ws, "extra.txt", "untracked\n");
+    write(ws, "a.txt", "changed\n");
+    fs::hard_link(ws.join(KEPT), &link).unwrap();
+    restore_keeping(ws, "without", &[kept]).unwrap();
+    assert_eq!(read(ws, KEPT), "spotlight_testing = true\n");
+    assert!(
+        same_file(&link),
+        "the kept file was removed and written again"
+    );
+    // Everything else follows the checkpoint.
+    assert_eq!(read(ws, "a.txt"), "base\n");
+    assert!(!ws.join("extra.txt").exists());
+    assert_eq!(status(ws), "?? .conductor/settings.local.toml");
+    fs::remove_file(&link).unwrap();
+
+    // Held by the checkpoint with other bytes: a plain restore writes those.
+    write(ws, KEPT, "old\n");
+    save(ws, &named("with")).unwrap();
+    write(ws, KEPT, "new\n");
+    fs::hard_link(ws.join(KEPT), &link).unwrap();
+    restore_keeping(ws, "with", &[kept]).unwrap();
+    assert_eq!(read(ws, KEPT), "new\n");
+    assert!(same_file(&link), "the kept file was replaced");
+    fs::remove_file(&link).unwrap();
+
+    // Absent on disk but held by the checkpoint: it stays absent.
+    fs::remove_file(ws.join(KEPT)).unwrap();
+    restore_keeping(ws, "with", &[kept]).unwrap();
+    assert!(!ws.join(KEPT).exists());
+
+    // Without `keep`, restore still treats it like any other file.
+    write(ws, KEPT, "new\n");
+    restore(ws, "with").unwrap();
+    assert_eq!(read(ws, KEPT), "old\n");
+    restore(ws, "without").unwrap();
+    assert!(!ws.join(KEPT).exists());
+}
+
 #[test]
 fn busy_states_skip_save() {
     let t = repo_with_commit("busy");
