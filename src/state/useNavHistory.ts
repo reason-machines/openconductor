@@ -4,7 +4,7 @@ import type { AppState, Selection } from "./types";
 import { canGoBack, canGoForward, current, prune, sameSelection, startHistory, step, visit } from "./history";
 
 const exists = (state: AppState) => (sel: Selection) =>
-  sel.kind === "home" || state.repos.some((r) => r.id === sel.repoId && r.workspaces.some((w) => w.id === sel.workspaceId));
+  sel.kind !== "workspace" || state.repos.some((r) => r.id === sel.repoId && r.workspaces.some((w) => w.id === sel.workspaceId));
 
 /** Records each selection and moves through it for the sidebar arrows and nav.back / nav.forward. */
 export function useNavHistory(state: AppState, dispatch: Dispatch<Action>) {

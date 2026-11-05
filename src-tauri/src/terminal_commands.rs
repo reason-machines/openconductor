@@ -51,6 +51,16 @@ fn err(e: impl std::fmt::Display) -> String {
 #[tauri::command]
 pub async fn pty_spawn(state: State<'_, Terminals>, args: SpawnArgs) -> CmdResult<String> {
     let mut req = args.into_request();
+    // The workspace's settings environment (`environment_variable_files`,
+    // `environment_variables`) goes first, so variables the caller passes win,
+    // as Conductor spreads the settings env under its own.
+    let cwd = req.cwd.clone();
+    let settings_env = tauri::async_runtime::spawn_blocking(move || {
+        crate::settings::effective::local_env_for_dir(&cwd)
+    })
+    .await
+    .unwrap_or_default();
+    req.env.splice(0..0, settings_env);
     // `CONDUCTOR_PATH_PREFIX` is `$APPDATA/bin`, as in the reference.
     state
         .1

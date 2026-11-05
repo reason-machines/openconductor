@@ -103,14 +103,15 @@ workspace-creation service) and `renderApp-D_fmY7hW.js` (the rows).
   has no value. Nothing is shown: `cre` logs its skip warning and `zYe` logs thrown errors
   ("Failed to configure Git push upstream settings for workspace <id>: ...").
 - The rebuild runs `WorkspaceService::configure_push_upstream_for_existing` on a background
-  thread from app setup when the user setting is on (or settings cannot be read, matching
-  Conductor's "not false" check). It covers every active workspace of every registered
-  repository, skips archived and missing ones and repositories that can no longer be listed,
-  and logs each workspace it could not configure to stderr. Divergence: the setting is read
-  once at user scope, since repo-local overrides are not built.
+  thread from app setup. It covers every active workspace of every registered repository,
+  skips archived and missing ones and repositories that can no longer be listed, and logs
+  each workspace it could not configure to stderr. Each workspace uses its effective value
+  (user, repository, workspace and local settings files, see "Prompts, git flags and
+  environment"), as `lre` does; unreadable settings count as on, Conductor's "not false".
 - Delete branch on archive (with "Warning: archived workspaces will be unrecoverable" when
-  on) and Archive on merge are stored but have no row yet: no command archives a workspace
-  yet, so nothing would read them. Repo-local overrides of all three are not built.
+  on) and Archive on merge are stored and resolve per repository, but nothing consumes them
+  yet: the app's archive only marks the database row (`db_archive_workspace`) and keeps the
+  worktree, and no in-app merge archives.
 
 ## REA gaps hit (settings pages)
 
@@ -245,7 +246,8 @@ a `/settings/repos...` start URL is resolved again once they are loaded. Diverge
 - Repo Git shows the base branch and remote read-only (Conductor lets you change both); repo
   Scripts shows the resolved setup, run and archive scripts read-only; repo Actions has Use
   spotlight testing (General preferences, `custom_prompt_general`, comes with the prompts keys);
-  repo Misc shows the root path only (no icon, workspaces path or Remove repository yet).
+  repo Misc shows the root path and the workspaces path (no icon or Remove repository yet).
+  Advanced has the root directory row (`advanced:conductor-root`) and Scrollback limit.
 - Settings search (`vUi` keywords per tab) is not built.
 
 ## Models and providers (settings.toml.models, settings.toml.providers)
@@ -508,14 +510,129 @@ The rebuild implements 1–3 in `oc_scripts::config::effective` (`resolve_effect
 with a warning (the rebuild has no per-variable Keychain store); the `env_vars` table is not
 built.
 
+### Consumers in the rebuild
+
+| Key | Consumer | Status |
+| --- | --- | --- |
+| `prompts.code_review` | Review button (`buildReviewPrompt`, appended after the default as `gue` + `_g`) | wired, via `useRepoSettings` |
+| `prompts.create_pr` | `pr_create_prompt` (appended when the caller gives no instructions) | wired; no Create PR button calls the command yet |
+| `prompts.general` | first message of a new Reason chat (`sendReason`, `<user-preferences>` block as `lU6`) | wired |
+| `prompts.fix_errors` | Fix errors action | missing: no Fix errors button or CI-log flow |
+| `prompts.resolve_merge_conflicts` | Resolve conflicts action | missing: the header computes the conflict state but has no action |
+| `prompts.rename_branch` | model-generated branch name | missing: the rebuild names branches with a local heuristic (`branchNameFromMessage`), no model call |
+| `git.worktree_push_auto_setup_remote` | `create_workspace` and the startup backfill | wired, effective per repository / workspace |
+| `git.branch_prefix`, `git.branch_prefix_type` | Create-workspace naming | user scope, as Conductor's `C2` |
+| `git.archive_on_merge`, `git.delete_branch_on_archive` | archive | missing (see "Git flags: archive and push upstream") |
+| `preview_urls` | terminal panel Open URLs | missing: the terminal panel has no Open URL control |
+| `environment_variable_files`, `environment_variables.*` | setup / run / archive scripts (`ScriptService::set_settings_env`), terminals (`pty_spawn`) | wired; local context |
+| same | agent launches | missing: Claude/Codex launches are not built, and Reason runs one ACP process for every chat, so a per-workspace environment cannot reach it |
+
+`create_workspace` resolves the push-upstream flag for the repository root before the
+worktree exists, so a value in the new workspace's own `.conductor/settings.toml` is not
+seen at creation (Conductor reads it with the new worktree path); the startup backfill does
+see it.
+
+### Settings rows
+
+Row components live in `src/settings/rows/` and are mounted by the page owner:
+`RepoActionsRows` (repository Actions: Code review, Create PR and General preferences, with
+Conductor's titles, descriptions, "Customized" badge and placeholder `vzi`), `RepoGitRows`
+(repository Git: Set upstream on plain git push), `RepoEnvironmentRows` (repository
+Environment: env files with "N variables loaded", variables per context with their source,
+add and remove) and `UserEnvironmentRows` (user Environment: env files). Following this
+repository's rule of showing only rows whose setting is read, Fix errors, Resolve conflicts
+and Branch rename preferences, Delete branch on archive, Archive on merge and Preview URLs
+have no row yet. Not built: the prompt Preview dialog (`getPromptPreview`), Keychain-stored
+variable values, and Conductor's per-variable copy button.
+
 ### REA gaps (prompts, git, environment)
 
 - No REA command maps a settings key to its consumers: `rea trace-javascript-semantics` with
   literal seeds misses UI strings and Tauri `invoke` names (see "REA gaps hit (settings
   pages)"), so every consumer above was found by byte search in the extracted bundle.
+- `rea trace-javascript-semantics` on the analyzed frontend (`ev_b733d967…`) with seed
+  `{kind: "literal", value: "custom_prompt_general"}`, direction `callers`, run on
+  2026-11-05 (`out/trace_js_semantics_custom_prompt_general.json`), exited 0 in 83 s with
+  `status: partial`, 0 seed nodes, 0 nodes, 0 relations and the same 935 unknowns as the
+  earlier literal traces. A setting key used as an argument (`getSettingForWorkspaceV2(
+  "custom_prompt_rename_branch", …)`) or as an object value (the `Vxt` map) is not a seed
+  REA can resolve.
 - The sidecar runtime is a compiled single-file binary (`conductor-runtime`, 76 MB); REA's
   JavaScript extractors were not run on it, so `nQ4` / `lU6` / `pQ4` were read with a raw
   byte search. Its embedded JS is plain text, which is why that worked.
 - The published repository JSON schema (`settings.repo.schema.json`) lists
   `environment_variables.local/.cloud` but not the top-level shared entries that `SLe` reads;
   the bundle, not the schema, is the source for those.
+
+## App preferences in the settings table
+
+Source: REA-extracted frontend on `sven m5 max` (`~/code/conductor-rea-work/frontend/dist/assets`,
+`index-BGEQ8YjU.js` and `renderApp-D_fmY7hW.js`), read with `grep -lwF` and a context dump of every
+occurrence of each key, 2026-11-06. Key names and code only; no values were read from Conductor's
+`conductor.db` or `settings.toml`.
+
+Conductor's settings registry (`index-*.js`, `Te`/`Pe`/`yl` declarations and the `oZ` type map) marks
+each key file-backed (`Me({fileKey})`, lives in `settings.toml`) or non-file-backed (`Me()`/`xe()`,
+lives in the `settings` table). Every key below is non-file-backed, so OpenConductor stores it in
+`conductor.db` through `crates/openconductor-db/src/app_settings.rs` and decodes it in
+`src-tauri/src/app_prefs/` (typed `get_app_prefs`, `set_app_pref`, `record_open_in`,
+`client_instance_id`, `graphite_cli_installed`; no untyped key/value command).
+
+| Key | Default and encoding (REA source) | Consumer in OpenConductor |
+| --- | --- | --- |
+| `code_theme` | `yl("code_theme", _N, "default")`; `_N` = default, catppuccin-latte, -macchiato, -mocha, dracula, nord, tokyo-night, gruvbox-dark, solarized-dark; labels from `zPt` | Appearance row and diff highlighting built by the diff area (`DiffAppearanceRows.tsx`), stored in `settings.toml` `[appearance]` for now |
+| `colored_sidebar_diffs` | `Te(...,!1)`; `"true"`/`"false"`; sidebar row mutes counts unless selected or on (`eea`) | Appearance row and sidebar colors built in `AppearancePage.tsx` / `appearance.ts`, stored in `settings.toml` `[appearance]` for now |
+| `file_ligatures_enabled` | unset reads as on (`v5t`: `data ? data==="true" : true`) | Appearance row built by the diff area, stored in `settings.toml` `[appearance]` for now |
+| `garry_mode` | `Te(...,!1)`; toggled by `toggleGarryMode` | General row; `Transcript expandToolsByDefault`; ⌃O in `App.tsx` |
+| `experimental_show_agent_cost` | `Te(...,!1)`; read as `value==="true"` (or internal users unless `"false"`, `Y$e`) | Experimental row |
+| `experimental_tab_freak_mode` | `Te(...,!1)`; limit `iFt` = 10 on, 5 off, counting chats + terminals + browser (`oFt`) | Experimental row; terminal "+" and `startTab` limit |
+| `graphite_disabled` | `Te("graphite_disabled")`; disabled only when `"true"` (`ZUt`, `D9t`); row checked = gt installed && !disabled, reset writes `true` | Experimental row with "Install gt to enable." |
+| `default_open_in`, `open_in_mru_order` | MRU is a JSON string array of `app|local` / `app|remote`, newest first (`qzt`, `Hzt`, `UBe`, `HBe`); effective default = MRU[0] without suffix, else `default_open_in` (`l5t`) | `record_open_in` command |
+| `left_panel_visible`, `right_panel_visible` | unset reads as shown (`h5t`, `d5t`); written as `t.toString()`; zen mode sets both to `!left && !right` | `App.tsx` sidebar (`panelPrefs.tsx`), `WorkspaceView` right panel, ⌥⌘B, ⌘. |
+| `left_panel_width` | `parseInt`, default 256 (`mBe`); written `Math.round(w)`; drag range 192 to 480 (`Zsa`, `eoa`), saved on commit | `.app` `--sidebar-width` and a drag handle |
+| `onboarding_step`, `first_time_onboarding_step` | `parseInt(?? "0")`, `parseInt(?? "1")`; 999 = done (`_5t`) | stored and exposed only |
+| `last_clone_directory` | plain path, deleted when the data folder moves | clone and quick-start dialogs (`backend.ts`), localStorage value moved over once |
+| `last_seen_announcement` | announcement id; banner hidden when it equals the latest id (`Ena`) | stored and exposed only |
+| `client_instance_id` | `crypto.randomUUID()` stored on first read (`uue`) | `client_instance_id` command |
+| `roundhouse_client_user_id` | cloud sign-in user id; get/update/delete (`sWe`, `nWe`, `rWe`) | stored and exposed only |
+
+Missing consumers: the rebuild has no cloud workspaces (agent cost, Roundhouse), no "Open in" menu
+(MRU is recorded by `record_open_in` but nothing calls it yet), no onboarding, no announcements banner,
+no Graphite stack UI (only the toggle and the `gt` check), and no syntax highlighter, so a code theme
+sets only the code view's foreground and background, not token colors. The sidebar flag in localStorage
+(`UiPrefs.sidebarVisible`) is not migrated: the table cannot tell "unset" from "shown".
+
+### REA gaps (app preferences slice)
+
+- `grep -l` with a quoted-key regex through `devices_exec` (zsh, nested quotes) matched nothing; plain
+  `grep -lwF` worked. Not an REA bug, but REA has no "find setting key" query over the extracted bundle,
+  so every claim above comes from text search plus reading minified code, not from an REA trace.
+- Minified exports: hooks are re-exported under two-letter aliases (`p5t as og`, imported as `oEr`), which
+  REA's JavaScript semantic analysis does not resolve across chunks; we followed them by hand.
+
+### Appearance keys in the settings table
+
+Conductor stores these six keys in `conductor.db`'s `settings` table, not in `settings.toml`. REA source:
+the REA-extracted `index-BGEQ8YjU.js` and `renderApp-D_fmY7hW.js` on `sven m5 max`, key names and code
+only.
+
+| Key | Registry declaration (no `fileKey` = settings table) | Reader hook | Setter (`updateSetting` -> `INSERT OR REPLACE INTO settings`) |
+| --- | --- | --- | --- |
+| `zoom_level_v2` | `Pe("zoom_level_v2")`, `zoom_level_v2:Me()` | `C5t`: `parseFloat(data)`, else 1 | `m6t`: `t.toString()` |
+| `mono_font` | `Pe("mono_font")`, `mono_font:Me()` | `m5t`: `data ?? "Geist Mono"` | `Xzt` (debounced) |
+| `low_contrast_dark_mode` | `Te("low_contrast_dark_mode",!1)`, `xe()` | `us(...)` | `L6t`: `t.toString()` |
+| `code_theme` | `yl("code_theme",_N,"default")`, `_l(_N)` | `us(...)`, `Dgi` | `F6t` |
+| `colored_sidebar_diffs` | `Te("colored_sidebar_diffs",!1)`, `xe()` | `us(...)` in the sidebar row | `D6t`: `t.toString()` |
+| `file_ligatures_enabled` | `Te("file_ligatures_enabled")`, `xe()` | `v5t`: unset = on | `Jzt`: `t.toString()` |
+
+File-backed keys use `Me({fileKey: ...})` / `xe({fileKey: ...})` instead (for example
+`default_model: Me({fileKey:"models.default"})`), and only those go through the file writer `NN`.
+
+OpenConductor follows this through `src-tauri/src/settings/db_backed.rs`. The settings service overlays
+the table's values on `get_settings`, writes changed values to the table on save (an empty font deletes
+the row), and leaves these keys out of `settings.toml`. At startup, values an older build wrote to
+`[appearance]` move into the table. A row the table already has wins. Then the keys are dropped from
+the file. The frontend still sees them as `settings.appearance.*`, so the Appearance page, the diff
+viewer and the sidebar are unchanged. `terminal_font_family`, `terminal_font_size` and `color_vision`
+are also non-file-backed in Conductor (`Pe`/`yl` without `fileKey`), but they belong to the terminal
+and diff areas and stay in `[appearance]` for now.
