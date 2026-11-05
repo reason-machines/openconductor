@@ -3,7 +3,8 @@
 // theme (with a highlighted preview) above Mono Font, and Code ligatures
 // below it, in the order Conductor's Appearance page shows them
 // (evidence/screens/settings--appearance--dark.png; REA read of renderApp
-// 0.87.6 for the setting keys and values). Labels and help text are ours.
+// 0.87.6 for the setting keys and values, and for the titles, descriptions
+// and select widths of `rla`, `ala` and `fla`).
 import { File as PierreFile } from "@pierre/diffs/react";
 import { Row } from "../../settings/GeneralPage";
 import { withAppearance } from "../../settings/appearance";
@@ -36,8 +37,8 @@ export function DiffColorRows({ settings, save }: Props) {
   registerCodeThemes();
   return (
     <>
-      <Row label="Accessible colors" help="Colors for added and removed lines that work with color vision differences.">
-        <select aria-label="Accessible colors" value={colorVisionFrom(a.color_vision)} onChange={(e) => save(withAppearance(settings, "color_vision", colorVisionFrom(e.target.value)))}>
+      <Row label="Accessible colors" help="Theme optimized for color vision differences.">
+        <select className="settings-select" style={{ width: 260 }} aria-label="Accessible colors" value={colorVisionFrom(a.color_vision)} onChange={(e) => save(withAppearance(settings, "color_vision", colorVisionFrom(e.target.value)))}>
           {COLOR_VISIONS.map((c) => (
             <option key={c.value} value={c.value}>
               {c.label}
@@ -45,8 +46,8 @@ export function DiffColorRows({ settings, save }: Props) {
           ))}
         </select>
       </Row>
-      <Row label="Code theme" help="Syntax colors in diffs and code views.">
-        <select aria-label="Code theme" value={theme} onChange={(e) => save(withAppearance(settings, "code_theme", codeThemeFrom(e.target.value) as CodeTheme))}>
+      <Row label="Code theme" help="Syntax highlighting colors for code blocks and editors.">
+        <select className="settings-select" style={{ width: 220 }} aria-label="Code theme" value={theme} onChange={(e) => save(withAppearance(settings, "code_theme", codeThemeFrom(e.target.value) as CodeTheme))}>
           <option value="default">Default</option>
           {CODE_THEME_IDS.map((id) => (
             <option key={id} value={id}>
@@ -65,7 +66,7 @@ export function DiffColorRows({ settings, save }: Props) {
 /** Code ligatures, shown below Mono Font. */
 export function DiffLigaturesRow({ settings, save }: Props) {
   return (
-    <Row label="Code ligatures" help="Join character pairs such as => and != into ligatures in diffs and code, when the font has them.">
+    <Row label="Code ligatures" help="Use font ligatures in file editors and diffs.">
       <input
         type="checkbox"
         role="switch"
