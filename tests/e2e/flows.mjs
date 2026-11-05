@@ -185,8 +185,10 @@ export const flows = [
   },
   {
     // ⌘K opens the palette from anywhere; typing filters it and Enter runs the
-    // active result. Go to Home leaves the workspace, and searching the
-    // workspace's name brings it back.
+    // active result. Go to Home leaves the workspace for the Home list
+    // (Conductor's /all-workspaces, titled "Home"; the wordmark-and-cards
+    // screen at / only shows at start-up), and searching the workspace's name
+    // brings it back.
     name: "command-palette",
     async run(wd) {
       const META = "\uE03D";
@@ -221,7 +223,17 @@ export const flows = [
 
       await open();
       await run("Go to Home", "Go to Home");
-      await wd.waitFor("the Home screen", async () => (await wd.findAll(".home")).length > 0 && (await wd.findAll(".workspace")).length === 0);
+      const homeList = () =>
+        wd.execute(
+          "return { title: document.querySelector('.allws .allws-title')?.textContent.trim() ?? null, rows: document.querySelectorAll('.allws .allws-row').length, workspace: !!document.querySelector('.workspace') };",
+          [],
+        );
+      await wd.waitFor("the Home list with the workspace's row", async () => {
+        const h = await homeList();
+        return h.title === "Home" && h.rows > 0 && !h.workspace;
+      }).catch(async (e) => {
+        throw new Error(`${e.message}; saw ${JSON.stringify(await homeList())}`);
+      });
 
       await open();
       await run(name, name);

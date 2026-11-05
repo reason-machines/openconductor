@@ -142,6 +142,20 @@ pub async fn record_rename(pool: &SqlitePool, local_id: &str, branch: &str) -> R
     workspaces::rename_branch(pool, local_id, branch, None).await
 }
 
+/// Save the branch a workspace merges into (`intended_target_branch`).
+pub async fn set_target_branch(pool: &SqlitePool, local_id: &str, branch: &str) -> Result<()> {
+    workspaces::set_target_branch(pool, local_id, Some(branch)).await
+}
+
+/// Bring an archived workspace back: `ready`, since archiving keeps the
+/// worktree. Errors when it is not archived.
+pub async fn unarchive(pool: &SqlitePool, local_id: &str) -> Result<()> {
+    if !workspaces::unarchive(pool, local_id).await? {
+        return Err(openconductor_db::Error::NotFound);
+    }
+    workspaces::set_state(pool, local_id, WorkspaceState::Ready).await
+}
+
 /// Mark a workspace archived, keeping its branch.
 pub async fn archive(pool: &SqlitePool, local_id: &str) -> Result<()> {
     let w = workspaces::get(pool, local_id)
@@ -210,6 +224,8 @@ pub struct WorkspaceRow {
     pub derived_status: Option<String>,
     pub manual_status: Option<String>,
     pub workspace_path: Option<String>,
+    /// `intended_target_branch`: the branch the work merges into; "All changes" diffs against it.
+    pub intended_target_branch: Option<String>,
     pub pinned_at: Option<String>,
     pub unread: bool,
     /// The PR's title and body as last stored (`pr_title`, `pr_description`):
@@ -256,6 +272,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 derived_status: w.derived_status,
                 manual_status: w.manual_status,
                 workspace_path: w.workspace_path,
+                intended_target_branch: w.intended_target_branch,
                 pinned_at: w.pinned_at,
                 unread: w.unread,
                 pr_title: w.pr_title,

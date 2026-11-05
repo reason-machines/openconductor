@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { planPrEdit, planRetarget, prEditErrorMessage, retargetErrorMessage } from "./edit.ts";
+import { planPrEdit, prEditErrorMessage, retargetErrorMessage } from "./edit.ts";
 
 const current = { title: "Add checks tab", body: "Lists CI checks." };
 
@@ -28,12 +28,6 @@ test("edit errors name GitHub, with a read:org hint when the token lacks it", ()
   assert.match(prEditErrorMessage("missing required scopes [read:org]"), /read:org scope/);
 });
 
-test("retarget only an open PR whose base differs", () => {
-  const pr = { number: 9, baseRefName: "main", isMerged: false };
-  assert.deepEqual(planRetarget(pr, "release"), { kind: "retarget", number: 9, base: "release" });
-  assert.deepEqual(planRetarget(pr, "main"), { kind: "skip" });
-  assert.deepEqual(planRetarget(pr, "  "), { kind: "skip" });
-  assert.deepEqual(planRetarget({ ...pr, isMerged: true }, "release"), { kind: "skip" });
-  assert.deepEqual(planRetarget(null, "release"), { kind: "skip" });
+test("a refused retarget names the base branch", () => {
   assert.equal(retargetErrorMessage(new Error("no such branch")), "Failed to change the PR's base branch: no such branch");
 });

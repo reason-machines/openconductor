@@ -30,6 +30,8 @@ export interface DbWorkspaceRow {
   derivedStatus: string | null;
   manualStatus: string | null;
   workspacePath: string | null;
+  /** `intended_target_branch`; absent from rows of an older backend. */
+  intendedTargetBranch?: string | null;
   pinnedAt: string | null;
   unread: boolean;
   /** The PR's title and body as last stored (`pr_title`, `pr_description`). */
@@ -68,18 +70,21 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
       defaultBranch: r.defaultBranch,
       collapsed: folded.has(r.id) || undefined,
       hidden: r.hidden || undefined,
+      icon: r.icon,
       workspaces: workspaces
         .filter((w) => w.repositoryId === r.id && !HIDDEN_STATES.has(w.state))
         .map(
           (w): Workspace => ({
             id: w.id,
             name: w.workspaceName ?? w.directoryName,
+            directoryName: w.directoryName,
             branch: w.branch,
             status: "idle",
             diff: { added: 0, removed: 0 },
             createdAt: sqliteTime(w.createdAt),
             path: w.workspacePath ?? undefined,
             placeholderBranchName: w.placeholderBranchName,
+            targetBranch: w.intendedTargetBranch ?? null,
             /* sidebar: pin, unread and status columns */
             pinnedAt: w.pinnedAt ? sqliteTime(w.pinnedAt) : undefined,
             unread: w.unread || undefined,
