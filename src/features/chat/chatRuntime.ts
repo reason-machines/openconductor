@@ -177,6 +177,8 @@ export interface ChatRuntime<Config> {
    * or at once when it was no longer open.
    */
   answerPermission(chatId: string, requestId: string, optionId: string | null): Promise<void>;
+  /** The options the chat's sessions open with: picked, defaulted, or `defaultConfig`. */
+  config(chatId: string): Promise<Config>;
 }
 
 interface Chat<Config> {
@@ -577,6 +579,9 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       if (c.configured || c.opened) return;
       c.config = config.catch(() => backend.defaultConfig);
       c.configured = true;
+    },
+    config(chatId) {
+      return Promise.resolve(chat(chatId).config);
     },
   };
 }

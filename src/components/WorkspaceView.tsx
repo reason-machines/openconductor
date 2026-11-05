@@ -3,8 +3,10 @@ import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { answerPermission, chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type PermissionPrompt } from "../features/chat/reasonChat.ts";
+import { answerPermission, chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, reasonChatConfig, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type PermissionPrompt } from "../features/chat/reasonChat.ts";
 import { PermissionRequests } from "../features/chat/PermissionRequests.tsx";
+import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
+import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
@@ -89,6 +91,8 @@ interface ChatPanelProps extends Props {
   onRunningChange?: (running: boolean) => void;
   /** A file chip under a finished turn: open that file's changes from the turn. */
   openTurnFile: (turn: TurnRef, path: string) => void;
+  /** Opens a forked chat tab on `config` with `draft` in its composer; returns its chat id. */
+  forkToNewTab: (title: string, config: ConfigChoice[], draft: { text: string; attachments: TextAttachment[] }) => string;
 }
 
 // Which agent runs a chat; each keeps its own transcript.
@@ -117,7 +121,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
 /** What the chat panel shows: Codex's approvals, or Reason's permission requests. */
 type ChatView = CodexSnapshot & { permissions?: readonly PermissionPrompt[] };
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, forkToNewTab }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -132,6 +136,10 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   const [attachError, setAttachError] = useState<string | null>(null);
   /** The turn whose "Reset chat?" dialog is open. */
   const [resetTurn, setResetTurn] = useState<string | null>(null);
+  /** A "Fork to new tab" is reading the chat's options. */
+  const [forking, setForking] = useState(false);
+  /** The turn footer hover's "Opus 5.5 via Reason". */
+  const [turnAgent, setTurnAgent] = useState<string | undefined>(undefined);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const running = transcript.activeTurn !== null;
@@ -167,6 +175,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     const pendingMessage = takePendingMessage(chatId);
     if (pendingMessage?.kind === "draft") {
       setDraft(pendingMessage.text);
+      setAttachments(pendingMessage.attachments ?? []);
       inputRef.current?.focus();
     }
     // The workspace's chat runs the default model unless the New workspace dialog picked one.
@@ -235,6 +244,44 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
+  // The chat's model, for the turn footer hover. A Codex chat names only its agent.
+  useEffect(() => {
+    let live = true;
+    setTurnAgent(codex ? "Codex" : "Reason");
+    if (!codex)
+      void reasonChatConfig(chatId).then((config) => {
+        if (live) setTurnAgent(turnAgentLabel(config.find((o) => o.id === "model")?.value, "Reason"));
+      });
+    return () => {
+      live = false;
+    };
+  }, [chatId, codex]);
+
+  /**
+   * Conductor's "Fork to new tab" (`y9t`): a new tab in this workspace on this
+   * chat's options, with the conversation up to `turnId` attached as
+   * "Transcript of <title>.md" and this composer's text copied. Not sent.
+   */
+  async function forkToTab(turnId: string) {
+    setAttachError(null);
+    const markdown = forkTranscript(transcript, turnId);
+    if (markdown === null) {
+      setAttachError("Unable to fork chat to new tab: failed to generate chat transcript");
+      return;
+    }
+    setForking(true);
+    try {
+      const config = codex ? [] : await reasonChatConfig(chatId);
+      const title = review?.title ?? workspace.name;
+      const id = forkToNewTab(`Fork of ${title}`, config, { text: draft, attachments: [{ name: forkAttachmentName(title), text: markdown }] });
+      if (codex) localStorage.setItem(agentKey(id), "codex");
+    } catch (e) {
+      setAttachError(e instanceof Error ? e.message : "Failed to fork chat to new tab");
+    } finally {
+      setForking(false);
+    }
+  }
+
   const turnFooter = (turnId: string) => {
     const turn = turnCheckpointRef(chatId, turnId);
     return <TurnChanges turn={turn} worktree={workspace.path ?? null} onOpenFile={(path) => openTurnFile(turn, path)} />;
@@ -301,7 +348,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       {tabs}
       {content}
       <div className="chat-scroll" hidden={content !== null}>
-        {review && (
+        {review && !review.fork && (
           <div className="review-chat-info muted" role="note">
             Code review on {review.modelLabel}
             {review.effort ? `, ${review.effort} effort` : ""}
@@ -332,6 +379,10 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             onResetChat={reason && !codex && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
             turnFooter={codex ? undefined : turnFooter}
+            // Conductor: any turn of a chat in a workspace that is not archived; disabled while a fork is made.
+            onForkToNewTab={workspace.status !== "archived" ? (turnId) => void forkToTab(turnId) : undefined}
+            forkDisabled={forking}
+            turnAgent={turnAgent}
           />
         )}
         <div ref={endRef} />
@@ -526,7 +577,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
       )}
       {reviews.map((r) => (
         <span key={r.chatId} className={`main-tab${active === r.chatId ? " active" : ""}`}>
-          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} title={`Code review on ${r.modelLabel}`}>
+          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} title={r.fork ? r.title : `Code review on ${r.modelLabel}`}>
             {r.title}
           </button>
           <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} title="Close tab" aria-label={`Close ${r.title} tab`}>
@@ -770,6 +821,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
+          forkToNewTab={reviews.fork}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
           content={
             showDiff ? (
