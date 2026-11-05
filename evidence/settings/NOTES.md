@@ -206,3 +206,44 @@ zoom anywhere in the app. Divergences and gaps:
   Markdown Style.
 - Terminal font (`terminal_font_family`, `terminal_font_size`) is built by the terminal
   area; see `evidence/terminal/NOTES.md`.
+
+## Settings routes
+
+Source: Conductor 0.87.6 `renderApp-D_fmY7hW.js`, REA-extracted Tauri assets on `sven m5 max`
+(`~/code/conductor-rea-work/frontend/dist/assets`), read by the Settings twin Session 6020ca9e on
+2026-11-05. Conductor builds the tree with TanStack `Ha({getParentRoute,path})` under `/settings`.
+
+- `/settings` index (`nCa`, search `tab`, `repoId`, `cloudProjectId`, `providerTab`, `scrollTo`):
+  `cloudProjectId` opens `/settings/cloud/$cloudProjectId`; `tab=repo-<id>` opens
+  `/settings/repos/<id>/misc`; a repo section tab (`environment`, `git`, `scripts`, `actions`,
+  `misc`) with `repoId` opens that repo's section, without one the repo-only sections go to
+  `/settings/repos?section=<tab>` (`environment` and `git` have user pages); any other tab goes
+  through `Jse` (tab to path), unknown tabs to General. All redirects replace history.
+- `/settings/user/` opens General. `/settings/repos` opens the repo of the last workspace viewed,
+  else the first selectable repo, else General; `/settings/repos/$repoId/` opens `environment`.
+- Every `/settings/organization/*` page (`computer`, `environment`, `mcp`, `prompts`,
+  `repositories/$owner/$repo{,/git,/scripts}`, plus `github`, `members`, `preferences`,
+  `mcp-servers`) is wrapped in `lW`, which redirects to `/settings/user/general` unless the active
+  organization is a cloud one; `/settings/cloud/*` needs a personal cloud account (`Jna`). Ports is
+  listed only for a cloud org and Internal only for internal builds.
+- Navigation (`jWt`, `dti`, `I9a`, `A9a`): Personal [General, Account, Appearance, Default models,
+  Git, Ports], Agents & environment [Agents, Environment] followed, for a local org, by a
+  Repositories list where the active repo expands to its sections; More [Experimental, Advanced].
+- Scope by path (`S9a`): `/settings/repos` is "workspace" and edits
+  `<repo>/.conductor/settings.local.toml`; user pages edit `<config dir>/settings.toml`.
+
+OpenConductor (`src/settings/routes.ts`) has the same tree and redirects. Every OpenConductor user
+is local, so the organization and cloud routes, Ports and Internal all resolve to General, as
+Conductor does for a local user. The URL follows the open page (`history.replaceState`), keeping
+unrelated query parameters. On the desktop, repositories arrive from conductor.db after mount, so
+a `/settings/repos...` start URL is resolved again once they are loaded. Divergences and gaps:
+
+- Keyboard shortcuts is a normal page here (Conductor: internal builds only); it sits after
+  Appearance as in Conductor.
+- Account shows only the GitHub CLI login (no Conductor account, billing, Linear or sign out).
+- Environment (user and repo) has no rows yet: they come with the settings.toml workspace keys.
+- Repo Git shows the base branch and remote read-only (Conductor lets you change both); repo
+  Scripts shows the resolved setup, run and archive scripts read-only; repo Actions has Use
+  spotlight testing (General preferences, `custom_prompt_general`, comes with the prompts keys);
+  repo Misc shows the root path only (no icon, workspaces path or Remove repository yet).
+- Settings search (`vUi` keywords per tab) is not built.
