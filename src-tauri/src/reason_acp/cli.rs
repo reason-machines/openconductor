@@ -135,8 +135,14 @@ impl LaunchConfig {
     /// The command, with piped stdio, run in `dir`. `PATH` gets the CLI's
     /// own folder and the fallback folders appended so the tools `reason`
     /// runs on this computer (git, gh) resolve under a bare GUI `PATH`.
+    /// `DYLD_*` variables are dropped: `reason` refuses to start with them
+    /// ("unsafe inherited runtime environment"), and `cargo run`, `cargo
+    /// test` and `tauri dev` set `DYLD_FALLBACK_LIBRARY_PATH` on macOS.
     pub fn command(&self, dir: &Path) -> Command {
         let mut cmd = Command::new(&self.cli);
+        for key in refused_env(env::vars_os()) {
+            cmd.env_remove(key);
+        }
         cmd.args(self.args())
             .current_dir(dir)
             .env("PATH", self.path_env(env::var_os("PATH")))
@@ -158,6 +164,13 @@ impl LaunchConfig {
         }
         env::join_paths(dirs).unwrap_or_default()
     }
+}
+
+/// The inherited variables `reason` refuses to start with.
+pub(crate) fn refused_env(vars: impl Iterator<Item = (OsString, OsString)>) -> Vec<OsString> {
+    vars.filter(|(k, _)| k.to_string_lossy().starts_with("DYLD_"))
+        .map(|(k, _)| k)
+        .collect()
 }
 
 fn checked(flag: &'static str, value: &str) -> Result<String, LaunchError> {

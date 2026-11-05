@@ -25,6 +25,7 @@ pub use sqlx::sqlite::SqlitePool;
 
 pub mod diff_comments;
 pub mod repos;
+pub mod terminal_sessions;
 pub mod workspaces;
 
 /// Every schema migration, embedded from `migrations/`.

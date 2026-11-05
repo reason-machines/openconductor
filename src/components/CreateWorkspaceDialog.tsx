@@ -34,6 +34,8 @@ interface Props {
   githubUsername: string | null;
   onClose: () => void;
   onAddRepository: () => void;
+  /** A non-fatal issue while creating the workspace; the workspace still opens. */
+  onWarning: (message: string) => void;
   dispatch: Dispatch<Action>;
 }
 
@@ -46,7 +48,7 @@ function suggestName(repo: Repo | undefined, branches: string[] = []): Generated
   return generateWorkspaceNames(1, taken, Math.random)[0];
 }
 
-export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, githubUsername, onClose, onAddRepository, dispatch }: Props) {
+export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, githubUsername, onClose, onAddRepository, onWarning, dispatch }: Props) {
   const startRepo = repos.find((r) => r.id === initialRepoId) ?? repos[0];
   const [city, setCity] = useState(() => suggestName(startRepo));
   const [draft, setDraft] = useState<CreateDraft>(() =>
@@ -136,6 +138,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
       const backendRepo = await ensureRepository(repo.path);
       const created = await createWorkspace(toCreateWorkspaceArgs({ ...built.request, repoId: backendRepo.id }));
       send({ type: "created", workspaceId: created.workspace.id });
+      if (created.upstreamWarning) onWarning(created.upstreamWarning);
       send({ type: "setup_detected", started: await startSetupScript(backendRepo, created, built.request.targetBranch) });
       const { id, directoryName, branchName, path } = created.workspace;
       const { naming, firstSession } = built.request;
