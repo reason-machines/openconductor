@@ -50,7 +50,8 @@ fn runs_in_cwd_with_env_and_merges_output() {
         }
     );
     let text = p.transcript.text();
-    let cwd = fs::canonicalize(tmp.path()).unwrap();
+    // `pwd` reports the logical $PWD we set (macOS temp dirs sit behind /var -> /private/var).
+    let cwd = tmp.path();
     assert!(text.contains("out\n") && text.contains("err\n"), "{text}");
     assert!(
         text.contains(&format!("55000 xterm-256color {}", cwd.display())),
