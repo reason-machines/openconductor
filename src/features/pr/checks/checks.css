@@ -2,6 +2,7 @@
 .checks { flex: 1; overflow-y: auto; padding: 4px 0 12px; }
 .checks-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 18px; }
 .checks-title { font-size: 12px; font-weight: 500; color: var(--muted); }
+.checks-actions { display: flex; align-items: center; gap: 4px; }
 .checks-head .btn-ghost { background: transparent; border-color: transparent; color: var(--muted); }
 .checks-head .btn-ghost:hover:not(:disabled) { color: var(--text); background: var(--hover); }
 .checks-error { margin: 0 18px 6px; }

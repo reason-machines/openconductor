@@ -36,6 +36,10 @@ export type Action =
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
   /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
   | { type: "setWorkspaceWorking"; repoId: string; workspaceId: string; working: boolean }
+  /** Unarchive from the archive-on-merge toast: put the workspace back where it was. */
+  | { type: "restoreWorkspace"; repoId: string; workspace: Workspace }
+  /** The target-branch picker saved `intended_target_branch` (useTargetBranch writes the row). */
+  | { type: "setWorkspaceTargetBranch"; repoId: string; workspaceId: string; branch: string }
   | { type: "toggleSidebar" }
   /** Sidebar repo menu: Hide / Unhide repository (`repos.hidden`). */
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
@@ -136,6 +140,14 @@ export function reducer(state: AppState, action: Action): AppState {
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
     }
+    case "restoreWorkspace": {
+      const repos = state.repos.map((r) =>
+        r.id === action.repoId && !r.workspaces.some((w) => w.id === action.workspace.id) ? { ...r, workspaces: [...r.workspaces, action.workspace] } : r,
+      );
+      return { ...state, repos };
+    }
+    case "setWorkspaceTargetBranch":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, targetBranch: action.branch }));
     case "archiveWorkspace": {
       const repos = state.repos.map((r) =>
         r.id === action.repoId ? { ...r, workspaces: r.workspaces.filter((w) => w.id !== action.workspaceId) } : r,
@@ -283,6 +295,9 @@ export function useAppStore() {
         console.error(`conductor.db: could not ${what}`, err);
         loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined);
       };
+      if (desktop && action.type === "restoreWorkspace") {
+        invoke("db_unarchive_workspace", { workspaceId: action.workspace.id }).catch(rollback("unarchive workspace"));
+      }
       if (desktop && action.type === "setRepoHidden") {
         invoke("db_set_repo_hidden", { repoId: action.repoId, hidden: action.hidden }).catch(rollback("hide repository"));
       }
