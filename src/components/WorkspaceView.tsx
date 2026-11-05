@@ -32,6 +32,9 @@ import { RUNNING_SETUP } from "../workspace/createFlow";
 import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest";
 import { useArchiveOnMerge } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
+import { PrTab } from "../features/pr/PrTab";
+import { BranchPicker } from "../features/pr/edit/BranchPicker";
+import { useTargetBranch, type TargetBranch } from "../features/pr/useTargetBranch";
 import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
 import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
@@ -251,8 +254,6 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
           worktree={worktree}
           pr={pr.pr}
           refresh={pr.refresh}
-          repoPath={repo.path}
-          defaultBranch={repo.defaultBranch}
           repoId={repo.id}
           sendToChat={sendToChat}
           readOnly={readOnly}
@@ -268,20 +269,23 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
   );
 }
 
-/** "chat" (the workspace's chat), "diff" (All changes) or a review chat's id. */
+/** "chat" (the workspace's chat), "diff" (All changes), "pr" (the PR tab) or a review chat's id. */
 type MainTab = string;
 
 interface MainTabsProps {
   title: string;
   active: MainTab;
   diffOpen: boolean;
+  /** "PR #N" while the PR tab is open. */
+  prTab: string | null;
+  onClosePr: () => void;
   reviews: ReviewTab[];
   onSelect: (t: MainTab) => void;
   onCloseDiff: () => void;
   onCloseReview: (chatId: string) => void;
 }
 
-function MainTabs({ title, active, diffOpen, reviews, onSelect, onCloseDiff, onCloseReview }: MainTabsProps) {
+function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview }: MainTabsProps) {
   return (
     <div className="tabs main-tabs" role="tablist" aria-label="Workspace tabs">
       {diffOpen && (
@@ -299,6 +303,16 @@ function MainTabs({ title, active, diffOpen, reviews, onSelect, onCloseDiff, onC
           {title}
         </button>
       </span>
+      {prTab && (
+        <span className={`main-tab${active === "pr" ? " active" : ""}`}>
+          <button role="tab" aria-selected={active === "pr"} className={active === "pr" ? "active" : ""} onClick={() => onSelect("pr")}>
+            {prTab}
+          </button>
+          <button className="main-tab-close" onClick={onClosePr} title="Close tab" aria-label={`Close ${prTab} tab`}>
+            ×
+          </button>
+        </span>
+      )}
       {reviews.map((r) => (
         <span key={r.chatId} className={`main-tab${active === r.chatId ? " active" : ""}`}>
           <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} title={`Code review on ${r.modelLabel}`}>
@@ -310,6 +324,41 @@ function MainTabs({ title, active, diffOpen, reviews, onSelect, onCloseDiff, onC
         </span>
       ))}
     </div>
+  );
+}
+
+/** "→ <target>" in the workspace header: the target branch picker (Conductor's `sxi`). */
+function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; open: boolean; setOpen: (v: boolean) => void; repo: Repo }) {
+  const disabled = target.disabledReason !== null || target.changing;
+  return (
+    <span className="pr-base-anchor target-chip">
+      <button
+        className="chip"
+        disabled={disabled}
+        aria-label={`Target branch ${target.branch}`}
+        title={target.disabledReason ?? target.error ?? "Target branch"}
+        onClick={() => setOpen(!open)}
+      >
+        → {target.branch}
+      </button>
+      {open && (
+        <BranchPicker
+          base={target.branch}
+          repoPath={repo.path}
+          defaultBranch={repo.defaultBranch}
+          onPick={(b) => {
+            setOpen(false);
+            void target.change(b);
+          }}
+          onClose={() => setOpen(false)}
+        />
+      )}
+      {target.error && (
+        <span className="error small" role="alert">
+          {target.error}
+        </span>
+      )}
+    </span>
   );
 }
 
@@ -327,10 +376,24 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
   const [diffOpen, setDiffOpen] = useState(false);
   const [mainTab, setMainTab] = useState<MainTab>("chat");
+  const [prOpen, setPrOpen] = useState(false);
+  const [pickingTarget, setPickingTarget] = useState(false);
   useEffect(() => {
     setDiffOpen(false);
+    setPrOpen(false);
+    setPickingTarget(false);
     setMainTab("chat");
   }, [workspace.id]);
+  const openPrTab = useCallback(() => {
+    setPrOpen(true);
+    setMainTab("pr");
+  }, []);
+  const closePrTab = () => {
+    setPrOpen(false);
+    setMainTab("chat");
+  };
+  // The branch the work merges into; an open PR's base wins once the lookup answers (useTargetBranch).
+  const intendedTarget = workspace.targetBranch || repo.defaultBranch;
   const openDiffTab = useCallback(() => {
     setDiffOpen(true);
     setMainTab("diff");
@@ -343,7 +406,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   // The review hook needs the loaded files and the diff needs the hook's reveal, so loads go through a ref.
   const loaded = useRef<((files: FileDiff[], scope: DiffScope) => void) | null>(null);
   const onLoaded = useCallback((files: FileDiff[], scope: DiffScope) => loaded.current?.(files, scope), []);
-  const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, baseBranch: repo.defaultBranch, onLoaded, onOpen: openDiffTab });
+  const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, baseBranch: intendedTarget, onLoaded, onOpen: openDiffTab });
   // Inserts go to the chat shown; sends (e.g. Create PR) go to the workspace's own chat, switching to it.
   const shownChat = useRef<string>(workspace.id);
   const chat = useMemo<ChatBridge>(
@@ -377,12 +440,13 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     },
     [dispatch, repo.id, workspace.id, archiveOnMerge],
   );
-  const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, onLookup });
+  const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: intendedTarget, agentWorking, onLookup });
+  const target = useTargetBranch({ repo, workspace, pr: pullRequest.pr, refresh: pullRequest.refresh, dispatch });
   const prActions = usePrActions({
     pullRequest,
     worktree: workspace.path ?? null,
     branch: workspace.branch,
-    targetBranch: repo.defaultBranch,
+    targetBranch: target.branch,
     sendToAgent: chat.send,
     notify,
   });
@@ -395,7 +459,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const canReview = diff.load.state === "ready" && diff.files.length > 0;
 
   // Cycles All changes, the workspace chat and review chats in strip order.
-  const tabOrder = [...(diffOpen ? ["diff"] : []), "chat", ...reviews.tabs.map((r) => r.chatId)];
+  const tabOrder = [...(diffOpen ? ["diff"] : []), "chat", ...(prOpen ? ["pr"] : []), ...reviews.tabs.map((r) => r.chatId)];
   const stepTab = (dir: 1 | -1) => setMainTab((t) => tabOrder[(tabOrder.indexOf(t) + dir + tabOrder.length) % tabOrder.length] ?? "chat");
   useKeybindings({
     "view.toggleTerminalPanel": () => setShowTerminal((v) => !v),
@@ -412,8 +476,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "git.openInGitHub": prActions.openOnGitHub,
   });
   const showDiff = diffOpen && mainTab === "diff";
+  const showPr = prOpen && mainTab === "pr";
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
-  const activeTab = showDiff ? "diff" : (activeReview?.chatId ?? "chat");
+  const activeTab = showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
+  const prNumber = pullRequest.pr?.number ?? null;
   shownChat.current = activeReview?.chatId ?? workspace.id;
   return (
     <div className="workspace">
@@ -425,6 +491,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           <span className="chip">
             <BranchIcon size={12} /> {workspace.branch}
           </span>
+          <TargetChip target={target} open={pickingTarget} setOpen={setPickingTarget} repo={repo} />
+          {prNumber !== null && (
+            <button className="chip pr-chip" title="Open the PR tab" onClick={openPrTab}>
+              PR #{prNumber}
+            </button>
+          )}
           <span className={`chip status ${workspace.status}`}>
             <span className={`status-dot ${workspace.status}`} /> {STATUS_TEXT[workspace.status]}
           </span>
@@ -454,8 +526,24 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
-          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
-          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} /> : null}
+          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
+          content={
+            showDiff ? (
+              <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} />
+            ) : showPr ? (
+              <PrTab
+                worktree={workspace.path ?? null}
+                pr={pullRequest.pr}
+                refresh={pullRequest.refresh}
+                repoId={repo.id}
+                sendToChat={sendToChat}
+                readOnly={workspace.status === "archived"}
+                repoPath={repo.path}
+                defaultBranch={repo.defaultBranch}
+                target={target}
+              />
+            ) : null
+          }
         />
         <div className="ws-right">
           <RightPanel

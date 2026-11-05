@@ -33,6 +33,8 @@ export interface Workspace {
   derivedStatus?: WorkspaceStatusValue;
   /** `workspaces.number`, given on creation and shown as `W-<n>`; null for workspaces from before numbering. */
   number?: number | null;
+  /** `intended_target_branch`: the branch the work merges into; the repository default when unset. */
+  targetBranch?: string | null;
 }
 
 export interface Repo {

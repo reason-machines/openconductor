@@ -102,6 +102,29 @@ async fn create_lifecycle_initializing_then_ready() {
 }
 
 #[tokio::test]
+async fn target_branch_is_listed_and_saved() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    begin_workspace(&pool, &ws("app", "oslo"), Some("develop"))
+        .await
+        .unwrap();
+    assert_eq!(
+        list_workspaces(&pool).await.unwrap()[0]
+            .intended_target_branch
+            .as_deref(),
+        Some("develop")
+    );
+    set_target_branch(&pool, "app/oslo", "release/2").await.unwrap();
+    assert_eq!(
+        list_workspaces(&pool).await.unwrap()[0]
+            .intended_target_branch
+            .as_deref(),
+        Some("release/2")
+    );
+    assert!(set_target_branch(&pool, "app/missing", "main").await.is_err());
+}
+
+#[tokio::test]
 async fn failed_create_leaves_no_row() {
     let pool = pool().await;
     record_repository(&pool, &repo("app")).await.unwrap();

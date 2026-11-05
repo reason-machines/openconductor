@@ -32,6 +32,8 @@ export interface DbWorkspaceRow {
   unread: boolean;
   /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
   number: number | null;
+  /** `intended_target_branch`. */
+  intendedTargetBranch: string | null;
   createdAt: string;
 }
 
@@ -81,6 +83,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
             derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
             number: w.number ?? null,
+            targetBranch: w.intendedTargetBranch ?? null,
           }),
         ),
     }));

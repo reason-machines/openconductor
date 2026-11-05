@@ -294,6 +294,7 @@ pub fn run() {
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
             persistence_commands::db_repo_prompt,
+            persistence_commands::db_set_workspace_target_branch,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
             sidebar_workspace_commands::db_set_workspace_pinned,

@@ -31,6 +31,8 @@ export type Action =
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
   /** The workspace's pull request title changed on GitHub (`workspaces.pr_title`). */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null }
+  /** The target-branch picker saved `intended_target_branch` (useTargetBranch writes the row). */
+  | { type: "setWorkspaceTargetBranch"; repoId: string; workspaceId: string; branch: string }
   | { type: "toggleSidebar" }
   /** Sidebar repo menu: Hide / Unhide repository (`repos.hidden`). */
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
@@ -115,6 +117,8 @@ export function reducer(state: AppState, action: Action): AppState {
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
     }
+    case "setWorkspaceTargetBranch":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, targetBranch: action.branch }));
     case "archiveWorkspace": {
       const repos = state.repos.map((r) =>
         r.id === action.repoId ? { ...r, workspaces: r.workspaces.filter((w) => w.id !== action.workspaceId) } : r,

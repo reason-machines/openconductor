@@ -142,6 +142,11 @@ pub async fn record_rename(pool: &SqlitePool, local_id: &str, branch: &str) -> R
     workspaces::rename_branch(pool, local_id, branch, None).await
 }
 
+/// Save the branch a workspace merges into (`intended_target_branch`).
+pub async fn set_target_branch(pool: &SqlitePool, local_id: &str, branch: &str) -> Result<()> {
+    workspaces::set_target_branch(pool, local_id, Some(branch)).await
+}
+
 /// Mark a workspace archived, keeping its branch.
 pub async fn archive(pool: &SqlitePool, local_id: &str) -> Result<()> {
     let w = workspaces::get(pool, local_id)
@@ -212,6 +217,9 @@ pub struct WorkspaceRow {
     pub unread: bool,
     /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
     pub number: Option<i64>,
+    /// `workspaces.intended_target_branch`: the branch the work merges into,
+    /// set at creation and by the target-branch picker.
+    pub intended_target_branch: Option<String>,
     pub created_at: String,
 }
 
@@ -252,6 +260,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 pinned_at: w.pinned_at,
                 unread: w.unread,
                 number: w.number,
+                intended_target_branch: w.intended_target_branch,
                 created_at: w.created_at,
                 repository_id: w.repository_id,
                 id: w.local_id,
