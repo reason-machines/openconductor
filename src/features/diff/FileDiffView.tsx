@@ -6,14 +6,16 @@
 // number-column hover and a gutter button that starts a comment.
 // Like Conductor, the file is one item of a Pierre CodeView, which renders only
 // the rows in and near the viewport, so a long diff stays cheap to show.
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { processFile, type CodeViewItem, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
 import { CodeView, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
 import { WhitespaceOnly } from "./Whitespace";
+import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
 import type { CommentSide } from "./comments.ts";
-import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, PIERRE_THEME, codeViewItem, fromPierreSide, lineTarget, loadedFiles, toPatch } from "./pierre.ts";
+import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, codeViewItem, fromPierreSide, lineTarget, loadedFiles, toPatch } from "./pierre.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
+import { useDiffTheme } from "./useDiffTheme.ts";
 
 export type LineAnchor = Anchor;
 
@@ -69,7 +71,17 @@ export function revealLine(path: string, anchor: LineAnchor): boolean {
 
 function Code({ file, layout, ignoreWhitespace, onLineClick, anchors = [], annotations, loadFull }: Props) {
   const themeType = useThemeType();
-  const view = useRef<CodeViewHandle<LineAnchor, undefined>>(null);
+  const theme = useDiffTheme();
+  const view = useRef<CodeViewHandle<LineAnchor, undefined> | null>(null);
+  // The handle in state too, so comment navigation subscribes once the CodeView exists.
+  const [handle, setHandle] = useState<CodeViewHandle<LineAnchor, undefined> | null>(null);
+  const attach = useCallback((h: CodeViewHandle<LineAnchor, undefined> | null) => {
+    view.current = h;
+    setHandle(h);
+  }, []);
+  const nav = useCommentNavigation(handle, file.path, anchors);
+  const refreshNav = useRef(nav.refresh);
+  refreshNav.current = nav.refresh;
   // Pierre upgrades this object in place when it loads the full file, so keep it per file.
   const meta = useMemo(() => processFile(toPatch(file), { isGitDiff: true }), [file]);
 
@@ -87,7 +99,7 @@ function Code({ file, layout, ignoreWhitespace, onLineClick, anchors = [], annot
       disableFileHeader: true,
       layout: CODE_VIEW_LAYOUT,
       overflow: "scroll",
-      theme: PIERRE_THEME,
+      theme,
       themeType,
       lineHoverHighlight: "number",
       enableGutterUtility: clickable,
@@ -100,8 +112,10 @@ function Code({ file, layout, ignoreWhitespace, onLineClick, anchors = [], annot
       expansionLineCount: EXPANSION_LINE_COUNT,
       loadDiffFiles: canLoad ? async () => loadedFiles(await latest.current.loadFull!()) : undefined,
       parseDiffOptions: ignoreWhitespace ? { ignoreWhitespace: true } : undefined,
+      // Rows (and comment heights) settle after a render: re-count the comments then.
+      onPostRender: () => refreshNav.current(),
     }),
-    [themeType, clickable, canLoad, layout, fileSide, ignoreWhitespace],
+    [theme, themeType, clickable, canLoad, layout, fileSide, ignoreWhitespace],
   );
 
   useEffect(() => {
@@ -114,13 +128,16 @@ function Code({ file, layout, ignoreWhitespace, onLineClick, anchors = [], annot
 
   if (!meta && layout !== "file") return <div className="oc-file-note">This diff couldn't be displayed.</div>;
   return (
-    <CodeView<LineAnchor>
-      ref={view}
-      className="oc-code-view"
-      items={[item]}
-      options={options}
-      renderAnnotation={(...[a]) => annotations?.(a.metadata!)}
-    />
+    <>
+      <CodeView<LineAnchor>
+        ref={attach}
+        className="oc-code-view"
+        items={[item]}
+        options={options}
+        renderAnnotation={(...[a]) => annotations?.(a.metadata!)}
+      />
+      <CommentNav previousCount={nav.previousCount} nextCount={nav.nextCount} navigate={nav.navigate} />
+    </>
   );
 }
 

@@ -31,6 +31,8 @@ export interface CreatedWorkspaceDto {
   copiedFiles: string[];
   /** Set when "Set upstream on plain git push" could not be applied to the new workspace. */
   upstreamWarning: string | null;
+  /** `workspaces.number` assigned on creation (shown as `W-<n>`); null when conductor.db could not record it. */
+  number: number | null;
 }
 
 
@@ -82,6 +84,8 @@ export async function listBranches(repoId: string, defaultBranch: string): Promi
   return invoke<BranchDto[]>("list_branches", { repoId });
 }
 
+let browserNumber = 0;
+
 export async function createWorkspace(args: CreateWorkspaceArgs): Promise<CreatedWorkspaceDto> {
   if (!inTauri()) {
     await new Promise((r) => setTimeout(r, 400));
@@ -94,6 +98,7 @@ export async function createWorkspace(args: CreateWorkspaceArgs): Promise<Create
       copiedFiles: [],
       // `?upstream-warning` in a plain browser previews the warning toast.
       upstreamWarning: new URLSearchParams(window.location.search).has("upstream-warning") ? UPSTREAM_WARNING : null,
+      number: ++browserNumber,
     };
   }
   return invoke<CreatedWorkspaceDto>("create_workspace", { ...args });

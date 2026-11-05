@@ -182,8 +182,9 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
   const [resolving, setResolving] = useState(false);
   useEffect(() => setOpen(!resolved), [resolved]);
   // GitHub threads are resolved on GitHub (there is no unresolve) and replies are not posted there.
-  const remote = isRemoteThread(thread);
-  const resolveRemote = ops.resolveOnGithub;
+  // PR-level GitHub comments have no thread to resolve.
+  const remote = commentSource(thread.root) === "remote";
+  const resolveRemote = isRemoteThread(thread) ? ops.resolveOnGithub : undefined;
   const all = [thread.root, ...thread.replies];
   const pending = pendingForAgent(all);
   return (
@@ -200,38 +201,40 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
           {replying ? (
             <Composer placeholder="Reply…" submitLabel="Reply" onCancel={() => setReplying(false)} onSubmit={(b) => void ops.reply(thread.root, b).then((ok) => ok && setReplying(false))} />
           ) : (
-            <div className="oc-thread-bar">
-              {!remote && (
-                <button className="btn btn-small" onClick={() => setReplying(true)}>
-                  Reply
-                </button>
-              )}
-              {pending.length > 0 && (
-                <button className="btn btn-small" onClick={() => void ops.toChat(pending)} title="Put this thread into the chat composer">
-                  Add to chat
-                </button>
-              )}
-              {!remote ? (
-                <button className="btn btn-small" onClick={() => void ops.resolve(thread, !resolved)}>
-                  {resolved ? "Reopen" : "Resolve"}
-                </button>
-              ) : (
-                !resolved &&
-                resolveRemote && (
-                  <button
-                    className="btn btn-small"
-                    disabled={resolving}
-                    title="Resolve this conversation on GitHub"
-                    onClick={() => {
-                      setResolving(true);
-                      void resolveRemote(thread).finally(() => setResolving(false));
-                    }}
-                  >
-                    {resolving ? "Resolving…" : "Resolve"}
+            (!remote || pending.length > 0 || (!resolved && resolveRemote)) && (
+              <div className="oc-thread-bar">
+                {!remote && (
+                  <button className="btn btn-small" onClick={() => setReplying(true)}>
+                    Reply
                   </button>
-                )
-              )}
-            </div>
+                )}
+                {pending.length > 0 && (
+                  <button className="btn btn-small" onClick={() => void ops.toChat(pending)} title="Put this thread into the chat composer">
+                    Add to chat
+                  </button>
+                )}
+                {!remote ? (
+                  <button className="btn btn-small" onClick={() => void ops.resolve(thread, !resolved)}>
+                    {resolved ? "Reopen" : "Resolve"}
+                  </button>
+                ) : (
+                  !resolved &&
+                  resolveRemote && (
+                    <button
+                      className="btn btn-small"
+                      disabled={resolving}
+                      title="Resolve this conversation on GitHub"
+                      onClick={() => {
+                        setResolving(true);
+                        void resolveRemote(thread).finally(() => setResolving(false));
+                      }}
+                    >
+                      {resolving ? "Resolving…" : "Resolve"}
+                    </button>
+                  )
+                )}
+              </div>
+            )
           )}
         </>
       )}
