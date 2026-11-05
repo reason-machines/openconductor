@@ -1,0 +1,32 @@
+[
+  {
+    "shot": "home--empty-signed-in--dark",
+    "whole_changed": 0.0271,
+    "sidebar_changed": 0.0061,
+    "rea_evidence": "ev_aeacae5e90c235d5c9699aa0f40050e3da0835006cf4478f580f71da17bef6d6"
+  },
+  {
+    "shot": "home--empty-signed-in--light",
+    "whole_changed": 0.026,
+    "sidebar_changed": 0.0059,
+    "rea_evidence": "ev_b6f0f5ce4be223d90a84a3f28ca380771a45318ba7161dd3e44f093157f2f24c"
+  },
+  {
+    "shot": "sidebar--repos-collapsed--dark",
+    "whole_changed": 0.0275,
+    "sidebar_changed": 0.0062,
+    "rea_evidence": "ev_4b1863f2857c1bed5c381fda19d646fa0e1211fc880b1ed849e107ba470e521f"
+  },
+  {
+    "shot": "sidebar--repos-expanded--dark",
+    "whole_changed": 0.028,
+    "sidebar_changed": 0.009,
+    "rea_evidence": "ev_623f61f4a6a1768bd367f39834025dd226469262eb6439fda2eb870a77322c64"
+  },
+  {
+    "shot": "sidebar--repos-expanded--light",
+    "whole_changed": 0.027,
+    "sidebar_changed": 0.0088,
+    "rea_evidence": "ev_b4cd392ece1d98ec1c293661184dcb3f0dd08d4b815616f345e032c606f75b2c"
+  }
+]
