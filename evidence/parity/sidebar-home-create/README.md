@@ -2,20 +2,29 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`0e2531b`, 2026-11-05)
+## Result on main (`8229113`, 2026-11-05)
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Verified parity | Previous |
-|---|---|---|---|---|---|---|---|
-| Sidebar | 33 | 12 | 13 | 4 | 4 | **59.1%** | 54.5% (`5045114`, #261) |
-| Home | 18 | 9 | 5 | 0 | 4 | **63.9%** | 41.7% (`884f1f7`) |
-| Create workspace | 17 | 11 | 4 | 0 | 2 | **76.5%** | 61.8% (`884f1f7`) |
-| **All** | 68 | 32 | 22 | 4 | 10 | **64.7%** | 52.9% |
+| Area | Items | Implemented | Partial | Backend only | Missing | Verified parity | `0e2531b` (#289) | Previous |
+|---|---|---|---|---|---|---|---|---|
+| Sidebar | 33 | 16 | 10 | 3 | 4 | **65.9%** | 59.1% | 54.5% (`5045114`, #261) |
+| Home | 18 | 9 | 5 | 0 | 4 | **63.9%** | 63.9% | 41.7% (`884f1f7`) |
+| Create workspace | 17 | 11 | 4 | 0 | 2 | **76.5%** | 76.5% | 61.8% (`884f1f7`) |
+| **All** | 68 | 36 | 19 | 3 | 10 | **68.0%** | 64.7% | 52.9% |
 
-Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (36 open, was 45).
+**Since `0e2531b` (#289).** Four sidebar merges landed: #283 (hide/unhide repositories, show-hidden toggle, drag to reorder, repo menu) and the row-menu series #288, #293 and #312. Their items were re-read on `8229113`:
+
+- `repo-order` partial to implemented: drag reorder writes `repos.display_order` through the registered `db_reorder_repos` (`sidebar_repo_commands.rs`).
+- `repo-hide` backend only to implemented: Hide/Unhide repository in the repo menu, a Show hidden repositories toggle, and `db_set_repo_hidden` writes `repos.hidden`.
+- `ws-pinned` partial to implemented: pins are now written through `db_set_workspace_pinned` (`sidebarPersist.ts`) and read back on reload.
+- `ws-diffstat` partial to implemented: row counts come from the registered `sidebar_workspace_changes`, and unselected rows stay muted unless `colored_sidebar_diffs` is on.
+- Still partial, with new detail: `ws-unread` is now saved (`db_set_workspace_unread`) but has no jump-to-next-unread command; `ws-status` saves the manual status (`db_set_workspace_manual_status`) but the row icon still ignores it; `ws-numbers` shows 1..9 hints while the switch modifier is held (`shortcutHint.ts`) but not the `workspaces.number` column.
+- #305 is create-workspace evidence only (workspace numbering), so `create.number` stays missing.
+
+Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (32 open; 36 on `0e2531b`, 45 before).
 
 All 68 items were re-read on `85e00bb`. The diff from there to `0e2531b` was then read too, and the 6 items it touches were re-read on `0e2531b`: #278 (row menu, pins, unread, status) and #269 (Home card tokens). Compared with the last verdicts on main, 17 items changed: 16 up and 1 down.
 
-**What changed since the last verdicts** (`5045114` for the sidebar, `884f1f7` for Home and Create).
+**What changed from the last verdicts to `0e2531b`** (`5045114` for the sidebar, `884f1f7` for Home and Create).
 
 - **The sidebar has a row actions menu** (#278): mark read/unread, pin into a Pinned group, set status (manual, then derived, then in-progress), and archive. `ws-actions` moved from missing to partial, and `ws-pinned` from backend only to partial. These changes are local state only: nothing writes them back to conductor.db yet.
 - **Home colours match** (#269). The card fill and border are pixel-identical to the reference in both themes, so `home.colors` is now implemented.

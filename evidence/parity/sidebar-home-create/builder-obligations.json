@@ -1,15 +1,15 @@
 {
  "schema": "openconductor.builder-obligations.v1",
  "ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 0e2531b; sidebar items touched by #278 re-read on 0e2531b, others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 64.7,
+ "verdicts_verified_at": "2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, #278 items on 0e2531b, others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 68.0,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 36,
+ "open": 32,
  "by_owner": {
   "create-workspace": 5,
   "home": 9,
   "setup-and-run-scripts": 1,
-  "sidebar": 21
+  "sidebar": 17
  },
  "obligations": [
   {
@@ -498,32 +498,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.repo-hide",
-   "item": "sidebar.repo-hide",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "persistence"
-   ],
-   "feature": "Hide and unhide a repository, with a toggle to show hidden ones",
-   "verdict": "backend",
-   "gap": "repos::set_hidden in the now-linked openconductor-db crate is tested and reposFromDb drops hidden rows, but no hide/unhide command is registered in lib.rs and there is no UI or show-hidden toggle.",
-   "done_when": "the existing backend logic is reached from the UI (no localStorage-only path) and behaves as the cited evidence describes",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     2115,
-     4719,
-     4049,
-     2114
-    ],
-    "schema": [
-     "repos.hidden"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.repo-icon",
    "item": "sidebar.repo-icon",
    "area": "sidebar",
@@ -625,26 +599,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.repo-order",
-   "item": "sidebar.repo-order",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "persistence"
-   ],
-   "feature": "Manual, persisted ordering of repositories",
-   "verdict": "partial",
-   "gap": "The sidebar lists repos in conductor.db order (db_list_repos -> openconductor_db repos::list, display_order then created_at). No UI or registered command reorders them.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "schema": [
-     "repos.display_order"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.resize-toggle",
    "item": "sidebar.resize-toggle",
    "area": "sidebar",
@@ -716,25 +670,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.ws-diffstat",
-   "item": "sidebar.ws-diffstat",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Line additions/deletions on each row, colored, with a setting to color unselected rows",
-   "verdict": "partial",
-   "gap": "Sidebar.tsx renders +/- counts (coloured on the active row), but reposFromDb sets them to 0/0, so the desktop app never shows them (only ?demo=1 and localStorage seeds do); no setting to colour unselected rows.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     731,
-     156
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.ws-name",
    "item": "sidebar.ws-name",
    "area": "sidebar",
@@ -763,7 +698,7 @@
    ],
    "feature": "Workspace numbers shown optionally, with Cmd+1..9 switching",
    "verdict": "partial",
-   "gap": "workspace.switchTo1..9 are handled in PaletteHost.tsx over sidebarOrder; rows never show numbers and there is no setting to show them.",
+   "gap": "workspace.switchTo1..9 switch rows over sidebarOrder, and holding the switch modifier for 500 ms shows 1..9 in place of the first nine rows' icons (src/state/shortcutHint.ts, SidebarWorkspaceRow.tsx). The workspaces.number column is not shown and there is no setting to show numbers.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -780,31 +715,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.ws-pinned",
-   "item": "sidebar.ws-pinned",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "persistence"
-   ],
-   "feature": "Pin workspaces into a pinned group at the top",
-   "verdict": "partial",
-   "gap": "Pin/unpin from the row menu or P, and a Pinned group above My workspaces (src/state/sidebarOrder.ts, SidebarSections.tsx); reposFromDb maps pinned_at from conductor.db. Pins are local state only: no command writes set_pinned_at, so a desktop reload from the DB drops them.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     3263,
-     1863,
-     1864
-    ],
-    "schema": [
-     "workspaces.pinned_at"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.ws-status",
    "item": "sidebar.ws-status",
    "area": "sidebar",
@@ -814,7 +724,7 @@
    ],
    "feature": "Status indicator from a derived status with optional manual override (default in-progress)",
    "verdict": "partial",
-   "gap": "src/state/workspaceStatus.ts models effective status as manual, then derived, then in-progress, with a Set status submenu, and reposFromDb maps both columns. The row's status icon still renders the old idle/working model (SidebarWorkspaceRow.tsx STATUS_LABEL on ws.status), and the manual status is not written to conductor.db.",
+   "gap": "src/state/workspaceStatus.ts models effective status as manual, then derived, then in-progress, with a Set status submenu; the manual status is now written through db_set_workspace_manual_status and reposFromDb maps both columns. The row's status icon still renders the old idle/working model (SidebarWorkspaceRow.tsx STATUS_LABEL keyed by ws.status), so a manual or derived status never shows on the row.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [
     "ws.status-archive"
@@ -841,7 +751,7 @@
    ],
    "feature": "Unread marker, mark-as-unread action and jump-to-next-unread command",
    "verdict": "partial",
-   "gap": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it; reposFromDb maps unread from conductor.db. Changes are not written back (no set_unread command), and there is no jump-to-next-unread-workspace command.",
+   "gap": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it. Changes are now written through the registered db_set_workspace_unread (sidebarPersist.ts) and reposFromDb maps workspaces.unread back. There is still no jump-to-next-unread-workspace command.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {

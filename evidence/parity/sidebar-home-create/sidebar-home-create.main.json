@@ -1,19 +1,19 @@
 {
  "ref": "origin/main",
- "source_files": 269,
- "detector_parity_pct": 74.3,
+ "source_files": 315,
+ "detector_parity_pct": 77.2,
  "areas": {
   "sidebar": {
    "items": 33,
-   "implemented": 18,
-   "partial": 11,
-   "missing": 4,
-   "parity_pct": 71.2,
-   "verdict_implemented": 12,
-   "verdict_partial": 13,
-   "verdict_backend": 4,
+   "implemented": 21,
+   "partial": 9,
+   "missing": 3,
+   "parity_pct": 77.3,
+   "verdict_implemented": 16,
+   "verdict_partial": 10,
+   "verdict_backend": 3,
    "verdict_missing": 4,
-   "verdict_parity_pct": 59.1
+   "verdict_parity_pct": 65.9
   },
   "home": {
    "items": 18,
@@ -123,7 +123,7 @@
     {
      "pattern": "(nav|sidebar)\\w*.{0,60}create|CreateNav|create_?nav",
      "matched": true,
-     "file": "src-tauri/src/persistence/mod.rs"
+     "file": "crates/openconductor-db/src/navigation.rs"
     },
     {
      "pattern": "(nav|sidebar)\\w*.{0,60}search|SearchNav|search_?nav",
@@ -189,8 +189,8 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "partial",
-   "why": "The sidebar lists repos in conductor.db order (db_list_repos -> openconductor_db repos::list, display_order then created_at). No UI or registered command reorders them.",
+   "verdict": "implemented",
+   "why": "Repos drag to reorder in Sidebar.tsx (draggable rows, onDrop; order logic in src/state/repoOrder.ts, tested). The store calls the registered db_reorder_repos (sidebar_repo_commands.rs, #283), which writes repos.display_order, and db_list_repos reads it back in that order.",
    "recheck": false
   },
   {
@@ -210,8 +210,8 @@
      "file": "src-tauri/src/persistence/mod.rs"
     }
    ],
-   "verdict": "backend",
-   "why": "repos::set_hidden in the now-linked openconductor-db crate is tested and reposFromDb drops hidden rows, but no hide/unhide command is registered in lib.rs and there is no UI or show-hidden toggle.",
+   "verdict": "implemented",
+   "why": "The repo menu has Hide repository / Unhide repository, and the list ends with a Show hidden repositories toggle (Sidebar.tsx, visibleRepos). The store calls the registered db_set_repo_hidden (sidebar_repo_commands.rs, #283), which writes repos.hidden.",
    "recheck": false
   },
   {
@@ -281,7 +281,7 @@
     {
      "pattern": "\\.branch\\b",
      "matched": true,
-     "file": "crates/openconductor-db/src/workspaces.rs"
+     "file": "crates/openconductor-db/src/port_forwards.rs"
     },
     {
      "pattern": "user_?set_?branch",
@@ -316,14 +316,14 @@
     }
    ],
    "verdict": "partial",
-   "why": "src/state/workspaceStatus.ts models effective status as manual, then derived, then in-progress, with a Set status submenu, and reposFromDb maps both columns. The row's status icon still renders the old idle/working model (SidebarWorkspaceRow.tsx STATUS_LABEL on ws.status), and the manual status is not written to conductor.db.",
+   "why": "src/state/workspaceStatus.ts models effective status as manual, then derived, then in-progress, with a Set status submenu; the manual status is now written through db_set_workspace_manual_status and reposFromDb maps both columns. The row's status icon still renders the old idle/working model (SidebarWorkspaceRow.tsx STATUS_LABEL keyed by ws.status), so a manual or derived status never shows on the row.",
    "recheck": false
   },
   {
    "id": "sidebar.ws-diffstat",
    "area": "sidebar",
    "feature": "Line additions/deletions on each row, colored, with a setting to color unselected rows",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "diff_?stat|diffStat|\\.diff\\.added|lines_?added|additions",
@@ -337,12 +337,12 @@
     },
     {
      "pattern": "colored_?sidebar_?diffs?|sidebar_?diff_?colors?",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/settings/AppearancePage.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "Sidebar.tsx renders +/- counts (coloured on the active row), but reposFromDb sets them to 0/0, so the desktop app never shows them (only ?demo=1 and localStorage seeds do); no setting to colour unselected rows.",
+   "verdict": "implemented",
+   "why": "Each row shows +/- counts from the registered sidebar_workspace_changes (merge base with the target branch, committed and uncommitted, lockfiles skipped as in Conductor's FPt; useRowDiffStat.ts, sidebarDiffStat.ts), fetched for on-screen or active rows. Unselected rows are muted unless the colored_sidebar_diffs setting is on (styles.css data-colored-sidebar-diffs, AppearancePage.tsx).",
    "recheck": false
   },
   {
@@ -368,7 +368,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it; reposFromDb maps unread from conductor.db. Changes are not written back (no set_unread command), and there is no jump-to-next-unread-workspace command.",
+   "why": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it. Changes are now written through the registered db_set_workspace_unread (sidebarPersist.ts) and reposFromDb maps workspaces.unread back. There is still no jump-to-next-unread-workspace command.",
    "recheck": false
   },
   {
@@ -388,8 +388,8 @@
      "file": "crates/openconductor-db/src/workspaces.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Pin/unpin from the row menu or P, and a Pinned group above My workspaces (src/state/sidebarOrder.ts, SidebarSections.tsx); reposFromDb maps pinned_at from conductor.db. Pins are local state only: no command writes set_pinned_at, so a desktop reload from the DB drops them.",
+   "verdict": "implemented",
+   "why": "Pin/unpin from the row menu or P, and a Pinned group above My workspaces (src/state/sidebarOrder.ts, SidebarSections.tsx). In the desktop app the store writes each change through the registered db_set_workspace_pinned (sidebarPersist.ts, sidebar_workspace_commands.rs), which sets workspaces.pinned_at; reposFromDb maps it back on reload.",
    "recheck": false
   },
   {
@@ -417,17 +417,17 @@
    "id": "sidebar.drag-to-section",
    "area": "sidebar",
    "feature": "Drag a workspace row onto a section",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "(onDrop|draggable|dnd|useDrag)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
     }
    ],
    "verdict": "missing",
    "why": "No drag and drop in src and no user sections to drop onto.",
-   "recheck": false
+   "recheck": true
   },
   {
    "id": "sidebar.ws-numbers",
@@ -438,7 +438,7 @@
     {
      "pattern": "Digit[1-9]|key\\s*===?\\s*['\"][1-9]|(Cmd|Mod|Meta)\\+[1-9]|switch_?to_?workspace|workspace\\.switchTo",
      "matched": true,
-     "file": "src/palette/PaletteHost.tsx"
+     "file": "src/components/SidebarWorkspaceRow.tsx"
     },
     {
      "pattern": "workspace_?number|workspaceNumber|show_?workspace_?numbers",
@@ -447,7 +447,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "workspace.switchTo1..9 are handled in PaletteHost.tsx over sidebarOrder; rows never show numbers and there is no setting to show them.",
+   "why": "workspace.switchTo1..9 switch rows over sidebarOrder, and holding the switch modifier for 500 ms shows 1..9 in place of the first nine rows' icons (src/state/shortcutHint.ts, SidebarWorkspaceRow.tsx). The workspaces.number column is not shown and there is no setting to show numbers.",
    "recheck": false
   },
   {
@@ -538,12 +538,12 @@
    "id": "sidebar.archived-view",
    "area": "sidebar",
    "feature": "Browse archived workspaces and unarchive one",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "archived_?workspaces|view_?archived",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "crates/openconductor-db/src/port_forwards.rs"
     },
     {
      "pattern": "unarchive|restore_?workspace",
@@ -659,7 +659,7 @@
     {
      "pattern": "(context_?menu|onContextMenu|workspace_?actions)",
      "matched": true,
-     "file": "src/components/SidebarWorkspaceRow.tsx"
+     "file": "src/components/Sidebar.tsx"
     }
    ],
    "verdict": "partial",
@@ -1441,6 +1441,6 @@
   }
  ],
  "verdicts_ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 0e2531b; sidebar items touched by #278 re-read on 0e2531b, others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 64.7
+ "verdicts_verified_at": "2026-11-05 (main 8229113; sidebar items touched by #283, #288, #293, #312 re-read on 8229113, #278 items on 0e2531b, others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 68.0
 }
