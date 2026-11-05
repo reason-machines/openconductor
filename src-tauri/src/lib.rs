@@ -33,6 +33,7 @@ pub mod persistence;
 mod persistence_commands;
 mod sidebar_repo_commands;
 mod sidebar_workspace_commands;
+mod sidebar_rename_commands;
 pub mod diff;
 pub mod draft_attachments;
 pub mod github_repo;
@@ -334,6 +335,10 @@ pub fn run() {
             sidebar_workspace_commands::db_set_workspace_pinned,
             sidebar_workspace_commands::db_set_workspace_unread,
             sidebar_workspace_commands::db_set_workspace_manual_status,
+            sidebar_repo_commands::db_set_repo_icon,
+            sidebar_repo_commands::repo_favicon,
+            sidebar_rename_commands::db_rename_workspace,
+            sidebar_rename_commands::db_mark_user_set_branch_name,
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
@@ -409,6 +414,9 @@ pub fn run() {
             pr::commands::pr_git_state,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
+            pr::commands::pr_template,
+            pr::commands::pr_commit_and_push_prompt,
+            pr::commands::pr_resolve_conflicts_prompt,
             pr::commands::pr_merge,
             pr::commands::pr_merge_method,
             pr::commands::pr_set_auto_merge,
@@ -418,6 +426,7 @@ pub fn run() {
             pr::commands::pr_edit,
             pr::commands::pr_retarget,
             pr::commands::pr_approve,
+            pr::workspace_sync::pr_sync_workspace,
             scripts::scripts_config,
             scripts::setup_script_start,
             scripts::setup_script_cancel,

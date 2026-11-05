@@ -22,6 +22,8 @@ export interface AppPrefs {
   last_clone_directory: string | null;
   last_seen_announcement: string | null;
   roundhouse_client_user_id: string | null;
+  /** The sidebar's "Filter by project" repository id; null is all projects. */
+  sidebar_repo_filter: string | null;
 }
 
 /** One typed write: `{ key: "garry_mode", value: true }`. */
@@ -39,7 +41,7 @@ export type AppPrefUpdate =
     }
   | { key: "left_panel_width" | "onboarding_step" | "first_time_onboarding_step"; value: number }
   | { key: "last_clone_directory" | "last_seen_announcement"; value: string }
-  | { key: "roundhouse_client_user_id"; value: string | null };
+  | { key: "roundhouse_client_user_id" | "sidebar_repo_filter"; value: string | null };
 
 /** What the table reads as when it has no rows (Conductor's hook defaults). */
 export const DEFAULT_APP_PREFS: AppPrefs = {
@@ -58,6 +60,7 @@ export const DEFAULT_APP_PREFS: AppPrefs = {
   last_clone_directory: null,
   last_seen_announcement: null,
   roundhouse_client_user_id: null,
+  sidebar_repo_filter: null,
 };
 
 /** The state an update leads to, for the optimistic copy and the browser fallback. */

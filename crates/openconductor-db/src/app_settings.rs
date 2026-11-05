@@ -120,6 +120,9 @@ pub mod keys {
     pub const CLIENT_INSTANCE_ID: &str = "client_instance_id";
     /// User id of the cloud (Roundhouse) client sign-in.
     pub const ROUNDHOUSE_CLIENT_USER_ID: &str = "roundhouse_client_user_id";
+    /// Repository id the sidebar is narrowed to ("Filter by project"); no
+    /// row means all projects.
+    pub const SIDEBAR_REPO_FILTER: &str = "sidebar_repo_filter";
 }
 
 #[cfg(test)]

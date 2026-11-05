@@ -48,9 +48,9 @@ test("row menu: read/unread, pin into the Pinned group, status, keys, archive", 
   const harbor = row(page, "Quiet harbor");
   await harbor.waitFor();
 
-  // Conductor's order for a local workspace; Rename is hidden until the rename dialog is wired.
+  // Conductor's order for a local workspace.
   await harbor.click({ button: "right" });
-  assert.deepEqual(await menuItems(page), ["Mark as unread", "Pin", "Set status", "Archive"]);
+  assert.deepEqual(await menuItems(page), ["Mark as unread", "Pin", "Set status", "Rename", "Archive"]);
   assert.equal(await harbor.getAttribute("data-menu-open"), "true");
   await page.keyboard.press("Escape");
   assert.equal(await menu(page).count(), 0);
