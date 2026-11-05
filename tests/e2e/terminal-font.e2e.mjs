@@ -55,6 +55,7 @@ const SHELL_STATE = {
 // Runs in the page before the app. Everything it needs is inside it.
 function fakeBackend(shellState) {
   if (!localStorage.getItem("openconductor.shell.v1")) localStorage.setItem("openconductor.shell.v1", JSON.stringify(shellState));
+  if (!localStorage.getItem("openconductor.shell.prefs.v1")) localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ selection: shellState.selection, collapsed: [] }));
   const b64 = (s) => btoa(String.fromCharCode(...new TextEncoder().encode(s)));
   let settings = {
     $schema: "https://openconductor.dev/schemas/settings.schema.json",

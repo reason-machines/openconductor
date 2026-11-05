@@ -55,6 +55,26 @@ chmodSync(join(bin, "reason"), 0o755);
 
 const env = { ...process.env, HOME: home, PATH: `${bin}:${process.env.PATH}` };
 delete env.REASON_CLI;
+
+// The sidebar reads repos and workspaces from conductor.db in the app-data
+// folder (XDG_DATA_HOME/<identifier> on Linux). Create the database with the
+// app's own migrations, then seed the repo and workspace rows before the app
+// starts, so the first load already has them.
+const dataHome = join(home, ".local", "share");
+env.XDG_DATA_HOME = dataHome;
+const dbPath = join(dataHome, "com.reasonmachines.openconductor", "conductor.db");
+mkdirSync(dirname(dbPath), { recursive: true });
+execFileSync("cargo", ["run", "--locked", "-q", "--manifest-path", join(repoRoot, "crates/openconductor-db/Cargo.toml"), "--example", "migrate", "--", dbPath], {
+  stdio: "inherit",
+  env: { ...process.env, CARGO_TARGET_DIR: join(repoRoot, "src-tauri/target") },
+});
+execFileSync("python3", ["-c", `
+import sqlite3, sys
+db = sqlite3.connect(sys.argv[1])
+db.execute("INSERT INTO repos (id, name, root_path, default_branch) VALUES ('repo-e2e', 'proj', ?, 'main')", (sys.argv[2],))
+db.execute("INSERT INTO workspaces (local_id, repository_id, directory_name, workspace_name, branch, state, workspace_path, user_set_workspace_name, user_set_branch_name) VALUES ('ws-e2e', 'repo-e2e', 'e2e', 'e2e', 'main', 'active', ?, 1, 1)", (sys.argv[2],))
+db.commit()
+`, dbPath, project]);
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
 const driverExited = new Promise((r) => driver.on("exit", r));
 
@@ -137,7 +157,7 @@ try {
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
 
-  // Seed one repo with one workspace whose folder is the git repo above.
+  // Select the seeded repo and workspace (their rows are in conductor.db, seeded above).
   const state = {
     repos: [
       {
@@ -151,7 +171,7 @@ try {
     selection: { kind: "workspace", repoId: "repo-e2e", workspaceId: "ws-e2e" },
   };
   await waitFor("the app to load", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
-  await run("localStorage.setItem('openconductor.shell.v1', arguments[0]); location.reload();", JSON.stringify(state));
+  await run("localStorage.setItem('openconductor.shell.v1', arguments[0]); localStorage.setItem('openconductor.shell.prefs.v1', arguments[1]); location.reload();", JSON.stringify(state), JSON.stringify({ selection: state.selection, collapsed: [] }));
   const placeholder = await waitFor("the Reason chat panel", () => chatText().then((t) => t && t.includes("Reason runs this chat") && t));
   pass(`the desktop chat panel runs Reason: "${placeholder.split("\n").find((l) => l.includes("Reason runs"))}"`);
 

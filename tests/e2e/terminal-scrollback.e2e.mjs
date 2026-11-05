@@ -56,6 +56,7 @@ const SHELL_STATE = {
 // Runs in the page before the app. Everything it needs is inside it.
 function fakeBackend(shellState) {
   if (!localStorage.getItem("openconductor.shell.v1")) localStorage.setItem("openconductor.shell.v1", JSON.stringify(shellState));
+  if (!localStorage.getItem("openconductor.shell.prefs.v1")) localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ selection: shellState.selection, collapsed: [] }));
   const b64 = (s) => btoa(String.fromCharCode(...new TextEncoder().encode(s)));
   let settings = {
     $schema: "https://openconductor.dev/schemas/settings.schema.json",
@@ -89,6 +90,12 @@ function fakeBackend(shellState) {
           window.__fake.saves.push(structuredClone(settings.advanced ?? {}));
           return structuredClone(settings);
         }
+        case "db_list_repos":
+          return shellState.repos.map((r, i) => ({ id: r.id, name: r.name, rootPath: r.path, remoteUrl: null, defaultBranch: r.defaultBranch, displayOrder: i, hidden: false, icon: null, createdAt: "2026-01-01T00:00:00Z" }));
+        case "db_list_workspaces":
+          return shellState.repos.flatMap((r) => r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path ?? null, pinnedAt: null, unread: false, createdAt: "2026-01-01T00:00:00Z" })));
+        case "db_archive_workspace":
+          return null;
         case "pty_spawn": {
           const a = args.args;
           window.__fake.sizes.push({ cols: a.cols, rows: a.rows });

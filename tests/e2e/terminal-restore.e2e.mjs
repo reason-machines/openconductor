@@ -56,6 +56,8 @@ const SHELL_STATE = {
 // Runs in the page before the app. Everything it needs is inside it.
 function fakeBackend(shellState) {
   if (!localStorage.getItem("openconductor.shell.v1")) localStorage.setItem("openconductor.shell.v1", JSON.stringify(shellState));
+  // The desktop app keeps the selection in its prefs key; repos come from conductor.db.
+  if (!localStorage.getItem("openconductor.shell.prefs.v1")) localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ selection: shellState.selection, collapsed: [] }));
   const DISK = "__fake_backend_disk";
   const disk = () => JSON.parse(localStorage.getItem(DISK) ?? '{"history":{},"spawns":[],"mirrorWrites":[]}');
   const save = (d) => localStorage.setItem(DISK, JSON.stringify(d));
