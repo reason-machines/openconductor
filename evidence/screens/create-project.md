@@ -104,6 +104,15 @@ fails before the repo exists. "Adding project...", the Next.js scripts and
 "Creating workspace..." stay in the frontend, as in the reference. The steps run
 in `zsh` on macOS and `bash` elsewhere.
 
+`src/components/CreateProjectDialog.tsx` is the dialog (Home → Quick start and the
+palette's quick-start command). After `create_new_project` it shows "Adding
+project..." (`add_repository`, then `save_repo_scripts` for Next.js) and "Creating
+workspace..." (the store's `addRepo`, which adds and selects the first workspace),
+saves the parent folder to the clone dialog's last location, and shows the "Project
+created." toast with "Open in GitHub" (tauri-plugin-opener's `open_url`).
+Differences: no onboarding step is advanced (OpenConductor has no onboarding yet),
+and the first workspace is the store's local one, not a backend worktree.
+
 ## REA
 
 REA 6.7.0 cannot parse this chunk (see `evidence/rea/` and `home.md`: the 11.6 MB

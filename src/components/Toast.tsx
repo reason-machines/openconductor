@@ -5,6 +5,13 @@ export interface ToastItem {
   id: number;
   kind: "error" | "info";
   message: string;
+  /** A button beside the message, such as "Open in GitHub". */
+  action?: ToastAction;
+}
+
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
 }
 
 let nextId = 1;
@@ -12,8 +19,8 @@ let nextId = 1;
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const dismiss = useCallback((id: number) => setToasts((t) => t.filter((x) => x.id !== id)), []);
-  const show = useCallback((kind: ToastItem["kind"], message: string) => {
-    setToasts((t) => [...t, { id: nextId++, kind, message }]);
+  const show = useCallback((kind: ToastItem["kind"], message: string, action?: ToastAction) => {
+    setToasts((t) => [...t, { id: nextId++, kind, message, action }]);
   }, []);
   return { toasts, show, dismiss };
 }
@@ -33,6 +40,9 @@ function Toast({ toast, onDismiss }: { toast: ToastItem; onDismiss: () => void }
   return (
     <div className={`toast toast-${toast.kind}`} role={toast.kind === "error" ? "alert" : "status"}>
       <span className="toast-message">{toast.message}</span>
+      {toast.action && (
+        <button className="btn btn-small" onClick={() => { toast.action?.onClick(); onDismiss(); }}>{toast.action.label}</button>
+      )}
       {toast.kind === "error" && (
         <button className="btn btn-small" onClick={copy}>{copied ? "Copied" : "Copy"}</button>
       )}

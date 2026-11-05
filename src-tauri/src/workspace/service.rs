@@ -38,6 +38,8 @@ pub struct CreateWorkspaceRequest {
     pub existing_branch: bool,
     /// PR whose head `branch_name` is; see [`CreateOptions::pr_number`].
     pub pr_number: Option<u64>,
+    /// User setting `git.worktree_push_auto_setup_remote`.
+    pub push_auto_setup_remote: bool,
 }
 
 #[derive(Debug)]
@@ -142,6 +144,7 @@ impl WorkspaceService {
             existing_branch: req.existing_branch,
             pr_number: req.pr_number,
             fetch: true,
+            push_auto_setup_remote: req.push_auto_setup_remote,
             ..Default::default()
         };
         self.manager.create(&root, &opts)
