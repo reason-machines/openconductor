@@ -4,6 +4,13 @@ export interface ToastItem {
   message: string;
   /** Stays until dismissed (Conductor's `duration: Infinity` workspace errors). */
   sticky?: boolean;
+  /** A button beside the message, such as "Open in GitHub". */
+  action?: ToastAction;
+}
+
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
 }
 
 /** How long a toast stays before it dismisses itself; `null` means until dismissed. */

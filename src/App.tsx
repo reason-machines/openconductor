@@ -4,7 +4,9 @@ import { isSidebarVisible } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
-import { QuickStartDialog, type DialogKind } from "./components/Dialogs";
+import type { DialogKind } from "./components/Dialogs";
+import { CreateProjectDialog } from "./components/CreateProjectDialog";
+import { OPEN_IN_GITHUB, SUCCESS_TOAST } from "./state/createProject";
 import { CloneGitHubRepoDialog } from "./components/CloneGitHubRepoDialog";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
@@ -13,7 +15,7 @@ import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/n
 import { Toaster, useToasts } from "./components/Toast";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
-import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
+import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
@@ -144,7 +146,15 @@ export default function App() {
           onCloned={(cloned, remote, name) => dispatch({ type: "addRepo", repo: { name, path: cloned.root, remote, defaultBranch: cloned.defaultBranch } })}
         />
       )}
-      {dialog === "quickstart" && <QuickStartDialog onClose={() => setDialog(null)} dispatch={dispatch} />}
+      {dialog === "quickstart" && (
+        <CreateProjectDialog
+          onClose={() => setDialog(null)}
+          onCreated={(created, githubUrl) => {
+            dispatch({ type: "addRepo", repo: created });
+            show("info", SUCCESS_TOAST, { action: { label: OPEN_IN_GITHUB, onClick: () => void openUrl(githubUrl) } });
+          }}
+        />
+      )}
       {dialog === "create" && (
         <CreateWorkspaceDialog
           repos={state.repos}

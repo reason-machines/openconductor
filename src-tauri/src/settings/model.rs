@@ -99,12 +99,21 @@ pub struct Appearance {
     /// Font family for code and diffs; `None` keeps the built-in stack.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mono_font: Option<String>,
+    /// Terminal font family, put in front of the terminal's fallback stack;
+    /// `None` keeps the stack. Conductor's `terminal_font_family`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terminal_font_family: Option<String>,
+    /// Terminal font size in px, [`TERMINAL_FONT_SIZE_MIN`] to
+    /// [`TERMINAL_FONT_SIZE_MAX`] (Conductor's slider), 12 by default.
+    pub terminal_font_size: u32,
     #[serde(flatten)]
     pub extra: toml::Table,
 }
 
 pub const ZOOM_MIN: f64 = 0.5;
 pub const ZOOM_MAX: f64 = 3.0;
+pub const TERMINAL_FONT_SIZE_MIN: u32 = 10;
+pub const TERMINAL_FONT_SIZE_MAX: u32 = 20;
 
 impl Default for Appearance {
     fn default() -> Self {
@@ -112,6 +121,8 @@ impl Default for Appearance {
             zoom_level_v2: 1.0,
             low_contrast_dark_mode: false,
             mono_font: None,
+            terminal_font_family: None,
+            terminal_font_size: 12,
             extra: toml::Table::new(),
         }
     }

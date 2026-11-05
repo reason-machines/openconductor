@@ -93,9 +93,21 @@ workspace-creation service) and `renderApp-D_fmY7hW.js` (the rows).
   an error toast that stays until dismissed, with a "View logs" action when the create step
   wrote an initialization log (`index-BGEQ8YjU.js`, sha256 `b5b01f33…dbf3`). The rebuild's
   Create-workspace dialog shows `upstreamWarning` as a sticky error toast the same way. Not
-  built: the "View logs" action (we write no initialization log) and Conductor's startup
-  sweep (`zYe`), which applies the same setting to every existing local, non-archived
-  workspace and only logs its failures.
+  built: the "View logs" action (we write no initialization log).
+- Startup backfill: once per app run, after the first workspace list load
+  (`configureGitPushAutoSetupRemoteForLoadedWorkspaces`, guarded by
+  `hasBackfilledGitPushAutoSetupRemote`), Conductor's `zYe` walks every loaded workspace
+  and skips archived ones, ones with no path, remote hosts and folders that no longer exist.
+  For each workspace whose setting is not `false` (`lre`, workspace-scoped), `RYe` applies
+  the same steps as creation only when `git config --worktree --get push.autoSetupRemote`
+  has no value. Nothing is shown: `cre` logs its skip warning and `zYe` logs thrown errors
+  ("Failed to configure Git push upstream settings for workspace <id>: ...").
+- The rebuild runs `WorkspaceService::configure_push_upstream_for_existing` on a background
+  thread from app setup when the user setting is on (or settings cannot be read, matching
+  Conductor's "not false" check). It covers every active workspace of every registered
+  repository, skips archived and missing ones and repositories that can no longer be listed,
+  and logs each workspace it could not configure to stderr. Divergence: the setting is read
+  once at user scope, since repo-local overrides are not built.
 - Delete branch on archive (with "Warning: archived workspaces will be unrecoverable" when
   on) and Archive on merge are stored but have no row yet: no command archives a workspace
   yet, so nothing would read them. Repo-local overrides of all three are not built.
@@ -191,4 +203,6 @@ zoom anywhere in the app. Divergences and gaps:
   string (quotes, `\`, `;`, braces, `<>`) are refused, in the UI and in `validate`.
 - The App zoom help text does not name the shortcuts, since overrides can change them.
 - Not built: Colored sidebar diffs, Code ligatures, Accessible colors, Code theme,
-  Markdown Style, Terminal font. The terminal keeps its own font.
+  Markdown Style.
+- Terminal font (`terminal_font_family`, `terminal_font_size`) is built by the terminal
+  area; see `evidence/terminal/NOTES.md`.

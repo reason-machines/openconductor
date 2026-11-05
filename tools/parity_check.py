@@ -820,6 +820,20 @@ def check(args):
     print(json.dumps({a: v["parity_pct"] for a, v in areas.items()} | {"overall": report["overall"]["parity_pct"]}))
 
 
+def other_records():
+    """Rows for areas other checkers score, from their committed parity.json."""
+    path = os.path.join(PARITY, "reason-acp", "parity.json")
+    if not os.path.isfile(path):
+        return []
+    with open(path) as f:
+        a = json.load(f)
+    target = f'`{a["sha"]}`' if a.get("sha") else a["ref"]
+    return ["Other areas, scored by their own checkers (not counted in \"all four\"):\n",
+            "| Area | Items | Matched | Partial | Missing | Parity | Target | Report |", "|---|---|---|---|---|---|---|---|",
+            f'| Reason agent over ACP | {a["total"]} | {a["matched"]} | 0 | {a["total"] - a["matched"]} | **{a["parity"]}%** | {target} '
+            '| [`reason-acp/PARITY.md`](reason-acp/PARITY.md) (`tools/parity_reason_acp.py`) |\n']
+
+
 def render_md(r):
     out = [f'# Parity: settings, shortcuts, persistence, packaging\n',
            f'Target `{r["ref"]}` at `{r["sha"][:12]}` ({r["source_files_scanned"]} rebuild source files scanned) '
@@ -831,6 +845,7 @@ def render_md(r):
         out.append(f'| {a} | {v["total"]} | {v["matched"]} | {v["partial"]} | {v["missing"]} | **{v["parity_pct"]}%** |')
     o = r["overall"]
     out.append(f'| all four | {o["total"]} | {o["matched"]} | {o["partial"]} | {o["missing"]} | **{o["parity_pct"]}%** |\n')
+    out += other_records()
     for a, v in r["areas"].items():
         out.append(f"## {a.capitalize()}\n")
         out.append("| Group | Items | Matched | Partial | Parity |")

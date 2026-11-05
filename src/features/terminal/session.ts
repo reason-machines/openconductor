@@ -20,6 +20,7 @@ import {
 import { canOpen, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs";
 import { PersistThrottle, readSaved, restoreCwds, restoreOutput, writeWorkspace, type HistoryRecord } from "./restore";
 import { FIND_COMMAND, LINE_EDIT_BYTES, terminalCommandFor } from "./shortcuts.ts";
+import { currentTerminalFont, onTerminalFont, TERMINAL_LINE_HEIGHT } from "./font.ts";
 
 interface Live {
   workspaceId: string;
@@ -61,6 +62,16 @@ const persist = new PersistThrottle(async (id) => {
     hasReceivedUserInput: l.hasReceivedUserInput,
   });
 }, { set: (f, ms) => setTimeout(f, ms), clear: (h) => clearTimeout(h as ReturnType<typeof setTimeout>) });
+
+// A Terminal font change reaches every open terminal at once, as in Conductor;
+// a shown one refits, so its PTY hears the new cols and rows.
+onTerminalFont((font) => {
+  for (const l of live.values()) {
+    l.term.options.fontFamily = font.family;
+    l.term.options.fontSize = font.size;
+    if (l.opened && l.host.clientWidth > 0) l.fit.fit();
+  }
+});
 
 let flushOnHide = false;
 function persistOnHide() {
@@ -157,10 +168,12 @@ async function startTab(workspaceId: string, cwd: string, initialCommand?: strin
   const record: HistoryRecord | undefined = restore ? await ptyLoadTerminalHistory(restore.id).catch(() => undefined) : undefined;
 
   const id = restore?.id ?? `term-${crypto.randomUUID()}`;
+  const font = currentTerminalFont();
   const term = new Terminal({
     cursorBlink: true,
-    fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-    fontSize: 12,
+    fontFamily: font.family,
+    fontSize: font.size,
+    lineHeight: TERMINAL_LINE_HEIGHT,
     scrollback: 5000,
     theme: {
       background: cssVar("--panel", "#1d2025"),
