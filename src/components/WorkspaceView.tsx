@@ -7,21 +7,26 @@ import type { ChatMessage } from "../features/chat/types.ts";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { reasonAvailable, reasonTranscript, resetReasonChat, sendReason, stopReason, subscribeReason } from "../features/chat/reasonChat.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
+import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { answerCodex, CODEX_ACCESS, codexAccess, codexView, sendCodex, setCodexAccess, stopCodex, subscribeCodex, type CodexAccess } from "../features/chat/codexChat.ts";
 import { DECISION_LABELS, type CodexApproval, type CodexDecision } from "../features/chat/codex.ts";
-import { changedSinceTurn } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
+import { TurnChanges } from "../features/chat/TurnChanges.tsx";
+import type { TurnRef } from "../features/diff/turnChangesCache.ts";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
 import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
+import { addAttachment, revertedNote, withAttachments, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { ScriptsPanel } from "./ScriptsPanel";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
-import { usePullRequest } from "../features/pr/usePullRequest";
+import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest";
+import { useArchiveOnMerge } from "../features/pr/useArchiveOnMerge";
+import { ChecksTab } from "../features/pr/checks/ChecksTab";
 import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
 import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
@@ -60,13 +65,15 @@ export function seedTranscript(workspaceId: string, text: string) {
 }
 
 interface ChatPanelProps extends Props {
-  bridge: MutableRefObject<ChatBridge | null>;
+  bridge: MutableRefObject<(ChatBridge & ComposerAttach) | null>;
   /** The main area's tab strip. */
   tabs: ReactNode;
   /** Shown instead of the transcript while another tab (the diff) is active; the composer stays. */
   content: ReactNode | null;
   /** The agent started or finished a turn. */
   onRunningChange?: (running: boolean) => void;
+  /** A file chip under a finished turn: open that file's changes from the turn. */
+  openTurnFile: (turn: TurnRef, path: string) => void;
 }
 
 // Which agent runs a workspace's chat; each keeps its own transcript.
@@ -92,7 +99,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
-function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunningChange }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunningChange, openTurnFile }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const [agent, setAgent] = useState<ChatAgent>(() => savedAgent(workspace.id));
@@ -103,6 +110,8 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   const [approvals, setApprovals] = useState<CodexApproval[]>([]);
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(workspace.id));
   const [draft, setDraft] = useState("");
+  // Text files the diff viewer attached (the revert note after a discard); they go out with the next message.
+  const [attachments, setAttachments] = useState<TextAttachment[]>([]);
   /** The turn whose "Reset chat?" dialog is open. */
   const [resetTurn, setResetTurn] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -114,6 +123,7 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
     setAgent(savedAgent(workspace.id));
     setAccess(codexAccess(workspace.id));
     setDraft("");
+    setAttachments([]);
     setResetTurn(null);
   }, [workspace.id]);
 
@@ -144,21 +154,28 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
     endRef.current?.scrollIntoView({ block: "end" });
   }, [transcript]);
 
-  function sendText(text: string) {
+  function sendText(text: string, attached: readonly TextAttachment[] = []) {
     const first = !transcript.messages.some((m) => m.role === "user");
+    const message = withAttachments(text, attached);
     if (reason) {
-      void (codex ? sendCodex : sendReason)(workspace.id, cwd, text);
+      void (codex ? sendCodex : sendReason)(workspace.id, cwd, message);
       if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
       return;
     }
-    const next = withMessages(transcript, [
-      textMessage(workspace.id, "user", text),
-      textMessage(workspace.id, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."),
-    ]);
+    // One finished turn per message, so its footer (and sample turn changes) show.
+    const user = textMessage(workspace.id, "user", message);
+    const reply = { ...textMessage(workspace.id, "system", "Browser preview: Reason runs chats in the desktop app, so this message stays in this workspace's local transcript."), turnId: user.turnId };
+    const done = applyChatEvents(withMessages(transcript, [user, reply]), [{ type: "turn_status", sessionId: workspace.id, turnId: user.turnId, status: "completed" }]);
+    const next = done.ok ? done.transcript : withMessages(transcript, [user, reply]);
     transcripts.set(workspace.id, next);
     setTranscript(next);
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
+
+  const turnFooter = (turnId: string) => {
+    const turn = turnCheckpointRef(workspace.id, turnId);
+    return <TurnChanges turn={turn} worktree={workspace.path ?? null} onOpenFile={(path) => openTurnFile(turn, path)} />;
+  };
 
   // The diff viewer adds review comments to the composer and sends Review prompts.
   bridge.current = {
@@ -167,14 +184,16 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
       inputRef.current?.focus();
     },
     send: sendText,
+    attach: (a) => setAttachments((list) => addAttachment(list, a)),
   };
 
   function send(e: FormEvent) {
     e.preventDefault();
     const text = draft.trim();
     if (!text) return;
-    sendText(text);
+    sendText(text, attachments);
     setDraft("");
+    setAttachments([]);
   }
 
   return (
@@ -200,6 +219,8 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
             // Reset chat restores Reason turn checkpoints; Codex chats have none yet.
             onResetChat={reason && !codex && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
+            // Turn changes come from Reason turn checkpoints; Codex turns have none yet.
+            turnFooter={codex ? undefined : turnFooter}
           />
         )}
         <div ref={endRef} />
@@ -219,6 +240,18 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
         </div>
       ) : null}
       <form className="composer" onSubmit={send}>
+        {attachments.length > 0 && (
+          <div className="composer-attachments" aria-label="Attachments">
+            {attachments.map((a) => (
+              <span key={a.name} className="chip composer-attachment" title={a.text}>
+                {a.name}
+                <button type="button" className="composer-attachment-remove" aria-label={`Remove ${a.name}`} onClick={() => setAttachments((list) => list.filter((x) => x.name !== a.name))}>
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
         <textarea
           ref={inputRef}
           value={draft}
@@ -274,9 +307,14 @@ function ChatPanel({ repo, workspace, dispatch, bridge, tabs, content, onRunning
   );
 }
 
-function RightPanel({ diff, actions }: { diff: WorkspaceDiff; actions: () => ReactNode }) {
-  const [tab, setTab] = useState<"changes" | "files">("changes");
+function RightPanel({ diff, actions, pr, worktree }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null }) {
+  const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
+  // Picking a turn's file in the chat shows that turn's changes list.
+  useEffect(() => {
+    if (diff.turn) setTab("changes");
+  }, [diff.turn]);
   const count = diff.load.state === "ready" ? diff.files.length : null;
+  const checksStatus = pr.pr?.status?.checks.status ?? null;
   return (
     <section className="diff" aria-label="Changes">
       <div className="tabs" role="tablist">
@@ -286,9 +324,14 @@ function RightPanel({ diff, actions }: { diff: WorkspaceDiff; actions: () => Rea
         <button role="tab" aria-selected={tab === "changes"} className={tab === "changes" ? "active" : ""} onClick={() => setTab("changes")}>
           Changes {count ? <span className="tab-count">{count}</span> : null}
         </button>
+        <button role="tab" aria-selected={tab === "checks"} className={tab === "checks" ? "active" : ""} onClick={() => setTab("checks")}>
+          Checks {checksStatus ? <span className={`checks-dot ${checksStatus}`} aria-label={checksStatus} /> : null}
+        </button>
       </div>
       {tab === "changes" ? (
-        <ChangesList diff={diff} actions={actions} />
+        <ChangesList diff={diff} actions={actions} worktree={worktree} />
+      ) : tab === "checks" ? (
+        <ChecksTab worktree={worktree} pr={pr.pr} refresh={pr.refresh} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -333,7 +376,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 
 export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
-  const chatBridge = useRef<ChatBridge | null>(null);
+  const chatBridge = useRef<(ChatBridge & ComposerAttach) | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
   const [diffOpen, setDiffOpen] = useState(false);
@@ -358,12 +401,14 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const chat = useMemo<ChatBridge>(() => ({ insert: (t) => chatBridge.current?.insert(t), send: (t) => chatBridge.current?.send(t) }), []);
   const review = useReviewComments(workspace.id, chat, undefined, diff.openPath);
   const [agentWorking, setAgentWorking] = useState(false);
-  // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub.
+  const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
+  // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub, then archive on merge.
   const onLookup = useCallback(
-    (next: PrLookup) => {
+    (next: PrLookup, previous: PrLookup | null) => {
       if (next.kind === "found") dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title });
+      archiveOnMerge(next, previous);
     },
-    [dispatch, repo.id, workspace.id],
+    [dispatch, repo.id, workspace.id, archiveOnMerge],
   );
   const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, onLookup });
   const prActions = usePrActions({
@@ -428,16 +473,17 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           dispatch={dispatch}
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
+          openTurnFile={diff.openTurnFile}
           tabs={<MainTabs title={workspace.name} active={showDiff ? "diff" : "chat"} diffOpen={diffOpen} onSelect={setMainTab} onCloseDiff={closeDiffTab} />}
           content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
         />
         <div className="ws-right">
-          <RightPanel diff={diff} actions={review.actions} />
+          <RightPanel diff={diff} actions={review.actions} pr={pullRequest} worktree={workspace.path ?? null} />
           <ScriptsPanel repo={repo} workspace={workspace} />
         </div>
       </div>
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
-      <DiffDiscardHost diff={diff} />
+      <DiffDiscardHost diff={diff} onDiscarded={(f) => chatBridge.current?.attach(revertedNote(f.path))} />
       {showTerminal && <TerminalPanel workspaceId={workspace.id} cwd={repo.path} />}
     </div>
   );

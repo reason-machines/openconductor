@@ -21,7 +21,7 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex, OnceLock};
 
 use serde_json::Value;
-use tauri::{AppHandle, Emitter, State};
+use tauri::{AppHandle, Emitter, Runtime, State};
 
 use crate::agent::codex_cli::{
     find_codex_cli, ApprovalPolicy, CodexLaunch, CodexPolicy, SandboxMode,
@@ -100,8 +100,8 @@ pub async fn codex_cli_path(state: State<'_, CodexChats>) -> Result<Option<Strin
 
 /// Opens the chat (no process yet). Opening an open chat keeps it as is.
 #[tauri::command]
-pub async fn codex_open_chat(
-    app: AppHandle,
+pub async fn codex_open_chat<R: Runtime>(
+    app: AppHandle<R>,
     state: State<'_, CodexChats>,
     settings: State<'_, SettingsService>,
     chat_id: String,
@@ -237,5 +237,176 @@ mod tests {
         let d: ApprovalDecision =
             serde_json::from_value(serde_json::json!("acceptForSession")).unwrap();
         assert_eq!(d, ApprovalDecision::AcceptForSession);
+    }
+
+    /// The real `codex` through the app's own commands and event stream,
+    /// called with the JSON the frontend sends (`codexChat.ts`). Set
+    /// `OPENCONDUCTOR_CODEX_IPC_E2E` to a file for the event log; needs a
+    /// signed-in `codex` that `codex_cli_path` finds. Two prompts in one
+    /// chat with "Ask first": a command approval answered Allow, then a
+    /// follow-up on the same thread.
+    #[test]
+    fn live_ipc_chat_with_the_signed_in_codex() {
+        use std::sync::Mutex as StdMutex;
+        use std::time::{Duration, Instant};
+        use tauri::ipc::{CallbackFn, InvokeBody};
+        use tauri::test::{get_ipc_response, mock_builder, mock_context, noop_assets, INVOKE_KEY};
+        use tauri::webview::InvokeRequest;
+        use tauri::{Listener, WebviewWindowBuilder};
+
+        use crate::agent::MemorySecretStore;
+
+        let Some(log) = std::env::var_os("OPENCONDUCTOR_CODEX_IPC_E2E") else {
+            eprintln!("OPENCONDUCTOR_CODEX_IPC_E2E unset; live Codex IPC test skipped");
+            return;
+        };
+        let root = std::env::temp_dir().join(format!("oc-codex-ipc-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
+        let ws = root.join("ws");
+        std::fs::create_dir_all(&ws).unwrap();
+        let ws = ws.canonicalize().unwrap();
+        std::process::Command::new("git")
+            .args(["init", "-q"])
+            .current_dir(&ws)
+            .status()
+            .unwrap();
+
+        let app = mock_builder()
+            .manage(CodexChats::default())
+            .manage(SettingsService::new(
+                root.join("settings.toml"),
+                Arc::new(MemorySecretStore::new()),
+            ))
+            .invoke_handler(tauri::generate_handler![
+                codex_cli_path,
+                codex_open_chat,
+                codex_prompt,
+                codex_answer,
+                codex_cancel,
+                codex_close_chat
+            ])
+            .build(mock_context(noop_assets()))
+            .unwrap();
+        let webview = WebviewWindowBuilder::new(&app, "main", Default::default())
+            .build()
+            .unwrap();
+        let events: Arc<StdMutex<Vec<Value>>> = Arc::default();
+        let seen = events.clone();
+        app.listen(EVENT, move |e| {
+            seen.lock()
+                .unwrap()
+                .push(serde_json::from_str(e.payload()).unwrap());
+        });
+
+        let invoke =
+            |webview: &tauri::WebviewWindow<tauri::test::MockRuntime>, cmd: &str, body: Value| {
+                get_ipc_response(
+                    webview,
+                    InvokeRequest {
+                        cmd: cmd.into(),
+                        callback: CallbackFn(0),
+                        error: CallbackFn(1),
+                        url: "http://tauri.localhost".parse().unwrap(),
+                        body: InvokeBody::Json(body),
+                        headers: Default::default(),
+                        invoke_key: INVOKE_KEY.to_string(),
+                    },
+                )
+                .map(|b| b.deserialize::<Value>().unwrap())
+            };
+
+        let cli = invoke(&webview, "codex_cli_path", serde_json::json!({})).unwrap();
+        eprintln!("codex_cli_path: {cli}");
+        assert!(cli.as_str().is_some_and(|p| p.ends_with("/codex")), "{cli}");
+        invoke(
+            &webview,
+            "codex_open_chat",
+            serde_json::json!({
+                "chatId": "ws-e2e",
+                "cwd": ws.display().to_string(),
+                "threadId": null,
+                "policy": {"approvalPolicy": "on-request", "sandbox": "workspace-write"}
+            }),
+        )
+        .unwrap();
+
+        // Runs one prompt on its own thread while this one answers approvals.
+        let prompt = |text: &'static str| {
+            let w = webview.clone();
+            let handle = std::thread::spawn(move || {
+                invoke(
+                    &w,
+                    "codex_prompt",
+                    serde_json::json!({"chatId": "ws-e2e", "text": text}),
+                )
+            });
+            let mut answered = 0;
+            let deadline = Instant::now() + Duration::from_secs(300);
+            while !handle.is_finished() {
+                assert!(Instant::now() < deadline, "prompt did not finish in 300 s");
+                let approvals: Vec<Value> = events
+                    .lock()
+                    .unwrap()
+                    .iter()
+                    .filter(|e| e["type"] == "approval")
+                    .cloned()
+                    .collect();
+                for a in approvals.iter().skip(answered) {
+                    eprintln!("approval: {}", a["command"]);
+                    invoke(
+                        &webview,
+                        "codex_answer",
+                        serde_json::json!({"chatId": "ws-e2e", "requestId": a["requestId"], "decision": "accept"}),
+                    )
+                    .unwrap();
+                }
+                answered = approvals.len();
+                std::thread::sleep(Duration::from_millis(100));
+            }
+            handle.join().unwrap().unwrap()
+        };
+
+        let end = prompt(
+            "Create a file named hello.txt in the current folder containing exactly the line `hello from codex`, then run `cat hello.txt` and reply with its output only.",
+        );
+        eprintln!("turn 1 end: {end}");
+        assert_eq!(end["outcome"], "completed", "{end}");
+        assert_eq!(
+            std::fs::read_to_string(ws.join("hello.txt"))
+                .unwrap()
+                .trim(),
+            "hello from codex"
+        );
+        let end = prompt("What did hello.txt contain? Answer with the text only.");
+        eprintln!("turn 2 end: {end}");
+        assert_eq!(end["outcome"], "completed", "{end}");
+        invoke(
+            &webview,
+            "codex_close_chat",
+            serde_json::json!({"chatId": "ws-e2e"}),
+        )
+        .unwrap();
+
+        let events = events.lock().unwrap().clone();
+        std::fs::write(&log, serde_json::to_string_pretty(&events).unwrap()).unwrap();
+        let of = |kind: &str| events.iter().filter(|e| e["type"] == kind).count();
+        assert_eq!(of("threadStarted"), 1, "one thread for both prompts");
+        assert_eq!(of("turnEnded"), 2);
+        assert!(events.iter().all(|e| e["chatId"] == "ws-e2e"));
+        let finals: Vec<&str> = events
+            .iter()
+            .filter(|e| e["type"] == "message" && e["phase"] == "final_answer")
+            .filter_map(|e| e["text"].as_str())
+            .collect();
+        eprintln!(
+            "final answers: {finals:?}; approvals: {}; tools: {}",
+            of("approval"),
+            of("tool")
+        );
+        assert_eq!(finals.len(), 2, "{finals:?}");
+        assert!(
+            finals.iter().all(|t| t.contains("hello from codex")),
+            "{finals:?}"
+        );
     }
 }
