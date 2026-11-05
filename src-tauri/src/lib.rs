@@ -233,6 +233,7 @@ pub fn run() {
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
+            app.manage(db::open_cache(&data_dir));
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
             // Conductor's sidecar opens its session event outbox at start and
@@ -293,6 +294,7 @@ pub fn run() {
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,
+            persistence_commands::db_repo_prompt,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
             sidebar_workspace_commands::db_set_workspace_pinned,
@@ -374,6 +376,8 @@ pub fn run() {
             scripts::run_script_status,
             scripts::run_script_output,
             scripts::archive_script_run,
+            scripts::auto_run_after_setup_get,
+            scripts::auto_run_after_setup_set,
             spotlight_commands::spotlight_start,
             spotlight_commands::spotlight_stop,
             spotlight_commands::spotlight_status,
