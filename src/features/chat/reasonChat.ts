@@ -28,6 +28,7 @@ import { restoreCheckpoint, turnCheckpointRef } from "./checkpoints.ts";
 import { applyReasonPayload, cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type ReasonPayload, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
+import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import { turnChanges } from "../diff/useTurnChanges.ts";
 import type { FileChange } from "../diff/types.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
@@ -222,7 +223,11 @@ async function prompt(c: Chat, text: string, attachments: PromptAttachment[]): P
   c.unsent.add(turnId);
   // The stored transcript and Session id come first (see `stored`).
   await loads.get(chatId);
-  const isNewChat = !c.opened && !localStorage.getItem(sessionKey(chatId)) && !c.transcript.messages.some((m) => m.role === "user");
+  // No Session yet: a new chat, or one whose Session was dropped by Reset
+  // chat. The new Session gets the conversation the chat still shows.
+  const newSession = !c.opened && !localStorage.getItem(sessionKey(chatId));
+  const isNewChat = newSession && !c.transcript.messages.some((m) => m.role === "user");
+  const carried = newSession ? earlierConversation(c.transcript) : null;
   apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
   // `submitChat` sets the folder before any effect runs.
   const cwd = c.cwd ?? "";
@@ -241,7 +246,7 @@ async function prompt(c: Chat, text: string, attachments: PromptAttachment[]): P
     // the turn never started (no CLI, no process), so no event will end it.
     const turn = turnCheckpointRef(chatId, turnId);
     const agentText = isNewChat && c.repoPath ? await withGeneral(text, c.repoPath, cwd) : text;
-    const end = await invoke<{ turnChanges?: FileChange[] }>("reason_prompt", { chatId, text: agentText, attachments, turn });
+    const end = await invoke<{ turnChanges?: FileChange[] }>("reason_prompt", { chatId, text: agentText, attachments: carried ? [carried, ...attachments] : attachments, turn });
     if (end.turnChanges) turnChanges.record(turn, end.turnChanges);
   } catch (e) {
     c.unsent.delete(turnId);
@@ -263,15 +268,24 @@ async function withGeneral(text: string, repoPath: string, cwd: string): Promise
 /**
  * "Reset chat" to `turnId`: with `resetFiles`, restore the workspace to the
  * turn's end checkpoint first; only when that worked, delete the later
- * messages. The Reason Session itself is not rewound: ACP has no way to drop
- * turns from a Session, so the agent still remembers the deleted ones.
+ * messages. The agent is rewound too: a Reason Session cannot drop turns, so
+ * when messages were deleted the chat forgets its Session (here and in
+ * `conductor.db`, in the same write) and the next prompt opens a new one
+ * carrying the kept conversation (rewind.ts).
  */
 export async function resetReasonChat(chatId: string, cwd: string, turnId: string, resetFiles: boolean): Promise<void> {
   const c = chat(chatId);
   if (c.transcript.activeTurn !== null) throw new Error("Stop the agent before resetting the chat.");
   await restoreCheckpoint(invoke, cwd, chatId, turnId, resetFiles);
-  c.transcript = truncateAfterTurn(c.transcript, turnId);
-  savers.get(chatId)?.update(c.transcript);
+  const before = c.transcript;
+  c.transcript = truncateAfterTurn(before, turnId);
+  const lastKept = lastMessageOfTurn(c.transcript, turnId);
+  const saver = savers.get(chatId);
+  if (lastKept && c.transcript.messages.length < before.messages.length) {
+    localStorage.removeItem(sessionKey(chatId));
+    c.opened = false;
+    saver?.rewind(c.transcript, lastKept);
+  } else saver?.update(c.transcript);
   notify(c);
 }
 

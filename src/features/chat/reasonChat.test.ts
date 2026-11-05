@@ -55,9 +55,10 @@ function emit(payload: Record<string, unknown>) {
 
 const tick = () => new Promise((r) => setTimeout(r, 0));
 async function until(cond: () => boolean, what: string) {
-  for (let i = 0; i < 200; i++) {
+  const deadline = Date.now() + 3000;
+  while (Date.now() < deadline) {
     if (cond()) return;
-    await tick();
+    await new Promise((r) => setTimeout(r, 5));
   }
   assert.fail(`timed out waiting for ${what}`);
 }
@@ -164,5 +165,48 @@ test("a chat's own options win over the Settings defaults and are kept for later
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
   assert.deepEqual(callsOf("reason_open_chat", chatId)[0].args.config, own);
   assert.deepEqual(JSON.parse(store.get(`openconductor.reason.config.${chatId}`) ?? "null"), own);
+  ends.shift()!();
+});
+
+test("Reset chat rewinds the agent: the next prompt opens a new Session that carries only the kept turns", async () => {
+  const chatId = "reset-1";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  const saves: Record<string, unknown>[] = [];
+  handlers.set("chat_messages_save", (a) => void (a.chatId === chatId && saves.push(a)));
+  const ends = promptsEndOnDemand();
+  const turn = async (text: string, answer: string) => {
+    const before = callsOf("reason_prompt", chatId).length;
+    rc.submitChat(chatId, "/w", text, "queue");
+    await until(() => callsOf("reason_prompt", chatId).length === before + 1, `prompt "${text}"`);
+    if (!store.get(`openconductor.reason.session.${chatId}`)) emit({ chatId, type: "sessionStarted", sessionId: "sess-1" });
+    emit({ chatId, type: "text", text: answer });
+    ends.shift()!();
+    await until(() => rc.chatSnapshot(chatId).transcript.activeTurn === null, "turn end");
+  };
+  await turn("first", "first answer");
+  await turn("second", "second answer");
+  assert.equal(callsOf("reason_open_chat", chatId).length, 1);
+
+  const firstTurn = rc.chatSnapshot(chatId).transcript.messages[0].turnId;
+  await rc.resetReasonChat(chatId, "/w", firstTurn, false);
+  assert.equal(store.get(`openconductor.reason.session.${chatId}`), undefined);
+  await until(() => saves.some((s) => s.rewindTo !== undefined), "the rewind write");
+  const rewind = saves.find((s) => s.rewindTo !== undefined)!;
+  const kept = rc.chatSnapshot(chatId).transcript.messages;
+  assert.equal(rewind.rewindTo, kept[kept.length - 1].id);
+  assert.equal(rewind.agentSessionId, null);
+  assert.ok(!JSON.stringify(rewind.upserts).includes("second"), "the deleted turn is not written back");
+
+  rc.submitChat(chatId, "/w", "third", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 3, "the prompt after the reset");
+  const open = callsOf("reason_open_chat", chatId);
+  assert.equal(open.length, 2);
+  assert.equal(open[1].args.sessionId, null, "a new Session, not the one that remembers the deleted turn");
+  const sent = callsOf("reason_prompt", chatId)[2].args;
+  assert.equal(sent.text, "third");
+  const [carried] = sent.attachments as { name: string; text: string }[];
+  assert.equal(carried.name, "Earlier conversation.md");
+  assert.match(carried.text, /first answer/);
+  assert.doesNotMatch(carried.text, /second/);
   ends.shift()!();
 });
