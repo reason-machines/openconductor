@@ -3,6 +3,7 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import type { FileMatch } from "./spotlight/quickOpen";
 import type { GitHubOwners } from "./state/githubRepoDialog";
+import type { GitProtocol, RecentRepo } from "./state/cloneDialog";
 
 export interface AppInfo {
   name: string;
@@ -101,4 +102,50 @@ function demoMatch(query: string, root: string): FileMatch[] {
 export async function fuzzyFilterFiles(workspacePath: string, query: string, excludeDirectories: boolean): Promise<FileMatch[]> {
   if (!inTauri()) return demoMatch(query, workspacePath);
   return invoke<FileMatch[]>("fuzzy_filter_files", { workspacePath, query, excludeDirectories });
+}
+
+// Clone dialog helpers (evidence/screens/clone-dialog.md). Outside Tauri they
+// return demo data so the dialog can be tried in a browser.
+
+const DEMO_RECENT_REPOS: RecentRepo[] = [
+  { id: 1, full_name: "you/notes", description: "Personal notes and scratch work", clone_url: "https://github.com/you/notes.git", ssh_url: "git@github.com:you/notes.git", owner: { avatar_url: "" } },
+  { id: 2, full_name: "acme/web", description: null, clone_url: "https://github.com/acme/web.git", ssh_url: "git@github.com:acme/web.git", owner: { avatar_url: "" } },
+];
+
+/** The 8 most recently pushed repos you can reach (`github_recent_repos`). */
+export async function githubRecentRepos(): Promise<RecentRepo[]> {
+  if (!inTauri()) return DEMO_RECENT_REPOS;
+  return invoke<RecentRepo[]>("github_recent_repos");
+}
+
+/** `gh config get git_protocol`, as "ssh" or "https" (`github_git_protocol`). */
+export async function githubGitProtocol(): Promise<GitProtocol> {
+  if (!inTauri()) return "https";
+  return (await invoke<string>("github_git_protocol")) === "ssh" ? "ssh" : "https";
+}
+
+const LAST_CLONE_DIRECTORY = "openconductor.lastCloneDirectory";
+
+/** The folder the last successful clone went into, or null. */
+export function lastCloneDirectory(): string | null {
+  try {
+    return localStorage.getItem(LAST_CLONE_DIRECTORY);
+  } catch {
+    return null;
+  }
+}
+
+/** Remembers the clone location; a failure to save is only logged. */
+export function saveLastCloneDirectory(path: string): void {
+  try {
+    localStorage.setItem(LAST_CLONE_DIRECTORY, path);
+  } catch (err) {
+    console.warn("could not save the last clone directory", err);
+  }
+}
+
+/** Whether `path` is an existing folder; always true outside Tauri. */
+export async function folderExists(path: string): Promise<boolean> {
+  if (!inTauri()) return true;
+  return inspectProjectFolder(path).then((f) => f.isDir, () => false);
 }

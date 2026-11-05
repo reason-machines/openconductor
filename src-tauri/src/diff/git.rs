@@ -31,6 +31,10 @@ pub struct DiffRequest {
     /// Limit to one file (the file being opened); `None` loads every file.
     #[serde(default)]
     pub path: Option<String>,
+    /// Unchanged lines around each change (`-U<n>`); `None` keeps git's default of 3.
+    /// The entire-file view and "expand unmodified lines" ask for the whole file.
+    #[serde(default)]
+    pub context_lines: Option<u32>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq, Eq)]
@@ -136,10 +140,12 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
     } else {
         None
     };
+    let context = req.context_lines.map(|n| format!("-U{n}"));
 
     let mut args: Vec<&str> = vec!["diff"];
     args.extend(DIFF_FLAGS);
     args.extend(ws);
+    args.extend(context.as_deref());
     args.push(&base);
     args.push("--");
     args.extend(req.path.as_deref());
@@ -151,6 +157,7 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
         let mut args: Vec<&str> = vec!["diff", "--no-index"];
         args.extend(DIFF_FLAGS);
         args.extend(ws);
+        args.extend(context.as_deref());
         args.extend(["--", "/dev/null", path]);
         // --no-index exits 1 when the files differ, which is always the case here.
         for mut f in parse_unified(&git(repo, &args, &[0, 1])?).map_err(DiffError::Parse)? {

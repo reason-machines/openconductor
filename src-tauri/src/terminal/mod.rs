@@ -19,6 +19,8 @@
 //!   (`pty_*_mirror`); the reference keeps one per remote terminal.
 //! * `kill`: hangs up the process group, then SIGKILL after a grace period.
 //! * [`wire`]: `pty_spawn` arguments and the events the webview receives.
+//! * [`history_store`]: closed terminals' snapshots kept between launches
+//!   in the reference's encrypted local-storage format.
 //! * [`shell_exec`]: one-shot `/bin/sh -c` commands, optionally cancellable
 //!   (`execute_shell_command[_cancellable]`, `cancel_shell_command`).
 //!
@@ -27,6 +29,7 @@
 //! (`terminal_commands.rs`) forwards events through an [`EventSink`].
 
 pub mod flow;
+pub mod history_store;
 mod kill;
 mod manager;
 mod mirror;

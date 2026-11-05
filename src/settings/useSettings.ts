@@ -17,9 +17,10 @@ export function useSettings() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const reload = useCallback(() => {
     getSettings().then(setSettings, (e) => setError(errorText(e)));
   }, []);
+  useEffect(reload, [reload]);
 
   const save = useCallback(
     async (next: Settings): Promise<boolean> => {
@@ -41,5 +42,5 @@ export function useSettings() {
     [settings],
   );
 
-  return { settings, error, save };
+  return { settings, error, save, reload };
 }

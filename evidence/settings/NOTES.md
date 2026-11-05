@@ -102,3 +102,29 @@ effort or fast mode; display names are derived from ids (`opus-5-5-1m` is "Opus 
 because the bundle holds no labels for them; our stored default stays `opus` (a Conductor
 alias) rather than Conductor's `opus-5-1m` fallback. Not built: Codex personality, Claude
 output style, Review model, Default to plan mode.
+
+## Agents
+
+Conductor's Agents page is the `providers` route (`jWt` nav, see "Settings pages"). Its
+copy (`evidence/frontend/copy-catalog.json`) offers: Anthropic API key or auth token with a
+base URL override; Amazon Bedrock (region, named AWS profile, Bedrock API key); Google
+Vertex AI (GCP project, service account file); Microsoft Foundry; a custom provider; Codex
+via ChatGPT, an OpenAI API key (base URL, organization, project), OpenRouter or Vercel AI
+Gateway; a Cursor API key; OpenCode. Its only registry row on this tab is
+`chrome_mode_enabled` ("Use Claude Code with Chrome"); the provider forms are registered
+through another call shape the registry regex does not catch.
+
+OpenConductor's Agents page (`src/settings/AgentsPage.tsx`) shows one card per agent
+(Claude Code, Codex, Cursor, OpenCode) with a provider picker, that provider's options and
+its key fields, built on `connect_provider` / `disconnect_provider` / `provider_status`.
+Keys are write-only: a stored key shows only as stored, and leaving its field blank keeps
+it. Divergences and gaps:
+
+- Conductor's key commands return key values to its frontend (Reveal API key); ours never
+  do, so there is no Reveal.
+- Not built: "Use Claude Code with Chrome", the custom provider, per-provider model
+  overrides (stored ones are kept on save), Conductor's provider search, and validating a
+  key against the backend ("Could not validate this API key.").
+- The Reason agent is ours, not Conductor's, and has nothing to configure, so it has no card.
+- Layout is not compared against Conductor: no screenshot of its providers page exists
+  (native capture blocked, `evidence/providers/README.md`).

@@ -1,4 +1,5 @@
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
+import { AgentsPage } from "./AgentsPage";
 import { DefaultModelsPage } from "./DefaultModelsPage";
 import { GeneralPage } from "./GeneralPage";
 import { GitPage } from "./GitPage";
@@ -14,7 +15,7 @@ interface Props {
 
 /** Full-window settings: grouped page list on the left, the page on the right. Esc goes back. */
 export function SettingsView({ page, onNavigate, onClose }: Props) {
-  const { settings, error, save } = useSettings();
+  const { settings, error, save, reload } = useSettings();
 
   useKeybindings({ "settings.close": onClose });
 
@@ -56,6 +57,8 @@ export function SettingsView({ page, onNavigate, onClose }: Props) {
           <KeyBindingsPage settings={settings} save={save} />
         ) : page === "models" ? (
           <DefaultModelsPage settings={settings} save={save} />
+        ) : page === "providers" ? (
+          <AgentsPage settings={settings} reload={reload} />
         ) : page === "git" ? (
           <GitPage settings={settings} save={save} />
         ) : (
