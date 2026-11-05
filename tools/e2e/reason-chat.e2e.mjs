@@ -183,19 +183,14 @@ try {
   await screenshot("reason-0-empty-chat");
   pass(`the desktop chat opens on Conductor's empty state ("${intro.split("\n")[0]}") with ${modelChip} on the picker`);
 
-  // The workspace opens its first terminal on its own (a PTY spawn, so it lands
-  // a moment later). Its arrival must not take the keyboard from the chat box:
-  // keys typed there would go to the shell and Send would stay disabled.
-  const terminalFirst = await run(`document.querySelector('.composer textarea').focus(); return !!document.querySelector('.terminal-panel .xterm');`);
-  await waitFor("the workspace's terminal", () => run("return !!document.querySelector('.terminal-panel .xterm');"));
+  // Conductor's default workspace layout shows no terminal, so none opens with
+  // the workspace to take the keyboard from the chat box.
+  await run(`document.querySelector('.composer textarea').focus(); return true;`);
   await sleep(500);
+  assert.equal(await run("return document.querySelectorAll('.terminal-panel').length;"), 0, "the workspace opened a terminal panel by default");
   const focus = await focusedElement();
-  assert.equal(focus, "composer textarea", `the terminal that opened with the workspace took focus from the chat box (${focus})`);
-  pass(
-    terminalFirst
-      ? "the chat box keeps focus (the terminal was already open when it was focused)"
-      : "the chat box keeps focus when the workspace's terminal opens after it",
-  );
+  assert.equal(focus, "composer textarea", `something took focus from the chat box (${focus})`);
+  pass("no terminal opens with the workspace (Conductor's default layout) and the chat box keeps focus");
 
   // 1. A local path: in the workspace folder under HOME.
   await send("local");
