@@ -17,6 +17,9 @@ export function sidebarWrite(action: Action): SidebarWrite | undefined {
       return { command: "db_set_workspace_unread", args: { workspaceId: action.workspaceId, unread: action.unread } };
     case "setWorkspaceStatus":
       return { command: "db_set_workspace_manual_status", args: { workspaceId: action.workspaceId, status: action.status } };
+    case "assignSection":
+      // Assigning a section unpins the workspace (Conductor's `k$t` calls setWorkspacePinned false).
+      return action.sectionId === null ? undefined : { command: "db_set_workspace_pinned", args: { workspaceId: action.workspaceId, pinned: false } };
     default:
       return undefined;
   }

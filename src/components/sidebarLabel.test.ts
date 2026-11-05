@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { byRecentActivity, prettifyBranch, workspaceLabel } from "./sidebarLabel.ts";
+import { byRecentActivity, labelTargetBranch, prettifyBranch, workspaceLabel } from "./sidebarLabel.ts";
 
 test("branch names read as sentences", () => {
   assert.equal(prettifyBranch("ada/dark-mode-tokens"), "Ada/dark mode tokens");
@@ -19,6 +19,24 @@ test("the PR title wins over the branch", () => {
 test("the branch is shown, prettified, unless it is the target branch", () => {
   assert.equal(workspaceLabel({ name: "osaka", branch: "ada/dark-mode-tokens", targetBranch: "main" }), "Ada/dark mode tokens");
   assert.equal(workspaceLabel({ name: "osaka", branch: "main", targetBranch: "main" }), "Osaka");
+});
+
+test("a stored workspace_name comes before the PR title even when not user-set ($V: if(e)return e)", () => {
+  assert.equal(workspaceLabel({ name: "Login fix", workspaceName: "Login fix", branch: "ada/x", prTitle: "PR" }), "Login fix");
+  assert.equal(workspaceLabel({ name: "quito", workspaceName: null, branch: "ada/x", prTitle: "PR" }), "PR");
+});
+
+test("the configured branch prefix is stripped before prettifying (pGe / zcs)", () => {
+  assert.equal(workspaceLabel({ name: "osaka", branch: "sven/dark-mode", branchPrefix: "sven/", targetBranch: "main" }), "Dark mode");
+  assert.equal(workspaceLabel({ name: "osaka", branch: "other/dark-mode", branchPrefix: "sven/", targetBranch: "main" }), "Other/dark mode");
+  assert.equal(workspaceLabel({ name: "sven/osaka", branch: "main", branchPrefix: "sven/", targetBranch: "main" }), "Osaka");
+});
+
+test("the target is the workspace's intended_target_branch, main when unset", () => {
+  assert.equal(labelTargetBranch(null), "main");
+  assert.equal(labelTargetBranch("develop"), "develop");
+  assert.equal(workspaceLabel({ name: "osaka", branch: "develop", targetBranch: labelTargetBranch("develop") }), "Osaka");
+  assert.equal(workspaceLabel({ name: "osaka", branch: "master", targetBranch: labelTargetBranch(undefined) }), "Master");
 });
 
 test("rows are listed newest first, falling back to creation time", () => {

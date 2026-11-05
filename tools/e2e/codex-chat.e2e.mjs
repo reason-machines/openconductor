@@ -199,8 +199,17 @@ try {
   const tools = await toolNames();
   assert.deepEqual(tools, ["printf '%s\\n' 'hello from codex' > hello.txt", "cat hello.txt"]);
   assert.equal(readFileSync(join(workspace.path, "hello.txt"), "utf8"), "hello from codex\n");
-  const text1 = await chatText();
-  assert.ok(text1.includes("I’ll create `hello.txt`"), "commentary message shown");
+  // The commentary message folds into the (now opened) tool-call group and renders as Markdown, so its
+  // `code` spans lose their backticks; the final reply stays outside it (user bubbles are left out: the prompt quotes the reply).
+  const [grouped, outside] = await run(
+    `const groups = [...document.querySelectorAll('.chat-scroll .chat-tool-group')];
+     const clone = document.querySelector('.chat-scroll').cloneNode(true);
+     for (const g of clone.querySelectorAll('.chat-tool-group, .chat-user')) g.remove();
+     return [groups.map((g) => g.innerText).join('\\n'), clone.textContent];`,
+  );
+  assert.match(grouped, /I.ll create `?hello\.txt`? in the workspace, then run `?cat hello\.txt`?\./, "commentary message shown inside the tool-call group");
+  assert.ok(outside.includes("hello from codex"), "final message shown outside the tool-call group");
+  assert.ok(!/I.ll create/.test(outside), "commentary is not outside the tool-call group");
   await screenshot("codex-2-turn-done");
   pass(`Allow runs the commands (${tools.join(" | ")}), hello.txt is in ${workspace.path}, reply shown`);
 

@@ -36,6 +36,7 @@ pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
 mod sidebar_repo_commands;
+mod sidebar_section_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
@@ -347,6 +348,8 @@ pub fn run() {
             archive_on_merge_commands::repo_archive_on_merge,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
+            sidebar_section_commands::db_read_navigation_sections,
+            sidebar_section_commands::db_write_navigation_sections,
             sidebar_workspace_commands::db_set_workspace_pinned,
             sidebar_workspace_commands::db_set_workspace_unread,
             sidebar_workspace_commands::db_set_workspace_manual_status,
