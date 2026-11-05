@@ -5,12 +5,13 @@
 //!
 //! ```text
 //! <data_dir>/workspaces/<repo-slug>/<name>     active worktree
-//! <data_dir>/archived/<repo-slug>/<name>.ws    archive record (branch kept)
+//! <data_dir>/archived/<repo-slug>/<name>.ws    archive record (branch, archive commit)
 //! ```
 //!
 //! Lifecycle: [`WorkspaceManager::create`] -> setup script ->
-//! run scripts -> [`WorkspaceManager::archive`] (archive script, worktree
-//! removed, branch kept) -> [`WorkspaceManager::restore`] or
+//! run scripts -> [`WorkspaceManager::archive`] (archive script, HEAD
+//! recorded, worktree removed, branch kept or deleted) ->
+//! [`WorkspaceManager::restore`] or
 //! [`WorkspaceManager::delete`] (worktree and branch removed).
 //!
 //! Behavior is taken from the reference app's bundled scripts and skill (see
@@ -106,7 +107,8 @@ pub struct Workspace {
     pub path: PathBuf,
     pub branch: String,
     pub state: WorkspaceState,
-    /// Current HEAD commit (active workspaces only).
+    /// Current HEAD commit; for an archived workspace, the commit recorded
+    /// when it was archived (`archive_commit`).
     pub head: Option<String>,
 }
 
@@ -144,8 +146,12 @@ pub struct Created {
 pub struct ArchiveOptions {
     /// Archive script from repository settings, run in the workspace first.
     pub archive_script: Option<String>,
-    /// Archive even with uncommitted changes or an operation in progress.
+    /// Archive even with uncommitted changes (they are lost). Never
+    /// overrides an in-progress merge/rebase/cherry-pick/revert.
     pub force: bool,
+    /// Delete the local branch after removing the worktree ("Delete branch
+    /// on archive"). Restore recreates it from the archive commit.
+    pub delete_branch: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -231,7 +237,7 @@ impl WorkspaceManager {
             if !git::valid_branch_name(&root, b) {
                 return Err(WorkspaceError::InvalidName(b.to_string()));
             }
-            if git::branch_exists(&root, b) {
+            if git::branch_name_is_taken(&root, b)? {
                 return Err(WorkspaceError::BranchExists(b.to_string()));
             }
         }
@@ -320,8 +326,8 @@ impl WorkspaceManager {
                     continue;
                 }
                 let Some(name) = p.file_stem().map(|n| n.to_string_lossy().into_owned()) else { continue };
-                let branch = read_record(&p)?.unwrap_or_default();
-                out.push(self.make(&root, &name, branch, WorkspaceState::Archived, None));
+                let (branch, commit) = read_record(&p)?;
+                out.push(self.make(&root, &name, branch.unwrap_or_default(), WorkspaceState::Archived, commit));
             }
         }
         out.sort_by(|a, b| a.name.cmp(&b.name));
@@ -366,12 +372,12 @@ impl WorkspaceManager {
         if ws.state == WorkspaceState::Archived {
             return Ok(Archived { workspace: ws, script: None });
         }
-        if ws.state == WorkspaceState::Active && !opts.force {
+        if ws.state == WorkspaceState::Active {
             let busy = git::busy_state(&ws.path)?;
             if busy != BusyState::Clean {
                 return Err(WorkspaceError::Busy(busy));
             }
-            if git::is_dirty(&ws.path)? {
+            if !opts.force && git::is_dirty(&ws.path)? {
                 return Err(WorkspaceError::Dirty(ws.name.clone()));
             }
         }
@@ -383,27 +389,43 @@ impl WorkspaceManager {
         };
         let record = self.archive_record(&ws.repo_root, &ws.name);
         std::fs::create_dir_all(record.parent().expect("record has parent"))?;
-        std::fs::write(&record, format!("branch={}\n", ws.branch))?;
+        let commit = ws.head.clone().or_else(|| git::git(&ws.repo_root, ["rev-parse", "--verify", "-q", &format!("refs/heads/{}^{{commit}}", ws.branch)]).ok());
+        let mut text = format!("branch={}\n", ws.branch);
+        if let Some(c) = &commit {
+            text.push_str(&format!("commit={c}\n"));
+        }
+        std::fs::write(&record, text)?;
         self.remove_worktree(&ws)?;
-        let workspace = self.make(&ws.repo_root, &ws.name, ws.branch, WorkspaceState::Archived, None);
+        if opts.delete_branch && !ws.branch.is_empty() && git::branch_exists(&ws.repo_root, &ws.branch) {
+            git::git(&ws.repo_root, ["branch", "-D", &ws.branch])?;
+        }
+        let workspace = self.make(&ws.repo_root, &ws.name, ws.branch, WorkspaceState::Archived, commit);
         Ok(Archived { workspace, script })
     }
 
-    /// Restore an archived workspace: re-add its worktree on the kept branch.
+    /// Restore an archived workspace: re-add its worktree on its branch, or
+    /// recreate the branch at the archive commit when it was deleted.
     pub fn restore(&self, repo: &Path, name: &str) -> Result<Workspace, WorkspaceError> {
         let ws = self.get(repo, name)?;
         if ws.state != WorkspaceState::Archived {
             return Ok(ws);
         }
-        if !git::branch_exists(&ws.repo_root, &ws.branch) {
-            return Err(WorkspaceError::NotFound(format!("branch {}", ws.branch)));
-        }
+        let recreate_at = if git::branch_exists(&ws.repo_root, &ws.branch) {
+            None
+        } else {
+            match ws.head.as_deref().filter(|c| git::ref_exists(&ws.repo_root, &format!("{c}^{{commit}}"))) {
+                Some(c) if !ws.branch.is_empty() => Some(c.to_string()),
+                _ => return Err(WorkspaceError::NotFound(format!("branch {}", ws.branch))),
+            }
+        };
         std::fs::create_dir_all(self.workspaces_dir(&ws.repo_root))?;
-        git::git(
-            &ws.repo_root,
-            ["worktree".as_ref(), "add".as_ref(), "--quiet".as_ref(), ws.path.as_os_str(), ws.branch.as_ref()]
-                as [&std::ffi::OsStr; 5],
-        )?;
+        let mut args: Vec<&std::ffi::OsStr> = vec!["worktree".as_ref(), "add".as_ref(), "--quiet".as_ref()];
+        if recreate_at.is_some() {
+            args.extend(["-b".as_ref(), ws.branch.as_ref() as &std::ffi::OsStr]);
+        }
+        args.push(ws.path.as_os_str());
+        args.push(recreate_at.as_deref().unwrap_or(&ws.branch).as_ref());
+        git::git(&ws.repo_root, args)?;
         std::fs::remove_file(self.archive_record(&ws.repo_root, &ws.name))?;
         self.get(repo, name)
     }
@@ -439,10 +461,10 @@ impl WorkspaceManager {
     }
 }
 
-fn read_record(path: &Path) -> Result<Option<String>, WorkspaceError> {
+/// `(branch, archive commit)` from an archive record; records written
+/// before the commit was stored have only `branch=`.
+fn read_record(path: &Path) -> Result<(Option<String>, Option<String>), WorkspaceError> {
     let text = std::fs::read_to_string(path)?;
-    Ok(text
-        .lines()
-        .find_map(|l| l.strip_prefix("branch="))
-        .map(str::to_string))
+    let field = |key: &str| text.lines().find_map(|l| l.strip_prefix(key)).map(str::to_string);
+    Ok((field("branch="), field("commit=")))
 }

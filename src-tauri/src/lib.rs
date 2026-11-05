@@ -3,7 +3,12 @@
 //! Module ownership (one owner per path, see evidence/README.md):
 //! - `workspace/`  workspace lifecycle (worktrees, setup/run scripts)
 //! - `checkpoint/` checkpoints and revert
+//! - `agent/`      agent runner, providers and BYOK settings
+//!
 //! Those modules are added here once their owners land them.
+
+pub mod agent;
+pub mod project;
 
 use serde::Serialize;
 
@@ -24,11 +29,17 @@ fn app_info() -> AppInfo {
     }
 }
 
+/// Folder checks for Home "Open project" (see `project`).
+#[tauri::command]
+fn inspect_project_folder(path: String) -> project::FolderInspection {
+    project::inspect_folder(std::path::Path::new(&path))
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(tauri::generate_handler![app_info])
+        .invoke_handler(tauri::generate_handler![app_info, inspect_project_folder])
         .run(tauri::generate_context!())
         .expect("error while running OpenConductor");
 }

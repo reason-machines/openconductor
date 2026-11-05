@@ -15,6 +15,17 @@ export async function appInfo(): Promise<AppInfo> {
   return invoke<AppInfo>("app_info");
 }
 
+export interface FolderInspection {
+  isDir: boolean;
+  hasGit: boolean;
+  origin: string | null;
+}
+
+/** Backend folder checks for Open project (`inspect_project_folder`). */
+export async function inspectProjectFolder(path: string): Promise<FolderInspection> {
+  return invoke<FolderInspection>("inspect_project_folder", { path });
+}
+
 /** Native folder picker; returns null when cancelled or outside Tauri. */
 export async function pickFolder(title: string): Promise<string | null> {
   if (!inTauri()) return null;
