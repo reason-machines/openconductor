@@ -306,6 +306,7 @@ pub fn run() {
             pr::commands::pr_lookup,
             pr::commands::pr_list_open,
             pr::commands::gh_issue_list_open,
+            pr::commands::pr_git_state,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
             pr::commands::pr_merge,

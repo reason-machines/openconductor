@@ -16,6 +16,8 @@
 //!   GraphQL variables; the repository's preferred merge method; merge
 //!   (squash / merge / rebase), auto-merge, ready, edit, retarget, approve.
 //! * [`fetch`]: batched GraphQL lookup of each workspace branch's PR.
+//! * [`git_state`]: local git facts for the header (uncommitted work,
+//!   changes against the target, push remote, upstream ahead / behind).
 //! * [`list`]: open PRs and issues for the "Create from..." picker, with
 //!   `no_github:` / `no_remote:` tagged errors.
 //! * [`api`]: the operations the Tauri commands run (lookup, merge,
@@ -37,6 +39,7 @@ pub mod checks_commands;
 pub mod commands;
 pub mod fetch;
 pub mod gh;
+pub mod git_state;
 pub mod header;
 pub mod info;
 pub mod list;
@@ -53,6 +56,8 @@ mod checks_tests;
 mod fetch_tests;
 #[cfg(test)]
 mod gh_tests;
+#[cfg(test)]
+mod git_state_tests;
 #[cfg(test)]
 mod header_tests;
 #[cfg(test)]
