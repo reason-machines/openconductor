@@ -6,6 +6,7 @@ import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
 import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
+import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
@@ -74,11 +75,12 @@ export default function App() {
       if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
       if (outcome.kind === "needsGitHubRepo") return setGithubRepo({ path: outcome.path, name: outcome.name, needsGitInit: outcome.needsGitInit });
       const registered = await addRepository(outcome.path);
+      if (findExistingRepo(state.repos, { path: registered.root, remote: outcome.remote })) return show("error", REPO_EXISTS);
       dispatch({ type: "addRepo", repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
     } catch (err) {
       show("error", failedToAddMessage(err));
     }
-  }, [dispatch, show]);
+  }, [dispatch, show, state.repos]);
   const [quickOpen, setQuickOpen] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);

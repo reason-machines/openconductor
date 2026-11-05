@@ -363,3 +363,17 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .scripts-meta code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scripts-output { flex: 1; margin: 0; padding: 8px 12px 12px; overflow: auto; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; color: var(--text); }
 .scripts-error { padding: 6px 12px; font-size: 12px; color: #b4483c; }
+
+/* Create workspace: Add repository (Open project / Clone repo) */
+.add-repo { position: relative; display: flex; }
+.add-repo-pop { position: absolute; top: 100%; right: 0; z-index: 25; margin-top: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); padding: 6px; display: flex; flex-direction: column; gap: 6px; font-weight: 400; }
+.add-repo-menu { min-width: 160px; }
+.add-repo-menu button { text-align: left; padding: 6px 8px; border: 0; border-radius: 6px; background: none; color: inherit; font: inherit; cursor: pointer; }
+.add-repo-menu button:hover, .add-repo-menu button:focus-visible { background: var(--hover, rgba(127, 127, 127, 0.12)); outline: 0; }
+.add-repo-clone { width: min(380px, calc(100vw - 64px)); padding: 8px; }
+.add-repo-clone input { min-width: 0; }
+/* In the dialog the clone box spans the repository + base branch row; the menu stays under "Add…". */
+.create-row { position: relative; }
+.create-row .add-repo { position: static; }
+.create-row .add-repo-pop { left: 0; right: 0; width: auto; }
+.create-row .add-repo-menu { left: auto; right: calc(50% + 6px); }
