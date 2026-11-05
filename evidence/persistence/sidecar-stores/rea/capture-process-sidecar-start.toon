@@ -1,0 +1,427 @@
+evidence_id: ev_402827a66c960ceaa8f493a4f7990fddca4c94c134633a56418e62d52c0f2f64
+subject: null
+provider:
+  id: rea-process
+  name: REA process capture
+  version: "3"
+analysis_profile: null
+predicate_type: rea.process-capture
+operation: capture_process_scenario
+parameters:
+  executable_name: conductor-runtime
+  argument_count: 1
+  event_count: 0
+  filesystem_observation_path_count: 1
+  normalization:
+    paths: false
+    pids: true
+    ports: true
+    time_bucket_ms: 10
+    patterns: []
+raw_result: null
+normalized_result:
+  manifest:
+    rea_version: 6.7.0
+    provider_version: "3"
+    platform: darwin
+    architecture: arm64
+    pty_backend: node-pty
+    started_at: "2026-11-05T15:13:12.894Z"
+    completed_at: "2026-11-05T15:13:24.767Z"
+    scenario:
+      executable: /Users/sven/code/conductor-rea-work/Conductor.app/Contents/Resources/bin/.internal/conductor-runtime
+      arguments[1]: sidecar
+      working_directory: /Users/sven/code/conductor-rea-work/persist-rea/home
+      environment:
+        HOME: /Users/sven/code/conductor-rea-work/persist-rea/home
+        PATH: "/usr/bin:/bin:/usr/sbin:/sbin"
+        TMPDIR: /Users/sven/code/conductor-rea-work/persist-rea/home/tmp/
+        USER: sven
+        LANG: en_US.UTF-8
+      filesystem_observation_paths[1]: /Users/sven/code/conductor-rea-work/persist-rea/home
+      terminal:
+        columns: 80
+        rows: 24
+        scrollback: 1000
+      events: []
+      timeout_ms: 10000
+      idle_timeout_ms: 10000
+      settle_ms: 100
+      limits:
+        output_bytes: 2000000
+        files: 20000
+        file_bytes: 20000000
+        processes: 200
+        filesystem_depth: 16
+      normalization:
+        paths: false
+        pids: true
+        ports: true
+        time_bucket_ms: 10
+        patterns: []
+      finalization_ms: 2000
+      executable_sha256: 5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d
+    comparison_contract:
+      working_directory: /Users/sven/code/conductor-rea-work/persist-rea/home
+      environment:
+        HOME: /Users/sven/code/conductor-rea-work/persist-rea/home
+        PATH: "/usr/bin:/bin:/usr/sbin:/sbin"
+        TMPDIR: /Users/sven/code/conductor-rea-work/persist-rea/home/tmp/
+        USER: sven
+        LANG: en_US.UTF-8
+      ambient_environment: unknown
+      filesystem_observation_paths[1]: /Users/sven/code/conductor-rea-work/persist-rea/home
+      terminal:
+        columns: 80
+        rows: 24
+        scrollback: 1000
+      events: []
+      timeout_ms: 10000
+      idle_timeout_ms: 10000
+      settle_ms: 100
+      finalization_ms: 2000
+      limits:
+        output_bytes: 2000000
+        files: 20000
+        file_bytes: 20000000
+        processes: 200
+        filesystem_depth: 16
+      normalization:
+        paths: false
+        pids: true
+        ports: true
+        time_bucket_ms: 10
+        patterns: []
+      port_normalization_version: contextual-endpoints-v2
+      rendered_line_format: trailing-spaces-trimmed-v1
+    full_scenario_sha256: 3464586af53d569f0ae6f3f7fa5b6d24393bed842da102fcd976d9d8f586ee8a
+    comparison_contract_sha256: 1179c752888df8e593a8267314b029939dbf316a7b8f6109eba0863a81206523
+    selected_executable_sha256: 5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d
+    executable_sha256: 5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d
+    executable_identity:
+      state: path_metadata_unchanged
+      reason: null
+    normalization_sha256: 5c58aa1aa890197f15f9c59ef755d01120e6e07f356fa1ef2f20787e63b6fa87
+  normalization:
+    paths: false
+    pids: true
+    ports: true
+    time_bucket_ms: 10
+    patterns: []
+  frames[3]:
+    - sequence: 0
+      at_ms: 3160
+      data: "[processLogPublisher] publishing disabled: CONDUCTOR_INTERNAL_PROCESS_LOGS_ENABLED is not \"1\"\r\n"
+    - sequence: 1
+      at_ms: 5220
+      data: "[Log]Unix socket server listening on /Users/sven/code/conductor-rea-work/persist-rea/home/tmp/conductor-sidecar-v2-<pid>.sock\r\nSOCKET_PATH=/Users/sven/code/conductor-rea-work/persist-rea/home/tmp/conductor-sidecar-v2-<pid>.sock\r\n"
+      raw_data: "[Log]Unix socket server listening on /Users/sven/code/conductor-rea-work/persist-rea/home/tmp/conductor-sidecar-v2-40874.sock\r\nSOCKET_PATH=/Users/sven/code/conductor-rea-work/persist-rea/home/tmp/conductor-sidecar-v2-40874.sock\r\n"
+    - sequence: 2
+      at_ms: 10780
+      data: "[Log][SIGNAL] Received SIGTERM, shutting down...\r\n"
+  rendered_frames[3]:
+    - sequence: 0
+      at_ms: 3160
+      columns: 80
+      rows: 24
+      cursor_x: 0
+      cursor_y: 2
+      active_buffer: normal
+      lines[24]: "[processLogPublisher] publishing disabled: CONDUCTOR_INTERNAL_PROCESS_LOGS_ENABL","ED is not \"1\"","","","","","","","","","","","","","","","","","","","","","",""
+      serialized_state: "[processLogPublisher] publishing disabled: CONDUCTOR_INTERNAL_PROCESS_LOGS_ENABLED is not \"1\"\u001b[1B\u001b[13D"
+    - sequence: 1
+      at_ms: 5220
+      columns: 80
+      rows: 24
+      cursor_x: 0
+      cursor_y: 6
+      active_buffer: normal
+      lines[24]: "[processLogPublisher] publishing disabled: CONDUCTOR_INTERNAL_PROCESS_LOGS_ENABL","ED is not \"1\"","[Log]Unix socket server listening on /Users/sven/code/conductor-rea-work/persist","-rea/home/tmp/conductor-sidecar-v2-<pid>.sock",SOCKET_PATH=/Users/sven/code/conductor-rea-work/persist-rea/home/tmp/conductor-s,idecar-v2-<pid>.sock,"","","","","","","","","","","","","","","","","",""
+      serialized_state: "[processLogPublisher] publishing disabled: CONDUCTOR_INTERNAL_PROCESS_LOGS_ENABLED is not \"1\"\r\n[Log]Unix socket server listening on /Users/sven/code/conductor-rea-work/persist-rea/home/tmp/conductor-sidecar-v2-<pid>.sock\r\nSOCKET_PATH=/Users/sven/code/conductor-rea-work/persist-rea/home/tmp/conductor-sidecar-v2-<pid>.sock\u001b[1B\u001b[20D"
+    - sequence: 2
+      at_ms: 10780
+      columns: 80
+      rows: 24
+      cursor_x: 0
+      cursor_y: 7
+      active_buffer: normal
+      lines[24]: "[processLogPublisher] publishing disabled: CONDUCTOR_INTERNAL_PROCESS_LOGS_ENABL","ED is not \"1\"","[Log]Unix socket server listening on /Users/sven/code/conductor-rea-work/persist","-rea/home/tmp/conductor-sidecar-v2-<pid>.sock",SOCKET_PATH=/Users/sven/code/conductor-rea-work/persist-rea/home/tmp/conductor-s,idecar-v2-<pid>.sock,"[Log][SIGNAL] Received SIGTERM, shutting down...","","","","","","","","","","","","","","","","",""
+      serialized_state: "[processLogPublisher] publishing disabled: CONDUCTOR_INTERNAL_PROCESS_LOGS_ENABLED is not \"1\"\r\n[Log]Unix socket server listening on /Users/sven/code/conductor-rea-work/persist-rea/home/tmp/conductor-sidecar-v2-<pid>.sock\r\nSOCKET_PATH=/Users/sven/code/conductor-rea-work/persist-rea/home/tmp/conductor-sidecar-v2-<pid>.sock\r\n[Log][SIGNAL] Received SIGTERM, shutting down...\u001b[1B\u001b[48D"
+  interaction_events: []
+  exit:
+    code: null
+    signal: 0
+    reason: timeout
+    finalization:
+      requested_ms: 2000
+      elapsed_ms: 789
+      exit_code: 0
+      signals[1]{signal,sent_at_ms,delivery}:
+        SIGTERM,0,signaled
+  settlement:
+    state: unverifiable
+    elapsed_ms: 1048
+    cleanup_outcome: cleaned
+  process_samples[1]{at_ms,pid,parent_pid,command,process_group_id,session_id}:
+    3720,1,2,/Users/sven/code/conductor-rea-work/Conductor.app/Contents/Resources/bin/.internal/conductor-runtime sidecar,1,null
+  filesystem_checkpoints[2]:
+    - name: before
+      at_ms: 0
+      files[2]{path,mode,size,type,sha256,symlink_target}:
+        "root_0:.",16832,96,directory,null,null
+        "root_0:tmp",16832,64,directory,null,null
+      effects: []
+      truncated: false
+    - name: after_settlement
+      at_ms: 11873
+      files[5]{path,mode,size,type,sha256,symlink_target}:
+        "root_0:.",16832,128,directory,null,null
+        "root_0:.conductor",16832,96,directory,null,null
+        "root_0:.conductor/sidecar-v2-session-event-outbox",16832,64,directory,null,null
+        "root_0:tmp",16832,96,directory,null,null
+        "root_0:tmp/conductor-40874.log",33152,219,file,8c2f520af54ae0555b65a2b5fb7c677d776a5f3d411c20c270e916a40a1e80df,null
+      effects[5]:
+        - path: "root_0:."
+          status: modified
+          before:
+            path: "root_0:."
+            mode: 16832
+            size: 96
+            type: directory
+            sha256: null
+            symlink_target: null
+          after:
+            path: "root_0:."
+            mode: 16832
+            size: 128
+            type: directory
+            sha256: null
+            symlink_target: null
+        - path: "root_0:.conductor"
+          status: created
+          before: null
+          after:
+            path: "root_0:.conductor"
+            mode: 16832
+            size: 96
+            type: directory
+            sha256: null
+            symlink_target: null
+        - path: "root_0:.conductor/sidecar-v2-session-event-outbox"
+          status: created
+          before: null
+          after:
+            path: "root_0:.conductor/sidecar-v2-session-event-outbox"
+            mode: 16832
+            size: 64
+            type: directory
+            sha256: null
+            symlink_target: null
+        - path: "root_0:tmp"
+          status: modified
+          before:
+            path: "root_0:tmp"
+            mode: 16832
+            size: 64
+            type: directory
+            sha256: null
+            symlink_target: null
+          after:
+            path: "root_0:tmp"
+            mode: 16832
+            size: 96
+            type: directory
+            sha256: null
+            symlink_target: null
+        - path: "root_0:tmp/conductor-40874.log"
+          status: created
+          before: null
+          after:
+            path: "root_0:tmp/conductor-40874.log"
+            mode: 33152
+            size: 219
+            type: file
+            sha256: 8c2f520af54ae0555b65a2b5fb7c677d776a5f3d411c20c270e916a40a1e80df
+            symlink_target: null
+      truncated: false
+  event_journal[11]{capture_order,collection,index}:
+    0,filesystem_checkpoints,0
+    1,frames,0
+    2,rendered_frames,0
+    3,process_samples,0
+    4,frames,1
+    5,rendered_frames,1
+    6,frames,2
+    7,rendered_frames,2
+    8,lifecycle,0
+    9,lifecycle,1
+    10,filesystem_checkpoints,1
+  files_before[2]{path,mode,size,type,sha256,symlink_target}:
+    "root_0:.",16832,96,directory,null,null
+    "root_0:tmp",16832,64,directory,null,null
+  files_after[5]{path,mode,size,type,sha256,symlink_target}:
+    "root_0:.",16832,128,directory,null,null
+    "root_0:.conductor",16832,96,directory,null,null
+    "root_0:.conductor/sidecar-v2-session-event-outbox",16832,64,directory,null,null
+    "root_0:tmp",16832,96,directory,null,null
+    "root_0:tmp/conductor-40874.log",33152,219,file,8c2f520af54ae0555b65a2b5fb7c677d776a5f3d411c20c270e916a40a1e80df,null
+  filesystem_effects[5]:
+    - path: "root_0:."
+      status: modified
+      before:
+        path: "root_0:."
+        mode: 16832
+        size: 96
+        type: directory
+        sha256: null
+        symlink_target: null
+      after:
+        path: "root_0:."
+        mode: 16832
+        size: 128
+        type: directory
+        sha256: null
+        symlink_target: null
+    - path: "root_0:.conductor"
+      status: created
+      before: null
+      after:
+        path: "root_0:.conductor"
+        mode: 16832
+        size: 96
+        type: directory
+        sha256: null
+        symlink_target: null
+    - path: "root_0:.conductor/sidecar-v2-session-event-outbox"
+      status: created
+      before: null
+      after:
+        path: "root_0:.conductor/sidecar-v2-session-event-outbox"
+        mode: 16832
+        size: 64
+        type: directory
+        sha256: null
+        symlink_target: null
+    - path: "root_0:tmp"
+      status: modified
+      before:
+        path: "root_0:tmp"
+        mode: 16832
+        size: 64
+        type: directory
+        sha256: null
+        symlink_target: null
+      after:
+        path: "root_0:tmp"
+        mode: 16832
+        size: 96
+        type: directory
+        sha256: null
+        symlink_target: null
+    - path: "root_0:tmp/conductor-40874.log"
+      status: created
+      before: null
+      after:
+        path: "root_0:tmp/conductor-40874.log"
+        mode: 33152
+        size: 219
+        type: file
+        sha256: 8c2f520af54ae0555b65a2b5fb7c677d776a5f3d411c20c270e916a40a1e80df
+        symlink_target: null
+  truncated: false
+  truncation_details:
+    raw_terminal:
+      budget_bytes: 2000000
+      observed_bytes: 374
+      retained_bytes: 374
+      observed_frames: 3
+      retained_frames: 3
+    rendered_terminal:
+      budget_bytes: 2000000
+      observed_bytes: 1591
+      retained_bytes: 1591
+      observed_frames: 3
+      retained_frames: 3
+    normalized_terminal:
+      budget_bytes: 2000000
+      retained_bytes: 374
+      omitted_frames: 0
+    filesystem_before:
+      files_limit: 20000
+      depth_limit: 16
+      enumeration_truncated: false
+      enumeration_reasons: []
+      enumeration_omissions: []
+      hash_budget_bytes: 20000000
+      hashed_bytes: 0
+      hash_omissions: []
+    filesystem_after:
+      files_limit: 20000
+      depth_limit: 16
+      enumeration_truncated: false
+      enumeration_reasons: []
+      enumeration_omissions: []
+      hash_budget_bytes: 20000000
+      hashed_bytes: 219
+      hash_omissions: []
+    process:
+      sample_limit: 200
+      sampling_partial: false
+      retained_samples: 1
+      sample_limit_reached: false
+      sampling_failures: 0
+      first_sampling_failure: null
+      coverage: sampled
+  limitations[4]: The executable digest is a prelaunch file sample; matching path metadata immediately after spawn does not prove an atomic operating-system image binding.,Process trees are sampled and may omit short-lived descendants.,"Filesystem observations are before/after snapshots, not syscall traces.",Inherited host environment variables are not recorded and may affect results.
+  residual_unknowns[20]{scope,reason}:
+    process,Process trees are sampled and may omit short-lived descendants.
+    process,The executable digest is a prelaunch file sample; operating-system image binding is not atomically observed.
+    environment,Inherited host environment variables are not recorded.
+    network,Network activity is not observed by this capture.
+    process,"Ownership of unrelated process 39985 could not be verified; it was left untouched: platform_binary_environment_withheld"
+    process,"Ownership of unrelated process 40032 could not be verified; it was left untouched: platform_binary_environment_withheld"
+    process,"Ownership of unrelated process 40042 could not be verified; it was left untouched: platform_binary_environment_withheld"
+    process,"Ownership of unrelated process 40050 could not be verified; it was left untouched: platform_binary_environment_withheld"
+    process,"Ownership of unrelated process 40681 could not be verified; it was left untouched: platform_binary_environment_withheld"
+    process,"Ownership of unrelated process 41453 could not be verified; it was left untouched: restricted_process_environment_withheld"
+    process,"Ownership of unrelated process 41456 could not be verified; it was left untouched: restricted_process_environment_withheld"
+    process,"Ownership of unrelated process 41470 could not be verified; it was left untouched: platform_binary_environment_withheld"
+    process,"Ownership of unrelated process 41559 could not be verified; it was left untouched: platform_binary_environment_withheld"
+    process,"Ownership of unrelated process 42273 could not be verified; it was left untouched: platform_binary_environment_withheld"
+    process,"Ownership of unrelated process 43019 could not be verified; it was left untouched: restricted_process_environment_withheld"
+    process,"Ownership of unrelated process 43025 could not be verified; it was left untouched: restricted_process_environment_withheld"
+    process,"Ownership of unrelated process 43029 could not be verified; it was left untouched: sysctl_failed_22"
+    process,"Ownership of unrelated process 43033 could not be verified; it was left untouched: sysctl_failed_22"
+    process,"Ownership of unrelated process 43182 could not be verified; it was left untouched: platform_binary_environment_withheld"
+    process,"Ownership of unrelated process 43319 could not be verified; it was left untouched: platform_binary_environment_withheld"
+  cleanup:
+    owned_process_group: verified
+    temporary_root: removed
+    unverified_processes[16]{pid,reason}:
+      39985,platform_binary_environment_withheld
+      40032,platform_binary_environment_withheld
+      40042,platform_binary_environment_withheld
+      40050,platform_binary_environment_withheld
+      40681,platform_binary_environment_withheld
+      41453,restricted_process_environment_withheld
+      41456,restricted_process_environment_withheld
+      41470,platform_binary_environment_withheld
+      41559,platform_binary_environment_withheld
+      42273,platform_binary_environment_withheld
+      43019,restricted_process_environment_withheld
+      43025,restricted_process_environment_withheld
+      43029,sysctl_failed_22
+      43033,sysctl_failed_22
+      43182,platform_binary_environment_withheld
+      43319,platform_binary_environment_withheld
+confidence: observed
+authority: controlled-replay
+environment:
+  id: darwin-arm64
+  platform: darwin
+  architecture: arm64
+  isolation: process
+limitations[5]: Artifact identity is unavailable for this observation.,The executable digest is a prelaunch file sample; matching path metadata immediately after spawn does not prove an atomic operating-system image binding.,Process trees are sampled and may omit short-lived descendants.,"Filesystem observations are before/after snapshots, not syscall traces.",Inherited host environment variables are not recorded and may affect results.
+relationship_coverage: null
+locations: []
+evidence_links: []

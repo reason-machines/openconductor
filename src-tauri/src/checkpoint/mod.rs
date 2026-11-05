@@ -347,6 +347,53 @@ pub fn restore(workspace: &Path, id: &str) -> Result<(), CheckpointError> {
     Ok(())
 }
 
+/// Paths whose content differs between checkpoint `id` and the workspace's
+/// files now, as `checkpointer diff <id> current -- --name-only -z` lists
+/// them (the reference's "N changed" count in the reset dialog).
+///
+/// "Current" is the reference's transient tree: a temp index seeded from
+/// HEAD (not the real index), then `add -A`, so untracked non-ignored files
+/// count and ignored ones do not. Nothing in the workspace changes.
+pub fn changed_since(workspace: &Path, id: &str) -> Result<Vec<String>, CheckpointError> {
+    let root = workspace_root(workspace)?;
+    let git = Git::new(&root);
+    let reference = ref_name(id);
+    if git.verify(&reference)?.is_none() {
+        return Err(CheckpointError::NotFound(id.to_string()));
+    }
+    let current = {
+        let tmp = TempIndexDir::create(&root, "chkpt-cur")?;
+        let tmp_git = Git::new(&root).env("GIT_INDEX_FILE", tmp.index_path());
+        if let Some(head) = git.verify("HEAD")? {
+            tmp_git.run(["read-tree", &head])?;
+        }
+        tmp_git.run(["add", "-A", "--", "."])?;
+        tmp_git.run(["write-tree"])?
+    };
+    let args = [
+        "-c",
+        "core.quotePath=false",
+        "diff",
+        "--name-only",
+        "-z",
+        reference.as_str(),
+        current.as_str(),
+    ];
+    let out = git.output(args)?;
+    if !out.success {
+        return Err(CheckpointError::Git {
+            command: format!("git {}", args.join(" ")),
+            stderr: out.stderr.trim().to_string(),
+        });
+    }
+    Ok(out
+        .stdout
+        .split('\0')
+        .filter(|p| !p.is_empty())
+        .map(str::to_string)
+        .collect())
+}
+
 /// Temporary index directory under the worktree's git dir, removed on drop.
 /// Leftovers from killed processes are pruned by later runs once they are
 /// over an hour old and their recorded owner pid is gone.

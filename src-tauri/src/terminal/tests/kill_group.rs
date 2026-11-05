@@ -1,18 +1,28 @@
 use super::*;
 
-#[cfg(unix)]
+/// Whether `pid` is still running, from one read of `/proc/<pid>/stat`.
+///
+/// A killed background job is reparented and reaped by init, so it goes
+/// zombie (`Z`), then dead (`X`), then has no entry at all; each of those
+/// means gone. Asking `kill(pid, 0)` first and reading the state afterwards
+/// raced with the reaper: the job could be reaped between the two calls, and
+/// the failed read counted as alive (issue #177).
+#[cfg(target_os = "linux")]
 fn alive(pid: i32) -> bool {
-    // A zombie still answers kill(0); look at the state too.
-    if unsafe { libc::kill(pid, 0) } != 0 {
-        return false;
-    }
-    match std::fs::read_to_string(format!("/proc/{pid}/stat")) {
-        Ok(stat) => !stat
+    std::fs::read_to_string(format!("/proc/{pid}/stat")).is_ok_and(|stat| {
+        let state = stat
             .rsplit(')')
             .next()
-            .is_some_and(|rest| rest.trim_start().starts_with('Z')),
-        Err(_) => true,
-    }
+            .and_then(|rest| rest.trim_start().chars().next());
+        !matches!(state, Some('Z' | 'X'))
+    })
+}
+
+/// No `/proc`: `kill(pid, 0)` also answers for a zombie, which only makes the
+/// wait for it longer; once the job is reaped it fails for good.
+#[cfg(all(unix, not(target_os = "linux")))]
+fn alive(pid: i32) -> bool {
+    unsafe { libc::kill(pid, 0) == 0 }
 }
 
 #[cfg(unix)]

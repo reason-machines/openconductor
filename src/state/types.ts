@@ -1,3 +1,5 @@
+import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
+
 export type WorkspaceStatus = "idle" | "working" | "needs-review" | "archived";
 
 export interface Workspace {
@@ -23,6 +25,12 @@ export interface Workspace {
   prTitle?: string | null;
   /** Unread agent output; the sidebar row's name turns semibold. */
   unread?: boolean;
+  /* sidebar: pin and status (Conductor's pinned_at, manual_status, derived_status) */
+  /** When the workspace was pinned (ms); pinned rows sit in the sidebar's Pinned group. */
+  pinnedAt?: number;
+  /** Status the user set from the row menu; wins over the derived one. */
+  manualStatus?: WorkspaceStatusValue;
+  derivedStatus?: WorkspaceStatusValue;
 }
 
 export interface Repo {
@@ -35,6 +43,8 @@ export interface Repo {
   defaultBranch: string;
   workspaces: Workspace[];
   collapsed?: boolean;
+  /** `repos.hidden`: left out of the sidebar unless "show hidden" is on. */
+  hidden?: boolean;
 }
 
 export type Selection = { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };

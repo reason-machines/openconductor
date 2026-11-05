@@ -11,6 +11,7 @@ use tauri::async_runtime::spawn_blocking;
 
 use super::api::{self, CreatePrPrompt, LookupRequest, LookupResult};
 use super::gh::{MergeMethod, MergeMethodCache};
+use super::git_state::{read_git_state, GitState};
 use super::header::{header_state, HeaderInputs, HeaderState};
 use super::list::{OpenIssue, OpenPr};
 use super::prompt::create_pr_prompt;
@@ -50,6 +51,15 @@ pub async fn gh_issue_list_open(repo_path: String) -> Result<Vec<OpenIssue>, Str
     blocking(move || api::list_open_issues(&api::gh_in(&repo_path))).await
 }
 
+/// Local git state of a workspace checkout, compared with `target_branch`.
+#[tauri::command]
+pub async fn pr_git_state(
+    workspace_path: String,
+    target_branch: String,
+) -> Result<GitState, String> {
+    blocking(move || read_git_state(std::path::Path::new(&workspace_path), &target_branch)).await
+}
+
 /// What the workspace header's PR control shows.
 #[tauri::command]
 pub fn pr_header_state(inputs: HeaderInputs) -> Option<HeaderState> {
@@ -77,6 +87,15 @@ pub async fn pr_merge(
             number,
             method,
         )
+    })
+    .await
+}
+
+/// The method Merge uses for this repository, for the button's tooltip.
+#[tauri::command]
+pub async fn pr_merge_method(repo_path: String) -> Result<MergeMethod, String> {
+    blocking(move || {
+        api::preferred_merge_method(&api::gh_in(&repo_path), merge_methods(), &repo_path)
     })
     .await
 }

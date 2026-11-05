@@ -26,6 +26,12 @@ pub mod wire;
 mod cli_tests;
 #[cfg(test)]
 mod provider_tests;
+// Mounted here as well as at the crate root because tools/reason-acp/run-rust-tests.sh
+// builds this module as a crate of its own.
+#[cfg(test)]
+#[allow(clippy::duplicate_mod)]
+#[path = "../test_exe.rs"]
+mod test_exe;
 #[cfg(test)]
 mod tests;
 #[cfg(test)]
