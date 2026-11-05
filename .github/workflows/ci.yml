@@ -136,6 +136,10 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m py_compile tools/*.py
+      - name: Packaging reference matches the REA evidence bundle
+        run: |
+          python tools/packaging_ref.py
+          git diff --exit-code evidence/packaging/conductor-reference.json
 
   frontend-unit:
     name: Frontend unit tests (node --test)
