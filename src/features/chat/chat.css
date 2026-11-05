@@ -1,58 +1,168 @@
-/* Chat transcript. Colours come from the theme variables in src/styles.css. */
-.transcript { display: flex; flex-direction: column; gap: 12px; }
-.chat-msg { position: relative; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+/* Chat transcript in Conductor's message list layout (renderApp `UDo`,
+   `MDo`, `PDo`, `TDo`, tool rows `Mu`; evidence/chat/README.md). Sizes are
+   Conductor's Tailwind classes in px (text-sm 14/20, text-xs 12/16 +0.01em,
+   spacing 4px steps); colours are its theme tokens (evidence/frontend/css-tokens.json). */
+.transcript {
+  --oc-fg: #2c2826; --oc-muted-fg: #8e8885; --oc-muted: #fafaf9; --oc-accent: #fafaf9; --oc-accent-fg: #2c2826;
+  --oc-highlight: #faf7f5; --oc-highlight-fg: #594545; --oc-border: #eae8e6; --oc-input: #14100f1a; --oc-bg: #fff;
+  --oc-git-green: #16a249; --oc-git-red: #dc2828; --oc-destructive: #dc2828; --oc-link-fg: #a4847f;
+  --oc-tint-blue-600: oklch(54.6% .245 262.881); --oc-tint-blue-500: oklch(62.3% .214 259.815); --oc-tint-cyan-400: oklch(78.9% .154 211.53);
+  --oc-tint-cyan-600: oklch(60.9% .126 221.723); --oc-tint-yellow-400: oklch(85.2% .199 91.936); --oc-tint-yellow-600: oklch(68.1% .162 75.834);
+  --oc-tint-orange-600: oklch(64.6% .222 41.116); --oc-tint-orange-700: oklch(55.3% .195 38.402); --oc-tint-red-600: oklch(57.7% .245 27.325);
+  --oc-tint-green-500: oklch(72.3% .219 149.579); --oc-tint-green-600: oklch(62.7% .194 149.214); --oc-tint-gray-600: #766f6b; --oc-tint-documentation: #47423e;
+  display: flex; flex-direction: column; color: var(--oc-fg);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .transcript {
+    --oc-fg: #eae8e6; --oc-muted-fg: #a5a09c; --oc-muted: #211e1c; --oc-accent: #2c2826; --oc-accent-fg: #f3f2f1;
+    --oc-highlight: #2a1e1d; --oc-highlight-fg: #f3ece7; --oc-border: #ffffff1a; --oc-input: #fff3; --oc-bg: #141110;
+    --oc-git-green: #4ade80; --oc-git-red: #f87272; --oc-destructive: #f87272; --oc-link-fg: #cca694; --oc-tint-documentation: #8e8885;
+  }
+}
+:root[data-theme="dark"] .transcript {
+  --oc-fg: #eae8e6; --oc-muted-fg: #a5a09c; --oc-muted: #211e1c; --oc-accent: #2c2826; --oc-accent-fg: #f3f2f1;
+  --oc-highlight: #2a1e1d; --oc-highlight-fg: #f3ece7; --oc-border: #ffffff1a; --oc-input: #fff3; --oc-bg: #141110;
+  --oc-git-green: #4ade80; --oc-git-red: #f87272; --oc-destructive: #f87272; --oc-link-fg: #cca694; --oc-tint-documentation: #8e8885;
+}
 
-.chat-user { align-self: flex-end; max-width: 85%; display: flex; flex-direction: column; align-items: flex-end; }
-.chat-bubble { background: var(--secondary); color: var(--secondary-text); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; }
+/* The scroll area is the list: no padding of its own, turns centre at max-w-4xl.
+   The first turn sits 16px below the tab bar (Virtuoso's top offset). */
+.chat-scroll:has(> .transcript) { padding: 16px 0 0; gap: 0; container-type: inline-size; }
+.oc-turn { width: 100%; max-width: 896px; margin: 0 auto; padding-bottom: 12px; }
+@container (width < 896px) { .oc-turn { padding-right: 16px; } }
+.oc-turn-body { display: flex; flex-direction: column; gap: 4px; width: 100%; padding: 8px 28px; border: 1px solid transparent; }
+.oc-turn-items > * + * { margin-top: 4px; }
+.chat-msg { position: relative; overflow-wrap: anywhere; }
 
-.chat-report { align-self: stretch; border-left: 3px solid var(--accent); background: var(--hover); border-radius: 0 var(--radius) var(--radius) 0; padding: 6px 10px; }
+/* User prompt (`_Oo` bubble in a right-aligned row, py-3). */
+.oc-msg-user { display: flex; justify-content: flex-end; padding: 12px 0; }
+.oc-user-col { display: flex; flex-direction: column; align-items: flex-end; max-width: 100%; min-width: 0; }
+.oc-bubble { position: relative; max-width: 768px; padding: 12px 16px; border-radius: 4px; background: var(--oc-highlight); color: var(--oc-highlight-fg); overflow: hidden; overflow-wrap: break-word; }
+.oc-user-text { font-size: 14px; line-height: 20px; white-space: pre-wrap; overflow-wrap: break-word; user-select: text; }
+.oc-bubble .chat-msg-actions { position: absolute; top: 4px; right: 6px; }
+
+.chat-report { align-self: stretch; border-left: 3px solid var(--accent); background: var(--hover); border-radius: 0 var(--radius) var(--radius) 0; padding: 6px 10px; white-space: pre-wrap; }
 .chat-report-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+.chat-system { text-align: center; color: var(--oc-muted-fg); font-size: 12px; white-space: pre-wrap; }
 
-.chat-system { align-self: center; color: var(--muted); font-size: 12px; text-align: center; }
-
-.chat-assistant { display: flex; flex-direction: column; gap: 6px; }
-.chat-text.is-streaming > :last-child::after, .chat-thinking .is-streaming::after { content: ""; display: inline-block; width: 7px; height: 1em; margin-left: 2px; vertical-align: text-bottom; background: currentColor; opacity: 0.6; animation: chat-blink 1s steps(2) infinite; }
-.chat-typing { display: inline-block; width: 28px; height: 10px; background: radial-gradient(circle, var(--muted) 2px, transparent 3px) 0 50% / 9px 10px repeat-x; animation: pulse 1.4s ease-in-out infinite; }
+/* Assistant text (`aVt` > `uDi` > `yOo` my-1 > prose). */
+.oc-msg-assistant { display: flex; justify-content: flex-start; }
+.oc-assistant-col { display: flex; flex-direction: column; width: 100%; max-width: 768px; overflow-wrap: break-word; }
+.oc-text-wrap { margin: 4px 0; }
+.chat-text.is-streaming > :last-child::after { content: ""; display: inline-block; width: 7px; height: 1em; margin-left: 2px; vertical-align: text-bottom; background: currentColor; opacity: 0.6; animation: chat-blink 1s steps(2) infinite; }
+.chat-typing { display: inline-block; width: 28px; height: 10px; margin: 8px 0; background: radial-gradient(circle, var(--oc-muted-fg) 2px, transparent 3px) 0 50% / 9px 10px repeat-x; animation: pulse 1.4s ease-in-out infinite; }
 @keyframes chat-blink { to { opacity: 0; } }
 
-.chat-thinking { color: var(--muted); font-size: 13px; }
-.chat-thinking summary { cursor: pointer; user-select: none; }
+/* "4 tool calls, 2 messages" (`PDo`). */
+.oc-summary { display: flex; width: 100%; align-items: center; color: var(--oc-muted-fg); font: inherit; text-align: left; padding: 0; background: none; border: 0; }
+.oc-summary:not(:disabled):hover { color: var(--oc-fg); }
+.oc-summary:disabled { cursor: default; }
+.oc-summary-chevron { width: 12px; height: 12px; margin-right: 4px; flex: none; }
+.oc-summary-main { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.oc-summary-label { margin-left: 2px; font-size: 14px; line-height: 20px; white-space: nowrap; }
+.oc-summary-icons { display: flex; align-items: center; gap: 4px; }
+.oc-summary-icons .oc-tool-icon { color: var(--oc-muted-fg); }
 
-/* Tool rows are borderless lines (icon, name, input summary), like Conductor's. */
-.chat-tool { font-size: 13px; white-space: normal; }
-.chat-tool-head { display: flex; align-items: center; gap: 8px; width: 100%; padding: 2px 0; text-align: left; min-width: 0; border-radius: 5px; }
-.chat-tool-head:hover .chat-tool-name { color: var(--text); }
-.chat-tool-name { flex: none; }
-.chat-tool-summary { color: var(--muted); font-family: var(--font-mono); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-.chat-tool-status { display: inline-flex; flex: none; color: var(--muted); }
-.chat-tool.status-running .chat-tool-status { color: var(--amber); animation: pulse 1.4s ease-in-out infinite; }
-.chat-tool.status-error .chat-tool-status { color: var(--del); }
-.chat-tool-body { margin: 4px 0 4px 21px; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
-.chat-tool-body pre { margin: 0; max-height: 240px; overflow: auto; font-size: 11.5px; white-space: pre-wrap; }
-/* "4 tool calls, 2 messages" summary row. */
-.chat-tool-group { display: flex; flex-direction: column; gap: 8px; }
-.chat-tool-summary-row { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; padding: 2px 0; color: var(--muted); font-size: 13px; }
-.chat-tool-summary-row:not(:disabled):hover { color: var(--text); }
-.chat-tool-summary-row:disabled { cursor: default; }
-.chat-tool-summary-icons { display: inline-flex; gap: 3px; margin-left: 2px; }
-.chat-tool.status-error .chat-tool-result { color: var(--del); }
+/* Tool rows (`Mu`). */
+.oc-tool-wrap { width: 100%; }
+.oc-tool { width: 100%; }
+.oc-tool-icon { display: block; width: 12px; height: 12px; color: var(--oc-muted-fg); flex: none; }
+.oc-tool-head { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; padding: 6px 8px; margin: 0 -8px; border-radius: 4px; }
+.oc-tool-head.opens { cursor: pointer; }
+.oc-tool-head:hover { background: color-mix(in oklab, var(--oc-muted) 50%, transparent); }
+.oc-tool-icon-slot { flex: none; }
+.oc-tool-icon-swap { position: relative; }
+.oc-tool-icon-hover { position: absolute; inset: 0; margin: auto; display: none; width: 12px; height: 12px; color: var(--oc-muted-fg); }
+.oc-tool-head:hover .oc-tool-icon-idle { opacity: 0; }
+.oc-tool-head:hover .oc-tool-icon-hover { display: block; }
+.oc-tool-head:has(.filebadge:hover) .oc-tool-icon-idle { opacity: 1; }
+.oc-tool-head:has(.filebadge:hover) .oc-tool-icon-hover { display: none; }
+.oc-tool-main { display: flex; gap: 8px; min-width: 0; flex: 1; }
+.oc-tool-main.align-baseline { align-items: baseline; }
+.oc-tool-main.align-center { align-items: center; }
+.oc-tool-left { font-size: 14px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.oc-tool-right { font-family: var(--font-mono); font-weight: 500; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: var(--oc-muted-fg); max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.oc-tool-right.hidden { visibility: hidden; }
+.oc-tool-right-row { display: flex; align-items: center; gap: 8px; }
+.oc-tool-inline-code { font-family: var(--font-mono); font-size: 12px; line-height: 16px; letter-spacing: 0.01em; background: none; padding: 0; border: 0; color: inherit; }
+.oc-tool-count { font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); }
+.oc-lowercase { text-transform: lowercase; }
+.oc-code-chip { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-weight: 500; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: var(--oc-muted-fg); background: var(--oc-muted); padding: 2px 4px; border-radius: 6px; }
+.oc-code-chip.sans { font-family: var(--font-sans); font-weight: 400; }
+.oc-tool[data-tone="error"] .oc-tool-left, .oc-tool[data-tone="error"] .oc-tool-icon { color: var(--oc-destructive); }
+.oc-error-chip { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-weight: 500; font-size: 12px; line-height: 16px; color: var(--oc-destructive); background: color-mix(in oklab, var(--oc-destructive) 10%, transparent); padding: 2px 4px; border-radius: 6px; }
+.oc-tool[data-status="running"] .oc-tool-icon-idle .oc-tool-icon { animation: pulse 1.4s ease-in-out infinite; }
+.oc-tool-content { margin-top: 8px; user-select: text; font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; white-space: pre-wrap; overflow-wrap: break-word; color: var(--oc-accent-fg); background: var(--oc-accent); padding: 12px; border-radius: 6px; border: 1px solid var(--oc-border); max-height: 384px; overflow: auto; }
+.oc-tool-content.bare { padding: 0; background: none; border: 0; }
+.oc-tool-content.plain { font-family: inherit; font-weight: 400; background: none; border: 0; padding: 0 0 0 20px; color: inherit; }
+.oc-tool[data-tone="error"] .oc-tool-content { color: var(--oc-destructive); background: color-mix(in oklab, var(--oc-destructive) 10%, transparent); border-color: color-mix(in oklab, var(--oc-destructive) 20%, transparent); }
+.oc-tool-code { margin: 0; padding: 12px; font: 500 12px/16px var(--font-mono); color: var(--oc-accent-fg); background: var(--oc-accent); border: 1px solid var(--oc-border); border-radius: 6px; white-space: pre; overflow: auto; max-height: 384px; }
+.oc-tool-prompt { color: var(--oc-muted-fg); }
+.oc-code-line { display: flex; gap: 12px; }
+.oc-code-ln { flex: none; min-width: 2ch; text-align: right; color: var(--oc-muted-fg); user-select: none; }
+.oc-code-line.add { background: color-mix(in oklab, var(--oc-git-green) 12%, transparent); }
+.oc-code-line.del { background: color-mix(in oklab, var(--oc-git-red) 12%, transparent); }
+
+/* "+N −N" beside an Edit (`fIt`). */
+.oc-line-counts { display: flex; align-items: center; gap: 8px; font-size: 12px; line-height: 16px; }
+.oc-line-counts > span { display: flex; align-items: center; }
+.oc-line-counts .add { color: var(--oc-git-green); }
+.oc-line-counts .del { color: var(--oc-git-red); }
+.oc-line-counts-icon { width: 12px; height: 12px; }
+
+/* File badge (`tee` / `QZ`: an outline button, h-5 text-xs). */
+.oc-file-badge { display: inline-flex; align-items: center; gap: 4px; height: 20px; min-width: 0; max-width: 100%; padding: 0 6px; overflow: hidden; border: 1px solid var(--oc-input); border-radius: 4px; background: var(--oc-bg); color: inherit; font-family: var(--font-sans); font-size: 12px; line-height: 1; font-weight: inherit; /* twMerge drops the outline button's font-450 next to font-sans, so the weight is inherited */ letter-spacing: 0.01em; white-space: nowrap; cursor: pointer; }
+.oc-file-badge:hover { background: var(--oc-accent); color: var(--oc-accent-fg); }
+.oc-file-badge-name { display: block; min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.oc-file-glyph { width: 12px; height: 12px; flex: none; color: var(--oc-muted-fg); }
+.oc-file-glyph[data-tint="blue-600"] { color: var(--oc-tint-blue-600); }
+.oc-file-glyph[data-tint="blue-500"] { color: var(--oc-tint-blue-500); }
+.oc-file-glyph[data-tint="cyan-400"] { color: var(--oc-tint-cyan-400); }
+.oc-file-glyph[data-tint="cyan-600"] { color: var(--oc-tint-cyan-600); }
+.oc-file-glyph[data-tint="yellow-400"] { color: var(--oc-tint-yellow-400); }
+.oc-file-glyph[data-tint="yellow-600"] { color: var(--oc-tint-yellow-600); }
+.oc-file-glyph[data-tint="orange-600"] { color: var(--oc-tint-orange-600); }
+.oc-file-glyph[data-tint="orange-700"] { color: var(--oc-tint-orange-700); }
+.oc-file-glyph[data-tint="red-600"] { color: var(--oc-tint-red-600); }
+.oc-file-glyph[data-tint="green-500"] { color: var(--oc-tint-green-500); }
+.oc-file-glyph[data-tint="green-600"] { color: var(--oc-tint-green-600); }
+.oc-file-glyph[data-tint="gray-600"] { color: var(--oc-tint-gray-600); }
+.oc-file-glyph[data-tint="documentation"] { color: var(--oc-tint-documentation); }
+
+/* Thinking text. */
+.chat-thinking .oc-prose { color: var(--oc-muted-fg); }
+
+/* Turn footer (`TDo`): one wrapping row, text-xs muted. */
+.oc-turn-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; margin-top: 2px; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: var(--oc-muted-fg); }
+.oc-turn-time { flex: none; border-radius: 4px; }
+.oc-turn-time:hover { color: var(--oc-fg); }
+.chat-turn-actions { display: flex; flex: none; align-items: center; gap: 4px; }
+.chat-turn-error { color: var(--oc-destructive); }
+.oc-icon-action { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--oc-muted-fg); cursor: pointer; }
+.oc-icon-action:hover, .oc-icon-action[aria-expanded="true"] { background: var(--oc-accent); color: var(--oc-accent-fg); }
+.oc-icon-action-svg { width: 14px; height: 14px; }
+.oc-text-action { font-size: 12px; color: var(--oc-muted-fg); padding: 2px 6px; border-radius: 5px; }
+.oc-text-action:hover { background: var(--oc-accent); color: var(--oc-accent-fg); }
+/* Conductor (`vDo`): the first chips share the footer row and shrink instead of wrapping (flex-1 min-w-0
+   max-w-fit overflow-hidden); revealed chips and "+N more" wrap, on their own line once revealed (basis-full). */
+.chat-turn-changes { display: flex; flex: 1 1 0; align-items: center; gap: 8px; min-width: 0; max-width: fit-content; overflow: hidden; }
+.chat-turn-changes-more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.chat-turn-changes-more.revealed { flex-basis: 100%; }
+.chat-turn-chip { flex: 0 1 auto; min-width: 0; }
+.chat-turn-chip.more { padding: 0 4px; tab-size: 4; font-variant-numeric: tabular-nums; }
+.oc-chip-counts { display: flex; flex: none; align-items: center; gap: 4px; font: 500 10px/12px var(--font-mono); letter-spacing: 0.04em; }
+.oc-chip-counts .a { color: var(--oc-git-green); }
+.oc-chip-counts .d { color: var(--oc-git-red); }
 
 /* Conductor: a stopped prompt's "Cancelled" caption (mt-0.5 text-xs muted) and the outline "Interrupted by user" badge. */
-.chat-cancelled { margin-top: 2px; font-size: 12px; color: var(--muted); }
-.chat-badge { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 6px; padding: 1px 7px; font-size: 12px; font-weight: 500; color: var(--text); }
+.chat-cancelled { margin-top: 2px; font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); }
+.chat-badge { display: inline-flex; align-items: center; border: 1px solid var(--oc-border); border-radius: 6px; padding: 1px 7px; font-size: 12px; font-weight: 500; color: var(--oc-fg); }
 .chat-msg-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.12s; }
 .chat-msg:hover .chat-msg-actions, .chat-msg-actions:focus-within { opacity: 1; }
 .chat-action { font-size: 11.5px; color: var(--muted); padding: 2px 6px; border-radius: 5px; }
 .chat-action:hover { background: var(--hover); color: var(--text); }
 
-/* Conductor's turn footer (`TDo`): one wrapping row, left to right: time, status, actions, changed-file chips. */
-.chat-turn-end { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; min-height: 20px; min-width: 0; }
-.chat-turn-actions { display: flex; gap: 4px; }
-.chat-turn-time { color: var(--muted-foreground, #888); font-variant-numeric: tabular-nums; white-space: nowrap; cursor: default; }
-.chat-turn-time:hover { color: var(--foreground, inherit); }
-.chat-turn-error { color: var(--del); }
-
-/* Markdown (markdown.ts). Code colours follow Conductor's default code theme
+/* Markdown (markdown.ts) outside chat text, and code blocks. Code colours follow Conductor's default code theme
    (--code-* from its palette; evidence/chat/README.md) and its .hljs rules. */
 :root {
   --code-fg: hsl(25 8% 16%); --code-bg: hsl(30 9% 95%); --code-comment: hsl(23 5% 63%);
@@ -124,15 +234,32 @@
 .oc-reset-count { font-variant-numeric: tabular-nums; }
 .oc-skeleton { display: inline-block; width: 64px; height: 14px; border-radius: 4px; background: var(--muted); opacity: 0.2; animation: pulse 1.4s ease-in-out infinite; }
 
-/* Conductor (`vDo`): the first chips share the footer row and shrink instead of wrapping (flex-1 min-w-0
-   max-w-fit overflow-hidden); revealed chips and "+N more" wrap, on their own line once revealed (basis-full). */
-.chat-turn-changes { display: flex; flex: 1 1 0; align-items: center; gap: 8px; min-width: 0; max-width: fit-content; overflow: hidden; }
-.chat-turn-changes-more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
-.chat-turn-changes-more.revealed { flex-basis: 100%; }
-.chat-turn-chip { display: inline-flex; flex: 0 1 auto; min-width: 0; align-items: center; gap: 6px; height: 20px; padding: 0 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); font-size: 12px; line-height: 1; max-width: 240px; }
-.chat-turn-chip:hover { background: var(--hover); }
-.chat-turn-chip .name { font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-.chat-turn-chip .count { flex: none; font-family: var(--font-mono); font-size: 11px; }
-.chat-turn-chip .a { color: var(--add); }
-.chat-turn-chip .d { color: var(--del); }
-.chat-turn-chip.more { color: var(--muted); }
+/* Conductor's prose for chat text (`xS`: prose prose-sm, with its own overrides). */
+.oc-prose { font-size: 14px; line-height: 1.71429; letter-spacing: -0.01em; color: var(--oc-fg); font-kerning: normal; text-rendering: optimizeLegibility; overflow-wrap: anywhere; text-wrap: pretty; white-space: normal; user-select: text; }
+.oc-prose > :first-child { margin-top: 0; }
+.oc-prose > :last-child { margin-bottom: 0; }
+.oc-prose p { margin: 1.14286em 0; font-weight: 450; letter-spacing: -0.10667px; }
+.oc-prose ul, .oc-prose ol { margin: 1.14286em 0; padding-inline-start: 1.57143em; }
+.oc-prose ul { list-style-type: disc; }
+.oc-prose ol { list-style-type: decimal; }
+.oc-prose li { margin: 0.285714em 0; padding-inline-start: 0; }
+.oc-prose li::marker { color: var(--oc-muted-fg); }
+.oc-prose li > p { margin: 0.571429em 0; }
+.oc-prose :is(ul, ol) :is(ul, ol) { margin: 0.571429em 0; }
+.oc-prose strong { font-weight: 500; color: var(--oc-fg); }
+.oc-prose h1, .oc-prose h2, .oc-prose h3, .oc-prose h4 { color: var(--oc-fg); font-weight: 600; text-wrap: balance; }
+.oc-prose h1 { margin: 0 0 0.8em; font-size: 2.14286em; line-height: 1.2; }
+.oc-prose h2 { margin: 1.6em 0 0.8em; font-size: 1.42857em; line-height: 1.4; }
+.oc-prose h3 { margin: 1.55556em 0 0.444444em; font-size: 1.28571em; line-height: 1.55556; }
+.oc-prose h4 { margin: 1.42857em 0 0.571429em; line-height: 1.42857; font-weight: 500; }
+.oc-prose :is(h2, h3, h4, hr) + * { margin-top: 0; }
+.oc-prose blockquote { margin: 1.33333em 0; padding-inline-start: 1.11111em; border-left: 4px solid var(--oc-border); color: var(--oc-muted-fg); }
+.oc-prose hr { border: 0; border-top: 1px solid var(--oc-border); margin: 2.85714em 0; }
+.oc-prose .md-link { color: var(--oc-fg); font-weight: 500; text-decoration: none; }
+.oc-prose .md-link:hover { text-decoration: underline; }
+.oc-prose .md-file-link { display: inline; padding: 0; border: 0; background: none; font: inherit; letter-spacing: inherit; color: inherit; text-align: left; cursor: pointer; user-select: text; }
+.oc-prose .md-file-link code.md-code { color: var(--oc-link-fg); }
+.oc-prose .md-file-link:hover { text-decoration: underline; text-decoration-color: var(--oc-link-fg); }
+.oc-prose code.md-code { font-family: var(--font-mono); font-size: 0.857143em; font-weight: 450; color: var(--oc-fg); padding: 0.1em 0.4em; border: 1px solid var(--oc-input); border-radius: 6px; background: transparent; overflow-wrap: anywhere; }
+.oc-prose .md-pre { margin: 1.66667em 0; }
+.oc-prose.muted, .oc-prose.muted :is(p, li, strong, code.md-code) { color: var(--oc-muted-fg); }

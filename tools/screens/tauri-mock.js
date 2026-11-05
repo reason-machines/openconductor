@@ -372,10 +372,34 @@
       case "plugin:http|fetch_cancel":
         httpResponses.delete(args.rid);
         return null;
+      case "list_file_tree":
+        // The right panel's All files tab: { name, path, is_directory } under
+        // directoryPath, at most maxDepth levels deep (null: all).
+        return listFileTree(args.directoryPath, args.maxDepth);
     }
     if (cmd in DEFAULTS) return DEFAULTS[cmd];
     unhandled[cmd] = (unhandled[cmd] || 0) + 1;
     return null;
+  }
+
+  // Worktree files every seeded workspace shows in the All files tab (invented).
+  const TREE_FILES = [".gitignore", "README.md", "package.json", "tsconfig.json", "src/main.ts", "src/lib/auth.ts", "src/lib/auth.test.ts", "src/lib/session.ts", "src/routes/login.tsx", "src/routes/dashboard.tsx", "public/favicon.svg"];
+  let treeRoot = null; // the first directory asked for is the worktree
+  function listFileTree(dir, maxDepth) {
+    const abs = String(dir || "").replace(/\/+$/, "");
+    treeRoot ??= abs;
+    const sub = abs === treeRoot ? "" : abs.slice(treeRoot.length + 1);
+    const seen = new Map();
+    for (const full of TREE_FILES) {
+      if (sub && !full.startsWith(sub + "/")) continue;
+      const parts = (sub ? full.slice(sub.length + 1) : full).split("/");
+      for (let i = 1; i <= parts.length; i++) {
+        if (maxDepth != null && i > maxDepth) break;
+        const rel = parts.slice(0, i).join("/");
+        if (!seen.has(rel)) seen.set(rel, { name: parts[i - 1], path: `${abs}/${rel}`, is_directory: i < parts.length });
+      }
+    }
+    return [...seen.values()].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
   }
 
   async function invoke(cmd, args = {}, options) {

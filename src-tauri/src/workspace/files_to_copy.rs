@@ -50,8 +50,8 @@ pub fn patterns(text: &str) -> Vec<String> {
 
 /// What the repository settings' "Files to copy" row previews: where the
 /// patterns come from, their text, and the files they select today.
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
-#[serde(rename_all = "camelCase")]
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg_attr(not(workspace_std_only), derive(serde::Serialize), serde(rename_all = "camelCase"))]
 pub struct Preview {
     /// `"worktreeinclude"`, `"settings"` or `"default"`, as in the reference (`NBt`).
     pub source: &'static str,
