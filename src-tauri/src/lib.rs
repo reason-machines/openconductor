@@ -55,6 +55,7 @@ mod terminal_output_commands;
 #[cfg(all(test, unix))]
 mod test_exe;
 pub mod tool_cli;
+pub mod tool_spotlighter;
 pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
@@ -205,6 +206,19 @@ async fn branch_prefix_settings() -> BranchPrefixInfo {
     }
 }
 
+/// Conductor links tauri-plugin-updater and its frontend calls check, download, install and
+/// download_and_install. A release build bakes in its minisign public key from
+/// OPENCONDUCTOR_UPDATER_PUBKEY; without one the key in tauri.conf.json stays empty, so the
+/// plugin can check the endpoint but every install fails signature verification.
+fn updater_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R, tauri_plugin_updater::Config>
+{
+    let builder = tauri_plugin_updater::Builder::new();
+    match option_env!("OPENCONDUCTOR_UPDATER_PUBKEY") {
+        Some(key) if !key.is_empty() => builder.pubkey(key).build(),
+        _ => builder.build(),
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = tauri::Builder::default();
@@ -228,6 +242,7 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_sql::Builder::new().build())
+        .plugin(updater_plugin())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).

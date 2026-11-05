@@ -48,6 +48,9 @@ export type RowView =
       retryPrompt?: string;
       /** "Reset chat" applies: the turn has an agent reply and is not the chat's last turn. */
       canReset: boolean;
+      /** ISO times the turn started and ended, for the footer's "8m, 0s · 10:37 AM". */
+      startedAt?: string;
+      endedAt?: string;
     };
 
 interface ToolResult {
@@ -113,6 +116,8 @@ function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[],
     ...(finalText !== undefined ? { finalText } : {}),
     ...(canRetry && prompt ? { retryPrompt: plainText(prompt) } : {}),
     canReset: !isLastTurn && turnMessages.some((m) => m.role === "assistant"),
+    ...(state?.startedAt !== undefined ? { startedAt: state.startedAt } : {}),
+    ...(state?.endedAt !== undefined ? { endedAt: state.endedAt } : {}),
   };
 }
 
