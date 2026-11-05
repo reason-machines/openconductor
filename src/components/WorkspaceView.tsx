@@ -391,7 +391,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
           tabs={<MainTabs title={workspace.name} active={showDiff ? "diff" : "chat"} diffOpen={diffOpen} onSelect={setMainTab} onCloseDiff={closeDiffTab} />}
-          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} anchors={review.anchors} annotations={review.annotations} /> : null}
+          content={showDiff ? <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} /> : null}
         />
         <div className="ws-right">
           <RightPanel diff={diff} actions={review.actions} pr={pullRequest} worktree={workspace.path ?? null} />
