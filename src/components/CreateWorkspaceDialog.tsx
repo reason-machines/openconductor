@@ -3,19 +3,22 @@ import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import { Modal } from "./Dialogs";
 import { seedTranscript } from "./WorkspaceView";
-import { newId } from "../state/names";
 import { RARITY_LABEL, generateWorkspaceNames, resolveBranchPrefix, type BranchPrefixSettings, type GeneratedName } from "../workspace/naming";
 import {
   FAILED_TO_CREATE,
   buildCreateRequest,
   newDraft,
   progressLabel,
+  selectFrom,
   reduceProgress,
   toCreateWorkspaceArgs,
   type CreateDraft,
   type DraftErrors,
 } from "../workspace/createFlow";
-import { createWorkspace, ensureRepository, errorText, listBranches } from "../workspace/api";
+import { createWorkspace, ensureRepository, errorText, listBranches, type BranchDto } from "../workspace/api";
+import { renameAfterFirstMessage } from "../workspace/firstMessage";
+import type { SourceState } from "../workspace/createFrom";
+import { CreateFromPicker } from "./CreateFromPicker";
 
 interface Props {
   repos: Repo[];
@@ -43,21 +46,23 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
     newDraft({ repoId: startRepo?.id ?? null, defaultBranch: startRepo?.defaultBranch ?? "main", cityName: city?.name ?? "", ...AGENT }),
   );
   const [errors, setErrors] = useState<DraftErrors>({});
-  const [branches, setBranches] = useState<string[]>([]);
+  const [branchSrc, setBranchSrc] = useState<SourceState<BranchDto>>({ status: "loading" });
+  const branches = branchSrc.status === "ready" ? branchSrc.items.map((b) => b.name) : [];
   const [progress, send] = useReducer(reduceProgress, { step: "idle" });
   const repo = repos.find((r) => r.id === draft.repoId);
   const prefix = useMemo(() => resolveBranchPrefix(prefixSettings, githubUsername), [prefixSettings, githubUsername]);
   const busy = progress.step === "creating" || progress.step === "detecting_setup" || progress.step === "running_setup";
 
   useEffect(() => {
-    if (!repo?.path) return setBranches([repo?.defaultBranch ?? "main"]);
+    if (!repo?.path) return setBranchSrc({ status: "ready", items: [{ name: repo?.defaultBranch ?? "main", remote: null, commit: "", isHead: true, committedAt: 0 }] });
     let live = true;
+    setBranchSrc({ status: "loading" });
     ensureRepository(repo.path)
       .then((r) => listBranches(r.id, repo.defaultBranch))
       .then((list) => {
         if (!live) return;
         const names = list.map((b) => b.name);
-        setBranches(names);
+        setBranchSrc({ status: "ready", items: list });
         // Re-roll an untouched placeholder that collides with an existing branch.
         setDraft((d) => {
           if (d.nameEdited || !names.some((b) => b.replace(/^.*\//, "") === d.name)) return d;
@@ -66,7 +71,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
           return next ? { ...d, name: next.name } : d;
         });
       })
-      .catch(() => live && setBranches([repo.defaultBranch]));
+      .catch((e) => live && setBranchSrc({ status: "error", message: errorText(e) }));
     return () => {
       live = false;
     };
@@ -76,7 +81,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
     const next = repos.find((r) => r.id === id);
     const name = draft.nameEdited ? null : suggestName(next);
     if (name) setCity(name);
-    setDraft({ ...draft, repoId: id, baseBranch: next?.defaultBranch ?? "main", name: name?.name ?? draft.name });
+    setDraft({ ...selectFrom(draft, null), repoId: id, baseBranch: next?.defaultBranch ?? "main", name: name?.name ?? draft.name });
     setErrors({});
   }
 
@@ -94,12 +99,26 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
       send({ type: "created", workspaceId: created.workspace.id });
       // No setup-script command in the backend yet: detection finds none.
       send({ type: "setup_detected", hasScript: false });
-      const id = newId();
+      const { id, directoryName, branchName, path } = created.workspace;
+      const { naming, firstSession } = built.request;
+      const ws = {
+        id,
+        name: directoryName,
+        branch: branchName,
+        path,
+        placeholderBranchName: naming.placeholder_branch_name === null ? null : branchName,
+        userSetWorkspaceName: naming.user_set_workspace_name,
+        userSetBranchName: naming.user_set_branch_name,
+      };
       // The first message opens the workspace's first chat session (agent runtime pending).
-      if (built.request.firstSession) seedTranscript(id, built.request.firstSession.message);
-      const { directoryName, branchName, path } = created.workspace;
-      dispatch({ type: "addWorkspace", repoId: repo.id, workspace: { id, name: directoryName, branch: branchName, path } });
+      if (firstSession) seedTranscript(id, firstSession.message);
+      dispatch({ type: "addWorkspace", repoId: repo.id, workspace: ws });
       onClose();
+      // ...and renames a placeholder city workspace after it.
+      if (firstSession) {
+        const full = { ...ws, status: "idle" as const, diff: { added: 0, removed: 0 }, createdAt: Date.now() };
+        void renameAfterFirstMessage(repo, full, firstSession.message, dispatch);
+      }
     } catch (err) {
       send({ type: "create_failed", error: `${FAILED_TO_CREATE}: ${errorText(err)}` });
     }
@@ -133,6 +152,16 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
             onKeyDown={(e) => e.key === "Enter" && (e.metaKey || e.ctrlKey) && submit()}
           />
         </div>
+        <CreateFromPicker
+          value={draft.from}
+          branches={branchSrc}
+          disabled={busy}
+          error={errors.from}
+          onChange={(from) => {
+            setDraft(selectFrom(draft, from));
+            if (errors.from) setErrors({ ...errors, from: undefined });
+          }}
+        />
         <div className="create-row">
           <label className="field">
             <span>Repository</span>
@@ -174,7 +203,11 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
             <span className="error small">{errors.name}</span>
           ) : (
             <span className="muted small">
-              Branch <code>{prefix}{draft.name.trim() || "…"}</code>. A placeholder name is replaced by a generated branch name after the first message.
+              {draft.from?.kind === "pr" || draft.from?.kind === "branch" ? (
+                <>Checks out <code>{draft.from.kind === "pr" ? draft.from.headBranch : draft.from.name}</code>.</>
+              ) : (
+                <>Branch <code>{prefix}{draft.name.trim() || "…"}</code>. A placeholder name is replaced by a generated branch name after the first message.</>
+              )}
             </span>
           )}
         </label>
