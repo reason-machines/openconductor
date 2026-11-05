@@ -42,9 +42,15 @@ All REA runs and the fallbacks are rows `turn_*` in
   ("checkpoint refs not ready").
 - Only completed turns are queried. Concurrent requests for the same turn
   share one in-flight request.
-- Cache: a local-storage subsystem named turn-changes cache, keyed by the
-  JSON array `[sessionId, turnId]`, value the file list, 5 MB entry limit;
-  read failures and write failures are only logged. On an end
+- Cache: the local-storage subsystem `turn-changes-cache`, written with
+  `entryStorage: "subsystemStore"` and a 5 MiB `sizeLimit` for the whole
+  subsystem (index-BGEQ8YjU.js near byte 3130166; Sven's
+  `local-storage.metadata.json` record: subsystemStore, sizeLimit 5242880,
+  1,687 entries with 79-character ids, i.e. the JSON array
+  `[sessionId, turnId]` of two UUIDs). The value is the file list itself,
+  validated as an array on read; read failures and write failures are only
+  logged. The file is plain `local-storage.subsystem.turn-changes-cache.json`,
+  not encrypted. On an end
   `checkpointCreated` event the list is put straight into the query cache;
   without a list the query is invalidated and re-read.
 - Separately it can count files changed between a turn's end checkpoint and
@@ -93,9 +99,16 @@ Backend (#279, plus the `turn` argument change in the frontend PR):
 
 Frontend:
 - [`turnChangesCache.ts`](../../src/features/diff/turnChangesCache.ts): the
-  turn-changes cache (key `[sessionId, turnId]`, file list only, 5 MB entry
-  limit, logged storage errors, shared in-flight loads, failed loads not
-  cached) and the chip layout; [`useTurnChanges.ts`](../../src/features/diff/useTurnChanges.ts)
+  turn-changes cache in the `turn-changes-cache` subsystem (id
+  `[sessionId, turnId]`, file list only, 5 MiB subsystem limit with the
+  backend's least-recently-updated eviction, logged storage errors, shared
+  in-flight loads, failed loads not cached) and the chip layout. Entries go
+  through the shared local-storage client (`localStorageClient()` and
+  `TURN_CHANGES_CACHE` in src/lib/local-storage, #358) to the backend's
+  `local_storage_get_entry` / `local_storage_set_entry` (`SubsystemStore`);
+  the browser build uses that client's in-memory stand-in. Entries earlier builds
+  left in the webview's localStorage (`openconductor.turn-changes-cache:*`)
+  are removed once at startup (#389); [`useTurnChanges.ts`](../../src/features/diff/useTurnChanges.ts)
   holds the app-wide store (fed by `reason_prompt`'s `turnChanges`, else
   `checkpoint_turn_changes`).
 - [`TurnChanges.tsx`](../../src/features/chat/TurnChanges.tsx): chips under
@@ -118,9 +131,6 @@ Tests: `src/features/diff/turnChangesCache.test.ts`, `src-tauri/src/diff/turn_te
   running (Reason supersedes the earlier prompt).
 - The turn's file list comes back in `reason_prompt`'s result instead of a
   separate event.
-- The turn-changes cache lives in the webview's `localStorage`, not in
-  Conductor's encrypted file-backed local-storage subsystem
-  (`db.local-storage` is not built yet).
 - Turns replayed from a resumed Reason Session get fresh ids, so they show
   no chips (Conductor keeps turn ids in its database).
 - The scope control is a segment, not Conductor's dropdown, and only offers

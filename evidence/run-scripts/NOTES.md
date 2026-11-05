@@ -79,7 +79,7 @@ re-check a claim; the code itself is not copied here.
 ## Not done yet
 
 - Scripts settings page (`/settings/organization/repositories/$owner/$repo/scripts`): edit setup and run scripts, add, rename, hide and delete run scripts, script scope (local or shared file), import, managed-key locks in the UI.
-- The create-workspace dialog starts setup (`scripts_config`, then `setup_script_start`) after `create_workspace` (see `evidence/create-workspace/README.md`); `workspaces.state` is not persisted, so `setting_up` exists only in the UI. The workspace archive flow should call `archive_script_run` before removing the worktree. `src-tauri/src/workspace/scripts.rs` duplicates part of this crate and should delegate to it.
+- The create-workspace dialog starts setup (`scripts_config`, then `setup_script_start`) after `create_workspace` (see `evidence/create-workspace/README.md`); `workspaces.state` is not persisted, so `setting_up` exists only in the UI. The full archive (`archive_workspace`, `evidence/archive/NOTES.md`) runs the archive script through `ScriptService::run_archive` before removing the worktree. `src-tauri/src/workspace/scripts.rs` duplicates part of this crate and should delegate to it.
 - `workspaces.setup_log_path` is not persisted yet (no database layer is wired to this crate).
 - Shared environment variables (`environment_variables` settings) are not passed to scripts.
 - Output is a pipe, not a PTY; scripts that check for a TTY print less color than in the reference.
