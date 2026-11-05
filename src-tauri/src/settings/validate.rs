@@ -1,6 +1,9 @@
 //! Rules a settings value must satisfy before it is saved or used.
 
-use super::{BranchPrefixType, Settings, SettingsError, ZOOM_MAX, ZOOM_MIN};
+use super::{
+    BranchPrefixType, Settings, SettingsError, TERMINAL_FONT_SIZE_MAX, TERMINAL_FONT_SIZE_MIN,
+    ZOOM_MAX, ZOOM_MIN,
+};
 use crate::agent::AgentKind;
 
 /// Checks cross-field rules serde cannot express.
@@ -38,6 +41,19 @@ pub fn validate(s: &Settings) -> Result<(), SettingsError> {
                 "appearance.mono_font {font:?} is not a usable font name"
             ));
         }
+    }
+    if let Some(font) = s.appearance.terminal_font_family.as_deref() {
+        if !valid_font_family(font) {
+            return invalid(format!(
+                "appearance.terminal_font_family {font:?} is not a usable font name"
+            ));
+        }
+    }
+    let size = s.appearance.terminal_font_size;
+    if !(TERMINAL_FONT_SIZE_MIN..=TERMINAL_FONT_SIZE_MAX).contains(&size) {
+        return invalid(format!(
+            "appearance.terminal_font_size {size} must be {TERMINAL_FONT_SIZE_MIN} to {TERMINAL_FONT_SIZE_MAX}"
+        ));
     }
     if s.models.default.trim().is_empty() {
         return invalid("models.default must not be empty".into());

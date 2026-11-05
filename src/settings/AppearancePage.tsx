@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BUILTIN_MONO, MONO_FONTS, monoFontError, monoFontStack, withAppearance, zoomPercent, ZOOM_PERCENTS } from "./appearance";
 import { Row } from "./GeneralPage";
+import { TerminalFontRows } from "./TerminalFont";
 import { withField } from "./model";
 import type { Settings, Theme } from "./types";
 
@@ -20,7 +21,7 @@ const CUSTOM = "custom";
 
 /**
  * Settings › Appearance: Conductor's Theme, Low-contrast dark mode, App zoom
- * and Mono Font rows, with its titles and descriptions
+ * Mono Font and Terminal font rows, with its titles and descriptions
  * (evidence/settings/settings-registry.json). Its other Appearance rows
  * (code theme, accessible colors, ligatures, ...) are not built yet.
  */
@@ -120,6 +121,7 @@ export function AppearancePage({ settings, save }: Props) {
         <div>const greeting = 'Hello, World!';</div>
         <div>function sum(a, b) {"{ return a + b; }"}</div>
       </div>
+      <TerminalFontRows settings={settings} save={save} />
     </div>
   );
 }

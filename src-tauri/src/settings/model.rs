@@ -99,12 +99,21 @@ pub struct Appearance {
     /// Font family for code and diffs; `None` keeps the built-in stack.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mono_font: Option<String>,
+    /// Terminal font family, put in front of the terminal's fallback stack;
+    /// `None` keeps the stack. Conductor's `terminal_font_family`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terminal_font_family: Option<String>,
+    /// Terminal font size in px, [`TERMINAL_FONT_SIZE_MIN`] to
+    /// [`TERMINAL_FONT_SIZE_MAX`] (Conductor's slider), 12 by default.
+    pub terminal_font_size: u32,
     #[serde(flatten)]
     pub extra: toml::Table,
 }
 
 pub const ZOOM_MIN: f64 = 0.5;
 pub const ZOOM_MAX: f64 = 3.0;
+pub const TERMINAL_FONT_SIZE_MIN: u32 = 10;
+pub const TERMINAL_FONT_SIZE_MAX: u32 = 20;
 
 impl Default for Appearance {
     fn default() -> Self {
@@ -112,6 +121,8 @@ impl Default for Appearance {
             zoom_level_v2: 1.0,
             low_contrast_dark_mode: false,
             mono_font: None,
+            terminal_font_family: None,
+            terminal_font_size: 12,
             extra: toml::Table::new(),
         }
     }
@@ -130,14 +141,34 @@ pub enum BranchPrefixType {
     None,
 }
 
-#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Git {
     pub branch_prefix_type: BranchPrefixType,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub branch_prefix_custom: Option<String>,
+    /// Delete the local branch when a workspace is archived (Conductor default: off).
+    pub delete_branch_on_archive: bool,
+    /// Archive a local workspace after its PR is merged in the app (default: off).
+    pub archive_on_merge: bool,
+    /// Set `push.autoSetupRemote` in each new workspace's worktree config so
+    /// a plain `git push` sets the upstream (Conductor default: on).
+    pub worktree_push_auto_setup_remote: bool,
     #[serde(flatten)]
     pub extra: toml::Table,
+}
+
+impl Default for Git {
+    fn default() -> Self {
+        Self {
+            branch_prefix_type: BranchPrefixType::default(),
+            branch_prefix_custom: None,
+            delete_branch_on_archive: false,
+            archive_on_merge: false,
+            worktree_push_auto_setup_remote: true,
+            extra: toml::Table::new(),
+        }
+    }
 }
 
 /// Reasoning effort for Codex models (Codex CLI `model_reasoning_effort`).

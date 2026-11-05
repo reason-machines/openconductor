@@ -12,6 +12,7 @@ use oc_scripts::config::SettingsPaths;
 use oc_scripts::service::ScriptService;
 
 use crate::db::Db;
+use crate::spotlight::auto_run;
 use crate::spotlight::service::{SpotlightEvent, SpotlightService};
 use crate::spotlight::setting::{self, SpotlightTesting, SpotlightTestingChange};
 
@@ -30,6 +31,24 @@ pub fn service(app: &AppHandle) -> Spotlight {
             let _ = emitter.emit(EVENT, event);
         },
     )))
+}
+
+/// Move the legacy `repos.spotlight_testing` column into each repository's
+/// local settings file, once (see `spotlight::migrate`). Runs at startup
+/// before anything reads the setting, as the reference runs its settings
+/// file migrations on launch. A failure is logged and retried next launch;
+/// it never stops the app.
+pub fn migrate_legacy_setting(db: &Db) {
+    match tauri::async_runtime::block_on(crate::spotlight::migrate::run(&db.0)) {
+        Ok(report) => {
+            for (repo, error) in report.failed {
+                eprintln!(
+                    "spotlight_testing migration: repository {repo} left for next launch: {error}"
+                );
+            }
+        }
+        Err(error) => eprintln!("spotlight_testing migration failed: {error}"),
+    }
 }
 
 async fn blocking<T: Send + 'static>(
@@ -65,8 +84,14 @@ pub async fn spotlight_start(
     let spotlight = spotlight.inner().clone();
     let scripts = scripts.inner().clone();
     blocking(move || {
-        scripts.runs.stop_repository(&repo_id);
-        spotlight.start(&workspace_id, &workspace_path, &repo_root)
+        auto_run::start_session(
+            &spotlight,
+            &scripts,
+            &repo_id,
+            &workspace_id,
+            &workspace_path,
+            &repo_root,
+        )
     })
     .await
 }

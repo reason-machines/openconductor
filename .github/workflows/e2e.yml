@@ -9,14 +9,15 @@ permissions:
   contents: read
 
 concurrency:
-  group: e2e-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  tauri:
-    name: Tauri debug build under Xvfb (tauri-driver)
+  reason-chat:
+    name: Reason chat through the built app (ubuntu-22.04)
+    # WebDriver for Tauri apps exists on Linux (WebKitWebDriver) and Windows
+    # only; macOS WKWebView has no driver.
     runs-on: ubuntu-22.04
-    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - name: Install Tauri system deps, WebKitWebDriver and Xvfb
@@ -32,29 +33,37 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
-          key: e2e
+      - run: npm ci
+      - name: Build the app (debug, no bundle)
+        run: npx tauri build --debug --no-bundle
       - name: Install tauri-driver
         run: cargo install tauri-driver --locked
-      - run: npm ci
-      # `tauri build --debug` embeds dist/ (custom protocol), so no dev server is needed.
-      - name: Debug build
-        run: npx tauri build --debug --no-bundle
+      - name: Reason chat e2e (fake reason acp)
+        env:
+          E2E_OUT: ${{ runner.temp }}/e2e-screens
+        run: xvfb-run -a node tools/e2e/reason-chat.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reason-chat-e2e-screens
+          path: ${{ runner.temp }}/e2e-screens
+          retention-days: 14
       - name: Configure git identity
         run: |
           git config --global user.name "CI"
           git config --global user.email "ci@example.invalid"
-      - name: Run e2e flows under Xvfb
+      - name: App flows (tests/e2e/run.mjs)
+        if: always()
         env:
           OC_APP: src-tauri/target/debug/openconductor
-          E2E_OUT: e2e-artifacts
-          # WebKitGTK on a GPU-less Xvfb paints nothing (blank screenshots, CSS animations stuck) without these.
+          E2E_OUT: ${{ runner.temp }}/e2e-flows
+          # WebKitGTK on a GPU-less Xvfb paints nothing without these.
           WEBKIT_DISABLE_DMABUF_RENDERER: "1"
           WEBKIT_DISABLE_COMPOSITING_MODE: "1"
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1440x900x24" node tests/e2e/run.mjs
-      - name: Upload screenshots and results
+        run: xvfb-run -a node tests/e2e/run.mjs
+      - uses: actions/upload-artifact@v4
         if: always()
-        uses: actions/upload-artifact@v4
         with:
-          name: e2e-tauri
-          path: e2e-artifacts
-          if-no-files-found: warn
+          name: e2e-flows
+          path: ${{ runner.temp }}/e2e-flows
+          retention-days: 14

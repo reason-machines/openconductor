@@ -1,5 +1,5 @@
 // Minimal W3C WebDriver client for tauri-driver (no dependencies).
-const ELEMENT = "element-6066-11e4-a52e-4f735466cecc";
+const ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 
 export class WebDriver {
   constructor(base = "http://127.0.0.1:4444") {
@@ -45,9 +45,9 @@ export class WebDriver {
 
   async findAll(css) {
     const els = await this.#call("POST", this.#s("/elements"), { using: "css selector", value: css });
-    // W3C key, else the legacy JSON Wire `ELEMENT` key older WebKitWebDriver builds return.
+    // W3C key, else the legacy JSON Wire `ELEMENT` key.
     return els.map((e) => {
-      const id = e[ELEMENT] ?? e.ELEMENT ?? Object.values(e)[0];
+      const id = e[ELEMENT] ?? e.ELEMENT;
       if (typeof id !== "string") throw new Error(`unrecognised element reference ${JSON.stringify(e)}`);
       return id;
     });
