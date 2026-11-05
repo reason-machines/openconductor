@@ -458,4 +458,129 @@ export const flows = [
       await close();
     },
   },
+
+  // Settings › Agents per-agent options and Account tool approvals
+  // (src/settings/rows/AgentOptionRows.tsx, AccountAgentRows.tsx). Each flow
+  // changes a value, checks where it is stored, puts it back, and ends with
+  // its rows in view for the screenshot (dark theme, compared with
+  // Conductor's reference shots in evidence/settings/agent-options/).
+  {
+    name: "agents-claude-options",
+    async run(wd) {
+      await openSettingsPage(wd, "Agents");
+      const section = 'section[aria-label="Claude Code"]';
+      await wd.waitFor("the Claude Code options", async () => (await wd.findAll(`${section} input[aria-label="Use Claude Code with Chrome"]`)).length === 1);
+      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .oc-agent-config h3`);
+      const want = ["Use Claude Code with Chrome", "Claude Code executable path", "Claude settings"];
+      if (want.some((w, i) => labels.at(i - want.length) !== w)) throw new Error(`Claude option rows ${JSON.stringify(labels)}, want them to end with ${JSON.stringify(want)}`);
+
+      // Chrome mode lives in conductor.db's settings table.
+      const chrome = () => wd.execute("return window.__TAURI_INTERNALS__.invoke('get_app_prefs').then((p) => p.chrome_mode_enabled);", []);
+      const toggle = async () => wd.click((await wd.findAll(`${section} input[aria-label="Use Claude Code with Chrome"]`))[0]);
+      const before = await chrome();
+      await toggle();
+      await wd.waitFor("chrome_mode_enabled to flip", async () => (await chrome()) === !before);
+      await toggle();
+      await wd.waitFor("chrome_mode_enabled back", async () => (await chrome()) === before);
+
+      // The executable path saves as you type into settings.toml, shows the
+      // compatibility warning, and the reset button clears it.
+      const file = settingsFile();
+      const input = `${section} input[aria-label="Claude Code executable path"]`;
+      await wd.click((await wd.findAll(input))[0]);
+      await wd.keys("/opt/e2e/claude");
+      await wd.waitFor("claude_code_executable_path in settings.toml", async () => tomlValue(file, "", "claude_code_executable_path") === '"/opt/e2e/claude"');
+      await wd.waitFor("the compatibility warning", async () => (await textsOf(wd, `${section} .oc-agent-warning`)).some((t) => t.includes("not compatible")));
+      await wd.click((await wd.findAll(`${section} button[aria-label="Reset to bundled Claude Code"]`))[0]);
+      await wd.waitFor("the override cleared", async () => tomlValue(file, "", "claude_code_executable_path") === null);
+      await showRows(wd, `${section} .oc-agent-chrome`);
+    },
+  },
+  {
+    name: "agents-codex-options",
+    async run(wd) {
+      await openSettingsPage(wd, "Agents");
+      const section = 'section[aria-label="Codex"]';
+      const select = `${section} select[aria-label="Codex personality for new chats"]`;
+      const value = () => wd.execute("return document.querySelector(arguments[0])?.value ?? null;", [select]);
+      if ((await wd.waitFor("the Codex personality select", value)) !== "pragmatic") throw new Error(`Codex personality shows ${await value()}, want pragmatic (Conductor's default)`);
+      const options = await textsOf(wd, `${select} option`);
+      if (JSON.stringify(options) !== JSON.stringify(["Pragmatic (default)", "Friendly", "None"])) throw new Error(`personality options ${JSON.stringify(options)}`);
+      const file = settingsFile();
+      for (const v of ["friendly", "pragmatic"]) {
+        await wd.click((await wd.findAll(`${select} option[value="${v}"]`))[0]);
+        await wd.waitFor(`models.codex personality = "${v}"`, async () => tomlValue(file, "models.codex", "personality") === `"${v}"`);
+      }
+      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .oc-agent-config h3`);
+      const want = ["Codex personality for new chats", "Codex executable path", "Codex config"];
+      if (want.some((w, i) => labels.at(i - want.length) !== w)) throw new Error(`Codex option rows ${JSON.stringify(labels)}, want them to end with ${JSON.stringify(want)}`);
+      const path = await textsOf(wd, `${section} .oc-agent-config-path`);
+      if (path[0] !== "~/.codex/config.toml") throw new Error(`Codex config card shows ${JSON.stringify(path)}`);
+      await showRows(wd, `${section} .oc-agent-select-180`);
+    },
+  },
+  {
+    name: "agents-opencode-advanced",
+    async run(wd) {
+      await openSettingsPage(wd, "Agents");
+      const section = 'section[aria-label="OpenCode"]';
+      const toggle = `${section} .oc-agent-advanced-toggle`;
+      if ((await wd.execute("return document.querySelector(arguments[0])?.getAttribute('aria-expanded');", [toggle])) !== "true") {
+        await wd.click((await wd.findAll(toggle))[0]);
+      }
+      const badge = await wd.waitFor("the OpenCode status badge", async () => {
+        const [t] = await textsOf(wd, `${section} .oc-agent-badge`);
+        return t && t !== "Checking" ? t : null;
+      });
+      if (!/^(Installed|Missing|Update required|Needs repair)/.test(badge)) throw new Error(`OpenCode status badge ${JSON.stringify(badge)}`);
+      if ((await wd.findAll(`${section} input[aria-label="OpenCode executable path"]`)).length !== 1) throw new Error("no OpenCode executable path row under Advanced");
+      await showRows(wd, `${section} .oc-agent-advanced`);
+    },
+  },
+  {
+    name: "account-tool-approvals",
+    async run(wd) {
+      await openSettingsPage(wd, "Account");
+      const file = settingsFile();
+      const sw = 'input[aria-label="Claude Code tool approvals"]';
+      await wd.waitFor("the Claude Code tool approvals switch", async () => (await wd.findAll(sw)).length === 1);
+      const on = () => wd.execute("return document.querySelector(arguments[0]).checked;", [sw]);
+      const was = await on();
+      for (const want of [!was, was]) {
+        await wd.click((await wd.findAll(sw))[0]);
+        await wd.waitFor(`tool_approvals_enabled = ${want}`, async () => (tomlValue(file, "", "tool_approvals_enabled") ?? "false") === String(want));
+      }
+      const select = 'select[aria-label="Codex tool approvals"]';
+      const options = await textsOf(wd, `${select} option`);
+      if (JSON.stringify(options) !== JSON.stringify(["Default", "Always approve"])) throw new Error(`Codex tool approvals options ${JSON.stringify(options)}`);
+      for (const v of ["always_approve", "default"]) {
+        await wd.click((await wd.findAll(`${select} option[value="${v}"]`))[0]);
+        await wd.waitFor(`models.codex tool_approval_policy = "${v}"`, async () => (tomlValue(file, "models.codex", "tool_approval_policy") ?? '"default"') === `"${v}"`);
+      }
+      await showRows(wd, sw);
+    },
+  },
 ];
+
+function settingsFile() {
+  return join(process.env.OPENCONDUCTOR_HOME ?? join(homedir(), ".openconductor"), "settings.toml");
+}
+
+/** Opens Settings (⌘, when closed) on the page named `label`, in the dark theme for the screenshot. */
+async function openSettingsPage(wd, label) {
+  const heading = () => wd.execute("return document.querySelector('.settings .settings-header h1')?.textContent.trim() ?? null;", []);
+  if ((await wd.findAll(".settings")).length === 0) {
+    await wd.execute("document.activeElement?.blur();", []);
+    await wd.chord(["\uE03D"], ",");
+    await wd.waitFor("Settings after ⌘,", heading, 10000);
+  }
+  await clickByText(wd, ".settings-nav .nav-item", label);
+  await wd.waitFor(`the ${label} page`, async () => (await heading()) === label);
+  await wd.execute("document.documentElement.dataset.theme = 'dark';", []);
+}
+
+/** Scrolls the first `css` match to the top of the settings page, in the dark theme (a save re-applies the stored theme). */
+async function showRows(wd, css) {
+  await wd.execute("document.documentElement.dataset.theme = 'dark'; document.querySelector(arguments[0])?.scrollIntoView({ block: 'start' });", [css]);
+  await new Promise((r) => setTimeout(r, 300));
+}

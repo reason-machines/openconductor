@@ -3,6 +3,10 @@
 
 import type { AppState, Workspace } from "../state/types.ts";
 import type { ActionEntry, PaletteData, WorkspaceEntry } from "./search/model.ts";
+import { VIEW_ARCHIVED_LABEL, type ArchivedWorkspace } from "../workspace/archivedList.ts";
+
+/** Handled inside the palette: it switches tabs instead of closing. */
+export const VIEW_ARCHIVED_ACTION = "view-archived-workspaces";
 import { sidebarEntries } from "../state/sidebarOrder.ts";
 import { nextUnreadWorkspace } from "../state/nextUnread.ts";
 
@@ -42,10 +46,16 @@ export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   { id: "go-home", title: "Go to Home", group: "navigation", bindingId: "nav.home" },
   { id: "next-workspace", title: "Next workspace", group: "navigation", bindingId: "workspace.next" },
   { id: "previous-workspace", title: "Previous workspace", group: "navigation", bindingId: "workspace.previous" },
+  // Conductor: opens the Workspaces tab with archived workspaces shown (`view-archived-workspaces`).
+  { id: VIEW_ARCHIVED_ACTION, title: VIEW_ARCHIVED_LABEL, group: "navigation", keywords: ["archive", "archived", "workspaces", "view", "show"] },
 ];
 
-/** `recentIds` is most recent first; it also drives each workspace's recency. */
-export function paletteDataFromState(state: AppState, recentIds: readonly string[]): PaletteData {
+/**
+ * `recentIds` is most recent first; it also drives each workspace's recency.
+ * `archived` are the archived workspaces from conductor.db; they list after
+ * the active ones, newest first.
+ */
+export function paletteDataFromState(state: AppState, recentIds: readonly string[], archived: readonly ArchivedWorkspace[] = []): PaletteData {
   const known = new Set(sidebarOrder(state).map((w) => w.workspace.id));
   const rank = new Map(recentIds.map((id, i) => [id, i]));
   const workspaces: WorkspaceEntry[] = state.repos.flatMap((r) =>
@@ -56,6 +66,11 @@ export function paletteDataFromState(state: AppState, recentIds: readonly string
       return { id: w.id, name: w.name, branch: w.branch, repoName: r.name, lastActiveAt, archived: w.status === "archived" };
     }),
   );
+  const repoNames = new Map(state.repos.map((r) => [r.id, r.name]));
+  for (const a of archived) {
+    if (!repoNames.has(a.repoId)) continue;
+    workspaces.push({ id: a.id, name: a.name, branch: a.branch, repoName: repoNames.get(a.repoId) ?? "", lastActiveAt: a.createdAt - Number.MAX_SAFE_INTEGER / 2, archived: true });
+  }
   const activeWorkspaceId = state.selection.kind === "workspace" ? state.selection.workspaceId : null;
   return {
     workspaces,

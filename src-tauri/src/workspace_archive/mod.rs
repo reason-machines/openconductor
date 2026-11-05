@@ -413,72 +413,170 @@ pub fn remove_worktree(repo_root: &Path, workspace: &Path) -> Result<(), String>
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Restored {
     pub branch: String,
-    /// The branch was gone ("Delete branch on archive") and was recreated
-    /// at the archive commit.
+    /// The workspace went onto a new branch ("Restore to new branch").
     pub recreated_branch: bool,
     /// Uncommitted work from the archive checkpoint was put back.
     pub restored_changes: bool,
     pub notices: Vec<Notice>,
 }
 
-/// Unarchive (Conductor's `RWt` / `PY` @ ~3,304,884): re-add the worktree at
-/// `t.workspace_path` on `t.branch`, put back the uncommitted work saved in
-/// checkpoint `conductor-archive-<id>`, and move the archived `.context` back
-/// (`Wmt` @ ~2,268,547). The caller marks the row and reruns setup.
-///
-/// Refused, as in Conductor, when the row has no branch, the directory
-/// exists, or the branch is checked out in another worktree. A deleted
-/// branch is recreated at `archive_commit` (Conductor asks first, in its
-/// restore dialog, and names the new branch uniquely). When the branch has
-/// moved since the archive, the checkpoint is not restored, since that would
-/// reset the branch (Conductor asks first there too).
-pub fn restore(
-    t: &ArchiveTarget,
-    archive_commit: Option<&str>,
-    root_dir: Option<&Path>,
-) -> Result<Restored, String> {
+/// Why the stored branch cannot take the workspace back (Conductor's `CWt`
+/// @ ~3,304,700); the UI then asks "Restore to new branch?".
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RestoreScenario {
+    /// `refs/heads/<branch>` is gone (deleted or renamed).
+    BranchDeleted,
+    /// Another worktree has the branch checked out.
+    BranchTaken,
+    /// The branch no longer points at the archive commit.
+    BranchDiverged,
+}
+
+impl RestoreScenario {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            RestoreScenario::BranchDeleted => "branchDeleted",
+            RestoreScenario::BranchTaken => "branchTaken",
+            RestoreScenario::BranchDiverged => "branchDiverged",
+        }
+    }
+}
+
+/// Why [`restore`] refused; `DirectoryExists` gets its own toast.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum RestoreError {
+    /// Conductor's `xfe`: "Can't unarchive: <path> already exists".
+    DirectoryExists(PathBuf),
+    Failed(String),
+}
+
+impl fmt::Display for RestoreError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            RestoreError::DirectoryExists(p) => {
+                write!(f, "Can't unarchive: {} already exists", p.display())
+            }
+            RestoreError::Failed(m) => f.write_str(m),
+        }
+    }
+}
+
+impl From<String> for RestoreError {
+    fn from(m: String) -> Self {
+        RestoreError::Failed(m)
+    }
+}
+
+/// Conductor's `CWt`: deleted first, then checked out elsewhere, then moved
+/// since `archive_commit`. `None` is its "happy" scenario.
+pub fn restore_scenario(t: &ArchiveTarget, archive_commit: Option<&str>) -> Option<RestoreScenario> {
+    let branch = t.branch.trim();
+    let branch_ref = format!("refs/heads/{branch}");
+    let Ok(tip) = git(&t.repo_root, ["rev-parse", "--verify", "-q", &branch_ref]) else {
+        return Some(RestoreScenario::BranchDeleted);
+    };
+    let worktrees = git(&t.repo_root, ["worktree", "list", "--porcelain"]).unwrap_or_default();
+    if worktrees.lines().any(|l| l == format!("branch {branch_ref}")) {
+        return Some(RestoreScenario::BranchTaken);
+    }
+    match archive_commit {
+        Some(c) if tip != c => Some(RestoreScenario::BranchDiverged),
+        _ => None,
+    }
+}
+
+/// Conductor's `hf`: `name` -> `name-v1`, `name-v1` -> `name-v2`.
+pub fn next_branch_name(name: &str) -> String {
+    if let Some((stem, n)) = name.rsplit_once("-v") {
+        if !stem.is_empty() && !n.is_empty() && n.bytes().all(|b| b.is_ascii_digit()) {
+            if let Ok(n) = n.parse::<u64>() {
+                return format!("{stem}-v{}", n + 1);
+            }
+        }
+    }
+    format!("{name}-v1")
+}
+
+/// Conductor's `makeBranchNameUnique` (`CYe`): `next_branch_name` until no
+/// local branch and no remote-tracking branch has the name (`Qpe`).
+pub fn unique_branch_name(repo_root: &Path, branch: &str) -> Result<String, String> {
+    let taken = |b: &str| {
+        git(repo_root, ["rev-parse", "--verify", "-q", &format!("refs/heads/{b}")]).is_ok()
+            || git(repo_root, ["for-each-ref", "--format=%(refname)", "refs/remotes"])
+                .map(|out| out.lines().any(|r| r.splitn(4, '/').nth(3) == Some(b)))
+                .unwrap_or(false)
+    };
+    let mut name = next_branch_name(branch);
+    for _ in 0..1000 {
+        if !taken(&name) {
+            return Ok(name);
+        }
+        name = next_branch_name(&name);
+    }
+    Err("Failed to make branch name unique after 1000 attempts".into())
+}
+
+/// "Restore to new branch" (`RWt` with `useNewBranch`): a uniquely named
+/// branch at `archive_commit` (or the stored branch's tip for rows archived
+/// without one), which [`restore`] then checks out. Returns its name.
+pub fn create_restore_branch(t: &ArchiveTarget, archive_commit: Option<&str>) -> Result<String, String> {
     let branch = t.branch.trim();
     if branch.is_empty() {
         return Err("Cannot rehydrate workspace without branch information".into());
     }
+    let base = match archive_commit {
+        Some(c) => c.to_string(),
+        None => git(&t.repo_root, ["rev-parse", &format!("refs/heads/{branch}")]).map_err(|_| {
+            format!("Cannot restore workspace: branch \"{branch}\" was deleted or renamed. This workspace was archived with an older version of OpenConductor.")
+        })?,
+    };
+    let new_branch = unique_branch_name(&t.repo_root, branch)?;
+    git(&t.repo_root, ["branch", &new_branch, &base])
+        .map_err(|e| format!("Failed to create branch {new_branch}: {e}"))?;
+    Ok(new_branch)
+}
+
+/// Unarchive (Conductor's `PY` @ ~3,305,400): re-add the worktree at
+/// `t.workspace_path` on `t.branch`, copy the repository's gitignored
+/// include files into it (`iWt`), put back the uncommitted work saved in
+/// checkpoint `conductor-archive-<id>`, and move the archived `.context`
+/// back (`Wmt`). The caller marks the row and reruns setup.
+///
+/// Callers check [`restore_scenario`] first (or made a new branch with
+/// [`create_restore_branch`]); `new_branch` skips the branch validation, as
+/// Conductor's `skipBranchValidation` does. Refused when the row has no
+/// branch, the directory exists, the branch is gone or checked out in
+/// another worktree.
+pub fn restore(
+    t: &ArchiveTarget,
+    archive_commit: Option<&str>,
+    root_dir: Option<&Path>,
+    new_branch: bool,
+) -> Result<Restored, RestoreError> {
+    let branch = t.branch.trim();
+    if branch.is_empty() {
+        return Err("Cannot rehydrate workspace without branch information".to_string().into());
+    }
     let path = &t.workspace_path;
     if path.as_os_str().is_empty() || path == &t.repo_root {
-        return Err("Workspace directory not found".into());
+        return Err("Workspace directory not found".to_string().into());
     }
     if path.exists() {
-        return Err(format!(
-            "Can't unarchive: {} already exists",
-            path.display()
-        ));
+        return Err(RestoreError::DirectoryExists(path.clone()));
     }
     let branch_ref = format!("refs/heads/{branch}");
-    let commit = archive_commit.filter(|c| {
-        git(
-            &t.repo_root,
-            ["rev-parse", "--verify", "-q", &format!("{c}^{{commit}}")],
-        )
-        .is_ok()
-    });
-    let mut recreated_branch = false;
-    match git(&t.repo_root, ["rev-parse", "--verify", "-q", &branch_ref]) {
-        Ok(_) => {}
-        Err(_) => match commit {
-            Some(c) => {
-                git(&t.repo_root, ["branch", branch, c])?;
-                recreated_branch = true;
+    if !new_branch {
+        if git(&t.repo_root, ["rev-parse", "--verify", "-q", &branch_ref]).is_err() {
+            return Err(format!("Branch '{branch}' no longer exists").into());
+        }
+        let worktrees = git(&t.repo_root, ["worktree", "list", "--porcelain"])?;
+        let mut current = "";
+        for line in worktrees.lines() {
+            if let Some(p) = line.strip_prefix("worktree ") {
+                current = p;
+            } else if line == format!("branch {branch_ref}") {
+                return Err(format!("Branch '{branch}' is already checked out at {current}").into());
             }
-            None => return Err(format!("Branch '{branch}' no longer exists")),
-        },
-    }
-    let worktrees = git(&t.repo_root, ["worktree", "list", "--porcelain"])?;
-    let mut current = "";
-    for line in worktrees.lines() {
-        if let Some(p) = line.strip_prefix("worktree ") {
-            current = p;
-        } else if line == format!("branch {branch_ref}") {
-            return Err(format!(
-                "Branch '{branch}' is already checked out at {current}"
-            ));
         }
     }
     if let Some(parent) = path.parent() {
@@ -494,20 +592,23 @@ pub fn restore(
 
     let mut notices = Vec::new();
     let mut restored_changes = false;
-    if let Some(c) = archive_commit {
-        let head = git(path, ["rev-parse", "HEAD"]).unwrap_or_default();
-        if head != c {
-            notices.push(Notice::error(format!(
-                "Uncommitted changes couldn't be recovered: branch '{branch}' has moved since the workspace was archived."
-            )));
-        } else {
-            match checkpoint::restore(path, &checkpoint_id(&t.local_id)) {
-                Ok(()) => restored_changes = true,
-                Err(e) => notices.push(Notice::error(format!(
-                    "Uncommitted changes couldn't be recovered: {e}"
-                ))),
-            }
+    if archive_commit.is_some() {
+        match checkpoint::restore(path, &checkpoint_id(&t.local_id)) {
+            Ok(()) => restored_changes = true,
+            Err(e) => notices.push(Notice::error(format!(
+                "Uncommitted changes couldn't be recovered: {e}"
+            ))),
         }
+    }
+    // `iWt` copies the gitignored include files while it adds the worktree;
+    // here they come after the checkpoint restore, which cleans untracked
+    // files, and `copy_files` never overwrites what the checkpoint put back.
+    // A failure is a toast; the workspace is restored anyway.
+    let source = crate::workspace::files_to_copy::resolve_source(&t.repo_root, None);
+    if let Err(e) = crate::workspace::files_to_copy::files_to_copy(&t.repo_root, &source)
+        .and_then(|files| crate::workspace::files_to_copy::copy_files(&t.repo_root, path, &files))
+    {
+        notices.push(Notice::error(format!("Couldn't copy gitignored files: {e}")));
     }
     if let Some(root) = root_dir {
         let saved = root
@@ -527,10 +628,15 @@ pub fn restore(
     }
     Ok(Restored {
         branch: branch.to_string(),
-        recreated_branch,
+        recreated_branch: new_branch,
         restored_changes,
         notices,
     })
+}
+
+/// `git worktree prune` after a workspace folder was deleted.
+pub fn prune_worktrees(repo_root: &Path) -> Result<(), String> {
+    git(repo_root, ["worktree", "prune"]).map(|_| ())
 }
 
 /// "Delete branch on archive": `git branch -D`, skipping the default branch.

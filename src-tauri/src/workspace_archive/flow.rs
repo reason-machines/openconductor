@@ -58,9 +58,16 @@ pub struct ArchiveResultDto {
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ArchiveFailureDto {
-    /// `WORKSPACE_CORRUPTED`, `WorkspaceArchiveBlockedByGitOperationError` or `ArchiveFailed`.
+    /// `WORKSPACE_CORRUPTED`, `WorkspaceArchiveBlockedByGitOperationError`,
+    /// `UnarchiveDirectoryExists` or `ArchiveFailed`.
     pub code: &'static str,
     pub message: String,
+    /// `UnarchiveDirectoryExists`: the folder in the way.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// `UnarchiveDirectoryExists`: the workspace's directory name, for the toast title.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub directory_name: Option<String>,
 }
 
 impl From<ArchiveError> for ArchiveFailureDto {
@@ -68,6 +75,8 @@ impl From<ArchiveError> for ArchiveFailureDto {
         Self {
             code: e.code(),
             message: e.to_string(),
+            path: None,
+            directory_name: None,
         }
     }
 }
@@ -270,36 +279,44 @@ async fn target_of(
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UnarchiveResultDto {
-    /// False when the row was not archived, or an archive or unarchive of it
-    /// was already running.
+    /// False when the row was not archived, an archive or unarchive of it
+    /// was already running, or `scenario` is set.
     pub restored: bool,
     pub branch: Option<String>,
-    /// The branch had been deleted and was recreated at the archive commit.
+    /// Restored onto a new branch ("Restore to new branch").
     pub recreated_branch: bool,
     /// Uncommitted work saved at archive time was put back.
     pub restored_changes: bool,
     pub notices: Vec<NoticeDto>,
+    /// `branchDeleted`, `branchTaken` or `branchDiverged` (Conductor's `CWt`):
+    /// nothing was changed; the UI asks "Restore to new branch?".
+    pub scenario: Option<&'static str>,
 }
 
 /// Unarchive workspace `workspace_id` (Conductor's `RWt` / `PY`, index
-/// @ ~3,304,884): recreate the worktree on its branch (or at the archive
-/// commit when the branch was deleted), restore the uncommitted work and
-/// `.context` saved at archive time, drop the archive record and mark the row
-/// `ready`. The caller reruns the setup script (`needsSetupScript`). On an
-/// error the row is unchanged.
+/// @ ~3,304,884). Without `use_new_branch`, a branch that was deleted, is
+/// checked out elsewhere or moved since the archive returns its `scenario`
+/// and changes nothing. Otherwise recreate the worktree (on a new, uniquely
+/// named branch at the archive commit with `use_new_branch`), copy the
+/// gitignored include files, restore the uncommitted work and `.context`
+/// saved at archive time, drop the archive record and mark the row `ready`.
+/// The caller reruns the setup script (`needsSetupScript`). On an error the
+/// row stays archived.
 pub async fn unarchive_workspace(
     deps: &Deps<'_>,
     workspace_id: &str,
+    use_new_branch: bool,
 ) -> Result<UnarchiveResultDto, ArchiveFailureDto> {
-    let not_restored = |branch: Option<String>| UnarchiveResultDto {
+    let not_restored = |branch: Option<String>, scenario: Option<&'static str>| UnarchiveResultDto {
         restored: false,
         branch,
         recreated_branch: false,
         restored_changes: false,
         notices: vec![],
+        scenario,
     };
     let Some(_guard) = deps.in_flight.claim(workspace_id) else {
-        return Ok(not_restored(None));
+        return Ok(not_restored(None, None));
     };
     let pool = deps.pool;
     let row = openconductor_db::workspaces::get(pool, workspace_id)
@@ -308,18 +325,47 @@ pub async fn unarchive_workspace(
         .ok_or_else(|| failed("Workspace not found"))?;
     let w = &row.workspace;
     if w.state != openconductor_db::workspaces::WorkspaceState::Archived {
-        return Ok(not_restored(w.branch.clone()));
+        return Ok(not_restored(w.branch.clone(), None));
     }
-    let target = target_of(pool, &row).await?;
+    let mut target = target_of(pool, &row).await?;
     let commit = w.archive_commit.clone();
     let root = deps.manager.root().to_path_buf();
     let restored = {
         let t = target.clone();
-        tokio::task::spawn_blocking(move || archive::restore(&t, commit.as_deref(), Some(&root)))
-            .await
-            .map_err(|e| failed(e.to_string()))?
-            .map_err(failed)?
+        let commit = commit.clone();
+        let dir = target.directory_name.clone();
+        let step = tokio::task::spawn_blocking(move || -> Result<Result<archive::Restored, &'static str>, ArchiveFailureDto> {
+            let mut t = t;
+            if use_new_branch {
+                t.branch = archive::create_restore_branch(&t, commit.as_deref()).map_err(failed)?;
+            } else if let Some(s) = archive::restore_scenario(&t, commit.as_deref()) {
+                return Ok(Err(s.as_str()));
+            }
+            archive::restore(&t, commit.as_deref(), Some(&root), use_new_branch)
+                .map(Ok)
+                .map_err(|e| match e {
+                    archive::RestoreError::DirectoryExists(p) => ArchiveFailureDto {
+                        code: "UnarchiveDirectoryExists",
+                        message: archive::RestoreError::DirectoryExists(p.clone()).to_string(),
+                        path: Some(p.display().to_string()),
+                        directory_name: Some(dir),
+                    },
+                    archive::RestoreError::Failed(m) => failed(m),
+                })
+        })
+        .await
+        .map_err(|e| failed(e.to_string()))??;
+        match step {
+            Ok(r) => r,
+            Err(scenario) => return Ok(not_restored(w.branch.clone(), Some(scenario))),
+        }
     };
+    target.branch = restored.branch.clone();
+    if use_new_branch {
+        openconductor_db::workspaces::rename_branch(pool, workspace_id, &restored.branch, w.placeholder_branch_name.as_deref())
+            .await
+            .map_err(|e| failed(e.to_string()))?;
+    }
     // `markSettingUpAfterUnarchive`, then ready: the setup script's state
     // lives in the UI, as for a new workspace.
     if !openconductor_db::workspaces::unarchive(pool, workspace_id)
@@ -347,5 +393,87 @@ pub async fn unarchive_workspace(
         recreated_branch: restored.recreated_branch,
         restored_changes: restored.restored_changes,
         notices: restored.notices.into_iter().map(notice_dto).collect(),
+        scenario: None,
     })
+}
+
+/// The folder an unarchive found in the way (Conductor's `xfe`), when the row
+/// is archived and the folder is the workspace's own path: what the toast's
+/// "Open in Finder" and "Clear & unarchive" act on. The frontend never names
+/// a path itself.
+pub async fn unarchive_conflict_path(
+    pool: &SqlitePool,
+    workspace_id: &str,
+) -> Result<PathBuf, ArchiveFailureDto> {
+    let row = openconductor_db::workspaces::get(pool, workspace_id)
+        .await
+        .map_err(|e| failed(e.to_string()))?
+        .ok_or_else(|| failed("Workspace not found"))?;
+    if row.workspace.state != openconductor_db::workspaces::WorkspaceState::Archived {
+        return Err(failed("Workspace is not archived"));
+    }
+    let t = target_of(pool, &row).await?;
+    if !t.workspace_path.exists() {
+        return Err(failed(format!("{} does not exist", t.workspace_path.display())));
+    }
+    Ok(t.workspace_path)
+}
+
+/// "Open in Finder": Conductor runs `open <path>` (`exec-open`).
+pub async fn reveal_unarchive_conflict(
+    pool: &SqlitePool,
+    workspace_id: &str,
+) -> Result<(), ArchiveFailureDto> {
+    let path = unarchive_conflict_path(pool, workspace_id).await?;
+    let opener = if cfg!(target_os = "macos") { "open" } else { "xdg-open" };
+    std::process::Command::new(opener)
+        .arg(&path)
+        .spawn()
+        .map(|_| ())
+        .map_err(|e| failed(format!("{opener} {}: {e}", path.display())))
+}
+
+/// "Clear & unarchive", first half: delete the folder in the way (Conductor
+/// `rm -rf`s it, then retries the unarchive).
+pub async fn clear_unarchive_conflict(
+    pool: &SqlitePool,
+    workspace_id: &str,
+) -> Result<(), ArchiveFailureDto> {
+    let path = unarchive_conflict_path(pool, workspace_id).await?;
+    tokio::task::spawn_blocking(move || std::fs::remove_dir_all(&path))
+        .await
+        .map_err(|e| failed(e.to_string()))?
+        .map_err(|e| failed(format!("Failed to delete folder: {e}")))
+}
+
+/// "Delete permanently" / "Delete anyway" after a failed archive (Conductor's
+/// `Qk`, index @ ~3,298,174): drop the row, then `rm -rf` the workspace
+/// folder when it is there (a failure there is only logged) and prune the
+/// worktree registration. The branch and the repository are left alone.
+pub async fn delete_workspace(
+    pool: &SqlitePool,
+    workspace_id: &str,
+) -> Result<(), ArchiveFailureDto> {
+    let row = openconductor_db::workspaces::get(pool, workspace_id)
+        .await
+        .map_err(|e| failed(e.to_string()))?
+        .ok_or_else(|| failed("Workspace not found"))?;
+    let repo_root = PathBuf::from(row.root_path.clone().unwrap_or_default());
+    let path = row.workspace.workspace_path.clone().map(PathBuf::from);
+    openconductor_db::workspaces::delete(pool, workspace_id)
+        .await
+        .map_err(|e| failed(e.to_string()))?;
+    if let Some(path) = path.filter(|p| !p.as_os_str().is_empty() && p != &repo_root && p.exists()) {
+        let root = repo_root.clone();
+        let _ = tokio::task::spawn_blocking(move || {
+            if let Err(e) = std::fs::remove_dir_all(&path) {
+                eprintln!("delete workspace: could not remove {}: {e}", path.display());
+            }
+            if !root.as_os_str().is_empty() {
+                let _ = archive::prune_worktrees(&root);
+            }
+        })
+        .await;
+    }
+    Ok(())
 }
