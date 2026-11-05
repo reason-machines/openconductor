@@ -68,6 +68,12 @@ export interface Settings {
     [extra: string]: unknown;
   };
   providers: { [agent in AgentKind]?: ProviderConfig | null } & { [extra: string]: unknown };
+  /** Conductor's Advanced keys; older builds may not send the section. */
+  advanced?: {
+    /** Approximate terminal output to keep, in bytes; absent means 10 MB. */
+    terminal_scrollback_limit_bytes?: number | null;
+    [extra: string]: unknown;
+  };
   [extra: string]: unknown;
 }
 

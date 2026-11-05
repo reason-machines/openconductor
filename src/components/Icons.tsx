@@ -1,6 +1,6 @@
 // Small inline stroke icons drawn for OpenConductor (no third-party icon assets).
-type P = { size?: number };
-const base = (size = 16) => ({ width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const });
+type P = { size?: number; strokeWidth?: number };
+const base = (size = 16, strokeWidth = 1.8) => ({ width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth, strokeLinecap: "round" as const, strokeLinejoin: "round" as const });
 
 export const FolderIcon = ({ size }: P) => (<svg {...base(size)}><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>);
 export const CloudIcon = ({ size }: P) => (<svg {...base(size)}><path d="M7 18a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z" /><path d="M12 11v6m-3-3 3 3 3-3" /></svg>);
@@ -28,6 +28,8 @@ export const ArrowLeftIcon = ({ size }: P) => (<svg {...base(size)}><path d="M19
 export const ArrowRightIcon = ({ size }: P) => (<svg {...base(size)}><path d="M5 12h14M12 5l7 7-7 7" /></svg>);
 export const MoreIcon = ({ size }: P) => (<svg {...base(size)}><circle cx="5" cy="12" r="1" /><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /></svg>);
 export const ChevronDownIcon = ({ size }: P) => (<svg {...base(size)}><path d="m6 9 6 6 6-6" /></svg>);
+export const HelpIcon = ({ size, strokeWidth }: P) => (<svg {...base(size, strokeWidth)}><circle cx="12" cy="12" r="9.5" /><path d="M9.3 9.2a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.5-2.7 4M12 17.6h.01" /></svg>);
+export const SettingsIcon = ({ size, strokeWidth }: P) => (<svg {...base(size, strokeWidth)}><path d="M9.81 4.93L10.39 2.64L13.61 2.64L14.19 4.93L15.45 5.45L17.48 4.24L19.76 6.52L18.55 8.55L19.07 9.81L21.36 10.39L21.36 13.61L19.07 14.19L18.55 15.45L19.76 17.48L17.48 19.76L15.45 18.55L14.19 19.07L13.61 21.36L10.39 21.36L9.81 19.07L8.55 18.55L6.52 19.76L4.24 17.48L5.45 15.45L4.93 14.19L2.64 13.61L2.64 10.39L4.93 9.81L5.45 8.55L4.24 6.52L6.52 4.24L8.55 5.45Z" /><circle cx="12" cy="12" r="3" /></svg>);
 export const FileCodeIcon = ({ size }: P) => (<svg {...base(size)}><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M10 12.5 8.5 14l1.5 1.5M14 12.5l1.5 1.5-1.5 1.5" /></svg>);
 /** A plain circled "N" standing in for the Next.js template mark. */
 export const NextMarkIcon = ({ size = 16 }: P) => (

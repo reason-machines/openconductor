@@ -21,6 +21,7 @@ import { canOpen, emptyTabs, tabsReducer, type TabsAction, type TabsState } from
 import { PersistThrottle, readSaved, restoreCwds, restoreOutput, writeWorkspace, type HistoryRecord } from "./restore";
 import { FIND_COMMAND, LINE_EDIT_BYTES, terminalCommandFor } from "./shortcuts.ts";
 import { currentTerminalFont, onTerminalFont, TERMINAL_LINE_HEIGHT } from "./font.ts";
+import { currentScrollbackRows, onScrollbackRows } from "./scrollback.ts";
 
 interface Live {
   workspaceId: string;
@@ -71,6 +72,12 @@ onTerminalFont((font) => {
     l.term.options.fontSize = font.size;
     if (l.opened && l.host.clientWidth > 0) l.fit.fit();
   }
+});
+
+// A Scrollback limit change reaches every open terminal at once, as in
+// Conductor; xterm trims a shrunk buffer from the top.
+onScrollbackRows((rows) => {
+  for (const l of live.values()) l.term.options.scrollback = rows;
 });
 
 let flushOnHide = false;
@@ -174,7 +181,7 @@ async function startTab(workspaceId: string, cwd: string, initialCommand?: strin
     fontFamily: font.family,
     fontSize: font.size,
     lineHeight: TERMINAL_LINE_HEIGHT,
-    scrollback: 5000,
+    scrollback: currentScrollbackRows(),
     theme: {
       background: cssVar("--panel", "#1d2025"),
       foreground: cssVar("--text", "#e6e7e9"),
