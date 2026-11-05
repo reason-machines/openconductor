@@ -42,6 +42,7 @@ Both match the asset manifest's decoded sizes. Locations below are byte offsets 
 | `viewerCanMerge` comes from the repository `viewerPermission` (unknown when not reported) | `PrInfo::viewer_can_merge` | `read_permission_cannot_merge_and_missing_permission_is_unknown` |
 | Workspace `derived_status`: no PR = `in-progress`, open = `in-review`, merged = `done`, closed = `canceled`; stored values outside `backlog/in-progress/in-review/done/canceled` read as `in-progress` | `info::derived_status`, `WorkspaceStatus` | `workspace_status_round_trips_and_defaults` and the three above |
 | PR title/body are copied to the workspace's `pr_title` / `pr_description` only when they changed | `info::metadata_update` | `metadata_is_written_only_when_changed` |
+| Merge button shown only for an open, non-draft PR the viewer may merge (permission not known to be read-only) whose merge state is `CLEAN`, or `UNSTABLE` unless the "treat optional checks as blocking" setting is on and a check failed | `merge_eligibility::can_merge`, `merge_with_optional_failures` | `clean_open_pr_with_write_access_can_merge`, `only_clean_and_unstable_merge_states_qualify`, `optional_failures_merge_unless_the_setting_blocks_them` |
 
 ## Deliberate differences
 
@@ -51,4 +52,4 @@ Both match the asset manifest's decoded sizes. Locations below are byte offsets 
 ## REA gaps hit
 
 - `analyze-javascript-application` (Wave 0 run, `evidence/frontend/`) does not model Tauri `invoke` or shell commands, so none of the `gh` / `git` command lines the PR area runs appear in its findings. They were recovered by text search over the decoded chunks above. Logged for the REA test report.
-- Sven's Mac went offline mid-investigation (`device_offline`), so a REA `trace-javascript-semantics` run anchoring these functions is pending; the offsets above are from the byte-identical copies.
+- `trace-javascript-semantics` on the Wave 0 application Evidence (`ev_b733d967...`) finds nothing for the PR code: seeds `mergeStateStatus` and `squashMergeAllowed` (both present in `index-BGEQ8YjU.js`) return 0 seed matches, 0 nodes, 0 relations, status `partial`, with 11,355 resource-limit unknowns; the analyzer's worker exhausted its heap on `renderApp-D_fmY7hW.js`. Runs logged as `trace_js_semantics_pr_merge_state` (46 s) and `trace_js_semantics_pr_merge_methods` (33 s) in `~/code/conductor-rea-work/log.tsv` on Sven's Mac. Offsets above therefore come from text search over the byte-identical chunk copies.

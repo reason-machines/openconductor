@@ -25,6 +25,7 @@ publish = false
 
 [lib]
 path = "$module"
+doctest = false
 
 [dependencies]
 ignore = "0.4.25"
@@ -35,11 +36,16 @@ serde = { version = "1", features = ["derive"] }
 [dev-dependencies]
 serde_json = "1"
 
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(quick_open_std_only)"] }
+
 [workspace]
 TOML
 
 cd "$harness"
-RUSTFLAGS="${RUSTFLAGS:-} -D warnings" cargo test "$@"
+# commands.rs needs tauri; the cfg leaves it out of this harness.
+export RUSTFLAGS="${RUSTFLAGS:-} -D warnings --cfg quick_open_std_only"
+cargo test "$@"
 if cargo clippy --version >/dev/null 2>&1; then
   cargo clippy --all-targets -- -D warnings
 else
