@@ -34,7 +34,8 @@ export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {
   const [busy, setBusy] = useState(false);
   const autoOpened = useRef(new Set<string>());
 
-  async function newTab() {
+  /** `quiet`: the panel opens it by itself, so it leaves focus where the user is typing. */
+  async function newTab(quiet = false) {
     if (!cwd) {
       setError("Terminal working directory is missing.");
       return;
@@ -42,7 +43,7 @@ export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {
     setBusy(true);
     setError(null);
     try {
-      await openTab(workspaceId, cwd, initialCommand);
+      await openTab(workspaceId, cwd, initialCommand, { quiet });
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -56,7 +57,7 @@ export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {
     if (autoOpened.current.has(workspaceId)) return;
     autoOpened.current.add(workspaceId);
     void restoreWorkspaceTabs(workspaceId, cwd, initialCommand).then((has) => {
-      if (!has) void newTab();
+      if (!has) void newTab(true);
     });
   }, [workspaceId]);
 
