@@ -36,7 +36,8 @@ export interface FileDiff extends FileChange {
 
 /** Which changes the viewer shows: the whole branch versus its base, or only uncommitted work. */
 export type DiffScope = "all" | "uncommitted";
-export type DiffLayout = "unified" | "split";
+/** "file" shows each changed file whole, as it is now. */
+export type DiffLayout = "unified" | "split" | "file";
 
 export interface DiffViewOptions {
   scope: DiffScope;

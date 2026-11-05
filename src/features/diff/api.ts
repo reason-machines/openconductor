@@ -6,13 +6,27 @@ import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../../backend";
 import type { DiffLine, DiffViewOptions, FileDiff } from "./types.ts";
 
-export async function loadWorkspaceDiff(worktree: string | null, base: string, opts: DiffViewOptions): Promise<FileDiff[]> {
-  if (!inTauri()) return sampleDiff(opts);
+/** Context large enough that each file comes back as one hunk covering the whole file. */
+export const WHOLE_FILE_CONTEXT = 2 ** 31 - 1;
+
+export interface LoadExtra {
+  /** Load only this file. */
+  path?: string;
+  /** Unchanged lines around each change; the entire-file view asks for the whole file. */
+  contextLines?: number;
+}
+
+export async function loadWorkspaceDiff(worktree: string | null, base: string, opts: DiffViewOptions, extra: LoadExtra = {}): Promise<FileDiff[]> {
+  const contextLines = extra.contextLines ?? (opts.layout === "file" ? WHOLE_FILE_CONTEXT : undefined);
+  if (!inTauri()) {
+    const files = sampleDiff(opts);
+    return extra.path ? files.filter((f) => f.path === extra.path) : files;
+  }
   if (!worktree) throw new Error("This workspace has no worktree on disk yet.");
   const scope = opts.scope === "all" ? { kind: "all", base } : { kind: "uncommitted" };
   const res = await invoke<{ files: FileDiff[] }>("diff_workspace", {
     repo: worktree,
-    request: { scope, ignore_whitespace: opts.ignoreWhitespace, path: null },
+    request: { scope, ignore_whitespace: opts.ignoreWhitespace, path: extra.path ?? null, context_lines: contextLines ?? null },
   });
   return res.files;
 }
