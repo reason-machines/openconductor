@@ -1,4 +1,5 @@
 use super::*;
+use oc_scripts::config::{load, SettingsPaths, SharedSource};
 use std::os::unix::fs::PermissionsExt;
 use std::path::PathBuf;
 
@@ -208,5 +209,41 @@ fn nextjs_failures_report_the_last_line_and_clean_up() {
         result,
         Err("create-next-app completed but directory was not created".into())
     );
+    fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+fn saved_scripts_are_what_the_scripts_loader_resolves() {
+    let root = std::env::temp_dir().join(format!("oc-create-scripts-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&root);
+    let settings = root.join(SETTINGS_DIR);
+    fs::create_dir_all(&settings).unwrap();
+    let file = settings.join(LOCAL_SETTINGS_FILE);
+    fs::write(&file, "spotlight_testing = true\n").unwrap();
+    let scripts = RepoScripts {
+        setup: "ln -sf $CONDUCTOR_ROOT_PATH/.env.local .env.local && pnpm install".into(),
+        run: "pnpm run dev".into(),
+        run_mode: "concurrent".into(),
+    };
+    save_local_scripts(&root, &scripts).unwrap();
+    let text = fs::read_to_string(&file).unwrap();
+    assert!(text.contains("spotlight_testing = true"), "{text}");
+
+    let resolved = load(&SettingsPaths {
+        user_dir: root.join("no-user-dir"),
+        repo_root: root.clone(),
+        workspace: None,
+        shared_from: SharedSource::WorkingTree,
+    })
+    .unwrap();
+    assert_eq!(resolved.setup.unwrap().value, scripts.setup);
+    assert_eq!(resolved.run[0].command, "pnpm run dev");
+    assert_eq!(resolved.run_mode, oc_scripts::config::RunMode::Concurrent);
+
+    fs::write(&file, "not = [toml").unwrap();
+    assert!(save_local_scripts(&root, &scripts)
+        .unwrap_err()
+        .contains("could not parse"));
+    assert_eq!(fs::read_to_string(&file).unwrap(), "not = [toml");
     fs::remove_dir_all(root).unwrap();
 }

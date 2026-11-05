@@ -4,7 +4,7 @@ import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import type { FileMatch } from "./spotlight/quickOpen";
 import type { GitHubOwners } from "./state/githubRepoDialog";
 import type { GitProtocol, RecentRepo } from "./state/cloneDialog";
-import { STEP, targetPath, type TemplateId } from "./state/createProject";
+import { STEP, targetPath, type RepoScripts, type TemplateId } from "./state/createProject";
 
 export interface AppInfo {
   name: string;
@@ -108,6 +108,12 @@ export async function createNewProject(
   const channel = new Channel<CreateProgress>();
   channel.onmessage = onProgress;
   return invoke<CreatedProject>("create_new_project", { request, onProgress: channel });
+}
+
+/** Save a repo's setup and run scripts to `<root>/.conductor/settings.local.toml`. */
+export async function saveRepoScripts(repoRoot: string, scripts: RepoScripts): Promise<void> {
+  if (!inTauri()) return;
+  await invoke("save_repo_scripts", { repoRoot, scripts });
 }
 
 /** Native folder picker; returns null when cancelled or outside Tauri. */

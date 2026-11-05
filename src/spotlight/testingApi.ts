@@ -3,6 +3,7 @@
 // with a few syncs so the Run panel can be exercised end to end.
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../backend";
+import { stopRun } from "../scripts/api";
 import type { SpotlightEvent, SpotlightStatus, SpotlightTesting, SpotlightTestingChange } from "./testing.ts";
 
 type Listener = (e: SpotlightEvent) => void;
@@ -16,10 +17,17 @@ export async function onSpotlightEvent(listener: Listener): Promise<() => void> 
   return listen<SpotlightEvent>("spotlight://event", (e) => listener(e.payload));
 }
 
-/** Resolves to false when this workspace was already spotlighted there. */
-export async function startSpotlight(workspaceId: string, workspacePath: string, repoRoot: string): Promise<boolean> {
-  if (!inTauri()) return browser.start(workspaceId, repoRoot);
-  return invoke<boolean>("spotlight_start", { workspaceId, workspacePath, repoRoot });
+/**
+ * Stops the run scripts of every workspace of the repository, then starts
+ * Spotlight. Resolves to false when this workspace was already spotlighted there.
+ */
+export async function startSpotlight(repoId: string, workspaceId: string, workspacePath: string, repoRoot: string): Promise<boolean> {
+  if (!inTauri()) {
+    // The scripts stand-in has no repositories; stop this workspace's runs.
+    await stopRun(workspaceId, null);
+    return browser.start(workspaceId, repoRoot);
+  }
+  return invoke<boolean>("spotlight_start", { repoId, workspaceId, workspacePath, repoRoot });
 }
 
 export async function stopSpotlight(repoRoot: string): Promise<boolean> {

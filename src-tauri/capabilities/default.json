@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Main window capabilities. Plugin grants follow the plugin commands Conductor 0.87.6's frontend calls (evidence/packaging/conductor-plugin-commands.json).",
+  "description": "Main window capabilities. Plugin grants follow the plugin commands Conductor 0.87.6's frontend calls (evidence/packaging/conductor-plugin-commands.json); fs, shell, sql and http scopes follow evidence/packaging/conductor-plugin-scopes.json.",
   "windows": [
     "main"
   ],
@@ -24,6 +24,167 @@
       ]
     },
     "process:allow-exit",
-    "process:allow-restart"
+    "process:allow-restart",
+    "fs:allow-copy-file",
+    "fs:allow-exists",
+    "fs:allow-fstat",
+    "fs:allow-ftruncate",
+    "fs:allow-mkdir",
+    "fs:allow-open",
+    "fs:allow-read",
+    "fs:allow-read-dir",
+    "fs:allow-read-file",
+    "fs:allow-read-text-file",
+    "fs:allow-remove",
+    "fs:allow-rename",
+    "fs:allow-seek",
+    "fs:allow-stat",
+    "fs:allow-unwatch",
+    "fs:allow-watch",
+    "fs:allow-write",
+    "fs:allow-write-file",
+    "fs:allow-write-text-file",
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        {
+          "path": "$HOME/**"
+        },
+        {
+          "path": "**/*/.git"
+        },
+        {
+          "path": "**/*/.conductor"
+        },
+        {
+          "path": "**/*/.context"
+        },
+        {
+          "path": "**/*/.github"
+        },
+        {
+          "path": "**/*/.github/**"
+        },
+        {
+          "path": "$HOME/.claude.json"
+        },
+        {
+          "path": "$HOME/.claude/*"
+        },
+        {
+          "path": "$HOME/.claude/commands"
+        },
+        {
+          "path": "$HOME/.claude/commands/*"
+        },
+        {
+          "path": "$HOME/.claude/commands/**/*"
+        },
+        {
+          "path": "$HOME/.claude/agents"
+        },
+        {
+          "path": "$HOME/.claude/agents/*"
+        },
+        {
+          "path": "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+        }
+      ]
+    },
+    {
+      "identifier": "http:allow-fetch",
+      "allow": [
+        {
+          "url": "https://*"
+        },
+        {
+          "url": "https://*:*"
+        },
+        {
+          "url": "http://*"
+        },
+        {
+          "url": "http://*:*"
+        }
+      ]
+    },
+    "http:allow-fetch-cancel",
+    "http:allow-fetch-read-body",
+    "http:allow-fetch-send",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "exec-zsh",
+          "cmd": "/bin/zsh",
+          "args": [
+            "-c",
+            {
+              "validator": "[\\s\\S]*"
+            }
+          ]
+        },
+        {
+          "name": "exec-bash",
+          "cmd": "/bin/bash",
+          "args": [
+            "-c",
+            {
+              "validator": "[\\s\\S]*"
+            }
+          ]
+        },
+        {
+          "name": "exec-open",
+          "cmd": "/usr/bin/open",
+          "args": [
+            {
+              "validator": "[\\s\\S]+"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "exec-zsh",
+          "cmd": "/bin/zsh",
+          "args": [
+            "-c",
+            {
+              "validator": "[\\s\\S]*"
+            }
+          ]
+        },
+        {
+          "name": "exec-bash",
+          "cmd": "/bin/bash",
+          "args": [
+            "-c",
+            {
+              "validator": "[\\s\\S]*"
+            }
+          ]
+        },
+        {
+          "name": "exec-open",
+          "cmd": "/usr/bin/open",
+          "args": [
+            {
+              "validator": "[\\s\\S]+"
+            }
+          ]
+        }
+      ]
+    },
+    "shell:allow-kill",
+    "shell:allow-stdin-write",
+    "shell:allow-open",
+    "sql:allow-close",
+    "sql:allow-execute",
+    "sql:allow-load",
+    "sql:allow-select"
   ]
 }

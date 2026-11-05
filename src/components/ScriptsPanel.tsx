@@ -145,7 +145,7 @@ export function ScriptsPanel({ repo, workspace }: Props) {
 
   // One run-panel process per workspace, as in the reference: starting a
   // script ends this workspace's Spotlight session, and starting Spotlight
-  // stops its run scripts.
+  // stops the run scripts of every workspace of the repository (backend).
   async function startScript() {
     if (spotMine) await spotlight.stopSpotlight(repoRoot);
     await api.startRun(ref!, shown);
@@ -158,10 +158,7 @@ export function ScriptsPanel({ repo, workspace }: Props) {
     setSpotPending(spotMine ? "stopping" : "starting");
     try {
       if (spotMine) await spotlight.stopSpotlight(repoRoot);
-      else {
-        if (activeRun(runs)) await api.stopRun(wsId, null);
-        await spotlight.startSpotlight(wsId, ref!.workspacePath, repoRoot);
-      }
+      else await spotlight.startSpotlight(repo.id, wsId, ref!.workspacePath, repoRoot);
     } catch (e) {
       setError(errorText(e));
     }

@@ -35,3 +35,26 @@ jobs:
         run: rustfmt --edition 2021 --check src-tauri/src/reason_acp/*.rs src-tauri/src/reason_chat.rs
       - name: Test reason_acp module
         run: bash tools/reason-acp/run-rust-tests.sh
+
+  live-cli:
+    name: Reason ACP against the real reason CLI (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      # The official installer, CLI only: no sign-in, no desktop, no updater.
+      - name: Install the reason CLI
+        run: |
+          curl -fsSL https://reasonmachines.com/install.sh | bash -s -- \
+            --install-dir "$RUNNER_TEMP/reason-bin" --background-mode cli_only \
+            --no-modify-path --no-login --minimal
+          "$RUNNER_TEMP/reason-bin/reason" --version
+          echo "REASON_CLI=$RUNNER_TEMP/reason-bin/reason" >> "$GITHUB_ENV"
+      - name: live_cli_answers_initialize
+        env:
+          REASON_ACP_REQUIRE_LIVE: "1"
+        run: bash tools/reason-acp/run-rust-tests.sh live_cli -- --nocapture
