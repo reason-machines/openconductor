@@ -123,6 +123,8 @@ pub mod keys {
     /// Repository id the sidebar is narrowed to ("Filter by project"); no
     /// row means all projects.
     pub const SIDEBAR_REPO_FILTER: &str = "sidebar_repo_filter";
+    /// Experimental: CPU and memory readout in the sidebar; unset means off.
+    pub const SIDEBAR_RESOURCE_USAGE: &str = "sidebar_resource_usage";
 }
 
 #[cfg(test)]

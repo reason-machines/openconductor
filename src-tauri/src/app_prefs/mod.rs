@@ -44,6 +44,9 @@ pub struct AppPrefs {
     /// The sidebar's "Filter by project" repository id; `None` is all
     /// projects.
     pub sidebar_repo_filter: Option<String>,
+    /// Experimental "Show sidebar resource usage" (the reference's
+    /// `Te("sidebar_resource_usage", !1)`): off unless the row says `"true"`.
+    pub sidebar_resource_usage: bool,
 }
 
 /// `"true"` / `"false"`, anything else (or no row) is `default`.
@@ -126,6 +129,7 @@ impl AppPrefs {
             last_seen_announcement: text(rows, keys::LAST_SEEN_ANNOUNCEMENT),
             roundhouse_client_user_id: text(rows, keys::ROUNDHOUSE_CLIENT_USER_ID),
             sidebar_repo_filter: text(rows, keys::SIDEBAR_REPO_FILTER),
+            sidebar_resource_usage: flag(rows, keys::SIDEBAR_RESOURCE_USAGE, false),
         }
     }
 }
@@ -152,6 +156,8 @@ pub enum AppPrefUpdate {
     /// A repository id narrows the sidebar; `null` ("All projects") deletes
     /// the row (the reference's `z6t`).
     SidebarRepoFilter(Option<String>),
+    /// Written as `"true"` / `"false"` (the reference's `v6t`).
+    SidebarResourceUsage(bool),
 }
 
 /// What an update does to the table.
@@ -198,6 +204,7 @@ impl AppPrefUpdate {
             }
             SidebarRepoFilter(Some(id)) => Ok(Write::Set(keys::SIDEBAR_REPO_FILTER, id.clone())),
             SidebarRepoFilter(None) => Ok(Write::Delete(keys::SIDEBAR_REPO_FILTER)),
+            SidebarResourceUsage(v) => b(keys::SIDEBAR_RESOURCE_USAGE, *v),
         }
     }
 }

@@ -136,10 +136,10 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-row-label { color: var(--sidebar-muted-foreground); }
 .sb-row-hint { margin-left: auto; font: inherit; font-size: 12px; color: var(--sidebar-muted-foreground); opacity: 0; }
 .sb-row:hover .sb-row-hint, .sb-row:focus-visible .sb-row-hint { opacity: 1; }
-.sb-computer { cursor: default; }
-.sb-computer:hover { background: none; }
+/* Account menu trigger (Conductor's `zna`: px-1.5 py-1.5 gap-2 rounded-md, hover bg-sidebar-accent). */
+.sb-computer { cursor: pointer; }
 .sb-avatar { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 999px; background: var(--sidebar-accent); color: var(--sidebar-muted-foreground); font-size: 10px; font-weight: 500; line-height: 1; }
-.sb-computer-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--sidebar-accent-foreground); }
+.sb-computer-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--sidebar-foreground); }
 .sb-computer svg { flex: none; color: var(--sidebar-muted-foreground); }
 
 .icon-btn:hover { background: var(--hover); }
@@ -723,3 +723,56 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .add-menu-recent-path { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .add-menu-loading { padding: 6px 10px; color: var(--muted); }
 .add-menu-spinner { white-space: pre; }
+
+/* sidebar: Account menu (Conductor's `zna`: w-[260px], align start; items gap-2 with size-3.5 muted icons;
+   the email heading is font-normal, muted). */
+.sb-account { position: relative; }
+.sb-account-menu { position: absolute; left: 0; top: calc(100% + 4px); z-index: 50; width: 260px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.sb-account-email { padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--muted); }
+.sb-account-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 4px; text-align: left; font-size: 13px; color: var(--text); }
+.sb-account-item:hover, .sb-account-item:focus-visible { background: var(--hover); }
+.sb-account-item-icon { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex: none; color: var(--muted); }
+
+/* sidebar: resource usage pill (Conductor's `vna`: rounded-md border border-sidebar-border text-2xs
+   sidebar-muted; gap-1 px-2 py-1, or p-1 when collapsed; size-3 microchip icon). */
+.sb-usage-anchor { display: inline-flex; }
+.sb-usage-pill { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border: 1px solid var(--sidebar-border); border-radius: 6px; font-size: 11px; line-height: 14px; letter-spacing: 0.02em; color: var(--sidebar-muted-foreground); }
+.sb-usage-pill[data-collapsed] { padding: 4px; }
+.sb-usage-pill:hover, .sb-usage-pill[aria-expanded="true"] { background: var(--sidebar-accent); color: var(--sidebar-foreground); }
+.sb-usage-figure { font-variant-numeric: tabular-nums; }
+
+/* Resources popover (`qta` in a popover: rounded-lg ring-1 bg-popover shadow-md, p-0, min width from the sidebar). */
+.usage-popover { z-index: 50; width: max-content; max-width: calc(100vw - 24px); border-radius: 8px; border: 1px solid var(--border); background: var(--panel); color: var(--text); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.usage-head { padding: 8px 16px; border-bottom: 1px solid var(--border); }
+.usage-head-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.usage-title { margin: 0; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.025em; color: var(--muted); }
+.usage-tools { display: flex; align-items: center; gap: 2px; }
+.usage-tool { display: inline-flex; padding: 4px; border-radius: 4px; color: var(--muted); }
+.usage-tool[data-on] { color: var(--text); }
+.usage-tool:hover { background: var(--hover); color: var(--text); }
+.usage-totals { margin: 4px 0 0; font-size: 14px; }
+.usage-muted { color: var(--muted); }
+.usage-strong { font-variant-numeric: tabular-nums; font-weight: 500; }
+.usage-num { font-variant-numeric: tabular-nums; }
+.usage-scroll { max-height: 220px; overflow-x: hidden; overflow-y: auto; }
+.usage-scroll[data-all] { max-height: 60vh; }
+.usage-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.usage-table thead { position: sticky; top: 0; background: var(--panel); }
+.usage-table th { padding: 8px 12px 4px; font-weight: 400; font-size: 11px; color: var(--muted); }
+.usage-th-name { padding-left: 16px !important; text-align: left; }
+.usage-th-mem { padding-right: 16px !important; }
+.usage-sort { display: inline-flex; align-items: center; gap: 2px; color: inherit; font: inherit; }
+.usage-sort[data-end] { justify-content: flex-end; width: 100%; }
+.usage-sort:hover, .usage-sort[data-active] { color: var(--text); }
+.usage-table td { padding-top: 6px; padding-bottom: 6px; white-space: nowrap; }
+.usage-name { max-width: 260px; overflow: hidden; text-overflow: ellipsis; padding-right: 16px; }
+.usage-cpu { padding: 0 12px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
+.usage-mem { padding: 0 16px 0 12px; text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+.usage-group { cursor: pointer; }
+.usage-group:hover { background: var(--hover); }
+.usage-group td:first-child { padding: 6px 16px 6px 8px; }
+.usage-group-name { display: flex; align-items: center; gap: 4px; font-weight: 500; }
+.usage-group-chevron { display: inline-flex; color: var(--muted); transition: transform 0.15s; }
+.usage-group-chevron[data-open] { transform: rotate(180deg); }
+.usage-show-all { display: block; width: 100%; padding: 6px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--muted); }
+.usage-show-all:hover { color: var(--text); }
