@@ -276,3 +276,21 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em
 .ks-keys kbd { min-width: 20px; padding: 1px 5px; border: 1px solid var(--border); border-radius: 4px; font: inherit; font-size: 12px; text-align: center; }
 .ks-dim { opacity: 0.5; }
 .ks-empty { padding: 32px 0; text-align: center; font-size: 14px; color: var(--muted); }
+
+/* Run / Setup scripts panel (src/components/ScriptsPanel.tsx) */
+.ws-right { display: grid; grid-template-rows: minmax(0, 1fr) minmax(180px, 38%); min-height: 0; border-left: 1px solid var(--border); }
+.scripts { display: flex; flex-direction: column; min-height: 0; background: var(--panel); border-top: 1px solid var(--border); }
+.scripts-tabs { align-items: center; padding-bottom: 4px; }
+.scripts-actions { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+.scripts-actions select { font: inherit; font-size: 12px; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--panel); color: var(--text); }
+.scripts-actions .btn { color: var(--text); padding: 4px 10px; border: 1px solid var(--border); }
+.scripts-actions .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.scripts-actions .btn-stop { background: #b4483c; border-color: #b4483c; color: #fff; }
+.setup-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-left: 4px; background: var(--border); vertical-align: middle; }
+.setup-dot.running { background: #e8b04b; }
+.setup-dot.completed { background: #4f9d69; }
+.setup-dot.failed { background: #b4483c; }
+.scripts-meta { display: flex; gap: 10px; align-items: center; padding: 6px 12px; font-size: 12px; color: var(--muted); }
+.scripts-meta code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scripts-output { flex: 1; margin: 0; padding: 8px 12px 12px; overflow: auto; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; color: var(--text); }
+.scripts-error { padding: 6px 12px; font-size: 12px; color: #b4483c; }
