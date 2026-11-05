@@ -17,10 +17,11 @@ interface Props {
   dispatch: Dispatch<Action>;
   onOpenDialog: (d: DialogKind, repoId?: string) => void;
   onOpenProject: () => void;
+  onOpenSettings: () => void;
   info: AppInfo | null;
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, info }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, info }: Props) {
   const sel = state.selection;
   return (
     <aside className="sidebar" aria-label="Repositories and workspaces">
@@ -89,7 +90,10 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, info }: 
       </nav>
 
       <div className="sidebar-footer">
-        {info ? `${info.name} ${info.version} · ${info.platform}` : "OpenConductor"}
+        <span>{info ? `${info.name} ${info.version} · ${info.platform}` : "OpenConductor"}</span>
+        <button className="btn btn-small" title="Settings (⌘,)" onClick={onOpenSettings}>
+          Settings
+        </button>
       </div>
     </aside>
   );

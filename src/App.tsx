@@ -7,12 +7,18 @@ import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
 import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
+import { loadBranchPrefix } from "./workspace/api";
+import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
 import { QuickOpenDialog, QUICK_OPEN_DIALOG_ID } from "./components/QuickOpenDialog";
 import { resolveCommand } from "./keybindings/resolve";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { PaletteHost } from "./palette/PaletteHost";
+import { SettingsView } from "./settings/SettingsView";
+import { pageFromPath, type SettingsPage } from "./settings/pages";
+import { applyTheme } from "./settings/useSettings";
+import { getSettings } from "./settings/api";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
@@ -26,6 +32,26 @@ export default function App() {
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
   const { toasts, show, dismiss } = useToasts();
+  // `/settings` or `/settings/user/<page>` starts on that settings page.
+  const [settingsPage, setSettingsPage] = useState<SettingsPage | null>(() => pageFromPath(window.location.pathname));
+  const openSettings = useCallback(() => setSettingsPage((p) => p ?? "general"), []);
+  const closeSettings = useCallback(() => setSettingsPage(null), []);
+
+  // Apply the saved theme at startup; the settings page applies later changes.
+  useEffect(() => {
+    getSettings().then((s) => applyTheme(s.general.theme), () => undefined);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const typing = isTypingTarget(document.activeElement as HTMLElement | null);
+      if (e.repeat || resolveCommand(e, { activeDialogId: null, typing, inTerminal: false }, ["openSettings"]) !== "openSettings") return;
+      e.preventDefault();
+      openSettings();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [openSettings]);
 
   // Open project: native picker straight away, then the backend folder checks.
   const openProject = useCallback(async () => {
@@ -76,6 +102,13 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, [quickOpen, dialog, canQuickOpen]);
 
+  const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
+  // Re-read each time the dialog opens so a settings change applies to the next create.
+  useEffect(() => {
+    if (dialog !== "create") return;
+    loadBranchPrefix().then((info) => setPrefix(prefixSettingsFromInfo(info))).catch(() => {});
+  }, [dialog]);
+
   useEffect(() => {
     appInfo().then(setInfo).catch(() => setInfo(null));
     const onKey = (e: KeyboardEvent) => {
@@ -88,10 +121,11 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  if (settingsPage) return <SettingsView page={settingsPage} onNavigate={setSettingsPage} onClose={closeSettings} />;
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} info={info} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} info={info} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
@@ -105,8 +139,8 @@ export default function App() {
         <CreateWorkspaceDialog
           repos={state.repos}
           initialRepoId={createRepoId}
-          prefixSettings={{}}
-          githubUsername={null}
+          prefixSettings={prefix.settings}
+          githubUsername={prefix.githubUsername}
           onClose={() => setDialog(null)}
           onAddRepository={() => {
             setDialog(null);
