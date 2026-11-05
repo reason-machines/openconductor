@@ -100,6 +100,8 @@ pub fn parse_unified(patch: &str) -> Result<Vec<FileDiff>, ParseError> {
             file.binary = true;
             in_binary_patch = raw == "GIT binary patch";
         } else if let Some(p) = raw.strip_prefix("--- ") {
+            // git ends an unquoted name that contains a space with a tab.
+            let p = p.strip_suffix('\t').unwrap_or(p);
             if p != "/dev/null" {
                 let old = strip_side(&unquote(p), "a/");
                 if file.status != FileStatus::Deleted && old != file.path {
@@ -107,6 +109,7 @@ pub fn parse_unified(patch: &str) -> Result<Vec<FileDiff>, ParseError> {
                 }
             }
         } else if let Some(p) = raw.strip_prefix("+++ ") {
+            let p = p.strip_suffix('\t').unwrap_or(p);
             if p != "/dev/null" {
                 file.path = strip_side(&unquote(p), "b/");
             }

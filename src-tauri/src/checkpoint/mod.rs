@@ -375,17 +375,57 @@ pub fn diff_objects(
     let a = resolve(left)?;
     let b = match right {
         DiffSide::Checkpoint(id) => resolve(id)?,
-        DiffSide::Current => {
-            let tmp = TempIndexDir::create(&root, "chkpt-cur")?;
-            let tmp_git = Git::new(&root).env("GIT_INDEX_FILE", tmp.index_path());
-            if let Some(head) = git.verify("HEAD")? {
-                tmp_git.run(["read-tree", &head])?;
-            }
-            tmp_git.run(["add", "-A", "--", "."])?;
-            tmp_git.run(["write-tree"])?
-        }
+        DiffSide::Current => current_tree(&root, &git)?,
     };
     Ok((root, a, b))
+}
+
+/// Paths whose content differs between checkpoint `id` and the workspace's
+/// files now, as `checkpointer diff <id> current -- --name-only -z` lists
+/// them (the reference's "N changed" count in the reset dialog).
+pub fn changed_since(workspace: &Path, id: &str) -> Result<Vec<String>, CheckpointError> {
+    let root = workspace_root(workspace)?;
+    let git = Git::new(&root);
+    let reference = ref_name(id);
+    if git.verify(&reference)?.is_none() {
+        return Err(CheckpointError::NotFound(id.to_string()));
+    }
+    let current = current_tree(&root, &git)?;
+    let args = [
+        "-c",
+        "core.quotePath=false",
+        "diff",
+        "--name-only",
+        "-z",
+        reference.as_str(),
+        current.as_str(),
+    ];
+    let out = git.output(args)?;
+    if !out.success {
+        return Err(CheckpointError::Git {
+            command: format!("git {}", args.join(" ")),
+            stderr: out.stderr.trim().to_string(),
+        });
+    }
+    Ok(out
+        .stdout
+        .split('\0')
+        .filter(|p| !p.is_empty())
+        .map(str::to_string)
+        .collect())
+}
+
+/// The reference's transient "current" tree: a temp index seeded from HEAD
+/// (not the real index), then `add -A`, so untracked non-ignored files count
+/// and ignored ones do not. Nothing in the workspace changes.
+fn current_tree(root: &Path, git: &Git) -> Result<String, CheckpointError> {
+    let tmp = TempIndexDir::create(root, "chkpt-cur")?;
+    let tmp_git = Git::new(root).env("GIT_INDEX_FILE", tmp.index_path());
+    if let Some(head) = git.verify("HEAD")? {
+        tmp_git.run(["read-tree", &head])?;
+    }
+    tmp_git.run(["add", "-A", "--", "."])?;
+    tmp_git.run(["write-tree"])
 }
 
 /// Temporary index directory under the worktree's git dir, removed on drop.

@@ -45,6 +45,8 @@ export type RowView =
       finalText?: string;
       /** Set when the turn failed or was cancelled and has a user prompt to send again. */
       retryPrompt?: string;
+      /** "Reset chat" applies: the turn has an agent reply and is not the chat's last turn. */
+      canReset: boolean;
     };
 
 interface ToolResult {
@@ -91,7 +93,7 @@ function assistantRow(message: ChatMessage, results: Map<string, ToolResult>, st
   return { kind: "assistant", key: message.id, message, parts, streaming };
 }
 
-function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[]): RowView {
+function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[], isLastTurn: boolean): RowView {
   const state = t.turns[turnId];
   let finalText: string | undefined;
   for (let i = turnMessages.length - 1; i >= 0 && finalText === undefined; i--) {
@@ -109,6 +111,7 @@ function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[])
     ...(state?.error !== undefined ? { error: state.error } : {}),
     ...(finalText !== undefined ? { finalText } : {}),
     ...(canRetry && prompt ? { retryPrompt: plainText(prompt) } : {}),
+    canReset: !isLastTurn && turnMessages.some((m) => m.role === "assistant"),
   };
 }
 
@@ -120,6 +123,11 @@ export function buildRows(t: ChatTranscript): RowView[] {
   messages.forEach((m, i) => {
     if (m.role === "assistant" && m.turnId === activeTurn) lastAssistant = i;
   });
+
+  // The chat's last turn (its newest message's turn, reports aside) has no "Reset chat".
+  const turnIds = new Set([...Object.keys(t.turns), ...messages.filter((m) => m.role === "assistant").map((m) => m.turnId)]);
+  let lastTurn: string | undefined;
+  for (const m of messages) if (turnIds.has(m.turnId)) lastTurn = m.turnId;
 
   const rows: RowView[] = [];
   const turnMessages = new Map<string, ChatMessage[]>();
@@ -150,7 +158,7 @@ export function buildRows(t: ChatTranscript): RowView[] {
     }
     // A report that carries its own turn id is not a turn of this chat: no footer for it.
     const isTurn = t.turns[m.turnId] !== undefined || group.some((g) => g.role === "assistant");
-    if (lastOfTurn.get(m.turnId) === i && m.turnId !== activeTurn && isTurn) rows.push(turnEnd(t, m.turnId, group));
+    if (lastOfTurn.get(m.turnId) === i && m.turnId !== activeTurn && isTurn) rows.push(turnEnd(t, m.turnId, group, m.turnId === lastTurn));
   });
   return rows;
 }
