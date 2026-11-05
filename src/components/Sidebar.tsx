@@ -25,6 +25,9 @@ import { useRepoFilter } from "../home/useRepoFilter";
 import { filterRepoGroups } from "../home/repoFilter";
 import { SidebarAddRepositoryMenu } from "./AddRepositoryMenu";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
+import { AccountMenu } from "./AccountMenu";
+import { ResourceUsagePill } from "./ResourceUsagePill";
+import type { WorkspaceRef as UsageWorkspace } from "./resourceUsage";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
 function hint(commandId: string): string {
@@ -42,7 +45,7 @@ export interface NavControls {
 interface Props {
   state: AppState;
   dispatch: Dispatch<Action>;
-  onOpenDialog: (d: DialogKind, repoId?: string) => void;
+  onOpenDialog: (d: DialogKind, repoId?: string, sectionId?: string) => void;
   onOpenProject: () => void;
   /** A Recents row of the add-repository menu: add that folder as Open project would. */
   onAddProjectAt?: (path: string) => void;
@@ -51,8 +54,6 @@ interface Props {
   onSearch: () => void;
   nav: NavControls;
   info: AppInfo | null;
-  /** Local computer label; Conductor shows "<name>'s Mac", or "My Mac" with no user name. */
-  computerName?: string;
   /* sidebar: workspace row menu callbacks (rename dialog, archive flow) */
   onRenameWorkspace?: RowCallbacks["onRename"];
   onArchiveWorkspace?: RowCallbacks["onArchive"];
@@ -198,7 +199,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
@@ -247,7 +248,9 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   };
   const sectionMenu = (sectionId: string): MenuEntry[] => {
     const s = state.sections?.find((x) => x.id === sectionId);
+    // Conductor's section menu (oBi): Create workspace, Edit section, New section…, then Delete section.
     return [
+      { label: "Create workspace", onSelect: () => onOpenDialog("create", undefined, sectionId) },
       { label: "Edit section", onSelect: () => s && setSectionDialog({ mode: "edit", sectionId, name: s.name, emoji: s.emoji }) },
       { label: "New section…", onSelect: () => setSectionDialog({ mode: "create", beforeSectionId: sectionId }) },
       "-",
@@ -282,6 +285,10 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   const listed = filterRepoGroups(visibleRepos(state.repos, showHidden), repoFilter);
   // Dragging is off with a single listed repo, as in Conductor.
   const canDrag = listed.length > 1;
+  // Workspaces the usage popover can group processes under (by cwd).
+  const usageWorkspaces: UsageWorkspace[] = state.repos.flatMap((r) =>
+    r.workspaces.flatMap((w) => (w.path ? [{ localId: w.id, directoryName: w.directoryName ?? w.name, workspacePath: w.path }] : [])),
+  );
   const dropOn = (targetId: string) => {
     if (dragRepoId && dragRepoId !== targetId) {
       const ids = moveRepo(state.repos.map((r) => r.id), dragRepoId, targetId);
@@ -306,6 +313,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
           </button>
         </div>
         <div className="sb-history">
+          <ResourceUsagePill workspaces={usageWorkspaces} />
           <button type="button" className="sb-icon-btn" aria-label="Go back" title={`Go back (${hint("nav.back")})`} disabled={!nav.canBack} onClick={nav.onBack}>
             <ArrowLeftIcon size={12} />
           </button>
@@ -315,14 +323,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
         </div>
 
         <div className="sb-primary">
-          {/* Computer switcher. Only the local computer exists for now, so the menu is not built yet. */}
-          <div className="sb-row sb-computer" title={computerName}>
-            <span className="sb-row-icon">
-              <span className="sb-avatar" aria-hidden>{computerName.charAt(0).toUpperCase()}</span>
-            </span>
-            <span className="sb-computer-name">{computerName}</span>
-            <ChevronDownIcon size={12} />
-          </div>
+          <AccountMenu onOpenSettings={onOpenSettings} />
           <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
           <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
           <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={hint("toggleCommandPalette")} onClick={onSearch} />

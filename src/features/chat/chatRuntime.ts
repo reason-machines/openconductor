@@ -98,16 +98,7 @@ export interface ChatSnapshot {
   queue: Q.ChatQueue;
 }
 
-export type QueueAction =
-  | { kind: "delete"; id: string }
-  | { kind: "steer"; id: string }
-  | { kind: "edit"; id: string }
-  | { kind: "cancelEdit" }
-  | { kind: "saveEdit"; text: string; steer: boolean }
-  | { kind: "move"; id: string; by: -1 | 1 }
-  | { kind: "reorder"; ids: string[] }
-  | { kind: "pause" }
-  | { kind: "resume" };
+export type QueueAction = Q.QueueAction;
 
 export interface ChatRuntime<Config> {
   readonly canSteer: boolean;
@@ -399,27 +390,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     },
     queueAction(chatId, action) {
       const c = chat(chatId);
-      const q = c.queue;
-      switch (action.kind) {
-        case "delete":
-          return setQueue(c, Q.remove(q, action.id));
-        case "steer":
-          return setQueue(c, Q.steerQueued(q, action.id));
-        case "edit":
-          return setQueue(c, Q.beginEdit(q, action.id));
-        case "cancelEdit":
-          return setQueue(c, Q.cancelEdit(q));
-        case "saveEdit":
-          return setQueue(c, Q.saveEdit(q, action.text, action.steer));
-        case "move":
-          return setQueue(c, Q.move(q, action.id, action.by));
-        case "reorder":
-          return setQueue(c, Q.reorder(q, action.ids));
-        case "pause":
-          return setQueue(c, Q.pause(q));
-        case "resume":
-          return setQueue(c, Q.resume(q));
-      }
+      setQueue(c, Q.actionStep(c.queue, action));
     },
     async reset(chatId, cwd, turnId, resetFiles) {
       const c = chat(chatId);
