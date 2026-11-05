@@ -1,20 +1,20 @@
 {
  "ref": "origin/main",
- "source_files": 443,
- "detector_parity_pct": 86.0,
+ "source_files": 453,
+ "detector_parity_pct": 86.8,
  "areas": {
   "sidebar": {
    "items": 33,
-   "implemented": 24,
-   "partial": 7,
+   "implemented": 25,
+   "partial": 6,
    "missing": 2,
-   "parity_pct": 83.3,
-   "verdict_implemented": 21,
-   "verdict_partial": 9,
+   "parity_pct": 84.8,
+   "verdict_implemented": 25,
+   "verdict_partial": 5,
    "verdict_backend": 1,
    "verdict_missing": 2,
    "verdict_na": 0,
-   "verdict_parity_pct": 78.0
+   "verdict_parity_pct": 84.1
   },
   "home": {
    "items": 18,
@@ -74,7 +74,7 @@
     {
      "pattern": "toggle_?(left_?)?sidebar|toggleSidebar",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/menu.rs"
     },
     {
      "pattern": "go_?back|goBack|history\\.back|navigate\\(-1\\)",
@@ -534,7 +534,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "Archive from WorkspaceView and the palette now calls db_archive_workspace, so it survives restart, but there is no confirmation, no git-busy check, no WorkspaceManager::archive call and no archive commit.",
+   "why": "#391 (274ac80) replaces the row-only db_archive_workspace with archive_workspace (src-tauri/src/workspace_archive/, flow.rs), which the row menu, WorkspaceView, the palette and archive on merge all reach through startArchive (store.ts). It follows Conductor's dYe/mYe (index-BGEQ8YjU.js @ ~966,478 / ~969,254): checkpoint conductor-archive-<id>, refuse in safe mode while a merge/rebase/cherry-pick/revert is in progress with the sticky warning and Archive retry (discardGitOperationState), archive commit = HEAD kept under refs/conductor-archive-heads/<id>, row state/branch/archive_commit, archive script, .context move, worktree removal and delete_branch_on_archive. Conductor asks before archiving only when an agent is running, and ArchiveRunningDialog asks the same. Gap: 'Stop agents and archive' archives but does not cancel the running chat turn (Conductor cancels each session, Z$ / cancelSession), per evidence/archive/NOTES.md. Not run in the desktop app.",
    "recheck": false
   },
   {
@@ -555,7 +555,7 @@
     }
    ],
    "verdict": "backend",
-   "why": "#366 (df07012) registers db_unarchive_workspace (persistence_commands.rs: workspaces::unarchive, then state ready), but only the archive-on-merge toast's Unarchive reaches it (useArchiveOnMerge.ts -> restoreWorkspace). There is still no archived workspaces list, so a workspace archived any other way, or after the toast closes, cannot be restored from the UI. WorkspaceManager::restore is still unused.",
+   "why": "#391 (274ac80) replaces db_unarchive_workspace with unarchive_workspace (checkpoint, worktree, .context and branch restored, setup rerun), and restoreWorkspace runs it through startUnarchive. Only the archive-on-merge toast's Unarchive dispatches restoreWorkspace (useArchiveOnMerge.ts); there is still no archived-workspaces list, so a workspace archived from the row menu, WorkspaceView or the palette, or after the toast closes, cannot be restored from the UI.",
    "recheck": false
   },
   {
@@ -572,11 +572,11 @@
     {
      "pattern": "toggle_?(left_?)?sidebar|toggleSidebar",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/menu.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "The left sidebar toggles from the top-bar button and Cmd+B; the width is a fixed 256px CSS variable with no resize handle, and no right-sidebar toggle is wired.",
+   "verdict": "implemented",
+   "why": "The rail (useSidebarWidth, panelPrefs.tsx) has resized the left sidebar since #332, clamped to 192\u2013480 and saved as left_panel_width; #423 (99edc40) brings it to Conductor's Nta (@ 9,970,616): primary-button drag previews without saving, release saves, a cancelled pointer reverts, double-click resets to 256 and saves, and the aside is capped at 40% of the window. Left toggles: top-bar button, \u2318B (view.toggleLeftSidebar) and the native View > Toggle Left Sidebar item; right: \u2325\u2318B (view.toggleRightSidebar, right_panel_visible) and View > Toggle Right Sidebar (menu.rs emits toggle_left_sidebar / toggle_right_sidebar, App.tsx listens, as Conductor's lva/ova @ 10,931,680). REA gap: which submenu Conductor appends the two items to was not decompiled; they go in View here. Not run in the desktop app.",
    "recheck": false
   },
   {
@@ -665,8 +665,8 @@
      "file": "src/components/Sidebar.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "Still partial on main 962f017: the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status \u25b8, Move to section \u25b8 (#370), Rename (#315) and Archive; Copy link (Cmd+Shift+C) is missing. PR #400 (head 6e038d3, all 15 checks green, unmerged under the merge hold) adds it: Copy link in the row menu with the \u2318\u21e7C hint on the open workspace's row, \u2318\u21e7C bound at dialog priority, global, also while typing and not in the terminal (Conductor's Olo), copying openconductor://workspace?id=<id> with the 'Copied link' / 'Failed to copy link' toasts (Conductor's XV and $$; 'Failed to copy link' re-checked at renderApp byte 742,768). Re-read against #400's head this becomes implemented once it merges; the copied link opens nothing until app.deep-link (unowned) handles openconductor:// URLs.",
+   "verdict": "implemented",
+   "why": "#400 merged as be4f789 (squash of 6e038d3): the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status \u25b8, Move to section \u25b8 (#370), Rename (#315), Copy link (\u2318\u21e7C) and Archive (WorkspaceActionsMenu.tsx). Copy link puts openconductor://workspace?id=<id> on the clipboard with the 'Copied link' / 'Failed to copy link' toasts (src/workspace/link.ts, Conductor's XV and $$); workspace.copyLink is bound to Cmd+Shift+C in keybindings/registry.ts. Out of this item: the copied link opens nothing until app.deep-link (unowned) handles openconductor:// URLs.",
    "recheck": false
   },
   {
@@ -689,12 +689,12 @@
    "id": "sidebar.add-menu",
    "area": "sidebar",
    "feature": "Sidebar add menu offering the three Home actions plus recent local repositories not yet added (spinner while loading)",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "(add_?repo_?menu|AddRepoMenu|add_?menu)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
     },
     {
      "pattern": "recent_?(local_?)?repos|recentRepos|recents",
@@ -702,8 +702,8 @@
      "file": "src-tauri/src/github_repo.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "The My workspaces hover menu offers only Add project; the three Home actions and not-yet-added recent local repos are missing (AddRepositoryMenu.tsx is used only inside CreateWorkspaceDialog).",
+   "verdict": "implemented",
+   "why": "#423 (99edc40): the My workspaces header menu's 'Add project\u2026' opens the add-repository popover on the next frame, and \u2325\u2318A (nav.addRepository) opens it too, as Conductor's wra/yra do (renderApp-D_fmY7hW.js @ 10,069,794). SidebarAddRepositoryMenu (AddRepositoryMenu.tsx) shows Conductor's shared body Gji (@ 9,785,064): Open project, Open GitHub project, Quick start, then 'Recents' with a braille spinner row while loading. Recents come from recent_local_repos.rs, a Rust port of Conductor's MQo script (last 2,000 zsh history cd targets plus .git dirs up to 3 levels under the fixed roots, newest first, at most 8), leaving out folders already added (qQo); a Recents row adds that folder through the same checks as Open project. Pure parts are unit-tested (addRepositoryMenuModel.test.ts). Not run in the desktop app.",
    "recheck": false
   },
   {
@@ -723,8 +723,8 @@
      "file": "crates/openconductor-db/src/app_settings.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Visibility persists in the desktop UI prefs key in localStorage (UiPrefs in src/state/persisted.ts), not as a setting; the width matches the 256 default but is a fixed CSS value, not a persisted setting.",
+   "verdict": "implemented",
+   "why": "Re-read on 99edc40 (stale since #332, 7d2d4a2): left_panel_visible (default true), left_panel_width (default 256, clamped 192\u2013480) and right_panel_visible are rows in conductor.db's settings table (src-tauri/src/app_prefs/), loaded and written by useSidebarVisiblePref / useSidebarWidth (panelPrefs.tsx), as Conductor does. The browser build, which has no database, falls back to defaults.",
    "recheck": false
   },
   {
@@ -1449,6 +1449,6 @@
   }
  ],
  "verdicts_ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 83.2
+ "verdicts_verified_at": "2026-11-05 (main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 86.2
 }

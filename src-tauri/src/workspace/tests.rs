@@ -718,7 +718,7 @@ fn service_reads_a_registry_without_names_and_bumps_past_workspace_folders() {
 fn ensure_repository_twice_on_one_folder_adds_no_project() {
     use super::service::WorkspaceService;
     let f = fixture();
-    let svc = WorkspaceService::new(&f.tmp.path().join("svc")).unwrap();
+    let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
     // An unregistered folder: the first lookup registers it, the second finds it.
     let first = svc.ensure_repository(None, &f.repo).unwrap();
     assert_eq!(svc.repositories().len(), 1);
