@@ -28,6 +28,7 @@ import {
 } from "../home/allWorkspaces";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { RowStatusIcon } from "./RowStatusIcon";
+import { useWorkspaceSession } from "../features/chat/useWorkspaceSession";
 import { homeRowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
 import { glyphs } from "../keybindings/shortcut";
 
@@ -93,7 +94,7 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
   const { workspace: ws, repo, archived, matches } = row;
   const tone = archived ? "is-archived" : ws.unread ? "is-unread" : "";
   // Conductor's `vJo`: the row's session or setup status replaces its time while there is one.
-  const status = homeRowStatus({ workspaceState: ws.state, session: ws.sessionStatus });
+  const status = homeRowStatus({ workspaceState: ws.state, session: useWorkspaceSession(ws) });
   return (
     <div
       role="option"

@@ -70,8 +70,10 @@ test("changes requested offers Add all comments to chat only while a diff commen
   }
   await add.click();
 
-  const composer = page.getByPlaceholder(/^Ask the agent/);
-  assert.match(await composer.inputValue(), /src\/server\/ready\.ts line 2:[\s\S]*Return 204 here/);
+  // The comment reaches the workspace chat as an attachment carrying its comment id (#378), not composer text.
+  const chip = page.locator(".composer-attachment", { hasText: "ready.ts +2" });
+  await chip.waitFor();
+  assert.match((await chip.getAttribute("title")) ?? "", /File: src\/server\/ready\.ts[\s\S]*Return 204 here/);
   await header.getByRole("button", { name: "Changes requested" }).waitFor();
   assert.equal(await add.count(), 0);
   await page.close();

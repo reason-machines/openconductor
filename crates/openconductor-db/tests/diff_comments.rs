@@ -407,3 +407,25 @@ mod remote {
         assert_eq!(ids(&pool).await, ["local"]);
     }
 }
+
+#[tokio::test]
+async fn old_side_is_stored_as_original_and_legacy_base_rows_read_as_original() {
+    let pool = pool().await;
+    let mut n = comment("o", Some(4));
+    n.location = Location::Original;
+    let c = diff_comments::insert(&pool, &n).await.unwrap();
+    assert_eq!(c.location, Some(Location::Original));
+    let raw: (String,) = sqlx::query_as("SELECT location FROM diff_comments WHERE id = 'o'")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(raw.0, "original");
+
+    // A row an earlier build wrote with our old `base` value.
+    sqlx::query("UPDATE diff_comments SET location = 'base' WHERE id = 'o'")
+        .execute(&pool)
+        .await
+        .unwrap();
+    let c = diff_comments::get(&pool, "o").await.unwrap().unwrap();
+    assert_eq!(c.location, Some(Location::Original));
+}

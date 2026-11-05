@@ -17,8 +17,9 @@ Where the app shows them:
 | Board card | `rZo` | Text "Review plan", "Need permission", "Answer question", "Planning..."/"Working...", "Cancelling...", "Waiting...". |
 | Composer | `lTo`, send-mode rules | A turn is in flight for working, needs_*, cancelling (not waiting). |
 
-OpenConductor (this change): `Workspace.sessionStatus` holds the aggregated status; the sidebar row
-(`rowStatus`) and Home (`homeRowStatus`, the `vJo` rule) read it; `hasActiveTurn` is `lTo`. The chat
-runtime only produces working, cancelling, error and idle so far: Reason's ACP session has no
+OpenConductor: the sidebar row (`rowStatus`), Home (`homeRowStatus`, the `vJo` rule) and the workspace
+header read `useWorkspaceSession`, which folds every chat's status in this window (`chatStatuses`, the
+`aFi` hook) with `Workspace.sessionStatus` (statuses from elsewhere: the demo today). `hasActiveTurn` is
+`lTo`. The chat runtime only produces working, cancelling, error and idle so far: Reason's ACP session has no
 permission, question, plan or background-task events, so nothing sets needs_* or waiting yet.
 Chat tabs and the board card are not built.

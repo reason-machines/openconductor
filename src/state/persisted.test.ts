@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { keepLive, parsePrefs, prefsOf, reposFromDb, validSelection, withSessionStatus, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted.ts";
+import { keepPr, parsePrefs, prefsOf, reposFromDb, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted.ts";
 import type { Workspace } from "./types";
 
 const repo = (id: string, extra: Partial<DbRepoRow> = {}): DbRepoRow => ({
@@ -90,22 +90,14 @@ test("sidebar: a user-set workspace name is shown as is", async () => {
 
 const live = (extra: Partial<Workspace> = {}): Workspace => ({ id: "w", name: "w", branch: "w", status: "idle", diff: { added: 0, removed: 0 }, createdAt: 0, ...extra });
 
-test("a session status is stored on the workspace; idle clears it", () => {
-  assert.equal(withSessionStatus(live(), "needs_user_permission").sessionStatus, "needs_user_permission");
-  assert.equal(withSessionStatus(live({ sessionStatus: "working" }), "cancelling").sessionStatus, "cancelling");
-  const idle = withSessionStatus(live({ sessionStatus: "waiting" }), "idle");
-  assert.ok(!("sessionStatus" in idle));
-  assert.equal(idle.status, "idle");
-});
-
-test("re-reading conductor.db keeps the live session status and PR", () => {
+test("re-reading conductor.db keeps the PR the app last read", () => {
   const fresh = live({ name: "renamed" });
-  assert.deepEqual(keepLive(fresh, undefined), fresh);
-  const kept = keepLive(fresh, live({ sessionStatus: "needs_user_input", pr: null }));
-  assert.equal(kept.sessionStatus, "needs_user_input");
+  assert.deepEqual(keepPr(fresh, undefined), fresh);
+  assert.deepEqual(keepPr(fresh, live()), fresh);
+  const kept = keepPr(fresh, live({ pr: null, sessionStatus: "working" }));
   assert.equal(kept.pr, null);
   assert.equal(kept.name, "renamed");
-  assert.ok(!("sessionStatus" in keepLive(fresh, live())));
+  assert.ok(!("sessionStatus" in kept));
 });
 
 test("saved browser state drops live session statuses, including the old status: working", () => {
