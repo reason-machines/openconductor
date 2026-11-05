@@ -20,7 +20,12 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."
 const dist = path.join(repoRoot, "dist");
 const outDir = path.join(repoRoot, "evidence/parity/chat-diff-pr/screens");
 const refDir = path.join(repoRoot, "evidence/screens");
-const REA = process.env.REA ?? path.join(process.env.HOME, ".npm-global/bin/rea");
+const REA =
+  process.env.REA ??
+  [".npm-global/bin/rea", ".rea/node_modules/.bin/rea"]
+    .map((p) => path.join(process.env.HOME, p))
+    .find((p) => fs.existsSync(p)) ??
+  "rea";
 const CHROMIUM = process.env.CHROMIUM ?? "/usr/bin/chromium";
 const PORT = Number(process.env.PORT ?? 4329);
 const TMP = process.env.TMPDIR ?? "/tmp";
@@ -54,16 +59,18 @@ const sendMessage = [
   { step_id: "type_message", action: "fill", locator: { kind: "css", selector: ".composer textarea" }, value: { source: "literal", value: "Signed-in users with an expired session loop between the login page and the dashboard. Find out why and fix it." } },
   { step_id: "send", action: "press", locator: { kind: "css", selector: ".composer textarea" }, key: "Enter", timeout_ms: 3000 },
 ];
+// Files open in their own tab (like Conductor's "All changes" tab), so the diff shots open one first.
+const openFile = [{ step_id: "open_file", action: "click", locator: { kind: "css", selector: ".oc-change[title='Open src/server/router.ts']" }, timeout_ms: 5000 }];
 const SHOTS = [
   { name: "ours-chat--transcript--dark", theme: "dark", ref: "chat--transcript-collapsed-tools--dark.png", actions: sendMessage },
   { name: "ours-chat--transcript--light", theme: "light", ref: "chat--transcript-collapsed-tools--light.png", actions: sendMessage },
-  { name: "ours-diff--file-unified--dark", theme: "dark", ref: "diff--file-unified--dark.png", actions: [] },
-  { name: "ours-diff--file-unified--light", theme: "light", ref: "diff--file-unified--light.png", actions: [] },
+  { name: "ours-diff--file-unified--dark", theme: "dark", ref: "diff--file-unified--dark.png", actions: openFile },
+  { name: "ours-diff--file-unified--light", theme: "light", ref: "diff--file-unified--light.png", actions: openFile },
   {
     name: "ours-diff--file-split--dark",
     theme: "dark",
     ref: "diff--file-split--dark.png",
-    actions: [{ step_id: "split", action: "click", locator: { kind: "css", selector: ".oc-diff-toolbar button:has-text('Split')" }, timeout_ms: 5000 }],
+    actions: [...openFile, { step_id: "split", action: "click", locator: { kind: "css", selector: "button[aria-label='Split diff']" }, timeout_ms: 5000 }],
   },
 ];
 

@@ -76,9 +76,12 @@ function message(state: ReasonChatState, turnId: string, id: string, role: ChatM
   return { id, sessionId: state.chatId, turnId, role, createdAt: now.toISOString(), blocks };
 }
 
-/** The user's prompt: a new turn, running. */
-export function startTurn(state: ReasonChatState, text: string, now = new Date()): Step {
-  const turnId = `${state.chatId}:t${state.next}`;
+/**
+ * The user's prompt: a new turn, running. Pass `turnId` to name the turn's
+ * checkpoints (letters, digits, `.`, `_`, `-`); the default is only unique
+ * within one app run.
+ */
+export function startTurn(state: ReasonChatState, text: string, now = new Date(), turnId = `${state.chatId}:t${state.next}`): Step {
   const user = message(state, turnId, `${turnId}:user`, "user", [{ type: "text", text }], now);
   return {
     state: { ...state, open: [...state.open, { turnId, assistant: null }], next: state.next + 1 },

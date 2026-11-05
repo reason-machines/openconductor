@@ -37,7 +37,7 @@ alacritty_terminal = "=0.26.0"
 libc = "0.2"
 base64 = "0.21"
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+serde_json = { version = "1", features = ["preserve_order"] }  # as in the app crate: its Cargo.lock builds serde_json with indexmap
 aes-gcm = "0.10"
 sha2 = "0.10"
 openconductor-db = { path = "$repo_root/crates/openconductor-db" }

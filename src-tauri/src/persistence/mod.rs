@@ -96,16 +96,25 @@ pub async fn begin_workspace(
     w: &KnownWorkspace,
     parent_branch: Option<&str>,
 ) -> Result<()> {
-    insert_workspace(pool, w, WorkspaceState::Initializing, parent_branch, None).await
+    insert_workspace(pool, w, WorkspaceState::Initializing, parent_branch, None).await?;
+    // Numbered on creation, as Conductor does once its server answers.
+    workspaces::set_number(pool, &w.id, workspaces::next_number(pool).await?).await
 }
 
 /// The worktree exists: replace any row with this id by a `ready` one.
+/// Returns the workspace's number: the one `begin_workspace` gave it, or a new
+/// one when the replaced row was a leftover (an archived workspace) or absent.
 pub async fn finish_workspace(
     pool: &SqlitePool,
     w: &KnownWorkspace,
     parent_branch: Option<&str>,
     placeholder_branch_name: Option<&str>,
-) -> Result<()> {
+) -> Result<i64> {
+    let kept = workspaces::get(pool, &w.id)
+        .await?
+        .map(|r| r.workspace)
+        .filter(|r| r.state == WorkspaceState::Initializing)
+        .and_then(|r| r.number);
     workspaces::delete(pool, &w.id).await?;
     insert_workspace(
         pool,
@@ -114,7 +123,13 @@ pub async fn finish_workspace(
         parent_branch,
         placeholder_branch_name,
     )
-    .await
+    .await?;
+    let number = match kept {
+        Some(n) => n,
+        None => workspaces::next_number(pool).await?,
+    };
+    workspaces::set_number(pool, &w.id, number).await?;
+    Ok(number)
 }
 
 /// Creating the worktree failed: drop its `initializing` row.
@@ -195,6 +210,8 @@ pub struct WorkspaceRow {
     pub workspace_path: Option<String>,
     pub pinned_at: Option<String>,
     pub unread: bool,
+    /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
+    pub number: Option<i64>,
     pub created_at: String,
 }
 
@@ -234,6 +251,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 workspace_path: w.workspace_path,
                 pinned_at: w.pinned_at,
                 unread: w.unread,
+                number: w.number,
                 created_at: w.created_at,
                 repository_id: w.repository_id,
                 id: w.local_id,

@@ -1,12 +1,8 @@
 // Restoring terminals after a relaunch ("cold restore"), as the reference does:
-// the tab list is saved; a tab restored from it loads its saved screen by tab
-// id, redraws it, prints a divider and starts a new shell in the saved cwd.
-// Pure pieces only (storage format, restore output, save throttle); the PTY
-// and xterm side is in session.ts.
-import type { TabsState } from "./tabs.ts";
-
-/** The reference's store name for the terminal panel's tabs. */
-export const TABS_STORAGE_KEY = "terminal-panel-tabs-v1";
+// the tab list is saved (tabList.ts); a tab restored from it loads its saved
+// screen by tab id, redraws it, prints a divider and starts a new shell in the
+// saved cwd. Pure pieces only (restore output, save throttle); the PTY and
+// xterm side is in session.ts.
 
 /** The reference's divider text, printed grey between the restored screen and the new shell. */
 export const RESTORE_DIVIDER = "--- Previous terminal session restored. Starting new shell... ---";
@@ -14,84 +10,6 @@ export const dividerLine = (text: string) => `\r\n\x1b[90m${text}\x1b[0m\r\n`;
 
 /** Longest wait between output and saving it (the reference's idle timeout). */
 export const PERSIST_DELAY_MS = 1000;
-
-export interface SavedTab {
-  id: string;
-  title: string;
-  cwd: string;
-}
-
-export interface SavedWorkspace {
-  tabs: SavedTab[];
-  activeId: string | null;
-  next: number;
-}
-
-type Saved = Record<string, SavedWorkspace>;
-
-export interface KeyValue {
-  getItem(key: string): string | null;
-  setItem(key: string, value: string): void;
-}
-
-const isStr = (v: unknown): v is string => typeof v === "string";
-
-function parseWorkspace(v: unknown): SavedWorkspace | undefined {
-  if (!v || typeof v !== "object") return undefined;
-  const o = v as Record<string, unknown>;
-  if (!Array.isArray(o.tabs)) return undefined;
-  const tabs = o.tabs.filter(
-    (t): t is SavedTab => !!t && typeof t === "object" && isStr(t.id) && isStr(t.title) && isStr(t.cwd),
-  );
-  const activeId = isStr(o.activeId) && tabs.some((t) => t.id === o.activeId) ? o.activeId : (tabs[0]?.id ?? null);
-  const next = typeof o.next === "number" && Number.isInteger(o.next) && o.next > 0 ? o.next : tabs.length + 1;
-  return { tabs, activeId, next };
-}
-
-/** Every workspace's saved tabs; unreadable data reads as none. */
-export function readSaved(store: KeyValue): Saved {
-  let raw: unknown;
-  try {
-    raw = JSON.parse(store.getItem(TABS_STORAGE_KEY) ?? "{}");
-  } catch {
-    return {};
-  }
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
-  const out: Saved = {};
-  for (const [id, v] of Object.entries(raw)) {
-    const w = parseWorkspace(v);
-    if (w) out[id] = w;
-  }
-  return out;
-}
-
-/** Forget `workspaceId`'s saved tabs (workspace archived or its repository removed). */
-export function removeWorkspace(store: KeyValue, workspaceId: string) {
-  const saved = readSaved(store);
-  if (!(workspaceId in saved)) return;
-  delete saved[workspaceId];
-  try {
-    store.setItem(TABS_STORAGE_KEY, JSON.stringify(saved));
-  } catch {
-    // Unavailable storage: nothing was saved for it either.
-  }
-}
-
-/** Save one workspace's tabs, keeping every other workspace's as stored. */
-export function writeWorkspace(store: KeyValue, workspaceId: string, state: TabsState, cwdOf: (id: string) => string | undefined) {
-  const saved = readSaved(store);
-  const tabs = state.tabs.flatMap((t) => {
-    const cwd = cwdOf(t.id);
-    return cwd === undefined ? [] : [{ id: t.id, title: t.title, cwd }];
-  });
-  if (tabs.length === 0) delete saved[workspaceId];
-  else saved[workspaceId] = { tabs, activeId: state.activeId, next: state.next };
-  try {
-    store.setItem(TABS_STORAGE_KEY, JSON.stringify(saved));
-  } catch {
-    // Storage full or unavailable: tabs just are not restored next launch.
-  }
-}
 
 /** `pty_load_terminal_history`'s record (src-tauri/src/terminal_history.rs). */
 export interface HistoryRecord {

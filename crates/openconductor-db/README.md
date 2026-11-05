@@ -1,9 +1,13 @@
 # openconductor-db
 
 SQLite persistence for OpenConductor: the `conductor.db` schema as sqlx
-migrations, plus typed data access for repositories (`repos`) and
-workspaces (`workspaces`), and the `cache.db` schema as its own sqlx
-migrations (`migrations-cache/`, opened with `open_cache`).
+migrations, plus typed data access for every table (`repos`, `workspaces`,
+`diff_comments`, `terminal_sessions`, `app_settings` for `settings`,
+`env_vars`, `port_forwards`, `navigation` for sections and memberships,
+`favorite_models`, `outbox` for the message and asset outboxes and their pause
+state, `maintenance` for `symlinks_pending_deletion` and
+`migration_rollbacks`), and the `cache.db` schema as its own sqlx migrations
+(`migrations-cache/`, opened with `open_cache`).
 
 ```bash
 cd crates/openconductor-db
@@ -20,6 +24,10 @@ cargo run --example migrate -- /tmp/conductor.db   # write a migrated DB file
 | sqlx 0.8.6 and `_sqlx_migrations` | `evidence/sqlite/README.md` (`sqlx-sqlite-0.8.6` panic paths in the binary; REA `inspect-sqlite-database` of `_sqlx_migrations`) |
 | Workspace states `initializing`, `setting_up`, `ready`, `archiving`, `archived`, plus `failed`, `unstarted`, `deleted` | Migration text embedded in `MacOS/conductor` (`strings`), and SQL in the decoded frontend bundle, both read on the reference Mac |
 | Query shapes (repo list order, delete only when unused, reuse hidden repo by path, conditional state transitions, no workspaces `updated_at` trigger, monotonic `touch`) | SQL string literals in the decoded frontend bundle (the reference app runs its SQL from the webview through `tauri-plugin-sql`) |
+
+| Query shapes for `env_vars`, `port_forwards`, `navigation_*`, `favorite_models`, `session_*_outbox*`, `symlinks_pending_deletion`, `settings.deprecated_at` | `evidence/persistence/sql-literals-remaining-tables.txt`: every SQL literal over those tables in the decoded bundle (`index-BGEQ8YjU.js`, `renderApp-D_fmY7hW.js`, sha256 recorded), with byte offsets; each module's doc comment cites its offsets |
+| Outbox states, retry rule (20 attempts, 2 s doubling to 60 s), unreadable-row and unknown-value handling | Same bundle, around offsets 2309300 and 2369156 (constants `Qle = 20`, `{initialDelayMs: 2e3, maxDelayMs: 6e4}`) |
+| `migration_rollbacks` writes | Migration text in `MacOS/conductor` (`strings`): `INSERT OR REPLACE INTO migration_rollbacks (version, down_sql)`, each `down_sql` deleting its own row; no reader in the binary or bundle |
 
 Strings from the reference app are treated as data. Statements here are
 our own; only the schema is reproduced exactly.
@@ -56,6 +64,25 @@ the same SQL). The `cargo` parity test checks the real migrator on every CI run.
 - `unarchive` sets `setting_up` and bumps `updated_at` only from `archived`;
   the reference's matching statement has no state guard.
 - Data access lives in Rust; the reference queries from the frontend.
+- Times the reference computes in JavaScript (`toISOString()`) are taken as
+  milliseconds and formatted by `iso_time`; membership ids are random v4
+  UUIDs from SQLite `randomblob` (the reference uses `crypto.randomUUID()`).
+- `navigation::write_layout` and `favorite_models::replace` run one statement
+  per row inside `BEGIN IMMEDIATE` … `COMMIT`; the reference sends one
+  multi-row `VALUES` statement per table in that transaction.
+  `navigation::delete_layout` wraps its two deletes in a transaction; the
+  reference runs them back to back.
+- Outbox: the readable check covers JSON validity and object/array types;
+  the reference also rejects `asset_ids` entries that are not strings and a
+  `delivery_payload` without a usable `message`. There is no "claim due
+  messages" query: the reference picks due messages in memory, so
+  `idx_session_messages_outbox_due` has no caller here either.
+- `port_forwards::ssh_forwards` returns the union of the two reference
+  selects of SSH forwards (one selects `pf.*` and the workspace columns,
+  the other only workspace columns), with the forward id kept as
+  `forward_id` (the reference's `w.local_id AS id` shadows it).
+- `migration_rollbacks` has a writer only; our consolidated migrations record
+  no rollbacks.
 
 ## REA gaps
 
@@ -67,3 +94,10 @@ the same SQL). The `cargo` parity test checks the real migrator on every CI run.
   the frontend SQL was found by grepping the decoded bundle.
 - `inspect-sqlite-database` refuses databases over 256 MiB (see
   `rea-test-report.md`).
+- `rea search <bundle>.js 'FROM port_forwards'` fails with
+  `capability_unavailable` / `target_unsupported` (string search only runs
+  through Ghidra, Hopper, IDA or Kuna; none supports a JavaScript file and
+  Ghidra has no Java on the Mac), and `rea search MacOS/conductor
+  'migration_rollbacks'` with `provider_unavailable`. The remaining tables'
+  SQL was found with a literal scanner over the decoded bundle and `strings`
+  over the binary (`evidence/persistence/sql-literals-remaining-tables.txt`).
