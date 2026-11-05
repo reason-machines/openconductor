@@ -1,7 +1,9 @@
 # Pull requests: reference behavior vs our implementation
 
 Implementation: [`src-tauri/src/pr/`](../../src-tauri/src/pr/mod.rs) (serde + serde_json, shells out to `gh`).
-Tests: `src-tauri/src/pr/tests.rs`, run with [`run-tests.sh`](run-tests.sh) until the Tauri crate declares `mod pr;`. CI runs it on Linux and macOS (rustfmt check, tests, clippy `-D warnings`).
+Tests: `src-tauri/src/pr/*_tests.rs`, run with [`run-tests.sh`](run-tests.sh) (built with `--cfg pr_harness`, which leaves out `commands.rs`); the Tauri crate declares `pub mod pr;` and registers `pr::commands::*` in `lib.rs`, so CI's Tauri job builds the commands.
+
+Commands (JS names camelCase args): `pr_lookup(repoPath, requests)`, `pr_header_state(inputs)`, `pr_create_prompt(request)`, `pr_merge(repoPath, number, method?)`, `pr_set_auto_merge(repoPath, number, enabled, method?)`, `pr_mark_ready`, `pr_edit(repoPath, number, title?, body?)`, `pr_retarget(repoPath, number, base)`, `pr_approve(repoPath, number, headOid)`. CI runs it on Linux and macOS (rustfmt check, tests, clippy `-D warnings`).
 
 ## Evidence used
 
