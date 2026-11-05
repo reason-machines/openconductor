@@ -515,3 +515,26 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .create-project-template-icon { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); }
 .create-project-template-label { font-size: 13px; font-weight: 500; }
 .create-project-template-desc { font-size: 10px; font-weight: 400; color: var(--muted); text-align: center; }
+
+/* sidebar: workspace row menu, Pinned group, status dots.
+   Menu after Conductor's context menu (min-w-[200px], items with a trailing kbd hint);
+   status colours are Conductor's --status-* tokens (evidence/frontend/css-tokens.json). */
+.sb-ws[data-menu-open] { background: var(--sidebar-accent); }
+.sb-group { margin-bottom: 4px; }
+.sb-group-count { flex: none; font-size: 12px; color: var(--sidebar-muted-foreground); }
+.sb-group-list .sb-ws { padding-left: 6px; }
+.sb-ctx-menu { position: fixed; z-index: 1000; min-width: 200px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); font-size: 13px; }
+.sb-ctx-sub { position: relative; }
+.sb-ctx-submenu { position: absolute; left: calc(100% + 4px); top: -5px; min-width: 176px; }
+.sb-ctx-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 4px; text-align: left; color: var(--text); white-space: nowrap; }
+.sb-ctx-item:hover, .sb-ctx-item:focus-visible, .sb-ctx-item[aria-expanded="true"] { background: var(--hover); outline: none; }
+.sb-ctx-label { flex: 1; min-width: 0; }
+.sb-ctx-kbd { margin-left: auto; font: inherit; font-size: 12px; color: var(--muted); }
+.sb-ctx-check { margin-left: auto; color: var(--muted); }
+.sb-ctx-sep { height: 1px; margin: 4px -4px; background: var(--border); }
+.sb-status-dot { width: 10px; height: 10px; flex: none; border-radius: 999px; border: 1.5px solid currentColor; }
+.sb-status-dot.status-backlog { color: #8e8885; border-style: dashed; }
+.sb-status-dot.status-in-progress { color: #e0bb00; }
+.sb-status-dot.status-in-review { color: #16a249; }
+.sb-status-dot.status-done { color: #cca694; background: currentColor; }
+.sb-status-dot.status-canceled { color: #a5a09c; background: currentColor; }
