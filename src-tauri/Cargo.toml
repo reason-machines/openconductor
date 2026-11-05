@@ -56,6 +56,8 @@ openconductor-db = { path = "../crates/openconductor-db" }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+# MockRuntime and get_ipc_response for command tests (no extra crates).
+tauri = { version = "2", features = ["test"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 security-framework = "3"
