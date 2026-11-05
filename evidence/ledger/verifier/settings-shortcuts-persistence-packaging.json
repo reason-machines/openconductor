@@ -3,7 +3,7 @@
  "generated_by": "tools/parity_check.py check",
  "target": {
   "ref": "origin/main",
-  "sha": "f21d2dbf24bbf4476b2d1324f873d421bcb13f98"
+  "sha": "274ac804c49b3b6a4a55c7bfddf0bd7bb7b890a4"
  },
  "result_meaning": "pass = every item that evidences the obligation is matched on the target (static); fail = at least one item is partial, declared or missing. Static presence, not runtime behavior.",
  "areas": {
@@ -16,10 +16,10 @@
   },
   "shortcuts": {
    "total": 172,
-   "matched": 72,
-   "partial": 100,
+   "matched": 74,
+   "partial": 98,
    "missing": 0,
-   "parity_pct": 70.9
+   "parity_pct": 71.5
   },
   "persistence": {
    "total": 44,
@@ -38,10 +38,10 @@
  },
  "overall": {
   "total": 419,
-  "matched": 299,
-  "partial": 103,
+  "matched": 301,
+  "partial": 101,
   "missing": 17,
-  "parity_pct": 83.7
+  "parity_pct": 83.9
  },
  "evidence": {
   "report": "evidence/parity/parity-report.json",
@@ -861,10 +861,10 @@
    "result": "fail",
    "parity": {
     "total": 37,
-    "matched": 12,
-    "partial": 25,
+    "matched": 13,
+    "partial": 24,
     "missing": 0,
-    "parity_pct": 66.2
+    "parity_pct": 67.6
    },
    "gaps": [
     {
@@ -910,11 +910,6 @@
     {
      "group": "Workspace",
      "id": "workspace.openInMenu",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.copyLink",
      "status": "declared"
     },
     {
@@ -1003,17 +998,12 @@
    "result": "fail",
    "parity": {
     "total": 8,
-    "matched": 6,
-    "partial": 2,
+    "matched": 7,
+    "partial": 1,
     "missing": 0,
-    "parity_pct": 87.5
+    "parity_pct": 93.8
    },
    "gaps": [
-    {
-     "group": "Code review",
-     "id": "editor.saveFile",
-     "status": "declared"
-    },
     {
      "group": "Code review",
      "id": "editor.openSearch",

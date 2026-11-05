@@ -12,7 +12,7 @@ The REA ledger above is the obligation list as built from Conductor; it is not r
 
 | Record | Areas | Target | Parity | REA ledger obligations pass / fail | Builder obligations open |
 |---|---|---|---|---|---|
-| [`verifier/settings-shortcuts-persistence-packaging.md`](verifier/settings-shortcuts-persistence-packaging.md) (`.json`) | settings 96.4%, shortcuts 70.9%, persistence 100.0%, packaging 82.1% | main `f21d2db` | 83.7% | 14 / 3 | 10 of 35 |
+| [`verifier/settings-shortcuts-persistence-packaging.md`](verifier/settings-shortcuts-persistence-packaging.md) (`.json`) | settings 96.4%, shortcuts 71.5%, persistence 100.0%, packaging 82.1% | main `274ac80` | 83.9% | 14 / 3 | 10 of 35 |
 | [`../parity/chat-diff-pr/PARITY.md`](../parity/chat-diff-pr/PARITY.md) (`parity.json`, `tools/parity_chat_diff_pr.py`) | chat 21.7%, diff 42.9%, PR 27.1% (41 features, hand-reviewed) | main `d91540c` | 30.5% (strict 0%) | not scored per REA obligation; parent obligations `agent.*`, `diff.*`, `pr.*` all still open | 39 of 41 ([#139](https://github.com/reason-machines/openconductor/issues/139), [#140](https://github.com/reason-machines/openconductor/issues/140), [#141](https://github.com/reason-machines/openconductor/issues/141)) |
 | [`../parity/reason-acp/PARITY.md`](../parity/reason-acp/PARITY.md) (`parity.json`, `tools/parity_reason_acp.py`) | Reason agent over ACP: 11 items under `agent.session-run`, `agent.providers`, `agent.message-queue` | `59ac0ba` | 100.0% | not scored (OpenConductor's own items; Conductor has no Reason agent) | none (`acp.signed-in`: [signed-in Mac run](../reason-acp/signed-in-run.md)) |
 

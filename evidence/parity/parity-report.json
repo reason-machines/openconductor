@@ -1,7 +1,7 @@
 {
  "ref": "origin/main",
- "sha": "f21d2dbf24bbf4476b2d1324f873d421bcb13f98",
- "source_files_scanned": 674,
+ "sha": "274ac804c49b3b6a4a55c7bfddf0bd7bb7b890a4",
+ "source_files_scanned": 693,
  "reference": {
   "conductor_version": "0.87.6",
   "keybindings_source": {
@@ -13,10 +13,10 @@
  },
  "overall": {
   "total": 419,
-  "matched": 299,
-  "partial": 103,
+  "matched": 301,
+  "partial": 101,
   "missing": 17,
-  "parity_pct": 83.7
+  "parity_pct": 83.9
  },
  "areas": {
   "settings": {
@@ -72,10 +72,10 @@
   },
   "shortcuts": {
    "total": 172,
-   "matched": 72,
-   "partial": 100,
+   "matched": 74,
+   "partial": 98,
    "missing": 0,
-   "parity_pct": 70.9,
+   "parity_pct": 71.5,
    "groups": {
     "General": {
      "total": 30,
@@ -107,17 +107,17 @@
     },
     "Workspace": {
      "total": 37,
-     "matched": 12,
-     "partial": 25,
+     "matched": 13,
+     "partial": 24,
      "missing": 0,
-     "parity_pct": 66.2
+     "parity_pct": 67.6
     },
     "Code review": {
      "total": 8,
-     "matched": 6,
-     "partial": 2,
+     "matched": 7,
+     "partial": 1,
      "missing": 0,
-     "parity_pct": 87.5
+     "parity_pct": 93.8
     },
     "Terminal": {
      "total": 12,
@@ -1221,10 +1221,10 @@
    "result": "fail",
    "parity": {
     "total": 37,
-    "matched": 12,
-    "partial": 25,
+    "matched": 13,
+    "partial": 24,
     "missing": 0,
-    "parity_pct": 66.2
+    "parity_pct": 67.6
    },
    "gaps": [
     {
@@ -1270,11 +1270,6 @@
     {
      "group": "Workspace",
      "id": "workspace.openInMenu",
-     "status": "declared"
-    },
-    {
-     "group": "Workspace",
-     "id": "workspace.copyLink",
      "status": "declared"
     },
     {
@@ -1363,17 +1358,12 @@
    "result": "fail",
    "parity": {
     "total": 8,
-    "matched": 6,
-    "partial": 2,
+    "matched": 7,
+    "partial": 1,
     "missing": 0,
-    "parity_pct": 87.5
+    "parity_pct": 93.8
    },
    "gaps": [
-    {
-     "group": "Code review",
-     "id": "editor.saveFile",
-     "status": "declared"
-    },
     {
      "group": "Code review",
      "id": "editor.openSearch",
@@ -3085,8 +3075,8 @@
    "area": "shortcuts",
    "group": "Workspace",
    "id": "workspace.copyLink",
-   "status": "declared",
-   "detail": "meta+shift+c; no handler references this id"
+   "status": "matched",
+   "detail": "meta+shift+c"
   },
   {
    "area": "shortcuts",
@@ -3617,8 +3607,8 @@
    "area": "shortcuts",
    "group": "Code review",
    "id": "editor.saveFile",
-   "status": "declared",
-   "detail": "meta+s; no handler references this id"
+   "status": "matched",
+   "detail": "meta+s"
   },
   {
    "area": "shortcuts",
