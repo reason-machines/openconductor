@@ -1,0 +1,374 @@
+{
+ "sources": {
+  "user_schema": {
+   "id": "https://conductor.build/schemas/settings.schema.json",
+   "sha256": "9ef552dc3c592864c35ac235f7f4e8abaf03665cf87243ae7135fc83b0d914d6"
+  },
+  "repo_schema": {
+   "id": "https://conductor.build/schemas/settings.repo.schema.json",
+   "sha256": "ea04758cfdf1cc47fc8e2035c09e987c7f51720e2aca027ae7fd7b11b5d7f1ca"
+  },
+  "note": "Published JSON schemas referenced by the v0.87.6 frontend ($schema stamp in settings.toml). Fetched from the public site, so a newer schema than 0.87.6 is possible."
+ },
+ "user_keys": [
+  {
+   "path": "bedrock_region",
+   "type": "string"
+  },
+  {
+   "path": "claude_code_executable_path",
+   "type": "string"
+  },
+  {
+   "path": "claude_provider",
+   "type": "string"
+  },
+  {
+   "path": "codex_executable_path",
+   "type": "string"
+  },
+  {
+   "path": "codex_provider",
+   "type": "string"
+  },
+  {
+   "path": "enterprise_data_privacy",
+   "type": "boolean"
+  },
+  {
+   "path": "environment_variable_files",
+   "type": "array"
+  },
+  {
+   "path": "file_include_globs",
+   "type": "string"
+  },
+  {
+   "path": "git.archive_on_merge",
+   "type": "boolean"
+  },
+  {
+   "path": "git.branch_prefix",
+   "type": "string"
+  },
+  {
+   "path": "git.branch_prefix_type",
+   "type": "string"
+  },
+  {
+   "path": "git.delete_branch_on_archive",
+   "type": "boolean"
+  },
+  {
+   "path": "git.worktree_push_auto_setup_remote",
+   "type": "boolean"
+  },
+  {
+   "path": "models.claude_code.default_effort_level",
+   "type": "string"
+  },
+  {
+   "path": "models.claude_code.personality",
+   "type": "string",
+   "enum": [
+    "default",
+    "proactive",
+    "concise",
+    "explanatory",
+    "learning"
+   ]
+  },
+  {
+   "path": "models.claude_code.review_effort_level",
+   "type": "string"
+  },
+  {
+   "path": "models.codex.default_thinking_level",
+   "type": "string"
+  },
+  {
+   "path": "models.codex.personality",
+   "type": "string"
+  },
+  {
+   "path": "models.codex.review_thinking_level",
+   "type": "string"
+  },
+  {
+   "path": "models.codex.tool_approval_policy",
+   "type": "string",
+   "enum": [
+    "default",
+    "always_approve"
+   ]
+  },
+  {
+   "path": "models.default",
+   "type": "string"
+  },
+  {
+   "path": "models.default_fast_mode",
+   "type": "boolean"
+  },
+  {
+   "path": "models.default_plan_mode",
+   "type": "boolean"
+  },
+  {
+   "path": "models.review",
+   "type": "string"
+  },
+  {
+   "path": "models.review_fast_mode",
+   "type": "boolean"
+  },
+  {
+   "path": "models.visible_provider_models",
+   "type": "string"
+  },
+  {
+   "path": "opencode_executable_path",
+   "type": "string"
+  },
+  {
+   "path": "preview_urls",
+   "type": "array"
+  },
+  {
+   "path": "prompts.code_review",
+   "type": "string"
+  },
+  {
+   "path": "prompts.create_pr",
+   "type": "string"
+  },
+  {
+   "path": "prompts.fix_errors",
+   "type": "string"
+  },
+  {
+   "path": "prompts.general",
+   "type": "string"
+  },
+  {
+   "path": "prompts.rename_branch",
+   "type": "string"
+  },
+  {
+   "path": "prompts.resolve_merge_conflicts",
+   "type": "string"
+  },
+  {
+   "path": "scripts.archive",
+   "type": "string"
+  },
+  {
+   "path": "scripts.auto_run_after_setup",
+   "type": "boolean"
+  },
+  {
+   "path": "scripts.run",
+   "type": "anyOf"
+  },
+  {
+   "path": "scripts.run_mode",
+   "type": "string"
+  },
+  {
+   "path": "scripts.setup",
+   "type": "string"
+  },
+  {
+   "path": "spotlight_testing",
+   "type": "boolean"
+  },
+  {
+   "path": "ssh_key_path",
+   "type": "string"
+  },
+  {
+   "path": "tool_approvals_enabled",
+   "type": "boolean"
+  },
+  {
+   "path": "vertex_project_id",
+   "type": "string"
+  }
+ ],
+ "repo_keys": [
+  {
+   "path": "bedrock_region",
+   "type": "string"
+  },
+  {
+   "path": "claude_code_executable_path",
+   "type": "string"
+  },
+  {
+   "path": "claude_provider",
+   "type": "string"
+  },
+  {
+   "path": "codex_executable_path",
+   "type": "string"
+  },
+  {
+   "path": "codex_provider",
+   "type": "string"
+  },
+  {
+   "path": "enterprise_data_privacy",
+   "type": "boolean"
+  },
+  {
+   "path": "environment_variable_files",
+   "type": "array"
+  },
+  {
+   "path": "environment_variables.local",
+   "type": "object"
+  },
+  {
+   "path": "environment_variables.cloud",
+   "type": "object"
+  },
+  {
+   "path": "file_include_globs",
+   "type": "string"
+  },
+  {
+   "path": "git.archive_on_merge",
+   "type": "boolean"
+  },
+  {
+   "path": "git.branch_prefix",
+   "type": "string"
+  },
+  {
+   "path": "git.branch_prefix_type",
+   "type": "string"
+  },
+  {
+   "path": "git.delete_branch_on_archive",
+   "type": "boolean"
+  },
+  {
+   "path": "git.worktree_push_auto_setup_remote",
+   "type": "boolean"
+  },
+  {
+   "path": "models.visible_provider_models",
+   "type": "string"
+  },
+  {
+   "path": "opencode_executable_path",
+   "type": "string"
+  },
+  {
+   "path": "preview_urls",
+   "type": "array"
+  },
+  {
+   "path": "prompts.code_review",
+   "type": "string"
+  },
+  {
+   "path": "prompts.create_pr",
+   "type": "string"
+  },
+  {
+   "path": "prompts.fix_errors",
+   "type": "string"
+  },
+  {
+   "path": "prompts.general",
+   "type": "string"
+  },
+  {
+   "path": "prompts.rename_branch",
+   "type": "string"
+  },
+  {
+   "path": "prompts.resolve_merge_conflicts",
+   "type": "string"
+  },
+  {
+   "path": "scripts.archive",
+   "type": "string"
+  },
+  {
+   "path": "scripts.auto_run_after_setup",
+   "type": "boolean"
+  },
+  {
+   "path": "scripts.run",
+   "type": "anyOf"
+  },
+  {
+   "path": "scripts.run_mode",
+   "type": "string"
+  },
+  {
+   "path": "scripts.setup",
+   "type": "string"
+  },
+  {
+   "path": "spotlight_testing",
+   "type": "boolean"
+  },
+  {
+   "path": "ssh_key_path",
+   "type": "string"
+  },
+  {
+   "path": "vertex_project_id",
+   "type": "string"
+  }
+ ],
+ "files": [
+  {
+   "id": "user-settings-toml",
+   "path": "~/.conductor/settings.toml",
+   "evidence": "evidence/runtime/first-run-files.tsv"
+  },
+  {
+   "id": "repo-settings-toml",
+   "path": ".conductor/settings.toml",
+   "evidence": "frontend settings-service (repo scope, shared)"
+  },
+  {
+   "id": "repo-settings-local-toml",
+   "path": ".conductor/settings.local.toml",
+   "evidence": "frontend settings-service (repo scope, local)"
+  },
+  {
+   "id": "legacy-conductor-json",
+   "path": "conductor.json",
+   "evidence": "frontend settings-service readLegacyJson / migration"
+  },
+  {
+   "id": "schema-stamp",
+   "path": "$schema = settings.schema.json / settings.repo.schema.json",
+   "evidence": "throwaway first-run settings.toml; frontend t$e()"
+  }
+ ],
+ "routes": [
+  "/key-bindings",
+  "/settings",
+  "/settings/cloud/setup",
+  "/settings/organization/computer",
+  "/settings/organization/environment",
+  "/settings/organization/mcp",
+  "/settings/organization/prompts",
+  "/settings/organization/repositories/$owner/$repo",
+  "/settings/organization/repositories/$owner/$repo/git",
+  "/settings/organization/repositories/$owner/$repo/scripts",
+  "/settings/repos",
+  "/settings/user",
+  "/settings/user/account",
+  "/settings/user/general",
+  "/settings/user/git",
+  "/settings/user/models",
+  "/settings/user/providers"
+ ]
+}

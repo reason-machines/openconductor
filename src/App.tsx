@@ -7,7 +7,7 @@ import { HomeScreen } from "./components/HomeScreen";
 import { WorkspaceView } from "./components/WorkspaceView";
 import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
 import { Toaster, useToasts } from "./components/Toast";
-import { appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
+import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 
 export default function App() {
@@ -29,7 +29,8 @@ export default function App() {
         // The "Create a private GitHub repo?" dialog lands in the next PR.
         return show("info", outcome.needsGitInit ? `${outcome.name} is not a git repository yet.` : `${outcome.name} has no origin remote yet.`);
       }
-      dispatch({ type: "addRepo", repo: { name: outcome.name, path: outcome.path, remote: outcome.remote, defaultBranch: "main" } });
+      const registered = await addRepository(outcome.path);
+      dispatch({ type: "addRepo", repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
     } catch (err) {
       show("error", failedToAddMessage(err));
     }
