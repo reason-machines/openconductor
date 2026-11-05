@@ -357,15 +357,6 @@ impl BusyState {
             BusyState::Revert => "busy:revert",
         }
     }
-
-    /// The operation in progress (`rebase`, `merge`, `squash-merge`,
-    /// `cherry-pick`, `revert`), or `None` when the checkout is clean. Archive
-    /// refuses while one is (Conductor 0.87.6 `index-BGEQ8YjU.js` @ ~970,807:
-    /// the archive checkpoint's busy exit throws "a Git operation is in
-    /// progress").
-    pub fn operation(self) -> Option<&'static str> {
-        self.as_token().strip_prefix("busy:")
-    }
 }
 
 fn git_path(worktree: &Path, name: &str) -> Result<PathBuf, WorkspaceError> {

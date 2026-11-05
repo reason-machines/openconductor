@@ -109,9 +109,10 @@ workspace-creation service) and `renderApp-D_fmY7hW.js` (the rows).
   (user, repository, workspace and local settings files, see "Prompts, git flags and
   environment"), as `lre` does; unreadable settings count as on, Conductor's "not false".
 - Delete branch on archive (with "Warning: archived workspaces will be unrecoverable" when
-  on) and Archive on merge are stored and resolve per repository, but nothing consumes them
-  yet: the app's archive only marks the database row (`db_archive_workspace`) and keeps the
-  worktree, and no in-app merge archives.
+  on) and Archive on merge are stored and resolve per repository. The full archive
+  (`archive_workspace`, see `evidence/archive/NOTES.md`) reads Delete branch on archive per
+  workspace while the worktree still exists and deletes the branch with `git branch -D`,
+  never the repository's default branch.
 
 ## REA gaps hit (settings pages)
 
@@ -522,7 +523,8 @@ built.
 | `prompts.rename_branch` | model-generated branch name | missing: the rebuild names branches with a local heuristic (`branchNameFromMessage`), no model call |
 | `git.worktree_push_auto_setup_remote` | `create_workspace` and the startup backfill | wired, effective per repository / workspace |
 | `git.branch_prefix`, `git.branch_prefix_type` | Create-workspace naming | user scope, as Conductor's `C2` |
-| `git.archive_on_merge`, `git.delete_branch_on_archive` | archive | missing (see "Git flags: archive and push upstream") |
+| `git.delete_branch_on_archive` | `archive_workspace` (`evidence/archive/NOTES.md`) | wired, effective per workspace |
+| `git.archive_on_merge` | archive on merge | see `evidence/pr/NOTES.md` |
 | `preview_urls` | terminal panel Open URLs | missing: the terminal panel has no Open URL control |
 | `environment_variable_files`, `environment_variables.*` | setup / run / archive scripts (`ScriptService::set_settings_env`), terminals (`pty_spawn`) | wired; local context |
 | same | agent launches | missing: Claude/Codex launches are not built, and Reason runs one ACP process for every chat, so a per-workspace environment cannot reach it |

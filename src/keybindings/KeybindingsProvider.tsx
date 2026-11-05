@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { activeDialogIdFromDom, bindCommands, type CommandHandlers } from "./bind.ts";
 import { createDispatcher, type Dispatcher, type Telemetry } from "./dispatcher.ts";
+import type { BindOptions } from "./resolve.ts";
 import { createKeyListeners, installKeyListeners, type KeyCapture } from "./listeners.ts";
 import { parseOverrides, type Overrides } from "./overrides.ts";
 
@@ -81,10 +82,13 @@ export const useKeyCapture = (): ((c: KeyCapture) => () => void) => useKeybindin
  */
 /**
  * Binds registry commands to callbacks while the component is mounted.
- * `priority` raises these handlers over others for the same keys, as
- * Conductor's call sites do (a handler returning false passes the key on).
+ * `options` (a priority, or call-site options such as isGlobal) raises these
+ * handlers over others for the same keys, as Conductor's call sites do (a
+ * handler returning false passes the key on).
  */
-export function useKeybindings(handlers: CommandHandlers, priority?: number): void {
+export function useKeybindings(handlers: CommandHandlers, options?: number | BindOptions): void {
+  const bindOptions: BindOptions = typeof options === "number" ? { priority: options } : (options ?? {});
+  const optionsKey = JSON.stringify(bindOptions);
   const { dispatcher, overrides } = useKeybindingsContext();
   const latest = useRef(handlers);
   latest.current = handlers;
@@ -95,6 +99,6 @@ export function useKeybindings(handlers: CommandHandlers, priority?: number): vo
   useEffect(() => {
     const proxies: CommandHandlers = {};
     for (const id of ids ? ids.split("\n") : []) proxies[id] = () => latest.current[id]?.();
-    return bindCommands(dispatcher, proxies, { overrides }, priority === undefined ? {} : { priority });
-  }, [dispatcher, overrides, ids, priority]);
+    return bindCommands(dispatcher, proxies, { overrides }, JSON.parse(optionsKey) as BindOptions);
+  }, [dispatcher, overrides, ids, optionsKey]);
 }

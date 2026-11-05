@@ -38,7 +38,6 @@ import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest"
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
-import { archiveBlocker } from "../features/archive/archiveGuard";
 import { fixShortcutApplies } from "../features/pr/checks/fixErrors";
 import { useFixErrors, type FixErrors } from "../features/pr/checks/useFixErrors";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
@@ -551,18 +550,6 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     },
     [workspace.id],
   );
-  // Archive refuses while a merge or rebase is in progress in the checkout (archiveGuard.ts).
-  const [archiving, setArchiving] = useState(false);
-  const archive = useCallback(async () => {
-    setArchiving(true);
-    try {
-      const blocked = await archiveBlocker(workspace.path ?? null);
-      if (blocked) notify?.("error", blocked);
-      else dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id });
-    } finally {
-      setArchiving(false);
-    }
-  }, [dispatch, notify, repo.id, workspace.id, workspace.path]);
   const fixErrors = useFixErrors({ worktree: workspace.path ?? null, repoId: repo.id, sendToChat, notify });
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
   const [agentWorking, setAgentWorking] = useState(false);
@@ -676,7 +663,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
             Terminal
           </button>
-          <button className="btn btn-small" title="Archive workspace" disabled={archiving} aria-busy={archiving} onClick={() => void archive()}>
+          <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
             <ArchiveIcon size={14} /> Archive
           </button>
         </div>

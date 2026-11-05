@@ -518,7 +518,6 @@ fn busy_state_matches_git_busy_check_script() {
     let f = fixture();
     let ws = f.mgr.create(&f.repo, &named("busy")).unwrap().workspace;
     assert_eq!(git::busy_state(&ws.path).unwrap(), BusyState::Clean);
-    assert_eq!(BusyState::Clean.operation(), None);
 
     // Conflicting change on main and on the workspace branch -> merge conflict.
     commit_file(&f.repo, "README.md", "main side\n", "main");
@@ -526,7 +525,6 @@ fn busy_state_matches_git_busy_check_script() {
     let out = git::git_raw(&ws.path, ["merge", "main"]).unwrap();
     assert!(!out.status.success());
     assert_eq!(git::busy_state(&ws.path).unwrap(), BusyState::Merge);
-    assert_eq!(git::busy_state(&ws.path).unwrap().operation(), Some("merge"));
     assert!(matches!(
         f.mgr.archive(&f.repo, "busy", &ArchiveOptions::default()),
         Err(WorkspaceError::Busy(BusyState::Merge))
@@ -546,7 +544,6 @@ fn busy_state_matches_git_busy_check_script() {
     let out = git::git_raw(&ws.path, ["rebase", "main"]).unwrap();
     assert!(!out.status.success());
     assert_eq!(git::busy_state(&ws.path).unwrap(), BusyState::Rebase);
-    assert_eq!(git::busy_state(&ws.path).unwrap().operation(), Some("rebase"));
     sh(&ws.path, &["rebase", "--abort"]);
 
     let out = git::git_raw(&ws.path, ["merge", "--squash", "main"]).unwrap();
