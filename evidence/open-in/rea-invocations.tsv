@@ -1,0 +1,10 @@
+label	command	exit	evidence_id	note
+analyze_slice	rea analyze-javascript-application slice --format json	0	ev_338577609e67c31212d529d59606e90597850528ea9a2f9559d23a4876c960d1	7 slices of renderApp-D_fmY7hW.js (sha256 5199d392…5dde): catalog sX, gLr, Z_s, uD+helpers, X7t/cJe, KH..P9, ICi; 74 functions, 66 call edges
+trace_P9_callers	rea trace-javascript-semantics trace_P9_callers.in.json --format json	0	ev_25d404893f269c4ba311ecebd20fd52643532b2e0cc74b890d3dc5b734e5be5b	0 relations, coverage partial
+trace_P9_forward-influence	rea trace-javascript-semantics trace_P9_forward-influence.in.json --format json	0	ev_a1e1e4c2bbcded738812fdbf746a1b3f0a15e8a97eff2b14111125b9ae3bd3fd	0 relations, coverage partial
+trace_Z_s_callers	rea trace-javascript-semantics trace_Z_s_callers.in.json --format json	0	ev_bfbbac4fe49aeeeae4448c8016d9d3085fbfd05b65180ecdf4afe34ff047557c	0 relations, coverage partial
+trace_Z_s_forward-influence	rea trace-javascript-semantics trace_Z_s_forward-influence.in.json --format json	0	ev_34448d8bb72f425587b90b4979ab73e9519f9c96eec080e8583ac8d62910eede	1 relations, coverage partial
+trace_uD_callers	rea trace-javascript-semantics trace_uD_callers.in.json --format json	0	ev_d6f241732926ffdbb84827f60009addbf1337d93f3d18a488e458583b52bb16d	1 relations, coverage partial
+trace_uD_forward-influence	rea trace-javascript-semantics trace_uD_forward-influence.in.json --format json	0	ev_07890e4bd51cd898a2e69d1350693b020f6eb52309a589408e3b3862528bb38a	32 relations, coverage partial
+capture_menu--open-in--dark	rea capture-browser-scenario <input.json> --format json (tools/screens/capture.mjs shots/07-open-in.json)	0	ev_d542c9f256741ece8cafda9af94bc8955926746c1bbca454b261997567f1f994	png sha256 cbaa13ede58c
+capture_menu--open-in--light	rea capture-browser-scenario <input.json> --format json (tools/screens/capture.mjs shots/07-open-in.json)	0	ev_39539aa4b274460aaa8063457921e689b94ac02127602d5601b4ebcb33e17d57	png sha256 4b6b27863507

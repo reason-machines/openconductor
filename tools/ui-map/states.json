@@ -1,0 +1,1846 @@
+{
+ "schema": "openconductor.ui-map-states/1",
+ "viewport": {
+  "width": 1280,
+  "height": 820
+ },
+ "theme": "dark",
+ "states": [
+  {
+   "id": "onboarding-signed-out",
+   "title": "Onboarding, signed out",
+   "ref": {
+    "path": "/",
+    "scenario": "signed-out",
+    "actions": []
+   },
+   "oc": [],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/login"
+    }
+   ],
+   "oc_fresh": true
+  },
+  {
+   "id": "first-run-onboarding",
+   "title": "First-run onboarding",
+   "ref": {
+    "path": "/first-run-onboarding",
+    "scenario": "signed-in",
+    "actions": []
+   },
+   "oc": [],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/first-run-onboarding"
+    }
+   ],
+   "oc_fresh": true
+  },
+  {
+   "id": "home-empty",
+   "title": "Home, no projects",
+   "ref": {
+    "path": "/",
+    "scenario": "signed-in",
+    "actions": []
+   },
+   "oc": [
+    {
+     "click": ".onb-continue",
+     "after_ms": 1000
+    }
+   ],
+   "oc_fresh": true
+  },
+  {
+   "id": "home",
+   "title": "Home with projects",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/"
+    }
+   ]
+  },
+  {
+   "id": "all-workspaces",
+   "title": "All workspaces list",
+   "ref": {
+    "path": "/all-workspaces",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/all-workspaces"
+    }
+   ]
+  },
+  {
+   "id": "create",
+   "title": "Create workspace composer",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=Create >> nth=0"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Create",
+     "after_ms": 800
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/create"
+    }
+   ]
+  },
+  {
+   "id": "create-repo-picker",
+   "title": "Create: repo picker open",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=Create >> nth=0"
+     },
+     {
+      "click": "text=Select repo"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Create",
+     "after_ms": 800
+    },
+    {
+     "click": "form.create-ws button",
+     "nth": 0
+    }
+   ]
+  },
+  {
+   "id": "workspace-chat",
+   "title": "Workspace: chat transcript",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/repository/$repositoryId/workspace/$localWorkspaceId"
+    }
+   ]
+  },
+  {
+   "id": "workspace-new-chat",
+   "title": "Workspace: new empty chat",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    }
+   ]
+  },
+  {
+   "id": "workspace-tool-calls",
+   "title": "Chat: tool calls expanded",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "text=4 tool calls, 2 messages"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    }
+   ]
+  },
+  {
+   "id": "diff-unified",
+   "title": "Diff: file, unified",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "text=auth.ts >> nth=-1"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": "button.oc-change[title='Open src/lib/auth.ts']",
+     "after_ms": 1500
+    }
+   ]
+  },
+  {
+   "id": "diff-split",
+   "title": "Diff: file, split",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "text=auth.ts >> nth=-1"
+     },
+     {
+      "click": "role=button[name='Split view']"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": "button.oc-change[title='Open src/lib/auth.ts']",
+     "after_ms": 1500
+    },
+    {
+     "click": "button",
+     "text": "Split view"
+    }
+   ]
+  },
+  {
+   "id": "diff-entire-file",
+   "title": "Diff: entire file",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "text=auth.ts >> nth=-1"
+     },
+     {
+      "click": "role=button[name='Entire file']"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": "button.oc-change[title='Open src/lib/auth.ts']",
+     "after_ms": 1500
+    },
+    {
+     "click": "button",
+     "text": "Entire file"
+    }
+   ]
+  },
+  {
+   "id": "needs-permission",
+   "title": "Workspace needing permission",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-api"
+     },
+     {
+      "click": "text=Ada/rate limit headers"
+     }
+    ]
+   },
+   "oc_reason": "the OpenConductor seed has no workspace with a pending permission request"
+  },
+  {
+   "id": "route-dashboard",
+   "title": "Dashboard",
+   "ref": {
+    "path": "/dashboard",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no route or view for /dashboard",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/dashboard"
+    }
+   ]
+  },
+  {
+   "id": "route-routines",
+   "title": "Routines",
+   "ref": {
+    "path": "/routines",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no route or view for /routines",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/routines"
+    }
+   ]
+  },
+  {
+   "id": "route-routines-new",
+   "title": "New routine",
+   "ref": {
+    "path": "/routines/new",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no route or view for /routines/new",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/routines/new"
+    }
+   ]
+  },
+  {
+   "id": "route-team",
+   "title": "Team",
+   "ref": {
+    "path": "/team",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no route or view for /team",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/team"
+    }
+   ]
+  },
+  {
+   "id": "route-diagnostics",
+   "title": "Diagnostics",
+   "ref": {
+    "path": "/diagnostics",
+    "scenario": "populated",
+    "actions": []
+   },
+   "oc_reason": "OpenConductor has no route or view for /diagnostics",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/diagnostics"
+    }
+   ]
+  },
+  {
+   "id": "route-new-member-onboarding",
+   "title": "New member onboarding",
+   "ref": {
+    "path": "/new-member-onboarding",
+    "scenario": "populated",
+    "actions": []
+   },
+   "oc_reason": "OpenConductor has no route or view for /new-member-onboarding",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/new-member-onboarding"
+    }
+   ]
+  },
+  {
+   "id": "route-cloud-collab-onboarding",
+   "title": "Cloud collaboration onboarding",
+   "ref": {
+    "path": "/cloud-collab-onboarding",
+    "scenario": "populated",
+    "actions": []
+   },
+   "oc_reason": "OpenConductor has no route or view for /cloud-collab-onboarding",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/cloud-collab-onboarding"
+    }
+   ]
+  },
+  {
+   "id": "login",
+   "title": "Login",
+   "ref": {
+    "path": "/login",
+    "scenario": "signed-out",
+    "actions": []
+   },
+   "oc": [],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/login"
+    }
+   ],
+   "oc_fresh": true
+  },
+  {
+   "id": "settings-general",
+   "title": "Settings > General",
+   "ref": {
+    "path": "/settings/user/general",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "General"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/general"
+    },
+    {
+     "kind": "settings-page",
+     "name": "general"
+    }
+   ]
+  },
+  {
+   "id": "settings-account",
+   "title": "Settings > Account",
+   "ref": {
+    "path": "/settings/user/account",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Account"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/account"
+    },
+    {
+     "kind": "settings-page",
+     "name": "account"
+    }
+   ]
+  },
+  {
+   "id": "settings-models",
+   "title": "Settings > Default models",
+   "ref": {
+    "path": "/settings/user/models",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Default models"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/models"
+    },
+    {
+     "kind": "settings-page",
+     "name": "models"
+    }
+   ]
+  },
+  {
+   "id": "settings-providers",
+   "title": "Settings > Agents",
+   "ref": {
+    "path": "/settings/user/providers",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Agents"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/providers"
+    },
+    {
+     "kind": "settings-page",
+     "name": "providers"
+    }
+   ]
+  },
+  {
+   "id": "settings-environment",
+   "title": "Settings > Environment",
+   "ref": {
+    "path": "/settings/user/environment",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Environment"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/environment"
+    },
+    {
+     "kind": "settings-page",
+     "name": "environment"
+    }
+   ]
+  },
+  {
+   "id": "settings-git",
+   "title": "Settings > Git",
+   "ref": {
+    "path": "/settings/user/git",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Git"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/git"
+    },
+    {
+     "kind": "settings-page",
+     "name": "git"
+    }
+   ]
+  },
+  {
+   "id": "settings-ports",
+   "title": "Settings > ports",
+   "ref": {
+    "path": "/settings/user/ports",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor's settings have no ports page",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/ports"
+    },
+    {
+     "kind": "settings-page",
+     "name": "ports"
+    }
+   ]
+  },
+  {
+   "id": "settings-appearance",
+   "title": "Settings > Appearance",
+   "ref": {
+    "path": "/settings/user/appearance",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Appearance"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/appearance"
+    },
+    {
+     "kind": "settings-page",
+     "name": "appearance"
+    }
+   ]
+  },
+  {
+   "id": "settings-key-bindings",
+   "title": "Settings > Keyboard shortcuts",
+   "ref": {
+    "path": "/settings/user/key-bindings",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Keyboard shortcuts"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/key-bindings"
+    },
+    {
+     "kind": "settings-page",
+     "name": "key-bindings"
+    }
+   ]
+  },
+  {
+   "id": "settings-experimental",
+   "title": "Settings > Experimental",
+   "ref": {
+    "path": "/settings/user/experimental",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Experimental"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/experimental"
+    },
+    {
+     "kind": "settings-page",
+     "name": "experimental"
+    }
+   ]
+  },
+  {
+   "id": "settings-advanced",
+   "title": "Settings > Advanced",
+   "ref": {
+    "path": "/settings/user/advanced",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Advanced"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/advanced"
+    },
+    {
+     "kind": "settings-page",
+     "name": "advanced"
+    }
+   ]
+  },
+  {
+   "id": "settings-terminal",
+   "title": "Settings > Big terminal",
+   "ref": {
+    "path": "/settings/user/terminal",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Big terminal"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/terminal"
+    },
+    {
+     "kind": "settings-page",
+     "name": "terminal"
+    }
+   ]
+  },
+  {
+   "id": "settings-internal",
+   "title": "Settings > internal",
+   "ref": {
+    "path": "/settings/user/internal",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor's settings have no internal page",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/user/internal"
+    },
+    {
+     "kind": "settings-page",
+     "name": "internal"
+    }
+   ]
+  },
+  {
+   "id": "settings-repo-environment",
+   "title": "Settings > tide-web > Environment",
+   "ref": {
+    "path": "/settings/repos/repo-tide-web/environment",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-repo",
+     "text": "tide-web"
+    },
+    {
+     "click": ".settings-repo-sections .nav-item",
+     "text": "Environment"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/repos/$repoId/environment"
+    },
+    {
+     "kind": "settings-page",
+     "name": "repo-environment"
+    }
+   ]
+  },
+  {
+   "id": "settings-repo-git",
+   "title": "Settings > tide-web > Git",
+   "ref": {
+    "path": "/settings/repos/repo-tide-web/git",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-repo",
+     "text": "tide-web"
+    },
+    {
+     "click": ".settings-repo-sections .nav-item",
+     "text": "Git"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/repos/$repoId/git"
+    },
+    {
+     "kind": "settings-page",
+     "name": "repo-git"
+    }
+   ]
+  },
+  {
+   "id": "settings-repo-scripts",
+   "title": "Settings > tide-web > Scripts",
+   "ref": {
+    "path": "/settings/repos/repo-tide-web/scripts",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-repo",
+     "text": "tide-web"
+    },
+    {
+     "click": ".settings-repo-sections .nav-item",
+     "text": "Scripts"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/repos/$repoId/scripts"
+    },
+    {
+     "kind": "settings-page",
+     "name": "repo-scripts"
+    }
+   ]
+  },
+  {
+   "id": "settings-repo-actions",
+   "title": "Settings > tide-web > Actions",
+   "ref": {
+    "path": "/settings/repos/repo-tide-web/actions",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-repo",
+     "text": "tide-web"
+    },
+    {
+     "click": ".settings-repo-sections .nav-item",
+     "text": "Actions"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/repos/$repoId/actions"
+    },
+    {
+     "kind": "settings-page",
+     "name": "repo-actions"
+    }
+   ]
+  },
+  {
+   "id": "settings-repo-misc",
+   "title": "Settings > tide-web > Misc",
+   "ref": {
+    "path": "/settings/repos/repo-tide-web/misc",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-repo",
+     "text": "tide-web"
+    },
+    {
+     "click": ".settings-repo-sections .nav-item",
+     "text": "Misc"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/repos/$repoId/misc"
+    },
+    {
+     "kind": "settings-page",
+     "name": "repo-misc"
+    }
+   ]
+  },
+  {
+   "id": "settings-org-github",
+   "title": "Settings > Organization > github",
+   "ref": {
+    "path": "/settings/organization/github",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no organization settings",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/organization/github"
+    },
+    {
+     "kind": "settings-page",
+     "name": "organization-github"
+    }
+   ]
+  },
+  {
+   "id": "settings-org-members",
+   "title": "Settings > Organization > members",
+   "ref": {
+    "path": "/settings/organization/members",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no organization settings",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/organization/members"
+    },
+    {
+     "kind": "settings-page",
+     "name": "organization-members"
+    }
+   ]
+  },
+  {
+   "id": "settings-org-preferences",
+   "title": "Settings > Organization > preferences",
+   "ref": {
+    "path": "/settings/organization/preferences",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no organization settings",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/organization/preferences"
+    },
+    {
+     "kind": "settings-page",
+     "name": "organization-preferences"
+    }
+   ]
+  },
+  {
+   "id": "settings-org-computer",
+   "title": "Settings > Organization > computer",
+   "ref": {
+    "path": "/settings/organization/computer",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no organization settings",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/organization/computer"
+    },
+    {
+     "kind": "settings-page",
+     "name": "organization-computer"
+    }
+   ]
+  },
+  {
+   "id": "settings-org-environment",
+   "title": "Settings > Organization > environment",
+   "ref": {
+    "path": "/settings/organization/environment",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no organization settings",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/organization/environment"
+    },
+    {
+     "kind": "settings-page",
+     "name": "organization-environment"
+    }
+   ]
+  },
+  {
+   "id": "settings-org-mcp",
+   "title": "Settings > Organization > mcp",
+   "ref": {
+    "path": "/settings/organization/mcp",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no organization settings",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/organization/mcp"
+    },
+    {
+     "kind": "settings-page",
+     "name": "organization-mcp"
+    }
+   ]
+  },
+  {
+   "id": "settings-org-prompts",
+   "title": "Settings > Organization > prompts",
+   "ref": {
+    "path": "/settings/organization/prompts",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no organization settings",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/organization/prompts"
+    },
+    {
+     "kind": "settings-page",
+     "name": "organization-prompts"
+    }
+   ]
+  },
+  {
+   "id": "settings-cloud-setup",
+   "title": "Settings > Cloud setup",
+   "ref": {
+    "path": "/settings/cloud/setup",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     }
+    ]
+   },
+   "oc_reason": "OpenConductor has no cloud settings",
+   "covers": [
+    {
+     "kind": "route",
+     "name": "/settings/cloud/setup"
+    }
+   ]
+  },
+  {
+   "id": "settings-search",
+   "title": "Settings search",
+   "ref": {
+    "path": "/settings/user/general",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "fill": [
+       "input[placeholder='Search settings']",
+       "branch"
+      ]
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "type": "branch",
+     "css": ".settings input[type=search], .settings input[placeholder]"
+    }
+   ]
+  },
+  {
+   "id": "palette-all",
+   "title": "Command palette",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "palette-workspaces",
+   "title": "Command palette: Workspaces tab",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "click": "[role=dialog] >> text=Workspaces"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=dialog] button, [role=dialog] [role=tab]",
+     "text": "Workspaces"
+    }
+   ]
+  },
+  {
+   "id": "palette-search",
+   "title": "Command palette: search",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "fill": [
+       "[role=dialog] input",
+       "login"
+      ]
+     }
+    ]
+   },
+   "oc": [
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "keys": "login"
+    }
+   ]
+  },
+  {
+   "id": "dialog-clone-github",
+   "title": "Clone GitHub repo dialog",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=Open GitHub project"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "keys": "Open GitHub project",
+     "after_ms": 600
+    },
+    {
+     "keys": "{Enter}",
+     "after_ms": 800
+    }
+   ],
+   "oc_note": "OpenConductor's Home shows the workspace list, not the entry cards, so the dialog is opened from the command palette"
+  },
+  {
+   "id": "dialog-create-project",
+   "title": "Create project dialog",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=Quick start"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "keys": "Quick start",
+     "after_ms": 600
+    },
+    {
+     "keys": "{Enter}",
+     "after_ms": 800
+    }
+   ],
+   "oc_note": "opened from the command palette, see dialog-clone-github"
+  },
+  {
+   "id": "dialog-rename-workspace",
+   "title": "Rename workspace dialog",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "rclick": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "[role=menu] >> text=Rename"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "rclick": ".sb-ws-name"
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Rename"
+    }
+   ]
+  },
+  {
+   "id": "dialog-keyboard-shortcuts",
+   "title": "Keyboard shortcuts dialog",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+/"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "/",
+     "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "menu-account",
+   "title": "Account / computer menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "[aria-label='Account menu']"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-computer"
+    }
+   ]
+  },
+  {
+   "id": "menu-workspace-context",
+   "title": "Workspace context menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "rclick": "text=Ada/fix login redirect"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "rclick": ".sb-ws-name"
+    }
+   ]
+  },
+  {
+   "id": "menu-workspace-status",
+   "title": "Workspace context menu > Set status",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "rclick": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "[role=menu] >> text=Set status"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "rclick": ".sb-ws-name"
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Set status"
+    }
+   ]
+  },
+  {
+   "id": "menu-model-picker",
+   "title": "Composer model picker",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "text=Opus 5 >> nth=-1"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": ".composer button",
+     "text": "Opus 5"
+    }
+   ]
+  },
+  {
+   "id": "menu-repo-actions",
+   "title": "Sidebar repo actions menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "hover": "text=tide-web"
+     },
+     {
+      "click": "[aria-label='tide-web actions']"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-menu-trigger",
+     "text": "tide-web actions"
+    }
+   ]
+  },
+  {
+   "id": "menu-help",
+   "title": "Help menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "xpath=//button[@aria-label='Settings']/preceding::button[1]"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Help"
+    }
+   ]
+  },
+  {
+   "id": "toast-copied-link",
+   "title": "Toast: copied link",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "rclick": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "[role=menu] >> text=Copy link"
+     }
+    ],
+    "final_settle_ms": 300
+   },
+   "oc": [
+    {
+     "rclick": ".sb-ws-name"
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Copy link",
+     "after_ms": 200
+    }
+   ]
+  },
+  {
+   "id": "sidebar-after-archive",
+   "title": "Sidebar after archiving a workspace",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "rclick": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "[role=menu] >> text=Archive"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "rclick": ".sb-ws-name"
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Archive",
+     "after_ms": 1000
+    }
+   ]
+  }
+ ]
+}
