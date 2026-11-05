@@ -313,8 +313,14 @@ fn origin_tells_user_input_from_session_and_api_reports() {
     assert_eq!(m.origin(), MessageOrigin::ApiKey("ci"));
     m.sender_session_id = Some("child-1".into());
     assert_eq!(m.origin(), MessageOrigin::Session("child-1"));
-    assert_eq!(msg("a", Role::Assistant, vec![]).origin(), MessageOrigin::Assistant);
-    assert_eq!(msg("s", Role::System, vec![]).origin(), MessageOrigin::System);
+    assert_eq!(
+        msg("a", Role::Assistant, vec![]).origin(),
+        MessageOrigin::Assistant
+    );
+    assert_eq!(
+        msg("s", Role::System, vec![]).origin(),
+        MessageOrigin::System
+    );
 }
 
 #[test]
