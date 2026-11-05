@@ -6,6 +6,7 @@ import { newId, workspaceName } from "./names";
 import { isSidebarVisible } from "./selectors";
 import { inTauri } from "../backend";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
+import { sidebarWrite } from "./sidebarPersist";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -218,6 +219,8 @@ export function useAppStore() {
           console.error("conductor.db: could not archive workspace", err),
         );
       }
+      const write = desktop ? sidebarWrite(action) : undefined;
+      if (write) invoke(write.command, write.args).catch((err) => console.error(`conductor.db: ${write.command} failed`, err));
     },
     [desktop],
   );
