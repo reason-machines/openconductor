@@ -4,7 +4,15 @@ import { existsSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } fr
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const git = (cwd, ...args) => execFileSync("git", args, { cwd, stdio: "pipe" });
+// The fixture repo commits, so give git an identity here rather than relying on the runner's global config.
+const gitEnv = {
+  ...process.env,
+  GIT_AUTHOR_NAME: "OpenConductor E2E",
+  GIT_AUTHOR_EMAIL: "e2e@openconductor.invalid",
+  GIT_COMMITTER_NAME: "OpenConductor E2E",
+  GIT_COMMITTER_EMAIL: "e2e@openconductor.invalid",
+};
+const git = (cwd, ...args) => execFileSync("git", args, { cwd, stdio: "pipe", env: gitEnv });
 
 /** A clone with an `origin` remote and one commit, so Open project adds it directly. */
 function makeRepoFixture(name) {
