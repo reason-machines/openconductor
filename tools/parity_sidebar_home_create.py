@@ -249,7 +249,7 @@ OWNERS = [
     ("sidebar.repo-icon", "sidebar", ["persistence"]),
     ("sidebar.ws-pinned", "sidebar", ["persistence"]),
     ("sidebar.ws-unread", "sidebar", ["persistence"]),
-    ("sidebar.ws-status", "sidebar", ["persistence"]),
+    ("sidebar.ws-status", "sidebar", ["pr"]),
     ("sidebar.sections", "sidebar", ["persistence"]),
     ("sidebar.colors", "sidebar", ["theme"]),
     ("sidebar.", "sidebar", []),

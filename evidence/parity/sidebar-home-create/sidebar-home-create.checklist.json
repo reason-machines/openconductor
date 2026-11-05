@@ -222,24 +222,35 @@
     {
       "id": "sidebar.ws-status",
       "area": "sidebar",
-      "feature": "Status indicator from a derived status with optional manual override (default in-progress)",
+      "feature": "Row status icon from workspace state, then the sessions' aggregated status, then PR state, else branch/local (not the manual Backlog/In progress status, which only groups the status-grouped sidebar)",
       "evidence": {
         "copy": [
           4796,
-          5007
+          5007,
+          3979,
+          2785,
+          2784,
+          2783,
+          4901,
+          2189,
+          3445,
+          1287,
+          2625,
+          527,
+          3398
         ],
         "schema": [
-          "workspaces.derived_status",
-          "workspaces.manual_status"
+          "workspaces.state",
+          "sessions.status"
         ],
         "ledger": [
           "ws.status-archive"
         ]
       },
       "detect": [
-        "(workspace|ws)\\.status|derived_?status|derivedStatus",
-        "derived_?status|derivedStatus",
-        "manual_?status|manualStatus"
+        "rowStatus|workspaceRowStatus",
+        "needs-plan-response|needs_plan_response",
+        "merge-queued|ready-to-merge|checks-failing"
       ]
     },
     {
@@ -804,10 +815,10 @@
       "area": "home",
       "feature": "Adding an already-added repository again (Clone or Open project) makes a new project: no duplicate check, a new repos row, and Clone picks a unique folder (name-v1, name-v2)",
       "evidence": {
-       "schema": [
-        "repos.remote_url",
-        "repos.root_path"
-       ]
+        "schema": [
+          "repos.remote_url",
+          "repos.root_path"
+        ]
       },
       "detect": [
         "(repo|repository).{0,40}already (added|exists)|already (added|exists).{0,40}repo|duplicate_?repo|existing.{0,40}(path|remote)"
