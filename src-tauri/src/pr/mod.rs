@@ -11,14 +11,18 @@
 //!   failing.
 //! * [`info`]: normalized PR info and the workspace status it implies.
 //! * [`merge_eligibility`]: when the merge button may be offered.
+//! * [`header`]: what the workspace header's git/PR control shows.
 
 pub mod checks;
+pub mod header;
 pub mod info;
 pub mod merge_eligibility;
 pub mod model;
 
 #[cfg(test)]
 mod checks_tests;
+#[cfg(test)]
+mod header_tests;
 #[cfg(test)]
 mod info_tests;
 #[cfg(test)]
