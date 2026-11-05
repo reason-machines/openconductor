@@ -32,6 +32,7 @@ libc = "0.2"
 base64 = "0.21"
 # quick_open/ (same crates Conductor links for its file picker)
 ignore = "0.4.25"
+notify = "8"
 nucleo-matcher = "=0.3.1"
 unicode-segmentation = "1.10"
 toml = "0.8"
