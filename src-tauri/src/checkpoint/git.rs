@@ -31,12 +31,18 @@ pub(crate) struct GitOutput {
 
 impl<'a> Git<'a> {
     pub(crate) fn new(cwd: &'a Path) -> Self {
-        Self { cwd, envs: Vec::new(), stdin: None }
+        Self {
+            cwd,
+            envs: Vec::new(),
+            stdin: None,
+        }
     }
 
     pub(crate) fn env(mut self, key: &str, value: impl AsRef<OsStr>) -> Self {
-        self.envs
-            .push((key.to_string(), value.as_ref().to_string_lossy().into_owned()));
+        self.envs.push((
+            key.to_string(),
+            value.as_ref().to_string_lossy().into_owned(),
+        ));
         self
     }
 
@@ -60,12 +66,17 @@ impl<'a> Git<'a> {
             cmd.env(k, v);
         }
         cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
-        cmd.stdin(if self.stdin.is_some() { Stdio::piped() } else { Stdio::null() });
+        cmd.stdin(if self.stdin.is_some() {
+            Stdio::piped()
+        } else {
+            Stdio::null()
+        });
 
         let mut child = cmd.spawn().map_err(CheckpointError::Io)?;
         if let Some(input) = &self.stdin {
             if let Some(mut pipe) = child.stdin.take() {
-                pipe.write_all(input.as_bytes()).map_err(CheckpointError::Io)?;
+                pipe.write_all(input.as_bytes())
+                    .map_err(CheckpointError::Io)?;
             }
         }
         let out = child.wait_with_output().map_err(CheckpointError::Io)?;
@@ -100,6 +111,10 @@ impl<'a> Git<'a> {
     pub(crate) fn verify(&self, rev: &str) -> Result<Option<String>, CheckpointError> {
         let out = self.output(["rev-parse", "-q", "--verify", rev])?;
         let oid = out.stdout.trim();
-        Ok(if out.success && !oid.is_empty() { Some(oid.to_string()) } else { None })
+        Ok(if out.success && !oid.is_empty() {
+            Some(oid.to_string())
+        } else {
+            None
+        })
     }
 }
