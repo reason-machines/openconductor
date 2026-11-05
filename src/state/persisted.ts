@@ -30,8 +30,13 @@ export interface DbWorkspaceRow {
   derivedStatus: string | null;
   manualStatus: string | null;
   workspacePath: string | null;
+  /** `intended_target_branch`; absent from rows of an older backend. */
+  intendedTargetBranch?: string | null;
   pinnedAt: string | null;
   unread: boolean;
+  /** The PR's title and body as last stored (`pr_title`, `pr_description`). */
+  prTitle: string | null;
+  prDescription: string | null;
   /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
   number: number | null;
   createdAt: string;
@@ -77,11 +82,14 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
             createdAt: sqliteTime(w.createdAt),
             path: w.workspacePath ?? undefined,
             placeholderBranchName: w.placeholderBranchName,
+            targetBranch: w.intendedTargetBranch ?? null,
             /* sidebar: pin, unread and status columns */
             pinnedAt: w.pinnedAt ? sqliteTime(w.pinnedAt) : undefined,
             unread: w.unread || undefined,
             manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
             derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
+            prTitle: w.prTitle ?? null,
+            prDescription: w.prDescription ?? null,
             number: w.number ?? null,
             state: w.state,
             userSetWorkspaceName: w.userSetWorkspaceName || undefined,
@@ -94,7 +102,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
 export function validSelection(selection: Selection, repos: Repo[]): Selection {
   if (selection.kind !== "workspace") return selection;
   const repo = repos.find((r) => r.id === selection.repoId);
-  return repo?.workspaces.some((w) => w.id === selection.workspaceId) ? selection : { kind: "home" };
+  return repo?.workspaces.some((w) => w.id === selection.workspaceId) ? selection : { kind: "root" };
 }
 
 export function prefsOf(state: AppState): UiPrefs {
@@ -106,12 +114,12 @@ export function prefsOf(state: AppState): UiPrefs {
 }
 
 export function parsePrefs(raw: string | null): UiPrefs {
-  const fallback: UiPrefs = { selection: { kind: "home" }, collapsed: [] };
+  const fallback: UiPrefs = { selection: { kind: "root" }, collapsed: [] };
   if (!raw) return fallback;
   try {
     const p = JSON.parse(raw) as Partial<UiPrefs>;
     return {
-      selection: p.selection?.kind === "workspace" || p.selection?.kind === "home" ? p.selection : fallback.selection,
+      selection: p.selection?.kind === "workspace" || p.selection?.kind === "home" || p.selection?.kind === "root" ? p.selection : fallback.selection,
       sidebarVisible: typeof p.sidebarVisible === "boolean" ? p.sidebarVisible : undefined,
       collapsed: Array.isArray(p.collapsed) ? p.collapsed.filter((id): id is string => typeof id === "string") : [],
     };

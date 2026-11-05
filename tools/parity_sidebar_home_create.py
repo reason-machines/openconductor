@@ -33,6 +33,10 @@ EXCLUDE_DIRS = ("src/keybindings/",)
 SOURCE_EXT = (".ts", ".tsx", ".js", ".jsx", ".rs", ".sql", ".css")
 TEST_PATH = re.compile(r"(^|/)(tests?|__tests__)(/|\.rs$)|\.(test|spec)\.[jt]sx?$|_tests?\.rs$")
 VERDICT_WEIGHT = {"implemented": 1.0, "partial": 0.5, "backend": 0.25, "missing": 0.0}
+# A Conductor behaviour that cannot exist in a local-only app (it needs a Conductor
+# account or cloud organization), shown by REA evidence cited in `why`. Listed, but
+# left out of verified parity and of the builder obligations.
+NOT_APPLICABLE = "n/a"
 
 
 def skipped(path: str) -> bool:
@@ -127,7 +131,7 @@ def validate(checklist: Path) -> list[str]:
         for iid, vi in v.items():
             if iid not in seen:
                 errors.append(f"{iid}: verdict for unknown item")
-            if vi["verdict"] not in VERDICT_WEIGHT:
+            if vi["verdict"] not in VERDICT_WEIGHT and vi["verdict"] != NOT_APPLICABLE:
                 errors.append(f"{iid}: bad verdict {vi['verdict']}")
     return errors
 
@@ -205,20 +209,26 @@ def score(checklist: Path, ref: str | None, tree: Path | None) -> dict:
             rows = [i for i in items if i["area"] == a]
             for k in VERDICT_WEIGHT:
                 st["verdict_" + k] = sum(i["verdict"] == k for i in rows)
-            st["verdict_parity_pct"] = round(100 * sum(VERDICT_WEIGHT.get(i["verdict"], 0) for i in rows) / len(rows), 1)
-        res["verdict_parity_pct"] = round(100 * sum(VERDICT_WEIGHT.get(i["verdict"], 0) for i in items) / len(items), 1)
+            st["verdict_na"] = sum(i["verdict"] == NOT_APPLICABLE for i in rows)
+            st["verdict_parity_pct"] = verdict_pct(rows)
+        res["verdict_parity_pct"] = verdict_pct(items)
     return res
+
+
+def verdict_pct(rows: list) -> float:
+    scored = [i for i in rows if i["verdict"] != NOT_APPLICABLE]
+    return round(100 * sum(VERDICT_WEIGHT.get(i["verdict"], 0) for i in scored) / len(scored), 1) if scored else 0.0
 
 
 def to_md(res: dict) -> str:
     out = [f"Scored `{res['ref']}`: {res['source_files']} source files. Detector parity **{res['detector_parity_pct']}%**."]
     if "verdict_parity_pct" in res:
         out[0] += f" Verified parity **{res['verdict_parity_pct']}%** (verdicts read on `{res['verdicts_ref']}`, {res['verdicts_verified_at']})."
-        out += ["", "| Area | Items | Implemented | Partial | Backend only | Missing | Verified parity | Detector parity |",
-                "|---|---|---|---|---|---|---|---|"]
+        out += ["", "| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | Detector parity |",
+                "|---|---|---|---|---|---|---|---|---|"]
         for a, s in res["areas"].items():
             out.append(f"| {a} | {s['items']} | {s['verdict_implemented']} | {s['verdict_partial']} | {s['verdict_backend']} | "
-                       f"{s['verdict_missing']} | {s['verdict_parity_pct']}% | {s['parity_pct']}% |")
+                       f"{s['verdict_missing']} | {s['verdict_na']} | {s['verdict_parity_pct']}% | {s['parity_pct']}% |")
         out += ["", "| ID | Verdict | Detector | Feature | Finding |", "|---|---|---|---|---|"]
         out += [f"| `{i['id']}` | {i['verdict']}{' (recheck)' if i['recheck'] else ''} | {i['status']} | {i['feature']} | {i['why']} |"
                 for i in res["items"]]
@@ -274,7 +284,7 @@ def obligations(res: dict, checklist: Path) -> dict:
     rank = {"missing": 0, "backend": 1, "partial": 2}
     rows = []
     for r in res["items"]:
-        if r["verdict"] == "implemented":
+        if r["verdict"] in ("implemented", NOT_APPLICABLE):
             continue
         own, also = owner(r["id"])
         ev = items[r["id"]].get("evidence", {})

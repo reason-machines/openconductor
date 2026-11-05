@@ -791,7 +791,7 @@
     {
       "id": "home.new-project",
       "area": "home",
-      "feature": "Create a new project: local folder, git init, optional private GitHub repo, then a first workspace",
+      "feature": "Create a new project: local folder, git init, private GitHub repo (required, as in Conductor's Quick start), then a first workspace",
       "evidence": {
         "copy": [
           1047,
@@ -842,7 +842,7 @@
     {
       "id": "home.status-overview",
       "area": "home",
-      "feature": "Home shows workspaces with their status (status matrix option, mine vs all)",
+      "feature": "Home list shows each workspace's active session status or its last-activity time (Conductor: needs plan response, needs permission, needs input, working, cancelling, waiting); status-matrix option and mine-vs-all",
       "evidence": {
         "copy": [
           4796,

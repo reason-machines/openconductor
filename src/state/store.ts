@@ -4,11 +4,12 @@ import type { AppState, Repo, Selection, Workspace } from "./types";
 import type { WorkspaceStatusValue } from "./workspaceStatus";
 import type { RowPr } from "./rowStatus";
 import { newId, workspaceName } from "./names";
-import { isSidebarVisible } from "./selectors";
+import { isSidebarVisible, startSelection } from "./selectors";
 import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
+import { sameRepoRecord } from "./addRepo";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -25,13 +26,13 @@ export type Action =
   | {
       type: "addWorkspace";
       repoId: string;
-      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number">;
+      workspace: Pick<Workspace, "id" | "name" | "branch" | "path" | "targetBranch" | "placeholderBranchName" | "userSetWorkspaceName" | "userSetBranchName" | "number">;
     }
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean }
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
-  /** The workspace's pull request title changed on GitHub (`workspaces.pr_title`). */
-  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; pr?: RowPr | null }
+  /** The workspace's pull request title or body changed on GitHub (`workspaces.pr_title`, `pr_description`). `prDescription` and `pr` left out keep what the row has. */
+  | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
   /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
   | { type: "setWorkspaceWorking"; repoId: string; workspaceId: string; working: boolean }
   | { type: "toggleSidebar" }
@@ -39,20 +40,23 @@ export type Action =
   | { type: "setRepoHidden"; repoId: string; hidden: boolean }
   /** Sidebar drag and drop: the full repo id list in its new order (`repos.display_order`). */
   | { type: "reorderRepos"; ids: string[] }
+  | { type: "setSidebarVisible"; visible: boolean }
   | { type: "reset"; state: AppState }
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] }
   /* sidebar: row actions (unread, pin, status) */
   | { type: "setWorkspaceUnread"; repoId: string; workspaceId: string; unread: boolean }
   | { type: "setWorkspacePinned"; repoId: string; workspaceId: string; pinned: boolean; at?: number }
-  | { type: "setWorkspaceStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue };
+  | { type: "setWorkspaceStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue }
+  /** A PR lookup derived a new status (`workspaces.derived_status`); like the reference, it drops the manual status. */
+  | { type: "setWorkspaceDerivedStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue };
 
 function updateWorkspace(state: AppState, repoId: string, workspaceId: string, fn: (w: Workspace) => Workspace): AppState {
   const repos = state.repos.map((r) => (r.id !== repoId ? r : { ...r, workspaces: r.workspaces.map((w) => (w.id === workspaceId ? fn(w) : w)) }));
   return { ...state, repos };
 }
 
-const EMPTY: AppState = { repos: [], selection: { kind: "home" } };
+const EMPTY: AppState = { repos: [], selection: { kind: "root" } };
 
 function makeWorkspace(repo: Repo): Workspace {
   const taken = new Set(repo.workspaces.map((w) => w.name));
@@ -65,8 +69,7 @@ export function reducer(state: AppState, action: Action): AppState {
     case "select":
       return { ...state, selection: action.selection };
     case "addRepo": {
-      const existing = state.repos.find((r) => (action.repo.path && r.path === action.repo.path) || (action.repo.remote && r.remote === action.repo.remote));
-      if (existing) return state;
+      if (sameRepoRecord(state.repos, { id: action.id, path: action.repo.path })) return state;
       if (action.id) {
         const repo: Repo = { ...action.repo, id: action.id, workspaces: [] };
         return { ...state, repos: [...state.repos.filter((r) => r.id !== action.id), repo] };
@@ -78,7 +81,7 @@ export function reducer(state: AppState, action: Action): AppState {
     }
     case "removeRepo": {
       const repos = state.repos.filter((r) => r.id !== action.repoId);
-      const sel = state.selection.kind === "workspace" && state.selection.repoId === action.repoId ? { kind: "home" as const } : state.selection;
+      const sel = state.selection.kind === "workspace" && state.selection.repoId === action.repoId ? { kind: "root" as const } : state.selection;
       return { ...state, repos, selection: sel };
     }
     case "toggleRepo":
@@ -117,9 +120,15 @@ export function reducer(state: AppState, action: Action): AppState {
       const set = (w: Workspace): Workspace => {
         if (w.id !== action.workspaceId) return w;
         const titleSame = (w.prTitle ?? null) === action.prTitle;
+        const descriptionSame = action.prDescription === undefined || (w.prDescription ?? null) === action.prDescription;
         const prSame = action.pr === undefined || JSON.stringify(w.pr ?? null) === JSON.stringify(action.pr);
-        if (titleSame && prSame) return w;
-        return { ...w, prTitle: action.prTitle, ...(action.pr === undefined ? {} : { pr: action.pr }) };
+        if (titleSame && descriptionSame && prSame) return w;
+        return {
+          ...w,
+          prTitle: action.prTitle,
+          ...(action.prDescription === undefined ? {} : { prDescription: action.prDescription }),
+          ...(action.pr === undefined ? {} : { pr: action.pr }),
+        };
       };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
@@ -128,7 +137,7 @@ export function reducer(state: AppState, action: Action): AppState {
       const repos = state.repos.map((r) =>
         r.id === action.repoId ? { ...r, workspaces: r.workspaces.filter((w) => w.id !== action.workspaceId) } : r,
       );
-      const sel = state.selection.kind === "workspace" && state.selection.workspaceId === action.workspaceId ? { kind: "home" as const } : state.selection;
+      const sel = state.selection.kind === "workspace" && state.selection.workspaceId === action.workspaceId ? { kind: "root" as const } : state.selection;
       return { ...state, repos, selection: sel };
     }
     case "toggleSidebar":
@@ -137,6 +146,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos: setRepoHidden(state.repos, action.repoId, action.hidden) };
     case "reorderRepos":
       return { ...state, repos: orderRepos(state.repos, action.ids) };
+    case "setSidebarVisible":
+      return isSidebarVisible(state) === action.visible ? state : { ...state, sidebarVisible: action.visible };
     case "reset":
       return action.state;
     case "hydrate": {
@@ -162,6 +173,8 @@ export function reducer(state: AppState, action: Action): AppState {
       if (!ws || ws.status === status) return state;
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, status }));
     }
+    case "setWorkspaceDerivedStatus":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, derivedStatus: action.status, manualStatus: undefined }));
   }
 }
 
@@ -196,6 +209,7 @@ function load(): AppState {
   if (params.get("demo") === "1") {
     const s = demoState();
     if (params.get("view") === "home") s.selection = { kind: "home" };
+    if (params.get("view") === "root") s.selection = { kind: "root" };
     if (params.get("sidebar") === "0") s.sidebarVisible = false;
     return s;
   }
@@ -204,15 +218,15 @@ function load(): AppState {
     // First run after the switch: keep the selection and layout the old shell state had.
     const prefs = parsePrefs(localStorage.getItem(PREFS_KEY) ?? legacyPrefs(localStorage.getItem(STORAGE_KEY)));
     const repos = prefs.collapsed.map((id) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed: true }));
-    return { repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible };
+    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname);
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as AppState;
+    if (raw) return startSelection(JSON.parse(raw) as AppState, window.location.pathname);
   } catch {
     /* ignore corrupt state */
   }
-  return EMPTY;
+  return startSelection(EMPTY, window.location.pathname);
 }
 
 /** UI prefs carried over from the pre-database shell state, as `PREFS_KEY` JSON. */

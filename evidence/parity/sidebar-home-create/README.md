@@ -2,14 +2,29 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`d8b3b2e`, 2026-11-05)
+## Result on main (`4b9dc87`, 2026-11-05)
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Verified parity | `0e2531b` (#289) | Previous |
-|---|---|---|---|---|---|---|---|---|
-| Sidebar | 33 | 16 | 10 | 3 | 4 | **65.9%** | 59.1% | 54.5% (`5045114`, #261) |
-| Home | 18 | 9 | 4 | 1 | 4 | **62.5%** | 63.9% | 41.7% (`884f1f7`) |
-| Create workspace | 17 | 12 | 3 | 0 | 2 | **79.4%** | 76.5% | 61.8% (`884f1f7`) |
-| **All** | 68 | 37 | 17 | 4 | 10 | **68.4%** | 64.7% | 52.9% |
+| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `d8b3b2e` | `0e2531b` (#289) |
+|---|---|---|---|---|---|---|---|---|---|
+| Sidebar | 33 | 16 | 10 | 3 | 4 | 0 | **65.9%** | 65.9% | 59.1% |
+| Home | 18 | 12 | 5 | 0 | 0 | 1 | **85.3%** | 62.5% | 63.9% |
+| Create workspace | 17 | 13 | 2 | 0 | 2 | 0 | **82.4%** | 79.4% | 76.5% |
+| **All** | 68 | 41 | 17 | 3 | 6 | 1 | **75.0%** | 68.4% | 64.7% |
+
+**Since `d8b3b2e`.** Read on `4d72807`; `4b9dc87` adds #373 (the diff target ref), which changes no item in these areas. Merges in these areas: #322, #343, #350, #354, #379 and #381 (Home), #327, #375 and #379 (create), #337 and #344 (sidebar row).
+
+- `home.route` partial to implemented (#322): `{kind: "root"}` is `/`, the start screen unless a workspace was open, and the fallback when the open workspace or its repository goes away.
+- `home.first-run` missing to implemented (#381): `FirstRunGate` shows `/first-run-onboarding` on a fresh install with no repositories (`first_time_onboarding_step` in the settings table), as Conductor's `Pya`/`Bxa` do.
+- `home.new-project` partial to implemented (#350): Quick start creates the real first workspace and starts its setup script. The feature was re-worded: the GitHub repo step is required in Conductor's Quick start (`gbi`), not optional.
+- `home.duplicate-repo` backend only to partial (#343, #379): a second clone of an added remote is its own project in a `<name>-v1` folder. Open project still refuses an already-added folder (`REPO_EXISTS`), where Conductor adds a second row.
+- `home.status-overview` missing to partial (#322): the Home list at `/all-workspaces` groups rows by last activity with unread, diff stat and relative time, but the status column shows only "working".
+- `home.dashboard-routes` missing to partial: `/all-workspaces` exists; `/dashboard` (REA: route `lta`, shown in the sidebar when `dashboard_enabled` is on, default off) does not.
+- `home.recent` stays partial, re-read with REA: "Recent workspaces" is the palette's heading, backed by a persisted `recentWorkspaceIds` capped at 5. Ours is in memory only and capped at 8.
+- `home.org-states` missing to **not applicable** (new verdict `n/a`, left out of verified parity and obligations): Conductor's loading and cloud-redirect states come from its cloud organizations API, which a local-only app does not have (REA in `evidence/screens/first-run-onboarding.md`, #381).
+- `home.repo-search` stays partial: #354's Filter by project submenu is on main but not mounted. Sidebar PR #315 mounts it and keeps the filter in localStorage, not Conductor's `sidebar_repo_filter` settings row; that difference will be scored once #315 merges.
+- `create.worktree` partial to implemented (#375): the `conductor_root_path` setting moves workspaces under `<root>/workspaces/<repo>`, editable in Settings › Advanced and shown per repo. Default root is the app data directory, not `~/conductor`.
+- `create.initializing` stays partial with new detail (#327): a pending "Creating workspace..." row shows in the sidebar, but there is no initializing view or log.
+- `sidebar.ws-name` and `sidebar.ws-status` stay partial (#344): the PR title is now saved and read back, but no rename sets `user_set_workspace_name`, and the row icon still never sees PR state for unopened workspaces or any needs-* session status.
 
 **Since `8229113`.** #324 took `create.autostart-run` from partial to implemented (Settings › Experimental "Auto-run after setup", re-read on `7e75c2d`). `home.repo-search` was re-anchored (verdict unchanged, partial): REA on Conductor 0.87.6 (`renderApp-D_fmY7hW.js`, sha256 matches the asset manifest; Home builder 68dc657c, PR #354, offsets spot-checked by the verifier) shows Home and the Add-repository menu have no repository search. The old anchors ("Search repositories...", "No matching repositories.", "Loading repositories...") are the cloud GitHub repo picker (`mfa`, @10,435,221), which has no local surface. Local narrowing is the palette Projects tab ("Search projects...", already built) and the sidebar section header's "Filter by project" submenu (`pra`, @10,019,058: shown with more than one repository, "All projects" then each repository, "All projects" deletes `sidebar_repo_filter`). #354 adds that logic and submenu, tested but not mounted; the item closes once the sidebar owner mounts it in the section header menu and filters the repo groups.
 
@@ -23,7 +38,7 @@ Verifier output for the sidebar, Home and Create-workspace areas. Each item is s
 - `home.duplicate-repo` re-worded and partial to backend only. Home builder c93ae9dd's REA read of Conductor 0.87.6 (decoded index chunk, `createRepo`) shows Clone and Open project never check for an already-added repo: a second add inserts a new `repos` row and Clone picks a unique folder (`name-v1`). The real `conductor.schema.sql` agrees: `repos` has no unique constraint on `remote_url` or `root_path`. "This repository already exists." is the GitHub repo-name check, so that copy reference was dropped. The old wording ("refuse a duplicate") was wrong. Against the corrected wording the rebuild diverges in every UI path (`REPO_EXISTS` refusal in Open project and the Add-repository menu, store drops the Clone result); only the tested `clone_repository` unique-folder logic matches.
 - #305 is create-workspace evidence only (workspace numbering), so `create.number` stays missing.
 
-Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (31 open; 36 on `0e2531b`, 45 before).
+Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0; an item marked not applicable (`n/a`) is left out. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (26 open; 31 on `d8b3b2e`, 36 on `0e2531b`, 45 before).
 
 All 68 items were re-read on `85e00bb`. The diff from there to `0e2531b` was then read too, and the 6 items it touches were re-read on `0e2531b`: #278 (row menu, pins, unread, status) and #269 (Home card tokens). Compared with the last verdicts on main, 17 items changed: 16 up and 1 down.
 
