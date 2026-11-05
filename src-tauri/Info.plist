@@ -9,6 +9,8 @@
   <string>OpenConductor needs this when a repository you add is stored in Documents.</string>
   <key>NSDownloadsFolderUsageDescription</key>
   <string>OpenConductor needs this when a repository you add is stored in Downloads.</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>OpenConductor uses the microphone when you dictate a message to an agent.</string>
   <key>NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac</key>
   <true/>
   <key>CFBundleURLTypes</key>

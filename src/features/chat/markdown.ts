@@ -1,5 +1,5 @@
 // Assistant text as markdown, the way Conductor renders it (REA evidence in
-// evidence/chat/markdown.md): react-markdown with GitHub-flavoured markdown
+// evidence/chat/README.md): react-markdown with GitHub-flavoured markdown
 // and hard line breaks, code highlighted by lowlight (highlight.js grammars,
 // `hljs` classes), and an inline-code URL turned into a link.
 //

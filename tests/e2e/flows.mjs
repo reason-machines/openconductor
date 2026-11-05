@@ -1,6 +1,6 @@
 // Flows run in order against one app session. Each throws on failure.
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -99,6 +99,65 @@ export const flows = [
       });
       const [, added] = rows.find(([name]) => name === "e2e-diff.txt");
       if (added !== "+3") throw new Error(`e2e-diff.txt shows ${added} added lines, want +3 (rows: ${JSON.stringify(rows)})`);
+    },
+  },
+  {
+    // Checkpoints reach the UI through Spotlight: Run saves the repository root as
+    // the `pre-spotlight` checkpoint, then saves the workspace and restores that
+    // checkpoint into the root; Stop restores `pre-spotlight` and drops its ref.
+    name: "checkpoint",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the diff flow's worktree");
+      const inRoot = join(ctx.repo, "e2e-diff.txt");
+      const refs = () => git(ctx.repo, "for-each-ref", "--format=%(refname)", "refs/conductor-checkpoints").toString().split("\n").filter(Boolean);
+      const buttonText = () => wd.execute("return document.querySelector('.scripts-actions .btn-primary, .scripts-actions .btn-stop')?.textContent.trim() ?? null;", []);
+      if (existsSync(inRoot)) throw new Error("e2e-diff.txt is already in the repository root");
+
+      const [toggle] = await wd.waitFor("the spotlight testing toggle", () => wd.findAll(".spotlight-toggle input:not([disabled])").then((ids) => ids.length && ids));
+      await wd.click(toggle);
+      await wd.waitFor("Run Spotlight", async () => (await buttonText())?.endsWith("Run Spotlight"));
+      const [start] = await wd.findAll(".scripts-actions .btn-primary");
+      await wd.click(start);
+
+      await wd.waitFor("the workspace's file synced into the repository root", async () => existsSync(inRoot) && readFileSync(inRoot, "utf8") === "one\ntwo\nthree\n", 60000);
+      const during = refs();
+      if (!during.includes("refs/conductor-checkpoints/pre-spotlight") || !during.some((r) => /\/cp-spotlight-\d+-\d+$/.test(r))) {
+        throw new Error(`checkpoint refs while syncing: ${JSON.stringify(during)}, want pre-spotlight and cp-spotlight-<epoch>-<pid>`);
+      }
+      if (!existsSync(join(ctx.worktree, "e2e-diff.txt"))) throw new Error("saving the checkpoint removed e2e-diff.txt from the worktree");
+      await wd.waitFor("Stop Spotlight", async () => (await buttonText())?.endsWith("Stop Spotlight"));
+
+      const [stop] = await wd.findAll(".scripts-actions .btn-stop");
+      await wd.click(stop);
+      await wd.waitFor("the repository root restored from pre-spotlight", async () => !existsSync(inRoot), 60000);
+      await wd.waitFor("the pre-spotlight ref dropped", async () => !refs().includes("refs/conductor-checkpoints/pre-spotlight"));
+      const status = git(ctx.repo, "status", "--porcelain", "--untracked-files=all").toString().split("\n").filter((l) => l && !l.includes(".conductor/"));
+      if (status.length) throw new Error(`repository root not back to its own state: ${JSON.stringify(status)}`);
+
+      // Turn spotlight testing back off for later flows.
+      const [again] = await wd.findAll(".spotlight-toggle input:checked:not([disabled])");
+      if (again) await wd.click(again);
+    },
+  },
+  {
+    // The workspace's terminal panel runs a real login shell in the repository
+    // checkout. The typed line never contains "42", so seeing oc-term-42 proves
+    // the shell evaluated it, and pwd shows where the shell started.
+    name: "terminal",
+    async run(wd, ctx) {
+      if (!ctx.repo) throw new Error("needs the add-repo flow's repository");
+      const rows = () => wd.execute("return document.querySelector('.terminal-panel .xterm-rows')?.textContent ?? null;", []);
+      const [screen] = await wd.waitFor("a terminal in the workspace's terminal panel", () => wd.findAll(".terminal-panel .xterm-screen").then((ids) => ids.length && ids), 60000);
+      await wd.click(screen);
+      await wd.keys("echo oc-term-$((6*7)); pwd\uE007");
+      const cwds = [...new Set([ctx.repo, realpathSync(ctx.repo)])];
+      const text = await wd.waitFor("the shell's output", async () => {
+        const t = ((await rows()) ?? "").replace(/\u00a0/g, " ");
+        return t.includes("oc-term-42") && cwds.some((c) => t.includes(c)) && t;
+      }).catch(async (e) => {
+        throw new Error(`${e.message}; terminal shows ${JSON.stringify(((await rows()) ?? "").replace(/\u00a0/g, " ").trim().slice(-400))}`);
+      });
+      if (!text.includes("echo oc-term-$((6*7)); pwd")) throw new Error("the typed command is not echoed in the terminal");
     },
   },
 ];

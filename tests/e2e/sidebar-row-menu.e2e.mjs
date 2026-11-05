@@ -1,0 +1,163 @@
+// End-to-end check of the sidebar workspace row menu (right-click a row):
+// Mark as read / unread, Pin / Unpin and the Pinned group, Set status,
+// the R and P keys while the menu is open, and Archive, in a real browser
+// on the demo state (`?demo=1`). Run after `npm run build`:
+//
+//   node --test tests/e2e/
+import { test, before, after } from "node:test";
+import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
+import { chromium } from "playwright-core";
+import { preview } from "vite";
+
+const CANDIDATES = [
+  process.env.CHROME_PATH,
+  "/usr/bin/google-chrome",
+  "/usr/bin/google-chrome-stable",
+  "/usr/bin/chromium",
+  "/usr/bin/chromium-browser",
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+].filter(Boolean);
+const executablePath = CANDIDATES.find((p) => existsSync(p));
+
+let server;
+let browser;
+let base;
+
+before(async () => {
+  assert.ok(executablePath, `no Chrome or Chromium found; set CHROME_PATH (tried ${CANDIDATES.join(", ")})`);
+  assert.ok(existsSync("dist/index.html"), "dist/ is missing; run `npm run build` first");
+  server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
+  base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  browser = await chromium.launch({ executablePath, args: ["--no-sandbox"] });
+});
+
+after(async () => {
+  await browser?.close();
+  await new Promise((resolve) => server?.httpServer.close(resolve));
+});
+
+const ROW = '[data-testid="left-sidebar-workspace-item"]';
+const row = (page, label) => page.locator(ROW, { has: page.locator(".sb-ws-name", { hasText: label }) });
+const menu = (page) => page.getByRole("menu", { name: "Workspace actions" });
+const menuItems = (page) => menu(page).locator(":scope > [role=menuitem], :scope > .sb-ctx-sub > [role=menuitem]").evaluateAll((els) => els.map((e) => e.querySelector(".sb-ctx-label").textContent));
+
+test("row menu: read/unread, pin into the Pinned group, status, keys, archive", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${base}/?demo=1`);
+  const harbor = row(page, "Quiet harbor");
+  await harbor.waitFor();
+
+  // Conductor's order for a local workspace; Rename is hidden until the rename dialog is wired.
+  await harbor.click({ button: "right" });
+  assert.deepEqual(await menuItems(page), ["Mark as unread", "Pin", "Set status", "Archive"]);
+  assert.equal(await harbor.getAttribute("data-menu-open"), "true");
+  await page.keyboard.press("Escape");
+  assert.equal(await menu(page).count(), 0);
+
+  // Pin moves the row into the Pinned group above the repositories.
+  await harbor.click({ button: "right" });
+  await menu(page).getByRole("menuitem", { name: "Pin" }).click();
+  const pinnedGroup = page.locator('.sb-group[data-group="Pinned"]');
+  assert.deepEqual(await pinnedGroup.locator(".sb-ws-name").allTextContents(), ["Quiet harbor"]);
+  assert.equal(await page.locator(".sb-repo-groups .sb-ws-name", { hasText: "Quiet harbor" }).count(), 0);
+
+  // P while the menu is open unpins; the group goes away.
+  await harbor.click({ button: "right" });
+  assert.deepEqual((await menuItems(page)).slice(0, 2), ["Mark as unread", "Unpin"]);
+  await page.keyboard.press("p");
+  assert.equal(await pinnedGroup.count(), 0);
+  assert.equal(await page.locator(".sb-repo-groups .sb-ws-name", { hasText: "Quiet harbor" }).count(), 1);
+
+  // R marks unread (semibold row); opening the workspace clears it.
+  await harbor.click({ button: "right" });
+  await page.keyboard.press("r");
+  assert.equal(await harbor.getAttribute("data-unread"), "true");
+  await harbor.click({ button: "right" });
+  assert.equal((await menuItems(page))[0], "Mark as read");
+  await page.keyboard.press("Escape");
+  await harbor.click();
+  assert.equal(await harbor.getAttribute("data-unread"), null);
+
+  // Set status: the default is In progress; choosing one checks it next time.
+  await harbor.click({ button: "right" });
+  await menu(page).getByRole("menuitem", { name: "Set status" }).hover();
+  const statuses = page.getByRole("menu", { name: "Set status" });
+  assert.deepEqual(await statuses.locator("[role=menuitemradio]").allTextContents(), ["Backlog", "In progress✓", "In review", "Done", "Canceled"]);
+  await statuses.getByRole("menuitemradio", { name: "In review" }).click();
+  await harbor.click({ button: "right" });
+  await menu(page).getByRole("menuitem", { name: "Set status" }).hover();
+  assert.equal(await statuses.getByRole("menuitemradio", { name: "In review" }).getAttribute("aria-checked"), "true");
+
+  // Archive (selected row shows the ⌘⇧A hint) removes the row.
+  await page.keyboard.press("Escape");
+  await harbor.click({ button: "right" });
+  assert.equal(await menu(page).getByRole("menuitem", { name: /Archive/ }).locator("kbd").textContent(), "⌘⇧A");
+  await menu(page).getByRole("menuitem", { name: /Archive/ }).click();
+  assert.equal(await harbor.count(), 0);
+  await page.close();
+});
+
+test("holding Cmd shows 1..9 on the visible rows, and Cmd+N opens that row", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${base}/?demo=1`);
+  await row(page, "Quiet harbor").waitFor();
+  const hints = () => page.locator('.sb-ws-hint[data-state="visible"]').allTextContents();
+  const names = () => page.locator(`${ROW} .sb-ws-name`).allTextContents();
+
+  await page.keyboard.down("Meta");
+  assert.deepEqual(await hints(), [], "hints wait 500 ms");
+  await page.waitForTimeout(700);
+  const shown = await hints();
+  assert.deepEqual(shown, (await names()).map((_, i) => String(i + 1)));
+  assert.equal(await page.locator(".sb-ws-hint").first().getAttribute("aria-label"), "Switch with Command-1");
+  await page.keyboard.press("2");
+  await page.keyboard.up("Meta");
+  assert.deepEqual(await hints(), []);
+  const second = (await names())[1];
+  assert.equal(await row(page, second).getAttribute("aria-current"), "page");
+
+  // As in Conductor, pointer events hide them only once the modifier is no longer held.
+  await page.keyboard.down("Meta");
+  await page.waitForTimeout(700);
+  await page.mouse.move(600, 400);
+  assert.ok((await hints()).length > 0);
+  await page.keyboard.up("Meta");
+  assert.deepEqual(await hints(), []);
+  await page.close();
+});
+
+test("diff stats: muted on unselected rows unless Colored sidebar diffs is on", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${base}/?demo=1`);
+  await row(page, "Quiet harbor").waitFor();
+  const stats = page.locator(`${ROW}:not([data-active]) [data-testid="workspace-diff-stat"] .add`);
+  assert.ok((await stats.count()) > 0, "the demo has unselected rows with changes");
+  const colors = () =>
+    page.evaluate(() => {
+      const add = document.querySelector('[data-testid="left-sidebar-workspace-item"]:not([data-active]) [data-testid="workspace-diff-stat"] .add');
+      const muted = getComputedStyle(document.documentElement).getPropertyValue("--sidebar-muted-foreground").trim();
+      const probe = document.createElement("span");
+      probe.style.color = muted;
+      document.body.append(probe);
+      const mutedRgb = getComputedStyle(probe).color;
+      probe.remove();
+      return { add: getComputedStyle(add).color, muted: mutedRgb, text: add.textContent };
+    });
+  const off = await colors();
+  assert.match(off.text, /^\+(\d+|\d+(\.\d)?k|✱✱)$/);
+  assert.equal(off.add, off.muted, "default (off): unselected rows use the muted color");
+
+  await page.evaluate(() => {
+    const key = "openconductor.settings.preview";
+    const s = JSON.parse(localStorage.getItem(key) ?? "{}");
+    s.appearance = { ...(s.appearance ?? { zoom_level_v2: 1, low_contrast_dark_mode: false }), colored_sidebar_diffs: true };
+    localStorage.setItem(key, JSON.stringify(s));
+  });
+  await page.reload();
+  await row(page, "Quiet harbor").waitFor();
+  await page.waitForFunction(() => document.documentElement.dataset.coloredSidebarDiffs === "");
+  const on = await colors();
+  assert.notEqual(on.add, on.muted, "on: unselected rows keep the green");
+  await page.close();
+});

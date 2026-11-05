@@ -1,0 +1,41 @@
+/* parity:diff.appearance:ui
+   Accessible colors for diffs: Pierre's addition/deletion override variables,
+   set from the root's data-color-vision (src/features/diff/appearance.ts).
+   Values per mode as Conductor sets them (REA, renderApp 0.87.6): blue for
+   additions in both palettes, orange for deletions with protanopia /
+   deuteranopia. Light values apply to the light theme, dark ones to dark
+   (chosen, or "system" with a dark OS). */
+:root[data-color-vision="protanopia-deuteranopia"] {
+  --diffs-addition-color-override: #0969da;
+  --diffs-deletion-color-override: #bc4c00;
+}
+:root[data-color-vision="tritanopia"] {
+  --diffs-addition-color-override: #0969da;
+}
+:root[data-theme="dark"][data-color-vision="protanopia-deuteranopia"] {
+  --diffs-addition-color-override: #58a6ff;
+  --diffs-deletion-color-override: #f0883e;
+}
+:root[data-theme="dark"][data-color-vision="tritanopia"] {
+  --diffs-addition-color-override: #58a6ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme])[data-color-vision="protanopia-deuteranopia"] {
+    --diffs-addition-color-override: #58a6ff;
+    --diffs-deletion-color-override: #f0883e;
+  }
+  :root:not([data-theme])[data-color-vision="tritanopia"] {
+    --diffs-addition-color-override: #58a6ff;
+  }
+}
+
+/* Our own +/- counts and file status colours follow the same palette. */
+:root[data-color-vision] .oc-diff {
+  --oc-diff-addition: var(--diffs-addition-color-override);
+}
+:root[data-color-vision="protanopia-deuteranopia"] .oc-diff {
+  --oc-diff-deletion: var(--diffs-deletion-color-override);
+}
+
+/* Settings › Appearance: the Code theme preview. */
+.settings-code-preview { margin-top: 4px; border-radius: 6px; overflow: hidden; font-size: 13px; }
