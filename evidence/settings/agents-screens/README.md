@@ -113,3 +113,19 @@ What is still different, and why:
   column comparison is computed outside REA.
 - `compare-web-screenshots` takes `--channel-threshold`; `--threshold` fails
   as an unknown flag.
+
+## Per-agent options inside the tabs (after #432)
+
+The option rows from #432 (`src/settings/rows/AgentOptionRows.tsx`) render as
+the last children of each tab: Claude and Codex inside `.settings-rows` after
+the login block, OpenCode's Advanced collapsible last on the OpenCode tab. The
+tab panel is a `section` labelled with the tab name, so the
+`agents-*-options` e2e flows click their tab and then find
+`section[aria-label="<tab>"]`. Built-app shots from the headless run:
+`built-agents-claude-options--dark.png`, `built-agents-codex-options--dark.png`,
+`built-agents-opencode-advanced--dark.png`.
+
+OpenCode's Advanced section also renders before OpenCode is installed. This is
+inferred, not observed: `xpa` opens itself on an alert and `gpa` has a
+"Missing" badge, which only makes sense when the agent is absent. No Conductor
+reference shot of the not-installed tab exists to confirm it.

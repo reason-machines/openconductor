@@ -117,8 +117,21 @@ async function screenshot(name) {
 const chatText = () => run("const el = document.querySelector('.chat-scroll'); return el ? el.innerText : null;");
 const running = () => run("return !!document.querySelector('.composer button[title=\"Stop the agent\"]');");
 
+/** What has the keyboard, for failure messages: the composer, a terminal, or another element. */
+const focusedElement = () =>
+  run(`const a = document.activeElement;
+    if (!a || a === document.body) return "body";
+    if (a.closest(".composer")) return "composer " + a.tagName.toLowerCase();
+    if (a.closest(".terminal-panel")) return "terminal " + a.className;
+    return a.tagName.toLowerCase() + (a.className ? "." + a.className : "");`);
+const composerValue = () => run("const t = document.querySelector('.composer textarea'); return t ? t.value : null;");
+
 async function send(text) {
   await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  // Send is disabled while the box is empty: a click then does nothing and the
+  // turn never shows, so say where the typed text went instead of timing out later.
+  const typed = await composerValue();
+  assert.equal(typed, text, `the composer holds what was typed; focus is on ${await focusedElement()}`);
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
@@ -166,6 +179,20 @@ try {
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
   const placeholder = await waitFor("the Reason chat panel", () => chatText().then((t) => t && t.includes("Reason runs this chat") && t));
   pass(`the desktop chat panel runs Reason: "${placeholder.split("\n").find((l) => l.includes("Reason runs"))}"`);
+
+  // The workspace opens its first terminal on its own (a PTY spawn, so it lands
+  // a moment later). Its arrival must not take the keyboard from the chat box:
+  // keys typed there would go to the shell and Send would stay disabled.
+  const terminalFirst = await run(`document.querySelector('.composer textarea').focus(); return !!document.querySelector('.terminal-panel .xterm');`);
+  await waitFor("the workspace's terminal", () => run("return !!document.querySelector('.terminal-panel .xterm');"));
+  await sleep(500);
+  const focus = await focusedElement();
+  assert.equal(focus, "composer textarea", `the terminal that opened with the workspace took focus from the chat box (${focus})`);
+  pass(
+    terminalFirst
+      ? "the chat box keeps focus (the terminal was already open when it was focused)"
+      : "the chat box keeps focus when the workspace's terminal opens after it",
+  );
 
   // 1. A local path: in the workspace folder under HOME.
   await send("local");
@@ -251,11 +278,29 @@ try {
   }
   pass(`turns 5 and 6 each saved start/end checkpoints (${refs.length} refs in the workspace)`);
 
+  // Every finished turn has a More actions menu ("Fork to new tab", "Fork to new workspace"); only
+  // turns before the last also have "Reset chat". Opens the turn's menu with
+  // real clicks, reads its items, and leaves it open.
+  const openMenu = async (turn) => {
+    await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
+    return waitFor(`${turn}'s menu`, () =>
+      run(`const m = document.querySelector('${turn} .chat-menu'); return m ? [...m.querySelectorAll('[role="menuitem"]')].map((b) => b.innerText.trim()) : null;`),
+    );
+  };
+  const closeMenu = async (turn) => {
+    await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
+    await waitFor(`${turn}'s menu to close`, () => run(`return !document.querySelector('${turn} .chat-menu');`));
+  };
   const turn5 = `.chat-turn-end[data-turn-id="${id5}"]`;
-  const lastHasMenu = await run(`return !!document.querySelector('.chat-turn-end[data-turn-id="${id6}"] button[aria-label="More actions"]');`);
-  assert.equal(lastHasMenu, false, "the last turn has no Reset chat");
-  await wd("POST", `/element/${await find(`${turn5} button[aria-label="More actions"]`)}/click`, {});
-  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]`)}/click`, {});
+  const turn6 = `.chat-turn-end[data-turn-id="${id6}"]`;
+  const lastItems = await openMenu(turn6);
+  assert.deepEqual(lastItems, ["Fork to new tab", "Fork to new workspace"], "the last turn has no Reset chat");
+  await closeMenu(turn6);
+  const turn5Items = await openMenu(turn5);
+  assert.deepEqual(turn5Items, ["Fork to new tab", "Fork to new workspace", "Reset chat"], "turn 5 has both forks and Reset chat");
+  pass('the last turn\'s menu has "Fork to new tab" and "Fork to new workspace"; turn 5\'s also has "Reset chat"');
+  const resetItem = turn5Items.indexOf("Reset chat") + 1;
+  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]:nth-child(${resetItem})`)}/click`, {});
   const dialog = await waitFor('"Reset chat?" with "2 changed"', () =>
     run(`const d = document.querySelector('.modal[aria-label="Reset chat?"]'); return d && d.innerText.includes("changed") ? d.innerText : null;`),
   );
@@ -274,8 +319,8 @@ try {
   assert.ok(after.includes("turn 3: follow-up"), "earlier turns stay");
   assert.equal(readWs("notes.txt"), "one\n");
   assert.equal(readWs("extra.txt"), null);
-  const turn5Menu = await run(`return !!document.querySelector('${turn5} button[aria-label="More actions"]');`);
-  assert.equal(turn5Menu, false, "turn 5 is now the last turn");
+  assert.deepEqual(await openMenu(turn5), ["Fork to new tab", "Fork to new workspace"], "turn 5 is now the last turn: no Reset chat");
+  await closeMenu(turn5);
   await screenshot("reason-chat-after-reset");
   pass("Reset deleted turn 6 and restored the files: notes.txt is back to one, extra.txt is gone");
 
@@ -286,12 +331,45 @@ try {
   assert.equal(stored["sess-1"].config?.model, "byok:anthropic:claude-opus-5-5", JSON.stringify(stored["sess-1"]));
   pass("the Session runs Settings' default model: session/set_config_option model=byok:anthropic:claude-opus-5-5");
 
+  // 7. Fork to new workspace on turn 5 (Conductor's forkChat): a branch off
+  // "e2e" named "e2e-v1", a workspace on it restored to turn 5's end
+  // checkpoint, and its chat's composer holding the transcript, not sent.
+  const forkItems = await openMenu(turn5);
+  const forkItem = forkItems.indexOf("Fork to new workspace") + 1;
+  assert.ok(forkItem > 0, JSON.stringify(forkItems));
+  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]:nth-child(${forkItem})`)}/click`, {});
+  const worktrees = () =>
+    execFileSync("git", ["worktree", "list", "--porcelain"], { cwd: workspace.path, encoding: "utf8" })
+      .split("\n\n")
+      .map((block) => ({ path: block.match(/^worktree (.+)$/m)?.[1], branch: block.match(/^branch refs\/heads\/(.+)$/m)?.[1] }));
+  const forked = await waitFor('a worktree on branch "e2e-v1"', () => worktrees().find((w) => w.branch === "e2e-v1"), 30000);
+  assert.notEqual(forked.path, workspace.path);
+  const chip = await waitFor("the forked chat's transcript attachment", () =>
+    run(`const c = document.querySelector('.composer-attachments'); return c && c.innerText.includes("Transcript of") ? c.innerText : null;`),
+  );
+  assert.match(chip, /Transcript of e2e\.md/, chip);
+  assert.equal(await composerValue(), "", "nothing typed and nothing sent");
+  assert.equal(readFileSync(join(forked.path, "notes.txt"), "utf8"), "one\n", "the fork has turn 5's files");
+  assert.equal(existsSync(join(forked.path, "extra.txt")), false);
+  const forkedChat = await chatText();
+  assert.ok(!forkedChat.includes("turn 5 wrote notes.txt"), "the fork opens a new chat, not the source's transcript");
+  await screenshot("reason-chat-forked-workspace");
+  pass(`Fork to new workspace made ${forked.path} on e2e-v1 with turn 5's notes.txt and "Transcript of e2e.md" in its composer`);
+
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {
   console.error(`not ok - ${e instanceof Error ? e.stack : e}`);
   if (sessionUrl) {
     await screenshot("failure").catch(() => {});
     await chatText().then((t) => console.error(`chat text:\n${t}`)).catch(() => {});
+    await focusedElement().then((f) => console.error(`focus: ${f}`)).catch(() => {});
+    await composerValue().then((v) => console.error(`composer: ${JSON.stringify(v)}`)).catch(() => {});
+    await run("const a = document.querySelector('.composer-attachments'); return a ? a.innerText : null;")
+      .then((t) => console.error(`composer attachments: ${JSON.stringify(t)}`))
+      .catch(() => {});
+    await run("const r = document.querySelector('.terminal-panel .xterm-rows'); return r ? r.innerText : null;")
+      .then((t) => console.error(`terminal text:\n${t}`))
+      .catch(() => {});
   }
   process.exitCode = 1;
 } finally {

@@ -20,6 +20,7 @@ import { cliLoginStatus, openExternal, type CliAgent, type CliLoginStatus } from
 import { AgentMark, ExternalIcon, OpenCodeMark, type AgentTabId } from "./agents/icons";
 import { ApiKeyField, AuthModePicker, AuthStatus, LoginButton, RefreshButton } from "./agents/parts";
 import "./agents/agents.css";
+import { AcpAgentOptions, ClaudeAgentOptions, CodexAgentOptions } from "./rows/AgentOptionRows";
 
 interface Props {
   settings: Settings;
@@ -38,7 +39,7 @@ interface Props {
  * follows `?providerTab=`. Keys go through `connect_provider` and are never
  * read back (evidence/settings/NOTES.md, "Agents").
  */
-export function AgentsPage({ settings, reload }: Props) {
+export function AgentsPage({ settings, save, reload }: Props) {
   const [tab, setTab] = useState<AgentTabId>(() => providerTabFrom(new URLSearchParams(window.location.search).get("providerTab")));
   const select = (next: AgentTabId) => {
     setTab(next);
@@ -63,12 +64,12 @@ export function AgentsPage({ settings, reload }: Props) {
           </button>
         ))}
       </div>
-      <div role="tabpanel" aria-label={AGENT_TABS.find((t) => t.id === tab)?.label}>
-        {tab === "claude" && <CliAgentTab agent="claude" settings={settings} reload={reload} />}
-        {tab === "codex" && <CliAgentTab agent="codex" settings={settings} reload={reload} />}
+      <section role="tabpanel" aria-label={AGENT_TABS.find((t) => t.id === tab)?.label}>
+        {tab === "claude" && <CliAgentTab agent="claude" settings={settings} save={save} reload={reload} />}
+        {tab === "codex" && <CliAgentTab agent="codex" settings={settings} save={save} reload={reload} />}
         {tab === "cursor" && <CursorTab settings={settings} reload={reload} />}
-        {tab === "opencode" && <OpenCodeTab settings={settings} />}
-      </div>
+        {tab === "opencode" && <OpenCodeTab settings={settings} save={save} />}
+      </section>
     </div>
   );
 }
@@ -102,7 +103,7 @@ const CLI_COPY = {
 } as const;
 
 /** Claude Code (`jpa`) and Codex (`Fpa`): cards, status, login or key. */
-function CliAgentTab({ agent, settings, reload }: { agent: "claude" | "codex"; settings: Settings; reload: () => void }) {
+function CliAgentTab({ agent, settings, save, reload }: { agent: "claude" | "codex" } & Props) {
   const stored = providerOf(settings, agent);
   const { provider, login, loading, error, refresh, setProvider } = useAgentStatus(agent, agent, JSON.stringify(stored));
   const [pending, setPending] = useState<AuthMode | null>(null);
@@ -188,7 +189,10 @@ function CliAgentTab({ agent, settings, reload }: { agent: "claude" | "codex"; s
           <LoginButton command={copy.command} label={copy.label} onDone={refresh} />
         )}
       </div>
-      {/* Per-agent options (src/settings/rows/AgentOptionRows.tsx): <ClaudeAgentOptions/> / <CodexAgentOptions/>. */}
+      {/* Per-agent options; `.settings-rows` gives their switches and selects Conductor's styling. */}
+      <div className="settings-rows">
+        {agent === "claude" ? <ClaudeAgentOptions settings={settings} save={save} /> : <CodexAgentOptions settings={settings} save={save} />}
+      </div>
     </div>
   );
 }
@@ -238,7 +242,7 @@ const OPENCODE_DOCS = "https://opencode.ai/v2/docs/";
  * header (icon, name, tagline, Docs), Providers and Models. Its Advanced
  * section is <AcpAgentOptions agent="opencode"/> (AgentOptionRows.tsx).
  */
-function OpenCodeTab({ settings }: { settings: Settings }) {
+function OpenCodeTab({ settings, save }: Pick<Props, "settings" | "save">) {
   const [status, setStatus] = useState<CliLoginStatus | null>(null);
   const [checking, setChecking] = useState(true);
   const refresh = useCallback(() => {
@@ -271,6 +275,8 @@ function OpenCodeTab({ settings }: { settings: Settings }) {
             </div>
           </div>
         )}
+        {/* Advanced opens itself on an alert ("Missing"), so it also shows before OpenCode is installed. */}
+        {status && <AcpAgentOptions agent="opencode" settings={settings} save={save} />}
       </div>
     );
   }
@@ -310,7 +316,7 @@ function OpenCodeTab({ settings }: { settings: Settings }) {
           {selected === 0 ? "Add your first OpenCode model" : "Configure"}
         </button>
       </div>
-      {/* Advanced (install status, executable path): <AcpAgentOptions agent="opencode"/> from AgentOptionRows.tsx. */}
+      <AcpAgentOptions agent="opencode" settings={settings} save={save} />
     </div>
   );
 }

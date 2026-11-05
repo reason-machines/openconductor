@@ -102,7 +102,20 @@ const cap = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
 
 /** A model's display name: Conductor's label, else one derived from the id (`my-model-2` is "My Model 2"). */
 export function modelLabel(model: string): string {
-  return MODEL_LABELS[model] ?? model.split("-").map(cap).join(" ");
+  const known = MODEL_LABELS[model];
+  if (known) return known;
+  // Ids outside Conductor's table (e.g. a provider's "opus-5-5"): derive "Opus 5.5", "GPT-5.6 Sol".
+  if (model.startsWith("gpt-")) {
+    const [, version, ...rest] = model.split("-");
+    return [`GPT-${/^\d/.test(version) ? version : cap(version)}`, ...rest.map(cap)].join(" ");
+  }
+  const parts = model.split("-");
+  const oneM = parts.at(-1) === "1m";
+  if (oneM) parts.pop();
+  const [name, ...nums] = parts;
+  if (!nums.every((n) => /^\d+$/.test(n))) return model.split("-").map(cap).join(" ");
+  const version = nums.length ? ` ${nums.join(".")}` : "";
+  return `${cap(name)}${version}${oneM ? " (1M)" : ""}`;
 }
 
 /** Agent and model a new chat starts with, from `models.default`. Unknown ids run on Claude. */

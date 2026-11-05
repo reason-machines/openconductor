@@ -1,7 +1,7 @@
 {
   "schema": "openconductor.parity-verdicts.v1",
   "ref": "origin/main",
-  "verified_at": "2026-11-05 (main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+  "verified_at": "2026-11-05 (main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
   "method": "Read on main: src/, src-tauri/src/, crates/. 'backend' = logic or a command exists and is tested, but no UI path reaches it.",
   "items": {
     "sidebar.home-entry": {
@@ -46,7 +46,7 @@
     },
     "sidebar.ws-unread": {
       "verdict": "partial",
-      "why": "Row menu toggles unread (R), unread rows render semibold and opening a row clears it. Changes are now written through the registered db_set_workspace_unread (sidebarPersist.ts) and reposFromDb maps workspaces.unread back. There is still no jump-to-next-unread-workspace command."
+      "why": "#431 on 93f1846: Go to next unread (chat.nextAttention, Cmd+Alt+L; first under the palette's Navigation while something is unread) opens unread workspaces in Conductor's Qre order (updatedAt, then createdAt, then id; index-BGEQ8YjU.js @1,128,168), with Cmd+Alt+L skipping the open workspace and archived workspaces never counted (src/state/nextUnread.ts, palette/fromAppState.ts, PaletteHost.tsx). db_list_workspaces returns updated_at and chat_messages_save moves it forward on a user message through workspaces::touch, as Conductor's setSessionUpdatedAt does (index @1,066,404; migration 85 drops the trigger). Row menu toggles unread (R), unread rows render semibold and opening a row clears it, written through db_set_workspace_unread. Still partial: nothing sets unread by itself (Conductor's applyTurnCompletionTails @1,529,959 and markUnreadIfNotViewing @1,500,167), unread is per workspace rather than per chat (sessions.unread_count), there is no Next unread button over the composer (renderApp g1o, char @7,530,225), and Codex sends do not persist the updated_at bump. #443 (open) covers the composer button, Codex persistence and auto-unread on turn end and Codex approvals; per-chat unread and plan/question waits would remain."
     },
     "sidebar.ws-pinned": {
       "verdict": "implemented",
@@ -62,7 +62,7 @@
     },
     "sidebar.ws-numbers": {
       "verdict": "partial",
-      "why": "workspace.switchTo1..9 switch rows over sidebarOrder, and holding the switch modifier for 500 ms shows 1..9 in place of the first nine rows' icons (src/state/shortcutHint.ts, SidebarWorkspaceRow.tsx). The workspaces.number column is not shown and there is no setting to show numbers."
+      "why": "workspace.switchTo1..9 switch rows over sidebarOrder, and holding the switch modifier for 500 ms shows 1..9 in place of the first nine rows' icons (src/state/shortcutHint.ts, SidebarWorkspaceRow.tsx). #438 (8da9edf) adds Settings › Experimental 'Show workspace numbers' (experimental_show_workspace_numbers, Conductor's row @10,654,887, search terms 'number'/'W-'), but no sidebar or Home code reads it, so the workspaces.number column is still never shown on rows."
     },
     "sidebar.ws-next-prev": {
       "verdict": "implemented",
@@ -78,39 +78,39 @@
     },
     "sidebar.archive": {
       "verdict": "partial",
-      "why": "Archive from WorkspaceView and the palette now calls db_archive_workspace, so it survives restart, but there is no confirmation, no git-busy check, no WorkspaceManager::archive call and no archive commit."
+      "why": "#391 (274ac80) replaces the row-only db_archive_workspace with archive_workspace (src-tauri/src/workspace_archive/, flow.rs), which the row menu, WorkspaceView, the palette and archive on merge all reach through startArchive (store.ts). It follows Conductor's dYe/mYe (index-BGEQ8YjU.js @ ~966,478 / ~969,254): checkpoint conductor-archive-<id>, refuse in safe mode while a merge/rebase/cherry-pick/revert is in progress with the sticky warning and Archive retry (discardGitOperationState), archive commit = HEAD kept under refs/conductor-archive-heads/<id>, row state/branch/archive_commit, archive script, .context move, worktree removal and delete_branch_on_archive. #397 (aa32456) closes the last gap: the running-agents check folds every chat of the workspace (workspaceAgentStatus; working, cancelling or waiting block, as dYe), and every archive calls stopWorkspaceAgents, which stops each working or cancelling chat of the workspace (stopChat), as Conductor's Z$ (@974,859) calls cancelSession for every session of a local workspace. Conductor's cancel also settles a 'waiting' session (@3,013,752); no OpenConductor chat reports 'waiting', so there is nothing to settle. Read on f6c05d7 with the bundle (sha256 prefix b5b01f33); not run in the desktop app. Re-read on 1944b98: partial, because 'every chat' covers only Reason chats. chatStatuses is published only by createChatRuntime (chatRuntime.ts), which only reasonChat.ts uses; codexChat.ts keeps its own queue and never publishes a status, and stopWorkspaceAgents calls reasonChat's stopChat. So a working Codex chat neither blocks archive nor is stopped by 'Stop agents and archive', and its worktree is removed under it, unlike Conductor's Z$, which cancels every session of the workspace (gap reported in #437's body)."
     },
     "sidebar.archived-view": {
-      "verdict": "backend",
-      "why": "#366 (df07012) registers db_unarchive_workspace (persistence_commands.rs: workspaces::unarchive, then state ready), but only the archive-on-merge toast's Unarchive reaches it (useArchiveOnMerge.ts -> restoreWorkspace). There is still no archived workspaces list, so a workspace archived any other way, or after the toast closes, cannot be restored from the UI. WorkspaceManager::restore is still unused."
+      "verdict": "implemented",
+      "why": "#437 on 1944b98 builds the UI over #391's unarchive_workspace backend. Palette: 'View archived workspaces' (fromAppState.ts VIEW_ARCHIVED_ACTION) switches to the Workspaces tab with archived shown and the query cleared; the Workspaces tab's 'Archived workspaces' filter has Conductor's three options 'Hiding archived' / 'Showing all' / 'Only archived' (archivedList.ts); archived rows come from conductor.db through listArchivedWorkspaces / archivedFromRows (PaletteHost.tsx) and each has an 'Unarchive workspace' button. Opening one shows it read-only (store archivedOpen, ArchivedWorkspaceView.tsx) with the 'This workspace is archived.' banner and Unarchive in the header. Unarchive follows Conductor's CWt: branchDeleted/branchTaken/branchDiverged open 'Restore to new branch?' (RestoreWorkspaceDialog.tsx), which restores onto a unique -vN branch; gitignored include files are copied back; a folder in the way gives the 'Clear & unarchive' toast; a failed archive offers 'Delete permanently' through delete_workspace. All 16 user-facing strings were found as plain text in Conductor's renderApp/index bundles. Not run in the desktop app by the verifier; the new e2e (tests/e2e/sidebar-archived-view.e2e.mjs) passed in #437's CI. Home's All workspaces archive filter is a separate gap, recorded under home.status-overview. Minor gap: unarchive copies include files with resolve_source(&t.repo_root, None) (workspace_archive/mod.rs), so it reads .worktreeinclude or the default .env* but never the repository's file_include_globs setting, which workspace creation honours (workspace/mod.rs). Unarchiving a cloud workspace (listed as a gap in #437) does not apply: OpenConductor has no cloud workspaces (src/workspace/link.ts)."
     },
     "sidebar.resize-toggle": {
-      "verdict": "partial",
-      "why": "The left sidebar toggles from the top-bar button and Cmd+B; the width is a fixed 256px CSS variable with no resize handle, and no right-sidebar toggle is wired."
+      "verdict": "implemented",
+      "why": "The rail (useSidebarWidth, panelPrefs.tsx) has resized the left sidebar since #332, clamped to 192–480 and saved as left_panel_width; #423 (99edc40) brings it to Conductor's Nta (@ 9,970,616): primary-button drag previews without saving, release saves, a cancelled pointer reverts, double-click resets to 256 and saves, and the aside is capped at 40% of the window. Left toggles: top-bar button, ⌘B (view.toggleLeftSidebar) and the native View > Toggle Left Sidebar item; right: ⌥⌘B (view.toggleRightSidebar, right_panel_visible) and View > Toggle Right Sidebar (menu.rs emits toggle_left_sidebar / toggle_right_sidebar, App.tsx listens, as Conductor's lva/ova @ 10,931,680). REA gap: which submenu Conductor appends the two items to was not decompiled; they go in View here. Not run in the desktop app."
     },
     "sidebar.footer-usage": {
-      "verdict": "missing",
-      "why": "The footer holds only the help and settings buttons; no CPU/memory readout or backend for one."
+      "verdict": "implemented",
+      "why": "#410 on 9930339: Settings › Experimental 'Show sidebar resource usage' (sidebar_resource_usage in conductor.db settings, default off, AppPrefRows.tsx) shows ResourceUsagePill in the sidebar's top bar beside back/forward, where Conductor mounts it (renderApp Isa/bna @9,942,220), despite the setting text saying footer. The pill hides under 200 px of sidebar and goes icon-only under 260 px, polls the registered get_resource_usage every 2 s, and opens the Resources popover (qta @9,933,654): include terminals, group by workspace, tree/flat, copy, CPU/Memory totals, sortable Name/CPU/Mem table, Show all past 7 rows. Inferred, not decompiled: which processes Conductor samples, its label rules and redaction (evidence/sidebar-resource-usage/NOTES.md)."
     },
     "sidebar.transparency": {
       "verdict": "missing",
-      "why": "No vibrancy or transparency setting or window effect; the sidebar is a CSS color-mix fill (styles.css)."
+      "why": "No vibrancy or window effect; the sidebar is a CSS color-mix fill (styles.css). #438 (8da9edf) adds Settings › Experimental 'Sidebar transparency' (experimental_sidebar_transparency, ExperimentalPage.tsx, stored through table_prefs.rs), but nothing reads it: no frontend consumer and no vibrancy code in src-tauri (window-vibrancy is only a transitive Cargo.lock entry). Conductor reads the key in its theme setup (renderApp @439,002) and applies native macOS vibrancy after a restart (row @10,658,089). An inert toggle is not the feature, so it stays missing."
     },
     "sidebar.ws-actions": {
-      "verdict": "partial",
-      "why": "Still partial on main 962f017: the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status ▸, Move to section ▸ (#370), Rename (#315) and Archive; Copy link (Cmd+Shift+C) is missing. PR #400 (head 6e038d3, all 15 checks green, unmerged under the merge hold) adds it: Copy link in the row menu with the ⌘⇧C hint on the open workspace's row, ⌘⇧C bound at dialog priority, global, also while typing and not in the terminal (Conductor's Olo), copying openconductor://workspace?id=<id> with the 'Copied link' / 'Failed to copy link' toasts (Conductor's XV and $$; 'Failed to copy link' re-checked at renderApp byte 742,768). Re-read against #400's head this becomes implemented once it merges; the copied link opens nothing until app.deep-link (unowned) handles openconductor:// URLs."
+      "verdict": "implemented",
+      "why": "#400 merged as be4f789 (squash of 6e038d3): the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status ▸, Move to section ▸ (#370), Rename (#315), Copy link (⌘⇧C) and Archive (WorkspaceActionsMenu.tsx). Copy link puts openconductor://workspace?id=<id> on the clipboard with the 'Copied link' / 'Failed to copy link' toasts (src/workspace/link.ts, Conductor's XV and $$); workspace.copyLink is bound to Cmd+Shift+C in keybindings/registry.ts. Out of this item: the copied link opens nothing until app.deep-link (unowned) handles openconductor:// URLs."
     },
     "sidebar.empty-state": {
       "verdict": "implemented",
       "why": "With no repos, Sidebar.tsx shows a muted one-line empty state under My workspaces (matches the REA empty-Home capture)."
     },
     "sidebar.add-menu": {
-      "verdict": "partial",
-      "why": "The My workspaces hover menu offers only Add project; the three Home actions and not-yet-added recent local repos are missing (AddRepositoryMenu.tsx is used only inside CreateWorkspaceDialog)."
+      "verdict": "implemented",
+      "why": "#423 (99edc40): the My workspaces header menu's 'Add project…' opens the add-repository popover on the next frame, and ⌥⌘A (nav.addRepository) opens it too, as Conductor's wra/yra do (renderApp-D_fmY7hW.js @ 10,069,794). SidebarAddRepositoryMenu (AddRepositoryMenu.tsx) shows Conductor's shared body Gji (@ 9,785,064): Open project, Open GitHub project, Quick start, then 'Recents' with a braille spinner row while loading. Recents come from recent_local_repos.rs, a Rust port of Conductor's MQo script (last 2,000 zsh history cd targets plus .git dirs up to 3 levels under the fixed roots, newest first, at most 8), leaving out folders already added (qQo); a Recents row adds that folder through the same checks as Open project. Pure parts are unit-tested (addRepositoryMenuModel.test.ts). Not run in the desktop app."
     },
     "sidebar.visibility-settings": {
-      "verdict": "partial",
-      "why": "Visibility persists in the desktop UI prefs key in localStorage (UiPrefs in src/state/persisted.ts), not as a setting; the width matches the 256 default but is a fixed CSS value, not a persisted setting."
+      "verdict": "implemented",
+      "why": "Re-read on 99edc40 (stale since #332, 7d2d4a2): left_panel_visible (default true), left_panel_width (default 256, clamped 192–480) and right_panel_visible are rows in conductor.db's settings table (src-tauri/src/app_prefs/), loaded and written by useSidebarVisiblePref / useSidebarWidth (panelPrefs.tsx), as Conductor does. The browser build, which has no database, falls back to defaults."
     },
     "home.route": {
       "verdict": "implemented",
@@ -154,7 +154,7 @@
     },
     "home.status-overview": {
       "verdict": "partial",
-      "why": "#322 adds the Home list (AllWorkspaces.tsx, src/home/allWorkspaces.ts): grouped by last activity with counts, unread rows semibold, diff stat and a short relative time. The status column shows only 'working' (a spinner): our session status has only working/idle, so Conductor's other active statuses (needs plan response, needs permission, needs input, cancelling, waiting) never show, the same gap as sidebar.ws-status. The status-matrix toggle (internal_workspace_status_matrix, Settings > Experimental @10,701,242) and mine-vs-all (team organization sidebar, 'My workspaces' @10,055,740) are not built; #322 records them as cloud-only."
+      "why": "#322 adds the Home list (AllWorkspaces.tsx, src/home/allWorkspaces.ts): grouped by last activity with counts, unread rows semibold, diff stat and a short relative time. The status column shows only 'working' (a spinner): our session status has only working/idle, so Conductor's other active statuses (needs plan response, needs permission, needs input, cancelling, waiting) never show, the same gap as sidebar.ws-status. The status-matrix toggle (internal_workspace_status_matrix, Settings > Experimental @10,701,242) and mine-vs-all (team organization sidebar, 'My workspaces' @10,055,740) are not built; #322 records them as cloud-only. Home's 'Archived workspaces' filter (Hiding archived / Showing all / Only archived, allWorkspaces.ts) never sees an archived workspace on 1944b98: homeRows (AllWorkspaces.tsx) takes only state.repos, and reposFromDb drops archived rows (persisted.ts HIDDEN_STATES), so 'Only archived' is always empty and 'Showing all' shows no archived row, unlike Conductor's Home list; adf1f469 owns the follow-up that feeds listArchivedWorkspaces into homeRows."
     },
     "home.dashboard-routes": {
       "verdict": "partial",
@@ -233,8 +233,8 @@
       "why": "A failed create shows the backend error in the dialog and on_create_failed drops the pending row; a failed setup raises a toast pointing to the Setup log (setupWatch.ts); startup runs delete_incomplete -> delete_if_initializing (#224). No initialization_log_path for worktree failures."
     },
     "create.in-section": {
-      "verdict": "missing",
-      "why": "No user sections; the single My workspaces group's menu only offers Add project."
+      "verdict": "implemented",
+      "why": "#419 on d353535: a section's header menu starts with 'Create workspace' (Conductor's oBi @10,005,110), which opens the create dialog with that section; its Create button reads 'Create in <name>'. Opened without a section while sections exist, Create splits with a 'Create in section' menu listing every section (iQo @9,711,015). After the create the workspace is assigned to the section and unpinned (assignSection, persisted with the sections layout); a section deleted meanwhile keeps the workspace and warns with Conductor's SECTION_ASSIGN_FAILED text (src/workspace/createInSection.ts, tested)."
     },
     "create.first-message": {
       "verdict": "implemented",
@@ -253,8 +253,8 @@
       "why": "The Sidebar.tsx top bar has a toggle button (toggleSidebar) and back/forward arrows driven by useNavHistory (src/state/useNavHistory.ts, history.ts), disabled at the ends; nav.back/nav.forward use the same handlers. REA capture matches the reference layout."
     },
     "sidebar.computer-switcher": {
-      "verdict": "partial",
-      "why": "Sidebar.tsx renders a computer row with initial avatar, name and chevron, but App.tsx never passes computerName (always the default name) and clicking it opens no switcher menu."
+      "verdict": "implemented",
+      "why": "#410 on 9930339: AccountMenu.tsx replaces the static row: an 'Account menu' button with the initial avatar, \"<name>'s Mac\" (or 'My Mac') from the registered local_account (macOS full name or git user.name) and a chevron, opening a 260 px menu with the git email heading and Settings, as Conductor's zna @9,957,506 does for a single personal organization. Conductor's organization list, Create organization, Upgrade to Pro and Log out need its cloud account and are left out; Conductor also hides the row with nobody signed in, while ours always shows the local user."
     },
     "sidebar.primary-nav": {
       "verdict": "implemented",

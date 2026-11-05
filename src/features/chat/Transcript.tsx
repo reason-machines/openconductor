@@ -18,15 +18,35 @@ export interface TranscriptProps {
   dontCollapseToolCalls?: boolean;
   /** Sends a failed or cancelled turn's prompt again. */
   onRetry?: (prompt: string, turnId: string) => void;
-  /** Opens "Reset chat?" for a turn; without it turns have no More actions menu. */
+  /** Opens "Reset chat?" for a turn that can be reset. */
   onResetChat?: (turnId: string) => void;
+  /** "Fork to new tab" in every finished turn's More actions menu. */
+  onForkToNewTab?: (turnId: string) => void;
+  /** "Fork to new workspace" in the same menu, for a workspace on this machine. */
+  onForkToNewWorkspace?: (turnId: string) => void;
+  /** The fork items are shown but disabled, e.g. while a fork is being made. */
+  forkDisabled?: boolean;
+  /** The footer hover's first line, "Opus 5.5 via Reason" (Conductor's `kDo`). */
+  turnAgent?: string;
   /** "Reset chat" is shown but disabled, e.g. while the agent is working. */
   resetDisabled?: boolean;
   /** Extra content under a finished turn (the files it changed). */
   turnFooter?: (turnId: string) => ReactNode;
 }
 
-export function Transcript({ transcript, expandToolsByDefault = false, dontCollapseToolCalls = false, onRetry, onResetChat, resetDisabled = false, turnFooter }: TranscriptProps) {
+export function Transcript({
+  transcript,
+  expandToolsByDefault = false,
+  dontCollapseToolCalls = false,
+  onRetry,
+  onResetChat,
+  resetDisabled = false,
+  turnFooter,
+  onForkToNewTab,
+  onForkToNewWorkspace,
+  forkDisabled = false,
+  turnAgent,
+}: TranscriptProps) {
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
   const [toggled, setToggled] = useState<ReadonlyMap<string, boolean>>(new Map());
   const toggleTool = (id: string) =>
@@ -50,6 +70,10 @@ export function Transcript({ transcript, expandToolsByDefault = false, dontColla
           onResetChat={onResetChat}
           resetDisabled={resetDisabled}
           turnFooter={turnFooter}
+          onForkToNewTab={onForkToNewTab}
+          onForkToNewWorkspace={onForkToNewWorkspace}
+          forkDisabled={forkDisabled}
+          turnAgent={turnAgent}
         />
       ))}
     </div>
@@ -70,9 +94,13 @@ interface RowProps {
   onResetChat?: (turnId: string) => void;
   resetDisabled: boolean;
   turnFooter?: (turnId: string) => ReactNode;
+  onForkToNewTab?: (turnId: string) => void;
+  onForkToNewWorkspace?: (turnId: string) => void;
+  forkDisabled: boolean;
+  turnAgent?: string;
 }
 
-function Row({ row, isOpen, onToggle, summaries, onRetry, onResetChat, resetDisabled, turnFooter }: RowProps) {
+function Row({ row, isOpen, onToggle, summaries, onRetry, onResetChat, resetDisabled, turnFooter, onForkToNewTab, onForkToNewWorkspace, forkDisabled, turnAgent }: RowProps) {
   switch (row.kind) {
     case "user":
       return (
@@ -95,12 +123,15 @@ function Row({ row, isOpen, onToggle, summaries, onRetry, onResetChat, resetDisa
       return <Agent block={row} isOpen={isOpen} onToggle={onToggle} summaries={summaries} />;
     case "turn_end": {
       const time = turnTime(row.startedAt, row.endedAt);
+      const fork = onForkToNewTab ? () => onForkToNewTab(row.turnId) : undefined;
+      const forkWorkspace = onForkToNewWorkspace ? () => onForkToNewWorkspace(row.turnId) : undefined;
+      const reset = row.canReset && onResetChat ? () => onResetChat(row.turnId) : undefined;
       return (
         <div className={`chat-turn-end status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
           {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
           {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
           {time ? (
-            <span className="chat-turn-time" title={time.range}>
+            <span className="chat-turn-time" title={turnAgent ? `${turnAgent}\n${time.range}` : time.range}>
               {time.label}
             </span>
           ) : null}
@@ -111,7 +142,9 @@ function Row({ row, isOpen, onToggle, summaries, onRetry, onResetChat, resetDisa
                 Retry
               </button>
             ) : null}
-            {row.canReset && onResetChat ? <TurnMenu disabled={resetDisabled} onResetChat={() => onResetChat(row.turnId)} /> : null}
+            {fork || forkWorkspace || reset ? (
+              <TurnMenu onFork={fork} onForkWorkspace={forkWorkspace} forkDisabled={forkDisabled} onReset={reset} resetDisabled={resetDisabled} />
+            ) : null}
           </span>
           {turnFooter?.(row.turnId)}
         </div>
@@ -120,8 +153,23 @@ function Row({ row, isOpen, onToggle, summaries, onRetry, onResetChat, resetDisa
   }
 }
 
-/** Conductor's turn footer "More actions" menu; here it holds "Reset chat". */
-function TurnMenu({ disabled, onResetChat }: { disabled: boolean; onResetChat: () => void }) {
+/**
+ * Conductor's turn footer "More actions" menu: "Fork to new tab" and "Fork to
+ * new workspace" on every turn, "Reset chat" on turns that can be reset.
+ */
+function TurnMenu({
+  onFork,
+  onForkWorkspace,
+  forkDisabled,
+  onReset,
+  resetDisabled,
+}: {
+  onFork?: () => void;
+  onForkWorkspace?: () => void;
+  forkDisabled: boolean;
+  onReset?: () => void;
+  resetDisabled: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
@@ -137,21 +185,71 @@ function TurnMenu({ disabled, onResetChat }: { disabled: boolean; onResetChat: (
       </button>
       {open ? (
         <div className="chat-menu" role="menu">
-          <button
-            type="button"
-            role="menuitem"
-            className="chat-menu-item"
-            disabled={disabled}
-            onClick={() => {
-              setOpen(false);
-              onResetChat();
-            }}
-          >
-            <ResetIcon /> Reset chat
-          </button>
+          {onFork ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="chat-menu-item"
+              disabled={forkDisabled}
+              onClick={() => {
+                setOpen(false);
+                onFork();
+              }}
+            >
+              <ForkIcon /> Fork to new tab
+            </button>
+          ) : null}
+          {onForkWorkspace ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="chat-menu-item"
+              disabled={forkDisabled}
+              onClick={() => {
+                setOpen(false);
+                onForkWorkspace();
+              }}
+            >
+              <WorkspaceForkIcon /> Fork to new workspace
+            </button>
+          ) : null}
+          {onReset ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="chat-menu-item"
+              disabled={resetDisabled}
+              onClick={() => {
+                setOpen(false);
+                onReset();
+              }}
+            >
+              <ResetIcon /> Reset chat
+            </button>
+          ) : null}
         </div>
       ) : null}
     </span>
+  );
+}
+
+function ForkIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="4" cy="3" r="1.5" />
+      <circle cx="12" cy="3" r="1.5" />
+      <circle cx="8" cy="13" r="1.5" />
+      <path d="M4 4.5v1.5a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.5M8 8v3.5" />
+    </svg>
+  );
+}
+
+function WorkspaceForkIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M1.75 4.25a1 1 0 0 1 1-1h3l1.5 1.5h5.5a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1z" />
+      <path d="M8 7.25v3.5M6.25 9h3.5" />
+    </svg>
   );
 }
 

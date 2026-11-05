@@ -52,41 +52,61 @@ function useGraphiteInstalled(): boolean | null {
   return installed;
 }
 
-/** Experimental: Show agent cost, Tab Freak Mode, Graphite stack support. */
-export function ExperimentalAppPrefRows() {
+/** Experimental › Show agent cost. */
+export function ShowAgentCostRow() {
+  const p = useAppPrefs();
+  return (
+    <Row label="Show agent cost" help="Show estimated agent costs for cloud workspaces.">
+      <Switch label="Show agent cost" checked={p.experimental_show_agent_cost} onChange={(value) => save({ key: "experimental_show_agent_cost", value })} />
+    </Row>
+  );
+}
+
+/** Experimental › Tab Freak Mode. */
+export function TabFreakModeRow() {
+  const p = useAppPrefs();
+  return (
+    <Row label="Tab Freak Mode" help="Allow up to 10 chat and terminal tabs per workspace.">
+      <Switch label="Tab Freak Mode" checked={p.experimental_tab_freak_mode} onChange={(value) => save({ key: "experimental_tab_freak_mode", value })} />
+    </Row>
+  );
+}
+
+/** Experimental › Graphite stack support: off and disabled until `gt` is installed. */
+export function GraphiteRow() {
   const p = useAppPrefs();
   const gt = useGraphiteInstalled();
-  const graphiteHelp = [
-    "Detect Graphite stacks for the active local workspace and show stack-aware UI in the git panel. Cloud workspaces are unaffected. When off, OpenConductor never runs the gt CLI.",
-    gt === false ? "Install gt to enable." : "",
-    "Warning: appears to sometimes cause performance issues",
-  ]
-    .filter(Boolean)
-    .join(" ");
   return (
-    <>
-      <Row label="Show agent cost" help="Show estimated agent costs for cloud workspaces.">
-        <Switch
-          label="Show agent cost"
-          checked={p.experimental_show_agent_cost}
-          onChange={(value) => save({ key: "experimental_show_agent_cost", value })}
-        />
-      </Row>
-      <Row label="Tab Freak Mode" help="Allow up to 10 chat and terminal tabs per workspace.">
-        <Switch
-          label="Tab Freak Mode"
-          checked={p.experimental_tab_freak_mode}
-          onChange={(value) => save({ key: "experimental_tab_freak_mode", value })}
-        />
-      </Row>
-      <Row label="Graphite stack support" help={graphiteHelp}>
-        <Switch
-          label="Graphite stack support"
-          checked={gt === true && !p.graphite_disabled}
-          disabled={gt !== true}
-          onChange={(on) => save({ key: "graphite_disabled", value: !on })}
-        />
-      </Row>
-    </>
+    <Row
+      label="Graphite stack support"
+      help={
+        <>
+          Detect Graphite stacks for the active local workspace and show stack-aware UI in the git panel. Cloud workspaces are unaffected. When off, OpenConductor never runs the gt CLI.
+          {gt === false && (
+            <div>
+              Install <code>gt</code> to enable.
+            </div>
+          )}
+          <div className="settings-row-warning">Warning: appears to sometimes cause performance issues</div>
+        </>
+      }
+    >
+      <Switch
+        label="Graphite stack support"
+        checked={gt === true && !p.graphite_disabled}
+        disabled={gt !== true}
+        onChange={(on) => save({ key: "graphite_disabled", value: !on })}
+      />
+    </Row>
+  );
+}
+
+/** Experimental › Show sidebar resource usage (Conductor's `sidebar_resource_usage`). */
+export function SidebarResourceUsageRow() {
+  const p = useAppPrefs();
+  return (
+    <Row label="Show sidebar resource usage" help="Shows CPU and memory usage in the workspace sidebar footer.">
+      <Switch label="Show sidebar resource usage" checked={p.sidebar_resource_usage} onChange={(value) => save({ key: "sidebar_resource_usage", value })} />
+    </Row>
   );
 }

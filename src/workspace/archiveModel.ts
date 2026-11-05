@@ -35,12 +35,64 @@ export interface UnarchiveResult {
   restoredChanges: boolean;
   /** "Uncommitted changes couldn't be recovered: ..." */
   notices: ArchiveNotice[];
+  /**
+   * Set when nothing was restored because the branch cannot be used as it is
+   * (Conductor's `CWt`): the UI then offers "Restore to new branch?".
+   */
+  scenario?: RestoreScenario | null;
 }
+
+/** Why the original branch cannot take the workspace back (Conductor's `CWt`). */
+export type RestoreScenario = "branchDeleted" | "branchTaken" | "branchDiverged";
+
+/** Conductor's restore-workspace-dialog copy (`u6a`, renderApp @ ~10,957,700). */
+export function restoreDialogCopy(scenario: RestoreScenario, branch: string): { title: string; body: string } {
+  const title = "Restore to new branch?";
+  switch (scenario) {
+    case "branchTaken":
+      return { title, body: `This workspace was last on ${branch}, but that branch is being used by another workspace.` };
+    case "branchDiverged":
+      return { title, body: `This workspace was last on ${branch}, but someone updated that branch in the meantime. Restore to a new branch to preserve your work.` };
+    case "branchDeleted":
+      return { title, body: `This workspace was last on ${branch}, but that branch has been deleted or renamed.` };
+  }
+}
+
+export const RESTORE_DIALOG_LABELS = { cancel: "Cancel", confirm: "Restore to new branch", pending: "Restoring..." } as const;
 
 /** The rejection value of `archive_workspace` and `unarchive_workspace`. */
 export interface ArchiveFailure {
-  code: "WORKSPACE_CORRUPTED" | "WorkspaceArchiveBlockedByGitOperationError" | "ArchiveFailed" | string;
+  code: "WORKSPACE_CORRUPTED" | "WorkspaceArchiveBlockedByGitOperationError" | "UnarchiveDirectoryExists" | "ArchiveFailed" | string;
   message: string;
+  /** `UnarchiveDirectoryExists`: the folder in the way and the workspace's directory name. */
+  path?: string;
+  directoryName?: string;
+}
+
+/** Conductor's "directory already exists" unarchive toast (`kIa`, renderApp @ ~11,582,900). */
+export interface DirectoryExistsToast {
+  title: string;
+  description: string;
+  clearLabel: "Clear & unarchive";
+  openLabel: "Open in Finder";
+  copyLabel: "Copy path";
+  path: string;
+}
+
+/** The directory-exists toast for an unarchive failure, or null for any other failure. */
+export function directoryExistsToast(err: unknown): DirectoryExistsToast | null {
+  if (!err || typeof err !== "object") return null;
+  const { code, path, directoryName } = err as { code?: unknown; path?: unknown; directoryName?: unknown };
+  if (code !== "UnarchiveDirectoryExists" || typeof path !== "string") return null;
+  const name = typeof directoryName === "string" && directoryName ? directoryName : path.split("/").pop() ?? path;
+  return {
+    title: `Failed to unarchive: ${name}`,
+    description: `The folder at ${path} already exists.`,
+    clearLabel: "Clear & unarchive",
+    openLabel: "Open in Finder",
+    copyLabel: "Copy path",
+    path,
+  };
 }
 
 /** Conductor's `archive-running-workspace` dialog copy (renderApp @ ~10,888,626). */
@@ -53,16 +105,26 @@ export const RUNNING_AGENTS_DIALOG = {
 
 export const GIT_OPERATION_WARNING =
   "Because a Git operation (merge, rebase, cherry-pick, or revert) is in progress, archiving may lose some of your work.";
-export const CORRUPTED_MESSAGE = "Archiving failed. This workspace might be corrupted.";
+/** Conductor's `hv` toast (index @ ~3,302,400), with its "Delete permanently" button. */
+export const CORRUPTED_MESSAGE = "Archiving failed. This workspace might be corrupted. Delete permanently?";
+/** The archive failure toasts' delete buttons (Conductor's `Qk`). */
+export const DELETE_PERMANENTLY_LABEL = "Delete permanently";
+export const DELETE_ANYWAY_LABEL = "Delete anyway";
 
-/** Conductor's `vfe`: a session that is working, cancelling or waiting blocks archive. */
+/**
+ * Conductor's `dYe` (index-BGEQ8YjU.js @ ~966,533): any of the workspace's
+ * visible sessions working, cancelling or waiting blocks archive. `status` is
+ * the fold over every chat of the workspace (main, background and review
+ * chats: `workspaceSessionStatus`), not only the open view's main chat.
+ */
 export function blockedByAgents(status: string | undefined, stopRunningAgents: boolean | undefined): boolean {
-  return status === "working" && !stopRunningAgents;
+  return (status === "working" || status === "cancelling" || status === "waiting") && !stopRunningAgents;
 }
 
 export type FailureToast =
   | { kind: "git-operation"; message: string }
-  | { kind: "error"; message: string };
+  /** `deleteLabel`: the button that deletes the workspace (row and folder). */
+  | { kind: "error"; message: string; deleteLabel: string };
 
 /** What to show for a failed archive in `mode` (Conductor's `onError`). */
 export function failureToast(err: unknown, mode: ArchiveMode = "safe"): FailureToast {
@@ -70,8 +132,8 @@ export function failureToast(err: unknown, mode: ArchiveMode = "safe"): FailureT
   if (f.code === "WorkspaceArchiveBlockedByGitOperationError" && mode !== "discardGitOperationState") {
     return { kind: "git-operation", message: GIT_OPERATION_WARNING };
   }
-  if (f.code === "WORKSPACE_CORRUPTED") return { kind: "error", message: CORRUPTED_MESSAGE };
-  return { kind: "error", message: f.message };
+  if (f.code === "WORKSPACE_CORRUPTED") return { kind: "error", message: CORRUPTED_MESSAGE, deleteLabel: DELETE_PERMANENTLY_LABEL };
+  return { kind: "error", message: f.message, deleteLabel: DELETE_ANYWAY_LABEL };
 }
 
 function asFailure(err: unknown): ArchiveFailure {
@@ -88,6 +150,12 @@ export interface ArchiveStartDeps<A> {
   status: string | undefined;
   /** Hide the row (the store's reducer), optimistically. */
   hide: () => void;
+  /**
+   * Stop every chat turn running in the workspace. Conductor's `Z$` cancels all
+   * of the workspace's sessions during the archive (index @ ~974,853); the chats
+   * run in this frontend, so they are stopped here, before the backend call.
+   */
+  stopAgents: () => void;
   /** Run the archive; `null` outside the desktop app, where hiding is all there is. */
   run: ((mode: ArchiveMode) => Promise<ArchiveResult>) | null;
   /** Reload rows from conductor.db, bringing back a row whose archive failed. */
@@ -109,6 +177,7 @@ export async function startArchive<A extends { mode?: ArchiveMode; stopRunningAg
     return;
   }
   d.hide();
+  d.stopAgents();
   if (!d.run) return;
   const mode = action.mode ?? "safe";
   try {

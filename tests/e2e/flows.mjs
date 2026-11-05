@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
+import { installFakeApps } from "./fake-apps.mjs";
 
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, stdio: "pipe" });
 
@@ -255,6 +256,85 @@ export const flows = [
     },
   },
   {
+    // The header's Open button and its "Open in" menu, against stand-in app
+    // bundles in ~/Applications (fake-apps.mjs: the apps of Sven's Mac). The
+    // menu lists Finder (⌘O, 1), Cursor 2, VS Code 3, Zed 4, Xcode 5, Ghostty 6,
+    // Terminal 7 and Copy path 8, each with the app's icon; ⌘⇧O opens it, 8
+    // copies the path, and picking an app makes it the button's app.
+    name: "open-in",
+    setup(ctx) {
+      ctx.removeFakeApps = installFakeApps(homedir());
+    },
+    teardown(ctx) {
+      ctx.removeFakeApps?.();
+    },
+    async run(wd, ctx) {
+      const META = "\uE03D";
+      const SHIFT = "\uE008";
+      const ESC = "\uE00C";
+      const menuOpen = async () => (await wd.findAll('.oi-menu[role="menu"]')).length > 0;
+      const rows = () =>
+        wd.execute(
+          "return Array.from(document.querySelectorAll('.oi-menu .oi-row'), (r) => ({ label: r.querySelector('.oi-row-label').textContent, kbd: r.querySelector('.oi-row-kbd')?.textContent ?? null, num: r.querySelector('.oi-row-num')?.textContent ?? null, icon: !!r.querySelector('img') }));",
+          [],
+        );
+      const main = () => wd.execute("const b = document.querySelector('.ws-header .oi-main'); return b && { label: b.getAttribute('aria-label'), title: b.title, icon: !!b.querySelector('img'), disabled: b.disabled };", []);
+      const openMenu = async () => {
+        const [chevron] = await wd.findAll(".ws-header .oi-chevron");
+        await wd.click(chevron);
+        await wd.waitFor("the Open in menu", menuOpen, 10000);
+      };
+
+      const button = await wd.waitFor("the header's Open button with Finder's icon", async () => {
+        const b = await main();
+        return b && !b.disabled && b.icon ? b : null;
+      });
+      if (button.label !== "Open in Finder" || button.title !== "Open in Finder (⌘O)") throw new Error(`Open button ${JSON.stringify(button)}`);
+
+      await openMenu();
+      const want = [
+        ["Finder", "⌘O", "1"],
+        ["Cursor", null, "2"],
+        ["VS Code", null, "3"],
+        ["Zed", null, "4"],
+        ["Xcode", null, "5"],
+        ["Ghostty", null, "6"],
+        ["Terminal", null, "7"],
+      ];
+      const got = await rows();
+      const shape = got.map((r) => [r.label, r.kbd, r.num]);
+      if (JSON.stringify(shape) !== JSON.stringify([...want, ["Copy path", null, "8"]])) throw new Error(`menu rows ${JSON.stringify(shape)}`);
+      const noIcon = got.filter((r, i) => i < want.length && !r.icon).map((r) => r.label);
+      if (noIcon.length) throw new Error(`no app icon on ${JSON.stringify(noIcon)}`);
+      const shot = await wd.screenshot();
+      if (process.env.E2E_OUT) writeFileSync(join(process.env.E2E_OUT, "open-in-menu.png"), shot);
+
+      // Esc closes; ⌘⇧O opens it again; 8 runs Copy path.
+      await wd.keys(ESC);
+      await wd.waitFor("the menu to close on Esc", async () => !(await menuOpen()));
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.chord([META, SHIFT], "o");
+      await wd.waitFor("the Open in menu after ⌘⇧O", menuOpen, 10000);
+      await wd.keys("8");
+      await wd.waitFor("the menu to close after 8", async () => !(await menuOpen()));
+      await wd.waitFor("the Copied path toast", async () => (await textsOf(wd, ".toast-message")).includes("Copied workspace path to clipboard"));
+      const copied = await wd.execute("return window.__TAURI_INTERNALS__.invoke('plugin:clipboard-manager|read_text');", []);
+      if (!ctx.worktree || ![ctx.worktree, realpathSync(ctx.worktree)].includes(copied)) throw new Error(`clipboard ${JSON.stringify(copied)}, want the worktree ${JSON.stringify(ctx.worktree)}`);
+
+      // Picking an app saves it as the default: the button and the ⌘O hint move to it.
+      // (Linux has no `open -a`, so opening reports an error toast; the choice still sticks, as in Conductor.)
+      await openMenu();
+      const [cursor] = await wd.findAll('.oi-menu .oi-row[data-app="cursor"]');
+      await wd.click(cursor);
+      await wd.waitFor("the button to open in Cursor", async () => (await main())?.label === "Open in Cursor");
+      await openMenu();
+      const kbdRow = (await rows()).find((r) => r.kbd)?.label;
+      if (kbdRow !== "Cursor") throw new Error(`⌘O hint on ${JSON.stringify(kbdRow)}, want Cursor`);
+      await wd.keys("1");
+      await wd.waitFor("the button back on Finder", async () => (await main())?.label === "Open in Finder");
+    },
+  },
+  {
     // ⌘, opens Settings on General; Appearance › Theme saves at once, re-themes
     // the window and lands in settings.toml. Esc closes Settings, and reopening
     // it reads the theme back from disk. The original theme is restored last.
@@ -380,4 +460,132 @@ export const flows = [
       await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
     },
   },
+
+  // Settings › Agents per-agent options and Account tool approvals
+  // (src/settings/rows/AgentOptionRows.tsx, AccountAgentRows.tsx). Each flow
+  // changes a value, checks where it is stored, puts it back, and ends with
+  // its rows in view for the screenshot (dark theme, compared with
+  // Conductor's reference shots in evidence/settings/agent-options/).
+  {
+    name: "agents-claude-options",
+    async run(wd) {
+      await openSettingsPage(wd, "Agents");
+      await clickByText(wd, '[role="tab"]', "Claude Code");
+      const section = 'section[aria-label="Claude Code"]';
+      await wd.waitFor("the Claude Code options", async () => (await wd.findAll(`${section} input[aria-label="Use Claude Code with Chrome"]`)).length === 1);
+      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .oc-agent-config h3`);
+      const want = ["Use Claude Code with Chrome", "Claude Code executable path", "Claude settings"];
+      if (want.some((w, i) => labels.at(i - want.length) !== w)) throw new Error(`Claude option rows ${JSON.stringify(labels)}, want them to end with ${JSON.stringify(want)}`);
+
+      // Chrome mode lives in conductor.db's settings table.
+      const chrome = () => wd.execute("return window.__TAURI_INTERNALS__.invoke('get_app_prefs').then((p) => p.chrome_mode_enabled);", []);
+      const toggle = async () => wd.click((await wd.findAll(`${section} input[aria-label="Use Claude Code with Chrome"]`))[0]);
+      const before = await chrome();
+      await toggle();
+      await wd.waitFor("chrome_mode_enabled to flip", async () => (await chrome()) === !before);
+      await toggle();
+      await wd.waitFor("chrome_mode_enabled back", async () => (await chrome()) === before);
+
+      // The executable path saves as you type into settings.toml, shows the
+      // compatibility warning, and the reset button clears it.
+      const file = settingsFile();
+      const input = `${section} input[aria-label="Claude Code executable path"]`;
+      await wd.click((await wd.findAll(input))[0]);
+      await wd.keys("/opt/e2e/claude");
+      await wd.waitFor("claude_code_executable_path in settings.toml", async () => tomlValue(file, "", "claude_code_executable_path") === '"/opt/e2e/claude"');
+      await wd.waitFor("the compatibility warning", async () => (await textsOf(wd, `${section} .oc-agent-warning`)).some((t) => t.includes("not compatible")));
+      await wd.click((await wd.findAll(`${section} button[aria-label="Reset to bundled Claude Code"]`))[0]);
+      await wd.waitFor("the override cleared", async () => tomlValue(file, "", "claude_code_executable_path") === null);
+      await showRows(wd, `${section} .oc-agent-chrome`);
+    },
+  },
+  {
+    name: "agents-codex-options",
+    async run(wd) {
+      await openSettingsPage(wd, "Agents");
+      await clickByText(wd, '[role="tab"]', "Codex");
+      const section = 'section[aria-label="Codex"]';
+      const select = `${section} select[aria-label="Codex personality for new chats"]`;
+      const value = () => wd.execute("return document.querySelector(arguments[0])?.value ?? null;", [select]);
+      if ((await wd.waitFor("the Codex personality select", value)) !== "pragmatic") throw new Error(`Codex personality shows ${await value()}, want pragmatic (Conductor's default)`);
+      const options = await textsOf(wd, `${select} option`);
+      if (JSON.stringify(options) !== JSON.stringify(["Pragmatic (default)", "Friendly", "None"])) throw new Error(`personality options ${JSON.stringify(options)}`);
+      const file = settingsFile();
+      for (const v of ["friendly", "pragmatic"]) {
+        await wd.click((await wd.findAll(`${select} option[value="${v}"]`))[0]);
+        await wd.waitFor(`models.codex personality = "${v}"`, async () => tomlValue(file, "models.codex", "personality") === `"${v}"`);
+      }
+      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .oc-agent-config h3`);
+      const want = ["Codex personality for new chats", "Codex executable path", "Codex config"];
+      if (want.some((w, i) => labels.at(i - want.length) !== w)) throw new Error(`Codex option rows ${JSON.stringify(labels)}, want them to end with ${JSON.stringify(want)}`);
+      const path = await textsOf(wd, `${section} .oc-agent-config-path`);
+      if (path[0] !== "~/.codex/config.toml") throw new Error(`Codex config card shows ${JSON.stringify(path)}`);
+      await showRows(wd, `${section} .oc-agent-select-180`);
+    },
+  },
+  {
+    name: "agents-opencode-advanced",
+    async run(wd) {
+      await openSettingsPage(wd, "Agents");
+      await clickByText(wd, '[role="tab"]', "OpenCode");
+      const section = 'section[aria-label="OpenCode"]';
+      const toggle = `${section} .oc-agent-advanced-toggle`;
+      if ((await wd.execute("return document.querySelector(arguments[0])?.getAttribute('aria-expanded');", [toggle])) !== "true") {
+        await wd.click((await wd.findAll(toggle))[0]);
+      }
+      const badge = await wd.waitFor("the OpenCode status badge", async () => {
+        const [t] = await textsOf(wd, `${section} .oc-agent-badge`);
+        return t && t !== "Checking" ? t : null;
+      });
+      if (!/^(Installed|Missing|Update required|Needs repair)/.test(badge)) throw new Error(`OpenCode status badge ${JSON.stringify(badge)}`);
+      if ((await wd.findAll(`${section} input[aria-label="OpenCode executable path"]`)).length !== 1) throw new Error("no OpenCode executable path row under Advanced");
+      await showRows(wd, `${section} .oc-agent-advanced`);
+    },
+  },
+  {
+    name: "account-tool-approvals",
+    async run(wd) {
+      await openSettingsPage(wd, "Account");
+      const file = settingsFile();
+      const sw = 'input[aria-label="Claude Code tool approvals"]';
+      await wd.waitFor("the Claude Code tool approvals switch", async () => (await wd.findAll(sw)).length === 1);
+      const on = () => wd.execute("return document.querySelector(arguments[0]).checked;", [sw]);
+      const was = await on();
+      for (const want of [!was, was]) {
+        await wd.click((await wd.findAll(sw))[0]);
+        await wd.waitFor(`tool_approvals_enabled = ${want}`, async () => (tomlValue(file, "", "tool_approvals_enabled") ?? "false") === String(want));
+      }
+      const select = 'select[aria-label="Codex tool approvals"]';
+      const options = await textsOf(wd, `${select} option`);
+      if (JSON.stringify(options) !== JSON.stringify(["Default", "Always approve"])) throw new Error(`Codex tool approvals options ${JSON.stringify(options)}`);
+      for (const v of ["always_approve", "default"]) {
+        await wd.click((await wd.findAll(`${select} option[value="${v}"]`))[0]);
+        await wd.waitFor(`models.codex tool_approval_policy = "${v}"`, async () => (tomlValue(file, "models.codex", "tool_approval_policy") ?? '"default"') === `"${v}"`);
+      }
+      await showRows(wd, sw);
+    },
+  },
 ];
+
+function settingsFile() {
+  return join(process.env.OPENCONDUCTOR_HOME ?? join(homedir(), ".openconductor"), "settings.toml");
+}
+
+/** Opens Settings (⌘, when closed) on the page named `label`, in the dark theme for the screenshot. */
+async function openSettingsPage(wd, label) {
+  const heading = () => wd.execute("return document.querySelector('.settings .settings-header h1')?.textContent.trim() ?? null;", []);
+  if ((await wd.findAll(".settings")).length === 0) {
+    await wd.execute("document.activeElement?.blur();", []);
+    await wd.chord(["\uE03D"], ",");
+    await wd.waitFor("Settings after ⌘,", heading, 10000);
+  }
+  await clickByText(wd, ".settings-nav .nav-item", label);
+  await wd.waitFor(`the ${label} page`, async () => (await heading()) === label);
+  await wd.execute("document.documentElement.dataset.theme = 'dark';", []);
+}
+
+/** Scrolls the first `css` match to the top of the settings page, in the dark theme (a save re-applies the stored theme). */
+async function showRows(wd, css) {
+  await wd.execute("document.documentElement.dataset.theme = 'dark'; document.querySelector(arguments[0])?.scrollIntoView({ block: 'start' });", [css]);
+  await new Promise((r) => setTimeout(r, 300));
+}

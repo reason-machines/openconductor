@@ -14,22 +14,25 @@ import { glyphs } from "../../keybindings/shortcut.ts";
 import { getSettings } from "../../settings/api";
 import { DEFAULT_SETTINGS } from "../../settings/types";
 import type { Repo, Workspace } from "../../state/types";
-import { configureReason, hideChat } from "../chat/reasonChat.ts";
+import { configureReason } from "../chat/reasonChat.ts";
+import { hideChat } from "../chat/chatRuntime.ts";
 import type { PromptAttachment } from "../chat/reason.ts";
-import { buildReviewPrompt, REVIEW_ATTACHMENT, REVIEW_MESSAGE, reviewDraft, reviewModel, reviewTabTitle } from "./review.ts";
+import { buildReviewPrompt, type ConfigChoice, REVIEW_ATTACHMENT, REVIEW_MESSAGE, reviewDraft, reviewModel, reviewTabTitle } from "./review.ts";
 import { repoReviewPrompt } from "./reviewApi.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 
 export interface ReviewTab {
   chatId: string;
   title: string;
+  /** A chat forked from another ("Fork to new tab"), not a review. */
+  fork?: true;
   /** Readable review model, shown in the chat. */
   modelLabel: string;
   effort: string | null;
 }
 
 /** What a chat does when it next shows: send a message, or put it in the composer. */
-export type PendingMessage = { kind: "send"; text: string; attachments: PromptAttachment[] } | { kind: "draft"; text: string };
+export type PendingMessage = { kind: "send"; text: string; attachments: PromptAttachment[] } | { kind: "draft"; text: string; attachments?: PromptAttachment[] };
 
 const tabsByWorkspace = new Map<string, ReviewTab[]>();
 const pending = new Map<string, PendingMessage>();
@@ -96,7 +99,24 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
     [workspace.id, save],
   );
 
-  return { tabs, start, close, error };
+  /**
+   * "Fork to new tab": a new chat tab on the source chat's options whose
+   * composer holds `draft` (the transcript attachment and the source's draft).
+   * Opens it when created.
+   */
+  const fork = useCallback(
+    (title: string, config: ConfigChoice[], draft: { text: string; attachments: PromptAttachment[] }): string => {
+      const chatId = `${workspace.id}:review:${Date.now().toString(36)}-${++seq}`;
+      configureReason(chatId, config);
+      pending.set(chatId, { kind: "draft", ...draft });
+      save([...(tabsByWorkspace.get(workspace.id) ?? []), { chatId, title, fork: true, modelLabel: "", effort: null }]);
+      onOpen(chatId);
+      return chatId;
+    },
+    [workspace.id, save, onOpen],
+  );
+
+  return { tabs, start, close, fork, error };
 }
 
 /**

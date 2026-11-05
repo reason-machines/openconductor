@@ -1,0 +1,445 @@
+/* Chat composer, from Conductor 0.87.6's classes (renderApp-BYEcFwvt.css and the
+   live DOM captured with REA, evidence/chat/composer/README.md). Colours are
+   Conductor's tokens (evidence/frontend/css-tokens.json); sizes are its
+   Tailwind classes at --spacing .25rem. Scoped to .composer-wrap so the
+   create-workspace dialog's .composer keeps its own look. */
+
+.composer-wrap {
+  --oc-c-fg: #2c2826;
+  --oc-c-bg: #fff;
+  --oc-c-muted: #fafaf9;
+  --oc-c-muted-fg: #8e8885;
+  --oc-c-faint: #a5a09c;
+  --oc-c-border: #eae8e6;
+  --oc-c-popover: #fff;
+  --oc-c-popover-fg: #211e1c;
+  --oc-c-popover-ring: #211e1c0d;
+  --oc-c-popover-accent: #14100f0d;
+  --oc-c-sidebar-accent: #14100f0d;
+  --oc-c-input: #14100f1a;
+  --oc-c-switch-bg: #2c2826;
+  --oc-c-switch-fg: #fff;
+  --oc-c-ring: #2c2826;
+  --oc-c-shadow-md: 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a;
+  padding: 8px 16px 16px;
+  font-size: 14px;
+  line-height: 20px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .composer-wrap {
+    --oc-c-fg: #eae8e6;
+    --oc-c-bg: #141110;
+    --oc-c-muted: #211e1c;
+    --oc-c-muted-fg: #a5a09c;
+    --oc-c-faint: #766f6b;
+    --oc-c-border: #ffffff1a;
+    --oc-c-popover: #2c2826;
+    --oc-c-popover-fg: #eae8e6;
+    --oc-c-popover-ring: #ffffff1a;
+    --oc-c-popover-accent: #ffffff0d;
+    --oc-c-sidebar-accent: #ffffff0d;
+    --oc-c-input: #fff3;
+    --oc-c-switch-bg: #eae8e6;
+    --oc-c-switch-fg: #2c2826;
+    --oc-c-ring: #bcb6b3;
+  }
+}
+:root[data-theme="dark"] .composer-wrap {
+  --oc-c-fg: #eae8e6;
+  --oc-c-bg: #141110;
+  --oc-c-muted: #211e1c;
+  --oc-c-muted-fg: #a5a09c;
+  --oc-c-faint: #766f6b;
+  --oc-c-border: #ffffff1a;
+  --oc-c-popover: #2c2826;
+  --oc-c-popover-fg: #eae8e6;
+  --oc-c-popover-ring: #ffffff1a;
+  --oc-c-popover-accent: #ffffff0d;
+  --oc-c-sidebar-accent: #ffffff0d;
+  --oc-c-input: #fff3;
+  --oc-c-switch-bg: #eae8e6;
+  --oc-c-switch-fg: #2c2826;
+  --oc-c-ring: #bcb6b3;
+}
+
+/* max-w-4xl mx-auto relative */
+.composer-wrap > .queue,
+.oc-composer-anchor {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 896px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.oc-composer-anchor { position: relative; }
+
+/* The box: bg-muted border rounded-xl min-h-38 pt-4 pr-4 pb-3 pl-4.5, shadow 0 1px 2px #0000000d. */
+.composer.oc-composer {
+  position: relative;
+  margin: 0;
+  box-sizing: border-box;
+  min-height: 152px;
+  padding: 16px 16px 12px 18px;
+  border: 1px solid var(--oc-c-border);
+  border-radius: 12px;
+  background: var(--oc-c-muted);
+  box-shadow: 0 1px 2px 0 #0000000d;
+  color: var(--oc-c-fg);
+  cursor: text;
+  transition: background 200ms cubic-bezier(0.25, 0.1, 0.25, 1), border-color 200ms cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 200ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.composer.oc-composer:focus-within { border-color: var(--oc-c-border); }
+.composer.oc-composer.is-dropping { border-color: var(--oc-c-muted-fg); border-style: dashed; }
+
+/* Form mb-10; the editor: max-h-47 overflow-y-auto py-1 -my-1 min-h-22. */
+.oc-composer-input {
+  margin: -4px 0 36px;
+  padding: 4px 0;
+  max-height: 188px;
+  min-height: 88px;
+  overflow-y: auto;
+}
+/* ProseMirror: font-weight 350, min-height 3rem; text-sm (14px/20px); placeholder text-faint. */
+.composer.oc-composer textarea {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  color: var(--oc-c-fg);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 350;
+  letter-spacing: 0;
+  cursor: text;
+}
+.composer.oc-composer textarea::placeholder { color: var(--oc-c-faint); opacity: 1; }
+
+/* "⌘L to focus": absolute top-2 right-1 text-xs text-faint bg-muted rounded-full px-2 py-1. */
+.oc-focus-pill {
+  position: absolute;
+  top: 8px;
+  right: 4px;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  background: var(--oc-c-muted);
+  color: var(--oc-c-faint);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+}
+/* Hidden while the model picker is open (Conductor hides it while the picker reports open). */
+.oc-composer:has(.oc-model-menu) .oc-focus-pill { display: none; }
+
+/* composer-mode-controls: absolute bottom-3 left-3 gap-0.5; composer-primary-actions: absolute right-3 bottom-3 h-7 gap-1.5. */
+.oc-composer-left {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  max-width: calc(100% - 120px);
+}
+.oc-composer-right {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Icon buttons: ghost size iconXs (h-6 w-6), rounded-sm, text-muted-foreground. */
+.oc-icon-btn,
+.oc-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--oc-c-muted-fg);
+  cursor: default;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease-out;
+}
+.oc-icon-btn:hover { background: var(--oc-c-sidebar-accent); color: var(--oc-c-fg); }
+.oc-icon-btn:active,
+.oc-send:active:not(:disabled) { transform: scale(0.97); }
+.oc-icon-btn:focus-visible,
+.oc-send:focus-visible { outline: none; box-shadow: 0 0 0 1px var(--oc-c-ring); }
+/* Cancel: border border-border hover:bg-muted, stop icon text-foreground. */
+.oc-icon-btn.composer-stop { border: 1px solid var(--oc-c-border); color: var(--oc-c-fg); }
+.oc-icon-btn.composer-stop:hover { background: var(--oc-c-muted); }
+.oc-icon-btn.composer-stop:disabled { opacity: 0.5; }
+/* Send: bg-foreground hover:bg-foreground/80, icon text-background; disabled bg-foreground/50. */
+.oc-send { background: var(--oc-c-fg); color: var(--oc-c-bg); }
+.oc-send:hover { background: color-mix(in oklab, var(--oc-c-fg) 80%, transparent); }
+.oc-send:disabled { background: color-mix(in oklab, var(--oc-c-fg) 50%, transparent); cursor: not-allowed; }
+
+/* Menus: rounded-lg ring-1 ring-popover-ring bg-popover p-1 text-popover-foreground shadow-md. */
+.oc-menu {
+  position: absolute;
+  z-index: 50;
+  box-sizing: border-box;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--oc-c-popover);
+  color: var(--oc-c-popover-fg);
+  box-shadow: 0 0 0 1px var(--oc-c-popover-ring), var(--oc-c-shadow-md);
+  cursor: default;
+}
+.oc-add-menu { position: relative; display: inline-flex; }
+/* "+" menu: w-56 space-y-1, side top, align end. */
+.oc-add-popup { bottom: calc(100% + 4px); right: 0; width: 224px; display: flex; flex-direction: column; gap: 4px; }
+.oc-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: left;
+  cursor: default;
+}
+.oc-menu-item:hover,
+.oc-menu-item:focus-visible { background: var(--oc-c-popover-accent); outline: none; }
+.oc-menu-item-label { flex: 1; }
+.oc-kbd-hint { margin-left: auto; padding-left: 4px; font-size: 12px; line-height: 16px; color: var(--oc-c-muted-fg); letter-spacing: 0.01em; }
+
+/* Model chip: h-7 text-xs gap-1.5 rounded-md px-2 font-450 text-foreground/90 hover:bg-sidebar-accent. */
+.oc-model-picker { position: relative; display: inline-flex; }
+.oc-model-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: color-mix(in oklab, var(--oc-c-fg) 90%, transparent);
+  font: inherit;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  font-weight: 450;
+  white-space: nowrap;
+  cursor: default;
+}
+.oc-model-chip:hover,
+.oc-model-chip[aria-expanded="true"] { background: var(--oc-c-sidebar-accent); }
+.oc-model-chip:focus-visible { outline: none; box-shadow: inset 0 0 0 1px var(--oc-c-ring); }
+.oc-model-chip-label { max-width: 16rem; overflow: hidden; text-overflow: ellipsis; }
+.oc-model-chip-details { display: inline-flex; align-items: center; gap: 6px; }
+.oc-model-chip-effort,
+.oc-model-chip-chevron { color: var(--oc-c-muted-fg); flex-shrink: 0; }
+
+/* Picker menu: w-[22rem] bg-muted p-1 rounded-lg ring-1 ring-popover-ring shadow-md, side top align start. */
+.oc-model-menu {
+  position: absolute;
+  z-index: 50;
+  left: 0;
+  bottom: calc(100% + 4px);
+  width: 352px;
+  max-height: min(28rem, calc(100vh - 120px));
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--oc-c-muted);
+  color: var(--oc-c-popover-fg);
+  box-shadow: 0 0 0 1px var(--oc-c-popover-ring), var(--oc-c-shadow-md);
+  font-size: 14px;
+  line-height: 20px;
+  cursor: default;
+}
+.oc-model-menu-inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 4px;
+  border-radius: 6px;
+  background: var(--oc-c-popover);
+  box-shadow: 0 0 0 1px var(--oc-c-popover-ring);
+}
+.oc-model-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  padding: 2px 8px 8px;
+  border-bottom: 1px solid color-mix(in oklab, var(--oc-c-border) 70%, transparent);
+  color: var(--oc-c-muted-fg);
+}
+.oc-model-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--oc-c-popover-fg);
+  font: inherit;
+  font-size: 14px;
+}
+.oc-model-search input::placeholder { color: var(--oc-c-muted-fg); }
+.oc-model-list { display: grid; gap: 4px; align-content: start; overflow-y: auto; min-height: 0; }
+.oc-model-empty { padding: 6px 8px; text-align: center; color: var(--oc-c-muted-fg); }
+.oc-model-item,
+.oc-model-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 12px 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: left;
+  cursor: default;
+}
+.oc-model-row { padding: 6px 8px; }
+.oc-model-item:hover,
+.oc-model-item:focus-visible,
+.oc-model-row:hover,
+.oc-model-row:focus-visible,
+.oc-model-row[data-highlighted] { background: var(--oc-c-popover-accent); outline: none; }
+.oc-model-glyph { flex-shrink: 0; color: var(--oc-c-muted-fg); }
+.oc-model-glyph[data-agent="claude"] { color: #d97757; }
+.oc-model-item-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-model-item-effort { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; color: var(--oc-c-muted-fg); }
+.oc-model-item-check { margin-left: auto; flex-shrink: 0; }
+.oc-model-add { color: var(--oc-c-muted-fg); padding-left: 0; }
+.oc-model-add-icon { display: flex; justify-content: center; width: 24px; flex-shrink: 0; }
+.oc-model-sep { margin: 4px 0; border-top: 1px solid color-mix(in oklab, var(--oc-c-border) 70%, transparent); }
+.oc-model-sub + .oc-model-row { margin-top: 4px; }
+.oc-model-sub { position: relative; }
+.oc-model-row-value { margin-left: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--oc-c-muted-fg); }
+.oc-model-row-chevron { flex-shrink: 0; color: var(--oc-c-muted-fg); }
+.oc-model-row-grow { flex: 1; }
+/* Effort submenu: w-64 bg-popover p-1, side right align end. */
+.oc-model-submenu {
+  position: absolute;
+  z-index: 51;
+  left: calc(100% + 6px);
+  bottom: 0;
+  width: 256px;
+  box-sizing: border-box;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--oc-c-popover);
+  box-shadow: 0 0 0 1px var(--oc-c-popover-ring), var(--oc-c-shadow-md);
+}
+/* Switch: h-5 w-10 rounded-full bg-input, checked bg-switch-background; thumb size-4 bg-switch-foreground. */
+.oc-switch {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 40px;
+  height: 20px;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  background: var(--oc-c-input);
+  transition: background-color 150ms;
+}
+.oc-switch > span {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--oc-c-switch-fg);
+  box-shadow: 0 10px 15px -3px #0000001a, 0 4px 6px -4px #0000001a;
+  transform: translateX(1px);
+  transition: transform 150ms;
+}
+.oc-switch[data-state="checked"] { background: var(--oc-c-switch-bg); }
+.oc-switch[data-state="checked"] > span { transform: translateX(21px); }
+/* Footer: px-2 pt-2 pb-1 text-xs text-muted-foreground gap-1.5. */
+.oc-model-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 8px 4px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  color: var(--oc-c-muted-fg);
+}
+.oc-model-edit {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+.oc-model-edit:hover { color: var(--oc-c-fg); }
+.oc-kbd-box { margin-left: auto; padding: 1px 6px; border: 1px solid var(--oc-c-border); border-radius: 4px; background: var(--oc-c-popover); }
+
+/* "/" menu: bg-background border border-b-0 rounded-t-lg shadow-md, width anchor − 16px, max-h 308px. */
+.oc-suggest {
+  position: absolute;
+  z-index: 40;
+  left: 8px;
+  right: 8px;
+  bottom: 100%;
+  max-height: 308px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid var(--oc-c-border);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: var(--oc-c-bg);
+  box-shadow: var(--oc-c-shadow-md);
+  color: var(--oc-c-fg);
+  cursor: default;
+}
+.oc-suggest-row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; }
+.oc-suggest-row[data-focused] { background: var(--oc-c-sidebar-accent); }
+.oc-suggest-slash { flex-shrink: 0; font-size: 14px; line-height: 20px; color: var(--oc-c-muted-fg); }
+.oc-suggest-name { flex-shrink: 0; white-space: nowrap; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; font-weight: 500; }
+.oc-suggest-desc {
+  min-width: 0;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  line-height: 12px;
+  letter-spacing: 0.04em;
+  color: var(--oc-c-muted-fg);
+}
+.oc-dim { opacity: 0.5; }
+
+/* Attachment chips sit at the top of the box. */
+.oc-composer .composer-attachments { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -4px 0 10px; }
+
+/* A review chat's model, where the workspace chat has its picker. */
+.oc-review-model { display: inline-flex; align-items: center; height: 28px; padding: 0 8px; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; font-weight: 450; color: var(--oc-c-muted-fg); }

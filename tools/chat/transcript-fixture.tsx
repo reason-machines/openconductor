@@ -3,13 +3,15 @@
 // (evidence/screens), so rendering changes can be screenshotted without an agent.
 // ?theme=dark|light, ?running=1 keeps the turn running, ?cancelled=1 stops it early, ?tools=expanded opens
 // the "N tool calls, M messages" summary, ?files=N gives the turn N changed-file chips in its footer row
-// (?more=K clicks "+N more" K times).
+// (?more=K clicks "+N more" K times), ?fork=1 opens the turn's More actions menu and, with ?forked=1, picks
+// "Fork to new tab" and shows the transcript attachment the new tab would get.
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Transcript } from "../../src/features/chat/Transcript.tsx";
 import { TurnChanges } from "../../src/features/chat/TurnChanges.tsx";
 import { turnChanges } from "../../src/features/diff/useTurnChanges.ts";
 import { applyChatEvents, emptyTranscript } from "../../src/features/chat/reducer.ts";
+import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../../src/features/chat/fork.ts";
 import type { Block, ChatEvent, ChatMessage } from "../../src/features/chat/types.ts";
 import "../../src/fonts.css";
 import "../../src/styles.css";
@@ -63,16 +65,42 @@ if (fileCount > 0) {
 }
 const turnFooter = fileCount > 0 ? (turnId: string) => <TurnChanges turn={turnRef(turnId)} worktree={null} onOpenFile={() => undefined} /> : undefined;
 
+const fork = params.get("fork") === "1";
+function Fixture() {
+  const [forked, setForked] = React.useState<string | null>(null);
+  return (
+    <main style={{ maxWidth: 760, margin: "0 auto", padding: "32px 28px" }}>
+      <Transcript
+        transcript={r.transcript}
+        turnFooter={turnFooter}
+        turnAgent={turnAgentLabel("byok:anthropic:claude-opus-5-5", "Reason")}
+        onForkToNewTab={fork ? (turnId) => setForked(forkTranscript(r.transcript, turnId)) : undefined}
+        onForkToNewWorkspace={fork ? (turnId) => setForked(forkTranscript(r.transcript, turnId)) : undefined}
+      />
+      {forked !== null ? (
+        <section className="fixture-fork" style={{ marginTop: 24 }}>
+          <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}>
+            New tab's composer attachment: {forkAttachmentName(null)}
+          </div>
+          <pre style={{ whiteSpace: "pre-wrap", fontSize: 12, padding: 12, border: "1px solid var(--border)", borderRadius: 6 }}>{forked}</pre>
+        </section>
+      ) : null}
+    </main>
+  );
+}
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <main style={{ maxWidth: 760, margin: "0 auto", padding: "32px 28px" }}>
-      <Transcript transcript={r.transcript} turnFooter={turnFooter} />
-    </main>
+    <Fixture />
   </React.StrictMode>,
 );
 
 if (params.get("tools") === "expanded") {
   setTimeout(() => document.querySelector<HTMLButtonElement>('.chat-tool-summary-row[aria-expanded="false"]')?.click(), 100);
+}
+if (fork) {
+  setTimeout(() => document.querySelector<HTMLButtonElement>('.chat-turn-menu button[aria-label="More actions"]')?.click(), 150);
+  if (params.get("forked") === "1") setTimeout(() => document.querySelector<HTMLButtonElement>(".chat-menu-item")?.click(), 300);
 }
 for (let i = 0; i < Number(params.get("more") ?? 0); i++) {
   setTimeout(() => document.querySelector<HTMLButtonElement>(".chat-turn-chip.more")?.click(), 150 + i * 50);
