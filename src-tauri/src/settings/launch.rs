@@ -17,7 +17,7 @@ use std::path::{Path, PathBuf};
 
 use serde_json::json;
 
-use super::{CodexToolApprovalPolicy, Settings};
+use super::{CodexToolApprovalPolicy, EffortLevel, Settings};
 use crate::agent::claude::AnthropicApi;
 use crate::agent::claude_cloud::{Bedrock, Vertex};
 use crate::agent::codex::{CodexLogin, OpenAiApi};
@@ -206,6 +206,9 @@ pub fn claude_launch(
     }
     if settings.fast_mode_for(purpose) {
         extra.insert("fastMode".into(), json!(true));
+    }
+    if effort == Some(EffortLevel::Ultracode) {
+        extra.insert("ultracode".into(), json!(true));
     }
     if !extra.is_empty() {
         launch.settings = Some(serde_json::Value::Object(extra));

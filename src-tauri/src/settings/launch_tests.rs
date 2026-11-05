@@ -418,7 +418,23 @@ fn ultracode_parses_round_trips_and_launches_as_xhigh() {
         Purpose::Chat,
     )
     .unwrap();
-    assert_eq!(flag(&chat.args(), "--effort"), Some("xhigh"));
+    let args = chat.args();
+    assert_eq!(flag(&args, "--effort"), Some("xhigh"));
+    let extra: serde_json::Value =
+        serde_json::from_str(flag(&args, "--settings").unwrap()).unwrap();
+    assert_eq!(extra["ultracode"], serde_json::json!(true));
+
+    let plain = parse("[models.claude_code]\ndefault_effort_level = \"xhigh\"\n");
+    let args = launch::claude_launch(
+        &plain,
+        Path::new("/w"),
+        &MemorySecretStore::new(),
+        Purpose::Chat,
+    )
+    .unwrap()
+    .args();
+    assert_eq!(flag(&args, "--effort"), Some("xhigh"));
+    assert_eq!(flag(&args, "--settings"), None);
 }
 
 #[test]

@@ -362,7 +362,8 @@ impl EffortLevel {
     }
 
     /// The `claude --effort` value: Conductor runs `ultracode` as `xhigh`
-    /// (its `roe`); the workflow orchestration half has no CLI flag.
+    /// (its sidecar's `ly7`); the orchestration half is `ultracode: true` in
+    /// `--settings`, which `settings::launch::claude_launch` adds.
     pub fn cli_value(self) -> &'static str {
         match self {
             EffortLevel::Ultracode => "xhigh",

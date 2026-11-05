@@ -292,13 +292,40 @@ Key names, defaults and enums only; no user values were read.
   `requiresToolApprovals` is set; the Big terminal presets switch from
   `claude --dangerously-skip-permissions` to `claude` (`GN` / `kBe`). `codex_tool_approval_policy =
   always_approve` answers every Codex tool approval with `always_allow`.
-- Claude effort levels (`Wv` in index, `KXe` in the session schema): `low`, `medium`, `high`,
-  `xhigh`, `max`, `ultracode` ("Ultracode runs at extra-high effort with dynamic workflow
-  orchestration."). A session runs `ultracode` as effort `xhigh` (`roe`) with a separate
-  `ultracode: true` flag for the sidecar (`fit`). OpenConductor launches it as `--effort xhigh`; the
-  orchestration flag has no CLI equivalent. Read on 2026-11-05 with a bounded Python scan of
-  `index-BGEQ8YjU.js` (`out/settings/ultracode.txt`); a `grep -oE` with context over the bundle hit
-  the 60 s `devices_exec` cap twice.
+- `ultracode` as a Claude effort, from definition to argv (Conductor 0.87.6, read 2026-11-05 on
+  sven m5 max; scans in `out/settings/ultracode.txt`, `ultracode-launch.txt`, `runtime-effort.txt`
+  in the REA work folder):
+  1. Defined: `Wv = ["low","medium","high","xhigh","max","ultracode"]` with label `Ultracode` and
+     description "Ultracode runs at extra-high effort with dynamic workflow orchestration."
+     (`index-BGEQ8YjU.js` @294871); `agentParams.effortLevel` for Claude is `KXe`, the same six
+     (@1079353). The session config's `thinkingLevel` enum has no `ultracode` (`pE` @143413), only
+     `none`..`ultra` plus a separate `ultracode: boolean`.
+  2. Frontend session config: `roe(t) { return t==="ultracode" ? "xhigh" : t }` and
+     `fit(t)` = `agentParams.effortLevel==="ultracode" ? true : undefined`; `Gd` builds
+     `thinkingLevel: roe(...)`, `ultracode: thinkingLevel==="ultracode" ? true : undefined`
+     (@1375824, @1377977). `ioe` maps `xhigh` + `ultracode` back to `ultracode` for display.
+  3. Sidecar, `Contents/Resources/bin/.internal/conductor-runtime` (Bun-compiled Mach-O, 76 MB,
+     sha256 `5723ead4...6eac0d`): `ly7` returns `"xhigh"` for Claude `effortLevel === "ultracode"`
+     and `dy7` returns `ultracode: true` (@75245342), the same mapping as `roe` / `fit`.
+  4. Sidecar launch builder: the Agent SDK query options are `effort: oB4(B.thinkingLevel)` (`oB4`:
+     `none` -> unset, `ultra` -> `max`, else unchanged, so `xhigh` stays `xhigh`) and
+     `settings: qB5(B)`, where `qB5` collects `outputStyle`, `fastMode` and `ultracode: true`
+     (@66285521, @66239283). The SDK's argv builder pushes `--effort <options.effort>` (@66167585)
+     and puts `settings` (JSON-serialized by `B8` when it is an object, @65501644) into its
+     extra-args map, which becomes `--settings <json>` (`ve6`, @65477838).
+  5. Claude Code's settings schema, embedded in the same binary, documents `ultracode`: "Enable
+     ultracode for the session: standing dynamic-workflow orchestration at any effort level.
+     Session-scoped, typically provided via --settings or the apply_flag_settings control
+     request" (@65371553).
+  So a Conductor `ultracode` chat runs `claude --effort xhigh --settings '{"ultracode":true,...}'`.
+  OpenConductor's `claude_launch` does the same: `EffortLevel::cli_value` gives `xhigh` and
+  `ultracode: true` joins `outputStyle` / `fastMode` in `--settings` (test
+  `ultracode_parses_round_trips_and_launches_as_xhigh`). Not observed in a running process: no
+  `ultracode` chat was started to capture the sidecar's actual argv.
+- The sidecar also sends Claude `thinking` (`HB5`: `--thinking adaptive` for adaptive models, else
+  `--max-thinking-tokens <budget>`, `--thinking disabled` for `none`) and always
+  `permissionMode: "bypassPermissions"`, answering approvals in-process. OpenConductor's launch
+  builder passes neither yet; recorded here, not changed in this PR.
 - With no `models.review`, a review runs on Conductor's built-in Claude default `opus-5-1m`, not
   `models.default` (evidence/pr/ai-review.md); `settings::launch::REVIEW_FALLBACK_MODEL`.
 - `visible_provider_models` is a JSON string, an object keyed by provider (`claude`, `codex`,
@@ -334,16 +361,24 @@ Consumers still missing: no chat runner calls `claude_launch` / `codex_launch` y
 new-workspace dialog's first session is "agent runtime pending"), so the model, effort, output
 style, fast and plan mode keys reach a real agent only once it does; nothing in the rebuild uses
 `ssh_key_path` (no cloud workspaces). Codex plan mode (Conductor's `collaborationMode: plan` per
-turn) is not passed. Not verified against a running agent: the CLI option mapping above is from
-the bundled binaries' help and strings, not from Conductor's sidecar (see gaps).
+turn) is not passed. Not verified against a running agent: apart from `--effort` and `--settings`
+(read from Conductor's sidecar above), the CLI option mapping is from the bundled binaries' help
+and strings.
 
 ### REA gaps hit (models and providers)
 
 - Conductor's sidecar, which turns the session config (`claudePersonality`, `effortLevel`,
   `fastMode`, `personality`) into Claude Agent SDK and Codex options, is not in REA's extracted
   artifacts: `grep -c` of `outputStyle`, `effortLevel`, `fastMode`, `claudePersonality` in
-  `main_strings.txt` is 0, and no sidecar JS exists outside `frontend/dist` in the work folder. The
-  CLI mapping was read from the bundled CLIs instead.
+  `main_strings.txt` is 0, and no sidecar JS exists outside `frontend/dist` in the work folder.
+  It is the Bun-compiled `Contents/Resources/bin/.internal/conductor-runtime`, whose embedded JS
+  REA's app extraction skipped. REA 6.7.0 has no Bun standalone-binary command (`rea --help` has
+  `inspect-go-binary` and `inspect-rust-binary`; `analyze-javascript-application` takes only ASAR or
+  a directory). REA bug: `rea extract-artifact <conductor-runtime>` fails with
+  `integrity_mismatch` ("Regular artifact entry is missing from inventory: slices/arm64"), and
+  still fails the same way with `--integrity-policy record-and-continue`, the retry its own
+  remediation recommends. The sidecar was read with a bounded Python `mmap` search of the binary
+  instead; the `ultracode` / `--effort` / `--settings` chain above comes from there.
 - Minified names differ between chunks (`pni`, `hni`, `XA` in renderApp are `XN`, `TBe`, `qx` in
   index); REA's frontend analysis gives no cross-chunk symbol map, so definitions were found by
   grepping each chunk.
