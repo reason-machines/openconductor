@@ -2,10 +2,13 @@
 // chat--transcript-collapsed-tools / chat--tool-calls-expanded references
 // (evidence/screens), so rendering changes can be screenshotted without an agent.
 // ?theme=dark|light, ?running=1 keeps the turn running, ?cancelled=1 stops it early, ?tools=expanded opens
-// the "N tool calls, M messages" summary.
+// the "N tool calls, M messages" summary, ?files=N gives the turn N changed-file chips in its footer row
+// (?more=K clicks "+N more" K times).
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Transcript } from "../../src/features/chat/Transcript.tsx";
+import { TurnChanges } from "../../src/features/chat/TurnChanges.tsx";
+import { turnChanges } from "../../src/features/diff/useTurnChanges.ts";
 import { applyChatEvents, emptyTranscript } from "../../src/features/chat/reducer.ts";
 import type { Block, ChatEvent, ChatMessage } from "../../src/features/chat/types.ts";
 import "../../src/fonts.css";
@@ -49,14 +52,28 @@ const events: ChatEvent[] = [
 const r = applyChatEvents(emptyTranscript(S), events);
 if (!r.ok) throw new Error(JSON.stringify(r.error));
 
+const fileCount = Number(params.get("files") ?? 0);
+const paths = ["src/lib/auth.ts", "src/lib/auth.test.ts", "src/routes/login.ts", "src/routes/dashboard.tsx", "src/lib/session.ts", "docs/auth.md", "src/middleware.ts", "CHANGELOG.md"];
+const turnRef = (turnId: string) => ({ sessionId: S, turnId });
+if (fileCount > 0) {
+  turnChanges.record(
+    turnRef(T),
+    paths.slice(0, fileCount).map((path, i) => ({ path, old_path: null, status: "modified", binary: false, additions: [1, 14, 3, 22, 6, 9, 2, 4][i]!, deletions: [1, 0, 2, 5, 0, 1, 2, 0][i]! })),
+  );
+}
+const turnFooter = fileCount > 0 ? (turnId: string) => <TurnChanges turn={turnRef(turnId)} worktree={null} onOpenFile={() => undefined} /> : undefined;
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <main style={{ maxWidth: 760, margin: "0 auto", padding: "32px 28px" }}>
-      <Transcript transcript={r.transcript} />
+      <Transcript transcript={r.transcript} turnFooter={turnFooter} />
     </main>
   </React.StrictMode>,
 );
 
 if (params.get("tools") === "expanded") {
   setTimeout(() => document.querySelector<HTMLButtonElement>('.chat-tool-summary-row[aria-expanded="false"]')?.click(), 100);
+}
+for (let i = 0; i < Number(params.get("more") ?? 0); i++) {
+  setTimeout(() => document.querySelector<HTMLButtonElement>(".chat-turn-chip.more")?.click(), 150 + i * 50);
 }
