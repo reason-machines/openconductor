@@ -12,7 +12,10 @@ struct TempDir(PathBuf);
 impl TempDir {
     fn new(tag: &str) -> Self {
         static N: AtomicU64 = AtomicU64::new(0);
-        let nanos = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
+        let nanos = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
         let p = std::env::temp_dir().join(format!(
             "ckpt-test-{tag}-{}-{nanos}-{}",
             std::process::id(),
@@ -90,7 +93,10 @@ fn repo_with_commit(tag: &str) -> TempDir {
 }
 
 fn named(id: &str) -> SaveOptions {
-    SaveOptions { id: Some(id.into()), force: false }
+    SaveOptions {
+        id: Some(id.into()),
+        force: false,
+    }
 }
 
 fn status(dir: &Path) -> String {
@@ -140,12 +146,18 @@ fn save_change_restore_round_trip() {
     assert_eq!(read(ws, "staged.txt"), "staged\n");
     assert_eq!(read(ws, "untracked.txt"), "u\n");
     assert_eq!(read(ws, "newdir/n.txt"), "n\n");
-    assert!(!ws.join("keep/b.txt").exists(), "deleted file stays deleted");
+    assert!(
+        !ws.join("keep/b.txt").exists(),
+        "deleted file stays deleted"
+    );
     assert!(!ws.join("junk.txt").exists());
     assert!(!ws.join("junkdir").exists(), "untracked dirs removed");
     assert!(!ws.join("after-commit.txt").exists());
     // Only `git clean -fd` removes these: git never indexes empty dirs.
-    assert!(!ws.join("empty-dir").exists(), "empty untracked dirs removed");
+    assert!(
+        !ws.join("empty-dir").exists(),
+        "empty untracked dirs removed"
+    );
     assert_eq!(status(ws), status_before, "status identical");
     assert_eq!(
         g(ws, &["diff", "--cached", "--name-status"]),
@@ -170,7 +182,10 @@ fn checkpoint_commit_layout_matches_reference() {
     assert_eq!(format!("{REF_NAMESPACE}/l1"), reference);
     let commit = g(ws, &["rev-parse", &reference]);
     let raw = g(ws, &["cat-file", "commit", &commit]);
-    assert!(!raw.contains("\nparent "), "checkpoint commit has no parent");
+    assert!(
+        !raw.contains("\nparent "),
+        "checkpoint commit has no parent"
+    );
     assert!(raw.contains("\nauthor Checkpointer <checkpointer@noreply> "));
     assert!(raw.contains("\ncommitter Checkpointer <checkpointer@noreply> "));
 
@@ -208,7 +223,10 @@ fn default_id_and_duplicate_handling() {
     let t = repo_with_commit("ids");
     let ws = t.path();
     let id = save(ws, &SaveOptions::default()).unwrap();
-    assert!(id.starts_with("cp-") && id.len() == "cp-20250101T000000Z".len(), "{id}");
+    assert!(
+        id.starts_with("cp-") && id.len() == "cp-20250101T000000Z".len(),
+        "{id}"
+    );
     assert!(id[3..11].bytes().all(|b| b.is_ascii_digit()) && id.ends_with('Z'));
 
     save(ws, &named("dup")).unwrap();
@@ -218,12 +236,28 @@ fn default_id_and_duplicate_handling() {
         Err(CheckpointError::AlreadyExists(i)) => assert_eq!(i, "dup"),
         other => panic!("expected AlreadyExists, got {other:?}"),
     }
-    save(ws, &SaveOptions { id: Some("dup".into()), force: true }).unwrap();
+    save(
+        ws,
+        &SaveOptions {
+            id: Some("dup".into()),
+            force: true,
+        },
+    )
+    .unwrap();
     assert_ne!(get(ws, "dup").unwrap().worktree_tree, first.worktree_tree);
 
-    assert!(matches!(save(ws, &named("bad id")), Err(CheckpointError::InvalidId(_))));
-    assert!(matches!(save(ws, &named("a/b")), Err(CheckpointError::InvalidId(_))));
-    assert!(matches!(save(ws, &named("x..y")), Err(CheckpointError::InvalidId(_))));
+    assert!(matches!(
+        save(ws, &named("bad id")),
+        Err(CheckpointError::InvalidId(_))
+    ));
+    assert!(matches!(
+        save(ws, &named("a/b")),
+        Err(CheckpointError::InvalidId(_))
+    ));
+    assert!(matches!(
+        save(ws, &named("x..y")),
+        Err(CheckpointError::InvalidId(_))
+    ));
 }
 
 #[test]
@@ -243,8 +277,14 @@ fn ignored_files_semantics() {
     save(ws, &named("ig")).unwrap();
     let cp = get(ws, "ig").unwrap();
     let names = g(ws, &["ls-tree", "-r", "--name-only", &cp.worktree_tree]);
-    assert!(names.lines().any(|l| l == "tracked.log"), "tracked ignored-pattern file kept");
-    assert!(!names.contains("debug.log") && !names.contains("build/"), "ignored files skipped");
+    assert!(
+        names.lines().any(|l| l == "tracked.log"),
+        "tracked ignored-pattern file kept"
+    );
+    assert!(
+        !names.contains("debug.log") && !names.contains("build/"),
+        "ignored files skipped"
+    );
 
     write(ws, "tracked.log", "changed again\n");
     write(ws, "fresh.txt", "untracked\n");
@@ -253,10 +293,20 @@ fn ignored_files_semantics() {
     restore(ws, "ig").unwrap();
 
     assert_eq!(read(ws, "tracked.log"), "edited tracked log\n");
-    assert!(!ws.join("fresh.txt").exists(), "untracked non-ignored removed");
-    assert_eq!(read(ws, "other.log"), "new ignored\n", "ignored files are left alone");
+    assert!(
+        !ws.join("fresh.txt").exists(),
+        "untracked non-ignored removed"
+    );
+    assert_eq!(
+        read(ws, "other.log"),
+        "new ignored\n",
+        "ignored files are left alone"
+    );
     assert_eq!(read(ws, "build/out.bin"), "ignored dir\n");
-    assert!(!ws.join("debug.log").exists(), "ignored files are not part of the snapshot");
+    assert!(
+        !ws.join("debug.log").exists(),
+        "ignored files are not part of the snapshot"
+    );
 }
 
 #[test]
@@ -270,7 +320,12 @@ fn restore_is_noop_when_state_matches() {
 
     let old = SystemTime::now() - Duration::from_secs(3600);
     for f in ["a.txt", "u.txt", "keep/b.txt"] {
-        fs::File::options().write(true).open(ws.join(f)).unwrap().set_modified(old).unwrap();
+        fs::File::options()
+            .write(true)
+            .open(ws.join(f))
+            .unwrap()
+            .set_modified(old)
+            .unwrap();
     }
     // Refresh so the index carries the new stat info, as restore leaves it.
     let _ = git_cmd(ws, &["update-index", "-q", "--refresh"]);
@@ -282,7 +337,11 @@ fn restore_is_noop_when_state_matches() {
         let m = fs::metadata(ws.join(f)).unwrap().modified().unwrap();
         assert_eq!(m, old, "{f} was rewritten by a no-op restore");
     }
-    assert_eq!(g(ws, &["reflog"]).lines().count(), reflog_before, "no reflog entry");
+    assert_eq!(
+        g(ws, &["reflog"]).lines().count(),
+        reflog_before,
+        "no reflog entry"
+    );
 }
 
 #[test]
@@ -291,13 +350,21 @@ fn only_differing_files_are_rewritten() {
     let ws = t.path();
     save(ws, &named("m")).unwrap();
     let old = SystemTime::now() - Duration::from_secs(3600);
-    fs::File::options().write(true).open(ws.join("keep/b.txt")).unwrap().set_modified(old).unwrap();
+    fs::File::options()
+        .write(true)
+        .open(ws.join("keep/b.txt"))
+        .unwrap()
+        .set_modified(old)
+        .unwrap();
     let _ = git_cmd(ws, &["update-index", "-q", "--refresh"]);
     write(ws, "a.txt", "changed\n");
 
     restore(ws, "m").unwrap();
     assert_eq!(read(ws, "a.txt"), "base\n");
-    let m = fs::metadata(ws.join("keep/b.txt")).unwrap().modified().unwrap();
+    let m = fs::metadata(ws.join("keep/b.txt"))
+        .unwrap()
+        .modified()
+        .unwrap();
     assert_eq!(m, old, "unchanged file untouched");
 }
 
@@ -356,9 +423,14 @@ fn conflicted_squash_merge_is_busy() {
     g(ws, &["checkout", "-q", "main"]);
     write(ws, "a.txt", "mine\n");
     g(ws, &["commit", "-qam", "mine"]);
-    assert!(!git_cmd(ws, &["merge", "--squash", "other"]).status.success());
+    assert!(!git_cmd(ws, &["merge", "--squash", "other"])
+        .status
+        .success());
     assert_eq!(busy_state(ws).unwrap(), BusyState::SquashMerge);
-    assert!(matches!(save(ws, &named("s")), Err(CheckpointError::Busy(BusyState::SquashMerge))));
+    assert!(matches!(
+        save(ws, &named("s")),
+        Err(CheckpointError::Busy(BusyState::SquashMerge))
+    ));
 }
 
 #[test]
@@ -372,7 +444,10 @@ fn unresolved_conflicts_without_operation_is_102() {
     assert!(!git_cmd(ws, &["stash", "pop", "-q"]).status.success());
     assert_eq!(busy_state(ws).unwrap(), BusyState::Clean);
     let err = save(ws, &named("c")).unwrap_err();
-    assert!(matches!(err, CheckpointError::UnresolvedConflicts), "{err:?}");
+    assert!(
+        matches!(err, CheckpointError::UnresolvedConflicts),
+        "{err:?}"
+    );
     assert_eq!(err.reference_exit_code(), 102);
 }
 
@@ -406,13 +481,25 @@ fn refuses_outside_workspace_root() {
     let t = repo_with_commit("root");
     let sub = t.path().join("keep");
     let err = save(&sub, &named("x")).unwrap_err();
-    assert!(matches!(err, CheckpointError::RootMismatch { .. }), "{err:?}");
+    assert!(
+        matches!(err, CheckpointError::RootMismatch { .. }),
+        "{err:?}"
+    );
     assert_eq!(err.reference_exit_code(), 103);
-    assert!(matches!(restore(&sub, "x"), Err(CheckpointError::RootMismatch { .. })));
-    assert!(matches!(get(&sub, "x"), Err(CheckpointError::RootMismatch { .. })));
+    assert!(matches!(
+        restore(&sub, "x"),
+        Err(CheckpointError::RootMismatch { .. })
+    ));
+    assert!(matches!(
+        get(&sub, "x"),
+        Err(CheckpointError::RootMismatch { .. })
+    ));
 
     let plain = TempDir::new("plain");
-    assert!(matches!(save(plain.path(), &named("x")), Err(CheckpointError::NotARepository(_))));
+    assert!(matches!(
+        save(plain.path(), &named("x")),
+        Err(CheckpointError::NotARepository(_))
+    ));
 }
 
 #[test]
@@ -425,19 +512,35 @@ fn unborn_head_saves_but_cannot_restore() {
     assert_eq!(cp.head, None);
     let raw = g(ws, &["cat-file", "commit", &cp.commit]);
     assert!(raw.contains(&format!("\nhead {ZERO_OID}\n")));
-    assert!(matches!(restore(ws, "u"), Err(CheckpointError::UnbornHead(_))));
-    assert_eq!(read(ws, "first.txt"), "1\n", "failed restore touched nothing");
+    assert!(matches!(
+        restore(ws, "u"),
+        Err(CheckpointError::UnbornHead(_))
+    ));
+    assert_eq!(
+        read(ws, "first.txt"),
+        "1\n",
+        "failed restore touched nothing"
+    );
 }
 
 #[test]
 fn missing_checkpoint_and_metadata() {
     let t = repo_with_commit("missing");
     let ws = t.path();
-    assert!(matches!(restore(ws, "nope"), Err(CheckpointError::NotFound(_))));
+    assert!(matches!(
+        restore(ws, "nope"),
+        Err(CheckpointError::NotFound(_))
+    ));
     // A ref in the namespace that is not a checkpoint commit.
     let head = g(ws, &["rev-parse", "HEAD"]);
-    g(ws, &["update-ref", &format!("{REF_NAMESPACE}/bogus"), &head]);
-    assert!(matches!(restore(ws, "bogus"), Err(CheckpointError::MissingMetadata(_))));
+    g(
+        ws,
+        &["update-ref", &format!("{REF_NAMESPACE}/bogus"), &head],
+    );
+    assert!(matches!(
+        restore(ws, "bogus"),
+        Err(CheckpointError::MissingMetadata(_))
+    ));
 }
 
 #[test]
@@ -463,7 +566,10 @@ fn stale_temp_index_dirs_are_pruned() {
     fs::create_dir(&fresh).unwrap();
 
     save(ws, &named("p")).unwrap();
-    assert!(!dead.exists() && !ownerless.exists(), "old dirs with gone owners pruned");
+    assert!(
+        !dead.exists() && !ownerless.exists(),
+        "old dirs with gone owners pruned"
+    );
     assert!(live.exists(), "old dir with a live owner kept");
     assert!(fresh.exists(), "recent dir kept");
 }
