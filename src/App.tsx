@@ -14,6 +14,10 @@ import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { PaletteHost } from "./palette/PaletteHost";
 import { useKeybindings } from "./keybindings/KeybindingsProvider";
+import { SettingsView } from "./settings/SettingsView";
+import { pageFromPath, type SettingsPage } from "./settings/pages";
+import { applyTheme } from "./settings/useSettings";
+import { getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 
@@ -29,6 +33,16 @@ export default function App() {
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
   const { toasts, show, dismiss } = useToasts();
+  // `/settings` or `/settings/user/<page>` starts on that settings page.
+  const [settingsPage, setSettingsPage] = useState<SettingsPage | null>(() => pageFromPath(window.location.pathname));
+  const openSettings = useCallback(() => setSettingsPage((p) => p ?? "general"), []);
+  const closeSettings = useCallback(() => setSettingsPage(null), []);
+
+  // Apply the saved theme at startup; the settings page applies later changes.
+  useEffect(() => {
+    getSettings().then((s) => applyTheme(s.general.theme), () => undefined);
+  }, []);
+
 
   // Open project: native picker straight away, then the backend folder checks.
   const openProject = useCallback(async () => {
@@ -68,6 +82,7 @@ export default function App() {
   // Every app-shell shortcut goes through the one dispatcher (src/keybindings).
   useKeybindings({
     "openKeyboardShortcuts": toggleShortcuts,
+    "openSettings": openSettings,
     "view.toggleLeftSidebar": () => dispatch({ type: "toggleSidebar" }),
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
     "workspace.create": () => setDialog("create"),
@@ -84,10 +99,11 @@ export default function App() {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
+  if (settingsPage) return <SettingsView page={settingsPage} onNavigate={setSettingsPage} onClose={closeSettings} />;
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} info={info} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onOpenSettings={openSettings} info={info} />}
       <main className="main">
         {repo && workspace ? (
           <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
