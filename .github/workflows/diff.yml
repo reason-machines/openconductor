@@ -1,0 +1,41 @@
+name: Diff
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src-tauri/src/diff/**"
+      - "src/features/diff/**"
+      - "tools/diff/**"
+      - ".github/workflows/diff.yml"
+  pull_request:
+    paths:
+      - "src-tauri/src/diff/**"
+      - "src/features/diff/**"
+      - "tools/diff/**"
+      - ".github/workflows/diff.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: Diff Rust test + clippy (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: Configure git identity for tests
+        run: |
+          git config --global user.name "CI"
+          git config --global user.email "ci@example.invalid"
+      - name: rustfmt
+        run: rustfmt --edition 2021 --check src-tauri/src/diff/*.rs
+      - name: Test diff module
+        run: bash tools/diff/run-rust-tests.sh

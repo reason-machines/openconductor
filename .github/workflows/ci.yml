@@ -8,7 +8,62 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  frontend:
+    name: Frontend typecheck + build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+
+  app:
+    name: Tauri app check, test, clippy (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-22.04]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Tauri system deps (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - name: Configure git identity for tests
+        run: |
+          git config --global user.name "CI"
+          git config --global user.email "ci@example.invalid"
+      - run: npm ci
+      # generate_context! embeds dist/, so the frontend must be built first.
+      - run: npm run build
+      - name: cargo check, test, clippy
+        working-directory: src-tauri
+        run: |
+          cargo check --locked --all-targets
+          cargo test --locked
+          cargo clippy --locked --all-targets -- -D warnings
+
   rust:
     name: Rust build + test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -27,8 +82,52 @@ jobs:
           git config --global user.email "ci@example.invalid"
       - name: Checkpoint module build, test and clippy
         run: bash evidence/checkpoint/run-tests.sh
+      - name: PR module build, test and clippy
+        run: bash evidence/pr/run-tests.sh
       - name: Settings module build, test, clippy and rustfmt
         run: bash scripts/test-settings.sh
+
+  scripts:
+    name: Scripts crate build + test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    defaults:
+      run:
+        working-directory: crates/scripts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+        env:
+          RUSTFLAGS: -D warnings
+
+  db:
+    name: Persistence crate (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    defaults:
+      run:
+        working-directory: crates/openconductor-db
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --check
+      - run: cargo test
+        env:
+          RUSTFLAGS: -D warnings
+      - run: cargo clippy --all-targets -- -D warnings
 
   tools:
     name: Evidence tools compile
@@ -39,3 +138,14 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m py_compile tools/*.py
+
+  frontend-unit:
+    name: Frontend unit tests (node --test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Pure TypeScript modules (Node strips types natively)
+        run: node --test "src/**/*.test.ts"
