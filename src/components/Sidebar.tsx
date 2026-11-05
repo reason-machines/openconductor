@@ -15,7 +15,9 @@ import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
 import { RepoWorkspaceList } from "./PendingWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
-import { pinnedEntries, repoGroupWorkspaces } from "../state/sidebarOrder";
+import { pinnedEntries, repoGroupWorkspaces, sectionEntries, type SidebarSection } from "../state/sidebarOrder";
+import { newId } from "../state/names";
+import { SectionDialog, type SectionDialogMode } from "./SectionDialog";
 import { ProjectFilterSubmenu } from "./home/ProjectFilterSubmenu";
 import { useRepoFilter } from "../home/useRepoFilter";
 import { useDashboardEnabled } from "../home/useDashboardEnabled";
@@ -135,13 +137,94 @@ function HeaderMenu({ label, items, className, contextAt, onContextClose }: { la
   );
 }
 
+/**
+ * One user section (Conductor's `Yia`): header with emoji, name, a count while
+ * collapsed and the hover chevron; its "..." / right-click menu (`oBi`); the
+ * section's rows, or "Drag a workspace here" when it has none.
+ */
+function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow }: {
+  group: SidebarSection;
+  collapsed: boolean;
+  onToggle: () => void;
+  menuItems: MenuEntry[];
+  renderRow: (entry: SidebarSection["entries"][number]) => JSX.Element;
+}) {
+  const { section, entries } = group;
+  const [contextAt, setContextAt] = useState<{ x: number; y: number } | null>(null);
+  const closeContext = useCallback(() => setContextAt(null), []);
+  return (
+    <div className="sb-nav-section" data-navigation-section-drop-id={section.id}>
+      <div className="sb-section-header" onContextMenu={(e) => { e.preventDefault(); setContextAt({ x: e.clientX, y: e.clientY }); }}>
+        <button type="button" className="sb-section-toggle" aria-expanded={!collapsed} onClick={onToggle}>
+          {section.emoji !== undefined && <span className="sb-section-emoji" aria-hidden>{section.emoji}</span>}
+          <span className="sb-section-label">{section.name}</span>
+          {collapsed && <span className="sb-group-count">{entries.length}</span>}
+          <span className="sb-section-spacer" aria-hidden />
+          <span className="sb-section-chevron" data-collapsed={collapsed || undefined}>
+            {collapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}
+          </span>
+        </button>
+        <HeaderMenu label={section.name} className="sb-section-menu" items={menuItems} contextAt={contextAt} onContextClose={closeContext} />
+      </div>
+      {!collapsed && (
+        <div className="sb-ws-list sb-group-list">
+          {entries.map(renderRow)}
+          {entries.length === 0 && (
+            <div className="sb-section-empty">
+              <PlusIcon size={14} />
+              <span>Drag a workspace here</span>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSettings, onOpenShortcuts, onSearch, nav, info, computerName = "My Mac", onRenameWorkspace, onArchiveWorkspace, onError }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
-  const rows = useWorkspaceRows(state, dispatch, { onRename: onRenameWorkspace ?? openRename, onArchive: onArchiveWorkspace });
   const renamingWs = renaming && state.repos.find((r) => r.id === renaming.repoId)?.workspaces.find((w) => w.id === renaming.workspaceId);
-  const pinned = pinnedEntries(state);
+  // Conductor keeps each section's collapse under `section-<id>`; ours lasts for the session.
+  const [collapsedSections, setCollapsedSections] = useState<ReadonlySet<string>>(new Set());
+  const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
+  const rows = useWorkspaceRows(state, dispatch, {
+    onRename: onRenameWorkspace ?? openRename,
+    onArchive: onArchiveWorkspace,
+    onNewSection: (ws) => setSectionDialog({ mode: "create", workspaceIdToMove: ws.id }),
+    collapsedSections,
+  });
+  const { sections, sectioned } = sectionEntries(state);
+  const pinned = pinnedEntries(state, sectioned);
+  const toggleSection = (id: string) =>
+    setCollapsedSections((prev) => {
+      const next = new Set(prev);
+      if (!next.delete(id)) next.add(id);
+      return next;
+    });
+  const submitSection = (mode: SectionDialogMode, value: { name: string; emoji?: string }) => {
+    if (mode.mode === "edit") {
+      dispatch({ type: "editSection", sectionId: mode.sectionId, ...value });
+      return;
+    }
+    const section = { id: newId(), ...value, workspaceIds: mode.workspaceIdToMove === undefined ? [] : [mode.workspaceIdToMove] };
+    // Conductor's create (`_Y`) takes the workspace out of any other section; it does not unpin it.
+    dispatch({ type: "createSection", section, beforeSectionId: mode.beforeSectionId });
+  };
+  const sectionMenu = (sectionId: string): MenuEntry[] => {
+    const s = state.sections?.find((x) => x.id === sectionId);
+    return [
+      { label: "Edit section", onSelect: () => s && setSectionDialog({ mode: "edit", sectionId, name: s.name, emoji: s.emoji }) },
+      { label: "New section…", onSelect: () => setSectionDialog({ mode: "create", beforeSectionId: sectionId }) },
+      "-",
+      { label: "Delete section", destructive: true, onSelect: () => dispatch({ type: "deleteSection", sectionId }) },
+    ];
+  };
+  const row = ({ repoId, workspace }: SidebarSection["entries"][number]) => {
+    const repo = state.repos.find((r) => r.id === repoId);
+    return <SidebarWorkspaceRow key={workspace.id} workspace={workspace} targetBranch={repo?.defaultBranch ?? ""} hasRemote={Boolean(repo?.remote)} {...rows.rowProps(repoId, workspace)} />;
+  };
   const sel = state.selection;
   const dashboardEnabled = useDashboardEnabled().enabled;
   // Conductor persists this per collapse key; ours lasts for the session.
@@ -216,16 +299,22 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
       <nav className="repo-list">
         {pinned.length > 0 && (
           <SidebarGroup label="Pinned" count={pinned.length}>
-            {pinned.map(({ repoId, workspace }) => (
-              <SidebarWorkspaceRow
-                key={workspace.id}
-                workspace={workspace}
-                targetBranch={state.repos.find((r) => r.id === repoId)?.defaultBranch ?? ""}
-                hasRemote={Boolean(state.repos.find((r) => r.id === repoId)?.remote)}
-                {...rows.rowProps(repoId, workspace)}
+            {pinned.map(row)}
+          </SidebarGroup>
+        )}
+        {sections.length > 0 && (
+          <section className="sb-nav-sections" aria-label="Sections" data-navigation-sections-section="">
+            {sections.map((group) => (
+              <NavSectionGroup
+                key={group.section.id}
+                group={group}
+                collapsed={collapsedSections.has(group.section.id)}
+                onToggle={() => toggleSection(group.section.id)}
+                menuItems={sectionMenu(group.section.id)}
+                renderRow={row}
               />
             ))}
-          </SidebarGroup>
+          </section>
         )}
         {/* "My workspaces" section header (Conductor's `lBi`): label, hover chevron, "..." menu with Add project. */}
         <div className="sb-section-header">
@@ -238,6 +327,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
           </button>
           <HeaderMenu label="My workspaces" className="sb-section-menu" items={[
             { label: "Add project…", onSelect: onOpenProject },
+            { label: "New section…", onSelect: () => setSectionDialog({ mode: "create" }) },
             { key: "filter-by-project", render: (close) => <ProjectFilterSubmenu repos={state.repos} filter={repoFilter} onChange={setRepoFilter} onClose={close} /> },
           ]} />
         </div>
@@ -311,7 +401,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
               />
             </div>
             <RepoWorkspaceList repoId={repo.id} collapsed={!!repo.collapsed} isEmpty={repo.workspaces.length === 0} empty={<p className="ws-empty">No workspaces</p>}>
-              {repoGroupWorkspaces(repo.workspaces).map((ws) => (
+              {repoGroupWorkspaces(repo.workspaces, sectioned).map((ws) => (
                 <SidebarWorkspaceRow key={ws.id} workspace={ws} targetBranch={repo.defaultBranch} hasRemote={Boolean(repo.remote)} {...rows.rowProps(repo.id, ws)} />
               ))}
             </RepoWorkspaceList>
@@ -326,6 +416,14 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onOpenSe
         )}
       </nav>
       {rows.menu}
+      {sectionDialog && (
+        <SectionDialog
+          key={sectionDialog.mode === "edit" ? sectionDialog.sectionId : `create-${sectionDialog.workspaceIdToMove ?? "empty"}`}
+          data={sectionDialog}
+          onSubmit={(value) => submitSection(sectionDialog, value)}
+          onClose={() => setSectionDialog(null)}
+        />
+      )}
 
       {/* Footer, after Conductor's `Nna`: px-4 py-3, top border, help and settings icons (h-4 w-4, stroke 1.5) gap-5 at the right. */}
       <div className="sb-footer">

@@ -221,8 +221,8 @@ fn sidebar_repo_filter_is_a_raw_id_and_all_projects_deletes_it() {
 
 #[test]
 fn dashboard_enabled_is_off_unless_the_row_says_true() {
-    // `mzt` (index-BGEQ8YjU.js @407,004) reads `data === "true"`; `eGt`
-    // (@421,183) writes `value.toString()`; `_z` defaults it to "false".
+    // `mzt` (index-BGEQ8YjU.js @407,016) reads `data === "true"`; `eGt`
+    // (@421,195) writes `value.toString()`; `_z` defaults it to "false".
     assert!(!AppPrefs::from_rows(&HashMap::new()).dashboard_enabled);
     assert!(!AppPrefs::from_rows(&rows(&[("dashboard_enabled", "TRUE")])).dashboard_enabled);
     assert!(AppPrefs::from_rows(&rows(&[("dashboard_enabled", "true")])).dashboard_enabled);

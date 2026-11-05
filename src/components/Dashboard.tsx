@@ -1,6 +1,6 @@
 // parity:home.dashboard-routes
 // Conductor's /dashboard screen (`lta`, decoded renderApp-D_fmY7hW.js
-// @9,906,285; route `J7a` @11,520,499): a sticky "Dashboard" bar, project tabs
+// @9,951,985; route `J7a` @11,520,499): a sticky "Dashboard" bar, project tabs
 // when there is more than one project (`dta` / `hta`), then a board of the
 // non-archived workspaces in five status columns (`_ta` / `bta`). Dragging a
 // card to another column sets its status (`updateWorkspaceManualStatus`);
@@ -46,6 +46,9 @@ interface Props {
   onCreateWorkspace: (repoId?: string) => void;
   onError: (message: string) => void;
 }
+
+/** `w-48`. */
+const MENU_WIDTH = 192;
 
 const StatusDot = ({ status }: { status: WorkspaceStatusValue }) => <span className={`sb-status-dot status-${status}`} aria-hidden />;
 
@@ -283,8 +286,9 @@ function Card({
           </span>
           {hasChanges && (
             <span className="dash-card-diff">
-              <span className="dash-add">+{w.diff.added}</span>
-              <span className="dash-del">-{w.diff.removed}</span>
+              {/* `ID`: a zero side is left out. */}
+              {w.diff.added > 0 && <span className="dash-add">+{w.diff.added}</span>}
+              {w.diff.removed > 0 && <span className="dash-del">-{w.diff.removed}</span>}
             </span>
           )}
         </div>
@@ -313,8 +317,10 @@ function Card({
 
 /** The card's status button and menu (`yZo`): the five statuses, a check on the current one. */
 function StatusPicker({ status, onPick }: { status: WorkspaceStatusValue; onPick: (s: WorkspaceStatusValue) => void }) {
-  const [open, setOpen] = useState(false);
-  const ref = useOutsideClose(open, () => setOpen(false));
+  // Fixed to the button so the column's scroll box does not clip it (Conductor portals it).
+  const [at, setAt] = useState<{ top: number; left: number } | null>(null);
+  const open = at !== null;
+  const ref = useOutsideClose(open, () => setAt(null));
   return (
     <div className="dash-status" ref={ref}>
       <button
@@ -325,13 +331,15 @@ function StatusPicker({ status, onPick }: { status: WorkspaceStatusValue; onPick
         aria-expanded={open}
         onClick={(e) => {
           e.stopPropagation();
-          setOpen(!open);
+          if (open) return setAt(null);
+          const b = e.currentTarget.getBoundingClientRect();
+          setAt({ top: b.bottom + 4, left: Math.max(8, Math.min(b.left, window.innerWidth - MENU_WIDTH - 8)) });
         }}
       >
         <StatusDot status={status} />
       </button>
-      {open && (
-        <div className="dash-menu" role="menu" aria-label="Set status" onClick={(e) => e.stopPropagation()}>
+      {at && (
+        <div className="dash-menu" role="menu" aria-label="Set status" style={{ position: "fixed", top: at.top, left: at.left }} onClick={(e) => e.stopPropagation()}>
           {WORKSPACE_STATUSES.map((s) => (
             <button
               key={s}
@@ -341,7 +349,7 @@ function StatusPicker({ status, onPick }: { status: WorkspaceStatusValue; onPick
               data-selected={s === status || undefined}
               onClick={() => {
                 onPick(s);
-                setOpen(false);
+                setAt(null);
               }}
             >
               <StatusDot status={s} />

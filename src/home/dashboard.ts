@@ -1,7 +1,7 @@
 // Conductor's /dashboard route (`J7a`, component `lta`, decoded
-// renderApp-D_fmY7hW.js @11,520,499; screen @9,906,285): a board of the
+// renderApp-D_fmY7hW.js @11,520,499; screen @9,951,985): a board of the
 // non-archived workspaces in five status columns, gated by the Experimental
-// setting `dashboard_enabled` (index-BGEQ8YjU.js `mzt` @407,004, default
+// setting `dashboard_enabled` (index-BGEQ8YjU.js `mzt` @407,016, default
 // "false" in `_z`). Extracted code is read as data; this is the board's logic
 // without React, so node --test covers it. Evidence: evidence/screens/dashboard.md.
 

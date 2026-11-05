@@ -5,7 +5,7 @@
 // crosses as-is in DiffComment's snake_case shape.
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../../backend";
-import type { DiffComment } from "./comments.ts";
+import { migrateLocations, type DiffComment } from "./comments.ts";
 import { localCommentStore, type CommentStore, type GithubSyncReport } from "./commentStore.ts";
 
 function tauriCommentStore(workspaceId: string, workspacePath: string | null): CommentStore {
@@ -19,7 +19,7 @@ function tauriCommentStore(workspaceId: string, workspacePath: string | null): C
     : {};
   return {
     ...github,
-    list: () => invoke<DiffComment[]>("diff_comments_list", { workspaceId }),
+    list: () => invoke<DiffComment[]>("diff_comments_list", { workspaceId }).then(migrateLocations),
     add: async (comment) => {
       await invoke("diff_comment_add", { comment });
     },

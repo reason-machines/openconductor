@@ -1,4 +1,73 @@
 {
   "info_plist": {},
-  "entitlements": {}
+  "entitlements": {},
+  "bundled_resources": {
+    "bin/watchexec": {
+      "kind": "replaced",
+      "reason": "Conductor's frontend runs spotlight through watchexec (CONDUCTOR_INT_WATCHEXEC_PATH, bundled-bin.json); OpenConductor watches natively (src-tauri/src/spotlight/watch.rs, run by `openconductor --tool spotlighter`). Conductor's copy is also not the upstream v2.3.2 release binary (sha256 differs), so it cannot be fetched pinned the way bin/gh is.",
+      "evidence": "evidence/packaging/bundled-bin.json upstream_identity.bin/watchexec; evidence/scripts/MANIFEST.md"
+    },
+    "bin/conductor": {
+      "kind": "not_built",
+      "reason": "Shim that execs `.internal/conductor-runtime cli`, Conductor's agent-facing CLI. OpenConductor has no CLI counterpart yet.",
+      "evidence": "evidence/scripts/bin/conductor; evidence/runtime/conductor-cli-help.txt (REA capture-process of `conductor-runtime cli --help`)"
+    },
+    "bin/.internal/conductor-runtime": {
+      "kind": "replaced",
+      "reason": "Bun single-file executable (76 MB) that hosts the agent sidecar (bundled @anthropic-ai/claude-agent-sdk) plus the logger, actions, internal and cli subcommands. OpenConductor runs agents from Rust instead: agent/claude_cli.rs launches Claude Code and agent/codex_cli.rs launches Codex. Conductor resolves its conductor-skill resource and hands it to the sidecar in CONDUCTOR_INTERNAL_SKILL_PLUGIN_DIR; OpenConductor passes the same resource to Claude Code with --plugin-dir.",
+      "evidence": "REA search_strings ev_02b391f118c5e966 on MacOS/conductor (evidence/packaging/rea/search-strings-main-skill.json) (0x102afc487, 0x102afcca4, 0x102cc0c8f); evidence/claude-code/README.md; evidence/ipc/README.md"
+    },
+    "bin/.internal/sidecar": {
+      "kind": "replaced",
+      "reason": "Shim for `conductor-runtime sidecar`, the agent runtime; replaced as bin/.internal/conductor-runtime is.",
+      "evidence": "evidence/scripts/bin/.internal/sidecar"
+    },
+    "bin/.internal/logger": {
+      "kind": "by_design",
+      "reason": "Shim for `conductor-runtime logger`. The main binary configures it with CONDUCTOR_APP_LOGGER_* and CONDUCTOR_HONEYCOMB_* variables and per-environment Honeycomb ingest keys: it forwards app logs to Conductor's Honeycomb telemetry. OpenConductor sends no telemetry to Conductor's backend.",
+      "evidence": "evidence/scripts/bin/.internal/logger; REA search_strings ev_02b391f118c5e966 on MacOS/conductor (evidence/packaging/rea/search-strings-main-skill.json) (0x102afc487)"
+    },
+    "bin/.internal/actions": {
+      "kind": "by_design",
+      "reason": "Shim for `conductor-runtime actions`. The main binary starts the app actions server only for Conductor's internal users and refuses it otherwise, so it is a staff-only tool.",
+      "evidence": "evidence/scripts/bin/.internal/actions; REA search_strings ev_02b391f118c5e966 on MacOS/conductor (evidence/packaging/rea/search-strings-main-skill.json) (0x102afc487: 'App actions server is only available for internal users')"
+    },
+    "bin/.internal/internal": {
+      "kind": "not_built",
+      "reason": "Shim for `conductor-runtime internal`. What the subcommand does is not established: REA cannot unpack the Bun bundle (evidence/chat/rea-gaps.md gap 5).",
+      "evidence": "evidence/scripts/bin/.internal/internal"
+    },
+    "bin/.internal/agent-launcher": {
+      "kind": "not_built",
+      "reason": "68 KB native launcher: `agent-launcher <executable> [arguments...]` replaces itself (posix_spawn with the set-exec flag) with the agent after responsibility_spawnattrs_setdisclaim, so macOS attributes privacy permission prompts to the agent rather than to the app. OpenConductor launches agents directly, so their prompts are attributed to OpenConductor.",
+      "evidence": "REA search_strings ev_839eea1ea5b9e626 on bin/.internal/agent-launcher (evidence/packaging/rea/search-strings-agent-launcher.json) (sha256 64c540b511fa): usage line, 'set agent permission attribution', 'set process replacement', imports _posix_spawnp, _posix_spawnattr_setflags, _responsibility_spawnattrs_setdisclaim"
+    }
+  },
+  "linked_libraries": {
+    "CloudKit": {
+      "kind": "link_only",
+      "reason": "Conductor's MacOS/conductor links CloudKit (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_cloud_kit), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced).",
+      "evidence": "evidence/packaging/rea/macho-framework-use.json (tools/macho_framework_use.py over REA inspect-macho ev_4b8fc205… of MacOS/conductor)"
+    },
+    "CoreData": {
+      "kind": "link_only",
+      "reason": "Conductor's MacOS/conductor links CoreData (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_core_data), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced).",
+      "evidence": "evidence/packaging/rea/macho-framework-use.json (tools/macho_framework_use.py over REA inspect-macho ev_4b8fc205… of MacOS/conductor)"
+    },
+    "CoreImage": {
+      "kind": "link_only",
+      "reason": "Conductor's MacOS/conductor links CoreImage (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_core_image), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced).",
+      "evidence": "evidence/packaging/rea/macho-framework-use.json (tools/macho_framework_use.py over REA inspect-macho ev_4b8fc205… of MacOS/conductor)"
+    },
+    "CoreText": {
+      "kind": "link_only",
+      "reason": "Conductor's MacOS/conductor links CoreText (LC_LOAD_DYLIB) but imports no symbol from it and has no symbol from its objc2 binding crate (objc2_core_text), so its own code never calls it; WebKit, which it does use, shows 0 imports but 64 objc2_web_kit symbols. Nothing to rebuild. Most likely linked through the framework dependencies of the objc2 AppKit bindings (inference, not traced).",
+      "evidence": "evidence/packaging/rea/macho-framework-use.json (tools/macho_framework_use.py over REA inspect-macho ev_4b8fc205… of MacOS/conductor)"
+    },
+    "UserNotifications": {
+      "kind": "not_built",
+      "reason": "Conductor drives UNUserNotificationCenter itself through objc2-user-notifications (17 symbols): it requests authorization, sets its own NotificationCenterDelegate class as the delegate, posts UNNotificationRequests with a title, body and userInfo, and reads a clicked notification's actionIdentifier (imports UNNotificationDefaultActionIdentifier) and userInfo, so it reacts to clicks on its notifications. OpenConductor posts notifications only through tauri-plugin-notification and does not link UserNotifications or handle clicks. What Conductor does on a click is not established.",
+      "evidence": "evidence/packaging/rea/macho-framework-use.json (tools/macho_framework_use.py over REA inspect-macho ev_4b8fc205… of MacOS/conductor)"
+    }
+  }
 }

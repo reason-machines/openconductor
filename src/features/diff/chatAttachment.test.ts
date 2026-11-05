@@ -28,3 +28,26 @@ test("withAttachments appends each attachment after the message", () => {
   );
   assert.ok(withAttachments("", [revertedNote("a.ts")]).startsWith("<attachment"));
 });
+
+test("comment attachments dedupe by comment id and get unique chip names", () => {
+  const one = { name: "a.ts +2", text: "1", commentId: "c1" };
+  const two = { name: "a.ts +2", text: "2", commentId: "c2" };
+  let list = addAttachment(addAttachment([revertedNote("a.ts")], one), two);
+  assert.deepEqual(
+    list.map((x) => [x.name, x.commentId]),
+    [
+      ["revert-a.ts.txt", undefined],
+      ["a.ts +2", "c1"],
+      ["a.ts +2 (2)", "c2"],
+    ],
+  );
+  list = addAttachment(list, { ...one, text: "1 again" });
+  assert.deepEqual(
+    list.map((x) => [x.name, x.text]),
+    [
+      ["revert-a.ts.txt", "The user undid all changes to \"a.ts\". Do not undo this action unless the user asks."],
+      ["a.ts +2 (2)", "2"],
+      ["a.ts +2", "1 again"],
+    ],
+  );
+});

@@ -1,7 +1,7 @@
 {
  "ref": "origin/main",
- "sha": "4b9dc87d3eb156dd19cf34a433c64357512669f1",
- "source_files_scanned": 613,
+ "sha": "a0139339c52b4f013655b1af12c86828f24967c7",
+ "source_files_scanned": 667,
  "reference": {
   "conductor_version": "0.87.6",
   "keybindings_source": {
@@ -13,10 +13,10 @@
  },
  "overall": {
   "total": 419,
-  "matched": 281,
-  "partial": 110,
-  "missing": 28,
-  "parity_pct": 80.2
+  "matched": 296,
+  "partial": 104,
+  "missing": 19,
+  "parity_pct": 83.1
  },
  "areas": {
   "settings": {
@@ -72,10 +72,10 @@
   },
   "shortcuts": {
    "total": 172,
-   "matched": 65,
-   "partial": 107,
+   "matched": 71,
+   "partial": 101,
    "missing": 0,
-   "parity_pct": 68.9,
+   "parity_pct": 70.6,
    "groups": {
     "General": {
      "total": 30,
@@ -100,10 +100,10 @@
     },
     "Chat": {
      "total": 51,
-     "matched": 5,
-     "partial": 46,
+     "matched": 11,
+     "partial": 40,
      "missing": 0,
-     "parity_pct": 54.9
+     "parity_pct": 60.8
     },
     "Workspace": {
      "total": 37,
@@ -137,10 +137,10 @@
   },
   "persistence": {
    "total": 44,
-   "matched": 33,
+   "matched": 43,
    "partial": 0,
-   "missing": 11,
-   "parity_pct": 75.0,
+   "missing": 1,
+   "parity_pct": 97.7,
    "groups": {
     "conductor.db table": {
      "total": 18,
@@ -158,19 +158,19 @@
     },
     "app data store": {
      "total": 19,
-     "matched": 8,
+     "matched": 18,
      "partial": 0,
-     "missing": 11,
-     "parity_pct": 42.1
+     "missing": 1,
+     "parity_pct": 94.7
     }
    }
   },
   "packaging": {
    "total": 78,
-   "matched": 64,
+   "matched": 63,
    "partial": 0,
-   "missing": 14,
-   "parity_pct": 82.1,
+   "missing": 15,
+   "parity_pct": 80.8,
    "groups": {
     "Info.plist key": {
      "total": 20,
@@ -223,10 +223,10 @@
     },
     "bundled resource": {
      "total": 15,
-     "matched": 8,
+     "matched": 7,
      "partial": 0,
-     "missing": 7,
-     "parity_pct": 53.3
+     "missing": 8,
+     "parity_pct": 46.7
     },
     "frontend": {
      "total": 1,
@@ -242,13 +242,13 @@
   "conductor_rebuild": {
    "migrations": 5,
    "errors": [],
-   "schema_source": "REA inspect-sqlite-database ev_19fffea4f69f3d74dfb4d41ad2179b9d1e61172535a4b36bf530b3ea4b220672"
+   "schema_source": "PRAGMA table_info"
   },
   "conductor_reference": "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e",
   "cache_rebuild": {
    "migrations": 6,
    "errors": [],
-   "schema_source": "REA inspect-sqlite-database ev_010134444958a8fc22146f85380264db06764a41f7ccfbf662e13ada43c6124c"
+   "schema_source": "PRAGMA table_info"
   },
   "cache_reference": "ev_202d2f9fcbf5be8a97cec7b5c27cfa0b7722d0b3e095404e9ac0b0923904aabf",
   "conductor_migration_rows": 139,
@@ -355,10 +355,10 @@
     ],
     "rebuild": {
      "total": 11,
-     "matched": 1,
+     "matched": 11,
      "partial": 0,
-     "missing": 10,
-     "parity_pct": 9.1
+     "missing": 0,
+     "parity_pct": 100.0
     }
    },
    {
@@ -484,10 +484,10 @@
     ],
     "rebuild": {
      "total": 12,
-     "matched": 5,
+     "matched": 4,
      "partial": 0,
-     "missing": 7,
-     "parity_pct": 41.7
+     "missing": 8,
+     "parity_pct": 33.3
     }
    },
    {
@@ -1009,40 +1009,15 @@
    "result": "fail",
    "parity": {
     "total": 51,
-    "matched": 5,
-    "partial": 46,
+    "matched": 11,
+    "partial": 40,
     "missing": 0,
-    "parity_pct": 54.9
+    "parity_pct": 60.8
    },
    "gaps": [
     {
      "group": "Chat",
      "id": "nav.newTab",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queueEdit.save",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queueEdit.saveAndSteer",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queue.editMessage",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queue.deleteMessage",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queue.steerMessage",
      "status": "declared"
     },
     {
@@ -1053,11 +1028,6 @@
     {
      "group": "Chat",
      "id": "chat.planResponse.submit",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queueEdit.cancel",
      "status": "declared"
     },
     {
@@ -1476,66 +1446,15 @@
    "area": "persistence",
    "parent_obligation": "db.local-storage",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 11,
-    "matched": 1,
+    "matched": 11,
     "partial": 0,
-    "missing": 10,
-    "parity_pct": 9.1
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "app data store",
-     "id": "local-storage:browser-local-storage",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:claude-context-windows",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:composer-drafts",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:dispatcher-state",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:model-picker-configs-v1",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:opencode-model-discovery-v1",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:pre-workspace-completions-v1",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:route-user-state",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:run-script-history",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:turn-changes-cache",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "persistence.window-state",
@@ -1813,10 +1732,10 @@
    "result": "fail",
    "parity": {
     "total": 12,
-    "matched": 5,
+    "matched": 4,
     "partial": 0,
-    "missing": 7,
-    "parity_pct": 41.7
+    "missing": 8,
+    "parity_pct": 33.3
    },
    "gaps": [
     {
@@ -1847,6 +1766,11 @@
     {
      "group": "bundled resource",
      "id": "bin/.internal/sidecar",
+     "status": "missing"
+    },
+    {
+     "group": "bundled resource",
+     "id": "bin/conductor",
      "status": "missing"
     },
     {
@@ -3317,36 +3241,36 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.queueEdit.save",
-   "status": "declared",
-   "detail": "Enter; no handler references this id"
+   "status": "matched",
+   "detail": "Enter"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.queueEdit.saveAndSteer",
-   "status": "declared",
-   "detail": "meta+Enter; no handler references this id"
+   "status": "matched",
+   "detail": "meta+Enter"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.queue.editMessage",
-   "status": "declared",
-   "detail": "e; no handler references this id"
+   "status": "matched",
+   "detail": "e"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.queue.deleteMessage",
-   "status": "declared",
-   "detail": "Backspace; no handler references this id"
+   "status": "matched",
+   "detail": "Backspace"
   },
   {
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.queue.steerMessage",
-   "status": "declared",
-   "detail": "Enter; no handler references this id"
+   "status": "matched",
+   "detail": "Enter"
   },
   {
    "area": "shortcuts",
@@ -3366,8 +3290,8 @@
    "area": "shortcuts",
    "group": "Chat",
    "id": "chat.queueEdit.cancel",
-   "status": "declared",
-   "detail": "Escape; no handler references this id"
+   "status": "matched",
+   "detail": "Escape"
   },
   {
    "area": "shortcuts",
@@ -4220,63 +4144,63 @@
    "area": "persistence",
    "group": "app data store",
    "id": "local-storage:browser-local-storage",
-   "status": "missing",
+   "status": "matched",
    "detail": "local-storage.subsystem.browser-local-storage.json"
   },
   {
    "area": "persistence",
    "group": "app data store",
    "id": "local-storage:claude-context-windows",
-   "status": "missing",
+   "status": "matched",
    "detail": "local-storage.subsystem.claude-context-windows.json"
   },
   {
    "area": "persistence",
    "group": "app data store",
    "id": "local-storage:composer-drafts",
-   "status": "missing",
+   "status": "matched",
    "detail": "local-storage.subsystem.composer-drafts.json"
   },
   {
    "area": "persistence",
    "group": "app data store",
    "id": "local-storage:dispatcher-state",
-   "status": "missing",
+   "status": "matched",
    "detail": "local-storage.subsystem.dispatcher-state.json"
   },
   {
    "area": "persistence",
    "group": "app data store",
    "id": "local-storage:model-picker-configs-v1",
-   "status": "missing",
+   "status": "matched",
    "detail": "local-storage.subsystem.model-picker-configs-v1.json"
   },
   {
    "area": "persistence",
    "group": "app data store",
    "id": "local-storage:opencode-model-discovery-v1",
-   "status": "missing",
+   "status": "matched",
    "detail": "local-storage.subsystem.opencode-model-discovery-v1.json"
   },
   {
    "area": "persistence",
    "group": "app data store",
    "id": "local-storage:pre-workspace-completions-v1",
-   "status": "missing",
+   "status": "matched",
    "detail": "local-storage.subsystem.pre-workspace-completions-v1.json"
   },
   {
    "area": "persistence",
    "group": "app data store",
    "id": "local-storage:route-user-state",
-   "status": "missing",
+   "status": "matched",
    "detail": "local-storage.subsystem.route-user-state.json"
   },
   {
    "area": "persistence",
    "group": "app data store",
    "id": "local-storage:run-script-history",
-   "status": "missing",
+   "status": "matched",
    "detail": "local-storage.subsystem.run-script-history.json"
   },
   {
@@ -4290,7 +4214,7 @@
    "area": "persistence",
    "group": "app data store",
    "id": "local-storage:turn-changes-cache",
-   "status": "missing",
+   "status": "matched",
    "detail": "local-storage.subsystem.turn-changes-cache.json"
   },
   {
@@ -4732,42 +4656,42 @@
    "group": "bundled resource",
    "id": "bin/.internal/actions",
    "status": "missing",
-   "detail": ""
+   "detail": "by_design: Shim for `conductor-runtime actions`. The main binary starts the app actions server only for Conductor's internal users and refuses it otherwise, so it is a staff-only tool."
   },
   {
    "area": "packaging",
    "group": "bundled resource",
    "id": "bin/.internal/agent-launcher",
    "status": "missing",
-   "detail": ""
+   "detail": "not_built: 68 KB native launcher: `agent-launcher <executable> [arguments...]` replaces itself (posix_spawn with the set-exec flag) with the agent after responsibility_spawnattrs_setdisclaim, so macOS attributes privacy permission prompts to the agent rather than to the app. OpenConductor launches agents directly, so their prompts are attributed to OpenConductor."
   },
   {
    "area": "packaging",
    "group": "bundled resource",
    "id": "bin/.internal/conductor-runtime",
    "status": "missing",
-   "detail": ""
+   "detail": "replaced: Bun single-file executable (76 MB) that hosts the agent sidecar (bundled @anthropic-ai/claude-agent-sdk) plus the logger, actions, internal and cli subcommands. OpenConductor runs agents from Rust instead: agent/claude_cli.rs launches Claude Code and agent/codex_cli.rs launches Codex. Conductor resolves its conductor-skill resource and hands it to the sidecar in CONDUCTOR_INTERNAL_SKILL_PLUGIN_DIR; OpenConductor passes the same resource to Claude Code with --plugin-dir."
   },
   {
    "area": "packaging",
    "group": "bundled resource",
    "id": "bin/.internal/internal",
    "status": "missing",
-   "detail": ""
+   "detail": "not_built: Shim for `conductor-runtime internal`. What the subcommand does is not established: REA cannot unpack the Bun bundle (evidence/chat/rea-gaps.md gap 5)."
   },
   {
    "area": "packaging",
    "group": "bundled resource",
    "id": "bin/.internal/logger",
    "status": "missing",
-   "detail": ""
+   "detail": "by_design: Shim for `conductor-runtime logger`. The main binary configures it with CONDUCTOR_APP_LOGGER_* and CONDUCTOR_HONEYCOMB_* variables and per-environment Honeycomb ingest keys: it forwards app logs to Conductor's Honeycomb telemetry. OpenConductor sends no telemetry to Conductor's backend."
   },
   {
    "area": "packaging",
    "group": "bundled resource",
    "id": "bin/.internal/sidecar",
    "status": "missing",
-   "detail": ""
+   "detail": "replaced: Shim for `conductor-runtime sidecar`, the agent runtime; replaced as bin/.internal/conductor-runtime is."
   },
   {
    "area": "packaging",
@@ -4780,8 +4704,8 @@
    "area": "packaging",
    "group": "bundled resource",
    "id": "bin/conductor",
-   "status": "matched",
-   "detail": ""
+   "status": "missing",
+   "detail": "not_built: Shim that execs `.internal/conductor-runtime cli`, Conductor's agent-facing CLI. OpenConductor has no CLI counterpart yet."
   },
   {
    "area": "packaging",
@@ -4809,7 +4733,7 @@
    "group": "bundled resource",
    "id": "bin/watchexec",
    "status": "missing",
-   "detail": ""
+   "detail": "replaced: Conductor's frontend runs spotlight through watchexec (CONDUCTOR_INT_WATCHEXEC_PATH, bundled-bin.json); OpenConductor watches natively (src-tauri/src/spotlight/watch.rs, run by `openconductor --tool spotlighter`). Conductor's copy is also not the upstream v2.3.2 release binary (sha256 differs), so it cannot be fetched pinned the way bin/gh is."
   },
   {
    "area": "packaging",

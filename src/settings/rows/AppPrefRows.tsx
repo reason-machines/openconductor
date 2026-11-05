@@ -81,7 +81,7 @@ export function ExperimentalAppPrefRows() {
           onChange={(value) => save({ key: "experimental_tab_freak_mode", value })}
         />
       </Row>
-      {/* Conductor lists Dashboard after Auto-run after setup and before Graphite (renderApp settings registry @10,656,997). */}
+      {/* Conductor lists Dashboard after Auto-run after setup and before Graphite (renderApp settings registry @10,702,873). */}
       <Row label="Dashboard" help="Show the dashboard and workspace sidebar.">
         <Switch label="Dashboard" checked={dashboard.enabled} disabled={!dashboard.ready} onChange={setDashboardEnabled} />
       </Row>
