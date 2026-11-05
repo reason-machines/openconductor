@@ -9,6 +9,14 @@
 
 import { agentForModel, type ModelAgent } from "../../settings/models.ts";
 
+/** What the composer's model picker holds for a chat. */
+export interface ModelChoice {
+  /** Conductor model id ("opus-5-1m"), or a runtime's own id. */
+  model: string;
+  effort: string | null;
+  fast?: boolean;
+}
+
 /** Conductor's display names (`lv`). Ids it has no name for fall back to the id. */
 const DISPLAY_NAMES: Record<string, string> = {
   "fable-5-1": "Fable 5.1",

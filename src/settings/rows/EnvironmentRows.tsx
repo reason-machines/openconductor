@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import "./rows.css";
 import { layerLabel, repoSettingsSetLocal, type EffectiveSettings } from "../repoSettings.ts";
 import { notifyRepoSettingsChanged, useRepoSettings } from "../useRepoSettings.ts";
-import type { Settings } from "../types.ts";
 import { envFileStatus, envNameError, envRows, parseEnvFiles, type EnvContext } from "./rowModel.ts";
 
 const FILES_TITLE = "Environment variable files";
@@ -47,18 +46,6 @@ function EnvFilesRow({ value, onSave, statuses }: { value: string[]; onSave: (fi
           ))}
         </ul>
       )}
-    </div>
-  );
-}
-
-/** Mount on the user Environment page (`/settings/user/environment`). */
-export function UserEnvironmentRows({ settings, save }: { settings: Settings; save: (next: Settings) => void }) {
-  return (
-    <div className="settings-rows">
-      <EnvFilesRow
-        value={settings.environment_variable_files ?? []}
-        onSave={(files) => save({ ...settings, environment_variable_files: files })}
-      />
     </div>
   );
 }

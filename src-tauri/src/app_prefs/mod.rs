@@ -38,24 +38,6 @@ impl MessageSendKey {
     }
 }
 
-/// "Follow-up behavior": only the exact text `queued` queues; no row (or
-/// any other text) steers (the reference's `qQt`).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum FollowUpMode {
-    Queued,
-    Steering,
-}
-
-impl FollowUpMode {
-    fn as_str(self) -> &'static str {
-        match self {
-            FollowUpMode::Queued => "queued",
-            FollowUpMode::Steering => "steering",
-        }
-    }
-}
-
 /// Every app preference, decoded. Field names are the table keys.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct AppPrefs {
@@ -83,7 +65,6 @@ pub struct AppPrefs {
     /// `Te("sidebar_resource_usage", !1)`): off unless the row says `"true"`.
     pub sidebar_resource_usage: bool,
     pub message_send_key: MessageSendKey,
-    pub default_message_send_mode: FollowUpMode,
     /// "Use Claude Code with Chrome": Claude Code chats start with
     /// `--chrome` (the reference sidecar's `extraArgs: { chrome: null }`).
     pub chrome_mode_enabled: bool,
@@ -169,13 +150,6 @@ impl AppPrefs {
                 Some("cmd-enter") => MessageSendKey::CmdEnter,
                 _ => MessageSendKey::Enter,
             },
-            default_message_send_mode: match rows
-                .get(keys::DEFAULT_MESSAGE_SEND_MODE)
-                .map(String::as_str)
-            {
-                Some("queued") => FollowUpMode::Queued,
-                _ => FollowUpMode::Steering,
-            },
             // The reference reads it as `=== "true"`.
             chrome_mode_enabled: rows.get(keys::CHROME_MODE_ENABLED).map(String::as_str)
                 == Some("true"),
@@ -208,8 +182,6 @@ pub enum AppPrefUpdate {
     SidebarResourceUsage(bool),
     /// Written as `enter` / `cmd-enter` after the send-key overrides.
     MessageSendKey(MessageSendKey),
-    /// Written as `queued` / `steering` (the reference's `JUt`).
-    DefaultMessageSendMode(FollowUpMode),
     ChromeModeEnabled(bool),
 }
 
@@ -258,10 +230,6 @@ impl AppPrefUpdate {
             SidebarRepoFilter(None) => Ok(Write::Delete(keys::SIDEBAR_REPO_FILTER)),
             SidebarResourceUsage(v) => b(keys::SIDEBAR_RESOURCE_USAGE, *v),
             MessageSendKey(k) => Ok(Write::Set(keys::MESSAGE_SEND_KEY, k.as_str().into())),
-            DefaultMessageSendMode(m) => Ok(Write::Set(
-                keys::DEFAULT_MESSAGE_SEND_MODE,
-                m.as_str().into(),
-            )),
             ChromeModeEnabled(v) => b(keys::CHROME_MODE_ENABLED, *v),
         }
     }

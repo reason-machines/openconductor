@@ -3,10 +3,16 @@ import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { chatSnapshot, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, reasonChatConfig, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat } from "../features/chat/reasonChat.ts";
+import { chatSnapshot, configureReason, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, reasonChatConfig, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat } from "../features/chat/reasonChat.ts";
 import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
+import { forkToNewWorkspace } from "../features/chat/forkWorkspace.ts";
+import { createWorkspace, ensureRepository } from "../workspace/api";
+import { generateWorkspaceNames } from "../workspace/naming";
+import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
+import { commandSet, isKnownCommand, parseSlashCommand } from "../features/chat/slashCommands.ts";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
@@ -52,6 +58,7 @@ import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } fr
 import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
+import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 
 interface Props {
@@ -65,6 +72,9 @@ interface Props {
 // `features/chat/reasonChat.ts`): the workspace's own chat has the workspace
 // id, review chats their own. The browser preview uses a stand-in agent. Turn
 // lifecycle, Stop and the follow-up queue live in `features/chat/queue.ts`.
+/** The "/" menu for a Reason chat: Reason runs as an ACP agent, so only its own commands (none reported yet). */
+const SLASH_COMMANDS = commandSet({ agent: "acp" });
+const CODEX_SLASH_COMMANDS = commandSet({ agent: "codex" });
 /** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
 
@@ -90,6 +100,8 @@ interface ChatPanelProps extends Props {
   onRunningChange?: (running: boolean) => void;
   /** A file chip under a finished turn: open that file's changes from the turn. */
   openTurnFile: (turn: TurnRef, path: string) => void;
+  /** A file badge in a tool row (repository-relative path): open the file's changes when it has some. */
+  openFile?: (path: string) => void;
   /** Opens a forked chat tab on `config` with `draft` in its composer; returns its chat id. */
   forkToNewTab: (title: string, config: ConfigChoice[], draft: { text: string; attachments: TextAttachment[] }) => string;
 }
@@ -117,7 +129,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, forkToNewTab }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, forkToNewTab }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -145,7 +157,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   }, [main, running, onRunningChange]);
   // Garry Mode (Conductor's `garry_mode`, "Don't collapse tool calls", toggled with ⌃O): tool
   // groups stay open after the turn ends and tool calls start expanded.
-  const { garry_mode: garryMode, default_message_send_mode: followUpMode } = useAppPrefs();
+  const garryMode = useAppPrefs().garry_mode;
+  const followUpMode = useFollowUpMode();
 
   useEffect(() => {
     setAgent(savedAgent(chatId));
@@ -278,6 +291,52 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     }
   }
 
+  /**
+   * Conductor's "Fork to new workspace" (`forkChat`): a new workspace on a
+   * branch off this one's, restored to the turn's end checkpoint, whose chat
+   * opens on this chat's options with the transcript up to `turnId` attached.
+   * Not sent. Opens the new workspace.
+   */
+  async function forkToWorkspace(turnId: string) {
+    setAttachError(null);
+    setForking(true);
+    try {
+      if (!repo.path) throw new Error("Unable to fork chat: workspace not found");
+      const backendRepo = await ensureRepository(repo.path);
+      const taken = repo.workspaces.flatMap((w) => [w.name, w.branch.replace(/^.*\//, "")]);
+      const [name] = generateWorkspaceNames(1, taken, Math.random);
+      const targetBranch = workspace.targetBranch || backendRepo.defaultBranch;
+      const config = await reasonChatConfig(chatId);
+      const fork = await forkToNewWorkspace(
+        { invoke: (cmd, args) => invoke(cmd, args), createWorkspace },
+        {
+          repositoryId: backendRepo.id,
+          repoRoot: backendRepo.root,
+          workspacePath: workspace.path ?? null,
+          targetBranch,
+          directoryName: name.name,
+          chatId,
+          turnId,
+          transcript: forkTranscript(transcript, turnId),
+        },
+      );
+      const { id, directoryName, branchName, path } = fork.created.workspace;
+      const title = review?.title ?? workspace.name;
+      configureReason(id, config);
+      queuePending(id, { kind: "draft", text: "", attachments: [{ name: forkAttachmentName(title), text: fork.transcript }] });
+      await startSetupScript({ id: backendRepo.id, root: backendRepo.root, defaultBranch: backendRepo.defaultBranch }, { id, name: directoryName, path }, targetBranch);
+      dispatch({
+        type: "addWorkspace",
+        repoId: repo.id,
+        workspace: { id, name: directoryName, branch: branchName, path, targetBranch, placeholderBranchName: null, userSetWorkspaceName: false, userSetBranchName: false, number: fork.created.number ?? null },
+      });
+    } catch (e) {
+      setAttachError(e instanceof Error ? e.message : "Failed to fork chat");
+    } finally {
+      setForking(false);
+    }
+  }
+
   const turnFooter = (turnId: string) => {
     const turn = turnCheckpointRef(chatId, turnId);
     return <TurnChanges turn={turn} worktree={workspace.path ?? null} onOpenFile={(path) => openTurnFile(turn, path)} />;
@@ -375,8 +434,13 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             onResetChat={reason && !codex && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
             turnFooter={codex ? undefined : turnFooter}
+            workspacePath={cwd}
+            onOpenFile={openFile ? (path) => openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined}
             // Conductor: any turn of a chat in a workspace that is not archived; disabled while a fork is made.
             onForkToNewTab={workspace.status !== "archived" ? (turnId) => void forkToTab(turnId) : undefined}
+            // Conductor: the same, and only for a workspace on this machine. It restores the turn's
+            // end checkpoint, which only Reason turns have so far.
+            onForkToNewWorkspace={reason && !codex && workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
             forkDisabled={forking}
             turnAgent={turnAgent}
           />
@@ -401,7 +465,6 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         draft={draft}
         setDraft={setDraft}
         inputRef={inputRef}
-        placeholder={`Ask the agent to work in ${workspace.name}…`}
         queue={queue}
         canSteer={codex ? CODEX_CAN_STEER : REASON_CAN_STEER}
         followUpMode={followUpMode}
@@ -438,6 +501,17 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             </>
           ) : null
         }
+        picker={main && !codex ? <ChatModelPicker chatId={chatId} /> : review ? <span className="oc-review-model">{review.modelLabel}</span> : null}
+        slashCommands={codex ? CODEX_SLASH_COMMANDS : SLASH_COMMANDS}
+        onCommand={(text) => {
+          // Reason runs as an ACP agent and Codex here through its app server: Conductor's built-in commands are not wired for either yet.
+          const commands = codex ? CODEX_SLASH_COMMANDS : SLASH_COMMANDS;
+          const cmd = parseSlashCommand(text, isKnownCommand);
+          if (!cmd || commands.some((c) => c.name === cmd.name && c.effect === "agent")) return false;
+          const who = codex ? "Codex" : "Reason";
+          setAttachError(cmd.name === "plan" ? "Plan mode is not available in this chat." : `/${cmd.name} is not available for ${who}.`);
+          return true;
+        }}
         attachments={
           attachments.length > 0 || attachError ? (
             <div className="composer-attachments" aria-label="Attachments">
@@ -817,6 +891,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
+          openFile={diff.openPath}
           forkToNewTab={reviews.fork}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
           content={

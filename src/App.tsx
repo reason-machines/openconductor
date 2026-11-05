@@ -35,6 +35,7 @@ import { PRIORITY } from "./keybindings/dispatcher";
 import { copyWorkspaceLink } from "./workspace/link";
 import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
+import { OPEN_SETTINGS_EVENT } from "./features/chat/ChatModelPicker.tsx";
 import { keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
 import { changeZoom } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
@@ -158,6 +159,16 @@ export default function App() {
     if (!settingsLocation) navigateSettings({ scope: "user", page: "general" });
   }, [settingsLocation, navigateSettings]);
   const closeSettings = useCallback(() => navigateSettings(null), [navigateSettings]);
+  // The composer's model picker ("Add models", "Edit") opens Settings › Default models.
+  useEffect(() => {
+    const open = (e: Event) => {
+      const page = (e as CustomEvent<{ page?: string }>).detail?.page;
+      const known = USER_PAGES.find((p) => p === page);
+      if (known) navigateSettings({ scope: "user", page: known });
+    };
+    window.addEventListener(OPEN_SETTINGS_EVENT, open);
+    return () => window.removeEventListener(OPEN_SETTINGS_EVENT, open);
+  }, [navigateSettings]);
 
   // Apply the saved theme and appearance at startup; the settings page applies later changes.
   useEffect(() => {

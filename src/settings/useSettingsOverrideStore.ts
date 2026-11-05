@@ -7,7 +7,7 @@ import { createOverrideStore, parseOverrides } from "../keybindings/overrides.ts
 import { overridesRaw, settingsOverrideStorage } from "./keybindingOverrides.ts";
 import type { Settings } from "./types";
 
-export function useSettingsOverrideStore(settings: Settings, save: (next: Settings) => Promise<boolean>) {
+export function useSettingsOverrideStore(settings: Settings, save: (next: Settings) => void | Promise<boolean>) {
   const { setOverrides } = useKeybindingOverrides();
   const latest = useRef(settings);
   latest.current = settings;
@@ -19,7 +19,7 @@ export function useSettingsOverrideStore(settings: Settings, save: (next: Settin
         settingsOverrideStorage(
           () => latest.current,
           async (next) => {
-            const ok = await saveRef.current(next);
+            const ok = (await saveRef.current(next)) !== false;
             if (ok) {
               latest.current = next;
               setOverrides(parseOverrides(overridesRaw(next)));

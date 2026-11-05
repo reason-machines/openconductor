@@ -246,24 +246,16 @@ fn sidebar_resource_usage_is_an_off_by_default_flag() {
 }
 
 #[test]
-fn composer_send_settings_decode_and_encode_like_the_reference() {
-    // `yl("message_send_key", mN, "enter")` and `qQt` (index-BGEQ8YjU.js):
-    // unset reads as Enter and steering; only exact values change them.
+fn message_send_key_decodes_and_encodes_like_the_reference() {
+    // `yl("message_send_key", mN, "enter")` (index-BGEQ8YjU.js): unset reads
+    // as Enter; only the exact `cmd-enter` changes it. "Follow-up behavior"
+    // (`default_message_send_mode`) is a table pref in settings::table_prefs.
     let p = AppPrefs::from_rows(&HashMap::new());
     assert_eq!(p.message_send_key, MessageSendKey::Enter);
-    assert_eq!(p.default_message_send_mode, FollowUpMode::Steering);
-    let p = AppPrefs::from_rows(&rows(&[
-        ("message_send_key", "cmd-enter"),
-        ("default_message_send_mode", "queued"),
-    ]));
+    let p = AppPrefs::from_rows(&rows(&[("message_send_key", "cmd-enter")]));
     assert_eq!(p.message_send_key, MessageSendKey::CmdEnter);
-    assert_eq!(p.default_message_send_mode, FollowUpMode::Queued);
-    let p = AppPrefs::from_rows(&rows(&[
-        ("message_send_key", "shift-enter"),
-        ("default_message_send_mode", "Queued"),
-    ]));
+    let p = AppPrefs::from_rows(&rows(&[("message_send_key", "shift-enter")]));
     assert_eq!(p.message_send_key, MessageSendKey::Enter);
-    assert_eq!(p.default_message_send_mode, FollowUpMode::Steering);
 
     let u: AppPrefUpdate =
         serde_json::from_str(r#"{"key":"message_send_key","value":"cmd-enter"}"#).unwrap();
@@ -271,23 +263,12 @@ fn composer_send_settings_decode_and_encode_like_the_reference() {
         u.encode().unwrap(),
         Write::Set("message_send_key", "cmd-enter".into())
     );
-    let u: AppPrefUpdate =
-        serde_json::from_str(r#"{"key":"default_message_send_mode","value":"queued"}"#).unwrap();
-    assert_eq!(
-        u.encode().unwrap(),
-        Write::Set("default_message_send_mode", "queued".into())
-    );
-    assert!(serde_json::from_str::<AppPrefUpdate>(
-        r#"{"key":"default_message_send_mode","value":"later"}"#
-    )
-    .is_err());
     assert!(
         serde_json::from_str::<AppPrefUpdate>(r#"{"key":"message_send_key","value":"ctrl"}"#)
             .is_err()
     );
     let json = serde_json::to_value(AppPrefs::from_rows(&HashMap::new())).unwrap();
     assert_eq!(json["message_send_key"], "enter");
-    assert_eq!(json["default_message_send_mode"], "steering");
 }
 
 #[test]
