@@ -40,6 +40,8 @@ mod terminal_commands;
 pub mod terminal_history;
 pub mod terminal_output;
 mod terminal_output_commands;
+#[cfg(all(test, unix))]
+mod test_exe;
 pub mod workspace;
 
 use serde::Serialize;
