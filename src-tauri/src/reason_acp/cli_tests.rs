@@ -1,6 +1,6 @@
 //! Finding the CLI, the argument list and a real spawn of a fake `reason`.
 
-use super::cli::{find_reason_cli, AgentProcess, LaunchConfig, LaunchError};
+use super::cli::{find_reason_cli, refused_env, AgentProcess, LaunchConfig, LaunchError};
 use std::fs;
 use std::io::{BufRead, BufReader};
 use std::os::unix::fs::PermissionsExt;
@@ -107,6 +107,20 @@ read _"#,
     drop(stdin);
     process.kill();
     assert!(!process.is_running());
+}
+
+#[test]
+fn dyld_variables_are_not_passed_to_reason() {
+    let vars = [
+        ("DYLD_FALLBACK_LIBRARY_PATH", "/target/debug/deps"),
+        ("DYLD_LIBRARY_PATH", "/x"),
+        ("LD_LIBRARY_PATH", "/y"),
+        ("PATH", "/usr/bin"),
+        ("HOME", "/Users/me"),
+    ]
+    .map(|(k, v)| (k.into(), v.into()));
+    let refused = refused_env(vars.into_iter());
+    assert_eq!(refused, ["DYLD_FALLBACK_LIBRARY_PATH", "DYLD_LIBRARY_PATH"]);
 }
 
 #[test]
