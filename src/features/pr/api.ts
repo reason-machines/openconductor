@@ -26,6 +26,32 @@ export async function createPrPrompt(request: CreatePrPrompt): Promise<string> {
   return invoke<string>("pr_create_prompt", { request });
 }
 
+/** The message behind "Commit and push" (the reference's one-line agent instruction). */
+export async function commitAndPushPrompt(): Promise<string> {
+  if (!isTauri()) return "Commit and push all changes";
+  return invoke<string>("pr_commit_and_push_prompt");
+}
+
+/**
+ * The message behind "Resolve" on a PR with merge conflicts: rebase or merge
+ * per the workspace's `pull.rebase`, then the repository's custom prompt.
+ */
+export async function resolveConflictsPrompt(workspacePath: string, targetBranch: string, custom: string | null): Promise<string> {
+  if (!isTauri()) return `Demo: merge the remote \`${targetBranch}\` into this branch and resolve the conflicts, then commit the merge and push.`;
+  return invoke<string>("pr_resolve_conflicts_prompt", { workspacePath, targetBranch, custom });
+}
+
+/** The repository's `custom_prompt_resolve_merge_conflicts` (conductor.db); null when unset or not in the database yet. */
+export async function repoResolveConflictsPrompt(repoId: string): Promise<string | null> {
+  if (!isTauri()) return null;
+  try {
+    return await invoke<string | null>("db_repo_prompt", { repoId, prompt: "resolveMergeConflicts" });
+  } catch (e) {
+    console.warn("pr: no repository resolve-conflicts prompt", e);
+    return null;
+  }
+}
+
 /** Merge now; resolves to the merge method used. */
 export async function mergePr(repoPath: string, number: number, method?: MergeMethod): Promise<MergeMethod> {
   if (!isTauri()) return method ?? "squash";

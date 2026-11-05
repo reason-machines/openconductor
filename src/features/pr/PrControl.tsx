@@ -1,6 +1,7 @@
-// parity:pr.create:ui parity:pr.merge:ui parity:pr.review-actions:ui
+// parity:pr.create:ui parity:pr.merge:ui parity:pr.review-actions:ui parity:pr.commit-push:ui parity:pr.resolve-conflicts:ui
 // The workspace header's PR control: Create PR (asks the agent to commit,
-// push and run `gh pr create`), Merge (gh pr merge with the repository's
+// push and run `gh pr create`), Commit and push (uncommitted changes, an
+// agent message), Resolve (merge conflicts, an agent message), Merge (gh pr merge with the repository's
 // preferred method, named in the tooltip), Ready for review on a draft,
 // Approve PR, Automerge while checks run (with the setting on), or the PR's current state, which opens it on GitHub.
 import { useEffect, useRef, useState } from "react";
@@ -61,6 +62,27 @@ export function PrControl({ pullRequest, actions, worktree }: Props) {
               </button>
             </div>
           )}
+        </span>
+      );
+    case "commit_and_push":
+      return (
+        <span className={tone}>
+          {prLink}
+          <button className="btn btn-small" title={control.title} disabled={busy !== null} onClick={() => void actions.commitAndPush()}>
+            {busy === "committing" ? "Asking agent…" : control.label}
+          </button>
+        </span>
+      );
+    case "resolve_conflicts":
+      return (
+        <span className={tone}>
+          {prLink}
+          <span className="pr-pending" title={control.title}>
+            <span className="pr-dot" /> Merge conflicts
+          </span>
+          <button className="btn btn-small" title={control.title} disabled={busy !== null} onClick={() => void actions.resolveConflicts()}>
+            {busy === "resolving" ? "Asking agent…" : control.label}
+          </button>
         </span>
       );
     case "merge":

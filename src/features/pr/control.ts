@@ -6,6 +6,10 @@ import type { HeaderState, MergeMethod, PrInfo } from "./types.ts";
 export type Intent =
   /** Ask the workspace's agent to open a PR (menu offers a draft). */
   | "create"
+  /** Ask the agent to commit and push all changes (⌘⇧Y). */
+  | "commit_and_push"
+  /** Ask the agent to rebase onto or merge the base branch and resolve conflicts. */
+  | "resolve_conflicts"
   /** Merge now with the repository's preferred method. */
   | "merge"
   /** Take the draft PR out of draft. */
@@ -56,7 +60,7 @@ export function prControl(state: HeaderState | null, pr: PrInfo | null, opts: Co
     case "loading_pr":
       return status("Loading PR…");
     case "commit_and_push":
-      return status("Uncommitted changes", "Commit and push the workspace's changes to update the PR");
+      return { intent: "commit_and_push", label: "Commit and push", title: "Ask the agent to commit and push all changes (⌘⇧Y)", tone };
     case "incompatible":
       return status("Branch diverged", "The local branch and its remote branch have different histories");
     case "pull":
@@ -64,7 +68,9 @@ export function prControl(state: HeaderState | null, pr: PrInfo | null, opts: Co
     case "push":
       return status(`Push ${a.ahead}`, `This workspace has ${plural(a.ahead, "commit")} not pushed yet`);
     case "merge_conflicts":
-      return status("Merge conflicts", `PR ${num} conflicts with its base branch`);
+      return pr
+        ? { intent: "resolve_conflicts", label: "Resolve", title: `PR ${num} has merge conflicts with ${pr.baseRefName}. Ask the agent to resolve them`, tone }
+        : status("Merge conflicts", "The PR conflicts with its base branch");
     case "changes_requested":
       return status("Changes requested", a.hasPendingComments ? "A reviewer requested changes; you have unsent review comments" : "A reviewer requested changes");
     case "draft_pr":

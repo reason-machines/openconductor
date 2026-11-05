@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { DEMO_SCENARIOS } from "./demo.ts";
-import { canMerge, createShortcutApplies, mergeShortcutApplies } from "./shortcuts.ts";
+import { canMerge, commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } from "./shortcuts.ts";
 import type { PrInfo, PrStatus } from "./types.ts";
 
 const base = (DEMO_SCENARIOS.ready().lookup.lookup as { kind: "found"; info: PrInfo }).info;
@@ -36,4 +36,11 @@ test("the create shortcut acts only while Create PR is offered", () => {
   assert.equal(createShortcutApplies({ tone: "no_pr", action: { type: "create_pr" } }, true), false);
   assert.equal(createShortcutApplies({ tone: "in_sync", action: { type: "ready_to_merge", optionalFailed: 0 } }, false), false);
   assert.equal(createShortcutApplies(null, false), false);
+});
+
+test("git.commitAndPush acts only while the header offers Commit and push", () => {
+  assert.equal(commitShortcutApplies({ tone: "out_of_sync", action: { type: "commit_and_push" } }, false), true);
+  assert.equal(commitShortcutApplies({ tone: "out_of_sync", action: { type: "commit_and_push" } }, true), false, "not while another PR action runs");
+  assert.equal(commitShortcutApplies({ tone: "no_pr", action: { type: "create_pr" } }, false), false);
+  assert.equal(commitShortcutApplies(null, false), false);
 });

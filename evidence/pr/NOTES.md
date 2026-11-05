@@ -109,9 +109,37 @@ REA, Conductor v0.87.6 on Sven's Mac (REA 6.7.0):
 - `rea search index-BGEQ8YjU.js --pattern=archive_on_merge`: `capability_unavailable` (`target_unsupported`); `search` only accepts binaries for the Ghidra / Hopper / IDA / Kuna providers, so there is no REA string search over a JavaScript chunk.
 - `rea analyze-javascript-application` on a folder holding only `index-BGEQ8YjU.js`: exit 0 in 214 s, Evidence `ev_ed84d75ccb95a40cc1e33f548754ea751c7b2923f173806870054005b3164fd5` (59 MB; 1,381 modules, 65 endpoints, 15 storage nodes). The literals behind merge, automerge and archive-on-merge (`archive_on_merge`, `Merge failed`, `Failed to enable automerge`, `--disable-auto`, `squashMergeAllowed`) occur 0 times in it; only `mergeStateStatus` (11) does. These behaviors therefore come from reading the byte-identical chunk at the offsets above.
 
+## PR title, description and base branch (pr_edit, pr_retarget)
+
+Reference (Conductor v0.87.6 decoded frontend chunks, read by text search as data; offsets recorded by Session a4cdd6eb): `updatePrMetadata` (index ~721,160) trims the title, refuses an empty one ("PR title cannot be empty"), does nothing when neither field is given, then runs `gh pr edit <n> [--title] [--body]`, updates the cached PR info optimistically and refreshes. A failed edit shows "Failed to update PR on GitHub: <msg>", with a separate message when the error names the read:org scope (~3,167,200). `updatePrBase` (~722,230) runs `gh pr edit <n> --base <b>` ("Failed to change the PR's base branch") and is called from the workspace target-branch change only for an open, unmerged PR whose base differs (~3,321,350). UI (renderApp): the PR tab header's clickable title opens an "Edit PR title" dialog with Cancel / Save ("Saving..."), Enter saves and Save is disabled when empty (~9,660,300); the description is click-to-edit with placeholder "PR description" (~9,668,100); the target branch picker reads "Select target branch...", "Loading branches...", "Couldn't load branches." / Try again, "No branch found." and marks the default branch (~2,934,300).
+
+Ours: `src/features/pr/edit/` (`edit.ts` rules + tests, `api.ts`, `PrHeader.tsx`), shown at the top of the Checks tab.
+
+Differences:
+- The header sits in the Checks tab; Conductor has a separate PR tab.
+- The base-branch picker lives in the PR header and retargets only the PR. OpenConductor has no per-workspace target branch yet (it diffs against the repository default), so `intended_target_branch` is not saved and Graphite stacks are not checked.
+- Errors show inline under the header rather than as toasts, and the saved title is not written to `workspaces.pr_title` directly; the refreshed lookup updates it through WorkspaceView's `onLookup`.
+
+## Commit and push, Resolve conflicts (pr.commit-push, pr.resolve-conflicts)
+
+Source: Conductor v0.87.6 chunks on Sven's Mac (`renderApp-D_fmY7hW.js`, `index-BGEQ8YjU.js`), text search, offsets approximate.
+
+| Reference behavior | Where | Ours |
+|---|---|---|
+| Header `commit_and_push` (uncommitted changes) renders a button labelled with the forge's `commitActionLabel` ("Commit and push") and a tooltip with the `git.commitAndPush` shortcut | renderApp ~2,276,700 | `control.ts` intent `commit_and_push`, `PrControl.tsx` |
+| Clicking sends the forge's `commitAgentInstruction`, "Commit and push all changes", to the workspace's agent session (`zU({message, sessionId})`); no git command runs in the app | renderApp ~2,292,450 (`se`), index ~600,700 (GitHub forge object) | `prompt::commit_and_push_prompt`, `pr_commit_and_push_prompt`, `usePrActions.commitAndPush` |
+| `git.commitAndPush` (⌘⇧Y) acts only while the header action is `commit_and_push` | renderApp ~2,299,300 | `shortcuts.commitShortcutApplies`, WorkspaceView keybinding |
+| Header `merge_conflicts` comes only from the PR's `mergeStateStatus === "DIRTY"` and shows "Merge conflicts" with a "Resolve" button (records `git_resolve_conflicts`) | renderApp ~2,209,800, ~2,278,450 | `header::header_state` (existing), `control.ts` intent `resolve_conflicts` |
+| Resolve sends `resolveMergeConflictsAgentInstruction({ targetBranch, useRebase })` followed by the user preferences from the `resolveMergeConflicts` prompt type (repository `custom_prompt_resolve_merge_conflicts`) | renderApp ~2,293,430 (`ue`), index `lVt` ~3,218,800, `vue` ~2,506,500 | `prompt::resolve_merge_conflicts_prompt`, `pr_resolve_conflicts_prompt`, `api.repoResolveConflictsPrompt` (`db_repo_prompt`) |
+| GitHub forge instruction (`E5e`): rebase onto (or merge) the remote target branch and resolve conflicts; after a rebase `git rebase --continue` then `push --force-with-lease`, after a merge commit and push | index ~597,800 | same steps, our wording |
+| `useRebase` is `git config --get pull.rebase` in `merges`, `interactive`, `preserve`, `true`, `yes`, `on`, `1` | index `ofe` ~3,229,700 | `prompt::pull_rebase_enabled` |
+| Target branch is the PR's base ref, else the workspace's intended target branch | renderApp ~2,293,430 (`sVe(prInfo) ?? intendedTargetBranch`) | `usePrActions` `pr.baseRefName || targetBranch` |
+| Merge/rebase-in-progress detection (`MERGE_HEAD`, `rebase-merge`, `rebase-apply`) gates only Spotlight start and workspace archive, not the header's PR actions | index `YNt` ~3,225,800 (Spotlight), ~667,800 and ~966,100 (archive) | not added to the header: blocking PR actions during a local operation has no reference behavior. The diff tab's "finish rebasing or merging" message is already in place. |
+
 ## REA gaps hit
 
 - `rea search` (6.7.0 on Sven's Mac) refuses the decoded frontend chunks: `capability_unavailable` / `unsupported_provider`, every provider (ghidra, hopper, ida, kuna) rejects a JavaScript artifact target (`target_kind_unsupported`); ghidra is also `not_configured` there (no `GHIDRA_INSTALL_DIR`, no Java). Run: `rea search frontend/dist/assets/index-BGEQ8YjU.js --pattern='archive_on_merge|archiveOnMerge' --mode regex`, 15 s, exit 1. The archive-on-merge, check-log and re-run locations above were found by Python text search over the same chunk on the Mac instead.
 
 - `analyze-javascript-application` (Wave 0 run, `evidence/frontend/`) does not model Tauri `invoke` or shell commands, so none of the `gh` / `git` command lines the PR area runs appear in its findings. They were recovered by text search over the decoded chunks above. Logged for the REA test report.
 - `trace-javascript-semantics` on the Wave 0 application Evidence (`ev_b733d967...`) finds nothing for the PR code: seeds `mergeStateStatus` and `squashMergeAllowed` (both present in `index-BGEQ8YjU.js`) return 0 seed matches, 0 nodes, 0 relations, status `partial`, with 11,355 resource-limit unknowns; the analyzer's worker exhausted its heap on `renderApp-D_fmY7hW.js`. Runs logged as `trace_js_semantics_pr_merge_state` (46 s) and `trace_js_semantics_pr_merge_methods` (33 s) in `~/code/conductor-rea-work/log.tsv` on Sven's Mac. Offsets above therefore come from text search over the byte-identical chunk copies.
+- Commit-and-push / resolve-conflicts: the same text-search route was used (`node` over the chunks on the Mac); `rea search` and `trace-javascript-semantics` were not retried since the gaps above are unchanged in REA 6.7.0. No new REA gap.

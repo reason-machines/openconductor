@@ -109,3 +109,62 @@ pub fn should_archive_after_merge(
 ) -> bool {
     setting == Some("true") && !is_cloud && !already_archived
 }
+
+/// "Commit and push" (header action and `git.commitAndPush`) is delegated to
+/// the workspace's agent with this one-line instruction, the same
+/// instruction the reference's GitHub forge sends (index @ ~600,700,
+/// `commitAgentInstruction`).
+pub const COMMIT_AND_PUSH_PROMPT: &str = "Commit and push all changes";
+
+/// The message behind "Commit and push".
+pub fn commit_and_push_prompt() -> &'static str {
+    COMMIT_AND_PUSH_PROMPT
+}
+
+/// Whether `git config --get pull.rebase` asks for rebasing: `merges`,
+/// `interactive`, `preserve`, or a true boolean, case-insensitive, as the
+/// reference reads it (index @ ~3,229,742).
+pub fn pull_rebase_enabled(config_value: Option<&str>) -> bool {
+    let v = config_value.unwrap_or("").trim().to_ascii_lowercase();
+    matches!(
+        v.as_str(),
+        "merges" | "interactive" | "preserve" | "true" | "yes" | "on" | "1"
+    )
+}
+
+/// Inputs for the resolve-merge-conflicts message.
+#[derive(Debug, Clone, Default)]
+pub struct ResolveConflictsRequest<'a> {
+    /// The branch the PR merges into (its base, else the workspace's target).
+    pub target_branch: &'a str,
+    /// The workspace's `pull.rebase` asks for rebasing.
+    pub use_rebase: bool,
+    /// Repository setting `custom_prompt_resolve_merge_conflicts`.
+    pub custom_instructions: Option<&'a str>,
+}
+
+/// Build the message "Resolve" (header, merge conflicts) sends to the agent.
+/// As in the reference (index `E5e` @ ~597,800 and `vue` @ ~2,506,500):
+/// rebase onto or merge the remote target branch per `pull.rebase`, resolve
+/// the conflicts, then push (`--force-with-lease` after a rebase), followed
+/// by the repository's custom instructions, which win. Wording is ours.
+pub fn resolve_merge_conflicts_prompt(r: &ResolveConflictsRequest) -> String {
+    let target = r.target_branch;
+    let mut out = if r.use_rebase {
+        format!(
+            "This branch's PR has merge conflicts with `{target}`. Rebase this branch onto the remote `{target}` and resolve the conflicts. Stage each resolved file and run `git rebase --continue` until the rebase finishes, then push with `git push --force-with-lease`."
+        )
+    } else {
+        format!(
+            "This branch's PR has merge conflicts with `{target}`. Merge the remote `{target}` into this branch and resolve the conflicts, then commit the merge and push."
+        )
+    };
+    out.push_str(" If a conflict needs a decision only the user can make, stop and ask.");
+    if let Some(c) = present(r.custom_instructions) {
+        out.push_str(&format!(
+            "\n\n## Repository instructions\n\nThese come from the repository's settings and take precedence over the steps above:\n\n{}",
+            c.trim()
+        ));
+    }
+    out
+}

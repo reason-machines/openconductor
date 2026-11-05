@@ -14,7 +14,10 @@ use super::gh::{MergeMethod, MergeMethodCache};
 use super::git_state::{read_git_state, GitState};
 use super::header::{header_state, HeaderInputs, HeaderState};
 use super::list::{OpenIssue, OpenPr};
-use super::prompt::create_pr_prompt;
+use super::prompt::{
+    commit_and_push_prompt, create_pr_prompt, pull_rebase_enabled, resolve_merge_conflicts_prompt,
+    ResolveConflictsRequest,
+};
 
 fn merge_methods() -> &'static MergeMethodCache {
     static CACHE: OnceLock<MergeMethodCache> = OnceLock::new();
@@ -70,6 +73,38 @@ pub fn pr_header_state(inputs: HeaderInputs) -> Option<HeaderState> {
 #[tauri::command]
 pub fn pr_create_prompt(request: CreatePrPrompt) -> String {
     create_pr_prompt(&request.as_request())
+}
+
+/// The message behind "Commit and push" (header and `git.commitAndPush`).
+#[tauri::command]
+pub fn pr_commit_and_push_prompt() -> String {
+    commit_and_push_prompt().to_string()
+}
+
+/// The message behind "Resolve" on a PR with merge conflicts: rebase or
+/// merge per the workspace's `pull.rebase`, then the repository's
+/// `custom_prompt_resolve_merge_conflicts` (`custom`).
+#[tauri::command]
+pub async fn pr_resolve_conflicts_prompt(
+    workspace_path: String,
+    target_branch: String,
+    custom: Option<String>,
+) -> Result<String, String> {
+    blocking(move || {
+        let out = std::process::Command::new("git")
+            .args(["-C", &workspace_path, "config", "--get", "pull.rebase"])
+            .output()
+            .map_err(|e| format!("git config: {e}"))?;
+        // Exit 1 means unset: merge.
+        let value = String::from_utf8_lossy(&out.stdout).to_string();
+        let use_rebase = out.status.success() && pull_rebase_enabled(Some(&value));
+        Ok(resolve_merge_conflicts_prompt(&ResolveConflictsRequest {
+            target_branch: &target_branch,
+            use_rebase,
+            custom_instructions: custom.as_deref(),
+        }))
+    })
+    .await
 }
 
 /// Merge now; without `method`, the repository's preferred allowed one.

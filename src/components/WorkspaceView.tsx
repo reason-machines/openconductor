@@ -30,7 +30,7 @@ import { ChecksTab } from "../features/pr/checks/ChecksTab";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrControl } from "../features/pr/PrControl";
 import { usePrActions } from "../features/pr/usePrActions";
-import { createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
+import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
 
 interface Props {
@@ -247,7 +247,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   );
 }
 
-function RightPanel({ diff, actions, pr, worktree, review }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null; review: ReactNode }) {
+function RightPanel({ diff, actions, pr, worktree, review, repo }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null; review: ReactNode; repo: Repo }) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -273,7 +273,7 @@ function RightPanel({ diff, actions, pr, worktree, review }: { diff: WorkspaceDi
       {tab === "changes" ? (
         <ChangesList diff={diff} actions={actions} worktree={worktree} />
       ) : tab === "checks" ? (
-        <ChecksTab worktree={worktree} pr={pr.pr} refresh={pr.refresh} />
+        <ChecksTab worktree={worktree} pr={pr.pr} refresh={pr.refresh} repoPath={repo.path} defaultBranch={repo.defaultBranch} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -389,6 +389,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, onLookup, onDerivedStatus });
   const prActions = usePrActions({
     pullRequest,
+    repoId: repo.id,
     worktree: workspace.path ?? null,
     branch: workspace.branch,
     targetBranch: repo.defaultBranch,
@@ -414,6 +415,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "workspace.showReview": () => canReview && void reviews.start(),
     "git.createPR": () => {
       if (createShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.create(false);
+    },
+    "git.commitAndPush": () => {
+      if (commitShortcutApplies(pullRequest.header, prActions.busy !== null)) void prActions.commitAndPush();
     },
     "git.mergePR": () => {
       if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
@@ -473,6 +477,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
             pr={pullRequest}
             worktree={workspace.path ?? null}
             review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
+            repo={repo}
           />
           <ScriptsPanel repo={repo} workspace={workspace} />
         </div>

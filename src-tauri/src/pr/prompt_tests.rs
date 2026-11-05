@@ -1,4 +1,7 @@
-use super::prompt::{create_pr_prompt, should_archive_after_merge, CreatePrRequest};
+use super::prompt::{
+    commit_and_push_prompt, create_pr_prompt, pull_rebase_enabled, resolve_merge_conflicts_prompt,
+    should_archive_after_merge, CreatePrRequest, ResolveConflictsRequest,
+};
 
 fn base() -> CreatePrRequest<'static> {
     CreatePrRequest {
@@ -99,4 +102,70 @@ fn archive_on_merge_rule() {
         !should_archive_after_merge(Some("true"), false, true),
         "already archived"
     );
+}
+
+#[test]
+fn commit_and_push_is_the_reference_instruction() {
+    assert_eq!(commit_and_push_prompt(), "Commit and push all changes");
+}
+
+#[test]
+fn pull_rebase_values_that_mean_rebase() {
+    for v in [
+        "true",
+        "TRUE",
+        "yes",
+        "on",
+        "1",
+        "merges",
+        "interactive",
+        "preserve",
+        " true\n",
+    ] {
+        assert!(pull_rebase_enabled(Some(v)), "{v:?}");
+    }
+    for v in ["false", "no", "0", "", "off", "nonsense"] {
+        assert!(!pull_rebase_enabled(Some(v)), "{v:?}");
+    }
+    assert!(!pull_rebase_enabled(None), "unset means merge");
+}
+
+#[test]
+fn resolve_conflicts_merges_or_rebases_per_pull_rebase() {
+    let merge = resolve_merge_conflicts_prompt(&ResolveConflictsRequest {
+        target_branch: "main",
+        use_rebase: false,
+        custom_instructions: None,
+    });
+    assert!(merge.contains("Merge the remote `main` into this branch"));
+    assert!(merge.contains("commit the merge and push"));
+    assert!(!merge.contains("rebase") && !merge.contains("force"));
+    assert!(!merge.contains("Repository instructions"));
+
+    let rebase = resolve_merge_conflicts_prompt(&ResolveConflictsRequest {
+        target_branch: "release/1.2",
+        use_rebase: true,
+        custom_instructions: Some("   "),
+    });
+    assert!(rebase.contains("Rebase this branch onto the remote `release/1.2`"));
+    assert!(rebase.contains("git rebase --continue"));
+    assert!(rebase.contains("git push --force-with-lease"));
+    assert!(
+        !rebase.contains("Repository instructions"),
+        "blank custom prompt is ignored"
+    );
+}
+
+#[test]
+fn resolve_conflicts_appends_repository_instructions_last() {
+    let p = resolve_merge_conflicts_prompt(&ResolveConflictsRequest {
+        target_branch: "main",
+        use_rebase: false,
+        custom_instructions: Some("  Prefer our side for lockfiles.\n"),
+    });
+    let (steps, custom) = p
+        .split_once("## Repository instructions")
+        .expect("custom section");
+    assert!(steps.contains("Merge the remote `main`"));
+    assert!(custom.ends_with("Prefer our side for lockfiles."));
 }
