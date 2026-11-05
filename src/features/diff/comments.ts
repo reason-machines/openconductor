@@ -136,9 +136,15 @@ export function refreshOutdated(comments: DiffComment[], files: FileDiff[]): Dif
   });
 }
 
-/** Comments that "add all comments to chat" would send. */
+/** Any comment not yet sent to the agent, on lines still in the diff and not resolved: the reference's
+ *  header flag for "Add all comments to chat" (renderApp `Wus`: `state === "pending"`, not outdated, not resolved). */
+export function hasPendingComments(comments: Pick<DiffComment, "state" | "is_outdated" | "is_resolved">[]): boolean {
+  return comments.some((c) => c.state === "pending" && !c.is_outdated && !c.is_resolved);
+}
+
+/** Comments that "add all comments to chat" would send. PR-level GitHub comments have no file and stay out. */
 export function pendingForAgent(comments: DiffComment[]): DiffComment[] {
-  return comments.filter((c) => c.state === "pending" && !c.is_resolved && !c.is_outdated && c.body.length > 0);
+  return comments.filter((c) => c.state === "pending" && !c.is_resolved && !c.is_outdated && c.body.length > 0 && c.file_path !== "");
 }
 
 /** Text handed to the agent composer: location, the commented code, then the note.
@@ -189,4 +195,66 @@ export function threadKey(c: Pick<DiffComment, "id" | "thread_id">): string {
 /** Resolve or reopen a whole thread, as the Rust store's `set_thread_resolved` does. */
 export function setThreadResolved(comments: DiffComment[], threadId: string, resolved: boolean, now: number): DiffComment[] {
   return comments.map((c) => (threadKey(c) === threadId ? { ...c, is_resolved: resolved, updated_at: now } : c));
+}
+
+// ---- GitHub comments (parity:diff.comments-github:ui) ----
+
+/** Who a comment came from, as the reference tells them apart: a GitHub URL means GitHub,
+ *  an author without one means an agent left it locally, otherwise the user did. */
+export type CommentSource = "remote" | "agent-local" | "user-local";
+
+export function commentSource(c: Pick<DiffComment, "remote_url" | "author">): CommentSource {
+  return c.remote_url ? "remote" : c.author ? "agent-local" : "user-local";
+}
+
+/** A thread synced from a GitHub review thread (resolvable on GitHub). */
+export function isRemoteThread(t: Thread): boolean {
+  return commentSource(t.root) === "remote" && t.root.thread_id !== null;
+}
+
+/** Comments on the pull request itself rather than a file. */
+export function prThreads(threads: Thread[]): Thread[] {
+  return threads.filter((t) => t.root.file_path === "");
+}
+
+/** Threads on a file without a line: whole-file comments and GitHub threads whose code moved on. */
+export function fileThreads(threads: Thread[], path: string): Thread[] {
+  return threads.filter((t) => t.root.file_path === path && t.root.file_level);
+}
+
+/** Tags shown on a comment: resolved wins over outdated, as in the reference. */
+export function commentTags(c: Pick<DiffComment, "is_resolved" | "is_outdated">): ("Resolved" | "Outdated")[] {
+  return c.is_resolved ? ["Resolved"] : c.is_outdated ? ["Outdated"] : [];
+}
+
+export type BodyPart = { kind: "text"; text: string } | { kind: "suggestion"; code: string };
+
+const SUGGESTION = /^```suggestion[^\n]*\n([\s\S]*?)^```[ \t]*$/gm;
+
+/** Split a comment body into text and ```suggestion blocks. Without the original code
+ *  (`suggestion_base_code`) a suggestion cannot be shown as a change and stays text. */
+export function bodyParts(body: string, suggestionBaseCode: string | null): BodyPart[] {
+  if (suggestionBaseCode === null) return [{ kind: "text", text: body }];
+  const parts: BodyPart[] = [];
+  let at = 0;
+  for (const m of body.matchAll(SUGGESTION)) {
+    const before = body.slice(at, m.index).replace(/\n$/, "");
+    if (before.trim()) parts.push({ kind: "text", text: before });
+    parts.push({ kind: "suggestion", code: m[1].replace(/\n$/, "") });
+    at = m.index + m[0].length;
+  }
+  const rest = body.slice(at).replace(/^\n/, "");
+  if (rest.trim() || parts.length === 0) parts.push({ kind: "text", text: rest });
+  return parts;
+}
+
+export interface SuggestionRow {
+  kind: "del" | "add";
+  text: string;
+}
+
+/** A suggested change as removed then added lines. An empty suggestion deletes the lines. */
+export function suggestionRows(base: string, suggestion: string): SuggestionRow[] {
+  const lines = (s: string) => (s === "" ? [] : s.split("\n"));
+  return [...lines(base).map((text) => ({ kind: "del" as const, text })), ...lines(suggestion).map((text) => ({ kind: "add" as const, text }))];
 }

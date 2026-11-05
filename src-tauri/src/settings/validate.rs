@@ -74,6 +74,33 @@ pub fn validate(s: &Settings) -> Result<(), SettingsError> {
     {
         return invalid("models.review must not be empty when set".into());
     }
+    for (key, value) in [
+        (
+            "claude_code_executable_path",
+            &s.claude_code_executable_path,
+        ),
+        ("codex_executable_path", &s.codex_executable_path),
+        ("opencode_executable_path", &s.opencode_executable_path),
+        ("ssh_key_path", &s.ssh_key_path),
+    ] {
+        if let Some(v) = value.as_deref().filter(|v| !v.trim().is_empty()) {
+            if v.chars().any(char::is_control) {
+                return invalid(format!("{key} must be a single-line path"));
+            }
+        }
+    }
+    for (key, value) in [
+        ("claude_provider", &s.claude_provider),
+        ("codex_provider", &s.codex_provider),
+        ("bedrock_region", &s.bedrock_region),
+        ("vertex_project_id", &s.vertex_project_id),
+    ] {
+        if let Some(v) = value.as_deref().map(str::trim).filter(|v| !v.is_empty()) {
+            if v.chars().any(|c| c.is_whitespace() || c.is_control()) {
+                return invalid(format!("{key} {v:?} must not contain whitespace"));
+            }
+        }
+    }
     for agent in AgentKind::ALL {
         let Some(config) = s.providers.get(agent) else {
             continue;

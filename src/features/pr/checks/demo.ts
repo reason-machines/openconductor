@@ -1,6 +1,6 @@
 // Checks for the browser preview: with localStorage["openconductor.pr.demo"]
 // set to "checks", the Checks tab shows these instead of the demo PR's.
-import type { ChecksSummary } from "../types";
+import type { ChecksSummary, PrInfo } from "../types";
 
 const job = (n: number) => `https://github.com/acme/web/actions/runs/1234/job/${n}`;
 const t = (min: number, sec = 0) => new Date(Date.UTC(2026, 10, 5, 14, min, sec)).toISOString();
@@ -39,3 +39,24 @@ export function demoChecksEnabled(): boolean {
     return false;
   }
 }
+
+/** The PR the demo Checks tab's header shows. */
+export const DEMO_PR: PrInfo = {
+  number: 42,
+  url: "https://github.com/acme/web/pull/42",
+  title: "Add the Checks tab",
+  body: "Lists the PR's CI checks, failing first, with job logs and re-run.",
+  authorLogin: "octocat",
+  baseRefName: "main",
+  baseRefOid: null,
+  headRefName: "acme/checks-tab",
+  headRefOid: "0000000",
+  viewerDidAuthor: true,
+  viewerLatestReview: null,
+  viewerCanMerge: true,
+  isDraft: false,
+  isMerged: false,
+  isAutoMergeEnabled: false,
+  mergeQueue: null,
+  status: { mergeState: "BLOCKED", checks: DEMO_CHECKS, reviewDecision: null, numReviewRequests: 0 },
+};

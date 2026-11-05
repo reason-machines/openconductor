@@ -10,6 +10,10 @@ import { eventSessionId } from "./types.ts";
 export interface TurnState {
   status: TurnStatus;
   error?: string;
+  /** `at` of the turn's `running` status. */
+  startedAt?: string;
+  /** `at` of the turn's first terminal status. */
+  endedAt?: string;
 }
 
 export interface ChatTranscript {
@@ -94,8 +98,15 @@ export function applyChatEvent(t: ChatTranscript, event: ChatEvent): ApplyResult
       return { ok: true, transcript: withMessage(t, i, { ...message, blocks }) };
     }
     case "turn_status": {
-      const { turnId, status, error } = event;
-      const turns = { ...t.turns, [turnId]: error === undefined ? { status } : { status, error } };
+      const { turnId, status, error, at } = event;
+      const prev = t.turns[turnId];
+      const next: TurnState = { status };
+      if (error !== undefined) next.error = error;
+      const startedAt = status === "running" ? (at ?? prev?.startedAt) : prev?.startedAt;
+      if (startedAt !== undefined) next.startedAt = startedAt;
+      const endedAt = status === "running" ? undefined : (prev?.endedAt ?? at);
+      if (endedAt !== undefined) next.endedAt = endedAt;
+      const turns = { ...t.turns, [turnId]: next };
       let activeTurn = t.activeTurn;
       if (status === "running") activeTurn = turnId;
       else if (activeTurn === turnId) activeTurn = null;

@@ -12,7 +12,7 @@ export interface NavHistory {
 const LIMIT = 100;
 
 export const sameSelection = (a: Selection, b: Selection): boolean =>
-  a.kind === b.kind && (a.kind === "home" || (b.kind === "workspace" && a.workspaceId === b.workspaceId && a.repoId === b.repoId));
+  a.kind === b.kind && (a.kind !== "workspace" || (b.kind === "workspace" && a.workspaceId === b.workspaceId && a.repoId === b.repoId));
 
 export const startHistory = (sel: Selection): NavHistory => ({ entries: [sel], index: 0 });
 
@@ -38,7 +38,7 @@ export const current = (h: NavHistory): Selection => h.entries[h.index];
 export function prune(h: NavHistory, exists: (sel: Selection) => boolean): NavHistory {
   const keep = h.entries.map((s, i) => ({ s, i })).filter(({ s }) => exists(s));
   if (keep.length === h.entries.length) return h;
-  if (keep.length === 0) return startHistory({ kind: "home" });
+  if (keep.length === 0) return startHistory({ kind: "root" });
   const before = keep.filter(({ i }) => i <= h.index).length;
   return { entries: keep.map(({ s }) => s), index: Math.max(before - 1, 0) };
 }

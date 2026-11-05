@@ -55,6 +55,7 @@ jobs:
           path: ${{ runner.temp }}/e2e-screens
           retention-days: 14
       - name: Configure git identity
+        if: always()
         run: |
           git config --global user.name "CI"
           git config --global user.email "ci@example.invalid"
