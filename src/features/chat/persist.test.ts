@@ -123,3 +123,42 @@ test("the saver batches changes, writes one at a time, and retries a failed writ
     console.warn = warn;
   }
 });
+
+test("a Reset chat goes with the write that deletes the turns, and is retried until it is written", async () => {
+  const t2 = apply(t1, [status("t2", "running", "2026-11-05T10:09:00.000Z"), msg("u2", "user", "t2", [text("more")]), status("t2", "completed", "2026-11-05T10:10:00.000Z")]);
+  const writes: SaveBatch[] = [];
+  let fail = false;
+  const saver = new ChatSaver(async (b) => {
+    if (fail) throw new Error("db busy");
+    writes.push(b);
+  }, 5);
+  saver.update(t2);
+  await saver.flush();
+  const warn = console.warn;
+  console.warn = () => {};
+  try {
+    fail = true;
+    saver.rewind(truncateAfterTurn(t2, "t1"), "a1");
+    await saver.flush();
+    fail = false;
+    saver.update(truncateAfterTurn(t2, "t1"));
+    await saver.flush();
+  } finally {
+    console.warn = warn;
+  }
+  assert.equal(writes.length, 2);
+  assert.deepEqual(writes[1].deleteIds, ["u2"]);
+  assert.equal(writes[1].rewindTo, "a1");
+  saver.update(apply(truncateAfterTurn(t2, "t1"), [msg("u3", "user", "t3", [text("again")])]));
+  await saver.flush();
+  assert.equal(writes[2].rewindTo, undefined, "written once");
+});
+
+test("a Reset chat that deletes nothing still writes the rewind", async () => {
+  const writes: SaveBatch[] = [];
+  const saver = new ChatSaver(async (b) => void writes.push(b), 5);
+  saver.loaded(t1);
+  saver.rewind(t1, "a1");
+  await saver.flush();
+  assert.deepEqual(writes, [{ upserts: [], deleteIds: [], rewindTo: "a1" }]);
+});
