@@ -57,7 +57,7 @@ export async function discardFileChanges(worktree: string | null, base: string, 
 // parity:diff.turn-changes:command
 /** The files one finished chat turn changed, with counts (Rust: `checkpoint_turn_changes`). */
 export async function loadTurnChanges(ref: TurnRef, worktree: string): Promise<FileChange[]> {
-  if (!inTauri()) return sampleTurnDiff({ scope: "uncommitted", layout: "unified", ignoreWhitespace: false, wrapLines: true }).map(({ hunks: _, ...change }) => change);
+  if (!inTauri()) return sampleTurnDiff({ scope: "uncommitted", layout: "unified", ignoreWhitespace: false, wrapLines: false }).map(({ hunks: _, ...change }) => change);
   return invoke<FileChange[]>("checkpoint_turn_changes", { repo: worktree, sessionId: ref.sessionId, turnId: ref.turnId });
 }
 

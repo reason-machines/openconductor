@@ -1,9 +1,9 @@
-// parity:diff.comments-inline:ui parity:diff.comments-to-chat:ui parity:diff.review:ui parity:diff.navigation:ui parity:diff.comments-github:ui
+// parity:diff.comments-inline:ui parity:diff.comments-to-chat:ui parity:diff.navigation:ui parity:diff.comments-github:ui
 // Inline review comments for the diff viewer: threads under the lines they
 // end on, a composer opened by clicking a line number, replies, edit, delete,
-// resolve, "add to chat", the Review button, and next/previous comment through
-// the keybinding registry (diff.nextComment / diff.previousComment,
-// workspace.showReview). Conductor attaches comments to the composer as
+// resolve, "add to chat", and next/previous comment through the keybinding
+// registry (diff.nextComment / diff.previousComment). The Review button lives
+// in the right panel (WorkspaceView). Conductor attaches comments to the composer as
 // attachments; until the agent runtime lands we insert them as text.
 // GitHub review comments on the workspace PR are synced in (commentsApi.ts,
 // diff_comments_sync_github) and shown with author, Resolved / Outdated tags,
@@ -34,14 +34,13 @@ import type { GithubSyncReport } from "./commentStore.ts";
 import "./comments-github.css";
 import { revealLine, type LineAnchor, type LineRange } from "./FileDiffView";
 import { commentTargets, stepComment } from "./nav.ts";
-import { buildReviewPrompt } from "./review.ts";
 import type { DiffScope, FileDiff } from "./types.ts";
 
 /** How the diff viewer reaches the workspace chat. */
 export interface ChatBridge {
   /** Put text into the composer for the user to edit and send. */
   insert(text: string): void;
-  /** Send a message right away. */
+  /** Send a message to the workspace's own chat right away. */
   send(text: string): void;
 }
 
@@ -245,14 +244,13 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
 type Composing = LineRange & { path: string };
 
 /**
- * Review comments and the Review button for the diff views. `reveal` opens a
- * file in the diff tab, so comment navigation can move to another file.
+ * Review comments for the diff views. `reveal` opens a file in the diff tab,
+ * so comment navigation can move to another file.
  */
-export function useReviewComments(workspaceId: string, chat: ChatBridge, customReviewPrompt?: string | null, reveal?: (path: string) => void, workspacePath: string | null = null) {
+export function useReviewComments(workspaceId: string, chat: ChatBridge, reveal?: (path: string) => void, workspacePath: string | null = null) {
   const store = useMemo(() => commentStoreFor(workspaceId, workspacePath), [workspaceId, workspacePath]);
   const [stored, setStored] = useState<DiffComment[]>([]);
   const [files, setFiles] = useState<FileDiff[]>([]);
-  const [scope, setScope] = useState<DiffScope>("all");
   const [composing, setComposing] = useState<Composing | null>(null);
   const [focused, setFocused] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -337,8 +335,6 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, customR
     toChat,
   };
 
-  const review = () => chat.send(buildReviewPrompt(scope, customReviewPrompt));
-
   const goToComment = (dir: 1 | -1) => {
     const t = stepComment(commentTargets(comments, files), focused, dir);
     if (!t) return;
@@ -358,7 +354,6 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, customR
   useKeybindings({
     "diff.nextComment": () => goToComment(1),
     "diff.previousComment": () => goToComment(-1),
-    "workspace.showReview": review,
   });
 
   const onLineClick = (file: FileDiff, range: LineRange) => setComposing({ path: file.path, ...range });
@@ -456,15 +451,11 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge, customR
           Add {plural(ready.length, "comment")} to chat
         </button>
       )}
-      <button className="btn btn-small" onClick={review} title="Ask the agent to review these changes">
-        Review
-      </button>
     </>
   );
 
-  const onLoaded = useCallback((loaded: FileDiff[], s: DiffScope) => {
+  const onLoaded = useCallback((loaded: FileDiff[], _scope: DiffScope) => {
     setFiles(loaded);
-    setScope(s);
   }, []);
 
   return { onLineClick, commentRange, anchors, annotations, notes, actions, onLoaded };
