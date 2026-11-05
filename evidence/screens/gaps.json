@@ -1,0 +1,10 @@
+[
+  {
+    "screen": "Composer '+' (attachments) menu",
+    "reason": "No stable locator: the button has no aria-label or text, and the CSS guess timed out. Needs a DOM capture to pick a selector."
+  },
+  {
+    "screen": "Settings > Repositories > <repo>",
+    "reason": "Clicking a repository row in the settings nav only shows its hover state; the page body stays on General in the harness. Not investigated further (likely needs repo config reads the mock doesn't answer)."
+  }
+]
