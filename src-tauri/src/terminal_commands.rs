@@ -6,7 +6,7 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use tauri::{AppHandle, Emitter, State};
+use tauri::{AppHandle, Emitter, Manager, State};
 
 use crate::agent::secret::SecretString;
 use crate::db::Db;
@@ -18,17 +18,26 @@ use crate::terminal_history::{
 
 use crate::terminal::{
     wire, CreateMirrorArgs, IdArgs, PtyEvent, PtyManager, ResizeMirrorArgs, ScreenSnapshot,
-    ScreenTextArgs, ShellOutput, ShellRequest, ShellRunner, SpawnArgs, WireEvent, WriteMirrorArgs,
+    ScreenTextArgs, ShellIntegration, ShellOutput, ShellRequest, ShellRunner, SpawnArgs, WireEvent,
+    WriteMirrorArgs,
 };
 
-/// Managed state: the app's terminals.
-pub struct Terminals(pub PtyManager);
+/// Managed state: the app's terminals, and the zsh integration their
+/// login shells start with (`$APPDATA/terminal-shell-integration/zsh`).
+pub struct Terminals(pub PtyManager, pub ShellIntegration);
 
 impl Terminals {
     pub fn new(app: AppHandle) -> Self {
-        Self(PtyManager::new(move |e: PtyEvent| {
+        let data_dir = app
+            .path()
+            .app_data_dir()
+            .unwrap_or_else(|_| std::env::temp_dir().join("openconductor"));
+        let integration =
+            ShellIntegration::new(data_dir, crate::terminal::shell_integration::home_dir());
+        let manager = PtyManager::new(move |e: PtyEvent| {
             let _ = app.emit(wire::EVENT, WireEvent::from(e));
-        }))
+        });
+        Self(manager, integration)
     }
 }
 
@@ -41,7 +50,12 @@ fn err(e: impl std::fmt::Display) -> String {
 /// Start a terminal; returns its id. Ready/data/exit follow as events.
 #[tauri::command]
 pub async fn pty_spawn(state: State<'_, Terminals>, args: SpawnArgs) -> CmdResult<String> {
-    state.0.spawn(args.into_request()).map_err(err)
+    let mut req = args.into_request();
+    // `CONDUCTOR_PATH_PREFIX` is `$APPDATA/bin`, as in the reference.
+    state
+        .1
+        .prepare(&mut req, crate::bundled_bin::installed_bin_dir());
+    state.0.spawn(req).map_err(err)
 }
 
 /// Send input (keystrokes or pasted text) to a terminal.
