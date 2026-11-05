@@ -2,6 +2,7 @@
 // names match the Rust serde names; unknown keys from newer builds ride along
 // untouched because every section is spread, never rebuilt field by field.
 
+import type { CodeTheme } from "../features/diff/codeThemes.ts";
 export type Theme = "system" | "light" | "dark";
 export type SoundType = "default" | "none";
 export type BranchPrefixType = "github_username" | "custom" | "none";
@@ -49,6 +50,10 @@ export interface Settings {
     terminal_font_family?: string | null;
     /** Whole px, 10 to 20; 12 by default. */
     terminal_font_size?: number;
+    /** Font ligatures in diffs and code; on when absent. */
+    file_ligatures_enabled?: boolean;
+    color_vision?: "default" | "protanopia-deuteranopia" | "tritanopia";
+    code_theme?: CodeTheme;
     [extra: string]: unknown;
   };
   git: {

@@ -193,8 +193,43 @@ pub struct Appearance {
     /// Terminal font size in px, [`TERMINAL_FONT_SIZE_MIN`] to
     /// [`TERMINAL_FONT_SIZE_MAX`] (Conductor's slider), 12 by default.
     pub terminal_font_size: u32,
+    /// Font ligatures in diffs and code views; on by default. Conductor's
+    /// `file_ligatures_enabled`.
+    pub file_ligatures_enabled: bool,
+    /// Palette for colour vision differences (diff additions/deletions).
+    pub color_vision: ColorVision,
+    /// Syntax colours for code and diffs; `default` keeps the built-in palette.
+    pub code_theme: CodeTheme,
     #[serde(flatten)]
     pub extra: toml::Table,
+}
+
+/// Conductor's `color_vision` values (renderApp settings row, REA read of the
+/// bundle): default, protanopia-deuteranopia, tritanopia.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum ColorVision {
+    #[default]
+    Default,
+    ProtanopiaDeuteranopia,
+    Tritanopia,
+}
+
+/// Conductor's `code_theme` ids: `default` plus eight named themes, each
+/// for one mode (Catppuccin Latte light, the rest dark).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum CodeTheme {
+    #[default]
+    Default,
+    CatppuccinLatte,
+    CatppuccinMacchiato,
+    CatppuccinMocha,
+    Dracula,
+    Nord,
+    TokyoNight,
+    GruvboxDark,
+    SolarizedDark,
 }
 
 pub const ZOOM_MIN: f64 = 0.5;
@@ -210,6 +245,9 @@ impl Default for Appearance {
             mono_font: None,
             terminal_font_family: None,
             terminal_font_size: 12,
+            file_ligatures_enabled: true,
+            color_vision: ColorVision::Default,
+            code_theme: CodeTheme::Default,
             extra: toml::Table::new(),
         }
     }
