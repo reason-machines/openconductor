@@ -1,0 +1,25 @@
+name: Keybindings
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  keybindings:
+    name: Keybindings registry + logic tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Extractor and generator parse
+        run: node --check tools/keybindings_extract.mjs && node --check tools/keybindings_gen.mjs
+      - name: Generated registry is up to date
+        run: node tools/keybindings_gen.mjs --check
+      - name: Unit tests
+        run: node --experimental-strip-types --test src/keybindings/*.test.ts

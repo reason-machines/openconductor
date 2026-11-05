@@ -10,6 +10,8 @@ export interface Workspace {
   /** Lines added/removed versus the base branch; filled by the backend later. */
   diff: { added: number; removed: number };
   createdAt: number;
+  /** Worktree path, once the backend created it. */
+  path?: string;
 }
 
 export interface Repo {
@@ -29,4 +31,6 @@ export type Selection = { kind: "home" } | { kind: "workspace"; repoId: string; 
 export interface AppState {
   repos: Repo[];
   selection: Selection;
+  /** Left sidebar shown; absent in older saved state, which means shown. */
+  sidebarVisible?: boolean;
 }

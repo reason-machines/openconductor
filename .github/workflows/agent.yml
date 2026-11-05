@@ -1,0 +1,35 @@
+name: Agent
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src-tauri/src/agent/**"
+      - "tools/agent/**"
+      - ".github/workflows/agent.yml"
+  pull_request:
+    paths:
+      - "src-tauri/src/agent/**"
+      - "tools/agent/**"
+      - ".github/workflows/agent.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: Agent module test + clippy (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: rustfmt
+        run: rustfmt --edition 2021 --check src-tauri/src/agent/*.rs
+      - name: Test agent module
+        run: bash tools/agent/run-rust-tests.sh
