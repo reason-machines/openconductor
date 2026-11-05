@@ -1,5 +1,5 @@
 {
-  "reviewed_at": "4b9dc87",
+  "reviewed_at": "247d5a1",
   "obligation_issues": {
     "chat": "https://github.com/reason-machines/openconductor/issues/139",
     "diff": "https://github.com/reason-machines/openconductor/issues/140",
@@ -52,7 +52,7 @@
     },
     "chat.attachments": {
       "verdict": "partial",
-      "why": "Unchanged (#369 is rustfmt only). The only attachment sources are the revert note after a discard (WorkspaceView.tsx bridge.attach) and the review prompt, sent as resource blocks with reason_prompt. Nothing outside src/features/draft-attachments imports draftAttachmentsApi; no attach button, ⌘U, or file/image/paste/drag input.",
+      "why": "Re-read at 247d5a1: unchanged (#369 is rustfmt only; #315/#345/#386 only add settings and sidebar commands to lib.rs). The only attachment sources are the revert note after a discard (WorkspaceView.tsx bridge.attach) and the review prompt, sent as resource blocks with reason_prompt. Nothing outside src/features/draft-attachments imports draftAttachmentsApi; no attach button, ⌘U, or file/image/paste/drag input.",
       "obligation": "Mount draft attachments in the composer (attach button, ⌘U, drag/paste of files, images and terminal output) on draftAttachmentsApi, and materialize them on send with draft_attachments_materialize / materialize_local_path_attachment, recording attachments.is_draft. Show them as chips on sent messages."
     },
     "chat.model-picker": {

@@ -44,6 +44,7 @@ mod scope;
 pub mod session_messages;
 pub mod sessions;
 pub mod terminal_sessions;
+pub mod workspace_rename;
 pub mod workspaces;
 
 /// Every schema migration, embedded from `migrations/`.

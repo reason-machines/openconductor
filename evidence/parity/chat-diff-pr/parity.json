@@ -1,7 +1,7 @@
 {
  "ledger_id": "rol_ba2a4881609d4eec7a8be78f1d5035ba6cd0f218c0073f39a66ceafade50e29c",
- "reviewed_at": "4b9dc87",
- "head": "e296b20c",
+ "reviewed_at": "247d5a1",
+ "head": "685ef693",
  "areas": {
   "chat": {
    "label": "Chat: agent transcript, composer, queue, attachments, models, turn controls",
@@ -281,7 +281,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "why": "Unchanged (#369 is rustfmt only). The only attachment sources are the revert note after a discard (WorkspaceView.tsx bridge.attach) and the review prompt, sent as resource blocks with reason_prompt. Nothing outside src/features/draft-attachments imports draftAttachmentsApi; no attach button, \u2318U, or file/image/paste/drag input.",
+   "why": "Re-read at 247d5a1: unchanged (#369 is rustfmt only; #315/#345/#386 only add settings and sidebar commands to lib.rs). The only attachment sources are the revert note after a discard (WorkspaceView.tsx bridge.attach) and the review prompt, sent as resource blocks with reason_prompt. Nothing outside src/features/draft-attachments imports draftAttachmentsApi; no attach button, \u2318U, or file/image/paste/drag input.",
    "obligation": "Mount draft attachments in the composer (attach button, \u2318U, drag/paste of files, images and terminal output) on draftAttachmentsApi, and materialize them on send with draft_attachments_materialize / materialize_local_path_attachment, recording attachments.is_draft. Show them as chips on sent messages.",
    "layers_required": [
     "data",
@@ -1486,5 +1486,5 @@
   }
  ],
  "broken_anchors": [],
- "implementation_files_scanned": 459
+ "implementation_files_scanned": 475
 }
