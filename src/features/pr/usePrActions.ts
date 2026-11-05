@@ -17,6 +17,8 @@ export interface PrActionsArgs {
   pullRequest: PullRequest;
   /** Repository id in conductor.db, for its custom prompts. */
   repoId: string;
+  /** The repository's main checkout, for the settings-file Create PR prompt. */
+  repoPath?: string | null;
   worktree: string | null;
   branch: string;
   targetBranch: string;
@@ -50,7 +52,7 @@ export interface PrActions {
 
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e));
 
-export function usePrActions({ pullRequest, repoId, worktree, branch, targetBranch, prTitle, prDescription, sendToAgent, addCommentsToChat, notify }: PrActionsArgs): PrActions {
+export function usePrActions({ pullRequest, repoId, repoPath = null, worktree, branch, targetBranch, prTitle, prDescription, sendToAgent, addCommentsToChat, notify }: PrActionsArgs): PrActions {
   const { pr, git, header, refresh } = pullRequest;
   const [busy, setBusy] = useState<Busy>(null);
   const busyRef = useRef<Busy>(null);
@@ -94,12 +96,12 @@ export function usePrActions({ pullRequest, repoId, worktree, branch, targetBran
       run(
         "creating",
         async () => {
-          const request = await createPrRequest({ branch, remote: git?.remote ?? "origin", targetBranch, draft, worktree, repoId, title: prTitle, description: prDescription });
+          const request = await createPrRequest({ branch, remote: git?.remote ?? "origin", targetBranch, draft, worktree, repoId, repoPath, title: prTitle, description: prDescription });
           sendToAgent(await createPrPrompt(request));
         },
         "Couldn't start the PR",
       ),
-    [run, sendToAgent, branch, git?.remote, targetBranch, worktree, repoId, prTitle, prDescription],
+    [run, sendToAgent, branch, git?.remote, targetBranch, worktree, repoId, repoPath, prTitle, prDescription],
   );
 
   const commitAndPush = useCallback(

@@ -27,6 +27,8 @@ mod checkpoint_commands;
 mod chat_store_commands;
 pub mod claude_chat;
 pub mod create_project;
+pub mod archive_on_merge;
+mod archive_on_merge_commands;
 pub mod db;
 pub mod e2e;
 pub mod persistence;
@@ -329,6 +331,9 @@ pub fn run() {
             persistence_commands::db_repo_prompt,
             onboarding_commands::db_first_run_onboarding_step,
             onboarding_commands::db_finish_first_run_onboarding,
+            persistence_commands::db_set_workspace_target_branch,
+            persistence_commands::db_unarchive_workspace,
+            archive_on_merge_commands::repo_archive_on_merge,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
             sidebar_workspace_commands::db_set_workspace_pinned,

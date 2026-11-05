@@ -232,6 +232,16 @@ mod tests {
         assert!(p.ends_with("steps above:\n\nLink the Linear issue."), "{p}");
         let p = crate::pr::commands::pr_create_prompt(request(Some("Explicit.")));
         assert!(p.ends_with("Explicit.") && !p.contains("Linear"), "{p}");
+        // The request exactly as `createPrRequest` sends it over IPC when the
+        // repository row has no createPR prompt: null instructions plus paths.
+        let ipc: crate::pr::api::CreatePrPrompt = serde_json::from_value(serde_json::json!({
+            "branch": "sven/x", "remote": "origin", "targetBranch": "main", "draft": false,
+            "title": null, "description": null, "template": null, "customInstructions": null,
+            "repoPath": root.display().to_string(), "workspacePath": null,
+        }))
+        .unwrap();
+        let p = crate::pr::commands::pr_create_prompt(ipc);
+        assert!(p.ends_with("steps above:\n\nLink the Linear issue."), "{p}");
         let _ = std::fs::remove_dir_all(&root);
     }
 
