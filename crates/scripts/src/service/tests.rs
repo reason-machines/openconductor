@@ -228,3 +228,109 @@ command = "echo lint"
     );
     assert!(calls.lock().unwrap().is_empty());
 }
+
+/// A repository with a setup script and a default run script, and no
+/// `auto_run_after_setup` of its own: the user toggle decides.
+const SETUP_THEN_DEV: &str = r#"
+[scripts]
+setup = "echo setting up; sleep 0.2"
+[scripts.run.dev]
+command = "echo dev running"
+default = true
+"#;
+
+fn run_output_seen(f: &Fixture) -> bool {
+    f.svc
+        .runs
+        .output("w1", "dev")
+        .unwrap_or_default()
+        .contains("dev running")
+}
+
+#[test]
+fn the_user_toggle_on_runs_the_run_script_after_setup_completes() {
+    let f = fixture(SETUP_THEN_DEV);
+    assert!(!f.svc.auto_run_after_setup().unwrap(), "off by default");
+    assert!(f.svc.set_auto_run_after_setup(true).unwrap());
+
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    // Nothing runs while setup is still running.
+    assert_eq!(f.svc.runs.output("w1", "dev"), None);
+    wait_for("auto-run output", || run_output_seen(&f));
+    assert_eq!(f.svc.setup.state("w1"), SetupState::Completed);
+
+    // Setup finished before the run script printed anything.
+    let events = f.events.lock().unwrap();
+    let finished = events
+        .iter()
+        .position(
+            |e| matches!(e, ScriptEvent::SetupFinished(o) if o.state == SetupState::Completed),
+        )
+        .expect("setup finished");
+    let first_run = events
+        .iter()
+        .position(|e| matches!(e, ScriptEvent::Output { kind: "run", .. }))
+        .expect("run output");
+    assert!(
+        finished < first_run,
+        "setup then run: {finished} < {first_run}"
+    );
+}
+
+#[test]
+fn the_user_toggle_off_runs_nothing_after_setup() {
+    for set_explicitly in [false, true] {
+        let f = fixture(SETUP_THEN_DEV);
+        if set_explicitly {
+            f.svc.set_auto_run_after_setup(true).unwrap();
+            assert!(!f.svc.set_auto_run_after_setup(false).unwrap());
+        }
+        assert!(f.svc.start_setup(&f.ws).unwrap());
+        wait_for("setup completion", || {
+            f.svc.setup.state("w1") == SetupState::Completed
+        });
+        thread::sleep(Duration::from_millis(300));
+        assert_eq!(
+            f.svc.runs.output("w1", "dev"),
+            None,
+            "explicit off: {set_explicitly}"
+        );
+        assert_eq!(f.svc.runs.state("w1", "dev"), RunState::Stopped);
+    }
+}
+
+#[test]
+fn a_failed_setup_does_not_start_the_run_script() {
+    let f = fixture(
+        r#"
+[scripts]
+setup = "echo broken; exit 3"
+[scripts.run.dev]
+command = "echo dev running"
+default = true
+"#,
+    );
+    f.svc.set_auto_run_after_setup(true).unwrap();
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    wait_for("setup failure", || {
+        f.svc.setup.state("w1") == SetupState::Failed
+    });
+    thread::sleep(Duration::from_millis(300));
+    assert_eq!(f.svc.runs.output("w1", "dev"), None);
+    assert_eq!(f.svc.runs.state("w1", "dev"), RunState::Stopped);
+}
+
+#[test]
+fn a_repository_that_turns_auto_run_off_overrides_the_user_toggle() {
+    let f = fixture(
+        &format!("{SETUP_THEN_DEV}\n")
+            .replace("[scripts]\n", "[scripts]\nauto_run_after_setup = false\n"),
+    );
+    f.svc.set_auto_run_after_setup(true).unwrap();
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    wait_for("setup completion", || {
+        f.svc.setup.state("w1") == SetupState::Completed
+    });
+    thread::sleep(Duration::from_millis(300));
+    assert_eq!(f.svc.runs.output("w1", "dev"), None);
+}
