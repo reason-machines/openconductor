@@ -11,6 +11,8 @@ import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { ScriptsPanel } from "./ScriptsPanel";
+import { useCreateSetupRunning } from "../workspace/useSetupWatch";
+import { RUNNING_SETUP } from "../workspace/createFlow";
 
 interface Props {
   repo: Repo;
@@ -155,6 +157,7 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 export function WorkspaceView({ repo, workspace, dispatch }: Props) {
   const [showTerminal, setShowTerminal] = useState(true);
   const chatBridge = useRef<ChatBridge | null>(null);
+  const settingUp = useCreateSetupRunning(workspace.id);
   useKeybindings({ "view.toggleTerminalPanel": () => setShowTerminal((v) => !v) });
   return (
     <div className="workspace">
@@ -169,6 +172,11 @@ export function WorkspaceView({ repo, workspace, dispatch }: Props) {
           <span className={`chip status ${workspace.status}`}>
             <span className={`status-dot ${workspace.status}`} /> {STATUS_TEXT[workspace.status]}
           </span>
+          {settingUp && (
+            <span className="chip status setting-up" role="status">
+              <span className="status-dot working" /> {RUNNING_SETUP}
+            </span>
+          )}
         </div>
         <div className="ws-actions">
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>

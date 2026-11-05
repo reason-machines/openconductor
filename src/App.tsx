@@ -9,6 +9,7 @@ import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts } from "./components/Toast";
+import { useSetupWatch } from "./workspace/useSetupWatch";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
@@ -33,6 +34,8 @@ export default function App() {
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
   const { toasts, show, dismiss } = useToasts();
+  // A setup script the create flow started reports its failure here, after the dialog closed.
+  useSetupWatch(useCallback((message: string) => show("error", message), [show]));
   // `/settings` or `/settings/user/<page>` starts on that settings page.
   const [settingsPage, setSettingsPage] = useState<SettingsPage | null>(() => pageFromPath(window.location.pathname));
   const openSettings = useCallback(() => setSettingsPage((p) => p ?? "general"), []);
