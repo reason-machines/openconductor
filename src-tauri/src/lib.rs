@@ -5,17 +5,21 @@
 //! - `checkpoint/` checkpoints and revert
 //! - `agent/`      agent runner, providers and BYOK settings
 //! - `diff/`       diff viewer: git changes, unified diff parser
-//! - `quick_open/` quick open file index and fuzzy matching (Spotlight)
+//! - `quick_open/` quick open file index and fuzzy matching
+//! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //! - `settings/`   settings.toml and the Keychain-backed secret store
 //! - `terminal/`   PTY terminals (`terminal_commands.rs` is its IPC layer)
 //!
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod checkpoint;
 pub mod diff;
 pub mod project;
 pub mod quick_open;
+pub mod scripts;
 pub mod settings;
+pub mod spotlight;
 pub mod terminal;
 mod terminal_commands;
 pub mod workspace;
@@ -47,6 +51,38 @@ fn inspect_project_folder(path: String) -> project::FolderInspection {
     project::inspect_folder(std::path::Path::new(&path))
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct BranchPrefixInfo {
+    branch_prefix_type: settings::BranchPrefixType,
+    branch_prefix_custom: Option<String>,
+    github_username: Option<String>,
+}
+
+/// `[git]` branch prefix settings plus the GitHub username for the
+/// `github_username` prefix type, for the Create-workspace dialog. A missing or
+/// unreadable settings file falls back to defaults; the username comes from the
+/// local `gh` config (no network) and is null when `gh` has none.
+#[tauri::command]
+async fn branch_prefix_settings() -> BranchPrefixInfo {
+    let git = settings::config_dir()
+        .and_then(|dir| settings::load(&dir.join(settings::FILE_NAME)))
+        .map(|s| s.git)
+        .unwrap_or_default();
+    let github_username = std::process::Command::new("gh")
+        .args(["config", "get", "-h", "github.com", "user"])
+        .output()
+        .ok()
+        .filter(|out| out.status.success())
+        .map(|out| String::from_utf8_lossy(&out.stdout).trim().to_string())
+        .filter(|login| !login.is_empty());
+    BranchPrefixInfo {
+        branch_prefix_type: git.branch_prefix_type,
+        branch_prefix_custom: git.branch_prefix_custom,
+        github_username,
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -70,11 +106,13 @@ pub fn run() {
                 settings::config_dir()?.join(settings::FILE_NAME),
                 agent::keychain::default_store(),
             ));
+            app.manage(scripts::service(app.handle()));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             app_info,
             inspect_project_folder,
+            branch_prefix_settings,
             workspace::commands::add_repository,
             workspace::commands::list_repositories,
             workspace::commands::list_branches,
@@ -98,6 +136,15 @@ pub fn run() {
             settings::commands::provider_status,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
+            scripts::scripts_config,
+            scripts::setup_script_start,
+            scripts::setup_script_cancel,
+            scripts::setup_script_status,
+            scripts::run_script_start,
+            scripts::run_script_stop,
+            scripts::run_script_status,
+            scripts::run_script_output,
+            scripts::archive_script_run,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")
@@ -106,6 +153,10 @@ pub fn run() {
             if let tauri::RunEvent::Exit = event {
                 if let Some(terminals) = app.try_state::<Terminals>() {
                     terminals.0.kill_all();
+                }
+                // Run scripts lead their own process groups; do not orphan them.
+                if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {
+                    scripts.runs.stop_all();
                 }
             }
         });

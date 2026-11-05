@@ -1,13 +1,16 @@
 //! Normalized pull request info for a workspace, and the workspace status
 //! it implies.
 
+use serde::{Deserialize, Serialize};
+
 use super::checks::{summarize, ChecksSummary};
 use super::model::{
     Check, MergeQueueState, MergeStateStatus, PrNode, PrState, ReviewDecision, ViewerPermission,
 };
 
 /// What we know about a workspace branch's pull request.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(tag = "kind", content = "info", rename_all = "camelCase")]
 pub enum PrLookup {
     /// No pull request for this branch (or the one found belongs to a
     /// branch the workspace has since left).
@@ -26,7 +29,8 @@ impl PrLookup {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct MergeQueueEntry {
     pub state: MergeQueueState,
     pub position: u32,
@@ -34,7 +38,8 @@ pub struct MergeQueueEntry {
     pub estimated_time_to_merge: Option<u64>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PrInfo {
     pub number: u64,
     pub url: String,
@@ -46,8 +51,8 @@ pub struct PrInfo {
     pub head_ref_name: String,
     pub head_ref_oid: String,
     pub viewer_did_author: Option<bool>,
-    /// `Some` when the viewer has reviewed; holds the reviewed commit if known.
-    pub viewer_latest_review: Option<Option<String>>,
+    /// `Some` when the viewer has reviewed this PR.
+    pub viewer_latest_review: Option<ViewerReview>,
     /// `None` when the repository permission was not reported.
     pub viewer_can_merge: Option<bool>,
     pub is_draft: bool,
@@ -58,7 +63,15 @@ pub struct PrInfo {
     pub status: Option<PrStatus>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+/// The viewer's latest review; the commit is unknown when GitHub omits it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ViewerReview {
+    pub commit_oid: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PrStatus {
     pub merge_state: MergeStateStatus,
     pub checks: ChecksSummary,
@@ -95,7 +108,9 @@ pub fn lookup_from_node(node: PrNode, permission: Option<ViewerPermission>) -> P
         head_ref_name: node.head_ref_name,
         head_ref_oid: node.head_ref_oid,
         viewer_did_author: node.viewer_did_author,
-        viewer_latest_review: node.viewer_latest_review.map(|r| r.commit.map(|c| c.oid)),
+        viewer_latest_review: node.viewer_latest_review.map(|r| ViewerReview {
+            commit_oid: r.commit.map(|c| c.oid),
+        }),
         viewer_can_merge: permission.map(ViewerPermission::can_merge),
         is_draft: node.is_draft,
         is_merged,
@@ -111,7 +126,8 @@ pub fn lookup_from_node(node: PrNode, permission: Option<ViewerPermission>) -> P
 }
 
 /// Workspace status column values (`workspaces.derived_status`).
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
 pub enum WorkspaceStatus {
     Backlog,
     InProgress,

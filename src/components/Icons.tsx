@@ -12,6 +12,8 @@ export const ChevronIcon = ({ size, open }: P & { open?: boolean }) => (<svg {..
 export const BranchIcon = ({ size }: P) => (<svg {...base(size)}><circle cx="6" cy="5" r="2" /><circle cx="6" cy="19" r="2" /><circle cx="18" cy="7" r="2" /><path d="M6 7v10M18 9c0 5-6 4-12 8" /></svg>);
 export const SendIcon = ({ size }: P) => (<svg {...base(size)}><path d="M5 12h13M13 6l6 6-6 6" /></svg>);
 export const FileIcon = ({ size }: P) => (<svg {...base(size)}><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /></svg>);
+export const KeyboardIcon = ({ size }: P) => (<svg {...base(size)}><rect x="2" y="6" width="20" height="12" rx="2" /><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10" /></svg>);
+export const SearchIcon = ({ size }: P) => (<svg {...base(size)}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>);
 export const CloseIcon = ({ size }: P) => (<svg {...base(size)}><path d="M6 6l12 12M18 6 6 18" /></svg>);
 export const ArchiveIcon = ({ size }: P) => (<svg {...base(size)}><rect x="3" y="4" width="18" height="4" rx="1" /><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4" /></svg>);
 export const LogoMark = ({ size = 20 }: P) => (

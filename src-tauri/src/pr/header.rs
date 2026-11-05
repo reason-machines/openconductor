@@ -2,13 +2,16 @@
 //! the PR lookup and the local git state. Order of the rules matters: the
 //! first match wins, mirroring the reference app's precedence.
 
+use serde::{Deserialize, Serialize};
+
 use super::checks::ChecksStatus;
 use super::info::{PrLookup, PrStatus};
 use super::merge_eligibility::{can_merge, merge_with_optional_failures};
 use super::model::{MergeQueueState, MergeStateStatus, ReviewDecision};
 
 /// Visual tone of the control.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum Tone {
     NoPr,
     Loading,
@@ -19,7 +22,12 @@ pub enum Tone {
 }
 
 /// The action the control offers, with the data its label needs.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(
+    tag = "type",
+    rename_all = "snake_case",
+    rename_all_fields = "camelCase"
+)]
 pub enum HeaderAction {
     CreatePr,
     Working,
@@ -55,18 +63,21 @@ pub enum HeaderAction {
         optional_failed: usize,
     },
     UnableToMerge,
-    QueuedToMerge(MergeQueueState),
+    QueuedToMerge {
+        state: MergeQueueState,
+    },
     Merged,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct HeaderState {
     pub tone: Tone,
     pub action: HeaderAction,
 }
 
 /// Remote tracking state of the workspace branch.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "camelCase", default)]
 pub struct UpstreamSync {
     pub branch_exists: bool,
     pub diverged: bool,
@@ -74,7 +85,8 @@ pub struct UpstreamSync {
     pub behind: u32,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, Deserialize)]
+#[serde(rename_all = "camelCase", default)]
 pub struct HeaderInputs {
     /// Latest PR lookup; `None` while it has never loaded.
     pub pr: Option<PrLookup>,
@@ -108,7 +120,7 @@ pub fn header_state(i: &HeaderInputs) -> Option<HeaderState> {
             return state(Tone::Merged, HeaderAction::Merged);
         }
         if let Some(q) = &pr.merge_queue {
-            return state(Tone::Queued, HeaderAction::QueuedToMerge(q.state));
+            return state(Tone::Queued, HeaderAction::QueuedToMerge { state: q.state });
         }
     }
     if i.can_create_pr && !has_pr && !i.loading && i.has_changes {
@@ -191,7 +203,10 @@ pub fn header_state(i: &HeaderInputs) -> Option<HeaderState> {
         if s.review_decision == Some(ReviewDecision::ReviewRequired) {
             let review_is_stale = match &pr.viewer_latest_review {
                 None => true,
-                Some(commit) => commit.as_deref().is_some_and(|c| c != pr.head_ref_oid),
+                Some(review) => review
+                    .commit_oid
+                    .as_deref()
+                    .is_some_and(|c| c != pr.head_ref_oid),
             };
             let can_approve = pr.viewer_can_merge == Some(true)
                 && pr.viewer_did_author != Some(true)

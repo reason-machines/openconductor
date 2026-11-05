@@ -22,7 +22,9 @@ What the reference app (Conductor v0.87.6) does when a workspace is created, the
 
 - City list and tier weights (70 / 22 / 7 / 1) are ours; the reference list was not extracted.
 - Collisions append `-v1`, `-v2`, ... (case-insensitive); unused cities are drawn first.
-- Default prefix type when unset is the GitHub username; unverified against the app.
+- Default prefix type when unset is the GitHub username: Conductor's migration 51 is "set default branch prefix type to github_username" (`sqlite/rea-inspect-sqlite-conductor-migrations.json`).
+- The username comes from the local `gh` config (`gh config get -h github.com user`, no network); how Conductor finds it is not in the evidence. With no username the prefix is empty.
+- `settings.toml` stores a custom prefix without the trailing slash (the settings validator rejects one) and the dialog appends it; Conductor's migration 64 stores it with the slash.
 - Workspace names: letters, digits, `.`, `_`, `-`, no leading `.`/`-`, at most 64 characters. Branch names follow `git check-ref-format --branch` rules.
 - The generated name after the first message comes from the message itself (first line with words, filler and stopwords dropped, at most four words), not from a model; the reference wording says the branch name is "generated from the first message" but not how. The rename keeps the prefix the placeholder branch was created with, and auto-rename is on until a settings toggle exists.
 

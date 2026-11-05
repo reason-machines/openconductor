@@ -594,6 +594,170 @@ def ledger_rows(items):
     return rows, len(gen), led.get("summary")
 
 
+# --------------------------------------------------------------------------- builder obligations
+
+# Verifier-filed builder obligations: each failing report item belongs to exactly one, picked by the first
+# selector (area, group prefix, id prefixes or None) that matches. `parent` is the REA ledger obligation the
+# slice belongs to, or None when the REA ledger has none (keybindings: REA gap 3 below).
+LEDGER_VERIFIER = os.path.join(EV, "ledger", "verifier")
+LEDGER_VERIFIER_NAME = "settings-shortcuts-persistence-packaging"
+TOML = ("user settings.toml", "repo settings.toml")
+PROVIDER_KEYS = ("bedrock_region", "claude_provider", "codex_provider", "vertex_project_id",
+                 "claude_code_executable_path", "codex_executable_path", "opencode_executable_path")
+BUILDER_OBLIGATIONS = [
+    ("settings.routes", "Settings pages: the /settings route tree (user, repos, organization, cloud)", "ui.routes",
+     [("settings", "settings route", None)]),
+    ("settings.app-preferences", "App preferences kept in the conductor.db settings table (panels, zoom, fonts, "
+     "onboarding, migration flags)", "db.conductor-schema", [("settings", "settings table key", None)]),
+    ("settings.toml.prompts", "prompts.* keys in user and repo settings.toml", "pr.agent-prompts",
+     [("settings", g, ("prompts.",)) for g in TOML]),
+    ("settings.toml.models", "models.* keys in user and repo settings.toml", "agent.models",
+     [("settings", g, ("models.",)) for g in TOML]),
+    ("settings.toml.providers", "Provider and agent executable keys in settings.toml (Conductor's top-level "
+     "bedrock_region, claude_provider, *_executable_path, ...)", "agent.providers", [("settings", g, PROVIDER_KEYS) for g in TOML]),
+    ("settings.toml.git", "git.* keys in user and repo settings.toml", "db.settings-toml",
+     [("settings", g, ("git.",)) for g in TOML]),
+    ("settings.toml.workspace", "Remaining settings.toml keys: environment variables, preview URLs, SSH key, tool "
+     "approvals, file globs, spotlight", "db.settings-toml", [("settings", g, None) for g in TOML]),
+    *[(f"keys.wire.{c.lower().replace(' ', '-')}", f"Wire every {c} keybinding to its command handler", None,
+       [("shortcuts", c, None)])
+      for c in ("General", "View", "Navigation", "Chat", "Workspace", "Code review", "Terminal")],
+    ("keys.bindings-route", "Keybinding features: /key-bindings route and the rest of the keybinding UI", None,
+     [("shortcuts", "feature", None)]),
+    ("db.cache-schema.tables", "cache.db with Conductor's 7 tables", "db.cache-schema",
+     [("persistence", "cache.db table", None)]),
+    ("db.local-storage.stores", "The 11 file-backed local-storage subsystems", "db.local-storage",
+     [("persistence", "app data store", ("local-storage:",))]),
+    ("persistence.window-state", "Window state file (tauri-plugin-window-state)", "ui.window-chrome",
+     [("persistence", "app data store", ("window-state",))]),
+    ("persistence.draft-attachments", "draft-attachments/ store", "agent.attachments",
+     [("persistence", "app data store", ("draft-attachments",))]),
+    ("persistence.sidecar-stores", "Sidecar session-event outbox and completions stores", "proc.sidecar",
+     [("persistence", "app data store", ("sidecar-",))]),
+    ("persistence.terminal-shell-integration", "terminal-shell-integration/ store", "term.pty",
+     [("persistence", "app data store", ("terminal-shell-integration",))]),
+    ("persistence.agent-binaries", "agent-binaries/ store with sha256 .meta files", "agent.binaries",
+     [("persistence", "app data store", ("agent-binaries",))]),
+    ("persistence.bin-source-markers", ".bin-source-markers.json", "pkg.first-run-bootstrap",
+     [("persistence", "app data store", ("bin-source-markers",))]),
+    ("persistence.checkpoint-refs", "Checkpoint refs", "ws.checkpoints",
+     [("persistence", "app data store", ("checkpoint-refs",))]),
+    ("db.conductor-schema.tables", "conductor.db tables", "db.conductor-schema",
+     [("persistence", "conductor.db table", None)]),
+    ("pkg.microphone", "Microphone usage description and audio-input entitlement", "agent.speech",
+     [("packaging", "Info.plist key", ("NSMicrophoneUsageDescription",)),
+      ("packaging", "entitlement", ("com.apple.security.device.audio-input",))]),
+    ("pkg.bundle.plist", "Info.plist keys and URL scheme", "pkg.bundle",
+     [("packaging", "Info.plist key", None), ("packaging", "deep link", None)]),
+    ("pkg.signing.developer-id", "Developer ID signing, hardened runtime and entitlements", "pkg.signing",
+     [("packaging", "signing", None), ("packaging", "entitlement", None)]),
+    ("pkg.dylibs.frameworks", "Link the system frameworks Conductor links", "pkg.dylibs",
+     [("packaging", "linked system library", None)]),
+    ("pkg.updater-plugin", "tauri-plugin-updater", "app.updater",
+     [("packaging", "tauri plugin", ("tauri-plugin-updater",))]),
+    ("pkg.tauri-plugins", "The other Tauri plugins Conductor ships", "pkg.tauri-stack",
+     [("packaging", "tauri plugin", None), ("packaging", "tauri stack", None)]),
+    ("pkg.bundled-bin", "Bundled bin/ toolchain and internal binaries", "pkg.first-run-bootstrap",
+     [("packaging", "bundled resource", ("bin/",))]),
+    ("pkg.conductor-skill", "Bundled conductor skill / Claude Code plugin", "agent.conductor-skill",
+     [("packaging", "bundled resource", ("conductor-skill/",))]),
+    ("pkg.resources", "Other bundled resources", "pkg.bundle", [("packaging", "bundled resource", None)]),
+    ("pkg.frontend", "Embedded frontend", "pkg.embedded-frontend", [("packaging", "frontend", None)]),
+]
+
+
+def builder_obligations(items):
+    """Assign every item to its first matching builder obligation. Fails when a non-matched item has none,
+    so a new gap can't drop out of the ledger."""
+    owned = {oid: [] for oid, *_ in BUILDER_OBLIGATIONS}
+    orphans = []
+    for i in items:
+        for oid, _, _, sels in BUILDER_OBLIGATIONS:
+            if any(i["area"] == a and i["group"].startswith(g) and (ids is None or i["id"].startswith(ids))
+                   for a, g, ids in sels):
+                owned[oid].append(i)
+                break
+        else:
+            if i["status"] != "matched":
+                orphans.append(f'{i["area"]}/{i["group"]}/{i["id"]}')
+    if orphans:
+        raise SystemExit("items with no builder obligation (add a selector to BUILDER_OBLIGATIONS): "
+                         + ", ".join(orphans))
+    out = []
+    for oid, title, parent, _ in BUILDER_OBLIGATIONS:
+        sel = owned[oid]
+        if not sel:
+            continue
+        gaps = [{"group": i["group"], "id": i["id"], "status": i["status"]} for i in sel if i["status"] != "matched"]
+        out.append({"obligation_id": oid, "title": title, "area": sel[0]["area"], "parent_obligation": parent,
+                    "owner": "builder", "result": "fail" if gaps else "pass", "parity": score(sel), "gaps": gaps})
+    return out
+
+
+def ledger_record(report):
+    """Verifier record for the obligation ledger: pass/fail and parity per REA ledger obligation and per
+    builder obligation, with the REA Evidence each score rests on."""
+    pm, km = report["persistence_meta"], report["packaging_meta"]
+    rows = [{"obligation_id": r["id"], "area": r["area"], "ledger_status": r["ledger_status"],
+             "result": "pass" if r["rebuild"]["total"] and r["rebuild"]["missing"] == r["rebuild"]["partial"] == 0
+             else "fail", "parity": r["rebuild"]} for r in report["ledger"]["rows"]]
+    return {
+        "verifier": "settings, shortcuts, persistence, packaging",
+        "generated_by": "tools/parity_check.py check",
+        "target": {"ref": report["ref"], "sha": report["sha"]},
+        "result_meaning": "pass = every item that evidences the obligation is matched on the target (static); "
+                          "fail = at least one item is partial, declared or missing. Static presence, not runtime behavior.",
+        "areas": {a: {k: v[k] for k in ("total", "matched", "partial", "missing", "parity_pct")}
+                  for a, v in report["areas"].items()},
+        "overall": report["overall"],
+        "evidence": {
+            "report": "evidence/parity/parity-report.json",
+            "persistence": {"conductor": pm.get("conductor_reference"), "cache": pm.get("cache_reference"),
+                            "rebuild": pm["conductor_rebuild"].get("schema_source")},
+            "packaging": km["source"],
+            "shortcuts": report["reference"]["keybindings_source"],
+        },
+        "ledger_obligations": rows,
+        "builder_obligations": report["builder_obligations"],
+    }
+
+
+def render_ledger_md(rec):
+    t = rec["target"]
+    out = [f'# Verifier record: settings, shortcuts, persistence, packaging\n',
+           f'Target `{t["ref"]}` at `{t["sha"][:12]}`. Generated by `tools/parity_check.py check`; '
+           f'scores and evidence are in [`parity-report.json`](../../parity/parity-report.json). {rec["result_meaning"]}\n',
+           "| Area | Items | Matched | Partial | Missing | Parity |", "|---|---|---|---|---|---|"]
+    for a, v in rec["areas"].items():
+        out.append(f'| {a} | {v["total"]} | {v["matched"]} | {v["partial"]} | {v["missing"]} | **{v["parity_pct"]}%** |')
+    o = rec["overall"]
+    out.append(f'| all four | {o["total"]} | {o["matched"]} | {o["partial"]} | {o["missing"]} | **{o["parity_pct"]}%** |\n')
+    out.append("## REA ledger obligations\n")
+    out.append("| Obligation | Area | Ledger status | Result | Parity |")
+    out.append("|---|---|---|---|---|")
+    for r in rec["ledger_obligations"]:
+        p = r["parity"]
+        out.append(f'| `{r["obligation_id"]}` | {r["area"]} | {r["ledger_status"]} | {r["result"]} | '
+                   f'{p["parity_pct"]}% ({p["matched"]}/{p["total"]}) |')
+    out.append("\n## Builder obligations\n")
+    out.append("Each failing item is filed under exactly one builder obligation; `parent` is the REA ledger obligation "
+               "it belongs to (none: the REA ledger has no keybinding obligation).\n")
+    out.append("| Builder obligation | Parent | Result | Parity | Open items |")
+    out.append("|---|---|---|---|---|")
+    for b in rec["builder_obligations"]:
+        p = b["parity"]
+        scopes = {}
+        for g in b["gaps"]:
+            scope = g["group"].split(" settings.toml")[0] if g["group"] in TOML else None
+            scopes.setdefault((g["id"], g["status"]), []).append(scope)
+        gaps = ", ".join(f'`{i}`' + ("" if st == "missing" else f" ({st})")
+                         + (f' ({"+".join(s)})' if all(s) else "") for (i, st), s in scopes.items())
+        parent = "`%s`" % b["parent_obligation"] if b["parent_obligation"] else "none"
+        out.append(f'| `{b["obligation_id"]}`: {b["title"]} | {parent} | '
+                   f'{b["result"]} | {p["parity_pct"]}% ({p["matched"]}/{p["total"]}) | {gaps or "-"} |')
+    return "\n".join(out) + "\n"
+
+
 # --------------------------------------------------------------------------- report
 
 def score(items):
@@ -636,6 +800,7 @@ def check(args):
         "reference": {"conductor_version": "0.87.6", "keybindings_source": kb["source"]},
         "overall": score(items), "areas": areas, "persistence_meta": pmeta, "packaging_meta": kmeta,
         "ledger": {"rows": ledger, "generated_persistence_obligations": gen_persist, "summary": ledger_summary},
+        "builder_obligations": builder_obligations(items),
         "items": items,
     }
     os.makedirs(args.out_dir, exist_ok=True)
@@ -644,6 +809,14 @@ def check(args):
         f.write("\n")
     with open(os.path.join(args.out_dir, "PARITY.md"), "w") as f:
         f.write(render_md(report))
+    ledger_dir = LEDGER_VERIFIER if os.path.abspath(args.out_dir) == os.path.abspath(PARITY) else args.out_dir
+    os.makedirs(ledger_dir, exist_ok=True)
+    rec = ledger_record(report)
+    with open(os.path.join(ledger_dir, LEDGER_VERIFIER_NAME + ".json"), "w") as f:
+        json.dump(rec, f, indent=1)
+        f.write("\n")
+    with open(os.path.join(ledger_dir, LEDGER_VERIFIER_NAME + ".md"), "w") as f:
+        f.write(render_ledger_md(rec))
     print(json.dumps({a: v["parity_pct"] for a, v in areas.items()} | {"overall": report["overall"]["parity_pct"]}))
 
 

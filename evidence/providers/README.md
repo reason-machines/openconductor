@@ -28,6 +28,9 @@ not yet committed, so treat each line as unconfirmed until they are.
   stream-json input and output), not `claude -p`.
 - Codex is driven through `codex app-server --listen stdio://` over JSON-RPC
   (`thread/start`, `thread/resume`, `turn/start`, `turn/interrupt`).
+  These methods, the approval and sandbox values below and the approval
+  replies exist in the Codex CLI the reference app downloads (0.156.1);
+  see `codex-app-server.md`. Only the reference app's use of them is pending.
 - Claude permission modes: `acceptEdits`, `auto`, `bypassPermissions`,
   `default`, `dontAsk`, `plan`. Codex: approval {`untrusted`, `on-request`,
   `never`} x sandbox {`read-only`, `workspace-write`, `danger-full-access`},
