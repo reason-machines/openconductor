@@ -8,7 +8,10 @@
 //!   the earlier prompt with `cancelled`; that turn ends
 //!   [`TurnEnd::Superseded`], not `Cancelled`.
 //! * Stop sends `session/cancel`; the prompt then ends `cancelled`. A
-//!   second Stop sends it again, which Reason treats as a hard stop.
+//!   second Stop sends it again, which Reason treats as a hard stop. A
+//!   prompt announced with [`ReasonProvider::expect_prompt`] but not sent
+//!   yet (the app saves the start checkpoint first) is stopped too: it ends
+//!   `cancelled` without being sent.
 //! * After the app or the agent restarts, a chat with a stored id is
 //!   reattached with `session/resume` (no history replay; the app keeps its
 //!   own transcript) before its next prompt.
@@ -94,6 +97,9 @@ struct Chat {
     on_cloud: bool,
     /// Config options to set when the Session is created.
     config: Vec<ConfigChoice>,
+    /// Prompts announced by `expect_prompt` and not sent yet, with whether
+    /// a Stop came for them meanwhile.
+    pending: HashMap<u64, bool>,
 }
 
 #[derive(Default)]
@@ -111,6 +117,7 @@ struct Shared {
     /// Reason Session id to chat id.
     by_session: HashMap<String, String>,
     next_turn: u64,
+    next_ticket: u64,
 }
 
 struct Agent {
@@ -174,12 +181,47 @@ impl ReasonProvider {
 
     /// [`Self::prompt`] with attachments sent after the text.
     pub fn prompt_with(&self, chat: &str, text: &str, attachments: &[Attachment]) -> TurnEnd {
-        let end = self.run_prompt(chat, text, attachments);
+        self.prompt_expected(chat, text, attachments, None)
+    }
+
+    /// Announces a prompt that is about to be sent after other work (the
+    /// app saves the turn's start checkpoint first): a Stop meanwhile ends
+    /// that prompt `cancelled` instead of being lost. Pass the ticket to
+    /// [`Self::prompt_expected`]. `None` for a chat that is not open.
+    pub fn expect_prompt(&self, chat: &str) -> Option<u64> {
+        let mut s = self.shared.lock().unwrap();
+        s.next_ticket += 1;
+        let ticket = s.next_ticket;
+        s.chats.get_mut(chat)?.pending.insert(ticket, false);
+        Some(ticket)
+    }
+
+    /// [`Self::prompt_with`] for a prompt announced with
+    /// [`Self::expect_prompt`].
+    pub fn prompt_expected(
+        &self,
+        chat: &str,
+        text: &str,
+        attachments: &[Attachment],
+        ticket: Option<u64>,
+    ) -> TurnEnd {
+        let end = self.run_prompt(chat, text, attachments, ticket);
+        if let Some(t) = ticket {
+            if let Some(c) = self.shared.lock().unwrap().chats.get_mut(chat) {
+                c.pending.remove(&t);
+            }
+        }
         (self.sink)(chat, ProviderEvent::TurnEnded(end.clone()));
         end
     }
 
-    fn run_prompt(&self, chat: &str, text: &str, attachments: &[Attachment]) -> TurnEnd {
+    fn run_prompt(
+        &self,
+        chat: &str,
+        text: &str,
+        attachments: &[Attachment],
+        ticket: Option<u64>,
+    ) -> TurnEnd {
         let (conn, session_id) = match self.ensure_session(chat) {
             Ok(v) => v,
             Err(e) => return TurnEnd::Failed(e),
@@ -191,6 +233,10 @@ impl ReasonProvider {
             let Some(c) = s.chats.get_mut(chat) else {
                 return TurnEnd::Failed("unknown chat".into());
             };
+            // Stopped before it was sent: Reason never hears of it.
+            if ticket.and_then(|t| c.pending.remove(&t)) == Some(true) {
+                return TurnEnd::Cancelled;
+            }
             if let Some(prev) = &mut c.turn {
                 prev.superseded = true;
             }
@@ -243,6 +289,9 @@ impl ReasonProvider {
             let Some(c) = s.chats.get_mut(chat) else {
                 return;
             };
+            for stopped in c.pending.values_mut() {
+                *stopped = true;
+            }
             let Some(turn) = &mut c.turn else {
                 return;
             };
