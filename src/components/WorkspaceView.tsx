@@ -45,6 +45,8 @@ interface AttachedSend {
 type ShownChatBridge = ChatBridge & ComposerAttach & AttachedSend;
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
+import { openBigTab } from "../features/terminal/session";
+import { bigTabRequest } from "../features/terminal/bigTerminal";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { ScriptsPanel } from "./ScriptsPanel";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
@@ -730,7 +732,9 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 };
 
 export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread }: Props) {
-  const [showTerminal, setShowTerminal] = useState(true);
+  // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) shows it,
+  // and ⌘⇧T opens a big terminal while Big terminal mode is on.
+  const [showTerminal, setShowTerminal] = useState(false);
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
@@ -865,6 +869,20 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     },
     "git.openInGitHub": prActions.openOnGitHub,
   });
+  // ⌘⇧T inside a terminal is handled by the terminal itself (session.ts), so this one skips terminal focus.
+  useKeybindings(
+    {
+      "terminal.newBigTab": () => {
+        const big = bigTabRequest();
+        if (!big || !repo.path) return false;
+        void openBigTab(workspace.id, repo.path, big)
+          .catch(() => {})
+          .finally(() => setShowTerminal(true));
+        return true;
+      },
+    },
+    { enableOnTerminalFocus: false },
+  );
   const showDiff = diffOpen && mainTab === "diff";
   const showPr = prOpen && mainTab === "pr";
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
@@ -913,9 +931,6 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
         <div className="ws-actions">
           {workspace.status !== "archived" && <OpenInButton path={workspace.path ?? null} notify={notify} />}
           <PrControl pullRequest={pullRequest} actions={prActions} />
-          <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
-            Terminal
-          </button>
           <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
             <ArchiveIcon size={14} /> Archive
           </button>
