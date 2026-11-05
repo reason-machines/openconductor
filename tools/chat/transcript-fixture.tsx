@@ -75,6 +75,7 @@ function Fixture() {
         turnFooter={turnFooter}
         turnAgent={turnAgentLabel("byok:anthropic:claude-opus-5-5", "Reason")}
         onForkToNewTab={fork ? (turnId) => setForked(forkTranscript(r.transcript, turnId)) : undefined}
+        onForkToNewWorkspace={fork ? (turnId) => setForked(forkTranscript(r.transcript, turnId)) : undefined}
       />
       {forked !== null ? (
         <section className="fixture-fork" style={{ marginTop: 24 }}>
