@@ -84,6 +84,11 @@ export interface TurnStatusEvent {
   turnId: string;
   status: TurnStatus;
   error?: string;
+  /**
+   * When the status changed (RFC 3339 UTC). Stamped by the frontend runtime;
+   * the Rust `ChatEvent::TurnStatus` does not carry it yet.
+   */
+  at?: string;
 }
 
 export type ChatEvent = UpsertEvent | TextDeltaEvent | TurnStatusEvent;
