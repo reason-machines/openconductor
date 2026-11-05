@@ -24,6 +24,7 @@ import { ScriptsPanel } from "./ScriptsPanel";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
 import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest";
+import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
@@ -333,16 +334,30 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
-  // Keep the PR title and body (`workspaces.pr_title`, `pr_description`) in step with GitHub, then archive on merge.
+  // Keep the sidebar's PR title and body (`workspaces.pr_title`, `pr_description`) in step with GitHub, then archive on merge.
+  // The row's status icon reads the PR too (merged, checks failing, ready to merge, ...).
+  const optionalChecksBlock = useRef(false);
+  const prTitle = useRef(workspace.prTitle ?? null);
+  prTitle.current = workspace.prTitle ?? null;
   const onLookup = useCallback(
     (next: PrLookup, previous: PrLookup | null) => {
-      if (next.kind === "found") dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title, prDescription: next.info.body ?? null });
+      if (next.kind === "found") {
+        dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: next.info.title, prDescription: next.info.body ?? null, pr: rowPrOf(next.info, optionalChecksBlock.current) });
+      } else {
+        dispatch({ type: "setWorkspacePr", repoId: repo.id, workspaceId: workspace.id, prTitle: prTitle.current, pr: null });
+      }
       archiveOnMerge(next, previous);
     },
     [dispatch, repo.id, workspace.id, archiveOnMerge],
   );
   const onDerivedStatus = useWorkspacePrSync({ repoId: repo.id, workspace, dispatch });
   const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: repo.defaultBranch, agentWorking, hasPendingComments: review.hasPending, onLookup, onDerivedStatus });
+  optionalChecksBlock.current = pullRequest.settings.optionalChecksBlock;
+  useEffect(() => {
+    dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: agentWorking });
+  }, [dispatch, repo.id, workspace.id, agentWorking]);
+  // Nothing reports a closed workspace's agent, so its row stops showing it working.
+  useEffect(() => () => dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: false }), [dispatch, repo.id, workspace.id]);
   const prActions = usePrActions({
     pullRequest,
     repoId: repo.id,

@@ -53,6 +53,9 @@ pub struct Workspace {
     pub unread: bool,
     pub pr_title: Option<String>,
     pub pr_description: Option<String>,
+    /// The user named the workspace (rename dialog or create form); the sidebar
+    /// then shows `workspace_name` as is instead of the PR title or branch.
+    pub user_set_workspace_name: bool,
     /// Workspace number (shown as `W-<n>`); Conductor's hosting server assigns it.
     pub number: Option<i64>,
     pub created_at: String,
@@ -74,7 +77,8 @@ const SELECT_WITH_REPO: &str = "SELECT w.local_id, w.repository_id, w.directory_
     w.manual_status, w.active_session_id, w.initialization_parent_branch, \
     w.intended_target_branch, w.workspace_path, w.archive_commit, w.initialization_log_path, \
     w.initialization_files_copied, w.setup_log_path, w.pinned_at, w.notes, \
-    COALESCE(w.unread, 0) AS unread, w.pr_title, w.pr_description, w.number, w.created_at, w.updated_at, \
+    COALESCE(w.unread, 0) AS unread, w.pr_title, w.pr_description, \
+    COALESCE(w.user_set_workspace_name, 0) AS user_set_workspace_name, w.number, w.created_at, w.updated_at, \
     r.root_path, r.name AS repo_name, COALESCE(r.storage_version, 1) AS storage_version \
     FROM workspaces w JOIN repos r ON w.repository_id = r.id";
 

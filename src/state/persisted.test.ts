@@ -38,15 +38,15 @@ test("selection falls back to home when its workspace is gone", () => {
   const repos = reposFromDb([repo("a")], [ws("a", "oslo")], []);
   const keep = { kind: "workspace" as const, repoId: "a", workspaceId: "a/oslo" };
   assert.deepEqual(validSelection(keep, repos), keep);
-  assert.deepEqual(validSelection({ ...keep, workspaceId: "a/lima" }, repos), { kind: "home" });
+  assert.deepEqual(validSelection({ ...keep, workspaceId: "a/lima" }, repos), { kind: "root" });
 });
 
 test("prefs round-trip and survive garbage", () => {
   const repos = reposFromDb([repo("a"), repo("b")], [], ["b"]);
   const prefs = prefsOf({ repos, selection: { kind: "home" }, sidebarVisible: false });
   assert.deepEqual(parsePrefs(JSON.stringify(prefs)), { selection: { kind: "home" }, sidebarVisible: false, collapsed: ["b"] });
-  assert.deepEqual(parsePrefs("{nope"), { selection: { kind: "home" }, collapsed: [] });
-  assert.deepEqual(parsePrefs(null), { selection: { kind: "home" }, collapsed: [] });
+  assert.deepEqual(parsePrefs("{nope"), { selection: { kind: "root" }, collapsed: [] });
+  assert.deepEqual(parsePrefs(null), { selection: { kind: "root" }, collapsed: [] });
 });
 
 test("sidebar: pin, unread and status columns reach the workspace", () => {
@@ -59,4 +59,19 @@ test("sidebar: pin, unread and status columns reach the workspace", () => {
   assert.equal(oslo.pinnedAt, Date.UTC(2026, 10, 5, 12, 0, 0));
   assert.deepEqual([oslo.unread, oslo.manualStatus, oslo.derivedStatus], [true, "done", "in-review"]);
   assert.deepEqual([lima.pinnedAt, lima.unread, lima.manualStatus, lima.derivedStatus], [undefined, undefined, undefined, undefined]);
+});
+
+test("sidebar: a user-set workspace name is shown as is", async () => {
+  const { workspaceLabel } = await import("../components/sidebarLabel.ts");
+  const [r] = reposFromDb(
+    [repo("a")],
+    [ws("a", "oslo", "ready", { workspaceName: "Fix login", userSetWorkspaceName: true, branch: "sven/oslo" }), ws("a", "lima", "ready", { workspaceName: "lima", branch: "sven/fix-the-thing" })],
+    [],
+  );
+  const [oslo, lima] = r.workspaces;
+  assert.equal(oslo.userSetWorkspaceName, true);
+  assert.equal(lima.userSetWorkspaceName, undefined);
+  const label = (w: typeof oslo) => workspaceLabel({ name: w.name, branch: w.branch, prTitle: w.prTitle, userSetWorkspaceName: w.userSetWorkspaceName, targetBranch: "main" });
+  assert.equal(label(oslo), "Fix login");
+  assert.notEqual(label(lima), "lima");
 });
