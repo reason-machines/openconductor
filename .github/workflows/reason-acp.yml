@@ -1,0 +1,35 @@
+name: Reason ACP
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src-tauri/src/reason_acp/**"
+      - "tools/reason-acp/**"
+      - ".github/workflows/reason-acp.yml"
+  pull_request:
+    paths:
+      - "src-tauri/src/reason_acp/**"
+      - "tools/reason-acp/**"
+      - ".github/workflows/reason-acp.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: Reason ACP Rust test + clippy (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: rustfmt
+        run: rustfmt --edition 2021 --check src-tauri/src/reason_acp/*.rs
+      - name: Test reason_acp module
+        run: bash tools/reason-acp/run-rust-tests.sh

@@ -1,0 +1,110 @@
+{
+  "source": "REA inspect-plist / inspect-signature on Conductor.app 0.87.6 (sven m5 max)",
+  "generated_by": "tools/packaging_ref.py",
+  "info_plist": {
+    "evidence_id": "ev_c77ec9523dc61828b58e75ed7ca3b604968f34b09d35fe4980eb0abcb5ed8358",
+    "subject_sha256": "0a522241ef7ff6bf3b5492bb2bff55dabb7cd6a62b9c1667976b1b8cd686d7c2",
+    "keys": {
+      "CFBundleDevelopmentRegion": {
+        "type": "string",
+        "length": 7
+      },
+      "CFBundleDisplayName": {
+        "type": "string",
+        "length": 9
+      },
+      "CFBundleExecutable": {
+        "type": "string",
+        "length": 9
+      },
+      "CFBundleIconFile": {
+        "type": "string",
+        "length": 9
+      },
+      "CFBundleIdentifier": {
+        "type": "string",
+        "length": 17
+      },
+      "CFBundleInfoDictionaryVersion": "6.0",
+      "CFBundleName": {
+        "type": "string",
+        "length": 9
+      },
+      "CFBundlePackageType": "APPL",
+      "CFBundleShortVersionString": {
+        "type": "string",
+        "length": 6
+      },
+      "CFBundleURLTypes": [
+        {
+          "CFBundleTypeRole": "Editor",
+          "CFBundleURLName": {
+            "type": "string",
+            "length": 27
+          },
+          "CFBundleURLSchemes": [
+            {
+              "type": "string",
+              "length": 9
+            }
+          ]
+        }
+      ],
+      "CFBundleVersion": {
+        "type": "string",
+        "length": 6
+      },
+      "CSResourcesFileMapped": true,
+      "LSMinimumSystemVersion": "10.13",
+      "LSRequiresCarbon": true,
+      "NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac": true,
+      "NSDesktopFolderUsageDescription": {
+        "type": "string",
+        "length": 105
+      },
+      "NSDocumentsFolderUsageDescription": {
+        "type": "string",
+        "length": 107
+      },
+      "NSDownloadsFolderUsageDescription": {
+        "type": "string",
+        "length": 107
+      },
+      "NSHighResolutionCapable": true,
+      "NSMicrophoneUsageDescription": {
+        "type": "string",
+        "length": 64
+      }
+    }
+  },
+  "signatures": [
+    {
+      "evidence_id": "ev_9ebab8fc7c5cd30c23019a9566921c83f641615843814d1169ce1d6e5a62a11d",
+      "subject": "conductor",
+      "subject_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+      "format": "Mach-O thin (arm64)",
+      "signed": true,
+      "hardened_runtime": true,
+      "signing_kind": "developer-id",
+      "entitlements": {
+        "com.apple.security.cs.allow-jit": true,
+        "com.apple.security.cs.allow-unsigned-executable-memory": true,
+        "com.apple.security.device.audio-input": true
+      }
+    },
+    {
+      "evidence_id": "ev_ac711cc69a072dbe5d90642fc62f3287e1fe0b543694f67d06b6ededb155249b",
+      "subject": "conductor-runtime",
+      "subject_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+      "format": "Mach-O thin (arm64)",
+      "signed": true,
+      "hardened_runtime": true,
+      "signing_kind": "developer-id",
+      "entitlements": {
+        "com.apple.security.cs.allow-jit": true,
+        "com.apple.security.cs.allow-unsigned-executable-memory": true,
+        "com.apple.security.device.audio-input": true
+      }
+    }
+  ]
+}
