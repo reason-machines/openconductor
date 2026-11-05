@@ -1,0 +1,367 @@
+[
+ {
+  "name": "composer--typed--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "dom": true,
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_workspace",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/fix login redirect"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause",
+    "action": "wait_for_timeout",
+    "duration_ms": 2000
+   },
+   {
+    "step_id": "type",
+    "action": "fill",
+    "locator": {
+     "kind": "css",
+     "selector": "[contenteditable=true]"
+    },
+    "value": {
+     "source": "literal",
+     "value": "Also add a test for the expired-session redirect."
+    },
+    "timeout_ms": 5000
+   }
+  ],
+  "final_settle_ms": 800,
+  "notes": "Composer focused with a typed message: the send button is enabled."
+ },
+ {
+  "name": "composer--slash-menu--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "dom": true,
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_workspace",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/fix login redirect"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause",
+    "action": "wait_for_timeout",
+    "duration_ms": 2000
+   },
+   {
+    "step_id": "type",
+    "action": "fill",
+    "locator": {
+     "kind": "css",
+     "selector": "[contenteditable=true]"
+    },
+    "value": {
+     "source": "literal",
+     "value": "/"
+    },
+    "timeout_ms": 5000
+   }
+  ],
+  "final_settle_ms": 1500,
+  "notes": "Typing '/' at the start of the composer opens the slash-command menu."
+ },
+ {
+  "name": "composer--mention-menu--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "dom": true,
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_workspace",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/fix login redirect"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause",
+    "action": "wait_for_timeout",
+    "duration_ms": 2000
+   },
+   {
+    "step_id": "type",
+    "action": "fill",
+    "locator": {
+     "kind": "css",
+     "selector": "[contenteditable=true]"
+    },
+    "value": {
+     "source": "literal",
+     "value": "@"
+    },
+    "timeout_ms": 5000
+   }
+  ],
+  "final_settle_ms": 1500,
+  "notes": "Typing '@' opens the file mention menu."
+ },
+ {
+  "name": "composer--plus-menu--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "dom": true,
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_workspace",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/fix login redirect"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause",
+    "action": "wait_for_timeout",
+    "duration_ms": 2000
+   },
+   {
+    "step_id": "plus",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "[aria-label='Add']"
+    },
+    "timeout_ms": 5000
+   }
+  ],
+  "final_settle_ms": 1200,
+  "notes": "The composer's '+' (Add) menu: Add attachment, Link issue, Link workspaces, Plan mode."
+ },
+ {
+  "name": "composer--model-picker--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "dom": true,
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_workspace",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/fix login redirect"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause",
+    "action": "wait_for_timeout",
+    "duration_ms": 2000
+   },
+   {
+    "step_id": "model",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "[aria-label^='Change agent']"
+    },
+    "timeout_ms": 5000
+   }
+  ],
+  "final_settle_ms": 1200,
+  "notes": "Model picker open (DOM captured)."
+ },
+ {
+  "name": "composer--effort-submenu--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "dom": true,
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_workspace",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/fix login redirect"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause",
+    "action": "wait_for_timeout",
+    "duration_ms": 2000
+   },
+   {
+    "step_id": "model",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "[aria-label^='Change agent']"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause1",
+    "action": "wait_for_timeout",
+    "duration_ms": 800
+   },
+   {
+    "step_id": "effort",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "[role=menuitem]:has-text('Effort')"
+    },
+    "timeout_ms": 5000
+   }
+  ],
+  "final_settle_ms": 1200,
+  "notes": "Model picker > Effort submenu."
+ },
+ {
+  "name": "composer--working--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "dom": true,
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_osaka",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/dark mode tokens"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause",
+    "action": "wait_for_timeout",
+    "duration_ms": 2000
+   }
+  ],
+  "final_settle_ms": 1200,
+  "notes": "osaka, whose session is working: placeholder and Stop button."
+ },
+ {
+  "name": "composer--working-typed--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "dom": true,
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_osaka",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/dark mode tokens"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause",
+    "action": "wait_for_timeout",
+    "duration_ms": 2000
+   },
+   {
+    "step_id": "type",
+    "action": "fill",
+    "locator": {
+     "kind": "css",
+     "selector": "[contenteditable=true]"
+    },
+    "value": {
+     "source": "literal",
+     "value": "Then update the docs."
+    },
+    "timeout_ms": 5000
+   }
+  ],
+  "final_settle_ms": 1200,
+  "notes": "osaka working with a typed follow-up: Stop and the queue/steer send button."
+ }
+]

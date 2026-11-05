@@ -8,6 +8,10 @@ export interface ToastItem {
   action?: ToastAction;
   /** A second button after `action`, such as "Unarchive". */
   secondaryAction?: ToastAction;
+  /** A line under the message. */
+  description?: string;
+  /** More buttons after those; they leave the toast open ("Open in Finder", "Copy path"). */
+  extraActions?: ToastAction[];
 }
 
 export interface ToastAction {
