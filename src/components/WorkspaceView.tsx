@@ -246,7 +246,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   );
 }
 
-function RightPanel({ diff, actions, pr, worktree, review }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null; review: ReactNode }) {
+function RightPanel({ diff, actions, pr, worktree, review, repo }: { diff: WorkspaceDiff; actions: () => ReactNode; pr: PullRequest; worktree: string | null; review: ReactNode; repo: Repo }) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -272,7 +272,7 @@ function RightPanel({ diff, actions, pr, worktree, review }: { diff: WorkspaceDi
       {tab === "changes" ? (
         <ChangesList diff={diff} actions={actions} worktree={worktree} />
       ) : tab === "checks" ? (
-        <ChecksTab worktree={worktree} pr={pr.pr} refresh={pr.refresh} />
+        <ChecksTab worktree={worktree} pr={pr.pr} refresh={pr.refresh} repoPath={repo.path} defaultBranch={repo.defaultBranch} />
       ) : (
         <div className="diff-body">
           <div className="placeholder small">
@@ -471,6 +471,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
             pr={pullRequest}
             worktree={workspace.path ?? null}
             review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
+            repo={repo}
           />
           <ScriptsPanel repo={repo} workspace={workspace} />
         </div>
