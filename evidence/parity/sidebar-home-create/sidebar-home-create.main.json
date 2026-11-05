@@ -1,14 +1,14 @@
 {
  "ref": "origin/main",
- "source_files": 480,
- "detector_parity_pct": 88.2,
+ "source_files": 492,
+ "detector_parity_pct": 90.4,
  "areas": {
   "sidebar": {
    "items": 33,
-   "implemented": 26,
-   "partial": 6,
-   "missing": 1,
-   "parity_pct": 87.9,
+   "implemented": 28,
+   "partial": 5,
+   "missing": 0,
+   "parity_pct": 92.4,
    "verdict_implemented": 28,
    "verdict_partial": 4,
    "verdict_backend": 0,
@@ -436,7 +436,7 @@
    "id": "sidebar.ws-numbers",
    "area": "sidebar",
    "feature": "Workspace numbers shown optionally, with Cmd+1..9 switching",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "Digit[1-9]|key\\s*===?\\s*['\"][1-9]|(Cmd|Mod|Meta)\\+[1-9]|switch_?to_?workspace|workspace\\.switchTo",
@@ -445,12 +445,12 @@
     },
     {
      "pattern": "workspace_?number|workspaceNumber|show_?workspace_?numbers",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/settings/table_prefs.rs"
     }
    ],
    "verdict": "partial",
-   "why": "workspace.switchTo1..9 switch rows over sidebarOrder, and holding the switch modifier for 500 ms shows 1..9 in place of the first nine rows' icons (src/state/shortcutHint.ts, SidebarWorkspaceRow.tsx). The workspaces.number column is not shown and there is no setting to show numbers.",
+   "why": "workspace.switchTo1..9 switch rows over sidebarOrder, and holding the switch modifier for 500 ms shows 1..9 in place of the first nine rows' icons (src/state/shortcutHint.ts, SidebarWorkspaceRow.tsx). #438 (8da9edf) adds Settings \u203a Experimental 'Show workspace numbers' (experimental_show_workspace_numbers, Conductor's row @10,654,887, search terms 'number'/'W-'), but no sidebar or Home code reads it, so the workspaces.number column is still never shown on rows.",
    "recheck": false
   },
   {
@@ -620,17 +620,17 @@
    "id": "sidebar.transparency",
    "area": "sidebar",
    "feature": "Sidebar transparency (vibrancy) setting",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "sidebar_?transparency|vibrancy",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/settings/table_prefs.rs"
     }
    ],
    "verdict": "missing",
-   "why": "No vibrancy or transparency setting or window effect; the sidebar is a CSS color-mix fill (styles.css).",
-   "recheck": false
+   "why": "No vibrancy or window effect; the sidebar is a CSS color-mix fill (styles.css). #438 (8da9edf) adds Settings \u203a Experimental 'Sidebar transparency' (experimental_sidebar_transparency, ExperimentalPage.tsx, stored through table_prefs.rs), but nothing reads it: no frontend consumer and no vibrancy code in src-tauri (window-vibrancy is only a transitive Cargo.lock entry). Conductor reads the key in its theme setup (renderApp @439,002) and applies native macOS vibrancy after a restart (row @10,658,089). An inert toggle is not the feature, so it stays missing.",
+   "recheck": true
   },
   {
    "id": "sidebar.colors",
@@ -982,7 +982,7 @@
     {
      "pattern": "(status_?matrix|my_?workspaces|all_?workspaces)",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/settings/table_prefs.rs"
     }
    ],
    "verdict": "partial",
@@ -1449,6 +1449,6 @@
   }
  ],
  "verdicts_ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdicts_verified_at": "2026-11-05 (main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
  "verdict_parity_pct": 91.0
 }
