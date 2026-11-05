@@ -121,6 +121,25 @@ impl WorkspaceService {
         Ok(info(&id, &entry))
     }
 
+    /// The project an existing caller means, registering only when there is
+    /// none: the entry `id` names when it is registered, else the first project
+    /// on the root containing `path`, else a new one ([`Self::add_repository`]).
+    /// For lookups by a sidebar repo (branch lists, Create workspace), which
+    /// must not add a `<name>-v1` project the way Open project does.
+    pub fn ensure_repository(&self, id: Option<&str>, path: &Path) -> Result<RepositoryInfo, WorkspaceError> {
+        {
+            let repos = self.repos.lock().expect("registry lock");
+            if let Some((id, e)) = id.and_then(|id| repos.get_key_value(id)) {
+                return Ok(info(id, e));
+            }
+            let root = git::toplevel(path)?;
+            if let Some((id, e)) = repos.iter().find(|(_, e)| e.root == root) {
+                return Ok(info(id, e));
+            }
+        }
+        self.add_repository(path)
+    }
+
     /// Conductor's `makeRepoNameUnique` test: another project has the name, or
     /// `<root>/workspaces/<name>` exists.
     fn name_taken(&self, repos: &BTreeMap<String, Entry>, name: &str) -> bool {

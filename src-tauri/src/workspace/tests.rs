@@ -744,6 +744,22 @@ fn service_registers_repositories_and_creates_from_form_fields() {
     assert_eq!(got, want.map(|(i, n)| (i.to_string(), n.to_string())));
     assert_eq!(svc.repository_root("my-app-v1").unwrap(), r.root);
 
+    // ensure_repository (Create workspace, branch pickers) never adds a
+    // project: the id it is given, else the first on the folder.
+    let by_id = svc.ensure_repository(Some("my-app-v1"), &f.repo).unwrap();
+    assert_eq!(by_id.id, "my-app-v1");
+    let by_root = svc.ensure_repository(Some("no-such-id"), &f.repo.join("sub")).unwrap();
+    assert_eq!(by_root.id, "my-app");
+    assert_eq!(svc.ensure_repository(None, &f.repo).unwrap().id, "my-app");
+    assert_eq!(svc.repositories().len(), 4);
+    let fresh = f.tmp.path().join("fresh");
+    std::fs::create_dir_all(&fresh).unwrap();
+    sh(&fresh, &["init", "-q", "-b", "main"]);
+    commit_file(&fresh, "a.txt", "a\n", "init");
+    assert_eq!(svc.ensure_repository(None, &fresh).unwrap().id, "fresh");
+    assert_eq!(svc.ensure_repository(None, &fresh).unwrap().id, "fresh");
+    assert_eq!(svc.repositories().len(), 5);
+
     let req = CreateWorkspaceRequest {
         repository_id: "my-app".into(),
         branch_name: Some("sven/form".into()),

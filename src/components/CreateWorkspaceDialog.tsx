@@ -110,7 +110,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
     if (!repo?.path) return setBranchSrc({ status: "ready", items: [{ name: repo?.defaultBranch ?? "main", remote: null, commit: "", isHead: true, committedAt: 0 }] });
     let live = true;
     setBranchSrc({ status: "loading" });
-    ensureRepository(repo.path)
+    ensureRepository(repo.path, repo.id)
       .then((r) => listBranches(r.id, repo.defaultBranch))
       .then((list) => {
         if (!live) return;
@@ -150,7 +150,7 @@ export function CreateWorkspaceDialog({ repos, initialRepoId, prefixSettings, gi
     addPendingLaunch(pendingId, repo.id);
     try {
       if (!repo.path) throw new Error("This repository has no local checkout yet.");
-      const backendRepo = await ensureRepository(repo.path);
+      const backendRepo = await ensureRepository(repo.path, repo.id);
       const created = await createWorkspace(toCreateWorkspaceArgs({ ...built.request, repoId: backendRepo.id }));
       send({ type: "created", workspaceId: created.workspace.id });
       if (created.upstreamWarning) onWarning(created.upstreamWarning);
