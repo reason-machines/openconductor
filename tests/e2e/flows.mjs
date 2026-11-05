@@ -305,4 +305,79 @@ export const flows = [
       await close();
     },
   },
+  {
+    // Settings › Agents and Default models in the built app (Conductor's
+    // providers and models pages): the four agent tabs, the Authentication
+    // cards writing [providers] to settings.toml, Reset back to the CLI login,
+    // and a palette click filling a loadout slot (conductor.db favorite_models).
+    name: "agent-settings",
+    async run(wd) {
+      const META = "\uE03D";
+      const ESC = "\uE00C";
+      const file = join(process.env.OPENCONDUCTOR_HOME ?? join(homedir(), ".openconductor"), "settings.toml");
+      const heading = () => wd.execute("return document.querySelector('.settings .settings-header h1')?.textContent.trim() ?? null;", []);
+      const claudeKind = () => tomlValue(file, "providers.claude", "kind");
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.chord([META], ",");
+      await wd.waitFor("Settings after ⌘,", heading, 10000);
+      await clickByText(wd, ".settings-nav .nav-item", "Agents");
+      await wd.waitFor("the Agents page", async () => (await heading()) === "Agents");
+      const tabs = await wd.waitFor("the agent tabs", async () => {
+        const t = await textsOf(wd, '[role="tab"]');
+        return t.length === 4 ? t : null;
+      });
+      if (JSON.stringify(tabs) !== JSON.stringify(["Claude Code", "Codex", "Cursor", "OpenCode"])) throw new Error(`agent tabs ${JSON.stringify(tabs)}`);
+      const cards = await textsOf(wd, "button[aria-pressed]");
+      if (JSON.stringify(cards) !== JSON.stringify(["CLI", "API key"])) throw new Error(`Authentication cards ${JSON.stringify(cards)}`);
+      await wd.waitFor("the Claude Code status line", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]')).length === 1, 20000);
+      const before = claudeKind();
+      await clickByText(wd, "button[aria-pressed]", "API key");
+      await wd.waitFor('kind = "anthropic_api" under [providers.claude]', async () => claudeKind() === '"anthropic_api"').catch((e) => {
+        throw new Error(`${e.message}; [providers.claude] kind is ${claudeKind()}`);
+      });
+      await wd.waitFor("the Anthropic API key field", async () => (await wd.findAll('input[aria-label="Anthropic API key"]')).length === 1);
+      const status = await textsOf(wd, '[data-testid="agent-auth-status"]');
+      if (!status[0]?.includes("No Anthropic API key configured")) throw new Error(`status line ${JSON.stringify(status)}`);
+      // The row's Setting actions › Reset returns Claude Code to its CLI login.
+      // The gear shows on hover (opacity 0 otherwise), so it is clicked in the page.
+      const gear = await wd.waitFor("the Setting actions gear", async () => (await wd.findAll('button[aria-label="Setting actions"]')).length > 0);
+      if (!gear) throw new Error("no Setting actions on the Authentication row");
+      await wd.execute("document.querySelector('button[aria-label=\"Setting actions\"]').click();", []);
+      await wd.waitFor("the Reset item", async () => (await textsOf(wd, '[role="menuitem"]')).includes("Reset"));
+      await clickByText(wd, '[role="menuitem"]', "Reset");
+      await wd.waitFor("[providers.claude] cleared", async () => claudeKind() === null || claudeKind() === '"claude_login"');
+      await wd.waitFor("the Run claude /login button", async () => (await textsOf(wd, "button")).includes("Run claude /login"));
+      for (const [tab, want] of [
+        ["Codex", "Run codex login"],
+        ["Cursor", "Get key"],
+      ]) {
+        await clickByText(wd, '[role="tab"]', tab);
+        await wd.waitFor(`${tab}: ${want}`, async () => (await textsOf(wd, "button")).includes(want));
+      }
+      await clickByText(wd, '[role="tab"]', "OpenCode");
+      await wd.waitFor("the OpenCode tab", async () => (await textsOf(wd, "button")).some((t) => t === "Install OpenCode" || t === "Add your first provider"), 20000);
+      if (before !== null && before !== '"claude_login"') throw new Error(`[providers.claude] was ${before} before the flow; it is now reset`);
+
+      await clickByText(wd, ".settings-nav .nav-item", "Default models");
+      await wd.waitFor("the Default models page", async () => (await heading()) === "Default models");
+      const slots = () => wd.execute("return Array.from(document.querySelectorAll('[data-loadout-slot]'), (e) => e.textContent.trim());", []);
+      const first = await wd.waitFor("five loadout slots", async () => {
+        const s = await slots();
+        return s.length === 5 ? s : null;
+      });
+      if (!first[0].includes("DEFAULT") || !first[1].includes("DROP MODEL HERE") || !first[2].includes("EMPTY")) throw new Error(`loadout slots ${JSON.stringify(first)}`);
+      const [add] = await wd.findAll('button[aria-label="Add GPT-5.5 to loadout"]');
+      if (!add) throw new Error("no GPT-5.5 in the Codex column");
+      await wd.click(add);
+      await wd.waitFor("GPT-5.5 in slot 2", async () => (await slots())[1].includes("GPT-5.5"));
+      await wd.execute("document.querySelector('button[aria-label=\"Delete loadout 2\"]').click();", []);
+      await wd.waitFor("slot 2 empty again", async () => (await slots())[1].includes("DROP MODEL HERE"));
+      const rows = await textsOf(wd, ".ag-setting-title");
+      const want = ["Loadout", "Codex personality", "Claude output style", "Review model", "Default to plan mode in new chats"];
+      if (JSON.stringify(rows) !== JSON.stringify(want)) throw new Error(`Default models rows ${JSON.stringify(rows)}, want ${JSON.stringify(want)}`);
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.keys(ESC);
+      await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+    },
+  },
 ];

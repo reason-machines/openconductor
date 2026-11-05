@@ -38,6 +38,7 @@ pub mod recent_local_repos;
 mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod sidebar_section_commands;
+mod agent_settings_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
@@ -390,6 +391,9 @@ pub fn run() {
             reason_chat::reason_cancel,
             reason_chat::reason_list_sessions,
             claude_chat::commands::claude_cli_path,
+            agent_settings_commands::cli_login_status,
+            agent_settings_commands::favorite_models_list,
+            agent_settings_commands::favorite_models_replace,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,

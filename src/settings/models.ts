@@ -1,23 +1,25 @@
-// Model choices for Settings › Default models. The catalog is Conductor's
-// per-agent model list and its fallback per agent, read from its shipped
-// frontend bundle (evidence/settings/NOTES.md, "Default models"). Labels are
-// derived here: the bundle holds no display names for these ids.
+// Model choices for Settings › Default models. Ids, lists and labels are
+// Conductor's, read from its shipped frontend bundle (index-BGEQ8YjU.js:
+// `Jf`/`BE`/`WE` Claude ids, `Yy`/`AN`/`IN` Codex ids, `Qy` Cursor ids and the
+// label table `lv`; evidence/settings/NOTES.md, "Default models").
 
 import type { AgentKind, Settings } from "./types";
 
 /** Agents with a model catalog in Conductor; other agents pick their own models. */
 export type ModelAgent = Extract<AgentKind, "claude" | "codex" | "cursor">;
 
-export const MODEL_CATALOG: Record<ModelAgent, string[]> = {
+/**
+ * The models each agent's column on the Default models page lists, in
+ * Conductor's order (`Jf`, `Yy`, `Qy`): what its loadout palette shows.
+ */
+export const MODEL_PALETTE: Record<ModelAgent, string[]> = {
   claude: [
     "fable-5-1",
     "fable-5",
     "opus-5-5-1m",
     "opus-5-1m",
     "opus-4-8-1m",
-    "opus-4-8",
     "opus-4-7-1m",
-    "opus-4-7",
     "opus-4-6-1m",
     "sonnet-5-5-1m",
     "sonnet-5-1m",
@@ -25,27 +27,60 @@ export const MODEL_CATALOG: Record<ModelAgent, string[]> = {
     "sonnet-4-6",
     "haiku-4-5",
   ],
-  codex: [
-    "gpt-5.5",
-    "gpt-5.4",
-    "gpt-5.6-sol",
-    "gpt-5.6-terra",
-    "gpt-5.6-luna",
-    "gpt-5.3-codex-spark",
-    "gpt-5.3-codex",
-    "gpt-5.2-codex",
-    "gpt-6-astra",
-    "gpt-6-sol",
-    "gpt-6-luna",
-    "gpt-daybreak-blue-latest",
-  ],
+  codex: ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna", "gpt-5.5", "gpt-5.4"],
   cursor: ["auto", "composer-2.5", "grok-4.7", "grok-4.6", "grok-4.5"],
+};
+
+/** Every model id Conductor accepts per agent: the palette plus ids it keeps for stored settings (`BE`, `AN`, `IN`). */
+export const MODEL_CATALOG: Record<ModelAgent, string[]> = {
+  claude: [...MODEL_PALETTE.claude, "opus-4-8", "opus-4-7"],
+  codex: [...MODEL_PALETTE.codex, "gpt-6-astra", "gpt-6-sol", "gpt-6-luna", "gpt-daybreak-blue-latest", "gpt-5.3-codex-spark", "gpt-5.3-codex", "gpt-5.2-codex"],
+  cursor: [...MODEL_PALETTE.cursor],
+};
+
+/** Conductor's display name per model id (`lv`), aliases included. */
+export const MODEL_LABELS: Record<string, string> = {
+  "fable-5-1": "Fable 5.1",
+  "fable-5": "Fable 5",
+  "opus-5-5-1m": "Opus 5.5",
+  "opus-5-1m": "Opus 5",
+  "sonnet-5-5-1m": "Sonnet 5.5",
+  "sonnet-5-1m": "Sonnet 5 1M",
+  sonnet: "Sonnet 4.6",
+  "opus-4-8": "Opus 4.8",
+  "opus-4-8-1m": "Opus 4.8 1M",
+  opus: "Opus 4.8",
+  "opus-1m": "Opus 4.8 1M",
+  "opus-4-7": "Opus 4.7",
+  "opus-4-7-1m": "Opus 4.7 1M",
+  "opus-4-6-1m": "Opus 4.6 1M",
+  "sonnet-4-6-1m": "Sonnet 4.6 1M",
+  "sonnet-4-6": "Sonnet 4.6",
+  haiku: "Haiku 4.5",
+  "haiku-4-5": "Haiku 4.5",
+  "gpt-5.5": "GPT-5.5",
+  "gpt-5.4": "GPT-5.4",
+  "gpt-5.6-sol": "GPT-5.6 Sol",
+  "gpt-5.6-terra": "GPT-5.6 Terra",
+  "gpt-5.6-luna": "GPT-5.6 Luna",
+  "gpt-6-astra": "GPT-6 Astra",
+  "gpt-6-sol": "GPT-6 Sol",
+  "gpt-6-luna": "GPT-6 Luna",
+  "gpt-daybreak-blue-latest": "Daybreak Blue",
+  "gpt-5.3-codex-spark": "GPT-5.3 Codex Spark",
+  "gpt-5.3-codex": "GPT-5.3 Codex",
+  "gpt-5.2-codex": "GPT-5.2 Codex",
+  auto: "Auto",
+  "composer-2.5": "Composer 2.5",
+  "grok-4.7": "Grok 4.7",
+  "grok-4.6": "Grok 4.6",
+  "grok-4.5": "Grok 4.5",
 };
 
 /** Claude CLI aliases Conductor still accepts (our stored default is `opus`). */
 export const CLAUDE_ALIASES = ["opus-1m", "opus", "sonnet", "haiku"];
 
-export const AGENT_LABEL: Record<ModelAgent, string> = { claude: "Claude", codex: "Codex", cursor: "Cursor" };
+export const AGENT_LABEL: Record<ModelAgent, string> = { claude: "Claude Code", codex: "Codex", cursor: "Cursor" };
 
 /** Conductor's model for an agent when none is chosen. */
 export const AGENT_DEFAULT_MODEL: Record<ModelAgent, string> = {
@@ -65,18 +100,9 @@ export function agentForModel(model: string): ModelAgent | null {
 
 const cap = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
 
-/** A readable name for a model id: `opus-5-5-1m` is "Opus 5.5 (1M)", `gpt-5.6-sol` "GPT-5.6 Sol". */
+/** A model's display name: Conductor's label, else one derived from the id (`my-model-2` is "My Model 2"). */
 export function modelLabel(model: string): string {
-  if (model.startsWith("gpt-")) {
-    const [, version, ...rest] = model.split("-");
-    return [`GPT-${/^\d/.test(version) ? version : cap(version)}`, ...rest.map(cap)].join(" ");
-  }
-  const parts = model.split("-");
-  const oneM = parts.at(-1) === "1m";
-  if (oneM) parts.pop();
-  const [name, ...nums] = parts;
-  const version = nums.length ? ` ${nums.join(".")}` : "";
-  return `${cap(name)}${version}${oneM ? " (1M)" : ""}`;
+  return MODEL_LABELS[model] ?? model.split("-").map(cap).join(" ");
 }
 
 /** Agent and model a new chat starts with, from `models.default`. Unknown ids run on Claude. */
