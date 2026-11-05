@@ -3,6 +3,7 @@
 //! Module ownership (one owner per path, see evidence/README.md):
 //! - `workspace/`  workspace lifecycle (worktrees, setup/run scripts)
 //! - `checkpoint/` checkpoints and revert
+//!
 //! Those modules are added here once their owners land them.
 
 use serde::Serialize;
