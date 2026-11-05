@@ -16,7 +16,7 @@ import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorksp
 import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
-import { addAttachment, revertedNote, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
+import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
@@ -319,8 +319,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, baseBranch: repo.defaultBranch, onLoaded, onOpen: openDiffTab });
   // Inserts go to the chat shown; sends (e.g. Create PR) go to the workspace's own chat, switching to it.
   const shownChat = useRef<string>(workspace.id);
-  const chat = useMemo<ChatBridge>(
+  // Review comments attach to the workspace's own chat, even while a review chat is shown.
+  const attach = useWorkspaceChatAttach(workspace.id, shownChat, chatBridge, useCallback(() => setMainTab("chat"), []));
+  const chat = useMemo<ChatBridge & ComposerAttach>(
     () => ({
+      attach,
       insert: (t) => chatBridge.current?.insert(t),
       send: (t) => {
         if (shownChat.current === workspace.id) return chatBridge.current?.send(t);
@@ -328,9 +331,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         setMainTab("chat");
       },
     }),
-    [workspace.id],
+    [workspace.id, attach],
   );
-  const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
+  const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
   // Keep the sidebar's PR title (`workspaces.pr_title`) in step with GitHub, then archive on merge.
