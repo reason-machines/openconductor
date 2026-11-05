@@ -544,11 +544,17 @@ def probe_packaging(tree, pref):
         main_exe = nr["roots"][0]["image"]
         ours = {e["install_name"] for e in nr["edges"] if e["root"] == main_exe}
         meta["source"] += f', trace-dylib-resolution {app["dylib"]["evidence_id"]}'
+    divergences = load(os.path.join(EV, "packaging", "divergences.json"))
+    diverged_libs = divergences.get("linked_libraries", {})
     for lib in cd_dylibs:
         name = lib.rsplit("/", 1)[-1]
+        linked = ours is not None and lib in ours
+        d = diverged_libs.get(name)
+        detail = "" if ours is not None else "no REA dylib trace of a built app"
+        if not linked and d:
+            detail = f'{d["kind"]}: {d["reason"]}'
         items.append(item("packaging", "linked system library", name,
-                          "matched" if ours is not None and lib in ours else "missing",
-                          "" if ours is not None else "no REA dylib trace of a built app"))
+                          "matched" if linked else "missing", detail))
 
     tauri = cargo.get("tauri")
     tauri_v = tauri if isinstance(tauri, str) else (tauri or {}).get("version")
@@ -561,7 +567,7 @@ def probe_packaging(tree, pref):
     # Bundle-relative targets of `bundle.resources` (a map of source -> target, or a list of sources).
     res = bundle.get("resources") or {}
     targets = set(res.values()) if isinstance(res, dict) else {os.path.basename(s) for s in res}
-    diverged = load(os.path.join(EV, "packaging", "divergences.json")).get("bundled_resources", {})
+    diverged = divergences.get("bundled_resources", {})
     for r in pref["resources"]:
         name = r.split("/", 1)[1]
         present = name in targets or any(p == name or p.endswith("/" + name)
