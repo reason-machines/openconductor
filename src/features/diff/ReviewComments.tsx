@@ -17,6 +17,7 @@ import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { commentStoreFor } from "./commentsApi.ts";
 import {
   bodyParts,
+  canDeleteComment,
   commentAttachment,
   commentSource,
   commentTags,
@@ -173,17 +174,19 @@ function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
             Edit
           </button>
         )}
-        {/* Conductor's "Delete comment" removes any comment from its own list, without asking;
-            a GitHub comment stays on GitHub and comes back with the next sync. */}
-        {source === "remote" ? (
-          <button className="oc-link" aria-label="Delete comment" title="Remove from OpenConductor; it stays on GitHub" onClick={() => void ops.remove(c)}>
-            Delete
-          </button>
-        ) : (
-          <button className="oc-link" onClick={() => window.confirm(c.reply_to_comment_id ? "Delete this reply?" : "Delete this comment and its replies?") && void ops.remove(c)}>
-            Delete
-          </button>
-        )}
+        {/* Conductor offers Delete on GitHub and agent comments once they have left pending (see
+            canDeleteComment). It removes the comment from its own list without asking; a GitHub comment
+            stays on GitHub and comes back with the next sync. */}
+        {canDeleteComment(c) &&
+          (source === "user-local" ? (
+            <button className="oc-link" onClick={() => window.confirm(c.reply_to_comment_id ? "Delete this reply?" : "Delete this comment and its replies?") && void ops.remove(c)}>
+              Delete
+            </button>
+          ) : (
+            <button className="oc-link" aria-label="Delete comment" title={source === "remote" ? "Remove from OpenConductor; it stays on GitHub" : "Remove this comment"} onClick={() => void ops.remove(c)}>
+              Delete
+            </button>
+          ))}
       </div>
       <CommentBody c={c} />
     </div>
