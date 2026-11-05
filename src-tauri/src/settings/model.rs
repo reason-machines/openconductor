@@ -7,14 +7,16 @@
 //! `branch_prefix_type`, `branch_prefix_custom`, `default_model`,
 //! `review_model`, `default_codex_thinking_level`,
 //! `review_codex_thinking_level`, `default_thinking_enabled`,
-//! `review_thinking_enabled`, `claude_provider`, `send_native_notification`,
+//! `review_thinking_enabled`, `send_native_notification`,
 //! `sound_type`). Value spellings are ours. Secrets never live here: provider
-//! keys go to the keychain (`super::secrets`).
+//! keys go to the Keychain through `agent::byok`.
 //!
 //! Every section keeps keys it does not know in `extra`, so a file written by
 //! a newer build survives a round trip through an older one.
 
 use serde::{Deserialize, Serialize};
+
+use crate::agent::{AgentKind, ProviderConfig};
 
 pub const SCHEMA_URL: &str = "https://openconductor.dev/schemas/settings.schema.json";
 
@@ -157,36 +159,60 @@ pub struct CodexModels {
     pub extra: toml::Table,
 }
 
-/// Which backend Claude Code authenticates against.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum ClaudeProvider {
-    /// The user's Claude subscription via the local `claude` login.
-    #[default]
-    Subscription,
-    /// `ANTHROPIC_API_KEY` from the keychain.
-    Anthropic,
-    Bedrock,
-    Vertex,
-}
-
-/// Non-secret provider options. Keys and tokens are in the keychain.
+/// The provider each agent uses: `[providers.claude]`, `[providers.codex]`,
+/// ... with the [`ProviderConfig`] `kind` tag and its non-secret options. A
+/// missing entry means the agent CLI's own login
+/// ([`ProviderConfig::default_for`]).
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Providers {
-    pub claude_provider: ClaudeProvider,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub anthropic_base_url: Option<String>,
+    pub claude: Option<ProviderConfig>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bedrock_region: Option<String>,
+    pub codex: Option<ProviderConfig>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bedrock_profile: Option<String>,
+    pub cursor: Option<ProviderConfig>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub vertex_project: Option<String>,
+    pub opencode: Option<ProviderConfig>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub vertex_region: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub openai_base_url: Option<String>,
+    pub reason: Option<ProviderConfig>,
     #[serde(flatten)]
     pub extra: toml::Table,
+}
+
+impl Providers {
+    pub fn get(&self, agent: AgentKind) -> Option<&ProviderConfig> {
+        self.slot(agent).as_ref()
+    }
+
+    /// The configured provider, or the agent's own login.
+    pub fn effective(&self, agent: AgentKind) -> ProviderConfig {
+        self.get(agent)
+            .cloned()
+            .unwrap_or_else(|| ProviderConfig::default_for(agent))
+    }
+
+    pub fn set(&mut self, agent: AgentKind, config: Option<ProviderConfig>) {
+        *self.slot_mut(agent) = config;
+    }
+
+    fn slot(&self, agent: AgentKind) -> &Option<ProviderConfig> {
+        match agent {
+            AgentKind::Claude => &self.claude,
+            AgentKind::Codex => &self.codex,
+            AgentKind::Cursor => &self.cursor,
+            AgentKind::Opencode => &self.opencode,
+            AgentKind::Reason => &self.reason,
+        }
+    }
+
+    fn slot_mut(&mut self, agent: AgentKind) -> &mut Option<ProviderConfig> {
+        match agent {
+            AgentKind::Claude => &mut self.claude,
+            AgentKind::Codex => &mut self.codex,
+            AgentKind::Cursor => &mut self.cursor,
+            AgentKind::Opencode => &mut self.opencode,
+            AgentKind::Reason => &mut self.reason,
+        }
+    }
 }

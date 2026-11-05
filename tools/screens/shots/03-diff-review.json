@@ -1,0 +1,242 @@
+[
+  {
+    "name": "diff--file-unified--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "open_workspace",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/fix login redirect"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 2500
+      },
+      {
+        "step_id": "open_auth_diff",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=auth.ts >> nth=-1"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 2500,
+    "notes": "Changes panel > src/lib/auth.ts: unified diff tab with collapsed unmodified lines, one removed and one added line, Viewed checkbox."
+  },
+  {
+    "name": "diff--file-unified--light",
+    "scenario": "populated",
+    "theme": "light",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "open_workspace",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/fix login redirect"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 2500
+      },
+      {
+        "step_id": "open_auth_diff",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=auth.ts >> nth=-1"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 2500,
+    "notes": "Same as dark, light theme."
+  },
+  {
+    "name": "diff--file-split--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "open_workspace",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/fix login redirect"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 2500
+      },
+      {
+        "step_id": "open_auth_diff",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=auth.ts >> nth=-1"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause2",
+        "action": "wait_for_timeout",
+        "duration_ms": 1200
+      },
+      {
+        "step_id": "split_view",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Split view"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 2000,
+    "notes": "Same file in split view (old left, new right)."
+  },
+  {
+    "name": "diff--entire-file--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "open_workspace",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/fix login redirect"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 2500
+      },
+      {
+        "step_id": "open_auth_diff",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=auth.ts >> nth=-1"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause2",
+        "action": "wait_for_timeout",
+        "duration_ms": 1200
+      },
+      {
+        "step_id": "entire_file",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Entire file"
+        },
+        "timeout_ms": 3000
+      }
+    ],
+    "final_settle_ms": 2000,
+    "notes": "Same file as 'Entire file' (raw view)."
+  },
+  {
+    "name": "diff--added-tests--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "expand_tide_web",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "open_workspace",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Ada/fix login redirect"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 2500
+      },
+      {
+        "step_id": "open_test_diff",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=auth.test.ts >> nth=-1"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 2500,
+    "notes": "Changes panel > src/lib/auth.test.ts: an all-additions hunk (+14)."
+  }
+]

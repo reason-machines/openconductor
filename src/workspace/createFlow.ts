@@ -135,22 +135,22 @@ export type CreateProgress =
   | { step: "idle" }
   | { step: "creating" }
   | { step: "detecting_setup"; workspaceId: string }
-  | { step: "running_setup"; workspaceId: string; log: string[] }
-  | { step: "setup_failed"; workspaceId: string; exitCode: number | null; log: string[] }
-  | { step: "ready"; workspaceId: string; ranSetup: boolean }
+  /**
+   * The dialog's last step. When `setupStarted`, the setup script now runs in
+   * the backend (scripts crate); its log and outcome live in the workspace's
+   * Setup tab and `setupWatch`, not here.
+   */
+  | { step: "ready"; workspaceId: string; setupStarted: boolean }
   | { step: "failed"; error: string };
 
 export type CreateEvent =
   | { type: "submit" }
   | { type: "created"; workspaceId: string }
   | { type: "create_failed"; error?: string }
-  | { type: "setup_detected"; hasScript: boolean }
-  | { type: "setup_output"; line: string }
-  | { type: "setup_exited"; exitCode: number | null }
-  | { type: "retry_setup" };
+  /** `scripts_config` answered; `started` is what `setup_script_start` returned (false with no script). */
+  | { type: "setup_detected"; started: boolean };
 
 export const FAILED_TO_CREATE = "Failed to create workspace";
-const LOG_LIMIT = 500;
 
 export function progressLabel(p: CreateProgress): string {
   switch (p.step) {
@@ -160,16 +160,14 @@ export function progressLabel(p: CreateProgress): string {
       return "Creating workspace...";
     case "detecting_setup":
       return "Detecting setup script...";
-    case "running_setup":
-      return "Running setup script...";
-    case "setup_failed":
-      return "Setup script failed";
     case "ready":
-      return "Ready";
+      return p.setupStarted ? RUNNING_SETUP : "Ready";
     case "failed":
       return p.error;
   }
 }
+
+export const RUNNING_SETUP = "Running setup script...";
 
 /** The `workspaces.state` that matches a progress step. */
 export function workspaceState(p: CreateProgress): WorkspaceState | null {
@@ -177,12 +175,10 @@ export function workspaceState(p: CreateProgress): WorkspaceState | null {
     case "creating":
       return "initializing";
     case "detecting_setup":
-    case "running_setup":
       return "setting_up";
     case "ready":
-    case "setup_failed":
-      // A failed setup script leaves a usable workspace; the failure is shown, not fatal.
-      return "ready";
+      // A started setup script keeps the workspace in setting_up until setupFinished.
+      return p.setupStarted ? "setting_up" : "ready";
     case "failed":
       return "failed";
     case "idle":
@@ -200,19 +196,7 @@ export function reduceProgress(p: CreateProgress, e: CreateEvent): CreateProgres
     case "create_failed":
       return p.step === "creating" ? { step: "failed", error: e.error?.trim() || FAILED_TO_CREATE } : p;
     case "setup_detected":
-      if (p.step !== "detecting_setup") return p;
-      return e.hasScript
-        ? { step: "running_setup", workspaceId: p.workspaceId, log: [] }
-        : { step: "ready", workspaceId: p.workspaceId, ranSetup: false };
-    case "setup_output":
-      return p.step === "running_setup" ? { ...p, log: [...p.log, e.line].slice(-LOG_LIMIT) } : p;
-    case "setup_exited":
-      if (p.step !== "running_setup") return p;
-      return e.exitCode === 0
-        ? { step: "ready", workspaceId: p.workspaceId, ranSetup: true }
-        : { step: "setup_failed", workspaceId: p.workspaceId, exitCode: e.exitCode, log: p.log };
-    case "retry_setup":
-      return p.step === "setup_failed" ? { step: "running_setup", workspaceId: p.workspaceId, log: [] } : p;
+      return p.step === "detecting_setup" ? { step: "ready", workspaceId: p.workspaceId, setupStarted: e.started } : p;
   }
 }
 
@@ -222,14 +206,25 @@ export interface CreateWorkspaceArgs {
   branchName: string;
   directoryName: string;
   baseBranch: string;
+  /**
+   * Check out `branchName` as it is (the local branch, or a local tracking copy
+   * of `origin/<branchName>`) instead of creating it from `baseBranch` (#106).
+   */
+  existingBranch: boolean;
 }
 
 /**
- * Maps a request onto `create_workspace`. For a PR or branch the start point is
- * that branch; the backend refuses a branch that already exists locally
- * ("branch already exists: X"), so checking out an existing local branch still
- * needs backend support.
+ * Maps a request onto `create_workspace`. Create from a PR or branch sends
+ * `existingBranch: true`, so the backend checks that branch out rather than
+ * refusing it as taken. A fork PR's branch is not on origin and comes back as
+ * "branch not found locally or on origin".
  */
 export function toCreateWorkspaceArgs(r: CreateRequest): CreateWorkspaceArgs {
-  return { repositoryId: r.repoId, branchName: r.naming.branch, directoryName: r.naming.workspace_name, baseBranch: r.startPoint };
+  return {
+    repositoryId: r.repoId,
+    branchName: r.naming.branch,
+    directoryName: r.naming.workspace_name,
+    baseBranch: r.startPoint,
+    existingBranch: r.existingBranch,
+  };
 }

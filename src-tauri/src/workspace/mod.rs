@@ -39,6 +39,7 @@ mod tests;
 use std::collections::HashSet;
 use std::fmt;
 use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
 
 pub use git::BusyState;
 pub use scripts::{RunningScript, ScriptContext, ScriptKind, ScriptOutput};
@@ -60,8 +61,22 @@ pub enum WorkspaceError {
     Busy(BusyState),
     /// An explicitly requested branch already exists.
     BranchExists(String),
+    /// `existing_branch` was set but the branch is neither local nor on `origin`.
+    BranchNotFound(String),
+    /// `existing_branch` names a branch already checked out in another worktree.
+    BranchCheckedOut { branch: String, path: PathBuf },
     /// No repository is registered under this id.
     UnknownRepository(String),
+    /// The workspace is still being created; see [`WorkspaceManager::mark_initializing`].
+    Initializing(String),
+    /// The operation needs an active worktree, but the workspace is archived or missing.
+    NotActive(String),
+    /// `clone_repository`: no folder name can be derived from the URL.
+    InvalidCloneUrl(String),
+    /// `clone_repository`: the clone destination is already taken.
+    DestinationExists(PathBuf),
+    /// `clone_repository`: `git clone` failed; git's stderr, trimmed.
+    CloneFailed(String),
 }
 
 impl fmt::Display for WorkspaceError {
@@ -75,7 +90,16 @@ impl fmt::Display for WorkspaceError {
             WorkspaceError::Dirty(n) => write!(f, "workspace {n} has uncommitted changes"),
             WorkspaceError::Busy(s) => write!(f, "git operation in progress ({})", s.as_token()),
             WorkspaceError::BranchExists(b) => write!(f, "branch already exists: {b}"),
+            WorkspaceError::BranchNotFound(b) => write!(f, "branch not found locally or on origin: {b}"),
+            WorkspaceError::BranchCheckedOut { branch, path } => {
+                write!(f, "branch {branch} is already checked out at {}", path.display())
+            }
             WorkspaceError::UnknownRepository(id) => write!(f, "unknown repository: {id}"),
+            WorkspaceError::Initializing(n) => write!(f, "workspace {n} is still initializing; try again when it is ready"),
+            WorkspaceError::NotActive(n) => write!(f, "workspace {n} is archived or missing"),
+            WorkspaceError::InvalidCloneUrl(u) => write!(f, "cannot derive a repository name from {u:?}"),
+            WorkspaceError::DestinationExists(p) => write!(f, "destination already exists: {}", p.display()),
+            WorkspaceError::CloneFailed(stderr) => f.write_str(stderr),
         }
     }
 }
@@ -119,9 +143,14 @@ pub struct CreateOptions {
     pub name: Option<String>,
     /// Branch prefix, e.g. a username: branch becomes `<prefix>/<name>`.
     pub branch_prefix: Option<String>,
-    /// Exact branch name, overriding `<prefix>/<name>`. Must not exist yet.
+    /// Exact branch name, overriding `<prefix>/<name>`. Must not exist yet
+    /// unless `existing_branch` is set.
     /// When `name` is `None` the directory name comes from its last segment.
     pub branch_name: Option<String>,
+    /// Check out `branch_name` instead of creating it: the local branch if it
+    /// exists (and is not checked out elsewhere), otherwise a new local branch
+    /// tracking `origin/<branch_name>`. `base_branch` is ignored.
+    pub existing_branch: bool,
     /// Base branch; defaults to the repository's default branch.
     pub base_branch: Option<String>,
     /// Fetch `origin/<base>` first so the workspace starts from the latest
@@ -164,13 +193,40 @@ pub struct Archived {
 #[derive(Debug, Clone)]
 pub struct WorkspaceManager {
     data_dir: PathBuf,
+    /// Worktree paths still being set up. In memory only, so a crash never
+    /// leaves a workspace stuck as initializing.
+    initializing: Arc<Mutex<HashSet<PathBuf>>>,
+}
+
+/// Marks a workspace as initializing until dropped.
+#[derive(Debug)]
+pub struct InitializingGuard {
+    set: Arc<Mutex<HashSet<PathBuf>>>,
+    path: PathBuf,
+}
+
+impl Drop for InitializingGuard {
+    fn drop(&mut self) {
+        self.set.lock().unwrap_or_else(|e| e.into_inner()).remove(&self.path);
+    }
 }
 
 const ARCHIVE_EXT: &str = "ws";
 
 impl WorkspaceManager {
     pub fn new(data_dir: impl Into<PathBuf>) -> Self {
-        Self { data_dir: data_dir.into() }
+        Self { data_dir: data_dir.into(), initializing: Arc::default() }
+    }
+
+    /// Mark the workspace at `path` as initializing (worktree creation, setup
+    /// script) until the guard drops. Branch renames are refused meanwhile.
+    pub fn mark_initializing(&self, path: &Path) -> InitializingGuard {
+        self.initializing.lock().unwrap_or_else(|e| e.into_inner()).insert(path.to_path_buf());
+        InitializingGuard { set: Arc::clone(&self.initializing), path: path.to_path_buf() }
+    }
+
+    pub fn is_initializing(&self, path: &Path) -> bool {
+        self.initializing.lock().unwrap_or_else(|e| e.into_inner()).contains(path)
     }
 
     pub fn data_dir(&self) -> &Path {
@@ -208,39 +264,63 @@ impl WorkspaceManager {
         }
     }
 
-    /// Create a workspace: new branch from the base, worktree under the data
-    /// dir, then copy "files to copy" from the repository root.
+    /// Create a workspace: new branch from the base (or an existing branch,
+    /// see [`CreateOptions::existing_branch`]), worktree under the data dir,
+    /// then copy "files to copy" from the repository root.
     pub fn create(&self, repo: &Path, opts: &CreateOptions) -> Result<Created, WorkspaceError> {
         let root = git::toplevel(repo)?;
-        let base = match &opts.base_branch {
-            Some(b) => b.clone(),
-            None => git::default_branch(&root),
-        };
-
-        let mut fetched = false;
-        if opts.fetch && git::remote_exists(&root, "origin") {
-            // A fetch failure (offline) falls back to the local base branch.
-            fetched = git::git(&root, ["fetch", "--quiet", "origin", &base]).is_ok();
-        }
-        let remote_ref = format!("origin/{base}");
-        let base_ref = if git::ref_exists(&root, &remote_ref) {
-            remote_ref
-        } else if git::ref_exists(&root, &base) {
-            base.clone()
-        } else {
-            return Err(WorkspaceError::BaseNotFound(base));
-        };
-        let base_commit = git::git(&root, ["rev-parse", &format!("{base_ref}^{{commit}}")])?;
-
         let explicit_branch = opts.branch_name.as_deref().map(str::trim).filter(|b| !b.is_empty());
         if let Some(b) = explicit_branch {
             if !git::valid_branch_name(&root, b) {
                 return Err(WorkspaceError::InvalidName(b.to_string()));
             }
-            if git::branch_name_is_taken(&root, b)? {
-                return Err(WorkspaceError::BranchExists(b.to_string()));
-            }
         }
+
+        let mut fetched = false;
+        let (base_ref, checkout) = if opts.existing_branch {
+            let b = explicit_branch.ok_or_else(|| WorkspaceError::InvalidName(String::new()))?;
+            if git::branch_exists(&root, b) {
+                if let Some(wt) = git::list_worktrees(&root)?.into_iter().find(|w| w.branch.as_deref() == Some(b)) {
+                    return Err(WorkspaceError::BranchCheckedOut { branch: b.to_string(), path: wt.path });
+                }
+                (b.to_string(), Checkout::Local)
+            } else {
+                let remote_ref = format!("origin/{b}");
+                if opts.fetch && git::remote_exists(&root, "origin") {
+                    // Explicit refspec: updates origin/<b> even without a default fetch refspec.
+                    let spec = format!("+refs/heads/{b}:refs/remotes/{remote_ref}");
+                    fetched = git::git(&root, ["fetch", "--quiet", "origin", &spec]).is_ok();
+                }
+                if !git::ref_exists(&root, &remote_ref) {
+                    return Err(WorkspaceError::BranchNotFound(b.to_string()));
+                }
+                (remote_ref, Checkout::Track)
+            }
+        } else {
+            if let Some(b) = explicit_branch {
+                if git::branch_name_is_taken(&root, b)? {
+                    return Err(WorkspaceError::BranchExists(b.to_string()));
+                }
+            }
+            let base = match &opts.base_branch {
+                Some(b) => b.clone(),
+                None => git::default_branch(&root),
+            };
+            if opts.fetch && git::remote_exists(&root, "origin") {
+                // A fetch failure (offline) falls back to the local base branch.
+                fetched = git::git(&root, ["fetch", "--quiet", "origin", &base]).is_ok();
+            }
+            let remote_ref = format!("origin/{base}");
+            let base_ref = if git::ref_exists(&root, &remote_ref) {
+                remote_ref
+            } else if git::ref_exists(&root, &base) {
+                base.clone()
+            } else {
+                return Err(WorkspaceError::BaseNotFound(base));
+            };
+            (base_ref, Checkout::NewBranch)
+        };
+        let base_commit = git::git(&root, ["rev-parse", &format!("{base_ref}^{{commit}}")])?;
         let name_source = opts
             .name
             .clone()
@@ -279,20 +359,17 @@ impl WorkspaceManager {
         }
 
         let path = ws_dir.join(&name);
+        let _initializing = self.mark_initializing(&path);
         std::fs::create_dir_all(&ws_dir)?;
-        git::git(
-            &root,
-            [
-                "worktree".as_ref(),
-                "add".as_ref(),
-                "--quiet".as_ref(),
-                "--no-track".as_ref(),
-                "-b".as_ref(),
-                branch.as_ref(),
-                path.as_os_str(),
-                base_ref.as_ref(),
-            ] as [&std::ffi::OsStr; 8],
-        )?;
+        let mut args: Vec<&std::ffi::OsStr> = vec!["worktree".as_ref(), "add".as_ref(), "--quiet".as_ref()];
+        match checkout {
+            Checkout::NewBranch => args.extend(["--no-track".as_ref(), "-b".as_ref(), branch.as_ref() as &std::ffi::OsStr]),
+            Checkout::Track => args.extend(["--track".as_ref(), "-b".as_ref(), branch.as_ref() as &std::ffi::OsStr]),
+            Checkout::Local => {}
+        }
+        args.push(path.as_os_str());
+        args.push(base_ref.as_ref());
+        git::git(&root, args)?;
 
         let source = files_to_copy::resolve_source(&root, opts.file_include_globs.as_deref());
         let files = files_to_copy::files_to_copy(&root, &source)?;
@@ -430,6 +507,36 @@ impl WorkspaceManager {
         self.get(repo, name)
     }
 
+    /// Rename an active workspace's branch (`git branch -m` in its worktree).
+    /// The directory name stays. Refused while the workspace is initializing,
+    /// mid merge/rebase, or when `new_branch` is taken locally or on a remote.
+    /// Renaming to the current name is a no-op.
+    pub fn rename_branch(&self, repo: &Path, name: &str, new_branch: &str) -> Result<Workspace, WorkspaceError> {
+        let ws = self.get(repo, name)?;
+        if self.is_initializing(&ws.path) {
+            return Err(WorkspaceError::Initializing(ws.name));
+        }
+        if ws.state != WorkspaceState::Active || ws.branch.is_empty() {
+            return Err(WorkspaceError::NotActive(ws.name));
+        }
+        let new_branch = new_branch.trim();
+        if new_branch == ws.branch {
+            return Ok(ws);
+        }
+        if !git::valid_branch_name(&ws.repo_root, new_branch) {
+            return Err(WorkspaceError::InvalidName(new_branch.to_string()));
+        }
+        if git::branch_name_is_taken(&ws.repo_root, new_branch)? {
+            return Err(WorkspaceError::BranchExists(new_branch.to_string()));
+        }
+        let busy = git::busy_state(&ws.path)?;
+        if busy != BusyState::Clean {
+            return Err(WorkspaceError::Busy(busy));
+        }
+        git::git(&ws.path, ["branch", "-m", &ws.branch, new_branch])?;
+        self.get(repo, name)
+    }
+
     /// Delete: remove the worktree (forced), the branch and any archive record.
     pub fn delete(&self, repo: &Path, name: &str) -> Result<(), WorkspaceError> {
         let ws = self.get(repo, name)?;
@@ -459,6 +566,17 @@ impl WorkspaceManager {
         git::git(&ws.repo_root, ["worktree", "prune"])?;
         Ok(())
     }
+}
+
+/// How [`WorkspaceManager::create`] gets the worktree's branch.
+#[derive(Debug, Clone, Copy)]
+enum Checkout {
+    /// `-b <branch> <base>` without upstream tracking.
+    NewBranch,
+    /// The existing local branch.
+    Local,
+    /// `--track -b <branch> origin/<branch>`.
+    Track,
 }
 
 /// `(branch, archive commit)` from an archive record; records written

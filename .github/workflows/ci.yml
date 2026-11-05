@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -84,8 +84,8 @@ jobs:
         run: bash evidence/checkpoint/run-tests.sh
       - name: PR module build, test and clippy
         run: bash evidence/pr/run-tests.sh
-      - name: Settings module build, test, clippy and rustfmt
-        run: bash scripts/test-settings.sh
+      - name: Quick open module build, test and clippy
+        run: bash evidence/quick_open/run-tests.sh
 
   scripts:
     name: Scripts crate build + test (${{ matrix.os }})
@@ -128,6 +128,8 @@ jobs:
         env:
           RUSTFLAGS: -D warnings
       - run: cargo clippy --all-targets -- -D warnings
+      - name: App persistence module (src-tauri/src/persistence) build, test and clippy
+        run: bash ../../evidence/persistence/run-tests.sh
 
   tools:
     name: Evidence tools compile
@@ -138,10 +140,21 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m py_compile tools/*.py
+      - name: Parity checklist anchors resolve in REA evidence
+        run: python tools/parity_chat_diff_pr.py --check-anchors --out-dir "$RUNNER_TEMP/parity"
       - name: Packaging reference matches the REA evidence bundle
         run: |
           python tools/packaging_ref.py
           git diff --exit-code evidence/packaging/conductor-reference.json
+      - name: Bundle checker unit tests
+        run: python -m unittest tools/test_check_macos_bundle.py
+      - name: Parity checker runs on this tree (settings, shortcuts, persistence, packaging)
+        run: python tools/parity_check.py check --ref HEAD --out-dir "$RUNNER_TEMP/parity-ssp"
+      - name: Sidebar/Home/create parity references resolve and the checker runs
+        run: |
+          python tools/parity_sidebar_home_create.py validate
+          python tools/parity_sidebar_home_create.py score --tree . > /dev/null
+          python tools/parity_sidebar_home_create.py obligations --tree . > /dev/null
 
   frontend-unit:
     name: Frontend unit tests (node --test)
@@ -151,5 +164,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+      - run: npm ci
       - name: Pure TypeScript modules (Node strips types natively)
         run: node --test "src/**/*.test.ts"

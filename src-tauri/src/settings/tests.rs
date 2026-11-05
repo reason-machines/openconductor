@@ -1,4 +1,5 @@
 use super::*;
+use crate::agent::{AgentKind, ProviderConfig};
 use std::sync::atomic::{AtomicU32, Ordering};
 
 fn temp_dir() -> PathBuf {
@@ -40,16 +41,27 @@ review = "opus"
 [models.codex]
 default_thinking_level = "high"
 review_thinking_level = "xhigh"
-[providers]
-claude_provider = "bedrock"
-bedrock_region = "eu-west-1"
+[providers.claude]
+kind = "bedrock"
+region = "eu-west-1"
 "#,
     )
     .unwrap();
     let mut s = load(&path).unwrap();
     assert_eq!(s.git.branch_prefix_custom.as_deref(), Some("sven"));
     assert_eq!(s.models.codex.default_thinking_level, ThinkingLevel::High);
-    assert_eq!(s.providers.claude_provider, ClaudeProvider::Bedrock);
+    assert_eq!(
+        s.providers.effective(AgentKind::Claude).provider().kind(),
+        "bedrock"
+    );
+    assert_eq!(
+        s.providers.effective(AgentKind::Codex),
+        ProviderConfig::default_for(AgentKind::Codex)
+    );
+    assert_eq!(
+        s.providers.effective(AgentKind::Reason).provider().kind(),
+        "reason_login"
+    );
     s.general.theme = Theme::Dark;
     save(&path, &s).unwrap();
 
@@ -84,4 +96,77 @@ fn first_save_writes_schema_and_sections() {
     ] {
         assert!(text.contains(section), "missing {section}: {text}");
     }
+}
+
+#[test]
+fn bad_values_are_rejected_on_load() {
+    let dir = temp_dir();
+    for (body, needle) in [
+        ("[general]\ntheme = \"purple\"", "unknown variant"),
+        (
+            "[git]\nbranch_prefix_type = \"custom\"",
+            "branch_prefix_custom is required",
+        ),
+        ("[models]\ndefault = \"  \"", "models.default"),
+        (
+            "[providers.claude]\nkind = \"codex_login\"",
+            "providers.claude: codex_login is a codex provider",
+        ),
+        (
+            "[providers.claude]\nkind = \"bedrock\"\nregion = \" \"",
+            "providers.claude:",
+        ),
+        ("[providers.codex]\nkind = \"nope\"", "unknown variant"),
+        (
+            "[providers.reason]\nkind = \"claude_login\"",
+            "providers.reason: claude_login is a claude provider",
+        ),
+        ("not toml [", "failed to parse"),
+    ] {
+        let path = dir.join(FILE_NAME);
+        fs::write(&path, body).unwrap();
+        let err = load(&path).unwrap_err().to_string();
+        assert!(err.contains(needle), "{body:?}: {err}");
+    }
+}
+
+#[test]
+fn invalid_settings_are_not_written() {
+    let path = temp_dir().join(FILE_NAME);
+    save(&path, &Settings::default()).unwrap();
+    let before = fs::read_to_string(&path).unwrap();
+    let mut s = Settings::default();
+    s.git.branch_prefix_type = BranchPrefixType::Custom;
+    for bad in ["", "a..b", "-x", "a b", "x.lock", "a/"] {
+        s.git.branch_prefix_custom = Some(bad.into());
+        assert!(save(&path, &s).is_err(), "{bad:?} accepted");
+    }
+    assert_eq!(fs::read_to_string(&path).unwrap(), before);
+    s.git.branch_prefix_custom = Some("team/sven".into());
+    save(&path, &s).unwrap();
+}
+
+#[test]
+fn provider_configs_round_trip_per_agent() {
+    let path = temp_dir().join(FILE_NAME);
+    let mut s = Settings::default();
+    let foundry: ProviderConfig =
+        serde_json::from_str(r#"{"kind":"foundry","endpoint":{"resource":"r"}}"#).unwrap();
+    let gateway: ProviderConfig =
+        serde_json::from_str(r#"{"kind":"codex_gateway","gateway":"open_router"}"#).unwrap();
+    s.providers.set(AgentKind::Claude, Some(foundry.clone()));
+    s.providers.set(AgentKind::Codex, Some(gateway.clone()));
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(text.contains("[providers.claude]"), "{text}");
+    assert!(text.contains("kind = \"codex_gateway\""), "{text}");
+    let back = load(&path).unwrap();
+    assert_eq!(back.providers.get(AgentKind::Claude), Some(&foundry));
+    assert_eq!(back.providers.get(AgentKind::Codex), Some(&gateway));
+    assert_eq!(back.providers.get(AgentKind::Cursor), None);
+    s.providers.set(AgentKind::Claude, None);
+    save(&path, &s).unwrap();
+    assert!(!fs::read_to_string(&path)
+        .unwrap()
+        .contains("[providers.claude]"));
 }

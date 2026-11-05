@@ -12,11 +12,13 @@
 //! })
 //! .invoke_handler(tauri::generate_handler![
 //!     workspace::commands::add_repository,
+//!     workspace::commands::clone_repository,
 //!     workspace::commands::list_repositories,
 //!     workspace::commands::list_branches,
 //!     workspace::commands::branch_name_is_taken,
 //!     workspace::commands::create_workspace,
 //!     workspace::commands::list_workspaces,
+//!     workspace::commands::rename_workspace_branch,
 //! ])
 //! ```
 
@@ -78,6 +80,19 @@ pub async fn add_repository(service: State<'_, WorkspaceService>, path: String) 
     service.add_repository(path.as_ref()).map(repo_dto).map_err(|e| e.to_string())
 }
 
+/// JS: `invoke("clone_repository", { url, parentDir })`: `git clone <url>
+/// <parentDir>/<name>` (name = last URL segment without `.git`), then
+/// registered like `add_repository`. Errors: "destination already exists:
+/// <path>", or git's stderr.
+#[tauri::command]
+pub async fn clone_repository(
+    service: State<'_, WorkspaceService>,
+    url: String,
+    parent_dir: String,
+) -> Result<RepositoryDto, String> {
+    service.clone_repository(&url, parent_dir.as_ref()).map(repo_dto).map_err(|e| e.to_string())
+}
+
 #[tauri::command]
 pub async fn list_repositories(service: State<'_, WorkspaceService>) -> Result<Vec<RepositoryDto>, String> {
     Ok(service.repositories().into_iter().map(repo_dto).collect())
@@ -103,8 +118,10 @@ pub async fn branch_name_is_taken(
     service.branch_name_is_taken(&repository_id, &branch_name).map_err(|e| e.to_string())
 }
 
-/// JS: `invoke("create_workspace", { repositoryId, branchName, directoryName, baseBranch })`.
+/// JS: `invoke("create_workspace", { repositoryId, branchName, directoryName, baseBranch, existingBranch })`.
 /// `branchName`, `directoryName` and `baseBranch` may be null or empty.
+/// `existingBranch: true` checks out `branchName` (the local branch, or a new
+/// one tracking `origin/<branchName>`) instead of creating it from the base.
 #[tauri::command]
 pub async fn create_workspace(
     service: State<'_, WorkspaceService>,
@@ -112,8 +129,15 @@ pub async fn create_workspace(
     branch_name: Option<String>,
     directory_name: Option<String>,
     base_branch: Option<String>,
+    existing_branch: Option<bool>,
 ) -> Result<CreatedWorkspaceDto, String> {
-    let req = CreateWorkspaceRequest { repository_id: repository_id.clone(), branch_name, directory_name, base_branch };
+    let req = CreateWorkspaceRequest {
+        repository_id: repository_id.clone(),
+        branch_name,
+        directory_name,
+        base_branch,
+        existing_branch: existing_branch.unwrap_or(false),
+    };
     service.create_workspace(&req).map(|c| created_dto(&repository_id, c)).map_err(|e| e.to_string())
 }
 
@@ -128,6 +152,23 @@ pub async fn list_workspaces(
         .manager()
         .list(&root)
         .map(|ws| ws.into_iter().map(|w| workspace_dto(&repository_id, w)).collect())
+        .map_err(|e| e.to_string())
+}
+
+/// JS: `invoke("rename_workspace_branch", { workspaceId, branchName })`, where
+/// `workspaceId` is `WorkspaceDto.id`. Fails if the branch is taken or the
+/// workspace is still initializing; the directory name is unchanged.
+#[tauri::command]
+pub async fn rename_workspace_branch(
+    service: State<'_, WorkspaceService>,
+    workspace_id: String,
+    branch_name: String,
+) -> Result<WorkspaceDto, String> {
+    let (repository_id, _) = workspace_id.rsplit_once('/').unwrap_or(("", ""));
+    let repository_id = repository_id.to_string();
+    service
+        .rename_workspace_branch(&workspace_id, &branch_name)
+        .map(|w| workspace_dto(&repository_id, w))
         .map_err(|e| e.to_string())
 }
 

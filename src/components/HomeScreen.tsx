@@ -5,7 +5,10 @@ import type { DialogKind } from "./Dialogs";
 import { CloudIcon, FolderIcon, SidebarIcon, SparkIcon } from "./Icons";
 import { Wordmark } from "./Wordmark";
 import { activeWorkspaceCount } from "../state/selectors";
-import { TOGGLE_LEFT_SIDEBAR_HINT } from "../state/shortcuts";
+import { effectiveShortcuts } from "../keybindings/overrides";
+import { glyphs } from "../keybindings/shortcut";
+
+const TOGGLE_LEFT_SIDEBAR_HINT = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
 
 // Layout follows evidence/screens/home.md: wordmark, three entry cards, and a sidebar
 // toggle only while the sidebar is hidden. The repository list lives in the sidebar.
@@ -14,7 +17,8 @@ interface Props {
   repos: Repo[];
   sidebarVisible: boolean;
   dispatch: Dispatch<Action>;
-  onOpenDialog: (d: DialogKind) => void;
+  onOpenDialog: (d: DialogKind, repoId?: string) => void;
+  onOpenProject: () => void;
 }
 
 function EntryCard({ icon, label, onClick }: { icon: ReactNode; label: string; onClick: () => void }) {
@@ -26,7 +30,7 @@ function EntryCard({ icon, label, onClick }: { icon: ReactNode; label: string; o
   );
 }
 
-export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog }: Props) {
+export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOpenProject }: Props) {
   const hasWorkspaces = activeWorkspaceCount(repos) > 0;
   return (
     <div className="home" data-tauri-drag-region>
@@ -46,7 +50,7 @@ export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog }: Pr
       </div>
       <div className={`home-cards-wrap ${hasWorkspaces ? "has-workspaces" : ""}`}>
         <div className="home-cards">
-          <EntryCard icon={<FolderIcon size={16} />} label="Open project" onClick={() => onOpenDialog("open")} />
+          <EntryCard icon={<FolderIcon size={16} />} label="Open project" onClick={onOpenProject} />
           <EntryCard icon={<CloudIcon size={16} />} label="Open GitHub project" onClick={() => onOpenDialog("clone")} />
           <EntryCard icon={<SparkIcon size={16} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
         </div>

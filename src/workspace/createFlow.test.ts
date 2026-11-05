@@ -92,14 +92,8 @@ test("create from issue seeds the composer, and clearing removes only the seed",
 
 const run = (events: CreateEvent[]): CreateProgress => events.reduce(reduceProgress, { step: "idle" } as CreateProgress);
 
-test("lifecycle with a setup script: initializing -> setting_up -> ready", () => {
-  const steps: CreateEvent[] = [
-    { type: "submit" },
-    { type: "created", workspaceId: "w1" },
-    { type: "setup_detected", hasScript: true },
-    { type: "setup_output", line: "npm install" },
-    { type: "setup_exited", exitCode: 0 },
-  ];
+test("lifecycle with a setup script: initializing -> setting_up, and setup keeps running after the dialog", () => {
+  const steps: CreateEvent[] = [{ type: "submit" }, { type: "created", workspaceId: "w1" }, { type: "setup_detected", started: true }];
   const seen: (string | null)[] = [];
   const labels: string[] = [];
   steps.reduce((p, e) => {
@@ -108,31 +102,16 @@ test("lifecycle with a setup script: initializing -> setting_up -> ready", () =>
     labels.push(progressLabel(next));
     return next;
   }, { step: "idle" } as CreateProgress);
-  assert.deepEqual(seen, ["initializing", "setting_up", "setting_up", "setting_up", "ready"]);
-  assert.deepEqual(labels, ["Creating workspace...", "Detecting setup script...", "Running setup script...", "Running setup script...", "Ready"]);
-  assert.deepEqual(run(steps), { step: "ready", workspaceId: "w1", ranSetup: true });
+  assert.deepEqual(seen, ["initializing", "setting_up", "setting_up"]);
+  assert.deepEqual(labels, ["Creating workspace...", "Detecting setup script...", "Running setup script..."]);
+  assert.deepEqual(run(steps), { step: "ready", workspaceId: "w1", setupStarted: true });
 });
 
 test("no setup script goes straight to ready", () => {
-  assert.deepEqual(run([{ type: "submit" }, { type: "created", workspaceId: "w1" }, { type: "setup_detected", hasScript: false }]), {
-    step: "ready",
-    workspaceId: "w1",
-    ranSetup: false,
-  });
-});
-
-test("setup failure keeps the log and can be retried", () => {
-  const failed = run([
-    { type: "submit" },
-    { type: "created", workspaceId: "w1" },
-    { type: "setup_detected", hasScript: true },
-    { type: "setup_output", line: "boom" },
-    { type: "setup_exited", exitCode: 2 },
-  ]);
-  assert.deepEqual(failed, { step: "setup_failed", workspaceId: "w1", exitCode: 2, log: ["boom"] });
-  assert.equal(progressLabel(failed), "Setup script failed");
-  assert.equal(workspaceState(failed), "ready");
-  assert.deepEqual(reduceProgress(failed, { type: "retry_setup" }), { step: "running_setup", workspaceId: "w1", log: [] });
+  const p = run([{ type: "submit" }, { type: "created", workspaceId: "w1" }, { type: "setup_detected", started: false }]);
+  assert.deepEqual(p, { step: "ready", workspaceId: "w1", setupStarted: false });
+  assert.equal(progressLabel(p), "Ready");
+  assert.equal(workspaceState(p), "ready");
 });
 
 test("create failure shows the backend error or the generic one, and allows resubmit", () => {
@@ -145,18 +124,35 @@ test("create failure shows the backend error or the generic one, and allows resu
 
 test("out-of-order events are ignored", () => {
   assert.deepEqual(run([{ type: "created", workspaceId: "w1" }]), { step: "idle" });
-  assert.deepEqual(run([{ type: "submit" }, { type: "setup_exited", exitCode: 0 }]), { step: "creating" });
+  assert.deepEqual(run([{ type: "submit" }, { type: "setup_detected", started: true }]), { step: "creating" });
   assert.deepEqual(run([{ type: "submit" }, { type: "submit" }]), { step: "creating" });
-});
-
-test("setup log is capped", () => {
-  let p = run([{ type: "submit" }, { type: "created", workspaceId: "w" }, { type: "setup_detected", hasScript: true }]);
-  for (let i = 0; i < 600; i++) p = reduceProgress(p, { type: "setup_output", line: String(i) });
-  assert.ok(p.step === "running_setup" && p.log.length === 500 && p.log[0] === "100");
 });
 
 test("requests map onto create_workspace arguments", () => {
   const r = buildCreateRequest(draft(), "sven/");
   assert.ok(r.ok);
-  assert.deepEqual(toCreateWorkspaceArgs(r.request), { repositoryId: "r1", branchName: "sven/oslo", directoryName: "oslo", baseBranch: "develop" });
+  assert.deepEqual(toCreateWorkspaceArgs(r.request), {
+    repositoryId: "r1",
+    branchName: "sven/oslo",
+    directoryName: "oslo",
+    baseBranch: "develop",
+    existingBranch: false,
+  });
+});
+
+test("create from a PR or branch asks create_workspace to check that branch out", () => {
+  const fromPr = buildCreateRequest(selectFrom(draft(), pr), "sven/");
+  assert.ok(fromPr.ok);
+  assert.deepEqual(toCreateWorkspaceArgs(fromPr.request), {
+    repositoryId: "r1",
+    branchName: "fix/login",
+    directoryName: "oslo",
+    baseBranch: "fix/login",
+    existingBranch: true,
+  });
+  const fromBranch = buildCreateRequest(selectFrom(draft(), { kind: "branch", name: "feature/x" }), "sven/");
+  assert.ok(fromBranch.ok);
+  const args = toCreateWorkspaceArgs(fromBranch.request);
+  assert.equal(args.branchName, "feature/x");
+  assert.equal(args.existingBranch, true);
 });
