@@ -131,3 +131,7 @@ Not REA: direct ACP probes of `reason acp -y`.
 - Not checked in the running macOS app: the button, tabs and settings were
   checked in the browser build with sample data; the Reason side was checked
   with the fake agent in tests and the ACP probes above.
+
+## Shared attachment path (after merging main)
+
+Main added composer attachments for the discard revert note (`src/features/diff/chatAttachment.ts`), sent inline as `<attachment>` blocks in the message text. With the Reason attachment path from this change, the composer now sends every attachment (the review request and revert notes) as an embedded file through `reason_prompt`'s `attachments`, which matches Conductor uploading a text file and attaching it. The transcript shows each one as "Attached: NAME". `withAttachments` is no longer used by the composer; it is left for its owner to remove.
