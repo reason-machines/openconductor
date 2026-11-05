@@ -122,8 +122,9 @@ fn ready_data_exit_in_order_with_exit_code() {
         m.write(&id, b"x"),
         Err(TerminalError::NotRunning(_))
     ));
+    assert_eq!(m.history(&id).unwrap(), b"hello");
     m.kill(&id).unwrap();
-    assert!(matches!(m.exit_info(&id), Err(TerminalError::NotFound(_))));
+    assert!(matches!(m.history(&id), Err(TerminalError::NotFound(_))));
 }
 
 #[test]
@@ -234,3 +235,4 @@ fn dropping_the_manager_kills_terminals() {
 }
 
 mod flow_history;
+mod kill_group;
