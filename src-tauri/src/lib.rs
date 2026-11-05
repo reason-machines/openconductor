@@ -42,6 +42,7 @@ pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
 pub mod reason_chat;
+mod root_path_commands;
 pub mod scripts;
 pub mod settings;
 pub mod sidecar_stores;
@@ -269,7 +270,11 @@ pub fn run() {
                 &sidecar_stores::completions_dir(&data_dir),
             ));
             app.manage(local_storage_commands::state(&data_dir));
-            let workspaces = workspace::service::WorkspaceService::new(data_dir)?;
+            let mut workspaces = workspace::service::WorkspaceService::new(data_dir)?;
+            // Settings › Advanced › root directory (`conductor_root_path`).
+            if let Some(root) = root_path_commands::root_from_settings(&db) {
+                workspaces = workspaces.with_root(root);
+            }
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
             app.manage(db);
@@ -293,6 +298,9 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            root_path_commands::get_conductor_root,
+            root_path_commands::repo_workspaces_path,
+            root_path_commands::change_conductor_root,
             app_info,
             inspect_project_folder,
             branch_prefix_settings,

@@ -245,7 +245,8 @@ a `/settings/repos...` start URL is resolved again once they are loaded. Diverge
 - Repo Git shows the base branch and remote read-only (Conductor lets you change both); repo
   Scripts shows the resolved setup, run and archive scripts read-only; repo Actions has Use
   spotlight testing (General preferences, `custom_prompt_general`, comes with the prompts keys);
-  repo Misc shows the root path only (no icon, workspaces path or Remove repository yet).
+  repo Misc shows the root path and the workspaces path (no icon or Remove repository yet).
+  Advanced has the root directory row (`advanced:conductor-root`) and Scrollback limit.
 - Settings search (`vUi` keywords per tab) is not built.
 
 ## Models and providers (settings.toml.models, settings.toml.providers)

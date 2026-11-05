@@ -37,7 +37,7 @@ Aggregate reads only: `ls` of the data folders, `sqlite3 ...conductor.db?immutab
 
 | Fact | How observed | Module status |
 | --- | --- | --- |
-| Workspaces live at `~/conductor/workspaces/<repo-dir-name>/<directory_name>`; the repo itself can live anywhere (here `~/reasonmachines/<repo>`) | `ls ~/conductor/workspaces`, a worktree's `.git` file | ours: `<data_dir>/workspaces/<repo-slug>/<name>` (same shape, different root) |
+| Workspaces live at `~/conductor/workspaces/<repo-dir-name>/<directory_name>`; the repo itself can live anywhere (here `~/reasonmachines/<repo>`) | `ls ~/conductor/workspaces`, a worktree's `.git` file | ours: `<root>/workspaces/<repo-slug>/<name>`, root from the `conductor_root_path` setting (Settings › Advanced), default the app data dir; see `evidence/create-workspace/README.md`, "Root directory" |
 | The worktree's git admin name keeps the name it was created with after the folder is renamed (folder `arxiv-paper-adoption-review`, admin dir `worktrees/baghdad-v1`) | worktree `.git` file | rename not implemented yet |
 | `workspaces.state` is `ready` (24) or `archived` (660) | `select state,count(*)` | ours: `active` / `archived` / `missing` |
 | Every archived row has `archive_commit` (660/660) | count | archive records `commit=` and restore recreates a deleted branch from it |

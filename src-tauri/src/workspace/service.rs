@@ -69,8 +69,24 @@ impl WorkspaceService {
         Ok(Self { manager: WorkspaceManager::new(data_dir), registry_file, repos: Mutex::new(repos) })
     }
 
+    /// Keep workspaces, archive records and default clones under `root` (the
+    /// `conductor_root_path` setting) instead of the app data directory.
+    pub fn with_root(mut self, root: impl Into<PathBuf>) -> Self {
+        self.manager = self.manager.with_root(root);
+        self
+    }
+
     pub fn manager(&self) -> &WorkspaceManager {
         &self.manager
+    }
+
+    /// Forget every registered repository (the registry file is emptied; no
+    /// files under the repositories or workspaces are touched). Part of a
+    /// root path change, with the database rows.
+    pub fn forget_repositories(&self) -> Result<(), WorkspaceError> {
+        let mut repos = self.repos.lock().expect("registry lock");
+        repos.clear();
+        self.save(&repos)
     }
 
     /// Register the repository containing `path` (any worktree maps to its
@@ -87,10 +103,10 @@ impl WorkspaceService {
         Ok(info(&id, &root))
     }
 
-    /// Where clones go by default: `<data_dir>/repos` (Conductor uses
-    /// `<root>/repos`). Created on first clone, not here.
+    /// Where clones go by default: `<root>/repos`, as Conductor's. Created on
+    /// first clone, not here.
     pub fn default_clone_dir(&self) -> PathBuf {
-        self.manager.data_dir().join("repos")
+        self.manager.root().join("repos")
     }
 
     /// Clone `url` into `<parent_dir>/<name>` (name from
