@@ -100,6 +100,18 @@ plus a bubble-phase one for a bare Escape that nothing else took).
   passes to the next. The first that takes it sends `keyboard_shortcut_used`
   with `keybinding_id`, plus `active_dialog_id` and `telemetry_context` when set.
 
+## Registration (`oi` hook)
+
+From `renderApp-D_fmY7hW.js`: components bind a command with
+`oi(commandId, callback, options)`. It registers one handler per effective
+shortcut (overrides applied) with `when` merged as: the enclosing dialog's id
+(`enableOnDialogIds`), then the command's registry `when`, then `options`.
+Missing flags default to `enableOnInputFocus: true`, `enableOnTerminalFocus: true`,
+`isGlobal: false`, `requireTerminalFocus: false`, `allowWhileTyping: false`,
+priority NORMAL. `options.enabled === false` registers nothing. Workspace
+navigation passes `{telemetryContext: "workspace-navigation"}`. Ours:
+`bindingsFor` and `resolveCommand` in `src/keybindings/resolve.ts`.
+
 ## Window listeners
 
 From the same chunk (the component that mounts the dispatcher, next to the

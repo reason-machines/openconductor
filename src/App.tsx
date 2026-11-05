@@ -8,8 +8,11 @@ import { WorkspaceView } from "./components/WorkspaceView";
 import { CloneDialog, QuickStartDialog, type DialogKind } from "./components/Dialogs";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { Toaster, useToasts } from "./components/Toast";
+import { QuickOpenDialog, QUICK_OPEN_DIALOG_ID } from "./components/QuickOpenDialog";
+import { resolveCommand } from "./keybindings/resolve";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, pickFolder, type AppInfo } from "./backend";
 import { decideOpenProject, failedToAddMessage } from "./state/openProject";
+import { PaletteHost } from "./palette/PaletteHost";
 
 export default function App() {
   const [state, dispatch] = useAppStore();
@@ -42,6 +45,7 @@ export default function App() {
       show("error", failedToAddMessage(err));
     }
   }, [dispatch, show]);
+  const [quickOpen, setQuickOpen] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -52,6 +56,25 @@ export default function App() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [dispatch]);
+
+  const sel = state.selection;
+  const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
+  const workspace = sel.kind === "workspace" ? repo?.workspaces.find((w) => w.id === sel.workspaceId) : undefined;
+  // Quick open needs an active (not archived) workspace, like the reference.
+  const canQuickOpen = !!workspace && workspace.status !== "archived";
+  const workspacePath = workspace?.path || repo?.path || (inTauri() ? null : "/demo");
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const typing = isTypingTarget(document.activeElement as HTMLElement | null);
+      const ctx = { activeDialogId: quickOpen ? QUICK_OPEN_DIALOG_ID : dialog, typing, inTerminal: false };
+      if (resolveCommand(e, ctx, ["nav.quickOpen"]) !== "nav.quickOpen") return;
+      e.preventDefault();
+      setQuickOpen((open) => !open && canQuickOpen);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [quickOpen, dialog, canQuickOpen]);
 
   useEffect(() => {
     appInfo().then(setInfo).catch(() => setInfo(null));
@@ -65,9 +88,6 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const sel = state.selection;
-  const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
-  const workspace = sel.kind === "workspace" ? repo?.workspaces.find((w) => w.id === sel.workspaceId) : undefined;
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`}>
@@ -95,6 +115,15 @@ export default function App() {
           dispatch={dispatch}
         />
       )}
+      {quickOpen && repo && (
+        <QuickOpenDialog
+          repoId={repo.id}
+          workspacePath={workspacePath}
+          onClose={() => setQuickOpen(false)}
+          onOpen={(path, mode) => show("info", `${mode === "diff" ? "Diff of" : "Opened"} ${path} (file viewer not built yet)`)}
+        />
+      )}
+      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );
