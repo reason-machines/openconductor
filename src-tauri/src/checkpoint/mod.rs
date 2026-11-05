@@ -59,7 +59,10 @@ pub enum CheckpointError {
     NotARepository(PathBuf),
     /// Reference exit 103: git resolves the toplevel to a different directory
     /// (usually an ancestor repo), so operating would touch the wrong tree.
-    RootMismatch { root: PathBuf, workspace: PathBuf },
+    RootMismatch {
+        root: PathBuf,
+        workspace: PathBuf,
+    },
     /// Reference exit 101: an operation is in progress; skip, not a failure.
     Busy(BusyState),
     /// Reference exit 102: the index has stage 1/2/3 entries.
@@ -70,7 +73,10 @@ pub enum CheckpointError {
     MissingMetadata(String),
     /// The checkpoint was saved before the first commit; restore unsupported.
     UnbornHead(String),
-    Git { command: String, stderr: String },
+    Git {
+        command: String,
+        stderr: String,
+    },
     Io(std::io::Error),
 }
 
@@ -87,7 +93,10 @@ impl CheckpointError {
 
     /// True for the "skipped, not an error" outcomes (101 and 102).
     pub fn is_skip(&self) -> bool {
-        matches!(self, CheckpointError::Busy(_) | CheckpointError::UnresolvedConflicts)
+        matches!(
+            self,
+            CheckpointError::Busy(_) | CheckpointError::UnresolvedConflicts
+        )
     }
 }
 
@@ -173,7 +182,10 @@ fn workspace_root(workspace: &Path) -> Result<PathBuf, CheckpointError> {
     let phys_root = fs::canonicalize(&root).map_err(CheckpointError::Io)?;
     let phys_ws = fs::canonicalize(workspace).map_err(CheckpointError::Io)?;
     if phys_root != phys_ws {
-        return Err(CheckpointError::RootMismatch { root: phys_root, workspace: phys_ws });
+        return Err(CheckpointError::RootMismatch {
+            root: phys_root,
+            workspace: phys_ws,
+        });
     }
     Ok(phys_ws)
 }
@@ -273,8 +285,12 @@ fn parse_checkpoint(git: &Git<'_>, id: &str, commit: &str) -> Result<Checkpoint,
     };
     let missing = || CheckpointError::MissingMetadata(id.to_string());
     let head = meta("head").filter(|h| !h.is_empty()).ok_or_else(missing)?;
-    let index_tree = meta("index-tree").filter(|t| !t.is_empty()).ok_or_else(missing)?;
-    let worktree_tree = meta("worktree-tree").filter(|t| !t.is_empty()).ok_or_else(missing)?;
+    let index_tree = meta("index-tree")
+        .filter(|t| !t.is_empty())
+        .ok_or_else(missing)?;
+    let worktree_tree = meta("worktree-tree")
+        .filter(|t| !t.is_empty())
+        .ok_or_else(missing)?;
     Ok(Checkpoint {
         id: id.to_string(),
         commit: commit.to_string(),
@@ -299,7 +315,10 @@ pub fn restore(workspace: &Path, id: &str) -> Result<(), CheckpointError> {
         .verify(&ref_name(id))?
         .ok_or_else(|| CheckpointError::NotFound(id.to_string()))?;
     let cp = parse_checkpoint(&git, id, &commit)?;
-    let head = cp.head.clone().ok_or_else(|| CheckpointError::UnbornHead(id.to_string()))?;
+    let head = cp
+        .head
+        .clone()
+        .ok_or_else(|| CheckpointError::UnbornHead(id.to_string()))?;
 
     // 1) HEAD, via a mixed reset (soft refuses mid-merge; hard would touch
     //    files). Skipped in the steady state so a no-op restore adds no
@@ -353,7 +372,8 @@ impl TempIndexDir {
             let dir = parent.join(format!("{prefix}.{pid}.{nanos:x}{n:x}"));
             match fs::create_dir(&dir) {
                 Ok(()) => {
-                    fs::write(dir.join("owner-pid"), pid.to_string()).map_err(CheckpointError::Io)?;
+                    fs::write(dir.join("owner-pid"), pid.to_string())
+                        .map_err(CheckpointError::Io)?;
                     return Ok(Self { dir });
                 }
                 Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => continue,
@@ -374,7 +394,9 @@ impl Drop for TempIndexDir {
 }
 
 fn prune_stale(parent: &Path) {
-    let Ok(entries) = fs::read_dir(parent) else { return };
+    let Ok(entries) = fs::read_dir(parent) else {
+        return;
+    };
     let now = SystemTime::now();
     for entry in entries.flatten() {
         let path = entry.path();
@@ -418,7 +440,10 @@ fn pid_alive(pid: &str) -> bool {
 
 /// UTC civil date/time from a SystemTime (proleptic Gregorian).
 fn utc_parts(t: SystemTime) -> (i64, u32, u32, u32, u32, u32) {
-    let secs = t.duration_since(UNIX_EPOCH).map(|d| d.as_secs() as i64).unwrap_or(0);
+    let secs = t
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_secs() as i64)
+        .unwrap_or(0);
     let days = secs.div_euclid(86_400);
     let rem = secs.rem_euclid(86_400);
     // Howard Hinnant's civil_from_days.
@@ -431,7 +456,14 @@ fn utc_parts(t: SystemTime) -> (i64, u32, u32, u32, u32, u32) {
     let d = (doy - (153 * mp + 2) / 5 + 1) as u32;
     let m = (if mp < 10 { mp + 3 } else { mp - 9 }) as u32;
     let y = yoe + era * 400 + i64::from(m <= 2);
-    (y, m, d, (rem / 3600) as u32, (rem % 3600 / 60) as u32, (rem % 60) as u32)
+    (
+        y,
+        m,
+        d,
+        (rem / 3600) as u32,
+        (rem % 3600 / 60) as u32,
+        (rem % 60) as u32,
+    )
 }
 
 /// `YYYY-MM-DDTHH:MM:SSZ` (reference `date -u +"%Y-%m-%dT%H:%M:%SZ"`).
