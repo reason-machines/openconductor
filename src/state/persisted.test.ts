@@ -12,14 +12,15 @@ const ws = (repositoryId: string, dir: string, state = "ready", extra: Partial<D
   createdAt: "2026-11-05 12:00:00", ...extra,
 });
 
-test("maps rows in database order and drops hidden repos and archived workspaces", () => {
+test("maps rows in database order, marks hidden repos and drops archived workspaces", () => {
   const repos = reposFromDb(
     [repo("b"), repo("a"), repo("gone", { hidden: true })],
     [ws("a", "oslo"), ws("a", "lima", "archived"), ws("b", "rome", "initializing"), ws("gone", "x")],
     ["a"],
   );
-  assert.deepEqual(repos.map((r) => r.id), ["b", "a"]);
-  assert.deepEqual(repos.map((r) => r.workspaces.map((w) => w.id)), [["b/rome"], ["a/oslo"]]);
+  assert.deepEqual(repos.map((r) => r.id), ["b", "a", "gone"]);
+  assert.deepEqual(repos.map((r) => r.hidden), [undefined, undefined, true]);
+  assert.deepEqual(repos.map((r) => r.workspaces.map((w) => w.id)), [["b/rome"], ["a/oslo"], ["gone/x"]]);
   assert.equal(repos[1].collapsed, true);
   assert.equal(repos[0].collapsed, undefined);
   const w = repos[1].workspaces[0];
