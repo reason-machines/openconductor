@@ -237,7 +237,7 @@ impl WorkspaceManager {
             if !git::valid_branch_name(&root, b) {
                 return Err(WorkspaceError::InvalidName(b.to_string()));
             }
-            if git::branch_exists(&root, b) {
+            if git::branch_name_is_taken(&root, b)? {
                 return Err(WorkspaceError::BranchExists(b.to_string()));
             }
         }

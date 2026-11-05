@@ -14,6 +14,7 @@
 //!     workspace::commands::add_repository,
 //!     workspace::commands::list_repositories,
 //!     workspace::commands::list_branches,
+//!     workspace::commands::branch_name_is_taken,
 //!     workspace::commands::create_workspace,
 //!     workspace::commands::list_workspaces,
 //! ])
@@ -89,6 +90,17 @@ pub async fn list_branches(service: State<'_, WorkspaceService>, repo_id: String
         .list_branches(&repo_id)
         .map(|b| b.into_iter().map(branch_dto).collect())
         .map_err(|e| e.to_string())
+}
+
+/// JS: `invoke("branch_name_is_taken", { repositoryId, branchName })`: true
+/// when a local or remote-tracking branch has the name (or blocks it).
+#[tauri::command]
+pub async fn branch_name_is_taken(
+    service: State<'_, WorkspaceService>,
+    repository_id: String,
+    branch_name: String,
+) -> Result<bool, String> {
+    service.branch_name_is_taken(&repository_id, &branch_name).map_err(|e| e.to_string())
 }
 
 /// JS: `invoke("create_workspace", { repositoryId, branchName, directoryName, baseBranch })`.

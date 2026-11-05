@@ -167,6 +167,26 @@ fn create_fetches_origin_and_starts_from_remote_without_moving_root() {
 }
 
 #[test]
+fn branch_name_is_taken_checks_local_remote_and_path_conflicts() {
+    let f = fixture();
+    let origin = f.tmp.path().join("origin.git");
+    sh(f.tmp.path(), &["init", "-q", "--bare", "-b", "main", origin.to_str().unwrap()]);
+    sh(&f.repo, &["remote", "add", "origin", origin.to_str().unwrap()]);
+    sh(&f.repo, &["push", "-q", "origin", "main:sven/remote-only"]);
+    sh(&f.repo, &["fetch", "-q", "origin"]);
+    sh(&f.repo, &["branch", "sven/tokyo"]);
+    let taken = |b: &str| git::branch_name_is_taken(&f.repo, b).unwrap();
+    assert!(taken("main") && taken("sven/tokyo"));
+    assert!(taken("sven/remote-only"), "remote-tracking branches count");
+    assert!(taken("sven/tokyo/x") && taken("sven"), "ref path conflicts count");
+    assert!(!taken("sven/tokyo-v1") && !taken("osaka"));
+
+    // create refuses an explicit branch that exists only on the remote.
+    let opts = CreateOptions { branch_name: Some("sven/remote-only".into()), ..Default::default() };
+    assert!(matches!(f.mgr.create(&f.repo, &opts), Err(WorkspaceError::BranchExists(_))));
+}
+
+#[test]
 fn files_to_copy_default_env_glob_only_copies_gitignored() {
     let f = fixture();
     commit_file(&f.repo, ".gitignore", ".env\n.env.local\nnode_modules/\n", "ignore");
