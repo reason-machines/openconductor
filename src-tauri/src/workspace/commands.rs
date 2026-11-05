@@ -20,6 +20,7 @@
 //!     workspace::commands::create_workspace,
 //!     workspace::commands::list_workspaces,
 //!     workspace::commands::rename_workspace_branch,
+//!     workspace::commands::workspace_git_operation,
 //! ])
 //! ```
 
@@ -218,6 +219,21 @@ pub async fn list_workspaces(
         .list(&root)
         .map(|ws| ws.into_iter().map(|w| workspace_dto(&repository_id, w)).collect())
         .map_err(|e| e.to_string())
+}
+
+/// JS: `invoke("workspace_git_operation", { worktree })`: the git operation in
+/// progress in a workspace checkout (`rebase`, `merge`, `squash-merge`,
+/// `cherry-pick`, `revert`), or null when there is none. Archive is refused
+/// while one is; the check order is `git-busy-check.sh`'s.
+#[tauri::command]
+pub async fn workspace_git_operation(worktree: String) -> Result<Option<String>, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        super::git::busy_state(std::path::Path::new(&worktree))
+            .map(|s| s.operation().map(str::to_string))
+            .map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
 }
 
 /// JS: `invoke("rename_workspace_branch", { workspaceId, branchName })`, where

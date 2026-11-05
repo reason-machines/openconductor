@@ -34,6 +34,9 @@ import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest"
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
+import { archiveBlocker } from "../features/archive/archiveGuard";
+import { fixShortcutApplies } from "../features/pr/checks/fixErrors";
+import { useFixErrors, type FixErrors } from "../features/pr/checks/useFixErrors";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
 import { BranchPicker } from "../features/pr/edit/BranchPicker";
@@ -225,13 +228,12 @@ interface RightPanelProps {
   pr: PullRequest;
   worktree: string | null;
   review: ReactNode;
-  repo: Repo;
-  /** Fix errors: send to the workspace's own chat. */
-  sendToChat: (text: string, attachments: TextAttachment[]) => void;
+  /** Fix errors (shared with the `git.fixErrors` shortcut). */
+  fixErrors: FixErrors;
   readOnly: boolean;
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly }: RightPanelProps) {
+function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -269,8 +271,7 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
           worktree={worktree}
           pr={pr.pr}
           refresh={pr.refresh}
-          repoId={repo.id}
-          sendToChat={sendToChat}
+          fixErrors={fixErrors}
           readOnly={readOnly}
         />
       ) : (
@@ -448,6 +449,19 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     },
     [workspace.id],
   );
+  // Archive refuses while a merge or rebase is in progress in the checkout (archiveGuard.ts).
+  const [archiving, setArchiving] = useState(false);
+  const archive = useCallback(async () => {
+    setArchiving(true);
+    try {
+      const blocked = await archiveBlocker(workspace.path ?? null);
+      if (blocked) notify?.("error", blocked);
+      else dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id });
+    } finally {
+      setArchiving(false);
+    }
+  }, [dispatch, notify, repo.id, workspace.id, workspace.path]);
+  const fixErrors = useFixErrors({ worktree: workspace.path ?? null, repoId: repo.id, sendToChat, notify });
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
@@ -516,6 +530,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "git.mergePR": () => {
       if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
     },
+    "git.fixErrors": () => {
+      const failing = pullRequest.pr?.status?.checks.failing ?? [];
+      if (fixShortcutApplies(failing, fixErrors.fixing, workspace.status === "archived")) void fixErrors.run(failing);
+    },
     "git.openInGitHub": prActions.openOnGitHub,
   });
   const showDiff = diffOpen && mainTab === "diff";
@@ -556,7 +574,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
             Terminal
           </button>
-          <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
+          <button className="btn btn-small" title="Archive workspace" disabled={archiving} aria-busy={archiving} onClick={() => void archive()}>
             <ArchiveIcon size={14} /> Archive
           </button>
         </div>
@@ -580,8 +598,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
                 worktree={workspace.path ?? null}
                 pr={pullRequest.pr}
                 refresh={pullRequest.refresh}
-                repoId={repo.id}
-                sendToChat={sendToChat}
+                fixErrors={fixErrors}
                 readOnly={workspace.status === "archived"}
                 repoPath={repo.path}
                 defaultBranch={repo.defaultBranch}
@@ -598,8 +615,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               pr={pullRequest}
               worktree={workspace.path ?? null}
               review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
-              repo={repo}
-              sendToChat={sendToChat}
+              fixErrors={fixErrors}
               readOnly={workspace.status === "archived"}
             />
             <ScriptsPanel repo={repo} workspace={workspace} />

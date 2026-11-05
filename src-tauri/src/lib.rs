@@ -325,6 +325,7 @@ pub fn run() {
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
+            workspace::commands::workspace_git_operation,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
             persistence_commands::db_archive_workspace,

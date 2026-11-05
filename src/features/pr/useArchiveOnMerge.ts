@@ -13,6 +13,7 @@ import type { ToastAction } from "../../components/toastTiming";
 import type { Action } from "../../state/store";
 import type { Repo, Workspace } from "../../state/types";
 import { getSettings } from "../../settings/api";
+import { archiveBlocker } from "../archive/archiveGuard";
 import { AGENT_RUNNING_MESSAGE, archiveDecision, archivedMessage, archivedToastActions, archiveFailedMessage, archiveOnMergeEnabled, lastPrNumber, observeLookup, watchedWorkspaces } from "./archiveOnMerge";
 import type { LookupRequest, LookupResult, PrLookup } from "./types";
 
@@ -41,14 +42,19 @@ interface AfterMerge {
   notify?: ArchiveNotify;
   /** Reads `git.archive_on_merge` from the user settings; the settings file by default. */
   readSetting?: () => Promise<boolean>;
+  /** Why archive is refused now (a merge or rebase in the checkout), or null. */
+  blocker?: (worktree: string | null) => Promise<string | null>;
 }
 
-export async function archiveAfterMerge({ repo, workspace, merged, dispatch, agentWorking, notify, readSetting = readUserSetting }: AfterMerge): Promise<void> {
+export async function archiveAfterMerge({ repo, workspace, merged, dispatch, agentWorking, notify, readSetting = readUserSetting, blocker = archiveBlocker }: AfterMerge): Promise<void> {
   try {
     const [user, override] = await Promise.all([readSetting(), repoArchiveOnMerge(repo.id)]);
     const decision = archiveDecision({ enabled: archiveOnMergeEnabled(user, override), archived: workspace.status === "archived", agentWorking });
     if (decision === "agent-running") notify?.("error", AGENT_RUNNING_MESSAGE);
     if (decision !== "archive") return;
+    // The same refusal as the Archive button: never archive over a merge or rebase in progress.
+    const blocked = await blocker(workspace.path ?? null);
+    if (blocked) throw new Error(blocked);
     dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id });
     const buttons = archivedToastActions(merged);
     notify?.("info", archivedMessage(merged.number), {
