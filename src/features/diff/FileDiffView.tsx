@@ -1,21 +1,22 @@
-// parity:diff.file-render:ui parity:diff.split-unified:ui parity:diff.viewed:ui
+// parity:diff.file-render:ui parity:diff.split-unified:ui parity:diff.viewed:ui parity:diff.virtualized:ui
 // One changed file in the "All changes" tab. The code is drawn by Pierre's
 // diff library with the options Conductor's diff tab passes it (REA, 0.87.6):
 // no Pierre file header (ours carries Viewed and discard), Pierre themes,
 // "line-info-basic" separators expanding 20 lines per click, no wrapping,
 // number-column hover and a gutter button that starts a comment.
-import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { processFile, type DiffLineAnnotation, type LineAnnotation, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
-import { File as PierreFile, FileDiff as PierreFileDiff } from "@pierre/diffs/react";
+// Like Conductor, the file is one item of a Pierre CodeView, which renders only
+// the rows in and near the viewport, so a long diff stays cheap to show.
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { processFile, type CodeViewItem, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
+import { CodeView, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
+import { WhitespaceOnly } from "./Whitespace";
 import { RevertIcon } from "./DiscardDialog";
 import type { CommentSide } from "./comments.ts";
-import { EXPANSION_LINE_COUNT, PIERRE_THEME, fromPierreSide, fullContents, loadedFiles, toPatch, toPierreSide } from "./pierre.ts";
+import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, codeViewItem, fromPierreSide, lineTarget, loadedFiles, toPatch } from "./pierre.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
+import { useDiffTheme } from "./useDiffTheme.ts";
 
-export interface LineAnchor {
-  side: CommentSide;
-  line: number;
-}
+export type LineAnchor = Anchor;
 
 interface Props {
   file: FileDiff;
@@ -35,6 +36,8 @@ interface Props {
   onDiscard?: () => void;
   /** Extra header controls, before the Viewed checkbox (the layout toggle). */
   tools?: ReactNode;
+  /** Turn hidden whitespace back on (the whitespace-only empty state's link). */
+  onShowWhitespace?: () => void;
 }
 
 /** The app theme as Pierre's themeType: `data-theme` on the root, or the system setting when absent. */
@@ -52,59 +55,94 @@ function useThemeType(): ThemeTypes {
   return type;
 }
 
-const anchorOfRange = (r: SelectedLineRange): LineAnchor => ({ side: fromPierreSide(r.side), line: Math.min(r.start, r.end) });
+/** Scrollers of the file views on screen, by path, so a comment jump can bring an unrendered line into view. */
+const revealers = new Map<string, (anchor: LineAnchor) => void>();
+
+/**
+ * Scroll the open diff of `path` so `anchor`'s line is centred, rendering it if
+ * it was outside the virtualized window. False when that file is not open.
+ */
+export function revealLine(path: string, anchor: LineAnchor): boolean {
+  const reveal = revealers.get(path);
+  reveal?.(anchor);
+  return reveal !== undefined;
+}
 
 function Code({ file, layout, ignoreWhitespace, onLineClick, anchors = [], annotations, loadFull }: Props) {
   const themeType = useThemeType();
+  const theme = useDiffTheme();
+  const view = useRef<CodeViewHandle<LineAnchor, undefined>>(null);
   // Pierre upgrades this object in place when it loads the full file, so keep it per file.
   const meta = useMemo(() => processFile(toPatch(file), { isGitDiff: true }), [file]);
-  const interaction = {
-    enableGutterUtility: onLineClick !== undefined,
-    lineHoverHighlight: "number" as const,
-    onGutterUtilityClick: onLineClick && ((r: SelectedLineRange) => onLineClick(anchorOfRange(r))),
-  };
-  const base = { disableFileHeader: true, overflow: "scroll" as const, theme: PIERRE_THEME, themeType, ...interaction };
 
-  if (layout === "file") {
-    // The file as it is now (as it was, for a deleted file), loaded with whole-file context.
-    const c = fullContents(file);
-    const side: CommentSide = c.new === null ? "old" : "new";
-    const lineAnnotations: LineAnnotation<LineAnchor>[] = anchors.filter((a) => a.side === side).map((a) => ({ lineNumber: a.line, metadata: a }));
-    return (
-      <PierreFile<LineAnchor>
-        file={{ name: file.path, contents: c.new ?? c.old ?? "" }}
-        options={{ ...base, onGutterUtilityClick: onLineClick && ((r: SelectedLineRange) => onLineClick({ side, line: Math.min(r.start, r.end) })) }}
-        lineAnnotations={lineAnnotations}
-        renderAnnotation={(a) => annotations?.(a.metadata)}
-      />
-    );
-  }
+  // CodeView redraws whenever its options or items change identity: keep callbacks behind refs
+  // and bump the item's version only when what it shows changes (as Conductor's tab does).
+  const latest = useRef({ onLineClick, loadFull });
+  latest.current = { onLineClick, loadFull };
+  const clickable = onLineClick !== undefined;
+  const canLoad = loadFull !== undefined;
+  const item = useCodeViewItem(file, meta, layout, anchors);
+  const fileSide: CommentSide = item.type === "file" && file.status === "deleted" ? "old" : "new";
 
-  if (!meta) return <div className="oc-file-note">This diff couldn't be displayed.</div>;
-  const lineAnnotations: DiffLineAnnotation<LineAnchor>[] = anchors.map((a) => ({ side: toPierreSide(a.side), lineNumber: a.line, metadata: a }));
+  const options = useMemo<CodeViewReactOptions<LineAnchor, undefined>>(
+    () => ({
+      disableFileHeader: true,
+      layout: CODE_VIEW_LAYOUT,
+      overflow: "scroll",
+      theme,
+      themeType,
+      lineHoverHighlight: "number",
+      enableGutterUtility: clickable,
+      onGutterUtilityClick: clickable
+        ? (r: SelectedLineRange) =>
+            latest.current.onLineClick?.({ side: layout === "file" ? fileSide : fromPierreSide(r.side), line: Math.min(r.start, r.end) })
+        : undefined,
+      diffStyle: layout === "split" ? "split" : "unified",
+      hunkSeparators: "line-info-basic",
+      expansionLineCount: EXPANSION_LINE_COUNT,
+      loadDiffFiles: canLoad ? async () => loadedFiles(await latest.current.loadFull!()) : undefined,
+      parseDiffOptions: ignoreWhitespace ? { ignoreWhitespace: true } : undefined,
+    }),
+    [theme, themeType, clickable, canLoad, layout, fileSide, ignoreWhitespace],
+  );
+
+  useEffect(() => {
+    const reveal = (a: LineAnchor) => view.current?.scrollTo(lineTarget(file.path, a, layout === "file"));
+    revealers.set(file.path, reveal);
+    return () => {
+      if (revealers.get(file.path) === reveal) revealers.delete(file.path);
+    };
+  }, [file.path, layout]);
+
+  if (!meta && layout !== "file") return <div className="oc-file-note">This diff couldn't be displayed.</div>;
   return (
-    <PierreFileDiff<LineAnchor>
-      fileDiff={meta}
-      options={{
-        ...base,
-        diffStyle: layout === "split" ? "split" : "unified",
-        hunkSeparators: "line-info-basic",
-        expansionLineCount: EXPANSION_LINE_COUNT,
-        loadDiffFiles: loadFull && (async () => loadedFiles(await loadFull())),
-        parseDiffOptions: ignoreWhitespace ? { ignoreWhitespace: true } : undefined,
-      }}
-      lineAnnotations={lineAnnotations}
-      renderAnnotation={(a) => annotations?.(a.metadata)}
+    <CodeView<LineAnchor>
+      ref={view}
+      className="oc-code-view"
+      items={[item]}
+      options={options}
+      renderAnnotation={(...[a]) => annotations?.(a.metadata!)}
     />
   );
 }
 
+/** The one CodeView item, rebuilt (with a bumped version) only when the file, layout or anchors change. */
+function useCodeViewItem(file: FileDiff, meta: ReturnType<typeof processFile>, layout: DiffLayout, anchors: LineAnchor[]): CodeViewItem<LineAnchor> {
+  const signature = JSON.stringify(anchors);
+  const version = useRef({ file, layout, signature, n: 0 });
+  const v = version.current;
+  if (v.file !== file || v.layout !== layout || v.signature !== signature) version.current = { file, layout, signature, n: v.n + 1 };
+  const n = version.current.n;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(() => codeViewItem(file, meta, layout, anchors, n), [file, meta, layout, n]);
+}
+
 export function FileDiffView(props: Props) {
-  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools } = props;
+  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools, onShowWhitespace } = props;
   let body: ReactNode;
   if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
   else if (file.hunks.length === 0)
-    body = <div className="oc-file-note">{ignoreWhitespace ? "Only whitespace changed in this file." : "No content changes in this file."}</div>;
+    body = ignoreWhitespace ? <WhitespaceOnly onShow={onShowWhitespace} /> : <div className="oc-file-note">No content changes in this file.</div>;
   else
     body = (
       <div className="oc-code-scroll">

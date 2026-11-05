@@ -61,6 +61,15 @@ export class WebDriver {
     return this.#call("POST", this.#s(`/element/${id}/click`), {});
   }
 
+  /** Type into whatever has focus with real key events ("\uE007" is Enter). */
+  keys(text) {
+    const actions = [...text].flatMap((value) => [
+      { type: "keyDown", value },
+      { type: "keyUp", value },
+    ]);
+    return this.#call("POST", this.#s("/actions"), { actions: [{ type: "key", id: "keyboard", actions }] });
+  }
+
   title() {
     return this.#call("GET", this.#s("/title"));
   }

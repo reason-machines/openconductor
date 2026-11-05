@@ -5,6 +5,7 @@ import type { Settings } from "./types";
 import { setTerminalFont, terminalFontFrom } from "../features/terminal/font.ts";
 import { scrollbackRows, setScrollbackRows } from "../features/terminal/scrollback.ts";
 import { customCommandsFrom, presetFrom, setBigTerminal } from "../features/terminal/bigTerminal.ts";
+import { applyDiffAppearance } from "../features/diff/appearance.ts";
 
 /** Conductor's zoom steps: 50% to 300% in 10% steps, 100% by default. */
 export const ZOOM_PERCENTS: readonly number[] = Array.from({ length: (300 - 50) / 10 + 1 }, (_, i) => 50 + i * 10);
@@ -67,6 +68,7 @@ export function applyAppearance(s: Settings): void {
     delete root.dataset.monoFont;
     root.style.removeProperty("--font-mono");
   }
+  applyDiffAppearance({ ...a, mono_font_stack: monoFontStack(a.mono_font) }, root);
   setTerminalFont(terminalFontFrom(a));
   setScrollbackRows(scrollbackRows(s.advanced?.terminal_scrollback_limit_bytes));
   setBigTerminal({
