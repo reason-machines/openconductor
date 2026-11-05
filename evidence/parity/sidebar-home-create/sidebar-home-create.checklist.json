@@ -879,16 +879,17 @@
     {
       "id": "home.repo-search",
       "area": "home",
-      "feature": "Search the repository list",
+      "feature": "Narrow the repository list by project: the sidebar section header's Filter by project submenu (All projects, then each repository; shown with more than one repository; stored in sidebar_repo_filter) and the palette Projects tab (Search projects...). Home and the Add-repository menu have no repo search",
       "evidence": {
         "copy": [
-          3825,
-          2917,
-          2497
+          1917,
+          134,
+          3822
         ]
       },
       "detect": [
         "(search|filter)_?repo",
+        "repoFilter|sidebar_repo_filter|Filter by project",
         "projectResults"
       ]
     },

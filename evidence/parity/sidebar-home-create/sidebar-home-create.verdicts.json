@@ -166,7 +166,7 @@
     },
     "home.repo-search": {
       "verdict": "partial",
-      "why": "The palette's Projects tab filters repositories by name (src/palette/search/model.ts projectResults); there is no search field in the repository list or the Add-repository menu."
+      "why": "Re-anchored after REA on Conductor 0.87.6 (renderApp-D_fmY7hW.js, sha256 matches the manifest): Home and the Add-repository menu have no repo search; 'Search repositories...' is the cloud GitHub repo picker (mfa, @10,435,221). Local narrowing is the palette Projects tab and the section header's Filter by project submenu (pra @10,019,058: shown when repositories.length > 1, All projects then each repo, All deletes sidebar_repo_filter). The rebuild has the palette Projects tab (src/palette/search/model.ts projectResults) but no Filter by project on main. PR #354 adds the tested logic and submenu (src/home/repoFilter.ts, ProjectFilterSubmenu.tsx) without mounting it; implemented once the sidebar owner mounts it in the section header menu and filters the repo groups."
     },
     "home.recents": {
       "verdict": "implemented",

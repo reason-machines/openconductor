@@ -287,17 +287,19 @@
    "item": "home.repo-search",
    "area": "home",
    "owner": "home",
-   "depends_on_builders": [],
-   "feature": "Search the repository list",
+   "depends_on_builders": [
+    "sidebar"
+   ],
+   "feature": "Narrow the repository list by project: the sidebar section header's Filter by project submenu (All projects, then each repository; shown with more than one repository; stored in sidebar_repo_filter) and the palette Projects tab (Search projects...). Home and the Add-repository menu have no repo search",
    "verdict": "partial",
-   "gap": "The palette's Projects tab filters repositories by name (src/palette/search/model.ts projectResults); there is no search field in the repository list or the Add-repository menu.",
+   "gap": "Re-anchored after REA on Conductor 0.87.6 (renderApp-D_fmY7hW.js, sha256 matches the manifest): Home and the Add-repository menu have no repo search; 'Search repositories...' is the cloud GitHub repo picker (mfa, @10,435,221). Local narrowing is the palette Projects tab and the section header's Filter by project submenu (pra @10,019,058: shown when repositories.length > 1, All projects then each repo, All deletes sidebar_repo_filter). The rebuild has the palette Projects tab (src/palette/search/model.ts projectResults) but no Filter by project on main. PR #354 adds the tested logic and submenu (src/home/repoFilter.ts, ProjectFilterSubmenu.tsx) without mounting it; implemented once the sidebar owner mounts it in the section header menu and filters the repo groups.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
     "copy": [
-     3825,
-     2917,
-     2497
+     1917,
+     134,
+     3822
     ]
    },
    "status": "open"

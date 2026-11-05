@@ -240,6 +240,7 @@ OWNERS = [
     ("create.", "create-workspace", []),
     ("home.persist", "persistence", ["home"]),
     ("home.colors", "home", ["theme"]),
+    ("home.repo-search", "home", ["sidebar"]),
     ("home.", "home", []),
     ("sidebar.search", "sidebar", ["search-and-palette"]),
     ("sidebar.ws-numbers", "sidebar", ["keyboard-shortcuts"]),
