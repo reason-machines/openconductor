@@ -17,6 +17,8 @@ function fakeBackend() {
     canSteer: true,
     defaultConfig: ["default"],
     sessionKey: (chatId) => `fake.session.${chatId}`,
+    configKey: (chatId) => `fake.config.${chatId}`,
+    parseConfig: (v) => (Array.isArray(v) && v.every((x) => typeof x === "string") ? v : null),
     async listen(d) {
       calls.listen++;
       deliver = d;
@@ -46,7 +48,7 @@ function fakeHost() {
       return cmd === "checkpoint_exists" ? true : null;
     },
     recordTurnChanges: (turn, files) => recorded.push({ turn, files }),
-    storage: { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => void store.set(k, v) },
+    storage: { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => void store.set(k, v), removeItem: (k) => void store.delete(k) },
   };
   return { host, store, invoked, recorded };
 }

@@ -30,6 +30,10 @@ export interface ReasonConfig {
 
 const EVENT = "reason-chat-event";
 const sessionKey = (chatId: string) => `openconductor.reason.session.${chatId}`;
+/** The chat's picked Session options (`configureReason`), kept for a Session it opens later (after Reset chat). */
+const configKey = (chatId: string) => `openconductor.reason.config.${chatId}`;
+const parseConfig = (v: unknown): ReasonConfig[] | null =>
+  Array.isArray(v) ? v.filter((o): o is ReasonConfig => typeof o?.id === "string" && typeof o?.value === "string") : null;
 
 /** Reason chats need the desktop app; the browser preview uses a stand-in agent. */
 export const reasonAvailable = (): boolean => isTauri();
@@ -41,6 +45,8 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
   canSteer: REASON_CAN_STEER,
   defaultConfig: [],
   sessionKey,
+  configKey,
+  parseConfig,
   listen: (deliver) => listen<ReasonPayload>(EVENT, ({ payload }) => deliver(payload.chatId, (s) => applyReasonPayload(s, payload))),
   async open(chatId, cwd, sessionId, config) {
     await invoke("reason_open_chat", { chatId, cwd, sessionId, config });
@@ -77,6 +83,8 @@ function previewBackend(): ChatBackend<ReasonConfig[]> {
     canSteer: REASON_CAN_STEER,
     defaultConfig: [],
     sessionKey,
+    configKey,
+    parseConfig,
     async listen(deliver) {
       send = deliver;
     },
@@ -108,9 +116,13 @@ export const subscribeChat = reason.subscribe;
 export const submitChat = reason.submit;
 export const stopChat = reason.stop;
 export const queueAction = reason.queueAction;
-/** "Reset chat"; the Reason Session itself is not rewound: ACP has no way to drop turns from a Session. */
+/**
+ * "Reset chat". A Reason Session cannot drop turns, so a reset that deletes
+ * messages forgets the chat's Session and the next prompt opens a new one
+ * carrying the kept conversation.
+ */
 export const resetReasonChat = reason.reset;
-/** Session options for a chat that has not sent its first message; set when Reason creates its Session. */
+/** Session options for the chat's next new Session (its first, or the one after Reset chat); kept across restarts. */
 export const configureReason = reason.configure;
 /** The default model's options; a failed lookup leaves Reason's default. */
 export const configureReasonDefault = reason.configureDefault;

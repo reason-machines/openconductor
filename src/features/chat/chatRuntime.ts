@@ -27,6 +27,7 @@ import { restoreCheckpoint, turnCheckpointRef, type Invoke } from "./checkpoints
 import { cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
+import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import type { FileChange } from "../diff/types.ts";
 
 /** Open turns of one chat, as reason.ts tracks them. */
@@ -41,6 +42,11 @@ export interface PromptRequest {
   /** The workspace folder. */
   cwd: string;
   text: string;
+  /**
+   * What the agent gets attached: the user's files, after the kept
+   * conversation when this prompt opens a new session for a chat that
+   * already has turns (after Reset chat; rewind.ts).
+   */
   attachments: PromptAttachment[];
   /** Checkpoint ref the backend saves the turn's `start` and `end` checkpoints under (checkpoints.ts). */
   turn: { sessionId: string; turnId: string };
@@ -58,6 +64,10 @@ export interface ChatBackend<Config> {
   defaultConfig: Config;
   /** localStorage key of the chat's agent session id. */
   sessionKey(chatId: string): string;
+  /** localStorage key of the chat's picked options (`configure`), kept for a session it opens later. */
+  configKey(chatId: string): string;
+  /** Reads saved options back; null when they are not this backend's `Config`. */
+  parseConfig(saved: unknown): Config | null;
   /** Starts delivering the agent's events; called once, before the first `open`. */
   listen(deliver: Deliver): Promise<unknown>;
   /** Opens the chat's agent session (a new one, or `sessionId` resumed) before its first prompt. */
@@ -80,7 +90,7 @@ export interface ChatHost {
   persist: boolean;
   /** Caches the files a finished turn changed, for the chips under the turn. */
   recordTurnChanges(turn: { sessionId: string; turnId: string }, files: FileChange[]): void;
-  storage: Pick<Storage, "getItem" | "setItem">;
+  storage: Pick<Storage, "getItem" | "setItem" | "removeItem">;
 }
 
 export interface ChatSnapshot {
@@ -116,10 +126,18 @@ export interface ChatRuntime<Config> {
   /**
    * "Reset chat" to `turnId`: with `resetFiles`, restore the workspace to the
    * turn's end checkpoint first; only when that worked, delete the later
-   * messages. The agent session itself is not rewound.
+   * messages. The agent is rewound too: when messages were deleted the chat
+   * forgets its session (here and in `conductor.db`, in the same write) and
+   * the next prompt opens a new one carrying the kept conversation
+   * (rewind.ts).
    */
   reset(chatId: string, cwd: string, turnId: string, resetFiles: boolean): Promise<void>;
-  /** Session options for a chat that has not sent its first message. A chat whose session exists keeps its options. */
+  /**
+   * Session options for the chat's next new session: its first, or the one
+   * after Reset chat. A session that already exists keeps its own. Picked
+   * options are kept across restarts, so a session opened after a reset
+   * still runs on them.
+   */
   configure(chatId: string, config: Config): void;
   /**
    * The options a chat starts with when none were picked; the first prompt
@@ -136,9 +154,9 @@ interface Chat<Config> {
   /** Repository the chat's workspace belongs to. */
   repoPath: string | null;
   opened: boolean;
-  /** Options for the session `open` creates; the first prompt waits for them. */
+  /** Options for the session `open` creates (the first, or the one after Reset chat); the first prompt waits for them. */
   config: Config | Promise<Config>;
-  /** The chat's options were picked (New workspace dialog, review model), so the default does not replace them. */
+  /** The chat's options were picked (New workspace dialog, review model) or defaulted, so the default does not replace them. */
   configured: boolean;
   /** Turns shown as running whose prompt has not reached the backend yet. */
   unsent: Set<string>;
@@ -189,20 +207,48 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     if (c) publishStatus(chatId, c.queue.status);
   });
   const savers = new Map<string, ChatSaver>();
+  /** Settles once a chat's stored transcript and session id are in (or failed to load). */
+  const loads = new Map<string, Promise<void>>();
   let listening: Promise<unknown> | null = null;
   const sessionKey = backend.sessionKey;
+
+  function savedConfig(chatId: string): Config | null {
+    try {
+      return backend.parseConfig(JSON.parse(host.storage.getItem(backend.configKey(chatId)) ?? "null"));
+    } catch {
+      return null;
+    }
+  }
 
   function chat(chatId: string): Chat<Config> {
     let c = chats.get(chatId);
     if (!c) {
-      c = { state: reasonChat(chatId), transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), cwd: null, repoPath: null, opened: false, config: backend.defaultConfig, configured: false, unsent: new Set(), stopped: new Set(), listeners: new Set() };
+      const saved = savedConfig(chatId);
+      c = {
+        state: reasonChat(chatId),
+        transcript: emptyTranscript(chatId),
+        queue: Q.emptyQueue(),
+        cwd: null,
+        repoPath: null,
+        opened: false,
+        config: saved ?? backend.defaultConfig,
+        configured: saved !== null,
+        unsent: new Set(),
+        stopped: new Set(),
+        listeners: new Set(),
+      };
       chats.set(chatId, c);
     }
     stored(c);
     return c;
   }
 
-  /** The chat's saver; the first call loads the stored transcript into an untouched chat. */
+  /**
+   * The chat's saver; the first call loads the stored transcript into the chat.
+   * Nothing else changes the transcript before the load settles: `prompt` waits
+   * for it, so a message sent while loading lands after the stored turns and
+   * goes to the stored session.
+   */
   function stored(c: Chat<Config>): ChatSaver | undefined {
     if (!host.persist) return undefined;
     const chatId = c.state.chatId;
@@ -213,11 +259,10 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     });
     savers.set(chatId, saver);
     const s = saver;
-    (host.invoke("chat_messages_load", { chatId }) as Promise<{ messages: string[]; agentSessionId: string | null }>)
+    const load = (host.invoke("chat_messages_load", { chatId }) as Promise<{ messages: string[]; agentSessionId: string | null }>)
       .then(({ messages, agentSessionId }) => {
         if (agentSessionId && !host.storage.getItem(sessionKey(chatId))) host.storage.setItem(sessionKey(chatId), agentSessionId);
-        // A chat that already has messages (a prompt sent while loading) keeps them; the stored rows stay for the next open.
-        if (messages.length === 0 || c.transcript.messages.length > 0) return;
+        if (messages.length === 0) return;
         const r = applyChatEvents(c.transcript, restoreEvents(chatId, messages));
         if (!r.ok) return console.warn("chat: stored transcript not applied", r.error);
         c.transcript = r.transcript;
@@ -225,6 +270,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
         notify(c);
       })
       .catch((e) => console.warn("chat: stored transcript not loaded", e));
+    loads.set(chatId, load);
     return saver;
   }
 
@@ -291,16 +337,23 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
    */
   async function prompt(c: Chat<Config>, text: string, attachments: PromptAttachment[]): Promise<void> {
     const chatId = c.state.chatId;
-    const firstMessage = !c.opened && !host.storage.getItem(sessionKey(chatId)) && !c.transcript.messages.some((m) => m.role === "user");
     // A random turn id, so a turn's checkpoints and cached changes never
     // collide with a turn from an earlier app run.
     const turnId = `${chatId}:${crypto.randomUUID()}`;
-    apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
-    // `submit` sets the folder before any effect runs.
-    const cwd = c.cwd ?? "";
     // Stop is shown from here on, but the backend only learns of the turn
     // once `prompt` runs; a Stop before that is held in `c.stopped`.
     c.unsent.add(turnId);
+    // The stored transcript and session id come first (see `stored`).
+    const load = loads.get(chatId);
+    if (load) await load;
+    // No session yet: a new chat, or one whose session was dropped by Reset
+    // chat. The new session gets the conversation the chat still shows.
+    const newSession = !c.opened && !host.storage.getItem(sessionKey(chatId));
+    const firstMessage = newSession && !c.transcript.messages.some((m) => m.role === "user");
+    const carried = newSession ? earlierConversation(c.transcript) : null;
+    apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
+    // `submit` sets the folder before any effect runs.
+    const cwd = c.cwd ?? "";
     try {
       listening ??= backend.listen(deliver);
       await listening;
@@ -317,7 +370,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       // changed. Resolves after the turn ended; a rejection means the turn
       // never started (no CLI, no process), so no event will end it.
       const turn = turnCheckpointRef(chatId, turnId);
-      const end = await backend.prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath: c.repoPath });
+      const end = await backend.prompt({ chatId, cwd, text, attachments: carried ? [carried, ...attachments] : attachments, turn, firstMessage, repoPath: c.repoPath });
       if (end.turnChanges) host.recordTurnChanges(turn, end.turnChanges);
     } catch (e) {
       c.unsent.delete(turnId);
@@ -372,14 +425,26 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       const c = chat(chatId);
       if (c.transcript.activeTurn !== null) throw new Error("Stop the agent before resetting the chat.");
       await restoreCheckpoint(host.invoke, cwd, chatId, turnId, resetFiles);
-      c.transcript = truncateAfterTurn(c.transcript, turnId);
-      savers.get(chatId)?.update(c.transcript);
+      const before = c.transcript;
+      c.transcript = truncateAfterTurn(before, turnId);
+      const lastKept = lastMessageOfTurn(c.transcript, turnId);
+      const saver = savers.get(chatId);
+      if (lastKept && c.transcript.messages.length < before.messages.length) {
+        host.storage.removeItem(sessionKey(chatId));
+        c.opened = false;
+        saver?.rewind(c.transcript, lastKept);
+      } else saver?.update(c.transcript);
       notify(c);
     },
     configure(chatId, config) {
       const c = chat(chatId);
       c.config = config;
       c.configured = true;
+      try {
+        host.storage.setItem(backend.configKey(chatId), JSON.stringify(config));
+      } catch (e) {
+        console.warn("chat: session options not saved", e);
+      }
     },
     configureDefault(chatId, config) {
       const c = chat(chatId);

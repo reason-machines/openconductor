@@ -3,7 +3,7 @@
  "generated_by": "tools/parity_check.py check",
  "target": {
   "ref": "origin/main",
-  "sha": "4b9dc87d3eb156dd19cf34a433c64357512669f1"
+  "sha": "a0139339c52b4f013655b1af12c86828f24967c7"
  },
  "result_meaning": "pass = every item that evidences the obligation is matched on the target (static); fail = at least one item is partial, declared or missing. Static presence, not runtime behavior.",
  "areas": {
@@ -16,39 +16,39 @@
   },
   "shortcuts": {
    "total": 172,
-   "matched": 65,
-   "partial": 107,
+   "matched": 71,
+   "partial": 101,
    "missing": 0,
-   "parity_pct": 68.9
+   "parity_pct": 70.6
   },
   "persistence": {
    "total": 44,
-   "matched": 33,
+   "matched": 43,
    "partial": 0,
-   "missing": 11,
-   "parity_pct": 75.0
+   "missing": 1,
+   "parity_pct": 97.7
   },
   "packaging": {
    "total": 78,
-   "matched": 64,
+   "matched": 63,
    "partial": 0,
-   "missing": 14,
-   "parity_pct": 82.1
+   "missing": 15,
+   "parity_pct": 80.8
   }
  },
  "overall": {
   "total": 419,
-  "matched": 281,
-  "partial": 110,
-  "missing": 28,
-  "parity_pct": 80.2
+  "matched": 296,
+  "partial": 104,
+  "missing": 19,
+  "parity_pct": 83.1
  },
  "evidence": {
   "report": "evidence/parity/parity-report.json",
   "persistence": {
    "conductor": "ev_eebc0cee71a457516904ff1512241e4549370c51782891ca6801967cecc78a1e",
    "cache": "ev_202d2f9fcbf5be8a97cec7b5c27cfa0b7722d0b3e095404e9ac0b0923904aabf",
-   "rebuild": "REA inspect-sqlite-database ev_19fffea4f69f3d74dfb4d41ad2179b9d1e61172535a4b36bf530b3ea4b220672"
+   "rebuild": "PRAGMA table_info"
   },
   "packaging": "REA on CI-built OpenConductor.app (run 42062149395, commit d8b3b2e0f931): inspect-plist ev_eaeabb2489ff9054b990f484a5698c70e075e48d90e080ab5d0325a11036acc6, inspect-signature ev_e0e58206439cd9eb37bb1332705e4f671744b37c21f29034bb27ab7c84bd569f, trace-dylib-resolution ev_0a1ccf8e5f717183f189ca714a7a7242209e3d0843cde118a92deacb1cfdfa71",
   "shortcuts": {
@@ -128,13 +128,13 @@
    "obligation_id": "db.local-storage",
    "area": "persistence",
    "ledger_status": "unowned",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 11,
-    "matched": 1,
+    "matched": 11,
     "partial": 0,
-    "missing": 10,
-    "parity_pct": 9.1
+    "missing": 0,
+    "parity_pct": 100.0
    }
   },
   {
@@ -235,10 +235,10 @@
    "result": "fail",
    "parity": {
     "total": 12,
-    "matched": 5,
+    "matched": 4,
     "partial": 0,
-    "missing": 7,
-    "parity_pct": 41.7
+    "missing": 8,
+    "parity_pct": 33.3
    }
   },
   {
@@ -649,40 +649,15 @@
    "result": "fail",
    "parity": {
     "total": 51,
-    "matched": 5,
-    "partial": 46,
+    "matched": 11,
+    "partial": 40,
     "missing": 0,
-    "parity_pct": 54.9
+    "parity_pct": 60.8
    },
    "gaps": [
     {
      "group": "Chat",
      "id": "nav.newTab",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queueEdit.save",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queueEdit.saveAndSteer",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queue.editMessage",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queue.deleteMessage",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queue.steerMessage",
      "status": "declared"
     },
     {
@@ -693,11 +668,6 @@
     {
      "group": "Chat",
      "id": "chat.planResponse.submit",
-     "status": "declared"
-    },
-    {
-     "group": "Chat",
-     "id": "chat.queueEdit.cancel",
      "status": "declared"
     },
     {
@@ -1116,66 +1086,15 @@
    "area": "persistence",
    "parent_obligation": "db.local-storage",
    "owner": "builder",
-   "result": "fail",
+   "result": "pass",
    "parity": {
     "total": 11,
-    "matched": 1,
+    "matched": 11,
     "partial": 0,
-    "missing": 10,
-    "parity_pct": 9.1
+    "missing": 0,
+    "parity_pct": 100.0
    },
-   "gaps": [
-    {
-     "group": "app data store",
-     "id": "local-storage:browser-local-storage",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:claude-context-windows",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:composer-drafts",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:dispatcher-state",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:model-picker-configs-v1",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:opencode-model-discovery-v1",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:pre-workspace-completions-v1",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:route-user-state",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:run-script-history",
-     "status": "missing"
-    },
-    {
-     "group": "app data store",
-     "id": "local-storage:turn-changes-cache",
-     "status": "missing"
-    }
-   ]
+   "gaps": []
   },
   {
    "obligation_id": "persistence.window-state",
@@ -1453,10 +1372,10 @@
    "result": "fail",
    "parity": {
     "total": 12,
-    "matched": 5,
+    "matched": 4,
     "partial": 0,
-    "missing": 7,
-    "parity_pct": 41.7
+    "missing": 8,
+    "parity_pct": 33.3
    },
    "gaps": [
     {
@@ -1487,6 +1406,11 @@
     {
      "group": "bundled resource",
      "id": "bin/.internal/sidecar",
+     "status": "missing"
+    },
+    {
+     "group": "bundled resource",
+     "id": "bin/conductor",
      "status": "missing"
     },
     {

@@ -32,6 +32,8 @@ export interface StoredMessage {
 export interface SaveBatch {
   upserts: StoredMessage[];
   deleteIds: string[];
+  /** Reset chat: forget the agent Session, which remembers turns after this message. */
+  rewindTo?: string;
 }
 
 /** The message JSON kept in `full_message`. */
@@ -125,6 +127,8 @@ export class ChatSaver {
   private pending: ChatTranscript | null = null;
   private timer: ReturnType<typeof setTimeout> | null = null;
   private writing = false;
+  /** A Reset chat not written yet: goes with the next batch. */
+  private rewindTo: string | null = null;
   private readonly save: (batch: SaveBatch) => Promise<void>;
   private readonly delayMs: number;
 
@@ -138,6 +142,15 @@ export class ChatSaver {
     this.stored = t;
   }
 
+  /**
+   * Reset chat: `t` drops turns the agent Session remembers, so the stored
+   * Session is forgotten in the same write that deletes them.
+   */
+  rewind(t: ChatTranscript, lastKeptMessageId: string): void {
+    this.rewindTo = lastKeptMessageId;
+    this.update(t);
+  }
+
   update(t: ChatTranscript): void {
     this.pending = t;
     if (!this.timer && !this.writing) this.timer = setTimeout(() => void this.flush(), this.delayMs);
@@ -149,13 +162,16 @@ export class ChatSaver {
     const next = this.pending;
     if (!next || this.writing) return;
     this.pending = null;
-    const batch = diffForSave(this.stored, next);
+    const batch: SaveBatch = diffForSave(this.stored, next);
+    const rewindTo = this.rewindTo;
+    if (rewindTo !== null) batch.rewindTo = rewindTo;
     let failed = false;
-    if (batch.upserts.length > 0 || batch.deleteIds.length > 0) {
+    if (batch.upserts.length > 0 || batch.deleteIds.length > 0 || rewindTo !== null) {
       this.writing = true;
       try {
         await this.save(batch);
         this.stored = next;
+        if (this.rewindTo === rewindTo) this.rewindTo = null;
       } catch (e) {
         console.warn("chat: transcript not saved", e);
         this.pending ??= next;
