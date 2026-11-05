@@ -9,7 +9,7 @@ import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
-import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, sectionsFromDb, type DbNavSection, type NavSection } from "./navigationSections";
+import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, reorderSection, sectionOf, sectionsFromDb, withoutWorkspace, type DbNavSection, type NavSection } from "./navigationSections";
 import { sameRepoRecord } from "./addRepo";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
@@ -60,6 +60,8 @@ export type Action =
   | { type: "createSection"; section: NavSection; beforeSectionId?: string }
   | { type: "editSection"; sectionId: string; name: string; emoji?: string }
   | { type: "deleteSection"; sectionId: string }
+  /** Drag a section header to `toIndex` (Conductor's `bY`). */
+  | { type: "reorderSection"; sectionId: string; toIndex: number }
   /** Move a workspace into `sectionId`, or out of its section with null. */
   | { type: "assignSection"; workspaceId: string; sectionId: string | null }
   | { type: "hydrateSections"; sections: NavSection[]; updatedAt: number }
@@ -193,8 +195,11 @@ export function reducer(state: AppState, action: Action): AppState {
     }
     case "setWorkspaceUnread":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, unread: action.unread || undefined }));
-    case "setWorkspacePinned":
-      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
+    case "setWorkspacePinned": {
+      const next = updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
+      // Conductor's pin mutation unassigns the workspace from its section first (index-BGEQ8YjU.js @3315700).
+      return action.pinned && sectionOf(state.sections, action.workspaceId) ? withSections(next, withoutWorkspace(state.sections ?? [], action.workspaceId)) : next;
+    }
     case "setWorkspaceStatus":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, manualStatus: action.status }));
     case "createSection":
@@ -203,6 +208,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return withSections(state, editSection(state.sections ?? [], { id: action.sectionId, name: action.name, emoji: action.emoji }));
     case "deleteSection":
       return withSections(state, deleteSection(state.sections ?? [], action.sectionId));
+    case "reorderSection":
+      return withSections(state, reorderSection(state.sections ?? [], action.sectionId, action.toIndex));
     case "assignSection": {
       const next = withSections(state, assignWorkspace(state.sections ?? [], action.workspaceId, action.sectionId));
       if (action.sectionId === null) return next;
