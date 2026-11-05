@@ -85,9 +85,11 @@ interface ChatPanelProps extends Props {
   onRunningChange?: (running: boolean) => void;
   /** A file chip under a finished turn: open that file's changes from the turn. */
   openTurnFile: (turn: TurnRef, path: string) => void;
+  /** A file badge in a tool row (repository-relative path): open the file's changes when it has some. */
+  openFile?: (path: string) => void;
 }
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -272,6 +274,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             onResetChat={reason && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
             turnFooter={turnFooter}
+            workspacePath={cwd}
+            onOpenFile={openFile ? (path) => openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined}
           />
         )}
         <div ref={endRef} />
@@ -672,6 +676,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
+          openFile={diff.openPath}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
           content={
             showDiff ? (

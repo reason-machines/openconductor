@@ -122,13 +122,10 @@ async function send(text) {
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
-/** Opens every collapsed "N tool calls" summary, then expands every tool row and returns each row's tool input. */
+/** Opens every collapsed "N tool calls" summary, then returns each tool row's input as the agent reported it. */
 const toolInputs = () =>
   run(`for (const b of document.querySelectorAll('.chat-tool-summary-row[aria-expanded="false"]')) b.click(); return true;`).then(() =>
-  run(`
-    for (const b of document.querySelectorAll('.chat-tool-head[aria-expanded="false"]')) b.click();
-    return [...document.querySelectorAll('.chat-tool-body > pre:first-child')].map((p) => p.textContent);
-  `)).then((texts) => texts.map((t) => JSON.parse(t)));
+  run(`return [...document.querySelectorAll('.chat-tool[data-tool-input]')].map((e) => e.dataset.toolInput);`)).then((texts) => texts.map((t) => JSON.parse(t)));
 
 /** A finished turn has no Stop button. */
 const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await running()));
@@ -252,10 +249,13 @@ try {
   pass(`turns 5 and 6 each saved start/end checkpoints (${refs.length} refs in the workspace)`);
 
   const turn5 = `.chat-turn-end[data-turn-id="${id5}"]`;
-  const lastHasMenu = await run(`return !!document.querySelector('.chat-turn-end[data-turn-id="${id6}"] button[aria-label="More actions"]');`);
-  assert.equal(lastHasMenu, false, "the last turn has no Reset chat");
+  // Every finished turn has More actions (as in Conductor); only turns before the last offer Reset chat.
+  await wd("POST", `/element/${await find(`.chat-turn-end[data-turn-id="${id6}"] button[aria-label="More actions"]`)}/click`, {});
+  const lastHasReset = await run(`return !!document.querySelector('.chat-turn-end[data-turn-id="${id6}"] .chat-menu [data-action="reset-chat"]');`);
+  assert.equal(lastHasReset, false, "the last turn has no Reset chat");
+  await wd("POST", `/element/${await find(`.chat-turn-end[data-turn-id="${id6}"] button[aria-label="More actions"]`)}/click`, {});
   await wd("POST", `/element/${await find(`${turn5} button[aria-label="More actions"]`)}/click`, {});
-  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]`)}/click`, {});
+  await wd("POST", `/element/${await find(`${turn5} .chat-menu [data-action="reset-chat"]`)}/click`, {});
   const dialog = await waitFor('"Reset chat?" with "2 changed"', () =>
     run(`const d = document.querySelector('.modal[aria-label="Reset chat?"]'); return d && d.innerText.includes("changed") ? d.innerText : null;`),
   );
@@ -274,8 +274,10 @@ try {
   assert.ok(after.includes("turn 3: follow-up"), "earlier turns stay");
   assert.equal(readWs("notes.txt"), "one\n");
   assert.equal(readWs("extra.txt"), null);
-  const turn5Menu = await run(`return !!document.querySelector('${turn5} button[aria-label="More actions"]');`);
-  assert.equal(turn5Menu, false, "turn 5 is now the last turn");
+  await wd("POST", `/element/${await find(`${turn5} button[aria-label="More actions"]`)}/click`, {});
+  const turn5Reset = await run(`return !!document.querySelector('${turn5} .chat-menu [data-action="reset-chat"]');`);
+  assert.equal(turn5Reset, false, "turn 5 is now the last turn: no Reset chat");
+  await wd("POST", `/element/${await find(`${turn5} button[aria-label="More actions"]`)}/click`, {});
   await screenshot("reason-chat-after-reset");
   pass("Reset deleted turn 6 and restored the files: notes.txt is back to one, extra.txt is gone");
 

@@ -9,6 +9,7 @@
 // - Each finished turn ends with a footer carrying the copy and retry data.
 
 import type { ChatTranscript } from "./reducer.ts";
+import { conductorTools, type ConductorTool } from "./conductorTools.ts";
 import type { ChatMessage, MessageOrigin, TurnStatus } from "./types.ts";
 import { messageOrigin, plainText } from "./types.ts";
 
@@ -16,8 +17,11 @@ export type ToolStatus = "running" | "done" | "error" | "interrupted";
 
 export interface ToolCallView {
   id: string;
+  /** Conductor's tool name for the call (see conductorTools.ts). */
   name: string;
   input: unknown;
+  /** The call as Conductor draws it: Claude Code's tool name and input. */
+  tool: ConductorTool;
   status: ToolStatus;
   /** Result text once the tool has answered. */
   result?: string;
@@ -48,6 +52,9 @@ export type RowView =
       retryPrompt?: string;
       /** "Reset chat" applies: the turn has an agent reply and is not the chat's last turn. */
       canReset: boolean;
+      /** When the turn started and ended (RFC 3339), for the footer's duration and time. */
+      startedAt?: string;
+      endedAt?: string;
     };
 
 interface ToolResult {
@@ -82,7 +89,12 @@ function assistantRow(message: ChatMessage, results: Map<string, ToolResult>, st
       case "tool_use": {
         const r = results.get(b.id);
         const status: ToolStatus = r ? (r.isError ? "error" : "done") : turnRunning ? "running" : "interrupted";
-        parts.push({ kind: "tool", call: { id: b.id, name: b.name, input: b.input, status, ...(r ? { result: r.content } : {}) } });
+        // One Codex file change item edits several files: Conductor shows a row per file.
+        const tools = conductorTools(b.name, b.input);
+        tools.forEach((tool, j) => {
+          const id = j === 0 ? b.id : `${b.id}#${j}`;
+          parts.push({ kind: "tool", call: { id, name: tool.name, input: b.input, tool, status, ...(r ? { result: r.content } : {}) } });
+        });
         break;
       }
       case "tool_result":
@@ -113,6 +125,8 @@ function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[],
     ...(finalText !== undefined ? { finalText } : {}),
     ...(canRetry && prompt ? { retryPrompt: plainText(prompt) } : {}),
     canReset: !isLastTurn && turnMessages.some((m) => m.role === "assistant"),
+    ...(state?.startedAt !== undefined ? { startedAt: state.startedAt } : {}),
+    ...(state?.endedAt !== undefined ? { endedAt: state.endedAt } : {}),
   };
 }
 
