@@ -48,6 +48,13 @@ Pixel references of Conductor's screens for OpenConductor verifiers. Reference e
 |---|---|---|---|---|---|
 ${rows}
 
+## REA notes from this run
+
+- No REA bug found. \`capture-browser-scenario\` was deterministic: reruns of the same scenario produced byte-identical PNGs (same sha256).
+- Usage pitfalls (schema, not bugs): \`wait_for_timeout\` takes \`duration_ms\`, not \`timeout_ms\`; every action needs a \`step_id\`; a failed step skips every later step, and the final artifact then reports \`state: "missing", reason: "action was not executed after an earlier failure"\` without naming the failed step at that level, so you have to read each step's own result to find it.
+- Gap: there is no init-script or request-interception option, so the Tauri mock has to be injected by the HTTP server. A css locator such as \`text=Diagnostics\` that matches several elements fails (Playwright strict mode), which looks the same as a timeout.
+- Environment: Chromium aborts with "Socket path too long" under the long session \`TMPDIR\`; use \`TMPDIR=/tmp/t\`.
+
 ## Not captured
 
 ${gaps.length ? `| Screen | Reason |\n|---|---|\n${gapRows}` : "Nothing yet."}
