@@ -162,6 +162,8 @@ export interface ChatRuntime<Config> {
    * waits for them, and a failed lookup leaves `defaultConfig`.
    */
   configureDefault(chatId: string, config: Promise<Config>): void;
+  /** The options the chat's sessions open with: picked, defaulted, or `defaultConfig`. */
+  config(chatId: string): Promise<Config>;
 }
 
 interface Chat<Config> {
@@ -444,6 +446,9 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       if (c.configured || c.opened) return;
       c.config = config.catch(() => backend.defaultConfig);
       c.configured = true;
+    },
+    config(chatId) {
+      return Promise.resolve(chat(chatId).config);
     },
   };
 }

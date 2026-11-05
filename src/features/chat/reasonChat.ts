@@ -222,6 +222,8 @@ export const resetReasonChat = reason.reset;
 export const configureReason = reason.configure;
 /** The default model's options; a failed lookup leaves Reason's default. */
 export const configureReasonDefault = reason.configureDefault;
+/** The options the chat's Sessions open with (a fork opens on the same). */
+export const reasonChatConfig = reason.config;
 
 /** The first message or a Retry: starts when idle, else waits in the queue. */
 export function sendReason(chatId: string, cwd: string, text: string, attachments: readonly PromptAttachment[] = [], repoPath?: string): void {
