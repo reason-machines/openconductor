@@ -544,6 +544,126 @@
    ]
   },
   {
+   "id": "panel-run-add",
+   "title": "Terminal panel: Run, no run script",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Run"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": ".ws-strip-tabs [role=tab]",
+     "text": "Run",
+     "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "panel-run-idle",
+   "title": "Terminal panel: Run, before the run script runs",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Run"
+     }
+    ],
+    "query": {
+     "oc_run_script": "npm run dev"
+    }
+   },
+   "oc_reason": "the lane's seeded repositories have no run script; tools/side-by-side/setup-tab.mjs captures this state"
+  },
+  {
+   "id": "toast-xcode-license",
+   "title": "Toast: Xcode license is not accepted",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Run"
+     },
+     {
+      "wait": "text=Xcode license is not accepted"
+     }
+    ],
+    "query": {
+     "oc_xcode_license": "unaccepted"
+    }
+   },
+   "oc_reason": "the lane's Linux build skips the macOS-only check; tools/side-by-side/setup-tab.mjs captures this state",
+   "covers": [
+    {
+     "kind": "toast",
+     "name": "Xcode license is not accepted"
+    }
+   ]
+  },
+  {
+   "id": "toast-save-setting-failed",
+   "title": "Toast: Failed to save setting (Scripts, read-only settings file)",
+   "ref": {
+    "path": "/settings/repos/repo-tide-web/scripts",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "button:text-is('Add')"
+     },
+     {
+      "click": "[role=dialog] button:has-text('Save')"
+     },
+     {
+      "wait": "text=Failed to save setting"
+     }
+    ],
+    "query": {
+     "oc_fail_settings_write": "1"
+    }
+   },
+   "oc_reason": "the lane's settings files are writable; tools/side-by-side/setup-tab.mjs captures this state"
+  },
+  {
    "id": "needs-permission",
    "title": "Workspace needing permission",
    "ref": {

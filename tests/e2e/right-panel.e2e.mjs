@@ -206,9 +206,10 @@ test("Run with spotlight testing on and no run script offers Run Spotlight, whic
   const strip = page.locator(".ws-right .ws-strip");
   await strip.waitFor();
   assert.equal(await strip.getByRole("tab", { name: "Run" }).getAttribute("aria-selected"), "true");
-  const start = strip.locator(".scripts-actions .btn-primary");
+  // Conductor's run split button names the task: "Start spotlight" (header), and the idle body offers the same.
+  const start = strip.getByRole("button", { name: "Start spotlight", exact: true });
   await start.waitFor();
-  assert.match(await start.innerText(), /Run Spotlight$/);
+  await strip.getByText("Sync your changes to the repository root.").waitFor();
   assert.equal(await strip.locator(".scripts-empty-box").count(), 0);
   await start.click();
   await page.waitForFunction(() => window.__fake.calls.some((c) => c.cmd === "spotlight_start"));

@@ -27,13 +27,19 @@ import "./scripts.css";
 const SHARE_SCRIPTS_DOCS = "https://www.conductor.build/docs/reference/scripts/share-with-teammates";
 /** Conductor's `x0a`: edits save 2 s after the last keystroke. */
 const SAVE_DEBOUNCE_MS = 2000;
+/** Conductor's settings service (`Sz`) on a failed settings file write. */
+export const SAVE_SETTING_FAILED = "Failed to save setting";
 
 type Notify = (kind: "info" | "error", message: string) => void;
 
 /**
- * Failures are toasts, as Conductor's `ama` and `fGt` raise them (`kt.error`): "Failed to save
- * script", "Failed to save run script", "Failed to delete run script", "Run script names can't be
- * empty", "Run script names must be unique". Without a `notify` they show under the rows.
+ * A settings write that fails is one "Failed to save setting" toast, as Conductor's settings
+ * service raises it for every file-backed write (index-BGEQ8YjU.js `Sz` ~344,829: it toasts and
+ * returns false, so `ama` and `fGt` add nothing; their own "Failed to save run script" /
+ * "Failed to delete run script" / "Failed to save script" fire only when something throws past
+ * the service, which a local settings file write here never does). "Run script names can't be
+ * empty" and "Run script names must be unique" stay as Conductor's guards. Without a `notify`
+ * the message shows under the rows.
  */
 export function RepoScriptsRows({ repo, notify }: { repo: Repo; notify?: Notify }) {
   const [config, setConfig] = useState<ScriptsConfig | null>(null);
@@ -57,7 +63,7 @@ export function RepoScriptsRows({ repo, notify }: { repo: Repo; notify?: Notify 
   }, [load]);
 
   const write = useCallback(
-    async (key: RepoLocalKey, value: unknown, failure: string) => {
+    async (key: RepoLocalKey, value: unknown) => {
       if (!repo.path) return false;
       setError(null);
       try {
@@ -66,8 +72,8 @@ export function RepoScriptsRows({ repo, notify }: { repo: Repo; notify?: Notify 
         load();
         return true;
       } catch {
-        if (notify) notify("error", failure);
-        else setError(failure);
+        if (notify) notify("error", SAVE_SETTING_FAILED);
+        else setError(SAVE_SETTING_FAILED);
         return false;
       }
     },
@@ -87,7 +93,7 @@ export function RepoScriptsRows({ repo, notify }: { repo: Repo; notify?: Notify 
           filePath="setup.sh"
           value={config?.setup ?? ""}
           disabled={!config}
-          onSave={(v) => write("scripts.setup", v.trim() ? v : null, "Failed to save script")}
+          onSave={(v) => write("scripts.setup", v.trim() ? v : null)}
         />
         <ScriptRow
           id="archive_script"
@@ -96,7 +102,7 @@ export function RepoScriptsRows({ repo, notify }: { repo: Repo; notify?: Notify 
           filePath="archive.sh"
           value={config?.archive ?? ""}
           disabled={!config}
-          onSave={(v) => write("scripts.archive", v.trim() ? v : null, "Failed to save script")}
+          onSave={(v) => write("scripts.archive", v.trim() ? v : null)}
         />
       </div>
       <div className="settings-rows">
@@ -219,7 +225,7 @@ export function ScriptEditor(props: {
   );
 }
 
-type Write = (key: RepoLocalKey, value: unknown, failure: string) => Promise<boolean>;
+type Write = (key: RepoLocalKey, value: unknown) => Promise<boolean>;
 type DialogState = { mode: "new" } | { mode: "edit"; script: RunScript };
 
 /** Conductor's `ama`: the Run scripts row, its list and the Add / Edit dialog. */
@@ -232,10 +238,10 @@ function RunScriptsRow({ scripts, write, fail }: { scripts: RunScript[] | null; 
     if (id === undefined) return fail("Run script names can't be empty");
     if (taken(original?.id).has(id.toLowerCase())) return fail("Run script names must be unique");
     setDialog(null);
-    const ok = await write(`scripts.run.${id}`, runEntry(form, original), "Failed to save run script");
+    const ok = await write(`scripts.run.${id}`, runEntry(form, original));
     // A rename removes the old local entry (Conductor's `replaceId`).
     if (ok && original && original.layer === "repo_local" && scriptKey(original.id) !== scriptKey(id)) {
-      await write(`scripts.run.${original.id}`, null, "Failed to save run script");
+      await write(`scripts.run.${original.id}`, null);
     }
   };
   return (
@@ -290,7 +296,7 @@ function RunScriptsRow({ scripts, write, fail }: { scripts: RunScript[] | null; 
           onDelete={() => {
             if (dialog.mode !== "edit") return;
             setDialog(null);
-            void write(`scripts.run.${dialog.script.id}`, null, "Failed to delete run script");
+            void write(`scripts.run.${dialog.script.id}`, null);
           }}
         />
       )}
