@@ -600,7 +600,7 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
         {count ? <span className="tabs-end">{review}</span> : null}
       </div>
       {tab === "changes" ? (
-        <ChangesList diff={diff} actions={actions} worktree={worktree} />
+        <ChangesList diff={diff} actions={actions} worktree={worktree} notify={notify} />
       ) : tab === "checks" ? (
         <ChecksTab
           worktree={worktree}
@@ -949,7 +949,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               actions={review.actions}
               pr={pullRequest}
               worktree={workspace.path ?? null}
-              review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
+              review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} disabled={workspace.status === "archived"} />}
               repo={repo}
               sendToChat={sendToChat}
               readOnly={workspace.status === "archived"}

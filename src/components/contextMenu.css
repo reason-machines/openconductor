@@ -1,0 +1,144 @@
+/* Right-click menus, as Conductor's Base UI context menu (renderApp-D_fmY7hW.js:
+   `gy` ContextMenuContent, `L1` ContextMenuItem, `aye` ContextMenuSeparator,
+   `J4` ContextMenuShortcut, `TFt` ContextMenuSubTrigger, `AFt` ContextMenuSubContent;
+   classes read with REA's bundle slices as data). Colours are Conductor's tokens
+   (evidence/frontend/css-tokens.json: --popover*, --foreground, --accent-foreground,
+   --muted-foreground, --border, --internal for `:root,.light` and `.dark`). */
+.cm {
+  --cm-popover: #ffffff;
+  --cm-ring: #211e1c0d;
+  --cm-accent: #14100f0d;
+  --cm-fg: #2c2826;
+  --cm-accent-fg: #2c2826;
+  --cm-popover-fg: #211e1c;
+  --cm-muted: #8e8885;
+  --cm-border: #eae8e6;
+  --cm-internal: #993f29;
+  position: fixed;
+  z-index: 1100;
+  box-sizing: border-box;
+  /* min-w-32 p-1 rounded-lg ring-1 ring-popover-ring bg-popover shadow-md */
+  min-width: 128px;
+  max-height: var(--cm-available-height, calc(100vh - 8px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--cm-popover);
+  color: var(--cm-fg);
+  box-shadow: 0 0 0 1px var(--cm-ring), 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  /* origin-(--transform-origin) transition-[opacity,scale] duration-100,
+     starting/ending style opacity-0 scale-95 */
+  transform-origin: var(--cm-origin, top left);
+  transition-property: opacity, scale;
+  transition-duration: 100ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.cm[data-starting-style],
+.cm[data-ending-style] {
+  opacity: 0;
+  scale: 0.95;
+}
+/* AFt: the submenu's popup is rounded-md border shadow-lg ring-0. */
+.cm.cm-sub {
+  border: 1px solid var(--cm-border);
+  border-radius: 6px;
+  color: var(--cm-popover-fg);
+  box-shadow: 0 10px 15px -3px #0000001a, 0 4px 6px -4px #0000001a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .cm {
+    --cm-popover: #2c2826;
+    --cm-ring: #ffffff1a;
+    --cm-accent: #ffffff0d;
+    --cm-fg: #eae8e6;
+    --cm-accent-fg: #f3f2f1;
+    --cm-popover-fg: #eae8e6;
+    --cm-muted: #a5a09c;
+    --cm-border: #ffffff1a;
+    --cm-internal: #e29878;
+  }
+}
+:root[data-theme="dark"] .cm {
+  --cm-popover: #2c2826;
+  --cm-ring: #ffffff1a;
+  --cm-accent: #ffffff0d;
+  --cm-fg: #eae8e6;
+  --cm-accent-fg: #f3f2f1;
+  --cm-popover-fg: #eae8e6;
+  --cm-muted: #a5a09c;
+  --cm-border: #ffffff1a;
+  --cm-internal: #e29878;
+}
+
+/* L1: relative flex items-center gap-2 rounded-md px-2 py-1.5 text-sm,
+   [&_svg]:size-4 [&>svg]:text-muted-foreground, highlighted bg-popover-accent. */
+.cm-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: default;
+  outline: none;
+}
+.cm-item > svg,
+.cm-item > .cm-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--cm-muted);
+  pointer-events: none;
+}
+.cm-icon * { vector-effect: non-scaling-stroke; }
+.cm-item[data-highlighted],
+.cm-item[data-popup-open] {
+  background: var(--cm-accent);
+  color: var(--cm-accent-fg);
+}
+.cm-item[data-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+/* TFt: the submenu trigger is rounded-sm. */
+.cm-item.cm-subtrigger { border-radius: 4px; }
+.cm-item.cm-subtrigger > .cm-chevron { margin-left: auto; }
+.cm-item.cm-internal { color: var(--cm-internal); }
+.cm-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
+/* J4: ml-auto pl-4 text-xs tracking-widest text-muted-foreground. */
+.cm-shortcut {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  padding-left: 16px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 1.44px;
+  color: var(--cm-muted);
+}
+.cm-shortcut > svg { width: 12px; height: 12px; }
+/* X7t's number key on an "Open in" row. */
+.cm-numkey { margin-left: auto; padding-left: 16px; font-family: var(--font-mono); font-size: 12px; line-height: 16px; color: var(--cm-muted); }
+
+/* aye: -mx-1 my-1 h-px bg-border. */
+.cm-sep {
+  height: 1px;
+  margin: 4px -4px;
+  background: var(--cm-border);
+}

@@ -1,14 +1,31 @@
 // parity:diff.discard:ui parity:diff.changes-list:ui
 // Right-click menu on a changed file in the changes list.
 //
-// Conductor's file context menu (renderApp `Svs`, read with REA on sven m5 max
-// as data), in order: View, Attach in chat, Open in ▸ (external apps), Copy
-// path (absolute), Copy relative path (only with a workspace path), then a
-// separator and Discard changes (only for a file with changes; it opens the
-// same confirmation, in the "All changes" view).
-// Not built here: Attach in chat (no command reads a worktree file for the
-// composer yet) and Open in (no external-app launcher yet).
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+// Conductor's file context menu (renderApp `Svs`, mounted for Changes rows by
+// `syi` and for the file tree by `Bvs`; read with REA as data), in order:
+//   View (eye)                       - not for directories
+//   Attach in chat (plus)            - only where the caller can attach; the
+//                                      Changes row passes no attach handler
+//   Open in ▸ (arrow-up-right)       - installed apps that open files, with
+//                                      number keys 1-9 (`X7t`, `J7t` = 9)
+//   Copy path (copy)
+//   Copy relative path (copy)        - only with a workspace path
+//   ── Discard changes (undo-2)      - only for a file with changes
+// Copy toasts are "Copied path to clipboard" / "Copied relative path to clipboard" (`n5`).
+import { useEffect, useState } from "react";
+import { ArrowUpRightMenuIcon, ContextMenu, CopyMenuIcon, EyeMenuIcon, MenuItem, MenuSeparator, SubMenu, UndoMenuIcon } from "../../components/ContextMenu";
+import { AppIcon } from "../openIn/OpenInButton";
+import { NUMBERED_ROWS, loadOpenInApps, type OpenInApp } from "../openIn/apps";
+
+/**
+ * Apps Conductor's catalog marks `supportsFileOpen` (its `pLr` filter for a
+ * file's "Open in"); terminals and apps without the flag are left out.
+ */
+export const FILE_OPEN_APP_IDS: ReadonlySet<string> = new Set([
+  "finder", "cursor", "vscode", "vscode-short", "zed", "zed-preview", "zed-nightly", "vscodium", "devin", "sublime",
+  "pycharm", "pycharm-ce", "intellij", "intellij-ce", "intellij-ultimate", "intellij-community", "android-studio", "xcode",
+  "rider", "rubymine", "webstorm", "phpstorm", "goland", "datagrip", "trae", "antigravity",
+]);
 
 export interface FileMenuActions {
   view: () => void;
@@ -16,6 +33,8 @@ export interface FileMenuActions {
   copyPath?: () => void;
   copyRelativePath: () => void;
   discard: () => void;
+  /** Opens the file in an app; absent without a worktree (no "Open in"). */
+  openIn?: (appId: string) => void;
 }
 
 interface Props {
@@ -25,65 +44,50 @@ interface Props {
   onClose: () => void;
 }
 
-export function FileContextMenu({ path, at, actions, onClose }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState(at);
-  const run = (fn: () => void) => () => {
-    onClose();
-    fn();
-  };
-
-  // Keep the menu inside the window.
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    setPos({ x: Math.max(4, Math.min(at.x, window.innerWidth - r.width - 4)), y: Math.max(4, Math.min(at.y, window.innerHeight - r.height - 4)) });
-  }, [at]);
-
+/** The installed apps that can open a file, in catalog order. */
+function useFileApps(enabled: boolean): OpenInApp[] {
+  const [apps, setApps] = useState<OpenInApp[]>([]);
   useEffect(() => {
-    ref.current?.querySelector<HTMLElement>("[role=menuitem]")?.focus();
-    const onDown = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) onClose();
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onClose();
-      } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-        e.preventDefault();
-        const items = [...(ref.current?.querySelectorAll<HTMLElement>("[role=menuitem]") ?? [])];
-        const i = items.indexOf(document.activeElement as HTMLElement);
-        items[(i + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length]?.focus();
-      }
-    };
-    document.addEventListener("mousedown", onDown);
-    document.addEventListener("keydown", onKey, true);
-    window.addEventListener("blur", onClose);
+    if (!enabled) return;
+    let live = true;
+    loadOpenInApps()
+      .then((all) => live && setApps(all.filter((a) => FILE_OPEN_APP_IDS.has(a.id))))
+      .catch(() => live && setApps([]));
     return () => {
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("keydown", onKey, true);
-      window.removeEventListener("blur", onClose);
+      live = false;
     };
-  }, [onClose]);
+  }, [enabled]);
+  return apps;
+}
 
+export function FileContextMenu({ path, at, actions, onClose }: Props) {
+  const apps = useFileApps(actions.openIn !== undefined);
   return (
-    <div ref={ref} className="sb-ctx-menu" role="menu" aria-label={`Actions for ${path}`} style={{ left: pos.x, top: pos.y }} onContextMenu={(e) => e.preventDefault()}>
-      <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.view)}>
-        <span className="sb-ctx-label">View</span>
-      </button>
-      {actions.copyPath && (
-        <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.copyPath)}>
-          <span className="sb-ctx-label">Copy path</span>
-        </button>
+    <ContextMenu at={at} label={`Actions for ${path}`} onClose={onClose}>
+      <MenuItem icon={<EyeMenuIcon />} onSelect={actions.view}>
+        View
+      </MenuItem>
+      {actions.openIn && apps.length > 0 && (
+        <SubMenu icon={<ArrowUpRightMenuIcon />} label="Open in" menuLabel={`Open ${path} in`}>
+          {apps.map((app, i) => (
+            <MenuItem key={app.id} icon={<AppIcon app={app} size={14} />} numberKey={i < NUMBERED_ROWS ? i + 1 : undefined} onSelect={() => actions.openIn?.(app.id)}>
+              {app.name}
+            </MenuItem>
+          ))}
+        </SubMenu>
       )}
-      <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.copyRelativePath)}>
-        <span className="sb-ctx-label">Copy relative path</span>
-      </button>
-      <div className="sb-ctx-sep" role="separator" />
-      <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.discard)}>
-        <span className="sb-ctx-label">Discard changes</span>
-      </button>
-    </div>
+      {actions.copyPath && (
+        <MenuItem icon={<CopyMenuIcon />} onSelect={actions.copyPath}>
+          Copy path
+        </MenuItem>
+      )}
+      <MenuItem icon={<CopyMenuIcon />} onSelect={actions.copyRelativePath}>
+        Copy relative path
+      </MenuItem>
+      <MenuSeparator />
+      <MenuItem icon={<UndoMenuIcon />} onSelect={actions.discard}>
+        Discard changes
+      </MenuItem>
+    </ContextMenu>
   );
 }
