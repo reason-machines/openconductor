@@ -17,10 +17,12 @@ type Props = ComponentProps<typeof ChecksTab> & {
   repoPath: string;
   defaultBranch: string;
   target: TargetBranch;
+  /** Toasts for the "#N" right-click menu. */
+  notify?: (kind: "info" | "error", message: string) => void;
 };
 
 export function PrTab(props: Props) {
-  const { pr, worktree, repoId, repoPath, defaultBranch, refresh, target } = props;
+  const { pr, worktree, repoId, repoPath, defaultBranch, refresh, target, notify } = props;
   const demo = !isTauri() && demoChecksEnabled();
   const shown = pr ?? (demo ? DEMO_PR : null);
   if (!shown) {
@@ -34,7 +36,7 @@ export function PrTab(props: Props) {
   }
   return (
     <div className="pr-tab" aria-label="Pull request tab">
-      <PrHeader pr={shown} worktree={demo ? "demo" : worktree} repoId={repoId} repoPath={repoPath} defaultBranch={defaultBranch} refresh={refresh} target={target} />
+      <PrHeader pr={shown} worktree={demo ? "demo" : worktree} repoId={repoId} repoPath={repoPath} defaultBranch={defaultBranch} refresh={refresh} target={target} notify={notify} />
       <ChecksTab {...props} />
     </div>
   );

@@ -2,7 +2,7 @@
 // @2,246,672, read with REA on sven m5 max as data): a ContextMenu (`kS` > `gy`
 // "min-w-[180px]") with [arrow-up-right] Open in <setting's site>  ⌘⇧G, the other sites for a
 // github.com PR, [copy] Copy link and [hash] Copy number. Items and URLs: prLinks.ts.
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type MouseEvent } from "react";
 import { ContextMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { ArrowUpRightIcon, CopyIcon, HashIcon } from "../../components/menu/menuIcons";
 import { COMMANDS } from "../../keybindings/registry";
@@ -64,4 +64,25 @@ export function PrBadgeMenu({ url, number, at, onClose, notify }: Props) {
       </MenuItem>
     </ContextMenu>
   );
+}
+
+/**
+ * Right-click handling for another element that shows the PR's number: the header PR
+ * control's "#N" and status pill (`RFt`) and the "#N" in the PR tab's title (`sKo`),
+ * which open the same `w_i` menu. Gives the trigger's onContextMenu and the menu.
+ */
+export function usePrBadgeMenu(pr: { url?: string | null; number: number } | null | undefined, notify?: Props["notify"]) {
+  const [at, setAt] = useState<{ x: number; y: number } | null>(null);
+  const close = useCallback(() => setAt(null), []);
+  const url = pr?.url;
+  const onContextMenu = useCallback(
+    (e: MouseEvent) => {
+      if (!url) return;
+      e.preventDefault();
+      setAt({ x: e.clientX, y: e.clientY });
+    },
+    [url],
+  );
+  const menu = at && url && pr ? <PrBadgeMenu url={url} number={pr.number} at={at} onClose={close} notify={notify} /> : null;
+  return { onContextMenu, menu };
 }

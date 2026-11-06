@@ -1,0 +1,75 @@
+{
+  "pr-pill--dark": {
+    "theme": "dark",
+    "crop": [
+      700,
+      0,
+      740,
+      300
+    ],
+    "ours": {
+      "file": "ours-pr-pill--dark.png",
+      "sha256": "3f3effb856f9089ccd8ab8cecdb205b70736c567480ef58a377ac38c16c374d9",
+      "evidence_id": "ev_0396cbbf495e3e8640d54c7adf06726bcfe0bdbb6bfa8c251b82a191a3fcd59c",
+      "failed_steps": []
+    },
+    "sbs": {
+      "file": "sbs-pr-pill--dark.png",
+      "sha256": "aaae1cfa99b0d71d45e6c0e8227065c59b31e5523eda6cf98b8ddb9c6858b281",
+      "evidence_id": "ev_535b7ed55760689d94edaf4bbc7c7eaa39b3feb4966a52ec88870469bee5be1a",
+      "failed_steps": []
+    }
+  },
+  "pr-tab-number--dark": {
+    "theme": "dark",
+    "crop": [
+      240,
+      30,
+      740,
+      330
+    ],
+    "ours": {
+      "file": "ours-pr-tab-number--dark.png",
+      "sha256": "1784219437ca676cf2e716a69de66a6135eccd254dadf72b0935855262d46f9c",
+      "evidence_id": "ev_4153509a60937563f7acf815910a21c629b18a29aa59e1ed2c688e4347e23557",
+      "failed_steps": []
+    },
+    "sbs": {
+      "file": "sbs-pr-tab-number--dark.png",
+      "sha256": "0e779a98c01385de9836891630274495a1a05a8bb3bc72c2cea9a96dca8fa992",
+      "evidence_id": "ev_72b10942e9a47dd0f0781464a28478d30c93cd6cc346f7a25272197e81fbbed2",
+      "failed_steps": []
+    }
+  },
+  "chat-link--dark": {
+    "theme": "dark",
+    "crop": [
+      256,
+      90,
+      790,
+      280
+    ],
+    "conductor": {
+      "file": "conductor-chat-link--dark.png",
+      "sha256": "fec9aff880055f3e22334cc2b60a85fb088656943eb0591eb959cee4e04c0947",
+      "evidence_id": "ev_dc6be31216c2fbeb6e8deae4ffd737a7c59e7946a4552bf087a856b09f350c08",
+      "failed_steps": []
+    },
+    "ours": {
+      "file": "ours-chat-link--dark.png",
+      "sha256": "6cc2fb14385086ec4e054dc734521de3eb6f8a22d4e58df32b20535f6dcf6daf",
+      "evidence_id": "ev_6b69a957e9df015ab10eed797ab201e1e832726aabe5331c1acbf4a9e463f6cb",
+      "failed_steps": []
+    },
+    "compare_t24": {
+      "evidence_id": "ev_a58cd8837467f01917958f0570b876714f780720cd22a97bbf4711272724121b",
+      "changed_pixel_ratio": 0.06414737654320987
+    },
+    "sbs": {
+      "file": "sbs-chat-link--dark.png",
+      "sha256": "42ac98bd5bb8609822d529e743139a1d0058d68e48aec4a4708f99a3e9f1f9b1",
+      "evidence_id": "ev_f506ce6b847c129c4614384160c463841caa671e58ed1c2a3fbe060836ad0b01",
+      "failed_steps": []
+    }
+  }
+}
