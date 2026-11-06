@@ -8,6 +8,7 @@ import { migrateLegacySendKey } from "./keybindings/overrides";
 import { getSettings, updateSettings } from "./settings/api";
 import { loadAppPrefs } from "./settings/appPrefs";
 import { overridesRaw, withOverridesRaw } from "./settings/keybindingOverrides";
+import { installContextMenuGuard } from "./lib/nativeContextMenu";
 import "./fonts.css";
 import "./styles.css";
 
@@ -22,6 +23,8 @@ const loadOverrides = async () => {
   await updateSettings(withOverridesRaw(settings, migrated)).catch((err) => console.warn("Failed to migrate legacy message send key", err));
   return migrated;
 };
+
+installContextMenuGuard();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
