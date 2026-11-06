@@ -274,6 +274,39 @@ listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
   later change on another settings page cannot overwrite them with a stale copy.
   A failed save shows the toast "Failed to save keyboard shortcut".
 
+## Bound commands: run, select all, chat copy and fork
+
+Read on sven m5 max in the decoded `renderApp-D_fmY7hW.js` (by byte offset,
+with python over the file; see REA gaps). Conductor's strings are data only.
+
+- `workspace.toggleRun` (⌘R), offset ~7,141,947, in the terminal panel's
+  scripts component: `if (hasRunTask && workspace && ready) { selectTab(Run);
+  running ? stop() : start(); return true }`, nothing otherwise. `start` is a
+  no-op while the button is disabled. Ours: `ScriptsPanel` (always mounted in
+  the strip), which opens the strip on Run and presses its ▶/■ button.
+- `native.preventSelectAll` (⌘A), offset ~11,089,745: a root hook adds a
+  capture `keydown` listener on `document`; on the command's shortcut it calls
+  `preventDefault` and `stopPropagation` unless the event's first path element
+  (else `document.activeElement`) is an input, a textarea, has
+  `contenteditable="true"` or is inside `.composer-tiptap`. Ours:
+  `src/keybindings/selectAll.ts`, installed by `KeybindingsProvider`.
+- `git.fixErrors` (⌘⇧X), offset ~2,300,368: already bound (PR #393).
+
+Not bound, because OpenConductor lacks the feature behind them:
+
+- `git.pull` (⌘⇧L, priority HIGH, offset ~2,299,746): Conductor runs a
+  "pull latest from <target>" mutation (`{workspacePath, remoteName,
+  targetBranch}`) when the branch is behind its target, not merged, not
+  conflicting and not in a stack; its button's tooltip is "Pull latest from
+  <target> (<n> commits)". OpenConductor has neither that button nor a backend
+  command that merges the target into the workspace (its header "Pull <n>" is
+  a status about the remote branch). Note `openSidecarLogs` has ⌘⇧L too.
+- `terminal.openLocalhost` (⌘⇧B): the workspace view (priority LOW, offset
+  ~7,404,615) and the panel (offset ~7,141,734) open the preview URL in
+  Conductor's in-app Browser tab, or a detected localhost URL; false when
+  there is none. OpenConductor has the `preview_urls` setting but no Open
+  button and no Browser tab.
+
 ## REA gaps
 
 - Settings... item id, its position in the app menu, and the label of `custom_quit`
@@ -283,6 +316,9 @@ listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
   counter that `y5a` calls (`tPt` over sessions and workspaces) lives in a chunk
   where the minified name does not resolve by string search; its status set was
   not read.
+- `rea search` over the decoded JavaScript and the binary on sven m5 max fails
+  with `capability_unavailable` / `provider_unavailable`, so the handlers above
+  were found with python string search over the decoded chunk.
 
 - `analyze-javascript-application` finds no IPC operations: it does not model
   Tauri `invoke` or `listen`. The registry and event wiring were located by
@@ -299,3 +335,22 @@ listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
   `conductor_lib::run` at `0x100498360` fails with `provider_unavailable`: Ghidra,
   Hopper, IDA and Kuna are all unconfigured there (no Java runtime). So the menu
   builder was not decompiled; the native menu table above is from the string table.
+
+## Chat tab shortcuts: copy concise transcript and fork
+
+Read on sven m5 max in `renderApp-D_fmY7hW.js` (~7,376,706), the chat tab
+component `u8i`. Both bind at priority 100 and return false (pass the key on)
+unless their tab is the active one:
+
+- `chat.copyTextConcise` (⌥⌘C): fetches the chat's messages, builds the concise
+  transcript and copies it. Empty: warning "No chat content to copy". Copied:
+  `Copied concise transcript of "<tab title, cut to 20 chars + ...>"`. Failure:
+  "Failed to copy concise transcript". Ours: `ChatPanel` in
+  `src/components/WorkspaceView.tsx` with `forkTranscript` (the same concise
+  form) and `copiedTranscriptMessage` in `src/features/chat/fork.ts`.
+- `chat.forkToNewTab` (⌥⌘↩): also needs `canRename && !archived &&
+  experimental_fork_to_new_tab`; forks the whole chat (ignored while a fork is
+  pending). Ours: the turn menu's "Fork to new tab" path with every turn, gated
+  on Experimental › "Fork chat to new tab" and a workspace that is not archived.
+  Conductor's `canRename` comes from the parent tab strip and was not traced
+  further; we treat it as true.

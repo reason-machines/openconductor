@@ -7,9 +7,8 @@ import { nextPhase, POPUP_MS, presenceAttrs, type Phase } from "./presence.ts";
  * The popup mounts in the same render that `open` turns true, so effects keyed
  * on `open` (focusing the first item, outside-click listeners) already see it.
  */
-export function usePresence(open: boolean, exitMs: number = POPUP_MS, { appear = false }: { appear?: boolean } = {}) {
-  // appear: animate in on first mount too (toasts); popups start closed anyway.
-  const [stored, dispatch] = useReducer(nextPhase, open && !appear ? "open" : ("closed" as Phase));
+export function usePresence(open: boolean, exitMs: number = POPUP_MS) {
+  const [stored, dispatch] = useReducer(nextPhase, open ? "open" : ("closed" as Phase));
   const phase = nextPhase(stored, open ? "show" : "hide");
   useEffect(() => {
     if (phase !== stored) dispatch(open ? "show" : "hide");

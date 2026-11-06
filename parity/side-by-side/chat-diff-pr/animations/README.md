@@ -35,7 +35,7 @@ Status after this PR. "ours (main)" is OpenConductor before this change.
 | Create PR menu (header caret) | same popup classes on its Base UI menu. Not opened in the harness: no PR state. | instant | same. Measured. | match (static) |
 | Diff View options menu | same popup classes. Static. | instant | same, origin top right | match (static) |
 | Slash command menu | `[data-suggestion-popup]` has no transition classes: appears at once. Measured: no animation. | instant | instant | match |
-| Toast enter and exit (shared `Toast.tsx`, timing only) | `.conductor-toast`: `transition: transform .4s, opacity .4s` (default `ease`); enters from `translateY(150%)` with opacity 0, leaves the same way. Measured. | instant mount; unmounted at once on dismiss or timeout | 400 ms `ease`, translateY(150%) plus opacity on enter and exit; the toaster keeps a dismissed toast mounted for its exit. Measured. | match (stacking/scale of older toasts: gap) |
+| Toast enter and exit (shared `Toast.tsx`, timing only) | `.conductor-toast`: `transition: transform .4s, opacity .4s` (default `ease`); enters from `translateY(150%)` with opacity 0, leaves the same way. Measured. | instant mount; unmounted at once on dismiss or timeout | 400 ms `ease`, translateY(150%) plus opacity on enter and exit; the toaster keeps a dismissed toast mounted for its exit. Measured. Implemented on main by #496 (`styles.css`, `Toast.tsx`); this PR first had its own copy and dropped it when merging #496. | match (stacking/scale of older toasts: gap) |
 | Button press (composer +, send, header buttons) | Button: `transition-transform duration-150 ease-out active:scale-[0.97]`. Measured: transform 150 ms `cubic-bezier(0,0,.2,1)` to scale .97. | 150 ms `ease-out` to .97, **plus** a 150 ms background transition | transform 150 ms `cubic-bezier(0,0,.2,1)` only, via `--oc-motion-press` | match |
 | Button hover (composer +) | background changes at once (Button transitions transform only). Measured. | 150 ms `ease` background fade | instant | match |
 | Send button hover | `transition` of background/border 150 ms `ease`. Measured from computed style. | same | same, kept | match |
@@ -56,11 +56,11 @@ Layout shift: 0 in every measured scenario on all three builds. Longest frame ga
 
 [src/components/motion/motion.css](../../../../src/components/motion/motion.css) holds the shared motion values:
 
-- tokens: `--oc-motion-ease`, `--oc-motion-ease-out`, `--oc-motion-popup` (100 ms), `--oc-motion-press` (150 ms), `--oc-motion-toast` (400 ms) and `--oc-motion-press-scale` (.97);
+- tokens: `--oc-motion-ease`, `--oc-motion-ease-out`, `--oc-motion-popup` (100 ms), `--oc-motion-press` (150 ms) and `--oc-motion-press-scale` (.97);
 - the `.oc-popup` class (or `data-motion="popup"`), with Base UI's attribute names, so the tooltip and context-menu builders' Base UI popups take the same values (the tooltip PR uses 100 ms `cubic-bezier(.4,0,.2,1)` opacity plus scale .95, which matches);
 - `.oc-press`.
 
-[src/components/motion/presence.ts](../../../../src/components/motion/presence.ts) is a pure enter/exit state machine and `keepLeaving` (toasts kept mounted while leaving), with node tests. [src/components/motion/usePresence.ts](../../../../src/components/motion/usePresence.ts) is the React hook.
+[src/components/motion/presence.ts](../../../../src/components/motion/presence.ts) is a pure enter/exit state machine for popups, with node tests. [src/components/motion/usePresence.ts](../../../../src/components/motion/usePresence.ts) is the React hook.
 
 ## Frame strips (10x slow-motion, 8 frames)
 

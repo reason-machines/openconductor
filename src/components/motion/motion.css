@@ -7,13 +7,12 @@
    --oc-motion-ease-out   Tailwind v4 --ease-out (the `ease-out` class)
    --oc-motion-popup      `duration-100` on every Base UI menu/popover popup
    --oc-motion-press      Button: `transition-transform duration-150 ease-out active:scale-[0.97]`
-   --oc-motion-toast      .conductor-toast: `transition: transform .4s, opacity .4s` (default ease) */
+   Toasts (.conductor-toast, 400ms) are styles.css's, from #496. */
 :root {
   --oc-motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
   --oc-motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
   --oc-motion-popup: 100ms;
   --oc-motion-press: 150ms;
-  --oc-motion-toast: 400ms;
   --oc-motion-press-scale: 0.97;
 }
 
@@ -61,20 +60,3 @@
 @media (prefers-reduced-motion: reduce) {
   .diff > .tabs button:active:not(:disabled) { transform: none; }
 }
-
-/* Toasts (.conductor-toast): slide up from translateY(150%) with opacity over
-   400ms on enter and leave the same way; `transition: transform .4s, opacity .4s`
-   with the default `ease`. Only timing and animation here; layout is Toast.tsx's. */
-.toast {
-  transition: transform var(--oc-motion-toast) ease, opacity var(--oc-motion-toast) ease;
-}
-.toast[data-starting-style],
-.toast[data-ending-style] {
-  opacity: 0;
-  transform: translateY(150%);
-}
-/* The toaster box stays laid out while a toast plays its exit, so it lets
-   clicks through to the page; only a toast that is not leaving takes them. */
-.toaster { pointer-events: none; }
-.toast { pointer-events: auto; }
-.toast[data-ending-style] { pointer-events: none; }

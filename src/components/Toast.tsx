@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { CloseIcon } from "./Icons";
-import { entryOnce, keepLeaving, TOAST_MS } from "./motion/presence.ts";
-import { usePresence } from "./motion/usePresence.ts";
 import { toastTimeout, type ToastAction, type ToastItem } from "./toastTiming";
+import { endingProps } from "./sidebarMotion";
 
 export type { ToastAction, ToastItem };
 
 let nextId = 1;
-const entries = entryOnce(new Set<number>());
 
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -20,15 +18,13 @@ export function useToasts() {
 
 function Toast({ toast, leaving, onDismiss }: { toast: ToastItem; leaving: boolean; onDismiss: () => void }) {
   const [copied, setCopied] = useState(false);
-  const [appear] = useState(() => entries.pending(toast.id));
-  const motion = usePresence(!leaving, TOAST_MS, { appear });
-  useEffect(() => entries.played(toast.id), [toast.id]);
   useEffect(() => {
+    if (leaving) return;
     const ms = toastTimeout(toast);
     if (ms === null) return;
     const t = setTimeout(onDismiss, ms);
     return () => clearTimeout(t);
-  }, [toast, onDismiss]);
+  }, [toast, onDismiss, leaving]);
 
   async function copy() {
     await navigator.clipboard?.writeText(toast.message).catch(() => undefined);
@@ -36,7 +32,7 @@ function Toast({ toast, leaving, onDismiss }: { toast: ToastItem; leaving: boole
   }
 
   return (
-    <div className={`toast toast-${toast.kind}`} role={toast.kind === "error" ? "alert" : "status"} {...motion.attrs}>
+    <div className={`toast toast-${toast.kind}`} role={toast.kind === "error" ? "alert" : "status"} {...endingProps(leaving)}>
       <span className="toast-message">
         {toast.message}
         {toast.description && <span className="toast-description">{toast.description}</span>}
@@ -60,22 +56,41 @@ function Toast({ toast, leaving, onDismiss }: { toast: ToastItem; leaving: boole
   );
 }
 
-export function Toaster({ toasts, dismiss }: { toasts: ToastItem[]; dismiss: (id: number) => void }) {
-  // A dismissed toast stays rendered for its 400 ms exit (Conductor's toast leaves the way it came).
-  const [shown, setShown] = useState<{ item: ToastItem; leaving: boolean }[]>(() => keepLeaving([], toasts, (t) => t.id));
-  useEffect(() => setShown((s) => keepLeaving(s, toasts, (t) => t.id)), [toasts]);
-  const leavingIds = shown.filter((s) => s.leaving).map((s) => s.item.id).join(",");
+/**
+ * Conductor's toasts (`.conductor-toast`, renderApp-BYEcFwvt.css) slide in from
+ * translateY(150%) at opacity 0 and leave the same way, `transition: transform .4s,
+ * opacity .4s` (CSS default `ease`). A dismissed toast stays this long with
+ * data-ending-style before it unmounts.
+ */
+export const TOAST_EXIT_MS = 400;
+
+/** `toasts` plus the ones just removed, flagged as leaving, for TOAST_EXIT_MS. */
+function useLeavingToasts(toasts: ToastItem[]): { toast: ToastItem; leaving: boolean }[] {
+  const [leaving, setLeaving] = useState<ToastItem[]>([]);
+  const [prev, setPrev] = useState(toasts);
+  if (prev !== toasts) {
+    const ids = new Set(toasts.map((t) => t.id));
+    const gone = prev.filter((t) => !ids.has(t.id));
+    setPrev(toasts);
+    if (gone.length > 0) setLeaving((l) => [...l.filter((t) => !ids.has(t.id)), ...gone]);
+  }
   useEffect(() => {
-    if (!leavingIds) return;
-    const gone = new Set(leavingIds.split(",").map(Number));
-    const t = setTimeout(() => setShown((s) => s.filter((x) => !(x.leaving && gone.has(x.item.id)))), TOAST_MS);
-    return () => clearTimeout(t);
-  }, [leavingIds]);
+    if (leaving.length === 0) return;
+    const ids = new Set(leaving.map((t) => t.id));
+    const timer = setTimeout(() => setLeaving((l) => l.filter((t) => !ids.has(t.id))), TOAST_EXIT_MS);
+    return () => clearTimeout(timer);
+  }, [leaving]);
+  // Ids grow in show order, so sorting by id keeps a leaving toast in its place while it slides out.
+  return [...toasts.map((toast) => ({ toast, leaving: false })), ...leaving.map((toast) => ({ toast, leaving: true }))].sort((a, b) => a.toast.id - b.toast.id);
+}
+
+export function Toaster({ toasts, dismiss }: { toasts: ToastItem[]; dismiss: (id: number) => void }) {
+  const shown = useLeavingToasts(toasts);
   if (shown.length === 0) return null;
   return (
     <div className="toaster">
-      {shown.map(({ item, leaving }) => (
-        <Toast key={item.id} toast={item} leaving={leaving} onDismiss={() => dismiss(item.id)} />
+      {shown.map(({ toast: t, leaving }) => (
+        <Toast key={t.id} toast={t} leaving={leaving} onDismiss={() => dismiss(t.id)} />
       ))}
     </div>
   );

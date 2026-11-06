@@ -144,8 +144,9 @@ fn codex(app: &AppHandle, cwd: &Path) -> AgentCommands {
     let chats = app.state::<crate::codex_chat::CodexChats>();
     let bundled = bundled_skills(&ClaudeLaunch::new(cwd, Default::default()).plugin_dirs);
     let cwd_s = cwd.display().to_string();
+    let settings = app.state::<crate::settings::service::SettingsService>();
     let asked = chats
-        .cli()
+        .executable(&settings)
         .ok_or_else(|| "Codex is not installed".to_owned())
         .and_then(|exe| {
             let mut cmd = Command::new(exe);

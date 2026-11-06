@@ -17,7 +17,7 @@ use std::path::{Path, PathBuf};
 
 use serde_json::json;
 
-use super::{CodexToolApprovalPolicy, EffortLevel, Settings};
+use super::{CodexPersonality, CodexToolApprovalPolicy, EffortLevel, Settings};
 use crate::agent::claude::AnthropicApi;
 use crate::agent::claude_cloud::{Bedrock, Vertex};
 use crate::agent::codex::{CodexLogin, OpenAiApi};
@@ -242,9 +242,12 @@ pub fn codex_launch(
     launch
         .config
         .push(("model_reasoning_effort".into(), quoted(level.codex_value())));
-    if let Some(p) = codex.personality.and_then(|p| p.codex_value()) {
-        launch.config.push(("personality".into(), quoted(p)));
-    }
+    // Conductor sends the chat's personality on every turn, `pragmatic` when
+    // unset (`LG4`; evidence/providers/codex-conductor-client.md row 8).
+    let personality = codex.personality.unwrap_or(CodexPersonality::Pragmatic);
+    launch
+        .config
+        .push(("personality".into(), quoted(personality.codex_value())));
     if settings.fast_mode_for(purpose) {
         launch.config.push(("service_tier".into(), quoted("fast")));
     }
