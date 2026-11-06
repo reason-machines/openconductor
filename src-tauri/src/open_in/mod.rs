@@ -251,3 +251,19 @@ pub fn macos_open_command(app: &CatalogApp, dir: &Path) -> (String, Vec<String>)
         _ => ("open".into(), vec!["-a".into(), app.app_name.into(), dir]),
     }
 }
+
+/// The program and arguments that open one worktree `file` in `app` on macOS,
+/// for the right panel's All files tree. OpenConductor has no in-app file
+/// viewer, so a file opens through Open in: Finder reveals it (`open -R`), a
+/// terminal opens its folder (handing a file to a terminal would run it), and
+/// every other app opens the file itself the way it opens a workspace folder.
+pub fn macos_open_file_command(app: &CatalogApp, file: &Path) -> (String, Vec<String>) {
+    match app.icon_type {
+        IconType::Folder => (
+            "open".into(),
+            vec!["-R".into(), file.to_string_lossy().into_owned()],
+        ),
+        IconType::Terminal => macos_open_command(app, file.parent().unwrap_or(file)),
+        IconType::Code => macos_open_command(app, file),
+    }
+}

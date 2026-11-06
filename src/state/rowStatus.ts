@@ -133,6 +133,24 @@ export function rowGitStatus(i: RowStatusInput): RowStatus {
   return firstRule(i, GIT_RULES);
 }
 
+/** PR and branch statuses (`AXo`/`Cet`). */
+const GIT_STATUSES = new Set<RowStatus>(["merged", "merge-queued", "ready-to-merge", "draft-pr", "merge-conflict", "checks-failing", "checks-pending", "open-pr", "local", "branch"]);
+export const isGitStatus = (s: RowStatus): boolean => GIT_STATUSES.has(s);
+
+/**
+ * Home's status for a row: Conductor's Home row (`vJo`'s caller) runs `oWt`
+ * with only the sessions' status and the workspace state, no PR.
+ */
+export function homeStatus(workspaceState: string | undefined, session: SessionStatus): RowStatus {
+  return rowStatus({ workspaceState, session });
+}
+
+/**
+ * Home shows this status in place of the last-activity time (`aWt`): the
+ * setup and agent statuses, not a git status and not "unstarted".
+ */
+export const showsActivityStatus = (s: RowStatus): boolean => !GIT_STATUSES.has(s) && s !== "unstarted";
+
 const BUSY = new Set<RowStatus>(["setting-up", "working", "cancelling", "waiting"]);
 /** Statuses drawn as an animated loader instead of an icon (`sFi`). */
 export const isBusyStatus = (s: RowStatus) => BUSY.has(s);

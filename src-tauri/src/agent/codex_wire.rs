@@ -10,6 +10,7 @@
 use serde::Serialize;
 use serde_json::{json, Value};
 
+use super::codex_consent::{consent, Consent};
 use super::codex_events::{Notification, ServerMessage, ServerRequest, TurnStatus};
 use super::codex_rpc::{ApprovalDecision, RequestId};
 
@@ -160,6 +161,9 @@ pub enum Payload {
         delta: String,
     },
     Approval(Approval),
+    /// An MCP elicitation or a permission request the turn waits on; it
+    /// ends with [`Payload::ApprovalResolved`] like an approval.
+    Consent(Consent),
     /// The approval is answered (here or by Codex itself).
     ApprovalResolved {
         request_id: RequestId,
@@ -228,7 +232,8 @@ fn tool(item: &Value, started: bool) -> Option<Tool> {
         }
         "commandExecution" => (
             command_title(item),
-            json!({ "command": item.get("command"), "cwd": item.get("cwd") }),
+            // commandActions: Conductor shows a single read/search/listFiles action as Read/Grep/LS.
+            json!({ "command": item.get("command"), "cwd": item.get("cwd"), "commandActions": item.get("commandActions") }),
             text(item, "aggregatedOutput"),
             item.get("exitCode").and_then(Value::as_i64),
         ),
@@ -247,7 +252,7 @@ fn tool(item: &Value, started: bool) -> Option<Tool> {
             let kinds: Vec<Value> = changes
                 .into_iter()
                 .flatten()
-                .map(|c| json!({ "path": c.get("path"), "kind": c.pointer("/kind/type") }))
+                .map(|c| json!({ "path": c.get("path"), "kind": c.pointer("/kind/type"), "diff": c.get("diff") }))
                 .collect();
             (
                 format!("Edit {}", paths.join(", ")),
@@ -262,7 +267,8 @@ fn tool(item: &Value, started: bool) -> Option<Tool> {
                 text(item, "server").unwrap_or_default(),
                 text(item, "tool").unwrap_or_default()
             ),
-            item.get("arguments").cloned().unwrap_or(Value::Null),
+            // Conductor names the tool `mcp__<server>__<tool>` and shows its arguments.
+            json!({ "server": item.get("server"), "tool": item.get("tool"), "arguments": item.get("arguments") }),
             item.pointer("/error/message")
                 .and_then(Value::as_str)
                 .map(str::to_owned)
@@ -365,7 +371,12 @@ pub fn payloads(message: &ServerMessage) -> Vec<Payload> {
             reason: reason.clone(),
             decisions: offered(decisions),
         })],
-        ServerMessage::Request(ServerRequest::Other { .. }) => vec![],
+        ServerMessage::Request(ServerRequest::Other { id, method, params }) => {
+            consent(id, method, params)
+                .map(Payload::Consent)
+                .into_iter()
+                .collect()
+        }
         ServerMessage::Notification(n) => notification_payloads(n),
     }
 }
@@ -489,7 +500,8 @@ mod tests {
             json!({
                 "type": "tool", "id": "exec-1", "kind": "commandExecution",
                 "title": "cat hello.txt", "status": "completed",
-                "input": {"command": "/bin/zsh -lc 'cat hello.txt'", "cwd": "/ws"},
+                "input": {"command": "/bin/zsh -lc 'cat hello.txt'", "cwd": "/ws",
+                          "commandActions": [{"type": "read", "command": "cat hello.txt", "name": "hello.txt", "path": "/ws/hello.txt"}]},
                 "output": "hello from codex\n", "exitCode": 0
             })
         );
@@ -540,7 +552,7 @@ mod tests {
         assert_eq!(t.output.as_deref(), Some("+a\n\n-b\n+c\n"));
         assert_eq!(
             t.input,
-            json!({"changes": [{"path": "/ws/a.txt", "kind": "add"}, {"path": "/ws/b.txt", "kind": "update"}]})
+            json!({"changes": [{"path": "/ws/a.txt", "kind": "add", "diff": "+a\n"}, {"path": "/ws/b.txt", "kind": "update", "diff": "-b\n+c\n"}]})
         );
 
         let delta = r#"{"method":"item/reasoning/summaryTextDelta","params":{"threadId":"t1","turnId":"u1","itemId":"rs_1","delta":"Thinking","summaryIndex":0}}"#;

@@ -6,10 +6,13 @@ import { KeybindingsProvider } from "./keybindings/KeybindingsProvider";
 import { FirstRunGate } from "./onboarding/FirstRunGate";
 import { getSettings } from "./settings/api";
 import { overridesRaw } from "./settings/keybindingOverrides";
+import { installContextMenuGuard } from "./lib/nativeContextMenu";
 import "./fonts.css";
 import "./styles.css";
 
 const loadOverrides = async () => overridesRaw(await getSettings());
+
+installContextMenuGuard();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

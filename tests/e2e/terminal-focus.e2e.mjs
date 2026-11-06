@@ -1,5 +1,6 @@
-// End-to-end check that the terminal a workspace opens by itself does not take
-// the keyboard from the chat box, in a real browser.
+// End-to-end check that terminals never take the keyboard from the chat box
+// unless the user opens one, in a real browser. Terminals are tabs of the right
+// panel's Setup / Run / Terminal strip, which opens on Run with no terminal.
 //
 // The Reason chat e2e (tools/e2e/reason-chat.e2e.mjs) sometimes timed out on
 // its first message: the workspace's first terminal attached after the
@@ -17,6 +18,7 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
+import { showTerminalPanel } from "./terminal-panel.mjs";
 
 const CANDIDATES = [
   process.env.CHROME_PATH,
@@ -120,27 +122,30 @@ async function open(page) {
   await page.locator(".composer textarea").waitFor();
 }
 
-test("the workspace's first terminal leaves the keyboard in the chat box", async () => {
+test("no terminal opens with the workspace, so the chat box keeps every key", async () => {
   const page = await browser.newPage();
   await open(page);
   const box = page.locator(".composer textarea");
   await box.click();
   await page.keyboard.type("lo");
-  // The terminal arrives while the user is typing in the chat box.
+  // Terminals live in the right panel's strip, which opens on Run; nothing spawns a shell by itself.
+  await page.locator(".ws-strip[data-terminals-ready]").waitFor();
   await page.evaluate(() => window.__releasePty());
-  await page.locator(".terminal-panel .xterm").waitFor();
-  await page.waitForFunction(() => document.querySelector(".terminal-panel .xterm-rows")?.textContent?.includes("/repo$"));
+  await page.waitForTimeout(300);
   await page.keyboard.type("cal");
+  assert.equal(await page.locator(".terminal-panel").count(), 0, "no terminal is shown");
   assert.equal(await focusedIn(page), "composer", "focus stays in the chat box");
   assert.equal(await box.inputValue(), "local", "every key went to the chat box");
-  assert.equal(await page.evaluate(() => window.__ptyInput), "", "no key reached the shell");
+  assert.equal(await page.evaluate(() => window.__ptyInput), "", "no key reached a shell");
   assert.equal(await page.locator('.composer button[type="submit"]').isEnabled(), true, "Send is enabled");
   await page.close();
 });
 
-test("with nothing focused, the workspace's first terminal still takes the keyboard", async () => {
+test("a terminal opened with + takes the keyboard, even when its shell answers late", async () => {
   const page = await browser.newPage();
   await open(page);
+  await page.locator(".ws-strip[data-terminals-ready]").waitFor();
+  await page.getByRole("button", { name: "New terminal" }).click();
   await page.evaluate(() => window.__releasePty());
   await page.locator(".terminal-panel .xterm").waitFor();
   await page.waitForFunction(() => document.activeElement?.closest(".terminal-panel"));
@@ -152,9 +157,10 @@ test("a tab the user opens takes the keyboard", async () => {
   const page = await browser.newPage();
   await open(page);
   await page.evaluate(() => window.__releasePty());
+  await showTerminalPanel(page);
   await page.locator(".term-tab").first().waitFor();
   await page.locator(".composer textarea").click();
-  await page.getByRole("button", { name: "New terminal tab" }).click();
+  await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   await page.waitForFunction(() => document.activeElement?.closest(".terminal-panel .term-mount"));
   await page.keyboard.type("ls");
