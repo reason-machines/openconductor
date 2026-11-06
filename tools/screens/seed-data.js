@@ -287,9 +287,34 @@
       { jsonrpc: "2.0", id: "oc-mock-approval-1", method: "toolApproval", params: { sessionId: "sess-tallinn", toolUseId: "tu-tallinn-1", toolName: "Bash", toolInput: TALLINN_COMMAND } },
     ],
   };
+  // "two-turns": populated plus a second, shorter turn in "lisbon", so the first
+  // turn is not the last one. Conductor's turn menu offers "Reset chat" only on
+  // a turn before the last (renderApp `TDo`: `ue = ... && !isLastTurn && ...`).
+  // Same second turn as tools/side-by-side/chat-tabs.mjs (LISBON_FOLLOW_UP).
+  const LISBON_FOLLOW_UP = "Also cover a session that expires exactly now.";
+  const second = [];
+  const t2 = "u-lisbon-2";
+  second.push(insert("session_messages", { id: t2, session_id: S, role: "user", content: LISBON_FOLLOW_UP, created_at: iso(20), sent_at: iso(20), turn_id: t2, model: "claude-opus-4-8" }));
+  second.push(
+    insert("session_messages", {
+      id: `m-${S}-t2-1`,
+      session_id: S,
+      role: "assistant",
+      content: JSON.stringify({ type: "assistant", message: { role: "assistant", model: "claude-opus-4-8", content: [{ type: "text", text: "Done. A session whose `expiresAt` equals now counts as expired, and a test covers it." }] }, session_id: "claude-demo-1" }),
+      created_at: iso(19),
+      sent_at: iso(19),
+      turn_id: t2,
+      sdk_message_id: "sdk-8",
+      model: "claude-opus-4-8",
+    }),
+  );
+  second.push(insert("session_messages", { id: `m-${S}-t2-2`, session_id: S, role: "assistant", content: JSON.stringify({ type: "result", subtype: "success", session_id: "claude-demo-1", is_error: false, result: "done" }), created_at: iso(19), sent_at: iso(19), turn_id: t2, model: "claude-opus-4-8" }));
+  const twoTurns = { ...populated, conductor: [populated.conductor, ...second].join("\n") };
+
   // "chat-link": populated with a markdown web link in lisbon's last reply, so
   // REA can right-click it and open Conductor's link menu (`cEi` -> `EQ`).
   const LISBON_TAIL = "passes (4 tests).";
   const chatLink = { ...populated, conductor: populated.conductor.replace(LISBON_TAIL, `${LISBON_TAIL} See the [session docs](https://docs.example.com/auth/sessions).`) };
-  window.__OC_SEED_DATA__ = { populated, "needs-permission": needsPermission, "chat-link": chatLink };
+
+  window.__OC_SEED_DATA__ = { populated, "needs-permission": needsPermission, "two-turns": twoTurns, "chat-link": chatLink };
 })();

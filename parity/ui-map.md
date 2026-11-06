@@ -8,15 +8,15 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **980** | **712** | **84** | **184** |
-| States (captured screens) | 82 | 6 | 23 | 53 |
-| Inventory items | 898 | 706 | 61 | 131 |
-| &nbsp;&nbsp;dialog | 64 | 53 | 5 | 6 |
-| &nbsp;&nbsp;empty-state | 52 | 41 | 1 | 10 |
-| &nbsp;&nbsp;menu | 39 | 36 | 1 | 2 |
-| &nbsp;&nbsp;menu-item | 89 | 83 | 3 | 3 |
+| **All** | **982** | **710** | **75** | **197** |
+| States (captured screens) | 84 | 6 | 19 | 59 |
+| Inventory items | 898 | 704 | 56 | 138 |
+| &nbsp;&nbsp;dialog | 64 | 52 | 5 | 7 |
+| &nbsp;&nbsp;empty-state | 52 | 40 | 1 | 11 |
+| &nbsp;&nbsp;menu | 39 | 36 | 0 | 3 |
+| &nbsp;&nbsp;menu-item | 89 | 83 | 0 | 6 |
 | &nbsp;&nbsp;popover | 45 | 44 | 1 | 0 |
-| &nbsp;&nbsp;route | 65 | 32 | 11 | 22 |
+| &nbsp;&nbsp;route | 65 | 32 | 10 | 23 |
 | &nbsp;&nbsp;select | 29 | 22 | 5 | 2 |
 | &nbsp;&nbsp;settings-page | 29 | 9 | 7 | 13 |
 | &nbsp;&nbsp;settings-row | 121 | 38 | 24 | 59 |
@@ -30,7 +30,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 
 | Team | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| chat | 63 | 50 | 10 | 3 |
+| chat | 65 | 48 | 1 | 16 |
 | cloud-org | 83 | 44 | 10 | 29 |
 | git-review | 39 | 28 | 1 | 10 |
 | onboarding-auth | 23 | 15 | 7 | 1 |
@@ -41,7 +41,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | triage | 268 | 268 | 0 | 0 |
 | workspaces | 61 | 33 | 1 | 27 |
 
-234 of 898 items were located in a captured state; 234 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
+236 of 898 items were located in a captured state; 236 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
 
 ## How it was measured
 
@@ -71,9 +71,9 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Create: repo picker open<br>`create-repo-picker` | matches | workspaces | diff 1.0% at t24, copy 90% | [png](side-by-side/create-composer-02-repo-picker.png) | [png](side-by-side/create-composer-02-repo-picker.png) |  | 1.0% |
 | Create from: PRs<br>`create-from-prs` | matches | workspaces | diff 1.3% at t24, copy 93% | [png](side-by-side/git-review-04-create-from-prs.png) | [png](side-by-side/git-review-04-create-from-prs.png) |  | 1.3% |
 | Create from: Branches<br>`create-from-branches` | matches | git-review | diff 1.1% at t24, copy 92% | [png](side-by-side/git-review-05-create-from-branches.png) | [png](side-by-side/git-review-05-create-from-branches.png) |  | 1.1% |
-| Workspace: chat transcript<br>`workspace-chat` | wrong | chat | diff 6.0% at t24, copy 86% | [png](ui-map/ref/workspace-chat.png) | [png](ui-map/oc/workspace-chat.png) | [jpg](ui-map/diff/workspace-chat.jpg) | 6.0% |
+| Workspace: chat transcript<br>`workspace-chat` | matches | chat | diff 2.3% at t24, copy 100% | [png](side-by-side/chat-tabs-workspace-chat.png) | [png](side-by-side/chat-tabs-workspace-chat.png) |  | 2.3% |
 | Workspace: new empty chat<br>`workspace-new-chat` | matches | chat | diff 3.3% at t24, copy 92% | [png](ui-map/ref/workspace-new-chat.png) | [png](ui-map/oc/workspace-new-chat.png) | [jpg](ui-map/diff/workspace-new-chat.jpg) | 3.3% |
-| Chat: tool calls expanded<br>`workspace-tool-calls` | wrong | chat | diff 6.6% at t24, copy 93% | [png](ui-map/ref/workspace-tool-calls.png) | [png](ui-map/oc/workspace-tool-calls.png) | [jpg](ui-map/diff/workspace-tool-calls.jpg) | 6.6% |
+| Chat: tool calls expanded<br>`workspace-tool-calls` | matches | chat | diff 2.3% at t24, copy 100% | [png](side-by-side/chat-tabs-workspace-tool-calls.png) | [png](side-by-side/chat-tabs-workspace-tool-calls.png) |  | 2.3% |
 | Diff: file, unified<br>`diff-unified` | matches | git-review | diff 5.0% at t24, copy 100% | [png](side-by-side/git-review-01-diff-unified.png) | [png](side-by-side/git-review-01-diff-unified.png) |  | 5.0% |
 | Diff: file, split<br>`diff-split` | wrong | git-review | diff 5.2% at t24, copy 100% | [png](side-by-side/git-review-02-diff-split.png) | [png](side-by-side/git-review-02-diff-split.png) |  | 5.2% |
 | Diff: entire file<br>`diff-entire-file` | matches | git-review | diff 4.7% at t24, copy 100% | [png](side-by-side/git-review-03-diff-entire-file.png) | [png](side-by-side/git-review-03-diff-entire-file.png) |  | 4.7% |
@@ -133,19 +133,21 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Account / computer menu<br>`menu-account` | wrong | shell | diff 6.2% at t24, copy 94% | [png](ui-map/ref/menu-account.png) | [png](ui-map/oc/menu-account.png) | [jpg](ui-map/diff/menu-account.jpg) | 6.2% |
 | Workspace context menu<br>`menu-workspace-context` | matches | workspaces | diff 4.6% at t24, copy 100% | [png](side-by-side/workspaces-menu-workspace-context.png) | [png](side-by-side/workspaces-menu-workspace-context.png) |  | 4.6% |
 | Workspace context menu > Set status<br>`menu-workspace-status` | matches | workspaces | diff 4.9% at t24, copy 100% | [png](side-by-side/workspaces-menu-workspace-status.png) | [png](side-by-side/workspaces-menu-workspace-status.png) |  | 4.9% |
-| Composer model picker<br>`menu-model-picker` | wrong | chat | diff 6.4% at t24, copy 82% | [png](ui-map/ref/menu-model-picker.png) | [png](ui-map/oc/menu-model-picker.png) | [jpg](ui-map/diff/menu-model-picker.jpg) | 6.4% |
+| Composer model picker<br>`menu-model-picker` | matches | chat | diff 2.8% at t24, copy 97% | [png](side-by-side/chat-tabs-menu-model-picker.png) | [png](side-by-side/chat-tabs-menu-model-picker.png) |  | 2.8% |
 | Sidebar repo actions menu<br>`menu-repo-actions` | wrong | workspaces | no valid reference render (step-failed), diff 4.3% at t24 | [png](ui-map/ref/menu-repo-actions.png) | [png](ui-map/oc/menu-repo-actions.png) | [jpg](ui-map/diff/menu-repo-actions.jpg) | 4.3% |
 | Help menu<br>`menu-help` | wrong | shell | diff 6.2% at t24, copy 96% | [png](ui-map/ref/menu-help.png) | [png](ui-map/oc/menu-help.png) | [jpg](ui-map/diff/menu-help.jpg) | 6.2% |
 | Help > Submit a prompt dialog<br>`dialog-submit-prompt` | matches | shell | diff 3.0% at t24, copy 100% | [png](ui-map/ref/dialog-submit-prompt.png) | [png](ui-map/oc/dialog-submit-prompt.png) | [jpg](ui-map/diff/dialog-submit-prompt.jpg) | 3.0% |
 | Diagnostics after a run<br>`diagnostics-run` | wrong | shell | diff 3.6% at t24, copy 83% | [png](ui-map/ref/diagnostics-run.png) | [png](ui-map/oc/diagnostics-run.png) | [jpg](ui-map/diff/diagnostics-run.jpg) | 3.6% |
 | Toast: copied link<br>`toast-copied-link` | matches | shell | diff 4.6% at t24, copy 93% | [png](ui-map/ref/toast-copied-link.png) | [png](ui-map/oc/toast-copied-link.png) | [jpg](ui-map/diff/toast-copied-link.jpg) | 4.6% |
-| Chat tab context menu<br>`menu-chat-tab` | wrong | chat | diff 6.6% at t24, copy 85% | [png](side-by-side/shell-menus-01-chat-tab.png) | [png](side-by-side/shell-menus-01-chat-tab.png) |  | 6.6% |
+| Chat tab context menu<br>`menu-chat-tab` | matches | chat | diff 3.2% at t24, copy 100% | [png](side-by-side/chat-tabs-menu-chat-tab.png) | [png](side-by-side/chat-tabs-menu-chat-tab.png) |  | 3.2% |
 | Changes file context menu<br>`menu-changes-file` | wrong | shell | diff 8.0% at t24, copy 84% | [png](side-by-side/shell-menus-02-changes-file.png) | [png](side-by-side/shell-menus-02-changes-file.png) |  | 8.0% |
 | Sidebar after archiving a workspace<br>`sidebar-after-archive` | matches | workspaces | diff 4.7% at t24, copy 93% | [png](ui-map/ref/sidebar-after-archive.png) | [png](ui-map/oc/sidebar-after-archive.png) | [jpg](ui-map/diff/sidebar-after-archive.jpg) | 4.7% |
-| Rename chat dialog<br>`dialog-rename-chat` | matches | chat | diff 4.1% at t24, copy 96% | [png](side-by-side/chat-tabs-dialog-rename-chat.png) | [png](side-by-side/chat-tabs-dialog-rename-chat.png) |  | 4.1% |
-| Review button menu (Edit before sending)<br>`menu-review-edit` | matches | git-review | diff 4.5% at t24, copy 96% | [png](side-by-side/chat-tabs-menu-review-edit.png) | [png](side-by-side/chat-tabs-menu-review-edit.png) |  | 4.5% |
+| Rename chat dialog<br>`dialog-rename-chat` | matches | chat | diff 4.0% at t24, copy 100% | [png](side-by-side/chat-tabs-dialog-rename-chat.png) | [png](side-by-side/chat-tabs-dialog-rename-chat.png) |  | 4.0% |
+| Reset chat? dialog<br>`dialog-reset-chat` | matches | chat | diff 0.9% at t24, copy 97% | [png](side-by-side/chat-tabs-dialog-reset-chat.png) | [png](side-by-side/chat-tabs-dialog-reset-chat.png) |  | 0.9% |
+| Model picker, search with no match<br>`empty-model-search` | matches | chat | diff 3.6% at t24, copy 100% | [png](side-by-side/chat-tabs-empty-model-search.png) | [png](side-by-side/chat-tabs-empty-model-search.png) |  | 3.6% |
+| Review button menu (Edit before sending)<br>`menu-review-edit` | matches | git-review | diff 2.6% at t24, copy 100% | [png](side-by-side/chat-tabs-menu-review-edit.png) | [png](side-by-side/chat-tabs-menu-review-edit.png) |  | 2.6% |
 
-## route (65: 32 missing, 11 wrong, 22 matches)
+## route (65: 32 missing, 10 wrong, 23 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -191,7 +193,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:first-run-onboarding`<br>/first-run-onboarding | wrong | onboarding-auth |  | `BCa` | [first-run-onboarding](side-by-side/onboarding-03-first-run-route.png) | diff 7.7% at t24, copy 100% |
 | `route:new-member-onboarding`<br>/new-member-onboarding | missing | onboarding-auth |  | `tHi` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor has no route or view for /new-member-onboarding |
 | `route:untitled`<br>/ | matches | shell |  | `Wls` | [home](ui-map/oc/home.png) | diff 4.2% at t24, copy 100% |
-| `route:repository-repositoryid-workspace-localworkspaceid`<br>/repository/$repositoryId/workspace/$localWorkspaceId | wrong | chat |  | `dXo` | [workspace-chat](ui-map/oc/workspace-chat.png) | diff 6.0% at t24, copy 86% |
+| `route:repository-repositoryid-workspace-localworkspaceid`<br>/repository/$repositoryId/workspace/$localWorkspaceId | matches | chat |  | `dXo` | [workspace-chat](side-by-side/chat-tabs-workspace-chat.png) | diff 2.3% at t24, copy 100% |
 | `route:all-workspaces`<br>/all-workspaces | matches | workspaces |  | `UJo` | [all-workspaces](ui-map/oc/all-workspaces.png) | diff 3.9% at t24, copy 92% |
 | `route:create`<br>/create | matches | workspaces |  | `$Ca` | [create](side-by-side/create-composer-01-dialog.png) | diff 0.8% at t24, copy 90% |
 | `route:team`<br>/team | missing | cloud-org |  | `Yea` | [route-team](ui-map/ref/route-team.png) | OpenConductor has no route or view for /team |
@@ -375,7 +377,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-row:organization-prompts:prompts`<br>organization-prompts › Prompts | matches | cloud-org | Prompts / Custom instructions for the Review, Create PR, and Resolve conflicts b | `` | [settings-org-prompts](side-by-side/settings-org-08-prompts.png) | on screen in both; state settings-org-prompts matches |
 | `settings-row:organization-mcp-servers:mcps`<br>organization-mcp-servers › MCPs | missing | cloud-org | MCPs / Configure MCP servers for cloud workspaces. | `` |  | copy not shown in any OpenConductor capture |
 
-## dialog (64: 53 missing, 5 wrong, 6 matches)
+## dialog (64: 52 missing, 5 wrong, 7 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -423,7 +425,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `dialog:create-a-private-github-repo`<br>Create a private GitHub repo? | missing | git-review | Create a private GitHub repo? | `was` |  | copy not shown in any OpenConductor capture |
 | `dialog:discard-access-changes`<br>Discard access changes? | missing | shell | Discard access changes? | `_oo` |  | copy not shown in any OpenConductor capture |
 | `dialog:bfo` | missing | triage |  | `Bfo` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:reset-chat`<br>Reset chat? | missing | chat | Reset chat? | `dDo` |  | copy not shown in any OpenConductor capture |
+| `dialog:reset-chat`<br>Reset chat? | matches | chat | Reset chat? | `dDo` | [dialog-reset-chat](side-by-side/chat-tabs-dialog-reset-chat.png) | on screen in both; state dialog-reset-chat matches |
 | `dialog:discard-comment`<br>Discard comment? | missing | shell | Discard comment? | `SVo` |  | copy not shown in any OpenConductor capture |
 | `dialog:dra` | missing | triage |  | `Dra` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:sxe` | missing | triage |  | `sxe` |  | no literal copy to locate it; not observed in any capture |
@@ -452,7 +454,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `sheet:fda` | missing | triage |  | `Fda` |  | no literal copy to locate it; not observed in any capture |
 | `sheet:hha` | missing | triage |  | `Hha` |  | no literal copy to locate it; not observed in any capture |
 
-## menu (39: 36 missing, 1 wrong, 2 matches)
+## menu (39: 36 missing, 0 wrong, 3 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -485,7 +487,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `menu:eq` | missing | triage |  | `EQ` |  | no literal copy to locate it; not observed in any capture |
 | `menu:bro` | missing | triage |  | `bro` |  | no literal copy to locate it; not observed in any capture |
 | `menu:plo` | missing | triage |  | `Plo` |  | no literal copy to locate it; not observed in any capture |
-| `menu:u8i` | wrong | chat | Rename chat / Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/shell-menus-01-chat-tab.png) | host state menu-chat-tab is wrong |
+| `menu:u8i` | matches | chat | Rename chat / Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
 | `menu:gwt` | missing | triage |  | `gwt` |  | no literal copy to locate it; not observed in any capture |
 | `menu:zoo` | missing | triage |  | `zOo` |  | no literal copy to locate it; not observed in any capture |
 | `menu:sko` | missing | triage |  | `sKo` |  | no literal copy to locate it; not observed in any capture |
@@ -496,7 +498,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `menu:ztt` | missing | triage |  | `ZTt` |  | no literal copy to locate it; not observed in any capture |
 | `menu:svs~2` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
 
-## menu-item (89: 83 missing, 3 wrong, 3 matches)
+## menu-item (89: 83 missing, 0 wrong, 6 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -571,14 +573,14 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `menu-item:dlo` | missing | triage |  | `Dlo` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:dlo~2` | missing | triage |  | `Dlo` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:u8i` | missing | triage |  | `u8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:rename-chat`<br>Rename chat | wrong | chat | Rename chat | `u8i` | [menu-chat-tab](side-by-side/shell-menus-01-chat-tab.png) | host state menu-chat-tab is wrong |
+| `menu-item:rename-chat`<br>Rename chat | matches | chat | Rename chat | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
 | `menu-item:u8i~2` | missing | triage |  | `u8i` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:c`<br>⌘⌥C | missing | shell | ⌘⌥C | `u8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:copy-full-transcript`<br>Copy full transcript | wrong | chat | Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/shell-menus-01-chat-tab.png) | host state menu-chat-tab is wrong |
+| `menu-item:copy-full-transcript`<br>Copy full transcript | matches | chat | Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
 | `menu-item:copy-link`<br>Copy link | matches | workspaces | Copy link | `u8i` | [menu-workspace-context](side-by-side/workspaces-menu-workspace-context.png) | on screen in both; state menu-workspace-context matches |
 | `menu-item:u8i~3` | missing | triage |  | `u8i` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:w`<br>⌘W | missing | shell | ⌘W | `u8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:close-others`<br>Close others | wrong | chat | Close others | `u8i` | [menu-chat-tab](side-by-side/shell-menus-01-chat-tab.png) | host state menu-chat-tab is wrong |
+| `menu-item:close-others`<br>Close others | matches | chat | Close others | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
 | `menu-item:gwt` | missing | triage |  | `gwt` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:gwt~2` | missing | triage |  | `gwt` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:vho` | missing | triage |  | `Vho` |  | no literal copy to locate it; not observed in any capture |
@@ -1046,7 +1048,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `toast:failed-to-unarchive-t-workspacedirectoryname`<br>Failed to unarchive: ${t.workspaceDirectoryName} | missing | workspaces | Failed to unarchive: ${t.workspaceDirectoryName} | `kIa` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-start-agents`<br>Failed to start agents | missing | chat | Failed to start agents / Conductor will not work. Please report this error. | `wVi` |  | copy not shown in any OpenConductor capture |
 
-## empty-state (52: 41 missing, 1 wrong, 10 matches)
+## empty-state (52: 40 missing, 1 wrong, 11 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -1067,7 +1069,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `empty-state:no-comment-body`<br>No comment body | missing | shell | No comment body | `L8i` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-todos`<br>No todos | missing | shell | No todos | `bwt` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-tasks`<br>No tasks | missing | shell | No tasks | `X0o` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-models-found`<br>No models found | missing | chat | No models found | `A7o` |  | copy not shown in any OpenConductor capture |
+| `empty-state:no-models-found`<br>No models found | matches | chat | No models found | `A7o` | [empty-model-search](side-by-side/chat-tabs-empty-model-search.png) | on screen in both; state empty-model-search matches |
 | `empty-state:no-changes-in-this-file`<br>No changes in this file | missing | shell | No changes in this file | `Mqo` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-changes-to-this-file`<br>No changes to this file. | missing | git-review | No changes to this file. | `Jqo` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-description`<br>No description | missing | shell | No description | `dKo` |  | copy not shown in any OpenConductor capture |
@@ -1217,10 +1219,16 @@ Harness limits that shape the reference (not REA bugs): settings pages behind an
 58. **A click whose locator never appears also fails as "screenshot missing"**, with no step id or timeout reason: OpenConductor's palette had no "All projects" button before this change, and the scenario reported only a missing screenshot (gap 3 again, for a plain timeout).
 59. **No geometry or computed style in a capture** (gap 14 again): the palette's frame (672 x ≤500 at top 50% − 250px), 44px rows, 24px filter buttons, filter popups and empty-state button were measured with playwright-core `getBoundingClientRect`/`getComputedStyle` on the harness render, so those numbers carry no REA Evidence id; the side-by-side records do.
 
+### Hit while lining up the chat area's states (REA 6.8.0, Linux cloud)
+
+60. **`rea search` still has no route for the decoded `renderApp` chunk** (gaps 17, 25, 30, 34, 36, 41, 45, 48): `rea search renderApp-D_fmY7hW.js "Next unread"` fails `capability_unavailable` / `unsupported_provider` (`target_unsupported`; candidates ghidra, hopper, ida, kuna). The composer's "Next unread" (`g1o`, @7,573,441 bytes, `absolute -top-10 right-0 z-10` outline sm button, shown only while another chat is unread), the chat tab trigger (`Q1`, @6,943,290: `h-10`), the turn menu's "Reset chat" gate (`TDo` @8,919,512: `ue = workspace && workspacePath && !archived && !isLastTurn && X`), the Reset chat? AlertDialog (`dDo` @8,910,893 with `Im`/`Rm`/`Nm`/`Ag`/`Dm` @~1,984,000-1,991,500) and the model picker's "No models found" (`A7o`, @8,601,078) were read from the chunk by byte offset; the rendered states were captured with `capture-browser-scenario` (`tools/side-by-side/chat-tabs.mjs`).
+61. **A failed click step names only a timeout.** The first Reset chat? capture failed at `[role=menuitem] >> text=Reset chat` with "Analysis operation timed out after 8000ms: capture_browser_scenario"; REA did not say the locator matched nothing, and the run returns no screenshot for a failed step, so finding that Conductor hides Reset chat on the last turn took a second run without that step.
+62. **The inventory's offsets and a byte search disagree.** The UI map's `source.offset` for these items (e.g. `empty-state:no-models-found` @8,555,455) is a character offset into the chunk, while `grep -b` on the same bytes gives 8,601,078; the chunk has multi-byte characters, so offsets taken from REA-adjacent tooling cannot be used with `dd` without converting. REA has no offset query of its own over a JS file to settle which one a record means.
+
 ### Hit while building Settings › Organization on Reason workspaces (REA 6.8.0, Linux cloud)
 
-60. **No way to give a captured page a network answer, so seven references were the wrong page.** Conductor renders `/settings/organization/*` only for a member of a cloud organization (`lW`), and REA's scenario has no network fixture action, so every reference redirected to `/settings/user/general` and the map compared seven identical captures of General (one PNG sha256 `cb8ebfb5…`). Fixed in the harness, not REA: `tools/screens` now answers Conductor's organization API from `org-fixtures.js` with `?oc_org=cloud` (this also unblocks gap 47's routine table).
-61. **No HTTP trace in a capture** (as gap 50 for IPC): finding the endpoints the organization pages call needed the mock's own refused-request log (`refusedHttp` in the `/__mock/log` post); REA's result lists console and page errors only.
-62. **A strict-mode `wait_for` failure still reads "screenshot missing"** (gap 12, again): `text=tide-web` matches twice on Conductor's Cloud computer page (nav and repository chip) and on ours, and REA named neither the step nor the strict-mode violation. Both sides now wait on page-specific locators.
-63. **`rea search` still has no route for the decoded chunks** (gaps 17, 25, 30, 34, 36, 41, 45, 48): the routes (`PI`), gate (`lW`), nav (`I9a`), Members (`m0a`, `h0a`), cloud computer (`ofa`) and the API routes and zod schemas in `index-BGEQ8YjU.js` (`iPe`, `W1e`, `Qw`, `RPe`, `mPe`, `tu`) were read as plain text by byte offset.
+63. **No way to give a captured page a network answer, so seven references were the wrong page.** Conductor renders `/settings/organization/*` only for a member of a cloud organization (`lW`), and REA's scenario has no network fixture action, so every reference redirected to `/settings/user/general` and the map compared seven identical captures of General (one PNG sha256 `cb8ebfb5…`). Fixed in the harness, not REA: `tools/screens` now answers Conductor's organization API from `org-fixtures.js` with `?oc_org=cloud` (this also unblocks gap 47's routine table).
+64. **No HTTP trace in a capture** (as gap 50 for IPC): finding the endpoints the organization pages call needed the mock's own refused-request log (`refusedHttp` in the `/__mock/log` post); REA's result lists console and page errors only.
+65. **A strict-mode `wait_for` failure still reads "screenshot missing"** (gap 12, again): `text=tide-web` matches twice on Conductor's Cloud computer page (nav and repository chip) and on ours, and REA named neither the step nor the strict-mode violation. Both sides now wait on page-specific locators.
+66. **`rea search` still has no route for the decoded chunks** (gaps 17, 25, 30, 34, 36, 41, 45, 48): the routes (`PI`), gate (`lW`), nav (`I9a`), Members (`m0a`, `h0a`), cloud computer (`ofa`) and the API routes and zod schemas in `index-BGEQ8YjU.js` (`iPe`, `W1e`, `Qw`, `RPe`, `mPe`, `tu`) were read as plain text by byte offset.
 

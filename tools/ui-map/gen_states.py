@@ -170,6 +170,10 @@ st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{
 # Rename chat dialog and the Review button's right-click menu (chat builder 1)
 LISBON=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]
 st("dialog-rename-chat","Rename chat dialog", ref(actions=LISBON+[{"rclick":"[role=tab][aria-label^='Close chat']"},{"click":"[role=menuitem] >> text=Rename chat"}]), oc=OPEN_WS+[{"rclick":".main-tabs [role=tab]","after_ms":600},{"click":"[role=menu] [role=menuitem]","text":"Rename chat","after_ms":800}])
+# Turn footer "Show message actions" -> Reset chat (Conductor dDo "Reset chat?", renderApp @8,910,893 bytes).
+st("dialog-reset-chat","Reset chat? dialog", ref(actions=LISBON+[{"click":"[aria-label='Show message actions']"},{"click":"[role=menuitem] >> text=Reset chat"}]), oc=OPEN_WS+[{"click":"[aria-label='Show message actions']","after_ms":600},{"click":"[role=menu] [role=menuitem]","text":"Reset chat","after_ms":800}], covers=[{"kind":"dialog","name":"Reset chat?"}])
+# Model picker searched for a model no agent has (Conductor A7o "No models found", @8,601,078 bytes).
+st("empty-model-search","Model picker, search with no match", ref(actions=LISBON+[{"click":"text=Opus 5 >> nth=-1"},{"fill":["[placeholder='Search models']","zzz"]}]), oc=OPEN_WS+[{"click":".composer .oc-model-chip","after_ms":600},{"type":"zzz","css":"[placeholder='Search models']"}], covers=[{"kind":"empty-state","name":"No models found"}])
 st("menu-review-edit","Review button menu (Edit before sending)", ref(actions=LISBON+[{"rclick":"button:has-text('Review') >> nth=0"}]), oc=OPEN_WS+[{"rclick":".review-button","after_ms":600}], covers=[{"kind":"menu","name":"u6s"}])
 
 # Conductor's reference opens on "/" (Home: wordmark and the Open project / Open GitHub
