@@ -16,11 +16,17 @@ export function removedWorkspaceIds(prev: AppState, next: AppState): string[] {
 }
 
 /**
- * Where the app opens: `/all-workspaces` opens the Home list, otherwise a saved
- * open workspace is restored and anything else starts at `/` (the entry cards).
+ * Where the app opens: `/all-workspaces` opens the Home list and
+ * `/dashboard[?repo=<id>]` the dashboard board (which goes back to `/` when
+ * the setting is off), otherwise a saved open workspace is restored and
+ * anything else starts at `/` (the entry cards).
  */
-export function startSelection(state: AppState, pathname: string): AppState {
+export function startSelection(state: AppState, pathname: string, search = ""): AppState {
   if (pathname === "/all-workspaces") return { ...state, selection: { kind: "home" } };
+  if (pathname === "/dashboard") {
+    const repo = new URLSearchParams(search).get("repo") || undefined;
+    return { ...state, selection: repo ? { kind: "dashboard", repo } : { kind: "dashboard" } };
+  }
   if (state.selection?.kind === "workspace") return state;
   return { ...state, selection: { kind: "root" } };
 }
