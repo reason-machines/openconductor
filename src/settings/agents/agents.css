@@ -1,22 +1,24 @@
 /* Settings › Agents and Default models, laid out like Conductor 0.87.6's
-   providers and models pages (Tailwind classes read from renderApp-D_fmY7hW.js;
-   colours from evidence/frontend/css-tokens.json `:root,.light` and `.dark`). */
+   providers and models pages (Tailwind classes read from renderApp-D_fmY7hW.js).
+   Colours are the chosen palette's tokens (src/theme/tokens.css): under Stone
+   they are Conductor's own `:root,.light` and `.dark` values
+   (evidence/frontend/css-tokens.json), and under Neutral they are pure greys. */
 .oc-ag {
-  --ag-accent: var(--conductor-accent);
-  --ag-accent-fg: var(--conductor-accent-fg);
-  --ag-muted: var(--conductor-muted);
-  --ag-muted-fg: var(--conductor-muted-fg);
-  --ag-fg: var(--conductor-fg);
-  --ag-bg: var(--conductor-bg);
-  --ag-border: var(--conductor-border);
-  --ag-input: var(--conductor-input);
+  --ag-accent: var(--surface-accent);
+  --ag-accent-fg: var(--surface-accent-text);
+  --ag-muted: var(--surface-muted);
+  --ag-muted-fg: var(--muted);
+  --ag-fg: var(--text);
+  --ag-bg: var(--bg);
+  --ag-border: var(--border);
+  --ag-input: var(--input);
   --ag-destructive: var(--destructive);
   --ag-success: var(--success);
-  --ag-primary: var(--conductor-primary);
-  --ag-primary-fg: var(--conductor-primary-fg);
-  --ag-tip: var(--conductor-tip);
-  --ag-tip-fg: var(--conductor-tip-fg);
-  --ag-ring: var(--conductor-ring);
+  --ag-primary: var(--accent);
+  --ag-primary-fg: var(--accent-text);
+  --ag-tip: var(--popover);
+  --ag-tip-fg: var(--popover-text);
+  --ag-ring: var(--ring);
   color: var(--ag-fg);
   font-size: 14px;
 }
@@ -55,7 +57,7 @@
   background: none; border: 0; border-bottom: 1px solid transparent; cursor: default;
 }
 .ag-tab:hover { color: var(--ag-fg); }
-.ag-tab.on { color: var(--ag-fg); border-bottom-color: var(--conductor-tab-underline); }
+.ag-tab.on { color: var(--ag-fg); border-bottom-color: var(--emphasis); }
 
 /* Buttons (shadcn variants). */
 .ag-btn {

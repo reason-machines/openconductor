@@ -257,6 +257,18 @@ impl SettingsService {
 
     /// The environment to launch `agent` with: its configured provider (its
     /// CLI login if unset) and that provider's secrets.
+    /// Where a chat of `agent` in `cwd` runs when its workspace is on
+    /// another machine ([`crate::agent_target`]), with the credential
+    /// handed over for this launch; `None` on this Mac.
+    pub fn target_launch(
+        &self,
+        agent: AgentKind,
+        cwd: &std::path::Path,
+    ) -> Result<Option<crate::agent::handoff::TargetLaunch>, String> {
+        let settings = self.get().map_err(|e| e.to_string())?;
+        crate::agent_target::target_launch(&settings, self.store.as_ref(), agent, cwd)
+    }
+
     pub fn launch_env(&self, agent: AgentKind) -> Result<LaunchEnv, String> {
         let settings = self.get().map_err(|e| e.to_string())?;
         settings

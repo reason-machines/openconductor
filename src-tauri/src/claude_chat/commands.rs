@@ -42,6 +42,9 @@ impl ClaudeChats {
                     let env = settings.launch_env(AgentKind::Claude)?;
                     let mut launch = ClaudeLaunch::new(cwd, env);
                     launch.executable = exe;
+                    // A workspace on a Reason computer: the chat runs there
+                    // with the credential handed over for this launch.
+                    launch.target = settings.target_launch(AgentKind::Claude, &launch.cwd)?;
                     launch.resume = resume;
                     // Account › "Claude Code tool approvals" (Conductor's
                     // `tool_approvals_enabled`, off by default): ask before
@@ -60,7 +63,8 @@ impl ClaudeChats {
                     launch.chrome = settings_app
                         .try_state::<crate::db::Db>()
                         .and_then(|db| {
-                            tauri::async_runtime::block_on(crate::app_prefs::commands::load(&db.0)).ok()
+                            tauri::async_runtime::block_on(crate::app_prefs::commands::load(&db.0))
+                                .ok()
                         })
                         .is_some_and(|p| p.chrome_mode_enabled);
                     Ok(launch)

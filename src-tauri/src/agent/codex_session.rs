@@ -102,6 +102,24 @@ pub struct CodexSession {
     turn: Option<String>,
     /// The last turn the server announced with `turn/started`.
     started: Option<String>,
+    /// `account/login/start` sent right after `initialized`: the API key,
+    /// or on another machine its placeholder (never the key itself).
+    login: Option<ClientRequest>,
+}
+
+/// The API key login for `launch`. A chat on another machine sends only the
+/// placeholder: its stdin is the channel, and the key travels sealed.
+fn api_key_login(launch: &CodexLaunch) -> Option<ClientRequest> {
+    match &launch.target {
+        Some(t) => t
+            .handoff
+            .codex_api_key
+            .is_some()
+            .then_some(ClientRequest::AccountLoginApiKeyHandoff),
+        None => launch
+            .api_key()
+            .map(|api_key| ClientRequest::AccountLoginApiKey { api_key }),
+    }
 }
 
 impl CodexSession {
@@ -113,8 +131,17 @@ impl CodexSession {
                 format!("cannot start {}: {e}", launch.executable.display()),
             )
         })?;
-        let stdin = child.stdin.take();
-        let stdout = child.stdout.take().ok_or_else(|| missing("stdout"))?;
+        let mut stdin = child.stdin.take();
+        let mut stdout = child.stdout.take().ok_or_else(|| missing("stdout"))?;
+        if let (Some(target), Some(input)) = (&launch.target, stdin.as_mut()) {
+            // The credential goes over the target's own stdin, sealed to its
+            // key, before the agent starts there (agent::handoff).
+            if let Err(e) = super::handoff::handshake(&mut stdout, input, &target.handoff) {
+                let _ = child.kill();
+                let _ = child.wait();
+                return Err(e);
+            }
+        }
         let stderr = child.stderr.take().ok_or_else(|| missing("stderr"))?;
         let (tx, lines) = mpsc::channel();
         read_lines(stdout, tx.clone(), parse_stdout, Some(Line::Closed));
@@ -128,6 +155,7 @@ impl CodexSession {
             thread: None,
             turn: None,
             started: None,
+            login: api_key_login(launch),
         })
     }
 
@@ -207,6 +235,9 @@ impl CodexSession {
             timeout,
         )?;
         self.write(&initialized_line())?;
+        if let Some(login) = self.login.clone() {
+            self.call(&login, timeout)?;
+        }
         Ok(info)
     }
 
@@ -430,6 +461,7 @@ while IFS= read -r line; do
   case "$line" in
     *'"method":"initialize"'*) echo "{\"id\":$id,\"result\":{\"userAgent\":\"fake/0\"}}" ;;
     *'"method":"initialized"'*) echo 'starting' >&2 ;;
+    *'"method":"account/login/start"'*) echo "{\"id\":$id,\"result\":{\"type\":\"apiKey\"}}" ;;
     *'"method":"thread/start"'*)
       echo '{"method":"thread/started","params":{"thread":{"id":"t1"}}}'
       echo "{\"id\":$id,\"result\":{\"thread\":{\"id\":\"t1\"}}}" ;;
@@ -489,6 +521,47 @@ done
             CodexEvent::Message(ServerMessage::Notification(n)) => n,
             other => panic!("expected a notification, got {other:?}"),
         }
+    }
+
+    fn sent_lines(exe: &std::path::Path) -> Vec<Value> {
+        fs::read_to_string(format!("{}.stdin", exe.display()))
+            .unwrap_or_default()
+            .lines()
+            .map(|l| serde_json::from_str(l).unwrap())
+            .collect()
+    }
+
+    #[test]
+    fn api_key_launch_logs_in_with_the_key_after_initialized() {
+        use super::super::env::vars;
+        use super::super::SecretString;
+        let exe = script(FAKE_APP_SERVER);
+        let mut env = LaunchEnv::cleared_for(AgentKind::Codex);
+        env.set_secret(vars::CODEX_API_KEY, SecretString::new("sk-test-login"));
+        let mut keyed = CodexLaunch::new(exe.parent().unwrap(), env);
+        keyed.executable = exe.clone();
+        let mut s = CodexSession::spawn(&keyed).unwrap();
+        s.initialize("oc", "0", WAIT).unwrap();
+        let sent = sent_lines(&exe);
+        let methods: Vec<_> = sent.iter().map(|l| l["method"].as_str().unwrap()).collect();
+        assert_eq!(
+            methods,
+            ["initialize", "initialized", "account/login/start"]
+        );
+        assert_eq!(
+            sent[2]["params"],
+            serde_json::json!({"type": "apiKey", "apiKey": "sk-test-login"})
+        );
+    }
+
+    #[test]
+    fn login_launch_sends_no_api_key_login() {
+        let exe = script(FAKE_APP_SERVER);
+        let mut s = CodexSession::spawn(&launch(exe.clone())).unwrap();
+        s.initialize("oc", "0", WAIT).unwrap();
+        s.open_thread(None, ThreadOptions::default(), WAIT).unwrap();
+        let sent = sent_lines(&exe);
+        assert!(sent.iter().all(|l| l["method"] != "account/login/start"));
     }
 
     #[test]

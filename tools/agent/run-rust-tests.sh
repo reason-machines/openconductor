@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build, test and lint src-tauri/src/agent/ as a standalone crate.
 #
-# The module depends on std, serde, serde_json and (macOS) security-framework, so it is tested on
+# The module depends on std, serde, serde_json, the hand-off's crypto crates and (macOS) security-framework, so it is tested on
 # its own until the Tauri crate (src-tauri/Cargo.toml) exists and wires it in.
 # The harness crate is generated in a temp dir; nothing in the repo changes.
 #
@@ -28,6 +28,13 @@ path = "$module"
 [dependencies]
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1"
+base64 = "0.21"
+sha2 = "0.10"
+hmac = "0.12"
+aes = "0.8"
+ctr = "0.9"
+getrandom = "0.2"
+x25519-dalek = { version = "2", features = ["getrandom"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 security-framework = "3"

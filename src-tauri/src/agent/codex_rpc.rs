@@ -16,6 +16,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Map, Value};
 
 use super::codex_cli::CodexPolicy;
+use super::secret::SecretString;
 
 /// A request id. Ours are integers; the server's may be either.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -69,6 +70,24 @@ pub enum ClientRequest {
     AccountLoginCancel {
         login_id: String,
     },
+    /// `account/login/start` with `{type: "chatgptAuthTokens"}` for a chat
+    /// on another machine, as Conductor 0.87.6 signs in its cloud Codex.
+    /// Carries [`super::handoff`]'s placeholders: the target splices the
+    /// token in, so this app never writes it to the channel.
+    AccountLoginChatgptHandoff,
+    /// `account/login/start` with `{type: "apiKey", apiKey}`: the key saved
+    /// in the API key card, as Conductor's Codex client sends it right after
+    /// `initialized`. Codex 0.166's app server does not read CODEX_API_KEY
+    /// from its environment, so without this a key-only launch sends no
+    /// credential. The launch adds `cli_auth_credentials_store="ephemeral"`
+    /// so the key stays in memory and never replaces the user's auth.json.
+    AccountLoginApiKey {
+        api_key: SecretString,
+    },
+    /// [`ClientRequest::AccountLoginApiKey`] for a chat on another machine:
+    /// carries [`super::handoff::APIKEY_PLACEHOLDER`], which the target
+    /// replaces with the key from the sealed envelope.
+    AccountLoginApiKeyHandoff,
 }
 
 /// The answer to an approval request. Decline lets the turn continue;
@@ -124,6 +143,9 @@ impl ClientRequest {
             ClientRequest::AccountRead => "account/read",
             ClientRequest::AccountLoginChatgpt => "account/login/start",
             ClientRequest::AccountLoginCancel { .. } => "account/login/cancel",
+            ClientRequest::AccountLoginChatgptHandoff => "account/login/start",
+            ClientRequest::AccountLoginApiKey { .. } => "account/login/start",
+            ClientRequest::AccountLoginApiKeyHandoff => "account/login/start",
         }
     }
 
@@ -172,6 +194,18 @@ impl ClientRequest {
             ClientRequest::AccountRead => json!({}),
             ClientRequest::AccountLoginChatgpt => json!({ "type": "chatgpt" }),
             ClientRequest::AccountLoginCancel { login_id } => json!({ "loginId": login_id }),
+            ClientRequest::AccountLoginChatgptHandoff => json!({
+                "type": "chatgptAuthTokens",
+                "accessToken": super::handoff::ACCESS_PLACEHOLDER,
+                "chatgptAccountId": super::handoff::ACCOUNT_PLACEHOLDER,
+            }),
+            ClientRequest::AccountLoginApiKey { api_key } => {
+                json!({ "type": "apiKey", "apiKey": api_key.expose() })
+            }
+            ClientRequest::AccountLoginApiKeyHandoff => json!({
+                "type": "apiKey",
+                "apiKey": super::handoff::APIKEY_PLACEHOLDER,
+            }),
         }
     }
 
@@ -256,6 +290,18 @@ mod tests {
     fn sent(line: &str) -> Value {
         assert!(line.ends_with('\n') && !line[..line.len() - 1].contains('\n'));
         serde_json::from_str(line).unwrap()
+    }
+
+    #[test]
+    fn api_key_login_line_carries_the_key_and_debug_hides_it() {
+        let req = ClientRequest::AccountLoginApiKey {
+            api_key: SecretString::new("sk-test-rpc"),
+        };
+        assert_eq!(
+            sent(&req.to_line(4)),
+            json!({"id": 4, "method": "account/login/start", "params": {"type": "apiKey", "apiKey": "sk-test-rpc"}})
+        );
+        assert!(!format!("{req:?}").contains("sk-test-rpc"));
     }
 
     #[test]

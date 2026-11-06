@@ -50,8 +50,17 @@ impl ClaudeSession {
                 format!("cannot start {}: {e}", launch.executable.display()),
             )
         })?;
-        let stdin = child.stdin.take();
-        let stdout = child.stdout.take().ok_or_else(|| missing("stdout"))?;
+        let mut stdin = child.stdin.take();
+        let mut stdout = child.stdout.take().ok_or_else(|| missing("stdout"))?;
+        if let (Some(target), Some(input)) = (&launch.target, stdin.as_mut()) {
+            // The credential goes over the target's own stdin, sealed to its
+            // key, before the agent starts there (agent::handoff).
+            if let Err(e) = super::handoff::handshake(&mut stdout, input, &target.handoff) {
+                let _ = child.kill();
+                let _ = child.wait();
+                return Err(e);
+            }
+        }
         let stderr = child.stderr.take().ok_or_else(|| missing("stderr"))?;
         let (tx, events) = mpsc::channel();
         read_lines(stdout, tx.clone(), parse_stdout, Some(SessionEvent::Closed));

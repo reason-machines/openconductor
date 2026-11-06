@@ -1,14 +1,15 @@
 {
   "agent": "codex",
-  "app_commit": "this PR's branch on main 1f599d7 (local commit 378a30a)",
+  "app_commit": "main 95ec07d plus this PR's Codex API key login (built from the working tree)",
   "host": {
     "os": "macOS-26.4-arm64-arm-64bit",
     "machine": "arm64"
   },
   "cli_version": "codex-cli 0.166.0",
+  "key_only_control": false,
   "cli_auth_in_throwaway_home": "Logged in using ChatGPT",
-  "started": "2026-11-06T13:45:58.978Z",
-  "ended": "2026-11-06T13:46:07.806Z",
+  "started": "2026-11-06T14:16:33.080Z",
+  "ended": "2026-11-06T14:16:43.845Z",
   "error": null,
   "modes": [
     {
@@ -53,9 +54,28 @@
     },
     {
       "mode": "apikey",
-      "result": "not run",
-      "reason": "no OPENAI_API_KEY reference given (OC_E2E_*_OP_REF)"
+      "card": "API key",
+      "set_in_app": true,
+      "stored": {
+        "provider": null,
+        "config": {
+          "kind": "openai_api"
+        }
+      },
+      "connected": true,
+      "login_prompt": false,
+      "key_fingerprint": "76e86bc2f5441fbf",
+      "turn": {
+        "status": "completed",
+        "error": null,
+        "signInNotice": null,
+        "reply": "oc-apikey-ok",
+        "seconds": 2
+      },
+      "result": "pass"
     }
   ],
-  "result": "pass"
+  "driver_result": "pass",
+  "result": "pass",
+  "key_source": "1Password op://Production/github-native-engineer-evals/OPENAI_API_KEY (evals project), read inside the runner only"
 }

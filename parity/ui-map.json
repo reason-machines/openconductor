@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "1f599d7",
+  "commit": "95ec07d",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -33,19 +33,19 @@
  },
  "summary": {
   "total": 965,
-  "missing": 777,
-  "wrong": 86,
+  "missing": 771,
+  "wrong": 92,
   "matches": 102,
   "states": {
    "total": 67,
-   "missing": 20,
-   "wrong": 32,
+   "missing": 18,
+   "wrong": 34,
    "matches": 15
   },
   "items": {
    "total": 898,
-   "missing": 757,
-   "wrong": 54,
+   "missing": 753,
+   "wrong": 58,
    "matches": 87
   },
   "items_by_kind": {
@@ -81,8 +81,8 @@
    },
    "route": {
     "total": 65,
-    "missing": 43,
-    "wrong": 10,
+    "missing": 42,
+    "wrong": 11,
     "matches": 12
    },
    "select": {
@@ -93,14 +93,14 @@
    },
    "settings-page": {
     "total": 29,
-    "missing": 16,
-    "wrong": 5,
+    "missing": 15,
+    "wrong": 6,
     "matches": 8
    },
    "settings-row": {
     "total": 121,
-    "missing": 42,
-    "wrong": 23,
+    "missing": 41,
+    "wrong": 24,
     "matches": 56
    },
    "sheet": {
@@ -111,8 +111,8 @@
    },
    "tab": {
     "total": 35,
-    "missing": 31,
-    "wrong": 0,
+    "missing": 30,
+    "wrong": 1,
     "matches": 4
    },
    "toast": {
@@ -125,8 +125,8 @@
   "by_team": {
    "chat": {
     "total": 55,
-    "missing": 51,
-    "wrong": 4,
+    "missing": 50,
+    "wrong": 5,
     "matches": 0
    },
    "cloud-org": {
@@ -143,8 +143,8 @@
    },
    "onboarding-auth": {
     "total": 23,
-    "missing": 18,
-    "wrong": 5,
+    "missing": 17,
+    "wrong": 6,
     "matches": 0
    },
    "routines": {
@@ -155,8 +155,8 @@
    },
    "settings": {
     "total": 181,
-    "missing": 50,
-    "wrong": 42,
+    "missing": 46,
+    "wrong": 46,
     "matches": 89
    },
    "shell": {
@@ -214,10 +214,10 @@
    "diff": {
     "file": "ui-map/diff/onboarding-signed-out.jpg",
     "changed_ratio_t0": 0.999969512195122,
-    "changed_ratio_t24": 0.9798161204268293,
+    "changed_ratio_t24": 0.9798351753048781,
     "rea_evidence_ids": [
-     "ev_6551efd0a2bfe73a6d03c0db96ac71ed14a889bb2cf83982c763558c46b587b5",
-     "ev_2e98976874c4ae60440949e116c4b49750753ba5e87dfabb228eafd95e7f1657"
+     "ev_beded0c563c19e47c17333d2bcae50dba41e813871709191d5b8d5a02307c15e",
+     "ev_e3efeb6457f28b425b04fda54a67916c89c6e30ab747bab856fe5ef26600efa7"
     ]
    },
    "copy_coverage": 0.857,
@@ -251,10 +251,10 @@
    "diff": {
     "file": "ui-map/diff/first-run-onboarding.jpg",
     "changed_ratio_t0": 0.9844693216463415,
-    "changed_ratio_t24": 0.9549409298780488,
+    "changed_ratio_t24": 0.9549485518292683,
     "rea_evidence_ids": [
-     "ev_db82f7cf289aa3a9f0f3b58b98c3687a935ed8ce90d4cf67955374d4a875ab04",
-     "ev_c1527eda2da9b419a794913232d7af6296384cbc92e60caafe787cd160e54db9"
+     "ev_9d6c71ab2dcb0019e78563501c55a21a3c47774cf769656c3a81612b5b59a4be",
+     "ev_4fe6cbc7596d416ee3f8d7158e25ea56c270fce8c170a895dc15f264bf21783c"
     ]
    },
    "copy_coverage": 0.067,
@@ -323,10 +323,10 @@
    "diff": {
     "file": "ui-map/diff/home.jpg",
     "changed_ratio_t0": 0.9999971417682927,
-    "changed_ratio_t24": 0.0422875381097561,
+    "changed_ratio_t24": 0.04218940548780488,
     "rea_evidence_ids": [
-     "ev_1b902c71094fe24b9dee6f5207064bad6516fe19992c61acd37e7e0dff1aeeac",
-     "ev_7d2e32157d88f49665a3b731806a82efef7bf8e7bd5a4732d3dbe1f205de344d"
+     "ev_861094eec390d224fbc0c037e640a862cd9be74119f5eb811ee4c18c9a00aa8f",
+     "ev_eb12e90385e8cc5480fd0dfa0ba6546fd5ee505a2dfdea7dc1b08414195a34f6"
     ]
    },
    "copy_coverage": 0.933,
@@ -360,10 +360,10 @@
    "diff": {
     "file": "ui-map/diff/all-workspaces.jpg",
     "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.03877858231707317,
+    "changed_ratio_t24": 0.03868044969512195,
     "rea_evidence_ids": [
-     "ev_7041a74064ea008f9a81afc04d49ee1f797d36c3d8bfad9abd6b0eb28eda9a89",
-     "ev_6ab8dfffee936d733702d9b6937d9b0f1ae922e9f046ada8603f6b8bfbceabed"
+     "ev_5a89a489090749f691937218e2a8f22ee1e0e57682017ffc44285a9727a92b44",
+     "ev_2bba640eebc6b2a360635ca1a1610873571d902a3ab7a699431d3f88ced42599"
     ]
    },
    "copy_coverage": 0.846,
@@ -376,7 +376,7 @@
    "id": "create",
    "title": "Create workspace composer",
    "status": "wrong",
-   "why": "diff 8.0% at t24, copy 77%",
+   "why": "diff 7.9% at t24, copy 77%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -398,10 +398,10 @@
    "diff": {
     "file": "ui-map/diff/create.jpg",
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.07971417682926829,
+    "changed_ratio_t24": 0.07929496951219513,
     "rea_evidence_ids": [
-     "ev_fe822bf036129923337a16325810baa2e4ad4d1bf95ce81b760b5b53d5b18981",
-     "ev_59484b096ebcce8886975113acc5a4fda64de094282600f2f75a27d9be756b43"
+     "ev_c92641747371c12fd6bb878486a85d55f1f641179e9507a77d83ee0ca09ee2cc",
+     "ev_f62b94e5805e7060595e65e58f11fac06bce4f2916ad3efbe97c306a519c8a2c"
     ]
    },
    "copy_coverage": 0.773,
@@ -417,7 +417,7 @@
    "id": "create-repo-picker",
    "title": "Create: repo picker open",
    "status": "wrong",
-   "why": "diff 8.3% at t24, copy 78%",
+   "why": "diff 8.2% at t24, copy 78%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -439,10 +439,10 @@
    "diff": {
     "file": "ui-map/diff/create-repo-picker.jpg",
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.08279439786585366,
+    "changed_ratio_t24": 0.0823751905487805,
     "rea_evidence_ids": [
-     "ev_a35fcef7bf51c58e9253eca4a6cfd4956435e7597cb1a7138a61d58973d3e988",
-     "ev_f2cd1a86e0ad7d229568a6670b16ba1d0bbd77d9445af690c815701a1fdc1821"
+     "ev_af4a2e3eb61bc46d341a378fdaf06da03288d561d399b9b0254d6c1e0edfa7c6",
+     "ev_c92f752e20c773baacac32f326875a0638b2e158aed795d974cdcb8d72c58105"
     ]
    },
    "copy_coverage": 0.783,
@@ -480,10 +480,10 @@
    "diff": {
     "file": "ui-map/diff/workspace-chat.jpg",
     "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.06028677591463415,
+    "changed_ratio_t24": 0.05996855945121951,
     "rea_evidence_ids": [
-     "ev_092479b92410682caaf628739ec2588319d6e476045d256941fa4144e1e5f57b",
-     "ev_381104dd15806c69b4d28fab52e9962f0727468ba58f7a36fa112aced24d75c9"
+     "ev_877e4ec9468731c1e95ad9a4808f4b60f78184f850eea26908f94733243963c9",
+     "ev_9f7c170278957808472cae527f043574f636f798246c5d34b2129c4c84b564b0"
     ]
    },
    "copy_coverage": 0.821,
@@ -499,7 +499,7 @@
    "id": "workspace-new-chat",
    "title": "Workspace: new empty chat",
    "status": "wrong",
-   "why": "diff 3.3% at t24, copy 88%",
+   "why": "diff 3.2% at t24, copy 88%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -521,10 +521,10 @@
    "diff": {
     "file": "ui-map/diff/workspace-new-chat.jpg",
     "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.03262480945121951,
+    "changed_ratio_t24": 0.03214557926829268,
     "rea_evidence_ids": [
-     "ev_fab9926b16747ad57a8c36300be255c725163f76377e07006cbfb224d4aece1f",
-     "ev_7499032dd1758c155fd8f0e23f9148d0e6014019878d455365a2a26f55f78350"
+     "ev_a2b12338e08e4ff69f55085aa81355d9c26ecf45c086207357fea55aaf91d97d",
+     "ev_bf178816c9af64003b40c2900feae0f5b771e08df2d4f568988bf9f79a012fdf"
     ]
    },
    "copy_coverage": 0.885,
@@ -560,10 +560,10 @@
    "diff": {
     "file": "ui-map/diff/workspace-tool-calls.jpg",
     "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.07345560213414634,
+    "changed_ratio_t24": 0.07316120426829269,
     "rea_evidence_ids": [
-     "ev_20da8d9405597de498770a0ff427ca6ca472c0ac1bb38e087ce9397ac54b2506",
-     "ev_6ed9b9390677575d91d818b8daa59808c8ee0745eef9e41d85bb00c6285b0447"
+     "ev_5d0be450019f5dce8a04505caa42c65393b52f459afdbce6b8c08a7cd6ebaf2a",
+     "ev_4c5dd21a91f353f14894ccfd4e0e0b496c52f7705124445f5aaf75b70b2821ca"
     ]
    },
    "copy_coverage": 0.793,
@@ -602,10 +602,10 @@
    "diff": {
     "file": "ui-map/diff/diff-unified.jpg",
     "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.10716368140243902,
+    "changed_ratio_t24": 0.10698075457317073,
     "rea_evidence_ids": [
-     "ev_a0883816af1f5c45049cbc5846e88b5769fd81e2f32354063ed160063dbcce98",
-     "ev_5a2e1d7f47a0ffd215744f8bf467906d70089211c298e7700d3c3441f1649743"
+     "ev_9836b19960a4c5994970250aa6993e1bd544a5787b5ba3f49cafd9a41c0c84f6",
+     "ev_7d87e67d1c94b96e47b56e648c0c4ffa4df86109d23ad98aa0f07ce34fff8354"
     ]
    },
    "copy_coverage": 0.879,
@@ -642,10 +642,10 @@
    "diff": {
     "file": "ui-map/diff/diff-split.jpg",
     "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.10809165396341464,
+    "changed_ratio_t24": 0.10790872713414634,
     "rea_evidence_ids": [
-     "ev_79914254b92eff16b152daad9bdc4edd45efb52c0bfaa61c4c909705ac9c37bb",
-     "ev_8692cfeb84d17bd5499b2840aef305e13375f58406b05448a9cb610d2335beda"
+     "ev_cbfb775bb4c8824f2b6d513a3ee051d2d1a6b490f3be4af09bd9e8f94950f520",
+     "ev_ea1bc779d249860dc1b66b27061e9772e51d2ed0c336a2667ad7a0d9ffa9bb9c"
     ]
    },
    "copy_coverage": 0.879,
@@ -682,10 +682,10 @@
    "diff": {
     "file": "ui-map/diff/diff-entire-file.jpg",
     "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.052878239329268294,
+    "changed_ratio_t24": 0.0526953125,
     "rea_evidence_ids": [
-     "ev_5419c7429f7eae3c0f9f11fd60e762895d44732196ab174029d472dc3024df12",
-     "ev_7fccbf56f0e926b23e559aa8a4bcba705325d79681d8cfaf138e380b19c3f555"
+     "ev_e60654a0037fc744aab1b12aa0cb9d373a3d100b0a69d2179fad9fbdaf83fea8",
+     "ev_e96e1faaf3a156d83f9d0931f39c2ad13882572f7fb8d0b3f370dc105299314d"
     ]
    },
    "copy_coverage": 0.879,
@@ -981,10 +981,10 @@
    "diff": {
     "file": "ui-map/diff/login.jpg",
     "changed_ratio_t0": 0.999969512195122,
-    "changed_ratio_t24": 0.9801314786585366,
+    "changed_ratio_t24": 0.980123856707317,
     "rea_evidence_ids": [
-     "ev_d25f7e174f1ae2c8aaa516e4ce972c5856438761ab31c009830a531708429b25",
-     "ev_424c971492dfef33d67713c22ab5757c2a3da4eb9f7e1014449f6507310cff81"
+     "ev_5624fa20593aea7fe1c2fdedb6c09b2dfb5162e383bb3c5606a4d468f4b82347",
+     "ev_fd1522266313f98a449f8df02949682451b6349e88bcbd7afe2653c87845747d"
     ]
    },
    "copy_coverage": 0.0,
@@ -1021,8 +1021,8 @@
     "changed_ratio_t0": 0.999984756097561,
     "changed_ratio_t24": 0.031363376524390245,
     "rea_evidence_ids": [
-     "ev_2aa6f1e2f3679c06c47aa8b8d4340a0e7460cbaa4f34211a169e119820f6b5ec",
-     "ev_5de0549367d48023f43b5726af783b7489010b5695624dea06711672d23e1195"
+     "ev_fb936c7da72c195935844dd2855a6b969d66620f2c59bc77313270ee2a760511",
+     "ev_ce6266ce29c72d1bad6d8f7040cabce10a2018c9882ebf74efeb05976acdd3c8"
     ]
    },
    "copy_coverage": 0.957,
@@ -1100,8 +1100,8 @@
     "changed_ratio_t0": 0.921319550304878,
     "changed_ratio_t24": 0.030481135670731706,
     "rea_evidence_ids": [
-     "ev_5bf4d70351e650b20f0241afca65393d5778e9dc39569be798d807db409afc6a",
-     "ev_10a9daed72725d4fdbe49168f83046c59a66cb4b3ba4a756d923ac6761e49e20"
+     "ev_f80aab2bdd5db91e8fda6541893165c4a054adaf7afe88a7df2b5be17146a9ab",
+     "ev_c88ec59bc21fb8223122d9bb619c9002781fa06756fda0f92405d64f810aceba"
     ]
    },
    "copy_coverage": 0.935,
@@ -1114,7 +1114,7 @@
    "id": "settings-providers",
    "title": "Settings > Agents",
    "status": "wrong",
-   "why": "diff 7.8% at t24, copy 63%",
+   "why": "diff 6.4% at t24, copy 80%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1135,26 +1135,21 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-providers.jpg",
-    "changed_ratio_t0": 0.9959508384146342,
-    "changed_ratio_t24": 0.07778772865853659,
+    "changed_ratio_t0": 0.9377172256097561,
+    "changed_ratio_t24": 0.0639967606707317,
     "rea_evidence_ids": [
-     "ev_d85af61c04100b53e49a3527230c0a7368be53989da406faa449a1bd4afaedae",
-     "ev_5d85ac6821d04ebb1ce6ef5b2b63f980d1a67d77dd66eb13a8b61e25e51fea33"
+     "ev_8b7721127c7e17bdc263ae23198c35703958055b7614d9c4eb94a12ae03417ee",
+     "ev_be1e82d814deb7071bd7acbcd811524164117256110392610f2edd9ecef8a189"
     ]
    },
-   "copy_coverage": 0.633,
+   "copy_coverage": 0.8,
    "copy_missing": [
     "cursor",
     "opencode",
-    "authentication",
-    "cli",
-    "api key",
     "use claude code with chrome",
     "claude code executable path",
     "override the bundled claude code executable with a custom one. leave empty to use the bundled version (recommended)",
-    "claude settings",
-    "open in",
-    "browse for executable"
+    "claude settings"
    ]
   },
   {
@@ -1220,8 +1215,8 @@
     "changed_ratio_t0": 0.9999923780487805,
     "changed_ratio_t24": 0.03443311737804878,
     "rea_evidence_ids": [
-     "ev_30f4de8a4e129762fcafd4b98da67830396e390600f0e3956ce5363a4ff97ece",
-     "ev_137b60dc2ad14bf48b9dbec0040b742b6166cb536f6bc4aa4424ecdd6c50c081"
+     "ev_4d9486e6a2dc9f19bd02fba9ec833a2351ed2ea197c4edd151a40eeec22c462c",
+     "ev_e2fd37d14d04af4a69f041a07ae076d0ddeaa23ca909ced6c44a1e5689b3443f"
     ]
    },
    "copy_coverage": 1.0,
@@ -1287,8 +1282,8 @@
     "changed_ratio_t0": 1,
     "changed_ratio_t24": 0.058253620426829265,
     "rea_evidence_ids": [
-     "ev_531c8a94617ca678076fb62d1047cfe70e2c5153d4cba515ceafa175c57b28a7",
-     "ev_ce0ecf4146b0a168b045c730b6be0ef7f288d850fcdd2c4d40b14bcb87008b46"
+     "ev_c0e0427b92298aad5c836abac7b4d175ff6fba23dd0719ef90753b366c7185fa",
+     "ev_e8617a17d0128ee44acfc46403ca256e9e5a1c835ba3584e56726af9dada4368"
     ]
    },
    "copy_coverage": 0.957,
@@ -1325,8 +1320,8 @@
     "changed_ratio_t0": 1,
     "changed_ratio_t24": 0.05019340701219512,
     "rea_evidence_ids": [
-     "ev_eadbfb44f502bb8e8c03e220538dd5e0543515f8f1cd3a02e8dc8cc1eb51303e",
-     "ev_635de5644cb60330ce1475ae6d8f1f5e108dcbc966f34be4f9dd3e5673b0da5d"
+     "ev_fc790146712f283b75d2560dfd460706c97156e9965b8b55a66f3e43e92da4ba",
+     "ev_d3c8cd012f3d682d241b4861c5fd81f4f13f7c35a70baa4494b7463df2565977"
     ]
    },
    "copy_coverage": 0.413,
@@ -1360,8 +1355,8 @@
     "changed_ratio_t0": 1,
     "changed_ratio_t24": 0.0321312881097561,
     "rea_evidence_ids": [
-     "ev_8c3da76f657e15e8b89ed4f499a0bf5e161fba5bb1ac22eb1ca3dfb525eba212",
-     "ev_bd63606b4d8cd24dc2212ebcce3583706b28fd0306d83f30222fddb9c6150878"
+     "ev_c4440cc65f132b4560aeab2a06aa56aeecb493c2378b856064e087ddd2faf17d",
+     "ev_84e3ab0f5100464cba126a91d5402677f9f80d9e1272029701380f397194514b"
     ]
    },
    "copy_coverage": 1.0,
@@ -1395,8 +1390,8 @@
     "changed_ratio_t0": 1,
     "changed_ratio_t24": 0.06267435213414634,
     "rea_evidence_ids": [
-     "ev_fc747b43dd658245b9e4da59cdd1dfb040ee16dbcfb474e256c4f79ca20d4151",
-     "ev_43ea8fabb9e34cf09e4862c00ddf6cfd87619e13786db68ca7f3344f9fbb2a03"
+     "ev_27d80df5531d70bfa799a12af5a6bca371b8f53135b704ca3f710b63b296c63c",
+     "ev_1801b309038f18f81b13ef2e157b82bf3bafe1b945de419d858c8b2b77d9c163"
     ]
    },
    "copy_coverage": 0.952,
@@ -1408,36 +1403,36 @@
   {
    "id": "settings-terminal",
    "title": "Settings > Big terminal",
-   "status": "missing",
-   "why": "timed out waiting for .settings-nav .nav-item \"Big terminal\"",
+   "status": "wrong",
+   "why": "no valid reference render (redirected to /settings/user/terminal), diff 5.0% at t24",
    "team": "settings",
    "reference": {
     "status": "redirected",
     "file": "ui-map/ref/settings-terminal.png",
-    "path": "/settings/user/terminal",
-    "final_path": "/settings/user/general",
+    "path": "/settings/user/experimental",
+    "final_path": "/settings/user/terminal",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": 3,
+    "actions_total": 3,
     "error": null,
-    "rea_evidence_id": "ev_cae4b685ad0e17b59627716f308bab68172ffc1a66230b97408774855b705f47"
+    "rea_evidence_id": "ev_c1071ae9b668b462e89ff8bb6dd73a95e512f98224267b5977dc3ed42310e97a"
    },
    "openconductor": {
-    "status": "step-failed",
+    "status": "captured",
     "file": "ui-map/oc/settings-terminal.png",
-    "error": "timed out waiting for .settings-nav .nav-item \"Big terminal\"",
+    "error": null,
     "note": null
    },
    "diff": {
     "file": "ui-map/diff/settings-terminal.jpg",
-    "changed_ratio_t0": 0.999984756097561,
-    "changed_ratio_t24": 0.03051543445121951,
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.050345846036585366,
     "rea_evidence_ids": [
-     "ev_afa74f1f8642ce8f9b13cb34305260c638aaf21b59b89178889f49c85991fe23",
-     "ev_b9c3f3ca8582599ba3dfdfdc0b6c01aa0a4d686d4c334438967fdcaae9eb8666"
+     "ev_0f926023e2482fb7b64212da1650265404a01e91b8b6e9370a54c3365f23cc22",
+     "ev_79b743606f4cec3450fd3fb62b05936f69acdf4c78f63e0757cd61f79ed3f4f4"
     ]
    },
-   "copy_coverage": null,
+   "copy_coverage": 1.0,
    "copy_missing": null
   },
   {
@@ -1640,8 +1635,8 @@
     "changed_ratio_t0": 1,
     "changed_ratio_t24": 0.04396150914634146,
     "rea_evidence_ids": [
-     "ev_2e5d592a85ba58ac3460e6836e6390dc2e1eaf113b6b81442917fd25c04c9d3e",
-     "ev_9a98de4a941ec8e7cd24695b5c6ac34d4f7c81b0b0104fc2bd85d37e65c26879"
+     "ev_a40a57efe75ebb68223e1c8611308a9498182aaaa976ade368a8c313ccadb11b",
+     "ev_f70e158f5bb37fd06ad799c98c91bbbb97e0f613177ec687b96650e56b5fccc7"
     ]
    },
    "copy_coverage": 1.0,
@@ -1675,8 +1670,8 @@
     "changed_ratio_t0": 1,
     "changed_ratio_t24": 0.04470750762195122,
     "rea_evidence_ids": [
-     "ev_3cfbde56c5196366cea7f223cec3492f36efb99d32d7ccc3836f28db56162131",
-     "ev_39006e0e66dcb4b10ca6fde682e44fe32f5d90716a111eccddbee69c8caa8a6c"
+     "ev_d78a032b8a3266aff19cb8c5944cad8aff0f3f4808db5fcc2f85334f41ef2b7a",
+     "ev_9aec1d18bef6c35813797070d92626559bd4a581a5679d293e596c2e0057a85b"
     ]
    },
    "copy_coverage": 1.0,
@@ -1964,10 +1959,10 @@
    "diff": {
     "file": "ui-map/diff/settings-search.jpg",
     "changed_ratio_t0": 0.999984756097561,
-    "changed_ratio_t24": 0.03234375,
+    "changed_ratio_t24": 0.0323266006097561,
     "rea_evidence_ids": [
-     "ev_854c051ed4520429ce1663a413b95ca0b4478846daab202a9ce4c84094b5bb8a",
-     "ev_cfb015b01ad9314575d2a4d87de465efaa18d01207c240ca46ac7f3b30c8b002"
+     "ev_294dab0222e4463fa03579370adc0e96b0710eb5caf6210c35175b29f2b385d5",
+     "ev_0e7c79dc94509d848ae7c6c398a272189691e08230a6b1aec9763d86271be8ef"
     ]
    },
    "copy_coverage": 0.961,
@@ -2002,10 +1997,10 @@
    "diff": {
     "file": "ui-map/diff/palette-all.jpg",
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.07030583079268293,
+    "changed_ratio_t24": 0.06977801067073171,
     "rea_evidence_ids": [
-     "ev_24dca19368dac73141eebb2caef8e94c81e35489fa448185a2df94a43771dbed",
-     "ev_f9d9c60a20180e4c3e95db5c16f01f6b28353dd8bc808ba7077f428d18f626cb"
+     "ev_8cef43f78721f5a777ccd764fa454edd1d13ab9ed9fa7d607363ca9744a9d55b",
+     "ev_588d910863d2495b4e15d947ab4862b2674209cd449006aec2015768bb3578f7"
     ]
    },
    "copy_coverage": 0.468,
@@ -2041,7 +2036,7 @@
    "id": "palette-workspaces",
    "title": "Command palette: Workspaces tab",
    "status": "wrong",
-   "why": "diff 23.2% at t24, copy 77%",
+   "why": "diff 23.1% at t24, copy 77%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2063,10 +2058,10 @@
    "diff": {
     "file": "ui-map/diff/palette-workspaces.jpg",
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.23185403963414633,
+    "changed_ratio_t24": 0.23132431402439024,
     "rea_evidence_ids": [
-     "ev_93f32730166c601ba02a6c9ffdb7abf581dec5b419624fbf4eb7592954866093",
-     "ev_2c775fad00e0f6fcc15db00b7d4f63ebbb32eff5d9c86f93b38b0a2b5ffc6ed5"
+     "ev_b070307b4446553f6afe9188b456d739a372d2096c90adf54729a887489e05fe",
+     "ev_201361b5219b1941733f22e571f2186762c40ac50d53f4f5a08ace835aba45c4"
     ]
    },
    "copy_coverage": 0.773,
@@ -2104,10 +2099,10 @@
    "diff": {
     "file": "ui-map/diff/palette-search.jpg",
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.17691120426829268,
+    "changed_ratio_t24": 0.1765482088414634,
     "rea_evidence_ids": [
-     "ev_d41ef37bbda3c549c6364cb17739f043cc0ffc45fc0ffd90d76d209a6b876d83",
-     "ev_1a277aeeff2d7fce4525de158671447ee7bf8c219fce33e206d2414ec39367cd"
+     "ev_0072da859eb1efcb72144a18b987ace669b62cbf7fb89c5d26450a5cf34e9a8b",
+     "ev_3add79ca6877ec8cbebb24598e7309704e8a4d2e9916d2057886f8e576c0156d"
     ]
    },
    "copy_coverage": 0.762,
@@ -2123,7 +2118,7 @@
    "id": "dialog-clone-github",
    "title": "Clone GitHub repo dialog",
    "status": "wrong",
-   "why": "diff 5.1% at t24, copy 76%",
+   "why": "diff 5.0% at t24, copy 76%",
    "team": "git-review",
    "reference": {
     "status": "captured",
@@ -2145,10 +2140,10 @@
    "diff": {
     "file": "ui-map/diff/dialog-clone-github.jpg",
     "changed_ratio_t0": 0.9999742759146342,
-    "changed_ratio_t24": 0.05098323170731707,
+    "changed_ratio_t24": 0.050325838414634144,
     "rea_evidence_ids": [
-     "ev_f6bef465c0c123a4f1313996d80d329e8625d4c914c534a2103eee90073d51ff",
-     "ev_c8c77a1a7700ffa3e5009e7c7b145025db99d642fae196fa5861d14e634343e5"
+     "ev_44cf92d3691284c3be82aa4909027111da24c2f949ecfc731bef8ce0a6feb88f",
+     "ev_da6ed2995ee30b58ffd983c00287cb1dbbbd226dbaf3045d5be0e1477f669240"
     ]
    },
    "copy_coverage": 0.762,
@@ -2186,10 +2181,10 @@
    "diff": {
     "file": "ui-map/diff/dialog-create-project.jpg",
     "changed_ratio_t0": 0.9999780868902439,
-    "changed_ratio_t24": 0.07911490091463415,
+    "changed_ratio_t24": 0.07850895579268292,
     "rea_evidence_ids": [
-     "ev_6d7f498dedb65b30e8942f7ac640b2079b4f5b073e1b4370cfa0cbfe8462ae76",
-     "ev_75f4ef4d95293eb26d6a047b1faae1f7f9757a634a299d2aeccd928f65b9b7fc"
+     "ev_dd15e9ca96caa553db7096addb037315aa92f3f96dc2b582b4fd0b61ebc4f568",
+     "ev_f609d12ab94d414b7537ceb310f04b4508804713610092151d6ce906d892eccb"
     ]
    },
    "copy_coverage": 0.8,
@@ -2206,7 +2201,7 @@
    "id": "dialog-rename-workspace",
    "title": "Rename workspace dialog",
    "status": "wrong",
-   "why": "diff 4.4% at t24, copy 74%",
+   "why": "diff 4.3% at t24, copy 74%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2228,10 +2223,10 @@
    "diff": {
     "file": "ui-map/diff/dialog-rename-workspace.jpg",
     "changed_ratio_t0": 0.9999942835365854,
-    "changed_ratio_t24": 0.04364424542682927,
+    "changed_ratio_t24": 0.04267435213414634,
     "rea_evidence_ids": [
-     "ev_6669b126c4de1a7b08224688d2f96612a35f8b2896e56d2da9646c8cbbfce4de",
-     "ev_e4995f8f82b618a666facce5105fbfbb8f9a72debfe0c8f174f7ccb1e40e23b2"
+     "ev_2a1db81f0297e34bc2c194b97e9c4306705ede862de24f9f877a30524563e8ad",
+     "ev_6764cb1db920c56a5f2261751b71cbea231b49373c09c9c059daec83c025684a"
     ]
    },
    "copy_coverage": 0.737,
@@ -2247,7 +2242,7 @@
    "id": "dialog-keyboard-shortcuts",
    "title": "Keyboard shortcuts dialog",
    "status": "wrong",
-   "why": "diff 5.7% at t24, copy 73%",
+   "why": "diff 5.6% at t24, copy 73%",
    "team": "shell",
    "reference": {
     "status": "captured",
@@ -2269,10 +2264,10 @@
    "diff": {
     "file": "ui-map/diff/dialog-keyboard-shortcuts.jpg",
     "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.056772103658536584,
+    "changed_ratio_t24": 0.056120426829268294,
     "rea_evidence_ids": [
-     "ev_e95ab253f8f6b3a9f5cec545272e32963fa523fbadce17cf627e127d510ea783",
-     "ev_b90157fa9afd9617b266139c9339eec16734dcf407295afae953c777b3aeeda7"
+     "ev_6e138f65d0ac606c9ec25665a104f6d60cf55eb5e4b4ba946d6d3ee50956dbc5",
+     "ev_ab3c6742f27bf4f8fe476608ef41a1a09f5142e853f39940a617e65c402713f0"
     ]
    },
    "copy_coverage": 0.733,
@@ -2287,7 +2282,7 @@
    "id": "menu-account",
    "title": "Account / computer menu",
    "status": "wrong",
-   "why": "diff 7.4% at t24, copy 69%",
+   "why": "diff 7.3% at t24, copy 69%",
    "team": "shell",
    "reference": {
     "status": "captured",
@@ -2309,10 +2304,10 @@
    "diff": {
     "file": "ui-map/diff/menu-account.jpg",
     "changed_ratio_t0": 0.9999980945121951,
-    "changed_ratio_t24": 0.07371379573170732,
+    "changed_ratio_t24": 0.07306211890243902,
     "rea_evidence_ids": [
-     "ev_3e7a32c00b6d80eae09ced971b5b3fb988cb148be00b52793064ccf0f1ef99dc",
-     "ev_7f2a69849c54c45ae593c6b9920fe6ba85d55a5cfab2fcd2dd95985e25651d2b"
+     "ev_1591d75bf03dba39d2e1e35ba94597d499935575b73b9ef8fa872392409295ff",
+     "ev_340036aaa214e83a65d199eae43729405b7b832f7d87d925370f04024ac0bcf8"
     ]
    },
    "copy_coverage": 0.688,
@@ -2350,10 +2345,10 @@
    "diff": {
     "file": "ui-map/diff/menu-workspace-context.jpg",
     "changed_ratio_t0": 0.9695579268292683,
-    "changed_ratio_t24": 0.06429782774390244,
+    "changed_ratio_t24": 0.06368711890243903,
     "rea_evidence_ids": [
-     "ev_c16342640c018ce9475f34f500fc92de011a52a1db9b953f7fa9aba1fe62b54d",
-     "ev_1c4a3c6ced5fbbebf19b8ccafcb9bf156e2f69246f0b487484fd16529dba9f54"
+     "ev_db2344686c47f435f902f2beb429a365fbf8b13b3bbe0f2ec8e26b9f8bcfb467",
+     "ev_fd830cbc12412561f820099b89eeb748e8eaa5e528523412d5b4fd790f311955"
     ]
    },
    "copy_coverage": 0.737,
@@ -2369,7 +2364,7 @@
    "id": "menu-workspace-status",
    "title": "Workspace context menu > Set status",
    "status": "wrong",
-   "why": "diff 7.4% at t24, copy 75%",
+   "why": "diff 7.3% at t24, copy 75%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2391,10 +2386,10 @@
    "diff": {
     "file": "ui-map/diff/menu-workspace-status.jpg",
     "changed_ratio_t0": 0.9624018673780488,
-    "changed_ratio_t24": 0.07378715701219513,
+    "changed_ratio_t24": 0.07317644817073171,
     "rea_evidence_ids": [
-     "ev_6ca778eda382fc2a42cd1f78ac8376dd596aa0a2d8ff9604ae6b6a67db5e6dd3",
-     "ev_b752b45cd320e425dacc2409d66b9cc898589dc05c697efb0102277fa9194def"
+     "ev_cd961c014aa67be5a1b79fdeff04f43e938ae0508827d44d20784391fb5878cb",
+     "ev_ef8fa13a3cc34b27bfaaf00c2115b01abfa7adf94eb6bd1c5044530c84c0c0c8"
     ]
    },
    "copy_coverage": 0.75,
@@ -2409,8 +2404,8 @@
   {
    "id": "menu-model-picker",
    "title": "Composer model picker",
-   "status": "missing",
-   "why": "timed out waiting for .composer button \"Opus 5\"",
+   "status": "wrong",
+   "why": "diff 6.4% at t24, copy 79%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -2424,22 +2419,30 @@
     "rea_evidence_id": "ev_08abd0880b9cca67297dae13b427c34a40ccf0f6963e62cc7f5abc23b2ec5cde"
    },
    "openconductor": {
-    "status": "step-failed",
+    "status": "captured",
     "file": "ui-map/oc/menu-model-picker.png",
-    "error": "timed out waiting for .composer button \"Opus 5\"",
+    "error": null,
     "note": null
    },
    "diff": {
     "file": "ui-map/diff/menu-model-picker.jpg",
     "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.10211128048780488,
+    "changed_ratio_t24": 0.06368426067073171,
     "rea_evidence_ids": [
-     "ev_e13ce43e31c4f737fc3f10b05c88f198be58c747d30d9dcf03323202276333cc",
-     "ev_d7476345988003367ad602dbd9313fa62e1ffb789212ea8a624ee67c11d949ef"
+     "ev_4f1e35b14342a1525059db76ccb73b2dc0fe1056211e5789decd2cf05e1d6d45",
+     "ev_eaf57769031406fee52ea30fa00a6deb10abf36e1fed5a39da5fb7d557ac4684"
     ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.788,
+   "copy_missing": [
+    "next unread",
+    "fast",
+    "archive workspace",
+    "view pricing",
+    "copy final message",
+    "show message actions",
+    "filter files"
+   ]
   },
   {
    "id": "menu-repo-actions",
@@ -2467,10 +2470,10 @@
    "diff": {
     "file": "ui-map/diff/menu-repo-actions.jpg",
     "changed_ratio_t0": 0.9999933307926829,
-    "changed_ratio_t24": 0.05434546493902439,
+    "changed_ratio_t24": 0.05379763719512195,
     "rea_evidence_ids": [
-     "ev_e5fc84a13aa36f2fa93f8dd3f6ba4b59156df402bda7d50370b4358ce88c0ed9",
-     "ev_43f600b6ce871c4dc08bab55da8a3666751f61b0d8a166f2468fb46ee6425db5"
+     "ev_ded769c1aac2724a9284a7c6524e843e1b15b5183f858ed31199c7fabd54d4a8",
+     "ev_e9cc2fbf6af7dd7289858b585abea8590bd1e060e81ca872c0ff1e042c5c0566"
     ]
    },
    "copy_coverage": 0.733,
@@ -2502,10 +2505,10 @@
    "diff": {
     "file": "ui-map/diff/menu-help.jpg",
     "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.0722999237804878,
+    "changed_ratio_t24": 0.07164824695121952,
     "rea_evidence_ids": [
-     "ev_a1e6144a5c6a77d2260eedb58ad6bd5f808208a9dce3950d213266a9b101e4e9",
-     "ev_22a79d3e9fab16e3087fcacf55ca3ac5d2f63f4bd58711c288d07b5382ef2749"
+     "ev_361fa8442ef3d3077fcb87ad153d86889bb5ddc15ada78400bf2d3b43121e99f",
+     "ev_708616ac26c5dbf1c27deabad0781e57e36c0af6b317dd3fd5e2556c047ec56f"
     ]
    },
    "copy_coverage": 0.792,
@@ -2543,10 +2546,10 @@
    "diff": {
     "file": "ui-map/diff/dialog-submit-prompt.jpg",
     "changed_ratio_t0": 0.9999961890243902,
-    "changed_ratio_t24": 0.04116044207317073,
+    "changed_ratio_t24": 0.04067263719512195,
     "rea_evidence_ids": [
-     "ev_928e54c73a54c0675258ca55e5f0ad080a0c23653872f6516f8915f601182e64",
-     "ev_0490aa1852c2c91c3ba96d292902b42cac0979ee87dc19886149c2681abd7feb"
+     "ev_cb338f9b8aaedf582f31f09d79a55324925c586770420a82026727e09fb0d11c",
+     "ev_a908f5129f36122cc01fd80bd86025e5e9c9836304f88d43b462ad017e259009"
     ]
    },
    "copy_coverage": 0.81,
@@ -2598,7 +2601,7 @@
    "id": "toast-copied-link",
    "title": "Toast: copied link",
    "status": "wrong",
-   "why": "diff 5.8% at t24, copy 69%",
+   "why": "diff 5.7% at t24, copy 69%",
    "team": "shell",
    "reference": {
     "status": "captured",
@@ -2620,10 +2623,10 @@
    "diff": {
     "file": "ui-map/diff/toast-copied-link.jpg",
     "changed_ratio_t0": 0.9999961890243902,
-    "changed_ratio_t24": 0.057944931402439025,
+    "changed_ratio_t24": 0.05733422256097561,
     "rea_evidence_ids": [
-     "ev_a87719e1d2b3d3715c2522a3a9d55dd033c1230598e888a81a25a418eeab37e6",
-     "ev_17eee6c3c3bff5a9dc80a2edff0adc36955547d9734d336ce12558673a0d6907"
+     "ev_7b81ad37f6e31eb396df2512d6c7c944a664cfa2f2c335fbc001924ad08f5ef7",
+     "ev_f4bcd0ad611e5ab2f752aeb43feedfc458f7ea57cd9b02360e24585d8a7ca75c"
     ]
    },
    "copy_coverage": 0.688,
@@ -2695,7 +2698,7 @@
    "reference_screenshot": "ui-map/ref/onboarding-signed-out.png",
    "openconductor_screenshot": "ui-map/oc/onboarding-signed-out.png",
    "diff": "ui-map/diff/onboarding-signed-out.jpg",
-   "changed_ratio_t24": 0.9798161204268293
+   "changed_ratio_t24": 0.9798351753048781
   },
   {
    "id": "route:settings",
@@ -2768,7 +2771,7 @@
    "kind": "route",
    "name": "/settings/user/providers",
    "status": "wrong",
-   "why": "diff 7.8% at t24, copy 63%",
+   "why": "diff 6.4% at t24, copy 80%",
    "team": "settings",
    "component": "fEa",
    "source": {
@@ -2783,7 +2786,7 @@
    "reference_screenshot": "ui-map/ref/settings-providers.png",
    "openconductor_screenshot": "ui-map/oc/settings-providers.png",
    "diff": "ui-map/diff/settings-providers.jpg",
-   "changed_ratio_t24": 0.07778772865853659
+   "changed_ratio_t24": 0.0639967606707317
   },
   {
    "id": "route:settings-user-environment",
@@ -2855,8 +2858,8 @@
    "id": "route:settings-user-terminal",
    "kind": "route",
    "name": "/settings/user/terminal",
-   "status": "missing",
-   "why": "timed out waiting for .settings-nav .nav-item \"Big terminal\"",
+   "status": "wrong",
+   "why": "no valid reference render (redirected to /settings/user/terminal), diff 5.0% at t24",
    "team": "settings",
    "component": "hEa",
    "source": {
@@ -2871,7 +2874,7 @@
    "reference_screenshot": "ui-map/ref/settings-terminal.png",
    "openconductor_screenshot": "ui-map/oc/settings-terminal.png",
    "diff": "ui-map/diff/settings-terminal.jpg",
-   "changed_ratio_t24": 0.03051543445121951
+   "changed_ratio_t24": 0.050345846036585366
   },
   {
    "id": "route:settings-user-internal",
@@ -3553,7 +3556,7 @@
    "reference_screenshot": "ui-map/ref/first-run-onboarding.png",
    "openconductor_screenshot": "ui-map/oc/first-run-onboarding.png",
    "diff": "ui-map/diff/first-run-onboarding.jpg",
-   "changed_ratio_t24": 0.9549409298780488
+   "changed_ratio_t24": 0.9549485518292683
   },
   {
    "id": "route:new-member-onboarding",
@@ -3597,7 +3600,7 @@
    "reference_screenshot": "ui-map/ref/home.png",
    "openconductor_screenshot": "ui-map/oc/home.png",
    "diff": "ui-map/diff/home.jpg",
-   "changed_ratio_t24": 0.0422875381097561
+   "changed_ratio_t24": 0.04218940548780488
   },
   {
    "id": "route:repository-repositoryid-workspace-localworkspaceid",
@@ -3619,7 +3622,7 @@
    "reference_screenshot": "ui-map/ref/workspace-chat.png",
    "openconductor_screenshot": "ui-map/oc/workspace-chat.png",
    "diff": "ui-map/diff/workspace-chat.jpg",
-   "changed_ratio_t24": 0.06028677591463415
+   "changed_ratio_t24": 0.05996855945121951
   },
   {
    "id": "route:all-workspaces",
@@ -3641,14 +3644,14 @@
    "reference_screenshot": "ui-map/ref/all-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/all-workspaces.png",
    "diff": "ui-map/diff/all-workspaces.jpg",
-   "changed_ratio_t24": 0.03877858231707317
+   "changed_ratio_t24": 0.03868044969512195
   },
   {
    "id": "route:create",
    "kind": "route",
    "name": "/create",
    "status": "wrong",
-   "why": "diff 8.0% at t24, copy 77%",
+   "why": "diff 7.9% at t24, copy 77%",
    "team": "workspaces",
    "component": "$Ca",
    "source": {
@@ -3663,7 +3666,7 @@
    "reference_screenshot": "ui-map/ref/create.png",
    "openconductor_screenshot": "ui-map/oc/create.png",
    "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.07971417682926829
+   "changed_ratio_t24": 0.07929496951219513
   },
   {
    "id": "route:team",
@@ -4155,7 +4158,7 @@
    "reference_screenshot": "ui-map/ref/dialog-clone-github.png",
    "openconductor_screenshot": "ui-map/oc/dialog-clone-github.png",
    "diff": "ui-map/diff/dialog-clone-github.jpg",
-   "changed_ratio_t24": 0.05098323170731707,
+   "changed_ratio_t24": 0.050325838414634144,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4181,7 +4184,7 @@
    "reference_screenshot": "ui-map/ref/dialog-create-project.png",
    "openconductor_screenshot": "ui-map/oc/dialog-create-project.png",
    "diff": "ui-map/diff/dialog-create-project.jpg",
-   "changed_ratio_t24": 0.07911490091463415,
+   "changed_ratio_t24": 0.07850895579268292,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4755,7 +4758,7 @@
    "reference_screenshot": "ui-map/ref/create.png",
    "openconductor_screenshot": "ui-map/oc/create.png",
    "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.07971417682926829,
+   "changed_ratio_t24": 0.07929496951219513,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4953,7 +4956,7 @@
    "reference_screenshot": "ui-map/ref/dialog-submit-prompt.png",
    "openconductor_screenshot": "ui-map/oc/dialog-submit-prompt.png",
    "diff": "ui-map/diff/dialog-submit-prompt.jpg",
-   "changed_ratio_t24": 0.04116044207317073,
+   "changed_ratio_t24": 0.04067263719512195,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -6962,7 +6965,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.23185403963414633,
+   "changed_ratio_t24": 0.23132431402439024,
    "primitive": "DropdownMenuCheckboxItem",
    "dynamic": false
   },
@@ -7654,7 +7657,7 @@
    "reference_screenshot": "ui-map/ref/menu-workspace-context.png",
    "openconductor_screenshot": "ui-map/oc/menu-workspace-context.png",
    "diff": "ui-map/diff/menu-workspace-context.jpg",
-   "changed_ratio_t24": 0.06429782774390244,
+   "changed_ratio_t24": 0.06368711890243903,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -8372,7 +8375,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.23185403963414633,
+   "changed_ratio_t24": 0.23132431402439024,
    "primitive": "DropdownMenuContent",
    "dynamic": true
   },
@@ -9339,7 +9342,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.23185403963414633,
+   "changed_ratio_t24": 0.23132431402439024,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -9449,8 +9452,8 @@
    "id": "tab:recommended",
    "kind": "tab",
    "name": "Recommended",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "OpenConductor shows it in settings-providers, not in the host state; host state route-new-member-onboarding is missing",
    "team": "onboarding-auth",
    "component": "V1a",
    "source": {
@@ -10079,7 +10082,7 @@
    "reference_screenshot": "ui-map/ref/create-repo-picker.png",
    "openconductor_screenshot": "ui-map/oc/create-repo-picker.png",
    "diff": "ui-map/diff/create-repo-picker.jpg",
-   "changed_ratio_t24": 0.08279439786585366,
+   "changed_ratio_t24": 0.0823751905487805,
    "primitive": "SelectContent",
    "dynamic": true
   },
@@ -11404,7 +11407,7 @@
    "reference_screenshot": "ui-map/ref/palette-all.png",
    "openconductor_screenshot": "ui-map/oc/palette-all.png",
    "diff": "ui-map/diff/palette-all.jpg",
-   "changed_ratio_t24": 0.07030583079268293,
+   "changed_ratio_t24": 0.06977801067073171,
    "primitive": "E1",
    "dynamic": true
   },
@@ -19134,7 +19137,7 @@
    "reference_screenshot": "ui-map/ref/toast-copied-link.png",
    "openconductor_screenshot": "ui-map/oc/toast-copied-link.png",
    "diff": "ui-map/diff/toast-copied-link.jpg",
-   "changed_ratio_t24": 0.057944931402439025,
+   "changed_ratio_t24": 0.05733422256097561,
    "variant": "success",
    "dynamic": false
   },
@@ -24191,8 +24194,8 @@
    "id": "settings-row:models:default-model",
    "kind": "settings-row",
    "name": "Default model",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "not rendered in a reference capture; OpenConductor shows it in settings-providers, not in the host state",
    "team": "settings",
    "component": null,
    "source": {
@@ -25005,7 +25008,7 @@
    "kind": "settings-page",
    "name": "providers",
    "status": "wrong",
-   "why": "diff 7.8% at t24, copy 63%",
+   "why": "diff 6.4% at t24, copy 80%",
    "team": "settings",
    "component": null,
    "source": {
@@ -25018,7 +25021,7 @@
    "reference_screenshot": "ui-map/ref/settings-providers.png",
    "openconductor_screenshot": "ui-map/oc/settings-providers.png",
    "diff": "ui-map/diff/settings-providers.jpg",
-   "changed_ratio_t24": 0.07778772865853659,
+   "changed_ratio_t24": 0.0639967606707317,
    "route": "/settings/user/providers",
    "route_guess": "/settings/user/providers",
    "rows": 1
@@ -25043,7 +25046,7 @@
    "reference_screenshot": "ui-map/ref/settings-providers.png",
    "openconductor_screenshot": "ui-map/oc/settings-providers.png",
    "diff": "ui-map/diff/settings-providers.jpg",
-   "changed_ratio_t24": 0.07778772865853659,
+   "changed_ratio_t24": 0.0639967606707317,
    "page": "providers",
    "setting_key": "chrome_mode_enabled",
    "row_id": null,
@@ -25160,8 +25163,8 @@
    "id": "settings-page:terminal",
    "kind": "settings-page",
    "name": "terminal",
-   "status": "missing",
-   "why": "timed out waiting for .settings-nav .nav-item \"Big terminal\"",
+   "status": "wrong",
+   "why": "no valid reference render (redirected to /settings/user/terminal), diff 5.0% at t24",
    "team": "settings",
    "component": null,
    "source": {
@@ -25174,7 +25177,7 @@
    "reference_screenshot": "ui-map/ref/settings-terminal.png",
    "openconductor_screenshot": "ui-map/oc/settings-terminal.png",
    "diff": "ui-map/diff/settings-terminal.jpg",
-   "changed_ratio_t24": 0.03051543445121951,
+   "changed_ratio_t24": 0.050345846036585366,
    "route": "/settings/user/terminal",
    "route_guess": "/settings/user/terminal",
    "rows": 1
@@ -25200,7 +25203,7 @@
    "reference_screenshot": "ui-map/ref/settings-terminal.png",
    "openconductor_screenshot": "ui-map/oc/settings-terminal.png",
    "diff": "ui-map/diff/settings-terminal.jpg",
-   "changed_ratio_t24": 0.03051543445121951,
+   "changed_ratio_t24": 0.050345846036585366,
    "page": "terminal",
    "setting_key": null,
    "row_id": "terminal-panel",
