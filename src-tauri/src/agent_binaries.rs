@@ -32,7 +32,7 @@ use std::fs::{self, File, OpenOptions};
 use std::io::{self, Read, Write};
 use std::path::{Component, Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Condvar, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 /// Directory under the app data dir that holds the binaries.
@@ -707,6 +707,11 @@ pub struct ReleaseFile {
     pub sha256: String,
     #[serde(default)]
     pub size: Option<u64>,
+    /// When set, `url` is a `.tar.gz` and the executable is this member of
+    /// it (the Codex GitHub release assets). `sha256`/`size` are the
+    /// executable's, as in Conductor's manifest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tar_gz_entry: Option<String>,
 }
 
 /// The version of an agent to install and where its executables come from.
@@ -743,6 +748,138 @@ impl ReleaseSource for StaticReleases {
             .cloned()
             .ok_or_else(|| format!("No {agent} release in the agent binary manifest"))
     }
+}
+
+// ---------------------------------------------------------------------------
+// Pinned releases: the versions and hashes built into the app
+
+/// The release pins built into the app, in the schema of Conductor's
+/// build-time `agent-binary-manifest.json` (schemaVersion 1, `perArch` by
+/// Rust target triple, `codex.codeModeHost`). Conductor 0.87.6 pins Claude
+/// Code 2.1.284 and Codex 0.156.1 with the same sha256 values; its URLs
+/// point at its own CDN, ours at the upstream releases those bytes come
+/// from (evidence/persistence/agent-binaries/README.md).
+pub const PINNED_MANIFEST: &[u8] = include_bytes!("agent-binary-manifest.json");
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct PinnedManifest {
+    schema_version: u32,
+    claude: PinnedAgent,
+    codex: PinnedAgent,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct PinnedAgent {
+    version: String,
+    per_arch: HashMap<String, PinnedFile>,
+    #[serde(default)]
+    code_mode_host: Option<PinnedAux>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct PinnedAux {
+    per_arch: HashMap<String, PinnedFile>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct PinnedFile {
+    url: String,
+    sha256: String,
+    #[serde(default)]
+    size: Option<u64>,
+    #[serde(default)]
+    tar_gz_entry: Option<String>,
+}
+
+impl PinnedFile {
+    fn release_file(self, exe: &str) -> ReleaseFile {
+        ReleaseFile {
+            exe: exe.to_string(),
+            url: self.url,
+            sha256: self.sha256,
+            size: self.size,
+            tar_gz_entry: self.tar_gz_entry,
+        }
+    }
+}
+
+/// The Rust target triple the pins are keyed by, for this build.
+pub fn host_triple() -> &'static str {
+    match (std::env::consts::ARCH, std::env::consts::OS) {
+        ("aarch64", "macos") => "aarch64-apple-darwin",
+        ("x86_64", "macos") => "x86_64-apple-darwin",
+        ("aarch64", "linux") => "aarch64-unknown-linux-gnu",
+        ("x86_64", "linux") => "x86_64-unknown-linux-gnu",
+        _ => "unknown",
+    }
+}
+
+impl StaticReleases {
+    /// The releases a pinned manifest gives `triple`. An agent with no pin
+    /// for the triple is left out, so its download fails with "No <agent>
+    /// release" and launch falls back to the system copy.
+    pub fn pinned(json: &[u8], triple: &str) -> std::result::Result<Self, String> {
+        let m: PinnedManifest = serde_json::from_slice(json)
+            .map_err(|e| format!("Invalid pinned agent binary manifest: {e}"))?;
+        if m.schema_version != 1 {
+            return Err(format!(
+                "Unsupported agent binary manifest schemaVersion {}",
+                m.schema_version
+            ));
+        }
+        let mut manifest = Manifest::new();
+        for (agent, mut pinned) in [(Agent::Claude, m.claude), (Agent::Codex, m.codex)] {
+            let exes = agent.executables();
+            let Some(main) = pinned.per_arch.remove(triple) else {
+                continue;
+            };
+            let mut files = vec![main.release_file(exes[0])];
+            if let Some(&aux_exe) = exes.get(1) {
+                let aux = pinned
+                    .code_mode_host
+                    .and_then(|mut a| a.per_arch.remove(triple));
+                match aux {
+                    Some(f) => files.push(f.release_file(aux_exe)),
+                    None => continue, // a Codex release needs both executables
+                }
+            }
+            manifest.insert(
+                agent,
+                Release {
+                    version: pinned.version,
+                    files,
+                },
+            );
+        }
+        Ok(StaticReleases(manifest))
+    }
+}
+
+/// Hands `install` the member `entry` of the gzipped tar on `reader`.
+fn with_tar_gz_entry<T>(
+    reader: &mut dyn Read,
+    entry: &str,
+    install: &mut dyn FnMut(&mut dyn Read) -> Result<T>,
+) -> Result<T> {
+    let mut archive = tar::Archive::new(flate2::read::GzDecoder::new(reader));
+    let fetch_err = |e: io::Error| Error::Fetch(format!("reading archive: {e}"));
+    for member in archive.entries().map_err(fetch_err)? {
+        let mut member = member.map_err(fetch_err)?;
+        let is_it = member
+            .path()
+            .map(|p| {
+                p.as_os_str() == entry || p.strip_prefix("./").is_ok_and(|p| p == Path::new(entry))
+            })
+            .unwrap_or(false);
+        if is_it {
+            return install(&mut member);
+        }
+    }
+    Err(Error::Fetch(format!("{entry} is not in the archive")))
 }
 
 // ---------------------------------------------------------------------------
@@ -836,6 +973,8 @@ pub struct BinaryManager {
     emit: Emit,
     statuses: Arc<Mutex<HashMap<Agent, AgentBinaryStatus>>>,
     inflight: Arc<Mutex<HashMap<Agent, CancelToken>>>,
+    /// Signalled when a download thread leaves `inflight`.
+    finished: Arc<Condvar>,
 }
 
 impl BinaryManager {
@@ -854,6 +993,7 @@ impl BinaryManager {
             emit,
             statuses: Arc::default(),
             inflight: Arc::default(),
+            finished: Arc::default(),
         }
     }
 
@@ -930,8 +1070,33 @@ impl BinaryManager {
         Some(std::thread::spawn(move || {
             let status = this.run_download(agent, &token);
             this.inflight.lock().unwrap().remove(&agent);
+            this.finished.notify_all();
             status
         }))
+    }
+
+    /// The executable a chat launches for `agent`: the installed copy when
+    /// one is verified, else the current release once downloaded, waiting
+    /// for a download already running (Conductor holds the chat's message
+    /// while the binary is not `ready`). `Err` is the download's error.
+    pub fn ensure_ready(&self, agent: Agent) -> std::result::Result<PathBuf, String> {
+        if let Some(path) = self.ready_path(agent) {
+            return Ok(path);
+        }
+        self.request_download(agent);
+        let mut inflight = self.inflight.lock().unwrap();
+        while inflight.contains_key(&agent) {
+            inflight = self.finished.wait(inflight).unwrap();
+        }
+        drop(inflight);
+        self.ready_path(agent).ok_or_else(|| {
+            self.statuses
+                .lock()
+                .unwrap()
+                .get(&agent)
+                .and_then(|s| s.error.clone())
+                .unwrap_or_else(|| format!("{agent} is not installed"))
+        })
     }
 
     /// Downloads (or confirms) the agent's current release on this thread,
@@ -1023,7 +1188,7 @@ impl BinaryManager {
                 continue;
             }
             let (mut reader, len) = self.fetch.open(&file.url).map_err(Error::Fetch)?;
-            if total.is_none() && release.files.len() == 1 {
+            if total.is_none() && release.files.len() == 1 && file.tar_gz_entry.is_none() {
                 total = len;
             }
             let expected = ExpectedFile {
@@ -1044,14 +1209,20 @@ impl BinaryManager {
                     self.set(s);
                 }
             };
-            let meta = self.store.download_from_reader(
-                agent.as_str(),
-                &release.version,
-                &expected,
-                &mut reader,
-                cancel,
-                &mut progress,
-            )?;
+            let mut install = |reader: &mut dyn Read| {
+                self.store.download_from_reader(
+                    agent.as_str(),
+                    &release.version,
+                    &expected,
+                    reader,
+                    cancel,
+                    &mut progress,
+                )
+            };
+            let meta = match &file.tar_gz_entry {
+                None => install(reader.as_mut())?,
+                Some(entry) => with_tar_gz_entry(reader.as_mut(), entry, &mut install)?,
+            };
             done_before += meta.size;
         }
         if !self.store.verify_release(agent, &release.version)? {
@@ -1084,8 +1255,8 @@ fn sleep_unless_cancelled(delay: Duration, cancel: &CancelToken) -> bool {
 #[cfg(not(agent_binaries_std_only))]
 pub mod commands {
     use super::{
-        Agent, AgentBinaries, AgentBinaryStatus, BinaryManager, Fetch, LocalFetch, Release,
-        ReleaseSource, RetryPolicy, StaticReleases, PROGRESS_EVENT,
+        host_triple, Agent, AgentBinaries, AgentBinaryStatus, BinaryManager, Fetch, LocalFetch,
+        Release, ReleaseSource, RetryPolicy, StaticReleases, PINNED_MANIFEST, PROGRESS_EVENT,
     };
     use std::io::{self, Read};
     use std::path::Path;
@@ -1093,9 +1264,9 @@ pub mod commands {
     use tauri::{Emitter, Manager};
     use tauri_plugin_http::reqwest;
 
-    /// Env var naming the release manifest (a path, `file://` or `https://`
-    /// URL to JSON shaped as [`super::Manifest`]). Conductor's own updater
-    /// endpoint is not yet known (see evidence/persistence/agent-binaries).
+    /// Env var naming a release manifest (a path, `file://` or `https://`
+    /// URL to JSON shaped as [`super::Manifest`]) that replaces the pinned
+    /// releases: local mirrors and the e2e lane.
     pub const MANIFEST_ENV: &str = "OPENCONDUCTOR_AGENT_BINARY_MANIFEST";
 
     /// `file://`, absolute paths and `http(s)://`.
@@ -1148,14 +1319,17 @@ pub mod commands {
         }
     }
 
-    /// Reads the manifest named by [`MANIFEST_ENV`] on every lookup.
+    /// The manifest named by [`MANIFEST_ENV`] when set (read on every
+    /// lookup), else the releases pinned into the app for this machine.
     struct EnvManifest;
 
     impl ReleaseSource for EnvManifest {
         fn current(&self, agent: Agent) -> Result<Release, String> {
-            let location = std::env::var(MANIFEST_ENV).map_err(|_| {
-                format!("No agent binary release manifest configured (set {MANIFEST_ENV})")
-            })?;
+            let Ok(location) = std::env::var(MANIFEST_ENV) else {
+                return StaticReleases::pinned(PINNED_MANIFEST, host_triple())?
+                    .current(agent)
+                    .map_err(|_| format!("No {agent} build is pinned for {}", host_triple()));
+            };
             let (mut reader, _) = AnyFetch.open(&location)?;
             let mut json = Vec::new();
             reader

@@ -75,7 +75,7 @@ What OpenConductor does now:
 ## Differences that remain
 
 1. Review tabs live in memory (`features/diff/ReviewButton.tsx`). After a restart, a stored unread review chat has no tab, so it counts as hidden, as Conductor's hidden sessions do: it does not keep the row bold, and Next unread skips it. Closing a review tab marks it read. Its DB row keeps `unread_count = 1` until the workspace is marked read.
-2. Plan and question waits are not hooked, because our chats have no needs_* status yet (cdb73745, #428). The row click already follows a needs_* chat status when one is reported.
+2. Closed by #421 (75e4bb6): Claude Code's ExitPlanMode and AskUserQuestion prompts, like Reason's, open plan and question requests on PermissionEvents, which move the chat into `needs_plan_response` or `needs_user_input` and so mark it unread. Codex approvals and consents were hooked by #443 and #567. Unread is not yet seen in the built app.
 3. The chat tab menu has only the read and unread item. Rename, fork, copy transcript and close are not built. The chat tab's unread dot is built (see "Chat tab unread dot" below); its plan, question and typing icons are not.
 4. There is no `next_unread_used` telemetry.
 
@@ -100,7 +100,7 @@ Conductor's `_p` (`index-BGEQ8YjU.js` @2,941,190) marks a chat unread unless it 
 
 Main signalled only turn end, Reason permission requests and Codex tool approvals. Now:
 
-- `reportChatStatus` signals attention whenever a chat's status enters `needs_plan_response` or `needs_user_input` (`enteredWait` in `src/features/chat/attention.ts`), so plan review and questions mark the chat for any runtime that reports those statuses. Our Reason and Codex runtimes do not produce ExitPlanMode or AskUserQuestion waits yet; when they do, the status they report is enough.
+- `reportChatStatus` signals attention whenever a chat's status enters `needs_plan_response` or `needs_user_input` (`enteredWait` in `src/features/chat/attention.ts`), so plan review and questions mark the chat for any runtime that reports those statuses. Since #421 (75e4bb6), Claude Code and Reason chats report these waits through `permissionEvents.requested` (`chatRuntime.ts`), so plan review and questions mark the chat unread; a fresh request that does not enter a wait (a tool approval, or a second request) calls `chatWantsAttention` itself.
 - A new Codex MCP elicitation or permission consent signals attention (`codexAsks`): through its status when it moves the chat into `needs_user_input`, directly when the chat already waits (a second consent, or one behind an open tool approval, which outranks it). A re-sent request with the same id does not.
 - `needs_user_permission` stays signalled per request, so a second approval in the same wait still asks again, as in Conductor.
 
