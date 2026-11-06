@@ -73,4 +73,8 @@
   opacity: 0;
   transform: translateY(150%);
 }
+/* The toaster box stays laid out while a toast plays its exit, so it lets
+   clicks through to the page; only a toast that is not leaving takes them. */
+.toaster { pointer-events: none; }
+.toast { pointer-events: auto; }
 .toast[data-ending-style] { pointer-events: none; }
