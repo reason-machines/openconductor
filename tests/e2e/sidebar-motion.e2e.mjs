@@ -188,3 +188,25 @@ test("toasts slide in and out over 400ms", async () => {
   assert.equal(await page.locator(".toast").count(), 0);
   await page.close();
 });
+
+test("a toast stays put when Settings opens and closes: no remount, no second slide-in", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await open(page);
+  await page.getByRole("button", { name: "My workspaces actions" }).click();
+  await page.getByRole("menuitem", { name: "Add project…" }).click();
+  await page.getByRole("menuitem", { name: /Open project/ }).click();
+  const toast = page.locator(".toast").first();
+  await toast.waitFor();
+  await page.waitForTimeout(500);
+  await toast.evaluate((el) => (window.__ocToast = el));
+  // A remounted toast is a new element that replays toast-in over the page that just opened.
+  const same = () => page.evaluate(() => ({ same: document.querySelector(".toast") === window.__ocToast, animating: document.querySelector(".toast")?.getAnimations().length ?? -1 }));
+  await page.getByRole("button", { name: "Settings" }).click();
+  await page.locator(".settings").waitFor();
+  assert.deepEqual(await same(), { same: true, animating: 0 }, "opening Settings remounted the toast");
+  await page.evaluate(() => document.activeElement?.blur());
+  await page.keyboard.press("Escape");
+  await page.locator(".settings").waitFor({ state: "detached" });
+  assert.deepEqual(await same(), { same: true, animating: 0 }, "closing Settings remounted the toast");
+  await page.close();
+});
