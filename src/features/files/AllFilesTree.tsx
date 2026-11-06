@@ -5,7 +5,8 @@
 // its folder; src-tauri/src/open_in).
 import { useEffect, useMemo, useState } from "react";
 import { fuzzyFilterFiles } from "../../backend";
-import { ChevronDownIcon, FileIcon, FolderIcon } from "../../components/Icons";
+import { FileTypeIcon, FolderTypeIcon } from "../../components/FileIcons";
+import { ChevronDownIcon } from "../../components/Icons";
 import { recordOpenIn, useAppPrefs } from "../../settings/appPrefs";
 import { defaultAppId, loadOpenInApps, openInApp, type OpenInApp } from "../openIn/apps";
 import { absolutePath, buildTree, visibleRows } from "./tree";
@@ -91,7 +92,7 @@ export function AllFilesTree({ worktree, notify }: { worktree: string | null; no
             style={{ paddingLeft: 8 + r.depth * 20 }}
             onClick={() => toggle(r.path)}
           >
-            <FolderIcon size={14} />
+            <FolderTypeIcon open={r.expanded} />
             <span className="name">{r.name}</span>
             <span className={`oc-files-chevron${r.expanded ? " open" : ""}`} aria-hidden>
               <ChevronDownIcon size={12} />
@@ -106,7 +107,7 @@ export function AllFilesTree({ worktree, notify }: { worktree: string | null; no
             onClick={() => void open(r.path)}
             title={app ? `Open ${r.path} in ${app.name}` : r.path}
           >
-            <FileIcon size={14} />
+            <FileTypeIcon path={r.path} />
             <span className="name">{r.name}</span>
           </button>
         ),
