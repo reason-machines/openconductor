@@ -9,8 +9,9 @@
 // UIMAP_RUN (scratch dir for the isolated HOME and fixture repos).
 //
 // Every state starts from a fresh app session on a copy of one seeded HOME:
-// onboarding done, repos tide-web, tide-api and dotfiles added, one workspace
-// in tide-web, theme dark. The app's HOME is pointed at the scratch dir, so
+// onboarding done, repos tide-web, tide-api and dotfiles added with 3, 2 and 1
+// workspaces like the reference fixture (a tide-web one open), git identity Ada
+// Demo <ada@example.com>, theme dark. The app's HOME is pointed at the scratch dir, so
 // conductor.db, settings.toml and worktrees never touch the real home.
 import { execFileSync, spawn } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -119,6 +120,9 @@ async function seed(wd) {
   rmSync(run, { recursive: true, force: true });
   mkdirSync(join(home, ".openconductor"), { recursive: true });
   writeFileSync(join(home, ".openconductor", "settings.toml"), '[general]\ntheme = "dark"\n');
+  // The reference fixture's person (tools/screens/fixtures.js): the sidebar's Account row reads
+  // "<git user.name>'s Mac" and its menu heads with git user.email when the OS account has no name.
+  writeFileSync(join(home, ".gitconfig"), "[user]\n\tname = Ada Demo\n\temail = ada@example.com\n");
   await session(wd, async () => {
     await wd.waitFor("first-run onboarding", async () => (await wd.findAll(".onb-continue")).length > 0, 30000);
     await wd.click((await wd.findAll(".onb-continue"))[0]);
@@ -128,14 +132,24 @@ async function seed(wd) {
       await wd.click((await wd.findAll(".home-card"))[0]);
       await wd.waitFor(`${name} in the sidebar`, () => wd.execute("return Array.from(document.querySelectorAll('.sb-repo-name'), (e) => e.textContent.trim()).includes(arguments[0]);", [name]));
     }
-    const [add] = await wd.findAll('.sb-repo-add[aria-label="Create workspace in tide-web"]');
-    await wd.click(add);
-    const [submit] = await wd.waitFor("Create workspace dialog", () => wd.findAll('form.create-ws button[type="submit"]').then((ids) => ids.length && ids));
-    await wd.click(submit);
-    await wd.waitFor("workspace view", async () => (await wd.findAll(".workspace")).length > 0, 60000);
-    // Uncommitted changes in the new worktree, so the Changes panel and diff views have content.
-    const tide = join(run, "repos", "tide-web");
-    const tree = git(tide, "worktree", "list", "--porcelain").toString().match(/^worktree (.+)$/gm).map((l) => l.slice(9)).find((p) => p !== tide);
+    // As many workspaces per repository as the reference fixture (tools/screens/seed-data.js:
+    // tide-web 3, tide-api 2, dotfiles 1), so folded groups show the same counts. tide-web's
+    // last one is created last and stays open.
+    const trees = (name) => git(join(run, "repos", name), "worktree", "list", "--porcelain").toString().match(/^worktree (.+)$/gm).map((l) => l.slice(9));
+    const create = async (name) => {
+      const before = trees(name);
+      const [add] = await wd.findAll(`.sb-repo-add[aria-label="Create workspace in ${name}"]`);
+      await wd.click(add);
+      const [submit] = await wd.waitFor("Create workspace dialog", () => wd.findAll('form.create-ws button[type="submit"]').then((ids) => ids.length && ids));
+      await wd.click(submit);
+      const tree = await wd.waitFor(`a new ${name} worktree`, async () => trees(name).find((p) => !before.includes(p)), 60000);
+      await wd.waitFor("workspace view", async () => (await wd.findAll(".workspace")).length > 0, 60000);
+      await sleep(1000);
+      return tree;
+    };
+    for (const name of ["dotfiles", "tide-api", "tide-api", "tide-web", "tide-web"]) await create(name);
+    // Uncommitted changes in the open worktree, so the Changes panel and diff views have content.
+    const tree = await create("tide-web");
     if (tree) {
       mkdirSync(join(tree, "src", "lib"), { recursive: true });
       writeFileSync(join(tree, "src", "lib", "auth.ts"), "export function redirectAfterLogin(next?: string) {\n  return next && next.startsWith('/') ? next : '/';\n}\n");
@@ -158,7 +172,9 @@ return { texts, labels, roles, url: location.href, viewport: [innerWidth, innerH
 
 const driver = spawn(process.env.TAURI_DRIVER ?? "tauri-driver", [], {
   stdio: ["ignore", "ignore", "inherit"],
-  env: { ...process.env, HOME: home, XDG_DATA_HOME: join(home, ".local/share"), XDG_CONFIG_HOME: join(home, ".config"), XDG_CACHE_HOME: join(home, ".cache") },
+  // GIT_CONFIG_GLOBAL too: a host that sets it (Reason cloud computers do) would otherwise hand
+  // the app its own git identity instead of the seeded HOME's.
+  env: { ...process.env, HOME: home, XDG_DATA_HOME: join(home, ".local/share"), XDG_CONFIG_HOME: join(home, ".config"), XDG_CACHE_HOME: join(home, ".cache"), GIT_CONFIG_GLOBAL: join(home, ".gitconfig") },
 });
 const wd = new WebDriver();
 const manifestPath = join(out, "oc-captures.json");

@@ -57,7 +57,10 @@ export interface DbWorkspaceRow {
 export interface UiPrefs {
   selection: Selection;
   sidebarVisible?: boolean;
+  /** Repository groups folded by hand. */
   collapsed: string[];
+  /** Repository groups unfolded by hand; the others follow the open workspace (isRepoCollapsed). */
+  expanded: string[];
 }
 
 /** Rows that are not in the sidebar: archived, being archived, or deleted. */
@@ -167,19 +170,22 @@ export function prefsOf(state: AppState): UiPrefs {
   return {
     selection: state.selection,
     sidebarVisible: state.sidebarVisible,
-    collapsed: state.repos.filter((r) => r.collapsed).map((r) => r.id),
+    collapsed: state.repos.filter((r) => r.collapsed === true).map((r) => r.id),
+    expanded: state.repos.filter((r) => r.collapsed === false).map((r) => r.id),
   };
 }
 
 export function parsePrefs(raw: string | null): UiPrefs {
-  const fallback: UiPrefs = { selection: { kind: "root" }, collapsed: [] };
+  const fallback: UiPrefs = { selection: { kind: "root" }, collapsed: [], expanded: [] };
+  const ids = (v: unknown): string[] => (Array.isArray(v) ? v.filter((id): id is string => typeof id === "string") : []);
   if (!raw) return fallback;
   try {
     const p = JSON.parse(raw) as Partial<UiPrefs>;
     return {
       selection: p.selection?.kind === "workspace" || p.selection?.kind === "home" || p.selection?.kind === "root" ? p.selection : fallback.selection,
       sidebarVisible: typeof p.sidebarVisible === "boolean" ? p.sidebarVisible : undefined,
-      collapsed: Array.isArray(p.collapsed) ? p.collapsed.filter((id): id is string => typeof id === "string") : [],
+      collapsed: ids(p.collapsed),
+      expanded: ids(p.expanded),
     };
   } catch {
     return fallback;

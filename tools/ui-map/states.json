@@ -1678,6 +1678,11 @@
      "after_ms": 800
     },
     {
+     "click": ".sb-repo-name",
+     "text": "tide-web",
+     "after_ms": 400
+    },
+    {
      "rclick": ".sb-ws-name"
     },
     {
@@ -1767,6 +1772,11 @@
      "after_ms": 800
     },
     {
+     "click": ".sb-repo-name",
+     "text": "tide-web",
+     "after_ms": 400
+    },
+    {
      "rclick": ".sb-ws-name"
     }
    ]
@@ -1797,6 +1807,11 @@
      "click": ".sb-primary .sb-row",
      "text": "Home",
      "after_ms": 800
+    },
+    {
+     "click": ".sb-repo-name",
+     "text": "tide-web",
+     "after_ms": 400
     },
     {
      "rclick": ".sb-ws-name"
@@ -1994,6 +2009,11 @@
      "after_ms": 800
     },
     {
+     "click": ".sb-repo-name",
+     "text": "tide-web",
+     "after_ms": 400
+    },
+    {
      "rclick": ".sb-ws-name"
     },
     {
@@ -2029,6 +2049,11 @@
      "click": ".sb-primary .sb-row",
      "text": "Home",
      "after_ms": 800
+    },
+    {
+     "click": ".sb-repo-name",
+     "text": "tide-web",
+     "after_ms": 400
     },
     {
      "rclick": ".sb-ws-name"

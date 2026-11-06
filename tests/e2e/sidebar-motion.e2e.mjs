@@ -42,6 +42,16 @@ after(async () => {
 
 const ROW = '[data-testid="left-sidebar-workspace-item"]';
 const row = (scope, label) => scope.locator(ROW, { has: scope.locator(".sb-ws-name", { hasText: label }) });
+
+// A repository group nobody has toggled is folded unless the open workspace is one of its rows
+// (Conductor's `Dra`, src/state/sidebarOrder.ts isRepoCollapsed). A header click stores the
+// group's state, so this leaves it unfolded by hand whatever is opened or pinned next.
+async function unfold(page, name) {
+  const header = page.locator(".sb-repo-header", { has: page.locator(".sb-repo-name", { hasText: name }) });
+  if ((await header.getAttribute("aria-expanded")) === "true") await header.click();
+  await header.click();
+  await page.locator(".sb-repo-header[aria-expanded=true]", { has: page.locator(".sb-repo-name", { hasText: name }) }).waitFor();
+}
 const SHADOW_MD = "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px";
 // The shadow comes from the --shadow-10 token (a color-mix), which Chromium serialises as color(srgb ...).
 const rgba = (css) => css.replace(/color\(srgb (\S+) (\S+) (\S+) \/ ([\d.]+)\)/g, (_, r, g, b, a) => `rgba(${[r, g, b].map((v) => Math.round(Number(v) * 255)).join(", ")}, ${a})`);
@@ -59,6 +69,8 @@ async function pin(page, label) {
 test("rows: pinning rises the row into Pinned and collapses it out of its repo over 200ms", async () => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await open(page);
+  // Pinning the open workspace takes it out of its group's rows, which would fold an untoggled group.
+  await unfold(page, "openconductor");
   // The first pin mounts the Pinned group, whose list starts without an entrance
   // (AnimatePresence initial={false}, as Conductor's `Pia` returns null with no pins).
   const [first, second] = await page.locator(".sb-repo-groups .sb-ws-name").allTextContents();

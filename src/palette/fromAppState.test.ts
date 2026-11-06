@@ -31,12 +31,15 @@ test("Cmd+1..9 order puts Pinned first and skips collapsed repos", () => {
   const s: AppState = {
     ...state,
     repos: [
-      { ...state.repos[0], workspaces: [w("a", 1), { ...w("b", 2), pinnedAt: 5 }] },
+      { ...state.repos[0], collapsed: false, workspaces: [w("a", 1), { ...w("b", 2), pinnedAt: 5 }] },
       { ...state.repos[1], collapsed: true },
     ],
   };
   assert.deepEqual(shortcutOrder(s).map((x) => x.workspace.id), ["b", "a"]);
   assert.deepEqual(sidebarOrder(s).map((x) => x.workspace.id), ["b", "a", "c"]);
+  // Never toggled, r1 folds: the open workspace b is pinned, so it is not one of r1's rows (Conductor's Dra).
+  const untoggled: AppState = { ...s, repos: [{ ...s.repos[0], collapsed: undefined }, s.repos[1]] };
+  assert.deepEqual(shortcutOrder(untoggled).map((x) => x.workspace.id), ["b"]);
 });
 
 test("stepping wraps and starts at the ends when nothing is selected", () => {

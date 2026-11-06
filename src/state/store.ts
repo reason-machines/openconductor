@@ -9,6 +9,7 @@ import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { keepPr, parsePrefs, prefsOf, reposFromDb, restoreChatTabsOf, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
+import { toggleRepoCollapsed } from "./sidebarOrder";
 import { withActivity } from "./nextUnread";
 import { withChatUnread, withWorkspaceRead } from "./chatUnread";
 import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, reorderSection, sectionOf, sectionsFromDb, withoutWorkspace, type DbNavSection, type NavSection } from "./navigationSections";
@@ -132,20 +133,20 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos, selection: sel };
     }
     case "toggleRepo":
-      return { ...state, repos: state.repos.map((r) => (r.id === action.repoId ? { ...r, collapsed: !r.collapsed } : r)) };
+      return { ...state, repos: toggleRepoCollapsed(state, action.repoId) };
     case "newWorkspace": {
       let selection: Selection = state.selection;
       const repos = state.repos.map((r) => {
         if (r.id !== action.repoId) return r;
         const ws = makeWorkspace(r);
         selection = { kind: "workspace", repoId: r.id, workspaceId: ws.id };
-        return { ...r, collapsed: false, workspaces: [...r.workspaces, ws] };
+        return { ...r, workspaces: [...r.workspaces, ws] };
       });
       return { ...state, repos, selection };
     }
     case "addWorkspace": {
       const ws: Workspace = { ...action.workspace, status: "idle", diff: { added: 0, removed: 0 }, createdAt: Date.now() };
-      const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, collapsed: false, workspaces: [...r.workspaces, ws] } : r));
+      const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: [...r.workspaces, ws] } : r));
       return { ...state, repos, selection: { kind: "workspace", repoId: action.repoId, workspaceId: ws.id } };
     }
     case "renameWorkspace": {
@@ -215,10 +216,11 @@ export function reducer(state: AppState, action: Action): AppState {
     case "reset":
       return action.state;
     case "hydrate": {
-      const collapsed = new Set(state.repos.filter((r) => r.collapsed).map((r) => r.id));
+      // Folded or unfolded by hand (the rest follow the open workspace, see isRepoCollapsed).
+      const toggled = new Map(state.repos.flatMap((r) => (r.collapsed === undefined ? [] : [[r.id, r.collapsed] as const])));
       // conductor.db has no PR or agent activity: keep what the open workspaces reported.
       const live = new Map(state.repos.flatMap((r) => r.workspaces).map((w) => [w.id, w]));
-      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined, workspaces: r.workspaces.map((w) => keepPr(w, live.get(w.id))) }));
+      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed ?? toggled.get(r.id), workspaces: r.workspaces.map((w) => keepPr(w, live.get(w.id))) }));
       const viewingArchived = state.selection.kind === "workspace" && state.archivedOpen?.workspace.id === state.selection.workspaceId;
       return { ...state, repos, selection: viewingArchived ? state.selection : validSelection(state.selection, repos) };
     }
@@ -315,10 +317,11 @@ function load(): AppState {
     return s;
   }
   if (inTauri()) {
-    // Repos arrive from conductor.db after mount; collapsed ids wait on placeholder rows.
+    // Repos arrive from conductor.db after mount; groups folded or unfolded by hand wait on placeholder rows.
     // First run after the switch: keep the selection and layout the old shell state had.
     const prefs = parsePrefs(localStorage.getItem(PREFS_KEY) ?? legacyPrefs(localStorage.getItem(STORAGE_KEY)));
-    const repos = prefs.collapsed.map((id) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed: true }));
+    const placeholder = (id: string, collapsed: boolean) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed });
+    const repos = [...prefs.collapsed.map((id) => placeholder(id, true)), ...prefs.expanded.map((id) => placeholder(id, false))];
     return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname, window.location.search);
   }
   try {

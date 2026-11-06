@@ -107,11 +107,15 @@ st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{
 # own OpenConductor steps start by navigating (workspace, Home, Settings) are left as is.
 def ref_leaves_home(a):
     return a.get("click", "").startswith("text=Ada/")
+# On Home both apps fold every repository group nobody has toggled (Conductor's `Dra`:
+# repo-<id> defaultCollapsed unless the open workspace is in the group), so where the
+# reference clicks "tide-web" to unfold it, OpenConductor clicks its tide-web header too.
+OPEN_TIDE = {"click": ".sb-repo-name", "text": "tide-web", "after_ms": 400}
 OC_NAVIGATES = [OPEN_WS[0], HOME[0], SETTINGS[0]]
 for s in S:
     r = s.get("ref")
     if (r and r["path"] == "/" and r["scenario"] == "populated" and s.get("oc") and not s.get("oc_fresh")
             and not any(ref_leaves_home(a) for a in r["actions"]) and s["oc"][0] not in OC_NAVIGATES):
-        s["oc"] = HOME + s["oc"]
+        s["oc"] = HOME + ([OPEN_TIDE] if {"click": "text=tide-web"} in r["actions"] else []) + s["oc"]
 json.dump({"schema":"openconductor.ui-map-states/1","viewport":{"width":1280,"height":820},"theme":"dark","states":S}, open(__import__('os').path.join(__import__('os').path.dirname(__file__),'states.json'),'w'), indent=1)
 print(len(S))
