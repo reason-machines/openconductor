@@ -2174,6 +2174,84 @@
      "after_ms": 1000
     }
    ]
+  },
+  {
+   "id": "dialog-rename-chat",
+   "title": "Rename chat dialog",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": "[role=tab][aria-label^='Close chat']"
+     },
+     {
+      "click": "[role=menuitem] >> text=Rename chat"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".main-tabs [role=tab]",
+     "after_ms": 600
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Rename chat",
+     "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "menu-review-edit",
+   "title": "Review button menu (Edit before sending)",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": "button:has-text('Review') >> nth=0"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".review-button",
+     "after_ms": 600
+    }
+   ],
+   "covers": [
+    {
+     "kind": "menu",
+     "name": "u6s"
+    }
+   ]
   }
  ]
 }
