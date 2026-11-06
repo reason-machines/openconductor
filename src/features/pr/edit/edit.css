@@ -1,0 +1,28 @@
+/* parity:pr.edit:ui  PR header at the top of the Checks tab. */
+.pr-header { display: flex; flex-direction: column; gap: 4px; padding: 10px 18px 8px; border-bottom: 1px solid var(--border); }
+.pr-header-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.pr-number { font-weight: 600; }
+.pr-header button.pr-title, .pr-header button.pr-body, .pr-header button.pr-base { border: 0; background: transparent; color: inherit; font: inherit; text-align: left; padding: 2px 4px; margin: 0 -4px; border-radius: 4px; cursor: pointer; }
+.pr-header button:disabled { cursor: default; }
+.pr-header button.pr-title:hover:not(:disabled), .pr-header button.pr-body:hover:not(:disabled), .pr-header button.pr-base:hover:not(:disabled) { background: var(--hover); }
+.pr-header button.pr-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.pr-header button.pr-body { font-size: 12px; color: var(--muted); white-space: pre-wrap; max-height: 120px; overflow: auto; }
+.pr-header button.pr-base { font-family: var(--font-mono); font-size: 11px; color: var(--text); margin: 0; }
+.pr-base-anchor { position: relative; }
+.pr-base-picker { position: absolute; top: 100%; left: 0; z-index: 20; width: 240px; margin-top: 4px; padding: 6px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.pr-base-picker input { width: 100%; box-sizing: border-box; margin-bottom: 4px; }
+.pr-base-picker p { margin: 6px 4px; }
+.pr-base-picker ul { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow: auto; }
+.pr-base-picker li button { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 6px; border: 0; background: transparent; color: var(--text); font-size: 12px; padding: 4px 6px; border-radius: 4px; cursor: pointer; text-align: left; }
+.pr-base-picker li button:hover, .pr-base-picker li button.selected { background: var(--hover); }
+.pr-badge { font-size: 10px; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; }
+.link-btn { border: 0; background: transparent; color: var(--accent, var(--text)); text-decoration: underline; cursor: pointer; padding: 0; font: inherit; }
+.pr-body-editor textarea { width: 100%; box-sizing: border-box; min-height: 90px; font: inherit; font-size: 12px; }
+.pr-body-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 4px; }
+.pr-title-dialog input { width: 100%; box-sizing: border-box; }
+.target-chip { display: inline-flex; align-items: center; gap: 6px; }
+.target-chip > button.chip { cursor: pointer; font-family: var(--font-mono); font-size: 11px; }
+.target-chip > button.chip:disabled { cursor: default; opacity: 0.7; }
+button.pr-chip { cursor: pointer; }
+button.pr-chip:hover { background: var(--hover); }
+.pr-tab { overflow: auto; flex: 1; min-height: 0; }

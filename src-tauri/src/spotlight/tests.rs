@@ -189,3 +189,62 @@ fn end_without_a_session_changes_nothing() {
     end(&f.root).unwrap();
     assert_eq!(read(&f.root, "app.txt").as_deref(), Some("dirty\n"));
 }
+
+const LOCAL_SETTINGS: &str = ".conductor/settings.local.toml";
+
+#[test]
+fn the_roots_local_settings_file_survives_syncs_and_end() {
+    let f = fixture();
+    setting::write_local(&f.root, true).unwrap();
+    let on = read(&f.root, LOCAL_SETTINGS).unwrap();
+    assert!(on.contains("spotlight_testing = true"), "{on}");
+
+    begin(&f.root).unwrap();
+    // The workspace has a local settings file of its own; it is not the root's.
+    fs::create_dir_all(f.ws.join(".conductor")).unwrap();
+    write(&f.ws, LOCAL_SETTINGS, "spotlight_testing = false\n");
+    write(&f.ws, "new.txt", "from ws\n");
+    let id = session_checkpoint_id(1, 1);
+    assert_eq!(sync_once(&f.ws, &f.root, &id), SyncOutcome::Synced);
+    assert_eq!(read(&f.root, "new.txt").as_deref(), Some("from ws\n"));
+    assert_eq!(read(&f.root, LOCAL_SETTINGS), Some(on.clone()));
+
+    end(&f.root).unwrap();
+    assert_eq!(read(&f.root, "new.txt"), None);
+    assert_eq!(read(&f.root, LOCAL_SETTINGS), Some(on));
+    assert_eq!(
+        g(&f.root, &["status", "--porcelain", "--untracked-files=all"]),
+        "?? .conductor/settings.local.toml"
+    );
+}
+
+#[test]
+fn turning_the_setting_off_during_a_session_stays_off_after_end() {
+    // The toggle writes the file, then stops Spotlight (setting::apply).
+    let f = fixture();
+    setting::write_local(&f.root, true).unwrap();
+    begin(&f.root).unwrap();
+    assert_eq!(
+        sync_once(&f.ws, &f.root, &session_checkpoint_id(1, 2)),
+        SyncOutcome::Synced
+    );
+    setting::write_local(&f.root, false).unwrap();
+    end(&f.root).unwrap();
+    let text = read(&f.root, LOCAL_SETTINGS).unwrap();
+    assert!(text.contains("spotlight_testing = false"), "{text}");
+}
+
+#[test]
+fn a_root_without_local_settings_does_not_get_the_workspaces() {
+    let f = fixture();
+    begin(&f.root).unwrap();
+    fs::create_dir_all(f.ws.join(".conductor")).unwrap();
+    write(&f.ws, LOCAL_SETTINGS, "spotlight_testing = true\n");
+    assert_eq!(
+        sync_once(&f.ws, &f.root, &session_checkpoint_id(1, 3)),
+        SyncOutcome::Synced
+    );
+    assert_eq!(read(&f.root, LOCAL_SETTINGS), None);
+    end(&f.root).unwrap();
+    assert_eq!(read(&f.root, LOCAL_SETTINGS), None);
+}

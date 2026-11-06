@@ -7,6 +7,7 @@
 # Signing identity, first match wins: --identity, $APPLE_SIGNING_IDENTITY, the
 # first "Developer ID Application" identity in the keychain, else ad-hoc ("-").
 # The bundle is signed with the hardened runtime and src-tauri/Entitlements.plist.
+# Bundles scripts/fetch-bundled-tools.sh's tools in Contents/Resources/bin.
 # No notarization. Prints the bundle path on the last line.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -30,7 +31,9 @@ export APPLE_SIGNING_IDENTITY=$identity
 echo "signing identity: $identity"
 
 [[ -d node_modules ]] || npm ci
-npx --no-install tauri build "${profile[@]}" --bundles app
+# Third-party tools for Contents/Resources/bin (pinned gh), declared in tauri.bundle.conf.json.
+scripts/fetch-bundled-tools.sh
+npx --no-install tauri build "${profile[@]}" --bundles app --config src-tauri/tauri.bundle.conf.json
 
 app=src-tauri/target/$outdir/bundle/macos/OpenConductor.app
 codesign --verify --deep --strict --verbose=2 "$app"

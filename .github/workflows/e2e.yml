@@ -13,6 +13,52 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  codex-chat:
+    name: Codex chat through the built app (ubuntu-22.04)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Tauri system deps, WebKitWebDriver and Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev \
+            webkit2gtk-driver xvfb
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      # Same as the reason-chat job: rust-cache restores stale artifacts of the
+      # path crates, so rebuild them every run.
+      - name: Rebuild path crates
+        working-directory: src-tauri
+        run: cargo clean -p oc-scripts -p openconductor-db
+      - run: npm ci
+      - name: Build the app (debug, no bundle)
+        run: npx tauri build --debug --no-bundle
+      - name: Install tauri-driver
+        run: cargo install tauri-driver --locked
+      - name: Configure git identity
+        run: |
+          git config --global user.name "CI"
+          git config --global user.email "ci@example.invalid"
+      # tools/e2e/fake_codex_app_server.py replays a turn recorded from Codex 0.166.0 on macOS.
+      - name: Codex chat e2e (stand-in codex app-server)
+        env:
+          E2E_OUT: ${{ runner.temp }}/e2e-codex
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: xvfb-run -a node tools/e2e/codex-chat.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: codex-chat-e2e-screens
+          path: ${{ runner.temp }}/e2e-codex
+          retention-days: 14
+
   reason-chat:
     name: Reason chat through the built app (ubuntu-22.04)
     # WebDriver for Tauri apps exists on Linux (WebKitWebDriver) and Windows
@@ -33,6 +79,12 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
+      # rust-cache restores target/ after checkout, so artifacts of the path crates
+      # (crates/scripts, crates/openconductor-db) look newer than their changed sources
+      # and Cargo reuses them stale. Rebuild them every run.
+      - name: Rebuild path crates
+        working-directory: src-tauri
+        run: cargo clean -p oc-scripts -p openconductor-db
       - run: npm ci
       - name: Build the app (debug, no bundle)
         run: npx tauri build --debug --no-bundle
@@ -47,4 +99,48 @@ jobs:
         with:
           name: reason-chat-e2e-screens
           path: ${{ runner.temp }}/e2e-screens
+          retention-days: 14
+      - name: Codex chat e2e (fake codex app-server)
+        if: always()
+        env:
+          E2E_OUT: ${{ runner.temp }}/e2e-codex
+        run: xvfb-run -a node tools/e2e/codex-chat.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: codex-chat-e2e-screens
+          path: ${{ runner.temp }}/e2e-codex
+      - name: Transcript parity screenshots (fake reason acp, lisbon turn)
+        if: always()
+        env:
+          E2E_OUT: ${{ runner.temp }}/transcript-parity
+          # WebKitGTK on a GPU-less Xvfb paints nothing without these.
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: xvfb-run -a -s "-screen 0 1600x1000x24" node tools/e2e/transcript-parity.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: transcript-parity-screens
+          path: ${{ runner.temp }}/transcript-parity
+          retention-days: 14
+      - name: Configure git identity
+        if: always()
+        run: |
+          git config --global user.name "CI"
+          git config --global user.email "ci@example.invalid"
+      - name: App flows (tests/e2e/run.mjs)
+        if: always()
+        env:
+          OC_APP: src-tauri/target/debug/openconductor
+          E2E_OUT: ${{ runner.temp }}/e2e-flows
+          # WebKitGTK on a GPU-less Xvfb paints nothing without these.
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: xvfb-run -a node tests/e2e/run.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-flows
+          path: ${{ runner.temp }}/e2e-flows
           retention-days: 14

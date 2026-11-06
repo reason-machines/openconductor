@@ -227,18 +227,20 @@ pub fn save(workspace: &Path, opts: &SaveOptions) -> Result<String, CheckpointEr
     if busy::has_unmerged_entries(&root)? {
         return Err(CheckpointError::UnresolvedConflicts);
     }
-    let index_tree = git.run(["write-tree"])?;
-
-    // Full working tree via a temp index seeded with the real index tree, so
-    // tracked files that match .gitignore are kept (ignore rules only apply
-    // to untracked paths). The index file itself must not exist beforehand.
-    let worktree_tree = {
-        let tmp = TempIndexDir::create(&root, "chkpt-index")?;
-        let tmp_git = Git::new(&root).env("GIT_INDEX_FILE", tmp.index_path());
-        tmp_git.run(["read-tree", &index_tree])?;
-        tmp_git.run(["add", "-A", "--", "."])?;
-        tmp_git.run(["write-tree"])?
-    };
+    // Both trees come from a private copy of the real index: `write-tree`
+    // takes `index.lock` on the index it reads, so running it on the real
+    // index fails whenever another git process in this worktree holds the
+    // lock (#435). Git replaces the index by rename, so the copy is a whole
+    // index, and it keeps stat info, so `add -A` only rehashes changed files.
+    // Tracked files that match .gitignore stay in the worktree tree (ignore
+    // rules only apply to untracked paths).
+    let tmp = TempIndexDir::create(&root, "chkpt-index")?;
+    copy_real_index(&root, &tmp.index_path())?;
+    let tmp_git = Git::new(&root).env("GIT_INDEX_FILE", tmp.index_path());
+    let index_tree = tmp_git.run(["write-tree"])?;
+    tmp_git.run(["add", "-A", "--", "."])?;
+    let worktree_tree = tmp_git.run(["write-tree"])?;
+    drop(tmp);
 
     let created = iso_utc(now);
     let mut msg = format!(
@@ -345,6 +347,104 @@ pub fn restore(workspace: &Path, id: &str) -> Result<(), CheckpointError> {
     git.run(["read-tree", "--reset", &cp.index_tree])?;
     let _ = git.output(["update-index", "-q", "--refresh"]);
     Ok(())
+}
+
+/// One side of `checkpointer diff`: a saved checkpoint or the current files.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum DiffSide<'a> {
+    Checkpoint(&'a str),
+    Current,
+}
+
+/// Resolve both sides of a checkpoint diff to git objects (reference
+/// `checkpointer diff`): a checkpoint becomes its ref, `Current` a transient
+/// tree of the full working tree (seeded from HEAD, honoring .gitignore).
+/// Returns the workspace root and the two objects to pass to `git diff`.
+pub fn diff_objects(
+    workspace: &Path,
+    left: &str,
+    right: DiffSide<'_>,
+) -> Result<(PathBuf, String, String), CheckpointError> {
+    let root = workspace_root(workspace)?;
+    let git = Git::new(&root);
+    let resolve = |id: &str| -> Result<String, CheckpointError> {
+        let reference = ref_name(id);
+        match git.verify(&reference)? {
+            Some(_) => Ok(reference),
+            None => Err(CheckpointError::NotFound(id.to_string())),
+        }
+    };
+    let a = resolve(left)?;
+    let b = match right {
+        DiffSide::Checkpoint(id) => resolve(id)?,
+        DiffSide::Current => current_tree(&root, &git)?,
+    };
+    Ok((root, a, b))
+}
+
+/// Paths whose content differs between checkpoint `id` and the workspace's
+/// files now, as `checkpointer diff <id> current -- --name-only -z` lists
+/// them (the reference's "N changed" count in the reset dialog).
+pub fn changed_since(workspace: &Path, id: &str) -> Result<Vec<String>, CheckpointError> {
+    let root = workspace_root(workspace)?;
+    let git = Git::new(&root);
+    let reference = ref_name(id);
+    if git.verify(&reference)?.is_none() {
+        return Err(CheckpointError::NotFound(id.to_string()));
+    }
+    let current = current_tree(&root, &git)?;
+    let args = [
+        "-c",
+        "core.quotePath=false",
+        "diff",
+        "--name-only",
+        "-z",
+        reference.as_str(),
+        current.as_str(),
+    ];
+    let out = git.output(args)?;
+    if !out.success {
+        return Err(CheckpointError::Git {
+            command: format!("git {}", args.join(" ")),
+            stderr: out.stderr.trim().to_string(),
+        });
+    }
+    Ok(out
+        .stdout
+        .split('\0')
+        .filter(|p| !p.is_empty())
+        .map(str::to_string)
+        .collect())
+}
+
+/// The reference's transient "current" tree: a temp index seeded from HEAD
+/// (not the real index), then `add -A`, so untracked non-ignored files count
+/// and ignored ones do not. Nothing in the workspace changes.
+fn current_tree(root: &Path, git: &Git) -> Result<String, CheckpointError> {
+    let tmp = TempIndexDir::create(root, "chkpt-cur")?;
+    let tmp_git = Git::new(root).env("GIT_INDEX_FILE", tmp.index_path());
+    if let Some(head) = git.verify("HEAD")? {
+        tmp_git.run(["read-tree", &head])?;
+    }
+    tmp_git.run(["add", "-A", "--", "."])?;
+    tmp_git.run(["write-tree"])
+}
+
+/// Copy the worktree's index to `dest` without taking its lock. A repository
+/// with no index yet (nothing ever staged) leaves `dest` absent, which git
+/// reads as an empty index, as it would the real one.
+fn copy_real_index(root: &Path, dest: &Path) -> Result<(), CheckpointError> {
+    let path = PathBuf::from(Git::new(root).run(["rev-parse", "--git-path", "index"])?);
+    let path = if path.is_relative() {
+        root.join(path)
+    } else {
+        path
+    };
+    match fs::copy(&path, dest) {
+        Ok(_) => Ok(()),
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(()),
+        Err(e) => Err(CheckpointError::Io(e)),
+    }
 }
 
 /// Temporary index directory under the worktree's git dir, removed on drop.

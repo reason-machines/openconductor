@@ -171,3 +171,36 @@ fn auto_run_rule() {
     assert!(!should_auto_run(false, true, true, Completed));
     assert!(!should_auto_run(true, false, true, Completed));
 }
+
+#[test]
+fn latest_is_the_newest_run_with_its_state_and_output() {
+    let tmp = tempfile::tempdir().unwrap();
+    let m = RunManager::default();
+    assert_eq!(m.latest("w1"), None);
+    m.start(
+        req(tmp.path(), "w1", "r", "test", "echo old; exit 0", true),
+        SetupState::Idle,
+    )
+    .unwrap();
+    wait_for("test exit", || m.state("w1", "test") == RunState::Stopped);
+    let first = m.latest("w1").unwrap();
+    assert_eq!(first.script_id, "test");
+    assert_eq!(first.state, RunState::Stopped);
+    assert_eq!(first.output.as_deref(), Some("old\n"));
+
+    m.start(
+        req(tmp.path(), "w1", "r", "dev", LONG, true),
+        SetupState::Idle,
+    )
+    .unwrap();
+    wait_for("dev up", || {
+        m.output("w1", "dev").unwrap_or_default().contains("up")
+    });
+    let live = m.latest("w1").unwrap();
+    assert_eq!(live.script_id, "dev");
+    assert_eq!(live.state, RunState::Running);
+    assert_eq!(live.output.as_deref(), Some("up\n"));
+    assert!(live.started_at >= first.started_at);
+    assert_eq!(m.latest("w2"), None, "other workspaces are not mixed in");
+    m.stop_all();
+}

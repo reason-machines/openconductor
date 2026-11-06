@@ -96,16 +96,25 @@ pub async fn begin_workspace(
     w: &KnownWorkspace,
     parent_branch: Option<&str>,
 ) -> Result<()> {
-    insert_workspace(pool, w, WorkspaceState::Initializing, parent_branch, None).await
+    insert_workspace(pool, w, WorkspaceState::Initializing, parent_branch, None).await?;
+    // Numbered on creation, as Conductor does once its server answers.
+    workspaces::set_number(pool, &w.id, workspaces::next_number(pool).await?).await
 }
 
 /// The worktree exists: replace any row with this id by a `ready` one.
+/// Returns the workspace's number: the one `begin_workspace` gave it, or a new
+/// one when the replaced row was a leftover (an archived workspace) or absent.
 pub async fn finish_workspace(
     pool: &SqlitePool,
     w: &KnownWorkspace,
     parent_branch: Option<&str>,
     placeholder_branch_name: Option<&str>,
-) -> Result<()> {
+) -> Result<i64> {
+    let kept = workspaces::get(pool, &w.id)
+        .await?
+        .map(|r| r.workspace)
+        .filter(|r| r.state == WorkspaceState::Initializing)
+        .and_then(|r| r.number);
     workspaces::delete(pool, &w.id).await?;
     insert_workspace(
         pool,
@@ -114,7 +123,27 @@ pub async fn finish_workspace(
         parent_branch,
         placeholder_branch_name,
     )
-    .await
+    .await?;
+    let number = match kept {
+        Some(n) => n,
+        None => workspaces::next_number(pool).await?,
+    };
+    workspaces::set_number(pool, &w.id, number).await?;
+    Ok(number)
+}
+
+/// The worktree exists (Conductor's `qYe`): store the `git worktree add` log
+/// and the tracked-file count as the row passes through `setting_up`.
+/// Conductor keeps the row there until setup ends; ours tracks setup in the
+/// scripts backend (`setup_script_status`), so the row goes on to `ready`.
+pub async fn record_initialization(
+    pool: &SqlitePool,
+    local_id: &str,
+    init_log: Option<&str>,
+    files_copied: i64,
+) -> Result<()> {
+    workspaces::begin_setup(pool, local_id, init_log, files_copied).await?;
+    workspaces::finish_setup(pool, local_id).await.map(drop)
 }
 
 /// Creating the worktree failed: drop its `initializing` row.
@@ -127,19 +156,9 @@ pub async fn record_rename(pool: &SqlitePool, local_id: &str, branch: &str) -> R
     workspaces::rename_branch(pool, local_id, branch, None).await
 }
 
-/// Mark a workspace archived, keeping its branch.
-pub async fn archive(pool: &SqlitePool, local_id: &str) -> Result<()> {
-    let w = workspaces::get(pool, local_id)
-        .await?
-        .ok_or(openconductor_db::Error::NotFound)?
-        .workspace;
-    workspaces::archive(
-        pool,
-        local_id,
-        w.branch.as_deref().unwrap_or_default(),
-        None,
-    )
-    .await
+/// Save the branch a workspace merges into (`intended_target_branch`).
+pub async fn set_target_branch(pool: &SqlitePool, local_id: &str, branch: &str) -> Result<()> {
+    workspaces::set_target_branch(pool, local_id, Some(branch)).await
 }
 
 async fn insert_workspace(
@@ -187,15 +206,31 @@ pub struct WorkspaceRow {
     pub repository_id: String,
     pub directory_name: String,
     pub workspace_name: Option<String>,
+    /// `workspaces.user_set_workspace_name`: show `workspace_name` as is.
+    pub user_set_workspace_name: bool,
     pub branch: String,
     pub placeholder_branch_name: Option<String>,
     pub state: &'static str,
     pub derived_status: Option<String>,
     pub manual_status: Option<String>,
     pub workspace_path: Option<String>,
+    /// `intended_target_branch`: the branch the work merges into; "All changes" diffs against it.
+    pub intended_target_branch: Option<String>,
     pub pinned_at: Option<String>,
     pub unread: bool,
+    /// The PR's title and body as last stored (`pr_title`, `pr_description`):
+    /// the sidebar label and Create PR's title / description.
+    pub pr_title: Option<String>,
+    pub pr_description: Option<String>,
+    /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
+    pub number: Option<i64>,
+    /// Log of the `git worktree add` script and `git ls-files | wc -l` at
+    /// creation (`initialization_log_path`, `initialization_files_copied`).
+    pub initialization_log_path: Option<String>,
+    pub initialization_files_copied: Option<i64>,
     pub created_at: String,
+    /// `workspaces.updated_at`: last activity, the sidebar's and next-unread's sort key.
+    pub updated_at: String,
 }
 
 pub async fn list_repos(pool: &SqlitePool) -> Result<Vec<RepoRow>> {
@@ -226,15 +261,23 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
             WorkspaceRow {
                 directory_name: w.directory_name.unwrap_or_default(),
                 workspace_name: w.workspace_name,
+                user_set_workspace_name: w.user_set_workspace_name,
                 branch: w.branch.unwrap_or_default(),
                 placeholder_branch_name: w.placeholder_branch_name,
                 state: state_name(w.state),
                 derived_status: w.derived_status,
                 manual_status: w.manual_status,
                 workspace_path: w.workspace_path,
+                intended_target_branch: w.intended_target_branch,
                 pinned_at: w.pinned_at,
                 unread: w.unread,
+                pr_title: w.pr_title,
+                pr_description: w.pr_description,
+                number: w.number,
+                initialization_log_path: w.initialization_log_path,
+                initialization_files_copied: w.initialization_files_copied,
                 created_at: w.created_at,
+                updated_at: w.updated_at,
                 repository_id: w.repository_id,
                 id: w.local_id,
             }

@@ -28,7 +28,7 @@ const data: PaletteData = {
     { id: "open-vscode", title: "VS Code", group: "open-in" },
   ],
   settings: [{ id: "appearance.theme", title: "Theme", section: "Appearance" }],
-  recentWorkspaceIds: ["w2", "w4", "w1"],
+  recentWorkspaceIds: ["w2", "w4", "gone", "w1"],
   activeWorkspaceId: "w2",
 };
 
@@ -62,9 +62,9 @@ test("tabs cycle with wrap and skip Projects when hidden", () => {
   assert.equal(emptyText("projects"), "No matching projects");
 });
 
-test("All tab with empty query: recents (skipping archived) then action groups in fixed order", () => {
+test("All tab with empty query: recents (archived included, unknown ids dropped) then action groups in fixed order", () => {
   assert.deepEqual(ids("all", ""), [
-    "Recent workspaces: w2,w1",
+    "Recent workspaces: w2,w4,w1",
     "Workspace actions: quick-open,archive-workspace",
     "Actions: new-workspace,toggle-theme",
     "Navigation: go-home",
@@ -96,4 +96,13 @@ test("Projects, Actions and Settings tabs", () => {
   assert.deepEqual(ids("actions", "new"), ["Actions: new-workspace"]);
   assert.deepEqual(ids("settings", "appear"), ["Settings: appearance.theme"]);
   assert.deepEqual(ids("projects", "nothing"), []);
+});
+
+test("Workspaces tab archive filter: hiding archived by default, showing all, only archived; other tabs never list them", () => {
+  const ws = (f?: Parameters<typeof buildResults>[3]) => buildResults("workspaces", "", data, f)[0].items.map((i) => i.id.split(":")[1]);
+  assert.deepEqual(ws(), ["w2", "w3", "w1"]);
+  assert.deepEqual(ws("active"), ["w2", "w3", "w1"]);
+  assert.deepEqual(ws("all"), ["w2", "w3", "w1", "w4"]);
+  assert.deepEqual(ws("archived"), ["w4"]);
+  assert.ok(!ids("all", "lima").some((g) => g.includes("w4")));
 });

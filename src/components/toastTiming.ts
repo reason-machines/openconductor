@@ -6,6 +6,12 @@ export interface ToastItem {
   sticky?: boolean;
   /** A button beside the message, such as "Open in GitHub". */
   action?: ToastAction;
+  /** A second button after `action`, such as "Unarchive". */
+  secondaryAction?: ToastAction;
+  /** A line under the message. */
+  description?: string;
+  /** More buttons after those; they leave the toast open ("Open in Finder", "Copy path"). */
+  extraActions?: ToastAction[];
 }
 
 export interface ToastAction {

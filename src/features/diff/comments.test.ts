@@ -1,9 +1,8 @@
 // Run: node --test "src/**/*.test.ts"
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { deleteComment, formatForAgent, markSent, newLocalComment, pendingForAgent, refreshOutdated, setResolved, threadsAt, threadsOf } from "./comments.ts";
+import { attachmentName, attachmentText, commentAttachment, deleteComment, markSent, migrateLocations, newLocalComment, pendingForAgent, refreshOutdated, setResolved, threadsAt, threadsOf } from "./comments.ts";
 import { commentTargets, step, stepComment } from "./nav.ts";
-import { buildReviewPrompt, DEFAULT_REVIEW_PROMPT } from "./review.ts";
 import type { FileDiff } from "./types.ts";
 
 const file: FileDiff = {
@@ -60,13 +59,30 @@ test("local comments go outdated when their lines leave the diff; GitHub ones ke
   assert.deepEqual(pendingForAgent(out).map((c) => c.id), ["a", "c"]);
 });
 
-test("agent text quotes the commented code; sent and resolved comments are not pending", () => {
+test("a comment goes to the chat as Conductor's review attachment; sent and resolved comments are not pending", () => {
   const c = newLocalComment({ ...base, id: "a", side: "new", start: 2, end: 3 });
-  assert.equal(formatForAgent([c], [file]), "src/a.ts lines 2-3:\n```\nnext();\nmore();\n```\ntighten this");
+  assert.equal(attachmentName(c), "a.ts +2-3");
+  assert.equal(
+    attachmentText(c),
+    [
+      "OpenConductor local comment ID: a",
+      "File: src/a.ts",
+      "Lines: 2-3",
+      "This comment was left on the modified branch.",
+      "This comment was created locally in OpenConductor by the user. It is not a GitHub review thread.",
+      "Outdated: no",
+      "Resolved: no",
+      "",
+      "## Comment",
+      "",
+      "tighten this",
+      "",
+    ].join("\n"),
+  );
+  assert.deepEqual(commentAttachment(c), { name: "a.ts +2-3", text: attachmentText(c), commentId: "a" });
   const del = newLocalComment({ ...base, id: "d", side: "old", start: 2 });
-  assert.match(formatForAgent([del], [file]), /^src\/a\.ts line 2 \(removed code\):/);
-  const reply = newLocalComment({ ...base, id: "r", side: "new", start: 2, end: 3, body: "and rename it", replyTo: c });
-  assert.equal(formatForAgent([c, reply], [file]), "src/a.ts lines 2-3:\n```\nnext();\nmore();\n```\ntighten this\n> Reply: and rename it".replace("\n> Reply", "\n\n> Reply"));
+  assert.equal(attachmentName(del), "a.ts +2");
+  assert.match(attachmentText(del), /^This comment was left on the base branch\.$/m);
   assert.deepEqual(pendingForAgent(markSent([c], new Set(["a"]), 5)), []);
   assert.deepEqual(pendingForAgent(setResolved([c], "a", true, 5)), []);
 });
@@ -88,17 +104,12 @@ test("navigation wraps and orders comments by file then line", () => {
   assert.equal(stepComment(targets, null, -1)?.id, "late");
 });
 
-test("review prompt uses the repo override when set and names the scope", () => {
-  assert.ok(buildReviewPrompt("all").startsWith(DEFAULT_REVIEW_PROMPT));
-  assert.equal(buildReviewPrompt("uncommitted", "  Check perf. "), "Check perf.\n\nOnly the uncommitted changes are in scope.");
-});
-
 test("stored values match the REA-observed diff_comments values", () => {
   const line = newLocalComment({ ...base, id: "n", side: "new", start: 2 });
   assert.equal(line.state, "pending");
   assert.equal(line.location, "modified");
   assert.equal(line.file_level, false);
-  assert.equal(newLocalComment({ ...base, id: "o", side: "old", start: 2 }).location, "base");
+  assert.equal(newLocalComment({ ...base, id: "o", side: "old", start: 2 }).location, "original");
   const whole = newLocalComment({ ...base, id: "f", side: "new", fileLevel: true, start: 5, end: 9 });
   assert.equal(whole.location, "file");
   assert.equal(whole.file_level, true);
@@ -107,5 +118,15 @@ test("stored values match the REA-observed diff_comments values", () => {
   assert.equal(threadsAt(threadsOf([whole]), "src/a.ts", "new", 0).length, 0);
   assert.equal(refreshOutdated([whole], [file])[0].is_outdated, false);
   assert.equal(refreshOutdated([whole], [])[0].is_outdated, true);
-  assert.equal(formatForAgent([whole], [file]), "src/a.ts:\ntighten this");
+  assert.equal(attachmentName(whole), "a.ts");
+  assert.match(attachmentText(whole), /^Lines: Unknown\nThis comment was left on a file\.$/m);
+});
+
+test("rows stored with the old side as \"base\" read as Conductor's \"original\"", () => {
+  const old = { ...newLocalComment({ ...base, id: "o", side: "old", start: 2 }), location: "base" as never };
+  const [migrated] = migrateLocations([old]);
+  assert.equal(migrated.location, "original");
+  assert.equal(threadsAt(threadsOf([migrated]), "src/a.ts", "old", 2).length, 1);
+  const kept = newLocalComment({ ...base, id: "n", side: "new", start: 2 });
+  assert.equal(migrateLocations([kept])[0], kept);
 });

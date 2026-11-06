@@ -7,6 +7,7 @@ import type { CreateFrom, CreateWorkspaceArgs } from "./createFlow";
 import { issueToFrom, listErrorState, prToFrom, type OpenIssueDto, type OpenPrDto, type SourceState } from "./createFrom";
 import type { BranchPrefixInfo } from "./naming";
 import { UPSTREAM_WARNING } from "./upstream";
+import { reportInitIssue, WORKTREE_PARTIAL_FAILURE } from "./initIssues";
 
 export interface RepositoryDto {
   id: string;
@@ -29,20 +30,39 @@ export interface CreatedWorkspaceDto {
   baseCommit: string;
   fetched: boolean;
   copiedFiles: string[];
-  /** Set when "Set upstream on plain git push" could not be applied to the new workspace. */
-  upstreamWarning: string | null;
+  /** Log of the `git worktree add` script (`workspaces.initialization_log_path`). */
+  initializationLogPath: string | null;
+  /** Tracked files in the new worktree (`workspaces.initialization_files_copied`). */
+  initializationFilesCopied: number;
+  /**
+   * Non-fatal initialization issues joined with a space (failed post-checkout
+   * hook, push upstream not configured, files not copied). `createWorkspace`
+   * reports it to initIssues, which App shows as a persistent toast.
+   */
+  auxiliaryFailureMessage: string | null;
+  /**
+   * No longer sent: the push-upstream warning is part of
+   * `auxiliaryFailureMessage`. Optional until CreateWorkspaceDialog stops reading it.
+   */
+  upstreamWarning?: string | null;
+  /** `workspaces.number` assigned on creation (shown as `W-<n>`); null when conductor.db could not record it. */
+  number: number | null;
 }
 
 
-/** Registers a local checkout with the backend (idempotent) and returns its backend id. */
-export async function ensureRepository(path: string): Promise<RepositoryDto> {
+/**
+ * The backend project a sidebar repo is (`ensure_repository`): the one `repositoryId` names, else
+ * the first on the folder, registered only when there is none. Idempotent, unlike `add_repository`,
+ * which adds a `<name>-v1` project for an already-added folder as Open project does.
+ */
+export async function ensureRepository(path: string, repositoryId?: string): Promise<RepositoryDto> {
   if (!inTauri()) return { id: path || "browser-repo", name: path, root: path, defaultBranch: "main" };
-  return invoke<RepositoryDto>("add_repository", { path });
+  return invoke<RepositoryDto>("ensure_repository", { path, repositoryId: repositoryId ?? null });
 }
 
 /**
- * Clones `url` into `<parentDir>/<name>` (the backend suffixes `-2`, `-3`, ...
- * when taken) and registers it like add_repository. Each progress line goes
+ * Clones `url` into `<parentDir>/<name>` (the backend suffixes `-v1`, `-v2`, ...
+ * when taken, as Conductor does) and registers it like add_repository. Each progress line goes
  * to `onProgress` as it arrives. The browser stand-in waits briefly, emits a
  * few lines and returns a fake checkout; `fail-` URLs reject with the
  * backend's exit-code message so the error state can be tried without the
@@ -82,21 +102,32 @@ export async function listBranches(repoId: string, defaultBranch: string): Promi
   return invoke<BranchDto[]>("list_branches", { repoId });
 }
 
+let browserNumber = 0;
+
+/** Creates the workspace and reports any non-fatal initialization issue (see initIssues). */
 export async function createWorkspace(args: CreateWorkspaceArgs): Promise<CreatedWorkspaceDto> {
-  if (!inTauri()) {
-    await new Promise((r) => setTimeout(r, 400));
-    const path = `~/openconductor/workspaces/${args.directoryName}`;
-    return {
-      workspace: { id: `${args.repositoryId}/${args.directoryName}`, repositoryId: args.repositoryId, directoryName: args.directoryName, path, branchName: args.branchName, state: "active", head: null },
-      baseRef: args.baseBranch,
-      baseCommit: "",
-      fetched: false,
-      copiedFiles: [],
-      // `?upstream-warning` in a plain browser previews the warning toast.
-      upstreamWarning: new URLSearchParams(window.location.search).has("upstream-warning") ? UPSTREAM_WARNING : null,
-    };
-  }
-  return invoke<CreatedWorkspaceDto>("create_workspace", { ...args });
+  const created = inTauri() ? await invoke<CreatedWorkspaceDto>("create_workspace", { ...args }) : await createInBrowser(args);
+  reportInitIssue(created);
+  return created;
+}
+
+async function createInBrowser(args: CreateWorkspaceArgs): Promise<CreatedWorkspaceDto> {
+  await new Promise((r) => setTimeout(r, 400));
+  const path = `~/openconductor/workspaces/${args.directoryName}`;
+  // `?init-issue` and `?upstream-warning` in a plain browser preview the initialization-issue toast.
+  const q = new URLSearchParams(window.location.search);
+  const issues = [q.has("init-issue") ? WORKTREE_PARTIAL_FAILURE : null, q.has("upstream-warning") ? UPSTREAM_WARNING : null].filter((m) => m !== null);
+  return {
+    workspace: { id: `${args.repositoryId}/${args.directoryName}`, repositoryId: args.repositoryId, directoryName: args.directoryName, path, branchName: args.branchName, state: "active", head: null },
+    baseRef: args.baseBranch,
+    baseCommit: "",
+    fetched: false,
+    copiedFiles: [],
+    initializationLogPath: `/tmp/conductor-${Date.now()}-demo.log`,
+    initializationFilesCopied: 0,
+    auxiliaryFailureMessage: issues.length > 0 ? issues.join(" ") : null,
+    number: ++browserNumber,
+  };
 }
 
 // The browser stand-in has no gh, so it lists samples (one fork PR among them).
@@ -156,8 +187,8 @@ export async function loadBranchPrefix(): Promise<BranchPrefixInfo> {
     const q = new URLSearchParams(window.location.search);
     const custom = q.get("prefix");
     return custom === null
-      ? { branchPrefixType: "github_username", branchPrefixCustom: null, githubUsername: q.get("ghuser") }
-      : { branchPrefixType: custom ? "custom" : "none", branchPrefixCustom: custom || null, githubUsername: q.get("ghuser") };
+      ? { branchPrefixType: "github_username", branchPrefix: null, githubUsername: q.get("ghuser") }
+      : { branchPrefixType: custom ? "custom" : "none", branchPrefix: custom || null, githubUsername: q.get("ghuser") };
   }
   return invoke<BranchPrefixInfo>("branch_prefix_settings");
 }

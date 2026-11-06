@@ -10,6 +10,8 @@
 //   with a sender, so it never renders as the user's input.
 // - Tool rows keep the paths Reason reported, marked local or cloud with
 //   the same repository-relative path.
+// - A notice (e.g. a requested model Reason does not offer) is a system
+//   message.
 // Pure: no Tauri, no React, so `reason.test.ts` covers it.
 
 import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
@@ -31,6 +33,10 @@ export interface ReasonTool {
   output: string | null;
   diffs: { path: ReasonPath; oldText: string | null; newText: string }[];
   locations: ReasonPath[];
+  /** The provider's own tool name (Claude Code's "Grep", ...), when it reports one. */
+  toolName?: string | null;
+  /** The tool's raw input as the provider sent it (ACP `rawInput`, Claude Code's `input`). */
+  rawInput?: unknown;
 }
 
 export interface ReasonTurnEnd {
@@ -40,11 +46,13 @@ export interface ReasonTurnEnd {
 
 export type ReasonPayload = { chatId: string } & (
   | { type: "sessionStarted"; sessionId: string }
-  | { type: "text" | "thought" | "report" | "userReplay"; text: string }
+  | { type: "text" | "thought" | "report" | "userReplay" | "notice"; text: string }
   | { type: "title"; title: string }
   | { type: "error"; code: string | null; status: number | null; message: string }
   | ReasonTool
   | { type: "turnEnded"; end: ReasonTurnEnd }
+  | { type: "permissionRequest"; requestId: string; title: string; options: { optionId: string; name: string; kind: string }[] }
+  | { type: "permissionResolved"; requestId: string }
 );
 
 /** Sender recorded on reports; Reason does not say which Session sent one. */
@@ -52,6 +60,8 @@ export const REPORT_SENDER = "reason";
 
 interface OpenTurn {
   turnId: string;
+  /** The prompt; marked `cancelledAt` when the turn is stopped. */
+  user: ChatMessage;
   assistant: ChatMessage | null;
 }
 
@@ -76,15 +86,28 @@ function message(state: ReasonChatState, turnId: string, id: string, role: ChatM
   return { id, sessionId: state.chatId, turnId, role, createdAt: now.toISOString(), blocks };
 }
 
-/** The user's prompt: a new turn, running. */
-export function startTurn(state: ReasonChatState, text: string, now = new Date()): Step {
-  const turnId = `${state.chatId}:t${state.next}`;
-  const user = message(state, turnId, `${turnId}:user`, "user", [{ type: "text", text }], now);
+/** A file sent with a prompt (as an embedded resource). */
+export interface PromptAttachment {
+  name: string;
+  text: string;
+}
+
+/** Line the transcript shows for an attachment; the agent gets the file itself. */
+export const attachmentLine = (name: string) => `Attached: ${name}`;
+
+/**
+ * The user's prompt: a new turn, running. Pass `turnId` to name the turn's
+ * checkpoints (letters, digits, `.`, `_`, `-`); the default is only unique
+ * within one app run. Attachments show by name.
+ */
+export function startTurn(state: ReasonChatState, text: string, now = new Date(), turnId = `${state.chatId}:t${state.next}`, attachments: PromptAttachment[] = []): Step {
+  const blocks: Block[] = [{ type: "text", text }, ...attachments.map((a): Block => ({ type: "text", text: attachmentLine(a.name) }))];
+  const user = message(state, turnId, `${turnId}:user`, "user", blocks, now);
   return {
-    state: { ...state, open: [...state.open, { turnId, assistant: null }], next: state.next + 1 },
+    state: { ...state, open: [...state.open, { turnId, user, assistant: null }], next: state.next + 1 },
     events: [
       { type: "upsert", message: user },
-      { type: "turn_status", sessionId: state.chatId, turnId, status: "running" },
+      { type: "turn_status", sessionId: state.chatId, turnId, status: "running", at: now.toISOString() },
     ],
   };
 }
@@ -95,13 +118,21 @@ export function newestTurn(state: ReasonChatState): string | undefined {
 }
 
 /** A turn whose prompt call failed, so no `turnEnded` will come for it. */
-export function failTurn(state: ReasonChatState, turnId: string, error: string): Step {
-  if (!state.open.some((t) => t.turnId === turnId)) return { state, events: [] };
-  return {
-    state: { ...state, open: state.open.filter((t) => t.turnId !== turnId) },
-    events: [{ type: "turn_status", sessionId: state.chatId, turnId, status: "failed", error }],
-  };
+export function failTurn(state: ReasonChatState, turnId: string, error: string, now = new Date()): Step {
+  return closeTurn(state, turnId, { outcome: "failed", message: error }, now);
 }
+
+/**
+ * A turn stopped before its prompt reached Reason (the Stop came while the
+ * chat was opening or the start checkpoint was being saved): Reason never
+ * heard of it, so no `turnEnded` will come for it.
+ */
+export function cancelUnsent(state: ReasonChatState, turnId: string, now = new Date()): Step {
+  return closeTurn(state, turnId, { outcome: "cancelled" }, now);
+}
+
+/** Turns still open after this one: a steered follow-up keeps the session working. */
+export const openTurns = (state: ReasonChatState): number => state.open.length;
 
 export function turnStatus(end: ReasonTurnEnd): { status: TurnStatus; error?: string } {
   switch (end.outcome) {
@@ -116,19 +147,40 @@ export function turnStatus(end: ReasonTurnEnd): { status: TurnStatus; error?: st
   }
 }
 
-function closeOldest(state: ReasonChatState, end: ReasonTurnEnd): Step {
-  const [oldest, ...rest] = state.open;
-  if (!oldest) return { state, events: [] };
-  const s = turnStatus(end);
-  return {
-    state: { ...state, open: rest },
-    events: [{ type: "turn_status", sessionId: state.chatId, turnId: oldest.turnId, status: s.status, ...(s.error !== undefined ? { error: s.error } : {}) }],
-  };
+function closeOldest(state: ReasonChatState, end: ReasonTurnEnd, now: Date): Step {
+  const oldest = state.open[0];
+  return oldest ? closeTurn(state, oldest.turnId, end, now) : { state, events: [] };
 }
 
+function closeTurn(state: ReasonChatState, turnId: string, end: ReasonTurnEnd, now: Date): Step {
+  const turn = state.open.find((t) => t.turnId === turnId);
+  if (!turn) return { state, events: [] };
+  const s = turnStatus(end);
+  const at = now.toISOString();
+  const events: ChatEvent[] = [];
+  // A stopped turn's prompt is marked cancelled, as Conductor's `session_messages.cancelled_at`.
+  if (s.status === "cancelled") events.push({ type: "upsert", message: { ...turn.user, cancelledAt: at } });
+  events.push({ type: "turn_status", sessionId: state.chatId, turnId, status: s.status, ...(s.error !== undefined ? { error: s.error } : {}), at });
+  return { state: { ...state, open: state.open.filter((t) => t !== turn) }, events };
+}
+
+const pathInput = (p: ReasonPath) => ({ place: p.place, relative: p.relative, raw: p.raw, ...(p.sessionId ? { sessionId: p.sessionId } : {}) });
+
+/**
+ * A tool row's input: its paths (marked local or cloud), plus what the
+ * transcript needs to draw it as Conductor does (conductorTools.ts): the
+ * title, the provider's tool name and raw input when sent, and the diffs.
+ */
 function toolInput(t: ReasonTool): unknown {
   const paths = [...t.locations, ...t.diffs.map((d) => d.path)];
-  return { kind: t.kind, paths: paths.map((p) => ({ place: p.place, relative: p.relative, raw: p.raw, ...(p.sessionId ? { sessionId: p.sessionId } : {}) })) };
+  return {
+    kind: t.kind,
+    paths: paths.map(pathInput),
+    title: t.title,
+    ...(t.toolName ? { toolName: t.toolName } : {}),
+    ...(t.rawInput !== undefined && t.rawInput !== null ? { rawInput: t.rawInput } : {}),
+    ...(t.diffs.length > 0 ? { diffs: t.diffs.map((d) => ({ path: pathInput(d.path), oldText: d.oldText, newText: d.newText })) } : {}),
+  };
 }
 
 /** Blocks after applying one content payload to the assistant message. */
@@ -160,7 +212,13 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
     case "sessionStarted":
       return { state, events: [], sessionId: p.sessionId };
     case "turnEnded":
-      return closeOldest(state, p.end);
+      return closeOldest(state, p.end, now);
+    case "notice": {
+      const turn = state.open[state.open.length - 1];
+      const id = `${state.chatId}:n${state.next}`;
+      const m = message(state, turn?.turnId ?? id, id, "system", [{ type: "text", text: p.text }], now);
+      return { state: { ...state, next: state.next + 1 }, events: [{ type: "upsert", message: m }] };
+    }
     case "report": {
       const turn = state.open[state.open.length - 1];
       const id = `${state.chatId}:r${state.next}`;
@@ -182,6 +240,9 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
     case "error":
     case "userReplay":
     case "title":
+    // Permission requests change the chat's status, not its transcript (reasonChat.ts).
+    case "permissionRequest":
+    case "permissionResolved":
       return { state, events: [] };
   }
 }

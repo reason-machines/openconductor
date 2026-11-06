@@ -5,6 +5,7 @@ import type { FileMatch } from "./spotlight/quickOpen";
 import type { GitHubOwners } from "./state/githubRepoDialog";
 import type { GitProtocol, RecentRepo } from "./state/cloneDialog";
 import { STEP, targetPath, type RepoScripts, type TemplateId } from "./state/createProject";
+import { getAppPrefs, loadAppPrefs, setAppPref } from "./settings/appPrefs";
 
 export interface AppInfo {
   name: string;
@@ -132,6 +133,10 @@ export async function saveRepoScripts(repoRoot: string, scripts: RepoScripts): P
 /** Native folder picker; returns null when cancelled or outside Tauri. */
 export async function pickFolder(title: string): Promise<string | null> {
   if (!inTauri()) return null;
+  // E2E seam: WebDriver cannot drive the native picker and Tauri locks
+  // __TAURI_INTERNALS__.invoke, so tests/e2e sets the folder to "pick" here.
+  const e2ePick = (window as { __OC_E2E_PICK_FOLDER__?: string }).__OC_E2E_PICK_FOLDER__;
+  if (e2ePick !== undefined) return e2ePick || null;
   const { open } = await import("@tauri-apps/plugin-dialog");
   const picked = await open({ directory: true, multiple: false, title });
   return typeof picked === "string" ? picked : null;
@@ -144,6 +149,7 @@ const DEMO_FILES = [
   "src/components/Sidebar.tsx", "src/components/WorkspaceView.tsx", "src/components/QuickOpenDialog.tsx",
   "src/spotlight/quickOpen.ts", "src/spotlight/rank.ts", "src/state/store.ts", "src-tauri/src/lib.rs",
   "src-tauri/src/quick_open/mod.rs", "src-tauri/Cargo.toml",
+  ".gitignore", "tsconfig.json", "scripts/setup.sh", "tools/gen_ledger.py", "docs/NOTES.md", "src/lib/format.js",
 ];
 
 function demoMatch(query: string, root: string): FileMatch[] {
@@ -180,34 +186,74 @@ export async function githubRecentRepos(): Promise<RecentRepo[]> {
   return invoke<RecentRepo[]>("github_recent_repos");
 }
 
+// Sidebar add-repository menu "Recents". In a plain browser a short delay and
+// demo folders stand in, so the loading row and the list can both be seen.
+const DEMO_RECENT_LOCAL_REPOS = ["/Users/you/code/openconductor", "/Users/you/code/notes", "/Users/you/Developer/acme-web"];
+
+/** Up to 8 local checkouts worked in lately, newest first (`recent_local_repositories`). */
+export async function recentLocalRepositories(): Promise<string[]> {
+  if (!inTauri()) return new Promise((resolve) => setTimeout(() => resolve(DEMO_RECENT_LOCAL_REPOS), 600));
+  return invoke<string[]>("recent_local_repositories");
+}
+
 /** `gh config get git_protocol`, as "ssh" or "https" (`github_git_protocol`). */
 export async function githubGitProtocol(): Promise<GitProtocol> {
   if (!inTauri()) return "https";
   return (await invoke<string>("github_git_protocol")) === "ssh" ? "ssh" : "https";
 }
 
-const LAST_CLONE_DIRECTORY = "openconductor.lastCloneDirectory";
+/** Where the shell kept the clone folder before it moved to conductor.db. */
+const LEGACY_LAST_CLONE_DIRECTORY = "openconductor.lastCloneDirectory";
 
-/** The folder the last successful clone went into, or null. */
-export function lastCloneDirectory(): string | null {
+/**
+ * The folder the last successful clone went into (`last_clone_directory` in the
+ * settings table), or null. A value the older shell saved in localStorage moves
+ * to the database the first time it is read.
+ */
+export async function lastCloneDirectory(): Promise<string | null> {
+  const prefs = await loadAppPrefs().catch(() => getAppPrefs());
+  if (prefs.last_clone_directory) return prefs.last_clone_directory;
+  let legacy: string | null = null;
   try {
-    return localStorage.getItem(LAST_CLONE_DIRECTORY);
+    legacy = localStorage.getItem(LEGACY_LAST_CLONE_DIRECTORY);
   } catch {
     return null;
   }
+  if (!legacy || !inTauri()) return legacy;
+  await setAppPref({ key: "last_clone_directory", value: legacy })
+    .then(() => localStorage.removeItem(LEGACY_LAST_CLONE_DIRECTORY))
+    .catch((err) => console.warn("could not move the last clone directory", err));
+  return legacy;
 }
 
 /** Remembers the clone location; a failure to save is only logged. */
 export function saveLastCloneDirectory(path: string): void {
-  try {
-    localStorage.setItem(LAST_CLONE_DIRECTORY, path);
-  } catch (err) {
-    console.warn("could not save the last clone directory", err);
-  }
+  setAppPref({ key: "last_clone_directory", value: path }).catch((err) => console.warn("could not save the last clone directory", err));
 }
 
 /** Whether `path` is an existing folder; always true outside Tauri. */
 export async function folderExists(path: string): Promise<boolean> {
   if (!inTauri()) return true;
   return inspectProjectFolder(path).then((f) => f.isDir, () => false);
+}
+
+/** A favicon found in the repository at `rootPath`, as a data URL (`repo_favicon`); null outside Tauri. */
+export async function repoFavicon(rootPath: string): Promise<string | null> {
+  if (!inTauri()) return null;
+  return invoke<string | null>("repo_favicon", { rootPath });
+}
+
+/**
+ * Sidebar Rename workspace: record the new directory name (sibling symlink for a ready worktree)
+ * and `workspace_name` in conductor.db (src-tauri/src/sidebar_rename_commands.rs).
+ */
+export async function renameWorkspaceRecord(workspaceId: string, newDirectoryName: string, workspaceName: string | null): Promise<void> {
+  if (!inTauri()) return;
+  await invoke("db_rename_workspace", { workspaceId, newDirectoryName, workspaceName, userSet: true });
+}
+
+/** After a branch rename the user asked for: block later automatic branch renames. */
+export async function markUserSetBranchName(workspaceId: string): Promise<void> {
+  if (!inTauri()) return;
+  await invoke("db_mark_user_set_branch_name", { workspaceId });
 }

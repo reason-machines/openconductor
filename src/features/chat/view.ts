@@ -9,6 +9,7 @@
 // - Each finished turn ends with a footer carrying the copy and retry data.
 
 import type { ChatTranscript } from "./reducer.ts";
+import { conductorTools, type ConductorTool } from "./conductorTools.ts";
 import type { ChatMessage, MessageOrigin, TurnStatus } from "./types.ts";
 import { messageOrigin, plainText } from "./types.ts";
 
@@ -16,8 +17,11 @@ export type ToolStatus = "running" | "done" | "error" | "interrupted";
 
 export interface ToolCallView {
   id: string;
+  /** Conductor's tool name for the call (see conductorTools.ts). */
   name: string;
   input: unknown;
+  /** The call as Conductor draws it: Claude Code's tool name and input. */
+  tool: ConductorTool;
   status: ToolStatus;
   /** Result text once the tool has answered. */
   result?: string;
@@ -31,7 +35,8 @@ export type PartView =
 export type ReportOrigin = Extract<MessageOrigin, { kind: "session" } | { kind: "api_key" }>;
 
 export type RowView =
-  | { kind: "user"; key: string; message: ChatMessage; text: string }
+  /** `cancelled`: the prompt's turn was stopped (Conductor's `cancelled_at`), shown as a "Cancelled" caption. */
+  | { kind: "user"; key: string; message: ChatMessage; text: string; cancelled: boolean }
   | { kind: "report"; key: string; message: ChatMessage; origin: ReportOrigin; text: string }
   | { kind: "system"; key: string; message: ChatMessage; text: string }
   | { kind: "assistant"; key: string; message: ChatMessage; parts: PartView[]; streaming: boolean }
@@ -45,6 +50,11 @@ export type RowView =
       finalText?: string;
       /** Set when the turn failed or was cancelled and has a user prompt to send again. */
       retryPrompt?: string;
+      /** "Reset chat" applies: the turn has an agent reply and is not the chat's last turn. */
+      canReset: boolean;
+      /** ISO times the turn started and ended, for the footer's "8m, 0s · 10:37 AM". */
+      startedAt?: string;
+      endedAt?: string;
     };
 
 interface ToolResult {
@@ -79,7 +89,12 @@ function assistantRow(message: ChatMessage, results: Map<string, ToolResult>, st
       case "tool_use": {
         const r = results.get(b.id);
         const status: ToolStatus = r ? (r.isError ? "error" : "done") : turnRunning ? "running" : "interrupted";
-        parts.push({ kind: "tool", call: { id: b.id, name: b.name, input: b.input, status, ...(r ? { result: r.content } : {}) } });
+        // One Codex file change item edits several files: Conductor shows a row per file.
+        const tools = conductorTools(b.name, b.input);
+        tools.forEach((tool, j) => {
+          const id = j === 0 ? b.id : `${b.id}#${j}`;
+          parts.push({ kind: "tool", call: { id, name: tool.name, input: b.input, tool, status, ...(r ? { result: r.content } : {}) } });
+        });
         break;
       }
       case "tool_result":
@@ -91,7 +106,7 @@ function assistantRow(message: ChatMessage, results: Map<string, ToolResult>, st
   return { kind: "assistant", key: message.id, message, parts, streaming };
 }
 
-function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[]): RowView {
+function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[], isLastTurn: boolean): RowView {
   const state = t.turns[turnId];
   let finalText: string | undefined;
   for (let i = turnMessages.length - 1; i >= 0 && finalText === undefined; i--) {
@@ -109,6 +124,9 @@ function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[])
     ...(state?.error !== undefined ? { error: state.error } : {}),
     ...(finalText !== undefined ? { finalText } : {}),
     ...(canRetry && prompt ? { retryPrompt: plainText(prompt) } : {}),
+    canReset: !isLastTurn && turnMessages.some((m) => m.role === "assistant"),
+    ...(state?.startedAt !== undefined ? { startedAt: state.startedAt } : {}),
+    ...(state?.endedAt !== undefined ? { endedAt: state.endedAt } : {}),
   };
 }
 
@@ -120,6 +138,11 @@ export function buildRows(t: ChatTranscript): RowView[] {
   messages.forEach((m, i) => {
     if (m.role === "assistant" && m.turnId === activeTurn) lastAssistant = i;
   });
+
+  // The chat's last turn (its newest message's turn, reports aside) has no "Reset chat".
+  const turnIds = new Set([...Object.keys(t.turns), ...messages.filter((m) => m.role === "assistant").map((m) => m.turnId)]);
+  let lastTurn: string | undefined;
+  for (const m of messages) if (turnIds.has(m.turnId)) lastTurn = m.turnId;
 
   const rows: RowView[] = [];
   const turnMessages = new Map<string, ChatMessage[]>();
@@ -142,7 +165,7 @@ export function buildRows(t: ChatTranscript): RowView[] {
         break;
       case "user":
         // Tool-result carriers have no text of their own.
-        if (text.length > 0) rows.push({ kind: "user", key: m.id, message: m, text });
+        if (text.length > 0) rows.push({ kind: "user", key: m.id, message: m, text, cancelled: m.cancelledAt !== undefined });
         break;
       case "system":
         if (text.length > 0) rows.push({ kind: "system", key: m.id, message: m, text });
@@ -150,7 +173,7 @@ export function buildRows(t: ChatTranscript): RowView[] {
     }
     // A report that carries its own turn id is not a turn of this chat: no footer for it.
     const isTurn = t.turns[m.turnId] !== undefined || group.some((g) => g.role === "assistant");
-    if (lastOfTurn.get(m.turnId) === i && m.turnId !== activeTurn && isTurn) rows.push(turnEnd(t, m.turnId, group));
+    if (lastOfTurn.get(m.turnId) === i && m.turnId !== activeTurn && isTurn) rows.push(turnEnd(t, m.turnId, group, m.turnId === lastTurn));
   });
   return rows;
 }

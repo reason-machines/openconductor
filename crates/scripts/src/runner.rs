@@ -12,7 +12,7 @@ use std::collections::HashMap;
 use std::io;
 use std::sync::{Arc, Mutex, MutexGuard};
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, SystemTime};
 
 use serde::Serialize;
 
@@ -55,6 +55,17 @@ pub struct RunStatus {
     pub exit: Option<(Option<i32>, Option<i32>)>,
 }
 
+/// See [`RunManager::latest`].
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LatestRun {
+    pub script_id: String,
+    pub state: RunState,
+    pub started_at: SystemTime,
+    /// Raw output (escape sequences included); `None` before any output
+    /// was kept, for example while waiting for setup.
+    pub output: Option<String>,
+}
+
 type Key = (String, String);
 
 #[derive(Default)]
@@ -65,6 +76,7 @@ struct Inner {
     waiting: HashMap<String, RunRequest>,
     last_output: HashMap<Key, String>,
     last_exit: HashMap<Key, Exit>,
+    started_at: HashMap<Key, SystemTime>,
     history: HashMap<String, Vec<String>>,
 }
 
@@ -87,6 +99,7 @@ impl RunManager {
             history.insert(0, req.script_id.clone());
             history.truncate(HISTORY_LEN);
             inner.repos.insert(key.clone(), req.repo_id.clone());
+            inner.started_at.insert(key.clone(), SystemTime::now());
             if setup_state == SetupState::Running {
                 inner.states.insert(key, RunState::WaitingForSetup);
                 inner.waiting.insert(req.workspace_id.clone(), req);
@@ -277,6 +290,24 @@ impl RunManager {
             .collect();
         out.sort_by(|a, b| a.script_id.cmp(&b.script_id));
         out
+    }
+
+    /// The workspace's most recently started run script with its state and
+    /// output (live while it runs, else its last run's), for reading it
+    /// back the way the reference's `getTerminalOutput` does.
+    pub fn latest(&self, workspace_id: &str) -> Option<LatestRun> {
+        let (script_id, started_at) = {
+            let inner = self.lock();
+            let script_id = inner.history.get(workspace_id)?.first()?.clone();
+            let key = (workspace_id.to_string(), script_id.clone());
+            (script_id, *inner.started_at.get(&key)?)
+        };
+        Some(LatestRun {
+            state: self.state(workspace_id, &script_id),
+            output: self.output(workspace_id, &script_id),
+            script_id,
+            started_at,
+        })
     }
 
     /// Most recently started run-script ids, newest first.

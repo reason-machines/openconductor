@@ -59,7 +59,68 @@ fn req(scope: Scope) -> DiffRequest {
 fn all() -> Scope {
     Scope::All {
         base: "main".into(),
+        remote: None,
     }
+}
+
+/// `feature` has one commit over local `main`; `origin/main` already
+/// contains it (the branch was merged upstream), local `main` does not.
+fn merged_upstream_repo() -> PathBuf {
+    let r = repo();
+    write(&r, "f.txt", "x\n");
+    commit(&r, "base");
+    sh(&r, &["checkout", "-q", "-b", "feature"]);
+    write(&r, "feature.txt", "y\n");
+    commit(&r, "feature work");
+    sh(&r, &["update-ref", "refs/remotes/origin/main", "HEAD"]);
+    write(&r, "f.txt", "uncommitted\n");
+    r
+}
+
+fn changed(r: &Path, scope: Scope) -> Vec<String> {
+    list_changes(r, &req(scope))
+        .unwrap()
+        .into_iter()
+        .map(|c| c.path)
+        .collect()
+}
+
+// parity:diff.changes-list:test
+#[test]
+fn all_changes_use_the_remote_target_ref_when_it_exists() {
+    let r = merged_upstream_repo();
+    let remote = Scope::All {
+        base: "main".into(),
+        remote: Some("origin".into()),
+    };
+    assert_eq!(changed(&r, remote), vec!["f.txt"]);
+    // Against the stale local branch the merged commit still shows.
+    assert_eq!(changed(&r, all()), vec!["f.txt", "feature.txt"]);
+}
+
+#[test]
+fn all_changes_fall_back_to_the_local_branch_without_a_remote_ref() {
+    let r = merged_upstream_repo();
+    let missing = Scope::All {
+        base: "main".into(),
+        remote: Some("upstream".into()),
+    };
+    assert_eq!(changed(&r, missing), vec!["f.txt", "feature.txt"]);
+}
+
+#[test]
+fn all_scope_without_remote_reads_the_old_request_shape() {
+    let s: Scope = serde_json::from_str(r#"{"kind":"all","base":"main"}"#).unwrap();
+    assert_eq!(s, all());
+    let s: Scope =
+        serde_json::from_str(r#"{"kind":"all","base":"main","remote":"origin"}"#).unwrap();
+    assert_eq!(
+        s,
+        Scope::All {
+            base: "main".into(),
+            remote: Some("origin".into())
+        }
+    );
 }
 
 #[test]
@@ -108,8 +169,34 @@ fn ignore_whitespace_drops_whitespace_only_hunks() {
     let mut hidden = req(Scope::Uncommitted);
     hidden.ignore_whitespace = true;
     let hidden = workspace_diff(&r, &hidden).unwrap();
-    // The file stays listed with no hunks: "only whitespace changes".
-    assert!(hidden.files.iter().all(|f| f.hunks.is_empty()));
+    // The file stays listed, with its counts, and no hunks: "only whitespace changes".
+    assert_eq!(hidden.files.len(), 1, "{:?}", hidden.files);
+    assert_eq!(hidden.files[0].path, "a.py");
+    assert_eq!(
+        (hidden.files[0].additions, hidden.files[0].deletions),
+        (1, 1)
+    );
+    assert!(hidden.files[0].hunks.is_empty());
+}
+
+#[test]
+fn ignore_whitespace_keeps_real_changes_and_lists_every_file() {
+    let r = repo();
+    write(&r, "a.py", "def f():\n    return 1\n");
+    write(&r, "b.py", "x = 1\ny = 2\n");
+    commit(&r, "base");
+    write(&r, "a.py", "def f():\n\treturn 1\n");
+    write(&r, "b.py", "x = 1\ny  =  3\n");
+    write(&r, "new.txt", "fresh\n");
+    let mut hidden = req(Scope::Uncommitted);
+    hidden.ignore_whitespace = true;
+    let d = workspace_diff(&r, &hidden).unwrap();
+    let paths: Vec<_> = d.files.iter().map(|f| f.path.as_str()).collect();
+    assert_eq!(paths, ["a.py", "b.py", "new.txt"]);
+    assert!(d.files[0].hunks.is_empty());
+    // b.py has a real change mixed with whitespace: its hunk stays.
+    assert_eq!(d.files[1].hunks.len(), 1);
+    assert_eq!(d.files[2].hunks.len(), 1);
 }
 
 #[test]
@@ -161,6 +248,7 @@ fn unknown_base_is_a_git_error() {
         &r,
         &req(Scope::All {
             base: "nope".into(),
+            remote: None,
         }),
     )
     .unwrap_err();
@@ -190,4 +278,118 @@ fn context_lines_widens_hunks_to_the_whole_file() {
     let hunks = &whole.files[0].hunks;
     assert_eq!(hunks.len(), 1);
     assert_eq!((hunks[0].new_start, hunks[0].new_lines), (1, 20));
+}
+
+mod discard {
+    use super::super::discard::{discard_file, DiscardRequest};
+    use super::*;
+
+    fn discard(
+        r: &Path,
+        scope: Scope,
+        path: &str,
+        old_path: Option<&str>,
+    ) -> Result<(), DiffError> {
+        discard_file(
+            r,
+            &DiscardRequest {
+                scope,
+                path: path.into(),
+                old_path: old_path.map(Into::into),
+            },
+        )
+    }
+
+    fn read(r: &Path, path: &str) -> Option<String> {
+        fs::read_to_string(r.join(path)).ok()
+    }
+
+    /// Branch `feature` off `main` with one committed edit, one committed
+    /// new file, then uncommitted edits on top.
+    fn branch_repo() -> PathBuf {
+        let r = repo();
+        write(&r, "keep.txt", "base\n");
+        write(&r, "old name.txt", "same\n");
+        commit(&r, "base");
+        sh(&r, &["checkout", "-q", "-b", "feature"]);
+        write(&r, "keep.txt", "committed\n");
+        write(&r, "new.txt", "new\n");
+        commit(&r, "work");
+        write(&r, "keep.txt", "uncommitted\n");
+        r
+    }
+
+    fn paths(r: &Path, scope: Scope) -> Vec<String> {
+        list_changes(r, &req(scope))
+            .unwrap()
+            .into_iter()
+            .map(|f| f.path)
+            .collect()
+    }
+
+    #[test]
+    fn all_changes_restores_the_merge_base_version() {
+        let r = branch_repo();
+        sh(&r, &["add", "keep.txt"]);
+        discard(&r, all(), "keep.txt", None).unwrap();
+        assert_eq!(read(&r, "keep.txt").as_deref(), Some("base\n"));
+        assert_eq!(paths(&r, all()), vec!["new.txt"]);
+    }
+
+    #[test]
+    fn uncommitted_restores_head_and_keeps_committed_work() {
+        let r = branch_repo();
+        discard(&r, Scope::Uncommitted, "keep.txt", None).unwrap();
+        assert_eq!(read(&r, "keep.txt").as_deref(), Some("committed\n"));
+        assert!(paths(&r, Scope::Uncommitted).is_empty());
+    }
+
+    #[test]
+    fn files_missing_from_the_base_are_deleted_and_unstaged() {
+        let r = branch_repo();
+        write(&r, "dir/untracked.txt", "u\n");
+        write(&r, "staged.txt", "s\n");
+        sh(&r, &["add", "staged.txt"]);
+        discard(&r, all(), "new.txt", None).unwrap();
+        discard(&r, Scope::Uncommitted, "dir/untracked.txt", None).unwrap();
+        discard(&r, Scope::Uncommitted, "staged.txt", None).unwrap();
+        for p in ["new.txt", "dir/untracked.txt", "staged.txt"] {
+            assert_eq!(read(&r, p), None, "{p} should be gone");
+        }
+        // new.txt was committed on the branch, so against HEAD it now reads as deleted.
+        assert_eq!(paths(&r, all()), vec!["keep.txt"]);
+        assert_eq!(paths(&r, Scope::Uncommitted), vec!["keep.txt", "new.txt"]);
+    }
+
+    #[test]
+    fn a_rename_restores_the_old_path_and_drops_the_new_one() {
+        let r = branch_repo();
+        sh(&r, &["mv", "old name.txt", "new name.txt"]);
+        discard(&r, Scope::Uncommitted, "new name.txt", Some("old name.txt")).unwrap();
+        assert_eq!(read(&r, "old name.txt").as_deref(), Some("same\n"));
+        assert_eq!(read(&r, "new name.txt"), None);
+        assert_eq!(paths(&r, Scope::Uncommitted), vec!["keep.txt"]);
+    }
+
+    #[test]
+    fn unborn_branch_deletes_the_file() {
+        let r = repo();
+        write(&r, "x.txt", "x\n");
+        sh(&r, &["add", "x.txt"]);
+        discard(&r, Scope::Uncommitted, "x.txt", None).unwrap();
+        assert_eq!(read(&r, "x.txt"), None);
+        assert!(paths(&r, Scope::Uncommitted).is_empty());
+    }
+
+    #[test]
+    fn paths_outside_the_worktree_are_refused() {
+        let r = branch_repo();
+        for bad in ["../escape.txt", "/etc/hosts", "", "a/../../b"] {
+            let e = discard(&r, Scope::Uncommitted, bad, None).unwrap_err();
+            assert!(matches!(e, DiffError::InvalidPath(_)), "{bad}: {e}");
+        }
+        let e = discard(&r, Scope::Uncommitted, "keep.txt", Some("../x")).unwrap_err();
+        assert!(matches!(e, DiffError::InvalidPath(_)));
+        assert_eq!(read(&r, "keep.txt").as_deref(), Some("uncommitted\n"));
+    }
 }

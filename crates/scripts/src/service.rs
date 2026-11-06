@@ -66,6 +66,12 @@ pub type AutoRunSpotlight = Arc<
         + Sync,
 >;
 
+/// The settings environment (`environment_variable_files` and
+/// `environment_variables`, local context) a workspace's scripts get. The
+/// app sets it so its own user settings file is the user layer; without
+/// one, the layers are resolved with `conductor_dir` as the user folder.
+pub type SettingsEnv = Arc<dyn Fn(&WorkspaceRef) -> BTreeMap<String, String> + Send + Sync>;
+
 #[derive(Clone)]
 pub struct ScriptService {
     conductor_dir: PathBuf,
@@ -76,6 +82,7 @@ pub struct ScriptService {
     events: EventSink,
     counter: Arc<AtomicU64>,
     auto_run_spotlight: Arc<OnceLock<AutoRunSpotlight>>,
+    settings_env: Arc<OnceLock<SettingsEnv>>,
 }
 
 impl ScriptService {
@@ -90,6 +97,7 @@ impl ScriptService {
             events,
             counter: Arc::default(),
             auto_run_spotlight: Arc::default(),
+            settings_env: Arc::default(),
         }
     }
 
@@ -105,6 +113,34 @@ impl ScriptService {
         let _ = self.auto_run_spotlight.set(hook);
     }
 
+    /// Let `env` supply the settings environment of scripts. Only the first
+    /// call takes effect.
+    pub fn set_settings_env(&self, env: SettingsEnv) {
+        let _ = self.settings_env.set(env);
+    }
+
+    /// Variables from the settings layers for `ws`'s scripts. A settings
+    /// file that cannot be read gives none rather than blocking the script.
+    pub fn settings_env(&self, ws: &WorkspaceRef) -> BTreeMap<String, String> {
+        if let Some(hook) = self.settings_env.get() {
+            return hook(ws);
+        }
+        let home = self
+            .conductor_dir
+            .parent()
+            .map(PathBuf::from)
+            .unwrap_or_default();
+        let paths = config::EffectivePaths {
+            user_dir: self.conductor_dir.clone(),
+            home,
+            repo_root: ws.repo_root.clone(),
+            workspace: Some(ws.workspace_path.clone()),
+        };
+        config::load_effective(&paths)
+            .map(|e| e.env.vars(config::EnvContext::Local))
+            .unwrap_or_default()
+    }
+
     /// The settings files a workspace's settings resolve against.
     pub fn settings_paths(&self, ws: &WorkspaceRef) -> SettingsPaths {
         SettingsPaths {
@@ -113,6 +149,18 @@ impl ScriptService {
             workspace: Some(ws.workspace_path.clone()),
             shared_from: SharedSource::GitRef(format!("origin/{}", ws.default_branch)),
         }
+    }
+
+    /// The user-scope "Auto-run after setup" toggle (off by default).
+    pub fn auto_run_after_setup(&self) -> Result<bool, String> {
+        config::user_auto_run_after_setup(&self.conductor_dir)
+    }
+
+    /// Turn auto-run after setup on or off for every repository that does
+    /// not set it itself. Returns the user value read back.
+    pub fn set_auto_run_after_setup(&self, enabled: bool) -> Result<bool, String> {
+        config::set_user_auto_run_after_setup(&self.conductor_dir, enabled)?;
+        self.auto_run_after_setup()
     }
 
     pub fn config(&self, ws: &WorkspaceRef) -> Result<ResolvedScripts, String> {
@@ -190,7 +238,7 @@ impl ScriptService {
         }
         .ok_or_else(|| "No run script is configured for this workspace.".to_string())?;
         let ctx = self.context(ws)?;
-        let env = env::script_env(&ctx, ScriptKind::Run, &BTreeMap::new());
+        let env = env::script_env(&ctx, ScriptKind::Run, &self.settings_env(ws));
         let cwd = env::run_cwd(&ws.workspace_path, script.cwd.as_deref(), &env);
         let spec = self.spec(ws, ScriptKind::Run, script.command_line(), cwd)?;
         let req = RunRequest {
@@ -265,7 +313,7 @@ impl ScriptService {
         script: String,
         cwd: PathBuf,
     ) -> Result<LaunchSpec, String> {
-        let overlay = env::script_env(&self.context(ws)?, kind, &BTreeMap::new());
+        let overlay = env::script_env(&self.context(ws)?, kind, &self.settings_env(ws));
         let base_env = self.base_env.get_or_init(|| {
             let shell =
                 std::env::var("SHELL").unwrap_or_else(|_| launch::script_shell().to_string());

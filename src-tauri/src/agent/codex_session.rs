@@ -21,7 +21,8 @@ use serde_json::Value;
 use super::codex_cli::CodexLaunch;
 use super::codex_events::{thread_id, Notification, ServerMessage, Turn};
 use super::codex_rpc::{
-    approval_line, initialized_line, ApprovalDecision, ClientRequest, RequestId, ThreadOptions,
+    approval_line, error_line, initialized_line, result_line, ApprovalDecision, ClientRequest,
+    RequestId, ThreadOptions,
 };
 
 /// Something the process printed, in the order each stream produced it.
@@ -299,6 +300,17 @@ impl CodexSession {
         self.write(&approval_line(id, decision))
     }
 
+    /// Answers a server request with `result`.
+    pub fn respond(&mut self, id: &RequestId, result: Value) -> io::Result<()> {
+        self.write(&result_line(id, result))
+    }
+
+    /// Answers a server request the app does not handle with an error, so
+    /// the turn does not wait on it forever.
+    pub fn reject(&mut self, id: &RequestId, code: i64, message: &str) -> io::Result<()> {
+        self.write(&error_line(id, code, message))
+    }
+
     /// Waits up to `timeout` for the next event; `None` on timeout or once
     /// both output streams are done.
     pub fn next_event(&mut self, timeout: Duration) -> Option<CodexEvent> {
@@ -396,12 +408,12 @@ fn read_lines<R: Read + Send + 'static>(
 #[cfg(all(test, unix))]
 mod tests {
     use std::fs;
-    use std::os::unix::fs::PermissionsExt;
     use std::path::PathBuf;
     use std::sync::atomic::{AtomicU32, Ordering};
 
     use super::super::codex_cli::{ApprovalPolicy, CodexPolicy, SandboxMode};
     use super::super::codex_events::{ServerRequest, TurnStatus};
+    use super::super::test_exe::write_executable;
     use super::super::{AgentKind, LaunchEnv};
     use super::*;
 
@@ -448,10 +460,11 @@ done
             std::process::id(),
             N.fetch_add(1, Ordering::Relaxed)
         ));
+        // PIDs repeat across sandboxes: start from an empty folder.
+        let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("codex");
-        fs::write(&path, body).unwrap();
-        fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+        write_executable(&path, body, 0o755);
         path
     }
 

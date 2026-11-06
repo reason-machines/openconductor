@@ -1,0 +1,64 @@
+/* Stacked settings rows: label and help above a full-width control (Conductor's `align: "start"`). */
+.settings-row.settings-row-stacked { flex-direction: column; align-items: stretch; gap: 8px; }
+.settings-row-stacked textarea {
+  width: 100%;
+  min-height: 120px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 12px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  resize: vertical;
+}
+.settings-row-stacked textarea.settings-env-files { min-height: 64px; }
+.settings-badge { font-size: 11px; padding: 1px 6px; border-radius: 4px; background: var(--hover, rgba(127, 127, 127, 0.15)); color: var(--muted, inherit); margin-left: 8px; font-weight: 400; }
+.settings-env-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.settings-env-table th, .settings-env-table td { text-align: left; padding: 4px 6px; border-top: 1px solid var(--border); vertical-align: top; }
+.settings-env-table code { word-break: break-all; }
+.settings-env-form { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.settings-env-form input, .settings-env-form select { font: inherit; padding: 4px 6px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: inherit; }
+
+/* Settings › repository › Misc (Conductor's `Sba` rows). */
+.settings .settings-misc-warn { display: inline-flex; align-items: center; gap: 6px; }
+.settings .settings-misc-warn svg { flex-shrink: 0; }
+.settings .settings-misc-icon { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid var(--s-input); border-radius: 6px; background: transparent; color: var(--s-fg); cursor: pointer; }
+.settings .settings-misc-icon:hover { background: var(--s-hover); }
+.settings .settings-misc-icon .repo-icon, .settings .settings-misc-icon img { width: 20px; height: 20px; }
+.settings .settings-misc-path { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 12px; line-height: 16px; }
+.settings .settings-misc-path-text { display: flex; align-items: baseline; min-width: 0; }
+.settings .settings-misc-path-dir { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--s-muted); }
+.settings .settings-misc-path-name { flex-shrink: 0; color: var(--s-fg); }
+.settings .oi-icon .oi-chevron { height: 16px; width: 16px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--s-muted); }
+.settings .oi-icon .oi-chevron:hover:not(:disabled) { background: var(--s-hover); color: var(--s-fg); }
+.settings .settings-misc-urls { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.settings .settings-misc-url { display: flex; align-items: center; gap: 8px; width: 100%; }
+.settings .settings-misc-url .settings-field { height: 32px; font-size: 12px; }
+.settings .settings-misc-url .settings-field.settings-misc-url-name { width: 128px; flex: none; }
+.settings .settings-misc-url .settings-field.settings-misc-url-url { width: auto; flex: 1; min-width: 0; }
+.settings .settings-misc-url-move { display: flex; flex-direction: column; flex-shrink: 0; }
+.settings .settings-misc-url-move button { display: flex; align-items: center; justify-content: center; width: 24px; height: 14px; border: 0; background: transparent; color: var(--s-muted); }
+.settings .settings-misc-url-move button:disabled { opacity: 0.4; }
+.settings .settings-misc-url-remove { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; border: 0; border-radius: 6px; background: transparent; color: var(--s-muted); }
+.settings .settings-misc-url-remove:hover:not(:disabled) { background: var(--s-hover); color: var(--s-fg); }
+.settings .settings-misc-url-remove:disabled { opacity: 0.5; }
+.settings .btn.settings-outline.settings-misc-add { height: 24px; padding: 0 8px; gap: 4px; font-size: 12px; border-radius: 4px; }
+.settings .settings-misc-learn { display: inline-flex; align-items: center; gap: 2px; padding: 0; border: 0; background: transparent; color: var(--s-fg); font: inherit; cursor: pointer; }
+.settings .settings-misc-learn:hover { text-decoration: underline; }
+.settings .settings-misc-files { display: flex; flex-direction: column; gap: 8px; }
+.settings .settings-misc-textarea { height: auto; min-height: 120px; padding: 8px 12px; resize: vertical; line-height: 16px; }
+.settings .settings-misc-locked { position: relative; }
+.settings .settings-misc-locked .settings-misc-textarea { resize: none; background: var(--s-card); opacity: 1; }
+.settings .settings-misc-locked-note { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 16px; border-radius: 6px; background: color-mix(in srgb, var(--s-card) 80%, transparent); text-align: center; font-size: 12px; color: var(--s-muted); }
+.settings .settings-misc-files-note { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--s-muted); }
+.settings .settings-misc-files-head { justify-content: space-between; gap: 8px; }
+.settings .settings-misc-files-count { display: flex; align-items: baseline; gap: 0; min-width: 0; white-space: pre; }
+.settings .settings-misc-files-preview { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+.settings .settings-misc-files-list { max-height: 128px; overflow-y: auto; padding: 8px; border: 1px solid var(--s-border); border-radius: 6px; background: color-mix(in srgb, var(--s-card) 30%, transparent); font-family: var(--font-mono); color: var(--s-muted); }
+.settings .settings-misc-files-list > div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.settings .settings-misc-refresh { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex-shrink: 0; border: 0; border-radius: 4px; background: transparent; color: var(--s-muted); }
+.settings .settings-misc-refresh:hover { background: var(--s-hover); color: var(--s-fg); }
+.settings .settings-misc-remove { padding-bottom: 20px; }
+.settings .btn.settings-outline.settings-misc-remove-btn { height: 28px; padding: 0 10px; gap: 6px; font-size: 13px; color: var(--del); border-color: color-mix(in srgb, var(--del) 40%, transparent); }
+.settings .btn.settings-outline.settings-misc-remove-btn:hover { background: color-mix(in srgb, var(--del) 10%, transparent); }
+.settings-misc-break { word-break: break-all; }

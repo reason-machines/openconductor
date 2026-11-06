@@ -62,6 +62,12 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
+      # rust-cache restores target/ after checkout, so artifacts of the path crates
+      # (crates/scripts, crates/openconductor-db) look newer than their changed sources
+      # and Cargo reuses them stale. Rebuild them every run.
+      - name: Rebuild path crates
+        working-directory: src-tauri
+        run: cargo clean -p oc-scripts -p openconductor-db
       - name: Configure git identity for tests
         run: |
           git config --global user.name "CI"
@@ -94,6 +100,8 @@ jobs:
           git config --global user.email "ci@example.invalid"
       - name: Checkpoint module build, test and clippy
         run: bash evidence/checkpoint/run-tests.sh
+      - name: Bundled bin/ tools (checkpointer.sh, git-busy-check.sh shims) end to end
+        run: bash scripts/test-bin-tools.sh
       - name: PR module build, test and clippy
         run: bash evidence/pr/run-tests.sh
       - name: Quick open module build, test and clippy
@@ -142,6 +150,8 @@ jobs:
       - run: cargo clippy --all-targets -- -D warnings
       - name: App persistence module (src-tauri/src/persistence) build, test and clippy
         run: bash ../../evidence/persistence/run-tests.sh
+      - name: Agent binaries store (src-tauri/src/agent_binaries.rs) build, test and clippy
+        run: bash ../../evidence/persistence/agent-binaries/run-tests.sh
 
   tools:
     name: Evidence tools compile

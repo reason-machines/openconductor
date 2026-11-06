@@ -182,3 +182,42 @@ fn shared_settings_come_from_the_git_ref() {
     assert_eq!(r.setup.unwrap().value, "uncommitted");
     assert_eq!(r.warnings.len(), 1, "{:?}", r.warnings);
 }
+
+#[test]
+fn the_user_auto_run_toggle_round_trips_and_keeps_other_keys() {
+    let tmp = tempfile::tempdir().unwrap();
+    let home = tmp.path().join("home/.conductor");
+    assert!(!user_auto_run_after_setup(&home).unwrap(), "off by default");
+
+    write(
+        &home.join("settings.toml"),
+        "theme = \"dark\"\n[scripts]\nsetup = \"pnpm i\"\n",
+    );
+    set_user_auto_run_after_setup(&home, true).unwrap();
+    assert!(user_auto_run_after_setup(&home).unwrap());
+    let table: toml::Table = fs::read_to_string(home.join("settings.toml"))
+        .unwrap()
+        .parse()
+        .unwrap();
+    assert_eq!(table["theme"].as_str(), Some("dark"));
+    assert_eq!(table["scripts"]["setup"].as_str(), Some("pnpm i"));
+    assert_eq!(
+        table["scripts"]["auto_run_after_setup"].as_bool(),
+        Some(true)
+    );
+
+    set_user_auto_run_after_setup(&home, false).unwrap();
+    assert!(!user_auto_run_after_setup(&home).unwrap());
+}
+
+#[test]
+fn the_user_auto_run_toggle_leaves_an_unparsable_file_alone() {
+    let tmp = tempfile::tempdir().unwrap();
+    let home = tmp.path().join("home");
+    write(&home.join("settings.toml"), "not = [valid\n");
+    assert!(set_user_auto_run_after_setup(&home, true).is_err());
+    assert_eq!(
+        fs::read_to_string(home.join("settings.toml")).unwrap(),
+        "not = [valid\n"
+    );
+}

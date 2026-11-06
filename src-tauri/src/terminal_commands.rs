@@ -6,28 +6,38 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use tauri::{AppHandle, Emitter, State};
+use tauri::{AppHandle, Emitter, Manager, State};
 
 use crate::agent::secret::SecretString;
 use crate::db::Db;
 use crate::terminal::history_store::KEY_SECRET_NAME;
 use crate::terminal_history::{
     key_or_create, HistoryRecord, LoadHistoryArgs, PersistHistoryArgs, TerminalHistory,
+    WorkspaceHistoryArgs,
 };
 
 use crate::terminal::{
     wire, CreateMirrorArgs, IdArgs, PtyEvent, PtyManager, ResizeMirrorArgs, ScreenSnapshot,
-    ScreenTextArgs, ShellOutput, ShellRequest, ShellRunner, SpawnArgs, WireEvent, WriteMirrorArgs,
+    ScreenTextArgs, ShellIntegration, ShellOutput, ShellRequest, ShellRunner, SpawnArgs, WireEvent,
+    WriteMirrorArgs,
 };
 
-/// Managed state: the app's terminals.
-pub struct Terminals(pub PtyManager);
+/// Managed state: the app's terminals, and the zsh integration their
+/// login shells start with (`$APPDATA/terminal-shell-integration/zsh`).
+pub struct Terminals(pub PtyManager, pub ShellIntegration);
 
 impl Terminals {
     pub fn new(app: AppHandle) -> Self {
-        Self(PtyManager::new(move |e: PtyEvent| {
+        let data_dir = app
+            .path()
+            .app_data_dir()
+            .unwrap_or_else(|_| std::env::temp_dir().join("openconductor"));
+        let integration =
+            ShellIntegration::new(data_dir, crate::terminal::shell_integration::home_dir());
+        let manager = PtyManager::new(move |e: PtyEvent| {
             let _ = app.emit(wire::EVENT, WireEvent::from(e));
-        }))
+        });
+        Self(manager, integration)
     }
 }
 
@@ -40,7 +50,22 @@ fn err(e: impl std::fmt::Display) -> String {
 /// Start a terminal; returns its id. Ready/data/exit follow as events.
 #[tauri::command]
 pub async fn pty_spawn(state: State<'_, Terminals>, args: SpawnArgs) -> CmdResult<String> {
-    state.0.spawn(args.into_request()).map_err(err)
+    let mut req = args.into_request();
+    // The workspace's settings environment (`environment_variable_files`,
+    // `environment_variables`) goes first, so variables the caller passes win,
+    // as Conductor spreads the settings env under its own.
+    let cwd = req.cwd.clone();
+    let settings_env = tauri::async_runtime::spawn_blocking(move || {
+        crate::settings::effective::local_env_for_dir(&cwd)
+    })
+    .await
+    .unwrap_or_default();
+    req.env.splice(0..0, settings_env);
+    // `CONDUCTOR_PATH_PREFIX` is `$APPDATA/bin`, as in the reference.
+    state
+        .1
+        .prepare(&mut req, crate::bundled_bin::installed_bin_dir());
+    state.0.spawn(req).map_err(err)
 }
 
 /// Send input (keystrokes or pasted text) to a terminal.
@@ -190,6 +215,30 @@ pub async fn pty_load_terminal_history(
     args: LoadHistoryArgs,
 ) -> CmdResult<Option<HistoryRecord>> {
     history.load(&db.0, &args.session_id).await
+}
+
+/// Forget the saved session `sessionId` (a closed terminal tab). Ours: the
+/// reference deletes the row and entry from its frontend.
+#[tauri::command]
+pub async fn pty_delete_terminal_history(
+    history: State<'_, TerminalHistory>,
+    db: State<'_, Db>,
+    args: LoadHistoryArgs,
+) -> CmdResult<()> {
+    history.delete(&db.0, &args.session_id).await
+}
+
+/// Forget every saved session of `localWorkspaceId` (an archived workspace
+/// or removed repository); returns how many. Ours, like the one above.
+#[tauri::command]
+pub async fn pty_delete_workspace_terminal_history(
+    history: State<'_, TerminalHistory>,
+    db: State<'_, Db>,
+    args: WorkspaceHistoryArgs,
+) -> CmdResult<usize> {
+    history
+        .delete_workspace(&db.0, &args.local_workspace_id)
+        .await
 }
 
 /// Managed state: one-shot shell commands that can still be cancelled.

@@ -1,43 +1,46 @@
 {
  "ref": "origin/main",
- "source_files": 137,
- "detector_parity_pct": 64.0,
+ "source_files": 549,
+ "detector_parity_pct": 91.9,
  "areas": {
   "sidebar": {
    "items": 33,
-   "implemented": 12,
-   "partial": 13,
-   "missing": 8,
-   "parity_pct": 56.1,
-   "verdict_implemented": 5,
-   "verdict_partial": 10,
-   "verdict_backend": 7,
-   "verdict_missing": 11,
-   "verdict_parity_pct": 35.6
+   "implemented": 28,
+   "partial": 5,
+   "missing": 0,
+   "parity_pct": 92.4,
+   "verdict_implemented": 30,
+   "verdict_partial": 2,
+   "verdict_backend": 0,
+   "verdict_missing": 1,
+   "verdict_na": 0,
+   "verdict_parity_pct": 93.9
   },
   "home": {
    "items": 18,
-   "implemented": 9,
-   "partial": 4,
-   "missing": 5,
-   "parity_pct": 61.1,
-   "verdict_implemented": 4,
-   "verdict_partial": 7,
+   "implemented": 15,
+   "partial": 2,
+   "missing": 1,
+   "parity_pct": 88.9,
+   "verdict_implemented": 17,
+   "verdict_partial": 0,
    "verdict_backend": 0,
-   "verdict_missing": 7,
-   "verdict_parity_pct": 41.7
+   "verdict_missing": 0,
+   "verdict_na": 1,
+   "verdict_parity_pct": 100.0
   },
   "create": {
    "items": 17,
-   "implemented": 12,
-   "partial": 4,
-   "missing": 1,
-   "parity_pct": 82.4,
-   "verdict_implemented": 7,
-   "verdict_partial": 6,
-   "verdict_backend": 2,
-   "verdict_missing": 2,
-   "verdict_parity_pct": 61.8
+   "implemented": 15,
+   "partial": 2,
+   "missing": 0,
+   "parity_pct": 94.1,
+   "verdict_implemented": 16,
+   "verdict_partial": 1,
+   "verdict_backend": 0,
+   "verdict_missing": 0,
+   "verdict_na": 0,
+   "verdict_parity_pct": 97.1
   }
  },
  "items": [
@@ -50,7 +53,7 @@
     {
      "pattern": "HomeIcon|HomeButton|>Home<|kind:\\s*\"home\"",
      "matched": true,
-     "file": "src/components/Icons.tsx"
+     "file": "src/components/AllWorkspaces.tsx"
     },
     {
      "pattern": "go_?to_?home|goToHome|navigate\\w*\\(.{0,20}home",
@@ -59,75 +62,80 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Sidebar Home row (Sidebar.tsx) and the nav.home binding, handled in src/palette/PaletteHost.tsx (go-home) through the keybinding dispatcher.",
+   "why": "The Home row in Sidebar.tsx selects Home, and PaletteHost.tsx handles nav.home (go-home) through the keybinding dispatcher.",
    "recheck": false
   },
   {
    "id": "sidebar.top-bar",
    "area": "sidebar",
    "feature": "Sidebar top bar with a sidebar toggle button and back/forward history arrows",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "toggle_?(left_?)?sidebar|toggleSidebar",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/menu.rs"
     },
     {
      "pattern": "go_?back|goBack|history\\.back|navigate\\(-1\\)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/state/history.ts"
     },
     {
      "pattern": "go_?forward|goForward|history\\.forward",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/state/history.ts"
     }
    ],
-   "verdict": "missing",
-   "why": "No in-sidebar toggle button (toggle is keyboard-only, plus a Home button when hidden) and no back/forward navigation; the reference shows all three at the top of the sidebar.",
+   "verdict": "implemented",
+   "why": "The Sidebar.tsx top bar has a toggle button (toggleSidebar) and back/forward arrows driven by useNavHistory (src/state/useNavHistory.ts, history.ts), disabled at the ends; nav.back/nav.forward use the same handlers. REA capture matches the reference layout.",
    "recheck": false
   },
   {
    "id": "sidebar.computer-switcher",
    "area": "sidebar",
    "feature": "Computer/account switcher at the top of the sidebar (initial avatar, name, chevron)",
-   "status": "missing",
+   "status": "partial",
    "detectors": [
     {
      "pattern": "computer_?switcher|ComputerSwitcher|org_?switcher|OrgSwitcher|account_?switcher|AccountSwitcher",
      "matched": false,
      "file": null
+    },
+    {
+     "pattern": "sb-computer\\b|computerName",
+     "matched": true,
+     "file": "src/components/AccountMenu.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "Sidebar starts with our logo and name; the reference starts with a computer/account switcher.",
+   "verdict": "implemented",
+   "why": "#410 on 9930339: AccountMenu.tsx replaces the static row: an 'Account menu' button with the initial avatar, \"<name>'s Mac\" (or 'My Mac') from the registered local_account (macOS full name or git user.name) and a chevron, opening a 260 px menu with the git email heading and Settings, as Conductor's zna @9,957,506 does for a single personal organization. Conductor's organization list, Create organization, Upgrade to Pro and Log out need its cloud account and are left out; Conductor also hides the row with nobody signed in, while ours always shows the local user.",
    "recheck": false
   },
   {
    "id": "sidebar.primary-nav",
    "area": "sidebar",
    "feature": "Primary nav rows Home, Create and Search above the workspace list",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "HomeIcon|>Home<",
      "matched": true,
-     "file": "src/components/Icons.tsx"
+     "file": "src/components/AllWorkspaces.tsx"
     },
     {
      "pattern": "(nav|sidebar)\\w*.{0,60}create|CreateNav|create_?nav",
      "matched": true,
-     "file": "src/components/Sidebar.tsx"
+     "file": "crates/openconductor-db/src/navigation.rs"
     },
     {
      "pattern": "(nav|sidebar)\\w*.{0,60}search|SearchNav|search_?nav",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "Home and 'New workspace' rows (Sidebar.tsx); no Search row. The reference labels the second row Create.",
+   "verdict": "implemented",
+   "why": "Home, Create (opens the create dialog) and Search (opens the command palette) rows with shortcut hints above the workspace list (Sidebar.tsx); REA capture matches the reference.",
    "recheck": false
   },
   {
@@ -144,27 +152,32 @@
     {
      "pattern": "(collapsed|aria-expanded|toggleRepo|collapse_?repo)",
      "matched": true,
-     "file": "src/components/CreateFromPicker.tsx"
+     "file": "src/components/AccountMenu.tsx"
     }
    ],
    "verdict": "implemented",
-   "why": "Repos render as collapsible groups with nested workspace rows (Sidebar.tsx, store toggleRepo).",
+   "why": "Repos from conductor.db (reposFromDb in src/state/persisted.ts) render as collapsible groups with nested workspace rows (Sidebar.tsx, toggleRepo); collapsed ids persist in UI prefs.",
    "recheck": false
   },
   {
    "id": "sidebar.workspaces-group",
    "area": "sidebar",
    "feature": "Workspace list grouped under a sentence-case 'my workspaces' label rather than an uppercase repositories header",
-   "status": "missing",
+   "status": "partial",
    "detectors": [
     {
      "pattern": "my_?workspaces|myWorkspaces",
      "matched": false,
      "file": null
+    },
+    {
+     "pattern": "sb-section-label",
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "We show an uppercase 'Repositories' header with a '+'; the reference shows a sentence-case 'my workspaces' label.",
+   "verdict": "implemented",
+   "why": "Sentence-case 'My workspaces' section header with a hover menu replaces the uppercase Repositories header (Sidebar.tsx). Its collapsed state is not persisted.",
    "recheck": false
   },
   {
@@ -179,15 +192,15 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "backend",
-   "why": "crates/openconductor-db/src/repos.rs lists repos by display_order, created_at and appends new ones at the end, but the app does not depend on that crate and the sidebar renders insertion order from localStorage.",
+   "verdict": "implemented",
+   "why": "Repos drag to reorder in Sidebar.tsx (draggable rows, onDrop; order logic in src/state/repoOrder.ts, tested). The store calls the registered db_reorder_repos (sidebar_repo_commands.rs, #283), which writes repos.display_order, and db_list_repos reads it back in that order.",
    "recheck": false
   },
   {
    "id": "sidebar.repo-hide",
    "area": "sidebar",
    "feature": "Hide and unhide a repository, with a toggle to show hidden ones",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "repo\\.hidden|repos\\.hidden|hidden_?repo|hide_?repo|hideRepo|\\bhidden\\s+INTEGER",
@@ -196,33 +209,33 @@
     },
     {
      "pattern": "show_?hidden|unhide",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "crates/openconductor-db/src/sessions.rs"
     }
    ],
-   "verdict": "backend",
-   "why": "crates/openconductor-db repos::set_hidden and find_reusable_hidden (tested), but the app does not depend on that crate; no hide/unhide UI.",
+   "verdict": "implemented",
+   "why": "The repo menu has Hide repository / Unhide repository, and the list ends with a Show hidden repositories toggle (Sidebar.tsx, visibleRepos). The store calls the registered db_set_repo_hidden (sidebar_repo_commands.rs, #283), which writes repos.hidden.",
    "recheck": false
   },
   {
    "id": "sidebar.repo-icon",
    "area": "sidebar",
    "feature": "Per-repository icon (icon, emoji, favicon or uploaded image) next to the repo name",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "repo\\.icon|repo_?icon|repoIcon|repos\\.icon",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/lib.rs"
     },
     {
      "pattern": "(emoji|favicon)",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0006_add_navigation_section_emoji_to_cache.sql"
     }
    ],
-   "verdict": "backend",
-   "why": "crates/openconductor-db repos::set_icon (tested); not linked into the app and no icon UI.",
+   "verdict": "implemented",
+   "why": "#315 (0f82f19): RepoIcon (src/components/RepoIcon.tsx, rules in src/state/repoIcon.ts) replaces the initial in the sidebar repo header and follows Conductor's U9 order: emoji, stored image or bundled icon name, a favicon found in the repo, the GitHub owner's avatar, then the initial. Change icon (RepoIconDialog.tsx, from the repo menu or right-click) has Icons (Conductor's 238 names), Emoji, Favicon and Upload tabs, search and Reset. db_set_repo_icon (registered in lib.rs) writes repos.icon through openconductor_db::repos::set_icon; repo_favicon checks Conductor's 28 favicon paths in order. Known difference: the Emoji tab is a curated subset because REA could not extract Conductor's runtime-loaded emoji dataset (REA gap recorded in #315).",
    "recheck": false
   },
   {
@@ -238,7 +251,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Sidebar '+' runs the Open-project flow in App.tsx: native folder picker, inspect_project_folder, add_repository, then the row is added with the backend's default branch.",
+   "why": "The My workspaces menu (HeaderMenu in Sidebar.tsx) runs openProject in App.tsx: folder picker, inspect_project_folder, add_repository, which now records the repo in conductor.db (on_repository_added).",
    "recheck": false
   },
   {
@@ -258,8 +271,8 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "partial",
-   "why": "Row shows the name; user_set_workspace_name / user_set_branch_name are now modelled (src/state/types.ts) but no user rename sets them, and rows show a name where the reference shows the branch-style title.",
+   "verdict": "implemented",
+   "why": "#370 on 66a892a: workspaceLabel (src/components/sidebarLabel.ts, tested) follows Conductor's $V (renderApp-D_fmY7hW.js @2,153,907): a user-set name, then any stored workspace_name (reposFromDb maps workspaceName), then the PR title, then the branch prettified with the configured branch prefix stripped (useBranchPrefix; 'sven/dark-mode' -> 'Dark mode'), unless it equals intended_target_branch ?? 'main', else the directory name. Rename sets user_set_workspace_name (#315). The PR title now refreshes for every on-screen row through the 5-minute sidebar PR poll (sidebarPrPoll.ts), not only the open workspace.",
    "recheck": false
   },
   {
@@ -271,7 +284,7 @@
     {
      "pattern": "\\.branch\\b",
      "matched": true,
-     "file": "crates/openconductor-db/src/workspaces.rs"
+     "file": "crates/openconductor-db/src/port_forwards.rs"
     },
     {
      "pattern": "user_?set_?branch",
@@ -279,41 +292,41 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "partial",
-   "why": "Branch appears only in the row tooltip.",
+   "verdict": "implemented",
+   "why": "The row label is the prettified branch (workspaceLabel, unless it equals the target branch) and the tooltip shows the raw branch; since #337 the leading icon is the row status icon, which is the branch icon (Ready) for a workspace with a remote and no PR, as in the reference rows.",
    "recheck": false
   },
   {
    "id": "sidebar.ws-status",
    "area": "sidebar",
-   "feature": "Status indicator from a derived status with optional manual override (default in-progress)",
+   "feature": "Row status icon from workspace state, then the sessions' aggregated status, then PR state, else branch/local (not the manual Backlog/In progress status, which only groups the status-grouped sidebar)",
    "status": "implemented",
    "detectors": [
     {
-     "pattern": "(workspace|ws)\\.status|derived_?status|derivedStatus",
+     "pattern": "rowStatus|workspaceRowStatus",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0001_core.sql"
+     "file": "src/components/AllWorkspaces.tsx"
     },
     {
-     "pattern": "derived_?status|derivedStatus",
+     "pattern": "needs-plan-response|needs_plan_response",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0001_core.sql"
+     "file": "crates/openconductor-db/src/sessions.rs"
     },
     {
-     "pattern": "manual_?status|manualStatus",
+     "pattern": "merge-queued|ready-to-merge|checks-failing",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0001_core.sql"
+     "file": "src/components/RowStatusIcon.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "Status dot uses our own idle/working/needs-review/archived model, not derived/manual status with in-progress default (src/state/types.ts).",
+   "verdict": "implemented",
+   "why": "#428 (5751628) closes the last gap. SessionStatus (queue.ts) now holds all eight of Conductor's sessions.status values (JZe), stored per chat in conductor.db (openconductor_db::sessions::set_chat_status, session_set_status / session_statuses, startup reset as Conductor's xet) and loaded back into the shared chatStatuses map (chatRuntime.ts connectStatusStore), so needs_plan_response, needs_user_permission, needs_user_input and waiting reach rowStatus through aggregateSessions (nTr order) and FROM_SESSION, with RowStatusIcon drawing each. Reason chats reach needs_user_permission from session/request_permission; Codex chats report through the same store (codexChat.ts reportChatStatus) and an open Codex approval is needs_user_permission. The chain is still rowStatus({workspaceState, session, pr, hasRemote}) with #370's per-row PR poll; sidebar and Home share useWorkspaceAgentStatus. Read on f6da48f against index-BGEQ8YjU.js (Rit @1,383,780); not run in the desktop app (CI E2E reason-chat step 8 and the session-status flow drive it). Remaining notes, not scored here: no OpenConductor agent produces needs_plan_response, needs_user_input or waiting yet (Reason ACP has no plan/question/background signal; the Claude/Codex sources are with 72597031 and #443), so those icons appear only when conductor.db holds the status; Settings > Experimental 'Workspace status matrix' (internal_workspace_status_matrix, renderApp @10,655,6xx, applies to Home and the sidebar) is stored by #438 but nothing reads it.",
    "recheck": false
   },
   {
    "id": "sidebar.ws-diffstat",
    "area": "sidebar",
    "feature": "Line additions/deletions on each row, colored, with a setting to color unselected rows",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "diff_?stat|diffStat|\\.diff\\.added|lines_?added|additions",
@@ -323,16 +336,16 @@
     {
      "pattern": "\\.diff\\.removed|lines_?removed|deletions",
      "matched": true,
-     "file": "src-tauri/src/diff/model.rs"
+     "file": "crates/openconductor-db/src/workspace_rename.rs"
     },
     {
      "pattern": "colored_?sidebar_?diffs?|sidebar_?diff_?colors?",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/settings/db_backed.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "+/- counts render from stored placeholder numbers; not computed from git, no colour setting.",
+   "verdict": "implemented",
+   "why": "Each row shows +/- counts from the registered sidebar_workspace_changes (merge base with the target branch, committed and uncommitted, lockfiles skipped as in Conductor's FPt; useRowDiffStat.ts, sidebarDiffStat.ts), fetched for on-screen or active rows. Unselected rows are muted unless the colored_sidebar_diffs setting is on (styles.css data-colored-sidebar-diffs, AppearancePage.tsx).",
    "recheck": false
   },
   {
@@ -353,12 +366,12 @@
     },
     {
      "pattern": "next_?unread",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/App.tsx"
     }
    ],
-   "verdict": "backend",
-   "why": "crates/openconductor-db workspaces::set_unread (tested); crate not linked into the app; no unread styling or next-unread command.",
+   "verdict": "partial",
+   "why": "#443 on 1f43a15: unread now sets itself. A chat whose turn settles (completed, nothing queued; Conductor's applyTurnCompletionTails, index-BGEQ8YjU.js @1,529,959), a new Reason permission request, or a new Codex approval marks its workspace unread unless that chat's transcript is shown with the window focused (Conductor's isSessionInView/QW; features/chat/attention.ts, state/autoUnread.ts, useAutoUnread.ts in App.tsx). Showing an unread workspace's chat with the window focused reads it, except after a hand mark (R or row menu) until it is opened again (manuallyUnreadSessions). The composer shows a 'Next unread' button when another workspace is unread, hidden once the PR is merged (renderApp g1o @7,528,638), and Cmd+Alt+L, the palette and the button share openNextUnread in Qre order (nextUnread.ts). Codex sends persist the updated_at bump through db_touch_workspace (setSessionUpdatedAt @1,066,404). Still partial: (1) unread is per workspace (workspaces.unread); Conductor sets it per chat (fe.setUnread on sessions.unread_count), and main's sessions::set_unread / mark_workspace_read have no command or UI caller. (2) Conductor's _p (@2,940,721) also marks unread on a plan review (needs_plan_response @2,945,001), an AskUserQuestion (needs_user_input @2,945,451) and a Codex MCP elicitation (@2,946,028); on main chatWantsAttention is called only on turn end, Reason permission requests and Codex approvals, so Codex consents and plan/question waits never set unread. Not verified: auto-unread seen in the built app.",
    "recheck": false
   },
   {
@@ -378,8 +391,8 @@
      "file": "crates/openconductor-db/src/workspaces.rs"
     }
    ],
-   "verdict": "backend",
-   "why": "crates/openconductor-db workspaces::set_pinned_at (tested); crate not linked into the app; no pinned group or pin action.",
+   "verdict": "implemented",
+   "why": "Pin/unpin from the row menu or P, and a Pinned group above My workspaces (src/state/sidebarOrder.ts, SidebarSections.tsx). In the desktop app the store writes each change through the registered db_set_workspace_pinned (sidebarPersist.ts, sidebar_workspace_commands.rs), which sets workspaces.pinned_at; reposFromDb maps it back on reload.",
    "recheck": false
   },
   {
@@ -391,53 +404,53 @@
     {
      "pattern": "navigation_?sections?|nav_?section",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0004_create_navigation_sections_cache.sql"
     },
     {
      "pattern": "(move_?to_?section|moveToSection|section_?membership)",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0004_create_navigation_sections_cache.sql"
     }
    ],
-   "verdict": "missing",
-   "why": "No sections UI or commands; navigation_sections only in crates/openconductor-db/migrations/0005_navigation_and_favorites.sql (unwired).",
-   "recheck": true
+   "verdict": "implemented",
+   "why": "#370 on 66a892a: the section header menu (Edit section, New section\u2026, Delete section) and the sidebar's 'New section\u2026' open SectionDialog (name + emoji); the row menu's Move to section \u25b8 lists every section, 'New section\u2026' (creates one holding the workspace) and 'Remove from section'. The edits are pure functions after Conductor's index-chunk _Y/SY/wY/yY/kY/V2 (src/state/navigationSections.ts, tested), the projection follows renderApp usa (first section wins, archived and hidden-repo workspaces left out, newest first), and the whole layout is read and written through db_read_navigation_sections / db_write_navigation_sections (sidebar_section_commands.rs, registered in lib.rs) into conductor.db's navigation_sections tables with Conductor's tve updatedAt stamp. Not wired: reorderSection (bY) has no UI yet; that belongs with sidebar.drag-to-section.",
+   "recheck": false
   },
   {
    "id": "sidebar.drag-to-section",
    "area": "sidebar",
    "feature": "Drag a workspace row onto a section",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "(onDrop|draggable|dnd|useDrag)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/Dashboard.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "No drag and drop.",
+   "verdict": "implemented",
+   "why": "#412 on 93e4881: useSidebarDrag.tsx (wired in Sidebar.tsx) is a pointer drag after Conductor's controller `esa` (renderApp-D_fmY7hW.js, elementFromPoint hit test at byte 10,091,139, re-checked in the decoded bundle): a press becomes a drag after 5 px; a workspace row drops onto a section, onto Pinned or onto My workspaces, and a drop that leaves it where it is is no target; a section header drags to reorder sections (reorderSection, Conductor's bY); Escape, blur and pointercancel abort, the click ending a drag is swallowed, and the list edge-scrolls 4-16 px a frame. Pinning unassigns the workspace from its section as Conductor's pin mutation does. Drops go through the store's section actions, which #370 persists to conductor.db's navigation_sections tables. Rows inside a section stay newest first, as in Conductor (usa), so there is no row order to drag. Pure drop rules tested in navigationSectionsDrag.test.ts; not exercised end to end in the desktop app by the verifier.",
    "recheck": false
   },
   {
    "id": "sidebar.ws-numbers",
    "area": "sidebar",
    "feature": "Workspace numbers shown optionally, with Cmd+1..9 switching",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "Digit[1-9]|key\\s*===?\\s*['\"][1-9]|(Cmd|Mod|Meta)\\+[1-9]|switch_?to_?workspace|workspace\\.switchTo",
      "matched": true,
-     "file": "src/palette/PaletteHost.tsx"
+     "file": "src/components/SidebarWorkspaceRow.tsx"
     },
     {
      "pattern": "workspace_?number|workspaceNumber|show_?workspace_?numbers",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/settings/table_prefs.rs"
     }
    ],
    "verdict": "partial",
-   "why": "workspace.switchTo1..9 are handled in PaletteHost.tsx over sidebarOrder (fromAppState.ts); rows never show numbers and there is no setting to show them.",
+   "why": "workspace.switchTo1..9 switch rows over sidebarOrder, and holding the switch modifier for 500 ms shows 1..9 in place of the first nine rows' icons (src/state/shortcutHint.ts, SidebarWorkspaceRow.tsx). #438 (8da9edf) adds Settings \u203a Experimental 'Show workspace numbers' (experimental_show_workspace_numbers, Conductor's row @10,654,887, search terms 'number'/'W-'), but no sidebar or Home code reads it, so the workspaces.number column is still never shown on rows.",
    "recheck": false
   },
   {
@@ -458,7 +471,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "workspace.next / workspace.previous handled in PaletteHost.tsx via stepWorkspace (wraps, sidebar order; tested in fromAppState.test.ts).",
+   "why": "workspace.next / workspace.previous handled in PaletteHost.tsx through stepWorkspace (wraps, sidebar order).",
    "recheck": false
   },
   {
@@ -473,8 +486,8 @@
      "file": "src/palette/search/model.ts"
     }
    ],
-   "verdict": "partial",
-   "why": "Workspaces are searchable from the command palette (src/palette/search/model.ts, Cmd+K) by name, branch and repo; the sidebar has no Search row to reach it.",
+   "verdict": "implemented",
+   "why": "The sidebar Search row opens the command palette (onSearch -> setPaletteOpen in App.tsx), which searches workspaces by name, branch and repo (src/palette/search/model.ts).",
    "recheck": false
   },
   {
@@ -486,7 +499,7 @@
     {
      "pattern": "rename_?workspace|renameWorkspace",
      "matched": true,
-     "file": "src-tauri/src/lib.rs"
+     "file": "crates/openconductor-db/src/workspace_rename.rs"
     },
     {
      "pattern": "rename_?branch|renameBranch",
@@ -494,8 +507,8 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "backend",
-   "why": "rename_workspace_branch command (src-tauri workspace) and the automatic first-message rename call it; no user-facing rename action.",
+   "verdict": "implemented",
+   "why": "#315 (0f82f19): row menu Rename opens RenameWorkspaceDialog (Sidebar.tsx). It calls db_rename_workspace (sidebar_rename_commands.rs, registered in lib.rs), which follows Conductor's renameWorkspace (index-BGEQ8YjU.js @1,050,054): refuses an initializing workspace, a directory name another workspace of the repo uses and an invalid name; for a ready worktree it leaves the worktree in place, adds a sibling symlink recorded as secondary_directory_name and queues the old link in symlinks_pending_deletion; otherwise it rewrites directory_name and workspace_path. workspace_name and user_set_workspace_name = 1 are saved (workspace_rename.rs). The remembered Also rename branch checkbox renames the branch through rename_workspace_branch and sets user_set_branch_name (db_mark_user_set_branch_name). Not built: the CLI 'workspace rename' (no CLI in the rebuild).",
    "recheck": false
   },
   {
@@ -507,7 +520,7 @@
     {
      "pattern": "archive_?workspace|archiveWorkspace",
      "matched": true,
-     "file": "src/components/WorkspaceView.tsx"
+     "file": "src-tauri/src/lib.rs"
     },
     {
      "pattern": "archive_?commit|archiveCommit",
@@ -520,20 +533,20 @@
      "file": "src-tauri/src/workspace/mod.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Archive from WorkspaceView and the palette (workspace.archive) only removes the localStorage row: no confirmation, no git-busy check, no call to WorkspaceManager::archive.",
+   "verdict": "implemented",
+   "why": "#391 (274ac80) replaces the row-only db_archive_workspace with archive_workspace (src-tauri/src/workspace_archive/, flow.rs), which the row menu, WorkspaceView, the palette and archive on merge all reach through startArchive (store.ts). It follows Conductor's dYe/mYe (index-BGEQ8YjU.js @ ~966,478 / ~969,254): checkpoint conductor-archive-<id>, refuse in safe mode while a merge/rebase/cherry-pick/revert is in progress with the sticky warning and Archive retry (discardGitOperationState), archive commit = HEAD kept under refs/conductor-archive-heads/<id>, row state/branch/archive_commit, archive script, .context move, worktree removal and delete_branch_on_archive. #397 (aa32456) closes the last gap: the running-agents check folds every chat of the workspace (workspaceAgentStatus; working, cancelling or waiting block, as dYe), and every archive calls stopWorkspaceAgents, which stops each working or cancelling chat of the workspace (stopChat), as Conductor's Z$ (@974,859) calls cancelSession for every session of a local workspace. Conductor's cancel also settles a 'waiting' session (@3,013,752); no OpenConductor chat reports 'waiting', so there is nothing to settle. Read on f6c05d7 with the bundle (sha256 prefix b5b01f33); not run in the desktop app. Re-read on 1944b98: partial, because 'every chat' covers only Reason chats. chatStatuses is published only by createChatRuntime (chatRuntime.ts), which only reasonChat.ts uses; codexChat.ts keeps its own queue and never publishes a status, and stopWorkspaceAgents calls reasonChat's stopChat. So a working Codex chat neither blocks archive nor is stopped by 'Stop agents and archive', and its worktree is removed under it, unlike Conductor's Z$, which cancels every session of the workspace (gap reported in #437's body). Re-read on f6da48f after #428: half of the Codex gap is closed. #428 makes codexChat.ts report each Codex chat's status into the shared chatStatuses map (reportChatStatus), so workspaceAgentStatus now sees a working Codex chat and blockedByAgents refuses the plain archive, as dYe (@966,484) does for every session. 'Stop agents and archive' still does not stop it: stopWorkspaceAgents calls reasonChat's stopChat (reason.stop), which acts on the Reason runtime's own idle queue for that chat id, not on codexChat's, so the Codex turn keeps running while its worktree is removed. New with #428: stopWorkspaceAgents stops only working or cancelling chats, so a chat in needs_user_permission (Reason or Codex) is not stopped either, while Conductor's Z$ (@974,859) cancels every session of the workspace. PR #467 (head d5868c5, builder aebd8c64) was merged at 2026-11-06 01:41Z into its base reason/openconductor-home-statu-cdb73745, #428's branch, after #428 had already landed on main at 01:39Z, so none of it reached main: on 563981a src/workspace/archiveAgents.test.ts does not exist and src/workspace/archive.ts never calls stopCodex. It needs reopening against main; not scored until it lands there. Re-read on a9e4a48 after #532 (the #467 re-land against main, builder aebd8c64): implemented. stopWorkspaceAgents (src/workspace/archive.ts) now calls both reasonChat's stopChat and codexChat's stopCodex for every chat of the workspace, whatever its status, and both go through queue.ts stop, which moves working and every NEEDS_USER status (needs_plan_response, needs_user_permission, needs_user_input) to cancelling and emits a cancel; codexChat's setQueue turns that into codex_cancel. So 'Stop agents and archive' cancels a running Codex turn, a Codex chat waiting on an approval and a Reason chat waiting on a permission, as Conductor's Z$ (index-BGEQ8YjU.js @974,853, cancelSession @975,065, re-read: SELECT id FROM sessions WHERE workspace_id = ? then cancelSession for each) cancels every session of a local workspace. The plain-archive block (blockedByAgents: working, cancelling, waiting) matches dYe's list (@966,478, re-read), and a working Codex chat blocks it since #428. Covered by src/workspace/archiveAgents.test.ts (6 tests: Codex blocks, Codex running and approval-waiting turns cancelled, Reason permission-waiting chat cancelled, Codex stopped before the backend archive, another workspace's Codex chat left running). Minor: stopChat on a Codex chat id creates an idle Reason runtime entry for it and loads its stored transcript (Q.stop on it is a no-op, no status reported). Not run in the desktop app.",
    "recheck": false
   },
   {
    "id": "sidebar.archived-view",
    "area": "sidebar",
    "feature": "Browse archived workspaces and unarchive one",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "archived_?workspaces|view_?archived",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "crates/openconductor-db/src/port_forwards.rs"
     },
     {
      "pattern": "unarchive|restore_?workspace",
@@ -541,119 +554,119 @@
      "file": "crates/openconductor-db/src/workspaces.rs"
     }
    ],
-   "verdict": "backend",
-   "why": "WorkspaceManager::restore exists (src-tauri/src/workspace/mod.rs); no command, no UI.",
+   "verdict": "implemented",
+   "why": "#437 on 1944b98 builds the UI over #391's unarchive_workspace backend. Palette: 'View archived workspaces' (fromAppState.ts VIEW_ARCHIVED_ACTION) switches to the Workspaces tab with archived shown and the query cleared; the Workspaces tab's 'Archived workspaces' filter has Conductor's three options 'Hiding archived' / 'Showing all' / 'Only archived' (archivedList.ts); archived rows come from conductor.db through listArchivedWorkspaces / archivedFromRows (PaletteHost.tsx) and each has an 'Unarchive workspace' button. Opening one shows it read-only (store archivedOpen, ArchivedWorkspaceView.tsx) with the 'This workspace is archived.' banner and Unarchive in the header. Unarchive follows Conductor's CWt: branchDeleted/branchTaken/branchDiverged open 'Restore to new branch?' (RestoreWorkspaceDialog.tsx), which restores onto a unique -vN branch; gitignored include files are copied back; a folder in the way gives the 'Clear & unarchive' toast; a failed archive offers 'Delete permanently' through delete_workspace. All 16 user-facing strings were found as plain text in Conductor's renderApp/index bundles. Not run in the desktop app by the verifier; the new e2e (tests/e2e/sidebar-archived-view.e2e.mjs) passed in #437's CI. Home's All workspaces archive filter is a separate gap, recorded under home.status-overview. Minor gap: unarchive copies include files with resolve_source(&t.repo_root, None) (workspace_archive/mod.rs), so it reads .worktreeinclude or the default .env* but never the repository's file_include_globs setting, which workspace creation honours (workspace/mod.rs). Unarchiving a cloud workspace (listed as a gap in #437) does not apply: OpenConductor has no cloud workspaces (src/workspace/link.ts).",
    "recheck": false
   },
   {
    "id": "sidebar.resize-toggle",
    "area": "sidebar",
    "feature": "Resizable sidebar and show/hide toggles for left and right sidebars",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "sidebar_?width|sidebarWidth|resize_?handle|ResizeHandle|col-resize",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/App.tsx"
     },
     {
      "pattern": "toggle_?(left_?)?sidebar|toggleSidebar",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/menu.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Toggle works via Cmd+B and '[' (src/state/shortcuts.ts, App.tsx); the sidebar is a fixed 248px column with no resize.",
+   "verdict": "implemented",
+   "why": "The rail (useSidebarWidth, panelPrefs.tsx) has resized the left sidebar since #332, clamped to 192\u2013480 and saved as left_panel_width; #423 (99edc40) brings it to Conductor's Nta (@ 9,970,616): primary-button drag previews without saving, release saves, a cancelled pointer reverts, double-click resets to 256 and saves, and the aside is capped at 40% of the window. Left toggles: top-bar button, \u2318B (view.toggleLeftSidebar) and the native View > Toggle Left Sidebar item; right: \u2325\u2318B (view.toggleRightSidebar, right_panel_visible) and View > Toggle Right Sidebar (menu.rs emits toggle_left_sidebar / toggle_right_sidebar, App.tsx listens, as Conductor's lva/ova @ 10,931,680). REA gap: which submenu Conductor appends the two items to was not decompiled; they go in View here. Not run in the desktop app.",
    "recheck": false
   },
   {
    "id": "sidebar.footer-usage",
    "area": "sidebar",
    "feature": "Optional CPU/memory usage readout in the sidebar footer",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "(cpu|memory)_?usage|resource_?usage",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "crates/openconductor-db/src/app_settings.rs"
     }
    ],
-   "verdict": "missing",
-   "why": "Footer shows app name/version only.",
+   "verdict": "implemented",
+   "why": "#410 on 9930339: Settings \u203a Experimental 'Show sidebar resource usage' (sidebar_resource_usage in conductor.db settings, default off, AppPrefRows.tsx) shows ResourceUsagePill in the sidebar's top bar beside back/forward, where Conductor mounts it (renderApp Isa/bna @9,942,220), despite the setting text saying footer. The pill hides under 200 px of sidebar and goes icon-only under 260 px, polls the registered get_resource_usage every 2 s, and opens the Resources popover (qta @9,933,654): include terminals, group by workspace, tree/flat, copy, CPU/Memory totals, sortable Name/CPU/Mem table, Show all past 7 rows. Inferred, not decompiled: which processes Conductor samples, its label rules and redaction (evidence/sidebar-resource-usage/NOTES.md).",
    "recheck": false
   },
   {
    "id": "sidebar.footer-actions",
    "area": "sidebar",
    "feature": "Sidebar footer with help and settings icon buttons",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "HelpIcon|help_?button|open_?help|openHelp",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/HelpMenu.tsx"
     },
     {
      "pattern": "SettingsIcon|open_?settings|openSettings",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/App.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "Footer shows app name, version and platform text; the reference shows help and settings icon buttons.",
+   "verdict": "implemented",
+   "why": "Footer HelpMenu (src/components/HelpMenu.tsx, helpMenuItems.ts) and a Settings icon button that opens settings; REA capture matches the reference footer.",
    "recheck": false
   },
   {
    "id": "sidebar.transparency",
    "area": "sidebar",
    "feature": "Sidebar transparency (vibrancy) setting",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "sidebar_?transparency|vibrancy",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/settings/table_prefs.rs"
     }
    ],
    "verdict": "missing",
-   "why": "No vibrancy/transparency.",
-   "recheck": false
+   "why": "No vibrancy or window effect; the sidebar is a CSS color-mix fill (styles.css). #438 (8da9edf) adds Settings \u203a Experimental 'Sidebar transparency' (experimental_sidebar_transparency, ExperimentalPage.tsx, stored through table_prefs.rs), but nothing reads it: no frontend consumer and no vibrancy code in src-tauri (window-vibrancy is only a transitive Cargo.lock entry). Conductor reads the key in its theme setup (renderApp @439,002) and applies native macOS vibrancy after a restart (row @10,658,089). An inert toggle is not the feature, so it stays missing.",
+   "recheck": true
   },
   {
    "id": "sidebar.colors",
    "area": "sidebar",
    "feature": "Sidebar background, border and width match the reference screens in light and dark",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "--sidebar(-background)?\\s*:",
      "matched": true,
-     "file": "src/styles.css"
+     "file": "src/settings/appearance.css"
     },
     {
      "pattern": "(256px|left_?panel_?width)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "crates/openconductor-db/src/app_settings.rs"
     }
    ],
-   "verdict": "missing",
-   "why": "Measured on REA captures at 1440x900: sidebar edge at x=248 vs 256; dark sidebar #121417 vs #1c1817; light sidebar #eeeeeb vs #fcfcfb. REA compare-web-screenshots (threshold 24): 3.1% (dark) / 5.4% (light) of sidebar pixels differ.",
+   "verdict": "implemented",
+   "why": "Measured on REA captures at 1440x900 on 0e2531b: sidebar edge at x=255 in both, sidebar fill #1c1817 dark / #fcfcfb light and main #141110 / #ffffff identical to the reference. REA compare-web-screenshots (t=24): 0.6-0.9% of sidebar pixels differ (was 3.1-5.4%), from text and data only.",
    "recheck": false
   },
   {
    "id": "sidebar.ws-actions",
    "area": "sidebar",
    "feature": "Workspace actions menu on a row (copy info, rename, archive, pin, section)",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "(context_?menu|onContextMenu|workspace_?actions)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "No row context menu or actions menu.",
+   "verdict": "implemented",
+   "why": "#400 merged as be4f789 (squash of 6e038d3): the row menu reads Mark as unread/read (R), Pin/Unpin (P), Set status \u25b8, Move to section \u25b8 (#370), Rename (#315), Copy link (\u2318\u21e7C) and Archive (WorkspaceActionsMenu.tsx). Copy link puts openconductor://workspace?id=<id> on the clipboard with the 'Copied link' / 'Failed to copy link' toasts (src/workspace/link.ts, Conductor's XV and $$); workspace.copyLink is bound to Cmd+Shift+C in keybindings/registry.ts. Out of this item: the copied link opens nothing until app.deep-link (unowned) handles openconductor:// URLs.",
    "recheck": false
   },
   {
@@ -665,54 +678,54 @@
     {
      "pattern": "no repositories|no workspaces|empty_?state|EmptyState|repos\\.length\\s*===\\s*0|workspaces\\.length\\s*===\\s*0",
      "matched": true,
-     "file": "crates/openconductor-db/src/repos.rs"
+     "file": "crates/openconductor-db/src/onboarding.rs"
     }
    ],
    "verdict": "implemented",
-   "why": "Muted single-line empty state matches evidence/screens/home.md.",
+   "why": "With no repos, Sidebar.tsx shows a muted one-line empty state under My workspaces (matches the REA empty-Home capture).",
    "recheck": false
   },
   {
    "id": "sidebar.add-menu",
    "area": "sidebar",
    "feature": "Sidebar add menu offering the three Home actions plus recent local repositories not yet added (spinner while loading)",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "(add_?repo_?menu|AddRepoMenu|add_?menu)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
     },
     {
      "pattern": "recent_?(local_?)?repos|recentRepos|recents",
      "matched": true,
-     "file": "src/components/QuickOpenDialog.tsx"
+     "file": "src-tauri/src/github_repo.rs"
     }
    ],
-   "verdict": "missing",
-   "why": "'+' goes straight to the folder picker; no menu with the three Home actions and no recents (the detector hit is QuickOpen's recent files).",
+   "verdict": "implemented",
+   "why": "#423 (99edc40): the My workspaces header menu's 'Add project\u2026' opens the add-repository popover on the next frame, and \u2325\u2318A (nav.addRepository) opens it too, as Conductor's wra/yra do (renderApp-D_fmY7hW.js @ 10,069,794). SidebarAddRepositoryMenu (AddRepositoryMenu.tsx) shows Conductor's shared body Gji (@ 9,785,064): Open project, Open GitHub project, Quick start, then 'Recents' with a braille spinner row while loading. Recents come from recent_local_repos.rs, a Rust port of Conductor's MQo script (last 2,000 zsh history cd targets plus .git dirs up to 3 levels under the fixed roots, newest first, at most 8), leaving out folders already added (qQo); a Recents row adds that folder through the same checks as Open project. Pure parts are unit-tested (addRepositoryMenuModel.test.ts). Not run in the desktop app.",
    "recheck": false
   },
   {
    "id": "sidebar.visibility-settings",
    "area": "sidebar",
    "feature": "Left sidebar visibility and width persisted as settings (default visible, width 256)",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "left_?panel_?visible|leftPanelVisible",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "crates/openconductor-db/src/app_settings.rs"
     },
     {
      "pattern": "left_?panel_?width|leftPanelWidth",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "crates/openconductor-db/src/app_settings.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Visibility persists inside the localStorage app state, not as a setting; width is fixed (248px vs evidence default 256).",
-   "recheck": true
+   "verdict": "implemented",
+   "why": "Re-read on 99edc40 (stale since #332, 7d2d4a2): left_panel_visible (default true), left_panel_width (default 256, clamped 192\u2013480) and right_panel_visible are rows in conductor.db's settings table (src-tauri/src/app_prefs/), loaded and written by useSidebarVisiblePref / useSidebarWidth (panelPrefs.tsx), as Conductor does. The browser build, which has no database, falls back to defaults.",
+   "recheck": false
   },
   {
    "id": "home.route",
@@ -731,8 +744,8 @@
      "file": null
     }
    ],
-   "verdict": "partial",
-   "why": "Home is the default screen, but there is no router or '/' route (selection state in src/state/store.ts).",
+   "verdict": "implemented",
+   "why": "Since #322 the selection has a {kind: 'root'} entry for '/': the store starts there (startSelection, src/state/selectors.ts) unless a workspace was open, and removing or archiving the open workspace or its repository falls back to it, as Conductor's '/' (Wls) does. A start path of /all-workspaces opens the Home list, and #381 adds /first-run-onboarding before it (main.tsx FirstRunGate). There is no URL router: routes are selection kinds, which a window with no address bar does not expose.",
    "recheck": false
   },
   {
@@ -752,8 +765,8 @@
      "file": null
     }
    ],
-   "verdict": "missing",
-   "why": "No organization concept; no loading or cloud redirect state.",
+   "verdict": "n/a",
+   "why": "Not applicable locally. REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest; evidence/screens/first-run-onboarding.md, #381): Wls (@2,118,579) returns null while so()/rl loads the signed-in user's organizations from Conductor's cloud API and redirects to /all-workspaces when fc(org) is 'cloud'. OpenConductor has no account and no organizations, so there is no organization load and no cloud organization; the local startup wait shows FirstRunGate's loader before Home, as Bxa does.",
    "recheck": false
   },
   {
@@ -770,7 +783,7 @@
     {
      "pattern": "data-tauri-drag-region",
      "matched": true,
-     "file": "src/components/HomeScreen.tsx"
+     "file": "src/components/AccountMenu.tsx"
     },
     {
      "pattern": "(grid-cols|grid-template-columns|home-entr|EntryCard)",
@@ -779,7 +792,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Matches evidence/screens: three label-only cards in a 1-to-3 grid sit at the reference position (y 368-495; x offset 4 px from the narrower sidebar), wordmark centered above, drag region, fade-in. Differences: card icons for GitHub (cloud vs globe) and Quick start (sparkle vs folder-plus); the wordmark is our own brand by design.",
+   "why": "HomeScreen.tsx: centred wordmark above three label-only cards in a 1-to-3 grid, drag region, fade-in; REA capture puts wordmark and cards at the reference positions (cards y 368-495). Differences: GitHub card cloud vs globe icon, Quick start sparkle vs folder-plus; the wordmark is our own brand by design.",
    "recheck": false
   },
   {
@@ -796,11 +809,11 @@
     {
      "pattern": "--secondary\\s*:",
      "matched": true,
-     "file": "src/styles.css"
+     "file": "src/components/rightPanel.css"
     }
    ],
-   "verdict": "missing",
-   "why": "Measured: dark main #17191d vs #141110, dark card #24272d vs #211e1c; light main #f7f7f5 vs #ffffff, light card #efefec vs #fafaf9. Every pixel differs at threshold 0 (REA compare-web-screenshots).",
+   "verdict": "implemented",
+   "why": "Measured on REA captures on 0e2531b after #269: main background (#141110 dark, #ffffff light), entry-card fill (#211e1c / #fafaf9) and card border (#373433 / #eae8e6) are pixel-identical to the reference at the sampled points.",
    "recheck": false
   },
   {
@@ -812,16 +825,16 @@
     {
      "pattern": "(sidebar_?hidden|!\\s*\\w*(left)?\\w*sidebar\\w*visible|leftPanelVisible\\s*&&|!leftPanelVisible)",
      "matched": true,
-     "file": "src/components/HomeScreen.tsx"
+     "file": "src/components/AllWorkspaces.tsx"
     },
     {
      "pattern": "traffic_?lights?_?clearance|traffic-lights-clearance",
      "matched": true,
-     "file": "src/styles.css"
+     "file": "src/components/dashboard.css"
     }
    ],
    "verdict": "implemented",
-   "why": "Toggle shown only when the sidebar is hidden, with tooltip and shortcut hint (HomeScreen.tsx).",
+   "why": "HomeScreen.tsx shows the toggle only while the sidebar is hidden, with tooltip and shortcut hint, offset past the traffic lights.",
    "recheck": false
   },
   {
@@ -843,11 +856,11 @@
     {
      "pattern": "(detect_?default_?branch|symbolic-ref|rev-parse --abbrev-ref|remote show)",
      "matched": true,
-     "file": "src-tauri/src/workspace/git.rs"
+     "file": "src-tauri/src/create_project.rs"
     }
    ],
    "verdict": "implemented",
-   "why": "Open project card: native picker, inspect_project_folder (src-tauri/src/project.rs), add_repository; default branch comes from the backend.",
+   "why": "Open project card: native pickFolder, inspect_project_folder, add_repository (registered); default branch from the backend.",
    "recheck": false
   },
   {
@@ -859,21 +872,21 @@
     {
      "pattern": "needs_?git_?init|needsGitInit|\\.git\\b.{0,40}(exists|is_dir)",
      "matched": true,
-     "file": "src-tauri/src/project.rs"
+     "file": "src-tauri/src/github_repo.rs"
     },
     {
      "pattern": "remote\\s+get-url|\"get-url\"",
      "matched": true,
-     "file": "src-tauri/src/project.rs"
+     "file": "src-tauri/src/github_repo.rs"
     },
     {
      "pattern": "file://",
      "matched": true,
-     "file": "src/state/openProject.ts"
+     "file": "src-tauri/src/agent_binaries.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Folder checks and decision are real (project.rs, src/state/openProject.ts with tests): file:// remote on success and error toasts. The no-.git / no-origin cases only show an info toast; the init / create-GitHub-repo dialog is not built.",
+   "verdict": "implemented",
+   "why": "decideOpenProject (src/state/openProject.ts) sends a folder with no .git or no origin to GitHubRepoDialog, whose registered github_repo_create (github_repo.rs) runs git init when needed and publishes; otherwise it adds with a file:// remote; errors in a toast. There is no non-GitHub setting (always behaves as off).",
    "recheck": false
   },
   {
@@ -885,7 +898,7 @@
     {
      "pattern": "clone_?(repo|repository|dialog)|CloneDialog|cloneRepo",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/lib.rs"
     },
     {
      "pattern": "remote_?url|remoteUrl|github\\.com",
@@ -895,23 +908,23 @@
     {
      "pattern": "git\\s+clone|\"clone\"\\s*,",
      "matched": true,
-     "file": "src/palette/fromAppState.ts"
+     "file": "src-tauri/src/workspace/commands.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Dialog parses GitHub URLs but performs no clone and has no destination picker or progress.",
+   "verdict": "implemented",
+   "why": "CloneGitHubRepoDialog.tsx takes a URL and a location with a Browse picker and calls the registered clone_repository; progress streams over a Channel into a log and errors map through cloneErrorMessage (src/state/cloneDialog.ts); the clone is recorded in conductor.db.",
    "recheck": false
   },
   {
    "id": "home.new-project",
    "area": "home",
-   "feature": "Create a new project: local folder, git init, optional private GitHub repo, then a first workspace",
-   "status": "partial",
+   "feature": "Create a new project: local folder, git init, private GitHub repo (required, as in Conductor's Quick start), then a first workspace",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "new_?project|create_?project|quick_?start|quickstart",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/create_project.rs"
     },
     {
      "pattern": "git_?init|init_?repo|initRepo|\"init\"\\s*[,\\]]",
@@ -920,28 +933,28 @@
     },
     {
      "pattern": "gh\\s+repo\\s+create|\"repo\",\\s*\"create\"",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/github_repo.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Quick start dialog with placeholder templates; no git init, no GitHub repo, no first workspace on disk.",
+   "verdict": "implemented",
+   "why": "Quick start (CreateProjectDialog.tsx -> create_new_project) runs git init with a first commit or create-next-app, creates the private GitHub repo, registers the project with add_repository, then since #350 creates the real first workspace through create_workspace and starts the repository's setup script (src/home/createFirstWorkspace.ts, tested in firstWorkspace.test.ts) and opens it under the backend repo id. As in Conductor's gbi (@2,103,713, evidence/screens/create-project.md) the GitHub step cannot be skipped. Not run end to end in the packaged app.",
    "recheck": false
   },
   {
    "id": "home.duplicate-repo",
    "area": "home",
-   "feature": "Refuse adding a repository that is already added",
+   "feature": "Adding an already-added repository again (Clone or Open project) makes a new project: no duplicate check, a new repos row, and Clone picks a unique folder (name-v1, name-v2)",
    "status": "implemented",
    "detectors": [
     {
      "pattern": "(repo|repository).{0,40}already (added|exists)|already (added|exists).{0,40}repo|duplicate_?repo|existing.{0,40}(path|remote)",
      "matched": true,
-     "file": "src/state/store.ts"
+     "file": "src-tauri/src/github_repo.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "Store silently ignores a duplicate path/remote; no already-exists message. Backend add_repository returns the existing id.",
+   "verdict": "implemented",
+   "why": "Clone now matches (#343): the Clone dialog result is added under its backend id and a second clone of an added remote becomes its own project in a <name>-v1 folder (sameRepoRecord, src/state/addRepo.ts, tested; naming::bump since #379), as Conductor's g2t/C2t do. Open project still differs: App.tsx openProject refuses an already-added folder with REPO_EXISTS (findExistingRepo), and add_repository returns the existing id for a known path, while Conductor inserts a second repos row for the same folder named <name>-v1 (evidence/screens/duplicate-repo.md). Re-read on a9e4a48 after #401 (1121ccc): implemented. App.tsx addProject no longer refuses an added folder (REPO_EXISTS and findExistingRepo are gone); WorkspaceService::add_repository (src-tauri/src/workspace/service.rs) always registers a new project named with naming::uniquify (<name>-v1, -v2) and a fresh id, and conductor.db gets a second repos row on the same root (persistence test a_second_project_on_the_same_folder_gets_its_own_row), as Conductor's g2t/C2t. Lookups by a sidebar repo (Create workspace, branch pickers) use the new ensure_repository so they do not add -vN projects. Re-read on 2e728ad0 after #555: still implemented. Open project and the GitHub create-repo dialog both dispatch addRegisteredRepo (src/state/openProject.ts), so the store row takes add_repository's id and name (<name>-v1) rather than the folder name; before #555 the create-repo path used target.name. A persistence test (open_project_twice_on_one_folder_writes_a_second_repos_row, src-tauri/src/persistence_commands.rs) runs both steps of add_repository twice on one folder and gets rows my-app/My App and my-app-v1/My App-v1 on the same root, display order 0 and 1, matching Conductor's g2t makeRepoNameUnique(<folder name>, null). Rust tests and the duplicate-repo e2e run in CI only; not run in the desktop app.",
    "recheck": false
   },
   {
@@ -953,48 +966,48 @@
     {
      "pattern": "(no repositor|add a repo|repos\\.length\\s*===\\s*0)",
      "matched": true,
-     "file": "crates/openconductor-db/src/repos.rs"
+     "file": "crates/openconductor-db/src/onboarding.rs"
     }
    ],
    "verdict": "implemented",
-   "why": "With no repository the create dialog explains that a repository is needed and offers Add repository (CreateWorkspaceDialog.tsx).",
+   "why": "With no repositories, CreateWorkspaceDialog.tsx explains a repository is needed and offers an Add repository menu (Open project or Clone repo).",
    "recheck": false
   },
   {
    "id": "home.status-overview",
    "area": "home",
-   "feature": "Home shows workspaces with their status (status matrix option, mine vs all)",
-   "status": "missing",
+   "feature": "Home list shows each workspace's active session status or its last-activity time (Conductor: needs plan response, needs permission, needs input, working, cancelling, waiting); status-matrix option and mine-vs-all",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "(status_?matrix|my_?workspaces|all_?workspaces)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/settings/table_prefs.rs"
     }
    ],
-   "verdict": "missing",
-   "why": "Home shows no workspace list or statuses.",
+   "verdict": "implemented",
+   "why": "#539 (4c28914) builds the status-matrix option: src/settings/useStatusMatrix.ts reads internal_workspace_status_matrix (Settings > Experimental 'Workspace status matrix', prefs.ts) through getSettings when the first row mounts and again on SETTINGS_CHANGED, as Conductor reads it with one shared query sde() (renderApp-D_fmY7hW.js, sha256 matches the asset manifest; Settings row @10,655,297). Home: AllWorkspaces' Row draws StatusMatrix where the repository icon goes (status 'branch' when archived, no git status when unstarted, unread only when neither) and the time column then always shows the time, as Conductor's _Jo (@9,799,624: h?hWt({gitStatus:v?void 0:x,hasUnread:!_&&!v&&i.hasUnread,status:_?'branch':E}):SJo) and vJo (@9,804,257: !a&&aWt(r)?RCe:BPt(o)) do; UJo reads sde() at @9,818,697. The sidebar row (SFi @9,882,457) and the 'Creating workspace...' row (Ora @10,032,559, status 'setting-up') also draw the matrix on main. Earlier parts stand: #428 (5751628) shows homeStatus(ws.state, useWorkspaceAgentStatus(ws)) in place of the last-activity time for setup and agent statuses (needs plan response, needs permission, needs input, working, cancelling, waiting), and #457 (f6da48f) lists archived workspaces under 'Only archived' and 'Showing all'. Not counted: mine-vs-all ('My workspaces', @10,055,740) exists only for team organizations, which OpenConductor has none of; sidebar-only uses of sde() (nav icons size-3.5 in Aia @9,983,402, the tab-strip icon Qsa @10,075,472) belong to sidebar items. Read on 4c28914; not run in the desktop app with the setting on and not compared side by side with Conductor. As sidebar.ws-status: plan/input/waiting render only when conductor.db holds them.",
    "recheck": false
   },
   {
    "id": "home.dashboard-routes",
    "area": "home",
    "feature": "Dashboard and all-workspaces routes",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "/dashboard",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "crates/openconductor-db/src/app_settings.rs"
     },
     {
      "pattern": "/all-workspaces",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/AllWorkspaces.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "No /dashboard or /all-workspaces screens.",
+   "verdict": "implemented",
+   "why": "/all-workspaces is implemented by #322: the sidebar Home row, nav.home and the palette open AllWorkspaces, and a start path of /all-workspaces opens it. /dashboard closed by #403 (d92abbfe): Selection gains {kind:'dashboard', repo?} and startSelection maps a start path of /dashboard[?repo=<id>] to it (src/state/selectors.ts, called with location.search from store.ts); App renders Dashboard for it. The sidebar shows a 'Dashboard' row above Home only while dashboard_enabled is on (useDashboardEnabled; conductor.db settings key dashboard_enabled through app prefs, unset or not 'true' means off), and Settings > Experimental has the 'Dashboard' switch with Conductor's description. When the setting has loaded and is off, Dashboard selects root, as Conductor's lta returns <Navigate to='/' replace> on isSuccess && !enabled (renderApp-D_fmY7hW.js lta @9,906,285, redirect ~@9,908,080; h1 'Dashboard'; 'New workspace' on an empty board; route path '/dashboard' with search {repo?}). The board itself (status columns, Show N more / Show less, Move to drop hint, project tabs with 5 then More) is in src/components/Dashboard.tsx and src/home/dashboard.ts per evidence/screens/dashboard.md. Read as code and bundle text; not run in the desktop app, and drag-and-drop not exercised.",
    "recheck": false
   },
   {
@@ -1009,61 +1022,71 @@
      "file": "src/components/QuickOpenDialog.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "The command palette keeps a most-recent-first list of visited workspaces (PaletteHost.tsx, in memory only); Home shows no recents.",
+   "verdict": "implemented",
+   "why": "Re-read with REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest): 'Recent workspaces' is the command palette's All-tab heading with an empty query (m_a @10,909,908), not a Home list. Conductor keeps recentWorkspaceIds (most recent first, cap XOt = 5, recordViewedWorkspace) in its persisted UI store (partialize includes recentWorkspaceIds, index chunk @3,121,897), so the list survives a restart. Ours (src/palette/PaletteHost.tsx) shows the same heading and order but keeps up to 8 ids in React state only, so it is empty after a restart and holds 3 more than Conductor. Re-read on a9e4a48 after #401 (1121ccc): the persistence half is closed. src/palette/recentWorkspaces.ts keeps recentWorkspaceIds with Conductor's recordViewedWorkspace rule (unchanged when already first, else moved to the front, at most 5) and persists it under the same localStorage key workspace-tab-state-v2 in zustand's {state, version} shape; PaletteHost starts from the stored list and saves on every change. Matches index-BGEQ8YjU.js recordViewedWorkspace (@3,122,391), XOt=5 (@3,120,888) and partialize keeping recentWorkspaceIds (@3,125,154); tests/e2e/palette-recents.e2e.mjs covers a reload. Still partial: Conductor's palette maps the stored ids over every workspace, archived included, and drops only ids that no longer resolve (renderApp-D_fmY7hW.js @10,854,949: w.map(...).filter(E_a), E_a = t!==void 0 @10,875,488; the search path alone filters archived, S_a/k_a @10,875,434), so archived workspaces stay under 'Recent workspaces'. Ours drops them twice: paletteDataFromState keeps only ids in the sidebar's known set (src/palette/fromAppState.ts) and the All tab's Recent group filters !w.archived (src/palette/search/model.ts). Closed by #551 (4170c2c, re-read on main d92abbfe): paletteDataFromState now keeps every recent id that resolves to a workspace, active (state.repos, archived when status is 'archived') or archived (the conductor.db list PaletteHost loads and passes in), and drops only ids that resolve to nothing; the stored list is left as is, so deleted ids still count toward the cap of 5 as in Conductor (recordViewedWorkspace never prunes). The All tab's empty-query Recent group no longer filters !w.archived. Matches renderApp-D_fmY7hW.js @10,854,949 (Up = w.map(id => $u.find(localId===id)).filter(E_a)), where $u (@10,854,493) is every workspace in both states and only the query paths filter by state (k_a non-archived, S_a archived). Not run in the desktop app.",
    "recheck": false
   },
   {
    "id": "home.repo-search",
    "area": "home",
-   "feature": "Search the repository list",
-   "status": "missing",
+   "feature": "Narrow the repository list by project: the sidebar section header's Filter by project submenu (All projects, then each repository; shown with more than one repository; stored in sidebar_repo_filter) and the palette Projects tab (Search projects...). Home and the Add-repository menu have no repo search",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "(search|filter)_?repo",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/Sidebar.tsx"
+    },
+    {
+     "pattern": "repoFilter|sidebar_repo_filter|Filter by project",
+     "matched": true,
+     "file": "crates/openconductor-db/src/app_settings.rs"
+    },
+    {
+     "pattern": "projectResults",
+     "matched": true,
+     "file": "src/palette/search/model.ts"
     }
    ],
-   "verdict": "missing",
-   "why": "No repository search.",
+   "verdict": "implemented",
+   "why": "#315 (0f82f19) mounts #354's Filter by project submenu (ProjectFilterSubmenu) in the My workspaces section header menu (Sidebar.tsx), and filterRepoGroups narrows the repo groups while Pinned keeps every repo's rows, as Conductor's pra/hBi do (renderApp-D_fmY7hW.js @10,019,058). The submenu renders nothing with one repository or none, offers All projects then each repository, and a stale filter is cleared once repos load. In the desktop app the choice is saved as conductor.db settings key sidebar_repo_filter (raw repository id; All projects deletes the row) through useAppPrefs/set_app_pref (src-tauri/src/app_prefs, openconductor_db::app_settings::keys::SIDEBAR_REPO_FILTER), matching Conductor's z6t updateSetting/deleteSetting (index-BGEQ8YjU.js @420,066, REA by sidebar builder 0c122c06). Only the browser build, which has no database, falls back to localStorage. The palette Projects tab (projectResults, Search projects...) was already built. Home and the Add-repository menu have no repo search, as in Conductor.",
    "recheck": false
   },
   {
    "id": "home.recents",
    "area": "home",
    "feature": "Clone dialog shows recent repositories with loading placeholders and a screen-reader status",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "recent_?repos|recentRepos",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src-tauri/src/github_repo.rs"
     },
     {
      "pattern": "(aria-busy|sr-only|role=\"status\")",
      "matched": true,
-     "file": "src/components/CreateFromPicker.tsx"
+     "file": "src/components/AddRepositoryMenu.tsx"
     }
    ],
-   "verdict": "missing",
-   "why": "Clone dialog has no recent repositories (detector hit is CreateFromPicker's status line).",
+   "verdict": "implemented",
+   "why": "CloneGitHubRepoDialog.tsx loads recent repos through the registered github_recent_repos (cached 2 min), shows three skeleton rows in a role=status region with a screen-reader label while loading, renders nothing when empty, and fills the URL on click.",
    "recheck": false
   },
   {
    "id": "home.first-run",
    "area": "home",
    "feature": "First-run onboarding route before Home",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "(first_?run|onboarding)",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "crates/openconductor-db/src/app_settings.rs"
     }
    ],
-   "verdict": "missing",
-   "why": "No onboarding.",
+   "verdict": "implemented",
+   "why": "#381: FirstRunGate (src/onboarding/FirstRunGate.tsx, mounted around App in main.tsx) reads first_time_onboarding_step from the settings table (onboarding_commands.rs, crates/openconductor-db onboarding.rs) and shows /first-run-onboarding on a fresh install with no repositories, as Conductor's Pya/Bxa do (evidence/screens/first-run-onboarding.md); Continue writes 999 and DONE and goes to '/'. Three slides with titles and descriptions, ArrowDown and Enter. By design: no Conductor account (always 'Continue'), placeholder media instead of Conductor's videos, no analytics. Covered by tests/e2e/first-run.e2e.mjs and firstRun.test.ts.",
    "recheck": false
   },
   {
@@ -1083,8 +1106,8 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "partial",
-   "why": "UI state lives in localStorage; backend keeps a TSV repo registry; the Conductor-shaped SQLite schema in crates/openconductor-db is not used by the app.",
+   "verdict": "implemented",
+   "why": "In the desktop app the sidebar and Home load repos and workspaces from conductor.db through db_list_repos / db_list_workspaces (persistence_commands.rs); localStorage keeps only UI prefs; add, clone, create, rename and archive write rows. Gaps: remote_url is never written, and Quick start / palette placeholder workspaces are not saved.",
    "recheck": false
   },
   {
@@ -1096,32 +1119,32 @@
     {
      "pattern": "(new_?workspace|create_?workspace|newWorkspace|createWorkspace)",
      "matched": true,
-     "file": "crates/openconductor-db/src/workspaces.rs"
+     "file": "crates/openconductor-db/src/app_settings.rs"
     }
    ],
    "verdict": "implemented",
-   "why": "Cmd+N, the sidebar 'New workspace' row, each repo's '+' and the palette action all open the create dialog (App.tsx, Sidebar.tsx, PaletteHost.tsx).",
+   "why": "Cmd+N, the sidebar Create row, each repo's + and New workspace menu item (Sidebar.tsx), and the palette action all open CreateWorkspaceDialog.",
    "recheck": false
   },
   {
    "id": "create.page",
    "area": "create",
    "feature": "Full-screen create-workspace page with its own composer and tab navigation",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "create_?workspace_?page|CreateWorkspacePage|NewWorkspacePage|path:\\s*\"/create\"|CreateWorkspaceDialog",
      "matched": true,
-     "file": "src/App.tsx"
+     "file": "src-tauri/src/app_prefs/mod.rs"
     },
     {
      "pattern": "new_?workspace_?composer|NewWorkspaceComposer|create\\w{0,30}composer",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "src/components/CreateWorkspaceComposer.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "Create is a modal form (CreateWorkspaceDialog.tsx) with a prompt box, repo and branch selects and a name field. The reference is a composer: repo chip, prompt, model/effort picker and Create button (REA compare at t=24: 7.6% dark, 89% light differ).",
+   "verdict": "implemented",
+   "why": "#388 (563981a): with Settings \u203a Experimental \u203a 'New workspace page' (experimental_new_workspace_page, one app pref: DB key, AppPrefs field, AppPrefRows switch) on, Create routes to the full-screen /create page (App.tsx createPage, CreateWorkspacePage.tsx: sidebar toggle while hidden, 768 px column, sr-only 'Create workspace' h1), otherwise the dialog; both use CreateWorkspaceComposer.tsx (repo / base branch / create-from eyebrow, floating on the page and attached in the dialog; 'What do you want to work on?'; model and effort picker from launchModel.ts; Create). Matches Conductor's g5 gate @7,296,645, route Q7a '/create' -> $Ca @11,474,188 and composer @11,002,064 in renderApp-D_fmY7hW.js. Conductor's top tab strip Bsa (with its 'new' /create tab, Lsa @10,065,573) renders only under the internal 'Use workspace tabs' setting for team organizations (A9e, internal_workspace_tabs @10,720,959), so it is out of scope. Not covered: Settings search terms for the row (no settings search), not run in the packaged app.",
    "recheck": false
   },
   {
@@ -1136,8 +1159,8 @@
      "file": "src/components/CreateFromPicker.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "Create-from picker with PR, branch and issue tabs (CreateFromPicker.tsx, createFrom.ts); branches come from list_branches, but PRs and issues report unavailable in the desktop app (no GitHub/Linear listing command).",
+   "verdict": "implemented",
+   "why": "CreateFromPicker.tsx PR, branch and issue tabs; PRs and GitHub issues come from the registered pr_list_open and gh_issue_list_open (#203), a PR passes prNumber so fork heads are fetched (#197), an issue seeds the first message. Not covered: Linear issues, lookup beyond the 100 loaded items.",
    "recheck": false
   },
   {
@@ -1158,7 +1181,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Base-branch select fed by list_branches, defaulting to the repo default branch; passed to create_workspace.",
+   "why": "Base-branch select fed by list_branches, defaulting to the repo default branch, passed to create_workspace and written to conductor.db as initialization_parent_branch / intended_target_branch (#224).",
    "recheck": false
   },
   {
@@ -1179,7 +1202,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "Branch tab in the create-from picker with search, loading, empty and error states over list_branches (CreateFromPicker.tsx, createFrom.ts statusLine).",
+   "why": "Branch tab of CreateFromPicker.tsx with search, loading, empty and error states over list_branches (createFrom.ts statusLine, dedupeBranches).",
    "recheck": false
   },
   {
@@ -1191,16 +1214,16 @@
     {
      "pattern": "worktree\\s+add|\"worktree\"[^\\]]{0,30}\"add\"|worktree_?add",
      "matched": true,
-     "file": "src-tauri/src/workspace/mod.rs"
+     "file": "src-tauri/src/persistence/mod.rs"
     },
     {
      "pattern": "workspaces_?(path|dir|root)|workspacesDir|workspaces_?directory",
      "matched": true,
-     "file": "src-tauri/src/workspace/mod.rs"
+     "file": "src-tauri/src/lib.rs"
     }
    ],
    "verdict": "implemented",
-   "why": "The dialog calls create_workspace, which runs git worktree add on its own branch under the data dir (src-tauri/src/workspace/mod.rs).",
+   "why": "#375 adds the conductor_root_path setting: WorkspaceManager::with_root and workspaces_dir put workspaces under <root>/workspaces/<repo slug> (archive records and default clones under the same root). Settings > Advanced RootPathRow (Browse, 'Change root path?', change_conductor_root, which forgets repos, saves and restarts) and Repo settings > Misc 'Workspaces path' (repo_workspaces_path) make it reachable. #379 brings the -v1/-v2 name bump (naming::bump). Deliberate difference: with no setting the root is the app data directory, not Conductor's ~/conductor.",
    "recheck": false
   },
   {
@@ -1212,16 +1235,16 @@
     {
      "pattern": "branch_?prefix_?type|branchPrefixType",
      "matched": true,
-     "file": "src-tauri/src/settings/model.rs"
+     "file": "crates/scripts/src/config/effective.rs"
     },
     {
      "pattern": "branch_?prefix_?custom|branchPrefixCustom",
      "matched": true,
-     "file": "src-tauri/src/settings/model.rs"
+     "file": "crates/scripts/src/config/effective.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "resolveBranchPrefix is applied in the dialog, but App.tsx passes empty prefix settings and no GitHub username, so the prefix is always none; no settings UI.",
+   "verdict": "implemented",
+   "why": "Settings \u203a Git (GitPage.tsx) edits branch_prefix_type / branch_prefix_custom; App.tsx reads the registered branch_prefix_settings (with the gh username) each time the dialog opens and the dialog applies resolveBranchPrefix.",
    "recheck": false
   },
   {
@@ -1242,7 +1265,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "City-name placeholder with rarity badge (naming.ts) in the dialog; after the first message renameAfterFirstMessage renames workspace and branch via rename_workspace_branch.",
+   "why": "City placeholder with rarity badge (naming.ts); after the first message renameAfterFirstMessage renames workspace and branch via rename_workspace_branch. No rename-on-branch toggle (always on), and placeholder_branch_name is not stored.",
    "recheck": false
   },
   {
@@ -1263,7 +1286,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "buildCreateRequest validates name, repo, base branch and source and shows field errors; create_workspace rejects invalid branch names (git.rs).",
+   "why": "buildCreateRequest (createFlow.ts) validates name, repo, base branch and source with per-field errors; create_workspace rejects invalid branch names (git.rs).",
    "recheck": false
   },
   {
@@ -1279,7 +1302,7 @@
     }
    ],
    "verdict": "implemented",
-   "why": "create_workspace copies .worktreeinclude / globs / .env* files (files_to_copy.rs), now reached from the dialog.",
+   "why": "The create path resolves .worktreeinclude / include globs / .env* through files_to_copy.rs and copies them into each new worktree; initialization_files_copied (the git ls-files count, as Conductor's qYe) is written to conductor.db by record_initialization (#399).",
    "recheck": false
   },
   {
@@ -1299,8 +1322,8 @@
      "file": "crates/openconductor-db/migrations/0001_core.sql"
     }
    ],
-   "verdict": "backend",
-   "why": "The dialog reports no setup script; create_workspace never runs one. WorkspaceManager::run_setup and crates/scripts setup lifecycle exist but are not called (crates/scripts is not an app dependency).",
+   "verdict": "implemented",
+   "why": "After create_workspace, CreateWorkspaceDialog's startSetupScript calls scripts_config then setup_script_start, registered in lib.rs over the now-linked oc-scripts ScriptService; the workspace shows running-setup and the Setup tab (ScriptsPanel.tsx) shows output and the log path.",
    "recheck": false
   },
   {
@@ -1326,7 +1349,7 @@
     }
    ],
    "verdict": "partial",
-   "why": "The dialog shows createFlow progress (creating, failed) while create_workspace runs; there is no initializing workspace row or view, and setup steps are skipped.",
+   "why": "#327 adds a pendingLaunches store (src/workspace/pendingLaunches.ts, a port of Conductor's Y5e with the 120 s expiry): CreateWorkspaceDialog adds a launch on submit and removes it when the create finishes or fails, and RepoWorkspaceList/PendingWorkspaceRow (Sidebar.tsx) show an inert 'Untitled' row with a spinner ('Creating workspace...'), also in a collapsed group. #399 logs git worktree add to a Conductor-style $TMPDIR/conductor-<ms>-<rand>.log (init_log.rs), stores it as initialization_log_path with initialization_files_copied, and shows non-fatal initialization issues as a persistent toast with View logs. Still no initializing workspace view, and the loader is a CSS spinner rather than Conductor's sprite. Re-read on 563981a after #388/#399: unchanged (no initializing workspace view; the pending row and init log as above).",
    "recheck": false
   },
   {
@@ -1338,7 +1361,7 @@
     {
      "pattern": "(failed to create|create.*fail|initialization_?failed)",
      "matched": true,
-     "file": "src/components/CreateWorkspaceDialog.tsx"
+     "file": "src-tauri/src/create_project.rs"
     },
     {
      "pattern": "(cleanup|clean_?up).{0,40}(incomplete|initializ)",
@@ -1346,8 +1369,8 @@
      "file": null
     }
    ],
-   "verdict": "partial",
-   "why": "Failure text is shown in the dialog; no setup log, and no startup cleanup of incomplete workspaces (workspaces::delete_if_initializing exists only in the unlinked DB crate).",
+   "verdict": "implemented",
+   "why": "A failed create shows the backend error in the dialog and on_create_failed drops the pending row; a failed setup raises a toast pointing to the Setup log (setupWatch.ts); startup runs delete_incomplete -> delete_if_initializing (#224). #399: a failed git worktree add reports Conductor's fallback text (stderr, stdout, error, log contents, exit code; the branch-prefix clash message), and a worktree created despite a failure (post-checkout hook), a failed push-upstream setup or copy are non-fatal, recorded with initialization_log_path and shown with View logs.",
    "recheck": false
   },
   {
@@ -1359,48 +1382,48 @@
     {
      "pattern": "(create_?in_?section|section_?id.{0,60}create|create.{0,60}section_?id)",
      "matched": true,
-     "file": "crates/openconductor-db/migrations/0005_navigation_and_favorites.sql"
+     "file": "crates/openconductor-db/migrations-cache/0004_create_navigation_sections_cache.sql"
     }
    ],
-   "verdict": "missing",
-   "why": "No sections.",
-   "recheck": true
+   "verdict": "implemented",
+   "why": "#419 on d353535: a section's header menu starts with 'Create workspace' (Conductor's oBi @10,005,110), which opens the create dialog with that section; its Create button reads 'Create in <name>'. Opened without a section while sections exist, Create splits with a 'Create in section' menu listing every section (iQo @9,711,015). After the create the workspace is assigned to the section and unpinned (assignSection, persisted with the sections layout); a section deleted meanwhile keeps the workspace and warns with Conductor's SECTION_ASSIGN_FAILED text (src/workspace/createInSection.ts, tested).",
+   "recheck": false
   },
   {
    "id": "create.first-message",
    "area": "create",
    "feature": "Draft the first agent message, then create the workspace and send it",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "first_?message|initial_?message|initialMessage|firstMessage",
      "matched": true,
-     "file": "src/components/CreateWorkspaceDialog.tsx"
+     "file": "crates/openconductor-db/src/onboarding.rs"
     },
     {
      "pattern": "(start|create)_?(first_?)?session|startSession|createSession",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "crates/openconductor-db/src/sessions.rs"
     }
    ],
-   "verdict": "partial",
-   "why": "The first message seeds the workspace transcript and drives the rename (CreateWorkspaceDialog.tsx, firstMessage.ts); no agent session is started.",
+   "verdict": "implemented",
+   "why": "seedTranscript queues the first message and ChatPanel sends it with sendReason over the registered reason_open_chat / reason_prompt (#194), starting the workspace's first agent session; it also drives the rename. #388: the composer's model and effort picker is applied to the first chat (configureReason(id, sessionConfig(model, effort)) before seedTranscript); whether a Codex model chosen there starts a Codex chat was not checked.",
    "recheck": false
   },
   {
    "id": "create.number",
    "area": "create",
    "feature": "Assign a per-workspace number on creation",
-   "status": "missing",
+   "status": "implemented",
    "detectors": [
     {
-     "pattern": "workspace_?number|workspaceNumber|(ws|workspace)\\.number\\b",
-     "matched": false,
-     "file": null
+     "pattern": "workspace_?number|workspaceNumber|(ws|workspace)\\.number\\b|next_number",
+     "matched": true,
+     "file": "crates/openconductor-db/src/workspaces.rs"
     }
    ],
-   "verdict": "missing",
-   "why": "No workspace numbers.",
+   "verdict": "implemented",
+   "why": "#305 (9883bb3; its squash title says evidence, but it carries the code; the earlier 'evidence only' reading was wrong): begin_workspace numbers the initializing row with workspaces::next_number (MAX(number)+1 across repositories, crates/openconductor-db/src/workspaces.rs) and finish_workspace keeps it, or assigns one if the row was a leftover; create_workspace returns it (CreatedWorkspaceDto.number), and db_list_workspaces/reposFromDb carry Workspace.number, which the Home list matches as W-<n>. Archived rows keep their number, so none is reused. Conductor's server assigns the number instead (evidence/create-workspace/README.md); a local rule is the only option without it. Covered by persistence test each_new_workspace_gets_the_next_number_across_repositories. Showing W-<n> on rows is sidebar.ws-numbers, scored there.",
    "recheck": false
   },
   {
@@ -1420,12 +1443,12 @@
      "file": "crates/scripts/src/config/mod.rs"
     }
    ],
-   "verdict": "backend",
-   "why": "crates/scripts runner::should_auto_run (tested) decides auto-run after setup, but setup never runs on create and the crate is not an app dependency.",
+   "verdict": "implemented",
+   "why": "Settings > Experimental 'Auto-run after setup' (ExperimentalPage.tsx) calls auto_run_after_setup_get/_set (registered in lib.rs), which write [scripts] auto_run_after_setup to the user settings.toml the oc-scripts loader reads (config/user.rs, #324); after a completed setup ScriptService::after_setup -> should_auto_run starts the default run script, a failed setup never auto-runs, and a repo layer still overrides (crates/scripts service tests). User scope, default off, as in Conductor 0.87.6 (REA IRt/fQe, evidence/run-scripts/NOTES.md). Not run end to end in the packaged app.",
    "recheck": false
   }
  ],
  "verdicts_ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 884f1f7)",
- "verdict_parity_pct": 43.8
+ "verdicts_verified_at": "2026-11-06 (main d92abbfe: home.recent after #551 (4170c2c), archived workspaces stay in Recent; home.dashboard-routes after #403 (d92abbfe), /dashboard route, sidebar row and Experimental setting; main 2e728ad0: home.duplicate-repo after #555 (2e728ad0), stays implemented, both add paths keep the backend name; main 4c28914: home.status-overview after #539 (4c28914), status matrix read in Home, sidebar and pending rows; main 1f43a15: sidebar.ws-unread after #443 (1f43a15), stays partial (per-chat unread, plan/question/elicitation waits); main a9e4a48: sidebar.archive after #532 (a9e4a48), home.duplicate-repo after #401 (1121ccc), home.recent re-read after #401 (persistence closed; archived workspaces still dropped from Recent, open #551); main 563981a: create.page after #388 (563981a), create.first-message model/effort note after #388, create.initializing re-read after #388/#399 (unchanged), sidebar.archive: #467 merged into #428's branch after #428 landed, so its fix is not on main; main f6da48f: sidebar.ws-status after #428 (5751628), home.status-overview after #428 and #457 (f6da48f), sidebar.archive re-read (Codex chats now block archive, Stop still skips them and needs_user_permission chats); main 2e13137: sidebar.archive Codex-chat gap in progress via open draft #467, verdict unchanged; main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 96.3
 }

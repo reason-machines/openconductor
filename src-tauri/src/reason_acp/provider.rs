@@ -8,14 +8,42 @@
 //!   the earlier prompt with `cancelled`; that turn ends
 //!   [`TurnEnd::Superseded`], not `Cancelled`.
 //! * Stop sends `session/cancel`; the prompt then ends `cancelled`. A
-//!   second Stop sends it again, which Reason treats as a hard stop.
+//!   second Stop sends it again, which Reason treats as a hard stop. A
+//!   prompt announced with [`ReasonProvider::expect_prompt`] but not sent
+//!   yet (the app saves the start checkpoint first) is stopped too: it ends
+//!   `cancelled` without being sent.
 //! * After the app or the agent restarts, a chat with a stored id is
 //!   reattached with `session/resume` (no history replay; the app keeps its
 //!   own transcript) before its next prompt.
+//! * A Session lives in the workspace `reason` used when it was created,
+//!   and `reason acp` without `--workspace` follows the Reason desktop app's
+//!   selection, which can change in between. `session/resume` of a Session
+//!   the workspace in use cannot see still succeeds (0.2.690 hides the 404)
+//!   and the next prompt then fails `409 client_session_id_conflict`: it
+//!   tries to create a Session under the taken id. So the provider runs one
+//!   agent per workspace (`reason --workspace SLUG acp`), remembers each
+//!   Session's workspace ([`ReasonProvider::with_session_store`]), and
+//!   before resuming checks with `reason session get` which signed-in
+//!   workspace has the Session. A Session none has fails the turn with a
+//!   message saying so; nothing is sent.
 //! * An error Reason sends as reply text (see [`super::updates`]) ends the
 //!   turn as [`TurnEnd::Failed`] even though the prompt says `end_turn`.
+//! * A chat can ask for Session config options (`model`,
+//!   `reasoning_effort`) with [`ReasonProvider::set_config`]. They are set
+//!   with `session/set_config_option` right after `session/new`, only when
+//!   the Session offers the value: Reason resets a value it does not offer
+//!   to its default without an error, so the provider checks first and
+//!   sends a [`ProviderEvent::Notice`] instead.
+//! * A prompt can carry attachments, sent as embedded `resource` blocks
+//!   after the text (Reason advertises `embeddedContext`).
+//! * `session/request_permission` (Reason asks before a tool call) is held
+//!   until the app answers it ([`ReasonProvider::answer_permission`]) and
+//!   reported as [`ProviderEvent::PermissionRequested`]; the chat's session
+//!   shows `needs_user_permission` meanwhile, as Conductor's tool approval
+//!   does. Stop and the end of the turn answer what is still open with
+//!   `cancelled`, as ACP requires.
 
-use super::cli::{AgentProcess, LaunchConfig};
+use super::cli::{AgentProcess, LaunchConfig, Presence};
 use super::rpc::{CallError, Incoming, Responder, RpcConnection, RpcError};
 use super::updates::{computer_is_cloud, parse_update, AgentEvent, ReasonError, UpdateContext};
 use serde_json::{json, Value};
@@ -34,6 +62,58 @@ pub enum ProviderEvent {
     },
     Agent(AgentEvent),
     TurnEnded(TurnEnd),
+    /// Something the app should tell the user about the chat, e.g. that a
+    /// requested model is not offered and Reason's default runs instead.
+    Notice(String),
+    /// Reason asks to run a tool (`session/request_permission`); answer with
+    /// [`ReasonProvider::answer_permission`].
+    PermissionRequested(PermissionRequest),
+    /// A permission request was answered or withdrawn.
+    PermissionResolved {
+        request_id: String,
+    },
+}
+
+/// One `session/request_permission`, as the app shows it.
+#[derive(Debug, Clone, PartialEq)]
+pub struct PermissionRequest {
+    /// Provider-made id the answer names.
+    pub request_id: String,
+    /// The tool call's title, e.g. `bash: rm -rf build`.
+    pub title: String,
+    pub options: Vec<PermissionOption>,
+}
+
+/// One choice offered with a permission request.
+#[derive(Debug, Clone, PartialEq)]
+pub struct PermissionOption {
+    pub option_id: String,
+    pub name: String,
+    /// `allow_once`, `allow_always`, `reject_once` or `reject_always`.
+    pub kind: String,
+}
+
+/// A permission request waiting for the app's answer.
+struct PendingPermission {
+    chat: String,
+    rpc_id: Value,
+    out: Responder,
+}
+
+/// A Session config option to set when the chat's Session is created.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ConfigChoice {
+    /// The option's id, e.g. `model` or `reasoning_effort`.
+    pub id: String,
+    pub value: String,
+}
+
+/// Text sent along with a prompt as an embedded resource.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Attachment {
+    /// File name shown to the agent, e.g. `Review request.md`.
+    pub name: String,
+    pub text: String,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -63,8 +143,15 @@ struct Chat {
     /// Agent process generation the Session is open in.
     open_in: Option<u64>,
     turn: Option<Turn>,
+    /// Workspace (slug) of the Session's agent; `None` is `reason`'s default.
+    workspace: Option<String>,
     /// Reason said the Session runs on Reason cloud (see `computer_is_cloud`).
     on_cloud: bool,
+    /// Config options to set when the Session is created.
+    config: Vec<ConfigChoice>,
+    /// Prompts announced by `expect_prompt` and not sent yet, with whether
+    /// a Stop came for them meanwhile.
+    pending: HashMap<u64, bool>,
 }
 
 #[derive(Default)]
@@ -82,6 +169,10 @@ struct Shared {
     /// Reason Session id to chat id.
     by_session: HashMap<String, String>,
     next_turn: u64,
+    next_ticket: u64,
+    /// Open permission requests by `request_id`.
+    permissions: HashMap<String, PendingPermission>,
+    next_permission: u64,
 }
 
 struct Agent {
@@ -90,14 +181,55 @@ struct Agent {
     generation: u64,
 }
 
+/// Workspace slug by Reason Session id, kept in a JSON file when the app
+/// gives one, so a chat resumes in its Session's workspace after a restart.
+#[derive(Default)]
+struct SessionWorkspaces {
+    path: Option<PathBuf>,
+    by_session: HashMap<String, String>,
+}
+
+impl SessionWorkspaces {
+    fn load(path: PathBuf) -> Self {
+        let by_session = std::fs::read_to_string(&path)
+            .ok()
+            .and_then(|t| serde_json::from_str(&t).ok())
+            .unwrap_or_default();
+        SessionWorkspaces {
+            path: Some(path),
+            by_session,
+        }
+    }
+
+    fn get(&self, session_id: &str) -> Option<String> {
+        self.by_session.get(session_id).cloned()
+    }
+
+    fn set(&mut self, session_id: &str, workspace: &str) {
+        if self.get(session_id).as_deref() == Some(workspace) {
+            return;
+        }
+        self.by_session.insert(session_id.into(), workspace.into());
+        if let Some(path) = &self.path {
+            if let Some(dir) = path.parent() {
+                let _ = std::fs::create_dir_all(dir);
+            }
+            let text = serde_json::to_string_pretty(&self.by_session).unwrap_or_default();
+            let _ = std::fs::write(path, text);
+        }
+    }
+}
+
 pub struct ReasonProvider {
     launch: LaunchConfig,
     /// Folder the agent process runs in (the user's home folder).
     dir: PathBuf,
     sink: Sink,
     shared: Arc<Mutex<Shared>>,
-    agent: Mutex<Option<Agent>>,
+    /// Running agents by workspace (`None`: `reason`'s default workspace).
+    agents: Mutex<HashMap<Option<String>, Agent>>,
     generations: Mutex<u64>,
+    workspaces: Mutex<SessionWorkspaces>,
 }
 
 impl ReasonProvider {
@@ -107,14 +239,24 @@ impl ReasonProvider {
             dir,
             sink,
             shared: Arc::default(),
-            agent: Mutex::new(None),
+            agents: Mutex::default(),
             generations: Mutex::new(0),
+            workspaces: Mutex::default(),
         }
+    }
+
+    /// Keeps each Session's workspace in `path` (JSON), across restarts.
+    pub fn with_session_store(self, path: PathBuf) -> Self {
+        *self.workspaces.lock().unwrap() = SessionWorkspaces::load(path);
+        self
     }
 
     /// Registers a chat working in `cwd`, with its stored Session id when
     /// it had one before a restart. No process is started yet.
     pub fn open_chat(&self, chat: &str, cwd: &Path, session_id: Option<String>) {
+        let workspace = session_id
+            .as_deref()
+            .and_then(|id| self.workspaces.lock().unwrap().get(id));
         let mut s = self.shared.lock().unwrap();
         if let Some(id) = &session_id {
             s.by_session.insert(id.clone(), chat.into());
@@ -124,20 +266,77 @@ impl ReasonProvider {
             Chat {
                 cwd: cwd.into(),
                 session_id,
+                workspace,
                 ..Chat::default()
             },
         );
     }
 
+    /// Config options for the chat's Session, applied when `session/new`
+    /// creates it; a chat whose Session already exists keeps its options.
+    pub fn set_config(&self, chat: &str, config: Vec<ConfigChoice>) {
+        if let Some(c) = self.shared.lock().unwrap().chats.get_mut(chat) {
+            c.config = config;
+        }
+    }
+
     /// Sends `text` and blocks until the turn ends; events stream to the
     /// sink meanwhile. Call it from a worker thread.
     pub fn prompt(&self, chat: &str, text: &str) -> TurnEnd {
-        let end = self.run_prompt(chat, text);
+        self.prompt_with(chat, text, &[])
+    }
+
+    /// [`Self::prompt`] with attachments sent after the text.
+    pub fn prompt_with(&self, chat: &str, text: &str, attachments: &[Attachment]) -> TurnEnd {
+        self.prompt_expected(chat, text, attachments, None)
+    }
+
+    /// Announces a prompt that is about to be sent after other work (the
+    /// app saves the turn's start checkpoint first): a Stop meanwhile ends
+    /// that prompt `cancelled` instead of being lost. Pass the ticket to
+    /// [`Self::prompt_expected`]. `None` for a chat that is not open.
+    pub fn expect_prompt(&self, chat: &str) -> Option<u64> {
+        let mut s = self.shared.lock().unwrap();
+        s.next_ticket += 1;
+        let ticket = s.next_ticket;
+        s.chats.get_mut(chat)?.pending.insert(ticket, false);
+        Some(ticket)
+    }
+
+    /// [`Self::prompt_with`] for a prompt announced with
+    /// [`Self::expect_prompt`].
+    pub fn prompt_expected(
+        &self,
+        chat: &str,
+        text: &str,
+        attachments: &[Attachment],
+        ticket: Option<u64>,
+    ) -> TurnEnd {
+        let end = self.run_prompt(chat, text, attachments, ticket);
+        let idle = {
+            let mut s = self.shared.lock().unwrap();
+            if let Some(c) = s.chats.get_mut(chat) {
+                if let Some(t) = ticket {
+                    c.pending.remove(&t);
+                }
+            }
+            s.chats.get(chat).is_none_or(|c| c.turn.is_none())
+        };
+        // No turn runs any more: nothing can use an answer to what is open.
+        if idle {
+            self.withdraw_permissions(chat);
+        }
         (self.sink)(chat, ProviderEvent::TurnEnded(end.clone()));
         end
     }
 
-    fn run_prompt(&self, chat: &str, text: &str) -> TurnEnd {
+    fn run_prompt(
+        &self,
+        chat: &str,
+        text: &str,
+        attachments: &[Attachment],
+        ticket: Option<u64>,
+    ) -> TurnEnd {
         let (conn, session_id) = match self.ensure_session(chat) {
             Ok(v) => v,
             Err(e) => return TurnEnd::Failed(e),
@@ -149,6 +348,10 @@ impl ReasonProvider {
             let Some(c) = s.chats.get_mut(chat) else {
                 return TurnEnd::Failed("unknown chat".into());
             };
+            // Stopped before it was sent: Reason never hears of it.
+            if ticket.and_then(|t| c.pending.remove(&t)) == Some(true) {
+                return TurnEnd::Cancelled;
+            }
             if let Some(prev) = &mut c.turn {
                 prev.superseded = true;
             }
@@ -158,8 +361,12 @@ impl ReasonProvider {
             });
             seq
         };
+        let cwd = {
+            let s = self.shared.lock().unwrap();
+            s.chats.get(chat).map(|c| c.cwd.clone()).unwrap_or_default()
+        };
         let params = json!({ "sessionId": session_id,
-            "prompt": [{ "type": "text", "text": text }] });
+            "prompt": prompt_blocks(text, attachments, &cwd) });
         let result = conn.call("session/prompt", params, None);
 
         let mut s = self.shared.lock().unwrap();
@@ -178,7 +385,13 @@ impl ReasonProvider {
                 "cancelled" => TurnEnd::Cancelled,
                 "error" => TurnEnd::Failed(error_text(&v["error"])),
                 _ => match turn.error {
-                    Some(e) => TurnEnd::Failed(explain(e, &c.cwd)),
+                    Some(e) => {
+                        if e.code.as_deref() == Some("client_session_id_conflict") {
+                            // Reattach (and look for its workspace) next time.
+                            c.open_in = None;
+                        }
+                        TurnEnd::Failed(explain(e, &c.cwd))
+                    }
                     None => TurnEnd::Completed,
                 },
             },
@@ -197,21 +410,79 @@ impl ReasonProvider {
             let Some(c) = s.chats.get_mut(chat) else {
                 return;
             };
+            for stopped in c.pending.values_mut() {
+                *stopped = true;
+            }
             let Some(turn) = &mut c.turn else {
                 return;
             };
             turn.stop_requested = true;
-            c.session_id.clone()
+            (c.session_id.clone(), c.workspace.clone())
         };
-        let conn = self.agent.lock().unwrap().as_ref().map(|a| a.conn.clone());
+        let (session_id, workspace) = session_id;
+        let conn = self
+            .agents
+            .lock()
+            .unwrap()
+            .get(&workspace)
+            .map(|a| a.conn.clone());
         if let (Some(conn), Some(id)) = (conn, session_id) {
             let _ = conn.notify("session/cancel", json!({ "sessionId": id }));
+        }
+        // After session/cancel, so the agent knows the turn is stopping when
+        // its permission request comes back `cancelled`.
+        self.withdraw_permissions(chat);
+    }
+
+    /// Answers the chat's permission request with `option_id`, or as
+    /// `cancelled` when `None`. False when the request is not open (already
+    /// answered, withdrawn, or another chat's).
+    pub fn answer_permission(&self, chat: &str, request_id: &str, option_id: Option<&str>) -> bool {
+        let pending = {
+            let mut s = self.shared.lock().unwrap();
+            match s.permissions.get(request_id) {
+                Some(p) if p.chat == chat => s.permissions.remove(request_id),
+                _ => None,
+            }
+        };
+        let Some(p) = pending else {
+            return false;
+        };
+        let outcome = match option_id {
+            Some(id) => json!({ "outcome": "selected", "optionId": id }),
+            None => json!({ "outcome": "cancelled" }),
+        };
+        let _ = p.out.respond(&p.rpc_id, Ok(json!({ "outcome": outcome })));
+        (self.sink)(
+            chat,
+            ProviderEvent::PermissionResolved {
+                request_id: request_id.into(),
+            },
+        );
+        true
+    }
+
+    /// Answers every open permission request of the chat with `cancelled`.
+    fn withdraw_permissions(&self, chat: &str) {
+        let open: Vec<String> = {
+            let s = self.shared.lock().unwrap();
+            let mut ids: Vec<String> = s
+                .permissions
+                .iter()
+                .filter(|(_, p)| p.chat == chat)
+                .map(|(id, _)| id.clone())
+                .collect();
+            ids.sort();
+            ids
+        };
+        for id in open {
+            self.answer_permission(chat, &id, None);
         }
     }
 
     /// Recent Sessions in the signed-in Workspace, newest first.
     pub fn list_sessions(&self) -> Result<Vec<SessionInfo>, String> {
-        let agent = self.ensure_agent()?;
+        let agent = self.ensure_agent(None)?;
         let params = json!({ "cwd": self.dir });
         let v = agent.0.call("session/list", params, SETUP_TIMEOUT);
         let v = v.map_err(|e| e.to_string())?;
@@ -231,39 +502,73 @@ impl ReasonProvider {
     /// Kills the agent process. Chats keep their Session ids and resume on
     /// their next prompt.
     pub fn shutdown(&self) {
-        self.agent.lock().unwrap().take();
+        self.agents.lock().unwrap().clear();
     }
 
-    /// The chat's Session, open in the running agent process.
+    /// The chat's Session, open in the running agent process of its
+    /// workspace.
     fn ensure_session(&self, chat: &str) -> Result<(Arc<RpcConnection>, String), String> {
-        let (conn, generation) = self.ensure_agent()?;
-        let (cwd, known, open_in) = {
+        let (cwd, known, open_in, config, workspace) = {
             let s = self.shared.lock().unwrap();
             let c = s.chats.get(chat).ok_or("unknown chat")?;
-            (c.cwd.clone(), c.session_id.clone(), c.open_in)
+            (
+                c.cwd.clone(),
+                c.session_id.clone(),
+                c.open_in,
+                c.config.clone(),
+                c.workspace.clone(),
+            )
         };
+        if let (Some(id), Some(open_in)) = (&known, open_in) {
+            if let Some((conn, generation)) = self.live_agent(&workspace) {
+                if generation == open_in {
+                    return Ok((conn, id.clone()));
+                }
+            }
+        }
         let base = json!({ "cwd": cwd, "mcpServers": [] });
-        let id = match known {
-            Some(id) if open_in == Some(generation) => return Ok((conn, id)),
+        let (conn, generation, id, workspace) = match known {
             Some(id) => {
+                let workspace = self.locate(&id, workspace)?;
+                let (conn, generation) = self.ensure_agent(workspace.as_deref())?;
                 let mut params = base;
                 params["sessionId"] = json!(id);
                 conn.call("session/resume", params, SETUP_TIMEOUT)
                     .map_err(|e| format!("Could not resume the Reason session: {e}"))?;
-                id
+                (conn, generation, id, workspace)
             }
             None => {
+                // A new Session opens in the workspace selected now.
+                let workspace = self.launch.whoami(&self.dir).and_then(|w| w.selected);
+                let (conn, generation) = self.ensure_agent(workspace.as_deref())?;
                 let v = conn
                     .call("session/new", base, SETUP_TIMEOUT)
                     .map_err(|e| e.to_string())?;
                 let id = v["sessionId"].as_str().ok_or("no sessionId")?.to_string();
+                if let Some(w) = &workspace {
+                    self.workspaces.lock().unwrap().set(&id, w);
+                }
                 (self.sink)(
                     chat,
                     ProviderEvent::SessionStarted {
                         session_id: id.clone(),
                     },
                 );
-                id
+                let (set, mut notices) = plan_config(&v["configOptions"], &config);
+                for choice in set {
+                    let params = json!({ "sessionId": id, "configId": choice.id,
+                        "value": choice.value });
+                    if let Err(e) = conn.call("session/set_config_option", params, SETUP_TIMEOUT) {
+                        notices.push(format!(
+                            "Could not set {} to {}: {e}. Reason's default is used.",
+                            choice.id, choice.value
+                        ));
+                    }
+                }
+                for n in notices {
+                    (self.sink)(chat, ProviderEvent::Notice(n));
+                }
+                (conn, generation, id, workspace)
             }
         };
         let mut s = self.shared.lock().unwrap();
@@ -271,17 +576,78 @@ impl ReasonProvider {
         if let Some(c) = s.chats.get_mut(chat) {
             c.session_id = Some(id.clone());
             c.open_in = Some(generation);
+            c.workspace = workspace;
         }
         Ok((conn, id))
     }
 
+    /// The workspace that has Session `id`: `hint` (where it was created)
+    /// when `reason session get` finds it there, else the first signed-in
+    /// workspace that has it, the selected one first. When `reason` cannot
+    /// tell (offline, no `whoami`), the best guess, as before this check.
+    /// A Session no signed-in workspace has is an error: resuming it would
+    /// end in `409 client_session_id_conflict`.
+    fn locate(&self, id: &str, hint: Option<String>) -> Result<Option<String>, String> {
+        let mut unsure = None;
+        if let Some(w) = &hint {
+            match self.launch.session_presence(&self.dir, w, id) {
+                Presence::Found => return Ok(hint),
+                Presence::Unknown => unsure = hint.clone(),
+                Presence::Missing => {}
+            }
+        }
+        let Some(signed_in) = self.launch.whoami(&self.dir) else {
+            return Ok(hint);
+        };
+        let mut order: Vec<&String> = signed_in.selected.iter().collect();
+        order.extend(
+            signed_in
+                .saved
+                .iter()
+                .filter(|w| Some(*w) != signed_in.selected.as_ref()),
+        );
+        for w in order.into_iter().filter(|w| Some(*w) != hint.as_ref()) {
+            match self.launch.session_presence(&self.dir, w, id) {
+                Presence::Found => {
+                    self.workspaces.lock().unwrap().set(id, w);
+                    return Ok(Some(w.clone()));
+                }
+                Presence::Unknown => {
+                    unsure.get_or_insert_with(|| w.clone());
+                }
+                Presence::Missing => {}
+            }
+        }
+        if unsure.is_some() {
+            return Ok(unsure);
+        }
+        Err(format!(
+            "This chat's Reason Session {id} is not in any workspace the Reason CLI is \
+             signed in to ({}), so the message was not sent. Sign in to the workspace \
+             that has it (`reason login`), or use Reset chat to start a new Session.",
+            signed_in.saved.join(", ")
+        ))
+    }
+
+    /// The running agent of `workspace`, if its process is still up.
+    fn live_agent(&self, workspace: &Option<String>) -> Option<(Arc<RpcConnection>, u64)> {
+        let agents = self.agents.lock().unwrap();
+        let a = agents.get(workspace).filter(|a| !a.conn.is_closed())?;
+        Some((a.conn.clone(), a.generation))
+    }
+
     /// The running agent, started and initialized when needed.
-    fn ensure_agent(&self) -> Result<(Arc<RpcConnection>, u64), String> {
-        let mut slot = self.agent.lock().unwrap();
-        if let Some(a) = slot.as_ref().filter(|a| !a.conn.is_closed()) {
+    fn ensure_agent(&self, workspace: Option<&str>) -> Result<(Arc<RpcConnection>, u64), String> {
+        let key = workspace.map(str::to_string);
+        let mut agents = self.agents.lock().unwrap();
+        if let Some(a) = agents.get(&key).filter(|a| !a.conn.is_closed()) {
             return Ok((a.conn.clone(), a.generation));
         }
-        let (process, stdin, stdout) = AgentProcess::spawn(&self.launch, &self.dir)
+        let launch = self
+            .launch
+            .in_workspace(workspace)
+            .map_err(|e| e.to_string())?;
+        let (process, stdin, stdout) = AgentProcess::spawn(&launch, &self.dir)
             .map_err(|e| format!("Could not start {}: {e}", self.launch.cli().display()))?;
         let generation = {
             let mut g = self.generations.lock().unwrap();
@@ -302,11 +668,14 @@ impl ReasonProvider {
                 .trim()
                 .to_string()
         })?;
-        *slot = Some(Agent {
-            _process: process,
-            conn: conn.clone(),
-            generation,
-        });
+        agents.insert(
+            key,
+            Agent {
+                _process: process,
+                conn: conn.clone(),
+                generation,
+            },
+        );
         Ok((conn, generation))
     }
 }
@@ -324,7 +693,109 @@ fn explain(e: ReasonError, cwd: &Path) -> String {
             home.unwrap_or_default().display(),
             cwd.display()
         ),
+        Some("client_session_id_conflict") => format!(
+            "{} Reason could not reach this chat's Session from the workspace the Reason \
+             CLI uses now; send the message again to look for it in your other workspaces.",
+            e.message
+        ),
         _ => e.message,
+    }
+}
+
+/// Which wanted options to set, given the `configOptions` a new Session
+/// reports, and a notice for each one it cannot take: no such option, or a
+/// value the option does not offer (Reason would silently reset it).
+pub fn plan_config(options: &Value, wanted: &[ConfigChoice]) -> (Vec<ConfigChoice>, Vec<String>) {
+    let mut set = Vec::new();
+    let mut notices = Vec::new();
+    let options = options.as_array().map(Vec::as_slice).unwrap_or_default();
+    for w in wanted {
+        let Some(opt) = options.iter().find(|o| o["id"] == w.id.as_str()) else {
+            notices.push(format!(
+                "Reason has no \"{}\" option, so {} was not applied.",
+                w.id, w.value
+            ));
+            continue;
+        };
+        let name = opt["name"].as_str().unwrap_or(&w.id);
+        if opt["currentValue"] == w.value.as_str() {
+            continue;
+        }
+        let offered = opt["options"]
+            .as_array()
+            .map(Vec::as_slice)
+            .unwrap_or_default();
+        if offered.iter().any(|o| o["value"] == w.value.as_str()) {
+            set.push(w.clone());
+        } else {
+            notices.push(format!(
+                "Reason does not offer {} \"{}\" for this chat, so it uses Reason's default.",
+                name.to_lowercase(),
+                w.value
+            ));
+        }
+    }
+    (set, notices)
+}
+
+/// The `session/prompt` content: the text, then each attachment as an
+/// embedded resource named as a file in the chat's folder.
+pub fn prompt_blocks(text: &str, attachments: &[Attachment], cwd: &Path) -> Value {
+    let mut blocks = vec![json!({ "type": "text", "text": text })];
+    for a in attachments {
+        let mime = if a.name.ends_with(".md") {
+            "text/markdown"
+        } else {
+            "text/plain"
+        };
+        blocks.push(json!({ "type": "resource", "resource": {
+            "uri": file_uri(&cwd.join(&a.name)), "mimeType": mime, "text": a.text } }));
+    }
+    Value::Array(blocks)
+}
+
+/// `file://` URI of an absolute path, percent-encoding all but unreserved
+/// characters and `/`.
+fn file_uri(path: &Path) -> String {
+    let mut out = String::from("file://");
+    for b in path.to_string_lossy().bytes() {
+        match b {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'.' | b'_' | b'~' | b'/' => {
+                out.push(b as char)
+            }
+            _ => out.push_str(&format!("%{b:02X}")),
+        }
+    }
+    out
+}
+
+/// The app's view of `session/request_permission` params: the tool call's
+/// title (else its kind, else "Tool call") and the offered options.
+pub fn permission_request(request_id: String, params: &Value) -> PermissionRequest {
+    let call = &params["toolCall"];
+    let title = [&call["title"], &call["kind"]]
+        .into_iter()
+        .find_map(|v| v.as_str().filter(|t| !t.trim().is_empty()))
+        .unwrap_or("Tool call")
+        .to_string();
+    let options = params["options"]
+        .as_array()
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let options = options
+        .iter()
+        .filter_map(|o| {
+            Some(PermissionOption {
+                option_id: o["optionId"].as_str()?.into(),
+                name: o["name"].as_str().unwrap_or_default().into(),
+                kind: o["kind"].as_str().unwrap_or_default().into(),
+            })
+        })
+        .collect();
+    PermissionRequest {
+        request_id,
+        title,
+        options,
     }
 }
 
@@ -368,6 +839,33 @@ fn updates_handler(shared: Arc<Mutex<Shared>>, sink: Sink) -> super::rpc::Handle
             };
             if let Some((chat, ev)) = routed {
                 sink(&chat, ProviderEvent::Agent(ev));
+            }
+        }
+        Incoming::Request { id, method, params } if method == "session/request_permission" => {
+            let routed = {
+                let mut s = shared.lock().unwrap();
+                let sid = params["sessionId"].as_str().unwrap_or_default();
+                match s.by_session.get(sid).cloned() {
+                    Some(chat) => {
+                        s.next_permission += 1;
+                        let request_id = format!("permission-{}", s.next_permission);
+                        let pending = PendingPermission {
+                            chat: chat.clone(),
+                            rpc_id: id.clone(),
+                            out: out.clone(),
+                        };
+                        s.permissions.insert(request_id.clone(), pending);
+                        Some((chat, permission_request(request_id, &params)))
+                    }
+                    None => None,
+                }
+            };
+            match routed {
+                Some((chat, request)) => sink(&chat, ProviderEvent::PermissionRequested(request)),
+                // No chat to ask: the tool call does not run.
+                None => {
+                    let _ = out.respond(&id, Ok(json!({ "outcome": { "outcome": "cancelled" } })));
+                }
             }
         }
         Incoming::Request { id, method, .. } => {

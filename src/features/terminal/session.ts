@@ -9,6 +9,8 @@ import {
   onPtyEvent,
   ptyAckBytes,
   ptyClearHistory,
+  ptyDeleteTerminalHistory,
+  ptyDeleteWorkspaceTerminalHistory,
   ptyKill,
   ptyLoadTerminalHistory,
   ptyPersistTerminalHistory,
@@ -17,9 +19,16 @@ import {
   ptyWrite,
   ptyWriteMirror,
 } from "./pty";
-import { canOpen, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs";
-import { PersistThrottle, readSaved, restoreCwds, restoreOutput, writeWorkspace, type HistoryRecord } from "./restore";
+import { canOpen, canOpenTerminal, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs";
+import { PersistThrottle, restoreCwds, restoreOutput, type HistoryRecord } from "./restore";
+import { subsystemStorage } from "./localStorage";
+import { TABS_SIZE_LIMIT, TABS_SUBSYSTEM, TabListStore, savedWorkspace } from "./tabList";
+import { getAppPrefs } from "../../settings/appPrefs";
 import { FIND_COMMAND, LINE_EDIT_BYTES, terminalCommandFor } from "./shortcuts.ts";
+import { currentTerminalFont, onTerminalFont, TERMINAL_LINE_HEIGHT } from "./font.ts";
+import { currentScrollbackRows, onScrollbackRows } from "./scrollback.ts";
+import { applySegments, emptyShellState, splitMarks, type ShellState } from "./shellIntegration.ts";
+import { bigTabRequest } from "./bigTerminal.ts";
 
 interface Live {
   workspaceId: string;
@@ -28,13 +37,21 @@ interface Live {
   host: HTMLDivElement;
   ack: AckBatcher;
   opened: boolean;
-  /** Spawn settings, reused by a new tab opened from this one. */
+  /**
+   * Opened by the app, not the user (a workspace's first terminal, restored
+   * tabs). Its first attach leaves the keyboard where the user is typing.
+   */
+  quiet: boolean;
+  /** Spawn settings, reused by a new tab opened from this one (the panel's command, not a big terminal's). */
   cwd: string;
   initialCommand?: string;
   /** Saved-history fields (`pty_persist_terminal_history`). */
   startedAt: string;
   endedAt?: string;
   hasReceivedUserInput: boolean;
+  /** Shell integration: output decoded as a stream, marks stripped and tracked. */
+  decoder: TextDecoder;
+  shell: ShellState;
 }
 
 const live = new Map<string, Live>();
@@ -46,7 +63,12 @@ const EMPTY = emptyTabs();
 let listening: Promise<() => void> | null = null;
 /** Workspaces whose saved tabs were restored this launch; only these write the tab list. */
 const hydrated = new Set<string>();
-const storage = (): Storage | undefined => (typeof localStorage === "undefined" ? undefined : localStorage);
+/** The saved tab list, in the reference's `terminal` local-storage subsystem. */
+const tabList = new TabListStore(
+  subsystemStorage(TABS_SUBSYSTEM, TABS_SIZE_LIMIT),
+  typeof localStorage === "undefined" ? undefined : localStorage,
+  (e) => console.error("Failed to save or load the terminal tab list", e),
+);
 
 // Tab id doubles as the PTY id and the saved session's id.
 const persist = new PersistThrottle(async (id) => {
@@ -61,6 +83,22 @@ const persist = new PersistThrottle(async (id) => {
     hasReceivedUserInput: l.hasReceivedUserInput,
   });
 }, { set: (f, ms) => setTimeout(f, ms), clear: (h) => clearTimeout(h as ReturnType<typeof setTimeout>) });
+
+// A Terminal font change reaches every open terminal at once, as in Conductor;
+// a shown one refits, so its PTY hears the new cols and rows.
+onTerminalFont((font) => {
+  for (const l of live.values()) {
+    l.term.options.fontFamily = font.family;
+    l.term.options.fontSize = font.size;
+    if (l.opened && l.host.clientWidth > 0) l.fit.fit();
+  }
+});
+
+// A Scrollback limit change reaches every open terminal at once, as in
+// Conductor; xterm trims a shrunk buffer from the top.
+onScrollbackRows((rows) => {
+  for (const l of live.values()) l.term.options.scrollback = rows;
+});
 
 let flushOnHide = false;
 function persistOnHide() {
@@ -85,8 +123,7 @@ function dispatch(workspaceId: string, a: TabsAction) {
 }
 
 function saveTabs(workspaceId: string, state: TabsState) {
-  const store = storage();
-  if (store && hydrated.has(workspaceId)) writeWorkspace(store, workspaceId, state, (id) => live.get(id)?.cwd);
+  if (hydrated.has(workspaceId)) void tabList.setWorkspace(workspaceId, savedWorkspace(state, (id) => live.get(id)?.cwd), "terminal");
 }
 
 export const getFindRequests = (id: string): number => findRequests.get(id) ?? 0;
@@ -101,10 +138,16 @@ function route(e: PtyEvent) {
   if (!l) return;
   if (e.kind === "data") {
     const n = e.data.length;
-    l.term.write(e.data, () => l.ack.rendered(n));
+    const { sanitized, segments } = splitMarks(l.decoder.decode(e.data, { stream: true }));
+    if (applySegments(l.shell, segments)) dispatch(l.workspaceId, { type: "program", id: e.id, runningProgram: l.shell.runningProgram });
+    // Bytes that were only marks are acked at once, as in the reference.
+    if (sanitized.length > 0) l.term.write(sanitized, () => l.ack.rendered(n));
+    else l.ack.rendered(n);
     persist.schedule(e.id);
     return;
   }
+  // Ready and exit both forget tracked commands, as in the reference.
+  l.shell = emptyShellState();
   if (e.kind === "exit") {
     l.ack.flush();
     l.endedAt = new Date().toISOString();
@@ -122,9 +165,22 @@ function cssVar(name: string, fallback: string): string {
 /** `#rrggbb` plus an alpha byte; other colour forms pass through unchanged. */
 const withAlpha = (hex: string, alpha: string) => (/^#[0-9a-f]{6}$/i.test(hex) ? hex + alpha : hex);
 
-/** Open a new tab running the login shell in `cwd`; resolves to its id. */
-export const openTab = (workspaceId: string, cwd: string, initialCommand?: string): Promise<string> =>
-  startTab(workspaceId, cwd, initialCommand);
+/**
+ * Open a new tab running the login shell in `cwd`; resolves to its id. `quiet`
+ * when the app opens it by itself, so it does not take focus from a text field.
+ */
+export const openTab = (workspaceId: string, cwd: string, initialCommand?: string, opts: { quiet?: boolean } = {}): Promise<string> =>
+  startTab(workspaceId, cwd, initialCommand, undefined, undefined, opts.quiet);
+
+/**
+ * ⌘⇧T from outside a terminal: open a tab running the Big terminal preset
+ * (`run`, from `bigTabRequest`). The workspace's saved tabs come back first, so
+ * the panel shown afterwards finds tabs and opens no plain shell of its own.
+ */
+export async function openBigTab(workspaceId: string, cwd: string, run: { command: string | undefined }, initialCommand?: string): Promise<string> {
+  await restoreWorkspaceTabs(workspaceId, cwd, initialCommand);
+  return startTab(workspaceId, cwd, initialCommand, undefined, run);
+}
 
 /**
  * Reopen the tabs `workspaceId` had when the app last ran, each with its saved
@@ -139,29 +195,45 @@ export function restoreWorkspaceTabs(workspaceId: string, cwd: string, initialCo
 const restoring = new Map<string, Promise<void>>();
 
 async function restoreOnce(workspaceId: string, cwd: string, initialCommand?: string): Promise<void> {
-  const store = storage();
-  const saved = store ? readSaved(store)[workspaceId] : undefined;
+  const saved = await tabList.workspace(workspaceId);
   for (const tab of saved?.tabs ?? []) {
     if (live.has(tab.id)) continue;
-    await startTab(workspaceId, cwd, initialCommand, { id: tab.id, title: tab.title }).catch(() => {});
+    await startTab(workspaceId, cwd, initialCommand, { id: tab.id, title: tab.title }, undefined, true).catch(() => {});
   }
   hydrated.add(workspaceId);
   dispatch(workspaceId, { type: "restored", activeId: saved?.activeId ?? null, next: saved?.next ?? 1 });
 }
 
-async function startTab(workspaceId: string, cwd: string, initialCommand?: string, restore?: { id: string; title: string }): Promise<string> {
-  if (!canOpen(getTabs(workspaceId))) throw new Error("Tab limit reached for this workspace.");
+/**
+ * `initialCommand` is the panel's auto-run command, kept for tabs opened from
+ * this one; `run` overrides what this tab alone runs (a big terminal's preset,
+ * `undefined` command for a plain shell).
+ */
+async function startTab(
+  workspaceId: string,
+  cwd: string,
+  initialCommand?: string,
+  restore?: { id: string; title: string },
+  run?: { command: string | undefined },
+  quiet = false,
+): Promise<string> {
+  // Saved tabs come back as they were; new ones respect Tab Freak Mode's limit.
+  const tabs = getTabs(workspaceId);
+  if (!canOpen(tabs) || (!restore && !canOpenTerminal(tabs, getAppPrefs().experimental_tab_freak_mode)))
+    throw new Error("Tab limit reached for this workspace.");
   listening ??= onPtyEvent(route);
   await listening;
   persistOnHide();
   const record: HistoryRecord | undefined = restore ? await ptyLoadTerminalHistory(restore.id).catch(() => undefined) : undefined;
 
   const id = restore?.id ?? `term-${crypto.randomUUID()}`;
+  const font = currentTerminalFont();
   const term = new Terminal({
     cursorBlink: true,
-    fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-    fontSize: 12,
-    scrollback: 5000,
+    fontFamily: font.family,
+    fontSize: font.size,
+    lineHeight: TERMINAL_LINE_HEIGHT,
+    scrollback: currentScrollbackRows(),
     theme: {
       background: cssVar("--panel", "#1d2025"),
       foreground: cssVar("--text", "#e6e7e9"),
@@ -190,10 +262,13 @@ async function startTab(workspaceId: string, cwd: string, initialCommand?: strin
     host,
     ack,
     opened: false,
+    quiet,
     cwd,
     initialCommand,
     startedAt: record?.startedAt ?? new Date().toISOString(),
     hasReceivedUserInput: record?.hasReceivedUserInput ?? false,
+    decoder: new TextDecoder(),
+    shell: emptyShellState(),
   });
   term.attachCustomKeyEventHandler((e) => {
     const command = e.type === "keydown" ? terminalCommandFor(e) : undefined;
@@ -213,11 +288,13 @@ async function startTab(workspaceId: string, cwd: string, initialCommand?: strin
   dispatch(workspaceId, { type: "open", id, title: restore?.title });
   try {
     await spawnIn(restore ? restoreCwds(record, cwd) : [cwd], (dir) =>
-      ptySpawn({ id, cwd: dir, cols: term.cols, rows: term.rows, initialCommand }),
+      ptySpawn({ id, cwd: dir, cols: term.cols, rows: term.rows, initialCommand: run ? run.command : initialCommand }),
     );
   } catch (err) {
     dispose(id);
     dispatch(workspaceId, { type: "close", id });
+    // A restored tab that cannot start is gone from the list, so its saved screen goes too.
+    if (restore) void forget(id);
     throw err;
   }
   return id;
@@ -234,6 +311,13 @@ async function spawnIn(dirs: string[], spawn: (dir: string) => Promise<unknown>)
   }
 }
 
+/** Focus is in a text field outside the terminal panel: the chat box, a dialog's input. */
+function typingElsewhere(): boolean {
+  const a = document.activeElement;
+  if (!(a instanceof HTMLElement) || a.closest(".terminal-panel")) return false;
+  return a.isContentEditable || a instanceof HTMLTextAreaElement || a instanceof HTMLInputElement || a instanceof HTMLSelectElement;
+}
+
 /** Show terminal `id` inside `container`; returns the detach function. */
 export function attachTab(id: string, container: HTMLElement): () => void {
   const l = live.get(id);
@@ -247,7 +331,11 @@ export function attachTab(id: string, container: HTMLElement): () => void {
     if (l.host.clientWidth > 0) l.fit.fit();
   };
   refit();
-  l.term.focus();
+  // A tab takes the keyboard when shown. A quiet tab's first showing lands a
+  // moment after the workspace opens (it waits on the PTY listener), so it
+  // leaves focus in a text field the user is typing in, such as the chat box.
+  if (!(l.quiet && typingElsewhere())) l.term.focus();
+  l.quiet = false;
   const ro = new ResizeObserver(refit);
   ro.observe(container);
   return () => {
@@ -267,8 +355,12 @@ function runTerminalCommand(id: string, command: string) {
     subscribers.forEach((f) => f());
   }
   else if (command === "terminal.closeTab") closeTab(l.workspaceId, id);
-  else if (command === "terminal.newTab" || command === "terminal.newBigTab")
-    void openTab(l.workspaceId, l.cwd, l.initialCommand).catch(() => {});
+  else if (command === "terminal.newTab") void openTab(l.workspaceId, l.cwd, l.initialCommand).catch(() => {});
+  else if (command === "terminal.newBigTab") {
+    // Conductor opens a center-pane terminal; we have no center tabs, so it is a panel tab (NOTES.md).
+    const big = bigTabRequest();
+    if (big) void startTab(l.workspaceId, l.cwd, l.initialCommand, undefined, big).catch(() => {});
+  }
 }
 
 export function clearTab(id: string) {
@@ -281,10 +373,37 @@ export function clearTab(id: string) {
 }
 
 export function closeTab(workspaceId: string, id: string) {
-  persist.cancel(id);
   void ptyKill(id).catch(() => {});
   dispose(id);
   dispatch(workspaceId, { type: "close", id });
+  void forget(id);
+}
+
+/**
+ * Delete tab `id`'s saved session, as the reference does for every terminal
+ * that leaves its tab stores; after any save already running, so that save
+ * cannot bring it back.
+ */
+const forget = (id: string): Promise<void> => persist.drop(id, () => ptyDeleteTerminalHistory(id));
+
+/**
+ * End every terminal of `workspaceId` and delete what was saved for it: its
+ * tab list and every saved session, including ones from earlier launches that
+ * were never restored in this one. The reference does this when a workspace
+ * is archived or its repository removed (`destroyAllWorkspaceTerminalInstances`).
+ */
+export async function destroyWorkspaceTerminals(workspaceId: string): Promise<void> {
+  const ids = getTabs(workspaceId).tabs.map((t) => t.id);
+  for (const id of ids) {
+    void ptyKill(id).catch(() => {});
+    dispose(id);
+  }
+  tabsByWorkspace.delete(workspaceId);
+  hydrated.delete(workspaceId);
+  void tabList.setWorkspace(workspaceId, undefined);
+  subscribers.forEach((f) => f());
+  await Promise.all(ids.map(forget));
+  await ptyDeleteWorkspaceTerminalHistory(workspaceId).catch(() => {});
 }
 
 function dispose(id: string) {

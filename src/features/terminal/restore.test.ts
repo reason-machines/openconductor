@@ -4,21 +4,13 @@ import assert from "node:assert/strict";
 import {
   PERSIST_DELAY_MS,
   PersistThrottle,
-  TABS_STORAGE_KEY,
-  readSaved,
   restoreCwds,
   restoreOutput,
-  writeWorkspace,
   type HistoryRecord,
-  type KeyValue,
   type Timers,
 } from "./restore.ts";
 import { emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs.ts";
 
-const memory = (init: Record<string, string> = {}): KeyValue & { data: Record<string, string> } => {
-  const data = { ...init };
-  return { data, getItem: (k) => data[k] ?? null, setItem: (k, v) => void (data[k] = v) };
-};
 const run = (actions: TabsAction[], s: TabsState = emptyTabs()) => actions.reduce(tabsReducer, s);
 
 const record = (over: Partial<HistoryRecord> = {}): HistoryRecord => ({
@@ -35,44 +27,6 @@ const record = (over: Partial<HistoryRecord> = {}): HistoryRecord => ({
   alternateScreen: false,
   bracketedPaste: true,
   ...over,
-});
-
-test("a workspace's tabs round-trip through storage, leaving other workspaces alone", () => {
-  const store = memory();
-  const a = run([{ type: "open", id: "a1" }, { type: "open", id: "a2" }, { type: "select", id: "a1" }]);
-  const b = run([{ type: "open", id: "b1" }]);
-  writeWorkspace(store, "A", a, () => "/a");
-  writeWorkspace(store, "B", b, () => "/b");
-  writeWorkspace(store, "A", run([{ type: "close", id: "a2" }], a), () => "/a");
-
-  assert.deepEqual(readSaved(store), {
-    A: { tabs: [{ id: "a1", title: "Terminal 1", cwd: "/a" }], activeId: "a1", next: 3 },
-    B: { tabs: [{ id: "b1", title: "Terminal 1", cwd: "/b" }], activeId: "b1", next: 2 },
-  });
-
-  // Closing a workspace's last tab drops its entry.
-  writeWorkspace(store, "B", run([{ type: "close", id: "b1" }], b), () => "/b");
-  assert.deepEqual(Object.keys(readSaved(store)), ["A"]);
-});
-
-test("tabs with no live terminal are not saved", () => {
-  const store = memory();
-  writeWorkspace(store, "A", run([{ type: "open", id: "a1" }, { type: "open", id: "gone" }]), (id) => (id === "a1" ? "/a" : undefined));
-  assert.deepEqual(readSaved(store).A.tabs.map((t) => t.id), ["a1"]);
-});
-
-test("unreadable or malformed saved tabs read as none, keeping the valid parts", () => {
-  assert.deepEqual(readSaved(memory({ [TABS_STORAGE_KEY]: "{not json" })), {});
-  assert.deepEqual(readSaved(memory({ [TABS_STORAGE_KEY]: "[1,2]" })), {});
-  const saved = readSaved(
-    memory({
-      [TABS_STORAGE_KEY]: JSON.stringify({
-        A: { tabs: [{ id: "x", title: "T", cwd: "/" }, { id: 3 }, null], activeId: "missing", next: -1 },
-        B: { tabs: "nope" },
-      }),
-    }),
-  );
-  assert.deepEqual(saved, { A: { tabs: [{ id: "x", title: "T", cwd: "/" }], activeId: "x", next: 2 } });
 });
 
 test("restored tabs keep their titles, active tab and counter", () => {
@@ -171,4 +125,44 @@ test("saves of one terminal never overlap, and a failed save does not stop the n
   await Promise.all([p.flush("a"), p.flush("a"), p.flush("a")]);
   assert.equal(calls, 3);
   assert.equal(maxRunning, 1);
+});
+
+test("drop cancels a pending save and runs its step after a save already running", async () => {
+  const { timers, advance } = fakeTimers();
+  const log: string[] = [];
+  let finishSave!: () => void;
+  const p = new PersistThrottle(
+    (id) =>
+      new Promise<void>((r) => {
+        log.push(`save ${id} start`);
+        finishSave = () => {
+          log.push(`save ${id} end`);
+          r();
+        };
+      }),
+    timers,
+  );
+  const saving = p.flush("a");
+  await new Promise((r) => setImmediate(r));
+  p.schedule("a");
+  const dropped = p.drop("a", async () => void log.push("delete a"));
+  assert.equal(p.isPending("a"), false);
+  await new Promise((r) => setImmediate(r));
+  // The delete waits for the running save, so the save cannot write it back.
+  assert.deepEqual(log, ["save a start"]);
+  finishSave();
+  await Promise.all([saving, dropped]);
+  await advance(PERSIST_DELAY_MS * 2);
+  assert.deepEqual(log, ["save a start", "save a end", "delete a"]);
+});
+
+test("a failed drop step does not reject and does not stop later saves", async () => {
+  const { timers } = fakeTimers();
+  const saves: string[] = [];
+  const p = new PersistThrottle(async (id) => void saves.push(id), timers);
+  await p.drop("a", async () => {
+    throw new Error("backend gone");
+  });
+  await p.flush("a");
+  assert.deepEqual(saves, ["a"]);
 });

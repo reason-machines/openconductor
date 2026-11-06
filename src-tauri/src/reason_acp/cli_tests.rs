@@ -1,9 +1,9 @@
 //! Finding the CLI, the argument list and a real spawn of a fake `reason`.
 
 use super::cli::{find_reason_cli, refused_env, AgentProcess, LaunchConfig, LaunchError};
+use super::test_exe::write_executable;
 use std::fs;
 use std::io::{BufRead, BufReader};
-use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
@@ -17,8 +17,7 @@ fn temp_dir(name: &str) -> PathBuf {
 fn script(dir: &Path, body: &str, mode: u32) -> PathBuf {
     fs::create_dir_all(dir).unwrap();
     let path = dir.join("reason");
-    fs::write(&path, format!("#!/bin/sh\n{body}\n")).unwrap();
-    fs::set_permissions(&path, fs::Permissions::from_mode(mode)).unwrap();
+    write_executable(&path, &format!("#!/bin/sh\n{body}\n"), mode);
     path
 }
 
@@ -171,4 +170,37 @@ fn live_cli_answers_initialize() {
     for cap in ["list", "resume", "close"] {
         assert!(caps["sessionCapabilities"].get(cap).is_some(), "{cap}");
     }
+}
+
+#[test]
+fn whoami_lists_the_saved_workspaces_and_the_selected_one() {
+    use super::cli::parse_whoami;
+    // `reason whoami`, 0.2.690, on Sven's Mac (two of eleven workspaces).
+    let text = "sven@ara.so\nOrganization: Reason Engineering\nSaved workspaces:\n  \
+                reason-engineering (Reason Engineering) [selected]\n  \
+                reason-experiments (Reason Experiments)\n  \
+                hipaa-toggle-test-1028b (HIPAA toggle test (delete me))\n";
+    let w = parse_whoami(text);
+    assert_eq!(w.selected.as_deref(), Some("reason-engineering"));
+    assert_eq!(
+        w.saved,
+        [
+            "reason-engineering",
+            "reason-experiments",
+            "hipaa-toggle-test-1028b"
+        ]
+    );
+    // Signed in with an API key: no saved list.
+    assert!(parse_whoami("Organization: Reason Engineering\n")
+        .saved
+        .is_empty());
+}
+
+#[test]
+fn a_workspace_pins_the_agent_and_its_subcommands() {
+    let cfg = LaunchConfig::new("/usr/local/bin/reason").unwrap();
+    let pinned = cfg.in_workspace(Some("reason-tests")).unwrap();
+    assert_eq!(pinned.args()[..3], ["--workspace", "reason-tests", "acp"]);
+    assert_eq!(cfg.in_workspace(None).unwrap(), cfg);
+    assert!(cfg.in_workspace(Some("--evil")).is_err());
 }

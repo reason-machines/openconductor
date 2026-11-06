@@ -363,9 +363,10 @@ def pragma_schema(conn):
 
 
 def build_rebuild_db(tree, path, db):
-    """Apply the rebuild's migrations for one database. Migration directories with "cache" in their
-    path belong to cache.db; every other migrations/ directory belongs to conductor.db."""
-    migrations = sorted(p for p in tree.paths if re.search(r"(^|/)migrations/.*\.sql$", p)
+    """Apply the rebuild's migrations for one database. Migration directories (migrations/,
+    migrations-cache/, ...) with "cache" in their path belong to cache.db; every other one belongs
+    to conductor.db."""
+    migrations = sorted(p for p in tree.paths if re.search(r"(^|/)migrations[^/]*/[^/]*\.sql$", p)
                         and not p.startswith("evidence/") and not p.endswith(".down.sql")
                         and (("cache" in os.path.dirname(p).lower()) == (db == "cache")))
     conn = sqlite3.connect(path)
@@ -543,11 +544,17 @@ def probe_packaging(tree, pref):
         main_exe = nr["roots"][0]["image"]
         ours = {e["install_name"] for e in nr["edges"] if e["root"] == main_exe}
         meta["source"] += f', trace-dylib-resolution {app["dylib"]["evidence_id"]}'
+    divergences = load(os.path.join(EV, "packaging", "divergences.json"))
+    diverged_libs = divergences.get("linked_libraries", {})
     for lib in cd_dylibs:
         name = lib.rsplit("/", 1)[-1]
+        linked = ours is not None and lib in ours
+        d = diverged_libs.get(name)
+        detail = "" if ours is not None else "no REA dylib trace of a built app"
+        if not linked and d:
+            detail = f'{d["kind"]}: {d["reason"]}'
         items.append(item("packaging", "linked system library", name,
-                          "matched" if ours is not None and lib in ours else "missing",
-                          "" if ours is not None else "no REA dylib trace of a built app"))
+                          "matched" if linked else "missing", detail))
 
     tauri = cargo.get("tauri")
     tauri_v = tauri if isinstance(tauri, str) else (tauri or {}).get("version")
@@ -557,12 +564,17 @@ def probe_packaging(tree, pref):
     for plugin in pref["tauri_plugins"]:
         items.append(item("packaging", "tauri plugin", plugin, "matched" if plugin in cargo else "missing"))
 
-    res_conf = json.dumps(bundle.get("resources", ""))
+    # Bundle-relative targets of `bundle.resources` (a map of source -> target, or a list of sources).
+    res = bundle.get("resources") or {}
+    targets = set(res.values()) if isinstance(res, dict) else {os.path.basename(s) for s in res}
+    diverged = divergences.get("bundled_resources", {})
     for r in pref["resources"]:
         name = r.split("/", 1)[1]
-        base = os.path.basename(name)
-        present = base in res_conf or any(p.endswith(name) for p in tree.paths if not p.startswith("evidence/"))
-        items.append(item("packaging", "bundled resource", name, "matched" if present else "missing"))
+        present = name in targets or any(p == name or p.endswith("/" + name)
+                                         for p in tree.paths if not p.startswith("evidence/"))
+        d = diverged.get(name)
+        detail = "" if present or not d else f'{d["kind"]}: {d["reason"]}'
+        items.append(item("packaging", "bundled resource", name, "matched" if present else "missing", detail))
 
     items.append(item("packaging", "frontend", "embedded-frontend",
                       "matched" if conf.get("build", {}).get("frontendDist") else "missing",

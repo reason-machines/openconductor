@@ -33,7 +33,7 @@ fn round_trip_keeps_values_and_unknown_keys() {
 future_top = 1
 [git]
 branch_prefix_type = "custom"
-branch_prefix_custom = "sven"
+branch_prefix = "sven"
 future_git = "kept"
 [models]
 default = "sonnet"
@@ -48,7 +48,7 @@ region = "eu-west-1"
     )
     .unwrap();
     let mut s = load(&path).unwrap();
-    assert_eq!(s.git.branch_prefix_custom.as_deref(), Some("sven"));
+    assert_eq!(s.git.branch_prefix.as_deref(), Some("sven"));
     assert_eq!(s.models.codex.default_thinking_level, ThinkingLevel::High);
     assert_eq!(
         s.providers.effective(AgentKind::Claude).provider().kind(),
@@ -106,7 +106,7 @@ fn bad_values_are_rejected_on_load() {
         ("[general]\ntheme = \"purple\"", "unknown variant"),
         (
             "[git]\nbranch_prefix_type = \"custom\"",
-            "branch_prefix_custom is required",
+            "branch_prefix is required",
         ),
         ("[models]\ndefault = \"  \"", "models.default"),
         (
@@ -120,6 +120,18 @@ fn bad_values_are_rejected_on_load() {
         (
             "[appearance]\nmono_font = \"Fira\\\"; color: red\"",
             "appearance.mono_font",
+        ),
+        (
+            "[appearance]\nterminal_font_family = \"Fira}\"",
+            "appearance.terminal_font_family",
+        ),
+        (
+            "[appearance]\nterminal_font_size = 9",
+            "appearance.terminal_font_size",
+        ),
+        (
+            "[appearance]\nterminal_font_size = 21",
+            "appearance.terminal_font_size",
         ),
         (
             "[providers.claude]\nkind = \"codex_login\"",
@@ -152,6 +164,8 @@ fn appearance_round_trips_and_defaults_when_missing() {
     s.appearance.zoom_level_v2 = 1.1;
     s.appearance.low_contrast_dark_mode = true;
     s.appearance.mono_font = Some("iA Writer Mono".into());
+    s.appearance.terminal_font_family = Some("FiraCode Nerd Font".into());
+    s.appearance.terminal_font_size = 15;
     save(&path, &s).unwrap();
     assert_eq!(load(&path).unwrap().appearance, s.appearance);
     for zoom in [0.5, 0.7, 3.0] {
@@ -167,12 +181,12 @@ fn invalid_settings_are_not_written() {
     let before = fs::read_to_string(&path).unwrap();
     let mut s = Settings::default();
     s.git.branch_prefix_type = BranchPrefixType::Custom;
-    for bad in ["", "a..b", "-x", "a b", "x.lock", "a/"] {
-        s.git.branch_prefix_custom = Some(bad.into());
+    for bad in ["", "a..b", "-x", "a b", "x.lock", "a//", "/"] {
+        s.git.branch_prefix = Some(bad.into());
         assert!(save(&path, &s).is_err(), "{bad:?} accepted");
     }
     assert_eq!(fs::read_to_string(&path).unwrap(), before);
-    s.git.branch_prefix_custom = Some("team/sven".into());
+    s.git.branch_prefix = Some("team/sven".into());
     save(&path, &s).unwrap();
 }
 
@@ -222,4 +236,163 @@ fn git_flags_use_conductor_defaults_and_round_trip() {
         "{text}"
     );
     assert_eq!(load(&path).unwrap().git, s.git);
+}
+
+#[test]
+fn scrollback_limit_is_optional_and_round_trips_in_advanced() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[general]\ntheme = \"dark\"").unwrap();
+    assert_eq!(load(&path).unwrap().advanced, Advanced::default());
+    let mut s = Settings::default();
+    save(&path, &s).unwrap();
+    assert!(!fs::read_to_string(&path)
+        .unwrap()
+        .contains("terminal_scrollback_limit_bytes"));
+    s.advanced.terminal_scrollback_limit_bytes = Some(25_000_000);
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        text.contains("[advanced]\nterminal_scrollback_limit_bytes = 25000000"),
+        "{text}"
+    );
+    assert_eq!(load(&path).unwrap().advanced, s.advanced);
+}
+
+#[test]
+fn big_terminal_settings_are_optional_and_round_trip() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[general]\ntheme = \"dark\"").unwrap();
+    let loaded = load(&path).unwrap();
+    assert_eq!(loaded.experimental, Experimental::default());
+    assert_eq!(loaded.terminal, Terminal::default());
+    let mut s = Settings::default();
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(!text.contains("big_terminal_preset"), "{text}");
+    assert!(!text.contains("big_terminal_custom_commands"), "{text}");
+    s.experimental.experimental_big_terminal_mode = true;
+    s.terminal.big_terminal_preset = Some("custom:a1".into());
+    s.terminal.big_terminal_custom_commands = vec![
+        BigTerminalCustomCommand {
+            id: "a1".into(),
+            command: "my-agent --flag".into(),
+        },
+        BigTerminalCustomCommand {
+            id: "b2".into(),
+            command: String::new(),
+        },
+    ];
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        text.contains("[experimental]\nexperimental_big_terminal_mode = true"),
+        "{text}"
+    );
+    assert!(
+        text.contains("big_terminal_preset = \"custom:a1\""),
+        "{text}"
+    );
+    let back = load(&path).unwrap();
+    assert_eq!(back.experimental, s.experimental);
+    assert_eq!(back.terminal, s.terminal);
+}
+
+#[test]
+fn branch_prefix_reads_the_old_name_and_saves_conductors() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(
+        &path,
+        "[git]\nbranch_prefix_type = \"custom\"\nbranch_prefix_custom = \"old-\"\n",
+    )
+    .unwrap();
+    let s = load(&path).unwrap();
+    assert_eq!(s.git.branch_prefix.as_deref(), Some("old-"));
+    assert!(!s.git.extra.contains_key("branch_prefix_custom"));
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(text.contains("branch_prefix = \"old-\""), "{text}");
+    assert!(!text.contains("branch_prefix_custom"), "{text}");
+
+    fs::write(
+        &path,
+        "[git]\nbranch_prefix_type = \"custom\"\nbranch_prefix = \"new/\"\nbranch_prefix_custom = \"old-\"\n",
+    )
+    .unwrap();
+    assert_eq!(
+        load(&path).unwrap().git.branch_prefix.as_deref(),
+        Some("new/")
+    );
+}
+
+#[test]
+fn prompts_preview_urls_and_env_files_round_trip() {
+    let path = temp_dir().join(FILE_NAME);
+    let mut s = Settings::default();
+    s.prompts.general = Some("Use pnpm.".into());
+    s.prompts.resolve_merge_conflicts = Some("Prefer rebase.".into());
+    s.preview_urls = vec![
+        PreviewUrl {
+            name: Some("App".into()),
+            url: "http://localhost:$CONDUCTOR_PORT".into(),
+        },
+        PreviewUrl {
+            name: None,
+            url: "http://localhost:$((CONDUCTOR_PORT + 1))".into(),
+        },
+    ];
+    s.environment_variable_files = vec!["~/.env".into(), ".env.local".into()];
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        text.contains("[prompts]") && text.contains("general = \"Use pnpm.\""),
+        "{text}"
+    );
+    assert!(text.contains("environment_variable_files = ["), "{text}");
+    let back = load(&path).unwrap();
+    assert_eq!(back, s);
+    let defaults = toml::to_string_pretty(&Settings::default()).unwrap();
+    assert!(!defaults.contains("preview_urls") && !defaults.contains("environment_variable_files"));
+}
+
+#[test]
+fn bad_preview_urls_are_rejected() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "preview_urls = [{ name = 3, url = \"x\" }]\n").unwrap();
+    assert!(load(&path).is_err());
+    let mut s = Settings {
+        preview_urls: vec![PreviewUrl {
+            name: None,
+            url: "  ".into(),
+        }],
+        ..Settings::default()
+    };
+    assert!(matches!(save(&path, &s), Err(SettingsError::Invalid(_))));
+    s.preview_urls.clear();
+    s.environment_variable_files = vec![" ".into()];
+    assert!(matches!(save(&path, &s), Err(SettingsError::Invalid(_))));
+}
+
+#[test]
+fn diff_appearance_settings_default_and_round_trip() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(&path, "[appearance]\nzoom_level_v2 = 1.0").unwrap();
+    let loaded = load(&path).unwrap();
+    assert!(loaded.appearance.file_ligatures_enabled);
+    assert_eq!(loaded.appearance.color_vision, ColorVision::Default);
+    assert_eq!(loaded.appearance.code_theme, CodeTheme::Default);
+
+    let mut s = Settings::default();
+    s.appearance.file_ligatures_enabled = false;
+    s.appearance.color_vision = ColorVision::ProtanopiaDeuteranopia;
+    s.appearance.code_theme = CodeTheme::TokyoNight;
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(text.contains("file_ligatures_enabled = false"), "{text}");
+    assert!(text.contains("color_vision = \"protanopia-deuteranopia\""), "{text}");
+    assert!(text.contains("code_theme = \"tokyo-night\""), "{text}");
+    assert_eq!(load(&path).unwrap().appearance, s.appearance);
+
+    fs::write(&path, "[appearance]\ncode_theme = \"neon\"").unwrap();
+    let err = load(&path).unwrap_err().to_string();
+    assert!(err.contains("unknown variant"), "{err}");
 }

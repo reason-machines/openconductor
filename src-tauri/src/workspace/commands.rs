@@ -12,6 +12,7 @@
 //! })
 //! .invoke_handler(tauri::generate_handler![
 //!     workspace::commands::add_repository,
+//!     workspace::commands::ensure_repository,
 //!     workspace::commands::clone_repository,
 //!     workspace::commands::default_clone_directory,
 //!     workspace::commands::list_repositories,
@@ -28,9 +29,10 @@ use tauri::ipc::Channel;
 use tauri::{AppHandle, Manager, State};
 
 use super::git::BranchRef;
+use crate::db::Db;
+use crate::persistence_commands as persistence;
 use super::service::{CreateWorkspaceRequest, RepositoryInfo, WorkspaceService};
 use super::{Created, Workspace, WorkspaceState};
-use crate::settings::service::SettingsService;
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -76,13 +78,42 @@ pub struct CreatedWorkspaceDto {
     pub base_commit: String,
     pub fetched: bool,
     pub copied_files: Vec<String>,
-    /// Set when the "Set upstream on plain git push" setting could not be applied.
-    pub upstream_warning: Option<String>,
+    /// Log of the `git worktree add` script (`workspaces.initialization_log_path`).
+    pub initialization_log_path: Option<String>,
+    /// `git ls-files | wc -l` in the new worktree (`workspaces.initialization_files_copied`).
+    pub initialization_files_copied: i64,
+    /// Non-fatal initialization issues joined with a space (a failed
+    /// post-checkout hook, "Set upstream on plain git push" not applied, files
+    /// not copied). The frontend shows it as a persistent toast with "View logs".
+    pub auxiliary_failure_message: Option<String>,
+    /// `workspaces.number` given on creation (`W-<n>`); null if conductor.db could not record it.
+    pub number: Option<i64>,
 }
 
 #[tauri::command]
-pub async fn add_repository(service: State<'_, WorkspaceService>, path: String) -> Result<RepositoryDto, String> {
-    service.add_repository(path.as_ref()).map(repo_dto).map_err(|e| e.to_string())
+pub async fn add_repository(
+    service: State<'_, WorkspaceService>,
+    db: State<'_, Db>,
+    path: String,
+) -> Result<RepositoryDto, String> {
+    let repo = service.add_repository(path.as_ref()).map_err(|e| e.to_string())?;
+    persistence::on_repository_added(&db, &repo).await?;
+    Ok(repo_dto(repo))
+}
+
+/// JS: `invoke("ensure_repository", { path, repositoryId })`. The project a
+/// sidebar repo already is (by id, else by folder), registered only when the
+/// backend has none; unlike `add_repository` it never adds a `<name>-v1`.
+#[tauri::command]
+pub async fn ensure_repository(
+    service: State<'_, WorkspaceService>,
+    db: State<'_, Db>,
+    path: String,
+    repository_id: Option<String>,
+) -> Result<RepositoryDto, String> {
+    let repo = service.ensure_repository(repository_id.as_deref(), path.as_ref()).map_err(|e| e.to_string())?;
+    persistence::on_repository_added(&db, &repo).await?;
+    Ok(repo_dto(repo))
 }
 
 /// JS: `invoke("clone_repository", { url, parentDir, onProgress })` where
@@ -97,15 +128,18 @@ pub async fn clone_repository(
     parent_dir: String,
     on_progress: Channel<String>,
 ) -> Result<RepositoryDto, String> {
-    tauri::async_runtime::spawn_blocking(move || {
-        let service = app.state::<WorkspaceService>();
+    let cloner = app.clone();
+    let repo = tauri::async_runtime::spawn_blocking(move || {
+        let service = cloner.state::<WorkspaceService>();
         let mut send = |line: &str| {
             let _ = on_progress.send(line.to_string());
         };
-        service.clone_repository(&url, parent_dir.as_ref(), &mut send).map(repo_dto).map_err(|e| e.to_string())
+        service.clone_repository(&url, parent_dir.as_ref(), &mut send).map_err(|e| e.to_string())
     })
     .await
-    .map_err(|e| e.to_string())?
+    .map_err(|e| e.to_string())??;
+    persistence::on_repository_added(&app.state::<Db>(), &repo).await?;
+    Ok(repo_dto(repo))
 }
 
 /// JS: `invoke("default_clone_directory")`: the folder the clone dialog
@@ -158,6 +192,19 @@ pub async fn create_workspace(
     pr_number: Option<u64>,
 ) -> Result<CreatedWorkspaceDto, String> {
     let service = app.state::<WorkspaceService>();
+    let db = app.state::<Db>();
+    let repo = service
+        .repositories()
+        .into_iter()
+        .find(|r| r.id == repository_id)
+        .ok_or_else(|| format!("unknown repository: {repository_id}"))?;
+    let parent = base_branch.clone().filter(|b| !b.trim().is_empty()).unwrap_or_else(|| repo.default_branch.clone());
+    let pending =
+        persistence::on_create_started(&db, &repo, directory_name.as_deref(), branch_name.as_deref(), &parent).await;
+    let effective = service
+        .repository_root(&repository_id)
+        .ok()
+        .and_then(|root| crate::settings::effective::resolve(&root, None).ok());
     let req = CreateWorkspaceRequest {
         repository_id: repository_id.clone(),
         branch_name,
@@ -165,14 +212,30 @@ pub async fn create_workspace(
         base_branch,
         existing_branch: existing_branch.unwrap_or(false),
         pr_number,
-        // Unreadable settings fall back to Conductor's default (on).
-        push_auto_setup_remote: app
-            .state::<SettingsService>()
-            .get()
-            .map(|s| s.git.worktree_push_auto_setup_remote)
-            .unwrap_or(true),
+        // The repository's effective `git.worktree_push_auto_setup_remote`;
+        // unreadable settings fall back to Conductor's default (on).
+        push_auto_setup_remote: effective.as_ref().is_none_or(|e| e.git.worktree_push_auto_setup_remote.value),
+        file_include_globs: effective.and_then(|e| e.file_include_globs).map(|g| g.value),
     };
-    service.create_workspace(&req).map(|c| created_dto(&repository_id, c)).map_err(|e| e.to_string())
+    match service.create_workspace(&req) {
+        Ok(created) => {
+            let log = created.initialization_log_path.as_ref().map(|p| p.display().to_string());
+            let number = persistence::on_create_finished(
+                &db,
+                &repository_id,
+                &created.workspace,
+                &parent,
+                log.as_deref(),
+                created.initialization_files_copied,
+            )
+            .await;
+            Ok(CreatedWorkspaceDto { number, ..created_dto(&repository_id, created) })
+        }
+        Err(e) => {
+            persistence::on_create_failed(&db, pending).await;
+            Err(e.to_string())
+        }
+    }
 }
 
 /// JS: `invoke("list_workspaces", { repositoryId })`.
@@ -195,15 +258,15 @@ pub async fn list_workspaces(
 #[tauri::command]
 pub async fn rename_workspace_branch(
     service: State<'_, WorkspaceService>,
+    db: State<'_, Db>,
     workspace_id: String,
     branch_name: String,
 ) -> Result<WorkspaceDto, String> {
     let (repository_id, _) = workspace_id.rsplit_once('/').unwrap_or(("", ""));
     let repository_id = repository_id.to_string();
-    service
-        .rename_workspace_branch(&workspace_id, &branch_name)
-        .map(|w| workspace_dto(&repository_id, w))
-        .map_err(|e| e.to_string())
+    let w = service.rename_workspace_branch(&workspace_id, &branch_name).map_err(|e| e.to_string())?;
+    persistence::on_branch_renamed(&db, &workspace_id, &w.branch).await;
+    Ok(workspace_dto(&repository_id, w))
 }
 
 fn repo_dto(r: RepositoryInfo) -> RepositoryDto {
@@ -237,6 +300,9 @@ fn created_dto(repository_id: &str, c: Created) -> CreatedWorkspaceDto {
         base_commit: c.base_commit,
         fetched: c.fetched,
         copied_files: c.copied_files.into_iter().map(|p| p.display().to_string()).collect(),
-        upstream_warning: c.upstream_warning,
+        initialization_log_path: c.initialization_log_path.map(|p| p.display().to_string()),
+        initialization_files_copied: c.initialization_files_copied,
+        auxiliary_failure_message: c.auxiliary_failure_message,
+        number: None,
     }
 }

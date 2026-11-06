@@ -18,6 +18,12 @@ What the reference app (Conductor v0.87.6) does when a workspace is created, the
 | Progress | `frontend/copy-catalog.json` "Creating workspace...", "Detecting setup script...", "Running setup script...", "Setup script failed", "Workspace initializing", "Cannot rename while workspace is initializing"; `ipc` literal `setting_up`; `workspaces.state`, `setup_log_path`, `initialization_log_path` | `initializing` -> `setting_up` -> ready, with setup-script sub-states |
 | First session on create | `runtime/conductor-cli-help.txt`: `workspace create ... --agent --model --effort --message` "Create a workspace (and first session)" | Creating a workspace also starts its first session with the first message |
 
+## Workspace number (`create.number`)
+
+- **Conductor** (decoded frontend `assets/index-BGEQ8YjU.js` from `/Applications/Conductor.app` on "sven m5 max", sha256 of `renderApp-D_fmY7hW.js` `5199d392…`; read 2026-11-05): the number is not computed by the app. After `POST <hostingServerUrl>/workspaces` (its server, "roundhouse") the response's `number` is written with `UPDATE workspaces SET number = ? WHERE local_id = ?`; a failure logs "Failed to persist workspace number" and the workspace keeps no number (offset ~1,016,818). The Experimental setting `experimental_show_workspace_numbers` ("Show workspace numbers", search terms "number", "W-") shows it as `W-<n>` (`renderApp` offset ~10,654,887).
+- **Ours** (no hosting server): `begin_workspace` gives the `initializing` row `MAX(number) + 1` over all workspaces (so numbers are global, not per repository), and `finish_workspace` keeps it. A failed create deletes its row, so its number can be handed out again; archived rows keep theirs, so a number is never reused while its workspace exists. Replacing a leftover archived row with the same id counts as a new workspace and gets a new number. Workspaces imported from before the database have none. `create_workspace` returns `number`, `db_list_workspaces` lists it, and the frontend keeps it on `Workspace.number`. Display (`W-<n>`) belongs to the sidebar and Home list.
+- REA gap: `trace-javascript-semantics` cannot parse the 11.6 MB render chunk (see `evidence/screens/home.md`), so this came from reading the decoded chunk.
+
 ## Our choices where the evidence is silent
 
 - City list and tier weights (70 / 22 / 7 / 1) are ours; the reference list was not extracted.
@@ -45,3 +51,139 @@ What the reference app (Conductor v0.87.6) does when a workspace is created, the
 - The desktop app lists open PRs and GitHub issues through `pr_list_open` / `gh_issue_list_open` (#203, gh in the repository's checkout, newest-updated first, 100 each). Errors prefixed `no_github:` show "Set up GitHub in settings to include ...", `no_remote:` (or a repository with no local checkout) shows "Add a GitHub repository remote to include ...", anything else shows the backend's text. Conductor fills this picker from the GitHub REST API with 50 of each (decoded frontend, per the PR Session); its search across all open PRs/issues and lookup by number are not built, so a pasted reference only matches the loaded list. Linear issues have no backend, so the desktop app lists none. The browser stand-in still uses samples. Creating from an existing branch or PR head sends `existingBranch: true` to `create_workspace` (#106), which checks out the local branch or tracks `origin/<branch>`. A PR also sends `prNumber`, so a fork PR whose branch is not on origin is fetched from `pull/N/head` (#197). A fork PR (`isCrossRepository`) is checked out as `<headOwner>/<branch>`, because a fork branch named like an origin branch (often `main`) would otherwise check out origin's branch instead of the PR; that naming is ours, the evidence does not show how Conductor names fork PR branches.
 - `src/workspace/repoPicker.ts`: clone URL parsing and the already-exists match, tested by `src/workspace/repoPicker.test.ts`; `src/components/AddRepositoryMenu.tsx` is the menu and clone box.
 - `src/workspace/setupWatch.ts`: after `create_workspace` the dialog calls `scripts_config` ("Detecting setup script...") and, when `.setup` is set, `setup_script_start` with `workspaceRef(repo, ws)` and the base branch as `targetBranch` (#144, #157). `setupWatch` keeps "Running setup script..." on that workspace until `setupFinished` on `scripts://event` and returns the failure toast; tested by `src/workspace/setupWatch.test.ts`. `src/workspace/useSetupWatch.ts` mounts the listener in `App` and the header flag in `WorkspaceView`. Setup log and controls are the Setup tab (`src/components/ScriptsPanel.tsx`).
+
+## Initializing row (create.initializing)
+
+REA, renderApp chunk (read as data): `Y5e` is a `pendingLaunches` store. `addPendingLaunch` replaces any entry with the same `localWorkspaceId`, stamps `startedAt`, and a 120 s timer drops it unless it was re-added; `removePendingLaunch` runs when creation finishes or fails. The repository group `Dra` takes `pendingWorkspaceIds` and renders `(!collapsed || pending.length > 0)`: pending rows first (`Ora`), then the workspaces only when expanded. `Ora` is an inert row (`pointer-events-none`, `role="status"`, `aria-label="Creating workspace..."`, `displayName: "Untitled"`, status `setting-up`, `isSetupActive`).
+
+Ours: `src/workspace/pendingLaunches.ts` (same add/replace, 120 s expiry, remove), `PendingWorkspaceRow.tsx` (`RepoWorkspaceList` in the sidebar repo group), and the create dialog adds a launch on submit and removes it once the workspace is added or creation fails. Conductor's loader is an animated sprite (`setting-up-loader`); ours is a 14 px spinner in the same muted colour.
+
+## Root directory (create.worktree)
+
+REA: the decoded frontend (`renderApp` and `index` chunks pulled from
+`/Applications/Conductor.app`) read with byte offsets.
+
+- Setting `conductor_root_path` (index chunk ~2,255,075, `P_`): when unset the
+  root is `<home>/conductor`. Clones default to `<root>/repos` (`Yce`),
+  workspaces to `<root>/workspaces` (`uI`), archived contexts to
+  `<root>/archived-contexts`. A storage-v3 repository's workspaces directory
+  is `<workspaces root>/<repo name>` (`Ffe`, ~3,329,057), shown read-only as
+  "Workspaces path" in repo settings › Misc (`misc:workspaces-path`,
+  renderApp ~10,809,878).
+- Settings › Advanced opens with "Conductor root directory"
+  (`advanced:conductor-root`): a read-only text field and Browse. A different
+  folder opens "Change root path?" with the old and new paths and a
+  destructive "Remove all and change" button (renderApp ~10,892,738).
+- `changeRootPath` (renderApp ~10,541,944): stop runs, setups and sessions,
+  `DELETE FROM attachments`, `diff_comments`, `session_messages`, `sessions`,
+  `workspaces`, `repos`; save the setting, delete `last_clone_directory`,
+  `mkdir -p "<new>/repos" "<new>/workspaces" "<new>/archived-contexts"`,
+  then reload and go to `/` with "Conductor root path changed successfully".
+
+Ours (`src-tauri/src/root_path_commands.rs`, `WorkspaceManager::with_root`,
+`src/settings/RootPathRow.tsx`): the same setting key, layout, rows, dialog
+copy and wipe (`openconductor_db::maintenance::forget_repositories`, plus the
+repository registry). Deliberate differences: the default root is the app
+data directory, so OpenConductor never shares `~/conductor` with an installed
+Conductor; the directories are created before the wipe, so an unwritable
+root changes nothing; archive records live in `<root>/archived`; the app
+restarts on the new root instead of reloading in place, because the
+workspace service reads the root at startup.
+
+
+## Create composer and page (create.page)
+
+REA: the decoded frontend chunks from `/Applications/Conductor.app` on
+"sven m5 max" (`renderApp-D_fmY7hW.js`, read as data with byte offsets).
+
+- Opening create (`g5`, ~7,339,960): when the user setting
+  `experimental_new_workspace_page` is off (and the organization is not a
+  cloud one) it opens dialog `NU`; otherwise it navigates to `/create`.
+- The setting is Settings › Experimental "New workspace page", "Full-screen
+  workspace creation", user scope, default off, search terms "create
+  workspace", "dispatcher", "home page" (~10,697,900). It is stored with
+  `f6({key, value})` in the settings table, not settings.toml.
+- Dialog `pya` (~11,048,900): `max-w-3xl gap-0 border-none bg-transparent p-0
+  shadow-none`, `topEdgeAnchored`, no initial focus on the dialog itself;
+  screen-reader title "New workspace" and description "Draft the first
+  message, then create and send it."; Escape closes it.
+- Route `/create` (`Q7a` -> `$Ca` -> `zCa`, ~11,520,273 and ~11,287,700):
+  `flex h-full flex-col bg-background`; a `pt-9` drag region holding a
+  "Toggle left sidebar" button only while the sidebar is hidden (`UCa`); a
+  scroll area `items-start justify-center px-6 pb-20` with a `max-w-3xl
+  pt-[clamp(3rem,12vh,8rem)]` column; a cloud-only logo; then the composer.
+  The page has a screen-reader `h1` "Create workspace" (`oya`, shown when
+  there is no `closeDialogId`).
+- Composer `oya` -> `Hji` (~11,035,000 and ~9,770,840): placeholder "What do
+  you want to work on?", box `min-h-[216px]`, editor `min-h-[142px]
+  max-h-[312px]`, `eyebrowVariant` "attached" in the dialog (the row joined
+  to the card's top, `rounded-t-lg border px-4 py-2`) and "floating" on the
+  page (`mb-2` above the card). The eyebrow row is the repo picker, the
+  target branch picker, then right-aligned the create-from picker
+  (`l4a`). Bottom-left is the model picker `RNi` (agent, model, effort);
+  bottom-right the attach button and the submit button `sQo`: label
+  "Create", title "Create workspace <key>", key `chat.submitMessage`
+  (`rQo`). Create is enabled once a repository is chosen (`Ws`); the first
+  message is optional. There is no workspace-name field: the workspace
+  takes its placeholder city name.
+- The top tab strip that lists `/create` as a "new" tab (`Bsa`, `Lsa`) only
+  renders for cloud organizations (`A9e`), so it is not built.
+
+Ours: `src/components/CreateWorkspaceComposer.tsx` (shared composer),
+`CreateWorkspaceDialog.tsx` (dialog), `CreateWorkspacePage.tsx` (page),
+`src/workspace/launchModel.ts` (model and effort), the
+`experimental_new_workspace_page` app preference, and `App.tsx` choosing
+the page or the dialog for every create entry point (Cmd+N, the sidebar
+Create row and each repository's +, the palette, the All workspaces
+button). A `/create` start URL opens the page; `?dialog=create` the dialog.
+Choosing a workspace, Back, or creating one leaves the page.
+
+Differences and gaps:
+
+- The repository, branch, model and effort pickers are native selects, not
+  Conductor's searchable menus; the model menu has no favorites.
+- No attach button: the create flow has no attachment path yet.
+- The chosen model and effort go into the create request's `firstSession`,
+  but the chat still starts its agent without them (chat.model-picker owns
+  passing them into the launch).
+- "Create in section" waits on sidebar sections (create.in-section).
+- The workspace-name field and its rarity badge are gone, as in Conductor;
+  rename the workspace afterwards.
+
+## Initialization log (create.initializing)
+
+REA, decoded `assets/index-BGEQ8YjU.js` (3,493,297 bytes, sha256 `b5b01f33…`, the copy REA extracted from `/Applications/Conductor.app` on "sven m5 max" into `~/code/conductor-rea-work/frontend/dist/assets/`), read as data on 2026-11-05 with byte offsets:
+
+- `Jfe` (~3,408,598): an internal script is written to `<tmp>/conductor-script-<Date.now()>-<Math.random().toString(36).substring(7)>.sh` (local `<tmp>` is `$TMPDIR`) and run as `"<shell>" "<script>" < /dev/null > "<tmp>/conductor-<same ms>-<same rand>.log" 2>&1`; the script is removed. When that command exits non-zero and printed something itself, `\n\n--- Additional Output ---\nExit code: N\n\nStdout:\n…\n\nStderr:\n…` is appended to the log with `echo`. Returns `{exitCode, stdout, stderr, logFilePath}`, or `{exitCode: 1, error: "Failed to write script: …" | "Failed to execute script: …"}` without a log. `Zfe` prefixes `set -e` and `cd "<workingDirectory>"`; the shell is the user's (`GI()`) locally.
+- `UYe` (~990,064): `git worktree add '<path>' -b '<branch>' '<rev>'` (rev = the resolved commit of the remote branch) or `git worktree add '<path>' '<existing branch>'`, run with `Zfe` in the main worktree. On a non-zero exit, if `git worktree list --porcelain` has `worktree <path>` the failure is non-fatal: logged as "Worktree created at … but post-checkout hook failed: …" and the auxiliary message becomes "Something failed while creating your workspace. Check the logs to see what went wrong." Otherwise it throws `hre(pre(result))`.
+- `pre` (~992,900): the first non-empty of `stderr`, `stdout`, `error`, then `cat '<logFilePath>'`, else `exit code N`. `hre`: a `fatal: cannot lock ref 'refs/heads/<a>': 'refs/heads/<b>' exists; cannot create 'refs/heads/<a>'` line with `<a>` under `<b>/` gives "Git won't let us create branch "<a>" because "<b>" already exists. Rename or delete "<b>", or change your git prefix in settings."; anything else is "Failed to create worktree: <text>".
+- Then, in order: push upstream (`cre`, its warning) and the `.worktreeinclude` copy (a throw becomes "Couldn't copy files from .worktreeinclude: <error>" and returns early). `Lj` joins the messages with a space.
+- `qYe` (~995,649): `cd "<path>" && git ls-files | wc -l` (0 when it does not parse), then `UPDATE workspaces SET state = 'setting_up', initialization_log_path = ?, initialization_files_copied = ? WHERE local_id = ?` with the worktree-add log. So `initialization_files_copied` is the number of tracked files in the new worktree, not the number of files copied. With an auxiliary message: logger.warn "Workspace <id> had non-fatal initialization issues. Workspace created successfully. See logs at: <path>" and `notifications.workspaceError({message, localWorkspaceId, duration: Infinity, action: {label: "View logs", onClick: open "<path>"}})`, the action only when there is a log path. Then the `initializing -> setting_up` transition.
+
+Ours:
+
+- `src-tauri/src/workspace/init_log.rs`: `run_internal_script` / `run_logged` (Zfe/Jfe), `failure_output` (pre), `worktree_failure_message` (hre), `join_messages` (Lj). `WorkspaceManager::create` runs `git worktree add` through it, from the resolved base commit for a new branch as Conductor does; tracking an `origin/<branch>` and checking out a local branch keep our forms. The failure is `WorkspaceError::WorktreeFailed` with that text. Push-upstream and copy failures are now non-fatal and joined into `Created.auxiliary_failure_message`; `Created.initialization_log_path` and `initialization_files_copied` (`git ls-files` count) come back with it.
+- `create_workspace` returns `initializationLogPath`, `initializationFilesCopied` and `auxiliaryFailureMessage` (no longer `upstreamWarning`, which is part of the message). `persistence::record_initialization` runs `openconductor_db::workspaces::begin_setup` (the same UPDATE) and then `finish_setup`: Conductor keeps the row `setting_up` until setup ends, while ours tracks setup in the scripts backend, so the row goes on to `ready`.
+- `src/workspace/initIssues.ts`: `createWorkspace` (api.ts) reports the message; `useInitIssues` (App) shows it as an error toast that stays until dismissed, with "View logs" opening the log through `plugin:opener|open_path` (Conductor runs `open "<path>"`). Every create path goes through it, Quick start included. In a plain browser, `?init-issue` and `?upstream-warning` preview it.
+- Deliberate differences: paths in the script are single-quoted (Conductor double-quotes `cd "<dir>"`); `failure_output` trims trailing whitespace from the log text; the outer command runs under `/bin/sh -c`; the random part is six base-36 characters.
+
+REA gaps:
+
+- `rea trace-javascript-semantics` needs `analyze-javascript-application` Evidence for this chunk; looking up the saved Evidence on the Mac through `devices exec` timed out at the 60 s cap, so the functions above come from reading the REA-extracted chunk as text, not a REA semantic trace.
+- The decoded copy in Session a4283992's checkout was not reachable from this Session's cloud machine; the same file (same sha256 as `evidence/pr/NOTES.md`) was read on the Mac instead.
+
+## Create starts on the sidebar's project filter
+
+REA: decoded `renderApp-D_fmY7hW.js` from `/Applications/Conductor.app` on
+"sven m5 max", read as data. The composer `oya` (~11,036,000) reads
+`sidebar_repo_filter` and hands it to `K4a`, whose resolver `q4a`
+(~11,027,112) picks the first available of: the requested repository, the
+last repository chosen in the composer (`dispatcher-state-v1`
+`lastRepositoryIdByOrg`), the composer's current one, the sidebar filter, then
+the first repository. `g5` only forwards what its caller passes.
+
+Ours (`createRepoDefault` in `src/home/repoFilter.ts`, called from `openDialog`
+in `src/App.tsx`): requested repository (the caller's, else the open
+workspace's), then the sidebar filter, then the first repository. Deliberate
+difference: OpenConductor does not remember a last-chosen composer repository
+yet, so that step is skipped.
