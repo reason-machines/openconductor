@@ -124,12 +124,15 @@ export function ReasonTab({ settings, save, reload }: AgentTabProps) {
           onSave={async (value) => {
             setProvider(await connectProvider("reason", reasonProviderFor("apikey"), [{ key: REASON_KEY, value }]));
             reload();
+            // The key lives in the Keychain, not settings.toml: ask `reason status` again with it.
+            refresh();
           }}
           onDelete={async () => {
             // Disconnect deletes the key and returns to the login; keep the API key card selected.
             await disconnectProvider("reason");
             setProvider(await connectProvider("reason", reasonProviderFor("apikey"), []));
             reload();
+            refresh();
           }}
         />
       )}
