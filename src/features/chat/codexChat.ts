@@ -169,10 +169,10 @@ export function submitCodex(chatId: string, cwd: string, text: string, attachmen
   setQueue(c, Q.submit(c.view.queue, text, "queue", new Date(), attachments));
 }
 
-/** Stop: interrupts the running turn. */
+/** Stop: interrupts the running turn. A chat Codex never ran has nothing to stop. */
 export function stopCodex(chatId: string): void {
-  const c = chat(chatId);
-  setQueue(c, Q.stop(c.view.queue));
+  const c = chats.get(chatId);
+  if (c) setQueue(c, Q.stop(c.view.queue));
 }
 
 export function codexQueueAction(chatId: string, action: Q.QueueAction): void {
