@@ -16,7 +16,7 @@ use super::claude::{AnthropicApi, ClaudeLogin};
 use super::codex::{CodexLogin, OpenAiApi};
 use super::env::{AgentKind, LaunchEnv};
 use super::provider::{check_secret, Provider, ProviderError};
-use super::reason::ReasonLogin;
+use super::reason::{ReasonApi, ReasonLogin};
 use super::secret::{SecretStore, SecretString};
 
 /// Provider kinds earlier builds could store and that are gone: Claude Code
@@ -40,6 +40,7 @@ pub enum ProviderConfig {
     CodexLogin(CodexLogin),
     OpenaiApi(OpenAiApi),
     ReasonLogin(ReasonLogin),
+    ReasonApi(ReasonApi),
 }
 
 impl ProviderConfig {
@@ -50,6 +51,7 @@ impl ProviderConfig {
             ProviderConfig::CodexLogin(p) => p,
             ProviderConfig::OpenaiApi(p) => p,
             ProviderConfig::ReasonLogin(p) => p,
+            ProviderConfig::ReasonApi(p) => p,
         }
     }
 
@@ -59,7 +61,7 @@ impl ProviderConfig {
         match agent {
             AgentKind::Claude => ProviderConfig::ClaudeLogin(ClaudeLogin {}),
             AgentKind::Codex => ProviderConfig::CodexLogin(CodexLogin {}),
-            AgentKind::Reason => ProviderConfig::ReasonLogin(ReasonLogin {}),
+            AgentKind::Reason => ProviderConfig::ReasonLogin(ReasonLogin::default()),
         }
     }
 
@@ -232,6 +234,8 @@ mod tests {
             r#"{"kind":"codex_login"}"#,
             r#"{"kind":"openai_api"}"#,
             r#"{"kind":"reason_login"}"#,
+            r#"{"kind":"reason_login","source":"cli"}"#,
+            r#"{"kind":"reason_api"}"#,
         ];
         for json in all {
             let config = parse(json);

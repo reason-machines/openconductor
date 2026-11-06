@@ -25,7 +25,8 @@ export type ProviderKind =
   | "anthropic_api"
   | "codex_login"
   | "openai_api"
-  | "reason_login";
+  | "reason_login"
+  | "reason_api";
 export interface ProviderConfig {
   kind: ProviderKind;
   [option: string]: unknown;
@@ -46,6 +47,8 @@ export interface Settings {
   /** Advanced › executable paths; blank means the agent on PATH. */
   claude_code_executable_path?: string | null;
   codex_executable_path?: string | null;
+  /** Agents › Reason › "Reason executable path"; blank uses the installed `reason`. */
+  reason_executable_path?: string | null;
   /** Advanced › "SSH private key path". */
   ssh_key_path?: string | null;
   /** Account › "Claude Code tool approvals"; off by default. */
@@ -122,6 +125,8 @@ export interface Settings {
   environment_variable_files?: string[];
   /** Custom instructions per action (Conductor's `[prompts]`); repository files override each. */
   prompts?: Partial<Record<PromptKind, string | null>> & { [extra: string]: unknown };
+  /** `[reason]`: the workspace, model and effort new Reason chats start with. */
+  reason?: { workspace?: string | null; model?: string | null; reasoning_effort?: string | null; [extra: string]: unknown };
   /** Conductor's "Big terminal" settings tab (id `terminal`). */
   terminal?: {
     /** A built-in preset or `custom:<id>`; absent or unknown means Claude. */

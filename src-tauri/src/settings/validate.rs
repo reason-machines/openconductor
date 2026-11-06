@@ -80,11 +80,25 @@ pub fn validate(s: &Settings) -> Result<(), SettingsError> {
             &s.claude_code_executable_path,
         ),
         ("codex_executable_path", &s.codex_executable_path),
+        ("reason_executable_path", &s.reason_executable_path),
         ("ssh_key_path", &s.ssh_key_path),
     ] {
         if let Some(v) = value.as_deref().filter(|v| !v.trim().is_empty()) {
             if v.chars().any(char::is_control) {
                 return invalid(format!("{key} must be a single-line path"));
+            }
+        }
+    }
+    for (key, value) in [
+        ("reason.workspace", &s.reason.workspace),
+        ("reason.model", &s.reason.model),
+        ("reason.reasoning_effort", &s.reason.reasoning_effort),
+    ] {
+        if let Some(v) = value.as_deref() {
+            if !reason_value(v) {
+                return invalid(format!(
+                    "{key} {v:?} is not a Reason slug, model id or effort level"
+                ));
             }
         }
     }
@@ -140,4 +154,13 @@ fn valid_branch_prefix(p: &str) -> bool {
         && !p.contains("//")
         && !p.contains("@{")
         && !p.chars().any(|c| c.is_control() || " ~^:?*[\\".contains(c))
+}
+
+/// A value `reason` takes as `--workspace`, `--model` or
+/// `--reasoning-effort` (`reason_acp::cli` passes nothing else).
+fn reason_value(v: &str) -> bool {
+    !v.is_empty()
+        && !v.starts_with('-')
+        && v.chars()
+            .all(|c| c.is_ascii_alphanumeric() || "._-:/".contains(c))
 }

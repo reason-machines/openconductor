@@ -16,10 +16,16 @@ pub mod keys {
     pub const ANTHROPIC_API_KEY: &str = "anthropic_api_key";
     pub const ANTHROPIC_AUTH_TOKEN: &str = "anthropic_auth_token";
     pub const OPENAI_API_KEY: &str = "openai_api_key";
+    pub const REASON_API_KEY: &str = "reason_api_key";
 
     /// Every key a provider may read; a store implementation may use it to
     /// list or wipe provider secrets.
-    pub const ALL: &[&str] = &[ANTHROPIC_API_KEY, ANTHROPIC_AUTH_TOKEN, OPENAI_API_KEY];
+    pub const ALL: &[&str] = &[
+        ANTHROPIC_API_KEY,
+        ANTHROPIC_AUTH_TOKEN,
+        OPENAI_API_KEY,
+        REASON_API_KEY,
+    ];
 }
 
 /// A secret value. `Debug` and `Display` never show it; read it with

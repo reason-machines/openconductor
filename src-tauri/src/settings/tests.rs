@@ -449,3 +449,22 @@ fn diff_appearance_settings_default_and_round_trip() {
     let err = load(&path).unwrap_err().to_string();
     assert!(err.contains("unknown variant"), "{err}");
 }
+
+#[test]
+fn reason_settings_round_trip_and_reject_flag_like_values() {
+    let s: Settings = toml::from_str(
+        "reason_executable_path = \"/opt/reason\"\n[reason]\nworkspace = \"reason-tests\"\nmodel = \"byok:anthropic:claude-opus-5-5\"\nreasoning_effort = \"high\"\n",
+    )
+    .unwrap();
+    assert_eq!(s.reason.workspace.as_deref(), Some("reason-tests"));
+    assert_eq!(
+        s.executable(AgentKind::Reason),
+        std::path::PathBuf::from("/opt/reason")
+    );
+    assert!(validate(&s).is_ok());
+    let back: Settings = toml::from_str(&toml::to_string(&s).unwrap()).unwrap();
+    assert_eq!(back, s);
+    let mut bad = s.clone();
+    bad.reason.workspace = Some("--evil".into());
+    assert!(validate(&bad).is_err());
+}

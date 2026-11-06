@@ -72,8 +72,7 @@ impl AgentKind {
                 vars::OPENAI_PROJECT,
                 vars::CODEX_ACCESS_TOKEN,
             ],
-            // Reason routes through its own signed-in CLI.
-            AgentKind::Reason => &[],
+            AgentKind::Reason => &[vars::REASON_API_KEY],
         }
     }
 }
@@ -110,6 +109,7 @@ pub mod vars {
     pub const OPENAI_BASE_URL: &str = "OPENAI_BASE_URL";
     pub const OPENAI_ORGANIZATION: &str = "OPENAI_ORGANIZATION";
     pub const OPENAI_PROJECT: &str = "OPENAI_PROJECT";
+    pub const REASON_API_KEY: &str = "REASON_API_KEY";
 }
 
 /// One environment value for an agent process.

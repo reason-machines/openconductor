@@ -117,7 +117,7 @@ impl Settings {
         let configured = match agent {
             AgentKind::Claude => nonblank(&self.claude_code_executable_path),
             AgentKind::Codex => nonblank(&self.codex_executable_path),
-            _ => None,
+            AgentKind::Reason => nonblank(&self.reason_executable_path),
         };
         PathBuf::from(configured.unwrap_or(agent.as_str()))
     }
