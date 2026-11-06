@@ -478,6 +478,7 @@ pub fn run() {
             claude_chat::commands::claude_respond,
             agent_commands::agent_slash_commands,
             e2e::e2e_report,
+            e2e::e2e_secret,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,
             terminal_commands::pty_resize,

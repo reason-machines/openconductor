@@ -56,13 +56,22 @@ export function parsePastedVars(text: string): StoredVar[] | null {
  * (18)"), then "Env files". Variables are stored in conductor.db's `env_vars`
  * and reach terminals and scripts through the backend's `local_env`.
  */
+// The variables last listed: the page opens on them (no table popping in a frame
+// later) and lists them again behind it.
+let lastVars: StoredVar[] | null = null;
+
 export function EnvironmentPage({ settings, save }: { settings: Settings; save: (next: Settings) => void }) {
-  const [vars, setVars] = useState<StoredVar[] | null>(null);
+  const [vars, setVarsState] = useState<StoredVar[] | null>(() => lastVars);
+  const setVars = (next: StoredVar[]) => {
+    lastVars = next;
+    setVarsState(next);
+  };
   const [adding, setAdding] = useState(false);
   const [showDocumented, setShowDocumented] = useState(false);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     store.list().then(setVars, (e) => setError(errorText(e)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const run = (p: Promise<StoredVar[]>) => p.then(setVars, (e) => setError(errorText(e)));
   const documented = DOCUMENTED.filter((d) => !vars?.some((v) => v.key === d.name));
