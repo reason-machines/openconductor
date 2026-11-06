@@ -514,12 +514,18 @@ fn models_lists_what_a_new_session_offers_without_keeping_it() {
     assert_eq!(list.current, "default");
     let values: Vec<&str> = list.options.iter().map(|o| o.value.as_str()).collect();
     assert_eq!(
-        values,
+        &values[..3],
         [
             "default",
             "byok:anthropic:claude-opus-5-5",
             "byok:openai-codex:gpt-5.6-sol"
         ]
+    );
+    assert_eq!(list.options[0].name, "Auto");
+    assert_eq!(list.options[1].name, "Claude Opus 5.5");
+    assert_eq!(
+        list.options[1].description.as_deref(),
+        Some("Claude · Subscription")
     );
     assert!(started(&log).is_empty(), "no chat gets a Session");
 }

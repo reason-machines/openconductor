@@ -30,7 +30,7 @@ export interface ModelPickerProps {
   children?: ReactNode;
   /** Name for a listed entry that is not a Conductor model id (an agent such as Codex). */
   itemLabel?: (choice: ModelChoice) => string | undefined;
-  /** Every model the agent offers (Reason's list), listed after the favourites; none: favourites only, at most five entries. */
+  /** Every model the agent offers (Reason's list), listed before the favourites; none: favourites only, at most five entries. */
   models?: readonly ModelChoice[];
   /** The agent's own name for a model id (Reason's "Claude Opus 5.5"), for the chip and the list. */
   modelName?: (model: string) => string | undefined;
@@ -56,7 +56,8 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
   const current = effectiveEffort(value.model, value.effort);
   const showFast = fastSupported && fastModeAvailable(value.model);
   const items = useMemo(() => {
-    const listed = [value, ...favorites, ...(models ?? [])];
+    // The agent's models come before the other favourites (the Codex and Claude Code entries).
+    const listed = [value, ...(models ?? []), ...favorites];
     const unique = listed.filter((f, i) => listed.findIndex((g) => same(f, g)) === i);
     const list = models ? unique : unique.slice(0, 5);
     const q = query.trim().toLowerCase();

@@ -42,7 +42,8 @@ tool_call_update to completed, with ACP kind, rawInput and _meta.claudeCode.tool
 LISBON_PROMPT, the fixture's user message, is an alias).
 
 session/new reports configOptions `model` and `reasoning_effort` like
-Reason does (session/close forgets an unprompted one); `session get --json`
+Reason does (session/close drops one that never got a prompt, as Reason
+keeps none); `session get --json`
 reports the model a Session ran on (Claude Opus 5.5 for "default") and its
 reasoning effort; session/set_config_option with a value an option does not
 offer resets it to "default" without an error, as Reason does.
@@ -53,15 +54,31 @@ import sys
 import threading
 import urllib.parse
 
+# Values, names and descriptions as `reason acp` 0.2.692 reports them (a subset).
+MODELS = [
+    ("default", "Auto", "Your Workspace's default"),
+    ("byok:anthropic:claude-opus-5-5", "Claude Opus 5.5", "Claude · Subscription"),
+    ("byok:openai-codex:gpt-5.6-sol", "GPT-5.6-Sol", "ChatGPT · Subscription"),
+    ("byok:anthropic:claude-sonnet-5-5", "Claude Sonnet 5.5", "Claude · Subscription"),
+    ("byok:anthropic:claude-haiku-5-5", "Claude Haiku 5.5", "Claude · Subscription"),
+    ("byok:anthropic:claude-opus-4-8", "Claude Opus 4.8", "Claude · Subscription"),
+    ("byok:openai-codex:gpt-6.1-sol", "GPT-6.1-Sol", "ChatGPT · Subscription"),
+]
 OPTIONS = {
-    "model": ("Model", ["default", "byok:anthropic:claude-opus-5-5", "byok:openai-codex:gpt-5.6-sol"]),
+    "model": ("Model", [m[0] for m in MODELS]),
     "reasoning_effort": ("Reasoning", ["default", "low", "medium", "high", "xhigh", "max"]),
 }
+NAMES = {m[0]: (m[1], m[2]) for m in MODELS}
+
+
+def option(value):
+    name, description = NAMES.get(value, (value, None))
+    return {"value": value, "name": name, **({"description": description} if description else {})}
 
 
 def config_options(config):
     return [{"id": k, "name": name, "type": "select", "currentValue": config.get(k, "default"),
-             "options": [{"value": v, "name": v} for v in values]}
+             "options": [option(v) for v in values]}
             for k, (name, values) in OPTIONS.items()]
 
 HOME = os.path.realpath(os.getcwd())
@@ -294,6 +311,11 @@ def handle(msg):
         save(state)
         send({"id": rid, "result": {"configOptions": config_options(config)}})
     elif method == "session/close":
+        # Reason keeps no Session that never got a prompt.
+        state = load()
+        if state["sessions"].get(p.get("sessionId"), {}).get("turns") == 0:
+            del state["sessions"][p["sessionId"]]
+            save(state)
         opened.discard(p.get("sessionId"))
         send({"id": rid, "result": {}})
     elif method == "session/resume":
