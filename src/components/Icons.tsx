@@ -8,6 +8,8 @@ type P = { size?: number; strokeWidth?: number };
 export const FolderIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="folder" size={size} strokeWidth={strokeWidth} />;
 export const CloudIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="cloud" size={size} strokeWidth={strokeWidth} />;
 export const SparkIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="sparkle" size={size} strokeWidth={strokeWidth} />;
+/** Conductor's Dashboard row icon (Lucide "layout-grid"). */
+export const LayoutGridIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="layout-grid" size={size} strokeWidth={strokeWidth} />;
 export const HomeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="house" size={size} strokeWidth={strokeWidth} />;
 export const SidebarIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="panel-left" size={size} strokeWidth={strokeWidth} />;
 /** Right-hand panel toggle: Conductor's sidebar glyph with the divider on the right (hand-drawn, not in the Lucide set). */
@@ -55,9 +57,9 @@ export const UserIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="user"
 
 export const LogoMark = ({ size = 20 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
-    <rect x="1" y="1" width="22" height="22" rx="6" fill="#262e40" />
-    <path d="M12 5.5c.35 3.9 1.9 5.6 6.5 6.5-4.6.9-6.15 2.6-6.5 6.5-.35-3.9-1.9-5.6-6.5-6.5 4.6-.9 6.15-2.6 6.5-6.5z" fill="#f4efde" />
-    <circle cx="16.6" cy="7.6" r="1" fill="#e8b04b" />
+    <rect x="1" y="1" width="22" height="22" rx="6" style={{ fill: "var(--logo-bg)" }} />
+    <path d="M12 5.5c.35 3.9 1.9 5.6 6.5 6.5-4.6.9-6.15 2.6-6.5 6.5-.35-3.9-1.9-5.6-6.5-6.5 4.6-.9 6.15-2.6 6.5-6.5z" style={{ fill: "var(--logo-fg)" }} />
+    <circle cx="16.6" cy="7.6" r="1" style={{ fill: "var(--logo-dot)" }} />
   </svg>
 );
 

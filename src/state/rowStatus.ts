@@ -135,6 +135,7 @@ export function rowGitStatus(i: RowStatusInput): RowStatus {
 
 /** PR and branch statuses (`AXo`/`Cet`). */
 const GIT_STATUSES = new Set<RowStatus>(["merged", "merge-queued", "ready-to-merge", "draft-pr", "merge-conflict", "checks-failing", "checks-pending", "open-pr", "local", "branch"]);
+export const isGitStatus = (s: RowStatus): boolean => GIT_STATUSES.has(s);
 
 /**
  * Home's status for a row: Conductor's Home row (`vJo`'s caller) runs `oWt`

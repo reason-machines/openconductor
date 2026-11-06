@@ -103,7 +103,15 @@
       execute_shell_command: shell,
       execute_shell_command_cancellable: shell,
       "plugin:shell|execute": shell,
-      sidecar: {},
+      sidecar: {
+        // Conductor's fetch_slash_commands (renderApp `Kb.fetchSlashCommands`): answered from
+        // window.__OC_SLASH_FIXTURE__ = { slashCommands, skills } when a capture sets it.
+        fetchSlashCommands: (p) => {
+          const f = window.__OC_SLASH_FIXTURE__;
+          if (!f) return undefined;
+          return { type: "fetch_slash_commands_output", id: p && p.id, agent: { agentType: (p && p.agentType) || "claude", slashCommands: f.slashCommands || [], subAgents: [], skills: f.skills || [] } };
+        },
+      },
     };
   };
 })();

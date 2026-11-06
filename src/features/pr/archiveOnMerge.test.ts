@@ -1,8 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { archiveDecision, archivedMessage, archivedToastActions, archiveOnMergeEnabled, forgetLookup, lastPrNumber, mergedTransition, observeLookup, watchedWorkspaces } from "./archiveOnMerge.ts";
+import { archiveDecision, archivedMessage, archivedToastActions, archiveOnMergeEnabled, forgetLookup, unarchiveOnMergeAction, lastPrNumber, mergedTransition, observeLookup, watchedWorkspaces } from "./archiveOnMerge.ts";
 import type { Repo, Workspace } from "../../state/types.ts";
 import type { PrInfo, PrLookup } from "./types.ts";
+import { restoreRequestFor } from "../../workspace/archiveModel.ts";
 
 function found(number: number, isMerged: boolean): PrLookup {
   const info = { number, url: `https://github.com/o/r/pull/${number}`, isMerged } as PrInfo;
@@ -59,4 +60,16 @@ test("the watcher looks up live workspaces with a worktree, not the open one, as
   assert.equal(lastPrNumber("a"), 5);
   observeLookup("a", { kind: "none" });
   assert.equal(lastPrNumber("a"), null);
+});
+
+test("the toast's Unarchive is the store's unarchive, so a deleted branch opens Restore to new branch?", () => {
+  // Conductor: `{label:"Unarchive",onClick:()=>e.unarchiveWorkspace(i)}` with `unarchiveWorkspace: r => Xk.unarchive(r)`.
+  const action = unarchiveOnMergeAction("r", "w");
+  assert.deepEqual(action, { type: "unarchiveWorkspace", repoId: "r", workspaceId: "w" });
+  const result = { restored: false, branch: "feature", recreatedBranch: false, restoredChanges: false, notices: [], scenario: "branchDeleted" as const };
+  assert.deepEqual(restoreRequestFor({ type: "unarchived", action, result }), { repoId: "r", workspaceId: "w", branch: "feature", scenario: "branchDeleted" });
+  // What the toast dispatched before: no dialog, and the row it had already put back stayed as a ghost.
+  const old = { type: "restoreWorkspace", repoId: "r", workspace: { id: "w" } };
+  assert.equal(restoreRequestFor({ type: "unarchived", action: old, result }), null);
+  assert.equal(restoreRequestFor({ type: "unarchived", action, result: { ...result, restored: true, scenario: null } }), null, "a restored workspace needs no dialog");
 });
