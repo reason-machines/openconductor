@@ -262,8 +262,9 @@ const demoPr = (over: Partial<RowPr>): RowPr => ({
 
 /** Sample data for screenshots and demos: open the app with `?demo=1`. */
 export function demoState(): AppState {
+  let number = 0;
   const ws = (name: string, session: SessionStatus, added: number, removed: number): Workspace => ({
-    id: newId(), name, branch: name, status: "idle", ...(session !== "idle" ? { sessionStatus: session } : {}), diff: { added, removed }, createdAt: Date.now(),
+    id: newId(), name, branch: name, status: "idle", ...(session !== "idle" ? { sessionStatus: session } : {}), diff: { added, removed }, createdAt: Date.now(), number: ++number,
     // A worktree path so the right panel's All files tab has a tree (demo files outside Tauri).
     path: `/Users/you/conductor/workspaces/openconductor/${name}`,
   });
@@ -402,6 +403,16 @@ export function useAppStore() {
     if (desktop) localStorage.setItem(PREFS_KEY, JSON.stringify(prefsOf(state)));
     else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, demo, desktop]);
+  // Navigating to /all-workspaces while the app runs (history navigation)
+  // shows the Home list, as loading that path does. Sidebar Home opens the
+  // wordmark screen instead, so this is the in-session route to the list.
+  useEffect(() => {
+    const onPop = () => {
+      if (window.location.pathname === "/all-workspaces") rawDispatch({ type: "select", selection: { kind: "home" } });
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
   // Writes the backend does not already record when its command runs.
   const stateRef = useRef(state);
   stateRef.current = state;

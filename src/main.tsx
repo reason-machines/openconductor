@@ -10,6 +10,7 @@ import { getSettings, updateSettings } from "./settings/api";
 import { loadAppPrefs } from "./settings/appPrefs";
 import { overridesRaw, withOverridesRaw } from "./settings/keybindingOverrides";
 import { installContextMenuGuard } from "./lib/nativeContextMenu";
+import { installConsoleCapture } from "./diagnostics/consoleLog";
 import { agentBinaryStore } from "./features/chat/agentBinaryStore";
 import "./fonts.css";
 import "./theme/tokens.css";
@@ -29,6 +30,8 @@ const loadOverrides = async () => {
   return migrated;
 };
 
+// Diagnostics › "Copy all console logs" copies what the console printed since startup.
+installConsoleCapture();
 installContextMenuGuard();
 // Conductor starts its AgentBinaryStore at launch (renderApp `hRa`): failed downloads retry right away.
 void agentBinaryStore.initialize();

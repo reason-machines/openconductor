@@ -133,7 +133,11 @@ test("Home's All workspaces lists archived workspaces under Only archived and Sh
   await row(page, "Quiet harbor").waitFor();
   await archiveFromMenu(page, "Quiet harbor");
 
-  await page.locator(".sb-row", { hasText: "Home" }).first().click();
+  // The Home list is the /all-workspaces route (sidebar Home opens the wordmark screen, #483).
+  await page.evaluate(() => {
+    history.pushState(null, "", "/all-workspaces");
+    dispatchEvent(new PopStateEvent("popstate"));
+  });
   const list = page.getByRole("listbox", { name: "Workspaces" });
   await list.waitFor();
   const names = () => list.locator(".allws-row .allws-name").allTextContents();

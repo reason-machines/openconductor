@@ -35,8 +35,9 @@ assert.equal(await card("permission").locator(".prompt-heading").textContent(), 
 await settle("needs-user-permission");
 ok("a permission request shows the card and the row needs permission");
 await p.screenshot({ path: `${OUT}/1-permission.png` });
-// Home lists the same workspace with the same status while the chat keeps waiting.
-await p.getByRole("button", { name: /^Home/ }).first().click();
+// The Home list (the /all-workspaces route; sidebar Home opens the wordmark screen, #483)
+// shows the same workspace with the same status while the chat keeps waiting.
+await p.evaluate(() => { history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); });
 const homeStatus = p.locator('[data-testid="home-workspace-status"][data-status="needs-user-permission"]');
 await homeStatus.waitFor();
 assert.equal(await homeStatus.getAttribute("aria-label"), "Needs permission");

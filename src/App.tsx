@@ -4,6 +4,8 @@ import { destroyWorkspaceTerminals } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
+import { SubmitPromptDialog } from "./components/SubmitPromptDialog";
+import { DiagnosticsPage } from "./diagnostics/DiagnosticsPage";
 import { AllWorkspaces } from "./components/AllWorkspaces";
 import { Dashboard } from "./components/Dashboard";
 import "./home.css";
@@ -114,6 +116,9 @@ export default function App() {
     setDialog(d);
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
+  // Help › Diagnostics (Conductor's `/diagnostics` route) and Help › Submit a prompt.
+  const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
+  const [submitPromptOpen, setSubmitPromptOpen] = useState(false);
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
@@ -377,6 +382,17 @@ export default function App() {
   // opening or closing Settings keeps the toasts mounted: their timers keep running and
   // they do not replay their 400ms slide-in over the page that just opened.
   const toaster = <Toaster toasts={toasts} dismiss={dismiss} />;
+  if (diagnosticsOpen)
+    return (
+      <>
+        <>
+          <DiagnosticsPage onClose={() => setDiagnosticsOpen(false)} notify={show} />
+          {quitDialog}
+        </>
+        {toaster}
+      </>
+    );
+
   if (settingsLocation)
     return (
       <>
@@ -406,7 +422,7 @@ export default function App() {
     <>
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSubmitPrompt={() => setSubmitPromptOpen(true)} onOpenDiagnostics={() => setDiagnosticsOpen(true)} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
       <main className="main">
         {createPage ? (
           <CreateWorkspacePage
@@ -433,6 +449,7 @@ export default function App() {
             workspace={workspace}
             dispatch={dispatch}
             notify={show}
+            onCopyLink={() => copyLink(workspace.id)}
             hasNextUnread={(selectedChatId) => nextUnreadChat(state, { skipSelected: true, selectedChatId }) !== undefined}
             onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />
@@ -515,6 +532,7 @@ export default function App() {
           onError={(message) => show("error", createFailedMessage(message))}
         />
       )}
+      {submitPromptOpen && <SubmitPromptDialog appVersion={info?.version} platform={info?.platform} onClose={() => setSubmitPromptOpen(false)} />}
       {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
       <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} />
       {archiveOverAgents && (

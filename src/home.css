@@ -32,6 +32,8 @@
 .allws-row:hover, .allws-row[data-selected] { background: var(--sidebar-accent); }
 .allws-row-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; height: 20px; }
 .allws-repo-initial { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; background: var(--repo-initial-bg); color: var(--repo-initial-fg); font-size: 10px; font-weight: 500; line-height: 1; border: 1px solid var(--sidebar-border); box-sizing: border-box; }
+.allws-number { flex-shrink: 0; width: 56px; font-family: var(--font-mono); color: var(--muted); }
+.allws-number.is-archived { opacity: 0.6; }
 .allws-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 450; color: var(--muted); }
 .allws-name.is-unread { font-weight: 600; color: var(--text); }
 .allws-name.is-archived { opacity: 0.6; }
