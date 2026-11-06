@@ -33,10 +33,10 @@ function fakes(opts: { checkpoint?: boolean; head?: { stdout: string; exitCode: 
       baseCommit: "",
       fetched: false,
       copiedFiles: [],
+      upstreamWarning: null,
       initializationLogPath: null,
       initializationFilesCopied: 0,
       auxiliaryFailureMessage: null,
-      upstreamWarning: null,
       number: 7,
     };
   };
