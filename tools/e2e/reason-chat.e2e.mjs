@@ -140,13 +140,10 @@ async function send(text) {
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
-/** Opens every collapsed "N tool calls" summary, then expands every tool row and returns each row's tool input. */
+/** Opens every collapsed "N tool calls" summary, then returns each tool row's input as the agent reported it. */
 const toolInputs = () =>
   run(`for (const b of document.querySelectorAll('.chat-tool-summary-row[aria-expanded="false"]')) b.click(); return true;`).then(() =>
-  run(`
-    for (const b of document.querySelectorAll('.chat-tool-head[aria-expanded="false"]')) b.click();
-    return [...document.querySelectorAll('.chat-tool-body > pre:first-child')].map((p) => p.textContent);
-  `)).then((texts) => texts.map((t) => JSON.parse(t)));
+  run(`return [...document.querySelectorAll('.chat-tool[data-tool-input]')].map((e) => e.dataset.toolInput);`)).then((texts) => texts.map((t) => JSON.parse(t)));
 
 /** A finished turn has no Stop button. */
 const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await running()));
@@ -182,22 +179,23 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
-  const placeholder = await waitFor("the Reason chat panel", () => chatText().then((t) => t && t.includes("Reason runs this chat") && t));
-  pass(`the desktop chat panel runs Reason: "${placeholder.split("\n").find((l) => l.includes("Reason runs"))}"`);
+  // Conductor's empty first chat (x9s) and a model, not Codex, on the picker chip.
+  const intro = await waitFor("the empty chat's intro", () => chatText().then((t) => t && t.includes("You’re in a new copy of") && t));
+  assert.ok(intro.includes("called e2e"), intro);
+  // The picker renders once the default model has loaded from Settings, a moment after the intro.
+  const modelChip = await waitFor("the model on the picker chip", () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.title || null;"));
+  assert.ok(modelChip !== "Codex", `the chat runs a model on Reason: ${modelChip}`);
+  await screenshot("reason-0-empty-chat");
+  pass(`the desktop chat opens on Conductor's empty state ("${intro.split("\n")[0]}") with ${modelChip} on the picker`);
 
-  // The workspace opens its first terminal on its own (a PTY spawn, so it lands
-  // a moment later). Its arrival must not take the keyboard from the chat box:
-  // keys typed there would go to the shell and Send would stay disabled.
-  const terminalFirst = await run(`document.querySelector('.composer textarea').focus(); return !!document.querySelector('.terminal-panel .xterm');`);
-  await waitFor("the workspace's terminal", () => run("return !!document.querySelector('.terminal-panel .xterm');"));
+  // Conductor's default workspace layout shows no terminal, so none opens with
+  // the workspace to take the keyboard from the chat box.
+  await run(`document.querySelector('.composer textarea').focus(); return true;`);
   await sleep(500);
+  assert.equal(await run("return document.querySelectorAll('.terminal-panel').length;"), 0, "the workspace opened a terminal panel by default");
   const focus = await focusedElement();
-  assert.equal(focus, "composer textarea", `the terminal that opened with the workspace took focus from the chat box (${focus})`);
-  pass(
-    terminalFirst
-      ? "the chat box keeps focus (the terminal was already open when it was focused)"
-      : "the chat box keeps focus when the workspace's terminal opens after it",
-  );
+  assert.equal(focus, "composer textarea", `something took focus from the chat box (${focus})`);
+  pass("no terminal opens with the workspace (Conductor's default layout) and the chat box keeps focus");
 
   // 1. A local path: in the workspace folder under HOME.
   await send("local");
@@ -237,7 +235,10 @@ try {
   await waitFor("the Stop button", running);
   // Stop once the agent runs the turn (its tool row shows), so the fake CLI
   // counts it; a Stop before the prompt reaches Reason never sends it.
-  await waitFor('the "bash: sleep" tool row', () => chatText().then((t) => t.includes("bash: sleep")));
+  // Conductor's row: the tool name ("Bash") with the command in a chip ("sleep").
+  await waitFor('the Bash "sleep" tool row', () =>
+    run(`return [...document.querySelectorAll(".chat-tool")].some((r) => /\\bBash\\b/.test(r.innerText) && r.innerText.includes("sleep"));`),
+  );
   await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
   await waitFor('"Interrupted by user"', () => chatText().then((t) => t.includes("Interrupted by user")), 15000);
   await turnDone(4);
@@ -287,6 +288,9 @@ try {
   // turns before the last also have "Reset chat". Opens the turn's menu with
   // real clicks, reads its items, and leaves it open.
   const openMenu = async (turn) => {
+    // The menu opens upward from its button (.chat-menu: bottom: 100%), so a
+    // turn near the top of the transcript would put it past the scroller's edge.
+    await run(`document.querySelector(arguments[0]).scrollIntoView({ block: "center" }); return true;`, turn);
     await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
     return waitFor(`${turn}'s menu`, () =>
       run(`const m = document.querySelector('${turn} .chat-menu'); return m ? [...m.querySelectorAll('[role="menuitem"]')].map((b) => b.innerText.trim()) : null;`),
@@ -344,8 +348,12 @@ try {
     runAsync(`const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke("session_statuses").then(done, (e) => done({ error: String(e) }));`);
   const needsPermission = (list) => list.some((i) => i.status === "needs-user-permission" && i.label === "Needs permission");
   await send("permission");
-  // The fake runs its "bash: rm -rf build" tool row first, then asks.
-  await waitFor('the "bash: rm -rf build" tool row', () => chatText().then((t) => t.includes("bash: rm -rf build")));
+  // The fake runs its "bash: rm -rf build" tool call first, then asks. Conductor's
+  // row shows it as the tool name ("Bash") with the command in a chip, like step 4;
+  // the permission card below keeps the ACP title.
+  await waitFor('the Bash "rm -rf build" tool row', () =>
+    run(`return [...document.querySelectorAll(".chat-tool")].some((r) => /\\bBash\\b/.test(r.innerText) && r.innerText.includes("rm -rf build"));`),
+  );
   await waitFor("Needs permission on the sidebar row", async () => needsPermission(await sidebarStatus()), 15000).catch(async (e) => {
     throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await sidebarStatus())}`);
   });

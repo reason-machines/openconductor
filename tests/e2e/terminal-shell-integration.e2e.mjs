@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
+import { showTerminalPanel } from "./terminal-panel.mjs";
 
 const CANDIDATES = [
   process.env.CHROME_PATH,
@@ -181,6 +182,7 @@ test("the tab shows the running program from the shell's marks, and the marks ne
   page.on("pageerror", (err) => errors.push(err.message));
   await page.addInitScript(fakeBackend, SHELL_STATE);
   await page.goto(base + "/");
+  await showTerminalPanel(page);
 
   await page.locator(".term-tab").first().waitFor();
   await waitForScreen(page, "/repo$");
