@@ -16,6 +16,7 @@ import type { Overrides } from "../keybindings/overrides.ts";
 import { partGlyph, shortcutParts, spoken } from "../keybindings/shortcut.ts";
 import type { Shortcut } from "../keybindings/types.ts";
 import { CloseIcon, KeyboardIcon, SearchIcon } from "./Icons";
+import { useDialogMotion } from "./motion/dialogMotion";
 
 export const KEYBOARD_SHORTCUTS_DIALOG_ID = "keyboard-shortcuts-dialog";
 
@@ -62,9 +63,10 @@ export function KeyboardShortcutsDialog({ onClose, overrides = {} }: { onClose: 
   const rows = useMemo(() => helpRows(overrides), [overrides]);
   const groups = useMemo(() => groupRows(rows), [rows]);
   const results = useMemo(() => searchRows(rows, query), [rows, query]);
+  const ref = useDialogMotion<HTMLDivElement>();
 
   return (
-    <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="modal-backdrop" ref={ref} data-dialog-motion="dialog" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div
         className="modal ks-dialog"
         role="dialog"

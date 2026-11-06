@@ -10,6 +10,7 @@ import { installContextMenuGuard } from "./lib/nativeContextMenu";
 import "./fonts.css";
 import "./theme/tokens.css";
 import "./styles.css";
+import "./components/motion/screens.css";
 
 const loadOverrides = async () => overridesRaw(await getSettings());
 

@@ -364,7 +364,7 @@ function RemoveRow({ repo, actions }: { repo: Repo; actions: RepoMiscActions }) 
         <TrashIcon size={12} /> {COPY.remove.button}
       </button>
       {confirming && (
-        <Modal title={`Remove ${repo.name}?`} onClose={() => !pending && setConfirming(false)}>
+        <Modal title={`Remove ${repo.name}?`} onClose={() => !pending && setConfirming(false)} motion="alert">
           <div className="modal-body">
             <p>All your workspaces will be permanently deleted.</p>
             <p className="settings-misc-break">The source directory {repo.path} will not be modified.</p>
