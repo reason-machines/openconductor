@@ -35,7 +35,7 @@ import { restoreCheckpoint, turnCheckpointRef, type Invoke } from "./checkpoints
 import { cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
-import { chatWantsAttention, turnSettled } from "./attention.ts";
+import { chatWantsAttention, enteredWait, turnSettled } from "./attention.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import type { FileChange } from "../diff/types.ts";
 
@@ -102,7 +102,11 @@ export interface ChatBackend<Config> {
   listen(deliver: Deliver, permissions: PermissionEvents): Promise<unknown>;
   /** Opens the chat's agent session (a new one, or `sessionId` resumed) before its first prompt. */
   open(chatId: string, cwd: string, sessionId: string | null, config: Config): Promise<void>;
-  /** Applies options picked after the chat opened to its open session (Reason); without it they wait for the next session. */
+  /**
+   * New options for the chat's open session (a pick in a running chat): the
+   * session runs on them from its next prompt. A backend without it keeps
+   * them for its next new session.
+   */
   reconfigure?(chatId: string, config: Config): void;
   /**
    * Sends a prompt; steers it into a running turn when `canSteer`. Resolves
@@ -163,11 +167,10 @@ export interface ChatRuntime<Config> {
    */
   reset(chatId: string, cwd: string, turnId: string, resetFiles: boolean): Promise<void>;
   /**
-   * Session options for the chat's next new session: its first, or the one
-   * after Reset chat. A backend with `reconfigure` (Reason) also sets them on
-   * the session the chat has open; others keep that session's own. Picked
-   * options are kept across restarts, so a session opened after a reset
-   * still runs on them.
+   * The chat's session options. An open session runs on them from its next
+   * prompt (as Conductor reconciles a picked model before each turn); a chat
+   * not opened yet opens on them, as does the session after Reset chat.
+   * Picked options are kept across restarts.
    */
   configure(chatId: string, config: Config): void;
   /**
@@ -193,7 +196,7 @@ interface Chat<Config> {
   /** Repository the chat's workspace belongs to. */
   repoPath: string | null;
   opened: boolean;
-  /** Options for the session `open` creates (the first, or the one after Reset chat); the first prompt waits for them. */
+  /** Options the chat's session runs on: `open` passes them, `configure` updates an open one; the first prompt waits for them. */
   config: Config | Promise<Config>;
   /** The chat's options were picked (New workspace dialog, review model) or defaulted, so the default does not replace them. */
   configured: boolean;
@@ -229,8 +232,11 @@ function setStatus(chatId: string, status: Q.SessionStatus | undefined) {
  */
 export function reportChatStatus(chatId: string, status: Q.SessionStatus): void {
   if (hiddenChats.has(chatId)) return setStatus(chatId, undefined);
+  const prev = statuses.get(chatId);
   setStatus(chatId, status);
   persistStatus(chatId, status);
+  // Conductor calls `_p` right after setting plan review or user input (attention.ts).
+  if (enteredWait(prev, status)) chatWantsAttention(chatId);
 }
 
 /** Chat id → session status of every visible chat; a new map on each change. */
@@ -246,6 +252,11 @@ export function subscribeChatStatuses(fn: () => void): () => void {
 export function hideChat(chatId: string): void {
   hiddenChats.add(chatId);
   setStatus(chatId, undefined);
+}
+
+/** A closed chat tab opened again (⌘⇧T): it counts toward its workspace's status again. */
+export function showChat(chatId: string): void {
+  hiddenChats.delete(chatId);
 }
 
 /** The workspace a chat belongs to: a review chat's id is `<workspace id>:review:<n>`. */

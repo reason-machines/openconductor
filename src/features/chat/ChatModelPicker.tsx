@@ -6,8 +6,8 @@
 // models (the Session's `model` config option), searchable; until a Reason
 // Session has reported them it falls back to the picked and default models.
 // "Add models" / "Edit" open Settings › Default models. A pick becomes the
-// chat's Reason Session options (model, reasoning_effort): set on its open
-// Session at once, and on the next Session it opens.
+// chat's Reason Session options (model, reasoning_effort); an open Session
+// switches before its next prompt, as Conductor's does.
 //
 // It also picks the chat's agent, as Conductor's picker does (the model decides
 // the agent): when the CLI agents can run here they are listed as "Codex" and
@@ -93,7 +93,8 @@ export function ChatModelPicker({ chatId, disabled = false, agent = "reason", on
         const pick = { ...next, effort: next.effort ?? running.effort };
         setChoice(pick);
         saveModelChoice(chatId, pick);
-        // Shown at once; Reason's report (the Session takes it, or a notice says it cannot) replaces it.
+        // Shown at once; the open Session takes it before its next prompt, and Reason's report then
+        // replaces this (a model it does not offer comes back as a notice and the model it kept).
         if (session) recordModels(chatId, { ...session, current: pick.model, effort: pick.effort });
         configureReason(chatId, sessionConfig(pick.model, pick.effort));
       }}

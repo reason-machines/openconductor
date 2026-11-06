@@ -67,9 +67,9 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
   async open(chatId, cwd, sessionId, config) {
     await invoke("reason_open_chat", { chatId, cwd, sessionId, config });
   },
-  // A pick in an open chat is set on its Session now (Conductor's setAcpSessionConfigOption).
+  // The open Session switches before its next prompt (reason_acp/provider.rs).
   reconfigure(chatId, config) {
-    invoke("reason_set_config", { chatId, config }).catch((e) => console.warn("reason: options not set", e));
+    void invoke("reason_set_config", { chatId, config }).catch((e) => console.warn("reason chat: options not updated", e));
   },
   async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath }) {
     const agentText = firstMessage && repoPath ? await withGeneral(text, repoPath, cwd) : text;
@@ -144,7 +144,7 @@ export const queueAction = reason.queueAction;
  * carrying the kept conversation.
  */
 export const resetReasonChat = reason.reset;
-/** Session options for the chat: set on its open Session at once, and on the next one it opens (after Reset chat); kept across restarts. */
+/** The chat's Session options: an open Session switches before its next prompt; kept across restarts. */
 export const configureReason = reason.configure;
 /** The default model's options; a failed lookup leaves Reason's default. */
 export const configureReasonDefault = reason.configureDefault;

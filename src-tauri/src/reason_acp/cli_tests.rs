@@ -213,7 +213,8 @@ fn session_get_names_the_model_a_session_ran_on() {
         parse_session_model(out),
         Some(("byok:anthropic:claude-haiku-5-5".into(), Some("low".into())))
     );
-    let enveloped = r#"{"schema_version":1,"ok":true,"data":{"model":"byok:anthropic:claude-opus-5-5"}}"#;
+    let enveloped =
+        r#"{"schema_version":1,"ok":true,"data":{"model":"byok:anthropic:claude-opus-5-5"}}"#;
     assert_eq!(
         parse_session_model(enveloped),
         Some(("byok:anthropic:claude-opus-5-5".into(), None))

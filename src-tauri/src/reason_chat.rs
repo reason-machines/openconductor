@@ -12,6 +12,8 @@
 //!    `config` (`[{ id, value }]`, e.g. `model`, `reasoning_effort`) is set
 //!    on the Session when it is created; one Reason does not offer comes
 //!    back as a `notice` event.
+//!    `reason_set_config(chatId, config)` changes them later (a model pick
+//!    in a running chat): the open Session gets them before its next prompt.
 //! 2. `reason_prompt(chatId, text, attachments?, turn?)` for the first
 //!    message and every follow-up; it resolves with the turn's end once the
 //!    turn is over. `attachments` (`[{ name, text }]`) go to Reason as
@@ -26,9 +28,6 @@
 //! 4. `reason_answer_permission(chatId, requestId, optionId?)` answers a
 //!    `permissionRequest` event: with the chosen option, or `cancelled`
 //!    without one. A `permissionResolved` event follows.
-//! 5. `reason_set_config(chatId, config)` when the chat picks another model
-//!    or effort: it is set on the open Session at once (and on the next
-//!    Session the chat opens).
 
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -138,26 +137,16 @@ pub fn reason_open_chat(
     Ok(())
 }
 
-/// Sets the chat's Session options (`model`, `reasoning_effort`): on its
-/// open Session now, else when it opens one.
+/// A chat's new config options, for its open Session's next prompt.
 #[tauri::command]
-pub async fn reason_set_config(
-    app: AppHandle,
-    state: State<'_, ReasonChats>,
-    chat_id: String,
-    config: Vec<ConfigArg>,
-) -> Result<(), String> {
-    let provider = state.provider(&app)?;
-    let config: Vec<ConfigChoice> = config
-        .into_iter()
-        .map(|c| ConfigChoice {
+pub fn reason_set_config(state: State<'_, ReasonChats>, chat_id: String, config: Vec<ConfigArg>) {
+    if let Some(p) = state.provider.lock().unwrap().as_ref() {
+        let config = config.into_iter().map(|c| ConfigChoice {
             id: c.id,
             value: c.value,
-        })
-        .collect();
-    tauri::async_runtime::spawn_blocking(move || provider.apply_config(&chat_id, config))
-        .await
-        .map_err(|e| e.to_string())
+        });
+        p.set_config(&chat_id, config.collect());
+    }
 }
 
 /// Names one turn's checkpoints: the frontend's `turnCheckpointRef`, the

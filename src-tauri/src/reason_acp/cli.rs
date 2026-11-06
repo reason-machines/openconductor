@@ -264,9 +264,15 @@ const SUBCOMMAND_TIMEOUT: Duration = Duration::from_secs(20);
 /// read too).
 pub fn parse_session_model(json: &str) -> Option<(String, Option<String>)> {
     let v: serde_json::Value = serde_json::from_str(json.trim()).ok()?;
-    let s = if v["data"].is_object() { &v["data"] } else { &v };
+    let s = if v["data"].is_object() {
+        &v["data"]
+    } else {
+        &v
+    };
     let model = s["model"].as_str().filter(|m| !m.trim().is_empty())?;
-    let effort = s["reasoning_effort"].as_str().filter(|e| !e.trim().is_empty());
+    let effort = s["reasoning_effort"]
+        .as_str()
+        .filter(|e| !e.trim().is_empty());
     Some((model.to_string(), effort.map(str::to_string)))
 }
 

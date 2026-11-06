@@ -47,7 +47,9 @@ session/set_config_option with a value an option does not offer resets it
 to "default" without an error, as Reason does. A Session on "default"
 runs its turns on WORKSPACE_DEFAULT_MODEL: after a turn, session/resume
 reports that model as `model`'s currentValue and `session get` prints it as
-`model`, as reason acp 0.2.692 and `reason session get --json` do.
+`model`, as reason acp 0.2.692 and `reason session get --json` do. With the
+file `fake-reason-resume-bare` in the working directory, session/resume
+reports no configOptions, as older reason acp builds did.
 """
 import json
 import os
@@ -324,6 +326,9 @@ def handle(msg):
             opened.add(p["sessionId"])
             if session.get("workspace", "ws-a") != WORKSPACE:
                 foreign.add(p["sessionId"])
+            if os.path.exists(os.path.join(HOME, "fake-reason-resume-bare")):
+                # Like reason acp before 0.2.692: resume reports no options.
+                return send({"id": rid, "result": {}})
             config = dict(session.get("config", {}))
             if session.get("turns", 0) > 0:
                 config["model"] = ran_model(session)

@@ -211,6 +211,85 @@ fn config_is_set_on_a_new_session_and_unoffered_values_become_notices() {
     assert!(notices[1].contains("speed"));
 }
 
+/// The last `config` reply: each one is "model=M effort=E".
+fn last_config(log: &Log) -> String {
+    let r = reply(log);
+    let i = r.rfind("model=").expect("a config reply");
+    r[i..].to_string()
+}
+
+#[test]
+fn a_changed_config_applies_to_the_open_session_at_its_next_prompt() {
+    use super::provider::ConfigChoice;
+    let choice = |id: &str, value: &str| ConfigChoice {
+        id: id.into(),
+        value: value.into(),
+    };
+    let (p, log, home) = provider("config-live");
+    p.open_chat("ws", &home, None);
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:anthropic:claude-opus-5-5"),
+            choice("reasoning_effort", "high"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=high"
+    );
+
+    // A pick in the running chat: the same Session switches, as Conductor's
+    // `reconcileSessionConfig` does before its next prompt.
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:openai-codex:gpt-5.6-sol"),
+            choice("reasoning_effort", "low"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:openai-codex:gpt-5.6-sol effort=low"
+    );
+    assert_eq!(started(&log), vec!["sess-1"], "no new Session");
+
+    // After a restart the resumed Session gets a pick made meanwhile, also
+    // from a reason acp whose session/resume reports no configOptions.
+    std::fs::write(home.join("fake-reason-resume-bare"), "").unwrap();
+    p.shutdown();
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:anthropic:claude-opus-5-5"),
+            choice("reasoning_effort", "medium"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=medium"
+    );
+    assert_eq!(started(&log), vec!["sess-1"], "resumed, not replaced");
+
+    // A value the Session does not offer is told, not sent.
+    p.set_config("ws", vec![choice("model", "opus-5-1m")]);
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=medium"
+    );
+    let notices = log
+        .lock()
+        .unwrap()
+        .iter()
+        .filter(|(_, e)| matches!(e, ProviderEvent::Notice(n) if n.contains("opus-5-1m")))
+        .count();
+    assert_eq!(notices, 1);
+}
+
 #[test]
 fn attachments_go_to_reason_as_embedded_files() {
     use super::provider::Attachment;
@@ -434,8 +513,19 @@ fn the_session_reports_its_models_and_the_one_a_turn_ran_on() {
     // session/new: "Auto" until Reason picks a model, with Reason's names.
     assert_eq!(seen[0].current, "default");
     let names: Vec<&str> = seen[0].options.iter().map(|o| o.name.as_str()).collect();
-    assert_eq!(names, ["Auto", "Claude Opus 5.5", "Claude Sonnet 5.5", "GPT-5.6-Sol"]);
-    assert_eq!(seen[0].options[1].description.as_deref(), Some("Claude \u{b7} Subscription"));
+    assert_eq!(
+        names,
+        [
+            "Auto",
+            "Claude Opus 5.5",
+            "Claude Sonnet 5.5",
+            "GPT-5.6-Sol"
+        ]
+    );
+    assert_eq!(
+        seen[0].options[1].description.as_deref(),
+        Some("Claude \u{b7} Subscription")
+    );
     // After the turn: the model it ran on (`reason session get`), same list.
     assert_eq!(seen[1].current, "byok:anthropic:claude-opus-5-5");
     assert_eq!(seen[1].options, seen[0].options);
@@ -453,47 +543,34 @@ fn the_session_reports_its_models_and_the_one_a_turn_ran_on() {
 }
 
 #[test]
-fn a_pick_is_set_on_the_open_session_for_its_next_prompt() {
+fn a_pick_in_an_open_chat_is_reported_once_the_session_takes_it() {
     use super::provider::ConfigChoice;
-    let (p, log, home) = provider("models-live");
+    let (p, log, home) = provider("models-pick");
     p.open_chat("chat", &home, None);
-    // Nothing is open yet: kept for session/new, nothing sent.
-    let sonnet = || ConfigChoice {
-        id: "model".into(),
-        value: "byok:anthropic:claude-sonnet-5-5".into(),
-    };
-    p.apply_config("chat", vec![sonnet()]);
-    assert!(models(&log).is_empty());
-    assert_eq!(p.prompt("chat", "config"), TurnEnd::Completed);
-    assert_eq!(reply(&log), "model=byok:anthropic:claude-sonnet-5-5 effort=default");
-    assert_eq!(models(&log).last().unwrap().current, "byok:anthropic:claude-sonnet-5-5");
-
-    // Open Session: set now, reported at once, and the next prompt runs on it.
+    assert_eq!(p.prompt("chat", "echo: hi"), TurnEnd::Completed);
+    // The pick reaches the open Session before its next prompt: reported
+    // when Reason takes it, and again as the model the turn ran on.
     log.lock().unwrap().clear();
-    let opus = ConfigChoice {
-        id: "model".into(),
-        value: "byok:anthropic:claude-opus-5-5".into(),
-    };
-    p.apply_config("chat", vec![opus]);
-    assert_eq!(models(&log).last().unwrap().current, "byok:anthropic:claude-opus-5-5");
+    p.set_config(
+        "chat",
+        vec![ConfigChoice {
+            id: "model".into(),
+            value: "byok:anthropic:claude-sonnet-5-5".into(),
+        }],
+    );
     assert_eq!(p.prompt("chat", "config"), TurnEnd::Completed);
-    assert_eq!(reply(&log), "model=byok:anthropic:claude-opus-5-5 effort=default");
-
-    // A value the Session does not offer is not sent; a notice says so.
-    log.lock().unwrap().clear();
-    let unknown = ConfigChoice {
-        id: "model".into(),
-        value: "opus".into(),
-    };
-    p.apply_config("chat", vec![unknown]);
-    let notices = log
-        .lock()
-        .unwrap()
-        .iter()
-        .filter(|(_, e)| matches!(e, ProviderEvent::Notice(n) if n.contains("\"opus\"")))
-        .count();
-    assert_eq!(notices, 1);
-    assert_eq!(models(&log).last().unwrap().current, "byok:anthropic:claude-opus-5-5");
+    assert_eq!(
+        reply(&log),
+        "model=byok:anthropic:claude-sonnet-5-5 effort=default"
+    );
+    let seen: Vec<String> = models(&log).into_iter().map(|m| m.current).collect();
+    assert_eq!(
+        seen,
+        [
+            "byok:anthropic:claude-sonnet-5-5",
+            "byok:anthropic:claude-sonnet-5-5"
+        ]
+    );
 }
 
 #[test]
