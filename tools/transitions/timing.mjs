@@ -152,7 +152,7 @@ const inWorkspace = (name) => `${has(".workspace .composer-wrap")} && ${text(".w
 const changed = { before: "window.__tmBefore = document.querySelector('.app')?.innerHTML", done: "document.querySelector('.app')?.innerHTML !== window.__tmBefore" };
 const NAV = ".settings-nav button, .settings-nav a";
 const STEPS = [
-  { id: "route-home", kind: "route", what: "Workspace to Home (sidebar Home)", act: click(".sb-row", "Home"), done: `${has(".allws")} && !${has(".workspace")}` },
+  { id: "route-home", kind: "route", what: "Workspace to Home (sidebar Home)", act: click(".sb-row", "Home"), done: `${has(".home, .allws")} && !${has(".workspace")}` },
   { id: "route-workspace", kind: "route", what: "Home to workspace A (sidebar row)", act: (wd, c) => click(".sb-ws", c.wsA)(wd), done: (c) => inWorkspace(c.wsA) },
   { id: "ws-switch", kind: "route", what: "Workspace A to workspace B (sidebar row)", act: (wd, c) => click(".sb-ws", c.wsB)(wd), done: (c) => inWorkspace(c.wsB) },
   { id: "ws-switch-back", kind: "route", what: "Workspace B to workspace A (sidebar row)", act: (wd, c) => click(".sb-ws", c.wsA)(wd), done: (c) => inWorkspace(c.wsA) },
@@ -179,7 +179,7 @@ const STEPS = [
   { id: "settings-repo", kind: "settings", what: "Settings: repository tide-web", act: click(NAV, "tide-web"), done: `${has(".settings-repo.open")} && !${text(".settings-page", "Loading")}` },
   { id: "settings-repo-misc", kind: "settings", what: "Settings: repository Misc", act: click(NAV, "Misc"), done: has(".settings-misc-remove-btn") },
   { id: "settings-general", kind: "settings", what: "Settings page: General", act: click(NAV, "General"), done: `${text(".settings-header", "General")} && !${text(".settings-page", "Loading")}` },
-  { id: "route-back", kind: "route", what: "Settings back to workspace A (Back)", act: click("button", "Back"), done: (c) => inWorkspace(c.wsA) },
+  { id: "route-back", kind: "route", what: "Settings back to workspace A (Back)", act: click(".settings-back", "Back"), done: (c) => inWorkspace(c.wsA) },
 ];
 const only = process.env.STEPS?.split(",");
 const steps = only ? STEPS.filter((s) => only.includes(s.id)) : STEPS;
