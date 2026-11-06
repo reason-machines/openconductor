@@ -56,8 +56,8 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
   });
   const { ref, stat, onScreen } = useRowDiffStat(ws, targetBranch, active);
   useRowPrPoll({ ws, repoPath, onScreen, active, onResult: (r) => onPrLookup?.(r) });
-  // Every chat of the workspace, open or not, plus what the open view reports (and the demo's "working").
-  const session = useWorkspaceAgentStatus(ws);
+  // Every chat of the workspace, open or not; the demo's status only while the workspace is not open.
+  const session = useWorkspaceAgentStatus(ws, active);
   const status = rowStatus({ workspaceState: ws.state, session, pr: ws.pr, hasRemote });
   const statusLabel = rowStatusLabel(status);
   return (

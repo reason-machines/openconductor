@@ -8,11 +8,11 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **963** | **779** | **161** | **23** |
+| **All** | **963** | **780** | **160** | **23** |
 | States (captured screens) | 65 | 21 | 39 | 5 |
-| Inventory items | 898 | 758 | 122 | 18 |
+| Inventory items | 898 | 759 | 121 | 18 |
 | &nbsp;&nbsp;dialog | 64 | 56 | 8 | 0 |
-| &nbsp;&nbsp;empty-state | 52 | 47 | 4 | 1 |
+| &nbsp;&nbsp;empty-state | 52 | 48 | 3 | 1 |
 | &nbsp;&nbsp;menu | 39 | 39 | 0 | 0 |
 | &nbsp;&nbsp;menu-item | 89 | 88 | 1 | 0 |
 | &nbsp;&nbsp;popover | 45 | 43 | 2 | 0 |
@@ -36,7 +36,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | onboarding-auth | 23 | 19 | 4 | 0 |
 | routines | 40 | 40 | 0 | 0 |
 | settings | 181 | 54 | 110 | 17 |
-| shell | 191 | 177 | 13 | 1 |
+| shell | 191 | 178 | 12 | 1 |
 | terminal-scripts | 30 | 29 | 1 | 0 |
 | triage | 268 | 268 | 0 | 0 |
 | workspaces | 56 | 39 | 12 | 5 |
@@ -95,7 +95,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Settings > Advanced<br>`settings-advanced` | wrong | settings | diff 7.4% at t24, copy 88% | [png](ui-map/ref/settings-advanced.png) | [png](ui-map/oc/settings-advanced.png) |  | 7.4% |
 | Settings > Big terminal<br>`settings-terminal` | missing | settings | timed out waiting for .settings-nav .nav-item "Big terminal" | [png](ui-map/ref/settings-terminal.png) | [png](ui-map/oc/settings-terminal.png) |  | 4.7% |
 | Settings > internal<br>`settings-internal` | missing | settings | OpenConductor's settings have no internal page | [png](ui-map/ref/settings-internal.png) | no-equivalent |  |  |
-| Settings > tide-web > Environment<br>`settings-repo-environment` | wrong | settings | diff 4.3% at t24, copy 72% | [png](ui-map/ref/settings-repo-environment.png) | [png](ui-map/oc/settings-repo-environment.png) |  | 4.3% |
+| Settings > tide-web > Environment<br>`settings-repo-environment` | wrong | settings | diff 3.3% at t24, copy 88% | [png](ui-map/ref/settings-repo-environment.png) | [png](ui-map/oc/settings-repo-environment.png) |  | 3.3% |
 | Settings > tide-web > Git<br>`settings-repo-git` | matches | settings | diff 4.5% at t24, copy 90% | [png](ui-map/ref/settings-repo-git.png) | [png](ui-map/oc/settings-repo-git.png) |  | 4.5% |
 | Settings > tide-web > Scripts<br>`settings-repo-scripts` | wrong | settings | diff 3.2% at t24, copy 67% | [png](ui-map/ref/settings-repo-scripts.png) | [png](ui-map/oc/settings-repo-scripts.png) |  | 3.2% |
 | Settings > tide-web > Actions<br>`settings-repo-actions` | wrong | settings | diff 5.8% at t24, copy 74% | [png](ui-map/ref/settings-repo-actions.png) | [png](ui-map/oc/settings-repo-actions.png) |  | 5.8% |
@@ -144,7 +144,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:settings-repos`<br>/settings/repos | missing | settings |  | `` |  | no state captures this route |
 | `route:settings-repos-repoid`<br>/settings/repos/$repoId | missing | settings |  | `` |  | no state captures this route |
 | `route:settings-repos-repoid~2`<br>/settings/repos/$repoId | missing | settings |  | `` |  | no state captures this route |
-| `route:settings-repos-repoid-environment`<br>/settings/repos/$repoId/environment | wrong | settings |  | `_Ea` | [settings-repo-environment](ui-map/oc/settings-repo-environment.png) | diff 4.3% at t24, copy 72% |
+| `route:settings-repos-repoid-environment`<br>/settings/repos/$repoId/environment | wrong | settings |  | `_Ea` | [settings-repo-environment](ui-map/oc/settings-repo-environment.png) | diff 3.3% at t24, copy 88% |
 | `route:settings-repos-repoid-git`<br>/settings/repos/$repoId/git | matches | settings |  | `yEa` | [settings-repo-git](ui-map/oc/settings-repo-git.png) | diff 4.5% at t24, copy 90% |
 | `route:settings-repos-repoid-scripts`<br>/settings/repos/$repoId/scripts | wrong | settings |  | `wEa` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | diff 3.2% at t24, copy 67% |
 | `route:settings-repos-repoid-actions`<br>/settings/repos/$repoId/actions | wrong | settings |  | `EEa` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | diff 5.8% at t24, copy 74% |
@@ -1027,7 +1027,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `toast:failed-to-unarchive-t-workspacedirectoryname`<br>Failed to unarchive: ${t.workspaceDirectoryName} | missing | workspaces | Failed to unarchive: ${t.workspaceDirectoryName} | `kIa` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-start-agents`<br>Failed to start agents | missing | chat | Failed to start agents / Conductor will not work. Please report this error. | `wVi` |  | copy not shown in any OpenConductor capture |
 
-## empty-state (52: 47 missing, 4 wrong, 1 matches)
+## empty-state (52: 48 missing, 3 wrong, 1 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -1059,7 +1059,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `empty-state:no-variables-set`<br>No variables set | wrong | settings | No variables set | `T$i` | [settings-environment](ui-map/oc/settings-environment.png) | host state settings-environment is wrong |
 | `empty-state:no-matching-mcp-servers`<br>No matching MCP servers. | missing | chat | No matching MCP servers. | `z1a` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-matching-repositories`<br>No matching repositories. | missing | workspaces | No matching repositories. | `mfa` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-variables-yet`<br>No variables yet | wrong | shell | No variables yet | `Xha` |  | not rendered in a reference capture; OpenConductor shows it in settings-repo-environment, not in the host state |
+| `empty-state:no-variables-yet`<br>No variables yet | missing | shell | No variables yet | `Xha` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-members-yet`<br>No members yet. | missing | cloud-org | No members yet. | `m0a` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-icons-found`<br>No icons found | missing | shell | No icons found | `Mzi` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-run-scripts-yet-add-one-to-get-started`<br>No run scripts yet. Add one to get started. | missing | settings | No run scripts yet. Add one to get started. | `ama` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | copy not shown in any OpenConductor capture |
@@ -1101,6 +1101,16 @@ REA 6.7.0 (`rea-agents`), Linux cloud machine, Chromium 1.x headless. Each was h
 11. **A Chromium launch crash is reported as a bare `execution_failure`.** With a long `TMPDIR` Chromium aborts on "Socket path too long" for its singleton socket; REA only says "run `rea doctor`" with `cleanup_incomplete`. Set `TMPDIR` to a short path (for example `/tmp/t`).
 12. **A `wait_for` whose text locator matches two elements fails the scenario as "screenshot missing".** On the repository Misc page `text=tide-web` matches the nav item and the root path, Playwright's strict mode rejects it, and REA reports only a missing screenshot (no step id, no "strict mode violation"). The Misc state now waits on the page description instead.
 13. **No network-request view of the scenario.** REA records console and page errors but not the page's requests or the Tauri IPC behind them, so the cause of the repository-settings redirect (a failed `GET /organizations` inside Conductor's user service) was found by patching the bundle in Playwright and logging store writes, not with REA.
+14. **No layout or geometry capture.** `capture-browser-scenario` returns screenshot, url, DOM and accessibility, but no element boxes (no `getBoundingClientRect`, computed styles or text line boxes) and has no evaluate action, so the sidebar alignment sweep (`tools/sidebar-screens/measure-alignment.mjs`) measures both apps with playwright-core directly; its numbers carry no REA Evidence id. The DOM artifact has no geometry either.
+15. **REA's click and Playwright's click disagree on Conductor's repo header.** Through REA, `click` on `text=tide-web` expands the repo; the same locator clicked in playwright-core 1.64 (same Chromium, viewport, reduced motion and blocked service workers) does nothing, because the header is a @hello-pangea/dnd drag handle that swallows the pointer sequence. A dispatched DOM `click` expands it. REA does not record which input path its click used, so the difference cannot be explained from the Evidence.
+16. **Hover states don't render in Conductor's headless capture, and REA has no hover action to force them.** Conductor gates its row hover controls on `@media (hover:hover)` group-hover, which headless Chromium doesn't match, so the repo row's "..." button stays at opacity 0 in every capture. `capture-browser-scenario` (REA 6.7.0) has no hover action and no way to emulate the `hover` media feature: its action kinds are `goto`, `click`, `fill`, `press`, `select_option`, `check`, `uncheck` and `wait_for_timeout`, and the string `hover` doesn't appear in `rea-agents/dist/mcp/browserScenario-BRUz7yN0.js` or its contract, so it can't capture the hovered row either. The alignment sweep therefore places Conductor's "..." from the DOM structure (`getBoundingClientRect` via playwright-core: 24×24 at x=189, y=219, the same as ours) rather than from a screenshot, and Conductor's side of the hover crops shows the row unhovered.
 
 Harness limits that shape the reference (not REA bugs): settings pages behind an organization or feature flag (`ports`, `key-bindings`, `terminal`, `internal`, `organization/*`, `cloud/setup`) redirect to General; `/dashboard` redirects to `/`. The `repos/$repoId/*` pages used to redirect too: Conductor's repository guard (`fHi`) sends any organization *error* to General, and the mock refused every network call. The mock now answers `POST /auth/exchange` and `GET /organizations` (an empty list, a local-only account) from `HTTP_FIXTURES` in `tools/screens/tauri-mock.js`, over the same `plugin:http` channel protocol Conductor reads, so those five pages render.
+
+### Hit while building the repository Environment page (PR #484)
+
+14. **`rea search` cannot read an extracted JavaScript bundle.** `rea search dist/assets/renderApp-D_fmY7hW.js "passed to agents"` fails with `capability_unavailable` / `unsupported_provider`: every string-search provider (ghidra, hopper, ida, kuna) is a native disassembler, so a minified `.js` file has no search route. The component (`zda`) and its helpers were located by reading the extracted chunk directly.
+15. **`analyze-javascript-application` keeps only module nodes for the 11.6 MB `renderApp` chunk.** With `--source-path assets/renderApp-D_fmY7hW.js --max-heap-mb 4096 --max-semantic-nodes 400000` (2 m 36 s), the semantic graph holds 1,897 nodes, all `kind: module`, and 22,764 unknowns; no literal, function or call node holds "No variables set" or "Add environment variable", so REA cannot say which function renders the page. Coverage reports `partial` / `truncated` against the worker heap and 300 s timeout.
+16. **No cross-chunk import resolution.** The paste parser the add sheet calls is `lPt` in `renderApp`, an import (`pl as lPt`) of `Q$e` from `index-BGEQ8YjU.js`; `index` also has an unrelated local `lPt` (a gzip helper). REA gives no export/import map between chunks, so the name had to be resolved by hand from the `export{…}` list; a name search alone points at the wrong function.
+17. **No way to reach a Mac-only artifact from the Linux machine.** Conductor's binary was copied from Sven's Mac with Reason's device copy (`devices_copy_to_cloud`, sha256 `0ba55751…`), then decoded with `tools/extract_tauri_assets.py`; REA has no remote-artifact input.
 
