@@ -45,6 +45,7 @@ export function useSettings() {
       try {
         const stored = await updateSettings(next);
         setSettings(stored);
+        window.dispatchEvent(new Event(SETTINGS_CHANGED));
         setError(null);
         return true;
       } catch (e) {
