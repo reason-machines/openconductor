@@ -5,8 +5,12 @@ import { buildResults, cycleTab, emptyText, placeholderFor, TABS, type PaletteDa
 import { COMMAND_PALETTE_DIALOG_ID, moveActive, paletteCommandFor } from "./state.ts";
 import { workspaceNumberLabel } from "../state/workspaceNumber.ts";
 import { VIEW_ARCHIVED_ACTION } from "./fromAppState.ts";
-import { ARCHIVE_FILTERS, ARCHIVE_FILTER_LABEL, ARCHIVE_FILTER_TEXT, UNARCHIVE_LABEL, type ArchiveFilter } from "../workspace/archivedList.ts";
-import { ArchiveIcon } from "../components/Icons";
+import type { ArchiveFilter, ArchivedWorkspace } from "../workspace/archivedList.ts";
+import type { Repo } from "../state/types.ts";
+import { loadFilters, saveFilters, CLEARED_FILTERS, type HomeFilters, type HomeRow } from "../home/allWorkspaces.ts";
+import { showClearFilters, workspacesTabRows } from "./workspacesTab.ts";
+import { WorkspaceFilters, WorkspaceRow } from "./WorkspacesTab.tsx";
+import { SearchIcon } from "../components/Icons";
 import { useDialogMotion } from "../components/motion/dialogMotion";
 import "./palette.css";
 
@@ -18,12 +22,26 @@ export interface CommandPaletteProps {
   initialTab?: PaletteTab;
   /** Experimental "Show workspace numbers": W-<n> before each workspace's name. */
   showWorkspaceNumbers?: boolean;
-  /** Initial "Archived workspaces" filter of the Workspaces tab. */
+  /**
+   * "Archived workspaces" filter the Workspaces tab opens with, without saving it;
+   * otherwise it opens with the filters saved by Home's All workspaces, which it shares.
+   */
   initialArchiveFilter?: ArchiveFilter;
+  /** The Workspaces tab's rows: open repositories and conductor.db's archived workspaces. */
+  repos?: readonly Repo[];
+  archived?: readonly ArchivedWorkspace[];
   onSelect: (item: ResultItem) => void;
-  /** The button on an archived workspace's row. */
-  onUnarchive?: (workspaceId: string) => void;
   onClose: () => void;
+}
+
+/** A Workspaces-tab row as the palette item it selects. */
+function rowItem(row: HomeRow): ResultItem {
+  const w = row.workspace;
+  return {
+    kind: "workspace",
+    id: `workspace:${w.id}`,
+    workspace: { id: w.id, name: row.title, branch: w.branch, repoName: row.repo.name, lastActiveAt: row.lastActiveAt, archived: row.archived, number: w.number ?? null },
+  };
 }
 
 function itemLabel(item: ResultItem): { title: string; detail?: string } {
@@ -45,18 +63,36 @@ function shortcutFor(item: ResultItem, overrides: Overrides): string | null {
   return key ? glyphs(key) : null;
 }
 
-export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter = "active", showWorkspaceNumbers = false, onSelect, onUnarchive, onClose }: CommandPaletteProps) {
+export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, onClose }: CommandPaletteProps) {
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
-  const [archiveFilter, setArchiveFilter] = useState<ArchiveFilter>(initialArchiveFilter);
+  const [filters, setFiltersState] = useState<HomeFilters>(() => {
+    const saved = loadFilters(new Set(repos.map((r) => r.id)));
+    return initialArchiveFilter ? { ...saved, archiveFilter: initialArchiveFilter } : saved;
+  });
+  const setFilters = (f: HomeFilters) => {
+    setFiltersState(f);
+    saveFilters(f);
+  };
   const listRef = useRef<HTMLDivElement>(null);
   const motionRef = useDialogMotion<HTMLDivElement>();
+  const now = Date.now();
 
-  const groups = useMemo(() => buildResults(tab, query, data, archiveFilter), [tab, query, data, archiveFilter]);
-  const flat = useMemo(() => groups.flatMap((g) => g.items), [groups]);
+  const wsRows = useMemo(() => workspacesTabRows(repos, filters, query, archived), [repos, filters, query, archived]);
+  const groups = useMemo(() => (tab === "workspaces" ? [] : buildResults(tab, query, data)), [tab, query, data]);
+  const flat = useMemo(
+    () => (tab === "workspaces" ? [...wsRows.active, ...wsRows.archived].map(rowItem) : groups.flatMap((g) => g.items)),
+    [tab, wsRows, groups],
+  );
 
-  useEffect(() => setActive(0), [tab, query]);
+  // Conductor (cmdk): the Workspaces tab opens with no row highlighted; typing highlights the first.
+  useEffect(() => setActive(tab === "workspaces" ? -1 : 0), [tab]);
+  const typed = useRef(false);
+  useEffect(() => {
+    if (typed.current) setActive(0);
+    typed.current = true;
+  }, [query]);
   useEffect(() => {
     listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
   }, [active]);
@@ -66,7 +102,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     // Conductor: switch to the Workspaces tab showing archived ones too, and stay open.
     if (item.kind === "action" && item.action.id === VIEW_ARCHIVED_ACTION) {
       setTab("workspaces");
-      setArchiveFilter("all");
+      setFiltersState({ ...filters, archiveFilter: "all" });
       setQuery("");
       return;
     }
@@ -86,97 +122,110 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
   }
 
   const tabs = TABS.filter((t) => t.value !== "projects" || showProjects);
+  const wsRow = (row: HomeRow, i: number) => (
+    <WorkspaceRow key={row.workspace.id} row={row} active={i === active} showNumber={showWorkspaceNumbers} now={now} onHover={() => setActive(i)} onChoose={() => choose(flat[i])} />
+  );
   let index = -1;
   return (
     <div className="palette-backdrop" ref={motionRef} data-dialog-motion="cmdk" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="palette" role="dialog" aria-modal="true" aria-label="Command palette" data-dialog-id={COMMAND_PALETTE_DIALOG_ID}>
-        <div className="palette-tabs" role="tablist">
-          {tabs.map((t) => (
-            <button
-              key={t.value}
-              role="tab"
-              aria-selected={t.value === tab}
-              className={t.value === tab ? "palette-tab active" : "palette-tab"}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => setTab(t.value)}
-            >
-              {t.label}
-            </button>
-          ))}
-          {tab === "workspaces" && (
-            <label className="palette-archive-filter">
-              <ArchiveIcon size={14} />
-              <select aria-label={ARCHIVE_FILTER_LABEL} value={archiveFilter} onChange={(e) => setArchiveFilter(e.target.value as ArchiveFilter)}>
-                {ARCHIVE_FILTERS.map((f) => (
-                  <option key={f} value={f}>
-                    {ARCHIVE_FILTER_TEXT[f]}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
+        {/* Conductor's cmdk dialog: the search field first, then the tab row (`CUi`). */}
+        <div className="palette-search">
+          <SearchIcon size={16} />
+          <input
+            className="palette-input"
+            autoFocus
+            spellCheck={false}
+            autoComplete="off"
+            placeholder={placeholderFor(tab)}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={onKeyDown}
+            role="combobox"
+            aria-expanded="true"
+            aria-controls="palette-list"
+          />
         </div>
-        <input
-          className="palette-input"
-          autoFocus
-          spellCheck={false}
-          autoComplete="off"
-          placeholder={placeholderFor(tab)}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={onKeyDown}
-          role="combobox"
-          aria-expanded="true"
-          aria-controls="palette-list"
-        />
+        <div className="palette-tabs">
+          <div className="palette-tablist" role="tablist">
+            {tabs.map((t) => (
+              <button
+                key={t.value}
+                role="tab"
+                aria-selected={t.value === tab}
+                className={t.value === tab ? "palette-tab active" : "palette-tab"}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => setTab(t.value)}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          {tab === "workspaces" && <WorkspaceFilters repos={repos} filters={filters} onChange={setFilters} />}
+        </div>
         <div className="palette-list" id="palette-list" role="listbox" ref={listRef}>
-          {flat.length === 0 && <div className="palette-empty">{emptyText(tab)}</div>}
-          {groups.map((g) => (
-            <div key={g.id} className="palette-group" role="group" aria-label={g.heading}>
-              <div className="palette-heading">{g.heading}</div>
-              {g.items.map((item) => {
-                const i = ++index;
-                const { title, detail } = itemLabel(item);
-                const shortcut = shortcutFor(item, overrides);
-                const archived = item.kind === "workspace" && !!item.workspace.archived;
-                return (
-                  <div
-                    key={item.id}
-                    role="option"
-                    aria-selected={i === active}
-                    data-archived={archived || undefined}
-                    className={i === active ? "palette-item active" : "palette-item"}
-                    onMouseMove={() => i !== active && setActive(i)}
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => choose(item)}
-                  >
-                    {/* Conductor's workspace switcher row (`SUi`): a fixed-width W-<n> column, empty when unnumbered. */}
-                    {showWorkspaceNumbers && item.kind === "workspace" && (
-                      <span className="palette-number">{workspaceNumberLabel(item.workspace.number)}</span>
-                    )}
-                    <span className="palette-title">{title}</span>
-                    {detail && <span className="palette-detail">{detail}</span>}
-                    {shortcut && <kbd className="palette-kbd">{shortcut}</kbd>}
-                    {archived && onUnarchive && item.kind === "workspace" && (
-                      <button
-                        type="button"
-                        className="palette-unarchive"
-                        aria-label={UNARCHIVE_LABEL}
-                        title={UNARCHIVE_LABEL}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onUnarchive(item.workspace.id);
-                          onClose();
-                        }}
-                      >
-                        <ArchiveIcon size={14} />
-                      </button>
-                    )}
+          {tab === "workspaces" ? (
+            flat.length === 0 ? (
+              <div className="palette-ws-empty">
+                <span>No matching workspaces</span>
+                {showClearFilters(filters) && (
+                  <button type="button" className="palette-ws-clear" onMouseDown={(e) => e.preventDefault()} onClick={() => setFilters(CLEARED_FILTERS)}>
+                    Clear filters
+                  </button>
+                )}
+              </div>
+            ) : (
+              <>
+                {wsRows.active.length > 0 && (
+                  <div className="palette-group" role="group" aria-label="Workspaces">
+                    <div className="palette-heading">Workspaces</div>
+                    {wsRows.active.map((row, i) => wsRow(row, i))}
                   </div>
-                );
-              })}
-            </div>
-          ))}
+                )}
+                {wsRows.archived.length > 0 && (
+                  <div className="palette-group" role="group" aria-label="Archived">
+                    <div className="palette-heading">Archived</div>
+                    {wsRows.archived.map((row, i) => wsRow(row, wsRows.active.length + i))}
+                  </div>
+                )}
+              </>
+            )
+          ) : (
+            <>
+              {flat.length === 0 && <div className="palette-empty">{emptyText(tab)}</div>}
+              {groups.map((g) => (
+                <div key={g.id} className="palette-group" role="group" aria-label={g.heading}>
+                  <div className="palette-heading">{g.heading}</div>
+                  {g.items.map((item) => {
+                    const i = ++index;
+                    const { title, detail } = itemLabel(item);
+                    const shortcut = shortcutFor(item, overrides);
+                    const archived = item.kind === "workspace" && !!item.workspace.archived;
+                    return (
+                      <div
+                        key={item.id}
+                        role="option"
+                        aria-selected={i === active}
+                        data-archived={archived || undefined}
+                        className={i === active ? "palette-item active" : "palette-item"}
+                        onMouseMove={() => i !== active && setActive(i)}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => choose(item)}
+                      >
+                        {/* Conductor's workspace switcher row (`SUi`): a fixed-width W-<n> column, empty when unnumbered. */}
+                        {showWorkspaceNumbers && item.kind === "workspace" && (
+                          <span className="palette-number">{workspaceNumberLabel(item.workspace.number)}</span>
+                        )}
+                        <span className="palette-title">{title}</span>
+                        {detail && <span className="palette-detail">{detail}</span>}
+                        {shortcut && <kbd className="palette-kbd">{shortcut}</kbd>}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
     </div>
