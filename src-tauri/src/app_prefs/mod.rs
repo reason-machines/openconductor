@@ -20,12 +20,31 @@ use serde::{Deserialize, Serialize};
 /// Default left sidebar width (the reference's `mBe = 256`).
 pub const DEFAULT_LEFT_PANEL_WIDTH: u32 = 256;
 
+/// "Send messages with" (the reference's `mN`): unset or unknown reads as
+/// `enter` (`yl("message_send_key", mN, "enter")`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum MessageSendKey {
+    Enter,
+    CmdEnter,
+}
+
+impl MessageSendKey {
+    fn as_str(self) -> &'static str {
+        match self {
+            MessageSendKey::Enter => "enter",
+            MessageSendKey::CmdEnter => "cmd-enter",
+        }
+    }
+}
+
 /// Every app preference, decoded. Field names are the table keys.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct AppPrefs {
     pub garry_mode: bool,
     pub experimental_show_agent_cost: bool,
     pub experimental_tab_freak_mode: bool,
+    pub experimental_new_workspace_page: bool,
     pub graphite_disabled: bool,
     /// The app "Open in" uses first: the most recent entry of
     /// `open_in_mru_order` without its `|local` / `|remote` suffix, else
@@ -46,6 +65,10 @@ pub struct AppPrefs {
     /// Experimental "Show sidebar resource usage" (the reference's
     /// `Te("sidebar_resource_usage", !1)`): off unless the row says `"true"`.
     pub sidebar_resource_usage: bool,
+    pub message_send_key: MessageSendKey,
+    /// Experimental "Dashboard": shows the sidebar's Dashboard row and the
+    /// `/dashboard` workspace board. Off unless the row says `"true"`.
+    pub dashboard_enabled: bool,
     /// "Use Claude Code with Chrome": Claude Code chats start with
     /// `--chrome` (the reference sidecar's `extraArgs: { chrome: null }`).
     pub chrome_mode_enabled: bool,
@@ -102,6 +125,11 @@ impl AppPrefs {
             garry_mode: flag(rows, keys::GARRY_MODE, false),
             experimental_show_agent_cost: flag(rows, keys::EXPERIMENTAL_SHOW_AGENT_COST, false),
             experimental_tab_freak_mode: flag(rows, keys::EXPERIMENTAL_TAB_FREAK_MODE, false),
+            experimental_new_workspace_page: flag(
+                rows,
+                keys::EXPERIMENTAL_NEW_WORKSPACE_PAGE,
+                false,
+            ),
             // Only the exact text "true" turns Graphite off.
             graphite_disabled: rows.get(keys::GRAPHITE_DISABLED).map(String::as_str)
                 == Some("true"),
@@ -127,6 +155,11 @@ impl AppPrefs {
             roundhouse_client_user_id: text(rows, keys::ROUNDHOUSE_CLIENT_USER_ID),
             sidebar_repo_filter: text(rows, keys::SIDEBAR_REPO_FILTER),
             sidebar_resource_usage: flag(rows, keys::SIDEBAR_RESOURCE_USAGE, false),
+            message_send_key: match rows.get(keys::MESSAGE_SEND_KEY).map(String::as_str) {
+                Some("cmd-enter") => MessageSendKey::CmdEnter,
+                _ => MessageSendKey::Enter,
+            },
+            dashboard_enabled: flag(rows, keys::DASHBOARD_ENABLED, false),
             // The reference reads it as `=== "true"`.
             chrome_mode_enabled: rows.get(keys::CHROME_MODE_ENABLED).map(String::as_str)
                 == Some("true"),
@@ -141,6 +174,7 @@ pub enum AppPrefUpdate {
     GarryMode(bool),
     ExperimentalShowAgentCost(bool),
     ExperimentalTabFreakMode(bool),
+    ExperimentalNewWorkspacePage(bool),
     GraphiteDisabled(bool),
     LeftPanelVisible(bool),
     RightPanelVisible(bool),
@@ -157,6 +191,10 @@ pub enum AppPrefUpdate {
     SidebarRepoFilter(Option<String>),
     /// Written as `"true"` / `"false"` (the reference's `v6t`).
     SidebarResourceUsage(bool),
+    /// Written as `enter` / `cmd-enter` after the send-key overrides.
+    MessageSendKey(MessageSendKey),
+    /// The Experimental "Dashboard" switch (the reference's `eGt`).
+    DashboardEnabled(bool),
     ChromeModeEnabled(bool),
 }
 
@@ -177,6 +215,7 @@ impl AppPrefUpdate {
             GarryMode(v) => b(keys::GARRY_MODE, *v),
             ExperimentalShowAgentCost(v) => b(keys::EXPERIMENTAL_SHOW_AGENT_COST, *v),
             ExperimentalTabFreakMode(v) => b(keys::EXPERIMENTAL_TAB_FREAK_MODE, *v),
+            ExperimentalNewWorkspacePage(v) => b(keys::EXPERIMENTAL_NEW_WORKSPACE_PAGE, *v),
             GraphiteDisabled(v) => b(keys::GRAPHITE_DISABLED, *v),
             LeftPanelVisible(v) => b(keys::LEFT_PANEL_VISIBLE, *v),
             RightPanelVisible(v) => b(keys::RIGHT_PANEL_VISIBLE, *v),
@@ -204,6 +243,8 @@ impl AppPrefUpdate {
             SidebarRepoFilter(Some(id)) => Ok(Write::Set(keys::SIDEBAR_REPO_FILTER, id.clone())),
             SidebarRepoFilter(None) => Ok(Write::Delete(keys::SIDEBAR_REPO_FILTER)),
             SidebarResourceUsage(v) => b(keys::SIDEBAR_RESOURCE_USAGE, *v),
+            MessageSendKey(k) => Ok(Write::Set(keys::MESSAGE_SEND_KEY, k.as_str().into())),
+            DashboardEnabled(v) => b(keys::DASHBOARD_ENABLED, *v),
             ChromeModeEnabled(v) => b(keys::CHROME_MODE_ENABLED, *v),
         }
     }

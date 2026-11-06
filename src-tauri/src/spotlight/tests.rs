@@ -218,6 +218,41 @@ fn the_roots_local_settings_file_survives_syncs_and_end() {
     );
 }
 
+/// A sync must not remove the file and write it back afterwards: anything
+/// reading the setting in between (the UI, the E2E checkpoint flow) would
+/// find no file. A hard link made at Run still shares its inode after a sync
+/// and after Stop.
+#[cfg(unix)]
+#[test]
+fn syncs_and_end_never_remove_the_roots_local_settings_file() {
+    use std::os::unix::fs::MetadataExt;
+    let f = fixture();
+    setting::write_local(&f.root, true).unwrap();
+    let link = f.base.join("settings-link");
+    fs::hard_link(f.root.join(LOCAL_SETTINGS), &link).unwrap();
+    let same_file = || {
+        let a = fs::metadata(f.root.join(LOCAL_SETTINGS)).unwrap();
+        a.ino() == fs::metadata(&link).unwrap().ino()
+    };
+
+    begin(&f.root).unwrap();
+    write(&f.ws, "new.txt", "from ws\n");
+    let id = session_checkpoint_id(1, 4);
+    assert_eq!(sync_once(&f.ws, &f.root, &id), SyncOutcome::Synced);
+    assert_eq!(read(&f.root, "new.txt").as_deref(), Some("from ws\n"));
+    assert!(
+        same_file(),
+        "the sync removed and rewrote the root's settings file"
+    );
+
+    end(&f.root).unwrap();
+    assert_eq!(read(&f.root, "new.txt"), None);
+    assert!(
+        same_file(),
+        "Stop removed and rewrote the root's settings file"
+    );
+}
+
 #[test]
 fn turning_the_setting_off_during_a_session_stays_off_after_end() {
     // The toggle writes the file, then stops Spotlight (setting::apply).

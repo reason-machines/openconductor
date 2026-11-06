@@ -1,8 +1,9 @@
 import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
-import type { RowPr } from "./rowStatus.ts";
+import type { RowPr, SessionStatus } from "./rowStatus.ts";
 import type { NavSection } from "./navigationSections.ts";
 
-export type WorkspaceStatus = "idle" | "working" | "needs-review" | "archived";
+/** The workspace's lifecycle in this shell; what its agent is doing is `sessionStatus`. */
+export type WorkspaceStatus = "idle" | "needs-review" | "archived";
 
 export interface Workspace {
   id: string;
@@ -13,6 +14,13 @@ export interface Workspace {
   /** Git branch checked out in this workspace's worktree. */
   branch: string;
   status: WorkspaceStatus;
+  /**
+   * The most urgent status across the workspace's sessions (Conductor's
+   * `aggregatedStatus`, folded with `aggregateSessions`): working, cancelling,
+   * waiting for background tasks, or needing a plan response, an answer or a
+   * permission. Absent means idle. Live only: nothing reports a closed agent.
+   */
+  sessionStatus?: SessionStatus;
   /** Lines added/removed versus the base branch; filled by the backend later. */
   diff: { added: number; removed: number };
   createdAt: number;
@@ -72,7 +80,12 @@ export interface Repo {
  * the workspace list, reached by opening /all-workspaces (and restored if it was
  * open). Conductor itself sends Home to /all-workspaces; ours differs on purpose.
  */
-export type Selection = { kind: "root" } | { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
+export type Selection =
+  | { kind: "root" }
+  | { kind: "home" }
+  /** Conductor's `/dashboard` (Experimental "Dashboard"); `repo` is its `?repo=` project tab. */
+  | { kind: "dashboard"; repo?: string }
+  | { kind: "workspace"; repoId: string; workspaceId: string };
 
 export interface AppState {
   repos: Repo[];

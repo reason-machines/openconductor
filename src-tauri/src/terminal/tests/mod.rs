@@ -240,3 +240,7 @@ mod screen;
 mod screen_live;
 mod shell_exec;
 mod shell_integration;
+#[cfg(unix)]
+#[allow(clippy::duplicate_mod)]
+#[path = "../../test_exe.rs"]
+mod test_exe;

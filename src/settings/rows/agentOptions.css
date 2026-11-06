@@ -2,37 +2,14 @@
  * Per-agent options on Settings › Agents (AgentOptionRows.tsx). Sizes are
  * Conductor's Tailwind classes from renderApp-D_fmY7hW.js; colours are its
  * tokens from evidence/frontend/css-tokens.json (--success, --destructive,
- * --input-border), with fallbacks for themes that do not define them.
+ * --input-border), from src/theme/tokens.css.
  */
 .settings-row.oc-agent-exec,
 .oc-agent-config,
 .oc-agent-advanced {
-  --oc-success: #16a249;
-  --oc-destructive: #dc2828;
-  --oc-input-border: #14100f1a;
-}
-@media (prefers-color-scheme: dark) {
-  .settings-row.oc-agent-exec,
-  .oc-agent-config,
-  .oc-agent-advanced {
-    --oc-success: #4ade80;
-    --oc-destructive: #f87272;
-    --oc-input-border: #fff3;
-  }
-}
-:root[data-theme="dark"] .settings-row.oc-agent-exec,
-:root[data-theme="dark"] .oc-agent-config,
-:root[data-theme="dark"] .oc-agent-advanced {
-  --oc-success: #4ade80;
-  --oc-destructive: #f87272;
-  --oc-input-border: #fff3;
-}
-:root[data-theme="light"] .settings-row.oc-agent-exec,
-:root[data-theme="light"] .oc-agent-config,
-:root[data-theme="light"] .oc-agent-advanced {
-  --oc-success: #16a249;
-  --oc-destructive: #dc2828;
-  --oc-input-border: #14100f1a;
+  --oc-success: var(--success);
+  --oc-destructive: var(--destructive);
+  --oc-input-border: var(--input);
 }
 
 /* Inline link buttons in descriptions (`text-foreground hover:underline`, ExternalLink size-3). */
@@ -93,7 +70,7 @@
   align-items: flex-start;
   gap: 8px;
   margin-top: 4px;
-  color: #d97706;
+  color: var(--amber);
   font-size: 12px;
   line-height: 16px;
 }

@@ -5,9 +5,9 @@ import type { DialogKind } from "./Dialogs";
 import { FolderIcon, FolderPlusIcon, GlobeIcon, SidebarIcon, TicketsPlaneIcon } from "./Icons";
 import { Wordmark } from "./Wordmark";
 import { activeWorkspaceCount } from "../state/selectors";
-import { citiesVisited } from "../home/citiesVisited";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs } from "../keybindings/shortcut";
+import { CITY_TOTAL, visitedCities } from "../home/cities";
 
 const TOGGLE_LEFT_SIDEBAR_HINT = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
 
@@ -32,24 +32,9 @@ function EntryCard({ icon, label, onClick }: { icon: ReactNode; label: string; o
   );
 }
 
-/**
- * Conductor's `Xrs`: "<n>/<total> cities visited", nothing while no workspace is
- * named after a city. Conductor's button opens its world-map "Passport" dialog,
- * which OpenConductor does not have, so this is plain text.
- */
-function CitiesVisited({ repos }: { repos: Repo[] }) {
-  const { visited, total } = citiesVisited(repos);
-  if (visited === 0) return null;
-  return (
-    <span className="home-cities">
-      <TicketsPlaneIcon size={16} />
-      {visited}/{total} cities visited
-    </span>
-  );
-}
-
 export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOpenProject }: Props) {
   const hasWorkspaces = activeWorkspaceCount(repos) > 0;
+  const cities = visitedCities(repos);
   return (
     <div className="home" data-tauri-drag-region>
       {!sidebarVisible && (
@@ -73,9 +58,16 @@ export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOp
           <EntryCard icon={<FolderPlusIcon size={16} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
         </div>
       </div>
-      <div className="home-footer">
-        <CitiesVisited repos={repos} />
-      </div>
+      {/* Conductor's `Xrs`: "<n>/<total> cities visited" behind a tickets-plane icon, nothing while no
+          workspace is named after a city. Conductor's button opens its world-map dialog, which we lack. */}
+      {cities.length > 0 && (
+        <div className="home-footer">
+          <button type="button" className="home-cities" title={cities.join(", ")}>
+            <TicketsPlaneIcon size={16} />
+            {`${cities.length}/${CITY_TOTAL} cities visited`}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

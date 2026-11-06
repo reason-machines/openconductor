@@ -18,6 +18,9 @@ pub fn startup(db: &Db, service: &WorkspaceService) -> Result<(), Box<dyn std::e
     let pool = &db.0;
     tauri::async_runtime::block_on(async {
         store::delete_incomplete(pool).await?;
+        // Conductor's `xet`: sessions of local workspaces left busy by the
+        // last run go idle; `needs_user_input` survives.
+        openconductor_db::sessions::reset_busy_to_idle_at_startup(pool).await?;
         for repo in service.repositories() {
             if openconductor_db::repos::get(pool, &repo.id).await?.is_some() {
                 continue;
@@ -152,13 +155,27 @@ pub async fn on_create_started(
     store::begin_workspace(&db.0, &pending, Some(parent_branch)).await.ok().map(|_| pending.id)
 }
 
-/// The worktree exists: its row becomes `ready`; returns its number. A
-/// database error is logged, not returned: the worktree was created and the UI
-/// must show it (without a number).
-pub async fn on_create_finished(db: &Db, repository_id: &str, w: &Workspace, parent_branch: &str) -> Option<i64> {
+/// The worktree exists: its row becomes `ready` with the initialization log
+/// and tracked-file count recorded on the way (`record_initialization`);
+/// returns its number. A database error is logged, not returned: the worktree
+/// was created and the UI must show it (without a number).
+pub async fn on_create_finished(
+    db: &Db,
+    repository_id: &str,
+    w: &Workspace,
+    parent_branch: &str,
+    init_log: Option<&str>,
+    files_copied: i64,
+) -> Option<i64> {
     let row = known_workspace(repository_id, w);
     match store::finish_workspace(&db.0, &row, Some(parent_branch), None).await {
-        Ok(number) => Some(number),
+        Ok(number) => {
+            log_err(
+                "record initialization log",
+                store::record_initialization(&db.0, &row.id, init_log, files_copied).await,
+            );
+            Some(number)
+        }
         Err(e) => {
             log_err("record workspace", Err(e));
             None
@@ -202,5 +219,59 @@ mod repo_prompt_tests {
         assert_eq!(repo_prompt(&s, "createPR").unwrap(), None);
         assert_eq!(repo_prompt(&s, "general").unwrap(), None);
         assert!(repo_prompt(&s, "review").is_err());
+    }
+}
+
+#[cfg(test)]
+mod duplicate_repo_tests {
+    use super::*;
+    use std::path::Path;
+    use std::process::Command;
+
+    fn git(dir: &Path, args: &[&str]) {
+        let ok = Command::new("git").arg("-C").arg(dir).args(args).status().unwrap().success();
+        assert!(ok, "git {args:?}");
+    }
+
+    /// Open project on a folder that is already added, through the two steps
+    /// of the `add_repository` command (register with the service, then
+    /// `on_repository_added` writes conductor.db): as Conductor's `g2t`, a
+    /// second `repos` row on the same folder named `<name>-v1`, next in
+    /// display order (evidence/screens/duplicate-repo.md).
+    #[tokio::test]
+    async fn open_project_twice_on_one_folder_writes_a_second_repos_row() {
+        let tmp = std::env::temp_dir().join(format!("oc-duplicate-repo-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&tmp);
+        let repo = tmp.join("My App");
+        std::fs::create_dir_all(&repo).unwrap();
+        git(&repo, &["init", "-q", "-b", "main"]);
+        git(&repo, &["config", "user.name", "t"]);
+        git(&repo, &["config", "user.email", "t@example.com"]);
+        std::fs::write(repo.join("README.md"), "hello\n").unwrap();
+        git(&repo, &["add", "README.md"]);
+        git(&repo, &["commit", "-q", "-m", "init"]);
+
+        let svc = WorkspaceService::new(tmp.join("svc")).unwrap();
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        let mut roots = Vec::new();
+        for _ in 0..2 {
+            let r = svc.add_repository(&repo).unwrap();
+            store::record_repository(&pool, &known_repo(&r)).await.unwrap();
+            roots.push(r.root.display().to_string());
+        }
+        assert_eq!(roots[0], roots[1]);
+        let rows = store::list_repos(&pool).await.unwrap();
+        let got: Vec<_> = rows
+            .iter()
+            .map(|r| (r.id.as_str(), r.name.as_str(), r.root_path.as_str(), r.display_order))
+            .collect();
+        assert_eq!(
+            got,
+            [
+                ("my-app", "My App", roots[0].as_str(), 0),
+                ("my-app-v1", "My App-v1", roots[0].as_str(), 1)
+            ]
+        );
+        let _ = std::fs::remove_dir_all(&tmp);
     }
 }

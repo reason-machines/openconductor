@@ -9,6 +9,7 @@
 // ?agent=claude|codex|reason picks which agent's wire shape the same turn arrives in
 // (the rows must look the same for all three), ?files=N gives the turn N changed-file chips
 // instead of the reference's two (?more=K clicks "+N more" K times).
+// ?open=1 opens every tool row (expandToolsByDefault).
 // ?fork=1 opens the turn's More actions menu and, with ?forked=1, picks "Fork to new tab" and
 // shows the transcript attachment the new tab would get.
 import React from "react";
@@ -20,7 +21,9 @@ import { applyChatEvents, emptyTranscript } from "../../src/features/chat/reduce
 import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../../src/features/chat/fork.ts";
 import type { Block, ChatEvent, ChatMessage } from "../../src/features/chat/types.ts";
 import { LISBON, lisbonBlocks, type FixtureAgent } from "./lisbon.ts";
+import { catalogBlocks } from "./toolCatalog.ts";
 import "../../src/fonts.css";
+import "../../src/theme/tokens.css";
 import "../../src/styles.css";
 
 const params = new URLSearchParams(location.search);
@@ -34,7 +37,8 @@ const T = "w1:t1";
 const at = (s: number) => new Date(LISBON.startedAt + s * 1000).toISOString();
 const msg = (id: string, role: ChatMessage["role"], blocks: Block[], s: number): ChatMessage => ({ id, sessionId: S, turnId: T, role, createdAt: at(s), blocks });
 
-const assistant = lisbonBlocks(agent);
+// ?catalog=1: one call of each row kind the lisbon turn does not use (tools/chat/toolCatalog.ts).
+const assistant = params.get("catalog") === "1" ? catalogBlocks() : lisbonBlocks(agent);
 const events: ChatEvent[] = [
   { type: "upsert", message: { ...msg(`${T}:user`, "user", [{ type: "text", text: LISBON.prompt }], 0), ...(cancelled ? { cancelledAt: at(30) } : {}) } },
   { type: "turn_status", sessionId: S, turnId: T, status: "running", at: at(0) },
@@ -68,6 +72,7 @@ function Fixture() {
             transcript={r.transcript}
             workspacePath={LISBON.workspacePath}
             turnFooter={turnFooter}
+            expandToolsByDefault={params.get("open") === "1"}
             turnAgent={turnAgentLabel("byok:anthropic:claude-opus-5-5", "Reason")}
             onResetChat={() => undefined}
             onForkToNewTab={(turnId) => (fork ? setForked(forkTranscript(r.transcript, turnId)) : undefined)}

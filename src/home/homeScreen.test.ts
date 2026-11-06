@@ -1,32 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { citiesVisited, cityOf } from "./citiesVisited.ts";
 import { GLYPH_PITCH, pixelWordmark } from "./pixelWordmark.ts";
-import { CITIES } from "../workspace/naming.ts";
-import type { Repo, Workspace } from "../state/types";
-
-const ws = (name: string, directoryName?: string): Workspace => ({
-  id: name,
-  name,
-  directoryName,
-  branch: name,
-  status: "idle",
-  diff: { added: 0, removed: 0 },
-  createdAt: 0,
-});
-const repo = (workspaces: Workspace[]): Repo => ({ id: "r", name: "r", path: "/r", defaultBranch: "main", workspaces });
-
-test("a -vN suffix and letter case still name the city", () => {
-  assert.equal(cityOf("oslo"), "oslo");
-  assert.equal(cityOf("Oslo-v2"), "oslo");
-  assert.equal(cityOf("fix-login"), null);
-});
-
-test("cities visited counts distinct cities over the whole list", () => {
-  const repos = [repo([ws("Oslo PR title", "oslo"), ws("oslo-v1"), ws("fix-login")]), repo([ws("lima")])];
-  assert.deepEqual(citiesVisited(repos), { visited: 2, total: CITIES.length });
-  assert.equal(citiesVisited([]).visited, 0);
-});
 
 test("the wordmark spells OPENCONDUCTOR on Conductor's grid", () => {
   const mark = pixelWordmark("OPENCONDUCTOR");

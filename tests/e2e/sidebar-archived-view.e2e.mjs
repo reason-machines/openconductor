@@ -121,3 +121,97 @@ test("archived workspaces are listed in the palette, open read-only and can be u
   assert.deepEqual(errors, []);
   await page.close();
 });
+
+// Conductor's Home list (`UJo`) runs the same archive filter over active and
+// archived workspaces; archived ones are not in the sidebar state, so Home
+// reads them from the archive (listArchivedWorkspaces).
+test("Home's All workspaces lists archived workspaces under Only archived and Showing all", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto(`${base}/?demo=1`);
+  await row(page, "Quiet harbor").waitFor();
+  await archiveFromMenu(page, "Quiet harbor");
+
+  await page.locator(".sb-row", { hasText: "Home" }).first().click();
+  const list = page.getByRole("listbox", { name: "Workspaces" });
+  await list.waitFor();
+  const names = () => list.locator(".allws-row .allws-name").allTextContents();
+  const archivedNames = () => list.locator(".allws-row", { has: page.locator(".allws-archived") }).locator(".allws-name").allTextContents();
+  const setFilter = async (label) => {
+    await page.getByRole("button", { name: "Archived workspaces" }).click();
+    await page.getByRole("menuitemcheckbox", { name: label }).click();
+  };
+  const isHarbor = (n) => /quiet.harbor/i.test(n);
+
+  assert.ok(!(await names()).some(isHarbor), "Hiding archived leaves it out");
+
+  await setFilter("Only archived");
+  await list.locator(".allws-row").first().waitFor();
+  const only = await names();
+  assert.ok(only.length > 0 && only.every(isHarbor), `Only archived lists the archived workspace, got ${JSON.stringify(only)}`);
+  assert.deepEqual(await archivedNames(), only, "every row carries the archived mark");
+  await shot(page, "home-only-archived.png");
+
+  await setFilter("Showing all");
+  const all = await names();
+  assert.ok(all.some(isHarbor) && all.some((n) => !isHarbor(n)), `Showing all lists active and archived, got ${JSON.stringify(all)}`);
+
+  // An archived row opens the read-only archived view.
+  await setFilter("Only archived");
+  await list.locator(".allws-row").first().click();
+  await page.locator(".archived-workspace").waitFor();
+
+  assert.deepEqual(errors, []);
+  await page.close();
+});
+
+// Conductor's row (`lJn` → `iea`) has an Archive button at its right end that is
+// invisible until the row is hovered; the diff stat fades out under it, and the
+// tooltip names the shortcut only on the selected row.
+test("hovering a sidebar row shows its Archive button, which archives without selecting the row", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto(`${base}/?demo=1`);
+  const harbor = row(page, "Quiet harbor");
+  await harbor.waitFor();
+  const wrap = page.locator(".sb-ws-row", { has: harbor });
+  const archive = wrap.getByRole("button", { name: "Archive workspace" });
+
+  await page.mouse.move(5, 895);
+  assert.equal(await archive.isVisible(), false, "hidden until the row is hovered");
+  await harbor.hover();
+  assert.equal(await archive.isVisible(), true, "shown on hover");
+  const diff = wrap.locator(".sb-ws-diff");
+  if (await diff.count()) assert.equal(await diff.evaluate((e) => getComputedStyle(e).opacity), "0", "the diff stat fades under it");
+
+  // Inside the row's right end, vertically centred on it.
+  const r = await harbor.boundingBox();
+  const b = await archive.boundingBox();
+  assert.ok(b.x + b.width <= r.x + r.width && b.x > r.x + r.width - 40, `at the right end: row ${JSON.stringify(r)}, button ${JSON.stringify(b)}`);
+  assert.ok(Math.abs(b.y + b.height / 2 - (r.y + r.height / 2)) <= 1, "vertically centred");
+
+  await archive.hover();
+  const tip = page.getByRole("tooltip");
+  await tip.waitFor();
+  assert.equal((await tip.textContent()).trim(), "Archive workspace", "no shortcut on a row that is not selected");
+  await shot(page, "sidebar-row-archive-hover.png");
+
+  const selectedBefore = await page.locator(`${ROW}[aria-current="page"] .sb-ws-name`).allTextContents();
+  await archive.click();
+  await harbor.waitFor({ state: "detached" });
+  assert.deepEqual(await page.locator(`${ROW}[aria-current="page"] .sb-ws-name`).allTextContents(), selectedBefore, "archiving from the button does not open the row");
+
+  // The selected row's tooltip adds ⌘⇧A, the shortcut that archives the open workspace.
+  const wren = row(page, "Copper wren");
+  await wren.click();
+  await page.mouse.move(5, 895);
+  await wren.hover();
+  await page.locator(".sb-ws-row", { has: wren }).getByRole("button", { name: "Archive workspace" }).hover();
+  await page.getByRole("tooltip").filter({ hasText: "Archive workspace" }).waitFor();
+  assert.match(await page.getByRole("tooltip").filter({ hasText: "Archive workspace" }).textContent(), /⌘⇧A/);
+
+  assert.deepEqual(errors, []);
+  await page.close();
+});

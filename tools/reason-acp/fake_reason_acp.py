@@ -12,6 +12,20 @@ behaviours the provider has to handle (see src-tauri/src/reason_acp/):
 * A prompt sent while another runs ends the earlier one with "cancelled".
 * Sessions persist in state.json in the working directory across
   processes; the working directory also stands in for the home folder.
+* Workspaces, as `reason` 0.2.690 has them: the saved workspaces are ws-a and
+  ws-b; the selected one (the Reason desktop app's selection) is ws-a unless
+  the file `fake-reason-selected` in the working directory names another.
+  `[--workspace SLUG] acp` serves that workspace (else the selected one), and
+  a Session belongs to the workspace it was created in. `session/resume` of a
+  Session in another workspace succeeds without a word, and its next prompt
+  answers "Reason request failed (409 client_session_id_conflict)" with
+  end_turn, as reason acp does: its resume hides the 404 and its prompt then
+  creates a Session under the taken id.
+* `[--workspace SLUG] whoami` prints the account, the organization and the
+  saved workspaces with "[selected]" on the one in use, like `reason whoami`.
+* `[--workspace SLUG] session get ID --json` prints the Session and exits 0
+  when it is in that workspace, else prints "Reason: Reason request failed
+  (404 session_not_found)" to stderr and exits 1.
 
 Prompts are commands: "echo: TEXT" (reply split mid-word, prefixed with the
 turn number), "slow" (a running tool until session/cancel), "report" (a
@@ -20,6 +34,8 @@ mid-turn user_message_chunk), "local" (a diff in the session's working folder),
 files in the session's folder), "crash" (exit without answering),
 "config" (replies "model=M effort=E"), "attachments" (replies with each
 embedded resource as "NAME: TEXT", NAME the last part of its uri),
+"permission" (asks session/request_permission for a tool call, then replies
+"permission: OPTION" with the chosen optionId or "cancelled"),
 "lisbon" (replays Conductor's reference transcript turn, tools/screens/seed-data.js
 'lisbon': text, Grep, Read, text, Edit, Bash, text; each tool is a tool_call then a
 tool_call_update to completed, with ACP kind, rawInput and _meta.claudeCode.toolName;
@@ -48,10 +64,28 @@ def config_options(config):
 
 HOME = os.path.realpath(os.getcwd())
 STATE = os.path.join(HOME, "state.json")
+SAVED = ["ws-a", "ws-b"]
+
+
+def selected_workspace():
+    try:
+        with open(os.path.join(HOME, "fake-reason-selected")) as f:
+            return f.read().strip() or "ws-a"
+    except OSError:
+        return "ws-a"
+
+
+ARGS = sys.argv[1:]
+WORKSPACE = selected_workspace()
+if ARGS[:1] == ["--workspace"]:
+    WORKSPACE, ARGS = ARGS[1], ARGS[2:]
 CLOUD = "/home/runner/.reason/workspace/sessions/child-1/repo"
 lock = threading.Lock()
 opened = set()
+foreign = set()  # resumed Sessions of another workspace: their prompts get the 409
 running = {}  # session id -> (request id, threading.Event)
+asks = {}  # our request id -> (threading.Event, [response])
+next_ask = [0]
 
 
 def send(msg):
@@ -66,6 +100,18 @@ def update(sid, **u):
 
 def text(sid, kind, t):
     update(sid, sessionUpdate=kind, content={"type": "text", "text": t})
+
+
+def ask(sid, method, params):
+    """Sends a request to the client and waits for its answer."""
+    with lock:
+        next_ask[0] += 1
+        rid = f"ask-{next_ask[0]}"
+        asks[rid] = (threading.Event(), [])
+    send({"id": rid, "method": method, "params": params})
+    done, box = asks[rid]
+    done.wait(60)
+    return box[0] if box else None
 
 
 LISBON_PROMPT = ("After signing in, users with an expired session get bounced between "
@@ -152,7 +198,9 @@ def prompt(rid, p, cancel):
     # Real paths: on macOS the temp folder /var/... is a symlink to /private/var/...
     cwd = os.path.realpath(session["cwd"])
     inside_home = cwd == HOME or cwd.startswith(HOME.rstrip("/") + "/")
-    if not inside_home:
+    if sid in foreign:
+        text(sid, "agent_message_chunk", "Reason request failed (409 client_session_id_conflict)")
+    elif not inside_home:
         text(sid, "agent_message_chunk", "Reason request failed (404 device_not_found)")
     elif cmd.startswith("echo: "):
         reply = f"turn {session['turns']}: {cmd[6:]}"
@@ -194,6 +242,18 @@ def prompt(rid, p, cancel):
                 f.write(content + "\n")
             names.append(name)
         text(sid, "agent_message_chunk", f"turn {session['turns']} wrote {' '.join(names)}")
+    elif cmd == "permission":
+        tool = {"toolCallId": "tool:p", "title": "bash: rm -rf build", "kind": "execute"}
+        update(sid, sessionUpdate="tool_call", status="pending", **tool)
+        options = [{"optionId": "allow", "name": "Allow", "kind": "allow_once"},
+                   {"optionId": "reject", "name": "Reject", "kind": "reject_once"}]
+        answer = ask(sid, "session/request_permission", {"sessionId": sid, "toolCall": tool, "options": options})
+        outcome = ((answer or {}).get("result") or {}).get("outcome") or {}
+        chosen = outcome.get("optionId") if outcome.get("outcome") == "selected" else "cancelled"
+        update(sid, sessionUpdate="tool_call_update", status="completed" if chosen == "allow" else "failed", **tool)
+        text(sid, "agent_message_chunk", f"permission: {chosen}")
+        if cancel.is_set():
+            stop = "cancelled"
     elif cmd in ("lisbon", LISBON_PROMPT):
         lisbon(sid, session["cwd"])
     elif cmd == "crash":
@@ -205,6 +265,11 @@ def prompt(rid, p, cancel):
 
 def handle(msg):
     rid, method, p = msg.get("id"), msg.get("method"), msg.get("params") or {}
+    if method is None and rid in asks:
+        done, box = asks.pop(rid)
+        box.append(msg)
+        done.set()
+        return
     if method == "initialize":
         caps = {"loadSession": True, "sessionCapabilities": {"list": {}, "resume": {}, "close": {}}}
         send({"id": rid, "result": {"protocolVersion": 1, "agentCapabilities": caps,
@@ -212,7 +277,7 @@ def handle(msg):
     elif method == "session/new":
         state = load()
         sid = f"sess-{len(state['sessions']) + 1}"
-        state["sessions"][sid] = {"cwd": p["cwd"], "turns": 0, "title": None}
+        state["sessions"][sid] = {"cwd": p["cwd"], "turns": 0, "title": None, "workspace": WORKSPACE}
         save(state)
         opened.add(sid)
         send({"id": rid, "result": {"sessionId": sid, "configOptions": config_options({})}})
@@ -227,14 +292,17 @@ def handle(msg):
         save(state)
         send({"id": rid, "result": {"configOptions": config_options(config)}})
     elif method == "session/resume":
-        if p["sessionId"] in load()["sessions"]:
+        session = load()["sessions"].get(p["sessionId"])
+        if session is not None:
             opened.add(p["sessionId"])
+            if session.get("workspace", "ws-a") != WORKSPACE:
+                foreign.add(p["sessionId"])
             send({"id": rid, "result": {}})
         else:
             send({"id": rid, "error": {"code": -32002, "message": "Resource not found"}})
     elif method == "session/list":
         items = [{"sessionId": k, "cwd": v["cwd"], "title": f"{v['turns']} turns"}
-                 for k, v in load()["sessions"].items()]
+                 for k, v in load()["sessions"].items() if v.get("workspace", "ws-a") == WORKSPACE]
         send({"id": rid, "result": {"sessions": items}})
     elif method == "session/prompt":
         cancel = begin(rid, p)
@@ -248,6 +316,27 @@ def handle(msg):
         send({"id": rid, "error": {"code": -32601, "message": f"Method not found: {method}"}})
 
 
-for line in sys.stdin:
-    if line.strip():
-        handle(json.loads(line))
+def whoami():
+    print("e2e@example.com")
+    print(f"Organization: Workspace {WORKSPACE}")
+    print("Saved workspaces:")
+    for slug in [WORKSPACE] + [w for w in SAVED if w != WORKSPACE]:
+        print(f"  {slug} (Workspace {slug})" + (" [selected]" if slug == WORKSPACE else ""))
+
+
+def session_get(sid):
+    session = load()["sessions"].get(sid)
+    if session is None or session.get("workspace", "ws-a") != WORKSPACE:
+        sys.stderr.write("Reason: Reason request failed (404 session_not_found)\n")
+        sys.exit(1)
+    print(json.dumps({"session_id": sid, "status": "exit", "title": session.get("title")}))
+
+
+if ARGS[:1] == ["whoami"]:
+    whoami()
+elif ARGS[:2] == ["session", "get"]:
+    session_get(ARGS[2])
+else:
+    for line in sys.stdin:
+        if line.strip():
+            handle(json.loads(line))

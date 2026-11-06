@@ -220,6 +220,20 @@ export function unarchiveFailedMessage(err: unknown): string {
   return `Failed to unarchive: ${asFailure(err).message}`;
 }
 
+/**
+ * "Restore to new branch?" after an unarchive that found the branch deleted,
+ * taken or moved. Every unarchive goes through `unarchiveWorkspace`, the
+ * archive-on-merge toast's included, as Conductor's do (`Xk.unarchive`).
+ */
+export function restoreRequestFor<A extends { type: string }>(
+  e: ArchiveEvent<A>,
+): { repoId: string; workspaceId: string; branch: string; scenario: RestoreScenario } | null {
+  if (e.type !== "unarchived" || !e.result.scenario) return null;
+  const action = e.action as A & { repoId?: unknown; workspaceId?: unknown };
+  if (action.type !== "unarchiveWorkspace" || typeof action.repoId !== "string" || typeof action.workspaceId !== "string") return null;
+  return { repoId: action.repoId, workspaceId: action.workspaceId, branch: e.result.branch ?? "unknown", scenario: e.result.scenario };
+}
+
 /** What happened to an archive or unarchive the store started, for the app shell to show. */
 export type ArchiveEvent<A> =
   | { type: "agents-running"; action: A }

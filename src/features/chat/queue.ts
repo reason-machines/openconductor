@@ -17,8 +17,25 @@
 //   runtime makes the second one a hard stop).
 // - Queued messages can be deleted, edited, reordered, or steered into the
 //   running turn.
+// - While Reason waits for a permission answer the session is
+//   "needs_user_permission"; it still counts as running (Conductor's set of
+//   running statuses, index chunk `Rit`), so follow-ups queue and Stop
+//   cancels. An answer puts it back to "working" (Conductor's `qV`).
 
-export type SessionStatus = "idle" | "working" | "cancelling" | "error";
+/**
+ * `sessions.status` (Conductor's decoder `JZe` accepts exactly these). Reason
+ * chats reach idle, working, cancelling, error and needs_user_permission; the
+ * others come from `conductor.db` (reasonChat.ts `syncStatuses`).
+ */
+export type SessionStatus =
+  | "idle"
+  | "working"
+  | "cancelling"
+  | "error"
+  | "needs_plan_response"
+  | "needs_user_permission"
+  | "needs_user_input"
+  | "waiting";
 export type SendMode = "queue" | "steer";
 /** The user's default follow-up behaviour (Conductor's `default_message_send_mode`). */
 export type FollowUpMode = "queued" | "steering";
@@ -71,7 +88,21 @@ export function resolveSendMode(opts: { canSteer: boolean; defaultMode: FollowUp
   return steering !== (opts.opposite ?? false) ? "steer" : "queue";
 }
 
-const busy = (s: SessionStatus) => s === "working" || s === "cancelling";
+/** The agent waits on the user mid-turn (Conductor's `FZo`). */
+export const NEEDS_USER: ReadonlySet<SessionStatus> = new Set(["needs_plan_response", "needs_user_permission", "needs_user_input"]);
+/** A turn is running (Conductor `Rit` without "waiting", which has no open turn). */
+export const turnRunning = (s: SessionStatus) => s === "working" || s === "cancelling" || NEEDS_USER.has(s);
+const busy = turnRunning;
+
+/** Reason asked for permission mid-turn. */
+export function permissionRequested(q: ChatQueue): ChatQueue {
+  return q.status === "working" ? { ...q, status: "needs_user_permission" } : q;
+}
+
+/** Every open permission request was answered: the turn carries on. */
+export function permissionAnswered(q: ChatQueue): ChatQueue {
+  return q.status === "needs_user_permission" ? { ...q, status: "working" } : q;
+}
 
 /** Sends the head if the session is idle and nothing holds the queue. */
 function drain(q: ChatQueue, effects: Effect[]): QueueStep {
@@ -113,7 +144,7 @@ export function turnEnded(q: ChatQueue, outcome: "completed" | "cancelled" | "fa
 
 /** Stop. Only does something while a turn runs. */
 export function stop(q: ChatQueue): QueueStep {
-  if (q.status === "working") return { queue: { ...q, status: "cancelling" }, effects: [{ kind: "cancel", hard: false }] };
+  if (q.status === "working" || NEEDS_USER.has(q.status)) return { queue: { ...q, status: "cancelling" }, effects: [{ kind: "cancel", hard: false }] };
   if (q.status === "cancelling") return { queue: q, effects: [{ kind: "cancel", hard: true }] };
   return { queue: q, effects: [] };
 }
@@ -187,7 +218,7 @@ export function steerQueued(q: ChatQueue, id: string): QueueStep {
   const items = q.items.filter((x) => x.id !== id);
   const editingId = q.editingId === id ? null : q.editingId;
   if (q.status === "working") return { queue: { ...q, items, editingId }, effects: [{ kind: "steer", text: m.text, attachments: m.attachments }] };
-  if (q.status === "cancelling") return { queue: q, effects: [] };
+  if (busy(q.status)) return { queue: q, effects: [] };
   return { queue: { ...q, items, editingId, status: "working", paused: false }, effects: [{ kind: "start", text: m.text, attachments: m.attachments }] };
 }
 

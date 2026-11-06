@@ -209,6 +209,25 @@ fn preview_urls_parse_tables_and_legacy_strings() {
 }
 
 #[test]
+fn file_include_globs_is_a_string_the_repository_local_file_overrides() {
+    let f = Fixture::new();
+    write(
+        &f.user.join("settings.toml"),
+        "file_include_globs = \".env*\"\n",
+    );
+    write(
+        &f.root.join(".conductor/settings.local.toml"),
+        "file_include_globs = \".env\\n*.local\\n!.keep.local\"\n",
+    );
+    let g = f.load().file_include_globs.unwrap();
+    assert_eq!(
+        (g.value.as_str(), g.layer),
+        (".env\n*.local\n!.keep.local", Layer::RepoLocal)
+    );
+    assert!(is_local_writable(&["file_include_globs"]));
+}
+
+#[test]
 fn dotenv_parsing_matches_the_reference_rules() {
     let vars = parse_dotenv(
         "# comment\n\nexport A=1\nB = two words # trailing\nC=\"x\\ny\\tz\\\"q\"\nD='raw\\n'\n1BAD=no\n=empty\nE=a#b\nF=\n",
@@ -471,4 +490,59 @@ fn stored_variables_replace_user_file_values_but_not_repository_ones() {
     assert_eq!(vars["REPO_PINNED"], "repo");
     assert_eq!(vars["ONLY_STORED"], "s");
     assert_eq!(vars["UNTOUCHED"], "keep");
+}
+
+#[test]
+fn a_repository_unset_also_hides_a_stored_variable() {
+    let f = Fixture::new();
+    write(
+        &f.root.join(".conductor/settings.local.toml"),
+        "[environment_variables]\nSTORED = \"<none>\"\n",
+    );
+    let e = f.load();
+    assert_eq!(e.env.unset.local.get("STORED"), Some(&Layer::RepoLocal));
+    let vars = e
+        .env
+        .vars_with_stored(EnvContext::Local, [("STORED", "s"), ("OTHER", "o")]);
+    assert!(!vars.contains_key("STORED"), "{vars:?}");
+    assert_eq!(vars["OTHER"], "o");
+}
+
+#[test]
+fn a_later_layer_setting_a_variable_clears_its_unset() {
+    let f = Fixture::new();
+    write(
+        &f.root.join(".conductor/settings.toml"),
+        "[environment_variables]\nX = \"<none>\"\n",
+    );
+    write(
+        &f.root.join(".conductor/settings.local.toml"),
+        "[environment_variables]\nX = \"local\"\n",
+    );
+    let e = f.load();
+    assert!(e.env.unset.local.is_empty());
+    assert_eq!(e.env.local["X"].value, "local");
+}
+
+#[test]
+fn user_env_keeps_the_users_value_a_repository_overrides() {
+    let f = Fixture::new();
+    write(&f.home.join(".env.user"), "API_URL=mine\nONLY_USER=u\n");
+    write(
+        &f.user.join("settings.toml"),
+        "environment_variable_files = [\"~/.env.user\"]\n",
+    );
+    write(
+        &f.root.join(".conductor/settings.local.toml"),
+        "[environment_variables]\nAPI_URL = \"repo\"\n",
+    );
+    let e = f.load();
+    assert_eq!(e.env.local["API_URL"].value, "repo");
+    assert_eq!(e.user_env.local["API_URL"].value, "mine");
+    assert_eq!(e.user_env.local["ONLY_USER"].value, "u");
+    assert!(e
+        .user_env
+        .local
+        .values()
+        .all(|v| v.source.layer == Layer::User));
 }

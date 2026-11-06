@@ -141,7 +141,14 @@ impl ClientRequest {
             } => {
                 let mut p = Map::new();
                 p.insert("threadId".into(), json!(thread_id));
-                p.insert("input".into(), json!([{ "type": "text", "text": text }]));
+                let (text, skills) = skill_links(text);
+                let mut input = vec![json!({ "type": "text", "text": text })];
+                input.extend(
+                    skills
+                        .into_iter()
+                        .map(|(name, path)| json!({ "type": "skill", "name": name, "path": path })),
+                );
+                p.insert("input".into(), Value::Array(input));
                 put(&mut p, "model", model.as_ref().map(|m| json!(m)));
                 put(&mut p, "effort", effort.as_ref().map(|e| json!(e)));
                 Value::Object(p)
@@ -159,6 +166,47 @@ impl ClientRequest {
 }
 
 /// The `initialized` notification, sent once after `initialize` returns.
+/// A skill picked in the composer's "/" menu reaches the prompt as
+/// `[$name](path/SKILL.md)`. Codex gets `$name` in the text plus a
+/// `{type: "skill", name, path}` input item for each, as its own composer
+/// sends a picked skill (`UserInput::Skill`, Codex 0.166.0).
+pub fn skill_links(text: &str) -> (String, Vec<(String, String)>) {
+    let mut out = String::with_capacity(text.len());
+    let mut skills: Vec<(String, String)> = Vec::new();
+    let mut rest = text;
+    while let Some(i) = rest.find("[$") {
+        out.push_str(&rest[..i]);
+        let tail = &rest[i + 2..];
+        let link = tail.find("](").and_then(|n| {
+            let name = &tail[..n];
+            let after = &tail[n + 2..];
+            let close = after.find(')')?;
+            let path = &after[..close];
+            let ok = !name.is_empty()
+                && !name.contains(char::is_whitespace)
+                && path.ends_with("SKILL.md")
+                && !path.contains(char::is_whitespace);
+            ok.then(|| (name, path, n + 2 + close + 1))
+        });
+        match link {
+            Some((name, path, len)) => {
+                out.push('$');
+                out.push_str(name);
+                if !skills.iter().any(|(_, p)| p == path) {
+                    skills.push((name.to_owned(), path.to_owned()));
+                }
+                rest = &tail[len..];
+            }
+            None => {
+                out.push_str("[$");
+                rest = tail;
+            }
+        }
+    }
+    out.push_str(rest);
+    (out, skills)
+}
+
 pub fn initialized_line() -> String {
     line(json!({ "method": "initialized" }))
 }
@@ -236,6 +284,21 @@ mod tests {
         assert_eq!(
             turn.params(),
             json!({"threadId": "t1", "input": [{"type": "text", "text": "say hi"}], "effort": "high"})
+        );
+        // A skill picked in the "/" menu: `$name` in the text and a skill item.
+        let skill = ClientRequest::TurnStart {
+            thread_id: "t1".into(),
+            text: "[$deploy](/u/.codex/skills/deploy/SKILL.md) to staging [$x](not-a-skill) [$"
+                .into(),
+            model: None,
+            effort: None,
+        };
+        assert_eq!(
+            skill.params()["input"],
+            json!([
+                {"type": "text", "text": "$deploy to staging [$x](not-a-skill) [$"},
+                {"type": "skill", "name": "deploy", "path": "/u/.codex/skills/deploy/SKILL.md"}
+            ])
         );
         let stop = ClientRequest::TurnInterrupt {
             thread_id: "t1".into(),

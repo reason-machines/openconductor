@@ -9,7 +9,7 @@ import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
 import { Markdown } from "./markdown.ts";
-import { ConductorToolRow, Lucide, ToolIcon } from "./ToolRows.tsx";
+import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
 import { turnTime } from "./turnTime.ts";
 import { openUrl } from "../../backend.ts";
 import "./chat.css";
@@ -63,10 +63,10 @@ export function Transcript({
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
   const turns = useMemo(() => groupTurns(rows), [rows]);
   const [toggled, setToggled] = useState<ReadonlyMap<string, boolean>>(new Map());
-  const toggleTool = (id: string) => setToggled((prev) => new Map(prev).set(id, !isToolExpanded(id, prev, expandToolsByDefault)));
+  const toggleTool = (id: string, defaultOpen = false) => setToggled((prev) => new Map(prev).set(id, !isToolExpanded(id, prev, expandToolsByDefault || defaultOpen)));
   const [summaries, setSummaries] = useState<ReadonlyMap<string, "expanded" | "collapsed">>(new Map());
   const ctx: RowContext = {
-    isOpen: (id) => isToolExpanded(id, toggled, expandToolsByDefault),
+    isOpen: (id, defaultOpen = false) => isToolExpanded(id, toggled, expandToolsByDefault || defaultOpen),
     onToggle: toggleTool,
     summaries: {
       isOpen: (id, running) => isSummaryOpen(canCollapse(running, dontCollapseToolCalls), summaries.get(id)),
@@ -127,8 +127,9 @@ function groupTurns(rows: DisplayRow[]): Turn[] {
 }
 
 interface RowContext {
-  isOpen: (toolId: string) => boolean;
-  onToggle: (toolId: string) => void;
+  /** `defaultOpen`: Conductor's `defaultCollapsed: false` rows (a proposed plan). */
+  isOpen: (toolId: string, defaultOpen?: boolean) => boolean;
+  onToggle: (toolId: string, defaultOpen?: boolean) => void;
   summaries: {
     isOpen: (summaryId: string, turnRunning: boolean) => boolean;
     toggle: (summaryId: string, open: boolean) => void;
@@ -395,8 +396,8 @@ function Part({ part, preview = false, group, ctx }: { part: PartView; preview?:
             status={call.status}
             result={call.result}
             isError={call.status === "error"}
-            open={ctx.isOpen(call.id)}
-            onToggle={() => ctx.onToggle(call.id)}
+            open={ctx.isOpen(call.id, opensByDefault(call.tool))}
+            onToggle={() => ctx.onToggle(call.id, opensByDefault(call.tool))}
             workspacePath={ctx.workspacePath}
             onOpenFile={ctx.onOpenFile}
           />
