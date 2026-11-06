@@ -3,7 +3,7 @@
   "status": "captured",
   "steps": 1,
   "file": "oc/all-workspaces.png",
-  "png_sha256": "e6648cddb604c6cc725823d41f8cf1a68106a4a81af71b3c83b333ffd15bedc1",
+  "png_sha256": "80d7194f5f9a9d10120b9f9e042a74381c1435a546a5678e16005781ca48a64e",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -21,7 +21,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -37,7 +37,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Stockholm",
+    "Berlin",
     "tide-web"
    ],
    "roles": [
@@ -55,7 +55,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -70,7 +70,7 @@
     "Today",
     "1",
     "T",
-    "Stockholm",
+    "Berlin",
     "now"
    ],
    "url": "tauri://localhost",
@@ -79,13 +79,13 @@
     820
    ]
   },
-  "ms": 5030
+  "ms": 4688
  },
  "create": {
   "status": "captured",
   "steps": 1,
   "file": "oc/create.png",
-  "png_sha256": "cf5d259d75aabd2d7ff39dd55a5767a34a6af02778fd401e79c9ebdb2c7bdce5",
+  "png_sha256": "58a3a3ad8793e4d63bb528aa3623b2f47bcf3cbec63eef7d6cbc245f83c4ee86",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -103,7 +103,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -124,7 +124,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -179,7 +179,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -190,21 +190,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -257,13 +257,13 @@
     820
    ]
   },
-  "ms": 4879
+  "ms": 4119
  },
  "create-repo-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/create-repo-picker.png",
-  "png_sha256": "accfa363fad851ad87dafc37b1df34efb935675cba45397a25740ea134973332",
+  "png_sha256": "ee11f71436fe005482f0aed837f8ea15d1b08c073a2865481b63ac32f963e48b",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -281,7 +281,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -302,7 +302,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -358,7 +358,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -369,21 +369,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -438,13 +438,13 @@
     820
    ]
   },
-  "ms": 5467
+  "ms": 4637
  },
  "dialog-clone-github": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-clone-github.png",
-  "png_sha256": "18434030245122e496b8b3e61fd0b031d94145e31cf46779ca10286de74dadfc",
+  "png_sha256": "91bc09c1fb05cbf5d87183fe2d38f3925d8cb9e71331718583622d1e885779aa",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -462,7 +462,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -483,7 +483,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -529,7 +529,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -540,21 +540,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -608,13 +608,13 @@
     820
    ]
   },
-  "ms": 5699
+  "ms": 7023
  },
  "dialog-create-project": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-create-project.png",
-  "png_sha256": "d23a4eb7eb7642c780b4c5cc231eed95e3a4d17146646071ddf36d17b4e2524b",
+  "png_sha256": "d3696620b52603d34b7443d26d7b4b66df8e8563d34e249a00657b20fa9272af",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -632,7 +632,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -653,7 +653,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -700,7 +700,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -711,21 +711,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -786,13 +786,13 @@
     820
    ]
   },
-  "ms": 5645
+  "ms": 6769
  },
  "dialog-keyboard-shortcuts": {
   "status": "captured",
   "steps": 1,
   "file": "oc/dialog-keyboard-shortcuts.png",
-  "png_sha256": "b02b446b6292cadade1345fb58801e6155af94ad35a9ad6459540b54b297e508",
+  "png_sha256": "04739451782d2b417fd863a0765eced81f2982e1d22a16e92fcc191ef1a6f87d",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -810,7 +810,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -831,7 +831,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -879,7 +879,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -890,21 +890,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "Opus 4.8",
     "High",
     "Opus 4.8",
@@ -959,13 +959,13 @@
     820
    ]
   },
-  "ms": 4475
+  "ms": 4304
  },
  "dialog-rename-workspace": {
   "status": "captured",
   "steps": 2,
   "file": "oc/dialog-rename-workspace.png",
-  "png_sha256": "afc86577f8d5052fd0eb0d5fd237095de1f63a463c5370ad6b5ca15f800be56e",
+  "png_sha256": "138d77292a85373067dbca07c4c73c3ed4b10e5a0242d1efc23627992d4234ae",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -983,7 +983,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1004,7 +1004,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -1046,7 +1046,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -1062,21 +1062,21 @@
     "OK",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -1123,13 +1123,13 @@
     820
    ]
   },
-  "ms": 4116
+  "ms": 5427
  },
  "diff-entire-file": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-entire-file.png",
-  "png_sha256": "8d9c84b41ef981247f9ab8bca0dd88a29e18db24185524126ed696501bc44a0f",
+  "png_sha256": "7152ef659e96364fd49c707defb1cbb46099255246ed5dab8e02ea61a6b541a1",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1147,7 +1147,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1170,7 +1170,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1225,7 +1225,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -1236,13 +1236,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "All changes",
     "×",
-    "stockholm",
+    "berlin",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1297,13 +1297,13 @@
     820
    ]
   },
-  "ms": 7508
+  "ms": 7425
  },
  "diff-split": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-split.png",
-  "png_sha256": "54c4d0d70e1d71d46a51d7c281b04b117d9fe1fa8253b262696476a4b5311bb4",
+  "png_sha256": "77d071d8dc7b2fbfa7e26b5a82813c9a40e2a1ecad535362ce4f109c8b0fa7bd",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1321,7 +1321,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1344,7 +1344,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1399,7 +1399,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -1410,13 +1410,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "All changes",
     "×",
-    "stockholm",
+    "berlin",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1471,13 +1471,13 @@
     820
    ]
   },
-  "ms": 7542
+  "ms": 7389
  },
  "diff-unified": {
   "status": "captured",
   "steps": 2,
   "file": "oc/diff-unified.png",
-  "png_sha256": "8a037919bc747c598e2c24be747b1578817e105a016e8fd23206bb55547fc3d3",
+  "png_sha256": "a39a18c9ad200f1a1639e0a396f962e875a0b8a89eb8e388b7eb6d48d0406b75",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1495,7 +1495,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1518,7 +1518,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1573,7 +1573,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -1584,13 +1584,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
     "All changes",
     "×",
-    "stockholm",
+    "berlin",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1645,13 +1645,13 @@
     820
    ]
   },
-  "ms": 6436
+  "ms": 6921
  },
  "first-run-onboarding": {
   "status": "captured",
   "steps": 0,
   "file": "oc/first-run-onboarding.png",
-  "png_sha256": "fddf984975e9041dfd934ed87917223f9d4cee5cd850230a944f0afbaa733242",
+  "png_sha256": "83f305a2e0122faf7613465a71c6c3e058a638b9eed4a8b63e2aba288ff927d4",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1674,13 +1674,13 @@
     820
    ]
   },
-  "ms": 4121
+  "ms": 3855
  },
  "home": {
   "status": "captured",
   "steps": 1,
   "file": "oc/home.png",
-  "png_sha256": "e6648cddb604c6cc725823d41f8cf1a68106a4a81af71b3c83b333ffd15bedc1",
+  "png_sha256": "80d7194f5f9a9d10120b9f9e042a74381c1435a546a5678e16005781ca48a64e",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1698,7 +1698,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1714,7 +1714,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Stockholm",
+    "Berlin",
     "tide-web"
    ],
    "roles": [
@@ -1732,7 +1732,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -1747,7 +1747,7 @@
     "Today",
     "1",
     "T",
-    "Stockholm",
+    "Berlin",
     "now"
    ],
    "url": "tauri://localhost",
@@ -1756,7 +1756,7 @@
     820
    ]
   },
-  "ms": 5388
+  "ms": 4140
  },
  "home-empty": {
   "status": "captured",
@@ -1802,13 +1802,13 @@
     820
    ]
   },
-  "ms": 5225
+  "ms": 4921
  },
  "login": {
   "status": "captured",
   "steps": 0,
   "file": "oc/login.png",
-  "png_sha256": "f7f126f334088f24b3685cd7c92446d8f6f6eab7455397eb8cb2ec71f25990a4",
+  "png_sha256": "0a9079ccd9bcc331279d32ffcf2bd8e93581fd639e4d48ce9a410373937e65b7",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1831,13 +1831,13 @@
     820
    ]
   },
-  "ms": 4263
+  "ms": 3845
  },
  "menu-account": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-account.png",
-  "png_sha256": "cc336dd90a39f5bbc54b106d39814098df49478889c09b00921189fff9b54912",
+  "png_sha256": "3b20d98d45ccbdfd3fcbdb1ae28e2e66aca381cb1a2a9a4851bb9fdde9749296",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1856,7 +1856,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1877,7 +1877,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -1920,7 +1920,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -1931,21 +1931,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -1992,13 +1992,13 @@
     820
    ]
   },
-  "ms": 4355
+  "ms": 4539
  },
  "menu-help": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-help.png",
-  "png_sha256": "96a89db52e647a439415a0e6f1639236942b9752ef9e1ea1ec560b77a3ba0ccd",
+  "png_sha256": "d94292d391359806acfecc1c1c6a281dbe21313076a07af996c6c73764fa9534",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2016,7 +2016,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2038,7 +2038,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2080,7 +2080,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -2099,21 +2099,21 @@
     "OpenConductor v0.1.0",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2160,13 +2160,13 @@
     820
    ]
   },
-  "ms": 4912
+  "ms": 4082
  },
  "menu-model-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-model-picker.png",
-  "png_sha256": "27204f7a55188000732383693cb16dd7f4600a2b438efe869185769f44afd881",
+  "png_sha256": "57e5208fbb8024842ff31d4aa116bdcc4ad87cf29a27e14c8855622c3e01aff1",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2184,7 +2184,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2205,7 +2205,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2253,7 +2253,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -2264,21 +2264,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "Opus 4.8",
     "High",
     "Opus 4.8",
@@ -2333,13 +2333,13 @@
     820
    ]
   },
-  "ms": 5776
+  "ms": 5894
  },
  "menu-repo-actions": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-repo-actions.png",
-  "png_sha256": "25870e1e68d9a22d53dfd9595e62d1736422453061f6443e59b919e690028708",
+  "png_sha256": "6d982ad4c395fa76f6701f98bdb2360e78e3f3cd3283cfbc086a3abea1da7eda",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2357,7 +2357,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2378,7 +2378,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2422,7 +2422,7 @@
     "Change icon…",
     "Hide repository",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -2433,21 +2433,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2494,13 +2494,13 @@
     820
    ]
   },
-  "ms": 4372
+  "ms": 4380
  },
  "menu-workspace-context": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-workspace-context.png",
-  "png_sha256": "a5b22d94ee43803f365283585ba78e03034a0995ba0c26e1e6236fd730c47400",
+  "png_sha256": "26425856329d08b5693129d9477c01b8fec74c67acf4a98a4fb067f7194432cf",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2518,7 +2518,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -2541,7 +2541,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2583,7 +2583,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -2605,21 +2605,21 @@
     "⌘⇧A",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2666,13 +2666,13 @@
     820
    ]
   },
-  "ms": 3922
+  "ms": 5131
  },
  "menu-workspace-status": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-workspace-status.png",
-  "png_sha256": "ee593d841285071119b47e267dd39f675a9d149e4df32a73abee75c597269181",
+  "png_sha256": "bd94ec23e8c50c600396fd6803a0bb74011ffe3901c1031b3e687d5bcfa20db8",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2690,7 +2690,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2713,7 +2713,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2756,7 +2756,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -2784,21 +2784,21 @@
     "⌘⇧A",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2845,7 +2845,7 @@
     820
    ]
   },
-  "ms": 4840
+  "ms": 4425
  },
  "needs-permission": {
   "status": "no-equivalent",
@@ -2855,7 +2855,7 @@
   "status": "captured",
   "steps": 0,
   "file": "oc/onboarding-signed-out.png",
-  "png_sha256": "fddf984975e9041dfd934ed87917223f9d4cee5cd850230a944f0afbaa733242",
+  "png_sha256": "9aa01452f88382c0714c12dc3a44f0eb235efc3311da2c108f36a1380e5df09f",
   "dom": {
    "labels": [
     "Slide progress"
@@ -2878,13 +2878,13 @@
     820
    ]
   },
-  "ms": 3928
+  "ms": 3832
  },
  "palette-all": {
   "status": "captured",
   "steps": 1,
   "file": "oc/palette-all.png",
-  "png_sha256": "13aa340dd11ee3aff00ec0d2f23f25fd53a10eddc40868c17655221dc0c65014",
+  "png_sha256": "28cb08e11f71898121b214728e6e8edab9b28cdfb842ab7d0a1b4b5e00dba731",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2902,7 +2902,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2923,7 +2923,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2972,7 +2972,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -2983,21 +2983,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3043,8 +3043,8 @@
     "Actions",
     "Settings",
     "Recent workspaces",
-    "stockholm",
-    "tide-web · stockholm",
+    "berlin",
+    "tide-web · berlin",
     "Workspace actions",
     "Archive workspace",
     "⌘⇧A",
@@ -3069,13 +3069,13 @@
     820
    ]
   },
-  "ms": 4199
+  "ms": 5387
  },
  "palette-search": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-search.png",
-  "png_sha256": "6edf0a74f348bf883f7fa7d79bba4949759e664133e57f5fec89956323d3d192",
+  "png_sha256": "b2ba13108ddccab8a06e27dc4ceebbca983a54f82609bb127d631731bb6e930f",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3093,7 +3093,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3114,7 +3114,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -3159,7 +3159,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -3170,21 +3170,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3237,13 +3237,13 @@
     820
    ]
   },
-  "ms": 4560
+  "ms": 5946
  },
  "palette-workspaces": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-workspaces.png",
-  "png_sha256": "89576b03a55dba805f7ae941573941e60ef6ca45bd99aa0738c09220b8b5aaf7",
+  "png_sha256": "e01f016d33ac5b5219b8b2a251f81632722ef53b501f7b56271686dada40a5cb",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3261,7 +3261,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3282,7 +3282,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -3329,7 +3329,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -3340,21 +3340,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3400,8 +3400,8 @@
     "Actions",
     "Settings",
     "Workspaces",
-    "stockholm",
-    "tide-web · stockholm"
+    "berlin",
+    "tide-web · berlin"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -3409,7 +3409,7 @@
     820
    ]
   },
-  "ms": 4552
+  "ms": 6250
  },
  "route-cloud-collab-onboarding": {
   "status": "no-equivalent",
@@ -3498,13 +3498,13 @@
     820
    ]
   },
-  "ms": 5360
+  "ms": 5549
  },
  "settings-advanced": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-advanced.png",
-  "png_sha256": "2802f2e0d5418692574229291371b62f613877768721572f13cbeda7d9213e51",
+  "png_sha256": "2b8c8ebe1fc30e33bead9c917771c0cc8a99f66f329e57938bdcce53b181811c",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3590,13 +3590,13 @@
     820
    ]
   },
-  "ms": 5009
+  "ms": 5488
  },
  "settings-appearance": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-appearance.png",
-  "png_sha256": "f36cde7f036342f1b72bc625f05ee24b961da6e73449ae27c067350b06608513",
+  "png_sha256": "c56c0b7203cd932b5a81c4599e1bfbc8be8863e9ac035481d1b28fdbf10faf35",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3685,7 +3685,7 @@
     820
    ]
   },
-  "ms": 5562
+  "ms": 5000
  },
  "settings-cloud-setup": {
   "status": "no-equivalent",
@@ -3746,7 +3746,7 @@
     820
    ]
   },
-  "ms": 5162
+  "ms": 5080
  },
  "settings-experimental": {
   "status": "captured",
@@ -3854,13 +3854,13 @@
     820
    ]
   },
-  "ms": 5696
+  "ms": 4933
  },
  "settings-general": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-general.png",
-  "png_sha256": "e96f987fe0e002281a55daca48c898716bab461209d248911957b5f602bbbf2f",
+  "png_sha256": "1ed4c0fb9a115ea3cf7e9afd652b79635f0461781549bdb38d782ce502d80f53",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3950,13 +3950,13 @@
     820
    ]
   },
-  "ms": 5074
+  "ms": 5780
  },
  "settings-git": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-git.png",
-  "png_sha256": "bfeafd8d107c2acbe085146aa3dd535d1c2ac84413de6ebfd62869a068185abd",
+  "png_sha256": "8cf5f8e4451323663af64f79ae88c6ff2af11bba188e3230d4e7331d263cbdb0",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4032,7 +4032,7 @@
     820
    ]
   },
-  "ms": 5103
+  "ms": 4973
  },
  "settings-internal": {
   "status": "no-equivalent",
@@ -4042,7 +4042,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-key-bindings.png",
-  "png_sha256": "92e42927a6c0ae5127019dada9fd5d5874a940642dc7d06d88831b2e1e3d4c8b",
+  "png_sha256": "0aff060eab6be92f702fd46fb4645697e1c76c652e75e3d75c7c08155812bed9",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4869,7 +4869,7 @@
     820
    ]
   },
-  "ms": 5278
+  "ms": 4959
  },
  "settings-models": {
   "status": "captured",
@@ -4939,7 +4939,7 @@
     820
    ]
   },
-  "ms": 5764
+  "ms": 5544
  },
  "settings-org-computer": {
   "status": "no-equivalent",
@@ -4977,7 +4977,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-providers.png",
-  "png_sha256": "70381512313a31dcc612a1384fe0a4f32ae9580ce1db0bcbfd11d51fe45d752b",
+  "png_sha256": "127600aabd878d7ac918ed3029669ee7678ded738eda5933b9dc1341fded62df",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5075,13 +5075,13 @@
     820
    ]
   },
-  "ms": 5635
+  "ms": 5048
  },
  "settings-repo-actions": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-actions.png",
-  "png_sha256": "992c87b3afd78284fbffb561d06bf25738fe6ba0c4d4227f64ffaa4523d0f27e",
+  "png_sha256": "335d7665b260db687c80e0f39791a7ccab4b3cf00b550a67c5fd8eb96f3dbca5",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5143,7 +5143,7 @@
     820
    ]
   },
-  "ms": 5968
+  "ms": 6636
  },
  "settings-repo-environment": {
   "status": "captured",
@@ -5205,7 +5205,7 @@
     820
    ]
   },
-  "ms": 5536
+  "ms": 5481
  },
  "settings-repo-git": {
   "status": "captured",
@@ -5280,13 +5280,13 @@
     820
    ]
   },
-  "ms": 5536
+  "ms": 6603
  },
  "settings-repo-misc": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-misc.png",
-  "png_sha256": "f48239c4a08708124011b93a608c94527180fcdf3a45f7b4e6bb79ccf25cbf49",
+  "png_sha256": "b00e06109c4b0157643e0c211ba074c0d482c54d5427ad4279797269f558b623",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5367,13 +5367,13 @@
     820
    ]
   },
-  "ms": 5494
+  "ms": 6959
  },
  "settings-repo-misc-lower": {
   "status": "captured",
   "steps": 5,
   "file": "oc/settings-repo-misc-lower.png",
-  "png_sha256": "9427df6cd1ae6ae4d7b4726307ffccc0258b389f91dd59721d40e68420fc8faa",
+  "png_sha256": "062c6b137e24f275b67133f25504981935bf1ae696f881f434e3b4166ae6ab57",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5454,7 +5454,7 @@
     820
    ]
   },
-  "ms": 6236
+  "ms": 6952
  },
  "settings-repo-scripts": {
   "status": "captured",
@@ -5515,7 +5515,7 @@
     820
    ]
   },
-  "ms": 5507
+  "ms": 6418
  },
  "settings-search": {
   "status": "step-failed",
@@ -5613,7 +5613,7 @@
     820
    ]
   },
-  "ms": 12688
+  "ms": 13257
  },
  "settings-terminal": {
   "status": "step-failed",
@@ -5711,7 +5711,7 @@
     820
    ]
   },
-  "ms": 12832
+  "ms": 12748
  },
  "sidebar-after-archive": {
   "status": "captured",
@@ -5774,13 +5774,13 @@
     820
    ]
   },
-  "ms": 5882
+  "ms": 5406
  },
  "toast-copied-link": {
   "status": "captured",
   "steps": 2,
   "file": "oc/toast-copied-link.png",
-  "png_sha256": "9e4926f19afb8938e1bc23e040b81ad8bb2c31deb775604e67cf9e992d358115",
+  "png_sha256": "defde6ceb25b3b59beb03205e7ac39619d0a2a76156d3673d8d093c3b8dd9e13",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5798,7 +5798,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -5819,7 +5819,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -5862,7 +5862,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -5873,21 +5873,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -5935,13 +5935,13 @@
     820
    ]
   },
-  "ms": 4879
+  "ms": 4672
  },
  "workspace-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-chat.png",
-  "png_sha256": "c5526b4e0c7096312f8ac4b565b9fd70998401634a64f051eb535b21ac281ae2",
+  "png_sha256": "1ba1246dd811e63567a2cfe29550e45db87a072b0374f4eab0d182d502e6ef8e",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5959,7 +5959,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -5981,7 +5981,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6021,7 +6021,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -6032,21 +6032,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6093,13 +6093,13 @@
     820
    ]
   },
-  "ms": 5539
+  "ms": 4819
  },
  "workspace-new-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-new-chat.png",
-  "png_sha256": "c5526b4e0c7096312f8ac4b565b9fd70998401634a64f051eb535b21ac281ae2",
+  "png_sha256": "c31f92888cc5e47753e1f09221e5483cdca349466e0bb0f789520c379c9e98c4",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6117,7 +6117,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -6139,7 +6139,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6179,7 +6179,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -6190,21 +6190,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6251,13 +6251,13 @@
     820
    ]
   },
-  "ms": 6003
+  "ms": 4795
  },
  "workspace-tool-calls": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-tool-calls.png",
-  "png_sha256": "c5526b4e0c7096312f8ac4b565b9fd70998401634a64f051eb535b21ac281ae2",
+  "png_sha256": "c31f92888cc5e47753e1f09221e5483cdca349466e0bb0f789520c379c9e98c4",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6275,7 +6275,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Stockholm · stockholm · Local workspace",
+    "Berlin · berlin · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -6297,7 +6297,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "stockholm",
+    "berlin",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6337,7 +6337,7 @@
     "T",
     "tide-web",
     "1",
-    "Stockholm",
+    "Berlin",
     "+",
     "5",
     "T",
@@ -6348,21 +6348,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "stockholm",
-    "stockholm",
+    "berlin",
+    "berlin",
     "→",
     "main",
-    "stockholm",
+    "berlin",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "stockholm",
+    "berlin",
     "Branched",
-    "stockholm",
+    "berlin",
     "from",
     "main",
     "Created",
-    "stockholm",
+    "berlin",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6409,6 +6409,6 @@
     820
    ]
   },
-  "ms": 5120
+  "ms": 5435
  }
 }
