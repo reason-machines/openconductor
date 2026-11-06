@@ -9,7 +9,7 @@
 
 import { MODEL_CATALOG, agentForModel } from "../../settings/models.ts";
 import type { Settings } from "../../settings/types.ts";
-import { defaultEffortSetting } from "./chatModel.ts";
+import { defaultEffortSetting, reasonDefault } from "./chatModel.ts";
 import type { ModelChoice } from "./composerModels.ts";
 import type { ReasonConfig } from "./reasonChat.ts";
 
@@ -62,8 +62,10 @@ export function loadModelChoice(chatId: string, store: Store = localStorage): Mo
   return Array.isArray(config) ? choiceFromReasonConfig(config as ReasonConfig[]) : null;
 }
 
-/** Settings › Default models: the default model and its agent's default effort. */
+/** Settings › Agents › Reason's default model, else Settings › Default models: the default model and its agent's default effort. */
 export function defaultModelChoice(settings: Settings): ModelChoice {
+  const pinned = reasonDefault(settings);
+  if (pinned) return pinned;
   const model = settings.models.default;
   return { model, effort: defaultEffortSetting(settings, agentForModel(model)) };
 }

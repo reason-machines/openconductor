@@ -49,12 +49,29 @@ export function reasonChoice(choice: ModelChoice): ModelChoice {
   return { model: reasonModelFor(choice.model), effort: reasonEffort(choice.effort) };
 }
 
+/** A model id compared across Reason's spellings: `byok:anthropic:claude-opus-5-5` and `anthropic/claude-opus-5.5` are the same model. */
+function modelKey(model: string): string {
+  return model.toLowerCase().replace(/^byok:/, "").replace(/:/g, "/").replace(/\./g, "-");
+}
+
+/**
+ * The offered model `model` names. `reason session get` (0.2.693) reports a
+ * Session's model as `anthropic/claude-opus-5.5` while the model option
+ * lists `byok:anthropic:claude-opus-5-5`; the offered value wins so the chip
+ * and the list's check mark agree. Unmatched ids stay as they are.
+ */
+export function offeredModel(model: string, options: readonly ReasonModelOption[]): string {
+  if (options.some((o) => o.value === model)) return model;
+  const key = modelKey(model);
+  return options.find((o) => o.value !== AUTO && modelKey(o.value) === key)?.value ?? model;
+}
+
 /** Reason's name for a model id, else one made from the id ("Claude Opus 5.5", "GPT-5.6 Sol"). */
 export function reasonModelName(model: string, options: readonly ReasonModelOption[]): string {
-  const offered = options.find((o) => o.value === model);
+  const offered = options.find((o) => o.value === offeredModel(model, options));
   if (offered) return offered.name;
   if (model === AUTO) return "Auto";
-  const claude = /^byok:anthropic:claude-(.+)$/.exec(model)?.[1];
+  const claude = /^(?:byok:)?anthropic[:/]claude-(.+)$/.exec(model)?.[1]?.replace(/\./g, "-");
   if (claude) return `Claude ${modelLabel(claude)}`;
   const id = model.split(/[:/]/).at(-1) ?? model;
   return id.startsWith("gpt-") ? modelLabel(id) : id;
@@ -64,8 +81,8 @@ export function reasonModelName(model: string, options: readonly ReasonModelOpti
  * The picker's current entry: the model the Session ran its last turn on
  * when there is one, else the picked choice (or the default) as Reason runs it.
  */
-export function shownModel(running: RunningModel | null, picked: ModelChoice): ModelChoice {
-  return running ? { model: running.model, effort: running.effort } : reasonChoice(picked);
+export function shownModel(running: RunningModel | null, picked: ModelChoice, options: readonly ReasonModelOption[] = []): ModelChoice {
+  return running ? { model: offeredModel(running.model, options), effort: running.effort } : reasonChoice(picked);
 }
 
 /** Each offered model as a picker entry, Auto first as Reason lists it. */
