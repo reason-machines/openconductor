@@ -150,7 +150,8 @@ fn a_permission_request_carries_its_title_and_options() {
     assert_eq!(
         event_json("c", &ev),
         json!({ "chatId": "c", "type": "permissionRequest", "requestId": "permission-1", "title": "execute",
-            "options": [{ "optionId": "a", "name": "Allow", "kind": "allow_once" }] })
+            "options": [{ "optionId": "a", "name": "Allow", "kind": "allow_once" }],
+            "kind": "permission", "tool": "execute", "input": null })
     );
     let done = ProviderEvent::PermissionResolved {
         request_id: "permission-1".into(),
@@ -163,6 +164,44 @@ fn a_permission_request_carries_its_title_and_options() {
     assert_eq!(
         (untitled.title.as_str(), untitled.options.len()),
         ("Tool call", 0)
+    );
+}
+
+#[test]
+fn plan_and_question_requests_carry_what_they_ask() {
+    use super::provider::{Ask, PermissionRequest, Question, QuestionOption};
+    let plan = ProviderEvent::PermissionRequested(PermissionRequest {
+        request_id: "r1".into(),
+        title: String::new(),
+        options: Vec::new(),
+        ask: Ask::Plan {
+            plan: "1. Add a table".into(),
+        },
+    });
+    assert_eq!(
+        event_json("c", &plan),
+        json!({ "chatId": "c", "type": "permissionRequest", "requestId": "r1", "title": "", "options": [],
+            "kind": "plan", "plan": "1. Add a table" })
+    );
+    let questions = ProviderEvent::PermissionRequested(PermissionRequest {
+        request_id: "r2".into(),
+        title: String::new(),
+        options: Vec::new(),
+        ask: Ask::Questions(vec![Question {
+            header: "Database".into(),
+            question: "Which database?".into(),
+            multi_select: true,
+            options: vec![QuestionOption {
+                label: "SQLite".into(),
+                description: None,
+            }],
+        }]),
+    });
+    assert_eq!(
+        event_json("c", &questions),
+        json!({ "chatId": "c", "type": "permissionRequest", "requestId": "r2", "title": "", "options": [],
+            "kind": "question", "questions": [{ "header": "Database", "question": "Which database?", "multiSelect": true,
+                "options": [{ "label": "SQLite", "description": null }] }] })
     );
 }
 

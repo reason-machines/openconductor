@@ -77,10 +77,12 @@ pub enum ProviderEvent {
     /// Something the app should tell the user about the chat, e.g. that a
     /// requested model is not offered and Reason's default runs instead.
     Notice(String),
-    /// Reason asks to run a tool (`session/request_permission`); answer with
-    /// [`ReasonProvider::answer_permission`].
+    /// The agent waits on the user: Reason asks to run a tool
+    /// (`session/request_permission`, answered with
+    /// [`ReasonProvider::answer_permission`]); Claude Code also asks to
+    /// approve a plan or answer questions (`crate::claude_chat::interact`).
     PermissionRequested(PermissionRequest),
-    /// A permission request was answered or withdrawn.
+    /// A request was answered or withdrawn.
     PermissionResolved {
         request_id: String,
     },
@@ -134,7 +136,7 @@ pub fn model_list(config_options: &Value) -> Option<ModelList> {
     Some(ModelList { current, options })
 }
 
-/// One `session/request_permission`, as the app shows it.
+/// One request the agent waits on, as the app shows it.
 #[derive(Debug, Clone, PartialEq)]
 pub struct PermissionRequest {
     /// Provider-made id the answer names.
@@ -142,6 +144,38 @@ pub struct PermissionRequest {
     /// The tool call's title, e.g. `bash: rm -rf build`.
     pub title: String,
     pub options: Vec<PermissionOption>,
+    pub ask: Ask,
+}
+
+/// What a request asks of the user. Conductor 0.87.6 (REA-read
+/// `index-BGEQ8YjU.js`, frontend RPC methods `TOOL_APPROVAL`,
+/// `EXIT_PLAN_MODE`, `ASK_USER_QUESTION`) shows each with its own card and
+/// session status: `needs_user_permission`, `needs_plan_response`,
+/// `needs_user_input`.
+#[derive(Debug, Clone, PartialEq)]
+pub enum Ask {
+    /// Run this tool call? `tool` is the tool's name (`Bash`) or ACP kind
+    /// (`execute`), empty when unknown; `input` its arguments, `Null` when
+    /// the agent sent none. Answered with one of the request's options.
+    Tool { tool: String, input: Value },
+    /// Approve this plan, or keep planning.
+    Plan { plan: String },
+    /// Answer these questions.
+    Questions(Vec<Question>),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Question {
+    pub header: String,
+    pub question: String,
+    pub options: Vec<QuestionOption>,
+    pub multi_select: bool,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct QuestionOption {
+    pub label: String,
+    pub description: Option<String>,
 }
 
 /// One choice offered with a permission request.
@@ -965,10 +999,15 @@ pub fn permission_request(request_id: String, params: &Value) -> PermissionReque
             })
         })
         .collect();
+    let ask = Ask::Tool {
+        tool: call["kind"].as_str().unwrap_or_default().into(),
+        input: call.get("rawInput").cloned().unwrap_or(Value::Null),
+    };
     PermissionRequest {
         request_id,
         title,
         options,
+        ask,
     }
 }
 

@@ -34,7 +34,7 @@ export function DiscardDialog({ file, onConfirm, onClose }: Props) {
     });
   };
   return (
-    <Modal title="Discard file changes?" onClose={onClose}>
+    <Modal title="Discard file changes?" onClose={onClose} motion="alert">
       <div
         className="modal-body"
         onKeyDown={(e) => {

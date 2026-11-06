@@ -17,6 +17,7 @@ use crate::settings::service::SettingsService;
 use crate::turn_checkpoint::{around_turn, TurnTarget};
 
 use super::find_claude_cli;
+use super::interact::Answer;
 use super::runner::{ClaudeRunner, Launcher};
 
 pub const EVENT: &str = "claude-chat-event";
@@ -47,9 +48,16 @@ impl ClaudeChats {
                     let mut launch = ClaudeLaunch::new(cwd, env);
                     launch.executable = exe;
                     launch.resume = resume;
-                    // No permission prompt UI yet: the agent works in the
-                    // workspace's own worktree without asking.
-                    launch.permission_mode = PermissionMode::BypassPermissions;
+                    // Account › "Claude Code tool approvals" (Conductor's
+                    // `tool_approvals_enabled`, off by default): ask before
+                    // tools run; otherwise the agent works in the workspace's
+                    // own worktree without asking.
+                    let approvals = settings.inner().get().map(|s| s.tool_approvals_enabled);
+                    launch.permission_mode = if approvals.unwrap_or(false) {
+                        PermissionMode::Default
+                    } else {
+                        PermissionMode::BypassPermissions
+                    };
                     // "Use Claude Code with Chrome" (Settings › Agents): the
                     // reference sidecar adds `extraArgs: { chrome: null }`.
                     // The launcher runs on a blocking thread (claude_prompt's
@@ -133,4 +141,20 @@ pub async fn claude_prompt(
 #[tauri::command]
 pub fn claude_cancel(app: AppHandle, state: State<'_, ClaudeChats>, chat_id: String) {
     state.runner(&app).cancel(&chat_id);
+}
+
+/// Answers the chat's waiting request `id` (a `permissionRequest` event):
+/// `{ kind: "option", optionId: "allow" | "deny" }` for a tool,
+/// `{ kind: "plan", approved, feedback? }` for a plan, `{ kind: "answers",
+/// answers }` for questions, or `{ kind: "cancel" }`.
+#[tauri::command]
+pub fn claude_respond(
+    app: AppHandle,
+    state: State<'_, ClaudeChats>,
+    chat_id: String,
+    id: String,
+    answer: Value,
+) -> Result<(), String> {
+    let answer = Answer::from_json(&answer)?;
+    state.runner(&app).respond(&chat_id, &id, &answer)
 }

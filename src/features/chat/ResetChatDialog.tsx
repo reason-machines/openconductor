@@ -64,7 +64,7 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
   };
 
   return (
-    <Modal title="Reset chat?" onClose={onClose}>
+    <Modal title="Reset chat?" onClose={onClose} motion="alert">
       <div
         className="modal-body oc-reset-chat"
         onKeyDown={(e) => {

@@ -16,7 +16,7 @@
 
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { applyReasonPayload, type ReasonPayload } from "./reason.ts";
+import { applyReasonPayload, permissionPrompt, type ReasonPayload } from "./reason.ts";
 import { createChatRuntime, type ChatBackend } from "./chatRuntime.ts";
 import { desktopHost } from "./desktopHost.ts";
 import { withAttachments } from "../diff/chatAttachment.ts";
@@ -45,7 +45,14 @@ export const claudeBackend: ChatBackend<null> = {
   configKey,
   // No options to read back: a Claude Code chat always starts on the default.
   parseConfig: () => null,
-  listen: (deliver) => listen<ReasonPayload>(EVENT, ({ payload }) => deliver(payload.chatId, (s) => applyReasonPayload(s, payload))),
+  // A tool, plan or question prompt (`can_use_tool`, asked when tool
+  // approvals are on or in plan mode) opens a card; `claude_respond` answers it.
+  listen: (deliver, permissions) =>
+    listen<ReasonPayload>(EVENT, ({ payload }) => {
+      if (payload.type === "permissionRequest") permissions.requested(payload.chatId, permissionPrompt(payload));
+      else if (payload.type === "permissionResolved") permissions.resolved(payload.chatId, payload.requestId);
+      else deliver(payload.chatId, (s) => applyReasonPayload(s, payload));
+    }),
   async open(chatId, cwd, sessionId) {
     await invoke("claude_open_chat", { chatId, cwd, sessionId });
   },
@@ -62,6 +69,15 @@ export const claudeBackend: ChatBackend<null> = {
   cancel(chatId) {
     void invoke("claude_cancel", { chatId });
   },
+  // The backend refuses an answer to a request that is no longer open.
+  answerPermission: (chatId, requestId, answer) =>
+    invoke("claude_respond", { chatId, id: requestId, answer }).then(
+      () => true,
+      (e) => {
+        console.warn("claude chat: answer not delivered", e);
+        return false;
+      },
+    ),
 };
 
 async function withGeneral(text: string, repoPath: string, cwd: string): Promise<string> {

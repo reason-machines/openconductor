@@ -15,8 +15,8 @@ export { saveAgent, savedAgent, type ChatAgentId } from "./agentChoice.ts";
 
 /**
  * Reset chat and turn changes come from turn checkpoints; an agent without `reset` has none (Codex).
- * Only Reason asks for permission mid-turn (`answerPermission`): Codex asks through its own approvals and consent requests,
- * and Claude Code chats run in bypassPermissions.
+ * Reason and Claude Code ask mid-turn through permission requests (`answerPermission`): a tool, and for Claude Code
+ * also a plan or questions. Codex asks through its own approvals and consent requests.
  */
 export interface ChatAgent extends Pick<ChatRuntime<unknown>, "canSteer" | "snapshot" | "subscribe" | "submit" | "stop" | "queueAction">, Partial<Pick<ChatRuntime<unknown>, "reset" | "answerPermission">> {
   id: ChatAgentId;
@@ -62,6 +62,7 @@ export const CHAT_AGENTS: Record<ChatAgentId, ChatAgent> = {
     stop: claudeRuntime.stop,
     queueAction: claudeRuntime.queueAction,
     reset: claudeRuntime.reset,
+    answerPermission: claudeRuntime.answerPermission,
     chatId: claudeChatId,
   },
 };

@@ -6,6 +6,7 @@ import { COMMAND_PALETTE_DIALOG_ID, moveActive, paletteCommandFor } from "./stat
 import { VIEW_ARCHIVED_ACTION } from "./fromAppState.ts";
 import { ARCHIVE_FILTERS, ARCHIVE_FILTER_LABEL, ARCHIVE_FILTER_TEXT, UNARCHIVE_LABEL, type ArchiveFilter } from "../workspace/archivedList.ts";
 import { ArchiveIcon } from "../components/Icons";
+import { useDialogMotion } from "../components/motion/dialogMotion";
 import "./palette.css";
 
 export interface CommandPaletteProps {
@@ -47,6 +48,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
   const [active, setActive] = useState(0);
   const [archiveFilter, setArchiveFilter] = useState<ArchiveFilter>(initialArchiveFilter);
   const listRef = useRef<HTMLDivElement>(null);
+  const motionRef = useDialogMotion<HTMLDivElement>();
 
   const groups = useMemo(() => buildResults(tab, query, data, archiveFilter), [tab, query, data, archiveFilter]);
   const flat = useMemo(() => groups.flatMap((g) => g.items), [groups]);
@@ -83,7 +85,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
   const tabs = TABS.filter((t) => t.value !== "projects" || showProjects);
   let index = -1;
   return (
-    <div className="palette-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="palette-backdrop" ref={motionRef} data-dialog-motion="cmdk" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="palette" role="dialog" aria-modal="true" aria-label="Command palette" data-dialog-id={COMMAND_PALETTE_DIALOG_ID}>
         <div className="palette-tabs" role="tablist">
           {tabs.map((t) => (
