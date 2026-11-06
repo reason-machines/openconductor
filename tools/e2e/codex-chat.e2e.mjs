@@ -12,6 +12,10 @@
 //   2. "follow-up"       the reply says "turn 2", so one Codex thread ran both
 //   3. "hello" + Deny    "Deny and stop" ends the turn as "Interrupted by user"
 //   4. "slow" + Stop     Stop interrupts the running turn: "Interrupted by user"
+//   5. "elicit"          an MCP server asks for a form: the card, Needs input on
+//                        the sidebar row; Continue sends the form's content
+//   6. "perm" + Deny     Codex asks for network access: the card, Needs input;
+//                        Deny grants nothing
 //
 // Usage (under a display, e.g. xvfb-run):
 //   node tools/e2e/codex-chat.e2e.mjs <path to the built app binary>
@@ -241,7 +245,8 @@ try {
   await waitFor('"turn 2: follow-up"', () => chatText().then((t) => t.includes("turn 2: follow-up")));
   await turnDone(2);
   assert.equal(requests().filter((r) => r.method === "thread/start").length, 1);
-  assert.equal(requests().filter((r) => r.method === "initialize").length, 1);
+  // The "/" menu lists skills from its own short-lived app-server (clientInfo openconductor-commands).
+  assert.equal(requests().filter((r) => r.method === "initialize" && r.params?.clientInfo?.name === "openconductor").length, 1);
   pass('turn 2 reply is "turn 2: follow-up": one app-server and one thread ran both turns');
 
   // 3. Deny and stop.
@@ -263,6 +268,56 @@ try {
   assert.deepEqual(interrupt.params, { threadId: "th-e2e-1", turnId: "turn-4" });
   await screenshot("codex-3-stopped");
   pass('Stop sends turn/interrupt for the running turn and the chat shows "Interrupted by user"');
+
+  // parity: sidebar.ws-status. Conductor holds Codex's MCP elicitations and permission requests for the
+  // user and shows the session as needs_user_input ("Needs input") until they are answered.
+  const rowIcons = () =>
+    run(`return [...document.querySelectorAll('[data-testid="workspace-status-icon"]')].map((e) => ({ status: e.dataset.status, label: e.getAttribute('aria-label') }));`);
+  const needsInput = () => rowIcons().then((icons) => icons.some((i) => i.status === "needs-user-input" && i.label === "Needs input"));
+  const consentCard = (kind) => run(`const c = document.querySelector('[data-testid="codex-consent"][data-kind="${kind}"]'); return c ? c.innerText : null;`);
+  const clickConsent = (label) =>
+    run("const b = [...document.querySelectorAll('[data-testid=\"codex-consent\"] button')].find((b) => b.textContent === arguments[0]); if (!b) return false; b.click(); return true;", label);
+  const lastResponse = (id) => requests().filter((r) => r.response?.id === id).at(-1)?.response;
+
+  // 5. MCP elicitation (form).
+  await send("elicit: file the issue in linear");
+  const elicitCard = await waitFor("the elicitation card", () => consentCard("elicitation"));
+  assert.ok(elicitCard.includes("linear needs information"), elicitCard);
+  assert.ok(elicitCard.includes("Which team should own the issue?"), elicitCard);
+  await waitFor("Needs input on the sidebar row", needsInput, 15000).catch(async (e) => {
+    throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await rowIcons())}`);
+  });
+  await screenshot("codex-4-elicitation-needs-input");
+  pass('an MCP elicitation shows "linear needs information" and the sidebar row shows Needs input');
+  assert.ok(await clickConsent("Continue"));
+  await waitFor("the required-field error", () => consentCard("elicitation").then((t) => t && t.includes("Team is required.")));
+  assert.equal(lastResponse("elicit-turn-5"), undefined, "nothing is sent while the form is incomplete");
+  await run(
+    `const i = document.querySelector('[data-testid="codex-consent"] input');
+     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(i, 'core');
+     i.dispatchEvent(new Event('input', { bubbles: true }));`,
+  );
+  assert.ok(await clickConsent("Continue"));
+  await waitFor('"linear got team core"', () => chatText().then((t) => t.includes("linear got team core")));
+  await turnDone(5);
+  assert.deepEqual(lastResponse("elicit-turn-5"), { id: "elicit-turn-5", result: { action: "accept", content: { team: "core" }, _meta: null } });
+  await waitFor("the sidebar row to leave Needs input", async () => !(await needsInput()), 15000);
+  pass("Continue sends the form's content to Codex ({team: core}), the turn ends, and Needs input clears");
+
+  // 6. Permission request, denied.
+  await send("perm: fetch the tracker");
+  const permCard = await waitFor("the permission card", () => consentCard("permissions"));
+  assert.ok(permCard.includes("codex requests permission"), permCard);
+  assert.ok(permCard.includes("Network access"), permCard);
+  assert.ok(permCard.includes("Fetch the issue tracker"), permCard);
+  await waitFor("Needs input on the sidebar row", needsInput, 15000);
+  await screenshot("codex-5-permission-needs-input");
+  assert.ok(await clickConsent("Deny"));
+  await waitFor('"permissions: none granted"', () => chatText().then((t) => t.includes("permissions: none granted")));
+  await turnDone(6);
+  assert.deepEqual(lastResponse("perm-turn-6"), { id: "perm-turn-6", result: { permissions: {}, scope: "turn" } });
+  await waitFor("the sidebar row to leave Needs input", async () => !(await needsInput()), 15000);
+  pass('a permission request shows "codex requests permission" with Network access and Needs input; Deny grants nothing');
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {

@@ -158,12 +158,13 @@ function route(e: PtyEvent) {
   dispatch(l.workspaceId, e.kind === "ready" ? { type: "ready", id: e.id } : { type: "exit", id: e.id, exitCode: e.exitCode, signal: e.signal });
 }
 
-function cssVar(name: string, fallback: string): string {
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+/** A colour token from src/theme/tokens.css; undefined (xterm's default) if it is not set. */
+function cssVar(name: string): string | undefined {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || undefined;
 }
 
 /** `#rrggbb` plus an alpha byte; other colour forms pass through unchanged. */
-const withAlpha = (hex: string, alpha: string) => (/^#[0-9a-f]{6}$/i.test(hex) ? hex + alpha : hex);
+const withAlpha = (hex: string | undefined, alpha: string) => (hex && /^#[0-9a-f]{6}$/i.test(hex) ? hex + alpha : hex);
 
 /**
  * Open a new tab running the login shell in `cwd`; resolves to its id. `quiet`
@@ -235,13 +236,13 @@ async function startTab(
     lineHeight: TERMINAL_LINE_HEIGHT,
     scrollback: currentScrollbackRows(),
     theme: {
-      background: cssVar("--panel", "#1d2025"),
-      foreground: cssVar("--text", "#e6e7e9"),
+      background: cssVar("--panel"),
+      foreground: cssVar("--text"),
       // xterm's default selection is pale white, invisible on the light theme.
       // The inactive colour matters for Find: the match is selected while the
       // find input, not the terminal, has focus.
-      selectionBackground: withAlpha(cssVar("--accent", "#5b82f0"), "66"),
-      selectionInactiveBackground: withAlpha(cssVar("--accent", "#5b82f0"), "4d"),
+      selectionBackground: withAlpha(cssVar("--accent"), "66"),
+      selectionInactiveBackground: withAlpha(cssVar("--accent"), "4d"),
     },
   });
   const fit = new FitAddon();

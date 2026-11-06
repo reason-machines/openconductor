@@ -165,3 +165,53 @@ test("Home's All workspaces lists archived workspaces under Only archived and Sh
   assert.deepEqual(errors, []);
   await page.close();
 });
+
+// Conductor's row (`lJn` → `iea`) has an Archive button at its right end that is
+// invisible until the row is hovered; the diff stat fades out under it, and the
+// tooltip names the shortcut only on the selected row.
+test("hovering a sidebar row shows its Archive button, which archives without selecting the row", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto(`${base}/?demo=1`);
+  const harbor = row(page, "Quiet harbor");
+  await harbor.waitFor();
+  const wrap = page.locator(".sb-ws-row", { has: harbor });
+  const archive = wrap.getByRole("button", { name: "Archive workspace" });
+
+  await page.mouse.move(5, 895);
+  assert.equal(await archive.isVisible(), false, "hidden until the row is hovered");
+  await harbor.hover();
+  assert.equal(await archive.isVisible(), true, "shown on hover");
+  const diff = wrap.locator(".sb-ws-diff");
+  if (await diff.count()) assert.equal(await diff.evaluate((e) => getComputedStyle(e).opacity), "0", "the diff stat fades under it");
+
+  // Inside the row's right end, vertically centred on it.
+  const r = await harbor.boundingBox();
+  const b = await archive.boundingBox();
+  assert.ok(b.x + b.width <= r.x + r.width && b.x > r.x + r.width - 40, `at the right end: row ${JSON.stringify(r)}, button ${JSON.stringify(b)}`);
+  assert.ok(Math.abs(b.y + b.height / 2 - (r.y + r.height / 2)) <= 1, "vertically centred");
+
+  await archive.hover();
+  const tip = page.getByRole("tooltip");
+  await tip.waitFor();
+  assert.equal((await tip.textContent()).trim(), "Archive workspace", "no shortcut on a row that is not selected");
+  await shot(page, "sidebar-row-archive-hover.png");
+
+  const selectedBefore = await page.locator(`${ROW}[aria-current="page"] .sb-ws-name`).allTextContents();
+  await archive.click();
+  await harbor.waitFor({ state: "detached" });
+  assert.deepEqual(await page.locator(`${ROW}[aria-current="page"] .sb-ws-name`).allTextContents(), selectedBefore, "archiving from the button does not open the row");
+
+  // The selected row's tooltip adds ⌘⇧A, the shortcut that archives the open workspace.
+  const wren = row(page, "Copper wren");
+  await wren.click();
+  await page.mouse.move(5, 895);
+  await wren.hover();
+  await page.locator(".sb-ws-row", { has: wren }).getByRole("button", { name: "Archive workspace" }).hover();
+  await page.getByRole("tooltip").filter({ hasText: "Archive workspace" }).waitFor();
+  assert.match(await page.getByRole("tooltip").filter({ hasText: "Archive workspace" }).textContent(), /⌘⇧A/);
+
+  assert.deepEqual(errors, []);
+  await page.close();
+});

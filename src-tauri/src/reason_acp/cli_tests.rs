@@ -171,3 +171,36 @@ fn live_cli_answers_initialize() {
         assert!(caps["sessionCapabilities"].get(cap).is_some(), "{cap}");
     }
 }
+
+#[test]
+fn whoami_lists_the_saved_workspaces_and_the_selected_one() {
+    use super::cli::parse_whoami;
+    // `reason whoami`, 0.2.690, on Sven's Mac (two of eleven workspaces).
+    let text = "sven@ara.so\nOrganization: Reason Engineering\nSaved workspaces:\n  \
+                reason-engineering (Reason Engineering) [selected]\n  \
+                reason-experiments (Reason Experiments)\n  \
+                hipaa-toggle-test-1028b (HIPAA toggle test (delete me))\n";
+    let w = parse_whoami(text);
+    assert_eq!(w.selected.as_deref(), Some("reason-engineering"));
+    assert_eq!(
+        w.saved,
+        [
+            "reason-engineering",
+            "reason-experiments",
+            "hipaa-toggle-test-1028b"
+        ]
+    );
+    // Signed in with an API key: no saved list.
+    assert!(parse_whoami("Organization: Reason Engineering\n")
+        .saved
+        .is_empty());
+}
+
+#[test]
+fn a_workspace_pins_the_agent_and_its_subcommands() {
+    let cfg = LaunchConfig::new("/usr/local/bin/reason").unwrap();
+    let pinned = cfg.in_workspace(Some("reason-tests")).unwrap();
+    assert_eq!(pinned.args()[..3], ["--workspace", "reason-tests", "acp"]);
+    assert_eq!(cfg.in_workspace(None).unwrap(), cfg);
+    assert!(cfg.in_workspace(Some("--evil")).is_err());
+}

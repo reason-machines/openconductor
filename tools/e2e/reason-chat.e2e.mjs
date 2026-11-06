@@ -20,6 +20,13 @@
 //                        in conductor.db, the sidebar row and the Home list show
 //                        "Needs permission"; Allow resumes the turn and the
 //                        status goes back to idle
+//   9. Fork to new workspace on turn 5
+//   10. Relaunch: quit the app, select another Reason workspace (the fake's
+//                        `fake-reason-selected`, as switching workspace in the
+//                        Reason desktop app does), start the app again and send
+//                        a follow-up in the first chat. It must resume the
+//                        chat's own Session in its workspace: no 409
+//                        client_session_id_conflict, no new Session.
 //   The Session runs Settings' default model (set before the chat opens).
 //
 // Usage (under a display, e.g. xvfb-run):
@@ -154,12 +161,17 @@ const pass = (s) => {
   console.log(`ok - ${s}`);
 };
 
-try {
-  await waitFor("tauri-driver", () => fetch(`${base}/status`).then((r) => r.ok), 20000);
+/** Starts the app in a new WebDriver session. */
+async function launch() {
   const session = await wd("POST", "/session", {
     capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } },
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
+}
+
+try {
+  await waitFor("tauri-driver", () => fetch(`${base}/status`).then((r) => r.ok), 20000);
+  await launch();
 
   // Seed one repo with one workspace through the real backend: the sidebar lists
   // what conductor.db holds, so the repo is added and a worktree created like the UI does.
@@ -408,6 +420,35 @@ try {
   assert.ok(!forkedChat.includes("turn 5 wrote notes.txt"), "the fork opens a new chat, not the source's transcript");
   await screenshot("reason-chat-forked-workspace");
   pass(`Fork to new workspace made ${forked.path} on e2e-v1 with turn 5's notes.txt and "Transcript of e2e.md" in its composer`);
+
+  // 10. Relaunch with another Reason workspace selected, then a follow-up
+  // in the first chat (Sven's 409 client_session_id_conflict).
+  const sessionKey = `openconductor.reason.session.${workspace.id}`;
+  const before = await run("return localStorage.getItem(arguments[0]);", sessionKey);
+  assert.ok(before, `the first chat stored its Reason Session under ${sessionKey}`);
+  const fakeState = () => JSON.parse(readFileSync(join(home, "state.json"), "utf8")).sessions;
+  const sessionsBefore = Object.keys(fakeState());
+  assert.equal(fakeState()[before].workspace, "ws-a", "the Session was created in the selected workspace, ws-a");
+  await wd("DELETE", "");
+  sessionUrl = null;
+  writeFileSync(join(home, "fake-reason-selected"), "ws-b");
+  await launch();
+  await waitFor("the app to load again", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
+  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  await waitFor("the first chat's transcript after the relaunch", () => chatText().then((t) => t && t.includes("turn 5 wrote notes.txt")));
+  assert.equal(await run("return localStorage.getItem(arguments[0]);", sessionKey), before, "the chat kept its Session id");
+  await send("echo: after relaunch");
+  const relaunched = await waitFor('the follow-up\'s reply (or an error)', () =>
+    chatText().then((t) => (/turn \d+: after relaunch|409|client_session_id_conflict|was not sent/.test(t) ? t : null)),
+  );
+  assert.ok(!/409|client_session_id_conflict/.test(relaunched), `no 409 after the relaunch:\n${relaunched}`);
+  const turnN = Number(relaunched.match(/turn (\d+): after relaunch/)?.[1]);
+  await turnDone("after relaunch");
+  const stateAfter = fakeState();
+  assert.deepEqual(Object.keys(stateAfter), sessionsBefore, "no new Reason Session");
+  assert.equal(stateAfter[before].turns, turnN, `Session ${before} ran the follow-up as its turn ${turnN}`);
+  await screenshot("reason-chat-relaunch-follow-up");
+  pass(`after a relaunch with workspace ws-b selected, the follow-up resumed Session ${before} in ws-a ("turn ${turnN}: after relaunch"), with no 409 and no new Session`);
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {

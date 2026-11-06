@@ -1,14 +1,13 @@
 {
  "schema": "openconductor.builder-obligations.v1",
  "ref": "origin/main",
- "verdicts_verified_at": "2026-11-05 (main 2e13137: sidebar.archive Codex-chat gap in progress via open draft #467, verdict unchanged; main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 91.0,
+ "verdicts_verified_at": "2026-11-06 (main d92abbfe: home.recent after #551 (4170c2c), archived workspaces stay in Recent; home.dashboard-routes after #403 (d92abbfe), /dashboard route, sidebar row and Experimental setting; main 2e728ad0: home.duplicate-repo after #555 (2e728ad0), stays implemented, both add paths keep the backend name; main 4c28914: home.status-overview after #539 (4c28914), status matrix read in Home, sidebar and pending rows; main 1f43a15: sidebar.ws-unread after #443 (1f43a15), stays partial (per-chat unread, plan/question/elicitation waits); main a9e4a48: sidebar.archive after #532 (a9e4a48), home.duplicate-repo after #401 (1121ccc), home.recent re-read after #401 (persistence closed; archived workspaces still dropped from Recent, open #551); main 563981a: create.page after #388 (563981a), create.first-message model/effort note after #388, create.initializing re-read after #388/#399 (unchanged), sidebar.archive: #467 merged into #428's branch after #428 landed, so its fix is not on main; main f6da48f: sidebar.ws-status after #428 (5751628), home.status-overview after #428 and #457 (f6da48f), sidebar.archive re-read (Codex chats now block archive, Stop still skips them and needs_user_permission chats); main 2e13137: sidebar.archive Codex-chat gap in progress via open draft #467, verdict unchanged; main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 96.3,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 11,
+ "open": 4,
  "by_owner": {
-  "create-workspace": 2,
-  "home": 4,
-  "sidebar": 5
+  "create-workspace": 1,
+  "sidebar": 3
  },
  "obligations": [
   {
@@ -19,7 +18,7 @@
    "depends_on_builders": [],
    "feature": "Initializing state with progress while the workspace is created",
    "verdict": "partial",
-   "gap": "#327 adds a pendingLaunches store (src/workspace/pendingLaunches.ts, a port of Conductor's Y5e with the 120 s expiry): CreateWorkspaceDialog adds a launch on submit and removes it when the create finishes or fails, and RepoWorkspaceList/PendingWorkspaceRow (Sidebar.tsx) show an inert 'Untitled' row with a spinner ('Creating workspace...'), also in a collapsed group. #399 logs git worktree add to a Conductor-style $TMPDIR/conductor-<ms>-<rand>.log (init_log.rs), stores it as initialization_log_path with initialization_files_copied, and shows non-fatal initialization issues as a persistent toast with View logs. Still no initializing workspace view, and the loader is a CSS spinner rather than Conductor's sprite.",
+   "gap": "#327 adds a pendingLaunches store (src/workspace/pendingLaunches.ts, a port of Conductor's Y5e with the 120 s expiry): CreateWorkspaceDialog adds a launch on submit and removes it when the create finishes or fails, and RepoWorkspaceList/PendingWorkspaceRow (Sidebar.tsx) show an inert 'Untitled' row with a spinner ('Creating workspace...'), also in a collapsed group. #399 logs git worktree add to a Conductor-style $TMPDIR/conductor-<ms>-<rand>.log (init_log.rs), stores it as initialization_log_path with initialization_files_copied, and shows non-fatal initialization issues as a persistent toast with View logs. Still no initializing workspace view, and the loader is a CSS spinner rather than Conductor's sprite. Re-read on 563981a after #388/#399: unchanged (no initializing workspace view; the pending row and init log as above).",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -35,112 +34,6 @@
     ],
     "files": [
      "evidence/create-workspace/README.md"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.create.page",
-   "item": "create.page",
-   "area": "create",
-   "owner": "create-workspace",
-   "depends_on_builders": [],
-   "feature": "Full-screen create-workspace page with its own composer and tab navigation",
-   "verdict": "partial",
-   "gap": "Create is still a modal (CreateWorkspaceDialog.tsx) with a prompt box, create-from picker, repo and base-branch selects and a name field, not the reference's full-screen composer with tabs; agent, model and effort come from Settings \u203a Default models with no picker in the composer. Re-read on 0f82f19: unchanged. PR #388 (Conductor's composer and the full-screen /create page behind Settings > Experimental > New workspace page) is open, not merged, so it is not scored.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "routes": [
-     "/create"
-    ],
-    "copy": [
-     2821,
-     2820,
-     1994,
-     2831,
-     3350
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.home.dashboard-routes",
-   "item": "home.dashboard-routes",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [],
-   "feature": "Dashboard and all-workspaces routes",
-   "verdict": "partial",
-   "gap": "/all-workspaces is implemented by #322: the sidebar Home row, nav.home and the palette open AllWorkspaces, and a start path of /all-workspaces opens it. /dashboard is missing: REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest) shows route lta (@11,520,499) and a sidebar 'Dashboard' row (@10,029,038) shown when the dashboard_enabled setting is on (default 'false' in the index chunk's settings defaults); the rebuild has neither the route nor the setting.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "routes": [
-     "/dashboard",
-     "/all-workspaces",
-     "/workspaces"
-    ],
-    "copy": [
-     1130
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.home.duplicate-repo",
-   "item": "home.duplicate-repo",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [],
-   "feature": "Adding an already-added repository again (Clone or Open project) makes a new project: no duplicate check, a new repos row, and Clone picks a unique folder (name-v1, name-v2)",
-   "verdict": "partial",
-   "gap": "Clone now matches (#343): the Clone dialog result is added under its backend id and a second clone of an added remote becomes its own project in a <name>-v1 folder (sameRepoRecord, src/state/addRepo.ts, tested; naming::bump since #379), as Conductor's g2t/C2t do. Open project still differs: App.tsx openProject refuses an already-added folder with REPO_EXISTS (findExistingRepo), and add_repository returns the existing id for a known path, while Conductor inserts a second repos row for the same folder named <name>-v1 (evidence/screens/duplicate-repo.md).",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "schema": [
-     "repos.remote_url",
-     "repos.root_path"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.home.recent",
-   "item": "home.recent",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [],
-   "feature": "Recent workspaces list",
-   "verdict": "partial",
-   "gap": "Re-read with REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest): 'Recent workspaces' is the command palette's All-tab heading with an empty query (m_a @10,909,908), not a Home list. Conductor keeps recentWorkspaceIds (most recent first, cap XOt = 5, recordViewedWorkspace) in its persisted UI store (partialize includes recentWorkspaceIds, index chunk @3,121,897), so the list survives a restart. Ours (src/palette/PaletteHost.tsx) shows the same heading and order but keeps up to 8 ids in React state only, so it is empty after a restart and holds 3 more than Conductor.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     3459
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.home.status-overview",
-   "item": "home.status-overview",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [],
-   "feature": "Home list shows each workspace's active session status or its last-activity time (Conductor: needs plan response, needs permission, needs input, working, cancelling, waiting); status-matrix option and mine-vs-all",
-   "verdict": "partial",
-   "gap": "#322 adds the Home list (AllWorkspaces.tsx, src/home/allWorkspaces.ts): grouped by last activity with counts, unread rows semibold, diff stat and a short relative time. The status column shows only 'working' (a spinner): our session status has only working/idle, so Conductor's other active statuses (needs plan response, needs permission, needs input, cancelling, waiting) never show, the same gap as sidebar.ws-status. The status-matrix toggle (internal_workspace_status_matrix, Settings > Experimental @10,701,242) and mine-vs-all (team organization sidebar, 'My workspaces' @10,055,740) are not built; #322 records them as cloud-only. Home's 'Archived workspaces' filter (Hiding archived / Showing all / Only archived, allWorkspaces.ts) never sees an archived workspace on 1944b98: homeRows (AllWorkspaces.tsx) takes only state.repos, and reposFromDb drops archived rows (persisted.ts HIDDEN_STATES), so 'Only archived' is always empty and 'Showing all' shows no archived row, unlike Conductor's Home list; adf1f469 owns the follow-up that feeds listArchivedWorkspaces into homeRows.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     4796,
-     5007,
-     137,
-     2767
     ]
    },
    "status": "open"
@@ -164,39 +57,6 @@
     ],
     "ipc": [
      "experimental_sidebar_transparency"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.archive",
-   "item": "sidebar.archive",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Archive with confirmation, refusing while a git operation is in progress, recording an archive commit",
-   "verdict": "partial",
-   "gap": "#391 (274ac80) replaces the row-only db_archive_workspace with archive_workspace (src-tauri/src/workspace_archive/, flow.rs), which the row menu, WorkspaceView, the palette and archive on merge all reach through startArchive (store.ts). It follows Conductor's dYe/mYe (index-BGEQ8YjU.js @ ~966,478 / ~969,254): checkpoint conductor-archive-<id>, refuse in safe mode while a merge/rebase/cherry-pick/revert is in progress with the sticky warning and Archive retry (discardGitOperationState), archive commit = HEAD kept under refs/conductor-archive-heads/<id>, row state/branch/archive_commit, archive script, .context move, worktree removal and delete_branch_on_archive. #397 (aa32456) closes the last gap: the running-agents check folds every chat of the workspace (workspaceAgentStatus; working, cancelling or waiting block, as dYe), and every archive calls stopWorkspaceAgents, which stops each working or cancelling chat of the workspace (stopChat), as Conductor's Z$ (@974,859) calls cancelSession for every session of a local workspace. Conductor's cancel also settles a 'waiting' session (@3,013,752); no OpenConductor chat reports 'waiting', so there is nothing to settle. Read on f6c05d7 with the bundle (sha256 prefix b5b01f33); not run in the desktop app. Re-read on 1944b98: partial, because 'every chat' covers only Reason chats. chatStatuses is published only by createChatRuntime (chatRuntime.ts), which only reasonChat.ts uses; codexChat.ts keeps its own queue and never publishes a status, and stopWorkspaceAgents calls reasonChat's stopChat. So a working Codex chat neither blocks archive nor is stopped by 'Stop agents and archive', and its worktree is removed under it, unlike Conductor's Z$, which cancels every session of the workspace (gap reported in #437's body). In progress: draft PR #467 (head f2f5d1e, builder aebd8c64, stacked on #428's branch, lands after #428) makes 'Stop agents and archive' cancel Codex chats too; open and held, so it is not scored until it merges.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [
-    "ws.status-archive",
-    "ws.git-busy"
-   ],
-   "evidence": {
-    "copy": [
-     219,
-     223,
-     224,
-     786,
-     2723,
-     4222
-    ],
-    "schema": [
-     "workspaces.state",
-     "workspaces.archive_commit"
-    ],
-    "cli": [
-     "workspace archive"
     ]
    },
    "status": "open"
@@ -228,44 +88,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.sidebar.ws-status",
-   "item": "sidebar.ws-status",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [
-    "pr"
-   ],
-   "feature": "Row status icon from workspace state, then the sessions' aggregated status, then PR state, else branch/local (not the manual Backlog/In progress status, which only groups the status-grouped sidebar)",
-   "verdict": "partial",
-   "gap": "On 66a892a the row icon follows Conductor's chain: rowStatus({workspaceState: ws.state, session, pr: ws.pr}). #370 closed two gaps: the session status is now aggregated over every chat of the workspace (reasonChat chatStatuses -> workspaceSessionStatus, nTr order), and every on-screen row polls its PR every 5 minutes like Conductor's G5e (sidebarPrPoll.ts / sidebarPrPoller.ts, batched per repository), so PR states reach rows that are not open and come back after a restart once the row is on screen. Still missing: the chat queue's SessionStatus is only idle/working/cancelling/error, so needs_plan_response, needs_user_permission, needs_user_input and waiting never reach the icon.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [
-    "ws.status-archive"
-   ],
-   "evidence": {
-    "copy": [
-     4796,
-     5007,
-     3979,
-     2785,
-     2784,
-     2783,
-     4901,
-     2189,
-     3445,
-     1287,
-     2625,
-     527,
-     3398
-    ],
-    "schema": [
-     "workspaces.state",
-     "sessions.status"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.sidebar.ws-unread",
    "item": "sidebar.ws-unread",
    "area": "sidebar",
@@ -275,7 +97,7 @@
    ],
    "feature": "Unread marker, mark-as-unread action and jump-to-next-unread command",
    "verdict": "partial",
-   "gap": "#431 on 93f1846: Go to next unread (chat.nextAttention, Cmd+Alt+L; first under the palette's Navigation while something is unread) opens unread workspaces in Conductor's Qre order (updatedAt, then createdAt, then id; index-BGEQ8YjU.js @1,128,168), with Cmd+Alt+L skipping the open workspace and archived workspaces never counted (src/state/nextUnread.ts, palette/fromAppState.ts, PaletteHost.tsx). db_list_workspaces returns updated_at and chat_messages_save moves it forward on a user message through workspaces::touch, as Conductor's setSessionUpdatedAt does (index @1,066,404; migration 85 drops the trigger). Row menu toggles unread (R), unread rows render semibold and opening a row clears it, written through db_set_workspace_unread. Still partial: nothing sets unread by itself (Conductor's applyTurnCompletionTails @1,529,959 and markUnreadIfNotViewing @1,500,167), unread is per workspace rather than per chat (sessions.unread_count), there is no Next unread button over the composer (renderApp g1o, char @7,530,225), and Codex sends do not persist the updated_at bump. #443 (open) covers the composer button, Codex persistence and auto-unread on turn end and Codex approvals; per-chat unread and plan/question waits would remain.",
+   "gap": "#443 on 1f43a15: unread now sets itself. A chat whose turn settles (completed, nothing queued; Conductor's applyTurnCompletionTails, index-BGEQ8YjU.js @1,529,959), a new Reason permission request, or a new Codex approval marks its workspace unread unless that chat's transcript is shown with the window focused (Conductor's isSessionInView/QW; features/chat/attention.ts, state/autoUnread.ts, useAutoUnread.ts in App.tsx). Showing an unread workspace's chat with the window focused reads it, except after a hand mark (R or row menu) until it is opened again (manuallyUnreadSessions). The composer shows a 'Next unread' button when another workspace is unread, hidden once the PR is merged (renderApp g1o @7,528,638), and Cmd+Alt+L, the palette and the button share openNextUnread in Qre order (nextUnread.ts). Codex sends persist the updated_at bump through db_touch_workspace (setSessionUpdatedAt @1,066,404). Still partial: (1) unread is per workspace (workspaces.unread); Conductor sets it per chat (fe.setUnread on sessions.unread_count), and main's sessions::set_unread / mark_workspace_read have no command or UI caller. (2) Conductor's _p (@2,940,721) also marks unread on a plan review (needs_plan_response @2,945,001), an AskUserQuestion (needs_user_input @2,945,451) and a Codex MCP elicitation (@2,946,028); on main chatWantsAttention is called only on turn end, Reason permission requests and Codex approvals, so Codex consents and plan/question waits never set unread. Not verified: auto-unread seen in the built app.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {

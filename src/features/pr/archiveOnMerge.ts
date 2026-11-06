@@ -9,6 +9,7 @@
 // own lookup, the others through the background watcher
 // (useArchiveOnMergeWatcher). Both report to one tracker, so a merge is acted
 // on once whichever lookup sees it first.
+import type { Action } from "../../state/store";
 import type { Repo, Workspace } from "../../state/types";
 import type { PrLookup } from "./types";
 
@@ -69,6 +70,11 @@ export function archiveDecision(args: { enabled: boolean; archived: boolean; age
 export const archivedMessage = (number: number) => `PR #${number} merged and workspace archived`;
 export const AGENT_RUNNING_MESSAGE = "Merged PR, but workspace was not archived because agents are still running";
 export const archiveFailedMessage = (detail: string) => `Merged PR, but failed to archive workspace: ${detail}`;
+
+/** What the toast's Unarchive dispatches: the store's one unarchive, so a deleted or moved branch opens "Restore to new branch?". */
+export function unarchiveOnMergeAction(repoId: string, workspaceId: string): Extract<Action, { type: "unarchiveWorkspace" }> {
+  return { type: "unarchiveWorkspace", repoId, workspaceId };
+}
 
 /** Toast buttons after an archive on merge: "Open PR" when the URL is known, then "Unarchive". */
 export function archivedToastActions(merged: { number: number; url: string }): { action?: "open-pr"; secondary: "unarchive" } {

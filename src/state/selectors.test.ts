@@ -16,7 +16,7 @@ test("active workspace count ignores archived workspaces", () => {
   assert.equal(activeWorkspaceCount([]), 0);
   assert.equal(activeWorkspaceCount([repo([])]), 0);
   assert.equal(activeWorkspaceCount([repo([ws("archived")])]), 0);
-  assert.equal(activeWorkspaceCount([repo([ws("idle"), ws("archived")]), repo([ws("working"), ws("needs-review")])]), 3);
+  assert.equal(activeWorkspaceCount([repo([ws("idle"), ws("archived")]), repo([{ ...ws("idle"), id: "busy", sessionStatus: "working" }, ws("needs-review")])]), 3);
 });
 
 test("removedWorkspaceIds lists workspaces archived or gone with their repository", () => {
@@ -34,4 +34,12 @@ test("the app opens at / unless a workspace was open or the path is /all-workspa
   assert.deepEqual(startSelection({ repos: [], selection: { kind: "home" } }, "/").selection, { kind: "root" });
   assert.deepEqual(startSelection({ repos: [], selection: ws }, "/").selection, ws);
   assert.deepEqual(startSelection({ repos: [], selection: ws }, "/all-workspaces").selection, { kind: "home" });
+});
+
+test("/dashboard opens the dashboard board, with ?repo= as its project tab", async () => {
+  const { startSelection } = await import("./selectors.ts");
+  const ws = { kind: "workspace" as const, repoId: "r", workspaceId: "w" };
+  assert.deepEqual(startSelection({ repos: [], selection: ws }, "/dashboard").selection, { kind: "dashboard" });
+  assert.deepEqual(startSelection({ repos: [], selection: ws }, "/dashboard", "?repo=r1").selection, { kind: "dashboard", repo: "r1" });
+  assert.deepEqual(startSelection({ repos: [], selection: { kind: "dashboard" } }, "/").selection, { kind: "root" });
 });

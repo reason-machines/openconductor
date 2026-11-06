@@ -12,8 +12,10 @@ import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { getSettings } from "../../settings/api";
 import { DEFAULT_SETTINGS } from "../../settings/types";
 import type { Repo, Workspace } from "../../state/types";
-import { configureReason } from "../chat/reasonChat.ts";
-import { hideChat } from "../chat/chatRuntime.ts";
+import { configureReason, configureReasonDefault } from "../chat/reasonChat.ts";
+import { defaultChatConfig } from "../chat/chatModel.ts";
+import { NEW_CHAT_TITLE, newChatId } from "../chat/chatTabs.ts";
+import { hideChat, showChat } from "../chat/chatRuntime.ts";
 import type { PromptAttachment } from "../chat/reason.ts";
 import { buildReviewPrompt, type ConfigChoice, REVIEW_ATTACHMENT, REVIEW_MESSAGE, reviewDraft, reviewModel, reviewTabTitle } from "./review.ts";
 import { repoReviewPrompt } from "./reviewApi.ts";
@@ -24,6 +26,8 @@ export interface ReviewTab {
   title: string;
   /** A chat forked from another ("Fork to new tab"), not a review. */
   fork?: true;
+  /** A new chat opened with "+" or ⌘T, not a review. */
+  blank?: true;
   /** Readable review model, shown in the chat. */
   modelLabel: string;
   effort: string | null;
@@ -114,7 +118,29 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
     [workspace.id, save, onOpen],
   );
 
-  return { tabs, start, close, fork, error };
+  /**
+   * "+" and ⌘T ("New chat, same files"): a new Untitled chat in this
+   * workspace on the default model, shown once created. Returns its chat id.
+   */
+  const newChat = useCallback((): string => {
+    const chatId = newChatId(workspace.id, Date.now(), ++seq);
+    configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
+    save([...(tabsByWorkspace.get(workspace.id) ?? []), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
+    onOpen(chatId);
+    return chatId;
+  }, [workspace.id, save, onOpen]);
+
+  /** ⌘⇧T: put a closed chat tab back at the end of the strip and show it. */
+  const reopen = useCallback(
+    (tab: ReviewTab) => {
+      showChat(tab.chatId);
+      save([...(tabsByWorkspace.get(workspace.id) ?? []).filter((t) => t.chatId !== tab.chatId), tab]);
+      onOpen(tab.chatId);
+    },
+    [workspace.id, save, onOpen],
+  );
+
+  return { tabs, start, close, fork, newChat, reopen, error };
 }
 
 /**

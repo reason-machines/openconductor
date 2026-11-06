@@ -24,6 +24,7 @@ import {
   SPOTLIGHT_TASK_ID,
   applyEvent,
   runTasks,
+  shownTask,
   spotlightButton,
   toggleBlocked,
   viewFromStatus,
@@ -34,19 +35,30 @@ import {
 interface Props {
   repo: Repo;
   workspace: Workspace;
+  /** Which strip tab this body is for (the strip draws the tabs). */
+  tab: "run" | "setup";
+  /** Reports the setup state, for the dot on the strip's Setup tab. */
+  onSetupState?: (state: SetupStatus["state"]) => void;
+  /** The Run tab's empty state: "Add run script" opens the repository's Scripts settings. */
+  onAddRunScript: () => void;
 }
+
+/** Conductor's Run tab text with no run script (copy catalog). */
+export const RUN_EMPTY_TEXT = "Run tests or a development server to test changes in this workspace";
+/** Conductor's Setup tab text before setup has run (copy catalog). */
+const SETUP_EMPTY_TEXT = "Setup script output will appear here after running setup.";
 
 const errorText = (e: unknown) => (typeof e === "string" ? e : e instanceof Error ? e.message : String(e));
 
 /**
- * Run and Setup tabs: start/stop the repository's run scripts and watch setup.
+ * The Run and Setup tab bodies of the right panel's strip: start/stop the
+ * repository's run scripts and watch setup.
  * With the repository's spotlight_testing setting on, the Run task picker also
  * offers Spotlight, which syncs this workspace into the repository root.
  */
-export function ScriptsPanel({ repo, workspace }: Props) {
+export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScript }: Props) {
   const ref = useMemo(() => workspaceRef(repo, workspace), [repo, workspace]);
   const wsId = workspace.id;
-  const [tab, setTab] = useState<"run" | "setup">("run");
   const [config, setConfig] = useState<ScriptsConfig | null>(null);
   const [runs, setRuns] = useState<RunStatus[]>([]);
   const [picked, setPicked] = useState<string | null>(null);
@@ -62,10 +74,13 @@ export function ScriptsPanel({ repo, workspace }: Props) {
   const spotEnabled = spotSetting?.enabled === true;
   const spotMine = spotView.workspaceId === wsId;
   const spotLogMine = spotView.logWorkspaceId === wsId;
-  const spotPicked = picked === SPOTLIGHT_TASK_ID && spotEnabled;
-  const shown = spotPicked
-    ? SPOTLIGHT_TASK_ID
-    : (picked !== SPOTLIGHT_TASK_ID ? picked : null) ?? activeRun(runs)?.scriptId ?? (spotMine ? SPOTLIGHT_TASK_ID : null) ?? defaultScript(config)?.id ?? null;
+  const shown = shownTask({
+    picked,
+    spotlightEnabled: spotEnabled,
+    activeScriptId: activeRun(runs)?.scriptId ?? null,
+    spotlightMine: spotMine,
+    defaultScriptId: defaultScript(config)?.id ?? null,
+  });
   const showSpotlight = shown === SPOTLIGHT_TASK_ID;
 
   const refresh = useCallback(async () => {
@@ -133,6 +148,10 @@ export function ScriptsPanel({ repo, workspace }: Props) {
     outRef.current?.scrollTo({ top: outRef.current.scrollHeight });
   }, [runOut, setup.log, spotView.log, tab]);
 
+  useEffect(() => {
+    onSetupState?.(setup.state);
+  }, [onSetupState, setup.state]);
+
   async function act(f: () => Promise<unknown>) {
     setError(null);
     try {
@@ -188,59 +207,27 @@ export function ScriptsPanel({ repo, workspace }: Props) {
   const shownStatus = runs.find((r) => r.scriptId === shown);
   const setupRunning = setup.state === "running";
 
-  return (
-    <section className="scripts" aria-label="Scripts">
-      <div className="tabs scripts-tabs" role="tablist">
-        <button role="tab" aria-selected={tab === "run"} className={tab === "run" ? "active" : ""} onClick={() => setTab("run")}>
-          Run
-        </button>
-        <button role="tab" aria-selected={tab === "setup"} className={tab === "setup" ? "active" : ""} onClick={() => setTab("setup")}>
-          Setup <span className={`setup-dot ${setup.state}`} aria-label={SETUP_TEXT[setup.state]} />
-        </button>
-        <div className="scripts-actions">
-          {tab === "run" ? (
-            <>
-              {tasks.length > 1 && (
-                <select aria-label="Run script" value={shown ?? ""} onChange={(e) => setPicked(e.target.value)} disabled={busy}>
-                  {tasks.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.label}
-                    </option>
-                  ))}
-                </select>
-              )}
-              {showSpotlight ? (
-                <button
-                  className={`btn btn-small ${spotButton.action === "stop" ? "btn-stop" : "btn-primary"}`}
-                  title={spotButton.hint}
-                  disabled={spotButton.disabled}
-                  onClick={() => toggleSpotlightRun()}
-                >
-                  {spotButton.action === "stop" ? "■" : "▶"} {spotButton.label}
-                </button>
-              ) : (
-                <button
-                  className={`btn btn-small ${button.action === "stop" ? "btn-stop" : "btn-primary"}`}
-                  title={button.hint}
-                  disabled={button.disabled}
-                  onClick={() => act(() => (button.action === "stop" ? api.stopRun(wsId, null) : startScript()))}
-                >
-                  {button.action === "stop" ? "■" : "▶"} {button.label}
-                </button>
-              )}
-            </>
-          ) : (
-            <button
-              className={`btn btn-small ${setupRunning ? "btn-stop" : ""}`}
-              disabled={!ref || !config?.setup}
-              title={config?.setup ?? "No setup script is configured"}
-              onClick={() => act(() => (setupRunning ? api.cancelSetup(wsId) : api.startSetup(ref!)))}
-            >
-              {setupRunning ? "Stop setup" : setup.state === "idle" ? "Run setup" : "Rerun setup"}
+  // Conductor's Run tab with no run script: a dashed box offering to add one.
+  const noRunScript = (config !== null || !ref) && tasks.length === 0 && !showSpotlight && runs.length === 0;
+
+  if (tab === "run" && noRunScript) {
+    return (
+      <section className="scripts" aria-label="Run">
+        {error && <div className="scripts-error">{error}</div>}
+        <div className="scripts-empty">
+          <div className="scripts-empty-box">
+            <p>{RUN_EMPTY_TEXT}</p>
+            <button type="button" className="scripts-empty-btn" onClick={onAddRunScript}>
+              Add run script
             </button>
-          )}
+          </div>
         </div>
-      </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="scripts" aria-label={tab === "run" ? "Run" : "Setup"}>
       {error && <div className="scripts-error">{error}</div>}
       {tab === "run" ? (
         <>
@@ -270,6 +257,36 @@ export function ScriptsPanel({ repo, workspace }: Props) {
               />
               {SPOTLIGHT_SETTING_TITLE}
             </label>
+            <div className="scripts-actions">
+              {tasks.length > 1 && (
+                <select aria-label="Run script" value={shown ?? ""} onChange={(e) => setPicked(e.target.value)} disabled={busy}>
+                  {tasks.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+              {showSpotlight ? (
+                <button
+                  className={`btn btn-small ${spotButton.action === "stop" ? "btn-stop" : "btn-primary"}`}
+                  title={spotButton.hint}
+                  disabled={spotButton.disabled}
+                  onClick={() => toggleSpotlightRun()}
+                >
+                  {spotButton.action === "stop" ? "■" : "▶"} {spotButton.label}
+                </button>
+              ) : (
+                <button
+                  className={`btn btn-small ${button.action === "stop" ? "btn-stop" : "btn-primary"}`}
+                  title={button.hint}
+                  disabled={button.disabled}
+                  onClick={() => act(() => (button.action === "stop" ? api.stopRun(wsId, null) : startScript()))}
+                >
+                  {button.action === "stop" ? "■" : "▶"} {button.label}
+                </button>
+              )}
+            </div>
           </div>
           {showSpotlight ? (
             <pre ref={outRef} className="scripts-output">
@@ -286,8 +303,27 @@ export function ScriptsPanel({ repo, workspace }: Props) {
           <div className="scripts-meta">
             <span>{SETUP_TEXT[setup.state]}</span>
             {setup.last?.logPath && <code title="Setup log file">{setup.last.logPath}</code>}
+            <div className="scripts-actions">
+              <button
+                className={`btn btn-small ${setupRunning ? "btn-stop" : ""}`}
+                disabled={!ref || !config?.setup}
+                title={config?.setup ?? "No setup script is configured"}
+                onClick={() => act(() => (setupRunning ? api.cancelSetup(wsId) : api.startSetup(ref!)))}
+              >
+                {setupRunning ? "Stop setup" : setup.state === "idle" ? "Run setup" : "Rerun setup"}
+              </button>
+            </div>
           </div>
-          <pre ref={outRef} className="scripts-output">{setup.log ? stripAnsi(setup.log) : config?.setup ? "Setup output appears here after setup runs." : "No setup script is configured for this repository."}</pre>
+          {setup.log ? (
+            <pre ref={outRef} className="scripts-output">{stripAnsi(setup.log)}</pre>
+          ) : (
+            // The Run tab's dashed card, so both tabs' empty states look alike (#509).
+            <div className="scripts-empty">
+              <div className="scripts-empty-box">
+                <p>{config?.setup ? SETUP_EMPTY_TEXT : "No setup script is configured for this repository."}</p>
+              </div>
+            </div>
+          )}
         </>
       )}
     </section>

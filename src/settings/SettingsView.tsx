@@ -1,4 +1,5 @@
 import { Fragment, type ReactNode } from "react";
+import { Tooltip } from "../components/Tooltip";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import type { Repo } from "../state/types";
 import { AccountPage } from "./AccountPage";
@@ -79,10 +80,13 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
       <nav className="settings-nav" aria-label="Settings pages">
         <div className="sidebar-drag" data-tauri-drag-region />
         <div className="settings-nav-top">
-          <button className="settings-back" title="Esc" onClick={onClose}>
-            <BackIcon />
-            Back
-          </button>
+          {/* Conductor's `I9a`: Root delayDuration 100, content side "right", text "Esc". */}
+          <Tooltip content="Esc" side="right" delay={BACK_TOOLTIP_DELAY_MS}>
+            <button className="settings-back" tabIndex={-1} onClick={onClose}>
+              <BackIcon />
+              Back
+            </button>
+          </Tooltip>
         </div>
         {settingsGroups(settings?.experimental?.experimental_big_terminal_mode === true).map((g) => (
           <Fragment key={g.title || g.pages[0]?.id}>
@@ -98,7 +102,7 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
       </nav>
       <section className="settings-page">
         <div className="settings-page-inner">
-          {!(location.scope === "user" && SELF_HEADED.includes(location.page)) && (
+          {!(location.scope === "user" ? SELF_HEADED.includes(location.page) : location.section === "environment") && (
             <header className="settings-header">
               <div>
                 <h1>{title}</h1>
@@ -120,7 +124,7 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
           ) : !settings ? (
             <p className="muted">Loading…</p>
           ) : (
-            <UserPage page={location.page} settings={settings} save={save} reload={reload} />
+            <UserPage page={location.page} settings={settings} save={save} reload={reload} onNavigate={onNavigate} />
           )}
         </div>
       </section>
@@ -133,12 +137,21 @@ function UserPage({
   settings,
   save,
   reload,
+  onNavigate,
 }: {
   page: SettingsPage;
   settings: Settings;
   save: ReturnType<typeof useSettings>["save"];
   reload: () => void;
+  onNavigate: (location: SettingsLocation) => void;
 }) {
+  // Conductor's "Configure <agent>": Settings › Agents on that agent's tab (`?providerTab=`).
+  const openAgentsTab = (tab: string) => {
+    onNavigate({ scope: "user", page: "providers" });
+    const q = new URLSearchParams(window.location.search);
+    q.set("providerTab", tab);
+    window.history.replaceState(window.history.state, "", `${window.location.pathname}?${q}`);
+  };
   switch (page) {
     case "account":
       return <AccountPage settings={settings} save={save} />;
@@ -147,9 +160,9 @@ function UserPage({
     case "key-bindings":
       return <KeyBindingsPage settings={settings} save={save} />;
     case "models":
-      return <DefaultModelsPage settings={settings} save={save} />;
+      return <DefaultModelsPage settings={settings} save={save} openAgentsTab={openAgentsTab} />;
     case "providers":
-      return <AgentsPage settings={settings} reload={reload} save={save} />;
+      return <AgentsPage settings={settings} save={save} reload={reload} />;
     case "appearance":
       return <AppearancePage settings={settings} save={save} />;
     case "experimental":
@@ -220,6 +233,9 @@ const PAGE_ICONS: Record<SettingsPage, ReactNode> = {
   advanced: <DriveIcon />,
   terminal: <TerminalIcon />,
 };
+
+/** Settings' Back opens its "Esc" tooltip after 100 ms, not the app's 600 ms (Conductor's `I9a`). */
+const BACK_TOOLTIP_DELAY_MS = 100;
 
 /** Pages that draw their own header (Conductor's environment panel has an "Add" action beside its title). */
 const SELF_HEADED: readonly SettingsPage[] = ["environment"];

@@ -1,0 +1,81 @@
+{
+  "result": "fail",
+  "agents": [
+    {
+      "agent": "reason",
+      "menuItems": 78,
+      "menuSkills": 78,
+      "headings": [
+        "Skills"
+      ],
+      "menuMs": 2042,
+      "filter": "bro",
+      "filtered": [
+        "bro",
+        "principle-subtract-before-you-add",
+        "principle-test-behavior-not-implementation"
+      ],
+      "inserted": "/bro ",
+      "sent": "/bro The deploy failed because the TLS certificate expired on Sunday.",
+      "turnStatus": "completed",
+      "turnError": null,
+      "reply": "The deploy broke because the security certificate that lets browsers connect securely to the site ran out on Sunday, so the connection was refused.",
+      "eventOutcome": "completed",
+      "error": null,
+      "fixtureRow": null,
+      "ran": true
+    },
+    {
+      "agent": "codex",
+      "menuItems": 451,
+      "menuSkills": 443,
+      "headings": [
+        "Skills"
+      ],
+      "menuMs": 1653,
+      "filter": "oc-fix",
+      "filtered": [
+        "oc-fixture-skill",
+        "poteto-principle-fix-root-causes"
+      ],
+      "inserted": "$oc-fixture-skill ",
+      "sent": "$oc-fixture-skill codex-e2e",
+      "turnStatus": "completed",
+      "turnError": null,
+      "reply": "I\u2019m using the oc-fixture-skill.\nOC-FIXTURE-SKILL-RAN codex-e2e",
+      "eventOutcome": null,
+      "error": null,
+      "fixtureRow": {
+        "name": "oc-fixture-skill",
+        "description": "OpenConductor e2e fixture skill. Replies with one marker line and does nothing else.",
+        "skill": true
+      },
+      "ran": true
+    },
+    {
+      "agent": "claude",
+      "menuItems": 402,
+      "menuSkills": 0,
+      "headings": [],
+      "menuMs": 655,
+      "filter": "oc-fix",
+      "filtered": [
+        "oc-fixture-skill",
+        "poteto-principle-fix-root-causes"
+      ],
+      "inserted": "/oc-fixture-skill ",
+      "sent": "/oc-fixture-skill claude-e2e",
+      "turnStatus": "failed",
+      "turnError": "You've hit your weekly limit \u00b7 resets Nov 11 at 1am (America/Los_Angeles)",
+      "reply": null,
+      "eventOutcome": "failed",
+      "error": null,
+      "fixtureRow": {
+        "name": "oc-fixture-skill",
+        "description": "OpenConductor e2e fixture skill. Replies with one marker line and does nothing else. (project)",
+        "skill": false
+      },
+      "ran": false
+    }
+  ]
+}

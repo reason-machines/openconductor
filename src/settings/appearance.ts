@@ -6,6 +6,7 @@ import { setTerminalFont, terminalFontFrom } from "../features/terminal/font.ts"
 import { scrollbackRows, setScrollbackRows } from "../features/terminal/scrollback.ts";
 import { customCommandsFrom, presetFrom, setBigTerminal } from "../features/terminal/bigTerminal.ts";
 import { applyDiffAppearance } from "../features/diff/appearance.ts";
+import { applyPalette, paletteFrom } from "../theme/palettes.ts";
 import { executablePaths } from "./agentSettings.ts";
 
 /** Conductor's zoom steps: 50% to 300% in 10% steps, 100% by default. */
@@ -50,7 +51,7 @@ export function withAppearance<K extends keyof Settings["appearance"]>(s: Settin
 
 /**
  * Applies theme and appearance to the document root: `data-theme` (absent for
- * "system"), CSS zoom, `data-low-contrast` (styles.css applies it only while
+ * "system"), the color palette (`data-color-palette`), CSS zoom, `data-low-contrast` (styles.css applies it only while
  * dark is in effect) and `--font-mono`; and the terminal font, scrollback
  * limit and Big terminal preset to terminals.
  */
@@ -59,6 +60,7 @@ export function applyAppearance(s: Settings): void {
   if (s.general.theme === "system") delete root.dataset.theme;
   else root.dataset.theme = s.general.theme;
   const a = s.appearance ?? { zoom_level_v2: DEFAULT_ZOOM, low_contrast_dark_mode: false };
+  applyPalette(paletteFrom(a.color_palette), root);
   root.style.zoom = a.zoom_level_v2 === DEFAULT_ZOOM ? "" : String(a.zoom_level_v2);
   if (a.low_contrast_dark_mode) root.dataset.lowContrast = "";
   else delete root.dataset.lowContrast;

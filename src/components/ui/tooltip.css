@@ -3,28 +3,8 @@
    pl-2 py-1 text-xs tracking-wide text-popover-foreground shadow-md outline-none
    data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0
    data-[ending-style]:scale-95 transition-[opacity,scale] duration-100, plus pr-1 / pr-2.
-   Tokens: evidence/frontend/css-tokens.json (`:root,.light` and `.dark`). */
-:root {
-  --popover: #fff;
-  --popover-foreground: #211e1c;
-  --popover-ring: #211e1c0d;
-  --muted-foreground: #8e8885;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --popover: #2c2826;
-    --popover-foreground: #eae8e6;
-    --popover-ring: #ffffff1a;
-    --muted-foreground: #a5a09c;
-  }
-}
-:root[data-theme="dark"] {
-  --popover: #2c2826;
-  --popover-foreground: #eae8e6;
-  --popover-ring: #ffffff1a;
-  --muted-foreground: #a5a09c;
-}
-
+   Colours come from src/theme/tokens.css (popover, popover-text, popover-ring, muted, shadow-10), so they
+   follow the palette; Conductor's values are the Stone palette (evidence/frontend/css-tokens.json). */
 .oc-tip-positioner { z-index: 50; }
 
 .oc-tip {
@@ -40,9 +20,9 @@
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.025px; /* tracking-wide: --tracking-wide is .025px in Conductor's build */
-  color: var(--popover-foreground);
+  color: var(--popover-text);
   /* ring-1 then shadow-md, in Tailwind's box-shadow order */
-  box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a;
+  box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10);
   outline: none;
   transition-property: opacity, scale;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -58,8 +38,8 @@
 
 /* Ss: inline-flex items-center ml-auto pl-1; each binding: inline-flex items-center text-xs text-muted-foreground. */
 .oc-tip-hint { display: inline-flex; align-items: center; margin-left: auto; padding-left: 4px; }
-.oc-tip-hint-keys { display: inline-flex; align-items: center; font-size: 12px; line-height: 16px; color: var(--muted-foreground); }
-.oc-tip-hint-or { padding: 0 4px; font-size: 12px; line-height: 16px; color: var(--muted-foreground); }
+.oc-tip-hint-keys { display: inline-flex; align-items: center; font-size: 12px; line-height: 16px; color: var(--muted); }
+.oc-tip-hint-or { padding: 0 4px; font-size: 12px; line-height: 16px; color: var(--muted); }
 /* gf: inline-block size-3 shrink-0 */
 .oc-tip-enter { display: inline-block; width: 12px; height: 12px; flex-shrink: 0; }
 

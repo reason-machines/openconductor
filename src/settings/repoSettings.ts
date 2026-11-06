@@ -27,6 +27,14 @@ export interface EnvFileStatus {
   loaded: number | null;
 }
 
+export interface ResolvedEnv {
+  local: Record<string, EnvVar>;
+  cloud: Record<string, EnvVar>;
+  files: EnvFileStatus[];
+  /** Names a settings file unsets with "<none>", and the layer that did. */
+  unset?: { local: Record<string, Layer>; cloud: Record<string, Layer> };
+}
+
 export interface EffectiveSettings {
   prompts: Record<PromptKind, Sourced<string> | null>;
   git: {
@@ -40,7 +48,9 @@ export interface EffectiveSettings {
   environmentVariableFiles: Sourced<string[]> | null;
   /** "Files to copy": gitignore-style patterns, one per line (`file_include_globs`). */
   fileIncludeGlobs: Sourced<string> | null;
-  env: { local: Record<string, EnvVar>; cloud: Record<string, EnvVar>; files: EnvFileStatus[] };
+  env: ResolvedEnv;
+  /** The environment of the user layer alone (user and managed files): what a repository overrides. */
+  userEnv?: ResolvedEnv;
   warnings: string[];
 }
 

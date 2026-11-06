@@ -175,7 +175,7 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
         </button>
       </Tooltip>
       {open && (
-        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey}>
+        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey} data-tauri-drag-region="false">
           {installed === null ? (
             <div className="oi-menu-note">Loading…</div>
           ) : apps.length === 0 ? (

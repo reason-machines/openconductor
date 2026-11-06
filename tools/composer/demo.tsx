@@ -13,6 +13,7 @@ import { commandSet, type ComposerAgent } from "../../src/features/chat/slashCom
 import { emptyQueue } from "../../src/features/chat/queue";
 import type { ModelChoice } from "../../src/features/chat/composerModels";
 import "../../src/fonts.css";
+import "../../src/theme/tokens.css";
 import "../../src/styles.css";
 
 const params = new URLSearchParams(location.search);

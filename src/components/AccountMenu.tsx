@@ -49,7 +49,7 @@ export function AccountMenu({ onOpenSettings }: { onOpenSettings: () => void }) 
         <ChevronDownIcon size={14} />
       </button>
       {open && (
-        <div className="sb-account-menu" role="menu" aria-label="Account">
+        <div className="sb-account-menu" role="menu" aria-label="Account" data-tauri-drag-region="false">
           {model.entries.map((e, i) =>
             e.kind === "email" ? (
               <div key="email" className="sb-account-email" role="presentation">{e.email}</div>
