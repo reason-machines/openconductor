@@ -112,6 +112,10 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
           disabled={disabled}
           onClick={() => setOpen((o) => !o)}
         >
+          {/* Conductor's `composer-compact-model-icon`: shown only while the composer is minimized. */}
+          <span className="oc-model-chip-icon" aria-hidden>
+            <ModelGlyph model={value.model} />
+          </span>
           <span className="oc-model-chip-label">{label ?? chip.label}</span>
           <span className="oc-model-chip-details">
             {!label && chip.effort ? <span className="oc-model-chip-effort">{chip.effort}</span> : null}
