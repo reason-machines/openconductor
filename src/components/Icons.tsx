@@ -28,6 +28,10 @@ export const BranchIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="git
 export const PaperclipIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="paperclip" size={size} strokeWidth={strokeWidth} />;
 export const SendIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="send-horizontal" size={size} strokeWidth={strokeWidth} />;
 export const FileIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="file" size={size} strokeWidth={strokeWidth} />;
+/** Help › Diagnostics (Lucide "stethoscope", Conductor's `rhi`). */
+export const StethoscopeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="stethoscope" size={size} strokeWidth={strokeWidth} />;
+/** Conductor's external-link marker in the Help menu (Lucide "arrow-up-right", its `co`). */
+export const ArrowUpRightIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="arrow-up-right" size={size} strokeWidth={strokeWidth} />;
 export const KeyboardIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="keyboard" size={size} strokeWidth={strokeWidth} />;
 export const SearchIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="search" size={size} strokeWidth={strokeWidth} />;
 export const CloseIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="x" size={size} strokeWidth={strokeWidth} />;

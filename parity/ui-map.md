@@ -8,18 +8,18 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **963** | **777** | **132** | **54** |
-| States (captured screens) | 65 | 21 | 36 | 8 |
-| Inventory items | 898 | 756 | 96 | 46 |
-| &nbsp;&nbsp;dialog | 64 | 56 | 7 | 1 |
+| **All** | **965** | **774** | **130** | **61** |
+| States (captured screens) | 67 | 20 | 37 | 10 |
+| Inventory items | 898 | 754 | 93 | 51 |
+| &nbsp;&nbsp;dialog | 64 | 55 | 7 | 2 |
 | &nbsp;&nbsp;empty-state | 52 | 48 | 3 | 1 |
 | &nbsp;&nbsp;menu | 39 | 39 | 0 | 0 |
 | &nbsp;&nbsp;menu-item | 89 | 88 | 1 | 0 |
 | &nbsp;&nbsp;popover | 45 | 44 | 1 | 0 |
-| &nbsp;&nbsp;route | 65 | 44 | 16 | 5 |
+| &nbsp;&nbsp;route | 65 | 43 | 15 | 7 |
 | &nbsp;&nbsp;select | 29 | 23 | 5 | 1 |
-| &nbsp;&nbsp;settings-page | 29 | 16 | 10 | 3 |
-| &nbsp;&nbsp;settings-row | 121 | 39 | 48 | 34 |
+| &nbsp;&nbsp;settings-page | 29 | 16 | 9 | 4 |
+| &nbsp;&nbsp;settings-row | 121 | 39 | 47 | 35 |
 | &nbsp;&nbsp;sheet | 3 | 3 | 0 | 0 |
 | &nbsp;&nbsp;tab | 35 | 31 | 3 | 1 |
 | &nbsp;&nbsp;toast | 327 | 325 | 2 | 0 |
@@ -30,16 +30,16 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 
 | Team | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| chat | 56 | 51 | 4 | 1 |
+| chat | 55 | 50 | 5 | 0 |
 | cloud-org | 83 | 74 | 4 | 5 |
 | git-review | 35 | 30 | 5 | 0 |
 | onboarding-auth | 23 | 18 | 5 | 0 |
 | routines | 40 | 40 | 0 | 0 |
-| settings | 181 | 49 | 90 | 42 |
-| shell | 191 | 179 | 11 | 1 |
+| settings | 181 | 49 | 86 | 46 |
+| shell | 194 | 177 | 11 | 6 |
 | terminal-scripts | 30 | 29 | 1 | 0 |
 | triage | 268 | 268 | 0 | 0 |
-| workspaces | 56 | 39 | 12 | 5 |
+| workspaces | 56 | 39 | 13 | 4 |
 
 212 of 898 items were located in a captured state; 212 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
 
@@ -54,6 +54,8 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
   - **wrong**: OpenConductor shows it (its copy is in a capture of the running app) but it is not shown to match: the diff or copy is over the bar, or there is no valid reference render to prove a match.
   - **missing**: OpenConductor has no way to reach the state, shows a different screen there (under 25% of the reference's UI copy), or the item's copy is in no capture of the running app.
 - UI copy means rendered strings that are literals in Conductor's bundle (`ui_strings` in inventory.json), so invented seed data (repo, workspace and user names) never counts. The OpenConductor brand name is normalised to Conductor before matching.
+- **Side-by-side records** ([ui-map/side-by-side.json](ui-map/side-by-side.json)): a builder who fixes a state captures both apps in that state with REA `capture-browser-scenario` (`tools/side-by-side/*.mjs`, Conductor's extracted frontend in the `tools/screens` harness beside OpenConductor's built frontend in Chromium with Tauri IPC mocked) and scores the pair with REA `compare-web-screenshots`, at the map's viewport. The record stands in for both captures of that state, under the same status rules, until the OpenConductor lane captures the state again; its rows link the committed side-by-side image and name the lane in `openconductor.note`.
+
 - Seed data differs between the two sides (the reference harness seeds six workspaces with a transcript; the OpenConductor seed has one real git worktree), so the pixel ratio carries some content difference too. The copy check and the side-by-side images are the better guide to what to fix.
 
 ## States
@@ -62,30 +64,30 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 |---|---|---|---|---|---|---|---:|
 | Onboarding, signed out<br>`onboarding-signed-out` | wrong | onboarding-auth | diff 99.2% at t24, copy 86% | [png](ui-map/ref/onboarding-signed-out.png) | [png](ui-map/oc/onboarding-signed-out.png) | [jpg](ui-map/diff/onboarding-signed-out.jpg) | 99.2% |
 | First-run onboarding<br>`first-run-onboarding` | wrong | onboarding-auth | no valid reference render (redirected to /), diff 96.8% at t24 | [png](ui-map/ref/first-run-onboarding.png) | [png](ui-map/oc/first-run-onboarding.png) | [jpg](ui-map/diff/first-run-onboarding.jpg) | 96.8% |
-| Home, no projects<br>`home-empty` | matches | workspaces | diff 3.5% at t24, copy 100% | [png](ui-map/ref/home-empty.png) | [png](ui-map/oc/home-empty.png) | [jpg](ui-map/diff/home-empty.jpg) | 3.5% |
-| Home with projects<br>`home` | wrong | workspaces | diff 4.4% at t24, copy 79% | [png](ui-map/ref/home.png) | [png](ui-map/oc/home.png) | [jpg](ui-map/diff/home.jpg) | 4.4% |
-| All workspaces list<br>`all-workspaces` | matches | workspaces | diff 1.2% at t24, copy 100% | [png](ui-map/ref/all-workspaces.png) | [png](ui-map/oc/all-workspaces.png) | [jpg](ui-map/diff/all-workspaces.jpg) | 1.2% |
-| Create workspace composer<br>`create` | wrong | chat | diff 8.6% at t24, copy 81% | [png](ui-map/ref/create.png) | [png](ui-map/oc/create.png) | [jpg](ui-map/diff/create.jpg) | 8.6% |
-| Create: repo picker open<br>`create-repo-picker` | wrong | workspaces | diff 8.9% at t24, copy 82% | [png](ui-map/ref/create-repo-picker.png) | [png](ui-map/oc/create-repo-picker.png) | [jpg](ui-map/diff/create-repo-picker.jpg) | 8.9% |
-| Workspace: chat transcript<br>`workspace-chat` | wrong | terminal-scripts | diff 6.2% at t24, copy 85% | [png](ui-map/ref/workspace-chat.png) | [png](ui-map/oc/workspace-chat.png) | [jpg](ui-map/diff/workspace-chat.jpg) | 6.2% |
-| Workspace: new empty chat<br>`workspace-new-chat` | matches | chat | diff 3.5% at t24, copy 92% | [png](ui-map/ref/workspace-new-chat.png) | [png](ui-map/oc/workspace-new-chat.png) | [jpg](ui-map/diff/workspace-new-chat.jpg) | 3.5% |
-| Chat: tool calls expanded<br>`workspace-tool-calls` | wrong | chat | diff 7.6% at t24, copy 86% | [png](ui-map/ref/workspace-tool-calls.png) | [png](ui-map/oc/workspace-tool-calls.png) | [jpg](ui-map/diff/workspace-tool-calls.jpg) | 7.6% |
-| Diff: file, unified<br>`diff-unified` | wrong | git-review | diff 11.3% at t24, copy 91% | [png](ui-map/ref/diff-unified.png) | [png](ui-map/oc/diff-unified.png) | [jpg](ui-map/diff/diff-unified.jpg) | 11.3% |
-| Diff: file, split<br>`diff-split` | wrong | git-review | diff 11.4% at t24, copy 91% | [png](ui-map/ref/diff-split.png) | [png](ui-map/oc/diff-split.png) | [jpg](ui-map/diff/diff-split.jpg) | 11.4% |
-| Diff: entire file<br>`diff-entire-file` | wrong | git-review | diff 5.9% at t24, copy 91% | [png](ui-map/ref/diff-entire-file.png) | [png](ui-map/oc/diff-entire-file.png) | [jpg](ui-map/diff/diff-entire-file.jpg) | 5.9% |
+| Home, no projects<br>`home-empty` | matches | workspaces | diff 3.5% at t24, copy 93% | [png](ui-map/ref/home-empty.png) | [png](ui-map/oc/home-empty.png) | [jpg](ui-map/diff/home-empty.jpg) | 3.5% |
+| Home with projects<br>`home` | wrong | workspaces | diff 4.4% at t24, copy 73% | [png](ui-map/ref/home.png) | [png](ui-map/oc/home.png) | [jpg](ui-map/diff/home.jpg) | 4.4% |
+| All workspaces list<br>`all-workspaces` | matches | workspaces | diff 1.2% at t24, copy 92% | [png](ui-map/ref/all-workspaces.png) | [png](ui-map/oc/all-workspaces.png) | [jpg](ui-map/diff/all-workspaces.jpg) | 1.2% |
+| Create workspace composer<br>`create` | wrong | chat | diff 8.6% at t24, copy 77% | [png](ui-map/ref/create.png) | [png](ui-map/oc/create.png) | [jpg](ui-map/diff/create.jpg) | 8.6% |
+| Create: repo picker open<br>`create-repo-picker` | wrong | workspaces | diff 8.9% at t24, copy 78% | [png](ui-map/ref/create-repo-picker.png) | [png](ui-map/oc/create-repo-picker.png) | [jpg](ui-map/diff/create-repo-picker.jpg) | 8.9% |
+| Workspace: chat transcript<br>`workspace-chat` | wrong | terminal-scripts | diff 6.2% at t24, copy 82% | [png](ui-map/ref/workspace-chat.png) | [png](ui-map/oc/workspace-chat.png) | [jpg](ui-map/diff/workspace-chat.jpg) | 6.2% |
+| Workspace: new empty chat<br>`workspace-new-chat` | wrong | chat | diff 3.5% at t24, copy 88% | [png](ui-map/ref/workspace-new-chat.png) | [png](ui-map/oc/workspace-new-chat.png) | [jpg](ui-map/diff/workspace-new-chat.jpg) | 3.5% |
+| Chat: tool calls expanded<br>`workspace-tool-calls` | wrong | chat | diff 7.6% at t24, copy 83% | [png](ui-map/ref/workspace-tool-calls.png) | [png](ui-map/oc/workspace-tool-calls.png) | [jpg](ui-map/diff/workspace-tool-calls.jpg) | 7.6% |
+| Diff: file, unified<br>`diff-unified` | wrong | git-review | diff 11.3% at t24, copy 88% | [png](ui-map/ref/diff-unified.png) | [png](ui-map/oc/diff-unified.png) | [jpg](ui-map/diff/diff-unified.jpg) | 11.3% |
+| Diff: file, split<br>`diff-split` | wrong | git-review | diff 11.4% at t24, copy 88% | [png](ui-map/ref/diff-split.png) | [png](ui-map/oc/diff-split.png) | [jpg](ui-map/diff/diff-split.jpg) | 11.4% |
+| Diff: entire file<br>`diff-entire-file` | wrong | git-review | diff 5.9% at t24, copy 88% | [png](ui-map/ref/diff-entire-file.png) | [png](ui-map/oc/diff-entire-file.png) | [jpg](ui-map/diff/diff-entire-file.jpg) | 5.9% |
 | Workspace needing permission<br>`needs-permission` | missing | chat | the OpenConductor seed has no workspace with a pending permission request | [png](ui-map/ref/needs-permission.png) | no-equivalent |  |  |
 | Dashboard<br>`route-dashboard` | missing | shell | OpenConductor has no route or view for /dashboard | [png](ui-map/ref/route-dashboard.png) | no-equivalent |  |  |
 | Routines<br>`route-routines` | missing | routines | OpenConductor has no route or view for /routines | [png](ui-map/ref/route-routines.png) | no-equivalent |  |  |
 | New routine<br>`route-routines-new` | missing | routines | OpenConductor has no route or view for /routines/new | [png](ui-map/ref/route-routines-new.png) | no-equivalent |  |  |
 | Team<br>`route-team` | missing | cloud-org | OpenConductor has no route or view for /team | [png](ui-map/ref/route-team.png) | no-equivalent |  |  |
-| Diagnostics<br>`route-diagnostics` | missing | shell | OpenConductor has no route or view for /diagnostics | [png](ui-map/ref/route-diagnostics.png) | no-equivalent |  |  |
+| Diagnostics<br>`route-diagnostics` | matches | shell | diff 0.7% at t24, copy 100% | [png](side-by-side/dialogs-menus-03-diagnostics.png) | [png](side-by-side/dialogs-menus-03-diagnostics.png) |  | 0.7% |
 | New member onboarding<br>`route-new-member-onboarding` | missing | onboarding-auth | OpenConductor has no route or view for /new-member-onboarding | [png](ui-map/ref/route-new-member-onboarding.png) | no-equivalent |  |  |
 | Cloud collaboration onboarding<br>`route-cloud-collab-onboarding` | missing | onboarding-auth | OpenConductor has no route or view for /cloud-collab-onboarding | [png](ui-map/ref/route-cloud-collab-onboarding.png) | no-equivalent |  |  |
 | Login<br>`login` | missing | onboarding-auth | OpenConductor shows a different screen here (copy 0%, diff 99.3% at t24) | [png](ui-map/ref/login.png) | [png](ui-map/oc/login.png) | [jpg](ui-map/diff/login.jpg) | 99.3% |
 | Settings > General<br>`settings-general` | wrong | settings | diff 3.3% at t24, copy 89% | [png](ui-map/ref/settings-general.png) | [png](ui-map/oc/settings-general.png) | [jpg](ui-map/diff/settings-general.jpg) | 3.3% |
 | Settings > Account<br>`settings-account` | wrong | settings | diff 5.0% at t24, copy 73% | [png](ui-map/ref/settings-account.png) | [png](ui-map/oc/settings-account.png) | [jpg](ui-map/diff/settings-account.jpg) | 5.0% |
 | Settings > Default models<br>`settings-models` | matches | settings | diff 3.3% at t24, copy 90% | [png](ui-map/ref/settings-models.png) | [png](ui-map/oc/settings-models.png) | [jpg](ui-map/diff/settings-models.jpg) | 3.3% |
-| Settings > Agents<br>`settings-providers` | wrong | settings | diff 4.2% at t24, copy 88% | [png](ui-map/ref/settings-providers.png) | [png](ui-map/oc/settings-providers.png) | [jpg](ui-map/diff/settings-providers.jpg) | 4.2% |
+| Settings > Agents<br>`settings-providers` | matches | settings | diff 4.2% at t24, copy 90% | [png](ui-map/ref/settings-providers.png) | [png](ui-map/oc/settings-providers.png) | [jpg](ui-map/diff/settings-providers.jpg) | 4.2% |
 | Settings > Environment<br>`settings-environment` | wrong | settings | diff 3.0% at t24, copy 86% | [png](ui-map/ref/settings-environment.png) | [png](ui-map/oc/settings-environment.png) | [jpg](ui-map/diff/settings-environment.jpg) | 3.0% |
 | Settings > Git<br>`settings-git` | matches | settings | diff 4.8% at t24, copy 92% | [png](ui-map/ref/settings-git.png) | [png](ui-map/oc/settings-git.png) | [jpg](ui-map/diff/settings-git.jpg) | 4.8% |
 | Settings > ports<br>`settings-ports` | missing | settings | OpenConductor's settings have no ports page | [png](ui-map/ref/settings-ports.png) | no-equivalent |  |  |
@@ -110,23 +112,25 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Settings > Organization > prompts<br>`settings-org-prompts` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-prompts.png) | no-equivalent |  |  |
 | Settings > Cloud setup<br>`settings-cloud-setup` | missing | cloud-org | OpenConductor has no cloud settings | [png](ui-map/ref/settings-cloud-setup.png) | no-equivalent |  |  |
 | Settings search<br>`settings-search` | missing | settings | timed out waiting for .settings input[type=search], .settings input[placeholder] | [png](ui-map/ref/settings-search.png) | [png](ui-map/oc/settings-search.png) | [jpg](ui-map/diff/settings-search.jpg) | 4.5% |
-| Command palette<br>`palette-all` | wrong | shell | diff 7.0% at t24, copy 50% | [png](ui-map/ref/palette-all.png) | [png](ui-map/oc/palette-all.png) | [jpg](ui-map/diff/palette-all.jpg) | 7.0% |
-| Command palette: Workspaces tab<br>`palette-workspaces` | wrong | workspaces | diff 23.1% at t24, copy 81% | [png](ui-map/ref/palette-workspaces.png) | [png](ui-map/oc/palette-workspaces.png) | [jpg](ui-map/diff/palette-workspaces.jpg) | 23.1% |
-| Command palette: search<br>`palette-search` | wrong | shell | diff 17.6% at t24, copy 80% | [png](ui-map/ref/palette-search.png) | [png](ui-map/oc/palette-search.png) | [jpg](ui-map/diff/palette-search.jpg) | 17.6% |
-| Clone GitHub repo dialog<br>`dialog-clone-github` | wrong | git-review | diff 5.1% at t24, copy 80% | [png](ui-map/ref/dialog-clone-github.png) | [png](ui-map/oc/dialog-clone-github.png) | [jpg](ui-map/diff/dialog-clone-github.jpg) | 5.1% |
-| Create project dialog<br>`dialog-create-project` | wrong | workspaces | diff 7.8% at t24, copy 83% | [png](ui-map/ref/dialog-create-project.png) | [png](ui-map/oc/dialog-create-project.png) | [jpg](ui-map/diff/dialog-create-project.jpg) | 7.8% |
-| Rename workspace dialog<br>`dialog-rename-workspace` | wrong | workspaces | diff 4.4% at t24, copy 78% | [png](ui-map/ref/dialog-rename-workspace.png) | [png](ui-map/oc/dialog-rename-workspace.png) | [jpg](ui-map/diff/dialog-rename-workspace.jpg) | 4.4% |
-| Keyboard shortcuts dialog<br>`dialog-keyboard-shortcuts` | wrong | shell | diff 5.8% at t24, copy 79% | [png](ui-map/ref/dialog-keyboard-shortcuts.png) | [png](ui-map/oc/dialog-keyboard-shortcuts.png) | [jpg](ui-map/diff/dialog-keyboard-shortcuts.jpg) | 5.8% |
-| Account / computer menu<br>`menu-account` | wrong | shell | diff 7.4% at t24, copy 73% | [png](ui-map/ref/menu-account.png) | [png](ui-map/oc/menu-account.png) | [jpg](ui-map/diff/menu-account.jpg) | 7.4% |
-| Workspace context menu<br>`menu-workspace-context` | wrong | workspaces | diff 6.5% at t24, copy 78% | [png](ui-map/ref/menu-workspace-context.png) | [png](ui-map/oc/menu-workspace-context.png) | [jpg](ui-map/diff/menu-workspace-context.jpg) | 6.5% |
-| Workspace context menu > Set status<br>`menu-workspace-status` | wrong | workspaces | diff 7.5% at t24, copy 79% | [png](ui-map/ref/menu-workspace-status.png) | [png](ui-map/oc/menu-workspace-status.png) | [jpg](ui-map/diff/menu-workspace-status.jpg) | 7.5% |
-| Composer model picker<br>`menu-model-picker` | wrong | chat | diff 6.6% at t24, copy 81% | [png](ui-map/ref/menu-model-picker.png) | [png](ui-map/oc/menu-model-picker.png) | [jpg](ui-map/diff/menu-model-picker.jpg) | 6.6% |
+| Command palette<br>`palette-all` | wrong | shell | diff 7.0% at t24, copy 47% | [png](ui-map/ref/palette-all.png) | [png](ui-map/oc/palette-all.png) | [jpg](ui-map/diff/palette-all.jpg) | 7.0% |
+| Command palette: Workspaces tab<br>`palette-workspaces` | wrong | workspaces | diff 23.1% at t24, copy 77% | [png](ui-map/ref/palette-workspaces.png) | [png](ui-map/oc/palette-workspaces.png) | [jpg](ui-map/diff/palette-workspaces.jpg) | 23.1% |
+| Command palette: search<br>`palette-search` | wrong | shell | diff 17.6% at t24, copy 76% | [png](ui-map/ref/palette-search.png) | [png](ui-map/oc/palette-search.png) | [jpg](ui-map/diff/palette-search.jpg) | 17.6% |
+| Clone GitHub repo dialog<br>`dialog-clone-github` | wrong | git-review | diff 5.1% at t24, copy 76% | [png](ui-map/ref/dialog-clone-github.png) | [png](ui-map/oc/dialog-clone-github.png) | [jpg](ui-map/diff/dialog-clone-github.jpg) | 5.1% |
+| Create project dialog<br>`dialog-create-project` | wrong | workspaces | diff 7.8% at t24, copy 80% | [png](ui-map/ref/dialog-create-project.png) | [png](ui-map/oc/dialog-create-project.png) | [jpg](ui-map/diff/dialog-create-project.jpg) | 7.8% |
+| Rename workspace dialog<br>`dialog-rename-workspace` | wrong | workspaces | diff 4.4% at t24, copy 74% | [png](ui-map/ref/dialog-rename-workspace.png) | [png](ui-map/oc/dialog-rename-workspace.png) | [jpg](ui-map/diff/dialog-rename-workspace.jpg) | 4.4% |
+| Keyboard shortcuts dialog<br>`dialog-keyboard-shortcuts` | wrong | shell | diff 5.8% at t24, copy 73% | [png](ui-map/ref/dialog-keyboard-shortcuts.png) | [png](ui-map/oc/dialog-keyboard-shortcuts.png) | [jpg](ui-map/diff/dialog-keyboard-shortcuts.jpg) | 5.8% |
+| Account / computer menu<br>`menu-account` | wrong | shell | diff 7.4% at t24, copy 69% | [png](ui-map/ref/menu-account.png) | [png](ui-map/oc/menu-account.png) | [jpg](ui-map/diff/menu-account.jpg) | 7.4% |
+| Workspace context menu<br>`menu-workspace-context` | wrong | workspaces | diff 6.5% at t24, copy 74% | [png](ui-map/ref/menu-workspace-context.png) | [png](ui-map/oc/menu-workspace-context.png) | [jpg](ui-map/diff/menu-workspace-context.jpg) | 6.5% |
+| Workspace context menu > Set status<br>`menu-workspace-status` | wrong | workspaces | diff 7.5% at t24, copy 75% | [png](ui-map/ref/menu-workspace-status.png) | [png](ui-map/oc/menu-workspace-status.png) | [jpg](ui-map/diff/menu-workspace-status.jpg) | 7.5% |
+| Composer model picker<br>`menu-model-picker` | wrong | chat | diff 6.6% at t24, copy 79% | [png](ui-map/ref/menu-model-picker.png) | [png](ui-map/oc/menu-model-picker.png) | [jpg](ui-map/diff/menu-model-picker.jpg) | 6.6% |
 | Sidebar repo actions menu<br>`menu-repo-actions` | wrong | workspaces | no valid reference render (step-failed), diff 5.5% at t24 | [png](ui-map/ref/menu-repo-actions.png) | [png](ui-map/oc/menu-repo-actions.png) | [jpg](ui-map/diff/menu-repo-actions.jpg) | 5.5% |
-| Help menu<br>`menu-help` | wrong | shell | diff 10.4% at t24, copy 70% | [png](ui-map/ref/menu-help.png) | [png](ui-map/oc/menu-help.png) | [jpg](ui-map/diff/menu-help.jpg) | 10.4% |
-| Toast: copied link<br>`toast-copied-link` | wrong | shell | diff 5.9% at t24, copy 73% | [png](ui-map/ref/toast-copied-link.png) | [png](ui-map/oc/toast-copied-link.png) | [jpg](ui-map/diff/toast-copied-link.jpg) | 5.9% |
-| Sidebar after archiving a workspace<br>`sidebar-after-archive` | matches | workspaces | diff 4.3% at t24, copy 93% | [png](ui-map/ref/sidebar-after-archive.png) | [png](ui-map/oc/sidebar-after-archive.png) | [jpg](ui-map/diff/sidebar-after-archive.jpg) | 4.3% |
+| Help menu<br>`menu-help` | matches | shell | diff 3.7% at t24, copy 93% | [png](side-by-side/dialogs-menus-01-help-menu.png) | [png](side-by-side/dialogs-menus-01-help-menu.png) |  | 3.7% |
+| Help > Submit a prompt dialog<br>`dialog-submit-prompt` | matches | shell | diff 2.4% at t24, copy 100% | [png](side-by-side/dialogs-menus-02-submit-prompt.png) | [png](side-by-side/dialogs-menus-02-submit-prompt.png) |  | 2.4% |
+| Diagnostics after a run<br>`diagnostics-run` | wrong | shell | diff 3.4% at t24, copy 83% | [png](side-by-side/dialogs-menus-04-diagnostics-run.png) | [png](side-by-side/dialogs-menus-04-diagnostics-run.png) |  | 3.4% |
+| Toast: copied link<br>`toast-copied-link` | wrong | shell | diff 5.9% at t24, copy 69% | [png](ui-map/ref/toast-copied-link.png) | [png](ui-map/oc/toast-copied-link.png) | [jpg](ui-map/diff/toast-copied-link.jpg) | 5.9% |
+| Sidebar after archiving a workspace<br>`sidebar-after-archive` | wrong | workspaces | diff 4.3% at t24, copy 88% | [png](ui-map/ref/sidebar-after-archive.png) | [png](ui-map/oc/sidebar-after-archive.png) | [jpg](ui-map/diff/sidebar-after-archive.jpg) | 4.3% |
 
-## route (65: 44 missing, 16 wrong, 5 matches)
+## route (65: 43 missing, 15 wrong, 7 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -134,7 +138,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:settings`<br>/settings | missing | settings |  | `L9a` |  | no state captures this route |
 | `route:settings-user`<br>/settings/user | missing | settings |  | `` |  | no state captures this route |
 | `route:settings-user~2`<br>/settings/user | missing | settings |  | `` |  | no state captures this route |
-| `route:settings-user-providers`<br>/settings/user/providers | wrong | settings |  | `fEa` | [settings-providers](ui-map/oc/settings-providers.png) | diff 4.2% at t24, copy 88% |
+| `route:settings-user-providers`<br>/settings/user/providers | matches | settings |  | `fEa` | [settings-providers](ui-map/oc/settings-providers.png) | diff 4.2% at t24, copy 90% |
 | `route:settings-user-environment`<br>/settings/user/environment | wrong | settings |  | `mEa` | [settings-environment](ui-map/oc/settings-environment.png) | diff 3.0% at t24, copy 86% |
 | `route:settings-user-ports`<br>/settings/user/ports | missing | settings |  | `gEa` | [settings-ports](ui-map/ref/settings-ports.png) | OpenConductor's settings have no ports page |
 | `route:settings-user-key-bindings`<br>/settings/user/key-bindings | wrong | settings |  | `dEa` | [settings-key-bindings](ui-map/oc/settings-key-bindings.png) | no valid reference render (redirected to /settings/user/general), diff 5.2% at t24 |
@@ -167,14 +171,14 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:settings-organization-repositories-owner-repo~2`<br>/settings/organization/repositories/$owner/$repo | missing | cloud-org |  | `` |  | no state captures this route |
 | `route:settings-organization-repositories-owner-repo-scripts`<br>/settings/organization/repositories/$owner/$repo/scripts | missing | cloud-org |  | `` |  | no state captures this route |
 | `route:settings-organization-repositories-owner-repo-git`<br>/settings/organization/repositories/$owner/$repo/git | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:diagnostics`<br>/diagnostics | missing | shell |  | `boa` | [route-diagnostics](ui-map/ref/route-diagnostics.png) | OpenConductor has no route or view for /diagnostics |
+| `route:diagnostics`<br>/diagnostics | matches | shell |  | `boa` | [route-diagnostics](side-by-side/dialogs-menus-03-diagnostics.png) | diff 0.7% at t24, copy 100% |
 | `route:cloud-collab-onboarding`<br>/cloud-collab-onboarding | missing | onboarding-auth |  | `eHi` | [route-cloud-collab-onboarding](ui-map/ref/route-cloud-collab-onboarding.png) | OpenConductor has no route or view for /cloud-collab-onboarding |
 | `route:first-run-onboarding`<br>/first-run-onboarding | wrong | onboarding-auth |  | `BCa` | [first-run-onboarding](ui-map/oc/first-run-onboarding.png) | no valid reference render (redirected to /), diff 96.8% at t24 |
 | `route:new-member-onboarding`<br>/new-member-onboarding | missing | onboarding-auth |  | `tHi` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor has no route or view for /new-member-onboarding |
-| `route:untitled`<br>/ | wrong | shell |  | `Wls` | [home](ui-map/oc/home.png) | diff 4.4% at t24, copy 79% |
-| `route:repository-repositoryid-workspace-localworkspaceid`<br>/repository/$repositoryId/workspace/$localWorkspaceId | wrong | chat |  | `dXo` | [workspace-chat](ui-map/oc/workspace-chat.png) | diff 6.2% at t24, copy 85% |
-| `route:all-workspaces`<br>/all-workspaces | matches | workspaces |  | `UJo` | [all-workspaces](ui-map/oc/all-workspaces.png) | diff 1.2% at t24, copy 100% |
-| `route:create`<br>/create | wrong | workspaces |  | `$Ca` | [create](ui-map/oc/create.png) | diff 8.6% at t24, copy 81% |
+| `route:untitled`<br>/ | wrong | shell |  | `Wls` | [home](ui-map/oc/home.png) | diff 4.4% at t24, copy 73% |
+| `route:repository-repositoryid-workspace-localworkspaceid`<br>/repository/$repositoryId/workspace/$localWorkspaceId | wrong | chat |  | `dXo` | [workspace-chat](ui-map/oc/workspace-chat.png) | diff 6.2% at t24, copy 82% |
+| `route:all-workspaces`<br>/all-workspaces | matches | workspaces |  | `UJo` | [all-workspaces](ui-map/oc/all-workspaces.png) | diff 1.2% at t24, copy 92% |
+| `route:create`<br>/create | wrong | workspaces |  | `$Ca` | [create](ui-map/oc/create.png) | diff 8.6% at t24, copy 77% |
 | `route:team`<br>/team | missing | cloud-org |  | `Yea` | [route-team](ui-map/ref/route-team.png) | OpenConductor has no route or view for /team |
 | `route:dashboard`<br>/dashboard | missing | shell |  | `lta` | [route-dashboard](ui-map/ref/route-dashboard.png) | OpenConductor has no route or view for /dashboard |
 | `route:routines`<br>/routines | missing | routines |  | `eka` | [route-routines](ui-map/ref/route-routines.png) | OpenConductor has no route or view for /routines |
@@ -196,7 +200,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:settings-user-experimental`<br>/settings/user/experimental | matches | settings |  | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | diff 3.4% at t24, copy 94% |
 | `route:settings-user-advanced`<br>/settings/user/advanced | wrong | settings |  | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | diff 7.5% at t24, copy 88% |
 
-## settings-page (29: 16 missing, 10 wrong, 3 matches)
+## settings-page (29: 16 missing, 9 wrong, 4 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -212,7 +216,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-page:actions`<br>actions | wrong | settings |  | `` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | diff 6.1% at t24, copy 74% |
 | `settings-page:misc`<br>misc | wrong | settings |  | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | diff 6.5% at t24, copy 92% |
 | `settings-page:appearance`<br>appearance | wrong | settings |  | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | diff 6.0% at t24, copy 89% |
-| `settings-page:providers`<br>providers | wrong | settings |  | `` | [settings-providers](ui-map/oc/settings-providers.png) | diff 4.2% at t24, copy 88% |
+| `settings-page:providers`<br>providers | matches | settings |  | `` | [settings-providers](ui-map/oc/settings-providers.png) | diff 4.2% at t24, copy 90% |
 | `settings-page:environment`<br>environment | wrong | settings |  | `` | [settings-environment](ui-map/oc/settings-environment.png) | diff 3.0% at t24, copy 86% |
 | `settings-page:scripts`<br>scripts | wrong | settings |  | `` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | diff 3.5% at t24, copy 67% |
 | `settings-page:terminal`<br>terminal | missing | settings |  | `` | [settings-terminal](ui-map/oc/settings-terminal.png) | timed out waiting for .settings-nav .nav-item "Big terminal" |
@@ -230,7 +234,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-page:user`<br>user | missing | settings |  | `` |  | no state for this page |
 | `settings-page:key-bindings`<br>key-bindings | wrong | settings |  | `` | [settings-key-bindings](ui-map/oc/settings-key-bindings.png) | no valid reference render (redirected to /settings/user/general), diff 5.2% at t24 |
 
-## settings-row (121: 39 missing, 48 wrong, 34 matches)
+## settings-row (121: 39 missing, 47 wrong, 35 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -346,7 +350,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-row:appearance:markdown-style`<br>appearance › Markdown Style | wrong | settings | Markdown Style / Rendering style for markdown files. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
 | `settings-row:appearance:terminal-font`<br>appearance › Terminal font | wrong | settings | Terminal font / Font family and size for the terminal. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
 | `settings-row:appearance:appearance-settings`<br>appearance › Appearance settings | missing | settings | Appearance settings / Theme, typography, color, and editor appearance. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | copy not shown in any OpenConductor capture |
-| `settings-row:providers:use-claude-code-with-chrome`<br>providers › Use Claude Code with Chrome | wrong | settings | Use Claude Code with Chrome | `` | [settings-providers](ui-map/oc/settings-providers.png) | not rendered in a reference capture; host state settings-providers is wrong |
+| `settings-row:providers:use-claude-code-with-chrome`<br>providers › Use Claude Code with Chrome | matches | settings | Use Claude Code with Chrome | `` | [settings-providers](ui-map/oc/settings-providers.png) | on screen in both; state settings-providers matches |
 | `settings-row:environment:environment-settings`<br>environment › Environment settings | missing | settings | Environment settings / Environment variables, files, and preview URLs. | `` | [settings-environment](ui-map/oc/settings-environment.png) | copy not shown in any OpenConductor capture |
 | `settings-row:scripts:repository-scripts`<br>scripts › Repository scripts | wrong | settings | Repository scripts / Setup and run scripts for the selected repository. | `` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | not rendered in a reference capture; host state settings-repo-scripts is wrong |
 | `settings-row:terminal:big-terminal-settings`<br>terminal › Big terminal settings | missing | settings | Big terminal settings / Configure the experimental center-pane terminal. | `` | [settings-terminal](ui-map/oc/settings-terminal.png) | copy not shown in any OpenConductor capture |
@@ -356,7 +360,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-row:organization-prompts:prompts`<br>organization-prompts › Prompts | missing | cloud-org | Prompts / Custom instructions for the Review, Create PR, and Resolve conflicts b | `` | [settings-org-prompts](ui-map/ref/settings-org-prompts.png) | copy not shown in any OpenConductor capture |
 | `settings-row:organization-mcp-servers:mcps`<br>organization-mcp-servers › MCPs | missing | cloud-org | MCPs / Configure MCP servers for cloud workspaces. | `` |  | copy not shown in any OpenConductor capture |
 
-## dialog (64: 56 missing, 7 wrong, 1 matches)
+## dialog (64: 55 missing, 7 wrong, 2 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -393,7 +397,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `dialog:connect-github`<br>Connect GitHub | missing | onboarding-auth | Connect GitHub | `C5a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | copy not shown in any OpenConductor capture |
 | `dialog:t5a` | missing | triage |  | `T5a` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:feedback`<br>Feedback | missing | shell | Feedback | `z5a` |  | copy not shown in any OpenConductor capture |
-| `dialog:submit-a-prompt`<br>Submit a prompt | missing | chat | Submit a prompt | `W5a` | [palette-all](ui-map/oc/palette-all.png) | copy not shown in any OpenConductor capture |
+| `dialog:submit-a-prompt`<br>Submit a prompt | matches | shell | Submit a prompt | `W5a` | [dialog-submit-prompt](side-by-side/dialogs-menus-02-submit-prompt.png) | on screen in both; state dialog-submit-prompt matches |
 | `dialog:build-snapshot-logs`<br>Build snapshot logs | missing | shell | Build snapshot logs | `xSa` |  | copy not shown in any OpenConductor capture |
 | `dialog:csa` | missing | triage |  | `CSa` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:psa` | missing | triage |  | `PSa` |  | no literal copy to locate it; not observed in any capture |
@@ -1110,6 +1114,10 @@ REA 6.7.0 (`rea-agents`), Linux cloud machine, Chromium 1.x headless. Each was h
 19. **Real pointer input to Conductor's extracted frontend is dropped unless the pointer moves while the page loads** (harness/Playwright, not REA, recorded because it shapes the evidence). With playwright-core 1.64.1 and Chrome for Testing 155 headless, a page whose first mouse event arrives after Conductor has finished loading never gets `:hover`, pointer events or clicks (`document.querySelectorAll(":hover")` stays empty, window capture listeners see nothing), while the OpenConductor page in the same browser does. Moving the mouse 200 ms after `goto` keeps input working; the Settings measurements also dispatch `pointerenter`/`contextmenu` in-page so Conductor's own Base UI components render the result. The cause was not found.
 20. **The menu inventory misses the sidebar's right-click menus.** `inventory.json` lists 15 `ContextMenuContent` popups (AFt, RFt, Svs, gwt, zOo, Lna, gJn, h0a, t9a, …), but the sidebar's workspace row (`Qj` -> `D9e`/`Aao`), repository header (`Dra` -> `Nra`/`uBi`), section header (`Yia` -> `Qia`/`oBi`) and "My workspaces" header (`rBi` -> `_Wt`) open a Base UI `ContextMenu.Root` (`wI`) with the generic Menu popup (`g2`/`b2`/`m2`) and `Menu.Item` (`Pu`), so none of them is in the inventory; the only sidebar entries there are `gJn` (account row, "Copy user info") and `Lna` (organization row, "Copy organization info"), both internal-build only (`internal_settings_enabled`). Found by reading the 24 `jsxs(wI|kS,…)` call sites in the bundle, not with REA, which has no "menus attached to this element" query.
 21. **A rejected action can hang `capture-browser-scenario`.** A shot with a `hover` step (no hover action, see above) did not come back with `invalid_input`: the run printed nothing for over ten minutes on a loaded 4-vCPU machine and was killed. Shots no longer use hover, so the Set status / Move to section submenus have no REA reference capture.
+22. **No motion capture.** `capture-browser-scenario` takes one screenshot at the end of a scenario: no frame sequence, no fake clock and no way to pause or seek CSS transitions, WAAPI or framer-motion animations, so it cannot show or time a transition. The sidebar motion frames (`tools/sidebar-screens/motion.mjs`, parity/side-by-side/sidebar/motion/) use Playwright's clock plus `document.getAnimations()` seeking instead, and the durations and easings come from reading the decoded chunk, not from REA.
+23. **No computed-style or animation readout.** REA's DOM/accessibility capture has no `getComputedStyle`, so values such as Conductor's ghost-button press (`scale: 0.97`, `transform, translate, scale, rotate 0.15s cubic-bezier(0, 0, 0.2, 1)`) were read with `page.evaluate` in Playwright.
+24. **Synthetic input reaches Conductor's renderer only through REA's own clicks.** In the tools/screens harness, Playwright CDP mouse/keyboard input (`page.click`, `page.mouse`) never arrives at Conductor's `document` (no pointerdown/mousedown/click events), while REA's `click` action works; motion.mjs dispatches DOM events in the page for both apps. Cause not found; recorded so the next capture lane does not assume CDP input works there.
+
 Harness limits that shape the reference (not REA bugs): settings pages behind an organization or feature flag (`ports`, `key-bindings`, `terminal`, `internal`, `organization/*`, `cloud/setup`) redirect to General; `/dashboard` redirects to `/`. The `repos/$repoId/*` pages used to redirect too: Conductor's repository guard (`fHi`) sends any organization *error* to General, and the mock refused every network call. The mock now answers `POST /auth/exchange` and `GET /organizations` (an empty list, a local-only account) from `HTTP_FIXTURES` in `tools/screens/tauri-mock.js`, over the same `plugin:http` channel protocol Conductor reads, so those five pages render.
 
 ### Hit while building the repository Environment page (PR #484)
@@ -1119,7 +1127,28 @@ Harness limits that shape the reference (not REA bugs): settings pages behind an
 16. **No cross-chunk import resolution.** The paste parser the add sheet calls is `lPt` in `renderApp`, an import (`pl as lPt`) of `Q$e` from `index-BGEQ8YjU.js`; `index` also has an unrelated local `lPt` (a gzip helper). REA gives no export/import map between chunks, so the name had to be resolved by hand from the `export{…}` list; a name search alone points at the wrong function.
 17. **No way to reach a Mac-only artifact from the Linux machine.** Conductor's binary was copied from Sven's Mac with Reason's device copy (`devices_copy_to_cloud`, sha256 `0ba55751…`), then decoded with `tools/extract_tauri_assets.py`; REA has no remote-artifact input.
 
+### Hit while building Settings › Repository › Scripts and Actions (REA 6.8.0)
+
+18. **`capture-browser-scenario` cannot open a context menu.** It has no right-click action (`click` takes no `button`), so the "right-click menus" checklist item was checked with Playwright: on Conductor's Scripts page a right-click on the editors, the Add button and the share link opens no menu and sends no `plugin:menu|*` IPC.
+19. **No dialog or popover state in a scenario's DOM capture.** Base UI portals the Add/Edit run-script dialog outside the page root; the scenario's `dom` artifact has the overlay but the popup had to be measured with a Playwright walk of `[role=dialog]`.
+20. **Minified cross-chunk names still need manual tracing.** `ama` (run scripts) calls `qje`/`bAn`/`cJ`/`Jw`, imported from `index-BGEQ8YjU.js` as `Szt`/`bzt`/`pf`/`lo`; REA's graph gives no import map, so each was resolved by reading the chunk's export list.
+21. **Collapsed content is invisible to a capture.** Conductor's Actions prompt rows are Base UI collapsibles whose panel is unmounted while closed; a REA scenario has no way to expand one before capture short of a `click` on a text locator that also matches the row's description, so the open state was measured with Playwright.
+
 ### Hit while wiring the plan, question and Codex consent attention triggers (parity.sidebar.ws-unread)
 
 25. **`rea search` on an extracted JavaScript chunk now fails as `target_kind_unsupported` from Kuna** (REA 6.8.0, `TMPDIR=/tmp/t npx rea search index-BGEQ8YjU.js "await _p("`). Earlier passes (17 above) saw `capability_unavailable` / `unsupported_provider`; this run routes the file to Kuna, which answers "Kuna decompiles executable images, not databases or archives." with `target_format: javascript`, so REA still has no string-search route for Conductor's frontend. The `_p` call sites (`index-BGEQ8YjU.js` sha256 `b5b01f33…`: `_p` @2,941,190; ExitPlanMode `needs_plan_response` @2,945,001; AskUserQuestion `needs_user_input` @2,945,451; Codex MCP elicitation @2,946,028; Codex permission approval @2,946,583; tool approval @2,947,277) were read as plain text by byte offset.
+
+### Hit in the REA pass on the real app and Final UI pass run 2 (2026-11-06, REA 6.7.0 on sven m5 max)
+
+26. **Native capture is refused without Screen Recording, and there is no fallback.** `rea observe-native-ui /Applications/Conductor.app --pid 97824 --window-id 24425` fails with `capability_unavailable` / `screen-recording-denied: Grant Screen Recording to the REA host … no broad capture fallback is used`. The host is the Reason worker's login shell, which has neither Screen Recording (`CGPreflightScreenCaptureAccess() == false`) nor Accessibility (`AXIsProcessTrusted() == false`), so `capture-native-ui-scenario` cannot run either, and REA does not offer an accessibility-only observation when only the screenshot is blocked. With a wrong window id the error is `window-mismatch: Selected window is absent or belongs to another process`; REA has no command that lists a process's windows, so the id came from `CGWindowListCopyWindowInfo` in a Swift one-liner.
+27. **No string search on a native binary without a third-party disassembler.** `rea search` and `rea trace` on `MacOS/conductor` fail with `provider_unavailable` (candidates `ghidra` "Set GHIDRA_INSTALL_DIR…" and no JRE, `hopper` missing, `ida` and `kuna` not configured). REA's own `native-macos` provider, which reads the plist and signature, has no strings operation, so the native menu bar was read from a plain `strings` table.
+28. **`analyze-javascript-application` still cannot model the frontend at its maximum budgets.** The CLI caps `--max-semantic-nodes` and `--max-semantic-nodes-per-file` at 1,000,000 and `--max-heap-mb` at 16,384 (larger values fail validation with `VALIDATION_ERROR … Too big`). At those caps on an 18-core, 128 GB Mac (`--analysis-timeout-ms 2400000`, about 7 minutes) the run ends `partial`: `renderApp-D_fmY7hW.js` "Owned JavaScript worker exhausted its heap", `index-BGEQ8YjU.js` "Complete JavaScript file facts exceed the transfer byte budget" (512 MiB, not configurable), and the semantic graph holds 1,897 nodes, all `module`, with none of the settings gates, menu events or page labels (Evidence `ev_192c3390…`). The settings gates in `parity/ui-map-coverage.md` were therefore read from the chunk at byte offsets.
+29. **`rea inspect-plist` and `inspect-signature` take the `.app` path but report on the executable.** Both return `subject.format: mach-o` for `/Applications/Conductor.app`; correct data, but the subject is the binary, not the bundle the plist came from.
+
+### Hit while building Help › Submit a prompt, Diagnostics and Open debug tools (shell rows, REA 6.8.0)
+
+30. **`rea search` still has no route for an extracted JavaScript chunk.** `rea search renderApp-D_fmY7hW.js "open_devtools"` fails `capability_unavailable` / `unsupported_provider` with `selection_reason: target_unsupported` (candidates ghidra, hopper, ida, kuna, all native). The Help popover's nine items and their actions (`openDialog(aJ)`, `navigate({to:"/diagnostics"})`, `invoke("open_devtools")`, renderApp @9,789,300-9,792,900), the Diagnostics page (`boa` @10,136,010), its 59 checks (`hoa` @10,128,169), the redaction (`doa`) and the Submit a prompt dialog (`W5a` @11,132,912) were read from the decoded chunk by byte offset. The rendered result of each was then captured from Conductor's own frontend with `capture-browser-scenario`.
+31. **No way to diff a ported table against the original.** REA cannot evaluate or extract a literal array from the bundle (the `hoa()` check list), so the comparison of OpenConductor's `diagnosticChecks()` with Conductor's list ran outside REA: Conductor's own `hoa` source was evaluated in Node with a capturing `dl`. All 59 labels, commands, deadlines and env flags are equal except the one deliberate row ("OpenConductor app env").
+32. **No native capture on sven m5 max (still, see 26).** `devices_computer` refuses with "Computer use needs Accessibility and Screen & System Audio Recording permissions" for the Reason worker, and REA's `observe-native-ui` / `capture-native-ui-scenario` need the same grants (gap 6). So the left half of every new side-by-side image is Conductor's extracted frontend in the `tools/screens` harness, not the native window.
+33. **`compare-web-screenshots` scores only same-size PNGs and gives no regions** (gap 5 still holds). The side-by-side record therefore captures both apps at the map's 1280x820 for scoring and again at 1440x900 for the committed images (`tools/side-by-side/help-diagnostics.mjs`).
 
