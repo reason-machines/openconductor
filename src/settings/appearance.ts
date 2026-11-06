@@ -8,6 +8,8 @@ import { customCommandsFrom, presetFrom, setBigTerminal } from "../features/term
 import { applyDiffAppearance } from "../features/diff/appearance.ts";
 import { applyPalette, paletteFrom } from "../theme/palettes.ts";
 import { executablePaths } from "./agentSettings.ts";
+import { boolPref } from "./prefs.ts";
+import { setSidebarTransparency } from "./sidebarTransparency.ts";
 
 /** Conductor's zoom steps: 50% to 300% in 10% steps, 100% by default. */
 export const ZOOM_PERCENTS: readonly number[] = Array.from({ length: (300 - 50) / 10 + 1 }, (_, i) => 50 + i * 10);
@@ -53,7 +55,8 @@ export function withAppearance<K extends keyof Settings["appearance"]>(s: Settin
  * Applies theme and appearance to the document root: `data-theme` (absent for
  * "system"), the color palette (`data-color-palette`), CSS zoom, `data-low-contrast` (styles.css applies it only while
  * dark is in effect) and `--font-mono`; and the terminal font, scrollback
- * limit and Big terminal preset to terminals.
+ * limit and Big terminal preset to terminals; then Sidebar transparency, which
+ * needs the theme in place to pick light or dark vibrancy.
  */
 export function applyAppearance(s: Settings): void {
   const root = document.documentElement;
@@ -83,6 +86,7 @@ export function applyAppearance(s: Settings): void {
     requiresToolApprovals: s.tool_approvals_enabled === true,
     executablePaths: executablePaths(s),
   });
+  setSidebarTransparency(boolPref(s, "experimental_sidebar_transparency"));
 }
 
 /** Fired after something outside the settings view saved settings (e.g. ⌘+), so open views reload. */

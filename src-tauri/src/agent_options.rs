@@ -301,8 +301,7 @@ mod tests {
     fn exe(dir: &Path, name: &str) -> PathBuf {
         fs::create_dir_all(dir).unwrap();
         let p = dir.join(name);
-        fs::write(&p, "#!/bin/sh\necho 2.0.5\n").unwrap();
-        fs::set_permissions(&p, fs::Permissions::from_mode(0o755)).unwrap();
+        crate::test_exe::write_executable(&p, "#!/bin/sh\necho 2.0.5\n", 0o755);
         p
     }
 

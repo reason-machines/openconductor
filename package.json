@@ -13,8 +13,10 @@
     "test:e2e": "node --test tests/e2e/*.e2e.mjs"
   },
   "dependencies": {
+    "@base-ui/react": "1.9.0",
     "@pierre/diffs": "^1.6.4",
     "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-deep-link": "^2.6.3",
     "@tauri-apps/plugin-dialog": "^2.0.0",
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/xterm": "^6.0.0",

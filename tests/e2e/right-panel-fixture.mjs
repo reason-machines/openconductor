@@ -68,7 +68,7 @@ export function fakeBackend({ shell, files, spotlight = false }) {
         case "app_info":
           return { name: "OpenConductor", version: "0.1.0", platform: "macos" };
         case "fuzzy_filter_files":
-          return fileList.map((p) => ({ relative_path: p, score: 0, indices: [] }));
+          return fileList.map((p) => ({ file: { name: p.split("/").pop(), path: p, is_directory: false }, relative_path: p, score: 0, match_indices: [] }));
         case "diff_workspace":
           return {
             files: [

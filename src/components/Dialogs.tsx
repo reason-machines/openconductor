@@ -5,13 +5,14 @@ import { useDialogMotion } from "./motion/dialogMotion";
 export type DialogKind = "clone" | "quickstart" | "create";
 
 /**
+ * `dialogId` tags the dialog for the keybinding dispatcher (`enableOnDialogIds`).
  * `motion`: "dialog" for Conductor's DialogContent (fade), "alert" for its
  * AlertDialogContent confirmations (fade and scale from .95).
  */
-export function Modal({ title, onClose, children, motion = "dialog" }: { title: string; onClose: () => void; children: ReactNode; motion?: "dialog" | "alert" }) {
+export function Modal({ title, onClose, children, dialogId, motion = "dialog" }: { title: string; onClose: () => void; children: ReactNode; dialogId?: string; motion?: "dialog" | "alert" }) {
   const ref = useDialogMotion<HTMLDivElement>();
   return (
-    <div className="modal-backdrop" ref={ref} data-dialog-motion={motion} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="modal-backdrop" ref={ref} data-dialog-motion={motion} data-dialog-id={dialogId} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal" role="dialog" aria-modal="true" aria-label={title} onKeyDown={(e) => e.key === "Escape" && onClose()}>
         <div className="modal-header">
           <h2>{title}</h2>

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Repo } from "../../state/types";
 import { RepoIcon } from "../../components/RepoIcon";
 import { RepoIconDialog } from "../../components/RepoIconDialog";
-import { Modal } from "../../components/Dialogs";
+import { RemoveRepositoryDialog } from "../../components/RemoveRepositoryDialog";
 import { ChevronDownIcon, ChevronUpIcon, ExternalIcon, PlusIcon } from "../../components/Icons";
 import { openUrl } from "../../backend";
 import "./rows.css";
@@ -24,7 +24,6 @@ import {
   movePreviewRow,
   previewRows,
   previewValue,
-  removeRepository,
   splitPath,
   type FilesToCopyPreview,
   type PreviewRow,
@@ -339,45 +338,25 @@ function FilesPreview({ preview, repoPath, onRefresh }: { preview: FilesToCopyPr
   );
 }
 
-/** "Remove repository" and its confirmation (`J3a`). */
+/** "Remove repository" and its confirmation (`J3a`, src/components/RemoveRepositoryDialog.tsx). */
 function RemoveRow({ repo, actions }: { repo: Repo; actions: RepoMiscActions }) {
   const [confirming, setConfirming] = useState(false);
-  const [pending, setPending] = useState(false);
-  const remove = () => {
-    setPending(true);
-    removeRepository(repo.id).then(
-      () => {
-        setPending(false);
-        setConfirming(false);
-        actions.notify("info", COPY.remove.removed);
-        actions.onRemoved(repo.id);
-      },
-      (e) => {
-        setPending(false);
-        actions.notify("error", `Failed to remove repository: ${e instanceof Error ? e.message : String(e)}`);
-      },
-    );
-  };
   return (
     <div className="settings-row settings-misc-remove" data-settings-row>
       <button type="button" className="btn settings-outline settings-misc-remove-btn" onClick={() => setConfirming(true)}>
         <TrashIcon size={12} /> {COPY.remove.button}
       </button>
       {confirming && (
-        <Modal title={`Remove ${repo.name}?`} onClose={() => !pending && setConfirming(false)} motion="alert">
-          <div className="modal-body">
-            <p>All your workspaces will be permanently deleted.</p>
-            <p className="settings-misc-break">The source directory {repo.path} will not be modified.</p>
-            <div className="modal-actions">
-              <button className="btn" disabled={pending} onClick={() => setConfirming(false)}>
-                Cancel
-              </button>
-              <button className="btn btn-danger" autoFocus disabled={pending} onClick={remove}>
-                {pending ? "Removing..." : "Remove"}
-              </button>
-            </div>
-          </div>
-        </Modal>
+        <RemoveRepositoryDialog
+          repo={repo}
+          onClose={() => setConfirming(false)}
+          onRemoved={() => {
+            setConfirming(false);
+            actions.notify("info", COPY.remove.removed);
+            actions.onRemoved(repo.id);
+          }}
+          onError={(message) => actions.notify("error", message)}
+        />
       )}
     </div>
   );

@@ -25,10 +25,10 @@ import {
 import { groupRows } from "../keybindings/help.ts";
 import { useKeyCapture, useKeybindingOverrides, useKeybindings } from "../keybindings/KeybindingsProvider";
 import type { KeyCapture } from "../keybindings/listeners.ts";
-import { createOverrideStore, parseOverrides, type OverrideUpdate, type Overrides } from "../keybindings/overrides.ts";
+import type { OverrideUpdate, Overrides } from "../keybindings/overrides.ts";
 import { heldModifiers, type KeyEventLike } from "../keybindings/shortcut.ts";
 import type { Modifier, Shortcut } from "../keybindings/types.ts";
-import { overridesRaw, settingsOverrideStorage } from "./keybindingOverrides.ts";
+import { useSettingsOverrideStore } from "./useSettingsOverrideStore.ts";
 import type { Settings } from "./types";
 
 interface Props {
@@ -63,29 +63,9 @@ function useCapture(onStop: () => void) {
 }
 
 export function KeyBindingsPage({ settings, save }: Props) {
-  const { overrides, overridesLoaded, setOverrides } = useKeybindingOverrides();
+  const { overrides, overridesLoaded } = useKeybindingOverrides();
   const { toasts, show, dismiss } = useToasts();
-  const latest = useRef(settings);
-  latest.current = settings;
-  const saveRef = useRef(save);
-  saveRef.current = save;
-  const store = useMemo(
-    () =>
-      createOverrideStore(
-        settingsOverrideStorage(
-          () => latest.current,
-          async (next) => {
-            const ok = await saveRef.current(next);
-            if (ok) {
-              latest.current = next;
-              setOverrides(parseOverrides(overridesRaw(next)));
-            }
-            return ok;
-          },
-        ),
-      ),
-    [setOverrides],
-  );
+  const store = useSettingsOverrideStore(settings, save);
   const update = (u: OverrideUpdate) => {
     void store.update(u).then((ok) => ok || show("error", SAVE_FAILED));
   };

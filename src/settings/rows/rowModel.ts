@@ -11,10 +11,11 @@ export interface PromptRowSpec {
 }
 
 /**
- * The Actions rows OpenConductor shows: those whose prompt something here
- * sends (evidence/settings/NOTES.md, "Consumers in the rebuild"). Conductor
- * also has Fix errors, Resolve conflicts and Branch rename preferences; their
- * actions are not built, so their rows are not shown.
+ * The Actions prompt rows, in Conductor 0.87.6's order (renderApp registry
+ * `Q3a`: five `S6e` rows, then General). Review and Create PR (pr/prompt.rs),
+ * Fix errors (fixErrors.ts), Resolve conflicts (`resolve_merge_conflicts_prompt`)
+ * and General read the repository value; branch-name generation does not read
+ * `prompts.rename_branch` yet, so that row only stores it.
  */
 export const PROMPT_ROWS: PromptRowSpec[] = [
   {
@@ -26,6 +27,21 @@ export const PROMPT_ROWS: PromptRowSpec[] = [
     kind: "create_pr",
     title: "Create PR preferences",
     description: "Add custom instructions sent to the agent when you click the Create PR button.",
+  },
+  {
+    kind: "fix_errors",
+    title: "Fix errors preferences",
+    description: "Add custom instructions sent to the agent when you click the Fix errors button.",
+  },
+  {
+    kind: "resolve_merge_conflicts",
+    title: "Resolve conflicts preferences",
+    description: "Add custom instructions sent to the agent when you click the Resolve conflicts button.",
+  },
+  {
+    kind: "rename_branch",
+    title: "Branch rename preferences",
+    description: "Add custom instructions for generating branch names from your messages.",
   },
   {
     kind: "general",

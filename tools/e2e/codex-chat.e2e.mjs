@@ -112,7 +112,7 @@ async function screenshot(name) {
 }
 
 const chatText = () => run("const el = document.querySelector('.chat-scroll'); return el ? el.innerText : null;");
-const running = () => run("return !!document.querySelector('.composer button[title=\"Stop the agent\"]');");
+const running = () => run("return !!document.querySelector('.composer button[aria-label^=\"Stop the agent\"]');");
 const approvalButtons = () => run("return [...document.querySelectorAll('.codex-approval button')].map((b) => b.textContent);");
 const clickApproval = (label) =>
   run("const b = [...document.querySelectorAll('.codex-approval button')].find((b) => b.textContent === arguments[0]); if (!b) return false; b.click(); return true;", label);
@@ -261,7 +261,7 @@ try {
   // 4. Stop a running turn.
   await send("slow");
   await waitFor("the Stop button", running);
-  await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
+  await wd("POST", `/element/${await find('.composer button[aria-label^="Stop the agent"]')}/click`, {});
   await waitFor('a second "Interrupted by user"', () => chatText().then((t) => (t.match(/Interrupted by user/g) ?? []).length === 2), 20000);
   await turnDone(4);
   const interrupt = requests().find((r) => r.method === "turn/interrupt");

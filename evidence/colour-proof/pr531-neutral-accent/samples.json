@@ -1,0 +1,193 @@
+{
+  "tool": "playwright-core + system Chromium, 1440x900, scale 1, sRGB, en-US, UTC",
+  "tolerance": 3,
+  "palette_attr": "data-palette",
+  "results": [
+    {
+      "palette": "baseline",
+      "scheme": "light",
+      "file": "baseline--light.png",
+      "root": {
+        "theme": null,
+        "palette": null
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            44,
+            40,
+            38
+          ],
+          "hex": "#2c2826",
+          "spread": 6,
+          "achromatic": false,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            44,
+            40,
+            38
+          ],
+          "hex": "#2c2826",
+          "spread": 6,
+          "achromatic": false,
+          "at": [
+            1374,
+            607
+          ],
+          "element": ".scripts Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            250,
+            247,
+            245
+          ],
+          "hex": "#faf7f5",
+          "spread": 5,
+          "achromatic": false,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "hex": "#ffffff",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            1177,
+            523
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            252,
+            252,
+            251
+          ],
+          "hex": "#fcfcfb",
+          "spread": 1,
+          "achromatic": true,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    },
+    {
+      "palette": "baseline",
+      "scheme": "dark",
+      "file": "baseline--dark.png",
+      "root": {
+        "theme": null,
+        "palette": null
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            234,
+            232,
+            230
+          ],
+          "hex": "#eae8e6",
+          "spread": 4,
+          "achromatic": false,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            234,
+            232,
+            230
+          ],
+          "hex": "#eae8e6",
+          "spread": 4,
+          "achromatic": false,
+          "at": [
+            1374,
+            607
+          ],
+          "element": ".scripts Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            42,
+            30,
+            29
+          ],
+          "hex": "#2a1e1d",
+          "spread": 13,
+          "achromatic": false,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            29,
+            32,
+            37
+          ],
+          "hex": "#1d2025",
+          "spread": 8,
+          "achromatic": false,
+          "at": [
+            1177,
+            523
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            28,
+            24,
+            23
+          ],
+          "hex": "#1c1817",
+          "spread": 5,
+          "achromatic": false,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    }
+  ]
+}

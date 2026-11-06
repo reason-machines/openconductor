@@ -454,6 +454,9 @@ fn local_writes_set_and_remove_only_known_keys() {
 
     for bad in [
         &["scripts", "setup"][..],
+        &["scripts", "run", "dev"],
+        &["scripts", "run", "Dev Server"],
+        &["scripts", "run_mode"],
         &["prompts", "other"],
         &["environment_variables", "local", "1X"],
     ] {
@@ -462,6 +465,59 @@ fn local_writes_set_and_remove_only_known_keys() {
             "{bad:?}"
         );
     }
+}
+
+#[test]
+fn local_writes_edit_the_repository_scripts() {
+    let f = Fixture::new();
+    let paths = || super::SettingsPaths {
+        user_dir: f.root.join("home/.conductor"),
+        repo_root: f.root.clone(),
+        workspace: None,
+        shared_from: super::SharedSource::WorkingTree,
+    };
+    let local = f.root.join(".conductor/settings.local.toml");
+    write(&local, "[scripts]\nrun = \"npm start\"\n");
+    set_local_value(
+        &f.root,
+        &["scripts", "setup"],
+        Some(Value::String("npm install".into())),
+    )
+    .unwrap();
+    let mut entry = Table::new();
+    entry.insert("command".into(), Value::String("npm test".into()));
+    entry.insert("icon".into(), Value::String("flask-conical".into()));
+    set_local_value(
+        &f.root,
+        &["scripts", "run", "unit-tests"],
+        Some(Value::Table(entry)),
+    )
+    .unwrap();
+    let r = super::load(&paths()).unwrap();
+    assert_eq!(
+        r.setup.as_ref().map(|s| s.value.as_str()),
+        Some("npm install")
+    );
+    let ids: Vec<_> = r
+        .run
+        .iter()
+        .map(|s| (s.id.as_str(), s.command.as_str(), s.default))
+        .collect();
+    // The legacy string survives as entry `run`, still the default.
+    assert_eq!(
+        ids,
+        [
+            ("run", "npm start", true),
+            ("unit-tests", "npm test", false)
+        ]
+    );
+    assert_eq!(r.run[1].icon, "flask-conical");
+
+    set_local_value(&f.root, &["scripts", "run", "unit-tests"], None).unwrap();
+    set_local_value(&f.root, &["scripts", "setup"], None).unwrap();
+    let r = super::load(&paths()).unwrap();
+    assert!(r.setup.is_none());
+    assert_eq!(r.run.len(), 1);
 }
 
 #[test]

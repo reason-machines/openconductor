@@ -24,7 +24,8 @@
 // `session-status` event, so the sidebar and Home show a workspace's agent
 // from the moment the app starts. A backend that asks the user for
 // permission mid-turn reports it through `PermissionEvents`; the chat lists
-// the request and its status is `needs_user_permission` until it is answered.
+// the request and its status is `needs_user_permission` (a question:
+// `needs_user_input`, `isQuestion`) until it is answered.
 //
 // Pure apart from what it is given: the backend, and the host's `invoke`,
 // `recordTurnChanges` and `localStorage`, so chatRuntime.test.ts runs it with
@@ -35,7 +36,7 @@ import { restoreCheckpoint, turnCheckpointRef, type Invoke } from "./checkpoints
 import { cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
-import { chatWantsAttention, turnSettled } from "./attention.ts";
+import { chatWantsAttention, enteredWait, turnSettled } from "./attention.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import type { FileChange } from "../diff/types.ts";
 
@@ -58,6 +59,17 @@ export interface PermissionPrompt {
   requestId: string;
   title: string;
   options: PermissionOption[];
+}
+
+/**
+ * Conductor's ACP client asks a request as a question, not a tool approval,
+ * when it offers two or more allow options and no reject option (`cX8` in
+ * conductor-runtime.js @1,641,185): AskUserQuestion's `needs_user_input`,
+ * then `_p`. Every other request is a tool approval (`needs_user_permission`).
+ */
+export function isQuestion(p: PermissionPrompt): boolean {
+  const allows = p.options.filter((o) => o.kind === "allow_once" || o.kind === "allow_always");
+  return allows.length >= 2 && !p.options.some((o) => o.kind === "reject_once" || o.kind === "reject_always");
 }
 
 /** How a backend reports permission requests opening and closing. */
@@ -102,6 +114,12 @@ export interface ChatBackend<Config> {
   listen(deliver: Deliver, permissions: PermissionEvents): Promise<unknown>;
   /** Opens the chat's agent session (a new one, or `sessionId` resumed) before its first prompt. */
   open(chatId: string, cwd: string, sessionId: string | null, config: Config): Promise<void>;
+  /**
+   * New options for the chat's open session (a pick in a running chat): the
+   * session runs on them from its next prompt. A backend without it keeps
+   * them for its next new session.
+   */
+  reconfigure?(chatId: string, config: Config): void;
   /**
    * Sends a prompt; steers it into a running turn when `canSteer`. Resolves
    * once the turn ended, with the files it changed; a rejection means the
@@ -161,10 +179,10 @@ export interface ChatRuntime<Config> {
    */
   reset(chatId: string, cwd: string, turnId: string, resetFiles: boolean): Promise<void>;
   /**
-   * Session options for the chat's next new session: its first, or the one
-   * after Reset chat. A session that already exists keeps its own. Picked
-   * options are kept across restarts, so a session opened after a reset
-   * still runs on them.
+   * The chat's session options. An open session runs on them from its next
+   * prompt (as Conductor reconciles a picked model before each turn); a chat
+   * not opened yet opens on them, as does the session after Reset chat.
+   * Picked options are kept across restarts.
    */
   configure(chatId: string, config: Config): void;
   /**
@@ -190,7 +208,7 @@ interface Chat<Config> {
   /** Repository the chat's workspace belongs to. */
   repoPath: string | null;
   opened: boolean;
-  /** Options for the session `open` creates (the first, or the one after Reset chat); the first prompt waits for them. */
+  /** Options the chat's session runs on: `open` passes them, `configure` updates an open one; the first prompt waits for them. */
   config: Config | Promise<Config>;
   /** The chat's options were picked (New workspace dialog, review model) or defaulted, so the default does not replace them. */
   configured: boolean;
@@ -226,8 +244,11 @@ function setStatus(chatId: string, status: Q.SessionStatus | undefined) {
  */
 export function reportChatStatus(chatId: string, status: Q.SessionStatus): void {
   if (hiddenChats.has(chatId)) return setStatus(chatId, undefined);
+  const prev = statuses.get(chatId);
   setStatus(chatId, status);
   persistStatus(chatId, status);
+  // Conductor calls `_p` right after setting plan review or user input (attention.ts).
+  if (enteredWait(prev, status)) chatWantsAttention(chatId);
 }
 
 /** Chat id → session status of every visible chat; a new map on each change. */
@@ -243,6 +264,11 @@ export function subscribeChatStatuses(fn: () => void): () => void {
 export function hideChat(chatId: string): void {
   hiddenChats.add(chatId);
   setStatus(chatId, undefined);
+}
+
+/** A closed chat tab opened again (⌘⇧T): it counts toward its workspace's status again. */
+export function showChat(chatId: string): void {
+  hiddenChats.delete(chatId);
 }
 
 /** The workspace a chat belongs to: a review chat's id is `<workspace id>:review:<n>`. */
@@ -427,7 +453,13 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     if (!c.permissions.some((r) => r.requestId === requestId)) return;
     c.permissions = c.permissions.filter((r) => r.requestId !== requestId);
     notify(c);
-    if (c.permissions.length === 0) setQueue(c, Q.permissionAnswered(c.queue));
+    syncRequests(c);
+  }
+
+  /** The chat's status follows its open requests (queue.ts `requestsOpen`). */
+  function syncRequests(c: Chat<Config>) {
+    const questions = c.permissions.filter(isQuestion).length;
+    setQueue(c, Q.requestsOpen(c.queue, c.permissions.length - questions, questions));
   }
 
   const permissionEvents: PermissionEvents = {
@@ -435,11 +467,14 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       const c = chats.get(chatId);
       if (!c) return;
       const fresh = !c.permissions.some((r) => r.requestId === request.requestId);
+      const prev = c.queue.status;
       c.permissions = [...c.permissions.filter((r) => r.requestId !== request.requestId), request];
       notify(c);
-      setQueue(c, Q.permissionRequested(c.queue));
-      // A new request is a wait on the user (Conductor's `_p` on needs_user_permission).
-      if (fresh) chatWantsAttention(chatId);
+      syncRequests(c);
+      // A new request is a wait on the user (Conductor's `_p`). A question that
+      // moved the chat into needs_user_input was already signalled by
+      // reportChatStatus (`enteredWait`), so it is not signalled twice.
+      if (fresh && !enteredWait(prev, c.queue.status)) chatWantsAttention(chatId);
     },
     resolved(chatId, requestId) {
       const c = chats.get(chatId);
@@ -568,6 +603,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       const c = chat(chatId);
       c.config = config;
       c.configured = true;
+      if (c.opened) backend.reconfigure?.(chatId, config);
       try {
         host.storage.setItem(backend.configKey(chatId), JSON.stringify(config));
       } catch (e) {
