@@ -8,12 +8,10 @@ import type { AgentKind, ProviderConfig, ProviderKind, SecretInput } from "./typ
 
 /** The agents Conductor's Agents page configures, in its order. */
 export type ProviderAgent = Exclude<AgentKind, "reason">;
-export const PROVIDER_AGENTS: ProviderAgent[] = ["claude", "codex", "cursor", "opencode"];
+export const PROVIDER_AGENTS: ProviderAgent[] = ["claude", "codex"];
 export const PROVIDER_AGENT_LABEL: Record<ProviderAgent, string> = {
   claude: "Claude Code",
   codex: "Codex",
-  cursor: "Cursor",
-  opencode: "OpenCode",
 };
 
 export const KIND_LABEL: Record<ProviderKind, string> = {
@@ -25,16 +23,12 @@ export const KIND_LABEL: Record<ProviderKind, string> = {
   codex_login: "ChatGPT (Codex login)",
   openai_api: "OpenAI API key",
   codex_gateway: "OpenRouter or Vercel AI Gateway",
-  cursor_api: "Cursor API key",
-  opencode_login: "OpenCode login",
   reason_login: "Reason login",
 };
 
 export const KINDS_FOR: Record<ProviderAgent, ProviderKind[]> = {
   claude: ["claude_login", "anthropic_api", "bedrock", "vertex", "foundry"],
   codex: ["codex_login", "openai_api", "codex_gateway"],
-  cursor: ["cursor_api"],
-  opencode: ["opencode_login"],
 };
 
 export const SECRET_LABEL: Record<string, string> = {
@@ -45,7 +39,6 @@ export const SECRET_LABEL: Record<string, string> = {
   openai_api_key: "OpenAI API key",
   openrouter_api_key: "OpenRouter API key",
   vercel_ai_gateway_api_key: "Vercel AI Gateway key",
-  cursor_api_key: "Cursor API key",
 };
 
 export type FormValues = Record<string, string>;
@@ -173,8 +166,6 @@ export function secretKeys(form: ProviderForm): string[] {
       return ["openai_api_key"];
     case "codex_gateway":
       return [v.gateway === "vercel_ai_gateway" ? "vercel_ai_gateway_api_key" : "openrouter_api_key"];
-    case "cursor_api":
-      return ["cursor_api_key"];
     default:
       return [];
   }

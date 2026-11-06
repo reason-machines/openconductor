@@ -17,13 +17,11 @@ export const AUTH_MODE_LABEL: Record<AuthMode, string> = { cli: "CLI", apikey: "
 export const AGENT_TABS: readonly { id: AgentTabId; label: string }[] = [
   { id: "claude", label: "Claude Code" },
   { id: "codex", label: "Codex" },
-  { id: "cursor", label: "Cursor" },
-  { id: "opencode", label: "OpenCode" },
 ];
 
-/** Conductor's `$pa`: `codex`, `cursor` and the ACP agents open their tab; anything else opens Claude Code. */
+/** Conductor's `$pa`: `codex` opens its tab; anything else opens Claude Code. */
 export function providerTabFrom(value: string | null | undefined): AgentTabId {
-  return value === "codex" || value === "cursor" || value === "opencode" ? value : "claude";
+  return value === "codex" ? value : "claude";
 }
 
 /** Kinds the Claude Code "API key" card stands for (Conductor: `claude_provider = custom`). */
@@ -108,11 +106,10 @@ export function configForMode(agent: "claude" | "codex", mode: AuthMode, stored:
 }
 
 /** The keychain key the API key field saves for this agent and config. */
-export function apiKeyName(agent: "claude" | "codex" | "cursor", config: ProviderConfig | null | undefined): string {
-  if (agent === "cursor") return "cursor_api_key";
+export function apiKeyName(agent: "claude" | "codex", config: ProviderConfig | null | undefined): string {
   if (agent === "claude") return config?.kind === "anthropic_api" && config.auth === "auth_token" ? "anthropic_auth_token" : "anthropic_api_key";
   if (config?.kind === "codex_gateway") return config.gateway === "vercel_ai_gateway" ? "vercel_ai_gateway_api_key" : "openrouter_api_key";
   return "openai_api_key";
 }
 
-export const providerOf = (settings: Settings, agent: "claude" | "codex" | "cursor" | "opencode") => settings.providers[agent] ?? null;
+export const providerOf = (settings: Settings, agent: "claude" | "codex") => settings.providers[agent] ?? null;
