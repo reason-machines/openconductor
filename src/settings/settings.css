@@ -156,6 +156,7 @@
   background: transparent; color: var(--s-fg); font: inherit; font-size: 14px;
 }
 .settings .settings-field.mono { font-family: var(--font-mono); font-size: 12px; }
+.settings .settings-field::placeholder { color: var(--s-muted); opacity: 1; }
 .settings .settings-field-wrap { position: relative; display: flex; align-items: center; gap: 8px; }
 /* Conductor's path fields (`mGt`, SSH key `npa`): "font-mono text-xs pr-8", a 24 px icon button "absolute right-1". */
 .settings .settings-field-wrap .settings-field { padding-right: 32px; }
@@ -166,7 +167,7 @@
 /* Conductor's RadioGroup (`eW` "grid gap-2") and item (`KO`): a 16 px circle, "border border-primary
    text-primary", checked shows a "size-2 rounded-full bg-current" dot; label "text-sm font-normal", "space-x-2". */
 .settings .settings-radios { gap: 8px; }
-.settings .settings-radio { font-size: 14px; line-height: 20px; gap: 8px; }
+.settings .settings-radio { font-size: 14px; line-height: 20px; font-weight: 400; gap: 8px; }
 .settings .settings-radio input[type="radio"] { -webkit-appearance: none; appearance: none; flex-shrink: 0; box-sizing: border-box; width: 16px; height: 16px; margin: 0; border: 1px solid var(--s-fg); border-radius: 999px; background: transparent; color: var(--s-fg); cursor: pointer; }
 .settings .settings-radio input[type="radio"]:checked { background: radial-gradient(circle, currentColor 0 3.5px, transparent 4px); }
 .settings .settings-radio input[type="radio"]:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }

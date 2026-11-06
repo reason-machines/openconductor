@@ -36,6 +36,10 @@ st("diff-entire-file","Diff: entire file", ref(actions=[{"click":"text=tide-web"
 st("needs-permission","Workspace needing permission", ref(actions=[{"click":"text=tide-api"},{"click":"text=Ada/rate limit headers"}]), oc_reason="the OpenConductor seed has no workspace with a pending permission request")
 for path,title in [("/dashboard","Dashboard"),("/routines","Routines"),("/routines/new","New routine"),("/team","Team"),("/diagnostics","Diagnostics"),("/new-member-onboarding","New member onboarding"),("/cloud-collab-onboarding","Cloud collaboration onboarding")]:
     sid="route-"+path.strip("/").replace("/","-")
+    if path == "/diagnostics":
+        # Help > Diagnostics opens it (Conductor's footer help popover navigates to /diagnostics).
+        st(sid, title, ref(path, wait=False), oc=[{"click":".sb-footer-btn","text":"Help"},{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800}], covers=[{"kind":"route","name":path}])
+        continue
     st(sid, title, ref(path, wait=path not in ("/diagnostics","/new-member-onboarding","/cloud-collab-onboarding")), oc_reason="OpenConductor has no route or view for "+path, covers=[{"kind":"route","name":path}])
 st("login","Login", ref("/login","signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
 
@@ -51,12 +55,12 @@ for sec,label in [("environment","Environment"),("git","Git"),("scripts","Script
     path="/settings/repos/repo-tide-web/"+sec
     # Misc shows the repository path too, so "text=tide-web" matches twice there and REA's wait fails.
     r = ref(path, wait=False, actions=[{"wait":"text=Repository paths and workspace file behavior."}]) if sec=="misc" else ref(path)
-    st("settings-repo-"+sec, "Settings > tide-web > "+label, r, oc=oc_settings(None,[{"click":".settings-repo","text":"tide-web"},{"click":".settings-repo-sections .nav-item","text":label}]), covers=[{"kind":"route","name":"/settings/repos/$repoId/"+sec},{"kind":"settings-page","name":"repo-"+sec}])
+    st("settings-repo-"+sec, "Settings > tide-web > "+label, r, oc=oc_settings(None,[{"click":".settings-repo","text":"Ttide-web"},{"click":".settings-repo-sections .nav-item","text":label}]), covers=[{"kind":"route","name":"/settings/repos/$repoId/"+sec},{"kind":"settings-page","name":"repo-"+sec}])
 # Misc is taller than the window: a second state scrolls to its last rows (Files to copy preview, Remove repository).
 # REA's scenario has no hover or scroll action, so the reference clicks the preview's note, which scrolls it to the middle.
 st("settings-repo-misc-lower", "Settings > tide-web > Misc, scrolled to Remove repository",
    ref("/settings/repos/repo-tide-web/misc", wait=False, actions=[{"wait":"text=Repository paths and workspace file behavior."},{"click":"text=No matching gitignored files found."}]),
-   oc=oc_settings(None,[{"click":".settings-repo","text":"tide-web"},{"click":".settings-repo-sections .nav-item","text":"Misc","after_ms":800},{"exec":"document.querySelector('.settings-misc-files-note')?.scrollIntoView({block:'center'})","after_ms":400}]),
+   oc=oc_settings(None,[{"click":".settings-repo","text":"Ttide-web"},{"click":".settings-repo-sections .nav-item","text":"Misc","after_ms":800},{"exec":"document.querySelector('.settings-misc-files-note')?.scrollIntoView({block:'center'})","after_ms":400}]),
    covers=[{"kind":"settings-page","name":"repo-misc"}])
 for sec in ["github","members","preferences","computer","environment","mcp","prompts"]:
     path="/settings/organization/"+sec
@@ -82,6 +86,10 @@ st("menu-workspace-status","Workspace context menu > Set status", ref(actions=[{
 st("menu-model-picker","Composer model picker", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=Opus 5 >> nth=-1"}]), oc=OPEN_WS+[{"click":".composer button","text":"Opus 5"}])
 st("menu-repo-actions","Sidebar repo actions menu", ref(actions=[{"hover":"text=tide-web"},{"click":"[aria-label='tide-web actions']"}]), oc=[{"click":".sb-menu-trigger","text":"tide-web actions"}])
 st("menu-help","Help menu", ref(actions=[{"click":"xpath=//button[@aria-label='Settings']/preceding::button[1]"}]), oc=[{"click":".sb-footer-btn","text":"Help"}])
+HELP_REF={"click":"xpath=//button[@aria-label='Settings']/preceding::button[1]"}
+HELP_OC={"click":".sb-footer-btn","text":"Help"}
+st("dialog-submit-prompt","Help > Submit a prompt dialog", ref(actions=[HELP_REF,{"click":"[role=menuitem] >> text=Submit a prompt"}]), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Submit a prompt","after_ms":800}], covers=[{"kind":"dialog","name":"Submit a prompt"}])
+st("diagnostics-run","Diagnostics after a run", ref("/diagnostics", wait=False, actions=[{"click":"text=Run environment diagnostics"}], final_settle_ms=4000), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800},{"click":".diag-btn-primary","after_ms":4000}])
 st("toast-copied-link","Toast: copied link", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Copy link"}], final_settle_ms=300), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Copy link","after_ms":200}])
 st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Archive"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Archive","after_ms":1000}])
 json.dump({"schema":"openconductor.ui-map-states/1","viewport":{"width":1280,"height":820},"theme":"dark","states":S}, open(__import__('os').path.join(__import__('os').path.dirname(__file__),'states.json'),'w'), indent=1)

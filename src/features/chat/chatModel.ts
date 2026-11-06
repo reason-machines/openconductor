@@ -39,8 +39,20 @@ export function defaultEffortSetting(settings: Settings, agent: ModelAgent | nul
   return level ?? null;
 }
 
+/**
+ * Settings › Agents › Reason's model and effort for new Reason chats
+ * (`[reason] model`, `reasoning_effort`); null when no model is set there,
+ * so Settings › Default models applies.
+ */
+export function reasonDefault(settings: Settings): { model: string; effort: string | null } | null {
+  const model = settings.reason?.model?.trim();
+  return model ? { model, effort: settings.reason?.reasoning_effort ?? null } : null;
+}
+
 /** Options for a chat with no model picked: the default model with its agent's default effort. */
 export function defaultChatConfig(settings: Settings): ReasonConfig[] {
+  const pinned = reasonDefault(settings);
+  if (pinned) return sessionConfig(pinned.model, pinned.effort);
   const model = storedModel(settings.models.default);
   return sessionConfig(model, defaultEffortSetting(settings, agentForModel(model)));
 }

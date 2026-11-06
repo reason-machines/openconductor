@@ -382,7 +382,8 @@ try {
   await screenshot("status-needs-permission-chat");
   pass(`Reason's permission request shows "Do you want to run this command?", the sidebar row says Needs permission, conductor.db holds ${JSON.stringify(storedRows)}`);
 
-  await run(`const b = [...document.querySelectorAll(".sb-row")].find((e) => e.querySelector(".sb-row-label")?.textContent.trim() === "Home"); b.click(); return true;`);
+  // Sidebar Home opens the wordmark screen (#483); the list is the /all-workspaces route.
+  await run(`history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); return true;`);
   await waitFor("Needs permission on the Home row", async () => needsPermission(await homeStatus()));
   await screenshot("status-needs-permission-home");
   pass("the Home list shows the workspace's Needs permission status in place of its time");

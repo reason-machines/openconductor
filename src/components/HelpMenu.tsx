@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
-import { openUrl } from "../backend";
+import { openDevtools, openUrl } from "../backend";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
-import { BookIcon, ExternalIcon, HelpIcon, KeyboardIcon, MessageIcon } from "./Icons";
+import { ArrowUpRightIcon, BookIcon, HelpIcon, KeyboardIcon, MessageIcon, StethoscopeIcon } from "./Icons";
 import { Tooltip } from "./Tooltip";
 import { HELP_ITEMS, nextIndex, versionLine, type HelpIcon as HelpIconName, type HelpItem } from "./helpMenuItems";
 import { endingProps, useMenuPresence } from "./sidebarMotion";
@@ -16,6 +16,7 @@ const ICONS: Record<HelpIconName, JSX.Element> = {
   keyboard: <KeyboardIcon size={16} />,
   book: <BookIcon size={16} />,
   message: <MessageIcon size={16} />,
+  stethoscope: <StethoscopeIcon size={16} />,
 };
 
 /**
@@ -23,7 +24,14 @@ const ICONS: Record<HelpIconName, JSX.Element> = {
  * aligned to its left edge, 4px away; 340px wide; arrow keys move between items; Escape or a
  * click outside closes it.
  */
-export function HelpMenu({ appVersion, onOpenShortcuts }: { appVersion?: string; onOpenShortcuts: () => void }) {
+interface Props {
+  appVersion?: string;
+  onOpenShortcuts: () => void;
+  onSubmitPrompt: () => void;
+  onOpenDiagnostics: () => void;
+}
+
+export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -58,8 +66,18 @@ export function HelpMenu({ appVersion, onOpenShortcuts }: { appVersion?: string;
   const popup = useMenuPresence(open);
   const select = (item: HelpItem) => {
     setOpen(false);
-    if (item.action.kind === "shortcuts") onOpenShortcuts();
-    else void openUrl(item.action.url);
+    switch (item.action.kind) {
+      case "shortcuts":
+        return onOpenShortcuts();
+      case "url":
+        return void openUrl(item.action.url);
+      case "submitPrompt":
+        return onSubmitPrompt();
+      case "diagnostics":
+        return onOpenDiagnostics();
+      case "devtools":
+        return void openDevtools().catch((e) => console.warn("open_devtools failed", e));
+    }
   };
 
   return (
@@ -87,7 +105,7 @@ export function HelpMenu({ appVersion, onOpenShortcuts }: { appVersion?: string;
                 <span className="sb-help-item-main">
                   {item.icon ? <span className="sb-help-icon">{ICONS[item.icon]}</span> : <span className="sb-help-icon" aria-hidden />}
                   <span>{item.label}</span>
-                  {item.external && <span className="sb-help-external"><ExternalIcon size={12} /></span>}
+                  {item.external && <span className="sb-help-external"><ArrowUpRightIcon size={12} /></span>}
                 </span>
                 {keys && <kbd className="sb-help-kbd">{keys}</kbd>}
               </button>

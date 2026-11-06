@@ -40,7 +40,7 @@ that justifies the status.
 | Settings: Repositories (per repo: Environment, Git, Scripts, Actions, Misc) `settings-repos` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
 | Settings: More (Experimental, Advanced) `settings-more` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
 | Settings: Organization and Cloud (cloud org only) `settings-org` | unassigned | | missing | seed | n/a |
-| Dialogs and menus `dialogs-menus` | unassigned | | wrong | seed | n/a |
+| Dialogs and menus `dialogs-menus` | 700983e1 (Help menu, Submit a prompt, Diagnostics) | #631 | wrong | 2026-11-06, 18ecd9590, [dialogs-menus-01](../side-by-side/dialogs-menus-01-help-menu.png) (harness render) | build: unrecorded (700983e1, Opus 5.5 high) |
 | Toasts `toasts` | unassigned | | wrong | seed | n/a |
 
 Settings groups follow Conductor's settings navigation as read from its bundle
@@ -123,6 +123,19 @@ rules, so the coordinator re-checks each before changing a seed status.
 | `settings-org` | ui-map: OpenConductor has no organization or cloud settings |
 | `dialogs-menus` | ui-map dialog and menu states all wrong; 56 of 64 dialogs and 39 of 39 menus missing in the inventory |
 | `toasts` | ui-map `toast-copied-link` wrong; 326 of 327 inventory toasts missing |
+
+## Shell rows of the UI map (sidebar, header, Home, menus)
+
+Builder `700983e1`, PR #631. Statuses come from [ui-map.md](../ui-map.md). The UI map's references are Conductor's extracted frontend, not the native window, so the images below are labelled "harness render". They do not count as `matches` for the `dialogs-menus` node above.
+
+| UI map row | Before | After | Evidence |
+|---|---|---|---|
+| `menu-help` Help menu | wrong (10.4%, copy 70%) | matches (3.7%, copy 93%) | [dialogs-menus-01](../side-by-side/dialogs-menus-01-help-menu.png). Discord is left out on purpose (Conductor's own server). Conductor's version line also lists the Claude Code and Codex versions; ours shows only the app version. |
+| `dialog-submit-prompt` (new), `dialog:submit-a-prompt` | missing | matches (2.4%, copy 100%) | [dialogs-menus-02](../side-by-side/dialogs-menus-02-submit-prompt.png). Submitting opens a GitHub issue instead of Conductor's feedback proxy. |
+| `route-diagnostics`, `route:diagnostics` | missing | matches (0.7%, copy 100%) | [dialogs-menus-03](../side-by-side/dialogs-menus-03-diagnostics.png) |
+| `diagnostics-run` (new) | n/a | wrong (3.4%, copy 83%) | [dialogs-menus-04](../side-by-side/dialogs-menus-04-diagnostics-run.png). It has no "Ask agent to analyze … report" buttons, which create a chat (chat team), and its env row is "OpenConductor app env". |
+| `home` Home with projects | wrong (copy 79%) | wrong, measurement only | Conductor's sidebar Home row and ⌘⇧H both go to `/all-workspaces` (renderApp @10,030,267 and @10,928,888), as OpenConductor's do. The lane's `home` state clicks Home and so captures All workspaces, not `/`. The missing copy ("Open project", "Open GitHub project", "Quick start") is the `/` cards, which OpenConductor shows at its root view. `dialog-keyboard-shortcuts`, `menu-account` and `palette-*` miss the same three strings for the same reason: the lane opens them over a workspace instead of `/`. |
+| `menu-account` Account menu | wrong (copy 73%) | unchanged | Missing copy beyond the `/` cards: "Log out" only. It ends Conductor's cloud session, and OpenConductor has none (`accountMenuModel.ts`). |
 
 ## Native references
 
@@ -326,13 +339,15 @@ main `841a805`.
 | Round | OpenConductor | Matches / 963 | Missing | Wrong | States matching (of 65) | What moved it |
 |---|---|---:|---:|---:|---:|---|
 | baseline | main `841a805` | 61 | 778 | 124 | 8 | (none) |
-| B1 | `841a805` + #644 | 89 | 777 | 97 | 12 | Settings nav: account switcher and "Search settings ⌘F" above the groups (11 settings states were missing "account menu", "search settings", "search settings shortcut"); Big terminal in More |
+| B1 | `841a805` + #644 (first commit) | 89 | 777 | 97 | 12 | Settings nav: account switcher and "Search settings ⌘F" above the groups (11 settings states were missing "account menu", "search settings", "search settings shortcut"); Big terminal in More |
+| B2 | `841a805` + #644 (merged) | 103 | 776 | 84 | 13 | 32 px Input and outline Button, path fields ("Browse for executable", "Browse for SSH key"), SSH key as a bare block, RadioGroup circles: Advanced and Git match |
+| B3 | main `56e96e7` + #PR_B3 | 100 | 779 | 84 | 14 | Repo Misc: placeholders muted, warning line as a block with lucide circle-alert, "Learn more" arrow-up-right, refresh-cw in a 24 px button: both Misc states match. Main's #640 removed the OpenCode executable row, so Advanced is back to wrong (6.3%: the reference still has the row) |
 
 ### Track B nodes
 
 | Node (UI map states) | PRs | Status (UI map) | Open differences |
 |---|---|---|---|
-| Settings chrome (all `settings-*`) | #644 | General, Models, Environment, Git, Experimental, repo Environment, Git, Scripts, Actions, Settings search match | Account (Linear, Billing, Sign out cards), Appearance (code preview), Advanced (Browse buttons), Agents (track A owns), repo Misc (pixels 6.1%) |
+| Settings chrome (all `settings-*`) | #644, #PR_B3 | General, Models, Environment, Git, Experimental, repo Environment, Git, Scripts, Actions, Misc (both), Settings search match | Account (Linear, Billing, Sign out cards: no Conductor account service), Appearance (code preview "function sum"), Advanced (OpenCode row removed on purpose by #640), Agents (track A owns) |
 
 ### REA gaps hit by track B
 
@@ -342,6 +357,7 @@ main `841a805`.
     for "the arguments of every call to function X" in a JavaScript chunk (REA-GAPS 14, 17, 25,
     28). `tools/settings/extract_settings_rows.py` reads the `ir({...})` and `S6e({...})` calls as
     text, with their order in `fUi`, into `evidence/settings/settings-search-rows.json`.
+32. **Lane fixture reuse (not REA):** `oc_lane.mjs` keeps its seeded HOME template across runs when `UIMAP_RUN` is reused; after a full run, the archive state leaves the template's worktree gone, so later runs fail every diff state with "not a git repository … worktrees/montreal". Delete `UIMAP_RUN` before each full run.
 31. **The UI map's Linux lane needs WebKit's helper processes at a hard-coded `/usr/lib` path.**
     Not a REA bug: on a Reason cloud computer without root, WebKitGTK from a sysroot fails with
     "Unable to spawn … WebKitNetworkProcess"; the lane runs under `unshare -rm` with the sysroot's

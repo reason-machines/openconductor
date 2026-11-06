@@ -28,6 +28,10 @@ export const BranchIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="git
 export const PaperclipIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="paperclip" size={size} strokeWidth={strokeWidth} />;
 export const SendIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="send-horizontal" size={size} strokeWidth={strokeWidth} />;
 export const FileIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="file" size={size} strokeWidth={strokeWidth} />;
+/** Help › Diagnostics (Lucide "stethoscope", Conductor's `rhi`). */
+export const StethoscopeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="stethoscope" size={size} strokeWidth={strokeWidth} />;
+/** Conductor's external-link marker in the Help menu (Lucide "arrow-up-right", its `co`). */
+export const ArrowUpRightIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="arrow-up-right" size={size} strokeWidth={strokeWidth} />;
 export const KeyboardIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="keyboard" size={size} strokeWidth={strokeWidth} />;
 export const SearchIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="search" size={size} strokeWidth={strokeWidth} />;
 export const CloseIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="x" size={size} strokeWidth={strokeWidth} />;
@@ -43,10 +47,15 @@ export const HelpIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="circl
 export const SettingsIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="settings" size={size} strokeWidth={strokeWidth} />;
 export const BookIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="book-open" size={size} strokeWidth={strokeWidth} />;
 export const MessageIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="message-square" size={size} strokeWidth={strokeWidth} />;
+export const CircleAlertIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="circle-alert" size={size} strokeWidth={strokeWidth} />;
+export const RefreshCwIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="refresh-cw" size={size} strokeWidth={strokeWidth} />;
+export const ArrowUpRightIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="arrow-up-right" size={size} strokeWidth={strokeWidth} />;
 export const ExternalIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="external-link" size={size} strokeWidth={strokeWidth} />;
 export const FileCodeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="file-code" size={size} strokeWidth={strokeWidth} />;
 export const GlobeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="globe" size={size} strokeWidth={strokeWidth} />;
 export const FolderPlusIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="folder-plus" size={size} strokeWidth={strokeWidth} />;
+// Home's "cities visited" line: Conductor draws Lucide's tickets-plane there.
+export const TicketsPlaneIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="tickets-plane" size={size} strokeWidth={strokeWidth} />;
 export const ChipIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="cpu" size={size} strokeWidth={strokeWidth} />;
 export const TerminalIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="terminal" size={size} strokeWidth={strokeWidth} />;
 export const LayersIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="layers" size={size} strokeWidth={strokeWidth} />;
