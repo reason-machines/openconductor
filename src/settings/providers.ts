@@ -28,6 +28,7 @@ export const KIND_LABEL: Record<ProviderKind, string> = {
   cursor_api: "Cursor API key",
   opencode_login: "OpenCode login",
   reason_login: "Reason login",
+  reason_api: "Reason API key",
 };
 
 export const KINDS_FOR: Record<ProviderAgent, ProviderKind[]> = {

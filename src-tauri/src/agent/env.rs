@@ -80,8 +80,7 @@ impl AgentKind {
             ],
             AgentKind::Cursor => &[vars::CURSOR_API_KEY],
             AgentKind::Opencode => &[],
-            // Reason routes through its own signed-in CLI.
-            AgentKind::Reason => &[],
+            AgentKind::Reason => &[vars::REASON_API_KEY],
         }
     }
 }
@@ -118,6 +117,7 @@ pub mod vars {
     pub const OPENAI_ORGANIZATION: &str = "OPENAI_ORGANIZATION";
     pub const OPENAI_PROJECT: &str = "OPENAI_PROJECT";
     pub const CURSOR_API_KEY: &str = "CURSOR_API_KEY";
+    pub const REASON_API_KEY: &str = "REASON_API_KEY";
 }
 
 /// One environment value for an agent process.

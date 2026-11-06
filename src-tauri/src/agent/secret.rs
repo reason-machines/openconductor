@@ -21,6 +21,7 @@ pub mod keys {
     pub const FOUNDRY_API_KEY: &str = "foundry_api_key";
     pub const OPENROUTER_API_KEY: &str = "openrouter_api_key";
     pub const VERCEL_AI_GATEWAY_API_KEY: &str = "vercel_ai_gateway_api_key";
+    pub const REASON_API_KEY: &str = "reason_api_key";
 
     /// Every key a provider may read; a store implementation may use it to
     /// list or wipe provider secrets.
@@ -33,6 +34,7 @@ pub mod keys {
         FOUNDRY_API_KEY,
         OPENROUTER_API_KEY,
         VERCEL_AI_GATEWAY_API_KEY,
+        REASON_API_KEY,
     ];
 }
 

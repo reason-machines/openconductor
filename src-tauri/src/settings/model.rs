@@ -54,6 +54,10 @@ pub struct Settings {
     /// Advanced › "OpenCode executable path"; blank means `opencode` on `PATH`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub opencode_executable_path: Option<String>,
+    /// Agents › Reason › "Reason executable path"; blank means `reason`
+    /// found on `PATH`, `~/.local/bin` or Homebrew (the installer's).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason_executable_path: Option<String>,
     /// Advanced › "SSH private key path" for cloud workspace access; blank
     /// means a generated key.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -77,6 +81,27 @@ pub struct Settings {
     pub experimental: Experimental,
     pub terminal: Terminal,
     pub prompts: Prompts,
+    pub reason: ReasonSettings,
+    #[serde(flatten)]
+    pub extra: toml::Table,
+}
+
+/// `[reason]`: what new Reason chats start with (Settings › Agents › Reason).
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct ReasonSettings {
+    /// Workspace slug from `reason whoami` that new Reason chats open their
+    /// Session in (`reason --workspace SLUG acp`); `None` follows the
+    /// workspace selected in the Reason desktop app.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub workspace: Option<String>,
+    /// Reason model id for new Reason chats (`byok:anthropic:claude-opus-5-5`,
+    /// `default` for Auto); `None` uses `models.default` as Reason runs it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub model: Option<String>,
+    /// Reasoning effort for new Reason chats (`low` ... `max`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reasoning_effort: Option<String>,
     #[serde(flatten)]
     pub extra: toml::Table,
 }
@@ -92,6 +117,7 @@ impl Default for Settings {
             claude_code_executable_path: None,
             codex_executable_path: None,
             opencode_executable_path: None,
+            reason_executable_path: None,
             ssh_key_path: None,
             tool_approvals_enabled: false,
             preview_urls: Vec::new(),
@@ -105,6 +131,7 @@ impl Default for Settings {
             experimental: Experimental::default(),
             terminal: Terminal::default(),
             prompts: Prompts::default(),
+            reason: ReasonSettings::default(),
             extra: toml::Table::new(),
         }
     }
