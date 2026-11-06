@@ -17,7 +17,7 @@ export interface CliLoginStatus {
   organization?: string;
 }
 
-export type CliAgent = "claude" | "codex" | "opencode";
+export type CliAgent = "claude" | "codex";
 
 export async function cliLoginStatus(agent: CliAgent): Promise<CliLoginStatus> {
   if (inTauri()) return invoke<CliLoginStatus>("cli_login_status", { agent });

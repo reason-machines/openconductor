@@ -29,7 +29,7 @@ test("top-level paths trim, blank clears, and other keys are kept", () => {
   assert.equal(s.codex_executable_path, "/x/codex");
   assert.equal((s as Record<string, unknown>).future, 1);
   assert.equal(withTopLevel(s, "codex_executable_path", " ").codex_executable_path, null);
-  assert.deepEqual(executablePaths(s), { claude: undefined, codex: "/x/codex", opencode: undefined });
+  assert.deepEqual(executablePaths(s), { claude: undefined, codex: "/x/codex" });
 });
 
 test("agent model fields keep the rest of their section", () => {

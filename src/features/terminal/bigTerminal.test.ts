@@ -33,7 +33,6 @@ test("with tool approvals required, Claude and Codex drop their skip-approval fl
 
 test("an executable path replaces the first word, quoted; blank paths and other agents are ignored", () => {
   assert.equal(run("claude", { executablePaths: { claude: " /opt/my claude/bin/claude " } }), "'/opt/my claude/bin/claude' --dangerously-skip-permissions");
-  assert.equal(run("opencode", { executablePaths: { opencode: "/x/opencode" } }), "'/x/opencode'");
   assert.equal(run("codex", { executablePaths: { codex: "   " } }), run("codex"));
   assert.equal(run("amp", { executablePaths: { claude: "/c" } }), "amp");
   assert.equal(shellQuote("it's"), "'it'\\''s'");

@@ -13,6 +13,7 @@
 
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
+import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
@@ -310,6 +311,7 @@ export function Composer({
 /** Conductor's "+" button (`a7i`): "Add attachments and more"; this build offers Add attachment. */
 function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: () => void }) {
   const [open, setOpen] = useState(false);
+  const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
   if (!onAddAttachment) return null;
   return (
@@ -331,8 +333,8 @@ function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: ()
           <PlusIcon size={16} strokeWidth={1.5} />
         </button>
       </Tooltip>
-      {open ? (
-        <div className="oc-menu oc-add-popup" role="menu">
+      {popup.mounted ? (
+        <div className="oc-menu oc-add-popup" role="menu" data-motion="popup" {...popup.attrs}>
           <button
             type="button"
             role="menuitem"

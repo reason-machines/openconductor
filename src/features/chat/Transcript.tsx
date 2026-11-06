@@ -6,6 +6,7 @@
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { usePresence } from "../../components/motion/usePresence.ts";
 import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
@@ -249,6 +250,7 @@ function TurnMenu({
   resetDisabled: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const menu = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     if (!open) return;
@@ -263,8 +265,8 @@ function TurnMenu({
           <Lucide name="ellipsis" className="oc-icon-action-svg" />
         </button>
       </Tooltip>
-      {open ? (
-        <div className="chat-menu" role="menu">
+      {menu.mounted ? (
+        <div className="chat-menu" role="menu" data-motion="popup" {...menu.attrs}>
           {onFork ? (
             <button
               type="button"

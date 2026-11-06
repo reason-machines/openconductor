@@ -121,7 +121,7 @@
 /* File-toolbar "View options" menu (Whitespace.tsx) and the Viewed toggle (FileDiffView.tsx). */
 .oc-view-options { position: relative; display: inline-flex; }
 .oc-view-options .icon-btn[aria-expanded="true"] { background: var(--active); color: var(--text); }
-.oc-view-options-menu { position: absolute; top: calc(100% + 4px); right: 0; z-index: 5; min-width: 200px; padding: 4px; background: var(--panel, var(--bg)); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 20px var(--shadow-18); }
+.oc-view-options-menu { position: absolute; top: calc(100% + 4px); right: 0; transform-origin: top right; z-index: 5; min-width: 200px; padding: 4px; background: var(--panel, var(--bg)); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 20px var(--shadow-18); }
 .oc-view-option { display: flex; width: 100%; height: 32px; align-items: center; gap: 8px; padding: 0 8px; border-radius: 6px; font-size: 13px; color: var(--text); text-align: left; }
 .oc-view-option:hover, .oc-view-option:focus-visible { background: var(--active); }
 .oc-view-option .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
