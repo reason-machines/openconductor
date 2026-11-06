@@ -369,11 +369,12 @@ def write_md(doc):
         L.append("- %d: %s" % (number, reason))
     L.append("\n## Main-screen verdicts\n")
     for screen in doc["main_screens"].values():
-        L.append("- **%s**: %s in retained evidence (%d/%d state matches); final review **%s**. %s" % (screen["title"], screen["evidence_verdict"], screen["counts"]["matches"], screen["counts"]["total"], screen["final_review"], screen["gap"]))
+        L.append("- **%s**: %s in area evidence; retained evidence %s (%d/%d state matches); final review **%s**. %s" % (screen["title"], screen["area_verdict"], screen["evidence_verdict"], screen["counts"]["matches"], screen["counts"]["total"], screen["final_review"], screen["gap"]))
     supplemental = doc.get("supplemental_evidence", {})
     if supplemental:
         L.append("\n## Supplemental evidence\n")
         L.append("Ledger reconciled against main `%s`. This is not a new capture identity. Supplemental crops do not replace full-state scores, change the denominator, or sign off native parity.\n" % supplemental["source_main_commit"])
+        L.extend("- " + note for note in supplemental.get("batch_notes", []))
         for record in supplemental["records"]:
             L.append("- **%s (%s)**: %s [Merged PR](%s), [evidence](../%s). Lane: %s" % (record["id"], record["verdict"], record["summary"], record["pr_url"], record["evidence_path"], record["lane"]))
             L.extend("  - " + limit for limit in record["limits"])

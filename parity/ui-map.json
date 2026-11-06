@@ -32060,7 +32060,7 @@
   }
  ],
  "supplemental_evidence": {
-  "source_main_commit": "623b0936be1ebf430255c719dff4e1d04e7afeed",
+  "source_main_commit": "f16d9338ae254955baca8f67baee1652eeb055af",
   "records": [
    {
     "id": "shell-actions-722",
@@ -32125,7 +32125,8 @@
      "Preference persistence across browser document loads is fixture persistence, not native app SQLite verification.",
      "No installed native Mac run or real signed-in Mac-to-cloud chat was exercised.",
      "The gate requirement and all nine native final-review verdicts remain unverified; deferred cloud UI stays excluded from the denominator.",
-     "The pre-existing broad settings test-harness problem remains separately tracked as issue #720."
+     "The pre-existing broad settings test-harness problem remains separately tracked as issue #720.",
+     "Owner-reported consuming CI42303633668 completed11/11 jobs success. This does not close native default-off persistence or real Mac/cloud chat."
     ]
    },
    {
@@ -32150,8 +32151,309 @@
      "The gstack template remains omitted. Generic Modal and Reset chat are untouched. Existing #682 workspace-create and #690 onboarding evidence is reused, not rerun.",
      "The area's supplemental verdict is partial. All nine final native-review verdicts remain unverified; packaging and branch CI do not close them."
     ]
+   },
+   {
+    "id": "reason-runtime-715",
+    "areas": [
+     "workspace-chat",
+     "settings"
+    ],
+    "verdict": "runtime-only",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/715",
+    "merge_commit": "24b32f6ba7a533cc9b38b0837d069446be574450",
+    "evidence_path": "evidence/reason-acp/signed-in-run.md",
+    "capture_manifests": [],
+    "lane": "No-inference assertions and CLI/Rust smoke checks; consuming main Reason ACP workflow, not signed-in chat",
+    "summary": "The merged smoke requires real writes and an approved subscription source. Consuming run42307840383 passed five jobs; owner reports 13 no-inference assertions and successful package42307840272.",
+    "limits": [
+     "No real signed-in Mac/cloud inference or installed-app proof was completed.",
+     "Native targeting/isolation remains separately owned. A capability inventory or safe-launch preparation is not native behavior proof."
+    ]
+   },
+   {
+    "id": "local-settings-716",
+    "areas": [
+     "settings"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/716",
+    "merge_commit": "e57066523c94028ae937b4219cf1462937ec4aed",
+    "evidence_path": "evidence/settings/local-pages/README.md",
+    "capture_manifests": [
+     "evidence/settings/local-pages/identity.json",
+     "evidence/settings/local-pages/ref-captures.json",
+     "evidence/settings/local-pages/oc-captures.json",
+     "evidence/settings/local-pages/compare.json"
+    ],
+    "lane": "REA extracted-reference and built-frontend Chromium fixtures, 16 selected dark states at1280x820",
+    "summary": "Merged local-page alignment and save-order/status-refresh corrections. Owner reports four deterministic browser checks,1258 units and build/typecheck passing. Exact-merge E2E42311136275, CI42311136322 and package42311136165 passed; package artifact13548801069.",
+    "limits": [
+     "Appearance lower scroll alignment and native range controls differ; default exact colours are not proven by tolerant comparison.",
+     "Every dropdown, font/style variant, filesystem persistence, native rendering and real agent auth remain unverified.",
+     "Passing the containing E2E does not prove every settings runtime consumer or native parity."
+    ]
+   },
+   {
+    "id": "terminal-output-find-719",
+    "areas": [
+     "workspace-chat"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/719",
+    "merge_commit": "8467a7d9caf02ce404615e27c0d303879a2e4c23",
+    "evidence_path": "evidence/terminal/find/NOTES.md",
+    "capture_manifests": [
+     "evidence/terminal/find/captures.json",
+     "evidence/terminal/find/compare.json",
+     "evidence/terminal/output/captures.json"
+    ],
+    "lane": "REA cropped Setup Find and read-only xterm browser fixtures with synthetic IPC, matched Stone palette",
+    "summary": "Merged ANSI/carriage-return output and Setup/Run Find. Owner reports31 focused tests and five browser cases passing,19 exact-head checks and five workflows green. Containing package42310404564 at8467a7d9 passed signing/39 contracts; artifact13548507162.",
+    "limits": [
+     "Browser fixture PTY is not a native shell. Real scripts, native PTY and full terminal/tab parity remain unverified.",
+     "Running dot, strip spacing and cursor differences remain. Matched Stone proof does not establish default palette parity.",
+     "Native proof owner is preparing process-binding/scratch-isolation safety. No launch or Find verification is inferred from preparation."
+    ]
+   },
+   {
+    "id": "changes-panel-721",
+    "areas": [
+     "diff-changes"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/721",
+    "merge_commit": "6a46c3820ece0dcea22a956ec64ac01b0419f53f",
+    "evidence_path": "evidence/diff/changes-panel.md",
+    "capture_manifests": [
+     "evidence/diff/changes-panel/captures.json",
+     "evidence/diff/changes-panel/panel-report.json",
+     "evidence/diff/changes-menu-boundary.json"
+    ],
+    "lane": "REA Chromium panel crops and full-window fixtures; separate exact-head/containing-main built-app evidence",
+    "summary": "Merged list/tree/scope work and external-diff refresh correction. Owner reports19/19 exact-head checks,5/5 workflows,102 browser tests passed/0 failed/1 skipped. Containing main42310404623 at8467a7d9 passed both jobs and23 App flows; owner viewed/hash-checked e2e-diff.txt exactly+3.",
+    "limits": [
+     "Merge timing gate was violated. Owner requested merge23:01:54Z; merge23:03:51Z preceded six head-check completions. Later green results do not undo that finding.",
+     "Exact-merge E2E42309271363 and later42309317371 were cancelled, not behavioral passes. Older successful42308581600 predates this correction.",
+     "One browser test remains skipped. Panel Options tone/spacing, history choices and route persistence remain gaps; installed/native diff and real-auth behavior are unverified."
+    ]
+   },
+   {
+    "id": "composer-mentions-724",
+    "areas": [
+     "composer"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/724",
+    "merge_commit": "1dc803d4f38493946f45e8a491cb3599bbb1a27b",
+    "evidence_path": "evidence/chat/composer/current/README.md",
+    "capture_manifests": [
+     "evidence/chat/composer/current/reference-captures.json",
+     "evidence/chat/composer/current/ours-captures.json",
+     "evidence/chat/composer/current/checks.json"
+    ],
+    "lane": "REA decoded-frontend and actual Composer/ModelPicker isolated Chromium components,1440x900 dark Stone",
+    "summary": "Merged file suggestions and attachment-only sends. Owner reports17 exact-head checks and five workflows passed, consuming package successful. Existing composer gaps and the later #735 regression are retained separately.",
+    "limits": [
+     "Exact-merge E2E42307119712 was cancelled, not a pass.",
+     "Native/WebKit, real IME, signed-in sends and full composer integration remain unverified."
+    ]
+   },
+   {
+    "id": "open-in-switcher-727",
+    "areas": [
+     "open-in",
+     "palette"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/727",
+    "merge_commit": "597cba984f5cb3203abf568734273b7987252ede",
+    "evidence_path": "evidence/open-in/switcher/README.md",
+    "capture_manifests": [
+     "evidence/open-in/switcher/provenance.json",
+     "evidence/open-in/switcher/screens/captures.json",
+     "evidence/open-in/switcher/rea-static-summary.json"
+    ],
+    "lane": "REA static decoded-frontend rules; ordinary browser held-key/crop evidence and synthetic targets",
+    "summary": "Merged held app chooser and palette icon strokes. Owner reports16/16 checks and successful containing package42309317593, signing and39/39 bundle contracts.",
+    "limits": [
+     "REA scenario actions cannot hold key-down separately; held-key browser captures are not REA scenario execution.",
+     "Installed WKWebView, actual external-app launch, real clipboard, remote chooser targets, light chooser and native menu ordering remain unverified.",
+     "No dedicated Open in full-state pair exists in the retained map. Supplemental browser/static evidence does not create a native match."
+    ]
+   },
+   {
+    "id": "chat-startup-729-732",
+    "areas": [
+     "workspace-chat"
+    ],
+    "verdict": "runtime-only",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/729",
+    "merge_commit": "2ee7b92fa032d4dc9c9f44168382daedff452b90",
+    "evidence_path": "evidence/chat/startup/README.md",
+    "capture_manifests": [
+     "evidence/chat/startup/checks.txt"
+    ],
+    "lane": "Deterministic boot-ready/error/stale-effect browser checks plus separately owned PR/main built-app E2E",
+    "summary": "Merged #729 startup readiness and consuming #732 contract. Owner reports#72917/17 checks and six startup browser checks; #732 exact-head E2E42308910209 atf7d63934 passed23:15:50Z. Containing main42310404623 passed both jobs and23 flows.",
+    "limits": [
+     "Readiness proof does not reproduce hydration overwrite or establish native selection behavior.",
+     "#732 exact-head result is one branch pass, not five-pass or a main streak. Generic delayed green events do not override cancelled E2E42308217859/42309317371.",
+     "Native local/cloud authentication and full workspace final review remain unverified."
+    ]
+   },
+   {
+    "id": "home-details-730",
+    "areas": [
+     "home",
+     "sidebar"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/730",
+    "merge_commit": "4c1b638d80214e738dae3d7af8233f0278f15197",
+    "evidence_path": "evidence/home-details/README.md",
+    "capture_manifests": [
+     "evidence/home-details/captures.json",
+     "evidence/home-details/comparisons.json"
+    ],
+    "lane": "REA decoded-frontend and built-frontend Chromium dark/light comparisons with synthetic populated data",
+    "summary": "Merged city/footer/entry-icon details. Owner reports build/typecheck,colour tests,reprodata and browser checks passed; package42308208475 later completed success. Repository-menu dark/light crops add bounded evidence, not full-sidebar equality.",
+    "limits": [
+     "Branding and uncaptured states differ. Native/WebKit and full sidebar state coverage remain unverified.",
+     "Section menus and default native palette parity are not closed by repository-menu crop matches."
+    ]
+   },
+   {
+    "id": "onboarding-lifecycle-731",
+    "areas": [
+     "dialogs"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/731",
+    "merge_commit": "5ed536a758fba3bb1aaf8c49dc8b17544df27e13",
+    "evidence_path": "evidence/onboarding-sign-in/README.md",
+    "capture_manifests": [
+     "evidence/onboarding-sign-in/images.json"
+    ],
+    "lane": "Actual LoginScreen/SignUp in isolated Chromium StrictMode fixture; reused REA reference control crop",
+    "summary": "Merged async sign-in presentation correction. Owner reproduced four failing StrictMode paths before; all nine browser paths passed after. Owner reports16 checks and package42308581591 successful.",
+    "limits": [
+     "No native WebKit, actual reason login, real browser authentication or packaged-app auth was run.",
+     "Different viewports and crop-only comparison are not full-screen parity; local skip link and Reason confirmation code intentionally differ."
+    ]
+   },
+   {
+    "id": "linked-directory-733",
+    "areas": [
+     "composer",
+     "dialogs"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/733",
+    "merge_commit": "fc9e3c99ba13772194249c645e7b7b1739213e62",
+    "evidence_path": "evidence/chat/linked-directory/README.md",
+    "capture_manifests": [
+     "evidence/chat/linked-directory/reference-captures.json",
+     "evidence/chat/linked-directory/ours-captures.json",
+     "evidence/chat/linked-directory/browser-checks.json"
+    ],
+    "lane": "REA decoded-reference and isolated callback component Chromium proof",
+    "summary": "Merged linked-directory picker component and retained search/selection evidence. Source integration remains distinct from full composer runtime wiring.",
+    "limits": [
+     "Callback component evidence does not establish end-to-end composer linked-directory integration, native folder access, WebKit or signed-in delivery."
+    ]
+   },
+   {
+    "id": "passport-734",
+    "areas": [
+     "home"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/734",
+    "merge_commit": "f16d9338ae254955baca8f67baee1652eeb055af",
+    "evidence_path": "evidence/passport/README.md",
+    "capture_manifests": [
+     "evidence/passport/captures.json",
+     "evidence/passport/checks.json"
+    ],
+    "lane": "Four REA originals and two dark/light browser pairs with synthetic data",
+    "summary": "Merged Passport UI after PassportDialog.tsx filename-stem correction. Parent reports16/16 checks on head8898d88. Owner reports13 tests, build/typecheck,colour/reprodata checks and browser geometry/navigation coverage passing.",
+    "limits": [
+     "Own branding differs. Reference remote country map was absent under capture CSP, so country or whole-map equality is not claimed.",
+     "Native/WebKit, touch, small-window and tooltip pixel parity remain unverified.",
+     "385 marker geometry checks do not constitute full Home or native final review."
+    ]
+   },
+   {
+    "id": "atomic-composer-735",
+    "areas": [
+     "composer"
+    ],
+    "verdict": "partial-known-defect",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/735",
+    "merge_commit": "5ab4fe1b752c5c62f238dcf852af7c88c0d6633d",
+    "evidence_path": "evidence/chat/composer/mentions/README.md",
+    "capture_manifests": [
+     "evidence/chat/composer/mentions/reference-captures.json",
+     "evidence/chat/composer/mentions/ours-captures.json",
+     "evidence/chat/composer/mentions/checks.json"
+    ],
+    "lane": "REA decoded-frontend atomic-file/multiline captures and isolated Composer browser groups, not native IME",
+    "summary": "Merged at uncorrected PR head69897a7e26c5bcc9f155b8d91236e058b628e10f. All18 checks passed but did not cover premature Send-click submission during synthetic composition. Corrective27de19bc is unpublished; fresh-main owner3cf126be solely owns fix-forward, former13576d11 is handoff-only.",
+    "limits": [
+     "KNOWN DEFECT: Send-click during composition prematurely submits. This record does not mark it corrected or safe.",
+     "Local corrective build/typecheck,1265 units and12 browser groups x3 are owner-reported passing, not publication evidence.",
+     "Native/WebKit/real IME,full-app persistence and signed-in delivery remain unverified. Terminal mention/actions,full linked-directory integration,Link issue and Plan mode remain gaps; queued editor is plain text and README icon differs."
+    ]
    }
-  ]
+  ],
+  "reconciled_at": "2026-11-06T23:40:00Z",
+  "provenance": "Merged source and committed area manifests reconciled on Reason Cloud. Area checks, artifact inspection and native limits are attributed to their existing owners; no CI or native verification was rerun by ledger integration.",
+  "batch_notes": [
+   "Retained full-state captures were not rerun. Supplemental component/crop/runtime records do not change raw or scoped scores.",
+   "Consuming main E2E42310404623 at8467a7d9 completed23:23:58Z with both jobs and23/23 App flows; owner confirmed ancestry contains#721 and#732 and inspected the exact+3 diff screenshot.",
+   "Latest owner report: main E2E42311136275 ate57066523 completed23:34:26Z; both jobs and23/23 App flows passed, artifact13548084792. Fourth verified complete main success since#714, not a consecutive streak. Newer1476/42312167858 cancelled, so streak remains0/10. Successor42312516137 atf16d9338 was in progress at owner read, not a pass.",
+   "Five-pass CI/local proof remains unverified after prior pass4 pre-selection failure. Cancelled runs are not passes. Real-auth/real-IME safety and all nine installed-macOS final reviews remain unverified.",
+   "#728 merged-source consumption is complete: exact-head16/16 checks and4/4 workflows passed; exact-merge scope tests4/4 and9-file identity/accounting passed; remaining CI42310767153 and Keybindings42310766958 settled12/12 jobs successful; Package42310767104 artifact13548178284 passed. Exact-merge E2E42310767045 cancelled.",
+   "#711 is confirmed closed unmerged and remains parked. No new builder, E2E dispatch or duplicate watcher was created by this batch. Existing runtime/E2E/native owners retain exclusive proof ownership."
+  ],
+  "screen_updates": {
+   "home": {
+    "area_verdict": "partial",
+    "gap": "Dark/light browser Passport geometry and interactions plus Home details are supplemental. Branding differs; reference country map was absent under CSP. Native/WebKit, tooltip pixels, touch and small-window coverage remain unverified."
+   },
+   "sidebar": {
+    "area_verdict": "partial",
+    "gap": "Repository-menu crops match in dark/light fixtures. Section menus, expanded/collapsed/populated state coverage and current native side-by-side review remain incomplete."
+   },
+   "workspace-chat": {
+    "area_verdict": "partial",
+    "gap": "Turn-footer crops, startup readiness, terminal/Find fixtures and two containing main E2E passes are distinct proof lanes. Retained needs-permission is wrong. Real-auth Mac/cloud chat, native selection, real scripts/PTY and native final review remain unverified."
+   },
+   "composer": {
+    "area_verdict": "partial-known-defect",
+    "gap": "#735 merged uncorrected69897a7e with premature Send-click during composition. Fix27de19bc remains unpublished; sole corrective writer3cf126be is active. Native/WebKit/real IME, full integration, persistence and signed-in delivery remain unverified."
+   },
+   "diff-changes": {
+    "area_verdict": "partial",
+    "gap": "List/tree/scope/browser-refresh proof and containing main23/23 flows with inspected+3 diff exist. Retained split/file-menu gaps and skipped browser test remain. #721 premature-merge finding is preserved; installed/native and real-git action parity remain unverified."
+   },
+   "settings": {
+    "area_verdict": "partial",
+    "gap": "16 selected browser states and four save/status checks passed; consuming CI,E2E and package passed. Lower Appearance, native controls, dropdown/font variants, real auth and desktop persistence remain unverified. Default-off gate native proof remains unverified."
+   },
+   "open-in": {
+    "area_verdict": "partial",
+    "gap": "Static reference and held-key browser chooser evidence plus package contracts exist; no dedicated retained full-state pair. Installed WKWebView, real external-app launch,clipboard,light chooser and native menu ordering remain unverified."
+   },
+   "palette": {
+    "area_verdict": "partial",
+    "gap": "Seven retained threshold-matching states and browser icon/menu proof are not current native final review. Default palette, full action coverage, clipboard,external launches and native ordering remain unverified."
+   },
+   "dialogs": {
+    "area_verdict": "partial",
+    "gap": "Local modal and StrictMode lifecycle browser checks passed; linked-picker callback component is bounded evidence. Archive reference pair was rejected; native folder/filesystem actions, real clone/auth,WebKit and full dialog coverage remain unverified."
+   }
+  }
  },
  "raw_summary": {
   "total": 983,
@@ -32397,10 +32699,13 @@
     "home-empty",
     "home"
    ],
-   "gap": "Current native side-by-side and final review not recorded.",
+   "gap": "Dark/light browser Passport geometry and interactions plus Home details are supplemental. Branding differs; reference country map was absent under CSP. Native/WebKit, tooltip pixels, touch and small-window coverage remain unverified.",
    "supplemental_evidence": [
-    "shell-actions-722"
-   ]
+    "shell-actions-722",
+    "home-details-730",
+    "passport-734"
+   ],
+   "area_verdict": "partial"
   },
   "sidebar": {
    "title": "Sidebar",
@@ -32417,10 +32722,12 @@
     "all-workspaces",
     "sidebar-after-archive"
    ],
-   "gap": "Expanded, collapsed and populated sidebar details need current native review.",
+   "gap": "Repository-menu crops match in dark/light fixtures. Section menus, expanded/collapsed/populated state coverage and current native side-by-side review remain incomplete.",
    "supplemental_evidence": [
-    "shell-actions-722"
-   ]
+    "shell-actions-722",
+    "home-details-730"
+   ],
+   "area_verdict": "partial"
   },
   "workspace-chat": {
    "title": "Workspace / chat",
@@ -32440,10 +32747,14 @@
     "needs-permission",
     "menu-chat-tab"
    ],
-   "gap": "Transcript, permission state and workspace header need current native review.",
+   "gap": "Turn-footer crops, startup readiness, terminal/Find fixtures and two containing main E2E passes are distinct proof lanes. Retained needs-permission is wrong. Real-auth Mac/cloud chat, native selection, real scripts/PTY and native final review remain unverified.",
    "supplemental_evidence": [
-    "turn-changes-718"
-   ]
+    "turn-changes-718",
+    "reason-runtime-715",
+    "terminal-output-find-719",
+    "chat-startup-729-732"
+   ],
+   "area_verdict": "partial"
   },
   "composer": {
    "title": "Composer",
@@ -32463,8 +32774,13 @@
     "empty-model-search",
     "menu-review-edit"
    ],
-   "gap": "These states cover create and picker controls, not the full workspace composer.",
-   "supplemental_evidence": []
+   "gap": "#735 merged uncorrected69897a7e with premature Send-click during composition. Fix27de19bc remains unpublished; sole corrective writer3cf126be is active. Native/WebKit/real IME, full integration, persistence and signed-in delivery remain unverified.",
+   "supplemental_evidence": [
+    "composer-mentions-724",
+    "linked-directory-733",
+    "atomic-composer-735"
+   ],
+   "area_verdict": "partial-known-defect"
   },
   "diff-changes": {
    "title": "Diff / changes",
@@ -32483,8 +32799,11 @@
     "diff-entire-file",
     "menu-changes-file"
    ],
-   "gap": "All files, Checks and current native diff review remain separate requirements.",
-   "supplemental_evidence": []
+   "gap": "List/tree/scope/browser-refresh proof and containing main23/23 flows with inspected+3 diff exist. Retained split/file-menu gaps and skipped browser test remain. #721 premature-merge finding is preserved; installed/native and real-git action parity remain unverified.",
+   "supplemental_evidence": [
+    "changes-panel-721"
+   ],
+   "area_verdict": "partial"
   },
   "settings": {
    "title": "Settings pages",
@@ -32518,10 +32837,13 @@
     "settings-repo-misc-lower",
     "settings-search"
    ],
-   "gap": "Only local settings are in scope. Per-page captures do not prove native final parity.",
+   "gap": "16 selected browser states and four save/status checks passed; consuming CI,E2E and package passed. Lower Appearance, native controls, dropdown/font variants, real auth and desktop persistence remain unverified. Default-off gate native proof remains unverified.",
    "supplemental_evidence": [
-    "cloud-ui-gate-723"
-   ]
+    "cloud-ui-gate-723",
+    "reason-runtime-715",
+    "local-settings-716"
+   ],
+   "area_verdict": "partial"
   },
   "open-in": {
    "title": "Open in",
@@ -32535,8 +32857,11 @@
     "unverified": 0
    },
    "state_ids": [],
-   "gap": "No dedicated paired state in this map. Static evidence is not a visual match.",
-   "supplemental_evidence": []
+   "gap": "Static reference and held-key browser chooser evidence plus package contracts exist; no dedicated retained full-state pair. Installed WKWebView, real external-app launch,clipboard,light chooser and native menu ordering remain unverified.",
+   "supplemental_evidence": [
+    "open-in-switcher-727"
+   ],
+   "area_verdict": "partial"
   },
   "palette": {
    "title": "Command palette",
@@ -32558,8 +32883,11 @@
     "palette-search",
     "palette-no-results"
    ],
-   "gap": "Threshold matches are retained evidence, not a current native final-review verdict.",
-   "supplemental_evidence": []
+   "gap": "Seven retained threshold-matching states and browser icon/menu proof are not current native final review. Default palette, full action coverage, clipboard,external launches and native ordering remain unverified.",
+   "supplemental_evidence": [
+    "open-in-switcher-727"
+   ],
+   "area_verdict": "partial"
   },
   "dialogs": {
    "title": "Dialogs",
@@ -32584,10 +32912,13 @@
     "dialog-rename-chat",
     "dialog-reset-chat"
    ],
-   "gap": "Captured dialogs are a subset. Onboarding and unlocated dialogs remain separately visible.",
+   "gap": "Local modal and StrictMode lifecycle browser checks passed; linked-picker callback component is bounded evidence. Archive reference pair was rejected; native folder/filesystem actions, real clone/auth,WebKit and full dialog coverage remain unverified.",
    "supplemental_evidence": [
-    "local-dialogs-725"
-   ]
+    "local-dialogs-725",
+    "onboarding-lifecycle-731",
+    "linked-directory-733"
+   ],
+   "area_verdict": "partial"
   }
  }
 }

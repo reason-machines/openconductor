@@ -87,6 +87,9 @@ def rescore(doc):
         evidence_verdict = "unverified" if not rows else "partial" if any(row["status"] != "matches" for row in rows) or key in ("sidebar", "composer") else "harness-only"
         doc["main_screens"][key] = dict(title=title, evidence_verdict=evidence_verdict, final_review="unverified", counts=counts(rows), state_ids=[row["id"] for row in rows], gap=gap)
         doc["main_screens"][key]["supplemental_evidence"] = [record["id"] for record in doc.get("supplemental_evidence", {}).get("records", []) if key in record["areas"]]
+        update = doc.get("supplemental_evidence", {}).get("screen_updates", {}).get(key, {})
+        doc["main_screens"][key]["area_verdict"] = update.get("area_verdict", evidence_verdict)
+        doc["main_screens"][key]["gap"] = update.get("gap", gap)
     return doc
 
 
@@ -102,12 +105,14 @@ def write_html(doc, root):
     payload = json.dumps(compact, ensure_ascii=False).replace("</", "<\\/")
     s = doc["summary"]
     cards = "".join(f'<div class="metric"><strong>{s[key]}</strong><span>{label}</span></div>' for key, label in (("total", "In scope"), ("matches", "Retained matches"), ("wrong", "Observed wrong"), ("missing", "Observed missing"), ("unverified", "Unverified")))
-    screens = "".join(f'<article><div class="eyebrow">{escape(screen["evidence_verdict"])}</div><h3>{escape(screen["title"])}</h3><p>{screen["counts"]["matches"]} / {screen["counts"]["total"]} retained state matches</p><p class="muted">{escape(screen["gap"])}</p><span class="pill">Final review unverified</span></article>' for screen in doc["main_screens"].values())
+    screens = "".join(f'<article><div class="eyebrow">{escape(screen["area_verdict"])}</div><h3>{escape(screen["title"])}</h3><p>{screen["counts"]["matches"]} / {screen["counts"]["total"]} retained state matches ({escape(screen["evidence_verdict"])})</p><p class="muted">{escape(screen["gap"])}</p><span class="pill">Final review unverified</span></article>' for screen in doc["main_screens"].values())
     reasons = "".join(f'<li><strong>{number}</strong> {escape(reason)}</li>' for reason, number in doc["excluded_summary"]["by_reason"].items())
     supplemental = doc.get("supplemental_evidence", {})
     supplements = ""
     if supplemental:
         supplements = '<h2>Supplemental evidence</h2><p class="muted">Ledger reconciled against main <code>' + escape(supplemental["source_main_commit"]) + '</code>. This is not a new capture identity. These records do not change full-state scores, the denominator or native final review.</p>'
+        if supplemental.get("batch_notes"):
+            supplements += '<h3>Delivery and proof boundaries</h3><ul>' + ''.join('<li>' + escape(note) + '</li>' for note in supplemental["batch_notes"]) + '</ul>'
         for record in supplemental["records"]:
             url = "https://github.com/reason-machines/openconductor/blob/" + record["merge_commit"] + "/" + record["evidence_path"]
             limits = "".join('<li>' + escape(limit) + '</li>' for limit in record["limits"])
