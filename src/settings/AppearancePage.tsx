@@ -11,6 +11,7 @@ import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { effectiveShortcuts, type Overrides } from "../keybindings/overrides";
 import { glyphs } from "../keybindings/shortcut";
 import type { Settings, Theme } from "./types";
+import { PALETTE_IDS, PALETTE_LABELS, paletteFrom, type PaletteId } from "../theme/palettes.ts";
 
 interface Props {
   settings: Settings;
@@ -33,8 +34,8 @@ const CUSTOM = "custom";
 
 /**
  * Settings › Personal › Appearance, row for row with Conductor 0.87.6's
- * appearance panel (`vla` in renderApp-D_fmY7hW.js): Theme, Low-contrast dark
- * mode, App zoom, Colored sidebar diffs, Accessible colors, Code theme (with
+ * appearance panel (`vla` in renderApp-D_fmY7hW.js): Theme, Color palette
+ * (ours; Neutral, Stone, Blue, Slate, Zinc), Low-contrast dark mode, App zoom, Colored sidebar diffs, Accessible colors, Code theme (with
  * preview), Mono Font (with preview), Code ligatures, Markdown Style (with
  * preview), Terminal font. Accessible colors, Code theme and Code ligatures
  * come from the diff feature (DiffAppearanceRows.tsx).
@@ -72,6 +73,14 @@ export function AppearancePage({ settings, save }: Props) {
           value={settings.general.theme}
           options={THEMES}
           onChange={(v) => save(withField(settings, "general", "theme", v))}
+        />
+      </Row>
+      <Row label="Color palette" help="Surfaces, text and the accent color. Status and diff colors keep their meaning.">
+        <Select<PaletteId>
+          label="Color palette"
+          value={paletteFrom(a.color_palette)}
+          options={PALETTE_IDS.map((id) => ({ value: id, label: PALETTE_LABELS[id] }))}
+          onChange={(v) => save(withAppearance(settings, "color_palette", v))}
         />
       </Row>
       <Row label="Low-contrast dark mode">

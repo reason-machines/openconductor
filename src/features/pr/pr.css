@@ -4,19 +4,19 @@
 .pr-control .pr-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); display: inline-block; }
 .pr-control.tone-out_of_sync .pr-dot { background: var(--amber); }
 .pr-control.tone-in_sync .pr-dot,
-.pr-control.tone-merged .pr-dot { background: var(--add); }
+.pr-control.tone-merged .pr-dot { background: var(--diff-add); }
 .pr-control.tone-queued .pr-dot { background: var(--accent); }
 .pr-control.tone-loading .pr-dot { background: var(--muted); animation: pulse 1.4s ease-in-out infinite; }
-.pr-control.tone-merged { color: var(--add); }
+.pr-control.tone-merged { color: var(--diff-add); }
 .pr-control button:disabled { cursor: default; }
 .pr-split .btn-primary:first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
 .pr-control.pr-split { gap: 0; }
-.pr-split .pr-caret { border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 4px; padding-right: 4px; border-left: 1px solid rgba(255, 255, 255, 0.25); }
-.pr-menu { position: absolute; right: 0; top: calc(100% + 4px); z-index: 40; min-width: 160px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.pr-split .pr-caret { border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 4px; padding-right: 4px; border-left: 1px solid var(--on-solid-divider); }
+.pr-menu { position: absolute; right: 0; top: calc(100% + 4px); z-index: 40; min-width: 160px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px var(--shadow-18); }
 .pr-menu button { display: block; width: 100%; text-align: left; padding: 6px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--text); font-size: 12px; cursor: pointer; }
 .pr-menu button:hover { background: var(--hover); }
-.pr-control .btn-merge { background: var(--add); border-color: var(--add); color: #fff; }
+.pr-control .btn-merge { background: var(--diff-add); border-color: var(--diff-add); color: var(--on-solid); }
 .pr-control .btn-merge:disabled { opacity: 0.7; }
 .pr-control .pr-link { font-family: var(--font-mono); color: var(--muted); }
-.pr-control .btn-approve { border-color: var(--add); color: var(--add); }
+.pr-control .btn-approve { border-color: var(--diff-add); color: var(--diff-add); }
 .pr-control .pr-pending { display: inline-flex; align-items: center; gap: 6px; height: 24px; font-size: 12px; line-height: 16px; color: var(--muted); margin-right: 4px; }

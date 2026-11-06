@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "lint:colors": "node --test scripts/check-colors.test.mjs && node scripts/check-colors.mjs",
     "tauri": "tauri",
     "test:e2e": "node --test tests/e2e/*.e2e.mjs"
   },
