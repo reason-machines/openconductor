@@ -819,6 +819,157 @@ export const flows = [
       }
     },
   },
+  {
+    // Settings › Experimental › "Workspace status matrix" (internal_workspace_status_matrix,
+    // default off): the sidebar rows and Home's rows draw the 4×4 dot matrix
+    // (Conductor's `fJo`, src/components/StatusMatrix.tsx) in place of the row
+    // status icon and the repository initial, fed by the workspace's real status.
+    // A Needs-permission session status must reach both matrices; turning the
+    // switch off brings the ordinary status icons back. The switch saves to
+    // conductor.db's settings table, not settings.toml.
+    // Screenshots: status-matrix-on.png and status-matrix-off.png in E2E_OUT.
+    name: "status-matrix",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
+      const ESC = "\uE00C";
+      const sw = 'input[aria-label="Workspace status matrix"]';
+      const stored = async () =>
+        (await wd.execute("return window.__TAURI_INTERNALS__.invoke('get_settings');", []))?.experimental?.internal_workspace_status_matrix === true;
+      async function setSwitch(want) {
+        await openSettingsPage(wd, "Experimental");
+        await wd.waitFor("the Workspace status matrix switch", async () => (await wd.findAll(sw)).length === 1);
+        if ((await wd.execute("return document.querySelector(arguments[0]).checked;", [sw])) !== want) {
+          await wd.execute("document.querySelector(arguments[0]).scrollIntoView({ block: 'center' });", [sw]);
+          await wd.click((await wd.findAll(sw))[0]);
+        }
+        // A conductor.db settings-table row (src-tauri/src/settings/table_prefs.rs), which get_settings overlays; never settings.toml.
+        await wd.waitFor(`internal_workspace_status_matrix = ${want} in get_settings`, async () => (await stored()) === want);
+        const toml = tomlValue(settingsFile(), "experimental", "internal_workspace_status_matrix");
+        if (toml !== null) throw new Error(`internal_workspace_status_matrix leaked into ${settingsFile()} as ${toml}`);
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys(ESC);
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", []);
+      const want = realpathSync(ctx.worktree);
+      const ws = rows.find((w) => w.workspacePath && existsSync(w.workspacePath) && realpathSync(w.workspacePath) === want);
+      if (!ws) throw new Error(`no stored workspace at ${want}`);
+      const invoke = (cmd, args) =>
+        wd.execute("return window.__TAURI_INTERNALS__.invoke(arguments[0], arguments[1]).then((value) => ({ value }), (e) => ({ refused: String(e) }));", [cmd, args]);
+      const setStatus = async (status) => {
+        const r = await invoke("session_set_status", { chatId: ws.id, workspaceId: ws.id, status });
+        if (r.refused) throw new Error(`session_set_status ${status} was refused (${r.refused})`);
+      };
+
+      const ROWS = '[data-testid="left-sidebar-workspace-item"]';
+      // Every sidebar row's status slot, and the one for this workspace (its title is "label · branch · status").
+      const sidebar = () =>
+        wd.execute(
+          `return Array.from(document.querySelectorAll(arguments[0]), (row) => {
+             const slot = row.querySelector('[data-testid="workspace-status-icon"]');
+             const m = slot?.querySelector('[data-testid="workspace-status-matrix"]');
+             return {
+               mine: (row.getAttribute('title') ?? '').includes(' · ' + arguments[1] + ' · '),
+               status: slot?.dataset.status ?? null,
+               matrixAttr: slot?.dataset.matrix ?? null,
+               role: slot?.getAttribute('role') ?? null,
+               label: slot?.getAttribute('aria-label') ?? null,
+               matrix: m ? { status: m.dataset.status, label: m.getAttribute('aria-label'), dots: m.querySelectorAll('rect, path').length, attention: !!m.querySelector('.workspace-matrix-attention') } : null,
+             };
+           });`,
+          [ROWS, ws.branch],
+        );
+      const mine = async () => (await sidebar()).find((r) => r.mine);
+      const home = () =>
+        wd.execute(
+          `return Array.from(document.querySelectorAll('.allws .allws-row'), (row) => {
+             const m = row.querySelector('[data-testid="home-workspace-status-matrix"] [data-testid="workspace-status-matrix"]');
+             return {
+               initial: !!row.querySelector('.allws-repo-initial'),
+               status: row.querySelector('[data-testid="home-workspace-status"]')?.dataset.status ?? null,
+               matrix: m ? { status: m.dataset.status, label: m.getAttribute('aria-label'), attention: !!m.querySelector('.workspace-matrix-attention') } : null,
+             };
+           });`,
+          [],
+        );
+      const openHome = async () => {
+        const opened = await wd.execute("const b = Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Home'); b?.click(); return !!b;", []);
+        if (!opened) throw new Error("no Home row in the sidebar");
+        await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
+      };
+      const shot = async (name) => {
+        if (!process.env.E2E_OUT) return;
+        const { writeFile } = await import("node:fs/promises");
+        await writeFile(join(process.env.E2E_OUT, name), await wd.screenshot()).catch(() => {});
+      };
+      const failWith = (read) => async (e) => {
+        throw new Error(`${e.message}; saw ${JSON.stringify(await read())}`);
+      };
+
+      if (await stored()) throw new Error("internal_workspace_status_matrix is already on; it defaults to off");
+      const selectedRow = await wd.execute("return [...document.querySelectorAll(arguments[0])].findIndex((b) => b.getAttribute('aria-current') === 'page');", [ROWS]);
+      try {
+        // Off: the ordinary status icon, no matrix anywhere.
+        const before = await wd.waitFor("the workspace's sidebar row", mine).catch(failWith(sidebar));
+        if (before.matrix || before.matrixAttr || before.role !== "img") throw new Error(`sidebar row with the matrix off: ${JSON.stringify(before)}`);
+        if ((await wd.findAll('[data-testid="workspace-status-matrix"]')).length) throw new Error("a status matrix is drawn while the setting is off");
+
+        await setStatus("needs_user_permission");
+        await wd.waitFor("Needs permission on the sidebar row", async () => (await mine())?.status === "needs-user-permission").catch(failWith(mine));
+
+        // On: every sidebar row draws the matrix, and this one carries the real status.
+        await setSwitch(true);
+        const on = await wd
+          .waitFor("the matrix on every sidebar row", async () => {
+            const all = await sidebar();
+            return all.length > 0 && all.every((r) => r.matrix && r.matrixAttr !== null && r.role === null) && all;
+          })
+          .catch(failWith(sidebar));
+        const row = on.find((r) => r.mine);
+        if (!row) throw new Error(`no sidebar row for branch ${ws.branch}: ${JSON.stringify(on)}`);
+        if (row.matrix.status !== "needs-user-permission" || !row.matrix.label.startsWith("Needs permission") || !row.matrix.attention || row.matrix.dots < 2)
+          throw new Error(`the sidebar matrix does not show Needs permission: ${JSON.stringify(row)}`);
+
+        await openHome();
+        const homeOn = await wd
+          .waitFor("the matrix on every Home row", async () => {
+            const all = await home();
+            return all.length > 0 && all.every((r) => r.matrix && !r.initial && r.status === null) && all;
+          })
+          .catch(failWith(home));
+        const homeRow = homeOn.find((r) => r.matrix.status === "needs-user-permission");
+        if (!homeRow || !homeRow.matrix.label.startsWith("Needs permission") || !homeRow.matrix.attention) throw new Error(`no Home matrix shows Needs permission: ${JSON.stringify(homeOn)}`);
+        await shot("status-matrix-on.png");
+
+        // A status change reaches the matrices without touching the setting.
+        await setStatus("idle");
+        await wd.waitFor("the sidebar matrix back to the idle status", async () => {
+          const r = await mine();
+          return r?.matrix && r.matrix.status === before.status && !r.matrix.attention;
+        }).catch(failWith(mine));
+        await wd.waitFor("Needs permission to leave Home's matrices", async () => {
+          const all = await home();
+          return all.length > 0 && all.every((r) => r.matrix && r.matrix.status !== "needs-user-permission");
+        }).catch(failWith(home));
+
+        // Off again: the matrices go and the ordinary icons come back.
+        await setSwitch(false);
+        await wd.waitFor("no status matrix after turning it off", async () => (await wd.findAll('[data-testid="workspace-status-matrix"]')).length === 0).catch(failWith(sidebar));
+        const after = await mine();
+        if (!after || after.matrixAttr || after.role !== "img" || after.status !== before.status || after.label !== before.label)
+          throw new Error(`sidebar row after turning the matrix off: ${JSON.stringify(after)}, want ${JSON.stringify(before)}`);
+        if ((await wd.findAll(".allws")).length === 0) await openHome();
+        const homeOff = await home();
+        if (homeOff.some((r) => r.matrix)) throw new Error(`Home still draws a matrix: ${JSON.stringify(homeOff)}`);
+        await shot("status-matrix-off.png");
+      } finally {
+        await setStatus("idle").catch(() => {});
+        if (await stored().catch(() => false)) await setSwitch(false).catch(() => {});
+        await wd.execute("document.querySelectorAll(arguments[0])[arguments[1]]?.click();", [ROWS, selectedRow]).catch(() => {});
+      }
+    },
+  },
 ];
 
 function settingsFile() {
