@@ -121,7 +121,18 @@ st("settings-repo-misc-lower", "Settings > tide-web > Misc, scrolled to Remove r
    covers=[{"kind":"settings-page","name":"repo-misc"}])
 for sec in ["github","members","preferences","computer","environment","mcp","prompts"]:
     path="/settings/organization/"+sec
-    st("settings-org-"+sec, "Settings > Organization > "+sec, ref(path), oc_reason="OpenConductor has no organization settings", covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
+    # Conductor renders these only for a member of a cloud organization (`lW`; any other account is
+    # sent to /settings/user/general), so the reference runs with ?oc_org=cloud
+    # (tools/screens/org-fixtures.js). OpenConductor's organization is the signed-in Reason workspace,
+    # which the lane's throwaway HOME has none of; tools/side-by-side/org-settings.mjs scores them.
+    # The Cloud computer page (where /github redirects) shows tide-web twice, so it waits for its own copy.
+    # /github is Conductor's redirect to /computer (`REa`), so that is where its reference lands.
+    r = (ref(path, wait=False, actions=[{"wait":"text=Configure your organization's shared cloud computer."}], query={"oc_org":"cloud"},
+             **({"expect_path":"/settings/organization/computer"} if sec=="github" else {}))
+         if sec in ("github","computer") else ref(path, query={"oc_org":"cloud"}))
+    st("settings-org-"+sec, "Settings > Organization > "+sec, r,
+       oc_reason="the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
+       covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
 # The lane's throwaway HOME has no Reason login, so Settings lists no Cloud group to click: open the page
 # the way create's "Set up cloud" does (the app's open-settings event). Its steps then read signed out.
 st("settings-cloud-setup","Settings > Cloud setup", ref("/settings/cloud/setup"),

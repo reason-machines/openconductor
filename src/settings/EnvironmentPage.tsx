@@ -16,18 +16,18 @@ export interface StoredVar {
 const PREVIEW_KEY = "openconductor.envVars.preview";
 
 /** The `env_vars` table (scope `shared`, context `local`); localStorage in the browser preview. */
-const store = {
+export const envVarStore = {
   list: async (): Promise<StoredVar[]> =>
     inTauri() ? invoke<StoredVar[]>("env_vars_list") : (JSON.parse(localStorage.getItem(PREVIEW_KEY) ?? "[]") as StoredVar[]),
   set: async (entries: StoredVar[]): Promise<StoredVar[]> => {
     if (inTauri()) return invoke<StoredVar[]>("env_vars_set", { entries });
-    const next = [...(await store.list()).filter((v) => !entries.some((e) => e.key === v.key)), ...entries];
+    const next = [...(await envVarStore.list()).filter((v) => !entries.some((e) => e.key === v.key)), ...entries];
     localStorage.setItem(PREVIEW_KEY, JSON.stringify(next));
     return next;
   },
   remove: async (key: string): Promise<StoredVar[]> => {
     if (inTauri()) return invoke<StoredVar[]>("env_vars_delete", { key });
-    const next = (await store.list()).filter((v) => v.key !== key);
+    const next = (await envVarStore.list()).filter((v) => v.key !== key);
     localStorage.setItem(PREVIEW_KEY, JSON.stringify(next));
     return next;
   },
@@ -70,7 +70,7 @@ export function EnvironmentPage({ settings, save }: { settings: Settings; save: 
   const [showDocumented, setShowDocumented] = useState(false);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    store.list().then(setVars, (e) => setError(errorText(e)));
+    envVarStore.list().then(setVars, (e) => setError(errorText(e)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const run = (p: Promise<StoredVar[]>) => p.then(setVars, (e) => setError(errorText(e)));
@@ -107,7 +107,7 @@ export function EnvironmentPage({ settings, save }: { settings: Settings; save: 
               <code role="cell" className="settings-env-value">
                 {v.value}
               </code>
-              <button type="button" className="settings-field-icon settings-env-remove" aria-label={`Delete ${v.key}`} onClick={() => run(store.remove(v.key))}>
+              <button type="button" className="settings-field-icon settings-env-remove" aria-label={`Delete ${v.key}`} onClick={() => run(envVarStore.remove(v.key))}>
                 <CloseIcon />
               </button>
             </div>
@@ -135,7 +135,7 @@ export function EnvironmentPage({ settings, save }: { settings: Settings; save: 
           existing={vars ?? []}
           onCancel={() => setAdding(false)}
           onAdd={(entries) =>
-            store.set(entries).then(
+            envVarStore.set(entries).then(
               (next) => {
                 setVars(next);
                 setAdding(false);
