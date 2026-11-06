@@ -3,15 +3,15 @@
    rows px-2.5 py-2 text-sm rounded-md); colours are its tokens
    (evidence/frontend/css-tokens.json: --input, --popover*, --muted-foreground, --accent). */
 .oi {
-  --oi-input: #14100f1a;
-  --oi-bg: #ffffff;
-  --oi-accent: #fafaf9;
-  --oi-sidebar: #fafaf9;
-  --oi-popover: #ffffff;
-  --oi-popover-fg: #211e1c;
-  --oi-popover-accent: #14100f0d;
-  --oi-popover-ring: #211e1c0d;
-  --oi-muted: #8e8885;
+  --oi-input: var(--input);
+  --oi-bg: var(--bg);
+  --oi-accent: var(--surface-accent);
+  --oi-sidebar: var(--sidebar-background);
+  --oi-popover: var(--popover);
+  --oi-popover-fg: var(--popover-text);
+  --oi-popover-accent: var(--popover-hover);
+  --oi-popover-ring: var(--popover-ring);
+  --oi-muted: var(--muted);
   --oi-icon-blend: darken;
   position: relative;
   display: inline-flex;
@@ -21,28 +21,10 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .oi {
-    --oi-input: #ffffff33;
-    --oi-bg: #141110;
-    --oi-accent: #2c2826;
-    --oi-sidebar: #211e1c;
-    --oi-popover: #2c2826;
-    --oi-popover-fg: #eae8e6;
-    --oi-popover-accent: #ffffff0d;
-    --oi-popover-ring: #ffffff1a;
-    --oi-muted: #a5a09c;
     --oi-icon-blend: lighten;
   }
 }
 :root[data-theme="dark"] .oi {
-  --oi-input: #ffffff33;
-  --oi-bg: #141110;
-  --oi-accent: #2c2826;
-  --oi-sidebar: #211e1c;
-  --oi-popover: #2c2826;
-  --oi-popover-fg: #eae8e6;
-  --oi-popover-accent: #ffffff0d;
-  --oi-popover-ring: #ffffff1a;
-  --oi-muted: #a5a09c;
   --oi-icon-blend: lighten;
 }
 
@@ -53,7 +35,7 @@
   height: 24px;
   padding: 0 8px;
   border: 1px solid var(--oi-input);
-  transition: transform 150ms ease-out;
+  transition: transform var(--oc-motion-press) var(--oc-motion-ease-out); /* transition-transform duration-150 ease-out */
 }
 .oi-main { border-right: 0; border-radius: 4px 0 0 4px; background: var(--oi-bg); }
 .oi-chevron { border-radius: 0 4px 4px 0; background: color-mix(in srgb, var(--oi-sidebar) 4%, transparent); }
@@ -71,13 +53,14 @@
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
+  transform-origin: top right;
   z-index: 1000;
   width: 192px;
   padding: 4px;
   border-radius: 8px;
   background: var(--oi-popover);
   color: var(--oi-popover-fg);
-  box-shadow: 0 0 0 1px var(--oi-popover-ring), 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  box-shadow: 0 0 0 1px var(--oi-popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10);
 }
 .oi-row {
   display: flex;

@@ -1,45 +1,53 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MouseEvent as ReactMouseEvent, type MutableRefObject, type ReactNode } from "react";
-import { ChatTabMenu, forkShortcut, type ChatTabMenuActions } from "../features/chat/ChatTabMenu.tsx";
-import { copiedTranscriptToast, transcriptText, type TranscriptMode } from "../features/chat/transcriptCopy.ts";
-import { copyText } from "../features/openIn/apps.ts";
-import { COPIED_LINK, COPY_LINK_FAILED, workspaceLink } from "../workspace/link.ts";
-import { boolPref } from "../settings/prefs.ts";
-import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider.tsx";
-import { effectiveShortcuts } from "../keybindings/overrides.ts";
-import { glyphs } from "../keybindings/shortcut.ts";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type Dispatch, type MouseEvent as ReactMouseEvent, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
-import { BranchIcon, RightSidebarIcon } from "./Icons";
+import { BranchIcon, ChevronIcon, RightSidebarIcon } from "./Icons";
 import { toggleRightPanel } from "./panelPrefs";
+import { clearManuallyUnread, markManuallyUnread, readOnView, setSelectedChat, setShownChat } from "../state/autoUnread";
+import { isChatUnread } from "../state/chatUnread";
+import { chatTabStatus, chatTabUnreadDot } from "../state/chatTabUnread";
+import { onChatRequest, takeChatRequest } from "../state/openChat";
+import { useWindowFocused } from "../state/useAutoUnread";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { answerPermission, chatSnapshot, configureReason, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, reasonChatConfig, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type PermissionPrompt } from "../features/chat/reasonChat.ts";
+import { configureReason, configureReasonDefault, reasonAvailable, reasonChatConfig } from "../features/chat/reasonChat.ts";
+import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
+import { chatStatuses, subscribeChatStatuses, type ChatSnapshot, type PermissionPrompt } from "../features/chat/chatRuntime.ts";
 import { PermissionRequests } from "../features/chat/PermissionRequests.tsx";
-import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
+import { copiedTranscriptMessage, forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
 import { forkToNewWorkspace } from "../features/chat/forkWorkspace.ts";
 import { createWorkspace, ensureRepository } from "../workspace/api";
 import { generateWorkspaceNames } from "../workspace/naming";
 import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { canMinimize } from "../features/chat/composerMinimize.ts";
+import { useComposerMinimize } from "../features/chat/useComposerMinimize.ts";
+import { AgentBinaryBanner } from "../features/chat/AgentBinaryBanner.tsx";
+import { binaryAgentFor } from "../features/chat/agentBinaries.ts";
 import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
 import { ChatEmptyState } from "../features/chat/ChatEmptyState.tsx";
 import { NewChatButton } from "../features/chat/NewChatButton.tsx";
 import { atTabLimit, tabLimitToast } from "../features/chat/chatTabs.ts";
+import { chatAfterClose, popClosedTab, pushClosedTab, recordViewedChat } from "../features/chat/closedTabs.ts";
 import { lastUserMessageAt, type OtherChat } from "../features/chat/chatEmptyState.ts";
-import type { ChatAgent } from "../features/chat/chatAgentChoice.ts";
-import { commandSet, isKnownCommand, parseSlashCommand } from "../features/chat/slashCommands.ts";
+import { AGENT_NAMES, commandSet, isKnownCommand, parseSlashCommand, type ComposerAgent } from "../features/chat/slashCommands.ts";
+import { useAgentCommands } from "../features/chat/slashCompletions.ts";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
 import { CodexConsentCard } from "../features/chat/CodexConsentCard.tsx";
-import { answerCodex, answerCodexConsent, CODEX_ACCESS, CODEX_CAN_STEER, codexAccess, codexQueueAction, codexSnapshot, setCodexAccess, stopCodex, submitCodex, subscribeCodex, type CodexAccess, type CodexSnapshot } from "../features/chat/codexChat.ts";
+import type { CodexConsent } from "../features/chat/codexConsent.ts";
+import { answerCodex, answerCodexConsent, CODEX_ACCESS, codexAccess, setCodexAccess, type CodexAccess } from "../features/chat/codexChat.ts";
 import { DECISION_LABELS, type CodexApproval, type CodexDecision } from "../features/chat/codex.ts";
 import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
 import { TurnChanges } from "../features/chat/TurnChanges.tsx";
 import type { TurnRef } from "../features/diff/turnChangesCache.ts";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
+import { filterActive, filterToggleShown, toggleFilter } from "../features/diff/changesFilter";
+import { SearchIcon } from "../features/files/panelIcons";
+import { Tooltip } from "./ui/Tooltip.tsx";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
 import { showUncommittedChanges, TARGET_REMOTE, targetBranch } from "../features/diff/target";
 import type { DiffScope, FileDiff } from "../features/diff/types";
@@ -58,14 +66,19 @@ import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { openBigTab } from "../features/terminal/session";
 import { bigTabRequest } from "../features/terminal/bigTerminal";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
-import { ScriptsPanel } from "./ScriptsPanel";
+import { PRIORITY } from "../keybindings/dispatcher.ts";
+import { PanelStrip, type StripView } from "./PanelStrip";
+import "./rightPanel.css";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
 import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest";
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
+import { PullLatestButton, usePullLatest } from "../features/pr/usePullLatest.tsx";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
-import { AllFilesTree } from "../features/files/AllFilesTree";
+import { fixShortcutApplies } from "../features/pr/checks/fixErrors";
+import { useFixErrors, type FixErrors } from "../features/pr/checks/useFixErrors";
+import { AllFilesTree, FilesToolbarButtons, useFilesToolbar } from "../features/files/AllFilesTree";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
 import { BranchPicker } from "../features/pr/edit/BranchPicker";
@@ -76,6 +89,9 @@ import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } fr
 import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
+import { useBoolPref } from "../settings/useBoolPref";
+import { workspaceNumberLabel } from "../state/workspaceNumber";
+import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 
 interface Props {
@@ -83,15 +99,22 @@ interface Props {
   workspace: Workspace;
   dispatch: Dispatch<Action>;
   notify?: ArchiveNotify;
+  /** Copy link (`XV`), which the header's W-<n> badge runs. */
+  onCopyLink?: () => void;
+  /** Opens the next unread chat (the composer's "Next unread" button). */
+  onNextUnread?: () => void;
+  /** Whether a chat other than `selectedChatId` is unread: the button shows only then. */
+  hasNextUnread?: (selectedChatId: string) => boolean;
 }
 
-// The chat runs Reason in the desktop app (one Reason Session per chat,
-// `features/chat/reasonChat.ts`): the workspace's own chat has the workspace
-// id, review chats their own. The browser preview uses a stand-in agent. Turn
+// In the desktop app the workspace's own chat runs the agent picked in the
+// composer (`features/chat/agents.ts`): Reason (one Reason Session per chat,
+// `features/chat/reasonChat.ts`) or Claude Code (the signed-in `claude` CLI,
+// `features/chat/claudeChat.ts`). It has the workspace id; review chats their
+// own and always run Reason. The browser preview uses a stand-in agent. Turn
 // lifecycle, Stop and the follow-up queue live in `features/chat/queue.ts`.
-/** The "/" menu for a Reason chat: Reason runs as an ACP agent, so only its own commands (none reported yet). */
-const SLASH_COMMANDS = commandSet({ agent: "acp" });
-const CODEX_SLASH_COMMANDS = commandSet({ agent: "codex" });
+/** The "/" menu's agent for a chat's agent: Reason runs as an ACP agent. */
+const COMPOSER_AGENT: Record<ChatAgentId, ComposerAgent> = { reason: "acp", codex: "codex", claude: "claude" };
 /** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
 
@@ -134,14 +157,12 @@ function branchedFrom(repo: Repo, workspace: Workspace): string | null {
 
 /** Another chat tab of the workspace, with its last user message, for the empty chat's transcript chips. */
 function otherChat(chatId: string, title: string, reason: boolean): OtherChat {
-  const agent = reason && savedAgent(chatId) === "codex" ? "codex" : "reason";
-  const messages = (agent === "codex" ? codexSnapshot(chatId) : chatSnapshot(chatId)).transcript.messages;
-  return { chatId, title, agent, lastUserMessageAt: lastUserMessageAt(messages) };
+  const agent: ChatAgentId = reason ? savedAgent(chatId) : "reason";
+  return { chatId, title, agent, lastUserMessageAt: lastUserMessageAt(agentSnapshot(agent, chatId).transcript.messages) };
 }
 
-// Which agent runs a chat; each keeps its own transcript.
-const agentKey = (chatId: string) => `openconductor.agent.${chatId}`;
-const savedAgent = (chatId: string): ChatAgent => (localStorage.getItem(agentKey(chatId)) === "codex" ? "codex" : "reason");
+/** The transcript of the chat shown under `chatId` on `agent` (Claude Code keeps its own chat id). */
+const agentSnapshot = (agent: ChatAgentId, chatId: string) => CHAT_AGENTS[agent].snapshot(CHAT_AGENTS[agent].chatId(chatId));
 
 /** Codex asks before a command or patch; the turn waits for the answer. */
 function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswer: (d: CodexDecision) => void }) {
@@ -161,18 +182,32 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
-/** What the chat panel shows: Codex's approvals, or Reason's permission requests. */
-type ChatView = CodexSnapshot & { permissions?: readonly PermissionPrompt[] };
+/** What the chat panel shows: Codex's approvals and consent requests, or the permission requests of Reason and Claude Code. */
+type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly PermissionPrompt[]; approvals?: CodexApproval[]; consents?: CodexConsent[] };
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, forkToNewTab, chatTabs }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
-  const [agent, setAgent] = useState<ChatAgent>(() => savedAgent(chatId));
-  const codex = reason && agent === "codex";
-  const snapshotOf = (a: ChatAgent): ChatView => (reason && a === "codex" ? codexSnapshot(chatId) : { ...chatSnapshot(chatId), approvals: [], consents: [] });
-  const [{ transcript, queue, approvals, consents, permissions = [] }, setSnapshot] = useState<ChatView>(() => snapshotOf(agent));
+  const [picked, setPicked] = useState<Record<string, ChatAgentId>>({});
+  const agentId: ChatAgentId = reason ? (picked[chatId] ?? savedAgent(chatId)) : "reason";
+  const agent = CHAT_AGENTS[agentId];
+  const codex = agentId === "codex";
+  // The "/" menu: Conductor's built-ins for the agent, then the commands and
+  // skills the agent reports for this folder (agent_commands backend).
+  const reported = useAgentCommands(agentId, cwd);
+  const slashCommands = useMemo(
+    () => commandSet({ agent: COMPOSER_AGENT[agentId], agentCommands: reported?.slashCommands, skills: reported?.skills }),
+    [agentId, reported],
+  );
+  /** The chat id on the agent's side. */
+  const runId = agent.chatId(chatId);
+  // Codex's snapshots carry its pending approvals and consent requests; the others' carry permission requests.
+  const [{ transcript, queue, approvals = [], consents = [], permissions = [] }, setSnapshot] = useState<ChatView>(() => agent.snapshot(runId));
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
+  // The card shows the oldest open request; while it is a plan, the message box asks for changes to it.
+  const waiting = permissions[0];
+  const planWaiting = waiting?.kind === "plan" ? waiting : undefined;
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
   const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
@@ -193,27 +228,19 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Garry Mode (Conductor's `garry_mode`, "Don't collapse tool calls", toggled with ⌃O): tool
   // groups stay open after the turn ends and tool calls start expanded.
   const garryMode = useAppPrefs().garry_mode;
-
-  useEffect(() => {
-    setAgent(savedAgent(chatId));
-    setAccess(codexAccess(chatId));
-  }, [chatId]);
-
-  // Follows the chat and its agent (picking another agent shows that agent's transcript and queue).
-  useEffect(() => {
-    setSnapshot(snapshotOf(agent));
-    return codex ? subscribeCodex(chatId, setSnapshot) : subscribeChat(chatId, (s) => setSnapshot({ ...s, approvals: [], consents: [] }));
-  }, [chatId, agent]);
-
-  function chooseAgent(next: ChatAgent) {
-    localStorage.setItem(agentKey(chatId), next);
-    setAgent(next);
-  }
+  // Experimental › "Fork chat to new tab" turns on ⌥⌘↩ (Conductor's `experimental_fork_to_new_tab`).
+  const forkTabEnabled = useBoolPref("experimental_fork_to_new_tab");
+  const followUpMode = useFollowUpMode();
 
   useEffect(() => {
     setDraft("");
     setAttachments([]);
     setAttachError(null);
+    setAccess(codexAccess(chatId));
+  }, [chatId]);
+
+  useEffect(() => {
+    setSnapshot(agent.snapshot(runId));
     setResetTurn(null);
     const pendingMessage = takePendingMessage(chatId);
     if (pendingMessage?.kind === "draft") {
@@ -221,16 +248,22 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       setAttachments(pendingMessage.attachments ?? []);
       inputRef.current?.focus();
     }
-    // The workspace's chat runs the default model unless the New workspace dialog picked one.
+    const unsubscribe = agent.subscribe(runId, setSnapshot);
+    // The workspace's Reason chat runs the default model unless the New workspace dialog picked one.
     if (main) configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
     if (pendingMessage?.kind === "send") submit(pendingMessage.text, "queue", pendingMessage.attachments);
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      if (reason && savedAgent(chatId) === "codex") submitCodex(chatId, cwd, first);
-      else sendReason(workspace.id, cwd, first, [], repo.path || undefined);
+      agent.submit(runId, cwd, first, "queue", [], repo.path || undefined);
     }
-  }, [chatId]);
+    return unsubscribe;
+  }, [chatId, agentId]);
+
+  function pickAgent(next: ChatAgentId) {
+    saveAgent(chatId, next);
+    setPicked((p) => ({ ...p, [chatId]: next }));
+  }
 
   // The draft is kept between launches (`composer-drafts`, keyed by the chat
   // session, which is the workspace): loaded when the workspace opens, saved
@@ -273,39 +306,36 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
-  }, [transcript]);
+  }, [transcript, waiting]);
 
-  // Attachments (a review request, revert notes) go to Reason as embedded files and show by name.
-  // Codex gets them inline in the prompt.
+  // Attachments (a review request, revert notes) go to the agent with the message and show by name.
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
-    const useCodex = reason && savedAgent(chatId) === "codex";
-    const before = useCodex ? codexSnapshot(chatId).transcript : chatSnapshot(chatId).transcript;
-    const first = main && !before.messages.some((m) => m.role === "user");
-    if (useCodex) submitCodex(chatId, cwd, text, attached);
-    else submitChat(chatId, cwd, text, mode, attached, repo.path || undefined);
+    const first = main && !agent.snapshot(runId).transcript.messages.some((m) => m.role === "user");
+    agent.submit(runId, cwd, text, mode, attached, repo.path || undefined);
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
-  // The chat's model, for the turn footer hover. A Codex chat names only its agent.
+  // The chat's model, for the turn footer hover. A Codex or Claude Code chat names only its agent.
   useEffect(() => {
     let live = true;
-    setTurnAgent(codex ? "Codex" : "Reason");
-    if (!codex)
+    setTurnAgent(agent.label);
+    if (agentId === "reason")
       void reasonChatConfig(chatId).then((config) => {
         if (live) setTurnAgent(turnAgentLabel(config.find((o) => o.id === "model")?.value, "Reason"));
       });
     return () => {
       live = false;
     };
-  }, [chatId, codex]);
+  }, [chatId, agentId]);
 
   /**
    * Conductor's "Fork to new tab" (`y9t`): a new tab in this workspace on this
-   * chat's options, with the conversation up to `turnId` attached as
-   * "Transcript of <title>.md" and this composer's text copied. Not sent.
+   * chat's options, with the conversation up to `turnId` (all of it when
+   * omitted, as ⌥⌘↩ forks) attached as "Transcript of <title>.md" and this
+   * composer's text copied. Not sent.
    */
-  async function forkToTab(turnId: string) {
+  async function forkToTab(turnId?: string) {
     setAttachError(null);
     const markdown = forkTranscript(transcript, turnId);
     if (markdown === null) {
@@ -314,10 +344,11 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     }
     setForking(true);
     try {
-      const config = codex ? [] : await reasonChatConfig(chatId);
+      // Only Reason chats carry options; a fork of a Codex or Claude Code chat keeps its agent.
+      const config = agentId === "reason" ? await reasonChatConfig(chatId) : [];
       const title = review?.title ?? workspace.name;
       const id = forkToNewTab(`Fork of ${title}`, config, { text: draft, attachments: [{ name: forkAttachmentName(title), text: markdown }] });
-      if (codex) localStorage.setItem(agentKey(id), "codex");
+      if (agentId !== "reason") saveAgent(id, agentId);
     } catch (e) {
       setAttachError(e instanceof Error ? e.message : "Failed to fork chat to new tab");
     } finally {
@@ -371,8 +402,43 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     }
   }
 
+  /** Conductor's "Copy concise transcript": the whole chat in the fork's concise Markdown, to the clipboard. */
+  async function copyConciseTranscript() {
+    const text = forkTranscript(transcript);
+    if (!text?.trim()) return notify?.("info", "No chat content to copy");
+    try {
+      await navigator.clipboard.writeText(text);
+      notify?.("info", copiedTranscriptMessage("concise", review?.title ?? workspace.name));
+    } catch {
+      notify?.("error", "Failed to copy concise transcript");
+    }
+  }
+
+  // ⌥⌘C and ⌥⌘↩ act on the chat on screen, as Conductor binds them on the active chat tab
+  // (renderApp-D_fmY7hW.js ~7,376,706, priority 100). The fork needs the "Fork chat to new tab"
+  // experimental setting and a workspace that is not archived; otherwise the key passes on.
+  const chatShown = content === null;
+  // Conductor's minimized composer: one row while a file diff or the PR fills the area and the box is empty.
+  const minimize = useComposerMinimize(
+    !chatShown,
+    canMinimize({ draft, hasAttachments: attachments.length > 0 || attachError !== null, approvalWaiting: (waiting !== undefined && !planWaiting) || approvals.length > 0 || consents.length > 0, planWaiting: planWaiting !== undefined }),
+  );
+  useKeybindings(
+    {
+      "chat.copyTextConcise": () => {
+        if (!chatShown) return false;
+        void copyConciseTranscript();
+      },
+      "chat.forkToNewTab": () => {
+        if (!chatShown || !forkTabEnabled || workspace.status === "archived") return false;
+        if (!forking) void forkToTab();
+      },
+    },
+    PRIORITY.HIGH,
+  );
+
   const turnFooter = (turnId: string) => {
-    const turn = turnCheckpointRef(chatId, turnId);
+    const turn = turnCheckpointRef(runId, turnId);
     return <TurnChanges turn={turn} worktree={workspace.path ?? null} onOpenFile={(path) => openTurnFile(turn, path)} />;
   };
 
@@ -435,7 +501,12 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   return (
     <section className="chat" aria-label="Chat">
       {tabs}
-      {content}
+      {/* Conductor minimizes the empty composer when the content tab scrolls (onScrollCapture → minimizeIfEmpty). */}
+      {content !== null ? (
+        <div className="chat-content" onScrollCapture={minimize.minimizeIfEmpty}>
+          {content}
+        </div>
+      ) : null}
       <div className="chat-scroll" hidden={content !== null}>
         {review && !review.fork && !review.blank && (
           <div className="review-chat-info muted" role="note">
@@ -453,7 +524,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             otherChats={chatTabs.filter((t) => t.chatId !== chatId).map((t) => otherChat(t.chatId, t.title, reason))}
             onAttachTranscript={(c) => {
               // Conductor: "Transcript of <title>.md", or "No messages in this chat".
-              const text = forkTranscript((c.agent === "codex" ? codexSnapshot(c.chatId) : chatSnapshot(c.chatId)).transcript);
+              const text = forkTranscript(agentSnapshot(c.agent, c.chatId).transcript);
               if (text === null) return setAttachError("No messages in this chat");
               setAttachments((list) => addAttachment(list, { name: forkAttachmentName(c.title), text }));
             }}
@@ -464,32 +535,33 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             expandToolsByDefault={garryMode}
             dontCollapseToolCalls={garryMode}
             onRetry={(prompt) => submit(prompt, "queue")}
-            // Conductor: workspace with a path, not archived; disabled while the agent works.
-            // Reset chat and turn changes come from Reason turn checkpoints; Codex turns have none yet.
-            onResetChat={reason && !codex && workspace.status !== "archived" ? setResetTurn : undefined}
-            resetDisabled={running}
-            turnFooter={codex ? undefined : turnFooter}
+            // Conductor: workspace with a path, not archived; disabled while the agent works or a plan waits.
+            // Reset chat and turn changes come from turn checkpoints (Reason, Claude Code); Codex turns have none yet.
+            onResetChat={reason && agent.reset && workspace.status !== "archived" ? setResetTurn : undefined}
+            resetDisabled={running || planWaiting !== undefined}
+            turnFooter={agent.reset ? turnFooter : undefined}
             workspacePath={cwd}
             onOpenFile={openFile ? (path) => openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined}
             // Conductor: any turn of a chat in a workspace that is not archived; disabled while a fork is made.
-            onForkToNewTab={workspace.status !== "archived" ? (turnId) => void forkToTab(turnId) : undefined}
+            onForkToNewTab={workspace.status !== "archived" ? (turnId: string) => void forkToTab(turnId) : undefined}
             // Conductor: the same, and only for a workspace on this machine. It restores the turn's
-            // end checkpoint, which only Reason turns have so far.
-            onForkToNewWorkspace={reason && !codex && workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
+            // end checkpoint under the Reason chat id, so Codex and Claude Code chats do not offer it yet.
+            onForkToNewWorkspace={reason && agentId === "reason" && workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
             forkDisabled={forking}
             turnAgent={turnAgent}
+            chatAgent={agentId}
           />
         )}
         <div ref={endRef} />
       </div>
       {resetTurn !== null ? (
         <ResetChatDialog
-          loadChangedCount={() => changedSinceTurn(invoke, cwd, chatId, resetTurn)}
-          onConfirm={(resetFiles) => resetReasonChat(chatId, cwd, resetTurn, resetFiles)}
+          loadChangedCount={() => changedSinceTurn(invoke, cwd, runId, resetTurn)}
+          onConfirm={(resetFiles) => (agent.reset ? agent.reset(runId, cwd, resetTurn, resetFiles) : Promise.resolve())}
           onClose={() => setResetTurn(null)}
         />
       ) : null}
-      <PermissionRequests permissions={permissions} onAnswer={(requestId, optionId) => void answerPermission(chatId, requestId, optionId)} />
+      <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => void agent.answerPermission?.(runId, requestId, answer)} onStop={() => agent.stop(runId)} />
       {codex && approvals.length > 0 ? (
         <div className="codex-approvals">
           {approvals.map((a) => (
@@ -504,15 +576,29 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           ))}
         </div>
       ) : null}
+      {onNextUnread ? (
+        // parity:sidebar.ws-unread — Conductor's g1o (renderApp @7,528,638): a small outline
+        // "Next unread" button with a chevron, 40px above the composer's right edge.
+        <div className="next-unread-anchor">
+          <button type="button" className="btn btn-small next-unread" onClick={onNextUnread}>
+            <span>Next unread</span>
+            <ChevronIcon size={12} />
+          </button>
+        </div>
+      ) : null}
+      <AgentBinaryBanner agent={binaryAgentFor(agentId)} />
       <Composer
         draft={draft}
         setDraft={setDraft}
         inputRef={inputRef}
+        // Conductor: while a plan waits, the message box asks for changes to it; otherwise its own placeholders.
+        placeholder={planWaiting ? "Enter your plan adjustments here..." : undefined}
         queue={queue}
-        canSteer={codex ? CODEX_CAN_STEER : REASON_CAN_STEER}
-        onSubmit={onSubmit}
-        onStop={() => (codex ? stopCodex : stopChat)(chatId)}
-        onQueue={(action) => (codex ? codexQueueAction : queueAction)(chatId, action)}
+        canSteer={agent.canSteer}
+        followUpMode={followUpMode}
+        onSubmit={planWaiting ? (text) => void agent.answerPermission?.(runId, planWaiting.requestId, { kind: "plan", approved: false, feedback: text }) : onSubmit}
+        onStop={() => agent.stop(runId)}
+        onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
         controls={
           // Codex's access mode; the agent itself is picked in the model picker.
@@ -540,20 +626,20 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           review && !review.blank ? (
             <span className="oc-review-model">{review.modelLabel}</span>
           ) : (
-            // A review chat keeps its model. The agent changes only between turns.
-            <ChatModelPicker chatId={chatId} agent={codex ? "codex" : "reason"} onAgentChange={reason && !running ? chooseAgent : undefined} />
+            // A review chat keeps its model. The agent changes only while no turn runs and no message waits, so queued messages never move to another agent.
+            <ChatModelPicker chatId={chatId} agent={agentId} onAgentChange={reason && queue.status === "idle" && queue.items.length === 0 ? pickAgent : undefined} />
           )
         }
-        slashCommands={codex ? CODEX_SLASH_COMMANDS : SLASH_COMMANDS}
+        slashCommands={slashCommands}
         onCommand={(text) => {
-          // Reason runs as an ACP agent and Codex here through its app server: Conductor's built-in commands are not wired for either yet.
-          const commands = codex ? CODEX_SLASH_COMMANDS : SLASH_COMMANDS;
+          // Conductor's built-in effects are not wired here yet; the agent's own commands and skills go to the agent as typed.
           const cmd = parseSlashCommand(text, isKnownCommand);
-          if (!cmd || commands.some((c) => c.name === cmd.name && c.effect === "agent")) return false;
-          const who = codex ? "Codex" : "Reason";
+          if (!cmd || slashCommands.some((c) => c.name === cmd.name && (c.effect === "agent" || c.effect === "skill"))) return false;
+          const who = agentId === "reason" ? "Reason" : AGENT_NAMES[COMPOSER_AGENT[agentId]];
           setAttachError(cmd.name === "plan" ? "Plan mode is not available in this chat." : `/${cmd.name} is not available for ${who}.`);
           return true;
         }}
+        minimize={minimize}
         attachments={
           attachments.length > 0 || attachError ? (
             <div className="composer-attachments" aria-label="Attachments">
@@ -584,14 +670,15 @@ interface RightPanelProps {
   pr: PullRequest;
   worktree: string | null;
   review: ReactNode;
-  repo: Repo;
-  /** Fix errors: send to the workspace's own chat. */
-  sendToChat: (text: string, attachments: TextAttachment[]) => void;
+  /** Fix errors (shared with the `git.fixErrors` shortcut). */
+  fixErrors: FixErrors;
   readOnly: boolean;
   notify?: ArchiveNotify;
+  /** Under the empty Changes list: "Pull latest from <target>" (shared with the `git.pull` shortcut). */
+  emptyAction?: ReactNode;
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly, notify }: RightPanelProps) {
+function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -607,34 +694,59 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
   });
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
+  const files = useFilesToolbar();
+  // parity:diff.changes-list:ui Conductor's "Filter files" (changesFilter.ts): the toggle sits after Review, the row in ChangesList.
+  const [changesFilter, setChangesFilter] = useState({ open: false, query: "" });
+  useEffect(() => setChangesFilter({ open: false, query: "" }), [worktree]);
+  const filterOn = filterActive(changesFilter.open, changesFilter.query);
+  const filter = {
+    ...changesFilter,
+    setQuery: (query: string) => setChangesFilter({ open: true, query }),
+    close: () => setChangesFilter({ open: false, query: "" }),
+  };
+  const tabButton = (id: typeof tab, label: ReactNode) => (
+    <button type="button" role="tab" aria-selected={tab === id} className={`rp-tab${tab === id ? " active" : ""}`} onClick={() => setTab(id)}>
+      {label}
+    </button>
+  );
   return (
     <section className="diff" aria-label="Changes">
-      <div className="tabs" role="tablist">
-        <button role="tab" aria-selected={tab === "files"} className={tab === "files" ? "active" : ""} onClick={() => setTab("files")}>
-          All files
-        </button>
-        <button role="tab" aria-selected={tab === "changes"} className={tab === "changes" ? "active" : ""} onClick={() => setTab("changes")}>
-          Changes {count ? <span className="tab-count">{count}</span> : null}
-        </button>
-        <button role="tab" aria-selected={tab === "checks"} className={tab === "checks" ? "active" : ""} onClick={() => setTab("checks")}>
-          Checks {checksStatus ? <span className={`checks-dot ${checksStatus}`} aria-label={checksStatus} /> : null}
-        </button>
-        {/* Conductor shows Review only while the workspace has changes. */}
-        {count ? <span className="tabs-end">{review}</span> : null}
+      {/* Conductor's right panel: All files, Changes N, Checks, then the tab's own icons at the right end. */}
+      <div className="rp-tabs" role="tablist">
+        {tabButton("files", "All files")}
+        {tabButton("changes", <>Changes {count ? <span className="tab-count">{count}</span> : null}</>)}
+        {tabButton("checks", <>Checks {checksStatus ? <span className={`checks-dot ${checksStatus}`} aria-label={checksStatus} /> : null}</>)}
+        <span className="rp-tabs-end">
+          {tab === "files" && <FilesToolbarButtons toolbar={files} />}
+          {/* Conductor shows Review only while the workspace has changes. */}
+          {tab === "changes" && count ? review : null}
+          {tab === "changes" && filterToggleShown(filterOn, count ?? 0) && (
+            <Tooltip content="Filter files">
+              <button
+                type="button"
+                className={`rp-icon${filterOn ? " on" : ""}`}
+                aria-label="Filter files"
+                aria-pressed={filterOn}
+                onClick={() => setChangesFilter((f) => toggleFilter(f.open, f.query))}
+              >
+                <SearchIcon size={12} />
+              </button>
+            </Tooltip>
+          )}
+        </span>
       </div>
       {tab === "changes" ? (
-        <ChangesList diff={diff} actions={actions} worktree={worktree} notify={notify} />
+        <ChangesList diff={diff} actions={actions} worktree={worktree} emptyAction={emptyAction} filter={filter} notify={notify} />
       ) : tab === "checks" ? (
         <ChecksTab
           worktree={worktree}
           pr={pr.pr}
           refresh={pr.refresh}
-          repoId={repo.id}
-          sendToChat={sendToChat}
+          fixErrors={fixErrors}
           readOnly={readOnly}
         />
       ) : (
-        <AllFilesTree worktree={worktree} notify={notify} />
+        <AllFilesTree worktree={worktree} notify={notify} toolbar={files} />
       )}
     </section>
   );
@@ -642,6 +754,11 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
 
 /** "chat" (the workspace's chat), "diff" (All changes), "pr" (the PR tab) or a review chat's id. */
 type MainTab = string;
+
+/** The tab that shows `chatId` of the workspace: "chat" for its own chat (or none), else the review chat's id. */
+function tabOfChat(workspaceId: string, chatId: string | undefined): MainTab {
+  return chatId === undefined || chatId === workspaceId ? "chat" : chatId;
+}
 
 interface MainTabsProps {
   title: string;
@@ -654,34 +771,40 @@ interface MainTabsProps {
   onSelect: (t: MainTab) => void;
   onCloseDiff: () => void;
   onCloseReview: (chatId: string) => void;
+  /** The workspace's own chat id (its tab is "chat"). */
+  mainChatId: string;
+  isUnread: (chatId: string) => boolean;
+  /** The chat tab menu's "Mark as read" / "Mark as unread". */
+  onToggleRead: (chatId: string) => void;
   /** The "+" after the chat tabs (NewChatButton). */
   newChat: ReactNode;
-  /** Right-click on a chat tab (the workspace chat or a review/fork chat): Conductor's `u8i` menu. */
-  onChatMenu?: (chatId: string, at: { x: number; y: number }) => void;
-  /** The workspace chat's id. */
-  mainChatId: string;
 }
 
-function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview, newChat, onChatMenu, mainChatId }: MainTabsProps) {
-  const menu = (chatId: string) => (e: ReactMouseEvent) => {
-    if (!onChatMenu) return;
+function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead, newChat }: MainTabsProps) {
+  const [menu, setMenu] = useState<{ chatId: string; x: number; y: number } | null>(null);
+  const openMenu = (chatId: string) => (e: ReactMouseEvent) => {
     e.preventDefault();
-    onChatMenu(chatId, { x: e.clientX, y: e.clientY });
+    setMenu({ chatId, x: e.clientX, y: e.clientY });
   };
+  const statuses = useSyncExternalStore(subscribeChatStatuses, chatStatuses);
+  // Conductor's l8i before the chat tab's title: an 8px --unread dot while the chat is unread and idle.
+  const unreadDot = (chatId: string) => (chatTabUnreadDot(isUnread(chatId), chatTabStatus(statuses, chatId)) ? <ChatTabUnreadDot /> : null);
   return (
     <div className="tabs main-tabs" role="tablist" aria-label="Workspace tabs">
+      {menu && <ChatTabMenu at={menu} unread={isUnread(menu.chatId)} onToggleRead={() => onToggleRead(menu.chatId)} onClose={() => setMenu(null)} />}
       {diffOpen && (
         <span className={`main-tab${active === "diff" ? " active" : ""}`}>
           <button role="tab" aria-selected={active === "diff"} className={active === "diff" ? "active" : ""} onClick={() => onSelect("diff")}>
             All changes
           </button>
-          <button className="main-tab-close" onClick={onCloseDiff} title="Close tab" aria-label="Close All changes tab">
+          <button className="main-tab-close" onClick={onCloseDiff} aria-label="Close All changes tab">
             ×
           </button>
         </span>
       )}
       <span className={`main-tab${active === "chat" ? " active" : ""}`}>
-        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")} onContextMenu={menu(mainChatId)} title={title}>
+        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")} onContextMenu={openMenu(mainChatId)} data-unread={isUnread(mainChatId) || undefined}>
+          {unreadDot(mainChatId)}
           {title}
         </button>
       </span>
@@ -690,22 +813,71 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           <button role="tab" aria-selected={active === "pr"} className={active === "pr" ? "active" : ""} onClick={() => onSelect("pr")}>
             {prTab}
           </button>
-          <button className="main-tab-close" onClick={onClosePr} title="Close tab" aria-label={`Close ${prTab} tab`}>
+          <button className="main-tab-close" onClick={onClosePr} aria-label={`Close ${prTab} tab`}>
             ×
           </button>
         </span>
       )}
       {reviews.map((r) => (
         <span key={r.chatId} className={`main-tab${active === r.chatId ? " active" : ""}`}>
-          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} onContextMenu={menu(r.chatId)} title={r.fork || r.blank ? r.title : `Code review on ${r.modelLabel}`}>
+          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} onContextMenu={openMenu(r.chatId)} data-unread={isUnread(r.chatId) || undefined} title={r.fork || r.blank ? r.title : `Code review on ${r.modelLabel}`}>
+            {unreadDot(r.chatId)}
             {r.title}
           </button>
-          <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} title="Close tab" aria-label={`Close ${r.title} tab`}>
+          <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} aria-label={`Close ${r.title} tab`}>
             ×
           </button>
         </span>
       ))}
       {newChat}
+    </div>
+  );
+}
+
+/** Conductor's unread mark: lucide `circle` (r=10 of 24), size-2, filled with --unread, transparent stroke. */
+function ChatTabUnreadDot() {
+  return (
+    <svg className="main-tab-unread" data-testid="chat-tab-unread" width="8" height="8" viewBox="0 0 24 24" aria-label="Unread" role="img">
+      <circle cx="12" cy="12" r="10" fill="currentColor" stroke="transparent" strokeWidth="2" />
+    </svg>
+  );
+}
+
+/**
+ * A chat tab's right-click menu. Conductor's (renderApp-D_fmY7hW.js @7,377,893) starts
+ * with "Mark as read" / "Mark as unread" for that chat (`Q`: setUnread, and a hand mark
+ * when marking unread, cleared when marking read); its rename, fork, copy and close items
+ * are not here yet.
+ */
+function ChatTabMenu({ at, unread, onToggleRead, onClose }: { at: { x: number; y: number }; unread: boolean; onToggleRead: () => void; onClose: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) onClose();
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    window.addEventListener("blur", onClose);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("blur", onClose);
+    };
+  }, [onClose]);
+  return (
+    <div ref={ref} className="sb-ctx-menu" role="menu" aria-label="Chat actions" style={{ left: at.x, top: at.y }} onContextMenu={(e) => e.preventDefault()}>
+      <button
+        type="button"
+        role="menuitem"
+        className="sb-ctx-item"
+        onClick={() => {
+          onClose();
+          onToggleRead();
+        }}
+      >
+        <span className="sb-ctx-label">{unread ? "Mark as read" : "Mark as unread"}</span>
+      </button>
     </div>
   );
 }
@@ -746,11 +918,13 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
   );
 }
 
-export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
-  // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) shows it,
-  // and ⌘⇧T opens a big terminal while Big terminal mode is on.
-  const [terminalRequest, setTerminalRequest] = useState(0);
-  const showTerminal = () => setTerminalRequest((n) => n + 1);
+export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, onNextUnread, hasNextUnread }: Props) {
+  // The right panel's Setup / Run / Terminal strip: open on Run, like Conductor.
+  // ⌘J (view.toggleTerminalPanel) hides or shows it; ⌘⇧T opens a big terminal
+  // in it while Big terminal mode is on.
+  const [stripOpen, setStripOpen] = useState(true);
+  const [stripView, setStripView] = useState<StripView>("run");
+  useEffect(() => setStripView("run"), [workspace.id]);
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
@@ -762,7 +936,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     setDiffOpen(false);
     setPrOpen(false);
     setPickingTarget(false);
-    setMainTab("chat");
+    // Go to next unread or a row click may have asked for one of its chats (state/openChat.ts).
+    setMainTab(tabOfChat(workspace.id, takeChatRequest(workspace.id)));
+    return onChatRequest((id) => {
+      if (id === workspace.id) setMainTab(tabOfChat(workspace.id, takeChatRequest(workspace.id)));
+    });
   }, [workspace.id]);
   const openPrTab = useCallback(() => {
     setPrOpen(true);
@@ -779,6 +957,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     setMainTab("diff");
   }, []);
   const closeDiffTab = () => {
+    pushClosedTab(workspace.id, { kind: "diff" });
     setDiffOpen(false);
     setMainTab("chat");
   };
@@ -816,6 +995,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     },
     [workspace.id],
   );
+  const fixErrors = useFixErrors({ worktree: workspace.path ?? null, repoId: repo.id, sendToChat, notify });
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
@@ -840,14 +1020,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: intendedTarget, agentWorking, hasPendingComments: review.hasPending, onLookup, onDerivedStatus });
   const target = useTargetBranch({ repo, workspace, pr: pullRequest.pr, refresh: pullRequest.refresh, dispatch });
   optionalChecksBlock.current = pullRequest.settings.optionalChecksBlock;
-  useEffect(() => {
-    dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: agentWorking });
-  }, [dispatch, repo.id, workspace.id, agentWorking]);
-  // Nothing reports a closed workspace's agent, so its row stops showing it working.
-  useEffect(() => () => dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: false }), [dispatch, repo.id, workspace.id]);
   const prActions = usePrActions({
     pullRequest,
     repoId: repo.id,
+    repoPath: repo.path,
     worktree: workspace.path ?? null,
     branch: workspace.branch,
     targetBranch: target.branch,
@@ -857,6 +1033,17 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     addCommentsToChat: review.addAllToChat,
     notify,
   });
+  const pullLatest = usePullLatest({
+    pullRequest,
+    worktree: workspace.path ?? null,
+    targetBranch: target.branch,
+    readOnly: workspace.status === "archived",
+    sendToAgent: chat.send,
+    refreshChanges: diff.refresh,
+    notify,
+  });
+  // Conductor binds git.pull (⌘⇧L) at priority HIGH, over the global openSidecarLogs on the same keys.
+  useKeybindings({ "git.pull": pullLatest.shortcut }, PRIORITY.HIGH);
   loaded.current = review.onLoaded;
   const reviews = useReviewChats(repo, workspace, setMainTab);
   // The workspace's own chat plus its review, fork and new chats count toward Conductor's tab limit.
@@ -865,75 +1052,23 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     if (atTabLimit(openChatTabs)) notify?.("info", tabLimitToast());
     else reviews.newChat();
   };
+  // Closing the chat on screen shows the chat viewed before it that is still open (closedTabs.ts).
   const closeReview = (chatId: string) => {
+    // A closed review counts as hidden: it no longer keeps the workspace unread.
+    if (isChatUnread(workspace, chatId)) dispatch({ type: "setChatUnread", repoId: repo.id, workspaceId: workspace.id, chatId, unread: false, at: Date.now() });
+    clearManuallyUnread(chatId);
+    const tab = reviews.tabs.find((r) => r.chatId === chatId);
+    if (tab) pushClosedTab(workspace.id, { kind: "chat", tab });
     reviews.close(chatId);
-    if (mainTab === chatId) setMainTab("chat");
+    if (mainTab === chatId) setMainTab(chatAfterClose(workspace.id, chatId, ["chat", ...reviews.tabs.map((r) => r.chatId)]) ?? "chat");
   };
   const canReview = diff.load.state === "ready" && diff.files.length > 0;
-
-  // Chat tab right-click menu (Conductor's `u8i`, src/features/chat/ChatTabMenu.tsx).
-  const [chatMenu, setChatMenu] = useState<{ chatId: string; at: { x: number; y: number } } | null>(null);
-  const closeChatMenu = useCallback(() => setChatMenu(null), []);
-  const forkToTabOn = useForkToTabSetting();
-  const { overrides: keyOverrides } = useKeybindingOverrides();
-  const keyHint = (id: string) => {
-    const k = effectiveShortcuts(id, keyOverrides)[0];
-    return k ? glyphs(k) : undefined;
-  };
-  const chatTitle = (chatId: string) => (chatId === workspace.id ? workspace.name : (reviews.tabs.find((r) => r.chatId === chatId)?.title ?? "chat"));
-  const chatTranscript = (chatId: string) => (savedAgent(chatId) === "codex" ? codexSnapshot(chatId) : chatSnapshot(chatId)).transcript;
-  const copyChatTranscript = (chatId: string, mode: TranscriptMode) => {
-    const text = transcriptText(chatTranscript(chatId), mode);
-    if (!text?.trim()) {
-      notify?.("info", "No chat content to copy");
-      return;
-    }
-    copyText(text).then(
-      () => notify?.("info", copiedTranscriptToast(mode, chatTitle(chatId))),
-      () => notify?.("error", `Failed to copy ${mode} transcript`),
-    );
-  };
-  const forkChatToTab = async (chatId: string) => {
-    const title = chatTitle(chatId);
-    const markdown = forkTranscript(chatTranscript(chatId));
-    if (markdown === null) {
-      notify?.("error", "Unable to fork chat to new tab: failed to generate chat transcript");
-      return;
-    }
-    const codexChat = savedAgent(chatId) === "codex";
-    try {
-      const config = codexChat ? [] : await reasonChatConfig(chatId);
-      const id = reviews.fork(`Fork of ${title}`, config, { text: "", attachments: [{ name: forkAttachmentName(title), text: markdown }] });
-      if (codexChat) localStorage.setItem(agentKey(id), "codex");
-    } catch (e) {
-      notify?.("error", e instanceof Error ? e.message : "Failed to fork chat to new tab");
-    }
-  };
-  const activeChatId = mainTab === "chat" ? workspace.id : reviews.tabs.some((r) => r.chatId === mainTab) ? mainTab : null;
-  const chatMenuActions = (chatId: string): ChatTabMenuActions => ({
-    fork: forkToTabOn && workspace.status !== "archived" ? () => void forkChatToTab(chatId) : undefined,
-    copyTranscript: (mode) => copyChatTranscript(chatId, mode),
-    copyLink: () =>
-      copyText(workspaceLink(workspace.id, chatId)).then(
-        () => notify?.("info", COPIED_LINK),
-        () => notify?.("error", COPY_LINK_FAILED),
-      ),
-    // Conductor (`u8i` showClose): a tab with messages, or one of several, offers Close.
-    // OpenConductor cannot close the workspace's own chat yet, so there it is disabled.
-    showClose: chatId !== workspace.id || reviews.tabs.length > 0 || chatTranscript(chatId).messages.length > 0,
-    close: chatId === workspace.id ? undefined : () => closeReview(chatId),
-    closeOthers: () => {
-      setMainTab(chatId === workspace.id ? "chat" : chatId);
-      for (const r of reviews.tabs) if (r.chatId !== chatId) reviews.close(r.chatId);
-    },
-    hasOtherChats: reviews.tabs.length > 0,
-  });
 
   // Cycles All changes, the workspace chat and review chats in strip order.
   const tabOrder = [...(diffOpen ? ["diff"] : []), "chat", ...(prOpen ? ["pr"] : []), ...reviews.tabs.map((r) => r.chatId)];
   const stepTab = (dir: 1 | -1) => setMainTab((t) => tabOrder[(tabOrder.indexOf(t) + dir + tabOrder.length) % tabOrder.length] ?? "chat");
   useKeybindings({
-    "view.toggleTerminalPanel": showTerminal,
+    "view.toggleTerminalPanel": () => setStripOpen((v) => !v),
     "diff.open": () => (diff.current < 0 && diff.files.length > 0 ? diff.open(0) : openDiffTab()),
     "nav.nextTab": () => stepTab(1),
     "nav.previousTab": () => stepTab(-1),
@@ -947,16 +1082,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "git.mergePR": () => {
       if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
     },
+    "git.fixErrors": () => {
+      const failing = pullRequest.pr?.status?.checks.failing ?? [];
+      if (fixShortcutApplies(failing, fixErrors.fixing, workspace.status === "archived")) void fixErrors.run(failing);
+    },
     "git.openInGitHub": prActions.openOnGitHub,
-    // Conductor binds these in the active chat tab (`u8i`).
-    "chat.copyTextConcise": () => {
-      if (!activeChatId) return false;
-      copyChatTranscript(activeChatId, "concise");
-    },
-    "chat.forkToNewTab": () => {
-      if (!activeChatId || !forkToTabOn || workspace.status === "archived") return false;
-      void forkChatToTab(activeChatId);
-    },
   });
   // ⌘⇧T inside a terminal is handled by the terminal itself (session.ts), so this one skips terminal focus.
   // So is ⌘T (terminal.newTab); elsewhere ⌘T (nav.newTab) opens a new chat, as the "+" does.
@@ -971,7 +1101,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         if (!big || !repo.path) return false;
         void openBigTab(workspace.id, repo.path, big)
           .catch(() => {})
-          .finally(showTerminal);
+          .finally(() => {
+            setStripView("terminal");
+            setStripOpen(true);
+          });
         return true;
       },
     },
@@ -982,9 +1115,59 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
   const activeTab = showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const prNumber = pullRequest.pr?.number ?? null;
+  useEffect(() => {
+    if (activeTab !== "diff" && activeTab !== "pr") recordViewedChat(workspace.id, activeTab);
+  }, [workspace.id, activeTab]);
+  // ⌘W closes the tab on screen and ⌘⇧T reopens the last closed one, as Conductor's workspace
+  // view does. The workspace's own chat has no close button here, so ⌘W leaves it. Inside a
+  // terminal ⌘W is terminal.closeTab, which the terminal handles itself (session.ts).
+  useKeybindings(
+    {
+      "nav.closeTab": () => {
+        if (activeTab === "diff") closeDiffTab();
+        else if (activeTab === "pr") closePrTab();
+        else if (activeTab !== "chat") closeReview(activeTab);
+      },
+      "nav.reopenTab": () => {
+        const tab = popClosedTab(workspace.id);
+        if (tab?.kind === "chat") reviews.reopen(tab.tab);
+        else if (tab?.kind === "diff") openDiffTab();
+      },
+    },
+    { enableOnTerminalFocus: false },
+  );
   shownChat.current = activeReview?.chatId ?? workspace.id;
+  // The chat whose transcript is on screen (none while the diff or PR tab is open): auto-unread
+  // skips it while the window has focus, and an unread workspace shown that way is read.
+  const transcriptShown = showDiff || showPr ? null : shownChat.current;
+  const focused = useWindowFocused();
+  useEffect(() => {
+    setShownChat(transcriptShown);
+    return () => setShownChat(null);
+  }, [transcriptShown]);
+  // The selected chat tab (Conductor's selectedSessionId): the row menu's "Mark as unread" marks it.
+  const selectedChat = shownChat.current;
+  useEffect(() => {
+    setSelectedChat(selectedChat);
+    return () => setSelectedChat(null);
+  }, [selectedChat]);
+  // Showing a chat (again) drops its hand mark (yIo's mount effect).
+  useEffect(() => clearManuallyUnread(selectedChat), [selectedChat]);
+  useEffect(() => {
+    const chatId = readOnView(workspace, { shownChatId: transcriptShown, focused });
+    if (chatId) dispatch({ type: "setChatUnread", repoId: repo.id, workspaceId: workspace.id, chatId, unread: false, at: Date.now() });
+  }, [workspace, transcriptShown, focused, dispatch, repo.id]);
+  const toggleChatRead = (chatId: string) => {
+    const unread = !isChatUnread(workspace, chatId);
+    if (unread) markManuallyUnread(chatId);
+    else clearManuallyUnread(chatId);
+    dispatch({ type: "setChatUnread", repoId: repo.id, workspaceId: workspace.id, chatId, unread, at: Date.now() });
+  };
   // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
-  const rightPanelVisible = useAppPrefs().right_panel_visible;
+  const prefs = useAppPrefs();
+  const rightPanelVisible = prefs.right_panel_visible;
+  const showNumbers = useBoolPref("experimental_show_workspace_numbers");
+  const numberLabel = showNumbers ? workspaceNumberLabel(workspace.number) : null;
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region="deep">
@@ -992,6 +1175,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           <span className="crumb">{repo.name}</span>
           <span className="crumb-sep">/</span>
           <strong>{workspace.name}</strong>
+          {/* "Show workspace numbers": Conductor's header badge (`Plo`), a W-<n> button whose click is Copy link. */}
+          {numberLabel && (
+            <button type="button" className="ws-number" title="Copy link" aria-label={`Copy link to ${numberLabel}`} onClick={onCopyLink} disabled={!onCopyLink}>
+              {numberLabel}
+            </button>
+          )}
           <span className="chip">
             <BranchIcon size={12} /> {workspace.branch}
           </span>
@@ -1009,7 +1198,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         </div>
         <div className="ws-actions">
           {workspace.status !== "archived" && <OpenInButton path={workspace.path ?? null} notify={notify} />}
-          <PrControl pullRequest={pullRequest} actions={prActions} notify={notify} />
+          <PrControl pullRequest={pullRequest} actions={prActions} />
           <button
             className={`btn btn-small btn-icon${rightPanelVisible ? " active" : ""}`}
             title="Toggle right sidebar ⌥⌘B"
@@ -1026,79 +1215,55 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           repo={repo}
           workspace={workspace}
           dispatch={dispatch}
+          notify={notify}
           chatId={activeReview?.chatId ?? workspace.id}
           review={activeReview}
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
           openFile={diff.openPath}
+          // Conductor hides the button once the workspace's PR is merged (g1o's `hidden`, `mIo` isMerged).
+          onNextUnread={!prBase?.merged && hasNextUnread?.(selectedChat) ? onNextUnread : undefined}
           forkToNewTab={reviews.fork}
           chatTabs={[{ chatId: workspace.id, title: workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
-          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />}  onChatMenu={(chatId, at) => setChatMenu({ chatId, at })} mainChatId={workspace.id} />}
+          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />}
           content={
             showDiff ? (
-              <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} />
+              <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} notify={notify} />
             ) : showPr ? (
               <PrTab
                 worktree={workspace.path ?? null}
                 pr={pullRequest.pr}
                 refresh={pullRequest.refresh}
                 repoId={repo.id}
-                sendToChat={sendToChat}
+                fixErrors={fixErrors}
                 readOnly={workspace.status === "archived"}
                 repoPath={repo.path}
                 defaultBranch={repo.defaultBranch}
                 target={target}
-                notify={notify}
               />
             ) : null
           }
         />
         {rightPanelVisible && (
-          <div className="ws-right">
+          <div className={`ws-right${stripOpen ? "" : " strip-collapsed"}`}>
             <RightPanel
               diff={diff}
               actions={review.actions}
               pr={pullRequest}
               worktree={workspace.path ?? null}
               review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} disabled={workspace.status === "archived"} />}
-              repo={repo}
-              sendToChat={sendToChat}
+              fixErrors={fixErrors}
               readOnly={workspace.status === "archived"}
               notify={notify}
+              emptyAction={<PullLatestButton pullLatest={pullLatest} agentWorking={agentWorking} />}
             />
-            <ScriptsPanel repo={repo} workspace={workspace} terminalRequest={terminalRequest} />
+            {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
+            <PanelStrip repo={repo} workspace={workspace} open={stripOpen} setOpen={setStripOpen} view={stripView} setView={setStripView} cwd={repo.path} />
           </div>
         )}
       </div>
-      {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
       <DiffDiscardHost diff={diff} onDiscarded={(f) => chatBridge.current?.attach(revertedNote(f.path))} />
-      {chatMenu && (
-        <ChatTabMenu
-          key={chatMenu.chatId}
-          at={chatMenu.at}
-          title={chatTitle(chatMenu.chatId)}
-          actions={chatMenuActions(chatMenu.chatId)}
-          keys={{ fork: forkShortcut(keyHint("chat.forkToNewTab")), copyConcise: keyHint("chat.copyTextConcise"), close: keyHint("nav.closeTab") }}
-          onClose={closeChatMenu}
-        />
-      )}
     </div>
   );
-}
-
-/** Experimental › Fork chat to new tab (`experimental_fork_to_new_tab`), read once per workspace view. */
-function useForkToTabSetting(): boolean {
-  const [on, setOn] = useState(false);
-  useEffect(() => {
-    let live = true;
-    getSettings().then(
-      (s) => live && setOn(boolPref(s, "experimental_fork_to_new_tab")),
-      () => undefined,
-    );
-    return () => {
-      live = false;
-    };
-  }, []);
-  return on;
 }

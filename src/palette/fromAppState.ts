@@ -8,7 +8,7 @@ import { VIEW_ARCHIVED_LABEL, type ArchivedWorkspace } from "../workspace/archiv
 /** Handled inside the palette: it switches tabs instead of closing. */
 export const VIEW_ARCHIVED_ACTION = "view-archived-workspaces";
 import { sidebarEntries } from "../state/sidebarOrder.ts";
-import { nextUnreadWorkspace } from "../state/nextUnread.ts";
+import { nextUnreadChat } from "../state/nextUnread.ts";
 
 export interface WorkspaceRef {
   repoId: string;
@@ -56,28 +56,29 @@ export const PALETTE_ACTIONS: readonly ActionEntry[] = [
  * the active ones, newest first.
  */
 export function paletteDataFromState(state: AppState, recentIds: readonly string[], archived: readonly ArchivedWorkspace[] = []): PaletteData {
-  const known = new Set(sidebarOrder(state).map((w) => w.workspace.id));
   const rank = new Map(recentIds.map((id, i) => [id, i]));
   const workspaces: WorkspaceEntry[] = state.repos.flatMap((r) =>
     r.workspaces.map((w) => {
       const r0 = rank.get(w.id);
       // Recently visited workspaces sort above the rest; others by creation time.
       const lastActiveAt = r0 === undefined ? w.createdAt : Number.MAX_SAFE_INTEGER - r0;
-      return { id: w.id, name: w.name, branch: w.branch, repoName: r.name, lastActiveAt, archived: w.status === "archived" };
+      return { id: w.id, name: w.name, branch: w.branch, repoName: r.name, lastActiveAt, archived: w.status === "archived", number: w.number ?? null };
     }),
   );
   const repoNames = new Map(state.repos.map((r) => [r.id, r.name]));
   for (const a of archived) {
     if (!repoNames.has(a.repoId)) continue;
-    workspaces.push({ id: a.id, name: a.name, branch: a.branch, repoName: repoNames.get(a.repoId) ?? "", lastActiveAt: a.createdAt - Number.MAX_SAFE_INTEGER / 2, archived: true });
+    workspaces.push({ id: a.id, name: a.name, branch: a.branch, repoName: repoNames.get(a.repoId) ?? "", lastActiveAt: a.createdAt - Number.MAX_SAFE_INTEGER / 2, archived: true, number: a.workspace.number ?? null });
   }
   const activeWorkspaceId = state.selection.kind === "workspace" ? state.selection.workspaceId : null;
   return {
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
-    actions: nextUnreadWorkspace(state, { skipSelected: false }) ? PALETTE_ACTIONS : PALETTE_ACTIONS.filter((a) => a.id !== "go-to-next-unread"),
+    actions: nextUnreadChat(state, { skipSelected: false }) ? PALETTE_ACTIONS : PALETTE_ACTIONS.filter((a) => a.id !== "go-to-next-unread"),
     settings: [],
-    recentWorkspaceIds: recentIds.filter((id) => known.has(id)),
+    // Archived workspaces stay in Recent, as in Conductor; ids of deleted ones drop out here
+    // but stay stored, so they still count toward the cap of 5 (recordViewedWorkspace never prunes).
+    recentWorkspaceIds: recentIds.filter((id) => workspaces.some((w) => w.id === id)),
     activeWorkspaceId,
   };
 }

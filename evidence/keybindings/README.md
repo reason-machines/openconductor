@@ -184,6 +184,39 @@ handled by the webview dispatcher, not a menu accelerator.
 OpenConductor: `src-tauri/src/menu.rs` appends Keyboard Shortcuts to the default
 Help submenu on macOS and emits `open_keyboard_shortcuts_dialog` on click.
 
+### Settings... and Quit (re-read 2026-11-06)
+
+- `Settings...` carries the accelerator `CmdOrCtrl+,`. The webview listens for
+  `open_settings_page` and, on it, closes any dialog and opens
+  `/settings/user/general` (renderApp-D_fmY7hW.js @ ~10,884,627). After building
+  the menu, the binary looks `Settings...` up by label to set the `gearshape` SF
+  Symbol (`Warning: Could not find Settings... menu item`,
+  `Warning: Could not load gearshape SF Symbol`).
+- `custom_quit` carries `Cmd+Q` and replaces the predefined Quit. Clicking it logs
+  `Custom quit menu item clicked` and emits `quit_requested`
+  (`Failed to emit quit_requested event`). The binary registers the commands
+  `set_quit_handler_ready(ready)` and `quit_app`.
+- The webview registers its `quit_requested` listener, then calls
+  `set_quit_handler_ready(true)` (`v5a` @ ~11,073,980). On a request (`b5a`):
+  source `system` quits at once; otherwise, if any local agent is running, it
+  opens the confirm dialog `y5a`, else quits. The dialog: title "Quit Conductor?",
+  text "No agents are running, so it's safe to quit." / "1 agent is currently
+  running and will be stopped." / "N agents are currently running and will be
+  stopped." / "Agents may be running and will be stopped." (count unknown),
+  buttons Cancel and a destructive `data-primary-action` "Quit ⌘↵".
+- The registry's `quitApplication` (⌘Q) has no `oi()` call in renderApp: Quit is
+  native-only there.
+
+OpenConductor: `menu.rs` adds `Settings...` (id `settings`, `CmdOrCtrl+,`) after
+About and swaps the predefined Quit for `custom_quit` (`Cmd+Q`);
+`src-tauri/src/app_quit.rs` holds the ready flag and `quit_app`;
+`src/features/quit/` is the dialog. `quitApplication` is also bound in the
+webview (`src/App.tsx`), so ⌘Q follows the same path where there is no native
+menu. Differences: the `system` source (quit from the Dock or the OS) is not
+routed through the webview; the running count is the sidebar row's rule: chats
+in this window that are `working`/`cancelling`, plus a workspace's own
+`sessionStatus` when it has no chat here and is not the open one; no `gearshape` icon; dialog title says OpenConductor.
+
 ## Key-bindings page (`/settings/user/key-bindings`)
 
 - Gated by `internal_settings_enabled` (or dev mode). Without it, the route
@@ -241,7 +274,164 @@ listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
   later change on another settings page cannot overwrite them with a stale copy.
   A failed save shows the toast "Failed to save keyboard shortcut".
 
+## Bound commands: run, select all, chat copy and fork
+
+Read on sven m5 max in the decoded `renderApp-D_fmY7hW.js` (by byte offset,
+with python over the file; see REA gaps). Conductor's strings are data only.
+
+- `workspace.toggleRun` (⌘R), offset ~7,141,947, in the terminal panel's
+  scripts component: `if (hasRunTask && workspace && ready) { selectTab(Run);
+  running ? stop() : start(); return true }`, nothing otherwise. `start` is a
+  no-op while the button is disabled. Ours: `ScriptsPanel` (always mounted in
+  the strip), which opens the strip on Run and presses its ▶/■ button.
+- `native.preventSelectAll` (⌘A), offset ~11,089,745: a root hook adds a
+  capture `keydown` listener on `document`; on the command's shortcut it calls
+  `preventDefault` and `stopPropagation` unless the event's first path element
+  (else `document.activeElement`) is an input, a textarea, has
+  `contenteditable="true"` or is inside `.composer-tiptap`. Ours:
+  `src/keybindings/selectAll.ts`, installed by `KeybindingsProvider`.
+- `git.fixErrors` (⌘⇧X), offset ~2,300,368: already bound (PR #393).
+
+## Bound command: git.pull (pull latest from the target)
+
+Read on sven m5 max in the decoded `renderApp-D_fmY7hW.js` and
+`index-BGEQ8YjU.js` (python over the files; see REA gaps). Strings are data.
+
+- Shortcut, renderApp `Wds` @ ~2,299,746: `oi("git.pull", cb, {priority:
+  HIGH})`. `cb` returns false (the key passes on, e.g. to `openSidecarLogs`,
+  also ⌘⇧L) when read-only, a pull is running, the workspace is in a stack or
+  a GitHub stack, no session is selected, there is no repo or intended target,
+  the PR is merged or `mergeStateStatus === "DIRTY"`, or `targetSyncStatus ===
+  0`. Otherwise it mutates `{workspacePath, workspaceHost, localWorkspaceId,
+  sessionId, remoteName, targetBranch: <PR base> ?? intendedTargetBranch}`.
+  It does not look at a running agent or the remote branch.
+- Button, renderApp `Y4s` @ ~2,818,200, rendered only in the Changes panel's
+  empty state for the All changes scope (@ ~2,821,988, variant "text"):
+  lucide `arrow-down` (12 px), muted label "Pull latest from <target> (<n>
+  commits)", "Pulling latest..." with a spinner while running, disabled while
+  read-only or pulling. Hidden in a stack, without a target, session or
+  current branch, on a detached HEAD, for a merged or DIRTY PR, when
+  `targetSyncStatus` is 0, while the agent works, and when the remote branch
+  has commits the workspace lacks (`upstream.branchExists && behind > 0`).
+  Its "icon" variant has the tooltip "Pull latest from <target> (<n>
+  commits)" plus the ⌘⇧L hint, but no call site renders it in this build.
+- Mutation `gitPullLatestFromTarget`, index `aNt` @ ~3,207,600: with
+  uncommitted changes it sends the agent "Commit uncommitted changes, then
+  merge <remote>/<target> into this branch. Then push." (rebase wording when
+  `pull.rebase` is set); else `git fetch <remote>` (error: stderr or "Failed
+  to fetch from remote"), re-checks uncommitted, resolves
+  `refs/remotes/<remote>/<target>` (missing: toast "Target branch <t> does not
+  exist"), compares with `rev-list --left-right --count`: in sync does
+  nothing, only behind runs `git merge --ff-only` and toasts "Pulled latest
+  changes. You're up to date!", diverged sends the agent "Merge
+  <remote>/<target> into this branch. Then push." Failures toast "Pulling
+  latest from remote failed: <message>". Success refreshes the workspace's
+  changes. `targetSyncStatus` is `git rev-list --count HEAD..<remote>/<target>`
+  (index `Hse`).
+
+Ours: `pr_pull_latest_from_target` (src-tauri/src/pr/pull_latest.rs) and
+`targetBehind` / `detached` in `pr_git_state`; rules in
+src/features/pr/pullLatest.ts; button and shared state in
+src/features/pr/usePullLatest.tsx; ⌘⇧L bound at `PRIORITY.HIGH` in
+`WorkspaceView`. e2e: tests/e2e/shortcuts-git-pull.e2e.mjs. Differences:
+no stacks in OpenConductor (that check is absent); the shortcut also waits for
+the git state to load (the remote comes from it); the success toast uses our
+"info" style (no success toast kind); the worktree lock Conductor holds
+around the git steps (`Uc`) is not taken; a null `targetBehind` hides the
+button instead of showing "(undefined commits)".
+
+Formerly unbound, now bound:
+
+- `terminal.openLocalhost` (⌘⇧B): now bound; see "terminal.openLocalhost"
+  below. The in-app Browser tab it can open stays a gap.
+
+## terminal.openLocalhost (⌘⇧B) and the Run tab's Open button
+
+Read 2026-11-06 with python string search over the decoded `renderApp-D_fmY7hW.js`
+on sven m5 max (`rea search` still fails on it, see REA gaps). Four `oi` call
+sites:
+
+- Terminal panel, normal priority (offset ~7,141,744): on the Run tab (`hn`),
+  if the Open button is shown (`id`: the run task is busy, not Spotlight, and
+  there is a preview option) open the first option and return true; else if a
+  native app owns a port under the run's process tree (`Fo`) focus it; else,
+  only with the in-app browser on, open a Browser tab at
+  `http://localhost:<CONDUCTOR_PORT>`; else false. Off the Run tab: a cloud
+  terminal's forwarded port (`ha`), the active local terminal's last command
+  output URL (`Na`), or that command's native app (`C1`); else false.
+- Workspace tab bar, priority LOW (~7,404,625) and the split-group view, LOW
+  (~9,688,630): only when `canUseBrowser`, i.e. write access, not archived and
+  the experimental user setting `experimental_in_app_browser_preview`
+  ("In-app browser preview": "Open the preview button in an in-app browser tab
+  (with the annotation overlay) instead of your external browser", off by
+  default, ~10,653,572). Then they open a Browser tab at `b8i`'s URL. With the
+  setting off they return false.
+- Preview options (`rl`, `Fl`): the repository's `preview_urls` (`ezt`; entries
+  with a non-empty URL; the first is the default), else the URL detected in the
+  run terminal: `bzt` takes the last match of `Fno`
+  (`https?://(localhost|127.0.0.1|0.0.0.0|[::1]|[::])(:port)?(/path)?`) in the
+  last 1000 lines and rewrites 0.0.0.0/[::1]/[::] to localhost (`Bno`); it is
+  polled every 2 s until found and kept for that run. Each URL goes through
+  `gEi`: `$((CONDUCTOR_PORT + N))` (one digit) first, then `$NAME` for each of
+  `CONDUCTOR_WORKSPACE_NAME, _WORKSPACE_PATH, _ROOT_PATH, _DEFAULT_BRANCH, _PORT,
+  [_USER_ID,] _IS_LOCAL` in that order (`wE` in the index chunk). Label = name,
+  else the resolved URL; port from `UAt`.
+- Opening (`lr`): in-app browser on, `navigateToBrowser(url, {reload: true})`;
+  off, `vs(url)` = `plugin:opener|open_url` (index chunk `Rue`), errors only
+  logged ("Failed to open URL:").
+- The button (`Yve`, ~6,927,549): outline xs button in the panel's tab row
+  (`flex min-w-0 items-center ml-auto pl-2 gap-2`, before Run/Stop): browser
+  icon (default browser's icon, else lucide `globe`), "Open" and ` :<port>` in
+  muted mono, label hidden under a 440 px container (`@[440px]:inline-block`);
+  tooltip `Open <url>` + the ⌘⇧B hint; with several options a chevron
+  ("Choose preview URL") opens a menu of globe + label rows.
+
+Ours: `src/scripts/preview.ts` (Fno/Bno/bzt, UAt, gEi, options; unit-tested),
+`PreviewOpenButton` portaled into the strip's tab row (`PanelStrip`'s
+`.ws-strip-actions`), the handler in `ScriptsPanel` (Run tab selected, run busy,
+options present, else false), and `run_script_preview_env` (Rust,
+`oc_scripts::env::preview_env`) for the template variables and port block. URLs
+open with `openUrl` (opener plugin), as Conductor does with the experimental
+setting off. e2e: `tests/e2e/shortcuts-open-localhost.e2e.mjs`.
+
+Gaps (not built here):
+
+- In-app Browser tab and the "In-app browser preview" setting (with it on,
+  Conductor's three Browser-tab paths and the annotation overlay). Too large
+  for this change; with the setting off, Conductor's default, behaviour matches.
+- Focusing a native app found on the run's ports (`Fo`, "Focus <app>") and the
+  terminal-tab paths (`Na` local terminal command URL, `C1` its app, `ha` cloud
+  forwarding): OpenConductor has no port-to-process lookup and no per-command
+  output capture for terminal tabs.
+- The default browser's icon on the button (`fJs`, read from LaunchServices);
+  ours always shows the globe.
+- `CONDUCTOR_USER_ID` is never set (no signed-in user id in OpenConductor).
+
 ## REA gaps
+
+- terminal.openLocalhost (2026-11-06): `rea search` still fails on the decoded
+  chunk, and REA does not resolve names across chunks: the preview-template
+  variables (`xii`) are an index-chunk export (`h0 as xii`, defined there as
+  `wE`) and the opener `vs` is `dG as vs` (`Rue`, `plugin:opener|open_url`);
+  both were followed by hand through the import map with string search.
+
+- Settings... item id, its position in the app menu, and the label of `custom_quit`
+  are not in the string table and were not decompiled (`rea search` on
+  `MacOS/conductor` fails with `provider_unavailable`; no Ghidra/Hopper/IDA/Kuna
+  and no Java runtime on Sven's Mac, re-checked 2026-11-06). The running-agent
+  counter that `y5a` calls (`tPt` over sessions and workspaces) lives in a chunk
+  where the minified name does not resolve by string search; its status set was
+  not read.
+- `rea search` over the decoded JavaScript and the binary on sven m5 max fails
+  with `capability_unavailable` / `provider_unavailable`, so the handlers above
+  were found with python string search over the decoded chunk.
+- git.pull: the helpers live in `index-BGEQ8YjU.js` under other minified
+  names; they were resolved by hand through the renderApp import list and the
+  index export list (`nDt` = `eo` = `sVt`, `iDt` = `er` = `q9t`, `QOt` = `dA` =
+  `z9t`). `sVe` (the PR target the shortcut uses) and `QO` beyond `cs(t) =
+  t === m$` were not followed further; we read both as the PR's base branch
+  and a detached HEAD. The Mac went offline once mid-read (`device_offline`)
+  and the read was retried.
 
 - `analyze-javascript-application` finds no IPC operations: it does not model
   Tauri `invoke` or `listen`. The registry and event wiring were located by
@@ -258,3 +448,22 @@ listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
   `conductor_lib::run` at `0x100498360` fails with `provider_unavailable`: Ghidra,
   Hopper, IDA and Kuna are all unconfigured there (no Java runtime). So the menu
   builder was not decompiled; the native menu table above is from the string table.
+
+## Chat tab shortcuts: copy concise transcript and fork
+
+Read on sven m5 max in `renderApp-D_fmY7hW.js` (~7,376,706), the chat tab
+component `u8i`. Both bind at priority 100 and return false (pass the key on)
+unless their tab is the active one:
+
+- `chat.copyTextConcise` (⌥⌘C): fetches the chat's messages, builds the concise
+  transcript and copies it. Empty: warning "No chat content to copy". Copied:
+  `Copied concise transcript of "<tab title, cut to 20 chars + ...>"`. Failure:
+  "Failed to copy concise transcript". Ours: `ChatPanel` in
+  `src/components/WorkspaceView.tsx` with `forkTranscript` (the same concise
+  form) and `copiedTranscriptMessage` in `src/features/chat/fork.ts`.
+- `chat.forkToNewTab` (⌥⌘↩): also needs `canRename && !archived &&
+  experimental_fork_to_new_tab`; forks the whole chat (ignored while a fork is
+  pending). Ours: the turn menu's "Fork to new tab" path with every turn, gated
+  on Experimental › "Fork chat to new tab" and a workspace that is not archived.
+  Conductor's `canRename` comes from the parent tab strip and was not traced
+  further; we treat it as true.

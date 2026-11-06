@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { HELP_ITEMS, nextIndex, versionLine } from "./helpMenuItems.ts";
 
 test("items follow Conductor's order", () => {
-  assert.deepEqual(HELP_ITEMS.map((i) => i.label), ["Keyboard shortcuts", "Docs", "Best practices", "Changelog", "Send feedback"]);
+  assert.deepEqual(HELP_ITEMS.map((i) => i.label), ["Keyboard shortcuts", "Docs", "Best practices", "Changelog", "Send feedback", "Submit a prompt", "Diagnostics", "Open debug tools"]);
 });
 
 test("keyboard shortcuts opens the dialog and shows its shortcut", () => {
@@ -17,6 +17,15 @@ test("external items open https links", () => {
     assert.equal(item.action.kind, "url");
     if (item.action.kind === "url") assert.match(item.action.url, /^https:\/\//);
   }
+});
+
+test("the last three items open the prompt dialog, the Diagnostics page and the web inspector", () => {
+  const tail = HELP_ITEMS.slice(-3).map((i) => [i.label, i.action.kind, i.icon ?? null, !!i.external]);
+  assert.deepEqual(tail, [
+    ["Submit a prompt", "submitPrompt", null, false],
+    ["Diagnostics", "diagnostics", "stethoscope", false],
+    ["Open debug tools", "devtools", null, false],
+  ]);
 });
 
 test("version line shows the app version, or ... while unknown", () => {

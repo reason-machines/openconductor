@@ -8,6 +8,13 @@
 //! kills the process. A process that exits fails the turns still waiting
 //! with the last stderr lines; the next prompt starts a new process that
 //! resumes the same Claude session.
+//!
+//! A permission prompt goes to the UI as a
+//! [`ProviderEvent::PermissionRequested`] (a tool, a plan or questions, see
+//! [`super::interact`]) and waits for [`ClaudeRunner::respond`]. Stop denies
+//! what is still waiting; the turn's end and the process exiting drop it.
+//! Each one answered or dropped is reported with
+//! [`ProviderEvent::PermissionResolved`].
 
 use std::collections::{HashMap, VecDeque};
 use std::path::{Path, PathBuf};
@@ -16,10 +23,13 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
+use serde_json::Value;
+
 use crate::agent::claude_stream::{ClaudeEvent, PermissionDecision};
 use crate::agent::{ClaudeLaunch, ClaudeSession, SessionEvent};
 use crate::reason_acp::provider::{ProviderEvent, Sink, TurnEnd};
 
+use super::interact::{self, Answer};
 use super::map::TurnMapper;
 
 /// Builds the launch for a chat: its folder and the session to resume.
@@ -41,6 +51,17 @@ struct TurnState {
     alive: bool,
     /// Stop was pressed during the current turn.
     stopping: bool,
+    /// Permission prompts waiting for the user: request id to tool and input.
+    asks: HashMap<String, (String, Value)>,
+}
+
+impl TurnState {
+    /// Drops every waiting prompt, oldest request id first.
+    fn take_asks(&mut self) -> Vec<(String, (String, Value))> {
+        let mut out: Vec<_> = self.asks.drain().collect();
+        out.sort_by(|a, b| a.0.cmp(&b.0));
+        out
+    }
 }
 
 struct Chat {
@@ -48,6 +69,11 @@ struct Chat {
     /// Claude session id to resume when a process starts.
     resume: Option<String>,
     live: Option<Live>,
+    /// A prompt was announced ([`ClaudeRunner::expect_prompt`]) and has not
+    /// been sent yet.
+    expected: bool,
+    /// Stop was pressed while the expected prompt was not sent yet.
+    stopped_before_send: bool,
 }
 
 pub struct ClaudeRunner {
@@ -74,12 +100,23 @@ impl ClaudeRunner {
             cwd: cwd.to_owned(),
             resume: None,
             live: None,
+            expected: false,
+            stopped_before_send: false,
         });
         if chat.live.is_none() {
             chat.cwd = cwd.to_owned();
             if session_id.is_some() {
                 chat.resume = session_id;
             }
+        }
+    }
+
+    /// Announces a prompt about to be sent (after the turn's start
+    /// checkpoint), so a Stop before it is sent still stops it.
+    pub fn expect_prompt(&self, chat_id: &str) {
+        if let Some(chat) = self.chats.lock().unwrap().get_mut(chat_id) {
+            chat.expected = true;
+            chat.stopped_before_send = false;
         }
     }
 
@@ -90,6 +127,12 @@ impl ClaudeRunner {
             let Some(chat) = chats.get_mut(chat_id) else {
                 return self.fail_now(chat_id, "This chat was not opened.".into());
             };
+            chat.expected = false;
+            if std::mem::take(&mut chat.stopped_before_send) {
+                let end = TurnEnd::Cancelled;
+                (self.sink)(chat_id, ProviderEvent::TurnEnded(end.clone()));
+                return end;
+            }
             if let Err(e) = self.ensure_live(chat_id, chat) {
                 return self.fail_now(chat_id, e);
             }
@@ -118,11 +161,23 @@ impl ClaudeRunner {
     }
 
     /// Stop: interrupts the running turn; pressed again, kills the process.
+    /// A Stop before an expected prompt was sent cancels that prompt.
     pub fn cancel(&self, chat_id: &str) {
-        let chats = self.chats.lock().unwrap();
-        let Some(live) = chats.get(chat_id).and_then(|c| c.live.as_ref()) else {
+        let mut chats = self.chats.lock().unwrap();
+        let Some(chat) = chats.get_mut(chat_id) else {
             return;
         };
+        let running = chat
+            .live
+            .as_ref()
+            .is_some_and(|live| !live.state.lock().unwrap().waiting.is_empty());
+        if !running {
+            if chat.expected {
+                chat.stopped_before_send = true;
+            }
+            return;
+        }
+        let live = chat.live.as_ref().unwrap();
         let again = {
             let mut st = live.state.lock().unwrap();
             if st.waiting.is_empty() {
@@ -136,6 +191,50 @@ impl ClaudeRunner {
         if again || session.interrupt().is_err() {
             let _ = session.kill();
         }
+        let asks = live.state.lock().unwrap().take_asks();
+        for (id, (tool, input)) in asks {
+            (self.sink)(
+                chat_id,
+                ProviderEvent::PermissionResolved {
+                    request_id: id.clone(),
+                },
+            );
+            if let Ok(d) = interact::decision(&tool, &input, &Answer::Cancel) {
+                let _ = session.answer_permission(id, d);
+            }
+        }
+    }
+
+    /// Answers the chat's waiting permission prompt `id`.
+    pub fn respond(&self, chat_id: &str, id: &str, answer: &Answer) -> Result<(), String> {
+        let chats = self.chats.lock().unwrap();
+        let live = chats
+            .get(chat_id)
+            .and_then(|c| c.live.as_ref())
+            .ok_or("This chat has no running Claude Code.")?;
+        let (tool, input) = live
+            .state
+            .lock()
+            .unwrap()
+            .asks
+            .get(id)
+            .cloned()
+            .ok_or_else(|| format!("No request {id} is waiting in this chat."))?;
+        let decision = interact::decision(&tool, &input, answer)?;
+        live.state.lock().unwrap().asks.remove(id);
+        // Resolved before the answer: the agent may end the turn right after it.
+        (self.sink)(
+            chat_id,
+            ProviderEvent::PermissionResolved {
+                request_id: id.into(),
+            },
+        );
+        let sent = live
+            .session
+            .lock()
+            .unwrap()
+            .answer_permission(id.to_owned(), decision);
+        sent.map_err(|e| format!("Could not answer Claude Code: {e}"))
     }
 
     /// The Claude session id of a chat, once its process reported one.
@@ -182,6 +281,7 @@ impl ClaudeRunner {
             stderr: VecDeque::new(),
             alive: true,
             stopping: false,
+            asks: HashMap::new(),
         }));
         let session = Arc::new(Mutex::new(session));
         spawn_reader(
@@ -209,31 +309,49 @@ fn spawn_reader(
             SessionEvent::Event(ClaudeEvent::PermissionPrompt {
                 request_id,
                 tool_name,
-                ..
+                input,
             }) => {
-                // Chats run in bypassPermissions, so this is not expected;
-                // the app has no prompt UI yet, so refuse rather than hang.
-                let decision = PermissionDecision::Deny {
-                    message: format!(
-                        "OpenConductor cannot answer permission prompts yet ({tool_name})."
-                    ),
-                    interrupt: false,
-                };
-                let _ = session
-                    .lock()
-                    .unwrap()
-                    .answer_permission(request_id, decision);
+                let request = interact::request_of(request_id.clone(), &tool_name, &input);
+                let mut st = state.lock().unwrap();
+                if st.waiting.is_empty() {
+                    // No turn of ours is running: nobody would see it.
+                    drop(st);
+                    let decision = PermissionDecision::Deny {
+                        message: "No turn is running to ask the user.".into(),
+                        interrupt: false,
+                    };
+                    let _ = session
+                        .lock()
+                        .unwrap()
+                        .answer_permission(request_id, decision);
+                    continue;
+                }
+                st.asks.insert(request_id, (tool_name, input));
+                sink(&chat_id, ProviderEvent::PermissionRequested(request));
             }
             SessionEvent::Event(e) => {
                 let mut st = state.lock().unwrap();
                 for out in st.mapper.map(&e) {
-                    if let ProviderEvent::TurnEnded(end) = &out {
+                    let ended = match &out {
+                        ProviderEvent::TurnEnded(end) => Some(end.clone()),
+                        _ => None,
+                    };
+                    if ended.is_some() {
                         st.stopping = false;
-                        if let Some(tx) = st.waiting.pop_front() {
-                            let _ = tx.send(end.clone());
+                        for (id, _) in st.take_asks() {
+                            sink(
+                                &chat_id,
+                                ProviderEvent::PermissionResolved { request_id: id },
+                            );
                         }
                     }
                     sink(&chat_id, out);
+                    // The waiting prompt returns once its end has been emitted.
+                    if let Some(end) = ended {
+                        if let Some(tx) = st.waiting.pop_front() {
+                            let _ = tx.send(end);
+                        }
+                    }
                 }
             }
             SessionEvent::BadLine { line, error } => {
@@ -257,6 +375,12 @@ fn spawn_reader(
                     }
                 }
                 st.alive = false;
+                for (id, _) in st.take_asks() {
+                    sink(
+                        &chat_id,
+                        ProviderEvent::PermissionResolved { request_id: id },
+                    );
+                }
                 let end = if st.stopping {
                     TurnEnd::Cancelled
                 } else {
@@ -269,8 +393,8 @@ fn spawn_reader(
                     })
                 };
                 while let Some(tx) = st.waiting.pop_front() {
-                    let _ = tx.send(end.clone());
                     sink(&chat_id, ProviderEvent::TurnEnded(end.clone()));
+                    let _ = tx.send(end.clone());
                 }
                 return;
             }

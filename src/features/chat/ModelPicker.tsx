@@ -5,7 +5,9 @@
 // ("Effort"/"Thinking"), the Fast toggle, and a footer with "Edit" and the
 // Cycle effort shortcut. ⌘/ opens it, ⌘⇧/ cycles the effort, ⌘⇧E toggles Fast.
 
+import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs } from "../../keybindings/shortcut.ts";
@@ -30,12 +32,19 @@ export interface ModelPickerProps {
   children?: ReactNode;
   /** Name for a listed entry that is not a Conductor model id (an agent such as Codex). */
   itemLabel?: (choice: ModelChoice) => string | undefined;
+  /** Every model the agent offers (Reason's list), listed before the favourites; none: favourites only, at most five entries. */
+  models?: readonly ModelChoice[];
+  /** The agent's own name for a model id (Reason's "Claude Opus 5.5"), for the chip and the list. */
+  modelName?: (model: string) => string | undefined;
+  /** A line about a model (Reason's "Claude · Subscription"), shown as its tooltip. */
+  modelDescription?: (model: string) => string | undefined;
 }
 
 const same = (a: ModelChoice, b: ModelChoice) => a.model === b.model;
 
-export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel }: ModelPickerProps) {
+export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription }: ModelPickerProps) {
   const [open, setOpen] = useState(false);
+  const menu = usePresence(open);
   const [query, setQuery] = useState("");
   const [effortOpen, setEffortOpen] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
@@ -44,16 +53,20 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
     const s = effectiveShortcuts(id, overrides)[0];
     return s ? glyphs(s) : "";
   };
-  const chip = modelChip(value.model, value.effort, value.fast);
+  const nameOf = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
+  const chip = modelChip(value.model, value.effort, value.fast, modelName?.(value.model));
   const efforts = modelEfforts(value.model);
   const current = effectiveEffort(value.model, value.effort);
   const showFast = fastSupported && fastModeAvailable(value.model);
   const items = useMemo(() => {
-    const list = [value, ...favorites.filter((f) => !same(f, value))].slice(0, 5);
+    // The agent's models come before the other favourites (the Codex and Claude Code entries).
+    const listed = [value, ...(models ?? []), ...favorites];
+    const unique = listed.filter((f, i) => listed.findIndex((g) => same(f, g)) === i);
+    const list = models ? unique : unique.slice(0, 5);
     const q = query.trim().toLowerCase();
-    const name = (f: ModelChoice) => itemLabel?.(f) ?? modelDisplayName(f.model);
-    return q ? list.filter((f) => name(f).toLowerCase().includes(q) || f.model.includes(q)) : list;
-  }, [favorites, value, query, itemLabel]);
+    const name = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
+    return q ? list.filter((f) => name(f).toLowerCase().includes(q) || f.model.toLowerCase().includes(q)) : list;
+  }, [favorites, value, query, itemLabel, models, modelName]);
 
   useKeybindings({
     "chat.openModelPicker": () => (disabled ? false : setOpen((o) => !o)),
@@ -87,25 +100,31 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
 
   return (
     <span className="oc-model-picker" ref={root} onKeyDown={onMenuKey}>
-      <button
-        type="button"
-        className="oc-model-chip"
-        data-testid="composer-model-button"
-        aria-label={`${label ? "Change model" : "Change agent"} (${label ?? chip.accessible})`}
-        title={label ?? chip.accessible}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        disabled={disabled}
-        onClick={() => setOpen((o) => !o)}
-      >
-        <span className="oc-model-chip-label">{label ?? chip.label}</span>
-        <span className="oc-model-chip-details">
-          {!label && chip.effort ? <span className="oc-model-chip-effort">{chip.effort}</span> : null}
-          <ChevronDownIcon className="oc-model-chip-chevron" />
-        </span>
-      </button>
-      {open ? (
-        <div className="oc-model-menu" role="menu" aria-label="Model">
+      <Tooltip content={<p>Change agent <ShortcutHint commandId="chat.openModelPicker" /></p>}>
+        <button
+          type="button"
+          className="oc-model-chip"
+          data-testid="composer-model-button"
+          aria-label={`${label ? "Change model" : "Change agent"} (${label ?? chip.accessible})`}
+          title={label ?? chip.accessible}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          disabled={disabled}
+          onClick={() => setOpen((o) => !o)}
+        >
+          {/* Conductor's `composer-compact-model-icon`: shown only while the composer is minimized. */}
+          <span className="oc-model-chip-icon" aria-hidden>
+            <ModelGlyph model={value.model} />
+          </span>
+          <span className="oc-model-chip-label">{label ?? chip.label}</span>
+          <span className="oc-model-chip-details">
+            {!label && chip.effort ? <span className="oc-model-chip-effort">{chip.effort}</span> : null}
+            <ChevronDownIcon className="oc-model-chip-chevron" />
+          </span>
+        </button>
+      </Tooltip>
+      {menu.mounted ? (
+        <div className="oc-model-menu" role="menu" aria-label="Model" data-motion="popup" {...menu.attrs}>
           <div className="oc-model-menu-inner">
             <div className="oc-model-search">
               <SearchSmallIcon />
@@ -123,14 +142,14 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                     role="menuitem"
                     className="oc-model-item"
                     data-selected={selected || undefined}
-                    title={itemLabel?.(f) ?? modelDisplayName(f.model)}
+                    title={[nameOf(f), modelDescription?.(f.model)].filter(Boolean).join(" · ")}
                     onClick={() => {
                       if (!selected) onChange(f);
                       setOpen(false);
                     }}
                   >
                     <ModelGlyph model={f.model} />
-                    <span className="oc-model-item-name">{selected && label ? label : (itemLabel?.(f) ?? modelDisplayName(f.model))}</span>
+                    <span className="oc-model-item-name">{selected && label ? label : nameOf(f)}</span>
                     {e ? <span className="oc-model-item-effort">{e}</span> : null}
                     {selected ? <CheckIcon className="oc-model-item-check" /> : null}
                   </button>

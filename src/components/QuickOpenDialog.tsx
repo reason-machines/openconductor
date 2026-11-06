@@ -21,6 +21,7 @@ import {
   parseRecentFiles,
 } from "../spotlight/recentFiles";
 import { FileIcon } from "./Icons";
+import { useDialogMotion } from "./motion/dialogMotion";
 
 export const QUICK_OPEN_DIALOG_ID = "quick-open-dialog";
 
@@ -78,6 +79,7 @@ export function QuickOpenDialog({ repoId, workspacePath, onClose, onOpen }: Prop
   const [selected, setSelected] = useState(0);
   const [recents, setRecents] = useState(() => parseRecentFiles(localStorage.getItem(RECENT_FILES_STORAGE_KEY)));
   const listRef = useRef<HTMLUListElement>(null);
+  const motionRef = useDialogMotion<HTMLDivElement>();
 
   useEffect(() => {
     if (workspacePath === null) {
@@ -124,7 +126,7 @@ export function QuickOpenDialog({ repoId, workspacePath, onClose, onOpen }: Prop
 
   const empty = workspacePath === null ? "No files available" : emptyMessage(query, loading, rows.length);
   return (
-    <div className="modal-backdrop qo-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="modal-backdrop qo-backdrop" ref={motionRef} data-dialog-motion="cmdk" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal qo" role="dialog" aria-modal="true" aria-label="Quick open file" id={QUICK_OPEN_DIALOG_ID}>
         <input
           className="qo-input"

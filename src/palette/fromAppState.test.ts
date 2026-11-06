@@ -60,6 +60,16 @@ test("workspace actions appear only with a workspace selected", () => {
   assert.ok(!headings({ ...state, selection: { kind: "home" } }).includes("Workspace actions"));
 });
 
+test("palette workspace entries carry workspaces.number for the W-<n> column", () => {
+  const numbered: AppState = {
+    ...state,
+    repos: [{ ...state.repos[0]!, workspaces: [{ ...w("a", 1), number: 12 }, w("b", 2)] }],
+  };
+  const byId = new Map(paletteDataFromState(numbered, []).workspaces.map((e) => [e.id, e.number]));
+  assert.equal(byId.get("a"), 12);
+  assert.equal(byId.get("b"), null);
+});
+
 test("archived workspaces from conductor.db join the palette data after the active ones; View archived workspaces is a Navigation action", () => {
   const ws = (id: string, name: string, branch: string, createdAt: number) => ({ id, name, branch, createdAt, status: "archived" as const, diff: { added: 0, removed: 0 } });
   const data = paletteDataFromState(state, [], [
@@ -68,20 +78,29 @@ test("archived workspaces from conductor.db join the palette data after the acti
   ]);
   const all = buildResults("workspaces", "", data, "all")[0].items.map((i) => i.id.split(":")[1]);
   assert.deepEqual(all, ["c", "b", "a", "r2/z"]);
-  assert.deepEqual(data.workspaces.find((x) => x.id === "r2/z"), { id: "r2/z", name: "zurich", branch: "b-z", repoName: "api", lastActiveAt: 5 - Number.MAX_SAFE_INTEGER / 2, archived: true });
+  assert.deepEqual(data.workspaces.find((x) => x.id === "r2/z"), { id: "r2/z", name: "zurich", branch: "b-z", repoName: "api", lastActiveAt: 5 - Number.MAX_SAFE_INTEGER / 2, archived: true, number: null });
   const nav = buildResults("actions", "archived", data).find((g) => g.id === "navigation");
   assert.deepEqual(nav?.items.map((i) => i.id), ["action:view-archived-workspaces"]);
 });
 
-test("Go to next unread is listed under Navigation only while a non-archived workspace is unread", () => {
+test("Recent workspaces keeps archived workspaces and drops deleted ones, as Conductor's palette does", () => {
+  const ws = (id: string) => ({ id, name: id, branch: id, createdAt: 5, status: "archived" as const, diff: { added: 0, removed: 0 } });
+  const archived = [{ id: "r2/z", repoId: "r2", name: "zurich", branch: "b-z", createdAt: 5, workspace: ws("r2/z") }];
+  const data = paletteDataFromState(state, ["r2/z", "deleted", "a"], archived);
+  assert.deepEqual(data.recentWorkspaceIds, ["r2/z", "a"]);
+  const recent = buildResults("all", "", data).find((g) => g.heading === "Recent workspaces");
+  assert.deepEqual(recent?.items.map((i) => i.id), ["workspace:r2/z", "workspace:a"]);
+});
+
+test("Go to next unread is listed under Navigation only while a chat of a non-archived workspace is unread", () => {
   const ids = (s: AppState) => paletteDataFromState(s, []).actions.map((a) => a.id);
   assert.ok(!ids(state).includes("go-to-next-unread"));
-  const unread: AppState = { ...state, repos: [{ ...state.repos[0], workspaces: [{ ...w("a", 1), unread: true }, w("b", 2)] }, state.repos[1]] };
+  const unread: AppState = { ...state, repos: [{ ...state.repos[0], workspaces: [{ ...w("a", 1), unreadChats: [{ id: "a", at: 1 }] }, w("b", 2)] }, state.repos[1]] };
   const actions = paletteDataFromState(unread, []).actions;
   const entry = actions.find((a) => a.id === "go-to-next-unread");
   assert.equal(entry?.group, "navigation");
   assert.equal(entry?.bindingId, "chat.nextAttention");
   assert.equal(actions.filter((a) => a.group === "navigation")[0].id, "go-to-next-unread");
-  const archived: AppState = { ...state, repos: [{ ...state.repos[0], workspaces: [{ ...w("a", 1), unread: true, status: "archived" }] }] };
+  const archived: AppState = { ...state, repos: [{ ...state.repos[0], workspaces: [{ ...w("a", 1), unreadChats: [{ id: "a", at: 1 }], status: "archived" }] }] };
   assert.ok(!ids(archived).includes("go-to-next-unread"));
 });

@@ -1,11 +1,12 @@
 // Home with workspaces: Conductor's /all-workspaces screen (`UJo`), which its
-// sidebar Home row and nav.home open. Header "Home" + Create workspace, a
+// sidebar Home row and nav.home open (ours open the wordmark screen instead). Header "Home" + Create workspace, a
 // search box with project and archive filters, then rows grouped by day.
 // Logic and evidence: src/home/allWorkspaces.ts.
 
 import { useEffect, useMemo, useRef, useState, type Dispatch, type ReactNode } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
+import { isWorkspaceUnread } from "../state/chatUnread";
 import { ArchiveIcon, ChevronDownIcon, FolderIcon, SearchIcon, SidebarIcon } from "./Icons";
 import {
   ARCHIVE_FILTERS,
@@ -29,9 +30,13 @@ import {
 import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
-import { homeStatus, rowStatusColor, rowStatusLabel, showsActivityStatus } from "../state/rowStatus";
+import { homeStatus, rowGitStatus, rowStatusColor, rowStatusLabel, showsActivityStatus } from "../state/rowStatus";
 import { RowStatusIcon } from "./RowStatusIcon";
+import { StatusMatrix } from "./StatusMatrix";
+import { useStatusMatrix } from "../settings/useStatusMatrix";
 import { glyphs } from "../keybindings/shortcut";
+import { useBoolPref } from "../settings/useBoolPref";
+import { workspaceNumberLabel } from "../state/workspaceNumber";
 
 interface Props {
   repos: Repo[];
@@ -91,12 +96,31 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
   );
 }
 
-function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRepoIcon: boolean; active: boolean; now: number; onOpen: () => void }) {
+function Row({
+  row,
+  showRepoIcon,
+  showNumber,
+  active,
+  now,
+  onOpen,
+}: {
+  row: HomeRow;
+  showRepoIcon: boolean;
+  showNumber: boolean;
+  active: boolean;
+  now: number;
+  onOpen: () => void;
+}) {
   const { workspace: ws, repo, archived, matches } = row;
-  const tone = archived ? "is-archived" : ws.unread ? "is-unread" : "";
+  const tone = archived ? "is-archived" : isWorkspaceUnread(ws) ? "is-unread" : "";
+  const label = workspaceNumberLabel(ws.number);
   // Conductor's Home row (`vJo`): the agent's or setup's status, else the last-activity time.
   const status = homeStatus(ws.state, useWorkspaceAgentStatus(ws));
   const statusLabel = rowStatusLabel(status);
+  // Workspace status matrix (Settings › Experimental): Conductor's Home row (`_Jo`) puts the
+  // matrix where the repository icon goes, and the time column then always shows the time (`vJo`).
+  const matrix = useStatusMatrix();
+  const unstarted = ws.state === "unstarted";
   return (
     <div
       role="option"
@@ -107,9 +131,23 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
       title={row.title}
     >
       <div className="allws-row-main">
-        {showRepoIcon && (
+        {matrix ? (
+          <span className="allws-matrix" data-testid="home-workspace-status-matrix">
+            <StatusMatrix
+              status={archived ? "branch" : status}
+              gitStatus={unstarted ? undefined : rowGitStatus({ pr: ws.pr, hasRemote: Boolean(repo.remote) })}
+              hasUnread={!archived && !unstarted && isWorkspaceUnread(ws)}
+            />
+          </span>
+        ) : showRepoIcon && (
           <span className="allws-repo-initial" title={repo.name} aria-hidden>
             {repo.name.charAt(0).toUpperCase()}
+          </span>
+        )}
+        {/* "Show workspace numbers" (Conductor's `_Jo`): a fixed-width W-<n> column, empty for unnumbered rows. */}
+        {showNumber && (
+          <span className={`allws-number${archived ? " is-archived" : ""}`}>
+            {label !== null && <Highlight match={matches?.number} fallback={label} />}
           </span>
         )}
         <span className={`allws-name ${tone}`}>
@@ -129,7 +167,7 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
             <span className="allws-archived" title="Archived" aria-label="Archived">
               <ArchiveIcon size={14} />
             </span>
-          ) : showsActivityStatus(status) ? (
+          ) : !matrix && showsActivityStatus(status) ? (
             <span className="allws-status" data-testid="home-workspace-status" data-status={status} data-color={rowStatusColor(status)} role="img" title={statusLabel} aria-label={statusLabel}>
               <RowStatusIcon status={status} />
             </span>
@@ -154,6 +192,7 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
   const [activeIndex, setActiveIndex] = useState(0);
   const sentinel = useRef<HTMLDivElement>(null);
   const now = Date.now();
+  const showNumbers = useBoolPref("experimental_show_workspace_numbers");
 
   useEffect(() => setLimit(PAGE_SIZE), [query, filters]);
 
@@ -302,6 +341,7 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
                         key={row.workspace.id}
                         row={row}
                         showRepoIcon={filters.projects.length === 0}
+                        showNumber={showNumbers}
                         active={i === activeIndex}
                         now={now}
                         onOpen={() => open(row)}

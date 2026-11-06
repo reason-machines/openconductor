@@ -1,0 +1,47 @@
+/* Settings › Agents shared kit (kit.tsx). Builds on agents.css (`.oc-ag`
+   variables, buttons, cards, status table); colours are theme tokens only. */
+.settings .settings-header.agk-header { align-items: center; margin-bottom: 32px; }
+
+/* Equal-width auth cards; the column count comes from the option count. */
+.agk-cards { display: grid; gap: 12px; }
+.agk-pill {
+  display: inline-flex; align-items: center; margin-left: 6px; padding: 0 6px; height: 18px;
+  border: 1px solid var(--ag-border); border-radius: 999px; background: var(--ag-muted);
+  color: var(--ag-muted-fg); font-size: 11px; font-weight: 500; vertical-align: 1px;
+}
+.ag-mode.on .agk-pill { color: var(--ag-accent-fg); }
+
+/* The revealed key reads in the foreground colour; selectable for copying. */
+.ag-key-mask.agk-shown { color: var(--ag-fg); user-select: text; overflow-wrap: anywhere; }
+
+/* Option rows separated by hairlines (`Al`: border-t, py-5). */
+.agk-option { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px 0; border-top: 1px solid var(--ag-border); }
+.agk-option.stacked { flex-direction: column; align-items: stretch; gap: 12px; }
+.agk-option-text { min-width: 0; }
+.agk-option-text > * + * { margin-top: 4px; }
+.agk-option-control { flex-shrink: 0; display: flex; align-items: center; gap: 8px; }
+
+/* Config-file card (`Nzi`: rounded-md border p-4). */
+.agk-config { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid var(--ag-border); border-radius: 6px; }
+.agk-config-text { flex: 1; min-width: 0; }
+.agk-config-text h3 { margin: 0 0 4px; font-size: 14px; font-weight: 500; line-height: 20px; }
+.agk-mono {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ag-muted-fg);
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 12px; line-height: 16px;
+}
+
+/* "Open in" / "Open settings.toml" split button (`P9`). */
+.agk-split { position: relative; display: inline-flex; flex-shrink: 0; }
+.agk-split-main, .agk-split-chevron {
+  display: inline-flex; align-items: center; gap: 6px; height: 28px; border: 1px solid var(--ag-border);
+  background: var(--ag-bg); color: var(--ag-fg); font: inherit; font-size: 12px; font-weight: 500; cursor: default;
+}
+.agk-split-main { padding: 0 10px; border-radius: 6px 0 0 6px; font-family: var(--font-mono, ui-monospace, monospace); }
+.agk-split-chevron { padding: 0 6px; margin-left: -1px; border-radius: 0 6px 6px 0; color: var(--ag-muted-fg); }
+.agk-split-main:hover, .agk-split-chevron:hover { background: var(--ag-accent); }
+.agk-split-main:disabled, .agk-split-chevron:disabled { opacity: 0.5; }
+.agk-split-menu { width: 200px; }
+.agk-split-error { position: absolute; top: calc(100% + 4px); right: 0; width: max-content; max-width: 320px; font-size: 12px; }
+
+/* The option rows under a tab's authentication start below a hairline. */
+.settings .settings-rows.agk-rows { padding-top: 24px; border-top: 1px solid var(--ag-border); }

@@ -6,6 +6,7 @@
 //   node --test tests/e2e/
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
+import { isDeepStrictEqual } from "node:util";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
@@ -40,10 +41,28 @@ after(async () => {
 const ROW = '[data-testid="left-sidebar-workspace-item"]';
 const row = (page, label) => page.locator(ROW, { has: page.locator(".sb-ws-name", { hasText: label }) });
 const menu = (page) => page.getByRole("menu", { name: "Workspace actions" });
-const menuItems = (page) => menu(page).locator(":scope > [role=menuitem], :scope > .sb-ctx-sub > [role=menuitem]").evaluateAll((els) => els.map((e) => e.querySelector(".sb-ctx-label").textContent));
+// Item label = the row's text without its shortcut hint (`.cm-shortcut`).
+const menuItems = (page) =>
+  menu(page)
+    .locator(":scope > [role=menuitem]")
+    .evaluateAll((els) => els.map((e) => [...e.childNodes].filter((n) => !(n instanceof Element && n.classList.contains("cm-shortcut"))).map((n) => n.textContent).join("").trim()));
+
+// Rows and sections leave through framer-motion's AnimatePresence, which unmounts a removed
+// child a frame after the change even with reduced motion, so removals are polled to settle.
+async function settled(read, expected, timeout = 3000) {
+  const end = Date.now() + timeout;
+  let actual = await read();
+  while (!isDeepStrictEqual(actual, expected) && Date.now() < end) {
+    await new Promise((r) => setTimeout(r, 25));
+    actual = await read();
+  }
+  assert.deepEqual(actual, expected);
+}
 
 test("row menu: read/unread, pin into the Pinned group, status, keys, archive", async () => {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  // Reduced motion: rows move between groups at once instead of collapsing out over 200ms
+  // (Conductor's `Qj` skips its motion wrapper the same way); removals still settle a frame later.
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
   await page.goto(`${base}/?demo=1`);
   const harbor = row(page, "Quiet harbor");
   await harbor.waitFor();
@@ -53,48 +72,60 @@ test("row menu: read/unread, pin into the Pinned group, status, keys, archive", 
   assert.deepEqual(await menuItems(page), ["Mark as unread", "Pin", "Set status", "Move to section", "Rename", "Copy link", "Archive"]);
   assert.equal(await harbor.getAttribute("data-menu-open"), "true");
   await page.keyboard.press("Escape");
-  assert.equal(await menu(page).count(), 0);
+  // Conductor's 100 ms exit animation runs before the menu unmounts.
+  await menu(page).waitFor({ state: "detached" });
 
   // Pin moves the row into the Pinned group above the repositories.
   await harbor.click({ button: "right" });
   await menu(page).getByRole("menuitem", { name: "Pin" }).click();
+  await menu(page).waitFor({ state: "detached" });
   const pinnedGroup = page.locator('.sb-group[data-group="Pinned"]');
   assert.deepEqual(await pinnedGroup.locator(".sb-ws-name").allTextContents(), ["Quiet harbor"]);
-  assert.equal(await page.locator(".sb-repo-groups .sb-ws-name", { hasText: "Quiet harbor" }).count(), 0);
+  await settled(() => page.locator(".sb-repo-groups .sb-ws-name", { hasText: "Quiet harbor" }).count(), 0);
 
   // P while the menu is open unpins; the group goes away.
   await harbor.click({ button: "right" });
   assert.deepEqual((await menuItems(page)).slice(0, 2), ["Mark as unread", "Unpin"]);
   await page.keyboard.press("p");
-  assert.equal(await pinnedGroup.count(), 0);
-  assert.equal(await page.locator(".sb-repo-groups .sb-ws-name", { hasText: "Quiet harbor" }).count(), 1);
+  await settled(() => pinnedGroup.count(), 0);
+  await settled(() => page.locator(".sb-repo-groups .sb-ws-name", { hasText: "Quiet harbor" }).count(), 1);
 
   // R marks unread (semibold row); opening the workspace clears it.
   await harbor.click({ button: "right" });
   await page.keyboard.press("r");
+  await menu(page).waitFor({ state: "detached" });
   assert.equal(await harbor.getAttribute("data-unread"), "true");
   await harbor.click({ button: "right" });
   assert.equal((await menuItems(page))[0], "Mark as read");
   await page.keyboard.press("Escape");
+  await menu(page).waitFor({ state: "detached" });
+  // Read on view (Conductor's yIo) runs once the workspace's chat is on screen, after the click's render.
   await harbor.click();
+  await page.waitForFunction((sel) => [...document.querySelectorAll(sel)].some((r) => r.querySelector(".sb-ws-name")?.textContent?.includes("Quiet harbor") && !r.hasAttribute("data-unread")), ROW, { timeout: 5_000 });
   assert.equal(await harbor.getAttribute("data-unread"), null);
 
   // Set status: the default is In progress; choosing one checks it next time.
   await harbor.click({ button: "right" });
   await menu(page).getByRole("menuitem", { name: "Set status" }).hover();
   const statuses = page.getByRole("menu", { name: "Set status" });
-  assert.deepEqual(await statuses.locator("[role=menuitemradio]").allTextContents(), ["Backlog", "In progress✓", "In review", "Done", "Canceled"]);
+  // The submenu opens after Conductor's hover delay.
+  await statuses.waitFor();
+  assert.deepEqual(await statuses.locator("[role=menuitemradio]").allTextContents(), ["Backlog", "In progress", "In review", "Done", "Canceled"]);
+  // The current one carries Conductor's trailing check icon (lucide Check), not a text glyph.
+  assert.equal(await statuses.getByRole("menuitemradio", { name: "In progress" }).getAttribute("aria-checked"), "true");
   await statuses.getByRole("menuitemradio", { name: "In review" }).click();
+  await menu(page).waitFor({ state: "detached" });
   await harbor.click({ button: "right" });
   await menu(page).getByRole("menuitem", { name: "Set status" }).hover();
   assert.equal(await statuses.getByRole("menuitemradio", { name: "In review" }).getAttribute("aria-checked"), "true");
 
   // Archive (selected row shows the ⌘⇧A hint) removes the row.
   await page.keyboard.press("Escape");
+  await menu(page).waitFor({ state: "detached" });
   await harbor.click({ button: "right" });
-  assert.equal(await menu(page).getByRole("menuitem", { name: /Archive/ }).locator("kbd").textContent(), "⌘⇧A");
+  assert.equal(await menu(page).getByRole("menuitem", { name: /Archive/ }).locator(".cm-shortcut").textContent(), "⌘⇧A");
   await menu(page).getByRole("menuitem", { name: /Archive/ }).click();
-  assert.equal(await harbor.count(), 0);
+  await settled(() => harbor.count(), 0);
   await page.close();
 });
 
@@ -109,7 +140,8 @@ test("holding Cmd shows 1..9 on the visible rows, and Cmd+N opens that row", asy
   assert.deepEqual(await hints(), [], "hints wait 500 ms");
   await page.waitForTimeout(700);
   const shown = await hints();
-  assert.deepEqual(shown, (await names()).map((_, i) => String(i + 1)));
+  // Only the first nine rows get a number (Cmd+1..9); the demo has more.
+  assert.deepEqual(shown, (await names()).slice(0, 9).map((_, i) => String(i + 1)));
   assert.equal(await page.locator(".sb-ws-hint").first().getAttribute("aria-label"), "Switch with Command-1");
   await page.keyboard.press("2");
   await page.keyboard.up("Meta");

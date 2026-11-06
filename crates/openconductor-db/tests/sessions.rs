@@ -319,6 +319,154 @@ async fn unread_and_mark_workspace_read() {
 }
 
 #[tokio::test]
+async fn upsert_unread_creates_or_fills_the_chat_row() {
+    let pool = pool().await;
+    // A chat with no row (a Codex chat): the row is created in its workspace.
+    sessions::upsert_unread(&pool, "app/oslo", "app/oslo", true)
+        .await
+        .unwrap();
+    let s = sessions::get(&pool, "app/oslo").await.unwrap().unwrap();
+    assert!(s.unread);
+    assert_eq!(s.workspace_id.as_deref(), Some("app/oslo"));
+    assert_eq!(s.status, SessionStatus::Idle);
+
+    // A row that chat_messages::save made with no workspace gets one.
+    openconductor_db::chat_messages::save(
+        &pool,
+        "app/oslo:review:1",
+        &openconductor_db::chat_messages::Batch::default(),
+    )
+    .await
+    .unwrap();
+    assert_eq!(
+        sessions::workspace_id(&pool, "app/oslo:review:1")
+            .await
+            .unwrap(),
+        None
+    );
+    sessions::upsert_unread(&pool, "app/oslo:review:1", "app/oslo", true)
+        .await
+        .unwrap();
+    assert_eq!(
+        sessions::workspace_id(&pool, "app/oslo:review:1")
+            .await
+            .unwrap()
+            .as_deref(),
+        Some("app/oslo")
+    );
+
+    // An existing workspace is kept; the flag clears.
+    create(&pool, "s", "w", "2026-11-05T10:00:00Z").await;
+    sessions::upsert_unread(&pool, "s", "other", true)
+        .await
+        .unwrap();
+    sessions::upsert_unread(&pool, "s", "other", false)
+        .await
+        .unwrap();
+    let s = sessions::get(&pool, "s").await.unwrap().unwrap();
+    assert_eq!((s.workspace_id.as_deref(), s.unread), (Some("w"), false));
+
+    // mark_workspace_read now reaches the chats the upsert placed.
+    assert_eq!(
+        sessions::mark_workspace_read(&pool, "app/oslo")
+            .await
+            .unwrap(),
+        ["app/oslo", "app/oslo:review:1"]
+    );
+}
+
+#[tokio::test]
+async fn open_tabs_survive_a_restart_with_their_unread() {
+    const T1: &str = "2026-11-05T10:00:00.000Z";
+    const T2: &str = "2026-11-05T10:00:00.001Z";
+    const T3: &str = "2026-11-05T10:00:00.002Z";
+    let pool = pool().await;
+    sessions::open_tab(&pool, "app/oslo:review:1", "app/oslo", "Review", T1)
+        .await
+        .unwrap();
+    sessions::open_tab(&pool, "app/oslo:chat:2", "app/oslo", UNTITLED, T2)
+        .await
+        .unwrap();
+    sessions::open_tab(&pool, "app/oslo:review:3", "app/oslo", "Review 2", T3)
+        .await
+        .unwrap();
+    sessions::upsert_unread(&pool, "app/oslo:review:1", "app/oslo", true)
+        .await
+        .unwrap();
+    // Not tabs: the main chat, a Claude Code chat, a chat of another workspace's id.
+    sessions::upsert_unread(&pool, "app/oslo", "app/oslo", true)
+        .await
+        .unwrap();
+    sessions::upsert_unread(&pool, "app/oslo:review:1:claude", "app/oslo", true)
+        .await
+        .unwrap();
+    sessions::upsert_unread(&pool, "app/lima:review:9", "app/oslo", true)
+        .await
+        .unwrap();
+    // A closed tab stays closed.
+    sessions::hide(&pool, "app/oslo:review:3").await.unwrap();
+
+    let tabs = sessions::open_tabs(&pool).await.unwrap();
+    let tabs: Vec<_> = tabs
+        .iter()
+        .map(|t| (t.workspace_id.as_str(), t.id.as_str(), t.title.as_str()))
+        .collect();
+    assert_eq!(
+        tabs,
+        [
+            ("app/oslo", "app/oslo:review:1", "Review"),
+            ("app/oslo", "app/oslo:chat:2", UNTITLED),
+        ]
+    );
+    let unread: Vec<_> = sessions::unread_chats(&pool)
+        .await
+        .unwrap()
+        .into_iter()
+        .map(|c| c.id)
+        .collect();
+    assert!(unread.contains(&"app/oslo:review:1".to_string()));
+
+    // Reopening a closed tab shows it again; a row chat_messages::save made
+    // with no workspace gets the tab's.
+    sqlx::query("UPDATE sessions SET workspace_id = NULL WHERE id = 'app/oslo:review:3'")
+        .execute(&pool)
+        .await
+        .unwrap();
+    sessions::open_tab(&pool, "app/oslo:review:3", "app/oslo", "Review 2", T3)
+        .await
+        .unwrap();
+    assert_eq!(sessions::open_tabs(&pool).await.unwrap().len(), 3);
+}
+
+#[tokio::test]
+async fn unread_chats_lists_visible_unread_chats_by_workspace() {
+    let pool = pool().await;
+    create(&pool, "b", "w1", "2026-11-05T10:00:00Z").await;
+    create(&pool, "a", "w1", "2026-11-05T10:00:01Z").await;
+    create(&pool, "hidden", "w1", "2026-11-05T10:00:02Z").await;
+    create(&pool, "read", "w2", "2026-11-05T10:00:03Z").await;
+    create(&pool, "c", "w2", "2026-11-05T10:00:04Z").await;
+    for id in ["a", "b", "hidden", "c"] {
+        sessions::set_unread(&pool, id, true).await.unwrap();
+    }
+    sessions::hide(&pool, "hidden").await.unwrap();
+    // A row with no workspace (chat_messages::save) is not listed.
+    sqlx::query("INSERT INTO sessions (id, unread_count) VALUES ('orphan', 1)")
+        .execute(&pool)
+        .await
+        .unwrap();
+    set_updated_at(&pool, "a", "2026-11-05T11:00:00.000Z").await;
+
+    let rows = sessions::unread_chats(&pool).await.unwrap();
+    let ids: Vec<_> = rows
+        .iter()
+        .map(|r| (r.workspace_id.as_str(), r.id.as_str()))
+        .collect();
+    assert_eq!(ids, [("w1", "a"), ("w1", "b"), ("w2", "c")]);
+    assert_eq!(rows[0].updated_at, "2026-11-05T11:00:00.000Z");
+}
+
+#[tokio::test]
 async fn last_user_message_at_only_moves_forward_when_bumped() {
     let pool = pool().await;
     create(&pool, "s", "w", "2026-11-05T10:00:00Z").await;

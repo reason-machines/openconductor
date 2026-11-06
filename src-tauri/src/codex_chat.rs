@@ -27,14 +27,12 @@ use std::sync::{Arc, Mutex, OnceLock};
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, Runtime, State};
 
-use crate::agent::codex_cli::{
-    find_codex_cli, ApprovalPolicy, CodexLaunch, CodexPolicy, SandboxMode,
-};
+use crate::agent::codex_cli::{ApprovalPolicy, CodexPolicy, SandboxMode};
 use crate::agent::codex_consent::ConsentAnswer;
 use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
 use crate::agent::codex_runner::{CodexRunner, RunnerConfig, Sink, Timeouts};
 use crate::agent::codex_wire::{Payload, TurnEnd};
-use crate::agent::AgentKind;
+use crate::agent_binaries::{Agent, BinaryManager};
 use crate::settings::service::SettingsService;
 
 pub const EVENT: &str = "codex-chat-event";
@@ -42,8 +40,8 @@ pub const EVENT: &str = "codex-chat-event";
 #[derive(Default)]
 pub struct CodexChats {
     chats: Mutex<HashMap<String, Arc<CodexRunner>>>,
-    /// The user's login-shell `PATH`, read once.
-    shell_path: OnceLock<Option<OsString>>,
+    /// The bundled-binary store, for [`Self::executable`].
+    binaries: OnceLock<BinaryManager>,
 }
 
 /// Conductor's default when a session sets neither: never ask, full
@@ -52,25 +50,25 @@ fn default_policy() -> CodexPolicy {
     CodexPolicy::new(ApprovalPolicy::Never, SandboxMode::DangerFullAccess)
 }
 
-fn home() -> Option<PathBuf> {
-    std::env::var_os("HOME").map(PathBuf::from)
-}
-
 impl CodexChats {
-    /// `PATH` from the user's login shell, falling back to the app's own.
-    fn path(&self) -> Option<OsString> {
-        self.shell_path
-            .get_or_init(|| {
-                let shell = std::env::var("SHELL").unwrap_or_else(|_| "/bin/zsh".into());
-                oc_scripts::shell_env::capture(&shell, None)
-                    .and_then(|env| env.get("PATH").map(OsString::from))
-                    .or_else(|| std::env::var_os("PATH"))
-            })
-            .clone()
+    pub fn with_binaries(binaries: BinaryManager) -> Self {
+        let chats = Self::default();
+        let _ = chats.binaries.set(binaries);
+        chats
     }
 
-    fn cli(&self) -> Option<PathBuf> {
-        find_codex_cli(self.path().as_deref(), home().as_deref())
+    /// `PATH` from the user's login shell, falling back to the app's own.
+    pub(crate) fn path(&self) -> Option<OsString> {
+        crate::agent_launch::login_shell_path()
+    }
+
+    /// The `codex` a chat would run now, without downloading (account and
+    /// sign-in): "Codex executable path", else the verified bundled copy,
+    /// else the CLI on the login shell's `PATH` ([`crate::agent_launch`]).
+    pub(crate) fn executable(&self, settings: &SettingsService) -> Option<PathBuf> {
+        let custom = settings.get().ok().and_then(|s| s.codex_executable_path);
+        crate::agent_launch::current_with(Agent::Codex, custom.as_deref(), self.binaries.get())
+            .map(|r| r.path)
     }
 
     fn get(&self, chat_id: &str) -> Result<Arc<CodexRunner>, String> {
@@ -97,10 +95,10 @@ fn event_json(chat_id: &str, payload: &Payload) -> Value {
     v
 }
 
-/// Absolute path of the `codex` the chat would run, or null.
+/// Absolute path of the `codex` the chat would run now, or null.
 #[tauri::command]
-pub async fn codex_cli_path(state: State<'_, CodexChats>) -> Result<Option<String>, String> {
-    Ok(state.cli().map(|p| p.display().to_string()))
+pub async fn codex_cli_path<R: Runtime>(app: AppHandle<R>) -> Result<Option<String>, String> {
+    Ok(crate::agent_launch::current(&app, Agent::Codex).map(|r| r.path.display().to_string()))
 }
 
 /// Opens the chat (no process yet). Opening an open chat keeps it as is.
@@ -117,16 +115,21 @@ pub async fn codex_open_chat<R: Runtime>(
     if state.chats.lock().unwrap().contains_key(&chat_id) {
         return Ok(());
     }
-    let cli = state.cli().ok_or(
-        "The Codex CLI was not found. Install it (npm i -g @openai/codex), then sign in with `codex login`.",
-    )?;
-    let mut env = settings.launch_env(AgentKind::Codex)?;
-    if let Some(path) = state.path() {
-        env.set("PATH", path.to_string_lossy());
-    }
     let cwd = PathBuf::from(cwd);
-    let mut launch = CodexLaunch::new(&cwd, env);
-    launch.executable = cli;
+    // Model, effort, personality and provider come from settings, as
+    // Conductor's launch (`Ohe`). The executable is the Settings path, else
+    // the bundled copy (waits for its download), else the CLI on the login
+    // shell's PATH (agent_launch.rs).
+    let mut launch = settings.codex_launch(&cwd)?;
+    let launch_app = app.clone();
+    launch.executable = tauri::async_runtime::spawn_blocking(move || {
+        crate::agent_launch::launch(&launch_app, Agent::Codex)
+    })
+    .await
+    .map_err(|e| e.to_string())??;
+    if let Some(path) = state.path() {
+        launch.env.set("PATH", path.to_string_lossy());
+    }
     let config = RunnerConfig {
         launch,
         thread: ThreadOptions {
@@ -142,7 +145,9 @@ pub async fn codex_open_chat<R: Runtime>(
     };
     let chat = chat_id.clone();
     let sink: Sink = Arc::new(move |payload: Payload| {
-        let _ = app.emit(EVENT, event_json(&chat, &payload));
+        let event = event_json(&chat, &payload);
+        crate::e2e::log_event("codex", &event);
+        let _ = app.emit(EVENT, event);
     });
     let runner = Arc::new(CodexRunner::start(config, sink));
     state.chats.lock().unwrap().entry(chat_id).or_insert(runner);

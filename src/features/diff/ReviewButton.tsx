@@ -5,24 +5,26 @@
 // tab on the review model and sends the review request with the instructions
 // attached as "Review request.md"; "Edit before sending" (right-click) opens
 // the tab with the request in the composer instead. ⌘⇧R does the same as a
-// click. Review tabs live until closed or the app quits; their Reason
-// Sessions stay in Reason.
+// click. Review tabs live until closed; an open one is stored in conductor.db
+// and comes back after a restart, as Conductor's review chat (a `sessions`
+// row) does (state/openChat.ts). Their Reason Sessions stay in Reason.
 import { useCallback, useEffect, useState } from "react";
-import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
-import { effectiveShortcuts } from "../../keybindings/overrides.ts";
-import { glyphs } from "../../keybindings/shortcut.ts";
-import { ContextMenu, MenuItem } from "../../components/ContextMenu";
+import { Tooltip } from "../../components/ui/Tooltip.tsx";
+import { ContextMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { getSettings } from "../../settings/api";
 import { DEFAULT_SETTINGS } from "../../settings/types";
 import type { Repo, Workspace } from "../../state/types";
 import { configureReason, configureReasonDefault } from "../chat/reasonChat.ts";
 import { defaultChatConfig } from "../chat/chatModel.ts";
-import { NEW_CHAT_TITLE, newChatId } from "../chat/chatTabs.ts";
-import { hideChat } from "../chat/chatRuntime.ts";
+import { CHAT_ID_SEGMENT, NEW_CHAT_TITLE, newChatId } from "../chat/chatTabs.ts";
+import { hideChat, showChat } from "../chat/chatRuntime.ts";
 import type { PromptAttachment } from "../chat/reason.ts";
 import { buildReviewPrompt, type ConfigChoice, REVIEW_ATTACHMENT, REVIEW_MESSAGE, reviewDraft, reviewModel, reviewTabTitle } from "./review.ts";
 import { repoReviewPrompt } from "./reviewApi.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
+import { chatTabWrites, restoredChatTabs, setOpenReviewChats } from "../../state/openChat.ts";
+import { inTauri } from "../../backend.ts";
+import { invoke } from "@tauri-apps/api/core";
 
 export interface ReviewTab {
   chatId: string;
@@ -55,18 +57,34 @@ export function takePendingMessage(chatId: string): PendingMessage | undefined {
   return p;
 }
 
+/** The workspace's tabs in this window, else the ones open when the app last ran. */
+function currentTabs(workspaceId: string): ReviewTab[] {
+  return (
+    tabsByWorkspace.get(workspaceId) ??
+    restoredChatTabs(workspaceId).map((t) => ({ chatId: t.id, title: t.title, ...(t.id.includes(CHAT_ID_SEGMENT) ? { blank: true as const } : {}), modelLabel: "", effort: null }))
+  );
+}
+
 /** Review chats of a workspace. `onOpen` shows a chat once it is created. */
 export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId: string) => void) {
-  const [tabs, setTabs] = useState<ReviewTab[]>(() => tabsByWorkspace.get(workspace.id) ?? []);
+  const [tabs, setTabs] = useState<ReviewTab[]>(() => currentTabs(workspace.id));
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    setTabs(tabsByWorkspace.get(workspace.id) ?? []);
+    setTabs(currentTabs(workspace.id));
     setError(null);
   }, [workspace.id]);
 
   const save = useCallback(
     (next: ReviewTab[]) => {
+      // Open tabs are stored so they, and their unread, survive a restart.
+      if (inTauri()) {
+        for (const w of chatTabWrites(workspace.id, currentTabs(workspace.id), next)) {
+          invoke(w.command, w.args).catch((err) => console.error(`conductor.db: ${w.command} failed`, err));
+        }
+      }
       tabsByWorkspace.set(workspace.id, next);
+      // Unread and Go to next unread count a review chat only while its tab is open.
+      setOpenReviewChats(workspace.id, next.map((t) => t.chatId));
       setTabs(next);
     },
     [workspace.id],
@@ -85,7 +103,7 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
           chatId,
           editBeforeSending ? { kind: "draft", text: reviewDraft(prompt) } : { kind: "send", text: REVIEW_MESSAGE, attachments: [{ name: REVIEW_ATTACHMENT, text: prompt }] },
         );
-        const current = tabsByWorkspace.get(workspace.id) ?? [];
+        const current = currentTabs(workspace.id);
         save([...current, { chatId, title: reviewTabTitle(current.length + 1), modelLabel: model.label, effort: model.effort }]);
         onOpen(chatId);
       } catch (e) {
@@ -99,7 +117,7 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
     (chatId: string) => {
       // A closed review no longer counts toward the workspace's sidebar status (Conductor folds visible sessions only).
       hideChat(chatId);
-      save((tabsByWorkspace.get(workspace.id) ?? []).filter((t) => t.chatId !== chatId));
+      save(currentTabs(workspace.id).filter((t) => t.chatId !== chatId));
     },
     [workspace.id, save],
   );
@@ -114,7 +132,7 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
       const chatId = `${workspace.id}:review:${Date.now().toString(36)}-${++seq}`;
       configureReason(chatId, config);
       pending.set(chatId, { kind: "draft", ...draft });
-      save([...(tabsByWorkspace.get(workspace.id) ?? []), { chatId, title, fork: true, modelLabel: "", effort: null }]);
+      save([...currentTabs(workspace.id), { chatId, title, fork: true, modelLabel: "", effort: null }]);
       onOpen(chatId);
       return chatId;
     },
@@ -128,12 +146,22 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
   const newChat = useCallback((): string => {
     const chatId = newChatId(workspace.id, Date.now(), ++seq);
     configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
-    save([...(tabsByWorkspace.get(workspace.id) ?? []), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
+    save([...currentTabs(workspace.id), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
     onOpen(chatId);
     return chatId;
   }, [workspace.id, save, onOpen]);
 
-  return { tabs, start, close, fork, newChat, error };
+  /** ⌘⇧T: put a closed chat tab back at the end of the strip and show it. */
+  const reopen = useCallback(
+    (tab: ReviewTab) => {
+      showChat(tab.chatId);
+      save([...currentTabs(workspace.id).filter((t) => t.chatId !== tab.chatId), tab]);
+      onOpen(tab.chatId);
+    },
+    [workspace.id, save, onOpen],
+  );
+
+  return { tabs, start, close, fork, newChat, reopen, error };
 }
 
 /**
@@ -158,8 +186,6 @@ async function reviewPreferences(repoId: string, repoPath: string, workspacePath
  * "Edit before sending", disabled like the button in a read-only workspace.
  */
 export function ReviewButton({ onReview, onEdit, error, disabled }: { onReview: () => void; onEdit: () => void; error: string | null; disabled?: boolean }) {
-  const { overrides } = useKeybindingOverrides();
-  const key = effectiveShortcuts("workspace.showReview", overrides)[0];
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const closeMenu = useCallback(() => setMenu(null), []);
   return (
@@ -169,19 +195,21 @@ export function ReviewButton({ onReview, onEdit, error, disabled }: { onReview: 
           Review failed
         </span>
       )}
-      <button
-        className="btn btn-small review-button"
-        onClick={onReview}
-        disabled={disabled}
-        onContextMenu={(e) => {
-          e.preventDefault();
-          setMenu({ x: e.clientX, y: e.clientY });
-        }}
-        title={`Get an AI code review${key ? ` (${glyphs(key)})` : ""}. Right-click to edit the request first.`}
-      >
-        <ReviewIcon /> Review
-      </button>
+      <Tooltip content="Get an AI code review" shortcut="workspace.showReview">
+        <button
+          className="btn btn-small review-button"
+          onClick={onReview}
+          disabled={disabled}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setMenu({ x: e.clientX, y: e.clientY });
+          }}
+        >
+          <ReviewIcon /> Review
+        </button>
+      </Tooltip>
       {menu && (
+        // ContextMenu flips and shifts it inside the window (the button sits at the right edge).
         <ContextMenu at={menu} label="Review actions" onClose={closeMenu}>
           <MenuItem disabled={disabled} onSelect={onEdit}>
             Edit before sending

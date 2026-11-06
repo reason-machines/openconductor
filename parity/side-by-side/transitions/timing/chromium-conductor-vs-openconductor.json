@@ -1,0 +1,2406 @@
+{
+ "browser": "Chromium headless 1440x900 dark, prefers-reduced-motion: no-preference",
+ "runs": 4,
+ "sides": {
+  "conductor": [
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "route-workspace",
+    "what": "Home to a workspace (sidebar row)",
+    "firstMs": 1.9,
+    "settledMs": 401.9,
+    "loaderMs": 0,
+    "maxFrameMs": 366.7,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "route-home",
+    "what": "Workspace to Home (sidebar Home)",
+    "firstMs": 8.1,
+    "settledMs": 91.5,
+    "loaderMs": 0,
+    "maxFrameMs": 50,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "route-workspace-2",
+    "what": "Home to a workspace again",
+    "firstMs": 12.4,
+    "settledMs": 145.7,
+    "loaderMs": 0,
+    "maxFrameMs": 100,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "rp-files",
+    "what": "Right panel: All files",
+    "firstMs": 13.1,
+    "settledMs": 13.1,
+    "loaderMs": 0,
+    "maxFrameMs": 13.1,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "rp-changes",
+    "what": "Right panel: Changes",
+    "firstMs": 2.7,
+    "settledMs": 36,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-left-hide",
+    "what": "Left sidebar hide (⌘B)",
+    "firstMs": 19,
+    "settledMs": 35.8,
+    "loaderMs": 0,
+    "maxFrameMs": 16.8,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-left-show",
+    "what": "Left sidebar show (⌘B)",
+    "firstMs": 2.8,
+    "settledMs": 19.4,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-right-hide",
+    "what": "Right panel toggle (⌥⌘B)",
+    "firstMs": 5.2,
+    "settledMs": 5.2,
+    "loaderMs": 0,
+    "maxFrameMs": 5.2,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-right-show",
+    "what": "Right panel toggle back (⌥⌘B)",
+    "firstMs": 15.2,
+    "settledMs": 65.2,
+    "loaderMs": 0,
+    "maxFrameMs": 33.3,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-terminal",
+    "what": "Terminal toggle (⌘J)",
+    "firstMs": 30.9,
+    "settledMs": 30.9,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-terminal-back",
+    "what": "Terminal toggle back (⌘J)",
+    "firstMs": 27.6,
+    "settledMs": 27.6,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "dialog-palette",
+    "what": "Command palette open (⌘K)",
+    "firstMs": 2,
+    "settledMs": 68.6,
+    "loaderMs": 0,
+    "maxFrameMs": 33.3,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "dialog-palette-close",
+    "what": "Command palette close (Escape)",
+    "firstMs": 143.9,
+    "settledMs": 143.9,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "dialog-shortcuts",
+    "what": "Keyboard shortcuts open (⌥⌘/)",
+    "firstMs": 2.5,
+    "settledMs": 2.5,
+    "loaderMs": 0,
+    "maxFrameMs": 2.5,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "dialog-shortcuts-close",
+    "what": "Keyboard shortcuts close (Escape)",
+    "firstMs": 202.2,
+    "settledMs": 202.2,
+    "loaderMs": 0,
+    "maxFrameMs": 50.1,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "route-settings",
+    "what": "App to Settings (sidebar Settings)",
+    "firstMs": 7.5,
+    "settledMs": 74.2,
+    "loaderMs": 0,
+    "maxFrameMs": 50,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "settings-appearance",
+    "what": "Settings page: Appearance",
+    "firstMs": 2.7,
+    "settledMs": 2.7,
+    "loaderMs": 0,
+    "maxFrameMs": 2.7,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "settings-git",
+    "what": "Settings page: Git",
+    "firstMs": 10.3,
+    "settledMs": 10.3,
+    "loaderMs": 0,
+    "maxFrameMs": 10.3,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "route-back",
+    "what": "Settings back to the app (Escape)",
+    "firstMs": 10.5,
+    "settledMs": 193.8,
+    "loaderMs": 0,
+    "maxFrameMs": 133.3,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "route-workspace",
+    "what": "Home to a workspace (sidebar row)",
+    "firstMs": null,
+    "settledMs": null,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "route-home",
+    "what": "Workspace to Home (sidebar Home)",
+    "firstMs": 13.1,
+    "settledMs": 46.5,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "route-workspace-2",
+    "what": "Home to a workspace again",
+    "firstMs": 70,
+    "settledMs": 136.7,
+    "loaderMs": 0,
+    "maxFrameMs": 70,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "rp-files",
+    "what": "Right panel: All files",
+    "firstMs": 14,
+    "settledMs": 14,
+    "loaderMs": 0,
+    "maxFrameMs": 14,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "rp-changes",
+    "what": "Right panel: Changes",
+    "firstMs": 11.9,
+    "settledMs": 45.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-left-hide",
+    "what": "Left sidebar hide (⌘B)",
+    "firstMs": 15,
+    "settledMs": 31.6,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-left-show",
+    "what": "Left sidebar show (⌘B)",
+    "firstMs": 9.7,
+    "settledMs": 26.4,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-right-hide",
+    "what": "Right panel toggle (⌥⌘B)",
+    "firstMs": 21.7,
+    "settledMs": 21.7,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-right-show",
+    "what": "Right panel toggle back (⌥⌘B)",
+    "firstMs": 16,
+    "settledMs": 66,
+    "loaderMs": 0,
+    "maxFrameMs": 33.3,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-terminal",
+    "what": "Terminal toggle (⌘J)",
+    "firstMs": 33.9,
+    "settledMs": 33.9,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-terminal-back",
+    "what": "Terminal toggle back (⌘J)",
+    "firstMs": 28,
+    "settledMs": 28,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "dialog-palette",
+    "what": "Command palette open (⌘K)",
+    "firstMs": 6.6,
+    "settledMs": 56.5,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "dialog-palette-close",
+    "what": "Command palette close (Escape)",
+    "firstMs": 147.4,
+    "settledMs": 147.4,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "dialog-shortcuts",
+    "what": "Keyboard shortcuts open (⌥⌘/)",
+    "firstMs": 12.4,
+    "settledMs": 12.4,
+    "loaderMs": 0,
+    "maxFrameMs": 12.4,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "dialog-shortcuts-close",
+    "what": "Keyboard shortcuts close (Escape)",
+    "firstMs": 255.5,
+    "settledMs": 255.5,
+    "loaderMs": 0,
+    "maxFrameMs": 50.1,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "route-settings",
+    "what": "App to Settings (sidebar Settings)",
+    "firstMs": 6.7,
+    "settledMs": 56.7,
+    "loaderMs": 0,
+    "maxFrameMs": 33.3,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "settings-appearance",
+    "what": "Settings page: Appearance",
+    "firstMs": 10.5,
+    "settledMs": 10.5,
+    "loaderMs": 0,
+    "maxFrameMs": 10.5,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "settings-git",
+    "what": "Settings page: Git",
+    "firstMs": 6.7,
+    "settledMs": 6.7,
+    "loaderMs": 0,
+    "maxFrameMs": 6.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "route-back",
+    "what": "Settings back to the app (Escape)",
+    "firstMs": 12.4,
+    "settledMs": 179.1,
+    "loaderMs": 0,
+    "maxFrameMs": 116.7,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "route-workspace",
+    "what": "Home to a workspace (sidebar row)",
+    "firstMs": null,
+    "settledMs": null,
+    "loaderMs": 0,
+    "maxFrameMs": 33.2,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "route-home",
+    "what": "Workspace to Home (sidebar Home)",
+    "firstMs": 8,
+    "settledMs": 41.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "route-workspace-2",
+    "what": "Home to a workspace again",
+    "firstMs": -38.2,
+    "settledMs": 161.7,
+    "loaderMs": 0,
+    "maxFrameMs": 166.6,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "rp-files",
+    "what": "Right panel: All files",
+    "firstMs": 13.8,
+    "settledMs": 13.8,
+    "loaderMs": 0,
+    "maxFrameMs": 13.8,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "rp-changes",
+    "what": "Right panel: Changes",
+    "firstMs": 12.2,
+    "settledMs": 45.5,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-left-hide",
+    "what": "Left sidebar hide (⌘B)",
+    "firstMs": 11.4,
+    "settledMs": 28,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-left-show",
+    "what": "Left sidebar show (⌘B)",
+    "firstMs": 14.7,
+    "settledMs": 31.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-right-hide",
+    "what": "Right panel toggle (⌥⌘B)",
+    "firstMs": 2.8,
+    "settledMs": 2.8,
+    "loaderMs": 0,
+    "maxFrameMs": 2.8,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-right-show",
+    "what": "Right panel toggle back (⌥⌘B)",
+    "firstMs": 13.9,
+    "settledMs": 64,
+    "loaderMs": 0,
+    "maxFrameMs": 33.4,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-terminal",
+    "what": "Terminal toggle (⌘J)",
+    "firstMs": 28.3,
+    "settledMs": 28.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-terminal-back",
+    "what": "Terminal toggle back (⌘J)",
+    "firstMs": 34,
+    "settledMs": 34,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "dialog-palette",
+    "what": "Command palette open (⌘K)",
+    "firstMs": 13,
+    "settledMs": 63,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "dialog-palette-close",
+    "what": "Command palette close (Escape)",
+    "firstMs": 141,
+    "settledMs": 141,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "dialog-shortcuts",
+    "what": "Keyboard shortcuts open (⌥⌘/)",
+    "firstMs": 18.6,
+    "settledMs": 18.6,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "dialog-shortcuts-close",
+    "what": "Keyboard shortcuts close (Escape)",
+    "firstMs": 249.5,
+    "settledMs": 249.5,
+    "loaderMs": 0,
+    "maxFrameMs": 50.1,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "route-settings",
+    "what": "App to Settings (sidebar Settings)",
+    "firstMs": -0.5,
+    "settledMs": 66.2,
+    "loaderMs": 0,
+    "maxFrameMs": 33.4,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "settings-appearance",
+    "what": "Settings page: Appearance",
+    "firstMs": 11.8,
+    "settledMs": 11.8,
+    "loaderMs": 0,
+    "maxFrameMs": 11.8,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "settings-git",
+    "what": "Settings page: Git",
+    "firstMs": 10.8,
+    "settledMs": 10.8,
+    "loaderMs": 0,
+    "maxFrameMs": 10.8,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "route-back",
+    "what": "Settings back to the app (Escape)",
+    "firstMs": 4.8,
+    "settledMs": 171.4,
+    "loaderMs": 0,
+    "maxFrameMs": 116.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "route-workspace",
+    "what": "Home to a workspace (sidebar row)",
+    "firstMs": null,
+    "settledMs": null,
+    "loaderMs": 0,
+    "maxFrameMs": 49.9,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "route-home",
+    "what": "Workspace to Home (sidebar Home)",
+    "firstMs": 2.1,
+    "settledMs": 118.8,
+    "loaderMs": 0,
+    "maxFrameMs": 66.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "route-workspace-2",
+    "what": "Home to a workspace again",
+    "firstMs": 11.4,
+    "settledMs": 128,
+    "loaderMs": 0,
+    "maxFrameMs": 66.6,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "rp-files",
+    "what": "Right panel: All files",
+    "firstMs": 6.4,
+    "settledMs": 6.4,
+    "loaderMs": 0,
+    "maxFrameMs": 6.4,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "rp-changes",
+    "what": "Right panel: Changes",
+    "firstMs": 2.5,
+    "settledMs": 35.8,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-left-hide",
+    "what": "Left sidebar hide (⌘B)",
+    "firstMs": 6.1,
+    "settledMs": 22.7,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-left-show",
+    "what": "Left sidebar show (⌘B)",
+    "firstMs": 15.4,
+    "settledMs": 32.1,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-right-hide",
+    "what": "Right panel toggle (⌥⌘B)",
+    "firstMs": 15.8,
+    "settledMs": 15.8,
+    "loaderMs": 0,
+    "maxFrameMs": 15.8,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-right-show",
+    "what": "Right panel toggle back (⌥⌘B)",
+    "firstMs": 3.6,
+    "settledMs": 70.3,
+    "loaderMs": 0,
+    "maxFrameMs": 50,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-terminal",
+    "what": "Terminal toggle (⌘J)",
+    "firstMs": 23.8,
+    "settledMs": 23.8,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-terminal-back",
+    "what": "Terminal toggle back (⌘J)",
+    "firstMs": 30.6,
+    "settledMs": 30.6,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "dialog-palette",
+    "what": "Command palette open (⌘K)",
+    "firstMs": 5.7,
+    "settledMs": 55.7,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "dialog-palette-close",
+    "what": "Command palette close (Escape)",
+    "firstMs": 133.3,
+    "settledMs": 133.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "dialog-shortcuts",
+    "what": "Keyboard shortcuts open (⌥⌘/)",
+    "firstMs": 12.5,
+    "settledMs": 12.5,
+    "loaderMs": 0,
+    "maxFrameMs": 12.5,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "dialog-shortcuts-close",
+    "what": "Keyboard shortcuts close (Escape)",
+    "firstMs": 244.5,
+    "settledMs": 244.5,
+    "loaderMs": 0,
+    "maxFrameMs": 50,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "route-settings",
+    "what": "App to Settings (sidebar Settings)",
+    "firstMs": 14.4,
+    "settledMs": 47.7,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "settings-appearance",
+    "what": "Settings page: Appearance",
+    "firstMs": 5,
+    "settledMs": 5,
+    "loaderMs": 0,
+    "maxFrameMs": 5,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "settings-git",
+    "what": "Settings page: Git",
+    "firstMs": 5.8,
+    "settledMs": 5.8,
+    "loaderMs": 0,
+    "maxFrameMs": 5.8,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "route-back",
+    "what": "Settings back to the app (Escape)",
+    "firstMs": 11.3,
+    "settledMs": 177.9,
+    "loaderMs": 0,
+    "maxFrameMs": 116.6,
+    "cls": 0
+   }
+  ],
+  "openconductor": [
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "route-workspace",
+    "what": "Home to a workspace (sidebar row)",
+    "firstMs": 0.9,
+    "settledMs": 34.3,
+    "loaderMs": 0.9,
+    "maxFrameMs": 33.4,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "route-home",
+    "what": "Workspace to Home (sidebar Home)",
+    "firstMs": 11,
+    "settledMs": 11,
+    "loaderMs": 0,
+    "maxFrameMs": 11,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "route-workspace-2",
+    "what": "Home to a workspace again",
+    "firstMs": 2.9,
+    "settledMs": 19.6,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "rp-files",
+    "what": "Right panel: All files",
+    "firstMs": 15.5,
+    "settledMs": 15.5,
+    "loaderMs": 0,
+    "maxFrameMs": 15.5,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "rp-changes",
+    "what": "Right panel: Changes",
+    "firstMs": 6.9,
+    "settledMs": 6.9,
+    "loaderMs": 0,
+    "maxFrameMs": 6.9,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-left-hide",
+    "what": "Left sidebar hide (⌘B)",
+    "firstMs": 12,
+    "settledMs": 28.7,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-left-show",
+    "what": "Left sidebar show (⌘B)",
+    "firstMs": 11.1,
+    "settledMs": 11.1,
+    "loaderMs": 0,
+    "maxFrameMs": 11.1,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-right-hide",
+    "what": "Right panel toggle (⌥⌘B)",
+    "firstMs": 7.8,
+    "settledMs": 7.8,
+    "loaderMs": 0,
+    "maxFrameMs": 7.8,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-right-show",
+    "what": "Right panel toggle back (⌥⌘B)",
+    "firstMs": 12,
+    "settledMs": 12,
+    "loaderMs": 0,
+    "maxFrameMs": 12,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-terminal",
+    "what": "Terminal toggle (⌘J)",
+    "firstMs": 16,
+    "settledMs": 16,
+    "loaderMs": 0,
+    "maxFrameMs": 16,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "panel-terminal-back",
+    "what": "Terminal toggle back (⌘J)",
+    "firstMs": 10.2,
+    "settledMs": 10.2,
+    "loaderMs": 0,
+    "maxFrameMs": 10.2,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "dialog-palette",
+    "what": "Command palette open (⌘K)",
+    "firstMs": 0.8,
+    "settledMs": 0.8,
+    "loaderMs": 0,
+    "maxFrameMs": 0.8,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "dialog-palette-close",
+    "what": "Command palette close (Escape)",
+    "firstMs": 142,
+    "settledMs": 142,
+    "loaderMs": 0,
+    "maxFrameMs": 16.8,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "dialog-shortcuts",
+    "what": "Keyboard shortcuts open (⌥⌘/)",
+    "firstMs": 14.7,
+    "settledMs": 14.7,
+    "loaderMs": 0,
+    "maxFrameMs": 14.7,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "dialog-shortcuts-close",
+    "what": "Keyboard shortcuts close (Escape)",
+    "firstMs": 221.1,
+    "settledMs": 221.1,
+    "loaderMs": 0,
+    "maxFrameMs": 21,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "route-settings",
+    "what": "App to Settings (sidebar Settings)",
+    "firstMs": 3.7,
+    "settledMs": 20.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "settings-appearance",
+    "what": "Settings page: Appearance",
+    "firstMs": 6,
+    "settledMs": 6,
+    "loaderMs": 0,
+    "maxFrameMs": 6,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "settings-git",
+    "what": "Settings page: Git",
+    "firstMs": 10.9,
+    "settledMs": 10.9,
+    "loaderMs": 0,
+    "maxFrameMs": 10.9,
+    "cls": 0
+   },
+   {
+    "run": 1,
+    "temp": "cold",
+    "id": "route-back",
+    "what": "Settings back to the app (Escape)",
+    "firstMs": -0.7,
+    "settledMs": -0.7,
+    "loaderMs": 0,
+    "maxFrameMs": 0,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "route-workspace",
+    "what": "Home to a workspace (sidebar row)",
+    "firstMs": null,
+    "settledMs": null,
+    "loaderMs": 0,
+    "maxFrameMs": 16.8,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "route-home",
+    "what": "Workspace to Home (sidebar Home)",
+    "firstMs": 4.1,
+    "settledMs": 4.1,
+    "loaderMs": 0,
+    "maxFrameMs": 4.1,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "route-workspace-2",
+    "what": "Home to a workspace again",
+    "firstMs": 11.1,
+    "settledMs": 11.1,
+    "loaderMs": 0,
+    "maxFrameMs": 11.1,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "rp-files",
+    "what": "Right panel: All files",
+    "firstMs": 9.7,
+    "settledMs": 9.7,
+    "loaderMs": 0,
+    "maxFrameMs": 9.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "rp-changes",
+    "what": "Right panel: Changes",
+    "firstMs": 2.1,
+    "settledMs": 2.1,
+    "loaderMs": 0,
+    "maxFrameMs": 2.1,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-left-hide",
+    "what": "Left sidebar hide (⌘B)",
+    "firstMs": 8.7,
+    "settledMs": 25.4,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-left-show",
+    "what": "Left sidebar show (⌘B)",
+    "firstMs": 0.4,
+    "settledMs": 0.4,
+    "loaderMs": 0,
+    "maxFrameMs": 0.4,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-right-hide",
+    "what": "Right panel toggle (⌥⌘B)",
+    "firstMs": 6.8,
+    "settledMs": 6.8,
+    "loaderMs": 0,
+    "maxFrameMs": 6.8,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-right-show",
+    "what": "Right panel toggle back (⌥⌘B)",
+    "firstMs": 8.7,
+    "settledMs": 8.7,
+    "loaderMs": 0,
+    "maxFrameMs": 8.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-terminal",
+    "what": "Terminal toggle (⌘J)",
+    "firstMs": 1.5,
+    "settledMs": 1.5,
+    "loaderMs": 0,
+    "maxFrameMs": 1.5,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "panel-terminal-back",
+    "what": "Terminal toggle back (⌘J)",
+    "firstMs": 8.7,
+    "settledMs": 8.7,
+    "loaderMs": 0,
+    "maxFrameMs": 8.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "dialog-palette",
+    "what": "Command palette open (⌘K)",
+    "firstMs": 11.6,
+    "settledMs": 11.6,
+    "loaderMs": 0,
+    "maxFrameMs": 11.6,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "dialog-palette-close",
+    "what": "Command palette close (Escape)",
+    "firstMs": 133.6,
+    "settledMs": 133.6,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "dialog-shortcuts",
+    "what": "Keyboard shortcuts open (⌥⌘/)",
+    "firstMs": 13.9,
+    "settledMs": 13.9,
+    "loaderMs": 0,
+    "maxFrameMs": 13.9,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "dialog-shortcuts-close",
+    "what": "Keyboard shortcuts close (Escape)",
+    "firstMs": 245.3,
+    "settledMs": 245.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "route-settings",
+    "what": "App to Settings (sidebar Settings)",
+    "firstMs": 10,
+    "settledMs": 10,
+    "loaderMs": 0,
+    "maxFrameMs": 10,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "settings-appearance",
+    "what": "Settings page: Appearance",
+    "firstMs": 10.3,
+    "settledMs": 10.3,
+    "loaderMs": 0,
+    "maxFrameMs": 10.3,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "settings-git",
+    "what": "Settings page: Git",
+    "firstMs": 7.8,
+    "settledMs": 7.8,
+    "loaderMs": 0,
+    "maxFrameMs": 7.8,
+    "cls": 0
+   },
+   {
+    "run": 2,
+    "temp": "warm",
+    "id": "route-back",
+    "what": "Settings back to the app (Escape)",
+    "firstMs": 13.3,
+    "settledMs": 13.3,
+    "loaderMs": 0,
+    "maxFrameMs": 13.3,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "route-workspace",
+    "what": "Home to a workspace (sidebar row)",
+    "firstMs": null,
+    "settledMs": null,
+    "loaderMs": 0,
+    "maxFrameMs": 16.8,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "route-home",
+    "what": "Workspace to Home (sidebar Home)",
+    "firstMs": 12.2,
+    "settledMs": 12.2,
+    "loaderMs": 0,
+    "maxFrameMs": 12.2,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "route-workspace-2",
+    "what": "Home to a workspace again",
+    "firstMs": 20.4,
+    "settledMs": 20.4,
+    "loaderMs": 0,
+    "maxFrameMs": 20.4,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "rp-files",
+    "what": "Right panel: All files",
+    "firstMs": 0.6,
+    "settledMs": 0.6,
+    "loaderMs": 0,
+    "maxFrameMs": 0.6,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "rp-changes",
+    "what": "Right panel: Changes",
+    "firstMs": 7.7,
+    "settledMs": 7.7,
+    "loaderMs": 0,
+    "maxFrameMs": 7.7,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-left-hide",
+    "what": "Left sidebar hide (⌘B)",
+    "firstMs": 2.4,
+    "settledMs": 35.7,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-left-show",
+    "what": "Left sidebar show (⌘B)",
+    "firstMs": 2.6,
+    "settledMs": 2.6,
+    "loaderMs": 0,
+    "maxFrameMs": 2.6,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-right-hide",
+    "what": "Right panel toggle (⌥⌘B)",
+    "firstMs": 6.5,
+    "settledMs": 6.5,
+    "loaderMs": 0,
+    "maxFrameMs": 6.5,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-right-show",
+    "what": "Right panel toggle back (⌥⌘B)",
+    "firstMs": 4.8,
+    "settledMs": 4.8,
+    "loaderMs": 0,
+    "maxFrameMs": 4.8,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-terminal",
+    "what": "Terminal toggle (⌘J)",
+    "firstMs": 7.5,
+    "settledMs": 7.5,
+    "loaderMs": 0,
+    "maxFrameMs": 7.5,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "panel-terminal-back",
+    "what": "Terminal toggle back (⌘J)",
+    "firstMs": 9.8,
+    "settledMs": 9.8,
+    "loaderMs": 0,
+    "maxFrameMs": 9.8,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "dialog-palette",
+    "what": "Command palette open (⌘K)",
+    "firstMs": 8.1,
+    "settledMs": 8.1,
+    "loaderMs": 0,
+    "maxFrameMs": 8.1,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "dialog-palette-close",
+    "what": "Command palette close (Escape)",
+    "firstMs": 135.3,
+    "settledMs": 135.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.8,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "dialog-shortcuts",
+    "what": "Keyboard shortcuts open (⌥⌘/)",
+    "firstMs": 5.5,
+    "settledMs": 5.5,
+    "loaderMs": 0,
+    "maxFrameMs": 5.5,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "dialog-shortcuts-close",
+    "what": "Keyboard shortcuts close (Escape)",
+    "firstMs": 237.1,
+    "settledMs": 237.1,
+    "loaderMs": 0,
+    "maxFrameMs": 20.4,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "route-settings",
+    "what": "App to Settings (sidebar Settings)",
+    "firstMs": 14.1,
+    "settledMs": 14.1,
+    "loaderMs": 0,
+    "maxFrameMs": 14.1,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "settings-appearance",
+    "what": "Settings page: Appearance",
+    "firstMs": 6.9,
+    "settledMs": 6.9,
+    "loaderMs": 0,
+    "maxFrameMs": 6.9,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "settings-git",
+    "what": "Settings page: Git",
+    "firstMs": 5.9,
+    "settledMs": 5.9,
+    "loaderMs": 0,
+    "maxFrameMs": 5.9,
+    "cls": 0
+   },
+   {
+    "run": 3,
+    "temp": "warm",
+    "id": "route-back",
+    "what": "Settings back to the app (Escape)",
+    "firstMs": 14.9,
+    "settledMs": 14.9,
+    "loaderMs": 0,
+    "maxFrameMs": 14.9,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "route-workspace",
+    "what": "Home to a workspace (sidebar row)",
+    "firstMs": null,
+    "settledMs": null,
+    "loaderMs": 0,
+    "maxFrameMs": 383.3,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "route-home",
+    "what": "Workspace to Home (sidebar Home)",
+    "firstMs": 9.4,
+    "settledMs": 9.4,
+    "loaderMs": 0,
+    "maxFrameMs": 9.4,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "route-workspace-2",
+    "what": "Home to a workspace again",
+    "firstMs": 18.2,
+    "settledMs": 18.2,
+    "loaderMs": 0,
+    "maxFrameMs": 18.2,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "rp-files",
+    "what": "Right panel: All files",
+    "firstMs": 11.7,
+    "settledMs": 11.7,
+    "loaderMs": 0,
+    "maxFrameMs": 11.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "rp-changes",
+    "what": "Right panel: Changes",
+    "firstMs": 12.4,
+    "settledMs": 12.4,
+    "loaderMs": 0,
+    "maxFrameMs": 12.4,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-left-hide",
+    "what": "Left sidebar hide (⌘B)",
+    "firstMs": 7.4,
+    "settledMs": 24,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-left-show",
+    "what": "Left sidebar show (⌘B)",
+    "firstMs": 5.9,
+    "settledMs": 5.9,
+    "loaderMs": 0,
+    "maxFrameMs": 5.9,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-right-hide",
+    "what": "Right panel toggle (⌥⌘B)",
+    "firstMs": 15,
+    "settledMs": 15,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-right-show",
+    "what": "Right panel toggle back (⌥⌘B)",
+    "firstMs": 2.9,
+    "settledMs": 2.9,
+    "loaderMs": 0,
+    "maxFrameMs": 2.9,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-terminal",
+    "what": "Terminal toggle (⌘J)",
+    "firstMs": 8.3,
+    "settledMs": 8.3,
+    "loaderMs": 0,
+    "maxFrameMs": 8.3,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "panel-terminal-back",
+    "what": "Terminal toggle back (⌘J)",
+    "firstMs": 6,
+    "settledMs": 6,
+    "loaderMs": 0,
+    "maxFrameMs": 6,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "dialog-palette",
+    "what": "Command palette open (⌘K)",
+    "firstMs": 15.1,
+    "settledMs": 15.1,
+    "loaderMs": 0,
+    "maxFrameMs": 15.1,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "dialog-palette-close",
+    "what": "Command palette close (Escape)",
+    "firstMs": 137.5,
+    "settledMs": 137.5,
+    "loaderMs": 0,
+    "maxFrameMs": 16.8,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "dialog-shortcuts",
+    "what": "Keyboard shortcuts open (⌥⌘/)",
+    "firstMs": 6.7,
+    "settledMs": 6.7,
+    "loaderMs": 0,
+    "maxFrameMs": 6.7,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "dialog-shortcuts-close",
+    "what": "Keyboard shortcuts close (Escape)",
+    "firstMs": 221.4,
+    "settledMs": 221.4,
+    "loaderMs": 0,
+    "maxFrameMs": 21.4,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "route-settings",
+    "what": "App to Settings (sidebar Settings)",
+    "firstMs": 0.5,
+    "settledMs": 0.5,
+    "loaderMs": 0,
+    "maxFrameMs": 0.5,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "settings-appearance",
+    "what": "Settings page: Appearance",
+    "firstMs": 9.3,
+    "settledMs": 9.3,
+    "loaderMs": 0,
+    "maxFrameMs": 9.3,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "settings-git",
+    "what": "Settings page: Git",
+    "firstMs": 0.4,
+    "settledMs": 0.4,
+    "loaderMs": 0,
+    "maxFrameMs": 0.4,
+    "cls": 0
+   },
+   {
+    "run": 4,
+    "temp": "warm",
+    "id": "route-back",
+    "what": "Settings back to the app (Escape)",
+    "firstMs": -1,
+    "settledMs": -1,
+    "loaderMs": 0,
+    "maxFrameMs": 0,
+    "cls": 0
+   }
+  ]
+ },
+ "summary": [
+  {
+   "id": "route-workspace",
+   "what": "Home to a workspace (sidebar row)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 401.9,
+    "loaderMs": 0,
+    "maxFrameMs": 366.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 34.3,
+    "loaderMs": 0.9,
+    "maxFrameMs": 33.4,
+    "cls": 0
+   }
+  },
+  {
+   "id": "route-workspace",
+   "what": "Home to a workspace (sidebar row)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": null,
+    "loaderMs": 0,
+    "maxFrameMs": 33.2,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": null,
+    "loaderMs": 0,
+    "maxFrameMs": 16.8,
+    "cls": 0
+   }
+  },
+  {
+   "id": "route-home",
+   "what": "Workspace to Home (sidebar Home)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 91.5,
+    "loaderMs": 0,
+    "maxFrameMs": 50,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 11,
+    "loaderMs": 0,
+    "maxFrameMs": 11,
+    "cls": 0
+   }
+  },
+  {
+   "id": "route-home",
+   "what": "Workspace to Home (sidebar Home)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 46.5,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 9.4,
+    "loaderMs": 0,
+    "maxFrameMs": 9.4,
+    "cls": 0
+   }
+  },
+  {
+   "id": "route-workspace-2",
+   "what": "Home to a workspace again",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 145.7,
+    "loaderMs": 0,
+    "maxFrameMs": 100,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 19.6,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   }
+  },
+  {
+   "id": "route-workspace-2",
+   "what": "Home to a workspace again",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 136.7,
+    "loaderMs": 0,
+    "maxFrameMs": 70,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 18.2,
+    "loaderMs": 0,
+    "maxFrameMs": 18.2,
+    "cls": 0
+   }
+  },
+  {
+   "id": "rp-files",
+   "what": "Right panel: All files",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 13.1,
+    "loaderMs": 0,
+    "maxFrameMs": 13.1,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 15.5,
+    "loaderMs": 0,
+    "maxFrameMs": 15.5,
+    "cls": 0
+   }
+  },
+  {
+   "id": "rp-files",
+   "what": "Right panel: All files",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 13.8,
+    "loaderMs": 0,
+    "maxFrameMs": 13.8,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 9.7,
+    "loaderMs": 0,
+    "maxFrameMs": 9.7,
+    "cls": 0
+   }
+  },
+  {
+   "id": "rp-changes",
+   "what": "Right panel: Changes",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 36,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 6.9,
+    "loaderMs": 0,
+    "maxFrameMs": 6.9,
+    "cls": 0
+   }
+  },
+  {
+   "id": "rp-changes",
+   "what": "Right panel: Changes",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 45.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 7.7,
+    "loaderMs": 0,
+    "maxFrameMs": 7.7,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-left-hide",
+   "what": "Left sidebar hide (⌘B)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 35.8,
+    "loaderMs": 0,
+    "maxFrameMs": 16.8,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 28.7,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-left-hide",
+   "what": "Left sidebar hide (⌘B)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 28,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 25.4,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-left-show",
+   "what": "Left sidebar show (⌘B)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 19.4,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 11.1,
+    "loaderMs": 0,
+    "maxFrameMs": 11.1,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-left-show",
+   "what": "Left sidebar show (⌘B)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 31.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 2.6,
+    "loaderMs": 0,
+    "maxFrameMs": 2.6,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-right-hide",
+   "what": "Right panel toggle (⌥⌘B)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 5.2,
+    "loaderMs": 0,
+    "maxFrameMs": 5.2,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 7.8,
+    "loaderMs": 0,
+    "maxFrameMs": 7.8,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-right-hide",
+   "what": "Right panel toggle (⌥⌘B)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 15.8,
+    "loaderMs": 0,
+    "maxFrameMs": 15.8,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 6.8,
+    "loaderMs": 0,
+    "maxFrameMs": 6.8,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-right-show",
+   "what": "Right panel toggle back (⌥⌘B)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 65.2,
+    "loaderMs": 0,
+    "maxFrameMs": 33.3,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 12,
+    "loaderMs": 0,
+    "maxFrameMs": 12,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-right-show",
+   "what": "Right panel toggle back (⌥⌘B)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 66,
+    "loaderMs": 0,
+    "maxFrameMs": 33.4,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 4.8,
+    "loaderMs": 0,
+    "maxFrameMs": 4.8,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-terminal",
+   "what": "Terminal toggle (⌘J)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 30.9,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 16,
+    "loaderMs": 0,
+    "maxFrameMs": 16,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-terminal",
+   "what": "Terminal toggle (⌘J)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 28.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 7.5,
+    "loaderMs": 0,
+    "maxFrameMs": 7.5,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-terminal-back",
+   "what": "Terminal toggle back (⌘J)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 27.6,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 10.2,
+    "loaderMs": 0,
+    "maxFrameMs": 10.2,
+    "cls": 0
+   }
+  },
+  {
+   "id": "panel-terminal-back",
+   "what": "Terminal toggle back (⌘J)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 30.6,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 8.7,
+    "loaderMs": 0,
+    "maxFrameMs": 8.7,
+    "cls": 0
+   }
+  },
+  {
+   "id": "dialog-palette",
+   "what": "Command palette open (⌘K)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 68.6,
+    "loaderMs": 0,
+    "maxFrameMs": 33.3,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 0.8,
+    "loaderMs": 0,
+    "maxFrameMs": 0.8,
+    "cls": 0
+   }
+  },
+  {
+   "id": "dialog-palette",
+   "what": "Command palette open (⌘K)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 56.5,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 11.6,
+    "loaderMs": 0,
+    "maxFrameMs": 11.6,
+    "cls": 0
+   }
+  },
+  {
+   "id": "dialog-palette-close",
+   "what": "Command palette close (Escape)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 143.9,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 142,
+    "loaderMs": 0,
+    "maxFrameMs": 16.8,
+    "cls": 0
+   }
+  },
+  {
+   "id": "dialog-palette-close",
+   "what": "Command palette close (Escape)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 141,
+    "loaderMs": 0,
+    "maxFrameMs": 16.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 135.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.8,
+    "cls": 0
+   }
+  },
+  {
+   "id": "dialog-shortcuts",
+   "what": "Keyboard shortcuts open (⌥⌘/)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 2.5,
+    "loaderMs": 0,
+    "maxFrameMs": 2.5,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 14.7,
+    "loaderMs": 0,
+    "maxFrameMs": 14.7,
+    "cls": 0
+   }
+  },
+  {
+   "id": "dialog-shortcuts",
+   "what": "Keyboard shortcuts open (⌥⌘/)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 12.5,
+    "loaderMs": 0,
+    "maxFrameMs": 12.5,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 6.7,
+    "loaderMs": 0,
+    "maxFrameMs": 6.7,
+    "cls": 0
+   }
+  },
+  {
+   "id": "dialog-shortcuts-close",
+   "what": "Keyboard shortcuts close (Escape)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 202.2,
+    "loaderMs": 0,
+    "maxFrameMs": 50.1,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 221.1,
+    "loaderMs": 0,
+    "maxFrameMs": 21,
+    "cls": 0
+   }
+  },
+  {
+   "id": "dialog-shortcuts-close",
+   "what": "Keyboard shortcuts close (Escape)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 249.5,
+    "loaderMs": 0,
+    "maxFrameMs": 50.1,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 237.1,
+    "loaderMs": 0,
+    "maxFrameMs": 20.4,
+    "cls": 0
+   }
+  },
+  {
+   "id": "route-settings",
+   "what": "App to Settings (sidebar Settings)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 74.2,
+    "loaderMs": 0,
+    "maxFrameMs": 50,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 20.3,
+    "loaderMs": 0,
+    "maxFrameMs": 16.6,
+    "cls": 0
+   }
+  },
+  {
+   "id": "route-settings",
+   "what": "App to Settings (sidebar Settings)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 56.7,
+    "loaderMs": 0,
+    "maxFrameMs": 33.3,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 10,
+    "loaderMs": 0,
+    "maxFrameMs": 10,
+    "cls": 0
+   }
+  },
+  {
+   "id": "settings-appearance",
+   "what": "Settings page: Appearance",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 2.7,
+    "loaderMs": 0,
+    "maxFrameMs": 2.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 6,
+    "loaderMs": 0,
+    "maxFrameMs": 6,
+    "cls": 0
+   }
+  },
+  {
+   "id": "settings-appearance",
+   "what": "Settings page: Appearance",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 10.5,
+    "loaderMs": 0,
+    "maxFrameMs": 10.5,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 9.3,
+    "loaderMs": 0,
+    "maxFrameMs": 9.3,
+    "cls": 0
+   }
+  },
+  {
+   "id": "settings-git",
+   "what": "Settings page: Git",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 10.3,
+    "loaderMs": 0,
+    "maxFrameMs": 10.3,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": 10.9,
+    "loaderMs": 0,
+    "maxFrameMs": 10.9,
+    "cls": 0
+   }
+  },
+  {
+   "id": "settings-git",
+   "what": "Settings page: Git",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 6.7,
+    "loaderMs": 0,
+    "maxFrameMs": 6.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 5.9,
+    "loaderMs": 0,
+    "maxFrameMs": 5.9,
+    "cls": 0
+   }
+  },
+  {
+   "id": "route-back",
+   "what": "Settings back to the app (Escape)",
+   "temp": "cold",
+   "conductor": {
+    "runs": 1,
+    "settledMs": 193.8,
+    "loaderMs": 0,
+    "maxFrameMs": 133.3,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 1,
+    "settledMs": -0.7,
+    "loaderMs": 0,
+    "maxFrameMs": 0,
+    "cls": 0
+   }
+  },
+  {
+   "id": "route-back",
+   "what": "Settings back to the app (Escape)",
+   "temp": "warm",
+   "conductor": {
+    "runs": 3,
+    "settledMs": 177.9,
+    "loaderMs": 0,
+    "maxFrameMs": 116.7,
+    "cls": 0
+   },
+   "openconductor": {
+    "runs": 3,
+    "settledMs": 13.3,
+    "loaderMs": 0,
+    "maxFrameMs": 13.3,
+    "cls": 0
+   }
+  }
+ ]
+}

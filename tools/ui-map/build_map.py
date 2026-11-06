@@ -99,6 +99,8 @@ def probe(copy):
 # git-review, terminal-scripts, settings, cloud-org, routines, onboarding-auth, and triage
 # for items with nothing to place them by (no route, page, state or copy).
 TEAM_RULES = [
+    # The sidebar footer's Help menu and what it opens (Submit a prompt, /diagnostics).
+    ("shell", r"\bdiagnostics\b|submit[ -]a[ -]prompt|^help > "),
     ("onboarding-auth", r"onboarding|\blogin\b|sign[ -]?in|sign[ -]?out|signed-out|log ?out"),
     ("routines", r"routine|automation|webhook|trigger"),
     ("cloud-org", r"organi[sz]ation|\bteam\b|teammate|cloud|member|invite|\bshare|sharing|\bseat|billing|subscription|\bplan\b"),
@@ -131,6 +133,21 @@ def main():
     oc = load("oc-captures.json", {})
     cmp_ = (load("compare.json", {}) or {}).get("results", {})
     UI_STRINGS.update(norm(x) for x in inv.get("ui_strings", []))
+    # Side-by-side records (tools/side-by-side/*.mjs, UIMAP_RECORD): both sides captured
+    # with REA in one run after a fix, for a state the UI map lane has not re-captured
+    # since. A record applies while the lane's OpenConductor capture of the state is the
+    # one it superseded (or there is none); a newer lane capture wins.
+    sbs = (load("side-by-side.json", {}) or {}).get("states", {})
+    sbs_used = {}
+    for sid, rec in sbs.items():
+        if (oc.get(sid) or {}).get("png_sha256") != rec.get("supersedes_oc_png_sha256"):
+            continue
+        sbs_used[sid] = rec
+        ref[sid] = dict(status="captured", link=rec["image"], dom=rec["reference"]["dom"],
+                        rea=dict(evidence_id=rec["reference"]["evidence_id"], final_url=rec["reference"].get("final_url")),
+                        actions_run=None, actions_total=None)
+        oc[sid] = dict(status="captured", link=rec["image"], dom=rec["openconductor"]["dom"], png_sha256=rec["openconductor"]["png_sha256"])
+        cmp_[sid] = rec["compare"]
 
     # ---------- states
     states = OrderedDict()
@@ -174,15 +191,17 @@ def main():
             id=sid, title=st["title"], status=status, why=why,
             team=owning_team({"id": sid, "name": st["title"], "route": want_path if want_path != "/" else ""}, sid),
             reference=OrderedDict(
-                status=ref_status, file=("ui-map/" + r["file"]) if r.get("file") else None, path=want_path,
+                status=ref_status, file=r.get("link") or (("ui-map/" + r["file"]) if r.get("file") else None), path=want_path,
                 final_path=final_path or None, scenario=(st.get("ref") or {}).get("scenario"),
                 actions_run=r.get("actions_run"), actions_total=r.get("actions_total"), error=r.get("error"),
                 rea_evidence_id=(r.get("rea") or {}).get("evidence_id")),
             openconductor=OrderedDict(
-                status=oc_status, file=("ui-map/" + o["file"]) if o.get("file") else None,
-                error=o.get("error") or o.get("reason"), note=st.get("oc_note")),
+                status=oc_status, file=o.get("link") or (("ui-map/" + o["file"]) if o.get("file") else None),
+                error=o.get("error") or o.get("reason"),
+                note=("side-by-side lane at %s: %s" % (sbs_used[sid].get("openconductor_commit"), sbs_used[sid]["lane"])) if sid in sbs_used else st.get("oc_note")),
             diff=OrderedDict(
-                file=("ui-map/diff/%s.jpg" % sid) if os.path.exists(os.path.join(OUT, "diff", sid + ".jpg")) else None,
+                # compare.mjs writes the image for every pair it scores; the images are not committed.
+                file=None if sid in sbs_used else ("ui-map/diff/%s.jpg" % sid) if (c or os.path.exists(os.path.join(OUT, "diff", sid + ".jpg"))) else None,
                 changed_ratio_t0=t0, changed_ratio_t24=t24,
                 rea_evidence_ids=[x for x in [(c.get("t0") or {}).get("evidence_id"), (c.get("t24") or {}).get("evidence_id")] if x]),
             copy_coverage=coverage,
@@ -223,6 +242,9 @@ def main():
             user_page = page_state.get(it["page"]) if "user" in (it.get("scopes") or []) else None
             host = user_page or page_state.get("repo-" + it["page"]) or page_state.get(it["page"])
             basis = "settings page state"
+        if host is None and kind not in ("route", "settings-page", "settings-row") and covers.get((kind, it.get("name"))):
+            host = covers[(kind, it["name"])][0]
+            basis = "state covers it"
         if host is None and probes:
             for sid, b in ref_blobs.items():
                 if seen(probes[0], b):
@@ -344,6 +366,7 @@ def write_md(doc):
     L.append("  - **wrong**: OpenConductor shows it (its copy is in a capture of the running app) but it is not shown to match: the diff or copy is over the bar, or there is no valid reference render to prove a match.")
     L.append("  - **missing**: OpenConductor has no way to reach the state, shows a different screen there (under 25% of the reference's UI copy), or the item's copy is in no capture of the running app.")
     L.append("- UI copy means rendered strings that are literals in Conductor's bundle (`ui_strings` in inventory.json), so invented seed data (repo, workspace and user names) never counts. The OpenConductor brand name is normalised to Conductor before matching.")
+    L.append("- **Side-by-side records** ([ui-map/side-by-side.json](ui-map/side-by-side.json)): a builder who fixes a state captures both apps in that state with REA `capture-browser-scenario` (`tools/side-by-side/*.mjs`, Conductor's extracted frontend in the `tools/screens` harness beside OpenConductor's built frontend in Chromium with Tauri IPC mocked) and scores the pair with REA `compare-web-screenshots`, at the map's viewport. The record stands in for both captures of that state, under the same status rules, until the OpenConductor lane captures the state again; its rows link the committed side-by-side image and name the lane in `openconductor.note`.\n")
     L.append("- Seed data differs between the two sides (the reference harness seeds six workspaces with a transcript; the OpenConductor seed has one real git worktree), so the pixel ratio carries some content difference too. The copy check and the side-by-side images are the better guide to what to fix.\n")
     L.append("## States\n")
     L.append("| State | Status | Team | Why | Reference | OpenConductor | Diff | t24 |\n|---|---|---|---|---|---|---|---:|")

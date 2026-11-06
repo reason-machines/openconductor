@@ -116,7 +116,7 @@ async function screenshot(name) {
 }
 
 const chatText = () => run("const el = document.querySelector('.chat-scroll'); return el ? el.innerText : null;");
-const running = () => run("return !!document.querySelector('.composer button[title=\"Stop the agent\"]');");
+const running = () => run("return !!document.querySelector('.composer button[aria-label^=\"Stop the agent\"]');");
 
 /**
  * Sets the composer's text through React's native value setter and an input

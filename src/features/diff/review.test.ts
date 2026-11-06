@@ -30,6 +30,7 @@ test("an unset review model falls back to Conductor's built-in review default, n
   assert.equal(reviewModelSetting(withModels({ default: "gpt-5.6-sol", review: null })), "opus-5-1m");
   assert.equal(reviewModelSetting(withModels({ review: "  " })), "opus-5-1m");
   assert.equal(reviewModelSetting(withModels({ review: "sonnet-4-6" })), "sonnet-4-6");
+  assert.equal(reviewModelSetting(withModels({ review: "composer-2.5" })), "opus", "a removed Cursor id reads as the default model");
 });
 
 test("Conductor model ids map to Reason model ids", () => {
@@ -41,7 +42,6 @@ test("Conductor model ids map to Reason model ids", () => {
   assert.equal(reasonModelId("byok:anthropic:claude-opus-5-5"), "byok:anthropic:claude-opus-5-5", "a Reason id is kept");
   assert.equal(reasonModelId("openai/gpt-6.1-sol"), "openai/gpt-6.1-sol");
   assert.equal(reasonModelId("opus"), null, "an alias has no fixed Reason id");
-  assert.equal(reasonModelId("composer-2.5"), null, "Cursor models do not run on Reason");
   assert.equal(reasonModelId("something-else"), null);
 });
 
@@ -51,7 +51,7 @@ test("Claude reviews use the Claude review effort, Codex reviews the Codex one",
     { id: "model", value: "byok:anthropic:claude-opus-5-5" },
     { id: "reasoning_effort", value: "xhigh" },
   ]);
-  assert.equal(claude.label, "Opus 5.5 (1M)");
+  assert.equal(claude.label, "Opus 5.5");
 
   const codex = reviewModel(withModels({ review: "gpt-5.6-sol", claude_code: { review_effort_level: "low" }, codex: { default_thinking_level: "low", review_thinking_level: "high" } }));
   assert.deepEqual(codex.config, [
@@ -69,7 +69,7 @@ test("a model Reason cannot name runs on Reason's default with no options set", 
   const r = reviewModel(withModels({ review: "opus" }));
   assert.equal(r.reasonModel, null);
   assert.deepEqual(r.config, []);
-  assert.equal(r.label, "Opus");
+  assert.equal(r.label, "Opus 4.8");
   const reason = reviewModel(withModels({ review: "byok:openai-codex:gpt-6-sol", codex: { default_thinking_level: "medium", review_thinking_level: "minimal" } }));
   assert.deepEqual(reason.config, [
     { id: "model", value: "byok:openai-codex:gpt-6-sol" },

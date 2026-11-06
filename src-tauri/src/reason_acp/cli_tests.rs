@@ -171,3 +171,113 @@ fn live_cli_answers_initialize() {
         assert!(caps["sessionCapabilities"].get(cap).is_some(), "{cap}");
     }
 }
+
+#[test]
+fn whoami_lists_the_saved_workspaces_and_the_selected_one() {
+    use super::cli::parse_whoami;
+    // `reason whoami`, 0.2.690, on Sven's Mac (two of eleven workspaces).
+    let text = "sven@ara.so\nOrganization: Reason Engineering\nSaved workspaces:\n  \
+                reason-engineering (Reason Engineering) [selected]\n  \
+                reason-experiments (Reason Experiments)\n  \
+                hipaa-toggle-test-1028b (HIPAA toggle test (delete me))\n";
+    let w = parse_whoami(text);
+    assert_eq!(w.selected.as_deref(), Some("reason-engineering"));
+    assert_eq!(
+        w.saved,
+        [
+            "reason-engineering",
+            "reason-experiments",
+            "hipaa-toggle-test-1028b"
+        ]
+    );
+    // Signed in with an API key: no saved list.
+    assert!(parse_whoami("Organization: Reason Engineering\n")
+        .saved
+        .is_empty());
+}
+
+#[test]
+fn a_workspace_pins_the_agent_and_its_subcommands() {
+    let cfg = LaunchConfig::new("/usr/local/bin/reason").unwrap();
+    let pinned = cfg.in_workspace(Some("reason-tests")).unwrap();
+    assert_eq!(pinned.args()[..3], ["--workspace", "reason-tests", "acp"]);
+    assert_eq!(cfg.in_workspace(None).unwrap(), cfg);
+    assert!(cfg.in_workspace(Some("--evil")).is_err());
+}
+
+#[test]
+fn session_get_json_gives_the_model_a_session_ran_on() {
+    use super::cli::{parse_session_model, RunningModel};
+    // Trimmed from `reason session get ID --json` (0.2.692).
+    let got = parse_session_model(
+        r#"{"session_id":"bfcbd49f","status":"exit","model":"byok:anthropic:claude-haiku-5-5","reasoning_effort":"low"}"#,
+    );
+    assert_eq!(
+        got,
+        Some(RunningModel {
+            model: "byok:anthropic:claude-haiku-5-5".into(),
+            effort: Some("low".into())
+        })
+    );
+    let nested = parse_session_model(r#"{"session":{"model":"m","reasoning_effort":null}}"#);
+    assert_eq!(
+        nested,
+        Some(RunningModel {
+            model: "m".into(),
+            effort: None
+        })
+    );
+    assert_eq!(parse_session_model(r#"{"model":null}"#), None);
+    assert_eq!(parse_session_model(r#"{"model":"default"}"#), None);
+    assert_eq!(parse_session_model("not json"), None);
+}
+
+#[test]
+fn the_provider_env_reaches_acp_and_subcommands_and_debug_hides_it() {
+    use super::cli::CliEnv;
+    let root = temp_dir("env");
+    let cli = script(
+        &root.join("bin"),
+        r#"printf '%s|%s\n' "${REASON_API_KEY-unset}" "${OTHER_KEY-unset}""#,
+        0o755,
+    );
+    let mut env = CliEnv::default();
+    env.set("REASON_API_KEY", "rsn_secret");
+    env.remove("OTHER_KEY");
+    let cfg = LaunchConfig::new(&cli).unwrap().env(env);
+    assert!(!format!("{cfg:?}").contains("rsn_secret"), "{cfg:?}");
+    std::env::set_var("OTHER_KEY", "from-shell");
+    let (_p, _stdin, stdout) = AgentProcess::spawn(&cfg, &root).unwrap();
+    let mut line = String::new();
+    BufReader::new(stdout).read_line(&mut line).unwrap();
+    assert_eq!(line.trim(), "rsn_secret|unset");
+    let out = cfg.run(&root, &["status"], true).unwrap();
+    assert_eq!(
+        String::from_utf8_lossy(&out.stdout).trim(),
+        "rsn_secret|unset"
+    );
+}
+
+#[test]
+fn login_and_status_run_the_cli_without_a_terminal() {
+    let root = temp_dir("login");
+    let cli = script(
+        &root.join("bin"),
+        r#"case "$1" in
+  login) [ -t 0 ] && echo tty; echo 'Open this link to sign in to Reason: https://reasonmachines.com/cli/connect?request=r1'; echo 'The page shows the code AB12-CD34.';;
+  status) echo '{"version":"9.9.9","account":{"email":"a@b.c","credential":"api_key"},"workspaces":[]}';;
+  connect) echo 'connected'; exit 0;;
+esac"#,
+        0o755,
+    );
+    let cfg = LaunchConfig::new(&cli).unwrap();
+    let prompt = cfg.login(&root).unwrap();
+    assert_eq!(prompt.code.as_deref(), Some("AB12-CD34"));
+    assert!(!prompt.message.contains("tty"));
+    let account = cfg.account(&root).unwrap();
+    assert_eq!(account.version.as_deref(), Some("9.9.9"));
+    assert_eq!(account.credential.as_deref(), Some("api_key"));
+    let connect = cfg.connect_computer(&root);
+    assert!(connect.ok);
+    assert_eq!(connect.message, "connected");
+}

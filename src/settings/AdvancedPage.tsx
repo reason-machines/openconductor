@@ -17,7 +17,6 @@ interface Props {
 const EXECUTABLES = [
   { key: "claude_code_executable_path", label: "Claude Code" },
   { key: "codex_executable_path", label: "Codex" },
-  { key: "opencode_executable_path", label: "OpenCode" },
 ] as const;
 
 /**
@@ -46,7 +45,8 @@ export function AdvancedPage({ settings, save }: Props) {
         label="SSH private key path"
         help="Use your own SSH key for cloud workspace access. Leave empty to auto-generate a key."
         placeholder="~/.ssh/id_ed25519"
-        mono
+        browseTitle="Browse for SSH key"
+        plain
         value={settings.ssh_key_path ?? ""}
         onSave={(v) => save(withTopLevel(settings, "ssh_key_path", v))}
       />
@@ -95,11 +95,28 @@ export function AdvancedPage({ settings, save }: Props) {
 }
 
 /**
- * A path field under its title (Conductor's executable-path and SSH key rows),
- * with a folder button that picks the parent folder's path; saved on Enter or
- * blur, blank clears the setting.
+ * A path field under its title (Conductor's executable-path rows `mGt` and SSH key row `npa`):
+ * a mono 12 px input with a 24 px folder button titled "Browse for executable" (or "Browse for
+ * SSH key") that picks a path; saved on Enter or blur, blank clears the setting. The SSH key row
+ * is `plain`: Conductor draws it as a bare block, not a bordered settings row.
  */
-function PathRow({ label, help, placeholder, mono, value, onSave }: { label: string; help: string; placeholder?: string; mono?: boolean; value: string; onSave: (v: string) => void }) {
+function PathRow({
+  label,
+  help,
+  placeholder,
+  browseTitle = "Browse for executable",
+  plain,
+  value,
+  onSave,
+}: {
+  label: string;
+  help: string;
+  placeholder?: string;
+  browseTitle?: string;
+  plain?: boolean;
+  value: string;
+  onSave: (v: string) => void;
+}) {
   const [text, setText] = useState(value);
   useEffect(() => setText(value), [value]);
   const commit = (next: string) => {
@@ -112,13 +129,12 @@ function PathRow({ label, help, placeholder, mono, value, onSave }: { label: str
       commit(picked);
     }
   };
-  return (
-    <Row label={label} help={help} stacked>
-      <span className="settings-field-wrap">
-        <input
-          type="text"
-          aria-label={label}
-          className={`settings-field${mono ? " mono" : ""}`}
+  const field = (
+    <span className="settings-field-wrap">
+      <input
+        type="text"
+        aria-label={label}
+        className="settings-field mono"
           placeholder={placeholder}
           autoComplete="off"
           spellCheck={false}
@@ -129,10 +145,24 @@ function PathRow({ label, help, placeholder, mono, value, onSave }: { label: str
             if (e.key === "Enter") e.currentTarget.blur();
           }}
         />
-        <button type="button" className="settings-field-icon" title="Browse" aria-label={`Browse for ${label}`} onClick={() => void browse()}>
+        <button type="button" className="settings-field-icon" title={browseTitle} onClick={() => void browse()}>
           <FolderIcon size={14} />
         </button>
       </span>
+  );
+  if (plain)
+    return (
+      <div className="settings-row settings-plain-row" data-settings-row>
+        <div>
+          <div className="settings-plain-row-title settings-row-label">{label}</div>
+          <div className="settings-plain-row-help">{help}</div>
+        </div>
+        {field}
+      </div>
+    );
+  return (
+    <Row label={label} help={help} stacked>
+      {field}
     </Row>
   );
 }

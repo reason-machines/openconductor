@@ -839,6 +839,11 @@ pub fn is_local_writable(path: &[&str]) -> bool {
                 | "worktree_push_auto_setup_remote"
         ),
         ["preview_urls"] | ["environment_variable_files"] | ["file_include_globs"] => true,
+        // Settings › Repository › Scripts (Conductor's `setup_script`,
+        // `archive_script` and its run-script editor, `updateTask` with
+        // `locality: "local"`).
+        ["scripts", "setup" | "archive"] => true,
+        ["scripts", "run", id] => super::normalize_id(id).as_deref() == Some(*id),
         ["environment_variables", name] => valid_name(name),
         ["environment_variables", "local" | "cloud", name] => valid_name(name),
         _ => false,
@@ -864,10 +869,26 @@ pub fn set_local_value(
             message: format!("{} is not a repository setting", path.join(".")),
         });
     }
+    if let Some(v) = &value {
+        let fits = match path {
+            ["scripts", "setup" | "archive"] => v.is_str(),
+            ["scripts", "run", _] => v.is_table(),
+            _ => true,
+        };
+        if !fits {
+            return Err(ConfigError::Parse {
+                origin,
+                message: format!("{}: unexpected {}", path.join("."), v.type_str()),
+            });
+        }
+    }
     let mut table = match read_optional(&file)? {
         Some(text) => LayerSource::from_toml(Layer::RepoLocal, origin.clone(), &text)?.table,
         None => Table::new(),
     };
+    if let ["scripts", "run", _] = path {
+        expand_legacy_run(&mut table);
+    }
     match value {
         Some(v) => {
             let (last, parents) = path.split_last().expect("non-empty path");
@@ -903,6 +924,26 @@ pub fn set_local_value(
             let _ = std::fs::remove_file(&tmp);
             io(e)
         })
+}
+
+/// A legacy single-string `scripts.run` becomes the entry it is read as
+/// (`run`: default, `play` icon, local only), so writing another entry next
+/// to it keeps it.
+fn expand_legacy_run(table: &mut Table) {
+    let Some(Value::Table(scripts)) = table.get_mut("scripts") else {
+        return;
+    };
+    let Some(Value::String(command)) = scripts.get("run").cloned() else {
+        return;
+    };
+    let mut entry = Table::new();
+    entry.insert("command".into(), Value::String(command));
+    entry.insert("default".into(), Value::Boolean(true));
+    entry.insert("icon".into(), Value::String(super::DEFAULT_ICON.into()));
+    entry.insert("available_in".into(), Value::String("local".into()));
+    let mut run = Table::new();
+    run.insert(super::LEGACY_RUN_ID.into(), Value::Table(entry));
+    scripts.insert("run".into(), Value::Table(run));
 }
 
 /// Remove `path`; true when `table` is left empty.

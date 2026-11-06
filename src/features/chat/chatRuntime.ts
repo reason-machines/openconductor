@@ -22,9 +22,13 @@
 // once `connectStatusStore` runs (the desktop app), kept in `conductor.db`
 // (`sessions.status`), loaded at start and followed through the
 // `session-status` event, so the sidebar and Home show a workspace's agent
-// from the moment the app starts. A backend that asks the user for
-// permission mid-turn reports it through `PermissionEvents`; the chat lists
-// the request and its status is `needs_user_permission` until it is answered.
+// from the moment the app starts. A backend whose agent waits on the user
+// mid-turn reports it through `PermissionEvents`: a tool call to allow, a
+// plan to approve or questions to answer (Claude Code asks all three through
+// its permission prompt; an ACP tool request that offers only allow choices is
+// a question too, `isQuestion`). The chat lists the requests and its status is
+// the most urgent one's (`needs_plan_response`, `needs_user_permission`,
+// `needs_user_input`) until they are answered.
 //
 // Pure apart from what it is given: the backend, and the host's `invoke`,
 // `recordTurnChanges` and `localStorage`, so chatRuntime.test.ts runs it with
@@ -35,6 +39,7 @@ import { restoreCheckpoint, turnCheckpointRef, type Invoke } from "./checkpoints
 import { cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
+import { chatWantsAttention, enteredWait, turnSettled } from "./attention.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import type { FileChange } from "../diff/types.ts";
 
@@ -52,11 +57,88 @@ export interface PermissionOption {
   kind: string;
 }
 
-/** A tool call the agent waits to be allowed (ACP `session/request_permission`). */
-export interface PermissionPrompt {
+/** A tool call the agent waits to be allowed (ACP `session/request_permission`, Claude Code's tool approval). */
+export interface ToolPrompt {
+  kind: "permission";
   requestId: string;
   title: string;
   options: PermissionOption[];
+  /** The tool's name (`Bash`) or ACP kind (`execute`); empty when unknown. Picks the card's question. */
+  tool: string;
+  /** The tool's arguments, shown on the card; null when none were sent. */
+  input: unknown;
+}
+
+/** A plan the agent waits to have approved (Claude Code's `ExitPlanMode`). */
+export interface PlanPrompt {
+  kind: "plan";
+  requestId: string;
+  /** Markdown. */
+  plan: string;
+}
+
+export interface QuestionOption {
+  label: string;
+  description: string | null;
+}
+
+export interface Question {
+  header: string;
+  question: string;
+  multiSelect: boolean;
+  options: QuestionOption[];
+}
+
+/** Questions the agent waits to have answered (Claude Code's `AskUserQuestion`). */
+export interface QuestionPrompt {
+  kind: "question";
+  requestId: string;
+  questions: Question[];
+}
+
+/** What the agent waits on the user for. */
+export type PermissionPrompt = ToolPrompt | PlanPrompt | QuestionPrompt;
+
+/** The user's answer to a `PermissionPrompt`. */
+export type PermissionAnswer =
+  /** One of a tool prompt's options. */
+  | { kind: "option"; optionId: string }
+  /** Approve the plan, or keep planning with the changes asked for. */
+  | { kind: "plan"; approved: boolean; feedback?: string }
+  /** Per question: the chosen labels, then any typed answer. */
+  | { kind: "answers"; answers: string[][] }
+  /** Declined without an answer (ACP `cancelled`). */
+  | { kind: "cancel" };
+
+/** The status a chat waiting on `kind` has (Conductor's TOOL_APPROVAL, EXIT_PLAN_MODE, ASK_USER_QUESTION). */
+export const PROMPT_STATUS: Record<PermissionPrompt["kind"], Q.SessionStatus> = {
+  permission: "needs_user_permission",
+  plan: "needs_plan_response",
+  question: "needs_user_input",
+};
+
+/** Most urgent first, as Conductor ranks a workspace's sessions (`tTr`). */
+const PROMPT_ORDER: readonly Q.SessionStatus[] = ["needs_plan_response", "needs_user_permission", "needs_user_input"];
+
+/** The status one open request gives a running chat: its kind's, or user input for a tool request asked as a question. */
+export function promptStatus(p: PermissionPrompt): Q.SessionStatus {
+  return p.kind === "permission" && isQuestion(p) ? "needs_user_input" : PROMPT_STATUS[p.kind];
+}
+
+/** The status the open requests give a running chat; null when none is open. */
+export function promptsStatus(open: readonly PermissionPrompt[]): Q.SessionStatus | null {
+  return PROMPT_ORDER.find((s) => open.some((p) => promptStatus(p) === s)) ?? null;
+}
+
+/**
+ * Conductor's ACP client asks a request as a question, not a tool approval,
+ * when it offers two or more allow options and no reject option (`cX8` in
+ * conductor-runtime.js @1,641,185): AskUserQuestion's `needs_user_input`,
+ * then `_p`. Every other request is a tool approval (`needs_user_permission`).
+ */
+export function isQuestion(p: ToolPrompt): boolean {
+  const allows = p.options.filter((o) => o.kind === "allow_once" || o.kind === "allow_always");
+  return allows.length >= 2 && !p.options.some((o) => o.kind === "reject_once" || o.kind === "reject_always");
 }
 
 /** How a backend reports permission requests opening and closing. */
@@ -102,6 +184,12 @@ export interface ChatBackend<Config> {
   /** Opens the chat's agent session (a new one, or `sessionId` resumed) before its first prompt. */
   open(chatId: string, cwd: string, sessionId: string | null, config: Config): Promise<void>;
   /**
+   * New options for the chat's open session (a pick in a running chat): the
+   * session runs on them from its next prompt. A backend without it keeps
+   * them for its next new session.
+   */
+  reconfigure?(chatId: string, config: Config): void;
+  /**
    * Sends a prompt; steers it into a running turn when `canSteer`. Resolves
    * once the turn ended, with the files it changed; a rejection means the
    * turn never started, so no event will end it.
@@ -109,11 +197,8 @@ export interface ChatBackend<Config> {
   prompt(req: PromptRequest): Promise<{ turnChanges?: FileChange[] }>;
   /** Interrupts the running turn; `hard` on a repeated Stop. */
   cancel(chatId: string, hard: boolean): void;
-  /**
-   * Answers a permission request with one of its options, or `cancelled`
-   * with null. False when the request is no longer open.
-   */
-  answerPermission?(chatId: string, requestId: string, optionId: string | null): Promise<boolean>;
+  /** Answers a permission request. False when the request is no longer open. */
+  answerPermission?(chatId: string, requestId: string, answer: PermissionAnswer): Promise<boolean>;
 }
 
 /** What the runtime needs from the app around it. */
@@ -160,10 +245,10 @@ export interface ChatRuntime<Config> {
    */
   reset(chatId: string, cwd: string, turnId: string, resetFiles: boolean): Promise<void>;
   /**
-   * Session options for the chat's next new session: its first, or the one
-   * after Reset chat. A session that already exists keeps its own. Picked
-   * options are kept across restarts, so a session opened after a reset
-   * still runs on them.
+   * The chat's session options. An open session runs on them from its next
+   * prompt (as Conductor reconciles a picked model before each turn); a chat
+   * not opened yet opens on them, as does the session after Reset chat.
+   * Picked options are kept across restarts.
    */
   configure(chatId: string, config: Config): void;
   /**
@@ -172,11 +257,11 @@ export interface ChatRuntime<Config> {
    */
   configureDefault(chatId: string, config: Promise<Config>): void;
   /**
-   * Answers a permission request with one of its options, or declines it
-   * (`cancelled`) with null. The request closes when the backend confirms it,
-   * or at once when it was no longer open.
+   * Answers a permission request: a tool's option, a plan decision,
+   * question answers, or `cancel`. The request closes when the backend
+   * confirms it, or at once when it was no longer open.
    */
-  answerPermission(chatId: string, requestId: string, optionId: string | null): Promise<void>;
+  answerPermission(chatId: string, requestId: string, answer: PermissionAnswer): Promise<void>;
   /** The options the chat's sessions open with: picked, defaulted, or `defaultConfig`. */
   config(chatId: string): Promise<Config>;
 }
@@ -189,7 +274,7 @@ interface Chat<Config> {
   /** Repository the chat's workspace belongs to. */
   repoPath: string | null;
   opened: boolean;
-  /** Options for the session `open` creates (the first, or the one after Reset chat); the first prompt waits for them. */
+  /** Options the chat's session runs on: `open` passes them, `configure` updates an open one; the first prompt waits for them. */
   config: Config | Promise<Config>;
   /** The chat's options were picked (New workspace dialog, review model) or defaulted, so the default does not replace them. */
   configured: boolean;
@@ -225,8 +310,11 @@ function setStatus(chatId: string, status: Q.SessionStatus | undefined) {
  */
 export function reportChatStatus(chatId: string, status: Q.SessionStatus): void {
   if (hiddenChats.has(chatId)) return setStatus(chatId, undefined);
+  const prev = statuses.get(chatId);
   setStatus(chatId, status);
   persistStatus(chatId, status);
+  // Conductor calls `_p` right after setting plan review or user input (attention.ts).
+  if (enteredWait(prev, status)) chatWantsAttention(chatId);
 }
 
 /** Chat id → session status of every visible chat; a new map on each change. */
@@ -242,6 +330,11 @@ export function subscribeChatStatuses(fn: () => void): () => void {
 export function hideChat(chatId: string): void {
   hiddenChats.add(chatId);
   setStatus(chatId, undefined);
+}
+
+/** A closed chat tab opened again (⌘⇧T): it counts toward its workspace's status again. */
+export function showChat(chatId: string): void {
+  hiddenChats.delete(chatId);
 }
 
 /** The workspace a chat belongs to: a review chat's id is `<workspace id>:review:<n>`. */
@@ -418,6 +511,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
         notify(c);
       }
       setQueue(c, Q.turnEnded(c.queue, e.status, openTurns(c.state) > 0));
+      if (turnSettled(e.status, c.queue)) chatWantsAttention(c.state.chatId);
     }
   }
 
@@ -425,16 +519,21 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     if (!c.permissions.some((r) => r.requestId === requestId)) return;
     c.permissions = c.permissions.filter((r) => r.requestId !== requestId);
     notify(c);
-    if (c.permissions.length === 0) setQueue(c, Q.permissionAnswered(c.queue));
+    setQueue(c, Q.waitingOn(c.queue, promptsStatus(c.permissions)));
   }
 
   const permissionEvents: PermissionEvents = {
     requested(chatId, request) {
       const c = chats.get(chatId);
       if (!c) return;
+      const fresh = !c.permissions.some((r) => r.requestId === request.requestId);
       c.permissions = [...c.permissions.filter((r) => r.requestId !== request.requestId), request];
       notify(c);
-      setQueue(c, Q.permissionRequested(c.queue));
+      const before = c.queue.status;
+      setQueue(c, Q.waitingOn(c.queue, promptsStatus(c.permissions)));
+      // A new request is a wait on the user (Conductor's `_p`), signalled once:
+      // a status that just entered plan review or user input already did.
+      if (fresh && !enteredWait(before, c.queue.status)) chatWantsAttention(chatId);
     },
     resolved(chatId, requestId) {
       const c = chats.get(chatId);
@@ -563,15 +662,16 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       const c = chat(chatId);
       c.config = config;
       c.configured = true;
+      if (c.opened) backend.reconfigure?.(chatId, config);
       try {
         host.storage.setItem(backend.configKey(chatId), JSON.stringify(config));
       } catch (e) {
         console.warn("chat: session options not saved", e);
       }
     },
-    async answerPermission(chatId, requestId, optionId) {
+    async answerPermission(chatId, requestId, answer) {
       const c = chat(chatId);
-      const open = backend.answerPermission ? await backend.answerPermission(chatId, requestId, optionId) : false;
+      const open = backend.answerPermission ? await backend.answerPermission(chatId, requestId, answer) : false;
       if (!open) closePermission(c, requestId);
     },
     configureDefault(chatId, config) {

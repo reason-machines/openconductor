@@ -1,0 +1,81 @@
+{
+  "agent": "codex",
+  "app_commit": "main 95ec07d plus this PR's Codex API key login (built from the working tree)",
+  "host": {
+    "os": "macOS-26.4-arm64-arm-64bit",
+    "machine": "arm64"
+  },
+  "cli_version": "codex-cli 0.166.0",
+  "key_only_control": false,
+  "cli_auth_in_throwaway_home": "Logged in using ChatGPT",
+  "started": "2026-11-06T14:16:33.080Z",
+  "ended": "2026-11-06T14:16:43.845Z",
+  "error": null,
+  "modes": [
+    {
+      "mode": "import",
+      "card": "CLI",
+      "set_in_app": false,
+      "stored": {
+        "provider": null,
+        "config": null
+      },
+      "connected": true,
+      "login_prompt": false,
+      "key_fingerprint": null,
+      "turn": {
+        "status": "completed",
+        "error": null,
+        "signInNotice": null,
+        "reply": "oc-import-ok",
+        "seconds": 3
+      },
+      "result": "pass"
+    },
+    {
+      "mode": "chatgpt",
+      "card": "ChatGPT",
+      "set_in_app": true,
+      "stored": {
+        "provider": "chatgpt_sign_in",
+        "config": null
+      },
+      "connected": true,
+      "login_prompt": false,
+      "key_fingerprint": null,
+      "turn": {
+        "status": "completed",
+        "error": null,
+        "signInNotice": null,
+        "reply": "oc-chatgpt-ok",
+        "seconds": 3
+      },
+      "result": "pass"
+    },
+    {
+      "mode": "apikey",
+      "card": "API key",
+      "set_in_app": true,
+      "stored": {
+        "provider": null,
+        "config": {
+          "kind": "openai_api"
+        }
+      },
+      "connected": true,
+      "login_prompt": false,
+      "key_fingerprint": "76e86bc2f5441fbf",
+      "turn": {
+        "status": "completed",
+        "error": null,
+        "signInNotice": null,
+        "reply": "oc-apikey-ok",
+        "seconds": 2
+      },
+      "result": "pass"
+    }
+  ],
+  "driver_result": "pass",
+  "result": "pass",
+  "key_source": "1Password op://Production/github-native-engineer-evals/OPENAI_API_KEY (evals project), read inside the runner only"
+}

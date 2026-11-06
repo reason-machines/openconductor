@@ -19,15 +19,33 @@
 //!
 //! Those modules are added here once their owners land them.
 
+/// `std::eprintln!` for every module below, except that a failed write is
+/// dropped instead of panicking. An agent that launches the app with stderr on
+/// its own pipe closes that pipe when its command returns; `std::eprintln!`
+/// then panics with EPIPE, and the first log line in the setup hook aborted the
+/// app before its window opened (tests/closed_stderr.rs). Unit tests keep
+/// `std::eprintln!` so the test harness still captures their output.
+#[cfg(not(test))]
+macro_rules! eprintln {
+    ($($arg:tt)*) => {{
+        use ::std::io::Write as _;
+        let _ = ::std::writeln!(::std::io::stderr(), $($arg)*);
+    }};
+}
+
 pub mod agent;
 pub mod agent_binaries;
+pub mod agent_commands;
+pub mod agent_launch;
 pub mod agent_options;
+pub mod app_quit;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
 pub mod checkpoint;
 mod checkpoint_commands;
 mod chat_store_commands;
+pub mod codex_account;
 pub mod codex_chat;
 mod session_status_commands;
 pub mod claude_chat;
@@ -43,6 +61,8 @@ mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod repo_misc_commands;
 mod sidebar_section_commands;
+pub mod sidebar_transparency;
+mod agent_settings_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
@@ -78,6 +98,7 @@ pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
 pub mod workspace_archive;
+mod window_bounds;
 mod workspace_archive_commands;
 
 use serde::Serialize;
@@ -118,6 +139,12 @@ fn app_info() -> AppInfo {
         version: env!("CARGO_PKG_VERSION"),
         platform: std::env::consts::OS,
     }
+}
+
+/// Help › "Open debug tools" (Conductor's `open_devtools`): the window's web inspector.
+#[tauri::command]
+fn open_devtools(window: tauri::WebviewWindow) {
+    window.open_devtools();
 }
 
 /// Folder checks for Home "Open project" (see `project`).
@@ -248,6 +275,16 @@ pub fn run() {
     let builder = builder.menu(menu::build);
     builder
         .on_menu_event(|app, event| menu::handle_event(app, event.id().as_ref()))
+        // A window-state restore can set a size below the configured minimum; raise it back.
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::Resized(size) = event {
+                if let Ok(scale) = window.scale_factor() {
+                    if let Some((w, h)) = window_bounds::clamp_to_min(size.width, size.height, scale) {
+                        let _ = window.set_size(tauri::PhysicalSize::new(w, h));
+                    }
+                }
+            }
+        })
         // Same plugin set as Conductor 0.87.6 (see Cargo.toml). Capabilities grant only the
         // commands its frontend calls (capabilities/default.json).
         .plugin(tauri_plugin_deep_link::init())
@@ -271,10 +308,18 @@ pub fn run() {
             // Conductor sweeps draft-attachments/ dirs older than 30 days at start.
             draft_attachments::sweep_at_startup(&data_dir);
             // Conductor's binary_manager: agent-binaries/ with .meta sha256 files.
-            app.manage(agent_binaries::commands::manager(app.handle(), &data_dir));
+            let binaries = agent_binaries::commands::manager(app.handle(), &data_dir);
+            // Conductor fetches (or re-verifies) both agents at launch, so a
+            // chat rarely waits on a download (agent_launch.rs).
+            for agent in agent_binaries::Agent::ALL {
+                binaries.request_download(agent);
+            }
+            app.manage(binaries.clone());
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
+            // Conductor's `startup_sidebar_transparency_enabled`: read once, before the window exists.
+            let transparent_window = sidebar_transparency::startup_enabled(&db.0);
             app.manage(db::open_cache(&data_dir));
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
@@ -306,7 +351,8 @@ pub fn run() {
             app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
-            app.manage(codex_chat::CodexChats::default());
+            app.manage(codex_chat::CodexChats::with_binaries(binaries));
+            app.manage(codex_account::CodexLogins::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
@@ -326,14 +372,22 @@ pub fn run() {
             app.manage(scripts);
             app.manage(spotlight);
             spawn_push_upstream_backfill(app.handle().clone());
+            // tauri.conf.json leaves the main window to us (`"create": false`) so it can be
+            // created transparent when Sidebar transparency was on at launch. Last, so every
+            // managed state exists before the webview loads.
+            sidebar_transparency::create_main_window(app.handle(), transparent_window)?;
             e2e::install(app.handle());
             Ok(())
         })
+        .manage(app_quit::QuitHandler::default())
         .invoke_handler(tauri::generate_handler![
+            app_quit::set_quit_handler_ready,
+            app_quit::quit_app,
             root_path_commands::get_conductor_root,
             root_path_commands::repo_workspaces_path,
             root_path_commands::change_conductor_root,
             app_info,
+            open_devtools,
             inspect_project_folder,
             branch_prefix_settings,
             github_repo_owners,
@@ -370,7 +424,11 @@ pub fn run() {
             sidebar_section_commands::db_read_navigation_sections,
             sidebar_section_commands::db_write_navigation_sections,
             sidebar_workspace_commands::db_set_workspace_pinned,
-            sidebar_workspace_commands::db_set_workspace_unread,
+            sidebar_workspace_commands::db_set_chat_unread,
+            sidebar_workspace_commands::db_mark_workspace_read,
+            sidebar_workspace_commands::db_open_chat_tab,
+            sidebar_workspace_commands::db_close_chat_tab,
+            sidebar_workspace_commands::db_touch_workspace,
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
             repo_misc_commands::repo_files_to_copy_preview,
@@ -399,7 +457,12 @@ pub fn run() {
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
+            reason_chat::reason_account_status,
+            reason_chat::reason_login_start,
+            reason_chat::reason_connect_computer,
+            reason_chat::reason_paths,
             reason_chat::reason_open_chat,
+            reason_chat::reason_set_config,
             chat_store_commands::chat_messages_save,
             chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
@@ -408,6 +471,10 @@ pub fn run() {
             session_status_commands::session_statuses,
             session_status_commands::session_set_status,
             reason_chat::reason_list_sessions,
+            reason_chat::reason_models,
+            codex_account::codex_account,
+            codex_account::codex_chatgpt_login_start,
+            codex_account::codex_chatgpt_login_cancel,
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,
@@ -416,10 +483,16 @@ pub fn run() {
             codex_chat::codex_respond,
             codex_chat::codex_close_chat,
             claude_chat::commands::claude_cli_path,
+            agent_settings_commands::cli_login_status,
+            agent_settings_commands::favorite_models_list,
+            agent_settings_commands::favorite_models_replace,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,
+            claude_chat::commands::claude_respond,
+            agent_commands::agent_slash_commands,
             e2e::e2e_report,
+            e2e::e2e_secret,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,
             terminal_commands::pty_resize,
@@ -448,9 +521,9 @@ pub fn run() {
             terminal_commands::cancel_shell_command,
             app_prefs::commands::get_app_prefs,
             agent_options::agent_system_binary,
+            agent_launch::agent_executable_status,
             agent_options::agent_config_file,
             agent_options::open_agent_config,
-            agent_options::acp_agent_status,
             app_prefs::commands::set_app_pref,
             app_prefs::commands::record_open_in,
             open_in::commands::open_in_apps,
@@ -458,6 +531,7 @@ pub fn run() {
             app_prefs::commands::client_instance_id,
             app_prefs::commands::graphite_cli_installed,
             resource_usage::commands::get_resource_usage,
+            sidebar_transparency::update_window_vibrancy,
             local_account::local_account,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
@@ -471,10 +545,13 @@ pub fn run() {
             settings::commands::provider_status,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
+            settings::commands::reveal_provider_secret,
+            settings::commands::settings_file_path,
             pr::commands::pr_lookup,
             pr::commands::pr_list_open,
             pr::commands::gh_issue_list_open,
             pr::commands::pr_git_state,
+            pr::commands::pr_pull_latest_from_target,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
             pr::commands::pr_template,
@@ -498,6 +575,7 @@ pub fn run() {
             scripts::run_script_stop,
             scripts::run_script_status,
             scripts::run_script_output,
+            scripts::run_script_preview_env,
             scripts::archive_script_run,
             scripts::auto_run_after_setup_get,
             scripts::auto_run_after_setup_set,

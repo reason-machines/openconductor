@@ -9,9 +9,9 @@
   --oc-diff-bg: var(--panel);
   --oc-diff-fg: var(--text);
   --oc-diff-gutter-fg: var(--muted);
-  --oc-diff-addition: #1a7f37;
-  --oc-diff-deletion: #cf222e;
-  --oc-diff-modified: #9a6700;
+  --oc-diff-addition: var(--diff-add);
+  --oc-diff-deletion: var(--diff-del);
+  --oc-diff-modified: var(--diff-mod);
   --oc-diff-bg-addition: color-mix(in srgb, var(--oc-diff-addition) 12%, var(--oc-diff-bg));
   --oc-diff-bg-addition-emphasis: color-mix(in srgb, var(--oc-diff-addition) 32%, var(--oc-diff-bg));
   --oc-diff-bg-deletion: color-mix(in srgb, var(--oc-diff-deletion) 12%, var(--oc-diff-bg));
@@ -28,16 +28,9 @@
   color: var(--oc-diff-fg);
   background: var(--oc-diff-bg);
 }
-@media (prefers-color-scheme: dark) {
-  .oc-diff {
-    --oc-diff-addition: #3fb950;
-    --oc-diff-deletion: #f85149;
-    --oc-diff-modified: #d29922;
-  }
-}
 /* Colour-vision palettes: additions blue, deletions orange or red. */
-.oc-diff[data-palette="protanopia-deuteranopia"] { --oc-diff-addition: #0969da; --oc-diff-deletion: #bc4c00; }
-.oc-diff[data-palette="tritanopia"] { --oc-diff-addition: #0969da; --oc-diff-deletion: #cf222e; }
+.oc-diff[data-palette="protanopia-deuteranopia"] { --oc-diff-addition: var(--diff-add-cb); --oc-diff-deletion: var(--diff-del-cb); }
+.oc-diff[data-palette="tritanopia"] { --oc-diff-addition: var(--diff-add-cb); --oc-diff-deletion: var(--diff-del); }
 
 .oc-diff-toolbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-bottom: 1px solid var(--border); font-size: 12px; flex-wrap: wrap; }
 .oc-diff-toolbar .spacer { flex: 1; }
@@ -76,7 +69,7 @@
 .oc-diff-list .oc-change { padding: 5px 8px; border-radius: 6px; font-size: 13px; }
 .oc-diff-tab .oc-file { border-radius: 0; border-width: 0 0 1px; margin-bottom: 0; content-visibility: visible; }
 .oc-files { overflow: auto; min-width: 0; padding: 8px 12px 40px; }
-.oc-next-unread { position: sticky; bottom: 12px; display: block; width: fit-content; margin: 0 0 0 auto; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15); }
+.oc-next-unread { position: sticky; bottom: 12px; display: block; width: fit-content; margin: 0 0 0 auto; box-shadow: 0 2px 8px var(--shadow-15); }
 .oc-file { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; content-visibility: auto; contain-intrinsic-size: auto 200px; }
 .oc-file-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--oc-diff-bg-gutter); border-bottom: 1px solid var(--border); font-size: 12px; }
 .oc-file-header .path { flex: 1; font-family: var(--oc-diff-font); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -96,7 +89,8 @@
 
 /* parity:diff.comments-inline:ui  Review comment threads and composer. */
 .oc-threads { display: flex; flex-direction: column; gap: 8px; word-break: normal; }
-.oc-thread, .oc-composer { border: 1px solid var(--border); border-radius: 6px; background: var(--panel); max-width: 720px; }
+/* :not(.composer): the chat composer shares the oc-composer class and centres at its own 896px column. */
+.oc-thread, .oc-composer:not(.composer) { border: 1px solid var(--border); border-radius: 6px; background: var(--panel); max-width: 720px; }
 .oc-thread[data-focused] { outline: 2px solid var(--accent); outline-offset: 1px; }
 .oc-thread.resolved { opacity: 0.85; }
 .oc-comment { padding: 8px 10px; border-bottom: 1px solid var(--border); }
@@ -110,7 +104,7 @@
 .oc-thread-collapsed { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 6px 10px; font-size: 12px; cursor: pointer; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .oc-composer textarea { display: block; width: 100%; box-sizing: border-box; border: 0; border-radius: 6px 6px 0 0; padding: 8px 10px; resize: vertical; font: inherit; font-size: 13px; background: transparent; color: inherit; }
 .oc-composer textarea:focus { outline: none; }
-.btn.oc-btn-danger, .btn.oc-btn-danger:hover { background: var(--del); border-color: var(--del); color: #fff; }
+.btn.oc-btn-danger, .btn.oc-btn-danger:hover { background: var(--diff-del); border-color: var(--diff-del); color: var(--on-solid); }
 .btn.oc-btn-danger .muted { color: inherit; opacity: 0.7; }
 /* Whitespace-only file while whitespace is hidden (Whitespace.tsx). */
 .oc-whitespace-only { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 32px 12px; text-align: center; }
@@ -127,7 +121,7 @@
 /* File-toolbar "View options" menu (Whitespace.tsx) and the Viewed toggle (FileDiffView.tsx). */
 .oc-view-options { position: relative; display: inline-flex; }
 .oc-view-options .icon-btn[aria-expanded="true"] { background: var(--active); color: var(--text); }
-.oc-view-options-menu { position: absolute; top: calc(100% + 4px); right: 0; z-index: 5; min-width: 200px; padding: 4px; background: var(--panel, var(--bg)); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 20px rgb(0 0 0 / 0.18); }
+.oc-view-options-menu { position: absolute; top: calc(100% + 4px); right: 0; transform-origin: top right; z-index: 5; min-width: 200px; padding: 4px; background: var(--panel, var(--bg)); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 20px var(--shadow-18); }
 .oc-view-option { display: flex; width: 100%; height: 32px; align-items: center; gap: 8px; padding: 0 8px; border-radius: 6px; font-size: 13px; color: var(--text); text-align: left; }
 .oc-view-option:hover, .oc-view-option:focus-visible { background: var(--active); }
 .oc-view-option .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -135,8 +129,33 @@
 .oc-file-header .oc-viewed { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 6px; color: var(--muted); }
 .oc-file-header .oc-viewed:hover { background: var(--active); }
 .oc-file-header .oc-viewed[aria-pressed="true"] { color: var(--text); }
+/* "Copy file contents" (FileDiffView.tsx), Conductor's S1e ghost button: size-7, muted icon, accent on hover. */
+.oc-file-header .oc-copy-file { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; padding: 0; border-radius: 6px; color: var(--sidebar-muted-foreground); }
+.oc-file-header .oc-copy-file:hover { background: var(--active); color: var(--text); }
 
 /* Editing in the entire-file view (EditInViewer.ts). Conductor's dot: size-2 rounded-full bg-warning-foreground-secondary. */
 .oc-file-header .oc-unsaved { width: 8px; height: 8px; flex-shrink: 0; border-radius: 9999px; background: var(--amber); }
 .oc-code-edit { display: contents; }
-.oc-save-error { color: var(--del); text-align: left; }
+.oc-save-error { color: var(--diff-del); text-align: left; }
+
+/* Conductor's "Pull latest from <target>" in the empty Changes panel: a small ghost button, muted text. */
+.oc-pull-latest { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; padding: 4px 8px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); font-size: 12px; line-height: 16px; cursor: pointer; }
+.oc-pull-latest:hover:not(:disabled) { background: var(--hover); color: var(--text); }
+.oc-pull-latest:disabled { opacity: 0.5; cursor: default; }
+.oc-pull-latest-spinner { width: 12px; height: 12px; border-width: 1.5px; }
+
+/* Conductor's Changes filter row (`W4s`): px-2 pb-2 around a h-7 rounded-md bg-muted px-3 box,
+   gap-1.5; size-3 muted search icon, text-sm input, "N of M" text-xs tabular-nums, close button
+   -mr-1.5 p-1.5. Opens to 36 px over 180 ms ease-out. */
+.oc-diff.oc-diff-list:has(> .oc-changes-filter) { grid-template-rows: auto auto minmax(0, 1fr); }
+.oc-changes-filter { height: 36px; padding: 0 8px 8px; box-sizing: border-box; overflow: hidden; animation: oc-changes-filter-in 180ms ease-out; }
+.oc-changes-filter-box { display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border-radius: 6px; background: var(--surface-muted); color: var(--muted); }
+.oc-changes-filter-box > svg { flex: none; }
+.oc-changes-filter-box input { flex: 1; min-width: 0; padding: 0; border: 0; outline: none; background: transparent; color: var(--text); font: inherit; font-size: 14px; }
+.oc-changes-filter-box input::placeholder { color: var(--muted); }
+.oc-changes-filter-count { flex: none; font-size: 12px; font-variant-numeric: tabular-nums; }
+.oc-changes-filter-close { display: inline-flex; flex: none; margin-right: -6px; padding: 6px; border: 0; background: none; color: var(--muted); }
+.oc-changes-filter-close:hover { color: var(--text); }
+.oc-changes-nomatch { display: flex; align-items: center; justify-content: center; height: 96px; padding: 0 16px; text-align: center; font-size: 12px; color: var(--muted); }
+@keyframes oc-changes-filter-in { from { height: 0; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .oc-changes-filter { animation: none; } }

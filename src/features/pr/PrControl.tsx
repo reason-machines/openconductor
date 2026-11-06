@@ -5,8 +5,8 @@
 // preferred method, named in the tooltip), Ready for review on a draft,
 // Approve PR, Automerge while checks run (with the setting on), or the PR's current state, which opens it on GitHub.
 import { useEffect, useRef, useState } from "react";
+import { usePresence } from "../../components/motion/usePresence.ts";
 import { prControl } from "./control.ts";
-import { usePrLinkMenu } from "./PrLinkMenu";
 import type { PrActions } from "./usePrActions.ts";
 import type { PullRequest } from "./usePullRequest.ts";
 import "./pr.css";
@@ -14,18 +14,15 @@ import "./pr.css";
 interface Props {
   pullRequest: PullRequest;
   actions: PrActions;
-  /** Toasts for the PR number's right-click menu. */
-  notify?: (kind: "info" | "error", message: string) => void;
 }
 
-export function PrControl({ pullRequest, actions, notify }: Props) {
+export function PrControl({ pullRequest, actions }: Props) {
   const { header, pr } = pullRequest;
   const { busy } = actions;
   const [menu, setMenu] = useState(false);
+  const menuPresence = usePresence(menu);
   const menuRef = useRef<HTMLSpanElement>(null);
   const control = prControl(header, pr, { method: actions.method, automerge: pullRequest.settings.automerge });
-  // Conductor's PR pill (`RFt`) right-click: the PR link menu (`w_i`).
-  const linkMenu = usePrLinkMenu(pr, notify);
 
   useEffect(() => {
     if (!menu) return;
@@ -36,33 +33,26 @@ export function PrControl({ pullRequest, actions, notify }: Props) {
 
   // Without a worktree the desktop app has no header state; the browser preview shows its demo PR.
   if (!control) return null;
-  const withMenu = (node: JSX.Element) => (
-    <>
-      {node}
-      {linkMenu.menu}
-    </>
-  );
 
   const tone = `pr-control tone-${control.tone}`;
   const prLink = pr && (
-    <button className="btn btn-small pr-link" title={`Open PR #${pr.number} on GitHub`} onClick={actions.openOnGitHub} onContextMenu={linkMenu.onContextMenu}>
+    <button className="btn btn-small pr-link" title={`Open PR #${pr.number} on GitHub`} onClick={actions.openOnGitHub}>
       #{pr.number}
     </button>
   );
 
-  const node = ((): JSX.Element => {
   switch (control.intent) {
     case "create":
       return (
         <span className={`${tone} pr-split`} ref={menuRef}>
-          <button className="btn btn-small btn-primary" title={control.title} disabled={busy !== null} onClick={() => void actions.create(false)}>
+          <button className="btn btn-small btn-primary" disabled={busy !== null} onClick={() => void actions.create(false)}>
             {busy === "creating" ? "Creating…" : control.label}
           </button>
           <button className="btn btn-small btn-primary pr-caret" aria-label="More ways to create a PR" aria-expanded={menu} disabled={busy !== null} onClick={() => setMenu((m) => !m)}>
             ▾
           </button>
-          {menu && (
-            <div className="pr-menu" role="menu" data-tauri-drag-region="false">
+          {menuPresence.mounted && (
+            <div className="pr-menu" role="menu" data-tauri-drag-region="false" data-motion="popup" {...menuPresence.attrs}>
               <button
                 role="menuitem"
                 onClick={() => {
@@ -150,11 +140,9 @@ export function PrControl({ pullRequest, actions, notify }: Props) {
       );
     case "status":
       return (
-        <button className={`btn btn-small ${tone}`} title={pr ? `${control.title}. Open PR #${pr.number} on GitHub` : control.title} disabled={!pr} onClick={actions.openOnGitHub} onContextMenu={linkMenu.onContextMenu}>
+        <button className={`btn btn-small ${tone}`} title={pr ? `${control.title}. Open PR #${pr.number} on GitHub` : control.title} disabled={!pr} onClick={actions.openOnGitHub}>
           <span className="pr-dot" /> {control.label}
         </button>
       );
   }
-  })();
-  return withMenu(node);
 }

@@ -211,6 +211,83 @@ fn config_is_set_on_a_new_session_and_unoffered_values_become_notices() {
     assert!(notices[1].contains("speed"));
 }
 
+/// The last `config` reply: each one is "model=M effort=E".
+fn last_config(log: &Log) -> String {
+    let r = reply(log);
+    let i = r.rfind("model=").expect("a config reply");
+    r[i..].to_string()
+}
+
+#[test]
+fn a_changed_config_applies_to_the_open_session_at_its_next_prompt() {
+    use super::provider::ConfigChoice;
+    let choice = |id: &str, value: &str| ConfigChoice {
+        id: id.into(),
+        value: value.into(),
+    };
+    let (p, log, home) = provider("config-live");
+    p.open_chat("ws", &home, None);
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:anthropic:claude-opus-5-5"),
+            choice("reasoning_effort", "high"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=high"
+    );
+
+    // A pick in the running chat: the same Session switches, as Conductor's
+    // `reconcileSessionConfig` does before its next prompt.
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:openai-codex:gpt-5.6-sol"),
+            choice("reasoning_effort", "low"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:openai-codex:gpt-5.6-sol effort=low"
+    );
+    assert_eq!(started(&log), vec!["sess-1"], "no new Session");
+
+    // After a restart the resumed Session gets a pick made meanwhile.
+    p.shutdown();
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:anthropic:claude-opus-5-5"),
+            choice("reasoning_effort", "medium"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=medium"
+    );
+    assert_eq!(started(&log), vec!["sess-1"], "resumed, not replaced");
+
+    // A value the Session does not offer is told, not sent.
+    p.set_config("ws", vec![choice("model", "opus-5-1m")]);
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=medium"
+    );
+    let notices = log
+        .lock()
+        .unwrap()
+        .iter()
+        .filter(|(_, e)| matches!(e, ProviderEvent::Notice(n) if n.contains("opus-5-1m")))
+        .count();
+    assert_eq!(notices, 1);
+}
+
 #[test]
 fn attachments_go_to_reason_as_embedded_files() {
     use super::provider::Attachment;
@@ -322,4 +399,175 @@ fn stop_answers_an_open_permission_request_cancelled() {
     assert_eq!(reply(&log), "permission: cancelled");
     assert_eq!(resolved(&log), std::slice::from_ref(&r.request_id));
     assert!(!p.answer_permission("chat", &r.request_id, Some("allow")));
+}
+
+/// Sven's 409: the Reason desktop app's selected workspace changed while
+/// OpenConductor was closed, so a plain `reason acp` serves another
+/// workspace. Its `session/resume` hides the 404 and the follow-up got
+/// `409 client_session_id_conflict`. The follow-up must resume the chat's
+/// own Session in the workspace that has it.
+#[test]
+fn a_follow_up_after_relaunch_resumes_the_session_in_its_own_workspace() {
+    let (p, log, home) = provider("relaunch-ws");
+    p.open_chat("chat", &home, None);
+    assert_eq!(p.prompt("chat", "echo: one"), TurnEnd::Completed);
+    let id = started(&log).pop().unwrap();
+    p.shutdown();
+    drop(p);
+
+    std::fs::write(home.join("fake-reason-selected"), "ws-b").unwrap();
+    let (p, log, _) = provider_in(home.clone());
+    p.open_chat("chat", &home, Some(id.clone()));
+    let end = p.prompt("chat", "echo: two");
+    let errors: Vec<String> = log
+        .lock()
+        .unwrap()
+        .iter()
+        .filter_map(|(_, ev)| match ev {
+            ProviderEvent::Agent(AgentEvent::Error(e)) => Some(e.message.clone()),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(end, TurnEnd::Completed, "errors: {errors:?}");
+    assert!(errors.is_empty(), "{errors:?}");
+    assert_eq!(reply(&log), "turn 2: two", "the same Session ran turn 2");
+    assert!(started(&log).is_empty(), "no new Session");
+
+    // A new chat still opens in the workspace selected now.
+    p.open_chat("new", &home, None);
+    assert_eq!(p.prompt("new", "echo: b"), TurnEnd::Completed);
+    let state: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(home.join("state.json")).unwrap()).unwrap();
+    assert_eq!(state["sessions"][&id]["workspace"], "ws-a");
+    let new_id = started(&log).pop().unwrap();
+    assert_eq!(state["sessions"][&new_id]["workspace"], "ws-b");
+}
+
+/// A stored Session no signed-in workspace has: the follow-up is not sent
+/// and the chat says why, instead of Reason's bare 409.
+#[test]
+fn a_session_no_workspace_has_fails_with_a_clear_message() {
+    let (p, _log, home) = provider("relaunch-gone");
+    let mut state = serde_json::json!({ "sessions": {} });
+    state["sessions"]["sess-9"] =
+        serde_json::json!({ "cwd": home, "turns": 1, "title": null, "workspace": "ws-z" });
+    std::fs::write(home.join("state.json"), state.to_string()).unwrap();
+    p.open_chat("chat", &home, Some("sess-9".into()));
+    let end = p.prompt("chat", "echo: two");
+    let TurnEnd::Failed(message) = &end else {
+        panic!("expected a failure, got {end:?}");
+    };
+    assert!(message.contains("sess-9"), "{message}");
+    assert!(message.contains("ws-a, ws-b"), "{message}");
+    assert!(!message.contains("409"), "{message}");
+}
+
+/// The app keeps each Session's workspace in a file: after a relaunch the
+/// chat's agent starts in that workspace without asking every workspace.
+#[test]
+fn the_session_store_remembers_each_sessions_workspace() {
+    let (_, _, home) = provider("store");
+    let store = home.join("app-data/reason-session-workspaces.json");
+    let with_store = |home: &PathBuf| {
+        let (p, log, _) = provider_in(home.clone());
+        let p = Arc::try_unwrap(p)
+            .ok()
+            .unwrap()
+            .with_session_store(store.clone());
+        (Arc::new(p), log)
+    };
+    let (p, log) = with_store(&home);
+    p.open_chat("chat", &home, None);
+    assert_eq!(p.prompt("chat", "echo: one"), TurnEnd::Completed);
+    let id = started(&log).pop().unwrap();
+    drop(p);
+    let saved: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(&store).unwrap()).unwrap();
+    assert_eq!(saved[&id], "ws-a");
+
+    std::fs::write(home.join("fake-reason-selected"), "ws-b").unwrap();
+    let (p, log) = with_store(&home);
+    p.open_chat("chat", &home, Some(id));
+    assert_eq!(p.prompt("chat", "echo: two"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "turn 2: two");
+}
+
+fn session_models(log: &Log) -> Vec<(String, Option<String>)> {
+    let log = log.lock().unwrap();
+    let models = log.iter().filter_map(|(_, ev)| match ev {
+        ProviderEvent::SessionModel(m) => Some((m.model.clone(), m.effort.clone())),
+        _ => None,
+    });
+    models.collect()
+}
+
+#[test]
+fn after_each_turn_the_model_the_session_ran_on_is_reported() {
+    let (p, log, home) = provider("session-model");
+    p.open_chat("c", &home, None);
+    assert_eq!(p.prompt("c", "hello"), TurnEnd::Completed);
+    // Auto: the fake's `session get` says it ran Claude Opus 5.5 at high.
+    wait_for(&log, |e| matches!(e, ProviderEvent::SessionModel(_)));
+    assert_eq!(
+        session_models(&log),
+        vec![(
+            "byok:anthropic:claude-opus-5-5".to_string(),
+            Some("high".to_string())
+        )]
+    );
+}
+
+#[test]
+fn models_lists_what_a_new_session_offers_without_keeping_it() {
+    let (p, log, _home) = provider("models");
+    let list = p.models().unwrap();
+    assert_eq!(list.current, "default");
+    let values: Vec<&str> = list.options.iter().map(|o| o.value.as_str()).collect();
+    assert_eq!(
+        &values[..3],
+        [
+            "default",
+            "byok:anthropic:claude-opus-5-5",
+            "byok:openai-codex:gpt-5.6-sol"
+        ]
+    );
+    assert_eq!(list.options[0].name, "Auto");
+    assert_eq!(list.options[1].name, "Claude Opus 5.5");
+    assert_eq!(
+        list.options[1].description.as_deref(),
+        Some("Claude · Subscription")
+    );
+    assert!(started(&log).is_empty(), "no chat gets a Session");
+}
+
+/// Settings › Agents › Reason pins new chats to a workspace; existing
+/// Sessions keep theirs. A changed launch restarts the agent between turns.
+#[test]
+fn a_pinned_workspace_takes_new_sessions_and_a_new_launch_restarts_the_agent() {
+    let (p, log, home) = provider("pinned");
+    p.open_chat("old", &home, None);
+    assert_eq!(p.prompt("old", "echo: a"), TurnEnd::Completed);
+    let old = started(&log).pop().unwrap();
+
+    let same = LaunchConfig::new(fake_agent()).unwrap();
+    p.reconfigure(same, Some("ws-b".into()));
+    p.open_chat("new", &home, None);
+    assert_eq!(p.prompt("new", "echo: b"), TurnEnd::Completed);
+    let new = started(&log).pop().unwrap();
+    let state = |home: &PathBuf| -> serde_json::Value {
+        serde_json::from_str(&std::fs::read_to_string(home.join("state.json")).unwrap()).unwrap()
+    };
+    assert_eq!(state(&home)["sessions"][&old]["workspace"], "ws-a");
+    assert_eq!(state(&home)["sessions"][&new]["workspace"], "ws-b");
+
+    // A new environment (an API key) restarts the agents; chats resume.
+    let mut env = super::cli::CliEnv::default();
+    env.set("REASON_API_KEY", "k");
+    p.reconfigure(
+        LaunchConfig::new(fake_agent()).unwrap().env(env),
+        Some("ws-b".into()),
+    );
+    assert_eq!(p.prompt("old", "echo: c"), TurnEnd::Completed);
+    assert!(reply(&log).ends_with("turn 2: c"), "{}", reply(&log));
+    assert_eq!(started(&log), [old, new], "no new Session");
 }

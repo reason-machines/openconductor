@@ -13,7 +13,7 @@ import type { ToastAction } from "../../components/toastTiming";
 import type { Action } from "../../state/store";
 import type { Repo, Workspace } from "../../state/types";
 import { getSettings } from "../../settings/api";
-import { AGENT_RUNNING_MESSAGE, archiveDecision, archivedMessage, archivedToastActions, archiveFailedMessage, archiveOnMergeEnabled, lastPrNumber, observeLookup, watchedWorkspaces } from "./archiveOnMerge";
+import { AGENT_RUNNING_MESSAGE, archiveDecision, unarchiveOnMergeAction, archivedMessage, archivedToastActions, archiveFailedMessage, archiveOnMergeEnabled, lastPrNumber, observeLookup, watchedWorkspaces } from "./archiveOnMerge";
 import type { LookupRequest, LookupResult, PrLookup } from "./types";
 
 export type ArchiveNotify = (kind: "info" | "error", message: string, opts?: { action?: ToastAction; secondaryAction?: ToastAction }) => void;
@@ -53,7 +53,9 @@ export async function archiveAfterMerge({ repo, workspace, merged, dispatch, age
     const buttons = archivedToastActions(merged);
     notify?.("info", archivedMessage(merged.number), {
       action: buttons.action ? { label: "Open PR", onClick: () => void openUrl(merged.url) } : undefined,
-      secondaryAction: { label: "Unarchive", onClick: () => dispatch({ type: "restoreWorkspace", repoId: repo.id, workspace }) },
+      // Conductor's toast calls the same unarchive as everywhere else (`unarchiveWorkspace: r => Xk.unarchive(r)`,
+      // index-BGEQ8YjU.js @ ~3,233,438), so a deleted or moved branch opens "Restore to new branch?".
+      secondaryAction: { label: "Unarchive", onClick: () => dispatch(unarchiveOnMergeAction(repo.id, workspace.id)) },
     });
   } catch (e) {
     notify?.("error", archiveFailedMessage(e instanceof Error ? e.message : String(e)));

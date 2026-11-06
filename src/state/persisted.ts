@@ -1,8 +1,9 @@
 // Repositories and workspaces from conductor.db (src-tauri/src/persistence_commands.rs).
 // In the desktop app these rows are the source of truth for the sidebar and Home;
 // localStorage keeps only UI preferences (selection, sidebar visibility, collapsed repos).
-import type { AppState, Repo, Selection, Workspace } from "./types";
+import type { AppState, Repo, Selection, UnreadChat, Workspace } from "./types";
 import { isWorkspaceStatus } from "./workspaceStatus.ts";
+import { restoreChatTabs, type StoredChatTab } from "./openChat.ts";
 
 export interface DbRepoRow {
   id: string;
@@ -33,7 +34,12 @@ export interface DbWorkspaceRow {
   /** `intended_target_branch`; absent from rows of an older backend. */
   intendedTargetBranch?: string | null;
   pinnedAt: string | null;
+  /** `workspaces.unread`, the legacy per-workspace flag; folded into the main chat. */
   unread: boolean;
+  /** The workspace's unread, non-hidden chats (`sessions.unread_count`); absent from rows of an older backend. */
+  unreadChats?: { id: string; updatedAt: string }[];
+  /** The open chat tabs besides the main chat (review, fork, "+"), oldest first; absent from rows of an older backend. */
+  chatTabs?: StoredChatTab[];
   /** The PR's title and body as last stored (`pr_title`, `pr_description`). */
   prTitle: string | null;
   prDescription: string | null;
@@ -80,7 +86,7 @@ export function workspaceFromRow(w: DbWorkspaceRow): Workspace {
     targetBranch: w.intendedTargetBranch ?? null,
     /* sidebar: pin, unread and status columns */
     pinnedAt: w.pinnedAt ? sqliteTime(w.pinnedAt) : undefined,
-    unread: w.unread || undefined,
+    unreadChats: unreadChatsOf(w),
     manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
     derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
     prTitle: w.prTitle ?? null,
@@ -110,11 +116,51 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
     }));
 }
 
+/**
+ * The row's unread chats: the main chat (id = workspace id) and the chats whose
+ * tab was open when the app last ran, which come back after a restart as
+ * Conductor's do (its tabs are the workspace's non-hidden sessions, index `ylt`
+ * at 1226:63776). Any other stored unread chat counts as hidden, which Conductor
+ * leaves out of the workspace's unread (`zJo`). A legacy `workspaces.unread` = 1
+ * marks the main chat.
+ */
+export function unreadChatsOf(w: DbWorkspaceRow): UnreadChat[] | undefined {
+  const tabbed = (id: string) => id === w.id || (w.chatTabs?.some((t) => t.id === id) ?? false);
+  const chats = (w.unreadChats ?? []).filter((c) => tabbed(c.id)).map((c) => ({ id: c.id, at: sqliteTime(c.updatedAt) }));
+  if (w.unread && chats.length === 0) chats.push({ id: w.id, at: sqliteTime(w.updatedAt ?? w.createdAt) });
+  return chats.length > 0 ? chats : undefined;
+}
+
+/** Show again the chat tabs that were open when the app last ran (`db_list_workspaces` rows). */
+export function restoreChatTabsOf(rows: readonly DbWorkspaceRow[]): void {
+  for (const w of rows) restoreChatTabs(w.id, w.chatTabs ?? []);
+}
+
 /** Keep the selection only while it still points at a listed workspace. */
 export function validSelection(selection: Selection, repos: Repo[]): Selection {
   if (selection.kind !== "workspace") return selection;
   const repo = repos.find((r) => r.id === selection.repoId);
   return repo?.workspaces.some((w) => w.id === selection.workspaceId) ? selection : { kind: "root" };
+}
+
+/** A workspace re-read from conductor.db keeps the pull request the app last read (not a column). */
+export function keepPr(fresh: Workspace, old: Workspace | undefined): Workspace {
+  return old?.pr !== undefined ? { ...fresh, pr: old.pr } : fresh;
+}
+
+/**
+ * Browser shell state saved before a reload: no agent from before it is
+ * running, so drop session statuses (the demo's, and the old `status: "working"`).
+ */
+export function withoutLiveSessions(state: AppState): AppState {
+  const repos = state.repos.map((r) => ({
+    ...r,
+    workspaces: r.workspaces.map((w): Workspace => {
+      const { sessionStatus: _gone, ...rest } = w;
+      return (rest.status as string) === "working" ? { ...rest, status: "idle" } : rest;
+    }),
+  }));
+  return { ...state, repos };
 }
 
 export function prefsOf(state: AppState): UiPrefs {

@@ -192,9 +192,9 @@ test("a queued message keeps its attachments until it sends", () => {
 });
 
 test("a permission request holds the turn: follow-ups queue, Stop cancels, an answer resumes working", async () => {
-  const { permissionRequested, permissionAnswered, turnRunning } = await import("./queue.ts");
+  const { waitingOn, turnRunning } = await import("./queue.ts");
   let q = submit(emptyQueue(), "go", "queue").queue;
-  q = permissionRequested(q);
+  q = waitingOn(q, "needs_user_permission");
   assert.equal(q.status, "needs_user_permission");
   assert.ok(turnRunning(q.status));
   assert.equal(canSteerNow(q, true), false, "nothing to steer into while Reason waits on the user");
@@ -204,9 +204,10 @@ test("a permission request holds the turn: follow-ups queue, Stop cancels, an an
   assert.equal(followUp.queue.items.length, 1);
   assert.deepEqual(steerQueued(followUp.queue, followUp.queue.items[0]!.id).effects, []);
 
-  assert.equal(permissionAnswered(q).status, "working");
-  assert.equal(permissionRequested(emptyQueue()).status, "idle", "only a running turn asks");
-  assert.equal(permissionAnswered(emptyQueue()).status, "idle");
+  assert.equal(waitingOn(q, null).status, "working");
+  assert.equal(waitingOn(q, "needs_plan_response").status, "needs_plan_response", "a plan takes over");
+  assert.equal(waitingOn(emptyQueue(), "needs_user_input").status, "idle", "only a running turn asks");
+  assert.equal(waitingOn(emptyQueue(), null).status, "idle");
 
   const stopped = stop(q);
   assert.equal(stopped.queue.status, "cancelling");

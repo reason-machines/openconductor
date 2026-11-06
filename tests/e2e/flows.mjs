@@ -144,8 +144,35 @@ export const flows = [
       const buttonText = () => wd.execute("return document.querySelector('.scripts-actions .btn-primary, .scripts-actions .btn-stop')?.textContent.trim() ?? null;", []);
       if (existsSync(inRoot)) throw new Error("e2e-diff.txt is already in the repository root");
 
-      const [toggle] = await wd.waitFor("the spotlight testing toggle", () => wd.findAll(".spotlight-toggle input:not([disabled])").then((ids) => ids.length && ids));
-      await wd.click(toggle);
+      // Like Conductor, the Run tab of a repository without a run script shows only
+      // "Add run script", which opens the repository's settings; spotlight
+      // testing is a switch on its Actions page. Esc goes back to the workspace.
+      const heading = () => wd.execute("return document.querySelector('.settings .settings-header h1')?.textContent.trim() ?? null;", []);
+      async function setSpotlightTesting(on) {
+        if (on) {
+          const [add] = await wd.waitFor("the Run tab's Add run script", () => wd.findAll(".scripts-empty-btn").then((ids) => ids.length && ids));
+          await wd.click(add);
+          await wd.waitFor("the repository's Scripts settings", async () => (await heading()) === "Scripts", 10000);
+        } else {
+          await wd.execute("document.activeElement?.blur();", []);
+          await wd.chord(["\uE03D"], ",");
+          await wd.waitFor("Settings after ⌘,", heading, 10000);
+          const [repoNav] = await wd.findAll('.settings-nav .settings-repo[aria-label="e2e-demo"]');
+          if (!repoNav) throw new Error("no e2e-demo under Settings › Repositories");
+          await wd.click(repoNav);
+        }
+        await clickByText(wd, ".settings-nav .settings-repo-sections .nav-item", "Actions");
+        await wd.waitFor("the repository's Actions page", async () => (await heading()) === "Actions");
+        const [toggle] = await wd.waitFor("the spotlight testing switch", () =>
+          wd.findAll(`input[aria-label="Use spotlight testing"]${on ? ":not(:checked)" : ":checked"}:not([disabled])`).then((ids) => ids.length && ids),
+        );
+        await wd.click(toggle);
+        await wd.waitFor(`spotlight_testing = ${on} in .conductor/settings.local.toml`, async () => spotlightSetting() === String(on));
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys("\uE00C");
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+      await setSpotlightTesting(true);
       await wd.waitFor("Run Spotlight", async () => (await buttonText())?.endsWith("Run Spotlight"));
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after turning it on, want true`);
       const [start] = await wd.findAll(".scripts-actions .btn-primary");
@@ -169,11 +196,8 @@ export const flows = [
       if (JSON.stringify(status) !== JSON.stringify(want)) throw new Error(`repository root status ${JSON.stringify(status)}, want ${JSON.stringify(want)}`);
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after Stop, want true`);
 
-      // Turn spotlight testing back off for later flows.
-      const [again] = await wd.findAll(".spotlight-toggle input:checked:not([disabled])");
-      if (!again) throw new Error("no checked spotlight testing toggle to turn off");
-      await wd.click(again);
-      await wd.waitFor("spotlight_testing = false in .conductor/settings.local.toml", async () => spotlightSetting() === "false");
+      // Turn spotlight testing back off for later flows (Settings › repository › Actions).
+      await setSpotlightTesting(false);
     },
   },
   {
@@ -184,10 +208,10 @@ export const flows = [
     async run(wd, ctx) {
       if (!ctx.repo) throw new Error("needs the add-repo flow's repository");
       const rows = () => wd.execute("return document.querySelector('.terminal-panel .xterm-rows')?.textContent ?? null;", []);
-      // Conductor's default layout shows no terminal; ⌘J (Toggle terminal panel) shows it.
-      if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal panel by default");
-      await wd.execute("document.activeElement?.blur();", []);
-      await wd.chord(["\uE03D"], "j");
+      // Conductor's workspace opens on the right panel's Run tab with no terminal; + (New terminal) in that strip opens one.
+      if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal by default");
+      const [plus] = await wd.waitFor("the strip's New terminal button", () => wd.findAll('.ws-strip-tabs button[aria-label="New terminal"]').then((ids) => ids.length && ids));
+      await wd.click(plus);
       const [screen] = await wd.waitFor("a terminal in the workspace's terminal panel", () => wd.findAll(".terminal-panel .xterm-screen").then((ids) => ids.length && ids), 60000);
       await wd.click(screen);
       await wd.keys("echo oc-term-$((6*7)); pwd\uE007");
@@ -203,10 +227,9 @@ export const flows = [
   },
   {
     // ⌘K opens the palette from anywhere; typing filters it and Enter runs the
-    // active result. Go to Home leaves the workspace for the Home list
-    // (Conductor's /all-workspaces, titled "Home"; the wordmark-and-cards
-    // screen at / only shows at start-up), and searching the workspace's name
-    // brings it back.
+    // active result. Go to Home leaves the workspace for the wordmark-and-cards
+    // Home screen (Conductor opens its /all-workspaces list here; ours follows
+    // Sven's brief for #483), and searching the workspace's name brings it back.
     name: "command-palette",
     async run(wd) {
       const META = "\uE03D";
@@ -241,16 +264,16 @@ export const flows = [
 
       await open();
       await run("Go to Home", "Go to Home");
-      const homeList = () =>
+      const home = () =>
         wd.execute(
-          "return { title: document.querySelector('.allws .allws-title')?.textContent.trim() ?? null, rows: document.querySelectorAll('.allws .allws-row').length, workspace: !!document.querySelector('.workspace') };",
+          "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), workspace: !!document.querySelector('.workspace') };",
           [],
         );
-      await wd.waitFor("the Home list with the workspace's row", async () => {
-        const h = await homeList();
-        return h.title === "Home" && h.rows > 0 && !h.workspace;
+      await wd.waitFor("the Home screen with its entry cards", async () => {
+        const h = await home();
+        return h.cards === 3 && !h.list && !h.workspace;
       }).catch(async (e) => {
-        throw new Error(`${e.message}; saw ${JSON.stringify(await homeList())}`);
+        throw new Error(`${e.message}; saw ${JSON.stringify(await home())}`);
       });
 
       await open();
@@ -303,9 +326,8 @@ export const flows = [
         const stored = (await invoke("session_statuses", {})).value ?? [];
         if (!stored.some((r) => r.chatId === ws.id && r.status === "needs_user_permission")) throw new Error(`session_statuses ${JSON.stringify(stored)}`);
 
-        // The sidebar's Home row (its title carries the shortcut hint).
-        const opened = await wd.execute("const b = Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Home'); b?.click(); return !!b;", []);
-        if (!opened) throw new Error("no Home row in the sidebar");
+        // The Home list is the /all-workspaces route (sidebar Home opens the wordmark screen, #483).
+        await wd.execute('history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); return true;', []);
         await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
         await waitShown("Needs permission on the Home row", homeIcons, "needs-user-permission", "Needs permission");
         if (process.env.E2E_OUT) {
@@ -355,7 +377,7 @@ export const flows = [
           "return Array.from(document.querySelectorAll('.oi-menu .oi-row'), (r) => ({ label: r.querySelector('.oi-row-label').textContent, kbd: r.querySelector('.oi-row-kbd')?.textContent ?? null, num: r.querySelector('.oi-row-num')?.textContent ?? null, icon: !!r.querySelector('img') }));",
           [],
         );
-      const main = () => wd.execute("const b = document.querySelector('.ws-header .oi-main'); return b && { label: b.getAttribute('aria-label'), title: b.title, icon: !!b.querySelector('img'), disabled: b.disabled };", []);
+      const main = () => wd.execute("const b = document.querySelector('.ws-header .oi-main'); return b && { label: b.getAttribute('aria-label'), icon: !!b.querySelector('img'), disabled: b.disabled };", []);
       const openMenu = async () => {
         const [chevron] = await wd.findAll(".ws-header .oi-chevron");
         await wd.click(chevron);
@@ -366,7 +388,8 @@ export const flows = [
         const b = await main();
         return b && !b.disabled && b.icon ? b : null;
       });
-      if (button.label !== "Open in Finder" || button.title !== "Open in Finder (⌘O)") throw new Error(`Open button ${JSON.stringify(button)}`);
+      // The "Open in Finder ⌘O" tooltip is checked in the browser lane (parity/side-by-side/chat-diff-pr/tooltips).
+      if (button.label !== "Open in Finder") throw new Error(`Open button ${JSON.stringify(button)}`);
 
       await openMenu();
       const want = [
@@ -404,6 +427,11 @@ export const flows = [
       const [cursor] = await wd.findAll('.oi-menu .oi-row[data-app="cursor"]');
       await wd.click(cursor);
       await wd.waitFor("the button to open in Cursor", async () => (await main())?.label === "Open in Cursor");
+      // That error toast dismisses itself after 8 s (toastTiming.ts) while the app keeps
+      // re-rendering; it used to stay up and show on every later screenshot (Settings › Agents).
+      const cursorToast = async () => (await textsOf(wd, ".toast-message")).some((t) => t.startsWith("Failed to open in cursor"));
+      await wd.waitFor("the Open in Cursor error toast", cursorToast, 5000);
+      await wd.waitFor("the Open in Cursor error toast to dismiss itself", async () => !(await cursorToast()), 12000);
       await openMenu();
       const kbdRow = (await rows()).find((r) => r.kbd)?.label;
       if (kbdRow !== "Cursor") throw new Error(`⌘O hint on ${JSON.stringify(kbdRow)}, want Cursor`);
@@ -585,6 +613,91 @@ export const flows = [
       if (shown.join() !== "e2e-demo,e2e-demo-v1") throw new Error(`want the sidebar to show e2e-demo and e2e-demo-v1, got ${JSON.stringify(shown)}`);
     },
   },
+  {
+    // Settings › Agents and Default models in the built app (Conductor's
+    // providers and models pages): the four agent tabs, the Authentication
+    // cards writing [providers] to settings.toml, Reset back to the CLI login,
+    // and a palette click filling a loadout slot (conductor.db favorite_models).
+    name: "agent-settings",
+    async run(wd) {
+      const META = "\uE03D";
+      const ESC = "\uE00C";
+      const file = join(process.env.OPENCONDUCTOR_HOME ?? join(homedir(), ".openconductor"), "settings.toml");
+      const heading = () => wd.execute("return document.querySelector('.settings .settings-header h1')?.textContent.trim() ?? null;", []);
+      const claudeKind = () => tomlValue(file, "providers.claude", "kind");
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.chord([META], ",");
+      await wd.waitFor("Settings after ⌘,", heading, 10000);
+      await clickByText(wd, ".settings-nav .nav-item", "Agents");
+      await wd.waitFor("the Agents page", async () => (await heading()) === "Agents");
+      const tabs = await wd.waitFor("the agent tabs", async () => {
+        const t = await textsOf(wd, '[role="tab"]');
+        return t.length === 3 ? t : null;
+      });
+      if (JSON.stringify(tabs) !== JSON.stringify(["Reason", "Claude Code", "Codex"])) throw new Error(`agent tabs ${JSON.stringify(tabs)}`);
+      const openToml = await textsOf(wd, ".agk-header .agk-split-main");
+      if (openToml[0] !== "Open settings.toml") throw new Error(`page header button ${JSON.stringify(openToml)}`);
+      await clickByText(wd, '[role="tab"]', "Claude Code");
+      const cards = await wd.waitFor("the Claude Code cards", async () => {
+        const c = await textsOf(wd, "button[aria-pressed]");
+        return c.length === 2 ? c : null;
+      });
+      if (JSON.stringify(cards) !== JSON.stringify(["CLI", "API key"])) throw new Error(`Authentication cards ${JSON.stringify(cards)}`);
+      await wd.waitFor("the Claude Code status line", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]')).length === 1, 20000);
+      const before = claudeKind();
+      await clickByText(wd, "button[aria-pressed]", "API key");
+      await wd.waitFor('kind = "anthropic_api" under [providers.claude]', async () => claudeKind() === '"anthropic_api"').catch((e) => {
+        throw new Error(`${e.message}; [providers.claude] kind is ${claudeKind()}`);
+      });
+      const keyField = 'input[aria-label="Anthropic API key"]';
+      await wd.waitFor("the Anthropic API key field", async () => (await wd.findAll(keyField)).length === 1);
+      const status = await textsOf(wd, '[data-testid="agent-auth-status"]');
+      if (!status[0]?.includes("No Anthropic API key configured")) throw new Error(`status line ${JSON.stringify(status)}`);
+      // Save a key: the row masks it to its last four characters; the eye
+      // shows the whole key only on request, the trash removes it.
+      const key = "sk-ant-e2e-0123456789-bAAA";
+      await wd.click((await wd.findAll(keyField))[0]);
+      await wd.keys(key);
+      await clickByText(wd, "button", "Save");
+      const secret = () => wd.execute("return document.querySelector('[data-testid=\"secret-value\"]')?.textContent ?? null;", []);
+      await wd.waitFor("the masked key", async () => (await secret()) === "••••••••bAAA");
+      await wd.waitFor("Connected", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]'))[0]?.includes("Connected"));
+      if ((await wd.execute("return document.body.textContent.includes(arguments[0]);", [key]))) throw new Error("the key is on the page before Show");
+      await wd.click((await wd.findAll('button[aria-label="Show Anthropic API key"]'))[0]);
+      await wd.waitFor("the revealed key", async () => (await secret()) === key);
+      await wd.click((await wd.findAll('button[aria-label="Hide Anthropic API key"]'))[0]);
+      await wd.waitFor("the key masked again", async () => (await secret()) === "••••••••bAAA");
+      await wd.click((await wd.findAll('button[aria-label="Remove Anthropic API key"]'))[0]);
+      await wd.waitFor("the key field after Remove", async () => (await wd.findAll(keyField)).length === 1);
+      // The CLI card puts Claude Code back on its own login.
+      await clickByText(wd, "button[aria-pressed]", "CLI");
+      await wd.waitFor("[providers.claude] back on the CLI", async () => claudeKind() === null || claudeKind() === '"claude_login"');
+      await clickByText(wd, '[role="tab"]', "Codex");
+      await wd.waitFor("the Codex tab", async () => (await textsOf(wd, "button[aria-pressed]")).includes("API key"));
+      if (before !== null && before !== '"claude_login"') throw new Error(`[providers.claude] was ${before} before the flow; it is now reset`);
+
+      await clickByText(wd, ".settings-nav .nav-item", "Default models");
+      await wd.waitFor("the Default models page", async () => (await heading()) === "Default models");
+      const slots = () => wd.execute("return Array.from(document.querySelectorAll('[data-loadout-slot]'), (e) => e.textContent.trim());", []);
+      const first = await wd.waitFor("five loadout slots", async () => {
+        const s = await slots();
+        return s.length === 5 ? s : null;
+      });
+      if (!first[0].includes("DEFAULT") || !first[1].includes("DROP MODEL HERE") || !first[2].includes("EMPTY")) throw new Error(`loadout slots ${JSON.stringify(first)}`);
+      const [add] = await wd.findAll('button[aria-label="Add GPT-5.5 to loadout"]');
+      if (!add) throw new Error("no GPT-5.5 in the Codex column");
+      await wd.click(add);
+      await wd.waitFor("GPT-5.5 in slot 2", async () => (await slots())[1].includes("GPT-5.5"));
+      await wd.execute("document.querySelector('button[aria-label=\"Delete loadout 2\"]').click();", []);
+      await wd.waitFor("slot 2 empty again", async () => (await slots())[1].includes("DROP MODEL HERE"));
+      const rows = await textsOf(wd, ".ag-setting-title");
+      const want = ["Loadout", "Codex personality", "Claude output style", "Review model", "Default to plan mode in new chats"];
+      if (JSON.stringify(rows) !== JSON.stringify(want)) throw new Error(`Default models rows ${JSON.stringify(rows)}, want ${JSON.stringify(want)}`);
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.keys(ESC);
+      await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+    },
+  },
 
   // Settings › Agents per-agent options and Account tool approvals
   // (src/settings/rows/AgentOptionRows.tsx, AccountAgentRows.tsx). Each flow
@@ -595,9 +708,10 @@ export const flows = [
     name: "agents-claude-options",
     async run(wd) {
       await openSettingsPage(wd, "Agents");
+      await clickByText(wd, '[role="tab"]', "Claude Code");
       const section = 'section[aria-label="Claude Code"]';
       await wd.waitFor("the Claude Code options", async () => (await wd.findAll(`${section} input[aria-label="Use Claude Code with Chrome"]`)).length === 1);
-      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .oc-agent-config h3`);
+      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .agk-config h3`);
       const want = ["Use Claude Code with Chrome", "Claude Code executable path", "Claude settings"];
       if (want.some((w, i) => labels.at(i - want.length) !== w)) throw new Error(`Claude option rows ${JSON.stringify(labels)}, want them to end with ${JSON.stringify(want)}`);
 
@@ -627,6 +741,7 @@ export const flows = [
     name: "agents-codex-options",
     async run(wd) {
       await openSettingsPage(wd, "Agents");
+      await clickByText(wd, '[role="tab"]', "Codex");
       const section = 'section[aria-label="Codex"]';
       const select = `${section} select[aria-label="Codex personality for new chats"]`;
       const value = () => wd.execute("return document.querySelector(arguments[0])?.value ?? null;", [select]);
@@ -638,30 +753,171 @@ export const flows = [
         await wd.click((await wd.findAll(`${select} option[value="${v}"]`))[0]);
         await wd.waitFor(`models.codex personality = "${v}"`, async () => tomlValue(file, "models.codex", "personality") === `"${v}"`);
       }
-      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .oc-agent-config h3`);
+      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .agk-config h3`);
       const want = ["Codex personality for new chats", "Codex executable path", "Codex config"];
       if (want.some((w, i) => labels.at(i - want.length) !== w)) throw new Error(`Codex option rows ${JSON.stringify(labels)}, want them to end with ${JSON.stringify(want)}`);
-      const path = await textsOf(wd, `${section} .oc-agent-config-path`);
+      const path = await textsOf(wd, `${section} .agk-config .agk-mono`);
       if (path[0] !== "~/.codex/config.toml") throw new Error(`Codex config card shows ${JSON.stringify(path)}`);
       await showRows(wd, `${section} .oc-agent-select-180`);
     },
   },
+  // Settings › Agents › Codex Authentication against the stand-in app-server
+  // (tools/e2e/fake_codex_app_server.py, set as the Codex executable path):
+  // ChatGPT signs in from the app, then API key and CLI, each checked in
+  // settings.toml. Ends signed in with ChatGPT for the screenshot.
   {
-    name: "agents-opencode-advanced",
-    async run(wd) {
+    name: "agents-codex-chatgpt",
+    setup(ctx) {
+      const dir = realpathSync(mkdtempSync(join(tmpdir(), "oc-e2e-codex-")));
+      const exe = join(dir, "codex");
+      writeFileSync(exe, `#!/bin/sh\nOC_FAKE_CODEX_DIR="${dir}" exec python3 "${resolve("tools/e2e/fake_codex_app_server.py")}" "$@"\n`);
+      chmodSync(exe, 0o755);
+      ctx.fakeCodex = { dir, exe };
+    },
+    teardown(ctx) {
+      if (ctx.fakeCodex) rmSync(ctx.fakeCodex.dir, { recursive: true, force: true });
+    },
+    async run(wd, ctx) {
       await openSettingsPage(wd, "Agents");
-      const section = 'section[aria-label="OpenCode"]';
-      const toggle = `${section} .oc-agent-advanced-toggle`;
-      if ((await wd.execute("return document.querySelector(arguments[0])?.getAttribute('aria-expanded');", [toggle])) !== "true") {
-        await wd.click((await wd.findAll(toggle))[0]);
-      }
-      const badge = await wd.waitFor("the OpenCode status badge", async () => {
-        const [t] = await textsOf(wd, `${section} .oc-agent-badge`);
-        return t && t !== "Checking" ? t : null;
+      await clickByText(wd, '[role="tab"]', "Codex");
+      const section = 'section[aria-label="Codex"]';
+      const file = settingsFile();
+      const cards = await wd.waitFor("the Codex cards", async () => {
+        const c = await textsOf(wd, `${section} button[aria-pressed]`);
+        return c.length === 3 ? c : null;
       });
-      if (!/^(Installed|Missing|Update required|Needs repair)/.test(badge)) throw new Error(`OpenCode status badge ${JSON.stringify(badge)}`);
-      if ((await wd.findAll(`${section} input[aria-label="OpenCode executable path"]`)).length !== 1) throw new Error("no OpenCode executable path row under Advanced");
-      await showRows(wd, `${section} .oc-agent-advanced`);
+      if (JSON.stringify(cards) !== JSON.stringify(["ChatGPTRecommended", "CLI", "API key"])) throw new Error(`Codex Authentication cards ${JSON.stringify(cards)}`);
+      await wd.click((await wd.findAll(`${section} input[aria-label="Codex executable path"]`))[0]);
+      await wd.keys(ctx.fakeCodex.exe);
+      await wd.waitFor("codex_executable_path in settings.toml", async () => tomlValue(file, "", "codex_executable_path") === JSON.stringify(ctx.fakeCodex.exe));
+      await clickByText(wd, `${section} button[aria-pressed]`, "ChatGPTRecommended");
+      await wd.waitFor('codex_provider = "chatgpt_sign_in" and no [providers.codex]', async () => tomlValue(file, "", "codex_provider") === '"chatgpt_sign_in"' && tomlValue(file, "providers.codex", "kind") === null);
+      await wd.waitFor("Not signed in with ChatGPT", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]'))[0]?.includes("Not signed in with ChatGPT"), 20000);
+      await clickByText(wd, `${section} button`, "Sign in with ChatGPT");
+      const connected = await wd.waitFor("Connected with ChatGPT", async () => (await textsOf(wd, '[data-testid="codex-chatgpt-connected"] .agc-ok'))[0], 20000);
+      if (connected !== "Connected with ChatGPT as e2e@example.com") throw new Error(`connected line ${JSON.stringify(connected)}`);
+      const table = await textsOf(wd, `${section} .ag-info tr`);
+      if (JSON.stringify(table) !== JSON.stringify(["ChatGPT accounte2e@example.com", "PlanPro"])) throw new Error(`status table ${JSON.stringify(table)}`);
+      const buttons = await textsOf(wd, '[data-testid="codex-chatgpt-connected"] button');
+      if (JSON.stringify(buttons) !== JSON.stringify(["Manage usage", "Reconnect"])) throw new Error(`connected actions ${JSON.stringify(buttons)}`);
+      const sent = readFileSync(join(ctx.fakeCodex.dir, "codex-fake.jsonl"), "utf8");
+      if (!sent.includes('"method": "account/login/start"')) throw new Error("the stand-in Codex got no account/login/start");
+      await showRows(wd, `${section} .agk-cards`);
+    },
+  },
+  {
+    name: "agents-codex-modes",
+    async run(wd, ctx) {
+      const section = 'section[aria-label="Codex"]';
+      const file = settingsFile();
+      const status = async () => (await textsOf(wd, '[data-testid="agent-auth-status"]'))[0] ?? "";
+      await clickByText(wd, `${section} button[aria-pressed]`, "API key");
+      await wd.waitFor("[providers.codex] openai_api, codex_provider cleared", async () => tomlValue(file, "providers.codex", "kind") === '"openai_api"' && tomlValue(file, "", "codex_provider") === null);
+      const keyField = `${section} input[aria-label="OpenAI API key"]`;
+      await wd.waitFor("the OpenAI API key field", async () => (await wd.findAll(keyField)).length === 1);
+      await wd.click((await wd.findAll(keyField))[0]);
+      await wd.keys("sk-e2e-0123456789-cAAA");
+      await clickByText(wd, `${section} button`, "Save");
+      await wd.waitFor("the masked key", async () => (await textsOf(wd, `${section} [data-testid="secret-value"]`))[0] === "••••••••cAAA");
+      await wd.waitFor("Connected with the key", async () => (await status()).startsWith("Connected"));
+      await clickByText(wd, `${section} button[aria-pressed]`, "CLI");
+      await wd.waitFor("[providers.codex] codex_login", async () => tomlValue(file, "providers.codex", "kind") === '"codex_login"');
+      await wd.waitFor("the CLI status", async () => /Connected|CLI not authenticated/.test(await status()), 20000);
+      const select = `${section} select[aria-label="Codex personality for new chats"]`;
+      for (const v of ["none", "pragmatic"]) {
+        await wd.click((await wd.findAll(`${select} option[value="${v}"]`))[0]);
+        await wd.waitFor(`models.codex personality = "${v}"`, async () => tomlValue(file, "models.codex", "personality") === `"${v}"`);
+      }
+      await wd.click((await wd.findAll(`${section} button[aria-label="Reset to bundled Codex"]`))[0]);
+      await wd.waitFor("codex_executable_path cleared", async () => tomlValue(file, "", "codex_executable_path") === null);
+      if (!ctx.fakeCodex) throw new Error("agents-codex-chatgpt did not set up the stand-in Codex");
+    },
+  },
+  // Settings › Agents › Reason against tools/reason-acp/fake_reason_acp.py
+  // (set as the Reason executable path, signed out): "Reason account" signs
+  // in from the app with `reason login`'s code, This Mac connects with
+  // `reason connect`, the workspace, model and effort for new chats land in
+  // settings.toml, and the API key reaches `reason` as REASON_API_KEY. Ends
+  // signed in on the Reason account card for the screenshot.
+  {
+    name: "agents-reason",
+    setup(ctx) {
+      const dir = realpathSync(mkdtempSync(join(tmpdir(), "oc-e2e-reason-")));
+      const exe = join(dir, "reason");
+      writeFileSync(exe, `#!/bin/sh\ncd "${dir}" && exec python3 "${resolve("tools/reason-acp/fake_reason_acp.py")}" "$@"\n`);
+      chmodSync(exe, 0o755);
+      writeFileSync(join(dir, "fake-reason-signed-out"), "");
+      ctx.fakeReason = { dir, exe };
+    },
+    teardown(ctx) {
+      if (!ctx.fakeReason) return;
+      // Later runs must not launch the removed stand-in.
+      const file = settingsFile();
+      if (existsSync(file)) writeFileSync(file, readFileSync(file, "utf8").replace(/^reason_executable_path = .*\n/m, ""));
+      rmSync(ctx.fakeReason.dir, { recursive: true, force: true });
+    },
+    async run(wd, ctx) {
+      await openSettingsPage(wd, "Agents");
+      await clickByText(wd, '[role="tab"]', "Reason");
+      const section = 'section[aria-label="Reason"]';
+      const file = settingsFile();
+      const status = async () => (await textsOf(wd, `${section} [data-testid="agent-auth-status"]`))[0] ?? "";
+      const table = () => textsOf(wd, `${section} .ag-info tr`);
+      const cards = await wd.waitFor("the Reason cards", async () => {
+        const c = await textsOf(wd, `${section} button[aria-pressed]`);
+        return c.length === 3 ? c : null;
+      });
+      if (JSON.stringify(cards) !== JSON.stringify(["Reason accountRecommended", "CLI", "API key"])) throw new Error(`Reason Authentication cards ${JSON.stringify(cards)}`);
+      const exeField = `${section} input[aria-label="Reason executable path"]`;
+      await wd.click((await wd.findAll(exeField))[0]);
+      await wd.keys(ctx.fakeReason.exe);
+      await wd.waitFor("reason_executable_path in settings.toml", async () => tomlValue(file, "", "reason_executable_path") === JSON.stringify(ctx.fakeReason.exe));
+      await wd.waitFor("Not signed in", async () => (await status()).includes("Not signed in"), 20000);
+
+      // Reason account: the app runs `reason login`, shows its code and polls until signed in.
+      await clickByText(wd, `${section} button`, "Sign in with Reason");
+      const code = await wd.waitFor("the pairing code", async () => (await textsOf(wd, '[data-testid="reason-login-code"]'))[0], 20000);
+      if (code !== "E2E1-CODE") throw new Error(`pairing code ${JSON.stringify(code)}`);
+      await wd.waitFor("Connected after the sign-in", async () => (await status()).startsWith("Connected"), 20000);
+      const rows = await table();
+      const want = ["Version0.2.692", "Accounte2e@example.com", "WorkspaceWorkspace ws-a", "This MacNot connected"];
+      if (JSON.stringify(rows) !== JSON.stringify(want)) throw new Error(`status table ${JSON.stringify(rows)}, want ${JSON.stringify(want)}`);
+      await clickByText(wd, `${section} button`, "Connect");
+      await wd.waitFor("This Mac connected", async () => (await table()).includes("This MacConnected"), 20000);
+
+      // New chats: a pinned workspace, model and effort in [reason].
+      const pick = async (label, value) => wd.click((await wd.findAll(`${section} select[aria-label="${label}"] option[value="${value}"]`))[0]);
+      await pick("Workspace for new chats", "ws-b");
+      await wd.waitFor('[reason] workspace = "ws-b"', async () => tomlValue(file, "reason", "workspace") === '"ws-b"');
+      await wd.waitFor("the table follows the pinned workspace", async () => (await table()).includes("WorkspaceWorkspace ws-b"));
+      await wd.waitFor("Reason's models in the select", async () => (await wd.findAll(`${section} select[aria-label="Default Reason model"] option[value="byok:anthropic:claude-opus-5-5"]`)).length === 1, 20000);
+      await pick("Default Reason model", "byok:anthropic:claude-opus-5-5");
+      await wd.waitFor('[reason] model', async () => tomlValue(file, "reason", "model") === '"byok:anthropic:claude-opus-5-5"');
+      await pick("Default Reason effort", "high");
+      await wd.waitFor('[reason] reasoning_effort = "high"', async () => tomlValue(file, "reason", "reasoning_effort") === '"high"');
+
+      // API key: stored in the Keychain, handed to `reason` as REASON_API_KEY (the fake then reports credential api_key).
+      await clickByText(wd, `${section} button[aria-pressed]`, "API key");
+      await wd.waitFor('[providers.reason] kind = "reason_api"', async () => tomlValue(file, "providers.reason", "kind") === '"reason_api"');
+      const keyField = `${section} input[aria-label="Reason API key"]`;
+      await wd.waitFor("the Reason API key field", async () => (await wd.findAll(keyField)).length === 1);
+      await wd.click((await wd.findAll(keyField))[0]);
+      await wd.keys("rsn_e2e_0123456789_dAAA");
+      await clickByText(wd, `${section} button`, "Save");
+      await wd.waitFor("the masked key", async () => (await textsOf(wd, `${section} [data-testid="secret-value"]`))[0] === "••••••••dAAA");
+      await wd.waitFor("Auth API key in the table", async () => (await table()).includes("AuthAPI key"), 20000);
+      const account = await wd.execute("return window.__TAURI_INTERNALS__.invoke('reason_account_status');", []);
+      if (account.credential !== "api_key") throw new Error(`reason status ran without REASON_API_KEY: credential ${account.credential}`);
+      await wd.click((await wd.findAll(`${section} button[aria-label="Remove Reason API key"]`))[0]);
+      await wd.waitFor("the key field after Remove", async () => (await wd.findAll(keyField)).length === 1);
+
+      // Back on the Reason account with the defaults unset, for the screenshot.
+      await clickByText(wd, `${section} button[aria-pressed]`, "Reason accountRecommended");
+      await wd.waitFor("[providers.reason] reason_login", async () => tomlValue(file, "providers.reason", "kind") === '"reason_login"');
+      for (const label of ["Workspace for new chats", "Default Reason model", "Default Reason effort"]) await pick(label, "");
+      await wd.waitFor("[reason] cleared", async () => tomlValue(file, "reason", "workspace") === null && tomlValue(file, "reason", "model") === null);
+      await wd.waitFor("Connected again", async () => (await status()).startsWith("Connected"), 20000);
+      await showRows(wd, `${section} .agk-cards`);
     },
   },
   {
@@ -685,6 +941,265 @@ export const flows = [
         await wd.waitFor(`models.codex tool_approval_policy = "${v}"`, async () => (tomlValue(file, "models.codex", "tool_approval_policy") ?? '"default"') === `"${v}"`);
       }
       await showRows(wd, sw);
+    },
+  },
+  {
+    // The Experimental "Dashboard" switch (dashboard_enabled, default off) shows
+    // the sidebar's Dashboard row; the board lists workspaces in five status
+    // columns, and dropping a card on another column sets its manual status
+    // (db_set_workspace_manual_status). Turning the switch off takes the
+    // dashboard route back to Home (Conductor's `lta`, evidence/screens/dashboard.md).
+    // The drag is HTML5 drag-and-drop events dispatched in the webview:
+    // WebKitWebDriver's pointer actions do not start a native drag.
+    name: "dashboard",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
+      const ESC = "\uE00C";
+      const sw = 'input[aria-label="Dashboard"]';
+      const prefOn = async () => (await wd.execute("return window.__TAURI_INTERNALS__.invoke('get_app_prefs');", [])).dashboard_enabled === true;
+      const navRow = () => wd.execute("return Array.from(document.querySelectorAll('.sb-row')).some((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Dashboard');", []);
+      async function setSwitch(want) {
+        await openSettingsPage(wd, "Experimental");
+        await wd.waitFor("the Dashboard switch", async () => (await wd.findAll(sw)).length === 1);
+        if ((await wd.execute("return document.querySelector(arguments[0]).checked;", [sw])) !== want) await wd.click((await wd.findAll(sw))[0]);
+        await wd.waitFor(`dashboard_enabled = ${want} in conductor.db`, async () => (await prefOn()) === want);
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys(ESC);
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+
+      if (await prefOn()) throw new Error("dashboard_enabled is already on; it defaults to off");
+      if (await navRow()) throw new Error("the sidebar shows a Dashboard row while the setting is off");
+
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", []);
+      const want = realpathSync(ctx.worktree);
+      const ws = rows.find((w) => w.workspacePath && existsSync(w.workspacePath) && realpathSync(w.workspacePath) === want);
+      if (!ws) throw new Error(`no stored workspace at ${want}`);
+      const board = () =>
+        wd.execute(
+          "return Array.from(document.querySelectorAll('.dash-col'), (c) => ({ status: c.dataset.status, title: c.querySelector('.dash-col-title')?.textContent.trim(), branches: Array.from(c.querySelectorAll('[data-testid=\"dashboard-card\"] .dash-card-branch'), (b) => b.textContent.trim()) }));",
+          [],
+        );
+      const columnOf = async () => (await board()).find((c) => c.branches.includes(ws.branch))?.status;
+      const stored = async () => (await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", [])).find((w) => w.id === ws.id)?.manualStatus ?? null;
+      const original = await stored();
+
+      try {
+        await setSwitch(true);
+        await wd.waitFor("the sidebar's Dashboard row", navRow);
+        await wd.execute("Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Dashboard').click();", []);
+        const cols = await wd.waitFor("the dashboard's five columns", async () => {
+          const b = await board();
+          return b.length === 5 && b.some((c) => c.branches.includes(ws.branch)) && b;
+        });
+        const titles = cols.map((c) => c.title);
+        if (JSON.stringify(titles) !== JSON.stringify(["Backlog", "In progress", "In review", "Done", "Canceled"])) throw new Error(`dashboard columns ${JSON.stringify(titles)}`);
+
+        const from = await columnOf();
+        const to = from === "done" ? "backlog" : "done";
+        // dragstart in its own script so React re-renders with the drag active before dragover.
+        const started = await wd.execute(
+          `const card = Array.from(document.querySelectorAll('[data-testid="dashboard-card"]')).find((c) => c.querySelector('.dash-card-branch')?.textContent.trim() === arguments[0]);
+           if (!card) return false;
+           const fire = (el, type) => {
+             if (!window.__OC_E2E_DT__) window.__OC_E2E_DT__ = new DataTransfer();
+             const dt = window.__OC_E2E_DT__;
+             let ev = new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: dt });
+             // A WebKit without DragEventInit.dataTransfer: the same event with dataTransfer set by hand.
+             if (!ev.dataTransfer) { ev = new MouseEvent(type, { bubbles: true, cancelable: true }); Object.defineProperty(ev, 'dataTransfer', { value: dt }); }
+             el.dispatchEvent(ev);
+           };
+           window.__OC_E2E_FIRE__ = fire;
+           window.__OC_E2E_CARD__ = card;
+           fire(card, 'dragstart');
+           return true;`,
+          [ws.branch],
+        );
+        if (!started) throw new Error(`no dashboard card for branch ${ws.branch}`);
+        await wd.waitFor("the dragged card", () => wd.execute("return window.__OC_E2E_CARD__?.dataset.dragging === 'true';", []));
+        await wd.execute("const body = document.querySelector(`.dash-col[data-status=\"${arguments[0]}\"] .dash-col-body`); window.__OC_E2E_FIRE__(body, 'dragenter'); window.__OC_E2E_FIRE__(body, 'dragover');", [to]);
+        const pill = await wd.waitFor("the Move to pill", () =>
+          wd.execute("const d = document.querySelector(`.dash-col[data-status=\"${arguments[0]}\"] .dash-drop`); return d?.dataset.over === 'true' && d.textContent.trim();", [to]),
+        );
+        if (process.env.E2E_OUT) {
+          const { writeFile } = await import("node:fs/promises");
+          await writeFile(join(process.env.E2E_OUT, "dashboard-dragging.png"), await wd.screenshot()).catch(() => {});
+        }
+        await wd.execute(
+          "const body = document.querySelector(`.dash-col[data-status=\"${arguments[0]}\"] .dash-col-body`); window.__OC_E2E_FIRE__(body, 'drop'); const card = window.__OC_E2E_CARD__; if (card.isConnected) window.__OC_E2E_FIRE__(card, 'dragend'); delete window.__OC_E2E_DT__;",
+          [to],
+        );
+        await wd.waitFor(`the card in the ${to} column`, async () => (await columnOf()) === to).catch(async (e) => {
+          throw new Error(`${e.message}; board ${JSON.stringify(await board())}`);
+        });
+        await wd.waitFor(`manual_status = ${to} in conductor.db`, async () => (await stored()) === to).catch(async (e) => {
+          throw new Error(`${e.message}; stored ${JSON.stringify(await stored())}`);
+        });
+        if (pill !== `Move to ${cols.find((c) => c.status === to).title}`) throw new Error(`drop pill reads ${JSON.stringify(pill)}`);
+        if (process.env.E2E_OUT) {
+          const { writeFile } = await import("node:fs/promises");
+          await writeFile(join(process.env.E2E_OUT, "dashboard-dropped.png"), await wd.screenshot()).catch(() => {});
+        }
+
+        // Off again: the route goes back to Home and the row leaves the sidebar.
+        await setSwitch(false);
+        await wd.waitFor("Home after turning the dashboard off", async () => (await wd.findAll(".home")).length > 0 && (await wd.findAll(".dash")).length === 0);
+        if (await navRow()) throw new Error("the Dashboard row is still in the sidebar after turning it off");
+      } finally {
+        await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_set_workspace_manual_status', { workspaceId: arguments[0], status: arguments[1] }).then(() => true, () => false);", [ws.id, original]).catch(() => {});
+        if (await prefOn().catch(() => false)) await setSwitch(false).catch(() => {});
+      }
+    },
+  },
+  {
+    // Settings › Experimental › "Workspace status matrix" (internal_workspace_status_matrix,
+    // default off): the sidebar rows and Home's rows draw the 4×4 dot matrix
+    // (Conductor's `fJo`, src/components/StatusMatrix.tsx) in place of the row
+    // status icon and the repository initial, fed by the workspace's real status.
+    // A Needs-permission session status must reach both matrices; turning the
+    // switch off brings the ordinary status icons back. The switch saves to
+    // conductor.db's settings table, not settings.toml.
+    // Screenshots: status-matrix-on.png and status-matrix-off.png in E2E_OUT.
+    name: "status-matrix",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
+      const ESC = "\uE00C";
+      const sw = 'input[aria-label="Workspace status matrix"]';
+      const stored = async () =>
+        (await wd.execute("return window.__TAURI_INTERNALS__.invoke('get_settings');", []))?.experimental?.internal_workspace_status_matrix === true;
+      async function setSwitch(want) {
+        await openSettingsPage(wd, "Experimental");
+        await wd.waitFor("the Workspace status matrix switch", async () => (await wd.findAll(sw)).length === 1);
+        if ((await wd.execute("return document.querySelector(arguments[0]).checked;", [sw])) !== want) {
+          await wd.execute("document.querySelector(arguments[0]).scrollIntoView({ block: 'center' });", [sw]);
+          await wd.click((await wd.findAll(sw))[0]);
+        }
+        // A conductor.db settings-table row (src-tauri/src/settings/table_prefs.rs), which get_settings overlays; never settings.toml.
+        await wd.waitFor(`internal_workspace_status_matrix = ${want} in get_settings`, async () => (await stored()) === want);
+        const toml = tomlValue(settingsFile(), "experimental", "internal_workspace_status_matrix");
+        if (toml !== null) throw new Error(`internal_workspace_status_matrix leaked into ${settingsFile()} as ${toml}`);
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys(ESC);
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", []);
+      const want = realpathSync(ctx.worktree);
+      const ws = rows.find((w) => w.workspacePath && existsSync(w.workspacePath) && realpathSync(w.workspacePath) === want);
+      if (!ws) throw new Error(`no stored workspace at ${want}`);
+      const invoke = (cmd, args) =>
+        wd.execute("return window.__TAURI_INTERNALS__.invoke(arguments[0], arguments[1]).then((value) => ({ value }), (e) => ({ refused: String(e) }));", [cmd, args]);
+      const setStatus = async (status) => {
+        const r = await invoke("session_set_status", { chatId: ws.id, workspaceId: ws.id, status });
+        if (r.refused) throw new Error(`session_set_status ${status} was refused (${r.refused})`);
+      };
+
+      const ROWS = '[data-testid="left-sidebar-workspace-item"]';
+      // Every sidebar row's status slot, and the one for this workspace (its title is "label · branch · status").
+      const sidebar = () =>
+        wd.execute(
+          `return Array.from(document.querySelectorAll(arguments[0]), (row) => {
+             const slot = row.querySelector('[data-testid="workspace-status-icon"]');
+             const m = slot?.querySelector('[data-testid="workspace-status-matrix"]');
+             return {
+               mine: (row.getAttribute('title') ?? '').includes(' · ' + arguments[1] + ' · '),
+               status: slot?.dataset.status ?? null,
+               matrixAttr: slot?.dataset.matrix ?? null,
+               role: slot?.getAttribute('role') ?? null,
+               label: slot?.getAttribute('aria-label') ?? null,
+               matrix: m ? { status: m.dataset.status, label: m.getAttribute('aria-label'), dots: m.querySelectorAll('rect, path').length, attention: !!m.querySelector('.workspace-matrix-attention') } : null,
+             };
+           });`,
+          [ROWS, ws.branch],
+        );
+      const mine = async () => (await sidebar()).find((r) => r.mine);
+      const home = () =>
+        wd.execute(
+          `return Array.from(document.querySelectorAll('.allws .allws-row'), (row) => {
+             const m = row.querySelector('[data-testid="home-workspace-status-matrix"] [data-testid="workspace-status-matrix"]');
+             return {
+               initial: !!row.querySelector('.allws-repo-initial'),
+               status: row.querySelector('[data-testid="home-workspace-status"]')?.dataset.status ?? null,
+               matrix: m ? { status: m.dataset.status, label: m.getAttribute('aria-label'), attention: !!m.querySelector('.workspace-matrix-attention') } : null,
+             };
+           });`,
+          [],
+        );
+      // The Home list is the /all-workspaces route (sidebar Home opens the wordmark screen, #483).
+      const openHome = async () => {
+        await wd.execute('history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); return true;', []);
+        await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
+      };
+      const shot = async (name) => {
+        if (!process.env.E2E_OUT) return;
+        const { writeFile } = await import("node:fs/promises");
+        await writeFile(join(process.env.E2E_OUT, name), await wd.screenshot()).catch(() => {});
+      };
+      const failWith = (read) => async (e) => {
+        throw new Error(`${e.message}; saw ${JSON.stringify(await read())}`);
+      };
+
+      if (await stored()) throw new Error("internal_workspace_status_matrix is already on; it defaults to off");
+      const selectedRow = await wd.execute("return [...document.querySelectorAll(arguments[0])].findIndex((b) => b.getAttribute('aria-current') === 'page');", [ROWS]);
+      try {
+        // Off: the ordinary status icon, no matrix anywhere.
+        const before = await wd.waitFor("the workspace's sidebar row", mine).catch(failWith(sidebar));
+        if (before.matrix || before.matrixAttr || before.role !== "img") throw new Error(`sidebar row with the matrix off: ${JSON.stringify(before)}`);
+        if ((await wd.findAll('[data-testid="workspace-status-matrix"]')).length) throw new Error("a status matrix is drawn while the setting is off");
+
+        await setStatus("needs_user_permission");
+        await wd.waitFor("Needs permission on the sidebar row", async () => (await mine())?.status === "needs-user-permission").catch(failWith(mine));
+
+        // On: every sidebar row draws the matrix, and this one carries the real status.
+        await setSwitch(true);
+        const on = await wd
+          .waitFor("the matrix on every sidebar row", async () => {
+            const all = await sidebar();
+            return all.length > 0 && all.every((r) => r.matrix && r.matrixAttr !== null && r.role === null) && all;
+          })
+          .catch(failWith(sidebar));
+        const row = on.find((r) => r.mine);
+        if (!row) throw new Error(`no sidebar row for branch ${ws.branch}: ${JSON.stringify(on)}`);
+        if (row.matrix.status !== "needs-user-permission" || !row.matrix.label.startsWith("Needs permission") || !row.matrix.attention || row.matrix.dots < 2)
+          throw new Error(`the sidebar matrix does not show Needs permission: ${JSON.stringify(row)}`);
+
+        await openHome();
+        const homeOn = await wd
+          .waitFor("the matrix on every Home row", async () => {
+            const all = await home();
+            return all.length > 0 && all.every((r) => r.matrix && !r.initial && r.status === null) && all;
+          })
+          .catch(failWith(home));
+        const homeRow = homeOn.find((r) => r.matrix.status === "needs-user-permission");
+        if (!homeRow || !homeRow.matrix.label.startsWith("Needs permission") || !homeRow.matrix.attention) throw new Error(`no Home matrix shows Needs permission: ${JSON.stringify(homeOn)}`);
+        await shot("status-matrix-on.png");
+
+        // A status change reaches the matrices without touching the setting.
+        await setStatus("idle");
+        await wd.waitFor("the sidebar matrix back to the idle status", async () => {
+          const r = await mine();
+          return r?.matrix && r.matrix.status === before.status && !r.matrix.attention;
+        }).catch(failWith(mine));
+        await wd.waitFor("Needs permission to leave Home's matrices", async () => {
+          const all = await home();
+          return all.length > 0 && all.every((r) => r.matrix && r.matrix.status !== "needs-user-permission");
+        }).catch(failWith(home));
+
+        // Off again: the matrices go and the ordinary icons come back.
+        await setSwitch(false);
+        await wd.waitFor("no status matrix after turning it off", async () => (await wd.findAll('[data-testid="workspace-status-matrix"]')).length === 0).catch(failWith(sidebar));
+        const after = await mine();
+        if (!after || after.matrixAttr || after.role !== "img" || after.status !== before.status || after.label !== before.label)
+          throw new Error(`sidebar row after turning the matrix off: ${JSON.stringify(after)}, want ${JSON.stringify(before)}`);
+        if ((await wd.findAll(".allws")).length === 0) await openHome();
+        const homeOff = await home();
+        if (homeOff.some((r) => r.matrix)) throw new Error(`Home still draws a matrix: ${JSON.stringify(homeOff)}`);
+        await shot("status-matrix-off.png");
+      } finally {
+        await setStatus("idle").catch(() => {});
+        if (await stored().catch(() => false)) await setSwitch(false).catch(() => {});
+        await wd.execute("document.querySelectorAll(arguments[0])[arguments[1]]?.click();", [ROWS, selectedRow]).catch(() => {});
+      }
     },
   },
 ];

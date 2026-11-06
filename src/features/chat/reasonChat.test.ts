@@ -226,6 +226,108 @@ test("Reset chat rewinds the agent: the next prompt opens a new Session that car
   ends.shift()!();
 });
 
+test("a turn that completes with nothing queued asks for attention; one with a follow-up queued does not", async () => {
+  const { onChatAttention } = await import("./attention.ts");
+  const chatId = "attention-1";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  const ends = promptsEndOnDemand();
+  const asked: string[] = [];
+  const off = onChatAttention((id) => id === chatId && asked.push(id));
+
+  rc.submitChat(chatId, "/w", "first", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "first prompt");
+  rc.submitChat(chatId, "/w", "second", "queue");
+  ends.shift()!();
+  await until(() => callsOf("reason_prompt", chatId).length === 2, "queued prompt starts");
+  assert.deepEqual(asked, [], "the queued follow-up runs next, so the chat has not settled");
+
+  ends.shift()!();
+  await until(() => asked.length === 1, "attention after the last turn");
+  assert.deepEqual(asked, [chatId]);
+  off();
+});
+
+test("a new permission request asks for attention once, while the turn still runs", async () => {
+  const { onChatAttention } = await import("./attention.ts");
+  const chatId = "attention-perm";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  const ends = promptsEndOnDemand();
+  const asked: string[] = [];
+  const off = onChatAttention((id) => id === chatId && asked.push(id));
+
+  rc.submitChat(chatId, "/w", "permission", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
+  emit({ chatId, type: "permissionRequest", requestId: "permission-a", title: "t", options: [], kind: "permission", tool: "", input: null });
+  assert.deepEqual(asked, [chatId], "the request is a wait on the user");
+  // The same request again (a re-send) is not a new wait.
+  emit({ chatId, type: "permissionRequest", requestId: "permission-a", title: "t", options: [], kind: "permission", tool: "", input: null });
+  assert.deepEqual(asked, [chatId]);
+  emit({ chatId, type: "permissionResolved", requestId: "permission-a" });
+  ends.shift()!();
+  await until(() => asked.length === 2, "attention when the turn settles");
+  off();
+});
+
+test("a plan request asks for attention once, though it both opens a request and enters plan review", async () => {
+  const { onChatAttention } = await import("./attention.ts");
+  const chatId = "attention-plan";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  const ends = promptsEndOnDemand();
+  const asked: string[] = [];
+  const off = onChatAttention((id) => id === chatId && asked.push(id));
+
+  rc.submitChat(chatId, "/w", "plan", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
+  emit({ chatId, type: "permissionRequest", requestId: "plan-a", title: "", options: [], kind: "plan", plan: "1. Add a table" });
+  assert.deepEqual(asked, [chatId]);
+  // A tool request while the plan waits keeps plan review, so it signals on its own.
+  emit({ chatId, type: "permissionRequest", requestId: "tool-b", title: "t", options: [], kind: "permission", tool: "", input: null });
+  assert.deepEqual(asked, [chatId, chatId]);
+  emit({ chatId, type: "permissionResolved", requestId: "plan-a" });
+  emit({ chatId, type: "permissionResolved", requestId: "tool-b" });
+  ends.shift()!();
+  off();
+});
+
+test("a request offering only allow choices is a question: needs_user_input, unread once, working once answered", async () => {
+  const { onChatAttention } = await import("./attention.ts");
+  const chatId = "attention-question";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  const ends = promptsEndOnDemand();
+  const asked: string[] = [];
+  const off = onChatAttention((id) => id === chatId && asked.push(id));
+  const choices = [
+    { optionId: "a", name: "Postgres", kind: "allow_once" },
+    { optionId: "b", name: "SQLite", kind: "allow_once" },
+  ];
+  const approval = [
+    { optionId: "allow", name: "Allow", kind: "allow_once" },
+    { optionId: "deny", name: "Deny", kind: "reject_once" },
+  ];
+
+  rc.submitChat(chatId, "/w", "question", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
+  emit({ chatId, type: "permissionRequest", requestId: "permission-q", title: "Which database?", options: choices, kind: "permission", tool: "", input: null });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "needs_user_input");
+  assert.equal(runtime.chatStatuses().get(chatId), "needs_user_input");
+  assert.deepEqual(asked, [chatId], "the question marks the chat unread, and only once");
+
+  // A tool approval while the question is open outranks it, and is a new wait.
+  emit({ chatId, type: "permissionRequest", requestId: "permission-t", title: "bash: rm -rf build", options: approval, kind: "permission", tool: "", input: null });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "needs_user_permission");
+  assert.deepEqual(asked, [chatId, chatId]);
+  emit({ chatId, type: "permissionResolved", requestId: "permission-t" });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "needs_user_input", "back to the open question");
+  assert.deepEqual(asked, [chatId, chatId], "returning to an open question is not a new wait");
+
+  emit({ chatId, type: "permissionResolved", requestId: "permission-q" });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "working");
+  assert.equal(runtime.chatStatuses().get(chatId), "working");
+  ends.shift()!();
+  await until(() => asked.length === 3, "attention when the turn settles");
+  off();
+});
+
 function emitStatus(payload: Record<string, unknown>) {
   emitTo("session-status", payload);
 }
@@ -270,15 +372,15 @@ test("a permission request makes the chat needs_user_permission until it is answ
   rc.submitChat(chatId, "/w", "permission", "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
 
-  emit({ chatId, type: "permissionRequest", requestId: "permission-1", title: "bash: rm -rf build", options: [{ optionId: "allow", name: "Allow", kind: "allow_once" }] });
+  emit({ chatId, type: "permissionRequest", requestId: "permission-1", title: "bash: rm -rf build", options: [{ optionId: "allow", name: "Allow", kind: "allow_once" }], kind: "permission", tool: "execute", input: { command: "rm -rf build" } });
   let snap = rc.chatSnapshot(chatId);
   assert.equal(snap.queue.status, "needs_user_permission");
-  assert.deepEqual(snap.permissions.map((p) => p.title), ["bash: rm -rf build"]);
+  assert.deepEqual(snap.permissions.map((p) => p.kind === "permission" && [p.title, p.tool]), [["bash: rm -rf build", "execute"]]);
   assert.equal(runtime.chatStatuses().get(chatId), "needs_user_permission");
   await until(() => callsOf("session_set_status", chatId).some((c) => c.args.status === "needs_user_permission"), "the stored status");
   assert.equal(callsOf("session_set_status", chatId)[0].args.workspaceId, "ws-perm", "a review chat is stored under its workspace");
 
-  await rc.answerPermission(chatId, "permission-1", "allow");
+  await rc.answerPermission(chatId, "permission-1", { kind: "option", optionId: "allow" });
   assert.deepEqual(callsOf("reason_answer_permission", chatId)[0].args, { chatId, requestId: "permission-1", optionId: "allow" });
   await until(() => rc.chatSnapshot(chatId).queue.status === "working", "working again");
   snap = rc.chatSnapshot(chatId);
@@ -293,6 +395,38 @@ test("a permission request makes the chat needs_user_permission until it is answ
   assert.deepEqual(callsOf("session_set_status", chatId).map((c) => c.args.status), ["working", "needs_user_permission", "working", "idle"]);
 });
 
+test("plan and question requests make the chat needs_plan_response and needs_user_input; the most urgent open one wins", async () => {
+  const chatId = "ws-plan";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  const ends = promptsEndOnDemand();
+  handlers.set("reason_answer_permission", (a) => {
+    setTimeout(() => emit({ chatId: a.chatId, type: "permissionResolved", requestId: a.requestId }), 0);
+    return true;
+  });
+  rc.submitChat(chatId, "/w", "plan", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
+
+  const questions = [{ header: "Database", question: "Which database?", multiSelect: false, options: [{ label: "SQLite", description: null }] }];
+  emit({ chatId, type: "permissionRequest", requestId: "q-1", title: "", options: [], kind: "question", questions });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "needs_user_input");
+  assert.equal(runtime.chatStatuses().get(chatId), "needs_user_input");
+  emit({ chatId, type: "permissionRequest", requestId: "p-1", title: "", options: [], kind: "plan", plan: "1. Add a table" });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "needs_plan_response", "a plan outranks a question");
+  assert.deepEqual(
+    rc.chatSnapshot(chatId).permissions.map((p) => p.kind),
+    ["question", "plan"],
+  );
+  const plan = rc.chatSnapshot(chatId).permissions[1]!;
+  assert.deepEqual(plan, { kind: "plan", requestId: "p-1", plan: "1. Add a table" });
+
+  emit({ chatId, type: "permissionResolved", requestId: "p-1" });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "needs_user_input", "the question still waits");
+  emit({ chatId, type: "permissionResolved", requestId: "q-1" });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "working");
+  ends.shift()!();
+  await until(() => rc.chatSnapshot(chatId).queue.status === "idle", "idle");
+});
+
 test("a request Reason no longer holds closes at once", async () => {
   const chatId = "ws-perm-gone";
   handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
@@ -300,8 +434,8 @@ test("a request Reason no longer holds closes at once", async () => {
   handlers.set("reason_answer_permission", () => false);
   rc.submitChat(chatId, "/w", "permission", "queue");
   await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
-  emit({ chatId, type: "permissionRequest", requestId: "permission-9", title: "t", options: [] });
-  await rc.answerPermission(chatId, "permission-9", null);
+  emit({ chatId, type: "permissionRequest", requestId: "permission-9", title: "t", options: [], kind: "permission", tool: "", input: null });
+  await rc.answerPermission(chatId, "permission-9", { kind: "cancel" });
   assert.equal(rc.chatSnapshot(chatId).permissions.length, 0);
   assert.equal(rc.chatSnapshot(chatId).queue.status, "working");
   ends.shift()!();
@@ -325,7 +459,7 @@ test("needs_user_permission never outlives its request: Stop withdraws it, and a
   });
   rc.submitChat(stopped, "/w", "permission", "queue");
   await until(() => callsOf("reason_prompt", stopped).length === 1, "reason_prompt");
-  emit({ chatId: stopped, type: "permissionRequest", requestId: "permission-s", title: "t", options: [] });
+  emit({ chatId: stopped, type: "permissionRequest", requestId: "permission-s", title: "t", options: [], kind: "permission", tool: "", input: null });
   assert.equal(runtime.chatStatuses().get(stopped), "needs_user_permission");
   rc.stopChat(stopped);
   await until(() => rc.chatSnapshot(stopped).queue.status === "idle", "idle after Stop");
@@ -337,7 +471,7 @@ test("needs_user_permission never outlives its request: Stop withdraws it, and a
   const ends = promptsEndOnDemand();
   rc.submitChat(ended, "/w", "permission", "queue");
   await until(() => callsOf("reason_prompt", ended).length === 1, "reason_prompt");
-  emit({ chatId: ended, type: "permissionRequest", requestId: "permission-e", title: "t", options: [] });
+  emit({ chatId: ended, type: "permissionRequest", requestId: "permission-e", title: "t", options: [], kind: "permission", tool: "", input: null });
   assert.equal(rc.chatSnapshot(ended).queue.status, "needs_user_permission");
   ends.shift()!();
   await until(() => rc.chatSnapshot(ended).queue.status === "idle", "idle after the turn");

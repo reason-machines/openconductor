@@ -1,8 +1,9 @@
 import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
-import type { RowPr } from "./rowStatus.ts";
+import type { RowPr, SessionStatus } from "./rowStatus.ts";
 import type { NavSection } from "./navigationSections.ts";
 
-export type WorkspaceStatus = "idle" | "working" | "needs-review" | "archived";
+/** The workspace's lifecycle in this shell; what its agent is doing is `sessionStatus`. */
+export type WorkspaceStatus = "idle" | "needs-review" | "archived";
 
 export interface Workspace {
   id: string;
@@ -13,6 +14,13 @@ export interface Workspace {
   /** Git branch checked out in this workspace's worktree. */
   branch: string;
   status: WorkspaceStatus;
+  /**
+   * The most urgent status across the workspace's sessions (Conductor's
+   * `aggregatedStatus`, folded with `aggregateSessions`): working, cancelling,
+   * waiting for background tasks, or needing a plan response, an answer or a
+   * permission. Absent means idle. Live only: nothing reports a closed agent.
+   */
+  sessionStatus?: SessionStatus;
   /** Lines added/removed versus the base branch; filled by the backend later. */
   diff: { added: number; removed: number };
   createdAt: number;
@@ -33,8 +41,12 @@ export interface Workspace {
   prTitle?: string | null;
   /** Body of the workspace's pull request (`pr_description`); Create PR uses it verbatim. */
   prDescription?: string | null;
-  /** Unread agent output; the sidebar row's name turns semibold. */
-  unread?: boolean;
+  /**
+   * The workspace's unread chats (Conductor's `sessions.unread_count`, per chat): the
+   * workspace is unread while it has one (state/chatUnread.ts), and its sidebar row's
+   * name turns semibold. Absent when none is unread.
+   */
+  unreadChats?: UnreadChat[];
   /* sidebar: pin and status (Conductor's pinned_at, manual_status, derived_status) */
   /** When the workspace was pinned (ms); pinned rows sit in the sidebar's Pinned group. */
   pinnedAt?: number;
@@ -47,6 +59,12 @@ export interface Workspace {
   state?: string;
   /** The workspace's pull request as last read from GitHub; drives the row's status icon. */
   pr?: RowPr | null;
+}
+
+/** An unread chat; `at` (ms) is when its row last changed, the "Go to next unread" order. */
+export interface UnreadChat {
+  id: string;
+  at: number;
 }
 
 export interface Repo {
@@ -67,10 +85,17 @@ export interface Repo {
 
 /**
  * `root` is Conductor's `/` route: the wordmark and the three entry cards, shown at
- * start and when the open workspace goes away. `home` is its `/all-workspaces`
- * route, the workspace list that the sidebar Home row and nav.home open.
+ * start, when the open workspace goes away, and from the sidebar Home row, nav.home
+ * (⌘⇧H) and the palette's Go to Home. `home` is Conductor's `/all-workspaces` route,
+ * the workspace list, reached by opening /all-workspaces (and restored if it was
+ * open). Conductor itself sends Home to /all-workspaces; ours differs on purpose.
  */
-export type Selection = { kind: "root" } | { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
+export type Selection =
+  | { kind: "root" }
+  | { kind: "home" }
+  /** Conductor's `/dashboard` (Experimental "Dashboard"); `repo` is its `?repo=` project tab. */
+  | { kind: "dashboard"; repo?: string }
+  | { kind: "workspace"; repoId: string; workspaceId: string };
 
 export interface AppState {
   repos: Repo[];

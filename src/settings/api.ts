@@ -31,13 +31,28 @@ export async function providerStatus(agent: AgentKind): Promise<ProviderStatus> 
 /** Saves `config` as the agent's provider and stores `secrets` in the Keychain. */
 export async function connectProvider(agent: AgentKind, config: ProviderConfig, secrets: SecretInput[]): Promise<ProviderStatus> {
   if (inTauri()) return invoke<ProviderStatus>("connect_provider", { agent, config, secrets });
-  throw new Error(PREVIEW_NO_KEYS);
+  // The preview can switch providers (Settings › Agents cards) but never holds a key.
+  if (secrets.length > 0) throw new Error(PREVIEW_NO_KEYS);
+  const settings = await getSettings();
+  await updateSettings({ ...settings, providers: { ...settings.providers, [agent]: config } });
+  return providerStatus(agent);
 }
 
 /** Deletes the agent's keys and puts it back on its CLI's own login. */
 export async function disconnectProvider(agent: AgentKind): Promise<ProviderStatus> {
   if (inTauri()) return invoke<ProviderStatus>("disconnect_provider", { agent });
   throw new Error(PREVIEW_NO_KEYS);
+}
+
+/** The whole stored value of one of the agent's current provider secrets, for an explicit "show". */
+export async function revealProviderSecret(agent: AgentKind, key: string): Promise<string> {
+  if (inTauri()) return invoke<string>("reveal_provider_secret", { agent, key });
+  throw new Error(PREVIEW_NO_KEYS);
+}
+
+/** Absolute path of settings.toml; null outside the desktop app. */
+export async function settingsFilePath(): Promise<string | null> {
+  return inTauri() ? invoke<string>("settings_file_path") : null;
 }
 
 /** Tauri rejects with the command's error string; keep messages readable. */

@@ -56,10 +56,10 @@ export function RootPathRow() {
       <Row
         label={ROOT_TITLE}
         help={
-          <>
+          <div className="settings-help-spaced">
             <p>{ROOT_DESCRIPTION}</p>
             <p>{ROOT_WARNING}</p>
-          </>
+          </div>
         }
         stacked
       >
@@ -73,7 +73,7 @@ export function RootPathRow() {
       </Row>
       {error && !pending && <p className="error small" role="alert">{error}</p>}
       {pending && (
-        <Modal title={CHANGE_TITLE} onClose={() => !busy && setPending(null)}>
+        <Modal title={CHANGE_TITLE} onClose={() => !busy && setPending(null)} motion="alert">
           <div className="modal-body">
             <p>{CHANGE_BODY}</p>
             <p className="small">

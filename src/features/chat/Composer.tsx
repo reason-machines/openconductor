@@ -10,17 +10,22 @@
 // `chat.newLine` inserts a line break, `chat.cancel` stops the agent and
 // `chat.focus` focuses the box. With `onAttachFiles`, files come in through
 // the "+" menu, `chat.addAttachment` (⌘U), pasting files and dropping them.
+// With `minimize`, an empty box shrinks to one row while a content tab is shown
+// (composerMinimize.ts); focus, a click or ⌘L expands it.
 
+import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
+import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
 import { canSteerNow, headStatusLabel, resolveSendMode, turnRunning, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
 import type { QueueAction } from "./queue.ts";
 import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
-import { completeCommand, matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
+import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
 import { SlashMenu } from "./SlashMenu.tsx";
 import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
+import type { ComposerMinimize } from "./useComposerMinimize.ts";
 import "./queue.css";
 import "./composer.css";
 
@@ -55,6 +60,8 @@ export interface ComposerProps {
    * a command (the draft is cleared and nothing goes to the agent).
    */
   onCommand?: (text: string) => boolean;
+  /** The one-line state (Conductor's minimized composer over a file diff or the PR). */
+  minimize?: ComposerMinimize;
 }
 
 export function Composer({
@@ -74,7 +81,9 @@ export function Composer({
   controls,
   slashCommands = [],
   onCommand,
+  minimize,
 }: ComposerProps) {
+  const minimized = minimize?.minimized ?? false;
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [focused, setFocused] = useState(false);
@@ -100,15 +109,20 @@ export function Composer({
     if (!box) return;
     box.style.height = "auto";
     box.style.height = `${box.scrollHeight}px`;
-  }, [draft, inputRef]);
+  }, [draft, inputRef, minimized]);
+
+  // Conductor blurs the editor when the box minimizes.
+  useLayoutEffect(() => {
+    if (minimized && document.activeElement === inputRef.current) inputRef.current?.blur();
+  }, [minimized, inputRef]);
 
   const query = focused ? slashQuery(draft, caret) : null;
   const slashMatches = useMemo(() => (query === null || query === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashDismissed, slashCommands]);
   const slashOpen = slashMatches.length > 0;
   const slashFocus = Math.min(slashIndex, Math.max(0, slashMatches.length - 1));
 
-  function pickCommand(name: string) {
-    const next = completeCommand(draft, name);
+  function pickCommand(command: SlashCommand) {
+    const next = completeInsert(draft, command.insert ?? `/${command.name}`);
     setDraft(next);
     setSlashIndex(0);
     requestAnimationFrame(() => {
@@ -172,7 +186,7 @@ export function Composer({
     }
     if (slashOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
       e.preventDefault();
-      pickCommand(slashMatches[slashFocus]!.command.name);
+      pickCommand(slashMatches[slashFocus]!.command);
       return;
     }
     if (slashOpen && e.key === "Escape") {
@@ -199,7 +213,13 @@ export function Composer({
     // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the textarea.
   }
 
+  // Conductor's `Lm` (composerMinimize.ts focusHintVisible); the open model picker hides it in CSS.
   const showFocusPill = !focused && !hasText && attachments == null && hint("chat.focus") !== "";
+  const focusPill = (inline: boolean) => (
+    <div className={`oc-focus-pill${inline ? " is-inline" : ""}`} aria-hidden>
+      {hint("chat.focus")} to focus
+    </div>
+  );
   const sendLabel = `${queues ? "Queue message" : "Send message"} ${hint("chat.submitMessage")}`;
 
   return (
@@ -210,6 +230,9 @@ export function Composer({
         <form
           className={`composer oc-composer${dragging ? " is-dropping" : ""}`}
           aria-label="composer"
+          data-composer-minimized={minimized || undefined}
+          data-composer-resize-instant={(minimize && !minimize.animate) || undefined}
+          onClick={() => minimize?.expand()}
           onMouseDown={(e) => {
             // Conductor's box is all click target: a click on its padding focuses the message.
             if (e.target === e.currentTarget) {
@@ -245,25 +268,28 @@ export function Composer({
                 setSlashDismissed(null);
               }}
               onSelect={(e) => setCaret(e.currentTarget.selectionStart ?? 0)}
-              onFocus={() => setFocused(true)}
+              onFocus={() => {
+                setFocused(true);
+                minimize?.expand();
+              }}
               onBlur={() => setFocused(false)}
               onKeyDown={onKeyDown}
               onPaste={onPaste}
-              rows={3}
+              rows={minimized ? 1 : 3}
               spellCheck={false}
             />
           </div>
-          {showFocusPill ? (
-            <div className="oc-focus-pill" aria-hidden>
-              {hint("chat.focus")} to focus
-            </div>
-          ) : null}
-          <div className="oc-composer-left">
+          {showFocusPill && !minimized ? focusPill(false) : null}
+          {/* Conductor stops clicks on its controls from reaching the box, so the model picker opens without expanding it. */}
+          <div className="oc-composer-left" onClick={(e) => e.stopPropagation()}>
             {picker}
-            {controls}
+            {controls ? <span className="oc-composer-fade">{controls}</span> : null}
           </div>
-          <div className="oc-composer-right">
-            <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} />
+          <div className="oc-composer-right" onClick={(e) => e.stopPropagation()}>
+            <span className="oc-composer-fade">
+              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} />
+            </span>
+            {showFocusPill && minimized ? focusPill(true) : null}
             {onAttachFiles ? (
               <input
                 ref={fileInput}
@@ -279,22 +305,25 @@ export function Composer({
               />
             ) : null}
             {working ? (
-              <button
-                className="oc-icon-btn composer-stop"
-                type="button"
-                title="Stop the agent"
-                aria-label={`Stop the agent (${hint("chat.cancel")})`}
-                data-state={queue.status}
-                disabled={queue.status === "cancelling"}
-                onClick={onStop}
-              >
-                <StopCircleIcon size={16} />
-              </button>
+              <Tooltip content={<span className="oc-tip-inline">Cancel <ShortcutHint commandId="chat.cancel" /></span>}>
+                <button
+                  className="oc-icon-btn composer-stop"
+                  type="button"
+                  aria-label={`Stop the agent (${hint("chat.cancel")})`}
+                  data-state={queue.status}
+                  disabled={queue.status === "cancelling"}
+                  onClick={onStop}
+                >
+                  <StopCircleIcon size={16} />
+                </button>
+              </Tooltip>
             ) : null}
             {!working || hasText ? (
-              <button className="oc-send" type="submit" disabled={!hasText} data-mode={sendMode} aria-label={sendLabel} title={sendLabel} data-testid="composer-send-button">
-                {queues ? <CornerDownLeftIcon size={16} strokeWidth={1.5} /> : <ArrowUpIcon size={16} strokeWidth={1.5} />}
-              </button>
+              <Tooltip content={<span className="oc-tip-inline">{queues ? "Queue message" : "Send message"}<ShortcutHint commandId="chat.submitMessage" /></span>}>
+                <button className="oc-send" type="submit" disabled={!hasText} data-mode={sendMode} aria-label={sendLabel} data-testid="composer-send-button">
+                  {queues ? <CornerDownLeftIcon size={16} strokeWidth={1.5} /> : <ArrowUpIcon size={16} strokeWidth={1.5} />}
+                </button>
+              </Tooltip>
             ) : null}
           </div>
         </form>
@@ -306,6 +335,7 @@ export function Composer({
 /** Conductor's "+" button (`a7i`): "Add attachments and more"; this build offers Add attachment. */
 function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: () => void }) {
   const [open, setOpen] = useState(false);
+  const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
   if (!onAddAttachment) return null;
   return (
@@ -322,11 +352,13 @@ function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: ()
         }
       }}
     >
-      <button type="button" className="oc-icon-btn oc-add-btn" aria-label="Add" title="Add attachments and more" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        <PlusIcon size={16} strokeWidth={1.5} />
-      </button>
-      {open ? (
-        <div className="oc-menu oc-add-popup" role="menu">
+      <Tooltip content={<p>Add attachments and more</p>}>
+        <button type="button" className="oc-icon-btn oc-add-btn" aria-label="Add" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          <PlusIcon size={16} strokeWidth={1.5} />
+        </button>
+      </Tooltip>
+      {popup.mounted ? (
+        <div className="oc-menu oc-add-popup" role="menu" data-motion="popup" {...popup.attrs}>
           <button
             type="button"
             role="menuitem"

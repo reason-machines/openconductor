@@ -2,14 +2,15 @@ import { useCallback, useEffect, useReducer, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import type { WorkspaceStatusValue } from "./workspaceStatus";
-import type { RowPr } from "./rowStatus";
+import type { RowPr, SessionStatus } from "./rowStatus";
 import { newId, workspaceName } from "./names";
 import { isSidebarVisible, startSelection } from "./selectors";
 import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
-import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
+import { keepPr, parsePrefs, prefsOf, reposFromDb, restoreChatTabsOf, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
 import { withActivity } from "./nextUnread";
+import { withChatUnread, withWorkspaceRead } from "./chatUnread";
 import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, reorderSection, sectionOf, sectionsFromDb, withoutWorkspace, type DbNavSection, type NavSection } from "./navigationSections";
 import { sameRepoRecord } from "./addRepo";
 import { archiveWorkspace, deleteWorkspace, emitArchiveEvent, startArchive, startUnarchive, rememberBrowserArchived, stopWorkspaceAgents, takeBrowserArchived, unarchiveWorkspace, workspaceAgentStatus, type ArchiveMode } from "../workspace/archive";
@@ -45,8 +46,6 @@ export type Action =
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string; mode?: ArchiveMode; stopRunningAgents?: boolean }
   /** The workspace's pull request title or body changed on GitHub (`workspaces.pr_title`, `pr_description`). `prDescription` and `pr` left out keep what the row has. */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
-  /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
-  | { type: "setWorkspaceWorking"; repoId: string; workspaceId: string; working: boolean }
   /** Open an archived workspace from the archived list: read-only, with Unarchive. */
   | { type: "openArchivedWorkspace"; repoId: string; workspace: Workspace }
   /**
@@ -58,7 +57,7 @@ export type Action =
   | { type: "deleteWorkspace"; repoId: string; workspaceId: string }
   /** The workspace is back in `repos`: stop showing it as archived. */
   | { type: "unarchivedWorkspace"; workspaceId: string }
-  /** Unarchive from the archive-on-merge toast: put the workspace back where it was. */
+  /** Put a workspace row back (reducer only; the browser stand-in for unarchive). */
   | { type: "restoreWorkspace"; repoId: string; workspace: Workspace }
   /** The target-branch picker saved `intended_target_branch` (useTargetBranch writes the row). */
   | { type: "setWorkspaceTargetBranch"; repoId: string; workspaceId: string; branch: string }
@@ -74,7 +73,10 @@ export type Action =
   /** Replace repos and workspaces with the conductor.db rows (desktop app). */
   | { type: "hydrate"; repos: Repo[] }
   /* sidebar: row actions (unread, pin, status) */
-  | { type: "setWorkspaceUnread"; repoId: string; workspaceId: string; unread: boolean }
+  /** A chat's unread flag (`at`: when, ms; it orders Go to next unread). */
+  | { type: "setChatUnread"; repoId: string; workspaceId: string; chatId: string; unread: boolean; at: number }
+  /** Every chat of the workspace read (the row's "Mark as read"). */
+  | { type: "markWorkspaceRead"; repoId: string; workspaceId: string }
   | { type: "setWorkspacePinned"; repoId: string; workspaceId: string; pinned: boolean; at?: number }
   | { type: "setWorkspaceStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue }
   /** The user sent a message at `at`: last activity moves forward (chat_messages_save writes the same to conductor.db). */
@@ -216,16 +218,14 @@ export function reducer(state: AppState, action: Action): AppState {
       const collapsed = new Set(state.repos.filter((r) => r.collapsed).map((r) => r.id));
       // conductor.db has no PR or agent activity: keep what the open workspaces reported.
       const live = new Map(state.repos.flatMap((r) => r.workspaces).map((w) => [w.id, w]));
-      const keepLive = (w: Workspace): Workspace => {
-        const old = live.get(w.id);
-        return old ? { ...w, status: old.status, ...(old.pr !== undefined ? { pr: old.pr } : {}) } : w;
-      };
-      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined, workspaces: r.workspaces.map(keepLive) }));
+      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined, workspaces: r.workspaces.map((w) => keepPr(w, live.get(w.id))) }));
       const viewingArchived = state.selection.kind === "workspace" && state.archivedOpen?.workspace.id === state.selection.workspaceId;
       return { ...state, repos, selection: viewingArchived ? state.selection : validSelection(state.selection, repos) };
     }
-    case "setWorkspaceUnread":
-      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, unread: action.unread || undefined }));
+    case "setChatUnread":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => withChatUnread(w, action.chatId, action.unread, action.at));
+    case "markWorkspaceRead":
+      return updateWorkspace(state, action.repoId, action.workspaceId, withWorkspaceRead);
     case "setWorkspacePinned": {
       const next = updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
       // Conductor's pin mutation unassigns the workspace from its section first (index-BGEQ8YjU.js @3315700).
@@ -251,12 +251,6 @@ export function reducer(state: AppState, action: Action): AppState {
     }
     case "hydrateSections":
       return { ...state, sections: action.sections, sectionsUpdatedAt: action.updatedAt };
-    case "setWorkspaceWorking": {
-      const status: Workspace["status"] = action.working ? "working" : "idle";
-      const ws = state.repos.find((r) => r.id === action.repoId)?.workspaces.find((w) => w.id === action.workspaceId);
-      if (!ws || ws.status === status) return state;
-      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, status }));
-    }
     case "setWorkspaceDerivedStatus":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, derivedStatus: action.status, manualStatus: undefined }));
   }
@@ -268,8 +262,9 @@ const demoPr = (over: Partial<RowPr>): RowPr => ({
 
 /** Sample data for screenshots and demos: open the app with `?demo=1`. */
 export function demoState(): AppState {
-  const ws = (name: string, status: Workspace["status"], added: number, removed: number): Workspace => ({
-    id: newId(), name, branch: name, status, diff: { added, removed }, createdAt: Date.now(),
+  let number = 0;
+  const ws = (name: string, session: SessionStatus, added: number, removed: number): Workspace => ({
+    id: newId(), name, branch: name, status: "idle", ...(session !== "idle" ? { sessionStatus: session } : {}), diff: { added, removed }, createdAt: Date.now(), number: ++number,
     // A worktree path so the right panel's All files tab has a tree (demo files outside Tauri).
     path: `/Users/you/conductor/workspaces/openconductor/${name}`,
   });
@@ -282,9 +277,14 @@ export function demoState(): AppState {
         { ...ws("copper-wren", "idle", 18, 2), pr: demoPr({ number: 14, checks: "failing", failingChecks: 1 }) },
         { ...ws("misty-larch", "idle", 6, 0), pr: demoPr({ number: 9, isMerged: true }) },
         ws("lunar-reef", "working", 0, 0),
+        ws("tidal-moss", "needs_user_input", 11, 3),
+        ws("slate-heron", "needs_user_permission", 5, 0),
       ],
     },
-    { id: newId(), name: "api-server", path: "~/code/api-server", defaultBranch: "main", workspaces: [ws("brisk-otter", "idle", 3, 1)] },
+    {
+      id: newId(), name: "api-server", path: "~/code/api-server", defaultBranch: "main",
+      workspaces: [ws("brisk-otter", "idle", 3, 1), ws("pale-cedar", "waiting", 2, 0), ws("dusk-finch", "cancelling", 0, 0)],
+    },
     { id: newId(), name: "design-system", path: "~/code/design-system", defaultBranch: "develop", workspaces: [] },
   ];
   return { repos, selection: { kind: "workspace", repoId: repos[0].id, workspaceId: repos[0].workspaces[0].id } };
@@ -296,6 +296,21 @@ function load(): AppState {
     const s = demoState();
     if (params.get("view") === "home") s.selection = { kind: "home" };
     if (params.get("view") === "root") s.selection = { kind: "root" };
+    if (params.get("view") === "dashboard") {
+      // The board's columns: PR workspaces derive in-review / done (Conductor's `XDt`), one is in the backlog.
+      const derived: Record<string, Workspace["derivedStatus"]> = { "quiet-harbor": "in-review", "copper-wren": "in-review", "misty-larch": "done" };
+      s.repos = s.repos.map((r) => ({
+        ...r,
+        workspaces: r.workspaces.map((w, i) => ({
+          ...w,
+          derivedStatus: derived[w.name],
+          manualStatus: w.name === "brisk-otter" ? "backlog" : undefined,
+          updatedAt: Date.now() - (i + 1) * 37 * 60_000,
+        })),
+      }));
+      const repo = params.get("repo");
+      s.selection = repo ? { kind: "dashboard", repo } : { kind: "dashboard" };
+    }
     if (params.get("sidebar") === "0") s.sidebarVisible = false;
     return s;
   }
@@ -304,15 +319,15 @@ function load(): AppState {
     // First run after the switch: keep the selection and layout the old shell state had.
     const prefs = parsePrefs(localStorage.getItem(PREFS_KEY) ?? legacyPrefs(localStorage.getItem(STORAGE_KEY)));
     const repos = prefs.collapsed.map((id) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed: true }));
-    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname);
+    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname, window.location.search);
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return startSelection(JSON.parse(raw) as AppState, window.location.pathname);
+    if (raw) return startSelection(withoutLiveSessions(JSON.parse(raw) as AppState), window.location.pathname, window.location.search);
   } catch {
     /* ignore corrupt state */
   }
-  return startSelection(EMPTY, window.location.pathname);
+  return startSelection(EMPTY, window.location.pathname, window.location.search);
 }
 
 /** UI prefs carried over from the pre-database shell state, as `PREFS_KEY` JSON. */
@@ -331,6 +346,8 @@ export async function loadReposFromDb(collapsed: Iterable<string> = []): Promise
     invoke<DbRepoRow[]>("db_list_repos"),
     invoke<DbWorkspaceRow[]>("db_list_workspaces"),
   ]);
+  // Tabs open when the app last ran come back, with their unread (before the rows reach the sidebar).
+  restoreChatTabsOf(workspaces);
   return reposFromDb(repos, workspaces, collapsed);
 }
 
@@ -386,6 +403,16 @@ export function useAppStore() {
     if (desktop) localStorage.setItem(PREFS_KEY, JSON.stringify(prefsOf(state)));
     else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, demo, desktop]);
+  // Navigating to /all-workspaces while the app runs (history navigation)
+  // shows the Home list, as loading that path does. Sidebar Home opens the
+  // wordmark screen instead, so this is the in-session route to the list.
+  useEffect(() => {
+    const onPop = () => {
+      if (window.location.pathname === "/all-workspaces") rawDispatch({ type: "select", selection: { kind: "home" } });
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
   // Writes the backend does not already record when its command runs.
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -448,17 +475,6 @@ export function useAppStore() {
               const ws = repo?.workspaces.find((w) => w.id === workspaceId);
               if (ws) void rerunSetup(repo, ws);
             }, () => undefined),
-          reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
-          emit: emitArchiveEvent,
-        });
-        return;
-      }
-      if (action.type === "restoreWorkspace") {
-        const repo = stateRef.current.repos.find((r) => r.id === action.repoId);
-        void startUnarchive(action, {
-          show: () => rawDispatch(action),
-          run: desktop ? () => unarchiveWorkspace(action.workspace.id) : null,
-          setup: () => void rerunSetup(repo, action.workspace),
           reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
           emit: emitArchiveEvent,
         });

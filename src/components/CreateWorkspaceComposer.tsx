@@ -23,12 +23,16 @@ import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { addPendingLaunch, removePendingLaunch } from "../workspace/pendingLaunches";
 import type { SourceState } from "../workspace/createFrom";
-import { chooseModel, effortLevels, launchDefaults, type LaunchModel } from "../workspace/launchModel";
+import { launchDefaults, loadoutPicks, pickLaunch, type LaunchModel, type LaunchPick } from "../workspace/launchModel";
+import { ModelPicker } from "../features/chat/ModelPicker";
+import { openSettingsPage } from "../features/chat/ChatModelPicker";
+import { listFavorites } from "../settings/agents/api";
+import { displayedLoadout, parseFavorites } from "../settings/agents/loadout";
 import { CreateFromPicker } from "./CreateFromPicker";
+import { Tooltip } from "./Tooltip";
 import { getSettings } from "../settings/api";
 import type { Settings } from "../settings/types";
-import { AGENT_LABEL, CLAUDE_ALIASES, MODEL_CATALOG, agentForModel, modelLabel, type ModelAgent } from "../settings/models";
-import { levelLabel } from "../settings/agentSettings";
+import { modelLabel } from "../settings/models";
 import { AddRepositoryMenu } from "./AddRepositoryMenu";
 import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { effectiveShortcuts } from "../keybindings/overrides";
@@ -61,6 +65,8 @@ export interface CreateWorkspaceComposerProps {
   sections?: readonly NavSection[];
   /** The section the composer was opened from (its menu's Create workspace). */
   initialSectionId?: string;
+  /** Open with the "Create from..." picker showing (the repo menu's Create from..., ⌘⇧N). */
+  fromOpen?: boolean;
 }
 
 /** Conductor's composer placeholder for a new workspace (`oya` -> `Hji`). */
@@ -91,6 +97,7 @@ export function CreateWorkspaceComposer({
   dispatch,
   sections = [],
   initialSectionId,
+  fromOpen,
 }: CreateWorkspaceComposerProps) {
   const choice = sectionChoice(sections, initialSectionId);
   // The create outlives a render; check the section against the latest list when assigning.
@@ -99,6 +106,7 @@ export function CreateWorkspaceComposer({
   const [sectionMenuOpen, setSectionMenuOpen] = useState(false);
   const startRepo = repos.find((r) => r.id === initialRepoId) ?? repos[0];
   const [settings, setSettings] = useState<Settings | null>(null);
+  const [favorites, setFavorites] = useState<LaunchPick[]>([]);
   const [draft, setDraft] = useState<CreateDraft>(() =>
     newDraft({ repoId: startRepo?.id ?? null, defaultBranch: startRepo?.defaultBranch ?? "main", cityName: suggestName(startRepo)?.name ?? "", ...launchDefaults(null) }),
   );
@@ -115,6 +123,10 @@ export function CreateWorkspaceComposer({
   const submitKeys = [...effectiveShortcuts("chat.submitMessage", overrides), ...effectiveShortcuts("chat.submitOppositeFollowUp", overrides)];
   const submitShortcut = effectiveShortcuts("chat.submitMessage", overrides)[0];
   const submitHint = submitShortcut ? glyphs(submitShortcut) : "↵";
+  const hint = (commandId: string) => {
+    const first = effectiveShortcuts(commandId, overrides)[0];
+    return first ? glyphs(first) : undefined;
+  };
 
   // With no repository yet, the first one added (opened or cloned) is chosen.
   useEffect(() => {
@@ -138,6 +150,11 @@ export function CreateWorkspaceComposer({
         if (!live) return;
         setSettings(s);
         setDraft((d) => ({ ...d, ...launchDefaults(s) }));
+        // Conductor lists the loadout (slot 1 is the default model) as the picker's favorites.
+        listFavorites().then(
+          (rows) => live && setFavorites(loadoutPicks(displayedLoadout(s, parseFavorites(rows)))),
+          () => live && setFavorites(loadoutPicks(displayedLoadout(s, []))),
+        );
       },
       () => undefined,
     );
@@ -291,25 +308,30 @@ export function CreateWorkspaceComposer({
           addRepository("Add repository", true)
         ) : (
           <>
-            <select className="create-chip" aria-label="Repository" value={draft.repoId ?? ""} onChange={(e) => chooseRepo(e.target.value)} disabled={busy} aria-invalid={!!errors.repo}>
-              {repos.map((r) => (
-                <option key={r.id} value={r.id}>{r.name}</option>
-              ))}
-            </select>
+            {/* Conductor's repo trigger (`ZQo`): Tooltip "Switch repo" with the workspace.create hint. */}
+            <Tooltip content="Switch repo" shortcut={hint("workspace.create")}>
+              <select className="create-chip" aria-label="Repository" value={draft.repoId ?? ""} onChange={(e) => chooseRepo(e.target.value)} disabled={busy} aria-invalid={!!errors.repo}>
+                {repos.map((r) => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+            </Tooltip>
             {addRepository("Add…")}
-            <select
-              className="create-chip"
-              aria-label="Base branch"
-              title="Base branch"
-              value={draft.baseBranch}
-              onChange={(e) => setDraft({ ...draft, baseBranch: e.target.value })}
-              disabled={busy}
-              aria-invalid={!!errors.baseBranch}
-            >
-              {branchOptions.map((b) => (
-                <option key={b} value={b}>{b}</option>
-              ))}
-            </select>
+            {/* Conductor's target-branch trigger (`U4a`): Tooltip "Target branch". */}
+            <Tooltip content="Target branch">
+              <select
+                className="create-chip"
+                aria-label="Base branch"
+                value={draft.baseBranch}
+                onChange={(e) => setDraft({ ...draft, baseBranch: e.target.value })}
+                disabled={busy}
+                aria-invalid={!!errors.baseBranch}
+              >
+                {branchOptions.map((b) => (
+                  <option key={b} value={b}>{b}</option>
+                ))}
+              </select>
+            </Tooltip>
           </>
         )}
         <span className="create-eyebrow-end">
@@ -318,6 +340,8 @@ export function CreateWorkspaceComposer({
             branches={branchSrc}
             repoPath={repo?.path ?? null}
             disabled={busy || !repo}
+            shortcut={hint("workspace.createFromPRBranchIssue")}
+            defaultOpen={fromOpen}
             onChange={(from) => {
               setDraft(selectFrom(draft, from));
               if (errors.from) setErrors({ ...errors, from: undefined });
@@ -337,7 +361,7 @@ export function CreateWorkspaceComposer({
           disabled={busy}
         />
         <div className="create-card-bar">
-          <ModelControls value={draft} settings={settings} disabled={busy} onChange={chooseLaunch} />
+          <CreateModelPicker value={draft} favorites={favorites} settings={settings} disabled={busy} onChange={chooseLaunch} />
           <div className="create-split" role="group" aria-label="Create workspace">
             <button
               type="submit"
@@ -397,41 +421,21 @@ export function CreateWorkspaceComposer({
   );
 }
 
-/** The model menu (grouped by agent) and the effort menu for that model's agent. */
-function ModelControls({ value, settings, disabled, onChange }: { value: LaunchModel; settings: Settings | null; disabled: boolean; onChange: (next: LaunchModel) => void }) {
-  const known = agentForModel(value.model) !== null;
-  const levels = effortLevels(value.agent);
+/**
+ * Conductor's create composer model trigger: the chat composer's "Change agent"
+ * picker (`RNi` inside `Hji`), with the loadout's favorites, "Add models" and
+ * "Edit" (Settings › Default models) and the effort submenu, in place of two selects.
+ */
+function CreateModelPicker({ value, favorites, settings, disabled, onChange }: { value: LaunchModel; favorites: readonly LaunchPick[]; settings: Settings | null; disabled: boolean; onChange: (next: LaunchModel) => void }) {
   return (
-    <span className="create-model">
-      <select className="create-chip" aria-label="Model" title="Model" value={value.model} disabled={disabled} onChange={(e) => onChange(chooseModel(value, e.target.value, settings))}>
-        {!known && <option value={value.model}>{value.model}</option>}
-        {(Object.keys(MODEL_CATALOG) as ModelAgent[]).map((agent) => (
-          <optgroup key={agent} label={AGENT_LABEL[agent]}>
-            {MODEL_CATALOG[agent].map((m) => (
-              <option key={m} value={m}>{modelLabel(m)}</option>
-            ))}
-            {agent === "claude" &&
-              CLAUDE_ALIASES.map((m) => (
-                <option key={m} value={m}>{`${modelLabel(m)}, latest`}</option>
-              ))}
-          </optgroup>
-        ))}
-      </select>
-      {levels.length > 0 && (
-        <select
-          className="create-chip"
-          aria-label={value.agent === "codex" ? "Thinking level" : "Effort"}
-          title={value.agent === "codex" ? "Thinking level" : "Effort"}
-          value={value.effort}
-          disabled={disabled}
-          onChange={(e) => onChange({ ...value, effort: e.target.value })}
-        >
-          {!levels.includes(value.effort) && <option value={value.effort}>{levelLabel(value.effort)}</option>}
-          {levels.map((l) => (
-            <option key={l} value={l}>{levelLabel(l)}</option>
-          ))}
-        </select>
-      )}
-    </span>
+    <ModelPicker
+      value={{ model: value.model, effort: value.effort || null }}
+      favorites={favorites}
+      itemLabel={(f) => modelLabel(f.model)}
+      modelName={modelLabel}
+      disabled={disabled}
+      onOpenSettings={() => openSettingsPage("models")}
+      onChange={(next) => onChange(pickLaunch(value, next, settings))}
+    />
   );
 }

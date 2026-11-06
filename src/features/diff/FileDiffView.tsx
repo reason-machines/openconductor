@@ -1,7 +1,7 @@
 // parity:diff.file-render:ui parity:diff.split-unified:ui parity:diff.viewed:ui parity:diff.virtualized:ui
 // One changed file in the "All changes" tab. The code is drawn by Pierre's
 // diff library with the options Conductor's diff tab passes it (REA, 0.87.6):
-// no Pierre file header (ours carries Viewed and discard), Pierre themes,
+// no Pierre file header (ours carries Viewed, discard and copy), Pierre themes,
 // "line-info-basic" separators expanding 20 lines per click, lines wrapped or
 // scrolled by the Wrap lines toggle (the wrap_lines setting, on by default),
 // number-column hover, and a comment started from the gutter button or by
@@ -9,13 +9,18 @@
 // written (enableLineSelection with a controlled selection).
 // Like Conductor, the file is one item of a Pierre CodeView, which renders only
 // the rows in and near the viewport, so a long diff stays cheap to show.
+import { Tooltip } from "../../components/ui/Tooltip.tsx";
+import { CheckIcon, CopyIcon } from "../../components/Icons.tsx";
+import { invoke } from "@tauri-apps/api/core";
+import { inTauri } from "../../backend";
+import { clipboardHtml, COPIED_MS, copySource } from "./copyFile.ts";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { processFile, type CodeViewItem, type CodeViewLineSelection, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
 import { CodeView, EditProvider, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
 import { WhitespaceOnly } from "./Whitespace";
 import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
-import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
+import { matchesEvent } from "../../keybindings/shortcut.ts";
 import { createEditor, type FileEdit } from "./EditInViewer.ts";
 import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
@@ -53,6 +58,10 @@ interface Props {
   onShowWhitespace?: () => void;
   /** Make the entire-file view an editor (EditInViewer.ts); absent where the file can't be edited. */
   edit?: FileEdit;
+  /** The whole new file, for the header's "Copy file contents" button. */
+  loadText?: () => Promise<string>;
+  /** Shows a toast (a failed copy). */
+  notify?: (kind: "info" | "error", message: string) => void;
 }
 
 /** The app theme as Pierre's themeType: `data-theme` on the root, or the system setting when absent. */
@@ -213,7 +222,8 @@ function useCodeViewItem(file: FileDiff, meta: ReturnType<typeof processFile>, l
 }
 
 export function FileDiffView(props: Props) {
-  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools, onShowWhitespace, edit } = props;
+  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools, onShowWhitespace, edit, loadText, notify } = props;
+  const copy = copySource(file, { draft: edit?.current, loadText });
   let body: ReactNode;
   if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
   else if (file.hunks.length === 0)
@@ -238,11 +248,18 @@ export function FileDiffView(props: Props) {
           <span className="d">-{file.deletions}</span>
         </span>
         {onDiscard && (
-          <button className="icon-btn oc-discard" onClick={onDiscard} title="Discard changes" aria-label={`Discard changes to ${file.path}`}>
-            <RevertIcon />
-          </button>
+          <Tooltip content="Discard changes">
+            <button className="icon-btn oc-discard" onClick={onDiscard} aria-label={`Discard changes to ${file.path}`}>
+              <RevertIcon />
+            </button>
+          </Tooltip>
         )}
-        {edit?.dirty && <span className="oc-unsaved" role="img" aria-label="Unsaved changes" title="Unsaved changes" />}
+        {edit?.dirty && (
+          <Tooltip content="Unsaved changes">
+            <span className="oc-unsaved" role="img" aria-label="Unsaved changes" />
+          </Tooltip>
+        )}
+        {copy && <CopyFileButton path={file.path} read={copy} notify={notify} />}
         {tools}
         <ViewedToggle viewed={viewed} onToggle={onToggleViewed} />
       </header>
@@ -256,22 +273,74 @@ export function FileDiffView(props: Props) {
   );
 }
 
+/** Plain text plus Conductor's HTML flavour naming the path (`V$r`), falling back to plain text. */
+async function writeFileToClipboard(path: string, contents: string): Promise<void> {
+  const html = clipboardHtml(path, contents);
+  if (inTauri()) {
+    try {
+      await invoke("plugin:clipboard-manager|write_html", { html, altText: contents });
+    } catch {
+      await invoke("plugin:clipboard-manager|write_text", { text: contents });
+    }
+    return;
+  }
+  try {
+    await navigator.clipboard.write([
+      new ClipboardItem({ "text/plain": new Blob([contents], { type: "text/plain" }), "text/html": new Blob([html], { type: "text/html" }) }),
+    ]);
+  } catch {
+    await navigator.clipboard.writeText(contents);
+  }
+}
+
+/**
+ * Conductor's SimpleCopyButton in the file header: a copy icon that turns into a
+ * check, with the tooltip "Copied!", for two seconds after a copy.
+ */
+function CopyFileButton({ path, read, notify }: { path: string; read: () => Promise<string>; notify?: Props["notify"] }) {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const onClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    read()
+      .then((contents) => writeFileToClipboard(path, contents))
+      .then(() => {
+        setCopied(true);
+        clearTimeout(timer.current);
+        timer.current = setTimeout(() => setCopied(false), COPIED_MS);
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+        notify?.("error", "Failed to copy");
+      });
+  };
+  const label = "Copy file contents";
+  return (
+    <Tooltip content={copied ? "Copied!" : label}>
+      <button type="button" className="oc-copy-file" aria-label={label} onClick={onClick}>
+        {copied ? <CheckIcon size={14} strokeWidth={1.5} /> : <CopyIcon size={14} strokeWidth={1.5} />}
+      </button>
+    </Tooltip>
+  );
+}
+
 /** Conductor's viewed toggle tooltip, which says what a click does. */
 export const viewedLabel = (viewed: boolean): string => (viewed ? "Mark as not viewed" : "Mark as viewed");
 
 /** Conductor's ghost "Viewed" button: a check box icon and the word, tooltip with the toggle's shortcut. */
 function ViewedToggle({ viewed, onToggle }: { viewed: boolean; onToggle: () => void }) {
-  const { overrides } = useKeybindingOverrides();
-  const key = effectiveShortcuts("diff.toggleViewed", overrides)[0];
   const label = viewedLabel(viewed);
   return (
-    <button type="button" className="oc-viewed" aria-pressed={viewed} aria-label={label} title={key ? `${label} (${glyphs(key)})` : label} onClick={onToggle}>
-      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" />
-        {viewed && <path d="M5.5 8.2l1.8 1.8 3.4-4" />}
-      </svg>
-      Viewed
-    </button>
+    <Tooltip content={label} shortcut="diff.toggleViewed">
+      <button type="button" className="oc-viewed" aria-pressed={viewed} aria-label={label} onClick={onToggle}>
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" />
+          {viewed && <path d="M5.5 8.2l1.8 1.8 3.4-4" />}
+        </svg>
+        Viewed
+      </button>
+    </Tooltip>
   );
 }
 

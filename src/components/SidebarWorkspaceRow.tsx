@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState, type Dispatch, type MouseEvent, type 
 import type { AppState, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { RowStatusIcon } from "./RowStatusIcon";
-import { rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
+import { rowGitStatus, rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
+import { StatusMatrix } from "./StatusMatrix";
+import { useStatusMatrix } from "../settings/useStatusMatrix";
 import { labelTargetBranch, workspaceLabel } from "./sidebarLabel";
 import { useBranchPrefix } from "./useBranchPrefix";
 import { WorkspaceActionsMenu } from "./WorkspaceActionsMenu";
@@ -16,6 +18,13 @@ import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
 import { applyRowLookup, useRowPrPoll } from "../features/pr/sidebarPrPoller";
 import { usePrSettings } from "../features/pr/usePullRequest";
 import type { LookupResult } from "../features/pr/types";
+import { clearManuallyUnreadForWorkspace, markManuallyUnread, selectedChatOf } from "../state/autoUnread";
+import { attentionChat, isWorkspaceUnread } from "../state/chatUnread";
+import { requestChat, workspaceChats } from "../state/openChat";
+import { chatStatuses } from "../features/chat/chatRuntime";
+import { Tooltip } from "./Tooltip";
+import { ArchiveIcon } from "./Icons";
+import { glyphs } from "../keybindings/shortcut";
 
 interface Props {
   workspace: Workspace;
@@ -40,10 +49,18 @@ interface Props {
   branchPrefix?: string;
   /** A press that may become a drag onto a section, Pinned or My workspaces. */
   onPointerDown?: (e: PointerEvent<HTMLButtonElement>) => void;
+  /** Archive this workspace: the hover button at the row's right end (Conductor's `iea`). */
+  onArchive?: () => void;
 }
 
-/** One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat. */
-export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix, onPointerDown }: Props) {
+const ARCHIVE_COMMAND = COMMANDS.find((c) => c.id === "workspace.archive");
+const ARCHIVE_SHORTCUT = ARCHIVE_COMMAND ? glyphs(ARCHIVE_COMMAND.key) : undefined;
+
+/**
+ * One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat,
+ * and the Archive button that replaces the diff stat while the row is hovered.
+ */
+export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix, onPointerDown, onArchive }: Props) {
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
   const label = workspaceLabel({
     name: ws.name,
@@ -56,52 +73,79 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
   });
   const { ref, stat, onScreen } = useRowDiffStat(ws, targetBranch, active);
   useRowPrPoll({ ws, repoPath, onScreen, active, onResult: (r) => onPrLookup?.(r) });
-  // Every chat of the workspace, open or not, plus what the open view reports (and the demo's "working").
-  const session = useWorkspaceAgentStatus(ws);
+  // Every chat of the workspace, open or not; the demo's status only while the workspace is not open.
+  const session = useWorkspaceAgentStatus(ws, active);
   const status = rowStatus({ workspaceState: ws.state, session, pr: ws.pr, hasRemote });
   const statusLabel = rowStatusLabel(status);
+  // Settings › Experimental › Workspace status matrix: the matrix with the PR's status and unread folded in (`hWt`).
+  const matrix = useStatusMatrix();
   return (
-    <button
-      ref={ref}
-      type="button"
-      className="sb-ws"
-      data-testid="left-sidebar-workspace-item"
-      data-active={active || undefined}
-      data-unread={ws.unread || undefined}
-      data-pinned={typeof ws.pinnedAt === "number" || undefined}
-      data-menu-open={menuOpen || undefined}
-      aria-current={active ? "page" : undefined}
-      onClick={onSelect}
-      onContextMenu={onContextMenu}
-      onPointerDown={onPointerDown}
-      title={`${label} · ${ws.branch} · ${statusLabel}`}
-    >
-      <span className="sb-ws-lead" data-testid="workspace-leading-visual" data-hint={hint || undefined}>
-        <span
-          className="sb-ws-status"
-          data-testid="workspace-status-icon"
-          data-status={status}
-          data-color={rowStatusColor(status)}
-          role="img"
-          aria-label={statusLabel}
-          aria-hidden={hint || undefined}
-        >
-          <RowStatusIcon status={status} />
+    <div className="sb-ws-row">
+      <button
+        ref={ref}
+        type="button"
+        className="sb-ws"
+        data-testid="left-sidebar-workspace-item"
+        data-active={active || undefined}
+        data-unread={isWorkspaceUnread(ws) || undefined}
+        data-pinned={typeof ws.pinnedAt === "number" || undefined}
+        data-menu-open={menuOpen || undefined}
+        aria-current={active ? "page" : undefined}
+        onClick={onSelect}
+        onContextMenu={onContextMenu}
+        onPointerDown={onPointerDown}
+        title={`${label} · ${ws.branch} · ${statusLabel}`}
+      >
+        <span className="sb-ws-lead" data-testid="workspace-leading-visual" data-hint={hint || undefined}>
+          <span
+            className="sb-ws-status"
+            data-testid="workspace-status-icon"
+            data-status={status}
+            data-color={matrix ? undefined : rowStatusColor(status)}
+            data-matrix={matrix || undefined}
+            role={matrix ? undefined : "img"}
+            aria-label={matrix ? undefined : statusLabel}
+            aria-hidden={hint || undefined}
+          >
+            {matrix ? (
+              <StatusMatrix status={status} gitStatus={rowGitStatus({ pr: ws.pr, hasRemote })} hasUnread={isWorkspaceUnread(ws)} />
+            ) : (
+              <RowStatusIcon status={status} />
+            )}
+          </span>
+          {shortcutNumber !== undefined && (
+            <span className="sb-ws-hint" aria-label={hintLabel(shortcutNumber)} aria-hidden={!hint} data-state={hint ? "visible" : "hidden"}>
+              {shortcutNumber}
+            </span>
+          )}
         </span>
-        {shortcutNumber !== undefined && (
-          <span className="sb-ws-hint" aria-label={hintLabel(shortcutNumber)} aria-hidden={!hint} data-state={hint ? "visible" : "hidden"}>
-            {shortcutNumber}
+        <span className="sb-ws-name">{label}</span>
+        {(stat.added > 0 || stat.removed > 0) && (
+          <span className="sb-ws-diff" data-testid="workspace-diff-stat">
+            {stat.added > 0 && <span className="add">+{compactCount(stat.added)}</span>}
+            {stat.removed > 0 && <span className="del">-{compactCount(stat.removed)}</span>}
           </span>
         )}
-      </span>
-      <span className="sb-ws-name">{label}</span>
-      {(stat.added > 0 || stat.removed > 0) && (
-        <span className="sb-ws-diff" data-testid="workspace-diff-stat">
-          {stat.added > 0 && <span className="add">+{compactCount(stat.added)}</span>}
-          {stat.removed > 0 && <span className="del">-{compactCount(stat.removed)}</span>}
-        </span>
+      </button>
+      {onArchive && (
+        <div className="sb-ws-archive">
+          {/* Conductor shows the shortcut in the tooltip only on the selected row, since ⌘⇧A archives the open workspace. */}
+          <Tooltip content="Archive workspace" shortcut={active ? ARCHIVE_SHORTCUT : undefined}>
+            <button
+              type="button"
+              aria-label="Archive workspace"
+              data-testid="workspace-archive-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onArchive();
+              }}
+            >
+              <ArchiveIcon size={12} />
+            </button>
+          </Tooltip>
+        </div>
       )}
-    </button>
+    </div>
   );
 }
 
@@ -168,8 +212,10 @@ type MenuTarget = { repoId: string; workspaceId: string; x: number; y: number };
 
 /**
  * Row props and the open menu for every workspace row in the sidebar.
- * `rowProps(repoId, ws)` gives select (which also clears unread, as opening a
- * workspace's session does in Conductor) and right-click.
+ * `rowProps(repoId, ws)` gives select and right-click. As in Conductor (renderApp
+ * @9,885,472), a click on another workspace's row opens it (showing a chat reads it,
+ * autoUnread's readOnView); a click on the open workspace's row opens its first chat
+ * that is unread or waits on the user (`fea`) and marks it read.
  */
 export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { onRename, onArchive, onNewSection, collapsedSections, onRowPointerDown, onCopyLink }: RowCallbacks = {}) {
   const [menu, setMenu] = useState<MenuTarget | null>(null);
@@ -180,7 +226,11 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
   const { optionalChecksBlock } = usePrSettings();
   const branchPrefix = useBranchPrefix();
 
+  const archive = (repoId: string, ws: Workspace) =>
+    onArchive ? onArchive(repoId, ws) : dispatch({ type: "archiveWorkspace", repoId, workspaceId: ws.id });
+
   const rowProps = (repoId: string, ws: Workspace) => ({
+    onArchive: () => archive(repoId, ws),
     repoPath: state.repos.find((r) => r.id === repoId)?.path || undefined,
     branchPrefix,
     onPrLookup: (r: LookupResult) => applyRowLookup(dispatch, repoId, ws, r, optionalChecksBlock),
@@ -189,8 +239,14 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
     shortcutNumber: numbers.get(ws.id),
     showShortcutHint: hintsVisible,
     onSelect: () => {
-      dispatch({ type: "select", selection: { kind: "workspace", repoId, workspaceId: ws.id } });
-      if (ws.unread) dispatch({ type: "setWorkspaceUnread", repoId, workspaceId: ws.id, unread: false });
+      if (!(sel.kind === "workspace" && sel.workspaceId === ws.id)) {
+        dispatch({ type: "select", selection: { kind: "workspace", repoId, workspaceId: ws.id } });
+        return;
+      }
+      const chat = attentionChat(ws, workspaceChats(ws.id), chatStatuses());
+      if (!chat) return;
+      if (chat.unread) dispatch({ type: "setChatUnread", repoId, workspaceId: ws.id, chatId: chat.id, unread: false, at: Date.now() });
+      requestChat(chat.id);
     },
     onContextMenu: (e: MouseEvent) => {
       e.preventDefault();
@@ -214,12 +270,24 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
         sections={state.sections ?? []}
         currentSectionId={sectionOf(state.sections, ws.id)?.id}
         actions={{
-          toggleRead: () => dispatch({ type: "setWorkspaceUnread", ...ids, unread: !ws.unread }),
+          toggleRead: () => {
+            // Conductor's row menu (renderApp @7,306,180): an unread workspace is read whole
+            // (markWorkspaceAsRead, and its hand marks go); otherwise its selected chat is
+            // marked unread by hand, which sticks while it is on screen.
+            if (isWorkspaceUnread(ws)) {
+              clearManuallyUnreadForWorkspace(ws.id);
+              dispatch({ type: "markWorkspaceRead", ...ids });
+            } else {
+              const chatId = selectedChatOf(ws.id);
+              markManuallyUnread(chatId);
+              dispatch({ type: "setChatUnread", ...ids, chatId, unread: true, at: Date.now() });
+            }
+          },
           togglePin: () => dispatch({ type: "setWorkspacePinned", ...ids, pinned: typeof ws.pinnedAt !== "number" }),
           setStatus: (status) => dispatch({ type: "setWorkspaceStatus", ...ids, status }),
           rename: onRename && (() => onRename(repo.id, ws)),
           copyLink: onCopyLink && (() => onCopyLink(ws)),
-          archive: () => (onArchive ? onArchive(repo.id, ws) : dispatch({ type: "archiveWorkspace", ...ids })),
+          archive: () => archive(repo.id, ws),
           moveToSection: (sectionId) => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId }),
           newSection: () => onNewSection?.(ws),
           removeFromSection: () => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId: null }),

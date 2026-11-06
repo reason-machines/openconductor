@@ -5,6 +5,10 @@
 //   the model offers Fast mode; "add-dir" is left out in a cloud workspace,
 // - the agent's own commands (`slashCommands` the agent reports) come first
 //   and hide a built-in of the same name,
+// - the agent's skills follow the commands (`jI`), each keyed
+//   `skill:<name>|<path>` and named by its display name; the filtered list
+//   keeps commands before skills, and the menu heads the first skill with
+//   "Skills" (`jNi`, `FNi`); evidence/chat/slash-menu/README.md,
 // - the menu shows the items whose `supportedAgents` include the chat's
 //   agent, filtered by fuzzysort on the name with exact matches first (`lj`,
 //   `jNi`); an empty query keeps every item in order,
@@ -15,7 +19,7 @@
 import fuzzysort from "fuzzysort";
 
 /** The agent running the chat, as Conductor names it; Reason runs as an ACP agent. */
-export type ComposerAgent = "claude" | "codex" | "cursor" | "acp";
+export type ComposerAgent = "claude" | "codex" | "acp";
 
 export type SlashEffect =
   | "clear_session"
@@ -30,7 +34,9 @@ export type SlashEffect =
   | "toggle_plan_mode"
   | "toggle_fast_mode"
   /** An agent-reported command: the agent runs it from the prompt text. */
-  | "agent";
+  | "agent"
+  /** An agent skill: picking it inserts `insert`, and the agent runs it from the prompt. */
+  | "skill";
 
 export interface SlashCommand {
   name: string;
@@ -38,6 +44,39 @@ export interface SlashCommand {
   argumentHint: string;
   effect: SlashEffect;
   supportedAgents: ComposerAgent[];
+  /** Unique in a command set; a skill's is `skill:<name>|<path>`. Defaults to the name. */
+  id?: string;
+  /** What picking it puts in the draft; defaults to `/name`. */
+  insert?: string;
+}
+
+/** A skill the agent reports (Conductor's sidecar `skills` entries). */
+export interface AgentSkillInput {
+  name: string;
+  description: string;
+  path: string;
+  displayName?: string;
+}
+
+export const SKILL_ID_PREFIX = "skill:";
+export const isSkill = (c: SlashCommand): boolean => c.effect === "skill";
+export const commandId = (c: SlashCommand): string => c.id ?? c.name;
+
+/**
+ * A skill as a menu item (Conductor's `jI`). Codex runs a skill named in the
+ * prompt as `$name` (its own composer's mention); Reason and Claude Code as
+ * `/name`.
+ */
+export function skillCommand(skill: AgentSkillInput, agent: ComposerAgent): SlashCommand {
+  return {
+    id: `${SKILL_ID_PREFIX}${skill.name}|${encodeURIComponent(skill.path)}`,
+    name: skill.displayName ?? skill.name,
+    description: skill.description,
+    argumentHint: "",
+    effect: "skill",
+    supportedAgents: [agent],
+    insert: `${agent === "codex" ? "$" : "/"}${skill.name}`,
+  };
 }
 
 const BOTH: ComposerAgent[] = ["claude", "codex"];
@@ -68,7 +107,7 @@ export function planCommand(isPlanMode: boolean, agent: ComposerAgent): SlashCom
 
 /** Conductor's `vmo`. */
 export function fastCommand(isFastMode: boolean, agent: ComposerAgent): SlashCommand {
-  const what = agent === "codex" ? "fast mode (uses credits 2x faster)" : agent === "cursor" ? "fast mode (uses Cursor's faster variant)" : "fast mode (uses extra credits)";
+  const what = agent === "codex" ? "fast mode (uses credits 2x faster)" : "fast mode (uses extra credits)";
   return { name: "fast", description: isFastMode ? "Disable fast mode" : `Enable ${what}`, argumentHint: "", effect: "toggle_fast_mode", supportedAgents: [agent] };
 }
 
@@ -81,12 +120,14 @@ export interface CommandSetInput {
   planMode?: { isPlanMode: boolean };
   /** The model offers Fast mode; `isFastMode` says whether it is on. */
   fastMode?: { isFastMode: boolean };
-  /** Commands the agent reports (name and description). */
-  agentCommands?: readonly { name: string; description: string }[];
+  /** Commands the agent reports (name, description, argument hint). */
+  agentCommands?: readonly { name: string; description: string; argumentHint?: string }[];
+  /** Skills the agent reports; listed after every command. */
+  skills?: readonly AgentSkillInput[];
 }
 
 /** Every command the chat's "/" menu can show, agent commands first (Conductor's `c1`, `jI`, `z6`). */
-export function commandSet({ agent, isCloudWorkspace = false, goalsEnabled = false, planMode, fastMode, agentCommands = [] }: CommandSetInput): SlashCommand[] {
+export function commandSet({ agent, isCloudWorkspace = false, goalsEnabled = false, planMode, fastMode, agentCommands = [], skills = [] }: CommandSetInput): SlashCommand[] {
   const builtins = [
     ...BUILTIN_COMMANDS.filter((c) => !(isCloudWorkspace && c.name === ADD_DIR)).filter((c) => goalsEnabled || c.name !== "goal"),
     ...(planMode ? [planCommand(planMode.isPlanMode, agent)] : []),
@@ -94,12 +135,12 @@ export function commandSet({ agent, isCloudWorkspace = false, goalsEnabled = fal
   ];
   const reported: SlashCommand[] = agentCommands
     .filter((c) => !(isCloudWorkspace && c.name === ADD_DIR))
-    .map((c) => ({ name: c.name, description: c.description, argumentHint: "", effect: "agent" as const, supportedAgents: [agent] }));
+    .map((c) => ({ name: c.name, description: c.description, argumentHint: c.argumentHint ?? "", effect: "agent" as const, supportedAgents: [agent] }));
   const taken = new Set(reported.map((c) => c.name));
   const seen = new Set<string>();
-  return [...reported, ...builtins.filter((c) => !taken.has(c.name))]
+  return [...reported, ...builtins.filter((c) => !taken.has(c.name)), ...skills.map((s) => skillCommand(s, agent))]
     .filter((c) => c.supportedAgents.includes(agent))
-    .filter((c) => (seen.has(c.name) ? false : (seen.add(c.name), true)));
+    .filter((c) => (seen.has(commandId(c)) ? false : (seen.add(commandId(c)), true)));
 }
 
 export interface SlashMatch {
@@ -108,12 +149,16 @@ export interface SlashMatch {
   indices: number[];
 }
 
-/** Fuzzy match on the name; exact matches first, then fuzzysort's order (Conductor's `lj`). */
+/**
+ * Fuzzy match on the name; exact matches first, then fuzzysort's order
+ * (Conductor's `lj`), and commands before skills (`jNi`).
+ */
 export function matchCommands(commands: readonly SlashCommand[], query: string): SlashMatch[] {
-  if (!query.trim()) return commands.map((command) => ({ command, indices: [] }));
+  const bySkill = (ms: SlashMatch[]) => [...ms.filter((m) => !isSkill(m.command)), ...ms.filter((m) => isSkill(m.command))];
+  if (!query.trim()) return bySkill(commands.map((command) => ({ command, indices: [] })));
   const hits = fuzzysort.go(query, commands as SlashCommand[], { key: "name" }).map((r) => ({ command: r.obj, indices: Array.from(r.indexes) }));
   const q = query.toLowerCase();
-  return [...hits.filter((h) => h.command.name.toLowerCase() === q), ...hits.filter((h) => h.command.name.toLowerCase() !== q)];
+  return bySkill([...hits.filter((h) => h.command.name.toLowerCase() === q), ...hits.filter((h) => h.command.name.toLowerCase() !== q)]);
 }
 
 /**
@@ -130,9 +175,14 @@ export function slashQuery(draft: string, caret: number): string | null {
 
 /** The draft after picking a command: `/name ` replaces what was typed up to the first space. */
 export function completeCommand(draft: string, name: string): string {
+  return completeInsert(draft, `/${name}`);
+}
+
+/** The draft after picking `command`: its insert text (`/name`, or `$name` for a Codex skill), then a space. */
+export function completeInsert(draft: string, insert: string): string {
   const space = draft.search(/\s/);
   const rest = space < 0 ? "" : draft.slice(space).replace(/^\s+/, "");
-  return `/${name} ${rest}`;
+  return `${insert} ${rest}`;
 }
 
 /** A message that names a known command (Conductor's `gWn`): `/name args` or `/[name](command) args`. */
@@ -163,4 +213,4 @@ export function isKnownCommand(name: string): boolean {
 }
 
 /** The agent names Conductor uses in "/x is not available for …" (`_A`). */
-export const AGENT_NAMES: Record<ComposerAgent, string> = { claude: "Claude Code", codex: "Codex", cursor: "Cursor", acp: "this agent" };
+export const AGENT_NAMES: Record<ComposerAgent, string> = { claude: "Claude Code", codex: "Codex", acp: "this agent" };

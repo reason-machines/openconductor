@@ -38,6 +38,10 @@ pub enum ServiceError {
     },
     /// Reading or writing `conductor.db`'s settings table failed.
     Db(String),
+    /// The key is not stored for the agent's current provider.
+    NotProviderSecret(String),
+    /// The Keychain refused or failed.
+    Store(String),
 }
 
 impl fmt::Display for ServiceError {
@@ -49,6 +53,8 @@ impl fmt::Display for ServiceError {
                 write!(f, "{kind} is not a provider for {agent}")
             }
             ServiceError::Db(e) => write!(f, "settings table: {e}"),
+            ServiceError::NotProviderSecret(k) => write!(f, "no stored {k} for this agent"),
+            ServiceError::Store(e) => write!(f, "keychain: {e}"),
         }
     }
 }
@@ -233,6 +239,22 @@ impl SettingsService {
         ))
     }
 
+    /// One stored secret of `agent`'s current provider, for the explicit
+    /// "show" on Settings › Agents. Keys the provider does not use are
+    /// refused, so this cannot read arbitrary Keychain items.
+    pub fn reveal_secret(&self, agent: AgentKind, key: &str) -> Result<SecretString, ServiceError> {
+        let settings = self.get()?;
+        let config = settings.provider_for(agent);
+        if !config.provider().secret_keys().contains(&key) {
+            return Err(ServiceError::NotProviderSecret(key.to_owned()));
+        }
+        match self.store.get(key) {
+            Ok(Some(value)) => Ok(value),
+            Ok(None) => Err(ServiceError::NotProviderSecret(key.to_owned())),
+            Err(e) => Err(ServiceError::Store(e.to_string())),
+        }
+    }
+
     /// The environment to launch `agent` with: its configured provider (its
     /// CLI login if unset) and that provider's secrets.
     pub fn launch_env(&self, agent: AgentKind) -> Result<LaunchEnv, String> {
@@ -242,6 +264,30 @@ impl SettingsService {
             .effective(agent)
             .launch_env(self.store.as_ref())
             .map_err(|e| e.to_string())
+    }
+
+    /// A Codex chat's `app-server` launch in `cwd`: provider env plus the
+    /// model, effort, personality and executable from settings
+    /// ([`super::launch::codex_launch`]). `executable` is `codex` unless
+    /// `codex_executable_path` is set; [`Self::codex_executable_override`]
+    /// tells the caller which.
+    pub fn codex_launch(&self, cwd: &Path) -> Result<crate::agent::codex_cli::CodexLaunch, String> {
+        let settings = self.get().map_err(|e| e.to_string())?;
+        super::launch::codex_launch(
+            &settings,
+            cwd,
+            self.store.as_ref(),
+            super::launch::Purpose::Chat,
+        )
+        .map_err(|e| e.to_string())
+    }
+
+    /// `codex_executable_path` when it is set and not blank.
+    pub fn codex_executable_override(&self) -> Option<PathBuf> {
+        let settings = self.get().ok()?;
+        let path = settings.codex_executable_path?;
+        let path = path.trim();
+        (!path.is_empty()).then(|| PathBuf::from(path))
     }
 
     /// Switches `agent` to `config`, storing `secrets` for it. The settings
@@ -366,6 +412,38 @@ mod tests {
     }
 
     #[test]
+    fn reveal_returns_only_the_current_providers_stored_secret() {
+        let (svc, store) = service();
+        svc.connect(
+            AgentKind::Claude,
+            config(r#"{"kind":"anthropic_api"}"#),
+            secret(keys::ANTHROPIC_API_KEY, "sk-ant-api03-reveal-me-bAAA"),
+        )
+        .unwrap();
+        let shown = svc
+            .reveal_secret(AgentKind::Claude, keys::ANTHROPIC_API_KEY)
+            .unwrap();
+        assert_eq!(shown.expose(), "sk-ant-api03-reveal-me-bAAA");
+        // Another provider's key, even when it is in the store, is refused.
+        store
+            .set(
+                keys::OPENAI_API_KEY,
+                &SecretString::new("sk-openai-xxxxxxxxxxxx"),
+            )
+            .unwrap();
+        assert!(svc
+            .reveal_secret(AgentKind::Claude, keys::OPENAI_API_KEY)
+            .is_err());
+        assert!(svc
+            .reveal_secret(AgentKind::Codex, keys::OPENAI_API_KEY)
+            .is_err());
+        svc.disconnect(AgentKind::Claude).unwrap();
+        assert!(svc
+            .reveal_secret(AgentKind::Claude, keys::ANTHROPIC_API_KEY)
+            .is_err());
+    }
+
+    #[test]
     fn connect_saves_config_and_secret_then_disconnect_resets() {
         let (svc, store) = service();
         assert_eq!(
@@ -421,14 +499,14 @@ mod tests {
         );
 
         let bad_option = svc.connect(
-            AgentKind::Claude,
-            config(r#"{"kind":"bedrock","region":" "}"#),
-            secret(keys::BEDROCK_API_KEY, "abc"),
+            AgentKind::Codex,
+            config(r#"{"kind":"openai_api","project":"a b"}"#),
+            secret(keys::OPENAI_API_KEY, "abc"),
         );
         assert!(bad_option.is_err());
 
         assert_eq!(store.get(keys::ANTHROPIC_API_KEY).unwrap(), None);
-        assert_eq!(store.get(keys::BEDROCK_API_KEY).unwrap(), None);
+        assert_eq!(store.get(keys::OPENAI_API_KEY).unwrap(), None);
         assert!(!svc.path().exists());
     }
 
@@ -437,7 +515,7 @@ mod tests {
     #[test]
     fn settings_round_trip_through_ipc_json() {
         let mut s: Settings = toml::from_str(
-            "future = 1\n[git]\nfuture_git = [\"a\"]\n[providers.claude]\nkind = \"bedrock\"\nregion = \"us-east-1\"\n",
+            "future = 1\n[git]\nfuture_git = [\"a\"]\n[providers.claude]\nkind = \"anthropic_api\"\nbase_url = \"https://gw.example\"\n",
         )
         .unwrap();
         s.models.review = Some("opus".into());

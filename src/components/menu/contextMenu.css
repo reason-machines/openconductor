@@ -1,0 +1,114 @@
+/* Right-click menus (ContextMenu.tsx). Classes and tokens are Conductor's (renderApp-BYEcFwvt.css,
+   `:root,.light` and `.dark`): --popover, --popover-foreground, --popover-accent, --popover-ring,
+   --accent-foreground, --muted-foreground, --border, --destructive, --status-*; text-sm is 14px/20px,
+   text-xs 12px/16px, tracking-widest 1.44px, rounded-lg 8px, rounded-md 6px, shadow-md, and the
+   default transition easing cubic-bezier(.4, 0, .2, 1). */
+.cm {
+  --cm-popover: var(--conductor-popover);
+  --cm-popover-fg: var(--conductor-popover-fg);
+  --cm-popover-accent: var(--conductor-popover-accent);
+  --cm-popover-ring: var(--conductor-popover-ring);
+  --cm-accent-fg: var(--conductor-accent-fg);
+  --cm-muted: var(--conductor-muted-fg);
+  --cm-border: var(--conductor-border);
+  --cm-destructive: var(--destructive);
+  --cm-status-backlog: var(--conductor-status-backlog);
+  --cm-status-in-progress: var(--conductor-status-in-progress);
+  --cm-status-in-review: var(--status-in-review);
+  --cm-status-done: var(--status-done);
+  --cm-status-canceled: var(--conductor-status-canceled);
+  position: fixed;
+  z-index: 50;
+  box-sizing: border-box;
+  min-width: 8rem;
+  max-height: calc(100vh - 10px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--cm-popover);
+  color: var(--cm-popover-fg);
+  box-shadow: 0 0 0 1px var(--cm-popover-ring), 0 4px 6px -1px var(--conductor-menu-shadow), 0 2px 4px -2px var(--conductor-menu-shadow);
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  transform-origin: var(--transform-origin);
+  transition-property: opacity, scale;
+  transition-duration: 0.1s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.cm-backdrop { position: fixed; inset: 0; z-index: 50; }
+.cm[data-starting-style],
+.cm[data-ending-style] {
+  opacity: 0;
+  scale: 0.95;
+}
+/* `min-w-[200px]` (workspace menu), `w-44` (Set status), `min-w-44` (Move to section). */
+.cm.cm-min-w-200 { min-width: 200px; }
+.cm.cm-w-44 { width: 176px; }
+.cm.cm-min-w-44 { min-width: 176px; }
+
+.cm-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  outline: none;
+  white-space: nowrap;
+}
+.cm-item:focus,
+.cm-item[data-popup-open] {
+  background: var(--cm-popover-accent);
+  color: var(--cm-accent-fg);
+}
+.cm-item[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.cm-item svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+.cm-item > svg { color: var(--cm-muted); }
+.cm svg.lucide { stroke-width: 1px; }
+.cm svg.lucide * { vector-effect: non-scaling-stroke; }
+.cm-item[data-destructive],
+.cm-item[data-destructive]:focus,
+.cm-item[data-destructive] svg { color: var(--cm-destructive); }
+.cm-chevron { margin-left: auto; }
+.cm-grow { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* X7t: the number key on an "Open in" row. */
+.cm-numkey { margin-left: auto; padding-left: 16px; font-family: var(--font-mono); font-size: 12px; line-height: 16px; color: var(--cm-muted); }
+.cm-shortcut {
+  margin-left: auto;
+  padding-left: 16px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 1.44px;
+  color: var(--cm-muted);
+}
+.cm-sep {
+  height: 1px;
+  margin: 4px -4px;
+  background: var(--cm-border);
+}
+/* Set status glyphs (`K5e`): status colours, the item draws them at 16px. */
+.cm-status-wrap { display: flex; align-items: center; }
+.cm-item svg.cm-status-backlog { color: var(--cm-status-backlog); }
+.cm-item svg.cm-status-in-progress { color: var(--cm-status-in-progress); }
+.cm-item svg.cm-status-in-review { color: var(--cm-status-in-review); }
+.cm-item svg.cm-status-done { color: var(--cm-status-done); }
+.cm-item svg.cm-status-canceled { color: var(--cm-status-canceled); }
+/* Section emoji in Move to section (`flex size-4 shrink-0 items-center justify-center leading-none`). */
+.cm-emoji { display: flex; flex-shrink: 0; align-items: center; justify-content: center; width: 16px; height: 16px; line-height: 1; }
+/* The chat turn footer's dropdown (`Tm` + `Yc` with `gap-2`): its items pass 14px icons
+   (`h-3.5 w-3.5`) in the item's own colour, not the context menu's muted 16px ones. */
+.cm.cm-turn-menu .cm-item svg { width: 14px; height: 14px; }
+.cm.cm-turn-menu .cm-item > svg { color: inherit; }

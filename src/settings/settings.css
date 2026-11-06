@@ -9,63 +9,71 @@
  * screenshots at 1440 px: 256 px navigation, content 40 px in, at most 896 px.
  */
 .settings {
-  --s-fg: #2c2826;
-  --s-muted: #8e8885;
-  --s-border: #eae8e6;
-  --s-input: #14100f1a;
-  --s-switch-on: #2c2826;
-  --s-switch-knob-on: #fff;
-  --s-switch-off: #14100f1a;
-  --s-hover: #14100f0a;
-  --s-active: #14100f0d;
-  --s-card: #fafaf9;
-  --s-warning: #a4847f;
+  --s-fg: var(--text);
+  --s-muted: var(--muted);
+  --s-border: var(--border);
+  --s-input: var(--input);
+  --s-switch-on: var(--switch-on);
+  --s-switch-knob-on: var(--switch-knob);
+  --s-switch-off: var(--switch-off);
+  --s-hover: var(--hover);
+  --s-active: var(--sidebar-accent);
+  --s-card: var(--secondary);
+  --s-warning: var(--warning);
   grid-template-columns: 256px 1fr;
   color: var(--s-fg);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .settings {
-    --s-fg: #eae8e6;
-    --s-muted: #a5a09c;
-    --s-border: #ffffff1a;
-    --s-input: #fff3;
-    --s-switch-on: #eae8e6;
-    --s-switch-knob-on: #2c2826;
-    /* Conductor dark off switch: #43403f track, #2c2826 knob (sampled from its repo Git page). */
-    --s-switch-off: #43403f;
-    --s-hover: #ffffff0a;
-    --s-active: #ffffff0d;
-    --s-card: #211e1c;
-    --s-warning: #ddc1b1;
-  }
-}
-:root[data-theme="dark"] .settings {
-  --s-fg: #eae8e6;
-  --s-muted: #a5a09c;
-  --s-border: #ffffff1a;
-  --s-input: #fff3;
-  --s-switch-on: #eae8e6;
-  --s-switch-knob-on: #2c2826;
-  --s-switch-off: #43403f;
-  --s-hover: #ffffff0a;
-  --s-active: #ffffff0d;
-  --s-card: #211e1c;
-  --s-warning: #ddc1b1;
 }
 
 /* Navigation */
 .settings .settings-nav { background: var(--bg); border-right: 1px solid var(--s-border); padding: 8px 6px; font-size: 14px; }
-.settings .settings-nav-top { display: flex; justify-content: flex-end; align-items: center; height: 24px; margin: 2px 4px 12px; }
-.settings .settings-back { display: inline-flex; align-items: center; gap: 6px; color: var(--s-muted); font-size: 14px; padding: 2px 4px; border-radius: 6px; }
+/* Conductor's `I9a` top bar: "flex h-8 shrink-0 items-center justify-end pt-2" at the top of the nav;
+   Back is "gap-1.5 rounded-md px-1.5 py-1 text-sm" with a 16 px icon: 28 px tall, right edge on the items' edge. */
+.settings .settings-nav-top { display: flex; justify-content: flex-end; align-items: center; box-sizing: border-box; height: 32px; padding-top: 8px; margin: -8px 0 0; }
+/* Conductor's `I9a` under Back: the account switcher in "pt-1.5" (the sidebar's 32 px row,
+   "px-1.5 py-1.5 gap-2"), then "Search settings" in "px-0.5 py-3", then the groups. */
+.settings .settings-nav-account { padding-top: 6px; line-height: 20px; }
+.settings .settings-nav-search { padding: 12px 2px; }
+/* `a9a`: Input "h-7 pl-8 pr-10 rounded-md text-sm bg-background !border !border-input", focus border
+   `special`; search icon 14 px at 10 px; key hint "h-4 min-w-5 rounded-sm border bg-muted px-1 text-[10px]" 8 px from the right. */
+.settings .settings-search { position: relative; width: 100%; min-width: 0; }
+.settings .settings-search > svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--s-muted); pointer-events: none; }
+.settings .settings-search input { box-sizing: border-box; display: flex; width: 100%; height: 28px; padding: 8px 40px 8px 32px; border-radius: 6px; border: 1px solid var(--s-input); background: var(--bg); color: var(--s-fg); font: inherit; font-size: 14px; line-height: 20px; outline: none; -webkit-appearance: none; appearance: none; }
+.settings .settings-search input::placeholder { color: var(--s-muted); opacity: 1; }
+.settings .settings-search input::-webkit-search-cancel-button { display: none; }
+.settings .settings-search input:focus { border-color: var(--emphasis); }
+.settings .settings-search-kbd { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); pointer-events: none; display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 16px; min-width: 20px; box-sizing: border-box; padding: 0 4px; border-radius: 4px; border: 1px solid var(--s-border); background: var(--surface-muted); color: var(--s-muted); font-family: inherit; font-size: 10px; font-weight: 500; line-height: 1; box-shadow: 0 1px 2px 0 var(--shadow-5); }
+.settings .settings-search-kbd > span { display: inline-flex; align-items: center; font-size: 10px; line-height: 1; }
+.settings .settings-search-clear { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: inline-flex; padding: 2px; border-radius: 4px; color: var(--s-muted); }
+.settings .settings-search-clear:hover { color: var(--s-fg); }
+/* Results (`E1`): anchor width, 6 px below, "rounded-lg ring-1 ring-popover-ring bg-sidebar-background p-1 shadow-md",
+   scale .95 + fade over 100 ms; list "max-h-[min(480px,…)] flex-col gap-0.5"; row `l9a` "gap-3 rounded-md px-2 py-1.5 text-sm". */
+.settings .settings-search-results { position: fixed; z-index: 50; box-sizing: border-box; padding: 4px; border-radius: 8px; background: var(--sidebar-background); color: var(--popover-text); box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10); transform-origin: top right; animation: settings-search-in 100ms ease; }
+@keyframes settings-search-in { from { opacity: 0; scale: 0.95; } }
+@media (prefers-reduced-motion: reduce) { .settings .settings-search-results { animation: none; } }
+.settings .settings-search-list { display: flex; flex-direction: column; gap: 2px; max-height: min(480px, calc(100vh - 120px)); overflow-y: auto; }
+.settings .settings-search-result { display: flex; align-items: flex-start; gap: 12px; width: 100%; padding: 6px 8px; border-radius: 6px; text-align: left; font-size: 14px; line-height: 20px; color: var(--s-fg); }
+.settings .settings-search-result.highlighted { background: var(--sidebar-accent); }
+.settings .settings-search-result-icon { display: flex; margin-top: 2px; flex-shrink: 0; color: var(--s-muted); }
+.settings .settings-search-result-icon svg { width: 16px; height: 16px; }
+.settings .settings-search-result-text { min-width: 0; flex: 1; }
+.settings .settings-search-result-label, .settings .settings-search-result-tab { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.settings .settings-search-result-label .dim { opacity: 0.5; }
+.settings .settings-search-result-tab { font-size: 12px; line-height: 16px; color: var(--s-muted); }
+.settings .settings-search-empty { padding: 6px 8px; font-size: 12px; line-height: 16px; color: var(--s-muted); }
+.settings .settings-back { display: inline-flex; align-items: center; gap: 6px; color: var(--s-muted); font-size: 14px; line-height: 20px; padding: 4px 6px; border-radius: 6px; }
 .settings .settings-back:hover { color: var(--s-fg); }
-.settings .settings-group { margin-top: 18px; gap: 4px; }
-.settings .settings-group:first-of-type { margin-top: 6px; }
-.settings .settings-group-title { color: var(--s-muted); font-size: 12px; font-weight: 400; padding: 0 9px 4px; }
-.settings .settings-nav .nav-item { display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 10px; border-radius: 6px; color: var(--s-fg); opacity: 0.85; font-size: 14px; }
+/* Conductor's Back: "transition-colors" (Tailwind default 150 ms, cubic-bezier(.4,0,.2,1)). */
+.settings .settings-back { transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke; transition-duration: 150ms; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+/* Conductor: groups 20 px apart, title "px-2 py-1.5 text-xs" (28 px) directly above the items, items gap-1. */
+.settings .settings-group { margin-top: 20px; gap: 4px; }
+.settings .settings-nav-search + .settings-group { margin-top: 0; }
+.settings .settings-group-title { color: var(--s-muted); font-size: 12px; line-height: 16px; font-weight: 400; padding: 6px 8px 2px; }
+/* Conductor's `t9a` link: "gap-3 rounded-md px-2 py-1.5 text-sm" (32 px, icon at 8 px, text at 36 px). */
+.settings .settings-nav .nav-item { display: flex; align-items: center; gap: 12px; height: 32px; padding: 0 8px; border-radius: 6px; color: var(--s-fg); opacity: 0.85; font-size: 14px; line-height: 20px; }
 .settings .settings-nav .nav-item svg { color: var(--s-muted); flex-shrink: 0; }
 .settings .settings-nav .nav-item:hover { background: var(--s-hover); opacity: 1; }
 .settings .settings-nav .nav-item.active { background: var(--s-active); opacity: 1; font-weight: 500; }
-.settings .settings-repos { margin-top: 18px; gap: 4px; }
+.settings .settings-repos { margin-top: 20px; gap: 4px; }
 .settings .settings-repo-initial { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; background: var(--repo-initial-bg); color: var(--repo-initial-fg); font-size: 10px; font-weight: 600; flex-shrink: 0; }
 .settings .settings-repo-sections { margin: 4px 0 0 16px; border-left: 1px solid var(--s-border); padding-left: 8px; display: flex; flex-direction: column; gap: 4px; }
 
@@ -89,6 +97,13 @@
 .settings .settings-row-label { display: flex; align-items: center; gap: 8px; min-height: 28px; margin: 0; font-size: 14px; font-weight: 500; }
 .settings .settings-row-help { margin-top: 2px; font-size: 14px; line-height: 20px; color: var(--s-muted); }
 .settings .settings-row-help p { margin: 0; }
+/* Conductor's root directory row: two paragraphs in "space-y-1". */
+.settings .settings-help-spaced p + p { margin-top: 4px; }
+/* Conductor's SSH key row (`npa`) is not a bordered row: "space-y-2" around a "space-y-0.5" title and
+   description (title plain font-medium, no min-h-7), so it sits 20 px under the row above with no rule. */
+.settings .settings-rows > .settings-plain-row { border-top: 0; padding-top: 0; display: flex; flex-direction: column; gap: 8px; }
+.settings .settings-plain-row .settings-plain-row-title { display: block; min-height: 0; font-size: 14px; line-height: 20px; font-weight: 500; }
+.settings .settings-plain-row-help { margin-top: 2px; font-size: 14px; line-height: 20px; color: var(--s-muted); }
 .settings .settings-row-help a, .settings .settings-header a { color: inherit; text-decoration: underline; }
 .settings .settings-row-help a:hover { color: var(--s-fg); }
 .settings .settings-row-help code { font-family: var(--font-mono); font-size: 13px; }
@@ -96,6 +111,11 @@
 .settings .settings-row-warning { color: var(--s-warning); }
 .settings .settings-row-control { flex-shrink: 0; display: flex; align-items: center; gap: 8px; }
 .settings .settings-row-body { margin-top: 12px; }
+/* Conductor wraps a row's lone switch in a plain block ("shrink-0") around the inline-flex
+   Switch, so the 14px/20px line box makes the wrapper 23 px and the switch sits at its top,
+   1.5 px above the row's centre. Same layout here. */
+.settings .settings-row-control:has(> input[role="switch"]:only-child) { display: block; font-size: 14px; line-height: 20px; }
+.settings .settings-row-control:has(> input[role="switch"]:only-child) > input[role="switch"] { display: inline-block; vertical-align: -2px; /* Conductor's inline-flex switch takes its baseline from the 16 px thumb, 2 px above the bottom. */ }
 
 /* Controls */
 .settings select.settings-select, .settings .settings-row-control select {
@@ -108,37 +128,51 @@
 .settings select option { background: var(--bg); color: var(--s-fg); }
 .settings .settings-rows input[type="checkbox"][role="switch"] {
   appearance: none; -webkit-appearance: none; position: relative; width: 40px; height: 20px; margin: 0; border-radius: 999px;
-  background: var(--s-switch-off); cursor: pointer; transition: background-color 0.15s; flex-shrink: 0;
+  background: var(--s-switch-off); cursor: pointer; flex-shrink: 0;
+  /* Conductor's Switch: track "transition-colors duration-150", thumb "transition-transform duration-150", both Tailwind's default cubic-bezier(.4,0,.2,1). */
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .settings .settings-rows input[type="checkbox"][role="switch"]::after {
   content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%;
-  background: var(--s-switch-knob-on); transition: transform 0.15s;
+  background: var(--s-switch-knob-on); transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .settings .settings-rows input[type="checkbox"][role="switch"]:checked { background: var(--s-switch-on); }
 .settings .settings-rows input[type="checkbox"][role="switch"]:checked::after { transform: translateX(20px); }
 .settings .settings-rows input[type="checkbox"][role="switch"]:disabled { opacity: 0.5; cursor: not-allowed; }
 .settings .settings-rows input[type="checkbox"][role="switch"]:focus-visible { outline: 2px solid var(--s-muted); outline-offset: 2px; }
-.settings .btn.settings-outline { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid var(--s-input); border-radius: 6px; background: transparent; color: var(--s-fg); font-size: 14px; font-weight: 500; }
+/* Conductor's Button outline, size default (`REe`): "h-8 px-3 text-sm gap-2 rounded-md border !border-input bg-background font-450". */
+.settings .btn.settings-outline { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border: 1px solid var(--s-input); border-radius: 6px; background: transparent; color: var(--s-fg); font-size: 14px; font-weight: 450; }
 .settings .btn.settings-outline:hover:not(:disabled) { background: var(--s-hover); }
 .settings .btn.settings-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 .settings .btn.settings-test { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 8px; color: var(--s-fg); font-size: 13px; background: none; border: 0; }
 .settings .btn.settings-test:disabled { opacity: 0.5; }
+/* Conductor's ghost Button: "hover:bg-sidebar-accent", instant. */
+.settings .btn.settings-test { border-radius: 6px; }
+.settings .btn.settings-test:hover:not(:disabled) { background: var(--sidebar-accent); }
 .settings .settings-kbd { font: inherit; font-size: 12px; padding: 0 3px; letter-spacing: 1px; }
+/* Conductor's Input (`Qo`): "flex h-8 rounded-md px-3 py-2 text-sm bg-background !border !border-input". */
 .settings .settings-field {
-  width: 100%; box-sizing: border-box; height: 36px; padding: 0 12px; border: 1px solid var(--s-input); border-radius: 6px;
+  width: 100%; box-sizing: border-box; height: 32px; padding: 0 12px; border: 1px solid var(--s-input); border-radius: 6px;
   background: transparent; color: var(--s-fg); font: inherit; font-size: 14px;
 }
 .settings .settings-field.mono { font-family: var(--font-mono); font-size: 12px; }
+.settings .settings-field::placeholder { color: var(--s-muted); opacity: 1; }
 .settings .settings-field-wrap { position: relative; display: flex; align-items: center; gap: 8px; }
-.settings .settings-field-wrap .settings-field { padding-right: 36px; }
-.settings .settings-field-icon { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; color: var(--s-muted); }
+/* Conductor's path fields (`mGt`, SSH key `npa`): "font-mono text-xs pr-8", a 24 px icon button "absolute right-1". */
+.settings .settings-field-wrap .settings-field { padding-right: 32px; }
+.settings .settings-field-icon { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; color: var(--s-muted); }
 .settings .settings-field-icon:hover { color: var(--s-fg); background: var(--s-hover); }
 .settings .settings-number-field { width: 128px; }
 .settings .settings-preview { margin-top: 16px; padding: 16px 12px; border-radius: 6px; background: var(--s-card); font-family: var(--font-mono); font-size: 14px; line-height: 20px; white-space: pre; overflow-x: auto; }
-.settings .settings-radios { gap: 12px; }
-.settings .settings-radio { font-size: 14px; gap: 8px; }
-.settings .settings-radio input[type="radio"] { width: 16px; height: 16px; margin: 0; accent-color: var(--s-fg); }
-.settings .settings-row-danger { margin-top: -8px; font-size: 12px; color: var(--del); }
+/* Conductor's RadioGroup (`eW` "grid gap-2") and item (`KO`): a 16 px circle, "border border-primary
+   text-primary", checked shows a "size-2 rounded-full bg-current" dot; label "text-sm font-normal", "space-x-2". */
+.settings .settings-radios { gap: 8px; }
+.settings .settings-radio { font-size: 14px; line-height: 20px; font-weight: 400; gap: 8px; }
+.settings .settings-radio input[type="radio"] { -webkit-appearance: none; appearance: none; flex-shrink: 0; box-sizing: border-box; width: 16px; height: 16px; margin: 0; border: 1px solid var(--s-fg); border-radius: 999px; background: transparent; color: var(--s-fg); cursor: pointer; }
+.settings .settings-radio input[type="radio"]:checked { background: radial-gradient(circle, currentColor 0 3.5px, transparent 4px); }
+.settings .settings-radio input[type="radio"]:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.settings .settings-radio input[type="radio"]:disabled { cursor: not-allowed; opacity: 0.5; }
+.settings .settings-row-danger { margin-top: -8px; font-size: 12px; color: var(--diff-del); }
 .settings .settings-radio-detail { margin-left: 24px; gap: 4px; }
 .settings .settings-radio-detail .settings-field { width: 100%; max-width: 420px; }
 
@@ -224,7 +258,7 @@
 .settings .settings-env-pasted { border: 1px solid var(--s-border); border-radius: 6px; }
 .settings .settings-env-pasted > div { display: flex; gap: 12px; padding: 8px 12px; font-size: 14px; }
 .settings .settings-env-pasted > div + div { border-top: 1px solid var(--s-border); }
-.settings-sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: rgb(0 0 0 / 0.5); display: flex; justify-content: flex-end; }
+.settings-sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: var(--backdrop-strong); display: flex; justify-content: flex-end; }
 .settings-sheet { position: relative; display: flex; flex-direction: column; width: 520px; max-width: calc(100vw - 2rem); height: 100%; background: var(--bg); border-left: 1px solid var(--s-border); color: var(--s-fg); }
 .settings .settings-sheet-close { top: 16px; right: 16px; transform: none; }
 .settings-sheet-body { flex: 1; overflow-y: auto; padding: 40px 24px 24px; display: flex; flex-direction: column; }
@@ -243,3 +277,20 @@
 .settings .btn.settings-sm { height: 28px; padding: 0 10px; font-size: 13px; }
 .settings .settings-env-sections code, .settings .settings-env-pasted code { background: none; padding: 0; border-radius: 0; }
 .settings .settings-env-name-text code { font-size: 14px; }
+
+/* Press state. Conductor's Button (`REe`, renderApp-D_fmY7hW.js) is "transition-transform
+   duration-150 ease-out will-change-transform active:scale-[0.97]
+   motion-reduce:active:scale-100 disabled:pointer-events-none"; ease-out is
+   cubic-bezier(0, 0, .2, 1) (renderApp-BYEcFwvt.css --ease-out). Hover colours change
+   at once (no colour transition). Plain icon buttons (Browse for executable) and nav
+   links have no transition in Conductor and keep none here. */
+.settings .btn {
+  transition-property: transform, translate, scale, rotate;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  will-change: transform;
+}
+.settings .btn:active:not(:disabled) { scale: 0.97; }
+@media (prefers-reduced-motion: reduce) {
+  .settings .btn:active:not(:disabled) { scale: 1; }
+}

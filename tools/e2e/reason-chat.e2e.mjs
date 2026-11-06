@@ -16,10 +16,17 @@
 //   7. "Reset chat" on turn 5   "Reset chat?" says 2 changed; Reset deletes
 //                        turn 6 and restores turn 5's files
 //   8. "permission"      Reason asks session/request_permission: the chat shows
-//                        "Approve tool use", the session is needs_user_permission
+//                        "Do you want to run this command?", the session is needs_user_permission
 //                        in conductor.db, the sidebar row and the Home list show
 //                        "Needs permission"; Allow resumes the turn and the
 //                        status goes back to idle
+//   9. Fork to new workspace on turn 5
+//   10. Relaunch: quit the app, select another Reason workspace (the fake's
+//                        `fake-reason-selected`, as switching workspace in the
+//                        Reason desktop app does), start the app again and send
+//                        a follow-up in the first chat. It must resume the
+//                        chat's own Session in its workspace: no 409
+//                        client_session_id_conflict, no new Session.
 //   The Session runs Settings' default model (set before the chat opens).
 //
 // Usage (under a display, e.g. xvfb-run):
@@ -120,7 +127,7 @@ async function screenshot(name) {
 }
 
 const chatText = () => run("const el = document.querySelector('.chat-scroll'); return el ? el.innerText : null;");
-const running = () => run("return !!document.querySelector('.composer button[title=\"Stop the agent\"]');");
+const running = () => run("return !!document.querySelector('.composer button[aria-label^=\"Stop the agent\"]');");
 
 /** What has the keyboard, for failure messages: the composer, a terminal, or another element. */
 const focusedElement = () =>
@@ -154,12 +161,17 @@ const pass = (s) => {
   console.log(`ok - ${s}`);
 };
 
-try {
-  await waitFor("tauri-driver", () => fetch(`${base}/status`).then((r) => r.ok), 20000);
+/** Starts the app in a new WebDriver session. */
+async function launch() {
   const session = await wd("POST", "/session", {
     capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } },
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
+}
+
+try {
+  await waitFor("tauri-driver", () => fetch(`${base}/status`).then((r) => r.ok), 20000);
+  await launch();
 
   // Seed one repo with one workspace through the real backend: the sidebar lists
   // what conductor.db holds, so the repo is added and a worktree created like the UI does.
@@ -239,7 +251,7 @@ try {
   await waitFor('the Bash "sleep" tool row', () =>
     run(`return [...document.querySelectorAll(".chat-tool")].some((r) => /\\bBash\\b/.test(r.innerText) && r.innerText.includes("sleep"));`),
   );
-  await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
+  await wd("POST", `/element/${await find('.composer button[aria-label^="Stop the agent"]')}/click`, {});
   await waitFor('"Interrupted by user"', () => chatText().then((t) => t.includes("Interrupted by user")), 15000);
   await turnDone(4);
   pass('Stop ends the running turn: "Interrupted by user"');
@@ -284,21 +296,20 @@ try {
   }
   pass(`turns 5 and 6 each saved start/end checkpoints (${refs.length} refs in the workspace)`);
 
-  // Every finished turn has a More actions menu ("Fork to new tab", "Fork to new workspace"); only
-  // turns before the last also have "Reset chat". Opens the turn's menu with
-  // real clicks, reads its items, and leaves it open.
+  // Every finished turn has a "Show message actions" menu ("Fork to new tab", "Fork to new
+  // workspace"); only turns before the last also have "Reset chat". Opens the turn's menu with
+  // real clicks, reads its items, and leaves it open. The menu is portalled to <body> under its
+  // button (.cm-turn-menu, one open at a time) behind a backdrop, so Escape closes it.
   const openMenu = async (turn) => {
-    // The menu opens upward from its button (.chat-menu: bottom: 100%), so a
-    // turn near the top of the transcript would put it past the scroller's edge.
     await run(`document.querySelector(arguments[0]).scrollIntoView({ block: "center" }); return true;`, turn);
-    await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
+    await wd("POST", `/element/${await find(`${turn} button[aria-label="Show message actions"]`)}/click`, {});
     return waitFor(`${turn}'s menu`, () =>
-      run(`const m = document.querySelector('${turn} .chat-menu'); return m ? [...m.querySelectorAll('[role="menuitem"]')].map((b) => b.innerText.trim()) : null;`),
+      run(`const m = document.querySelector('.cm-turn-menu'); return m ? [...m.querySelectorAll('[role="menuitem"]')].map((b) => b.innerText.trim()) : null;`),
     );
   };
   const closeMenu = async (turn) => {
-    await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
-    await waitFor(`${turn}'s menu to close`, () => run(`return !document.querySelector('${turn} .chat-menu');`));
+    await run(`document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })); return true;`);
+    await waitFor(`${turn}'s menu to close`, () => run(`return !document.querySelector('.cm-turn-menu');`));
   };
   const turn5 = `.chat-turn-end[data-turn-id="${id5}"]`;
   const turn6 = `.chat-turn-end[data-turn-id="${id6}"]`;
@@ -309,7 +320,7 @@ try {
   assert.deepEqual(turn5Items, ["Fork to new tab", "Fork to new workspace", "Reset chat"], "turn 5 has both forks and Reset chat");
   pass('the last turn\'s menu has "Fork to new tab" and "Fork to new workspace"; turn 5\'s also has "Reset chat"');
   const resetItem = turn5Items.indexOf("Reset chat") + 1;
-  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]:nth-child(${resetItem})`)}/click`, {});
+  await wd("POST", `/element/${await find(`.cm-turn-menu [role="menuitem"]:nth-child(${resetItem})`)}/click`, {});
   const dialog = await waitFor('"Reset chat?" with "2 changed"', () =>
     run(`const d = document.querySelector('.modal[aria-label="Reset chat?"]'); return d && d.innerText.includes("changed") ? d.innerText : null;`),
   );
@@ -358,22 +369,26 @@ try {
     throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await sidebarStatus())}`);
   });
   const card = await waitFor("the permission card", () => run(`const c = document.querySelector('[data-testid="chat-permission-request"]'); return c ? c.innerText : null;`));
-  assert.match(card, /Approve tool use/);
+  // Conductor's tool card (`Jpo`): the question for an `execute` tool, the call's title, Reason's options.
+  assert.match(card, /Do you want to run this command\?/);
   assert.match(card, /bash: rm -rf build/);
+  assert.match(card, /Allow/);
+  assert.match(card, /Reject/);
   const storedRows = await waitFor("needs_user_permission in conductor.db", async () => {
     const rows = await storedStatuses();
     return Array.isArray(rows) && rows.some((r) => r.chatId === workspace.id && r.status === "needs_user_permission") && rows;
   });
   await screenshot("status-needs-permission-chat");
-  pass(`Reason's permission request shows "Approve tool use", the sidebar row says Needs permission, conductor.db holds ${JSON.stringify(storedRows)}`);
+  pass(`Reason's permission request shows "Do you want to run this command?", the sidebar row says Needs permission, conductor.db holds ${JSON.stringify(storedRows)}`);
 
-  await run(`const b = [...document.querySelectorAll(".sb-row")].find((e) => e.querySelector(".sb-row-label")?.textContent.trim() === "Home"); b.click(); return true;`);
+  // Sidebar Home opens the wordmark screen (#483); the list is the /all-workspaces route.
+  await run(`history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); return true;`);
   await waitFor("Needs permission on the Home row", async () => needsPermission(await homeStatus()));
   await screenshot("status-needs-permission-home");
   pass("the Home list shows the workspace's Needs permission status in place of its time");
 
   await run(`document.querySelector('[data-testid="workspace-status-icon"][data-status="needs-user-permission"]').closest("button").click(); return true;`);
-  await wd("POST", `/element/${await waitFor("the Allow button", () => find('.chat-permission button[data-kind="allow_once"]'))}/click`, {});
+  await wd("POST", `/element/${await waitFor("the Allow button", () => find('[data-testid="chat-permission-request"] button[data-kind="allow_once"]'))}/click`, {});
   await waitFor('"permission: allow"', () => chatText().then((t) => t.includes("permission: allow")));
   await turnDone(8);
   await waitFor("the sidebar row to leave Needs permission", async () => !needsPermission(await sidebarStatus()));
@@ -390,7 +405,7 @@ try {
   const forkItems = await openMenu(turn5);
   const forkItem = forkItems.indexOf("Fork to new workspace") + 1;
   assert.ok(forkItem > 0, JSON.stringify(forkItems));
-  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]:nth-child(${forkItem})`)}/click`, {});
+  await wd("POST", `/element/${await find(`.cm-turn-menu [role="menuitem"]:nth-child(${forkItem})`)}/click`, {});
   const worktrees = () =>
     execFileSync("git", ["worktree", "list", "--porcelain"], { cwd: workspace.path, encoding: "utf8" })
       .split("\n\n")
@@ -408,6 +423,35 @@ try {
   assert.ok(!forkedChat.includes("turn 5 wrote notes.txt"), "the fork opens a new chat, not the source's transcript");
   await screenshot("reason-chat-forked-workspace");
   pass(`Fork to new workspace made ${forked.path} on e2e-v1 with turn 5's notes.txt and "Transcript of e2e.md" in its composer`);
+
+  // 10. Relaunch with another Reason workspace selected, then a follow-up
+  // in the first chat (Sven's 409 client_session_id_conflict).
+  const sessionKey = `openconductor.reason.session.${workspace.id}`;
+  const before = await run("return localStorage.getItem(arguments[0]);", sessionKey);
+  assert.ok(before, `the first chat stored its Reason Session under ${sessionKey}`);
+  const fakeState = () => JSON.parse(readFileSync(join(home, "state.json"), "utf8")).sessions;
+  const sessionsBefore = Object.keys(fakeState());
+  assert.equal(fakeState()[before].workspace, "ws-a", "the Session was created in the selected workspace, ws-a");
+  await wd("DELETE", "");
+  sessionUrl = null;
+  writeFileSync(join(home, "fake-reason-selected"), "ws-b");
+  await launch();
+  await waitFor("the app to load again", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
+  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  await waitFor("the first chat's transcript after the relaunch", () => chatText().then((t) => t && t.includes("turn 5 wrote notes.txt")));
+  assert.equal(await run("return localStorage.getItem(arguments[0]);", sessionKey), before, "the chat kept its Session id");
+  await send("echo: after relaunch");
+  const relaunched = await waitFor('the follow-up\'s reply (or an error)', () =>
+    chatText().then((t) => (/turn \d+: after relaunch|409|client_session_id_conflict|was not sent/.test(t) ? t : null)),
+  );
+  assert.ok(!/409|client_session_id_conflict/.test(relaunched), `no 409 after the relaunch:\n${relaunched}`);
+  const turnN = Number(relaunched.match(/turn (\d+): after relaunch/)?.[1]);
+  await turnDone("after relaunch");
+  const stateAfter = fakeState();
+  assert.deepEqual(Object.keys(stateAfter), sessionsBefore, "no new Reason Session");
+  assert.equal(stateAfter[before].turns, turnN, `Session ${before} ran the follow-up as its turn ${turnN}`);
+  await screenshot("reason-chat-relaunch-follow-up");
+  pass(`after a relaunch with workspace ws-b selected, the follow-up resumed Session ${before} in ws-a ("turn ${turnN}: after relaunch"), with no 409 and no new Session`);
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {

@@ -126,6 +126,11 @@
    "oc": [
     {
      "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-primary .sb-row",
      "text": "Create",
      "after_ms": 800
     }
@@ -156,6 +161,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "click": ".sb-primary .sb-row",
      "text": "Create",
@@ -469,7 +479,17 @@
     "scenario": "populated",
     "actions": []
    },
-   "oc_reason": "OpenConductor has no route or view for /diagnostics",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Help"
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Diagnostics",
+     "after_ms": 800
+    }
+   ],
    "covers": [
     {
      "kind": "route",
@@ -924,11 +944,17 @@
    "id": "settings-terminal",
    "title": "Settings > Big terminal",
    "ref": {
-    "path": "/settings/user/terminal",
+    "path": "/settings/user/experimental",
     "scenario": "populated",
     "actions": [
      {
       "wait": "text=tide-web"
+     },
+     {
+      "click": "#big-terminal-mode"
+     },
+     {
+      "click": "text=\"Big terminal\""
      }
     ]
    },
@@ -943,7 +969,17 @@
     },
     {
      "click": ".settings-nav .nav-item",
-     "text": "Big terminal"
+     "text": "Experimental"
+    },
+    {
+     "click": "input[role=switch]",
+     "text": "Big terminal mode",
+     "after_ms": 400
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Big terminal",
+     "after_ms": 600
     }
    ],
    "covers": [
@@ -1004,7 +1040,7 @@
     },
     {
      "click": ".settings-repo",
-     "text": "tide-web"
+     "text": "Ttide-web"
     },
     {
      "click": ".settings-repo-sections .nav-item",
@@ -1045,7 +1081,7 @@
     },
     {
      "click": ".settings-repo",
-     "text": "tide-web"
+     "text": "Ttide-web"
     },
     {
      "click": ".settings-repo-sections .nav-item",
@@ -1086,7 +1122,7 @@
     },
     {
      "click": ".settings-repo",
-     "text": "tide-web"
+     "text": "Ttide-web"
     },
     {
      "click": ".settings-repo-sections .nav-item",
@@ -1127,7 +1163,7 @@
     },
     {
      "click": ".settings-repo",
-     "text": "tide-web"
+     "text": "Ttide-web"
     },
     {
      "click": ".settings-repo-sections .nav-item",
@@ -1168,7 +1204,7 @@
     },
     {
      "click": ".settings-repo",
-     "text": "tide-web"
+     "text": "Ttide-web"
     },
     {
      "click": ".settings-repo-sections .nav-item",
@@ -1212,7 +1248,7 @@
     },
     {
      "click": ".settings-repo",
-     "text": "tide-web"
+     "text": "Ttide-web"
     },
     {
      "click": ".settings-repo-sections .nav-item",
@@ -1469,6 +1505,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "chord": [
       "Meta"
      ],
@@ -1496,6 +1537,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "chord": [
       "Meta"
@@ -1532,6 +1578,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "chord": [
       "Meta"
      ],
@@ -1560,22 +1611,16 @@
    },
    "oc": [
     {
-     "chord": [
-      "Meta"
-     ],
-     "key": "k",
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
      "after_ms": 800
     },
     {
-     "keys": "Open GitHub project",
-     "after_ms": 600
-    },
-    {
-     "keys": "{Enter}",
+     "click": ".home-card",
+     "text": "Open GitHub project",
      "after_ms": 800
     }
-   ],
-   "oc_note": "OpenConductor's Home shows the workspace list, not the entry cards, so the dialog is opened from the command palette"
+   ]
   },
   {
    "id": "dialog-create-project",
@@ -1594,22 +1639,16 @@
    },
    "oc": [
     {
-     "chord": [
-      "Meta"
-     ],
-     "key": "k",
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
      "after_ms": 800
     },
     {
-     "keys": "Quick start",
-     "after_ms": 600
-    },
-    {
-     "keys": "{Enter}",
+     "click": ".home-card",
+     "text": "Quick start",
      "after_ms": 800
     }
-   ],
-   "oc_note": "opened from the command palette, see dialog-clone-github"
+   ]
   },
   {
    "id": "dialog-rename-workspace",
@@ -1633,6 +1672,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "rclick": ".sb-ws-name"
     },
@@ -1659,6 +1703,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "chord": [
       "Meta"
      ],
@@ -1684,6 +1733,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "click": ".sb-computer"
     }
    ]
@@ -1707,6 +1761,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "rclick": ".sb-ws-name"
     }
@@ -1734,6 +1793,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "rclick": ".sb-ws-name"
     },
@@ -1770,8 +1834,7 @@
      "after_ms": 1500
     },
     {
-     "click": ".composer button",
-     "text": "Opus 5"
+     "click": ".composer .oc-model-chip"
     }
    ]
   },
@@ -1795,6 +1858,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "click": ".sb-menu-trigger",
      "text": "tide-web actions"
     }
@@ -1817,8 +1885,83 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "click": ".sb-footer-btn",
      "text": "Help"
+    }
+   ]
+  },
+  {
+   "id": "dialog-submit-prompt",
+   "title": "Help > Submit a prompt dialog",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "xpath=//button[@aria-label='Settings']/preceding::button[1]"
+     },
+     {
+      "click": "[role=menuitem] >> text=Submit a prompt"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-footer-btn",
+     "text": "Help"
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Submit a prompt",
+     "after_ms": 800
+    }
+   ],
+   "covers": [
+    {
+     "kind": "dialog",
+     "name": "Submit a prompt"
+    }
+   ]
+  },
+  {
+   "id": "diagnostics-run",
+   "title": "Diagnostics after a run",
+   "ref": {
+    "path": "/diagnostics",
+    "scenario": "populated",
+    "actions": [
+     {
+      "click": "text=Run environment diagnostics"
+     }
+    ],
+    "final_settle_ms": 4000
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Help"
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Diagnostics",
+     "after_ms": 800
+    },
+    {
+     "click": ".diag-btn-primary",
+     "after_ms": 4000
     }
    ]
   },
@@ -1845,6 +1988,11 @@
     "final_settle_ms": 300
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "rclick": ".sb-ws-name"
     },
@@ -1877,6 +2025,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "rclick": ".sb-ws-name"
     },

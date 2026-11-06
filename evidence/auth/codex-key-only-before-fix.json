@@ -1,0 +1,40 @@
+{
+  "agent": "codex",
+  "app_commit": "main 95ec07d, before this PR's fix",
+  "host": {
+    "os": "macOS-26.4-arm64-arm-64bit",
+    "machine": "arm64"
+  },
+  "cli_version": "codex-cli 0.166.0",
+  "key_only_control": true,
+  "cli_auth_in_throwaway_home": "Not logged in",
+  "started": "2026-11-06T14:08:39.566Z",
+  "ended": "2026-11-06T14:08:58.200Z",
+  "error": null,
+  "modes": [
+    {
+      "mode": "apikey",
+      "card": "API key",
+      "set_in_app": true,
+      "stored": {
+        "provider": null,
+        "config": {
+          "kind": "openai_api"
+        }
+      },
+      "connected": true,
+      "login_prompt": false,
+      "key_fingerprint": "76e86bc2f5441fbf",
+      "turn": {
+        "status": "failed",
+        "error": "unexpected status 401 Unauthorized: Missing bearer or basic authentication in header, url: https://api.openai.com/v1/responses, cf-ray: a564ac5b197d3e8e-SJC, request id: req_8182f235746140b7a3b58a24d9a1e8e5",
+        "signInNotice": "Authentication requiredCodex is not signed in. Sign in on its Settings \u203a Agents tab, then send your message again.Open Codex settings",
+        "reply": null,
+        "seconds": 16
+      },
+      "result": "fail"
+    }
+  ],
+  "driver_result": "fail",
+  "result": "fail"
+}

@@ -1,0 +1,66 @@
+/* The workspace's right panel as Conductor draws it (REA reference capture
+   evidence/screens/chat--transcript-collapsed-tools--dark.png, 1440x900):
+   pill tabs with the tab's icons at the right end, and under the list a strip
+   with a chevron, Setup, Run, terminal tabs and +. Colours are Conductor's
+   theme tokens (evidence/frontend/css-tokens.json). */
+.ws-right {
+  --rp-pill: var(--surface-accent); /* --accent */
+  --rp-highlight: var(--emphasis); /* --border-highlight: the strip's active underline */
+  --rp-secondary: var(--secondary); /* --secondary: the empty state's button */
+  --rp-muted-fg: var(--muted);
+  /* File-type glyph tints, shared with the chat's file badges (chat.css). */
+  --oc-muted-fg: var(--muted);
+  --oc-tint-blue-600: var(--tint-blue-600); --oc-tint-blue-500: var(--tint-blue-500); --oc-tint-cyan-400: var(--tint-cyan-400);
+  --oc-tint-cyan-600: var(--tint-cyan-600); --oc-tint-yellow-400: var(--tint-yellow-400); --oc-tint-yellow-600: var(--tint-yellow-600);
+  --oc-tint-orange-600: var(--tint-orange-600); --oc-tint-orange-700: var(--tint-orange-700); --oc-tint-red-600: var(--tint-red-600);
+  --oc-tint-green-500: var(--tint-green-500); --oc-tint-green-600: var(--tint-green-600); --oc-tint-gray-600: var(--tint-gray); --oc-tint-documentation: var(--tint-doc);
+  /* Conductor's panel sits on --background, not a lifted panel colour. */
+  --panel: var(--bg);
+  background: var(--bg);
+}
+.ws-right, .ws-right > * { min-width: 0; }
+.ws-right.strip-collapsed { grid-template-rows: minmax(0, 1fr) auto; }
+
+/* Tab row: 28 px pills, 13 px labels. */
+/* At a third of a narrow window the row is wider than the panel; it scrolls sideways inside the
+   panel (Conductor's tab list is a horizontal scroll area) instead of spilling past the window. */
+.rp-tabs { display: flex; align-items: center; gap: 2px; height: 44px; padding: 0 8px 0 10px; flex: none; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.rp-tabs > * { flex: none; }
+.rp-tab { display: inline-flex; align-items: center; height: 28px; padding: 0 9px; border-radius: 6px; color: var(--rp-muted-fg); font-size: 13px; font-weight: 500; white-space: nowrap; }
+.rp-tab:hover { color: var(--text); }
+.rp-tab.active { background: var(--rp-pill); color: var(--text); }
+.rp-tab .tab-count { margin-left: 5px; font-size: 13px; color: var(--rp-muted-fg); }
+.rp-tabs-end { margin-left: auto; display: flex; align-items: center; gap: 2px; }
+.rp-tabs-end .review-button { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; color: var(--accent); font-weight: 500; }
+.rp-icon { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 6px; color: var(--rp-muted-fg); }
+.rp-icon:hover:not(:disabled), .rp-icon.on { background: var(--hover); color: var(--text); }
+.rp-icon:disabled { opacity: 0.4; }
+
+/* The Setup / Run / Terminal strip. */
+.ws-strip { display: flex; flex-direction: column; min-height: 0; border-top: 1px solid var(--border); background: var(--bg); }
+.ws-strip-tabs { display: flex; align-items: stretch; gap: 4px; height: 34px; padding: 0 8px; flex: none; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+.ws-strip.collapsed .ws-strip-tabs { border-bottom: 0; }
+.ws-strip-tabs > .rp-icon { align-self: center; width: 22px; height: 22px; }
+.strip-tab { position: relative; display: inline-flex; align-items: center; gap: 6px; padding: 0 9px; color: var(--rp-muted-fg); font-size: 13px; font-weight: 500; white-space: nowrap; cursor: default; }
+.strip-tab:hover { color: var(--text); }
+.strip-tab.active { color: var(--text); }
+.strip-tab.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--rp-highlight); }
+.strip-tab.term-tab { padding-right: 4px; border-radius: 0; background: none; }
+.strip-tab.term-tab:hover, .strip-tab.term-tab.active { background: none; }
+.strip-tab .term-x { display: inline-flex; padding: 2px; opacity: 0; }
+.strip-tab:hover .term-x, .strip-tab.active .term-x { opacity: 1; }
+.ws-strip-body { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+.ws-strip-body[hidden] { display: none; }
+.ws-strip .scripts { flex: 1; border-top: 0; background: transparent; }
+.ws-strip .terminal-panel { flex: 1; height: auto; min-height: 0; border-top: 0; background: var(--panel); }
+
+/* Run with no run script: Conductor's dashed box. */
+.scripts-empty { flex: 1; min-height: 0; padding: 32px; overflow: auto; }
+.scripts-empty-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 170px; padding: 24px; border: 1px dashed var(--border); border-radius: 8px; text-align: center; }
+.scripts-empty-box p { margin: 0; max-width: 240px; color: var(--rp-muted-fg); font-size: 14px; line-height: 20px; }
+/* Conductor's Button base (`REe`: inline-flex … whitespace-nowrap): the label stays on one line in a narrow panel. */
+.scripts-empty-btn { flex: none; height: 32px; padding: 0 12px; border-radius: 6px; background: var(--rp-secondary); color: var(--text); font-size: 14px; font-weight: 500; white-space: nowrap; }
+.scripts-empty-btn:hover { background: var(--rp-pill); }
+.ws-strip .scripts-meta .scripts-actions { margin-left: auto; }
+.ws-right .diff { background: var(--bg); }
+.ws-strip-tabs > .ws-strip-end { margin-left: auto; }

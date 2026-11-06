@@ -1,15 +1,27 @@
-import { LogoMark } from "./Icons";
+import { BAR_HEIGHT, CORNER_RADIUS, pixelWordmark } from "../home/pixelWordmark";
+
+const MARK = pixelWordmark("OPENCONDUCTOR");
 
 /**
- * Centered Home wordmark: our mark plus the product name, drawn in currentColor so it
- * follows light and dark themes. Decorative only (the window title names the app).
- * Sizing mirrors the reference layout: a 96px-tall box, at most 627px wide.
+ * Centred Home wordmark: OPENCONDUCTOR in the pixel style of Conductor's
+ * CONDUCTOR mark (src/home/pixelWordmark.ts), drawn in currentColor so it
+ * follows light and dark themes. Decorative only, like Conductor's `Xgi`, and in
+ * the same box: `h-24`, full width up to 627px. Our 13 letters are wider than
+ * CONDUCTOR's 9, so the blocks come out smaller than Conductor's.
  */
 export function Wordmark() {
   return (
     <div className="wordmark" aria-hidden="true">
-      <LogoMark size={56} />
-      <span className="wordmark-text">OpenConductor</span>
+      <svg
+        className="wordmark-svg"
+        viewBox={`0 0 ${MARK.width} ${MARK.height}`}
+        fill="currentColor"
+        focusable="false"
+      >
+        {MARK.bars.map((b) => (
+          <rect key={`${b.x},${b.y}`} x={b.x} y={b.y} width={b.width} height={BAR_HEIGHT} rx={CORNER_RADIUS} />
+        ))}
+      </svg>
     </div>
   );
 }

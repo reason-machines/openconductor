@@ -80,8 +80,16 @@ test("fork attachment name", () => {
 test("footer hover agent line: model via agent when the model is known, else the agent", () => {
   assert.equal(turnAgentLabel("byok:anthropic:claude-opus-5-5", "Reason"), "Opus 5.5 via Reason");
   assert.equal(turnAgentLabel("byok:openai-codex:gpt-5.6-sol", "Reason"), "GPT-5.6 Sol via Reason");
-  assert.equal(turnAgentLabel("opus-5-5-1m", "Reason"), "Opus 5.5 (1M) via Reason");
+  // Conductor's label table (`lv`) names opus-5-5-1m "Opus 5.5".
+  assert.equal(turnAgentLabel("opus-5-5-1m", "Reason"), "Opus 5.5 via Reason");
   assert.equal(turnAgentLabel("some-provider:mystery", "Reason"), "Reason");
   assert.equal(turnAgentLabel(null, "Codex"), "Codex");
   assert.equal(knownModelLabel("byok:anthropic:claude-sonnet-4-6"), "Sonnet 4.6");
+});
+
+test("the copy toast names the chat, cut to 20 characters (Conductor's chat tab `L`)", async () => {
+  const { copiedTranscriptMessage } = await import("./fork.ts");
+  assert.equal(copiedTranscriptMessage("concise", "amber-falcon"), 'Copied concise transcript of "amber-falcon"');
+  assert.equal(copiedTranscriptMessage("concise", "  "), 'Copied concise transcript of "chat"');
+  assert.equal(copiedTranscriptMessage("concise", "Fix the flaky login test today"), 'Copied concise transcript of "Fix the flaky login..."');
 });

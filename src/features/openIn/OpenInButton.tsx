@@ -4,7 +4,9 @@
 // opens the "Open in" menu (⌘⇧O). The menu lists the installed apps in
 // Conductor's catalog order with their icons, the default app's ⌘O hint and
 // number keys 1-9, then "Copy path" (`bvs`, rows `X7t`).
+import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { usePresence } from "../../components/motion/usePresence.ts";
 import { PRIORITY } from "../../keybindings/dispatcher.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
@@ -69,6 +71,7 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
   const defaultId = defaultAppId(apps, useAppPrefs().default_open_in);
   const defaultApp = apps.find((a) => a.id === defaultId);
   const [open, setOpen] = useState(false);
+  const presence = usePresence(open);
   const wrap = useRef<HTMLDivElement>(null);
   const menu = useRef<HTMLDivElement>(null);
   const { overrides } = useKeybindingOverrides();
@@ -144,32 +147,37 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
   const mainLabel = defaultApp ? `Open in ${defaultApp.name}` : "Open in...";
   return (
     <div className={split ? "oi" : "oi oi-icon"} ref={wrap} data-testid={split ? "open-in" : undefined}>
+      {/* Conductor's yvs: "Open in <app>" and the workspace.openInApp hint; no tooltip without a default app. */}
       {split && (
-      <button
-        type="button"
-        className="oi-main"
-        disabled={noApps || !defaultApp}
-        aria-label={mainLabel}
-        title={defaultApp && openKeyText ? `${mainLabel} (${openKeyText})` : mainLabel}
-        onClick={() => defaultId && void openIn(defaultId)}
-      >
-        {defaultApp ? <AppIcon app={defaultApp} size={12} /> : <FolderIcon size={12} />}
-      </button>
+        <Tooltip
+          disabled={!defaultApp}
+          content={
+            <div className="oc-tip-row">
+              <span>{mainLabel}</span>
+              <ShortcutHint commandId="workspace.openInApp" />
+            </div>
+          }
+        >
+          <button type="button" className="oi-main" disabled={noApps || !defaultApp} aria-label={mainLabel} onClick={() => defaultId && void openIn(defaultId)}>
+            {defaultApp ? <AppIcon app={defaultApp} size={12} /> : <FolderIcon size={12} />}
+          </button>
+        </Tooltip>
       )}
-      <button
-        type="button"
-        className="oi-chevron"
-        disabled={noApps}
-        aria-label="Open in..."
-        title="Open in..."
-        aria-haspopup="menu"
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-      >
-        <ChevronDownIcon size={12} />
-      </button>
-      {open && (
-        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey} data-tauri-drag-region="false">
+      <Tooltip content={<span>Open in...</span>}>
+        <button
+          type="button"
+          className="oi-chevron"
+          disabled={noApps}
+          aria-label="Open in..."
+          aria-haspopup="menu"
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+        >
+          <ChevronDownIcon size={12} />
+        </button>
+      </Tooltip>
+      {presence.mounted && (
+        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey} data-tauri-drag-region="false" data-motion="popup" {...presence.attrs}>
           {installed === null ? (
             <div className="oi-menu-note">Loading…</div>
           ) : apps.length === 0 ? (

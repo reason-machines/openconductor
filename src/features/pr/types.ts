@@ -96,7 +96,14 @@ export interface GitState {
   canCreatePr: boolean;
   remote: string | null;
   upstream: UpstreamSync | null;
+  /** Target-branch commits HEAD does not have (`git rev-list --count HEAD..<remote>/<target>`); null when the target does not resolve. */
+  targetBehind: number | null;
+  /** HEAD is detached. */
+  detached: boolean;
 }
+
+/** `pr_pull_latest_from_target` (`pull_latest::PullOutcome`). */
+export type PullOutcome = { kind: "upToDate" } | { kind: "pulled" } | { kind: "agent"; message: string } | { kind: "targetMissing" };
 
 export type Tone = "no_pr" | "loading" | "out_of_sync" | "in_sync" | "queued" | "merged";
 
@@ -150,5 +157,10 @@ export interface CreatePrPrompt {
   title?: string | null;
   description?: string | null;
   template?: string | null;
+  /** Null sends none, so `pr_create_prompt` falls back to `prompts.create_pr` from the settings files of `repoPath` / `workspacePath`. */
   customInstructions?: string | null;
+  /** The repository's main checkout, for reading its settings files. */
+  repoPath?: string | null;
+  /** The workspace the PR is opened from, for its workspace settings layer. */
+  workspacePath?: string | null;
 }

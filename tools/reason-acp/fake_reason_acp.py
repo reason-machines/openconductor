@@ -12,6 +12,27 @@ behaviours the provider has to handle (see src-tauri/src/reason_acp/):
 * A prompt sent while another runs ends the earlier one with "cancelled".
 * Sessions persist in state.json in the working directory across
   processes; the working directory also stands in for the home folder.
+* Workspaces, as `reason` 0.2.690 has them: the saved workspaces are ws-a and
+  ws-b; the selected one (the Reason desktop app's selection) is ws-a unless
+  the file `fake-reason-selected` in the working directory names another.
+  `[--workspace SLUG] acp` serves that workspace (else the selected one), and
+  a Session belongs to the workspace it was created in. `session/resume` of a
+  Session in another workspace succeeds without a word, and its next prompt
+  answers "Reason request failed (409 client_session_id_conflict)" with
+  end_turn, as reason acp does: its resume hides the 404 and its prompt then
+  creates a Session under the taken id.
+* `[--workspace SLUG] whoami` prints the account, the organization and the
+  saved workspaces with "[selected]" on the one in use, like `reason whoami`.
+* `status --json`, `login` and `connect`, for Settings › Agents › Reason, in
+  `reason` 0.2.692's formats (evidence/reason-acp/account.md). The account
+  is signed in unless the file `fake-reason-signed-out` is in the working
+  directory; `login` then prints a link and a code and marks the sign-in
+  pending, and the next `status` finds it done (the user used the link).
+  With REASON_API_KEY set the account is signed in with credential
+  `api_key`. `connect` connects this computer (file `fake-reason-connected`).
+* `[--workspace SLUG] session get ID --json` prints the Session and exits 0
+  when it is in that workspace, else prints "Reason: Reason request failed
+  (404 session_not_found)" to stderr and exits 1.
 
 Prompts are commands: "echo: TEXT" (reply split mid-word, prefixed with the
 turn number), "slow" (a running tool until session/cancel), "report" (a
@@ -28,7 +49,10 @@ tool_call_update to completed, with ACP kind, rawInput and _meta.claudeCode.tool
 LISBON_PROMPT, the fixture's user message, is an alias).
 
 session/new reports configOptions `model` and `reasoning_effort` like
-Reason does; session/set_config_option with a value an option does not
+Reason does (session/close drops one that never got a prompt, as Reason
+keeps none); `session get --json`
+reports the model a Session ran on (Claude Opus 5.5 for "default") and its
+reasoning effort; session/set_config_option with a value an option does not
 offer resets it to "default" without an error, as Reason does.
 """
 import json
@@ -37,22 +61,54 @@ import sys
 import threading
 import urllib.parse
 
+# Values, names and descriptions as `reason acp` 0.2.692 reports them (a subset).
+MODELS = [
+    ("default", "Auto", "Your Workspace's default"),
+    ("byok:anthropic:claude-opus-5-5", "Claude Opus 5.5", "Claude · Subscription"),
+    ("byok:openai-codex:gpt-5.6-sol", "GPT-5.6-Sol", "ChatGPT · Subscription"),
+    ("byok:anthropic:claude-sonnet-5-5", "Claude Sonnet 5.5", "Claude · Subscription"),
+    ("byok:anthropic:claude-haiku-5-5", "Claude Haiku 5.5", "Claude · Subscription"),
+    ("byok:anthropic:claude-opus-4-8", "Claude Opus 4.8", "Claude · Subscription"),
+    ("byok:openai-codex:gpt-6.1-sol", "GPT-6.1-Sol", "ChatGPT · Subscription"),
+]
 OPTIONS = {
-    "model": ("Model", ["default", "byok:anthropic:claude-opus-5-5", "byok:openai-codex:gpt-5.6-sol"]),
+    "model": ("Model", [m[0] for m in MODELS]),
     "reasoning_effort": ("Reasoning", ["default", "low", "medium", "high", "xhigh", "max"]),
 }
+NAMES = {m[0]: (m[1], m[2]) for m in MODELS}
+
+
+def option(value):
+    name, description = NAMES.get(value, (value, None))
+    return {"value": value, "name": name, **({"description": description} if description else {})}
 
 
 def config_options(config):
     return [{"id": k, "name": name, "type": "select", "currentValue": config.get(k, "default"),
-             "options": [{"value": v, "name": v} for v in values]}
+             "options": [option(v) for v in values]}
             for k, (name, values) in OPTIONS.items()]
 
 HOME = os.path.realpath(os.getcwd())
 STATE = os.path.join(HOME, "state.json")
+SAVED = ["ws-a", "ws-b"]
+
+
+def selected_workspace():
+    try:
+        with open(os.path.join(HOME, "fake-reason-selected")) as f:
+            return f.read().strip() or "ws-a"
+    except OSError:
+        return "ws-a"
+
+
+ARGS = sys.argv[1:]
+WORKSPACE = selected_workspace()
+if ARGS[:1] == ["--workspace"]:
+    WORKSPACE, ARGS = ARGS[1], ARGS[2:]
 CLOUD = "/home/runner/.reason/workspace/sessions/child-1/repo"
 lock = threading.Lock()
 opened = set()
+foreign = set()  # resumed Sessions of another workspace: their prompts get the 409
 running = {}  # session id -> (request id, threading.Event)
 asks = {}  # our request id -> (threading.Event, [response])
 next_ask = [0]
@@ -168,7 +224,9 @@ def prompt(rid, p, cancel):
     # Real paths: on macOS the temp folder /var/... is a symlink to /private/var/...
     cwd = os.path.realpath(session["cwd"])
     inside_home = cwd == HOME or cwd.startswith(HOME.rstrip("/") + "/")
-    if not inside_home:
+    if sid in foreign:
+        text(sid, "agent_message_chunk", "Reason request failed (409 client_session_id_conflict)")
+    elif not inside_home:
         text(sid, "agent_message_chunk", "Reason request failed (404 device_not_found)")
     elif cmd.startswith("echo: "):
         reply = f"turn {session['turns']}: {cmd[6:]}"
@@ -245,7 +303,7 @@ def handle(msg):
     elif method == "session/new":
         state = load()
         sid = f"sess-{len(state['sessions']) + 1}"
-        state["sessions"][sid] = {"cwd": p["cwd"], "turns": 0, "title": None}
+        state["sessions"][sid] = {"cwd": p["cwd"], "turns": 0, "title": None, "workspace": WORKSPACE}
         save(state)
         opened.add(sid)
         send({"id": rid, "result": {"sessionId": sid, "configOptions": config_options({})}})
@@ -259,15 +317,26 @@ def handle(msg):
         config[p["configId"]] = p["value"] if p["value"] in values else "default"
         save(state)
         send({"id": rid, "result": {"configOptions": config_options(config)}})
+    elif method == "session/close":
+        # Reason keeps no Session that never got a prompt.
+        state = load()
+        if state["sessions"].get(p.get("sessionId"), {}).get("turns") == 0:
+            del state["sessions"][p["sessionId"]]
+            save(state)
+        opened.discard(p.get("sessionId"))
+        send({"id": rid, "result": {}})
     elif method == "session/resume":
-        if p["sessionId"] in load()["sessions"]:
+        session = load()["sessions"].get(p["sessionId"])
+        if session is not None:
             opened.add(p["sessionId"])
+            if session.get("workspace", "ws-a") != WORKSPACE:
+                foreign.add(p["sessionId"])
             send({"id": rid, "result": {}})
         else:
             send({"id": rid, "error": {"code": -32002, "message": "Resource not found"}})
     elif method == "session/list":
         items = [{"sessionId": k, "cwd": v["cwd"], "title": f"{v['turns']} turns"}
-                 for k, v in load()["sessions"].items()]
+                 for k, v in load()["sessions"].items() if v.get("workspace", "ws-a") == WORKSPACE]
         send({"id": rid, "result": {"sessions": items}})
     elif method == "session/prompt":
         cancel = begin(rid, p)
@@ -281,6 +350,79 @@ def handle(msg):
         send({"id": rid, "error": {"code": -32601, "message": f"Method not found: {method}"}})
 
 
-for line in sys.stdin:
-    if line.strip():
-        handle(json.loads(line))
+def whoami():
+    print("e2e@example.com")
+    print(f"Organization: Workspace {WORKSPACE}")
+    print("Saved workspaces:")
+    for slug in [WORKSPACE] + [w for w in SAVED if w != WORKSPACE]:
+        print(f"  {slug} (Workspace {slug})" + (" [selected]" if slug == WORKSPACE else ""))
+
+
+def session_get(sid):
+    session = load()["sessions"].get(sid)
+    if session is None or session.get("workspace", "ws-a") != WORKSPACE:
+        sys.stderr.write("Reason: Reason request failed (404 session_not_found)\n")
+        sys.exit(1)
+    # Auto ("default") runs Reason's pick; the fake picks Claude Opus 5.5.
+    config = session.get("config", {})
+    model = config.get("model", "default")
+    effort = config.get("reasoning_effort", "default")
+    print(json.dumps({"session_id": sid, "status": "exit", "title": session.get("title"),
+                      "model": None if session["turns"] == 0 else
+                      ("byok:anthropic:claude-opus-5-5" if model == "default" else model),
+                      "reasoning_effort": "high" if effort == "default" else effort}))
+
+
+def marker(name):
+    return os.path.join(HOME, name)
+
+
+def status():
+    key = os.environ.get("REASON_API_KEY")
+    if os.path.exists(marker("fake-reason-login-pending")):
+        for m in ("fake-reason-login-pending", "fake-reason-signed-out"):
+            os.remove(marker(m)) if os.path.exists(marker(m)) else None
+    signed_in = bool(key) or not os.path.exists(marker("fake-reason-signed-out"))
+    ids = {w: f"org-{w}" for w in SAVED}
+    connected = os.path.exists(marker("fake-reason-connected"))
+    print(json.dumps({
+        "version": "0.2.692",
+        "channel": "production",
+        "account": {"id": "u1", "name": "E2E", "email": "e2e@example.com",
+                    "credential": "api_key" if key else "login"} if signed_in else None,
+        "account_error": None,
+        "organization": {"id": ids[WORKSPACE] if WORKSPACE in ids else WORKSPACE,
+                         "name": f"Workspace {WORKSPACE}", "slug": WORKSPACE} if signed_in else None,
+        "workspaces": [{"id": ids[w], "slug": w, "name": f"Workspace {w}", "selected": w == WORKSPACE}
+                       for w in SAVED] if signed_in else [],
+        "mcp": [],
+        "connection": {"workspaces": [{"organization_id": ids[WORKSPACE], "state": "connected",
+                                       "blocked": False}]} if signed_in and connected else None,
+    }))
+
+
+def login():
+    if not os.path.exists(marker("fake-reason-signed-out")):
+        print("Already signed in as e2e@example.com.")
+        return
+    open(marker("fake-reason-login-pending"), "w").close()
+    print("Open this link to sign in to Reason: https://reasonmachines.com/cli/connect?request=e2e-request")
+    print("The page shows the code E2E1-CODE.")
+    print("It finishes on its own once you have; run `reason login` again any time to see where it stands.")
+
+
+if ARGS[:1] == ["whoami"]:
+    whoami()
+elif ARGS[:2] == ["status", "--json"]:
+    status()
+elif ARGS[:1] == ["login"]:
+    login()
+elif ARGS[:1] == ["connect"]:
+    open(marker("fake-reason-connected"), "w").close()
+    print("Connected this computer to Reason.")
+elif ARGS[:2] == ["session", "get"]:
+    session_get(ARGS[2])
+else:
+    for line in sys.stdin:
+        if line.strip():
+            handle(json.loads(line))

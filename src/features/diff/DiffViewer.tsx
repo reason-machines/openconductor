@@ -2,6 +2,7 @@
 // The diff viewer in two places, as in Conductor: the changed-files list in the
 // right panel, and the selected file in an "All changes" tab in the main area.
 // Both read one useWorkspaceDiff state. The list is in ChangesList.tsx.
+import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import type { ReactNode } from "react";
 import "./diff.css";
 import { DiscardDialog } from "./DiscardDialog";
@@ -34,11 +35,13 @@ function LayoutToggle({ value, onChange }: { value: DiffLayout; onChange: (v: Di
   return (
     <span className="oc-seg oc-icons" role="group" aria-label="Diff layout">
       {(Object.keys(LAYOUT_ICON) as DiffLayout[]).map((v) => (
-        <button key={v} aria-pressed={v === value} onClick={() => onChange(v)} title={LAYOUT_TITLE[v]} aria-label={LAYOUT_TITLE[v]}>
-          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            {LAYOUT_ICON[v]}
-          </svg>
-        </button>
+        <Tooltip key={v} content={LAYOUT_TITLE[v]}>
+          <button aria-pressed={v === value} onClick={() => onChange(v)} aria-label={LAYOUT_TITLE[v]}>
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              {LAYOUT_ICON[v]}
+            </svg>
+          </button>
+        </Tooltip>
       ))}
     </span>
   );
@@ -53,10 +56,12 @@ export interface DiffTabProps {
   annotations?: (file: FileDiff, anchor: LineAnchor) => ReactNode;
   /** Shown above the file: PR-level and whole-file comments. */
   notes?: (file: FileDiff) => ReactNode;
+  /** Shows a toast (a failed copy of the file). */
+  notify?: (kind: "info" | "error", message: string) => void;
 }
 
 /** Main-area "All changes" tab: the file picked in the changes list, with its toolbar. */
-export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations, notes }: DiffTabProps) {
+export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps) {
   const { selected, files, load } = diff;
   if (!selected) {
     return (
@@ -68,11 +73,11 @@ export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations,
     );
   }
   const f = files[diff.current];
-  return <OpenFile diff={diff} f={f} selected={selected} onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} notes={notes} />;
+  return <OpenFile diff={diff} f={f} selected={selected} onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} notes={notes} notify={notify} />;
 }
 
 /** The open file, editable in the entire-file layout (EditInViewer.ts). */
-function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annotations, notes }: DiffTabProps & { f: FileDiff; selected: FileDiff }) {
+function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff }) {
   const { opts, update } = diff;
   const edit = useFileEdit(diff.worktree, selected.path, editableContents(selected, opts.layout, opts.ignoreWhitespace), diff.reloadQuietly);
   return (
@@ -92,6 +97,8 @@ function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annot
           anchors={anchors?.(f)}
           annotations={annotations && ((a) => annotations(f, a))}
           loadFull={() => diff.loadFull(f)}
+          loadText={() => diff.loadText(f)}
+          notify={notify}
           onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
           onShowWhitespace={() => update({ ignoreWhitespace: false })}
           edit={edit}
@@ -106,7 +113,7 @@ function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annot
           }
         />
         {diff.unread >= 0 && diff.unread !== diff.current && (
-          <button className="btn btn-small oc-next-unread" onClick={() => diff.open(diff.unread)} title="Open the next file not marked as viewed">
+          <button className="btn btn-small oc-next-unread" onClick={() => diff.open(diff.unread)}>
             Next unread ›
           </button>
         )}

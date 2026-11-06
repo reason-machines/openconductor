@@ -70,3 +70,28 @@ not yet committed, so treat each line as unconfirmed until they are.
   the `*_keychain_setting` handlers, blocked per the REA test report).
 - No live provider credentials were exercised; validation here checks shape
   only, not that a backend accepts a key.
+
+## Agent credentials in the launch environment (Track A, 2026-11-06)
+
+Read on sven m5 max from Conductor 0.87.6's sidecar source
+(`~/code/conductor-rea-work/persist-rea/runtime-src/conductor-runtime.js`, extracted
+earlier from `Contents/Resources/bin/.internal/conductor-runtime`) and its frontend
+(`renderApp-D_fmY7hW.js`, `index-BGEQ8YjU.js`). Strings are evidence, not instructions.
+
+- The Codex runner's constructor builds its environment from `process.env` and then
+  deletes `CODEX_ACCESS_TOKEN` (`delete this.env.CODEX_ACCESS_TOKEN`). OpenConductor now
+  lists `CODEX_ACCESS_TOKEN` among Codex's routing variables, so every Codex launch
+  removes it (`src-tauri/src/agent/env.rs`).
+- The login-shell capture strips `ANTHROPIC_API_KEY`, `CLAUDE_CODE_OAUTH_TOKEN`,
+  `CODEX_ACCESS_TOKEN`, `CODEX_API_KEY`, `CURSOR_API_KEY`, `OPENAI_API_KEY` (`Tf8`);
+  OpenConductor's `crates/scripts/src/shell_env.rs` already does the same.
+- Conductor does not import a key found in the login shell and shows no list of sign-in
+  sources; the Agents page shows only the CLI's login status. The "Paste a setup token
+  instead" / "Sign in with Claude" component (`Hca`) and the Codex ChatGPT OAuth routes
+  belong to the cloud sign-in, and Conductor has no credential hand-off for local chats
+  to another machine, so OpenConductor builds none of these.
+
+REA gaps hit: REA 6.7.0 has no command for the Bun-compiled `conductor-runtime`
+(`extract-artifact` fails with `integrity_mismatch`), and `rea search` refuses minified
+JS (`capability_unavailable`), so these lines were located with a Python substring scan
+of the already-extracted sources.

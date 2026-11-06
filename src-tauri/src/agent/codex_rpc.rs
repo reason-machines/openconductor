@@ -16,6 +16,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Map, Value};
 
 use super::codex_cli::CodexPolicy;
+use super::secret::SecretString;
 
 /// A request id. Ours are integers; the server's may be either.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -58,6 +59,25 @@ pub enum ClientRequest {
     TurnInterrupt {
         thread_id: String,
         turn_id: String,
+    },
+    /// `account/read`: the signed-in account (ChatGPT email and plan, or
+    /// API key), without reading Codex's credential file ourselves.
+    AccountRead,
+    /// `account/login/start` with `{type: "chatgpt"}`: Codex starts its
+    /// local callback server and answers with the browser `authUrl`.
+    AccountLoginChatgpt,
+    /// `account/login/cancel` for a login `AccountLoginChatgpt` started.
+    AccountLoginCancel {
+        login_id: String,
+    },
+    /// `account/login/start` with `{type: "apiKey", apiKey}`: the key saved
+    /// in the API key card, as Conductor's Codex client sends it right after
+    /// `initialized`. Codex 0.166's app server does not read CODEX_API_KEY
+    /// from its environment, so without this a key-only launch sends no
+    /// credential. The launch adds `cli_auth_credentials_store="ephemeral"`
+    /// so the key stays in memory and never replaces the user's auth.json.
+    AccountLoginApiKey {
+        api_key: SecretString,
     },
 }
 
@@ -111,6 +131,10 @@ impl ClientRequest {
             ClientRequest::ThreadResume { .. } => "thread/resume",
             ClientRequest::TurnStart { .. } => "turn/start",
             ClientRequest::TurnInterrupt { .. } => "turn/interrupt",
+            ClientRequest::AccountRead => "account/read",
+            ClientRequest::AccountLoginChatgpt => "account/login/start",
+            ClientRequest::AccountLoginCancel { .. } => "account/login/cancel",
+            ClientRequest::AccountLoginApiKey { .. } => "account/login/start",
         }
     }
 
@@ -141,13 +165,26 @@ impl ClientRequest {
             } => {
                 let mut p = Map::new();
                 p.insert("threadId".into(), json!(thread_id));
-                p.insert("input".into(), json!([{ "type": "text", "text": text }]));
+                let (text, skills) = skill_links(text);
+                let mut input = vec![json!({ "type": "text", "text": text })];
+                input.extend(
+                    skills
+                        .into_iter()
+                        .map(|(name, path)| json!({ "type": "skill", "name": name, "path": path })),
+                );
+                p.insert("input".into(), Value::Array(input));
                 put(&mut p, "model", model.as_ref().map(|m| json!(m)));
                 put(&mut p, "effort", effort.as_ref().map(|e| json!(e)));
                 Value::Object(p)
             }
             ClientRequest::TurnInterrupt { thread_id, turn_id } => {
                 json!({ "threadId": thread_id, "turnId": turn_id })
+            }
+            ClientRequest::AccountRead => json!({}),
+            ClientRequest::AccountLoginChatgpt => json!({ "type": "chatgpt" }),
+            ClientRequest::AccountLoginCancel { login_id } => json!({ "loginId": login_id }),
+            ClientRequest::AccountLoginApiKey { api_key } => {
+                json!({ "type": "apiKey", "apiKey": api_key.expose() })
             }
         }
     }
@@ -159,6 +196,47 @@ impl ClientRequest {
 }
 
 /// The `initialized` notification, sent once after `initialize` returns.
+/// A skill picked in the composer's "/" menu reaches the prompt as
+/// `[$name](path/SKILL.md)`. Codex gets `$name` in the text plus a
+/// `{type: "skill", name, path}` input item for each, as its own composer
+/// sends a picked skill (`UserInput::Skill`, Codex 0.166.0).
+pub fn skill_links(text: &str) -> (String, Vec<(String, String)>) {
+    let mut out = String::with_capacity(text.len());
+    let mut skills: Vec<(String, String)> = Vec::new();
+    let mut rest = text;
+    while let Some(i) = rest.find("[$") {
+        out.push_str(&rest[..i]);
+        let tail = &rest[i + 2..];
+        let link = tail.find("](").and_then(|n| {
+            let name = &tail[..n];
+            let after = &tail[n + 2..];
+            let close = after.find(')')?;
+            let path = &after[..close];
+            let ok = !name.is_empty()
+                && !name.contains(char::is_whitespace)
+                && path.ends_with("SKILL.md")
+                && !path.contains(char::is_whitespace);
+            ok.then(|| (name, path, n + 2 + close + 1))
+        });
+        match link {
+            Some((name, path, len)) => {
+                out.push('$');
+                out.push_str(name);
+                if !skills.iter().any(|(_, p)| p == path) {
+                    skills.push((name.to_owned(), path.to_owned()));
+                }
+                rest = &tail[len..];
+            }
+            None => {
+                out.push_str("[$");
+                rest = tail;
+            }
+        }
+    }
+    out.push_str(rest);
+    (out, skills)
+}
+
 pub fn initialized_line() -> String {
     line(json!({ "method": "initialized" }))
 }
@@ -192,6 +270,18 @@ mod tests {
     fn sent(line: &str) -> Value {
         assert!(line.ends_with('\n') && !line[..line.len() - 1].contains('\n'));
         serde_json::from_str(line).unwrap()
+    }
+
+    #[test]
+    fn api_key_login_line_carries_the_key_and_debug_hides_it() {
+        let req = ClientRequest::AccountLoginApiKey {
+            api_key: SecretString::new("sk-test-rpc"),
+        };
+        assert_eq!(
+            sent(&req.to_line(4)),
+            json!({"id": 4, "method": "account/login/start", "params": {"type": "apiKey", "apiKey": "sk-test-rpc"}})
+        );
+        assert!(!format!("{req:?}").contains("sk-test-rpc"));
     }
 
     #[test]
@@ -236,6 +326,21 @@ mod tests {
         assert_eq!(
             turn.params(),
             json!({"threadId": "t1", "input": [{"type": "text", "text": "say hi"}], "effort": "high"})
+        );
+        // A skill picked in the "/" menu: `$name` in the text and a skill item.
+        let skill = ClientRequest::TurnStart {
+            thread_id: "t1".into(),
+            text: "[$deploy](/u/.codex/skills/deploy/SKILL.md) to staging [$x](not-a-skill) [$"
+                .into(),
+            model: None,
+            effort: None,
+        };
+        assert_eq!(
+            skill.params()["input"],
+            json!([
+                {"type": "text", "text": "$deploy to staging [$x](not-a-skill) [$"},
+                {"type": "skill", "name": "deploy", "path": "/u/.codex/skills/deploy/SKILL.md"}
+            ])
         );
         let stop = ClientRequest::TurnInterrupt {
             thread_id: "t1".into(),

@@ -1,14 +1,15 @@
 // The model and effort a workspace chat's composer shows and picks. Conductor
 // keeps them on the chat's session (model, thinking level, fast mode); here
 // they are kept per chat in localStorage and become the Reason Session's
-// options (`configureReason`, applied when the chat opens its next Session).
+// options (`configureReason`, applied to the open Session before its next
+// prompt, or when the chat opens one).
 // A chat with nothing picked shows what it runs: the options the New
 // workspace dialog gave it (read back from reasonChat's saved config), else
 // Settings › Default models.
 
 import { MODEL_CATALOG, agentForModel } from "../../settings/models.ts";
 import type { Settings } from "../../settings/types.ts";
-import { defaultEffortSetting } from "./chatModel.ts";
+import { defaultEffortSetting, reasonDefault } from "./chatModel.ts";
 import type { ModelChoice } from "./composerModels.ts";
 import type { ReasonConfig } from "./reasonChat.ts";
 
@@ -61,8 +62,10 @@ export function loadModelChoice(chatId: string, store: Store = localStorage): Mo
   return Array.isArray(config) ? choiceFromReasonConfig(config as ReasonConfig[]) : null;
 }
 
-/** Settings › Default models: the default model and its agent's default effort. */
+/** Settings › Agents › Reason's default model, else Settings › Default models: the default model and its agent's default effort. */
 export function defaultModelChoice(settings: Settings): ModelChoice {
+  const pinned = reasonDefault(settings);
+  if (pinned) return pinned;
   const model = settings.models.default;
   return { model, effort: defaultEffortSetting(settings, agentForModel(model)) };
 }

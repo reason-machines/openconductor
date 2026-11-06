@@ -13,7 +13,8 @@
 //   ── Discard changes (undo-2)      - only for a file with changes
 // Copy toasts are "Copied path to clipboard" / "Copied relative path to clipboard" (`n5`).
 import { useEffect, useState } from "react";
-import { ArrowUpRightMenuIcon, ContextMenu, CopyMenuIcon, EyeMenuIcon, MenuItem, MenuSeparator, SubMenu, UndoMenuIcon } from "../../components/ContextMenu";
+import { ContextMenu, MenuItem, MenuSeparator, SubMenu } from "../../components/menu/ContextMenu";
+import { ArrowUpRightIcon, CopyIcon, EyeIcon, Undo2Icon } from "../../components/menu/menuIcons";
 import { AppIcon } from "../openIn/OpenInButton";
 import { NUMBERED_ROWS, loadOpenInApps, type OpenInApp } from "../openIn/apps";
 
@@ -64,11 +65,11 @@ export function FileContextMenu({ path, at, actions, onClose }: Props) {
   const apps = useFileApps(actions.openIn !== undefined);
   return (
     <ContextMenu at={at} label={`Actions for ${path}`} onClose={onClose}>
-      <MenuItem icon={<EyeMenuIcon />} onSelect={actions.view}>
+      <MenuItem icon={<EyeIcon />} onSelect={actions.view}>
         View
       </MenuItem>
       {actions.openIn && apps.length > 0 && (
-        <SubMenu icon={<ArrowUpRightMenuIcon />} label="Open in" menuLabel={`Open ${path} in`}>
+        <SubMenu icon={<ArrowUpRightIcon />} label="Open in">
           {apps.map((app, i) => (
             <MenuItem key={app.id} icon={<AppIcon app={app} size={14} />} numberKey={i < NUMBERED_ROWS ? i + 1 : undefined} onSelect={() => actions.openIn?.(app.id)}>
               {app.name}
@@ -77,15 +78,15 @@ export function FileContextMenu({ path, at, actions, onClose }: Props) {
         </SubMenu>
       )}
       {actions.copyPath && (
-        <MenuItem icon={<CopyMenuIcon />} onSelect={actions.copyPath}>
+        <MenuItem icon={<CopyIcon />} onSelect={actions.copyPath}>
           Copy path
         </MenuItem>
       )}
-      <MenuItem icon={<CopyMenuIcon />} onSelect={actions.copyRelativePath}>
+      <MenuItem icon={<CopyIcon />} onSelect={actions.copyRelativePath}>
         Copy relative path
       </MenuItem>
       <MenuSeparator />
-      <MenuItem icon={<UndoMenuIcon />} onSelect={actions.discard}>
+      <MenuItem icon={<Undo2Icon />} onSelect={actions.discard}>
         Discard changes
       </MenuItem>
     </ContextMenu>
