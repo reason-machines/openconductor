@@ -6,6 +6,7 @@
 import { useEffect, useMemo, useRef, useState, type Dispatch, type ReactNode } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
+import { isWorkspaceUnread } from "../state/chatUnread";
 import { ArchiveIcon, ChevronDownIcon, FolderIcon, SearchIcon, SidebarIcon } from "./Icons";
 import {
   ARCHIVE_FILTERS,
@@ -95,7 +96,7 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
 
 function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRepoIcon: boolean; active: boolean; now: number; onOpen: () => void }) {
   const { workspace: ws, repo, archived, matches } = row;
-  const tone = archived ? "is-archived" : ws.unread ? "is-unread" : "";
+  const tone = archived ? "is-archived" : isWorkspaceUnread(ws) ? "is-unread" : "";
   // Conductor's Home row (`vJo`): the agent's or setup's status, else the last-activity time.
   const status = homeStatus(ws.state, useWorkspaceAgentStatus(ws));
   const statusLabel = rowStatusLabel(status);
@@ -118,7 +119,7 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
             <StatusMatrix
               status={archived ? "branch" : status}
               gitStatus={unstarted ? undefined : rowGitStatus({ pr: ws.pr, hasRemote: Boolean(repo.remote) })}
-              hasUnread={!archived && !unstarted && ws.unread === true}
+              hasUnread={!archived && !unstarted && isWorkspaceUnread(ws)}
             />
           </span>
         ) : showRepoIcon && (

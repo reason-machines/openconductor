@@ -97,6 +97,16 @@ export const GearIcon = ({ size = 16 }: { size?: number }) =>
     </>,
   );
 
+/** Reason: a ringed dot. */
+export const ReasonMark = ({ size = 14 }: { size?: number }) =>
+  svg(
+    size,
+    <>
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none" />
+    </>,
+  );
+
 export type AgentTabId = "claude" | "codex" | "cursor" | "opencode";
 
 /** The tab icon of each agent (Conductor's `axe`). */

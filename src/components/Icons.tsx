@@ -34,6 +34,7 @@ export const CloseIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="x" s
 export const LockIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="lock" size={size} strokeWidth={strokeWidth} />;
 export const ArchiveIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="archive" size={size} strokeWidth={strokeWidth} />;
 export const ArrowLeftIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="arrow-left" size={size} strokeWidth={strokeWidth} />;
+export const ArrowDownIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="arrow-down" size={size} strokeWidth={strokeWidth} />;
 export const ArrowRightIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="arrow-right" size={size} strokeWidth={strokeWidth} />;
 export const MoreIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="ellipsis" size={size} strokeWidth={strokeWidth} />;
 export const CodeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="code-xml" size={size} strokeWidth={strokeWidth} />;

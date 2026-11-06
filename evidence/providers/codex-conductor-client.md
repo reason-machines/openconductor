@@ -41,14 +41,14 @@ Because the trace finds no seeds, the call sites below were read from the slice 
 
 | Fact | OpenConductor | Status |
 |---|---|---|
-| 1 | `CodexLaunch::args` gives `app-server --listen stdio://`. `codex_chat.rs` finds the CLI on the login shell's PATH, then in `~/.local/bin`, Homebrew and `/usr/local/bin`. | same |
+| 1 | `CodexLaunch::args` gives `app-server --listen stdio://`. `codex_chat.rs` runs Settings › Agents "Codex executable path" when set (`CodexChats::executable`), else finds the CLI on the login shell's PATH, then in `~/.local/bin`, Homebrew and `/usr/local/bin`. | same |
 | 2 | Our `initialize` sends `clientInfo {name: "openconductor"}` and then `initialized`. We send no login call: we rely on the CLI's own login or the provider env. | differs on purpose (client name) |
 | 3 | We do not send `experimentalRawEvents` or `persistExtendedHistory`. | gap, low impact |
 | 4 | We send approval and sandbox on `thread/start` and `thread/resume`. Changing access in the UI restarts the app-server and resumes the same thread with the new policy. We send `effort` per turn from `[models.codex] default_thinking_level`. We do not send `summary`, `personality` or `collaborationMode`. | differs: per-thread, not per-turn |
 | 5 | The runner queues prompts. A follow-up waits for the running turn instead of cancelling its stream. | differs |
 | 6 | `codex_chat.rs` `default_policy()` is never plus danger-full-access, and the UI's "Full access" is the default. | same |
 | 7 | We do not read `configRequirements/read`. | gap |
-| 8 | We send no personality. | gap |
+| 8 | `settings::launch::codex_launch` passes `-c personality="<value>"` when the chat's app-server starts: `[models.codex] personality`, `pragmatic` when unset, `none` passed as Codex's own `none`. Proved by `tools/e2e/codex-chat.e2e.mjs` (the stand-in logs its argv). | differs: per app-server launch, not per turn |
 | 9 | `codex_runner.rs` `default_answer` gives user input `{answers: {}}` and elicitation `cancel`. Every other unknown request gets a JSON-RPC error (-32601). Approvals always go to the UI, never to an automatic `accept`. | same for user input, elicitation and permissions; approvals are shown to the user |
 | 10 | Approval cards show the decisions Codex offers in `availableDecisions`, which can include `cancel` ("Deny and stop"). Without that list they show `accept`, `acceptForSession`, `decline` and `cancel`. | superset |
 

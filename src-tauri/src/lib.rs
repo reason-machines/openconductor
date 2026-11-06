@@ -30,6 +30,7 @@ pub mod bundled_bin;
 pub mod checkpoint;
 mod checkpoint_commands;
 mod chat_store_commands;
+pub mod codex_account;
 pub mod codex_chat;
 mod session_status_commands;
 pub mod claude_chat;
@@ -324,6 +325,7 @@ pub fn run() {
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
             app.manage(codex_chat::CodexChats::default());
+            app.manage(codex_account::CodexLogins::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
@@ -394,7 +396,8 @@ pub fn run() {
             sidebar_section_commands::db_read_navigation_sections,
             sidebar_section_commands::db_write_navigation_sections,
             sidebar_workspace_commands::db_set_workspace_pinned,
-            sidebar_workspace_commands::db_set_workspace_unread,
+            sidebar_workspace_commands::db_set_chat_unread,
+            sidebar_workspace_commands::db_mark_workspace_read,
             sidebar_workspace_commands::db_touch_workspace,
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
@@ -435,6 +438,9 @@ pub fn run() {
             session_status_commands::session_set_status,
             reason_chat::reason_list_sessions,
             reason_chat::reason_models,
+            codex_account::codex_account,
+            codex_account::codex_chatgpt_login_start,
+            codex_account::codex_chatgpt_login_cancel,
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,
@@ -504,10 +510,13 @@ pub fn run() {
             settings::commands::provider_status,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
+            settings::commands::reveal_provider_secret,
+            settings::commands::settings_file_path,
             pr::commands::pr_lookup,
             pr::commands::pr_list_open,
             pr::commands::gh_issue_list_open,
             pr::commands::pr_git_state,
+            pr::commands::pr_pull_latest_from_target,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
             pr::commands::pr_template,

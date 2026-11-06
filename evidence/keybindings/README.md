@@ -274,6 +274,80 @@ listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
   later change on another settings page cannot overwrite them with a stale copy.
   A failed save shows the toast "Failed to save keyboard shortcut".
 
+## Bound commands: run, select all, chat copy and fork
+
+Read on sven m5 max in the decoded `renderApp-D_fmY7hW.js` (by byte offset,
+with python over the file; see REA gaps). Conductor's strings are data only.
+
+- `workspace.toggleRun` (⌘R), offset ~7,141,947, in the terminal panel's
+  scripts component: `if (hasRunTask && workspace && ready) { selectTab(Run);
+  running ? stop() : start(); return true }`, nothing otherwise. `start` is a
+  no-op while the button is disabled. Ours: `ScriptsPanel` (always mounted in
+  the strip), which opens the strip on Run and presses its ▶/■ button.
+- `native.preventSelectAll` (⌘A), offset ~11,089,745: a root hook adds a
+  capture `keydown` listener on `document`; on the command's shortcut it calls
+  `preventDefault` and `stopPropagation` unless the event's first path element
+  (else `document.activeElement`) is an input, a textarea, has
+  `contenteditable="true"` or is inside `.composer-tiptap`. Ours:
+  `src/keybindings/selectAll.ts`, installed by `KeybindingsProvider`.
+- `git.fixErrors` (⌘⇧X), offset ~2,300,368: already bound (PR #393).
+
+## Bound command: git.pull (pull latest from the target)
+
+Read on sven m5 max in the decoded `renderApp-D_fmY7hW.js` and
+`index-BGEQ8YjU.js` (python over the files; see REA gaps). Strings are data.
+
+- Shortcut, renderApp `Wds` @ ~2,299,746: `oi("git.pull", cb, {priority:
+  HIGH})`. `cb` returns false (the key passes on, e.g. to `openSidecarLogs`,
+  also ⌘⇧L) when read-only, a pull is running, the workspace is in a stack or
+  a GitHub stack, no session is selected, there is no repo or intended target,
+  the PR is merged or `mergeStateStatus === "DIRTY"`, or `targetSyncStatus ===
+  0`. Otherwise it mutates `{workspacePath, workspaceHost, localWorkspaceId,
+  sessionId, remoteName, targetBranch: <PR base> ?? intendedTargetBranch}`.
+  It does not look at a running agent or the remote branch.
+- Button, renderApp `Y4s` @ ~2,818,200, rendered only in the Changes panel's
+  empty state for the All changes scope (@ ~2,821,988, variant "text"):
+  lucide `arrow-down` (12 px), muted label "Pull latest from <target> (<n>
+  commits)", "Pulling latest..." with a spinner while running, disabled while
+  read-only or pulling. Hidden in a stack, without a target, session or
+  current branch, on a detached HEAD, for a merged or DIRTY PR, when
+  `targetSyncStatus` is 0, while the agent works, and when the remote branch
+  has commits the workspace lacks (`upstream.branchExists && behind > 0`).
+  Its "icon" variant has the tooltip "Pull latest from <target> (<n>
+  commits)" plus the ⌘⇧L hint, but no call site renders it in this build.
+- Mutation `gitPullLatestFromTarget`, index `aNt` @ ~3,207,600: with
+  uncommitted changes it sends the agent "Commit uncommitted changes, then
+  merge <remote>/<target> into this branch. Then push." (rebase wording when
+  `pull.rebase` is set); else `git fetch <remote>` (error: stderr or "Failed
+  to fetch from remote"), re-checks uncommitted, resolves
+  `refs/remotes/<remote>/<target>` (missing: toast "Target branch <t> does not
+  exist"), compares with `rev-list --left-right --count`: in sync does
+  nothing, only behind runs `git merge --ff-only` and toasts "Pulled latest
+  changes. You're up to date!", diverged sends the agent "Merge
+  <remote>/<target> into this branch. Then push." Failures toast "Pulling
+  latest from remote failed: <message>". Success refreshes the workspace's
+  changes. `targetSyncStatus` is `git rev-list --count HEAD..<remote>/<target>`
+  (index `Hse`).
+
+Ours: `pr_pull_latest_from_target` (src-tauri/src/pr/pull_latest.rs) and
+`targetBehind` / `detached` in `pr_git_state`; rules in
+src/features/pr/pullLatest.ts; button and shared state in
+src/features/pr/usePullLatest.tsx; ⌘⇧L bound at `PRIORITY.HIGH` in
+`WorkspaceView`. e2e: tests/e2e/shortcuts-git-pull.e2e.mjs. Differences:
+no stacks in OpenConductor (that check is absent); the shortcut also waits for
+the git state to load (the remote comes from it); the success toast uses our
+"info" style (no success toast kind); the worktree lock Conductor holds
+around the git steps (`Uc`) is not taken; a null `targetBehind` hides the
+button instead of showing "(undefined commits)".
+
+Still not bound, because OpenConductor lacks the feature behind it:
+
+- `terminal.openLocalhost` (⌘⇧B): the workspace view (priority LOW, offset
+  ~7,404,615) and the panel (offset ~7,141,734) open the preview URL in
+  Conductor's in-app Browser tab, or a detected localhost URL; false when
+  there is none. OpenConductor has the `preview_urls` setting but no Open
+  button and no Browser tab.
+
 ## REA gaps
 
 - Settings... item id, its position in the app menu, and the label of `custom_quit`
@@ -283,6 +357,16 @@ listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
   counter that `y5a` calls (`tPt` over sessions and workspaces) lives in a chunk
   where the minified name does not resolve by string search; its status set was
   not read.
+- `rea search` over the decoded JavaScript and the binary on sven m5 max fails
+  with `capability_unavailable` / `provider_unavailable`, so the handlers above
+  were found with python string search over the decoded chunk.
+- git.pull: the helpers live in `index-BGEQ8YjU.js` under other minified
+  names; they were resolved by hand through the renderApp import list and the
+  index export list (`nDt` = `eo` = `sVt`, `iDt` = `er` = `q9t`, `QOt` = `dA` =
+  `z9t`). `sVe` (the PR target the shortcut uses) and `QO` beyond `cs(t) =
+  t === m$` were not followed further; we read both as the PR's base branch
+  and a detached HEAD. The Mac went offline once mid-read (`device_offline`)
+  and the read was retried.
 
 - `analyze-javascript-application` finds no IPC operations: it does not model
   Tauri `invoke` or `listen`. The registry and event wiring were located by
@@ -299,3 +383,22 @@ listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
   `conductor_lib::run` at `0x100498360` fails with `provider_unavailable`: Ghidra,
   Hopper, IDA and Kuna are all unconfigured there (no Java runtime). So the menu
   builder was not decompiled; the native menu table above is from the string table.
+
+## Chat tab shortcuts: copy concise transcript and fork
+
+Read on sven m5 max in `renderApp-D_fmY7hW.js` (~7,376,706), the chat tab
+component `u8i`. Both bind at priority 100 and return false (pass the key on)
+unless their tab is the active one:
+
+- `chat.copyTextConcise` (⌥⌘C): fetches the chat's messages, builds the concise
+  transcript and copies it. Empty: warning "No chat content to copy". Copied:
+  `Copied concise transcript of "<tab title, cut to 20 chars + ...>"`. Failure:
+  "Failed to copy concise transcript". Ours: `ChatPanel` in
+  `src/components/WorkspaceView.tsx` with `forkTranscript` (the same concise
+  form) and `copiedTranscriptMessage` in `src/features/chat/fork.ts`.
+- `chat.forkToNewTab` (⌥⌘↩): also needs `canRename && !archived &&
+  experimental_fork_to_new_tab`; forks the whole chat (ignored while a fork is
+  pending). Ours: the turn menu's "Fork to new tab" path with every turn, gated
+  on Experimental › "Fork chat to new tab" and a workspace that is not archived.
+  Conductor's `canRename` comes from the parent tab strip and was not traced
+  further; we treat it as true.

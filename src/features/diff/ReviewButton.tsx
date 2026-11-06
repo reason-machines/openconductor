@@ -20,6 +20,7 @@ import type { PromptAttachment } from "../chat/reason.ts";
 import { buildReviewPrompt, type ConfigChoice, REVIEW_ATTACHMENT, REVIEW_MESSAGE, reviewDraft, reviewModel, reviewTabTitle } from "./review.ts";
 import { repoReviewPrompt } from "./reviewApi.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
+import { setOpenReviewChats } from "../../state/openChat.ts";
 
 export interface ReviewTab {
   chatId: string;
@@ -64,6 +65,8 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
   const save = useCallback(
     (next: ReviewTab[]) => {
       tabsByWorkspace.set(workspace.id, next);
+      // Unread and Go to next unread count a review chat only while its tab is open.
+      setOpenReviewChats(workspace.id, next.map((t) => t.chatId));
       setTabs(next);
     },
     [workspace.id],

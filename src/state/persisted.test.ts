@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { nextUnreadWorkspace } from "./nextUnread.ts";
+import { nextUnreadChat } from "./nextUnread.ts";
 import { keepPr, parsePrefs, prefsOf, reposFromDb, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted.ts";
 import type { Workspace } from "./types";
 
@@ -69,8 +69,26 @@ test("sidebar: pin, unread and status columns reach the workspace", () => {
   );
   const [oslo, lima] = r.workspaces;
   assert.equal(oslo.pinnedAt, Date.UTC(2026, 10, 5, 12, 0, 0));
-  assert.deepEqual([oslo.unread, oslo.manualStatus, oslo.derivedStatus], [true, "done", "in-review"]);
-  assert.deepEqual([lima.pinnedAt, lima.unread, lima.manualStatus, lima.derivedStatus], [undefined, undefined, undefined, undefined]);
+  assert.deepEqual([oslo.unreadChats?.map((c) => c.id), oslo.manualStatus, oslo.derivedStatus], [["a/oslo"], "done", "in-review"]);
+  assert.deepEqual([lima.pinnedAt, lima.unreadChats, lima.manualStatus, lima.derivedStatus], [undefined, undefined, undefined, undefined]);
+});
+
+test("sidebar: unread chats come from sessions; a legacy workspaces.unread marks the main chat; tabless reviews count as hidden", () => {
+  const [r] = reposFromDb(
+    [repo("a")],
+    [
+      ws("a", "oslo", "ready", { unreadChats: [{ id: "a/oslo", updatedAt: "2026-11-05 13:00:00" }] }),
+      ws("a", "lima", "ready", { unread: true, unreadChats: [{ id: "a/lima", updatedAt: "2026-11-05T14:00:00.000Z" }] }),
+      ws("a", "rome", "ready", { unread: true, updatedAt: "2026-11-05 15:00:00" }),
+      ws("a", "kyiv", "ready", { unreadChats: [{ id: "a/kyiv:review:1", updatedAt: "2026-11-05 16:00:00" }] }),
+    ],
+    [],
+  );
+  const [oslo, lima, rome, kyiv] = r.workspaces;
+  assert.deepEqual(oslo.unreadChats, [{ id: "a/oslo", at: Date.UTC(2026, 10, 5, 13) }]);
+  assert.deepEqual(lima.unreadChats, [{ id: "a/lima", at: Date.UTC(2026, 10, 5, 14) }], "the legacy flag does not add a second entry");
+  assert.deepEqual(rome.unreadChats, [{ id: "a/rome", at: Date.UTC(2026, 10, 5, 15) }], "a legacy flag alone marks the main chat");
+  assert.equal(kyiv.unreadChats, undefined, "a review tab does not survive a restart");
 });
 
 test("sidebar: a user-set workspace name is shown as is", async () => {
@@ -121,5 +139,5 @@ test("loads updated_at, so Go to next unread picks the most recently active row"
     [],
   );
   assert.deepEqual(repos[0].workspaces.map((w) => w.updatedAt), [Date.UTC(2026, 10, 5, 12), Date.UTC(2026, 10, 5, 18), undefined]);
-  assert.equal(nextUnreadWorkspace({ selection: { kind: "home" }, repos }, { skipSelected: true })?.workspace.id, "a/older-active");
+  assert.equal(nextUnreadChat({ selection: { kind: "home" }, repos }, { skipSelected: true })?.chatId, "a/older-active");
 });

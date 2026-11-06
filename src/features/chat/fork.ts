@@ -102,6 +102,16 @@ export function forkTranscript(t: ChatTranscript, turnId?: string): string | nul
   return parts.length === 0 ? null : parts.join("\n\n");
 }
 
+/**
+ * The toast after "Copy concise transcript" (Conductor's chat tab `L`): the
+ * tab's title, "chat" when untitled, cut to 20 characters plus "...".
+ */
+export function copiedTranscriptMessage(kind: string, title: string | null | undefined): string {
+  const name = title?.trim() || "chat";
+  const shown = name.length > 20 ? `${name.slice(0, 20).trimEnd()}...` : name;
+  return `Copied ${kind} transcript of "${shown}"`;
+}
+
 /** The attachment's file name: "Transcript of <title>.md", "chat" when untitled. */
 export function forkAttachmentName(title: string | null | undefined): string {
   return `Transcript of ${title?.trim() || "chat"}.md`;

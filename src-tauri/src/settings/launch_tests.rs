@@ -389,6 +389,26 @@ fn codex_launch_uses_the_settings() {
 }
 
 #[test]
+fn codex_personality_reaches_every_launch_and_none_is_passed() {
+    // Unset is Conductor's default `pragmatic`; "None" is Codex's own `none`.
+    let store = MemorySecretStore::new();
+    for (file, want) in [
+        ("", "\"pragmatic\""),
+        ("[models.codex]\npersonality = \"none\"", "\"none\""),
+        ("[models.codex]\npersonality = \"friendly\"", "\"friendly\""),
+    ] {
+        let s = parse(file);
+        let chat = launch::codex_launch(&s, Path::new("/w"), &store, Purpose::Chat).unwrap();
+        assert_eq!(
+            codex_config(&chat, "personality").as_deref(),
+            Some(want),
+            "{file}"
+        );
+        assert!(chat.args().contains(&format!("personality={want}")));
+    }
+}
+
+#[test]
 fn model_ids_map_to_agents_and_claude_cli_names() {
     assert_eq!(model_agent("gpt-5.6-sol"), AgentKind::Codex);
     assert_eq!(model_agent("composer-2.5"), AgentKind::Cursor);

@@ -4,7 +4,10 @@
    Tailwind classes at --spacing .25rem. Scoped to .composer-wrap so the
    create-workspace dialog's .composer keeps its own look. */
 
-.composer-wrap {
+/* The model picker carries the tokens too, so it keeps its look outside the
+   chat composer (the create composer's "Change agent" picker). */
+.composer-wrap,
+.oc-model-picker {
   --oc-c-fg: var(--text);
   --oc-c-bg: var(--bg);
   --oc-c-muted: var(--surface-muted);
@@ -21,6 +24,8 @@
   --oc-c-switch-fg: var(--switch-knob);
   --oc-c-ring: var(--ring);
   --oc-c-shadow-md: 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10);
+}
+.composer-wrap {
   padding: 8px 16px 16px;
   font-size: 14px;
   line-height: 20px;
