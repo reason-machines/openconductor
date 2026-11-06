@@ -4,6 +4,7 @@ import { createDispatcher, type Dispatcher, type Telemetry } from "./dispatcher.
 import type { BindOptions } from "./resolve.ts";
 import { createKeyListeners, installKeyListeners, type KeyCapture } from "./listeners.ts";
 import { parseOverrides, type Overrides } from "./overrides.ts";
+import { preventsSelectAll } from "./selectAll.ts";
 
 interface KeybindingsContext {
   dispatcher: Dispatcher;
@@ -54,6 +55,20 @@ export function KeybindingsProvider({ loadOverrides, track, children }: Props) {
     }),
   );
   useEffect(() => installKeyListeners(window, listeners), [listeners]);
+  // native.preventSelectAll (selectAll.ts): ⌘A outside a text field does not select the whole window.
+  const overridesRef = useRef(overrides);
+  overridesRef.current = overrides;
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const first = e.composedPath()[0];
+      const focused = first instanceof HTMLElement ? first : document.activeElement;
+      if (!preventsSelectAll(e, focused, overridesRef.current)) return;
+      e.preventDefault();
+      e.stopPropagation();
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => document.removeEventListener("keydown", onKeyDown, true);
+  }, []);
   const value = useMemo(
     () => ({ dispatcher, overrides, overridesLoaded, setOverrides, captureKeys: listeners.captureKeys }),
     [dispatcher, overrides, overridesLoaded, listeners],
