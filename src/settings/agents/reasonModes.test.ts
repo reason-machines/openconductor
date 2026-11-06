@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { DEFAULT_SETTINGS, type Settings } from "../types.ts";
-import { reasonModeOf, reasonProviderFor, reasonStatus, withReason, type ReasonAccount } from "./reasonTab.ts";
+import { reasonModeOf, reasonProviderFor, reasonStatus, withReason, type ReasonAccount } from "./reasonModes.ts";
 
 const account: ReasonAccount = {
   version: "0.2.692",

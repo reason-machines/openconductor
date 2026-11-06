@@ -5,7 +5,7 @@
 // Mac with Connect), then the workspace, model and effort new Reason chats
 // start with, the `reason` executable path and the ~/.config/reason card.
 // Laid out like the Claude Code and Codex tabs (Conductor has no Reason tab);
-// the CLI facts are in evidence/reason-acp/account.md. Rules: reasonTab.ts.
+// the CLI facts are in evidence/reason-acp/account.md. Rules: reasonModes.ts.
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { inTauri, openUrl } from "../../backend";
@@ -32,7 +32,7 @@ import {
   type LoginPrompt,
   type ReasonAccount,
   type ReasonMode,
-} from "./reasonTab";
+} from "./reasonModes";
 import { storedSecret } from "./useAgentStatus";
 import { providerStatus } from "../api";
 import type { ProviderStatus } from "../types";

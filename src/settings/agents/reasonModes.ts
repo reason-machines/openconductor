@@ -1,7 +1,7 @@
 // Settings › Agents › Reason, without React: which card is active, what the
 // status line and table say, and how a card or option changes settings.toml.
 // The CLI facts behind it: evidence/reason-acp/account.md.
-// Pure: reasonTab.test.ts covers it.
+// Pure: reasonModes.test.ts covers it.
 
 import type { ProviderConfig, Settings } from "../types";
 import type { InfoRow } from "./agentAuth";
