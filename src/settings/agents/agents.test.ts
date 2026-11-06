@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { apiKeyName, authModeOf, claudeAuthState, codexAuthState, configForMode, otherProvider, providerTabFrom } from "./agentAuth.ts";
+import { apiKeyName, authModeOf, claudeAuthState, codexAuthState, configForMode, normalizeSetupToken, otherProvider, providerTabFrom } from "./agentAuth.ts";
 import { displayedLoadout, equip, isEquipped, move, parseFavorites, remove, toRows, withDefault, withReview, builtIn, type Favorite } from "./loadout.ts";
 import { DEFAULT_SETTINGS } from "../types.ts";
 
@@ -89,4 +89,28 @@ test("slot 1 and the review model write the settings the agent launch reads", ()
   const r = withReview(DEFAULT_SETTINGS, builtIn("r", "opus-5-5-1m", "max"));
   assert.equal(r.models.review, "opus-5-5-1m");
   assert.equal(r.models.claude_code?.review_effort_level, "max");
+});
+
+test("a pasted setup token is cleaned like Conductor's I7r", () => {
+  for (const pasted of [
+    "sk-ant-oat01-abc",
+    "  sk-ant-oat01-abc\n",
+    "export CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-abc",
+    'export CLAUDE_CODE_OAUTH_TOKEN="sk-ant-oat01-abc";',
+    "CLAUDE_CODE_OAUTH_TOKEN='sk-ant-oat01-abc'",
+    "Bearer sk-ant-oat01-abc",
+    "Authorization: Bearer sk-ant-oat01-abc",
+    "sk-ant-oat01-\nabc",
+    "Your token:\nexport CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-abc\nUse it in CI.",
+  ]) {
+    assert.equal(normalizeSetupToken(pasted), "sk-ant-oat01-abc", JSON.stringify(pasted));
+  }
+});
+
+test("a stored setup token counts as signed in on the CLI card", () => {
+  const signedOut = { installed: true, version: "2.1.284", authenticated: false };
+  assert.equal(claudeAuthState("cli", signedOut, false).authenticated, false);
+  const s = claudeAuthState("cli", signedOut, false, true);
+  assert.equal(s.authenticated, true);
+  assert.deepEqual(s.rows, [{ label: "Version", value: "2.1.284" }, { label: "Login method", value: "Setup token" }]);
 });

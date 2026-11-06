@@ -21,9 +21,24 @@ use super::secret::SecretStore;
 pub const SERVICE: &str = "com.reasonmachines.openconductor";
 
 /// The store the app should use on this platform.
+///
+/// Debug builds started with `OC_E2E_KEYCHAIN=<path>` use that keychain file
+/// instead of the login Keychain (unlocked with `OC_E2E_KEYCHAIN_PASSWORD`),
+/// so end-to-end runs in a throwaway `HOME` store real Keychain items without
+/// touching the user's own.
 pub fn default_store() -> Arc<dyn SecretStore> {
     #[cfg(target_os = "macos")]
     {
+        if cfg!(debug_assertions) {
+            if let Some(path) = std::env::var_os("OC_E2E_KEYCHAIN") {
+                let password = std::env::var("OC_E2E_KEYCHAIN_PASSWORD").ok();
+                match macos::KeychainSecretStore::in_file(SERVICE, &path, password.as_deref()) {
+                    Ok(store) => return Arc::new(store),
+                    Err(e) => eprintln!("OC_E2E_KEYCHAIN: {e}; using memory"),
+                }
+                return Arc::new(super::secret::MemorySecretStore::new());
+            }
+        }
         Arc::new(macos::KeychainSecretStore::new(SERVICE))
     }
     #[cfg(not(target_os = "macos"))]
@@ -46,16 +61,40 @@ mod macos {
     /// `errSecItemNotFound`: the key was never set or was deleted.
     const ITEM_NOT_FOUND: i32 = -25300;
 
-    /// Generic password items in the login Keychain under one service.
+    use security_framework::os::macos::keychain::SecKeychain;
+
+    /// Generic password items under one service, in the login Keychain or
+    /// in one keychain file ([`KeychainSecretStore::in_file`]).
     pub struct KeychainSecretStore {
         service: String,
+        file: Option<SecKeychain>,
     }
+
+    // SecKeychain is a CoreFoundation reference; Keychain Services calls on it
+    // are thread-safe.
+    unsafe impl Send for KeychainSecretStore {}
+    unsafe impl Sync for KeychainSecretStore {}
 
     impl KeychainSecretStore {
         pub fn new(service: impl Into<String>) -> Self {
             KeychainSecretStore {
                 service: service.into(),
+                file: None,
             }
+        }
+
+        /// Items in the keychain file at `path`, unlocked with `password`.
+        pub fn in_file(
+            service: impl Into<String>,
+            path: impl AsRef<std::path::Path>,
+            password: Option<&str>,
+        ) -> Result<Self, String> {
+            let mut keychain = SecKeychain::open(path).map_err(|e| e.to_string())?;
+            keychain.unlock(password).map_err(|e| e.to_string())?;
+            Ok(KeychainSecretStore {
+                service: service.into(),
+                file: Some(keychain),
+            })
         }
     }
 
@@ -66,7 +105,13 @@ mod macos {
 
     impl SecretStore for KeychainSecretStore {
         fn get(&self, key: &str) -> Result<Option<SecretString>, SecretStoreError> {
-            match get_generic_password(&self.service, key) {
+            let found = match &self.file {
+                Some(k) => k
+                    .find_generic_password(&self.service, key)
+                    .map(|(password, _)| password.to_vec()),
+                None => get_generic_password(&self.service, key),
+            };
+            match found {
                 Ok(bytes) => String::from_utf8(bytes)
                     .map(|s| Some(SecretString::new(s)))
                     .map_err(|_| {
@@ -78,12 +123,21 @@ mod macos {
         }
 
         fn set(&self, key: &str, value: &SecretString) -> Result<(), SecretStoreError> {
-            set_generic_password(&self.service, key, value.expose().as_bytes())
-                .map_err(|err| backend("set", key, err))
+            match &self.file {
+                Some(k) => k.set_generic_password(&self.service, key, value.expose().as_bytes()),
+                None => set_generic_password(&self.service, key, value.expose().as_bytes()),
+            }
+            .map_err(|err| backend("set", key, err))
         }
 
         fn delete(&self, key: &str) -> Result<(), SecretStoreError> {
-            match delete_generic_password(&self.service, key) {
+            let deleted = match &self.file {
+                Some(k) => k
+                    .find_generic_password(&self.service, key)
+                    .map(|(_, item)| item.delete()),
+                None => delete_generic_password(&self.service, key),
+            };
+            match deleted {
                 Ok(()) => Ok(()),
                 Err(err) if err.code() == ITEM_NOT_FOUND => Ok(()),
                 Err(err) => Err(backend("delete", key, err)),

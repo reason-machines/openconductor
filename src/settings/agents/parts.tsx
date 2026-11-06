@@ -8,7 +8,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
 import { onPtyEvent, ptyKill, ptyResize, ptySpawn, ptyWrite } from "../../features/terminal/pty";
 import { AUTH_MODE_LABEL, type AuthMode, type InfoRow } from "./agentAuth";
-import { homeDir, openExternal } from "./api";
+import { homeDir, openExternal, type AuthSource } from "./api";
 import { CheckIcon, CloseIcon, CodexMark, ExternalIcon, GearIcon, KeyIcon, PencilIcon, PlayIcon, RefreshIcon, TerminalIcon, TrashIcon } from "./icons";
 
 const MODE_ICON: Record<AuthMode, ReactNode> = {
@@ -367,6 +367,60 @@ function LoginTerminal({ command, label, onDismiss, onDone }: { command: string;
         </button>
       </div>
       <div className="ag-term-body" data-terminal ref={mount} />
+    </div>
+  );
+}
+
+/**
+ * Every sign-in found for the agent (`agent_auth_sources`), the one a chat
+ * uses marked "In use". Login-shell keys are never used directly (chats clear
+ * agent keys from the shell environment, as Conductor does); "Import" copies
+ * one into OpenConductor's Keychain. Shows nothing until something is found.
+ */
+export function SignInSources({ sources, onImport }: { sources: AuthSource[]; onImport: (s: AuthSource) => Promise<void> }) {
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string>();
+  if (sources.length === 0) return null;
+  return (
+    <div className="ag-stack-2" data-testid="agent-auth-sources">
+      <p className="ag-label">Sign-ins found</p>
+      <div className="ag-info">
+        <table>
+          <tbody>
+            {sources.map((s) => (
+              <tr key={s.id} data-source={s.id} data-active={s.active ? "true" : "false"}>
+                <th title={s.label}>{s.label}</th>
+                <td title={[s.location, s.detail].filter(Boolean).join(" · ")}>
+                  <span className="ag-src-row">
+                    <span className="ag-grow ag-truncate">
+                      {s.plan === "subscription" ? "Subscription" : "API key"} · {s.location}
+                      {s.detail ? ` · ${s.detail}` : ""}
+                    </span>
+                    {s.active && <span className="ag-src-badge">In use</span>}
+                    {s.importable && (
+                      <button
+                        type="button"
+                        className="ag-btn ag-outline ag-sm ag-h7"
+                        disabled={busy !== null}
+                        onClick={() => {
+                          setBusy(s.id);
+                          setError(undefined);
+                          onImport(s)
+                            .catch((e) => setError(`Failed to import ${s.label}: ${e instanceof Error ? e.message : String(e)}`))
+                            .finally(() => setBusy(null));
+                        }}
+                      >
+                        {busy === s.id ? "Importing…" : "Import"}
+                      </button>
+                    )}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {error && <p className="ag-detail">{error}</p>}
     </div>
   );
 }

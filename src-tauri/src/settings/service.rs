@@ -239,6 +239,20 @@ impl SettingsService {
         ))
     }
 
+    /// The store provider secrets live in.
+    pub fn secret_store(&self) -> &dyn SecretStore {
+        self.store.as_ref()
+    }
+
+    /// OpenConductor Keychain keys that hold a value (never the values).
+    pub fn stored_keys(&self) -> std::collections::BTreeSet<&'static str> {
+        crate::agent::secret::keys::ALL
+            .iter()
+            .copied()
+            .filter(|k| matches!(self.store.get(k), Ok(Some(_))))
+            .collect()
+    }
+
     /// One stored secret of `agent`'s current provider, for the explicit
     /// "show" on Settings › Agents. Keys the provider does not use are
     /// refused, so this cannot read arbitrary Keychain items.

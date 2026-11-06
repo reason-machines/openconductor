@@ -47,6 +47,7 @@ mod sidebar_repo_commands;
 mod repo_misc_commands;
 mod sidebar_section_commands;
 pub mod sidebar_transparency;
+mod agent_auth_commands;
 mod agent_settings_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
@@ -339,6 +340,8 @@ pub fn run() {
                 eprintln!("Appearance settings stay in settings.toml until next launch: {e}");
             }
             app.manage(settings_service);
+            // First launch: a key that only lives in the login shell is imported, no prompt.
+            agent_auth_commands::first_run_import(app.handle(), &app.path().app_data_dir()?);
             let scripts = scripts::service(app.handle());
             let spotlight = spotlight_commands::service(app.handle());
             scripts.set_auto_run_spotlight(spotlight::auto_run::hook(spotlight.clone()));
@@ -450,6 +453,9 @@ pub fn run() {
             codex_chat::codex_close_chat,
             claude_chat::commands::claude_cli_path,
             agent_settings_commands::cli_login_status,
+            agent_auth_commands::agent_auth_sources,
+            agent_auth_commands::agent_auth_import,
+            agent_auth_commands::e2e_agent_handoff,
             agent_settings_commands::favorite_models_list,
             agent_settings_commands::favorite_models_replace,
             claude_chat::commands::claude_open_chat,
@@ -458,6 +464,7 @@ pub fn run() {
             claude_chat::commands::claude_respond,
             agent_commands::agent_slash_commands,
             e2e::e2e_report,
+            e2e::e2e_secret,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,
             terminal_commands::pty_resize,

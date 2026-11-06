@@ -21,6 +21,9 @@ pub mod keys {
     pub const FOUNDRY_API_KEY: &str = "foundry_api_key";
     pub const OPENROUTER_API_KEY: &str = "openrouter_api_key";
     pub const VERCEL_AI_GATEWAY_API_KEY: &str = "vercel_ai_gateway_api_key";
+    /// A Claude subscription token from `claude setup-token`. Conductor's
+    /// legacy secret name for the same value (`claude_code_oauth_token`).
+    pub const CLAUDE_CODE_OAUTH_TOKEN: &str = "claude_code_oauth_token";
 
     /// Every key a provider may read; a store implementation may use it to
     /// list or wipe provider secrets.
@@ -33,6 +36,7 @@ pub mod keys {
         FOUNDRY_API_KEY,
         OPENROUTER_API_KEY,
         VERCEL_AI_GATEWAY_API_KEY,
+        CLAUDE_CODE_OAUTH_TOKEN,
     ];
 }
 

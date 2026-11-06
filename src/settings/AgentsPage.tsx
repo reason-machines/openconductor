@@ -14,11 +14,13 @@ import {
   otherProvider,
   providerOf,
   providerTabFrom,
+  normalizeSetupToken,
+  SETUP_TOKEN_KEY,
   type AuthMode,
 } from "./agents/agentAuth";
-import { cliLoginStatus, openExternal, type CliAgent, type CliLoginStatus } from "./agents/api";
+import { authSources, cliLoginStatus, importAuthSource, openExternal, type AuthSource, type CliAgent, type CliLoginStatus } from "./agents/api";
 import { AgentMark, ExternalIcon, OpenCodeMark, type AgentTabId } from "./agents/icons";
-import { ApiKeyField, AuthModePicker, AuthStatus, LoginButton, RefreshButton } from "./agents/parts";
+import { ApiKeyField, AuthModePicker, AuthStatus, LoginButton, RefreshButton, SignInSources } from "./agents/parts";
 import "./agents/agents.css";
 import { AcpAgentOptions, ClaudeAgentOptions, CodexAgentOptions } from "./rows/AgentOptionRows";
 
@@ -78,21 +80,28 @@ export function AgentsPage({ settings, save, reload }: Props) {
 function useAgentStatus(agent: "claude" | "codex" | "cursor", cli: CliAgent | null, storedKey: string) {
   const [provider, setProvider] = useState<ProviderStatus | null>(null);
   const [login, setLogin] = useState<CliLoginStatus | null>(null);
+  const [sources, setSources] = useState<AuthSource[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | undefined>();
   const refresh = useCallback(() => {
     setLoading(true);
-    Promise.all([providerStatus(agent), cli ? cliLoginStatus(cli) : Promise.resolve(null)])
-      .then(([p, l]) => {
+    const withSources = agent === "claude" || agent === "codex";
+    Promise.all([
+      providerStatus(agent),
+      cli ? cliLoginStatus(cli) : Promise.resolve(null),
+      withSources ? authSources(agent).catch(() => [] as AuthSource[]) : Promise.resolve([] as AuthSource[]),
+    ])
+      .then(([p, l, s]) => {
         setProvider(p);
         setLogin(l);
+        setSources(s);
         setError(undefined);
       })
       .catch((e) => setError(errorText(e)))
       .finally(() => setLoading(false));
   }, [agent, cli]);
   useEffect(refresh, [refresh, storedKey]);
-  return { provider, login, loading, error, refresh, setProvider };
+  return { provider, login, sources, loading, error, refresh, setProvider };
 }
 
 const keyPresent = (status: ProviderStatus | null, key: string) => status?.secrets.some((s) => s.key === key && s.present) === true;
@@ -105,7 +114,7 @@ const CLI_COPY = {
 /** Claude Code (`jpa`) and Codex (`Fpa`): cards, status, login or key. */
 function CliAgentTab({ agent, settings, save, reload }: { agent: "claude" | "codex" } & Props) {
   const stored = providerOf(settings, agent);
-  const { provider, login, loading, error, refresh, setProvider } = useAgentStatus(agent, agent, JSON.stringify(stored));
+  const { provider, login, sources, loading, error, refresh, setProvider } = useAgentStatus(agent, agent, JSON.stringify(stored));
   const [pending, setPending] = useState<AuthMode | null>(null);
   const [actionError, setActionError] = useState<string>();
   const storedMode = authModeOf(agent, stored);
@@ -116,7 +125,8 @@ function CliAgentTab({ agent, settings, save, reload }: { agent: "claude" | "cod
 
   const keyName = apiKeyName(agent, mode === "apikey" ? configForMode(agent, "apikey", stored) : null);
   const keyStored = mode === storedMode && keyPresent(provider, keyName);
-  const auth = agent === "claude" ? claudeAuthState(mode, login, keyStored) : codexAuthState(mode, login, keyStored);
+  const setupToken = agent === "claude" && mode === "cli" && storedMode === "cli" && keyPresent(provider, SETUP_TOKEN_KEY);
+  const auth = agent === "claude" ? claudeAuthState(mode, login, keyStored, setupToken) : codexAuthState(mode, login, keyStored);
   const other = otherProvider(agent, stored);
   const copy = CLI_COPY[agent];
 
@@ -186,13 +196,63 @@ function CliAgentTab({ agent, settings, save, reload }: { agent: "claude" | "cod
             }}
           />
         ) : (
-          <LoginButton command={copy.command} label={copy.label} onDone={refresh} />
+          <div className="ag-stack-3">
+            <LoginButton command={copy.command} label={copy.label} onDone={refresh} />
+            {agent === "claude" && (
+              <SetupTokenField
+                configured={setupToken}
+                onSave={async (value) => {
+                  await connect({ kind: "claude_login" }, [{ key: SETUP_TOKEN_KEY, value: normalizeSetupToken(value) }]);
+                  return true;
+                }}
+                onRemove={async () => {
+                  // Deletes the token; the CLI's own login is used again.
+                  await disconnectProvider(agent);
+                  reload();
+                  refresh();
+                }}
+              />
+            )}
+          </div>
         )}
       </div>
+      <SignInSources
+        sources={sources}
+        onImport={async (source) => {
+          await importAuthSource(agent, source.id);
+          reload();
+          refresh();
+        }}
+      />
       {/* Per-agent options; `.settings-rows` gives their switches and selects Conductor's styling. */}
       <div className="settings-rows">
         {agent === "claude" ? <ClaudeAgentOptions settings={settings} save={save} /> : <CodexAgentOptions settings={settings} save={save} />}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Conductor's "Paste a setup token instead" under the Claude subscription
+ * sign-in: run `claude setup-token` in a terminal and paste the token. It is
+ * stored in the Keychain and passed to chats as CLAUDE_CODE_OAUTH_TOKEN.
+ */
+function SetupTokenField({ configured, onSave, onRemove }: { configured: boolean; onSave: (v: string) => Promise<boolean>; onRemove: () => Promise<void> }) {
+  const [open, setOpen] = useState(false);
+  if (!configured && !open) {
+    return (
+      <button type="button" className="ag-btn ag-ghost ag-sm ag-self-start" onClick={() => setOpen(true)}>
+        Paste a setup token instead
+      </button>
+    );
+  }
+  return (
+    <div className="ag-stack-2">
+      <p className="ag-label">Claude Code subscription</p>
+      <p className="ag-muted ag-text-sm">
+        Run <code className="ag-mono">claude setup-token</code> in a terminal and paste the token you get back here.
+      </p>
+      <ApiKeyField label="CLAUDE_CODE_OAUTH_TOKEN" configured={configured} onSave={onSave} onRemove={onRemove} />
     </div>
   );
 }

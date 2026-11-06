@@ -24,6 +24,29 @@ export async function cliLoginStatus(agent: CliAgent): Promise<CliLoginStatus> {
   return { installed: false, authenticated: false };
 }
 
+/** A sign-in OpenConductor found for an agent (`agent_auth_sources`). Never carries a value. */
+export interface AuthSource {
+  id: string;
+  label: string;
+  plan: "subscription" | "api_key";
+  location: string;
+  /** A chat started now uses this one. */
+  active: boolean;
+  /** A login-shell key that "Import" copies into OpenConductor's Keychain. */
+  importable: boolean;
+  detail?: string;
+}
+
+export async function authSources(agent: "claude" | "codex"): Promise<AuthSource[]> {
+  if (inTauri()) return invoke<AuthSource[]>("agent_auth_sources", { agent });
+  return [];
+}
+
+/** Copies a login-shell key into the Keychain and switches the agent to it. */
+export async function importAuthSource(agent: "claude" | "codex", sourceId: string): Promise<void> {
+  await invoke("agent_auth_import", { agent, sourceId });
+}
+
 /** One `favorite_models` row: its id and configuration JSON without the id. */
 export interface FavoriteRow {
   id: string;

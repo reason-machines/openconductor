@@ -256,3 +256,9 @@
   background-repeat: no-repeat; background-position: right 10px center; background-size: 14px;
 }
 .ag-select option { background: var(--ag-bg); color: var(--ag-fg); }
+
+/* Sign-ins found (OpenConductor): source rows with an "In use" badge. */
+.ag-src-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.ag-src-badge { flex: none; font-size: 12px; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--ag-border); color: var(--ag-muted-fg); }
+.ag-self-start { align-self: flex-start; }
+.ag-mono { font-family: var(--font-mono, ui-monospace, monospace); }

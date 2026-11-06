@@ -70,6 +70,7 @@ impl AgentKind {
                 vars::ANTHROPIC_DEFAULT_OPUS_MODEL,
                 vars::ANTHROPIC_DEFAULT_SONNET_MODEL,
                 vars::ANTHROPIC_DEFAULT_HAIKU_MODEL,
+                vars::CLAUDE_CODE_OAUTH_TOKEN,
             ],
             AgentKind::Codex => &[
                 vars::OPENAI_API_KEY,
@@ -77,6 +78,7 @@ impl AgentKind {
                 vars::OPENAI_BASE_URL,
                 vars::OPENAI_ORGANIZATION,
                 vars::OPENAI_PROJECT,
+                vars::CODEX_ACCESS_TOKEN,
             ],
             AgentKind::Cursor => &[vars::CURSOR_API_KEY],
             AgentKind::Opencode => &[],
@@ -111,9 +113,15 @@ pub mod vars {
     pub const ANTHROPIC_DEFAULT_OPUS_MODEL: &str = "ANTHROPIC_DEFAULT_OPUS_MODEL";
     pub const ANTHROPIC_DEFAULT_SONNET_MODEL: &str = "ANTHROPIC_DEFAULT_SONNET_MODEL";
     pub const ANTHROPIC_DEFAULT_HAIKU_MODEL: &str = "ANTHROPIC_DEFAULT_HAIKU_MODEL";
+    /// A Claude subscription token (`claude setup-token`, or a Claude Code
+    /// login's access token handed to another machine).
+    pub const CLAUDE_CODE_OAUTH_TOKEN: &str = "CLAUDE_CODE_OAUTH_TOKEN";
     pub const GOOGLE_APPLICATION_CREDENTIALS: &str = "GOOGLE_APPLICATION_CREDENTIALS";
     pub const OPENAI_API_KEY: &str = "OPENAI_API_KEY";
     pub const CODEX_API_KEY: &str = "CODEX_API_KEY";
+    /// Conductor deletes this from every Codex launch and from the login
+    /// shell's environment (evidence/agent-auth/README.md); so do we.
+    pub const CODEX_ACCESS_TOKEN: &str = "CODEX_ACCESS_TOKEN";
     pub const OPENAI_BASE_URL: &str = "OPENAI_BASE_URL";
     pub const OPENAI_ORGANIZATION: &str = "OPENAI_ORGANIZATION";
     pub const OPENAI_PROJECT: &str = "OPENAI_PROJECT";
