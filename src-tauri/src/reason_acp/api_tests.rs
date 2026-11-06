@@ -128,3 +128,68 @@ fn signed_out_call_reports_authentication_required() {
     let e = cfg.api_call(&dir, "listReasons", &json!({})).unwrap_err();
     assert_eq!(e.code, "authentication_required");
 }
+
+#[test]
+fn organization_environment_and_mcp_through_reason_call() {
+    let dir = scratch("org");
+    let cfg = LaunchConfig::new(fake()).unwrap();
+    let names = |scope: &str| -> Vec<String> {
+        let out = cfg
+            .api_call(&dir, "listSecrets", &json!({ "query": { "scope": scope } }))
+            .unwrap();
+        out["items"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["name"].as_str().unwrap().to_string())
+            .collect()
+    };
+    assert_eq!(names("organization"), vec!["NPM_TOKEN"]);
+    assert!(names("user").is_empty());
+
+    cfg.api_call(
+        &dir,
+        "setSecret",
+        &json!({ "body": { "name": "API_URL", "value": "https://api.example.test", "scope": "user" } }),
+    )
+    .unwrap();
+    assert_eq!(names("user"), vec!["API_URL"]);
+    let listed = cfg
+        .api_call(
+            &dir,
+            "listSecrets",
+            &json!({ "query": { "scope": "user" } }),
+        )
+        .unwrap();
+    assert!(
+        !listed.to_string().contains("api.example.test"),
+        "a listed secret never carries its value"
+    );
+    cfg.api_call(
+        &dir,
+        "deleteSecret",
+        &json!({ "path": { "secretId": "API_URL" }, "query": { "scope": "user" } }),
+    )
+    .unwrap();
+    assert!(names("user").is_empty());
+
+    let created = cfg
+        .api_call(
+            &dir,
+            "createMcpServer",
+            &json!({ "body": { "name": "Linear", "transport": "http", "url": "https://mcp.linear.app/mcp" } }),
+        )
+        .unwrap();
+    let id = created["id"].as_str().unwrap().to_string();
+    let list = cfg.api_call(&dir, "listMcpServers", &json!({})).unwrap();
+    assert_eq!(list["items"][0]["name"], "Linear");
+    cfg.api_call(&dir, "deleteMcpServer", &json!({ "path": { "id": id } }))
+        .unwrap();
+    let list = cfg.api_call(&dir, "listMcpServers", &json!({})).unwrap();
+    assert_eq!(list["items"].as_array().unwrap().len(), 0);
+
+    // The secret's value went in on stdin, never in the command line.
+    let log = calls(&dir);
+    let set = log.iter().find(|c| c["op"] == "setSecret").unwrap();
+    assert_eq!(set["input"]["body"]["value"], "https://api.example.test");
+}

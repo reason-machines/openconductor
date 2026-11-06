@@ -119,9 +119,19 @@ st("settings-repo-misc-lower", "Settings > tide-web > Misc, scrolled to Remove r
    ref("/settings/repos/repo-tide-web/misc", wait=False, actions=[{"wait":"text=Repository paths and workspace file behavior."},{"click":"text=No matching gitignored files found."}]),
    oc=oc_settings(None,[{"click":".settings-repo","text":"Ttide-web"},{"click":".settings-repo-sections .nav-item","text":"Misc","after_ms":800},{"exec":"document.querySelector('.settings-misc-files-note')?.scrollIntoView({block:'center'})","after_ms":400}]),
    covers=[{"kind":"settings-page","name":"repo-misc"}])
+# Organization settings render in the reference's "team" scenario (tools/screens/seed-data.js: a
+# corporation organization and its members, machine, MCP servers and settings). OpenConductor's
+# organization is the Reason workspace; the lane opens each page with the app's open-settings event
+# (/settings/organization/github resolves to Cloud computer on both sides).
+ORG_WAIT={"github":"Configure your organization's shared cloud computer.","members":"People in your organization.",
+          "preferences":"Include link to workspace in PR description","computer":"Configure your organization's shared cloud computer.",
+          "environment":"Add environment variable","mcp":"Add MCP server","prompts":"General preferences"}
 for sec in ["github","members","preferences","computer","environment","mcp","prompts"]:
     path="/settings/organization/"+sec
-    st("settings-org-"+sec, "Settings > Organization > "+sec, ref(path), oc_reason="OpenConductor has no organization settings", covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
+    page="org-computer" if sec=="github" else "org-"+sec
+    st("settings-org-"+sec, "Settings > Organization > "+sec, ref(path, scenario="team", actions=[{"wait":"text="+ORG_WAIT[sec]}]),
+       oc=oc_settings(None,[{"exec":"window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'"+page+"'}}))","after_ms":2500}]),
+       covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
 # The lane's throwaway HOME has no Reason login, so Settings lists no Cloud group to click: open the page
 # the way create's "Set up cloud" does (the app's open-settings event). Its steps then read signed out.
 st("settings-cloud-setup","Settings > Cloud setup", ref("/settings/cloud/setup"),

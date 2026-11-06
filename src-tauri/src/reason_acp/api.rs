@@ -1,12 +1,14 @@
-//! The public Reason API operations Routines (Reason Loops) may run, through
-//! the `reason` CLI: [`LaunchConfig::api_call`] checks the operation against
+//! The public Reason API operations OpenConductor may run, through the
+//! `reason` CLI (Routines on Reason Loops, Settings › Organization on the
+//! Reason workspace): [`LaunchConfig::api_call`] checks the operation against
 //! [`OPERATIONS`] and runs it with [`LaunchConfig::call`] (`reason
 //! [--workspace SLUG] call OPERATION --input-file -`, `cloud.rs`).
 //!
 //! The CLI signs the request with its own login or `REASON_API_KEY` and pins
 //! the Workspace, so OpenConductor never holds a Reason credential. The
-//! page can read and change Loops and read the Workspace's members, nothing
-//! else the API offers.
+//! app can read and change Loops, read the Workspace's members, and list,
+//! set and delete its environment variables (secrets, values write-only)
+//! and MCP servers; nothing else the API offers.
 
 use std::path::Path;
 
@@ -15,7 +17,7 @@ use serde_json::Value;
 use super::cli::LaunchConfig;
 use super::cloud::CallError;
 
-/// The operations Routines may call, by `reason tools` id.
+/// The operations OpenConductor may call, by `reason tools` id.
 pub const OPERATIONS: &[&str] = &[
     // Who is signed in (`user_id` decides "Me" and who may change a routine).
     "getSelf",
@@ -27,8 +29,18 @@ pub const OPERATIONS: &[&str] = &[
     "updateReasonLoop",
     "deleteReasonLoop",
     "runReasonLoop",
-    // Authors' emails in the routines table.
+    // Authors' emails in the routines table; Settings › Organization › Members.
     "listMembers",
+    // Settings › Organization › Environment: Personal (`user`) and Shared
+    // (`organization`) variables. Values go in on stdin and never come back.
+    "listSecrets",
+    "setSecret",
+    "deleteSecret",
+    // Settings › Organization › MCP.
+    "listMcpServers",
+    "createMcpServer",
+    "updateMcpServer",
+    "deleteMcpServer",
 ];
 
 impl LaunchConfig {

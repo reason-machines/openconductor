@@ -5,14 +5,15 @@
 // `path:"/settings"`, the `/settings` index redirect `nCa` and the tab-to-path
 // map `Jse`), REA-extracted on sven m5 max; evidence/settings/NOTES.md,
 // "Settings routes". OpenConductor has no Conductor account or cloud
-// organization, so every route Conductor gates behind one resolves where
-// Conductor sends a local user: /settings/user/general. The exception is
-// /settings/cloud/setup (Conductor's `TEa`, which renders the page unless the
-// active organization is already a cloud one): OpenConductor's cloud is
-// Reason, set up there.
+// organization: its cloud is Reason. /settings/cloud/setup (Conductor's
+// `TEa`) sets Reason up, and the /settings/organization pages (Conductor's
+// `PI` routes, `lW`-gated on a cloud organization) are the Reason workspace's
+// settings: they open whether or not the `reason` CLI is signed in, and say
+// so when it is not, as /routines does. The cloud project and organization
+// repository routes still resolve to General.
 
 import { APP_URL_SCHEME } from "../workspace/link.ts";
-import type { SettingsPage } from "./pages.ts";
+import { ORG_PAGE_PATHS, isOrgPage, type OrgPage, type SettingsPage } from "./pages.ts";
 
 /**
  * Tabs of a repository's settings (`/settings/repos/$repoId/<section>`), Conductor's `BCe`, in
@@ -49,22 +50,27 @@ const GENERAL: SettingsLocation = { scope: "user", page: "general" };
 const CLOUD_SETUP: SettingsLocation = { scope: "user", page: "setup-cloud" };
 export const CLOUD_SETUP_PATH = "/settings/cloud/setup";
 
+const org = (page: OrgPage): SettingsLocation => ({ scope: "user", page });
+
 /**
- * Settings routes that need a Conductor cloud organization or account
- * (Conductor's `lW` and `Jna` gates). Each redirects to /settings/user/general
- * for a local user, which is every OpenConductor user.
+ * Conductor's /settings/organization routes (`PI` and its children,
+ * renderApp @~11,300,000): one page each, and the redirects `pCa` (the index
+ * and `REa` /github open Cloud computer) and `xCa` (/mcp-servers opens /mcp).
+ */
+export const ORG_ROUTES: readonly (readonly [string, OrgPage])[] = [
+  ["/settings/organization", "org-computer"],
+  ["/settings/organization/github", "org-computer"],
+  ["/settings/organization/mcp-servers", "org-mcp"],
+  ...Object.entries(ORG_PAGE_PATHS).map(([page, seg]) => [`/settings/organization/${seg}`, page as OrgPage] as const),
+];
+
+/**
+ * Settings routes that need a Conductor cloud project or organization
+ * repository, which OpenConductor does not have yet. Each redirects to
+ * /settings/user/general.
  */
 export const CLOUD_ONLY_ROUTES = [
   "/settings/cloud/$cloudProjectId",
-  "/settings/organization",
-  "/settings/organization/github",
-  "/settings/organization/members",
-  "/settings/organization/preferences",
-  "/settings/organization/computer",
-  "/settings/organization/environment",
-  "/settings/organization/mcp",
-  "/settings/organization/mcp-servers",
-  "/settings/organization/prompts",
   "/settings/organization/repositories/$owner/$repo",
   "/settings/organization/repositories/$owner/$repo/scripts",
   "/settings/organization/repositories/$owner/$repo/git",
@@ -170,6 +176,7 @@ export const SETTINGS_ROUTES: readonly (readonly [string, Resolver])[] = [
   // Conductor's `dCa`: the /settings/cloud index redirects to /settings/cloud/setup.
   ["/settings/cloud", () => CLOUD_SETUP],
   [CLOUD_SETUP_PATH, () => CLOUD_SETUP],
+  ...ORG_ROUTES.map(([p, page]) => [p, () => org(page)] as const),
   ...CLOUD_ONLY_ROUTES.map((p) => [p, () => GENERAL] as const),
 ];
 
@@ -205,6 +212,7 @@ export function keptSearch(search: string): string {
 /** The canonical path of a location, as Conductor's router shows it. */
 export function settingsPath(loc: SettingsLocation): string {
   if (loc.scope === "user" && loc.page === "setup-cloud") return CLOUD_SETUP_PATH;
+  if (loc.scope === "user" && isOrgPage(loc.page)) return `/settings/organization/${ORG_PAGE_PATHS[loc.page]}`;
   return loc.scope === "user"
     ? `/settings/user/${loc.page}`
     : `/settings/repos/${encodeURIComponent(loc.repoId)}/${loc.section}`;

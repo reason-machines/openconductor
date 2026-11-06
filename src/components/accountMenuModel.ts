@@ -39,12 +39,25 @@ export function personIcon(name: string, avatarUrl = ""): PersonIcon {
 export type AccountMenuEntry =
   | { kind: "email"; email: string }
   | { kind: "separator" }
+  | { kind: "org"; id: string; label: string; cloud: boolean; selected: boolean }
   | { kind: "item"; id: "settings"; label: string };
 
 export interface AccountMenuModel {
   triggerLabel: string;
   triggerIcon: PersonIcon;
+  /** The trigger shows a building (`Building2`) for a team organization, not the avatar. */
+  triggerCloud: boolean;
   entries: AccountMenuEntry[];
+}
+
+/**
+ * A team organization the switcher lists besides the personal one: for
+ * OpenConductor, the Reason workspace the `reason` CLI is signed in to.
+ */
+export interface TeamOrganization {
+  id: string;
+  name: string;
+  selected: boolean;
 }
 
 /**
@@ -55,13 +68,26 @@ export interface AccountMenuModel {
  * "Log out", ends the Conductor cloud session; with no account there is
  * nothing to end, so it is left out rather than shown doing nothing.
  */
-export function accountMenuModel(account: LocalAccount): AccountMenuModel {
+export function accountMenuModel(account: LocalAccount, team?: TeamOrganization): AccountMenuModel {
   const entries: AccountMenuEntry[] = [];
   if (account.email) entries.push({ kind: "email", email: account.email }, { kind: "separator" });
+  // `zna` with more than one organization: the personal one, then each team one, a check on the active one.
+  if (team) {
+    entries.push(
+      { kind: "org", id: PERSONAL_ORG, label: computerLabel(account.name), cloud: false, selected: !team.selected },
+      { kind: "org", id: team.id, label: team.name, cloud: true, selected: team.selected },
+      { kind: "separator" },
+    );
+  }
   entries.push({ kind: "item", id: "settings", label: "Settings" });
+  const onTeam = team?.selected === true;
   return {
-    triggerLabel: computerLabel(account.name),
-    triggerIcon: personIcon(account.name),
+    triggerLabel: onTeam ? team.name : computerLabel(account.name),
+    triggerIcon: onTeam ? { fallbackInitial: undefined, imageAlt: team.name } : personIcon(account.name),
+    triggerCloud: onTeam,
     entries,
   };
 }
+
+/** The personal organization's id in the switcher. */
+export const PERSONAL_ORG = "personal";

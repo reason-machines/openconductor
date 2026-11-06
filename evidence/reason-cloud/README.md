@@ -87,3 +87,49 @@ plan"), [Customize › GitHub](https://reasonmachines.com/customize?tab=plugins&
   workspace" opens the create dialog today.
 - Not run: the page in the Tauri app against a real signed-in CLI (CI and the
   side-by-side use a fake CLI and a fixture).
+
+# Settings › Organization on the Reason workspace
+
+OpenConductor's cloud organization is the Reason workspace the `reason` CLI
+is signed in to. Settings shows it the way Conductor shows a cloud
+organization: the switcher at the top of the nav lists the personal
+organization ("<name>'s Mac") and the workspace, and the workspace's nav is
+Conductor's organization nav.
+
+## Conductor 0.87.6 (REA capture in the `tools/screens` "team" scenario, bundle read by offset)
+
+- Routes (`PI` and children): `/settings/organization` and `/github` redirect
+  to `/computer` (`pCa`, `REa`); `/mcp-servers` to `/mcp` (`xCa`); members,
+  preferences, computer, environment, mcp and prompts each render one tab
+  under the `lW` gate (`t9e`: a cloud organization, not SSO-blocked).
+- Nav with a cloud organization: Personal (General, Account, Appearance,
+  Default models, Git, Ports), Agents & environment (Agents, Prompts,
+  Environment, MCP, Cloud computer), Repositories (the organization's), Admin
+  (Preferences, Members, Billing ↗), More.
+- Members `m0a`: "Members", "People in your organization.", rows `h0a`
+  (initials, name over email, role); empty "No members yet.", error
+  "Couldn't load members." with Retry.
+- Preferences: "Include link to workspace in PR description" (setting
+  `prWorkspaceLinkEnabled`, org scope).
+- Prompts `S0a`: Personal / Shared tabs in the URL hash; `cei` rows General
+  preferences, "Review", "Create PR", "Fix errors", "Resolve conflicts".
+- Environment `o0a`: Personal / Shared; "Add environment variable", "Import
+  .env", "No variables yet".
+- MCP `W1a`: Installed / Recommended, "Search installed MCPs", "Add MCP
+  server", "No MCP servers installed"; recommended list `V$i`.
+- Cloud computer `Tha`: one shared machine with versions, repositories, an
+  install script and "Build computer".
+
+## What OpenConductor reads from Reason
+
+| Page | Reason operation (`reason call`) | Notes |
+|---|---|---|
+| Members | `listMembers`, `getSelf` | Reason members carry no names; the signed-in person's comes from `getSelf`. "Manage ↗" opens the workspace in Reason (invites, roles). |
+| Environment | `listSecrets`, `setSecret`, `deleteSecret` with `scope` `user` (Personal) or `organization` (Shared) | Names only; values go in on stdin and are never returned or shown. |
+| MCP | `listMcpServers`, `createMcpServer`, `updateMcpServer`, `deleteMcpServer` | Add takes a name and an http(s) URL; Recommended adds Conductor's no-setup entries. |
+| Cloud computer | `getSelf`, `listRepositories` (the Cloud setup read) | Reason gives each Session its own cloud computer, so there is no shared machine to build: the page says so and lists the repositories. |
+| Prompts | OpenConductor's `[prompts]` (Personal) | Shared prompts are the Reason workspace's own instructions, changed in Reason. |
+| Preferences | OpenConductor's settings file, `[organization] pr_workspace_link` | Reason's settings API has no such namespace. |
+
+`src-tauri/src/reason_acp/api.rs` refuses any other operation before the CLI
+starts.

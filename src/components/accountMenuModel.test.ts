@@ -28,3 +28,21 @@ test("without an email the menu is Settings alone, and never Log out", () => {
   const labels = accountMenuModel({ name: "Ada", email: "a@b.c" }).entries.map((e) => (e.kind === "item" ? e.label : e.kind));
   assert.ok(!labels.includes("Log out"));
 });
+
+test("with a team organization the switcher lists both, checks the active one, and names the trigger after it", () => {
+  const local = accountMenuModel({ name: "Ada", email: "ada@example.com" }, { id: "reason", name: "Tide Labs", selected: false });
+  assert.equal(local.triggerLabel, "Ada's Mac");
+  assert.equal(local.triggerCloud, false);
+  assert.deepEqual(local.entries, [
+    { kind: "email", email: "ada@example.com" },
+    { kind: "separator" },
+    { kind: "org", id: "personal", label: "Ada's Mac", cloud: false, selected: true },
+    { kind: "org", id: "reason", label: "Tide Labs", cloud: true, selected: false },
+    { kind: "separator" },
+    { kind: "item", id: "settings", label: "Settings" },
+  ]);
+  const team = accountMenuModel({ name: "Ada", email: null }, { id: "reason", name: "Tide Labs", selected: true });
+  assert.equal(team.triggerLabel, "Tide Labs");
+  assert.equal(team.triggerCloud, true);
+  assert.deepEqual(team.entries.filter((e) => e.kind === "org").map((e) => e.kind === "org" && e.selected), [false, true]);
+});

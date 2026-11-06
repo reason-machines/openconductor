@@ -761,6 +761,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-account-email { padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--muted); }
 .sb-account-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 4px; text-align: left; font-size: 13px; color: var(--text); }
 .sb-account-item:hover, .sb-account-item:focus-visible { background: var(--hover); }
+.sb-account-item-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-account-item-check { display: flex; flex: none; color: var(--muted); }
 .sb-account-item-icon { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex: none; color: var(--muted); }
 
 /* sidebar: resource usage pill (Conductor's `vna`: rounded-md border border-sidebar-border text-2xs

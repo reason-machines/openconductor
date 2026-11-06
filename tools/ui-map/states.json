@@ -1597,14 +1597,27 @@
    "title": "Settings > Organization > github",
    "ref": {
     "path": "/settings/organization/github",
-    "scenario": "populated",
+    "scenario": "team",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Configure your organization's shared cloud computer."
      }
     ]
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-computer'}}))",
+     "after_ms": 2500
+    }
+   ],
    "covers": [
     {
      "kind": "route",
@@ -1621,14 +1634,27 @@
    "title": "Settings > Organization > members",
    "ref": {
     "path": "/settings/organization/members",
-    "scenario": "populated",
+    "scenario": "team",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=People in your organization."
      }
     ]
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-members'}}))",
+     "after_ms": 2500
+    }
+   ],
    "covers": [
     {
      "kind": "route",
@@ -1645,14 +1671,27 @@
    "title": "Settings > Organization > preferences",
    "ref": {
     "path": "/settings/organization/preferences",
-    "scenario": "populated",
+    "scenario": "team",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Include link to workspace in PR description"
      }
     ]
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-preferences'}}))",
+     "after_ms": 2500
+    }
+   ],
    "covers": [
     {
      "kind": "route",
@@ -1669,14 +1708,27 @@
    "title": "Settings > Organization > computer",
    "ref": {
     "path": "/settings/organization/computer",
-    "scenario": "populated",
+    "scenario": "team",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Configure your organization's shared cloud computer."
      }
     ]
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-computer'}}))",
+     "after_ms": 2500
+    }
+   ],
    "covers": [
     {
      "kind": "route",
@@ -1693,14 +1745,27 @@
    "title": "Settings > Organization > environment",
    "ref": {
     "path": "/settings/organization/environment",
-    "scenario": "populated",
+    "scenario": "team",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Add environment variable"
      }
     ]
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-environment'}}))",
+     "after_ms": 2500
+    }
+   ],
    "covers": [
     {
      "kind": "route",
@@ -1717,14 +1782,27 @@
    "title": "Settings > Organization > mcp",
    "ref": {
     "path": "/settings/organization/mcp",
-    "scenario": "populated",
+    "scenario": "team",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Add MCP server"
      }
     ]
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-mcp'}}))",
+     "after_ms": 2500
+    }
+   ],
    "covers": [
     {
      "kind": "route",
@@ -1741,14 +1819,27 @@
    "title": "Settings > Organization > prompts",
    "ref": {
     "path": "/settings/organization/prompts",
-    "scenario": "populated",
+    "scenario": "team",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=General preferences"
      }
     ]
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-prompts'}}))",
+     "after_ms": 2500
+    }
+   ],
    "covers": [
     {
      "kind": "route",

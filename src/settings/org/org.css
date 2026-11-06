@@ -1,0 +1,47 @@
+/* Settings › Organization, after Conductor 0.87.6's organization pages
+   (`ap` page `space-y-6`, `Z3` header, member list `divide-y rounded-md
+   border`, rows `flex items-center gap-3 px-3 py-2.5`, avatar `size-7
+   text-xs`, tabs `yy` in a `border-b` with `gap-6`). Colours are the
+   settings palette tokens. */
+.settings .org-page { display: flex; flex-direction: column; gap: 24px; user-select: text; }
+.settings .org-header { align-items: center; }
+.settings .org-header .btn { flex-shrink: 0; }
+.settings .org-page > p.muted.small, .settings .org-note p { margin: 0; font-size: 14px; line-height: 20px; }
+.settings .org-working { margin: 0; }
+.settings .org-note { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.settings .org-center { margin: 8px 0 0; text-align: center; font-size: 14px; }
+
+.settings .org-tabs { display: flex; gap: 24px; margin-top: 8px; border-bottom: 1px solid var(--s-border); }
+.settings .org-tab { position: relative; padding: 0 0 10px; border: 0; background: none; color: var(--s-muted); font: inherit; font-size: 14px; line-height: 20px; font-weight: 450; cursor: pointer; }
+.settings .org-tab:hover { color: var(--s-fg); }
+.settings .org-tab.on { color: var(--s-fg); }
+.settings .org-tab.on::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; border-radius: 1px; background: var(--s-fg); }
+
+.settings .org-list, .settings .org-box { border: 1px solid var(--s-border); border-radius: 6px; }
+.settings .org-list > * + * { border-top: 1px solid var(--s-border); }
+.settings .org-member { display: flex; align-items: center; gap: 12px; padding: 10px 12px; }
+.settings .org-avatar { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; border-radius: 999px; background: var(--s-card); color: var(--s-muted); font-size: 12px; line-height: 16px; font-weight: 500; }
+.settings .org-member-text { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+.settings .org-member-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; line-height: 20px; font-weight: 500; }
+.settings .org-member-email { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; color: var(--s-muted); }
+.settings .org-member-role { flex-shrink: 0; font-size: 12px; line-height: 16px; color: var(--s-muted); }
+
+.settings .org-actions { display: flex; align-items: center; gap: 8px; }
+.settings .org-search { display: flex; flex: 1; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border: 1px solid var(--s-input); border-radius: 6px; color: var(--s-muted); }
+.settings .org-search input { flex: 1; min-width: 0; border: 0; background: none; color: var(--s-fg); font: inherit; font-size: 14px; outline: none; }
+.settings .org-empty-box { padding: 10px 12px; font-size: 14px; line-height: 20px; color: var(--s-muted); }
+.settings .org-var { display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 4px 4px 4px 12px; }
+.settings .org-var-name { font-family: var(--font-mono, ui-monospace, monospace); font-size: 13px; }
+.settings .org-mcp-name { font-size: 14px; font-weight: 500; }
+.settings .org-var-value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--s-muted); }
+.settings .org-icon-btn { margin-left: auto; color: var(--s-muted); }
+.settings .org-add-var { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; }
+.settings .org-add-var .settings-input { flex: 1; min-width: 160px; height: 32px; padding: 0 10px; border: 1px solid var(--s-input); border-radius: 6px; background: var(--bg); color: var(--s-fg); font: inherit; font-size: 14px; outline: none; }
+.settings .org-add-hint { flex-basis: 100%; margin: 0; }
+/* Conductor's `rV` list: rows 47 px apart, a divider between them, none above the first. */
+.settings .org-prompts .org-prompt-row { padding: 14px 0; border-top: 1px solid var(--s-border); }
+.settings .org-prompts .org-prompt-row:first-child { border-top: 0; }
+
+.settings .org-computer-status { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; font-size: 14px; line-height: 20px; color: var(--s-muted); }
+.settings .org-section { display: flex; flex-direction: column; gap: 12px; padding-top: 24px; border-top: 1px solid var(--s-border); }
+.settings .org-section h2 { margin: 0; font-size: 16px; line-height: 24px; font-weight: 500; }

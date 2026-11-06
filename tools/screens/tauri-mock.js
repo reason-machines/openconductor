@@ -257,6 +257,8 @@
       refreshToken: "oc-harness-fake-refresh-token",
     },
     "GET https://api.conductor.build/organizations": { organizations: [] },
+    // Per-scenario answers (seed.http, e.g. the "team" scenario's organization).
+    ...(seed.http || {}),
   };
   const httpResponses = new Map();
   let nextHttpRid = 1;

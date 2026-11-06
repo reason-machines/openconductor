@@ -54,7 +54,7 @@ import { useKeybindingOverrides, useKeybindings } from "./keybindings/Keybinding
 import { PRIORITY } from "./keybindings/dispatcher";
 import { copyWorkspaceLink } from "./workspace/link";
 import { SettingsView } from "./settings/SettingsView";
-import { USER_PAGES } from "./settings/pages";
+import { ORG_PAGES, USER_PAGES } from "./settings/pages";
 import { OPEN_SETTINGS_EVENT, openAgentSettings } from "./features/chat/ChatModelPicker.tsx";
 import { RoutinesPage } from "./features/routines/RoutinesPage";
 import { RoutineEditor } from "./features/routines/RoutineEditor";
@@ -231,8 +231,9 @@ export default function App() {
       // The right panel's "Add run script" opens the repository's Scripts settings.
       const section = REPO_SECTIONS.find((s) => s === detail?.section);
       if (detail?.repoId && section) return navigateSettings({ scope: "repo", repoId: detail.repoId, section });
-      // Cloud setup (create's "Set up cloud") lives at /settings/cloud/setup, outside the user pages.
-      const known = [...USER_PAGES, "setup-cloud" as const].find((p) => p === detail?.page);
+      // Cloud setup (create's "Set up cloud") lives at /settings/cloud/setup and the organization
+      // pages at /settings/organization/..., outside the user pages.
+      const known = [...USER_PAGES, "setup-cloud" as const, ...ORG_PAGES].find((p) => p === detail?.page);
       if (known) navigateSettings({ scope: "user", page: known });
       // A chat's "Open <agent> settings": the Agents page opens on that agent's tab.
       if (known === "providers" && detail?.providerTab) {
