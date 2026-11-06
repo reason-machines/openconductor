@@ -204,3 +204,30 @@ fn a_workspace_pins_the_agent_and_its_subcommands() {
     assert_eq!(cfg.in_workspace(None).unwrap(), cfg);
     assert!(cfg.in_workspace(Some("--evil")).is_err());
 }
+
+#[test]
+fn session_get_json_gives_the_model_a_session_ran_on() {
+    use super::cli::{parse_session_model, RunningModel};
+    // Trimmed from `reason session get ID --json` (0.2.692).
+    let got = parse_session_model(
+        r#"{"session_id":"bfcbd49f","status":"exit","model":"byok:anthropic:claude-haiku-5-5","reasoning_effort":"low"}"#,
+    );
+    assert_eq!(
+        got,
+        Some(RunningModel {
+            model: "byok:anthropic:claude-haiku-5-5".into(),
+            effort: Some("low".into())
+        })
+    );
+    let nested = parse_session_model(r#"{"session":{"model":"m","reasoning_effort":null}}"#);
+    assert_eq!(
+        nested,
+        Some(RunningModel {
+            model: "m".into(),
+            effort: None
+        })
+    );
+    assert_eq!(parse_session_model(r#"{"model":null}"#), None);
+    assert_eq!(parse_session_model(r#"{"model":"default"}"#), None);
+    assert_eq!(parse_session_model("not json"), None);
+}

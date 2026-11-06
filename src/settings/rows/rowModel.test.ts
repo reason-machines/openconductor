@@ -2,8 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { promptWrite, PROMPT_ROWS } from "./rowModel.ts";
 
-test("prompt rows show only prompts something here sends", () => {
-  assert.deepEqual(PROMPT_ROWS.map((r) => r.kind), ["code_review", "create_pr", "general"]);
+test("prompt rows follow Conductor's Actions order", () => {
+  assert.deepEqual(PROMPT_ROWS.map((r) => r.kind), ["code_review", "create_pr", "fix_errors", "resolve_merge_conflicts", "rename_branch", "general"]);
 });
 
 test("prompt saves write trimmed text, remove blanks and skip no-ops", () => {

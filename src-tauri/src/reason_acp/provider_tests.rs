@@ -491,3 +491,51 @@ fn the_session_store_remembers_each_sessions_workspace() {
     assert_eq!(p.prompt("chat", "echo: two"), TurnEnd::Completed);
     assert_eq!(reply(&log), "turn 2: two");
 }
+
+fn session_models(log: &Log) -> Vec<(String, Option<String>)> {
+    let log = log.lock().unwrap();
+    let models = log.iter().filter_map(|(_, ev)| match ev {
+        ProviderEvent::SessionModel(m) => Some((m.model.clone(), m.effort.clone())),
+        _ => None,
+    });
+    models.collect()
+}
+
+#[test]
+fn after_each_turn_the_model_the_session_ran_on_is_reported() {
+    let (p, log, home) = provider("session-model");
+    p.open_chat("c", &home, None);
+    assert_eq!(p.prompt("c", "hello"), TurnEnd::Completed);
+    // Auto: the fake's `session get` says it ran Claude Opus 5.5 at high.
+    wait_for(&log, |e| matches!(e, ProviderEvent::SessionModel(_)));
+    assert_eq!(
+        session_models(&log),
+        vec![(
+            "byok:anthropic:claude-opus-5-5".to_string(),
+            Some("high".to_string())
+        )]
+    );
+}
+
+#[test]
+fn models_lists_what_a_new_session_offers_without_keeping_it() {
+    let (p, log, _home) = provider("models");
+    let list = p.models().unwrap();
+    assert_eq!(list.current, "default");
+    let values: Vec<&str> = list.options.iter().map(|o| o.value.as_str()).collect();
+    assert_eq!(
+        &values[..3],
+        [
+            "default",
+            "byok:anthropic:claude-opus-5-5",
+            "byok:openai-codex:gpt-5.6-sol"
+        ]
+    );
+    assert_eq!(list.options[0].name, "Auto");
+    assert_eq!(list.options[1].name, "Claude Opus 5.5");
+    assert_eq!(
+        list.options[1].description.as_deref(),
+        Some("Claude · Subscription")
+    );
+    assert!(started(&log).is_empty(), "no chat gets a Session");
+}

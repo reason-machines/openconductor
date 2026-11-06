@@ -47,6 +47,27 @@ export async function addRepository(path: string): Promise<RepositoryDto> {
   return invoke<RepositoryDto>("add_repository", { path });
 }
 
+/** Fired on `window` instead of quitting when there is no desktop app (vite preview, e2e). */
+export const BROWSER_QUIT_EVENT = "openconductor:quit";
+
+/**
+ * Tell the backend the webview answers `quit_requested` (`set_quit_handler_ready`,
+ * as Conductor does), so the native Quit item asks it first instead of exiting.
+ */
+export async function setQuitHandlerReady(ready: boolean): Promise<void> {
+  if (!inTauri()) return;
+  await invoke("set_quit_handler_ready", { ready });
+}
+
+/** Quit the app now (`quit_app`). */
+export async function quitApp(): Promise<void> {
+  if (!inTauri()) {
+    window.dispatchEvent(new CustomEvent(BROWSER_QUIT_EVENT));
+    return;
+  }
+  await invoke("quit_app");
+}
+
 /** Open a web page in the default browser (tauri-plugin-opener's `open_url`). */
 export async function openUrl(url: string): Promise<void> {
   if (!inTauri()) {

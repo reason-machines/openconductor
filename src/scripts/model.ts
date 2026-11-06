@@ -22,6 +22,7 @@ export interface ScriptsConfig {
   setup: string | null;
   setupLayer: string | null;
   archive: string | null;
+  archiveLayer?: string | null;
   runMode: "concurrent" | "nonconcurrent";
   autoRunAfterSetup: boolean;
   run: RunScript[];

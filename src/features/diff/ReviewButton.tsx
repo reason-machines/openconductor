@@ -8,9 +8,7 @@
 // click. Review tabs live until closed or the app quits; their Reason
 // Sessions stay in Reason.
 import { useCallback, useEffect, useState } from "react";
-import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
-import { effectiveShortcuts } from "../../keybindings/overrides.ts";
-import { glyphs } from "../../keybindings/shortcut.ts";
+import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { getSettings } from "../../settings/api";
 import { DEFAULT_SETTINGS } from "../../settings/types";
 import type { Repo, Workspace } from "../../state/types";
@@ -169,8 +167,6 @@ const MENU_WIDTH = 180;
 
 /** The Review button; right-click offers "Edit before sending". */
 export function ReviewButton({ onReview, onEdit, error }: { onReview: () => void; onEdit: () => void; error: string | null }) {
-  const { overrides } = useKeybindingOverrides();
-  const key = effectiveShortcuts("workspace.showReview", overrides)[0];
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   useEffect(() => {
     if (!menu) return;
@@ -189,17 +185,18 @@ export function ReviewButton({ onReview, onEdit, error }: { onReview: () => void
           Review failed
         </span>
       )}
-      <button
-        className="btn btn-small review-button"
-        onClick={onReview}
-        onContextMenu={(e) => {
-          e.preventDefault();
-          setMenu({ x: e.clientX, y: e.clientY });
-        }}
-        title={`Get an AI code review${key ? ` (${glyphs(key)})` : ""}. Right-click to edit the request first.`}
-      >
-        <ReviewIcon /> Review
-      </button>
+      <Tooltip content="Get an AI code review" shortcut="workspace.showReview">
+        <button
+          className="btn btn-small review-button"
+          onClick={onReview}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setMenu({ x: e.clientX, y: e.clientY });
+          }}
+        >
+          <ReviewIcon /> Review
+        </button>
+      </Tooltip>
       {menu && (
         // The button sits at the window's right edge: keep the menu inside it.
         <div className="review-menu" role="menu" style={{ left: Math.max(4, Math.min(menu.x, window.innerWidth - MENU_WIDTH - 8)), top: menu.y }}>

@@ -65,6 +65,9 @@ export type RepoLocalKey =
   | "preview_urls"
   | "environment_variable_files"
   | "file_include_globs"
+  | "scripts.setup"
+  | "scripts.archive"
+  | `scripts.run.${string}`
   | `environment_variables.${string}`;
 
 export function repoSettingsEffective(repoPath: string, workspacePath?: string): Promise<EffectiveSettings> {
