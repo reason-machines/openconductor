@@ -196,3 +196,50 @@
 /* Conductor's branch / remote picker trigger (`text-sm border px-2`, up-down chevron). */
 .settings .settings-picker { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; border: 1px solid var(--s-border); border-radius: 6px; font-size: 14px; line-height: 20px; color: var(--s-fg); cursor: default; }
 .settings .settings-picker svg { opacity: 0.7; }
+
+/* Repository Environment (Conductor's `zda` for a repository: `T$i` tables, `FZn` rows, `vda`/`Fda` sheets). */
+.settings .settings-env-sections { display: flex; flex-direction: column; gap: 40px; margin-top: 24px; }
+.settings .settings-env-sections .settings-env-section { gap: 16px; }
+.settings .settings-env-section-title { margin: 0; font-size: 14px; font-weight: 500; color: var(--s-muted); }
+.settings .settings-env-sections .settings-env-var { grid-template-columns: 42% minmax(0, 1fr) 88px; align-items: start; padding: 0 16px; gap: 0; }
+.settings .settings-env-sections .settings-env-var.dimmed { opacity: 0.5; }
+.settings .settings-env-name-cell { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0 8px; padding: 12px 8px 12px 0; }
+.settings .settings-env-source-icon { display: flex; height: 20px; align-items: center; color: var(--s-muted); }
+.settings .settings-env-name-text { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.settings .settings-env-name-text code { font-size: 14px; line-height: 20px; }
+.settings .settings-env-var.documented .settings-env-name-text code { color: var(--s-muted); }
+.settings .settings-env-detail { font-size: 12px; color: var(--s-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.settings .settings-env-value-cell { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 8px 0; }
+.settings .settings-env-icon { position: static; transform: none; width: 28px; height: 28px; border: 0; background: none; }
+.settings .settings-env-icon:disabled { opacity: 0.5; }
+.settings .settings-env-value { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 2px 4px; border: 0; border-radius: 4px; background: none; color: var(--s-muted); font-family: var(--font-mono); font-size: 12px; text-align: left; cursor: pointer; }
+.settings .settings-env-value:hover { background: var(--s-hover); color: var(--s-fg); }
+.settings .settings-env-not-set { display: inline-flex; margin: 4px 0; padding: 4px 8px; border-radius: 4px; background: var(--s-hover); color: var(--s-muted); font-size: 12px; }
+.settings .settings-env-actions { display: flex; justify-content: flex-end; gap: 2px; padding: 8px 0; opacity: 0.7; }
+.settings .settings-env-var:hover .settings-env-actions, .settings .settings-env-actions:focus-within { opacity: 1; }
+.settings .settings-env-sections + .settings-env-files-section { margin-top: 24px; }
+.settings .settings-env-file-add { display: flex; align-items: center; gap: 4px; width: 100%; }
+.settings .settings-env-file-add .settings-field-wrap { flex: 1; }
+.settings .settings-env-warning { margin: 0; font-size: 14px; color: var(--s-warning); }
+.settings .settings-env-pasted { border: 1px solid var(--s-border); border-radius: 6px; }
+.settings .settings-env-pasted > div { display: flex; gap: 12px; padding: 8px 12px; font-size: 14px; }
+.settings .settings-env-pasted > div + div { border-top: 1px solid var(--s-border); }
+.settings-sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: rgb(0 0 0 / 0.5); display: flex; justify-content: flex-end; }
+.settings-sheet { position: relative; display: flex; flex-direction: column; width: 520px; max-width: calc(100vw - 2rem); height: 100%; background: var(--bg); border-left: 1px solid var(--s-border); color: var(--s-fg); }
+.settings .settings-sheet-close { top: 16px; right: 16px; transform: none; }
+.settings-sheet-body { flex: 1; overflow-y: auto; padding: 40px 24px 24px; display: flex; flex-direction: column; }
+.settings-sheet-head { padding-right: 32px; }
+.settings-sheet-head h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.settings-sheet-head p { margin: 8px 0 0; font-size: 14px; color: var(--s-muted); }
+.settings-sheet-fields { margin-top: 32px; display: flex; flex-direction: column; gap: 24px; }
+.settings-sheet-row { display: flex; align-items: center; justify-content: space-between; }
+.settings .settings-sheet-value { min-height: 280px; font-size: 14px; }
+.settings-sheet-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 16px 24px; border-top: 1px solid var(--s-border); }
+.settings .btn.settings-ghost { height: 32px; padding: 0 12px; border: 0; border-radius: 6px; background: none; color: var(--s-fg); font-size: 14px; font-weight: 500; }
+.settings .btn.settings-ghost:hover { background: var(--s-hover); }
+.settings .settings-kbd { margin-left: 8px; opacity: 0.6; }
+.settings .settings-env-sections { margin-top: 12px; }
+.settings .settings-env-sections + .settings-env-files-section { margin-top: 15px; padding-top: 20px; }
+.settings .btn.settings-sm { height: 28px; padding: 0 10px; font-size: 13px; }
+.settings .settings-env-sections code, .settings .settings-env-pasted code { background: none; padding: 0; border-radius: 0; }
+.settings .settings-env-name-text code { font-size: 14px; }
