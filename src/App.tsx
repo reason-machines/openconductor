@@ -23,7 +23,7 @@ import { Toaster, useToasts, type ToastAction } from "./components/Toast";
 import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { ArchiveRunningDialog } from "./components/ArchiveRunningDialog";
-import { clearUnarchiveConflict, directoryExistsToast, failureToast, onArchiveEvent, revealUnarchiveConflict, unarchiveFailedMessage } from "./workspace/archive";
+import { clearUnarchiveConflict, directoryExistsToast, failureToast, onArchiveEvent, restoreRequestFor, revealUnarchiveConflict, unarchiveFailedMessage } from "./workspace/archive";
 import { ArchivedWorkspaceView } from "./components/ArchivedWorkspaceView";
 import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/RestoreWorkspaceDialog";
 import type { Action } from "./state/store";
@@ -126,9 +126,8 @@ export default function App() {
       onArchiveEvent<Action>((e) => {
         if (e.type === "agents-running" && e.action.type === "archiveWorkspace") setArchiveOverAgents(e.action);
         if (e.type === "archived" || e.type === "unarchived") for (const n of e.result.notices) show(n.kind, n.message, { sticky: n.kind === "error" });
-        if (e.type === "unarchived" && e.result.scenario && e.action.type === "unarchiveWorkspace") {
-          setRestoreRequest({ repoId: e.action.repoId, workspaceId: e.action.workspaceId, branch: e.result.branch ?? "unknown", scenario: e.result.scenario });
-        }
+        const restore = restoreRequestFor(e);
+        if (restore) setRestoreRequest(restore);
         if (e.type === "unarchive-failed") {
           const conflict = directoryExistsToast(e.error);
           const retry = e.action.type === "unarchiveWorkspace" ? e.action : null;
