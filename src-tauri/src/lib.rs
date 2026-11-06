@@ -80,6 +80,7 @@ pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
 pub mod workspace_archive;
+mod window_bounds;
 mod workspace_archive_commands;
 
 use serde::Serialize;
@@ -250,6 +251,16 @@ pub fn run() {
     let builder = builder.menu(menu::build);
     builder
         .on_menu_event(|app, event| menu::handle_event(app, event.id().as_ref()))
+        // A window-state restore can set a size below the configured minimum; raise it back.
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::Resized(size) = event {
+                if let Ok(scale) = window.scale_factor() {
+                    if let Some((w, h)) = window_bounds::clamp_to_min(size.width, size.height, scale) {
+                        let _ = window.set_size(tauri::PhysicalSize::new(w, h));
+                    }
+                }
+            }
+        })
         // Same plugin set as Conductor 0.87.6 (see Cargo.toml). Capabilities grant only the
         // commands its frontend calls (capabilities/default.json).
         .plugin(tauri_plugin_deep_link::init())
