@@ -1310,7 +1310,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
               actions={review.actions}
               pr={pullRequest}
               worktree={workspace.path ?? null}
-              review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
+              review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} disabled={workspace.status === "archived"} />}
               fixErrors={fixErrors}
               readOnly={workspace.status === "archived"}
               notify={notify}

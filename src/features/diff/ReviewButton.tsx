@@ -10,6 +10,7 @@
 // row) does (state/openChat.ts). Their Reason Sessions stay in Reason.
 import { useCallback, useEffect, useState } from "react";
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
+import { ContextMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { getSettings } from "../../settings/api";
 import { DEFAULT_SETTINGS } from "../../settings/types";
 import type { Repo, Workspace } from "../../state/types";
@@ -188,21 +189,13 @@ async function reviewPreferences(repoId: string, repoPath: string, workspacePath
   return repoReviewPrompt(repoId);
 }
 
-const MENU_WIDTH = 180;
-
-/** The Review button; right-click offers "Edit before sending". */
-export function ReviewButton({ onReview, onEdit, error }: { onReview: () => void; onEdit: () => void; error: string | null }) {
+/**
+ * The Review button; right-click opens Conductor's one-item menu (`u6s`):
+ * "Edit before sending", disabled like the button in a read-only workspace.
+ */
+export function ReviewButton({ onReview, onEdit, error, disabled }: { onReview: () => void; onEdit: () => void; error: string | null; disabled?: boolean }) {
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
-  useEffect(() => {
-    if (!menu) return;
-    const close = () => setMenu(null);
-    window.addEventListener("click", close);
-    window.addEventListener("blur", close);
-    return () => {
-      window.removeEventListener("click", close);
-      window.removeEventListener("blur", close);
-    };
-  }, [menu]);
+  const closeMenu = useCallback(() => setMenu(null), []);
   return (
     <span className="review-action">
       {error && (
@@ -214,6 +207,7 @@ export function ReviewButton({ onReview, onEdit, error }: { onReview: () => void
         <button
           className="btn btn-small review-button"
           onClick={onReview}
+          disabled={disabled}
           onContextMenu={(e) => {
             e.preventDefault();
             setMenu({ x: e.clientX, y: e.clientY });
@@ -223,12 +217,12 @@ export function ReviewButton({ onReview, onEdit, error }: { onReview: () => void
         </button>
       </Tooltip>
       {menu && (
-        // The button sits at the window's right edge: keep the menu inside it.
-        <div className="review-menu" role="menu" style={{ left: Math.max(4, Math.min(menu.x, window.innerWidth - MENU_WIDTH - 8)), top: menu.y }}>
-          <button role="menuitem" onClick={onEdit}>
+        // ContextMenu flips and shifts it inside the window (the button sits at the right edge).
+        <ContextMenu at={menu} label="Review actions" onClose={closeMenu}>
+          <MenuItem disabled={disabled} onSelect={onEdit}>
             Edit before sending
-          </button>
-        </div>
+          </MenuItem>
+        </ContextMenu>
       )}
     </span>
   );
