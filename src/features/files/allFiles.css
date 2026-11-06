@@ -1,11 +1,18 @@
 /* Conductor's All files tree: 28 px rows (evidence/frontend/pierre-diff-options.md). */
+.oc-files-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
 .oc-files {
   flex: 1;
   min-height: 0;
   overflow: auto;
   padding: 4px 8px;
 }
-.oc-files-row {
+.oc-files-row,
+.oc-files-new {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -27,26 +34,93 @@
   background: var(--hover, rgba(255, 255, 255, 0.06));
   outline: none;
 }
-.oc-files-row svg {
-  flex: none;
-  opacity: 0.7;
-}
 .oc-files-row .name {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+/* A 16 px slot: a folder (open or closed) or the file's type glyph. On hover a
+   folder's icon gives way to its expand chevron. */
+.oc-files-icon {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--muted);
+}
+.oc-files-icon .oc-file-glyph {
+  width: 14px;
+  height: 14px;
+}
+.oc-files-folder,
 .oc-files-chevron {
   display: inline-flex;
-  margin-left: auto;
-  opacity: 0;
-  width: 12px;
-  transform: rotate(-90deg);
-  transition: transform 0.1s;
 }
-.oc-files-chevron.open {
-  transform: none;
+.oc-files-chevron {
+  display: none;
 }
-.oc-files-row:hover .oc-files-chevron {
-  opacity: 0.7;
+.oc-files-row.dir:hover .oc-files-folder,
+.oc-files-row.dir:focus-visible .oc-files-folder {
+  display: none;
+}
+.oc-files-row.dir:hover .oc-files-chevron,
+.oc-files-row.dir:focus-visible .oc-files-chevron {
+  display: inline-flex;
+  color: var(--text);
+}
+.oc-files-new {
+  position: relative;
+}
+.oc-files-new input,
+.oc-files-filter input {
+  flex: 1;
+  min-width: 0;
+  height: 22px;
+  padding: 0 6px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  outline: none;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+.oc-files-new input[aria-invalid] {
+  border-color: var(--del);
+}
+.oc-files-new-error {
+  position: absolute;
+  top: 26px;
+  left: 30px;
+  right: 8px;
+  z-index: 2;
+  padding: 4px 6px;
+  border: 1px solid var(--del);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--del);
+  font-family: var(--font-sans, inherit);
+  font-size: 12px;
+}
+.oc-files-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 8px 0;
+  padding: 0 8px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+}
+.oc-files-filter input {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+}
+.oc-files-filter input::placeholder {
+  color: var(--muted);
 }

@@ -1,5 +1,5 @@
 // Pure helpers behind the prompt, git and environment rows (no React, no IPC).
-import type { EffectiveSettings, EnvVar, Layer, RepoLocalKey } from "../repoSettings.ts";
+import type { RepoLocalKey } from "../repoSettings.ts";
 import type { PromptKind } from "../types.ts";
 
 /** A repository Actions row: Conductor's copy (renderApp registry, `S6e` and the General row). */
@@ -48,58 +48,4 @@ export function promptWrite(kind: PromptKind, saved: string | undefined, draft: 
   const next = draft.trim();
   if (next === (saved ?? "").trim()) return null;
   return { key: `prompts.${kind}`, value: next === "" ? null : next };
-}
-
-/** `environment_variable_files` from the textarea: one path per line (Conductor's `hda`). */
-export function parseEnvFiles(text: string): string[] {
-  return text
-    .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter((l) => l.length > 0);
-}
-
-/** "1 variable loaded" / "N variables loaded" (Conductor's `mda`), or why none were. */
-export function envFileStatus(loaded: number | null): string {
-  if (loaded === null) return "File not found";
-  return loaded === 1 ? "1 variable loaded" : `${loaded} variables loaded`;
-}
-
-const NAME = /^[A-Za-z_][A-Za-z0-9_]*$/;
-
-/** Why `name` cannot be an environment variable name, or null. */
-export function envNameError(name: string): string | null {
-  if (name.trim() === "") return "Enter a name.";
-  return NAME.test(name.trim()) ? null : "Use letters, digits and _, not starting with a digit.";
-}
-
-export type EnvContext = "local" | "cloud";
-
-export interface EnvRow {
-  name: string;
-  context: EnvContext;
-  value: string;
-  layer: Layer;
-  envFile?: string;
-  /** Defined in the repository local file, so this page can remove it. */
-  removable: boolean;
-}
-
-/** Effective variables per context, sorted by name, with where each came from. */
-export function envRows(settings: EffectiveSettings): EnvRow[] {
-  const rows: EnvRow[] = [];
-  for (const context of ["local", "cloud"] as const) {
-    const vars: Record<string, EnvVar> = settings.env[context];
-    for (const name of Object.keys(vars).sort()) {
-      const v = vars[name];
-      rows.push({
-        name,
-        context,
-        value: v.value,
-        layer: v.source.layer,
-        envFile: v.source.envFile,
-        removable: v.source.layer === "repo_local" && v.source.envFile === undefined,
-      });
-    }
-  }
-  return rows;
 }

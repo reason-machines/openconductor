@@ -76,6 +76,19 @@ test("approvals are kept until answered or the turn ends", () => {
   assert.equal(ended.transcript.turns["ws:t1"]!.status, "cancelled");
 });
 
+test("consents (MCP elicitation, permissions) are kept until resolved or the turn ends", () => {
+  const elicit: P = { type: "consent", requestId: 79, kind: "elicitation", turnId: "u1", serverName: "linear", message: "Which team?", mode: "form", requestedSchema: { type: "object", properties: {} }, url: null, reason: null, cwd: null, permissions: null };
+  const perm: P = { ...elicit, requestId: 78, kind: "permissions", serverName: "codex", message: null, mode: null, requestedSchema: null, permissions: { network: { enabled: true } } };
+  const { state } = run(["x"], [...recorded.slice(0, 2), elicit, perm, { ...elicit, message: "Which team, again?" }]);
+  assert.deepEqual(state.consents.map((c) => [c.requestId, c.kind]), [[78, "permissions"], [79, "elicitation"]], "a repeated request replaces the old card");
+  assert.equal("chatId" in state.consents[0]!, false);
+  assert.equal(state.approvals.length, 0, "consents are not tool approvals");
+  const resolved = run(["x"], [...recorded.slice(0, 2), elicit, perm, { type: "approvalResolved", requestId: 79 }]);
+  assert.deepEqual(resolved.state.consents.map((c) => c.requestId), [78]);
+  const ended = run(["x"], [...recorded.slice(0, 2), elicit, { type: "turnEnded", outcome: "cancelled" }]);
+  assert.deepEqual(ended.state.consents, []);
+});
+
 test("declined and failing tools are errors; failures end the turn with Codex's message", () => {
   const { transcript } = run(["x"], [
     { type: "tool", id: "e1", kind: "commandExecution", title: "rm -rf /", status: "declined", input: {}, output: null, exitCode: null },
