@@ -64,7 +64,7 @@ fn home() -> Result<PathBuf, String> {
         .ok_or_else(|| "HOME is not set".to_string())
 }
 
-fn cli_path() -> Option<PathBuf> {
+pub(crate) fn cli_path() -> Option<PathBuf> {
     let home = std::env::var_os("HOME").map(PathBuf::from);
     find_reason_cli(std::env::var_os("PATH").as_deref(), home.as_deref())
 }

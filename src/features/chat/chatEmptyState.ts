@@ -11,12 +11,13 @@
 //   "Transcript of <title>.md" (fork.ts formats it, as for Fork to new workspace).
 // Pure: no React, no Tauri, so chatEmptyState.test.ts covers it.
 
+import type { ChatAgentId } from "./agentChoice.ts";
 import type { ChatMessage } from "./types.ts";
 
 export interface OtherChat {
   chatId: string;
   title: string;
-  agent: "reason" | "codex";
+  agent: ChatAgentId;
   /** Last user message (ms); null when the chat has none. */
   lastUserMessageAt: number | null;
 }
