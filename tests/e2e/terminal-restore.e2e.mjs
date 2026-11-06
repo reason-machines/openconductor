@@ -304,7 +304,7 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
   await waitForScreen(page, "Previous terminal session restored");
   await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
-  assert.deepEqual(await tabTitles(page), ["Terminal 1", "Terminal 3"]);
+  assert.deepEqual(await tabTitles(page), ["Terminal 1", "Terminal 2"]);
 
   // Clear scrollback clears the backend screen too, so the next save has no old output.
   await page.locator(".term-tab").first().click();
@@ -349,8 +349,8 @@ test("a tab list saved in the webview's localStorage by an earlier build moves t
   await page.goto(base + "/");
   await showTerminalPanel(page);
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
-  assert.deepEqual(await tabTitles(page), ["Terminal 2", "Terminal 5"]);
-  assert.equal(await page.locator(".term-tab.active span:not(.term-dot)").innerText(), "Terminal 5");
+  assert.deepEqual(await tabTitles(page), ["Terminal 1", "Terminal 2"]);
+  assert.equal(await page.locator(".term-tab.active span:not(.term-dot)").innerText(), "Terminal 2");
   await page.waitForFunction(() => localStorage.getItem("terminal-panel-tabs-v1") === null, null, { timeout: 5000 });
   const tabs = await savedTabs(page);
   assert.deepEqual(tabs.record.state.workspaceTerminals, [["w1", ["old-1", "old-2"]]]);
@@ -361,7 +361,7 @@ test("a tab list saved in the webview's localStorage by an earlier build moves t
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 3);
-  assert.deepEqual(await tabTitles(page), ["Terminal 2", "Terminal 5", "Terminal 6"]);
+  assert.deepEqual(await tabTitles(page), ["Terminal 1", "Terminal 2", "Terminal 3"]);
   assert.deepEqual(errors, []);
   await context.close();
 });

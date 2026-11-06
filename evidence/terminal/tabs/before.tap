@@ -1,0 +1,42 @@
+(node:23418) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:23425) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: terminal tab labels follow visible order after closing siblings
+not ok 1 - terminal tab labels follow visible order after closing siblings
+  ---
+  duration_ms: 770.00661
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/tests/e2e/script-output.e2e.mjs:24:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'Terminal 1'
+    -   'Terminal'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Terminal'
+  actual:
+    0: 'Terminal 1'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/tests/e2e/script-output.e2e.mjs:33:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1240.377862

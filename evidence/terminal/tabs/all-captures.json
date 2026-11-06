@@ -1,0 +1,69 @@
+{
+  "tool": "REA capture-browser-scenario",
+  "captures": {
+    "reference-single": {
+      "evidence_id": "ev_647c87bd0aadb878362a1bd445f153ab71055fcbf1756fca248495669426dace",
+      "sha256": "fcfa764d7ecb249482a30055744f6ad08d2478f44cba0d0efcffcd0785e1c780",
+      "scenario": "reference-single-scenario.json",
+      "screenshot": "reference-single.png",
+      "url": {
+        "url": "http://conductor.localhost:4404/repository/repo-tide-web/workspace/ws-osaka?activeTabType=session&sessionId=sess-osaka",
+        "origin": "http://conductor.localhost:4404",
+        "query_parameter_names": [
+          "activeTabType",
+          "sessionId"
+        ],
+        "redacted": false
+      },
+      "issues": []
+    },
+    "reference-renumbered": {
+      "evidence_id": "ev_98e9908a5f801a8b94059f06ec2023d026443afc9e721cb0bb69da9c31276760",
+      "sha256": "c9bd8ce93723d936e9ec9d90450a8aaf66efaddcdc9148fe2ffd9e4324fa3197",
+      "scenario": "reference-renumbered-scenario.json",
+      "screenshot": "reference-renumbered.png",
+      "url": {
+        "url": "http://conductor.localhost:4404/repository/repo-tide-web/workspace/ws-osaka?activeTabType=session&sessionId=sess-osaka",
+        "origin": "http://conductor.localhost:4404",
+        "query_parameter_names": [
+          "activeTabType",
+          "sessionId"
+        ],
+        "redacted": false
+      },
+      "issues": []
+    },
+    "openconductor-single": {
+      "evidence_id": "ev_740eb2e93a1631ab6622342e51ea222536fc91f48b02087e2750de59306ffc76",
+      "sha256": "6384e4174705ca6b68de48399dc0d19c63a39020ec32116db52b30ba1101ffa3",
+      "scenario": "openconductor-single-scenario.json",
+      "screenshot": "openconductor-single.png",
+      "url": {
+        "url": "http://localhost:4404/?kind=setup&palette=stone",
+        "origin": "http://localhost:4404",
+        "query_parameter_names": [
+          "kind",
+          "palette"
+        ],
+        "redacted": false
+      },
+      "issues": []
+    },
+    "openconductor-renumbered": {
+      "evidence_id": "ev_ac1a972cc2eb30d046b43d6686442e2355b0a1044c9e7b6f0e43d20fff15c5c3",
+      "sha256": "6b424d5c61860024520d8482b09b579bc895e2c2e205e47fb4bf91edae03d6b8",
+      "scenario": "openconductor-renumbered-scenario.json",
+      "screenshot": "openconductor-renumbered.png",
+      "url": {
+        "url": "http://localhost:4404/?kind=setup&palette=stone",
+        "origin": "http://localhost:4404",
+        "query_parameter_names": [
+          "kind",
+          "palette"
+        ],
+        "redacted": false
+      },
+      "issues": []
+    }
+  }
+}
