@@ -45,7 +45,7 @@ import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
 import { OPEN_SETTINGS_EVENT } from "./features/chat/ChatModelPicker.tsx";
 import { REPO_SECTIONS, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
-import { changeZoom } from "./settings/useSettings";
+import { changeZoom, rememberSettings } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
 import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
@@ -221,7 +221,7 @@ export default function App() {
 
   // Apply the saved theme and appearance at startup; the settings page applies later changes.
   useEffect(() => {
-    getSettings().then(applyAppearance, () => undefined);
+    getSettings().then((s) => applyAppearance(rememberSettings(s)), () => undefined);
   }, []);
 
 

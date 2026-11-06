@@ -4,18 +4,30 @@ import { applyAppearance, DEFAULT_ZOOM, SETTINGS_CHANGED, withAppearance, zoomSt
 import "./appearance.css";
 import type { Settings } from "./types";
 
+// The settings last read or saved. Settings opens on them at once (no "Loading…"
+// frame) and reads them again behind the page; App primes it at startup.
+let lastSettings: Settings | null = null;
+export function rememberSettings(s: Settings): Settings {
+  lastSettings = s;
+  return s;
+}
+
 /**
  * Loads settings and saves each change at once. A change the backend refuses
  * is rolled back and its message kept in `error`. Theme and appearance are
  * applied to the document as soon as a change is made.
  */
 export function useSettings() {
-  const [settings, setSettings] = useState<Settings | null>(null);
+  const [settings, setSettingsState] = useState<Settings | null>(() => lastSettings);
+  const setSettings = useCallback((s: Settings | null) => {
+    if (s) rememberSettings(s);
+    setSettingsState(s);
+  }, []);
   const [error, setError] = useState<string | null>(null);
 
   const reload = useCallback(() => {
     getSettings().then(setSettings, (e) => setError(errorText(e)));
-  }, []);
+  }, [setSettings]);
   useEffect(reload, [reload]);
   // A save from outside this view (⌘+ / ⌘− zoom) would otherwise be overwritten by the next save here.
   useEffect(() => {
@@ -40,7 +52,7 @@ export function useSettings() {
         return false;
       }
     },
-    [settings],
+    [settings, setSettings],
   );
 
   return { settings, error, save, reload };
@@ -56,7 +68,7 @@ export function changeZoom(direction: "in" | "out" | "reset"): Promise<void> {
     const zoom = direction === "reset" ? DEFAULT_ZOOM : zoomStep(s.appearance.zoom_level_v2, direction);
     if (zoom === s.appearance.zoom_level_v2) return;
     const stored = await updateSettings(withAppearance(s, "zoom_level_v2", zoom));
-    applyAppearance(stored);
+    applyAppearance(rememberSettings(stored));
     window.dispatchEvent(new Event(SETTINGS_CHANGED));
   });
   zoomQueue = run.catch(() => undefined);

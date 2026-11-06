@@ -7,6 +7,7 @@
 // The tab's toolbar (collapse all folders, filter, new file) sits in the
 // panel's tab row; `useFilesToolbar` carries its clicks to the tree.
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { keyedCache } from "../../lib/keyedCache";
 import { invoke } from "@tauri-apps/api/core";
 import { fuzzyFilterFiles, inTauri } from "../../backend";
 import { FileTypeIcon, FolderTypeIcon } from "../../components/FileIcons";
@@ -19,6 +20,14 @@ import "./allFiles.css";
 type Notify = (kind: "info" | "error", message: string) => void;
 
 type Load = { state: "loading" } | { state: "error"; message: string } | { state: "ready"; paths: string[] };
+
+// The last file list per worktree: opening the tab again, or coming back to a
+// workspace, shows it at once and reloads behind it (lib/keyedCache.ts).
+const listed = keyedCache<string[]>(32);
+const fromCache = (worktree: string | null): Load => {
+  const paths = worktree ? listed.get(worktree) : undefined;
+  return paths ? { state: "ready", paths } : { state: "loading" };
+};
 
 export interface FilesToolbarState {
   filterOpen: boolean;
@@ -75,7 +84,11 @@ async function createFile(worktree: string, path: string): Promise<void> {
 const errorText = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
 export function AllFilesTree({ worktree, notify, toolbar }: { worktree: string | null; notify?: Notify; toolbar: FilesToolbar }) {
-  const [load, setLoad] = useState<Load>({ state: "loading" });
+  // The list belongs to the worktree it was read from; another worktree shows its own
+  // cached list (or "Loading files...") in the same frame, never this one's.
+  const [state, setState] = useState<{ worktree: string | null; load: Load }>(() => ({ worktree, load: fromCache(worktree) }));
+  const load = useMemo(() => (state.worktree === worktree ? state.load : fromCache(worktree)), [state, worktree]);
+  const setLoad = (next: Load) => setState({ worktree, load: next });
   const [reloadSeq, setReloadSeq] = useState(0);
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   /** The folder last opened: where "New file" puts the file ("" is the root). */
@@ -101,10 +114,16 @@ export function AllFilesTree({ worktree, notify, toolbar }: { worktree: string |
   useEffect(() => {
     if (!worktree) return;
     let live = true;
-    setLoad((l) => (l.state === "ready" && reloadSeq > 0 ? l : { state: "loading" }));
     fuzzyFilterFiles(worktree, "", true).then(
-      (m) => live && setLoad({ state: "ready", paths: m.map((x) => x.relative_path) }),
-      (err) => live && setLoad({ state: "error", message: errorText(err) }),
+      (m) => {
+        const paths = m.map((x) => x.relative_path);
+        listed.set(worktree, paths);
+        if (live) setState({ worktree, load: { state: "ready", paths } });
+      },
+      (err) => {
+        listed.delete(worktree);
+        if (live) setState({ worktree, load: { state: "error", message: errorText(err) } });
+      },
     );
     return () => {
       live = false;
