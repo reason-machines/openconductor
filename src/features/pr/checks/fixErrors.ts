@@ -8,6 +8,7 @@
 // The instruction wording is our own. Pure: `fixErrors.test.ts` covers it.
 import type { Check } from "../types";
 import type { CheckLog } from "./api";
+import { isActionsJob } from "./checks.ts";
 
 /** The chat message; the logs and instructions go along as attachments. */
 export const FIX_ERRORS_MESSAGE = "Fix the failing CI actions. I've attached the failure logs.";
@@ -71,4 +72,28 @@ export interface FixErrorsAttachment {
 export function fixErrorsAttachments(logs: (CheckLog | null)[], custom?: string | null): FixErrorsAttachment[] {
   const files = logs.filter((l): l is CheckLog => l !== null).map((l) => ({ name: logAttachmentName(l), text: logAttachmentText(l) }));
   return [...files, { name: FIX_ERRORS_INSTRUCTIONS, text: fixErrorsInstructions(custom) }];
+}
+
+/**
+ * `git.fixErrors` (Cmd+Shift+X) runs Fix errors when a failing check has a
+ * details URL and no fix is in flight (renderApp-D_fmY7hW.js @ ~2,299,938:
+ * `failingStatusCheckRollups.some(c => c.detailsUrl)` and `!isFixingChecks`).
+ * Ours also skips an archived workspace, where the button is disabled.
+ */
+export const fixShortcutApplies = (failing: Check[], fixing: boolean, readOnly: boolean) => !readOnly && !fixing && canFixErrors(failing);
+
+export interface FixErrorsSources {
+  /** A failing GitHub Actions job's log (`pr_check_log`). */
+  log: (worktree: string, check: Check) => Promise<CheckLog>;
+  /** The repository's `custom_prompt_fix_errors`. */
+  customPrompt: (repoId: string) => Promise<string | null>;
+}
+
+/** Everything Fix errors sends: each failing Actions job's log (a fetch that fails is left out), then the instructions. */
+export async function collectFixErrors(worktree: string, failing: Check[], repoId: string, sources: FixErrorsSources): Promise<FixErrorsAttachment[]> {
+  const [fetched, custom] = await Promise.all([
+    Promise.all(failing.map((c) => (isActionsJob(c) ? sources.log(worktree, c).catch(() => null) : Promise.resolve(null)))),
+    sources.customPrompt(repoId),
+  ]);
+  return fixErrorsAttachments(fetched, custom);
 }

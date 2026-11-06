@@ -19,6 +19,17 @@
 //! for @ 10,931,122). Which submenu Conductor appends them to was not
 //! decompiled (REA gap); they go in View here.
 //!
+//! Close Window is removed. Tauri's default macOS menu has it, with ⌘W, in
+//! both File and Window, and a menu key equivalent wins over the webview, so
+//! ⌘W closed the whole window instead of reaching `nav.closeTab` /
+//! `terminal.closeTab`. Conductor's binary holds the literals `Close Window`
+//! and `Window` next to its menu builder and logs
+//! `Warning: Could not find Close Window item in <menu>` (`strings -a` on
+//! 0.87.6, re-read 2026-11-06), so it looks the item up by label and drops it.
+//! Whether it also touches File was not decompiled (REA gap: no decompiler
+//! engine on Sven's Mac); removing it only from Window would leave ⌘W on
+//! File's copy, so it goes from both here.
+//!
 //! The app menu gets Conductor's `Settings...` (`CmdOrCtrl+,`) and its own
 //! Quit (`custom_quit`, `Cmd+Q`) in place of Tauri's predefined Quit. Both are
 //! native accelerators, so ⌘, and ⌘Q reach the webview only as these items'
@@ -47,6 +58,14 @@ const SIDEBAR_ITEMS: &[(&str, &str)] = &[
     (TOGGLE_LEFT_SIDEBAR_ID, "Toggle Left Sidebar"),
     (TOGGLE_RIGHT_SIDEBAR_ID, "Toggle Right Sidebar"),
 ];
+
+/// Tauri's Close Window label, with or without its `&` mnemonic (muda's `C&lose Window`).
+pub const CLOSE_WINDOW_LABEL: &str = "Close Window";
+
+/// Whether a menu item label is Close Window.
+pub fn is_close_window(label: &str) -> bool {
+    label.replace('&', "") == CLOSE_WINDOW_LABEL
+}
 
 /// App menu > Settings... (⌘,).
 pub const SETTINGS_ID: &str = "settings";
@@ -87,6 +106,7 @@ pub fn build<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<tauri::menu::Menu<
     use tauri::menu::{Menu, MenuItem, HELP_SUBMENU_ID};
 
     let menu = Menu::default(app)?;
+    remove_close_window(&menu);
     add_settings_and_quit(app, &menu);
     let view = menu.items().ok().and_then(|items| {
         items.iter().find_map(|kind| {
@@ -121,6 +141,37 @@ pub fn build<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<tauri::menu::Menu<
         eprintln!("Warning: Could not add Keyboard Shortcuts menu item");
     }
     Ok(menu)
+}
+
+/// Drops Close Window (⌘W) from every top-level submenu that has it, so ⌘W
+/// reaches the webview's dispatcher. Logs, like Conductor, when a submenu
+/// that should hold it does not.
+#[cfg(target_os = "macos")]
+fn remove_close_window<R: Runtime>(menu: &tauri::menu::Menu<R>) {
+    let submenus = menu
+        .items()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|kind| kind.as_submenu().cloned());
+    for sub in submenus {
+        let name = sub.text().unwrap_or_default();
+        let close = sub.items().unwrap_or_default().into_iter().find(|item| {
+            item.as_predefined_menuitem()
+                .and_then(|p| p.text().ok())
+                .is_some_and(|t| is_close_window(&t))
+        });
+        match close {
+            Some(item) => {
+                if let Err(e) = sub.remove(&item) {
+                    eprintln!("Warning: Could not remove Close Window item in {name}: {e}");
+                }
+            }
+            None if name == "File" || name == "Window" => {
+                eprintln!("Warning: Could not find Close Window item in {name}");
+            }
+            None => {}
+        }
+    }
 }
 
 /// Adds `Settings...` after About and swaps Tauri's predefined Quit for
@@ -213,6 +264,14 @@ mod tests {
             event_for("toggle_right_sidebar"),
             Some("toggle_right_sidebar")
         );
+    }
+
+    #[test]
+    fn close_window_is_matched_with_or_without_its_mnemonic() {
+        assert!(is_close_window("Close Window"));
+        assert!(is_close_window("C&lose Window"));
+        assert!(!is_close_window("Close"));
+        assert!(!is_close_window("Minimize"));
     }
 
     #[test]
