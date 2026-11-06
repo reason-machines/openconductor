@@ -109,14 +109,13 @@ export function repoEnvSections(entries: EnvEntry[], userScope: EnvEntry[]): Rep
   return { current, repoShared, user: [...user, ...overridden], dimmedUserKeys: new Set(overridden.map((e) => e.key)) };
 }
 
-/** What the user's own level holds (Conductor's list for target `{scope:"user"}`): stored variables over the user's env files. */
-export function userScopeEntries(env: EffectiveSettings["env"], stored: StoredVar[]): EnvEntry[] {
-  const out = new Map<string, EnvEntry>();
-  for (const [key, v] of Object.entries(env.local)) {
-    if (v.source.layer === "user") out.set(key, { key, value: v.value, level: "user", origin: v.source.origin, envFile: v.source.envFile });
-  }
-  for (const s of stored) out.set(s.key, { key: s.key, value: s.value, level: "user" });
-  return [...out.values()];
+/**
+ * What the user's own level holds (Conductor's list for target
+ * `{scope:"user"}`), from the backend's `userEnv`: stored variables over the
+ * user's env files, managed values last.
+ */
+export function userScopeEntries(userEnv: EffectiveSettings["env"], stored: StoredVar[]): EnvEntry[] {
+  return effectiveEntries(userEnv, stored);
 }
 
 const description = new Map(DOCUMENTED_VARS.map((d) => [d.name, d.description]));

@@ -310,6 +310,11 @@ pub struct EffectiveSettings {
     pub preview_urls: Option<Sourced<Vec<PreviewUrl>>>,
     pub environment_variable_files: Option<Sourced<Vec<String>>>,
     pub env: ResolvedEnv,
+    /// The environment the user layer alone gives (user `settings.toml`
+    /// env files, plus managed values), what the reference lists for target
+    /// `{scope:"user"}`: a repository page shows the user's variables it
+    /// overrides from here, dimmed (`Ada`).
+    pub user_env: ResolvedEnv,
     pub warnings: Vec<String>,
 }
 
@@ -388,9 +393,18 @@ pub fn load_effective_layers(paths: &EffectivePaths) -> Result<Vec<EffectiveLaye
     Ok(out)
 }
 
-/// [`load_effective_layers`] then [`resolve_effective`].
+/// [`load_effective_layers`] then [`resolve_effective`], with
+/// [`EffectiveSettings::user_env`] from the user and managed layers only.
 pub fn load_effective(paths: &EffectivePaths) -> Result<EffectiveSettings, ConfigError> {
-    Ok(resolve_effective(&load_effective_layers(paths)?))
+    let layers = load_effective_layers(paths)?;
+    let user_only: Vec<EffectiveLayer> = layers
+        .iter()
+        .filter(|l| matches!(l.source.layer, Layer::User | Layer::Managed))
+        .cloned()
+        .collect();
+    let mut out = resolve_effective(&layers);
+    out.user_env = resolve_effective(&user_only).env;
+    Ok(out)
 }
 
 /// Read this module's keys from the layers, env files included. Each key

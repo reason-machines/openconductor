@@ -32,7 +32,7 @@ test("an empty repository lists nothing and documents Conductor's 18 variables",
 test("variables split into this repository's, Repo shared and User, as fOt/Ada do", () => {
   const e = env({ LOCAL: v("l", "repo_local"), SHARED: v("s", "repo_shared"), FILE_USER: v("u", "user", "/home/me/.env"), M: v("m", "managed") });
   const stored = [{ key: "STORED", value: "st" }];
-  const s = repoEnvSections(effectiveEntries(e, stored), userScopeEntries(e, stored));
+  const s = repoEnvSections(effectiveEntries(e, stored), userScopeEntries(env({ FILE_USER: v("u", "user", "/home/me/.env") }), stored));
   assert.deepEqual(s.current.map((x) => x.key).sort(), ["LOCAL", "M"]);
   assert.deepEqual(s.repoShared.map((x) => x.key), ["SHARED"]);
   assert.deepEqual(s.user.map((x) => x.key).sort(), ["FILE_USER", "STORED"]);
@@ -42,7 +42,7 @@ test("variables split into this repository's, Repo shared and User, as fOt/Ada d
 test("a user variable the repository overrides is listed under User, dimmed", () => {
   const e = env({ API_URL: v("repo", "repo_local") });
   const stored = [{ key: "API_URL", value: "mine" }];
-  const s = repoEnvSections(effectiveEntries(e, stored), userScopeEntries(e, stored));
+  const s = repoEnvSections(effectiveEntries(e, stored), userScopeEntries(env({}), stored));
   assert.deepEqual(s.current.map((x) => [x.key, x.value]), [["API_URL", "repo"]]);
   assert.deepEqual(s.user.map((x) => [x.key, x.value]), [["API_URL", "mine"]]);
   assert.ok(s.dimmedUserKeys.has("API_URL"));
@@ -140,4 +140,14 @@ test("names the app manages cannot be added (Het)", () => {
   assert.match(managedNameWarning("PATH") ?? "", /^PATH is managed by OpenConductor/);
   assert.ok(managedNameWarning("CONDUCTOR_INTERNAL_X"));
   assert.equal(managedNameWarning("API_URL"), null);
+});
+
+test("a user env-file value the repository overrides comes from userEnv and is dimmed", () => {
+  const e = env({ API_URL: v("repo", "repo_local"), USER_TOKEN: v("abc", "user", "/h/user.env") });
+  const user = env({ API_URL: v("mine", "user", "/h/user.env"), USER_TOKEN: v("abc", "user", "/h/user.env") });
+  const s = repoEnvSections(effectiveEntries(e, []), userScopeEntries(user, []));
+  assert.deepEqual(inheritedRows(s.user, s.dimmedUserKeys).map((r) => [r.name, r.value, r.dimmed]), [
+    ["API_URL", "mine", true],
+    ["USER_TOKEN", "abc", false],
+  ]);
 });

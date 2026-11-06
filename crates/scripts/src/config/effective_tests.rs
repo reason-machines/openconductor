@@ -504,3 +504,26 @@ fn a_later_layer_setting_a_variable_clears_its_unset() {
     assert!(e.env.unset.local.is_empty());
     assert_eq!(e.env.local["X"].value, "local");
 }
+
+#[test]
+fn user_env_keeps_the_users_value_a_repository_overrides() {
+    let f = Fixture::new();
+    write(&f.home.join(".env.user"), "API_URL=mine\nONLY_USER=u\n");
+    write(
+        &f.user.join("settings.toml"),
+        "environment_variable_files = [\"~/.env.user\"]\n",
+    );
+    write(
+        &f.root.join(".conductor/settings.local.toml"),
+        "[environment_variables]\nAPI_URL = \"repo\"\n",
+    );
+    let e = f.load();
+    assert_eq!(e.env.local["API_URL"].value, "repo");
+    assert_eq!(e.user_env.local["API_URL"].value, "mine");
+    assert_eq!(e.user_env.local["ONLY_USER"].value, "u");
+    assert!(e
+        .user_env
+        .local
+        .values()
+        .all(|v| v.source.layer == Layer::User));
+}

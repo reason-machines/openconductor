@@ -55,7 +55,7 @@ export function RepoEnvironmentPage({ repo }: { repo: Repo }) {
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const env = effective?.env ?? EMPTY_ENV;
-  const sections = repoEnvSections(effectiveEntries(env, stored), userScopeEntries(env, stored));
+  const sections = repoEnvSections(effectiveEntries(env, stored), userScopeEntries(effective?.userEnv ?? env, stored));
   const { setEntries, documentedEntries } = currentRows(sections.current);
   const editable = Boolean(repo.path) && inTauri();
 
@@ -82,7 +82,7 @@ export function RepoEnvironmentPage({ repo }: { repo: Repo }) {
           <h1>Environment</h1>
           <p>Configure environment variables used by OpenConductor and passed to agents.</p>
         </div>
-        <button type="button" className="btn settings-primary" onClick={() => setAdding(true)} disabled={!editable}>
+        <button type="button" className="btn settings-primary settings-sm" onClick={() => setAdding(true)} disabled={!editable}>
           <PlusIcon size={14} />
           Add environment variable
         </button>
@@ -492,7 +492,7 @@ function RepoEnvFiles({ repo, effective, disabled, write }: { repo: Repo; effect
           </button>
         </div>
       ) : (
-        <button type="button" className="btn settings-outline settings-env-add-file" disabled={disabled} onClick={() => setAdding(true)}>
+        <button type="button" className="btn settings-outline settings-sm settings-env-add-file" disabled={disabled} onClick={() => setAdding(true)}>
           <PlusIcon size={14} />
           Add env file
         </button>
