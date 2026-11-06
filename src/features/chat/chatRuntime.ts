@@ -35,7 +35,7 @@ import { restoreCheckpoint, turnCheckpointRef, type Invoke } from "./checkpoints
 import { cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
-import { chatWantsAttention, turnSettled } from "./attention.ts";
+import { chatWantsAttention, enteredWait, turnSettled } from "./attention.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import type { FileChange } from "../diff/types.ts";
 
@@ -226,8 +226,11 @@ function setStatus(chatId: string, status: Q.SessionStatus | undefined) {
  */
 export function reportChatStatus(chatId: string, status: Q.SessionStatus): void {
   if (hiddenChats.has(chatId)) return setStatus(chatId, undefined);
+  const prev = statuses.get(chatId);
   setStatus(chatId, status);
   persistStatus(chatId, status);
+  // Conductor calls `_p` right after setting plan review or user input (attention.ts).
+  if (enteredWait(prev, status)) chatWantsAttention(chatId);
 }
 
 /** Chat id → session status of every visible chat; a new map on each change. */

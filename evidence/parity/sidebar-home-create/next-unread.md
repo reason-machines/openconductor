@@ -58,3 +58,15 @@ What OpenConductor does now:
 - Browser test: `node --test tests/e2e/next-unread.e2e.mjs`, after `npm run build`.
 
 Follow-up: `rea trace-javascript-semantics` with seeds `markUnreadIfNotViewing`, `isSessionInView`, `Next unread` and the `unread_count` UPDATE (REA 6.7.0 on sven m5 max) all came back partial with 0 seed matches, so the offsets above come from plain-text reads. Runtime state is from a read-only query of Sven's conductor.db. All three are logged in evidence/rea/rea-invocations.tsv (ws_unread_auto_*).
+
+## Attention triggers for plan review, questions and Codex consents
+
+Conductor's `_p` (`index-BGEQ8YjU.js` @2,941,190) marks a chat unread unless it is selected with the window focused, and every wait on the user calls it right after `updateSessionStatus`: ExitPlanMode `needs_plan_response` @2,945,001, AskUserQuestion `needs_user_input` @2,945,451, Codex MCP elicitation @2,946,028 and Codex permission approval @2,946,583 (both `needs_user_input`), tool approval `needs_user_permission` @2,947,277. Read as plain text by byte offset; `rea search` has no route for a JavaScript chunk (REA-GAPS 25).
+
+Main signalled only turn end, Reason permission requests and Codex tool approvals. Now:
+
+- `reportChatStatus` signals attention whenever a chat's status enters `needs_plan_response` or `needs_user_input` (`enteredWait` in `src/features/chat/attention.ts`), so plan review and questions mark the chat for any runtime that reports those statuses. Our Reason and Codex runtimes do not produce ExitPlanMode or AskUserQuestion waits yet; when they do, the status they report is enough.
+- A new Codex MCP elicitation or permission consent signals attention (`codexAsks`): through its status when it moves the chat into `needs_user_input`, directly when the chat already waits (a second consent, or one behind an open tool approval, which outranks it). A re-sent request with the same id does not.
+- `needs_user_permission` stays signalled per request, so a second approval in the same wait still asks again, as in Conductor.
+
+Per-chat unread (`sessions.unread_count`) is PR #564; with it the signal marks the chat, without it the chat's workspace.

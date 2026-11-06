@@ -3,8 +3,9 @@
 // (hard on the second), a Stop before the prompt was sent, and Reset chat.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { chatStatuses, createChatRuntime, hideChat, subscribeChatStatuses, type ChatBackend, type ChatHost, type Deliver, type PromptRequest } from "./chatRuntime.ts";
+import { chatStatuses, createChatRuntime, hideChat, reportChatStatus, subscribeChatStatuses, type ChatBackend, type ChatHost, type Deliver, type PromptRequest } from "./chatRuntime.ts";
 import { applyReasonPayload, type ReasonPayload } from "./reason.ts";
+import { onChatAttention } from "./attention.ts";
 import type { FileChange } from "../diff/types.ts";
 
 type Config = string[];
@@ -214,5 +215,30 @@ test("chat statuses span runtimes, and a hidden chat drops out", async () => {
   hideChat("status-b");
   assert.equal(chatStatuses().has("status-b"), false);
   assert.equal(chatStatuses().get("status-a"), "working");
+  off();
+});
+
+test("a chat entering plan review or user input asks for attention once, as Conductor's _p after updateSessionStatus", () => {
+  const asked: string[] = [];
+  const off = onChatAttention((id) => id.startsWith("wait-") && asked.push(id));
+  reportChatStatus("wait-plan", "working");
+  reportChatStatus("wait-plan", "needs_plan_response");
+  reportChatStatus("wait-plan", "needs_plan_response");
+  assert.deepEqual(asked, ["wait-plan"], "ExitPlanMode's plan review, reported once");
+  reportChatStatus("wait-question", "working");
+  reportChatStatus("wait-question", "needs_user_input");
+  assert.deepEqual(asked, ["wait-plan", "wait-question"], "AskUserQuestion or an MCP elicitation");
+  // A tool approval signals per request (permissionEvents), not from its status.
+  reportChatStatus("wait-tool", "working");
+  reportChatStatus("wait-tool", "needs_user_permission");
+  assert.deepEqual(asked, ["wait-plan", "wait-question"]);
+  // Answered and asked again: a new wait.
+  reportChatStatus("wait-plan", "working");
+  reportChatStatus("wait-plan", "needs_plan_response");
+  assert.deepEqual(asked, ["wait-plan", "wait-question", "wait-plan"]);
+  // A closed chat tab no longer asks.
+  hideChat("wait-hidden");
+  reportChatStatus("wait-hidden", "needs_user_input");
+  assert.deepEqual(asked, ["wait-plan", "wait-question", "wait-plan"]);
   off();
 });
