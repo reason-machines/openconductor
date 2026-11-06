@@ -34,6 +34,9 @@ function fakes(opts: { checkpoint?: boolean; head?: { stdout: string; exitCode: 
       fetched: false,
       copiedFiles: [],
       upstreamWarning: null,
+      initializationLogPath: null,
+      initializationFilesCopied: 0,
+      auxiliaryFailureMessage: null,
       number: 7,
     };
   };

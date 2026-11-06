@@ -197,6 +197,12 @@ try {
   assert.ok(card.includes("hello.txt"), card);
   await screenshot("codex-1-approval");
   pass(`approval card shows the command and Codex's decisions: ${buttons.join(", ")}`);
+  // parity: sidebar.ws-status. An open approval is Conductor's tool approval: Needs permission.
+  const rowStatus = () => run(`return [...document.querySelectorAll('[data-testid="workspace-status-icon"]')].map((e) => e.dataset.status);`);
+  await waitFor("Needs permission on the sidebar row", async () => (await rowStatus()).includes("needs-user-permission"), 15000).catch(async (e) => {
+    throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await rowStatus())}`);
+  });
+  pass("the sidebar row shows Needs permission while the approval is open");
 
   assert.ok(await clickApproval("Allow"));
   await waitFor('"hello from codex" reply', () => chatText().then((t) => t.includes("hello from codex") && !t.includes("Codex wants")));
@@ -217,6 +223,8 @@ try {
   assert.ok(!/I.ll create/.test(outside), "commentary is not outside the tool-call group");
   await screenshot("codex-2-turn-done");
   pass(`Allow runs the commands (${tools.join(" | ")}), hello.txt is in ${workspace.path}, reply shown`);
+  await waitFor("the sidebar row to leave Needs permission", async () => !(await rowStatus()).includes("needs-user-permission"), 15000);
+  pass("answering the approval clears Needs permission on the sidebar row");
 
   const sent = requests();
   const start = sent.find((r) => r.method === "thread/start");
