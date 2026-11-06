@@ -24,3 +24,10 @@ test("a refused or missing clipboard reports Failed to copy link", async () => {
   assert.deepEqual(refused, { kind: "error", message: COPY_LINK_FAILED });
   assert.deepEqual(await copyWorkspaceLink("w1", undefined), { kind: "error", message: COPY_LINK_FAILED });
 });
+
+test("a chat tab's Copy link names the chat as its session", async () => {
+  const written: string[] = [];
+  const result = await copyWorkspaceLink("w1", { writeText: async (t) => void written.push(t) }, "w1:review:2");
+  assert.deepEqual(written, ["openconductor://workspace?id=w1&session=w1%3Areview%3A2"]);
+  assert.deepEqual(result, { kind: "info", message: "Copied link" });
+});

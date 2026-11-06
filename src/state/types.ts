@@ -37,6 +37,11 @@ export interface Workspace {
   /** `user_set_workspace_name` / `user_set_branch_name`: block the auto-rename. */
   userSetWorkspaceName?: boolean;
   userSetBranchName?: boolean;
+  /**
+   * The main chat's own title, once renamed with its tab's "Rename chat" (Conductor's
+   * session title). Absent, the tab shows the workspace's name.
+   */
+  chatTitle?: string;
   /** Title of the workspace's pull request; the sidebar row shows it in place of the branch. */
   prTitle?: string | null;
   /** Body of the workspace's pull request (`pr_description`); Create PR uses it verbatim. */
@@ -95,7 +100,18 @@ export type Selection =
   | { kind: "home" }
   /** Conductor's `/dashboard` (Experimental "Dashboard"); `repo` is its `?repo=` project tab. */
   | { kind: "dashboard"; repo?: string }
+  /** Conductor's `/routines` pages on Reason Loops (src/features/routines). */
+  | { kind: "routines"; page?: RoutinesPage }
   | { kind: "workspace"; repoId: string; workspaceId: string };
+
+/**
+ * Which `/routines` page: the list (none), `/routines/new`, `/routines/new/$suggestionId`,
+ * `/routines/$automationId` (a Loop, by its Reason and id) or `/routines/$automationId/fork`.
+ */
+export type RoutinesPage =
+  | { view: "new"; suggestion?: string }
+  | { view: "edit"; reasonId: string; id: string }
+  | { view: "fork"; reasonId: string; id: string };
 
 export interface AppState {
   repos: Repo[];

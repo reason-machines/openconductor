@@ -43,7 +43,8 @@ const REF_AUTH = [...REF_LISBON, click("text=auth.ts >> nth=-1")];
 const OC_AUTH = [click("button.oc-change[title='Open src/lib/auth.ts']")];
 // The Create composer from the sidebar, then its "Create from" trigger.
 const REF_CREATE_FROM = [click("text=Create >> nth=0"), click("[aria-label='Create from']")];
-const OC_CREATE_FROM = [click(".sb-primary .sb-row >> text=Create"), click("[aria-label='Create from']")];
+// Conductor's reference opens Create over Home ("/"), so ours goes Home first, as the UI map lane does.
+const OC_CREATE_FROM = [click(".sb-primary .sb-row >> text=Home"), click(".sb-primary .sb-row >> text=Create"), click("[aria-label='Create from']")];
 
 /**
  * Per state: the steps on each side, its UI map state id (tools/ui-map/gen_states.py)

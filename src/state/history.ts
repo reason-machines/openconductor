@@ -11,8 +11,12 @@ export interface NavHistory {
 
 const LIMIT = 100;
 
-export const sameSelection = (a: Selection, b: Selection): boolean =>
-  a.kind === b.kind && (a.kind !== "workspace" || (b.kind === "workspace" && a.workspaceId === b.workspaceId && a.repoId === b.repoId));
+export const sameSelection = (a: Selection, b: Selection): boolean => {
+  if (a.kind !== b.kind) return false;
+  if (a.kind === "workspace") return b.kind === "workspace" && a.workspaceId === b.workspaceId && a.repoId === b.repoId;
+  if (a.kind === "routines") return b.kind === "routines" && JSON.stringify(a.page ?? null) === JSON.stringify(b.page ?? null);
+  return true;
+};
 
 export const startHistory = (sel: Selection): NavHistory => ({ entries: [sel], index: 0 });
 

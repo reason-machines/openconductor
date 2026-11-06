@@ -148,6 +148,20 @@
           return { hasUncommitted: true, hasChanges: true, hasRemote: true, canCreatePr: true, remote: "origin", upstream: { branchExists: false, diverged: false, ahead: 0, behind: 0 }, targetBehind: 0, detached: false };
         case "sidebar_workspace_changes":
           return [];
+        // The Create from picker. gh is signed out in the reference harness (`gh auth status` fails),
+        // so PRs and GitHub issues are "set up GitHub"; branches are main plus each workspace's branch.
+        case "pr_list_open":
+        case "gh_issue_list_open":
+          throw "no_github: gh auth login required";
+        case "ensure_repository": {
+          const repo = shell.repos.find((r) => r.id === args.repositoryId || r.path === args.path);
+          return { id: repo.id, name: repo.name, root: repo.path, defaultBranch: repo.defaultBranch };
+        }
+        // Conductor's create composer opens with no repository chosen, so its Branches tab is
+        // empty ("No branches found"). Ours opens on tide-web; giving it only its default branch,
+        // which the list leaves out, shows the same empty state.
+        case "list_branches":
+          return [{ name: "main", remote: null, commit: "", isHead: true, committedAt: 0 }];
         default:
           window.__fake.unmocked.push(cmd);
           throw new Error(`fake backend: ${cmd} is not mocked`);

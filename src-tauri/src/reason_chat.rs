@@ -40,6 +40,7 @@ use tauri::{AppHandle, Emitter, Manager, State};
 use crate::agent::AgentKind;
 use crate::reason_acp::account::{Account, CommandResult, LoginPrompt};
 use crate::reason_acp::cli::{find_reason_cli, CliEnv, LaunchConfig};
+use crate::reason_acp::cloud::CallError;
 use crate::reason_acp::cloud::CloudSetup;
 use crate::reason_acp::provider::{Attachment, ConfigChoice, ProviderEvent, ReasonProvider, Sink};
 use crate::reason_acp::wire;
@@ -182,6 +183,12 @@ pub async fn reason_login_start(app: AppHandle) -> Result<LoginPrompt, String> {
     with_cli(&app, |l, dir| l.login(dir)).await?
 }
 
+/// Settings › Account › Sign out: `reason logout`.
+#[tauri::command]
+pub async fn reason_logout(app: AppHandle) -> Result<CommandResult, String> {
+    with_cli(&app, |l, dir| l.logout(dir)).await
+}
+
 /// Paths Settings › Agents › Reason shows: the installed `reason` ("Use
 /// system Reason") and the CLI's own config folder (`~/.config/reason`,
 /// where it keeps its login, connection and preferences).
@@ -200,6 +207,32 @@ pub fn reason_paths() -> ReasonPaths {
             .ok()
             .map(|h| h.join(".config/reason").display().to_string()),
     }
+}
+
+/// One public Reason API operation through `reason call`, in the configured
+/// Workspace: Routines read and change Reason Loops with it. Only the
+/// operations in [`crate::reason_acp::api::OPERATIONS`] run.
+#[tauri::command]
+pub async fn reason_api_call(
+    app: AppHandle,
+    operation: String,
+    input: Value,
+) -> Result<Value, CallError> {
+    let unavailable = |message: String| CallError {
+        code: "reason_unavailable".into(),
+        message,
+    };
+    let (launch, workspace) = configured(&app).map_err(unavailable)?;
+    let launch = launch
+        .in_workspace(workspace.as_deref())
+        .map_err(|e| unavailable(e.to_string()))?;
+    let dir = home().map_err(unavailable)?;
+    tauri::async_runtime::spawn_blocking(move || launch.api_call(&dir, &operation, &input))
+        .await
+        .map_err(|e| CallError {
+            code: "no_answer".into(),
+            message: e.to_string(),
+        })?
 }
 
 /// "Connect" next to "This Mac": `reason connect`.

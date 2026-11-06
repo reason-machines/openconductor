@@ -92,3 +92,29 @@ fn login_reads_link_and_code() {
     assert_eq!((done.url, done.code), (None, None));
     assert_eq!(done.message, "Signed in as ada@example.com");
 }
+
+/// Settings › Account › Sign out runs `reason logout` and reports its outcome.
+#[test]
+fn logout_runs_reason_logout() {
+    use super::cli::LaunchConfig;
+    use super::test_exe::write_executable;
+    let dir = std::env::temp_dir().join(format!("reason-acp-logout-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    let dir = dir.canonicalize().unwrap();
+    let cli = dir.join("reason");
+    write_executable(
+        &cli,
+        "#!/bin/sh\n[ \"$1\" = logout ] && { echo 'Signed out of Reason.'; exit 0; }\necho \"unexpected: $*\" >&2; exit 2\n",
+        0o755,
+    );
+    let r = LaunchConfig::new(&cli).unwrap().logout(&dir);
+    assert!(r.ok, "{}", r.message);
+    assert_eq!(r.message, "Signed out of Reason.");
+
+    write_executable(&cli, "#!/bin/sh\necho 'not signed in' >&2; exit 1\n", 0o755);
+    let r = LaunchConfig::new(&cli).unwrap().logout(&dir);
+    assert!(!r.ok);
+    assert_eq!(r.message, "not signed in");
+    let _ = std::fs::remove_dir_all(&dir);
+}

@@ -3,7 +3,7 @@ import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlayIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { HelpMenu } from "./HelpMenu";
@@ -30,6 +30,7 @@ import { AccountMenu } from "./AccountMenu";
 import { ResourceUsagePill } from "./ResourceUsagePill";
 import { Tooltip, titleWithShortcut } from "./Tooltip";
 import { ContextMenu, MenuItem as CtxItem, MenuSeparator } from "./menu/ContextMenu";
+import { useRoutinesAvailable } from "../features/routines/useRoutinesAvailable";
 import { EyeIcon, EyeOffIcon, Link2Icon, PencilIcon, PlusIcon as MenuPlusIcon, SettingsIcon as MenuSettingsIcon, Trash2Icon } from "./menu/menuIcons";
 import type { WorkspaceRef as UsageWorkspace } from "./resourceUsage";
 import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
@@ -309,6 +310,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   };
   const sel = state.selection;
   const dashboardEnabled = useDashboardEnabled().enabled;
+  const routinesAvailable = useRoutinesAvailable();
   // Conductor persists this per collapse key; ours lasts for the session.
   const [groupCollapsed, setGroupCollapsed] = useState(false);
   // Conductor keeps "show hidden repositories" in component state, so it resets on reload.
@@ -394,6 +396,11 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
           )}
           <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} title={titleWithShortcut("Home", hint("nav.home"))} active={sel.kind === "root"} onClick={() => dispatch({ type: "select", selection: { kind: "root" } })} />
           <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
+          {/* "Routines" (Conductor's `uy` row after Create, active on /routines*): Conductor shows it for a cloud
+              organization; ours runs on Reason Loops, so it shows once Reason is signed in. */}
+          {routinesAvailable && (
+            <NavRow icon={<PlayIcon size={12} />} label="Routines" shortcut="" active={sel.kind === "routines"} onClick={() => dispatch({ type: "select", selection: { kind: "routines" } })} />
+          )}
           <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={hint("toggleCommandPalette")} onClick={onSearch} />
         </div>
       </div>

@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { CreateFrom } from "./createFlow.ts";
 import { prBranchName } from "./createFlow.ts";
-import { branchToFrom, dedupeBranches, fromLabel, issueToFrom, listErrorState, matches, nextTab, parseRef, prToFrom, statusLine } from "./createFrom.ts";
+import { LIST_LIMIT, SEARCH_PLACEHOLDER, TAB_LABEL, branchChoices, branchToFrom, capList, dedupeBranches, fromLabel, issueToFrom, listErrorState, matches, nextTab, parseRef, prToFrom, statusKind, statusLine } from "./createFrom.ts";
 
 const pr: CreateFrom = { kind: "pr", number: 128, title: "Fix login redirect", headBranch: "fix/login", baseBranch: "main" };
 const gh: CreateFrom = { kind: "issue", provider: "github", key: "#42", title: "Crash on start", body: "Stack overflow in parser" };
@@ -81,4 +81,34 @@ test("list errors map to the picker's setup states", () => {
   assert.deepEqual(listErrorState(new Error("Listing pull requests failed: boom")), { status: "error", message: "Listing pull requests failed: boom" });
   assert.equal(statusLine("pr", listErrorState("no_github: x"), 0, ""), "Set up GitHub in settings to include pull requests");
   assert.equal(statusLine("issue", listErrorState("no_remote: x"), 0, ""), "Add a GitHub repository remote to include GitHub issues");
+});
+
+test("Conductor's tab labels and per-tab placeholders", () => {
+  assert.deepEqual(TAB_LABEL, { pr: "PRs", branch: "Branches", issue: "Issues" });
+  assert.equal(SEARCH_PLACEHOLDER.pr, "Search by title, number, or author");
+  assert.equal(SEARCH_PLACEHOLDER.branch, "Search by name");
+  assert.equal(SEARCH_PLACEHOLDER.issue, "Search by issue number, title, or description");
+});
+
+test("the branch list leaves out the default branch and filters case-insensitively", () => {
+  assert.deepEqual(branchChoices(["main", "ada/Fix-Login", "ada/dark"], "main", ""), ["ada/Fix-Login", "ada/dark"]);
+  assert.deepEqual(branchChoices(["main", "ada/Fix-Login", "ada/dark"], "main", " fix "), ["ada/Fix-Login"]);
+  assert.deepEqual(branchChoices(["main"], "main", ""), []);
+  assert.equal(statusLine("branch", { status: "ready", items: [] }, 0, ""), "No branches found");
+});
+
+test("lists stop at 100 rows and count the rest", () => {
+  const many = Array.from({ length: LIST_LIMIT + 7 }, (_, i) => i);
+  assert.equal(capList(many).shown.length, 100);
+  assert.equal(capList(many).more, 7);
+  assert.equal(capList([1, 2]).more, 0);
+});
+
+test("PR load and search failures use Conductor's copy; status kinds pick the line's style", () => {
+  assert.equal(statusLine("pr", { status: "error", message: "boom" }, 0, ""), "Couldn't load pull requests. Try again.");
+  assert.equal(statusLine("pr", { status: "error", message: "boom" }, 0, "fix"), "Couldn't search pull requests. Try again.");
+  assert.equal(statusKind({ status: "loading" }), "loading");
+  assert.equal(statusKind({ status: "error", message: "x" }), "error");
+  assert.equal(statusKind({ status: "unavailable", reason: "no_github" }), "setup");
+  assert.equal(statusKind({ status: "ready", items: [] }), "empty");
 });

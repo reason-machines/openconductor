@@ -176,6 +176,21 @@ impl LaunchConfig {
         Ok(prompt)
     }
 
+    /// `reason logout`: signs this computer out of Reason (Settings ›
+    /// Account › Sign out, Conductor's `account:sign-out`).
+    pub fn logout(&self, dir: &Path) -> CommandResult {
+        match self.run_for(dir, &["logout"], true, STATUS_TIMEOUT) {
+            Some(out) => CommandResult {
+                ok: out.status.success(),
+                message: output_text(&out),
+            },
+            None => CommandResult {
+                ok: false,
+                message: "`reason logout` did not answer".into(),
+            },
+        }
+    }
+
     /// `reason connect`: connects this computer to Reason in the background.
     pub fn connect_computer(&self, dir: &Path) -> CommandResult {
         match self.run_for(dir, &["connect"], true, CONNECT_TIMEOUT) {

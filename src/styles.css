@@ -385,19 +385,48 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .create-from { position: relative; display: flex; align-items: center; gap: 2px; min-width: 0; }
 .create-from-btn { max-width: 260px; }
 .create-from-clear { padding: 0 6px; }
-.create-from-panel { position: absolute; top: 100%; right: 0; width: min(420px, calc(100vw - 64px)); z-index: 20; margin-top: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow-18); padding: 8px; display: flex; flex-direction: column; gap: 6px; color: var(--text); }
+/* Conductor's create-from popover (l4a): w-[28rem] rounded-lg ring-1 ring-popover-ring bg-popover p-0 shadow-md,
+   below the trigger (side bottom, sideOffset 4, align end). */
+.create-from-panel { position: absolute; top: 100%; right: 0; width: min(448px, calc(100vw - 64px)); z-index: 20; margin-top: 4px; display: flex; flex-direction: column; overflow: hidden; border-radius: 8px; background: var(--popover); color: var(--popover-text); box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10); font-size: 14px; line-height: 20px; }
+/* The cmdk input (kI) with wrapperClassName "!border-sidebar-border px-4 [&_svg]:hidden": h-11, text-sm, no search icon. */
+.cf-input { display: flex; align-items: center; flex-shrink: 0; padding: 0 16px; border-bottom: 1px solid var(--sidebar-border); }
+.cf-input input { width: 100%; height: 44px; padding: 12px 0; border: 0; outline: none; background: transparent; color: inherit; font: inherit; font-size: 14px; }
+.cf-input input::placeholder { color: var(--muted); }
+/* Tabs: "shrink-0 px-2 py-1.5 border-b !border-sidebar-border", triggers Q9t: h-7 px-2.5 text-xs rounded-md, the active one bg-muted. */
+.cf-tabs { display: flex; align-items: center; gap: 4px; flex-shrink: 0; padding: 6px 8px; border-bottom: 1px solid var(--sidebar-border); }
+.cf-tabs button { height: 28px; padding: 0 10px; border-radius: 6px; background: transparent; color: var(--muted); font-size: 12px; font-weight: 500; line-height: 16px; }
+.cf-tabs button:hover { color: var(--text); }
+.cf-tabs button[data-active] { background: var(--surface-muted); color: var(--text); }
+/* List: max-h-[320px] overflow-y-auto; cmdk List py-2; groups px-2 pb-1.5; heading px-2 py-1.5 text-xs muted font-medium. */
+.cf-list { min-height: 0; max-height: 320px; overflow-y: auto; padding: 8px 0; }
+.cf-group { padding: 0 8px; }
+.cf-heading { padding: 6px 8px; color: var(--muted); font-size: 12px; font-weight: 500; line-height: 16px; }
+/* Rows ($o + wOt): flex gap-2 items-center rounded-sm px-2, h-9, the highlighted one bg-sidebar-accent. */
+.cf-row { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 8px; overflow: hidden; border-radius: 4px; cursor: pointer; user-select: none; }
+.cf-row[data-selected] { background: var(--sidebar-accent); }
+.cf-row > svg, .cf-state { flex-shrink: 0; color: var(--muted); display: inline-flex; }
+.cf-state.cf-open { color: var(--success); }
+.cf-number { flex-shrink: 0; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.cf-number-pr { width: 48px; }
+.cf-number-issue { width: 64px; }
+.cf-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cf-check { display: inline-flex; flex-shrink: 0; color: var(--text); }
+/* $Ge / L9: "Select ↵" at the end, ml-auto text-xs muted, only on the highlighted row. */
+.cf-hint { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; flex-shrink: 0; color: var(--muted); font-size: 12px; opacity: 0; }
+.cf-row[data-selected] .cf-hint { opacity: 1; }
+/* Empty (o5): py-6 text-center text-xs muted/70. Loading (i4a): centred py-6, spinner, ml-2 text-sm muted.
+   Error and setup hints: px-2 py-3 text-sm, destructive or muted. "N more": px-3 py-1 text-[11px] muted/50. */
+.cf-empty { margin: 0; padding: 24px 0; text-align: center; font-size: 12px; color: color-mix(in srgb, var(--muted) 70%, transparent); }
+.cf-loading { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0; padding: 24px 0; color: var(--muted); }
+.cf-error, .cf-setup { margin: 0; padding: 12px 8px; }
+.cf-error { color: var(--destructive); }
+.cf-setup { color: var(--muted); }
+.cf-more { padding: 4px 12px; font-size: 11px; color: color-mix(in srgb, var(--muted) 50%, transparent); }
 /* Full-screen /create page. */
 .create-page { position: relative; display: flex; flex-direction: column; height: 100%; min-height: 0; background: var(--bg); }
 .create-page-top { position: relative; flex-shrink: 0; height: 36px; }
 .create-page-scroll { display: flex; flex: 1; min-height: 0; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 0 24px 80px; }
 .create-page-column { width: 100%; max-width: 768px; padding-top: clamp(3rem, 12vh, 8rem); }
-.create-from-tabs { display: flex; gap: 4px; }
-.create-from-tabs button { padding: 3px 8px; border-radius: 5px; color: var(--muted); font-size: 12px; }
-.create-from-tabs button.active { background: var(--hover); color: inherit; font-weight: 600; }
-.create-from-panel ul { list-style: none; margin: 0; padding: 0; max-height: 180px; overflow-y: auto; }
-.create-from-panel li { padding: 5px 8px; border-radius: 5px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.create-from-panel li.active { background: var(--hover); }
-.create-from-status, .create-from-hint { margin: 2px 4px; }
 
 /* Toasts (bottom-right stack) */
 .toaster { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; flex-direction: column; gap: 8px; max-width: 420px; }
@@ -705,6 +734,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .rename-ws-branch:has(input:disabled) { opacity: 0.6; }
 .rename-ws-dialog .btn-ghost { background: transparent; border-color: transparent; }
 .rename-ws-dialog .btn-ghost:hover { background: var(--hover); }
+/* Rename chat's title icon: lucide message-square-text at size-5. */
+.rename-chat-icon { width: 20px; height: 20px; flex-shrink: 0; }
 
 /* Sidebar add-repository menu (Conductor's `wra` popover around `Gji`): w-80 rounded-lg p-1
    popover; rows px-2.5 py-2 text-sm rounded-md gap-2 with 16px icons; then a my-1 separator,

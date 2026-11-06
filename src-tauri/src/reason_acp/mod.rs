@@ -11,6 +11,8 @@
 //!   Settings › Agents › Reason.
 //! * [`cloud`]: `reason call` reads of the Reason HTTP API for Settings ›
 //!   Cloud setup (cloud workspaces run as Reason Sessions in Reason's cloud).
+//! * [`api`]: allowlisted public API operations through `reason call`, for
+//!   Routines (Reason Loops).
 //! * [`updates`]: `session/update` to provider events, error notices sent
 //!   as text, and local/cloud path mapping.
 //! * [`provider`]: one Reason Session per chat; follow-up, Stop, resume.
@@ -21,6 +23,7 @@
 //! commands over it are in `crate::reason_chat`.
 
 pub mod account;
+pub mod api;
 pub mod cli;
 pub mod cloud;
 pub mod provider;
@@ -30,6 +33,8 @@ pub mod wire;
 
 #[cfg(test)]
 mod account_tests;
+#[cfg(test)]
+mod api_tests;
 #[cfg(test)]
 mod cli_tests;
 #[cfg(test)]
