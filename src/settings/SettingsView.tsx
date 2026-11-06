@@ -1,4 +1,9 @@
-import { Fragment, type ReactNode } from "react";
+import { Fragment, useState, type MouseEvent, type ReactNode } from "react";
+import { openUrl } from "../backend";
+import { Tooltip } from "../components/Tooltip";
+import { CopyIcon, ExternalIcon } from "../components/Icons";
+import { PopoverMenu, type PopoverMenuItem } from "../components/PopoverMenu";
+import type { Point } from "../components/popoverMenuPlacement";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import type { Repo } from "../state/types";
 import { AccountPage } from "./AccountPage";
@@ -15,7 +20,7 @@ import { ExperimentalPage } from "./ExperimentalPage";
 import { pageLabel, settingsGroups, type SettingsPage } from "./pages";
 import { RepoSettingsPage } from "./RepoSettingsPage";
 import type { RepoMiscActions } from "./rows/RepoMiscRows";
-import { REPO_SECTIONS, REPO_SECTION_LABELS, sameLocation, type SettingsLocation } from "./routes";
+import { REPO_SECTIONS, REPO_SECTION_LABELS, sameLocation, settingsDeepLink, type SettingsLocation } from "./routes";
 import type { Settings } from "./types";
 import { useSettings } from "./useSettings";
 import {
@@ -56,6 +61,42 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
 
   useKeybindings({ "settings.close": onClose });
 
+  // Right-click menus (Conductor's `t9a` on each page link, and its app-wide `X$r` for
+  // links with a scheme). Conductor's toasts: "Copied link to clipboard" (`n5`),
+  // "Failed to copy to clipboard", "Failed to open link".
+  const [menu, setMenu] = useState<{ at: Point; offset: Point; items: PopoverMenuItem[]; label: string } | null>(null);
+  const notify = miscActions.notify;
+  const copyLink = (href: string) => {
+    void (navigator.clipboard?.writeText(href) ?? Promise.reject(new Error("no clipboard"))).then(
+      () => notify("info", "Copied link to clipboard"),
+      () => notify("error", "Failed to copy to clipboard"),
+    );
+  };
+  const copyLinkItem = (href: string): PopoverMenuItem => ({ label: "Copy link", icon: <CopyIcon />, onSelect: () => copyLink(href) });
+  const onNavContextMenu = (to: SettingsLocation, label: string) => (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // `gy` defaults: side right, sideOffset 2, align start, at the pointer.
+    setMenu({ at: { x: e.clientX, y: e.clientY }, offset: { x: 2, y: 0 }, items: [copyLinkItem(settingsDeepLink(to))], label: `${label} link` });
+  };
+  const onPageContextMenu = (e: MouseEvent) => {
+    if (e.defaultPrevented) return;
+    const a = (e.target as Element).closest?.("a");
+    const href = a?.getAttribute("href");
+    // Conductor's `T$r`: only links whose href has a scheme (https:, mailto:, ...).
+    if (!a || !href || !/^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+    e.preventDefault();
+    setMenu({
+      at: { x: e.clientX, y: e.clientY },
+      offset: { x: 0, y: -5 },
+      label: "Link",
+      items: [
+        { label: "Open link", icon: <ExternalIcon />, onSelect: () => void openUrl(a.href).catch(() => notify("error", "Failed to open link")) },
+        copyLinkItem(a.href),
+      ],
+    });
+  };
+
   const repo = location.scope === "repo" ? repos.find((r) => r.id === location.repoId) : undefined;
   const title = location.scope === "user" ? pageLabel(location.page) : REPO_SECTION_LABELS[location.section];
   const navButton = (to: SettingsLocation, label: string, className = "nav-item", icon?: ReactNode) => {
@@ -66,6 +107,7 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
         className={`${className} ${active ? "active" : ""}`}
         aria-current={active ? "page" : undefined}
         onClick={() => onNavigate(to)}
+        onContextMenu={onNavContextMenu(to, label)}
       >
         {icon}
         <span>{label}</span>
@@ -75,14 +117,18 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
   const header = location.scope === "user" ? PAGE_HEADERS[location.page] : REPO_HEADERS[location.section];
 
   return (
-    <div className="settings">
+    <div className="settings" onContextMenu={onPageContextMenu}>
+      {menu && <PopoverMenu at={menu.at} offset={menu.offset} items={menu.items} label={menu.label} onClose={() => setMenu(null)} />}
       <nav className="settings-nav" aria-label="Settings pages">
         <div className="sidebar-drag" data-tauri-drag-region />
         <div className="settings-nav-top">
-          <button className="settings-back" title="Esc" onClick={onClose}>
-            <BackIcon />
-            Back
-          </button>
+          {/* Conductor's `I9a`: Root delayDuration 100, content side "right", text "Esc". */}
+          <Tooltip content="Esc" side="right" delay={BACK_TOOLTIP_DELAY_MS}>
+            <button className="settings-back" tabIndex={-1} onClick={onClose}>
+              <BackIcon />
+              Back
+            </button>
+          </Tooltip>
         </div>
         {settingsGroups(settings?.experimental?.experimental_big_terminal_mode === true).map((g) => (
           <Fragment key={g.title || g.pages[0]?.id}>
@@ -220,6 +266,9 @@ const PAGE_ICONS: Record<SettingsPage, ReactNode> = {
   advanced: <DriveIcon />,
   terminal: <TerminalIcon />,
 };
+
+/** Settings' Back opens its "Esc" tooltip after 100 ms, not the app's 600 ms (Conductor's `I9a`). */
+const BACK_TOOLTIP_DELAY_MS = 100;
 
 /** Pages that draw their own header (Conductor's environment panel has an "Add" action beside its title). */
 const SELF_HEADED: readonly SettingsPage[] = ["environment"];

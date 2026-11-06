@@ -56,3 +56,16 @@
 
 - Captured live (OpenConductor): first-run onboarding, empty Home with sidebar, New workspace dialog, workspace view (header, chat tab, chat, composer, Changes, Run/Setup strip), All files.
 - Not captured: Settings pages, Checks, Terminal, right-click menus, popovers, toasts, animations, and every live Conductor screen (no Screen Recording; the live Conductor window was left alone).
+
+## Settings (repo + user settings)
+
+Scope: user Settings (General, Account, Appearance, Agents, Models, Git, Environment, Experimental, Advanced) and repo Settings (Git, Environment, Scripts, Actions, Misc), shared Settings chrome only for Scripts and Actions. Reference: Conductor 0.87.6's frontend decoded from `/Applications/Conductor.app/Contents/MacOS/conductor` on sven m5 max (sha256 `0ba55751…831d`, 2,902 assets, `tools/extract_tauri_assets.py`), served by `tools/screens` and rendered in Chromium beside OpenConductor's build. Measurements use playwright-core because REA cannot hover (tools/ui-map/REA-GAPS.md 17-19). Images: [parity/side-by-side/settings/](../side-by-side/settings/).
+
+| Item | Conductor (verified) | OpenConductor | Status |
+|---|---|---|---|
+| Tooltip: Back | "Esc", `side:"right"`, Root `delayDuration:100` (`I9a`); live: opens after ~115 ms, 36×24 at 4 px right of the button, fade + scale from 95% over 100 ms | Same text, side, delay and box (opens after ~103 ms) through the shared `Tooltip` (`delay` prop added) | **matches** ([back-tooltip.png](../side-by-side/settings/back-tooltip.png)) |
+| Tooltip: Account › Linear Connect, Billing | "Opens settings in your browser", "Opens billing in your browser" (600 ms, top) | No Linear or Billing card (no Conductor account service) | n/a until those cards exist |
+| Right-click: settings nav links | Every page link (user pages and repo sections): one item, copy icon + "Copy link", copies `<scheme>://settings/<path>` (`t9a`, `TGt`); menu 128×40 at pointer +2 px, item 32 px, 16 px muted icon. REA Evidence `ev_c20f4c8e…` (right-click through `capture-browser-scenario`) | Same item, icon, size and offset; copies `openconductor://settings/user/<page>` or `…/repos/<id>/<section>`, toast "Copied link to clipboard" | **matches** ([nav-copy-link-menu.png](../side-by-side/settings/nav-copy-link-menu.png)) |
+| Right-click: links in row text | "Open link" (external-link icon), "Copy link" (copy icon), no separator (`Q$r`, `X$r` for any `<a>` whose href has a scheme); 128×72 at the pointer, 5 px up | Same items, order, icons and placement, on every link inside Settings | **matches** ([row-link-menu.png](../side-by-side/settings/row-link-menu.png)) |
+| Press state | Buttons `transition-transform duration-150 ease-out active:scale-[0.97]` (`REe`) | not compared yet | open: PR (c) |
+| Alignment | Back: 28 px tall, right edge 6 px inside the 256 px nav; account switcher and "Search settings" above the groups | Back 22 px tall and 40 px further left; no account switcher or search | open: PR (d) |
