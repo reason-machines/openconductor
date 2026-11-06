@@ -37,7 +37,7 @@
 | Toasts | not captured | Conductor's native capture shows an update toast ("New update available" with See changes / Restart); no toast was triggered in ours. |
 | Tooltips | partly checked | From the accessibility tree: ours has "Toggle left sidebar (⌘B)", "Go back (⌘[)", "Home (⌘⇧H)", "Create (⌘N)", "Search (⌘K)", "Settings (⌘,)", "Open in Finder (⌘O)", "Archive workspace". Conductor's new-tab tooltip "New chat, same files ⌘T" has no counterpart because ours has no `+` button. Delay and placement not measured. |
 | Animations | not checked | Needs a screen recording, and none can be captured from this session. |
-| Alignment sweep | header misalignment confirmed from Sven's crop | Other rows not measured in this run. |
+| Alignment sweep | done: sidebar alignment merged in #491 (squash f3831f7); header misalignment confirmed from Sven's crop | Sidebar FREE plan badge in the footer still open as a feature gap, not alignment. |
 
 ### Title-bar drag test
 
