@@ -1,0 +1,76 @@
+// Browser-only IPC fixture for settings captures and deterministic save-race checks.
+// Never invokes an agent or touches a user's settings, credentials or repositories.
+import fs from "node:fs";
+import http from "node:http";
+import path from "node:path";
+import { fakeBackend, FILES } from "../../tests/e2e/right-panel-fixture.mjs";
+
+const root = path.resolve("dist");
+const port = Number(process.env.PORT ?? 51749);
+const shell = {
+  repos: ["tide-web", "tide-api", "dotfiles"].map((name) => ({
+    id: `repo-${name}`, name, path: `/Users/demo/code/${name}`, defaultBranch: "main", workspaces: [],
+  })),
+  selection: { kind: "home" },
+};
+function settingsBackend() {
+  localStorage.setItem("openconductor.firstRunOnboardingStep", "999");
+  const manual = new URLSearchParams(location.search).has("manual_writes");
+  let settings = {
+    $schema: "https://openconductor.dev/schemas/settings.schema.json",
+    general: { theme: "dark", send_native_notification: true, sound_type: "default" },
+    appearance: { zoom_level_v2: 1, low_contrast_dark_mode: false, terminal_font_size: 12 },
+    git: { branch_prefix_type: "github_username", delete_branch_on_archive: false, archive_on_merge: false, worktree_push_auto_setup_remote: true },
+    models: { default: "opus", default_thinking_enabled: true, review_thinking_enabled: true, codex: { default_thinking_level: "medium", review_thinking_level: "medium" } },
+    providers: {},
+    experimental: { experimental_big_terminal_mode: true },
+    reason: { workspace: "ws-b", model: "test-model", reasoning_effort: "high" },
+  };
+  const account = { version: "0.2.692", name: "Ada Demo", email: "ada@example.com", credential: "login", error: null, organization: "Tide Labs", computerConnected: true, workspaces: [{ slug: "ws-a", name: "Workspace A", selected: true, connected: true }, { slug: "ws-b", name: "Workspace B", selected: false, connected: true }] };
+  const writes = [];
+  window.__settingsTest = {
+    writes,
+    stored: () => structuredClone(settings),
+    complete(index, fail = false) {
+      const write = writes[index];
+      if (!write || write.done) throw new Error("No pending settings write " + index);
+      write.done = true;
+      if (fail) write.reject(new Error("fixture write refused"));
+      else { settings = structuredClone(write.next); write.resolve(structuredClone(settings)); }
+    },
+  };
+  const original = window.__TAURI_INTERNALS__.invoke;
+  window.__TAURI_INTERNALS__.invoke = async (cmd, args) => {
+    if (cmd === "get_settings") return structuredClone(settings);
+    if (cmd === "update_settings") {
+      if (!manual) { settings = structuredClone(args.settings); return structuredClone(settings); }
+      return new Promise((resolve, reject) => writes.push({ next: structuredClone(args.settings), resolve, reject, done: false }));
+    }
+    if (cmd === "reason_account_status") return account;
+    if (cmd === "reason_models") return [{ value: "test-model", name: "Test model" }];
+    if (cmd === "reason_paths") return { systemCli: "/Users/demo/.local/bin/reason", configDir: "/Users/demo/.config/reason" };
+    if (cmd === "provider_status") return { agent: args.agent, kind: args.agent === "reason" ? "reason_login" : args.agent === "codex" ? "codex_login" : "claude_login", secrets: [], ready: false, problem: null };
+    if (cmd === "agent_system_binary") return `/Users/demo/.local/bin/${args.agent === "claude" ? "claude" : args.agent}`;
+    if (cmd === "agent_auth_status") return { authenticated: false, error: null };
+    return original(cmd, args);
+  };
+}
+const seed = `(${fakeBackend})(${JSON.stringify({ shell, files: FILES })});(${settingsBackend})();`;
+const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".png": "image/png" };
+http.createServer((req, res) => {
+  const url = new URL(req.url, "http://localhost");
+  let file = path.resolve(root, "." + decodeURIComponent(url.pathname));
+  if (!file.startsWith(root + path.sep) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) file = path.join(root, "index.html");
+  let body = fs.readFileSync(file);
+  if (file.endsWith("index.html")) body = body.toString().replace("<head>", `<head><script>${seed}</script>`);
+  res.writeHead(200, { "content-type": types[path.extname(file)] ?? "application/octet-stream" });
+  res.end(body);
+}).listen(port, "0.0.0.0", () => {
+  console.log(`Settings fixture listening on ${port}`);
+  if (process.env.CHECK_SAVE_RACE) {
+    void import("./check-save-race.mjs").then(
+      () => console.log("SAVE_RACE_CHECK_PASSED"),
+      (error) => console.error("SAVE_RACE_CHECK_FAILED", error),
+    );
+  }
+});
