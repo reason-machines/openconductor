@@ -127,7 +127,7 @@ async function screenshot(name) {
 }
 
 const chatText = () => run("const el = document.querySelector('.chat-scroll'); return el ? el.innerText : null;");
-const running = () => run("return !!document.querySelector('.composer button[title=\"Stop the agent\"]');");
+const running = () => run("return !!document.querySelector('.composer button[aria-label^=\"Stop the agent\"]');");
 
 /** What has the keyboard, for failure messages: the composer, a terminal, or another element. */
 const focusedElement = () =>
@@ -251,7 +251,7 @@ try {
   await waitFor('the Bash "sleep" tool row', () =>
     run(`return [...document.querySelectorAll(".chat-tool")].some((r) => /\\bBash\\b/.test(r.innerText) && r.innerText.includes("sleep"));`),
   );
-  await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
+  await wd("POST", `/element/${await find('.composer button[aria-label^="Stop the agent"]')}/click`, {});
   await waitFor('"Interrupted by user"', () => chatText().then((t) => t.includes("Interrupted by user")), 15000);
   await turnDone(4);
   pass('Stop ends the running turn: "Interrupted by user"');

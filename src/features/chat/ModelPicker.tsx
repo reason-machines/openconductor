@@ -5,12 +5,12 @@
 // ("Effort"/"Thinking"), the Fast toggle, and a footer with "Edit" and the
 // Cycle effort shortcut. ⌘/ opens it, ⌘⇧/ cycles the effort, ⌘⇧E toggles Fast.
 
+import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs } from "../../keybindings/shortcut.ts";
 import { effectiveEffort, fastModeAvailable, modelChip, modelDisplayName, modelEfforts, nextEffort, type ModelChoice } from "./composerModels.ts";
-import { Tooltip } from "../../components/Tooltip.tsx";
 import { ArrowUpRightIcon, CheckIcon, ChevronDownIcon, ChevronRightIcon, ModelGlyph, PlusSmallIcon, SearchSmallIcon, SettingsSmallIcon } from "./composerIcons.tsx";
 
 export type { ModelChoice };
@@ -37,13 +37,11 @@ export interface ModelPickerProps {
   modelName?: (model: string) => string | undefined;
   /** A line about a model (Reason's "Claude · Subscription"), shown as its tooltip. */
   modelDescription?: (model: string) => string | undefined;
-  /** Conductor's trigger tooltip "Change agent ⌘/" (`RNi`'s triggerTooltip), as the create composer shows it. */
-  tooltip?: boolean;
 }
 
 const same = (a: ModelChoice, b: ModelChoice) => a.model === b.model;
 
-export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription, tooltip = false }: ModelPickerProps) {
+export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription }: ModelPickerProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [effortOpen, setEffortOpen] = useState(false);
@@ -100,7 +98,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
 
   return (
     <span className="oc-model-picker" ref={root} onKeyDown={onMenuKey}>
-      <Tooltip content="Change agent" shortcut={hint("chat.openModelPicker") || undefined} disabled={!tooltip || open}>
+      <Tooltip content={<p>Change agent <ShortcutHint commandId="chat.openModelPicker" /></p>}>
         <button
           type="button"
           className="oc-model-chip"

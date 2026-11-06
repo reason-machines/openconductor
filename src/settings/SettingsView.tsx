@@ -301,6 +301,7 @@ const REPO_SECTION_ICONS: Record<(typeof REPO_SECTIONS)[number], ReactNode> = {
   misc: <SlidersHorizontalIcon />,
 };
 const REPO_HEADERS: Partial<Record<(typeof REPO_SECTIONS)[number], { description: ReactNode }>> = {
+  scripts: { description: "Commands that run when workspaces are set up, run, or archived." },
   actions: { description: "Configure action-specific behavior and instructions for this repository." },
   misc: { description: "Repository paths and workspace file behavior." },
 };

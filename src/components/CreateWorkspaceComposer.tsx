@@ -429,7 +429,6 @@ export function CreateWorkspaceComposer({
 function CreateModelPicker({ value, favorites, settings, disabled, onChange }: { value: LaunchModel; favorites: readonly LaunchPick[]; settings: Settings | null; disabled: boolean; onChange: (next: LaunchModel) => void }) {
   return (
     <ModelPicker
-      tooltip
       value={{ model: value.model, effort: value.effort || null }}
       favorites={favorites}
       itemLabel={(f) => modelLabel(f.model)}
