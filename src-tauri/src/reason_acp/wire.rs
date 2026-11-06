@@ -78,6 +78,8 @@ fn tool_json(r: &ToolRow) -> Value {
         "output": r.output,
         "diffs": r.diffs.iter().map(diff_json).collect::<Vec<_>>(),
         "locations": r.locations.iter().map(path_json).collect::<Vec<_>>(),
+        "toolName": r.tool_name,
+        "rawInput": r.raw_input,
     })
 }
 
