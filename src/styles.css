@@ -166,6 +166,10 @@ html.sidebar-transparency .settings { background: var(--bg); }
    actions are flex gap-5 ml-auto; each icon is text-sidebar-muted-foreground hover:text-foreground. */
 .sb-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--sidebar-border); }
 /* Conductor's Badge `tip-outline` + `h-4 border-dashed !border-muted-foreground/80 text-muted-foreground/80`. */
+/* Conductor's plan badge button: shrink-0 cursor-pointer rounded-xs, ring on keyboard focus only. */
+.sb-plan-btn { display: inline-flex; flex-shrink: 0; padding: 0; border: 0; border-radius: 2px; background: none; cursor: pointer; }
+.sb-plan-btn:focus { outline: none; }
+.sb-plan-btn:focus-visible { box-shadow: 0 0 0 2px var(--sidebar-background), 0 0 0 4px var(--ring); }
 .sb-plan-badge { display: inline-flex; align-items: center; flex-shrink: 0; height: 16px; padding: 0 8px; border: 1px dashed color-mix(in srgb, var(--sidebar-muted-foreground) 80%, transparent); border-radius: 2px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: color-mix(in srgb, var(--sidebar-muted-foreground) 80%, transparent); user-select: none; }
 /* Conductor's footer line is 20px tall (its plan badge button), so the 16px icons centre 10px below the padding. */
 .sb-footer-actions { position: relative; display: flex; align-items: center; gap: 20px; min-height: 20px; margin-left: auto; }

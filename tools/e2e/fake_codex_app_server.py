@@ -34,6 +34,10 @@ Codex keeps such tokens in memory: the log gets a fingerprint of the access
 token and the account id, never the token, and replies end in
 "(auth: chatgptAuthTokens)". The launch line also says whether CODEX_HOME is
 set and whether CODEX_ACCESS_TOKEN reached the process.
+account/login/start {type: "apiKey"} is answered as Codex does and logged
+with the key's fingerprint ("apiKey": "sha256:<16 hex>"), never its value; it
+leaves the stored ChatGPT account alone, as Codex does with
+cli_auth_credentials_store="ephemeral".
 Only "codex app-server" is handled; other subcommands exit 2.
 """
 import hashlib
@@ -202,7 +206,10 @@ def handle(msg):
             consent_answered(msg["id"], msg["result"])
         return
     method, params, mid = msg["method"], msg.get("params") or {}, msg.get("id")
-    note({"method": method, "params": {k: ("<redacted>" if k == "accessToken" else v) for k, v in params.items()}})
+    logged = {k: ("<redacted>" if k == "accessToken" else v) for k, v in params.items()}
+    if isinstance(logged.get("apiKey"), str):
+        logged["apiKey"] = "sha256:" + hashlib.sha256(logged["apiKey"].encode()).hexdigest()[:16]
+    note({"method": method, "params": logged})
     if method == "initialize":
         send({"id": mid, "result": {"userAgent": "fake-codex/0.166.0", "platformFamily": "unix"}})
     elif method == "account/read":
@@ -212,6 +219,8 @@ def handle(msg):
         state["tokens"] = {"type": "chatgpt", "via": "chatgptAuthTokens"}
         note({"tokens_login": {"access": hashlib.sha256(token.encode()).hexdigest()[:16], "account": params.get("chatgptAccountId")}})
         send({"id": mid, "result": {"type": "chatgptAuthTokens"}})
+    elif method == "account/login/start" and params.get("type") == "apiKey":
+        send({"id": mid, "result": {"type": "apiKey"}})
     elif method == "account/login/start" and params.get("type") == "chatgpt":
         login = "login-e2e"
         send({"id": mid, "result": {"type": "chatgpt", "loginId": login, "authUrl": "http://127.0.0.1:1455/e2e-auth"}})

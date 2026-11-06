@@ -17,8 +17,13 @@ use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
-use super::env::LaunchEnv;
+use super::env::{vars, LaunchEnv};
 use super::handoff::TargetLaunch;
+use super::secret::SecretString;
+
+/// Keeps a login made through `account/login/start` in memory: an API key
+/// from the API key card must not be written over the user's auth.json.
+pub const EPHEMERAL_AUTH_STORE: &str = "cli_auth_credentials_store=\"ephemeral\"";
 
 /// When Codex stops to ask before running a command or applying a patch.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -183,7 +188,22 @@ impl CodexLaunch {
         for (key, value) in &self.config {
             args.extend(["-c".into(), format!("{key}={value}")]);
         }
+        let handed_key = self
+            .target
+            .as_ref()
+            .is_some_and(|t| t.handoff.codex_api_key.is_some());
+        if self.api_key().is_some() || handed_key {
+            args.extend(["-c".into(), EPHEMERAL_AUTH_STORE.into()]);
+        }
         args
+    }
+
+    /// The API key this launch logs in with after `initialized`, when its
+    /// provider set one (the API key card).
+    pub fn api_key(&self) -> Option<SecretString> {
+        self.env
+            .get(vars::CODEX_API_KEY)
+            .map(|v| SecretString::new(v.expose()))
     }
 
     /// The command to spawn: piped stdio, the workspace as cwd, and the
@@ -310,6 +330,12 @@ mod tests {
         );
         let args: Vec<_> = cmd.get_args().map(|a| a.to_string_lossy()).collect();
         assert!(args.iter().all(|a| !a.contains("sk-test-123")));
+        // The key is logged in after initialized and kept in memory only.
+        assert_eq!(args[args.len() - 2..], ["-c", EPHEMERAL_AUTH_STORE]);
+        assert_eq!(
+            launch.api_key().map(|k| k.expose().to_owned()),
+            Some("sk-test-123".into())
+        );
         let key = cmd
             .get_envs()
             .find(|(k, _)| *k == vars::CODEX_API_KEY)

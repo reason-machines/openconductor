@@ -51,7 +51,7 @@ refresh must be handled by the external host app."
 | When | per spawn | per launch: `Handoff::build` runs in the Claude launcher closure (every spawn) and when a Codex chat opens |
 | Claude, API key | env | `ANTHROPIC_API_KEY` (plus base URL and model options) |
 | Claude, subscription | brokered `CLAUDE_CODE_OAUTH_TOKEN` + scopes | the Mac's own Claude Code login (Keychain `Claude Code-credentials`, else `~/.claude/.credentials.json`): access token and scopes only. Expired logins are refused. The refresh token is never read into the hand-off. |
-| Codex, API key | `CODEX_API_KEY` | `CODEX_API_KEY` / `OPENAI_API_KEY` |
+| Codex, API key | `CODEX_API_KEY` | `CODEX_API_KEY` / `OPENAI_API_KEY`, and `account/login/start {type: "apiKey"}` after `initialized` (Codex 0.166's app server does not read the env var; local launches do the same since #668) with the key spliced in on the target, under `cli_auth_credentials_store="ephemeral"` |
 | Codex, ChatGPT | `account/login/start chatgptAuthTokens`; refresh answered by the host | the same RPC with the access token and account id from `~/.codex/auth.json` (never modified). The refresh and id tokens stay on the Mac. |
 | Routing vars | deleted | every routing variable of the agent is unset on the target, plus `CLAUDE_CODE_OAUTH_*` for API-key Claude and `CODEX_ACCESS_TOKEN` for Codex |
 | Codex home | `cloudEnv.CODEX_HOME` | a private, empty `CODEX_HOME`, removed when the agent exits |
@@ -82,7 +82,10 @@ built so the channel only ever carries ciphertext.
    writes `account/login/start` with the placeholders `@OC_SECRET_ACCESS@` /
    `@OC_SECRET_ACCOUNT@`, and the target splices the decrypted values into the
    app-server's stdin. A refresh request is answered with the same placeholders. A new
-   chat hands over a fresh token.
+   chat hands over a fresh token. A Codex API key logs in the same way: the app writes
+   `account/login/start {type: "apiKey", apiKey: "@OC_SECRET_APIKEY@"}` and the target
+   splices the key from the envelope, so the plaintext login #668 sends on a local
+   launch never crosses the channel.
 
 Threat model: the envelope protects against a channel, log or receipt store that keeps
 what it carries. That store holds two ephemeral public keys, ciphertext, and a hash of a

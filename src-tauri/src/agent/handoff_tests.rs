@@ -177,6 +177,12 @@ fn openai_api_key_and_reason() {
     )
     .unwrap();
     assert_eq!(env_of(&h, "CODEX_API_KEY"), Some("sk-proj-stored"));
+    assert_eq!(
+        h.codex_api_key.as_ref().map(|k| k.expose()),
+        Some("sk-proj-stored"),
+        "spliced into account/login/start on the target"
+    );
+    assert!(!format!("{h:?}").contains("sk-proj-stored"));
     assert!(h.private_codex_home);
     assert!(matches!(
         Handoff::build(
@@ -208,6 +214,7 @@ fn debug_and_logs_never_show_values() {
             access_token: SecretString::new(CHATGPT_ACCESS),
             account_id: "acct".into(),
         }),
+        codex_api_key: Some(SecretString::new("sk-proj-secret-value")),
         source: "test",
     };
     let shown = format!("{h:?} {:?}", h.fingerprints());
@@ -452,6 +459,52 @@ fn codex_chatgpt_token_is_spliced_on_the_target_and_never_crosses() {
 
 #[cfg(unix)]
 #[test]
+fn codex_api_key_is_spliced_on_the_target_and_never_crosses() {
+    const KEY: &str = "sk-proj-handoff-test-openai-key_0123";
+    let Some(t) = target("codex-key") else {
+        eprintln!("note: no openssl with X25519; round trip skipped");
+        return;
+    };
+    let handoff = Handoff::build(
+        &ProviderConfig::OpenaiApi(OpenAiApi::default()),
+        &MemorySecretStore::with(&[(keys::OPENAI_API_KEY, KEY)]),
+        &logins(&none_claude, &none_codex),
+    )
+    .unwrap();
+    let launch = TargetLaunch {
+        transport: t.transport.clone(),
+        dir: t.tmp.join("work").display().to_string(),
+        program: "sh".into(),
+        handoff,
+    };
+    let script = format!(
+        r#"{FP}; while IFS= read -r l; do printf 'got %s\n' "$(fp "$l")"; done"#
+    );
+    let mut child = launch.command(&["-c".into(), script]).spawn().unwrap();
+    let tap = Tap::default();
+    let mut out = TapRead(child.stdout.take().unwrap(), tap.clone());
+    let mut inp = TapWrite(child.stdin.take().unwrap(), tap.clone());
+    handshake(&mut out, &mut inp, &launch.handoff).unwrap();
+    let request = format!(
+        r#"{{"method":"account/login/start","id":1,"params":{{"type":"apiKey","apiKey":"{APIKEY_PLACEHOLDER}"}}}}"#
+    );
+    inp.write_all(format!("{request}\n").as_bytes()).unwrap();
+    drop(inp);
+    let mut rest = String::new();
+    out.read_to_string(&mut rest).unwrap();
+    assert!(child.wait().unwrap().success(), "{rest}");
+    let spliced = request.replace(APIKEY_PLACEHOLDER, KEY);
+    assert_eq!(
+        rest.lines().next(),
+        Some(format!("got {}", fingerprint(&format!("t:{spliced}"))).as_str()),
+        "{rest}"
+    );
+    assert_clean(&tap.0.lock().unwrap(), &[KEY]);
+    let _ = std::fs::remove_dir_all(&t.tmp);
+}
+
+#[cfg(unix)]
+#[test]
 fn a_tampered_envelope_is_refused_on_the_target() {
     let Some(t) = target("tamper") else {
         return;
@@ -465,6 +518,7 @@ fn a_tampered_envelope_is_refused_on_the_target() {
         unset: vec![],
         private_codex_home: false,
         codex_chatgpt: None,
+        codex_api_key: None,
         source: "test",
     };
     let mut child = t.transport.command("/", "true", &[]).spawn().unwrap();
@@ -774,6 +828,83 @@ mod sessions {
         assert_eq!(login["account"], "acct-1234");
         let text = serde_json::to_string(&log).unwrap();
         assert!(!text.contains(CHATGPT_ACCESS) && !text.contains(CHATGPT_REFRESH));
+        let _ = std::fs::remove_dir_all(&t.tmp);
+    }
+
+    #[test]
+    fn a_codex_chat_on_a_fresh_target_logs_in_with_the_handed_over_api_key() {
+        const KEY: &str = "sk-proj-handoff-test-openai-key_4567";
+        let Some(t) = target("codex-key-session") else {
+            return;
+        };
+        let Some(program) = install_fake(&t, "fake_codex_app_server.py", "codex") else {
+            return;
+        };
+        let handoff = Handoff::build(
+            &ProviderConfig::OpenaiApi(OpenAiApi::default()),
+            &MemorySecretStore::with(&[(keys::OPENAI_API_KEY, KEY)]),
+            &logins(&none_claude, &none_codex),
+        )
+        .unwrap();
+        // The app's own launch env also carries the key (OpenAI API mode);
+        // the app-server's stdin must still get only the placeholder.
+        let mut env = LaunchEnv::new();
+        env.set_secret(vars::CODEX_API_KEY, SecretString::new(KEY));
+        let mut launch = CodexLaunch::new("/", env);
+        launch.target = Some(TargetLaunch {
+            transport: t.transport.clone(),
+            dir: t.tmp.join("work").display().to_string(),
+            program,
+            handoff,
+        });
+        let seen = Arc::new(Mutex::new(Vec::<Value>::new()));
+        let s = seen.clone();
+        let runner = CodexRunner::start(
+            RunnerConfig {
+                launch,
+                thread: ThreadOptions::default(),
+                resume: None,
+                client_name: "openconductor".into(),
+                client_version: "0.0.0".into(),
+                timeouts: Timeouts::default(),
+            },
+            Arc::new(move |p| s.lock().unwrap().push(serde_json::to_value(p).unwrap())),
+        );
+        let end = runner
+            .prompt("hi with a key", None, None)
+            .recv_timeout(Duration::from_secs(30))
+            .map_err(|e: mpsc::RecvTimeoutError| e.to_string())
+            .unwrap();
+        assert_eq!(
+            end.outcome,
+            Outcome::Completed,
+            "{end:?} {:?}",
+            seen.lock().unwrap()
+        );
+        let shown = serde_json::to_string(&*seen.lock().unwrap()).unwrap();
+        assert!(!shown.contains(KEY));
+        drop(runner);
+        let log = fake_log(&t, "codex-fake.jsonl");
+        let login = log
+            .iter()
+            .find(|l| l["method"] == "account/login/start")
+            .expect("logged in after initialized");
+        assert_eq!(login["params"]["type"], "apiKey");
+        assert_eq!(
+            login["params"]["apiKey"],
+            format!("sha256:{}", fingerprint(KEY)),
+            "the target spliced the real key in"
+        );
+        let launch_line = log.iter().find(|l| l.get("launch").is_some()).unwrap();
+        assert!(
+            launch_line["launch"]["args"]
+                .to_string()
+                .contains("cli_auth_credentials_store"),
+            "{launch_line}"
+        );
+        assert_eq!(launch_line["launch"]["codex_home"], true);
+        let text = serde_json::to_string(&log).unwrap();
+        assert!(!text.contains(KEY));
         let _ = std::fs::remove_dir_all(&t.tmp);
     }
 }

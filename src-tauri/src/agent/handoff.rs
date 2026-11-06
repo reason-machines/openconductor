@@ -55,6 +55,10 @@ use super::secret::{SecretStore, SecretString};
 /// Placeholders the target replaces with the Codex ChatGPT login.
 pub const ACCESS_PLACEHOLDER: &str = "@OC_SECRET_ACCESS@";
 pub const ACCOUNT_PLACEHOLDER: &str = "@OC_SECRET_ACCOUNT@";
+/// Stands for the Codex API key in `account/login/start {type: "apiKey"}`:
+/// Codex 0.166's app server does not read `CODEX_API_KEY`, so the key is
+/// spliced in on the target like the ChatGPT token.
+pub const APIKEY_PLACEHOLDER: &str = "@OC_SECRET_APIKEY@";
 
 const KDF_CONTEXT: &[u8] = b"openconductor-agent-handoff-v1";
 const B64: base64::engine::GeneralPurpose = base64::engine::general_purpose::STANDARD;
@@ -195,6 +199,8 @@ pub struct Handoff {
     pub private_codex_home: bool,
     /// Codex ChatGPT login, spliced into `account/login/start` by the target.
     pub codex_chatgpt: Option<ChatgptTokens>,
+    /// Codex API key, spliced into `account/login/start` by the target.
+    pub codex_api_key: Option<SecretString>,
     /// What was handed over, safe to show.
     pub source: &'static str,
 }
@@ -215,6 +221,10 @@ impl fmt::Debug for Handoff {
             .field("unset", &self.unset)
             .field("private_codex_home", &self.private_codex_home)
             .field("codex_chatgpt", &self.codex_chatgpt)
+            .field(
+                "codex_api_key",
+                &self.codex_api_key.as_ref().map(|_| "<redacted>"),
+            )
             .field("source", &self.source)
             .finish()
     }
@@ -260,6 +270,7 @@ impl Handoff {
                 .collect(),
             private_codex_home: agent == AgentKind::Codex,
             codex_chatgpt: None,
+            codex_api_key: None,
             source: "",
         };
         if agent == AgentKind::Claude {
@@ -325,6 +336,16 @@ impl Handoff {
             ProviderConfig::OpenaiApi(_) => h.source = "OpenAI API key",
             ProviderConfig::ReasonLogin(_) | ProviderConfig::ReasonApi(_) => unreachable!(),
         }
+        if agent == AgentKind::Codex {
+            if let Some((_, key)) = h.env.iter().find(|(k, _)| k == vars::CODEX_API_KEY) {
+                if !is_token_text(key.expose()) {
+                    return Err(HandoffError::Login(
+                        "the Codex API key has an unexpected format".into(),
+                    ));
+                }
+                h.codex_api_key = Some(SecretString::new(key.expose()));
+            }
+        }
         h.unset.retain(|v| !h.env.iter().any(|(k, _)| k == v));
         h.unset.sort();
         h.unset.dedup();
@@ -333,7 +354,7 @@ impl Handoff {
     }
 
     /// The plaintext the target decrypts: `N <nonce>`, `U <name>`,
-    /// `E <name> <base64>`, `S ACCESS|ACCOUNT <base64>`, `C`. Only [`seal`]
+    /// `E <name> <base64>`, `S ACCESS|ACCOUNT|APIKEY <base64>`, `C`. Only [`seal`]
     /// sees it.
     fn plaintext(&self, nonce: &[u8]) -> SecretString {
         let mut out = format!("N {}\n", B64.encode(nonce));
@@ -349,6 +370,9 @@ impl Handoff {
                 B64.encode(t.access_token.expose())
             ));
             out.push_str(&format!("S ACCOUNT {}\n", B64.encode(&t.account_id)));
+        }
+        if let Some(k) = &self.codex_api_key {
+            out.push_str(&format!("S APIKEY {}\n", B64.encode(k.expose())));
         }
         if self.private_codex_home {
             out.push_str("C\n");
@@ -522,7 +546,7 @@ printf '%s' "$ct" | base64 -d > "$d/ct" 2>/dev/null || fail ciphertext
 openssl enc -d -aes-256-ctr -pbkdf2 -iter 1 -md sha256 -nosalt -kfile "$d/pw" -in "$d/ct" -out "$d/p" 2>/dev/null || fail decrypt
 rm -f "$d/k" "$d/s" "$d/pw" "$d/ct" "$d/hp.der"
 [ "$(openssl dgst -sha256 -binary < "$d/p" | base64 | tr -d '\n')" = "$sum" ] || fail checksum
-sa=; sc=; subst=
+sa=; sc=; sk=; subst=
 while IFS=' ' read -r t a b; do
   case "$t" in
     N) ;;
@@ -531,7 +555,7 @@ while IFS=' ' read -r t a b; do
        v=$(printf '%s' "$b" | base64 -d) || fail value; export "$a=$v" ;;
     S) v=$(printf '%s' "$b" | base64 -d) || fail value
        case "$v" in ''|*[!A-Za-z0-9._-]*) fail token ;; esac
-       case "$a" in ACCESS) sa=$v ;; ACCOUNT) sc=$v ;; *) fail slot ;; esac; subst=1 ;;
+       case "$a" in ACCESS) sa=$v ;; ACCOUNT) sc=$v ;; APIKEY) sk=$v ;; *) fail slot ;; esac; subst=1 ;;
     C) mkdir "$d/codex" || fail codex-home; export CODEX_HOME="$d/codex" ;;
     *) fail payload ;;
   esac
@@ -544,6 +568,7 @@ splice() {
       case "$l" in
         *@OC_SECRET_ACCESS@*) l=${l%%@OC_SECRET_ACCESS@*}$sa${l#*@OC_SECRET_ACCESS@} ;;
         *@OC_SECRET_ACCOUNT@*) l=${l%%@OC_SECRET_ACCOUNT@*}$sc${l#*@OC_SECRET_ACCOUNT@} ;;
+        *@OC_SECRET_APIKEY@*) l=${l%%@OC_SECRET_APIKEY@*}$sk${l#*@OC_SECRET_APIKEY@} ;;
         *) break ;;
       esac
     done

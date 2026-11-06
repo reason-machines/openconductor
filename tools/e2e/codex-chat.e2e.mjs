@@ -466,6 +466,17 @@ try {
     assert.equal(launch.launcher, "custom", `${mode.id}: the Codex executable path`);
     assert.ok(launch.args.includes('personality="friendly"'), `${mode.id}: launch args ${JSON.stringify(launch.args)}`);
     assert.deepEqual(launch.keys, mode.keys, `${mode.id}: the API key variables Codex got`);
+    // Codex's app server ignores CODEX_API_KEY: the stored key must also arrive as Conductor sends it, an
+    // account/login/start {type: "apiKey"} right after initialized, kept in memory (ephemeral credential store).
+    const keyLogins = all.filter((r) => r.pid === turnStart.pid && r.method === "account/login/start" && r.params.type === "apiKey");
+    const ephemeral = launch.args.includes('cli_auth_credentials_store="ephemeral"');
+    if (mode.keys.CODEX_API_KEY) {
+      assert.deepEqual(keyLogins.map((r) => r.params.apiKey), [`sha256:${mode.keys.CODEX_API_KEY}`], `${mode.id}: one apiKey login with the stored key`);
+      assert.ok(ephemeral, `${mode.id}: the key login stays in memory: ${JSON.stringify(launch.args)}`);
+    } else {
+      assert.equal(keyLogins.length, 0, `${mode.id}: no apiKey login`);
+      assert.ok(!ephemeral, `${mode.id}: Codex's own credential store`);
+    }
     assert.equal(launch.account, "chatgpt", `${mode.id}: Codex's own login`);
     // WebKitWebDriver's snapshot of a new chat right after its turn can stall (seen on CI); the picture is evidence, not a check.
     await screenshot(`codex-9-${mode.id}-turn`, 10000).catch((e) => console.log(`# no screenshot: ${e.message}`));
