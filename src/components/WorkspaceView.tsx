@@ -529,6 +529,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             onForkToNewWorkspace={reason && agentId === "reason" && workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
             forkDisabled={forking}
             turnAgent={turnAgent}
+            chatAgent={agentId}
           />
         )}
         <div ref={endRef} />

@@ -15,6 +15,8 @@ first command really writes hello.txt in the thread's cwd. Prompts:
   contains "perm"   Codex asks for network access; the reply says whether it
                     was granted ("permissions: network granted" or
                     "permissions: none granted")
+  contains "unauth" the turn fails with "unexpected status 401 Unauthorized"
+                   (signed out), as Codex 0.166.0 reports it
   anything else     replies "turn <n>: <prompt>", n counting this thread's turns
 
 Every request it receives is appended to $HOME/codex-fake.jsonl, after one
@@ -190,6 +192,8 @@ def handle(msg):
             ask_consent(turn, "elicit")
         elif "perm" in text:
             ask_consent(turn, "perm")
+        elif "unauth" in text:
+            complete(turn, "failed", {"message": "unexpected status 401 Unauthorized", "codexErrorInfo": None})
         else:
             message(turn, f"msg-{turn}", f"turn {state['turns']}: {text}", "final_answer")
             complete(turn, "completed")
