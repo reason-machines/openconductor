@@ -53,7 +53,11 @@ git("-c", "user.name=e2e", "-c", "user.email=e2e@example.com", "commit", "-q", "
 // fixture; everything else is the ACP stand-in.
 const bin = join(home, "bin");
 mkdirSync(bin);
-const skills = JSON.stringify({ schema_version: 1, ok: true, data: { items: [{ skill_id: "fixture-1", name: FIXTURE, description: FIXTURE_DESCRIPTION, is_enabled: true }], total: 1, has_next_page: false, end_cursor: null } });
+const skills = JSON.stringify({ schema_version: 1, ok: true, data: { items: [
+  { skill_id: "fixture-1", name: FIXTURE, description: FIXTURE_DESCRIPTION, is_enabled: true },
+  // A second skill the "/oc-fix" filter drops.
+  { skill_id: "fixture-2", name: "release-notes", description: "Draft release notes", is_enabled: true },
+], total: 2, has_next_page: false, end_cursor: null } });
 writeFileSync(join(home, "skills.json"), skills);
 const fake = join(repoRoot, "tools/reason-acp/fake_reason_acp.py");
 writeFileSync(join(bin, "reason"), `#!/bin/sh\nif [ "$1" = skills ]; then cat "${join(home, "skills.json")}"; exit 0; fi\nexec python3 "${fake}" "$@"\n`);
@@ -164,8 +168,7 @@ try {
     await wd("POST", `/element/${await find(".composer textarea")}/click`, {});
     await type("/");
     const rows = await waitFor(`${a.id}: the fixture skill in the "/" menu`, () => menu().then((rs) => (rs.some((r) => r.name === FIXTURE) ? rs : null)), 45000);
-    // A Reason chat has no built-in commands, so the stand-in's one skill can be the whole menu.
-    assert.ok(rows.length >= (a.id === "reason" ? 1 : 2), `${a.id}: the "/" menu is non-empty: ${rows.length}`);
+    assert.ok(rows.length >= 2, `${a.id}: the "/" menu lists the fixture and more: ${rows.length}`);
     const fixture = rows.find((r) => r.name === FIXTURE);
     assert.equal(fixture.description, FIXTURE_DESCRIPTION, `${a.id}: the skill's description`);
     assert.equal(fixture.skill, a.heading, `${a.id}: listed as a ${a.heading ? "skill" : "command"}`);
