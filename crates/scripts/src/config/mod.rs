@@ -36,7 +36,7 @@ pub use effective::{
     env_file_entries, is_local_writable, load_effective, load_effective_layers, parse_dotenv,
     parse_preview_urls, resolve_effective, resolve_env_file, set_local_value, EffectiveLayer,
     EffectivePaths, EffectiveSettings, EnvContext, EnvFileStatus, EnvSource, EnvVar, GitFlags,
-    PreviewUrl, PromptKind, Prompts, ResolvedEnv, KEYCHAIN_VALUE, UNSET_VALUE,
+    PreviewUrl, PromptKind, Prompts, ResolvedEnv, UnsetVars, KEYCHAIN_VALUE, UNSET_VALUE,
 };
 pub use load::{load, load_layers, SettingsPaths, SharedSource, SETTINGS_DIR};
 pub use run::{

@@ -23,6 +23,11 @@ Examples: `home-01-empty.png`, `right-panel-03-changes-badge.png`, `strip-02-run
 A new image for the same state after a fix gets a new number, so older PRs keep pointing at the
 image they were reviewed with.
 
+Images committed before this README (for example `home-native.jpg`, `home-empty-rea.jpg`,
+`create-workspace--main.png`, `title-drag-region--workspace--light.png` and the `home/`, `sidebar/`,
+`chat-tabs/` folders) keep their names, so the PRs that link them stay valid. New images follow
+the rule above.
+
 ## Window size
 
 Both apps are captured at the same window size: **1440 x 900 points**, the size the existing
