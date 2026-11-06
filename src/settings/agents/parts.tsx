@@ -310,7 +310,7 @@ function LoginTerminal({ command, label, onDismiss, onDone }: { command: string;
   useEffect(() => {
     const el = mount.current;
     if (!el) return;
-    const term = new Terminal({ fontSize: 12, cursorBlink: true, convertEol: false, theme: { background: "#00000000" }, allowTransparency: true });
+    const term = new Terminal({ fontSize: 12, cursorBlink: true, convertEol: false, theme: { background: "transparent" }, allowTransparency: true });
     const fit = new FitAddon();
     term.loadAddon(fit);
     term.open(el);
