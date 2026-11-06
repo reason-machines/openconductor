@@ -49,9 +49,9 @@
 /* The Add / Edit dialog (`nd`): bg-overlay + backdrop-blur-xs, the popup max-w-lg p-6 gap-4,
    top max(2rem, 50% − 250px), both fading over 200 ms. */
 .repo-dialog-root { position: fixed; inset: 0; z-index: 50; }
-.repo-dialog-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); opacity: 0; transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1); }
+.repo-dialog-backdrop { position: fixed; inset: 0; background: var(--backdrop-strong); backdrop-filter: blur(4px); opacity: 0; transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1); }
 .repo-dialog-positioner { pointer-events: none; position: fixed; inset: max(2rem, calc(50% - 250px)) 0 0; display: flex; align-items: flex-start; justify-content: center; padding-bottom: 32px; }
-.repo-dialog { pointer-events: auto; position: relative; display: grid; gap: 16px; width: 100%; max-width: 512px; max-height: 100%; overflow-y: auto; box-sizing: border-box; padding: 24px; border: 1px solid var(--s-border); border-radius: 6px; background: var(--bg); color: var(--s-fg); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); outline: none; opacity: 0; transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1); font-size: 14px; }
+.repo-dialog { pointer-events: auto; position: relative; display: grid; gap: 16px; width: 100%; max-width: 512px; max-height: 100%; overflow-y: auto; box-sizing: border-box; padding: 24px; border: 1px solid var(--s-border); border-radius: 6px; background: var(--bg); color: var(--s-fg); box-shadow: 0 10px 15px -3px var(--shadow-10), 0 4px 6px -4px var(--shadow-10); outline: none; opacity: 0; transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1); font-size: 14px; }
 .repo-dialog-root[data-open] .repo-dialog-backdrop,
 .repo-dialog-root[data-open] .repo-dialog { opacity: 1; }
 .repo-dialog-title { margin: 0; font-size: 20px; line-height: 20px; font-weight: 500; letter-spacing: -0.025em; }
@@ -60,8 +60,8 @@
 .repo-dialog-name { display: flex; align-items: center; gap: 8px; }
 .repo-dialog-name input { flex: 1; height: 32px; box-sizing: border-box; padding: 8px 12px; border: 1px solid var(--s-input); border-radius: 6px; background: var(--bg); color: var(--s-fg); font: inherit; font-size: 14px; font-weight: 500; outline: none; }
 .repo-dialog-name input:focus { border-color: var(--s-fg); }
-.repo-dialog-name input.is-invalid { border-color: var(--del, #e5484d); }
-.repo-dialog-error { margin: 0; font-size: 12px; line-height: 16px; color: var(--del, #e5484d); }
+.repo-dialog-name input.is-invalid { border-color: var(--destructive); }
+.repo-dialog-error { margin: 0; font-size: 12px; line-height: 16px; color: var(--destructive); }
 .repo-dialog-footer { display: flex; justify-content: flex-end; gap: 8px; }
 .repo-dialog-footer-start { margin-right: auto; display: flex; align-items: center; gap: 4px; }
 .repo-dialog .btn.oc-btn-outline { height: 32px; padding: 0 12px; border: 1px solid var(--s-input); background: var(--bg); color: var(--s-fg); font-size: 14px; font-weight: 450; }
@@ -77,7 +77,7 @@
 .repo-icon-picker { position: relative; display: inline-flex; }
 .repo-icon-trigger { display: flex; flex: none; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--s-muted); cursor: pointer; }
 .repo-icon-trigger:hover { background: var(--s-hover); color: var(--s-fg); }
-.repo-icon-popover { position: absolute; top: calc(100% + 4px); left: 0; z-index: 60; width: 288px; border-radius: 8px; background: var(--panel, var(--bg)); box-shadow: 0 0 0 1px var(--s-border), 0 4px 6px -1px rgba(0, 0, 0, 0.1); animation: repo-pop 100ms ease-out; }
+.repo-icon-popover { position: absolute; top: calc(100% + 4px); left: 0; z-index: 60; width: 288px; border-radius: 8px; background: var(--panel, var(--bg)); box-shadow: 0 0 0 1px var(--s-border), 0 4px 6px -1px var(--shadow-10); animation: repo-pop 100ms ease-out; }
 @keyframes repo-pop { from { opacity: 0; transform: scale(0.95); } }
 .repo-icon-search { padding: 12px; border-bottom: 1px solid var(--s-border); }
 .repo-icon-search input { width: 100%; box-sizing: border-box; height: 32px; padding: 0 12px; border: 1px solid var(--s-input); border-radius: 6px; background: var(--bg); color: var(--s-fg); font: inherit; outline: none; }

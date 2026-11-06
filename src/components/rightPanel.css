@@ -18,10 +18,14 @@
   --panel: var(--bg);
   background: var(--bg);
 }
+.ws-right, .ws-right > * { min-width: 0; }
 .ws-right.strip-collapsed { grid-template-rows: minmax(0, 1fr) auto; }
 
 /* Tab row: 28 px pills, 13 px labels. */
-.rp-tabs { display: flex; align-items: center; gap: 2px; height: 44px; padding: 0 8px 0 10px; flex: none; }
+/* At a third of a narrow window the row is wider than the panel; it scrolls sideways inside the
+   panel (Conductor's tab list is a horizontal scroll area) instead of spilling past the window. */
+.rp-tabs { display: flex; align-items: center; gap: 2px; height: 44px; padding: 0 8px 0 10px; flex: none; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.rp-tabs > * { flex: none; }
 .rp-tab { display: inline-flex; align-items: center; height: 28px; padding: 0 9px; border-radius: 6px; color: var(--rp-muted-fg); font-size: 13px; font-weight: 500; white-space: nowrap; }
 .rp-tab:hover { color: var(--text); }
 .rp-tab.active { background: var(--rp-pill); color: var(--text); }
