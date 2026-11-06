@@ -76,7 +76,9 @@ test("row menu: read/unread, pin into the Pinned group, status, keys, archive", 
   await harbor.click({ button: "right" });
   assert.equal((await menuItems(page))[0], "Mark as read");
   await page.keyboard.press("Escape");
+  // Read on view (Conductor's yIo) runs once the workspace's chat is on screen, after the click's render.
   await harbor.click();
+  await page.waitForFunction((sel) => [...document.querySelectorAll(sel)].some((r) => r.querySelector(".sb-ws-name")?.textContent?.includes("Quiet harbor") && !r.hasAttribute("data-unread")), ROW, { timeout: 5_000 });
   assert.equal(await harbor.getAttribute("data-unread"), null);
 
   // Set status: the default is In progress; choosing one checks it next time.
