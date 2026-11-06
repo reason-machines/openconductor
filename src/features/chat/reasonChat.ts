@@ -16,8 +16,12 @@
 //
 // Reason asks before some tool calls (ACP `session/request_permission`, held
 // by the backend as `permissionRequest`); the chat lists the request and its
-// status is `needs_user_permission` until `answerPermission` (chatRuntime.ts).
-// The same event carries Claude Code's plans and questions (`kind`).
+// status is `needs_user_permission` (`needs_user_input` for a request that is
+// a question, chatRuntime.ts `isQuestion`) until `answerPermission`
+// (chatRuntime.ts). The same event carries Claude Code's plans and questions
+// (`kind`). Reason's CLI (0.2.692) sends no such request today: its own
+// questions arrive as message text and end the turn, which marks the chat
+// unread as a settled turn, and it has no plan-review wait over ACP.
 // In the desktop app every chat's status is kept in `conductor.db`
 // (`connectStatusStore`).
 

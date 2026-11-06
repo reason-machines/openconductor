@@ -289,6 +289,45 @@ test("a plan request asks for attention once, though it both opens a request and
   off();
 });
 
+test("a request offering only allow choices is a question: needs_user_input, unread once, working once answered", async () => {
+  const { onChatAttention } = await import("./attention.ts");
+  const chatId = "attention-question";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  const ends = promptsEndOnDemand();
+  const asked: string[] = [];
+  const off = onChatAttention((id) => id === chatId && asked.push(id));
+  const choices = [
+    { optionId: "a", name: "Postgres", kind: "allow_once" },
+    { optionId: "b", name: "SQLite", kind: "allow_once" },
+  ];
+  const approval = [
+    { optionId: "allow", name: "Allow", kind: "allow_once" },
+    { optionId: "deny", name: "Deny", kind: "reject_once" },
+  ];
+
+  rc.submitChat(chatId, "/w", "question", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
+  emit({ chatId, type: "permissionRequest", requestId: "permission-q", title: "Which database?", options: choices, kind: "permission", tool: "", input: null });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "needs_user_input");
+  assert.equal(runtime.chatStatuses().get(chatId), "needs_user_input");
+  assert.deepEqual(asked, [chatId], "the question marks the chat unread, and only once");
+
+  // A tool approval while the question is open outranks it, and is a new wait.
+  emit({ chatId, type: "permissionRequest", requestId: "permission-t", title: "bash: rm -rf build", options: approval, kind: "permission", tool: "", input: null });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "needs_user_permission");
+  assert.deepEqual(asked, [chatId, chatId]);
+  emit({ chatId, type: "permissionResolved", requestId: "permission-t" });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "needs_user_input", "back to the open question");
+  assert.deepEqual(asked, [chatId, chatId], "returning to an open question is not a new wait");
+
+  emit({ chatId, type: "permissionResolved", requestId: "permission-q" });
+  assert.equal(rc.chatSnapshot(chatId).queue.status, "working");
+  assert.equal(runtime.chatStatuses().get(chatId), "working");
+  ends.shift()!();
+  await until(() => asked.length === 3, "attention when the turn settles");
+  off();
+});
+
 function emitStatus(payload: Record<string, unknown>) {
   emitTo("session-status", payload);
 }

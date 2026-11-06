@@ -51,8 +51,15 @@ export function turnSettled(status: TurnStatus, queue: ChatQueue): boolean {
  */
 const STATUS_WAITS: ReadonlySet<SessionStatus> = new Set(["needs_plan_response", "needs_user_input"]);
 
-/** The chat's status moved from `prev` into plan review or user input: a new wait on the user. */
+/**
+ * The chat's status moved from `prev` into plan review or user input: a new
+ * wait on the user. A tool approval that gives way to user input is not: a
+ * permission outranks input (chatRuntime.ts `promptsStatus`, codexConsent.ts
+ * `statusWithOpenRequests`), so the chat is going back to a question or
+ * consent that opened under the approval and was signalled as it came.
+ */
 export function enteredWait(prev: SessionStatus | undefined, next: SessionStatus): boolean {
+  if (prev === "needs_user_permission" && next === "needs_user_input") return false;
   return prev !== next && STATUS_WAITS.has(next);
 }
 

@@ -25,8 +25,9 @@
 // from the moment the app starts. A backend whose agent waits on the user
 // mid-turn reports it through `PermissionEvents`: a tool call to allow, a
 // plan to approve or questions to answer (Claude Code asks all three through
-// its permission prompt). The chat lists the requests and its status is the
-// most urgent one's (`needs_plan_response`, `needs_user_permission`,
+// its permission prompt; an ACP tool request that offers only allow choices is
+// a question too, `isQuestion`). The chat lists the requests and its status is
+// the most urgent one's (`needs_plan_response`, `needs_user_permission`,
 // `needs_user_input`) until they are answered.
 //
 // Pure apart from what it is given: the backend, and the host's `invoke`,
@@ -119,9 +120,25 @@ export const PROMPT_STATUS: Record<PermissionPrompt["kind"], Q.SessionStatus> = 
 /** Most urgent first, as Conductor ranks a workspace's sessions (`tTr`). */
 const PROMPT_ORDER: readonly Q.SessionStatus[] = ["needs_plan_response", "needs_user_permission", "needs_user_input"];
 
+/** The status one open request gives a running chat: its kind's, or user input for a tool request asked as a question. */
+export function promptStatus(p: PermissionPrompt): Q.SessionStatus {
+  return p.kind === "permission" && isQuestion(p) ? "needs_user_input" : PROMPT_STATUS[p.kind];
+}
+
 /** The status the open requests give a running chat; null when none is open. */
 export function promptsStatus(open: readonly PermissionPrompt[]): Q.SessionStatus | null {
-  return PROMPT_ORDER.find((s) => open.some((p) => PROMPT_STATUS[p.kind] === s)) ?? null;
+  return PROMPT_ORDER.find((s) => open.some((p) => promptStatus(p) === s)) ?? null;
+}
+
+/**
+ * Conductor's ACP client asks a request as a question, not a tool approval,
+ * when it offers two or more allow options and no reject option (`cX8` in
+ * conductor-runtime.js @1,641,185): AskUserQuestion's `needs_user_input`,
+ * then `_p`. Every other request is a tool approval (`needs_user_permission`).
+ */
+export function isQuestion(p: ToolPrompt): boolean {
+  const allows = p.options.filter((o) => o.kind === "allow_once" || o.kind === "allow_always");
+  return allows.length >= 2 && !p.options.some((o) => o.kind === "reject_once" || o.kind === "reject_always");
 }
 
 /** How a backend reports permission requests opening and closing. */
