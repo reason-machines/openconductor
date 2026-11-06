@@ -711,6 +711,114 @@ export const flows = [
       await showRows(wd, sw);
     },
   },
+  {
+    // The Experimental "Dashboard" switch (dashboard_enabled, default off) shows
+    // the sidebar's Dashboard row; the board lists workspaces in five status
+    // columns, and dropping a card on another column sets its manual status
+    // (db_set_workspace_manual_status). Turning the switch off takes the
+    // dashboard route back to Home (Conductor's `lta`, evidence/screens/dashboard.md).
+    // The drag is HTML5 drag-and-drop events dispatched in the webview:
+    // WebKitWebDriver's pointer actions do not start a native drag.
+    name: "dashboard",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
+      const ESC = "\uE00C";
+      const sw = 'input[aria-label="Dashboard"]';
+      const prefOn = async () => (await wd.execute("return window.__TAURI_INTERNALS__.invoke('get_app_prefs');", [])).dashboard_enabled === true;
+      const navRow = () => wd.execute("return Array.from(document.querySelectorAll('.sb-row')).some((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Dashboard');", []);
+      async function setSwitch(want) {
+        await openSettingsPage(wd, "Experimental");
+        await wd.waitFor("the Dashboard switch", async () => (await wd.findAll(sw)).length === 1);
+        if ((await wd.execute("return document.querySelector(arguments[0]).checked;", [sw])) !== want) await wd.click((await wd.findAll(sw))[0]);
+        await wd.waitFor(`dashboard_enabled = ${want} in conductor.db`, async () => (await prefOn()) === want);
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys(ESC);
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+
+      if (await prefOn()) throw new Error("dashboard_enabled is already on; it defaults to off");
+      if (await navRow()) throw new Error("the sidebar shows a Dashboard row while the setting is off");
+
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", []);
+      const want = realpathSync(ctx.worktree);
+      const ws = rows.find((w) => w.workspacePath && existsSync(w.workspacePath) && realpathSync(w.workspacePath) === want);
+      if (!ws) throw new Error(`no stored workspace at ${want}`);
+      const board = () =>
+        wd.execute(
+          "return Array.from(document.querySelectorAll('.dash-col'), (c) => ({ status: c.dataset.status, title: c.querySelector('.dash-col-title')?.textContent.trim(), branches: Array.from(c.querySelectorAll('[data-testid=\"dashboard-card\"] .dash-card-branch'), (b) => b.textContent.trim()) }));",
+          [],
+        );
+      const columnOf = async () => (await board()).find((c) => c.branches.includes(ws.branch))?.status;
+      const stored = async () => (await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", [])).find((w) => w.id === ws.id)?.manualStatus ?? null;
+      const original = await stored();
+
+      try {
+        await setSwitch(true);
+        await wd.waitFor("the sidebar's Dashboard row", navRow);
+        await wd.execute("Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Dashboard').click();", []);
+        const cols = await wd.waitFor("the dashboard's five columns", async () => {
+          const b = await board();
+          return b.length === 5 && b.some((c) => c.branches.includes(ws.branch)) && b;
+        });
+        const titles = cols.map((c) => c.title);
+        if (JSON.stringify(titles) !== JSON.stringify(["Backlog", "In progress", "In review", "Done", "Canceled"])) throw new Error(`dashboard columns ${JSON.stringify(titles)}`);
+
+        const from = await columnOf();
+        const to = from === "done" ? "backlog" : "done";
+        // dragstart in its own script so React re-renders with the drag active before dragover.
+        const started = await wd.execute(
+          `const card = Array.from(document.querySelectorAll('[data-testid="dashboard-card"]')).find((c) => c.querySelector('.dash-card-branch')?.textContent.trim() === arguments[0]);
+           if (!card) return false;
+           const fire = (el, type) => {
+             if (!window.__OC_E2E_DT__) window.__OC_E2E_DT__ = new DataTransfer();
+             const dt = window.__OC_E2E_DT__;
+             let ev = new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: dt });
+             // A WebKit without DragEventInit.dataTransfer: the same event with dataTransfer set by hand.
+             if (!ev.dataTransfer) { ev = new MouseEvent(type, { bubbles: true, cancelable: true }); Object.defineProperty(ev, 'dataTransfer', { value: dt }); }
+             el.dispatchEvent(ev);
+           };
+           window.__OC_E2E_FIRE__ = fire;
+           window.__OC_E2E_CARD__ = card;
+           fire(card, 'dragstart');
+           return true;`,
+          [ws.branch],
+        );
+        if (!started) throw new Error(`no dashboard card for branch ${ws.branch}`);
+        await wd.waitFor("the dragged card", () => wd.execute("return window.__OC_E2E_CARD__?.dataset.dragging === 'true';", []));
+        await wd.execute("const body = document.querySelector(`.dash-col[data-status=\"${arguments[0]}\"] .dash-col-body`); window.__OC_E2E_FIRE__(body, 'dragenter'); window.__OC_E2E_FIRE__(body, 'dragover');", [to]);
+        const pill = await wd.waitFor("the Move to pill", () =>
+          wd.execute("const d = document.querySelector(`.dash-col[data-status=\"${arguments[0]}\"] .dash-drop`); return d?.dataset.over === 'true' && d.textContent.trim();", [to]),
+        );
+        if (process.env.E2E_OUT) {
+          const { writeFile } = await import("node:fs/promises");
+          await writeFile(join(process.env.E2E_OUT, "dashboard-dragging.png"), await wd.screenshot()).catch(() => {});
+        }
+        await wd.execute(
+          "const body = document.querySelector(`.dash-col[data-status=\"${arguments[0]}\"] .dash-col-body`); window.__OC_E2E_FIRE__(body, 'drop'); const card = window.__OC_E2E_CARD__; if (card.isConnected) window.__OC_E2E_FIRE__(card, 'dragend'); delete window.__OC_E2E_DT__;",
+          [to],
+        );
+        await wd.waitFor(`the card in the ${to} column`, async () => (await columnOf()) === to).catch(async (e) => {
+          throw new Error(`${e.message}; board ${JSON.stringify(await board())}`);
+        });
+        await wd.waitFor(`manual_status = ${to} in conductor.db`, async () => (await stored()) === to).catch(async (e) => {
+          throw new Error(`${e.message}; stored ${JSON.stringify(await stored())}`);
+        });
+        if (pill !== `Move to ${cols.find((c) => c.status === to).title}`) throw new Error(`drop pill reads ${JSON.stringify(pill)}`);
+        if (process.env.E2E_OUT) {
+          const { writeFile } = await import("node:fs/promises");
+          await writeFile(join(process.env.E2E_OUT, "dashboard-dropped.png"), await wd.screenshot()).catch(() => {});
+        }
+
+        // Off again: the route goes back to Home and the row leaves the sidebar.
+        await setSwitch(false);
+        await wd.waitFor("Home after turning the dashboard off", async () => (await wd.findAll(".home")).length > 0 && (await wd.findAll(".dash")).length === 0);
+        if (await navRow()) throw new Error("the Dashboard row is still in the sidebar after turning it off");
+      } finally {
+        await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_set_workspace_manual_status', { workspaceId: arguments[0], status: arguments[1] }).then(() => true, () => false);", [ws.id, original]).catch(() => {});
+        if (await prefOn().catch(() => false)) await setSwitch(false).catch(() => {});
+      }
+    },
+  },
 ];
 
 function settingsFile() {
