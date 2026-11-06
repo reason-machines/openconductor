@@ -211,6 +211,83 @@ fn config_is_set_on_a_new_session_and_unoffered_values_become_notices() {
     assert!(notices[1].contains("speed"));
 }
 
+/// The last `config` reply: each one is "model=M effort=E".
+fn last_config(log: &Log) -> String {
+    let r = reply(log);
+    let i = r.rfind("model=").expect("a config reply");
+    r[i..].to_string()
+}
+
+#[test]
+fn a_changed_config_applies_to_the_open_session_at_its_next_prompt() {
+    use super::provider::ConfigChoice;
+    let choice = |id: &str, value: &str| ConfigChoice {
+        id: id.into(),
+        value: value.into(),
+    };
+    let (p, log, home) = provider("config-live");
+    p.open_chat("ws", &home, None);
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:anthropic:claude-opus-5-5"),
+            choice("reasoning_effort", "high"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=high"
+    );
+
+    // A pick in the running chat: the same Session switches, as Conductor's
+    // `reconcileSessionConfig` does before its next prompt.
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:openai-codex:gpt-5.6-sol"),
+            choice("reasoning_effort", "low"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:openai-codex:gpt-5.6-sol effort=low"
+    );
+    assert_eq!(started(&log), vec!["sess-1"], "no new Session");
+
+    // After a restart the resumed Session gets a pick made meanwhile.
+    p.shutdown();
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:anthropic:claude-opus-5-5"),
+            choice("reasoning_effort", "medium"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=medium"
+    );
+    assert_eq!(started(&log), vec!["sess-1"], "resumed, not replaced");
+
+    // A value the Session does not offer is told, not sent.
+    p.set_config("ws", vec![choice("model", "opus-5-1m")]);
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=medium"
+    );
+    let notices = log
+        .lock()
+        .unwrap()
+        .iter()
+        .filter(|(_, e)| matches!(e, ProviderEvent::Notice(n) if n.contains("opus-5-1m")))
+        .count();
+    assert_eq!(notices, 1);
+}
+
 #[test]
 fn attachments_go_to_reason_as_embedded_files() {
     use super::provider::Attachment;
@@ -413,4 +490,52 @@ fn the_session_store_remembers_each_sessions_workspace() {
     p.open_chat("chat", &home, Some(id));
     assert_eq!(p.prompt("chat", "echo: two"), TurnEnd::Completed);
     assert_eq!(reply(&log), "turn 2: two");
+}
+
+fn session_models(log: &Log) -> Vec<(String, Option<String>)> {
+    let log = log.lock().unwrap();
+    let models = log.iter().filter_map(|(_, ev)| match ev {
+        ProviderEvent::SessionModel(m) => Some((m.model.clone(), m.effort.clone())),
+        _ => None,
+    });
+    models.collect()
+}
+
+#[test]
+fn after_each_turn_the_model_the_session_ran_on_is_reported() {
+    let (p, log, home) = provider("session-model");
+    p.open_chat("c", &home, None);
+    assert_eq!(p.prompt("c", "hello"), TurnEnd::Completed);
+    // Auto: the fake's `session get` says it ran Claude Opus 5.5 at high.
+    wait_for(&log, |e| matches!(e, ProviderEvent::SessionModel(_)));
+    assert_eq!(
+        session_models(&log),
+        vec![(
+            "byok:anthropic:claude-opus-5-5".to_string(),
+            Some("high".to_string())
+        )]
+    );
+}
+
+#[test]
+fn models_lists_what_a_new_session_offers_without_keeping_it() {
+    let (p, log, _home) = provider("models");
+    let list = p.models().unwrap();
+    assert_eq!(list.current, "default");
+    let values: Vec<&str> = list.options.iter().map(|o| o.value.as_str()).collect();
+    assert_eq!(
+        &values[..3],
+        [
+            "default",
+            "byok:anthropic:claude-opus-5-5",
+            "byok:openai-codex:gpt-5.6-sol"
+        ]
+    );
+    assert_eq!(list.options[0].name, "Auto");
+    assert_eq!(list.options[1].name, "Claude Opus 5.5");
+    assert_eq!(
+        list.options[1].description.as_deref(),
+        Some("Claude · Subscription")
+    );
+    assert!(started(&log).is_empty(), "no chat gets a Session");
 }

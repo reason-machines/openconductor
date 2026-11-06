@@ -12,6 +12,8 @@
 //!    `config` (`[{ id, value }]`, e.g. `model`, `reasoning_effort`) is set
 //!    on the Session when it is created; one Reason does not offer comes
 //!    back as a `notice` event.
+//!    `reason_set_config(chatId, config)` changes them later (a model pick
+//!    in a running chat): the open Session gets them before its next prompt.
 //! 2. `reason_prompt(chatId, text, attachments?, turn?)` for the first
 //!    message and every follow-up; it resolves with the turn's end once the
 //!    turn is over. `attachments` (`[{ name, text }]`) go to Reason as
@@ -21,7 +23,9 @@
 //!    carries `turnChanges`, the files the turn changed (absent when a
 //!    checkpoint was skipped or the turn touched more than 200 files).
 //! 3. `reason_cancel(chatId)` for Stop.
-//! 4. `reason_answer_permission(chatId, requestId, optionId?)` answers a
+//! 4. `reason_models()` lists the models Reason offers. After each turn a
+//!    `sessionModel` event (`{ model, effort }`) says what the Session ran.
+//! 5. `reason_answer_permission(chatId, requestId, optionId?)` answers a
 //!    `permissionRequest` event: with the chosen option, or `cancelled`
 //!    without one. A `permissionResolved` event follows.
 
@@ -133,6 +137,18 @@ pub fn reason_open_chat(
     Ok(())
 }
 
+/// A chat's new config options, for its open Session's next prompt.
+#[tauri::command]
+pub fn reason_set_config(state: State<'_, ReasonChats>, chat_id: String, config: Vec<ConfigArg>) {
+    if let Some(p) = state.provider.lock().unwrap().as_ref() {
+        let config = config.into_iter().map(|c| ConfigChoice {
+            id: c.id,
+            value: c.value,
+        });
+        p.set_config(&chat_id, config.collect());
+    }
+}
+
 /// Names one turn's checkpoints: the frontend's `turnCheckpointRef`, the
 /// ref-safe chat id and turn id (the same ids "Reset chat" restores).
 #[derive(Deserialize, Debug, Clone)]
@@ -205,6 +221,16 @@ pub fn reason_answer_permission(
 ) -> bool {
     let provider = state.provider.lock().unwrap().clone();
     provider.is_some_and(|p| p.answer_permission(&chat_id, &request_id, option_id.as_deref()))
+}
+
+/// The models Reason offers (`{ current, options: [{ value, name, description? }] }`).
+#[tauri::command]
+pub async fn reason_models(app: AppHandle, state: State<'_, ReasonChats>) -> Result<Value, String> {
+    let provider = state.provider(&app)?;
+    let list = tauri::async_runtime::spawn_blocking(move || provider.models())
+        .await
+        .map_err(|e| e.to_string())??;
+    Ok(wire::models_json(&list))
 }
 
 /// Recent Sessions in the signed-in Workspace, newest first.

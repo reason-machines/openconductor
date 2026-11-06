@@ -23,14 +23,17 @@ import { Toaster, useToasts, type ToastAction } from "./components/Toast";
 import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { ArchiveRunningDialog } from "./components/ArchiveRunningDialog";
-import { clearUnarchiveConflict, directoryExistsToast, failureToast, onArchiveEvent, revealUnarchiveConflict, unarchiveFailedMessage } from "./workspace/archive";
+import { clearUnarchiveConflict, directoryExistsToast, failureToast, onArchiveEvent, restoreRequestFor, revealUnarchiveConflict, unarchiveFailedMessage } from "./workspace/archive";
 import { ArchivedWorkspaceView } from "./components/ArchivedWorkspaceView";
 import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/RestoreWorkspaceDialog";
 import type { Action } from "./state/store";
 import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
-import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
+import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, quitApp, setQuitHandlerReady, type AppInfo } from "./backend";
+import { chatStatuses } from "./features/chat/chatRuntime";
+import { countRunningAgents, quitDecision } from "./features/quit/quit";
+import { QuitDialog } from "./features/quit/QuitDialog";
 import { addRegisteredRepo, decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
@@ -48,6 +51,7 @@ import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { useWorkspaceDeepLinks } from "./workspace/useWorkspaceDeepLinks";
 import { useAutoUnread } from "./state/useAutoUnread";
 import { nextUnreadWorkspace, openNextUnread } from "./state/nextUnread";
 import { createRepoDefault } from "./home/repoFilter";
@@ -80,6 +84,8 @@ export default function App() {
     prevState.current = state;
   }, [state]);
   const nav = useNavHistory(state, dispatch);
+  // openconductor://workspace?id=<id> (Copy link) selects that workspace.
+  useWorkspaceDeepLinks(state, dispatch);
   // A chat that finishes or waits on the user while not in view marks its workspace unread.
   useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
@@ -126,9 +132,8 @@ export default function App() {
       onArchiveEvent<Action>((e) => {
         if (e.type === "agents-running" && e.action.type === "archiveWorkspace") setArchiveOverAgents(e.action);
         if (e.type === "archived" || e.type === "unarchived") for (const n of e.result.notices) show(n.kind, n.message, { sticky: n.kind === "error" });
-        if (e.type === "unarchived" && e.result.scenario && e.action.type === "unarchiveWorkspace") {
-          setRestoreRequest({ repoId: e.action.repoId, workspaceId: e.action.workspaceId, branch: e.result.branch ?? "unknown", scenario: e.result.scenario });
-        }
+        const restore = restoreRequestFor(e);
+        if (restore) setRestoreRequest(restore);
         if (e.type === "unarchive-failed") {
           const conflict = directoryExistsToast(e.error);
           const retry = e.action.type === "unarchiveWorkspace" ? e.action : null;
@@ -272,6 +277,38 @@ export default function App() {
     return () => offs.forEach((off) => void off.then((f) => f()));
   }, [dispatch]);
 
+  // Quit: the native app menu's Quit (⌘Q) and the quitApplication shortcut ask first
+  // while agents run, as Conductor does (src/features/quit/quit.ts).
+  const [quitConfirm, setQuitConfirm] = useState<number | null>(null);
+  const reposRef = useRef(state.repos);
+  reposRef.current = state.repos;
+  const openWorkspaceRef = useRef<string | undefined>(undefined);
+  openWorkspaceRef.current = state.selection.kind === "workspace" ? state.selection.workspaceId : undefined;
+  const requestQuit = useCallback(() => {
+    const running = countRunningAgents(chatStatuses(), reposRef.current.flatMap((r) => r.workspaces), openWorkspaceRef.current);
+    if (quitDecision(running) === "confirm") setQuitConfirm(running);
+    else void quitApp().catch((e) => show("error", errorText(e)));
+  }, [show]);
+  const confirmQuit = useCallback(() => void quitApp().catch((e) => show("error", errorText(e))), [show]);
+  // The native menu's accelerators land here as events: App menu > Settings... (⌘,) opens
+  // Settings › General like Conductor's `open_settings_page`, and Quit (⌘Q) sends `quit_requested`.
+  const menuRef = useRef({ requestQuit, navigateSettings });
+  menuRef.current = { requestQuit, navigateSettings };
+  useEffect(() => {
+    if (!inTauri()) return;
+    const offs = [
+      listen("quit_requested", () => menuRef.current.requestQuit()),
+      listen("open_settings_page", () => menuRef.current.navigateSettings({ scope: "user", page: "general" })),
+    ];
+    // Only once it listens may the native Quit item wait for it.
+    void Promise.all(offs).then(() => setQuitHandlerReady(true)).catch(() => {});
+    return () => {
+      void setQuitHandlerReady(false).catch(() => {});
+      offs.forEach((off) => void off.then((f) => f()));
+    };
+  }, []);
+  const quitDialog = quitConfirm !== null && <QuitDialog running={quitConfirm} onConfirm={confirmQuit} onClose={() => setQuitConfirm(null)} />;
+
   const sel = state.selection;
   const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
   // An archived workspace opened from the archived list is not in `repos` (parity:sidebar.archived-view).
@@ -300,6 +337,7 @@ export default function App() {
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
     "workspace.create": () => openDialog("create"),
     "workspace.createFromPRBranchIssue": () => openDialog("create", undefined, undefined, true),
+    "quitApplication": requestQuit,
   });
 
   // Repo menu "Remove repository" (Conductor's `Dra` dialog), then the same toast and state as Settings › Misc.
@@ -347,6 +385,7 @@ export default function App() {
             notify: (kind, message) => show(kind, message),
           }}
         />
+        {quitDialog}
         <Toaster toasts={toasts} dismiss={dismiss} />
       </>
     );
@@ -471,6 +510,7 @@ export default function App() {
         />
       )}
       {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
+      {quitDialog}
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );

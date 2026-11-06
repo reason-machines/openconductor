@@ -1,0 +1,234 @@
+[
+ {
+  "name": "settings--agents--dark",
+  "actions": [
+   {
+    "step_id": "open_agents",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": ".settings-nav >> text=\"Agents\""
+    },
+    "timeout_ms": 5000
+   }
+  ]
+ },
+ {
+  "name": "settings--agents-claude-apikey--dark",
+  "actions": [
+   {
+    "step_id": "open_agents",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": ".settings-nav >> text=\"Agents\""
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause_1",
+    "action": "wait_for_timeout",
+    "duration_ms": 600
+   },
+   {
+    "step_id": "claude_apikey",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "button[aria-pressed] >> text=\"API key\""
+    },
+    "timeout_ms": 5000
+   }
+  ]
+ },
+ {
+  "name": "settings--agents-codex--dark",
+  "actions": [
+   {
+    "step_id": "open_agents",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": ".settings-nav >> text=\"Agents\""
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause_1",
+    "action": "wait_for_timeout",
+    "duration_ms": 600
+   },
+   {
+    "step_id": "tab_codex",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "[role=tab] >> text=\"Codex\""
+    },
+    "timeout_ms": 5000
+   }
+  ]
+ },
+ {
+  "name": "settings--agents-codex-apikey--dark",
+  "actions": [
+   {
+    "step_id": "open_agents",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": ".settings-nav >> text=\"Agents\""
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause_1",
+    "action": "wait_for_timeout",
+    "duration_ms": 600
+   },
+   {
+    "step_id": "tab_codex",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "[role=tab] >> text=\"Codex\""
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause_3",
+    "action": "wait_for_timeout",
+    "duration_ms": 600
+   },
+   {
+    "step_id": "codex_apikey",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "button[aria-pressed] >> text=\"API key\""
+    },
+    "timeout_ms": 5000
+   }
+  ]
+ },
+ {
+  "name": "settings--agents-cursor--dark",
+  "actions": [
+   {
+    "step_id": "open_agents",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": ".settings-nav >> text=\"Agents\""
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause_1",
+    "action": "wait_for_timeout",
+    "duration_ms": 600
+   },
+   {
+    "step_id": "tab_cursor",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "[role=tab] >> text=\"Cursor\""
+    },
+    "timeout_ms": 5000
+   }
+  ]
+ },
+ {
+  "name": "settings--agents-opencode--dark",
+  "actions": [
+   {
+    "step_id": "open_agents",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": ".settings-nav >> text=\"Agents\""
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause_1",
+    "action": "wait_for_timeout",
+    "duration_ms": 600
+   },
+   {
+    "step_id": "tab_opencode",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "[role=tab] >> text=\"OpenCode\""
+    },
+    "timeout_ms": 5000
+   }
+  ]
+ },
+ {
+  "name": "settings--default-models--dark",
+  "actions": [
+   {
+    "step_id": "open_models",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": ".settings-nav >> text=\"Default models\""
+    },
+    "timeout_ms": 5000
+   }
+  ]
+ },
+ {
+  "name": "settings--default-models-full--dark",
+  "viewport": {
+   "width": 1440,
+   "height": 1800
+  },
+  "actions": [
+   {
+    "step_id": "open_models",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": ".settings-nav >> text=\"Default models\""
+    },
+    "timeout_ms": 5000
+   }
+  ]
+ },
+ {
+  "name": "settings--agents-codex-full--dark",
+  "viewport": {
+   "width": 1440,
+   "height": 1800
+  },
+  "actions": [
+   {
+    "step_id": "open_agents",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": ".settings-nav >> text=\"Agents\""
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "pause_1",
+    "action": "wait_for_timeout",
+    "duration_ms": 600
+   },
+   {
+    "step_id": "tab_codex",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "[role=tab] >> text=\"Codex\""
+    },
+    "timeout_ms": 5000
+   }
+  ]
+ }
+]

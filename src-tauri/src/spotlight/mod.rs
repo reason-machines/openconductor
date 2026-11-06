@@ -40,7 +40,6 @@ mod tests;
 pub mod watch;
 
 use std::fmt;
-use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -163,40 +162,19 @@ fn delete_checkpoint(root: &Path, id: &str) -> Result<(), SpotlightError> {
     git(root, &["update-ref", "-d", &reference]).map(|_| ())
 }
 
-/// The root's machine-local settings file.
-fn local_settings(root: &Path) -> PathBuf {
-    root.join(oc_scripts::config::SETTINGS_DIR)
-        .join(setting::LOCAL_FILE)
-}
-
 /// Restore checkpoint `id` into the root, keeping the root's own
 /// `.conductor/settings.local.toml` (bytes, or its absence) as it was.
 ///
 /// That file is untracked and belongs to the root checkout: it holds the
 /// root's local settings, `spotlight_testing` among them. A plain restore
-/// removes it on every sync (the workspace snapshot lacks it, so the restore
-/// cleans it as an extra untracked file), and on Stop puts back the copy
-/// saved at Run, undoing a setting written meanwhile (the toggle writes the
-/// file, then stops Spotlight).
+/// removes it on every sync (the workspace snapshot lacks it), and on Stop
+/// puts back the copy saved at Run, undoing a setting written meanwhile (the
+/// toggle writes the file, then stops Spotlight). The restore must not touch
+/// it at all: removing it and writing it back afterwards leaves a window in
+/// which the setting reads as missing.
 fn restore_root(root: &Path, id: &str) -> Result<(), CheckpointError> {
-    let path = local_settings(root);
-    let before = fs::read(&path).ok();
-    let restored = checkpoint::restore(root, id);
-    let after = fs::read(&path).ok();
-    if after != before {
-        let put_back = match &before {
-            Some(bytes) => path
-                .parent()
-                .map_or(Ok(()), fs::create_dir_all)
-                .and_then(|()| fs::write(&path, bytes)),
-            None => fs::remove_file(&path),
-        };
-        if let Err(e) = put_back {
-            restored?;
-            return Err(CheckpointError::Io(e));
-        }
-    }
-    restored
+    let local = Path::new(oc_scripts::config::SETTINGS_DIR).join(setting::LOCAL_FILE);
+    checkpoint::restore_keeping(root, id, &[&local])
 }
 
 /// What [`begin`] found from a session that was never ended.
