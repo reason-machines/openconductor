@@ -76,3 +76,28 @@ test("labels, colours and loaders", () => {
   assert.ok(isBusyStatus("working") && isBusyStatus("setting-up"));
   assert.ok(!isBusyStatus("needs-user-input"));
 });
+
+test("Home shows the agent's or setup's status in place of the time, never a git status (vJo, aWt)", async () => {
+  const { homeStatus, showsActivityStatus } = await import("./rowStatus.ts");
+  const cases: [string | undefined, Parameters<typeof homeStatus>[1], string, boolean][] = [
+    ["ready", "needs_plan_response", "needs-plan-response", true],
+    ["ready", "needs_user_permission", "needs-user-permission", true],
+    ["ready", "needs_user_input", "needs-user-input", true],
+    ["ready", "working", "working", true],
+    ["ready", "cancelling", "cancelling", true],
+    ["ready", "waiting", "waiting", true],
+    // Idle and error fall through to the branch status, which Home shows as the time.
+    ["ready", "idle", "local", false],
+    ["ready", "error", "local", false],
+    // The workspace's own state comes first.
+    ["initializing", "needs_user_input", "setting-up", true],
+    ["failed", "working", "failed", true],
+    ["unstarted", "idle", "unstarted", false],
+  ];
+  for (const [state, session, want, shown] of cases) {
+    const s = homeStatus(state, session);
+    assert.equal(s, want, `${state}/${session}`);
+    assert.equal(showsActivityStatus(s), shown, `${state}/${session} shown`);
+  }
+  for (const git of ["merged", "open-pr", "checks-pending", "branch"] as const) assert.equal(showsActivityStatus(git), false);
+});
