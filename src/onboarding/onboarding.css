@@ -31,9 +31,12 @@
 .onb-slide-title { margin: 0; font-size: inherit; font-weight: 500; color: var(--text); }
 .onb-slide-desc { margin: 0; color: var(--muted); }
 .onb-actions { padding-left: 16px; }
-.onb-continue {
+/* The primary buttons: Continue (signed in) and Sign up (signed out), Conductor's
+   default Button (`REe`: h-8 px-3 gap-2 rounded-md bg-foreground font-medium). */
+.onb-btn {
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   width: min-content;
   white-space: nowrap;
   height: 32px;
@@ -47,9 +50,32 @@
   font-weight: 500;
   cursor: pointer;
 }
-.onb-continue:hover { filter: brightness(0.92); }
-.onb-continue:disabled { opacity: 0.5; cursor: default; }
-.onb-continue-icon { margin-left: auto; padding-left: 4px; display: inline-flex; align-items: center; color: var(--muted); }
+.onb-btn:hover { filter: brightness(0.92); }
+.onb-btn:disabled { opacity: 0.5; cursor: default; }
+.onb-btn-icon { margin-left: auto; padding-left: 4px; display: inline-flex; align-items: center; color: var(--muted); }
+/* Sign up's arrow: `!size-4 ml-2` after the gap, in the button's own colour. */
+.onb-signup-icon { padding-left: 0; margin-left: 8px; color: inherit; }
+/* The sign-up block (`xBi`): space-y-4. */
+.onb-signin { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.onb-links { margin: 0; display: flex; align-items: center; gap: 16px; font-size: 14px; line-height: 20px; color: var(--muted); }
+.onb-link { padding: 0; height: auto; border: 0; background: none; font: inherit; color: var(--muted); cursor: pointer; }
+.onb-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+.onb-note { margin: 0; font-size: 14px; line-height: 20px; color: var(--muted); }
+.onb-code { font-family: var(--font-mono, ui-monospace, monospace); color: var(--text); }
+.onb-error { margin: 0; font-size: 14px; line-height: 20px; color: var(--destructive); }
+/* `/login` (`xWt`): a 448px column centred in the window, space-y-8. */
+.onb-login {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: var(--bg);
+  color: var(--text);
+}
+.onb-login-inner { width: 100%; max-width: 448px; display: flex; flex-direction: column; gap: 32px; }
+.onb-login-prompt { margin: 40px 0 0; font-size: 14px; line-height: 20px; color: var(--muted); }
 .onb-right { min-width: 0; display: flex; align-items: flex-start; }
 .onb-media { width: 600px; display: flex; flex-direction: column; gap: 8px; }
 .onb-frame {

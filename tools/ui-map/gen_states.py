@@ -21,7 +21,9 @@ HOME=[{"click":".sb-primary .sb-row","text":"Home","after_ms":800}]
 
 # screens and routes
 st("onboarding-signed-out","Onboarding, signed out", ref("/", "signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
-st("first-run-onboarding","First-run onboarding", ref("/first-run-onboarding","signed-in"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/first-run-onboarding"}])
+# Conductor renders /first-run-onboarding only through its auth guard: signed in with
+# projects the harness redirects it to "/", so the reference is the signed-out first run.
+st("first-run-onboarding","First-run onboarding", ref("/first-run-onboarding","signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/first-run-onboarding"}])
 st("home-empty","Home, no projects", ref("/","signed-in"), oc=[{"click":".onb-continue","after_ms":1000}], oc_fresh=True)
 st("home","Home with projects", ref("/"), oc=HOME, covers=[{"kind":"route","name":"/"}])
 st("all-workspaces","All workspaces list", ref("/all-workspaces"), oc=HOME, covers=[{"kind":"route","name":"/all-workspaces"}])
@@ -41,7 +43,8 @@ for path,title in [("/dashboard","Dashboard"),("/routines","Routines"),("/routin
         st(sid, title, ref(path, wait=False), oc=[{"click":".sb-footer-btn","text":"Help"},{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800}], covers=[{"kind":"route","name":path}])
         continue
     st(sid, title, ref(path, wait=path not in ("/diagnostics","/new-member-onboarding","/cloud-collab-onboarding")), oc_reason="OpenConductor has no route or view for "+path, covers=[{"kind":"route","name":path}])
-st("login","Login", ref("/login","signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
+# The gate reads the path once at startup, so the lane loads /login rather than pushing it.
+st("login","Login", ref("/login","signed-out"), oc=[{"exec":"location.assign('/login');"},{"wait":".onb-login","after_ms":800}], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
 
 # settings
 USER=[("general","General"),("account","Account"),("models","Default models"),("providers","Agents"),("environment","Environment"),("git","Git"),("ports",None),("appearance","Appearance"),("key-bindings","Keyboard shortcuts"),("experimental","Experimental"),("advanced","Advanced"),("terminal","Big terminal"),("internal",None)]

@@ -173,6 +173,12 @@ pub async fn reason_login_start(app: AppHandle) -> Result<LoginPrompt, String> {
     with_cli(&app, |l, dir| l.login(dir)).await?
 }
 
+/// Settings › Account › Sign out: `reason logout`.
+#[tauri::command]
+pub async fn reason_logout(app: AppHandle) -> Result<CommandResult, String> {
+    with_cli(&app, |l, dir| l.logout(dir)).await
+}
+
 /// Paths Settings › Agents › Reason shows: the installed `reason` ("Use
 /// system Reason") and the CLI's own config folder (`~/.config/reason`,
 /// where it keeps its login, connection and preferences).

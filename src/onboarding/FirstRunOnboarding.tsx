@@ -3,6 +3,7 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { ArrowRightIcon } from "../components/Icons";
 import { Wordmark } from "../components/Wordmark";
 import { CONTINUE_LABEL, EXIT_LABEL, nextSlideId, SLIDES, type Slide } from "./firstRun";
+import { SignUp, useReasonAccount, type SignUpProps } from "./SignIn";
 import "./onboarding.css";
 
 /** How long a slide shows before the next one (the reference advances when its video ends). */
@@ -16,11 +17,23 @@ const TICK_MS = 100;
  * selects it; ArrowDown (`onboarding.nextSlide`) goes to the next and Enter
  * (`onboarding.continue`) continues.
  *
- * Conductor shows "Sign up" there until its account is signed in, then
- * "Continue" (and it moves on by itself once signed in). OpenConductor has no
- * Conductor account, so it always shows the signed-in "Continue".
+ * Like Conductor, it shows "Sign up" (src/onboarding/SignIn.tsx) until the
+ * account is signed in, then "Continue", and moves on by itself once signed
+ * in (`wBi`'s auto_advance). The account is Reason's (`reason status`). Local
+ * agents need no account, so signed out it also offers "Continue without
+ * signing in", and Enter continues either way (Conductor's Enter waits for
+ * the account).
  */
-export function FirstRunOnboarding({ onContinue, busy }: { onContinue: () => void; busy: boolean }) {
+export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue: () => void; busy: boolean; onFailed: SignUpProps["onFailed"] }) {
+  const [account, setAccount] = useReasonAccount();
+  // wBi: once signed in, finish without waiting for Continue (once).
+  const advanced = useRef(false);
+  useEffect(() => {
+    if (account && !advanced.current) {
+      advanced.current = true;
+      onContinue();
+    }
+  }, [account, onContinue]);
   const [current, setCurrent] = useState<Slide["id"]>("repo");
   const [progress, setProgress] = useState(0);
   const select = useCallback((id: Slide["id"]) => {
@@ -73,12 +86,16 @@ export function FirstRunOnboarding({ onContinue, busy }: { onContinue: () => voi
               ))}
             </div>
             <div className="onb-actions">
-              <button type="button" className="onb-continue" onClick={onContinue} disabled={busy}>
-                {CONTINUE_LABEL}
-                <span className="onb-continue-icon">
-                  <ArrowRightIcon size={16} />
-                </span>
-              </button>
+              {account ? (
+                <button type="button" className="onb-btn onb-continue" onClick={onContinue} disabled={busy}>
+                  {CONTINUE_LABEL}
+                  <span className="onb-btn-icon">
+                    <ArrowRightIcon size={16} />
+                  </span>
+                </button>
+              ) : (
+                <SignUp onSignedIn={setAccount} onFailed={onFailed} onSkip={onContinue} />
+              )}
             </div>
           </div>
           <div className="onb-right" data-tauri-drag-region>

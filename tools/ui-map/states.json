@@ -28,7 +28,7 @@
    "title": "First-run onboarding",
    "ref": {
     "path": "/first-run-onboarding",
-    "scenario": "signed-in",
+    "scenario": "signed-out",
     "actions": []
    },
    "oc": [],
@@ -537,7 +537,15 @@
     "scenario": "signed-out",
     "actions": []
    },
-   "oc": [],
+   "oc": [
+    {
+     "exec": "location.assign('/login');"
+    },
+    {
+     "wait": ".onb-login",
+     "after_ms": 800
+    }
+   ],
    "covers": [
     {
      "kind": "route",

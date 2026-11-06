@@ -48,11 +48,15 @@ function tomlValue(path, section, key) {
 export const flows = [
   {
     // A fresh conductor.db has no repositories and no onboarding step, so the
-    // first-run onboarding comes first; Continue writes the step and opens Home.
+    // first-run onboarding comes first. No Reason account here, so it offers
+    // "Sign up" (Reason) and "Continue without signing in", which writes the
+    // step and opens Home.
     name: "first-run",
     async run(wd) {
       await wd.waitFor("the first-run onboarding", async () => (await wd.findAll(".onb")).length > 0);
-      await clickByText(wd, ".onb-continue", "Continue");
+      const signUp = await textsOf(wd, ".onb-signup");
+      if (JSON.stringify(signUp) !== JSON.stringify(["Sign up"])) throw new Error(`Sign up button ${JSON.stringify(signUp)}`);
+      await clickByText(wd, ".onb-continue", "Continue without signing in");
       await wd.waitFor("Home after onboarding", async () => (await wd.findAll(".home")).length > 0);
       const step = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_first_run_onboarding_step');", []);
       if (step !== "999") throw new Error(`first_time_onboarding_step ${JSON.stringify(step)}, want "999"`);
@@ -941,6 +945,23 @@ export const flows = [
         await wd.waitFor(`models.codex tool_approval_policy = "${v}"`, async () => (tomlValue(file, "models.codex", "tool_approval_policy") ?? '"default"') === `"${v}"`);
       }
       await showRows(wd, sw);
+    },
+  },
+  // Settings › Account › Sign out (Conductor's `account:sign-out`) signs this
+  // computer out of Reason with `reason logout`: the agents-reason flow left
+  // the stand-in signed in; afterwards the row is gone and `reason status` has
+  // no account.
+  {
+    name: "account-reason-sign-out",
+    async run(wd, ctx) {
+      if (!ctx.fakeReason) throw new Error("needs the agents-reason flow's stand-in Reason");
+      await openSettingsPage(wd, "Account");
+      const row = ".settings-account-signout";
+      await wd.waitFor("the Sign out row", async () => (await textsOf(wd, `${row} button`))[0] === "Sign out", 20000);
+      await clickByText(wd, `${row} button`, "Sign out");
+      await wd.waitFor("the Sign out row gone", async () => (await wd.findAll(row)).length === 0, 20000);
+      const account = await wd.execute("return window.__TAURI_INTERNALS__.invoke('reason_account_status');", []);
+      if (account.email !== null) throw new Error(`still signed in to Reason as ${account.email}`);
     },
   },
   {
