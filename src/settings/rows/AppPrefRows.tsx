@@ -52,6 +52,16 @@ function useGraphiteInstalled(): boolean | null {
   return installed;
 }
 
+/** Experimental › New workspace page: Create opens the full-screen /create page instead of the dialog. */
+export function NewWorkspacePageRow() {
+  const p = useAppPrefs();
+  return (
+    <Row label="New workspace page" help="Full-screen workspace creation">
+      <Switch label="New workspace page" checked={p.experimental_new_workspace_page} onChange={(value) => save({ key: "experimental_new_workspace_page", value })} />
+    </Row>
+  );
+}
+
 /** Experimental › Show agent cost. */
 export function ShowAgentCostRow() {
   const p = useAppPrefs();

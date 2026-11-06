@@ -25,12 +25,11 @@ interface Props {
   /** Local checkout of the chosen repository; PRs and issues are listed through it. */
   repoPath: string | null;
   disabled?: boolean;
-  error?: string;
   onChange: (from: CreateFrom | null) => void;
 }
 
-/** "Create from..." button and its PR / branch / issue picker. */
-export function CreateFromPicker({ value, branches, repoPath, disabled, error, onChange }: Props) {
+/** "Create from..." in the create composer's eyebrow, and its PR / branch / issue picker. */
+export function CreateFromPicker({ value, branches, repoPath, disabled, onChange }: Props) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<FromTab>("pr");
   const [query, setQuery] = useState("");
@@ -100,19 +99,15 @@ export function CreateFromPicker({ value, branches, repoPath, disabled, error, o
   }
 
   return (
-    <div className="field create-from">
-      <span>Create from</span>
-      <div className="field-row">
-        <button type="button" className="btn create-from-btn" onClick={() => setOpen(!open)} disabled={disabled} aria-expanded={open}>
-          {value ? fromLabel(value) : "Create from..."}
+    <div className="create-from">
+      <button type="button" className="create-chip create-from-btn" onClick={() => setOpen(!open)} disabled={disabled} aria-expanded={open} title="Create new workspace from PR, branch, or issue">
+        {value ? fromLabel(value) : "Create from..."}
+      </button>
+      {value && (
+        <button type="button" className="create-chip create-from-clear" aria-label="Clear create from selection" title="Clear create from selection" onClick={() => onChange(null)} disabled={disabled}>
+          ×
         </button>
-        {value && (
-          <button type="button" className="btn btn-small" aria-label="Clear create from selection" title="Clear create from selection" onClick={() => onChange(null)} disabled={disabled}>
-            ×
-          </button>
-        )}
-      </div>
-      {error && <span className="error small">{error}</span>}
+      )}
       {open && (
         <div className="create-from-panel" role="listbox" aria-label="Create new workspace from PR, branch, or issue">
           <div className="create-from-tabs" role="tablist">
