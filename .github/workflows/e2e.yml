@@ -12,6 +12,13 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# The app downloads the pinned Claude Code and Codex at startup and chats
+# prefer them (src-tauri/src/agent_launch.rs). An empty release manifest keeps
+# every lane on its stand-in CLIs (PATH / executable path) instead of racing a
+# real download; agent-binaries.e2e.mjs points this at its own local mirror.
+env:
+  OPENCONDUCTOR_AGENT_BINARY_MANIFEST: ${{ github.workspace }}/tools/e2e/no-agent-binaries.json
+
 jobs:
   codex-chat:
     name: Codex chat through the built app (ubuntu-22.04)
@@ -201,6 +208,19 @@ jobs:
         with:
           name: codex-chat-e2e-screens
           path: ${{ runner.temp }}/e2e-codex
+      - name: Agent binaries e2e (local release manifest, fake codex)
+        if: always()
+        # Normally under a minute.
+        timeout-minutes: 5
+        env:
+          E2E_OUT: ${{ runner.temp }}/e2e-agent-binaries
+        run: xvfb-run -a node tools/e2e/agent-binaries.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agent-binaries-e2e-screens
+          path: ${{ runner.temp }}/e2e-agent-binaries
+          retention-days: 14
       - name: Transcript parity screenshots (fake reason acp, lisbon turn)
         if: always()
         # Normally about 4.5 minutes.

@@ -29,6 +29,10 @@ export const OPEN_SETTINGS_EVENT = "openconductor:open-settings";
 export function openSettingsPage(page: string): void {
   window.dispatchEvent(new CustomEvent(OPEN_SETTINGS_EVENT, { detail: { page } }));
 }
+/** Opens Settings › Agents on `agent`'s tab (`?providerTab=`). */
+export function openAgentSettings(agent: string): void {
+  window.dispatchEvent(new CustomEvent(OPEN_SETTINGS_EVENT, { detail: { page: "providers", providerTab: agent } }));
+}
 /** Asks the app shell to open a repository's settings section (for example "scripts"). */
 export function openRepoSettingsPage(repoId: string, section: string): void {
   window.dispatchEvent(new CustomEvent(OPEN_SETTINGS_EVENT, { detail: { repoId, section } }));

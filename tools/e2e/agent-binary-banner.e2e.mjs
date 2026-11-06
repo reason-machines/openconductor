@@ -82,11 +82,15 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 const base = "http://127.0.0.1:4444";
 let sessionUrl = null;
 
-async function wd(method, path, body) {
+/** One WebDriver request; none may hang the run (25 s bound, named in the error). */
+async function wd(method, path, body, timeoutMs = 25000) {
   const res = await fetch(`${sessionUrl ?? base}${path}`, {
     method,
     headers: { "content-type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
+    signal: AbortSignal.timeout(timeoutMs),
+  }).catch((e) => {
+    throw new Error(`${method} ${path}: ${e?.name === "TimeoutError" ? `no answer in ${timeoutMs} ms` : e}`);
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(`${method} ${path}: ${res.status} ${JSON.stringify(json.value ?? json)}`);
@@ -107,6 +111,7 @@ const invoke = (cmd, args = {}) =>
   });
 
 async function waitFor(what, fn, timeoutMs = 30000, everyMs = 200) {
+  console.log(`… ${what}`);
   const end = Date.now() + timeoutMs;
   let last;
   while (Date.now() < end) {
@@ -121,11 +126,16 @@ async function waitFor(what, fn, timeoutMs = 30000, everyMs = 200) {
   throw new Error(`timed out waiting for ${what}; last: ${last instanceof Error ? last.message : JSON.stringify(last)}`);
 }
 
+/** Saves <name>.png; a screenshot that fails or takes over 20 s is logged, not fatal (as in run.mjs). */
 async function screenshot(name) {
-  const png = await wd("GET", "/screenshot");
-  const file = join(out, `${name}.png`);
-  writeFileSync(file, Buffer.from(png, "base64"));
-  console.log(`screenshot: ${file}`);
+  try {
+    const png = await wd("GET", "/screenshot", undefined, 20000);
+    const file = join(out, `${name}.png`);
+    writeFileSync(file, Buffer.from(png, "base64"));
+    console.log(`screenshot: ${file}`);
+  } catch (e) {
+    console.log(`no ${name}.png: ${e?.message ?? e}`);
+  }
 }
 
 /** The banner's state, text, button and error, or null when it is not shown. */

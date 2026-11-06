@@ -45,6 +45,7 @@ after(async () => {
 });
 
 const ROW = '[data-testid="left-sidebar-workspace-item"]';
+const DOT = '[data-testid="chat-tab-unread"]';
 const row = (page, label) => page.locator(ROW, { has: page.locator(".sb-ws-name", { hasText: label }) });
 const palette = (page) => page.getByRole("dialog", { name: "Command palette", exact: true });
 const navItems = (page) => palette(page).getByRole("group", { name: "Navigation" }).locator(".palette-title").allTextContents();
@@ -167,6 +168,7 @@ test("the chat tab menu marks one chat; a click on the open workspace's row read
   await tab.click({ button: "right" });
   await chatMenu.getByRole("menuitem", { name: "Mark as unread" }).click();
   assert.equal(await tab.getAttribute("data-unread"), "true", "the chat is unread");
+  assert.equal(await tab.locator(DOT).count(), 1, "the unread chat's tab shows the dot (Conductor's l8i)");
   assert.equal(await row(page, first).getAttribute("data-unread"), "true", "so is its workspace");
   await page.waitForTimeout(300);
   assert.equal(await row(page, first).getAttribute("data-unread"), "true", "a hand mark sticks while the chat is shown");
@@ -175,13 +177,16 @@ test("the chat tab menu marks one chat; a click on the open workspace's row read
   // The open workspace's row opens its first unread chat and reads it.
   await row(page, first).click();
   assert.equal(await tab.getAttribute("data-unread"), null);
+  assert.equal(await tab.locator(DOT).count(), 0, "reading the chat clears its tab's dot");
   assert.equal(await row(page, first).getAttribute("data-unread"), null);
 
   // And the tab menu's "Mark as read" reads it too.
   await tab.click({ button: "right" });
   await chatMenu.getByRole("menuitem", { name: "Mark as unread" }).click();
   await tab.click({ button: "right" });
+  assert.equal(await tab.locator(DOT).count(), 1);
   await chatMenu.getByRole("menuitem", { name: "Mark as read" }).click();
+  assert.equal(await tab.locator(DOT).count(), 0, "Mark as read clears the dot");
   assert.equal(await row(page, first).getAttribute("data-unread"), null);
   await page.close();
 });
