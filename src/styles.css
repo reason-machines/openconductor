@@ -48,7 +48,7 @@ html.sidebar-transparency .settings { background: var(--bg); }
    size-4 icon box, gap-0.5 between rows) above a border-b. */
 .sb-header { position: relative; flex: none; }
 .sb-topbar { display: flex; align-items: center; height: 32px; padding: 8px 0 0 calc(16px + var(--traffic-lights-clearance) + min(4px, var(--traffic-lights-clearance))); }
-.sb-toggle { display: inline-flex; padding: 0; color: var(--muted); transition: color 0.15s; }
+.sb-toggle { display: inline-flex; padding: 0; color: var(--muted); transition: color 150ms cubic-bezier(0, 0, 0.2, 1); } /* Rta: transition-colors duration-150 ease-out */
 .sb-toggle:hover { color: var(--text); }
 .sb-history { position: absolute; top: 8px; right: 14px; z-index: 1; display: flex; align-items: center; gap: 8px; }
 .sb-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; color: var(--sidebar-muted-foreground); }
@@ -391,6 +391,15 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .toaster { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; flex-direction: column; gap: 8px; max-width: 420px; }
 .toast { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 16px var(--shadow-12); font-size: 13px; }
 .toast-error { border-color: var(--diff-del); }
+/* Conductor's .conductor-toast: enters from translateY(150%) at opacity 0, leaves the same way;
+   transition: transform .4s, opacity .4s (default ease). */
+.toast { animation: toast-in 400ms ease; transition: transform 400ms ease, opacity 400ms ease; }
+.toast[data-ending-style] { transform: translateY(150%); opacity: 0; pointer-events: none; }
+/* The toaster box stays laid out while a toast slides out, so only live toasts take clicks. */
+.toaster { pointer-events: none; }
+.toast:not([data-ending-style]) { pointer-events: auto; }
+@keyframes toast-in { from { transform: translateY(150%); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .toast { animation: none; transition: none; } }
 .toast-message { flex: 1; overflow-wrap: anywhere; }
 
 /* Quick open (⌘P). Pinned near the top like the reference's picker. */
@@ -595,8 +604,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-repo-name[data-hidden] { opacity: 0.5; }
 .sb-show-hidden { align-self: flex-start; padding: 4px 0 4px 6px; font-size: 12px; line-height: 16px; font-weight: 500; color: color-mix(in srgb, var(--sidebar-muted-foreground) 70%, transparent); }
 .sb-show-hidden:hover { color: var(--sidebar-foreground); }
-.sb-repo-group[data-dragging] { background: var(--sidebar-accent); border-radius: 6px; box-shadow: 0 4px 12px var(--shadow-18); }
-.sb-repo-group[data-drop-target] > .sb-repo .sb-repo-header { box-shadow: inset 0 2px 0 var(--accent); }
 /* sidebar: workspace row menu, Pinned group, status dots.
    Menu after Conductor's context menu (min-w-[200px], items with a trailing kbd hint);
    status colours are Conductor's --status-* tokens (evidence/frontend/css-tokens.json). */
@@ -642,7 +649,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-nav-section-indicator[data-position="above"] { top: -5px; }
 .sb-nav-section-indicator[data-position="above"][data-first] { top: 0; }
 .sb-nav-section-indicator[data-position="below"] { bottom: -5px; }
-.sb-drag-ghost { position: fixed; left: 0; top: 0; z-index: 50; opacity: 0.9; pointer-events: none; border-radius: 6px; background: var(--sidebar-background); box-shadow: 0 10px 15px -3px var(--shadow-20), 0 0 0 1px var(--sidebar-border); }
+/* Conductor's drag preview (@10051997): fixed opacity-90 > rounded-md bg-sidebar-background shadow-lg ring-1 ring-sidebar-border. */
+.sb-drag-ghost { position: fixed; left: 0; top: 0; z-index: 50; opacity: 0.9; pointer-events: none; border-radius: 6px; background: var(--sidebar-background); box-shadow: 0 0 0 1px var(--sidebar-border), 0 10px 15px -3px var(--shadow-10), 0 4px 6px -4px var(--shadow-10); }
 .sb-drag-ghost > * { width: 100%; margin: 0; }
 .sb-drag-ghost .sb-section-label { flex: 0 1 auto; font-weight: 500; }
 .section-dialog-row { display: flex; align-items: center; gap: 8px; min-width: 0; }

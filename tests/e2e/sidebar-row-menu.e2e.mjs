@@ -6,6 +6,7 @@
 //   node --test tests/e2e/
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
+import { isDeepStrictEqual } from "node:util";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
@@ -46,8 +47,22 @@ const menuItems = (page) =>
     .locator(":scope > [role=menuitem]")
     .evaluateAll((els) => els.map((e) => [...e.childNodes].filter((n) => !(n instanceof Element && n.classList.contains("cm-shortcut"))).map((n) => n.textContent).join("").trim()));
 
+// Rows and sections leave through framer-motion's AnimatePresence, which unmounts a removed
+// child a frame after the change even with reduced motion, so removals are polled to settle.
+async function settled(read, expected, timeout = 3000) {
+  const end = Date.now() + timeout;
+  let actual = await read();
+  while (!isDeepStrictEqual(actual, expected) && Date.now() < end) {
+    await new Promise((r) => setTimeout(r, 25));
+    actual = await read();
+  }
+  assert.deepEqual(actual, expected);
+}
+
 test("row menu: read/unread, pin into the Pinned group, status, keys, archive", async () => {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  // Reduced motion: rows move between groups at once instead of collapsing out over 200ms
+  // (Conductor's `Qj` skips its motion wrapper the same way); removals still settle a frame later.
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
   await page.goto(`${base}/?demo=1`);
   const harbor = row(page, "Quiet harbor");
   await harbor.waitFor();
@@ -66,15 +81,14 @@ test("row menu: read/unread, pin into the Pinned group, status, keys, archive", 
   await menu(page).waitFor({ state: "detached" });
   const pinnedGroup = page.locator('.sb-group[data-group="Pinned"]');
   assert.deepEqual(await pinnedGroup.locator(".sb-ws-name").allTextContents(), ["Quiet harbor"]);
-  assert.equal(await page.locator(".sb-repo-groups .sb-ws-name", { hasText: "Quiet harbor" }).count(), 0);
+  await settled(() => page.locator(".sb-repo-groups .sb-ws-name", { hasText: "Quiet harbor" }).count(), 0);
 
   // P while the menu is open unpins; the group goes away.
   await harbor.click({ button: "right" });
   assert.deepEqual((await menuItems(page)).slice(0, 2), ["Mark as unread", "Unpin"]);
   await page.keyboard.press("p");
-  await menu(page).waitFor({ state: "detached" });
-  assert.equal(await pinnedGroup.count(), 0);
-  assert.equal(await page.locator(".sb-repo-groups .sb-ws-name", { hasText: "Quiet harbor" }).count(), 1);
+  await settled(() => pinnedGroup.count(), 0);
+  await settled(() => page.locator(".sb-repo-groups .sb-ws-name", { hasText: "Quiet harbor" }).count(), 1);
 
   // R marks unread (semibold row); opening the workspace clears it.
   await harbor.click({ button: "right" });
@@ -111,7 +125,7 @@ test("row menu: read/unread, pin into the Pinned group, status, keys, archive", 
   await harbor.click({ button: "right" });
   assert.equal(await menu(page).getByRole("menuitem", { name: /Archive/ }).locator(".cm-shortcut").textContent(), "⌘⇧A");
   await menu(page).getByRole("menuitem", { name: /Archive/ }).click();
-  assert.equal(await harbor.count(), 0);
+  await settled(() => harbor.count(), 0);
   await page.close();
 });
 
