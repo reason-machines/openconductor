@@ -9,7 +9,7 @@ interface Demo {
   header: HeaderState | null;
 }
 
-const GIT: GitState = { hasUncommitted: false, hasChanges: true, hasRemote: true, canCreatePr: true, remote: "origin", upstream: { branchExists: true, diverged: false, ahead: 0, behind: 0 } };
+const GIT: GitState = { hasUncommitted: false, hasChanges: true, hasRemote: true, canCreatePr: true, remote: "origin", upstream: { branchExists: true, diverged: false, ahead: 0, behind: 0 }, targetBehind: 0, detached: false };
 
 function demoPr(patch: Partial<PrInfo>): PrInfo {
   return {

@@ -3,7 +3,7 @@
 // the PR control can be tried in a browser.
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { demo } from "./demo.ts";
-import type { CreatePrPrompt, GitState, HeaderInputs, HeaderState, LookupRequest, LookupResult, MergeMethod, WorkspacePrStatus, WorkspaceSync } from "./types.ts";
+import type { CreatePrPrompt, GitState, HeaderInputs, HeaderState, LookupRequest, LookupResult, MergeMethod, PullOutcome, WorkspacePrStatus, WorkspaceSync } from "./types.ts";
 
 export async function lookupPr(repoPath: string, request: LookupRequest): Promise<LookupResult> {
   if (!isTauri()) return demo().lookup;
@@ -14,6 +14,12 @@ export async function lookupPr(repoPath: string, request: LookupRequest): Promis
 export async function gitState(workspacePath: string, targetBranch: string): Promise<GitState> {
   if (!isTauri()) return demo().git;
   return invoke<GitState>("pr_git_state", { workspacePath, targetBranch });
+}
+
+/** "Pull latest from <target>": fetch `remoteName`, then fast-forward or return the agent's message. */
+export async function pullLatestFromTarget(workspacePath: string, remoteName: string | null, targetBranch: string): Promise<PullOutcome> {
+  if (!isTauri()) return { kind: "upToDate" };
+  return invoke<PullOutcome>("pr_pull_latest_from_target", { workspacePath, remoteName, targetBranch });
 }
 
 export async function headerState(inputs: HeaderInputs): Promise<HeaderState | null> {
