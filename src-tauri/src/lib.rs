@@ -23,6 +23,7 @@ pub mod agent;
 pub mod agent_binaries;
 pub mod agent_commands;
 pub mod agent_options;
+pub mod app_quit;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
@@ -80,6 +81,7 @@ pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
 pub mod workspace_archive;
+mod window_bounds;
 mod workspace_archive_commands;
 
 use serde::Serialize;
@@ -250,6 +252,16 @@ pub fn run() {
     let builder = builder.menu(menu::build);
     builder
         .on_menu_event(|app, event| menu::handle_event(app, event.id().as_ref()))
+        // A window-state restore can set a size below the configured minimum; raise it back.
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::Resized(size) = event {
+                if let Ok(scale) = window.scale_factor() {
+                    if let Some((w, h)) = window_bounds::clamp_to_min(size.width, size.height, scale) {
+                        let _ = window.set_size(tauri::PhysicalSize::new(w, h));
+                    }
+                }
+            }
+        })
         // Same plugin set as Conductor 0.87.6 (see Cargo.toml). Capabilities grant only the
         // commands its frontend calls (capabilities/default.json).
         .plugin(tauri_plugin_deep_link::init())
@@ -331,7 +343,10 @@ pub fn run() {
             e2e::install(app.handle());
             Ok(())
         })
+        .manage(app_quit::QuitHandler::default())
         .invoke_handler(tauri::generate_handler![
+            app_quit::set_quit_handler_ready,
+            app_quit::quit_app,
             root_path_commands::get_conductor_root,
             root_path_commands::repo_workspaces_path,
             root_path_commands::change_conductor_root,
@@ -412,6 +427,7 @@ pub fn run() {
             session_status_commands::session_statuses,
             session_status_commands::session_set_status,
             reason_chat::reason_list_sessions,
+            reason_chat::reason_models,
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,

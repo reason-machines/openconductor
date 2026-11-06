@@ -187,7 +187,7 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .home-sidebar-toggle:hover { color: var(--text); }
 .home-wordmark { margin: 224px 0 48px; text-align: center; }
 .wordmark { display: flex; align-items: center; justify-content: center; gap: 16px; height: 96px; width: 100%; max-width: 627px; margin: 0 auto; color: var(--text); user-select: none; }
-.wordmark-text { font-size: 44px; font-weight: 600; letter-spacing: -0.02em; }
+.wordmark-svg { display: block; width: 627px; max-width: 100%; height: 96px; margin: 0 auto; }
 .home-cards-wrap { max-width: 896px; width: 100%; margin: 0 auto; padding: 0 32px; animation: home-fade-in 1s ease both; }
 .home-cards-wrap.has-workspaces { margin-top: 16px; }
 .home-cards { display: grid; grid-template-columns: 1fr; gap: 12px; max-width: 640px; width: 100%; margin: 0 auto; }
@@ -216,8 +216,13 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 
 /* Workspace */
 .workspace { display: flex; flex-direction: column; height: 100%; }
-.ws-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 30px 16px 10px; border-bottom: 1px solid var(--border); background: var(--panel); }
-.ws-title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+/* Conductor's workspace header (renderApp `poo`): flex justify-between items-center pl-4 pr-2 py-2 h-10
+   border-b, so it is 40px tall with the breadcrumb, chips and buttons centred on one line, the same
+   centre line as the sidebar's toggle row (h-8 pt-2). With the sidebar hidden, its content clears the
+   traffic lights (Conductor's ml-[var(--traffic-lights-clearance)]). */
+.ws-header { display: flex; flex: none; align-items: center; justify-content: space-between; gap: 12px; box-sizing: border-box; height: 40px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--border); background: var(--panel); }
+.app.sidebar-hidden .ws-header { padding-left: calc(16px + var(--traffic-lights-clearance)); }
+.ws-title { display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; white-space: nowrap; }
 /* Header actions row: Conductor's header group is "flex items-center gap-1.5" and its
    buttons use the xs button size (h-6 px-2 text-xs gap-1.5 rounded-sm, icons size-3),
    so Open in, the PR control and Archive share one 24px height and centre line. */
@@ -561,6 +566,7 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .clone-log { height: 8rem; margin: 0; padding: 8px; overflow: auto; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); font: 11px/1.4 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; }
 .clone-error { padding: 8px 10px; border-radius: 6px; background: color-mix(in srgb, var(--diff-del) 12%, transparent); color: var(--diff-del); user-select: text; white-space: pre-wrap; word-break: break-word; }
 .clone-kbd { margin-left: 6px; opacity: 0.6; font: inherit; }
+.quit-kbd { margin-left: 8px; opacity: 0.6; font: inherit; }
 
 /* Create project (Home → Quick start), evidence/screens/create-project.md. */
 .modal:has(.create-project-dialog) { width: min(525px, calc(100vw - 48px)); }
