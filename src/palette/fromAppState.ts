@@ -8,7 +8,7 @@ import { VIEW_ARCHIVED_LABEL, type ArchivedWorkspace } from "../workspace/archiv
 /** Handled inside the palette: it switches tabs instead of closing. */
 export const VIEW_ARCHIVED_ACTION = "view-archived-workspaces";
 import { sidebarEntries } from "../state/sidebarOrder.ts";
-import { nextUnreadWorkspace } from "../state/nextUnread.ts";
+import { nextUnreadChat } from "../state/nextUnread.ts";
 
 export interface WorkspaceRef {
   repoId: string;
@@ -74,7 +74,7 @@ export function paletteDataFromState(state: AppState, recentIds: readonly string
   return {
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
-    actions: nextUnreadWorkspace(state, { skipSelected: false }) ? PALETTE_ACTIONS : PALETTE_ACTIONS.filter((a) => a.id !== "go-to-next-unread"),
+    actions: nextUnreadChat(state, { skipSelected: false }) ? PALETTE_ACTIONS : PALETTE_ACTIONS.filter((a) => a.id !== "go-to-next-unread"),
     settings: [],
     // Archived workspaces stay in Recent, as in Conductor; ids of deleted ones drop out here
     // but stay stored, so they still count toward the cap of 5 (recordViewedWorkspace never prunes).

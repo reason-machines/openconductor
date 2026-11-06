@@ -18,7 +18,10 @@ import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
 import { applyRowLookup, useRowPrPoll } from "../features/pr/sidebarPrPoller";
 import { usePrSettings } from "../features/pr/usePullRequest";
 import type { LookupResult } from "../features/pr/types";
-import { clearManuallyUnread, markManuallyUnread } from "../state/autoUnread";
+import { clearManuallyUnreadForWorkspace, markManuallyUnread, selectedChatOf } from "../state/autoUnread";
+import { attentionChat, isWorkspaceUnread } from "../state/chatUnread";
+import { requestChat, workspaceChats } from "../state/openChat";
+import { chatStatuses } from "../features/chat/chatRuntime";
 import { Tooltip } from "./Tooltip";
 import { ArchiveIcon } from "./Icons";
 import { glyphs } from "../keybindings/shortcut";
@@ -84,7 +87,7 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
         className="sb-ws"
         data-testid="left-sidebar-workspace-item"
         data-active={active || undefined}
-        data-unread={ws.unread || undefined}
+        data-unread={isWorkspaceUnread(ws) || undefined}
         data-pinned={typeof ws.pinnedAt === "number" || undefined}
         data-menu-open={menuOpen || undefined}
         aria-current={active ? "page" : undefined}
@@ -105,7 +108,7 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
             aria-hidden={hint || undefined}
           >
             {matrix ? (
-              <StatusMatrix status={status} gitStatus={rowGitStatus({ pr: ws.pr, hasRemote })} hasUnread={ws.unread === true} />
+              <StatusMatrix status={status} gitStatus={rowGitStatus({ pr: ws.pr, hasRemote })} hasUnread={isWorkspaceUnread(ws)} />
             ) : (
               <RowStatusIcon status={status} />
             )}
@@ -209,8 +212,10 @@ type MenuTarget = { repoId: string; workspaceId: string; x: number; y: number };
 
 /**
  * Row props and the open menu for every workspace row in the sidebar.
- * `rowProps(repoId, ws)` gives select (which also clears unread, as opening a
- * workspace's session does in Conductor) and right-click.
+ * `rowProps(repoId, ws)` gives select and right-click. As in Conductor (renderApp
+ * @9,885,472), a click on another workspace's row opens it (showing a chat reads it,
+ * autoUnread's readOnView); a click on the open workspace's row opens its first chat
+ * that is unread or waits on the user (`fea`) and marks it read.
  */
 export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { onRename, onArchive, onNewSection, collapsedSections, onRowPointerDown, onCopyLink }: RowCallbacks = {}) {
   const [menu, setMenu] = useState<MenuTarget | null>(null);
@@ -234,8 +239,14 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
     shortcutNumber: numbers.get(ws.id),
     showShortcutHint: hintsVisible,
     onSelect: () => {
-      dispatch({ type: "select", selection: { kind: "workspace", repoId, workspaceId: ws.id } });
-      if (ws.unread) dispatch({ type: "setWorkspaceUnread", repoId, workspaceId: ws.id, unread: false });
+      if (!(sel.kind === "workspace" && sel.workspaceId === ws.id)) {
+        dispatch({ type: "select", selection: { kind: "workspace", repoId, workspaceId: ws.id } });
+        return;
+      }
+      const chat = attentionChat(ws, workspaceChats(ws.id), chatStatuses());
+      if (!chat) return;
+      if (chat.unread) dispatch({ type: "setChatUnread", repoId, workspaceId: ws.id, chatId: chat.id, unread: false, at: Date.now() });
+      requestChat(chat.id);
     },
     onContextMenu: (e: MouseEvent) => {
       e.preventDefault();
@@ -260,10 +271,17 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
         currentSectionId={sectionOf(state.sections, ws.id)?.id}
         actions={{
           toggleRead: () => {
-            // A hand mark sticks while the workspace is on screen (Conductor's markManuallyUnread).
-            if (ws.unread) clearManuallyUnread(ws.id);
-            else markManuallyUnread(ws.id);
-            dispatch({ type: "setWorkspaceUnread", ...ids, unread: !ws.unread });
+            // Conductor's row menu (renderApp @7,306,180): an unread workspace is read whole
+            // (markWorkspaceAsRead, and its hand marks go); otherwise its selected chat is
+            // marked unread by hand, which sticks while it is on screen.
+            if (isWorkspaceUnread(ws)) {
+              clearManuallyUnreadForWorkspace(ws.id);
+              dispatch({ type: "markWorkspaceRead", ...ids });
+            } else {
+              const chatId = selectedChatOf(ws.id);
+              markManuallyUnread(chatId);
+              dispatch({ type: "setChatUnread", ...ids, chatId, unread: true, at: Date.now() });
+            }
           },
           togglePin: () => dispatch({ type: "setWorkspacePinned", ...ids, pinned: typeof ws.pinnedAt !== "number" }),
           setStatus: (status) => dispatch({ type: "setWorkspaceStatus", ...ids, status }),

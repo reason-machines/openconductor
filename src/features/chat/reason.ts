@@ -15,6 +15,7 @@
 // Pure: no Tauri, no React, so `reason.test.ts` covers it.
 
 import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
+import type { PermissionOption, PermissionPrompt, Question } from "./chatRuntime.ts";
 
 export interface ReasonPath {
   raw: string;
@@ -51,9 +52,33 @@ export type ReasonPayload = { chatId: string } & (
   | { type: "error"; code: string | null; status: number | null; message: string }
   | ReasonTool
   | { type: "turnEnded"; end: ReasonTurnEnd }
-  | { type: "permissionRequest"; requestId: string; title: string; options: { optionId: string; name: string; kind: string }[] }
+  | PermissionRequestPayload
   | { type: "permissionResolved"; requestId: string }
+  | { type: "sessionModel"; model: string; effort: string | null }
 );
+
+/**
+ * The agent waits on the user (src-tauri reason_acp/wire.rs): `kind` says
+ * for what. Reason asks only for tools; Claude Code also for a plan or
+ * questions.
+ */
+type PermissionRequestPayload = { type: "permissionRequest"; requestId: string; title: string; options: PermissionOption[] } & (
+  | { kind: "permission"; tool: string; input: unknown }
+  | { kind: "plan"; plan: string }
+  | { kind: "question"; questions: Question[] }
+);
+
+/** The request a `permissionRequest` payload makes. */
+export function permissionPrompt(p: Extract<ReasonPayload, { type: "permissionRequest" }>): PermissionPrompt {
+  switch (p.kind) {
+    case "plan":
+      return { kind: "plan", requestId: p.requestId, plan: p.plan };
+    case "question":
+      return { kind: "question", requestId: p.requestId, questions: p.questions };
+    case "permission":
+      return { kind: "permission", requestId: p.requestId, title: p.title, options: p.options, tool: p.tool, input: p.input ?? null };
+  }
+}
 
 /** Sender recorded on reports; Reason does not say which Session sent one. */
 export const REPORT_SENDER = "reason";
@@ -243,6 +268,8 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
     // Permission requests change the chat's status, not its transcript (reasonChat.ts).
     case "permissionRequest":
     case "permissionResolved":
+    // The Session's model goes to the model picker (reasonChat.ts).
+    case "sessionModel":
       return { state, events: [] };
   }
 }

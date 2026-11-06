@@ -6,7 +6,7 @@ import { lastWorkspaceLink, openWorkspaceLinkActions, parseWorkspaceLink } from 
 
 const repo = (id: string, workspaces: Repo["workspaces"]): Repo => ({ id, name: id, path: `/r/${id}`, workspaces }) as Repo;
 const ws = (id: string, unread?: boolean): Repo["workspaces"][number] =>
-  ({ id, name: id, branch: id, status: "idle", diff: { added: 0, removed: 0 }, createdAt: 0, unread }) as Repo["workspaces"][number];
+  ({ id, name: id, branch: id, status: "idle", diff: { added: 0, removed: 0 }, createdAt: 0, unreadChats: unread ? [{ id, at: 0 }] : undefined }) as Repo["workspaces"][number];
 
 const state = (): AppState =>
   ({ repos: [repo("r1", [ws("w1")]), repo("r2", [ws("w2", true), ws("w3")])], selection: { kind: "home" } }) as unknown as AppState;
@@ -34,11 +34,11 @@ test("other URLs are not workspace links", () => {
   ]) assert.equal(parseWorkspaceLink(url), null, url);
 });
 
-test("opening a link selects that workspace in its repository and clears unread", () => {
-  // The same actions a click on the sidebar row dispatches (useWorkspaceRows onSelect).
+test("opening a link selects that workspace in its repository, as a row click does", () => {
+  // The same action a click on an unselected sidebar row dispatches (useWorkspaceRows onSelect);
+  // an unread chat is read once it is on screen (read on view), not by the link.
   assert.deepEqual(open(state(), "openconductor://workspace?id=w2"), [
     { type: "select", selection: { kind: "workspace", repoId: "r2", workspaceId: "w2" } },
-    { type: "setWorkspaceUnread", repoId: "r2", workspaceId: "w2", unread: false },
   ]);
   assert.deepEqual(open(state(), "openconductor://workspace?id=w1&session=s1"), [
     { type: "select", selection: { kind: "workspace", repoId: "r1", workspaceId: "w1" } },

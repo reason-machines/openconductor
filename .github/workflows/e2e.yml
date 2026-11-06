@@ -160,6 +160,19 @@ jobs:
           name: reason-chat-e2e-screens
           path: ${{ runner.temp }}/e2e-screens
           retention-days: 14
+      - name: Model picker e2e (fake reason acp)
+        if: always()
+        # Normally under a minute.
+        timeout-minutes: 5
+        env:
+          E2E_OUT: ${{ runner.temp }}/e2e-picker
+        run: xvfb-run -a node tools/e2e/model-picker.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: model-picker-e2e-screens
+          path: ${{ runner.temp }}/e2e-picker
+          retention-days: 14
       - name: Codex chat e2e (fake codex app-server)
         if: always()
         # Normally about 1 minute.
