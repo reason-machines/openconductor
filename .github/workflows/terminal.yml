@@ -8,6 +8,12 @@ on:
       - "src-tauri/src/terminal_history.rs"
       - "crates/openconductor-db/**"
       - "tools/terminal/**"
+      - "src/components/ScriptOutput.tsx"
+      - "src/components/ScriptsPanel.tsx"
+      - "src/components/scriptOutput.css"
+      - "src/scripts/**"
+      - "src/theme/scriptTerminal.css"
+      - "tests/e2e/script-output*"
       - ".github/workflows/terminal.yml"
   pull_request:
     paths:
@@ -15,12 +21,36 @@ on:
       - "src-tauri/src/terminal_history.rs"
       - "crates/openconductor-db/**"
       - "tools/terminal/**"
+      - "src/components/ScriptOutput.tsx"
+      - "src/components/ScriptsPanel.tsx"
+      - "src/components/scriptOutput.css"
+      - "src/scripts/**"
+      - "src/theme/scriptTerminal.css"
+      - "tests/e2e/script-output*"
       - ".github/workflows/terminal.yml"
 
 permissions:
   contents: read
 
 jobs:
+  script-output:
+    name: Script output browser regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: browser-actions/setup-chrome@v1
+        id: chrome
+      - name: Script output colors, streaming, rerun and resize
+        run: node --test tests/e2e/script-output.e2e.mjs
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+
   rust:
     name: Terminal Rust test + clippy + rustfmt (${{ matrix.os }})
     runs-on: ${{ matrix.os }}

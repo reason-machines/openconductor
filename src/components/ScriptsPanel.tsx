@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { keyedCache } from "../lib/keyedCache";
 import type { Repo, Workspace } from "../state/types";
@@ -9,7 +9,6 @@ import {
   appendOutput,
   defaultScript,
   runButton,
-  stripAnsi,
   visibleScripts,
   workspaceRef,
   type RunState,
@@ -24,6 +23,7 @@ import { useRepoSettings } from "../settings/useRepoSettings";
 import { detectLocalhostUrl, previewEnvFrom, previewOptions, type PreviewEnv, type PreviewOption } from "../scripts/preview";
 import { PreviewOpenButton } from "./PreviewOpenButton";
 import { RunSplitButton } from "./RunSplitButton";
+import { ScriptOutput } from "./ScriptOutput";
 import { ShortcutHint } from "./ui/Tooltip";
 import { RunIcon } from "../settings/rows/runIcons";
 import { runBody, runHeader } from "../scripts/runTab";
@@ -109,7 +109,6 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const spotSetting = spotState.repoId === repo.id ? spotState.setting : (spotSettings.get(repo.id) ?? null);
   const [spotView, setSpotView] = useState<SpotlightView>(EMPTY_VIEW);
   const [spotPending, setSpotPending] = useState<"starting" | "stopping" | null>(null);
-  const outRef = useRef<HTMLPreElement>(null);
   const repoSettings = useRepoSettings(repo.path || undefined, workspace.path);
   const [previewEnv, setPreviewEnv] = useState<PreviewEnv>({});
   const [detectedUrl, setDetectedUrl] = useState<string | null>(null);
@@ -197,10 +196,6 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
       .then((f) => (off = f));
     return () => off?.();
   }, [wsId, shown, refresh]);
-
-  useEffect(() => {
-    outRef.current?.scrollTo({ top: outRef.current.scrollHeight });
-  }, [runOut, setup.log, spotView.log, tab]);
 
   useEffect(() => {
     onSetupState?.(setup.state);
@@ -320,7 +315,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
       return (
         <div className="scripts-setup-log" aria-label={SETUP_TEXT[setup.state]}>
           {error && <div className="scripts-error">{error}</div>}
-          <pre ref={outRef} className="scripts-output">{stripAnsi(setup.log ?? "")}</pre>
+          <ScriptOutput key={`setup:${wsId}`} output={setup.log ?? ""} />
           {setupButton(setupRunning || setupPending === "stop" ? "stop" : "rerun", true)}
         </div>
       );
@@ -429,11 +424,9 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
       );
     }
     return showSpotlight ? (
-      <pre ref={outRef} className="scripts-output">
-        {spotLogMine && spotView.log.length > 0 ? spotView.log.join("\n") : spotButton.hint ?? SPOTLIGHT_EMPTY_TEXT}
-      </pre>
+      <ScriptOutput key={`spotlight:${wsId}`} output={spotLogMine && spotView.log.length > 0 ? spotView.log.join("\n") : spotButton.hint ?? SPOTLIGHT_EMPTY_TEXT} />
     ) : (
-      <pre ref={outRef} className="scripts-output">{stripAnsi(runOut)}</pre>
+      <ScriptOutput key={`run:${wsId}:${shown}`} output={runOut} />
     );
   }
 

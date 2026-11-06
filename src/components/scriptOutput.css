@@ -1,0 +1,4 @@
+.script-output { position: relative; flex: 1; min-height: 0; height: 100%; width: 100%; min-width: 0; overflow: hidden; padding: 16px; border-radius: 6px; background: var(--bg); }
+.script-output-mount, .script-output .xterm { height: 100%; }
+.script-output .xterm-viewport { overflow-x: hidden; }
+.script-output .term-find { max-width: none; background: var(--sidebar-background); }

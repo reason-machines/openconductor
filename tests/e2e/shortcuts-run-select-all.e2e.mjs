@@ -22,19 +22,21 @@ const executablePath = CANDIDATES.find((p) => existsSync(p));
 
 let server;
 let browser;
-let base;
+let base = process.env.E2E_BASE;
 
 before(async () => {
   assert.ok(executablePath, `no Chrome or Chromium found; set CHROME_PATH (tried ${CANDIDATES.join(", ")})`);
   assert.ok(existsSync("dist/index.html"), "dist/ is missing; run `npm run build` first");
-  server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
-  base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  if (!base) {
+    server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
+    base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  }
   browser = await chromium.launch({ executablePath, args: ["--no-sandbox"] });
 });
 
 after(async () => {
   await browser?.close();
-  await new Promise((resolve) => server?.httpServer.close(resolve));
+  if (server) await new Promise((resolve) => server.httpServer.close(resolve));
 });
 
 async function openDemo() {
@@ -67,12 +69,13 @@ test("⌘R shows the Run tab and starts the run script, ⌘R again stops it (wor
   await press(page, "Meta+r");
   await page.waitForFunction(() => document.querySelector('.ws-strip [role="tab"][aria-selected="true"]')?.textContent?.trim() === "Run");
   await strip.getByRole("button", { name: "Stop Dev", exact: true }).waitFor();
-  await run.locator(".scripts-output", { hasText: "vite --port 55000" }).waitFor();
+  const output = run.getByRole("region", { name: "Script output", exact: true }).locator(".xterm-rows", { hasText: "vite --port 55000" });
+  await output.waitFor();
 
   await press(page, "Meta+r");
   await strip.getByRole("button", { name: "Run Dev", exact: true }).waitFor();
   // The stopped run keeps its output, as Conductor's run terminal does.
-  await run.locator(".scripts-output", { hasText: "vite --port 55000" }).waitFor();
+  await output.waitFor();
 
   // ⌘R also works from the collapsed strip: it opens it on the Run tab.
   await strip.getByRole("button", { name: "Hide terminal panel" }).click();
