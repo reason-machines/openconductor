@@ -28,7 +28,7 @@ const data: PaletteData = {
     { id: "open-vscode", title: "VS Code", group: "open-in" },
   ],
   settings: [{ id: "appearance.theme", title: "Theme", section: "Appearance" }],
-  recentWorkspaceIds: ["w2", "w4", "w1"],
+  recentWorkspaceIds: ["w2", "w4", "gone", "w1"],
   activeWorkspaceId: "w2",
 };
 
@@ -62,9 +62,9 @@ test("tabs cycle with wrap and skip Projects when hidden", () => {
   assert.equal(emptyText("projects"), "No matching projects");
 });
 
-test("All tab with empty query: recents (skipping archived) then action groups in fixed order", () => {
+test("All tab with empty query: recents (archived included, unknown ids dropped) then action groups in fixed order", () => {
   assert.deepEqual(ids("all", ""), [
-    "Recent workspaces: w2,w1",
+    "Recent workspaces: w2,w4,w1",
     "Workspace actions: quick-open,archive-workspace",
     "Actions: new-workspace,toggle-theme",
     "Navigation: go-home",

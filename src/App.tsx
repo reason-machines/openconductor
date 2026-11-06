@@ -5,6 +5,7 @@ import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { AllWorkspaces } from "./components/AllWorkspaces";
+import { Dashboard } from "./components/Dashboard";
 import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
 import type { DialogKind } from "./components/Dialogs";
@@ -28,7 +29,7 @@ import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
-import { decideOpenProject, failedToAddMessage } from "./state/openProject";
+import { addRegisteredRepo, decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
 import { PaletteHost } from "./palette/PaletteHost";
@@ -222,8 +223,7 @@ export default function App() {
       : null,
   );
   const addCreatedRepo = useCallback(async (target: GitHubRepoTarget, remote: string) => {
-    const registered = await addRepository(target.path);
-    dispatch({ type: "addRepo", id: registered.id, repo: { name: target.name, path: registered.root, remote, defaultBranch: registered.defaultBranch } });
+    dispatch(addRegisteredRepo(await addRepository(target.path), remote));
   }, [dispatch]);
 
   // Open project: native picker straight away, then the backend folder checks.
@@ -240,8 +240,7 @@ export default function App() {
       // An already-added folder is not refused: as in Conductor the backend
       // registers a second project for it, named `<name>-v1`, `-v2`, ...
       // (evidence/screens/duplicate-repo.md).
-      const registered = await addRepository(outcome.path);
-      dispatch({ type: "addRepo", id: registered.id, repo: { name: registered.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
+      dispatch(addRegisteredRepo(await addRepository(outcome.path), outcome.remote));
     } catch (err) {
       show("error", failedToAddMessage(err));
     }
@@ -375,6 +374,15 @@ export default function App() {
           />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+        ) : sel.kind === "dashboard" ? (
+          <Dashboard
+            repos={state.repos}
+            repo={sel.repo}
+            sidebarVisible={isSidebarVisible(state)}
+            dispatch={dispatch}
+            onCreateWorkspace={(repoId) => openDialog("create", repoId)}
+            onError={(message) => show("error", message)}
+          />
         ) : (
           <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}

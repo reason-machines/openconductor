@@ -66,6 +66,9 @@ pub struct AppPrefs {
     /// `Te("sidebar_resource_usage", !1)`): off unless the row says `"true"`.
     pub sidebar_resource_usage: bool,
     pub message_send_key: MessageSendKey,
+    /// Experimental "Dashboard": shows the sidebar's Dashboard row and the
+    /// `/dashboard` workspace board. Off unless the row says `"true"`.
+    pub dashboard_enabled: bool,
     /// "Use Claude Code with Chrome": Claude Code chats start with
     /// `--chrome` (the reference sidecar's `extraArgs: { chrome: null }`).
     pub chrome_mode_enabled: bool,
@@ -156,6 +159,7 @@ impl AppPrefs {
                 Some("cmd-enter") => MessageSendKey::CmdEnter,
                 _ => MessageSendKey::Enter,
             },
+            dashboard_enabled: flag(rows, keys::DASHBOARD_ENABLED, false),
             // The reference reads it as `=== "true"`.
             chrome_mode_enabled: rows.get(keys::CHROME_MODE_ENABLED).map(String::as_str)
                 == Some("true"),
@@ -189,6 +193,8 @@ pub enum AppPrefUpdate {
     SidebarResourceUsage(bool),
     /// Written as `enter` / `cmd-enter` after the send-key overrides.
     MessageSendKey(MessageSendKey),
+    /// The Experimental "Dashboard" switch (the reference's `eGt`).
+    DashboardEnabled(bool),
     ChromeModeEnabled(bool),
 }
 
@@ -238,6 +244,7 @@ impl AppPrefUpdate {
             SidebarRepoFilter(None) => Ok(Write::Delete(keys::SIDEBAR_REPO_FILTER)),
             SidebarResourceUsage(v) => b(keys::SIDEBAR_RESOURCE_USAGE, *v),
             MessageSendKey(k) => Ok(Write::Set(keys::MESSAGE_SEND_KEY, k.as_str().into())),
+            DashboardEnabled(v) => b(keys::DASHBOARD_ENABLED, *v),
             ChromeModeEnabled(v) => b(keys::CHROME_MODE_ENABLED, *v),
         }
     }

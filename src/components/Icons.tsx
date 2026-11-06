@@ -8,6 +8,8 @@ type P = { size?: number; strokeWidth?: number };
 export const FolderIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="folder" size={size} strokeWidth={strokeWidth} />;
 export const CloudIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="cloud" size={size} strokeWidth={strokeWidth} />;
 export const SparkIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="sparkle" size={size} strokeWidth={strokeWidth} />;
+/** Conductor's Dashboard row icon (Lucide "layout-grid"). */
+export const LayoutGridIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="layout-grid" size={size} strokeWidth={strokeWidth} />;
 export const HomeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="house" size={size} strokeWidth={strokeWidth} />;
 export const SidebarIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="panel-left" size={size} strokeWidth={strokeWidth} />;
 /** Right-hand panel toggle: Conductor's sidebar glyph with the divider on the right (hand-drawn, not in the Lucide set). */

@@ -131,6 +131,9 @@ pub mod keys {
     /// Legacy "Send messages with" choice, `enter` or `cmd-enter`; the
     /// keybinding overrides hold the live keys, this row only seeds them.
     pub const MESSAGE_SEND_KEY: &str = "message_send_key";
+    /// Experimental "Dashboard": the sidebar's Dashboard row and the
+    /// `/dashboard` board; unset means off (`_z.dashboard_enabled = "false"`).
+    pub const DASHBOARD_ENABLED: &str = "dashboard_enabled";
 }
 
 #[cfg(test)]
