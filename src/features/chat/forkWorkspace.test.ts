@@ -35,6 +35,9 @@ function fakes(opts: { checkpoint?: boolean; head?: { stdout: string; exitCode: 
       copiedFiles: [],
       upstreamWarning: null,
       number: 7,
+      initializationLogPath: null,
+      initializationFilesCopied: 0,
+      auxiliaryFailureMessage: null,
     };
   };
   return { deps: { invoke, createWorkspace }, calls, created };

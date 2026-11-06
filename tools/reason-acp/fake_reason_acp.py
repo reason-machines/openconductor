@@ -20,6 +20,8 @@ mid-turn user_message_chunk), "local" (a diff in the session's working folder),
 files in the session's folder), "crash" (exit without answering),
 "config" (replies "model=M effort=E"), "attachments" (replies with each
 embedded resource as "NAME: TEXT", NAME the last part of its uri),
+"permission" (asks session/request_permission for a tool call, then replies
+"permission: OPTION" with the chosen optionId or "cancelled"),
 "lisbon" (replays Conductor's reference transcript turn, tools/screens/seed-data.js
 'lisbon': text, Grep, Read, text, Edit, Bash, text; each tool is a tool_call then a
 tool_call_update to completed, with ACP kind, rawInput and _meta.claudeCode.toolName;
@@ -52,6 +54,8 @@ CLOUD = "/home/runner/.reason/workspace/sessions/child-1/repo"
 lock = threading.Lock()
 opened = set()
 running = {}  # session id -> (request id, threading.Event)
+asks = {}  # our request id -> (threading.Event, [response])
+next_ask = [0]
 
 
 def send(msg):
@@ -66,6 +70,18 @@ def update(sid, **u):
 
 def text(sid, kind, t):
     update(sid, sessionUpdate=kind, content={"type": "text", "text": t})
+
+
+def ask(sid, method, params):
+    """Sends a request to the client and waits for its answer."""
+    with lock:
+        next_ask[0] += 1
+        rid = f"ask-{next_ask[0]}"
+        asks[rid] = (threading.Event(), [])
+    send({"id": rid, "method": method, "params": params})
+    done, box = asks[rid]
+    done.wait(60)
+    return box[0] if box else None
 
 
 LISBON_PROMPT = ("After signing in, users with an expired session get bounced between "
@@ -194,6 +210,18 @@ def prompt(rid, p, cancel):
                 f.write(content + "\n")
             names.append(name)
         text(sid, "agent_message_chunk", f"turn {session['turns']} wrote {' '.join(names)}")
+    elif cmd == "permission":
+        tool = {"toolCallId": "tool:p", "title": "bash: rm -rf build", "kind": "execute"}
+        update(sid, sessionUpdate="tool_call", status="pending", **tool)
+        options = [{"optionId": "allow", "name": "Allow", "kind": "allow_once"},
+                   {"optionId": "reject", "name": "Reject", "kind": "reject_once"}]
+        answer = ask(sid, "session/request_permission", {"sessionId": sid, "toolCall": tool, "options": options})
+        outcome = ((answer or {}).get("result") or {}).get("outcome") or {}
+        chosen = outcome.get("optionId") if outcome.get("outcome") == "selected" else "cancelled"
+        update(sid, sessionUpdate="tool_call_update", status="completed" if chosen == "allow" else "failed", **tool)
+        text(sid, "agent_message_chunk", f"permission: {chosen}")
+        if cancel.is_set():
+            stop = "cancelled"
     elif cmd in ("lisbon", LISBON_PROMPT):
         lisbon(sid, session["cwd"])
     elif cmd == "crash":
@@ -205,6 +233,11 @@ def prompt(rid, p, cancel):
 
 def handle(msg):
     rid, method, p = msg.get("id"), msg.get("method"), msg.get("params") or {}
+    if method is None and rid in asks:
+        done, box = asks.pop(rid)
+        box.append(msg)
+        done.set()
+        return
     if method == "initialize":
         caps = {"loadSession": True, "sessionCapabilities": {"list": {}, "resume": {}, "close": {}}}
         send({"id": rid, "result": {"protocolVersion": 1, "agentCapabilities": caps,

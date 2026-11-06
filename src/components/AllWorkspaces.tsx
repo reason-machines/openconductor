@@ -27,6 +27,9 @@ import {
   type HomeRow,
 } from "../home/allWorkspaces";
 import { effectiveShortcuts } from "../keybindings/overrides";
+import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
+import { homeStatus, rowStatusColor, rowStatusLabel, showsActivityStatus } from "../state/rowStatus";
+import { RowStatusIcon } from "./RowStatusIcon";
 import { glyphs } from "../keybindings/shortcut";
 
 interface Props {
@@ -90,6 +93,9 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
 function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRepoIcon: boolean; active: boolean; now: number; onOpen: () => void }) {
   const { workspace: ws, repo, archived, matches } = row;
   const tone = archived ? "is-archived" : ws.unread ? "is-unread" : "";
+  // Conductor's Home row (`vJo`): the agent's or setup's status, else the last-activity time.
+  const status = homeStatus(ws.state, useWorkspaceAgentStatus(ws));
+  const statusLabel = rowStatusLabel(status);
   return (
     <div
       role="option"
@@ -122,8 +128,10 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
             <span className="allws-archived" title="Archived" aria-label="Archived">
               <ArchiveIcon size={14} />
             </span>
-          ) : ws.status === "working" ? (
-            <span className="allws-working" title="Working" aria-label="Working" />
+          ) : showsActivityStatus(status) ? (
+            <span className="allws-status" data-testid="home-workspace-status" data-status={status} data-color={rowStatusColor(status)} role="img" title={statusLabel} aria-label={statusLabel}>
+              <RowStatusIcon status={status} />
+            </span>
           ) : (
             shortRelativeTime(row.lastActiveAt, now)
           )}
