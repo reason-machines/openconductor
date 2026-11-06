@@ -8,6 +8,7 @@ import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import * as Q from "./queue.ts";
+import { chatWantsAttention, turnSettled } from "./attention.ts";
 import { reportChatStatus } from "./chatRuntime.ts";
 import { answered, applyCodexPayload, codexChat, failTurn, newestTurn, startTurn, type CodexApproval, type CodexChatState, type CodexDecision, type CodexPayload, type Step } from "./codex.ts";
 import { statusWithOpenRequests, type CodexConsent, type ConsentAnswer } from "./codexConsent.ts";
@@ -86,8 +87,11 @@ function publish(c: Chat, next: Partial<CodexSnapshot>) {
 
 function apply(c: Chat, step: Step) {
   const approvalsChanged = step.state.approvals !== c.state.approvals;
+  // A new approval request is a wait on the user (Conductor's `_p` on needs_user_permission).
+  const asked = step.state.approvals.some((a) => !c.state.approvals.some((b) => b.requestId === a.requestId));
   const prevConsents = c.state.consents;
   c.state = step.state;
+  if (asked) chatWantsAttention(c.state.chatId);
   // An open approval is Conductor's tool approval: needs_user_permission until answered (`qV`).
   if (approvalsChanged) setQueue(c, c.state.approvals.length > 0 ? Q.permissionRequested(c.view.queue) : Q.permissionAnswered(c.view.queue));
   // An open MCP elicitation or permission request is needs_user_input until answered
@@ -112,6 +116,7 @@ function apply(c: Chat, step: Step) {
   for (const e of step.events) {
     if (e.type !== "turn_status" || e.status === "running") continue;
     setQueue(c, Q.turnEnded(c.view.queue, e.status));
+    if (turnSettled(e.status, c.view.queue)) chatWantsAttention(c.state.chatId);
   }
 }
 
