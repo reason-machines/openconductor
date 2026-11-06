@@ -4,6 +4,13 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      reason_chat_runs:
+        description: Consecutive Reason chat suite passes on the built app
+        type: choice
+        options: ["1", "5"]
+        default: "1"
 
 permissions:
   contents: read
@@ -189,11 +196,18 @@ jobs:
       - name: Install tauri-driver
         run: cargo install tauri-driver --locked
       - name: Reason chat e2e (fake reason acp)
-        # Normally about 1 minute.
-        timeout-minutes: 5
+        timeout-minutes: 10
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-screens
-        run: xvfb-run -a node tools/e2e/reason-chat.e2e.mjs src-tauri/target/debug/openconductor
+          E2E_RUNS: ${{ inputs.reason_chat_runs || '1' }}
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: |
+          for pass in $(seq 1 "$E2E_RUNS"); do
+            echo "Reason chat suite pass $pass/$E2E_RUNS on $GITHUB_SHA"
+            E2E_OUT="$E2E_OUT/pass-$pass" xvfb-run -a node tools/e2e/reason-chat.e2e.mjs src-tauri/target/debug/openconductor
+            echo "Reason chat suite pass $pass/$E2E_RUNS passed on $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:

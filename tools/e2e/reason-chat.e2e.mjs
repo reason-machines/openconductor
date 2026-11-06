@@ -69,7 +69,7 @@ const fake = join(repoRoot, "tools/reason-acp/fake_reason_acp.py");
 writeFileSync(join(bin, "reason"), `#!/bin/sh\nexec python3 "${fake}" "$@"\n`);
 chmodSync(join(bin, "reason"), 0o755);
 
-const env = { ...process.env, HOME: home, PATH: `${bin}:${process.env.PATH}` };
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), PATH: `${bin}:${process.env.PATH}` };
 delete env.REASON_CLI;
 // The app data folder (conductor.db, worktrees) must be under the fresh HOME too.
 delete env.XDG_DATA_HOME;
@@ -101,6 +101,10 @@ async function find(css) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const run = (script, ...args) => wd("POST", "/execute/sync", { script, args });
+/** Runs `script` in the page; it returns one element (or null), whose WebDriver id this returns. */
+const elementBy = (script, ...args) => run(script, ...args).then((el) => (el ? el[W3C_ELEMENT] ?? el.ELEMENT ?? null : null));
+/** A real WebDriver click: scrolled into view, refused while another element covers it. */
+const click = (id) => wd("POST", `/element/${id}/click`, {});
 /** Runs `script` in the page; it calls the last argument with its result. */
 const runAsync = (script, ...args) => wd("POST", "/execute/async", { script, args });
 
@@ -155,6 +159,23 @@ const toolInputs = () =>
 /** A finished turn has no Stop button. */
 const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await running()));
 
+// Navigate through the sidebar instead of racing React's saved preferences with a reload.
+async function openWorkspace(repoName, branch) {
+  const row = `button[data-testid="left-sidebar-workspace-item"][title*=" · ${branch} · "]`;
+  const rowId = await waitFor(`the ${branch} row in the sidebar`, async () => {
+    const id = await elementBy("return document.querySelector(arguments[0]);", row);
+    if (id) return id;
+    const header = await elementBy(
+      `return [...document.querySelectorAll('.sb-repo-header[role="button"][aria-expanded="false"]')].find((h) => h.querySelector(".sb-repo-name")?.textContent === arguments[0]) || null;`,
+      repoName,
+    );
+    if (header) await click(header);
+    return null;
+  });
+  await click(rowId);
+  await waitFor(`${branch} to be the open workspace`, () => run("return document.querySelector(arguments[0])?.getAttribute('aria-current') === 'page';", row));
+}
+
 const steps = [];
 const pass = (s) => {
   steps.push(s);
@@ -189,8 +210,9 @@ try {
   );
   assert.ok(seeded?.workspace, `seeding failed: ${JSON.stringify(seeded)}`);
   const workspace = seeded.workspace;
-  const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
-  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  // The page loads conductor.db's rows at startup, so reload to list the seeded repo, then open its workspace.
+  await run("location.reload(); return true;");
+  await openWorkspace("proj", workspace.branch);
   // Conductor's empty first chat (x9s) and a model, not Codex, on the picker chip.
   const intro = await waitFor("the empty chat's intro", () => chatText().then((t) => t && t.includes("You’re in a new copy of") && t));
   assert.ok(intro.includes("called e2e"), intro);
@@ -301,8 +323,7 @@ try {
   // real clicks, reads its items, and leaves it open. The menu is portalled to <body> under its
   // button (.cm-turn-menu, one open at a time) behind a backdrop, so Escape closes it.
   const openMenu = async (turn) => {
-    await run(`document.querySelector(arguments[0]).scrollIntoView({ block: "center" }); return true;`, turn);
-    await wd("POST", `/element/${await find(`${turn} button[aria-label="Show message actions"]`)}/click`, {});
+    await click(await find(`${turn} button[aria-label="Show message actions"]`));
     return waitFor(`${turn}'s menu`, () =>
       run(`const m = document.querySelector('.cm-turn-menu'); return m ? [...m.querySelectorAll('[role="menuitem"]')].map((b) => b.innerText.trim()) : null;`),
     );
@@ -311,6 +332,12 @@ try {
     await run(`document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })); return true;`);
     await waitFor(`${turn}'s menu to close`, () => run(`return !document.querySelector('.cm-turn-menu');`));
   };
+  const menuItem = (name) =>
+    waitFor(`the "${name}" menu item`, () =>
+      elementBy(`return [...document.querySelectorAll('.cm-turn-menu [role="menuitem"]')].find((b) => b.innerText.trim() === arguments[0]) || null;`, name),
+    );
+  // "Reset chat?" by role and accessible title, not by class.
+  const resetDialog = `[...document.querySelectorAll('[role="alertdialog"]')].find((d) => document.getElementById(d.getAttribute("aria-labelledby"))?.textContent.trim() === "Reset chat?") || null`;
   const turn5 = `.chat-turn-end[data-turn-id="${id5}"]`;
   const turn6 = `.chat-turn-end[data-turn-id="${id6}"]`;
   const lastItems = await openMenu(turn6);
@@ -319,20 +346,21 @@ try {
   const turn5Items = await openMenu(turn5);
   assert.deepEqual(turn5Items, ["Fork to new tab", "Fork to new workspace", "Reset chat"], "turn 5 has both forks and Reset chat");
   pass('the last turn\'s menu has "Fork to new tab" and "Fork to new workspace"; turn 5\'s also has "Reset chat"');
-  const resetItem = turn5Items.indexOf("Reset chat") + 1;
-  await wd("POST", `/element/${await find(`.cm-turn-menu [role="menuitem"]:nth-child(${resetItem})`)}/click`, {});
-  const dialog = await waitFor('"Reset chat?" with "2 changed"', () =>
-    run(`const d = document.querySelector('[role="alertdialog"][aria-labelledby="reset-chat-title"]'); return d && d.innerText.includes("changed") ? d.innerText : null;`),
+  await click(await menuItem("Reset chat"));
+  await waitFor('the "Reset chat?" dialog', () => run(`return !!(${resetDialog});`));
+  // The count arrives after the dialog opens. Wait for its value, then assert it.
+  const dialog = await waitFor('"Reset chat?" to finish counting changed files', () =>
+    run(`const d = ${resetDialog}; return d && /\\b\\d+ changed\\b/.test(d.innerText) ? d.innerText : null;`),
   );
   assert.match(dialog, /Later messages will be deleted\./);
   assert.match(dialog, /Also reset files/);
-  assert.match(dialog, /\b2 changed\b/, dialog);
-  assert.equal(await run(`return document.querySelector('[role="alertdialog"] input[aria-label="Also reset files"]').checked;`), true);
+  assert.match(dialog, /\b2 changed\b/, `the count of files changed since turn 5:\n${dialog}`);
+  assert.equal(await run(`return (${resetDialog}).querySelector('input[type="checkbox"][aria-label="Also reset files"]').checked;`), true);
   await screenshot("reason-chat-reset-dialog");
   pass('Reset chat on turn 5 opens "Reset chat?": "Later messages will be deleted.", Also reset files on, 2 changed');
 
-  await wd("POST", `/element/${await find('[role="alertdialog"] .oc-alert-destructive')}/click`, {});
-  await waitFor("the dialog to close", () => run(`return !document.querySelector('[role="alertdialog"][aria-labelledby="reset-chat-title"]');`), 15000);
+  await click(await elementBy(`return [...(${resetDialog}).querySelectorAll("button")].find((b) => b.innerText.trim().startsWith("Reset")) || null;`));
+  await waitFor("the dialog to close", () => run(`return !(${resetDialog});`), 15000);
   const after = await chatText();
   assert.ok(after.includes("turn 5 wrote notes.txt"), after);
   assert.ok(!after.includes("turn 6 wrote"), after);
@@ -391,9 +419,16 @@ try {
   await screenshot("status-needs-permission-home");
   pass("the Home list shows the workspace's Needs permission status in place of its time");
 
-  // With no workspace open its sidebar group is folded (Conductor's `Dra`), so open it from the Home row.
-  await run(`document.querySelector('[data-testid="home-workspace-status"][data-status="needs-user-permission"]').closest('[role="option"]').click(); return true;`);
-  await wd("POST", `/element/${await waitFor("the Allow button", () => find('[data-testid="chat-permission-request"] button[data-kind="allow_once"]'))}/click`, {});
+  // With no workspace open its sidebar group is folded (Conductor's `Dra`), so open it from
+  // the Home list: the option whose status reads "Needs permission".
+  await click(
+    await waitFor("the Home row that needs permission", () =>
+      elementBy(
+        `return [...document.querySelectorAll('[role="listbox"][aria-label="Workspaces"] [role="option"]')].find((o) => o.querySelector('[role="img"][aria-label="Needs permission"]')) || null;`,
+      ),
+    ),
+  );
+  await click(await waitFor("the Allow button", () => find('[data-testid="chat-permission-request"] button[data-kind="allow_once"]')));
   await waitFor('"permission: allow"', () => chatText().then((t) => t.includes("permission: allow")));
   await turnDone(8);
   await waitFor("the sidebar row to leave Needs permission", async () => !needsPermission(await sidebarStatus()));
@@ -408,9 +443,8 @@ try {
   // "e2e" named "e2e-v1", a workspace on it restored to turn 5's end
   // checkpoint, and its chat's composer holding the transcript, not sent.
   const forkItems = await openMenu(turn5);
-  const forkItem = forkItems.indexOf("Fork to new workspace") + 1;
-  assert.ok(forkItem > 0, JSON.stringify(forkItems));
-  await wd("POST", `/element/${await find(`.cm-turn-menu [role="menuitem"]:nth-child(${forkItem})`)}/click`, {});
+  assert.ok(forkItems.includes("Fork to new workspace"), JSON.stringify(forkItems));
+  await click(await menuItem("Fork to new workspace"));
   const worktrees = () =>
     execFileSync("git", ["worktree", "list", "--porcelain"], { cwd: workspace.path, encoding: "utf8" })
       .split("\n\n")
@@ -442,17 +476,8 @@ try {
   writeFileSync(join(home, "fake-reason-selected"), "ws-b");
   await launch();
   await waitFor("the app to load again", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
-  // The app saves its prefs on every state change, so one that lands between
-  // setItem and the reload (conductor.db rows arriving, say) puts the fork
-  // back. Reload until the page loaded with the first chat selected.
-  for (let attempt = 1; ; attempt++) {
-    await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
-    await waitFor("the app to load again", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
-    const selected = await run("try { return JSON.parse(localStorage.getItem('openconductor.shell.prefs.v1')).selection.workspaceId; } catch { return null; }");
-    if (selected === workspace.id) break;
-    assert.ok(attempt < 5, `the relaunched app kept ${selected} selected after ${attempt} reloads`);
-    await sleep(500);
-  }
+  // The app reopens the workspace that was open when it quit (the fork), so go back to the first chat from its sidebar row.
+  await openWorkspace("proj", workspace.branch);
   await waitFor("the first chat's transcript after the relaunch", () => chatText().then((t) => t && t.includes("turn 5 wrote notes.txt")));
   assert.equal(await run("return localStorage.getItem(arguments[0]);", sessionKey), before, "the chat kept its Session id");
   await send("echo: after relaunch");
