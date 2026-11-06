@@ -239,7 +239,7 @@
 .settings .btn.settings-ghost:hover { background: var(--s-hover); }
 .settings .settings-kbd { margin-left: 8px; opacity: 0.6; }
 .settings .settings-env-sections { margin-top: 12px; }
-.settings .settings-env-sections + .settings-env-files-section { margin-top: 2px; padding-top: 20px; }
+.settings .settings-env-sections + .settings-env-files-section { margin-top: 15px; padding-top: 20px; }
 .settings .btn.settings-sm { height: 28px; padding: 0 10px; font-size: 13px; }
 .settings .settings-env-sections code, .settings .settings-env-pasted code { background: none; padding: 0; border-radius: 0; }
 .settings .settings-env-name-text code { font-size: 14px; }

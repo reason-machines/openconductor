@@ -637,19 +637,19 @@
   },
   "settings-repo-environment": {
    "reference_sha256": "bf2e4c7b91965878e79a252923c954b522e6aade0bd2ad2978cecee37106fafa",
-   "ours_sha256": "45424e458fae114d0c0ff8f4760288813265d2852e574373d781e9f46ef06d33",
+   "ours_sha256": "93190d52ba19f64d5b97a8b4c82a271b537831d5e76ae8e32cf2467c7d4bb7e5",
    "t0": {
-    "evidence_id": "ev_176cccaec84f6cefdefed8a7b53cff16836fa6b5e60fb9a02cade83e9543b432",
-    "changed_pixels": 74935,
+    "evidence_id": "ev_ed6a379115b380d1e474d33ebadf5d8eaffcd3a8d94ecba7b99211c4f21d4788",
+    "changed_pixels": 57229,
     "total_pixels": null,
-    "changed_ratio": 0.0713938643292683,
+    "changed_ratio": 0.05452458079268293,
     "dimensions_match": null
    },
    "t24": {
-    "evidence_id": "ev_dc6b9715e9a92699e7db184dce80660c7e670038f14e2b1fb304a36a6e777244",
-    "changed_pixels": 45250,
+    "evidence_id": "ev_d5574bbd102e480e050c302c965ddf8eaddf36247f52f0b1d37f10ac566c508a",
+    "changed_pixels": 34242,
     "total_pixels": null,
-    "changed_ratio": 0.043111661585365856,
+    "changed_ratio": 0.03262385670731707,
     "dimensions_match": null
    }
   },
