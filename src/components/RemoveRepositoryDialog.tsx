@@ -32,7 +32,7 @@ export function RemoveRepositoryDialog({ repo, onClose, onRemoved, onError }: Pr
     );
   };
   return (
-    <Modal title={`Remove ${repo.name}?`} onClose={() => !pending && onClose()}>
+    <Modal title={`Remove ${repo.name}?`} onClose={() => !pending && onClose()} motion="alert">
       <div className="modal-body">
         <p>All your workspaces will be permanently deleted.</p>
         <p className="settings-misc-break">The source directory {repo.path} will not be modified.</p>

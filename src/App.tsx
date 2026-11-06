@@ -53,7 +53,7 @@ import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
 import { useWorkspaceDeepLinks } from "./workspace/useWorkspaceDeepLinks";
 import { useAutoUnread } from "./state/useAutoUnread";
-import { nextUnreadWorkspace, openNextUnread } from "./state/nextUnread";
+import { nextUnreadChat, openNextUnread } from "./state/nextUnread";
 import { createRepoDefault } from "./home/repoFilter";
 import { storedRepoFilter } from "./home/useRepoFilter";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
@@ -86,7 +86,7 @@ export default function App() {
   const nav = useNavHistory(state, dispatch);
   // openconductor://workspace?id=<id> (Copy link) selects that workspace.
   useWorkspaceDeepLinks(state, dispatch);
-  // A chat that finishes or waits on the user while not in view marks its workspace unread.
+  // A chat that finishes or waits on the user while not in view is marked unread.
   useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
   const sidebarWidth = useSidebarWidth();
@@ -367,9 +367,14 @@ export default function App() {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
+  // The Toaster sits at the same place (second child of this fragment) in both views, so
+  // opening or closing Settings keeps the toasts mounted: their timers keep running and
+  // they do not replay their 400ms slide-in over the page that just opened.
+  const toaster = <Toaster toasts={toasts} dismiss={dismiss} />;
   if (settingsLocation)
     return (
       <>
+        <>
         <SettingsView
           location={settingsLocation}
           repos={state.repos}
@@ -386,11 +391,13 @@ export default function App() {
           }}
         />
         {quitDialog}
-        <Toaster toasts={toasts} dismiss={dismiss} />
+        </>
+        {toaster}
       </>
     );
 
   return (
+    <>
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
       {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
@@ -420,7 +427,8 @@ export default function App() {
             workspace={workspace}
             dispatch={dispatch}
             notify={show}
-            onNextUnread={nextUnreadWorkspace(state, { skipSelected: true }) ? () => void openNextUnread(state, dispatch, { skipSelected: true }) : undefined}
+            hasNextUnread={(selectedChatId) => nextUnreadChat(state, { skipSelected: true, selectedChatId }) !== undefined}
+            onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
@@ -511,7 +519,8 @@ export default function App() {
       )}
       {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
       {quitDialog}
-      <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
+    {toaster}
+    </>
   );
 }

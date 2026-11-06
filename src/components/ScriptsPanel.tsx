@@ -16,6 +16,7 @@ import {
   type SetupStatus,
 } from "../scripts/model";
 import * as spotlight from "../spotlight/testingApi";
+import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import {
   EMPTY_VIEW,
   SPOTLIGHT_EMPTY_TEXT,
@@ -41,6 +42,8 @@ interface Props {
   onSetupState?: (state: SetupStatus["state"]) => void;
   /** The Run tab's empty state: "Add run script" opens the repository's Scripts settings. */
   onAddRunScript: () => void;
+  /** Opens the strip on its Run tab (⌘R does before it starts or stops). */
+  onShowRun: () => void;
 }
 
 /** Conductor's Run tab text with no run script (copy catalog). */
@@ -56,7 +59,7 @@ const errorText = (e: unknown) => (typeof e === "string" ? e : e instanceof Erro
  * With the repository's spotlight_testing setting on, the Run task picker also
  * offers Spotlight, which syncs this workspace into the repository root.
  */
-export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScript }: Props) {
+export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScript, onShowRun }: Props) {
   const ref = useMemo(() => workspaceRef(repo, workspace), [repo, workspace]);
   const wsId = workspace.id;
   const [config, setConfig] = useState<ScriptsConfig | null>(null);
@@ -207,6 +210,23 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
   const shownStatus = runs.find((r) => r.scriptId === shown);
   const setupRunning = setup.state === "running";
 
+  // The Run tab's ▶/■ button: stop what runs, else start the task shown.
+  const toggleRun = () => {
+    if (showSpotlight) {
+      if (!spotButton.disabled) void toggleSpotlightRun();
+    } else if (!button.disabled) void act(() => (button.action === "stop" ? api.stopRun(wsId, null) : startScript()));
+  };
+  // workspace.toggleRun (⌘R), as Conductor's terminal panel binds it (renderApp-D_fmY7hW.js
+  // offset ~7,141,947): with a run task and the workspace ready, show the Run tab, then stop
+  // the running task or start the shown one. Without a run task it does nothing.
+  useKeybindings({
+    "workspace.toggleRun": () => {
+      if (tasks.length === 0 || !ref || config === null) return;
+      onShowRun();
+      toggleRun();
+    },
+  });
+
   // Conductor's Run tab with no run script: a dashed box offering to add one.
   const noRunScript = (config !== null || !ref) && tasks.length === 0 && !showSpotlight && runs.length === 0;
 
@@ -272,7 +292,7 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
                   className={`btn btn-small ${spotButton.action === "stop" ? "btn-stop" : "btn-primary"}`}
                   title={spotButton.hint}
                   disabled={spotButton.disabled}
-                  onClick={() => toggleSpotlightRun()}
+                  onClick={toggleRun}
                 >
                   {spotButton.action === "stop" ? "■" : "▶"} {spotButton.label}
                 </button>
@@ -281,7 +301,7 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
                   className={`btn btn-small ${button.action === "stop" ? "btn-stop" : "btn-primary"}`}
                   title={button.hint}
                   disabled={button.disabled}
-                  onClick={() => act(() => (button.action === "stop" ? api.stopRun(wsId, null) : startScript()))}
+                  onClick={toggleRun}
                 >
                   {button.action === "stop" ? "■" : "▶"} {button.label}
                 </button>

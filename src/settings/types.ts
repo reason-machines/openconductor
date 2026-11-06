@@ -163,7 +163,8 @@ export interface SecretInput {
 export interface ProviderStatus {
   kind: ProviderKind;
   agent: AgentKind;
-  secrets: { key: string; present: boolean }[];
+  /** `hint`: the stored value's last four characters, when it is long enough to have one. */
+  secrets: { key: string; present: boolean; hint?: string }[];
   /** Options and keys are present and well formed; not that the backend accepts them. */
   ready: boolean;
   /** Why it is not ready, safe to display. */

@@ -1,0 +1,51 @@
+{
+    "schemaVersion": 1,
+    "claude": {
+        "version": "2.1.284",
+        "perArch": {
+            "aarch64-apple-darwin": {
+                "url": "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.284/darwin-arm64/claude",
+                "sha256": "50a14c2f50f56668380fdda490167f1d3630d5cc18fb8aed3073c2c7ea7314fe",
+                "size": 226563088
+            },
+            "x86_64-apple-darwin": {
+                "url": "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.284/darwin-x64/claude",
+                "sha256": "79441b868935a11ed0630b2ee59327eda9f6a93bb8d470bd6633c03df76d2135",
+                "size": 235010944
+            }
+        }
+    },
+    "codex": {
+        "version": "0.156.1",
+        "perArch": {
+            "aarch64-apple-darwin": {
+                "url": "https://github.com/openai/codex/releases/download/rust-v0.156.1/codex-aarch64-apple-darwin.tar.gz",
+                "tarGzEntry": "codex-aarch64-apple-darwin",
+                "sha256": "0196e89fe5a7598f816ee54232c3d7c26d75e502ab5cfe2c9240e81d90f7255a",
+                "size": 238138912
+            },
+            "x86_64-apple-darwin": {
+                "url": "https://github.com/openai/codex/releases/download/rust-v0.156.1/codex-x86_64-apple-darwin.tar.gz",
+                "tarGzEntry": "codex-x86_64-apple-darwin",
+                "sha256": "389da6f942f964618cfd095b84fd2abbb96bb74b94934bf0ddfdff93e1f8c0a2",
+                "size": 258309632
+            }
+        },
+        "codeModeHost": {
+            "perArch": {
+                "aarch64-apple-darwin": {
+                    "url": "https://github.com/openai/codex/releases/download/rust-v0.156.1/codex-code-mode-host-aarch64-apple-darwin.tar.gz",
+                    "tarGzEntry": "codex-code-mode-host-aarch64-apple-darwin",
+                    "sha256": "588df0df1dab35f99f272f9f499a9fada658c613d09ef34562fe274dd54287d6",
+                    "size": 62802592
+                },
+                "x86_64-apple-darwin": {
+                    "url": "https://github.com/openai/codex/releases/download/rust-v0.156.1/codex-code-mode-host-x86_64-apple-darwin.tar.gz",
+                    "tarGzEntry": "codex-code-mode-host-x86_64-apple-darwin",
+                    "sha256": "34fffed9da603637c3216da00853d482a1745251788eb5a34bc0d38d87aa96d3",
+                    "size": 65853840
+                }
+            }
+        }
+    }
+}
