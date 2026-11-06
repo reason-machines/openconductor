@@ -140,3 +140,19 @@
 .oc-pull-latest:hover:not(:disabled) { background: var(--hover); color: var(--text); }
 .oc-pull-latest:disabled { opacity: 0.5; cursor: default; }
 .oc-pull-latest-spinner { width: 12px; height: 12px; border-width: 1.5px; }
+
+/* Conductor's Changes filter row (`W4s`): px-2 pb-2 around a h-7 rounded-md bg-muted px-3 box,
+   gap-1.5; size-3 muted search icon, text-sm input, "N of M" text-xs tabular-nums, close button
+   -mr-1.5 p-1.5. Opens to 36 px over 180 ms ease-out. */
+.oc-diff.oc-diff-list:has(> .oc-changes-filter) { grid-template-rows: auto auto minmax(0, 1fr); }
+.oc-changes-filter { height: 36px; padding: 0 8px 8px; box-sizing: border-box; overflow: hidden; animation: oc-changes-filter-in 180ms ease-out; }
+.oc-changes-filter-box { display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border-radius: 6px; background: var(--surface-muted); color: var(--muted); }
+.oc-changes-filter-box > svg { flex: none; }
+.oc-changes-filter-box input { flex: 1; min-width: 0; padding: 0; border: 0; outline: none; background: transparent; color: var(--text); font: inherit; font-size: 14px; }
+.oc-changes-filter-box input::placeholder { color: var(--muted); }
+.oc-changes-filter-count { flex: none; font-size: 12px; font-variant-numeric: tabular-nums; }
+.oc-changes-filter-close { display: inline-flex; flex: none; margin-right: -6px; padding: 6px; border: 0; background: none; color: var(--muted); }
+.oc-changes-filter-close:hover { color: var(--text); }
+.oc-changes-nomatch { display: flex; align-items: center; justify-content: center; height: 96px; padding: 0 16px; text-align: center; font-size: 12px; color: var(--muted); }
+@keyframes oc-changes-filter-in { from { height: 0; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .oc-changes-filter { animation: none; } }

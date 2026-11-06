@@ -43,6 +43,9 @@ import { invoke } from "@tauri-apps/api/core";
 import { TurnChanges } from "../features/chat/TurnChanges.tsx";
 import type { TurnRef } from "../features/diff/turnChangesCache.ts";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
+import { filterActive, filterToggleShown, toggleFilter } from "../features/diff/changesFilter";
+import { SearchIcon } from "../features/files/panelIcons";
+import { Tooltip } from "./ui/Tooltip.tsx";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
 import { showUncommittedChanges, TARGET_REMOTE, targetBranch } from "../features/diff/target";
 import type { DiffScope, FileDiff } from "../features/diff/types";
@@ -679,6 +682,15 @@ function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, 
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
   const files = useFilesToolbar();
+  // parity:diff.changes-list:ui Conductor's "Filter files" (changesFilter.ts): the toggle sits after Review, the row in ChangesList.
+  const [changesFilter, setChangesFilter] = useState({ open: false, query: "" });
+  useEffect(() => setChangesFilter({ open: false, query: "" }), [worktree]);
+  const filterOn = filterActive(changesFilter.open, changesFilter.query);
+  const filter = {
+    ...changesFilter,
+    setQuery: (query: string) => setChangesFilter({ open: true, query }),
+    close: () => setChangesFilter({ open: false, query: "" }),
+  };
   const tabButton = (id: typeof tab, label: ReactNode) => (
     <button type="button" role="tab" aria-selected={tab === id} className={`rp-tab${tab === id ? " active" : ""}`} onClick={() => setTab(id)}>
       {label}
@@ -695,10 +707,23 @@ function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, 
           {tab === "files" && <FilesToolbarButtons toolbar={files} />}
           {/* Conductor shows Review only while the workspace has changes. */}
           {tab === "changes" && count ? review : null}
+          {tab === "changes" && filterToggleShown(filterOn, count ?? 0) && (
+            <Tooltip content="Filter files">
+              <button
+                type="button"
+                className={`rp-icon${filterOn ? " on" : ""}`}
+                aria-label="Filter files"
+                aria-pressed={filterOn}
+                onClick={() => setChangesFilter((f) => toggleFilter(f.open, f.query))}
+              >
+                <SearchIcon size={12} />
+              </button>
+            </Tooltip>
+          )}
         </span>
       </div>
       {tab === "changes" ? (
-        <ChangesList diff={diff} actions={actions} worktree={worktree} emptyAction={emptyAction} />
+        <ChangesList diff={diff} actions={actions} worktree={worktree} emptyAction={emptyAction} filter={filter} />
       ) : tab === "checks" ? (
         <ChecksTab
           worktree={worktree}
