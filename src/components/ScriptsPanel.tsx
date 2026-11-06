@@ -8,11 +8,11 @@ import {
   activeRun,
   appendOutput,
   defaultScript,
-  exitText,
   runButton,
   stripAnsi,
   visibleScripts,
   workspaceRef,
+  type RunState,
   type RunStatus,
   type ScriptsConfig,
   type SetupStatus,
@@ -23,17 +23,18 @@ import { openUrl } from "../backend";
 import { useRepoSettings } from "../settings/useRepoSettings";
 import { detectLocalhostUrl, previewEnvFrom, previewOptions, type PreviewEnv, type PreviewOption } from "../scripts/preview";
 import { PreviewOpenButton } from "./PreviewOpenButton";
+import { RunSplitButton } from "./RunSplitButton";
+import { ShortcutHint } from "./ui/Tooltip";
+import { RunIcon } from "../settings/rows/runIcons";
+import { runBody, runHeader } from "../scripts/runTab";
 import {
   EMPTY_VIEW,
   SPOTLIGHT_EMPTY_TEXT,
-  SPOTLIGHT_SETTING_DESCRIPTION,
-  SPOTLIGHT_SETTING_TITLE,
   SPOTLIGHT_TASK_ID,
   applyEvent,
   runTasks,
   shownTask,
   spotlightButton,
-  toggleBlocked,
   viewFromStatus,
   type SpotlightTesting,
   type SpotlightView,
@@ -46,7 +47,7 @@ interface Props {
   tab: "run" | "setup";
   /** The strip's Run tab is the selected one (open or collapsed), as Conductor's `it === Rx.RUN`. */
   active: boolean;
-  /** The strip's tab-row slot for the Open button; null when the Run tab is not selected. */
+  /** The strip's tab-row slot (its right end) for the run split button and, on Run, the Open button. */
   actionsSlot?: HTMLElement | null;
   /** Reports the setup state, for the dot on the strip's Setup tab. */
   onSetupState?: (state: SetupStatus["state"]) => void;
@@ -243,25 +244,10 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     await Promise.all([refresh(), refreshSpotlight()]).catch(() => {});
   }
 
-  async function setSpotlightTesting(enabled: boolean) {
-    setError(null);
-    try {
-      const change = await spotlight.setSpotlightTesting(repo.id, repoRoot, enabled);
-      spotSettings.set(repo.id, change.setting);
-      setSpotState({ repoId: repo.id, setting: change.setting });
-      if (!change.setting.enabled && picked === SPOTLIGHT_TASK_ID) setPicked(null);
-      if (change.setting.enabled) setPicked(SPOTLIGHT_TASK_ID);
-    } catch (e) {
-      setError(errorText(e));
-    }
-    await Promise.all([refresh(), refreshSpotlight()]).catch(() => {});
-  }
-
   const button = runButton(config, runs, ref !== null);
   const spotButton = spotlightButton(spotView, wsId, ref !== null, spotPending);
   const scripts = visibleScripts(config);
   const tasks = runTasks(scripts, spotEnabled);
-  const toggleHint = toggleBlocked(spotSetting, Boolean(repoRoot));
   const busy = showSpotlight ? spotButton.action === "stop" : button.action === "stop";
   const shownStatus = runs.find((r) => r.scriptId === shown);
   const setupRunning = setup.state === "running";
@@ -406,82 +392,78 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     );
   }
 
+  // The shown task as Conductor's run button and body read it (src/scripts/runTab.ts).
+  const shownTaskInfo = tasks.find((t) => t.id === shown) ?? null;
+  const shownScript = scripts.find((s) => s.id === shown);
+  const taskState: RunState | null = showSpotlight
+    ? spotPending ?? (spotMine ? "running" : null)
+    : shownStatus && shownStatus.state !== "stopped"
+      ? shownStatus.state
+      : null;
+  const header = runHeader(shownTaskInfo, taskState);
+  const hasOutput = showSpotlight ? spotLogMine && spotView.log.length > 0 : runOut.length > 0;
+  const body = runBody(shownTaskInfo, taskState, showSpotlight ? spotMine : shownStatus !== undefined, hasOutput);
+  const headerDisabled = showSpotlight ? spotButton.disabled : button.disabled;
+
+  function runTabBody() {
+    if (body.kind === "pending") {
+      return (
+        <div className="scripts-run-pending">
+          <WorkingDots />
+          <p>{body.text}</p>
+        </div>
+      );
+    }
+    if (body.kind === "idle") {
+      return (
+        <div className="scripts-run-idle">
+          <RunIcon name={shownScript?.icon ?? "play"} size={48} />
+          <div className="scripts-run-idle-actions">
+            <button type="button" className="scripts-setup-btn" disabled={headerDisabled} title={showSpotlight ? spotButton.hint : button.hint} onClick={toggleRun}>
+              {body.button}
+              <ShortcutHint commandId="workspace.toggleRun" />
+            </button>
+            <p>{body.hint}</p>
+          </div>
+        </div>
+      );
+    }
+    return showSpotlight ? (
+      <pre ref={outRef} className="scripts-output">
+        {spotLogMine && spotView.log.length > 0 ? spotView.log.join("\n") : spotButton.hint ?? SPOTLIGHT_EMPTY_TEXT}
+      </pre>
+    ) : (
+      <pre ref={outRef} className="scripts-output">{stripAnsi(runOut)}</pre>
+    );
+  }
+
   return (
     <section className="scripts" aria-label={tab === "run" ? "Run" : "Setup"}>
-      {actionsSlot && previews.length > 0 && createPortal(<PreviewOpenButton options={previews} onOpen={openPreview} />, actionsSlot)}
-      {error && tab === "run" && <div className="scripts-error">{error}</div>}
-      {tab === "run" ? (
-        <>
-          <div className="scripts-meta">
-            {showSpotlight ? (
-              <span className={`spotlight-status${spotView.syncing ? " syncing" : ""}`}>
-                {spotMine
-                  ? spotView.status ?? "Running"
-                  : spotView.workspaceId
-                    ? "Syncing another workspace"
-                    : spotLogMine && spotView.status
-                      ? spotView.status
-                      : "Spotlight is off"}
-              </span>
-            ) : shown ? (
-              <code>{scripts.find((s) => s.id === shown)?.command ?? shown}</code>
-            ) : (
-              <span>No run script configured</span>
-            )}
-            {!showSpotlight && exitText(shownStatus) && <span className="muted">{exitText(shownStatus)}</span>}
-            <label className="spotlight-toggle" title={toggleHint ?? SPOTLIGHT_SETTING_DESCRIPTION}>
-              <input
-                type="checkbox"
-                checked={spotEnabled}
-                disabled={toggleHint !== null}
-                onChange={(e) => setSpotlightTesting(e.target.checked)}
+      {actionsSlot &&
+        ref &&
+        createPortal(
+          <>
+            {active && previews.length > 0 && <PreviewOpenButton options={previews} onOpen={openPreview} />}
+            {tasks.length > 0 && (
+              <RunSplitButton
+                header={header}
+                task={shownTaskInfo}
+                tasks={tasks.map((t) => ({ ...t, icon: scripts.find((s) => s.id === t.id)?.icon }))}
+                icon={shownScript?.icon}
+                disabled={headerDisabled}
+                onToggle={toggleRun}
+                onPick={(id) => {
+                  setPicked(id);
+                  onShowRun();
+                }}
+                onConfigure={onAddRunScript}
               />
-              {SPOTLIGHT_SETTING_TITLE}
-            </label>
-            <div className="scripts-actions">
-              {tasks.length > 1 && (
-                <select aria-label="Run script" value={shown ?? ""} onChange={(e) => setPicked(e.target.value)} disabled={busy}>
-                  {tasks.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.label}
-                    </option>
-                  ))}
-                </select>
-              )}
-              {showSpotlight ? (
-                <button
-                  className={`btn btn-small ${spotButton.action === "stop" ? "btn-stop" : "btn-primary"}`}
-                  title={spotButton.hint}
-                  disabled={spotButton.disabled}
-                  onClick={toggleRun}
-                >
-                  {spotButton.action === "stop" ? "■" : "▶"} {spotButton.label}
-                </button>
-              ) : (
-                <button
-                  className={`btn btn-small ${button.action === "stop" ? "btn-stop" : "btn-primary"}`}
-                  title={button.hint}
-                  disabled={button.disabled}
-                  onClick={toggleRun}
-                >
-                  {button.action === "stop" ? "■" : "▶"} {button.label}
-                </button>
-              )}
-            </div>
-          </div>
-          {showSpotlight ? (
-            <pre ref={outRef} className="scripts-output">
-              {spotLogMine && spotView.log.length > 0
-                ? spotView.log.join("\n")
-                : spotButton.hint ?? SPOTLIGHT_EMPTY_TEXT}
-            </pre>
-          ) : (
-            <pre ref={outRef} className="scripts-output">{runOut ? stripAnsi(runOut) : button.hint && !shown ? button.hint : "Output from the run script appears here."}</pre>
-          )}
-        </>
-      ) : (
-        setupBody()
-      )}
+            )}
+          </>,
+          actionsSlot,
+        )}
+      {error && tab === "run" && <div className="scripts-error">{error}</div>}
+      {tab === "run" ? runTabBody() : setupBody()}
     </section>
   );
 }

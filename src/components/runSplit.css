@@ -1,0 +1,35 @@
+/* The terminal panel's run split button (RunSplitButton.tsx): Conductor's outline xs Button
+   (`REe` outline/xs: h-6 px-2 text-xs, border-input, bg-background) with `rounded-r-none` and
+   its chevron "flex h-6 w-6 ... rounded-r-sm border !border-input border-l-0 bg-background". */
+.run-split { display: flex; align-items: center; min-width: 0; }
+.run-split-main,
+.run-split-chevron { display: inline-flex; align-items: center; justify-content: center; height: 24px; border: 1px solid var(--input); background: var(--bg); color: var(--text); font-size: 12px; line-height: 16px; font-weight: 450; white-space: nowrap; }
+.run-split-main { gap: 6px; min-width: 0; max-width: 160px; padding: 0 8px; border-radius: 4px; overflow: hidden; }
+.run-split-main.is-split { justify-content: flex-start; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.run-split-chevron { flex: none; width: 24px; padding: 0; border-left: 0; border-radius: 0 4px 4px 0; }
+.run-split-main:hover:not(:disabled),
+.run-split-chevron:hover { background: var(--rp-pill); }
+.run-split-main:disabled { opacity: 0.5; pointer-events: none; }
+.run-split-main svg { flex: none; }
+.run-split-label,
+.run-split-kbd { display: none; }
+.run-split-label { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+/* `wio.default`: the label and shortcut appear once the strip is 440 px wide; Stop is w-24 there. */
+@container (min-width: 440px) {
+  .run-split-label { display: block; }
+  .run-split-kbd { display: contents; }
+  .run-split-main { max-width: 208px; }
+  .run-split-main.is-stop { width: 96px; }
+}
+
+/* Run tab body before the task has run: Conductor's idle view (size-12 faint icon, an outline sm
+   "Start <label>" with its ⌘R hint, and a faint xs hint under it, gap-6 / gap-2, max-w-64). */
+.scripts-run-idle { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; width: 100%; text-align: center; }
+.scripts-run-idle > svg { color: var(--faint); }
+.scripts-run-idle-actions { display: flex; flex-direction: column; align-items: center; gap: 8px; max-width: 256px; }
+.scripts-run-idle-actions p { margin: 0; color: var(--faint); font-size: 12px; line-height: 16px; }
+.scripts-run-idle .scripts-setup-btn .oc-tip-hint { color: var(--rp-muted-fg); }
+/* "Starting..." / "Setting up..." / "Stopping...": working dots and a medium label, muted. */
+.scripts-run-pending { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; color: var(--rp-muted-fg); }
+.scripts-run-pending p { margin: 0; font-size: 14px; font-weight: 500; }
+.ws-strip-actions + .ws-strip-end { margin-left: 0; }
