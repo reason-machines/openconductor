@@ -402,6 +402,7 @@ pub fn run() {
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
             reason_chat::reason_open_chat,
+            reason_chat::reason_set_config,
             chat_store_commands::chat_messages_save,
             chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,

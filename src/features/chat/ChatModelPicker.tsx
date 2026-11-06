@@ -2,7 +2,8 @@
 // from the New workspace dialog, or Settings › Default models), a list with
 // that model and the default one, and "Add models" / "Edit" opening
 // Settings › Default models. A pick becomes the chat's Reason Session options
-// (model, reasoning_effort) for the next Session it opens.
+// (model, reasoning_effort); a Session already open switches before its next
+// prompt, as Conductor's does.
 //
 // It also picks the chat's agent, as Conductor's picker does (the model decides
 // the agent): when the CLI agents can run here they are listed as "Codex" and
