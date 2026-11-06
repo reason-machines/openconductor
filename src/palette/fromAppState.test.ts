@@ -60,6 +60,16 @@ test("workspace actions appear only with a workspace selected", () => {
   assert.ok(!headings({ ...state, selection: { kind: "home" } }).includes("Workspace actions"));
 });
 
+test("palette workspace entries carry workspaces.number for the W-<n> column", () => {
+  const numbered: AppState = {
+    ...state,
+    repos: [{ ...state.repos[0]!, workspaces: [{ ...w("a", 1), number: 12 }, w("b", 2)] }],
+  };
+  const byId = new Map(paletteDataFromState(numbered, []).workspaces.map((e) => [e.id, e.number]));
+  assert.equal(byId.get("a"), 12);
+  assert.equal(byId.get("b"), null);
+});
+
 test("archived workspaces from conductor.db join the palette data after the active ones; View archived workspaces is a Navigation action", () => {
   const ws = (id: string, name: string, branch: string, createdAt: number) => ({ id, name, branch, createdAt, status: "archived" as const, diff: { added: 0, removed: 0 } });
   const data = paletteDataFromState(state, [], [
@@ -68,7 +78,7 @@ test("archived workspaces from conductor.db join the palette data after the acti
   ]);
   const all = buildResults("workspaces", "", data, "all")[0].items.map((i) => i.id.split(":")[1]);
   assert.deepEqual(all, ["c", "b", "a", "r2/z"]);
-  assert.deepEqual(data.workspaces.find((x) => x.id === "r2/z"), { id: "r2/z", name: "zurich", branch: "b-z", repoName: "api", lastActiveAt: 5 - Number.MAX_SAFE_INTEGER / 2, archived: true });
+  assert.deepEqual(data.workspaces.find((x) => x.id === "r2/z"), { id: "r2/z", name: "zurich", branch: "b-z", repoName: "api", lastActiveAt: 5 - Number.MAX_SAFE_INTEGER / 2, archived: true, number: null });
   const nav = buildResults("actions", "archived", data).find((g) => g.id === "navigation");
   assert.deepEqual(nav?.items.map((i) => i.id), ["action:view-archived-workspaces"]);
 });

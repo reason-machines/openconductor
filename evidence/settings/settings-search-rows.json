@@ -1,0 +1,2310 @@
+{
+ "source": "Conductor 0.87.6 assets/renderApp-D_fmY7hW.js, `ir({...})` and `S6e({...})` calls read as text",
+ "chunk_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+ "rows": [
+  {
+   "offset": 10664130,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "message_send_key",
+   "scopes": [
+    "user"
+   ],
+   "title": "Send messages with",
+   "description": "Choose which key combination sends messages",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10664992,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "default_message_send_mode",
+   "scopes": [
+    "user"
+   ],
+   "title": "Follow-up behavior",
+   "description": "Queue messages to send after the agent finishes, or steer the agent mid-turn.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10665739,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "notifications_enabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "Agent notifications",
+   "description": "Get notified when an agent finishes working.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10666041,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "mention_notifications_enabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "@ notifications",
+   "description": "Get notified when a teammate mentions you.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10666355,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "sound_type",
+   "scopes": [
+    "user"
+   ],
+   "title": "Completion sound",
+   "description": "Choose what plays when AI finishes working in a chat.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10666946,
+   "order": 0,
+   "tab": "general",
+   "id": "general:full-disk-access",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Full disk access permissions",
+   "description": "To let agents work without repeated folder permission prompts.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10667587,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "auto_convert_long_text",
+   "scopes": [
+    "user"
+   ],
+   "title": "Auto-convert long text",
+   "description": "Convert pasted text over 5000 characters into text attachments",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10667935,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "not_absolutely_right",
+   "scopes": [
+    "user"
+   ],
+   "title": "I'm not absolutely right, thank you very much",
+   "description": null,
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10668307,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "always_show_context_wheel",
+   "scopes": [
+    "user"
+   ],
+   "title": "Always show context usage",
+   "description": "Always show context usage. By default, it is only shown when more than 70% is used.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10668685,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "caffeinate_while_agents_running",
+   "scopes": [
+    "user"
+   ],
+   "title": "Caffeinate while agents are running",
+   "description": "Prevent your Mac from sleeping while an agent is actively working. Shuts off below 10% battery.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10669126,
+   "order": 0,
+   "tab": "general",
+   "id": "general:workspace-api-access",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Workspace API access",
+   "description": "Give new workspaces access to the Conductor API",
+   "searchTerms": [
+    "cloud",
+    "api key",
+    "conductor api"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10669704,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "auto_restart_on_update_when_idle",
+   "scopes": [
+    "user"
+   ],
+   "title": "Restart automatically on update",
+   "description": null,
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10670119,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "mcp_status_indicator_enabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "Show MCP status in chat",
+   "description": "Show a per-session MCP server status indicator in the composer.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10670499,
+   "order": 0,
+   "tab": "general",
+   "id": null,
+   "settingKey": "garry_mode",
+   "scopes": [
+    "user"
+   ],
+   "title": "Don't collapse tool calls (Garry Mode)",
+   "description": "Show all tool calls expanded by default instead of collapsed.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10671008,
+   "order": 0,
+   "tab": "general",
+   "id": "general:sync-agent-configs",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Sync agent configs",
+   "description": "Copy skills, slash commands, and MCP servers between Claude Code and Codex.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10680071,
+   "order": 1,
+   "tab": "git",
+   "id": "git:user-identity",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Git identity",
+   "description": "Name and email used for commits in cloud workspaces.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10680567,
+   "order": 1,
+   "tab": "git",
+   "id": "git:default-branch",
+   "settingKey": null,
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Branch new workspaces from",
+   "description": "Each workspace is an isolated copy of your codebase.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10681357,
+   "order": 1,
+   "tab": "git",
+   "id": "git:remote-origin",
+   "settingKey": null,
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Remote origin",
+   "description": "Where should we push, pull, and create PRs?",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10681947,
+   "order": 1,
+   "tab": "git",
+   "id": null,
+   "settingKey": "pull_request_open_target",
+   "scopes": [
+    "user"
+   ],
+   "title": "Open pull requests in",
+   "description": null,
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10682458,
+   "order": 1,
+   "tab": "git",
+   "id": null,
+   "settingKey": "branch_prefix_type",
+   "scopes": [
+    "user"
+   ],
+   "title": "Branch name prefix",
+   "description": "Prefix for new workspace branch names.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10683958,
+   "order": 1,
+   "tab": "git",
+   "id": null,
+   "settingKey": "auto_rename_workspace_on_branch_name_set",
+   "scopes": [
+    "user"
+   ],
+   "title": "Rename workspace when branch is named",
+   "description": "Automatically rename workspaces from their placeholder city name to the branch name generated from the first message.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10684408,
+   "order": 1,
+   "tab": "git",
+   "id": null,
+   "settingKey": "delete_branch_on_archive",
+   "scopes": [
+    "user",
+    "workspace"
+   ],
+   "title": "Delete branch on archive",
+   "description": "Delete the local branch when archiving a workspace. To delete the remote branch, configure it on GitHub.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10685838,
+   "order": 1,
+   "tab": "git",
+   "id": null,
+   "settingKey": "archive_on_merge",
+   "scopes": [
+    "user",
+    "workspace"
+   ],
+   "title": "Archive on merge",
+   "description": "Automatically archive a workspace after merging its PR in Conductor",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10686196,
+   "order": 1,
+   "tab": "git",
+   "id": null,
+   "settingKey": "automerge_enabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "Automerge",
+   "description": "Show an automerge button in the git panel when checks are pending. Requires automerge to be enabled in your GitHub repository settings. Automerge is not supported for stacked pull requests.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10686623,
+   "order": 1,
+   "tab": "git",
+   "id": null,
+   "settingKey": "treat_optional_checks_as_blocking",
+   "scopes": [
+    "user"
+   ],
+   "title": "Treat optional checks as blocking",
+   "description": "Hide the merge button when any check has failed, including checks GitHub considers optional.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10687008,
+   "order": 1,
+   "tab": "git",
+   "id": null,
+   "settingKey": "worktree_push_auto_setup_remote",
+   "scopes": [
+    "user",
+    "workspace"
+   ],
+   "title": "Set upstream on plain git push",
+   "description": "Configure new Conductor workspaces so plain git push sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10687538,
+   "order": 1,
+   "tab": "git",
+   "id": null,
+   "settingKey": "github_stacked_prs_enabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "Use GitHub stacked PRs",
+   "description": "Instruct agents that they can use `gh stack` for PR stacking.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10704261,
+   "order": 2,
+   "tab": "ports",
+   "id": "ports:exclusive-port-forwarding",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Exclusive port forwarding",
+   "description": "Turning on port forwarding in one workspace turns it off everywhere else",
+   "searchTerms": [
+    "cloud",
+    "port",
+    "forward",
+    "tunnel",
+    "localhost"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10704597,
+   "order": 2,
+   "tab": "ports",
+   "id": "ports:forwarding-strategy",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Forwarding strategies",
+   "description": "How new forwards choose their local port. Existing forwards keep their ports.",
+   "searchTerms": [
+    "cloud",
+    "port",
+    "forward",
+    "tunnel",
+    "localhost",
+    "mirror",
+    "match",
+    "strategy"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10705184,
+   "order": 2,
+   "tab": "ports",
+   "id": "ports:local-port-range",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Local port range",
+   "description": "Used for forwards that don't match their remote port number.",
+   "searchTerms": [
+    "cloud",
+    "port",
+    "forward",
+    "tunnel",
+    "localhost",
+    "range"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10705528,
+   "order": 2,
+   "tab": "ports",
+   "id": "ports:manual-overrides",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Manual overrides",
+   "description": null,
+   "searchTerms": [
+    "cloud",
+    "port",
+    "forward",
+    "tunnel",
+    "localhost",
+    "mapping",
+    "override",
+    "manual",
+    "pin",
+    "static"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10774453,
+   "order": 3,
+   "tab": "models",
+   "id": null,
+   "settingKey": "default_model",
+   "scopes": [
+    "user"
+   ],
+   "title": "Default model",
+   "description": "Model for new chats",
+   "searchTerms": [
+    "default model",
+    "loadout",
+    "model picker",
+    "favorite models"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10774962,
+   "order": 3,
+   "tab": "models",
+   "id": null,
+   "settingKey": "default_codex_personality",
+   "scopes": [
+    "user"
+   ],
+   "title": "Codex personality",
+   "description": null,
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10775326,
+   "order": 3,
+   "tab": "models",
+   "id": null,
+   "settingKey": "default_claude_personality",
+   "scopes": [
+    "user"
+   ],
+   "title": "Claude output style",
+   "description": "Choose which output style to apply to new chats. Existing chats do not change.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10776049,
+   "order": 3,
+   "tab": "models",
+   "id": null,
+   "settingKey": "review_model",
+   "scopes": [
+    "user"
+   ],
+   "title": "Review model",
+   "description": null,
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10776264,
+   "order": 3,
+   "tab": "models",
+   "id": null,
+   "settingKey": "default_plan_mode",
+   "scopes": [
+    "user"
+   ],
+   "title": "Default to plan mode in new chats",
+   "description": null,
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10645824,
+   "order": 4,
+   "tab": "advanced",
+   "id": "advanced:conductor-root",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Conductor root directory",
+   "description": "Where Conductor stores repositories and workspaces. This should be an empty directory that you don't modify directly.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10646100,
+   "order": 4,
+   "tab": "advanced",
+   "id": "advanced:claude_executable_path",
+   "settingKey": "claude_executable_path",
+   "scopes": [
+    "user"
+   ],
+   "title": "Claude Code executable path",
+   "description": "Override the bundled Claude Code executable with a custom one. Leave empty to use the bundled version (recommended).",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10646422,
+   "order": 4,
+   "tab": "advanced",
+   "id": "advanced:codex_executable_path",
+   "settingKey": "codex_executable_path",
+   "scopes": [
+    "user"
+   ],
+   "title": "Codex executable path",
+   "description": "Override the bundled Codex executable with a custom one. Leave empty to use the bundled version (recommended).",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10646730,
+   "order": 4,
+   "tab": "advanced",
+   "id": "advanced:opencode_executable_path",
+   "settingKey": "opencode_executable_path",
+   "scopes": [
+    "user"
+   ],
+   "title": "OpenCode executable path",
+   "description": "Override the bundled OpenCode executable with a custom one. Leave empty to use the bundled version (recommended).",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10647050,
+   "order": 4,
+   "tab": "advanced",
+   "id": null,
+   "settingKey": "ssh_key_path",
+   "scopes": [
+    "user"
+   ],
+   "title": "SSH private key path",
+   "description": "Use your own SSH key for cloud workspace access. Leave empty to auto-generate a key.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10647286,
+   "order": 4,
+   "tab": "advanced",
+   "id": null,
+   "settingKey": "internal_remote_local_execution_mcp",
+   "scopes": [
+    "user"
+   ],
+   "title": "Remote execution MCP",
+   "description": "Let remote agents request approved one-shot commands on this Mac. Each command still requires your approval.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10647569,
+   "order": 4,
+   "tab": "advanced",
+   "id": null,
+   "settingKey": "always_allow_local_execution",
+   "scopes": [
+    "user"
+   ],
+   "title": "Always allow local commands",
+   "description": "Run local commands from remote agents without asking. Turned on when you choose Yes always on a local command approval.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10647863,
+   "order": 4,
+   "tab": "advanced",
+   "id": null,
+   "settingKey": "auto_sync_files_in_new_cloud_workspaces",
+   "scopes": [
+    "user"
+   ],
+   "title": "Enable file sync in new cloud workspaces",
+   "description": "Start syncing when you open a local terminal or run a local task. Sync files can still be turned on per workspace.",
+   "searchTerms": [
+    "file sync",
+    "mirror",
+    "local folder"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10648446,
+   "order": 4,
+   "tab": "advanced",
+   "id": "advanced:worktree_push_auto_setup_remote",
+   "settingKey": "worktree_push_auto_setup_remote",
+   "scopes": [
+    "user"
+   ],
+   "title": "Set upstream on plain git push",
+   "description": "Configure new Conductor workspaces so plain git push sets a branch upstream. Turning this off avoids writing Git worktree config, but PR info may be less reliable until branches have an upstream.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10648868,
+   "order": 4,
+   "tab": "advanced",
+   "id": null,
+   "settingKey": "terminal_scrollback_limit_bytes",
+   "scopes": [
+    "user"
+   ],
+   "title": "Scrollback limit",
+   "description": "Approximate terminal output to keep.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10778915,
+   "order": 5,
+   "tab": "actions",
+   "id": null,
+   "settingKey": "spotlight_testing",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Use spotlight testing",
+   "description": "Replace Run with Spotlight for this repository so workspace changes are tested in the repository root.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10779978,
+   "order": 5,
+   "tab": "actions",
+   "id": null,
+   "settingKey": "custom_prompt_code_review",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Code review preferences",
+   "description": "Add custom instructions sent to the agent when you click the Review button.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10780170,
+   "order": 5,
+   "tab": "actions",
+   "id": null,
+   "settingKey": "custom_prompt_create_pr",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Create PR preferences",
+   "description": "Add custom instructions sent to the agent when you click the Create PR button.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10780359,
+   "order": 5,
+   "tab": "actions",
+   "id": null,
+   "settingKey": "custom_prompt_fix_errors",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Fix errors preferences",
+   "description": "Add custom instructions sent to the agent when you click the Fix errors button.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10780552,
+   "order": 5,
+   "tab": "actions",
+   "id": null,
+   "settingKey": "custom_prompt_resolve_merge_conflicts",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Resolve conflicts preferences",
+   "description": "Add custom instructions sent to the agent when you click the Resolve conflicts button.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10780784,
+   "order": 5,
+   "tab": "actions",
+   "id": null,
+   "settingKey": "custom_prompt_rename_branch",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Branch rename preferences",
+   "description": "Add custom instructions for generating branch names from your messages.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10780978,
+   "order": 5,
+   "tab": "actions",
+   "id": null,
+   "settingKey": "custom_prompt_general",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "General preferences",
+   "description": "Add custom instructions sent to the agent at the start of every new chat.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10808798,
+   "order": 6,
+   "tab": "misc",
+   "id": "misc:icon",
+   "settingKey": null,
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Icon",
+   "description": "Shown next to the repository name in the sidebar.",
+   "searchTerms": [
+    "icon",
+    "emoji",
+    "favicon",
+    "image",
+    "logo",
+    "upload"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10809173,
+   "order": 6,
+   "tab": "misc",
+   "id": "misc:root-path",
+   "settingKey": null,
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Root path",
+   "description": "Do not move or delete this directory. Instead, remove the repository in Conductor.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10809809,
+   "order": 6,
+   "tab": "misc",
+   "id": "misc:workspaces-path",
+   "settingKey": null,
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Workspaces path",
+   "description": "Do not move or delete the workspace subdirectories. Instead, archive workspaces in Conductor.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10810537,
+   "order": 6,
+   "tab": "misc",
+   "id": "misc:preview-url",
+   "settingKey": null,
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Preview URLs",
+   "description": "Set the terminal panel's Open URLs. The first URL is the default; additional URLs appear in its menu. Supports Conductor variables such as $CONDUCTOR_PORT. Use $((CONDUCTOR_PORT + 1)) through $((CONDUCTOR_PORT + 9)) for other allocated ports. Leave blank to detect a URL from output.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10811141,
+   "order": 6,
+   "tab": "misc",
+   "id": null,
+   "settingKey": "file_include_globs",
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Files to copy",
+   "description": "Conductor will automatically copy these file paths in each new workspace.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10811617,
+   "order": 6,
+   "tab": "misc",
+   "id": "misc:remove-repository",
+   "settingKey": null,
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Remove repository",
+   "description": "Remove this repository and its workspaces from Conductor.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10639734,
+   "order": 7,
+   "tab": "account",
+   "id": "account:identity-integrations",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Account and integrations",
+   "description": "Your Conductor account, billing, GitHub access, and Linear connection.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10643304,
+   "order": 7,
+   "tab": "account",
+   "id": null,
+   "settingKey": "enterprise_data_privacy",
+   "scopes": [
+    "user"
+   ],
+   "title": "Enterprise data privacy",
+   "description": "Disable features requiring external AI providers, such as AI generated chat titles, as well as custom MCP servers.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10643930,
+   "order": 7,
+   "tab": "account",
+   "id": null,
+   "settingKey": "tool_approvals_enabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "Claude Code tool approvals",
+   "description": "Require manual approval before agents can run tools.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10644741,
+   "order": 7,
+   "tab": "account",
+   "id": null,
+   "settingKey": "codex_tool_approval_policy",
+   "scopes": [
+    "user"
+   ],
+   "title": "Codex tool approvals",
+   "description": null,
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10645399,
+   "order": 7,
+   "tab": "account",
+   "id": "account:sign-out",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Sign out",
+   "description": "Sign out of your Conductor account.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10650376,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "internal_settings_use_defaults",
+   "scopes": [
+    "user"
+   ],
+   "title": "Use default internal and experimental settings",
+   "description": "Internal setting. Makes Conductor behave as if internal and experimental settings are set to their defaults without changing saved values.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": true
+  },
+  {
+   "offset": 10650824,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_auto_permission_mode",
+   "scopes": [
+    "user"
+   ],
+   "title": "Auto permission mode",
+   "description": "Turns on Claude auto mode.",
+   "searchTerms": [
+    "permissions",
+    "auto mode",
+    "yolo"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10651546,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_big_terminal_mode",
+   "scopes": [
+    "user"
+   ],
+   "title": "Big terminal mode",
+   "description": "Create big terminals in the center pane with ⌘⇧T",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10651911,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_new_workspace_page",
+   "scopes": [
+    "user"
+   ],
+   "title": "New workspace page",
+   "description": "Full-screen workspace creation",
+   "searchTerms": [
+    "create workspace",
+    "dispatcher",
+    "home page"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10652358,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_tab_freak_mode",
+   "scopes": [
+    "user"
+   ],
+   "title": "Tab Freak Mode",
+   "description": "Allow up to 10 chat and terminal tabs per workspace.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10652715,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_configurable_center_panel",
+   "scopes": [
+    "user"
+   ],
+   "title": "Split tabs",
+   "description": "Split the center panel and move tabs between panes.",
+   "searchTerms": [
+    "split",
+    "panes",
+    "center panel"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10653085,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_fork_to_new_tab",
+   "scopes": [
+    "user"
+   ],
+   "title": "Fork chat to new tab",
+   "description": "Fork a chat, even mid-turn, from its tab's context menu or with ⌘⌥↵.",
+   "searchTerms": [
+    "fork",
+    "branch chat"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10653537,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_in_app_browser_preview",
+   "scopes": [
+    "user"
+   ],
+   "title": "In-app browser preview",
+   "description": "Open the preview button in an in-app browser tab (with the annotation overlay) instead of your external browser.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10653986,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_legacy_file_preview_and_editing",
+   "scopes": [
+    "user"
+   ],
+   "title": "Use legacy file preview and editing",
+   "description": null,
+   "searchTerms": [
+    "diff",
+    "edit",
+    "pierre",
+    "legacy"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10654442,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_show_agent_cost",
+   "scopes": [
+    "user"
+   ],
+   "title": "Show agent cost",
+   "description": "Show estimated agent costs for cloud workspaces.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10654852,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_show_workspace_numbers",
+   "scopes": [
+    "user"
+   ],
+   "title": "Show workspace numbers",
+   "description": null,
+   "searchTerms": [
+    "number",
+    "W-"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10655262,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "internal_workspace_status_matrix",
+   "scopes": [
+    "user"
+   ],
+   "title": "Workspace status matrix",
+   "description": "Use the matrix-style workspace status indicator in Home and the sidebar.",
+   "searchTerms": [
+    "workspace",
+    "status",
+    "matrix",
+    "sidebar",
+    "home"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10655679,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_cloud_desktop",
+   "scopes": [
+    "user"
+   ],
+   "title": "Cloud desktop",
+   "description": "Show Cloud desktop tabs in cloud workspaces.",
+   "searchTerms": [
+    "desktop",
+    "VNC",
+    "sandbox"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10656032,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "local_git_forge_enabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "Add projects without GitHub",
+   "description": "Let Conductor add existing local repositories even when they are not connected to GitHub.",
+   "searchTerms": [
+    "github",
+    "local repositories",
+    "projects"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10656560,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "auto_run_after_setup",
+   "scopes": [
+    "user"
+   ],
+   "title": "Auto-run after setup",
+   "description": "Start a repository's run script automatically after a new local workspace finishes setup.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10656962,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "dashboard_enabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "Dashboard",
+   "description": "Show the dashboard and workspace sidebar.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10657250,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "voice_mode",
+   "scopes": [
+    "user"
+   ],
+   "title": "Voice mode",
+   "description": "Enables speech-to-text in the chat composer. Press Ctrl+Shift+D to start dictating.",
+   "searchTerms": [
+    "dictation",
+    "speech to text",
+    "microphone"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10657644,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "sidebar_resource_usage",
+   "scopes": [
+    "user"
+   ],
+   "title": "Show sidebar resource usage",
+   "description": "Shows CPU and memory usage in the workspace sidebar footer.",
+   "searchTerms": [
+    "cpu",
+    "memory",
+    "ram"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10658054,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "experimental_sidebar_transparency",
+   "scopes": [
+    "user"
+   ],
+   "title": "Sidebar transparency",
+   "description": "Use native macOS vibrancy behind the workspace sidebar. Takes effect after you restart Conductor.",
+   "searchTerms": [
+    "vibrancy",
+    "translucent",
+    "blur"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10658566,
+   "order": 8,
+   "tab": "experimental",
+   "id": null,
+   "settingKey": "graphite_disabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "Graphite stack support",
+   "description": "Detect Graphite stacks for the active local workspace and show stack-aware UI in the git panel. Cloud workspaces are unaffected. When off, Conductor never runs the gt CLI.",
+   "searchTerms": [
+    "graphite",
+    "gt",
+    "stack",
+    "stacked prs"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10724485,
+   "order": 9,
+   "tab": "internal",
+   "id": "internal:build-commit",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Build commit",
+   "description": "The commit this build was made from.",
+   "searchTerms": [
+    "sha",
+    "version",
+    "git"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10725016,
+   "order": 9,
+   "tab": "internal",
+   "id": "internal:settings-use-defaults",
+   "settingKey": "internal_settings_use_defaults",
+   "scopes": [
+    "user"
+   ],
+   "title": "Use default internal and experimental settings",
+   "description": "Make Conductor behave as if internal and experimental settings are set to their defaults without changing the saved values.",
+   "searchTerms": [],
+   "excludeFromSearch": true,
+   "internalOnly": false
+  },
+  {
+   "offset": 10725480,
+   "order": 9,
+   "tab": "internal",
+   "id": "internal:log-viewer",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Log viewer",
+   "description": "Open the app log viewer for this Conductor instance.",
+   "searchTerms": [
+    "logs",
+    "app logs",
+    "debug"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10725679,
+   "order": 9,
+   "tab": "internal",
+   "id": "internal:app-logger-token",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "App logger token",
+   "description": null,
+   "searchTerms": [
+    "logs",
+    "debug",
+    "bearer token"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10725831,
+   "order": 9,
+   "tab": "internal",
+   "id": "internal:onboarding",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Onboarding",
+   "description": "Open the real onboarding flows the way new users see them. Anything you change inside them is saved.",
+   "searchTerms": [
+    "first run",
+    "welcome",
+    "join organization"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10726465,
+   "order": 9,
+   "tab": "internal",
+   "id": "internal:new-member-simulation",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "New member onboarding state",
+   "description": "Treat a shared org's membership as not onboarded: the org switcher shows the switch callout, and switching to the org shows new member onboarding. Cleared on relaunch. Reset forgets which orgs' callouts were dismissed on this Mac.",
+   "searchTerms": [
+    "callout",
+    "coach mark",
+    "switch org",
+    "dismiss",
+    "join organization"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10726983,
+   "order": 9,
+   "tab": "internal",
+   "id": null,
+   "settingKey": "internal_terminal_render_debug_log",
+   "scopes": [
+    "user"
+   ],
+   "title": "Terminal render debug log",
+   "description": "Log raw terminal input/output and renderer events through the app logger.",
+   "searchTerms": [
+    "terminal",
+    "xterm",
+    "renderer"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10727560,
+   "order": 9,
+   "tab": "internal",
+   "id": null,
+   "settingKey": "internal_frame_drop_logging",
+   "scopes": [
+    "user"
+   ],
+   "title": "Frame drop logging",
+   "description": "Log any frame that takes more than 200ms to render through the app logger, to help diagnose UI freezes. Will prevent app from going idle, might increase battery + CPU usage.",
+   "searchTerms": [
+    "performance",
+    "freeze",
+    "jank"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10728037,
+   "order": 9,
+   "tab": "internal",
+   "id": null,
+   "settingKey": "internal_remote_file_sync_mode",
+   "scopes": [
+    "user"
+   ],
+   "title": "Cloud file sync trigger",
+   "description": "Choose whether cloud file sync polls or waits for workspace change signals.",
+   "searchTerms": [
+    "poll",
+    "push",
+    "file sync"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10728720,
+   "order": 9,
+   "tab": "internal",
+   "id": null,
+   "settingKey": "internal_cloud_workspaces_independent_of_local_repos",
+   "scopes": [
+    "user"
+   ],
+   "title": "Keep cloud workspaces independent from local repositories",
+   "description": "Prevent cloud workspaces from attaching to matching repositories on this Mac.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10729160,
+   "order": 9,
+   "tab": "internal",
+   "id": null,
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Paginated desktop workspace sync",
+   "description": "Load cloud workspaces through the paginated workspace API. Takes effect after restarting Conductor.",
+   "searchTerms": [
+    "pagination",
+    "workspace sync"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10729593,
+   "order": 9,
+   "tab": "internal",
+   "id": null,
+   "settingKey": "internal_request_metadata",
+   "scopes": [
+    "user"
+   ],
+   "title": "Request metadata",
+   "description": "Show requested and returned model/runtime metadata in the context hover card and turn tooltips.",
+   "searchTerms": [
+    "model",
+    "runtime",
+    "debug"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10729991,
+   "order": 9,
+   "tab": "internal",
+   "id": null,
+   "settingKey": "internal_claude_token_usage_tracking",
+   "scopes": [
+    "user"
+   ],
+   "title": "Claude token usage tracking",
+   "description": "Track Claude token usage totals, show them in context usage, and log turn totals to Honeycomb.",
+   "searchTerms": [
+    "tokens",
+    "context",
+    "honeycomb"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10730417,
+   "order": 9,
+   "tab": "internal",
+   "id": null,
+   "settingKey": "internal_verbose_logging",
+   "scopes": [
+    "user"
+   ],
+   "title": "Verbose logging",
+   "description": "Enable extra diagnostic logs in the frontend, Rust host, and sidecar.",
+   "searchTerms": [
+    "logs",
+    "debug"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10730766,
+   "order": 9,
+   "tab": "internal",
+   "id": null,
+   "settingKey": "internal_tauri_http_proxy_url",
+   "scopes": [
+    "user"
+   ],
+   "title": "Tauri HTTP proxy",
+   "description": "Route native Tauri HTTP requests through a local proxy. Applies immediately to requests made through the shared Tauri fetch wrapper. Leave blank to disable.",
+   "searchTerms": [
+    "proxy",
+    "http",
+    "charles",
+    "mitm"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10731602,
+   "order": 9,
+   "tab": "internal",
+   "id": null,
+   "settingKey": "internal_sidecar_exp_session_log",
+   "scopes": [
+    "user"
+   ],
+   "title": "Save workspace session logs",
+   "description": "Persist frontend-ingested session events on disk.",
+   "searchTerms": [
+    "session logs",
+    "transcript",
+    "debug"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10732157,
+   "order": 9,
+   "tab": "internal",
+   "id": "internal:crash-test",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Crash test",
+   "description": "Trigger a crash to validate error reporting in Sentry.",
+   "searchTerms": [
+    "crash",
+    "sentry",
+    "error reporting"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10732838,
+   "order": 9,
+   "tab": "internal",
+   "id": "internal:error-reporting-test",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Error reporting test",
+   "description": "Trigger logged, request-scoped, and async errors in Roundhouse and a ready cloud workspace.",
+   "searchTerms": [
+    "sentry",
+    "error reporting",
+    "roundhouse"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10733183,
+   "order": 9,
+   "tab": "internal",
+   "id": "internal:agent-binaries",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Agent binaries",
+   "description": "Re-download the pinned Claude / Codex binary, and inject artificial failures to exercise the retry UI. Failure counts are in-memory only — they reset on app restart.",
+   "searchTerms": [
+    "download",
+    "claude code",
+    "codex",
+    "retry"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10733591,
+   "order": 9,
+   "tab": "internal",
+   "id": "internal:feature-flags",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Feature flags",
+   "description": "Feature flags received from PostHog for the current user. Toggle to override locally.",
+   "searchTerms": [
+    "posthog",
+    "flags",
+    "override"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10778135,
+   "order": 10,
+   "tab": "organization-preferences",
+   "id": "organization-preferences:pr-workspace-link",
+   "settingKey": null,
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "Include link to workspace in PR description",
+   "description": null,
+   "searchTerms": [
+    "pull request",
+    "workspace link",
+    "github"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10812601,
+   "order": 11,
+   "tab": "appearance",
+   "id": null,
+   "settingKey": "colored_sidebar_diffs",
+   "scopes": [
+    "user"
+   ],
+   "title": "Colored sidebar diffs",
+   "description": "Always show line change colors in the sidebar, even for unselected workspaces.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10812850,
+   "order": 12,
+   "tab": "appearance",
+   "id": null,
+   "settingKey": "file_ligatures_enabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "Code ligatures",
+   "description": "Use font ligatures in file editors and diffs.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10813060,
+   "order": 13,
+   "tab": "appearance",
+   "id": "appearance:theme",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Theme",
+   "description": "Switch between light, dark, and system appearance.",
+   "searchTerms": [
+    "dark mode",
+    "light mode",
+    "system"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10813279,
+   "order": 14,
+   "tab": "appearance",
+   "id": null,
+   "settingKey": "low_contrast_dark_mode",
+   "scopes": [
+    "user"
+   ],
+   "title": "Low-contrast dark mode",
+   "description": "Soften the app's colors when using the dark theme.",
+   "searchTerms": [
+    "contrast",
+    "dark mode",
+    "composer",
+    "dim"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10813556,
+   "order": 15,
+   "tab": "appearance",
+   "id": null,
+   "settingKey": "zoom_level_v2",
+   "scopes": [
+    "user"
+   ],
+   "title": "App zoom",
+   "description": "Adjust the size of the Conductor interface.",
+   "searchTerms": [
+    "display",
+    "scale",
+    "zoom in",
+    "zoom out"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10813781,
+   "order": 16,
+   "tab": "appearance",
+   "id": null,
+   "settingKey": "color_vision",
+   "scopes": [
+    "user"
+   ],
+   "title": "Accessible colors",
+   "description": "Theme optimized for color vision differences.",
+   "searchTerms": [
+    "colorblind",
+    "deuteranopia",
+    "protanopia",
+    "tritanopia"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10814031,
+   "order": 17,
+   "tab": "appearance",
+   "id": null,
+   "settingKey": "code_theme",
+   "scopes": [
+    "user"
+   ],
+   "title": "Code theme",
+   "description": "Syntax highlighting theme for code and diffs.",
+   "searchTerms": [
+    "syntax",
+    "highlighting",
+    "editor"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10814251,
+   "order": 18,
+   "tab": "appearance",
+   "id": null,
+   "settingKey": "mono_font",
+   "scopes": [
+    "user"
+   ],
+   "title": "Mono Font",
+   "description": "Font used for code and diffs.",
+   "searchTerms": [
+    "monospace",
+    "typeface",
+    "font family",
+    "code font"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10814469,
+   "order": 19,
+   "tab": "appearance",
+   "id": null,
+   "settingKey": "markdown_style",
+   "scopes": [
+    "user"
+   ],
+   "title": "Markdown Style",
+   "description": "Rendering style for markdown files.",
+   "searchTerms": [
+    "prose",
+    "preview"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10814672,
+   "order": 20,
+   "tab": "appearance",
+   "id": "appearance:terminal",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Terminal font",
+   "description": "Font family and size for the terminal.",
+   "searchTerms": [
+    "terminal font size",
+    "monospace",
+    "font family"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10814903,
+   "order": 21,
+   "tab": "appearance",
+   "id": "appearance-panel",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Appearance settings",
+   "description": "Theme, typography, color, and editor appearance.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10815095,
+   "order": 22,
+   "tab": "providers",
+   "id": "providers:claude",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Claude Code harness",
+   "description": "Configure Claude Code authentication and behavior.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10815306,
+   "order": 23,
+   "tab": "providers",
+   "id": null,
+   "settingKey": "chrome_mode_enabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "Use Claude Code with Chrome",
+   "description": null,
+   "searchTerms": [
+    "browser"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10815468,
+   "order": 24,
+   "tab": "providers",
+   "id": "providers:codex",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Codex harness",
+   "description": "Configure Codex authentication and behavior.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10815665,
+   "order": 25,
+   "tab": "providers",
+   "id": "providers:cursor",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Cursor harness",
+   "description": "Configure Cursor authentication and behavior.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10815866,
+   "order": 26,
+   "tab": "providers",
+   "id": "providers-panel",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Agent settings",
+   "description": "Configure Claude Code, Codex, Cursor, and ACP agents.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10816143,
+   "order": 27,
+   "tab": "environment",
+   "id": "environment-panel",
+   "settingKey": null,
+   "scopes": [
+    "user",
+    "workspace"
+   ],
+   "title": "Environment settings",
+   "description": "Environment variables, files, and preview URLs.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10816494,
+   "order": 28,
+   "tab": "scripts",
+   "id": "scripts-panel",
+   "settingKey": null,
+   "scopes": [
+    "workspace"
+   ],
+   "title": "Repository scripts",
+   "description": "Setup and run scripts for the selected repository.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10816725,
+   "order": 29,
+   "tab": "terminal",
+   "id": "terminal-panel",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Big terminal settings",
+   "description": "Configure the experimental center-pane terminal.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10816915,
+   "order": 30,
+   "tab": "setup-cloud",
+   "id": "cloud-setup-panel",
+   "settingKey": null,
+   "scopes": [
+    "organization"
+   ],
+   "title": "Cloud setup",
+   "description": "Configure cloud workspaces and templates.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10817124,
+   "order": 31,
+   "tab": "organization-members",
+   "id": "organization-members-panel",
+   "settingKey": null,
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "Organization members",
+   "description": "Manage organization membership.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10817336,
+   "order": 32,
+   "tab": "organization-computer",
+   "id": "organization-computer-panel",
+   "settingKey": null,
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "Cloud computer",
+   "description": "Configure the organization's cloud computer.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10817557,
+   "order": 33,
+   "tab": "organization-environment",
+   "id": "organization-environment-panel",
+   "settingKey": null,
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "Environment",
+   "description": "Configure personal and shared cloud environment variables.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10817795,
+   "order": 34,
+   "tab": "organization-prompts",
+   "id": "organization-prompts-panel",
+   "settingKey": null,
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "Prompts",
+   "description": "Custom instructions for the Review, Create PR, and Resolve conflicts buttons.",
+   "searchTerms": [
+    "prompts",
+    "custom instructions",
+    "code review",
+    "create pr",
+    "resolve conflicts",
+    "merge conflicts"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10818150,
+   "order": 35,
+   "tab": "organization-mcp-servers",
+   "id": "organization-mcp-servers-panel",
+   "settingKey": null,
+   "scopes": [
+    "organizationSettings"
+   ],
+   "title": "MCPs",
+   "description": "Configure MCP servers for cloud workspaces.",
+   "searchTerms": [],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10720610,
+   "order": null,
+   "tab": "internal",
+   "id": null,
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Developer metrics bar",
+   "description": null,
+   "searchTerms": [
+    "debug",
+    "performance",
+    "queries"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10720919,
+   "order": null,
+   "tab": "internal",
+   "id": null,
+   "settingKey": "internal_workspace_tabs",
+   "scopes": [
+    "user"
+   ],
+   "title": "Use workspace tabs",
+   "description": "Show open workspaces as browser-style tabs across the top of the window, after a fixed Home tab. Only applies in team organizations.",
+   "searchTerms": [
+    "sidebar",
+    "tabs",
+    "browser",
+    "home"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10721665,
+   "order": null,
+   "tab": "internal",
+   "id": "internal:claude-initial-permission-mode",
+   "settingKey": "internal_claude_initial_permission_mode",
+   "scopes": [
+    "user"
+   ],
+   "title": "Initial Claude permission mode",
+   "description": "Set the native Claude permission mode for new local Claude sessions. Inherit preserves the existing Conductor behavior.",
+   "searchTerms": [
+    "claude",
+    "permissions",
+    "auto",
+    "bypassPermissions"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10722391,
+   "order": null,
+   "tab": "internal",
+   "id": "internal:codex-initial-permission-config",
+   "settingKey": "internal_codex_initial_permission_config",
+   "scopes": [
+    "user"
+   ],
+   "title": "Initial Codex approval policy and sandbox",
+   "description": "Set native Codex approval policy and sandbox values for new local Codex sessions. Inherit preserves the existing Conductor behavior.",
+   "searchTerms": [
+    "codex",
+    "permissions",
+    "approval policy",
+    "sandbox",
+    "workspace-write",
+    "danger-full-access"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  },
+  {
+   "offset": 10723188,
+   "order": null,
+   "tab": "internal",
+   "id": null,
+   "settingKey": "unstarted_workspaces_enabled",
+   "scopes": [
+    "user"
+   ],
+   "title": "Unstarted workspaces",
+   "description": null,
+   "searchTerms": [
+    "backlog",
+    "tasks",
+    "unstarted",
+    "dispatcher"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": true
+  },
+  {
+   "offset": 10723562,
+   "order": null,
+   "tab": "internal",
+   "id": "internal:sidecar-http-health",
+   "settingKey": null,
+   "scopes": [
+    "user"
+   ],
+   "title": "Sidecar HTTP health",
+   "description": null,
+   "searchTerms": [
+    "sidecar",
+    "http",
+    "health",
+    "loopback"
+   ],
+   "excludeFromSearch": false,
+   "internalOnly": false
+  }
+ ]
+}

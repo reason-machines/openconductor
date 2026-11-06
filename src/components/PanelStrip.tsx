@@ -36,6 +36,8 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd 
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [restored, setRestored] = useState(false);
+  // The tab row's right end, where the Run tab puts its Open button (Conductor's `ml-auto pl-2 gap-2` group).
+  const [actionsEl, setActionsEl] = useState<HTMLDivElement | null>(null);
 
   // The workspace's terminals from the last launch come back as tabs (not shown until picked).
   useEffect(() => {
@@ -138,6 +140,7 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd 
         <button type="button" className="rp-icon" aria-label="New terminal" title="New terminal" disabled={busy || !canOpenTerminal(terms, tabFreakMode)} onClick={() => void newTerminal()}>
           <PlusIcon />
         </button>
+        {view === "run" && <div className="ws-strip-actions" ref={setActionsEl} />}
         {/* Not in the reference capture (it has no terminal open); kept so scrollback can be cleared without ⌘K, which the command palette also takes. */}
         {showTerminal && (
           <button type="button" className="rp-icon ws-strip-end" aria-label="Clear terminal scrollback" title="Clear terminal scrollback" onClick={() => clearTab(activeTerm.id)}>
@@ -148,7 +151,7 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd 
       {open && error && <div className="term-error">{error}</div>}
       {/* Kept mounted while hidden, so run output and the setup state keep coming in. */}
       <div className="ws-strip-body" hidden={!open || view === "terminal"}>
-        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} onSetupState={onSetupState} onAddRunScript={addRunScript} onShowRun={showRun} />
+        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} active={view === "run"} actionsSlot={view === "run" ? actionsEl : null} onSetupState={onSetupState} onAddRunScript={addRunScript} onShowRun={showRun} />
       </div>
       {showTerminal && (
         <section className="terminal-panel" aria-label="Terminal">

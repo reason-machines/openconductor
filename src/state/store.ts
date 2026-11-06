@@ -262,8 +262,9 @@ const demoPr = (over: Partial<RowPr>): RowPr => ({
 
 /** Sample data for screenshots and demos: open the app with `?demo=1`. */
 export function demoState(): AppState {
+  let number = 0;
   const ws = (name: string, session: SessionStatus, added: number, removed: number): Workspace => ({
-    id: newId(), name, branch: name, status: "idle", ...(session !== "idle" ? { sessionStatus: session } : {}), diff: { added, removed }, createdAt: Date.now(),
+    id: newId(), name, branch: name, status: "idle", ...(session !== "idle" ? { sessionStatus: session } : {}), diff: { added, removed }, createdAt: Date.now(), number: ++number,
     // A worktree path so the right panel's All files tab has a tree (demo files outside Tauri).
     path: `/Users/you/conductor/workspaces/openconductor/${name}`,
   });

@@ -174,6 +174,16 @@ pub async fn archive_script_run(
     Ok(result.map(|(exit_code, output)| ArchiveResultDto { exit_code, output }))
 }
 
+/// Variables for the Run tab's Open URL templates (`preview_urls`), as
+/// ordered `[name, value]` pairs.
+#[tauri::command]
+pub fn run_script_preview_env(
+    scripts: State<'_, ScriptService>,
+    workspace: WorkspaceRef,
+) -> Result<Vec<(String, String)>, String> {
+    scripts.preview_env(&workspace)
+}
+
 #[tauri::command]
 pub fn run_script_output(
     scripts: State<'_, ScriptService>,

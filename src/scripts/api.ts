@@ -46,6 +46,12 @@ export async function runOutput(workspaceId: string, scriptId: string): Promise<
   return invoke<string | null>("run_script_output", { workspaceId, scriptId });
 }
 
+/** The `CONDUCTOR_*` variables the Run tab's Open URLs expand with, as ordered pairs. */
+export async function previewEnv(workspace: WorkspaceRef): Promise<[string, string][]> {
+  if (!inTauri()) return browser.previewEnv(workspace);
+  return invoke<[string, string][]>("run_script_preview_env", { workspace });
+}
+
 export async function startRun(workspace: WorkspaceRef, scriptId: string | null): Promise<string> {
   if (!inTauri()) return browser.startRun(workspace.workspaceId, scriptId ?? "dev");
   return invoke<string>("run_script_start", { workspace, scriptId });
@@ -119,6 +125,16 @@ const browser = {
   cancelSetup(id: string) {
     const s = this.setupStatus(id);
     this.setup.set(id, { ...s, state: "cancelled" });
+  },
+  previewEnv(ws: WorkspaceRef): [string, string][] {
+    return [
+      ["CONDUCTOR_WORKSPACE_NAME", ws.workspaceName],
+      ["CONDUCTOR_WORKSPACE_PATH", ws.workspacePath],
+      ["CONDUCTOR_ROOT_PATH", ws.repoRoot],
+      ["CONDUCTOR_DEFAULT_BRANCH", ws.targetBranch ?? ws.defaultBranch],
+      ["CONDUCTOR_PORT", "55000"],
+      ["CONDUCTOR_IS_LOCAL", "1"],
+    ];
   },
   runs(id: string): RunStatus[] {
     return [...this.states.values()].filter((s) => s.workspaceId === id);

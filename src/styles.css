@@ -228,6 +228,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .ws-header { display: flex; flex: none; align-items: center; justify-content: space-between; gap: 12px; box-sizing: border-box; height: 40px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--border); background: var(--panel); }
 .app.sidebar-hidden .ws-header { padding-left: calc(16px + var(--traffic-lights-clearance)); }
 .ws-title { display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; white-space: nowrap; }
+.ws-number { flex-shrink: 0; height: 24px; padding: 0 6px; border: 0; border-radius: 4px; background: none; font-family: var(--font-mono); font-size: 13px; color: var(--muted); cursor: pointer; }
+.ws-number:hover { background: var(--hover); color: var(--text); }
 /* Header actions row: Conductor's header group is "flex items-center gap-1.5" and its
    buttons use the xs button size (h-6 px-2 text-xs gap-1.5 rounded-sm, icons size-3),
    so Open in, the PR control and Archive share one 24px height and centre line. */
