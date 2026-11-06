@@ -19,6 +19,8 @@
 //!   policy and sandbox, or inherit) and the `codex app-server` command line.
 //! * [`codex_rpc`] - the JSON-RPC requests the app sends a running `codex
 //!   app-server`: handshake, threads, turns and approval answers.
+//! * [`codex_consent`] - MCP elicitations and permission requests that
+//!   wait on the user (`needs_user_input`), and the answers Codex expects.
 //! * [`codex_events`] - what the app-server sends back: responses, approval
 //!   requests and turn notifications.
 //! * [`codex_session`] - a running `codex app-server`: JSON-RPC calls that
@@ -54,6 +56,7 @@ pub mod claude_session;
 pub mod claude_stream;
 pub mod codex;
 pub mod codex_cli;
+pub mod codex_consent;
 pub mod codex_events;
 pub mod codex_rpc;
 pub mod codex_runner;
