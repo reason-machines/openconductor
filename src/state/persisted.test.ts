@@ -56,11 +56,15 @@ test("selection falls back to home when its workspace is gone", () => {
 });
 
 test("prefs round-trip and survive garbage", () => {
-  const repos = reposFromDb([repo("a"), repo("b")], [], ["b"]);
+  const repos = reposFromDb([repo("a"), repo("b"), repo("c")], [], ["b"]);
+  // c was unfolded by hand; a was never toggled and follows the open workspace.
+  repos[2].collapsed = false;
   const prefs = prefsOf({ repos, selection: { kind: "home" }, sidebarVisible: false });
-  assert.deepEqual(parsePrefs(JSON.stringify(prefs)), { selection: { kind: "home" }, sidebarVisible: false, collapsed: ["b"] });
-  assert.deepEqual(parsePrefs("{nope"), { selection: { kind: "root" }, collapsed: [] });
-  assert.deepEqual(parsePrefs(null), { selection: { kind: "root" }, collapsed: [] });
+  assert.deepEqual(parsePrefs(JSON.stringify(prefs)), { selection: { kind: "home" }, sidebarVisible: false, collapsed: ["b"], expanded: ["c"] });
+  // Prefs saved before `expanded` existed.
+  assert.deepEqual(parsePrefs(JSON.stringify({ selection: { kind: "root" }, collapsed: ["b"] })), { selection: { kind: "root" }, sidebarVisible: undefined, collapsed: ["b"], expanded: [] });
+  assert.deepEqual(parsePrefs("{nope"), { selection: { kind: "root" }, collapsed: [], expanded: [] });
+  assert.deepEqual(parsePrefs(null), { selection: { kind: "root" }, collapsed: [], expanded: [] });
 });
 
 test("sidebar: pin, unread and status columns reach the workspace", () => {

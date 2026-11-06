@@ -15,7 +15,7 @@ import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
 import { RepoWorkspaceList } from "./PendingWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
-import { pinnedEntries, repoGroupWorkspaces, sectionEntries, type SidebarSection } from "../state/sidebarOrder";
+import { isRepoCollapsed, pinnedEntries, repoGroupWorkspaces, sectionEntries, type SidebarSection } from "../state/sidebarOrder";
 import { newId } from "../state/names";
 import { SectionDialog, type SectionDialogMode } from "./SectionDialog";
 import { useSidebarDrag, type WorkspaceRef } from "./useSidebarDrag";
@@ -470,7 +470,9 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
           <Droppable droppableId="repo-list">
             {(drop, dropState) => (
           <div className="sb-repo-groups" ref={drop.innerRef} {...drop.droppableProps} data-dragging-over={dropState.isDraggingOver || undefined}>
-            {listed.map((repo, repoIndex) => (
+            {listed.map((repo, repoIndex) => {
+              const folded = isRepoCollapsed(repo, sel, sectioned);
+              return (
           <Draggable key={repo.id} draggableId={repo.id} index={repoIndex} isDragDisabled={!canDrag}>
             {(drag, dragState) => (
           <div
@@ -485,7 +487,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
                 className="sb-repo-header"
                 role="button"
                 tabIndex={0}
-                aria-expanded={!repo.collapsed}
+                aria-expanded={!folded}
                 onClick={() => dispatch({ type: "toggleRepo", repoId: repo.id })}
                 onContextMenu={(e) => { e.preventDefault(); setRepoContext({ repoId: repo.id, x: e.clientX, y: e.clientY }); }}
                 onKeyDown={(e) => {
@@ -497,10 +499,10 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
                 <div className="sb-repo-main">
                   <span className="sb-repo-lead">
                     <RepoIcon repo={repo} />
-                    <span className="sb-repo-chevron" aria-hidden>{repo.collapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}</span>
+                    <span className="sb-repo-chevron" aria-hidden>{folded ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}</span>
                   </span>
                   <span className="sb-repo-name" data-hidden={repo.hidden || undefined}>{repo.name}</span>
-                  {repo.collapsed && repo.workspaces.length > 0 && <span className="sb-repo-count">{repo.workspaces.length}</span>}
+                  {folded && repo.workspaces.length > 0 && <span className="sb-repo-count">{repo.workspaces.length}</span>}
                 </div>
                 <span className="sb-repo-spacer" aria-hidden />
                 <button
@@ -516,7 +518,8 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
               <HeaderMenu label={repo.name} className="sb-repo-menu" contextOpen={repoContext?.repoId === repo.id} items={repoMenu(repo)} />
               {repoContext?.repoId === repo.id && <HeaderContextMenu label={repo.name} items={repoMenu(repo)} at={repoContext} onClose={closeRepoContext} />}
             </div>
-            <RepoWorkspaceList repoId={repo.id} collapsed={!!repo.collapsed} isEmpty={repo.workspaces.length === 0} empty={<p className="ws-empty">No workspaces</p>}>
+            {/* An unfolded group with no rows is empty, with no placeholder line (Conductor's `Dra`). */}
+            <RepoWorkspaceList repoId={repo.id} collapsed={folded} isEmpty={repo.workspaces.length === 0} empty={null}>
               <SidebarPresence>
                 {repoGroupWorkspaces(repo.workspaces, sectioned).map((ws, i) => (
                   <SidebarRowMotion key={ws.id} listIndex={i}>
@@ -528,7 +531,8 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
           </div>
             )}
           </Draggable>
-            ))}
+              );
+            })}
             {drop.placeholder}
             {hasHiddenRepos(state.repos) && (
               <button type="button" className="sb-show-hidden" onClick={() => setShowHidden(!showHidden)}>

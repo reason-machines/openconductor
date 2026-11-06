@@ -44,10 +44,13 @@ const css = (selector) => ({ kind: "css", selector });
 
 /** An invented setup script for the idle state, the same on both sides. */
 const SETUP_SCRIPT = "npm install";
+/** An invented run script for the Run tab's idle state, the same on both sides. */
+const RUN_SCRIPT = "npm run dev";
 // The workspace tools/ui-map/states.json's workspace-new-chat opens (an empty chat, like the
 // OpenConductor fixture's), so the chat area does not weigh on the score; then the strip's Setup tab.
 const REF_OPEN = [css("text=tide-web"), css("text=Ada/dark mode tokens")];
 const SETUP_TAB = css("[role=tab] >> text=Setup");
+const RUN_TAB = css("[role=tab] >> text=Run");
 
 // The right-panel fixture plus a second, unread workspace, as the harness seeds one
 // ("Add search to settings"), so both sides show the composer's "Next unread".
@@ -59,6 +62,23 @@ const OC_SHELL = {
 const STATES = {
   "panel-setup-add": { ref: [...REF_OPEN, SETUP_TAB], oc: [SETUP_TAB], setup: null, uiMap: "panel-setup-add", image: "terminal-scripts-01-setup-add.png" },
   "panel-setup-idle": { ref: [...REF_OPEN, SETUP_TAB], oc: [SETUP_TAB], setup: SETUP_SCRIPT, uiMap: "panel-setup-idle", image: "terminal-scripts-02-setup-idle.png" },
+  "panel-run-add": { ref: [...REF_OPEN, RUN_TAB], oc: [RUN_TAB], setup: null, uiMap: "panel-run-add", image: "terminal-scripts-03-run-add.png" },
+  // Conductor's startup Xcode license check (`HBr`) over the Run tab: both shells answer
+  // `xcodebuild -license check` as an unaccepted license (?oc_xcode_license=unaccepted).
+  "toast-xcode-license": { ref: [...REF_OPEN, RUN_TAB], oc: [RUN_TAB], setup: null, xcode: "unaccepted", wait: css("text=Xcode license is not accepted"), uiMap: "toast-xcode-license", image: "terminal-scripts-05-xcode-license.png" },
+  // Settings › tide-web › Scripts › Add › Save when the repository's settings file cannot be written:
+  // Conductor's settings service says "Failed to save setting" (index `Sz`), not `ama`'s own toast.
+  "toast-save-setting-failed": {
+    ref: [css("button:text-is('Add')"), css("[role=dialog] button:has-text('Save')")],
+    refPath: "/settings/repos/repo-tide-web/scripts",
+    oc: [RUN_TAB, css("button:has-text('Add run script')"), css("button:text-is('Add')"), css("[role=dialog] button:has-text('Save')")],
+    setup: null,
+    failWrite: true,
+    wait: css("text=Failed to save setting"),
+    uiMap: "toast-save-setting-failed",
+    image: "terminal-scripts-06-save-setting-failed.png",
+  },
+  "panel-run-idle": { ref: [...REF_OPEN, RUN_TAB], oc: [RUN_TAB], setup: null, run: RUN_SCRIPT, uiMap: "panel-run-idle", image: "terminal-scripts-04-run-idle.png" },
 };
 
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".woff2": "font/woff2", ".json": "application/json" };
@@ -72,7 +92,10 @@ function serveOc() {
       let body = fs.readFileSync(file);
       if (file.endsWith("index.html")) {
         const setupScript = url.searchParams.get("oc_setup_script");
-        const init = `(${fakeBackend})(${JSON.stringify({ shell: OC_SHELL, files: FILES, setupScript })});`;
+        const runScript = url.searchParams.get("oc_run_script");
+        const xcodeLicense = url.searchParams.get("oc_xcode_license") ?? "accepted";
+        const failSettingsWrite = url.searchParams.has("oc_fail_settings_write");
+        const init = `(${fakeBackend})(${JSON.stringify({ shell: OC_SHELL, files: FILES, setupScript, runScript, xcodeLicense, failSettingsWrite })});`;
         body = body.toString().replace("<head>", `<head><script>${init}</script>`);
       }
       res.writeHead(200, { "content-type": TYPES[path.extname(file)] ?? "application/octet-stream" });
@@ -111,12 +134,14 @@ function compare(name, a, b) {
   return res;
 }
 
-function capture(name, url, clicks) {
+function capture(name, url, clicks, waitFor = null) {
   const actions = [{ step_id: "settle", action: "wait_for_timeout", duration_ms: 4000 }];
   clicks.forEach((locator, i) => {
     actions.push({ step_id: `c${i}`, action: "click", locator, timeout_ms: 5000 });
     actions.push({ step_id: `p${i}`, action: "wait_for_timeout", duration_ms: 1200 });
   });
+  // A state that appears on its own (a startup toast) is waited for before the screenshot.
+  if (waitFor) actions.push({ step_id: "wait", action: "wait_for", locator: waitFor, state: "visible", timeout_ms: 30000 });
   // REA has no pointer-move action, so the pointer stays on the Setup tab it clicked (tools/ui-map/REA-GAPS.md).
   actions.push({ step_id: "final", action: "wait_for_timeout", duration_ms: 800 });
   const input = {
@@ -167,10 +192,10 @@ async function main() {
   try {
     for (const [state, spec] of Object.entries(STATES)) {
       if (only.length && !only.includes(state)) continue;
-      const q = `oc_scenario=populated&oc_theme=dark${spec.setup ? `&oc_setup_script=${encodeURIComponent(spec.setup)}` : ""}`;
+      const q = `oc_scenario=populated&oc_theme=dark${spec.setup ? `&oc_setup_script=${encodeURIComponent(spec.setup)}` : ""}${spec.run ? `&oc_run_script=${encodeURIComponent(spec.run)}` : ""}${spec.xcode ? `&oc_xcode_license=${spec.xcode}` : ""}${spec.failWrite ? "&oc_fail_settings_write=1" : ""}`;
       try {
-        const { png: refPng, ...ref } = capture(`ref-${state}`, `http://conductor.localhost:${REF_PORT}/?${q}`, spec.ref);
-        const { png: ocPng, ...oc } = capture(`oc-${state}`, `http://localhost:${OC_PORT}/?${q}`, spec.oc);
+        const { png: refPng, ...ref } = capture(`ref-${state}`, `http://conductor.localhost:${REF_PORT}${spec.refPath ?? "/"}?${q}`, spec.ref, spec.wait);
+        const { png: ocPng, ...oc } = capture(`oc-${state}`, `http://localhost:${OC_PORT}/?${q}`, spec.oc, spec.wait);
         manifest[state] = { tool: "rea capture-browser-scenario", viewport: VIEWPORT, theme: "dark", ref, oc };
         let line = `${state}: ref ${ref.evidence_id} | oc ${oc.evidence_id}`;
         if (RECORD) {

@@ -59,6 +59,22 @@ st("panel-setup-add","Terminal panel: Setup, no setup script", ref(actions=[{"cl
 st("panel-setup-idle","Terminal panel: Setup, before setup runs", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Setup"}], query={"oc_setup_script":"npm install"}),
    oc_reason="the lane's seeded repositories have no setup script; tools/side-by-side/setup-tab.mjs captures this state",
    covers=[{"kind":"empty-state","name":"No setup script output"}])
+# The Run tab next to it: no run script (the dashed "Add run script" card), and a run script that
+# has not run yet (Conductor's idle "Start Run" view and the strip's run split button).
+RUN_TAB=[{"click":".ws-strip-tabs [role=tab]","text":"Run","after_ms":800}]
+st("panel-run-add","Terminal panel: Run, no run script", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Run"}]), oc=OPEN_WS+RUN_TAB)
+st("panel-run-idle","Terminal panel: Run, before the run script runs", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Run"}], query={"oc_run_script":"npm run dev"}),
+   oc_reason="the lane's seeded repositories have no run script; tools/side-by-side/setup-tab.mjs captures this state")
+# Conductor's startup Xcode license check (`HBr` -> `QQt`) when `xcodebuild -license check` says the
+# license is not accepted (?oc_xcode_license=unaccepted makes the harness a macOS user agent and
+# answers the check that way), over the same workspace's Run tab.
+st("toast-xcode-license","Toast: Xcode license is not accepted", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Run"},{"wait":"text=Xcode license is not accepted"}], query={"oc_xcode_license":"unaccepted"}),
+   oc_reason="the lane's Linux build skips the macOS-only check; tools/side-by-side/setup-tab.mjs captures this state",
+   covers=[{"kind":"toast","name":"Xcode license is not accepted"}])
+# Settings › tide-web › Scripts, Add, Save while the repository's settings file cannot be written
+# (?oc_fail_settings_write=1): Conductor's settings service toasts "Failed to save setting" (index `Sz`).
+st("toast-save-setting-failed","Toast: Failed to save setting (Scripts, read-only settings file)", ref("/settings/repos/repo-tide-web/scripts", actions=[{"click":"button:text-is('Add')"},{"click":"[role=dialog] button:has-text('Save')"},{"wait":"text=Failed to save setting"}], query={"oc_fail_settings_write":"1"}),
+   oc_reason="the lane's settings files are writable; tools/side-by-side/setup-tab.mjs captures this state")
 # Conductor's harness sends the sidecar's toolApproval request for "tallinn" (scenario needs-permission,
 # tools/screens/seed-data.js); OpenConductor gets the same turn from the fake `reason acp` ("tallinn").
 st("needs-permission","Workspace needing permission", ref(scenario="needs-permission", actions=[{"click":"text=tide-api"},{"click":"text=Ada/rate limit headers"},{"wait":"text=Do you want to run this command?"}]),
@@ -153,11 +169,15 @@ st("menu-review-edit","Review button menu (Edit before sending)", ref(actions=LI
 # own OpenConductor steps start by navigating (workspace, Home, Settings) are left as is.
 def ref_leaves_home(a):
     return a.get("click", "").startswith("text=Ada/")
+# On Home both apps fold every repository group nobody has toggled (Conductor's `Dra`:
+# repo-<id> defaultCollapsed unless the open workspace is in the group), so where the
+# reference clicks "tide-web" to unfold it, OpenConductor clicks its tide-web header too.
+OPEN_TIDE = {"click": ".sb-repo-name", "text": "tide-web", "after_ms": 400}
 OC_NAVIGATES = [OPEN_WS[0], HOME[0], SETTINGS[0]]
 for s in S:
     r = s.get("ref")
     if (r and r["path"] == "/" and r["scenario"] == "populated" and s.get("oc") and not s.get("oc_fresh")
             and not any(ref_leaves_home(a) for a in r["actions"]) and s["oc"][0] not in OC_NAVIGATES):
-        s["oc"] = HOME + s["oc"]
+        s["oc"] = HOME + ([OPEN_TIDE] if {"click": "text=tide-web"} in r["actions"] else []) + s["oc"]
 json.dump({"schema":"openconductor.ui-map-states/1","viewport":{"width":1280,"height":820},"theme":"dark","states":S}, open(__import__('os').path.join(__import__('os').path.dirname(__file__),'states.json'),'w'), indent=1)
 print(len(S))
