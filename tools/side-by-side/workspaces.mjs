@@ -63,6 +63,9 @@ const ROWS = SEED.map(([id, , , , ago, unread, prTitle], i) => ({ id, ago, unrea
 
 /** Runs in the page after fakeBackend: Conductor's row data (no stored names, PR titles, unread, ages, numbers). */
 function extras({ rows }) {
+  // Conductor's populated scenario opens with every repository collapsed; the menu states expand tide-web.
+  const prefs = JSON.parse(localStorage.getItem("openconductor.shell.prefs.v1"));
+  localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ ...prefs, collapsed: ["r1", "r2", "r3"] }));
   const inner = window.__TAURI_INTERNALS__.invoke;
   const now = Date.now();
   window.__TAURI_INTERNALS__.invoke = async (cmd, args) => {
@@ -75,6 +78,8 @@ function extras({ rows }) {
         return { ...w, workspaceName: null, prTitle: r.prTitle, prDescription: null, unread: r.unread, number: r.number, intendedTargetBranch: "main", createdAt: at(r.ago + 60), updatedAt: at(r.ago) };
       });
     }
+    // The harness's repos have GitHub remotes (seed-data.js), which sets the rows' git status icon.
+    if (cmd === "db_list_repos") return (await inner(cmd, args)).map((r) => ({ ...r, remoteUrl: `git@github.com:tide-labs/${r.name}.git` }));
     if (cmd === "db_list_sections" || cmd === "session_statuses" || cmd === "db_list_archived_workspaces") return [];
     if (cmd === "local_storage_get_entry") return null;
     if (cmd === "local_storage_set_entry") return { success: true };
@@ -92,6 +97,15 @@ const STATES = {
   "palette-workspaces-projects": both([css("[role=dialog] button:has-text('All projects')")]),
   "palette-workspaces-archive-filter": both([css("[role=dialog] button:has-text('Hiding archived')")]),
   "palette-workspaces-empty": both([{ fill: [SEARCH, "zzzz"] }]),
+  // The lisbon row's right-click menu, and its Set status submenu.
+  "menu-workspace-context": {
+    ref: [css("text=tide-web"), { right: "text=Ada/fix login redirect" }],
+    oc: [css(".sb-repo-name:has-text('tide-web')"), { right: ".sb-ws-name:has-text('Ada/fix login redirect')" }],
+  },
+  "menu-workspace-status": {
+    ref: [css("text=tide-web"), { right: "text=Ada/fix login redirect" }, css("[role=menu] >> text=Set status")],
+    oc: [css(".sb-repo-name:has-text('tide-web')"), { right: ".sb-ws-name:has-text('Ada/fix login redirect')" }, css("[role=menu] [role=menuitem]:has-text('Set status')")],
+  },
 };
 
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".woff2": "font/woff2", ".json": "application/json" };

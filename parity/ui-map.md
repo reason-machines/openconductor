@@ -8,13 +8,13 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **976** | **742** | **83** | **151** |
-| States (captured screens) | 78 | 13 | 24 | 41 |
-| Inventory items | 898 | 729 | 59 | 110 |
+| **All** | **976** | **742** | **80** | **154** |
+| States (captured screens) | 78 | 13 | 22 | 43 |
+| Inventory items | 898 | 729 | 58 | 111 |
 | &nbsp;&nbsp;dialog | 64 | 54 | 5 | 5 |
 | &nbsp;&nbsp;empty-state | 52 | 42 | 1 | 9 |
 | &nbsp;&nbsp;menu | 39 | 36 | 1 | 2 |
-| &nbsp;&nbsp;menu-item | 89 | 83 | 4 | 2 |
+| &nbsp;&nbsp;menu-item | 89 | 83 | 3 | 3 |
 | &nbsp;&nbsp;popover | 45 | 44 | 1 | 0 |
 | &nbsp;&nbsp;route | 65 | 39 | 9 | 17 |
 | &nbsp;&nbsp;select | 29 | 22 | 5 | 2 |
@@ -39,7 +39,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | shell | 196 | 178 | 9 | 9 |
 | terminal-scripts | 22 | 19 | 0 | 3 |
 | triage | 268 | 268 | 0 | 0 |
-| workspaces | 61 | 33 | 6 | 22 |
+| workspaces | 61 | 33 | 3 | 25 |
 
 226 of 898 items were located in a captured state; 226 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
 
@@ -127,8 +127,8 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Rename workspace dialog<br>`dialog-rename-workspace` | matches | workspaces | diff 4.6% at t24, copy 94% | [png](ui-map/ref/dialog-rename-workspace.png) | [png](ui-map/oc/dialog-rename-workspace.png) | [jpg](ui-map/diff/dialog-rename-workspace.jpg) | 4.6% |
 | Keyboard shortcuts dialog<br>`dialog-keyboard-shortcuts` | matches | shell | diff 4.2% at t24, copy 100% | [png](ui-map/ref/dialog-keyboard-shortcuts.png) | [png](ui-map/oc/dialog-keyboard-shortcuts.png) | [jpg](ui-map/diff/dialog-keyboard-shortcuts.jpg) | 4.2% |
 | Account / computer menu<br>`menu-account` | wrong | shell | diff 6.2% at t24, copy 94% | [png](ui-map/ref/menu-account.png) | [png](ui-map/oc/menu-account.png) | [jpg](ui-map/diff/menu-account.jpg) | 6.2% |
-| Workspace context menu<br>`menu-workspace-context` | wrong | workspaces | diff 5.2% at t24, copy 95% | [png](ui-map/ref/menu-workspace-context.png) | [png](ui-map/oc/menu-workspace-context.png) | [jpg](ui-map/diff/menu-workspace-context.jpg) | 5.2% |
-| Workspace context menu > Set status<br>`menu-workspace-status` | wrong | workspaces | diff 6.2% at t24, copy 95% | [png](ui-map/ref/menu-workspace-status.png) | [png](ui-map/oc/menu-workspace-status.png) | [jpg](ui-map/diff/menu-workspace-status.jpg) | 6.2% |
+| Workspace context menu<br>`menu-workspace-context` | matches | workspaces | diff 4.6% at t24, copy 100% | [png](side-by-side/workspaces-menu-workspace-context.png) | [png](side-by-side/workspaces-menu-workspace-context.png) |  | 4.6% |
+| Workspace context menu > Set status<br>`menu-workspace-status` | matches | workspaces | diff 4.9% at t24, copy 100% | [png](side-by-side/workspaces-menu-workspace-status.png) | [png](side-by-side/workspaces-menu-workspace-status.png) |  | 4.9% |
 | Composer model picker<br>`menu-model-picker` | wrong | chat | diff 6.4% at t24, copy 82% | [png](ui-map/ref/menu-model-picker.png) | [png](ui-map/oc/menu-model-picker.png) | [jpg](ui-map/diff/menu-model-picker.jpg) | 6.4% |
 | Sidebar repo actions menu<br>`menu-repo-actions` | wrong | workspaces | no valid reference render (step-failed), diff 4.3% at t24 | [png](ui-map/ref/menu-repo-actions.png) | [png](ui-map/oc/menu-repo-actions.png) | [jpg](ui-map/diff/menu-repo-actions.jpg) | 4.3% |
 | Help menu<br>`menu-help` | wrong | shell | diff 6.2% at t24, copy 96% | [png](ui-map/ref/menu-help.png) | [png](ui-map/oc/menu-help.png) | [jpg](ui-map/diff/menu-help.jpg) | 6.2% |
@@ -492,7 +492,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `menu:ztt` | missing | triage |  | `ZTt` |  | no literal copy to locate it; not observed in any capture |
 | `menu:svs~2` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
 
-## menu-item (89: 83 missing, 4 wrong, 2 matches)
+## menu-item (89: 83 missing, 3 wrong, 3 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -571,7 +571,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `menu-item:u8i~2` | missing | triage |  | `u8i` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:c`<br>⌘⌥C | missing | shell | ⌘⌥C | `u8i` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:copy-full-transcript`<br>Copy full transcript | wrong | chat | Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/shell-menus-01-chat-tab.png) | host state menu-chat-tab is wrong |
-| `menu-item:copy-link`<br>Copy link | wrong | workspaces | Copy link | `u8i` | [menu-workspace-context](ui-map/oc/menu-workspace-context.png) | host state menu-workspace-context is wrong |
+| `menu-item:copy-link`<br>Copy link | matches | workspaces | Copy link | `u8i` | [menu-workspace-context](side-by-side/workspaces-menu-workspace-context.png) | on screen in both; state menu-workspace-context matches |
 | `menu-item:u8i~3` | missing | triage |  | `u8i` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:w`<br>⌘W | missing | shell | ⌘W | `u8i` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:close-others`<br>Close others | wrong | chat | Close others | `u8i` | [menu-chat-tab](side-by-side/shell-menus-01-chat-tab.png) | host state menu-chat-tab is wrong |

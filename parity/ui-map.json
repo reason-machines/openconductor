@@ -34,19 +34,19 @@
  "summary": {
   "total": 976,
   "missing": 742,
-  "wrong": 83,
-  "matches": 151,
+  "wrong": 80,
+  "matches": 154,
   "states": {
    "total": 78,
    "missing": 13,
-   "wrong": 24,
-   "matches": 41
+   "wrong": 22,
+   "matches": 43
   },
   "items": {
    "total": 898,
    "missing": 729,
-   "wrong": 59,
-   "matches": 110
+   "wrong": 58,
+   "matches": 111
   },
   "items_by_kind": {
    "dialog": {
@@ -70,8 +70,8 @@
    "menu-item": {
     "total": 89,
     "missing": 83,
-    "wrong": 4,
-    "matches": 2
+    "wrong": 3,
+    "matches": 3
    },
    "popover": {
     "total": 45,
@@ -180,8 +180,8 @@
    "workspaces": {
     "total": 61,
     "missing": 33,
-    "wrong": 6,
-    "matches": 22
+    "wrong": 3,
+    "matches": 25
    }
   },
   "located_items": 226,
@@ -2525,76 +2525,72 @@
   {
    "id": "menu-workspace-context",
    "title": "Workspace context menu",
-   "status": "wrong",
-   "why": "diff 5.2% at t24, copy 95%",
+   "status": "matches",
+   "why": "diff 4.6% at t24, copy 100%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/menu-workspace-context.png",
+    "file": "side-by-side/workspaces-menu-workspace-context.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 3,
-    "actions_total": 3,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_1bb76b074544bf60bf84e8acb3507f9555046351b705bfaffa72f141ba48ed98"
+    "rea_evidence_id": "ev_21a4e2670f0942c412a6b9df279203ae51cec33144af6fdabba0aa1fdc74637d"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/menu-workspace-context.png",
+    "file": "side-by-side/workspaces-menu-workspace-context.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 86e8ed6d1: tools/side-by-side/workspaces.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/menu-workspace-context.jpg",
-    "changed_ratio_t0": 0.9692397103658537,
-    "changed_ratio_t24": 0.052210365853658534,
+    "file": null,
+    "changed_ratio_t0": 0.9681002286585366,
+    "changed_ratio_t24": 0.0458812881097561,
     "rea_evidence_ids": [
-     "ev_759f4e1571b022fa9ec2685d8d4a5d7cbd96ac0358c9ce67c58cd7dc779b7e03",
-     "ev_09f0df5e0de87f1e93e6a35103cf5615ea4b00b5a2b26496f07f8d7157de864e"
+     "ev_55e48ac4e90025d27ee1de3af0dc470462782fc2c16eeb37cdcc6f9f3f3089b5",
+     "ev_4d4eafd175b2be01413e5d7d5bb2a9d6117bcffa5feceb8f7ad63de0ed5ebc5f"
     ]
    },
-   "copy_coverage": 0.947,
-   "copy_missing": [
-    "archive workspace"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "menu-workspace-status",
    "title": "Workspace context menu > Set status",
-   "status": "wrong",
-   "why": "diff 6.2% at t24, copy 95%",
+   "status": "matches",
+   "why": "diff 4.9% at t24, copy 100%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/menu-workspace-status.png",
+    "file": "side-by-side/workspaces-menu-workspace-status.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 4,
-    "actions_total": 4,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_bcef36750f134eb9c37e02d2069050b6b92151cee64cc9eec688213db326009b"
+    "rea_evidence_id": "ev_168501aedc4f06cd98ccdfdddb6463bf1725c5ed4f36711be25e3868c8207323"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/menu-workspace-status.png",
+    "file": "side-by-side/workspaces-menu-workspace-status.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 86e8ed6d1: tools/side-by-side/workspaces.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/menu-workspace-status.jpg",
-    "changed_ratio_t0": 0.9621398628048781,
-    "changed_ratio_t24": 0.0616015625,
+    "file": null,
+    "changed_ratio_t0": 0.9459041539634147,
+    "changed_ratio_t24": 0.04881478658536585,
     "rea_evidence_ids": [
-     "ev_755de798431277ad3c72ff63f36f59082582a8665a9f05036bf2cba56dc5eef6",
-     "ev_002d344b41ccb915757a52ec5fc3b9c216b955f049a51e6a65c434a8c2320edd"
+     "ev_1984dc292a636f8f782f2943c6937beaeff79099a3b384c3aff969c875e94bf5",
+     "ev_cf42ca34786a60e5627e9c422758fac4dea6d0c9a048458cc30f6c66a17052d3"
     ]
    },
-   "copy_coverage": 0.95,
-   "copy_missing": [
-    "archive workspace"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "menu-model-picker",
@@ -7975,8 +7971,8 @@
    "id": "menu-item:copy-link",
    "kind": "menu-item",
    "name": "Copy link",
-   "status": "wrong",
-   "why": "host state menu-workspace-context is wrong",
+   "status": "matches",
+   "why": "on screen in both; state menu-workspace-context matches",
    "team": "workspaces",
    "component": "u8i",
    "source": {
@@ -7990,10 +7986,10 @@
    "tokens": [],
    "state": "menu-workspace-context",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/menu-workspace-context.png",
-   "openconductor_screenshot": "ui-map/oc/menu-workspace-context.png",
-   "diff": "ui-map/diff/menu-workspace-context.jpg",
-   "changed_ratio_t24": 0.052210365853658534,
+   "reference_screenshot": "side-by-side/workspaces-menu-workspace-context.png",
+   "openconductor_screenshot": "side-by-side/workspaces-menu-workspace-context.png",
+   "diff": null,
+   "changed_ratio_t24": 0.0458812881097561,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
