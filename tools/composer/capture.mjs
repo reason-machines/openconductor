@@ -29,7 +29,7 @@ function screenshot(value) {
 }
 fs.mkdirSync(output, { recursive: true });
 const capturesPath = `${output}/${target}-captures.json`;
-const results = fs.existsSync(capturesPath) ? JSON.parse(fs.readFileSync(capturesPath, "utf8")) : []; 
+const results = fs.existsSync(capturesPath) ? JSON.parse(fs.readFileSync(capturesPath, "utf8")) : [];
 try {
   for (const [name, actions] of Object.entries(cases).filter(([name]) => only.length === 0 || only.includes(name))) {
     const input = {
