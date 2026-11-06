@@ -1,15 +1,24 @@
-import { LogoMark } from "./Icons";
+import { buildPixelWordmark, pixelWordmarkPath } from "./pixelWordmark";
+
+const MARK = buildPixelWordmark("OPENCONDUCTOR");
+const PATH = pixelWordmarkPath(MARK);
 
 /**
- * Centered Home wordmark: our mark plus the product name, drawn in currentColor so it
- * follows light and dark themes. Decorative only (the window title names the app).
- * Sizing mirrors the reference layout: a 96px-tall box, at most 627px wide.
+ * Centered Home wordmark: OpenConductor's pixel lettering in currentColor, so it follows
+ * light and dark themes. Sized like the reference layout: at most 627px wide, 96px box.
  */
 export function Wordmark() {
   return (
-    <div className="wordmark" aria-hidden="true">
-      <LogoMark size={56} />
-      <span className="wordmark-text">OpenConductor</span>
+    <div className="wordmark">
+      <svg
+        role="img"
+        aria-label="OpenConductor"
+        viewBox={`0 0 ${MARK.cols} ${MARK.rows}`}
+        className="wordmark-svg"
+        shapeRendering="crispEdges"
+      >
+        <path d={PATH} fill="currentColor" />
+      </svg>
     </div>
   );
 }
