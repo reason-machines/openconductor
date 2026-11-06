@@ -177,6 +177,13 @@ test("toasts slide in and out over 400ms", async () => {
   assert.deepEqual(t, { name: "toast-in", duration: "0.4s", transition: "transform 0.4s, opacity 0.4s" });
   await toast.getByRole("button", { name: "Dismiss" }).click();
   assert.equal(await toast.getAttribute("data-ending-style"), "");
+  // While it slides out, nothing under the toaster's box is blocked: the click lands on the page.
+  const hit = await toast.evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    const at = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    return { inToaster: !!at?.closest(".toaster"), tag: at?.tagName };
+  });
+  assert.equal(hit.inToaster, false, `a leaving toast still takes clicks (${hit.tag})`);
   await page.waitForTimeout(600);
   assert.equal(await page.locator(".toast").count(), 0);
   await page.close();

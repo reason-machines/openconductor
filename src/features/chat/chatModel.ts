@@ -12,13 +12,16 @@ import type { Settings } from "../../settings/types.ts";
 import type { ReasonConfig } from "./reasonChat.ts";
 
 /**
- * Reason Session options for a Conductor model id and effort level. A model
- * Reason has no fixed id for (a Claude alias such as `opus`, Cursor) and an
- * effort Reason does not offer are left out, so Reason's default runs.
+ * Reason Session options for a Conductor (or Reason) model id and effort
+ * level. A model Reason has no fixed id for (a Claude alias such as `opus`,
+ * Cursor) and an effort Reason does not offer are left out, so Reason's
+ * default runs; Reason's own `default` (Auto) is kept, so a pick of Auto
+ * reaches a Session that runs another model.
  */
 export function sessionConfig(model: string | null | undefined, effort: string | null | undefined): ReasonConfig[] {
   const config: ReasonConfig[] = [];
-  const id = model?.trim() ? reasonModelId(model.trim()) : null;
+  const trimmed = model?.trim();
+  const id = !trimmed ? null : trimmed === "default" ? "default" : reasonModelId(trimmed);
   if (id) config.push({ id: "model", value: id });
   const level = reasonEffort(effort);
   if (level) config.push({ id: "reasoning_effort", value: level });
