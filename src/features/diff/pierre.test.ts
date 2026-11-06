@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { processFile } from "@pierre/diffs";
-import { codeViewItem, fullContents, lineTarget, loadedFiles, rangeOf, selectionOf, toPatch, fromPierreSide, toPierreSide } from "./pierre.ts";
+import { codeViewItem, fullContents, fullDiffMeta, lineTarget, loadedFiles, rangeOf, selectionOf, toPatch, fromPierreSide, toPierreSide } from "./pierre.ts";
 import type { FileDiff } from "./types.ts";
 
 const modified: FileDiff = {
@@ -134,4 +134,36 @@ test("a line selection becomes a comment range, lower line first, on the side it
 test("a comment range maps back to Pierre's selection, with no side in the entire-file view", () => {
   assert.deepEqual(selectionOf({ side: "old", start: 3, line: 7 }, false), { start: 3, end: 7, side: "deletions", endSide: "deletions" });
   assert.deepEqual(selectionOf({ side: "new", start: 3, line: 7 }, true), { start: 3, end: 7 });
+});
+
+test("a whole-file load parses as a full diff: unmodified lines counted on both sides, none after the end", () => {
+  const before = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  const after = before.map((l) => (l === "d" ? "D" : l));
+  const whole: FileDiff = {
+    ...modified,
+    hunks: [
+      {
+        old_start: 1,
+        old_lines: 8,
+        new_start: 1,
+        new_lines: 8,
+        section: "",
+        lines: [
+          ...before.slice(0, 3).map((text, i) => ({ kind: "context" as const, old_line: i + 1, new_line: i + 1, text })),
+          { kind: "deletion", old_line: 4, new_line: null, text: "d" },
+          { kind: "addition", old_line: null, new_line: 4, text: "D" },
+          ...after.slice(4).map((text, i) => ({ kind: "context" as const, old_line: i + 5, new_line: i + 5, text })),
+        ],
+      },
+    ],
+  };
+  const meta = fullDiffMeta(whole, false);
+  assert.equal(meta.isPartial, false);
+  assert.equal(meta.hunks.length, 1);
+  assert.equal(meta.hunks[0].collapsedBefore, 0);
+  assert.equal(meta.hunks[0].additionStart, 1);
+  assert.equal(meta.additionLines.length, 8);
+  assert.equal(meta.deletionLines.length, 8);
+  // The partial patch of the same file does not know where the file ends.
+  assert.equal(processFile(toPatch(whole), { isGitDiff: true })?.isPartial, true);
 });

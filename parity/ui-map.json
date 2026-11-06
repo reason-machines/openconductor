@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "2d9ead58",
+  "commit": null,
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -34,13 +34,13 @@
  "summary": {
   "total": 965,
   "missing": 764,
-  "wrong": 79,
-  "matches": 122,
+  "wrong": 77,
+  "matches": 124,
   "states": {
    "total": 67,
    "missing": 16,
-   "wrong": 25,
-   "matches": 26
+   "wrong": 23,
+   "matches": 28
   },
   "items": {
    "total": 898,
@@ -138,8 +138,8 @@
    "git-review": {
     "total": 35,
     "missing": 30,
-    "wrong": 3,
-    "matches": 2
+    "wrong": 1,
+    "matches": 4
    },
    "onboarding-auth": {
     "total": 23,
@@ -560,119 +560,107 @@
   {
    "id": "diff-unified",
    "title": "Diff: file, unified",
-   "status": "wrong",
-   "why": "diff 10.7% at t24, copy 91%",
+   "status": "matches",
+   "why": "diff 5.0% at t24, copy 100%",
    "team": "git-review",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/diff-unified.png",
+    "file": "side-by-side/git-review-01-diff-unified.png",
     "path": "/",
     "final_path": "/repository/repo-tide-web/workspace/ws-lisbon",
     "scenario": "populated",
-    "actions_run": 4,
-    "actions_total": 4,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_dd9877681e3ad26f0539b39dfd9297eede366c0e1b9f8a23994ee432e5222595"
+    "rea_evidence_id": "ev_17bb76c4f9a94bcf64454fe8eb508f8c3883366d4e9ed5ed7f7d26c17bbae18d"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/diff-unified.png",
+    "file": "side-by-side/git-review-01-diff-unified.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 90a33bf28: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/diff-unified.jpg",
-    "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.10715224847560975,
+    "file": null,
+    "changed_ratio_t0": 0.8817692454268292,
+    "changed_ratio_t24": 0.04997237042682927,
     "rea_evidence_ids": [
-     "ev_a39fb65d9aca4bd8376d501da242a2843c7394ac3d0441a2b8fba8237b373bae",
-     "ev_4576d77dfcc938385c06fcb446d93edb81ef97d68fcbd16cad1bf610be3476ee"
+     "ev_e1fadb274b09a5213acc517a04a32855070604b0ecd682c298d693eba361565a",
+     "ev_b56df34c6816a22faf1e7027da8e334f93bbd94cc1101498f0eb321c5c41c643"
     ]
    },
-   "copy_coverage": 0.909,
-   "copy_missing": [
-    "archive workspace",
-    "copy file contents",
-    "filter files"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "diff-split",
    "title": "Diff: file, split",
    "status": "wrong",
-   "why": "diff 10.8% at t24, copy 91%",
+   "why": "diff 5.2% at t24, copy 100%",
    "team": "git-review",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/diff-split.png",
+    "file": "side-by-side/git-review-02-diff-split.png",
     "path": "/",
     "final_path": "/repository/repo-tide-web/workspace/ws-lisbon",
     "scenario": "populated",
-    "actions_run": 5,
-    "actions_total": 5,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_81838728ad040f01bc3eb073d4b47942b3f07669d53838d83d86133235bcf909"
+    "rea_evidence_id": "ev_94c6659dd003b32ffc70942391781de6fb74a2e91b867c309ed3718fd4936b98"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/diff-split.png",
+    "file": "side-by-side/git-review-02-diff-split.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 90a33bf28: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/diff-split.jpg",
-    "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.10808022103658536,
+    "file": null,
+    "changed_ratio_t0": 0.8586375762195122,
+    "changed_ratio_t24": 0.05208269817073171,
     "rea_evidence_ids": [
-     "ev_1c1047aa48c74bdca767ac24425ef6c36444d8d5a8d6d128d5e6e4c2142b1103",
-     "ev_4d98d0303e028eae4051b0396da6c52298fe7b235d397291bfac370644a1d4ea"
+     "ev_f6d18c49425d793276c58c3325f6dbec7ba8c0a3aa01f5142ec523133d89b4ef",
+     "ev_c5298d07ca7a27b379841107a8ea47aa6a582dbedd73f4df9ed245a2dc773435"
     ]
    },
-   "copy_coverage": 0.909,
-   "copy_missing": [
-    "archive workspace",
-    "copy file contents",
-    "filter files"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "diff-entire-file",
    "title": "Diff: entire file",
-   "status": "wrong",
-   "why": "diff 5.3% at t24, copy 91%",
+   "status": "matches",
+   "why": "diff 4.7% at t24, copy 100%",
    "team": "git-review",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/diff-entire-file.png",
+    "file": "side-by-side/git-review-03-diff-entire-file.png",
     "path": "/",
     "final_path": "/repository/repo-tide-web/workspace/ws-lisbon",
     "scenario": "populated",
-    "actions_run": 5,
-    "actions_total": 5,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_acc5ce74c3a44b9ce44e9f182e214ce4dfff1be56b6bc888b9f0e90c2a66864a"
+    "rea_evidence_id": "ev_8c2b234eaee25cdaa553dae3a8e6670949361db41d4d7b8bfc3f172b72e69d06"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/diff-entire-file.png",
+    "file": "side-by-side/git-review-03-diff-entire-file.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 90a33bf28: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/diff-entire-file.jpg",
-    "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.05286680640243902,
+    "file": null,
+    "changed_ratio_t0": 0.8350438262195122,
+    "changed_ratio_t24": 0.04703029725609756,
     "rea_evidence_ids": [
-     "ev_0235a66cdc6c415b1bcbe13ba38d6eaafbfd6656c1ab22cf2e6e5454d4da1b03",
-     "ev_20f70e8f7bc585671520593cdd20a079f41a68b7817fd7ef59def826aee605b5"
+     "ev_b3beb6c2a0c14068cb67f7946b3fd011c785363469ed1d3f896a68aac77832eb",
+     "ev_a24d4d19c7488134a433548ede34fc303039a37adb81bcd36557c2fc3c4be3d9"
     ]
    },
-   "copy_coverage": 0.909,
-   "copy_missing": [
-    "archive workspace",
-    "copy file contents",
-    "filter files"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "needs-permission",

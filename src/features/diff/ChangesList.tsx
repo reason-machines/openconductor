@@ -9,6 +9,7 @@ import "./diff.css";
 import { RevertIcon } from "./DiscardDialog";
 import { FileContextMenu } from "./FileContextMenu";
 import { STATUS_LETTER } from "./FileDiffView";
+import { splitPath } from "./FilePathChip";
 import { SearchIcon, XIcon } from "../files/panelIcons";
 import { filterActive, filterChangedFiles } from "./changesFilter";
 import type { FileDiff } from "./types.ts";
@@ -152,7 +153,10 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter }: Ch
               }}
             >
               <button className={`oc-change${diff.isViewed(f) ? " viewed" : ""}`} aria-current={i === current} onClick={() => diff.open(i)} title={`Open ${f.path}`}>
-                <span className="name">{f.path}</span>
+                <span className="name">
+                  {/* Conductor's row draws the path with \`bj\`: the directory muted, the file name in the foreground. */}
+                  <PathParts path={f.path} />
+                </span>
                 <span className={`oc-status ${f.status}`}>{STATUS_LETTER[f.status]}</span>
                 <span className="oc-count">
                   <span className="a">+{f.additions}</span>
@@ -189,3 +193,14 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter }: Ch
   );
 }
 
+
+/** The directory (muted, may truncate) and the file name of a changed path. */
+function PathParts({ path }: { path: string }) {
+  const { directory, fileName } = splitPath(path);
+  return (
+    <>
+      {directory && <span className="oc-path-dir">{directory}</span>}
+      <span className="oc-path-name">{fileName}</span>
+    </>
+  );
+}

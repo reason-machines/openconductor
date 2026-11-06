@@ -11,3 +11,7 @@ circle-alert
 arrow-up-right
 arrow-down
 refresh-cw
+ellipsis-vertical
+text-align-start
+columns-2
+file-text
