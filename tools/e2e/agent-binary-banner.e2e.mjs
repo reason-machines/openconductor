@@ -165,9 +165,13 @@ const pass = (s) => {
 
 try {
   await waitFor("tauri-driver", () => fetch(`${base}/status`).then((r) => r.ok), 20000);
-  const session = await wd("POST", "/session", {
-    capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } },
-  });
+  // Starting the app takes 25-40 s on a cold CI runner.
+  const session = await wd(
+    "POST",
+    "/session",
+    { capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } } },
+    180000,
+  );
   sessionUrl = `${base}/session/${session.sessionId}`;
   await wd("POST", "/window/rect", { width: 1280, height: 860 }).catch(() => {});
 
