@@ -320,7 +320,7 @@ fn files_to_copy_prefers_worktreeinclude_then_settings_globs() {
     std::fs::create_dir_all(f.repo.join("certs")).unwrap();
     std::fs::write(f.repo.join("certs/dev.pem"), "p\n").unwrap();
 
-    let globs = Some(vec!["certs/*.pem".to_string()]);
+    let globs = Some("# pem files\ncerts/*.pem\n".to_string());
     let c = f.mgr.create(&f.repo, &CreateOptions { file_include_globs: globs.clone(), ..named("g") }).unwrap();
     assert_eq!(c.copied_files, vec![PathBuf::from("certs/dev.pem")]);
 
@@ -328,6 +328,32 @@ fn files_to_copy_prefers_worktreeinclude_then_settings_globs() {
     let c = f.mgr.create(&f.repo, &CreateOptions { file_include_globs: globs, ..named("w") }).unwrap();
     assert_eq!(c.copied_files, vec![PathBuf::from("config/local.toml")]);
     assert!(c.workspace.path.join("config/local.toml").is_file());
+
+    // An explicit empty "Files to copy" copies nothing, unlike no setting (`.env*`).
+    std::fs::remove_file(f.repo.join(".worktreeinclude")).unwrap();
+    let c = f.mgr.create(&f.repo, &CreateOptions { file_include_globs: Some(String::new()), ..named("e") }).unwrap();
+    assert!(c.copied_files.is_empty());
+    let c = f.mgr.create(&f.repo, &CreateOptions { file_include_globs: None, ..named("d") }).unwrap();
+    assert_eq!(c.copied_files, vec![PathBuf::from(".env")]);
+}
+
+#[test]
+fn remove_all_deletes_worktrees_and_records_but_keeps_branches_and_the_checkout() {
+    let f = fixture();
+    let a = f.mgr.create(&f.repo, &named("a")).unwrap().workspace;
+    let b = f.mgr.create(&f.repo, &named("b")).unwrap().workspace;
+    f.mgr.archive(&f.repo, "b", &ArchiveOptions::default()).unwrap();
+    std::fs::write(a.path.join("dirty.txt"), "x").unwrap();
+
+    f.mgr.remove_all(&f.repo).unwrap();
+
+    assert!(f.mgr.list(&f.repo).unwrap().is_empty());
+    assert!(!a.path.exists());
+    assert!(!f.mgr.workspaces_dir(&f.repo).exists());
+    for branch in [&a.branch, &b.branch] {
+        assert!(git::branch_exists(&f.repo, branch), "{branch} kept");
+    }
+    assert!(f.repo.join(".git").exists());
 }
 
 #[test]
@@ -697,28 +723,88 @@ fn root_setting_moves_workspaces_archives_and_default_clones() {
 }
 
 #[test]
+fn service_reads_a_registry_without_names_and_bumps_past_workspace_folders() {
+    use super::service::WorkspaceService;
+    let f = fixture();
+    let data = f.tmp.path().join("svc");
+    std::fs::create_dir_all(data.join("workspaces").join("My App")).unwrap();
+    // A registry from before the name column: the name is the folder name.
+    let root = super::git::toplevel(&f.repo).unwrap();
+    std::fs::write(data.join("repositories.tsv"), format!("old\t{}\n", root.display())).unwrap();
+    let svc = WorkspaceService::new(&data).unwrap();
+    assert_eq!(svc.repositories()[0].name, "My App");
+    // `My App` is taken by that project, `My App-v1` would be free but for its
+    // workspaces folder (Conductor's makeRepoNameUnique checks the folder).
+    std::fs::create_dir_all(data.join("workspaces").join("My App-v1")).unwrap();
+    let r = svc.add_repository(&f.repo).unwrap();
+    assert_eq!((r.id.as_str(), r.name.as_str()), ("my-app-v2", "My App-v2"));
+}
+
+#[test]
+fn ensure_repository_twice_on_one_folder_adds_no_project() {
+    use super::service::WorkspaceService;
+    let f = fixture();
+    let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
+    // An unregistered folder: the first lookup registers it, the second finds it.
+    let first = svc.ensure_repository(None, &f.repo).unwrap();
+    assert_eq!(svc.repositories().len(), 1);
+    let second = svc.ensure_repository(None, &f.repo).unwrap();
+    assert_eq!((second.id.as_str(), svc.repositories().len()), (first.id.as_str(), 1));
+    // With a `-v1` copy on the folder, lookups by id or by folder add nothing.
+    let copy = svc.add_repository(&f.repo).unwrap();
+    let before = svc.repositories().len();
+    assert_eq!(svc.ensure_repository(Some(&copy.id), &f.repo).unwrap().id, copy.id);
+    assert_eq!(svc.ensure_repository(Some(&copy.id), &f.repo).unwrap().id, copy.id);
+    assert_eq!(svc.ensure_repository(None, &f.repo).unwrap().id, first.id);
+    assert_eq!(svc.ensure_repository(None, &f.repo).unwrap().id, first.id);
+    assert_eq!(svc.repositories().len(), before);
+}
+
+#[test]
 fn service_registers_repositories_and_creates_from_form_fields() {
     use super::service::{CreateWorkspaceRequest, WorkspaceService};
     let f = fixture();
     let data = f.tmp.path().join("svc");
     let svc = WorkspaceService::new(&data).unwrap();
     let r = svc.add_repository(&f.repo).unwrap();
-    assert_eq!((r.id.as_str(), r.default_branch.as_str()), ("my-app", "main"));
-    // Same repo (even via a subdirectory) keeps its id.
+    assert_eq!((r.id.as_str(), r.name.as_str(), r.default_branch.as_str()), ("my-app", "My App", "main"));
+    // Adding the same folder again (even via a subdirectory) is not refused:
+    // as in Conductor it becomes a second project on the same root, `-v1`.
     std::fs::create_dir_all(f.repo.join("sub")).unwrap();
-    assert_eq!(svc.add_repository(&f.repo.join("sub")).unwrap().id, "my-app");
+    let again = svc.add_repository(&f.repo.join("sub")).unwrap();
+    assert_eq!((again.id.as_str(), again.name.as_str(), again.root.as_path()), ("my-app-v1", "My App-v1", r.root.as_path()));
+    assert_eq!(svc.add_repository(&f.repo).unwrap().name, "My App-v2");
 
-    // A second repo with the same folder name gets a distinct id.
+    // Another repo with the same folder name is bumped past both.
     let other = f.tmp.path().join("elsewhere").join("My App");
     std::fs::create_dir_all(&other).unwrap();
     sh(&other, &["init", "-q", "-b", "main"]);
     commit_file(&other, "a.txt", "a\n", "init");
-    assert_eq!(svc.add_repository(&other).unwrap().id, "my-app-v1");
+    let o = svc.add_repository(&other).unwrap();
+    assert_eq!((o.id.as_str(), o.name.as_str()), ("my-app-v3", "My App-v3"));
 
-    // Registry survives a restart.
+    // Registry (ids, roots and names) survives a restart.
     let svc = WorkspaceService::new(&data).unwrap();
-    let ids: Vec<String> = svc.repositories().into_iter().map(|r| r.id).collect();
-    assert_eq!(ids, ["my-app", "my-app-v1"]);
+    let got: Vec<(String, String)> = svc.repositories().into_iter().map(|r| (r.id, r.name)).collect();
+    let want = [("my-app", "My App"), ("my-app-v1", "My App-v1"), ("my-app-v2", "My App-v2"), ("my-app-v3", "My App-v3")];
+    assert_eq!(got, want.map(|(i, n)| (i.to_string(), n.to_string())));
+    assert_eq!(svc.repository_root("my-app-v1").unwrap(), r.root);
+
+    // ensure_repository (Create workspace, branch pickers) never adds a
+    // project: the id it is given, else the first on the folder.
+    let by_id = svc.ensure_repository(Some("my-app-v1"), &f.repo).unwrap();
+    assert_eq!(by_id.id, "my-app-v1");
+    let by_root = svc.ensure_repository(Some("no-such-id"), &f.repo.join("sub")).unwrap();
+    assert_eq!(by_root.id, "my-app");
+    assert_eq!(svc.ensure_repository(None, &f.repo).unwrap().id, "my-app");
+    assert_eq!(svc.repositories().len(), 4);
+    let fresh = f.tmp.path().join("fresh");
+    std::fs::create_dir_all(&fresh).unwrap();
+    sh(&fresh, &["init", "-q", "-b", "main"]);
+    commit_file(&fresh, "a.txt", "a\n", "init");
+    assert_eq!(svc.ensure_repository(None, &fresh).unwrap().id, "fresh");
+    assert_eq!(svc.ensure_repository(None, &fresh).unwrap().id, "fresh");
+    assert_eq!(svc.repositories().len(), 5);
 
     let req = CreateWorkspaceRequest {
         repository_id: "my-app".into(),
@@ -831,6 +917,13 @@ fn clone_repository_streams_progress_and_picks_a_unique_name() {
     let again = svc.clone_repository(&url, &parent, &mut |_| {}).unwrap();
     assert_eq!(again.root, parent.join("My App-v1"));
     assert_eq!(svc.repositories().len(), 2);
+
+    // An empty clone folder still skips names other projects have, so the
+    // folder and the project name stay the same (makeRepoNameUnique).
+    let other = f.tmp.path().join("other-clones");
+    std::fs::create_dir_all(&other).unwrap();
+    let third = svc.clone_repository(&url, &other, &mut |_| {}).unwrap();
+    assert_eq!((third.root, third.name.as_str()), (other.join("My App-v2"), "My App-v2"));
 }
 
 #[test]
@@ -956,4 +1049,190 @@ fn service_backfills_push_upstream_for_existing_active_workspaces() {
     sh(&f.repo, &["config", "core.worktree", f.repo.to_str().unwrap()]);
     assert_eq!(svc.configure_push_upstream_for_existing(not_rome), vec![(format!("{id}/paris"), git::PUSH_UPSTREAM_WARNING)]);
     assert_eq!(config_get(&paris.path, &["--worktree", "--get", "push.autoSetupRemote"]), None);
+}
+
+// --- Initialization log (create.initializing) ---
+
+use super::init_log::{self, ScriptRun};
+
+fn logs_in(dir: &Path) -> (Vec<PathBuf>, Vec<PathBuf>) {
+    let mut logs = Vec::new();
+    let mut scripts = Vec::new();
+    for e in std::fs::read_dir(dir).unwrap().flatten() {
+        let name = e.file_name().to_string_lossy().into_owned();
+        if name.starts_with("conductor-script-") {
+            scripts.push(e.path());
+        } else if name.starts_with("conductor-") && name.ends_with(".log") {
+            logs.push(e.path());
+        }
+    }
+    (logs, scripts)
+}
+
+#[test]
+fn create_logs_worktree_add_and_counts_tracked_files() {
+    let f = fixture();
+    let tmp = f.tmp.path().join("script-tmp");
+    let mgr = f.mgr.clone().with_script_tmp_dir(&tmp);
+    commit_file(&f.repo, "b.txt", "b\n", "two");
+    let c = mgr.create(&f.repo, &named("oslo")).unwrap();
+    let log = c.initialization_log_path.clone().expect("log path");
+    let (logs, scripts) = logs_in(&tmp);
+    assert_eq!(logs, vec![log.clone()]);
+    assert!(scripts.is_empty(), "the script file is removed: {scripts:?}");
+    let name = log.file_name().unwrap().to_string_lossy().into_owned();
+    // conductor-<ms>-<rand>.log
+    let parts: Vec<&str> = name.trim_end_matches(".log").split('-').collect();
+    assert_eq!(parts.len(), 3, "{name}");
+    assert!(parts[1].parse::<u128>().is_ok(), "{name}");
+    let text = std::fs::read_to_string(&log).unwrap();
+    assert!(text.contains("Preparing worktree"), "git worktree add output is logged: {text:?}");
+    assert_eq!(c.initialization_files_copied, 2);
+    assert_eq!(c.auxiliary_failure_message, None);
+    assert_eq!(sh(&c.workspace.path, &["symbolic-ref", "--short", "HEAD"]), "oslo");
+}
+
+#[test]
+fn failing_post_checkout_hook_is_a_non_fatal_initialization_issue() {
+    let f = fixture();
+    let tmp = f.tmp.path().join("script-tmp");
+    let mgr = f.mgr.clone().with_script_tmp_dir(&tmp);
+    let hook = f.repo.join(".git/hooks/post-checkout");
+    std::fs::write(&hook, "#!/bin/sh\necho hook says no >&2\nexit 7\n").unwrap();
+    Command::new("chmod").arg("+x").arg(&hook).status().unwrap();
+    // Shared core.worktree also makes push upstream fail: both messages join with a space.
+    sh(&f.repo, &["config", "core.worktree", f.repo.to_str().unwrap()]);
+    let c = mgr
+        .create(&f.repo, &CreateOptions { push_auto_setup_remote: true, ..named("oslo") })
+        .unwrap();
+    assert!(c.workspace.path.join("README.md").is_file());
+    assert_eq!(
+        c.auxiliary_failure_message.as_deref(),
+        Some(format!("{} {}", init_log::WORKTREE_PARTIAL_FAILURE, git::PUSH_UPSTREAM_WARNING).as_str())
+    );
+    let text = std::fs::read_to_string(c.initialization_log_path.unwrap()).unwrap();
+    assert!(text.contains("hook says no"), "{text:?}");
+}
+
+#[test]
+fn files_to_copy_failure_is_non_fatal() {
+    // Root reads any file, so the copy cannot fail there.
+    if Command::new("id").arg("-u").output().is_ok_and(|o| o.stdout.starts_with(b"0\n")) {
+        return;
+    }
+    let f = fixture();
+    let mgr = f.mgr.clone().with_script_tmp_dir(f.tmp.path().join("script-tmp"));
+    // A gitignored .env (copied by default) that cannot be read.
+    std::fs::write(f.repo.join(".gitignore"), ".env\n").unwrap();
+    sh(&f.repo, &["add", ".gitignore"]);
+    sh(&f.repo, &["commit", "-q", "-m", "ignore"]);
+    std::fs::write(f.repo.join(".env"), "SECRET=1\n").unwrap();
+    Command::new("chmod").arg("000").arg(f.repo.join(".env")).status().unwrap();
+    let r = mgr.create(&f.repo, &named("oslo"));
+    Command::new("chmod").arg("644").arg(f.repo.join(".env")).status().unwrap();
+    let c = r.unwrap();
+    let msg = c.auxiliary_failure_message.expect("copy failure is reported");
+    assert!(msg.starts_with("Couldn't copy files from .worktreeinclude: "), "{msg}");
+    assert!(c.copied_files.is_empty());
+    assert!(c.workspace.path.join("README.md").is_file());
+}
+
+#[test]
+fn worktree_add_failure_reports_the_logged_output() {
+    let f = fixture();
+    let mgr = f.mgr.clone().with_script_tmp_dir(f.tmp.path().join("script-tmp"));
+    // git keeps worktree metadata in .git/worktrees; a file there makes `worktree add` fail.
+    std::fs::write(f.repo.join(".git/worktrees"), "").unwrap();
+    let err = mgr.create(&f.repo, &named("oslo")).unwrap_err();
+    let msg = err.to_string();
+    assert!(matches!(err, WorkspaceError::WorktreeFailed(_)), "{err:?}");
+    assert!(msg.starts_with("Failed to create worktree: "), "{msg}");
+    assert!(msg.contains("fatal:"), "the log's text is the reason: {msg}");
+    assert!(!f.tmp.path().join("data/workspaces/my-app/oslo/README.md").exists());
+}
+
+fn script_tmp() -> TempDir {
+    TempDir::new()
+}
+
+#[test]
+fn internal_script_logs_output_and_runs_in_the_working_directory() {
+    let t = script_tmp();
+    let wd = t.path().join("it's here");
+    std::fs::create_dir_all(&wd).unwrap();
+    let run = init_log::run_internal_script("pwd\necho out\necho err >&2", &wd, Path::new("/bin/sh"), t.path(), &[]);
+    assert_eq!(run.exit_code, 0);
+    assert_eq!((run.stdout.as_str(), run.stderr.as_str(), run.error.as_deref()), ("", "", None));
+    let text = std::fs::read_to_string(run.log_file_path.unwrap()).unwrap();
+    assert_eq!(text, format!("{}\nout\nerr\n", wd.display()));
+    // set -e: the first failing command ends the script.
+    let run = init_log::run_internal_script("false\necho unreachable", &wd, Path::new("/bin/sh"), t.path(), &[]);
+    assert_eq!(run.exit_code, 1);
+    assert_eq!(std::fs::read_to_string(run.log_file_path.as_ref().unwrap()).unwrap(), "");
+    assert_eq!(init_log::failure_output(&run), "exit code 1");
+}
+
+#[test]
+fn wrapper_output_is_appended_as_additional_output() {
+    let t = script_tmp();
+    let shell = t.path().join("no-such-shell");
+    let run = init_log::run_internal_script("echo hi", t.path(), &shell, t.path(), &[]);
+    assert_ne!(run.exit_code, 0);
+    let log = run.log_file_path.clone().unwrap();
+    let text = std::fs::read_to_string(&log).unwrap();
+    let block = init_log::additional_output(run.exit_code, &run.stdout, &run.stderr);
+    if run.stderr.is_empty() && run.stdout.is_empty() {
+        // The shell reported the missing program inside the redirect, so it is in the log itself.
+        assert!(!text.is_empty());
+        assert!(!text.contains("--- Additional Output ---"));
+    } else {
+        assert!(text.ends_with(&format!("{block}\n")), "{text:?}");
+    }
+    assert_eq!(
+        init_log::additional_output(127, "", "sh: x: not found\n"),
+        "\n\n--- Additional Output ---\nExit code: 127\n\nStdout:\n\n\nStderr:\nsh: x: not found\n"
+    );
+}
+
+#[test]
+fn failure_output_falls_back_from_stderr_to_stdout_error_log_then_exit_code() {
+    let t = script_tmp();
+    let log = t.path().join("conductor-1-abc.log");
+    std::fs::write(&log, "fatal: from the log\n").unwrap();
+    let base = ScriptRun {
+        exit_code: 128,
+        stdout: "out".into(),
+        stderr: "err".into(),
+        error: Some("Failed to execute script: boom".into()),
+        log_file_path: Some(log.clone()),
+    };
+    assert_eq!(init_log::failure_output(&base), "err");
+    let r = ScriptRun { stderr: String::new(), ..base.clone() };
+    assert_eq!(init_log::failure_output(&r), "out");
+    let r = ScriptRun { stdout: String::new(), ..r };
+    assert_eq!(init_log::failure_output(&r), "Failed to execute script: boom");
+    let r = ScriptRun { error: None, ..r };
+    assert_eq!(init_log::failure_output(&r), "fatal: from the log");
+    std::fs::write(&log, "").unwrap();
+    assert_eq!(init_log::failure_output(&r), "exit code 128");
+    let r = ScriptRun { log_file_path: None, ..r };
+    assert_eq!(init_log::failure_output(&r), "exit code 128");
+}
+
+#[test]
+fn worktree_failure_message_special_cases_branch_prefix_clashes() {
+    let clash = "Preparing worktree (new branch 'sven/x')\nfatal: cannot lock ref 'refs/heads/sven/x': 'refs/heads/sven' exists; cannot create 'refs/heads/sven/x'\n";
+    assert_eq!(
+        init_log::worktree_failure_message(clash),
+        "Git won't let us create branch \"sven/x\" because \"sven\" already exists. Rename or delete \"sven\", or change your git prefix in settings."
+    );
+    // Same shape, but not a prefix clash: the generic text.
+    let other = "fatal: cannot lock ref 'refs/heads/a': 'refs/heads/b' exists; cannot create 'refs/heads/a'";
+    assert_eq!(init_log::worktree_failure_message(other), format!("Failed to create worktree: {other}"));
+    assert_eq!(init_log::worktree_failure_message("exit code 1"), "Failed to create worktree: exit code 1");
+    assert_eq!(init_log::join_messages(None, None), None);
+    assert_eq!(init_log::join_messages(Some("a".into()), None).as_deref(), Some("a"));
+    assert_eq!(init_log::join_messages(None, Some("b".into())).as_deref(), Some("b"));
+    assert_eq!(init_log::join_messages(Some("a".into()), Some("b".into())).as_deref(), Some("a b"));
+    assert_eq!(init_log::shell_quote("it's"), "'it'\\''s'");
 }
