@@ -550,6 +550,41 @@ export const flows = [
       }
     },
   },
+  {
+    // Open project on a folder that is already added is not refused: like
+    // Conductor it adds a second project on the same folder, `<name>-v1`
+    // (evidence/screens/duplicate-repo.md). Runs from the palette's
+    // "Open project" action, since Home's cards only show at start-up.
+    name: "duplicate-repo",
+    async run(wd, ctx) {
+      if (!ctx.repo) throw new Error("needs the add-repo flow's repo");
+      const ENTER = "\uE007";
+      await wd.execute("window.__OC_E2E_PICK_FOLDER__ = arguments[0];", [ctx.repo]);
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.chord(["\uE03D"], "k");
+      await wd.waitFor("the command palette", async () => (await wd.findAll('.palette[aria-label="Command palette"]')).length > 0, 10000);
+      await wd.keys("Open project");
+      await wd.waitFor("Open project highlighted", () =>
+        wd.execute("return document.querySelector('.palette-item.active .palette-title')?.textContent.trim() === 'Open project';", []),
+      );
+      await wd.keys(ENTER);
+      await wd.waitFor("e2e-demo-v1 in the sidebar", async () => (await textsOf(wd, ".sb-repo-name")).includes("e2e-demo-v1")).catch(async (e) => {
+        throw new Error(`${e.message}; sidebar ${JSON.stringify(await textsOf(wd, ".sb-repo-name"))}`);
+      });
+      // Exactly two projects on the folder, whatever their names: the
+      // create-workspace flow and the branch lookups must not have
+      // registered hidden extra copies (#401 once saw e2e-demo-v3 here).
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_repos');", []);
+      const root = rows.find((r) => r.name === "e2e-demo")?.rootPath;
+      const demo = rows.filter((r) => r.rootPath === root);
+      const names = demo.map((r) => r.name).sort();
+      if (!root || demo.length !== 2 || new Set(demo.map((r) => r.id)).size !== 2 || names.join() !== "e2e-demo,e2e-demo-v1") {
+        throw new Error(`want two repos rows on one folder (e2e-demo, e2e-demo-v1), got ${JSON.stringify(demo.map((r) => [r.id, r.name, r.rootPath]))}`);
+      }
+      const shown = (await textsOf(wd, ".sb-repo-name")).filter((n) => /^e2e-demo(-v\d+)?$/.test(n)).sort();
+      if (shown.join() !== "e2e-demo,e2e-demo-v1") throw new Error(`want the sidebar to show e2e-demo and e2e-demo-v1, got ${JSON.stringify(shown)}`);
+    },
+  },
 
   // Settings › Agents per-agent options and Account tool approvals
   // (src/settings/rows/AgentOptionRows.tsx, AccountAgentRows.tsx). Each flow

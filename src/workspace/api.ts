@@ -50,10 +50,14 @@ export interface CreatedWorkspaceDto {
 }
 
 
-/** Registers a local checkout with the backend (idempotent) and returns its backend id. */
-export async function ensureRepository(path: string): Promise<RepositoryDto> {
+/**
+ * The backend project a sidebar repo is (`ensure_repository`): the one `repositoryId` names, else
+ * the first on the folder, registered only when there is none. Idempotent, unlike `add_repository`,
+ * which adds a `<name>-v1` project for an already-added folder as Open project does.
+ */
+export async function ensureRepository(path: string, repositoryId?: string): Promise<RepositoryDto> {
   if (!inTauri()) return { id: path || "browser-repo", name: path, root: path, defaultBranch: "main" };
-  return invoke<RepositoryDto>("add_repository", { path });
+  return invoke<RepositoryDto>("ensure_repository", { path, repositoryId: repositoryId ?? null });
 }
 
 /**

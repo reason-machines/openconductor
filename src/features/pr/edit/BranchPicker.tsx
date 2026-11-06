@@ -8,20 +8,21 @@ import "./edit.css";
 
 type Branches = { status: "loading" } | { status: "error" } | { status: "ready"; items: BranchDto[] };
 
-export function BranchPicker({ base, repoPath, defaultBranch, onPick, onClose }: { base: string; repoPath: string; defaultBranch: string; onPick: (b: string) => void; onClose: () => void }) {
+export function BranchPicker({ base, repoId, repoPath, defaultBranch, onPick, onClose }: { base: string; repoId?: string; repoPath: string; defaultBranch: string; onPick: (b: string) => void; onClose: () => void }) {
   const [branches, setBranches] = useState<Branches>({ status: "loading" });
   const [query, setQuery] = useState("");
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     let live = true;
     setBranches({ status: "loading" });
-    ensureRepository(repoPath)
+    // The project id picks the right row when a folder has `-v1` copies.
+    ensureRepository(repoPath, repoId)
       .then((r) => listBranches(r.id, defaultBranch))
       .then((items) => live && setBranches({ status: "ready", items }), () => live && setBranches({ status: "error" }));
     return () => {
       live = false;
     };
-  }, [repoPath, defaultBranch, attempt]);
+  }, [repoId, repoPath, defaultBranch, attempt]);
   const names = useMemo(() => {
     if (branches.status !== "ready") return [];
     const seen = new Set<string>();
@@ -30,7 +31,7 @@ export function BranchPicker({ base, repoPath, defaultBranch, onPick, onClose }:
     return [...seen].filter((n) => n.toLowerCase().includes(q));
   }, [branches, query]);
   return (
-    <div className="pr-base-picker" role="dialog" aria-label="Select target branch" onKeyDown={(e) => e.key === "Escape" && onClose()}>
+    <div className="pr-base-picker" role="dialog" aria-label="Select target branch" data-tauri-drag-region="false" onKeyDown={(e) => e.key === "Escape" && onClose()}>
       <input autoFocus placeholder="Select target branch..." value={query} onChange={(e) => setQuery(e.target.value)} />
       {branches.status === "loading" && <p className="muted small">Loading branches...</p>}
       {branches.status === "error" && (

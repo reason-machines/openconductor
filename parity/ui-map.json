@@ -33,8 +33,8 @@
  },
  "summary": {
   "total": 963,
-  "missing": 779,
-  "wrong": 161,
+  "missing": 780,
+  "wrong": 160,
   "matches": 23,
   "states": {
    "total": 65,
@@ -44,8 +44,8 @@
   },
   "items": {
    "total": 898,
-   "missing": 758,
-   "wrong": 122,
+   "missing": 759,
+   "wrong": 121,
    "matches": 18
   },
   "items_by_kind": {
@@ -57,8 +57,8 @@
    },
    "empty-state": {
     "total": 52,
-    "missing": 47,
-    "wrong": 4,
+    "missing": 48,
+    "wrong": 3,
     "matches": 1
    },
    "menu": {
@@ -161,8 +161,8 @@
    },
    "shell": {
     "total": 191,
-    "missing": 177,
-    "wrong": 13,
+    "missing": 178,
+    "wrong": 12,
     "matches": 1
    },
    "terminal-scripts": {
@@ -1508,7 +1508,7 @@
    "id": "settings-repo-environment",
    "title": "Settings > tide-web > Environment",
    "status": "wrong",
-   "why": "diff 4.3% at t24, copy 72%",
+   "why": "diff 3.3% at t24, copy 88%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1519,7 +1519,7 @@
     "actions_run": 1,
     "actions_total": 1,
     "error": null,
-    "rea_evidence_id": "ev_e9f4d8c2192a513c34d8205eab68e0880e9fff7e80d8b2eaced407adc5c7c81d"
+    "rea_evidence_id": "ev_c94dd4ade5b35e8981f906e00e55bdad292906784868019c378b72e1df74787f"
    },
    "openconductor": {
     "status": "captured",
@@ -1529,19 +1529,15 @@
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": 0.0713938643292683,
-    "changed_ratio_t24": 0.043111661585365856,
+    "changed_ratio_t0": 0.05452458079268293,
+    "changed_ratio_t24": 0.03262385670731707,
     "rea_evidence_ids": [
-     "ev_176cccaec84f6cefdefed8a7b53cff16836fa6b5e60fb9a02cade83e9543b432",
-     "ev_dc6b9715e9a92699e7db184dce80660c7e670038f14e2b1fb304a36a6e777244"
+     "ev_ed6a379115b380d1e474d33ebadf5d8eaffcd3a8d94ecba7b99211c4f21d4788",
+     "ev_d5574bbd102e480e050c302c965ddf8eaddf36247f52f0b1d37f10ac566c508a"
     ]
    },
-   "copy_coverage": 0.72,
+   "copy_coverage": 0.88,
    "copy_missing": [
-    "configure environment variables used by conductor and passed to agents",
-    "no variables set",
-    "add a variable to make it available in this environment",
-    "cmd+shift+",
     "account menu",
     "search settings",
     "search settings shortcut"
@@ -2975,7 +2971,7 @@
    "kind": "route",
    "name": "/settings/repos/$repoId/environment",
    "status": "wrong",
-   "why": "diff 4.3% at t24, copy 72%",
+   "why": "diff 3.3% at t24, copy 88%",
    "team": "settings",
    "component": "_Ea",
    "source": {
@@ -2990,7 +2986,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-environment.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-environment.png",
    "diff": null,
-   "changed_ratio_t24": 0.043111661585365856
+   "changed_ratio_t24": 0.03262385670731707
   },
   {
    "id": "route:settings-repos-repoid-git",
@@ -20901,8 +20897,8 @@
    "id": "empty-state:no-variables-yet",
    "kind": "empty-state",
    "name": "No variables yet",
-   "status": "wrong",
-   "why": "not rendered in a reference capture; OpenConductor shows it in settings-repo-environment, not in the host state",
+   "status": "missing",
+   "why": "copy not shown in any OpenConductor capture",
    "team": "shell",
    "component": "Xha",
    "source": {

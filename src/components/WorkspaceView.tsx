@@ -15,6 +15,8 @@ import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
 import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
 import { ChatEmptyState } from "../features/chat/ChatEmptyState.tsx";
+import { NewChatButton } from "../features/chat/NewChatButton.tsx";
+import { atTabLimit, tabLimitToast } from "../features/chat/chatTabs.ts";
 import { lastUserMessageAt, type OtherChat } from "../features/chat/chatEmptyState.ts";
 import type { ChatAgent } from "../features/chat/chatAgentChoice.ts";
 import { commandSet, isKnownCommand, parseSlashCommand } from "../features/chat/slashCommands.ts";
@@ -22,7 +24,8 @@ import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
-import { answerCodex, CODEX_ACCESS, CODEX_CAN_STEER, codexAccess, codexQueueAction, codexSnapshot, setCodexAccess, stopCodex, submitCodex, subscribeCodex, type CodexAccess, type CodexSnapshot } from "../features/chat/codexChat.ts";
+import { CodexConsentCard } from "../features/chat/CodexConsentCard.tsx";
+import { answerCodex, answerCodexConsent, CODEX_ACCESS, CODEX_CAN_STEER, codexAccess, codexQueueAction, codexSnapshot, setCodexAccess, stopCodex, submitCodex, subscribeCodex, type CodexAccess, type CodexSnapshot } from "../features/chat/codexChat.ts";
 import { DECISION_LABELS, type CodexApproval, type CodexDecision } from "../features/chat/codex.ts";
 import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
@@ -44,7 +47,6 @@ interface AttachedSend {
 }
 type ShownChatBridge = ChatBridge & ComposerAttach & AttachedSend;
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
-import { TerminalPanel } from "../features/terminal/TerminalPanel";
 import { openBigTab } from "../features/terminal/session";
 import { bigTabRequest } from "../features/terminal/bigTerminal";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
@@ -65,7 +67,7 @@ import { usePrActions } from "../features/pr/usePrActions";
 import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
-import { useAppPrefs } from "../settings/appPrefs";
+import { getAppPrefs, setAppPref, useAppPrefs } from "../settings/appPrefs";
 import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 
@@ -161,8 +163,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   const main = chatId === workspace.id;
   const [agent, setAgent] = useState<ChatAgent>(() => savedAgent(chatId));
   const codex = reason && agent === "codex";
-  const snapshotOf = (a: ChatAgent): ChatView => (reason && a === "codex" ? codexSnapshot(chatId) : { ...chatSnapshot(chatId), approvals: [] });
-  const [{ transcript, queue, approvals, permissions = [] }, setSnapshot] = useState<ChatView>(() => snapshotOf(agent));
+  const snapshotOf = (a: ChatAgent): ChatView => (reason && a === "codex" ? codexSnapshot(chatId) : { ...chatSnapshot(chatId), approvals: [], consents: [] });
+  const [{ transcript, queue, approvals, consents, permissions = [] }, setSnapshot] = useState<ChatView>(() => snapshotOf(agent));
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
@@ -194,7 +196,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Follows the chat and its agent (picking another agent shows that agent's transcript and queue).
   useEffect(() => {
     setSnapshot(snapshotOf(agent));
-    return codex ? subscribeCodex(chatId, setSnapshot) : subscribeChat(chatId, (s) => setSnapshot({ ...s, approvals: [] }));
+    return codex ? subscribeCodex(chatId, setSnapshot) : subscribeChat(chatId, (s) => setSnapshot({ ...s, approvals: [], consents: [] }));
   }, [chatId, agent]);
 
   function chooseAgent(next: ChatAgent) {
@@ -328,7 +330,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     setForking(true);
     try {
       if (!repo.path) throw new Error("Unable to fork chat: workspace not found");
-      const backendRepo = await ensureRepository(repo.path);
+      const backendRepo = await ensureRepository(repo.path, repo.id);
       const taken = repo.workspaces.flatMap((w) => [w.name, w.branch.replace(/^.*\//, "")]);
       const [name] = generateWorkspaceNames(1, taken, Math.random);
       const targetBranch = workspace.targetBranch || backendRepo.defaultBranch;
@@ -429,7 +431,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       {tabs}
       {content}
       <div className="chat-scroll" hidden={content !== null}>
-        {review && !review.fork && (
+        {review && !review.fork && !review.blank && (
           <div className="review-chat-info muted" role="note">
             Code review on {review.modelLabel}
             {review.effort ? `, ${review.effort} effort` : ""}
@@ -489,6 +491,13 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           ))}
         </div>
       ) : null}
+      {codex && consents.length > 0 ? (
+        <div className="codex-approvals">
+          {consents.map((c) => (
+            <CodexConsentCard key={String(c.requestId)} consent={c} onRespond={(answer) => void answerCodexConsent(chatId, c.requestId, answer)} />
+          ))}
+        </div>
+      ) : null}
       <Composer
         draft={draft}
         setDraft={setDraft}
@@ -523,7 +532,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           ) : null
         }
         picker={
-          review ? (
+          review && !review.blank ? (
             <span className="oc-review-model">{review.modelLabel}</span>
           ) : (
             // A review chat keeps its model. The agent changes only between turns.
@@ -640,9 +649,11 @@ interface MainTabsProps {
   onSelect: (t: MainTab) => void;
   onCloseDiff: () => void;
   onCloseReview: (chatId: string) => void;
+  /** The "+" after the chat tabs (NewChatButton). */
+  newChat: ReactNode;
 }
 
-function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview }: MainTabsProps) {
+function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview, newChat }: MainTabsProps) {
   return (
     <div className="tabs main-tabs" role="tablist" aria-label="Workspace tabs">
       {diffOpen && (
@@ -672,7 +683,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
       )}
       {reviews.map((r) => (
         <span key={r.chatId} className={`main-tab${active === r.chatId ? " active" : ""}`}>
-          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} title={r.fork ? r.title : `Code review on ${r.modelLabel}`}>
+          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} title={r.fork || r.blank ? r.title : `Code review on ${r.modelLabel}`}>
             {r.title}
           </button>
           <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} title="Close tab" aria-label={`Close ${r.title} tab`}>
@@ -680,6 +691,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           </button>
         </span>
       ))}
+      {newChat}
     </div>
   );
 }
@@ -701,6 +713,7 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
       {open && (
         <BranchPicker
           base={target.branch}
+          repoId={repo.id}
           repoPath={repo.path}
           defaultBranch={repo.defaultBranch}
           onPick={(b) => {
@@ -720,9 +733,22 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
 }
 
 export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
-  // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) shows it,
-  // and ⌘⇧T opens a big terminal while Big terminal mode is on.
-  const [showTerminal, setShowTerminal] = useState(false);
+  // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) toggles the
+  // right panel that holds the Terminal tab, and ⌘⇧T opens a big terminal while Big terminal mode is on.
+  const [terminalRequest, setTerminalRequest] = useState(0);
+  const showTerminal = () => {
+    if (!getAppPrefs().right_panel_visible) setAppPref({ key: "right_panel_visible", value: true }).catch(() => {});
+    setTerminalRequest((n) => n + 1);
+  };
+  // ⌘J hides the panel only while its Terminal tab is the one on screen; otherwise it shows that tab.
+  const terminalTab = useRef<string | null>(null);
+  const setTerminalTab = useCallback((tab: string | null) => {
+    terminalTab.current = tab;
+  }, []);
+  const toggleTerminal = () => {
+    if (getAppPrefs().right_panel_visible && terminalTab.current === "terminal") setAppPref({ key: "right_panel_visible", value: false }).catch(() => {});
+    else showTerminal();
+  };
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
@@ -831,6 +857,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   });
   loaded.current = review.onLoaded;
   const reviews = useReviewChats(repo, workspace, setMainTab);
+  // The workspace's own chat plus its review, fork and new chats count toward Conductor's tab limit.
+  const openChatTabs = 1 + reviews.tabs.length;
+  const newChat = () => {
+    if (atTabLimit(openChatTabs)) notify?.("info", tabLimitToast());
+    else reviews.newChat();
+  };
   const closeReview = (chatId: string) => {
     reviews.close(chatId);
     if (mainTab === chatId) setMainTab("chat");
@@ -841,7 +873,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const tabOrder = [...(diffOpen ? ["diff"] : []), "chat", ...(prOpen ? ["pr"] : []), ...reviews.tabs.map((r) => r.chatId)];
   const stepTab = (dir: 1 | -1) => setMainTab((t) => tabOrder[(tabOrder.indexOf(t) + dir + tabOrder.length) % tabOrder.length] ?? "chat");
   useKeybindings({
-    "view.toggleTerminalPanel": () => setShowTerminal((v) => !v),
+    "view.toggleTerminalPanel": toggleTerminal,
     "diff.open": () => (diff.current < 0 && diff.files.length > 0 ? diff.open(0) : openDiffTab()),
     "nav.nextTab": () => stepTab(1),
     "nav.previousTab": () => stepTab(-1),
@@ -858,14 +890,19 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     "git.openInGitHub": prActions.openOnGitHub,
   });
   // ⌘⇧T inside a terminal is handled by the terminal itself (session.ts), so this one skips terminal focus.
+  // So is ⌘T (terminal.newTab); elsewhere ⌘T (nav.newTab) opens a new chat, as the "+" does.
   useKeybindings(
     {
+      "nav.newTab": () => {
+        newChat();
+        return true;
+      },
       "terminal.newBigTab": () => {
         const big = bigTabRequest();
         if (!big || !repo.path) return false;
         void openBigTab(workspace.id, repo.path, big)
           .catch(() => {})
-          .finally(() => setShowTerminal(true));
+          .finally(showTerminal);
         return true;
       },
     },
@@ -881,7 +918,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const rightPanelVisible = useAppPrefs().right_panel_visible;
   return (
     <div className="workspace">
-      <header className="ws-header" data-tauri-drag-region>
+      <header className="ws-header" data-tauri-drag-region="deep">
         <div className="ws-title">
           <span className="crumb">{repo.name}</span>
           <span className="crumb-sep">/</span>
@@ -928,7 +965,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           openFile={diff.openPath}
           forkToNewTab={reviews.fork}
           chatTabs={[{ chatId: workspace.id, title: workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
-          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
+          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />}
           content={
             showDiff ? (
               <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} />
@@ -960,13 +997,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               readOnly={workspace.status === "archived"}
               notify={notify}
             />
-            <ScriptsPanel repo={repo} workspace={workspace} />
+            <ScriptsPanel repo={repo} workspace={workspace} terminalRequest={terminalRequest} onTabChange={setTerminalTab} />
           </div>
         )}
       </div>
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
       <DiffDiscardHost diff={diff} onDiscarded={(f) => chatBridge.current?.attach(revertedNote(f.path))} />
-      {showTerminal && <TerminalPanel workspaceId={workspace.id} cwd={repo.path} />}
     </div>
   );
 }
