@@ -1,0 +1,84 @@
+{
+  "lane": "reference",
+  "url": "http://conductor.localhost:51749/settings/user/appearance?oc_scenario=populated&oc_theme=dark",
+  "source": {
+    "indexSha256": "48b778fa0c04f73e55a744c99873cf8cafe942ba7613f24c533b0963b1cf411b"
+  },
+  "checks": [
+    {
+      "key": "PageUp",
+      "expected": 20,
+      "actual": 20,
+      "passed": true
+    },
+    {
+      "key": "Home",
+      "expected": 10,
+      "actual": 10,
+      "passed": true
+    },
+    {
+      "key": "ArrowLeft",
+      "expected": 10,
+      "actual": 10,
+      "passed": true
+    },
+    {
+      "key": "ArrowRight",
+      "expected": 11,
+      "actual": 11,
+      "passed": true
+    },
+    {
+      "key": "End",
+      "expected": 20,
+      "actual": 20,
+      "passed": true
+    },
+    {
+      "key": "ArrowRight",
+      "expected": 20,
+      "actual": 20,
+      "passed": true
+    },
+    {
+      "key": "PageDown",
+      "expected": 10,
+      "actual": 10,
+      "passed": true
+    },
+    {
+      "key": "ArrowRight",
+      "expected": 11,
+      "actual": 11,
+      "passed": true
+    },
+    {
+      "key": "ArrowRight",
+      "expected": 12,
+      "actual": 12,
+      "passed": true
+    }
+  ],
+  "geometry": {
+    "input": {
+      "width": 14,
+      "height": 14,
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "0px"
+    },
+    "thumb": {
+      "width": 16,
+      "height": 16,
+      "background": "rgb(20, 17, 16)",
+      "border": "1px"
+    },
+    "track": {
+      "width": 896,
+      "height": 6,
+      "background": "oklab(0.961632 0.00069201 0.00160801 / 0.2)",
+      "border": "0px"
+    }
+  },
+  "limitations": "Isolated Chromium and invented IPC state. Does not prove native macOS rendering, authentication, or filesystem persistence."
+}

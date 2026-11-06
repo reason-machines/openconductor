@@ -1,0 +1,70 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/usr/bin/chromium",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://conductor.localhost:51749/settings/user/appearance?oc_scenario=populated&oc_theme=dark"
+  },
+  "environment": {
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "color_scheme": "dark"
+  },
+  "actions": [
+    {
+      "step_id": "settle",
+      "action": "wait_for_timeout",
+      "duration_ms": 2000
+    },
+    {
+      "step_id": "size-0",
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "input[type=\"range\"]"
+      },
+      "key": "Home",
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "size-1",
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "input[type=\"range\"]"
+      },
+      "key": "ArrowRight",
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "size-2",
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "input[type=\"range\"]"
+      },
+      "key": "ArrowRight",
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "ready",
+      "action": "wait_for_timeout",
+      "duration_ms": 500
+    }
+  ],
+  "capture": {
+    "at_end": [
+      "screenshot",
+      "dom",
+      "url"
+    ],
+    "events": [
+      "page-errors"
+    ]
+  }
+}
