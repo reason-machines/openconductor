@@ -95,6 +95,23 @@ jobs:
           name: codex-chat-e2e-screens
           path: ${{ runner.temp }}/e2e-codex
           retention-days: 14
+      # tools/e2e/fake_claude.py stands in for `claude`: an existing login in a fresh HOME, then the
+      # API key and CLI (subscription login) modes of Settings › Agents › Claude Code.
+      - name: Claude Code chat e2e (stand-in claude, each auth mode)
+        if: always()
+        # Normally about 1 minute.
+        timeout-minutes: 5
+        env:
+          E2E_OUT: ${{ runner.temp }}/e2e-claude
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: xvfb-run -a node tools/e2e/claude-chat.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: claude-chat-e2e-screens
+          path: ${{ runner.temp }}/e2e-claude
+          retention-days: 14
       # The chat's bundled-binary download banner, against a local stand-in release host.
       - name: Agent binary download banner e2e
         if: always()
