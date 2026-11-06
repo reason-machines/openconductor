@@ -1,6 +1,7 @@
-// Side-by-side evidence for the Rename chat dialog and the Review button's
-// "Edit before sending" menu (UI map states dialog-rename-chat and
-// menu-review-edit; the chat tab menu itself is tools/side-by-side/shell-menus.mjs): Conductor 0.87.6's extracted frontend
+// Side-by-side evidence for the chat area on one shared fixture (UI map states
+// workspace-chat, workspace-tool-calls, menu-chat-tab, menu-model-picker,
+// dialog-rename-chat and the Review button's "Edit before sending" menu,
+// menu-review-edit): Conductor 0.87.6's extracted frontend
 // (tools/screens harness, Tauri IPC mocked, the "lisbon" workspace) and
 // OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs's
 // fake backend with the same repos, workspaces and lisbon turn), both driven
@@ -74,6 +75,10 @@ const LISBON_REF = [css("text=tide-web"), css("text=Ada/fix login redirect")];
 const REF_TAB = right("[role=tab][aria-label^='Close chat']");
 const OC_TAB = right(".main-tabs [role=tab]");
 const STATES = {
+  "workspace-chat": { ref: LISBON_REF, oc: [] },
+  "workspace-tool-calls": { ref: [...LISBON_REF, css("text=4 tool calls, 2 messages")], oc: [css("text=4 tool calls, 2 messages")] },
+  "menu-chat-tab": { ref: [...LISBON_REF, REF_TAB], oc: [OC_TAB] },
+  "menu-model-picker": { ref: [...LISBON_REF, css("text=Opus 5 >> nth=-1")], oc: [css(".composer .oc-model-chip")] },
   "dialog-rename-chat": { ref: [...LISBON_REF, REF_TAB, css("[role=menuitem] >> text=Rename chat")], oc: [OC_TAB, css("[role=menuitem] >> text=Rename chat")] },
   "menu-review-edit": { ref: [...LISBON_REF, right("button:has-text('Review') >> nth=0")], oc: [right(".review-button")] },
 };
