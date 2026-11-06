@@ -31,7 +31,6 @@ test("configs round-trip through the form in the backend's serde shape", () => {
     { kind: "foundry", endpoint: { resource: "my-res" }, api_key: false },
     { kind: "openai_api", organization: "org-1", project: "proj" },
     { kind: "codex_gateway", gateway: "vercel_ai_gateway" },
-    { kind: "cursor_api" },
   ] as const;
   for (const c of configs) assert.deepEqual(configFromForm(formFromConfig(c)), c);
 });

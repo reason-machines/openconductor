@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, type DragEvent, type ReactNode } from "react";
-import { AGENT_DEFAULT_MODEL, MODEL_PALETTE, modelLabel, type ModelAgent } from "./models";
-import { CLAUDE_OUTPUT_STYLES, CODEX_PERSONALITIES, levelLabel, visibleModels } from "./agentSettings";
+import { AGENT_DEFAULT_MODEL, AGENT_LABEL, MODEL_PALETTE, modelLabel, storedModel, type ModelAgent } from "./models";
+import { CLAUDE_OUTPUT_STYLES, CODEX_PERSONALITIES, levelLabel } from "./agentSettings";
 import { withAgentModel } from "./agentSettings";
-import { providerStatus } from "./api";
 import type { ClaudePersonality, CodexPersonality, Settings } from "./types";
 import { listFavorites, openExternal, replaceFavorites } from "./agents/api";
 import {
@@ -28,20 +27,13 @@ import "./agents/agents.css";
 interface Props {
   settings: Settings;
   save: (next: Settings) => Promise<boolean> | void;
-  /** Opens Settings › Agents on an agent's tab (Conductor's "Configure <agent>"). */
-  openAgentsTab?: (tab: string) => void;
 }
 
 /** Conductor's review model when none is chosen (index `pZ`; features/diff/review.ts). */
 const REVIEW_FALLBACK = AGENT_DEFAULT_MODEL.claude;
 
-/** The palette columns, in Conductor's order (`P3a` plus OpenCode for a local organization). */
-const COLUMNS: readonly { agent: ModelAgent | "opencode"; label: string }[] = [
-  { agent: "claude", label: "Claude Code" },
-  { agent: "codex", label: "Codex" },
-  { agent: "cursor", label: "Cursor" },
-  { agent: "opencode", label: "OpenCode" },
-];
+/** The palette columns, in Conductor's order (`P3a`) without its Cursor and OpenCode columns. */
+const COLUMNS = Object.keys(MODEL_PALETTE) as ModelAgent[];
 
 /**
  * Settings › Default models (Conductor's `models` tab, `$3a`): the Loadout
@@ -49,10 +41,10 @@ const COLUMNS: readonly { agent: ModelAgent | "opencode"; label: string }[] = [
  * per-agent palette by click or drag), Codex personality, Claude output
  * style, Review model and Default to plan mode in new chats.
  */
-export function DefaultModelsPage({ settings, save, openAgentsTab }: Props) {
+export function DefaultModelsPage({ settings, save }: Props) {
   const m = settings.models;
   const personality = m.codex.personality ?? "pragmatic";
-  const reviewModel = m.review || REVIEW_FALLBACK;
+  const reviewModel = storedModel(m.review || REVIEW_FALLBACK);
   const review = builtIn("review", reviewModel, settingsEffort(settings, reviewModel, "review"), m.review_fast_mode ?? m.default_fast_mode === true);
   return (
     <div className="oc-ag ag-page">
@@ -61,7 +53,7 @@ export function DefaultModelsPage({ settings, save, openAgentsTab }: Props) {
           <div className="ag-setting-title">Loadout</div>
           <p className="ag-setting-desc">Choose which models you want to use</p>
         </div>
-        <Loadout settings={settings} save={save} openAgentsTab={openAgentsTab} />
+        <Loadout settings={settings} save={save} />
       </section>
       <SettingRow title="Codex personality">
         <select
@@ -151,17 +143,14 @@ function Switch({ label, checked, onChange }: { label: string; checked: boolean;
 type Drag = { kind: "palette"; model: string } | { kind: "slot"; index: number };
 
 /** The five slots and the per-agent palette below them. */
-function Loadout({ settings, save, openAgentsTab }: Props) {
+function Loadout({ settings, save }: Props) {
   const [stored, setStored] = useState<Favorite[] | null>(null);
-  const [cursorReady, setCursorReady] = useState(false);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [dropAt, setDropAt] = useState<number | null>(null);
   useEffect(() => {
     listFavorites().then((rows) => setStored(parseFavorites(rows)), () => setStored([]));
-    providerStatus("cursor").then((s) => setCursorReady(s.ready), () => setCursorReady(false));
   }, []);
   const slots = displayedLoadout(settings, stored ?? []);
-  const opencodeModels = visibleModels(settings).opencode;
 
   const commit = (next: Favorite[]) => {
     setStored(next);
@@ -230,28 +219,25 @@ function Loadout({ settings, save, openAgentsTab }: Props) {
         })}
       </div>
       <div className="ag-palette">
-        {COLUMNS.map(({ agent, label }) => {
-          const available = agent === "opencode" ? opencodeModels.length > 0 : agent === "cursor" ? cursorReady : true;
-          const models = agent === "opencode" ? opencodeModels : MODEL_PALETTE[agent];
+        {COLUMNS.map((agent) => {
+          const label = AGENT_LABEL[agent];
           return (
             <section key={agent} className="ag-palette-col" aria-label={label}>
               <span className="ag-palette-head">
-                {available && <AgentMark agent={agent} size={14} />}
+                <AgentMark agent={agent} size={14} />
                 {label}
               </span>
               <div className="ag-palette-list">
-                {available ? (
-                  models.map((model) => {
-                    const name = agent === "opencode" ? model : modelLabel(model);
+                {MODEL_PALETTE[agent].map((model) => {
+                    const name = modelLabel(model);
                     return (
                       <button
                         key={model}
                         type="button"
-                        draggable={agent !== "opencode"}
+                        draggable
                         className="ag-palette-item"
                         aria-label={`Add ${name} to loadout`}
                         title={name}
-                        disabled={agent === "opencode"}
                         onClick={() => add(model)}
                         onDragStart={(e) => {
                           e.dataTransfer.effectAllowed = "copy";
@@ -270,12 +256,7 @@ function Loadout({ settings, save, openAgentsTab }: Props) {
                         </span>
                       </button>
                     );
-                  })
-                ) : (
-                  <button type="button" className="ag-configure" onClick={() => openAgentsTab?.(agent)}>
-                    Configure {label}
-                  </button>
-                )}
+                  })}
               </div>
             </section>
           );
@@ -314,7 +295,7 @@ function SlotCard(props: {
         trigger={(open) => (
           <button type="button" className="ag-slot-card" aria-label={[name, effort].filter(Boolean).join(", ")} title="Change agent" onClick={open}>
             <span className="ag-slot-icon">
-              <AgentMark agent={fav.type === "built-in" ? fav.agent : "opencode"} size={28} />
+              {fav.type === "built-in" && <AgentMark agent={fav.agent} size={28} />}
             </span>
             <span className="ag-slot-model ag-truncate">{name}</span>
             <span className="ag-slot-effort">{effort}</span>
@@ -369,7 +350,7 @@ function ModelPicker({
             <div key={a} className="ag-menu-group">
               <div className="ag-menu-head">
                 <AgentMark agent={a} size={12} />
-                {a === "claude" ? "Claude Code" : a === "codex" ? "Codex" : "Cursor"}
+                {AGENT_LABEL[a]}
               </div>
               {MODEL_PALETTE[a].map((model) => (
                 <button
