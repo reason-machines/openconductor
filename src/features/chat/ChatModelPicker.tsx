@@ -24,6 +24,10 @@ export const OPEN_SETTINGS_EVENT = "openconductor:open-settings";
 export function openSettingsPage(page: string): void {
   window.dispatchEvent(new CustomEvent(OPEN_SETTINGS_EVENT, { detail: { page } }));
 }
+/** Asks the app shell to open a repository's settings section (for example "scripts"). */
+export function openRepoSettingsPage(repoId: string, section: string): void {
+  window.dispatchEvent(new CustomEvent(OPEN_SETTINGS_EVENT, { detail: { repoId, section } }));
+}
 
 export interface ChatModelPickerProps {
   chatId: string;
