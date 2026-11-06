@@ -86,7 +86,7 @@ export function ChatModelPicker({ chatId, disabled = false, agent = "reason", on
   const picked = choice ?? fallback;
   if (!picked) return null;
   const pickedAuto = reasonChoice(picked).model === AUTO;
-  const state = pickerState(agent, shownModel(running, picked), fallback && reasonChoice(fallback), !!onAgentChange);
+  const state = pickerState(agent, shownModel(running, picked, models), fallback && reasonChoice(fallback), !!onAgentChange);
   return (
     <ModelPicker
       value={state.value}
