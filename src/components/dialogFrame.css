@@ -1,0 +1,43 @@
+.project-dialog-layer { position: fixed; inset: 0; z-index: 50; }
+.project-dialog-backdrop { position: absolute; inset: 0; background: var(--backdrop); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.project-dialog-no-blur { backdrop-filter: none; -webkit-backdrop-filter: none; }
+.project-dialog-viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; pointer-events: none; }
+.project-dialog-dialog { top: max(32px, calc(50% - 250px)); bottom: 0; padding: 0 16px 32px; align-items: flex-start; }
+.modal.project-dialog { pointer-events: auto; width: 512px; max-width: 100%; max-height: 100%; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 24px; background: var(--bg); border-radius: 6px; outline: none; font-size: 14px; line-height: 20px; }
+.project-dialog .btn { height: 32px; padding: 0 12px; border-radius: 6px; font-size: 14px; line-height: 20px; font-weight: 500; }
+.project-dialog .modal-actions { margin-top: 0; }
+.project-dialog .btn-ghost { background: transparent; border-color: transparent; }
+.project-dialog .btn-ghost:hover { background: var(--hover); }
+.modal.project-dialog.rename-ws-dialog { width: 384px; }
+.project-dialog .rename-ws-title { padding-bottom: 6px; font-size: 20px; line-height: 20px; letter-spacing: -0.025em; }
+.project-dialog .rename-ws-input:focus { border-color: var(--ring); }
+.project-dialog .rename-ws-branch { line-height: 20px; }
+.project-dialog .rename-ws-branch input { appearance: none; width: 16px; height: 16px; margin: 0; border: 1px solid var(--text); border-radius: 4px; background: transparent; }
+.project-dialog .rename-ws-branch input:checked { background: var(--text); }
+.project-dialog .rename-ws-branch input:checked::after { content: ""; display: block; width: 5px; height: 9px; margin: 1px 0 0 5px; border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.project-dialog .rename-ws-branch input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.modal.project-dialog.create-project-modal, .modal.project-dialog.clone-project-modal { width: 525px; }
+.modal.project-dialog.clone-project-modal { padding: 16px; }
+.project-dialog-header { display: flex; flex-direction: column; gap: 6px; }
+.project-dialog-header h2 { margin: 0; font-size: 20px; line-height: 20px; font-weight: 500; letter-spacing: -0.025em; }
+.clone-project-modal .project-dialog-header { padding-bottom: 6px; }
+.project-dialog .clone-dialog { padding: 0; gap: 24px; }
+.project-dialog .clone-dialog .field { gap: 8px; }
+.project-dialog .clone-dialog .field > span:first-child { font-size: 14px; line-height: 14px; }
+.project-dialog .clone-dialog .field input { height: 32px; padding: 0 12px; border-color: var(--input); }
+.project-dialog .clone-dialog .field > input { flex: none; }
+.project-dialog .clone-dialog .field-row input { min-width: 0; }
+.project-dialog-alert { padding: 16px; }
+.modal.project-dialog.project-confirmation { border-radius: 12px; }
+.project-confirmation .btn-danger { background: var(--destructive); border-color: transparent; }
+.project-confirmation-header { display: flex; flex-direction: column; gap: 8px; }
+.project-confirmation-header h2 { margin: 0; font-size: 18px; line-height: 28px; font-weight: 500; }
+.project-confirmation-body { font-size: 14px; line-height: 20px; color: var(--muted); overflow-wrap: anywhere; }
+.project-confirmation-body p { margin: 0; }
+.project-confirmation-body p + p { margin-top: 16px; }
+.project-confirmation-kbd { display: inline-flex; align-items: center; margin-left: 8px; opacity: 0.6; }
+.project-confirmation-kbd svg { width: 12px; height: 12px; }
+@media (max-width: 639px) {
+  .project-confirmation .modal-actions { flex-direction: column-reverse; }
+  .project-confirmation-header { text-align: center; }
+}
