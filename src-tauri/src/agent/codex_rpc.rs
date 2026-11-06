@@ -59,6 +59,16 @@ pub enum ClientRequest {
         thread_id: String,
         turn_id: String,
     },
+    /// `account/read`: the signed-in account (ChatGPT email and plan, or
+    /// API key), without reading Codex's credential file ourselves.
+    AccountRead,
+    /// `account/login/start` with `{type: "chatgpt"}`: Codex starts its
+    /// local callback server and answers with the browser `authUrl`.
+    AccountLoginChatgpt,
+    /// `account/login/cancel` for a login `AccountLoginChatgpt` started.
+    AccountLoginCancel {
+        login_id: String,
+    },
 }
 
 /// The answer to an approval request. Decline lets the turn continue;
@@ -111,6 +121,9 @@ impl ClientRequest {
             ClientRequest::ThreadResume { .. } => "thread/resume",
             ClientRequest::TurnStart { .. } => "turn/start",
             ClientRequest::TurnInterrupt { .. } => "turn/interrupt",
+            ClientRequest::AccountRead => "account/read",
+            ClientRequest::AccountLoginChatgpt => "account/login/start",
+            ClientRequest::AccountLoginCancel { .. } => "account/login/cancel",
         }
     }
 
@@ -156,6 +169,9 @@ impl ClientRequest {
             ClientRequest::TurnInterrupt { thread_id, turn_id } => {
                 json!({ "threadId": thread_id, "turnId": turn_id })
             }
+            ClientRequest::AccountRead => json!({}),
+            ClientRequest::AccountLoginChatgpt => json!({ "type": "chatgpt" }),
+            ClientRequest::AccountLoginCancel { login_id } => json!({ "loginId": login_id }),
         }
     }
 

@@ -367,9 +367,14 @@ export default function App() {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
+  // The Toaster sits at the same place (second child of this fragment) in both views, so
+  // opening or closing Settings keeps the toasts mounted: their timers keep running and
+  // they do not replay their 400ms slide-in over the page that just opened.
+  const toaster = <Toaster toasts={toasts} dismiss={dismiss} />;
   if (settingsLocation)
     return (
       <>
+        <>
         <SettingsView
           location={settingsLocation}
           repos={state.repos}
@@ -386,11 +391,13 @@ export default function App() {
           }}
         />
         {quitDialog}
-        <Toaster toasts={toasts} dismiss={dismiss} />
+        </>
+        {toaster}
       </>
     );
 
   return (
+    <>
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
       {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
@@ -513,7 +520,8 @@ export default function App() {
       )}
       {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
       {quitDialog}
-      <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
+    {toaster}
+    </>
   );
 }
