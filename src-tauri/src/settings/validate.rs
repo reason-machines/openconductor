@@ -80,7 +80,6 @@ pub fn validate(s: &Settings) -> Result<(), SettingsError> {
             &s.claude_code_executable_path,
         ),
         ("codex_executable_path", &s.codex_executable_path),
-        ("opencode_executable_path", &s.opencode_executable_path),
         ("reason_executable_path", &s.reason_executable_path),
         ("ssh_key_path", &s.ssh_key_path),
     ] {
@@ -106,8 +105,6 @@ pub fn validate(s: &Settings) -> Result<(), SettingsError> {
     for (key, value) in [
         ("claude_provider", &s.claude_provider),
         ("codex_provider", &s.codex_provider),
-        ("bedrock_region", &s.bedrock_region),
-        ("vertex_project_id", &s.vertex_project_id),
     ] {
         if let Some(v) = value.as_deref().map(str::trim).filter(|v| !v.is_empty()) {
             if v.chars().any(|c| c.is_whitespace() || c.is_control()) {

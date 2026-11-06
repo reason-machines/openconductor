@@ -16,21 +16,15 @@ export type CodexPersonality = "none" | "friendly" | "pragmatic";
 export type CodexToolApprovalPolicy = "default" | "always_approve";
 
 /** `agent::AgentKind`. */
-export type AgentKind = "claude" | "codex" | "cursor" | "opencode" | "reason";
-export const AGENTS: AgentKind[] = ["claude", "codex", "cursor", "opencode", "reason"];
+export type AgentKind = "claude" | "codex" | "reason";
+export const AGENTS: AgentKind[] = ["claude", "codex", "reason"];
 
 /** `agent::ProviderConfig`, tagged by `kind`. Options are per kind. */
 export type ProviderKind =
   | "claude_login"
   | "anthropic_api"
-  | "bedrock"
-  | "vertex"
-  | "foundry"
   | "codex_login"
   | "openai_api"
-  | "codex_gateway"
-  | "cursor_api"
-  | "opencode_login"
   | "reason_login"
   | "reason_api";
 export interface ProviderConfig {
@@ -42,8 +36,6 @@ export interface ProviderConfig {
 export const DEFAULT_PROVIDER: Record<AgentKind, ProviderKind> = {
   claude: "claude_login",
   codex: "codex_login",
-  cursor: "cursor_api",
-  opencode: "opencode_login",
   reason: "reason_login",
 };
 
@@ -52,12 +44,9 @@ export interface Settings {
   /** Conductor's top-level provider keys: `custom` (API key) or `default` (CLI login); Codex also `chatgpt_sign_in`. */
   claude_provider?: string | null;
   codex_provider?: string | null;
-  bedrock_region?: string | null;
-  vertex_project_id?: string | null;
   /** Advanced › executable paths; blank means the agent on PATH. */
   claude_code_executable_path?: string | null;
   codex_executable_path?: string | null;
-  opencode_executable_path?: string | null;
   /** Agents › Reason › "Reason executable path"; blank uses the installed `reason`. */
   reason_executable_path?: string | null;
   /** Advanced › "SSH private key path". */

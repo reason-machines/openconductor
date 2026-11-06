@@ -42,8 +42,8 @@ review = "opus"
 default_thinking_level = "high"
 review_thinking_level = "xhigh"
 [providers.claude]
-kind = "bedrock"
-region = "eu-west-1"
+kind = "anthropic_api"
+base_url = "https://gw.example"
 "#,
     )
     .unwrap();
@@ -52,7 +52,7 @@ region = "eu-west-1"
     assert_eq!(s.models.codex.default_thinking_level, ThinkingLevel::High);
     assert_eq!(
         s.providers.effective(AgentKind::Claude).provider().kind(),
-        "bedrock"
+        "anthropic_api"
     );
     assert_eq!(
         s.providers.effective(AgentKind::Codex),
@@ -138,7 +138,7 @@ fn bad_values_are_rejected_on_load() {
             "providers.claude: codex_login is a codex provider",
         ),
         (
-            "[providers.claude]\nkind = \"bedrock\"\nregion = \" \"",
+            "[providers.claude]\nkind = \"anthropic_api\"\nbase_url = \"not a url\"",
             "providers.claude:",
         ),
         ("[providers.codex]\nkind = \"nope\"", "unknown variant"),
@@ -194,25 +194,75 @@ fn invalid_settings_are_not_written() {
 fn provider_configs_round_trip_per_agent() {
     let path = temp_dir().join(FILE_NAME);
     let mut s = Settings::default();
-    let foundry: ProviderConfig =
-        serde_json::from_str(r#"{"kind":"foundry","endpoint":{"resource":"r"}}"#).unwrap();
-    let gateway: ProviderConfig =
-        serde_json::from_str(r#"{"kind":"codex_gateway","gateway":"open_router"}"#).unwrap();
-    s.providers.set(AgentKind::Claude, Some(foundry.clone()));
-    s.providers.set(AgentKind::Codex, Some(gateway.clone()));
+    let anthropic: ProviderConfig =
+        serde_json::from_str(r#"{"kind":"anthropic_api","base_url":"https://gw.example"}"#)
+            .unwrap();
+    let openai: ProviderConfig =
+        serde_json::from_str(r#"{"kind":"openai_api","project":"p1"}"#).unwrap();
+    s.providers.set(AgentKind::Claude, Some(anthropic.clone()));
+    s.providers.set(AgentKind::Codex, Some(openai.clone()));
     save(&path, &s).unwrap();
     let text = fs::read_to_string(&path).unwrap();
     assert!(text.contains("[providers.claude]"), "{text}");
-    assert!(text.contains("kind = \"codex_gateway\""), "{text}");
+    assert!(text.contains("kind = \"openai_api\""), "{text}");
     let back = load(&path).unwrap();
-    assert_eq!(back.providers.get(AgentKind::Claude), Some(&foundry));
-    assert_eq!(back.providers.get(AgentKind::Codex), Some(&gateway));
-    assert_eq!(back.providers.get(AgentKind::Cursor), None);
+    assert_eq!(back.providers.get(AgentKind::Claude), Some(&anthropic));
+    assert_eq!(back.providers.get(AgentKind::Codex), Some(&openai));
+    assert_eq!(back.providers.get(AgentKind::Reason), None);
     s.providers.set(AgentKind::Claude, None);
     save(&path, &s).unwrap();
     assert!(!fs::read_to_string(&path)
         .unwrap()
         .contains("[providers.claude]"));
+}
+
+/// A settings file written before the Cursor, OpenCode, Bedrock, Vertex,
+/// Foundry and Codex gateway providers were removed still loads: each agent
+/// that named a removed kind runs on its default provider.
+#[test]
+fn settings_naming_removed_providers_load_as_the_default() {
+    let path = temp_dir().join(FILE_NAME);
+    fs::write(
+        &path,
+        r#"
+claude_provider = "vertex"
+vertex_project_id = "p"
+opencode_executable_path = "/opt/opencode"
+
+[models]
+default = "composer-2.5"
+
+[providers.claude]
+kind = "foundry"
+endpoint = { resource = "r" }
+
+[providers.codex]
+kind = "codex_gateway"
+gateway = "open_router"
+
+[providers.cursor]
+kind = "cursor_api"
+
+[providers.opencode]
+kind = "opencode_login"
+"#,
+    )
+    .unwrap();
+    let s = load(&path).unwrap();
+    for agent in [AgentKind::Claude, AgentKind::Codex] {
+        assert_eq!(s.providers.get(agent), None, "{agent}");
+        assert_eq!(s.provider_for(agent), ProviderConfig::default_for(agent));
+    }
+    assert_eq!(
+        s.model_for(crate::settings::launch::Purpose::Chat),
+        crate::settings::DEFAULT_MODEL
+    );
+    save(&path, &s).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        !text.contains("foundry") && !text.contains("codex_gateway"),
+        "{text}"
+    );
 }
 
 #[test]

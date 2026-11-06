@@ -29,14 +29,11 @@ use super::{validate, Settings, SettingsError};
 
 /// Dotted keys a repository's settings files may set (Conductor's
 /// `workspaceConfigurable` keys of this group).
-pub const REPO_KEYS: [&str; 9] = [
+pub const REPO_KEYS: [&str; 6] = [
     "claude_provider",
     "codex_provider",
-    "bedrock_region",
-    "vertex_project_id",
     "claude_code_executable_path",
     "codex_executable_path",
-    "opencode_executable_path",
     "ssh_key_path",
     "models.visible_provider_models",
 ];

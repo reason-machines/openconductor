@@ -7,7 +7,7 @@
 // and wins over them. The instruction text below is our own.
 // Pure: no Tauri, no React, so `review.test.ts` covers it.
 
-import { agentForModel, AGENT_DEFAULT_MODEL, CLAUDE_ALIASES, modelLabel } from "../../settings/models.ts";
+import { agentForModel, AGENT_DEFAULT_MODEL, CLAUDE_ALIASES, modelLabel, storedModel } from "../../settings/models.ts";
 import type { Settings } from "../../settings/types.ts";
 
 /** The user message of a review chat; the instructions go along as an attachment. */
@@ -113,9 +113,9 @@ export interface ReviewModel {
   label: string;
 }
 
-/** The review model setting with Conductor's fallback. */
+/** The review model setting with Conductor's fallback; a removed Cursor id reads as the default model. */
 export function reviewModelSetting(settings: Settings): string {
-  return settings.models.review?.trim() || REVIEW_MODEL_FALLBACK;
+  return storedModel(settings.models.review?.trim() || REVIEW_MODEL_FALLBACK);
 }
 
 /**
@@ -123,7 +123,7 @@ export function reviewModelSetting(settings: Settings): string {
  * `byok:anthropic:claude-<name>` (Reason has no separate 1M-context ids),
  * Codex models as `byok:openai-codex:<id>`. An id that already names a
  * Reason model (`provider:model` or `provider/model`) is kept. Claude
- * aliases (`opus`, ...), Cursor and unknown ids have no fixed Reason id.
+ * aliases (`opus`, ...) and unknown ids have no fixed Reason id.
  */
 export function reasonModelId(model: string): string | null {
   if (model.includes(":") || model.includes("/")) return model;
