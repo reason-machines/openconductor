@@ -5,8 +5,10 @@
 // markdown) and, once finished, its footer.
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
-import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { usePresence } from "../../components/motion/usePresence.ts";
+import { Fragment, useMemo, useState, type ReactNode } from "react";
+import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
+import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
+import { turnMenuItems, TURN_MENU_TOOLTIP, TURN_MENU_TRIGGER_LABEL, type TurnMenuItem } from "./turnMenu.ts";
 import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
@@ -185,12 +187,14 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
   }
 }
 
-/** Conductor's turn footer: duration · end time, copy and More actions, then the turn's changed files. */
+/** Conductor's turn footer: duration · end time, "Copy final message" and "Show message actions", then the turn's changed files. */
 function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const { onRetry, onResetChat, resetDisabled, turnFooter, onForkToNewTab, onForkToNewWorkspace, forkDisabled, turnAgent } = ctx;
   const fork = onForkToNewTab ? () => onForkToNewTab(row.turnId) : undefined;
   const forkWorkspace = onForkToNewWorkspace ? () => onForkToNewWorkspace(row.turnId) : undefined;
   const reset = row.canReset && onResetChat ? () => onResetChat(row.turnId) : undefined;
+  const actions: Partial<Record<TurnMenuItem["id"], () => void>> = { "fork-tab": fork, "fork-workspace": forkWorkspace, "reset-chat": reset };
+  const menuItems = turnMenuItems({ canForkToTab: !!fork, canForkToWorkspace: !!forkWorkspace, canReset: !!reset, forkPending: forkDisabled, resetBlocked: resetDisabled });
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
@@ -208,9 +212,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
             Retry
           </button>
         ) : null}
-        {fork || forkWorkspace || reset ? (
-          <TurnMenu onFork={fork} onForkWorkspace={forkWorkspace} forkDisabled={forkDisabled} onReset={reset} resetDisabled={resetDisabled} />
-        ) : null}
+        {menuItems.length > 0 ? <TurnMenu items={menuItems} onSelect={(id) => actions[id]?.()} /> : null}
       </span>
       {turnFooter?.(row.turnId)}
       {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <SignInNotice agent={ctx.chatAgent} /> : null}
@@ -232,116 +234,47 @@ function SignInNotice({ agent }: { agent: ChatAgentId }) {
   );
 }
 
+const TURN_MENU_ICONS: Record<TurnMenuItem["icon"], (p: { className?: string }) => JSX.Element> = {
+  "message-square-plus": MessageSquarePlusIcon,
+  split: SplitIcon,
+  "undo-2": Undo2Icon,
+};
+
 /**
- * Conductor's turn footer "More actions" menu: "Fork to new tab" and "Fork to
- * new workspace" on every turn, "Reset chat" on turns that can be reset.
+ * Conductor's turn footer "Show message actions" menu (turnMenu.ts): a 20px ellipsis
+ * button with the tooltip "More actions" that opens a dropdown under it.
  */
-function TurnMenu({
-  onFork,
-  onForkWorkspace,
-  forkDisabled,
-  onReset,
-  resetDisabled,
-}: {
-  onFork?: () => void;
-  onForkWorkspace?: () => void;
-  forkDisabled: boolean;
-  onReset?: () => void;
-  resetDisabled: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-  const menu = usePresence(open);
-  const ref = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    if (!open) return;
-    const close = (e: MouseEvent) => ref.current?.contains(e.target as Node) || setOpen(false);
-    document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
-  }, [open]);
+function TurnMenu({ items, onSelect }: { items: TurnMenuItem[]; onSelect: (id: TurnMenuItem["id"]) => void }) {
+  const [anchor, setAnchor] = useState<DOMRect | null>(null);
+  const open = anchor !== null;
   return (
-    <span className="chat-turn-menu" ref={ref} onKeyDown={(e) => e.key === "Escape" && setOpen(false)}>
-      <Tooltip content="More actions">
-        <button type="button" className="oc-icon-action" aria-label="More actions" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-          <Lucide name="ellipsis" className="oc-icon-action-svg" />
+    <>
+      <Tooltip content={TURN_MENU_TOOLTIP}>
+        <button
+          type="button"
+          className="oc-icon-action oc-turn-menu-trigger"
+          aria-label={TURN_MENU_TRIGGER_LABEL}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          data-popup-open={open || undefined}
+          onClick={(e) => setAnchor(open ? null : e.currentTarget.getBoundingClientRect())}
+        >
+          <EllipsisIcon className="oc-icon-action-svg" />
         </button>
       </Tooltip>
-      {menu.mounted ? (
-        <div className="chat-menu" role="menu" data-motion="popup" {...menu.attrs}>
-          {onFork ? (
-            <button
-              type="button"
-              role="menuitem"
-              className="chat-menu-item"
-              disabled={forkDisabled}
-              onClick={() => {
-                setOpen(false);
-                onFork();
-              }}
-            >
-              <ForkIcon /> Fork to new tab
-            </button>
-          ) : null}
-          {onForkWorkspace ? (
-            <button
-              type="button"
-              role="menuitem"
-              className="chat-menu-item"
-              disabled={forkDisabled}
-              onClick={() => {
-                setOpen(false);
-                onForkWorkspace();
-              }}
-            >
-              <WorkspaceForkIcon /> Fork to new workspace
-            </button>
-          ) : null}
-          {onReset ? (
-            <button
-              type="button"
-              role="menuitem"
-              className="chat-menu-item"
-              data-action="reset-chat"
-              disabled={resetDisabled}
-              onClick={() => {
-                setOpen(false);
-                onReset();
-              }}
-            >
-              <ResetIcon /> Reset chat
-            </button>
-          ) : null}
-        </div>
+      {anchor ? (
+        <DropdownMenu anchor={anchor} label={TURN_MENU_TRIGGER_LABEL} className="cm-turn-menu" onClose={() => setAnchor(null)}>
+          {items.map((item) => {
+            const Icon = TURN_MENU_ICONS[item.icon];
+            return (
+              <MenuItem key={item.id} icon={<Icon />} disabled={item.disabled} onSelect={() => onSelect(item.id)}>
+                {item.label}
+              </MenuItem>
+            );
+          })}
+        </DropdownMenu>
       ) : null}
-    </span>
-  );
-}
-
-function ForkIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <circle cx="4" cy="3" r="1.5" />
-      <circle cx="12" cy="3" r="1.5" />
-      <circle cx="8" cy="13" r="1.5" />
-      <path d="M4 4.5v1.5a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.5M8 8v3.5" />
-    </svg>
-  );
-}
-
-function WorkspaceForkIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M1.75 4.25a1 1 0 0 1 1-1h3l1.5 1.5h5.5a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1z" />
-      <path d="M8 7.25v3.5M6.25 9h3.5" />
-    </svg>
-  );
-}
-
-function ResetIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9" />
-      <path d="M2.5 2.5v3h3" />
-    </svg>
+    </>
   );
 }
 
@@ -488,7 +421,8 @@ function CopyButton({ text, label }: { text: string; label: string }) {
     } catch {
       setState("failed");
     }
-    setTimeout(() => setState("idle"), 1500);
+    // Conductor's SimpleCopyButton (`t0`) shows the check and "Copied!" for 2s.
+    setTimeout(() => setState("idle"), 2000);
   }
   const title = state === "copied" ? "Copied!" : state === "failed" ? "Couldn't copy" : label;
   return (

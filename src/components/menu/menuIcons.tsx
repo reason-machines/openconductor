@@ -107,6 +107,30 @@ export const RotateCcwIcon = lucide([
 ]);
 /** `check` (`Uo`). */
 export const CheckIcon = lucide([["path", "M20 6 9 17l-5-5"]]);
+/** `ellipsis` (`iD`): the chat turn footer's "Show message actions" trigger. */
+export const EllipsisIcon = lucide([
+  ["circle", 12, 12, 1],
+  ["circle", 19, 12, 1],
+  ["circle", 5, 12, 1],
+]);
+/** `message-square-plus` (`uEe`): Fork to new tab. */
+export const MessageSquarePlusIcon = lucide([
+  ["path", "M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"],
+  ["path", "M12 8v6"],
+  ["path", "M9 11h6"],
+]);
+/** `split` (`Bfi`): Fork to new workspace. */
+export const SplitIcon = lucide([
+  ["path", "M16 3h5v5"],
+  ["path", "M8 3H3v5"],
+  ["path", "M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"],
+  ["path", "m15 9 6-6"],
+]);
+/** `undo-2` (`YQe`): Reset chat. */
+export const Undo2Icon = lucide([
+  ["path", "M9 14 4 9l5-5"],
+  ["path", "M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"],
+]);
 /** `chevron-right` (`td`): submenu triggers. */
 export const ChevronRightIcon = lucide([["path", "m9 18 6-6-6-6"]]);
 /** `plus` (`Qc`). */

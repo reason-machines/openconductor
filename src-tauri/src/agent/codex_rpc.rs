@@ -70,11 +70,6 @@ pub enum ClientRequest {
     AccountLoginCancel {
         login_id: String,
     },
-    /// `account/login/start` with `{type: "chatgptAuthTokens"}` for a chat
-    /// on another machine, as Conductor 0.87.6 signs in its cloud Codex.
-    /// Carries [`super::handoff`]'s placeholders: the target splices the
-    /// token in, so this app never writes it to the channel.
-    AccountLoginChatgptHandoff,
     /// `account/login/start` with `{type: "apiKey", apiKey}`: the key saved
     /// in the API key card, as Conductor's Codex client sends it right after
     /// `initialized`. Codex 0.166's app server does not read CODEX_API_KEY
@@ -84,10 +79,6 @@ pub enum ClientRequest {
     AccountLoginApiKey {
         api_key: SecretString,
     },
-    /// [`ClientRequest::AccountLoginApiKey`] for a chat on another machine:
-    /// carries [`super::handoff::APIKEY_PLACEHOLDER`], which the target
-    /// replaces with the key from the sealed envelope.
-    AccountLoginApiKeyHandoff,
 }
 
 /// The answer to an approval request. Decline lets the turn continue;
@@ -143,9 +134,7 @@ impl ClientRequest {
             ClientRequest::AccountRead => "account/read",
             ClientRequest::AccountLoginChatgpt => "account/login/start",
             ClientRequest::AccountLoginCancel { .. } => "account/login/cancel",
-            ClientRequest::AccountLoginChatgptHandoff => "account/login/start",
             ClientRequest::AccountLoginApiKey { .. } => "account/login/start",
-            ClientRequest::AccountLoginApiKeyHandoff => "account/login/start",
         }
     }
 
@@ -194,18 +183,9 @@ impl ClientRequest {
             ClientRequest::AccountRead => json!({}),
             ClientRequest::AccountLoginChatgpt => json!({ "type": "chatgpt" }),
             ClientRequest::AccountLoginCancel { login_id } => json!({ "loginId": login_id }),
-            ClientRequest::AccountLoginChatgptHandoff => json!({
-                "type": "chatgptAuthTokens",
-                "accessToken": super::handoff::ACCESS_PLACEHOLDER,
-                "chatgptAccountId": super::handoff::ACCOUNT_PLACEHOLDER,
-            }),
             ClientRequest::AccountLoginApiKey { api_key } => {
                 json!({ "type": "apiKey", "apiKey": api_key.expose() })
             }
-            ClientRequest::AccountLoginApiKeyHandoff => json!({
-                "type": "apiKey",
-                "apiKey": super::handoff::APIKEY_PLACEHOLDER,
-            }),
         }
     }
 

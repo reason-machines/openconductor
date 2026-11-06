@@ -102,24 +102,8 @@ pub struct CodexSession {
     turn: Option<String>,
     /// The last turn the server announced with `turn/started`.
     started: Option<String>,
-    /// `account/login/start` sent right after `initialized`: the API key,
-    /// or on another machine its placeholder (never the key itself).
-    login: Option<ClientRequest>,
-}
-
-/// The API key login for `launch`. A chat on another machine sends only the
-/// placeholder: its stdin is the channel, and the key travels sealed.
-fn api_key_login(launch: &CodexLaunch) -> Option<ClientRequest> {
-    match &launch.target {
-        Some(t) => t
-            .handoff
-            .codex_api_key
-            .is_some()
-            .then_some(ClientRequest::AccountLoginApiKeyHandoff),
-        None => launch
-            .api_key()
-            .map(|api_key| ClientRequest::AccountLoginApiKey { api_key }),
-    }
+    /// Logged in with `account/login/start` after `initialized`.
+    api_key: Option<super::secret::SecretString>,
 }
 
 impl CodexSession {
@@ -131,17 +115,8 @@ impl CodexSession {
                 format!("cannot start {}: {e}", launch.executable.display()),
             )
         })?;
-        let mut stdin = child.stdin.take();
-        let mut stdout = child.stdout.take().ok_or_else(|| missing("stdout"))?;
-        if let (Some(target), Some(input)) = (&launch.target, stdin.as_mut()) {
-            // The credential goes over the target's own stdin, sealed to its
-            // key, before the agent starts there (agent::handoff).
-            if let Err(e) = super::handoff::handshake(&mut stdout, input, &target.handoff) {
-                let _ = child.kill();
-                let _ = child.wait();
-                return Err(e);
-            }
-        }
+        let stdin = child.stdin.take();
+        let stdout = child.stdout.take().ok_or_else(|| missing("stdout"))?;
         let stderr = child.stderr.take().ok_or_else(|| missing("stderr"))?;
         let (tx, lines) = mpsc::channel();
         read_lines(stdout, tx.clone(), parse_stdout, Some(Line::Closed));
@@ -155,7 +130,7 @@ impl CodexSession {
             thread: None,
             turn: None,
             started: None,
-            login: api_key_login(launch),
+            api_key: launch.api_key(),
         })
     }
 
@@ -235,8 +210,8 @@ impl CodexSession {
             timeout,
         )?;
         self.write(&initialized_line())?;
-        if let Some(login) = self.login.clone() {
-            self.call(&login, timeout)?;
+        if let Some(api_key) = self.api_key.clone() {
+            self.call(&ClientRequest::AccountLoginApiKey { api_key }, timeout)?;
         }
         Ok(info)
     }

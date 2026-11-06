@@ -81,8 +81,8 @@ st("palette-workspaces","Command palette: Workspaces tab", ref(actions=[{"press"
 st("palette-search","Command palette: search", ref(actions=[{"press":"Meta+k"},{"fill":["[role=dialog] input","login"]}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"login"}])
 
 # dialogs
-st("dialog-clone-github","Clone GitHub repo dialog", ref(actions=[{"click":"text=Open GitHub project"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"Open GitHub project","after_ms":600},{"keys":"{Enter}","after_ms":800}], oc_note="OpenConductor's Home shows the workspace list, not the entry cards, so the dialog is opened from the command palette")
-st("dialog-create-project","Create project dialog", ref(actions=[{"click":"text=Quick start"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"Quick start","after_ms":600},{"keys":"{Enter}","after_ms":800}], oc_note="opened from the command palette, see dialog-clone-github")
+st("dialog-clone-github","Clone GitHub repo dialog", ref(actions=[{"click":"text=Open GitHub project"}]), oc=[{"click":".home-card","text":"Open GitHub project","after_ms":800}])
+st("dialog-create-project","Create project dialog", ref(actions=[{"click":"text=Quick start"}]), oc=[{"click":".home-card","text":"Quick start","after_ms":800}])
 st("dialog-rename-workspace","Rename workspace dialog", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Rename"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Rename"}])
 st("dialog-keyboard-shortcuts","Keyboard shortcuts dialog", ref(actions=[{"press":"Meta+/"}]), oc=[{"chord":["Meta"],"key":"/","after_ms":800}])
 
@@ -99,5 +99,19 @@ st("dialog-submit-prompt","Help > Submit a prompt dialog", ref(actions=[HELP_REF
 st("diagnostics-run","Diagnostics after a run", ref("/diagnostics", wait=False, actions=[{"click":"text=Run environment diagnostics"}], final_settle_ms=4000), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800},{"click":".diag-btn-primary","after_ms":4000}])
 st("toast-copied-link","Toast: copied link", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Copy link"}], final_settle_ms=300), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Copy link","after_ms":200}])
 st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Archive"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Archive","after_ms":1000}])
+# Conductor's reference opens on "/" (Home: wordmark and the Open project / Open GitHub
+# project / Quick start cards) and stays there unless its actions open a workspace (Create
+# is a dialog over Home). The seeded OpenConductor app opens on its workspace instead, so
+# those states first go to OpenConductor's root view (Selection "root", the sidebar Home
+# row) and both sides show the same scene behind the dialog, menu or toast. States whose
+# own OpenConductor steps start by navigating (workspace, Home, Settings) are left as is.
+def ref_leaves_home(a):
+    return a.get("click", "").startswith("text=Ada/")
+OC_NAVIGATES = [OPEN_WS[0], HOME[0], SETTINGS[0]]
+for s in S:
+    r = s.get("ref")
+    if (r and r["path"] == "/" and r["scenario"] == "populated" and s.get("oc") and not s.get("oc_fresh")
+            and not any(ref_leaves_home(a) for a in r["actions"]) and s["oc"][0] not in OC_NAVIGATES):
+        s["oc"] = HOME + s["oc"]
 json.dump({"schema":"openconductor.ui-map-states/1","viewport":{"width":1280,"height":820},"theme":"dark","states":S}, open(__import__('os').path.join(__import__('os').path.dirname(__file__),'states.json'),'w'), indent=1)
 print(len(S))

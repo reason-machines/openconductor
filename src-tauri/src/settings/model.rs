@@ -72,11 +72,6 @@ pub struct Settings {
     pub terminal: Terminal,
     pub prompts: Prompts,
     pub reason: ReasonSettings,
-    /// Workspaces whose Claude Code and Codex chats run on another machine,
-    /// keyed by the workspace's folder on this Mac. Each launch hands the
-    /// selected credential over (`agent::handoff`).
-    #[serde(skip_serializing_if = "std::collections::BTreeMap::is_empty")]
-    pub agent_targets: std::collections::BTreeMap<String, AgentTarget>,
     #[serde(flatten)]
     pub extra: toml::Table,
 }
@@ -124,31 +119,12 @@ impl Default for Settings {
             terminal: Terminal::default(),
             prompts: Prompts::default(),
             reason: ReasonSettings::default(),
-            agent_targets: std::collections::BTreeMap::new(),
             extra: toml::Table::new(),
         }
     }
 }
 
 pub use oc_scripts::config::PreviewUrl;
-
-/// Where a workspace's agent runs, `[agent_targets."<folder>"]`.
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
-#[serde(default, deny_unknown_fields)]
-pub struct AgentTarget {
-    /// Debug builds only: an argv prefix that runs a command on the target
-    /// (the tests' stand-in machine). The channel to a Reason cloud computer
-    /// is still to come; release builds refuse a target without one.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub exec: Option<Vec<String>>,
-    /// The workspace's folder on the target.
-    pub dir: String,
-    /// Claude Code's and Codex's commands there (default `claude`, `codex`).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub claude: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub codex: Option<String>,
-}
 
 /// Custom instructions per action, Conductor's `[prompts]` (setting keys
 /// `custom_prompt_<name>`). Repository settings files override each one;

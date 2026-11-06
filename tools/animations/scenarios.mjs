@@ -27,7 +27,7 @@ export const SCENARIOS = [
     oc: { act: click(".pr-caret"), sel: ".pr-menu" } },
   { id: "turn-menu-open", element: "Turn actions menu (… under a reply)", ms: 400,
     conductor: { act: click('[aria-label="Show message actions"]'), sel: POPUP_C },
-    oc: { act: click(".chat-turn-menu button"), sel: ".chat-menu" } },
+    oc: { act: click('[aria-label="Show message actions"]'), sel: ".cm-turn-menu" } },
   { id: "right-tab-switch", element: "Right panel tab switch (Changes -> Checks)", ms: 400,
     conductor: { act: click('button:has-text("Checks")'), sel: 'button:has-text("Checks")' },
     oc: { act: click('.diff .tabs button:has-text("Checks")'), sel: '.diff .tabs button:has-text("Checks")' },
