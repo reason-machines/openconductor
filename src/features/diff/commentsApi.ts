@@ -1,16 +1,25 @@
-// parity:diff.comments-inline:command parity:diff.comments-to-chat:command
+// parity:diff.comments-inline:command parity:diff.comments-to-chat:command parity:diff.comments-github:command
 // Review comments through the diff_comment* Tauri commands
 // (src-tauri/src/diff/comment_commands.rs). Tauri maps camelCase argument
 // names to the commands' snake_case parameters; the comment object itself
 // crosses as-is in DiffComment's snake_case shape.
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../../backend";
-import type { DiffComment } from "./comments.ts";
-import { localCommentStore, type CommentStore } from "./commentStore.ts";
+import { migrateLocations, type DiffComment } from "./comments.ts";
+import { localCommentStore, type CommentStore, type GithubSyncReport } from "./commentStore.ts";
 
-function tauriCommentStore(workspaceId: string): CommentStore {
+function tauriCommentStore(workspaceId: string, workspacePath: string | null): CommentStore {
+  const github: Pick<CommentStore, "syncGithub" | "resolveOnGithub"> = workspacePath
+    ? {
+        syncGithub: () => invoke<GithubSyncReport>("diff_comments_sync_github", { workspaceId, workspacePath }),
+        resolveOnGithub: async (threadId) => {
+          await invoke("diff_comment_resolve_github", { workspacePath, threadId });
+        },
+      }
+    : {};
   return {
-    list: () => invoke<DiffComment[]>("diff_comments_list", { workspaceId }),
+    ...github,
+    list: () => invoke<DiffComment[]>("diff_comments_list", { workspaceId }).then(migrateLocations),
     add: async (comment) => {
       await invoke("diff_comment_add", { comment });
     },
@@ -27,6 +36,7 @@ function tauriCommentStore(workspaceId: string): CommentStore {
   };
 }
 
-export function commentStoreFor(workspaceId: string): CommentStore {
-  return inTauri() ? tauriCommentStore(workspaceId) : localCommentStore(localStorage, workspaceId);
+/** `workspacePath` (the workspace's checkout) enables GitHub comment sync. */
+export function commentStoreFor(workspaceId: string, workspacePath: string | null = null): CommentStore {
+  return inTauri() ? tauriCommentStore(workspaceId, workspacePath) : localCommentStore(localStorage, workspaceId);
 }

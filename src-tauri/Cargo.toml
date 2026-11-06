@@ -7,7 +7,7 @@ publish = false
 
 [lib]
 name = "openconductor_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
+crate-type = ["rlib"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
@@ -25,13 +25,27 @@ tauri-plugin-os = "2"
 tauri-plugin-process = "2"
 tauri-plugin-store = "2"
 tauri-plugin-window-state = "2"
+tauri-plugin-fs = { version = "2", features = ["watch"] }
+tauri-plugin-http = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-sql = { version = "2", features = ["sqlite"] }
+tauri-plugin-updater = "2"
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+# preserve_order: local-storage records keep the reference's key order (terminal/history_store.rs)
+serde_json = { version = "1", features = ["preserve_order"] }
+uuid = { version = "1", features = ["v4"] }
 portable-pty = "=0.9.0"
 # terminal screen state (terminal/screen.rs); the version Conductor links
 alacritty_terminal = "=0.26.0"
 libc = "0.2"
 base64 = "0.21"
+# open_in/icon.rs: an app's Info.plist (already linked through tauri)
+plist = "1"
+# terminal history entries (terminal/history_store.rs): AES-256-GCM, SHA-256 long names
+aes-gcm = "0.10"
+sha2 = "0.10"
+# spawn_blocking for terminal history file I/O (already linked through tauri)
+tokio = { version = "1", features = ["rt", "sync"] }
 # quick_open/ (same crates Conductor links for its file picker)
 ignore = "0.4.25"
 notify = "8"
@@ -44,9 +58,11 @@ openconductor-db = { path = "../crates/openconductor-db" }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+# MockRuntime and get_ipc_response for command tests (no extra crates).
+tauri = { version = "2", features = ["test"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 security-framework = "3"
 
 [lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ["cfg(workspace_std_only)", "cfg(quick_open_std_only)", "cfg(diff_std_only)", "cfg(pr_harness)"] }
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(workspace_std_only)", "cfg(quick_open_std_only)", "cfg(diff_std_only)", "cfg(pr_harness)", "cfg(draft_attachments_std_only)", "cfg(agent_binaries_std_only)", "cfg(resource_usage_std_only)"] }

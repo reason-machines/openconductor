@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { activeDialogIdFromDom, bindCommands, type CommandHandlers } from "./bind.ts";
 import { createDispatcher, type Dispatcher, type Telemetry } from "./dispatcher.ts";
+import type { BindOptions } from "./resolve.ts";
 import { createKeyListeners, installKeyListeners, type KeyCapture } from "./listeners.ts";
 import { parseOverrides, type Overrides } from "./overrides.ts";
 
@@ -79,7 +80,15 @@ export const useKeyCapture = (): ((c: KeyCapture) => () => void) => useKeybindin
  * Run each callback when its registry command's shortcut is pressed. The set of
  * command ids decides what is registered; callbacks may change every render.
  */
-export function useKeybindings(handlers: CommandHandlers): void {
+/**
+ * Binds registry commands to callbacks while the component is mounted.
+ * `options` (a priority, or call-site options such as isGlobal) raises these
+ * handlers over others for the same keys, as Conductor's call sites do (a
+ * handler returning false passes the key on).
+ */
+export function useKeybindings(handlers: CommandHandlers, options?: number | BindOptions): void {
+  const bindOptions: BindOptions = typeof options === "number" ? { priority: options } : (options ?? {});
+  const optionsKey = JSON.stringify(bindOptions);
   const { dispatcher, overrides } = useKeybindingsContext();
   const latest = useRef(handlers);
   latest.current = handlers;
@@ -90,6 +99,6 @@ export function useKeybindings(handlers: CommandHandlers): void {
   useEffect(() => {
     const proxies: CommandHandlers = {};
     for (const id of ids ? ids.split("\n") : []) proxies[id] = () => latest.current[id]?.();
-    return bindCommands(dispatcher, proxies, { overrides });
-  }, [dispatcher, overrides, ids]);
+    return bindCommands(dispatcher, proxies, { overrides }, JSON.parse(optionsKey) as BindOptions);
+  }, [dispatcher, overrides, ids, optionsKey]);
 }

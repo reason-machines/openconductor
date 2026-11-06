@@ -18,6 +18,8 @@ The script builds `OpenConductor.app` with Tauri and signs it with the hardened 
 
 It then runs `codesign --verify --deep --strict` and prints the bundle path on its last line, for example `src-tauri/target/debug/bundle/macos/OpenConductor.app`.
 
+To build with working updates, set `OPENCONDUCTOR_UPDATER_PUBKEY` to the public key from `npx tauri signer generate`, and to publish an update, also set `bundle.createUpdaterArtifacts` to `true` and provide `TAURI_SIGNING_PRIVATE_KEY` (and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`) so the bundler writes and signs the update archive. Without the public key the app still checks for updates but can't install any.
+
 The build is not notarized. Gatekeeper accepts a Developer ID build on the Mac that built it; on another Mac, or after a download, macOS blocks it until it is notarized.
 
 ## Check a bundle
@@ -33,9 +35,12 @@ The checker compares the bundle with `src-tauri/tauri.conf.json` and with REA's 
 
 - Bundle ID `com.reasonmachines.openconductor`, minimum macOS 12.0, category developer tools.
 - URL scheme `openconductor://`.
-- Folder-access prompts for Desktop, Documents and Downloads, for repositories stored there.
-- Entitlements `com.apple.security.cs.allow-jit` and `com.apple.security.cs.allow-unsigned-executable-memory`, which the WebKit JavaScript engine needs under the hardened runtime.
+- `Contents/Resources/conductor-skill/`, where Conductor ships its agent skill: OpenConductor's own Claude Code plugin (`openconductor`, skill `conductor`) from `src-tauri/resources/conductor-skill/`, describing OpenConductor's workspaces, repository settings, scripts, files to copy, Spotlight and checkpoints. Every `ClaudeLaunch` passes it with `--plugin-dir`. Check it with `claude plugin validate src-tauri/resources/conductor-skill`.
+- Folder-access prompts for Desktop, Documents and Downloads, for repositories stored there, and a microphone prompt for dictating messages.
+- Entitlements `com.apple.security.cs.allow-jit` and `com.apple.security.cs.allow-unsigned-executable-memory`, which the WebKit JavaScript engine needs under the hardened runtime, and `com.apple.security.device.audio-input`, without which the hardened runtime denies the microphone. Conductor 0.87.6 signs the same three (`evidence/packaging/conductor-reference.json`).
+- `tauri-plugin-updater`, which Conductor links, with the four commands Conductor's frontend calls (`check`, `download`, `install`, `download_and_install`, granted by `updater:default`). It checks `latest.json` on this repository's latest GitHub release. `tauri.conf.json` ships an empty public key; a release build bakes in the real one from `OPENCONDUCTOR_UPDATER_PUBKEY` at compile time. With an empty key every install fails signature verification, so an unsigned build never installs an update. The app doesn't call the updater itself yet; Conductor's own update flow (`conductor_lib::updater`, the `check_for_updates` command and `manual_update_status` events) hasn't been traced with REA.
 - Icon from `src-tauri/icons/icon.svg`; regenerate every size with `scripts/gen-icons.sh`.
+- `Contents/Resources/bin/`, copied into `$APPDATA/bin/` at startup like Conductor's: the pinned `gh`, and `checkpointer.sh`, `git-busy-check.sh` and `spotlighter.sh`. The scripts are shims (`src-tauri/resources/bin-tools/`) that run the app binary in tool mode (`openconductor --tool <name>`), so they reuse the native checkpoint and Spotlight code and keep the command line, output and exit codes of Conductor's scripts. `spotlighter.sh` runs the Spotlight watch loop on the current workspace into `$CONDUCTOR_ROOT_PATH` until it gets SIGINT, SIGTERM or SIGHUP. In `$APPDATA/bin/`, `.internal/openconductor` links to the running app binary. Test them without building the app with `scripts/test-bin-tools.sh`.
 
 ## CI
 

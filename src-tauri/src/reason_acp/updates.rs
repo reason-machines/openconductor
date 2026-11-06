@@ -19,6 +19,13 @@
 //!   `/home/runner/.reason/workspace/sessions/<session id>/repo` (the id is
 //!   the Session doing the work, often a child). [`map_path`] relates both to
 //!   the workspace.
+//! * After the Session moves to Reason cloud, `reason acp` (0.2.683, seen in
+//!   a signed-in run) reports the cloud checkout's files under the chat's
+//!   folder too: a cloud write of `/home/runner/.../sessions/<id>/repo/a.txt`
+//!   arrives as `<cwd>/a.txt`. Only `session_info_update`'s
+//!   `_meta["com.reasonmachines/computer"].kind` says where the Session runs
+//!   (`cloud`, `headless`, ...); [`computer_is_cloud`] reads it, and paths
+//!   under the folder are then the cloud Session's checkout.
 
 use serde_json::Value;
 use std::path::Path;
@@ -33,7 +40,8 @@ pub enum AgentEvent {
     /// Reasoning text to append.
     Thought(String),
     /// A tool row to insert or replace by `id`.
-    Tool(ToolRow),
+    /// Boxed: a row carries its input, which would make every event as large as the biggest row.
+    Tool(Box<ToolRow>),
     /// The Session's title changed.
     Title(String),
     /// A message from another Session (e.g. a child's report), mid-turn.
@@ -72,6 +80,10 @@ pub struct ToolRow {
     pub output: Option<String>,
     pub diffs: Vec<Diff>,
     pub locations: Vec<MappedPath>,
+    /// The provider's own tool name (`Grep`, `Read`, ...), when it says.
+    pub tool_name: Option<String>,
+    /// The tool's input as the provider sent it, when it did.
+    pub raw_input: Option<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -189,6 +201,19 @@ pub struct UpdateContext<'a> {
     /// it is the turn's first text, follows a tool row, or Reason prefixes
     /// it with a newline.
     pub in_text: bool,
+    /// The Session's id while it runs on Reason cloud: paths under `cwd`
+    /// are then that Session's cloud checkout, not this computer's folder.
+    pub cloud_session: Option<&'a str>,
+}
+
+/// Where a `session_info_update` says the Session now runs: `Some(true)` on
+/// Reason cloud, `Some(false)` on a computer, `None` when it does not say.
+pub fn computer_is_cloud(update: &Value) -> Option<bool> {
+    if update["sessionUpdate"].as_str()? != "session_info_update" {
+        return None;
+    }
+    let kind = update["_meta"]["com.reasonmachines/computer"]["kind"].as_str()?;
+    Some(kind == "cloud")
 }
 
 /// Parses one `session/update` `update` object. Kinds a chat does not show
@@ -210,12 +235,23 @@ pub fn parse_update(update: &Value, ctx: UpdateContext) -> Option<AgentEvent> {
         "session_info_update" => update["title"]
             .as_str()
             .map(|t| AgentEvent::Title(t.into())),
-        "tool_call" | "tool_call_update" => Some(AgentEvent::Tool(tool_row(update, ctx.cwd)?)),
+        "tool_call" | "tool_call_update" => {
+            Some(AgentEvent::Tool(Box::new(tool_row(update, ctx)?)))
+        }
         _ => None,
     }
 }
 
-fn tool_row(u: &Value, cwd: &Path) -> Option<ToolRow> {
+fn tool_row(u: &Value, ctx: UpdateContext) -> Option<ToolRow> {
+    let map = |raw: &str| {
+        let mut p = map_path(raw, ctx.cwd);
+        if let (Place::Local, Some(id)) = (&p.place, ctx.cloud_session) {
+            p.place = Place::Cloud {
+                session_id: id.into(),
+            };
+        }
+        p
+    };
     let status = match u["status"].as_str() {
         Some("in_progress") => ToolStatus::Running,
         Some("completed") => ToolStatus::Completed,
@@ -230,11 +266,19 @@ fn tool_row(u: &Value, cwd: &Path) -> Option<ToolRow> {
         output: None,
         diffs: Vec::new(),
         locations: Vec::new(),
+        tool_name: [
+            &u["_meta"]["claudeCode"]["toolName"],
+            &u["_meta"]["toolName"],
+        ]
+        .into_iter()
+        .find_map(Value::as_str)
+        .map(str::to_string),
+        raw_input: Some(u["rawInput"].clone()).filter(|v| !v.is_null()),
     };
     for item in u["content"].as_array().into_iter().flatten() {
         match item["type"].as_str() {
             Some("diff") => row.diffs.push(Diff {
-                path: map_path(item["path"].as_str().unwrap_or_default(), cwd),
+                path: map(item["path"].as_str().unwrap_or_default()),
                 old_text: item["oldText"].as_str().map(str::to_string),
                 new_text: item["newText"].as_str().unwrap_or_default().into(),
             }),
@@ -248,7 +292,7 @@ fn tool_row(u: &Value, cwd: &Path) -> Option<ToolRow> {
     }
     for loc in u["locations"].as_array().into_iter().flatten() {
         if let Some(p) = loc["path"].as_str() {
-            row.locations.push(map_path(p, cwd));
+            row.locations.push(map(p));
         }
     }
     Some(row)

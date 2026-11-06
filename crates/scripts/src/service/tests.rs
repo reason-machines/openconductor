@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 use std::thread;
 use std::time::Instant;
@@ -105,4 +105,271 @@ fn archive_runs_to_completion_with_the_workspace_id() {
     let none = fixture("");
     assert_eq!(none.svc.run_archive(&none.ws).unwrap(), None);
     assert!(Path::new(&f.ws.workspace_path).exists());
+}
+
+/// Records each workspace the auto-run Spotlight hook was asked about and
+/// answers with `answer`.
+fn spotlight_hook(
+    f: &Fixture,
+    answer: Option<Result<(), String>>,
+) -> Arc<Mutex<Vec<(String, PathBuf)>>> {
+    let calls = Arc::new(Mutex::new(Vec::new()));
+    let seen = calls.clone();
+    f.svc
+        .set_auto_run_spotlight(Arc::new(move |_svc, ws, paths| {
+            assert_eq!(paths.repo_root, ws.repo_root);
+            assert_eq!(
+                paths.workspace.as_deref(),
+                Some(ws.workspace_path.as_path())
+            );
+            seen.lock()
+                .unwrap()
+                .push((ws.workspace_id.clone(), paths.repo_root.clone()));
+            answer.clone()
+        }));
+    calls
+}
+
+const AUTO_RUN_DEV: &str = r#"
+[scripts]
+auto_run_after_setup = true
+[scripts.run.dev]
+command = "echo dev"
+default = true
+"#;
+
+#[test]
+fn spotlight_takes_the_auto_runs_place_when_the_hook_starts_it() {
+    let f = fixture(AUTO_RUN_DEV);
+    let calls = spotlight_hook(&f, Some(Ok(())));
+    assert!(!f.svc.start_setup(&f.ws).unwrap(), "no setup script");
+    assert_eq!(
+        *calls.lock().unwrap(),
+        vec![("w1".to_string(), f.ws.repo_root.clone())]
+    );
+    thread::sleep(Duration::from_millis(200));
+    assert_eq!(
+        f.svc.runs.output("w1", "dev"),
+        None,
+        "run script must not start"
+    );
+    assert_eq!(f.svc.runs.state("w1", "dev"), RunState::Stopped);
+}
+
+#[test]
+fn a_failed_spotlight_auto_run_does_not_fall_back_to_the_run_script() {
+    let f = fixture(AUTO_RUN_DEV);
+    let calls = spotlight_hook(&f, Some(Err("root is mid-rebase".into())));
+    f.svc.start_setup(&f.ws).unwrap();
+    assert_eq!(calls.lock().unwrap().len(), 1);
+    thread::sleep(Duration::from_millis(200));
+    assert_eq!(f.svc.runs.output("w1", "dev"), None);
+}
+
+#[test]
+fn the_run_script_auto_runs_when_spotlight_testing_is_off() {
+    let f = fixture(AUTO_RUN_DEV);
+    let calls = spotlight_hook(&f, None);
+    f.svc.start_setup(&f.ws).unwrap();
+    wait_for("auto-run output", || {
+        f.svc
+            .runs
+            .output("w1", "dev")
+            .unwrap_or_default()
+            .contains("dev")
+    });
+    assert_eq!(calls.lock().unwrap().len(), 1);
+}
+
+#[test]
+fn spotlight_is_not_asked_without_a_run_script_or_with_auto_run_off() {
+    // The reference requires a run script even when Spotlight would start.
+    let no_run = fixture("[scripts]\nauto_run_after_setup = true\n");
+    let calls = spotlight_hook(&no_run, Some(Ok(())));
+    no_run.svc.start_setup(&no_run.ws).unwrap();
+    assert!(calls.lock().unwrap().is_empty());
+
+    let off = fixture("[scripts.run.dev]\ncommand = \"echo dev\"\n");
+    let calls = spotlight_hook(&off, Some(Ok(())));
+    off.svc.start_setup(&off.ws).unwrap();
+    assert!(calls.lock().unwrap().is_empty());
+}
+
+#[test]
+fn a_run_queued_during_setup_starts_instead_of_the_auto_run() {
+    let f = fixture(
+        r#"
+[scripts]
+setup = "sleep 0.4"
+auto_run_after_setup = true
+[scripts.run.dev]
+command = "echo dev"
+default = true
+[scripts.run.lint]
+command = "echo lint"
+"#,
+    );
+    let calls = spotlight_hook(&f, None);
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    f.svc.start_run(&f.ws, Some("lint")).unwrap();
+    assert_eq!(f.svc.runs.state("w1", "lint"), RunState::WaitingForSetup);
+    wait_for("queued run output", || {
+        f.svc
+            .runs
+            .output("w1", "lint")
+            .unwrap_or_default()
+            .contains("lint")
+    });
+    thread::sleep(Duration::from_millis(200));
+    assert_eq!(
+        f.svc.runs.output("w1", "dev"),
+        None,
+        "no auto-run on top of the queued run"
+    );
+    assert!(calls.lock().unwrap().is_empty());
+}
+
+/// A repository with a setup script and a default run script, and no
+/// `auto_run_after_setup` of its own: the user toggle decides.
+const SETUP_THEN_DEV: &str = r#"
+[scripts]
+setup = "echo setting up; sleep 0.2"
+[scripts.run.dev]
+command = "echo dev running"
+default = true
+"#;
+
+fn run_output_seen(f: &Fixture) -> bool {
+    f.svc
+        .runs
+        .output("w1", "dev")
+        .unwrap_or_default()
+        .contains("dev running")
+}
+
+#[test]
+fn the_user_toggle_on_runs_the_run_script_after_setup_completes() {
+    let f = fixture(SETUP_THEN_DEV);
+    assert!(!f.svc.auto_run_after_setup().unwrap(), "off by default");
+    assert!(f.svc.set_auto_run_after_setup(true).unwrap());
+
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    // Nothing runs while setup is still running.
+    assert_eq!(f.svc.runs.output("w1", "dev"), None);
+    wait_for("auto-run output", || run_output_seen(&f));
+    assert_eq!(f.svc.setup.state("w1"), SetupState::Completed);
+
+    // Setup finished before the run script printed anything.
+    let events = f.events.lock().unwrap();
+    let finished = events
+        .iter()
+        .position(
+            |e| matches!(e, ScriptEvent::SetupFinished(o) if o.state == SetupState::Completed),
+        )
+        .expect("setup finished");
+    let first_run = events
+        .iter()
+        .position(|e| matches!(e, ScriptEvent::Output { kind: "run", .. }))
+        .expect("run output");
+    assert!(
+        finished < first_run,
+        "setup then run: {finished} < {first_run}"
+    );
+}
+
+#[test]
+fn the_user_toggle_off_runs_nothing_after_setup() {
+    for set_explicitly in [false, true] {
+        let f = fixture(SETUP_THEN_DEV);
+        if set_explicitly {
+            f.svc.set_auto_run_after_setup(true).unwrap();
+            assert!(!f.svc.set_auto_run_after_setup(false).unwrap());
+        }
+        assert!(f.svc.start_setup(&f.ws).unwrap());
+        wait_for("setup completion", || {
+            f.svc.setup.state("w1") == SetupState::Completed
+        });
+        thread::sleep(Duration::from_millis(300));
+        assert_eq!(
+            f.svc.runs.output("w1", "dev"),
+            None,
+            "explicit off: {set_explicitly}"
+        );
+        assert_eq!(f.svc.runs.state("w1", "dev"), RunState::Stopped);
+    }
+}
+
+#[test]
+fn a_failed_setup_does_not_start_the_run_script() {
+    let f = fixture(
+        r#"
+[scripts]
+setup = "echo broken; exit 3"
+[scripts.run.dev]
+command = "echo dev running"
+default = true
+"#,
+    );
+    f.svc.set_auto_run_after_setup(true).unwrap();
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    wait_for("setup failure", || {
+        f.svc.setup.state("w1") == SetupState::Failed
+    });
+    thread::sleep(Duration::from_millis(300));
+    assert_eq!(f.svc.runs.output("w1", "dev"), None);
+    assert_eq!(f.svc.runs.state("w1", "dev"), RunState::Stopped);
+}
+
+#[test]
+fn a_repository_that_turns_auto_run_off_overrides_the_user_toggle() {
+    let f = fixture(
+        &format!("{SETUP_THEN_DEV}\n")
+            .replace("[scripts]\n", "[scripts]\nauto_run_after_setup = false\n"),
+    );
+    f.svc.set_auto_run_after_setup(true).unwrap();
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    wait_for("setup completion", || {
+        f.svc.setup.state("w1") == SetupState::Completed
+    });
+    thread::sleep(Duration::from_millis(300));
+    assert_eq!(f.svc.runs.output("w1", "dev"), None);
+}
+
+#[test]
+fn scripts_get_the_settings_environment_without_overriding_conductor_vars() {
+    let f = fixture(
+        r#"
+environment_variable_files = ["app.env"]
+[environment_variables.local]
+FROM_TABLE = "table"
+CONDUCTOR_PORT = "1"
+[scripts]
+setup = "echo env=$FROM_FILE/$FROM_TABLE/$CONDUCTOR_PORT"
+"#,
+    );
+    fs::write(
+        f.ws.repo_root.join(".conductor/app.env"),
+        "FROM_FILE=file\n",
+    )
+    .unwrap();
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    wait_for("setup output", || {
+        f.events.lock().unwrap().iter().any(|e| {
+            matches!(e, ScriptEvent::Output { kind: "setup", chunk, .. } if chunk.contains("env=file/table/55000"))
+        })
+    });
+}
+
+#[test]
+fn the_app_can_supply_the_settings_environment() {
+    let f = fixture("[scripts]\nsetup = \"echo hook=$HOOKED\"\n");
+    f.svc.set_settings_env(Arc::new(|ws: &WorkspaceRef| {
+        BTreeMap::from([("HOOKED".to_string(), ws.workspace_name.clone())])
+    }));
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    wait_for("setup output", || {
+        f.events.lock().unwrap().iter().any(|e| {
+            matches!(e, ScriptEvent::Output { kind: "setup", chunk, .. } if chunk.contains("hook=tokyo"))
+        })
+    });
 }

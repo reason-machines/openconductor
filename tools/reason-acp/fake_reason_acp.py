@@ -15,13 +15,36 @@ behaviours the provider has to handle (see src-tauri/src/reason_acp/):
 
 Prompts are commands: "echo: TEXT" (reply split mid-word, prefixed with the
 turn number), "slow" (a running tool until session/cancel), "report" (a
-mid-turn user_message_chunk), "cloud" (a diff under a cloud checkout),
-"crash" (exit without answering).
+mid-turn user_message_chunk), "local" (a diff in the session's working folder),
+"cloud" (a diff under a cloud checkout), "write: a.txt=one;b.txt=two" (write
+files in the session's folder), "crash" (exit without answering),
+"config" (replies "model=M effort=E"), "attachments" (replies with each
+embedded resource as "NAME: TEXT", NAME the last part of its uri),
+"lisbon" (replays Conductor's reference transcript turn, tools/screens/seed-data.js
+'lisbon': text, Grep, Read, text, Edit, Bash, text; each tool is a tool_call then a
+tool_call_update to completed, with ACP kind, rawInput and _meta.claudeCode.toolName;
+LISBON_PROMPT, the fixture's user message, is an alias).
+
+session/new reports configOptions `model` and `reasoning_effort` like
+Reason does; session/set_config_option with a value an option does not
+offer resets it to "default" without an error, as Reason does.
 """
 import json
 import os
 import sys
 import threading
+import urllib.parse
+
+OPTIONS = {
+    "model": ("Model", ["default", "byok:anthropic:claude-opus-5-5", "byok:openai-codex:gpt-5.6-sol"]),
+    "reasoning_effort": ("Reasoning", ["default", "low", "medium", "high", "xhigh", "max"]),
+}
+
+
+def config_options(config):
+    return [{"id": k, "name": name, "type": "select", "currentValue": config.get(k, "default"),
+             "options": [{"value": v, "name": v} for v in values]}
+            for k, (name, values) in OPTIONS.items()]
 
 HOME = os.path.realpath(os.getcwd())
 STATE = os.path.join(HOME, "state.json")
@@ -45,6 +68,50 @@ def text(sid, kind, t):
     update(sid, sessionUpdate=kind, content={"type": "text", "text": t})
 
 
+LISBON_PROMPT = ("After signing in, users with an expired session get bounced between "
+                 "/login and /dashboard forever. Can you find out why and fix it?")
+OLD_LINE = '  if (session) return "/dashboard";'
+NEW_LINE = '  if (session && session.expiresAt > Date.now()) return "/dashboard";'
+
+
+def lisbon(sid, cwd):
+    """Conductor's reference turn (tools/chat/transcript-fixture.tsx)."""
+    auth = cwd.rstrip("/") + "/src/lib/auth.ts"
+
+    def tool(n, name, kind, title, raw_input, result=None, diff=None, locations=None):
+        row = {"toolCallId": f"lisbon:{n}", "title": title, "kind": kind, "rawInput": raw_input,
+               "_meta": {"claudeCode": {"toolName": name}}}
+        if locations:
+            row["locations"] = locations
+        update(sid, sessionUpdate="tool_call", status="pending", **row)
+        content = [{"type": "content", "content": {"type": "text", "text": result}}] if result else []
+        if diff:
+            content.append(diff)
+        update(sid, sessionUpdate="tool_call_update", status="completed", content=content, **row)
+
+    text(sid, "agent_message_chunk", "I'll look at how the login route decides where to send a signed-in user.")
+    tool(1, "Grep", "search", "Grep: redirectTo", {"pattern": "redirectTo", "path": "src"},
+         'src/routes/login.tsx:18:  const redirectTo = search.next ?? "/dashboard";\n'
+         "src/lib/auth.ts:42:export function redirectTo(session) {")
+    tool(2, "Read", "read", "Read src/lib/auth.ts", {"file_path": auth},
+         'export function redirectTo(session) {\n  if (session) return "/dashboard";\n  return "/login";\n}',
+         locations=[{"path": auth}])
+    text(sid, "agent_message_chunk",
+         "Found it. `redirectTo` treats any session object as signed in, including an expired one, "
+         "while the dashboard loader rejects expired sessions and sends the user back to `/login`. "
+         "I'll check `expiresAt` before redirecting.")
+    tool(3, "Edit", "edit", "Edit src/lib/auth.ts",
+         {"file_path": auth, "old_string": OLD_LINE, "new_string": NEW_LINE},
+         diff={"type": "diff", "path": auth, "oldText": OLD_LINE, "newText": NEW_LINE},
+         locations=[{"path": auth}])
+    tool(4, "Bash", "execute", "pnpm test src/lib/auth.test.ts",
+         {"command": "pnpm test src/lib/auth.test.ts", "description": "Run the auth tests"}, "4 passed")
+    text(sid, "agent_message_chunk",
+         "Fixed. Expired sessions now go straight to `/login` instead of looping.\n\n"
+         "- `src/lib/auth.ts`: only redirect to the dashboard when the session has not expired.\n"
+         "- Tests: `pnpm test src/lib/auth.test.ts` passes (4 tests).")
+
+
 def load():
     try:
         with open(STATE) as f:
@@ -58,16 +125,24 @@ def save(state):
         json.dump(state, f)
 
 
-def prompt(rid, p):
+def begin(rid, p):
+    """Registers the prompt before its thread starts, so a session/cancel
+    read right after it always finds it (the thread may run later)."""
     sid = p["sessionId"]
     if sid not in opened:
-        return send({"id": rid, "error": {"code": -32002, "message": f"Resource not found: {sid}"}})
+        send({"id": rid, "error": {"code": -32002, "message": f"Resource not found: {sid}"}})
+        return None
     prev = running.pop(sid, None)
     if prev:
         send({"id": prev[0], "result": {"stopReason": "cancelled"}})
         prev[1].set()
     cancel = threading.Event()
     running[sid] = (rid, cancel)
+    return cancel
+
+
+def prompt(rid, p, cancel):
+    sid = p["sessionId"]
     state = load()
     session = state["sessions"][sid]
     session["turns"] += 1
@@ -94,10 +169,33 @@ def prompt(rid, p):
     elif cmd == "report":
         text(sid, "user_message_chunk", "Child report: done")
         text(sid, "agent_message_chunk", "ok")
+    elif cmd == "local":
+        diff = {"type": "diff", "path": session["cwd"].rstrip("/") + "/a.txt", "oldText": None, "newText": "hi"}
+        update(sid, sessionUpdate="tool_call", toolCallId="tool:3", title="write: a.txt",
+               kind="edit", status="completed", content=[diff])
     elif cmd == "cloud":
         diff = {"type": "diff", "path": CLOUD + "/a.txt", "oldText": None, "newText": "hi"}
         update(sid, sessionUpdate="tool_call", toolCallId="tool:2", title="write: a.txt",
                kind="edit", status="completed", content=[diff])
+    elif cmd == "config":
+        c = session.get("config", {})
+        text(sid, "agent_message_chunk", f"model={c.get('model', 'default')} effort={c.get('reasoning_effort', 'default')}")
+    elif cmd == "attachments":
+        parts = [f"{urllib.parse.unquote(b['resource']['uri'].rsplit('/', 1)[-1])}: {b['resource']['text']}"
+                 for b in p["prompt"] if b.get("type") == "resource"]
+        text(sid, "agent_message_chunk", " | ".join(parts))
+    elif cmd.startswith("write: "):
+        # "write: a.txt=one;b.txt=two" writes files in the chat's folder, like
+        # an agent editing the workspace (the checkpoint e2e resets them).
+        names = []
+        for spec in cmd[7:].split(";"):
+            name, _, content = spec.partition("=")
+            with open(os.path.join(cwd, name), "w") as f:
+                f.write(content + "\n")
+            names.append(name)
+        text(sid, "agent_message_chunk", f"turn {session['turns']} wrote {' '.join(names)}")
+    elif cmd in ("lisbon", LISBON_PROMPT):
+        lisbon(sid, session["cwd"])
     elif cmd == "crash":
         os._exit(3)
     if running.get(sid, (None,))[0] == rid:
@@ -117,7 +215,17 @@ def handle(msg):
         state["sessions"][sid] = {"cwd": p["cwd"], "turns": 0, "title": None}
         save(state)
         opened.add(sid)
-        send({"id": rid, "result": {"sessionId": sid}})
+        send({"id": rid, "result": {"sessionId": sid, "configOptions": config_options({})}})
+    elif method == "session/set_config_option":
+        state = load()
+        session = state["sessions"].get(p["sessionId"])
+        if session is None or p["sessionId"] not in opened:
+            return send({"id": rid, "error": {"code": -32002, "message": "Resource not found"}})
+        values = OPTIONS.get(p["configId"], (None, []))[1]
+        config = session.setdefault("config", {})
+        config[p["configId"]] = p["value"] if p["value"] in values else "default"
+        save(state)
+        send({"id": rid, "result": {"configOptions": config_options(config)}})
     elif method == "session/resume":
         if p["sessionId"] in load()["sessions"]:
             opened.add(p["sessionId"])
@@ -129,7 +237,9 @@ def handle(msg):
                  for k, v in load()["sessions"].items()]
         send({"id": rid, "result": {"sessions": items}})
     elif method == "session/prompt":
-        threading.Thread(target=prompt, args=(rid, p), daemon=True).start()
+        cancel = begin(rid, p)
+        if cancel is not None:
+            threading.Thread(target=prompt, args=(rid, p, cancel), daemon=True).start()
     elif method == "session/cancel":
         entry = running.get(p.get("sessionId"))
         if entry:

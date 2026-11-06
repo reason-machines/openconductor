@@ -230,3 +230,202 @@ async fn reads_reference_rows_with_null_flags() {
     );
     assert_eq!(diff_comments::delete(&pool, "x").await.unwrap(), 1);
 }
+
+mod remote {
+    use super::*;
+    use openconductor_db::diff_comments::{RemoteDiffComment, RemoteScope};
+
+    fn gh(id: &str) -> RemoteDiffComment {
+        RemoteDiffComment {
+            id: id.into(),
+            file_path: Some("src/a.rs".into()),
+            line_number: Some(3),
+            end_line_number: Some(5),
+            body: "use a const".into(),
+            location: Location::Modified,
+            created_at: 1_000,
+            updated_at: Some(1_000),
+            remote_url: format!("https://github.com/acme/app/pull/7#{id}"),
+            author: Some("octo".into()),
+            author_avatar_url: Some("https://a/octo.png".into()),
+            thread_id: Some("T1".into()),
+            reply_to_comment_id: None,
+            is_outdated: false,
+            is_resolved: false,
+            suggestion_base_code: Some("let x = 1;".into()),
+        }
+    }
+
+    async fn ids(pool: &SqlitePool) -> Vec<String> {
+        diff_comments::list_for_workspace(pool, "w")
+            .await
+            .unwrap()
+            .into_iter()
+            .map(|c| c.id)
+            .collect()
+    }
+
+    #[tokio::test]
+    async fn upsert_inserts_pending_rows_with_github_fields() {
+        let pool = pool().await;
+        let n = diff_comments::upsert_remote(&pool, "w", &[gh("github-T1-1")])
+            .await
+            .unwrap();
+        assert_eq!(n, 1);
+        let c = diff_comments::get(&pool, "github-T1-1")
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(c.state, Some(State::Pending));
+        assert_eq!((c.line_number, c.end_line_number), (Some(3), Some(5)));
+        assert_eq!(
+            c.remote_url.as_deref(),
+            Some("https://github.com/acme/app/pull/7#github-T1-1")
+        );
+        assert_eq!(c.author.as_deref(), Some("octo"));
+        assert_eq!(c.thread_id.as_deref(), Some("T1"));
+        assert_eq!(c.suggestion_base_code.as_deref(), Some("let x = 1;"));
+        assert!(!c.is_outdated && !c.is_resolved);
+        // False flags are stored as NULL, as the reference writes them.
+        let raw: (Option<i64>, Option<i64>) =
+            sqlx::query_as("SELECT is_outdated, is_resolved FROM diff_comments WHERE id = ?")
+                .bind("github-T1-1")
+                .fetch_one(&pool)
+                .await
+                .unwrap();
+        assert_eq!(raw, (None, None));
+    }
+
+    #[tokio::test]
+    async fn upsert_refreshes_github_fields_and_keeps_local_state() {
+        let pool = pool().await;
+        diff_comments::upsert_remote(&pool, "w", &[gh("github-T1-1")])
+            .await
+            .unwrap();
+        // Same data again: nothing to change.
+        assert_eq!(
+            diff_comments::upsert_remote(&pool, "w", &[gh("github-T1-1")])
+                .await
+                .unwrap(),
+            0
+        );
+        diff_comments::mark_sent(&pool, &["github-T1-1".into()], 50)
+            .await
+            .unwrap();
+        let mut next = gh("github-T1-1");
+        next.body = "use a const, please".into();
+        next.is_resolved = true;
+        next.is_outdated = true;
+        next.line_number = None;
+        next.end_line_number = None;
+        next.created_at = 9_999;
+        next.updated_at = Some(2_000);
+        assert_eq!(
+            diff_comments::upsert_remote(&pool, "w", &[next])
+                .await
+                .unwrap(),
+            1
+        );
+        let c = diff_comments::get(&pool, "github-T1-1")
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(c.body.as_deref(), Some("use a const, please"));
+        assert!(c.is_resolved && c.is_outdated);
+        assert_eq!(c.line_number, None);
+        assert_eq!(c.updated_at, Some(2_000));
+        assert_eq!(c.state, Some(State::Sent), "local state kept");
+        assert_eq!(c.created_at, 1_000, "created_at kept");
+    }
+
+    #[tokio::test]
+    async fn upsert_leaves_rows_in_states_the_reference_freezes_and_other_workspaces() {
+        let pool = pool().await;
+        diff_comments::upsert_remote(&pool, "w", &[gh("github-T1-1")])
+            .await
+            .unwrap();
+        sqlx::query("UPDATE diff_comments SET state = 'superseded' WHERE id = 'github-T1-1'")
+            .execute(&pool)
+            .await
+            .unwrap();
+        let mut next = gh("github-T1-1");
+        next.body = "changed".into();
+        assert_eq!(
+            diff_comments::upsert_remote(&pool, "w", &[next.clone()])
+                .await
+                .unwrap(),
+            0
+        );
+        sqlx::query("UPDATE diff_comments SET state = 'pending' WHERE id = 'github-T1-1'")
+            .execute(&pool)
+            .await
+            .unwrap();
+        assert_eq!(
+            diff_comments::upsert_remote(&pool, "other", &[next])
+                .await
+                .unwrap(),
+            0,
+            "a row owned by another workspace is not rewritten"
+        );
+    }
+
+    #[tokio::test]
+    async fn delete_missing_removes_only_vanished_rows_of_its_scope() {
+        let pool = pool().await;
+        diff_comments::insert(&pool, &comment("local", Some(1)))
+            .await
+            .unwrap();
+        let mut general = gh("github-general-5");
+        general.file_path = None;
+        general.thread_id = None;
+        diff_comments::upsert_remote(&pool, "w", &[gh("github-T1-1"), gh("github-T1-2"), general])
+            .await
+            .unwrap();
+
+        let gone = diff_comments::delete_missing_remote(
+            &pool,
+            "w",
+            RemoteScope::ReviewThreads,
+            &["github-T1-1".into()],
+        )
+        .await
+        .unwrap();
+        assert_eq!(gone, 1);
+        assert_eq!(
+            ids(&pool).await,
+            ["local", "github-T1-1", "github-general-5"]
+        );
+
+        // An empty list clears the scope; general comments go only with their own scope.
+        diff_comments::delete_missing_remote(&pool, "w", RemoteScope::ReviewThreads, &[])
+            .await
+            .unwrap();
+        assert_eq!(ids(&pool).await, ["local", "github-general-5"]);
+        diff_comments::delete_missing_remote(&pool, "w", RemoteScope::General, &[])
+            .await
+            .unwrap();
+        assert_eq!(ids(&pool).await, ["local"]);
+    }
+}
+
+#[tokio::test]
+async fn old_side_is_stored_as_original_and_legacy_base_rows_read_as_original() {
+    let pool = pool().await;
+    let mut n = comment("o", Some(4));
+    n.location = Location::Original;
+    let c = diff_comments::insert(&pool, &n).await.unwrap();
+    assert_eq!(c.location, Some(Location::Original));
+    let raw: (String,) = sqlx::query_as("SELECT location FROM diff_comments WHERE id = 'o'")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(raw.0, "original");
+
+    // A row an earlier build wrote with our old `base` value.
+    sqlx::query("UPDATE diff_comments SET location = 'base' WHERE id = 'o'")
+        .execute(&pool)
+        .await
+        .unwrap();
+    let c = diff_comments::get(&pool, "o").await.unwrap().unwrap();
+    assert_eq!(c.location, Some(Location::Original));
+}

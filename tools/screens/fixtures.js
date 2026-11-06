@@ -16,6 +16,8 @@
     cached_user_data: JSON.stringify({ apiToken: FAKE_TOKEN, userData: USER }),
   };
 
+  // The apps of Sven's Mac "sven m5 max" (checked 2026-11-05) besides Finder and Terminal.
+  const INSTALLED_APPS = ["Cursor", "Visual Studio Code", "Zed", "Xcode", "Ghostty"];
   const ok = (stdout) => ({ code: 0, stdout, stderr: "" });
   const fail = (stderr) => ({ code: 1, stdout: "", stderr });
 
@@ -33,6 +35,16 @@
     const diff = git.diffs[cwd];
 
     if (/pmset -g batt/.test(cmd)) return ok("Now drawing from 'AC Power'\n");
+    // Conductor's installed-apps check (`Z_s`): one `test -d "/Applications/<App>.app" ... && echo "<id>"`
+    // clause per catalog app. Answers as a Mac with INSTALLED_APPS in /Applications.
+    if (/test -d "\/Applications\//.test(cmd) && /&& echo "/.test(cmd)) {
+      const ids = cmd.split("; ").flatMap((clause) => {
+        const app = clause.match(/test -d "\/Applications\/([^"]+)\.app"/);
+        const id = clause.match(/&& echo "([^"]+)"/);
+        return app && id && INSTALLED_APPS.includes(app[1]) ? [id[1]] : [];
+      });
+      return ok(ids.length ? ids.join("\n") + "\n" : "");
+    }
     if (/gh auth status/.test(cmd)) return fail("You are not logged into any GitHub hosts.");
     if (/git branch --format/.test(cmd) && repo) return ok(repo.branches.join("\n") + "\n");
     if (/git worktree list --porcelain/.test(cmd) && repo)
@@ -83,7 +95,9 @@
         delete keychain[args.key];
         return null;
       },
-      native_http_fetch: () => {
+      native_http_fetch: (args) => {
+        const r = (args && args.request) || {};
+        console.warn(`[oc-mock] refused native_http_fetch ${r.method} ${r.url}`);
         throw "network disabled in the screenshot harness";
       },
       execute_shell_command: shell,

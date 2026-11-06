@@ -11,7 +11,8 @@
 //! migrations (`evidence/sqlite/cache.schema.sql`): a client-side mirror of
 //! `session_messages`, the pending-message queue, and cached navigation
 //! sections and favorite models. [`CACHE_MIGRATOR`], [`open_cache`] and
-//! [`open_cache_in_memory`] recreate it from `migrations-cache/`.
+//! [`open_cache_in_memory`] recreate it from `migrations-cache/`; [`cache`]
+//! is the typed data access over it.
 
 use std::path::Path;
 use std::str::FromStr;
@@ -23,8 +24,27 @@ use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePoolOptions};
 /// Connection pool returned by [`open`]; re-exported so callers need no `sqlx` dependency.
 pub use sqlx::sqlite::SqlitePool;
 
+pub use scope::Scope;
+
+pub mod app_settings;
+pub mod attachments;
+pub mod cache;
+pub mod chat_messages;
 pub mod diff_comments;
+pub mod env_vars;
+pub mod favorite_models;
+pub mod iso_time;
+pub mod maintenance;
+pub mod navigation;
+pub mod onboarding;
+pub mod outbox;
+pub mod port_forwards;
 pub mod repos;
+mod scope;
+pub mod session_messages;
+pub mod sessions;
+pub mod terminal_sessions;
+pub mod workspace_rename;
 pub mod workspaces;
 
 /// Every schema migration, embedded from `migrations/`.

@@ -1,0 +1,368 @@
+{
+ "conductor_version": "0.87.6",
+ "note": "Derived data from a third-party app; untrusted, kept to match behaviour. Rust packs string literals back to back, and LLVM writes literals of 8 bytes or fewer (exec-zsh, /bin/zsh, kill, open, git, rm) as movz/movk immediates, so a string search alone misses them. The 'acl' section is read from the disassembly of the function Tauri's generate_context! emits, which builds the resolved ACL in order.",
+ "rea": {
+  "command": "rea search Conductor.app/Contents/MacOS/conductor --pattern='\\$(HOME|APP[A-Z]*|RESOURCE)/|sqlite:|tauri-plugin-(fs|shell|sql|http|updater)' --mode regex --provider ghidra --snapshot snap/conductor-search.snap --format json",
+  "machine": "sven m5 max",
+  "seconds": 2672,
+  "exit": 0,
+  "evidence_id": "ev_ac9bd6d90d4a437226e5c04d9cd1db305371ea18846c9650b0897902881e1c11",
+  "subject_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+  "provider": "ghidra 12.1.4",
+  "operation": "search_strings",
+  "matches": 88
+ },
+ "fs_scope": {
+  "address": "0x10150a293",
+  "raw": "**/*/.git**/*/.conductor**/*/.context**/*/.github**/*/.github/**$HOME/.claude.json$HOME/.claude/*$HOME/.claude/commands$HOME/.claude/commands/*$HOME/.claude/commands/**/*$HOME/.claude/agents$HOME/.claude/agents/*$HOME/Library/Application Support/Claude/claude_desktop_config.json",
+  "entries": [
+   "**/*/.git",
+   "**/*/.conductor",
+   "**/*/.context",
+   "**/*/.github",
+   "**/*/.github/**",
+   "$HOME/.claude.json",
+   "$HOME/.claude/*",
+   "$HOME/.claude/commands",
+   "$HOME/.claude/commands/*",
+   "$HOME/.claude/commands/**/*",
+   "$HOME/.claude/agents",
+   "$HOME/.claude/agents/*",
+   "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+  ],
+  "ours": "Conductor's 18 global fs entries verbatim (including **/*, **/.* and **/.*/**, which #212 replaced with $HOME/**; that base blocked files inside repo .conductor/.context directories). The first search's split also missed **/*/.context/** and $HOME/.claude/** (16-byte literals stored apart)."
+ },
+ "sidecar_path": {
+  "address": "0x10150a261",
+  "raw": "$APPDATA/bin/.internal/sidecarsidecar-runtime",
+  "ours": "Not granted: claude-sidecar and sidecar-runtime are spawn entries, no frontend call site names them, and OpenConductor ships neither binary yet."
+ },
+ "fs_watch_feature": "Conductor links notify-8.2.0 and notify-debouncer-full-0.5.0 (evidence/ipc/rust-crates-from-paths.txt), which tauri-plugin-fs pulls in only with its watch feature, and the frontend calls plugin:fs|watch and unwatch. We enable features = [\"watch\"].",
+ "sql": {
+  "binary": {
+   "address": "0x101503e53",
+   "value": "sqlite:conductor.db"
+  },
+  "frontend": [
+   "sqlite:cache.db",
+   "sqlite:conductor.db"
+  ],
+  "ours": "sql:allow-load, allow-select, allow-execute, allow-close (the four commands the frontend calls); the sql plugin has no path scope."
+ },
+ "shell_scope": {
+  "source": "Decoded embedded frontend (assets/index-BGEQ8YjU.js, assets/renderApp-D_fmY7hW.js, the tree REA analyze-javascript-application read). Command.create names and arguments at every call site.",
+  "names": {
+   "exec-zsh": "args [\"-c\", <script>] at every site (scripts, PATH-prefixed git commands, caffeinate -i, pmset -g batt, the sidecar launch)",
+   "exec-bash": "args [\"-c\", <script>], used instead of exec-zsh on Linux",
+   "exec-open": "args [<workspace path>] (Open in Finder from the unarchive-conflict toast)"
+  },
+  "ours": "Only the names the frontend calls, with Conductor's own cmd and args: execute = exec-zsh (/bin/zsh, any args), exec-bash (/bin/bash, any args), exec-open (open, one arg .*); spawn = exec-zsh, exec-bash. exec-kill, exec-which, exec-git, exec-rm and both sidecars are in Conductor's ACL but no frontend call site names them."
+ },
+ "http_scope": {
+  "source": "Command scopes 2-5 of the decoded ACL.",
+  "ours": "Conductor's 25 URL patterns verbatim (#212 granted any http/https host)."
+ },
+ "updater": "Registered (tauri-plugin-updater, updater:default = check, download, install, download_and_install, the four commands Conductor's frontend calls). Endpoint: latest.json on this repository's latest GitHub release. The public key is empty in tauri.conf.json and baked in from OPENCONDUCTOR_UPDATER_PUBKEY at build time; with no key, installs fail signature verification.",
+ "rea_second_search": {
+  "command": "rea search Conductor.app/Contents/MacOS/conductor --pattern='exec-(zsh|bash|open)|^(/bin/|/usr/bin/)?(zsh|bash|open)$|https?://(\\*|[a-z0-9.*-]+/\\*\\*)|requireLiteralLeadingDot' --mode regex --case-sensitive=false --provider ghidra --snapshot snap/conductor-search.snap --format json",
+  "machine": "sven m5 max",
+  "seconds": 2448,
+  "exit": 0,
+  "evidence_id": "ev_681f4c89de2cc1e8543c2e1d149444462da1a256f723002a72ef0876c3e97bed",
+  "subject_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+  "matches": 12,
+  "found": {
+   "0x101509da8": "the http URL allowlist and the opener URL schemes, packed into one string",
+   "0x10150a206": "/bin/bash, exec-bash, exec-kill, validator",
+   "0x10150a23c": "exec-open",
+   "0x101503e30": "requireLiteralLeadingDot (plugins config key; its value was not decoded)"
+  },
+  "missed": "exec-zsh and /bin/zsh: both are 8 bytes and exist only as immediates (0x10039fd28, 0x10039fc74), never as string data. exec-which, exec-git, exec-rm and the cmd values kill/which/git/rm/open were likewise absent or unattributable."
+ },
+ "acl": {
+  "function": "conductor_lib::init_common::inner closure at 0x100338208 (tauri::generate_context! output)",
+  "method": "tools/decode_tauri_acl.py Conductor.app/Contents/MacOS/conductor 0x100338208 0x1003a2690 (xcrun llvm-objdump disassembly; addresses map to file offsets through __TEXT vmaddr 0x100000000). 196 ResolvedCommand inserts, 8 command scopes, 2 global scopes.",
+  "why_not_rea": "rea execute-rizin-command failed (capability_unavailable: rizin ENOENT, not installed); a Ghidra decompile of this ~90k-instruction function would re-import the binary again (~40 min). See rea-test-report.md gaps 15-16.",
+  "command_scopes": {
+   "1 opener|open_path": {
+    "allow": [
+     {
+      "path": "**/*"
+     },
+     {
+      "path": "**/.conductor/**/*"
+     }
+    ]
+   },
+   "2-5 http|fetch, fetch_cancel, fetch_read_body, fetch_send": {
+    "allow": [
+     {
+      "url": "https://app.conductor.build/*"
+     },
+     {
+      "url": "https://stage-app.conductor.build/*"
+     },
+     {
+      "url": "https://conductor.build/*"
+     },
+     {
+      "url": "https://app.chorus.sh/*"
+     },
+     {
+      "url": "http://localhost:*/*"
+     },
+     {
+      "url": "http://127.0.0.1:*/*"
+     },
+     {
+      "url": "https://api.github.com/*"
+     },
+     {
+      "url": "https://github.com/user-attachments/*"
+     },
+     {
+      "url": "https://private-user-images.githubusercontent.com/*"
+     },
+     {
+      "url": "https://api.linear.app/graphql"
+     },
+     {
+      "url": "https://platform.claude.com/v1/oauth/token"
+     },
+     {
+      "url": "https://api.conductor.build/*"
+     },
+     {
+      "url": "https://conductor-roundhouse.fly.dev/*"
+     },
+     {
+      "url": "https://stage-api.conductor.build/*"
+     },
+     {
+      "url": "https://statuspage.incident.io/*"
+     },
+     {
+      "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-public-staging/*"
+     },
+     {
+      "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-public-prod/*"
+     },
+     {
+      "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-user-staging/*"
+     },
+     {
+      "url": "https://b79a7ea7a981e2f176a636cb05d07bc6.r2.cloudflarestorage.com/conductor-user-prod/*"
+     },
+     {
+      "url": "https://sb-*.vercel.run/*"
+     },
+     {
+      "url": "wss://sb-*.vercel.run/*"
+     },
+     {
+      "url": "https://*.ngrok-free.dev/*"
+     },
+     {
+      "url": "wss://*.ngrok-free.dev/*"
+     },
+     {
+      "url": "https://*.ngrok.dev/*"
+     },
+     {
+      "url": "wss://*.ngrok.dev/*"
+     }
+    ]
+   },
+   "6 opener|open_url": {
+    "allow": [
+     {
+      "url": "linear://*"
+     },
+     {
+      "url": "vscode://*"
+     },
+     {
+      "url": "slack://*"
+     },
+     {
+      "url": "figma://*"
+     },
+     {
+      "url": "notion://*"
+     },
+     {
+      "url": "raycast://*"
+     },
+     {
+      "url": "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+     }
+    ]
+   },
+   "7 shell|execute": {
+    "allow": [
+     {
+      "name": "exec-zsh",
+      "cmd": "/bin/zsh",
+      "args": true
+     },
+     {
+      "name": "exec-bash",
+      "cmd": "/bin/bash",
+      "args": true
+     },
+     {
+      "name": "exec-kill",
+      "cmd": "kill",
+      "args": true
+     },
+     {
+      "name": "exec-which",
+      "cmd": "which",
+      "args": [
+       {
+        "validator": ".*"
+       }
+      ]
+     },
+     {
+      "name": "exec-git",
+      "cmd": "git",
+      "args": [
+       {
+        "validator": ".*"
+       }
+      ]
+     },
+     {
+      "name": "exec-open",
+      "cmd": "open",
+      "args": [
+       {
+        "validator": ".*"
+       }
+      ]
+     },
+     {
+      "name": "exec-rm",
+      "cmd": "rm",
+      "args": [
+       {
+        "validator": ".*"
+       }
+      ]
+     }
+    ]
+   },
+   "8 shell|spawn": {
+    "allow": [
+     {
+      "name": "exec-zsh",
+      "cmd": "/bin/zsh",
+      "args": true
+     },
+     {
+      "name": "exec-bash",
+      "cmd": "/bin/bash",
+      "args": true
+     },
+     {
+      "name": "claude-sidecar",
+      "sidecar": true,
+      "args": true
+     },
+     {
+      "name": "sidecar-runtime",
+      "cmd": "$APPDATA/bin/.internal/sidecar",
+      "args": true
+     }
+    ]
+   }
+  },
+  "global_scopes": {
+   "fs": {
+    "allow": [
+     {
+      "path": "**/*"
+     },
+     {
+      "path": "**/.*"
+     },
+     {
+      "path": "**/.*/**"
+     },
+     {
+      "path": "**/*/.git"
+     },
+     {
+      "path": "**/*/.conductor"
+     },
+     {
+      "path": "**/*/.context"
+     },
+     {
+      "path": "**/*/.context/**"
+     },
+     {
+      "path": "**/*/.github"
+     },
+     {
+      "path": "**/*/.github/**"
+     },
+     {
+      "path": "$HOME/.claude.json"
+     },
+     {
+      "path": "$HOME/.claude/*"
+     },
+     {
+      "path": "$HOME/.claude/**"
+     },
+     {
+      "path": "$HOME/.claude/commands"
+     },
+     {
+      "path": "$HOME/.claude/commands/*"
+     },
+     {
+      "path": "$HOME/.claude/commands/**/*"
+     },
+     {
+      "path": "$HOME/.claude/agents"
+     },
+     {
+      "path": "$HOME/.claude/agents/*"
+     },
+     {
+      "path": "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+     }
+    ]
+   },
+   "opener": {
+    "allow": [
+     {
+      "url": "mailto:*"
+     },
+     {
+      "url": "tel:*"
+     },
+     {
+      "url": "http://*"
+     },
+     {
+      "url": "https://*"
+     }
+    ],
+    "note": "listed twice (opener:default and opener:allow-default-urls both contribute)"
+   }
+  },
+  "inferred": [
+   "args: true for entries whose args value holds no string literal (copied from one precomputed Value; the frontend passes ['-c', script] to exec-zsh, which rules out false and [])",
+   "every listed entry is an allow entry, not a deny (a deny of **/* would block everything Conductor does)",
+   "which scope key belongs to which command: keys are assigned in order, the only path scope is open_path, exec-open (called with .execute()) is only in key 7, and the four http commands share one list"
+  ]
+ },
+ "opener_scope": {
+  "ours": "opener:allow-default-urls (Conductor's global opener scope) plus Conductor's 7 open_url schemes and its open_path paths. #212 granted allow-open-url with no URL scope, so open_url was denied for every URL."
+ },
+ "requireLiteralLeadingDot": "Present as a plugins-config key next to deep-link's 'conductor' scheme and sqlite:conductor.db; value not decoded. We keep Tauri's default; Conductor's explicit **/.* and **/.*/** entries cover dotfiles either way."
+}

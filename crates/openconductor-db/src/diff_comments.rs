@@ -6,27 +6,74 @@
 //! (`evidence/sqlite/diff-comments-values.json`): `state` was always
 //! `pending`; `location` was `file` or `modified`; a whole-file comment has
 //! a NULL `line_number` (the snapshot's `file_level` column was computed as
-//! `line_number IS NULL`, it is not a stored column). `base` (old side) and
-//! `sent` were not observed and are our own.
+//! `line_number IS NULL`, it is not a stored column). The old side is
+//! `original`, the value the reference's GitHub sync writes for a LEFT-side
+//! thread (evidence/diff/comments-github.md); rows we wrote earlier as `base`
+//! read as `original`. `sent` was not observed and is our own.
 //!
 //! Replies point at their parent with `reply_to_comment_id` and share the
 //! root's `thread_id`; resolving and deleting act on a whole thread.
 //! `DEPRECATED_update_memory` is left NULL.
 
-use sqlx::SqlitePool;
+use sqlx::encode::IsNull;
+use sqlx::error::BoxDynError;
+use sqlx::sqlite::{Sqlite, SqliteArgumentValue, SqliteTypeInfo, SqliteValueRef};
+use sqlx::{Decode, Encode, SqlitePool, Type};
 
 use crate::{exec, exec_one, Result};
 
 /// Which side of the diff a comment is anchored to (`diff_comments.location`).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
-#[sqlx(type_name = "TEXT", rename_all = "snake_case")]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Location {
     /// New side of the diff (observed).
     Modified,
-    /// Old side of the diff (ours; not observed).
-    Base,
+    /// Old side of the diff (the reference's value; we used to write `base`).
+    Original,
     /// The whole file (observed).
     File,
+}
+
+impl Location {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Location::Modified => "modified",
+            Location::Original => "original",
+            Location::File => "file",
+        }
+    }
+
+    /// A stored value; our earlier `base` is the old side.
+    pub fn parse(s: &str) -> Option<Self> {
+        match s {
+            "modified" => Some(Location::Modified),
+            "original" | "base" => Some(Location::Original),
+            "file" => Some(Location::File),
+            _ => None,
+        }
+    }
+}
+
+impl Type<Sqlite> for Location {
+    fn type_info() -> SqliteTypeInfo {
+        <str as Type<Sqlite>>::type_info()
+    }
+
+    fn compatible(ty: &SqliteTypeInfo) -> bool {
+        <str as Type<Sqlite>>::compatible(ty)
+    }
+}
+
+impl<'q> Encode<'q, Sqlite> for Location {
+    fn encode_by_ref(&self, buf: &mut Vec<SqliteArgumentValue<'q>>) -> Result<IsNull, BoxDynError> {
+        <&str as Encode<'q, Sqlite>>::encode(self.as_str(), buf)
+    }
+}
+
+impl<'r> Decode<'r, Sqlite> for Location {
+    fn decode(value: SqliteValueRef<'r>) -> Result<Self, BoxDynError> {
+        let s = <&str as Decode<'r, Sqlite>>::decode(value)?;
+        Location::parse(s).ok_or_else(|| format!("unknown diff_comments.location: {s}").into())
+    }
 }
 
 /// `diff_comments.state`.
@@ -216,6 +263,139 @@ pub async fn delete(pool: &SqlitePool, id: &str) -> Result<u64> {
         pool,
     )
     .await
+}
+
+/// A comment read from the workspace's GitHub pull request.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RemoteDiffComment {
+    /// `github-<thread>-<database id>` or `github-general-<database id>`.
+    pub id: String,
+    /// `None` for a comment on the PR as a whole.
+    pub file_path: Option<String>,
+    /// `None` for a whole-PR comment or an outdated thread.
+    pub line_number: Option<i64>,
+    pub end_line_number: Option<i64>,
+    pub body: String,
+    pub location: Location,
+    pub created_at: i64,
+    pub updated_at: Option<i64>,
+    pub remote_url: String,
+    pub author: Option<String>,
+    pub author_avatar_url: Option<String>,
+    pub thread_id: Option<String>,
+    pub reply_to_comment_id: Option<String>,
+    pub is_outdated: bool,
+    pub is_resolved: bool,
+    pub suggestion_base_code: Option<String>,
+}
+
+/// Which half of a GitHub sync a set of ids covers.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RemoteScope {
+    /// Review-thread comments (`github-…`, not `github-general-…`).
+    ReviewThreads,
+    /// PR-level comments (`github-general-…`).
+    General,
+}
+
+/// States the reference app's sync leaves alone (none of them is ours).
+const SYNC_FROZEN_STATES: &str = "('hidden', 'reviewed', 'superseded')";
+
+/// Insert new GitHub comments as `pending` and refresh the GitHub-owned
+/// fields of ones already stored (text, anchor, avatar, outdated,
+/// resolved, suggestion base), keeping their `state`, `created_at`,
+/// author and thread links. Flags are written as 1 or NULL, as the
+/// reference does. Returns how many rows were inserted or changed.
+pub async fn upsert_remote(
+    pool: &SqlitePool,
+    workspace_id: &str,
+    comments: &[RemoteDiffComment],
+) -> Result<u64> {
+    let sql = format!(
+        "INSERT INTO diff_comments (id, workspace_id, file_path, line_number, end_line_number, \
+         body, state, location, created_at, updated_at, remote_url, author, author_avatar_url, \
+         thread_id, reply_to_comment_id, is_outdated, is_resolved, suggestion_base_code) \
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18) \
+         ON CONFLICT(id) DO UPDATE SET file_path = excluded.file_path, \
+           line_number = excluded.line_number, end_line_number = excluded.end_line_number, \
+           body = excluded.body, updated_at = excluded.updated_at, location = excluded.location, \
+           author_avatar_url = excluded.author_avatar_url, is_outdated = excluded.is_outdated, \
+           is_resolved = excluded.is_resolved, suggestion_base_code = excluded.suggestion_base_code \
+         WHERE diff_comments.workspace_id IS excluded.workspace_id \
+           AND (diff_comments.state IS NULL OR diff_comments.state NOT IN {SYNC_FROZEN_STATES}) \
+           AND (diff_comments.file_path IS NOT excluded.file_path \
+             OR diff_comments.line_number IS NOT excluded.line_number \
+             OR diff_comments.end_line_number IS NOT excluded.end_line_number \
+             OR diff_comments.body IS NOT excluded.body \
+             OR diff_comments.updated_at IS NOT excluded.updated_at \
+             OR diff_comments.location IS NOT excluded.location \
+             OR diff_comments.author_avatar_url IS NOT excluded.author_avatar_url \
+             OR diff_comments.is_outdated IS NOT excluded.is_outdated \
+             OR diff_comments.is_resolved IS NOT excluded.is_resolved \
+             OR diff_comments.suggestion_base_code IS NOT excluded.suggestion_base_code)"
+    );
+    let flag = |b: bool| b.then_some(1_i64);
+    let mut changed = 0;
+    for c in comments {
+        changed += exec(
+            sqlx::query(&sql)
+                .bind(&c.id)
+                .bind(workspace_id)
+                .bind(&c.file_path)
+                .bind(c.line_number)
+                .bind(c.end_line_number)
+                .bind(&c.body)
+                .bind(State::Pending)
+                .bind(c.location)
+                .bind(c.created_at)
+                .bind(c.updated_at)
+                .bind(&c.remote_url)
+                .bind(&c.author)
+                .bind(&c.author_avatar_url)
+                .bind(&c.thread_id)
+                .bind(&c.reply_to_comment_id)
+                .bind(flag(c.is_outdated))
+                .bind(flag(c.is_resolved))
+                .bind(&c.suggestion_base_code),
+            pool,
+        )
+        .await?;
+    }
+    Ok(changed)
+}
+
+/// Delete a workspace's GitHub comments in `scope` that GitHub no longer
+/// returned (`current` holds the ids it did). Local comments are never
+/// touched. Returns rows deleted.
+pub async fn delete_missing_remote(
+    pool: &SqlitePool,
+    workspace_id: &str,
+    scope: RemoteScope,
+    current: &[String],
+) -> Result<u64> {
+    let (pattern, exclude_general) = match scope {
+        RemoteScope::ReviewThreads => ("github-%", true),
+        RemoteScope::General => ("github-general-%", false),
+    };
+    let keep = if current.is_empty() {
+        String::new()
+    } else {
+        format!(" AND id NOT IN ({})", vec!["?"; current.len()].join(", "))
+    };
+    let general = if exclude_general {
+        " AND id NOT LIKE 'github-general-%'"
+    } else {
+        ""
+    };
+    let sql = format!(
+        "DELETE FROM diff_comments WHERE workspace_id = ? AND id LIKE ? \
+         AND (state IS NULL OR state <> 'superseded'){general}{keep}"
+    );
+    let mut q = sqlx::query(&sql).bind(workspace_id).bind(pattern);
+    for id in current {
+        q = q.bind(id);
+    }
+    exec(q, pool).await
 }
 
 /// Delete every comment in a workspace (when the workspace is deleted).

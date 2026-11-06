@@ -6,6 +6,7 @@ import { inTauri } from "../backend";
 import type { CreateFrom, CreateWorkspaceArgs } from "./createFlow";
 import { issueToFrom, listErrorState, prToFrom, type OpenIssueDto, type OpenPrDto, type SourceState } from "./createFrom";
 import type { BranchPrefixInfo } from "./naming";
+import { UPSTREAM_WARNING } from "./upstream";
 
 export interface RepositoryDto {
   id: string;
@@ -28,7 +29,12 @@ export interface CreatedWorkspaceDto {
   baseCommit: string;
   fetched: boolean;
   copiedFiles: string[];
+  /** Set when "Set upstream on plain git push" could not be applied to the new workspace. */
+  upstreamWarning: string | null;
+  /** `workspaces.number` assigned on creation (shown as `W-<n>`); null when conductor.db could not record it. */
+  number: number | null;
 }
+
 
 /** Registers a local checkout with the backend (idempotent) and returns its backend id. */
 export async function ensureRepository(path: string): Promise<RepositoryDto> {
@@ -37,8 +43,8 @@ export async function ensureRepository(path: string): Promise<RepositoryDto> {
 }
 
 /**
- * Clones `url` into `<parentDir>/<name>` (the backend suffixes `-2`, `-3`, ...
- * when taken) and registers it like add_repository. Each progress line goes
+ * Clones `url` into `<parentDir>/<name>` (the backend suffixes `-v1`, `-v2`, ...
+ * when taken, as Conductor does) and registers it like add_repository. Each progress line goes
  * to `onProgress` as it arrives. The browser stand-in waits briefly, emits a
  * few lines and returns a fake checkout; `fail-` URLs reject with the
  * backend's exit-code message so the error state can be tried without the
@@ -78,6 +84,8 @@ export async function listBranches(repoId: string, defaultBranch: string): Promi
   return invoke<BranchDto[]>("list_branches", { repoId });
 }
 
+let browserNumber = 0;
+
 export async function createWorkspace(args: CreateWorkspaceArgs): Promise<CreatedWorkspaceDto> {
   if (!inTauri()) {
     await new Promise((r) => setTimeout(r, 400));
@@ -88,6 +96,9 @@ export async function createWorkspace(args: CreateWorkspaceArgs): Promise<Create
       baseCommit: "",
       fetched: false,
       copiedFiles: [],
+      // `?upstream-warning` in a plain browser previews the warning toast.
+      upstreamWarning: new URLSearchParams(window.location.search).has("upstream-warning") ? UPSTREAM_WARNING : null,
+      number: ++browserNumber,
     };
   }
   return invoke<CreatedWorkspaceDto>("create_workspace", { ...args });
@@ -150,8 +161,8 @@ export async function loadBranchPrefix(): Promise<BranchPrefixInfo> {
     const q = new URLSearchParams(window.location.search);
     const custom = q.get("prefix");
     return custom === null
-      ? { branchPrefixType: "github_username", branchPrefixCustom: null, githubUsername: q.get("ghuser") }
-      : { branchPrefixType: custom ? "custom" : "none", branchPrefixCustom: custom || null, githubUsername: q.get("ghuser") };
+      ? { branchPrefixType: "github_username", branchPrefix: null, githubUsername: q.get("ghuser") }
+      : { branchPrefixType: custom ? "custom" : "none", branchPrefix: custom || null, githubUsername: q.get("ghuser") };
   }
   return invoke<BranchPrefixInfo>("branch_prefix_settings");
 }

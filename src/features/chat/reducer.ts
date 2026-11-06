@@ -10,6 +10,10 @@ import { eventSessionId } from "./types.ts";
 export interface TurnState {
   status: TurnStatus;
   error?: string;
+  /** `at` of the turn's `running` status. */
+  startedAt?: string;
+  /** `at` of the turn's first terminal status. */
+  endedAt?: string;
 }
 
 export interface ChatTranscript {
@@ -94,8 +98,15 @@ export function applyChatEvent(t: ChatTranscript, event: ChatEvent): ApplyResult
       return { ok: true, transcript: withMessage(t, i, { ...message, blocks }) };
     }
     case "turn_status": {
-      const { turnId, status, error } = event;
-      const turns = { ...t.turns, [turnId]: error === undefined ? { status } : { status, error } };
+      const { turnId, status, error, at } = event;
+      const prev = t.turns[turnId];
+      const next: TurnState = { status };
+      if (error !== undefined) next.error = error;
+      const startedAt = status === "running" ? (at ?? prev?.startedAt) : prev?.startedAt;
+      if (startedAt !== undefined) next.startedAt = startedAt;
+      const endedAt = status === "running" ? undefined : (prev?.endedAt ?? at);
+      if (endedAt !== undefined) next.endedAt = endedAt;
+      const turns = { ...t.turns, [turnId]: next };
       let activeTurn = t.activeTurn;
       if (status === "running") activeTurn = turnId;
       else if (activeTurn === turnId) activeTurn = null;
@@ -113,4 +124,22 @@ export function applyChatEvents(t: ChatTranscript, events: ChatEvent[]): ApplyRe
     cur = r.transcript;
   }
   return { ok: true, transcript: cur };
+}
+
+/**
+ * "Reset chat" to `turnId`: drops every message after that turn's last one,
+ * and the statuses of turns that no longer have messages (Conductor's
+ * `deleteMessagesAfterWatermark`). Unknown turn: unchanged.
+ */
+export function truncateAfterTurn(t: ChatTranscript, turnId: string): ChatTranscript {
+  let last = -1;
+  t.messages.forEach((m, i) => {
+    if (m.turnId === turnId) last = i;
+  });
+  if (last < 0) return t;
+  const messages = t.messages.slice(0, last + 1);
+  const kept = new Set(messages.map((m) => m.turnId));
+  const turns = Object.fromEntries(Object.entries(t.turns).filter(([id]) => kept.has(id)));
+  const activeTurn = t.activeTurn !== null && kept.has(t.activeTurn) ? t.activeTurn : null;
+  return { ...t, messages, turns, activeTurn };
 }

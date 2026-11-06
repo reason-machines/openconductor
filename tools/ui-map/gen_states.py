@@ -1,0 +1,82 @@
+import json
+S=[]
+def st(id, title, ref=None, oc=None, oc_reason=None, covers=None, **kw):
+    d=dict(id=id, title=title)
+    if ref is not None: d['ref']=ref
+    if oc is not None: d['oc']=oc
+    if oc_reason: d['oc_reason']=oc_reason
+    if covers: d['covers']=covers
+    d.update(kw); S.append(d)
+W={"wait":"text=tide-web"}
+def ref(path="/", scenario="populated", actions=(), wait=True, **kw):
+    a=([W] if wait and scenario=="populated" else [])+list(actions)
+    return dict(path=path, scenario=scenario, actions=a, **kw)
+SETTINGS=[{"click":".sb-footer-btn","text":"Settings"},{"wait":".settings","after_ms":800}]
+def oc_settings(label=None, extra=()):
+    s=list(SETTINGS)
+    if label: s.append({"click":".settings-nav .nav-item","text":label})
+    return s+list(extra)
+OPEN_WS=[{"click":".sb-ws-name","after_ms":1500}]
+HOME=[{"click":".sb-primary .sb-row","text":"Home","after_ms":800}]
+
+# screens and routes
+st("onboarding-signed-out","Onboarding, signed out", ref("/", "signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
+st("first-run-onboarding","First-run onboarding", ref("/first-run-onboarding","signed-in"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/first-run-onboarding"}])
+st("home-empty","Home, no projects", ref("/","signed-in"), oc=[{"click":".onb-continue","after_ms":1000}], oc_fresh=True)
+st("home","Home with projects", ref("/"), oc=HOME, covers=[{"kind":"route","name":"/"}])
+st("all-workspaces","All workspaces list", ref("/all-workspaces"), oc=HOME, covers=[{"kind":"route","name":"/all-workspaces"}])
+st("create","Create workspace composer", ref(actions=[{"click":"text=Create >> nth=0"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800}], covers=[{"kind":"route","name":"/create"}])
+st("create-repo-picker","Create: repo picker open", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"text=Select repo"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800},{"click":"form.create-ws button","nth":0}])
+st("workspace-chat","Workspace: chat transcript", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]), oc=OPEN_WS, covers=[{"kind":"route","name":"/repository/$repositoryId/workspace/$localWorkspaceId"}])
+st("workspace-new-chat","Workspace: new empty chat", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"}]), oc=OPEN_WS)
+st("workspace-tool-calls","Chat: tool calls expanded", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=4 tool calls, 2 messages"}]), oc=OPEN_WS)
+st("diff-unified","Diff: file, unified", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500}])
+st("diff-split","Diff: file, split", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"},{"click":"role=button[name='Split view']"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500},{"click":"button","text":"Split view"}])
+st("diff-entire-file","Diff: entire file", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"},{"click":"role=button[name='Entire file']"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500},{"click":"button","text":"Entire file"}])
+st("needs-permission","Workspace needing permission", ref(actions=[{"click":"text=tide-api"},{"click":"text=Ada/rate limit headers"}]), oc_reason="the OpenConductor seed has no workspace with a pending permission request")
+for path,title in [("/dashboard","Dashboard"),("/routines","Routines"),("/routines/new","New routine"),("/team","Team"),("/diagnostics","Diagnostics"),("/new-member-onboarding","New member onboarding"),("/cloud-collab-onboarding","Cloud collaboration onboarding")]:
+    sid="route-"+path.strip("/").replace("/","-")
+    st(sid, title, ref(path, wait=path not in ("/diagnostics","/new-member-onboarding","/cloud-collab-onboarding")), oc_reason="OpenConductor has no route or view for "+path, covers=[{"kind":"route","name":path}])
+st("login","Login", ref("/login","signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
+
+# settings
+USER=[("general","General"),("account","Account"),("models","Default models"),("providers","Agents"),("environment","Environment"),("git","Git"),("ports",None),("appearance","Appearance"),("key-bindings","Keyboard shortcuts"),("experimental","Experimental"),("advanced","Advanced"),("terminal","Big terminal"),("internal",None)]
+for tab,label in USER:
+    path="/settings/user/"+tab
+    if label:
+        st("settings-"+tab, "Settings > "+(label), ref(path), oc=oc_settings(label), covers=[{"kind":"route","name":path},{"kind":"settings-page","name":tab}])
+    else:
+        st("settings-"+tab, "Settings > "+tab, ref(path), oc_reason="OpenConductor's settings have no %s page" % tab, covers=[{"kind":"route","name":path},{"kind":"settings-page","name":tab}])
+for sec,label in [("environment","Environment"),("git","Git"),("scripts","Scripts"),("actions","Actions"),("misc","Misc")]:
+    path="/settings/repos/repo-tide-web/"+sec
+    # Misc shows the repository path too, so "text=tide-web" matches twice there and REA's wait fails.
+    r = ref(path, wait=False, actions=[{"wait":"text=Repository paths and workspace file behavior."}]) if sec=="misc" else ref(path)
+    st("settings-repo-"+sec, "Settings > tide-web > "+label, r, oc=oc_settings(None,[{"click":".settings-repo","text":"tide-web"},{"click":".settings-repo-sections .nav-item","text":label}]), covers=[{"kind":"route","name":"/settings/repos/$repoId/"+sec},{"kind":"settings-page","name":"repo-"+sec}])
+for sec in ["github","members","preferences","computer","environment","mcp","prompts"]:
+    path="/settings/organization/"+sec
+    st("settings-org-"+sec, "Settings > Organization > "+sec, ref(path), oc_reason="OpenConductor has no organization settings", covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
+st("settings-cloud-setup","Settings > Cloud setup", ref("/settings/cloud/setup"), oc_reason="OpenConductor has no cloud settings", covers=[{"kind":"route","name":"/settings/cloud/setup"}])
+st("settings-search","Settings search", ref("/settings/user/general", actions=[{"fill":["input[placeholder='Search settings']","branch"]}]), oc=oc_settings(None,[{"type":"branch","css":".settings input[type=search], .settings input[placeholder]"}]))
+
+# palette
+st("palette-all","Command palette", ref(actions=[{"press":"Meta+k"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800}])
+st("palette-workspaces","Command palette: Workspaces tab", ref(actions=[{"press":"Meta+k"},{"click":"[role=dialog] >> text=Workspaces"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"click":"[role=dialog] button, [role=dialog] [role=tab]","text":"Workspaces"}])
+st("palette-search","Command palette: search", ref(actions=[{"press":"Meta+k"},{"fill":["[role=dialog] input","login"]}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"login"}])
+
+# dialogs
+st("dialog-clone-github","Clone GitHub repo dialog", ref(actions=[{"click":"text=Open GitHub project"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"Open GitHub project","after_ms":600},{"keys":"{Enter}","after_ms":800}], oc_note="OpenConductor's Home shows the workspace list, not the entry cards, so the dialog is opened from the command palette")
+st("dialog-create-project","Create project dialog", ref(actions=[{"click":"text=Quick start"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"Quick start","after_ms":600},{"keys":"{Enter}","after_ms":800}], oc_note="opened from the command palette, see dialog-clone-github")
+st("dialog-rename-workspace","Rename workspace dialog", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Rename"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Rename"}])
+st("dialog-keyboard-shortcuts","Keyboard shortcuts dialog", ref(actions=[{"press":"Meta+/"}]), oc=[{"chord":["Meta"],"key":"/","after_ms":800}])
+
+# menus and toasts
+st("menu-account","Account / computer menu", ref(actions=[{"click":"[aria-label='Account menu']"}]), oc=[{"click":".sb-computer"}])
+st("menu-workspace-context","Workspace context menu", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"}]), oc=[{"rclick":".sb-ws-name"}])
+st("menu-workspace-status","Workspace context menu > Set status", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Set status"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Set status"}])
+st("menu-model-picker","Composer model picker", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=Opus 5 >> nth=-1"}]), oc=OPEN_WS+[{"click":".composer button","text":"Opus 5"}])
+st("menu-repo-actions","Sidebar repo actions menu", ref(actions=[{"hover":"text=tide-web"},{"click":"[aria-label='tide-web actions']"}]), oc=[{"click":".sb-menu-trigger","text":"tide-web actions"}])
+st("menu-help","Help menu", ref(actions=[{"click":"xpath=//button[@aria-label='Settings']/preceding::button[1]"}]), oc=[{"click":".sb-footer-btn","text":"Help"}])
+st("toast-copied-link","Toast: copied link", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Copy link"}], final_settle_ms=300), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Copy link","after_ms":200}])
+st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Archive"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Archive","after_ms":1000}])
+json.dump({"schema":"openconductor.ui-map-states/1","viewport":{"width":1280,"height":820},"theme":"dark","states":S}, open(__import__('os').path.join(__import__('os').path.dirname(__file__),'states.json'),'w'), indent=1)
+print(len(S))

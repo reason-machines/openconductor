@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import "@xterm/xterm/css/xterm.css";
-import { canOpen } from "./tabs";
-import { attachTab, clearTab, closeTab, getTabs, openTab, selectTab, subscribeTabs } from "./session";
+import { canOpenTerminal } from "./tabs";
+import { useAppPrefs } from "../../settings/appPrefs";
+import { attachTab, clearTab, closeTab, getTabs, openTab, restoreWorkspaceTabs, selectTab, subscribeTabs } from "./session";
 import { FindBar, useTerminalFind } from "./FindBar";
+import { tabLabel } from "./shellIntegration";
 
 interface Props {
   workspaceId: string;
@@ -32,7 +34,8 @@ export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {
   const [busy, setBusy] = useState(false);
   const autoOpened = useRef(new Set<string>());
 
-  async function newTab() {
+  /** `quiet`: the panel opens it by itself, so it leaves focus where the user is typing. */
+  async function newTab(quiet = false) {
     if (!cwd) {
       setError("Terminal working directory is missing.");
       return;
@@ -40,7 +43,7 @@ export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {
     setBusy(true);
     setError(null);
     try {
-      await openTab(workspaceId, cwd, initialCommand);
+      await openTab(workspaceId, cwd, initialCommand, { quiet });
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -48,15 +51,18 @@ export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {
     }
   }
 
-  // The first time a workspace's panel is shown, give it one terminal.
+  // The first time a workspace's panel is shown, reopen the tabs it had last
+  // launch, or give it one terminal.
   useEffect(() => {
-    if (state.tabs.length === 0 && !autoOpened.current.has(workspaceId)) {
-      autoOpened.current.add(workspaceId);
-      void newTab();
-    }
+    if (autoOpened.current.has(workspaceId)) return;
+    autoOpened.current.add(workspaceId);
+    void restoreWorkspaceTabs(workspaceId, cwd, initialCommand).then((has) => {
+      if (!has) void newTab(true);
+    });
   }, [workspaceId]);
 
   const active = state.tabs.find((t) => t.id === state.activeId) ?? null;
+  const tabFreakMode = useAppPrefs().experimental_tab_freak_mode;
 
   return (
     <section className="terminal-panel" aria-label="Terminal panel">
@@ -64,13 +70,13 @@ export function TerminalPanel({ workspaceId, cwd, initialCommand }: Props) {
         {state.tabs.map((t) => (
           <div key={t.id} role="tab" aria-selected={t.id === state.activeId} className={`term-tab${t.id === state.activeId ? " active" : ""}`} onClick={() => selectTab(workspaceId, t.id)}>
             <span className={`term-dot ${t.status}`} />
-            <span>{t.title}</span>
+            <span>{tabLabel(t.title, t.runningProgram)}</span>
             <button className="term-x" aria-label="Close terminal" title="Close terminal" onClick={(e) => (e.stopPropagation(), closeTab(workspaceId, t.id))}>
               ×
             </button>
           </div>
         ))}
-        <button className="term-icon" aria-label="New terminal tab" title="New terminal tab" disabled={busy || !canOpen(state)} onClick={() => void newTab()}>
+        <button className="term-icon" aria-label="New terminal tab" title="New terminal tab" disabled={busy || !canOpenTerminal(state, tabFreakMode)} onClick={() => void newTab()}>
           +
         </button>
         <span className="term-spacer" />

@@ -1,11 +1,12 @@
 //! Workspace lifecycle on git worktrees.
 //!
-//! A workspace is a git worktree on its own branch, created under the app
-//! data directory:
+//! A workspace is a git worktree on its own branch, created under the root
+//! directory (the `conductor_root_path` setting, default the app data
+//! directory; Conductor's default is `~/conductor`):
 //!
 //! ```text
-//! <data_dir>/workspaces/<repo-slug>/<name>     active worktree
-//! <data_dir>/archived/<repo-slug>/<name>.ws    archive record (branch, archive commit)
+//! <root>/workspaces/<repo-slug>/<name>     active worktree
+//! <root>/archived/<repo-slug>/<name>.ws    archive record (branch, archive commit)
 //! ```
 //!
 //! Lifecycle: [`WorkspaceManager::create`] -> setup script ->
@@ -174,6 +175,9 @@ pub struct CreateOptions {
     pub fetch: bool,
     /// `file_include_globs` from repository settings.
     pub file_include_globs: Option<Vec<String>>,
+    /// Set `push.autoSetupRemote` in the new worktree's config
+    /// (`git.worktree_push_auto_setup_remote`, see [`git::configure_push_upstream`]).
+    pub push_auto_setup_remote: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -185,6 +189,8 @@ pub struct Created {
     /// Whether the `origin` fetch succeeded (false when skipped or offline).
     pub fetched: bool,
     pub copied_files: Vec<PathBuf>,
+    /// Set when `push_auto_setup_remote` was asked for but could not be applied.
+    pub upstream_warning: Option<String>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -205,10 +211,13 @@ pub struct Archived {
     pub script: Option<ScriptOutput>,
 }
 
-/// Owns the on-disk layout under the app data directory.
+/// Owns the on-disk layout under the root directory.
 #[derive(Debug, Clone)]
 pub struct WorkspaceManager {
     data_dir: PathBuf,
+    /// Where workspaces, archive records and default clones live; the app
+    /// data directory unless the `conductor_root_path` setting names another.
+    root: PathBuf,
     /// Worktree paths still being set up. In memory only, so a crash never
     /// leaves a workspace stuck as initializing.
     initializing: Arc<Mutex<HashSet<PathBuf>>>,
@@ -230,8 +239,20 @@ impl Drop for InitializingGuard {
 const ARCHIVE_EXT: &str = "ws";
 
 impl WorkspaceManager {
+    /// Rooted at `data_dir` until [`Self::with_root`] names another root.
     pub fn new(data_dir: impl Into<PathBuf>) -> Self {
-        Self { data_dir: data_dir.into(), initializing: Arc::default() }
+        let data_dir = data_dir.into();
+        Self { root: data_dir.clone(), data_dir, initializing: Arc::default() }
+    }
+
+    /// Keep workspaces, archive records and default clones under `root`.
+    pub fn with_root(mut self, root: impl Into<PathBuf>) -> Self {
+        self.root = root.into();
+        self
+    }
+
+    pub fn root(&self) -> &Path {
+        &self.root
     }
 
     /// Mark the workspace at `path` as initializing (worktree creation, setup
@@ -256,12 +277,14 @@ impl WorkspaceManager {
         if s.is_empty() { "repo".into() } else { s }
     }
 
-    fn workspaces_dir(&self, repo_root: &Path) -> PathBuf {
-        self.data_dir.join("workspaces").join(Self::repo_slug(repo_root))
+    /// A repository's workspaces directory, `<root>/workspaces/<repo slug>`
+    /// (Conductor's repo settings show it as "Workspaces path").
+    pub fn workspaces_dir(&self, repo_root: &Path) -> PathBuf {
+        self.root.join("workspaces").join(Self::repo_slug(repo_root))
     }
 
     fn archive_dir(&self, repo_root: &Path) -> PathBuf {
-        self.data_dir.join("archived").join(Self::repo_slug(repo_root))
+        self.root.join("archived").join(Self::repo_slug(repo_root))
     }
 
     fn archive_record(&self, repo_root: &Path, name: &str) -> PathBuf {
@@ -403,9 +426,14 @@ impl WorkspaceManager {
         let source = files_to_copy::resolve_source(&root, opts.file_include_globs.as_deref());
         let files = files_to_copy::files_to_copy(&root, &source)?;
         let copied_files = files_to_copy::copy_files(&root, &path, &files)?;
+        let upstream_warning = if opts.push_auto_setup_remote {
+            git::configure_push_upstream(&root, &path).map(str::to_string)
+        } else {
+            None
+        };
 
         let workspace = self.make(&root, &name, branch, WorkspaceState::Active, Some(base_commit.clone()));
-        Ok(Created { workspace, base_ref, base_commit, fetched, copied_files })
+        Ok(Created { workspace, base_ref, base_commit, fetched, copied_files, upstream_warning })
     }
 
     /// Active (and missing) workspaces from `git worktree list`, plus archived
@@ -493,20 +521,44 @@ impl WorkspaceManager {
             }
             _ => None,
         };
-        let record = self.archive_record(&ws.repo_root, &ws.name);
-        std::fs::create_dir_all(record.parent().expect("record has parent"))?;
         let commit = ws.head.clone().or_else(|| git::git(&ws.repo_root, ["rev-parse", "--verify", "-q", &format!("refs/heads/{}^{{commit}}", ws.branch)]).ok());
-        let mut text = format!("branch={}\n", ws.branch);
-        if let Some(c) = &commit {
-            text.push_str(&format!("commit={c}\n"));
-        }
-        std::fs::write(&record, text)?;
+        self.record_archive(&ws.repo_root, &ws.name, &ws.branch, commit.as_deref())?;
         self.remove_worktree(&ws)?;
         if opts.delete_branch && !ws.branch.is_empty() && git::branch_exists(&ws.repo_root, &ws.branch) {
             git::git(&ws.repo_root, ["branch", "-D", &ws.branch])?;
         }
         let workspace = self.make(&ws.repo_root, &ws.name, ws.branch, WorkspaceState::Archived, commit);
         Ok(Archived { workspace, script })
+    }
+
+    /// Write the archive record (`branch=`, `commit=`) that keeps an archived
+    /// workspace listed and its name taken. [`Self::archive`] and the app's
+    /// full archive (`workspace_archive_commands`) both write it.
+    pub fn record_archive(
+        &self,
+        repo_root: &Path,
+        name: &str,
+        branch: &str,
+        commit: Option<&str>,
+    ) -> Result<(), WorkspaceError> {
+        let record = self.archive_record(repo_root, name);
+        std::fs::create_dir_all(record.parent().expect("record has parent"))?;
+        let mut text = format!("branch={branch}\n");
+        if let Some(c) = commit {
+            text.push_str(&format!("commit={c}\n"));
+        }
+        std::fs::write(&record, text)?;
+        Ok(())
+    }
+
+    /// Remove the archive record of `name`, if any (the full unarchive in
+    /// `workspace_archive` recreated the worktree itself).
+    pub fn forget_archive_record(&self, repo_root: &Path, name: &str) -> Result<(), WorkspaceError> {
+        let record = self.archive_record(repo_root, name);
+        if record.exists() {
+            std::fs::remove_file(record)?;
+        }
+        Ok(())
     }
 
     /// Restore an archived workspace: re-add its worktree on its branch, or

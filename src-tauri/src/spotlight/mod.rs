@@ -17,11 +17,20 @@
 //! [`watch`] runs [`sync_once`] at start and after each file change.
 //! [`service`] keeps one session per repository root and reports each step
 //! as an event for the UI. [`setting`] is the per-repository
-//! `spotlight_testing` toggle.
+//! `spotlight_testing` toggle. [`auto_run`] starts Spotlight in place of the
+//! run script when auto-run after setup fires with that toggle on.
+//! [`migrate`] moves the legacy `repos.spotlight_testing` column into the
+//! local settings file once, at startup.
 //!
 //! Everything goes through [`crate::checkpoint`], whose refs are shared by
-//! every worktree of a repository.
+//! every worktree of a repository. Every restore into the root keeps the
+//! root's `.conductor/settings.local.toml` as it was (see
+//! [`restore_root`]).
 
+pub mod auto_run;
+pub mod migrate;
+#[cfg(test)]
+mod migrate_tests;
 pub mod service;
 pub mod setting;
 #[cfg(test)]
@@ -31,6 +40,7 @@ mod tests;
 pub mod watch;
 
 use std::fmt;
+use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -153,6 +163,42 @@ fn delete_checkpoint(root: &Path, id: &str) -> Result<(), SpotlightError> {
     git(root, &["update-ref", "-d", &reference]).map(|_| ())
 }
 
+/// The root's machine-local settings file.
+fn local_settings(root: &Path) -> PathBuf {
+    root.join(oc_scripts::config::SETTINGS_DIR)
+        .join(setting::LOCAL_FILE)
+}
+
+/// Restore checkpoint `id` into the root, keeping the root's own
+/// `.conductor/settings.local.toml` (bytes, or its absence) as it was.
+///
+/// That file is untracked and belongs to the root checkout: it holds the
+/// root's local settings, `spotlight_testing` among them. A plain restore
+/// removes it on every sync (the workspace snapshot lacks it, so the restore
+/// cleans it as an extra untracked file), and on Stop puts back the copy
+/// saved at Run, undoing a setting written meanwhile (the toggle writes the
+/// file, then stops Spotlight).
+fn restore_root(root: &Path, id: &str) -> Result<(), CheckpointError> {
+    let path = local_settings(root);
+    let before = fs::read(&path).ok();
+    let restored = checkpoint::restore(root, id);
+    let after = fs::read(&path).ok();
+    if after != before {
+        let put_back = match &before {
+            Some(bytes) => path
+                .parent()
+                .map_or(Ok(()), fs::create_dir_all)
+                .and_then(|()| fs::write(&path, bytes)),
+            None => fs::remove_file(&path),
+        };
+        if let Err(e) = put_back {
+            restored?;
+            return Err(CheckpointError::Io(e));
+        }
+    }
+    restored
+}
+
 /// What [`begin`] found from a session that was never ended.
 #[derive(Debug, PartialEq, Eq)]
 pub enum LeftoverSession {
@@ -167,7 +213,7 @@ pub enum LeftoverSession {
 /// Prepare the root for a Spotlight session. See the module docs.
 pub fn begin(root: &Path) -> Result<LeftoverSession, SpotlightError> {
     let leftover = if has_checkpoint(root, PRE_SPOTLIGHT_ID)? {
-        match checkpoint::restore(root, PRE_SPOTLIGHT_ID) {
+        match restore_root(root, PRE_SPOTLIGHT_ID) {
             Ok(()) => {
                 delete_checkpoint(root, PRE_SPOTLIGHT_ID)?;
                 LeftoverSession::Restored
@@ -213,7 +259,7 @@ pub fn sync_once(workspace: &Path, root: &Path, id: &str) -> SyncOutcome {
         Err(CheckpointError::Busy(_)) => return SyncOutcome::SkippedBusy,
         Err(e) => return SyncOutcome::SkippedSaveFailed(e.to_string()),
     }
-    match checkpoint::restore(root, id) {
+    match restore_root(root, id) {
         Ok(()) => SyncOutcome::Synced,
         Err(e) => SyncOutcome::RestoreFailed(e.to_string()),
     }
@@ -225,6 +271,6 @@ pub fn end(root: &Path) -> Result<(), SpotlightError> {
     if !has_checkpoint(root, PRE_SPOTLIGHT_ID)? {
         return Ok(());
     }
-    checkpoint::restore(root, PRE_SPOTLIGHT_ID)?;
+    restore_root(root, PRE_SPOTLIGHT_ID)?;
     delete_checkpoint(root, PRE_SPOTLIGHT_ID)
 }

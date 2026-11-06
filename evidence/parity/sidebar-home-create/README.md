@@ -2,79 +2,154 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`884f1f7`, 2026-11-05)
+## Result on main (`8da9edf`, 2026-11-05)
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Verified parity | Previous (`d846158`) |
-|---|---|---|---|---|---|---|---|
-| Sidebar | 33 | 5 | 10 | 7 | 11 | **35.6%** | 22.7% |
-| Home | 18 | 4 | 7 | 0 | 7 | **41.7%** | 31.9% |
-| Create workspace | 17 | 7 | 6 | 2 | 2 | **61.8%** | 20.6% |
-| **All** | 68 | 16 | 23 | 9 | 20 | **43.8%** | 24.6% |
+| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `9930339` | `f6c05d7` | `99edc40` | `274ac80` | `962f017` | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Sidebar | 33 | 28 | 4 | 0 | 1 | 0 | **90.9%** | 90.2% | 85.6% | 84.1% | 79.5% | 78.0% | 75.0% | 70.5% | 65.9% | 65.9% |
+| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 85.3% | 62.5% |
+| Create workspace | 17 | 15 | 2 | 0 | 0 | 0 | **94.1%** | 94.1% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 82.4% | 79.4% |
+| **All** | 68 | 56 | 10 | 0 | 1 | 1 | **91.0%** | 90.7% | 86.9% | 86.2% | 84.0% | 83.2% | 81.7% | 79.5% | 75.0% | 68.4% |
 
-Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (52 open).
+**Since `1944b98`.** Read on `8da9edf`. Merges: #438 (`8da9edf`, Settings pages row for row), #432, #455, #445, #459 and evidence-only #442, #454, #458. No score changes.
 
-**What changed since `d846158`.**
+- `sidebar.transparency` stays missing and `sidebar.ws-numbers` stays partial. #438 adds Conductor's Experimental toggles "Sidebar transparency" and "Show workspace numbers" and stores them, so the detector now flags both as implemented, but no code reads either value: there is no vibrancy code (Conductor reads the key in its theme setup, renderApp @439,002) and no row shows `workspaces.number`. Owners: transparency 0cf7315e, ws-numbers e26c55fa.
 
-- **Create workspace is now wired to the backend.** `CreateWorkspaceDialog.tsx` calls `add_repository`, `list_branches` and `create_workspace`. It shows the city-name placeholder and validation errors, and it renames the workspace after the first message through `rename_workspace_branch`. Cmd+N, the sidebar row, each repo's "+" and the palette all open it.
-- **Open project is real.** The sidebar "+" and the Home card use the native picker, then `inspect_project_folder` (`src-tauri/src/project.rs`) and `add_repository`. Errors appear as toasts.
-- **Palette handlers cover sidebar navigation.** `PaletteHost.tsx` handles go-home, next and previous workspace, Cmd+1..9 and workspace search.
-- **The DB crate gained workspace setters, but it is still not linked into the app.** `crates/openconductor-db` now has pin, unread, manual and derived status, archive and unarchive, hidden and icon setters. `src-tauri/Cargo.toml` does not depend on it, so these count as backend only.
+**Since `9930339`.** Read on `1944b98`. Merges: #431 (`93f1846`, Go to next unread; `ws-unread` stays partial, see #444), #437 (`1944b98`, archived workspaces list and read-only archived view), and #439, #441, #427, #452 and #444 (no item here).
+
+- `sidebar.archived-view` backend only to implemented (#437): the palette's "View archived workspaces" opens the Workspaces tab with archived workspaces shown; its "Archived workspaces" filter has Conductor's "Hiding archived" / "Showing all" / "Only archived"; archived rows come from conductor.db (`listArchivedWorkspaces`) with an "Unarchive workspace" button. An archived workspace opens read-only with the "This workspace is archived." banner and Unarchive in the header. Unarchive follows Conductor's `CWt`: a deleted, taken or moved branch opens "Restore to new branch?" and restores onto a unique `-vN` branch; a folder in the way offers "Clear & unarchive"; a failed archive offers "Delete permanently". All 16 strings were found as plain text in Conductor's bundles. Not run in the desktop app by the verifier; #437's new E2E passed in its CI.
+- `sidebar.archive` implemented to partial (re-read on `1944b98`, a gap #437's body reports): the #397 verdict said the running-agents check and "Stop agents and archive" cover every chat of the workspace, but only Reason chats publish a status. `chatStatuses` comes from `createChatRuntime`, which only `reasonChat.ts` uses; `codexChat.ts` keeps its own queue, and `stopWorkspaceAgents` calls Reason's `stopChat`. A working Codex chat neither blocks archive nor is stopped, and its worktree is removed under it, unlike Conductor's `Z$`, which cancels every session of the workspace.
+- `sidebar.archived-view` minor gap, still implemented: unarchive copies include files with `resolve_source(&t.repo_root, None)`, so it ignores the repository's `file_include_globs` setting that workspace creation reads. #437's "cloud workspaces can't be unarchived" does not apply, since OpenConductor has no cloud workspaces.
+- `home.status-overview` stays partial with one more gap: Home's "Archived workspaces" filter never sees an archived workspace, because `homeRows` takes only `state.repos` and `reposFromDb` drops archived rows (`HIDDEN_STATES`). "Only archived" is always empty and "Showing all" shows no archived row. adf1f469 owns the follow-up.
+
+**Since `f6c05d7`.** Read on `9930339`. Merges: #419 (`d353535`, create a workspace in a section), #410 (`9930339`, resource usage pill and Account menu), and #429 (evidence only).
+
+- `sidebar.footer-usage` missing to implemented (#410): Settings › Experimental "Show sidebar resource usage" (`sidebar_resource_usage`, default off) shows a memory pill in the sidebar's top bar beside back/forward, which is where Conductor mounts it (`Isa`/`bna`, renderApp @9,942,220), though its setting text says footer. The pill hides under 200 px of sidebar and shows only its icon under 260 px. It polls the registered `get_resource_usage` every 2 s and opens Conductor's Resources popover (`qta` @9,933,654). Inferred rather than decompiled: which processes Conductor samples, its labels and its argument redaction (`evidence/sidebar-resource-usage/NOTES.md`).
+- `sidebar.computer-switcher` partial to implemented (#410): the top row is now an "Account menu" button with the initial avatar, "`<name>`'s Mac" (or "My Mac") from the registered `local_account`, and a chevron. It opens a 260 px menu with the git email and Settings, as Conductor's `zna` (@9,957,506) does for a single personal organization. The organization list, Create organization, Upgrade to Pro and Log out depend on Conductor's cloud account and are left out.
+- `create.in-section` missing to implemented (#419): a section's header menu starts with Create workspace (Conductor's `oBi` @10,005,110), which opens the dialog with "Create in `<name>`". Opened without a section while sections exist, Create splits with a "Create in section" menu (`iQo` @9,711,015). The new workspace is assigned to the section and unpinned, and a section deleted meanwhile keeps the workspace and shows Conductor's assign-failed warning.
+
+**Since `99edc40`.** Read on `f6c05d7`. Merges: #397 (`aa32456`, archive stops the workspace's agents), and #389, #402, #360, #424 and #425 (diff, chat, evidence; no item here).
+
+- `sidebar.archive` partial to implemented (#397): the last gap is closed. The running-agents check now folds every chat of the workspace (`workspaceAgentStatus`; working, cancelling or waiting block, as Conductor's `dYe`), and every archive calls `stopWorkspaceAgents`, which stops each working or cancelling chat, as Conductor's `Z$` (`index-BGEQ8YjU.js` @974,859) calls `cancelSession` for every session of a local workspace. Conductor's cancel also settles a waiting session (@3,013,752); no OpenConductor chat reports waiting, so nothing is left to settle.
+- `sidebar.archived-view` stays backend only. #397's title promises archived workspaces in the palette with Unarchive, and its first commit (`753f691`) had them, but rebuilding it on #391's backend dropped them: the squash touches only `store.ts` and `src/workspace/archive*`. The palette still filters archived workspaces out, and `reposFromDb` leaves archived rows out of state, so Home's "Only archived" filter is empty too. Only the archive-on-merge toast can unarchive.
+
+**Since `274ac80`.** Read on `99edc40`. Merges: #423 (`99edc40`, sidebar add-repository menu, rail and native sidebar menu items), and #415, #418 and #422 (evidence, diff theme and chat; no item here).
+
+- `sidebar.add-menu` partial to implemented (#423): "Add project…" in the My workspaces header menu, and ⌥⌘A, open the add-repository popover (Conductor's `wra`) with the shared body `Gji`: Open project, Open GitHub project, Quick start, then "Recents" with a spinner row while loading. Recents come from `recent_local_repos.rs`, a port of Conductor's `MQo` script (zsh history `cd` targets plus `.git` directories under fixed roots, newest first, at most 8), minus folders already added; a Recents row adds its folder through Open project's checks.
+- `sidebar.resize-toggle` partial to implemented (#423): the old verdict was stale, since the rail has resized and saved `left_panel_width` since #332. #423 matches Conductor's rail `Nta` (drag previews, release saves, cancel reverts, double-click resets to 256, 40% window cap) and adds View > Toggle Left Sidebar / Toggle Right Sidebar beside ⌘B and ⌥⌘B. REA gap: which submenu Conductor puts those items in was not decompiled.
+- `sidebar.visibility-settings` partial to implemented (stale since #332): `left_panel_visible`, `left_panel_width` and `right_panel_visible` are rows in conductor.db's settings table, as in Conductor.
+
+**Since `962f017`.** Read on `274ac80`. Merges: #400 (`be4f789`, Copy link), #391 (`274ac80`, full workspace archive and unarchive), #411 and #395 (evidence only).
+
+- `sidebar.ws-actions` partial to implemented (#400): the row menu now has every action Conductor's has, including Copy link with the ⌘⇧C hint, copying `openconductor://workspace?id=<id>` with Conductor's "Copied link" / "Failed to copy link" toasts. The copied link opens nothing until `app.deep-link` (unowned, outside this folder) handles `openconductor://` URLs.
+- `sidebar.archive` stays partial, much narrower (#391): every archive path (row menu, WorkspaceView, palette, archive on merge) runs `archive_workspace`, which checkpoints the worktree, refuses while a git operation is in progress (sticky warning with an Archive retry that discards the operation state), records the archive commit under `refs/conductor-archive-heads/<id>`, runs the archive script and removes the worktree, following Conductor's `dYe`/`mYe`. The running-agents dialog matches Conductor's only confirmation. Left: "Stop agents and archive" does not cancel the running chat turn.
+- `sidebar.archived-view` stays backend only: `unarchive_workspace` replaces `db_unarchive_workspace` and restores the worktree, checkpoint, `.context` and branch, but only the archive-on-merge toast can call it; there is still no archived-workspaces list.
+
+**Since `df07012`.** Read on `66a892a`. Merges: #370 (sidebar sections, row status from every chat, 5-minute PR lookup for on-screen rows, Conductor's label rule), `407e222` (#271, #365: chat model/effort and queue keys; no item here), #384 (evidence only), #345 and #386 (settings rows and settings in conductor.db; no item here).
+
+- `sidebar.sections` missing to implemented (#370): create, edit (name and emoji) and delete from the section header menu and New section…; Move to section ▸ and Remove from section in the row menu. Edits follow Conductor's `_Y`/`SY`/`wY`/`yY`/`kY`/`V2`, the projection follows `usa`, and the whole layout goes through `db_read_navigation_sections` / `db_write_navigation_sections` into conductor.db. Section reorder (`bY`) has no UI yet.
+- `sidebar.ws-name` partial to implemented (#370): a stored `workspace_name` now shows before the PR title even when not user-set, the configured branch prefix is stripped before prettifying, and the target is `intended_target_branch ?? "main"`, as in Conductor's `$V`.
+- `sidebar.ws-actions` stays partial, narrower: Move to section ▸ is in the row menu; only Copy link (Cmd+Shift+C) is missing.
+- `sidebar.ws-status` stays partial, narrower: the session status is aggregated over every chat of the workspace and every on-screen row polls its PR every 5 minutes (Conductor's `G5e`). The chat queue still has only idle/working/cancelling/error, so the needs-* and waiting states never reach the icon.
+- `sidebar.drag-to-section` stays missing: the sidebar's only drag reorders repository groups; rows are not draggable and sections are not drop targets.
+
+**Since `4b9dc87`.** Read on `0f82f19`. Merges: #315 (sidebar repo icon, Rename workspace dialog, Filter by project mount with `sidebar_repo_filter` in conductor.db), #383 (an E2E test only, no item), #323 (this folder only). Main has since moved to `247d5a1` (#345, #386, #392: settings rows, settings in conductor.db, packaging records), which touches no sidebar, Home or create code; `colored_sidebar_diffs` moving into the settings table does not change `ws-diffstat`. `df07012` (#366, archive on merge for every workspace) registers `db_unarchive_workspace`, reached only from the archive-on-merge toast's Unarchive, so `sidebar.archived-view` stays backend only with new detail; its PR polling dispatches no row PR state, so `ws-status` is unchanged. #305 was re-read: its squash title says evidence, but it carries the numbering code, so the earlier "evidence only" reading of it was wrong.
+
+- `home.repo-search` partial to implemented (#315): the section header's Filter by project submenu is mounted and narrows the repo groups (Pinned stays unfiltered), and the desktop app saves the choice as conductor.db's `sidebar_repo_filter` setting (raw repository id; All projects deletes the row), as Conductor's `z6t` does. The localStorage difference noted last pass is gone; only the browser build, which has no database, still uses localStorage.
+- `sidebar.repo-icon` backend only to implemented (#315): `RepoIcon` follows Conductor's `U9` fallback order, the Change icon dialog has Icons (238 names), Emoji, Favicon and Upload, and `db_set_repo_icon` writes `repos.icon`. The Emoji tab is a curated subset (REA could not extract Conductor's runtime emoji dataset).
+- `sidebar.rename` backend only to implemented (#315): `db_rename_workspace` follows Conductor's `renameWorkspace` (sibling symlink for a ready worktree, refusals for initializing, taken and invalid names) and saves `workspace_name` with `user_set_workspace_name = 1`; Also rename branch sets `user_set_branch_name`. No CLI `workspace rename` (the rebuild has no CLI).
+- `create.number` missing to implemented (#305): `begin_workspace` numbers the row with `next_number` (highest `workspaces.number` plus one), `finish_workspace` keeps it, and the Home list matches `W-<n>`. The detector now also matches `next_number`. Showing numbers on rows stays with `sidebar.ws-numbers`.
+- `sidebar.ws-actions` stays partial: the row menu now has Rename; Copy link and Move to section are still missing.
+- `sidebar.ws-name` stays partial, narrower: rename sets `user_set_workspace_name`, which closes last pass's gap. REA on Conductor's `$V` (`renderApp-D_fmY7hW.js` @2,153,907) shows two differences left: Conductor shows a stored `workspace_name` before the PR title even when it is not user-set, and it strips the configured branch prefix before prettifying the branch.
+- `create.page` stays partial: #388 (composer and full-screen `/create`) is open, not merged.
+- `home.first-run` (implemented) and `home.org-states` (not applicable) are unchanged: nothing since #381 touches onboarding.
+
+**Since `d8b3b2e`.** Read on `4d72807`; `4b9dc87` adds #373 (the diff target ref), which changes no item in these areas. Merges in these areas: #322, #343, #350, #354, #379 and #381 (Home), #327, #375 and #379 (create), #337 and #344 (sidebar row).
+
+- `home.route` partial to implemented (#322): `{kind: "root"}` is `/`, the start screen unless a workspace was open, and the fallback when the open workspace or its repository goes away.
+- `home.first-run` missing to implemented (#381): `FirstRunGate` shows `/first-run-onboarding` on a fresh install with no repositories (`first_time_onboarding_step` in the settings table), as Conductor's `Pya`/`Bxa` do.
+- `home.new-project` partial to implemented (#350): Quick start creates the real first workspace and starts its setup script. The feature was re-worded: the GitHub repo step is required in Conductor's Quick start (`gbi`), not optional.
+- `home.duplicate-repo` backend only to partial (#343, #379): a second clone of an added remote is its own project in a `<name>-v1` folder. Open project still refuses an already-added folder (`REPO_EXISTS`), where Conductor adds a second row.
+- `home.status-overview` missing to partial (#322): the Home list at `/all-workspaces` groups rows by last activity with unread, diff stat and relative time, but the status column shows only "working".
+- `home.dashboard-routes` missing to partial: `/all-workspaces` exists; `/dashboard` (REA: route `lta`, shown in the sidebar when `dashboard_enabled` is on, default off) does not.
+- `home.recent` stays partial, re-read with REA: "Recent workspaces" is the palette's heading, backed by a persisted `recentWorkspaceIds` capped at 5. Ours is in memory only and capped at 8.
+- `home.org-states` missing to **not applicable** (new verdict `n/a`, left out of verified parity and obligations): Conductor's loading and cloud-redirect states come from its cloud organizations API, which a local-only app does not have (REA in `evidence/screens/first-run-onboarding.md`, #381).
+- `home.repo-search` stays partial: #354's Filter by project submenu is on main but not mounted. Sidebar PR #315 mounts it and keeps the filter in localStorage, not Conductor's `sidebar_repo_filter` settings row; that difference will be scored once #315 merges.
+- `create.worktree` partial to implemented (#375): the `conductor_root_path` setting moves workspaces under `<root>/workspaces/<repo>`, editable in Settings › Advanced and shown per repo. Default root is the app data directory, not `~/conductor`.
+- `create.initializing` stays partial with new detail (#327): a pending "Creating workspace..." row shows in the sidebar, but there is no initializing view or log.
+- `sidebar.ws-name` and `sidebar.ws-status` stay partial (#344): the PR title is now saved and read back, but no rename sets `user_set_workspace_name`, and the row icon still never sees PR state for unopened workspaces or any needs-* session status.
+
+**Since `8229113`.** #324 took `create.autostart-run` from partial to implemented (Settings › Experimental "Auto-run after setup", re-read on `7e75c2d`). `home.repo-search` was re-anchored (verdict unchanged, partial): REA on Conductor 0.87.6 (`renderApp-D_fmY7hW.js`, sha256 matches the asset manifest; Home builder 68dc657c, PR #354, offsets spot-checked by the verifier) shows Home and the Add-repository menu have no repository search. The old anchors ("Search repositories...", "No matching repositories.", "Loading repositories...") are the cloud GitHub repo picker (`mfa`, @10,435,221), which has no local surface. Local narrowing is the palette Projects tab ("Search projects...", already built) and the sidebar section header's "Filter by project" submenu (`pra`, @10,019,058: shown with more than one repository, "All projects" then each repository, "All projects" deletes `sidebar_repo_filter`). #354 adds that logic and submenu, tested but not mounted; the item closes once the sidebar owner mounts it in the section header menu and filters the repo groups.
+
+**Since `0e2531b` (#289).** Four sidebar merges landed: #283 (hide/unhide repositories, show-hidden toggle, drag to reorder, repo menu) and the row-menu series #288, #293 and #312. Their items were re-read on `8229113`:
+
+- `repo-order` partial to implemented: drag reorder writes `repos.display_order` through the registered `db_reorder_repos` (`sidebar_repo_commands.rs`).
+- `repo-hide` backend only to implemented: Hide/Unhide repository in the repo menu, a Show hidden repositories toggle, and `db_set_repo_hidden` writes `repos.hidden`.
+- `ws-pinned` partial to implemented: pins are now written through `db_set_workspace_pinned` (`sidebarPersist.ts`) and read back on reload.
+- `ws-diffstat` partial to implemented: row counts come from the registered `sidebar_workspace_changes`, and unselected rows stay muted unless `colored_sidebar_diffs` is on.
+- Still partial, with new detail: `ws-unread` is now saved (`db_set_workspace_unread`) but has no jump-to-next-unread command; `ws-status` saves the manual status (`db_set_workspace_manual_status`) but the row icon still ignores it; `ws-numbers` shows 1..9 hints while the switch modifier is held (`shortcutHint.ts`) but not the `workspaces.number` column.
+- `home.duplicate-repo` re-worded and partial to backend only. Home builder c93ae9dd's REA read of Conductor 0.87.6 (decoded index chunk, `createRepo`) shows Clone and Open project never check for an already-added repo: a second add inserts a new `repos` row and Clone picks a unique folder (`name-v1`). The real `conductor.schema.sql` agrees: `repos` has no unique constraint on `remote_url` or `root_path`. "This repository already exists." is the GitHub repo-name check, so that copy reference was dropped. The old wording ("refuse a duplicate") was wrong. Against the corrected wording the rebuild diverges in every UI path (`REPO_EXISTS` refusal in Open project and the Add-repository menu, store drops the Clone result); only the tested `clone_repository` unique-folder logic matches.
+- #305 was read as create-workspace evidence only, so `create.number` stayed missing; corrected on `0f82f19` (it carries the numbering code).
+
+Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0; an item marked not applicable (`n/a`) is left out. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (10 open; 11 on `9930339`, 14 on `f6c05d7`, 15 on `99edc40`, 26 on `4b9dc87`, 31 on `d8b3b2e`, 36 on `0e2531b`, 45 before).
+
+All 68 items were re-read on `85e00bb`. The diff from there to `0e2531b` was then read too, and the 6 items it touches were re-read on `0e2531b`: #278 (row menu, pins, unread, status) and #269 (Home card tokens). Compared with the last verdicts on main, 17 items changed: 16 up and 1 down.
+
+**What changed from the last verdicts to `0e2531b`** (`5045114` for the sidebar, `884f1f7` for Home and Create).
+
+- **The sidebar has a row actions menu** (#278): mark read/unread, pin into a Pinned group, set status (manual, then derived, then in-progress), and archive. `ws-actions` moved from missing to partial, and `ws-pinned` from backend only to partial. These changes are local state only: nothing writes them back to conductor.db yet.
+- **Home colours match** (#269). The card fill and border are pixel-identical to the reference in both themes, so `home.colors` is now implemented.
+- **conductor.db is the source of truth in the desktop app** (#224). `crates/openconductor-db` is linked. The sidebar and Home load from `db_list_repos` and `db_list_workspaces`. Add, clone, create, rename and archive write rows, and startup removes incomplete workspaces. `home.persist` and `create.failure` are now implemented. `repo-order` went from backend only to partial, because the sidebar now uses the DB order.
+- **Create runs setup and starts the agent.** The dialog calls `scripts_config` and `setup_script_start`, which run on the now-linked `oc-scripts`, and shows the setup log. The first message is sent to Reason (#194). PR and issue lists come from `pr_list_open` and `gh_issue_list_open` (#203). Settings › Git feeds the branch prefix. `setup-script`, `first-message`, `from-ref` and `branch-prefix` are now implemented.
+- **Home's project flows are real.** Clone runs `clone_repository` with streamed progress and recent repositories (#230, #189). A folder with no `.git` or no origin opens a dialog that runs git init and creates the GitHub repo (`github_repo_create`). Quick start runs `create_new_project`.
+- **One verdict went down after a closer read.** `create.worktree` dropped to partial: the workspaces directory is fixed, and no setting changes it. `create.autostart-run` went up from backend only to partial. Auto-run after setup now works, but only the repo scripts config file can turn it on.
 
 **Still the main gaps.**
 
-- Setup never runs on create.
-- The sidebar and Home still read the localStorage shell state, not `list_workspaces` or the DB.
-- Archive deletes a localStorage row with no confirmation.
-- The sidebar structure and colours still differ from the reference.
+- Sidebar row state does not round-trip. Pin, unread and status changes are never written to conductor.db. The row icon still shows the old status model. Diff stats are 0/0 from the DB, and the user-set name is not mapped.
+- There is no user rename, no repo hide or icon, no archived view and no safe archive. The row menu has no copy-info or section items.
+- Home has no workspace overview, no dashboard routes and no first run.
 
 ## Screen comparison (REA)
 
-Captured on this machine with REA 6.8.0 `capture-browser-scenario` (Chromium 155, 1440x900, same locale and timezone as the references) on the Vite build of `884f1f7`. Compared with `compare-web-screenshots`. All Evidence IDs are in [screens/rea-compare-884f1f7.json](screens/rea-compare-884f1f7.json). The populated captures seed the shell's localStorage with 3 repositories and 6 workspaces shaped like the reference fixture.
+Captured on this machine with REA 6.8.0 `capture-browser-scenario` (Chromium, 1440x900, same locale and timezone as the references) on the Vite build of `0e2531b`, using `tools/sidebar-screens/capture.mjs`. Compared with `compare-web-screenshots` through `tools/sidebar-screens/compare.py`. The comparison Evidence IDs are in [screens/rea-compare-0e2531b.json](screens/rea-compare-0e2531b.json). The populated captures seed localStorage with 3 repositories and 6 workspaces shaped like the reference fixture (the browser build has no Tauri, so it still reads localStorage).
 
-| Pair (reference vs ours) | Changed pixels, threshold 0 | Threshold 24 | Comparison Evidence (t=24) |
-|---|---|---|---|
-| Populated sidebar, dark: `sidebar--repos-expanded--dark` vs [ours](screens/ours-sidebar-populated-dark.png) | 100% | 4.36% | `ev_3accc141…` |
-| Populated sidebar, light: `sidebar--repos-expanded--light` vs [ours](screens/ours-sidebar-populated-light.png) | 100% | 4.39% | `ev_d67f80ba…` |
-| Create, dark: `create-workspace--from-repo--dark` vs [ours](screens/ours-create-dialog-dark.png) | 100% | 7.62% | `ev_90c92854…` |
-| Create, light: `create-workspace--no-repo--light` vs [ours](screens/ours-create-dialog-light.png) | 100% | 89.09% | `ev_78687f2f…` |
-| Empty Home, dark: `home--empty-signed-in--dark` vs ours | 100% | 3.73% | `ev_e74c2b2e…` |
+| Pair (reference vs ours) | Whole frame, t=24 | Sidebar x<256, t=24 | Whole frame on `884f1f7` | Capture Evidence |
+|---|---|---|---|---|
+| `sidebar--repos-expanded--dark` vs [ours](screens/ours-sidebar-populated-dark.png) | 2.80% | 0.90% | 4.36% | `ev_f0e80361…` |
+| `sidebar--repos-expanded--light` vs [ours](screens/ours-sidebar-populated-light.png) | 2.70% | 0.88% | 4.39% | `ev_127ac024…` |
+| `sidebar--repos-collapsed--dark` vs ours | 2.75% | 0.62% | - | `ev_38fc1662…` |
+| `home--empty-signed-in--dark` vs [ours](screens/ours-home-empty-dark.png) | 2.71% | 0.61% | 3.73% | `ev_8137d269…` |
+| `home--empty-signed-in--light` vs [ours](screens/ours-home-empty-light.png) | 2.60% | 0.59% | - | `ev_4b5732b8…` |
 
-What the captures show:
+Pixel samples from the same captures:
 
-- **Populated sidebar.** The reference has, from top to bottom:
-  1. A toggle and back/forward arrows.
-  2. A computer switcher.
-  3. Home, Create and Search rows.
-  4. A "My workspaces" label.
-  5. Repo rows with an initial avatar, a count and hover "..." / "+" actions.
-  6. Workspace rows with a branch icon and the branch-style title, with unread rows bold.
-  7. A help and settings footer.
+| Point | Reference | Ours |
+|---|---|---|
+| Sidebar fill, dark / light | #1c1817 / #fcfcfb | #1c1817 / #fcfcfb |
+| Main background, dark / light | #141110 / #ffffff | #141110 / #ffffff |
+| Home entry card fill, dark / light | #211e1c / #fafaf9 | #211e1c / #fafaf9 |
+| Home entry card border, dark / light | #373433 / #eae8e6 | #373433 / #eae8e6 |
+| Sidebar right edge | x=255 | x=255 |
 
-  Ours has the logo, Home and "New workspace" rows, an uppercase "Repositories" header, chevron repo rows, workspace rows with a status dot and short name, and a version footer. The diff stat on a row matches (+15 -1). The sidebar edge is at x=248 vs 256.
-- **Create.** The reference is a centred composer with:
-  - a repo chip and a "..." menu
-  - a prompt area
-  - a model and effort picker
-  - an attach button and a Create button
+What is left in the frames:
 
-  Ours is a titled modal form with a prompt box, Create from, Repository, Base branch and Workspace name fields, and Cancel/Create buttons.
-
-  In light theme the reference dims the whole window to mid-grey behind the composer and ours uses a light scrim. That causes most of the 89%. The light reference is also the no-repo state, while ours has repositories, so the layout comparison there is approximate.
-- **Colours.** These are unchanged since the last pass. Ours are cool greys (dark sidebar #121417, main #17191d). The reference uses warm near-blacks (#1c1817, #141110).
+- **Sidebar.** The row order, icons, section header, footer and spacing line up with the reference. The remaining differences are the computer name (we always show the default name) and how long titles truncate next to the diff stat.
+- **Home.** The wordmark and the cards sit at the same positions, and the colours match. The GitHub and Quick start card icons differ. The wordmark is our own brand by design.
+- **Create.** It was not re-captured in this pass, because `shots.json` has no create scenario. The create screens in [screens/](screens) are still from `884f1f7`. `create.page` is scored from code: it is still a modal form, not the reference composer.
 
 ## Gap list, by priority
 
 The full list, with the owner of each item, is in [builder-obligations.md](builder-obligations.md).
 
-1. **Run setup on create, and show it** (owner: create-workspace, with setup-and-run-scripts). Call the setup lifecycle from `crates/scripts` after `create_workspace`, and keep its log. Show initializing and setting-up states on the new workspace. Respect `auto_run_after_setup`. Clean up incomplete workspaces on start. Items: `create.setup-script`, `create.initializing`, `create.failure`, `create.autostart-run`.
-2. **Load the sidebar and Home from the backend** (owner: sidebar and home, with persistence). Link `crates/openconductor-db` into the app. Read repositories and workspaces from it, or from `list_workspaces`, instead of localStorage. This lifts 7 backend-only sidebar items at once: `repo-hide`, `repo-icon`, `repo-order`, `ws-pinned`, `ws-unread`, `rename`, `archived-view`.
-3. **Rebuild the sidebar to the reference structure** (owner: sidebar): `sidebar.top-bar`, `computer-switcher`, `primary-nav` (add Search), `workspaces-group`, `footer-actions`, `colors` (256 px width, warm tokens), row titles and icons (`ws-name`, `ws-branch`).
-4. **Make archive safe** (owner: sidebar). Call `WorkspaceManager::archive` through a command, with confirmation and the git-busy refusal. Add an archived view with restore (`sidebar.archive`, `sidebar.archived-view`).
-5. **Match the create composer** (owner: create-workspace). Use the reference layout and the dimmed backdrop, with a model and effort picker. List PRs and issues so Create from works in the desktop app. Read the branch-prefix settings. Start the agent session with the first message. Items: `create.page`, `create.from-ref`, `create.branch-prefix`, `create.first-message`.
-6. **Finish Open project** (owner: home). Add the init / create-GitHub-repo dialog for folders with no `.git` or no origin (`home.open-project-flow`). Add a real clone with progress (`home.clone-github`). Make quick start do a git init and create the first workspace (`home.new-project`).
-7. **Use the workspace status model** (owner: sidebar): derived status plus a manual override (`sidebar.ws-status`).
-8. **Add the remaining sidebar features** (owner: sidebar): sections and drag, workspace numbers shown in rows, the row actions menu, the add menu with recents, resizing and its persisted width, transparency, footer usage.
-9. **Add the remaining Home features** (owner: home): routes, dashboard, recents on Home and in the clone dialog, repo search, first run, the theme colours.
+1. **Write the row state back to conductor.db and show it** (owner: sidebar, with persistence). Register commands over `workspaces::set_pinned_at`, `set_unread` and the manual status, and call them from the row menu. Drive the row icon from the effective status. Map `user_set_workspace_name`, and supply real diff stats. Items: `ws-pinned`, `ws-unread`, `ws-status`, `ws-name`, `ws-diffstat`.
+2. **Finish workspace and repo actions** (owner: sidebar). Add a rename dialog, then copy info and move to section in the row menu. Archive needs a confirmation, the git-busy refusal and `WorkspaceManager::archive`. Add an archived view with restore, and repo hide and icon. Items: `ws-actions`, `rename`, `archive`, `archived-view`, `repo-hide`, `repo-icon`, `repo-order`.
+3. **Sections** (owner: sidebar, with create-workspace): `navigation_sections` commands and UI, drag to a section, and create inside a section. Items: `sections`, `drag-to-section`, `create.in-section`.
+4. **Home overview and routes** (owner: home): workspace status overview, dashboard and all-workspaces routes, a '/' route, and first run. Items: `status-overview`, `dashboard-routes`, `route`, `first-run`, `org-states`.
+5. **Finish Home flows** (owner: home). Quick start should create a real first workspace under the registered repo id, and the GitHub repo should be optional. Adding an already-added repo again should make a new project, as Conductor does, instead of being refused or dropped. Home should get recents, and the sidebar section header a "Filter by project" submenu (#354, mounted by the sidebar owner). Items: `new-project`, `duplicate-repo`, `recent`, `repo-search`.
+6. **Create composer and initializing state** (owner: create-workspace). Build the reference composer with a model and effort picker. Show an initializing sidebar row while the worktree is created. Add a workspaces-directory setting and workspace numbers. Items: `page`, `initializing`, `worktree`, `number`.
+7. **Remaining sidebar chrome** (owner: sidebar): the computer switcher menu and name, the add menu with the Home actions and recents, resize with a persisted width, a visibility setting, numbers shown in rows, transparency, and footer usage.
+8. **Auto-run after setup toggle** (owner: setup-and-run-scripts): a UI for `auto_run_after_setup`, and `save_repo_scripts` writing it.
 
 ## Files
 
@@ -100,7 +175,7 @@ The full list, with the owner of each item, is in [builder-obligations.md](build
 3. Update its verdict.
 4. Run `python tools/parity_sidebar_home_create.py obligations --ref origin/main --json evidence/parity/sidebar-home-create/builder-obligations.json --md evidence/parity/sidebar-home-create/builder-obligations.md`.
 
-Detectors only test presence. For example, a schema column in the unwired DB crate counts as a match. The score comes from the verdicts. On `884f1f7`, the 3 remaining `(recheck)` flags match only schema in the unlinked DB crate (`sidebar.sections`, `create.in-section`) or a detector that finds no settings key (`sidebar.visibility-settings`, where the verdict credits the persisted toggle).
+Detectors only test presence. For example, a schema column in the unwired DB crate counts as a match. The score comes from the verdicts. On `0e2531b`, 3 `(recheck)` flags remain. `sidebar.sections` and `create.in-section` match only the `navigation_sections` migration, which no code uses. `sidebar.visibility-settings` has a detector that finds no settings key, and its verdict credits the persisted toggle. This pass added detectors for the computer row, the section header and the palette's project search, so those no longer raise false flags.
 
 ## REA use and gaps found
 
@@ -124,6 +199,10 @@ Detectors only test presence. For example, a schema column in the unwired DB cra
   - REA reports only `execution_failure` and `cleanup_incomplete`, with "Run `rea doctor`", and drops the browser's stderr.
   - Running it with `TMPDIR=/tmp/t` works.
   - REA could surface the browser's exit reason, or use a short profile directory.
+- **REA gaps re-checked on `85e00bb` and `0e2531b` (rea-agents 6.8.0).**
+  - The long-TMPDIR capture failure is now a hang. With this Session's 91-character TMPDIR, `capture-browser-scenario` for one Home shot had not returned when `timeout 120` fired, and the process tree outlived the timeout until the sandbox killed it after 200 s. With `TMPDIR=/tmp/t`, the same shot finished in 18 s. The likely cause is unchanged: Chromium's singleton socket path is longer than the Unix socket limit. The previous pass got a fast `execution_failure`; this one got no result and no error at all.
+  - `compare-web-screenshots` still has no region or mask option. The sidebar split in the table above is computed with Pillow on the same PNGs.
+  - `inspect-sqlite-database` (for `tools/parity_check.py --rea`) was run with Node.js 24.22.2 from nodejs.org, because the machine's Node.js 22.23.4 is below the version the tool really needs (gap 1 in [../README.md](../README.md)).
 - **Reference coverage.**
   - The references are Chromium renders, not WKWebView.
   - PR #81 and PR #115 added populated-sidebar, create and menu references, so this pass scores sidebar and create layout.

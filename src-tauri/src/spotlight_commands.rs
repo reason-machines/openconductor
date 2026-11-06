@@ -12,6 +12,7 @@ use oc_scripts::config::SettingsPaths;
 use oc_scripts::service::ScriptService;
 
 use crate::db::Db;
+use crate::spotlight::auto_run;
 use crate::spotlight::service::{SpotlightEvent, SpotlightService};
 use crate::spotlight::setting::{self, SpotlightTesting, SpotlightTestingChange};
 
@@ -32,6 +33,24 @@ pub fn service(app: &AppHandle) -> Spotlight {
     )))
 }
 
+/// Move the legacy `repos.spotlight_testing` column into each repository's
+/// local settings file, once (see `spotlight::migrate`). Runs at startup
+/// before anything reads the setting, as the reference runs its settings
+/// file migrations on launch. A failure is logged and retried next launch;
+/// it never stops the app.
+pub fn migrate_legacy_setting(db: &Db) {
+    match tauri::async_runtime::block_on(crate::spotlight::migrate::run(&db.0)) {
+        Ok(report) => {
+            for (repo, error) in report.failed {
+                eprintln!(
+                    "spotlight_testing migration: repository {repo} left for next launch: {error}"
+                );
+            }
+        }
+        Err(error) => eprintln!("spotlight_testing migration failed: {error}"),
+    }
+}
+
 async fn blocking<T: Send + 'static>(
     f: impl FnOnce() -> Result<T, String> + Send + 'static,
 ) -> Result<T, String> {
@@ -47,18 +66,34 @@ pub struct SpotlightStatusDto {
     pub workspace_id: Option<String>,
 }
 
-/// Start spotlighting a workspace into its repository root. Resolves to
-/// `false` when that workspace was already running there. Rejects with a
-/// message the UI can show (for example a rebase in progress in the root).
+/// Start spotlighting a workspace into its repository root. First stops
+/// every run script of the repository's workspaces, this one included: the
+/// reference starts Spotlight with `allowRunScriptConcurrency: false`.
+/// Resolves to `false` when that workspace was already running there.
+/// Rejects with a message the UI can show (for example a rebase in progress
+/// in the root).
 #[tauri::command]
 pub async fn spotlight_start(
     spotlight: State<'_, Spotlight>,
+    scripts: State<'_, ScriptService>,
+    repo_id: String,
     workspace_id: String,
     workspace_path: PathBuf,
     repo_root: PathBuf,
 ) -> Result<bool, String> {
     let spotlight = spotlight.inner().clone();
-    blocking(move || spotlight.start(&workspace_id, &workspace_path, &repo_root)).await
+    let scripts = scripts.inner().clone();
+    blocking(move || {
+        auto_run::start_session(
+            &spotlight,
+            &scripts,
+            &repo_id,
+            &workspace_id,
+            &workspace_path,
+            &repo_root,
+        )
+    })
+    .await
 }
 
 /// Stop the session on `repo_root` and put the root back.

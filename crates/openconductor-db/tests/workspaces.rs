@@ -153,6 +153,57 @@ async fn touch_only_moves_forward() {
     assert_eq!(w.updated_at, "2100-01-01 00:00:00");
 }
 
+/// What chat_messages_save does (Conductor's addUserMessage ->
+/// setSessionUpdatedAt): a user message moves its workspace's last activity
+/// to its created_at; assistant output leaves it alone.
+#[tokio::test]
+async fn a_user_message_is_workspace_activity_and_assistant_output_is_not() {
+    use openconductor_db::chat_messages::{latest_user_message_at, Batch, StoredMessage};
+    let msg = |id: &str, role: &str, at: &str| StoredMessage {
+        id: id.into(),
+        role: role.into(),
+        created_at: at.into(),
+        full_message: "{}".into(),
+        ..Default::default()
+    };
+    let pool = setup().await;
+    workspaces::insert(&pool, &new_ws("a", WorkspaceState::Ready))
+        .await
+        .unwrap();
+    let reply = Batch {
+        upserts: vec![msg("a1", "assistant", "2100-01-01T00:00:00.000Z")],
+        ..Default::default()
+    };
+    assert_eq!(latest_user_message_at(&reply), None);
+    let sent = Batch {
+        upserts: vec![
+            msg("u1", "user", "2099-01-01T00:00:00.000Z"),
+            msg("u2", "user", "2099-06-01T12:00:00.000Z"),
+            msg("a2", "assistant", "2100-01-01T00:00:00.000Z"),
+        ],
+        ..Default::default()
+    };
+    let at = latest_user_message_at(&sent).unwrap();
+    assert_eq!(at, "2099-06-01T12:00:00.000Z");
+    workspaces::touch(&pool, "a", at).await.unwrap();
+    let w = workspaces::get(&pool, "a")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert_eq!(w.updated_at, "2099-06-01T12:00:00.000Z");
+    // An older ISO time (a re-saved message) does not move it back.
+    workspaces::touch(&pool, "a", "2099-01-01T00:00:00.000Z")
+        .await
+        .unwrap();
+    let w = workspaces::get(&pool, "a")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert_eq!(w.updated_at, "2099-06-01T12:00:00.000Z");
+}
+
 #[tokio::test]
 async fn field_setters() {
     let pool = setup().await;
@@ -250,4 +301,60 @@ async fn list_for_session_and_delete() {
         .await
         .unwrap());
     assert_eq!(workspaces::list(&pool).await.unwrap().len(), 1);
+}
+
+#[tokio::test]
+async fn user_set_workspace_name_is_read() {
+    let pool = setup().await;
+    workspaces::insert(&pool, &new_ws("a", WorkspaceState::Ready))
+        .await
+        .unwrap();
+    let w = workspaces::get(&pool, "a")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert!(!w.user_set_workspace_name);
+    sqlx::query("UPDATE workspaces SET workspace_name = 'Mine', user_set_workspace_name = 1")
+        .execute(&pool)
+        .await
+        .unwrap();
+    let w = workspaces::get(&pool, "a")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert!(w.user_set_workspace_name);
+    assert_eq!(w.workspace_name.as_deref(), Some("Mine"));
+}
+
+#[tokio::test]
+async fn pr_metadata_round_trips_and_clears() {
+    let pool = setup().await;
+    workspaces::insert(&pool, &new_ws("a", WorkspaceState::Ready))
+        .await
+        .unwrap();
+    let meta = |pool: SqlitePool| async move {
+        let w = workspaces::get(&pool, "a")
+            .await
+            .unwrap()
+            .unwrap()
+            .workspace;
+        (w.pr_title, w.pr_description)
+    };
+    workspaces::set_pr_metadata(&pool, "a", Some("Add thing"), Some("Body"))
+        .await
+        .unwrap();
+    assert_eq!(
+        meta(pool.clone()).await,
+        (Some("Add thing".into()), Some("Body".into()))
+    );
+    workspaces::set_pr_metadata(&pool, "a", None, None)
+        .await
+        .unwrap();
+    assert_eq!(meta(pool.clone()).await, (None, None));
+    assert!(matches!(
+        workspaces::set_pr_metadata(&pool, "nope", Some("t"), None).await,
+        Err(Error::NotFound)
+    ));
 }

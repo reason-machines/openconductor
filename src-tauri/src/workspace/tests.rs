@@ -111,12 +111,12 @@ fn names_are_uniquified_against_dirs_and_branches() {
     let a = f.mgr.create(&f.repo, &named("feature")).unwrap().workspace;
     let b = f.mgr.create(&f.repo, &named("feature")).unwrap().workspace;
     assert_eq!(a.name, "feature");
-    assert_eq!(b.name, "feature-2");
+    assert_eq!(b.name, "feature-v1");
     // A pre-existing branch also counts as taken.
     sh(&f.repo, &["branch", "taken"]);
     let c = f.mgr.create(&f.repo, &named("taken")).unwrap().workspace;
-    assert_eq!(c.name, "taken-2");
-    assert_eq!(c.branch, "taken-2");
+    assert_eq!(c.name, "taken-v1");
+    assert_eq!(c.branch, "taken-v1");
 }
 
 #[test]
@@ -379,7 +379,7 @@ fn archive_refuses_dirty_or_busy_then_keeps_branch_and_restores() {
     assert!(git::branch_exists(&f.repo, "arch"));
     assert!(f.mgr.list(&f.repo).unwrap().iter().all(|w| w.state == WorkspaceState::Archived));
     // Archived names stay taken.
-    assert_eq!(f.mgr.create(&f.repo, &named("arch")).unwrap().workspace.name, "arch-2");
+    assert_eq!(f.mgr.create(&f.repo, &named("arch")).unwrap().workspace.name, "arch-v1");
 
     let r = f.mgr.restore(&f.repo, "arch").unwrap();
     assert_eq!(r.state, WorkspaceState::Active);
@@ -579,7 +579,16 @@ fn naming_helpers() {
     assert_eq!(naming::slugify("---"), "");
     assert_eq!(naming::branch_for(Some("/sven/"), "x"), "sven/x");
     assert_eq!(naming::branch_for(Some(""), "x"), "x");
-    assert_eq!(naming::uniquify("a", |c| c == "a" || c == "a-2"), "a-3");
+    assert_eq!(naming::uniquify("a", |c| c == "a" || c == "a-v1"), "a-v2");
+    assert_eq!(naming::uniquify("a", |_| false), "a");
+    // Same bump as the reference app's: an existing -vN suffix is counted up.
+    assert_eq!(naming::bump("x"), "x-v1");
+    assert_eq!(naming::bump("x-v3"), "x-v4");
+    assert_eq!(naming::bump("a-v1-v2"), "a-v1-v3");
+    assert_eq!(naming::bump("-v5"), "-v5-v1");
+    assert_eq!(naming::bump("x-v"), "x-v-v1");
+    assert_eq!(naming::bump("x-v1a"), "x-v1a-v1");
+    assert_eq!(naming::uniquify("r-v2", |c| c == "r-v2"), "r-v3");
     let all: HashSet<String> = (0..100).map(|_| naming::generate_name(&HashSet::new())).collect();
     let n = naming::generate_name(&all);
     assert!(!all.contains(&n));
@@ -655,6 +664,39 @@ fn parses_branch_refs_with_slashed_remote_names() {
 }
 
 #[test]
+fn root_setting_moves_workspaces_archives_and_default_clones() {
+    use super::service::{CreateWorkspaceRequest, WorkspaceService};
+    let f = fixture();
+    let data = f.tmp.path().join("svc");
+    let root = f.tmp.path().join("oc-root");
+    let svc = WorkspaceService::new(&data).unwrap().with_root(&root);
+    assert_eq!(svc.manager().root(), root.as_path());
+    assert_eq!(svc.default_clone_dir(), root.join("repos"));
+    let r = svc.add_repository(&f.repo).unwrap();
+    assert!(data.join("repositories.tsv").is_file(), "registry stays in the data dir");
+    assert_eq!(svc.manager().workspaces_dir(&f.repo), root.join("workspaces/my-app"));
+
+    let req = CreateWorkspaceRequest { repository_id: r.id.clone(), directory_name: Some("oslo".into()), ..Default::default() };
+    let ws = svc.create_workspace(&req).unwrap().workspace;
+    assert_eq!(ws.path, root.join("workspaces/my-app/oslo"));
+    assert!(ws.path.join("README.md").is_file());
+    svc.manager().archive(&f.repo, "oslo", &Default::default()).unwrap();
+    assert!(root.join("archived/my-app/oslo.ws").is_file());
+    assert!(!data.join("workspaces").exists() && !data.join("archived").exists());
+
+    // Without the setting everything stays under the data dir.
+    let plain = WorkspaceService::new(&data).unwrap();
+    assert_eq!(plain.default_clone_dir(), data.join("repos"));
+    assert_eq!(plain.manager().workspaces_dir(&f.repo), data.join("workspaces/my-app"));
+
+    // A root change forgets every repository, also after a restart.
+    svc.forget_repositories().unwrap();
+    assert!(svc.repositories().is_empty());
+    assert!(WorkspaceService::new(&data).unwrap().repositories().is_empty());
+    assert!(f.repo.join("README.md").is_file(), "files stay on disk");
+}
+
+#[test]
 fn service_registers_repositories_and_creates_from_form_fields() {
     use super::service::{CreateWorkspaceRequest, WorkspaceService};
     let f = fixture();
@@ -671,12 +713,12 @@ fn service_registers_repositories_and_creates_from_form_fields() {
     std::fs::create_dir_all(&other).unwrap();
     sh(&other, &["init", "-q", "-b", "main"]);
     commit_file(&other, "a.txt", "a\n", "init");
-    assert_eq!(svc.add_repository(&other).unwrap().id, "my-app-2");
+    assert_eq!(svc.add_repository(&other).unwrap().id, "my-app-v1");
 
     // Registry survives a restart.
     let svc = WorkspaceService::new(&data).unwrap();
     let ids: Vec<String> = svc.repositories().into_iter().map(|r| r.id).collect();
-    assert_eq!(ids, ["my-app", "my-app-2"]);
+    assert_eq!(ids, ["my-app", "my-app-v1"]);
 
     let req = CreateWorkspaceRequest {
         repository_id: "my-app".into(),
@@ -787,7 +829,7 @@ fn clone_repository_streams_progress_and_picks_a_unique_name() {
     assert_eq!(lines[lines.len() - 2..], ["Detecting default branch...", "Saving repository information..."]);
 
     let again = svc.clone_repository(&url, &parent, &mut |_| {}).unwrap();
-    assert_eq!(again.root, parent.join("My App-2"));
+    assert_eq!(again.root, parent.join("My App-v1"));
     assert_eq!(svc.repositories().len(), 2);
 }
 
@@ -820,4 +862,98 @@ fn clone_repository_creates_only_the_default_dir_and_reports_exit_code() {
     assert!(!default.join("no-such-repo").exists());
     assert_eq!(svc.repositories().len(), 1);
     assert!(matches!(svc.clone_repository("https://", &default, &mut |_| {}), Err(WorkspaceError::InvalidCloneUrl(_))));
+}
+
+/// `git config <args>` in `dir`, or `None` when the key is unset.
+fn config_get(dir: &Path, args: &[&str]) -> Option<String> {
+    let out = git::git_raw(dir, [&["config"], args].concat()).unwrap();
+    out.status.success().then(|| String::from_utf8_lossy(&out.stdout).trim().to_string())
+}
+
+#[test]
+fn push_auto_setup_remote_is_set_in_the_new_worktree_only() {
+    let f = fixture();
+    let opts = CreateOptions { push_auto_setup_remote: true, ..named("tokyo") };
+    let c = f.mgr.create(&f.repo, &opts).unwrap();
+    assert_eq!(c.upstream_warning, None);
+    let ws = &c.workspace.path;
+    assert_eq!(config_get(ws, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("true"));
+    assert_eq!(config_get(&f.repo, &["--get", "extensions.worktreeConfig"]).as_deref(), Some("true"));
+    // The main checkout and other workspaces do not inherit it.
+    assert_eq!(config_get(&f.repo, &["--get", "push.autoSetupRemote"]), None);
+    let other = f.mgr.create(&f.repo, &named("lisbon")).unwrap().workspace;
+    assert_eq!(config_get(&other.path, &["--get", "push.autoSetupRemote"]), None);
+}
+
+#[test]
+fn push_auto_setup_remote_off_writes_no_config() {
+    let f = fixture();
+    let c = f.mgr.create(&f.repo, &named("tokyo")).unwrap();
+    assert_eq!(c.upstream_warning, None);
+    assert_eq!(config_get(&c.workspace.path, &["--get", "push.autoSetupRemote"]), None);
+    assert_eq!(config_get(&f.repo, &["--get", "extensions.worktreeConfig"]), None);
+}
+
+#[test]
+fn push_auto_setup_remote_keeps_an_explicit_worktree_value() {
+    let f = fixture();
+    let ws = f.mgr.create(&f.repo, &named("tokyo")).unwrap().workspace;
+    sh(&f.repo, &["config", "extensions.worktreeConfig", "true"]);
+    sh(&ws.path, &["config", "--worktree", "push.autoSetupRemote", "false"]);
+    assert_eq!(git::configure_push_upstream(&f.repo, &ws.path), None);
+    assert_eq!(config_get(&ws.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("false"));
+}
+
+#[test]
+fn push_auto_setup_remote_skips_shared_core_worktree() {
+    let f = fixture();
+    let ws = f.mgr.create(&f.repo, &named("tokyo")).unwrap().workspace;
+    sh(&f.repo, &["config", "core.worktree", f.repo.to_str().unwrap()]);
+    assert_eq!(git::configure_push_upstream(&f.repo, &ws.path), Some(git::PUSH_UPSTREAM_WARNING));
+    assert_eq!(config_get(&f.repo, &["--get", "extensions.worktreeConfig"]), None);
+    // Already true through shared config: nothing to warn about.
+    sh(&f.repo, &["config", "push.autoSetupRemote", "true"]);
+    assert_eq!(git::configure_push_upstream(&f.repo, &ws.path), None);
+}
+
+#[test]
+fn service_backfills_push_upstream_for_existing_active_workspaces() {
+    use super::service::{CreateWorkspaceRequest, WorkspaceService};
+    let f = fixture();
+    let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
+    let id = svc.add_repository(&f.repo).unwrap().id;
+    let create = |name: &str| {
+        let req = CreateWorkspaceRequest { repository_id: id.clone(), directory_name: Some(name.into()), ..Default::default() };
+        svc.create_workspace(&req).unwrap().workspace
+    };
+    let (tokyo, lisbon, _oslo) = (create("tokyo"), create("lisbon"), create("oslo"));
+    sh(&f.repo, &["config", "extensions.worktreeConfig", "true"]);
+    sh(&lisbon.path, &["config", "--worktree", "push.autoSetupRemote", "false"]);
+    svc.manager().archive(&f.repo, "oslo", &ArchiveOptions::default()).unwrap();
+    // A registered repository that is gone is skipped, not an error.
+    let gone = f.tmp.path().join("gone");
+    std::fs::create_dir_all(&gone).unwrap();
+    sh(&gone, &["init", "-q", "-b", "main"]);
+    svc.add_repository(&gone).unwrap();
+    std::fs::remove_dir_all(&gone).unwrap();
+
+    assert_eq!(svc.configure_push_upstream_for_existing(|_, _| true), vec![]);
+    assert_eq!(config_get(&tokyo.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("true"));
+    assert_eq!(config_get(&lisbon.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("false"));
+    assert_eq!(config_get(&f.repo, &["--get", "push.autoSetupRemote"]), None);
+    // Running it again changes nothing.
+    assert_eq!(svc.configure_push_upstream_for_existing(|_, _| true), vec![]);
+
+    // Shared core.worktree makes it unsafe: each unconfigured workspace reports the warning.
+    let paris = create("paris");
+    // A workspace whose effective setting is off is left alone.
+    let rome = create("rome");
+    let not_rome = |_: &std::path::Path, ws: &std::path::Path| !ws.ends_with("rome");
+    assert_eq!(svc.configure_push_upstream_for_existing(not_rome), vec![]);
+    assert_eq!(config_get(&rome.path, &["--worktree", "--get", "push.autoSetupRemote"]), None);
+    assert_eq!(config_get(&paris.path, &["--worktree", "--get", "push.autoSetupRemote"]).as_deref(), Some("true"));
+    sh(&paris.path, &["config", "--worktree", "--unset", "push.autoSetupRemote"]);
+    sh(&f.repo, &["config", "core.worktree", f.repo.to_str().unwrap()]);
+    assert_eq!(svc.configure_push_upstream_for_existing(not_rome), vec![(format!("{id}/paris"), git::PUSH_UPSTREAM_WARNING)]);
+    assert_eq!(config_get(&paris.path, &["--worktree", "--get", "push.autoSetupRemote"]), None);
 }

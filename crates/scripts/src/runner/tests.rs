@@ -103,6 +103,36 @@ fn nonconcurrent_stops_other_workspaces_of_the_same_repo_only() {
 }
 
 #[test]
+fn stop_repository_stops_every_workspace_of_that_repo_only() {
+    let tmp = tempfile::tempdir().unwrap();
+    let m = RunManager::default();
+    m.start(
+        req(tmp.path(), "w1", "r", "dev", LONG, true),
+        SetupState::Idle,
+    )
+    .unwrap();
+    m.start(
+        req(tmp.path(), "w3", "r", "dev", LONG, true),
+        SetupState::Running,
+    )
+    .unwrap();
+    m.start(
+        req(tmp.path(), "x1", "other", "dev", LONG, true),
+        SetupState::Idle,
+    )
+    .unwrap();
+    assert_eq!(m.state("w3", "dev"), RunState::WaitingForSetup);
+
+    assert_eq!(m.stop_repository("r"), ["w1", "w3"]);
+    assert_eq!(m.state("w1", "dev"), RunState::Stopped);
+    assert_eq!(m.state("w3", "dev"), RunState::Stopped);
+    assert!(!m.setup_finished("w3").unwrap(), "the wait is dropped");
+    assert_eq!(m.state("x1", "dev"), RunState::Running);
+    assert!(m.stop_repository("r").is_empty(), "nothing left to stop");
+    m.stop_all();
+}
+
+#[test]
 fn waits_for_setup_then_starts() {
     let tmp = tempfile::tempdir().unwrap();
     let m = RunManager::default();
@@ -140,4 +170,37 @@ fn auto_run_rule() {
     assert!(!should_auto_run(true, true, true, Failed));
     assert!(!should_auto_run(false, true, true, Completed));
     assert!(!should_auto_run(true, false, true, Completed));
+}
+
+#[test]
+fn latest_is_the_newest_run_with_its_state_and_output() {
+    let tmp = tempfile::tempdir().unwrap();
+    let m = RunManager::default();
+    assert_eq!(m.latest("w1"), None);
+    m.start(
+        req(tmp.path(), "w1", "r", "test", "echo old; exit 0", true),
+        SetupState::Idle,
+    )
+    .unwrap();
+    wait_for("test exit", || m.state("w1", "test") == RunState::Stopped);
+    let first = m.latest("w1").unwrap();
+    assert_eq!(first.script_id, "test");
+    assert_eq!(first.state, RunState::Stopped);
+    assert_eq!(first.output.as_deref(), Some("old\n"));
+
+    m.start(
+        req(tmp.path(), "w1", "r", "dev", LONG, true),
+        SetupState::Idle,
+    )
+    .unwrap();
+    wait_for("dev up", || {
+        m.output("w1", "dev").unwrap_or_default().contains("up")
+    });
+    let live = m.latest("w1").unwrap();
+    assert_eq!(live.script_id, "dev");
+    assert_eq!(live.state, RunState::Running);
+    assert_eq!(live.output.as_deref(), Some("up\n"));
+    assert!(live.started_at >= first.started_at);
+    assert_eq!(m.latest("w2"), None, "other workspaces are not mixed in");
+    m.stop_all();
 }

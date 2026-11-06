@@ -36,13 +36,16 @@ export interface FileDiff extends FileChange {
 
 /** Which changes the viewer shows: the whole branch versus its base, or only uncommitted work. */
 export type DiffScope = "all" | "uncommitted";
-export type DiffLayout = "unified" | "split";
+/** "file" shows each changed file whole, as it is now. */
+export type DiffLayout = "unified" | "split" | "file";
 
 export interface DiffViewOptions {
   scope: DiffScope;
   layout: DiffLayout;
   /** Hide changes that only touch whitespace (git diff -w). */
   ignoreWhitespace: boolean;
+  /** Wrap long lines in the diff tab (Conductor's wrap_lines setting, on by default). */
+  wrapLines: boolean;
 }
 
-export const DEFAULT_VIEW_OPTIONS: DiffViewOptions = { scope: "all", layout: "unified", ignoreWhitespace: false };
+export const DEFAULT_VIEW_OPTIONS: DiffViewOptions = { scope: "all", layout: "unified", ignoreWhitespace: false, wrapLines: true };

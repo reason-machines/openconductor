@@ -12,7 +12,7 @@ use std::sync::Mutex;
 
 use super::git::{self, BranchRef};
 use super::naming;
-use super::{CreateOptions, Created, Workspace, WorkspaceError, WorkspaceManager};
+use super::{CreateOptions, Created, Workspace, WorkspaceError, WorkspaceManager, WorkspaceState};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RepositoryInfo {
@@ -38,6 +38,8 @@ pub struct CreateWorkspaceRequest {
     pub existing_branch: bool,
     /// PR whose head `branch_name` is; see [`CreateOptions::pr_number`].
     pub pr_number: Option<u64>,
+    /// User setting `git.worktree_push_auto_setup_remote`.
+    pub push_auto_setup_remote: bool,
 }
 
 #[derive(Debug)]
@@ -67,8 +69,24 @@ impl WorkspaceService {
         Ok(Self { manager: WorkspaceManager::new(data_dir), registry_file, repos: Mutex::new(repos) })
     }
 
+    /// Keep workspaces, archive records and default clones under `root` (the
+    /// `conductor_root_path` setting) instead of the app data directory.
+    pub fn with_root(mut self, root: impl Into<PathBuf>) -> Self {
+        self.manager = self.manager.with_root(root);
+        self
+    }
+
     pub fn manager(&self) -> &WorkspaceManager {
         &self.manager
+    }
+
+    /// Forget every registered repository (the registry file is emptied; no
+    /// files under the repositories or workspaces are touched). Part of a
+    /// root path change, with the database rows.
+    pub fn forget_repositories(&self) -> Result<(), WorkspaceError> {
+        let mut repos = self.repos.lock().expect("registry lock");
+        repos.clear();
+        self.save(&repos)
     }
 
     /// Register the repository containing `path` (any worktree maps to its
@@ -85,10 +103,10 @@ impl WorkspaceService {
         Ok(info(&id, &root))
     }
 
-    /// Where clones go by default: `<data_dir>/repos` (Conductor uses
-    /// `<root>/repos`). Created on first clone, not here.
+    /// Where clones go by default: `<root>/repos`, as Conductor's. Created on
+    /// first clone, not here.
     pub fn default_clone_dir(&self) -> PathBuf {
-        self.manager.data_dir().join("repos")
+        self.manager.root().join("repos")
     }
 
     /// Clone `url` into `<parent_dir>/<name>` (name from
@@ -142,9 +160,38 @@ impl WorkspaceService {
             existing_branch: req.existing_branch,
             pr_number: req.pr_number,
             fetch: true,
+            push_auto_setup_remote: req.push_auto_setup_remote,
             ..Default::default()
         };
         self.manager.create(&root, &opts)
+    }
+
+    /// Conductor's startup backfill (`zYe`): apply "Set upstream on plain git
+    /// push" ([`git::configure_push_upstream`]) to every existing active
+    /// workspace of every registered repository. A worktree that already has a
+    /// `push.autoSetupRemote` value is left alone. Returns `(workspace id,
+    /// warning)` for each workspace it could not configure; a repository that
+    /// can no longer be listed is skipped. `enabled(repo_root, workspace)` is
+    /// the workspace's effective `git.worktree_push_auto_setup_remote`;
+    /// workspaces where it is off are skipped.
+    pub fn configure_push_upstream_for_existing(
+        &self,
+        enabled: impl Fn(&std::path::Path, &std::path::Path) -> bool,
+    ) -> Vec<(String, &'static str)> {
+        let roots: Vec<PathBuf> = self.repos.lock().expect("registry lock").values().cloned().collect();
+        let mut failed = Vec::new();
+        for root in roots {
+            let Ok(list) = self.manager.list(&root) else { continue };
+            for ws in list
+                .into_iter()
+                .filter(|w| w.state == WorkspaceState::Active && enabled(&w.repo_root, &w.path))
+            {
+                if let Some(warning) = git::configure_push_upstream(&ws.repo_root, &ws.path) {
+                    failed.push((ws.id, warning));
+                }
+            }
+        }
+        failed
     }
 
     /// Local, then remote-tracking branches, newest first.

@@ -1,49 +1,164 @@
-// Transcript UI: draws the rows from `buildRows` (see view.ts). Message text is
-// shown as plain pre-wrapped text; markdown rendering is a separate slice.
+// Transcript UI: draws the rows from `buildRows` (see view.ts) in Conductor's
+// message list layout (renderApp `UDo` turn row, `MDo` turn, `PDo` summary
+// row, `TDo` turn footer; evidence/chat/README.md). Each turn is one block:
+// its prompt bubble, its agent output (tool rows from ToolRows.tsx, text as
+// markdown) and, once finished, its footer.
 
-import { useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { ChatTranscript } from "./reducer.ts";
-import { buildRows, isToolExpanded, type PartView, type ReportOrigin, type RowView, type ToolCallView } from "./view.ts";
-import { plainText } from "./types.ts";
+import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
+import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
+import { Markdown } from "./markdown.ts";
+import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
+import { turnTime } from "./turnTime.ts";
+import { openUrl } from "../../backend.ts";
 import "./chat.css";
 
 export interface TranscriptProps {
   transcript: ChatTranscript;
   /** "Keep tool calls expanded" setting. */
   expandToolsByDefault?: boolean;
+  /** "Don't collapse tool calls" setting: summary rows stay open. */
+  dontCollapseToolCalls?: boolean;
   /** Sends a failed or cancelled turn's prompt again. */
   onRetry?: (prompt: string, turnId: string) => void;
+  /** Opens "Reset chat?" for a turn that can be reset. */
+  onResetChat?: (turnId: string) => void;
+  /** "Fork to new tab" in every finished turn's More actions menu. */
+  onForkToNewTab?: (turnId: string) => void;
+  /** "Fork to new workspace" in the same menu, for a workspace on this machine. */
+  onForkToNewWorkspace?: (turnId: string) => void;
+  /** The fork items are shown but disabled, e.g. while a fork is being made. */
+  forkDisabled?: boolean;
+  /** The footer hover's first line, "Opus 5.5 via Reason" (Conductor's `kDo`). */
+  turnAgent?: string;
+  /** "Reset chat" is shown but disabled, e.g. while the agent is working. */
+  resetDisabled?: boolean;
+  /** Extra content at the end of a finished turn's footer (the files it changed). */
+  turnFooter?: (turnId: string) => ReactNode;
+  /** The workspace folder, so tool rows show paths inside it relative. */
+  workspacePath?: string;
+  /** A file badge in a tool row was clicked. */
+  onOpenFile?: (path: string) => void;
+  /** Clock for the footer's time of day (tests pin it). */
+  now?: () => number;
 }
 
-export function Transcript({ transcript, expandToolsByDefault = false, onRetry }: TranscriptProps) {
-  const rows = useMemo(() => buildRows(transcript), [transcript]);
+export function Transcript({
+  transcript,
+  expandToolsByDefault = false,
+  dontCollapseToolCalls = false,
+  onRetry,
+  onResetChat,
+  resetDisabled = false,
+  turnFooter,
+  workspacePath,
+  onOpenFile,
+  now = Date.now,
+  onForkToNewTab,
+  onForkToNewWorkspace,
+  forkDisabled = false,
+  turnAgent,
+}: TranscriptProps) {
+  const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
+  const turns = useMemo(() => groupTurns(rows), [rows]);
   const [toggled, setToggled] = useState<ReadonlyMap<string, boolean>>(new Map());
-  const toggleTool = (id: string) =>
-    setToggled((prev) => new Map(prev).set(id, !isToolExpanded(id, prev, expandToolsByDefault)));
+  const toggleTool = (id: string, defaultOpen = false) => setToggled((prev) => new Map(prev).set(id, !isToolExpanded(id, prev, expandToolsByDefault || defaultOpen)));
+  const [summaries, setSummaries] = useState<ReadonlyMap<string, "expanded" | "collapsed">>(new Map());
+  const ctx: RowContext = {
+    isOpen: (id, defaultOpen = false) => isToolExpanded(id, toggled, expandToolsByDefault || defaultOpen),
+    onToggle: toggleTool,
+    summaries: {
+      isOpen: (id, running) => isSummaryOpen(canCollapse(running, dontCollapseToolCalls), summaries.get(id)),
+      toggle: (id, open) => setSummaries((prev) => new Map(prev).set(id, open ? "collapsed" : "expanded")),
+    },
+    onRetry,
+    onResetChat,
+    resetDisabled,
+    turnFooter,
+    workspacePath,
+    onOpenFile,
+    now,
+    onForkToNewTab,
+    onForkToNewWorkspace,
+    forkDisabled,
+    turnAgent,
+  };
 
   return (
     <div className="transcript">
-      {rows.map((row) => (
-        <Row key={row.key} row={row} isOpen={(id) => isToolExpanded(id, toggled, expandToolsByDefault)} onToggle={toggleTool} onRetry={onRetry} />
-      ))}
+      {turns.map((turn) => {
+        const footer = turn.rows.find((r): r is TurnEndRow => r.kind === "turn_end");
+        return (
+          <div key={turn.key} className="oc-turn" data-turn-id={turn.turnId}>
+            <div className="oc-turn-body">
+              <div className="oc-turn-items">
+                {turn.rows.map((row) => (row.kind === "turn_end" ? null : <Row key={row.key} row={row} ctx={ctx} />))}
+              </div>
+              {footer ? <TurnFooter row={footer} ctx={ctx} /> : null}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-interface RowProps {
-  row: RowView;
-  isOpen: (toolId: string) => boolean;
-  onToggle: (toolId: string) => void;
-  onRetry?: (prompt: string, turnId: string) => void;
+type TurnEndRow = Extract<DisplayRow, { kind: "turn_end" }>;
+
+interface Turn {
+  key: string;
+  turnId: string;
+  rows: DisplayRow[];
 }
 
-function Row({ row, isOpen, onToggle, onRetry }: RowProps) {
+const rowTurn = (row: DisplayRow): string => (row.kind === "agent" || row.kind === "turn_end" ? row.turnId : row.message.turnId);
+
+/** Consecutive rows of one turn form one turn block, as Conductor lists turns. */
+function groupTurns(rows: DisplayRow[]): Turn[] {
+  const out: Turn[] = [];
+  for (const row of rows) {
+    const turnId = rowTurn(row);
+    const last = out[out.length - 1];
+    if (last && last.turnId === turnId && !last.rows.some((r) => r.kind === "turn_end")) last.rows.push(row);
+    else out.push({ key: `turn:${row.key}`, turnId, rows: [row] });
+  }
+  return out;
+}
+
+interface RowContext {
+  /** `defaultOpen`: Conductor's `defaultCollapsed: false` rows (a proposed plan). */
+  isOpen: (toolId: string, defaultOpen?: boolean) => boolean;
+  onToggle: (toolId: string, defaultOpen?: boolean) => void;
+  summaries: {
+    isOpen: (summaryId: string, turnRunning: boolean) => boolean;
+    toggle: (summaryId: string, open: boolean) => void;
+  };
+  onRetry?: (prompt: string, turnId: string) => void;
+  onResetChat?: (turnId: string) => void;
+  resetDisabled: boolean;
+  turnFooter?: (turnId: string) => ReactNode;
+  workspacePath?: string;
+  onOpenFile?: (path: string) => void;
+  now: () => number;
+  onForkToNewTab?: (turnId: string) => void;
+  onForkToNewWorkspace?: (turnId: string) => void;
+  forkDisabled: boolean;
+  turnAgent?: string;
+}
+
+function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowContext }) {
   switch (row.kind) {
     case "user":
       return (
-        <div className="chat-msg chat-user">
-          <div className="chat-bubble">{row.text}</div>
-          <MessageActions text={row.text} />
+        <div className="chat-msg chat-user oc-msg-user" data-message-role="user">
+          <div className="oc-user-col">
+            <div className="chat-bubble oc-bubble">
+              <div className="oc-user-text">{row.text}</div>
+              <MessageActions text={row.text} />
+            </div>
+            {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
+          </div>
         </div>
       );
     case "report":
@@ -55,77 +170,275 @@ function Row({ row, isOpen, onToggle, onRetry }: RowProps) {
       );
     case "system":
       return <div className="chat-msg chat-system">{row.text}</div>;
-    case "assistant":
-      return (
-        <div className={`chat-msg chat-assistant${row.streaming ? " is-streaming" : ""}`}>
-          {row.parts.length === 0 && row.streaming ? <span className="chat-typing" aria-label="Agent is responding" /> : null}
-          {row.parts.map((part, i) => (
-            <Part key={part.kind === "tool" ? part.call.id : i} part={part} isOpen={isOpen} onToggle={onToggle} />
-          ))}
-          {!row.streaming && plainText(row.message) ? <MessageActions text={plainText(row.message)} /> : null}
-        </div>
-      );
-    case "turn_end":
-      return (
-        <div className={`chat-turn-end status-${row.status ?? "unknown"}`}>
-          {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
-          {row.status === "cancelled" ? <span className="muted">Stopped.</span> : null}
-          <span className="chat-turn-actions">
-            {row.finalText ? <CopyButton text={row.finalText} label="Copy final message" /> : null}
-            {row.retryPrompt && onRetry ? (
-              <button type="button" className="chat-action" onClick={() => onRetry(row.retryPrompt!, row.turnId)}>
-                Retry
-              </button>
-            ) : null}
-          </span>
-        </div>
-      );
+    case "agent":
+      return <Agent block={row} ctx={ctx} />;
   }
+}
+
+/** Conductor's turn footer: duration · end time, copy and More actions, then the turn's changed files. */
+function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
+  const { onRetry, onResetChat, resetDisabled, turnFooter, onForkToNewTab, onForkToNewWorkspace, forkDisabled, turnAgent } = ctx;
+  const fork = onForkToNewTab ? () => onForkToNewTab(row.turnId) : undefined;
+  const forkWorkspace = onForkToNewWorkspace ? () => onForkToNewWorkspace(row.turnId) : undefined;
+  const reset = row.canReset && onResetChat ? () => onResetChat(row.turnId) : undefined;
+  const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
+  return (
+    <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
+      {when ? (
+        <span className="chat-turn-time oc-turn-time" title={turnAgent ? `${turnAgent}\n${when.range}` : when.range}>
+          {when.label}
+        </span>
+      ) : null}
+      {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
+      {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
+      <span className="chat-turn-actions">
+        {row.finalText ? <CopyButton text={row.finalText} label="Copy final message" /> : null}
+        {row.retryPrompt && onRetry ? (
+          <button type="button" className="chat-action oc-text-action" onClick={() => onRetry(row.retryPrompt!, row.turnId)}>
+            Retry
+          </button>
+        ) : null}
+        {fork || forkWorkspace || reset ? (
+          <TurnMenu onFork={fork} onForkWorkspace={forkWorkspace} forkDisabled={forkDisabled} onReset={reset} resetDisabled={resetDisabled} />
+        ) : null}
+      </span>
+      {turnFooter?.(row.turnId)}
+    </div>
+  );
+}
+
+/**
+ * Conductor's turn footer "More actions" menu: "Fork to new tab" and "Fork to
+ * new workspace" on every turn, "Reset chat" on turns that can be reset.
+ */
+function TurnMenu({
+  onFork,
+  onForkWorkspace,
+  forkDisabled,
+  onReset,
+  resetDisabled,
+}: {
+  onFork?: () => void;
+  onForkWorkspace?: () => void;
+  forkDisabled: boolean;
+  onReset?: () => void;
+  resetDisabled: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: MouseEvent) => ref.current?.contains(e.target as Node) || setOpen(false);
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [open]);
+  return (
+    <span className="chat-turn-menu" ref={ref} onKeyDown={(e) => e.key === "Escape" && setOpen(false)}>
+      <button type="button" className="oc-icon-action" title="More actions" aria-label="More actions" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <Lucide name="ellipsis" className="oc-icon-action-svg" />
+      </button>
+      {open ? (
+        <div className="chat-menu" role="menu">
+          {onFork ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="chat-menu-item"
+              disabled={forkDisabled}
+              onClick={() => {
+                setOpen(false);
+                onFork();
+              }}
+            >
+              <ForkIcon /> Fork to new tab
+            </button>
+          ) : null}
+          {onForkWorkspace ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="chat-menu-item"
+              disabled={forkDisabled}
+              onClick={() => {
+                setOpen(false);
+                onForkWorkspace();
+              }}
+            >
+              <WorkspaceForkIcon /> Fork to new workspace
+            </button>
+          ) : null}
+          {onReset ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="chat-menu-item"
+              data-action="reset-chat"
+              disabled={resetDisabled}
+              onClick={() => {
+                setOpen(false);
+                onReset();
+              }}
+            >
+              <ResetIcon /> Reset chat
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+    </span>
+  );
+}
+
+function ForkIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="4" cy="3" r="1.5" />
+      <circle cx="12" cy="3" r="1.5" />
+      <circle cx="8" cy="13" r="1.5" />
+      <path d="M4 4.5v1.5a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.5M8 8v3.5" />
+    </svg>
+  );
+}
+
+function WorkspaceForkIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M1.75 4.25a1 1 0 0 1 1-1h3l1.5 1.5h5.5a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1z" />
+      <path d="M8 7.25v3.5M6.25 9h3.5" />
+    </svg>
+  );
+}
+
+function ResetIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9" />
+      <path d="M2.5 2.5v3h3" />
+    </svg>
+  );
 }
 
 function reportLabel(origin: ReportOrigin): string {
   return origin.kind === "session" ? `Report from session ${origin.sessionId}` : `Sent with API key ${origin.name}`;
 }
 
-function Part({ part, isOpen, onToggle }: { part: PartView; isOpen: (id: string) => boolean; onToggle: (id: string) => void }) {
-  switch (part.kind) {
-    case "text":
-      return <div className={`chat-text${part.streaming ? " is-streaming" : ""}`}>{part.text}</div>;
-    case "thinking":
-      return (
-        <details className="chat-thinking" open={part.streaming}>
-          <summary>Thinking</summary>
-          <div className={part.streaming ? "is-streaming" : undefined}>{part.text}</div>
-        </details>
-      );
-    case "tool":
-      return <ToolRow call={part.call} open={isOpen(part.call.id)} onToggle={() => onToggle(part.call.id)} />;
-  }
-}
-
-/** One-line summary of a tool's input: the first string field, e.g. a path or command. */
-function toolSummary(input: unknown): string {
-  if (input && typeof input === "object") {
-    for (const v of Object.values(input as Record<string, unknown>)) if (typeof v === "string" && v) return v.split("\n")[0]!;
-  }
-  return "";
-}
-
-function ToolRow({ call, open, onToggle }: { call: ToolCallView; open: boolean; onToggle: () => void }) {
-  const summary = toolSummary(call.input);
+/** A turn's agent output; its items sit directly in the turn's item list, as Conductor's do. */
+function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
   return (
-    <div className={`chat-tool status-${call.status}`}>
-      <button type="button" className="chat-tool-head" aria-expanded={open} onClick={onToggle}>
-        <span className="chat-tool-dot" aria-label={call.status} />
-        <span className="chat-tool-name">{call.name}</span>
-        {summary ? <span className="chat-tool-summary">{summary}</span> : null}
-      </button>
-      {open ? (
-        <div className="chat-tool-body">
-          <pre>{JSON.stringify(call.input, null, 2)}</pre>
-          {call.result !== undefined ? <pre className="chat-tool-result">{call.result}</pre> : null}
+    <>
+      {block.empty && block.streaming ? (
+        <div className="chat-msg chat-assistant oc-msg-assistant">
+          <span className="chat-typing" aria-label="Agent is responding" />
         </div>
       ) : null}
+      {block.items.map((item) => {
+        if (item.kind === "part") return <Part key={item.key} part={item.part} preview={item.preview === true} ctx={ctx} />;
+        const open = ctx.summaries.isOpen(item.summary.id, block.running);
+        return (
+          <Fragment key={item.summary.id}>
+            <SummaryRow summary={item.summary} open={open} onToggle={block.running ? undefined : () => ctx.summaries.toggle(item.summary.id, open)} />
+            {open ? item.parts.map((p) => <Part key={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
+          </Fragment>
+        );
+      })}
+    </>
+  );
+}
+
+/** Conductor's summary row (`PDo`): chevron, "4 tool calls, 2 messages", one icon per distinct tool. */
+function SummaryRow({ summary, open, onToggle }: { summary: ToolSummary; open: boolean; onToggle?: () => void }) {
+  const label = summaryLabel(summary);
+  const icons = [...new Map(summary.toolNames.map((n) => [n, n])).values()];
+  return (
+    <button type="button" className="chat-tool-summary-row oc-summary" aria-expanded={open} aria-label={`${open ? "Collapse" : "Expand"} ${label}`} disabled={!onToggle} onClick={onToggle}>
+      <Lucide name={open ? "chevron-down" : "chevron-right"} className="oc-summary-chevron" />
+      <span className="oc-summary-main">
+        <span className="oc-summary-label">{label}</span>
+        {icons.length > 0 ? (
+          <span className="oc-summary-icons" aria-hidden>
+            {icons.map((name) => (
+              <ToolIcon key={name} name={name} className="oc-tool-icon" />
+            ))}
+          </span>
+        ) : null}
+      </span>
+    </button>
+  );
+}
+
+/** `preview`: the turn's final text; Conductor mutes every other text (`ROo` `muted: !isPreviewMessage`). */
+function Part({ part, preview = false, group, ctx }: { part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
+  switch (part.kind) {
+    case "text":
+      return (
+        <div className="chat-msg chat-assistant oc-msg-assistant" data-message-role="assistant" data-tool-group={group}>
+          <div className="oc-assistant-col">
+            <div className="oc-text-wrap">
+              <Markdown
+                text={part.text}
+                className={`oc-prose chat-text${preview ? "" : " muted"}${part.streaming ? " is-streaming" : ""}`}
+                onOpenLink={(href) => void openUrl(href)}
+                workspacePath={ctx.workspacePath}
+                onOpenFile={ctx.onOpenFile}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    case "thinking":
+      return <ThinkingRow id={`thinking:${part.text.slice(0, 32)}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
+    case "tool": {
+      const { call } = part;
+      return (
+        // data-tool-input: the block's input as the agent reported it (paths marked local or cloud), for e2e checks.
+        <div className={`chat-tool oc-tool-wrap status-${call.status}`} data-tool-group={group} data-tool-input={JSON.stringify(call.input ?? null)}>
+          <ConductorToolRow
+            tool={call.tool}
+            status={call.status}
+            result={call.result}
+            isError={call.status === "error"}
+            open={ctx.isOpen(call.id, opensByDefault(call.tool))}
+            onToggle={() => ctx.onToggle(call.id, opensByDefault(call.tool))}
+            workspacePath={ctx.workspacePath}
+            onOpenFile={ctx.onOpenFile}
+          />
+        </div>
+      );
+    }
+  }
+}
+
+/** `ppo`: a thinking block as a row, its text as a muted chip; open while it streams. */
+function ThinkingRow({ id, text, streaming, group, ctx }: { id: string; text: string; streaming: boolean; group?: string; ctx: RowContext }) {
+  const open = streaming || ctx.isOpen(id);
+  return (
+    <div className="chat-thinking oc-tool-wrap" data-tool-group={group}>
+      <div className="oc-tool">
+        <div className="oc-tool-head opens" role="button" aria-expanded={open} onClick={() => ctx.onToggle(id)}>
+          <div className="oc-tool-icon-slot">
+            <div className="oc-tool-icon-swap">
+              <div className="oc-tool-icon-idle">
+                <Lucide name="brain" className="oc-tool-icon" />
+              </div>
+              <Lucide name={open ? "minus" : "plus"} className="oc-tool-icon-hover" />
+            </div>
+          </div>
+          <div className="oc-tool-main align-center">
+            <div className="oc-tool-left">
+              <span>Thinking</span>
+            </div>
+            {!open ? (
+              <div className="oc-tool-right">
+                <span className="oc-code-chip sans">{text.trim()}</span>
+              </div>
+            ) : null}
+          </div>
+        </div>
+        {open ? (
+          <div className="oc-tool-content plain">
+            <Markdown text={text} className={`oc-prose muted${streaming ? " is-streaming" : ""}`} />
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -149,9 +462,10 @@ function CopyButton({ text, label }: { text: string; label: string }) {
     }
     setTimeout(() => setState("idle"), 1500);
   }
+  const title = state === "copied" ? "Copied!" : state === "failed" ? "Couldn't copy" : label;
   return (
-    <button type="button" className="chat-action" onClick={copy} title={label}>
-      {state === "copied" ? "Copied" : state === "failed" ? "Couldn't copy" : label}
+    <button type="button" className="oc-icon-action" onClick={copy} title={title} aria-label={label}>
+      <Lucide name={state === "copied" ? "check" : "copy"} className="oc-icon-action-svg" />
     </button>
   );
 }

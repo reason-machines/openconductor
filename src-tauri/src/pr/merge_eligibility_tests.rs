@@ -61,3 +61,28 @@ fn optional_failures_merge_unless_the_setting_blocks_them() {
         "CLEAN reports no failures"
     );
 }
+
+/// The table `src/features/pr/shortcuts.test.ts` also runs against the
+/// shortcut's `canMerge`, so the two rules cannot drift apart.
+#[test]
+fn shared_can_merge_cases_hold_for_the_rust_rule() {
+    let table: serde_json::Value =
+        serde_json::from_str(include_str!("fixtures/can_merge_cases.json")).unwrap();
+    let cases = table["cases"].as_array().unwrap();
+    assert!(cases.len() >= 15, "the shared table lost cases");
+    for case in cases {
+        let mut pr = table["base"].clone();
+        for (k, v) in case["patch"].as_object().unwrap() {
+            pr[k] = v.clone();
+        }
+        let pr: super::info::PrInfo = serde_json::from_value(pr)
+            .unwrap_or_else(|e| panic!("{}: not a PrInfo: {e}", case["name"]));
+        let block = case["optionalChecksBlock"].as_bool().unwrap();
+        assert_eq!(
+            can_merge(&pr, block),
+            case["canMerge"].as_bool().unwrap(),
+            "{}",
+            case["name"]
+        );
+    }
+}

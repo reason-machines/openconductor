@@ -1,166 +1,126 @@
-// parity:diff.changes-list:ui parity:diff.whitespace:ui parity:diff.split-unified:ui parity:diff.viewed:ui parity:diff.navigation:ui
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+// parity:diff.discard:ui parity:diff.whitespace:ui parity:diff.split-unified:ui parity:diff.viewed:ui parity:diff.navigation:ui parity:diff.file-render:ui
+// The diff viewer in two places, as in Conductor: the changed-files list in the
+// right panel, and the selected file in an "All changes" tab in the main area.
+// Both read one useWorkspaceDiff state. The list is in ChangesList.tsx.
+import type { ReactNode } from "react";
 import "./diff.css";
-import { loadWorkspaceDiff } from "./api.ts";
-import { FileDiffView, STATUS_LETTER, type LineAnchor } from "./FileDiffView";
-import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
-import { step } from "./nav.ts";
-import { DEFAULT_VIEW_OPTIONS, type DiffScope, type DiffViewOptions, type FileDiff } from "./types.ts";
-import { isViewed, loadViewed, pruneViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
+import { DiscardDialog } from "./DiscardDialog";
+import { ViewOptionsMenu } from "./Whitespace";
+import { FileDiffView, type LineAnchor, type LineRange } from "./FileDiffView";
+import { editableContents, useFileEdit } from "./EditInViewer.ts";
+import type { DiffLayout, FileDiff } from "./types.ts";
+import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
+export { ChangesList, type ChangesListProps } from "./ChangesList";
 
-export interface DiffViewerProps {
-  workspaceId: string;
-  /** Worktree folder; null while the workspace has none on disk. */
-  worktree: string | null;
-  /** Branch the workspace is compared against for "All changes". */
-  baseBranch: string;
-  /** Extra toolbar content (comment and review actions). */
-  actions?: (files: FileDiff[]) => ReactNode;
-  onLineClick?: (file: FileDiff, anchor: LineAnchor) => void;
-  annotations?: (file: FileDiff, anchor: LineAnchor) => ReactNode;
-  /** Called with the loaded files and the scope they were loaded for. */
-  onLoaded?: (files: FileDiff[], scope: DiffScope) => void;
-}
+const LAYOUT_ICON: Record<DiffLayout, ReactNode> = {
+  unified: <path d="M3 4h10M3 7h10M3 10h10M3 13h6" />,
+  split: (
+    <>
+      <rect x="2.5" y="3" width="11" height="10" rx="1.5" />
+      <path d="M8 3v10" />
+    </>
+  ),
+  file: (
+    <>
+      <path d="M4 2.5h5l3 3v8H4z" />
+      <path d="M6 8h4M6 10.5h4" />
+    </>
+  ),
+};
+// Conductor's labels for its three file-toolbar layout toggles (REA, 0.87.6).
+export const LAYOUT_TITLE: Record<DiffLayout, string> = { unified: "Unified view", split: "Split view", file: "Entire file" };
 
-type Load = { state: "loading" } | { state: "error"; message: string } | { state: "ready"; files: FileDiff[] };
-
-const OPTIONS_KEY = "openconductor.diff.options";
-
-function initialOptions(): DiffViewOptions {
-  try {
-    return { ...DEFAULT_VIEW_OPTIONS, ...JSON.parse(localStorage.getItem(OPTIONS_KEY) ?? "{}") };
-  } catch {
-    return DEFAULT_VIEW_OPTIONS;
-  }
-}
-
-function Seg<T extends string>({ value, options, onChange }: { value: T; options: Array<[T, string]>; onChange: (v: T) => void }) {
+function LayoutToggle({ value, onChange }: { value: DiffLayout; onChange: (v: DiffLayout) => void }) {
   return (
-    <span className="oc-seg">
-      {options.map(([v, label]) => (
-        <button key={v} aria-pressed={v === value} onClick={() => onChange(v)}>
-          {label}
+    <span className="oc-seg oc-icons" role="group" aria-label="Diff layout">
+      {(Object.keys(LAYOUT_ICON) as DiffLayout[]).map((v) => (
+        <button key={v} aria-pressed={v === value} onClick={() => onChange(v)} title={LAYOUT_TITLE[v]} aria-label={LAYOUT_TITLE[v]}>
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            {LAYOUT_ICON[v]}
+          </svg>
         </button>
       ))}
     </span>
   );
 }
 
-export function DiffViewer({ workspaceId, worktree, baseBranch, actions, onLineClick, annotations, onLoaded }: DiffViewerProps) {
-  const [opts, setOpts] = useState<DiffViewOptions>(initialOptions);
-  const [load, setLoad] = useState<Load>({ state: "loading" });
-  const [viewed, setViewedMap] = useState<ViewedMap>(() => loadViewed(localStorage, workspaceId));
-  const [current, setCurrent] = useState(-1);
+export interface DiffTabProps {
+  diff: WorkspaceDiff;
+  onLineClick?: (file: FileDiff, range: LineRange) => void;
+  /** Lines a comment is being written on in `file`, if any. */
+  commentRange?: (file: FileDiff) => LineRange | null;
+  anchors?: (file: FileDiff) => LineAnchor[];
+  annotations?: (file: FileDiff, anchor: LineAnchor) => ReactNode;
+  /** Shown above the file: PR-level and whole-file comments. */
+  notes?: (file: FileDiff) => ReactNode;
+}
 
-  const update = (patch: Partial<DiffViewOptions>) => {
-    const next = { ...opts, ...patch };
-    localStorage.setItem(OPTIONS_KEY, JSON.stringify(next));
-    setOpts(next);
-  };
-
-  const refresh = useCallback(() => {
-    setLoad({ state: "loading" });
-    loadWorkspaceDiff(worktree, baseBranch, opts).then(
-      (files) => setLoad({ state: "ready", files }),
-      (e: unknown) => setLoad({ state: "error", message: String(e) }),
-    );
-  }, [worktree, baseBranch, opts]);
-
-  useEffect(refresh, [refresh]);
-  useEffect(() => setViewedMap(loadViewed(localStorage, workspaceId)), [workspaceId]);
-
-  const files = useMemo(() => (load.state === "ready" ? load.files : []), [load]);
-
-  const setViewed = (map: ViewedMap) => {
-    const pruned = pruneViewed(map, files);
-    saveViewed(localStorage, workspaceId, pruned);
-    setViewedMap(pruned);
-  };
-
-  const goTo = useCallback(
-    (i: number) => {
-      setCurrent(i);
-      if (i >= 0) document.getElementById(`oc-file-${encodeURIComponent(files[i].path)}`)?.scrollIntoView({ block: "start" });
-    },
-    [files],
-  );
-
-  useEffect(() => {
-    if (load.state === "ready") onLoaded?.(load.files, opts.scope);
-  }, [load, opts.scope, onLoaded]);
-
-  // Keys come from the registry (diff.nextFile = ArrowDown, diff.previousFile = ArrowUp,
-  // diff.toggleViewed = Ctrl+V), so user overrides apply and bare arrows stay out of text fields.
-  useKeybindings({
-    "diff.nextFile": () => goTo(step(current, files.length, 1)),
-    "diff.previousFile": () => goTo(step(current, files.length, -1)),
-    "diff.toggleViewed": () => current >= 0 && current < files.length && setViewed(toggleViewed(viewed, files[current])),
-  });
-
-  const totals = files.reduce((t, f) => ({ a: t.a + f.additions, d: t.d + f.deletions }), { a: 0, d: 0 });
-
-  return (
-    <div className="oc-diff">
-      <div className="oc-diff-toolbar">
-        <Seg value={opts.scope} options={[["all", "All changes"], ["uncommitted", "Uncommitted"]]} onChange={(scope) => update({ scope })} />
-        <Seg value={opts.layout} options={[["unified", "Unified"], ["split", "Split"]]} onChange={(layout) => update({ layout })} />
-        <label title="Hide changes that only touch whitespace">
-          <input type="checkbox" checked={opts.ignoreWhitespace} onChange={(e) => update({ ignoreWhitespace: e.target.checked })} /> Hide whitespace
-        </label>
-        <span className="spacer" />
-        {load.state === "ready" && files.length > 0 && (
-          <span className="muted">
-            {viewedCount(viewed, files)}/{files.length} viewed · <span className="add">+{totals.a}</span> <span className="del">-{totals.d}</span>
-          </span>
-        )}
-        {actions?.(files)}
-        <button className="btn btn-small" onClick={refresh} title="Reload changes">
-          Refresh
-        </button>
-      </div>
-      {load.state === "loading" && <div className="placeholder small">Loading changes…</div>}
-      {load.state === "error" && (
+/** Main-area "All changes" tab: the file picked in the changes list, with its toolbar. */
+export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations, notes }: DiffTabProps) {
+  const { selected, files, load } = diff;
+  if (!selected) {
+    return (
+      <div className="oc-diff oc-diff-tab">
         <div className="placeholder small">
-          <p className="error">Couldn't load changes.</p>
-          <p className="muted">{load.message}</p>
+          <p>{load.state === "ready" && files.length === 0 ? "No changes to show." : "Pick a file in the changes list."}</p>
         </div>
-      )}
-      {load.state === "ready" && files.length === 0 && (
-        <div className="placeholder small" style={{ gridColumn: "1 / -1" }}>
-          <p>{opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>
-          <p className="muted">Changes the agent makes show up here.</p>
-        </div>
-      )}
-      {load.state === "ready" && files.length > 0 && (
-        <>
-          <nav className="oc-changes" aria-label="Changed files">
-            {files.map((f, i) => (
-              <button key={f.path} className={`oc-change${isViewed(viewed, f) ? " viewed" : ""}`} aria-current={i === current} onClick={() => goTo(i)} title={f.path}>
-                <span className={`oc-status ${f.status}`}>{STATUS_LETTER[f.status]}</span>
-                <span className="name">{f.path}</span>
-                <span className="oc-count">
-                  <span className="a">+{f.additions}</span>
-                  <span className="d">-{f.deletions}</span>
-                </span>
-              </button>
-            ))}
-          </nav>
-          <div className="oc-files">
-            {files.map((f) => (
-              <FileDiffView
-                key={f.path}
-                file={f}
-                layout={opts.layout}
-                ignoreWhitespace={opts.ignoreWhitespace}
-                viewed={isViewed(viewed, f)}
-                onToggleViewed={() => setViewed(toggleViewed(viewed, f))}
-                onLineClick={onLineClick && ((a) => onLineClick(f, a))}
-                annotations={annotations && ((a) => annotations(f, a))}
+      </div>
+    );
+  }
+  const f = files[diff.current];
+  return <OpenFile diff={diff} f={f} selected={selected} onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} notes={notes} />;
+}
+
+/** The open file, editable in the entire-file layout (EditInViewer.ts). */
+function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annotations, notes }: DiffTabProps & { f: FileDiff; selected: FileDiff }) {
+  const { opts, update } = diff;
+  const edit = useFileEdit(diff.worktree, selected.path, editableContents(selected, opts.layout, opts.ignoreWhitespace), diff.reloadQuietly);
+  return (
+    <div className="oc-diff oc-diff-tab">
+      <div className="oc-files">
+        {notes?.(f)}
+        <FileDiffView
+          key={selected.path}
+          file={selected}
+          layout={opts.layout}
+          ignoreWhitespace={opts.ignoreWhitespace}
+          wrapLines={opts.wrapLines}
+          viewed={diff.isViewed(f)}
+          onToggleViewed={() => diff.toggleViewed(f)}
+          onLineClick={onLineClick && ((r) => onLineClick(f, r))}
+          selected={commentRange?.(f)}
+          anchors={anchors?.(f)}
+          annotations={annotations && ((a) => annotations(f, a))}
+          loadFull={() => diff.loadFull(f)}
+          onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
+          onShowWhitespace={() => update({ ignoreWhitespace: false })}
+          edit={edit}
+          tools={
+            <>
+              <LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />
+              <ViewOptionsMenu
+                whitespace={{ hidden: opts.ignoreWhitespace, onChange: (ignoreWhitespace) => update({ ignoreWhitespace }) }}
+                textWrap={f.binary ? undefined : { wrapLines: opts.wrapLines, onChange: (wrapLines) => update({ wrapLines }) }}
               />
-            ))}
-          </div>
-        </>
-      )}
+            </>
+          }
+        />
+        {diff.unread >= 0 && diff.unread !== diff.current && (
+          <button className="btn btn-small oc-next-unread" onClick={() => diff.open(diff.unread)} title="Open the next file not marked as viewed">
+            Next unread ›
+          </button>
+        )}
+      </div>
     </div>
   );
+}
+
+/**
+ * The discard confirmation, shown once for whichever view asked for it.
+ * `onDiscarded` runs after a successful discard (WorkspaceView attaches Conductor's revert note to the chat).
+ */
+export function DiffDiscardHost({ diff, onDiscarded }: { diff: WorkspaceDiff; onDiscarded?: (f: FileDiff) => void }) {
+  const f = diff.discarding;
+  if (!f) return null;
+  return <DiscardDialog file={f} onClose={() => diff.askDiscard(null)} onConfirm={() => diff.discard(f).then(() => onDiscarded?.(f))} />;
 }

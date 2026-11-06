@@ -136,6 +136,14 @@ impl ClaudeSession {
         self.events.try_iter().collect()
     }
 
+    /// Hands the event stream to the caller (a reader thread), so writes
+    /// never wait on a reader. Afterwards [`Self::next_event`] and
+    /// [`Self::pending_events`] return nothing.
+    pub fn take_events(&mut self) -> Receiver<SessionEvent> {
+        let (_closed, empty) = mpsc::channel();
+        std::mem::replace(&mut self.events, empty)
+    }
+
     /// Closes stdin: the CLI finishes its current turn and exits.
     pub fn close_stdin(&mut self) {
         self.stdin = None;
@@ -203,10 +211,10 @@ fn read_lines<R: Read + Send + 'static>(
 #[cfg(all(test, unix))]
 mod tests {
     use std::fs;
-    use std::os::unix::fs::PermissionsExt;
     use std::path::PathBuf;
     use std::sync::atomic::{AtomicU32, Ordering};
 
+    use super::super::test_exe::write_executable;
     use super::super::LaunchEnv;
     use super::*;
 
@@ -234,8 +242,7 @@ exit 3
         ));
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("claude");
-        fs::write(&path, FAKE_CLAUDE).unwrap();
-        fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+        write_executable(&path, FAKE_CLAUDE, 0o755);
         path
     }
 
