@@ -1,0 +1,7 @@
+PASS desktop shell is busy before database rows arrive
+PASS visible workspace rows do not imply sidebar sections are loaded
+PASS ready shell accepts original-workspace navigation
+PASS cancelled StrictMode read cannot remove or replace the selected workspace
+PASS failed database load is error, never ready or permanently busy
+PASS plain browser has no desktop hydration to wait for
+6 startup checks passed

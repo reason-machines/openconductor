@@ -75,7 +75,7 @@ import { storedRepoFilter } from "./home/useRepoFilter";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
 
 export default function App() {
-  const [state, storeDispatch] = useAppStore();
+  const [state, storeDispatch, startup] = useAppStore();
   // The full-screen create page (`/create`) fills the main area until a
   // selection or a created workspace replaces it.
   const [createPage, setCreatePage] = useState<{ repoId: string | null; sectionId?: string; fromOpen?: boolean } | null>(() => (window.location.pathname === "/create" ? { repoId: null } : null));
@@ -507,7 +507,7 @@ export default function App() {
 
   return (
     <>
-    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
+    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style} aria-busy={startup === "loading"} data-startup={startup}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
       {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSubmitPrompt={() => setSubmitPromptOpen(true)} onOpenDiagnostics={() => setDiagnosticsOpen(true)} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
       <main className="main">
