@@ -7,6 +7,7 @@
 
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs } from "../../keybindings/shortcut.ts";
@@ -43,6 +44,7 @@ const same = (a: ModelChoice, b: ModelChoice) => a.model === b.model;
 
 export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription }: ModelPickerProps) {
   const [open, setOpen] = useState(false);
+  const menu = usePresence(open);
   const [query, setQuery] = useState("");
   const [effortOpen, setEffortOpen] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
@@ -117,8 +119,8 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
           </span>
         </button>
       </Tooltip>
-      {open ? (
-        <div className="oc-model-menu" role="menu" aria-label="Model">
+      {menu.mounted ? (
+        <div className="oc-model-menu" role="menu" aria-label="Model" data-motion="popup" {...menu.attrs}>
           <div className="oc-model-menu-inner">
             <div className="oc-model-search">
               <SearchSmallIcon />
