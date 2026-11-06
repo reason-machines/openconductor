@@ -3,7 +3,7 @@
   "status": "captured",
   "steps": 1,
   "file": "oc/all-workspaces.png",
-  "png_sha256": "b98e12d68a82f001c6ebcee3c31c97f3f591dad00218434a8b0f89d4ed2ef857",
+  "png_sha256": "56cefe362368eb8a1a9f1f079215539afcc55a819c66d07fff409c88a6120fa7",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -21,7 +21,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -37,7 +37,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Granada",
+    "Krakow",
     "tide-web"
    ],
    "roles": [
@@ -55,7 +55,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -70,7 +70,7 @@
     "Today",
     "1",
     "T",
-    "Granada",
+    "Krakow",
     "1m"
    ],
    "url": "tauri://localhost",
@@ -79,13 +79,13 @@
     820
    ]
   },
-  "ms": 12232
+  "ms": 7668
  },
  "create": {
   "status": "captured",
   "steps": 1,
   "file": "oc/create.png",
-  "png_sha256": "a64466bee9542da3dcf172c1074566703f99976b16dea2f98ecf1e8209c07dcc",
+  "png_sha256": "69c45cf3a54fbf7473a1aee4beeedd2a04d02c5838c3d3559baf3a76b05c259d",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -103,7 +103,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -124,7 +124,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -179,7 +179,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -190,21 +190,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -257,13 +257,13 @@
     820
    ]
   },
-  "ms": 8247
+  "ms": 6320
  },
  "create-repo-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/create-repo-picker.png",
-  "png_sha256": "70c143ade2cbc8caba2a035ccf47b890da4d9e76097e41f58d21c540e059641b",
+  "png_sha256": "a34d0a45dae72ce08d430cc0d6cac86b451f78f8c156812035b107a632b9e1af",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -281,7 +281,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -302,7 +302,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -358,7 +358,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -369,21 +369,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -438,13 +438,13 @@
     820
    ]
   },
-  "ms": 11533
+  "ms": 7542
  },
  "dialog-clone-github": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-clone-github.png",
-  "png_sha256": "924a549d201febb876df38d26af03db205442c438cad2b61f22fa4628172afed",
+  "png_sha256": "49a818bde6f9546ba273fa19a836b081f7ffb3bae26d33d8f285c00eb295378a",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -462,7 +462,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -483,7 +483,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -529,7 +529,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -540,21 +540,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -608,13 +608,13 @@
     820
    ]
   },
-  "ms": 13895
+  "ms": 10880
  },
  "dialog-create-project": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-create-project.png",
-  "png_sha256": "f5e5f63a5910b8bada5349be7ad18bdb524091a999c463779a3d2e20ee2a0aca",
+  "png_sha256": "020db0e677f23e1393d574ce76b870fbfcad62163359e0e76a29eae3f72ac9b3",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -632,7 +632,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -653,7 +653,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -700,7 +700,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -711,21 +711,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -786,13 +786,13 @@
     820
    ]
   },
-  "ms": 10023
+  "ms": 12821
  },
  "dialog-keyboard-shortcuts": {
   "status": "captured",
   "steps": 1,
   "file": "oc/dialog-keyboard-shortcuts.png",
-  "png_sha256": "0664f9e1054a85bd63a2f4f57fb2f8fb6983cda99ba046b1a37f74943f70ecbf",
+  "png_sha256": "4f1c3fa568475e0dd149da0730232a5afcf4cea1da0730ab8bdc4ffee076d24e",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -810,7 +810,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -831,17 +831,12 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Opus 4.8 · High)",
     "Opus 4.8 · High",
-    "Model",
-    "Search models",
-    "Search models",
-    "Opus 4.8",
-    "Codex",
     "Add",
     "Add attachments and more",
     "Send message ↵",
@@ -863,9 +858,7 @@
     "New terminal",
     "Run"
    ],
-   "roles": [
-    "menu"
-   ],
+   "roles": [],
    "texts": [
     "My Mac",
     "Home",
@@ -878,7 +871,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -889,32 +882,25 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
+    "⌘L",
+    "to focus",
     "Opus 4.8",
     "High",
-    "Opus 4.8",
-    "High",
-    "Codex",
-    "Add models",
-    "Effort",
-    "High",
-    "Edit",
-    "⌘⇧/",
-    "Cycle effort",
     "All files",
     "Changes",
     "2",
@@ -957,13 +943,13 @@
     820
    ]
   },
-  "ms": 7667
+  "ms": 11193
  },
  "dialog-rename-workspace": {
   "status": "captured",
   "steps": 2,
   "file": "oc/dialog-rename-workspace.png",
-  "png_sha256": "8204630774f3ab9b4e60f61d97c572d4c3a214145d8b5308d12c351e521170e0",
+  "png_sha256": "190265ed54f2656fcb932dfee17255a78efa56f115f1918f82e9e624beb6cb14",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -981,7 +967,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1002,7 +988,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -1044,7 +1030,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -1060,21 +1046,21 @@
     "OK",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -1121,13 +1107,13 @@
     820
    ]
   },
-  "ms": 7459
+  "ms": 12708
  },
  "diff-entire-file": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-entire-file.png",
-  "png_sha256": "b38d2e027df2150d3322547db34150c88be3b4f38267882f67f50f0284790485",
+  "png_sha256": "135bf58ceae40793ae8c4fffdbd37ce6a013b618e62a80bc2e44f67dd137d889",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1145,7 +1131,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1168,7 +1154,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1223,7 +1209,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -1234,13 +1220,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
     "All changes",
     "×",
-    "granada",
+    "krakow",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1295,13 +1281,13 @@
     820
    ]
   },
-  "ms": 18469
+  "ms": 9252
  },
  "diff-split": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-split.png",
-  "png_sha256": "bc539ec46fd6817fda7cf24bc628b3a9a93dc55f5b98e9f6347258faafd4f2d1",
+  "png_sha256": "3b20b23fb2e81e80982ae686f86b38649a6741cdb4181350187eddc14ac66b77",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1319,7 +1305,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1342,7 +1328,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1397,7 +1383,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -1408,13 +1394,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
     "All changes",
     "×",
-    "granada",
+    "krakow",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1469,13 +1455,13 @@
     820
    ]
   },
-  "ms": 15499
+  "ms": 8979
  },
  "diff-unified": {
   "status": "captured",
   "steps": 2,
   "file": "oc/diff-unified.png",
-  "png_sha256": "c4da06821493aaf4f72b173fe54c7095103fcb227f7a381505cf14d3decadd5f",
+  "png_sha256": "10ccf88172a3da73093d47dc471f87028708f22d4695ad6c4f15dd83511f2601",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1493,7 +1479,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1516,7 +1502,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1571,7 +1557,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -1582,13 +1568,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
     "All changes",
     "×",
-    "granada",
+    "krakow",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1643,13 +1629,13 @@
     820
    ]
   },
-  "ms": 16067
+  "ms": 8710
  },
  "first-run-onboarding": {
   "status": "captured",
   "steps": 0,
   "file": "oc/first-run-onboarding.png",
-  "png_sha256": "c863ac629505a1524cfe218c608744ce40b8c080a063c11430f01a40816323bf",
+  "png_sha256": "49a962d081b8920ba3483e8808b38f31b165a4e2ee9c077a0ce461732d37d310",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1672,13 +1658,13 @@
     820
    ]
   },
-  "ms": 8340
+  "ms": 6495
  },
  "home": {
   "status": "captured",
   "steps": 1,
   "file": "oc/home.png",
-  "png_sha256": "096350b0ce61f4d72cd2db1a193893e2473315b3368dd1a33e02e71551792ccf",
+  "png_sha256": "56cefe362368eb8a1a9f1f079215539afcc55a819c66d07fff409c88a6120fa7",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1696,7 +1682,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1712,7 +1698,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Granada",
+    "Krakow",
     "tide-web"
    ],
    "roles": [
@@ -1730,7 +1716,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -1745,7 +1731,7 @@
     "Today",
     "1",
     "T",
-    "Granada",
+    "Krakow",
     "1m"
    ],
    "url": "tauri://localhost",
@@ -1754,7 +1740,7 @@
     820
    ]
   },
-  "ms": 9460
+  "ms": 7854
  },
  "home-empty": {
   "status": "captured",
@@ -1800,13 +1786,13 @@
     820
    ]
   },
-  "ms": 8617
+  "ms": 9067
  },
  "login": {
   "status": "captured",
   "steps": 0,
   "file": "oc/login.png",
-  "png_sha256": "bef890d99c20465e7faff78312b0e82594853843faef7feb4f9b1a0be8e9aa01",
+  "png_sha256": "5241b6026c244dc2b5407a11a10c108951cbf17d40223d08fe36f8bab63899e6",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1829,13 +1815,13 @@
     820
    ]
   },
-  "ms": 8165
+  "ms": 5545
  },
  "menu-account": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-account.png",
-  "png_sha256": "3ac90c1576919ef773fc0afbd71096bf5b680e0c4922cd308c3e54ebcf8decca",
+  "png_sha256": "9a54f4d18a04e8f0f8471bbf62d5174b995ad4a567b5b9cf90fa9e76a6c22f3f",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1854,7 +1840,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1875,7 +1861,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -1918,7 +1904,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -1929,21 +1915,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -1990,13 +1976,13 @@
     820
    ]
   },
-  "ms": 6086
+  "ms": 11805
  },
  "menu-help": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-help.png",
-  "png_sha256": "e01b329fa640dbb3c6136f5f1f41cd89b633632a183938c3474bfe737c88a8e5",
+  "png_sha256": "b1123473ca97a1bd2f0d89734d978aae0825e65f0c304bf7591c9d1ccb3bb060",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2014,7 +2000,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2036,7 +2022,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2078,7 +2064,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -2097,21 +2083,21 @@
     "OpenConductor v0.1.0",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2158,13 +2144,13 @@
     820
    ]
   },
-  "ms": 7703
+  "ms": 10120
  },
  "menu-model-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-model-picker.png",
-  "png_sha256": "c9c076bcfab3ad48fd102131e1374de5baadb7141f5fc0b6439fdc699be475c0",
+  "png_sha256": "eaea6bbefc8c42222c8a14c165902eadf21b36d62ff997ec9dc335cf0636b753",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2182,7 +2168,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2203,7 +2189,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2250,7 +2236,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -2261,21 +2247,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "Opus 4.8",
     "High",
     "Opus 4.8",
@@ -2329,13 +2315,13 @@
     820
    ]
   },
-  "ms": 9179
+  "ms": 8190
  },
  "menu-repo-actions": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-repo-actions.png",
-  "png_sha256": "2f641f349a2326bbc679caf63990409de4dd598398a7d32bed275c9869584c23",
+  "png_sha256": "7b35fbfff4fdd5bd573068c19d19691c5b8df6da9447327d240869495d94f66f",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2353,7 +2339,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2374,7 +2360,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2418,7 +2404,7 @@
     "Change icon…",
     "Hide repository",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -2429,21 +2415,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2490,13 +2476,13 @@
     820
    ]
   },
-  "ms": 7256
+  "ms": 7295
  },
  "menu-workspace-context": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-workspace-context.png",
-  "png_sha256": "64afef61c9034db0f61ccba670abdd05413f9d4df0bc8157283207f93cdfc77a",
+  "png_sha256": "6f597cb027dc7d413a0d25a37c3ec00f514b0bbe6e395664d1eab37b1c71a104",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2514,7 +2500,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -2537,7 +2523,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2579,7 +2565,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -2601,21 +2587,21 @@
     "⌘⇧A",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2662,13 +2648,13 @@
     820
    ]
   },
-  "ms": 5720
+  "ms": 11430
  },
  "menu-workspace-status": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-workspace-status.png",
-  "png_sha256": "bef02d8a8c911093a2e814b074ba1556f15e188800bb610c32de2b66e3537485",
+  "png_sha256": "b49345a4e2a071164bd17b8dac12174254ccf24556ab8fb5da39e4d761c54d0f",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2686,7 +2672,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2709,7 +2695,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2752,7 +2738,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -2780,21 +2766,21 @@
     "⌘⇧A",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2841,7 +2827,7 @@
     820
    ]
   },
-  "ms": 6901
+  "ms": 9088
  },
  "needs-permission": {
   "status": "no-equivalent",
@@ -2851,7 +2837,7 @@
   "status": "captured",
   "steps": 0,
   "file": "oc/onboarding-signed-out.png",
-  "png_sha256": "4be00667629267999cf6efbd5c1fecb19fba86cc0f788a0a4f6230513d7aee9d",
+  "png_sha256": "edcfa3aa353505ee6a15397595eb0cc03706eb84d821ad3b6226b0034f38dc3a",
   "dom": {
    "labels": [
     "Slide progress"
@@ -2874,13 +2860,13 @@
     820
    ]
   },
-  "ms": 9699
+  "ms": 6537
  },
  "palette-all": {
   "status": "captured",
   "steps": 1,
   "file": "oc/palette-all.png",
-  "png_sha256": "349cae158d11d12ad2f51b4e69589d96ad10ef6807e612de958a18414a46e685",
+  "png_sha256": "52f817f9d2a4a9258c76914fa967a9ae492f61237af9b75efbd047264efaf0fc",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2898,7 +2884,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2919,7 +2905,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2968,7 +2954,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -2979,21 +2965,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3039,8 +3025,8 @@
     "Actions",
     "Settings",
     "Recent workspaces",
-    "granada",
-    "tide-web · granada",
+    "krakow",
+    "tide-web · krakow",
     "Workspace actions",
     "Archive workspace",
     "⌘⇧A",
@@ -3065,13 +3051,13 @@
     820
    ]
   },
-  "ms": 9760
+  "ms": 6512
  },
  "palette-search": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-search.png",
-  "png_sha256": "0218b5a259e5e435dea6a69008e61cb4ef775feaf94c48ce7d109c38f9807a0e",
+  "png_sha256": "96fd8c580200dacfd81e731005cfbd684de998b787f8fcf510da76ea60f5b91b",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3089,7 +3075,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3110,7 +3096,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -3155,7 +3141,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -3166,21 +3152,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3233,13 +3219,13 @@
     820
    ]
   },
-  "ms": 10479
+  "ms": 6222
  },
  "palette-workspaces": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-workspaces.png",
-  "png_sha256": "e7c182b1479d17a868124a910ea21a48a3be2271ec03a9d981a6817d4032109e",
+  "png_sha256": "199354e43e3fe63e3efe4ce4fb062bab313071015c686154cf974a3a61c9b956",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3257,7 +3243,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3278,7 +3264,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -3325,7 +3311,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -3336,21 +3322,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3396,8 +3382,8 @@
     "Actions",
     "Settings",
     "Workspaces",
-    "granada",
-    "tide-web · granada"
+    "krakow",
+    "tide-web · krakow"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -3405,7 +3391,7 @@
     820
    ]
   },
-  "ms": 10443
+  "ms": 6740
  },
  "route-cloud-collab-onboarding": {
   "status": "no-equivalent",
@@ -3439,11 +3425,10 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-account.png",
-  "png_sha256": "04aeb1c477a8942596bb2b811f7c619fd3a2bce25b29c0726daced07a1c335e2",
+  "png_sha256": "8f41b5c1b86986ef3b6f9fa9b8b2858e94ca8a7e10e801af8c19e8e9f62a44cb",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -3495,17 +3480,16 @@
     820
    ]
   },
-  "ms": 8659
+  "ms": 7044
  },
  "settings-advanced": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-advanced.png",
-  "png_sha256": "2a4c618191084f267873dd2301ce109ae2e429e1a1ad1034dc9a3e8cbdd0a23f",
+  "png_sha256": "9abdd8aa524c577861092b68cbfa64bab94c7c411b6a9662e61a5ac6858f33e8",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -3588,17 +3572,16 @@
     820
    ]
   },
-  "ms": 13184
+  "ms": 7313
  },
  "settings-appearance": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-appearance.png",
-  "png_sha256": "357e8a2013a28a1e6d9c491f43ba683251ea36676b90682e60184556d69628a2",
+  "png_sha256": "2b8c6251ed3c50154e0654c108e509990a948c4260895057569223c1674b3d0b",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -3684,7 +3667,7 @@
     820
    ]
   },
-  "ms": 10348
+  "ms": 9881
  },
  "settings-cloud-setup": {
   "status": "no-equivalent",
@@ -3694,11 +3677,10 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-environment.png",
-  "png_sha256": "65cb999adee6a0e7b7d7bdad12449b1d2b83f3e0b981411abd8421c7226e9e6c",
+  "png_sha256": "3668435af0ae695e74f47ff46b7b8b76fca353e152b65201f5b90d596826fb6d",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -3746,17 +3728,16 @@
     820
    ]
   },
-  "ms": 9365
+  "ms": 6286
  },
  "settings-experimental": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-experimental.png",
-  "png_sha256": "9098c73ddc8125050abe5203378bfb9e92dcf1890fe7c55fa08dff6fd6aba8cd",
+  "png_sha256": "e1555c60004916e94b06a0b2fda0e4fb45bafd30fb168bfddbf9b874b1bbbb7e",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -3852,17 +3833,16 @@
     820
    ]
   },
-  "ms": 9443
+  "ms": 8012
  },
  "settings-general": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-general.png",
-  "png_sha256": "b575f59fba4e913995124267813bdc1f233a5d7e55058539dcbed508b89b459f",
+  "png_sha256": "54e4d5f159c5dc61bc2797ffad6813a9d651be00ee8acfc1428ba87128112bf8",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -3949,17 +3929,16 @@
     820
    ]
   },
-  "ms": 8772
+  "ms": 6437
  },
  "settings-git": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-git.png",
-  "png_sha256": "a6a65711e9327b37d91f7797d08489f97648299542a128f690a3432182c93ff1",
+  "png_sha256": "d1d6a82ee56af217bf012a8afc33d8f068a9ddf45d540695d71a21314a487d50",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -4032,7 +4011,7 @@
     820
    ]
   },
-  "ms": 9276
+  "ms": 6711
  },
  "settings-internal": {
   "status": "no-equivalent",
@@ -4042,11 +4021,10 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-key-bindings.png",
-  "png_sha256": "3cc3a125f327a883e13ac9e1688a44185d8d00b737f78281f4e15da9221ecc27",
+  "png_sha256": "41dc449372b043e822cd009d36bd465f468713f4ba7c4b44d87a5f08249a3b51",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -4870,17 +4848,16 @@
     820
    ]
   },
-  "ms": 11020
+  "ms": 7763
  },
  "settings-models": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-models.png",
-  "png_sha256": "05b245902a512112d6d638d9893fa201752a6ea1f5cfcc4bf0cff0a31801a88f",
+  "png_sha256": "2dbd48e1666eb205d2bc29f054a09605ca9cd8d101784c6581f194de730b7849",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -4941,7 +4918,7 @@
     820
    ]
   },
-  "ms": 10580
+  "ms": 7044
  },
  "settings-org-computer": {
   "status": "no-equivalent",
@@ -4979,11 +4956,10 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-providers.png",
-  "png_sha256": "6e31c08caf42e629c7a110abcd1fc3b9a9bb780e0a85804456d4ec32071aaeb4",
+  "png_sha256": "6bba1cb724c0fdad5ed6c8df326fb6e68a4eaaf17d0353e0e7c29ff6b3e8f30a",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -5078,17 +5054,16 @@
     820
    ]
   },
-  "ms": 9502
+  "ms": 7245
  },
  "settings-repo-actions": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-actions.png",
-  "png_sha256": "749ab00fd0e680aeef517c36aded5fa0dec89380f427ed05a07eebd43f710339",
+  "png_sha256": "3b7ac2add5db856ec568b386bc759ae7514bb42f8aa29073d86cffc273c6f0ee",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -5147,17 +5122,16 @@
     820
    ]
   },
-  "ms": 9856
+  "ms": 9130
  },
  "settings-repo-environment": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-environment.png",
-  "png_sha256": "b98ca7b7a9b9d379bd4c4e42672e73e3917ec8ef24e0b96fa7c606a056dd68e1",
+  "png_sha256": "2909a3771b73dc1867f2fd09ea767cde62085f663385394a3e60951f7964f09d",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -5210,17 +5184,16 @@
     820
    ]
   },
-  "ms": 7990
+  "ms": 9413
  },
  "settings-repo-git": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-git.png",
-  "png_sha256": "8bee88e27cb07d079b57ff18454da486bd97bef5c3f3820a30944bfb5f484612",
+  "png_sha256": "0234cd5b9f1b0fc86aba6daca753fa9e1cb538853d965d70dc23b6e0707bc927",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -5286,17 +5259,16 @@
     820
    ]
   },
-  "ms": 11304
+  "ms": 8260
  },
  "settings-repo-misc": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-misc.png",
-  "png_sha256": "89482c674bba1a938baf0ca0805c5e9d185e58e271d647d6518ce08c30be34b9",
+  "png_sha256": "441aaa3eb07b51f3142016666b8fed7869f99c8ba3844340ccf69b3998be9256",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -5374,17 +5346,16 @@
     820
    ]
   },
-  "ms": 11846
+  "ms": 9797
  },
  "settings-repo-misc-lower": {
   "status": "captured",
   "steps": 5,
   "file": "oc/settings-repo-misc-lower.png",
-  "png_sha256": "91fce475fe8cdb5fd7e8b59b426ba2062f1e3f319697efb2c1bb6d0ea3ac5350",
+  "png_sha256": "9c34f69d7862da2baf126b98e89a1a8d95ec86977244615c93c0a1ea1383c32c",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -5462,17 +5433,16 @@
     820
    ]
   },
-  "ms": 10550
+  "ms": 10111
  },
  "settings-repo-scripts": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-scripts.png",
-  "png_sha256": "dba7570d48f2e18ce7e5ac8fd7ca63fe57c4076a18f685c1cc12d248a12cba34",
+  "png_sha256": "736061c891726ec8e594e70c956ca3d6ddadf3874b491080abb4b47f9341daca",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -5524,7 +5494,7 @@
     820
    ]
   },
-  "ms": 9171
+  "ms": 9564
  },
  "settings-search": {
   "status": "step-failed",
@@ -5532,11 +5502,10 @@
   "failed_step": 2,
   "error": "timed out waiting for .settings input[type=search], .settings input[placeholder]",
   "file": "oc/settings-search.png",
-  "png_sha256": "05f86bf5fb29d1737c1602c4e47b943a78ffffd7beb0073b1cac41be651e182a",
+  "png_sha256": "067a678339382d8c21376b8c656e0c68e80e03ef2af6c3c2e1e116f02ae34118",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -5623,7 +5592,7 @@
     820
    ]
   },
-  "ms": 17895
+  "ms": 16879
  },
  "settings-terminal": {
   "status": "step-failed",
@@ -5631,11 +5600,10 @@
   "failed_step": 2,
   "error": "timed out waiting for .settings-nav .nav-item \"Big terminal\"",
   "file": "oc/settings-terminal.png",
-  "png_sha256": "05f86bf5fb29d1737c1602c4e47b943a78ffffd7beb0073b1cac41be651e182a",
+  "png_sha256": "067a678339382d8c21376b8c656e0c68e80e03ef2af6c3c2e1e116f02ae34118",
   "dom": {
    "labels": [
     "Settings pages",
-    "Esc",
     "Repositories",
     "tide-web",
     "tide-api",
@@ -5722,7 +5690,7 @@
     820
    ]
   },
-  "ms": 18142
+  "ms": 13948
  },
  "sidebar-after-archive": {
   "status": "captured",
@@ -5785,13 +5753,13 @@
     820
    ]
   },
-  "ms": 9276
+  "ms": 14524
  },
  "toast-copied-link": {
   "status": "captured",
   "steps": 2,
   "file": "oc/toast-copied-link.png",
-  "png_sha256": "1aef497314e4bc3940370d850bced8c75cf5775c5e063ed5027850c21fd4d3a3",
+  "png_sha256": "e67bb72a18dc7d5f3ef88aab79f9643616f6d95c552045147c8e84575729e548",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5809,7 +5777,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -5830,7 +5798,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -5873,7 +5841,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -5884,21 +5852,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -5946,13 +5914,13 @@
     820
    ]
   },
-  "ms": 8735
+  "ms": 9536
  },
  "workspace-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-chat.png",
-  "png_sha256": "c26f44e1c7755252a38b8c1318efb627d47f5be3878e64a86fffbbd4f7b99e19",
+  "png_sha256": "666b5776b39694cb32c66308116074c899f379f82b0981d835f342ec61ef0c32",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5970,7 +5938,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -5992,7 +5960,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6032,7 +6000,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -6043,21 +6011,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6104,13 +6072,13 @@
     820
    ]
   },
-  "ms": 13287
+  "ms": 6882
  },
  "workspace-new-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-new-chat.png",
-  "png_sha256": "11a67b7ae04b4feb562a4d2daa737b4e2b46f9651915e68eeb0b4769d409c222",
+  "png_sha256": "666b5776b39694cb32c66308116074c899f379f82b0981d835f342ec61ef0c32",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6128,7 +6096,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -6150,7 +6118,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6190,7 +6158,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -6201,21 +6169,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6262,13 +6230,13 @@
     820
    ]
   },
-  "ms": 15071
+  "ms": 7624
  },
  "workspace-tool-calls": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-tool-calls.png",
-  "png_sha256": "c26f44e1c7755252a38b8c1318efb627d47f5be3878e64a86fffbbd4f7b99e19",
+  "png_sha256": "b0a15de672240b49bb9321169baf899ffb78b60758ec5ee82da5461e947521b4",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6286,7 +6254,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Granada · granada · Local workspace",
+    "Krakow · krakow · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -6308,7 +6276,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "granada",
+    "krakow",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6348,7 +6316,7 @@
     "T",
     "tide-web",
     "1",
-    "Granada",
+    "Krakow",
     "+",
     "5",
     "T",
@@ -6359,21 +6327,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "granada",
-    "granada",
+    "krakow",
+    "krakow",
     "→",
     "main",
-    "granada",
+    "krakow",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "granada",
+    "krakow",
     "Branched",
-    "granada",
+    "krakow",
     "from",
     "main",
     "Created",
-    "granada",
+    "krakow",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6420,6 +6388,6 @@
     820
    ]
   },
-  "ms": 13768
+  "ms": 7144
  }
 }

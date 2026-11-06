@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "cd756e6",
+  "commit": "2e728ad",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -34,19 +34,19 @@
  "summary": {
   "total": 963,
   "missing": 781,
-  "wrong": 149,
-  "matches": 33,
+  "wrong": 136,
+  "matches": 46,
   "states": {
    "total": 65,
    "missing": 21,
-   "wrong": 38,
-   "matches": 6
+   "wrong": 37,
+   "matches": 7
   },
   "items": {
    "total": 898,
    "missing": 760,
-   "wrong": 111,
-   "matches": 27
+   "wrong": 99,
+   "matches": 39
   },
   "items_by_kind": {
    "dialog": {
@@ -82,26 +82,26 @@
    "route": {
     "total": 65,
     "missing": 44,
-    "wrong": 18,
-    "matches": 3
+    "wrong": 17,
+    "matches": 4
    },
    "select": {
     "total": 29,
     "missing": 27,
-    "wrong": 2,
-    "matches": 0
+    "wrong": 1,
+    "matches": 1
    },
    "settings-page": {
     "total": 29,
     "missing": 16,
-    "wrong": 12,
-    "matches": 1
+    "wrong": 11,
+    "matches": 2
    },
    "settings-row": {
     "total": 121,
     "missing": 39,
-    "wrong": 62,
-    "matches": 20
+    "wrong": 53,
+    "matches": 29
    },
    "sheet": {
     "total": 3,
@@ -156,8 +156,8 @@
    "settings": {
     "total": 181,
     "missing": 53,
-    "wrong": 106,
-    "matches": 22
+    "wrong": 93,
+    "matches": 35
    },
    "shell": {
     "total": 191,
@@ -214,10 +214,10 @@
    "diff": {
     "file": "ui-map/diff/onboarding-signed-out.jpg",
     "changed_ratio_t0": 0.999969512195122,
-    "changed_ratio_t24": 0.9926724466463415,
+    "changed_ratio_t24": 0.9926876905487805,
     "rea_evidence_ids": [
-     "ev_0b93ab1f2f87adadf09ef6d002b8e10ecda82178515a53029517a64734d76c8b",
-     "ev_f16d8ca76ce9969a96cd125c3b2322b4ef444cc8fb1ac0dd67cc6098f1966d11"
+     "ev_7d35e46e80813d75abf7a10e183678ac000bc2aa5a4250d28acd0efd11cce1b5",
+     "ev_e9d84771629d30faf1481537af71871f423ab7d6d63fe4257d95a2b4e9fc5387"
     ]
    },
    "copy_coverage": 0.857,
@@ -251,10 +251,10 @@
    "diff": {
     "file": "ui-map/diff/first-run-onboarding.jpg",
     "changed_ratio_t0": 0.9844693216463415,
-    "changed_ratio_t24": 0.9679744664634147,
+    "changed_ratio_t24": 0.968031631097561,
     "rea_evidence_ids": [
-     "ev_d19cf1a148d465f5d2ae369e8612a1c846e7fb7c87aee63ec0d6de8d081533c9",
-     "ev_639aea8ee64afff37e4adb97e64701cf0bd8f3a253b03ffe7d038f2b1377e158"
+     "ev_b5566c641a0626405d31acc28d7d72c55a118f21ea17934335e7efe4172db36d",
+     "ev_3d2a3563b6fc182be04d47c0464f28c320875fc3d1bc06aae185fb25486cfd82"
     ]
    },
    "copy_coverage": 0.071,
@@ -320,11 +320,11 @@
    },
    "diff": {
     "file": "ui-map/diff/home.jpg",
-    "changed_ratio_t0": 0.15724085365853657,
-    "changed_ratio_t24": 0.042641006097560975,
+    "changed_ratio_t0": 0.15722275152439025,
+    "changed_ratio_t24": 0.04259622713414634,
     "rea_evidence_ids": [
-     "ev_bd5991ae22e35c33dc5f2ee963d831787e7590f522c32d54c4fea444ea08acaa",
-     "ev_beb4cf3b5964cc54c2b4107c3a24fbdbc5a86cffa290f9ae65d4575ff2f38f4d"
+     "ev_400814501fd514e29edfdbab1014b519f15814e86f0bfdb7670b4d3a35bd36d6",
+     "ev_12badabcb3902227444ae8e0dd7fc70d7285c5e2d5c69c7ca420c3a5c6360f8b"
     ]
    },
    "copy_coverage": 0.786,
@@ -359,11 +359,11 @@
    },
    "diff": {
     "file": "ui-map/diff/all-workspaces.jpg",
-    "changed_ratio_t0": 0.022818216463414635,
-    "changed_ratio_t24": 0.011214748475609757,
+    "changed_ratio_t0": 0.02273246951219512,
+    "changed_ratio_t24": 0.011153772865853659,
     "rea_evidence_ids": [
-     "ev_139e510d452a9826930c12f740a3e9d052f6130acfa9cb7dd2ccff2f28a20e51",
-     "ev_7d5b96e82e72af820b578ec1364435370ed9f737d6a86059ccbd948013dc68a0"
+     "ev_8af66f1d760673fc083d8bac5d32555fc64489fe5af5171db45f8a4d58dd2199",
+     "ev_c0a944d34420ac8b1ceea9bb72ba82c7be82b6bbe8aab6c6965a7ae6304d16d2"
     ]
    },
    "copy_coverage": 1.0,
@@ -395,10 +395,10 @@
    "diff": {
     "file": "ui-map/diff/create.jpg",
     "changed_ratio_t0": 0.8686423399390244,
-    "changed_ratio_t24": 0.06903868140243903,
+    "changed_ratio_t24": 0.06884432164634147,
     "rea_evidence_ids": [
-     "ev_95584c788803575b8292988d354ecb6115c2661ad0427ece84fcac6a7959ac83",
-     "ev_2d41a685a38d6c956b84a820a5b90cb7d74ddfb993733e5b2dd487e0ef38c013"
+     "ev_be3e6d2ee5259c472dce56c377ebe501e8940f53e937ab24ca785c0972d2e4fb",
+     "ev_fa5a8ed56d091369114101b151d7d6b8be18d084e4010cfa7e43635314c36588"
     ]
    },
    "copy_coverage": 0.81,
@@ -435,10 +435,10 @@
    "diff": {
     "file": "ui-map/diff/create-repo-picker.jpg",
     "changed_ratio_t0": 0.8980535442073171,
-    "changed_ratio_t24": 0.07308974847560976,
+    "changed_ratio_t24": 0.07289538871951219,
     "rea_evidence_ids": [
-     "ev_ed01a8337b621f62bbcc80a3ecc4077b5f92d72bc434bc627d1af033cf943cd9",
-     "ev_4d5729413d8a23c10fd4133dc204b5abf656e52d758a2c99f7ac4437f09b9172"
+     "ev_6ffa129842f8090628c4baa31808948ceabb455c6355f5e5e2012e05e194d6a9",
+     "ev_a47f140a223310db92149caf4dd007781178c61b23559e2f2d9dcc472e42551a"
     ]
    },
    "copy_coverage": 0.818,
@@ -453,7 +453,7 @@
    "id": "workspace-chat",
    "title": "Workspace: chat transcript",
    "status": "wrong",
-   "why": "diff 4.6% at t24, copy 85%",
+   "why": "diff 4.5% at t24, copy 85%",
    "team": "terminal-scripts",
    "reference": {
     "status": "captured",
@@ -474,11 +474,11 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-chat.jpg",
-    "changed_ratio_t0": 0.19408631859756098,
-    "changed_ratio_t24": 0.04553544207317073,
+    "changed_ratio_t0": 0.19393673780487805,
+    "changed_ratio_t24": 0.045215320121951216,
     "rea_evidence_ids": [
-     "ev_92c5bfb39d943035591f058ea52201e8be04f25a1e76e48c2aae035817261146",
-     "ev_6aca0c1243f1132ae59a5fe2424f2bf2d9c0f73b1c5232692d5e2c8b5caf2a47"
+     "ev_69987f09ddd1a7c52c0c2ab0c1e260671aac47333a25a5770d504d8055cfe7b7",
+     "ev_44346f12dc88e1ea3bc85782b674ada1d120f6b401be5a07e282a1e6382a0ce8"
     ]
    },
    "copy_coverage": 0.852,
@@ -493,7 +493,7 @@
    "id": "workspace-new-chat",
    "title": "Workspace: new empty chat",
    "status": "matches",
-   "why": "diff 3.3% at t24, copy 92%",
+   "why": "diff 3.2% at t24, copy 92%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -514,11 +514,11 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-new-chat.jpg",
-    "changed_ratio_t0": 0.15439405487804878,
-    "changed_ratio_t24": 0.032807736280487804,
+    "changed_ratio_t0": 0.1541625381097561,
+    "changed_ratio_t24": 0.032456173780487804,
     "rea_evidence_ids": [
-     "ev_5c458f0bfeefa7f8d35da49eb68252beffcb9476368186fc300504124b4f6876",
-     "ev_43e4a897941b73336475dc48dc33824ad7545c2ed874c9656ab2d6c8ba420f6c"
+     "ev_ce448b98a79ac2ff8cf43abf1c6530742785d7ee0a1188824aba4116941b880a",
+     "ev_e1e0bc813b7c3fcc2322011ba612e3bb3fb3caa23e625cac3ee0689540d9b1ea"
     ]
    },
    "copy_coverage": 0.92,
@@ -531,7 +531,7 @@
    "id": "workspace-tool-calls",
    "title": "Chat: tool calls expanded",
    "status": "wrong",
-   "why": "diff 5.9% at t24, copy 86%",
+   "why": "diff 5.8% at t24, copy 86%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -552,11 +552,11 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-tool-calls.jpg",
-    "changed_ratio_t0": 0.2116330030487805,
-    "changed_ratio_t24": 0.05852419969512195,
+    "changed_ratio_t0": 0.21148246951219513,
+    "changed_ratio_t24": 0.05819931402439024,
     "rea_evidence_ids": [
-     "ev_640e3179937d9aee9db30c99e84f03a9e63e366fa9f4ba69e465a5d65f2c30dc",
-     "ev_f4eab9cd32c61c2367206e21bb57e8a09eaa730de68b397f4a425fa579ff97ee"
+     "ev_c04b1031de4cbc009f61ae72dac0fb1a41f804c33b2448d22a7223f0b94e4eaa",
+     "ev_4cbf8157db3e6a994d06b8e85eae71b8627c87b73f5cbb9e8f917b631161863a"
     ]
    },
    "copy_coverage": 0.857,
@@ -592,11 +592,11 @@
    },
    "diff": {
     "file": "ui-map/diff/diff-unified.jpg",
-    "changed_ratio_t0": 0.5094121570121951,
-    "changed_ratio_t24": 0.10986185213414634,
+    "changed_ratio_t0": 0.5093711890243903,
+    "changed_ratio_t24": 0.10951124237804878,
     "rea_evidence_ids": [
-     "ev_9d46c545171b253a9f0685597a72a86a24bea306ca413c2d0db776c003fbe321",
-     "ev_578508732d9c19d12fb26d4e09cd79258f3798498b18880cff0bc77e234f2909"
+     "ev_487f674aa071f9ff1b1ab673869ef76a5d24dfd129604a0f1e38ca42ed3e5157",
+     "ev_83fda3970f8452f7030c15a44fe0eb9008a862eee732e8c276a158d578e55ea6"
     ]
    },
    "copy_coverage": 0.906,
@@ -631,11 +631,11 @@
    },
    "diff": {
     "file": "ui-map/diff/diff-split.jpg",
-    "changed_ratio_t0": 0.509976181402439,
-    "changed_ratio_t24": 0.11082602896341463,
+    "changed_ratio_t0": 0.5099352134146341,
+    "changed_ratio_t24": 0.11067168445121951,
     "rea_evidence_ids": [
-     "ev_47f2fc8a1fbd77890390bd8f95f7316ac95d09b76197969969464b73fe4f062b",
-     "ev_9d63b5ea69dc65f5d9342e67af303c2aeb95467bdee52660e55d4b595edba794"
+     "ev_b531e340dcc17720a067dfba77ea7f290fbd91ce26bed68e311e98ee264d66fd",
+     "ev_09ff806f791c642742d5df8b426d6aca8be81eb81a8236466fa7da91003371b9"
     ]
    },
    "copy_coverage": 0.906,
@@ -670,11 +670,11 @@
    },
    "diff": {
     "file": "ui-map/diff/diff-entire-file.jpg",
-    "changed_ratio_t0": 0.5025924161585366,
-    "changed_ratio_t24": 0.06207126524390244,
+    "changed_ratio_t0": 0.5025514481707317,
+    "changed_ratio_t24": 0.06191692073170732,
     "rea_evidence_ids": [
-     "ev_6cd77b5a35d4e4281f0742ccdf8e6f10d4e9ec1fd12d41880dcc0314239adb76",
-     "ev_3baef8cbc9f8f3524a001133ee07aa310caf09adc9846e705ad555484dc3eb7b"
+     "ev_50e6ee63462d6ca0a404888a2d24e5b8706d9566bc850a048c0a556e2dfc2091",
+     "ev_50f8b41a920915d951f1780c71d85eff3084c27f41f3425982369df11e23a72f"
     ]
    },
    "copy_coverage": 0.906,
@@ -966,10 +966,10 @@
    "diff": {
     "file": "ui-map/diff/login.jpg",
     "changed_ratio_t0": 0.999969512195122,
-    "changed_ratio_t24": 0.9932545731707317,
+    "changed_ratio_t24": 0.9932240853658536,
     "rea_evidence_ids": [
-     "ev_e6d12dba7f9f45f3ab17ccb569ce2182ca9fcc128af7abad4ac99fc0c5b3fb47",
-     "ev_9fa1b01ae262057b79e2ad61df2e99c78961a58a0af907dc3251c28d9d0f1d19"
+     "ev_ca5a2ae0c27657d448b9ae1b2dc4fabfecd276bbf720c4cc5173479754ab876f",
+     "ev_44dfbf954aff097e41901ce34ed7b2bbfc5ffb61268a8bac1aca83047e384550"
     ]
    },
    "copy_coverage": 0.0,
@@ -982,7 +982,7 @@
    "id": "settings-general",
    "title": "Settings > General",
    "status": "wrong",
-   "why": "diff 4.8% at t24, copy 89%",
+   "why": "diff 3.1% at t24, copy 89%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1003,11 +1003,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-general.jpg",
-    "changed_ratio_t0": 0.0745264862804878,
-    "changed_ratio_t24": 0.04765815548780488,
+    "changed_ratio_t0": 0.058445121951219516,
+    "changed_ratio_t24": 0.03120236280487805,
     "rea_evidence_ids": [
-     "ev_84e7671c4841f73b3c00f0b925cccf4bf36af479018fab61d97b813d85dabab1",
-     "ev_2da7f8f5279c6c496f43a09f6c6fed35187d7825b9d43f402932abb2715f730f"
+     "ev_5e2eb047745d65134670668a3c2d9e682cc30bd2dc41dccd654cd0e676fcffbd",
+     "ev_b817c30fe0ae2f4bcff6679ef1437bafc8eafacfbf0ccde9ba134b954e9311a4"
     ]
    },
    "copy_coverage": 0.891,
@@ -1023,7 +1023,7 @@
    "id": "settings-account",
    "title": "Settings > Account",
    "status": "wrong",
-   "why": "diff 4.5% at t24, copy 73%",
+   "why": "diff 4.3% at t24, copy 73%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1044,11 +1044,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-account.jpg",
-    "changed_ratio_t0": 0.0842921112804878,
-    "changed_ratio_t24": 0.04452172256097561,
+    "changed_ratio_t0": 0.07848323170731707,
+    "changed_ratio_t24": 0.04286966463414634,
     "rea_evidence_ids": [
-     "ev_592d9b217df06fd9ed0b0c403a543058027a6ac52040676a8865656aff448a14",
-     "ev_c9a59b6f89b7c1e3db95300512f823c2f2ea7adce623e21c266219658af6b3c7"
+     "ev_e9aaa2928cf7b553e15ed5ff4eb718227f8faac58f73ad3da2039acde9790295",
+     "ev_de15275d7d823ad35fff064eb7cada43384cab944187ccc01483f41dbd8423aa"
     ]
    },
    "copy_coverage": 0.733,
@@ -1067,7 +1067,7 @@
    "id": "settings-models",
    "title": "Settings > Default models",
    "status": "wrong",
-   "why": "diff 4.3% at t24, copy 71%",
+   "why": "diff 4.2% at t24, copy 71%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1088,11 +1088,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-models.jpg",
-    "changed_ratio_t0": 0.07668635670731708,
-    "changed_ratio_t24": 0.043206935975609755,
+    "changed_ratio_t0": 0.0745188643292683,
+    "changed_ratio_t24": 0.04176638719512195,
     "rea_evidence_ids": [
-     "ev_c8b33a4fd4543f641e2ea806e11d03fdddf659d8904beeb246ee6db7703a32f3",
-     "ev_1b4900591b1cd510b62df53187f6dcb2bf31d5b27c3c2bab0b1872bf83d625d9"
+     "ev_c11bafe31614f608b6cb4cdf2751bdeeb04a182e7f14206c5575bed9b310ab9b",
+     "ev_15cc266be990070970e157f9a68cabf861ed36517603b60a28f9c00a2ae14d50"
     ]
    },
    "copy_coverage": 0.71,
@@ -1112,7 +1112,7 @@
    "id": "settings-providers",
    "title": "Settings > Agents",
    "status": "wrong",
-   "why": "diff 4.7% at t24, copy 79%",
+   "why": "diff 4.6% at t24, copy 79%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1133,11 +1133,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-providers.jpg",
-    "changed_ratio_t0": 0.11259622713414634,
-    "changed_ratio_t24": 0.04700362042682927,
+    "changed_ratio_t0": 0.11030487804878049,
+    "changed_ratio_t24": 0.045514481707317075,
     "rea_evidence_ids": [
-     "ev_096087211591e574c77f682a09326289e82afc074c7a1bbbf6df9a340ae47ddb",
-     "ev_d4d307fb53f3f4ae5612f435b4ed1b870ae50d459afdd241e6f2fa8ae41b0bc5"
+     "ev_0d34c9a49714ff2ba41759aa4e11eda8cb033efde635033cc153d9b900c68e75",
+     "ev_a8318697a1923b0f3cc1c222bb38e42b3ef2a3e06daae5891cb9943b05584f3f"
     ]
    },
    "copy_coverage": 0.792,
@@ -1153,7 +1153,7 @@
    "id": "settings-environment",
    "title": "Settings > Environment",
    "status": "wrong",
-   "why": "diff 3.3% at t24, copy 86%",
+   "why": "diff 2.9% at t24, copy 86%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1174,11 +1174,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-environment.jpg",
-    "changed_ratio_t0": 0.05662252286585366,
-    "changed_ratio_t24": 0.033162157012195125,
+    "changed_ratio_t0": 0.051639672256097564,
+    "changed_ratio_t24": 0.028844321646341462,
     "rea_evidence_ids": [
-     "ev_e62d0bd83ae6b521086aac1fb46dcb6801a27290482a3bcf60283bc585487909",
-     "ev_c83a36c3a49403219719f6c5819351265d8636d9006b8e8bea6959cb3e3e5fd2"
+     "ev_6ba820ff6aa12933425bfc622e5cb6aab0baba69e512b5b347bd134dd42aaf00",
+     "ev_7b5320b36c40dc33e54b2790f4da6c4be92dfcaa3adc13113f25c77f416b3422"
     ]
    },
    "copy_coverage": 0.864,
@@ -1191,8 +1191,8 @@
   {
    "id": "settings-git",
    "title": "Settings > Git",
-   "status": "wrong",
-   "why": "diff 5.1% at t24, copy 92%",
+   "status": "matches",
+   "why": "diff 4.2% at t24, copy 92%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1213,11 +1213,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-git.jpg",
-    "changed_ratio_t0": 0.08940548780487804,
-    "changed_ratio_t24": 0.051271913109756095,
+    "changed_ratio_t0": 0.07965034298780488,
+    "changed_ratio_t24": 0.04201124237804878,
     "rea_evidence_ids": [
-     "ev_c8bffca8ea7d80c33dcc6ab5f42675525781932d7ff6f6edee336c6f78d4d894",
-     "ev_5cf2a6ed0b1ab84fe80f3470c38818152c1873ea66459e7aea617c75547c9a17"
+     "ev_6e9ab31253d92bc1b1034aaf9dcc57b167ef84ccf4d8341d66e25b423cd13281",
+     "ev_083c019cc5ac974e891b35f65a2b90a2668a4948f4ff21c788079fa8fec324fb"
     ]
    },
    "copy_coverage": 0.921,
@@ -1263,7 +1263,7 @@
    "id": "settings-appearance",
    "title": "Settings > Appearance",
    "status": "wrong",
-   "why": "diff 5.4% at t24, copy 89%",
+   "why": "diff 5.1% at t24, copy 89%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1284,11 +1284,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-appearance.jpg",
-    "changed_ratio_t0": 0.2053096417682927,
-    "changed_ratio_t24": 0.05420922256097561,
+    "changed_ratio_t0": 0.19623189786585366,
+    "changed_ratio_t24": 0.050540205792682924,
     "rea_evidence_ids": [
-     "ev_4c1e16d238b6bfad9f4cf7cd844d5657979cc55236b95de202693a5d960ee877",
-     "ev_aa05f5b1482af2ea0cd973402c8e0b8365a8cbafe21a4166da61ec6468222136"
+     "ev_0846a751dfb746eb1c89f8107369995d20206ae1999d4f040b676aa088bac485",
+     "ev_9caa1c0d535456b20038d2c1f6a3b45e6d06d968d31b66ef6d8d5f71504ff980"
     ]
    },
    "copy_coverage": 0.891,
@@ -1304,7 +1304,7 @@
    "id": "settings-key-bindings",
    "title": "Settings > Keyboard shortcuts",
    "status": "wrong",
-   "why": "no valid reference render (redirected to /settings/user/general), diff 4.5% at t24",
+   "why": "no valid reference render (redirected to /settings/user/general), diff 4.4% at t24",
    "team": "settings",
    "reference": {
     "status": "redirected",
@@ -1325,11 +1325,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-key-bindings.jpg",
-    "changed_ratio_t0": 0.08719893292682927,
-    "changed_ratio_t24": 0.04532774390243902,
+    "changed_ratio_t0": 0.0849171112804878,
+    "changed_ratio_t24": 0.04391673018292683,
     "rea_evidence_ids": [
-     "ev_d35de790896421593241921ee7ec658801367c9dca02c107246bda7b4004d3fc",
-     "ev_4f69fbecf9ea6a031325fb16fb47dbf44fa1b31b695ea464bddbdce161bef3af"
+     "ev_f4a84f299894a6403879d02e781799c7bf876964d4a3793a036512ddaaa13468",
+     "ev_0baf637512946261e88be4d7b1af5689023ef9f905842eb3b4b49160f523fed0"
     ]
    },
    "copy_coverage": 0.37,
@@ -1339,7 +1339,7 @@
    "id": "settings-experimental",
    "title": "Settings > Experimental",
    "status": "matches",
-   "why": "diff 4.9% at t24, copy 91%",
+   "why": "diff 3.2% at t24, copy 91%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1360,11 +1360,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-experimental.jpg",
-    "changed_ratio_t0": 0.08100228658536586,
-    "changed_ratio_t24": 0.049497903963414636,
+    "changed_ratio_t0": 0.06306021341463415,
+    "changed_ratio_t24": 0.03235232469512195,
     "rea_evidence_ids": [
-     "ev_daf3abc50ebed5cfb8c38a17a7bfbd48a9b647d3c19cc00347794c8e32046815",
-     "ev_ed929fda5df9bbe2d3b27d5c3c846b2815cc4196993c839c754d864b6539b896"
+     "ev_0ca82d3a318477aee048ed1492bee5c6fd29a2dca70ca6791e501b1d24bd6f31",
+     "ev_0c57c6f8fa82f9fd553b7b46c264d450b4ad6251632be3ddca6e7d071b92c3ee"
     ]
    },
    "copy_coverage": 0.911,
@@ -1380,7 +1380,7 @@
    "id": "settings-advanced",
    "title": "Settings > Advanced",
    "status": "wrong",
-   "why": "diff 7.4% at t24, copy 88%",
+   "why": "diff 7.0% at t24, copy 88%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1401,11 +1401,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-advanced.jpg",
-    "changed_ratio_t0": 0.10789824695121951,
-    "changed_ratio_t24": 0.07371855945121951,
+    "changed_ratio_t0": 0.10380716463414634,
+    "changed_ratio_t24": 0.07026581554878049,
     "rea_evidence_ids": [
-     "ev_ec4f77d2f1c6ca0736b99a1e315c6198303085520482697cd8d0a1082ccddaff",
-     "ev_5bd78f5a785669236d8185549a8ad233f9cac6584ce0a2bd36274ac9a244b5b9"
+     "ev_e49269cccf55ff15c3d91246bec221bbb399125da6e7f95b978acd930f55f687",
+     "ev_9fba8b6e6b10b4c1b068846c81a00d9150438f6ef6f46bac84a4353a973746cf"
     ]
    },
    "copy_coverage": 0.881,
@@ -1442,11 +1442,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-terminal.jpg",
-    "changed_ratio_t0": 0.07241139481707318,
-    "changed_ratio_t24": 0.04681116615853659,
+    "changed_ratio_t0": 0.056330030487804876,
+    "changed_ratio_t24": 0.030354420731707316,
     "rea_evidence_ids": [
-     "ev_a16fc169c8a0173d92d1e3351ecd55a73a2f51363e6fd77c172b523041a80ddd",
-     "ev_528f237f6e8e7cea512ff776fd5b25b1c82ad62cdc5bf648784b51f74c0035af"
+     "ev_4bb2ab8c1890079d83c6af171cd735f9fec8b225ba5dcde5848f1e541941a57a",
+     "ev_7cc25d772cfaef1ceb955f554edcc4a859235014814e55ec2506de396343a57b"
     ]
    },
    "copy_coverage": null,
@@ -1488,7 +1488,7 @@
    "id": "settings-repo-environment",
    "title": "Settings > tide-web > Environment",
    "status": "wrong",
-   "why": "diff 3.3% at t24, copy 88%",
+   "why": "diff 2.6% at t24, copy 88%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1509,11 +1509,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-repo-environment.jpg",
-    "changed_ratio_t0": 0.054526486280487806,
-    "changed_ratio_t24": 0.03262385670731707,
+    "changed_ratio_t0": 0.04784108231707317,
+    "changed_ratio_t24": 0.02637862042682927,
     "rea_evidence_ids": [
-     "ev_ab2bc78ee253b09bb770022a0b8b27a87e85d323e036e20623487b7993fb1a98",
-     "ev_fbe8e7f3edb7f62dea459ba9fdfead2dfb85e912abdb9abb888a83a2b12214af"
+     "ev_37b30ddf84b3cbbdc994afa23279837088c19e57eb5aeffdc1f5b9d7e4dd6785",
+     "ev_ce10d9f6d8025cff538bfb60420c0be02e034faf7226f319e509e018c444d25c"
     ]
    },
    "copy_coverage": 0.88,
@@ -1527,7 +1527,7 @@
    "id": "settings-repo-git",
    "title": "Settings > tide-web > Git",
    "status": "matches",
-   "why": "diff 4.5% at t24, copy 90%",
+   "why": "diff 3.4% at t24, copy 90%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1548,11 +1548,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-repo-git.jpg",
-    "changed_ratio_t0": 0.0720922256097561,
-    "changed_ratio_t24": 0.04451505335365854,
+    "changed_ratio_t0": 0.061627286585365856,
+    "changed_ratio_t24": 0.034258765243902436,
     "rea_evidence_ids": [
-     "ev_af3d8e9ecbb11f1041976622ab8ec9aeaf05aa6d82148f3f62cf4b856cd5c641",
-     "ev_de1d04f8626a1a54c1751d86a5e4522a37f51413c99ac2f6475890c0de4d3d86"
+     "ev_4a6b23c133fc84ea5d7bd545c2e1454c99be764d1ef75a992a5f8062b3b44d56",
+     "ev_7574137debfb229c3213d4bd81e227bca3748ce3520eafad2cad7263dd6b47b4"
     ]
    },
    "copy_coverage": 0.906,
@@ -1566,7 +1566,7 @@
    "id": "settings-repo-scripts",
    "title": "Settings > tide-web > Scripts",
    "status": "wrong",
-   "why": "diff 3.1% at t24, copy 67%",
+   "why": "diff 2.9% at t24, copy 67%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1587,11 +1587,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-repo-scripts.jpg",
-    "changed_ratio_t0": 0.09070693597560976,
-    "changed_ratio_t24": 0.031428163109756095,
+    "changed_ratio_t0": 0.08801829268292682,
+    "changed_ratio_t24": 0.02930830792682927,
     "rea_evidence_ids": [
-     "ev_6ced61f880464da7a8767a4f69611ab3f7f9ebe85cffc3f4e0b2cab38f1b7ca0",
-     "ev_f1658851f0345147e9aad0d13360abb7b604f2a5101c0337450903311c1d35a3"
+     "ev_96347fe8138105dbf888fb93d81ebe3211229a047b8e0bc66d972a09286c8bb0",
+     "ev_20c55b5c87ab264814f33bc692e3f5fedeb70e78d3572ac70c9067238062d88a"
     ]
    },
    "copy_coverage": 0.667,
@@ -1612,7 +1612,7 @@
    "id": "settings-repo-actions",
    "title": "Settings > tide-web > Actions",
    "status": "wrong",
-   "why": "diff 5.8% at t24, copy 74%",
+   "why": "diff 5.4% at t24, copy 74%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1633,11 +1633,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-repo-actions.jpg",
-    "changed_ratio_t0": 0.09736280487804878,
-    "changed_ratio_t24": 0.05834889481707317,
+    "changed_ratio_t0": 0.09296208079268292,
+    "changed_ratio_t24": 0.054264481707317076,
     "rea_evidence_ids": [
-     "ev_52eda89b94a04dccbfe16175fb2a1090cd3bedcdcd12cf38de119baa1214e253",
-     "ev_3d21f831708dec1afbc0b506ed67ac3b230c987ebaddf618fbc4f2b8bbd3f0e5"
+     "ev_fcfe6c2629b16ebd3d889e3bc47a18d0a706ae39a49e09f7ec600fc1c4398085",
+     "ev_b047a54b5c25f169ef97657288258b891d1e3ab748d729a4defa96eb282f0850"
     ]
    },
    "copy_coverage": 0.743,
@@ -1657,7 +1657,7 @@
    "id": "settings-repo-misc",
    "title": "Settings > tide-web > Misc",
    "status": "wrong",
-   "why": "diff 6.4% at t24, copy 92%",
+   "why": "diff 5.8% at t24, copy 92%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1678,11 +1678,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-repo-misc.jpg",
-    "changed_ratio_t0": 0.09771341463414634,
-    "changed_ratio_t24": 0.06380049542682927,
+    "changed_ratio_t0": 0.09153105945121952,
+    "changed_ratio_t24": 0.05794874237804878,
     "rea_evidence_ids": [
-     "ev_715da91206c970294f60ef20b6a50ff80b56b9c00032d037814d4023f9de2a18",
-     "ev_6c579aaa028db08a7b095ec0f72692a9232cc7667044b50fdc1ab99dddfa26f4"
+     "ev_3c7e86b0e20f12a4dae096c1edeaa44c50941bfb2e8db89a61e897d0a0fb8364",
+     "ev_392d33cea31371284e21eefec637f14470032dccc7fcd7a421bd5b8eddbf1cff"
     ]
    },
    "copy_coverage": 0.921,
@@ -1696,7 +1696,7 @@
    "id": "settings-repo-misc-lower",
    "title": "Settings > tide-web > Misc, scrolled to Remove repository",
    "status": "wrong",
-   "why": "diff 6.4% at t24, copy 92%",
+   "why": "diff 6.0% at t24, copy 92%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1717,11 +1717,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-repo-misc-lower.jpg",
-    "changed_ratio_t0": 0.09845846036585366,
-    "changed_ratio_t24": 0.06373951981707317,
+    "changed_ratio_t0": 0.09433307926829268,
+    "changed_ratio_t24": 0.05978563262195122,
     "rea_evidence_ids": [
-     "ev_4ff5a20b63a7a849e49ab6bee2f7e84915fe4bf3357563a97c49bd6491c895f1",
-     "ev_043d22c0e6d360ef3bba0a0ab845e49463f80bb8495cfb43c483ffce526c1688"
+     "ev_5c8a6f521eed186832beb73436fd381442a847ae570596ca19b76956adc9a4d3",
+     "ev_32c51645e1d109d589ae5be857292fcbf42584185b4d8a4cc855cb8078ce7297"
     ]
    },
    "copy_coverage": 0.921,
@@ -2012,11 +2012,11 @@
    },
    "diff": {
     "file": "ui-map/diff/settings-search.jpg",
-    "changed_ratio_t0": 0.12962271341463413,
-    "changed_ratio_t24": 0.04877572408536585,
+    "changed_ratio_t0": 0.11449885670731708,
+    "changed_ratio_t24": 0.03272008384146342,
     "rea_evidence_ids": [
-     "ev_f011953e71429e940ade708066dbb077d4643ea03ebbc5a3a05dae5be25893f3",
-     "ev_b6071373c17b5aa10feac32baad1c3ca2c33242cccb2dc42bc405afbb147d3bc"
+     "ev_1f71087ae50c1c6cd3544edffb2af0fb0241a1ac59520ac3daf4dd885a3ba7e1",
+     "ev_ce9174e22554f3f218fe0913425dfc49613b5d6c4471fa42773f7f649e189b0d"
     ]
    },
    "copy_coverage": null,
@@ -2048,10 +2048,10 @@
    "diff": {
     "file": "ui-map/diff/palette-all.jpg",
     "changed_ratio_t0": 0.9999866615853659,
-    "changed_ratio_t24": 0.059029153963414634,
+    "changed_ratio_t24": 0.058870998475609754,
     "rea_evidence_ids": [
-     "ev_232691d11ea926a07d0dac12261ff7dfd83618567bb00fb1739b90ef1f716e14",
-     "ev_fe637ef323b7390401795ab7f3ee59a844a69e46bf772c9e619f3bccd92b4d32"
+     "ev_ca9cc6c4a950eb7f69ab2c16df5ab8acf4530f84f3ca1e5b09e2aad62034d1c5",
+     "ev_c98f5d4e72005f375623e21e0c8473462d8d42711335b56264f93624f33bee56"
     ]
    },
    "copy_coverage": 0.5,
@@ -2106,10 +2106,10 @@
    "diff": {
     "file": "ui-map/diff/palette-workspaces.jpg",
     "changed_ratio_t0": 0.9999876143292683,
-    "changed_ratio_t24": 0.056441501524390245,
+    "changed_ratio_t24": 0.056244283536585366,
     "rea_evidence_ids": [
-     "ev_dabd393ddea233382823e790e929961060ff81a3f73365bcfb16f74d9398e611",
-     "ev_fe54824d7f462a097690663e95b187e5fe0306dfe9f2919e659da6b6c4172fdb"
+     "ev_cc77cff5ba4f42a805d8b70dd76aa48dd34809daa9360ded3ba6d4ad208fe159",
+     "ev_139501cd308bfb35d9468b42cf8262890cb88f570f4f2fd64acce5c5b7a13ace"
     ]
    },
    "copy_coverage": 0.81,
@@ -2146,10 +2146,10 @@
    "diff": {
     "file": "ui-map/diff/palette-search.jpg",
     "changed_ratio_t0": 0.9999809451219512,
-    "changed_ratio_t24": 0.059357850609756097,
+    "changed_ratio_t24": 0.05920541158536585,
     "rea_evidence_ids": [
-     "ev_338f954dd9283e830ba818c066f39a2bc9bf18cfd44e45ad132907f5843271be",
-     "ev_b119cc988594dd1a51a9742e89f3002248f2e8cc57b268cb80f385752525830c"
+     "ev_8488267b5c9b6ed11cc4a1cfab1df49867ba972c2f20f5edb319ba42adf689d0",
+     "ev_a32978157f232a405399a88c32e05d9557e43daee839ffcb715db44175a55988"
     ]
    },
    "copy_coverage": 0.8,
@@ -2185,11 +2185,11 @@
    },
    "diff": {
     "file": "ui-map/diff/dialog-clone-github.jpg",
-    "changed_ratio_t0": 0.9893464176829269,
-    "changed_ratio_t24": 0.08534012957317073,
+    "changed_ratio_t0": 0.9893530868902439,
+    "changed_ratio_t24": 0.0848828125,
     "rea_evidence_ids": [
-     "ev_90a6793391966f090548653ccf29b0c131cdd6b5db1d70d8513c4e26ca5b173c",
-     "ev_d6e4449b08d59c7f9f7ed5dfc47b085abf2c412a8635f50d4469ea55232e2ab5"
+     "ev_9d2c2841ac5f45ed142c9a209a6aca1774626d9076824e6b3503b4a2ea326ac5",
+     "ev_e6dea88936795c1ae2b1e8a5d3b62b9c3ea53c42ec3e22d902e67c4a93a07712"
     ]
    },
    "copy_coverage": 0.8,
@@ -2204,7 +2204,7 @@
    "id": "dialog-create-project",
    "title": "Create project dialog",
    "status": "wrong",
-   "why": "diff 9.7% at t24, copy 83%",
+   "why": "diff 9.6% at t24, copy 83%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2226,10 +2226,10 @@
    "diff": {
     "file": "ui-map/diff/dialog-create-project.jpg",
     "changed_ratio_t0": 0.9785289634146341,
-    "changed_ratio_t24": 0.0967311356707317,
+    "changed_ratio_t24": 0.09635766006097561,
     "rea_evidence_ids": [
-     "ev_ca96f52f8ed58b1f943fa765898862688fb74df79dc9799e6fb8581eeaf34c04",
-     "ev_d4c366aac485a11d92f7191807b27efbfece5f5d197f186c2e047fd0d88038e0"
+     "ev_0df5b405fdd58a82ee927fd51cbc01108b63bcd05744cd9089ceb017d30b433d",
+     "ev_9480cb591a31d6b228cd99ed4b405c21cf2e6e384fd02d5af200f0e4b2ec72b2"
     ]
    },
    "copy_coverage": 0.828,
@@ -2245,7 +2245,7 @@
    "id": "dialog-rename-workspace",
    "title": "Rename workspace dialog",
    "status": "wrong",
-   "why": "diff 5.4% at t24, copy 78%",
+   "why": "diff 5.3% at t24, copy 78%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2266,11 +2266,11 @@
    },
    "diff": {
     "file": "ui-map/diff/dialog-rename-workspace.jpg",
-    "changed_ratio_t0": 0.9999904725609756,
-    "changed_ratio_t24": 0.05357374237804878,
+    "changed_ratio_t0": 0.9999895198170732,
+    "changed_ratio_t24": 0.05320503048780488,
     "rea_evidence_ids": [
-     "ev_e580c26d1be1993d2c8d9f5ef77cdb57aee2e5adc8aaa68fd132018038e22555",
-     "ev_2e906120b6d56c9269eb54b9089d29966ec9c2e49cca0c812212d7b5ec99aba1"
+     "ev_9a14f9403baeee56ac8b84d29f2225839ac63c005ff193899825f10494275265",
+     "ev_19d761d9c795d1aa7631c316172b2f500a38763a91e707b3a2a9ffe92dbdc832"
     ]
    },
    "copy_coverage": 0.778,
@@ -2285,7 +2285,7 @@
    "id": "dialog-keyboard-shortcuts",
    "title": "Keyboard shortcuts dialog",
    "status": "wrong",
-   "why": "diff 5.9% at t24, copy 79%",
+   "why": "diff 5.6% at t24, copy 79%",
    "team": "shell",
    "reference": {
     "status": "captured",
@@ -2306,11 +2306,11 @@
    },
    "diff": {
     "file": "ui-map/diff/dialog-keyboard-shortcuts.jpg",
-    "changed_ratio_t0": 0.34322694359756095,
-    "changed_ratio_t24": 0.05936833079268293,
+    "changed_ratio_t0": 0.30191692073170734,
+    "changed_ratio_t24": 0.0556421493902439,
     "rea_evidence_ids": [
-     "ev_94c56cd0720c0fa3c8071da007add03ac0763b101903912ed40293ad2e8d0f81",
-     "ev_a338dd4c368ceab52b35f5be1f69c3adf0d2ed7a68fdf45c5cc6496028b5152f"
+     "ev_c390dac78b7b4c4e20afc68f076aff52e8cb0313489c45872031c54c54cbe733",
+     "ev_7a3e7124b7575463e65c83bde219927391ac10262e617e26213c07d7d7c8d5bd"
     ]
    },
    "copy_coverage": 0.786,
@@ -2324,7 +2324,7 @@
    "id": "menu-account",
    "title": "Account / computer menu",
    "status": "wrong",
-   "why": "diff 5.8% at t24, copy 73%",
+   "why": "diff 5.7% at t24, copy 73%",
    "team": "shell",
    "reference": {
     "status": "captured",
@@ -2345,11 +2345,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-account.jpg",
-    "changed_ratio_t0": 0.3361080411585366,
-    "changed_ratio_t24": 0.057884908536585365,
+    "changed_ratio_t0": 0.335922256097561,
+    "changed_ratio_t24": 0.05743711890243902,
     "rea_evidence_ids": [
-     "ev_4e4073880e3d0016b37d88abb209b0b99694adc6dc594a7e1860a015379c6db6",
-     "ev_b68b3f87e5eb2c617a31b69b953372e0a7f177ded6348700a5f70e5f496bef59"
+     "ev_f20f54d1d1cf6f7ef6f7efd0923465bcda760c07cf001688c60d30f640091cad",
+     "ev_e58a636db31e70b1728ed53045fcc4fe9059d1348bbb4a018e13cc09cc891bf6"
     ]
    },
    "copy_coverage": 0.733,
@@ -2364,7 +2364,7 @@
    "id": "menu-workspace-context",
    "title": "Workspace context menu",
    "status": "wrong",
-   "why": "diff 6.2% at t24, copy 83%",
+   "why": "diff 6.1% at t24, copy 83%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2385,11 +2385,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-workspace-context.jpg",
-    "changed_ratio_t0": 0.3560261051829268,
-    "changed_ratio_t24": 0.06165967987804878,
+    "changed_ratio_t0": 0.35697599085365855,
+    "changed_ratio_t24": 0.061171875,
     "rea_evidence_ids": [
-     "ev_5c3a5b6e2ea6bf743296549e1a112b76dec39ab95d178b0970a9ee0bb59297a1",
-     "ev_eecff10836750db5f1a52aaa95bdc5babec30a6a69063a20375c153fb2de1b5f"
+     "ev_8832f378662f6e3a1f7165ed4cedc83a93c1d1ccbc5926b52bead68b6c8ca94d",
+     "ev_f74de5c0ca7eaa2adab0dae5a8891b6400cdce1f33b51e9c509cf5e4c7aa6856"
     ]
    },
    "copy_coverage": 0.833,
@@ -2403,7 +2403,7 @@
    "id": "menu-workspace-status",
    "title": "Workspace context menu > Set status",
    "status": "wrong",
-   "why": "diff 7.3% at t24, copy 79%",
+   "why": "diff 7.2% at t24, copy 79%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2424,11 +2424,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-workspace-status.jpg",
-    "changed_ratio_t0": 0.38461509146341466,
-    "changed_ratio_t24": 0.07274009146341463,
+    "changed_ratio_t0": 0.3844331173780488,
+    "changed_ratio_t24": 0.07227896341463415,
     "rea_evidence_ids": [
-     "ev_856a196aa95a69f5578e69ddcae8de464b527859d248d4ebdf7408914ce5ae81",
-     "ev_f37a6fdacd5992db62d4e432f954e43dc723bcb70e15d3fdadeb4af9a4863510"
+     "ev_2054236d3919f7dba6c4610a424ccf11a4e1b54937bf75742467e071971664f4",
+     "ev_eaad7a8decd94b0b7731bd29f32861c6e3a1d5798f5fe6d38155e9cf9a416596"
     ]
    },
    "copy_coverage": 0.789,
@@ -2443,7 +2443,7 @@
    "id": "menu-model-picker",
    "title": "Composer model picker",
    "status": "wrong",
-   "why": "diff 4.8% at t24, copy 81%",
+   "why": "diff 4.7% at t24, copy 81%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -2464,11 +2464,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-model-picker.jpg",
-    "changed_ratio_t0": 0.21265434451219511,
-    "changed_ratio_t24": 0.047781059451219514,
+    "changed_ratio_t0": 0.21248951981707317,
+    "changed_ratio_t24": 0.0474437881097561,
     "rea_evidence_ids": [
-     "ev_b03f5f92cca37671b4fee84a8980fae954c18fd91aa08ba1b9259180cbb92602",
-     "ev_0e01bc68237a895d223fb9922ab11cbb8f40fe9aca83910fca5b599827860dbf"
+     "ev_ca1aa89f7cf934eff3023ea9f50769bd890f0c2120b687c6ed351217fa26d2c6",
+     "ev_c210fa2f6f1d5c2e8e8e0735d8d8f080272d6422b564089a018d4d33fb36be5e"
     ]
    },
    "copy_coverage": 0.812,
@@ -2506,11 +2506,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-repo-actions.jpg",
-    "changed_ratio_t0": 0.32525247713414634,
-    "changed_ratio_t24": 0.057109375,
+    "changed_ratio_t0": 0.32506669207317074,
+    "changed_ratio_t24": 0.056682545731707314,
     "rea_evidence_ids": [
-     "ev_bbdab6d5fbeffd06967cb48b6bfded652873317e110d9ea36815912ba0e6fa6c",
-     "ev_2fb7c1c64a246c54102c2025be2f196586b66427b180d575fccf0a838168684e"
+     "ev_2d698f5541a1be7a4134fb059bb9431822ba9e263a70f1e551d555c90fd3bf01",
+     "ev_79cbe1e4459e03e51a010453c61ec5e6fcee0088b54cc92904206753d0e1b047"
     ]
    },
    "copy_coverage": 0.786,
@@ -2541,11 +2541,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-help.jpg",
-    "changed_ratio_t0": 0.3832059832317073,
-    "changed_ratio_t24": 0.07243711890243902,
+    "changed_ratio_t0": 0.3830201981707317,
+    "changed_ratio_t24": 0.07198932926829268,
     "rea_evidence_ids": [
-     "ev_896df32988c43e20d9c796f78957f77cb6f3632810b76a844b666fa0f4bc4cfa",
-     "ev_6de4732d79c2a9993bfcfd7679e4d7556a0350c612f93c4a10fb7c198beda2be"
+     "ev_473926f9981b69ec14816af3f1e9c95644e3f7f2f2ac5505ea5212ea25d56cec",
+     "ev_9fc3d49d0adc0e08e84089ea29eaab011648bf205b485011367a9c324d0abcb3"
     ]
    },
    "copy_coverage": 0.696,
@@ -2584,11 +2584,11 @@
    },
    "diff": {
     "file": "ui-map/diff/toast-copied-link.jpg",
-    "changed_ratio_t0": 0.34385099085365856,
-    "changed_ratio_t24": 0.06323456554878049,
+    "changed_ratio_t0": 0.3436690167682927,
+    "changed_ratio_t24": 0.0627734375,
     "rea_evidence_ids": [
-     "ev_b8987f0f3b78b8485bc752e374bd396f63da120e4884c0e415f68d0d54a693c5",
-     "ev_7dba96935bc8fc2003ddfe527f0e2f7e2ef291e182c6712890124759db55557d"
+     "ev_7cf1ecac3030b4dc7a3b2c6078d65076b3edf8df27a4bf408ae94d7d26331aa8",
+     "ev_2437626a54bfa9c71ceef57a35659ff8ce3f1c1985907e6ed53a0f5dcc29db86"
     ]
    },
    "copy_coverage": 0.733,
@@ -2658,7 +2658,7 @@
    "reference_screenshot": "ui-map/ref/onboarding-signed-out.png",
    "openconductor_screenshot": "ui-map/oc/onboarding-signed-out.png",
    "diff": "ui-map/diff/onboarding-signed-out.jpg",
-   "changed_ratio_t24": 0.9926724466463415
+   "changed_ratio_t24": 0.9926876905487805
   },
   {
    "id": "route:settings",
@@ -2731,7 +2731,7 @@
    "kind": "route",
    "name": "/settings/user/providers",
    "status": "wrong",
-   "why": "diff 4.7% at t24, copy 79%",
+   "why": "diff 4.6% at t24, copy 79%",
    "team": "settings",
    "component": "fEa",
    "source": {
@@ -2746,14 +2746,14 @@
    "reference_screenshot": "ui-map/ref/settings-providers.png",
    "openconductor_screenshot": "ui-map/oc/settings-providers.png",
    "diff": "ui-map/diff/settings-providers.jpg",
-   "changed_ratio_t24": 0.04700362042682927
+   "changed_ratio_t24": 0.045514481707317075
   },
   {
    "id": "route:settings-user-environment",
    "kind": "route",
    "name": "/settings/user/environment",
    "status": "wrong",
-   "why": "diff 3.3% at t24, copy 86%",
+   "why": "diff 2.9% at t24, copy 86%",
    "team": "settings",
    "component": "mEa",
    "source": {
@@ -2768,7 +2768,7 @@
    "reference_screenshot": "ui-map/ref/settings-environment.png",
    "openconductor_screenshot": "ui-map/oc/settings-environment.png",
    "diff": "ui-map/diff/settings-environment.jpg",
-   "changed_ratio_t24": 0.033162157012195125
+   "changed_ratio_t24": 0.028844321646341462
   },
   {
    "id": "route:settings-user-ports",
@@ -2797,7 +2797,7 @@
    "kind": "route",
    "name": "/settings/user/key-bindings",
    "status": "wrong",
-   "why": "no valid reference render (redirected to /settings/user/general), diff 4.5% at t24",
+   "why": "no valid reference render (redirected to /settings/user/general), diff 4.4% at t24",
    "team": "settings",
    "component": "dEa",
    "source": {
@@ -2812,7 +2812,7 @@
    "reference_screenshot": "ui-map/ref/settings-key-bindings.png",
    "openconductor_screenshot": "ui-map/oc/settings-key-bindings.png",
    "diff": "ui-map/diff/settings-key-bindings.jpg",
-   "changed_ratio_t24": 0.04532774390243902
+   "changed_ratio_t24": 0.04391673018292683
   },
   {
    "id": "route:settings-user-terminal",
@@ -2834,7 +2834,7 @@
    "reference_screenshot": "ui-map/ref/settings-terminal.png",
    "openconductor_screenshot": "ui-map/oc/settings-terminal.png",
    "diff": "ui-map/diff/settings-terminal.jpg",
-   "changed_ratio_t24": 0.04681116615853659
+   "changed_ratio_t24": 0.030354420731707316
   },
   {
    "id": "route:settings-user-internal",
@@ -2951,7 +2951,7 @@
    "kind": "route",
    "name": "/settings/repos/$repoId/environment",
    "status": "wrong",
-   "why": "diff 3.3% at t24, copy 88%",
+   "why": "diff 2.6% at t24, copy 88%",
    "team": "settings",
    "component": "_Ea",
    "source": {
@@ -2966,14 +2966,14 @@
    "reference_screenshot": "ui-map/ref/settings-repo-environment.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-environment.png",
    "diff": "ui-map/diff/settings-repo-environment.jpg",
-   "changed_ratio_t24": 0.03262385670731707
+   "changed_ratio_t24": 0.02637862042682927
   },
   {
    "id": "route:settings-repos-repoid-git",
    "kind": "route",
    "name": "/settings/repos/$repoId/git",
    "status": "matches",
-   "why": "diff 4.5% at t24, copy 90%",
+   "why": "diff 3.4% at t24, copy 90%",
    "team": "settings",
    "component": "yEa",
    "source": {
@@ -2988,14 +2988,14 @@
    "reference_screenshot": "ui-map/ref/settings-repo-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-git.png",
    "diff": "ui-map/diff/settings-repo-git.jpg",
-   "changed_ratio_t24": 0.04451505335365854
+   "changed_ratio_t24": 0.034258765243902436
   },
   {
    "id": "route:settings-repos-repoid-scripts",
    "kind": "route",
    "name": "/settings/repos/$repoId/scripts",
    "status": "wrong",
-   "why": "diff 3.1% at t24, copy 67%",
+   "why": "diff 2.9% at t24, copy 67%",
    "team": "settings",
    "component": "wEa",
    "source": {
@@ -3010,14 +3010,14 @@
    "reference_screenshot": "ui-map/ref/settings-repo-scripts.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-scripts.png",
    "diff": "ui-map/diff/settings-repo-scripts.jpg",
-   "changed_ratio_t24": 0.031428163109756095
+   "changed_ratio_t24": 0.02930830792682927
   },
   {
    "id": "route:settings-repos-repoid-actions",
    "kind": "route",
    "name": "/settings/repos/$repoId/actions",
    "status": "wrong",
-   "why": "diff 5.8% at t24, copy 74%",
+   "why": "diff 5.4% at t24, copy 74%",
    "team": "settings",
    "component": "EEa",
    "source": {
@@ -3032,14 +3032,14 @@
    "reference_screenshot": "ui-map/ref/settings-repo-actions.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-actions.png",
    "diff": "ui-map/diff/settings-repo-actions.jpg",
-   "changed_ratio_t24": 0.05834889481707317
+   "changed_ratio_t24": 0.054264481707317076
   },
   {
    "id": "route:settings-repos-repoid-misc",
    "kind": "route",
    "name": "/settings/repos/$repoId/misc",
    "status": "wrong",
-   "why": "diff 6.4% at t24, copy 92%",
+   "why": "diff 5.8% at t24, copy 92%",
    "team": "settings",
    "component": "kEa",
    "source": {
@@ -3054,7 +3054,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
    "diff": "ui-map/diff/settings-repo-misc.jpg",
-   "changed_ratio_t24": 0.06380049542682927
+   "changed_ratio_t24": 0.05794874237804878
   },
   {
    "id": "route:settings-cloud",
@@ -3516,7 +3516,7 @@
    "reference_screenshot": "ui-map/ref/first-run-onboarding.png",
    "openconductor_screenshot": "ui-map/oc/first-run-onboarding.png",
    "diff": "ui-map/diff/first-run-onboarding.jpg",
-   "changed_ratio_t24": 0.9679744664634147
+   "changed_ratio_t24": 0.968031631097561
   },
   {
    "id": "route:new-member-onboarding",
@@ -3560,14 +3560,14 @@
    "reference_screenshot": "ui-map/ref/home.png",
    "openconductor_screenshot": "ui-map/oc/home.png",
    "diff": "ui-map/diff/home.jpg",
-   "changed_ratio_t24": 0.042641006097560975
+   "changed_ratio_t24": 0.04259622713414634
   },
   {
    "id": "route:repository-repositoryid-workspace-localworkspaceid",
    "kind": "route",
    "name": "/repository/$repositoryId/workspace/$localWorkspaceId",
    "status": "wrong",
-   "why": "diff 4.6% at t24, copy 85%",
+   "why": "diff 4.5% at t24, copy 85%",
    "team": "chat",
    "component": "dXo",
    "source": {
@@ -3582,7 +3582,7 @@
    "reference_screenshot": "ui-map/ref/workspace-chat.png",
    "openconductor_screenshot": "ui-map/oc/workspace-chat.png",
    "diff": "ui-map/diff/workspace-chat.jpg",
-   "changed_ratio_t24": 0.04553544207317073
+   "changed_ratio_t24": 0.045215320121951216
   },
   {
    "id": "route:all-workspaces",
@@ -3604,7 +3604,7 @@
    "reference_screenshot": "ui-map/ref/all-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/all-workspaces.png",
    "diff": "ui-map/diff/all-workspaces.jpg",
-   "changed_ratio_t24": 0.011214748475609757
+   "changed_ratio_t24": 0.011153772865853659
   },
   {
    "id": "route:create",
@@ -3626,7 +3626,7 @@
    "reference_screenshot": "ui-map/ref/create.png",
    "openconductor_screenshot": "ui-map/oc/create.png",
    "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.06903868140243903
+   "changed_ratio_t24": 0.06884432164634147
   },
   {
    "id": "route:team",
@@ -3919,7 +3919,7 @@
    "kind": "route",
    "name": "/settings/user/general",
    "status": "wrong",
-   "why": "diff 4.8% at t24, copy 89%",
+   "why": "diff 3.1% at t24, copy 89%",
    "team": "settings",
    "component": null,
    "source": {
@@ -3934,14 +3934,14 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488
+   "changed_ratio_t24": 0.03120236280487805
   },
   {
    "id": "route:settings-user-account",
    "kind": "route",
    "name": "/settings/user/account",
    "status": "wrong",
-   "why": "diff 4.5% at t24, copy 73%",
+   "why": "diff 4.3% at t24, copy 73%",
    "team": "settings",
    "component": null,
    "source": {
@@ -3956,14 +3956,14 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561
+   "changed_ratio_t24": 0.04286966463414634
   },
   {
    "id": "route:settings-user-models",
    "kind": "route",
    "name": "/settings/user/models",
    "status": "wrong",
-   "why": "diff 4.3% at t24, copy 71%",
+   "why": "diff 4.2% at t24, copy 71%",
    "team": "settings",
    "component": null,
    "source": {
@@ -3978,14 +3978,14 @@
    "reference_screenshot": "ui-map/ref/settings-models.png",
    "openconductor_screenshot": "ui-map/oc/settings-models.png",
    "diff": "ui-map/diff/settings-models.jpg",
-   "changed_ratio_t24": 0.043206935975609755
+   "changed_ratio_t24": 0.04176638719512195
   },
   {
    "id": "route:settings-user-git",
    "kind": "route",
    "name": "/settings/user/git",
-   "status": "wrong",
-   "why": "diff 5.1% at t24, copy 92%",
+   "status": "matches",
+   "why": "diff 4.2% at t24, copy 92%",
    "team": "settings",
    "component": null,
    "source": {
@@ -4000,14 +4000,14 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095
+   "changed_ratio_t24": 0.04201124237804878
   },
   {
    "id": "route:settings-user-appearance",
    "kind": "route",
    "name": "/settings/user/appearance",
    "status": "wrong",
-   "why": "diff 5.4% at t24, copy 89%",
+   "why": "diff 5.1% at t24, copy 89%",
    "team": "settings",
    "component": null,
    "source": {
@@ -4022,14 +4022,14 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561
+   "changed_ratio_t24": 0.050540205792682924
   },
   {
    "id": "route:settings-user-experimental",
    "kind": "route",
    "name": "/settings/user/experimental",
    "status": "matches",
-   "why": "diff 4.9% at t24, copy 91%",
+   "why": "diff 3.2% at t24, copy 91%",
    "team": "settings",
    "component": null,
    "source": {
@@ -4044,14 +4044,14 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636
+   "changed_ratio_t24": 0.03235232469512195
   },
   {
    "id": "route:settings-user-advanced",
    "kind": "route",
    "name": "/settings/user/advanced",
    "status": "wrong",
-   "why": "diff 7.4% at t24, copy 88%",
+   "why": "diff 7.0% at t24, copy 88%",
    "team": "settings",
    "component": null,
    "source": {
@@ -4066,7 +4066,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951
+   "changed_ratio_t24": 0.07026581554878049
   },
   {
    "id": "dialog:conductor-passport",
@@ -4118,7 +4118,7 @@
    "reference_screenshot": "ui-map/ref/dialog-clone-github.png",
    "openconductor_screenshot": "ui-map/oc/dialog-clone-github.png",
    "diff": "ui-map/diff/dialog-clone-github.jpg",
-   "changed_ratio_t24": 0.08534012957317073,
+   "changed_ratio_t24": 0.0848828125,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4144,7 +4144,7 @@
    "reference_screenshot": "ui-map/ref/dialog-create-project.png",
    "openconductor_screenshot": "ui-map/oc/dialog-create-project.png",
    "diff": "ui-map/diff/dialog-create-project.jpg",
-   "changed_ratio_t24": 0.0967311356707317,
+   "changed_ratio_t24": 0.09635766006097561,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4170,7 +4170,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4196,7 +4196,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4320,7 +4320,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4692,7 +4692,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4718,7 +4718,7 @@
    "reference_screenshot": "ui-map/ref/create.png",
    "openconductor_screenshot": "ui-map/oc/create.png",
    "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.06903868140243903,
+   "changed_ratio_t24": 0.06884432164634147,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4916,7 +4916,7 @@
    "reference_screenshot": "ui-map/ref/palette-all.png",
    "openconductor_screenshot": "ui-map/oc/palette-all.png",
    "diff": "ui-map/diff/palette-all.jpg",
-   "changed_ratio_t24": 0.059029153963414634,
+   "changed_ratio_t24": 0.058870998475609754,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -6925,7 +6925,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.056441501524390245,
+   "changed_ratio_t24": 0.056244283536585366,
    "primitive": "DropdownMenuCheckboxItem",
    "dynamic": false
   },
@@ -7617,7 +7617,7 @@
    "reference_screenshot": "ui-map/ref/menu-workspace-context.png",
    "openconductor_screenshot": "ui-map/oc/menu-workspace-context.png",
    "diff": "ui-map/diff/menu-workspace-context.jpg",
-   "changed_ratio_t24": 0.06165967987804878,
+   "changed_ratio_t24": 0.061171875,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -8335,7 +8335,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.056441501524390245,
+   "changed_ratio_t24": 0.056244283536585366,
    "primitive": "DropdownMenuContent",
    "dynamic": true
   },
@@ -9302,7 +9302,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.056441501524390245,
+   "changed_ratio_t24": 0.056244283536585366,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -9508,7 +9508,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -9560,7 +9560,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -9810,7 +9810,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -10042,7 +10042,7 @@
    "reference_screenshot": "ui-map/ref/create-repo-picker.png",
    "openconductor_screenshot": "ui-map/oc/create-repo-picker.png",
    "diff": "ui-map/diff/create-repo-picker.jpg",
-   "changed_ratio_t24": 0.07308974847560976,
+   "changed_ratio_t24": 0.07289538871951219,
    "primitive": "SelectContent",
    "dynamic": true
   },
@@ -10170,7 +10170,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "primitive": "SelectContent",
    "dynamic": true
   },
@@ -10196,7 +10196,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "primitive": "SelectContent",
    "dynamic": true
   },
@@ -10204,8 +10204,8 @@
    "id": "select:ula",
    "kind": "select",
    "name": null,
-   "status": "wrong",
-   "why": "host state settings-git is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-git matches",
    "team": "settings",
    "component": "ula",
    "source": {
@@ -10222,7 +10222,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "primitive": "SelectContent",
    "dynamic": true
   },
@@ -10249,7 +10249,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "primitive": "SelectContent",
    "dynamic": true
   },
@@ -10324,7 +10324,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "primitive": "SelectContent",
    "dynamic": true
   },
@@ -10376,7 +10376,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "primitive": "SelectContent",
    "dynamic": true
   },
@@ -11367,7 +11367,7 @@
    "reference_screenshot": "ui-map/ref/palette-all.png",
    "openconductor_screenshot": "ui-map/oc/palette-all.png",
    "diff": "ui-map/diff/palette-all.jpg",
-   "changed_ratio_t24": 0.059029153963414634,
+   "changed_ratio_t24": 0.058870998475609754,
    "primitive": "E1",
    "dynamic": true
   },
@@ -19097,7 +19097,7 @@
    "reference_screenshot": "ui-map/ref/toast-copied-link.png",
    "openconductor_screenshot": "ui-map/oc/toast-copied-link.png",
    "diff": "ui-map/diff/toast-copied-link.jpg",
-   "changed_ratio_t24": 0.06323456554878049,
+   "changed_ratio_t24": 0.0627734375,
    "variant": "success",
    "dynamic": false
   },
@@ -20823,7 +20823,7 @@
    "reference_screenshot": "ui-map/ref/settings-environment.png",
    "openconductor_screenshot": "ui-map/oc/settings-environment.png",
    "diff": "ui-map/diff/settings-environment.jpg",
-   "changed_ratio_t24": 0.033162157012195125
+   "changed_ratio_t24": 0.028844321646341462
   },
   {
    "id": "empty-state:no-matching-mcp-servers",
@@ -20967,7 +20967,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-scripts.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-scripts.png",
    "diff": "ui-map/diff/settings-repo-scripts.jpg",
-   "changed_ratio_t24": 0.031428163109756095
+   "changed_ratio_t24": 0.02930830792682927
   },
   {
    "id": "empty-state:no-account-information-available-please-sign-in",
@@ -21087,7 +21087,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
    "diff": "ui-map/diff/settings-repo-misc.jpg",
-   "changed_ratio_t24": 0.06380049542682927
+   "changed_ratio_t24": 0.05794874237804878
   },
   {
    "id": "empty-state:no-emoji-found",
@@ -21454,7 +21454,7 @@
    "kind": "settings-page",
    "name": "account",
    "status": "wrong",
-   "why": "diff 4.5% at t24, copy 73%",
+   "why": "diff 4.3% at t24, copy 73%",
    "team": "settings",
    "component": null,
    "source": {
@@ -21467,7 +21467,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "route": "/settings/user/account",
    "route_guess": "/settings/user/account",
    "rows": 5
@@ -21493,7 +21493,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "page": "account",
    "setting_key": null,
    "row_id": "account:identity-integrations",
@@ -21522,7 +21522,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "page": "account",
    "setting_key": "enterprise_data_privacy",
    "row_id": null,
@@ -21551,7 +21551,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "page": "account",
    "setting_key": "tool_approvals_enabled",
    "row_id": null,
@@ -21579,7 +21579,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "page": "account",
    "setting_key": "codex_tool_approval_policy",
    "row_id": null,
@@ -21608,7 +21608,7 @@
    "reference_screenshot": "ui-map/ref/settings-account.png",
    "openconductor_screenshot": "ui-map/oc/settings-account.png",
    "diff": "ui-map/diff/settings-account.jpg",
-   "changed_ratio_t24": 0.04452172256097561,
+   "changed_ratio_t24": 0.04286966463414634,
    "page": "account",
    "setting_key": null,
    "row_id": "account:sign-out",
@@ -21621,7 +21621,7 @@
    "kind": "settings-page",
    "name": "advanced",
    "status": "wrong",
-   "why": "diff 7.4% at t24, copy 88%",
+   "why": "diff 7.0% at t24, copy 88%",
    "team": "settings",
    "component": null,
    "source": {
@@ -21634,7 +21634,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "route": "/settings/user/advanced",
    "route_guess": "/settings/user/advanced",
    "rows": 10
@@ -21660,7 +21660,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "page": "advanced",
    "setting_key": null,
    "row_id": "advanced:conductor-root",
@@ -21689,7 +21689,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "page": "advanced",
    "setting_key": "claude_executable_path",
    "row_id": "advanced:claude_executable_path",
@@ -21718,7 +21718,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "page": "advanced",
    "setting_key": "codex_executable_path",
    "row_id": "advanced:codex_executable_path",
@@ -21747,7 +21747,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "page": "advanced",
    "setting_key": "opencode_executable_path",
    "row_id": "advanced:opencode_executable_path",
@@ -21776,7 +21776,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "page": "advanced",
    "setting_key": "ssh_key_path",
    "row_id": null,
@@ -21805,7 +21805,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "page": "advanced",
    "setting_key": "internal_remote_local_execution_mcp",
    "row_id": null,
@@ -21834,7 +21834,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "page": "advanced",
    "setting_key": "always_allow_local_execution",
    "row_id": null,
@@ -21863,7 +21863,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "page": "advanced",
    "setting_key": "auto_sync_files_in_new_cloud_workspaces",
    "row_id": null,
@@ -21892,7 +21892,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "page": "advanced",
    "setting_key": "worktree_push_auto_setup_remote",
    "row_id": "advanced:worktree_push_auto_setup_remote",
@@ -21921,7 +21921,7 @@
    "reference_screenshot": "ui-map/ref/settings-advanced.png",
    "openconductor_screenshot": "ui-map/oc/settings-advanced.png",
    "diff": "ui-map/diff/settings-advanced.jpg",
-   "changed_ratio_t24": 0.07371855945121951,
+   "changed_ratio_t24": 0.07026581554878049,
    "page": "advanced",
    "setting_key": "terminal_scrollback_limit_bytes",
    "row_id": null,
@@ -21934,7 +21934,7 @@
    "kind": "settings-page",
    "name": "experimental",
    "status": "matches",
-   "why": "diff 4.9% at t24, copy 91%",
+   "why": "diff 3.2% at t24, copy 91%",
    "team": "settings",
    "component": null,
    "source": {
@@ -21947,7 +21947,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "route": "/settings/user/experimental",
    "route_guess": "/settings/user/experimental",
    "rows": 19
@@ -21973,7 +21973,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_auto_permission_mode",
    "row_id": null,
@@ -22002,7 +22002,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_big_terminal_mode",
    "row_id": null,
@@ -22031,7 +22031,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_new_workspace_page",
    "row_id": null,
@@ -22060,7 +22060,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_tab_freak_mode",
    "row_id": null,
@@ -22089,7 +22089,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_configurable_center_panel",
    "row_id": null,
@@ -22118,7 +22118,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_fork_to_new_tab",
    "row_id": null,
@@ -22147,7 +22147,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_in_app_browser_preview",
    "row_id": null,
@@ -22175,7 +22175,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_legacy_file_preview_and_editing",
    "row_id": null,
@@ -22204,7 +22204,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_show_agent_cost",
    "row_id": null,
@@ -22232,7 +22232,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_show_workspace_numbers",
    "row_id": null,
@@ -22261,7 +22261,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "internal_workspace_status_matrix",
    "row_id": null,
@@ -22290,7 +22290,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_cloud_desktop",
    "row_id": null,
@@ -22319,7 +22319,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "local_git_forge_enabled",
    "row_id": null,
@@ -22348,7 +22348,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "auto_run_after_setup",
    "row_id": null,
@@ -22377,7 +22377,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "dashboard_enabled",
    "row_id": null,
@@ -22406,7 +22406,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "voice_mode",
    "row_id": null,
@@ -22435,7 +22435,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "sidebar_resource_usage",
    "row_id": null,
@@ -22464,7 +22464,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "experimental_sidebar_transparency",
    "row_id": null,
@@ -22493,7 +22493,7 @@
    "reference_screenshot": "ui-map/ref/settings-experimental.png",
    "openconductor_screenshot": "ui-map/oc/settings-experimental.png",
    "diff": "ui-map/diff/settings-experimental.jpg",
-   "changed_ratio_t24": 0.049497903963414636,
+   "changed_ratio_t24": 0.03235232469512195,
    "page": "experimental",
    "setting_key": "graphite_disabled",
    "row_id": null,
@@ -22506,7 +22506,7 @@
    "kind": "settings-page",
    "name": "general",
    "status": "wrong",
-   "why": "diff 4.8% at t24, copy 89%",
+   "why": "diff 3.1% at t24, copy 89%",
    "team": "settings",
    "component": null,
    "source": {
@@ -22519,7 +22519,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "route": "/settings/user/general",
    "route_guess": "/settings/user/general",
    "rows": 15
@@ -22545,7 +22545,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "message_send_key",
    "row_id": null,
@@ -22574,7 +22574,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "default_message_send_mode",
    "row_id": null,
@@ -22603,7 +22603,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "notifications_enabled",
    "row_id": null,
@@ -22632,7 +22632,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "mention_notifications_enabled",
    "row_id": null,
@@ -22661,7 +22661,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "sound_type",
    "row_id": null,
@@ -22690,7 +22690,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": null,
    "row_id": "general:full-disk-access",
@@ -22719,7 +22719,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "auto_convert_long_text",
    "row_id": null,
@@ -22747,7 +22747,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "not_absolutely_right",
    "row_id": null,
@@ -22776,7 +22776,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "always_show_context_wheel",
    "row_id": null,
@@ -22805,7 +22805,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "caffeinate_while_agents_running",
    "row_id": null,
@@ -22834,7 +22834,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": null,
    "row_id": "general:workspace-api-access",
@@ -22862,7 +22862,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "auto_restart_on_update_when_idle",
    "row_id": null,
@@ -22891,7 +22891,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "mcp_status_indicator_enabled",
    "row_id": null,
@@ -22920,7 +22920,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": "garry_mode",
    "row_id": null,
@@ -22949,7 +22949,7 @@
    "reference_screenshot": "ui-map/ref/settings-general.png",
    "openconductor_screenshot": "ui-map/oc/settings-general.png",
    "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.04765815548780488,
+   "changed_ratio_t24": 0.03120236280487805,
    "page": "general",
    "setting_key": null,
    "row_id": "general:sync-agent-configs",
@@ -22961,8 +22961,8 @@
    "id": "settings-page:git",
    "kind": "settings-page",
    "name": "git",
-   "status": "wrong",
-   "why": "diff 5.1% at t24, copy 92%",
+   "status": "matches",
+   "why": "diff 4.2% at t24, copy 92%",
    "team": "settings",
    "component": null,
    "source": {
@@ -22975,7 +22975,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "route": "/settings/user/git",
    "route_guess": "/settings/user/git",
    "rows": 12
@@ -23001,7 +23001,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "page": "git",
    "setting_key": null,
    "row_id": "git:user-identity",
@@ -23030,7 +23030,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-git.png",
    "diff": "ui-map/diff/settings-repo-git.jpg",
-   "changed_ratio_t24": 0.04451505335365854,
+   "changed_ratio_t24": 0.034258765243902436,
    "page": "git",
    "setting_key": null,
    "row_id": "git:default-branch",
@@ -23059,7 +23059,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-git.png",
    "diff": "ui-map/diff/settings-repo-git.jpg",
-   "changed_ratio_t24": 0.04451505335365854,
+   "changed_ratio_t24": 0.034258765243902436,
    "page": "git",
    "setting_key": null,
    "row_id": "git:remote-origin",
@@ -23071,8 +23071,8 @@
    "id": "settings-row:git:open-pull-requests-in",
    "kind": "settings-row",
    "name": "Open pull requests in",
-   "status": "wrong",
-   "why": "host state settings-git is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-git matches",
    "team": "settings",
    "component": null,
    "source": {
@@ -23087,7 +23087,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "page": "git",
    "setting_key": "pull_request_open_target",
    "row_id": null,
@@ -23099,8 +23099,8 @@
    "id": "settings-row:git:branch-name-prefix",
    "kind": "settings-row",
    "name": "Branch name prefix",
-   "status": "wrong",
-   "why": "host state settings-git is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-git matches",
    "team": "settings",
    "component": null,
    "source": {
@@ -23116,7 +23116,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "page": "git",
    "setting_key": "branch_prefix_type",
    "row_id": null,
@@ -23128,8 +23128,8 @@
    "id": "settings-row:git:rename-workspace-when-branch-is-named",
    "kind": "settings-row",
    "name": "Rename workspace when branch is named",
-   "status": "wrong",
-   "why": "host state settings-git is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-git matches",
    "team": "settings",
    "component": null,
    "source": {
@@ -23145,7 +23145,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "page": "git",
    "setting_key": "auto_rename_workspace_on_branch_name_set",
    "row_id": null,
@@ -23157,8 +23157,8 @@
    "id": "settings-row:git:delete-branch-on-archive",
    "kind": "settings-row",
    "name": "Delete branch on archive",
-   "status": "wrong",
-   "why": "host state settings-git is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-git matches",
    "team": "settings",
    "component": null,
    "source": {
@@ -23174,7 +23174,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "page": "git",
    "setting_key": "delete_branch_on_archive",
    "row_id": null,
@@ -23187,8 +23187,8 @@
    "id": "settings-row:git:archive-on-merge",
    "kind": "settings-row",
    "name": "Archive on merge",
-   "status": "wrong",
-   "why": "host state settings-git is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-git matches",
    "team": "settings",
    "component": null,
    "source": {
@@ -23204,7 +23204,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "page": "git",
    "setting_key": "archive_on_merge",
    "row_id": null,
@@ -23217,8 +23217,8 @@
    "id": "settings-row:git:automerge",
    "kind": "settings-row",
    "name": "Automerge",
-   "status": "wrong",
-   "why": "host state settings-git is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-git matches",
    "team": "settings",
    "component": null,
    "source": {
@@ -23234,7 +23234,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "page": "git",
    "setting_key": "automerge_enabled",
    "row_id": null,
@@ -23246,8 +23246,8 @@
    "id": "settings-row:git:treat-optional-checks-as-blocking",
    "kind": "settings-row",
    "name": "Treat optional checks as blocking",
-   "status": "wrong",
-   "why": "host state settings-git is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-git matches",
    "team": "settings",
    "component": null,
    "source": {
@@ -23263,7 +23263,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "page": "git",
    "setting_key": "treat_optional_checks_as_blocking",
    "row_id": null,
@@ -23275,8 +23275,8 @@
    "id": "settings-row:git:set-upstream-on-plain-git-push",
    "kind": "settings-row",
    "name": "Set upstream on plain git push",
-   "status": "wrong",
-   "why": "host state settings-git is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-git matches",
    "team": "settings",
    "component": null,
    "source": {
@@ -23292,7 +23292,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "page": "git",
    "setting_key": "worktree_push_auto_setup_remote",
    "row_id": null,
@@ -23305,8 +23305,8 @@
    "id": "settings-row:git:use-github-stacked-prs",
    "kind": "settings-row",
    "name": "Use GitHub stacked PRs",
-   "status": "wrong",
-   "why": "host state settings-git is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-git matches",
    "team": "settings",
    "component": null,
    "source": {
@@ -23322,7 +23322,7 @@
    "reference_screenshot": "ui-map/ref/settings-git.png",
    "openconductor_screenshot": "ui-map/oc/settings-git.png",
    "diff": "ui-map/diff/settings-git.jpg",
-   "changed_ratio_t24": 0.051271913109756095,
+   "changed_ratio_t24": 0.04201124237804878,
    "page": "git",
    "setting_key": "github_stacked_prs_enabled",
    "row_id": null,
@@ -24132,7 +24132,7 @@
    "kind": "settings-page",
    "name": "models",
    "status": "wrong",
-   "why": "diff 4.3% at t24, copy 71%",
+   "why": "diff 4.2% at t24, copy 71%",
    "team": "settings",
    "component": null,
    "source": {
@@ -24145,7 +24145,7 @@
    "reference_screenshot": "ui-map/ref/settings-models.png",
    "openconductor_screenshot": "ui-map/oc/settings-models.png",
    "diff": "ui-map/diff/settings-models.jpg",
-   "changed_ratio_t24": 0.043206935975609755,
+   "changed_ratio_t24": 0.04176638719512195,
    "route": "/settings/user/models",
    "route_guess": "/settings/user/models",
    "rows": 5
@@ -24171,7 +24171,7 @@
    "reference_screenshot": "ui-map/ref/settings-models.png",
    "openconductor_screenshot": "ui-map/oc/settings-models.png",
    "diff": "ui-map/diff/settings-models.jpg",
-   "changed_ratio_t24": 0.043206935975609755,
+   "changed_ratio_t24": 0.04176638719512195,
    "page": "models",
    "setting_key": "default_model",
    "row_id": null,
@@ -24199,7 +24199,7 @@
    "reference_screenshot": "ui-map/ref/settings-models.png",
    "openconductor_screenshot": "ui-map/oc/settings-models.png",
    "diff": "ui-map/diff/settings-models.jpg",
-   "changed_ratio_t24": 0.043206935975609755,
+   "changed_ratio_t24": 0.04176638719512195,
    "page": "models",
    "setting_key": "default_codex_personality",
    "row_id": null,
@@ -24228,7 +24228,7 @@
    "reference_screenshot": "ui-map/ref/settings-models.png",
    "openconductor_screenshot": "ui-map/oc/settings-models.png",
    "diff": "ui-map/diff/settings-models.jpg",
-   "changed_ratio_t24": 0.043206935975609755,
+   "changed_ratio_t24": 0.04176638719512195,
    "page": "models",
    "setting_key": "default_claude_personality",
    "row_id": null,
@@ -24256,7 +24256,7 @@
    "reference_screenshot": "ui-map/ref/settings-models.png",
    "openconductor_screenshot": "ui-map/oc/settings-models.png",
    "diff": "ui-map/diff/settings-models.jpg",
-   "changed_ratio_t24": 0.043206935975609755,
+   "changed_ratio_t24": 0.04176638719512195,
    "page": "models",
    "setting_key": "review_model",
    "row_id": null,
@@ -24284,7 +24284,7 @@
    "reference_screenshot": "ui-map/ref/settings-models.png",
    "openconductor_screenshot": "ui-map/oc/settings-models.png",
    "diff": "ui-map/diff/settings-models.jpg",
-   "changed_ratio_t24": 0.043206935975609755,
+   "changed_ratio_t24": 0.04176638719512195,
    "page": "models",
    "setting_key": "default_plan_mode",
    "row_id": null,
@@ -24348,7 +24348,7 @@
    "kind": "settings-page",
    "name": "actions",
    "status": "wrong",
-   "why": "diff 5.8% at t24, copy 74%",
+   "why": "diff 5.4% at t24, copy 74%",
    "team": "settings",
    "component": null,
    "source": {
@@ -24361,7 +24361,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-actions.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-actions.png",
    "diff": "ui-map/diff/settings-repo-actions.jpg",
-   "changed_ratio_t24": 0.05834889481707317,
+   "changed_ratio_t24": 0.054264481707317076,
    "route": "/settings/repos/$repoId/actions",
    "route_guess": "/settings/repos/$repoId/actions",
    "rows": 2
@@ -24387,7 +24387,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-actions.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-actions.png",
    "diff": "ui-map/diff/settings-repo-actions.jpg",
-   "changed_ratio_t24": 0.05834889481707317,
+   "changed_ratio_t24": 0.054264481707317076,
    "page": "actions",
    "setting_key": "spotlight_testing",
    "row_id": null,
@@ -24416,7 +24416,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-actions.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-actions.png",
    "diff": "ui-map/diff/settings-repo-actions.jpg",
-   "changed_ratio_t24": 0.05834889481707317,
+   "changed_ratio_t24": 0.054264481707317076,
    "page": "actions",
    "setting_key": "custom_prompt_general",
    "row_id": null,
@@ -24429,7 +24429,7 @@
    "kind": "settings-page",
    "name": "misc",
    "status": "wrong",
-   "why": "diff 6.4% at t24, copy 92%",
+   "why": "diff 6.0% at t24, copy 92%",
    "team": "settings",
    "component": null,
    "source": {
@@ -24442,7 +24442,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": "ui-map/diff/settings-repo-misc-lower.jpg",
-   "changed_ratio_t24": 0.06373951981707317,
+   "changed_ratio_t24": 0.05978563262195122,
    "route": "/settings/repos/$repoId/misc",
    "route_guess": "/settings/repos/$repoId/misc",
    "rows": 6
@@ -24468,7 +24468,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": "ui-map/diff/settings-repo-misc-lower.jpg",
-   "changed_ratio_t24": 0.06373951981707317,
+   "changed_ratio_t24": 0.05978563262195122,
    "page": "misc",
    "setting_key": null,
    "row_id": "misc:icon",
@@ -24497,7 +24497,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": "ui-map/diff/settings-repo-misc-lower.jpg",
-   "changed_ratio_t24": 0.06373951981707317,
+   "changed_ratio_t24": 0.05978563262195122,
    "page": "misc",
    "setting_key": null,
    "row_id": "misc:root-path",
@@ -24526,7 +24526,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": "ui-map/diff/settings-repo-misc-lower.jpg",
-   "changed_ratio_t24": 0.06373951981707317,
+   "changed_ratio_t24": 0.05978563262195122,
    "page": "misc",
    "setting_key": null,
    "row_id": "misc:workspaces-path",
@@ -24555,7 +24555,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": "ui-map/diff/settings-repo-misc-lower.jpg",
-   "changed_ratio_t24": 0.06373951981707317,
+   "changed_ratio_t24": 0.05978563262195122,
    "page": "misc",
    "setting_key": null,
    "row_id": "misc:preview-url",
@@ -24584,7 +24584,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": "ui-map/diff/settings-repo-misc-lower.jpg",
-   "changed_ratio_t24": 0.06373951981707317,
+   "changed_ratio_t24": 0.05978563262195122,
    "page": "misc",
    "setting_key": "file_include_globs",
    "row_id": null,
@@ -24613,7 +24613,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": "ui-map/diff/settings-repo-misc-lower.jpg",
-   "changed_ratio_t24": 0.06373951981707317,
+   "changed_ratio_t24": 0.05978563262195122,
    "page": "misc",
    "setting_key": null,
    "row_id": "misc:remove-repository",
@@ -24626,7 +24626,7 @@
    "kind": "settings-page",
    "name": "appearance",
    "status": "wrong",
-   "why": "diff 5.4% at t24, copy 89%",
+   "why": "diff 5.1% at t24, copy 89%",
    "team": "settings",
    "component": null,
    "source": {
@@ -24639,7 +24639,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "route": "/settings/user/appearance",
    "route_guess": "/settings/user/appearance",
    "rows": 11
@@ -24665,7 +24665,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "page": "appearance",
    "setting_key": "colored_sidebar_diffs",
    "row_id": null,
@@ -24694,7 +24694,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "page": "appearance",
    "setting_key": "file_ligatures_enabled",
    "row_id": null,
@@ -24723,7 +24723,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "page": "appearance",
    "setting_key": null,
    "row_id": "appearance:theme",
@@ -24752,7 +24752,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "page": "appearance",
    "setting_key": "low_contrast_dark_mode",
    "row_id": null,
@@ -24781,7 +24781,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "page": "appearance",
    "setting_key": "zoom_level_v2",
    "row_id": null,
@@ -24810,7 +24810,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "page": "appearance",
    "setting_key": "color_vision",
    "row_id": null,
@@ -24839,7 +24839,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "page": "appearance",
    "setting_key": "code_theme",
    "row_id": null,
@@ -24868,7 +24868,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "page": "appearance",
    "setting_key": "mono_font",
    "row_id": null,
@@ -24897,7 +24897,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "page": "appearance",
    "setting_key": "markdown_style",
    "row_id": null,
@@ -24926,7 +24926,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "page": "appearance",
    "setting_key": null,
    "row_id": "appearance:terminal",
@@ -24955,7 +24955,7 @@
    "reference_screenshot": "ui-map/ref/settings-appearance.png",
    "openconductor_screenshot": "ui-map/oc/settings-appearance.png",
    "diff": "ui-map/diff/settings-appearance.jpg",
-   "changed_ratio_t24": 0.05420922256097561,
+   "changed_ratio_t24": 0.050540205792682924,
    "page": "appearance",
    "setting_key": null,
    "row_id": "appearance-panel",
@@ -24968,7 +24968,7 @@
    "kind": "settings-page",
    "name": "providers",
    "status": "wrong",
-   "why": "diff 4.7% at t24, copy 79%",
+   "why": "diff 4.6% at t24, copy 79%",
    "team": "settings",
    "component": null,
    "source": {
@@ -24981,7 +24981,7 @@
    "reference_screenshot": "ui-map/ref/settings-providers.png",
    "openconductor_screenshot": "ui-map/oc/settings-providers.png",
    "diff": "ui-map/diff/settings-providers.jpg",
-   "changed_ratio_t24": 0.04700362042682927,
+   "changed_ratio_t24": 0.045514481707317075,
    "route": "/settings/user/providers",
    "route_guess": "/settings/user/providers",
    "rows": 1
@@ -25006,7 +25006,7 @@
    "reference_screenshot": "ui-map/ref/settings-providers.png",
    "openconductor_screenshot": "ui-map/oc/settings-providers.png",
    "diff": "ui-map/diff/settings-providers.jpg",
-   "changed_ratio_t24": 0.04700362042682927,
+   "changed_ratio_t24": 0.045514481707317075,
    "page": "providers",
    "setting_key": "chrome_mode_enabled",
    "row_id": null,
@@ -25019,7 +25019,7 @@
    "kind": "settings-page",
    "name": "environment",
    "status": "wrong",
-   "why": "diff 3.3% at t24, copy 86%",
+   "why": "diff 2.9% at t24, copy 86%",
    "team": "settings",
    "component": null,
    "source": {
@@ -25032,7 +25032,7 @@
    "reference_screenshot": "ui-map/ref/settings-environment.png",
    "openconductor_screenshot": "ui-map/oc/settings-environment.png",
    "diff": "ui-map/diff/settings-environment.jpg",
-   "changed_ratio_t24": 0.033162157012195125,
+   "changed_ratio_t24": 0.028844321646341462,
    "route": "/settings/repos/$repoId/environment",
    "route_guess": "/settings/repos/$repoId/environment",
    "rows": 1
@@ -25058,7 +25058,7 @@
    "reference_screenshot": "ui-map/ref/settings-environment.png",
    "openconductor_screenshot": "ui-map/oc/settings-environment.png",
    "diff": "ui-map/diff/settings-environment.jpg",
-   "changed_ratio_t24": 0.033162157012195125,
+   "changed_ratio_t24": 0.028844321646341462,
    "page": "environment",
    "setting_key": null,
    "row_id": "environment-panel",
@@ -25072,7 +25072,7 @@
    "kind": "settings-page",
    "name": "scripts",
    "status": "wrong",
-   "why": "diff 3.1% at t24, copy 67%",
+   "why": "diff 2.9% at t24, copy 67%",
    "team": "settings",
    "component": null,
    "source": {
@@ -25085,7 +25085,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-scripts.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-scripts.png",
    "diff": "ui-map/diff/settings-repo-scripts.jpg",
-   "changed_ratio_t24": 0.031428163109756095,
+   "changed_ratio_t24": 0.02930830792682927,
    "route": "/settings/repos/$repoId/scripts",
    "route_guess": "/settings/repos/$repoId/scripts",
    "rows": 1
@@ -25111,7 +25111,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-scripts.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-scripts.png",
    "diff": "ui-map/diff/settings-repo-scripts.jpg",
-   "changed_ratio_t24": 0.031428163109756095,
+   "changed_ratio_t24": 0.02930830792682927,
    "page": "scripts",
    "setting_key": null,
    "row_id": "scripts-panel",
@@ -25137,7 +25137,7 @@
    "reference_screenshot": "ui-map/ref/settings-terminal.png",
    "openconductor_screenshot": "ui-map/oc/settings-terminal.png",
    "diff": "ui-map/diff/settings-terminal.jpg",
-   "changed_ratio_t24": 0.04681116615853659,
+   "changed_ratio_t24": 0.030354420731707316,
    "route": "/settings/user/terminal",
    "route_guess": "/settings/user/terminal",
    "rows": 1
@@ -25163,7 +25163,7 @@
    "reference_screenshot": "ui-map/ref/settings-terminal.png",
    "openconductor_screenshot": "ui-map/oc/settings-terminal.png",
    "diff": "ui-map/diff/settings-terminal.jpg",
-   "changed_ratio_t24": 0.04681116615853659,
+   "changed_ratio_t24": 0.030354420731707316,
    "page": "terminal",
    "setting_key": null,
    "row_id": "terminal-panel",
@@ -25597,7 +25597,7 @@
    "kind": "settings-page",
    "name": "key-bindings",
    "status": "wrong",
-   "why": "no valid reference render (redirected to /settings/user/general), diff 4.5% at t24",
+   "why": "no valid reference render (redirected to /settings/user/general), diff 4.4% at t24",
    "team": "settings",
    "component": null,
    "source": {
@@ -25610,7 +25610,7 @@
    "reference_screenshot": "ui-map/ref/settings-key-bindings.png",
    "openconductor_screenshot": "ui-map/oc/settings-key-bindings.png",
    "diff": "ui-map/diff/settings-key-bindings.jpg",
-   "changed_ratio_t24": 0.04532774390243902,
+   "changed_ratio_t24": 0.04391673018292683,
    "route": "/settings/user/key-bindings",
    "route_guess": "/settings/user/key-bindings",
    "rows": 0

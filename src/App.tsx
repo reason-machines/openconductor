@@ -28,7 +28,7 @@ import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
-import { decideOpenProject, failedToAddMessage } from "./state/openProject";
+import { addRegisteredRepo, decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
 import { PaletteHost } from "./palette/PaletteHost";
@@ -45,6 +45,8 @@ import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { useAutoUnread } from "./state/useAutoUnread";
+import { nextUnreadWorkspace, openNextUnread } from "./state/nextUnread";
 import { createRepoDefault } from "./home/repoFilter";
 import { storedRepoFilter } from "./home/useRepoFilter";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
@@ -75,6 +77,8 @@ export default function App() {
     prevState.current = state;
   }, [state]);
   const nav = useNavHistory(state, dispatch);
+  // A chat that finishes or waits on the user while not in view marks its workspace unread.
+  useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
   const sidebarWidth = useSidebarWidth();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
@@ -218,8 +222,7 @@ export default function App() {
       : null,
   );
   const addCreatedRepo = useCallback(async (target: GitHubRepoTarget, remote: string) => {
-    const registered = await addRepository(target.path);
-    dispatch({ type: "addRepo", id: registered.id, repo: { name: target.name, path: registered.root, remote, defaultBranch: registered.defaultBranch } });
+    dispatch(addRegisteredRepo(await addRepository(target.path), remote));
   }, [dispatch]);
 
   // Open project: native picker straight away, then the backend folder checks.
@@ -236,8 +239,7 @@ export default function App() {
       // An already-added folder is not refused: as in Conductor the backend
       // registers a second project for it, named `<name>-v1`, `-v2`, ...
       // (evidence/screens/duplicate-repo.md).
-      const registered = await addRepository(outcome.path);
-      dispatch({ type: "addRepo", id: registered.id, repo: { name: registered.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
+      dispatch(addRegisteredRepo(await addRepository(outcome.path), outcome.remote));
     } catch (err) {
       show("error", failedToAddMessage(err));
     }
@@ -362,7 +364,13 @@ export default function App() {
         ) : repo && workspace?.status === "archived" ? (
           <ArchivedWorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
         ) : repo && workspace ? (
-          <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
+          <WorkspaceView
+            repo={repo}
+            workspace={workspace}
+            dispatch={dispatch}
+            notify={show}
+            onNextUnread={nextUnreadWorkspace(state, { skipSelected: true }) ? () => void openNextUnread(state, dispatch, { skipSelected: true }) : undefined}
+          />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
         ) : (
