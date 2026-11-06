@@ -280,7 +280,7 @@ const PAGE_ICONS: Record<SettingsPage, ReactNode> = {
 const BACK_TOOLTIP_DELAY_MS = 100;
 
 /** Pages that draw their own header (Conductor's environment panel has an "Add" action beside its title). */
-const SELF_HEADED: readonly SettingsPage[] = ["environment"];
+const SELF_HEADED: readonly SettingsPage[] = ["environment", "providers"];
 
 /** Conductor's `_Sa` page headers: a description under the title where it has one. */
 const PAGE_HEADERS: Partial<Record<SettingsPage, { description: ReactNode }>> = {
