@@ -35,7 +35,7 @@ that justifies the status.
 | Chat tabs + chat area + composer `chat` | unassigned | #516 | wrong | seed | build: desktop-local-ffc7c778 (098edd23), unrecorded (379d1c82); verify: oauth-cf0b3f60 (8eb44615) |
 | Right panel: All files / Changes / Checks `right-panel` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (3530d46d, Diff viewer and review); verify: oauth-2791179c (0fa2bcc5, Diff viewer) |
 | Setup / Run / Terminal strip `strip` | unassigned | #509 | wrong | seed | build: oauth-cf0b3f60 (4bf88c3a, Setup and run scripts), desktop-local-ffc7c778 (d3abaff9 Spotlight and run, e6d07b82 Terminal); verify: oauth-cf0b3f60 (30f21708) |
-| Settings: Personal (General, Account, Appearance, Default models, Git, Ports) `settings-personal` | 396d0d00 (track B) | #PR_B1 | wrong | 2026-11-06, 841a805 + #PR_B1, [settings-personal-01](../side-by-side/settings-personal-01-search-branch.png) (harness render, does not count as matches) | build: desktop-local-ffc7c778 (2bc15518) |
+| Settings: Personal (General, Account, Appearance, Default models, Git, Ports) `settings-personal` | 396d0d00 (track B) | #644 | wrong | 2026-11-06, 841a805 + #644, [settings-personal-01](../side-by-side/settings-personal-01-search-branch.png) (harness render, does not count as matches) | build: desktop-local-ffc7c778 (2bc15518) |
 | Settings: Agents & environment (Agents, Environment) `settings-agents-env` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
 | Settings: Repositories (per repo: Environment, Git, Scripts, Actions, Misc) `settings-repos` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
 | Settings: More (Experimental, Advanced) `settings-more` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
@@ -326,13 +326,13 @@ main `841a805`.
 | Round | OpenConductor | Matches / 963 | Missing | Wrong | States matching (of 65) | What moved it |
 |---|---|---:|---:|---:|---:|---|
 | baseline | main `841a805` | 61 | 778 | 124 | 8 | (none) |
-| B1 | `841a805` + #PR_B1 | 89 | 777 | 97 | 12 | Settings nav: account switcher and "Search settings ⌘F" above the groups (11 settings states were missing "account menu", "search settings", "search settings shortcut"); Big terminal in More |
+| B1 | `841a805` + #644 | 89 | 777 | 97 | 12 | Settings nav: account switcher and "Search settings ⌘F" above the groups (11 settings states were missing "account menu", "search settings", "search settings shortcut"); Big terminal in More |
 
 ### Track B nodes
 
 | Node (UI map states) | PRs | Status (UI map) | Open differences |
 |---|---|---|---|
-| Settings chrome (all `settings-*`) | #PR_B1 | General, Models, Environment, Git, Experimental, repo Environment, Git, Scripts, Actions, Settings search match | Account (Linear, Billing, Sign out cards), Appearance (code preview), Advanced (Browse buttons), Agents (track A owns), repo Misc (pixels 6.1%) |
+| Settings chrome (all `settings-*`) | #644 | General, Models, Environment, Git, Experimental, repo Environment, Git, Scripts, Actions, Settings search match | Account (Linear, Billing, Sign out cards), Appearance (code preview), Advanced (Browse buttons), Agents (track A owns), repo Misc (pixels 6.1%) |
 
 ### REA gaps hit by track B
 
