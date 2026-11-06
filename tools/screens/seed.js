@@ -1,5 +1,5 @@
 // Synthetic seed data per scenario (invented; no real users, repos or tokens).
-// Returns { conductor: SQL, cache: SQL, vfs: {absolutePath: text} }.
+// Returns { conductor: SQL, cache: SQL, vfs: {absolutePath: text}, sidecarRequests: [JSON-RPC request] }.
 (function () {
   const APP = "/Users/demo/Library/Application Support/com.conductor.app";
 
@@ -25,6 +25,6 @@
   window.__OC_SEED__ = function (scenario) {
     const theme = new URLSearchParams(location.search).get("oc_theme") || "dark";
     const data = (window.__OC_SEED_DATA__ && window.__OC_SEED_DATA__[scenario]) || {};
-    return { conductor: data.conductor || "", cache: data.cache || "", vfs: { ...themeVfs(theme), ...(data.vfs || {}) } };
+    return { conductor: data.conductor || "", cache: data.cache || "", vfs: { ...themeVfs(theme), ...(data.vfs || {}) }, sidecarRequests: data.sidecarRequests || [] };
   };
 })();

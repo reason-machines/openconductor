@@ -46,7 +46,11 @@ embedded resource as "NAME: TEXT", NAME the last part of its uri),
 "lisbon" (replays Conductor's reference transcript turn, tools/screens/seed-data.js
 'lisbon': text, Grep, Read, text, Edit, Bash, text; each tool is a tool_call then a
 tool_call_update to completed, with ACP kind, rawInput and _meta.claudeCode.toolName;
-LISBON_PROMPT, the fixture's user message, is an alias).
+LISBON_PROMPT, the fixture's user message, is an alias),
+"tallinn" (Conductor's pending-permission reference, tools/screens/seed-data.js
+'needs-permission': text, then a Bash tool_call left pending while it asks
+session/request_permission with Yes/No options; replies "permission: OPTION"
+once answered; TALLINN_PROMPT, that fixture's user message, is an alias).
 
 session/new reports configOptions `model` and `reasoning_effort` like
 Reason does (session/close drops one that never got a prompt, as Reason
@@ -133,9 +137,10 @@ def ask(sid, method, params):
     with lock:
         next_ask[0] += 1
         rid = f"ask-{next_ask[0]}"
-        asks[rid] = (threading.Event(), [])
+        asks[rid] = entry = (threading.Event(), [])
+    # Read before sending: a client that answers at once has the entry popped by then.
+    done, box = entry
     send({"id": rid, "method": method, "params": params})
-    done, box = asks[rid]
     done.wait(60)
     return box[0] if box else None
 
@@ -182,6 +187,27 @@ def lisbon(sid, cwd):
          "Fixed. Expired sessions now go straight to `/login` instead of looping.\n\n"
          "- `src/lib/auth.ts`: only redirect to the dashboard when the session has not expired.\n"
          "- Tests: `pnpm test src/lib/auth.test.ts` passes (4 tests).")
+
+
+TALLINN_PROMPT = "Return X-RateLimit-Limit and X-RateLimit-Remaining headers on every API response."
+TALLINN_TEXT = "I'll add both headers in the rate limit middleware, then run its tests."
+TALLINN_COMMAND = "pnpm test src/middleware/rate-limit.test.ts"
+
+
+def tallinn(sid):
+    """Conductor's pending-permission reference turn (tools/screens/seed-data.js 'needs-permission')."""
+    text(sid, "agent_message_chunk", TALLINN_TEXT)
+    tool = {"toolCallId": "tallinn:1", "title": TALLINN_COMMAND, "kind": "execute",
+            "rawInput": {"command": TALLINN_COMMAND, "description": "Run the rate limit tests"},
+            "_meta": {"claudeCode": {"toolName": "Bash"}}}
+    update(sid, sessionUpdate="tool_call", status="pending", **tool)
+    options = [{"optionId": "allow", "name": "Yes", "kind": "allow_once"},
+               {"optionId": "reject", "name": "No", "kind": "reject_once"}]
+    answer = ask(sid, "session/request_permission", {"sessionId": sid, "toolCall": tool, "options": options})
+    outcome = ((answer or {}).get("result") or {}).get("outcome") or {}
+    chosen = outcome.get("optionId") if outcome.get("outcome") == "selected" else "cancelled"
+    update(sid, sessionUpdate="tool_call_update", status="completed" if chosen == "allow" else "failed", **tool)
+    text(sid, "agent_message_chunk", f"permission: {chosen}")
 
 
 def load():
@@ -282,6 +308,10 @@ def prompt(rid, p, cancel):
             stop = "cancelled"
     elif cmd in ("lisbon", LISBON_PROMPT):
         lisbon(sid, session["cwd"])
+    elif cmd in ("tallinn", TALLINN_PROMPT):
+        tallinn(sid)
+        if cancel.is_set():
+            stop = "cancelled"
     elif cmd == "crash":
         os._exit(3)
     if running.get(sid, (None,))[0] == rid:
