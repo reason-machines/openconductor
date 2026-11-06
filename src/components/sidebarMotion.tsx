@@ -97,10 +97,12 @@ export const POPUP_EXIT_MS = 100;
  * `data-ending-style`: `mounted` stays true while `ending` is set, then drops.
  * `value` is the last open value, so a closing popup keeps its content and place.
  */
-export function useMenuPresence<T>(value: T | null | undefined | false): { mounted: T | null; ending: boolean } {
+export function useMenuPresence<T>(value: T | null | undefined | false, { instant = false }: { instant?: boolean } = {}): { mounted: T | null; ending: boolean } {
   const open = value !== null && value !== undefined && value !== false;
   const [last, setLast] = useState<{ value: T | null; ending: boolean }>({ value: open ? value : null, ending: false });
   if (open && (last.value !== value || last.ending)) setLast({ value, ending: false });
+  // `instant`: the popup's owner went away (a row that moved), so it unmounts with no close transition.
+  else if (!open && last.value !== null && instant) setLast({ value: null, ending: false });
   else if (!open && last.value !== null && !last.ending) setLast({ value: last.value, ending: true });
   useEffect(() => {
     if (!last.ending) return;
@@ -108,6 +110,7 @@ export function useMenuPresence<T>(value: T | null | undefined | false): { mount
     return () => window.clearTimeout(t);
   }, [last]);
   if (open) return { mounted: value, ending: false };
+  if (instant) return { mounted: null, ending: false };
   return { mounted: last.value, ending: last.value !== null };
 }
 

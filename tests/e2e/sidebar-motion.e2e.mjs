@@ -65,6 +65,8 @@ test("rows: pinning rises the row into Pinned and collapses it out of its repo o
   await page.waitForTimeout(400);
   const before = await page.locator(".sb-repo-groups .sb-ws-name").count();
   await pin(page, second);
+  // The row menu goes with its row (Conductor's menu lives inside the row): no 100ms fade here.
+  assert.equal(await page.locator(".sb-ctx-menu").count(), 0);
   // Mid-flight: the new row is still fading in, the old one is still in its repo group.
   const mid = await page.evaluate((label) => {
     const entering = [...document.querySelectorAll('.sb-group[data-group="Pinned"] .sb-ws-motion')].find((el) => el.textContent.includes(label));

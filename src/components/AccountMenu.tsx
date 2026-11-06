@@ -51,7 +51,7 @@ export function AccountMenu({ onOpenSettings }: { onOpenSettings: () => void }) 
         <ChevronDownIcon size={14} />
       </button>
       {popup.mounted && (
-        <div className="sb-account-menu" role="menu" aria-label="Account" {...endingProps(popup.ending)}>
+        <div className="sb-account-menu" role="menu" aria-label="Account" data-tauri-drag-region="false" {...endingProps(popup.ending)}>
           {model.entries.map((e, i) =>
             e.kind === "email" ? (
               <div key="email" className="sb-account-email" role="presentation">{e.email}</div>

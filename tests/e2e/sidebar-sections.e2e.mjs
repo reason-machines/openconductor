@@ -157,24 +157,29 @@ test("create a workspace directly inside a section", async () => {
   const create = dialog(page, "New workspace");
   await create.waitFor();
   assert.equal(await create.getByRole("button", { name: "Create in section" }).count(), 0);
-  await create.getByLabel("Workspace name").fill("in-focus");
+  // The composer names the workspace after a city, so the new row is the section's only one.
+  const before = await page.locator(NAMES).allTextContents();
   await create.getByRole("button", { name: "Create in Focus" }).click();
   await create.waitFor({ state: "detached" });
-  await section(page, "Focus").locator(NAMES, { hasText: "in-focus" }).waitFor();
-  assert.deepEqual(await rowsIn(section(page, "Focus")), ["in-focus"]);
+  await section(page, "Focus").locator(NAMES).first().waitFor();
+  const [inFocus, ...extraFocus] = await rowsIn(section(page, "Focus"));
+  assert.deepEqual(extraFocus, []);
+  assert.ok(!before.includes(inFocus), `${inFocus} should be the new workspace`);
 
   // From the plain Create: the split menu lists the sections and creates into the chosen one.
   await page.locator("button.sb-row", { has: page.locator(".sb-row-label", { hasText: /^Create$/ }) }).click();
   const plain = dialog(page, "New workspace");
   await plain.waitFor();
   assert.equal(await plain.getByRole("button", { name: "Create", exact: true }).count(), 1);
-  await plain.getByLabel("Workspace name").fill("in-backend");
   await plain.getByRole("button", { name: "Create in section" }).click();
   const menu = plain.getByRole("menu");
   assert.deepEqual(await menu.getByRole("menuitem").allTextContents(), ["Focus", "Backend"]);
   await menu.getByRole("menuitem", { name: "Backend" }).click();
   await plain.waitFor({ state: "detached" });
-  await section(page, "Backend").locator(NAMES, { hasText: "in-backend" }).waitFor();
-  assert.deepEqual(await rowsIn(section(page, "Backend")), ["in-backend"]);
+  await section(page, "Backend").locator(NAMES).first().waitFor();
+  const [inBackend, ...extraBackend] = await rowsIn(section(page, "Backend"));
+  assert.deepEqual(extraBackend, []);
+  assert.ok(!before.includes(inBackend) && inBackend !== inFocus, `${inBackend} should be the second new workspace`);
+  assert.deepEqual(await rowsIn(section(page, "Focus")), [inFocus]);
   await page.close();
 });

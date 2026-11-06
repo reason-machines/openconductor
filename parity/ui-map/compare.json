@@ -637,19 +637,19 @@
   },
   "settings-repo-environment": {
    "reference_sha256": "bf2e4c7b91965878e79a252923c954b522e6aade0bd2ad2978cecee37106fafa",
-   "ours_sha256": "45424e458fae114d0c0ff8f4760288813265d2852e574373d781e9f46ef06d33",
+   "ours_sha256": "93190d52ba19f64d5b97a8b4c82a271b537831d5e76ae8e32cf2467c7d4bb7e5",
    "t0": {
-    "evidence_id": "ev_176cccaec84f6cefdefed8a7b53cff16836fa6b5e60fb9a02cade83e9543b432",
-    "changed_pixels": 74935,
+    "evidence_id": "ev_ed6a379115b380d1e474d33ebadf5d8eaffcd3a8d94ecba7b99211c4f21d4788",
+    "changed_pixels": 57229,
     "total_pixels": null,
-    "changed_ratio": 0.0713938643292683,
+    "changed_ratio": 0.05452458079268293,
     "dimensions_match": null
    },
    "t24": {
-    "evidence_id": "ev_dc6b9715e9a92699e7db184dce80660c7e670038f14e2b1fb304a36a6e777244",
-    "changed_pixels": 45250,
+    "evidence_id": "ev_d5574bbd102e480e050c302c965ddf8eaddf36247f52f0b1d37f10ac566c508a",
+    "changed_pixels": 34242,
     "total_pixels": null,
-    "changed_ratio": 0.043111661585365856,
+    "changed_ratio": 0.03262385670731707,
     "dimensions_match": null
    }
   },
@@ -673,19 +673,37 @@
   },
   "settings-repo-misc": {
    "reference_sha256": "30af3c1c705f775e0e33504a6f5ad178f075109ec7d1ebce670af061f26878c6",
-   "ours_sha256": "65d92c863358f0879bbafcd7ce9ec8c3b7b62b1e5b261a2deaebb38e5009aa44",
+   "ours_sha256": "121c472755e9d4d74538eabb839d37994ded7796325fa4b14993f30ca20e711f",
    "t0": {
-    "evidence_id": "ev_1809f805510f1c711106e110bf42482e86d078cc93ee3c641942108adf90eac1",
-    "changed_pixels": 91051,
+    "evidence_id": "ev_f809e0adc6dc00c9426cb1247296c1e633f207671e748f642bb0819f116cb70e",
+    "changed_pixels": 102535,
     "total_pixels": null,
-    "changed_ratio": 0.08674828506097561,
+    "changed_ratio": 0.09768959603658536,
     "dimensions_match": null
    },
    "t24": {
-    "evidence_id": "ev_4d156e70a0c9408d209dd63380f462ef8312d6cb7962372b89ce3564d9674b7e",
-    "changed_pixels": 53616,
+    "evidence_id": "ev_f452fa8c07e9da52f337ba55c77ca4d8bf4d1f032ddc7e21df73abfbd81ef21b",
+    "changed_pixels": 66934,
     "total_pixels": null,
-    "changed_ratio": 0.05108231707317073,
+    "changed_ratio": 0.06377096036585365,
+    "dimensions_match": null
+   }
+  },
+  "settings-repo-misc-lower": {
+   "reference_sha256": "484c2fb17b8f1ececeb227f9c9b01fd8e28427b78ada7a598481494e9769ac24",
+   "ours_sha256": "1b8abcbf739ac411b8e6d9e0a776d7c1431f6073fc35dc85f03ec72e5cc283e3",
+   "t0": {
+    "evidence_id": "ev_b34a7b707378dc02083229751bbcbec87428b43ed19ddb24dfee7d4dfebe5100",
+    "changed_pixels": 103317,
+    "total_pixels": null,
+    "changed_ratio": 0.09843464176829268,
+    "dimensions_match": null
+   },
+   "t24": {
+    "evidence_id": "ev_840f0d6cf062cef8a9c8d189b5894ab3d3ba7989f53af73232b9e06dbd5cda86",
+    "changed_pixels": 66874,
+    "total_pixels": null,
+    "changed_ratio": 0.06371379573170732,
     "dimensions_match": null
    }
   },

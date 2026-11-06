@@ -25,7 +25,7 @@ export const KeyIcon = ({ size }: P) => (<svg {...base(size)}><circle cx="8" cy=
 export const FlaskIcon = ({ size }: P) => (<svg {...base(size)}><path d="M9 3h6M10 3v6l-5.5 9.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3" /><path d="M7.5 15h9" /></svg>);
 export const DriveIcon = ({ size }: P) => (<svg {...base(size)}><path d="M3 13 6 5h12l3 8" /><rect x="3" y="13" width="18" height="6" rx="2" /><path d="M7 16h.01M11 16h.01" /></svg>);
 export const TerminalIcon = ({ size }: P) => (<svg {...base(size)}><rect x="3" y="4" width="18" height="16" rx="2" /><path d="m7 9 3 3-3 3M13 15h4" /></svg>);
-export const BackIcon = ({ size = 14 }: P) => (<svg {...base(size)}><path d="M19 12H5M11 18l-6-6 6-6" /></svg>);
+export const BackIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M19 12H5M11 18l-6-6 6-6" /></svg>);
 export const VolumeIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M11 5 6 9H3v6h3l5 4z" /><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" /></svg>);
 export const SyncIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M4 8h13l-3-3M20 16H7l3 3" /></svg>);
 export const FolderIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>);
@@ -41,3 +41,5 @@ export const ScriptIcon = ({ size }: P) => (<svg {...base(size)}><path d="M5 11V
 export const PointerClickIcon = ({ size }: P) => (<svg {...base(size)}><path d="m9.5 9.5 10.5 4.3-4.6 1.2-1.2 4.6z" /><path d="M8 2.5 8.7 5M2.5 8l2.6.6M12.8 4.5 11 6.3M4.6 13l1.8-1.8" /></svg>);
 /** Three horizontal sliders: the repository Misc tab. */
 export const SlidersHorizontalIcon = ({ size }: P) => (<svg {...base(size)}><path d="M3 5h7M14 5h7M3 12h5M12 12h9M3 19h9M16 19h5" /><path d="M12 3v4M10 10v4M14 17v4" /></svg>);
+export const InfoIcon = ({ size = 14 }: P) => (<svg {...base(size)}><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>);
+export const TrashIcon = ({ size = 14 }: P) => (<svg {...base(size)}><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3" /></svg>);

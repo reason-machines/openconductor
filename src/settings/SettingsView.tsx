@@ -1,4 +1,5 @@
 import { Fragment, type ReactNode } from "react";
+import { Tooltip } from "../components/Tooltip";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import type { Repo } from "../state/types";
 import { AccountPage } from "./AccountPage";
@@ -14,6 +15,7 @@ import { BigTerminalPage } from "./BigTerminalPage";
 import { ExperimentalPage } from "./ExperimentalPage";
 import { pageLabel, settingsGroups, type SettingsPage } from "./pages";
 import { RepoSettingsPage } from "./RepoSettingsPage";
+import type { RepoMiscActions } from "./rows/RepoMiscRows";
 import { REPO_SECTIONS, REPO_SECTION_LABELS, sameLocation, type SettingsLocation } from "./routes";
 import type { Settings } from "./types";
 import { useSettings } from "./useSettings";
@@ -41,6 +43,8 @@ interface Props {
   repos: Repo[];
   onNavigate: (location: SettingsLocation) => void;
   onClose: () => void;
+  /** Repository › Misc: change a repository's icon, after a removal, and toasts. */
+  miscActions: RepoMiscActions;
 }
 
 /**
@@ -48,7 +52,7 @@ interface Props {
  * Under "Agents & environment" a Repositories list opens each repository's own
  * settings (Conductor's `A9a`): the active repository expands to its sections.
  */
-export function SettingsView({ location, repos, onNavigate, onClose }: Props) {
+export function SettingsView({ location, repos, onNavigate, onClose, miscActions }: Props) {
   const { settings, error, save, reload } = useSettings();
 
   useKeybindings({ "settings.close": onClose });
@@ -76,10 +80,13 @@ export function SettingsView({ location, repos, onNavigate, onClose }: Props) {
       <nav className="settings-nav" aria-label="Settings pages">
         <div className="sidebar-drag" data-tauri-drag-region />
         <div className="settings-nav-top">
-          <button className="settings-back" title="Esc" onClick={onClose}>
-            <BackIcon />
-            Back
-          </button>
+          {/* Conductor's `I9a`: Root delayDuration 100, content side "right", text "Esc". */}
+          <Tooltip content="Esc" side="right" delay={BACK_TOOLTIP_DELAY_MS}>
+            <button className="settings-back" tabIndex={-1} onClick={onClose}>
+              <BackIcon />
+              Back
+            </button>
+          </Tooltip>
         </div>
         {settingsGroups(settings?.experimental?.experimental_big_terminal_mode === true).map((g) => (
           <Fragment key={g.title || g.pages[0]?.id}>
@@ -95,7 +102,7 @@ export function SettingsView({ location, repos, onNavigate, onClose }: Props) {
       </nav>
       <section className="settings-page">
         <div className="settings-page-inner">
-          {!(location.scope === "user" && SELF_HEADED.includes(location.page)) && (
+          {!(location.scope === "user" ? SELF_HEADED.includes(location.page) : location.section === "environment") && (
             <header className="settings-header">
               <div>
                 <h1>{title}</h1>
@@ -110,7 +117,7 @@ export function SettingsView({ location, repos, onNavigate, onClose }: Props) {
           )}
           {location.scope === "repo" ? (
             repo ? (
-              <RepoSettingsPage repo={repo} section={location.section} />
+              <RepoSettingsPage repo={repo} section={location.section} miscActions={miscActions} />
             ) : (
               <p className="muted">This repository is no longer in OpenConductor.</p>
             )
@@ -217,6 +224,9 @@ const PAGE_ICONS: Record<SettingsPage, ReactNode> = {
   advanced: <DriveIcon />,
   terminal: <TerminalIcon />,
 };
+
+/** Settings' Back opens its "Esc" tooltip after 100 ms, not the app's 600 ms (Conductor's `I9a`). */
+const BACK_TOOLTIP_DELAY_MS = 100;
 
 /** Pages that draw their own header (Conductor's environment panel has an "Add" action beside its title). */
 const SELF_HEADED: readonly SettingsPage[] = ["environment"];

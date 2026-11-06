@@ -236,7 +236,7 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
   await waitForScreen(page, "ran: echo hello");
   await type(page, "cd /repo/sub");
   await waitForScreen(page, "/repo/sub$");
-  await page.getByRole("button", { name: "New terminal tab" }).click();
+  await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   await waitForScreen(page, "/repo$");
   await type(page, "cd /gone");
@@ -302,7 +302,7 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
   await showTerminalPanel(page);
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 1);
   await waitForScreen(page, "Previous terminal session restored");
-  await page.getByRole("button", { name: "New terminal tab" }).click();
+  await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   assert.deepEqual(await tabTitles(page), ["Terminal 1", "Terminal 3"]);
 
@@ -320,7 +320,8 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
 
   // Archiving the workspace ends its terminals and deletes its saved sessions and tab list.
   await page.waitForFunction(() => Object.keys(JSON.parse(localStorage.getItem("__fake_backend_disk")).history).length === 2, null, { timeout: 5000 });
-  await page.getByTitle("Archive workspace").click();
+  await page.locator('[data-testid="left-sidebar-workspace-item"]', { has: page.locator(".sb-ws-name", { hasText: "lisbon" }) }).click({ button: "right" });
+  await page.getByRole("menu", { name: "Workspace actions" }).getByRole("menuitem", { name: "Archive" }).click();
   await page.waitForFunction(() => (JSON.parse(localStorage.getItem("__fake_backend_disk")).workspaceDeletes ?? []).includes("w1"), null, { timeout: 5000 });
   const archived = await disk(page);
   assert.deepEqual(archived.history, {});
@@ -358,7 +359,7 @@ test("a tab list saved in the webview's localStorage by an earlier build moves t
   await page.reload();
   await showTerminalPanel(page);
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
-  await page.getByRole("button", { name: "New terminal tab" }).click();
+  await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 3);
   assert.deepEqual(await tabTitles(page), ["Terminal 2", "Terminal 5", "Terminal 6"]);
   assert.deepEqual(errors, []);

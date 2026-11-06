@@ -3,6 +3,7 @@ import { openUrl } from "../backend";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { BookIcon, ExternalIcon, HelpIcon, KeyboardIcon, MessageIcon } from "./Icons";
+import { Tooltip } from "./Tooltip";
 import { HELP_ITEMS, nextIndex, versionLine, type HelpIcon as HelpIconName, type HelpItem } from "./helpMenuItems";
 import { endingProps, useMenuPresence } from "./sidebarMotion";
 
@@ -63,18 +64,20 @@ export function HelpMenu({ appVersion, onOpenShortcuts }: { appVersion?: string;
 
   return (
     <div ref={ref} className="sb-help">
-      <button
-        ref={triggerRef}
-        type="button"
-        className="sb-footer-btn"
-        aria-label="Help"
-        title="Help"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        onClick={() => setOpen(!open)}
-      >
-        <HelpIcon size={16} strokeWidth={1.5} />
-      </button>
+      {/* Conductor's help trigger: Tooltip "Help" (no shortcut), closed while the menu is open. */}
+      <Tooltip content="Help" disabled={open}>
+        <button
+          ref={triggerRef}
+          type="button"
+          className="sb-footer-btn"
+          aria-label="Help"
+          aria-haspopup="menu"
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+        >
+          <HelpIcon size={16} strokeWidth={1.5} />
+        </button>
+      </Tooltip>
       {popup.mounted && (
         <div ref={menuRef} className="sb-help-menu" role="menu" aria-label="Help" onKeyDown={onMenuKey} {...endingProps(popup.ending)}>
           {HELP_ITEMS.map((item) => {

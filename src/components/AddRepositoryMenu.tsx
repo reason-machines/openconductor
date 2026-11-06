@@ -28,8 +28,6 @@ import {
 } from "../workspace/repoPicker";
 
 interface Props {
-  /** Unused: a remote that is already added is cloned again as a new project, like Conductor (evidence/screens/duplicate-repo.md). */
-  repos: Repo[];
   disabled?: boolean;
   /** Label of the closed button: "Add…" next to the picker, "Add repository" when there are none. */
   label: string;
