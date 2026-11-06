@@ -1,17 +1,17 @@
 {
  "ledger_id": "rol_ba2a4881609d4eec7a8be78f1d5035ba6cd0f218c0073f39a66ceafade50e29c",
- "reviewed_at": "aec6ec2b",
- "head": "1e97ba303",
+ "reviewed_at": "792cabb7",
+ "head": "792cabb7c",
  "areas": {
   "chat": {
    "label": "Chat: agent transcript, composer, queue, attachments, models, turn controls",
    "features": 15,
-   "parity_pct": 45.0,
+   "parity_pct": 48.3,
    "code_layer_pct": 65.6,
    "strict_parity_pct": 0.0,
    "by_verdict": {
-    "implemented": 2,
-    "partial": 9,
+    "implemented": 3,
+    "partial": 8,
     "backend-only": 1,
     "missing": 3
    },
@@ -48,7 +48,7 @@
  },
  "total": {
   "features": 41,
-  "parity_pct": 65.2,
+  "parity_pct": 66.5,
   "code_layer_pct": 78.0,
   "strict_parity_pct": 0.0
  },
@@ -61,8 +61,8 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "da7891cd",
-   "why": "#272/#371: reasonChat.ts stored() loads each chat through the registered chat_messages_load and rebuilds it with persist.ts restoreEvents (a turn running at quit reloads as cancelled); apply() and resetReasonChat save through ChatSaver into chat_messages_save (sessions/session_messages), so transcripts survive a restart. #271 still open: configureReason is only called from ReviewButton.tsx, so the main chat opens with no model or effort; the registered claude_* commands have no caller. The sessions row gets only id, claude_session_id and last_user_message_at, and the follow-up queue (queue_order, queue_paused_at) is still in memory. Re-read at a0139339: #365 resolves the main chat's model and effort before session/new (reasonChat.ts:231, WorkspaceView.tsx:120, CreateWorkspaceDialog.tsx:164) and provider.rs applies it with session/set_config_option, but only at session/new, not on session/resume. Still Reason-only; queue not persisted. Re-read at 1e73a260: #387 fixes the transcript load race: prompt() waits for the chat's load before deciding new vs resume (reasonChat.ts:142, :260) and copies the stored Session id before reason_open_chat (:133, :273). Options are saved per chat (savedConfig :48, configureReason :362-367) so a Session created after Reset chat keeps model and effort. Still Reason-only, options not re-applied on session/resume (provider.rs:349-353), queue not persisted, sessions row stores no workspace/agent/model/effort. Re-read at 145d9593: Unchanged. #385's only chat change is the turn footer time (view.ts startedAt/endedAt, turnTime.ts); lib.rs only adds the workspace_archive commands. Still Reason-only, options not re-applied on session/resume, queue not persisted. Re-read at 0fe9eb8e: Unchanged. #422's only backend change is runner_tests.rs writing the fake claude with test_exe::write_executable; the claude_* commands are still registered (lib.rs:389-392) with no caller in src/, so chats are still Reason-only. Re-read at f6c05d78: Unchanged verdict. #360 adds a per-chat Agent menu (WorkspaceView.tsx:361) that switches a chat to Codex: codexChat.ts prompt() calls codex_open_chat (resuming the saved thread id) then codex_prompt; codex_chat.rs runs one codex app-server per chat, as Conductor's sidecar does, and codex.ts applyCodexPayload streams text, reasoning, tool rows and approvals. Gaps for Codex: the transcript lives only in memory (codexChat.ts:60) and is never saved via chat_messages_save/_load, and turn ids restart at <chat>:t1 each launch (codex.ts:94), so a restart shows an empty chat while Codex resumes the old thread (#272 for Codex); codex_prompt sends no model or effort and ThreadOptions.model is None (codex_chat.rs:129), so Codex runs the CLI default model (#271 for Codex); a workspace whose default model is Codex still starts on Reason because savedAgent defaults to reason; no sessions row is written; personality/summary/per-turn sandbox and configRequirements/read are not sent. Claude Code is still not mounted. Re-read on main 6339b6e1: #439 adds the header Open-in button (OpenInButton in WorkspaceView .ws-actions) and registers open_in_apps/open_in_app in lib.rs; #427 adds pure composerModels.ts and slashCommands.ts that no component imports yet. Neither changes this feature. Re-read on main 1944b982: #437's ArchivedWorkspaceView renders the archived workspace's main Reason chat read-only through chatSnapshot/subscribeChat and Transcript (sidebar.archived-view, not this feature); it adds no session or stream behaviour. Codex transcripts are still not saved, so an archived Codex workspace shows no messages. Verdict unchanged. Re-read on main 8da9edf0: unchanged. #445 adds a read-only config(chatId) getter to chatRuntime.ts (exported as reasonChatConfig) for forks; streaming, load and save are untouched. Verdict unchanged. Re-read on main aec6ec2b: unchanged in streaming and persistence. #436 only adds the provider's tool name and raw input to each tool row (reason_acp/updates.rs, claude_chat/map.rs, codex_wire.rs) and boxes AgentEvent::Tool; #465 lets a chat switch to Codex from the model picker, but Create workspace and Default models still do not pick the agent from the model. Re-read on main da7891cd: unchanged in streaming and persistence. #469 gives an empty chat Conductor's intro (renderApp x9s @3,155,445, checked on sven m5 max): 'You\u2019re in a new copy of <repo> called <dir>' and the steps. Small gaps: a failed workspace shows 'Created <dir>' where Conductor shows 'Workspace initialization failed' with its retry (@3,156,102), the 'Created' step is plain text rather than Conductor's Open-in pill, and 'Branched \u2026 from' uses targetBranch/defaultBranch with a hard-coded origin/ instead of initializationParentBranch and the repo's remote name. Verdict unchanged.",
+   "reviewed_at": "792cabb7",
+   "why": "#272/#371: reasonChat.ts stored() loads each chat through the registered chat_messages_load and rebuilds it with persist.ts restoreEvents (a turn running at quit reloads as cancelled); apply() and resetReasonChat save through ChatSaver into chat_messages_save (sessions/session_messages), so transcripts survive a restart. #271 still open: configureReason is only called from ReviewButton.tsx, so the main chat opens with no model or effort; the registered claude_* commands have no caller. The sessions row gets only id, claude_session_id and last_user_message_at, and the follow-up queue (queue_order, queue_paused_at) is still in memory. Re-read at a0139339: #365 resolves the main chat's model and effort before session/new (reasonChat.ts:231, WorkspaceView.tsx:120, CreateWorkspaceDialog.tsx:164) and provider.rs applies it with session/set_config_option, but only at session/new, not on session/resume. Still Reason-only; queue not persisted. Re-read at 1e73a260: #387 fixes the transcript load race: prompt() waits for the chat's load before deciding new vs resume (reasonChat.ts:142, :260) and copies the stored Session id before reason_open_chat (:133, :273). Options are saved per chat (savedConfig :48, configureReason :362-367) so a Session created after Reset chat keeps model and effort. Still Reason-only, options not re-applied on session/resume (provider.rs:349-353), queue not persisted, sessions row stores no workspace/agent/model/effort. Re-read at 145d9593: Unchanged. #385's only chat change is the turn footer time (view.ts startedAt/endedAt, turnTime.ts); lib.rs only adds the workspace_archive commands. Still Reason-only, options not re-applied on session/resume, queue not persisted. Re-read at 0fe9eb8e: Unchanged. #422's only backend change is runner_tests.rs writing the fake claude with test_exe::write_executable; the claude_* commands are still registered (lib.rs:389-392) with no caller in src/, so chats are still Reason-only. Re-read at f6c05d78: Unchanged verdict. #360 adds a per-chat Agent menu (WorkspaceView.tsx:361) that switches a chat to Codex: codexChat.ts prompt() calls codex_open_chat (resuming the saved thread id) then codex_prompt; codex_chat.rs runs one codex app-server per chat, as Conductor's sidecar does, and codex.ts applyCodexPayload streams text, reasoning, tool rows and approvals. Gaps for Codex: the transcript lives only in memory (codexChat.ts:60) and is never saved via chat_messages_save/_load, and turn ids restart at <chat>:t1 each launch (codex.ts:94), so a restart shows an empty chat while Codex resumes the old thread (#272 for Codex); codex_prompt sends no model or effort and ThreadOptions.model is None (codex_chat.rs:129), so Codex runs the CLI default model (#271 for Codex); a workspace whose default model is Codex still starts on Reason because savedAgent defaults to reason; no sessions row is written; personality/summary/per-turn sandbox and configRequirements/read are not sent. Claude Code is still not mounted. Re-read on main 6339b6e1: #439 adds the header Open-in button (OpenInButton in WorkspaceView .ws-actions) and registers open_in_apps/open_in_app in lib.rs; #427 adds pure composerModels.ts and slashCommands.ts that no component imports yet. Neither changes this feature. Re-read on main 1944b982: #437's ArchivedWorkspaceView renders the archived workspace's main Reason chat read-only through chatSnapshot/subscribeChat and Transcript (sidebar.archived-view, not this feature); it adds no session or stream behaviour. Codex transcripts are still not saved, so an archived Codex workspace shows no messages. Verdict unchanged. Re-read on main 8da9edf0: unchanged. #445 adds a read-only config(chatId) getter to chatRuntime.ts (exported as reasonChatConfig) for forks; streaming, load and save are untouched. Verdict unchanged. Re-read on main aec6ec2b: unchanged in streaming and persistence. #436 only adds the provider's tool name and raw input to each tool row (reason_acp/updates.rs, claude_chat/map.rs, codex_wire.rs) and boxes AgentEvent::Tool; #465 lets a chat switch to Codex from the model picker, but Create workspace and Default models still do not pick the agent from the model. Re-read on main da7891cd: unchanged in streaming and persistence. #469 gives an empty chat Conductor's intro (renderApp x9s @3,155,445, checked on sven m5 max): 'You\u2019re in a new copy of <repo> called <dir>' and the steps. Small gaps: a failed workspace shows 'Created <dir>' where Conductor shows 'Workspace initialization failed' with its retry (@3,156,102), the 'Created' step is plain text rather than Conductor's Open-in pill, and 'Branched \u2026 from' uses targetBranch/defaultBranch with a hard-coded origin/ instead of initializationParentBranch and the repo's remote name. Verdict unchanged. Re-read on main 792cabb7: unchanged. #477 touches Transcript.tsx/chat.css only for tool rows and default-open rows; streaming and persistence untouched.",
    "obligation": "Persist Codex transcripts via chat_messages_save/_load with stable turn ids and store the thread id in sessions; pass the chat's model and effort to codex_prompt and thread/start; pick the agent from the selected model in Create workspace and Default models; mount Claude Code.",
    "layers_required": [
     "data",
@@ -137,13 +137,13 @@
    "id": "chat.tool-calls",
    "area": "chat",
    "title": "Show agent tool calls as collapsible rows with a setting to keep them expanded",
-   "status": "partial",
-   "score": 0.5,
+   "status": "implemented",
+   "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
-   "why": "#339: toolGroups.ts foldAgentRows/groupParts feed Transcript.tsx SummaryRow, 'N tool calls, M messages' with one icon per tool, open while the turn runs and collapsed after. Garry Mode (#332, AppPrefRows.tsx, \u2303O) reaches Transcript only as expandToolsByDefault; WorkspaceView never passes dontCollapseToolCalls, so groups still collapse after each turn. ToolRow still shows raw JSON input and result instead of per-tool rendering. Re-read at 145d9593: Unchanged. view.ts and Transcript.tsx gained only the turn footer time (#385); toolGroups.ts grouping and the keep-expanded setting are as before. Re-read at 0fe9eb8e: Unchanged. #422 changed only the turn_end row in Transcript.tsx; toolGroups.ts, ToolRow and the keep-expanded wiring are untouched. Re-read on main 8da9edf0: correction. Since #387 (f21d2dbf) WorkspaceView passes dontCollapseToolCalls={garryMode} as well as expandToolsByDefault, and Transcript.tsx feeds it to canCollapse, so with Garry Mode on, groups stay open after the turn; the earlier 'never passes dontCollapseToolCalls' note (reviews at 145d9593 and 0fe9eb8e) was stale. #445 changed only the turn_end row and TurnMenu. Remaining gap: ToolRow still shows JSON.stringify of the input and the raw result instead of per-tool rendering. Verdict unchanged. Re-read on main aec6ec2b: gap smaller, verdict unchanged (#436). Transcript.tsx now draws each call through ToolRows.tsx ConductorToolRow, Conductor's one-line row shell (renderApp `Mu`: tool icon, chevron on hover, label, muted right part, click to open below), with per-tool rows for Bash (unwrapped command), Read (line-numbered content), Grep (match count), Glob/LS, Edit and MultiEdit (diff block and +/- counts), Write, WebSearch/WebFetch and TodoWrite (n/m completed). conductorTools.ts normalises Reason/ACP (_meta toolName + rawInput, new in reason_acp/updates.rs), Claude Code (claude_chat/map.rs tool_name/raw_input) and Codex items (codex_wire.rs now keeps commandActions, per-change diff and mcp server/tool) to Claude Code names, as Conductor's sidecar does. File badges open the file's changes (WorkspaceView openFile -> diff.openPath). #436's own REA capture-browser-scenario + compare-web-screenshots (evidence/chat/parity/parity.json) passes the collapsed and expanded tool-call references at <0.5% changed pixels (threshold 24) for Claude, Codex and Reason fixtures. Remaining gap, checked on sven m5 max against Conductor 0.87.6 renderApp-D_fmY7hW.js (sha256 5199d392...) @7,832,429: Conductor's row table `Qpo` has 35 kinds; ours covers 9 (bash, read, grep, glob, ls, edit, multi-edit, write, web) plus todo. ask-user-question, bash-output, sub-agent (Task/Agent), enter/exit-plan-mode, skill, slash-command, image-generation, thinking, task-create/get/list/update, teammate, send-message, schedule-wakeup, run-local-command, node-repl-js, Conductor's own MCP tools (diff-comment, get-diff-comments, get-terminal-output, get-workspace-diff), codex-collab, linear-mcp and context7-mcp all fall to our default row, which still prints JSON.stringify(input) and the raw output (ToolRows.tsx:408), where Conductor has a component each (`aUt` only for unknown tools).",
-   "obligation": "Add rows for the remaining Conductor row kinds (Qpo @7,832,429): sub-agent, ask-user-question, enter/exit-plan-mode, bash-output, skill, slash-command, image-generation, thinking, the task-* and teammate/send-message rows, schedule-wakeup, run-local-command, node-repl-js, Conductor's MCP tools (diff-comment, get-diff-comments, get-terminal-output, get-workspace-diff), codex-collab, linear-mcp and context7-mcp; keep raw JSON only for unknown tools.",
+   "reviewed_at": "792cabb7",
+   "why": "#339: toolGroups.ts foldAgentRows/groupParts feed Transcript.tsx SummaryRow, 'N tool calls, M messages' with one icon per tool, open while the turn runs and collapsed after. Garry Mode (#332, AppPrefRows.tsx, \u2303O) reaches Transcript only as expandToolsByDefault; WorkspaceView never passes dontCollapseToolCalls, so groups still collapse after each turn. ToolRow still shows raw JSON input and result instead of per-tool rendering. Re-read at 145d9593: Unchanged. view.ts and Transcript.tsx gained only the turn footer time (#385); toolGroups.ts grouping and the keep-expanded setting are as before. Re-read at 0fe9eb8e: Unchanged. #422 changed only the turn_end row in Transcript.tsx; toolGroups.ts, ToolRow and the keep-expanded wiring are untouched. Re-read on main 8da9edf0: correction. Since #387 (f21d2dbf) WorkspaceView passes dontCollapseToolCalls={garryMode} as well as expandToolsByDefault, and Transcript.tsx feeds it to canCollapse, so with Garry Mode on, groups stay open after the turn; the earlier 'never passes dontCollapseToolCalls' note (reviews at 145d9593 and 0fe9eb8e) was stale. #445 changed only the turn_end row and TurnMenu. Remaining gap: ToolRow still shows JSON.stringify of the input and the raw result instead of per-tool rendering. Verdict unchanged. Re-read on main aec6ec2b: gap smaller, verdict unchanged (#436). Transcript.tsx now draws each call through ToolRows.tsx ConductorToolRow, Conductor's one-line row shell (renderApp `Mu`: tool icon, chevron on hover, label, muted right part, click to open below), with per-tool rows for Bash (unwrapped command), Read (line-numbered content), Grep (match count), Glob/LS, Edit and MultiEdit (diff block and +/- counts), Write, WebSearch/WebFetch and TodoWrite (n/m completed). conductorTools.ts normalises Reason/ACP (_meta toolName + rawInput, new in reason_acp/updates.rs), Claude Code (claude_chat/map.rs tool_name/raw_input) and Codex items (codex_wire.rs now keeps commandActions, per-change diff and mcp server/tool) to Claude Code names, as Conductor's sidecar does. File badges open the file's changes (WorkspaceView openFile -> diff.openPath). #436's own REA capture-browser-scenario + compare-web-screenshots (evidence/chat/parity/parity.json) passes the collapsed and expanded tool-call references at <0.5% changed pixels (threshold 24) for Claude, Codex and Reason fixtures. Remaining gap, checked on sven m5 max against Conductor 0.87.6 renderApp-D_fmY7hW.js (sha256 5199d392...) @7,832,429: Conductor's row table `Qpo` has 35 kinds; ours covers 9 (bash, read, grep, glob, ls, edit, multi-edit, write, web) plus todo. ask-user-question, bash-output, sub-agent (Task/Agent), enter/exit-plan-mode, skill, slash-command, image-generation, thinking, task-create/get/list/update, teammate, send-message, schedule-wakeup, run-local-command, node-repl-js, Conductor's own MCP tools (diff-comment, get-diff-comments, get-terminal-output, get-workspace-diff), codex-collab, linear-mcp and context7-mcp all fall to our default row, which still prints JSON.stringify(input) and the raw output (ToolRows.tsx:408), where Conductor has a component each (`aUt` only for unknown tools). Re-read on main 792cabb7: gap closed (#477). conductorTools.ts KIND_BY_NAME now carries Conductor's full name table (`D1o`) and KIND_BY_PREFIX its prefix table (`P1o`: collab__, mcp__context7__, mcp__linear__), and ToolRows.tsx has a case for every one of the 35 `Qpo` kinds: sub-agent (typed `bpo` with Formatted/Raw tabs; untyped Task to the plain row), ask-user-question (incl. mcp__conductor__AskUserQuestion), enter/exit-plan-mode (Propose plan with copy, open by default via opensByDefault, wired in Transcript.tsx isOpen/onToggle), bash-output, run-local-command, skill, slash-command, thinking, image-generation, task-create/get/list/update, teammate, send-message, schedule-wakeup, node-repl-js, diff-comment, get-diff-comments, get-terminal-output, get-workspace-diff, codex-collab, linear-mcp and context7-mcp. Unknown tools now get `aUt`'s Input:/Output: body instead of a JSON dump; failed MCP calls turn red (`iUt`); the separate Error row follows Conductor's `AI` per kind. Residual fidelity gaps (small, tracked in #477's notes): ImageGeneration shows the path, not the image (no host file API in the webview); ScheduleWakeup cannot show 'Waiting until \u2026' (no toolResultCreatedAt); AskUserQuestion's Awaiting/Not answered uses call status, not session status; sub-agent model names map only opus/sonnet/haiku; known MCP servers show the wrench, not Conductor's server logos (`Pki`). Pixel parity for the 25 new kinds is not measured: the Conductor references cover only Grep/Read/Edit/Bash. Verdict partial -> implemented.",
+   "obligation": "",
    "layers_required": [
     "data",
     "ui"
@@ -258,7 +258,7 @@
    "score": 1.0,
    "code_score": 0.333,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "Stop calls the registered reason_cancel (a Stop before the prompt is sent is held for that turn). #339: a stopped prompt shows 'Cancelled' and its turn footer an 'Interrupted by user' badge (Transcript.tsx, view.ts cancelledAt); the e2e waits for the badge. #371: cancelled_at is saved to session_messages and reloaded, and a turn left running at quit reloads as cancelled. Implemented for the Reason runner the app uses; claude_cancel is registered but uncalled. Re-read at 1e73a260: Unchanged verdict. A Stop pressed while the stored transcript is still loading is now handled: the turn is marked unsent before the load wait (reasonChat.ts:258, :260) and cancelled at :277. Side effect: the user message appears only after the load finishes (startTurn at :266).",
    "obligation": "Render the cancelled-message state ('Interrupted by user' badge driven by cancelledAt) and persist session_messages.cancelled_at. Wire Stop to the Claude Code and Codex runners once they exist.",
    "layers_required": [
@@ -377,8 +377,8 @@
    "score": 0.25,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
-   "why": "PermissionMode::Plan exists only in agent/claude_cli.rs launch args, and no registered command launches Claude. chat.togglePlanMode and chat.approvePlan are keybinding registry entries with no handler, and no plan approval UI exists. Default to plan mode is explicitly omitted from DefaultModelsPage. Re-read at 1cedef0: #285's settings::launch::claude_launch sets permission mode, model, --effort and --settings from settings.toml, but it is called only from settings/launch_tests.rs; claude_chat does not use it and no UI toggles plan mode. Re-read on main e4f97ade: #432 adds ClaudeLaunch.chrome (--chrome) to agent/claude_cli.rs and claude_chat sets it from the chrome_mode_enabled app preference; claude_chat still launches with PermissionMode::BypassPermissions. chat.togglePlanMode/chat.approvePlan are still registry-only keybindings and there is no plan toggle or approval UI. Verdict unchanged. Re-read on main aec6ec2b: unchanged. #436 (tool rows, WorkspaceView openFile/workspacePath) and #465 (model picker agent choice, WorkspaceView controls) touch files this feature's probes match, not its behaviour. Plan mode still has no toggle; #436 adds no enter/exit-plan-mode rows (they fall to the JSON row).",
+   "reviewed_at": "792cabb7",
+   "why": "PermissionMode::Plan exists only in agent/claude_cli.rs launch args, and no registered command launches Claude. chat.togglePlanMode and chat.approvePlan are keybinding registry entries with no handler, and no plan approval UI exists. Default to plan mode is explicitly omitted from DefaultModelsPage. Re-read at 1cedef0: #285's settings::launch::claude_launch sets permission mode, model, --effort and --settings from settings.toml, but it is called only from settings/launch_tests.rs; claude_chat does not use it and no UI toggles plan mode. Re-read on main e4f97ade: #432 adds ClaudeLaunch.chrome (--chrome) to agent/claude_cli.rs and claude_chat sets it from the chrome_mode_enabled app preference; claude_chat still launches with PermissionMode::BypassPermissions. chat.togglePlanMode/chat.approvePlan are still registry-only keybindings and there is no plan toggle or approval UI. Verdict unchanged. Re-read on main aec6ec2b: unchanged. #436 (tool rows, WorkspaceView openFile/workspacePath) and #465 (model picker agent choice, WorkspaceView controls) touch files this feature's probes match, not its behaviour. Plan mode still has no toggle; #436 adds no enter/exit-plan-mode rows (they fall to the JSON row). Re-read on main 792cabb7: #477 adds the enter-plan-mode ('Enter plan mode') and exit-plan-mode ('Propose plan', markdown plan with copy, open by default) transcript rows, so a plan the agent proposes now renders. Still no composer plan toggle (chat.togglePlanMode is registry-only), claude_chat still launches with BypassPermissions, and there is no approve/reject step. Verdict unchanged.",
    "obligation": "Add a plan-mode toggle to the composer (Shift+Tab), pass it to the agent launch, and show the plan review/approve step in the transcript.",
    "layers_required": [
     "backend",
@@ -397,6 +397,7 @@
      "src-tauri/src/settings/launch.rs"
     ],
     "ui": [
+     "src/features/chat/ToolRows.tsx",
      "src/features/chat/conductorTools.ts"
     ]
    },
@@ -414,7 +415,7 @@
    "score": 0.0,
    "code_score": 0.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "No code reads or shows context usage or compaction. reason_acp/updates.rs parse_update explicitly returns None for usage updates, and sessions.context_used_percent and is_compacting are schema only.",
    "obligation": "Show a per-session context window usage meter and compaction state, fed by agent usage events.",
    "layers_required": [
@@ -441,8 +442,8 @@
    "score": 0.5,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "da7891cd",
-   "why": "Copy message, Copy final message, Retry, TurnMenu Reset chat and the TurnChanges chips unchanged, and now also work on transcripts reloaded from conductor.db (#371). chat.forkToNewTab has no handler; no edit-and-resend, Fork chat, or duration/time chips in the turn footer. Re-read at 145d9593: Gap smaller (#385): the turn footer now shows '8m, 0s \u00b7 10:37 AM' (turnTime.ts, Transcript.tsx:96-108), duration from TurnState.startedAt/endedAt, set live by reason.ts:104/157 and restored by persist.ts:108-115. Checked against Conductor 0.87.6 renderApp on Sven's Mac (plain-text bundle read): `$Pt(J.endTime-J.startTime,{showTenths:!1}),\" \u00b7 \",EDo({timestamp:J.endTime})`. Our hover is a title with the start \u2192 end range only; Conductor's also shows agent/model and token counts. Still missing: edit-and-resend, Fork chat (chat.forkToNewTab has no handler). Re-read at 0fe9eb8e: Layout closer, verdict unchanged (#422): the changed-file chips now sit in the footer row after the time and actions, as in Conductor's TDo/vDo, and the overflow button reads '+N more' with the hidden files' line totals (tooltip 'Show 3 more changed files'); revealed chips wrap onto their own line (TurnChanges.tsx, chat.css .chat-turn-changes-more.revealed). Still missing: edit-and-resend, Fork chat (chat.forkToNewTab has no handler), and agent/model and token counts in the footer hover. Re-read on main 8da9edf0: gap smaller, verdict unchanged (#445). The turn footer's More actions menu (Transcript.tsx TurnMenu) now shows 'Fork to new tab' on every finished turn of a chat in a workspace that is not archived, disabled while a fork is made; 'Reset chat' keeps its canReset rule. WorkspaceView forkToTab builds fork.ts forkTranscript (Conductor's concise transcript: '## User' / '## Assistant', '[N messages elided]', '[N tool calls elided]') and opens a tab through useReviewChats.fork on the source chat's reasonChatConfig (or Codex), with 'Transcript of <title>.md' and the source draft in its composer, not sent. The footer hover's first line is now '<model> via Reason' (turnAgentLabel). Checked on sven m5 max against Conductor 0.87.6 renderApp-D_fmY7hW.js (sha256 5199d392...): the turn menu holds 'Fork to new tab', 'Fork to new workspace' and 'Reset chat', both forks sharing one disabled flag; 'Failed to fork chat to new tab' and 'failed to generate chat transcript' are in the bundle. Still missing: edit-and-resend, 'Fork to new workspace', the tab limit, the tab context menu fork (Cmd+Opt+Enter) and token counts in the hover. Re-read on main 95047f91: gap smaller, verdict unchanged (#460). More actions now holds Fork to new workspace for Reason chats in a local, unarchived workspace (Transcript.tsx TurnMenu, WorkspaceView forkToWorkspace, forkWorkspace.ts): the turn's end checkpoint must exist, the current branch (git symbolic-ref) gets a unique '-vN' name (branch_name_is_taken), git branch in the main worktree, create_workspace on it, checkpoint_restore, .context copied, setup script, the new chat opens on the source's Reason options with 'Transcript of <title>.md' attached, not sent. Order and error strings match Conductor's forkChat (DIr, fork.md). Codex chats do not get it (no checkpoints). Likely bug (code read, not run): once create_workspace succeeds, a failed checkpoint_restore or setup script throws before dispatch(addWorkspace), so the new worktree and branch exist but the sidebar never shows them and nothing is rolled back. Still missing: edit-and-resend, the tab limit on Fork to new tab, the tab context-menu fork, hover token counts, and workspace notes on fork. Re-read on main aec6ec2b: obligation corrected (#464, edit.md): Conductor 0.87.6 has no edit-and-resend for a sent message (sent messages offer Copy message only; editing exists only for queued follow-ups, which ours already matches via queue.ts beginEdit/saveEdit/steerQueued). Dropped from the obligation. #436 restyled the turn's changed-file chips as Conductor's file badges (TurnChanges.tsx FileBadge, `_Do`). The Fork to new workspace rollback bug is still present (forkWorkspace.ts unchanged). Still missing: the tab limit on Fork to new tab, the tab context-menu fork and the footer hover's token counts. Re-read on main da7891cd: unchanged. #469 replaces the empty-chat placeholder with ChatEmptyState (WorkspaceView passes chatTabs and onAttachTranscript); #471 replaces the right panel's Files placeholder with AllFilesTree and passes notify to RightPanel. Both touch files this feature's probes match, not its behaviour.",
+   "reviewed_at": "792cabb7",
+   "why": "Copy message, Copy final message, Retry, TurnMenu Reset chat and the TurnChanges chips unchanged, and now also work on transcripts reloaded from conductor.db (#371). chat.forkToNewTab has no handler; no edit-and-resend, Fork chat, or duration/time chips in the turn footer. Re-read at 145d9593: Gap smaller (#385): the turn footer now shows '8m, 0s \u00b7 10:37 AM' (turnTime.ts, Transcript.tsx:96-108), duration from TurnState.startedAt/endedAt, set live by reason.ts:104/157 and restored by persist.ts:108-115. Checked against Conductor 0.87.6 renderApp on Sven's Mac (plain-text bundle read): `$Pt(J.endTime-J.startTime,{showTenths:!1}),\" \u00b7 \",EDo({timestamp:J.endTime})`. Our hover is a title with the start \u2192 end range only; Conductor's also shows agent/model and token counts. Still missing: edit-and-resend, Fork chat (chat.forkToNewTab has no handler). Re-read at 0fe9eb8e: Layout closer, verdict unchanged (#422): the changed-file chips now sit in the footer row after the time and actions, as in Conductor's TDo/vDo, and the overflow button reads '+N more' with the hidden files' line totals (tooltip 'Show 3 more changed files'); revealed chips wrap onto their own line (TurnChanges.tsx, chat.css .chat-turn-changes-more.revealed). Still missing: edit-and-resend, Fork chat (chat.forkToNewTab has no handler), and agent/model and token counts in the footer hover. Re-read on main 8da9edf0: gap smaller, verdict unchanged (#445). The turn footer's More actions menu (Transcript.tsx TurnMenu) now shows 'Fork to new tab' on every finished turn of a chat in a workspace that is not archived, disabled while a fork is made; 'Reset chat' keeps its canReset rule. WorkspaceView forkToTab builds fork.ts forkTranscript (Conductor's concise transcript: '## User' / '## Assistant', '[N messages elided]', '[N tool calls elided]') and opens a tab through useReviewChats.fork on the source chat's reasonChatConfig (or Codex), with 'Transcript of <title>.md' and the source draft in its composer, not sent. The footer hover's first line is now '<model> via Reason' (turnAgentLabel). Checked on sven m5 max against Conductor 0.87.6 renderApp-D_fmY7hW.js (sha256 5199d392...): the turn menu holds 'Fork to new tab', 'Fork to new workspace' and 'Reset chat', both forks sharing one disabled flag; 'Failed to fork chat to new tab' and 'failed to generate chat transcript' are in the bundle. Still missing: edit-and-resend, 'Fork to new workspace', the tab limit, the tab context menu fork (Cmd+Opt+Enter) and token counts in the hover. Re-read on main 95047f91: gap smaller, verdict unchanged (#460). More actions now holds Fork to new workspace for Reason chats in a local, unarchived workspace (Transcript.tsx TurnMenu, WorkspaceView forkToWorkspace, forkWorkspace.ts): the turn's end checkpoint must exist, the current branch (git symbolic-ref) gets a unique '-vN' name (branch_name_is_taken), git branch in the main worktree, create_workspace on it, checkpoint_restore, .context copied, setup script, the new chat opens on the source's Reason options with 'Transcript of <title>.md' attached, not sent. Order and error strings match Conductor's forkChat (DIr, fork.md). Codex chats do not get it (no checkpoints). Likely bug (code read, not run): once create_workspace succeeds, a failed checkpoint_restore or setup script throws before dispatch(addWorkspace), so the new worktree and branch exist but the sidebar never shows them and nothing is rolled back. Still missing: edit-and-resend, the tab limit on Fork to new tab, the tab context-menu fork, hover token counts, and workspace notes on fork. Re-read on main aec6ec2b: obligation corrected (#464, edit.md): Conductor 0.87.6 has no edit-and-resend for a sent message (sent messages offer Copy message only; editing exists only for queued follow-ups, which ours already matches via queue.ts beginEdit/saveEdit/steerQueued). Dropped from the obligation. #436 restyled the turn's changed-file chips as Conductor's file badges (TurnChanges.tsx FileBadge, `_Do`). The Fork to new workspace rollback bug is still present (forkWorkspace.ts unchanged). Still missing: the tab limit on Fork to new tab, the tab context-menu fork and the footer hover's token counts. Re-read on main da7891cd: unchanged. #469 replaces the empty-chat placeholder with ChatEmptyState (WorkspaceView passes chatTabs and onAttachTranscript); #471 replaces the right panel's Files placeholder with AllFilesTree and passes notify to RightPanel. Both touch files this feature's probes match, not its behaviour. Re-read on main 792cabb7: unchanged. #477 changes only tool rows (Transcript.tsx passes opensByDefault to isOpen/onToggle); its search of renderApp agrees there is no edit-and-resend on sent messages. Fork to new workspace rollback bug, tab limit, tab context-menu fork and footer token counts still open.",
    "obligation": "Add the tab limit on Fork to new tab, the tab context-menu fork and the footer hover's token counts; make Fork to new workspace show or clean up a workspace whose restore or setup fails; add it to Codex chats once they have checkpoints.",
    "layers_required": [
     "backend",
@@ -550,7 +551,7 @@
    "score": 0.0,
    "code_score": 0.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "No dictation or speech code exists in src/ or src-tauri/src (ledger agent.speech).",
    "obligation": "Add speech-to-text dictation into the composer.",
    "layers_required": [
@@ -575,7 +576,7 @@
    "score": 0.0,
    "code_score": 0.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "The only find bar is features/terminal/FindBar.tsx, which covers terminals. chat.search, searchNext and searchPrevious exist only as keybinding registry entries with no handler, and the transcript has no find UI.",
    "obligation": "Add find-in-transcript (top-level messages) bound to chat.search, with next/previous match navigation.",
    "layers_required": [
@@ -695,7 +696,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "No change: LAYOUT_TITLE still reads 'Unified view' / 'Split view' / 'Entire file' (DiffViewer.tsx:30) and LayoutToggle still drives Pierre diffStyle. Re-read at 1e73a260: Unchanged; editing is only available in the Entire file layout (editable.ts:9).",
    "obligation": "",
    "layers_required": [
@@ -725,7 +726,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "Since #282 FileDiffView renders the open file as the single item of a Pierre CodeView in a fixed-height .oc-code-view scroller, so only rows near the viewport render and revealLine scrolls unrendered lines into view. That is what evidence/frontend/pierre-diff-options.md records for Conductor (one-item CodeView per open file). The same evidence shows no windowing on Conductor's Changes list, so the unvirtualized ChangesList matches (inferred from the bundle). Re-read at 1e73a260: Unchanged; still one CodeView item per open file (FileDiffView.tsx:180), Code keyed by edit generation (:224).",
    "obligation": "",
    "layers_required": [
@@ -752,7 +753,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "No change: ViewOptionsMenu is still mounted in DiffTab (DiffViewer.tsx:92) with the 'Hide whitespace changes' / 'Wrap lines' items (Whitespace.tsx:33-34). The #270 file-list fix and the WhitespaceOnly state are intact. Re-read at 1e73a260: Unchanged; hiding whitespace disables editing (editable.ts:9), correctly.",
    "obligation": "",
    "layers_required": [
@@ -793,7 +794,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "No change: ViewedToggle is still mounted at FileDiffView.tsx:211 (defined at :222), with the 'Mark as viewed' / 'Mark as not viewed' tooltip and diff.toggleViewed. Re-read at 1e73a260: Unchanged; ViewedToggle at FileDiffView.tsx:247, new unsaved dot at :245.",
    "obligation": "",
    "layers_required": [
@@ -942,8 +943,8 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "f6c05d78",
-   "why": "Unchanged: enableLineSelection with a controlled range; threads persisted through the registered diff_comment_add/edit/delete/resolve/list. Only addition is the read-only hasPendingComments helper (comments.ts). Re-read at a0139339: Old-side comments now stored as 'original' (comments.ts locationOf; Location::parse accepts legacy 'base' in comment_commands.rs) and migrateLocations rewrites older rows (commentsApi.ts, commentStore.ts). Re-read at 1e73a260: Unchanged; comments are not moved when edited lines shift (gap tracked under diff.edit-in-viewer). Re-read at f6c05d78: Unchanged; authoring untouched. #389 only gates Delete: your own pending comments keep Delete with the confirm dialog (ReviewComments.tsx:180-188); agent-written comments lose Delete while pending.",
+   "reviewed_at": "792cabb7",
+   "why": "Unchanged: enableLineSelection with a controlled range; threads persisted through the registered diff_comment_add/edit/delete/resolve/list. Only addition is the read-only hasPendingComments helper (comments.ts). Re-read at a0139339: Old-side comments now stored as 'original' (comments.ts locationOf; Location::parse accepts legacy 'base' in comment_commands.rs) and migrateLocations rewrites older rows (commentsApi.ts, commentStore.ts). Re-read at 1e73a260: Unchanged; comments are not moved when edited lines shift (gap tracked under diff.edit-in-viewer). Re-read at f6c05d78: Unchanged; authoring untouched. #389 only gates Delete: your own pending comments keep Delete with the confirm dialog (ReviewComments.tsx:180-188); agent-written comments lose Delete while pending. Re-read at 792cabb7: Unchanged; authoring untouched. #477 only adds the transcript row for the agent's mcp__conductor__DiffComment / GetDiffComments calls.",
    "obligation": "",
    "layers_required": [
     "data",
@@ -967,6 +968,7 @@
      "src-tauri/src/diff/comment_commands.rs"
     ],
     "ui": [
+     "src/features/chat/chat.css",
      "src/features/diff/ReviewComments.tsx",
      "src/features/diff/commentStore.ts",
      "src/features/diff/comments.ts",
@@ -1072,7 +1074,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "There is no editor in the diff tab and no file-write command. The reference copy 'Edit in diff viewer' appears nowhere in src. Re-read at 1e73a260: Moved missing -> partial (#362). In the Entire file layout the open file becomes a Pierre Editor (FileDiffView.tsx:114-117, :191; EditInViewer.ts:18) with per-worktree drafts that remount on disk changes (EditInViewer.ts:35-76). Cmd+S (editor.saveFile, registry.ts:172) calls the registered diff_write_file (lib.rs:363), which writes via temp file + rename, keeps permissions, and refuses symlinks and paths resolving outside the worktree (write_file.rs:24-74); the diff then reloads quietly. Unsaved dot and 'Failed to save file' error shown (FileDiffView.tsx:245, :250). Missing: editing in unified/split, persisted drafts, moving comments with edited lines, a 'Failed to open editor' boundary. Bugs: in a turn view the editor starts from the turn's end checkpoint (git.rs:34) and Cmd+S writes it over newer changes; unsaved edits are dropped when the file changes on disk (EditInViewer.ts:69-74), while Conductor remounts only with no draft pending; reloadQuietly can overwrite a newer load.",
    "obligation": "Disable editing (or start from the worktree file) while a turn is selected; keep unsaved drafts when the file changes on disk; persist drafts; move comments with edited lines; support editing in unified/split; add the 'Failed to open editor' boundary; guard reloadQuietly against stale responses.",
    "layers_required": [
@@ -1132,7 +1134,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "usePrActions.create builds its request with createPrRequest (createPr.ts), which calls the registered pr_template and db_repo_prompt('createPR') and passes workspace prTitle/prDescription to pr_create_prompt. The lookup now saves title and body via pr_sync_workspace -> workspaces::set_pr_metadata and db_list_workspaces reloads them. Gap: #376's prompts.create_pr settings-file fallback in pr_create_prompt only runs with repo_path set, and createPrRequest never sends repoPath/workspacePath. Re-read at a0139339: createPr.ts:34-48 sends pr_template, db_repo_prompt('createPR') and the stored title/description to pr_create_prompt but never repoPath/workspacePath, so the settings-file fallback at pr/commands.rs:78-85 never runs. New user-facing bug: Settings > Actions 'Create PR' row (PromptRows.tsx:32, RepoSettingsPage.tsx:129, repo_settings_set_local) saves a prompt that Create PR ignores. Re-read at 145d9593: Unchanged. #391 only removed db_archive_workspace/db_unarchive_workspace from persistence/mod.rs; createPr.ts still sends no repoPath/workspacePath, so prompts.create_pr in Settings > Actions is still ignored.",
    "obligation": "Send repoPath and workspacePath from createPrRequest so prompts.create_pr is applied, and decide which wins between the conductor.db createPR prompt and the settings file (Review lets the settings file win).",
    "layers_required": [
@@ -1184,7 +1186,7 @@
    "score": 0.5,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "#301 registered db_repo_prompt (persistence_commands.rs; lib.rs:296), reading all six custom_prompt_* kinds; the running app reads codeReview for the Review button (reviewApi.ts:9). There is no UI to edit any prompt, and createPR, fixErrors, resolveMergeConflicts, renameBranch and general are read nowhere. Re-read at a0139339: Gap smaller: Settings > Actions rows (Code review, Create PR, General) save to the repo's local settings file via repo_settings_set_local (lib.rs:420). Code review and General are read; Create PR is not. Fix errors, Resolve conflicts and Branch rename have no row and read only conductor.db (db_repo_prompt). Re-read at 145d9593: Unchanged. persistence_commands.rs only lost the two archive commands (#391).",
    "obligation": "Make Create PR read prompts.create_pr. Add rows for Fix errors, Resolve conflicts and Branch rename, and have their flows read the effective settings value as well as conductor.db, as Code review does.",
    "layers_required": [
@@ -1218,7 +1220,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "usePullRequest polls the registered pr_lookup, pr_git_state and pr_header_state with the real hasPendingComments (review.hasPending) and optionalChecksBlock (usePrSettings); PrControl labels every header state (draft, review required, changes requested, merged, 'Loading PR\u2026'). #344's useWorkspacePrSync -> pr_sync_workspace stores derivedStatus with the reference's clear-manual-status rule (workspaces::set_derived_status). Only the open workspace is polled, which is all the header needs. Code-level; not run in the macOS app.",
    "obligation": "Store pr_lookup's derivedStatus (and PR title/description) per workspace, poll every workspace in a batch, and feed the real pending-comment flag and optional-checks-blocking setting into header_state.",
    "layers_required": [
@@ -1254,7 +1256,7 @@
    "score": 0.5,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "Changed: c1436d2 (#309) made usePullRequest.ts:45-71 read treat_optional_checks_as_blocking through usePrSettings (getSettings, re-read on SETTINGS_CHANGED) and pass it to pr_header_state. WorkspaceView.tsx:373 now passes it to mergeShortcutApplies, and the Settings \u203a Git row is at GitPage.tsx:123-131. ChecksTab is still mounted from RightPanel (WorkspaceView.tsx:231), and checks/api.ts:15 and :24 call pr_check_log and pr_rerun_failed_checks (both registered, lib.rs:365-366). 'Fix errors' is still missing, and Re-run still shows only for Actions-job URLs (checks.ts:66-67), while NOTES:32 shows it for any failing check with a details URL. Re-read at a0139339: Gap smaller (#366): Fix errors in ChecksTab.tsx:103-117/:141-145 shows when a failing check has a details URL (fixErrors.ts:23), fetches Actions logs with pr_check_log, adds db_repo_prompt fixErrors and sends attachments to the workspace chat (WorkspaceView.tsx:493-500), matching evidence/pr/NOTES.md:33. The Re-run rule (Actions jobs only) matches the corrected NOTES:32, so that gap is closed. Still missing: the header 'Fix errors' action and a git.fixErrors (Cmd+Shift+X) handler (registry.ts:167; NOTES:88).",
    "obligation": "Add the header 'Fix errors' action and handle git.fixErrors (Cmd+Shift+X) by calling the same fixErrors flow when checks are failing.",
    "layers_required": [
@@ -1291,7 +1293,7 @@
    "score": 1.0,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "Merge, Automerge and Cancel automerge in PrControl call the registered pr_merge, pr_merge_method and pr_set_auto_merge; git.mergePR goes through mergeShortcutApplies. The TS canMerge (shortcuts.ts) and Rust merge_eligibility::can_merge now share src-tauri/src/pr/fixtures/can_merge_cases.json in their tests, so they cannot drift silently.",
    "obligation": "",
    "layers_required": [
@@ -1399,7 +1401,7 @@
    "score": 1.0,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "Unchanged since a693ae8: Ready for review and Approve PR call the registered pr_mark_ready and pr_approve; PrHeader inside the Checks tab calls pr_edit and pr_retarget. No separate PR tab, and no per-workspace target branch (intended_target_branch) that triggers a retarget. Re-read at a0139339: Moved partial -> implemented (#366): a main-area PR tab (PrTab.tsx:21-39, opened from the 'PR #N' header chip at WorkspaceView.tsx:589-593) holds PrHeader (pr_edit) and the checks; a per-workspace target branch (useTargetBranch.ts:41-75) retargets an open PR with pr_retarget and saves intended_target_branch via db_set_workspace_target_branch (lib.rs:343), reachable from the header TargetChip and the PR header picker. Approve and Mark ready call pr_approve/pr_mark_ready. Out of scope here: the PR tab's Activity timeline and pr.stack.",
    "obligation": "",
    "layers_required": [
@@ -1473,7 +1475,7 @@
    "score": 1.0,
    "code_score": 1.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "#344: on merge_conflicts (DIRTY) PrControl shows Resolve, and resolveConflicts sends the registered pr_resolve_conflicts_prompt (reads pull.rebase: rebase with --force-with-lease or merge; targets baseRefName or targetBranch; appends db_repo_prompt('resolveMergeConflicts')), matching NOTES.md. Diff shows the operation-in-progress message. Gap: the header Archive has no busy check during a merge or rebase (workspace::git::busy_state is unreachable from the UI); the reference gates Spotlight and archive. Re-read at a0139339: Resolve still sends pr_resolve_conflicts_prompt (lib.rs:434). The header Archive button (WorkspaceView.tsx:608) and the new archive-on-merge paths (useArchiveOnMerge.ts:46-61) archive without checking workspace::git::busy_state, against NOTES.md:140. Re-read at 145d9593: Gap closed (#391): every archive path (header Archive, sidebar menu, palette, archive on merge) dispatches archiveWorkspace -> archive_workspace, whose checkpoint save returns Busy (exit 101) during a merge, rebase, cherry-pick or revert and refuses in safe mode (workspace_archive/mod.rs:229-231); App.tsx shows Conductor's sticky 'Because a Git operation (merge, rebase, cherry-pick, or revert) is in progress, archiving may lose some of your work.' with an Archive button that retries in discardGitOperationState mode. The copy is in Conductor 0.87.6 index-BGEQ8YjU.js (1 hit, read on Sven's Mac). Resolve still sends pr_resolve_conflicts_prompt.",
    "obligation": "None for this feature.",
    "layers_required": [
@@ -1511,7 +1513,7 @@
    "score": 0.5,
    "code_score": 0.5,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "App.tsx mounts CreateWorkspaceDialog, whose CreateFromPicker has a 'Pull requests' tab filled by the registered pr_list_open (bundled gh, list.rs), and gh_issue_list_open fills the Issues tab. Choosing a PR sends existingBranch and prNumber to create_workspace, which fetches pull/<n>/head for forks. Search only filters the first 100 open PRs on the client (createFrom.ts `matches`). A pasted PR outside that list gives 'Could not load that pull request', because NOTES confirms the reference's server-side search/issues and pulls/{n} lookup were not built.",
    "obligation": "Add search-as-you-type over all PRs (gh search prs or search/issues) and by-number or URL lookup (gh pr view), then create the workspace from the result and link it to the PR.",
    "layers_required": [
@@ -1542,7 +1544,7 @@
    "score": 0.0,
    "code_score": 0.0,
    "needs_rereview": false,
-   "reviewed_at": "aec6ec2b",
+   "reviewed_at": "792cabb7",
    "why": "src-tauri and src/ have no stack model, merge-stack command or stack UI. NOTES lists stacked-PR header states and the stack exception to archive-on-merge as not modelled.",
    "obligation": "Model dependent PR stacks (fetch stack fields), show the stack view, and implement merge-stack with its failure state.",
    "layers_required": [
