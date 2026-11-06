@@ -35,6 +35,7 @@ import { restoreCheckpoint, turnCheckpointRef, type Invoke } from "./checkpoints
 import { cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
+import { chatWantsAttention, turnSettled } from "./attention.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import type { FileChange } from "../diff/types.ts";
 
@@ -418,6 +419,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
         notify(c);
       }
       setQueue(c, Q.turnEnded(c.queue, e.status, openTurns(c.state) > 0));
+      if (turnSettled(e.status, c.queue)) chatWantsAttention(c.state.chatId);
     }
   }
 
@@ -432,9 +434,12 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     requested(chatId, request) {
       const c = chats.get(chatId);
       if (!c) return;
+      const fresh = !c.permissions.some((r) => r.requestId === request.requestId);
       c.permissions = [...c.permissions.filter((r) => r.requestId !== request.requestId), request];
       notify(c);
       setQueue(c, Q.permissionRequested(c.queue));
+      // A new request is a wait on the user (Conductor's `_p` on needs_user_permission).
+      if (fresh) chatWantsAttention(chatId);
     },
     resolved(chatId, requestId) {
       const c = chats.get(chatId);

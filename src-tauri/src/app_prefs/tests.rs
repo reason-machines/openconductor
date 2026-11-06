@@ -256,6 +256,35 @@ fn sidebar_resource_usage_is_an_off_by_default_flag() {
 }
 
 #[test]
+fn dashboard_enabled_is_off_unless_the_row_says_true() {
+    // `mzt` (index-BGEQ8YjU.js @407,016) reads `data === "true"`; `eGt`
+    // (@421,195) writes `value.toString()`; `_z` defaults it to "false".
+    assert!(!AppPrefs::from_rows(&HashMap::new()).dashboard_enabled);
+    assert!(!AppPrefs::from_rows(&rows(&[("dashboard_enabled", "TRUE")])).dashboard_enabled);
+    assert!(AppPrefs::from_rows(&rows(&[("dashboard_enabled", "true")])).dashboard_enabled);
+    let u: AppPrefUpdate =
+        serde_json::from_str(r#"{"key":"dashboard_enabled","value":true}"#).unwrap();
+    assert_eq!(u, AppPrefUpdate::DashboardEnabled(true));
+    assert_eq!(
+        u.encode().unwrap(),
+        Write::Set("dashboard_enabled", "true".into())
+    );
+    assert_eq!(
+        AppPrefUpdate::DashboardEnabled(false).encode().unwrap(),
+        Write::Set("dashboard_enabled", "false".into())
+    );
+
+    tauri::async_runtime::block_on(async {
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        let Write::Set(k, v) = AppPrefUpdate::DashboardEnabled(true).encode().unwrap() else {
+            unreachable!()
+        };
+        openconductor_db::app_settings::set(&pool, k, &v).await.unwrap();
+        assert!(commands::load(&pool).await.unwrap().dashboard_enabled);
+    });
+}
+
+#[test]
 fn chrome_mode_reads_only_true_and_writes_text() {
     assert!(!AppPrefs::from_rows(&HashMap::new()).chrome_mode_enabled);
     assert!(AppPrefs::from_rows(&rows(&[("chrome_mode_enabled", "true")])).chrome_mode_enabled);
