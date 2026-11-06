@@ -987,7 +987,7 @@
   },
   "menu-chat-tab": {
    "lane": "tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "347acb1d8",
+   "openconductor_commit": "892d5d095",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -995,8 +995,8 @@
    "image": "side-by-side/chat-tabs-menu-chat-tab.png",
    "supersedes_oc_png_sha256": null,
    "reference": {
-    "evidence_id": "ev_f971a86664f8eecea8108af9442be5e63f5fe3e42c7a716f8a6febe95a699fc8",
-    "png_sha256": "bc296b90b73976b63d90781fb1b9cc6b9b2348e740f1a80d733152af67a6eac2",
+    "evidence_id": "ev_a97ea67d46a61347003bb417a26994cc36db87500de20f9aa9286268315d7f0e",
+    "png_sha256": "c6a8c4c48c4477fb5545c0fea7cefaa5d7806d9cbd516c01d872aa07b5ecfa0c",
     "final_url": "http://conductor.localhost:4357/repository/repo-tide-web/workspace/ws-lisbon?activeTabType=session&sessionId=sess-lisbon&gitPanelTab=changes&gitDiff=all",
     "dom": {
      "texts": [
@@ -1046,7 +1046,7 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · 5:38 PM",
+      "8m, 0s · 5:55 PM",
       "auth.ts",
       "+1",
       "-1",
@@ -1152,8 +1152,8 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_45d5bfce398bbf43132c3fa3c4040272ff4f2d1805001fcdebc18ae9bd6a4c74",
-    "png_sha256": "10d241e9f37a0540de1856648ea899b89e31dda85324a2710b807b9f42ace701",
+    "evidence_id": "ev_c8a107d034451d196dacf7fb2a346d532db14981f98b56885e65319573f25748",
+    "png_sha256": "e36d7648cc72500bc202acc9b860d4a092e8e9dc1693846d0a81cfe0323de388",
     "dom": {
      "texts": [
       "OpenConductor",
@@ -1202,9 +1202,17 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · Thu 10:37 AM",
+      "8m, 0s · 6:14 PM",
+      "auth.ts",
+      "+1",
+      "-1",
+      "auth.test.ts",
+      "+14",
+      "-0",
+      "Next unread",
       "⌘L to focus",
-      "Auto",
+      "Claude Opus 5.5",
+      "High",
       "All files",
       "Changes",
       "2",
@@ -1306,13 +1314,16 @@
       "Copy message",
       "Expand 4 tool calls, 2 messages",
       "Open /Users/demo/code/tide-web/lisbon/src/lib/auth.ts",
-      "Reason\nNov 5, 2026, 10:29 AM → Nov 5, 2026, 10:37 AM",
+      "Reason\nNov 6, 2026, 6:06 PM → Nov 6, 2026, 6:14 PM",
       "Copy final message",
       "Show message actions",
+      "Files changed in this turn",
+      "src/lib/auth.ts",
+      "src/lib/auth.test.ts",
       "composer",
       "Ask to make changes, @mention files, run /commands",
-      "Change agent (Auto)",
-      "Auto",
+      "Change agent (Claude Opus 5.5 · High)",
+      "Claude Opus 5.5 · High",
       "Add",
       "Send message ↵",
       "Changes",
@@ -1337,16 +1348,16 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_1069092ceb82985362100c6c6ed1eae9296159db792c438129bf76202f822d75",
-     "changed_pixels": 1002807,
+     "evidence_id": "ev_dfc8d5edf031f8436cfebd9ce066fe6bff86079af2462a9554318b6f62c37ad1",
+     "changed_pixels": 1002268,
      "total_pixels": null,
-     "changed_ratio": 0.9554182545731708
+     "changed_ratio": 0.9549047256097561
     },
     "t24": {
-     "evidence_id": "ev_87d5f26cac14a47cc82f0025fb3570d2942fdc998c3460120c910dacede5fea6",
-     "changed_pixels": 44651,
+     "evidence_id": "ev_d309494d1c3deeacb3a4bd68b1590727b7e5c96abb94a01f8f32ebb28d4fb5f6",
+     "changed_pixels": 36803,
      "total_pixels": null,
-     "changed_ratio": 0.04254096798780488
+     "changed_ratio": 0.035063833841463415
     }
    }
   },
@@ -1992,7 +2003,7 @@
   },
   "dialog-rename-chat": {
    "lane": "tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "c7cb18e7c",
+   "openconductor_commit": "892d5d095",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -2000,8 +2011,8 @@
    "image": "side-by-side/chat-tabs-dialog-rename-chat.png",
    "supersedes_oc_png_sha256": null,
    "reference": {
-    "evidence_id": "ev_70ecb371d6463e79b50dce160b72185af4c721f8143d2b4b1f1abca31fc8e97f",
-    "png_sha256": "ca6e00b15472cdeb951f2f5de25a2e07f9ca65763abfcd759634c453293c1149",
+    "evidence_id": "ev_26069ffb562cfe2aa514f6854998ceabe952f10cf7f2bcefcec79199f769c672",
+    "png_sha256": "ccccdef63a09fabe30ef902da88281299321f764dd8731b9842eb88c131be2cb",
     "final_url": "http://conductor.localhost:4357/repository/repo-tide-web/workspace/ws-lisbon?activeTabType=session&sessionId=sess-lisbon&gitPanelTab=changes&gitDiff=all",
     "dom": {
      "texts": [
@@ -2051,7 +2062,7 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · 5:09 PM",
+      "8m, 0s · 5:56 PM",
       "auth.ts",
       "+1",
       "-1",
@@ -2152,8 +2163,8 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_9fb21213bdec3eb0a5eb7b11a0e74e42a74779eea2a21c41fe89bfffec729421",
-    "png_sha256": "e2a0e5187b379ef84eadd46fedc46ea4fe68934e5ba02310837642943de571fd",
+    "evidence_id": "ev_8422f589df03b69a1cbdf1fa1ea58624f731d9accaadd8d857c1b2afd46b0b8a",
+    "png_sha256": "a4769b11b067c9d2d16645f82a3687aff93cb17a5bc9fff405ca610704b34c06",
     "dom": {
      "texts": [
       "OpenConductor",
@@ -2202,9 +2213,17 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · Thu 10:37 AM",
+      "8m, 0s · 6:14 PM",
+      "auth.ts",
+      "+1",
+      "-1",
+      "auth.test.ts",
+      "+14",
+      "-0",
+      "Next unread",
       "⌘L to focus",
-      "Auto",
+      "Claude Opus 5.5",
+      "High",
       "All files",
       "Changes",
       "2",
@@ -2219,11 +2238,13 @@
       "2 files changed",
       "+15",
       "-1",
-      "src/lib/auth.test.ts",
+      "src/lib/",
+      "auth.test.ts",
       "U",
       "+14",
       "-0",
-      "src/lib/auth.ts",
+      "src/lib/",
+      "auth.ts",
       "U",
       "+1",
       "-1",
@@ -2299,13 +2320,16 @@
       "Copy message",
       "Expand 4 tool calls, 2 messages",
       "Open /Users/demo/code/tide-web/lisbon/src/lib/auth.ts",
-      "Reason\nNov 5, 2026, 10:29 AM → Nov 5, 2026, 10:37 AM",
+      "Reason\nNov 6, 2026, 6:06 PM → Nov 6, 2026, 6:14 PM",
       "Copy final message",
       "Show message actions",
+      "Files changed in this turn",
+      "src/lib/auth.ts",
+      "src/lib/auth.test.ts",
       "composer",
       "Ask to make changes, @mention files, run /commands",
-      "Change agent (Auto)",
-      "Auto",
+      "Change agent (Claude Opus 5.5 · High)",
+      "Claude Opus 5.5 · High",
       "Add",
       "Send message ↵",
       "Changes",
@@ -2330,22 +2354,22 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_8c09edacc1de641e270a24487274e7993fc26b03739f9d67dca26591179e221e",
+     "evidence_id": "ev_3905d7117a107c6eb0c953e6a986ed244ba302941558d9d099f200261577fc95",
      "changed_pixels": 1049589,
      "total_pixels": null,
      "changed_ratio": 0.9999895198170732
     },
     "t24": {
-     "evidence_id": "ev_95ade3637dd8e3775acca46fff71cd3864e0ff12acf2e2ba0e176d8183650aa8",
-     "changed_pixels": 42627,
+     "evidence_id": "ev_ef8740650fc616dd9e3e68e12cea4547dcdb3844818393263be2cdc5d237d34e",
+     "changed_pixels": 43367,
      "total_pixels": null,
-     "changed_ratio": 0.04061261432926829
+     "changed_ratio": 0.041317644817073174
     }
    }
   },
   "menu-review-edit": {
    "lane": "tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "c7cb18e7c",
+   "openconductor_commit": "892d5d095",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -2353,8 +2377,8 @@
    "image": "side-by-side/chat-tabs-menu-review-edit.png",
    "supersedes_oc_png_sha256": null,
    "reference": {
-    "evidence_id": "ev_1a4d62623c875af3e11293967e092f76b8ca16241f098b1603680a16b353d21f",
-    "png_sha256": "1c3dcef7a858ca1e2b2ab5a296d941c4e4adb05ba91117aa6d9bcfa51fb976b4",
+    "evidence_id": "ev_5f075e51ef2b7fe4ea8f898cba1aa1bd63475780b6a60b86fe228cc6b6ff9e75",
+    "png_sha256": "a309ccde7e5ee293be9f84a3e7737528a6ca2a8ceb674f0ad6a03e7d50d9e6e5",
     "final_url": "http://conductor.localhost:4357/repository/repo-tide-web/workspace/ws-lisbon?activeTabType=session&sessionId=sess-lisbon&gitPanelTab=changes&gitDiff=all",
     "dom": {
      "texts": [
@@ -2404,7 +2428,7 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · 5:10 PM",
+      "8m, 0s · 5:57 PM",
       "auth.ts",
       "+1",
       "-1",
@@ -2502,8 +2526,8 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_be77f5aa1f82222e13508bcc99e88a80904d3c10f3e53e77bd47739369402d2a",
-    "png_sha256": "738d134356e88b2e0f76d7f8746f87718460f7dfc459ee0b185b1848654e2e5c",
+    "evidence_id": "ev_75711cc2449499ec292a4666d006fc435c4292463c22ec7aea1bb111af40188a",
+    "png_sha256": "e3186b455fe685a89098e1d0f7bdfb0f8b47b0db1ec8ce3b6081fa2d7ea08936",
     "dom": {
      "texts": [
       "OpenConductor",
@@ -2552,9 +2576,17 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · Thu 10:37 AM",
+      "8m, 0s · 6:14 PM",
+      "auth.ts",
+      "+1",
+      "-1",
+      "auth.test.ts",
+      "+14",
+      "-0",
+      "Next unread",
       "⌘L to focus",
-      "Auto",
+      "Claude Opus 5.5",
+      "High",
       "All files",
       "Changes",
       "2",
@@ -2570,11 +2602,13 @@
       "2 files changed",
       "+15",
       "-1",
-      "src/lib/auth.test.ts",
+      "src/lib/",
+      "auth.test.ts",
       "U",
       "+14",
       "-0",
-      "src/lib/auth.ts",
+      "src/lib/",
+      "auth.ts",
       "U",
       "+1",
       "-1",
@@ -2646,13 +2680,16 @@
       "Copy message",
       "Expand 4 tool calls, 2 messages",
       "Open /Users/demo/code/tide-web/lisbon/src/lib/auth.ts",
-      "Reason\nNov 5, 2026, 10:29 AM → Nov 5, 2026, 10:37 AM",
+      "Reason\nNov 6, 2026, 6:06 PM → Nov 6, 2026, 6:14 PM",
       "Copy final message",
       "Show message actions",
+      "Files changed in this turn",
+      "src/lib/auth.ts",
+      "src/lib/auth.test.ts",
       "composer",
       "Ask to make changes, @mention files, run /commands",
-      "Change agent (Auto)",
-      "Auto",
+      "Change agent (Claude Opus 5.5 · High)",
+      "Claude Opus 5.5 · High",
       "Add",
       "Send message ↵",
       "Changes",
@@ -2676,16 +2713,16 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_7457c91311ab34805d0388a9061164c4d317332b2f469789e23bf6f51bd0e2b2",
-     "changed_pixels": 1049598,
+     "evidence_id": "ev_429514e50b681d43fec641b47ec1d6b10a2966e0c06fd4055469db36038fbe28",
+     "changed_pixels": 1049508,
      "total_pixels": null,
-     "changed_ratio": 0.9999980945121951
+     "changed_ratio": 0.9999123475609756
     },
     "t24": {
-     "evidence_id": "ev_6a79f4e9da6fae4159ec20e7bc0e2a5c91ace24df685f2dca9336c05b1a5eacc",
-     "changed_pixels": 47651,
+     "evidence_id": "ev_6e70a9e0d326c028f7b5ce761234da664661ce797d4f86b29eba624847f999ad",
+     "changed_pixels": 30615,
      "total_pixels": null,
-     "changed_ratio": 0.045399199695121954
+     "changed_ratio": 0.02916825457317073
     }
    }
   },
@@ -4307,7 +4344,7 @@
   },
   "workspace-chat": {
    "lane": "tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "347acb1d8",
+   "openconductor_commit": "892d5d095",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -4315,8 +4352,8 @@
    "image": "side-by-side/chat-tabs-workspace-chat.png",
    "supersedes_oc_png_sha256": "db0e178ce4ced6bd8e71d66050c623b2d789ca6a0619dab803d40b70bd820b7b",
    "reference": {
-    "evidence_id": "ev_ed4d1391eeb819ce71d52d3dbc0c60d2d849cbe6e978c5860643b7f5c0134465",
-    "png_sha256": "340891a4f36dc777ed29b2d3c21f16426f47610627db88998542d6b7c63b7f8b",
+    "evidence_id": "ev_b4f5fa27b688292ccead8a5034e51b671ba6c00d6b1ac064acf5f9bc275c4e2e",
+    "png_sha256": "fe7c32a686aa582150b9548b2d95ce177cc2166cf5105b394815206b09156e42",
     "final_url": "http://conductor.localhost:4357/repository/repo-tide-web/workspace/ws-lisbon?activeTabType=session&sessionId=sess-lisbon&gitPanelTab=changes&gitDiff=all",
     "dom": {
      "texts": [
@@ -4366,7 +4403,7 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · 5:38 PM",
+      "8m, 0s · 5:54 PM",
       "auth.ts",
       "+1",
       "-1",
@@ -4460,8 +4497,8 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_39a4587f6e69ac4c9838b4fc9bb590445f37e839df45dd0fcc381b38bc3c944e",
-    "png_sha256": "90203496b2cfd38566bbdc21b1681bee33f9d66e18d492834ec00a3a310e1446",
+    "evidence_id": "ev_52924ab7ce4c4c327efe204b817562f5504d72ebacce0241c2de17f071025bb2",
+    "png_sha256": "dcce55189d4d07d4c9d7593c6c8e098f17fe995e57738aa497b17c72c69c68f7",
     "dom": {
      "texts": [
       "OpenConductor",
@@ -4510,9 +4547,17 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · Thu 10:37 AM",
+      "8m, 0s · 6:14 PM",
+      "auth.ts",
+      "+1",
+      "-1",
+      "auth.test.ts",
+      "+14",
+      "-0",
+      "Next unread",
       "⌘L to focus",
-      "Auto",
+      "Claude Opus 5.5",
+      "High",
       "All files",
       "Changes",
       "2",
@@ -4605,13 +4650,16 @@
       "Copy message",
       "Expand 4 tool calls, 2 messages",
       "Open /Users/demo/code/tide-web/lisbon/src/lib/auth.ts",
-      "Reason\nNov 5, 2026, 10:29 AM → Nov 5, 2026, 10:37 AM",
+      "Reason\nNov 6, 2026, 6:06 PM → Nov 6, 2026, 6:14 PM",
       "Copy final message",
       "Show message actions",
+      "Files changed in this turn",
+      "src/lib/auth.ts",
+      "src/lib/auth.test.ts",
       "composer",
       "Ask to make changes, @mention files, run /commands",
-      "Change agent (Auto)",
-      "Auto",
+      "Change agent (Claude Opus 5.5 · High)",
+      "Claude Opus 5.5 · High",
       "Add",
       "Send message ↵",
       "Changes",
@@ -4635,22 +4683,22 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_bff56bb9acc1e0fcefc16ee8d436c806d7437ce73b6e5bb37aafc392803e0249",
-     "changed_pixels": 1049598,
+     "evidence_id": "ev_165e8fb99fb664c1cdf11157b5ee0e65c8bcebdabaaff6fb2d2618f3c01dabc4",
+     "changed_pixels": 1049502,
      "total_pixels": null,
-     "changed_ratio": 0.9999980945121951
+     "changed_ratio": 0.999906631097561
     },
     "t24": {
-     "evidence_id": "ev_3fe1399b8adb999a92f90f1d500b55b5cab9efb5d13deb8560caee7ed5977f23",
-     "changed_pixels": 43714,
+     "evidence_id": "ev_f52daa0136b5d710af566814aa08284a2013097e97bb38894354bfbf2c82ca94",
+     "changed_pixels": 26931,
      "total_pixels": null,
-     "changed_ratio": 0.04164824695121951
+     "changed_ratio": 0.025658346036585365
     }
    }
   },
   "workspace-tool-calls": {
    "lane": "tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "347acb1d8",
+   "openconductor_commit": "892d5d095",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -4658,8 +4706,8 @@
    "image": "side-by-side/chat-tabs-workspace-tool-calls.png",
    "supersedes_oc_png_sha256": "0ec85f3b9a59d6af28b3075f54b57b3ef61535a2c2c8dd92da38809ea227ea28",
    "reference": {
-    "evidence_id": "ev_218bb4c8ce531f61736bcfa0a97684af7cb4d6cbd0bed94d3f067063e08018ba",
-    "png_sha256": "a50e8be4822a5a028f19e65e4abd6ca1ae07f2ba239ea5d2f81a0818599dc863",
+    "evidence_id": "ev_fce957ecaf1f95c18522ba17853a57df7f22df23e42bab12fbec2f29630060b4",
+    "png_sha256": "0f7c5b86b49ff0d4925ff07ac148b9d402bd4c162d387934063ce50ac1e4b0d2",
     "final_url": "http://conductor.localhost:4357/repository/repo-tide-web/workspace/ws-lisbon?activeTabType=session&sessionId=sess-lisbon&gitPanelTab=changes&gitDiff=all",
     "dom": {
      "texts": [
@@ -4728,7 +4776,7 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · 5:38 PM",
+      "8m, 0s · 5:54 PM",
       "auth.ts",
       "+1",
       "-1",
@@ -4825,8 +4873,8 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_7fec705e7d09ea5457841ed5b221a1d9f08a6c2c361d004b1547ab28c2246c42",
-    "png_sha256": "0113bbedbf34a7423d706740d13954fedf18655f6acb01e80df9d9ae435453fa",
+    "evidence_id": "ev_e5d4aa395f753db149ff397484268b5d0df78a4fca549cf6e78bcb83da5f768a",
+    "png_sha256": "6828006a175375f1ad27642658084e67a49f31d5d8c4e8807749a0012069e196",
     "dom": {
      "texts": [
       "OpenConductor",
@@ -4894,9 +4942,17 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · Thu 10:37 AM",
+      "8m, 0s · 6:14 PM",
+      "auth.ts",
+      "+1",
+      "-1",
+      "auth.test.ts",
+      "+14",
+      "-0",
+      "Next unread",
       "⌘L to focus",
-      "Auto",
+      "Claude Opus 5.5",
+      "High",
       "All files",
       "Changes",
       "2",
@@ -4991,13 +5047,16 @@
       "/Users/demo/code/tide-web/lisbon/src/lib/auth.ts",
       "/Users/demo/code/tide-web/lisbon/src/lib/auth.ts",
       "Open /Users/demo/code/tide-web/lisbon/src/lib/auth.ts",
-      "Reason\nNov 5, 2026, 10:29 AM → Nov 5, 2026, 10:37 AM",
+      "Reason\nNov 6, 2026, 6:06 PM → Nov 6, 2026, 6:14 PM",
       "Copy final message",
       "Show message actions",
+      "Files changed in this turn",
+      "src/lib/auth.ts",
+      "src/lib/auth.test.ts",
       "composer",
       "Ask to make changes, @mention files, run /commands",
-      "Change agent (Auto)",
-      "Auto",
+      "Change agent (Claude Opus 5.5 · High)",
+      "Claude Opus 5.5 · High",
       "Add",
       "Send message ↵",
       "Changes",
@@ -5021,22 +5080,22 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_4f157fbaab77a74ccac18a0c2a894d2364abd50685a7533f13e2209bcc8a9e59",
-     "changed_pixels": 1049471,
+     "evidence_id": "ev_7c9d87e9c13510b4295377163f20b859bca488065304c329eafface0fbd619f7",
+     "changed_pixels": 1049269,
      "total_pixels": null,
-     "changed_ratio": 0.9998770960365854
+     "changed_ratio": 0.9996846417682926
     },
     "t24": {
-     "evidence_id": "ev_42c51ed4ccce230cc2a467a2fec3531a6803c12f7bd63c5dd1c7c8932c59e615",
-     "changed_pixels": 59348,
+     "evidence_id": "ev_cff9a18a9e3768e223d57b5ece8d3a1e8e1bec2f7e9a3721530fb3806a59a28d",
+     "changed_pixels": 27083,
      "total_pixels": null,
-     "changed_ratio": 0.05654344512195122
+     "changed_ratio": 0.025803163109756097
     }
    }
   },
   "menu-model-picker": {
    "lane": "tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "347acb1d8",
+   "openconductor_commit": "892d5d095",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -5044,8 +5103,8 @@
    "image": "side-by-side/chat-tabs-menu-model-picker.png",
    "supersedes_oc_png_sha256": "e694e0a74ef20870fec4d03a3532bed82479b6f4b488aef30fd9e723657f9637",
    "reference": {
-    "evidence_id": "ev_c16b764f43164fb0699985e6d6c9e24def76afa4e633d5e0a84a5985b2e950a4",
-    "png_sha256": "b1f4f49195b46967ff3b4fa88e28fb9b04f693a9946b28353fcd284b3a4ef570",
+    "evidence_id": "ev_f4d15d9f63f9e6885c40730251a9b278108551aed7b5a98d173fbd9b4780274a",
+    "png_sha256": "7aa50391206c2e0a9878ffe8cbd309728cf9fc5358d9ee7b67d38af09b99120a",
     "final_url": "http://conductor.localhost:4357/repository/repo-tide-web/workspace/ws-lisbon?activeTabType=session&sessionId=sess-lisbon&gitPanelTab=changes&gitDiff=all",
     "dom": {
      "texts": [
@@ -5095,7 +5154,7 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · 5:39 PM",
+      "8m, 0s · 5:56 PM",
       "auth.ts",
       "+1",
       "-1",
@@ -5207,8 +5266,8 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_fd78fac3d786cd4ff694bcc00a75403b17712e69e9a17c46f2fb849614a41063",
-    "png_sha256": "9b9e05c456b567369c6e0879c632c50b840aa85ebf0e8ae30d70fc92c9fc96ec",
+    "evidence_id": "ev_ce6032830b914e00bbbaaee56485a29249e4dd1b9842ecaf956073cb068852c8",
+    "png_sha256": "4975a922e12b8dff7db6c829a007fc2154fc58cc450b24ea6f250654ce7ac762",
     "dom": {
      "texts": [
       "OpenConductor",
@@ -5257,14 +5316,25 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · Thu 10:37 AM",
+      "8m, 0s · 6:14 PM",
+      "auth.ts",
+      "+1",
+      "-1",
+      "auth.test.ts",
+      "+14",
+      "-0",
+      "Next unread",
       "⌘L to focus",
-      "Auto",
+      "Claude Opus 5.5",
+      "High",
+      "Claude Opus 5.5",
+      "High",
       "Auto",
       "Codex",
       "Claude Code",
       "Add models",
       "Effort",
+      "High",
       "Edit",
       "⌘⇧/",
       "Cycle effort",
@@ -5360,16 +5430,20 @@
       "Copy message",
       "Expand 4 tool calls, 2 messages",
       "Open /Users/demo/code/tide-web/lisbon/src/lib/auth.ts",
-      "Reason\nNov 5, 2026, 10:29 AM → Nov 5, 2026, 10:37 AM",
+      "Reason\nNov 6, 2026, 6:06 PM → Nov 6, 2026, 6:14 PM",
       "Copy final message",
       "Show message actions",
+      "Files changed in this turn",
+      "src/lib/auth.ts",
+      "src/lib/auth.test.ts",
       "composer",
       "Ask to make changes, @mention files, run /commands",
-      "Change agent (Auto)",
-      "Auto",
+      "Change agent (Claude Opus 5.5 · High)",
+      "Claude Opus 5.5 · High",
       "Model",
       "Search models",
       "Search models",
+      "Claude Opus 5.5",
       "Auto",
       "Codex",
       "Claude Code",
@@ -5396,16 +5470,16 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_2fa50d6cb4503090a634a49e2543e165deda222632440546cd2e31bb71dd6585",
-     "changed_pixels": 1049598,
+     "evidence_id": "ev_288023c70f4e2cd2e8be9cd999d3fb968f71b634c47707bda964c4afe5c333ad",
+     "changed_pixels": 1049502,
      "total_pixels": null,
-     "changed_ratio": 0.9999980945121951
+     "changed_ratio": 0.999906631097561
     },
     "t24": {
-     "evidence_id": "ev_2bce8d00ddce488cb6b20703ad0b3ff368a6a15b95f2b9642ef7222f9f057d7a",
-     "changed_pixels": 48218,
+     "evidence_id": "ev_0d0db94d9ca5920cf828866cba9dd69566bb5d41f58ba723fe9469ef62aa2017",
+     "changed_pixels": 32376,
      "total_pixels": null,
-     "changed_ratio": 0.045939405487804875
+     "changed_ratio": 0.030846036585365853
     }
    }
   }

@@ -43,30 +43,41 @@ const css = (selector) => ({ kind: "css", selector });
 const right = (selector) => ({ locator: css(selector), button: "right" });
 
 // The repos and workspaces of tools/screens/seed-data.js's populated scenario, lisbon open.
-const ws = (id, name, branch, path) => ({ id, name, branch, path: path ?? `/Users/demo/code/${name}` });
+// quito and tallinn are unread there (seed-data.js `unread` 1), which shows the composer's "Next unread".
+const ws = (id, name, branch, path, unread = false) => ({ id, name, branch, path: path ?? `/Users/demo/code/${name}`, unread });
 const SHELL = {
   repos: [
-    { id: "r1", name: "tide-web", path: "/Users/demo/code/tide-web", defaultBranch: "main", workspaces: [ws("w1", "lisbon", "ada/fix-login-redirect", WT), ws("w2", "osaka", "ada/dark-mode-tokens"), ws("w3", "quito", "ada/settings-search")] },
-    { id: "r2", name: "tide-api", path: "/Users/demo/code/tide-api", defaultBranch: "main", workspaces: [ws("w4", "tallinn", "ada/rate-limit-headers"), ws("w5", "accra", "ada/pagination-cursor")] },
+    { id: "r1", name: "tide-web", path: "/Users/demo/code/tide-web", defaultBranch: "main", workspaces: [ws("w1", "lisbon", "ada/fix-login-redirect", WT), ws("w2", "osaka", "ada/dark-mode-tokens"), ws("w3", "quito", "ada/settings-search", undefined, true)] },
+    { id: "r2", name: "tide-api", path: "/Users/demo/code/tide-api", defaultBranch: "main", workspaces: [ws("w4", "tallinn", "ada/rate-limit-headers", undefined, true), ws("w5", "accra", "ada/pagination-cursor")] },
     { id: "r3", name: "dotfiles", path: "/Users/demo/code/dotfiles", defaultBranch: "main", workspaces: [ws("w6", "bergen", "ada/zsh-prompt")] },
   ],
   selection: { kind: "workspace", repoId: "r1", workspaceId: "w1" },
 };
-const at = (s) => new Date(LISBON.startedAt + s * 1000).toISOString();
+// Conductor's seed dates its turns relative to now (seed-data.js `iso(ago)`), so its footer reads "8m, 0s · h:mm AM"
+// for today; the same turn here ends 12 minutes ago.
+const STARTED = Date.now() - (12 * 60 + LISBON.durationSeconds) * 1000;
+const at = (s) => new Date(STARTED + s * 1000).toISOString();
 const turn = { status: "completed", startedAt: at(0), endedAt: at(LISBON.durationSeconds) };
 const MESSAGES = [
   { id: "w1:t1:user", sessionId: "w1", turnId: "w1:t1", role: "user", createdAt: at(0), blocks: [{ type: "text", text: LISBON.prompt }], turn },
   { id: "w1:t1:assistant", sessionId: "w1", turnId: "w1:t1", role: "assistant", createdAt: at(2), blocks: lisbonBlocks("claude") },
 ].map((m) => JSON.stringify(m));
+// The lisbon turn's changed files, the chips Conductor's footer shows for it (its checkpoint diff in the harness).
+const change = (path, additions, deletions) => ({ path, old_path: null, status: "modified", binary: false, additions, deletions });
+const TURN_FILES = [change("src/lib/auth.ts", 1, 1), change("src/lib/auth.test.ts", 14, 0)];
 
 /** Runs in the page after fakeBackend: the lisbon transcript and its chat title. */
-function extras({ messages, chatTitle }) {
+function extras({ messages, chatTitle, turnFiles }) {
+  // The lisbon turn ran on Claude Opus 5.5 at High, Reason's counterpart of Conductor's "Opus 5 · High" chat
+  // (reasonModels.ts: the chip shows the model the Session last ran on).
+  localStorage.setItem("openconductor.reason.running.w1", JSON.stringify({ model: "byok:anthropic:claude-opus-5-5", effort: "high" }));
   const inner = window.__TAURI_INTERNALS__.invoke;
   window.__TAURI_INTERNALS__.invoke = async (cmd, args) => {
     if (cmd === "chat_messages_load") return { messages: args.chatId === "w1" ? messages : [], agentSessionId: null };
     if (cmd === "db_list_workspaces") return (await inner(cmd, args)).map((w) => (w.id === "w1" ? { ...w, chatTitle } : w));
     if (["local_storage_get_entry", "db_set_chat_unread", "db_open_chat_tab", "checkpoint_exists", "session_statuses"].includes(cmd)) return cmd === "local_storage_get_entry" ? null : cmd === "session_statuses" ? [] : cmd === "checkpoint_exists" ? false : undefined;
     if (cmd === "local_storage_set_entry") return { success: true };
+    if (cmd === "checkpoint_turn_changes") return turnFiles; // the transcript has one finished turn
     return inner(cmd, args);
   };
 }
@@ -85,7 +96,7 @@ const STATES = {
 
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".woff2": "font/woff2", ".json": "application/json" };
 function serveOc() {
-  const init = `(${fakeBackend})(${JSON.stringify({ shell: SHELL, files: FILES })});(${extras})(${JSON.stringify({ messages: MESSAGES, chatTitle: "Fix login redirect loop" })});`;
+  const init = `(${fakeBackend})(${JSON.stringify({ shell: SHELL, files: FILES })});(${extras})(${JSON.stringify({ messages: MESSAGES, chatTitle: "Fix login redirect loop", turnFiles: TURN_FILES })});`;
   http
     .createServer((req, res) => {
       const url = new URL(req.url, "http://x");
