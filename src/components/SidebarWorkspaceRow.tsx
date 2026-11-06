@@ -18,6 +18,9 @@ import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
 import { applyRowLookup, useRowPrPoll } from "../features/pr/sidebarPrPoller";
 import { usePrSettings } from "../features/pr/usePullRequest";
 import type { LookupResult } from "../features/pr/types";
+import { Tooltip } from "./Tooltip";
+import { ArchiveIcon } from "./Icons";
+import { glyphs } from "../keybindings/shortcut";
 
 interface Props {
   workspace: Workspace;
@@ -42,10 +45,18 @@ interface Props {
   branchPrefix?: string;
   /** A press that may become a drag onto a section, Pinned or My workspaces. */
   onPointerDown?: (e: PointerEvent<HTMLButtonElement>) => void;
+  /** Archive this workspace: the hover button at the row's right end (Conductor's `iea`). */
+  onArchive?: () => void;
 }
 
-/** One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat. */
-export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix, onPointerDown }: Props) {
+const ARCHIVE_COMMAND = COMMANDS.find((c) => c.id === "workspace.archive");
+const ARCHIVE_SHORTCUT = ARCHIVE_COMMAND ? glyphs(ARCHIVE_COMMAND.key) : undefined;
+
+/**
+ * One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat,
+ * and the Archive button that replaces the diff stat while the row is hovered.
+ */
+export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix, onPointerDown, onArchive }: Props) {
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
   const label = workspaceLabel({
     name: ws.name,
@@ -65,52 +76,72 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
   // Settings › Experimental › Workspace status matrix: the matrix with the PR's status and unread folded in (`hWt`).
   const matrix = useStatusMatrix();
   return (
-    <button
-      ref={ref}
-      type="button"
-      className="sb-ws"
-      data-testid="left-sidebar-workspace-item"
-      data-active={active || undefined}
-      data-unread={ws.unread || undefined}
-      data-pinned={typeof ws.pinnedAt === "number" || undefined}
-      data-menu-open={menuOpen || undefined}
-      aria-current={active ? "page" : undefined}
-      onClick={onSelect}
-      onContextMenu={onContextMenu}
-      onPointerDown={onPointerDown}
-      title={`${label} · ${ws.branch} · ${statusLabel}`}
-    >
-      <span className="sb-ws-lead" data-testid="workspace-leading-visual" data-hint={hint || undefined}>
-        <span
-          className="sb-ws-status"
-          data-testid="workspace-status-icon"
-          data-status={status}
-          data-color={matrix ? undefined : rowStatusColor(status)}
-          data-matrix={matrix || undefined}
-          role={matrix ? undefined : "img"}
-          aria-label={matrix ? undefined : statusLabel}
-          aria-hidden={hint || undefined}
-        >
-          {matrix ? (
-            <StatusMatrix status={status} gitStatus={rowGitStatus({ pr: ws.pr, hasRemote })} hasUnread={ws.unread === true} />
-          ) : (
-            <RowStatusIcon status={status} />
+    <div className="sb-ws-row">
+      <button
+        ref={ref}
+        type="button"
+        className="sb-ws"
+        data-testid="left-sidebar-workspace-item"
+        data-active={active || undefined}
+        data-unread={ws.unread || undefined}
+        data-pinned={typeof ws.pinnedAt === "number" || undefined}
+        data-menu-open={menuOpen || undefined}
+        aria-current={active ? "page" : undefined}
+        onClick={onSelect}
+        onContextMenu={onContextMenu}
+        onPointerDown={onPointerDown}
+        title={`${label} · ${ws.branch} · ${statusLabel}`}
+      >
+        <span className="sb-ws-lead" data-testid="workspace-leading-visual" data-hint={hint || undefined}>
+          <span
+            className="sb-ws-status"
+            data-testid="workspace-status-icon"
+            data-status={status}
+            data-color={matrix ? undefined : rowStatusColor(status)}
+            data-matrix={matrix || undefined}
+            role={matrix ? undefined : "img"}
+            aria-label={matrix ? undefined : statusLabel}
+            aria-hidden={hint || undefined}
+          >
+            {matrix ? (
+              <StatusMatrix status={status} gitStatus={rowGitStatus({ pr: ws.pr, hasRemote })} hasUnread={ws.unread === true} />
+            ) : (
+              <RowStatusIcon status={status} />
+            )}
+          </span>
+          {shortcutNumber !== undefined && (
+            <span className="sb-ws-hint" aria-label={hintLabel(shortcutNumber)} aria-hidden={!hint} data-state={hint ? "visible" : "hidden"}>
+              {shortcutNumber}
+            </span>
           )}
         </span>
-        {shortcutNumber !== undefined && (
-          <span className="sb-ws-hint" aria-label={hintLabel(shortcutNumber)} aria-hidden={!hint} data-state={hint ? "visible" : "hidden"}>
-            {shortcutNumber}
+        <span className="sb-ws-name">{label}</span>
+        {(stat.added > 0 || stat.removed > 0) && (
+          <span className="sb-ws-diff" data-testid="workspace-diff-stat">
+            {stat.added > 0 && <span className="add">+{compactCount(stat.added)}</span>}
+            {stat.removed > 0 && <span className="del">-{compactCount(stat.removed)}</span>}
           </span>
         )}
-      </span>
-      <span className="sb-ws-name">{label}</span>
-      {(stat.added > 0 || stat.removed > 0) && (
-        <span className="sb-ws-diff" data-testid="workspace-diff-stat">
-          {stat.added > 0 && <span className="add">+{compactCount(stat.added)}</span>}
-          {stat.removed > 0 && <span className="del">-{compactCount(stat.removed)}</span>}
-        </span>
+      </button>
+      {onArchive && (
+        <div className="sb-ws-archive">
+          {/* Conductor shows the shortcut in the tooltip only on the selected row, since ⌘⇧A archives the open workspace. */}
+          <Tooltip content="Archive workspace" shortcut={active ? ARCHIVE_SHORTCUT : undefined}>
+            <button
+              type="button"
+              aria-label="Archive workspace"
+              data-testid="workspace-archive-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onArchive();
+              }}
+            >
+              <ArchiveIcon size={12} />
+            </button>
+          </Tooltip>
+        </div>
       )}
-    </button>
+    </div>
   );
 }
 
@@ -189,7 +220,11 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
   const { optionalChecksBlock } = usePrSettings();
   const branchPrefix = useBranchPrefix();
 
+  const archive = (repoId: string, ws: Workspace) =>
+    onArchive ? onArchive(repoId, ws) : dispatch({ type: "archiveWorkspace", repoId, workspaceId: ws.id });
+
   const rowProps = (repoId: string, ws: Workspace) => ({
+    onArchive: () => archive(repoId, ws),
     repoPath: state.repos.find((r) => r.id === repoId)?.path || undefined,
     branchPrefix,
     onPrLookup: (r: LookupResult) => applyRowLookup(dispatch, repoId, ws, r, optionalChecksBlock),
@@ -228,7 +263,7 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
           setStatus: (status) => dispatch({ type: "setWorkspaceStatus", ...ids, status }),
           rename: onRename && (() => onRename(repo.id, ws)),
           copyLink: onCopyLink && (() => onCopyLink(ws)),
-          archive: () => (onArchive ? onArchive(repo.id, ws) : dispatch({ type: "archiveWorkspace", ...ids })),
+          archive: () => archive(repo.id, ws),
           moveToSection: (sectionId) => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId }),
           newSection: () => onNewSection?.(ws),
           removeFromSection: () => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId: null }),
