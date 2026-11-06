@@ -1,0 +1,34 @@
+{
+  "results": [
+    {
+      "name": "search groups, keyboard selection, validated callback and close",
+      "passed": true
+    },
+    {
+      "name": "no matches retains Browse; browsing returns a checked selection",
+      "passed": true
+    },
+    {
+      "name": "canceled browse leaves picker open without checking or choosing",
+      "passed": true
+    },
+    {
+      "name": "invalid, missing and unreadable directories show errors without callbacks",
+      "passed": true
+    },
+    {
+      "name": "closing during validation suppresses late callbacks; repeated picks inspect once",
+      "passed": true
+    },
+    {
+      "name": "focus stays trapped, Escape and backdrop close, and trigger focus returns",
+      "passed": true
+    },
+    {
+      "name": "long lists scroll within a small viewport and keyboard wrap stays visible",
+      "passed": true
+    }
+  ],
+  "pageErrors": [],
+  "limitation": "Isolated component fixture with injected browse/inspection services; not a native file dialog or filesystem check."
+}

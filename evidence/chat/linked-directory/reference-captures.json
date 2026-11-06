@@ -1,0 +1,289 @@
+[
+  {
+    "name": "add",
+    "image": "evidence/chat/linked-directory/reference-add.png",
+    "evidence_id": "ev_8ff68791a4c317baaf6c413d4d4ef0c91b026efcce9d1244a06a04fb3b016416",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4438/?oc_scenario=populated&oc_mention_files=1"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "repo",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=tide-web"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "workspace",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=Ada/fix login redirect"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "open",
+          "action": "wait_for_timeout",
+          "duration_ms": 1200
+        },
+        {
+          "step_id": "add",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "[aria-label='Add']"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "link",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=Link workspaces"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "mention",
+    "image": "evidence/chat/linked-directory/reference-mention.png",
+    "evidence_id": "ev_7c742fd1faa7ca67e4766603506467498564fabb413776d72f770e70cc76b325",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4438/?oc_scenario=populated&oc_mention_files=1"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "repo",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=tide-web"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "workspace",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=Ada/fix login redirect"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "open",
+          "action": "wait_for_timeout",
+          "duration_ms": 1200
+        },
+        {
+          "step_id": "query",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": "[contenteditable=true]"
+          },
+          "value": {
+            "source": "literal",
+            "value": "@add"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "suggest",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        },
+        {
+          "step_id": "choose",
+          "action": "press",
+          "locator": {
+            "kind": "css",
+            "selector": "[contenteditable=true]"
+          },
+          "key": "Enter",
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "search",
+    "image": "evidence/chat/linked-directory/reference-search.png",
+    "evidence_id": "ev_ea9a204171a4e724394d96bc95e526934769305f009bdcf448ac0cacf94ceab2",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4438/?oc_scenario=populated&oc_mention_files=1"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "repo",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=tide-web"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "workspace",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=Ada/fix login redirect"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "open",
+          "action": "wait_for_timeout",
+          "duration_ms": 1200
+        },
+        {
+          "step_id": "add",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "[aria-label='Add']"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "link",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=Link workspaces"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "search",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": "[placeholder='Search workspaces...']"
+          },
+          "value": {
+            "source": "literal",
+            "value": "no-such-workspace"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  }
+]
