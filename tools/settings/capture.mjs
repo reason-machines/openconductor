@@ -62,3 +62,4 @@ for (const page of pages) {
   fs.writeFileSync(manifestFile, JSON.stringify(manifest, null, 2) + "\n");
 }
 console.log(failed ? "SETTINGS_CAPTURES_PARTIAL" : "SETTINGS_CAPTURES_COMPLETE");
+if (failed) throw new Error("One or more settings states failed to capture");

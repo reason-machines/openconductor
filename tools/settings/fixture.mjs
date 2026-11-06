@@ -69,7 +69,7 @@ function settingsBackend() {
 }
 const seed = `(${fakeBackend})(${JSON.stringify({ shell, files: FILES })});(${settingsBackend})();`;
 const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".png": "image/png" };
-http.createServer((req, res) => {
+const server = http.createServer((req, res) => {
   const url = new URL(req.url, "http://localhost");
   let file = path.resolve(root, "." + decodeURIComponent(url.pathname));
   if (!file.startsWith(root + path.sep) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) file = path.join(root, "index.html");
@@ -79,13 +79,18 @@ http.createServer((req, res) => {
   res.end(body);
 }).listen(port, "0.0.0.0", () => {
   console.log(`Settings fixture listening on ${port}`);
-  if (process.env.CAPTURE_SETTINGS) {
-    void import("./capture.mjs").catch((error) => console.error("SETTINGS_CAPTURE_FAILED", error));
-  }
-  if (process.env.CHECK_SAVE_RACE) {
-    void import("./check-save-race.mjs").then(
-      () => console.log("SAVE_RACE_CHECK_PASSED"),
-      (error) => console.error("SAVE_RACE_CHECK_FAILED", error),
-    );
-  }
+  void (async () => {
+    try {
+      if (process.env.CAPTURE_SETTINGS) await import("./capture.mjs");
+      if (process.env.CHECK_SAVE_RACE) {
+        await import("./check-save-race.mjs");
+        console.log("SAVE_RACE_CHECK_PASSED");
+      }
+    } catch (error) {
+      process.exitCode = 1;
+      console.error("SETTINGS_VERIFICATION_FAILED", error);
+    } finally {
+      if (process.env.EXIT_AFTER_CHECK) server.close();
+    }
+  })();
 });
