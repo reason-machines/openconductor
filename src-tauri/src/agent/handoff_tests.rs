@@ -761,7 +761,7 @@ mod sessions {
         let log = fake_log(&t, "codex-fake.jsonl");
         let launch_line = log.iter().find(|l| l.get("launch").is_some()).unwrap();
         assert_eq!(
-            launch_line["launch"]["keys"]["CODEX_ACCESS_TOKEN"],
+            launch_line["launch"]["access_token_env"],
             Value::Null,
             "the target's stale token was unset"
         );

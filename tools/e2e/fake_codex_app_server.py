@@ -82,7 +82,8 @@ def notify(method, params):
 note({"launch": {
     "args": sys.argv[1:],
     "launcher": os.environ.get("OC_FAKE_CODEX", "path"),
-    "keys": {k: fingerprint(k) for k in ("CODEX_API_KEY", "OPENAI_API_KEY", "CODEX_ACCESS_TOKEN")},
+    "keys": {k: fingerprint(k) for k in ("CODEX_API_KEY", "OPENAI_API_KEY")},
+    "access_token_env": fingerprint("CODEX_ACCESS_TOKEN"),
     "codex_home": bool(os.environ.get("CODEX_HOME")),
     "account": (read_account() or {}).get("type"),
 }})
