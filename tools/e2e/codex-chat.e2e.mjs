@@ -50,8 +50,9 @@ writeFileSync(join(project, "README.md"), "e2e\n");
 git("add", ".");
 git("-c", "user.name=e2e", "-c", "user.email=e2e@example.com", "commit", "-q", "-m", "init");
 
-// `codex` in ~/.local/bin is the fake; the app finds it with find_codex_cli
-// even when the login shell's PATH does not list that folder.
+// `codex` in ~/.local/bin is the fake, where find_codex_cli would find it
+// even when the login shell's PATH does not list that folder. The settings
+// below override it, so the app must pick the custom path over this one.
 const bin = join(home, ".local", "bin");
 mkdirSync(bin, { recursive: true });
 const fake = join(repoRoot, "tools/e2e/fake_codex_app_server.py");
@@ -179,8 +180,9 @@ try {
   await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   const cliPath = await runAsync("const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke('codex_cli_path').then(done, (e) => done('error: ' + e));");
-  assert.equal(cliPath, join(bin, "codex"));
-  pass(`codex_cli_path finds the CLI in ~/.local/bin: ${cliPath}`);
+  // "Codex executable path" from settings wins over the ~/.local/bin search (#612).
+  assert.equal(cliPath, custom);
+  pass(`codex_cli_path is the "Codex executable path" from settings, not ~/.local/bin: ${cliPath}`);
 
   // Pick Codex in the composer's model picker (Conductor's picker picks the agent too).
   await run("document.querySelector(\"[data-testid='composer-model-button']\").click();");
