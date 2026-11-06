@@ -13,6 +13,10 @@ This does not capture either app or verify current native parity. `scoped_report
 
 The nine `main_screens` verdicts separate retained state evidence from final native review. A threshold match never signs off a main screen. The generated page provides filters over both the in-scope queue and retained exclusions. Builders submit evidence summaries to the ledger owner rather than editing aggregate files concurrently.
 
+## Merged supplemental evidence
+
+The ledger owner records merged area evidence in [supplemental-evidence.json](../../parity/ui-program/supplemental-evidence.json). Each record names the PR, merge commit, area, capture lane, evidence source and limits. `source_main_commit` is the reconciled main revision, not an app capture identity. Regeneration copies these records into the reports and links them to the nine main-screen verdicts. It does not replace whole-state scores, add rows to the denominator or promote native final review. Unmerged area reports stay with their owners until the next merged batch.
+
 ## Regenerate (one command)
 
 ```bash

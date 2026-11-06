@@ -36,6 +36,17 @@ class ScopeReportTest(unittest.TestCase):
             (out / "ref-captures.json").write_text(json.dumps(reference))
             (out / "oc-captures.json").write_text(json.dumps({"home": {"status": "captured", "dom": {"texts": ["Open project"]}}}))
             (out / "compare.json").write_text(json.dumps({"results": {"home": {"t24": {"changed_ratio": 0.01}}}}))
+            program = root / "parity/ui-program"
+            program.mkdir()
+            supplemental = {"source_main_commit": "a" * 40, "records": [{
+                "id": "shell-actions-test", "areas": ["home", "sidebar"], "verdict": "partial",
+                "requirement_ids": ["deferred-ui-default-off"],
+                "pr_url": "https://github.com/reason-machines/openconductor/pull/722",
+                "evidence_path": "evidence/shell-actions/README.md", "merge_commit": "a" * 40,
+                "lane": "Chromium with mocked IPC", "summary": "One crop matches, the area does not.",
+                "limits": ["Native review not run", "Default palette not checked"],
+            }]}
+            (program / "supplemental-evidence.json").write_text(json.dumps(supplemental))
             old = build_map.ROOT, build_map.HERE, build_map.OUT
             build_map.ROOT, build_map.HERE, build_map.OUT = str(root), str(here), str(out)
             try:
@@ -59,8 +70,18 @@ class ScopeReportTest(unittest.TestCase):
             self.assertTrue(all(screen["final_review"] == "unverified" for screen in report["main_screens"].values()))
             self.assertEqual(report["requirements"][1]["id"], "deferred-ui-default-off")
             self.assertEqual(report["requirements"][1]["status"], "unverified")
+            self.assertEqual(report["requirements"][1]["supplemental_evidence"], ["shell-actions-test"])
             self.assertTrue((root / "parity/ui-program/ledger.html").is_file())
             self.assertIn("Unverified", (root / "parity/ui-map.md").read_text())
+            self.assertEqual(report["supplemental_evidence"], supplemental)
+            self.assertEqual(report["main_screens"]["home"]["supplemental_evidence"], ["shell-actions-test"])
+            self.assertEqual(report["main_screens"]["home"]["evidence_verdict"], "harness-only")
+            self.assertIsNone(report["openconductor"]["commit"])
+            html = (program / "ledger.html").read_text()
+            self.assertIn("a" * 40, html)
+            self.assertIn("One crop matches, the area does not.", html)
+            self.assertIn("Default palette not checked", html)
+            self.assertIn("Supplemental evidence", (root / "parity/ui-map.md").read_text())
 
     def test_no_reference_does_not_prove_missing_or_wrong(self):
         from scoped_report import annotate
