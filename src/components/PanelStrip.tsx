@@ -77,6 +77,10 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd 
 
   const addRunScript = useCallback(() => openRepoSettingsPage(repo.id, "scripts"), [repo.id]);
   const onSetupState = useCallback((s: SetupState) => setSetupState(s), []);
+  const showRun = useCallback(() => {
+    setView("run");
+    setOpen(true);
+  }, [setView, setOpen]);
   const activeTerm = terms.tabs.find((t) => t.id === terms.activeId) ?? null;
   const showTerminal = open && view === "terminal" && activeTerm !== null;
 
@@ -144,7 +148,7 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd 
       {open && error && <div className="term-error">{error}</div>}
       {/* Kept mounted while hidden, so run output and the setup state keep coming in. */}
       <div className="ws-strip-body" hidden={!open || view === "terminal"}>
-        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} onSetupState={onSetupState} onAddRunScript={addRunScript} />
+        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} onSetupState={onSetupState} onAddRunScript={addRunScript} onShowRun={showRun} />
       </div>
       {showTerminal && (
         <section className="terminal-panel" aria-label="Terminal">

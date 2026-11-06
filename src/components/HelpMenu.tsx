@@ -5,6 +5,7 @@ import { glyphs } from "../keybindings/shortcut";
 import { BookIcon, ExternalIcon, HelpIcon, KeyboardIcon, MessageIcon } from "./Icons";
 import { Tooltip } from "./Tooltip";
 import { HELP_ITEMS, nextIndex, versionLine, type HelpIcon as HelpIconName, type HelpItem } from "./helpMenuItems";
+import { endingProps, useMenuPresence } from "./sidebarMotion";
 
 function shortcut(commandId: string): string {
   const c = COMMANDS.find((cmd) => cmd.id === commandId);
@@ -54,6 +55,7 @@ export function HelpMenu({ appVersion, onOpenShortcuts }: { appVersion?: string;
     items[next].focus();
   };
 
+  const popup = useMenuPresence(open);
   const select = (item: HelpItem) => {
     setOpen(false);
     if (item.action.kind === "shortcuts") onOpenShortcuts();
@@ -76,8 +78,8 @@ export function HelpMenu({ appVersion, onOpenShortcuts }: { appVersion?: string;
           <HelpIcon size={16} strokeWidth={1.5} />
         </button>
       </Tooltip>
-      {open && (
-        <div ref={menuRef} className="sb-help-menu" role="menu" aria-label="Help" onKeyDown={onMenuKey}>
+      {popup.mounted && (
+        <div ref={menuRef} className="sb-help-menu" role="menu" aria-label="Help" onKeyDown={onMenuKey} {...endingProps(popup.ending)}>
           {HELP_ITEMS.map((item) => {
             const keys = item.commandId ? shortcut(item.commandId) : "";
             return (
