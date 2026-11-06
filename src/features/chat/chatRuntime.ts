@@ -245,6 +245,11 @@ export function hideChat(chatId: string): void {
   setStatus(chatId, undefined);
 }
 
+/** A closed chat tab opened again (⌘⇧T): it counts toward its workspace's status again. */
+export function showChat(chatId: string): void {
+  hiddenChats.delete(chatId);
+}
+
 /** The workspace a chat belongs to: a review chat's id is `<workspace id>:review:<n>`. */
 const workspaceOfChat = (chatId: string) => {
   const i = chatId.indexOf(":review:");
