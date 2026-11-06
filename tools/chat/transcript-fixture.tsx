@@ -66,7 +66,7 @@ function Fixture() {
   const [forked, setForked] = React.useState<string | null>(null);
   return (
     <div style={{ position: "fixed", inset: 0, background: "var(--bg)", overflow: "auto" }}>
-      <section className="chat" style={{ position: "absolute", left: 256, top: 80, width: 789, bottom: 0, display: "flex", flexDirection: "column", border: 0 }}>
+      <section className="chat" style={{ position: "absolute", left: 256, top: 80, width: Number(params.get("width") ?? 789), bottom: 0, display: "flex", flexDirection: "column", border: 0 }}>
         <div className="chat-scroll">
           <Transcript
             transcript={r.transcript}

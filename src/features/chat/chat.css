@@ -121,7 +121,7 @@
 .chat-thinking .oc-prose { color: var(--oc-muted-fg); }
 
 /* Turn footer (`TDo`): one wrapping row, text-xs muted. */
-.oc-turn-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; margin-top: 2px; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: var(--oc-muted-fg); }
+.oc-turn-footer { container: turn-footer / inline-size; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; margin-top: 2px; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: var(--oc-muted-fg); }
 .oc-turn-time { flex: none; border-radius: 4px; }
 .oc-turn-time:hover { color: var(--oc-fg); }
 .chat-turn-actions { display: flex; flex: none; align-items: center; gap: 4px; }
@@ -154,6 +154,19 @@
 .oc-chip-counts { display: flex; flex: none; align-items: center; gap: 4px; font: 500 10px/12px var(--font-mono); letter-spacing: 0.04em; }
 .oc-chip-counts .a { color: var(--oc-git-green); }
 .oc-chip-counts .d { color: var(--oc-git-red); }
+.chat-turn-more-icon { width: 12px; height: 12px; flex: none; }
+.chat-turn-more-compact { display: none; }
+.chat-turn-chip.more.compact-only { display: none; }
+@container turn-footer (width < 560px) {
+  .chat-turn-chip.more .oc-chip-counts { display: none; }
+}
+@container turn-footer (width < 480px) {
+  .chat-turn-changes:not(.revealed) { display: none; }
+  .chat-turn-changes.revealed { flex-basis: 100%; max-width: none; }
+  .chat-turn-chip.more.compact-only { display: inline-flex; }
+  .chat-turn-more-compact { display: inline; }
+  .chat-turn-more-wide { display: none; }
+}
 
 /* Conductor: a stopped prompt's "Cancelled" caption (mt-0.5 text-xs muted) and the outline "Interrupted by user" badge. */
 .chat-cancelled { margin-top: 2px; font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); }
