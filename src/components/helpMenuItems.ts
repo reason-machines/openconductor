@@ -8,6 +8,9 @@ export const REPO_URL = "https://github.com/reason-machines/openconductor";
 
 export const FEEDBACK_URL = `${REPO_URL}/issues/new`;
 
+/** Where the sidebar's "View pricing" plan badge goes. Conductor's opens its pricing page; OpenConductor has no paid plans. */
+export const PRICING_URL = REPO_URL;
+
 export type HelpIcon = "keyboard" | "book" | "message" | "stethoscope";
 
 export type HelpAction =
