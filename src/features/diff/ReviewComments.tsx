@@ -78,7 +78,7 @@ function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }
     if (text.trim()) onSubmit(text);
   };
   return (
-    <div className="oc-composer">
+    <div className="oc-review-composer">
       <textarea
         autoFocus
         rows={3}

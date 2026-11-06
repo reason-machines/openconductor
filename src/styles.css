@@ -230,7 +230,10 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .crumb-sep { color: var(--muted); opacity: 0.6; }
 .chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px; background: var(--hover); color: var(--muted); font-size: 12px; font-family: var(--font-mono); }
 .chip.status { font-family: inherit; }
-.ws-split { flex: 1; display: grid; grid-template-columns: minmax(360px, 1.25fr) minmax(300px, 1fr); min-height: 0; }
+/* Conductor's workspace panel group (renderApp `main-content` defaultSize 70, `right-panel` 35, which the
+   group normalises to 2:1): the right panel is a third of the width beside the sidebar at every window size,
+   with no pixel minimum that could push it past the window edge. */
+.ws-split { flex: 1; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); min-height: 0; }
 .ws-split.right-hidden { grid-template-columns: minmax(0, 1fr); }
 
 .chat { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--border); }

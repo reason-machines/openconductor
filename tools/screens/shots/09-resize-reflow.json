@@ -1,0 +1,130 @@
+[
+ {
+  "name": "resize--chat-900--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "viewport": {
+   "width": 900,
+   "height": 900
+  },
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_workspace",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/fix login redirect"
+    },
+    "timeout_ms": 5000
+   }
+  ],
+  "final_settle_ms": 3000,
+  "notes": "Workspace chat at a 900px wide window: transcript, composer, sidebar and right panel as Conductor lays them out at this width."
+ },
+ {
+  "name": "resize--chat-1280--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "viewport": {
+   "width": 1280,
+   "height": 900
+  },
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_workspace",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/fix login redirect"
+    },
+    "timeout_ms": 5000
+   }
+  ],
+  "final_settle_ms": 3000,
+  "notes": "Workspace chat at a 1280px wide window: transcript, composer, sidebar and right panel as Conductor lays them out at this width."
+ },
+ {
+  "name": "resize--chat-1600--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "viewport": {
+   "width": 1600,
+   "height": 900
+  },
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_workspace",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/fix login redirect"
+    },
+    "timeout_ms": 5000
+   }
+  ],
+  "final_settle_ms": 3000,
+  "notes": "Workspace chat at a 1600px wide window: transcript, composer, sidebar and right panel as Conductor lays them out at this width."
+ },
+ {
+  "name": "resize--chat-2100--dark",
+  "scenario": "populated",
+  "theme": "dark",
+  "settle_ms": 6000,
+  "viewport": {
+   "width": 2100,
+   "height": 900
+  },
+  "actions": [
+   {
+    "step_id": "expand_tide_web",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=tide-web"
+    },
+    "timeout_ms": 5000
+   },
+   {
+    "step_id": "open_workspace",
+    "action": "click",
+    "locator": {
+     "kind": "css",
+     "selector": "text=Ada/fix login redirect"
+    },
+    "timeout_ms": 5000
+   }
+  ],
+  "final_settle_ms": 3000,
+  "notes": "Workspace chat at a 2100px wide window: transcript, composer, sidebar and right panel as Conductor lays them out at this width."
+ }
+]

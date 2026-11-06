@@ -17,11 +17,15 @@
   /* Conductor's panel sits on --background, not a lifted panel colour. */
   --panel: var(--bg);
   background: var(--bg);
+  /* One column that is exactly the panel's third of the window: its rows' content (the tab row is
+     nowrap) must not widen the grid track past the window edge on a narrow window. */
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
 }
 .ws-right.strip-collapsed { grid-template-rows: minmax(0, 1fr) auto; }
 
 /* Tab row: 28 px pills, 13 px labels. */
-.rp-tabs { display: flex; align-items: center; gap: 2px; height: 44px; padding: 0 8px 0 10px; flex: none; }
+.rp-tabs { display: flex; align-items: center; gap: 2px; height: 44px; padding: 0 8px 0 10px; flex: none; min-width: 0; overflow-x: auto; scrollbar-width: none; }
 .rp-tab { display: inline-flex; align-items: center; height: 28px; padding: 0 9px; border-radius: 6px; color: var(--rp-muted-fg); font-size: 13px; font-weight: 500; white-space: nowrap; }
 .rp-tab:hover { color: var(--text); }
 .rp-tab.active { background: var(--rp-pill); color: var(--text); }
