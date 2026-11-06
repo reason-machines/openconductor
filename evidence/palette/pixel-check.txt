@@ -4,24 +4,28 @@ neutral-dark   createPrButton rgb(250, 250, 250)  achromatic
 neutral-dark   userBubble     rgb(31, 31, 31)  achromatic
 neutral-dark   panel          rgb(10, 10, 10)  achromatic
 neutral-dark   sidebar        rgb(16, 16, 16)  achromatic
+neutral-dark   composer       rgb(23, 23, 23)  achromatic
 neutral-light  tabUnderline   rgb(23, 23, 23)  achromatic
 neutral-light  runButton      rgb(23, 23, 23)  achromatic
 neutral-light  createPrButton rgb(23, 23, 23)  achromatic
 neutral-light  userBubble     rgb(240, 240, 240)  achromatic
 neutral-light  panel          rgb(255, 255, 255)  achromatic
 neutral-light  sidebar        rgb(249, 249, 249)  achromatic
+neutral-light  composer       rgb(245, 245, 245)  achromatic
 stone-dark     tabUnderline   rgb(243, 242, 241)  chromatic
 stone-dark     runButton      rgb(243, 242, 241)  chromatic
 stone-dark     createPrButton rgb(243, 242, 241)  chromatic
 stone-dark     userBubble     rgb(33, 30, 28)  chromatic
 stone-dark     panel          rgb(20, 17, 16)  chromatic
 stone-dark     sidebar        rgb(28, 24, 23)  chromatic
+stone-dark     composer       rgb(33, 30, 28)  chromatic
 stone-light    tabUnderline   rgb(65, 48, 48)  chromatic
 stone-light    runButton      rgb(65, 48, 48)  chromatic
 stone-light    createPrButton rgb(65, 48, 48)  chromatic
 stone-light    userBubble     rgb(250, 250, 249)  chromatic
 stone-light    panel          rgb(255, 255, 255)  achromatic
 stone-light    sidebar        rgb(252, 252, 251)  chromatic
-stone samples with a hue: 11 (the check is discriminative when this is above 0)
+stone-light    composer       rgb(250, 250, 249)  chromatic
+stone samples with a hue: 13 (the check is discriminative when this is above 0)
 
 PASS: every Neutral sample is achromatic

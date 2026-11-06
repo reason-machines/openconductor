@@ -79,6 +79,8 @@ try {
         if (panel) pts.panel = at(panel, panel.getBoundingClientRect().width / 2, 300);
         const sidebar = document.querySelector(".sidebar");
         if (sidebar) pts.sidebar = at(sidebar, sidebar.getBoundingClientRect().width / 2, 560);
+        const composer = document.querySelector(".composer.oc-composer");
+        if (composer) pts.composer = at(composer, -14, -14);
         return pts;
       });
       rects[key].errors = errors;

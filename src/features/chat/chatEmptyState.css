@@ -4,7 +4,7 @@
 
 .oc-chat-empty {
   --oc-c-fg: var(--foreground);
-  --oc-c-muted: var(--muted-foreground);
+  --oc-c-muted: var(--muted);
   --oc-c-muted-fg: var(--muted-foreground);
   --oc-c-border: var(--border);
   --oc-c-accent: var(--hover);

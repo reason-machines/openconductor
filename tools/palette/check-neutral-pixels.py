@@ -6,7 +6,7 @@
 Reads <dir>/rects.json and the <palette>-<mode>.png screenshots written by
 tools/palette/shoot.mjs. For the Neutral palette, in light and dark, every
 sampled point (active tab underline, Run and Create PR buttons, user bubble,
-panel and sidebar backgrounds) must have equal red, green and blue. Stone is
+panel, sidebar and composer backgrounds) must have equal red, green and blue. Stone is
 sampled too, to show the check does detect a hue. Exit status 1 on failure.
 """
 import json
@@ -15,7 +15,14 @@ from pathlib import Path
 
 from PIL import Image
 
-ACHROMATIC_POINTS = ["tabUnderline", "runButton", "createPrButton", "userBubble", "panel", "sidebar"]
+ACHROMATIC_POINTS = ["tabUnderline", "runButton", "createPrButton", "userBubble", "panel", "sidebar", "composer"]
+
+# Achromatic is not enough: a mid-grey block is achromatic too. The composer
+# background must be exactly the Neutral `muted` token (palettes.ts).
+EXPECTED_NEUTRAL = {
+    "neutral-light": {"composer": (245, 245, 245)},
+    "neutral-dark": {"composer": (23, 23, 23)},
+}
 
 
 def sample(img, x, y):
@@ -44,6 +51,9 @@ def main() -> int:
             rows.append((key, name, rgb, achromatic))
             if palette == "neutral" and not achromatic:
                 failures.append(f"{key}: {name} at ({p['x']},{p['y']}) is {rgb}, not achromatic")
+            want = EXPECTED_NEUTRAL.get(key, {}).get(name)
+            if want is not None and rgb != want:
+                failures.append(f"{key}: {name} is {rgb}, expected muted {want}")
     for key, name, rgb, ok in rows:
         print(f"{key:14} {name:14} rgb{rgb}  {'achromatic' if ok else 'chromatic'}")
     stone_hued = sum(1 for k, _, _, ok in rows if k.startswith("stone") and not ok)

@@ -201,7 +201,7 @@
 
 .oc-reset-files { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .oc-reset-count { font-variant-numeric: tabular-nums; }
-.oc-skeleton { display: inline-block; width: 64px; height: 14px; border-radius: 4px; background: var(--muted-foreground); opacity: 0.2; animation: pulse 1.4s ease-in-out infinite; }
+.oc-skeleton { display: inline-block; width: 64px; height: 14px; border-radius: 4px; background: var(--muted); opacity: 0.2; animation: pulse 1.4s ease-in-out infinite; }
 
 /* Conductor (`vDo`): the first chips share the footer row and shrink instead of wrapping (flex-1 min-w-0
    max-w-fit overflow-hidden); revealed chips and "+N more" wrap, on their own line once revealed (basis-full). */
@@ -218,7 +218,7 @@
 
 /* Open permission requests above the composer (PermissionRequests.tsx). */
 .chat-permissions { display: flex; flex-direction: column; gap: 6px; padding: 0 12px 8px; }
-.chat-permission { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--muted-foreground, transparent); }
+.chat-permission { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--muted, transparent); }
 .chat-permission-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; font-size: 12px; }
 .chat-permission-text code { overflow-wrap: anywhere; }
 .chat-permission-actions { display: flex; gap: 6px; flex-shrink: 0; }

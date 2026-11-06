@@ -7,7 +7,7 @@
 .composer-wrap {
   --oc-c-fg: var(--foreground);
   --oc-c-bg: var(--background);
-  --oc-c-muted: var(--muted-foreground);
+  --oc-c-muted: var(--muted);
   --oc-c-muted-fg: var(--muted-foreground);
   --oc-c-faint: var(--muted-foreground);
   --oc-c-border: var(--border);
