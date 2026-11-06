@@ -177,6 +177,90 @@
    ]
   },
   {
+   "id": "create-from-prs",
+   "title": "Create from: PRs",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=Create >> nth=0"
+     },
+     {
+      "click": "[aria-label='Create from']"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Create",
+     "after_ms": 800
+    },
+    {
+     "click": "[aria-label='Create from']",
+     "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "create-from-branches",
+   "title": "Create from: Branches",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=Create >> nth=0"
+     },
+     {
+      "click": "[aria-label='Create from']"
+     },
+     {
+      "click": "[role=tab] >> text=Branches"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Create",
+     "after_ms": 800
+    },
+    {
+     "click": "[aria-label='Create from']",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=tab]",
+     "text": "Branches",
+     "after_ms": 600
+    }
+   ],
+   "covers": [
+    {
+     "kind": "tab",
+     "name": "Branches"
+    }
+   ]
+  },
+  {
    "id": "workspace-chat",
    "title": "Workspace: chat transcript",
    "ref": {

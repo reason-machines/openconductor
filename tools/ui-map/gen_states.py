@@ -39,6 +39,10 @@ st("home","Home with projects", ref("/"), oc=HOME, covers=[{"kind":"route","name
 st("all-workspaces","All workspaces list", ref("/all-workspaces"), oc=HOME, covers=[{"kind":"route","name":"/all-workspaces"}])
 st("create","Create workspace composer", ref(actions=[{"click":"text=Create >> nth=0"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800}], covers=[{"kind":"route","name":"/create"}])
 st("create-repo-picker","Create: repo picker open", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"text=Select repo"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800},{"click":".create-repo-trigger"}])
+# Conductor's "Create from" picker (l4a): PRs first; Branches lists every branch but the default one.
+CREATE_FROM_OC=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800},{"click":"[aria-label='Create from']","after_ms":800}]
+st("create-from-prs","Create from: PRs", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"[aria-label='Create from']"}]), oc=CREATE_FROM_OC)
+st("create-from-branches","Create from: Branches", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"[aria-label='Create from']"},{"click":"[role=tab] >> text=Branches"}]), oc=CREATE_FROM_OC+[{"click":"[role=tab]","text":"Branches","after_ms":600}], covers=[{"kind":"tab","name":"Branches"}])
 st("workspace-chat","Workspace: chat transcript", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]), oc=OPEN_WS, covers=[{"kind":"route","name":"/repository/$repositoryId/workspace/$localWorkspaceId"}])
 st("workspace-new-chat","Workspace: new empty chat", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"}]), oc=OPEN_WS)
 st("workspace-tool-calls","Chat: tool calls expanded", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=4 tool calls, 2 messages"}]),

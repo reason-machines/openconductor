@@ -24,8 +24,9 @@ import { matchesEvent } from "../../keybindings/shortcut.ts";
 import { createEditor, type FileEdit } from "./EditInViewer.ts";
 import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
+import { FilePathChip } from "./FilePathChip";
 import type { CommentSide } from "./comments.ts";
-import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, type LineRange, codeViewItem, fromPierreSide, lineTarget, loadedFiles, rangeOf, selectionOf, toPatch } from "./pierre.ts";
+import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, type LineRange, codeViewItem, fromPierreSide, fullDiffMeta, lineTarget, loadedFiles, rangeOf, selectionOf, toPatch } from "./pierre.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import { useDiffTheme } from "./useDiffTheme.ts";
 
@@ -50,10 +51,16 @@ interface Props {
   annotations?: (anchor: LineAnchor) => ReactNode;
   /** This file loaded with whole-file context, for expanding unmodified lines. */
   loadFull?: () => Promise<FileDiff>;
+  /** This file already loaded with whole-file context: drawn as a full diff (pierre.ts `fullDiffMeta`). */
+  full?: FileDiff | null;
   /** Ask to discard this file's changes (opens the confirmation). */
   onDiscard?: () => void;
   /** Extra header controls, before the Viewed checkbox (the layout toggle). */
   tools?: ReactNode;
+  /** Header controls after the Viewed checkbox (Conductor's "View options" menu). */
+  options?: ReactNode;
+  /** The workspace's checkout, for the path chip's "Open in". */
+  worktree?: string | null;
   /** Turn hidden whitespace back on (the whitespace-only empty state's link). */
   onShowWhitespace?: () => void;
   /** Make the entire-file view an editor (EditInViewer.ts); absent where the file can't be edited. */
@@ -92,7 +99,7 @@ export function revealLine(path: string, anchor: LineAnchor): boolean {
   return reveal !== undefined;
 }
 
-function Code({ file, layout, ignoreWhitespace, wrapLines, onLineClick, selected = null, anchors = [], annotations, loadFull, edit }: Props) {
+function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, selected = null, anchors = [], annotations, loadFull, edit }: Props) {
   const themeType = useThemeType();
   const theme = useDiffTheme();
   const view = useRef<CodeViewHandle<LineAnchor, undefined> | null>(null);
@@ -106,7 +113,8 @@ function Code({ file, layout, ignoreWhitespace, wrapLines, onLineClick, selected
   const refreshNav = useRef(nav.refresh);
   refreshNav.current = nav.refresh;
   // Pierre upgrades this object in place when it loads the full file, so keep it per file.
-  const meta = useMemo(() => processFile(toPatch(file), { isGitDiff: true }), [file]);
+  // With the whole file at hand it is a full diff instead, as in Conductor's tab.
+  const meta = useMemo(() => (full ? fullDiffMeta(full, ignoreWhitespace) : processFile(toPatch(file), { isGitDiff: true })), [file, full, ignoreWhitespace]);
 
   // CodeView redraws whenever its options or items change identity: keep callbacks behind refs
   // and bump the item's version only when what it shows changes (as Conductor's tab does).
@@ -210,19 +218,19 @@ function Code({ file, layout, ignoreWhitespace, wrapLines, onLineClick, selected
 /** An ended edit session keeps its text, as Conductor's onItemEditComplete accepts it. */
 const acceptEdit = () => "accept" as const;
 
-/** The one CodeView item, rebuilt (with a bumped version) only when the file, layout or anchors change. */
+/** The one CodeView item, rebuilt (with a bumped version) only when the file, its parsed diff, layout or anchors change. */
 function useCodeViewItem(file: FileDiff, meta: ReturnType<typeof processFile>, layout: DiffLayout, anchors: LineAnchor[]): CodeViewItem<LineAnchor> {
   const signature = JSON.stringify(anchors);
-  const version = useRef({ file, layout, signature, n: 0 });
+  const version = useRef({ file, meta, layout, signature, n: 0 });
   const v = version.current;
-  if (v.file !== file || v.layout !== layout || v.signature !== signature) version.current = { file, layout, signature, n: v.n + 1 };
+  if (v.file !== file || v.meta !== meta || v.layout !== layout || v.signature !== signature) version.current = { file, meta, layout, signature, n: v.n + 1 };
   const n = version.current.n;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(() => codeViewItem(file, meta, layout, anchors, n), [file, meta, layout, n]);
 }
 
 export function FileDiffView(props: Props) {
-  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools, onShowWhitespace, edit, loadText, notify } = props;
+  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools, options, worktree, onShowWhitespace, edit, loadText, notify } = props;
   const copy = copySource(file, { draft: edit?.current, loadText });
   let body: ReactNode;
   if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
@@ -237,31 +245,30 @@ export function FileDiffView(props: Props) {
 
   return (
     <section className="oc-file" id={`oc-file-${encodeURIComponent(file.path)}`} data-viewed={viewed || undefined}>
+      {/* Conductor's NPo (REA, 0.87.6 @8,916,282): the path chip and the unsaved dot on the left;
+          then revert, copy, the layout group, Viewed and the View options menu (its Pierre order). */}
       <header className="oc-file-header">
-        <span className={`oc-status ${file.status}`}>{STATUS_LETTER[file.status]}</span>
-        <span className="path" title={file.path}>
-          {file.old_path ? `${file.old_path} → ` : ""}
-          {file.path}
-        </span>
-        <span className="oc-count">
-          <span className="a">+{file.additions}</span>
-          <span className="d">-{file.deletions}</span>
-        </span>
-        {onDiscard && (
-          <Tooltip content="Discard changes">
-            <button className="icon-btn oc-discard" onClick={onDiscard} aria-label={`Discard changes to ${file.path}`}>
-              <RevertIcon />
-            </button>
-          </Tooltip>
-        )}
-        {edit?.dirty && (
-          <Tooltip content="Unsaved changes">
-            <span className="oc-unsaved" role="img" aria-label="Unsaved changes" />
-          </Tooltip>
-        )}
-        {copy && <CopyFileButton path={file.path} read={copy} notify={notify} />}
-        {tools}
-        <ViewedToggle viewed={viewed} onToggle={onToggleViewed} />
+        <div className="oc-file-lead">
+          <FilePathChip path={file.path} oldPath={file.old_path} worktree={worktree} notify={notify} />
+          {edit?.dirty && (
+            <Tooltip content="Unsaved changes">
+              <span className="oc-unsaved" role="img" aria-label="Unsaved changes" />
+            </Tooltip>
+          )}
+        </div>
+        <div className="oc-file-actions">
+          {onDiscard && (
+            <Tooltip content="Discard changes">
+              <button className="icon-btn oc-discard" onClick={onDiscard} aria-label={`Discard changes to ${file.path}`}>
+                <RevertIcon />
+              </button>
+            </Tooltip>
+          )}
+          {copy && <CopyFileButton path={file.path} read={copy} notify={notify} />}
+          {tools}
+          <ViewedToggle viewed={viewed} onToggle={onToggleViewed} />
+          {options}
+        </div>
       </header>
       {edit?.error && (
         <div className="oc-file-note oc-save-error" role="alert">
@@ -328,16 +335,18 @@ function CopyFileButton({ path, read, notify }: { path: string; read: () => Prom
 /** Conductor's viewed toggle tooltip, which says what a click does. */
 export const viewedLabel = (viewed: boolean): string => (viewed ? "Mark as not viewed" : "Mark as viewed");
 
-/** Conductor's ghost "Viewed" button: a check box icon and the word, tooltip with the toggle's shortcut. */
+/**
+ * Conductor's ghost "Viewed" button (`MPo`): w-24, text-xs font-medium, a size-4 rounded-sm
+ * bordered box (filled with a check once viewed) and the word; tooltip with the toggle's shortcut.
+ */
 function ViewedToggle({ viewed, onToggle }: { viewed: boolean; onToggle: () => void }) {
   const label = viewedLabel(viewed);
   return (
     <Tooltip content={label} shortcut="diff.toggleViewed">
       <button type="button" className="oc-viewed" aria-pressed={viewed} aria-label={label} onClick={onToggle}>
-        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" />
-          {viewed && <path d="M5.5 8.2l1.8 1.8 3.4-4" />}
-        </svg>
+        <span className="oc-viewed-box" aria-hidden>
+          {viewed && <CheckIcon size={12} />}
+        </span>
         Viewed
       </button>
     </Tooltip>

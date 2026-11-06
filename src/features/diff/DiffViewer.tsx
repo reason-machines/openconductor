@@ -3,7 +3,9 @@
 // right panel, and the selected file in an "All changes" tab in the main area.
 // Both read one useWorkspaceDiff state. The list is in ChangesList.tsx.
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { ConductorIcon } from "../../components/ConductorIcon";
+import type { ConductorIconName } from "../../components/conductorIcons.generated";
 import "./diff.css";
 import { DiscardDialog } from "./DiscardDialog";
 import { ViewOptionsMenu } from "./Whitespace";
@@ -13,33 +15,19 @@ import type { DiffLayout, FileDiff } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
 export { ChangesList, type ChangesListProps } from "./ChangesList";
 
-const LAYOUT_ICON: Record<DiffLayout, ReactNode> = {
-  unified: <path d="M3 4h10M3 7h10M3 10h10M3 13h6" />,
-  split: (
-    <>
-      <rect x="2.5" y="3" width="11" height="10" rx="1.5" />
-      <path d="M8 3v10" />
-    </>
-  ),
-  file: (
-    <>
-      <path d="M4 2.5h5l3 3v8H4z" />
-      <path d="M6 8h4M6 10.5h4" />
-    </>
-  ),
-};
+// Conductor's `UPo` icons (Lucide, size-3): text-align-start, columns-2, file-text.
+const LAYOUT_ICON: Record<DiffLayout, ConductorIconName> = { unified: "text-align-start", split: "columns-2", file: "file-text" };
 // Conductor's labels for its three file-toolbar layout toggles (REA, 0.87.6).
 export const LAYOUT_TITLE: Record<DiffLayout, string> = { unified: "Unified view", split: "Split view", file: "Entire file" };
 
+/** Conductor's `HPo`: h-8 rounded-md bg-muted p-0.5 around three size-7 icon buttons, the pressed one bg-popover-accent. */
 function LayoutToggle({ value, onChange }: { value: DiffLayout; onChange: (v: DiffLayout) => void }) {
   return (
-    <span className="oc-seg oc-icons" role="group" aria-label="Diff layout">
+    <span className="oc-layout-group" role="group" aria-label="Diff layout">
       {(Object.keys(LAYOUT_ICON) as DiffLayout[]).map((v) => (
         <Tooltip key={v} content={LAYOUT_TITLE[v]}>
           <button aria-pressed={v === value} onClick={() => onChange(v)} aria-label={LAYOUT_TITLE[v]}>
-            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              {LAYOUT_ICON[v]}
-            </svg>
+            <ConductorIcon name={LAYOUT_ICON[v]} size={12} />
           </button>
         </Tooltip>
       ))}
@@ -76,10 +64,37 @@ export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations,
   return <OpenFile diff={diff} f={f} selected={selected} onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} notes={notes} notify={notify} />;
 }
 
+/**
+ * The open file with whole-file context, so Pierre draws it as a full diff like
+ * Conductor's tab (pierre.ts `fullDiffMeta`). The entire-file layout already has
+ * it; binary files have no lines. Null until it loads or when it fails (the
+ * patch is drawn meanwhile).
+ */
+function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayout): FileDiff | null {
+  const [full, setFull] = useState<{ of: FileDiff; file: FileDiff } | null>(null);
+  const wanted = layout !== "file" && !selected.binary && selected.hunks.length > 0;
+  const loadFull = diff.loadFull;
+  useEffect(() => {
+    if (!wanted) return;
+    let live = true;
+    loadFull(selected).then(
+      (file) => live && setFull({ of: selected, file }),
+      () => live && setFull(null),
+    );
+    return () => {
+      live = false;
+    };
+    // loadFull is rebuilt every render; the file object changes whenever the diff reloads.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected, wanted]);
+  return wanted && full?.of === selected ? full.file : null;
+}
+
 /** The open file, editable in the entire-file layout (EditInViewer.ts). */
 function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff }) {
   const { opts, update } = diff;
   const edit = useFileEdit(diff.worktree, selected.path, editableContents(selected, opts.layout, opts.ignoreWhitespace), diff.reloadQuietly);
+  const full = useWholeFile(diff, selected, opts.layout);
   return (
     <div className="oc-diff oc-diff-tab">
       <div className="oc-files">
@@ -97,19 +112,19 @@ function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annot
           anchors={anchors?.(f)}
           annotations={annotations && ((a) => annotations(f, a))}
           loadFull={() => diff.loadFull(f)}
+          full={full}
           loadText={() => diff.loadText(f)}
           notify={notify}
           onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
           onShowWhitespace={() => update({ ignoreWhitespace: false })}
           edit={edit}
-          tools={
-            <>
-              <LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />
-              <ViewOptionsMenu
-                whitespace={{ hidden: opts.ignoreWhitespace, onChange: (ignoreWhitespace) => update({ ignoreWhitespace }) }}
-                textWrap={f.binary ? undefined : { wrapLines: opts.wrapLines, onChange: (wrapLines) => update({ wrapLines }) }}
-              />
-            </>
+          worktree={diff.worktree}
+          tools={<LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />}
+          options={
+            <ViewOptionsMenu
+              whitespace={{ hidden: opts.ignoreWhitespace, onChange: (ignoreWhitespace) => update({ ignoreWhitespace }) }}
+              textWrap={f.binary ? undefined : { wrapLines: opts.wrapLines, onChange: (wrapLines) => update({ wrapLines }) }}
+            />
           }
         />
         {diff.unread >= 0 && diff.unread !== diff.current && (

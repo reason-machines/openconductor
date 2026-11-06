@@ -313,6 +313,7 @@ export function CreateWorkspaceComposer({
           <CreateFromPicker
             value={draft.from}
             branches={branchSrc}
+            defaultBranch={repo?.defaultBranch ?? null}
             repoPath={repo?.path ?? null}
             disabled={busy || !repo}
             shortcut={hint("workspace.createFromPRBranchIssue")}
