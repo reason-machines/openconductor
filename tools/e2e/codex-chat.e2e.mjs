@@ -16,6 +16,9 @@
 //                        the sidebar row; Continue sends the form's content
 //   6. "perm" + Deny     Codex asks for network access: the card, Needs input;
 //                        Deny grants nothing
+//   7. "unauth"          the turn fails with a 401: "Authentication required"
+//                        under it, and "Open Codex settings" opens Settings ›
+//                        Agents on the Codex tab
 //
 // Usage (under a display, e.g. xvfb-run):
 //   node tools/e2e/codex-chat.e2e.mjs <path to the built app binary>
@@ -337,6 +340,19 @@ try {
   assert.deepEqual(lastResponse("perm-turn-6"), { id: "perm-turn-6", result: { permissions: {}, scope: "turn" } });
   await waitFor("the sidebar row to leave Needs input", async () => !(await needsInput()), 15000);
   pass('a permission request shows "codex requests permission" with Network access and Needs input; Deny grants nothing');
+
+  // 7. Signed out: the failed turn links to the Codex tab of Settings › Agents.
+  await send("unauth: anything");
+  const signIn = await waitFor("the sign-in notice", () => run("const n = document.querySelector('[data-testid=\"chat-sign-in\"]'); return n ? n.textContent : null;"));
+  assert.ok(signIn.includes("Authentication required") && signIn.includes("Codex is not signed in"), signIn);
+  await screenshot("codex-6-sign-in-required");
+  await run("Array.from(document.querySelectorAll('[data-testid=\"chat-sign-in\"] button')).find((b) => b.textContent.trim() === 'Open Codex settings').click();");
+  const tab = await waitFor("Settings › Agents on the Codex tab", () =>
+    run("const t = document.querySelector('[role=\"tab\"][aria-selected=\"true\"]'); return t && location.pathname === '/settings/user/providers' ? t.textContent.trim() : null;"),
+  );
+  assert.equal(tab, "Codex");
+  await screenshot("codex-7-agents-codex-tab");
+  pass('a 401 turn shows "Authentication required" and "Open Codex settings" opens Settings › Agents on the Codex tab');
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {

@@ -7,7 +7,7 @@ import { newId, workspaceName } from "./names";
 import { isSidebarVisible, startSelection } from "./selectors";
 import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
-import { keepPr, parsePrefs, prefsOf, reposFromDb, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
+import { keepPr, parsePrefs, prefsOf, reposFromDb, restoreChatTabsOf, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
 import { withActivity } from "./nextUnread";
 import { withChatUnread, withWorkspaceRead } from "./chatUnread";
@@ -345,6 +345,8 @@ export async function loadReposFromDb(collapsed: Iterable<string> = []): Promise
     invoke<DbRepoRow[]>("db_list_repos"),
     invoke<DbWorkspaceRow[]>("db_list_workspaces"),
   ]);
+  // Tabs open when the app last ran come back, with their unread (before the rows reach the sidebar).
+  restoreChatTabsOf(workspaces);
   return reposFromDb(repos, workspaces, collapsed);
 }
 

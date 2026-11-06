@@ -748,12 +748,84 @@ export const flows = [
         await wd.click((await wd.findAll(`${select} option[value="${v}"]`))[0]);
         await wd.waitFor(`models.codex personality = "${v}"`, async () => tomlValue(file, "models.codex", "personality") === `"${v}"`);
       }
-      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .oc-agent-config h3`);
+      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .agk-config h3`);
       const want = ["Codex personality for new chats", "Codex executable path", "Codex config"];
       if (want.some((w, i) => labels.at(i - want.length) !== w)) throw new Error(`Codex option rows ${JSON.stringify(labels)}, want them to end with ${JSON.stringify(want)}`);
-      const path = await textsOf(wd, `${section} .oc-agent-config-path`);
+      const path = await textsOf(wd, `${section} .agk-config .agk-mono`);
       if (path[0] !== "~/.codex/config.toml") throw new Error(`Codex config card shows ${JSON.stringify(path)}`);
       await showRows(wd, `${section} .oc-agent-select-180`);
+    },
+  },
+  // Settings › Agents › Codex Authentication against the stand-in app-server
+  // (tools/e2e/fake_codex_app_server.py, set as the Codex executable path):
+  // ChatGPT signs in from the app, then API key and CLI, each checked in
+  // settings.toml. Ends signed in with ChatGPT for the screenshot.
+  {
+    name: "agents-codex-chatgpt",
+    setup(ctx) {
+      const dir = realpathSync(mkdtempSync(join(tmpdir(), "oc-e2e-codex-")));
+      const exe = join(dir, "codex");
+      writeFileSync(exe, `#!/bin/sh\nOC_FAKE_CODEX_DIR="${dir}" exec python3 "${resolve("tools/e2e/fake_codex_app_server.py")}" "$@"\n`);
+      chmodSync(exe, 0o755);
+      ctx.fakeCodex = { dir, exe };
+    },
+    teardown(ctx) {
+      if (ctx.fakeCodex) rmSync(ctx.fakeCodex.dir, { recursive: true, force: true });
+    },
+    async run(wd, ctx) {
+      await openSettingsPage(wd, "Agents");
+      await clickByText(wd, '[role="tab"]', "Codex");
+      const section = 'section[aria-label="Codex"]';
+      const file = settingsFile();
+      const cards = await wd.waitFor("the Codex cards", async () => {
+        const c = await textsOf(wd, `${section} button[aria-pressed]`);
+        return c.length === 3 ? c : null;
+      });
+      if (JSON.stringify(cards) !== JSON.stringify(["ChatGPTRecommended", "CLI", "API key"])) throw new Error(`Codex Authentication cards ${JSON.stringify(cards)}`);
+      await wd.click((await wd.findAll(`${section} input[aria-label="Codex executable path"]`))[0]);
+      await wd.keys(ctx.fakeCodex.exe);
+      await wd.waitFor("codex_executable_path in settings.toml", async () => tomlValue(file, "", "codex_executable_path") === JSON.stringify(ctx.fakeCodex.exe));
+      await clickByText(wd, `${section} button[aria-pressed]`, "ChatGPTRecommended");
+      await wd.waitFor('codex_provider = "chatgpt_sign_in" and no [providers.codex]', async () => tomlValue(file, "", "codex_provider") === '"chatgpt_sign_in"' && tomlValue(file, "providers.codex", "kind") === null);
+      await wd.waitFor("Not signed in with ChatGPT", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]'))[0]?.includes("Not signed in with ChatGPT"), 20000);
+      await clickByText(wd, `${section} button`, "Sign in with ChatGPT");
+      const connected = await wd.waitFor("Connected with ChatGPT", async () => (await textsOf(wd, '[data-testid="codex-chatgpt-connected"] .agc-ok'))[0], 20000);
+      if (connected !== "Connected with ChatGPT as e2e@example.com") throw new Error(`connected line ${JSON.stringify(connected)}`);
+      const table = await textsOf(wd, `${section} .ag-info tr`);
+      if (JSON.stringify(table) !== JSON.stringify(["ChatGPT accounte2e@example.com", "PlanPro"])) throw new Error(`status table ${JSON.stringify(table)}`);
+      const buttons = await textsOf(wd, '[data-testid="codex-chatgpt-connected"] button');
+      if (JSON.stringify(buttons) !== JSON.stringify(["Manage usage", "Reconnect"])) throw new Error(`connected actions ${JSON.stringify(buttons)}`);
+      const sent = readFileSync(join(ctx.fakeCodex.dir, "codex-fake.jsonl"), "utf8");
+      if (!sent.includes('"method": "account/login/start"')) throw new Error("the stand-in Codex got no account/login/start");
+      await showRows(wd, `${section} .agk-cards`);
+    },
+  },
+  {
+    name: "agents-codex-modes",
+    async run(wd, ctx) {
+      const section = 'section[aria-label="Codex"]';
+      const file = settingsFile();
+      const status = async () => (await textsOf(wd, '[data-testid="agent-auth-status"]'))[0] ?? "";
+      await clickByText(wd, `${section} button[aria-pressed]`, "API key");
+      await wd.waitFor("[providers.codex] openai_api, codex_provider cleared", async () => tomlValue(file, "providers.codex", "kind") === '"openai_api"' && tomlValue(file, "", "codex_provider") === null);
+      const keyField = `${section} input[aria-label="OpenAI API key"]`;
+      await wd.waitFor("the OpenAI API key field", async () => (await wd.findAll(keyField)).length === 1);
+      await wd.click((await wd.findAll(keyField))[0]);
+      await wd.keys("sk-e2e-0123456789-cAAA");
+      await clickByText(wd, `${section} button`, "Save");
+      await wd.waitFor("the masked key", async () => (await textsOf(wd, `${section} [data-testid="secret-value"]`))[0] === "••••••••cAAA");
+      await wd.waitFor("Connected with the key", async () => (await status()).startsWith("Connected"));
+      await clickByText(wd, `${section} button[aria-pressed]`, "CLI");
+      await wd.waitFor("[providers.codex] codex_login", async () => tomlValue(file, "providers.codex", "kind") === '"codex_login"');
+      await wd.waitFor("the CLI status", async () => /Connected|CLI not authenticated/.test(await status()), 20000);
+      const select = `${section} select[aria-label="Codex personality for new chats"]`;
+      for (const v of ["none", "pragmatic"]) {
+        await wd.click((await wd.findAll(`${select} option[value="${v}"]`))[0]);
+        await wd.waitFor(`models.codex personality = "${v}"`, async () => tomlValue(file, "models.codex", "personality") === `"${v}"`);
+      }
+      await wd.click((await wd.findAll(`${section} button[aria-label="Reset to bundled Codex"]`))[0]);
+      await wd.waitFor("codex_executable_path cleared", async () => tomlValue(file, "", "codex_executable_path") === null);
+      if (!ctx.fakeCodex) throw new Error("agents-codex-chatgpt did not set up the stand-in Codex");
     },
   },
   {

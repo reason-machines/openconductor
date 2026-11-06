@@ -77,6 +77,7 @@ impl AgentKind {
                 vars::OPENAI_BASE_URL,
                 vars::OPENAI_ORGANIZATION,
                 vars::OPENAI_PROJECT,
+                vars::CODEX_ACCESS_TOKEN,
             ],
             AgentKind::Cursor => &[vars::CURSOR_API_KEY],
             AgentKind::Opencode => &[],
@@ -114,6 +115,10 @@ pub mod vars {
     pub const GOOGLE_APPLICATION_CREDENTIALS: &str = "GOOGLE_APPLICATION_CREDENTIALS";
     pub const OPENAI_API_KEY: &str = "OPENAI_API_KEY";
     pub const CODEX_API_KEY: &str = "CODEX_API_KEY";
+    /// Never passed to Codex: Conductor 0.87.6 deletes it from every Codex
+    /// launch environment (`delete this.env.CODEX_ACCESS_TOKEN` in its Codex
+    /// runner) and from the login-shell environment it captures (`Tf8`).
+    pub const CODEX_ACCESS_TOKEN: &str = "CODEX_ACCESS_TOKEN";
     pub const OPENAI_BASE_URL: &str = "OPENAI_BASE_URL";
     pub const OPENAI_ORGANIZATION: &str = "OPENAI_ORGANIZATION";
     pub const OPENAI_PROJECT: &str = "OPENAI_PROJECT";
@@ -242,6 +247,7 @@ mod tests {
             assert_eq!(e.removed_vars().count(), agent.routing_vars().len());
         }
         assert!(LaunchEnv::cleared_for(AgentKind::Claude).is_removed(vars::CLAUDE_CODE_USE_FOUNDRY));
+        assert!(LaunchEnv::cleared_for(AgentKind::Codex).is_removed(vars::CODEX_ACCESS_TOKEN));
     }
 
     #[test]
