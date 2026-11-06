@@ -48,6 +48,8 @@
 }
 /* `min-w-[200px]` (workspace menu), `w-44` (Set status), `min-w-44` (Move to section). */
 .cm.cm-min-w-200 { min-width: 200px; }
+/* `min-w-[180px]`: the PR link menu (`w_i` in `gy`). */
+.cm.cm-min-w-180 { min-width: 180px; }
 .cm.cm-w-44 { width: 176px; }
 .cm.cm-min-w-44 { min-width: 176px; }
 

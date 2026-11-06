@@ -1,0 +1,75 @@
+{
+  "pr-tab-number--dark": {
+    "theme": "dark",
+    "crop": [
+      240,
+      30,
+      740,
+      330
+    ],
+    "ours": {
+      "file": "ours-pr-tab-number--dark.png",
+      "sha256": "1784219437ca676cf2e716a69de66a6135eccd254dadf72b0935855262d46f9c",
+      "evidence_id": "ev_ee038527ca2da0bf8854ce5be0ec6667ec68300dd067635e79eabec68c5d42f1",
+      "failed_steps": []
+    },
+    "sbs": {
+      "file": "sbs-pr-tab-number--dark.png",
+      "sha256": "0e779a98c01385de9836891630274495a1a05a8bb3bc72c2cea9a96dca8fa992",
+      "evidence_id": "ev_8e5784f777822126e30a5cb0e78bd885d9ee071b89556c2594b2bef6093c4077",
+      "failed_steps": []
+    }
+  },
+  "chat-link--dark": {
+    "theme": "dark",
+    "crop": [
+      256,
+      90,
+      790,
+      280
+    ],
+    "conductor": {
+      "file": "conductor-chat-link--dark.png",
+      "sha256": "0330f73741941e62c2766deda9f8a164a72f24d559189ff1f7b1009505b5a557",
+      "evidence_id": "ev_9f98d36a0fdf3059038950f5e6704204d8f3a47a73215293195425d53483cb24",
+      "failed_steps": []
+    },
+    "ours": {
+      "file": "ours-chat-link--dark.png",
+      "sha256": "f611a104707fb0a6e17e22b39d5ca3324c8f1eea9564f688ccd099ce897368bb",
+      "evidence_id": "ev_03f459ae2af810d879603656dcebd0fd7d5b5f98058f6e1718d7155bc30194b3",
+      "failed_steps": []
+    },
+    "compare_t24": {
+      "evidence_id": "ev_e9b176720feca4af91556fef55f1930cc921d90611a9a5b42718b60ca7ced47c",
+      "changed_pixel_ratio": 0.06412654320987654
+    },
+    "sbs": {
+      "file": "sbs-chat-link--dark.png",
+      "sha256": "ab5d403a35a5c747c51d72750781f1f620e2a355dc5c6b6dc2c02d590f427eee",
+      "evidence_id": "ev_80385bfeeba10320240f7d6b72ecc66e4271fa1120aab8205f066b29637a0520",
+      "failed_steps": []
+    }
+  },
+  "pr-pill--dark": {
+    "theme": "dark",
+    "crop": [
+      700,
+      0,
+      740,
+      300
+    ],
+    "ours": {
+      "file": "ours-pr-pill--dark.png",
+      "sha256": "3f3effb856f9089ccd8ab8cecdb205b70736c567480ef58a377ac38c16c374d9",
+      "evidence_id": "ev_fbda4a218ab47ad7566e0eae84b8c55a9e4a3d52bb6aa00f6cfb0df0828d4065",
+      "failed_steps": []
+    },
+    "sbs": {
+      "file": "sbs-pr-pill--dark.png",
+      "sha256": "aaae1cfa99b0d71d45e6c0e8227065c59b31e5523eda6cf98b8ddb9c6858b281",
+      "evidence_id": "ev_2d84c2dbb4768fad3c16dd2541d1e045666ad8d9975b412f9c06e6d0ba55c820",
+      "failed_steps": []
+    }
+  }
+}

@@ -287,5 +287,9 @@
       { jsonrpc: "2.0", id: "oc-mock-approval-1", method: "toolApproval", params: { sessionId: "sess-tallinn", toolUseId: "tu-tallinn-1", toolName: "Bash", toolInput: TALLINN_COMMAND } },
     ],
   };
-  window.__OC_SEED_DATA__ = { populated, "needs-permission": needsPermission };
+  // "chat-link": populated with a markdown web link in lisbon's last reply, so
+  // REA can right-click it and open Conductor's link menu (`cEi` -> `EQ`).
+  const LISBON_TAIL = "passes (4 tests).";
+  const chatLink = { ...populated, conductor: populated.conductor.replace(LISBON_TAIL, `${LISBON_TAIL} See the [session docs](https://docs.example.com/auth/sessions).`) };
+  window.__OC_SEED_DATA__ = { populated, "needs-permission": needsPermission, "chat-link": chatLink };
 })();
