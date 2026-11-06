@@ -477,9 +477,7 @@ fn codex_api_key_is_spliced_on_the_target_and_never_crosses() {
         program: "sh".into(),
         handoff,
     };
-    let script = format!(
-        r#"{FP}; while IFS= read -r l; do printf 'got %s\n' "$(fp "$l")"; done"#
-    );
+    let script = format!(r#"{FP}; while IFS= read -r l; do printf 'got %s\n' "$(fp "$l")"; done"#);
     let mut child = launch.command(&["-c".into(), script]).spawn().unwrap();
     let tap = Tap::default();
     let mut out = TapRead(child.stdout.take().unwrap(), tap.clone());
