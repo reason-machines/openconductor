@@ -32,21 +32,21 @@
   "statuses": ", from what the running apps showed:\n  matches  reference rendered and reached, OpenConductor reached the same\n           state, the item's copy is on screen in both, and the whole state\n           differs by at most MATCH_RATIO changed pixels at channel threshold 24.\n  wrong    OpenConductor shows it (copy found in a capture of the running\n           app) but it is not shown to match: the visual diff is over the bar,\n           the copy differs, or no valid reference render exists to prove it.\n  missing  OpenConductor has no way to reach the state, shows a different\n           screen there (under 25% of the reference's UI copy), or the item's\n           copy is in no capture of the running app."
  },
  "summary": {
-  "total": 971,
-  "missing": 748,
+  "total": 973,
+  "missing": 747,
   "wrong": 84,
-  "matches": 139,
+  "matches": 142,
   "states": {
-   "total": 73,
+   "total": 75,
    "missing": 13,
    "wrong": 25,
-   "matches": 35
+   "matches": 37
   },
   "items": {
    "total": 898,
-   "missing": 735,
+   "missing": 734,
    "wrong": 59,
-   "matches": 104
+   "matches": 105
   },
   "items_by_kind": {
    "dialog": {
@@ -57,9 +57,9 @@
    },
    "empty-state": {
     "total": 52,
-    "missing": 45,
+    "missing": 44,
     "wrong": 1,
-    "matches": 6
+    "matches": 7
    },
    "menu": {
     "total": 39,
@@ -124,9 +124,9 @@
   },
   "by_team": {
    "chat": {
-    "total": 56,
-    "missing": 46,
-    "wrong": 7,
+    "total": 63,
+    "missing": 50,
+    "wrong": 10,
     "matches": 3
    },
    "cloud-org": {
@@ -160,16 +160,16 @@
     "matches": 89
    },
    "shell": {
-    "total": 193,
-    "missing": 175,
+    "total": 196,
+    "missing": 178,
     "wrong": 9,
     "matches": 9
    },
    "terminal-scripts": {
-    "total": 30,
-    "missing": 27,
-    "wrong": 3,
-    "matches": 0
+    "total": 22,
+    "missing": 19,
+    "wrong": 0,
+    "matches": 3
    },
    "triage": {
     "total": 268,
@@ -184,8 +184,8 @@
     "matches": 13
    }
   },
-  "located_items": 223,
-  "items_with_reference_screenshot": 223
+  "located_items": 224,
+  "items_with_reference_screenshot": 224
  },
  "states": [
   {
@@ -454,13 +454,13 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_93ca08c2e20eb9fe4ef3e6a43e3b157329042f7faf6394c3075e161f0651ca57"
+    "rea_evidence_id": "ev_a4b6581193b9995b60d92c274c5ab56a01adc89fa39ee6bfe0e70b0fdf6272b1"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/git-review-04-create-from-prs.png",
     "error": null,
-    "note": "side-by-side lane at e221b2751: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
+    "note": "side-by-side lane at d3ce4bf09: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
    },
    "diff": {
     "file": null,
@@ -491,13 +491,13 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_e263848324c17315b2f0b435d60e3824ca3000bfab86c09da6d119cc56f99696"
+    "rea_evidence_id": "ev_e3a07389770dbe408bcb858f4f24fccab27bc0830b75bddff3494a788a77a5d0"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/git-review-05-create-from-branches.png",
     "error": null,
-    "note": "side-by-side lane at e221b2751: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
+    "note": "side-by-side lane at d3ce4bf09: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
    },
    "diff": {
     "file": null,
@@ -518,7 +518,7 @@
    "title": "Workspace: chat transcript",
    "status": "wrong",
    "why": "diff 6.0% at t24, copy 86%",
-   "team": "terminal-scripts",
+   "team": "chat",
    "reference": {
     "status": "captured",
     "file": "ui-map/ref/workspace-chat.png",
@@ -644,21 +644,21 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_4b091b0d2c8e65c3f7010811f6f48ec3246b7c21e811c0dbf03d2fd39fe4a6a2"
+    "rea_evidence_id": "ev_d6985ad69ff721a672592aa040db4238b0e923746cad1ef020222fc8b70abe15"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/git-review-01-diff-unified.png",
     "error": null,
-    "note": "side-by-side lane at e221b2751: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
+    "note": "side-by-side lane at d3ce4bf09: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 0.8817692454268292,
-    "changed_ratio_t24": 0.04997237042682927,
+    "changed_ratio_t24": 0.049772294207317075,
     "rea_evidence_ids": [
-     "ev_0ffd98df2075a881df3a1ba135c44d5c38f301ccb73df26fdf5187c232466d18",
-     "ev_8a2871d4f6fe653ca5af8a1128dbd9c5d11304abc5b8f5561ec53eef01eca104"
+     "ev_24e37637df53100637720d8e9b9bd247a71ee76b5f5711f8828d9a5b9b06c248",
+     "ev_59dc5cc30c3e3b0f74b25c70857dfcdf2bf30482ed2a753fa3932769c80651d0"
     ]
    },
    "copy_coverage": 1.0,
@@ -679,21 +679,21 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_ee8d676acee7826588ead9d983203429ebd70408bcc3e445269c1bc3dce790e1"
+    "rea_evidence_id": "ev_9116cfce2b440f870a19f63b247ff2be7e1b8ed8f5c033d1c79f59a528c5aeea"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/git-review-02-diff-split.png",
     "error": null,
-    "note": "side-by-side lane at e221b2751: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
+    "note": "side-by-side lane at d3ce4bf09: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 0.8586375762195122,
-    "changed_ratio_t24": 0.05208269817073171,
+    "changed_ratio_t24": 0.05188262195121951,
     "rea_evidence_ids": [
-     "ev_f6d18c49425d793276c58c3325f6dbec7ba8c0a3aa01f5142ec523133d89b4ef",
-     "ev_c5298d07ca7a27b379841107a8ea47aa6a582dbedd73f4df9ed245a2dc773435"
+     "ev_d3fb3845200559a0f73216fbfbac96bfff400b407f49b5581f1e6e450e964ae1",
+     "ev_2c1b00dd78456d953d78a9b868c95585deeab2d096366c7c5cb59076969511ad"
     ]
    },
    "copy_coverage": 1.0,
@@ -714,25 +714,99 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_4b0b925667ce097184238b0fb9af93e00384f3f885a0b46d83d733c6b74df36f"
+    "rea_evidence_id": "ev_a4f946687c7de08d03901abc1d90a5bae5ebecae01be37ba51d6b0adc96e506f"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/git-review-03-diff-entire-file.png",
     "error": null,
-    "note": "side-by-side lane at e221b2751: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
+    "note": "side-by-side lane at d3ce4bf09: tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 0.8350438262195122,
-    "changed_ratio_t24": 0.04703029725609756,
+    "changed_ratio_t24": 0.046830221036585365,
     "rea_evidence_ids": [
-     "ev_b3beb6c2a0c14068cb67f7946b3fd011c785363469ed1d3f896a68aac77832eb",
-     "ev_a24d4d19c7488134a433548ede34fc303039a37adb81bcd36557c2fc3c4be3d9"
+     "ev_c45a6cfcb0cf4d2525ce44d76d238da3e534cface6f2929dfcd09a3c78769631",
+     "ev_9db50ecb9901afd77bab0c6acf7c03e35d3a7ae99392b0277ff588fd47605287"
     ]
    },
    "copy_coverage": 1.0,
    "copy_missing": []
+  },
+  {
+   "id": "panel-setup-add",
+   "title": "Terminal panel: Setup, no setup script",
+   "status": "matches",
+   "why": "diff 3.1% at t24, copy 93%",
+   "team": "terminal-scripts",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-01-setup-add.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-osaka",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_b2fdd56951de70ea5f8d0d57e9498d72b3a78dfe6720c12ef4cdba64473869dd"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-01-setup-add.png",
+    "error": null,
+    "note": "side-by-side lane at 2e316e18a: tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.031414824695121954,
+    "rea_evidence_ids": [
+     "ev_a2cf0aae10c1e55dcb840cb968744ff6e7fdf440a416f3aba926fed94a63c308",
+     "ev_60abd14d24fa0ec01b453bd63d693988ab2aa072b07165970fac843abd794ee4"
+    ]
+   },
+   "copy_coverage": 0.933,
+   "copy_missing": [
+    "add chat transcripts"
+   ]
+  },
+  {
+   "id": "panel-setup-idle",
+   "title": "Terminal panel: Setup, before setup runs",
+   "status": "matches",
+   "why": "diff 2.9% at t24, copy 92%",
+   "team": "terminal-scripts",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-02-setup-idle.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-osaka",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_9f988c57b567a5feb0c0ffc33b0c2aed6d7f45929282bfbdfc3d3cb9884cb057"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-02-setup-idle.png",
+    "error": null,
+    "note": "side-by-side lane at 2e316e18a: tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.029302591463414632,
+    "rea_evidence_ids": [
+     "ev_25bcd5b8701197377b7dd6e5714fd507909a4af2768fa4ae8d61d30ceb180f33",
+     "ev_d6422c8a5d8db528daa7e96704b97e2d14ffd37b0351377259e329d074ce59be"
+    ]
+   },
+   "copy_coverage": 0.923,
+   "copy_missing": [
+    "add chat transcripts"
+   ]
   },
   {
    "id": "needs-permission",
@@ -7774,7 +7848,7 @@
    "name": "Copy full transcript",
    "status": "wrong",
    "why": "host state menu-chat-tab is wrong",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "u8i",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -8862,7 +8936,7 @@
    "name": null,
    "status": "wrong",
    "why": "host state menu-chat-tab is wrong",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "u8i",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -9411,7 +9485,7 @@
    "name": "Description",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "shell",
    "component": "KKo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -13181,7 +13255,7 @@
    "name": "Recording ended — transcript saved.",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "Ngo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -13207,7 +13281,7 @@
    "name": "Recording ended — transcript saved.",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "Ngo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -13623,7 +13697,7 @@
    "name": "Failed to attach chat transcript",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "RIo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -13649,7 +13723,7 @@
    "name": "Failed to attach chat transcript",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "RIo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -13873,7 +13947,7 @@
    "name": "Couldn't save description: ${rc(t)}",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "shell",
    "component": "lXo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -20548,8 +20622,8 @@
    "id": "empty-state:no-setup-script-output",
    "kind": "empty-state",
    "name": "No setup script output",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state panel-setup-idle matches",
    "team": "terminal-scripts",
    "component": "nro",
    "source": {
@@ -20561,12 +20635,12 @@
     "No setup script output"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "panel-setup-idle",
+   "state_basis": "state covers it",
+   "reference_screenshot": "side-by-side/terminal-scripts-02-setup-idle.png",
+   "openconductor_screenshot": "side-by-side/terminal-scripts-02-setup-idle.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.029302591463414632
   },
   {
    "id": "empty-state:no-one-has-been-added",
@@ -20886,7 +20960,7 @@
    "name": "No description",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "shell",
    "component": "dKo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",

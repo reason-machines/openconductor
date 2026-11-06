@@ -3004,9 +3004,399 @@
     }
    }
   },
+  "panel-setup-add": {
+   "lane": "tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium",
+   "openconductor_commit": "2e316e18a",
+   "viewport": {
+    "width": 1280,
+    "height": 820
+   },
+   "image": "side-by-side/terminal-scripts-01-setup-add.png",
+   "supersedes_oc_png_sha256": null,
+   "reference": {
+    "evidence_id": "ev_b2fdd56951de70ea5f8d0d57e9498d72b3a78dfe6720c12ef4cdba64473869dd",
+    "png_sha256": "f449b7a3937991669750f94d8bf4cc25dbdfb4ecbb11010e6b8f4b3efd8839d2",
+    "final_url": "http://conductor.localhost:4357/repository/repo-tide-web/workspace/ws-osaka?activeTabType=session&sessionId=sess-osaka",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "Tauri + React + Typescript",
+      "\\n",
+      "\\n \\n \\n",
+      "\\n \\n \\n \\n \\n \\n \\n \\n",
+      "\\n",
+      "\\n",
+      "\\n\\n",
+      "\\n",
+      "\\n",
+      "A",
+      "Ada Demo's Mac",
+      "Home",
+      "⌘",
+      "⇧",
+      "H",
+      "Create",
+      "⌘",
+      "N",
+      "Search",
+      "⌘",
+      "K",
+      "My workspaces",
+      "T",
+      "tide-web",
+      "1",
+      "Ada/dark mode tokens",
+      "3",
+      "Ada/fix login redirect",
+      "+15",
+      "-1",
+      "4",
+      "Add search to settings",
+      "T",
+      "tide-api",
+      "2",
+      "D",
+      "dotfiles",
+      "1",
+      "FREE",
+      "T",
+      "tide-web",
+      "ada/dark-mode-tokens",
+      "osaka",
+      "Move colors to design tokens",
+      "New chat in",
+      "/osaka",
+      ".",
+      "Add chat transcripts:",
+      "Move colors to design tokens",
+      "Next unread",
+      "⌘",
+      "L",
+      "to focus",
+      "Opus 5",
+      "High",
+      "Couldn’t load PR info",
+      "All files",
+      "Changes",
+      "0",
+      "Checks",
+      ".gitignore",
+      "README.md",
+      "package.json",
+      "public",
+      "src",
+      "tsconfig.json",
+      "Setup",
+      "Run",
+      "Add setup script",
+      "Ask agent",
+      "Add manually",
+      "Run commands when a workspace is created to install dependencies or set up the environment",
+      "\\n \\n\\n",
+      "\\n Press space bar to start a drag.\\n When dragging you can use the arrow keys to move the item around and escape to cancel.\\n Some screen readers may require you to be in focus mode or to use your pass through key\\n"
+     ],
+     "labels": []
+    }
+   },
+   "openconductor": {
+    "evidence_id": "ev_e4616cd60288ee424b5a13c71d842fa4035d1a935978fb84864351c89f66dfbf",
+    "png_sha256": "6de03317f7d5243c766fe498c5cec29a244cad81926d40e9b128f363f11b3841",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "OpenConductor",
+      "\\n \\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "My Mac",
+      "Home",
+      "⌘⇧H",
+      "Create",
+      "⌘N",
+      "Search",
+      "⌘K",
+      "My workspaces",
+      "T",
+      "tide-web",
+      "1",
+      "lisbon",
+      "2",
+      "quito",
+      "FREE",
+      "tide-web",
+      "/",
+      "lisbon",
+      "ada/fix-login-redirect",
+      "→ main",
+      "lisbon",
+      "New chat, same files",
+      "⌘T",
+      "You’re in a new copy of",
+      "tide-web",
+      "called",
+      "lisbon",
+      "Branched",
+      "ada/fix-login-redirect",
+      "from",
+      "main",
+      "Created",
+      "lisbon",
+      "Next unread",
+      "⌘L to focus",
+      "Auto",
+      "All files",
+      "Changes",
+      "2",
+      "Checks",
+      "Review",
+      "All changes",
+      "Uncommitted",
+      "0/2 viewed",
+      "GitHub comments failed",
+      "Comment failed",
+      "Refresh",
+      "2 files changed",
+      "+15",
+      "-1",
+      "src/lib/auth.test.ts",
+      "U",
+      "+14",
+      "-0",
+      "src/lib/auth.ts",
+      "U",
+      "+1",
+      "-1",
+      "Setup",
+      "Run",
+      "Add setup script",
+      "Ask agent",
+      "Add manually",
+      "Run commands when a workspace is created to install dependencies or set up the environment",
+      "\\n \\n\\n",
+      "\\n Press space bar to start a drag.\\n When dragging you can use the arrow keys to move the item around and escape to cancel.\\n Some screen readers may require you to be in focus mode or to use your pass through key\\n"
+     ],
+     "labels": []
+    }
+   },
+   "compare": {
+    "t0": {
+     "evidence_id": "ev_a2cf0aae10c1e55dcb840cb968744ff6e7fdf440a416f3aba926fed94a63c308",
+     "changed_pixels": 1049598,
+     "total_pixels": null,
+     "changed_ratio": 0.9999980945121951
+    },
+    "t24": {
+     "evidence_id": "ev_60abd14d24fa0ec01b453bd63d693988ab2aa072b07165970fac843abd794ee4",
+     "changed_pixels": 32973,
+     "total_pixels": null,
+     "changed_ratio": 0.031414824695121954
+    }
+   }
+  },
+  "panel-setup-idle": {
+   "lane": "tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium",
+   "openconductor_commit": "2e316e18a",
+   "viewport": {
+    "width": 1280,
+    "height": 820
+   },
+   "image": "side-by-side/terminal-scripts-02-setup-idle.png",
+   "supersedes_oc_png_sha256": null,
+   "reference": {
+    "evidence_id": "ev_9f988c57b567a5feb0c0ffc33b0c2aed6d7f45929282bfbdfc3d3cb9884cb057",
+    "png_sha256": "db51e427c0714ab25831754448283c92fe7e474796411eb315e3bc0ea3998788",
+    "final_url": "http://conductor.localhost:4357/repository/repo-tide-web/workspace/ws-osaka?activeTabType=session&sessionId=sess-osaka",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "Tauri + React + Typescript",
+      "\\n",
+      "\\n \\n \\n",
+      "\\n \\n \\n \\n \\n \\n \\n \\n",
+      "\\n",
+      "\\n",
+      "\\n\\n",
+      "\\n",
+      "\\n",
+      "A",
+      "Ada Demo's Mac",
+      "Home",
+      "⌘",
+      "⇧",
+      "H",
+      "Create",
+      "⌘",
+      "N",
+      "Search",
+      "⌘",
+      "K",
+      "My workspaces",
+      "T",
+      "tide-web",
+      "1",
+      "Ada/dark mode tokens",
+      "3",
+      "Ada/fix login redirect",
+      "+15",
+      "-1",
+      "4",
+      "Add search to settings",
+      "T",
+      "tide-api",
+      "2",
+      "D",
+      "dotfiles",
+      "1",
+      "FREE",
+      "T",
+      "tide-web",
+      "ada/dark-mode-tokens",
+      "osaka",
+      "Move colors to design tokens",
+      "New chat in",
+      "/osaka",
+      ".",
+      "Add chat transcripts:",
+      "Move colors to design tokens",
+      "Next unread",
+      "⌘",
+      "L",
+      "to focus",
+      "Opus 5",
+      "High",
+      "Couldn’t load PR info",
+      "All files",
+      "Changes",
+      "0",
+      "Checks",
+      ".gitignore",
+      "README.md",
+      "package.json",
+      "public",
+      "src",
+      "tsconfig.json",
+      "Setup",
+      "Run",
+      "No setup script output",
+      "Setup script output will appear here after running setup.",
+      "Run setup",
+      "\\n \\n\\n",
+      "\\n Press space bar to start a drag.\\n When dragging you can use the arrow keys to move the item around and escape to cancel.\\n Some screen readers may require you to be in focus mode or to use your pass through key\\n"
+     ],
+     "labels": []
+    }
+   },
+   "openconductor": {
+    "evidence_id": "ev_027b9c9d741be72a440a5d915c00d42dfa22b8ae409a5af402d5b1ae49ad40c5",
+    "png_sha256": "251152880ca1ddffff009014f71bfe6a85b02a8367283fc49098f02f380166a1",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "OpenConductor",
+      "\\n \\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "My Mac",
+      "Home",
+      "⌘⇧H",
+      "Create",
+      "⌘N",
+      "Search",
+      "⌘K",
+      "My workspaces",
+      "T",
+      "tide-web",
+      "1",
+      "lisbon",
+      "2",
+      "quito",
+      "FREE",
+      "tide-web",
+      "/",
+      "lisbon",
+      "ada/fix-login-redirect",
+      "→ main",
+      "lisbon",
+      "New chat, same files",
+      "⌘T",
+      "You’re in a new copy of",
+      "tide-web",
+      "called",
+      "lisbon",
+      "Branched",
+      "ada/fix-login-redirect",
+      "from",
+      "main",
+      "Created",
+      "lisbon",
+      "Next unread",
+      "⌘L to focus",
+      "Auto",
+      "All files",
+      "Changes",
+      "2",
+      "Checks",
+      "Review",
+      "All changes",
+      "Uncommitted",
+      "0/2 viewed",
+      "GitHub comments failed",
+      "Comment failed",
+      "Refresh",
+      "2 files changed",
+      "+15",
+      "-1",
+      "src/lib/auth.test.ts",
+      "U",
+      "+14",
+      "-0",
+      "src/lib/auth.ts",
+      "U",
+      "+1",
+      "-1",
+      "Setup",
+      "Run",
+      "No setup script output",
+      "Setup script output will appear here after running setup.",
+      "Run setup",
+      "\\n \\n\\n",
+      "\\n Press space bar to start a drag.\\n When dragging you can use the arrow keys to move the item around and escape to cancel.\\n Some screen readers may require you to be in focus mode or to use your pass through key\\n"
+     ],
+     "labels": []
+    }
+   },
+   "compare": {
+    "t0": {
+     "evidence_id": "ev_25bcd5b8701197377b7dd6e5714fd507909a4af2768fa4ae8d61d30ceb180f33",
+     "changed_pixels": 1049598,
+     "total_pixels": null,
+     "changed_ratio": 0.9999980945121951
+    },
+    "t24": {
+     "evidence_id": "ev_d6422c8a5d8db528daa7e96704b97e2d14ffd37b0351377259e329d074ce59be",
+     "changed_pixels": 30756,
+     "total_pixels": null,
+     "changed_ratio": 0.029302591463414632
+    }
+   }
+  },
   "diff-unified": {
    "lane": "tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium",
-   "openconductor_commit": "e221b2751",
+   "openconductor_commit": "d3ce4bf09",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -3014,7 +3404,7 @@
    "image": "side-by-side/git-review-01-diff-unified.png",
    "supersedes_oc_png_sha256": "67f008b546f89bcb7d1e52518343a230938f200a9ddff88b4da8f0abd0c90f51",
    "reference": {
-    "evidence_id": "ev_4b091b0d2c8e65c3f7010811f6f48ec3246b7c21e811c0dbf03d2fd39fe4a6a2",
+    "evidence_id": "ev_d6985ad69ff721a672592aa040db4238b0e923746cad1ef020222fc8b70abe15",
     "png_sha256": "a4ba7a0bb0ffd4a62701a71f9b631fb6f29b0a9036d062e3e0c0a40f041286eb",
     "final_url": "http://conductor.localhost:4367/repository/repo-tide-web/workspace/ws-lisbon?activeTabType=special&sessionId=sess-lisbon&gitPanelTab=changes&gitDiff=all&specialTabMode=file&specialTabPath=src%2Flib%2Fauth.ts&specialTabFileMode=diff",
     "dom": {
@@ -3106,8 +3496,8 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_8b5ce47fb99c6483dce1c120facfb1167d1567e1711711bd4086050833f45599",
-    "png_sha256": "32ab8dbea7b098cd08ed25683c07a5f0a8833905c4a6cbfde95ee6300e58b2b6",
+    "evidence_id": "ev_8da035ca124caf13fc0712d498819c8779491fd1ce9a3787444e7c24aa8e00d1",
+    "png_sha256": "98c626486e48a865e9fd6528c7c05b91f01c49aa2a045306d04efb99bc715f29",
     "dom": {
      "texts": [
       "\\n",
@@ -3207,22 +3597,22 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_0ffd98df2075a881df3a1ba135c44d5c38f301ccb73df26fdf5187c232466d18",
+     "evidence_id": "ev_24e37637df53100637720d8e9b9bd247a71ee76b5f5711f8828d9a5b9b06c248",
      "changed_pixels": 925505,
      "total_pixels": null,
      "changed_ratio": 0.8817692454268292
     },
     "t24": {
-     "evidence_id": "ev_8a2871d4f6fe653ca5af8a1128dbd9c5d11304abc5b8f5561ec53eef01eca104",
-     "changed_pixels": 52451,
+     "evidence_id": "ev_59dc5cc30c3e3b0f74b25c70857dfcdf2bf30482ed2a753fa3932769c80651d0",
+     "changed_pixels": 52241,
      "total_pixels": null,
-     "changed_ratio": 0.04997237042682927
+     "changed_ratio": 0.049772294207317075
     }
    }
   },
   "diff-split": {
    "lane": "tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium",
-   "openconductor_commit": "e221b2751",
+   "openconductor_commit": "d3ce4bf09",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -3230,7 +3620,7 @@
    "image": "side-by-side/git-review-02-diff-split.png",
    "supersedes_oc_png_sha256": "7da0bcc37f21012075a88b9518914b005322b3bf5292f03741ddca5736237a10",
    "reference": {
-    "evidence_id": "ev_ee8d676acee7826588ead9d983203429ebd70408bcc3e445269c1bc3dce790e1",
+    "evidence_id": "ev_9116cfce2b440f870a19f63b247ff2be7e1b8ed8f5c033d1c79f59a528c5aeea",
     "png_sha256": "281226b723917d907cd9af2c65ed2e4db1c44a70160085f4a996a8c2363f81f3",
     "final_url": "http://conductor.localhost:4367/repository/repo-tide-web/workspace/ws-lisbon?activeTabType=special&sessionId=sess-lisbon&gitPanelTab=changes&gitDiff=all&specialTabMode=file&specialTabPath=src%2Flib%2Fauth.ts&specialTabFileMode=diff",
     "dom": {
@@ -3322,8 +3712,8 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_80b5068a5d609422824c27200768c877725619853d029874415e02d03c98d07e",
-    "png_sha256": "773e218301be7dd3c397f006e50deb08c7328abfa9868dec51b57a1179a97d44",
+    "evidence_id": "ev_2a9c521e723cd41eae438a734f5c7893e804eeae14c6ebb935af710a42b80cad",
+    "png_sha256": "f4e12a1753b9edbd151949b7fbc1f20a79961c1d03afde70328d1da9212ac682",
     "dom": {
      "texts": [
       "\\n",
@@ -3423,22 +3813,22 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_f6d18c49425d793276c58c3325f6dbec7ba8c0a3aa01f5142ec523133d89b4ef",
+     "evidence_id": "ev_d3fb3845200559a0f73216fbfbac96bfff400b407f49b5581f1e6e450e964ae1",
      "changed_pixels": 901226,
      "total_pixels": null,
      "changed_ratio": 0.8586375762195122
     },
     "t24": {
-     "evidence_id": "ev_c5298d07ca7a27b379841107a8ea47aa6a582dbedd73f4df9ed245a2dc773435",
-     "changed_pixels": 54666,
+     "evidence_id": "ev_2c1b00dd78456d953d78a9b868c95585deeab2d096366c7c5cb59076969511ad",
+     "changed_pixels": 54456,
      "total_pixels": null,
-     "changed_ratio": 0.05208269817073171
+     "changed_ratio": 0.05188262195121951
     }
    }
   },
   "diff-entire-file": {
    "lane": "tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium",
-   "openconductor_commit": "e221b2751",
+   "openconductor_commit": "d3ce4bf09",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -3446,7 +3836,7 @@
    "image": "side-by-side/git-review-03-diff-entire-file.png",
    "supersedes_oc_png_sha256": "804398aff218bb777fa91dda2e6fc9c2cdaca34ce37ce9d5879e9e627d241478",
    "reference": {
-    "evidence_id": "ev_4b0b925667ce097184238b0fb9af93e00384f3f885a0b46d83d733c6b74df36f",
+    "evidence_id": "ev_a4f946687c7de08d03901abc1d90a5bae5ebecae01be37ba51d6b0adc96e506f",
     "png_sha256": "79d0f63d0a42e19f094ad452ad7be782abb1b9d574cf18d7ce8c123d826e925a",
     "final_url": "http://conductor.localhost:4367/repository/repo-tide-web/workspace/ws-lisbon?activeTabType=special&sessionId=sess-lisbon&gitPanelTab=changes&gitDiff=all&specialTabMode=file&specialTabPath=src%2Flib%2Fauth.ts&specialTabFileMode=diff",
     "dom": {
@@ -3538,8 +3928,8 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_02de93b7f107b275063b648ee68a668ce886b51c799cbfaf5b371dc83a498e26",
-    "png_sha256": "2bd75f3c5e3a1515c181bceb78dd464d00719c56d54ffd72b2113004f5da4788",
+    "evidence_id": "ev_f2e658982b9de2181a424a17bf2402b9ce61dda212ff59d3c8a5ff63106fa291",
+    "png_sha256": "b1be34889fee313f95823a8829cf9bf6cee5e080e621ff74e3653f5d2488f721",
     "dom": {
      "texts": [
       "\\n",
@@ -3639,22 +4029,22 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_b3beb6c2a0c14068cb67f7946b3fd011c785363469ed1d3f896a68aac77832eb",
+     "evidence_id": "ev_c45a6cfcb0cf4d2525ce44d76d238da3e534cface6f2929dfcd09a3c78769631",
      "changed_pixels": 876462,
      "total_pixels": null,
      "changed_ratio": 0.8350438262195122
     },
     "t24": {
-     "evidence_id": "ev_a24d4d19c7488134a433548ede34fc303039a37adb81bcd36557c2fc3c4be3d9",
-     "changed_pixels": 49363,
+     "evidence_id": "ev_9db50ecb9901afd77bab0c6acf7c03e35d3a7ae99392b0277ff588fd47605287",
+     "changed_pixels": 49153,
      "total_pixels": null,
-     "changed_ratio": 0.04703029725609756
+     "changed_ratio": 0.046830221036585365
     }
    }
   },
   "create-from-prs": {
    "lane": "tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium",
-   "openconductor_commit": "e221b2751",
+   "openconductor_commit": "d3ce4bf09",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -3662,7 +4052,7 @@
    "image": "side-by-side/git-review-04-create-from-prs.png",
    "supersedes_oc_png_sha256": null,
    "reference": {
-    "evidence_id": "ev_93ca08c2e20eb9fe4ef3e6a43e3b157329042f7faf6394c3075e161f0651ca57",
+    "evidence_id": "ev_a4b6581193b9995b60d92c274c5ab56a01adc89fa39ee6bfe0e70b0fdf6272b1",
     "png_sha256": "07c5f22d5bc8079ec8181e008f86d97f2dbf5e956783882793c702258b1376ea",
     "final_url": "http://conductor.localhost:4367/?oc_scenario=populated&oc_theme=dark",
     "dom": {
@@ -3726,7 +4116,7 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_7b880ba46779f64a4e3166a1c16c65455674737d74afe3d04adbdc71f1997d29",
+    "evidence_id": "ev_0fc82e12811e2ccdcf0256fa5dbbb1047ebfc09c7452f15980e0310217b32d34",
     "png_sha256": "5c6926d254660b6dfad9625b067df7f16f161014f11e8d23414bc9d74ee42ab8",
     "dom": {
      "texts": [
@@ -3807,7 +4197,7 @@
   },
   "create-from-branches": {
    "lane": "tools/side-by-side/git-review.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked with the reference's lisbon diff) in Chromium",
-   "openconductor_commit": "e221b2751",
+   "openconductor_commit": "d3ce4bf09",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -3815,7 +4205,7 @@
    "image": "side-by-side/git-review-05-create-from-branches.png",
    "supersedes_oc_png_sha256": null,
    "reference": {
-    "evidence_id": "ev_e263848324c17315b2f0b435d60e3824ca3000bfab86c09da6d119cc56f99696",
+    "evidence_id": "ev_e3a07389770dbe408bcb858f4f24fccab27bc0830b75bddff3494a788a77a5d0",
     "png_sha256": "e1783ebb15e035519bc65287c63b6d83ad1b16b50aede8fcfb6e6278b78564d9",
     "final_url": "http://conductor.localhost:4367/?oc_scenario=populated&oc_theme=dark",
     "dom": {
@@ -3877,7 +4267,7 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_8ebff8cee72f8a87a0060c85c3e6ade7620d7286c669b6193c70cae1a13705ab",
+    "evidence_id": "ev_7e9cef41ea194c6a8d3dcc06b3121a7218321c04fac3e3e1273d333410fbfba7",
     "png_sha256": "3df73a873a2f0af714ab409d584b57414d8358b538e8b545dd16f7b933e985fe",
     "dom": {
      "texts": [

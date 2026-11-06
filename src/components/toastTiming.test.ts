@@ -11,3 +11,8 @@ test("a sticky toast stays until dismissed", () => {
   assert.equal(toastTimeout({ kind: "error", sticky: true }), null);
   assert.equal(toastTimeout({ kind: "info", sticky: true }), null);
 });
+
+test("a toast with its own duration keeps it", () => {
+  assert.equal(toastTimeout({ kind: "error", durationMs: 15000 }), 15000);
+  assert.equal(toastTimeout({ kind: "error", sticky: true, durationMs: 15000 }), null);
+});

@@ -152,9 +152,13 @@ test("strip: Setup and Run under the list, Run's dashed empty state, chevron and
   await box.getByText("Run tests or a development server to test changes in this workspace").waitFor();
   assert.equal(await box.evaluate((e) => getComputedStyle(e).borderTopStyle), "dashed");
 
-  // Setup shows its own body.
+  // Setup with no setup script: Conductor's dashed "Add setup script" card (Ask agent / Add manually).
   await strip.getByRole("tab", { name: "Setup" }).click();
-  await strip.getByText("No setup script is configured for this repository.").waitFor();
+  const addSetup = strip.locator(".scripts-setup-add-box");
+  await addSetup.getByRole("heading", { name: "Add setup script" }).waitFor();
+  assert.equal(await addSetup.evaluate((e) => getComputedStyle(e).borderTopStyle), "dashed");
+  assert.deepEqual(await addSetup.getByRole("button").allInnerTexts(), ["Ask agent", "Add manually"]);
+  await addSetup.getByText("Run commands when a workspace is created to install dependencies or set up the environment").waitFor();
   await strip.getByRole("tab", { name: "Run" }).click();
 
   // The chevron hides the body (tabs stay), and shows it again.

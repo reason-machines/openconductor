@@ -26,9 +26,11 @@ interface Props {
   setView: (view: StripView) => void;
   /** Working directory for new terminals; empty when unknown. */
   cwd: string;
+  /** Setup's "Ask agent": sends the setup-script prompt to the workspace's chat; absent when it can't. */
+  onAskSetupAgent?: () => void;
 }
 
-export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd }: Props) {
+export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd, onAskSetupAgent }: Props) {
   const wsId = workspace.id;
   const terms = useSyncExternalStore(subscribeTabs, () => getTabs(wsId));
   const tabFreakMode = useAppPrefs().experimental_tab_freak_mode;
@@ -151,7 +153,7 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd 
       {open && error && <div className="term-error">{error}</div>}
       {/* Kept mounted while hidden, so run output and the setup state keep coming in. */}
       <div className="ws-strip-body" hidden={!open || view === "terminal"}>
-        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} active={view === "run"} actionsSlot={view === "run" ? actionsEl : null} onSetupState={onSetupState} onAddRunScript={addRunScript} onShowRun={showRun} />
+        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} active={view === "run"} actionsSlot={view === "run" ? actionsEl : null} onSetupState={onSetupState} onAddRunScript={addRunScript} onAskAgent={onAskSetupAgent} onShowRun={showRun} />
       </div>
       {showTerminal && (
         <section className="terminal-panel" aria-label="Terminal">
