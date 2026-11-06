@@ -35,12 +35,14 @@ interface Props {
   /** The trigger: one element that accepts pointer and focus handlers and a ref. */
   children: ReactElement;
   disabled?: boolean;
+  /** Open delay in ms; Conductor's Root `delayDuration`, 600 unless a trigger sets its own (Settings' Back: 100). */
+  delay?: number;
 }
 
 type Phase = "closed" | "starting" | "open" | "ending";
 
 /** A Conductor-style tooltip around one trigger element. */
-export function Tooltip({ content, shortcut, side = "top", sideOffset = SIDE_OFFSET, children, disabled }: Props) {
+export function Tooltip({ content, shortcut, side = "top", sideOffset = SIDE_OFFSET, children, disabled, delay = TOOLTIP_DELAY_MS }: Props) {
   const triggerRef = useRef<HTMLElement | null>(null);
   const tipRef = useRef<HTMLDivElement>(null);
   const timer = useRef<number | undefined>(undefined);
@@ -62,7 +64,7 @@ export function Tooltip({ content, shortcut, side = "top", sideOffset = SIDE_OFF
     clear();
     if (disabled) return;
     if (instantPhase(performance.now())) show();
-    else timer.current = window.setTimeout(show, TOOLTIP_DELAY_MS);
+    else timer.current = window.setTimeout(show, delay);
   };
 
   useEffect(() => {
