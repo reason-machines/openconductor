@@ -300,8 +300,10 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
             title: t.title,
         });
     }
-    let mut titles: std::collections::HashMap<String, String> =
-        sessions::main_chat_titles(pool).await?.into_iter().collect();
+    let mut titles: std::collections::HashMap<String, String> = sessions::main_chat_titles(pool)
+        .await?
+        .into_iter()
+        .collect();
     Ok(workspaces::list(pool)
         .await?
         .into_iter()

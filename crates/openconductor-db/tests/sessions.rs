@@ -488,7 +488,10 @@ async fn rename_titles_a_chat_without_reopening_or_moving_it() {
         .unwrap();
     assert_eq!(
         sessions::main_chat_titles(&pool).await.unwrap(),
-        [("app/oslo".to_string(), "Fix login redirect loop".to_string())]
+        [(
+            "app/oslo".to_string(),
+            "Fix login redirect loop".to_string()
+        )]
     );
     // Not a tab: the main chat never shows up among open tabs.
     assert_eq!(sessions::open_tabs(&pool).await.unwrap().len(), 1);
