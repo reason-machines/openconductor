@@ -13,6 +13,7 @@
 // current-item rule. Once chats carry unread, feed them through `pickNextUnread`.
 
 import type { AppState, Workspace } from "./types.ts";
+import type { Action } from "./store";
 
 export interface NextUnreadTarget {
   repoId: string;
@@ -61,4 +62,17 @@ export function nextUnreadWorkspace(state: AppState, { skipSelected }: { skipSel
     skipId,
   );
   return pick && { repoId: pick.repoId, workspace: pick.workspace };
+}
+
+/**
+ * Opens what "Go to next unread" picks and clears its unread flag, as clicking
+ * its row does; false when nothing is unread. The palette, Cmd+Alt+L and the
+ * composer's "Next unread" button all go through here.
+ */
+export function openNextUnread(state: AppState, dispatch: (action: Action) => void, opts: { skipSelected: boolean }): boolean {
+  const ref = nextUnreadWorkspace(state, opts);
+  if (!ref) return false;
+  dispatch({ type: "select", selection: { kind: "workspace", repoId: ref.repoId, workspaceId: ref.workspace.id } });
+  dispatch({ type: "setWorkspaceUnread", repoId: ref.repoId, workspaceId: ref.workspace.id, unread: false });
+  return true;
 }
