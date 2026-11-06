@@ -20,11 +20,15 @@ import { BigTerminalPage } from "./BigTerminalPage";
 import { ExperimentalPage } from "./ExperimentalPage";
 import { AGENTS_TABS, AGENTS_TAB_LABEL } from "./agents/kitModel";
 import { CloudCogIcon, CloudSetupPage } from "./cloud/CloudSetupPage";
+import { REASON_PLAN_URL } from "./cloud/cloudSetup";
 import { useCloudSetup } from "./cloud/useCloudSetup";
-import { pageLabel, settingsGroups, type SettingsPage } from "./pages";
+import { ConductorIcon } from "../components/ConductorIcon";
+import { useOrganization } from "../org/useOrganization";
+import { ORG_HEADERS, OrgPage } from "./org/OrgPages";
+import { orgSettingsGroups, pageLabel, settingsGroups, type OrgNavEntry, type SettingsPage } from "./pages";
 import { RepoSettingsPage } from "./RepoSettingsPage";
 import type { RepoMiscActions } from "./rows/RepoMiscRows";
-import { REPO_SECTIONS, REPO_SECTION_LABELS, sameLocation, settingsDeepLink, type RepoSection, type SettingsLocation } from "./routes";
+import { REPO_SECTIONS, REPO_SECTION_LABELS, sameLocation, settingsDeepLink, type OrgPage as OrgPageId, type RepoSection, type SettingsLocation } from "./routes";
 import { buildSearchIndex, type SearchItem } from "./searchIndex";
 import { SettingsSearch } from "./SettingsSearch";
 import type { Settings } from "./types";
@@ -106,7 +110,8 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
   };
 
   const repo = location.scope === "repo" ? repos.find((r) => r.id === location.repoId) : undefined;
-  const title = location.scope === "user" ? pageLabel(location.page) : REPO_SECTION_LABELS[location.section];
+  const title =
+    location.scope === "user" ? pageLabel(location.page) : location.scope === "org" ? ORG_HEADERS[location.page].title : REPO_SECTION_LABELS[location.section];
   const navButton = (to: SettingsLocation, label: string, className = "nav-item", icon?: ReactNode) => {
     const active = sameLocation(to, location);
     return (
@@ -122,11 +127,28 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
       </button>
     );
   };
-  const header = location.scope === "user" ? PAGE_HEADERS[location.page] : REPO_HEADERS[location.section];
+  const header =
+    location.scope === "user" ? PAGE_HEADERS[location.page] : location.scope === "org" ? ORG_HEADERS[location.page] : REPO_HEADERS[location.section];
   const bigTerminal = settings?.experimental?.experimental_big_terminal_mode === true;
-  // The Cloud group shows for a signed-in Reason CLI (Conductor's cloud entitlement, `F` in `L9a`).
-  const cloud = useCloudSetup().setup?.signedIn === true;
+  // A Reason workspace as the active organization turns on Conductor's organization view (`I9a` showOrganization).
+  const organization = useOrganization().active;
+  // The Cloud group shows for a signed-in Reason CLI (Conductor's cloud entitlement, `F` in `L9a`), personal accounts only.
+  const cloud = useCloudSetup().setup?.signedIn === true && !organization;
   const groups = useMemo(() => settingsGroups(bigTerminal, cloud), [bigTerminal, cloud]);
+  const orgGroups = useMemo(() => (organization ? orgSettingsGroups(bigTerminal) : null), [organization, bigTerminal]);
+  const orgEntry = (e: OrgNavEntry) =>
+    e.kind === "billing" ? (
+      // Conductor's `k9a`: Billing opens the billing portal in the browser; here, the Reason workspace's plan.
+      <button key="billing" type="button" className="nav-item" onClick={() => void openUrl(REASON_PLAN_URL).catch(() => notify("error", "Failed to open link"))}>
+        <ConductorIcon name="credit-card" size={16} />
+        <span>{e.label}</span>
+        <ConductorIcon name="arrow-up-right" size={12} />
+      </button>
+    ) : e.kind === "org" ? (
+      navButton({ scope: "org", page: e.page }, e.label, "nav-item", ORG_PAGE_ICONS[e.page])
+    ) : (
+      navButton({ scope: "user", page: e.page }, e.label, "nav-item", PAGE_ICONS[e.page])
+    );
   const searchItems = useMemo(
     () => buildSearchIndex({ pages: groups.flatMap((g) => g.pages), agentTabs: AGENT_SEARCH_TABS, hasRepos: repos.length > 0 }),
     [groups, repos.length],
@@ -169,7 +191,18 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
         <div className="settings-nav-search">
           <SettingsSearch items={searchItems} iconFor={searchIcon} onPick={openResult} />
         </div>
-        {groups.map((g) => (
+        {orgGroups?.map((g) => (
+          <Fragment key={g.title}>
+            <div className="settings-group">
+              <div className="settings-group-title">{g.title}</div>
+              {g.entries.map(orgEntry)}
+            </div>
+            {g.title === "Agents & environment" && (
+              <RepositoriesNav repos={repos} location={location} onNavigate={onNavigate} navButton={navButton} />
+            )}
+          </Fragment>
+        ))}
+        {!orgGroups && groups.map((g) => (
           <Fragment key={g.title || g.pages[0]?.id}>
             <div className="settings-group">
               {g.title && (
@@ -188,7 +221,7 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
       </nav>
       <section className="settings-page">
         <div className="settings-page-inner">
-          {!(location.scope === "user" ? SELF_HEADED.includes(location.page) : location.section === "environment") && (
+          {!(location.scope === "user" ? SELF_HEADED.includes(location.page) : location.scope === "repo" && location.section === "environment") && (
             <header className="settings-header">
               <div>
                 <h1>{title}</h1>
@@ -201,7 +234,13 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
               {error}
             </p>
           )}
-          {location.scope === "repo" ? (
+          {location.scope === "org" ? (
+            settings ? (
+              <OrgPage page={location.page} settings={settings} save={save} onNavigate={onNavigate} />
+            ) : (
+              <p className="muted">Loading…</p>
+            )
+          ) : location.scope === "repo" ? (
             repo ? (
               <RepoSettingsPage repo={repo} section={location.section} miscActions={miscActions} />
             ) : (
@@ -323,6 +362,16 @@ const PAGE_ICONS: Record<SettingsPage, ReactNode> = {
   advanced: <DriveIcon />,
   terminal: <TerminalIcon />,
   "setup-cloud": <CloudCogIcon />,
+};
+
+/** Conductor's organization tab icons (lucide message-square-text, key-round, blocks, laptop, sliders-horizontal, users). */
+const ORG_PAGE_ICONS: Record<OrgPageId, ReactNode> = {
+  prompts: <ConductorIcon name="message-square-text" size={16} />,
+  environment: <KeyIcon />,
+  mcp: <ConductorIcon name="blocks" size={16} />,
+  computer: <ConductorIcon name="laptop" size={16} />,
+  preferences: <SlidersHorizontalIcon />,
+  members: <ConductorIcon name="users" size={16} />,
 };
 
 /** The Agents page's tabs, listed after Agents in search (Conductor's `$ba` per agent tab). */

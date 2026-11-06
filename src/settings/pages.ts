@@ -4,6 +4,8 @@
 // Ports needs a cloud organization and Internal an internal build, so
 // neither is listed.
 
+import type { OrgPage } from "./routes";
+
 export type SettingsPage =
   | "general"
   | "account"
@@ -83,3 +85,47 @@ export const pageLabel = (page: SettingsPage): string => [...PAGES, ...CLOUD_GRO
 
 /** Every /settings/user/<id> page, for the router (Cloud setup has its own route). */
 export const USER_PAGES: readonly SettingsPage[] = PAGES.map((p) => p.id);
+
+// ---- the organization view -------------------------------------------------
+
+/** One link in the organization view's nav: a user page, an organization page, or Billing. */
+export type OrgNavEntry =
+  | { kind: "user"; page: SettingsPage; label: string }
+  | { kind: "org"; page: OrgPage; label: string }
+  | { kind: "billing"; label: string };
+
+export interface OrgNavGroup {
+  title: string;
+  entries: OrgNavEntry[];
+}
+
+/** Conductor's organization tab labels (`WWt`, `HWt`, `VWt`, `UWt`, `GWt`). */
+export const ORG_PAGE_LABELS: Record<OrgPage, string> = {
+  prompts: "Prompts",
+  environment: "Environment",
+  mcp: "MCP",
+  computer: "Cloud computer",
+  preferences: "Preferences",
+  members: "Members",
+};
+
+/**
+ * The nav with a Reason workspace active: Conductor's `I9a` with
+ * `showOrganization` (`dti` hides the user Environment page there). Agents &
+ * environment adds Prompts, Environment, MCP and Cloud computer after Agents;
+ * the repositories list follows it, then Admin (Preferences, Members, Billing).
+ * The Cloud setup group is gone (Conductor shows it to personal accounts only).
+ */
+export function orgSettingsGroups(bigTerminalEnabled: boolean): OrgNavGroup[] {
+  const user = (g: SettingsGroup): OrgNavEntry[] =>
+    g.pages.filter((p) => p.id !== "environment").map((p) => ({ kind: "user" as const, page: p.id, label: p.label }));
+  const org = (page: OrgPage): OrgNavEntry => ({ kind: "org", page, label: ORG_PAGE_LABELS[page] });
+  return settingsGroups(bigTerminalEnabled).flatMap((g): OrgNavGroup[] =>
+    g.title === "Agents & environment"
+      ? [
+          { title: g.title, entries: [...user(g), org("prompts"), org("environment"), org("mcp"), org("computer")] },
+          { title: "Admin", entries: [org("preferences"), org("members"), { kind: "billing", label: "Billing" }] },
+        ]
+      : [{ title: g.title, entries: user(g) }],
+  );
+}

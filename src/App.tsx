@@ -59,6 +59,7 @@ import { OPEN_SETTINGS_EVENT, openAgentSettings } from "./features/chat/ChatMode
 import { RoutinesPage } from "./features/routines/RoutinesPage";
 import { RoutineEditor } from "./features/routines/RoutineEditor";
 import { REPO_SECTIONS, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
+import { ORGANIZATION_EVENT, storedOrganization } from "./org/organization";
 import { changeZoom, rememberSettings } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
 import { errorText, getSettings } from "./settings/api";
@@ -196,6 +197,8 @@ export default function App() {
     repoIds: state.repos.map((r) => r.id),
     lastRepoId: state.selection.kind === "workspace" ? state.selection.repoId : null,
     userPages: USER_PAGES,
+    // Read synchronously from the stored choice, so an organization start URL resolves on the first render.
+    organization: storedOrganization() !== null,
   });
   const [settingsLocation, setSettingsLocation] = useState<SettingsLocation | null>(() =>
     resolveSettingsUrl(window.location.pathname, window.location.search, routeContext()),
@@ -220,6 +223,16 @@ export default function App() {
     if (settingsLocation && !pendingReposUrl.current) navigateSettings(settingsLocation);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Switching to Personal while an organization page is open lands on General, as Conductor's `lW` redirect does.
+  const settingsLocationRef = useRef(settingsLocation);
+  settingsLocationRef.current = settingsLocation;
+  useEffect(() => {
+    const onChange = () => {
+      if (storedOrganization() === null && settingsLocationRef.current?.scope === "org") navigateSettings({ scope: "user", page: "general" });
+    };
+    window.addEventListener(ORGANIZATION_EVENT, onChange);
+    return () => window.removeEventListener(ORGANIZATION_EVENT, onChange);
+  }, [navigateSettings]);
   const openSettings = useCallback(() => {
     if (!settingsLocation) navigateSettings({ scope: "user", page: "general" });
   }, [settingsLocation, navigateSettings]);

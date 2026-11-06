@@ -4,7 +4,9 @@
 // 260 px menu aligned to its left edge. The model is in accountMenuModel.ts.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { invoke, isTauri } from "@tauri-apps/api/core";
-import { ChevronDownIcon, SettingsIcon, UserIcon } from "./Icons";
+import { CheckIcon, ChevronDownIcon, CloudIcon, SettingsIcon, UserIcon } from "./Icons";
+import { ConductorIcon } from "./ConductorIcon";
+import { useOrganization } from "../org/useOrganization";
 import { accountMenuModel, type LocalAccount } from "./accountMenuModel";
 import { endingProps, useMenuPresence } from "./sidebarMotion";
 
@@ -21,7 +23,10 @@ function useLocalAccount(): LocalAccount {
 
 export function AccountMenu({ onOpenSettings }: { onOpenSettings: () => void }) {
   const account = useLocalAccount();
-  const model = accountMenuModel(account);
+  const { active, organizations, select } = useOrganization();
+  // Until Reason answers, the stored choice stands in for the list, so the trigger names it right away.
+  const orgs = organizations ?? (active ? [active] : []);
+  const model = accountMenuModel(account, orgs, active?.id ?? null);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const close = useCallback(() => setOpen(false), []);
@@ -43,9 +48,14 @@ export function AccountMenu({ onOpenSettings }: { onOpenSettings: () => void }) 
     <div ref={ref} className="sb-account">
       <button type="button" className="sb-row sb-computer" aria-label="Account menu" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(!open)}>
         <span className="sb-row-icon">
-          <span className="sb-avatar" aria-hidden>
-            {icon.fallbackInitial ?? <UserIcon size={10} />}
-          </span>
+          {model.triggerOrganization ? (
+            // Conductor's organization trigger: lucide building-2, size-3.
+            <ConductorIcon name="building-2" size={12} />
+          ) : (
+            <span className="sb-avatar" aria-hidden>
+              {icon.fallbackInitial ?? <UserIcon size={10} />}
+            </span>
+          )}
         </span>
         <span className="sb-computer-name">{model.triggerLabel}</span>
         <ChevronDownIcon size={14} />
@@ -57,6 +67,33 @@ export function AccountMenu({ onOpenSettings }: { onOpenSettings: () => void }) 
               <div key="email" className="sb-account-email" role="presentation">{e.email}</div>
             ) : e.kind === "separator" ? (
               <div key={`sep-${i}`} role="separator" className="sb-menu-sep" />
+            ) : e.kind === "organization" ? (
+              <button
+                key={e.organization.id ?? "personal"}
+                type="button"
+                role="menuitemradio"
+                aria-checked={e.organization.selected}
+                className="sb-account-item"
+                onClick={() => {
+                  close();
+                  select(e.organization.id === null ? null : (orgs.find((o) => o.id === e.organization.id) ?? null));
+                }}
+              >
+                <span className="sb-account-item-icon">
+                  {e.organization.id === null ? <UserIcon size={14} /> : <ConductorIcon name="building-2" size={14} />}
+                </span>
+                <span className="sb-account-org-label">{e.organization.label}</span>
+                {e.organization.cloud && (
+                  <span className="sb-account-org-cloud" aria-label="Cloud organization">
+                    <CloudIcon size={12} />
+                  </span>
+                )}
+                {e.organization.selected && (
+                  <span className="sb-account-org-check">
+                    <CheckIcon size={14} />
+                  </span>
+                )}
+              </button>
             ) : (
               <button
                 key={e.id}

@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "df68aece",
+  "commit": null,
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -33,33 +33,33 @@
  },
  "summary": {
   "total": 982,
-  "missing": 739,
-  "wrong": 69,
-  "matches": 174,
+  "missing": 710,
+  "wrong": 75,
+  "matches": 197,
   "states": {
    "total": 84,
-   "missing": 13,
-   "wrong": 17,
-   "matches": 54
+   "missing": 6,
+   "wrong": 19,
+   "matches": 59
   },
   "items": {
    "total": 898,
-   "missing": 726,
-   "wrong": 52,
-   "matches": 120
+   "missing": 704,
+   "wrong": 56,
+   "matches": 138
   },
   "items_by_kind": {
    "dialog": {
     "total": 64,
-    "missing": 53,
-    "wrong": 4,
+    "missing": 52,
+    "wrong": 5,
     "matches": 7
    },
    "empty-state": {
     "total": 52,
-    "missing": 41,
+    "missing": 40,
     "wrong": 1,
-    "matches": 10
+    "matches": 11
    },
    "menu": {
     "total": 39,
@@ -81,9 +81,9 @@
    },
    "route": {
     "total": 65,
-    "missing": 39,
-    "wrong": 8,
-    "matches": 18
+    "missing": 32,
+    "wrong": 10,
+    "matches": 23
    },
    "select": {
     "total": 29,
@@ -93,15 +93,15 @@
    },
    "settings-page": {
     "total": 29,
-    "missing": 14,
-    "wrong": 6,
-    "matches": 9
+    "missing": 9,
+    "wrong": 7,
+    "matches": 13
    },
    "settings-row": {
     "total": 121,
-    "missing": 41,
+    "missing": 38,
     "wrong": 24,
-    "matches": 56
+    "matches": 59
    },
    "sheet": {
     "total": 3,
@@ -111,15 +111,15 @@
    },
    "tab": {
     "total": 35,
-    "missing": 26,
+    "missing": 22,
     "wrong": 2,
-    "matches": 7
+    "matches": 11
    },
    "toast": {
     "total": 327,
-    "missing": 324,
+    "missing": 323,
     "wrong": 1,
-    "matches": 2
+    "matches": 3
    }
   },
   "by_team": {
@@ -131,9 +131,9 @@
    },
    "cloud-org": {
     "total": 83,
-    "missing": 70,
-    "wrong": 4,
-    "matches": 9
+    "missing": 44,
+    "wrong": 10,
+    "matches": 29
    },
    "git-review": {
     "total": 39,
@@ -154,14 +154,14 @@
     "matches": 5
    },
    "settings": {
-    "total": 178,
+    "total": 181,
     "missing": 46,
     "wrong": 46,
-    "matches": 86
+    "matches": 89
    },
    "shell": {
-    "total": 200,
-    "missing": 178,
+    "total": 197,
+    "missing": 175,
     "wrong": 9,
     "matches": 13
    },
@@ -184,8 +184,8 @@
     "matches": 27
    }
   },
-  "located_items": 229,
-  "items_with_reference_screenshot": 229
+  "located_items": 236,
+  "items_with_reference_screenshot": 236
  },
  "states": [
   {
@@ -1940,226 +1940,272 @@
   {
    "id": "settings-org-github",
    "title": "Settings > Organization > github",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "wrong",
+   "why": "diff 4.5% at t24, copy 83%",
    "team": "cloud-org",
    "reference": {
-    "status": "redirected",
-    "file": "ui-map/ref/settings-org-github.png",
-    "path": "/settings/organization/github",
-    "final_path": "/settings/user/general",
+    "status": "captured",
+    "file": "side-by-side/settings-org-03-computer.png",
+    "path": "/settings/organization/computer",
+    "final_path": "/settings/organization/computer",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_9824d2d4c301ede90692b55174096cd474ad80b2e3184b93b36b2a5c7516911f"
+    "rea_evidence_id": "ev_b0c7f814c51a33d6b3c71aa80fe2c2b0095f8a30f9329ddc4c02e1306d9ffe0f"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no organization settings",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/settings-org-03-computer.png",
+    "error": null,
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.04464748475609756,
+    "rea_evidence_ids": [
+     "ev_dac8b58da233d42f7f358a5d13a1555831312b20ecfb306f4bb9e8605d7b5fb8",
+     "ev_d88d3936e471e57f4316c6c2401f11d071c07d448da530b5d7cd71d2385e06ac"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.833,
+   "copy_missing": [
+    "ports",
+    "configure your organization's shared cloud computer",
+    "build computer",
+    "install software",
+    "install script"
+   ]
   },
   {
    "id": "settings-org-members",
    "title": "Settings > Organization > members",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 1.5% at t24, copy 96%",
    "team": "cloud-org",
    "reference": {
-    "status": "redirected",
-    "file": "ui-map/ref/settings-org-members.png",
+    "status": "captured",
+    "file": "side-by-side/settings-org-04-members.png",
     "path": "/settings/organization/members",
-    "final_path": "/settings/user/general",
+    "final_path": "/settings/organization/members",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_c38c5d18d621a63e0546da553bfcc15ca88275c74157c5e09b0b784f35c872ab"
+    "rea_evidence_id": "ev_69766b4e0f9a819cbc205d98870427c0a654b703727b2186b2eb0cdc240dc3c7"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no organization settings",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/settings-org-04-members.png",
+    "error": null,
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.0151953125,
+    "rea_evidence_ids": [
+     "ev_39ac278a60412efea73580a42f6282e082f6e33d916b8ea05cac6d8f6051b44e",
+     "ev_69b9ecc2cdc75f83a7728da3c6d5e5377fa8bec0aa6cdac24682e2123281fc18"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.962,
+   "copy_missing": [
+    "ports"
+   ]
   },
   {
    "id": "settings-org-preferences",
    "title": "Settings > Organization > preferences",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 1.3% at t24, copy 96%",
    "team": "cloud-org",
    "reference": {
-    "status": "redirected",
-    "file": "ui-map/ref/settings-org-preferences.png",
+    "status": "captured",
+    "file": "side-by-side/settings-org-05-preferences.png",
     "path": "/settings/organization/preferences",
-    "final_path": "/settings/user/general",
+    "final_path": "/settings/organization/preferences",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_c37d172d0be3c520448b9c76f804a51573e01d81700c16138d07d1b348889fa6"
+    "rea_evidence_id": "ev_fed4ed9be70fc07a019092a7a947889f148bcf3441a99b3c9186634162868ca2"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no organization settings",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/settings-org-05-preferences.png",
+    "error": null,
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.012514291158536585,
+    "rea_evidence_ids": [
+     "ev_f9dbee798636ef34ba396f9ec1a5656be71ab83b5157a7fb39db4bf62d84fb67",
+     "ev_be835c99336205a35ad2c79fa365123a1914aab17e3b28751e078e0b46aed153"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.962,
+   "copy_missing": [
+    "ports"
+   ]
   },
   {
    "id": "settings-org-computer",
    "title": "Settings > Organization > computer",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "wrong",
+   "why": "diff 4.5% at t24, copy 83%",
    "team": "cloud-org",
    "reference": {
-    "status": "redirected",
-    "file": "ui-map/ref/settings-org-computer.png",
+    "status": "captured",
+    "file": "side-by-side/settings-org-03-computer.png",
     "path": "/settings/organization/computer",
-    "final_path": "/settings/user/general",
+    "final_path": "/settings/organization/computer",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_db57f3de1917c9a70864868e7c6a4f549ce4bca2a23e3fb4f1e2b279cccdf6d6"
+    "rea_evidence_id": "ev_1ae535d453b67ea2d5ab30116a20933f42526d47d5a1b26a7c360605947d0ead"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no organization settings",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/settings-org-03-computer.png",
+    "error": null,
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.04464748475609756,
+    "rea_evidence_ids": [
+     "ev_c26cd855abbfcaac8470e067d6cd083a188873f7becb7ec6bf7ec57952271c16",
+     "ev_ede6b1bb42ddc4d7ce639b0e23d0be5845f89c0bd814ea53875f87534c83ebe6"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.833,
+   "copy_missing": [
+    "ports",
+    "configure your organization's shared cloud computer",
+    "build computer",
+    "install software",
+    "install script"
+   ]
   },
   {
    "id": "settings-org-environment",
    "title": "Settings > Organization > environment",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 1.4% at t24, copy 92%",
    "team": "cloud-org",
    "reference": {
-    "status": "redirected",
-    "file": "ui-map/ref/settings-org-environment.png",
+    "status": "captured",
+    "file": "side-by-side/settings-org-06-environment.png",
     "path": "/settings/organization/environment",
-    "final_path": "/settings/user/general",
+    "final_path": "/settings/organization/environment",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_663ea8b429d2f72cdfc6469abe137e8a5958454fa6e1e0b7e22daafd338683ee"
+    "rea_evidence_id": "ev_ed50d4f5373245c3789be11f233dd733e5c6de730e03b5b57530f08a744738d5"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no organization settings",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/settings-org-06-environment.png",
+    "error": null,
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.013532774390243902,
+    "rea_evidence_ids": [
+     "ev_9057bdf3f870f2a949fe08e51fc67c1095f816cbedef1ddaf777342d66178c28",
+     "ev_cbb8c2a93f3615c8c13b8e5d0ee953abd345b5808e0c5da47ea06a855bdc6866"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.929,
+   "copy_missing": [
+    "ports",
+    "applied to workspaces you create, and refreshed when those workspaces restart. may be visible to your teammates"
+   ]
   },
   {
    "id": "settings-org-mcp",
    "title": "Settings > Organization > mcp",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 1.1% at t24, copy 93%",
    "team": "cloud-org",
    "reference": {
-    "status": "redirected",
-    "file": "ui-map/ref/settings-org-mcp.png",
+    "status": "captured",
+    "file": "side-by-side/settings-org-07-mcp.png",
     "path": "/settings/organization/mcp",
-    "final_path": "/settings/user/general",
+    "final_path": "/settings/organization/mcp",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_d2849415bf6656daadff17b69833fab7a2f4862550f1e564981e66f94ca3b9f7"
+    "rea_evidence_id": "ev_d1f4f08b5f53f857d09aa84e339c40ef7aece329f556c10026f299239708e31b"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no organization settings",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/settings-org-07-mcp.png",
+    "error": null,
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.010677400914634146,
+    "rea_evidence_ids": [
+     "ev_f247b634f66f7f939081299fcac0870d26680960c327fe6ae9fec9eba829fabe",
+     "ev_4c835a2a100990b20ad7b2e0d4d92cc50b5c7bd1d019ae475539f4d349b03898"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.939,
+   "copy_missing": [
+    "ports",
+    "import from local"
+   ]
   },
   {
    "id": "settings-org-prompts",
    "title": "Settings > Organization > prompts",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 2.0% at t24, copy 92%",
    "team": "cloud-org",
    "reference": {
-    "status": "redirected",
-    "file": "ui-map/ref/settings-org-prompts.png",
+    "status": "captured",
+    "file": "side-by-side/settings-org-08-prompts.png",
     "path": "/settings/organization/prompts",
-    "final_path": "/settings/user/general",
+    "final_path": "/settings/organization/prompts",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_f62dfce5d011ca93bb3cad55bd9a34298a91cc6cd14deae78db11b60cfc2fbb6"
+    "rea_evidence_id": "ev_43513774ba733a631d952347d73afe128ecfd6464e4d367e4ee966717725b511"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no organization settings",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/settings-org-08-prompts.png",
+    "error": null,
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.01991044207317073,
+    "rea_evidence_ids": [
+     "ev_e4e9a1a0269d1294420d04a2003801066f58e111c9cb3ade46c6734560ab0399",
+     "ev_5c0ca9cc7c3d71d1bee5dd891216d047a64fab2f835753adb3f3e62910fe83bc"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.929,
+   "copy_missing": [
+    "ports",
+    "applied to your chats in this organization, alongside shared prompts"
+   ]
   },
   {
    "id": "settings-cloud-setup",
@@ -3759,8 +3805,8 @@
    "id": "route:settings-organization-github",
    "kind": "route",
    "name": "/settings/organization/github",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "wrong",
+   "why": "diff 4.5% at t24, copy 83%",
    "team": "cloud-org",
    "component": "REa",
    "source": {
@@ -3772,17 +3818,17 @@
    "tokens": [],
    "state": "settings-org-github",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/settings-org-github.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-03-computer.png",
+   "openconductor_screenshot": "side-by-side/settings-org-03-computer.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.04464748475609756
   },
   {
    "id": "route:settings-organization-members",
    "kind": "route",
    "name": "/settings/organization/members",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 1.5% at t24, copy 96%",
    "team": "cloud-org",
    "component": "NEa",
    "source": {
@@ -3794,17 +3840,17 @@
    "tokens": [],
    "state": "settings-org-members",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/settings-org-members.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-04-members.png",
+   "openconductor_screenshot": "side-by-side/settings-org-04-members.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.0151953125
   },
   {
    "id": "route:settings-organization-preferences",
    "kind": "route",
    "name": "/settings/organization/preferences",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 1.3% at t24, copy 96%",
    "team": "cloud-org",
    "component": "OEa",
    "source": {
@@ -3816,17 +3862,17 @@
    "tokens": [],
    "state": "settings-org-preferences",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/settings-org-preferences.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-05-preferences.png",
+   "openconductor_screenshot": "side-by-side/settings-org-05-preferences.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.012514291158536585
   },
   {
    "id": "route:settings-organization-computer",
    "kind": "route",
    "name": "/settings/organization/computer",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "wrong",
+   "why": "diff 4.5% at t24, copy 83%",
    "team": "cloud-org",
    "component": "DEa",
    "source": {
@@ -3838,17 +3884,17 @@
    "tokens": [],
    "state": "settings-org-computer",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/settings-org-computer.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-03-computer.png",
+   "openconductor_screenshot": "side-by-side/settings-org-03-computer.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.04464748475609756
   },
   {
    "id": "route:settings-organization-environment",
    "kind": "route",
    "name": "/settings/organization/environment",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 1.4% at t24, copy 92%",
    "team": "cloud-org",
    "component": "PEa",
    "source": {
@@ -3860,17 +3906,17 @@
    "tokens": [],
    "state": "settings-org-environment",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/settings-org-environment.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-06-environment.png",
+   "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.013532774390243902
   },
   {
    "id": "route:settings-organization-mcp",
    "kind": "route",
    "name": "/settings/organization/mcp",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 1.1% at t24, copy 93%",
    "team": "cloud-org",
    "component": "MEa",
    "source": {
@@ -3882,10 +3928,10 @@
    "tokens": [],
    "state": "settings-org-mcp",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/settings-org-mcp.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-07-mcp.png",
+   "openconductor_screenshot": "side-by-side/settings-org-07-mcp.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.010677400914634146
   },
   {
    "id": "route:settings-organization-mcp-servers",
@@ -3913,8 +3959,8 @@
    "id": "route:settings-organization-prompts",
    "kind": "route",
    "name": "/settings/organization/prompts",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 2.0% at t24, copy 92%",
    "team": "cloud-org",
    "component": "LEa",
    "source": {
@@ -3926,10 +3972,10 @@
    "tokens": [],
    "state": "settings-org-prompts",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/settings-org-prompts.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-08-prompts.png",
+   "openconductor_screenshot": "side-by-side/settings-org-08-prompts.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.01991044207317073
   },
   {
    "id": "route:settings-organization-repositories-owner-repo",
@@ -5093,8 +5139,8 @@
    "id": "dialog:github-organizations",
    "kind": "dialog",
    "name": "GitHub organizations",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state settings-org-github is wrong",
    "team": "cloud-org",
    "component": "Nfa",
    "source": {
@@ -5106,12 +5152,12 @@
     "GitHub organizations"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "settings-org-github",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/settings-org-03-computer.png",
+   "openconductor_screenshot": "side-by-side/settings-org-03-computer.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.04464748475609756,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -9953,9 +9999,9 @@
    "id": "tab:installed",
    "kind": "tab",
    "name": "Installed",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
-   "team": "shell",
+   "status": "matches",
+   "why": "on screen in both; state settings-org-mcp matches",
+   "team": "settings",
    "component": "V1a",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -9966,12 +10012,12 @@
     "Installed"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "settings-org-mcp",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/settings-org-07-mcp.png",
+   "openconductor_screenshot": "side-by-side/settings-org-07-mcp.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.010677400914634146,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -9980,7 +10026,7 @@
    "kind": "tab",
    "name": "Recommended",
    "status": "wrong",
-   "why": "OpenConductor shows it in settings-providers, settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing",
+   "why": "OpenConductor shows it in settings-providers, settings-org-mcp, settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing",
    "team": "onboarding-auth",
    "component": "V1a",
    "source": {
@@ -10083,8 +10129,8 @@
    "id": "tab:shared",
    "kind": "tab",
    "name": "Shared",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state settings-org-environment matches",
    "team": "cloud-org",
    "component": "r0a",
    "source": {
@@ -10096,12 +10142,12 @@
     "Shared"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "settings-org-environment",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/settings-org-06-environment.png",
+   "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.013532774390243902,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -10135,8 +10181,8 @@
    "id": "tab:shared~2",
    "kind": "tab",
    "name": "Shared",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state settings-org-environment matches",
    "team": "cloud-org",
    "component": "S0a",
    "source": {
@@ -10148,12 +10194,12 @@
     "Shared"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "settings-org-environment",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/settings-org-06-environment.png",
+   "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.013532774390243902,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -10385,8 +10431,8 @@
    "id": "tab:shared~3",
    "kind": "tab",
    "name": "Shared",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state settings-org-environment matches",
    "team": "cloud-org",
    "component": "KSa",
    "source": {
@@ -10398,12 +10444,12 @@
     "Shared"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "settings-org-environment",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/settings-org-06-environment.png",
+   "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.013532774390243902,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -16226,9 +16272,9 @@
    "id": "toast:installed-u",
    "kind": "toast",
    "name": "Installed ${u}.",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
-   "team": "shell",
+   "status": "matches",
+   "why": "on screen in both; state settings-org-mcp matches",
+   "team": "settings",
    "component": "Izi",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -16239,12 +16285,12 @@
     "Installed ${u}."
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "settings-org-mcp",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/settings-org-07-mcp.png",
+   "openconductor_screenshot": "side-by-side/settings-org-07-mcp.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.010677400914634146,
    "variant": "success",
    "dynamic": false
   },
@@ -21444,9 +21490,9 @@
    "id": "empty-state:no-variables-yet",
    "kind": "empty-state",
    "name": "No variables yet",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
-   "team": "shell",
+   "status": "matches",
+   "why": "on screen in both; state settings-org-environment matches",
+   "team": "settings",
    "component": "Xha",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -21457,12 +21503,12 @@
     "No variables yet"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "settings-org-environment",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/settings-org-06-environment.png",
+   "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.013532774390243902
   },
   {
    "id": "empty-state:no-members-yet",
@@ -24863,8 +24909,8 @@
    "id": "settings-page:organization-preferences",
    "kind": "settings-page",
    "name": "organization-preferences",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 1.3% at t24, copy 96%",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -24874,10 +24920,10 @@
    "tokens": [],
    "state": "settings-org-preferences",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-org-preferences.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-05-preferences.png",
+   "openconductor_screenshot": "side-by-side/settings-org-05-preferences.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.012514291158536585,
    "route": "/settings/organization/preferences",
    "route_guess": "/settings/organization/preferences",
    "rows": 1
@@ -24886,8 +24932,8 @@
    "id": "settings-row:organization-preferences:include-link-to-workspace-in-pr-description",
    "kind": "settings-row",
    "name": "Include link to workspace in PR description",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state settings-org-preferences matches",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -24899,10 +24945,10 @@
    "tokens": [],
    "state": "settings-org-preferences",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-org-preferences.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-05-preferences.png",
+   "openconductor_screenshot": "side-by-side/settings-org-05-preferences.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.012514291158536585,
    "page": "organization-preferences",
    "setting_key": null,
    "row_id": "organization-preferences:pr-workspace-link",
@@ -25742,8 +25788,8 @@
    "id": "settings-page:organization-members",
    "kind": "settings-page",
    "name": "organization-members",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 1.5% at t24, copy 96%",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25753,10 +25799,10 @@
    "tokens": [],
    "state": "settings-org-members",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-org-members.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-04-members.png",
+   "openconductor_screenshot": "side-by-side/settings-org-04-members.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.0151953125,
    "route": "/settings/organization/members",
    "route_guess": "/settings/organization/members",
    "rows": 1
@@ -25779,10 +25825,10 @@
    "tokens": [],
    "state": "settings-org-members",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-org-members.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-04-members.png",
+   "openconductor_screenshot": "side-by-side/settings-org-04-members.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.0151953125,
    "page": "organization-members",
    "setting_key": null,
    "row_id": "organization-members-panel",
@@ -25794,8 +25840,8 @@
    "id": "settings-page:organization-computer",
    "kind": "settings-page",
    "name": "organization-computer",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "wrong",
+   "why": "diff 4.5% at t24, copy 83%",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25805,10 +25851,10 @@
    "tokens": [],
    "state": "settings-org-computer",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-org-computer.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-03-computer.png",
+   "openconductor_screenshot": "side-by-side/settings-org-03-computer.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.04464748475609756,
    "route": "/settings/organization/computer",
    "route_guess": "/settings/organization/computer",
    "rows": 1
@@ -25817,8 +25863,8 @@
    "id": "settings-row:organization-computer:cloud-computer",
    "kind": "settings-row",
    "name": "Cloud computer",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state settings-org-computer is wrong",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25831,10 +25877,10 @@
    "tokens": [],
    "state": "settings-org-computer",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-org-computer.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-03-computer.png",
+   "openconductor_screenshot": "side-by-side/settings-org-03-computer.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.04464748475609756,
    "page": "organization-computer",
    "setting_key": null,
    "row_id": "organization-computer-panel",
@@ -25846,8 +25892,8 @@
    "id": "settings-page:organization-environment",
    "kind": "settings-page",
    "name": "organization-environment",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 1.4% at t24, copy 92%",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25857,10 +25903,10 @@
    "tokens": [],
    "state": "settings-org-environment",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-org-environment.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-06-environment.png",
+   "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.013532774390243902,
    "route": "/settings/organization/environment",
    "route_guess": "/settings/organization/environment",
    "rows": 1
@@ -25869,8 +25915,8 @@
    "id": "settings-row:organization-environment:environment",
    "kind": "settings-row",
    "name": "Environment",
-   "status": "wrong",
-   "why": "not rendered in a reference capture; OpenConductor shows it in toast-save-setting-failed, settings-general, settings-account, not in the host state; host state settings-org-environment is missing",
+   "status": "matches",
+   "why": "on screen in both; state settings-org-environment matches",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25883,10 +25929,10 @@
    "tokens": [],
    "state": "settings-org-environment",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-org-environment.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-06-environment.png",
+   "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.013532774390243902,
    "page": "organization-environment",
    "setting_key": null,
    "row_id": "organization-environment-panel",
@@ -25898,8 +25944,8 @@
    "id": "settings-page:organization-prompts",
    "kind": "settings-page",
    "name": "organization-prompts",
-   "status": "missing",
-   "why": "OpenConductor has no organization settings",
+   "status": "matches",
+   "why": "diff 2.0% at t24, copy 92%",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25909,10 +25955,10 @@
    "tokens": [],
    "state": "settings-org-prompts",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-org-prompts.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-08-prompts.png",
+   "openconductor_screenshot": "side-by-side/settings-org-08-prompts.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.01991044207317073,
    "route": "/settings/organization/prompts",
    "route_guess": "/settings/organization/prompts",
    "rows": 1
@@ -25921,8 +25967,8 @@
    "id": "settings-row:organization-prompts:prompts",
    "kind": "settings-row",
    "name": "Prompts",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state settings-org-prompts matches",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25935,10 +25981,10 @@
    "tokens": [],
    "state": "settings-org-prompts",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-org-prompts.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-08-prompts.png",
+   "openconductor_screenshot": "side-by-side/settings-org-08-prompts.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.01991044207317073,
    "page": "organization-prompts",
    "setting_key": null,
    "row_id": "organization-prompts-panel",
