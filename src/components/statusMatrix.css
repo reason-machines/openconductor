@@ -2,13 +2,13 @@
    the animations are Conductor's workspace-matrix-* rules from renderApp-BYEcFwvt.css. */
 .oc-matrix { width: 16px; height: 16px; flex: none; }
 .oc-matrix[data-dimmed] { opacity: 0.5; }
-.oc-matrix[data-color="destructive"], .oc-matrix [data-color="destructive"] { color: var(--del); }
-.oc-matrix[data-color="merged"], .oc-matrix [data-color="merged"] { color: #a855f7; }
-.oc-matrix[data-color="in-progress"], .oc-matrix [data-color="in-progress"] { color: #d29922; }
-.oc-matrix[data-color="ready"], .oc-matrix [data-color="ready"] { color: var(--add); }
-.oc-matrix[data-color="highlight"], .oc-matrix [data-color="highlight"] { color: #d29922; }
-.oc-matrix[data-color="amber"], .oc-matrix [data-color="amber"] { color: #f59e0b; }
-.oc-matrix[data-color="checks-pending"], .oc-matrix [data-color="checks-pending"] { color: #d29922; }
+.oc-matrix[data-color="destructive"], .oc-matrix [data-color="destructive"] { color: var(--diff-del); }
+.oc-matrix[data-color="merged"], .oc-matrix [data-color="merged"] { color: var(--status-merged); }
+.oc-matrix[data-color="in-progress"], .oc-matrix [data-color="in-progress"] { color: var(--status-in-progress); }
+.oc-matrix[data-color="ready"], .oc-matrix [data-color="ready"] { color: var(--diff-add); }
+.oc-matrix[data-color="highlight"], .oc-matrix [data-color="highlight"] { color: var(--status-in-progress); }
+.oc-matrix[data-color="amber"], .oc-matrix [data-color="amber"] { color: var(--status-running); }
+.oc-matrix[data-color="checks-pending"], .oc-matrix [data-color="checks-pending"] { color: var(--status-in-progress); }
 .oc-matrix[data-color="muted"], .oc-matrix [data-color="muted"] { color: var(--sidebar-muted-foreground, var(--muted)); }
 .oc-matrix[data-color="foreground"], .oc-matrix [data-color="foreground"] { color: var(--text); }
 .oc-matrix-base, .oc-matrix-current { fill: currentColor; }

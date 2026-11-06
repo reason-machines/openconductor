@@ -3,11 +3,11 @@
    composer.css, sizes its Tailwind classes at --spacing .25rem. */
 
 .oc-chat-empty {
-  --oc-c-fg: #2c2826;
-  --oc-c-muted: #fafaf9;
-  --oc-c-muted-fg: #8e8885;
-  --oc-c-border: #eae8e6;
-  --oc-c-accent: #14100f0d;
+  --oc-c-fg: var(--text);
+  --oc-c-muted: var(--surface-muted);
+  --oc-c-muted-fg: var(--muted);
+  --oc-c-border: var(--border);
+  --oc-c-accent: var(--popover-hover);
   /* max-w-4xl mx-auto px-7; the transcript's top padding (CHe 16 + JDo 8) */
   box-sizing: border-box;
   width: 100%;
@@ -17,22 +17,6 @@
   color: var(--oc-c-fg);
   font-size: 14px;
   line-height: 20px;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .oc-chat-empty {
-    --oc-c-fg: #eae8e6;
-    --oc-c-muted: #211e1c;
-    --oc-c-muted-fg: #a5a09c;
-    --oc-c-border: #ffffff1a;
-    --oc-c-accent: #ffffff0d;
-  }
-}
-:root[data-theme="dark"] .oc-chat-empty {
-  --oc-c-fg: #eae8e6;
-  --oc-c-muted: #211e1c;
-  --oc-c-muted-fg: #a5a09c;
-  --oc-c-border: #ffffff1a;
-  --oc-c-accent: #ffffff0d;
 }
 .oc-chat-empty .oc-mono {
   font-family: var(--font-mono);
