@@ -113,13 +113,13 @@ const menu = () =>
     skill: r.hasAttribute('data-skill'),
   }));`);
 const headings = () => run("return Array.from(document.querySelectorAll('.oc-suggest .oc-suggest-heading-label'), (h) => h.textContent);");
-const composerValue = () => run("const t = document.querySelector('.composer textarea'); return t ? t.value : null;");
+const composerValue = () => run("const t = document.querySelector('.composer [contenteditable=true]'); return t ? t.textContent : null;");
 async function clearComposer() {
-  await run(`const t = document.querySelector('.composer textarea');
-    Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(t, '');
-    t.dispatchEvent(new Event('input', { bubbles: true })); return true;`);
+  await run(`const t = document.querySelector('.composer [contenteditable=true]');
+    t.focus(); const selection = getSelection(); selection.selectAllChildren(t);
+    document.execCommand('delete'); return true;`);
 }
-const type = async (text) => wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+const type = async (text) => wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
 const chip = () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.textContent ?? null;");
 async function pickAgent(label) {
   await wd("POST", `/element/${await find("[data-testid='composer-model-button']")}/click`, {});
@@ -153,7 +153,7 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
-  await waitFor("the workspace chat", () => run("return !!document.querySelector('.workspace .composer textarea');"), 60000);
+  await waitFor("the workspace chat", () => run("return !!document.querySelector('.workspace .composer [contenteditable=true]');"), 60000);
   await waitFor("the model picker", () => chip());
 
   // Reason (the default agent), Claude Code, Codex.
@@ -165,7 +165,7 @@ try {
   for (const a of agents) {
     if (a.label) await pickAgent(a.label);
     await clearComposer();
-    await wd("POST", `/element/${await find(".composer textarea")}/click`, {});
+    await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/click`, {});
     await type("/");
     const rows = await waitFor(`${a.id}: the fixture skill in the "/" menu`, () => menu().then((rs) => (rs.some((r) => r.name === FIXTURE) ? rs : null)), 45000);
     assert.ok(rows.length >= 2, `${a.id}: the "/" menu lists the fixture and more: ${rows.length}`);

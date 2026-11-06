@@ -70,7 +70,7 @@ async function openDemo({ forkSetting = false, pr } = {}) {
 }
 
 async function send(page, text) {
-  const composer = page.locator(".chat textarea").first();
+  const composer = page.locator(".chat [contenteditable=true]").first();
   await composer.fill(text);
   await composer.press("Enter");
   await page.locator(".chat-scroll", { hasText: `“${text}” was not sent` }).waitFor();

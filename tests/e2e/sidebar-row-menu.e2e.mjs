@@ -237,7 +237,7 @@ test("row status: a workspace's agent keeps showing on its row after you leave i
   await row(page, "Brisk otter").click();
   assert.equal(await icon("Brisk otter").getAttribute("data-status"), "local");
   // The browser preview's stand-in agent works for 2.5 s per prompt.
-  const input = page.locator(".composer textarea, textarea[placeholder]").first();
+  const input = page.locator(".composer [contenteditable=true], textarea[placeholder]").first();
   await input.fill("look around");
   await input.press("Enter");
   await page.waitForFunction(() => document.querySelector('[aria-label^="Stop the agent"]') !== null);

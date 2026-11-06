@@ -7,7 +7,7 @@ interface Props {
   matches: readonly FileMatch[];
   focused: number;
   hasQuery: boolean;
-  onPick: (path: string) => void;
+  onPick: (file: FileMatch) => void;
   onFocus: (index: number) => void;
 }
 
@@ -27,7 +27,7 @@ export function FileMentionMenu({ matches, focused, hasQuery, onPick, onFocus }:
         return (
           <div key={path} role="option" aria-selected={index === focused} data-list-index={index} className="oc-file-mention-row" data-focused={index === focused || undefined}
             onMouseMove={() => index !== focused && onFocus(index)}
-            onMouseDown={(event) => { event.preventDefault(); onPick(path); }}>
+            onMouseDown={(event) => { event.preventDefault(); onPick(match); }}>
             {match.file.is_directory ? <FolderTypeIcon size={12} /> : <FileTypeIcon path={path} size={12} />}
             <span className="oc-file-mention-name">{highlight(path.slice(slash + 1), slash + 1)}</span>
             {slash >= 0 ? <span className={`oc-file-mention-directory${hasQuery ? " has-query" : ""}`}>{highlight(path.slice(0, slash), 0)}</span> : null}
