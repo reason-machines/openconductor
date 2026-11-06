@@ -1,0 +1,86 @@
+(node:2388) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:2395) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rename: top edge, reference width, no close X, trapped focus
+ok 1 - rename: top edge, reference width, no close X, trapped focus
+  ---
+  duration_ms: 1826.344836
+  type: 'test'
+  ...
+# Subtest: clone: top edge, reference width, no close X, trapped focus
+ok 2 - clone: top edge, reference width, no close X, trapped focus
+  ---
+  duration_ms: 730.808093
+  type: 'test'
+  ...
+# Subtest: create: top edge, reference width, no close X, trapped focus
+ok 3 - create: top edge, reference width, no close X, trapped focus
+  ---
+  duration_ms: 812.75075
+  type: 'test'
+  ...
+# Subtest: archive: centered alert, Cancel focused, outside click is inert
+ok 4 - archive: centered alert, Cancel focused, outside click is inert
+  ---
+  duration_ms: 661.096226
+  type: 'test'
+  ...
+# Subtest: remove: centered alert, Cancel focused, outside click is inert
+ok 5 - remove: centered alert, Cancel focused, outside click is inert
+  ---
+  duration_ms: 863.191773
+  type: 'test'
+  ...
+# Subtest: restore: centered alert, Cancel focused, outside click is inert
+ok 6 - restore: centered alert, Cancel focused, outside click is inert
+  ---
+  duration_ms: 677.667188
+  type: 'test'
+  ...
+# Subtest: archive: primary shortcut confirms exactly once
+ok 7 - archive: primary shortcut confirms exactly once
+  ---
+  duration_ms: 878.997752
+  type: 'test'
+  ...
+# Subtest: archive: configured primary shortcut replaces Command+Enter
+ok 8 - archive: configured primary shortcut replaces Command+Enter
+  ---
+  duration_ms: 1057.558656
+  type: 'test'
+  ...
+# Subtest: remove: no primary shortcut and plain Enter cancels rather than deletes
+ok 9 - remove: no primary shortcut and plain Enter cancels rather than deletes
+  ---
+  duration_ms: 816.859033
+  type: 'test'
+  ...
+# Subtest: restore: shortcut dispatches new-branch restore and disables buttons
+ok 10 - restore: shortcut dispatches new-branch restore and disables buttons
+  ---
+  duration_ms: 750.264377
+  type: 'test'
+  ...
+# Subtest: rename: remembers branch choice, Enter submits, primary shortcut accepts unchanged
+ok 11 - rename: remembers branch choice, Enter submits, primary shortcut accepts unchanged
+  ---
+  duration_ms: 852.882279
+  type: 'test'
+  ...
+# Subtest: dialogs remain within a short viewport and restore trigger focus
+ok 12 - dialogs remain within a short viewport and restore trigger focus
+  ---
+  duration_ms: 828.009775
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11517.249635

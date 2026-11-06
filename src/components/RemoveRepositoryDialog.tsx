@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Repo } from "../state/types";
-import { Modal } from "./Dialogs";
+import { ConfirmationDialog } from "./ConfirmationDialog";
 import { removeRepository } from "../settings/repoMisc";
 
 interface Props {
@@ -32,19 +32,9 @@ export function RemoveRepositoryDialog({ repo, onClose, onRemoved, onError }: Pr
     );
   };
   return (
-    <Modal title={`Remove ${repo.name}?`} onClose={() => !pending && onClose()} motion="alert">
-      <div className="modal-body">
-        <p>All your workspaces will be permanently deleted.</p>
-        <p className="settings-misc-break">The source directory {repo.path} will not be modified.</p>
-        <div className="modal-actions">
-          <button className="btn" disabled={pending} onClick={onClose}>
-            Cancel
-          </button>
-          <button className="btn btn-danger" autoFocus disabled={pending} onClick={remove}>
-            {pending ? "Removing..." : "Remove"}
-          </button>
-        </div>
-      </div>
-    </Modal>
+    <ConfirmationDialog title={`Remove ${repo.name}?`} confirmLabel="Remove" pendingLabel="Removing..." pending={pending} destructive primaryShortcut={false} onClose={onClose} onConfirm={remove}>
+      <p>All your workspaces will be permanently deleted.</p>
+      <p className="settings-misc-break">The source directory {repo.path} will not be modified.</p>
+    </ConfirmationDialog>
   );
 }

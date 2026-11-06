@@ -4,44 +4,67 @@ The parity work queue for the UI. Every screen, route, panel, dialog, menu, popo
 
 Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8YjU.js` (`b5b01f33fbbe`). OpenConductor at `?`, debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane), 1280x820, dark theme.
 
+## Scope and evidence
+
+The in-scope denominator excludes triage, routines, cloud-org and other cloud-only routes. Cloud UI is deferred. Unobservable toast literals are not required. All raw rows, statuses and reasons remain in JSON as `raw_status` / `raw_why` and `raw_summary`. Already merged cloud code is retained. Reason local-to-cloud runtime remains in scope; Claude Code and Codex stay local.
+
+This rescore reuses retained captures. It is not a new capture run or a native final-review pass. `unverified` means no valid reference observation proves a gap; it is neither missing nor matching. Threshold matches are not Track D sign-off.
+
+[Interactive ledger](ui-program/ledger.html) includes separate verdicts for every main screen and a searchable queue.
+
 ## Summary
 
-| | Total | Missing | Wrong | Matches |
-|---|---:|---:|---:|---:|
-| **All** | **983** | **710** | **69** | **204** |
-| States (captured screens) | 85 | 6 | 15 | 64 |
-| Inventory items | 898 | 704 | 54 | 140 |
-| &nbsp;&nbsp;dialog | 64 | 52 | 5 | 7 |
-| &nbsp;&nbsp;empty-state | 52 | 40 | 0 | 12 |
-| &nbsp;&nbsp;menu | 39 | 36 | 0 | 3 |
-| &nbsp;&nbsp;menu-item | 89 | 83 | 0 | 6 |
-| &nbsp;&nbsp;popover | 45 | 44 | 0 | 1 |
-| &nbsp;&nbsp;route | 65 | 32 | 10 | 23 |
-| &nbsp;&nbsp;select | 29 | 22 | 5 | 2 |
-| &nbsp;&nbsp;settings-page | 29 | 9 | 7 | 13 |
-| &nbsp;&nbsp;settings-row | 121 | 38 | 24 | 59 |
-| &nbsp;&nbsp;sheet | 3 | 3 | 0 | 0 |
-| &nbsp;&nbsp;tab | 35 | 22 | 2 | 11 |
-| &nbsp;&nbsp;toast | 327 | 323 | 1 | 3 |
+| | Total | Missing | Wrong | Matches | Unverified |
+|---|---:|---:|---:|---:|---:|
+| In scope | 341 | 3 | 48 | 169 | 121 |
+| States | 71 | 0 | 10 | 56 | 5 |
+| Inventory items | 268 | 3 | 38 | 113 | 114 |
+| System requirements | 2 | 0 | 0 | 0 | 2 |
+| &nbsp;&nbsp;dialog | 26 | 0 | 3 | 6 | 17 |
+| &nbsp;&nbsp;empty-state | 47 | 0 | 0 | 11 | 36 |
+| &nbsp;&nbsp;menu | 5 | 0 | 0 | 3 | 2 |
+| &nbsp;&nbsp;menu-item | 14 | 0 | 0 | 6 | 8 |
+| &nbsp;&nbsp;popover | 5 | 0 | 0 | 1 | 4 |
+| &nbsp;&nbsp;route | 33 | 0 | 6 | 15 | 12 |
+| &nbsp;&nbsp;select | 10 | 0 | 5 | 2 | 3 |
+| &nbsp;&nbsp;settings-page | 17 | 0 | 4 | 8 | 5 |
+| &nbsp;&nbsp;settings-row | 96 | 3 | 20 | 51 | 22 |
+| &nbsp;&nbsp;tab | 13 | 0 | 0 | 8 | 5 |
+| &nbsp;&nbsp;toast | 2 | 0 | 0 | 2 | 0 |
+
+Raw retained rows: 983. Excluded rows: 644. The in-scope queue includes two additional system requirements: toast component, placement, timing and look, and the Experimental default-off gate. Both remain unverified.
+
+- 136: Cloud UI not in scope. Existing implementation and raw evidence retained.
+- 268: Unassigned extracted inventory excluded from this main-screen denominator.
+- 240: No dedicated toast observation. Not a missing parity requirement; raw copy assessment retained.
+
+## Main-screen verdicts
+
+- **Home**: harness-only in retained evidence (2/2 state matches); final review **unverified**. Current native side-by-side and final review not recorded.
+- **Sidebar**: partial in retained evidence (2/2 state matches); final review **unverified**. Expanded, collapsed and populated sidebar details need current native review.
+- **Workspace / chat**: partial in retained evidence (4/5 state matches); final review **unverified**. Transcript, permission state and workspace header need current native review.
+- **Composer**: partial in retained evidence (5/5 state matches); final review **unverified**. These states cover create and picker controls, not the full workspace composer.
+- **Diff / changes**: partial in retained evidence (2/4 state matches); final review **unverified**. All files, Checks and current native diff review remain separate requirements.
+- **Settings pages**: partial in retained evidence (12/19 state matches); final review **unverified**. Only local settings are in scope. Per-page captures do not prove native final parity.
+- **Open in**: unverified in retained evidence (0/0 state matches); final review **unverified**. No dedicated paired state in this map. Static evidence is not a visual match.
+- **Command palette**: harness-only in retained evidence (7/7 state matches); final review **unverified**. Threshold matches are retained evidence, not a current native final-review verdict.
+- **Dialogs**: partial in retained evidence (8/10 state matches); final review **unverified**. Captured dialogs are a subset. Onboarding and unlocated dialogs remain separately visible.
 
 ### By owning team
 
 Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign there and regenerate). Counts include states and items.
 
-| Team | Total | Missing | Wrong | Matches |
-|---|---:|---:|---:|---:|
-| chat | 65 | 48 | 1 | 16 |
-| cloud-org | 83 | 44 | 10 | 29 |
-| git-review | 39 | 28 | 1 | 10 |
-| onboarding-auth | 23 | 15 | 7 | 1 |
-| routines | 40 | 35 | 0 | 5 |
-| settings | 181 | 46 | 46 | 89 |
-| shell | 198 | 175 | 3 | 20 |
-| terminal-scripts | 25 | 18 | 0 | 7 |
-| triage | 268 | 268 | 0 | 0 |
-| workspaces | 61 | 33 | 1 | 27 |
+| Team | Total | Missing | Wrong | Matches | Unverified |
+|---|---:|---:|---:|---:|---:|
+| chat | 21 | 0 | 1 | 16 | 4 |
+| git-review | 18 | 0 | 1 | 10 | 7 |
+| onboarding-auth | 10 | 1 | 4 | 1 | 4 |
+| settings | 167 | 2 | 39 | 88 | 38 |
+| shell | 84 | 0 | 3 | 20 | 61 |
+| terminal-scripts | 11 | 0 | 0 | 7 | 4 |
+| workspaces | 30 | 0 | 0 | 27 | 3 |
 
-237 of 898 items were located in a captured state; 237 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
+183 of 268 in-scope items were located in a captured state; 183 have a reference screenshot. Unobserved in-scope items are unverified, not invented missing behavior.
 
 ## How it was measured
 
@@ -51,8 +74,10 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 - **Diff**: `tools/ui-map/compare.mjs` runs REA `compare-web-screenshots` at channel thresholds 0 and 24 for every state with both captures; `diff/<state>.jpg` is reference | OpenConductor | changed pixels (threshold 24).
 - **Status** (per state, and per item through the state it appears in):
   - **matches**: the reference rendered the state, OpenConductor reached it, the item's copy is on screen in both, at least 90% of the reference's UI copy is on OpenConductor's screen, and the state differs by at most 5% of pixels at channel threshold 24.
-  - **wrong**: OpenConductor shows it (its copy is in a capture of the running app) but it is not shown to match: the diff or copy is over the bar, or there is no valid reference render to prove a match.
-  - **missing**: OpenConductor has no way to reach the state, shows a different screen there (under 25% of the reference's UI copy), or the item's copy is in no capture of the running app.
+  - **wrong**: the valid reference observation and OpenConductor capture differ beyond the existing threshold.
+  - **missing**: a valid reference observation exists, but OpenConductor did not show its equivalent.
+  - **unverified**: no valid reference observation proves the raw gap. No match is inferred.
+- Every row below includes its scope. Deferred and not-required rows are retained evidence, excluded from the summary denominator.
 - UI copy means rendered strings that are literals in Conductor's bundle (`ui_strings` in inventory.json), so invented seed data (repo, workspace and user names) never counts. The OpenConductor brand name is normalised to Conductor before matching.
 - **Side-by-side records** ([ui-map/side-by-side.json](ui-map/side-by-side.json)): a builder who fixes a state captures both apps in that state with REA `capture-browser-scenario` (`tools/side-by-side/*.mjs`, Conductor's extracted frontend in the `tools/screens` harness beside OpenConductor's built frontend in Chromium with Tauri IPC mocked) and scores the pair with REA `compare-web-screenshots`, at the map's viewport. The record stands in for both captures of that state, under the same status rules, until the OpenConductor lane captures the state again; its rows link the committed side-by-side image and name the lane in `openconductor.note`.
 
@@ -60,1051 +85,1051 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 
 ## States
 
-| State | Status | Team | Why | Reference | OpenConductor | Diff | t24 |
+| State | Status / scope | Team | Why | Reference | OpenConductor | Diff | t24 |
 |---|---|---|---|---|---|---|---:|
-| Onboarding, signed out<br>`onboarding-signed-out` | wrong | onboarding-auth | diff 7.8% at t24, copy 100% | [png](side-by-side/onboarding-01-signed-out.png) | [png](side-by-side/onboarding-01-signed-out.png) |  | 7.8% |
-| First-run onboarding<br>`first-run-onboarding` | wrong | onboarding-auth | diff 7.7% at t24, copy 100% | [png](side-by-side/onboarding-03-first-run-route.png) | [png](side-by-side/onboarding-03-first-run-route.png) |  | 7.7% |
-| Home, no projects<br>`home-empty` | matches | workspaces | diff 3.9% at t24, copy 100% | [png](ui-map/ref/home-empty.png) | [png](ui-map/oc/home-empty.png) | [jpg](ui-map/diff/home-empty.jpg) | 3.9% |
-| Home with projects<br>`home` | matches | workspaces | diff 4.2% at t24, copy 100% | [png](ui-map/ref/home.png) | [png](ui-map/oc/home.png) | [jpg](ui-map/diff/home.jpg) | 4.2% |
-| All workspaces list<br>`all-workspaces` | matches | workspaces | diff 3.9% at t24, copy 92% | [png](ui-map/ref/all-workspaces.png) | [png](ui-map/oc/all-workspaces.png) | [jpg](ui-map/diff/all-workspaces.jpg) | 3.9% |
-| Create workspace composer<br>`create` | matches | chat | diff 0.8% at t24, copy 90% | [png](side-by-side/create-composer-01-dialog.png) | [png](side-by-side/create-composer-01-dialog.png) |  | 0.8% |
-| Create: repo picker open<br>`create-repo-picker` | matches | workspaces | diff 1.0% at t24, copy 90% | [png](side-by-side/create-composer-02-repo-picker.png) | [png](side-by-side/create-composer-02-repo-picker.png) |  | 1.0% |
-| Create from: PRs<br>`create-from-prs` | matches | workspaces | diff 1.3% at t24, copy 93% | [png](side-by-side/git-review-04-create-from-prs.png) | [png](side-by-side/git-review-04-create-from-prs.png) |  | 1.3% |
-| Create from: Branches<br>`create-from-branches` | matches | git-review | diff 1.1% at t24, copy 92% | [png](side-by-side/git-review-05-create-from-branches.png) | [png](side-by-side/git-review-05-create-from-branches.png) |  | 1.1% |
-| Workspace: chat transcript<br>`workspace-chat` | matches | chat | diff 2.3% at t24, copy 100% | [png](side-by-side/chat-tabs-workspace-chat.png) | [png](side-by-side/chat-tabs-workspace-chat.png) |  | 2.3% |
-| Workspace: new empty chat<br>`workspace-new-chat` | matches | chat | diff 3.3% at t24, copy 92% | [png](ui-map/ref/workspace-new-chat.png) | [png](ui-map/oc/workspace-new-chat.png) | [jpg](ui-map/diff/workspace-new-chat.jpg) | 3.3% |
-| Chat: tool calls expanded<br>`workspace-tool-calls` | matches | chat | diff 2.3% at t24, copy 100% | [png](side-by-side/chat-tabs-workspace-tool-calls.png) | [png](side-by-side/chat-tabs-workspace-tool-calls.png) |  | 2.3% |
-| Diff: file, unified<br>`diff-unified` | matches | git-review | diff 5.0% at t24, copy 100% | [png](side-by-side/git-review-01-diff-unified.png) | [png](side-by-side/git-review-01-diff-unified.png) |  | 5.0% |
-| Diff: file, split<br>`diff-split` | wrong | git-review | diff 5.2% at t24, copy 100% | [png](side-by-side/git-review-02-diff-split.png) | [png](side-by-side/git-review-02-diff-split.png) |  | 5.2% |
-| Diff: entire file<br>`diff-entire-file` | matches | git-review | diff 4.7% at t24, copy 100% | [png](side-by-side/git-review-03-diff-entire-file.png) | [png](side-by-side/git-review-03-diff-entire-file.png) |  | 4.7% |
-| Terminal panel: Setup, no setup script<br>`panel-setup-add` | matches | terminal-scripts | diff 3.1% at t24, copy 93% | [png](side-by-side/terminal-scripts-01-setup-add.png) | [png](side-by-side/terminal-scripts-01-setup-add.png) |  | 3.1% |
-| Terminal panel: Setup, before setup runs<br>`panel-setup-idle` | matches | terminal-scripts | diff 2.9% at t24, copy 92% | [png](side-by-side/terminal-scripts-02-setup-idle.png) | [png](side-by-side/terminal-scripts-02-setup-idle.png) |  | 2.9% |
-| Terminal panel: Run, no run script<br>`panel-run-add` | matches | terminal-scripts | diff 2.9% at t24, copy 92% | [png](side-by-side/terminal-scripts-03-run-add.png) | [png](side-by-side/terminal-scripts-03-run-add.png) |  | 2.9% |
-| Terminal panel: Run, before the run script runs<br>`panel-run-idle` | matches | terminal-scripts | diff 2.8% at t24, copy 90% | [png](side-by-side/terminal-scripts-04-run-idle.png) | [png](side-by-side/terminal-scripts-04-run-idle.png) |  | 2.8% |
-| Toast: Xcode license is not accepted<br>`toast-xcode-license` | matches | shell | diff 3.8% at t24, copy 93% | [png](side-by-side/terminal-scripts-05-xcode-license.png) | [png](side-by-side/terminal-scripts-05-xcode-license.png) |  | 3.8% |
-| Toast: Failed to save setting (Scripts, read-only settings file)<br>`toast-save-setting-failed` | matches | settings | diff 1.6% at t24, copy 100% | [png](side-by-side/terminal-scripts-06-save-setting-failed.png) | [png](side-by-side/terminal-scripts-06-save-setting-failed.png) |  | 1.6% |
-| Workspace needing permission<br>`needs-permission` | wrong | chat | diff 3.9% at t24, copy 88% | [png](ui-map/ref/needs-permission.png) | [png](ui-map/oc/needs-permission.png) | [jpg](ui-map/diff/needs-permission.jpg) | 3.9% |
-| Dashboard<br>`route-dashboard` | missing | shell | OpenConductor has no route or view for /dashboard | [png](ui-map/ref/route-dashboard.png) | no-equivalent |  |  |
-| Routines<br>`route-routines` | matches | routines | diff 1.7% at t24, copy 100% | [png](side-by-side/routines-01-list.png) | [png](side-by-side/routines-01-list.png) |  | 1.7% |
-| New routine<br>`route-routines-new` | matches | routines | diff 0.9% at t24, copy 100% | [png](side-by-side/routines-02-new.png) | [png](side-by-side/routines-02-new.png) |  | 0.9% |
-| Team<br>`route-team` | missing | cloud-org | OpenConductor has no route or view for /team | [png](ui-map/ref/route-team.png) | no-equivalent |  |  |
-| Diagnostics<br>`route-diagnostics` | matches | shell | diff 0.6% at t24, copy 100% | [png](ui-map/ref/route-diagnostics.png) | [png](ui-map/oc/route-diagnostics.png) | [jpg](ui-map/diff/route-diagnostics.jpg) | 0.6% |
-| New member onboarding<br>`route-new-member-onboarding` | missing | onboarding-auth | OpenConductor has no route or view for /new-member-onboarding | [png](ui-map/ref/route-new-member-onboarding.png) | no-equivalent |  |  |
-| Cloud collaboration onboarding<br>`route-cloud-collab-onboarding` | missing | onboarding-auth | OpenConductor has no route or view for /cloud-collab-onboarding | [png](ui-map/ref/route-cloud-collab-onboarding.png) | no-equivalent |  |  |
-| Login<br>`login` | matches | onboarding-auth | diff 1.1% at t24, copy 100% | [png](side-by-side/onboarding-02-login.png) | [png](side-by-side/onboarding-02-login.png) |  | 1.1% |
-| Settings > General<br>`settings-general` | matches | settings | diff 3.1% at t24, copy 95% | [png](ui-map/ref/settings-general.png) | [png](ui-map/oc/settings-general.png) | [jpg](ui-map/diff/settings-general.jpg) | 3.1% |
-| Settings > Account<br>`settings-account` | wrong | settings | diff 4.9% at t24, copy 83% | [png](ui-map/ref/settings-account.png) | [png](ui-map/oc/settings-account.png) | [jpg](ui-map/diff/settings-account.jpg) | 4.9% |
-| Settings > Default models<br>`settings-models` | matches | settings | diff 3.3% at t24, copy 93% | [png](ui-map/ref/settings-models.png) | [png](ui-map/oc/settings-models.png) | [jpg](ui-map/diff/settings-models.jpg) | 3.3% |
-| Settings > Agents<br>`settings-providers` | wrong | settings | diff 7.6% at t24, copy 80% | [png](ui-map/ref/settings-providers.png) | [png](ui-map/oc/settings-providers.png) | [jpg](ui-map/diff/settings-providers.jpg) | 7.6% |
-| Settings > Environment<br>`settings-environment` | matches | settings | diff 2.9% at t24, copy 100% | [png](ui-map/ref/settings-environment.png) | [png](ui-map/oc/settings-environment.png) | [jpg](ui-map/diff/settings-environment.jpg) | 2.9% |
-| Settings > Git<br>`settings-git` | matches | settings | diff 3.4% at t24, copy 100% | [png](ui-map/ref/settings-git.png) | [png](ui-map/oc/settings-git.png) | [jpg](ui-map/diff/settings-git.jpg) | 3.4% |
-| Settings > ports<br>`settings-ports` | missing | settings | OpenConductor's settings have no ports page | [png](ui-map/ref/settings-ports.png) | no-equivalent |  |  |
-| Settings > Appearance<br>`settings-appearance` | wrong | settings | diff 5.8% at t24, copy 96% | [png](ui-map/ref/settings-appearance.png) | [png](ui-map/oc/settings-appearance.png) | [jpg](ui-map/diff/settings-appearance.jpg) | 5.8% |
-| Settings > Keyboard shortcuts<br>`settings-key-bindings` | wrong | settings | no valid reference render (redirected to /settings/user/general), diff 5.0% at t24 | [png](ui-map/ref/settings-key-bindings.png) | [png](ui-map/oc/settings-key-bindings.png) | [jpg](ui-map/diff/settings-key-bindings.jpg) | 5.0% |
-| Settings > Experimental<br>`settings-experimental` | matches | settings | diff 3.2% at t24, copy 100% | [png](ui-map/ref/settings-experimental.png) | [png](ui-map/oc/settings-experimental.png) | [jpg](ui-map/diff/settings-experimental.jpg) | 3.2% |
-| Settings > Advanced<br>`settings-advanced` | wrong | settings | diff 6.3% at t24, copy 95% | [png](ui-map/ref/settings-advanced.png) | [png](ui-map/oc/settings-advanced.png) | [jpg](ui-map/diff/settings-advanced.jpg) | 6.3% |
-| Settings > Big terminal<br>`settings-terminal` | wrong | settings | no valid reference render (redirected to /settings/user/terminal), diff 5.0% at t24 | [png](ui-map/ref/settings-terminal.png) | [png](ui-map/oc/settings-terminal.png) | [jpg](ui-map/diff/settings-terminal.jpg) | 5.0% |
-| Settings > internal<br>`settings-internal` | missing | settings | OpenConductor's settings have no internal page | [png](ui-map/ref/settings-internal.png) | no-equivalent |  |  |
-| Settings > tide-web > Environment<br>`settings-repo-environment` | matches | settings | diff 2.5% at t24, copy 100% | [png](ui-map/ref/settings-repo-environment.png) | [png](ui-map/oc/settings-repo-environment.png) | [jpg](ui-map/diff/settings-repo-environment.jpg) | 2.5% |
-| Settings > tide-web > Git<br>`settings-repo-git` | matches | settings | diff 3.3% at t24, copy 100% | [png](ui-map/ref/settings-repo-git.png) | [png](ui-map/oc/settings-repo-git.png) | [jpg](ui-map/diff/settings-repo-git.jpg) | 3.3% |
-| Settings > tide-web > Scripts<br>`settings-repo-scripts` | matches | settings | diff 2.3% at t24, copy 100% | [png](ui-map/ref/settings-repo-scripts.png) | [png](ui-map/oc/settings-repo-scripts.png) | [jpg](ui-map/diff/settings-repo-scripts.jpg) | 2.3% |
-| Settings > tide-web > Actions<br>`settings-repo-actions` | matches | settings | diff 4.2% at t24, copy 100% | [png](ui-map/ref/settings-repo-actions.png) | [png](ui-map/oc/settings-repo-actions.png) | [jpg](ui-map/diff/settings-repo-actions.jpg) | 4.2% |
-| Settings > tide-web > Misc<br>`settings-repo-misc` | matches | settings | diff 4.4% at t24, copy 100% | [png](ui-map/ref/settings-repo-misc.png) | [png](ui-map/oc/settings-repo-misc.png) | [jpg](ui-map/diff/settings-repo-misc.jpg) | 4.4% |
-| Settings > tide-web > Misc, scrolled to Remove repository<br>`settings-repo-misc-lower` | matches | settings | diff 4.5% at t24, copy 100% | [png](ui-map/ref/settings-repo-misc-lower.png) | [png](ui-map/oc/settings-repo-misc-lower.png) | [jpg](ui-map/diff/settings-repo-misc-lower.jpg) | 4.5% |
-| Settings > Organization > github<br>`settings-org-github` | wrong | cloud-org | diff 4.5% at t24, copy 83% | [png](side-by-side/settings-org-03-computer.png) | [png](side-by-side/settings-org-03-computer.png) |  | 4.5% |
-| Settings > Organization > members<br>`settings-org-members` | matches | cloud-org | diff 1.5% at t24, copy 96% | [png](side-by-side/settings-org-04-members.png) | [png](side-by-side/settings-org-04-members.png) |  | 1.5% |
-| Settings > Organization > preferences<br>`settings-org-preferences` | matches | cloud-org | diff 1.3% at t24, copy 96% | [png](side-by-side/settings-org-05-preferences.png) | [png](side-by-side/settings-org-05-preferences.png) |  | 1.3% |
-| Settings > Organization > computer<br>`settings-org-computer` | wrong | cloud-org | diff 4.5% at t24, copy 83% | [png](side-by-side/settings-org-03-computer.png) | [png](side-by-side/settings-org-03-computer.png) |  | 4.5% |
-| Settings > Organization > environment<br>`settings-org-environment` | matches | cloud-org | diff 1.4% at t24, copy 92% | [png](side-by-side/settings-org-06-environment.png) | [png](side-by-side/settings-org-06-environment.png) |  | 1.4% |
-| Settings > Organization > mcp<br>`settings-org-mcp` | matches | cloud-org | diff 1.1% at t24, copy 93% | [png](side-by-side/settings-org-07-mcp.png) | [png](side-by-side/settings-org-07-mcp.png) |  | 1.1% |
-| Settings > Organization > prompts<br>`settings-org-prompts` | matches | cloud-org | diff 2.0% at t24, copy 92% | [png](side-by-side/settings-org-08-prompts.png) | [png](side-by-side/settings-org-08-prompts.png) |  | 2.0% |
-| Settings > Cloud setup<br>`settings-cloud-setup` | matches | cloud-org | diff 4.0% at t24, copy 90% | [png](side-by-side/settings-org-01-cloud-setup.png) | [png](side-by-side/settings-org-01-cloud-setup.png) |  | 4.0% |
-| Settings search<br>`settings-search` | matches | settings | diff 3.2% at t24, copy 96% | [png](ui-map/ref/settings-search.png) | [png](ui-map/oc/settings-search.png) | [jpg](ui-map/diff/settings-search.jpg) | 3.2% |
-| Command palette<br>`palette-all` | matches | shell | diff 1.0% at t24, copy 90% | [png](side-by-side/shell-palette-01-all.png) | [png](side-by-side/shell-palette-01-all.png) |  | 1.0% |
-| Command palette: Workspaces tab<br>`palette-workspaces` | matches | workspaces | diff 1.7% at t24, copy 100% | [png](side-by-side/workspaces-palette-workspaces.png) | [png](side-by-side/workspaces-palette-workspaces.png) |  | 1.7% |
-| Command palette: Workspaces tab, project filter open<br>`palette-workspaces-projects` | matches | workspaces | diff 1.9% at t24, copy 100% | [png](side-by-side/workspaces-palette-workspaces-projects.png) | [png](side-by-side/workspaces-palette-workspaces-projects.png) |  | 1.9% |
-| Command palette: Workspaces tab, archive filter open<br>`palette-workspaces-archive-filter` | matches | workspaces | diff 1.8% at t24, copy 100% | [png](side-by-side/workspaces-palette-workspaces-archive-filter.png) | [png](side-by-side/workspaces-palette-workspaces-archive-filter.png) |  | 1.8% |
-| Command palette: Workspaces tab, no matching workspaces<br>`palette-workspaces-empty` | matches | workspaces | diff 1.1% at t24, copy 100% | [png](side-by-side/workspaces-palette-workspaces-empty.png) | [png](side-by-side/workspaces-palette-workspaces-empty.png) |  | 1.1% |
-| Command palette: search<br>`palette-search` | matches | shell | diff 1.0% at t24, copy 92% | [png](side-by-side/shell-palette-02-search.png) | [png](side-by-side/shell-palette-02-search.png) |  | 1.0% |
-| Command palette: no results<br>`palette-no-results` | matches | shell | diff 1.0% at t24, copy 92% | [png](side-by-side/shell-palette-03-no-results.png) | [png](side-by-side/shell-palette-03-no-results.png) |  | 1.0% |
-| Clone GitHub repo dialog<br>`dialog-clone-github` | matches | git-review | diff 4.9% at t24, copy 95% | [png](ui-map/ref/dialog-clone-github.png) | [png](ui-map/oc/dialog-clone-github.png) | [jpg](ui-map/diff/dialog-clone-github.jpg) | 4.9% |
-| Create project dialog<br>`dialog-create-project` | matches | workspaces | diff 4.4% at t24, copy 90% | [png](side-by-side/workspaces-dialog-create-project.png) | [png](side-by-side/workspaces-dialog-create-project.png) |  | 4.4% |
-| Rename workspace dialog<br>`dialog-rename-workspace` | matches | workspaces | diff 4.6% at t24, copy 94% | [png](ui-map/ref/dialog-rename-workspace.png) | [png](ui-map/oc/dialog-rename-workspace.png) | [jpg](ui-map/diff/dialog-rename-workspace.jpg) | 4.6% |
-| Keyboard shortcuts dialog<br>`dialog-keyboard-shortcuts` | matches | shell | diff 4.2% at t24, copy 100% | [png](ui-map/ref/dialog-keyboard-shortcuts.png) | [png](ui-map/oc/dialog-keyboard-shortcuts.png) | [jpg](ui-map/diff/dialog-keyboard-shortcuts.jpg) | 4.2% |
-| Account / computer menu<br>`menu-account` | matches | shell | diff 3.9% at t24, copy 100% | [png](side-by-side/shell-account-01-menu.png) | [png](side-by-side/shell-account-01-menu.png) |  | 3.9% |
-| Workspace context menu<br>`menu-workspace-context` | matches | workspaces | diff 4.6% at t24, copy 100% | [png](side-by-side/workspaces-menu-workspace-context.png) | [png](side-by-side/workspaces-menu-workspace-context.png) |  | 4.6% |
-| Workspace context menu > Set status<br>`menu-workspace-status` | matches | workspaces | diff 4.9% at t24, copy 100% | [png](side-by-side/workspaces-menu-workspace-status.png) | [png](side-by-side/workspaces-menu-workspace-status.png) |  | 4.9% |
-| Composer model picker<br>`menu-model-picker` | matches | chat | diff 2.8% at t24, copy 97% | [png](side-by-side/chat-tabs-menu-model-picker.png) | [png](side-by-side/chat-tabs-menu-model-picker.png) |  | 2.8% |
-| Sidebar repo actions menu<br>`menu-repo-actions` | wrong | workspaces | no valid reference render (step-failed), diff 4.3% at t24 | [png](ui-map/ref/menu-repo-actions.png) | [png](ui-map/oc/menu-repo-actions.png) | [jpg](ui-map/diff/menu-repo-actions.jpg) | 4.3% |
-| Help menu<br>`menu-help` | wrong | shell | diff 5.8% at t24, copy 94% | [png](side-by-side/dialogs-menus-01-help-menu.png) | [png](side-by-side/dialogs-menus-01-help-menu.png) |  | 5.8% |
-| Help > Submit a prompt dialog<br>`dialog-submit-prompt` | matches | shell | diff 3.0% at t24, copy 100% | [png](ui-map/ref/dialog-submit-prompt.png) | [png](ui-map/oc/dialog-submit-prompt.png) | [jpg](ui-map/diff/dialog-submit-prompt.jpg) | 3.0% |
-| Diagnostics after a run<br>`diagnostics-run` | matches | shell | diff 1.9% at t24, copy 100% | [png](side-by-side/dialogs-menus-04-diagnostics-run.png) | [png](side-by-side/dialogs-menus-04-diagnostics-run.png) |  | 1.9% |
-| Toast: copied link<br>`toast-copied-link` | matches | shell | diff 4.6% at t24, copy 93% | [png](ui-map/ref/toast-copied-link.png) | [png](ui-map/oc/toast-copied-link.png) | [jpg](ui-map/diff/toast-copied-link.jpg) | 4.6% |
-| Chat tab context menu<br>`menu-chat-tab` | matches | chat | diff 3.2% at t24, copy 100% | [png](side-by-side/chat-tabs-menu-chat-tab.png) | [png](side-by-side/chat-tabs-menu-chat-tab.png) |  | 3.2% |
-| Changes file context menu<br>`menu-changes-file` | wrong | shell | diff 8.0% at t24, copy 84% | [png](side-by-side/shell-menus-02-changes-file.png) | [png](side-by-side/shell-menus-02-changes-file.png) |  | 8.0% |
-| Sidebar after archiving a workspace<br>`sidebar-after-archive` | matches | workspaces | diff 4.7% at t24, copy 93% | [png](ui-map/ref/sidebar-after-archive.png) | [png](ui-map/oc/sidebar-after-archive.png) | [jpg](ui-map/diff/sidebar-after-archive.jpg) | 4.7% |
-| Rename chat dialog<br>`dialog-rename-chat` | matches | chat | diff 4.0% at t24, copy 100% | [png](side-by-side/chat-tabs-dialog-rename-chat.png) | [png](side-by-side/chat-tabs-dialog-rename-chat.png) |  | 4.0% |
-| Reset chat? dialog<br>`dialog-reset-chat` | matches | chat | diff 0.9% at t24, copy 97% | [png](side-by-side/chat-tabs-dialog-reset-chat.png) | [png](side-by-side/chat-tabs-dialog-reset-chat.png) |  | 0.9% |
-| Model picker, search with no match<br>`empty-model-search` | matches | chat | diff 3.6% at t24, copy 100% | [png](side-by-side/chat-tabs-empty-model-search.png) | [png](side-by-side/chat-tabs-empty-model-search.png) |  | 3.6% |
-| Review button menu (Edit before sending)<br>`menu-review-edit` | matches | git-review | diff 2.6% at t24, copy 100% | [png](side-by-side/chat-tabs-menu-review-edit.png) | [png](side-by-side/chat-tabs-menu-review-edit.png) |  | 2.6% |
+| Onboarding, signed out<br>`onboarding-signed-out` | wrong / in-scope | onboarding-auth | diff 7.8% at t24, copy 100% | [png](side-by-side/onboarding-01-signed-out.png) | [png](side-by-side/onboarding-01-signed-out.png) |  | 7.8% |
+| First-run onboarding<br>`first-run-onboarding` | wrong / in-scope | onboarding-auth | diff 7.7% at t24, copy 100% | [png](side-by-side/onboarding-03-first-run-route.png) | [png](side-by-side/onboarding-03-first-run-route.png) |  | 7.7% |
+| Home, no projects<br>`home-empty` | matches / in-scope | workspaces | diff 3.9% at t24, copy 100% | [png](ui-map/ref/home-empty.png) | [png](ui-map/oc/home-empty.png) | [jpg](ui-map/diff/home-empty.jpg) | 3.9% |
+| Home with projects<br>`home` | matches / in-scope | workspaces | diff 4.2% at t24, copy 100% | [png](ui-map/ref/home.png) | [png](ui-map/oc/home.png) | [jpg](ui-map/diff/home.jpg) | 4.2% |
+| All workspaces list<br>`all-workspaces` | matches / in-scope | workspaces | diff 3.9% at t24, copy 92% | [png](ui-map/ref/all-workspaces.png) | [png](ui-map/oc/all-workspaces.png) | [jpg](ui-map/diff/all-workspaces.jpg) | 3.9% |
+| Create workspace composer<br>`create` | matches / in-scope | chat | diff 0.8% at t24, copy 90% | [png](side-by-side/create-composer-01-dialog.png) | [png](side-by-side/create-composer-01-dialog.png) |  | 0.8% |
+| Create: repo picker open<br>`create-repo-picker` | matches / in-scope | workspaces | diff 1.0% at t24, copy 90% | [png](side-by-side/create-composer-02-repo-picker.png) | [png](side-by-side/create-composer-02-repo-picker.png) |  | 1.0% |
+| Create from: PRs<br>`create-from-prs` | matches / in-scope | workspaces | diff 1.3% at t24, copy 93% | [png](side-by-side/git-review-04-create-from-prs.png) | [png](side-by-side/git-review-04-create-from-prs.png) |  | 1.3% |
+| Create from: Branches<br>`create-from-branches` | matches / in-scope | git-review | diff 1.1% at t24, copy 92% | [png](side-by-side/git-review-05-create-from-branches.png) | [png](side-by-side/git-review-05-create-from-branches.png) |  | 1.1% |
+| Workspace: chat transcript<br>`workspace-chat` | matches / in-scope | chat | diff 2.3% at t24, copy 100% | [png](side-by-side/chat-tabs-workspace-chat.png) | [png](side-by-side/chat-tabs-workspace-chat.png) |  | 2.3% |
+| Workspace: new empty chat<br>`workspace-new-chat` | matches / in-scope | chat | diff 3.3% at t24, copy 92% | [png](ui-map/ref/workspace-new-chat.png) | [png](ui-map/oc/workspace-new-chat.png) | [jpg](ui-map/diff/workspace-new-chat.jpg) | 3.3% |
+| Chat: tool calls expanded<br>`workspace-tool-calls` | matches / in-scope | chat | diff 2.3% at t24, copy 100% | [png](side-by-side/chat-tabs-workspace-tool-calls.png) | [png](side-by-side/chat-tabs-workspace-tool-calls.png) |  | 2.3% |
+| Diff: file, unified<br>`diff-unified` | matches / in-scope | git-review | diff 5.0% at t24, copy 100% | [png](side-by-side/git-review-01-diff-unified.png) | [png](side-by-side/git-review-01-diff-unified.png) |  | 5.0% |
+| Diff: file, split<br>`diff-split` | wrong / in-scope | git-review | diff 5.2% at t24, copy 100% | [png](side-by-side/git-review-02-diff-split.png) | [png](side-by-side/git-review-02-diff-split.png) |  | 5.2% |
+| Diff: entire file<br>`diff-entire-file` | matches / in-scope | git-review | diff 4.7% at t24, copy 100% | [png](side-by-side/git-review-03-diff-entire-file.png) | [png](side-by-side/git-review-03-diff-entire-file.png) |  | 4.7% |
+| Terminal panel: Setup, no setup script<br>`panel-setup-add` | matches / in-scope | terminal-scripts | diff 3.1% at t24, copy 93% | [png](side-by-side/terminal-scripts-01-setup-add.png) | [png](side-by-side/terminal-scripts-01-setup-add.png) |  | 3.1% |
+| Terminal panel: Setup, before setup runs<br>`panel-setup-idle` | matches / in-scope | terminal-scripts | diff 2.9% at t24, copy 92% | [png](side-by-side/terminal-scripts-02-setup-idle.png) | [png](side-by-side/terminal-scripts-02-setup-idle.png) |  | 2.9% |
+| Terminal panel: Run, no run script<br>`panel-run-add` | matches / in-scope | terminal-scripts | diff 2.9% at t24, copy 92% | [png](side-by-side/terminal-scripts-03-run-add.png) | [png](side-by-side/terminal-scripts-03-run-add.png) |  | 2.9% |
+| Terminal panel: Run, before the run script runs<br>`panel-run-idle` | matches / in-scope | terminal-scripts | diff 2.8% at t24, copy 90% | [png](side-by-side/terminal-scripts-04-run-idle.png) | [png](side-by-side/terminal-scripts-04-run-idle.png) |  | 2.8% |
+| Toast: Xcode license is not accepted<br>`toast-xcode-license` | matches / in-scope | shell | diff 3.8% at t24, copy 93% | [png](side-by-side/terminal-scripts-05-xcode-license.png) | [png](side-by-side/terminal-scripts-05-xcode-license.png) |  | 3.8% |
+| Toast: Failed to save setting (Scripts, read-only settings file)<br>`toast-save-setting-failed` | matches / in-scope | settings | diff 1.6% at t24, copy 100% | [png](side-by-side/terminal-scripts-06-save-setting-failed.png) | [png](side-by-side/terminal-scripts-06-save-setting-failed.png) |  | 1.6% |
+| Workspace needing permission<br>`needs-permission` | wrong / in-scope | chat | diff 3.9% at t24, copy 88% | [png](ui-map/ref/needs-permission.png) | [png](ui-map/oc/needs-permission.png) | [jpg](ui-map/diff/needs-permission.jpg) | 3.9% |
+| Dashboard<br>`route-dashboard` | unverified / in-scope | shell | No valid reference observation proves this gap. Raw assessment: OpenConductor has no route or view for /dashboard | [png](ui-map/ref/route-dashboard.png) | no-equivalent |  |  |
+| Routines<br>`route-routines` | matches / deferred | routines | diff 1.7% at t24, copy 100% | [png](side-by-side/routines-01-list.png) | [png](side-by-side/routines-01-list.png) |  | 1.7% |
+| New routine<br>`route-routines-new` | matches / deferred | routines | diff 0.9% at t24, copy 100% | [png](side-by-side/routines-02-new.png) | [png](side-by-side/routines-02-new.png) |  | 0.9% |
+| Team<br>`route-team` | missing / deferred | cloud-org | OpenConductor has no route or view for /team | [png](ui-map/ref/route-team.png) | no-equivalent |  |  |
+| Diagnostics<br>`route-diagnostics` | matches / in-scope | shell | diff 0.6% at t24, copy 100% | [png](ui-map/ref/route-diagnostics.png) | [png](ui-map/oc/route-diagnostics.png) | [jpg](ui-map/diff/route-diagnostics.jpg) | 0.6% |
+| New member onboarding<br>`route-new-member-onboarding` | missing / deferred | onboarding-auth | OpenConductor has no route or view for /new-member-onboarding | [png](ui-map/ref/route-new-member-onboarding.png) | no-equivalent |  |  |
+| Cloud collaboration onboarding<br>`route-cloud-collab-onboarding` | missing / deferred | onboarding-auth | OpenConductor has no route or view for /cloud-collab-onboarding | [png](ui-map/ref/route-cloud-collab-onboarding.png) | no-equivalent |  |  |
+| Login<br>`login` | matches / in-scope | onboarding-auth | diff 1.1% at t24, copy 100% | [png](side-by-side/onboarding-02-login.png) | [png](side-by-side/onboarding-02-login.png) |  | 1.1% |
+| Settings > General<br>`settings-general` | matches / in-scope | settings | diff 3.1% at t24, copy 95% | [png](ui-map/ref/settings-general.png) | [png](ui-map/oc/settings-general.png) | [jpg](ui-map/diff/settings-general.jpg) | 3.1% |
+| Settings > Account<br>`settings-account` | wrong / in-scope | settings | diff 4.9% at t24, copy 83% | [png](ui-map/ref/settings-account.png) | [png](ui-map/oc/settings-account.png) | [jpg](ui-map/diff/settings-account.jpg) | 4.9% |
+| Settings > Default models<br>`settings-models` | matches / in-scope | settings | diff 3.3% at t24, copy 93% | [png](ui-map/ref/settings-models.png) | [png](ui-map/oc/settings-models.png) | [jpg](ui-map/diff/settings-models.jpg) | 3.3% |
+| Settings > Agents<br>`settings-providers` | wrong / in-scope | settings | diff 7.6% at t24, copy 80% | [png](ui-map/ref/settings-providers.png) | [png](ui-map/oc/settings-providers.png) | [jpg](ui-map/diff/settings-providers.jpg) | 7.6% |
+| Settings > Environment<br>`settings-environment` | matches / in-scope | settings | diff 2.9% at t24, copy 100% | [png](ui-map/ref/settings-environment.png) | [png](ui-map/oc/settings-environment.png) | [jpg](ui-map/diff/settings-environment.jpg) | 2.9% |
+| Settings > Git<br>`settings-git` | matches / in-scope | settings | diff 3.4% at t24, copy 100% | [png](ui-map/ref/settings-git.png) | [png](ui-map/oc/settings-git.png) | [jpg](ui-map/diff/settings-git.jpg) | 3.4% |
+| Settings > ports<br>`settings-ports` | unverified / deferred | settings | No valid reference observation proves this gap. Raw assessment: OpenConductor's settings have no ports page | [png](ui-map/ref/settings-ports.png) | no-equivalent |  |  |
+| Settings > Appearance<br>`settings-appearance` | wrong / in-scope | settings | diff 5.8% at t24, copy 96% | [png](ui-map/ref/settings-appearance.png) | [png](ui-map/oc/settings-appearance.png) | [jpg](ui-map/diff/settings-appearance.jpg) | 5.8% |
+| Settings > Keyboard shortcuts<br>`settings-key-bindings` | unverified / in-scope | settings | No valid reference observation proves this gap. Raw assessment: no valid reference render (redirected to /settings/user/general), diff 5.0% at t24 | [png](ui-map/ref/settings-key-bindings.png) | [png](ui-map/oc/settings-key-bindings.png) | [jpg](ui-map/diff/settings-key-bindings.jpg) | 5.0% |
+| Settings > Experimental<br>`settings-experimental` | matches / in-scope | settings | diff 3.2% at t24, copy 100% | [png](ui-map/ref/settings-experimental.png) | [png](ui-map/oc/settings-experimental.png) | [jpg](ui-map/diff/settings-experimental.jpg) | 3.2% |
+| Settings > Advanced<br>`settings-advanced` | wrong / in-scope | settings | diff 6.3% at t24, copy 95% | [png](ui-map/ref/settings-advanced.png) | [png](ui-map/oc/settings-advanced.png) | [jpg](ui-map/diff/settings-advanced.jpg) | 6.3% |
+| Settings > Big terminal<br>`settings-terminal` | unverified / in-scope | settings | No valid reference observation proves this gap. Raw assessment: no valid reference render (redirected to /settings/user/terminal), diff 5.0% at t24 | [png](ui-map/ref/settings-terminal.png) | [png](ui-map/oc/settings-terminal.png) | [jpg](ui-map/diff/settings-terminal.jpg) | 5.0% |
+| Settings > internal<br>`settings-internal` | unverified / in-scope | settings | No valid reference observation proves this gap. Raw assessment: OpenConductor's settings have no internal page | [png](ui-map/ref/settings-internal.png) | no-equivalent |  |  |
+| Settings > tide-web > Environment<br>`settings-repo-environment` | matches / in-scope | settings | diff 2.5% at t24, copy 100% | [png](ui-map/ref/settings-repo-environment.png) | [png](ui-map/oc/settings-repo-environment.png) | [jpg](ui-map/diff/settings-repo-environment.jpg) | 2.5% |
+| Settings > tide-web > Git<br>`settings-repo-git` | matches / in-scope | settings | diff 3.3% at t24, copy 100% | [png](ui-map/ref/settings-repo-git.png) | [png](ui-map/oc/settings-repo-git.png) | [jpg](ui-map/diff/settings-repo-git.jpg) | 3.3% |
+| Settings > tide-web > Scripts<br>`settings-repo-scripts` | matches / in-scope | settings | diff 2.3% at t24, copy 100% | [png](ui-map/ref/settings-repo-scripts.png) | [png](ui-map/oc/settings-repo-scripts.png) | [jpg](ui-map/diff/settings-repo-scripts.jpg) | 2.3% |
+| Settings > tide-web > Actions<br>`settings-repo-actions` | matches / in-scope | settings | diff 4.2% at t24, copy 100% | [png](ui-map/ref/settings-repo-actions.png) | [png](ui-map/oc/settings-repo-actions.png) | [jpg](ui-map/diff/settings-repo-actions.jpg) | 4.2% |
+| Settings > tide-web > Misc<br>`settings-repo-misc` | matches / in-scope | settings | diff 4.4% at t24, copy 100% | [png](ui-map/ref/settings-repo-misc.png) | [png](ui-map/oc/settings-repo-misc.png) | [jpg](ui-map/diff/settings-repo-misc.jpg) | 4.4% |
+| Settings > tide-web > Misc, scrolled to Remove repository<br>`settings-repo-misc-lower` | matches / in-scope | settings | diff 4.5% at t24, copy 100% | [png](ui-map/ref/settings-repo-misc-lower.png) | [png](ui-map/oc/settings-repo-misc-lower.png) | [jpg](ui-map/diff/settings-repo-misc-lower.jpg) | 4.5% |
+| Settings > Organization > github<br>`settings-org-github` | wrong / deferred | cloud-org | diff 4.5% at t24, copy 83% | [png](side-by-side/settings-org-03-computer.png) | [png](side-by-side/settings-org-03-computer.png) |  | 4.5% |
+| Settings > Organization > members<br>`settings-org-members` | matches / deferred | cloud-org | diff 1.5% at t24, copy 96% | [png](side-by-side/settings-org-04-members.png) | [png](side-by-side/settings-org-04-members.png) |  | 1.5% |
+| Settings > Organization > preferences<br>`settings-org-preferences` | matches / deferred | cloud-org | diff 1.3% at t24, copy 96% | [png](side-by-side/settings-org-05-preferences.png) | [png](side-by-side/settings-org-05-preferences.png) |  | 1.3% |
+| Settings > Organization > computer<br>`settings-org-computer` | wrong / deferred | cloud-org | diff 4.5% at t24, copy 83% | [png](side-by-side/settings-org-03-computer.png) | [png](side-by-side/settings-org-03-computer.png) |  | 4.5% |
+| Settings > Organization > environment<br>`settings-org-environment` | matches / deferred | cloud-org | diff 1.4% at t24, copy 92% | [png](side-by-side/settings-org-06-environment.png) | [png](side-by-side/settings-org-06-environment.png) |  | 1.4% |
+| Settings > Organization > mcp<br>`settings-org-mcp` | matches / deferred | cloud-org | diff 1.1% at t24, copy 93% | [png](side-by-side/settings-org-07-mcp.png) | [png](side-by-side/settings-org-07-mcp.png) |  | 1.1% |
+| Settings > Organization > prompts<br>`settings-org-prompts` | matches / deferred | cloud-org | diff 2.0% at t24, copy 92% | [png](side-by-side/settings-org-08-prompts.png) | [png](side-by-side/settings-org-08-prompts.png) |  | 2.0% |
+| Settings > Cloud setup<br>`settings-cloud-setup` | matches / deferred | cloud-org | diff 4.0% at t24, copy 90% | [png](side-by-side/settings-org-01-cloud-setup.png) | [png](side-by-side/settings-org-01-cloud-setup.png) |  | 4.0% |
+| Settings search<br>`settings-search` | matches / in-scope | settings | diff 3.2% at t24, copy 96% | [png](ui-map/ref/settings-search.png) | [png](ui-map/oc/settings-search.png) | [jpg](ui-map/diff/settings-search.jpg) | 3.2% |
+| Command palette<br>`palette-all` | matches / in-scope | shell | diff 1.0% at t24, copy 90% | [png](side-by-side/shell-palette-01-all.png) | [png](side-by-side/shell-palette-01-all.png) |  | 1.0% |
+| Command palette: Workspaces tab<br>`palette-workspaces` | matches / in-scope | workspaces | diff 1.7% at t24, copy 100% | [png](side-by-side/workspaces-palette-workspaces.png) | [png](side-by-side/workspaces-palette-workspaces.png) |  | 1.7% |
+| Command palette: Workspaces tab, project filter open<br>`palette-workspaces-projects` | matches / in-scope | workspaces | diff 1.9% at t24, copy 100% | [png](side-by-side/workspaces-palette-workspaces-projects.png) | [png](side-by-side/workspaces-palette-workspaces-projects.png) |  | 1.9% |
+| Command palette: Workspaces tab, archive filter open<br>`palette-workspaces-archive-filter` | matches / in-scope | workspaces | diff 1.8% at t24, copy 100% | [png](side-by-side/workspaces-palette-workspaces-archive-filter.png) | [png](side-by-side/workspaces-palette-workspaces-archive-filter.png) |  | 1.8% |
+| Command palette: Workspaces tab, no matching workspaces<br>`palette-workspaces-empty` | matches / in-scope | workspaces | diff 1.1% at t24, copy 100% | [png](side-by-side/workspaces-palette-workspaces-empty.png) | [png](side-by-side/workspaces-palette-workspaces-empty.png) |  | 1.1% |
+| Command palette: search<br>`palette-search` | matches / in-scope | shell | diff 1.0% at t24, copy 92% | [png](side-by-side/shell-palette-02-search.png) | [png](side-by-side/shell-palette-02-search.png) |  | 1.0% |
+| Command palette: no results<br>`palette-no-results` | matches / in-scope | shell | diff 1.0% at t24, copy 92% | [png](side-by-side/shell-palette-03-no-results.png) | [png](side-by-side/shell-palette-03-no-results.png) |  | 1.0% |
+| Clone GitHub repo dialog<br>`dialog-clone-github` | matches / in-scope | git-review | diff 4.9% at t24, copy 95% | [png](ui-map/ref/dialog-clone-github.png) | [png](ui-map/oc/dialog-clone-github.png) | [jpg](ui-map/diff/dialog-clone-github.jpg) | 4.9% |
+| Create project dialog<br>`dialog-create-project` | matches / in-scope | workspaces | diff 4.4% at t24, copy 90% | [png](side-by-side/workspaces-dialog-create-project.png) | [png](side-by-side/workspaces-dialog-create-project.png) |  | 4.4% |
+| Rename workspace dialog<br>`dialog-rename-workspace` | matches / in-scope | workspaces | diff 4.6% at t24, copy 94% | [png](ui-map/ref/dialog-rename-workspace.png) | [png](ui-map/oc/dialog-rename-workspace.png) | [jpg](ui-map/diff/dialog-rename-workspace.jpg) | 4.6% |
+| Keyboard shortcuts dialog<br>`dialog-keyboard-shortcuts` | matches / in-scope | shell | diff 4.2% at t24, copy 100% | [png](ui-map/ref/dialog-keyboard-shortcuts.png) | [png](ui-map/oc/dialog-keyboard-shortcuts.png) | [jpg](ui-map/diff/dialog-keyboard-shortcuts.jpg) | 4.2% |
+| Account / computer menu<br>`menu-account` | matches / in-scope | shell | diff 3.9% at t24, copy 100% | [png](side-by-side/shell-account-01-menu.png) | [png](side-by-side/shell-account-01-menu.png) |  | 3.9% |
+| Workspace context menu<br>`menu-workspace-context` | matches / in-scope | workspaces | diff 4.6% at t24, copy 100% | [png](side-by-side/workspaces-menu-workspace-context.png) | [png](side-by-side/workspaces-menu-workspace-context.png) |  | 4.6% |
+| Workspace context menu > Set status<br>`menu-workspace-status` | matches / in-scope | workspaces | diff 4.9% at t24, copy 100% | [png](side-by-side/workspaces-menu-workspace-status.png) | [png](side-by-side/workspaces-menu-workspace-status.png) |  | 4.9% |
+| Composer model picker<br>`menu-model-picker` | matches / in-scope | chat | diff 2.8% at t24, copy 97% | [png](side-by-side/chat-tabs-menu-model-picker.png) | [png](side-by-side/chat-tabs-menu-model-picker.png) |  | 2.8% |
+| Sidebar repo actions menu<br>`menu-repo-actions` | unverified / in-scope | workspaces | No valid reference observation proves this gap. Raw assessment: no valid reference render (step-failed), diff 4.3% at t24 | [png](ui-map/ref/menu-repo-actions.png) | [png](ui-map/oc/menu-repo-actions.png) | [jpg](ui-map/diff/menu-repo-actions.jpg) | 4.3% |
+| Help menu<br>`menu-help` | wrong / in-scope | shell | diff 5.8% at t24, copy 94% | [png](side-by-side/dialogs-menus-01-help-menu.png) | [png](side-by-side/dialogs-menus-01-help-menu.png) |  | 5.8% |
+| Help > Submit a prompt dialog<br>`dialog-submit-prompt` | matches / in-scope | shell | diff 3.0% at t24, copy 100% | [png](ui-map/ref/dialog-submit-prompt.png) | [png](ui-map/oc/dialog-submit-prompt.png) | [jpg](ui-map/diff/dialog-submit-prompt.jpg) | 3.0% |
+| Diagnostics after a run<br>`diagnostics-run` | matches / in-scope | shell | diff 1.9% at t24, copy 100% | [png](side-by-side/dialogs-menus-04-diagnostics-run.png) | [png](side-by-side/dialogs-menus-04-diagnostics-run.png) |  | 1.9% |
+| Toast: copied link<br>`toast-copied-link` | matches / in-scope | shell | diff 4.6% at t24, copy 93% | [png](ui-map/ref/toast-copied-link.png) | [png](ui-map/oc/toast-copied-link.png) | [jpg](ui-map/diff/toast-copied-link.jpg) | 4.6% |
+| Chat tab context menu<br>`menu-chat-tab` | matches / in-scope | chat | diff 3.2% at t24, copy 100% | [png](side-by-side/chat-tabs-menu-chat-tab.png) | [png](side-by-side/chat-tabs-menu-chat-tab.png) |  | 3.2% |
+| Changes file context menu<br>`menu-changes-file` | wrong / in-scope | shell | diff 8.0% at t24, copy 84% | [png](side-by-side/shell-menus-02-changes-file.png) | [png](side-by-side/shell-menus-02-changes-file.png) |  | 8.0% |
+| Sidebar after archiving a workspace<br>`sidebar-after-archive` | matches / in-scope | workspaces | diff 4.7% at t24, copy 93% | [png](ui-map/ref/sidebar-after-archive.png) | [png](ui-map/oc/sidebar-after-archive.png) | [jpg](ui-map/diff/sidebar-after-archive.jpg) | 4.7% |
+| Rename chat dialog<br>`dialog-rename-chat` | matches / in-scope | chat | diff 4.0% at t24, copy 100% | [png](side-by-side/chat-tabs-dialog-rename-chat.png) | [png](side-by-side/chat-tabs-dialog-rename-chat.png) |  | 4.0% |
+| Reset chat? dialog<br>`dialog-reset-chat` | matches / in-scope | chat | diff 0.9% at t24, copy 97% | [png](side-by-side/chat-tabs-dialog-reset-chat.png) | [png](side-by-side/chat-tabs-dialog-reset-chat.png) |  | 0.9% |
+| Model picker, search with no match<br>`empty-model-search` | matches / in-scope | chat | diff 3.6% at t24, copy 100% | [png](side-by-side/chat-tabs-empty-model-search.png) | [png](side-by-side/chat-tabs-empty-model-search.png) |  | 3.6% |
+| Review button menu (Edit before sending)<br>`menu-review-edit` | matches / in-scope | git-review | diff 2.6% at t24, copy 100% | [png](side-by-side/chat-tabs-menu-review-edit.png) | [png](side-by-side/chat-tabs-menu-review-edit.png) |  | 2.6% |
 
-## route (65: 32 missing, 10 wrong, 23 matches)
-
-| Item | Status | Team | Copy | Component | State | Why |
-|---|---|---|---|---|---|---|
-| `route:login`<br>/login | wrong | onboarding-auth |  | `xWt` | [onboarding-signed-out](side-by-side/onboarding-01-signed-out.png) | diff 7.8% at t24, copy 100% |
-| `route:settings`<br>/settings | missing | settings |  | `L9a` |  | no state captures this route |
-| `route:settings-user`<br>/settings/user | missing | settings |  | `` |  | no state captures this route |
-| `route:settings-user~2`<br>/settings/user | missing | settings |  | `` |  | no state captures this route |
-| `route:settings-user-providers`<br>/settings/user/providers | wrong | settings |  | `fEa` | [settings-providers](ui-map/oc/settings-providers.png) | diff 7.6% at t24, copy 80% |
-| `route:settings-user-environment`<br>/settings/user/environment | matches | settings |  | `mEa` | [settings-environment](ui-map/oc/settings-environment.png) | diff 2.9% at t24, copy 100% |
-| `route:settings-user-ports`<br>/settings/user/ports | missing | settings |  | `gEa` | [settings-ports](ui-map/ref/settings-ports.png) | OpenConductor's settings have no ports page |
-| `route:settings-user-key-bindings`<br>/settings/user/key-bindings | wrong | settings |  | `dEa` | [settings-key-bindings](ui-map/oc/settings-key-bindings.png) | no valid reference render (redirected to /settings/user/general), diff 5.0% at t24 |
-| `route:settings-user-terminal`<br>/settings/user/terminal | wrong | settings |  | `hEa` | [settings-terminal](ui-map/oc/settings-terminal.png) | no valid reference render (redirected to /settings/user/terminal), diff 5.0% at t24 |
-| `route:settings-user-internal`<br>/settings/user/internal | missing | settings |  | `pEa` | [settings-internal](ui-map/ref/settings-internal.png) | OpenConductor's settings have no internal page |
-| `route:settings~2`<br>/settings | missing | settings |  | `` |  | no state captures this route |
-| `route:settings-repos`<br>/settings/repos | missing | settings |  | `` |  | no state captures this route |
-| `route:settings-repos-repoid`<br>/settings/repos/$repoId | missing | settings |  | `` |  | no state captures this route |
-| `route:settings-repos-repoid~2`<br>/settings/repos/$repoId | missing | settings |  | `` |  | no state captures this route |
-| `route:settings-repos-repoid-environment`<br>/settings/repos/$repoId/environment | matches | settings |  | `_Ea` | [settings-repo-environment](ui-map/oc/settings-repo-environment.png) | diff 2.5% at t24, copy 100% |
-| `route:settings-repos-repoid-git`<br>/settings/repos/$repoId/git | matches | settings |  | `yEa` | [settings-repo-git](ui-map/oc/settings-repo-git.png) | diff 3.3% at t24, copy 100% |
-| `route:settings-repos-repoid-scripts`<br>/settings/repos/$repoId/scripts | matches | settings |  | `wEa` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | diff 2.3% at t24, copy 100% |
-| `route:settings-repos-repoid-actions`<br>/settings/repos/$repoId/actions | matches | settings |  | `EEa` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | diff 4.2% at t24, copy 100% |
-| `route:settings-repos-repoid-misc`<br>/settings/repos/$repoId/misc | matches | settings |  | `kEa` | [settings-repo-misc](ui-map/oc/settings-repo-misc.png) | diff 4.4% at t24, copy 100% |
-| `route:settings-cloud`<br>/settings/cloud | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:settings-cloud~2`<br>/settings/cloud | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:settings-cloud-setup`<br>/settings/cloud/setup | matches | cloud-org |  | `TEa` | [settings-cloud-setup](side-by-side/settings-org-01-cloud-setup.png) | diff 4.0% at t24, copy 90% |
-| `route:settings-cloud-cloudprojectid`<br>/settings/cloud/$cloudProjectId | missing | cloud-org |  | `IEa` |  | no state captures this route |
-| `route:settings-organization`<br>/settings/organization | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:settings-organization~2`<br>/settings/organization | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:settings-organization-github`<br>/settings/organization/github | wrong | cloud-org |  | `REa` | [settings-org-github](side-by-side/settings-org-03-computer.png) | diff 4.5% at t24, copy 83% |
-| `route:settings-organization-members`<br>/settings/organization/members | matches | cloud-org |  | `NEa` | [settings-org-members](side-by-side/settings-org-04-members.png) | diff 1.5% at t24, copy 96% |
-| `route:settings-organization-preferences`<br>/settings/organization/preferences | matches | cloud-org |  | `OEa` | [settings-org-preferences](side-by-side/settings-org-05-preferences.png) | diff 1.3% at t24, copy 96% |
-| `route:settings-organization-computer`<br>/settings/organization/computer | wrong | cloud-org |  | `DEa` | [settings-org-computer](side-by-side/settings-org-03-computer.png) | diff 4.5% at t24, copy 83% |
-| `route:settings-organization-environment`<br>/settings/organization/environment | matches | cloud-org |  | `PEa` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | diff 1.4% at t24, copy 92% |
-| `route:settings-organization-mcp`<br>/settings/organization/mcp | matches | cloud-org |  | `MEa` | [settings-org-mcp](side-by-side/settings-org-07-mcp.png) | diff 1.1% at t24, copy 93% |
-| `route:settings-organization-mcp-servers`<br>/settings/organization/mcp-servers | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:settings-organization-prompts`<br>/settings/organization/prompts | matches | cloud-org |  | `LEa` | [settings-org-prompts](side-by-side/settings-org-08-prompts.png) | diff 2.0% at t24, copy 92% |
-| `route:settings-organization-repositories-owner-repo`<br>/settings/organization/repositories/$owner/$repo | missing | cloud-org |  | `BEa` |  | no state captures this route |
-| `route:settings-organization-repositories-owner-repo~2`<br>/settings/organization/repositories/$owner/$repo | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:settings-organization-repositories-owner-repo-scripts`<br>/settings/organization/repositories/$owner/$repo/scripts | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:settings-organization-repositories-owner-repo-git`<br>/settings/organization/repositories/$owner/$repo/git | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:diagnostics`<br>/diagnostics | matches | shell |  | `boa` | [route-diagnostics](ui-map/oc/route-diagnostics.png) | diff 0.6% at t24, copy 100% |
-| `route:cloud-collab-onboarding`<br>/cloud-collab-onboarding | missing | onboarding-auth |  | `eHi` | [route-cloud-collab-onboarding](ui-map/ref/route-cloud-collab-onboarding.png) | OpenConductor has no route or view for /cloud-collab-onboarding |
-| `route:first-run-onboarding`<br>/first-run-onboarding | wrong | onboarding-auth |  | `BCa` | [first-run-onboarding](side-by-side/onboarding-03-first-run-route.png) | diff 7.7% at t24, copy 100% |
-| `route:new-member-onboarding`<br>/new-member-onboarding | missing | onboarding-auth |  | `tHi` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor has no route or view for /new-member-onboarding |
-| `route:untitled`<br>/ | matches | shell |  | `Wls` | [home](ui-map/oc/home.png) | diff 4.2% at t24, copy 100% |
-| `route:repository-repositoryid-workspace-localworkspaceid`<br>/repository/$repositoryId/workspace/$localWorkspaceId | matches | chat |  | `dXo` | [workspace-chat](side-by-side/chat-tabs-workspace-chat.png) | diff 2.3% at t24, copy 100% |
-| `route:all-workspaces`<br>/all-workspaces | matches | workspaces |  | `UJo` | [all-workspaces](ui-map/oc/all-workspaces.png) | diff 3.9% at t24, copy 92% |
-| `route:create`<br>/create | matches | workspaces |  | `$Ca` | [create](side-by-side/create-composer-01-dialog.png) | diff 0.8% at t24, copy 90% |
-| `route:team`<br>/team | missing | cloud-org |  | `Yea` | [route-team](ui-map/ref/route-team.png) | OpenConductor has no route or view for /team |
-| `route:dashboard`<br>/dashboard | missing | shell |  | `lta` | [route-dashboard](ui-map/ref/route-dashboard.png) | OpenConductor has no route or view for /dashboard |
-| `route:routines`<br>/routines | matches | routines |  | `eka` | [route-routines](side-by-side/routines-01-list.png) | diff 1.7% at t24, copy 100% |
-| `route:routines-automationid`<br>/routines/$automationId | missing | routines |  | `k7a` |  | no state captures this route |
-| `route:routines-new`<br>/routines/new | matches | routines |  | `B7a` | [route-routines-new](side-by-side/routines-02-new.png) | diff 0.9% at t24, copy 100% |
-| `route:routines-new-suggestionid`<br>/routines/new/$suggestionId | missing | routines |  | `z7a` |  | no state captures this route |
-| `route:routines-automationid-fork`<br>/routines/$automationId/fork | missing | routines |  | `U7a` |  | no state captures this route |
-| `route:automations`<br>/automations | missing | routines |  | `` |  | no state captures this route |
-| `route:automations-automationid`<br>/automations/$automationId | missing | routines |  | `` |  | no state captures this route |
-| `route:automations-new`<br>/automations/new | missing | routines |  | `` |  | no state captures this route |
-| `route:automations-new-suggestionid`<br>/automations/new/$suggestionId | missing | routines |  | `` |  | no state captures this route |
-| `route:automations-automationid-fork`<br>/automations/$automationId/fork | missing | routines |  | `` |  | no state captures this route |
-| `route:dev-simulated-route-error`<br>/dev/simulated-route-error | missing | shell |  | `` |  | no state captures this route |
-| `route:settings-user-general`<br>/settings/user/general | matches | settings |  | `` | [settings-general](ui-map/oc/settings-general.png) | diff 3.1% at t24, copy 95% |
-| `route:settings-user-account`<br>/settings/user/account | wrong | settings |  | `` | [settings-account](ui-map/oc/settings-account.png) | diff 4.9% at t24, copy 83% |
-| `route:settings-user-models`<br>/settings/user/models | matches | settings |  | `` | [settings-models](ui-map/oc/settings-models.png) | diff 3.3% at t24, copy 93% |
-| `route:settings-user-git`<br>/settings/user/git | matches | settings |  | `` | [settings-git](ui-map/oc/settings-git.png) | diff 3.4% at t24, copy 100% |
-| `route:settings-user-appearance`<br>/settings/user/appearance | wrong | settings |  | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | diff 5.8% at t24, copy 96% |
-| `route:settings-user-experimental`<br>/settings/user/experimental | matches | settings |  | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | diff 3.2% at t24, copy 100% |
-| `route:settings-user-advanced`<br>/settings/user/advanced | wrong | settings |  | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | diff 6.3% at t24, copy 95% |
-
-## settings-page (29: 9 missing, 7 wrong, 13 matches)
+## route (all 65 retained rows, including exclusions)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
-| `settings-page:account`<br>account | wrong | settings |  | `` | [settings-account](ui-map/oc/settings-account.png) | diff 4.9% at t24, copy 83% |
-| `settings-page:advanced`<br>advanced | wrong | settings |  | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | diff 6.3% at t24, copy 95% |
-| `settings-page:experimental`<br>experimental | matches | settings |  | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | diff 3.2% at t24, copy 100% |
-| `settings-page:general`<br>general | matches | settings |  | `` | [settings-general](ui-map/oc/settings-general.png) | diff 3.1% at t24, copy 95% |
-| `settings-page:git`<br>git | matches | settings |  | `` | [settings-git](ui-map/oc/settings-git.png) | diff 3.4% at t24, copy 100% |
-| `settings-page:ports`<br>ports | missing | settings |  | `` | [settings-ports](ui-map/ref/settings-ports.png) | OpenConductor's settings have no ports page |
-| `settings-page:internal`<br>internal | missing | settings |  | `` | [settings-internal](ui-map/ref/settings-internal.png) | OpenConductor's settings have no internal page |
-| `settings-page:models`<br>models | matches | settings |  | `` | [settings-models](ui-map/oc/settings-models.png) | diff 3.3% at t24, copy 93% |
-| `settings-page:organization-preferences`<br>organization-preferences | matches | cloud-org |  | `` | [settings-org-preferences](side-by-side/settings-org-05-preferences.png) | diff 1.3% at t24, copy 96% |
-| `settings-page:actions`<br>actions | matches | settings |  | `` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | diff 4.2% at t24, copy 100% |
-| `settings-page:misc`<br>misc | matches | settings |  | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | diff 4.5% at t24, copy 100% |
-| `settings-page:appearance`<br>appearance | wrong | settings |  | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | diff 5.8% at t24, copy 96% |
-| `settings-page:providers`<br>providers | wrong | settings |  | `` | [settings-providers](ui-map/oc/settings-providers.png) | diff 7.6% at t24, copy 80% |
-| `settings-page:environment`<br>environment | matches | settings |  | `` | [settings-environment](ui-map/oc/settings-environment.png) | diff 2.9% at t24, copy 100% |
-| `settings-page:scripts`<br>scripts | matches | settings |  | `` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | diff 2.3% at t24, copy 100% |
-| `settings-page:terminal`<br>terminal | wrong | settings |  | `` | [settings-terminal](ui-map/oc/settings-terminal.png) | no valid reference render (redirected to /settings/user/terminal), diff 5.0% at t24 |
-| `settings-page:organization-members`<br>organization-members | matches | cloud-org |  | `` | [settings-org-members](side-by-side/settings-org-04-members.png) | diff 1.5% at t24, copy 96% |
-| `settings-page:organization-computer`<br>organization-computer | wrong | cloud-org |  | `` | [settings-org-computer](side-by-side/settings-org-03-computer.png) | diff 4.5% at t24, copy 83% |
-| `settings-page:organization-environment`<br>organization-environment | matches | cloud-org |  | `` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | diff 1.4% at t24, copy 92% |
-| `settings-page:organization-prompts`<br>organization-prompts | matches | cloud-org |  | `` | [settings-org-prompts](side-by-side/settings-org-08-prompts.png) | diff 2.0% at t24, copy 92% |
-| `settings-page:organization-mcp-servers`<br>organization-mcp-servers | missing | cloud-org |  | `` |  | no state for this page |
-| `settings-page:cloud`<br>cloud | missing | cloud-org |  | `` |  | no state for this page |
-| `settings-page:setup`<br>setup | matches | cloud-org |  | `` | [settings-cloud-setup](side-by-side/settings-org-01-cloud-setup.png) | diff 4.0% at t24, copy 90% |
-| `settings-page:organization`<br>organization | missing | cloud-org |  | `` |  | no state for this page |
-| `settings-page:github`<br>github | missing | cloud-org |  | `` |  | no state for this page |
-| `settings-page:mcp`<br>mcp | missing | cloud-org |  | `` |  | no state for this page |
-| `settings-page:repos`<br>repos | missing | settings |  | `` |  | no state for this page |
-| `settings-page:user`<br>user | missing | settings |  | `` |  | no state for this page |
-| `settings-page:key-bindings`<br>key-bindings | wrong | settings |  | `` | [settings-key-bindings](ui-map/oc/settings-key-bindings.png) | no valid reference render (redirected to /settings/user/general), diff 5.0% at t24 |
+| `route:login`<br>/login | wrong / in-scope | onboarding-auth |  | `xWt` | [onboarding-signed-out](side-by-side/onboarding-01-signed-out.png) | diff 7.8% at t24, copy 100% |
+| `route:settings`<br>/settings | unverified / in-scope | settings |  | `L9a` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-user`<br>/settings/user | unverified / in-scope | settings |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-user~2`<br>/settings/user | unverified / in-scope | settings |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-user-providers`<br>/settings/user/providers | wrong / in-scope | settings |  | `fEa` | [settings-providers](ui-map/oc/settings-providers.png) | diff 7.6% at t24, copy 80% |
+| `route:settings-user-environment`<br>/settings/user/environment | matches / in-scope | settings |  | `mEa` | [settings-environment](ui-map/oc/settings-environment.png) | diff 2.9% at t24, copy 100% |
+| `route:settings-user-ports`<br>/settings/user/ports | unverified / deferred | settings |  | `gEa` | [settings-ports](ui-map/ref/settings-ports.png) | No valid reference observation proves this gap. Raw assessment: OpenConductor's settings have no ports page |
+| `route:settings-user-key-bindings`<br>/settings/user/key-bindings | unverified / in-scope | settings |  | `dEa` | [settings-key-bindings](ui-map/oc/settings-key-bindings.png) | No valid reference observation proves this gap. Raw assessment: no valid reference render (redirected to /settings/user/general), diff 5.0% at t24 |
+| `route:settings-user-terminal`<br>/settings/user/terminal | unverified / in-scope | settings |  | `hEa` | [settings-terminal](ui-map/oc/settings-terminal.png) | No valid reference observation proves this gap. Raw assessment: no valid reference render (redirected to /settings/user/terminal), diff 5.0% at t24 |
+| `route:settings-user-internal`<br>/settings/user/internal | unverified / in-scope | settings |  | `pEa` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: OpenConductor's settings have no internal page |
+| `route:settings~2`<br>/settings | unverified / in-scope | settings |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-repos`<br>/settings/repos | unverified / in-scope | settings |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-repos-repoid`<br>/settings/repos/$repoId | unverified / in-scope | settings |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-repos-repoid~2`<br>/settings/repos/$repoId | unverified / in-scope | settings |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-repos-repoid-environment`<br>/settings/repos/$repoId/environment | matches / in-scope | settings |  | `_Ea` | [settings-repo-environment](ui-map/oc/settings-repo-environment.png) | diff 2.5% at t24, copy 100% |
+| `route:settings-repos-repoid-git`<br>/settings/repos/$repoId/git | matches / in-scope | settings |  | `yEa` | [settings-repo-git](ui-map/oc/settings-repo-git.png) | diff 3.3% at t24, copy 100% |
+| `route:settings-repos-repoid-scripts`<br>/settings/repos/$repoId/scripts | matches / in-scope | settings |  | `wEa` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | diff 2.3% at t24, copy 100% |
+| `route:settings-repos-repoid-actions`<br>/settings/repos/$repoId/actions | matches / in-scope | settings |  | `EEa` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | diff 4.2% at t24, copy 100% |
+| `route:settings-repos-repoid-misc`<br>/settings/repos/$repoId/misc | matches / in-scope | settings |  | `kEa` | [settings-repo-misc](ui-map/oc/settings-repo-misc.png) | diff 4.4% at t24, copy 100% |
+| `route:settings-cloud`<br>/settings/cloud | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-cloud~2`<br>/settings/cloud | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-cloud-setup`<br>/settings/cloud/setup | matches / deferred | cloud-org |  | `TEa` | [settings-cloud-setup](side-by-side/settings-org-01-cloud-setup.png) | diff 4.0% at t24, copy 90% |
+| `route:settings-cloud-cloudprojectid`<br>/settings/cloud/$cloudProjectId | unverified / deferred | cloud-org |  | `IEa` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-organization`<br>/settings/organization | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-organization~2`<br>/settings/organization | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-organization-github`<br>/settings/organization/github | wrong / deferred | cloud-org |  | `REa` | [settings-org-github](side-by-side/settings-org-03-computer.png) | diff 4.5% at t24, copy 83% |
+| `route:settings-organization-members`<br>/settings/organization/members | matches / deferred | cloud-org |  | `NEa` | [settings-org-members](side-by-side/settings-org-04-members.png) | diff 1.5% at t24, copy 96% |
+| `route:settings-organization-preferences`<br>/settings/organization/preferences | matches / deferred | cloud-org |  | `OEa` | [settings-org-preferences](side-by-side/settings-org-05-preferences.png) | diff 1.3% at t24, copy 96% |
+| `route:settings-organization-computer`<br>/settings/organization/computer | wrong / deferred | cloud-org |  | `DEa` | [settings-org-computer](side-by-side/settings-org-03-computer.png) | diff 4.5% at t24, copy 83% |
+| `route:settings-organization-environment`<br>/settings/organization/environment | matches / deferred | cloud-org |  | `PEa` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | diff 1.4% at t24, copy 92% |
+| `route:settings-organization-mcp`<br>/settings/organization/mcp | matches / deferred | cloud-org |  | `MEa` | [settings-org-mcp](side-by-side/settings-org-07-mcp.png) | diff 1.1% at t24, copy 93% |
+| `route:settings-organization-mcp-servers`<br>/settings/organization/mcp-servers | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-organization-prompts`<br>/settings/organization/prompts | matches / deferred | cloud-org |  | `LEa` | [settings-org-prompts](side-by-side/settings-org-08-prompts.png) | diff 2.0% at t24, copy 92% |
+| `route:settings-organization-repositories-owner-repo`<br>/settings/organization/repositories/$owner/$repo | unverified / deferred | cloud-org |  | `BEa` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-organization-repositories-owner-repo~2`<br>/settings/organization/repositories/$owner/$repo | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-organization-repositories-owner-repo-scripts`<br>/settings/organization/repositories/$owner/$repo/scripts | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-organization-repositories-owner-repo-git`<br>/settings/organization/repositories/$owner/$repo/git | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:diagnostics`<br>/diagnostics | matches / in-scope | shell |  | `boa` | [route-diagnostics](ui-map/oc/route-diagnostics.png) | diff 0.6% at t24, copy 100% |
+| `route:cloud-collab-onboarding`<br>/cloud-collab-onboarding | missing / deferred | onboarding-auth |  | `eHi` | [route-cloud-collab-onboarding](ui-map/ref/route-cloud-collab-onboarding.png) | OpenConductor has no route or view for /cloud-collab-onboarding |
+| `route:first-run-onboarding`<br>/first-run-onboarding | wrong / in-scope | onboarding-auth |  | `BCa` | [first-run-onboarding](side-by-side/onboarding-03-first-run-route.png) | diff 7.7% at t24, copy 100% |
+| `route:new-member-onboarding`<br>/new-member-onboarding | missing / deferred | onboarding-auth |  | `tHi` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor has no route or view for /new-member-onboarding |
+| `route:untitled`<br>/ | matches / in-scope | shell |  | `Wls` | [home](ui-map/oc/home.png) | diff 4.2% at t24, copy 100% |
+| `route:repository-repositoryid-workspace-localworkspaceid`<br>/repository/$repositoryId/workspace/$localWorkspaceId | matches / in-scope | chat |  | `dXo` | [workspace-chat](side-by-side/chat-tabs-workspace-chat.png) | diff 2.3% at t24, copy 100% |
+| `route:all-workspaces`<br>/all-workspaces | matches / in-scope | workspaces |  | `UJo` | [all-workspaces](ui-map/oc/all-workspaces.png) | diff 3.9% at t24, copy 92% |
+| `route:create`<br>/create | matches / in-scope | workspaces |  | `$Ca` | [create](side-by-side/create-composer-01-dialog.png) | diff 0.8% at t24, copy 90% |
+| `route:team`<br>/team | missing / deferred | cloud-org |  | `Yea` | [route-team](ui-map/ref/route-team.png) | OpenConductor has no route or view for /team |
+| `route:dashboard`<br>/dashboard | unverified / in-scope | shell |  | `lta` | [route-dashboard](ui-map/ref/route-dashboard.png) | No valid reference observation proves this gap. Raw assessment: OpenConductor has no route or view for /dashboard |
+| `route:routines`<br>/routines | matches / deferred | routines |  | `eka` | [route-routines](side-by-side/routines-01-list.png) | diff 1.7% at t24, copy 100% |
+| `route:routines-automationid`<br>/routines/$automationId | unverified / deferred | routines |  | `k7a` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:routines-new`<br>/routines/new | matches / deferred | routines |  | `B7a` | [route-routines-new](side-by-side/routines-02-new.png) | diff 0.9% at t24, copy 100% |
+| `route:routines-new-suggestionid`<br>/routines/new/$suggestionId | unverified / deferred | routines |  | `z7a` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:routines-automationid-fork`<br>/routines/$automationId/fork | unverified / deferred | routines |  | `U7a` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:automations`<br>/automations | unverified / deferred | routines |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:automations-automationid`<br>/automations/$automationId | unverified / deferred | routines |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:automations-new`<br>/automations/new | unverified / deferred | routines |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:automations-new-suggestionid`<br>/automations/new/$suggestionId | unverified / deferred | routines |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:automations-automationid-fork`<br>/automations/$automationId/fork | unverified / deferred | routines |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:dev-simulated-route-error`<br>/dev/simulated-route-error | unverified / in-scope | shell |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state captures this route |
+| `route:settings-user-general`<br>/settings/user/general | matches / in-scope | settings |  | `` | [settings-general](ui-map/oc/settings-general.png) | diff 3.1% at t24, copy 95% |
+| `route:settings-user-account`<br>/settings/user/account | wrong / in-scope | settings |  | `` | [settings-account](ui-map/oc/settings-account.png) | diff 4.9% at t24, copy 83% |
+| `route:settings-user-models`<br>/settings/user/models | matches / in-scope | settings |  | `` | [settings-models](ui-map/oc/settings-models.png) | diff 3.3% at t24, copy 93% |
+| `route:settings-user-git`<br>/settings/user/git | matches / in-scope | settings |  | `` | [settings-git](ui-map/oc/settings-git.png) | diff 3.4% at t24, copy 100% |
+| `route:settings-user-appearance`<br>/settings/user/appearance | wrong / in-scope | settings |  | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | diff 5.8% at t24, copy 96% |
+| `route:settings-user-experimental`<br>/settings/user/experimental | matches / in-scope | settings |  | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | diff 3.2% at t24, copy 100% |
+| `route:settings-user-advanced`<br>/settings/user/advanced | wrong / in-scope | settings |  | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | diff 6.3% at t24, copy 95% |
 
-## settings-row (121: 38 missing, 24 wrong, 59 matches)
-
-| Item | Status | Team | Copy | Component | State | Why |
-|---|---|---|---|---|---|---|
-| `settings-row:account:account-and-integrations`<br>account › Account and integrations | missing | cloud-org | Account and integrations / Your Conductor account, billing, GitHub access, and Linear connection. | `` | [settings-account](ui-map/oc/settings-account.png) | copy not shown in any OpenConductor capture |
-| `settings-row:account:enterprise-data-privacy`<br>account › Enterprise data privacy | wrong | settings | Enterprise data privacy / Disable features requiring external AI providers, such as AI generated | `` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
-| `settings-row:account:claude-code-tool-approvals`<br>account › Claude Code tool approvals | wrong | settings | Claude Code tool approvals / Require manual approval before agents can run tools. | `` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
-| `settings-row:account:codex-tool-approvals`<br>account › Codex tool approvals | wrong | settings | Codex tool approvals | `` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
-| `settings-row:account:sign-out`<br>account › Sign out | missing | onboarding-auth | Sign out / Sign out of your Conductor account. | `` | [settings-account](ui-map/oc/settings-account.png) | copy not shown in any OpenConductor capture |
-| `settings-row:advanced:conductor-root-directory`<br>advanced › Conductor root directory | wrong | settings | Conductor root directory / Where Conductor stores repositories and workspaces. This should be an  | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
-| `settings-row:advanced:claude-code-executable-path`<br>advanced › Claude Code executable path | wrong | settings | Claude Code executable path / Override the bundled Claude Code executable with a custom one. Leave e | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
-| `settings-row:advanced:codex-executable-path`<br>advanced › Codex executable path | wrong | settings | Codex executable path / Override the bundled Codex executable with a custom one. Leave empty t | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
-| `settings-row:advanced:opencode-executable-path`<br>advanced › OpenCode executable path | missing | settings | OpenCode executable path / Override the bundled OpenCode executable with a custom one. Leave empt | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | copy not shown in any OpenConductor capture |
-| `settings-row:advanced:ssh-private-key-path`<br>advanced › SSH private key path | wrong | cloud-org | SSH private key path / Use your own SSH key for cloud workspace access. Leave empty to auto-g | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
-| `settings-row:advanced:remote-execution-mcp`<br>advanced › Remote execution MCP | wrong | settings | Remote execution MCP / Let remote agents request approved one-shot commands on this Mac. Each | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
-| `settings-row:advanced:always-allow-local-commands`<br>advanced › Always allow local commands | wrong | settings | Always allow local commands / Run local commands from remote agents without asking. Turned on when y | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
-| `settings-row:advanced:enable-file-sync-in-new-cloud-workspaces`<br>advanced › Enable file sync in new cloud workspaces | wrong | cloud-org | Enable file sync in new cloud workspaces / Start syncing when you open a local terminal or run a local task. Sync | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
-| `settings-row:advanced:set-upstream-on-plain-git-push`<br>advanced › Set upstream on plain git push | wrong | settings | Set upstream on plain git push / Configure new Conductor workspaces so plain git push sets a branch ups | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
-| `settings-row:advanced:scrollback-limit`<br>advanced › Scrollback limit | wrong | settings | Scrollback limit / Approximate terminal output to keep. | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
-| `settings-row:experimental:auto-permission-mode`<br>experimental › Auto permission mode | matches | settings | Auto permission mode / Turns on Claude auto mode. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:big-terminal-mode`<br>experimental › Big terminal mode | matches | settings | Big terminal mode / Create big terminals in the center pane with ⌘⇧T | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:new-workspace-page`<br>experimental › New workspace page | matches | settings | New workspace page / Full-screen workspace creation | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:tab-freak-mode`<br>experimental › Tab Freak Mode | matches | settings | Tab Freak Mode / Allow up to 10 chat and terminal tabs per workspace. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:split-tabs`<br>experimental › Split tabs | matches | settings | Split tabs / Split the center panel and move tabs between panes. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:fork-chat-to-new-tab`<br>experimental › Fork chat to new tab | matches | settings | Fork chat to new tab / Fork a chat, even mid-turn, from its tab's context menu or with ⌘⌥↵. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:in-app-browser-preview`<br>experimental › In-app browser preview | matches | settings | In-app browser preview / Open the preview button in an in-app browser tab (with the annotation  | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:use-legacy-file-preview-and-editing`<br>experimental › Use legacy file preview and editing | matches | settings | Use legacy file preview and editing | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:show-agent-cost`<br>experimental › Show agent cost | matches | cloud-org | Show agent cost / Show estimated agent costs for cloud workspaces. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:show-workspace-numbers`<br>experimental › Show workspace numbers | matches | settings | Show workspace numbers | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:workspace-status-matrix`<br>experimental › Workspace status matrix | matches | settings | Workspace status matrix / Use the matrix-style workspace status indicator in Home and the sideba | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:cloud-desktop`<br>experimental › Cloud desktop | matches | cloud-org | Cloud desktop / Show Cloud desktop tabs in cloud workspaces. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:add-projects-without-github`<br>experimental › Add projects without GitHub | matches | settings | Add projects without GitHub / Let Conductor add existing local repositories even when they are not c | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:auto-run-after-setup`<br>experimental › Auto-run after setup | matches | settings | Auto-run after setup / Start a repository's run script automatically after a new local worksp | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:dashboard`<br>experimental › Dashboard | matches | settings | Dashboard / Show the dashboard and workspace sidebar. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:voice-mode`<br>experimental › Voice mode | matches | settings | Voice mode / Enables speech-to-text in the chat composer. Press Ctrl+Shift+D to sta | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:show-sidebar-resource-usage`<br>experimental › Show sidebar resource usage | matches | settings | Show sidebar resource usage / Shows CPU and memory usage in the workspace sidebar footer. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:sidebar-transparency`<br>experimental › Sidebar transparency | matches | settings | Sidebar transparency / Use native macOS vibrancy behind the workspace sidebar. Takes effect a | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:experimental:graphite-stack-support`<br>experimental › Graphite stack support | matches | cloud-org | Graphite stack support / Detect Graphite stacks for the active local workspace and show stack-a | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `settings-row:general:send-messages-with`<br>general › Send messages with | matches | settings | Send messages with / Choose which key combination sends messages | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:follow-up-behavior`<br>general › Follow-up behavior | matches | settings | Follow-up behavior / Queue messages to send after the agent finishes, or steer the agent mi | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:agent-notifications`<br>general › Agent notifications | matches | settings | Agent notifications / Get notified when an agent finishes working. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:notifications`<br>general › @ notifications | matches | cloud-org | @ notifications / Get notified when a teammate mentions you. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:completion-sound`<br>general › Completion sound | matches | settings | Completion sound / Choose what plays when AI finishes working in a chat. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:full-disk-access-permissions`<br>general › Full disk access permissions | matches | settings | Full disk access permissions / To let agents work without repeated folder permission prompts. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:auto-convert-long-text`<br>general › Auto-convert long text | matches | settings | Auto-convert long text / Convert pasted text over 5000 characters into text attachments | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:i-m-not-absolutely-right-thank-you-very-much`<br>general › I'm not absolutely right, thank you very much | matches | settings | I'm not absolutely right, thank you very much | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:always-show-context-usage`<br>general › Always show context usage | matches | settings | Always show context usage / Always show context usage. By default, it is only shown when more than | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:caffeinate-while-agents-are-running`<br>general › Caffeinate while agents are running | matches | settings | Caffeinate while agents are running / Prevent your Mac from sleeping while an agent is actively working. Shu | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:workspace-api-access`<br>general › Workspace API access | missing | settings | Workspace API access / Give new workspaces access to the Conductor API | `` | [settings-general](ui-map/oc/settings-general.png) | copy not shown in any OpenConductor capture |
-| `settings-row:general:restart-automatically-on-update`<br>general › Restart automatically on update | matches | settings | Restart automatically on update | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:show-mcp-status-in-chat`<br>general › Show MCP status in chat | matches | settings | Show MCP status in chat / Show a per-session MCP server status indicator in the composer. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:don-t-collapse-tool-calls-garry-mode`<br>general › Don't collapse tool calls (Garry Mode) | matches | settings | Don't collapse tool calls (Garry Mode) / Show all tool calls expanded by default instead of collapsed. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:general:sync-agent-configs`<br>general › Sync agent configs | matches | settings | Sync agent configs / Copy skills, slash commands, and MCP servers between Claude Code and C | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `settings-row:git:git-identity`<br>git › Git identity | missing | cloud-org | Git identity / Name and email used for commits in cloud workspaces. | `` | [settings-git](ui-map/oc/settings-git.png) | copy not shown in any OpenConductor capture |
-| `settings-row:git:branch-new-workspaces-from`<br>git › Branch new workspaces from | matches | settings | Branch new workspaces from / Each workspace is an isolated copy of your codebase. | `` | [settings-repo-git](ui-map/oc/settings-repo-git.png) | on screen in both; state settings-repo-git matches |
-| `settings-row:git:remote-origin`<br>git › Remote origin | matches | settings | Remote origin / Where should we push, pull, and create PRs? | `` | [settings-repo-git](ui-map/oc/settings-repo-git.png) | on screen in both; state settings-repo-git matches |
-| `settings-row:git:open-pull-requests-in`<br>git › Open pull requests in | matches | settings | Open pull requests in | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
-| `settings-row:git:branch-name-prefix`<br>git › Branch name prefix | matches | settings | Branch name prefix / Prefix for new workspace branch names. | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
-| `settings-row:git:rename-workspace-when-branch-is-named`<br>git › Rename workspace when branch is named | matches | settings | Rename workspace when branch is named / Automatically rename workspaces from their placeholder city name to th | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
-| `settings-row:git:delete-branch-on-archive`<br>git › Delete branch on archive | matches | settings | Delete branch on archive / Delete the local branch when archiving a workspace. To delete the remo | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
-| `settings-row:git:archive-on-merge`<br>git › Archive on merge | matches | settings | Archive on merge / Automatically archive a workspace after merging its PR in Conductor | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
-| `settings-row:git:automerge`<br>git › Automerge | matches | settings | Automerge / Show an automerge button in the git panel when checks are pending. Req | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
-| `settings-row:git:treat-optional-checks-as-blocking`<br>git › Treat optional checks as blocking | matches | settings | Treat optional checks as blocking / Hide the merge button when any check has failed, including checks GitH | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
-| `settings-row:git:set-upstream-on-plain-git-push`<br>git › Set upstream on plain git push | matches | settings | Set upstream on plain git push / Configure new Conductor workspaces so plain git push sets a branch ups | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
-| `settings-row:git:use-github-stacked-prs`<br>git › Use GitHub stacked PRs | matches | settings | Use GitHub stacked PRs / Instruct agents that they can use `gh stack` for PR stacking. | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
-| `settings-row:ports:exclusive-port-forwarding`<br>ports › Exclusive port forwarding | missing | settings | Exclusive port forwarding / Turning on port forwarding in one workspace turns it off everywhere el | `` | [settings-ports](ui-map/ref/settings-ports.png) | copy not shown in any OpenConductor capture |
-| `settings-row:ports:forwarding-strategies`<br>ports › Forwarding strategies | missing | settings | Forwarding strategies / How new forwards choose their local port. Existing forwards keep their | `` | [settings-ports](ui-map/ref/settings-ports.png) | copy not shown in any OpenConductor capture |
-| `settings-row:ports:local-port-range`<br>ports › Local port range | missing | settings | Local port range / Used for forwards that don't match their remote port number. | `` | [settings-ports](ui-map/ref/settings-ports.png) | copy not shown in any OpenConductor capture |
-| `settings-row:ports:manual-overrides`<br>ports › Manual overrides | missing | settings | Manual overrides | `` | [settings-ports](ui-map/ref/settings-ports.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:use-workspace-tabs`<br>internal › Use workspace tabs | missing | cloud-org | Use workspace tabs / Show open workspaces as browser-style tabs across the top of the windo | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:initial-claude-permission-mode`<br>internal › Initial Claude permission mode | missing | settings | Initial Claude permission mode / Set the native Claude permission mode for new local Claude sessions. I | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:initial-codex-approval-policy-and-sandbox`<br>internal › Initial Codex approval policy and sandbox | missing | settings | Initial Codex approval policy and sandbox / Set native Codex approval policy and sandbox values for new local Code | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:sidecar-http-health`<br>internal › Sidecar HTTP health | missing | settings | Sidecar HTTP health | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:build-commit`<br>internal › Build commit | missing | settings | Build commit / The commit this build was made from. | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:log-viewer`<br>internal › Log viewer | missing | settings | Log viewer / Open the app log viewer for this Conductor instance. | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:app-logger-token`<br>internal › App logger token | missing | settings | App logger token | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:onboarding`<br>internal › Onboarding | missing | onboarding-auth | Onboarding / Open the real onboarding flows the way new users see them. Anything yo | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:new-member-onboarding-state`<br>internal › New member onboarding state | missing | onboarding-auth | New member onboarding state / Treat a shared org's membership as not onboarded: the org switcher sho | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:terminal-render-debug-log`<br>internal › Terminal render debug log | missing | settings | Terminal render debug log / Log raw terminal input/output and renderer events through the app logg | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:frame-drop-logging`<br>internal › Frame drop logging | missing | settings | Frame drop logging / Log any frame that takes more than 200ms to render through the app log | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:cloud-file-sync-trigger`<br>internal › Cloud file sync trigger | missing | routines | Cloud file sync trigger / Choose whether cloud file sync polls or waits for workspace change sig | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:keep-cloud-workspaces-independent-from-local-repositories`<br>internal › Keep cloud workspaces independent from local repositories | missing | cloud-org | Keep cloud workspaces independent from local repositories / Prevent cloud workspaces from attaching to matching repositories on th | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:request-metadata`<br>internal › Request metadata | missing | settings | Request metadata / Show requested and returned model/runtime metadata in the context hove | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:claude-token-usage-tracking`<br>internal › Claude token usage tracking | missing | settings | Claude token usage tracking / Track Claude token usage totals, show them in context usage, and log t | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:verbose-logging`<br>internal › Verbose logging | missing | settings | Verbose logging / Enable extra diagnostic logs in the frontend, Rust host, and sidecar. | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:tauri-http-proxy`<br>internal › Tauri HTTP proxy | missing | cloud-org | Tauri HTTP proxy / Route native Tauri HTTP requests through a local proxy. Applies immedi | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:save-workspace-session-logs`<br>internal › Save workspace session logs | missing | settings | Save workspace session logs / Persist frontend-ingested session events on disk. | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:crash-test`<br>internal › Crash test | missing | routines | Crash test / Trigger a crash to validate error reporting in Sentry. | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:error-reporting-test`<br>internal › Error reporting test | missing | routines | Error reporting test / Trigger logged, request-scoped, and async errors in Roundhouse and a r | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:agent-binaries`<br>internal › Agent binaries | missing | settings | Agent binaries / Re-download the pinned Claude / Codex binary, and inject artificial fa | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:internal:feature-flags`<br>internal › Feature flags | missing | settings | Feature flags / Feature flags received from PostHog for the current user. Toggle to ov | `` | [settings-internal](ui-map/ref/settings-internal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:models:default-model`<br>models › Default model | wrong | settings | Default model / Model for new chats | `` | [settings-models](ui-map/oc/settings-models.png) | not rendered in a reference capture; OpenConductor shows it in settings-providers, not in the host state |
-| `settings-row:models:codex-personality`<br>models › Codex personality | matches | settings | Codex personality | `` | [settings-models](ui-map/oc/settings-models.png) | on screen in both; state settings-models matches |
-| `settings-row:models:claude-output-style`<br>models › Claude output style | matches | settings | Claude output style / Choose which output style to apply to new chats. Existing chats do not | `` | [settings-models](ui-map/oc/settings-models.png) | on screen in both; state settings-models matches |
-| `settings-row:models:review-model`<br>models › Review model | matches | settings | Review model | `` | [settings-models](ui-map/oc/settings-models.png) | on screen in both; state settings-models matches |
-| `settings-row:models:default-to-plan-mode-in-new-chats`<br>models › Default to plan mode in new chats | matches | cloud-org | Default to plan mode in new chats | `` | [settings-models](ui-map/oc/settings-models.png) | on screen in both; state settings-models matches |
-| `settings-row:organization-preferences:include-link-to-workspace-in-pr-description`<br>organization-preferences › Include link to workspace in PR description | matches | cloud-org | Include link to workspace in PR description | `` | [settings-org-preferences](side-by-side/settings-org-05-preferences.png) | on screen in both; state settings-org-preferences matches |
-| `settings-row:actions:use-spotlight-testing`<br>actions › Use spotlight testing | matches | settings | Use spotlight testing / Replace Run with Spotlight for this repository so workspace changes ar | `` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | on screen in both; state settings-repo-actions matches |
-| `settings-row:actions:general-preferences`<br>actions › General preferences | matches | settings | General preferences / Add custom instructions sent to the agent at the start of every new ch | `` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | on screen in both; state settings-repo-actions matches |
-| `settings-row:misc:icon`<br>misc › Icon | matches | settings | Icon / Shown next to the repository name in the sidebar. | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
-| `settings-row:misc:root-path`<br>misc › Root path | matches | settings | Root path / Do not move or delete this directory. Instead, remove the repository i | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
-| `settings-row:misc:workspaces-path`<br>misc › Workspaces path | matches | settings | Workspaces path / Do not move or delete the workspace subdirectories. Instead, archive w | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
-| `settings-row:misc:preview-urls`<br>misc › Preview URLs | matches | settings | Preview URLs / Set the terminal panel's Open URLs. The first URL is the default; addi | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
-| `settings-row:misc:files-to-copy`<br>misc › Files to copy | matches | settings | Files to copy / Conductor will automatically copy these file paths in each new workspa | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
-| `settings-row:misc:remove-repository`<br>misc › Remove repository | matches | settings | Remove repository / Remove this repository and its workspaces from Conductor. | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
-| `settings-row:appearance:colored-sidebar-diffs`<br>appearance › Colored sidebar diffs | wrong | settings | Colored sidebar diffs / Always show line change colors in the sidebar, even for unselected wor | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
-| `settings-row:appearance:code-ligatures`<br>appearance › Code ligatures | wrong | settings | Code ligatures / Use font ligatures in file editors and diffs. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
-| `settings-row:appearance:theme`<br>appearance › Theme | wrong | settings | Theme / Switch between light, dark, and system appearance. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
-| `settings-row:appearance:low-contrast-dark-mode`<br>appearance › Low-contrast dark mode | wrong | settings | Low-contrast dark mode / Soften the app's colors when using the dark theme. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
-| `settings-row:appearance:app-zoom`<br>appearance › App zoom | wrong | settings | App zoom / Adjust the size of the Conductor interface. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
-| `settings-row:appearance:accessible-colors`<br>appearance › Accessible colors | wrong | settings | Accessible colors / Theme optimized for color vision differences. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
-| `settings-row:appearance:code-theme`<br>appearance › Code theme | wrong | settings | Code theme / Syntax highlighting theme for code and diffs. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
-| `settings-row:appearance:mono-font`<br>appearance › Mono Font | wrong | settings | Mono Font / Font used for code and diffs. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
-| `settings-row:appearance:markdown-style`<br>appearance › Markdown Style | wrong | settings | Markdown Style / Rendering style for markdown files. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
-| `settings-row:appearance:terminal-font`<br>appearance › Terminal font | wrong | settings | Terminal font / Font family and size for the terminal. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
-| `settings-row:appearance:appearance-settings`<br>appearance › Appearance settings | missing | settings | Appearance settings / Theme, typography, color, and editor appearance. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | copy not shown in any OpenConductor capture |
-| `settings-row:providers:use-claude-code-with-chrome`<br>providers › Use Claude Code with Chrome | missing | settings | Use Claude Code with Chrome | `` | [settings-providers](ui-map/oc/settings-providers.png) | copy not shown in any OpenConductor capture |
-| `settings-row:environment:environment-settings`<br>environment › Environment settings | missing | settings | Environment settings / Environment variables, files, and preview URLs. | `` | [settings-environment](ui-map/oc/settings-environment.png) | copy not shown in any OpenConductor capture |
-| `settings-row:scripts:repository-scripts`<br>scripts › Repository scripts | missing | settings | Repository scripts / Setup and run scripts for the selected repository. | `` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | copy not shown in any OpenConductor capture |
-| `settings-row:terminal:big-terminal-settings`<br>terminal › Big terminal settings | missing | settings | Big terminal settings / Configure the experimental center-pane terminal. | `` | [settings-terminal](ui-map/oc/settings-terminal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:organization-members:organization-members`<br>organization-members › Organization members | missing | cloud-org | Organization members / Manage organization membership. | `` | [settings-org-members](side-by-side/settings-org-04-members.png) | copy not shown in any OpenConductor capture |
-| `settings-row:organization-computer:cloud-computer`<br>organization-computer › Cloud computer | wrong | cloud-org | Cloud computer / Configure the organization's cloud computer. | `` | [settings-org-computer](side-by-side/settings-org-03-computer.png) | host state settings-org-computer is wrong |
-| `settings-row:organization-environment:environment`<br>organization-environment › Environment | matches | cloud-org | Environment / Configure personal and shared cloud environment variables. | `` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
-| `settings-row:organization-prompts:prompts`<br>organization-prompts › Prompts | matches | cloud-org | Prompts / Custom instructions for the Review, Create PR, and Resolve conflicts b | `` | [settings-org-prompts](side-by-side/settings-org-08-prompts.png) | on screen in both; state settings-org-prompts matches |
-| `settings-row:organization-mcp-servers:mcps`<br>organization-mcp-servers › MCPs | missing | cloud-org | MCPs / Configure MCP servers for cloud workspaces. | `` |  | copy not shown in any OpenConductor capture |
-
-## dialog (64: 52 missing, 5 wrong, 7 matches)
+## settings-page (all 29 retained rows, including exclusions)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
-| `dialog:conductor-passport`<br>Conductor Passport | missing | shell | Conductor Passport | `tss` |  | copy not shown in any OpenConductor capture |
-| `dialog:clone-github-repo`<br>Clone GitHub repo | matches | git-review | Clone GitHub repo | `los` | [dialog-clone-github](ui-map/oc/dialog-clone-github.png) | on screen in both; state dialog-clone-github matches |
-| `dialog:create-project`<br>Create project | matches | workspaces | Create project | `gbi` | [dialog-create-project](side-by-side/workspaces-dialog-create-project.png) | on screen in both; state dialog-create-project matches |
-| `dialog:cloud-desktop`<br>Cloud desktop | matches | cloud-org | Cloud desktop | `O9s` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
-| `dialog:workspace-access`<br>Workspace access | wrong | settings | Workspace access | `ioo` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
-| `dialog:mcp-status`<br>MCP status | missing | chat | MCP status | `duo` |  | copy not shown in any OpenConductor capture |
-| `dialog:uo` | missing | triage |  | `_uo` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:dmo` | missing | triage |  | `dmo` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:sko` | missing | triage |  | `sKo` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:github`<br>GitHub | wrong | settings | GitHub | `dca` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
-| `dialog:custom-provider`<br>Custom provider | missing | shell | Custom provider | `Iua` |  | copy not shown in any OpenConductor capture |
-| `dialog:iua` | missing | triage |  | `Iua` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:gda` | missing | triage |  | `Gda` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:kda` | missing | triage |  | `Kda` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:connect-datadog`<br>Connect Datadog | missing | shell | Connect Datadog | `Yda` |  | copy not shown in any OpenConductor capture |
-| `dialog:select-mcp-servers`<br>Select MCP servers | missing | chat | Select MCP servers | `z1a` |  | copy not shown in any OpenConductor capture |
-| `dialog:rfa` | missing | triage |  | `rfa` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:nfa` | missing | triage |  | `Nfa` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:github-organizations`<br>GitHub organizations | wrong | cloud-org | GitHub organizations | `Nfa` | [settings-org-github](side-by-side/settings-org-03-computer.png) | host state settings-org-github is wrong |
-| `dialog:xzi` | missing | triage |  | `xzi` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:providers`<br>Providers | missing | shell | Providers | `I0a` |  | copy not shown in any OpenConductor capture |
-| `dialog:uma` | missing | triage |  | `uma` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:hma` | missing | triage |  | `Hma` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:w-a` | missing | triage |  | `W_a` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:sync-agent-configs`<br>Sync agent configs | matches | settings | Sync agent configs | `h` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `dialog:new-workspace`<br>New workspace | matches | workspaces | New workspace | `pya` | [create](side-by-side/create-composer-01-dialog.png) | on screen in both; state create matches |
-| `dialog:sya` | missing | triage |  | `Sya` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:tya` | missing | triage |  | `Tya` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:rya` | missing | triage |  | `Rya` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:lya` | missing | triage |  | `Lya` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:connect-github`<br>Connect GitHub | wrong | onboarding-auth | Connect GitHub | `C5a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor shows it in settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing |
-| `dialog:t5a` | missing | triage |  | `T5a` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:feedback`<br>Feedback | missing | shell | Feedback | `z5a` |  | copy not shown in any OpenConductor capture |
-| `dialog:submit-a-prompt`<br>Submit a prompt | matches | shell | Submit a prompt | `W5a` | [dialog-submit-prompt](ui-map/oc/dialog-submit-prompt.png) | on screen in both; state dialog-submit-prompt matches |
-| `dialog:build-snapshot-logs`<br>Build snapshot logs | missing | shell | Build snapshot logs | `xSa` |  | copy not shown in any OpenConductor capture |
-| `dialog:csa` | missing | triage |  | `CSa` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:psa` | missing | triage |  | `PSa` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:sa` | missing | triage |  | `$Sa` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:trigger-with-a-webhook`<br>Trigger with a webhook | missing | routines | Trigger with a webhook | `gka` |  | copy not shown in any OpenConductor capture |
-| `dialog:a7a` | missing | triage |  | `a7a` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:version-history`<br>Version history | missing | shell | Version history | `c7a` |  | copy not shown in any OpenConductor capture |
-| `dialog:create-a-private-github-repo`<br>Create a private GitHub repo? | missing | git-review | Create a private GitHub repo? | `was` |  | copy not shown in any OpenConductor capture |
-| `dialog:discard-access-changes`<br>Discard access changes? | missing | shell | Discard access changes? | `_oo` |  | copy not shown in any OpenConductor capture |
-| `dialog:bfo` | missing | triage |  | `Bfo` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:reset-chat`<br>Reset chat? | matches | chat | Reset chat? | `dDo` | [dialog-reset-chat](side-by-side/chat-tabs-dialog-reset-chat.png) | on screen in both; state dialog-reset-chat matches |
-| `dialog:discard-comment`<br>Discard comment? | missing | shell | Discard comment? | `SVo` |  | copy not shown in any OpenConductor capture |
-| `dialog:dra` | missing | triage |  | `Dra` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:sxe` | missing | triage |  | `sxe` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:leave-without-building`<br>Leave without building? | missing | shell | Leave without building? | `Sha` |  | copy not shown in any OpenConductor capture |
-| `dialog:pause-port-forwarding`<br>Pause port forwarding? | missing | terminal-scripts | Pause port forwarding? | `Gzi` |  | copy not shown in any OpenConductor capture |
-| `dialog:j3a` | missing | triage |  | `J3a` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:cva` | missing | triage |  | `Cva` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:iva` | missing | triage |  | `Iva` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:discard-file-changes`<br>Discard file changes? | missing | shell | Discard file changes? | `jva` |  | copy not shown in any OpenConductor capture |
-| `dialog:change-root-path`<br>Change root path? | missing | shell | Change root path? | `Uva` |  | copy not shown in any OpenConductor capture |
-| `dialog:m6a` | missing | triage |  | `m6a` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:c6a` | missing | triage |  | `C6a` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:y5a` | missing | triage |  | `y5a` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:discard-changes`<br>Discard changes? | wrong | shell | Discard changes? | `CSa` | [menu-changes-file](side-by-side/shell-menus-02-changes-file.png) | host state menu-changes-file is wrong |
-| `dialog:h8a` | missing | triage |  | `H8a` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:c7a` | missing | triage |  | `c7a` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:d7a` | missing | triage |  | `d7a` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:unsaved-changes`<br>Unsaved Changes | missing | shell | Unsaved Changes | `f7a` |  | copy not shown in any OpenConductor capture |
-| `dialog:rotate-webhook-secret`<br>Rotate webhook secret? | missing | routines | Rotate webhook secret? | `b7a` |  | copy not shown in any OpenConductor capture |
+| `settings-page:account`<br>account | wrong / in-scope | settings |  | `` | [settings-account](ui-map/oc/settings-account.png) | diff 4.9% at t24, copy 83% |
+| `settings-page:advanced`<br>advanced | wrong / in-scope | settings |  | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | diff 6.3% at t24, copy 95% |
+| `settings-page:experimental`<br>experimental | matches / in-scope | settings |  | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | diff 3.2% at t24, copy 100% |
+| `settings-page:general`<br>general | matches / in-scope | settings |  | `` | [settings-general](ui-map/oc/settings-general.png) | diff 3.1% at t24, copy 95% |
+| `settings-page:git`<br>git | matches / in-scope | settings |  | `` | [settings-git](ui-map/oc/settings-git.png) | diff 3.4% at t24, copy 100% |
+| `settings-page:ports`<br>ports | unverified / deferred | settings |  | `` | [settings-ports](ui-map/ref/settings-ports.png) | No valid reference observation proves this gap. Raw assessment: OpenConductor's settings have no ports page |
+| `settings-page:internal`<br>internal | unverified / in-scope | settings |  | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: OpenConductor's settings have no internal page |
+| `settings-page:models`<br>models | matches / in-scope | settings |  | `` | [settings-models](ui-map/oc/settings-models.png) | diff 3.3% at t24, copy 93% |
+| `settings-page:organization-preferences`<br>organization-preferences | matches / deferred | cloud-org |  | `` | [settings-org-preferences](side-by-side/settings-org-05-preferences.png) | diff 1.3% at t24, copy 96% |
+| `settings-page:actions`<br>actions | matches / in-scope | settings |  | `` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | diff 4.2% at t24, copy 100% |
+| `settings-page:misc`<br>misc | matches / in-scope | settings |  | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | diff 4.5% at t24, copy 100% |
+| `settings-page:appearance`<br>appearance | wrong / in-scope | settings |  | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | diff 5.8% at t24, copy 96% |
+| `settings-page:providers`<br>providers | wrong / in-scope | settings |  | `` | [settings-providers](ui-map/oc/settings-providers.png) | diff 7.6% at t24, copy 80% |
+| `settings-page:environment`<br>environment | matches / in-scope | settings |  | `` | [settings-environment](ui-map/oc/settings-environment.png) | diff 2.9% at t24, copy 100% |
+| `settings-page:scripts`<br>scripts | matches / in-scope | settings |  | `` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | diff 2.3% at t24, copy 100% |
+| `settings-page:terminal`<br>terminal | unverified / in-scope | settings |  | `` | [settings-terminal](ui-map/oc/settings-terminal.png) | No valid reference observation proves this gap. Raw assessment: no valid reference render (redirected to /settings/user/terminal), diff 5.0% at t24 |
+| `settings-page:organization-members`<br>organization-members | matches / deferred | cloud-org |  | `` | [settings-org-members](side-by-side/settings-org-04-members.png) | diff 1.5% at t24, copy 96% |
+| `settings-page:organization-computer`<br>organization-computer | wrong / deferred | cloud-org |  | `` | [settings-org-computer](side-by-side/settings-org-03-computer.png) | diff 4.5% at t24, copy 83% |
+| `settings-page:organization-environment`<br>organization-environment | matches / deferred | cloud-org |  | `` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | diff 1.4% at t24, copy 92% |
+| `settings-page:organization-prompts`<br>organization-prompts | matches / deferred | cloud-org |  | `` | [settings-org-prompts](side-by-side/settings-org-08-prompts.png) | diff 2.0% at t24, copy 92% |
+| `settings-page:organization-mcp-servers`<br>organization-mcp-servers | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state for this page |
+| `settings-page:cloud`<br>cloud | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state for this page |
+| `settings-page:setup`<br>setup | matches / deferred | cloud-org |  | `` | [settings-cloud-setup](side-by-side/settings-org-01-cloud-setup.png) | diff 4.0% at t24, copy 90% |
+| `settings-page:organization`<br>organization | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state for this page |
+| `settings-page:github`<br>github | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state for this page |
+| `settings-page:mcp`<br>mcp | unverified / deferred | cloud-org |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state for this page |
+| `settings-page:repos`<br>repos | unverified / in-scope | settings |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state for this page |
+| `settings-page:user`<br>user | unverified / in-scope | settings |  | `` |  | No valid reference observation proves this gap. Raw assessment: no state for this page |
+| `settings-page:key-bindings`<br>key-bindings | unverified / in-scope | settings |  | `` | [settings-key-bindings](ui-map/oc/settings-key-bindings.png) | No valid reference observation proves this gap. Raw assessment: no valid reference render (redirected to /settings/user/general), diff 5.0% at t24 |
 
-## sheet (3: 3 missing, 0 wrong, 0 matches)
+## settings-row (all 121 retained rows, including exclusions)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
-| `sheet:vda` | missing | triage |  | `vda` |  | no literal copy to locate it; not observed in any capture |
-| `sheet:fda` | missing | triage |  | `Fda` |  | no literal copy to locate it; not observed in any capture |
-| `sheet:hha` | missing | triage |  | `Hha` |  | no literal copy to locate it; not observed in any capture |
+| `settings-row:account:account-and-integrations`<br>account › Account and integrations | unverified / deferred | cloud-org | Account and integrations / Your Conductor account, billing, GitHub access, and Linear connection. | `` | [settings-account](ui-map/oc/settings-account.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:account:enterprise-data-privacy`<br>account › Enterprise data privacy | wrong / in-scope | settings | Enterprise data privacy / Disable features requiring external AI providers, such as AI generated | `` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
+| `settings-row:account:claude-code-tool-approvals`<br>account › Claude Code tool approvals | wrong / in-scope | settings | Claude Code tool approvals / Require manual approval before agents can run tools. | `` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
+| `settings-row:account:codex-tool-approvals`<br>account › Codex tool approvals | wrong / in-scope | settings | Codex tool approvals | `` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
+| `settings-row:account:sign-out`<br>account › Sign out | missing / in-scope | onboarding-auth | Sign out / Sign out of your Conductor account. | `` | [settings-account](ui-map/oc/settings-account.png) | copy not shown in any OpenConductor capture |
+| `settings-row:advanced:conductor-root-directory`<br>advanced › Conductor root directory | wrong / in-scope | settings | Conductor root directory / Where Conductor stores repositories and workspaces. This should be an  | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
+| `settings-row:advanced:claude-code-executable-path`<br>advanced › Claude Code executable path | wrong / in-scope | settings | Claude Code executable path / Override the bundled Claude Code executable with a custom one. Leave e | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
+| `settings-row:advanced:codex-executable-path`<br>advanced › Codex executable path | wrong / in-scope | settings | Codex executable path / Override the bundled Codex executable with a custom one. Leave empty t | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
+| `settings-row:advanced:opencode-executable-path`<br>advanced › OpenCode executable path | missing / in-scope | settings | OpenCode executable path / Override the bundled OpenCode executable with a custom one. Leave empt | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | copy not shown in any OpenConductor capture |
+| `settings-row:advanced:ssh-private-key-path`<br>advanced › SSH private key path | wrong / deferred | cloud-org | SSH private key path / Use your own SSH key for cloud workspace access. Leave empty to auto-g | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
+| `settings-row:advanced:remote-execution-mcp`<br>advanced › Remote execution MCP | wrong / in-scope | settings | Remote execution MCP / Let remote agents request approved one-shot commands on this Mac. Each | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
+| `settings-row:advanced:always-allow-local-commands`<br>advanced › Always allow local commands | wrong / in-scope | settings | Always allow local commands / Run local commands from remote agents without asking. Turned on when y | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
+| `settings-row:advanced:enable-file-sync-in-new-cloud-workspaces`<br>advanced › Enable file sync in new cloud workspaces | wrong / deferred | cloud-org | Enable file sync in new cloud workspaces / Start syncing when you open a local terminal or run a local task. Sync | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
+| `settings-row:advanced:set-upstream-on-plain-git-push`<br>advanced › Set upstream on plain git push | wrong / in-scope | settings | Set upstream on plain git push / Configure new Conductor workspaces so plain git push sets a branch ups | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
+| `settings-row:advanced:scrollback-limit`<br>advanced › Scrollback limit | wrong / in-scope | settings | Scrollback limit / Approximate terminal output to keep. | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
+| `settings-row:experimental:auto-permission-mode`<br>experimental › Auto permission mode | matches / in-scope | settings | Auto permission mode / Turns on Claude auto mode. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:big-terminal-mode`<br>experimental › Big terminal mode | matches / in-scope | settings | Big terminal mode / Create big terminals in the center pane with ⌘⇧T | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:new-workspace-page`<br>experimental › New workspace page | matches / in-scope | settings | New workspace page / Full-screen workspace creation | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:tab-freak-mode`<br>experimental › Tab Freak Mode | matches / in-scope | settings | Tab Freak Mode / Allow up to 10 chat and terminal tabs per workspace. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:split-tabs`<br>experimental › Split tabs | matches / in-scope | settings | Split tabs / Split the center panel and move tabs between panes. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:fork-chat-to-new-tab`<br>experimental › Fork chat to new tab | matches / in-scope | settings | Fork chat to new tab / Fork a chat, even mid-turn, from its tab's context menu or with ⌘⌥↵. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:in-app-browser-preview`<br>experimental › In-app browser preview | matches / in-scope | settings | In-app browser preview / Open the preview button in an in-app browser tab (with the annotation  | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:use-legacy-file-preview-and-editing`<br>experimental › Use legacy file preview and editing | matches / in-scope | settings | Use legacy file preview and editing | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:show-agent-cost`<br>experimental › Show agent cost | matches / deferred | cloud-org | Show agent cost / Show estimated agent costs for cloud workspaces. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:show-workspace-numbers`<br>experimental › Show workspace numbers | matches / in-scope | settings | Show workspace numbers | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:workspace-status-matrix`<br>experimental › Workspace status matrix | matches / in-scope | settings | Workspace status matrix / Use the matrix-style workspace status indicator in Home and the sideba | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:cloud-desktop`<br>experimental › Cloud desktop | matches / deferred | cloud-org | Cloud desktop / Show Cloud desktop tabs in cloud workspaces. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:add-projects-without-github`<br>experimental › Add projects without GitHub | matches / in-scope | settings | Add projects without GitHub / Let Conductor add existing local repositories even when they are not c | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:auto-run-after-setup`<br>experimental › Auto-run after setup | matches / in-scope | settings | Auto-run after setup / Start a repository's run script automatically after a new local worksp | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:dashboard`<br>experimental › Dashboard | matches / in-scope | settings | Dashboard / Show the dashboard and workspace sidebar. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:voice-mode`<br>experimental › Voice mode | matches / in-scope | settings | Voice mode / Enables speech-to-text in the chat composer. Press Ctrl+Shift+D to sta | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:show-sidebar-resource-usage`<br>experimental › Show sidebar resource usage | matches / in-scope | settings | Show sidebar resource usage / Shows CPU and memory usage in the workspace sidebar footer. | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:sidebar-transparency`<br>experimental › Sidebar transparency | matches / in-scope | settings | Sidebar transparency / Use native macOS vibrancy behind the workspace sidebar. Takes effect a | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:experimental:graphite-stack-support`<br>experimental › Graphite stack support | matches / deferred | cloud-org | Graphite stack support / Detect Graphite stacks for the active local workspace and show stack-a | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `settings-row:general:send-messages-with`<br>general › Send messages with | matches / in-scope | settings | Send messages with / Choose which key combination sends messages | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:follow-up-behavior`<br>general › Follow-up behavior | matches / in-scope | settings | Follow-up behavior / Queue messages to send after the agent finishes, or steer the agent mi | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:agent-notifications`<br>general › Agent notifications | matches / in-scope | settings | Agent notifications / Get notified when an agent finishes working. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:notifications`<br>general › @ notifications | matches / deferred | cloud-org | @ notifications / Get notified when a teammate mentions you. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:completion-sound`<br>general › Completion sound | matches / in-scope | settings | Completion sound / Choose what plays when AI finishes working in a chat. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:full-disk-access-permissions`<br>general › Full disk access permissions | matches / in-scope | settings | Full disk access permissions / To let agents work without repeated folder permission prompts. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:auto-convert-long-text`<br>general › Auto-convert long text | matches / in-scope | settings | Auto-convert long text / Convert pasted text over 5000 characters into text attachments | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:i-m-not-absolutely-right-thank-you-very-much`<br>general › I'm not absolutely right, thank you very much | matches / in-scope | settings | I'm not absolutely right, thank you very much | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:always-show-context-usage`<br>general › Always show context usage | matches / in-scope | settings | Always show context usage / Always show context usage. By default, it is only shown when more than | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:caffeinate-while-agents-are-running`<br>general › Caffeinate while agents are running | matches / in-scope | settings | Caffeinate while agents are running / Prevent your Mac from sleeping while an agent is actively working. Shu | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:workspace-api-access`<br>general › Workspace API access | unverified / in-scope | settings | Workspace API access / Give new workspaces access to the Conductor API | `` | [settings-general](ui-map/oc/settings-general.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:general:restart-automatically-on-update`<br>general › Restart automatically on update | matches / in-scope | settings | Restart automatically on update | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:show-mcp-status-in-chat`<br>general › Show MCP status in chat | matches / in-scope | settings | Show MCP status in chat / Show a per-session MCP server status indicator in the composer. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:don-t-collapse-tool-calls-garry-mode`<br>general › Don't collapse tool calls (Garry Mode) | matches / in-scope | settings | Don't collapse tool calls (Garry Mode) / Show all tool calls expanded by default instead of collapsed. | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:general:sync-agent-configs`<br>general › Sync agent configs | matches / in-scope | settings | Sync agent configs / Copy skills, slash commands, and MCP servers between Claude Code and C | `` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `settings-row:git:git-identity`<br>git › Git identity | unverified / deferred | cloud-org | Git identity / Name and email used for commits in cloud workspaces. | `` | [settings-git](ui-map/oc/settings-git.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:git:branch-new-workspaces-from`<br>git › Branch new workspaces from | matches / in-scope | settings | Branch new workspaces from / Each workspace is an isolated copy of your codebase. | `` | [settings-repo-git](ui-map/oc/settings-repo-git.png) | on screen in both; state settings-repo-git matches |
+| `settings-row:git:remote-origin`<br>git › Remote origin | matches / in-scope | settings | Remote origin / Where should we push, pull, and create PRs? | `` | [settings-repo-git](ui-map/oc/settings-repo-git.png) | on screen in both; state settings-repo-git matches |
+| `settings-row:git:open-pull-requests-in`<br>git › Open pull requests in | matches / in-scope | settings | Open pull requests in | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
+| `settings-row:git:branch-name-prefix`<br>git › Branch name prefix | matches / in-scope | settings | Branch name prefix / Prefix for new workspace branch names. | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
+| `settings-row:git:rename-workspace-when-branch-is-named`<br>git › Rename workspace when branch is named | matches / in-scope | settings | Rename workspace when branch is named / Automatically rename workspaces from their placeholder city name to th | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
+| `settings-row:git:delete-branch-on-archive`<br>git › Delete branch on archive | matches / in-scope | settings | Delete branch on archive / Delete the local branch when archiving a workspace. To delete the remo | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
+| `settings-row:git:archive-on-merge`<br>git › Archive on merge | matches / in-scope | settings | Archive on merge / Automatically archive a workspace after merging its PR in Conductor | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
+| `settings-row:git:automerge`<br>git › Automerge | matches / in-scope | settings | Automerge / Show an automerge button in the git panel when checks are pending. Req | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
+| `settings-row:git:treat-optional-checks-as-blocking`<br>git › Treat optional checks as blocking | matches / in-scope | settings | Treat optional checks as blocking / Hide the merge button when any check has failed, including checks GitH | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
+| `settings-row:git:set-upstream-on-plain-git-push`<br>git › Set upstream on plain git push | matches / in-scope | settings | Set upstream on plain git push / Configure new Conductor workspaces so plain git push sets a branch ups | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
+| `settings-row:git:use-github-stacked-prs`<br>git › Use GitHub stacked PRs | matches / in-scope | settings | Use GitHub stacked PRs / Instruct agents that they can use `gh stack` for PR stacking. | `` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
+| `settings-row:ports:exclusive-port-forwarding`<br>ports › Exclusive port forwarding | unverified / deferred | settings | Exclusive port forwarding / Turning on port forwarding in one workspace turns it off everywhere el | `` | [settings-ports](ui-map/ref/settings-ports.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:ports:forwarding-strategies`<br>ports › Forwarding strategies | unverified / deferred | settings | Forwarding strategies / How new forwards choose their local port. Existing forwards keep their | `` | [settings-ports](ui-map/ref/settings-ports.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:ports:local-port-range`<br>ports › Local port range | unverified / deferred | settings | Local port range / Used for forwards that don't match their remote port number. | `` | [settings-ports](ui-map/ref/settings-ports.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:ports:manual-overrides`<br>ports › Manual overrides | unverified / deferred | settings | Manual overrides | `` | [settings-ports](ui-map/ref/settings-ports.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:use-workspace-tabs`<br>internal › Use workspace tabs | unverified / deferred | cloud-org | Use workspace tabs / Show open workspaces as browser-style tabs across the top of the windo | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:initial-claude-permission-mode`<br>internal › Initial Claude permission mode | unverified / in-scope | settings | Initial Claude permission mode / Set the native Claude permission mode for new local Claude sessions. I | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:initial-codex-approval-policy-and-sandbox`<br>internal › Initial Codex approval policy and sandbox | unverified / in-scope | settings | Initial Codex approval policy and sandbox / Set native Codex approval policy and sandbox values for new local Code | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:sidecar-http-health`<br>internal › Sidecar HTTP health | unverified / in-scope | settings | Sidecar HTTP health | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:build-commit`<br>internal › Build commit | unverified / in-scope | settings | Build commit / The commit this build was made from. | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:log-viewer`<br>internal › Log viewer | unverified / in-scope | settings | Log viewer / Open the app log viewer for this Conductor instance. | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:app-logger-token`<br>internal › App logger token | unverified / in-scope | settings | App logger token | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:onboarding`<br>internal › Onboarding | unverified / in-scope | onboarding-auth | Onboarding / Open the real onboarding flows the way new users see them. Anything yo | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:new-member-onboarding-state`<br>internal › New member onboarding state | unverified / in-scope | onboarding-auth | New member onboarding state / Treat a shared org's membership as not onboarded: the org switcher sho | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:terminal-render-debug-log`<br>internal › Terminal render debug log | unverified / in-scope | settings | Terminal render debug log / Log raw terminal input/output and renderer events through the app logg | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:frame-drop-logging`<br>internal › Frame drop logging | unverified / in-scope | settings | Frame drop logging / Log any frame that takes more than 200ms to render through the app log | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:cloud-file-sync-trigger`<br>internal › Cloud file sync trigger | unverified / deferred | routines | Cloud file sync trigger / Choose whether cloud file sync polls or waits for workspace change sig | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:keep-cloud-workspaces-independent-from-local-repositories`<br>internal › Keep cloud workspaces independent from local repositories | unverified / deferred | cloud-org | Keep cloud workspaces independent from local repositories / Prevent cloud workspaces from attaching to matching repositories on th | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:request-metadata`<br>internal › Request metadata | unverified / in-scope | settings | Request metadata / Show requested and returned model/runtime metadata in the context hove | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:claude-token-usage-tracking`<br>internal › Claude token usage tracking | unverified / in-scope | settings | Claude token usage tracking / Track Claude token usage totals, show them in context usage, and log t | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:verbose-logging`<br>internal › Verbose logging | unverified / in-scope | settings | Verbose logging / Enable extra diagnostic logs in the frontend, Rust host, and sidecar. | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:tauri-http-proxy`<br>internal › Tauri HTTP proxy | unverified / deferred | cloud-org | Tauri HTTP proxy / Route native Tauri HTTP requests through a local proxy. Applies immedi | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:save-workspace-session-logs`<br>internal › Save workspace session logs | unverified / in-scope | settings | Save workspace session logs / Persist frontend-ingested session events on disk. | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:crash-test`<br>internal › Crash test | unverified / deferred | routines | Crash test / Trigger a crash to validate error reporting in Sentry. | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:error-reporting-test`<br>internal › Error reporting test | unverified / deferred | routines | Error reporting test / Trigger logged, request-scoped, and async errors in Roundhouse and a r | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:agent-binaries`<br>internal › Agent binaries | unverified / in-scope | settings | Agent binaries / Re-download the pinned Claude / Codex binary, and inject artificial fa | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:internal:feature-flags`<br>internal › Feature flags | unverified / in-scope | settings | Feature flags / Feature flags received from PostHog for the current user. Toggle to ov | `` | [settings-internal](ui-map/ref/settings-internal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:models:default-model`<br>models › Default model | unverified / in-scope | settings | Default model / Model for new chats | `` | [settings-models](ui-map/oc/settings-models.png) | No valid reference observation proves this gap. Raw assessment: not rendered in a reference capture; OpenConductor shows it in settings-providers, not in the host state |
+| `settings-row:models:codex-personality`<br>models › Codex personality | matches / in-scope | settings | Codex personality | `` | [settings-models](ui-map/oc/settings-models.png) | on screen in both; state settings-models matches |
+| `settings-row:models:claude-output-style`<br>models › Claude output style | matches / in-scope | settings | Claude output style / Choose which output style to apply to new chats. Existing chats do not | `` | [settings-models](ui-map/oc/settings-models.png) | on screen in both; state settings-models matches |
+| `settings-row:models:review-model`<br>models › Review model | matches / in-scope | settings | Review model | `` | [settings-models](ui-map/oc/settings-models.png) | on screen in both; state settings-models matches |
+| `settings-row:models:default-to-plan-mode-in-new-chats`<br>models › Default to plan mode in new chats | matches / deferred | cloud-org | Default to plan mode in new chats | `` | [settings-models](ui-map/oc/settings-models.png) | on screen in both; state settings-models matches |
+| `settings-row:organization-preferences:include-link-to-workspace-in-pr-description`<br>organization-preferences › Include link to workspace in PR description | matches / deferred | cloud-org | Include link to workspace in PR description | `` | [settings-org-preferences](side-by-side/settings-org-05-preferences.png) | on screen in both; state settings-org-preferences matches |
+| `settings-row:actions:use-spotlight-testing`<br>actions › Use spotlight testing | matches / in-scope | settings | Use spotlight testing / Replace Run with Spotlight for this repository so workspace changes ar | `` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | on screen in both; state settings-repo-actions matches |
+| `settings-row:actions:general-preferences`<br>actions › General preferences | matches / in-scope | settings | General preferences / Add custom instructions sent to the agent at the start of every new ch | `` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | on screen in both; state settings-repo-actions matches |
+| `settings-row:misc:icon`<br>misc › Icon | matches / in-scope | settings | Icon / Shown next to the repository name in the sidebar. | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
+| `settings-row:misc:root-path`<br>misc › Root path | matches / in-scope | settings | Root path / Do not move or delete this directory. Instead, remove the repository i | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
+| `settings-row:misc:workspaces-path`<br>misc › Workspaces path | matches / in-scope | settings | Workspaces path / Do not move or delete the workspace subdirectories. Instead, archive w | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
+| `settings-row:misc:preview-urls`<br>misc › Preview URLs | matches / in-scope | settings | Preview URLs / Set the terminal panel's Open URLs. The first URL is the default; addi | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
+| `settings-row:misc:files-to-copy`<br>misc › Files to copy | matches / in-scope | settings | Files to copy / Conductor will automatically copy these file paths in each new workspa | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
+| `settings-row:misc:remove-repository`<br>misc › Remove repository | matches / in-scope | settings | Remove repository / Remove this repository and its workspaces from Conductor. | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
+| `settings-row:appearance:colored-sidebar-diffs`<br>appearance › Colored sidebar diffs | wrong / in-scope | settings | Colored sidebar diffs / Always show line change colors in the sidebar, even for unselected wor | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
+| `settings-row:appearance:code-ligatures`<br>appearance › Code ligatures | wrong / in-scope | settings | Code ligatures / Use font ligatures in file editors and diffs. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
+| `settings-row:appearance:theme`<br>appearance › Theme | wrong / in-scope | settings | Theme / Switch between light, dark, and system appearance. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
+| `settings-row:appearance:low-contrast-dark-mode`<br>appearance › Low-contrast dark mode | wrong / in-scope | settings | Low-contrast dark mode / Soften the app's colors when using the dark theme. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
+| `settings-row:appearance:app-zoom`<br>appearance › App zoom | wrong / in-scope | settings | App zoom / Adjust the size of the Conductor interface. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
+| `settings-row:appearance:accessible-colors`<br>appearance › Accessible colors | wrong / in-scope | settings | Accessible colors / Theme optimized for color vision differences. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
+| `settings-row:appearance:code-theme`<br>appearance › Code theme | wrong / in-scope | settings | Code theme / Syntax highlighting theme for code and diffs. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
+| `settings-row:appearance:mono-font`<br>appearance › Mono Font | wrong / in-scope | settings | Mono Font / Font used for code and diffs. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
+| `settings-row:appearance:markdown-style`<br>appearance › Markdown Style | wrong / in-scope | settings | Markdown Style / Rendering style for markdown files. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
+| `settings-row:appearance:terminal-font`<br>appearance › Terminal font | wrong / in-scope | settings | Terminal font / Font family and size for the terminal. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | host state settings-appearance is wrong |
+| `settings-row:appearance:appearance-settings`<br>appearance › Appearance settings | unverified / in-scope | settings | Appearance settings / Theme, typography, color, and editor appearance. | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:providers:use-claude-code-with-chrome`<br>providers › Use Claude Code with Chrome | missing / in-scope | settings | Use Claude Code with Chrome | `` | [settings-providers](ui-map/oc/settings-providers.png) | copy not shown in any OpenConductor capture |
+| `settings-row:environment:environment-settings`<br>environment › Environment settings | unverified / in-scope | settings | Environment settings / Environment variables, files, and preview URLs. | `` | [settings-environment](ui-map/oc/settings-environment.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:scripts:repository-scripts`<br>scripts › Repository scripts | unverified / in-scope | settings | Repository scripts / Setup and run scripts for the selected repository. | `` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:terminal:big-terminal-settings`<br>terminal › Big terminal settings | unverified / in-scope | settings | Big terminal settings / Configure the experimental center-pane terminal. | `` | [settings-terminal](ui-map/oc/settings-terminal.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:organization-members:organization-members`<br>organization-members › Organization members | unverified / deferred | cloud-org | Organization members / Manage organization membership. | `` | [settings-org-members](side-by-side/settings-org-04-members.png) | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `settings-row:organization-computer:cloud-computer`<br>organization-computer › Cloud computer | wrong / deferred | cloud-org | Cloud computer / Configure the organization's cloud computer. | `` | [settings-org-computer](side-by-side/settings-org-03-computer.png) | host state settings-org-computer is wrong |
+| `settings-row:organization-environment:environment`<br>organization-environment › Environment | matches / deferred | cloud-org | Environment / Configure personal and shared cloud environment variables. | `` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
+| `settings-row:organization-prompts:prompts`<br>organization-prompts › Prompts | matches / deferred | cloud-org | Prompts / Custom instructions for the Review, Create PR, and Resolve conflicts b | `` | [settings-org-prompts](side-by-side/settings-org-08-prompts.png) | on screen in both; state settings-org-prompts matches |
+| `settings-row:organization-mcp-servers:mcps`<br>organization-mcp-servers › MCPs | unverified / deferred | cloud-org | MCPs / Configure MCP servers for cloud workspaces. | `` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
 
-## menu (39: 36 missing, 0 wrong, 3 matches)
-
-| Item | Status | Team | Copy | Component | State | Why |
-|---|---|---|---|---|---|---|
-| `menu:v-i` | missing | triage |  | `v_i` |  | no literal copy to locate it; not observed in any capture |
-| `menu:ids` | missing | triage |  | `Ids` |  | no literal copy to locate it; not observed in any capture |
-| `menu:jds` | missing | triage |  | `jds` |  | no literal copy to locate it; not observed in any capture |
-| `menu:p9` | missing | triage |  | `P9` |  | no literal copy to locate it; not observed in any capture |
-| `menu:p9~2` | missing | triage |  | `P9` |  | no literal copy to locate it; not observed in any capture |
-| `menu:yve` | missing | triage |  | `Yve` |  | no literal copy to locate it; not observed in any capture |
-| `menu:nro` | missing | triage |  | `nro` |  | no literal copy to locate it; not observed in any capture |
-| `menu:nro~2` | missing | triage |  | `nro` |  | no literal copy to locate it; not observed in any capture |
-| `menu:moo` | missing | triage |  | `moo` |  | no literal copy to locate it; not observed in any capture |
-| `menu:xoo` | missing | triage |  | `xoo` |  | no literal copy to locate it; not observed in any capture |
-| `menu:g8i` | missing | triage |  | `g8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu:mho` | missing | triage |  | `mho` |  | no literal copy to locate it; not observed in any capture |
-| `menu:uit` | missing | triage |  | `uIt` |  | no literal copy to locate it; not observed in any capture |
-| `menu:kdo` | missing | triage |  | `kDo` |  | no literal copy to locate it; not observed in any capture |
-| `menu:nfi` | missing | shell | Anyone | `nFi` |  | copy not shown in any OpenConductor capture |
-| `menu:nfi~2` | matches | workspaces | All projects | `nFi` | [palette-workspaces](side-by-side/workspaces-palette-workspaces.png) | on screen in both; state palette-workspaces matches |
-| `menu:zna` | missing | triage |  | `zna` |  | no literal copy to locate it; not observed in any capture |
-| `menu:sxe` | missing | shell | Disconnect | `sxe` |  | copy not shown in any OpenConductor capture |
-| `menu:qha` | missing | triage |  | `Qha` |  | no literal copy to locate it; not observed in any capture |
-| `menu:xzi` | missing | triage |  | `Xzi` |  | no literal copy to locate it; not observed in any capture |
-| `menu:rya` | missing | triage |  | `rya` |  | no literal copy to locate it; not observed in any capture |
-| `menu:dsa` | missing | triage |  | `DSa` |  | no literal copy to locate it; not observed in any capture |
-| `menu:aft` | missing | triage |  | `AFt` |  | no literal copy to locate it; not observed in any capture |
-| `menu:rft` | missing | triage |  | `RFt` |  | no literal copy to locate it; not observed in any capture |
-| `menu:svs` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
-| `menu:u6s` | matches | git-review | Edit before sending | `u6s` | [menu-review-edit](side-by-side/chat-tabs-menu-review-edit.png) | on screen in both; state menu-review-edit matches |
-| `menu:eq` | missing | triage |  | `EQ` |  | no literal copy to locate it; not observed in any capture |
-| `menu:bro` | missing | triage |  | `bro` |  | no literal copy to locate it; not observed in any capture |
-| `menu:plo` | missing | triage |  | `Plo` |  | no literal copy to locate it; not observed in any capture |
-| `menu:u8i` | matches | chat | Rename chat / Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
-| `menu:gwt` | missing | triage |  | `gwt` |  | no literal copy to locate it; not observed in any capture |
-| `menu:zoo` | missing | triage |  | `zOo` |  | no literal copy to locate it; not observed in any capture |
-| `menu:sko` | missing | triage |  | `sKo` |  | no literal copy to locate it; not observed in any capture |
-| `menu:lna` | missing | triage |  | `Lna` |  | no literal copy to locate it; not observed in any capture |
-| `menu:gjn` | missing | triage |  | `gJn` |  | no literal copy to locate it; not observed in any capture |
-| `menu:h0a` | missing | triage |  | `h0a` |  | no literal copy to locate it; not observed in any capture |
-| `menu:t9a` | missing | triage |  | `t9a` |  | no literal copy to locate it; not observed in any capture |
-| `menu:ztt` | missing | triage |  | `ZTt` |  | no literal copy to locate it; not observed in any capture |
-| `menu:svs~2` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
-
-## menu-item (89: 83 missing, 0 wrong, 6 matches)
-
-| Item | Status | Team | Copy | Component | State | Why |
-|---|---|---|---|---|---|---|
-| `menu-item:ids` | missing | triage |  | `Ids` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:jds` | missing | triage |  | `jds` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:jds~2` | missing | triage |  | `jds` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:cfn` | missing | triage |  | `cFn` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:cfn~2` | missing | triage |  | `cFn` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:ztt` | missing | triage |  | `ZTt` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:yve` | missing | triage |  | `Yve` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:nro` | missing | triage |  | `nro` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:nro~2` | missing | triage |  | `nro` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:nro~3` | missing | triage |  | `nro` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:nro~4` | missing | triage |  | `nro` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:nro~5` | missing | triage |  | `nro` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:vro` | missing | triage |  | `Vro` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:vro~2` | missing | triage |  | `Vro` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:moo` | missing | triage |  | `moo` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:remove-access`<br>Remove access | missing | shell | Remove access | `moo` |  | copy not shown in any OpenConductor capture |
-| `menu-item:xoo` | missing | triage |  | `xoo` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:xoo~2` | missing | triage |  | `xoo` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:g8i` | missing | triage |  | `g8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:g8i~2` | missing | triage |  | `g8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:g8i~3` | missing | triage |  | `g8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:g8i~4` | missing | triage |  | `g8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:g8i~5` | missing | triage |  | `g8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:mho` | missing | triage |  | `mho` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:mho~2` | missing | triage |  | `mho` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:uit` | missing | triage |  | `uIt` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:uit~2` | missing | triage |  | `uIt` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:kdo` | missing | triage |  | `kDo` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:kdo~2` | missing | triage |  | `kDo` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:kdo~3` | missing | triage |  | `kDo` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:cloud-organization`<br>Cloud organization | missing | onboarding-auth | Cloud organization / Sign in with single sign-on to access | `zna` |  | copy not shown in any OpenConductor capture |
-| `menu-item:create-organization`<br>Create organization | missing | cloud-org | Create organization | `zna` |  | copy not shown in any OpenConductor capture |
-| `menu-item:upgrade-to-pro`<br>Upgrade to Pro | missing | shell | Upgrade to Pro | `zna` |  | copy not shown in any OpenConductor capture |
-| `menu-item:zna` | missing | triage |  | `zna` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:zna~2` | missing | triage |  | `zna` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:disconnect`<br>Disconnect | missing | shell | Disconnect | `sxe` |  | copy not shown in any OpenConductor capture |
-| `menu-item:qha` | missing | triage |  | `Qha` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:qha~2` | missing | triage |  | `Qha` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:qha~3` | missing | triage |  | `Qha` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:xzi` | missing | triage |  | `Xzi` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:yei` | missing | triage |  | `Yei` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:dsa` | missing | triage |  | `DSa` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:dsa~2` | missing | triage |  | `DSa` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:dsa~3` | missing | triage |  | `DSa` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:dsa~4` | missing | triage |  | `DSa` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:anyone`<br>Anyone | missing | shell | Anyone | `nFi` |  | copy not shown in any OpenConductor capture |
-| `menu-item:nfi` | missing | triage |  | `nFi` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:all-projects`<br>All projects | matches | workspaces | All projects | `nFi` | [palette-workspaces](side-by-side/workspaces-palette-workspaces.png) | on screen in both; state palette-workspaces matches |
-| `menu-item:nfi~2` | missing | triage |  | `nFi` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:import-details`<br>Import details | missing | shell | Import details | `ZTt` |  | copy not shown in any OpenConductor capture |
-| `menu-item:nro~6` | missing | triage |  | `nro` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:zna~3` | missing | triage |  | `zna` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:organizations-are-unavailable-when-enterprise-data-privacy-i`<br>Organizations are unavailable when enterprise data privacy is enabled. | missing | cloud-org | Organizations are unavailable when enterprise data privacy is enabled. | `zna` |  | copy not shown in any OpenConductor capture |
-| `menu-item:w-i` | missing | triage |  | `w_i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:w-i~2` | missing | triage |  | `w_i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:w-i~3` | missing | triage |  | `w_i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:w-i~4` | missing | triage |  | `w_i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:svs` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:svs~2` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:svs~3` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:svs~4` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:svs~5` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:svs~6` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:edit-before-sending`<br>Edit before sending | matches | git-review | Edit before sending | `u6s` | [menu-review-edit](side-by-side/chat-tabs-menu-review-edit.png) | on screen in both; state menu-review-edit matches |
-| `menu-item:eq` | missing | triage |  | `EQ` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:kxs` | missing | triage |  | `kXs` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:bro` | missing | triage |  | `bro` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:bro~2` | missing | triage |  | `bro` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:dlo` | missing | triage |  | `Dlo` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:dlo~2` | missing | triage |  | `Dlo` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:u8i` | missing | triage |  | `u8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:rename-chat`<br>Rename chat | matches | chat | Rename chat | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
-| `menu-item:u8i~2` | missing | triage |  | `u8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:c`<br>⌘⌥C | missing | shell | ⌘⌥C | `u8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:copy-full-transcript`<br>Copy full transcript | matches | chat | Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
-| `menu-item:copy-link`<br>Copy link | matches | workspaces | Copy link | `u8i` | [menu-workspace-context](side-by-side/workspaces-menu-workspace-context.png) | on screen in both; state menu-workspace-context matches |
-| `menu-item:u8i~3` | missing | triage |  | `u8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:w`<br>⌘W | missing | shell | ⌘W | `u8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:close-others`<br>Close others | matches | chat | Close others | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
-| `menu-item:gwt` | missing | triage |  | `gwt` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:gwt~2` | missing | triage |  | `gwt` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:vho` | missing | triage |  | `Vho` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:zoo` | missing | triage |  | `zOo` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:lna` | missing | triage |  | `Lna` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:gjn` | missing | triage |  | `gJn` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:h0a` | missing | triage |  | `h0a` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:t9a` | missing | triage |  | `t9a` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:svs~7` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:vho~2` | missing | triage |  | `Vho` |  | no literal copy to locate it; not observed in any capture |
-
-## popover (45: 44 missing, 0 wrong, 1 matches)
+## dialog (all 64 retained rows, including exclusions)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
-| `popover:l1e` | missing | triage |  | `l1e` |  | no literal copy to locate it; not observed in any capture |
-| `popover:t5o` | missing | triage |  | `t5o` |  | no literal copy to locate it; not observed in any capture |
-| `popover:t5o~2` | missing | triage |  | `T5o` |  | no literal copy to locate it; not observed in any capture |
-| `popover:uzo` | missing | triage |  | `UZo` |  | no literal copy to locate it; not observed in any capture |
-| `popover:ucs` | missing | triage |  | `Ucs` |  | no literal copy to locate it; not observed in any capture |
-| `popover:ucs~2` | missing | triage |  | `Ucs` |  | no literal copy to locate it; not observed in any capture |
-| `popover:s-i` | missing | triage |  | `S_i` |  | no literal copy to locate it; not observed in any capture |
-| `popover:s-i~2` | missing | triage |  | `S_i` |  | no literal copy to locate it; not observed in any capture |
-| `popover:xps` | missing | triage |  | `Xps` |  | no literal copy to locate it; not observed in any capture |
-| `popover:xps~2` | missing | triage |  | `Xps` |  | no literal copy to locate it; not observed in any capture |
-| `popover:xps~3` | missing | triage |  | `Xps` |  | no literal copy to locate it; not observed in any capture |
-| `popover:iso` | missing | terminal-scripts | Ports detected | `iso` |  | copy not shown in any OpenConductor capture |
-| `popover:iso~2` | missing | terminal-scripts | Ports detected | `iso` |  | copy not shown in any OpenConductor capture |
-| `popover:iso~3` | missing | triage |  | `iso` |  | no literal copy to locate it; not observed in any capture |
-| `popover:iso~4` | missing | triage |  | `iso` |  | no literal copy to locate it; not observed in any capture |
-| `popover:foo` | missing | triage |  | `foo` |  | no literal copy to locate it; not observed in any capture |
-| `popover:oo` | missing | triage |  | `_oo` |  | no literal copy to locate it; not observed in any capture |
-| `popover:oo~2` | missing | triage |  | `_oo` |  | no literal copy to locate it; not observed in any capture |
-| `popover:llo` | missing | triage |  | `Llo` |  | no literal copy to locate it; not observed in any capture |
-| `popover:llo~2` | missing | triage |  | `Llo` |  | no literal copy to locate it; not observed in any capture |
-| `popover:mlo` | missing | triage |  | `Mlo` |  | no literal copy to locate it; not observed in any capture |
-| `popover:qmo` | missing | triage |  | `Qmo` |  | no literal copy to locate it; not observed in any capture |
-| `popover:qmo~2` | missing | shell | Context / Context usage is unavailable for Cursor. | `Qmo` |  | copy not shown in any OpenConductor capture |
-| `popover:ego` | missing | triage |  | `ego` |  | no literal copy to locate it; not observed in any capture |
-| `popover:ego~2` | missing | triage |  | `ego` |  | no literal copy to locate it; not observed in any capture |
-| `popover:l7o` | missing | triage |  | `L7o` |  | no literal copy to locate it; not observed in any capture |
-| `popover:l7o~2` | missing | triage |  | `L7o` |  | no literal copy to locate it; not observed in any capture |
-| `popover:h7o` | missing | triage |  | `H7o` |  | no literal copy to locate it; not observed in any capture |
-| `popover:ukn` | missing | triage |  | `uKn` |  | no literal copy to locate it; not observed in any capture |
-| `popover:kdo` | missing | chat | Fast mode / Input | `kDo` |  | copy not shown in any OpenConductor capture |
-| `popover:kqo` | matches | shell | Keyboard shortcuts / Docs | `KQo` | [palette-all](side-by-side/shell-palette-01-all.png) | on screen in both; state palette-all matches |
-| `popover:zqo` | missing | triage |  | `ZQo` |  | no literal copy to locate it; not observed in any capture |
-| `popover:yzo` | missing | triage |  | `yZo` |  | no literal copy to locate it; not observed in any capture |
-| `popover:wra` | missing | triage |  | `wra` |  | no literal copy to locate it; not observed in any capture |
-| `popover:mfa` | missing | triage |  | `mfa` |  | no literal copy to locate it; not observed in any capture |
-| `popover:rzi` | missing | triage |  | `rzi` |  | no literal copy to locate it; not observed in any capture |
-| `popover:mzi` | missing | triage |  | `Mzi` |  | no literal copy to locate it; not observed in any capture |
-| `popover:wba` | missing | triage |  | `wba` |  | no literal copy to locate it; not observed in any capture |
-| `popover:wba~2` | missing | triage |  | `wba` |  | no literal copy to locate it; not observed in any capture |
-| `popover:b6a` | missing | triage |  | `B6a` |  | no literal copy to locate it; not observed in any capture |
-| `popover:l4a` | missing | triage |  | `l4a` |  | no literal copy to locate it; not observed in any capture |
-| `popover:aya` | missing | triage |  | `Aya` |  | no literal copy to locate it; not observed in any capture |
-| `popover:gka` | missing | triage |  | `Gka` |  | no literal copy to locate it; not observed in any capture |
-| `popover:gka~2` | missing | triage |  | `Gka` |  | no literal copy to locate it; not observed in any capture |
-| `popover:gka~3` | missing | triage |  | `Gka` |  | no literal copy to locate it; not observed in any capture |
+| `dialog:conductor-passport`<br>Conductor Passport | unverified / in-scope | shell | Conductor Passport | `tss` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:clone-github-repo`<br>Clone GitHub repo | matches / in-scope | git-review | Clone GitHub repo | `los` | [dialog-clone-github](ui-map/oc/dialog-clone-github.png) | on screen in both; state dialog-clone-github matches |
+| `dialog:create-project`<br>Create project | matches / in-scope | workspaces | Create project | `gbi` | [dialog-create-project](side-by-side/workspaces-dialog-create-project.png) | on screen in both; state dialog-create-project matches |
+| `dialog:cloud-desktop`<br>Cloud desktop | matches / deferred | cloud-org | Cloud desktop | `O9s` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
+| `dialog:workspace-access`<br>Workspace access | wrong / in-scope | settings | Workspace access | `ioo` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
+| `dialog:mcp-status`<br>MCP status | unverified / in-scope | chat | MCP status | `duo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:uo` | unverified / deferred | triage |  | `_uo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:dmo` | unverified / deferred | triage |  | `dmo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:sko` | unverified / deferred | triage |  | `sKo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:github`<br>GitHub | wrong / in-scope | settings | GitHub | `dca` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
+| `dialog:custom-provider`<br>Custom provider | unverified / in-scope | shell | Custom provider | `Iua` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:iua` | unverified / deferred | triage |  | `Iua` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:gda` | unverified / deferred | triage |  | `Gda` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:kda` | unverified / deferred | triage |  | `Kda` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:connect-datadog`<br>Connect Datadog | unverified / in-scope | shell | Connect Datadog | `Yda` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:select-mcp-servers`<br>Select MCP servers | unverified / in-scope | chat | Select MCP servers | `z1a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:rfa` | unverified / deferred | triage |  | `rfa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:nfa` | unverified / deferred | triage |  | `Nfa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:github-organizations`<br>GitHub organizations | wrong / deferred | cloud-org | GitHub organizations | `Nfa` | [settings-org-github](side-by-side/settings-org-03-computer.png) | host state settings-org-github is wrong |
+| `dialog:xzi` | unverified / deferred | triage |  | `xzi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:providers`<br>Providers | unverified / in-scope | shell | Providers | `I0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:uma` | unverified / deferred | triage |  | `uma` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:hma` | unverified / deferred | triage |  | `Hma` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:w-a` | unverified / deferred | triage |  | `W_a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:sync-agent-configs`<br>Sync agent configs | matches / in-scope | settings | Sync agent configs | `h` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
+| `dialog:new-workspace`<br>New workspace | matches / in-scope | workspaces | New workspace | `pya` | [create](side-by-side/create-composer-01-dialog.png) | on screen in both; state create matches |
+| `dialog:sya` | unverified / deferred | triage |  | `Sya` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:tya` | unverified / deferred | triage |  | `Tya` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:rya` | unverified / deferred | triage |  | `Rya` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:lya` | unverified / deferred | triage |  | `Lya` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:connect-github`<br>Connect GitHub | wrong / deferred | onboarding-auth | Connect GitHub | `C5a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor shows it in settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing |
+| `dialog:t5a` | unverified / deferred | triage |  | `T5a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:feedback`<br>Feedback | unverified / in-scope | shell | Feedback | `z5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:submit-a-prompt`<br>Submit a prompt | matches / in-scope | shell | Submit a prompt | `W5a` | [dialog-submit-prompt](ui-map/oc/dialog-submit-prompt.png) | on screen in both; state dialog-submit-prompt matches |
+| `dialog:build-snapshot-logs`<br>Build snapshot logs | unverified / in-scope | shell | Build snapshot logs | `xSa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:csa` | unverified / deferred | triage |  | `CSa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:psa` | unverified / deferred | triage |  | `PSa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:sa` | unverified / deferred | triage |  | `$Sa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:trigger-with-a-webhook`<br>Trigger with a webhook | unverified / deferred | routines | Trigger with a webhook | `gka` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:a7a` | unverified / deferred | triage |  | `a7a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:version-history`<br>Version history | unverified / in-scope | shell | Version history | `c7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:create-a-private-github-repo`<br>Create a private GitHub repo? | unverified / in-scope | git-review | Create a private GitHub repo? | `was` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:discard-access-changes`<br>Discard access changes? | unverified / in-scope | shell | Discard access changes? | `_oo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:bfo` | unverified / deferred | triage |  | `Bfo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:reset-chat`<br>Reset chat? | matches / in-scope | chat | Reset chat? | `dDo` | [dialog-reset-chat](side-by-side/chat-tabs-dialog-reset-chat.png) | on screen in both; state dialog-reset-chat matches |
+| `dialog:discard-comment`<br>Discard comment? | unverified / in-scope | shell | Discard comment? | `SVo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:dra` | unverified / deferred | triage |  | `Dra` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:sxe` | unverified / deferred | triage |  | `sxe` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:leave-without-building`<br>Leave without building? | unverified / in-scope | shell | Leave without building? | `Sha` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:pause-port-forwarding`<br>Pause port forwarding? | unverified / in-scope | terminal-scripts | Pause port forwarding? | `Gzi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:j3a` | unverified / deferred | triage |  | `J3a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:cva` | unverified / deferred | triage |  | `Cva` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:iva` | unverified / deferred | triage |  | `Iva` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:discard-file-changes`<br>Discard file changes? | unverified / in-scope | shell | Discard file changes? | `jva` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:change-root-path`<br>Change root path? | unverified / in-scope | shell | Change root path? | `Uva` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:m6a` | unverified / deferred | triage |  | `m6a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:c6a` | unverified / deferred | triage |  | `C6a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:y5a` | unverified / deferred | triage |  | `y5a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:discard-changes`<br>Discard changes? | wrong / in-scope | shell | Discard changes? | `CSa` | [menu-changes-file](side-by-side/shell-menus-02-changes-file.png) | host state menu-changes-file is wrong |
+| `dialog:h8a` | unverified / deferred | triage |  | `H8a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:c7a` | unverified / deferred | triage |  | `c7a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:d7a` | unverified / deferred | triage |  | `d7a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `dialog:unsaved-changes`<br>Unsaved Changes | unverified / in-scope | shell | Unsaved Changes | `f7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `dialog:rotate-webhook-secret`<br>Rotate webhook secret? | unverified / deferred | routines | Rotate webhook secret? | `b7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
 
-## select (29: 22 missing, 5 wrong, 2 matches)
-
-| Item | Status | Team | Copy | Component | State | Why |
-|---|---|---|---|---|---|---|
-| `select:was` | missing | triage |  | `was` |  | no literal copy to locate it; not observed in any capture |
-| `select:doo` | missing | triage |  | `doo` |  | no literal copy to locate it; not observed in any capture |
-| `select:goo` | missing | shell | Read / Write | `goo` |  | copy not shown in any OpenConductor capture |
-| `select:xdo` | missing | triage |  | `Xdo` |  | no literal copy to locate it; not observed in any capture |
-| `select:z5e` | missing | triage |  | `Z5e` |  | no literal copy to locate it; not observed in any capture |
-| `select:zqo` | matches | workspaces | Add project | `ZQo` | [create-repo-picker](side-by-side/create-composer-02-repo-picker.png) | on screen in both; state create-repo-picker matches |
-| `select:yji` | missing | triage |  | `Yji` |  | no literal copy to locate it; not observed in any capture |
-| `select:nfi` | missing | triage |  | `nFi` |  | no literal copy to locate it; not observed in any capture |
-| `select:qaa` | missing | shell | Light / Dark | `Qaa` |  | copy not shown in any OpenConductor capture |
-| `select:xaa` | missing | triage |  | `Xaa` |  | no literal copy to locate it; not observed in any capture |
-| `select:rla` | wrong | settings | Default / Deuteranopia / Protanopia | `rla` | [settings-account](ui-map/oc/settings-account.png) | OpenConductor shows it in settings-models, not in the host state; host state settings-account is wrong |
-| `select:ala` | wrong | settings | Default | `ala` | [settings-account](ui-map/oc/settings-account.png) | OpenConductor shows it in settings-models, not in the host state; host state settings-account is wrong |
-| `select:ula` | matches | settings | Custom... | `ula` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
-| `select:pla` | wrong | settings | Default / Tufte | `pla` | [settings-account](ui-map/oc/settings-account.png) | OpenConductor shows it in settings-models, not in the host state; host state settings-account is wrong |
-| `select:gda` | missing | triage |  | `Gda` |  | no literal copy to locate it; not observed in any capture |
-| `select:yda` | missing | triage |  | `Yda` |  | no literal copy to locate it; not observed in any capture |
-| `select:xma` | wrong | settings | Default / Always approve | `Xma` | [settings-account](ui-map/oc/settings-account.png) | OpenConductor shows it in settings-models, not in the host state; host state settings-account is wrong |
-| `select:rga` | missing | triage |  | `rga` |  | no literal copy to locate it; not observed in any capture |
-| `select:yei` | wrong | settings | GitHub / Linear | `yei` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
-| `select:j2a` | missing | triage |  | `j2a` |  | no literal copy to locate it; not observed in any capture |
-| `select:xzi` | missing | triage |  | `Xzi` |  | no literal copy to locate it; not observed in any capture |
-| `select:xzi~2` | missing | triage |  | `Xzi` |  | no literal copy to locate it; not observed in any capture |
-| `select:xzi~3` | missing | git-review | Poll / Push | `Xzi` |  | copy not shown in any OpenConductor capture |
-| `select:kka` | missing | triage |  | `kka` |  | no literal copy to locate it; not observed in any capture |
-| `select:kka~2` | missing | triage |  | `kka` |  | no literal copy to locate it; not observed in any capture |
-| `select:rka` | missing | triage |  | `Rka` |  | no literal copy to locate it; not observed in any capture |
-| `select:rka~2` | missing | triage |  | `Rka` |  | no literal copy to locate it; not observed in any capture |
-| `select:fti` | missing | triage |  | `Fti` |  | no literal copy to locate it; not observed in any capture |
-| `select:jka` | missing | triage |  | `Jka` |  | no literal copy to locate it; not observed in any capture |
-
-## tab (35: 22 missing, 2 wrong, 11 matches)
+## sheet (all 3 retained rows, including exclusions)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
-| `tab:w9i` | missing | triage |  | `W9i` |  | no literal copy to locate it; not observed in any capture |
-| `tab:nro` | missing | triage |  | `nro` |  | no literal copy to locate it; not observed in any capture |
-| `tab:nro~2` | missing | triage |  | `nro` |  | no literal copy to locate it; not observed in any capture |
-| `tab:u8i` | missing | triage |  | `u8i` |  | no literal copy to locate it; not observed in any capture |
-| `tab:d8i` | missing | triage |  | `d8i` |  | no literal copy to locate it; not observed in any capture |
-| `tab:f8i` | missing | triage |  | `f8i` |  | no literal copy to locate it; not observed in any capture |
-| `tab:m9e` | missing | triage |  | `M9e` |  | no literal copy to locate it; not observed in any capture |
-| `tab:activity`<br>Activity | missing | shell | Activity | `KKo` |  | copy not shown in any OpenConductor capture |
-| `tab:description`<br>Description | missing | shell | Description | `KKo` |  | copy not shown in any OpenConductor capture |
-| `tab:kko` | missing | triage |  | `KKo` |  | no literal copy to locate it; not observed in any capture |
-| `tab:nyo` | missing | triage |  | `NYo` |  | no literal copy to locate it; not observed in any capture |
-| `tab:all-projects`<br>All projects | matches | workspaces | All projects | `dta` | [palette-workspaces](side-by-side/workspaces-palette-workspaces.png) | on screen in both; state palette-workspaces matches |
-| `tab:fta` | missing | triage |  | `fta` |  | no literal copy to locate it; not observed in any capture |
-| `tab:local`<br>Local | missing | shell | Local | `zda` |  | copy not shown in any OpenConductor capture |
-| `tab:cloud`<br>Cloud | wrong | cloud-org | Cloud | `zda` |  | not rendered in a reference capture; OpenConductor shows it in settings-cloud-setup, not in the host state |
-| `tab:installed`<br>Installed | matches | settings | Installed | `V1a` | [settings-org-mcp](side-by-side/settings-org-07-mcp.png) | on screen in both; state settings-org-mcp matches |
-| `tab:recommended`<br>Recommended | wrong | onboarding-auth | Recommended | `V1a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor shows it in settings-providers, settings-org-mcp, settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing |
-| `tab:logs`<br>Logs | missing | shell | Logs | `rfa` |  | copy not shown in any OpenConductor capture |
-| `tab:settings`<br>Settings | matches | shell | Settings | `rfa` | [home-empty](ui-map/oc/home-empty.png) | on screen in both; state home-empty matches |
-| `tab:personal`<br>Personal | matches | shell | Personal | `r0a` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
-| `tab:shared`<br>Shared | matches | cloud-org | Shared | `r0a` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
-| `tab:personal~2`<br>Personal | matches | shell | Personal | `S0a` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
-| `tab:shared~2`<br>Shared | matches | cloud-org | Shared | `S0a` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
-| `tab:pa` | missing | triage |  | `$pa` |  | no literal copy to locate it; not observed in any capture |
-| `tab:pa~2` | missing | triage |  | `$pa` |  | no literal copy to locate it; not observed in any capture |
-| `tab:pa~3` | missing | triage |  | `$pa` |  | no literal copy to locate it; not observed in any capture |
-| `tab:zpa` | missing | triage |  | `zpa` |  | no literal copy to locate it; not observed in any capture |
-| `tab:i-a` | missing | triage |  | `i_a` |  | no literal copy to locate it; not observed in any capture |
-| `tab:prs`<br>PRs | missing | shell | PRs | `l4a` |  | no literal copy to locate it; not observed in any capture |
-| `tab:branches`<br>Branches | matches | git-review | Branches | `l4a` | [create-from-branches](side-by-side/git-review-05-create-from-branches.png) | on screen in both; state create-from-branches matches |
-| `tab:issues`<br>Issues | matches | workspaces | Issues | `l4a` | [create-from-prs](side-by-side/git-review-04-create-from-prs.png) | on screen in both; state create-from-prs matches |
-| `tab:personal~3`<br>Personal | matches | shell | Personal | `KSa` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
-| `tab:shared~3`<br>Shared | matches | cloud-org | Shared | `KSa` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
-| `tab:wpo` | missing | triage |  | `WPo` |  | no literal copy to locate it; not observed in any capture |
-| `tab:u8a` | missing | triage |  | `U8a` |  | no literal copy to locate it; not observed in any capture |
+| `sheet:vda` | unverified / deferred | triage |  | `vda` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `sheet:fda` | unverified / deferred | triage |  | `Fda` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `sheet:hha` | unverified / deferred | triage |  | `Hha` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
 
-## toast (327: 323 missing, 1 wrong, 3 matches)
+## menu (all 39 retained rows, including exclusions)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
-| `toast:xcode-license-is-not-accepted`<br>Xcode license is not accepted | matches | terminal-scripts | Xcode license is not accepted / Run `sudo xcodebuild -license accept` in terminal to continue | `HBr` | [toast-xcode-license](side-by-side/terminal-scripts-05-xcode-license.png) | on screen in both; state toast-xcode-license matches |
-| `toast:e-failed-to-start`<br>${e} failed to start | missing | shell | ${e} failed to start | `Jhi` |  | copy not shown in any OpenConductor capture |
-| `toast:twe` | missing | triage |  | `tWe` |  | no literal copy to locate it; not observed in any capture |
-| `toast:image-saved`<br>Image saved | missing | shell | Image saved | `R0i` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-image-to-clipboard`<br>Copied image to clipboard | missing | shell | Copied image to clipboard | `Y$r` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-e-to-clipboard`<br>Copied ${e} to clipboard | missing | shell | Copied ${e} to clipboard | `n5` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-to-clipboard`<br>Failed to copy to clipboard | missing | shell | Failed to copy to clipboard | `n5` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy`<br>Failed to copy | missing | shell | Failed to copy / Please try again. | `hZr` |  | copy not shown in any OpenConductor capture |
-| `toast:dv` | missing | triage |  | `dv` |  | no literal copy to locate it; not observed in any capture |
-| `toast:project-created`<br>Project created. | missing | workspaces | Project created. | `gbi` |  | copy not shown in any OpenConductor capture |
-| `toast:unknown-app-r`<br>Unknown app: ${r} | missing | shell | Unknown app: ${r} | `uD` |  | copy not shown in any OpenConductor capture |
-| `toast:file-is-outside-the-synced-workspace`<br>File is outside the synced workspace | missing | workspaces | File is outside the synced workspace | `uD` |  | copy not shown in any OpenConductor capture |
-| `toast:remote-open-is-only-supported-for-vs-code-cursor-and-zed`<br>Remote open is only supported for VS Code, Cursor, and Zed | missing | shell | Remote open is only supported for VS Code, Cursor, and Zed | `uD` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-open-in-r-o-instanceof-error-o-message-string-o`<br>Failed to open in ${r}: ${o instanceof Error?o.message:String(o)} | missing | chat | Failed to open in ${r}: ${o instanceof Error?o.message:String(o)} | `uD` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-prompt`<br>Failed to copy prompt | missing | chat | Failed to copy prompt | `T9s` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-prompt-to-clipboard`<br>Copied prompt to clipboard | missing | chat | Copied prompt to clipboard | `A9s` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-attach-terminal`<br>Failed to attach terminal | missing | terminal-scripts | Failed to attach terminal | `w9e` |  | copy not shown in any OpenConductor capture |
-| `toast:port-o-remoteport-forwarded-to-localhost-d`<br>Port ${o.remotePort} forwarded to localhost:${d} | missing | terminal-scripts | Port ${o.remotePort} forwarded to localhost:${d} | `rCi` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-forward-port-o-remoteport-u-message`<br>Failed to forward port ${o.remotePort}: ${u.message} | missing | terminal-scripts | Failed to forward port ${o.remotePort}: ${u.message} | `rCi` |  | copy not shown in any OpenConductor capture |
-| `toast:preview-url-copied-to-clipboard`<br>Preview URL copied to clipboard | missing | git-review | Preview URL copied to clipboard | `GAt` |  | copy not shown in any OpenConductor capture |
-| `toast:gat` | missing | triage |  | `GAt` |  | no literal copy to locate it; not observed in any capture |
-| `toast:failed-to-open-preview-url-rc-e`<br>Failed to open preview URL: ${rc(e)} | missing | git-review | Failed to open preview URL: ${rc(e)} | `Hro` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-turn-off-preview-url-t-message`<br>Failed to turn off preview URL: ${t.message} | missing | git-review | Failed to turn off preview URL: ${t.message} | `Gro` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-create-preview-url-t-message`<br>Failed to create preview URL: ${t.message} | missing | git-review | Failed to create preview URL: ${t.message} | `qro` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-update-auto-forwarding-t-message`<br>Failed to update auto-forwarding: ${t.message} | missing | chat | Failed to update auto-forwarding: ${t.message} | `Zro` |  | copy not shown in any OpenConductor capture |
-| `toast:enter-a-valid-port-1-65535`<br>Enter a valid port (1-65535) | missing | terminal-scripts | Enter a valid port (1-65535) | `nso` |  | copy not shown in any OpenConductor capture |
-| `toast:port-22-is-reserved-for-ssh-and-cannot-be-forwarded-here`<br>Port 22 is reserved for SSH and cannot be forwarded here | missing | terminal-scripts | Port 22 is reserved for SSH and cannot be forwarded here | `nso` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-check-forwarded-ports-i-error-message`<br>Failed to check forwarded ports: ${I.error.message} | missing | git-review | Failed to check forwarded ports: ${I.error.message} | `uso` |  | copy not shown in any OpenConductor capture |
-| `toast:forwarding-ports`<br>Forwarding ports | missing | terminal-scripts | Forwarding ports | `uso` |  | copy not shown in any OpenConductor capture |
-| `toast:aoo` | missing | triage |  | `aoo` |  | no literal copy to locate it; not observed in any capture |
-| `toast:couldn-t-remove-workspace-from-section`<br>Couldn't remove workspace from section | missing | workspaces | Couldn't remove workspace from section | `Zoo` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-move-workspace`<br>Couldn't move workspace | missing | workspaces | Couldn't move workspace | `eao` |  | copy not shown in any OpenConductor capture |
-| `toast:ovn` | missing | triage |  | `OVn` |  | no literal copy to locate it; not observed in any capture |
-| `toast:conductor-doesn-t-have-access-to-t-repofullname-reconnect-gi`<br>Conductor doesn't have access to ${t.repoFullName}. Reconnect GitHub or update t | missing | git-review | Conductor doesn't have access to ${t.repoFullName}. Reconnect GitHub o | `KAt` |  | copy not shown in any OpenConductor capture |
-| `toast:your-github-access-token-doesn-t-have-access-to-t-repofullna`<br>Your GitHub access token doesn't have access to ${t.repoFullName}. Update that t | missing | git-review | Your GitHub access token doesn't have access to ${t.repoFullName}. Upd | `KAt` |  | copy not shown in any OpenConductor capture |
-| `toast:set-up-a-github-token-in-settings-to-create-a-cloud-workspac`<br>Set up a GitHub token in Settings to create a cloud workspace | missing | cloud-org | Set up a GitHub token in Settings to create a cloud workspace | `KAt` |  | copy not shown in any OpenConductor capture |
-| `toast:cloud-workspace-preflight-failed-rc-t`<br>Cloud workspace preflight failed: ${rc(t)} | missing | cloud-org | Cloud workspace preflight failed: ${rc(t)} | `KAt` |  | copy not shown in any OpenConductor capture |
-| `toast:workspace-created-but-couldn-t-add-it-to-the-section-move-it`<br>Workspace created, but couldn't add it to the section. Move it from the sidebar. | missing | workspaces | Workspace created, but couldn't add it to the section. Move it from th | `GCi` |  | copy not shown in any OpenConductor capture |
-| `toast:no-ready-repository-pick-one-to-start-this-workspace`<br>No ready repository. Pick one to start this workspace. | missing | workspaces | No ready repository. Pick one to start this workspace. | `Bzt` |  | copy not shown in any OpenConductor capture |
-| `toast:bzt` | missing | triage |  | `Bzt` |  | no literal copy to locate it; not observed in any capture |
-| `toast:iao` | missing | triage |  | `Iao` |  | no literal copy to locate it; not observed in any capture |
-| `toast:rao` | missing | triage |  | `Rao` |  | no literal copy to locate it; not observed in any capture |
-| `toast:failed-to-copy-message`<br>Failed to copy message | missing | chat | Failed to copy message | `Xuo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-reset-setting`<br>Failed to reset setting | missing | shell | Failed to reset setting | `gho` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-save-image`<br>Failed to save image | missing | shell | Failed to save image | `Hho` |  | copy not shown in any OpenConductor capture |
-| `toast:fyi-when-you-switch-effort-mid-chat-with-claude-your-next-re`<br>FYI: When you switch effort mid-chat with Claude, your next response will be slo | missing | chat | FYI: When you switch effort mid-chat with Claude, your next response w | `cgo` |  | copy not shown in any OpenConductor capture |
-| `toast:fyi-when-you-switch-models-mid-chat-your-next-response-will-`<br>FYI: When you switch models mid-chat, your next response will be slower and use  | missing | chat | FYI: When you switch models mid-chat, your next response will be slowe | `yWn` |  | copy not shown in any OpenConductor capture |
-| `toast:recording-ended-transcript-saved`<br>Recording ended — transcript saved. | missing | chat | Recording ended — transcript saved. | `Ngo` |  | copy not shown in any OpenConductor capture |
-| `toast:recording-ended-transcript-saved~2`<br>Recording ended — transcript saved. | missing | chat | Recording ended — transcript saved. | `Ngo` |  | copy not shown in any OpenConductor capture |
-| `toast:speech-recording-failed`<br>Speech recording failed. | missing | shell | Speech recording failed. | `Pgo` |  | copy not shown in any OpenConductor capture |
-| `toast:folder-e-is-too-large-to-attach`<br>Folder "${e}" is too large to attach | missing | chat | Folder "${e}" is too large to attach | `Swo` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-attach-folder-e`<br>Couldn't attach folder "${e}" | missing | chat | Couldn't attach folder "${e}" | `Swo` |  | copy not shown in any OpenConductor capture |
-| `toast:file-picker-is-not-available-on-this-device`<br>File picker is not available on this device | missing | shell | File picker is not available on this device | `PNi` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-delete-queued-message`<br>Failed to delete queued message | missing | chat | Failed to delete queued message | `AAo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-reorder-queued-messages`<br>Failed to reorder queued messages | missing | chat | Failed to reorder queued messages | `AAo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-reorder-queued-messages~2`<br>Failed to reorder queued messages | missing | chat | Failed to reorder queued messages | `AAo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-resume-queue`<br>Failed to resume queue | missing | shell | Failed to resume queue | `IAo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-resume-queue~2`<br>Failed to resume queue | missing | shell | Failed to resume queue | `RAo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-retry-message`<br>Failed to retry message | missing | chat | Failed to retry message | `NAo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-retry-message~2`<br>Failed to retry message | missing | chat | Failed to retry message | `OAo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-delete-queued-message~2`<br>Failed to delete queued message | missing | chat | Failed to delete queued message | `DAo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-steer-queued-message`<br>Failed to steer queued message | missing | chat | Failed to steer queued message | `PAo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-steer-queued-message~2`<br>Failed to steer queued message | missing | chat | Failed to steer queued message | `LAo` |  | copy not shown in any OpenConductor capture |
-| `toast:no-messages-in-this-chat`<br>No messages in this chat | missing | chat | No messages in this chat | `RIo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-attach-chat-transcript`<br>Failed to attach chat transcript | missing | chat | Failed to attach chat transcript | `RIo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-attach-chat-transcript~2`<br>Failed to attach chat transcript | missing | chat | Failed to attach chat transcript | `RIo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-attach-plan`<br>Failed to attach plan | missing | cloud-org | Failed to attach plan | `RIo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-user-info`<br>Failed to copy user info | missing | shell | Failed to copy user info | `UOo` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-user-info`<br>Copied user info | missing | shell | Copied user info | `HOo` |  | copy not shown in any OpenConductor capture |
-| `toast:uho` | missing | triage |  | `UHo` |  | no literal copy to locate it; not observed in any capture |
-| `toast:lqo` | missing | triage |  | `lqo` |  | no literal copy to locate it; not observed in any capture |
-| `toast:lqo~2` | missing | triage |  | `lqo` |  | no literal copy to locate it; not observed in any capture |
-| `toast:lqo~3` | missing | triage |  | `lqo` |  | no literal copy to locate it; not observed in any capture |
-| `toast:eqo` | missing | triage |  | `eQo` |  | no literal copy to locate it; not observed in any capture |
-| `toast:couldn-t-save-description-rc-t`<br>Couldn't save description: ${rc(t)} | missing | shell | Couldn't save description: ${rc(t)} | `lXo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-user-info~2`<br>Failed to copy user info | missing | shell | Failed to copy user info | `Zna` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-user-info~2`<br>Copied user info | missing | shell | Copied user info | `eia` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-organization-info`<br>Failed to copy organization info | missing | cloud-org | Failed to copy organization info | `nia` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-organization-info`<br>Copied organization info | missing | cloud-org | Copied organization info | `iia` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-delete-section`<br>Couldn't delete section | missing | shell | Couldn't delete section | `Xia` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-remove-repository-e`<br>Failed to remove repository: ${e} | missing | workspaces | Failed to remove repository: ${e} | `Mra` |  | copy not shown in any OpenConductor capture |
-| `toast:esa` | missing | triage |  | `esa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:couldn-t-reorder-section`<br>Couldn't reorder section | missing | shell | Couldn't reorder section | `esa` |  | copy not shown in any OpenConductor capture |
-| `toast:diagnostics-failed-string-b`<br>Diagnostics failed: ${String(B)} | missing | shell | Diagnostics failed: ${String(B)} | `moa` |  | copy not shown in any OpenConductor capture |
-| `toast:moa` | missing | triage |  | `moa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:failed-to-copy-report-to-clipboard`<br>Failed to copy report to clipboard | missing | workspaces | Failed to copy report to clipboard | `moa` |  | copy not shown in any OpenConductor capture |
-| `toast:console-logs-copied-to-clipboard`<br>Console logs copied to clipboard | missing | shell | Console logs copied to clipboard | `moa` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-logs-string-b`<br>Failed to copy logs: ${String(B)} | missing | shell | Failed to copy logs: ${String(B)} | `moa` |  | copy not shown in any OpenConductor capture |
-| `toast:no-workspace-available-create-a-workspace-first`<br>No workspace available. Create a workspace first. | missing | workspaces | No workspace available. Create a workspace first. | `moa` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-create-session-string-z`<br>Failed to create session: ${String(z)} | missing | workspaces | Failed to create session: ${String(z)} | `moa` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-logs`<br>Failed to copy logs | missing | shell | Failed to copy logs | `Eoa` |  | copy not shown in any OpenConductor capture |
-| `toast:app-logs-copied`<br>App logs copied | missing | shell | App logs copied | `Coa` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-finish-setup-please-try-again`<br>Couldn't finish setup. Please try again. | missing | shell | Couldn't finish setup. Please try again. | `wBi` |  | copy not shown in any OpenConductor capture |
-| `toast:rla` | missing | triage |  | `Rla` |  | no literal copy to locate it; not observed in any capture |
-| `toast:copied-n`<br>Copied ${n}. | missing | shell | Copied ${n}. | `Zla` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-n`<br>Failed to copy ${n}. | missing | shell | Failed to copy ${n}. | `Zla` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-save-n-l`<br>Failed to save ${n}: ${L} | missing | shell | Failed to save ${n}: ${L} | `YWt` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-remove-n-p`<br>Failed to remove ${n}: ${P} | missing | shell | Failed to remove ${n}: ${P} | `YWt` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-refresh-github`<br>Couldn't refresh GitHub | missing | git-review | Couldn't refresh GitHub | `oca` |  | copy not shown in any OpenConductor capture |
-| `toast:some-github-details-couldn-t-be-updated`<br>Some GitHub details couldn't be updated | missing | git-review | Some GitHub details couldn't be updated | `aca` |  | copy not shown in any OpenConductor capture |
-| `toast:qa` | missing | chat | Restart workspaces to pick up new agent credentials. | `QA` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-n~2`<br>Copied ${n}. | missing | shell | Copied ${n}. | `Lca` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-n~2`<br>Failed to copy ${n}. | missing | shell | Failed to copy ${n}. | `Lca` |  | copy not shown in any OpenConductor capture |
-| `toast:lca` | missing | triage |  | `Lca` |  | no literal copy to locate it; not observed in any capture |
-| `toast:failed-to-load-n`<br>Failed to load ${n}. | missing | shell | Failed to load ${n}. | `Lca` |  | copy not shown in any OpenConductor capture |
-| `toast:hca` | missing | triage |  | `Hca` |  | no literal copy to locate it; not observed in any capture |
-| `toast:conductor-could-not-connect-to-cloud-settings-try-again`<br>Conductor could not connect to cloud settings. Try again. | missing | cloud-org | Conductor could not connect to cloud settings. Try again. | `v$i` |  | copy not shown in any OpenConductor capture |
-| `toast:v-i` | missing | chat | Restart workspaces to pick up new agent credentials. | `v$i` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-codex-verification-code`<br>Copied Codex verification code. | missing | chat | Copied Codex verification code. | `IZn` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-codex-verification-code`<br>Failed to copy Codex verification code. | missing | chat | Failed to copy Codex verification code. | `IZn` |  | copy not shown in any OpenConductor capture |
-| `toast:izn` | missing | triage |  | `IZn` |  | no literal copy to locate it; not observed in any capture |
-| `toast:aua` | missing | triage |  | `aua` |  | no literal copy to locate it; not observed in any capture |
-| `toast:aua~2` | missing | triage |  | `aua` |  | no literal copy to locate it; not observed in any capture |
-| `toast:enter-all-required-bedrock-fields`<br>Enter all required Bedrock fields. | missing | shell | Enter all required Bedrock fields. | `kua` |  | copy not shown in any OpenConductor capture |
-| `toast:kua` | missing | triage |  | `kua` |  | no literal copy to locate it; not observed in any capture |
-| `toast:kua~2` | missing | triage |  | `kua` |  | no literal copy to locate it; not observed in any capture |
-| `toast:iua` | missing | triage |  | `Iua` |  | no literal copy to locate it; not observed in any capture |
-| `toast:iua~2` | missing | triage |  | `Iua` |  | no literal copy to locate it; not observed in any capture |
-| `toast:dua` | missing | triage |  | `Dua` |  | no literal copy to locate it; not observed in any capture |
-| `toast:dua~2` | missing | triage |  | `Dua` |  | no literal copy to locate it; not observed in any capture |
-| `toast:failed-to-update-env-files`<br>Failed to update env files | missing | shell | Failed to update env files | `bda` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-update-env-files~2`<br>Failed to update env files | missing | shell | Failed to update env files | `_da` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-n-name`<br>Copied ${n.name} | missing | shell | Copied ${n.name} | `FZn` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-n-name`<br>Failed to copy ${n.name} | missing | shell | Failed to copy ${n.name} | `FZn` |  | copy not shown in any OpenConductor capture |
-| `toast:fda` | missing | triage |  | `Fda` |  | no literal copy to locate it; not observed in any capture |
-| `toast:v1a` | missing | triage |  | `V1a` |  | no literal copy to locate it; not observed in any capture |
-| `toast:v1a~2` | missing | triage |  | `V1a` |  | no literal copy to locate it; not observed in any capture |
-| `toast:couldn-t-activate-build-he-versionnumber-bf-ge`<br>Couldn't activate build #${he.versionNumber}: ${bF(ge)} | missing | shell | Couldn't activate build #${he.versionNumber}: ${bF(ge)} | `cfa` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-restart-the-build-bf-t`<br>Couldn't restart the build: ${bF(t)} | missing | shell | Couldn't restart the build: ${bF(t)} | `dfa` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-cancel-the-build-bf-t`<br>Couldn't cancel the build: ${bF(t)} | missing | shell | Couldn't cancel the build: ${bF(t)} | `ffa` |  | copy not shown in any OpenConductor capture |
-| `toast:ifa` | missing | triage |  | `Ifa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:ofa` | missing | triage |  | `Ofa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:nzi` | missing | triage |  | `nzi` |  | no literal copy to locate it; not observed in any capture |
-| `toast:izi` | missing | triage |  | `izi` |  | no literal copy to locate it; not observed in any capture |
-| `toast:couldn-t-start-the-snapshot-build-bf-t`<br>Couldn't start the snapshot build: ${bF(t)} | missing | shell | Couldn't start the snapshot build: ${bF(t)} | `Zfa` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-create-the-admin-workspace-bf-t`<br>Couldn't create the admin workspace: ${bF(t)} | missing | workspaces | Couldn't create the admin workspace: ${bF(t)} | `wha` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-start-the-rebuild-bf-t`<br>Couldn't start the rebuild: ${bF(t)} | missing | shell | Couldn't start the rebuild: ${bF(t)} | `Eha` |  | copy not shown in any OpenConductor capture |
-| `toast:no-key-value-lines-found-in-d-name-check-that-it-s-a-env-fil`<br>No KEY=VALUE lines found in ${d.name}. Check that it's a .env file. | missing | git-review | No KEY=VALUE lines found in ${d.name}. Check that it's a .env file. | `zha` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-read-d-name`<br>Couldn't read ${d.name}. | missing | shell | Couldn't read ${d.name}. | `zha` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-te`<br>Copied ${te} | missing | shell | Copied ${te} | `bzi` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-te`<br>Failed to copy ${te} | missing | shell | Failed to copy ${te} | `bzi` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-save-shared-environment-variables`<br>Couldn't save shared environment variables | missing | cloud-org | Couldn't save shared environment variables / Check your connection and try again. | `i0a` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-user-info~3`<br>Copied user info | missing | shell | Copied user info | `f0a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-user-info~3`<br>Failed to copy user info | missing | shell | Failed to copy user info | `f0a` |  | copy not shown in any OpenConductor capture |
-| `toast:api-key-saved`<br>API key saved | missing | shell | API key saved | `I0a` |  | copy not shown in any OpenConductor capture |
-| `toast:api-key-saved~2`<br>API key saved | missing | shell | API key saved | `I0a` |  | copy not shown in any OpenConductor capture |
-| `toast:api-key-removed`<br>API key removed | missing | shell | API key removed | `I0a` |  | copy not shown in any OpenConductor capture |
-| `toast:api-key-removed~2`<br>API key removed | missing | shell | API key removed | `I0a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-update-api-key-e`<br>Failed to update API key: ${e} | missing | shell | Failed to update API key: ${e} | `O0a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-update-api-key-e~2`<br>Failed to update API key: ${e} | missing | shell | Failed to update API key: ${e} | `D0a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-update-api-key-e~3`<br>Failed to update API key: ${e} | missing | shell | Failed to update API key: ${e} | `P0a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-update-api-key-e~4`<br>Failed to update API key: ${e} | missing | shell | Failed to update API key: ${e} | `L0a` |  | copy not shown in any OpenConductor capture |
-| `toast:installed-u`<br>Installed ${u}. | matches | settings | Installed ${u}. | `Izi` | [settings-org-mcp](side-by-side/settings-org-07-mcp.png) | on screen in both; state settings-org-mcp matches |
-| `toast:failed-to-install-u-i`<br>Failed to install ${u}: ${I} | missing | shell | Failed to install ${u}: ${I} | `Izi` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-open-install-location-e`<br>Failed to open install location: ${e} | missing | shell | Failed to open install location: ${e} | `bpa` |  | copy not shown in any OpenConductor capture |
-| `toast:api-key-saved~3`<br>API key saved | missing | shell | API key saved | `Spa` |  | copy not shown in any OpenConductor capture |
-| `toast:api-key-removed~3`<br>API key removed | missing | shell | API key removed | `Spa` |  | copy not shown in any OpenConductor capture |
-| `toast:api-key-saved~4`<br>API key saved | missing | shell | API key saved | `Lzi` |  | copy not shown in any OpenConductor capture |
-| `toast:api-key-removed~4`<br>API key removed | missing | shell | API key removed | `Lzi` |  | copy not shown in any OpenConductor capture |
-| `toast:api-key-imported-from-env`<br>API key imported from env | missing | shell | API key imported from env | `jpa` |  | copy not shown in any OpenConductor capture |
-| `toast:api-key-imported-from-env~2`<br>API key imported from env | missing | shell | API key imported from env | `Fpa` |  | copy not shown in any OpenConductor capture |
-| `toast:run-script-names-must-be-unique`<br>Run script names must be unique | missing | terminal-scripts | Run script names must be unique | `ama` |  | copy not shown in any OpenConductor capture |
-| `toast:run-script-names-can-t-be-empty`<br>Run script names can't be empty | missing | terminal-scripts | Run script names can't be empty | `ama` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-save-run-script`<br>Failed to save run script | missing | terminal-scripts | Failed to save run script | `ama` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-delete-run-script`<br>Failed to delete run script | missing | terminal-scripts | Failed to delete run script | `ama` |  | copy not shown in any OpenConductor capture |
-| `toast:select-an-area-of-the-photo-first`<br>Select an area of the photo first. | missing | shell | Select an area of the photo first. | `Wma` |  | copy not shown in any OpenConductor capture |
-| `toast:profile-photo-updated`<br>Profile photo updated. | missing | shell | Profile photo updated. | `Wma` |  | copy not shown in any OpenConductor capture |
-| `toast:choose-a-jpeg-png-or-webp-image`<br>Choose a JPEG, PNG, or WebP image. | missing | shell | Choose a JPEG, PNG, or WebP image. | `qma` |  | copy not shown in any OpenConductor capture |
-| `toast:choose-a-photo-smaller-than-10-mb`<br>Choose a photo smaller than 10 MB. | missing | shell | Choose a photo smaller than 10 MB. | `qma` |  | copy not shown in any OpenConductor capture |
-| `toast:could-not-open-that-photo`<br>Could not open that photo. | missing | shell | Could not open that photo. | `qma` |  | copy not shown in any OpenConductor capture |
-| `toast:display-name-updated`<br>Display name updated. | missing | settings | Display name updated. | `Kma` |  | copy not shown in any OpenConductor capture |
-| `toast:could-not-update-display-name-try-again`<br>Could not update display name. Try again. | missing | settings | Could not update display name. Try again. | `Kma` |  | copy not shown in any OpenConductor capture |
-| `toast:enter-a-display-name`<br>Enter a display name. | missing | settings | Enter a display name. | `Kma` |  | copy not shown in any OpenConductor capture |
-| `toast:display-names-can-be-at-most-100-characters`<br>Display names can be at most 100 characters. | missing | settings | Display names can be at most 100 characters. | `Kma` |  | copy not shown in any OpenConductor capture |
-| `toast:notification-permission-not-granted`<br>Notification permission not granted | missing | chat | Notification permission not granted | `mei` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-reset-message-send-key`<br>Failed to reset message send key | missing | chat | Failed to reset message send key | `mga` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-reset-message-send-key~2`<br>Failed to reset message send key | missing | chat | Failed to reset message send key | `mga` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-update-message-send-key`<br>Failed to update message send key | missing | chat | Failed to update message send key | `mga` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-update-message-send-key~2`<br>Failed to update message send key | missing | chat | Failed to update message send key | `mga` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-open-system-settings-go-to-privacy-security-full-di`<br>Couldn't open System Settings. Go to Privacy & Security > Full Disk Access to gr | missing | settings | Couldn't open System Settings. Go to Privacy & Security > Full Disk Ac | `mga` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-open-app-log-viewer-string-w-payload`<br>Failed to open app log viewer: ${String(w.payload)} | missing | shell | Failed to open app log viewer: ${String(w.payload)} | `h` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-open-app-log-viewer-rye-v`<br>Failed to open app log viewer: ${rYe(v)} | missing | shell | Failed to open app log viewer: ${rYe(v)} | `h` |  | copy not shown in any OpenConductor capture |
-| `toast:h` | missing | triage |  | `h` |  | no literal copy to locate it; not observed in any capture |
-| `toast:failed-to-start-app-log-viewer-m`<br>Failed to start app log viewer: ${m} | missing | shell | Failed to start app log viewer: ${m} | `h` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-start-app-log-viewer-rye-m`<br>Failed to start app log viewer: ${rYe(m)} | missing | shell | Failed to start app log viewer: ${rYe(m)} | `h` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-open-app-log-viewer-rye-t`<br>Failed to open app log viewer: ${rYe(t)} | missing | shell | Failed to open app log viewer: ${rYe(t)} | `b2a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-get-app-logger-url-rye-t`<br>Failed to get app logger URL: ${rYe(t)} | missing | shell | Failed to get app logger URL: ${rYe(t)} | `b2a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-reset-callout-dismissals`<br>Failed to reset callout dismissals | missing | shell | Failed to reset callout dismissals | `x2a` |  | copy not shown in any OpenConductor capture |
-| `toast:callout-dismissals-reset`<br>Callout dismissals reset | missing | shell | Callout dismissals reset | `w2a` |  | copy not shown in any OpenConductor capture |
-| `toast:injection-count-must-be-a-non-negative-integer`<br>Injection count must be a non-negative integer. | missing | shell | Injection count must be a non-negative integer. | `R2a` |  | copy not shown in any OpenConductor capture |
-| `toast:r2a` | missing | triage |  | `R2a` |  | no literal copy to locate it; not observed in any capture |
-| `toast:removed-g-binary-from-disk`<br>Removed ${g} binary from disk. | missing | shell | Removed ${g} binary from disk. | `R2a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-remove-g-string-v`<br>Failed to remove ${g}: ${String(v)} | missing | shell | Failed to remove ${g}: ${String(v)} | `R2a` |  | copy not shown in any OpenConductor capture |
-| `toast:re-downloading-g`<br>Re-downloading ${g}. | missing | shell | Re-downloading ${g}. | `R2a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-trigger-download-string-t`<br>Failed to trigger download: ${String(t)} | missing | routines | Failed to trigger download: ${String(t)} | `N2a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-start-re-download-string-t`<br>Failed to start re-download: ${String(t)} | missing | shell | Failed to start re-download: ${String(t)} | `O2a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-set-injection-string-t`<br>Failed to set injection: ${String(t)} | missing | shell | Failed to set injection: ${String(t)} | `D2a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-trigger-qzi-e-target-tolowercase-xzi-e-testid-tolo`<br>Failed to trigger ${Qzi(e.target).toLowerCase()} ${Xzi(e.testId).toLowerCase()}  | missing | routines | Failed to trigger ${Qzi(e.target).toLowerCase()} ${Xzi(e.testId).toLow | `B2a` |  | copy not shown in any OpenConductor capture |
-| `toast:triggered-qzi-e-target-xzi-e-testid-tolowercase-test`<br>Triggered ${Qzi(e.target)} ${Xzi(e.testId).toLowerCase()} test | missing | routines | Triggered ${Qzi(e.target)} ${Xzi(e.testId).toLowerCase()} test | `$2a` |  | copy not shown in any OpenConductor capture |
-| `toast:sidecar-http-is-healthy`<br>Sidecar HTTP is healthy | missing | shell | Sidecar HTTP is healthy | `Xzi` |  | copy not shown in any OpenConductor capture |
-| `toast:sidecar-http-health-check-failed`<br>Sidecar HTTP health check failed | missing | git-review | Sidecar HTTP health check failed | `Xzi` |  | copy not shown in any OpenConductor capture |
-| `toast:sign-in-to-share-a-loadout`<br>Sign in to share a loadout | wrong | onboarding-auth | Sign in to share a loadout | `N3a` |  | not rendered in a reference capture; OpenConductor shows it in settings-models, not in the host state |
-| `toast:could-not-open-your-loadout-try-again`<br>Could not open your loadout. Try again. | missing | shell | Could not open your loadout. Try again. | `O3a` |  | copy not shown in any OpenConductor capture |
-| `toast:claude-output-style-updated-new-chats-will-use-it-existing-c`<br>Claude output style updated. New chats will use it; existing chats won’t change. | missing | chat | Claude output style updated. New chats will use it; existing chats won / Model for new chats | `B3a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-update-spotlight-testing`<br>Failed to update spotlight testing | missing | shell | Failed to update spotlight testing | `K3a` |  | copy not shown in any OpenConductor capture |
-| `toast:choose-a-png-jpeg-gif-webp-or-svg-image`<br>Choose a PNG, JPEG, GIF, WebP, or SVG image | missing | shell | Choose a PNG, JPEG, GIF, WebP, or SVG image | `xba` |  | copy not shown in any OpenConductor capture |
-| `toast:image-is-too-large-choose-one-under-10mb`<br>Image is too large. Choose one under 10MB. | missing | shell | Image is too large. Choose one under 10MB. | `xba` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-set-the-icon-try-a-different-image`<br>Failed to set the icon. Try a different image. | missing | git-review | Failed to set the icon. Try a different image. | `xba` |  | copy not shown in any OpenConductor capture |
-| `toast:repository-removed-successfully`<br>Repository removed successfully | missing | workspaces | Repository removed successfully | `wba` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-remove-workspace-from-section~2`<br>Couldn't remove workspace from section | missing | workspaces | Couldn't remove workspace from section | `Zba` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-move-workspace~2`<br>Couldn't move workspace | missing | workspaces | Couldn't move workspace | `e_a` |  | copy not shown in any OpenConductor capture |
-| `toast:n6a` | missing | triage |  | `n6a` |  | no literal copy to locate it; not observed in any capture |
-| `toast:te-unsupportedmcp-length-mcp-server-te-unsupportedmcp-length`<br>${te.unsupportedMcp.length} MCP server${te.unsupportedMcp.length===1?"":"s"} cou | missing | chat | ${te.unsupportedMcp.length} MCP server${te.unsupportedMcp.length===1?" | `n6a` |  | copy not shown in any OpenConductor capture |
-| `toast:te-failures-length-item-te-failures-length-1-s-failed-to-syn`<br>${te.failures.length} item${te.failures.length===1?"":"s"} failed to sync | missing | shell | ${te.failures.length} item${te.failures.length===1?"":"s"} failed to s | `n6a` |  | copy not shown in any OpenConductor capture |
-| `toast:sync-failed-t-instanceof-error-t-message-string-t`<br>Sync failed: ${t instanceof Error?t.message:String(t)} | missing | chat | Sync failed: ${t instanceof Error?t.message:String(t)} | `i6a` |  | copy not shown in any OpenConductor capture |
-| `toast:update-conductor-to-equip-this-loadout`<br>Update Conductor to equip this loadout. | missing | shell | Update Conductor to equip this loadout. | `C6a` |  | copy not shown in any OpenConductor capture |
-| `toast:some-models-in-this-loadout-need-a-newer-version-of-conducto`<br>Some models in this loadout need a newer version of Conductor. | missing | chat | Some models in this loadout need a newer version of Conductor. | `C6a` |  | copy not shown in any OpenConductor capture |
-| `toast:loadout-equipped`<br>Loadout equipped | missing | shell | Loadout equipped | `T6a` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-image-to-clipboard~2`<br>Copied image to clipboard | missing | shell | Copied image to clipboard | `A6a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-image`<br>Failed to copy image | missing | shell | Failed to copy image | `A6a` |  | copy not shown in any OpenConductor capture |
-| `toast:could-not-load-that-pull-request`<br>Could not load that pull request | missing | git-review | Could not load that pull request | `$Ui` |  | copy not shown in any OpenConductor capture |
-| `toast:cannot-create-workspace-from-this-issue`<br>Cannot create workspace from this issue | missing | workspaces | Cannot create workspace from this issue | `j4a` |  | copy not shown in any OpenConductor capture |
-| `toast:no-repository-selected`<br>No repository selected | missing | workspaces | No repository selected | `j4a` |  | copy not shown in any OpenConductor capture |
-| `toast:added-to-backlog`<br>Added to backlog | missing | shell | Added to backlog | `oya` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-edit-section`<br>Couldn't edit section | missing | shell | Couldn't edit section | `Aya` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-create-section`<br>Couldn't create section | missing | workspaces | Couldn't create section | `Aya` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-create-the-admin-workspace-bf-je`<br>Couldn't create the admin workspace: ${bF(je)} | missing | workspaces | Couldn't create the admin workspace: ${bF(je)} | `JUi` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-create-the-admin-workspace-your-computer-isn-t-read`<br>Couldn't create the admin workspace: Your computer isn't ready yet. Try again. | missing | workspaces | Couldn't create the admin workspace: Your computer isn't ready yet. Tr | `JUi` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-create-the-admin-workspace-your-computer-has-no-rep`<br>Couldn't create the admin workspace: Your computer has no repositories. Add a re | missing | workspaces | Couldn't create the admin workspace: Your computer has no repositories | `JUi` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-save-your-computer-color-bf-t`<br>Couldn't save your computer color: ${bF(t)} | missing | shell | Couldn't save your computer color: ${bF(t)} | `_xa` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-start-building-your-computer-bf-t`<br>Failed to start building your computer: ${bF(t)} | missing | shell | Failed to start building your computer: ${bF(t)} | `xxa` |  | copy not shown in any OpenConductor capture |
-| `toast:you-can-t-open-this-workspace`<br>You can't open this workspace | missing | cloud-org | You can't open this workspace / It belongs to a different organization. | `iHi` |  | copy not shown in any OpenConductor capture |
-| `toast:invalid-browser-url`<br>Invalid browser URL | missing | shell | Invalid browser URL / Browser deep links must include an http:// or https:// URL. | `s5a` |  | copy not shown in any OpenConductor capture |
-| `toast:no-workspace-selected`<br>No workspace selected | missing | workspaces | No workspace selected / Open a workspace first, or include workspace-id in the browser deep li | `s5a` |  | copy not shown in any OpenConductor capture |
-| `toast:you-don-t-have-access-to-this-workspace`<br>You don't have access to this workspace | missing | cloud-org | You don't have access to this workspace / Ask a teammate to share it with you. | `s5a` |  | copy not shown in any OpenConductor capture |
-| `toast:workspace-not-found`<br>Workspace not found | missing | cloud-org | Workspace not found / It may have been deleted, belong to another device, or belong to anoth | `s5a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-open-browser-tab`<br>Couldn't open browser tab | missing | workspaces | Couldn't open browser tab / Something went wrong. Try again, or open the browser from a workspace. | `s5a` |  | copy not shown in any OpenConductor capture |
-| `toast:sign-in-failed`<br>Sign-in failed | missing | onboarding-auth | Sign-in failed / The authentication callback was invalid. | `o5a` |  | copy not shown in any OpenConductor capture |
-| `toast:sign-in-failed~2`<br>Sign-in failed | missing | onboarding-auth | Sign-in failed / The authentication token could not be validated. | `o5a` |  | copy not shown in any OpenConductor capture |
-| `toast:sign-in-failed~3`<br>Sign-in failed | missing | onboarding-auth | Sign-in failed | `o5a` |  | copy not shown in any OpenConductor capture |
-| `toast:sign-in-to-equip-a-loadout`<br>Sign in to equip a loadout | missing | onboarding-auth | Sign in to equip a loadout | `a5a` |  | copy not shown in any OpenConductor capture |
-| `toast:setting-cannot-be-enabled-by-link`<br>Setting cannot be enabled by link | missing | shell | Setting cannot be enabled by link | `l5a` |  | copy not shown in any OpenConductor capture |
-| `toast:enabled-setting-n-title`<br>Enabled setting: ${n.title} | missing | settings | Enabled setting: ${n.title} | `l5a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-enable-setting`<br>Failed to enable setting | missing | shell | Failed to enable setting | `l5a` |  | copy not shown in any OpenConductor capture |
-| `toast:linear-integration-required`<br>Linear integration required | missing | shell | Linear integration required / Please connect your Linear account to use this feature. | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:no-repository-available`<br>No repository available | missing | workspaces | No repository available / Please add a repository before creating workspaces from Linear issues. | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:fetching-f-from-linear`<br>Fetching ${F} from Linear... | missing | shell | Fetching ${F} from Linear... | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:linear-issue-not-found`<br>Linear issue not found | missing | shell | Linear issue not found | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:detecting-repository`<br>Detecting repository... | missing | workspaces | Detecting repository... | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:creating-workspace`<br>Creating workspace... | missing | workspaces | Creating workspace... | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-create-workspace`<br>Failed to create workspace | missing | workspaces | Failed to create workspace | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:no-repository-available~2`<br>No repository available | missing | workspaces | No repository available / Please add a repository before creating workspaces from async plans. | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:repository-not-found`<br>Repository not found | missing | cloud-org | Repository not found / The plan could not be decoded. It may be corrupted. | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:invalid-plan-data`<br>Invalid plan data | missing | cloud-org | Invalid plan data / The plan could not be decoded. It may be corrupted. | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:empty-plan`<br>Empty plan | missing | cloud-org | Empty plan / The plan content is empty. | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-create-workspace~2`<br>Failed to create workspace | missing | workspaces | Failed to create workspace | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:you-don-t-have-access-to-this-workspace~2`<br>You don't have access to this workspace | missing | cloud-org | You don't have access to this workspace / Ask a teammate to share it with you. | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:workspace-not-found~2`<br>Workspace not found | missing | cloud-org | Workspace not found / It may have been deleted, belong to another device, or belong to anoth | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-open-workspace`<br>Couldn't open workspace | missing | workspaces | Couldn't open workspace / Something went wrong. Try again, or open it from the sidebar. | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:github-sign-in-failed-invalid-or-expired-request`<br>GitHub sign-in failed: invalid or expired request | missing | onboarding-auth | GitHub sign-in failed: invalid or expired request | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:github-authenticated-successfully`<br>GitHub authenticated successfully | missing | git-review | GitHub authenticated successfully | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-save-github-token`<br>Failed to save GitHub token | missing | git-review | Failed to save GitHub token | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:waiting-for-a-github-admin-to-approve-the-installation`<br>Waiting for a GitHub admin to approve the installation | missing | git-review | Waiting for a GitHub admin to approve the installation | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:github-connected`<br>GitHub connected | missing | git-review | GitHub connected | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:invalid-deep-link`<br>Invalid deep link | missing | shell | Invalid deep link | `c5a` |  | copy not shown in any OpenConductor capture |
-| `toast:github-connected~2`<br>GitHub connected | missing | git-review | GitHub connected | `C5a` |  | copy not shown in any OpenConductor capture |
-| `toast:github-isn-t-connected-yet-finish-the-sign-in-and-try-again`<br>GitHub isn't connected yet. Finish the sign-in and try again. | missing | onboarding-auth | GitHub isn't connected yet. Finish the sign-in and try again. | `C5a` |  | copy not shown in any OpenConductor capture |
-| `toast:thank-you-for-your-feedback`<br>Thank you for your feedback! | missing | shell | Thank you for your feedback! / Thanks for making Conductor better. | `z5a` |  | copy not shown in any OpenConductor capture |
-| `toast:please-enter-a-prompt`<br>Please enter a prompt | missing | chat | Please enter a prompt / Thanks for your suggestion. | `W5a` |  | copy not shown in any OpenConductor capture |
-| `toast:prompt-submitted`<br>Prompt submitted! | missing | chat | Prompt submitted! / Thanks for your suggestion. | `W5a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-submit-prompt`<br>Failed to submit prompt | missing | chat | Failed to submit prompt / Please try again later. | `W5a` |  | copy not shown in any OpenConductor capture |
-| `toast:saved-snapshot-but-failed-to-start-build-ca-instanceof-error`<br>Saved snapshot, but failed to start build: ${ca instanceof Error?ca.message:Stri | missing | chat | Saved snapshot, but failed to start build: ${ca instanceof Error?ca.me | `CSa` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-update-snapshot-ca-instanceof-error-ca-message-str`<br>Failed to update snapshot: ${ca instanceof Error?ca.message:String(ca)} | missing | chat | Failed to update snapshot: ${ca instanceof Error?ca.message:String(ca) | `CSa` |  | copy not shown in any OpenConductor capture |
-| `toast:workspace-setup-script-saved`<br>Workspace setup script saved | missing | terminal-scripts | Workspace setup script saved | `CSa` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-save-workspace-setup-script-t-instanceof-error-t-m`<br>Failed to save workspace setup script: ${t instanceof Error?t.message:String(t)} | missing | terminal-scripts | Failed to save workspace setup script: ${t instanceof Error?t.message: | `kSa` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-cancel-build-t-instanceof-error-t-message-string-t`<br>Failed to cancel build: ${t instanceof Error?t.message:String(t)} | missing | chat | Failed to cancel build: ${t instanceof Error?t.message:String(t)} | `TSa` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-start-build-t-instanceof-error-t-message-string-t`<br>Failed to start build: ${t instanceof Error?t.message:String(t)} | missing | chat | Failed to start build: ${t instanceof Error?t.message:String(t)} | `ASa` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-save-run-scripts-t-message`<br>Couldn't save run scripts: ${t.message} | missing | terminal-scripts | Couldn't save run scripts: ${t.message} | `WSa` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-save-default-branch-t-instanceof-error-t-message-st`<br>Couldn't save default branch: ${t instanceof Error?t.message:String(t)} | missing | git-review | Couldn't save default branch: ${t instanceof Error?t.message:String(t) | `YSa` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-save-setup-script-t-instanceof-error-t-message-stri`<br>Couldn't save setup script: ${t instanceof Error?t.message:String(t)} | missing | terminal-scripts | Couldn't save setup script: ${t instanceof Error?t.message:String(t)} | `QSa` |  | copy not shown in any OpenConductor capture |
-| `toast:migration-pr-created`<br>Migration PR created | missing | git-review | Migration PR created | `XEa` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-create-migration-pr-w-instanceof-error-w-message-u`<br>Failed to create migration PR: ${w instanceof Error?w.message:"Unknown error"} | missing | git-review | Failed to create migration PR: ${w instanceof Error?w.message:"Unknown | `XEa` |  | copy not shown in any OpenConductor capture |
-| `toast:mhi` | missing | triage |  | `MHi` |  | no literal copy to locate it; not observed in any capture |
-| `toast:copied-link`<br>Copied link | matches | shell | Copied link | `jHi` | [toast-copied-link](ui-map/oc/toast-copied-link.png) | on screen in both; state toast-copied-link matches |
-| `toast:failed-to-copy-link`<br>Failed to copy link | missing | shell | Failed to copy link | `jHi` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-link~2`<br>Failed to copy link | missing | shell | Failed to copy link | `tka` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-de-enabled-disable-enable-routine-pgt-ue`<br>Couldn't ${de.enabled?"disable":"enable"} routine: ${PGt(ue)} | missing | routines | Couldn't ${de.enabled?"disable":"enable"} routine: ${PGt(ue)} | `tka` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-run-routine-pgt-t`<br>Couldn't run routine: ${PGt(t)} | missing | routines | Couldn't run routine: ${PGt(t)} | `nka` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-delete-routine-pgt-t`<br>Couldn't delete routine: ${PGt(t)} | missing | routines | Couldn't delete routine: ${PGt(t)} | `ika` |  | copy not shown in any OpenConductor capture |
-| `toast:routine-deleted`<br>Routine deleted | missing | routines | Routine deleted | `rka` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-copy-command`<br>Couldn't copy command | missing | shell | Couldn't copy command | `bka` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-command`<br>Copied command | missing | shell | Copied command | `_ka` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-copy-webhook-url`<br>Couldn't copy webhook URL | missing | routines | Couldn't copy webhook URL | `Dka` |  | copy not shown in any OpenConductor capture |
-| `toast:copied-webhook-url`<br>Copied webhook URL | missing | routines | Copied webhook URL | `Pka` |  | copy not shown in any OpenConductor capture |
-| `toast:routine-isn-t-ready-yr-join`<br>Routine isn't ready: ${Yr.join("; ")}. | missing | routines | Routine isn't ready: ${Yr.join("; ")}. | `b7a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-create-webhook-url-e`<br>Couldn't create webhook URL: ${e} | missing | routines | Couldn't create webhook URL: ${e} | `v7a` |  | copy not shown in any OpenConductor capture |
-| `toast:reverted-to-version-ft`<br>Reverted to version ${ft} | missing | shell | Reverted to version ${ft} | `k7a` |  | copy not shown in any OpenConductor capture |
-| `toast:routine-deleted~2`<br>Routine deleted | missing | routines | Routine deleted | `k7a` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-copy-link~3`<br>Failed to copy link | missing | shell | Failed to copy link | `k7a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-open-workspace~2`<br>Couldn't open workspace | missing | workspaces | Couldn't open workspace | `T7a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-run-routine-ee-t`<br>Couldn't run routine: ${_ee(t)} | missing | routines | Couldn't run routine: ${_ee(t)} | `A7a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-rotate-webhook-secret-ee-t`<br>Couldn't rotate webhook secret: ${_ee(t)} | missing | routines | Couldn't rotate webhook secret: ${_ee(t)} | `I7a` |  | copy not shown in any OpenConductor capture |
-| `toast:webhook-secret-rotated`<br>Webhook secret rotated | missing | routines | Webhook secret rotated | `R7a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-restore-routine-ee-t`<br>Couldn't restore routine: ${_ee(t)} | missing | routines | Couldn't restore routine: ${_ee(t)} | `N7a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-archive-routine-ee-t`<br>Couldn't archive routine: ${_ee(t)} | missing | routines | Couldn't archive routine: ${_ee(t)} | `O7a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-delete-routine-ee-t`<br>Couldn't delete routine: ${_ee(t)} | missing | routines | Couldn't delete routine: ${_ee(t)} | `D7a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-revert-routine-ee-t`<br>Couldn't revert routine: ${_ee(t)} | missing | routines | Couldn't revert routine: ${_ee(t)} | `P7a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-save-routine-ee-t`<br>Couldn't save routine: ${_ee(t)} | missing | routines | Couldn't save routine: ${_ee(t)} | `L7a` |  | copy not shown in any OpenConductor capture |
-| `toast:couldn-t-create-routine-m7a-t`<br>Couldn't create routine: ${M7a(t)} | missing | routines | Couldn't create routine: ${M7a(t)} | `$7a` |  | copy not shown in any OpenConductor capture |
-| `toast:new-update-available`<br>New update available | missing | shell | New update available | `bIa` |  | copy not shown in any OpenConductor capture |
-| `toast:will-restart-when-all-agents-are-done`<br>Will restart when all agents are done | missing | chat | Will restart when all agents are done / The update will download automatically in the background. | `bIa` |  | copy not shown in any OpenConductor capture |
-| `toast:update-available-v-t-version`<br>Update available: v${t.version} | missing | shell | Update available: v${t.version} / The update will download automatically in the background. | `_Ia` |  | copy not shown in any OpenConductor capture |
-| `toast:you-re-up-to-date`<br>You're up to date! | missing | shell | You're up to date! / You're running the latest version of Conductor. | `vIa` |  | copy not shown in any OpenConductor capture |
-| `toast:yia` | missing | triage |  | `yIa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:yia~2` | missing | triage |  | `yIa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:yia~3` | missing | triage |  | `yIa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:yia~4` | missing | triage |  | `yIa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:yia~5` | missing | triage |  | `yIa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:yia~6` | missing | triage |  | `yIa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:wia` | missing | triage |  | `wIa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:wia~2` | missing | triage |  | `wIa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:wia~3` | missing | triage |  | `wIa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:wia~4` | missing | triage |  | `wIa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:sia` | missing | triage |  | `SIa` |  | no literal copy to locate it; not observed in any capture |
-| `toast:e-city-visited-n`<br>${e} city visited: ${n}! | missing | shell | ${e} city visited: ${n}! | `EIa` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-unarchive-t-workspacedirectoryname`<br>Failed to unarchive: ${t.workspaceDirectoryName} | missing | workspaces | Failed to unarchive: ${t.workspaceDirectoryName} | `kIa` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-start-agents`<br>Failed to start agents | missing | chat | Failed to start agents / Conductor will not work. Please report this error. | `wVi` |  | copy not shown in any OpenConductor capture |
+| `menu:v-i` | unverified / deferred | triage |  | `v_i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:ids` | unverified / deferred | triage |  | `Ids` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:jds` | unverified / deferred | triage |  | `jds` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:p9` | unverified / deferred | triage |  | `P9` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:p9~2` | unverified / deferred | triage |  | `P9` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:yve` | unverified / deferred | triage |  | `Yve` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:nro` | unverified / deferred | triage |  | `nro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:nro~2` | unverified / deferred | triage |  | `nro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:moo` | unverified / deferred | triage |  | `moo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:xoo` | unverified / deferred | triage |  | `xoo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:g8i` | unverified / deferred | triage |  | `g8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:mho` | unverified / deferred | triage |  | `mho` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:uit` | unverified / deferred | triage |  | `uIt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:kdo` | unverified / deferred | triage |  | `kDo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:nfi` | unverified / in-scope | shell | Anyone | `nFi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `menu:nfi~2` | matches / in-scope | workspaces | All projects | `nFi` | [palette-workspaces](side-by-side/workspaces-palette-workspaces.png) | on screen in both; state palette-workspaces matches |
+| `menu:zna` | unverified / deferred | triage |  | `zna` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:sxe` | unverified / in-scope | shell | Disconnect | `sxe` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `menu:qha` | unverified / deferred | triage |  | `Qha` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:xzi` | unverified / deferred | triage |  | `Xzi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:rya` | unverified / deferred | triage |  | `rya` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:dsa` | unverified / deferred | triage |  | `DSa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:aft` | unverified / deferred | triage |  | `AFt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:rft` | unverified / deferred | triage |  | `RFt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:svs` | unverified / deferred | triage |  | `Svs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:u6s` | matches / in-scope | git-review | Edit before sending | `u6s` | [menu-review-edit](side-by-side/chat-tabs-menu-review-edit.png) | on screen in both; state menu-review-edit matches |
+| `menu:eq` | unverified / deferred | triage |  | `EQ` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:bro` | unverified / deferred | triage |  | `bro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:plo` | unverified / deferred | triage |  | `Plo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:u8i` | matches / in-scope | chat | Rename chat / Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
+| `menu:gwt` | unverified / deferred | triage |  | `gwt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:zoo` | unverified / deferred | triage |  | `zOo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:sko` | unverified / deferred | triage |  | `sKo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:lna` | unverified / deferred | triage |  | `Lna` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:gjn` | unverified / deferred | triage |  | `gJn` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:h0a` | unverified / deferred | triage |  | `h0a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:t9a` | unverified / deferred | triage |  | `t9a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:ztt` | unverified / deferred | triage |  | `ZTt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu:svs~2` | unverified / deferred | triage |  | `Svs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
 
-## empty-state (52: 40 missing, 0 wrong, 12 matches)
+## menu-item (all 89 retained rows, including exclusions)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
-| `empty-state:no-apps-available`<br>No apps available | missing | shell | No apps available | `cFn` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-apps-available~2`<br>No apps available | missing | shell | No apps available | `bvs` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-git-status`<br>No git status | missing | git-review | No git status | `gyi` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-files-match-this-filter`<br>No files match this filter | missing | shell | No files match this filter | `gyi` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-branch-found`<br>No branch found. | missing | git-review | No branch found. | `EJe` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-logs-were-recorded-or-they-have-expired`<br>No logs were recorded, or they have expired. | missing | shell | No logs were recorded, or they have expired. | `w9s` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-setup-script-output`<br>No setup script output | matches | terminal-scripts | No setup script output | `nro` | [panel-setup-idle](side-by-side/terminal-scripts-02-setup-idle.png) | on screen in both; state panel-setup-idle matches |
-| `empty-state:no-one-has-been-added`<br>No one has been added | missing | shell | No one has been added | `uoo` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-people-found`<br>No people found. | missing | shell | No people found. | `foo` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-other-teammates-in-this-organization`<br>No other teammates in this organization | missing | cloud-org | No other teammates in this organization | `Ioo` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-open-issues-found`<br>No open issues found | missing | shell | No open issues found | `nuo` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-issues-found`<br>No issues found | missing | shell | No issues found | `nuo` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-logs-available`<br>No logs available. | missing | shell | No logs available. | `_uo` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-workspaces-found`<br>No workspaces found | missing | workspaces | No workspaces found | `Auo` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-comment-body`<br>No comment body | missing | shell | No comment body | `L8i` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-todos`<br>No todos | missing | shell | No todos | `bwt` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-tasks`<br>No tasks | missing | shell | No tasks | `X0o` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-models-found`<br>No models found | matches | chat | No models found | `A7o` | [empty-model-search](side-by-side/chat-tabs-empty-model-search.png) | on screen in both; state empty-model-search matches |
-| `empty-state:no-changes-in-this-file`<br>No changes in this file | missing | shell | No changes in this file | `Mqo` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-changes-to-this-file`<br>No changes to this file. | missing | git-review | No changes to this file. | `Jqo` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-description`<br>No description | missing | shell | No description | `dKo` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-matching-workspaces`<br>No matching workspaces | matches | workspaces | No matching workspaces | `UJo` | [palette-workspaces-empty](side-by-side/workspaces-palette-workspaces-empty.png) | on screen in both; state palette-workspaces-empty matches |
-| `empty-state:no-members-found-in-this-organization`<br>No members found in this organization. | missing | cloud-org | No members found in this organization. | `Yea` |  | copy not shown in any OpenConductor capture |
-| `empty-state:add-a-project-to-get-started`<br>Add a project to get started. | matches | workspaces | Add a project to get started. | `hBi` | [home-empty](ui-map/oc/home-empty.png) | on screen in both; state home-empty matches |
-| `empty-state:no-providers-match-your-search`<br>No providers match your search. | missing | shell | No providers match your search. | `hua` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-variables-set`<br>No variables set | matches | settings | No variables set | `T$i` | [settings-environment](ui-map/oc/settings-environment.png) | on screen in both; state settings-environment matches |
-| `empty-state:no-matching-mcp-servers`<br>No matching MCP servers. | missing | chat | No matching MCP servers. | `z1a` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-matching-repositories`<br>No matching repositories. | missing | workspaces | No matching repositories. | `mfa` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-variables-yet`<br>No variables yet | matches | settings | No variables yet | `Xha` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
-| `empty-state:no-members-yet`<br>No members yet. | missing | cloud-org | No members yet. | `m0a` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-icons-found`<br>No icons found | missing | shell | No icons found | `Mzi` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-run-scripts-yet-add-one-to-get-started`<br>No run scripts yet. Add one to get started. | matches | terminal-scripts | No run scripts yet. Add one to get started. | `ama` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
-| `empty-state:no-account-information-available-please-sign-in`<br>No account information available. Please sign in. | missing | onboarding-auth | No account information available. Please sign in. | `Xma` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-remote-found`<br>No remote found. | missing | shell | No remote found. | `Tga` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-simulation`<br>No simulation | missing | shell | No simulation | `y2a` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-feature-flags-received`<br>No feature flags received | missing | shell | No feature flags received | `Xzi` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-matching-gitignored-files-found`<br>No matching gitignored files found. | matches | settings | No matching gitignored files found. | `Nei` | [settings-repo-misc](ui-map/oc/settings-repo-misc.png) | on screen in both; state settings-repo-misc matches |
-| `empty-state:no-emoji-found`<br>No emoji found | missing | shell | No emoji found | `uUi` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-favicon-detected`<br>No favicon detected | missing | shell | No favicon detected | `pba` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-matching-sections`<br>No matching sections | missing | shell | No matching sections | `Jba` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-matching-workspaces~2`<br>No matching workspaces | matches | workspaces | No matching workspaces | `l_a` | [palette-workspaces-empty](side-by-side/workspaces-palette-workspaces-empty.png) | on screen in both; state palette-workspaces-empty matches |
-| `empty-state:no-results-found`<br>No results found | matches | shell | No results found | `m_a` | [palette-no-results](side-by-side/shell-palette-03-no-results.png) | on screen in both; state palette-no-results matches |
-| `empty-state:no-branch-name`<br>No branch name | missing | git-review | No branch name | `Y6a` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-issues-found~2`<br>No issues found | missing | shell | No issues found | `X6a` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-pull-requests-found`<br>No pull requests found | missing | git-review | No pull requests found | `o4a` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-branches-found`<br>No branches found | matches | git-review | No branches found | `a4a` | [create-from-branches](side-by-side/git-review-05-create-from-branches.png) | on screen in both; state create-from-branches matches |
-| `empty-state:no-local-servers-running-start-your-dev-server-and-it-ll-sho`<br>No local servers running. Start your dev server and it'll show up here. | missing | shell | No local servers running. Start your dev server and it'll show up here | `Dwa` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-logs-for-this-build-yet`<br>No logs for this build yet. | missing | shell | No logs for this build yet. | `xSa` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-run-scripts-found-in-this-source`<br>No run scripts found in this source. | missing | terminal-scripts | No run scripts found in this source. | `PSa` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-triggers`<br>No triggers | missing | routines | No triggers | `a7a` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-versions`<br>No versions | missing | shell | No versions | `c7a` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-runs-yet`<br>No runs yet | matches | routines | No runs yet | `Bti` | [route-routines-new](side-by-side/routines-02-new.png) | on screen in both; state route-routines-new matches |
+| `menu-item:ids` | unverified / deferred | triage |  | `Ids` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:jds` | unverified / deferred | triage |  | `jds` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:jds~2` | unverified / deferred | triage |  | `jds` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:cfn` | unverified / deferred | triage |  | `cFn` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:cfn~2` | unverified / deferred | triage |  | `cFn` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:ztt` | unverified / deferred | triage |  | `ZTt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:yve` | unverified / deferred | triage |  | `Yve` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:nro` | unverified / deferred | triage |  | `nro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:nro~2` | unverified / deferred | triage |  | `nro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:nro~3` | unverified / deferred | triage |  | `nro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:nro~4` | unverified / deferred | triage |  | `nro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:nro~5` | unverified / deferred | triage |  | `nro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:vro` | unverified / deferred | triage |  | `Vro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:vro~2` | unverified / deferred | triage |  | `Vro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:moo` | unverified / deferred | triage |  | `moo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:remove-access`<br>Remove access | unverified / in-scope | shell | Remove access | `moo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `menu-item:xoo` | unverified / deferred | triage |  | `xoo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:xoo~2` | unverified / deferred | triage |  | `xoo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:g8i` | unverified / deferred | triage |  | `g8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:g8i~2` | unverified / deferred | triage |  | `g8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:g8i~3` | unverified / deferred | triage |  | `g8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:g8i~4` | unverified / deferred | triage |  | `g8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:g8i~5` | unverified / deferred | triage |  | `g8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:mho` | unverified / deferred | triage |  | `mho` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:mho~2` | unverified / deferred | triage |  | `mho` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:uit` | unverified / deferred | triage |  | `uIt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:uit~2` | unverified / deferred | triage |  | `uIt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:kdo` | unverified / deferred | triage |  | `kDo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:kdo~2` | unverified / deferred | triage |  | `kDo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:kdo~3` | unverified / deferred | triage |  | `kDo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:cloud-organization`<br>Cloud organization | unverified / in-scope | onboarding-auth | Cloud organization / Sign in with single sign-on to access | `zna` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `menu-item:create-organization`<br>Create organization | unverified / deferred | cloud-org | Create organization | `zna` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `menu-item:upgrade-to-pro`<br>Upgrade to Pro | unverified / in-scope | shell | Upgrade to Pro | `zna` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `menu-item:zna` | unverified / deferred | triage |  | `zna` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:zna~2` | unverified / deferred | triage |  | `zna` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:disconnect`<br>Disconnect | unverified / in-scope | shell | Disconnect | `sxe` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `menu-item:qha` | unverified / deferred | triage |  | `Qha` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:qha~2` | unverified / deferred | triage |  | `Qha` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:qha~3` | unverified / deferred | triage |  | `Qha` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:xzi` | unverified / deferred | triage |  | `Xzi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:yei` | unverified / deferred | triage |  | `Yei` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:dsa` | unverified / deferred | triage |  | `DSa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:dsa~2` | unverified / deferred | triage |  | `DSa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:dsa~3` | unverified / deferred | triage |  | `DSa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:dsa~4` | unverified / deferred | triage |  | `DSa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:anyone`<br>Anyone | unverified / in-scope | shell | Anyone | `nFi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `menu-item:nfi` | unverified / deferred | triage |  | `nFi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:all-projects`<br>All projects | matches / in-scope | workspaces | All projects | `nFi` | [palette-workspaces](side-by-side/workspaces-palette-workspaces.png) | on screen in both; state palette-workspaces matches |
+| `menu-item:nfi~2` | unverified / deferred | triage |  | `nFi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:import-details`<br>Import details | unverified / in-scope | shell | Import details | `ZTt` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `menu-item:nro~6` | unverified / deferred | triage |  | `nro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:zna~3` | unverified / deferred | triage |  | `zna` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:organizations-are-unavailable-when-enterprise-data-privacy-i`<br>Organizations are unavailable when enterprise data privacy is enabled. | unverified / deferred | cloud-org | Organizations are unavailable when enterprise data privacy is enabled. | `zna` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `menu-item:w-i` | unverified / deferred | triage |  | `w_i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:w-i~2` | unverified / deferred | triage |  | `w_i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:w-i~3` | unverified / deferred | triage |  | `w_i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:w-i~4` | unverified / deferred | triage |  | `w_i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:svs` | unverified / deferred | triage |  | `Svs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:svs~2` | unverified / deferred | triage |  | `Svs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:svs~3` | unverified / deferred | triage |  | `Svs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:svs~4` | unverified / deferred | triage |  | `Svs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:svs~5` | unverified / deferred | triage |  | `Svs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:svs~6` | unverified / deferred | triage |  | `Svs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:edit-before-sending`<br>Edit before sending | matches / in-scope | git-review | Edit before sending | `u6s` | [menu-review-edit](side-by-side/chat-tabs-menu-review-edit.png) | on screen in both; state menu-review-edit matches |
+| `menu-item:eq` | unverified / deferred | triage |  | `EQ` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:kxs` | unverified / deferred | triage |  | `kXs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:bro` | unverified / deferred | triage |  | `bro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:bro~2` | unverified / deferred | triage |  | `bro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:dlo` | unverified / deferred | triage |  | `Dlo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:dlo~2` | unverified / deferred | triage |  | `Dlo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:u8i` | unverified / deferred | triage |  | `u8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:rename-chat`<br>Rename chat | matches / in-scope | chat | Rename chat | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
+| `menu-item:u8i~2` | unverified / deferred | triage |  | `u8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:c`<br>⌘⌥C | unverified / in-scope | shell | ⌘⌥C | `u8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:copy-full-transcript`<br>Copy full transcript | matches / in-scope | chat | Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
+| `menu-item:copy-link`<br>Copy link | matches / in-scope | workspaces | Copy link | `u8i` | [menu-workspace-context](side-by-side/workspaces-menu-workspace-context.png) | on screen in both; state menu-workspace-context matches |
+| `menu-item:u8i~3` | unverified / deferred | triage |  | `u8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:w`<br>⌘W | unverified / in-scope | shell | ⌘W | `u8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:close-others`<br>Close others | matches / in-scope | chat | Close others | `u8i` | [menu-chat-tab](side-by-side/chat-tabs-menu-chat-tab.png) | on screen in both; state menu-chat-tab matches |
+| `menu-item:gwt` | unverified / deferred | triage |  | `gwt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:gwt~2` | unverified / deferred | triage |  | `gwt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:vho` | unverified / deferred | triage |  | `Vho` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:zoo` | unverified / deferred | triage |  | `zOo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:lna` | unverified / deferred | triage |  | `Lna` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:gjn` | unverified / deferred | triage |  | `gJn` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:h0a` | unverified / deferred | triage |  | `h0a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:t9a` | unverified / deferred | triage |  | `t9a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:svs~7` | unverified / deferred | triage |  | `Svs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `menu-item:vho~2` | unverified / deferred | triage |  | `Vho` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+
+## popover (all 45 retained rows, including exclusions)
+
+| Item | Status | Team | Copy | Component | State | Why |
+|---|---|---|---|---|---|---|
+| `popover:l1e` | unverified / deferred | triage |  | `l1e` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:t5o` | unverified / deferred | triage |  | `t5o` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:t5o~2` | unverified / deferred | triage |  | `T5o` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:uzo` | unverified / deferred | triage |  | `UZo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:ucs` | unverified / deferred | triage |  | `Ucs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:ucs~2` | unverified / deferred | triage |  | `Ucs` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:s-i` | unverified / deferred | triage |  | `S_i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:s-i~2` | unverified / deferred | triage |  | `S_i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:xps` | unverified / deferred | triage |  | `Xps` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:xps~2` | unverified / deferred | triage |  | `Xps` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:xps~3` | unverified / deferred | triage |  | `Xps` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:iso` | unverified / in-scope | terminal-scripts | Ports detected | `iso` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `popover:iso~2` | unverified / in-scope | terminal-scripts | Ports detected | `iso` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `popover:iso~3` | unverified / deferred | triage |  | `iso` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:iso~4` | unverified / deferred | triage |  | `iso` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:foo` | unverified / deferred | triage |  | `foo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:oo` | unverified / deferred | triage |  | `_oo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:oo~2` | unverified / deferred | triage |  | `_oo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:llo` | unverified / deferred | triage |  | `Llo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:llo~2` | unverified / deferred | triage |  | `Llo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:mlo` | unverified / deferred | triage |  | `Mlo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:qmo` | unverified / deferred | triage |  | `Qmo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:qmo~2` | unverified / in-scope | shell | Context / Context usage is unavailable for Cursor. | `Qmo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `popover:ego` | unverified / deferred | triage |  | `ego` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:ego~2` | unverified / deferred | triage |  | `ego` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:l7o` | unverified / deferred | triage |  | `L7o` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:l7o~2` | unverified / deferred | triage |  | `L7o` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:h7o` | unverified / deferred | triage |  | `H7o` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:ukn` | unverified / deferred | triage |  | `uKn` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:kdo` | unverified / in-scope | chat | Fast mode / Input | `kDo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `popover:kqo` | matches / in-scope | shell | Keyboard shortcuts / Docs | `KQo` | [palette-all](side-by-side/shell-palette-01-all.png) | on screen in both; state palette-all matches |
+| `popover:zqo` | unverified / deferred | triage |  | `ZQo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:yzo` | unverified / deferred | triage |  | `yZo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:wra` | unverified / deferred | triage |  | `wra` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:mfa` | unverified / deferred | triage |  | `mfa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:rzi` | unverified / deferred | triage |  | `rzi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:mzi` | unverified / deferred | triage |  | `Mzi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:wba` | unverified / deferred | triage |  | `wba` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:wba~2` | unverified / deferred | triage |  | `wba` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:b6a` | unverified / deferred | triage |  | `B6a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:l4a` | unverified / deferred | triage |  | `l4a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:aya` | unverified / deferred | triage |  | `Aya` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:gka` | unverified / deferred | triage |  | `Gka` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:gka~2` | unverified / deferred | triage |  | `Gka` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `popover:gka~3` | unverified / deferred | triage |  | `Gka` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+
+## select (all 29 retained rows, including exclusions)
+
+| Item | Status | Team | Copy | Component | State | Why |
+|---|---|---|---|---|---|---|
+| `select:was` | unverified / deferred | triage |  | `was` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:doo` | unverified / deferred | triage |  | `doo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:goo` | unverified / in-scope | shell | Read / Write | `goo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `select:xdo` | unverified / deferred | triage |  | `Xdo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:z5e` | unverified / deferred | triage |  | `Z5e` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:zqo` | matches / in-scope | workspaces | Add project | `ZQo` | [create-repo-picker](side-by-side/create-composer-02-repo-picker.png) | on screen in both; state create-repo-picker matches |
+| `select:yji` | unverified / deferred | triage |  | `Yji` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:nfi` | unverified / deferred | triage |  | `nFi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:qaa` | unverified / in-scope | shell | Light / Dark | `Qaa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `select:xaa` | unverified / deferred | triage |  | `Xaa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:rla` | wrong / in-scope | settings | Default / Deuteranopia / Protanopia | `rla` | [settings-account](ui-map/oc/settings-account.png) | OpenConductor shows it in settings-models, not in the host state; host state settings-account is wrong |
+| `select:ala` | wrong / in-scope | settings | Default | `ala` | [settings-account](ui-map/oc/settings-account.png) | OpenConductor shows it in settings-models, not in the host state; host state settings-account is wrong |
+| `select:ula` | matches / in-scope | settings | Custom... | `ula` | [settings-git](ui-map/oc/settings-git.png) | on screen in both; state settings-git matches |
+| `select:pla` | wrong / in-scope | settings | Default / Tufte | `pla` | [settings-account](ui-map/oc/settings-account.png) | OpenConductor shows it in settings-models, not in the host state; host state settings-account is wrong |
+| `select:gda` | unverified / deferred | triage |  | `Gda` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:yda` | unverified / deferred | triage |  | `Yda` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:xma` | wrong / in-scope | settings | Default / Always approve | `Xma` | [settings-account](ui-map/oc/settings-account.png) | OpenConductor shows it in settings-models, not in the host state; host state settings-account is wrong |
+| `select:rga` | unverified / deferred | triage |  | `rga` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:yei` | wrong / in-scope | settings | GitHub / Linear | `yei` | [settings-account](ui-map/oc/settings-account.png) | host state settings-account is wrong |
+| `select:j2a` | unverified / deferred | triage |  | `j2a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:xzi` | unverified / deferred | triage |  | `Xzi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:xzi~2` | unverified / deferred | triage |  | `Xzi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:xzi~3` | unverified / in-scope | git-review | Poll / Push | `Xzi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `select:kka` | unverified / deferred | triage |  | `kka` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:kka~2` | unverified / deferred | triage |  | `kka` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:rka` | unverified / deferred | triage |  | `Rka` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:rka~2` | unverified / deferred | triage |  | `Rka` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:fti` | unverified / deferred | triage |  | `Fti` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `select:jka` | unverified / deferred | triage |  | `Jka` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+
+## tab (all 35 retained rows, including exclusions)
+
+| Item | Status | Team | Copy | Component | State | Why |
+|---|---|---|---|---|---|---|
+| `tab:w9i` | unverified / deferred | triage |  | `W9i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:nro` | unverified / deferred | triage |  | `nro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:nro~2` | unverified / deferred | triage |  | `nro` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:u8i` | unverified / deferred | triage |  | `u8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:d8i` | unverified / deferred | triage |  | `d8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:f8i` | unverified / deferred | triage |  | `f8i` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:m9e` | unverified / deferred | triage |  | `M9e` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:activity`<br>Activity | unverified / in-scope | shell | Activity | `KKo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `tab:description`<br>Description | unverified / in-scope | shell | Description | `KKo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `tab:kko` | unverified / deferred | triage |  | `KKo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:nyo` | unverified / deferred | triage |  | `NYo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:all-projects`<br>All projects | matches / in-scope | workspaces | All projects | `dta` | [palette-workspaces](side-by-side/workspaces-palette-workspaces.png) | on screen in both; state palette-workspaces matches |
+| `tab:fta` | unverified / deferred | triage |  | `fta` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:local`<br>Local | unverified / in-scope | shell | Local | `zda` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `tab:cloud`<br>Cloud | unverified / deferred | cloud-org | Cloud | `zda` |  | No valid reference observation proves this gap. Raw assessment: not rendered in a reference capture; OpenConductor shows it in settings-cloud-setup, not in the host state |
+| `tab:installed`<br>Installed | matches / in-scope | settings | Installed | `V1a` | [settings-org-mcp](side-by-side/settings-org-07-mcp.png) | on screen in both; state settings-org-mcp matches |
+| `tab:recommended`<br>Recommended | wrong / deferred | onboarding-auth | Recommended | `V1a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor shows it in settings-providers, settings-org-mcp, settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing |
+| `tab:logs`<br>Logs | unverified / in-scope | shell | Logs | `rfa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `tab:settings`<br>Settings | matches / in-scope | shell | Settings | `rfa` | [home-empty](ui-map/oc/home-empty.png) | on screen in both; state home-empty matches |
+| `tab:personal`<br>Personal | matches / in-scope | shell | Personal | `r0a` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
+| `tab:shared`<br>Shared | matches / deferred | cloud-org | Shared | `r0a` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
+| `tab:personal~2`<br>Personal | matches / in-scope | shell | Personal | `S0a` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
+| `tab:shared~2`<br>Shared | matches / deferred | cloud-org | Shared | `S0a` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
+| `tab:pa` | unverified / deferred | triage |  | `$pa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:pa~2` | unverified / deferred | triage |  | `$pa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:pa~3` | unverified / deferred | triage |  | `$pa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:zpa` | unverified / deferred | triage |  | `zpa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:i-a` | unverified / deferred | triage |  | `i_a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:prs`<br>PRs | unverified / in-scope | shell | PRs | `l4a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:branches`<br>Branches | matches / in-scope | git-review | Branches | `l4a` | [create-from-branches](side-by-side/git-review-05-create-from-branches.png) | on screen in both; state create-from-branches matches |
+| `tab:issues`<br>Issues | matches / in-scope | workspaces | Issues | `l4a` | [create-from-prs](side-by-side/git-review-04-create-from-prs.png) | on screen in both; state create-from-prs matches |
+| `tab:personal~3`<br>Personal | matches / in-scope | shell | Personal | `KSa` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
+| `tab:shared~3`<br>Shared | matches / deferred | cloud-org | Shared | `KSa` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
+| `tab:wpo` | unverified / deferred | triage |  | `WPo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `tab:u8a` | unverified / deferred | triage |  | `U8a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+
+## toast (all 327 retained rows, including exclusions)
+
+| Item | Status | Team | Copy | Component | State | Why |
+|---|---|---|---|---|---|---|
+| `toast:xcode-license-is-not-accepted`<br>Xcode license is not accepted | matches / in-scope | terminal-scripts | Xcode license is not accepted / Run `sudo xcodebuild -license accept` in terminal to continue | `HBr` | [toast-xcode-license](side-by-side/terminal-scripts-05-xcode-license.png) | on screen in both; state toast-xcode-license matches |
+| `toast:e-failed-to-start`<br>${e} failed to start | unverified / not-required | shell | ${e} failed to start | `Jhi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:twe` | unverified / deferred | triage |  | `tWe` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:image-saved`<br>Image saved | unverified / not-required | shell | Image saved | `R0i` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-image-to-clipboard`<br>Copied image to clipboard | unverified / not-required | shell | Copied image to clipboard | `Y$r` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-e-to-clipboard`<br>Copied ${e} to clipboard | unverified / not-required | shell | Copied ${e} to clipboard | `n5` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-to-clipboard`<br>Failed to copy to clipboard | unverified / not-required | shell | Failed to copy to clipboard | `n5` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy`<br>Failed to copy | unverified / not-required | shell | Failed to copy / Please try again. | `hZr` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:dv` | unverified / deferred | triage |  | `dv` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:project-created`<br>Project created. | unverified / not-required | workspaces | Project created. | `gbi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:unknown-app-r`<br>Unknown app: ${r} | unverified / not-required | shell | Unknown app: ${r} | `uD` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:file-is-outside-the-synced-workspace`<br>File is outside the synced workspace | unverified / not-required | workspaces | File is outside the synced workspace | `uD` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:remote-open-is-only-supported-for-vs-code-cursor-and-zed`<br>Remote open is only supported for VS Code, Cursor, and Zed | unverified / not-required | shell | Remote open is only supported for VS Code, Cursor, and Zed | `uD` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-open-in-r-o-instanceof-error-o-message-string-o`<br>Failed to open in ${r}: ${o instanceof Error?o.message:String(o)} | unverified / not-required | chat | Failed to open in ${r}: ${o instanceof Error?o.message:String(o)} | `uD` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-prompt`<br>Failed to copy prompt | unverified / not-required | chat | Failed to copy prompt | `T9s` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-prompt-to-clipboard`<br>Copied prompt to clipboard | unverified / not-required | chat | Copied prompt to clipboard | `A9s` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-attach-terminal`<br>Failed to attach terminal | unverified / not-required | terminal-scripts | Failed to attach terminal | `w9e` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:port-o-remoteport-forwarded-to-localhost-d`<br>Port ${o.remotePort} forwarded to localhost:${d} | unverified / not-required | terminal-scripts | Port ${o.remotePort} forwarded to localhost:${d} | `rCi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-forward-port-o-remoteport-u-message`<br>Failed to forward port ${o.remotePort}: ${u.message} | unverified / not-required | terminal-scripts | Failed to forward port ${o.remotePort}: ${u.message} | `rCi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:preview-url-copied-to-clipboard`<br>Preview URL copied to clipboard | unverified / not-required | git-review | Preview URL copied to clipboard | `GAt` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:gat` | unverified / deferred | triage |  | `GAt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:failed-to-open-preview-url-rc-e`<br>Failed to open preview URL: ${rc(e)} | unverified / not-required | git-review | Failed to open preview URL: ${rc(e)} | `Hro` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-turn-off-preview-url-t-message`<br>Failed to turn off preview URL: ${t.message} | unverified / not-required | git-review | Failed to turn off preview URL: ${t.message} | `Gro` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-create-preview-url-t-message`<br>Failed to create preview URL: ${t.message} | unverified / not-required | git-review | Failed to create preview URL: ${t.message} | `qro` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-update-auto-forwarding-t-message`<br>Failed to update auto-forwarding: ${t.message} | unverified / not-required | chat | Failed to update auto-forwarding: ${t.message} | `Zro` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:enter-a-valid-port-1-65535`<br>Enter a valid port (1-65535) | unverified / not-required | terminal-scripts | Enter a valid port (1-65535) | `nso` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:port-22-is-reserved-for-ssh-and-cannot-be-forwarded-here`<br>Port 22 is reserved for SSH and cannot be forwarded here | unverified / not-required | terminal-scripts | Port 22 is reserved for SSH and cannot be forwarded here | `nso` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-check-forwarded-ports-i-error-message`<br>Failed to check forwarded ports: ${I.error.message} | unverified / not-required | git-review | Failed to check forwarded ports: ${I.error.message} | `uso` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:forwarding-ports`<br>Forwarding ports | unverified / not-required | terminal-scripts | Forwarding ports | `uso` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:aoo` | unverified / deferred | triage |  | `aoo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:couldn-t-remove-workspace-from-section`<br>Couldn't remove workspace from section | unverified / not-required | workspaces | Couldn't remove workspace from section | `Zoo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-move-workspace`<br>Couldn't move workspace | unverified / not-required | workspaces | Couldn't move workspace | `eao` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:ovn` | unverified / deferred | triage |  | `OVn` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:conductor-doesn-t-have-access-to-t-repofullname-reconnect-gi`<br>Conductor doesn't have access to ${t.repoFullName}. Reconnect GitHub or update t | unverified / not-required | git-review | Conductor doesn't have access to ${t.repoFullName}. Reconnect GitHub o | `KAt` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:your-github-access-token-doesn-t-have-access-to-t-repofullna`<br>Your GitHub access token doesn't have access to ${t.repoFullName}. Update that t | unverified / not-required | git-review | Your GitHub access token doesn't have access to ${t.repoFullName}. Upd | `KAt` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:set-up-a-github-token-in-settings-to-create-a-cloud-workspac`<br>Set up a GitHub token in Settings to create a cloud workspace | unverified / deferred | cloud-org | Set up a GitHub token in Settings to create a cloud workspace | `KAt` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:cloud-workspace-preflight-failed-rc-t`<br>Cloud workspace preflight failed: ${rc(t)} | unverified / deferred | cloud-org | Cloud workspace preflight failed: ${rc(t)} | `KAt` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:workspace-created-but-couldn-t-add-it-to-the-section-move-it`<br>Workspace created, but couldn't add it to the section. Move it from the sidebar. | unverified / not-required | workspaces | Workspace created, but couldn't add it to the section. Move it from th | `GCi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:no-ready-repository-pick-one-to-start-this-workspace`<br>No ready repository. Pick one to start this workspace. | unverified / not-required | workspaces | No ready repository. Pick one to start this workspace. | `Bzt` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:bzt` | unverified / deferred | triage |  | `Bzt` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:iao` | unverified / deferred | triage |  | `Iao` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:rao` | unverified / deferred | triage |  | `Rao` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:failed-to-copy-message`<br>Failed to copy message | unverified / not-required | chat | Failed to copy message | `Xuo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-reset-setting`<br>Failed to reset setting | unverified / not-required | shell | Failed to reset setting | `gho` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-save-image`<br>Failed to save image | unverified / not-required | shell | Failed to save image | `Hho` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:fyi-when-you-switch-effort-mid-chat-with-claude-your-next-re`<br>FYI: When you switch effort mid-chat with Claude, your next response will be slo | unverified / not-required | chat | FYI: When you switch effort mid-chat with Claude, your next response w | `cgo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:fyi-when-you-switch-models-mid-chat-your-next-response-will-`<br>FYI: When you switch models mid-chat, your next response will be slower and use  | unverified / not-required | chat | FYI: When you switch models mid-chat, your next response will be slowe | `yWn` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:recording-ended-transcript-saved`<br>Recording ended — transcript saved. | unverified / not-required | chat | Recording ended — transcript saved. | `Ngo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:recording-ended-transcript-saved~2`<br>Recording ended — transcript saved. | unverified / not-required | chat | Recording ended — transcript saved. | `Ngo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:speech-recording-failed`<br>Speech recording failed. | unverified / not-required | shell | Speech recording failed. | `Pgo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:folder-e-is-too-large-to-attach`<br>Folder "${e}" is too large to attach | unverified / not-required | chat | Folder "${e}" is too large to attach | `Swo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-attach-folder-e`<br>Couldn't attach folder "${e}" | unverified / not-required | chat | Couldn't attach folder "${e}" | `Swo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:file-picker-is-not-available-on-this-device`<br>File picker is not available on this device | unverified / not-required | shell | File picker is not available on this device | `PNi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-delete-queued-message`<br>Failed to delete queued message | unverified / not-required | chat | Failed to delete queued message | `AAo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-reorder-queued-messages`<br>Failed to reorder queued messages | unverified / not-required | chat | Failed to reorder queued messages | `AAo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-reorder-queued-messages~2`<br>Failed to reorder queued messages | unverified / not-required | chat | Failed to reorder queued messages | `AAo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-resume-queue`<br>Failed to resume queue | unverified / not-required | shell | Failed to resume queue | `IAo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-resume-queue~2`<br>Failed to resume queue | unverified / not-required | shell | Failed to resume queue | `RAo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-retry-message`<br>Failed to retry message | unverified / not-required | chat | Failed to retry message | `NAo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-retry-message~2`<br>Failed to retry message | unverified / not-required | chat | Failed to retry message | `OAo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-delete-queued-message~2`<br>Failed to delete queued message | unverified / not-required | chat | Failed to delete queued message | `DAo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-steer-queued-message`<br>Failed to steer queued message | unverified / not-required | chat | Failed to steer queued message | `PAo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-steer-queued-message~2`<br>Failed to steer queued message | unverified / not-required | chat | Failed to steer queued message | `LAo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:no-messages-in-this-chat`<br>No messages in this chat | unverified / not-required | chat | No messages in this chat | `RIo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-attach-chat-transcript`<br>Failed to attach chat transcript | unverified / not-required | chat | Failed to attach chat transcript | `RIo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-attach-chat-transcript~2`<br>Failed to attach chat transcript | unverified / not-required | chat | Failed to attach chat transcript | `RIo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-attach-plan`<br>Failed to attach plan | unverified / deferred | cloud-org | Failed to attach plan | `RIo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-user-info`<br>Failed to copy user info | unverified / not-required | shell | Failed to copy user info | `UOo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-user-info`<br>Copied user info | unverified / not-required | shell | Copied user info | `HOo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:uho` | unverified / deferred | triage |  | `UHo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:lqo` | unverified / deferred | triage |  | `lqo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:lqo~2` | unverified / deferred | triage |  | `lqo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:lqo~3` | unverified / deferred | triage |  | `lqo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:eqo` | unverified / deferred | triage |  | `eQo` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:couldn-t-save-description-rc-t`<br>Couldn't save description: ${rc(t)} | unverified / not-required | shell | Couldn't save description: ${rc(t)} | `lXo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-user-info~2`<br>Failed to copy user info | unverified / not-required | shell | Failed to copy user info | `Zna` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-user-info~2`<br>Copied user info | unverified / not-required | shell | Copied user info | `eia` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-organization-info`<br>Failed to copy organization info | unverified / deferred | cloud-org | Failed to copy organization info | `nia` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-organization-info`<br>Copied organization info | unverified / deferred | cloud-org | Copied organization info | `iia` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-delete-section`<br>Couldn't delete section | unverified / not-required | shell | Couldn't delete section | `Xia` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-remove-repository-e`<br>Failed to remove repository: ${e} | unverified / not-required | workspaces | Failed to remove repository: ${e} | `Mra` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:esa` | unverified / deferred | triage |  | `esa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:couldn-t-reorder-section`<br>Couldn't reorder section | unverified / not-required | shell | Couldn't reorder section | `esa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:diagnostics-failed-string-b`<br>Diagnostics failed: ${String(B)} | unverified / not-required | shell | Diagnostics failed: ${String(B)} | `moa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:moa` | unverified / deferred | triage |  | `moa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:failed-to-copy-report-to-clipboard`<br>Failed to copy report to clipboard | unverified / not-required | workspaces | Failed to copy report to clipboard | `moa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:console-logs-copied-to-clipboard`<br>Console logs copied to clipboard | unverified / not-required | shell | Console logs copied to clipboard | `moa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-logs-string-b`<br>Failed to copy logs: ${String(B)} | unverified / not-required | shell | Failed to copy logs: ${String(B)} | `moa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:no-workspace-available-create-a-workspace-first`<br>No workspace available. Create a workspace first. | unverified / not-required | workspaces | No workspace available. Create a workspace first. | `moa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-create-session-string-z`<br>Failed to create session: ${String(z)} | unverified / not-required | workspaces | Failed to create session: ${String(z)} | `moa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-logs`<br>Failed to copy logs | unverified / not-required | shell | Failed to copy logs | `Eoa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:app-logs-copied`<br>App logs copied | unverified / not-required | shell | App logs copied | `Coa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-finish-setup-please-try-again`<br>Couldn't finish setup. Please try again. | unverified / not-required | shell | Couldn't finish setup. Please try again. | `wBi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:rla` | unverified / deferred | triage |  | `Rla` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:copied-n`<br>Copied ${n}. | unverified / not-required | shell | Copied ${n}. | `Zla` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-n`<br>Failed to copy ${n}. | unverified / not-required | shell | Failed to copy ${n}. | `Zla` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-save-n-l`<br>Failed to save ${n}: ${L} | unverified / not-required | shell | Failed to save ${n}: ${L} | `YWt` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-remove-n-p`<br>Failed to remove ${n}: ${P} | unverified / not-required | shell | Failed to remove ${n}: ${P} | `YWt` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-refresh-github`<br>Couldn't refresh GitHub | unverified / not-required | git-review | Couldn't refresh GitHub | `oca` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:some-github-details-couldn-t-be-updated`<br>Some GitHub details couldn't be updated | unverified / not-required | git-review | Some GitHub details couldn't be updated | `aca` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:qa` | unverified / not-required | chat | Restart workspaces to pick up new agent credentials. | `QA` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-n~2`<br>Copied ${n}. | unverified / not-required | shell | Copied ${n}. | `Lca` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-n~2`<br>Failed to copy ${n}. | unverified / not-required | shell | Failed to copy ${n}. | `Lca` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:lca` | unverified / deferred | triage |  | `Lca` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:failed-to-load-n`<br>Failed to load ${n}. | unverified / not-required | shell | Failed to load ${n}. | `Lca` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:hca` | unverified / deferred | triage |  | `Hca` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:conductor-could-not-connect-to-cloud-settings-try-again`<br>Conductor could not connect to cloud settings. Try again. | unverified / deferred | cloud-org | Conductor could not connect to cloud settings. Try again. | `v$i` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:v-i` | unverified / not-required | chat | Restart workspaces to pick up new agent credentials. | `v$i` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-codex-verification-code`<br>Copied Codex verification code. | unverified / not-required | chat | Copied Codex verification code. | `IZn` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-codex-verification-code`<br>Failed to copy Codex verification code. | unverified / not-required | chat | Failed to copy Codex verification code. | `IZn` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:izn` | unverified / deferred | triage |  | `IZn` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:aua` | unverified / deferred | triage |  | `aua` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:aua~2` | unverified / deferred | triage |  | `aua` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:enter-all-required-bedrock-fields`<br>Enter all required Bedrock fields. | unverified / not-required | shell | Enter all required Bedrock fields. | `kua` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:kua` | unverified / deferred | triage |  | `kua` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:kua~2` | unverified / deferred | triage |  | `kua` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:iua` | unverified / deferred | triage |  | `Iua` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:iua~2` | unverified / deferred | triage |  | `Iua` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:dua` | unverified / deferred | triage |  | `Dua` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:dua~2` | unverified / deferred | triage |  | `Dua` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:failed-to-update-env-files`<br>Failed to update env files | unverified / not-required | shell | Failed to update env files | `bda` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-update-env-files~2`<br>Failed to update env files | unverified / not-required | shell | Failed to update env files | `_da` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-n-name`<br>Copied ${n.name} | unverified / not-required | shell | Copied ${n.name} | `FZn` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-n-name`<br>Failed to copy ${n.name} | unverified / not-required | shell | Failed to copy ${n.name} | `FZn` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:fda` | unverified / deferred | triage |  | `Fda` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:v1a` | unverified / deferred | triage |  | `V1a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:v1a~2` | unverified / deferred | triage |  | `V1a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:couldn-t-activate-build-he-versionnumber-bf-ge`<br>Couldn't activate build #${he.versionNumber}: ${bF(ge)} | unverified / not-required | shell | Couldn't activate build #${he.versionNumber}: ${bF(ge)} | `cfa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-restart-the-build-bf-t`<br>Couldn't restart the build: ${bF(t)} | unverified / not-required | shell | Couldn't restart the build: ${bF(t)} | `dfa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-cancel-the-build-bf-t`<br>Couldn't cancel the build: ${bF(t)} | unverified / not-required | shell | Couldn't cancel the build: ${bF(t)} | `ffa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:ifa` | unverified / deferred | triage |  | `Ifa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:ofa` | unverified / deferred | triage |  | `Ofa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:nzi` | unverified / deferred | triage |  | `nzi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:izi` | unverified / deferred | triage |  | `izi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:couldn-t-start-the-snapshot-build-bf-t`<br>Couldn't start the snapshot build: ${bF(t)} | unverified / not-required | shell | Couldn't start the snapshot build: ${bF(t)} | `Zfa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-create-the-admin-workspace-bf-t`<br>Couldn't create the admin workspace: ${bF(t)} | unverified / not-required | workspaces | Couldn't create the admin workspace: ${bF(t)} | `wha` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-start-the-rebuild-bf-t`<br>Couldn't start the rebuild: ${bF(t)} | unverified / not-required | shell | Couldn't start the rebuild: ${bF(t)} | `Eha` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:no-key-value-lines-found-in-d-name-check-that-it-s-a-env-fil`<br>No KEY=VALUE lines found in ${d.name}. Check that it's a .env file. | unverified / not-required | git-review | No KEY=VALUE lines found in ${d.name}. Check that it's a .env file. | `zha` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-read-d-name`<br>Couldn't read ${d.name}. | unverified / not-required | shell | Couldn't read ${d.name}. | `zha` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-te`<br>Copied ${te} | unverified / not-required | shell | Copied ${te} | `bzi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-te`<br>Failed to copy ${te} | unverified / not-required | shell | Failed to copy ${te} | `bzi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-save-shared-environment-variables`<br>Couldn't save shared environment variables | unverified / deferred | cloud-org | Couldn't save shared environment variables / Check your connection and try again. | `i0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-user-info~3`<br>Copied user info | unverified / not-required | shell | Copied user info | `f0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-user-info~3`<br>Failed to copy user info | unverified / not-required | shell | Failed to copy user info | `f0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:api-key-saved`<br>API key saved | unverified / not-required | shell | API key saved | `I0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:api-key-saved~2`<br>API key saved | unverified / not-required | shell | API key saved | `I0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:api-key-removed`<br>API key removed | unverified / not-required | shell | API key removed | `I0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:api-key-removed~2`<br>API key removed | unverified / not-required | shell | API key removed | `I0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-update-api-key-e`<br>Failed to update API key: ${e} | unverified / not-required | shell | Failed to update API key: ${e} | `O0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-update-api-key-e~2`<br>Failed to update API key: ${e} | unverified / not-required | shell | Failed to update API key: ${e} | `D0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-update-api-key-e~3`<br>Failed to update API key: ${e} | unverified / not-required | shell | Failed to update API key: ${e} | `P0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-update-api-key-e~4`<br>Failed to update API key: ${e} | unverified / not-required | shell | Failed to update API key: ${e} | `L0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:installed-u`<br>Installed ${u}. | matches / not-required | settings | Installed ${u}. | `Izi` | [settings-org-mcp](side-by-side/settings-org-07-mcp.png) | on screen in both; state settings-org-mcp matches |
+| `toast:failed-to-install-u-i`<br>Failed to install ${u}: ${I} | unverified / not-required | shell | Failed to install ${u}: ${I} | `Izi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-open-install-location-e`<br>Failed to open install location: ${e} | unverified / not-required | shell | Failed to open install location: ${e} | `bpa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:api-key-saved~3`<br>API key saved | unverified / not-required | shell | API key saved | `Spa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:api-key-removed~3`<br>API key removed | unverified / not-required | shell | API key removed | `Spa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:api-key-saved~4`<br>API key saved | unverified / not-required | shell | API key saved | `Lzi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:api-key-removed~4`<br>API key removed | unverified / not-required | shell | API key removed | `Lzi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:api-key-imported-from-env`<br>API key imported from env | unverified / not-required | shell | API key imported from env | `jpa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:api-key-imported-from-env~2`<br>API key imported from env | unverified / not-required | shell | API key imported from env | `Fpa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:run-script-names-must-be-unique`<br>Run script names must be unique | unverified / not-required | terminal-scripts | Run script names must be unique | `ama` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:run-script-names-can-t-be-empty`<br>Run script names can't be empty | unverified / not-required | terminal-scripts | Run script names can't be empty | `ama` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-save-run-script`<br>Failed to save run script | unverified / not-required | terminal-scripts | Failed to save run script | `ama` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-delete-run-script`<br>Failed to delete run script | unverified / not-required | terminal-scripts | Failed to delete run script | `ama` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:select-an-area-of-the-photo-first`<br>Select an area of the photo first. | unverified / not-required | shell | Select an area of the photo first. | `Wma` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:profile-photo-updated`<br>Profile photo updated. | unverified / not-required | shell | Profile photo updated. | `Wma` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:choose-a-jpeg-png-or-webp-image`<br>Choose a JPEG, PNG, or WebP image. | unverified / not-required | shell | Choose a JPEG, PNG, or WebP image. | `qma` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:choose-a-photo-smaller-than-10-mb`<br>Choose a photo smaller than 10 MB. | unverified / not-required | shell | Choose a photo smaller than 10 MB. | `qma` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:could-not-open-that-photo`<br>Could not open that photo. | unverified / not-required | shell | Could not open that photo. | `qma` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:display-name-updated`<br>Display name updated. | unverified / not-required | settings | Display name updated. | `Kma` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:could-not-update-display-name-try-again`<br>Could not update display name. Try again. | unverified / not-required | settings | Could not update display name. Try again. | `Kma` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:enter-a-display-name`<br>Enter a display name. | unverified / not-required | settings | Enter a display name. | `Kma` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:display-names-can-be-at-most-100-characters`<br>Display names can be at most 100 characters. | unverified / not-required | settings | Display names can be at most 100 characters. | `Kma` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:notification-permission-not-granted`<br>Notification permission not granted | unverified / not-required | chat | Notification permission not granted | `mei` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-reset-message-send-key`<br>Failed to reset message send key | unverified / not-required | chat | Failed to reset message send key | `mga` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-reset-message-send-key~2`<br>Failed to reset message send key | unverified / not-required | chat | Failed to reset message send key | `mga` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-update-message-send-key`<br>Failed to update message send key | unverified / not-required | chat | Failed to update message send key | `mga` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-update-message-send-key~2`<br>Failed to update message send key | unverified / not-required | chat | Failed to update message send key | `mga` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-open-system-settings-go-to-privacy-security-full-di`<br>Couldn't open System Settings. Go to Privacy & Security > Full Disk Access to gr | unverified / not-required | settings | Couldn't open System Settings. Go to Privacy & Security > Full Disk Ac | `mga` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-open-app-log-viewer-string-w-payload`<br>Failed to open app log viewer: ${String(w.payload)} | unverified / not-required | shell | Failed to open app log viewer: ${String(w.payload)} | `h` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-open-app-log-viewer-rye-v`<br>Failed to open app log viewer: ${rYe(v)} | unverified / not-required | shell | Failed to open app log viewer: ${rYe(v)} | `h` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:h` | unverified / deferred | triage |  | `h` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:failed-to-start-app-log-viewer-m`<br>Failed to start app log viewer: ${m} | unverified / not-required | shell | Failed to start app log viewer: ${m} | `h` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-start-app-log-viewer-rye-m`<br>Failed to start app log viewer: ${rYe(m)} | unverified / not-required | shell | Failed to start app log viewer: ${rYe(m)} | `h` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-open-app-log-viewer-rye-t`<br>Failed to open app log viewer: ${rYe(t)} | unverified / not-required | shell | Failed to open app log viewer: ${rYe(t)} | `b2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-get-app-logger-url-rye-t`<br>Failed to get app logger URL: ${rYe(t)} | unverified / not-required | shell | Failed to get app logger URL: ${rYe(t)} | `b2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-reset-callout-dismissals`<br>Failed to reset callout dismissals | unverified / not-required | shell | Failed to reset callout dismissals | `x2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:callout-dismissals-reset`<br>Callout dismissals reset | unverified / not-required | shell | Callout dismissals reset | `w2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:injection-count-must-be-a-non-negative-integer`<br>Injection count must be a non-negative integer. | unverified / not-required | shell | Injection count must be a non-negative integer. | `R2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:r2a` | unverified / deferred | triage |  | `R2a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:removed-g-binary-from-disk`<br>Removed ${g} binary from disk. | unverified / not-required | shell | Removed ${g} binary from disk. | `R2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-remove-g-string-v`<br>Failed to remove ${g}: ${String(v)} | unverified / not-required | shell | Failed to remove ${g}: ${String(v)} | `R2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:re-downloading-g`<br>Re-downloading ${g}. | unverified / not-required | shell | Re-downloading ${g}. | `R2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-trigger-download-string-t`<br>Failed to trigger download: ${String(t)} | unverified / deferred | routines | Failed to trigger download: ${String(t)} | `N2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-start-re-download-string-t`<br>Failed to start re-download: ${String(t)} | unverified / not-required | shell | Failed to start re-download: ${String(t)} | `O2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-set-injection-string-t`<br>Failed to set injection: ${String(t)} | unverified / not-required | shell | Failed to set injection: ${String(t)} | `D2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-trigger-qzi-e-target-tolowercase-xzi-e-testid-tolo`<br>Failed to trigger ${Qzi(e.target).toLowerCase()} ${Xzi(e.testId).toLowerCase()}  | unverified / deferred | routines | Failed to trigger ${Qzi(e.target).toLowerCase()} ${Xzi(e.testId).toLow | `B2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:triggered-qzi-e-target-xzi-e-testid-tolowercase-test`<br>Triggered ${Qzi(e.target)} ${Xzi(e.testId).toLowerCase()} test | unverified / deferred | routines | Triggered ${Qzi(e.target)} ${Xzi(e.testId).toLowerCase()} test | `$2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:sidecar-http-is-healthy`<br>Sidecar HTTP is healthy | unverified / not-required | shell | Sidecar HTTP is healthy | `Xzi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:sidecar-http-health-check-failed`<br>Sidecar HTTP health check failed | unverified / not-required | git-review | Sidecar HTTP health check failed | `Xzi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:sign-in-to-share-a-loadout`<br>Sign in to share a loadout | unverified / not-required | onboarding-auth | Sign in to share a loadout | `N3a` |  | No valid reference observation proves this gap. Raw assessment: not rendered in a reference capture; OpenConductor shows it in settings-models, not in the host state |
+| `toast:could-not-open-your-loadout-try-again`<br>Could not open your loadout. Try again. | unverified / not-required | shell | Could not open your loadout. Try again. | `O3a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:claude-output-style-updated-new-chats-will-use-it-existing-c`<br>Claude output style updated. New chats will use it; existing chats won’t change. | unverified / not-required | chat | Claude output style updated. New chats will use it; existing chats won / Model for new chats | `B3a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-update-spotlight-testing`<br>Failed to update spotlight testing | unverified / not-required | shell | Failed to update spotlight testing | `K3a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:choose-a-png-jpeg-gif-webp-or-svg-image`<br>Choose a PNG, JPEG, GIF, WebP, or SVG image | unverified / not-required | shell | Choose a PNG, JPEG, GIF, WebP, or SVG image | `xba` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:image-is-too-large-choose-one-under-10mb`<br>Image is too large. Choose one under 10MB. | unverified / not-required | shell | Image is too large. Choose one under 10MB. | `xba` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-set-the-icon-try-a-different-image`<br>Failed to set the icon. Try a different image. | unverified / not-required | git-review | Failed to set the icon. Try a different image. | `xba` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:repository-removed-successfully`<br>Repository removed successfully | unverified / not-required | workspaces | Repository removed successfully | `wba` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-remove-workspace-from-section~2`<br>Couldn't remove workspace from section | unverified / not-required | workspaces | Couldn't remove workspace from section | `Zba` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-move-workspace~2`<br>Couldn't move workspace | unverified / not-required | workspaces | Couldn't move workspace | `e_a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:n6a` | unverified / deferred | triage |  | `n6a` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:te-unsupportedmcp-length-mcp-server-te-unsupportedmcp-length`<br>${te.unsupportedMcp.length} MCP server${te.unsupportedMcp.length===1?"":"s"} cou | unverified / not-required | chat | ${te.unsupportedMcp.length} MCP server${te.unsupportedMcp.length===1?" | `n6a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:te-failures-length-item-te-failures-length-1-s-failed-to-syn`<br>${te.failures.length} item${te.failures.length===1?"":"s"} failed to sync | unverified / not-required | shell | ${te.failures.length} item${te.failures.length===1?"":"s"} failed to s | `n6a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:sync-failed-t-instanceof-error-t-message-string-t`<br>Sync failed: ${t instanceof Error?t.message:String(t)} | unverified / not-required | chat | Sync failed: ${t instanceof Error?t.message:String(t)} | `i6a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:update-conductor-to-equip-this-loadout`<br>Update Conductor to equip this loadout. | unverified / not-required | shell | Update Conductor to equip this loadout. | `C6a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:some-models-in-this-loadout-need-a-newer-version-of-conducto`<br>Some models in this loadout need a newer version of Conductor. | unverified / not-required | chat | Some models in this loadout need a newer version of Conductor. | `C6a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:loadout-equipped`<br>Loadout equipped | unverified / not-required | shell | Loadout equipped | `T6a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-image-to-clipboard~2`<br>Copied image to clipboard | unverified / not-required | shell | Copied image to clipboard | `A6a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-image`<br>Failed to copy image | unverified / not-required | shell | Failed to copy image | `A6a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:could-not-load-that-pull-request`<br>Could not load that pull request | unverified / not-required | git-review | Could not load that pull request | `$Ui` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:cannot-create-workspace-from-this-issue`<br>Cannot create workspace from this issue | unverified / not-required | workspaces | Cannot create workspace from this issue | `j4a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:no-repository-selected`<br>No repository selected | unverified / not-required | workspaces | No repository selected | `j4a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:added-to-backlog`<br>Added to backlog | unverified / not-required | shell | Added to backlog | `oya` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-edit-section`<br>Couldn't edit section | unverified / not-required | shell | Couldn't edit section | `Aya` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-create-section`<br>Couldn't create section | unverified / not-required | workspaces | Couldn't create section | `Aya` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-create-the-admin-workspace-bf-je`<br>Couldn't create the admin workspace: ${bF(je)} | unverified / not-required | workspaces | Couldn't create the admin workspace: ${bF(je)} | `JUi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-create-the-admin-workspace-your-computer-isn-t-read`<br>Couldn't create the admin workspace: Your computer isn't ready yet. Try again. | unverified / not-required | workspaces | Couldn't create the admin workspace: Your computer isn't ready yet. Tr | `JUi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-create-the-admin-workspace-your-computer-has-no-rep`<br>Couldn't create the admin workspace: Your computer has no repositories. Add a re | unverified / not-required | workspaces | Couldn't create the admin workspace: Your computer has no repositories | `JUi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-save-your-computer-color-bf-t`<br>Couldn't save your computer color: ${bF(t)} | unverified / not-required | shell | Couldn't save your computer color: ${bF(t)} | `_xa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-start-building-your-computer-bf-t`<br>Failed to start building your computer: ${bF(t)} | unverified / not-required | shell | Failed to start building your computer: ${bF(t)} | `xxa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:you-can-t-open-this-workspace`<br>You can't open this workspace | unverified / deferred | cloud-org | You can't open this workspace / It belongs to a different organization. | `iHi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:invalid-browser-url`<br>Invalid browser URL | unverified / not-required | shell | Invalid browser URL / Browser deep links must include an http:// or https:// URL. | `s5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:no-workspace-selected`<br>No workspace selected | unverified / not-required | workspaces | No workspace selected / Open a workspace first, or include workspace-id in the browser deep li | `s5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:you-don-t-have-access-to-this-workspace`<br>You don't have access to this workspace | unverified / deferred | cloud-org | You don't have access to this workspace / Ask a teammate to share it with you. | `s5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:workspace-not-found`<br>Workspace not found | unverified / deferred | cloud-org | Workspace not found / It may have been deleted, belong to another device, or belong to anoth | `s5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-open-browser-tab`<br>Couldn't open browser tab | unverified / not-required | workspaces | Couldn't open browser tab / Something went wrong. Try again, or open the browser from a workspace. | `s5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:sign-in-failed`<br>Sign-in failed | unverified / not-required | onboarding-auth | Sign-in failed / The authentication callback was invalid. | `o5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:sign-in-failed~2`<br>Sign-in failed | unverified / not-required | onboarding-auth | Sign-in failed / The authentication token could not be validated. | `o5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:sign-in-failed~3`<br>Sign-in failed | unverified / not-required | onboarding-auth | Sign-in failed | `o5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:sign-in-to-equip-a-loadout`<br>Sign in to equip a loadout | unverified / not-required | onboarding-auth | Sign in to equip a loadout | `a5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:setting-cannot-be-enabled-by-link`<br>Setting cannot be enabled by link | unverified / not-required | shell | Setting cannot be enabled by link | `l5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:enabled-setting-n-title`<br>Enabled setting: ${n.title} | unverified / not-required | settings | Enabled setting: ${n.title} | `l5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-enable-setting`<br>Failed to enable setting | unverified / not-required | shell | Failed to enable setting | `l5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:linear-integration-required`<br>Linear integration required | unverified / not-required | shell | Linear integration required / Please connect your Linear account to use this feature. | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:no-repository-available`<br>No repository available | unverified / not-required | workspaces | No repository available / Please add a repository before creating workspaces from Linear issues. | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:fetching-f-from-linear`<br>Fetching ${F} from Linear... | unverified / not-required | shell | Fetching ${F} from Linear... | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:linear-issue-not-found`<br>Linear issue not found | unverified / not-required | shell | Linear issue not found | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:detecting-repository`<br>Detecting repository... | unverified / not-required | workspaces | Detecting repository... | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:creating-workspace`<br>Creating workspace... | unverified / not-required | workspaces | Creating workspace... | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-create-workspace`<br>Failed to create workspace | unverified / not-required | workspaces | Failed to create workspace | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:no-repository-available~2`<br>No repository available | unverified / not-required | workspaces | No repository available / Please add a repository before creating workspaces from async plans. | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:repository-not-found`<br>Repository not found | unverified / deferred | cloud-org | Repository not found / The plan could not be decoded. It may be corrupted. | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:invalid-plan-data`<br>Invalid plan data | unverified / deferred | cloud-org | Invalid plan data / The plan could not be decoded. It may be corrupted. | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:empty-plan`<br>Empty plan | unverified / deferred | cloud-org | Empty plan / The plan content is empty. | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-create-workspace~2`<br>Failed to create workspace | unverified / not-required | workspaces | Failed to create workspace | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:you-don-t-have-access-to-this-workspace~2`<br>You don't have access to this workspace | unverified / deferred | cloud-org | You don't have access to this workspace / Ask a teammate to share it with you. | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:workspace-not-found~2`<br>Workspace not found | unverified / deferred | cloud-org | Workspace not found / It may have been deleted, belong to another device, or belong to anoth | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-open-workspace`<br>Couldn't open workspace | unverified / not-required | workspaces | Couldn't open workspace / Something went wrong. Try again, or open it from the sidebar. | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:github-sign-in-failed-invalid-or-expired-request`<br>GitHub sign-in failed: invalid or expired request | unverified / not-required | onboarding-auth | GitHub sign-in failed: invalid or expired request | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:github-authenticated-successfully`<br>GitHub authenticated successfully | unverified / not-required | git-review | GitHub authenticated successfully | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-save-github-token`<br>Failed to save GitHub token | unverified / not-required | git-review | Failed to save GitHub token | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:waiting-for-a-github-admin-to-approve-the-installation`<br>Waiting for a GitHub admin to approve the installation | unverified / not-required | git-review | Waiting for a GitHub admin to approve the installation | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:github-connected`<br>GitHub connected | unverified / not-required | git-review | GitHub connected | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:invalid-deep-link`<br>Invalid deep link | unverified / not-required | shell | Invalid deep link | `c5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:github-connected~2`<br>GitHub connected | unverified / not-required | git-review | GitHub connected | `C5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:github-isn-t-connected-yet-finish-the-sign-in-and-try-again`<br>GitHub isn't connected yet. Finish the sign-in and try again. | unverified / not-required | onboarding-auth | GitHub isn't connected yet. Finish the sign-in and try again. | `C5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:thank-you-for-your-feedback`<br>Thank you for your feedback! | unverified / not-required | shell | Thank you for your feedback! / Thanks for making Conductor better. | `z5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:please-enter-a-prompt`<br>Please enter a prompt | unverified / not-required | chat | Please enter a prompt / Thanks for your suggestion. | `W5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:prompt-submitted`<br>Prompt submitted! | unverified / not-required | chat | Prompt submitted! / Thanks for your suggestion. | `W5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-submit-prompt`<br>Failed to submit prompt | unverified / not-required | chat | Failed to submit prompt / Please try again later. | `W5a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:saved-snapshot-but-failed-to-start-build-ca-instanceof-error`<br>Saved snapshot, but failed to start build: ${ca instanceof Error?ca.message:Stri | unverified / not-required | chat | Saved snapshot, but failed to start build: ${ca instanceof Error?ca.me | `CSa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-update-snapshot-ca-instanceof-error-ca-message-str`<br>Failed to update snapshot: ${ca instanceof Error?ca.message:String(ca)} | unverified / not-required | chat | Failed to update snapshot: ${ca instanceof Error?ca.message:String(ca) | `CSa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:workspace-setup-script-saved`<br>Workspace setup script saved | unverified / not-required | terminal-scripts | Workspace setup script saved | `CSa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-save-workspace-setup-script-t-instanceof-error-t-m`<br>Failed to save workspace setup script: ${t instanceof Error?t.message:String(t)} | unverified / not-required | terminal-scripts | Failed to save workspace setup script: ${t instanceof Error?t.message: | `kSa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-cancel-build-t-instanceof-error-t-message-string-t`<br>Failed to cancel build: ${t instanceof Error?t.message:String(t)} | unverified / not-required | chat | Failed to cancel build: ${t instanceof Error?t.message:String(t)} | `TSa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-start-build-t-instanceof-error-t-message-string-t`<br>Failed to start build: ${t instanceof Error?t.message:String(t)} | unverified / not-required | chat | Failed to start build: ${t instanceof Error?t.message:String(t)} | `ASa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-save-run-scripts-t-message`<br>Couldn't save run scripts: ${t.message} | unverified / not-required | terminal-scripts | Couldn't save run scripts: ${t.message} | `WSa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-save-default-branch-t-instanceof-error-t-message-st`<br>Couldn't save default branch: ${t instanceof Error?t.message:String(t)} | unverified / not-required | git-review | Couldn't save default branch: ${t instanceof Error?t.message:String(t) | `YSa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-save-setup-script-t-instanceof-error-t-message-stri`<br>Couldn't save setup script: ${t instanceof Error?t.message:String(t)} | unverified / not-required | terminal-scripts | Couldn't save setup script: ${t instanceof Error?t.message:String(t)} | `QSa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:migration-pr-created`<br>Migration PR created | unverified / not-required | git-review | Migration PR created | `XEa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-create-migration-pr-w-instanceof-error-w-message-u`<br>Failed to create migration PR: ${w instanceof Error?w.message:"Unknown error"} | unverified / not-required | git-review | Failed to create migration PR: ${w instanceof Error?w.message:"Unknown | `XEa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:mhi` | unverified / deferred | triage |  | `MHi` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:copied-link`<br>Copied link | matches / in-scope | shell | Copied link | `jHi` | [toast-copied-link](ui-map/oc/toast-copied-link.png) | on screen in both; state toast-copied-link matches |
+| `toast:failed-to-copy-link`<br>Failed to copy link | unverified / not-required | shell | Failed to copy link | `jHi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-link~2`<br>Failed to copy link | unverified / not-required | shell | Failed to copy link | `tka` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-de-enabled-disable-enable-routine-pgt-ue`<br>Couldn't ${de.enabled?"disable":"enable"} routine: ${PGt(ue)} | unverified / deferred | routines | Couldn't ${de.enabled?"disable":"enable"} routine: ${PGt(ue)} | `tka` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-run-routine-pgt-t`<br>Couldn't run routine: ${PGt(t)} | unverified / deferred | routines | Couldn't run routine: ${PGt(t)} | `nka` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-delete-routine-pgt-t`<br>Couldn't delete routine: ${PGt(t)} | unverified / deferred | routines | Couldn't delete routine: ${PGt(t)} | `ika` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:routine-deleted`<br>Routine deleted | unverified / deferred | routines | Routine deleted | `rka` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-copy-command`<br>Couldn't copy command | unverified / not-required | shell | Couldn't copy command | `bka` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-command`<br>Copied command | unverified / not-required | shell | Copied command | `_ka` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-copy-webhook-url`<br>Couldn't copy webhook URL | unverified / deferred | routines | Couldn't copy webhook URL | `Dka` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:copied-webhook-url`<br>Copied webhook URL | unverified / deferred | routines | Copied webhook URL | `Pka` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:routine-isn-t-ready-yr-join`<br>Routine isn't ready: ${Yr.join("; ")}. | unverified / deferred | routines | Routine isn't ready: ${Yr.join("; ")}. | `b7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-create-webhook-url-e`<br>Couldn't create webhook URL: ${e} | unverified / deferred | routines | Couldn't create webhook URL: ${e} | `v7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:reverted-to-version-ft`<br>Reverted to version ${ft} | unverified / not-required | shell | Reverted to version ${ft} | `k7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:routine-deleted~2`<br>Routine deleted | unverified / deferred | routines | Routine deleted | `k7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-copy-link~3`<br>Failed to copy link | unverified / not-required | shell | Failed to copy link | `k7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-open-workspace~2`<br>Couldn't open workspace | unverified / not-required | workspaces | Couldn't open workspace | `T7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-run-routine-ee-t`<br>Couldn't run routine: ${_ee(t)} | unverified / deferred | routines | Couldn't run routine: ${_ee(t)} | `A7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-rotate-webhook-secret-ee-t`<br>Couldn't rotate webhook secret: ${_ee(t)} | unverified / deferred | routines | Couldn't rotate webhook secret: ${_ee(t)} | `I7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:webhook-secret-rotated`<br>Webhook secret rotated | unverified / deferred | routines | Webhook secret rotated | `R7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-restore-routine-ee-t`<br>Couldn't restore routine: ${_ee(t)} | unverified / deferred | routines | Couldn't restore routine: ${_ee(t)} | `N7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-archive-routine-ee-t`<br>Couldn't archive routine: ${_ee(t)} | unverified / deferred | routines | Couldn't archive routine: ${_ee(t)} | `O7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-delete-routine-ee-t`<br>Couldn't delete routine: ${_ee(t)} | unverified / deferred | routines | Couldn't delete routine: ${_ee(t)} | `D7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-revert-routine-ee-t`<br>Couldn't revert routine: ${_ee(t)} | unverified / deferred | routines | Couldn't revert routine: ${_ee(t)} | `P7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-save-routine-ee-t`<br>Couldn't save routine: ${_ee(t)} | unverified / deferred | routines | Couldn't save routine: ${_ee(t)} | `L7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:couldn-t-create-routine-m7a-t`<br>Couldn't create routine: ${M7a(t)} | unverified / deferred | routines | Couldn't create routine: ${M7a(t)} | `$7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:new-update-available`<br>New update available | unverified / not-required | shell | New update available | `bIa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:will-restart-when-all-agents-are-done`<br>Will restart when all agents are done | unverified / not-required | chat | Will restart when all agents are done / The update will download automatically in the background. | `bIa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:update-available-v-t-version`<br>Update available: v${t.version} | unverified / not-required | shell | Update available: v${t.version} / The update will download automatically in the background. | `_Ia` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:you-re-up-to-date`<br>You're up to date! | unverified / not-required | shell | You're up to date! / You're running the latest version of Conductor. | `vIa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:yia` | unverified / deferred | triage |  | `yIa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:yia~2` | unverified / deferred | triage |  | `yIa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:yia~3` | unverified / deferred | triage |  | `yIa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:yia~4` | unverified / deferred | triage |  | `yIa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:yia~5` | unverified / deferred | triage |  | `yIa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:yia~6` | unverified / deferred | triage |  | `yIa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:wia` | unverified / deferred | triage |  | `wIa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:wia~2` | unverified / deferred | triage |  | `wIa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:wia~3` | unverified / deferred | triage |  | `wIa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:wia~4` | unverified / deferred | triage |  | `wIa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:sia` | unverified / deferred | triage |  | `SIa` |  | No valid reference observation proves this gap. Raw assessment: no literal copy to locate it; not observed in any capture |
+| `toast:e-city-visited-n`<br>${e} city visited: ${n}! | unverified / not-required | shell | ${e} city visited: ${n}! | `EIa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-unarchive-t-workspacedirectoryname`<br>Failed to unarchive: ${t.workspaceDirectoryName} | unverified / not-required | workspaces | Failed to unarchive: ${t.workspaceDirectoryName} | `kIa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `toast:failed-to-start-agents`<br>Failed to start agents | unverified / not-required | chat | Failed to start agents / Conductor will not work. Please report this error. | `wVi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+
+## empty-state (all 52 retained rows, including exclusions)
+
+| Item | Status | Team | Copy | Component | State | Why |
+|---|---|---|---|---|---|---|
+| `empty-state:no-apps-available`<br>No apps available | unverified / in-scope | shell | No apps available | `cFn` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-apps-available~2`<br>No apps available | unverified / in-scope | shell | No apps available | `bvs` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-git-status`<br>No git status | unverified / in-scope | git-review | No git status | `gyi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-files-match-this-filter`<br>No files match this filter | unverified / in-scope | shell | No files match this filter | `gyi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-branch-found`<br>No branch found. | unverified / in-scope | git-review | No branch found. | `EJe` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-logs-were-recorded-or-they-have-expired`<br>No logs were recorded, or they have expired. | unverified / in-scope | shell | No logs were recorded, or they have expired. | `w9s` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-setup-script-output`<br>No setup script output | matches / in-scope | terminal-scripts | No setup script output | `nro` | [panel-setup-idle](side-by-side/terminal-scripts-02-setup-idle.png) | on screen in both; state panel-setup-idle matches |
+| `empty-state:no-one-has-been-added`<br>No one has been added | unverified / in-scope | shell | No one has been added | `uoo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-people-found`<br>No people found. | unverified / in-scope | shell | No people found. | `foo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-other-teammates-in-this-organization`<br>No other teammates in this organization | unverified / deferred | cloud-org | No other teammates in this organization | `Ioo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-open-issues-found`<br>No open issues found | unverified / in-scope | shell | No open issues found | `nuo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-issues-found`<br>No issues found | unverified / in-scope | shell | No issues found | `nuo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-logs-available`<br>No logs available. | unverified / in-scope | shell | No logs available. | `_uo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-workspaces-found`<br>No workspaces found | unverified / in-scope | workspaces | No workspaces found | `Auo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-comment-body`<br>No comment body | unverified / in-scope | shell | No comment body | `L8i` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-todos`<br>No todos | unverified / in-scope | shell | No todos | `bwt` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-tasks`<br>No tasks | unverified / in-scope | shell | No tasks | `X0o` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-models-found`<br>No models found | matches / in-scope | chat | No models found | `A7o` | [empty-model-search](side-by-side/chat-tabs-empty-model-search.png) | on screen in both; state empty-model-search matches |
+| `empty-state:no-changes-in-this-file`<br>No changes in this file | unverified / in-scope | shell | No changes in this file | `Mqo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-changes-to-this-file`<br>No changes to this file. | unverified / in-scope | git-review | No changes to this file. | `Jqo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-description`<br>No description | unverified / in-scope | shell | No description | `dKo` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-matching-workspaces`<br>No matching workspaces | matches / in-scope | workspaces | No matching workspaces | `UJo` | [palette-workspaces-empty](side-by-side/workspaces-palette-workspaces-empty.png) | on screen in both; state palette-workspaces-empty matches |
+| `empty-state:no-members-found-in-this-organization`<br>No members found in this organization. | unverified / deferred | cloud-org | No members found in this organization. | `Yea` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:add-a-project-to-get-started`<br>Add a project to get started. | matches / in-scope | workspaces | Add a project to get started. | `hBi` | [home-empty](ui-map/oc/home-empty.png) | on screen in both; state home-empty matches |
+| `empty-state:no-providers-match-your-search`<br>No providers match your search. | unverified / in-scope | shell | No providers match your search. | `hua` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-variables-set`<br>No variables set | matches / in-scope | settings | No variables set | `T$i` | [settings-environment](ui-map/oc/settings-environment.png) | on screen in both; state settings-environment matches |
+| `empty-state:no-matching-mcp-servers`<br>No matching MCP servers. | unverified / in-scope | chat | No matching MCP servers. | `z1a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-matching-repositories`<br>No matching repositories. | unverified / in-scope | workspaces | No matching repositories. | `mfa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-variables-yet`<br>No variables yet | matches / in-scope | settings | No variables yet | `Xha` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
+| `empty-state:no-members-yet`<br>No members yet. | unverified / deferred | cloud-org | No members yet. | `m0a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-icons-found`<br>No icons found | unverified / in-scope | shell | No icons found | `Mzi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-run-scripts-yet-add-one-to-get-started`<br>No run scripts yet. Add one to get started. | matches / in-scope | terminal-scripts | No run scripts yet. Add one to get started. | `ama` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
+| `empty-state:no-account-information-available-please-sign-in`<br>No account information available. Please sign in. | unverified / in-scope | onboarding-auth | No account information available. Please sign in. | `Xma` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-remote-found`<br>No remote found. | unverified / in-scope | shell | No remote found. | `Tga` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-simulation`<br>No simulation | unverified / in-scope | shell | No simulation | `y2a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-feature-flags-received`<br>No feature flags received | unverified / in-scope | shell | No feature flags received | `Xzi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-matching-gitignored-files-found`<br>No matching gitignored files found. | matches / in-scope | settings | No matching gitignored files found. | `Nei` | [settings-repo-misc](ui-map/oc/settings-repo-misc.png) | on screen in both; state settings-repo-misc matches |
+| `empty-state:no-emoji-found`<br>No emoji found | unverified / in-scope | shell | No emoji found | `uUi` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-favicon-detected`<br>No favicon detected | unverified / in-scope | shell | No favicon detected | `pba` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-matching-sections`<br>No matching sections | unverified / in-scope | shell | No matching sections | `Jba` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-matching-workspaces~2`<br>No matching workspaces | matches / in-scope | workspaces | No matching workspaces | `l_a` | [palette-workspaces-empty](side-by-side/workspaces-palette-workspaces-empty.png) | on screen in both; state palette-workspaces-empty matches |
+| `empty-state:no-results-found`<br>No results found | matches / in-scope | shell | No results found | `m_a` | [palette-no-results](side-by-side/shell-palette-03-no-results.png) | on screen in both; state palette-no-results matches |
+| `empty-state:no-branch-name`<br>No branch name | unverified / in-scope | git-review | No branch name | `Y6a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-issues-found~2`<br>No issues found | unverified / in-scope | shell | No issues found | `X6a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-pull-requests-found`<br>No pull requests found | unverified / in-scope | git-review | No pull requests found | `o4a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-branches-found`<br>No branches found | matches / in-scope | git-review | No branches found | `a4a` | [create-from-branches](side-by-side/git-review-05-create-from-branches.png) | on screen in both; state create-from-branches matches |
+| `empty-state:no-local-servers-running-start-your-dev-server-and-it-ll-sho`<br>No local servers running. Start your dev server and it'll show up here. | unverified / in-scope | shell | No local servers running. Start your dev server and it'll show up here | `Dwa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-logs-for-this-build-yet`<br>No logs for this build yet. | unverified / in-scope | shell | No logs for this build yet. | `xSa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-run-scripts-found-in-this-source`<br>No run scripts found in this source. | unverified / in-scope | terminal-scripts | No run scripts found in this source. | `PSa` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-triggers`<br>No triggers | unverified / deferred | routines | No triggers | `a7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-versions`<br>No versions | unverified / in-scope | shell | No versions | `c7a` |  | No valid reference observation proves this gap. Raw assessment: copy not shown in any OpenConductor capture |
+| `empty-state:no-runs-yet`<br>No runs yet | matches / deferred | routines | No runs yet | `Bti` | [route-routines-new](side-by-side/routines-02-new.png) | on screen in both; state route-routines-new matches |
 
 ## REA gaps and bugs hit while building this map
 
