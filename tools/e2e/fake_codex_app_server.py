@@ -28,6 +28,12 @@ carries the process's "pid", so a request can be traced to its launch.
 account/read answers signed out until account/login/start (ChatGPT) has run:
 that sign-in completes by itself after 0.5 s as e2e@example.com and is kept
 in codex-fake-account.json beside the log ($OC_FAKE_CODEX_DIR or $HOME).
+account/login/start {type: "chatgptAuthTokens"} (the sign-in a chat on
+another machine sends, agent/handoff.rs) signs in for this process only, as
+Codex keeps such tokens in memory: the log gets a fingerprint of the access
+token and the account id, never the token, and replies end in
+"(auth: chatgptAuthTokens)". The launch line also says whether CODEX_HOME is
+set and whether CODEX_ACCESS_TOKEN reached the process.
 Only "codex app-server" is handled; other subcommands exit 2.
 """
 import hashlib
@@ -76,7 +82,8 @@ def notify(method, params):
 note({"launch": {
     "args": sys.argv[1:],
     "launcher": os.environ.get("OC_FAKE_CODEX", "path"),
-    "keys": {k: fingerprint(k) for k in ("CODEX_API_KEY", "OPENAI_API_KEY")},
+    "keys": {k: fingerprint(k) for k in ("CODEX_API_KEY", "OPENAI_API_KEY", "CODEX_ACCESS_TOKEN")},
+    "codex_home": bool(os.environ.get("CODEX_HOME")),
     "account": (read_account() or {}).get("type"),
 }})
 
@@ -194,11 +201,16 @@ def handle(msg):
             consent_answered(msg["id"], msg["result"])
         return
     method, params, mid = msg["method"], msg.get("params") or {}, msg.get("id")
-    note({"method": method, "params": params})
+    note({"method": method, "params": {k: ("<redacted>" if k == "accessToken" else v) for k, v in params.items()}})
     if method == "initialize":
         send({"id": mid, "result": {"userAgent": "fake-codex/0.166.0", "platformFamily": "unix"}})
     elif method == "account/read":
         send({"id": mid, "result": {"account": read_account(), "requiresOpenaiAuth": True}})
+    elif method == "account/login/start" and params.get("type") == "chatgptAuthTokens":
+        token = params.get("accessToken") or ""
+        state["tokens"] = {"type": "chatgpt", "via": "chatgptAuthTokens"}
+        note({"tokens_login": {"access": hashlib.sha256(token.encode()).hexdigest()[:16], "account": params.get("chatgptAccountId")}})
+        send({"id": mid, "result": {"type": "chatgptAuthTokens"}})
     elif method == "account/login/start" and params.get("type") == "chatgpt":
         login = "login-e2e"
         send({"id": mid, "result": {"type": "chatgpt", "loginId": login, "authUrl": "http://127.0.0.1:1455/e2e-auth"}})
@@ -233,7 +245,8 @@ def handle(msg):
         elif "unauth" in text:
             complete(turn, "failed", {"message": "unexpected status 401 Unauthorized", "codexErrorInfo": None})
         else:
-            message(turn, f"msg-{turn}", f"turn {state['turns']}: {text}", "final_answer")
+            via = " (auth: chatgptAuthTokens)" if state.get("tokens") else ""
+            message(turn, f"msg-{turn}", f"turn {state['turns']}: {text}{via}", "final_answer")
             complete(turn, "completed")
     elif method == "turn/interrupt":
         if state["turn"] != params.get("turnId"):

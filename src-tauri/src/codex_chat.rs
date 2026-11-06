@@ -130,10 +130,17 @@ pub async fn codex_open_chat<R: Runtime>(
     if let Some(path) = state.path() {
         launch.env.set("PATH", path.to_string_lossy());
     }
+    // A workspace on a Reason computer: the app-server runs there with the
+    // credential handed over, in the workspace's folder on that machine.
+    launch.target = settings.target_launch(AgentKind::Codex, &cwd)?;
+    let thread_cwd = match &launch.target {
+        Some(t) => PathBuf::from(&t.dir),
+        None => cwd,
+    };
     let config = RunnerConfig {
         launch,
         thread: ThreadOptions {
-            cwd: Some(cwd),
+            cwd: Some(thread_cwd),
             model: None,
             policy: policy.unwrap_or_else(default_policy),
             developer_instructions: None,

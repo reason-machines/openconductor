@@ -31,6 +31,9 @@
 //! * [`env`] - [`AgentKind`] and [`LaunchEnv`], the environment an agent
 //!   process is launched with. A launch clears every inherited variable that
 //!   would route the agent elsewhere before setting its own.
+//! * [`handoff`] - running a chat's agent on another machine: the selected
+//!   credential, sealed per launch to a key the target generates, so the
+//!   channel carries only ciphertext; refresh tokens never leave this Mac.
 //! * [`keychain`] - the app's [`SecretStore`]: the macOS login Keychain
 //!   ([`keychain::default_store`]), memory on other platforms.
 //! * [`provider`] - the [`Provider`] trait: how an agent CLI is pointed at a
@@ -60,6 +63,7 @@ pub mod codex_runner;
 pub mod codex_session;
 pub mod codex_wire;
 pub mod env;
+pub mod handoff;
 pub mod keychain;
 pub mod provider;
 pub mod reason;

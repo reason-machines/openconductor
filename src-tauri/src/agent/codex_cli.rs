@@ -18,6 +18,7 @@ use std::str::FromStr;
 use serde::{Deserialize, Serialize};
 
 use super::env::LaunchEnv;
+use super::handoff::TargetLaunch;
 
 /// When Codex stops to ask before running a command or applying a patch.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -157,6 +158,9 @@ pub struct CodexLaunch {
     /// `-c key=value` overrides of Codex's config, in order. Values are
     /// TOML, as the CLI parses them.
     pub config: Vec<(String, String)>,
+    /// Run on another machine with the credential handed over
+    /// ([`super::handoff`]); `executable`, `cwd` and `env` are then unused.
+    pub target: Option<TargetLaunch>,
 }
 
 impl CodexLaunch {
@@ -166,6 +170,7 @@ impl CodexLaunch {
             cwd: cwd.into(),
             env,
             config: Vec::new(),
+            target: None,
         }
     }
 
@@ -184,6 +189,9 @@ impl CodexLaunch {
     /// The command to spawn: piped stdio, the workspace as cwd, and the
     /// provider environment applied over the inherited one.
     pub fn command(&self) -> Command {
+        if let Some(target) = &self.target {
+            return target.command(&self.args());
+        }
         let mut cmd = Command::new(&self.executable);
         cmd.args(self.args())
             .current_dir(&self.cwd)

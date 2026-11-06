@@ -69,6 +69,11 @@ pub enum ClientRequest {
     AccountLoginCancel {
         login_id: String,
     },
+    /// `account/login/start` with `{type: "chatgptAuthTokens"}` for a chat
+    /// on another machine, as Conductor 0.87.6 signs in its cloud Codex.
+    /// Carries [`super::handoff`]'s placeholders: the target splices the
+    /// token in, so this app never writes it to the channel.
+    AccountLoginChatgptHandoff,
 }
 
 /// The answer to an approval request. Decline lets the turn continue;
@@ -124,6 +129,7 @@ impl ClientRequest {
             ClientRequest::AccountRead => "account/read",
             ClientRequest::AccountLoginChatgpt => "account/login/start",
             ClientRequest::AccountLoginCancel { .. } => "account/login/cancel",
+            ClientRequest::AccountLoginChatgptHandoff => "account/login/start",
         }
     }
 
@@ -172,6 +178,11 @@ impl ClientRequest {
             ClientRequest::AccountRead => json!({}),
             ClientRequest::AccountLoginChatgpt => json!({ "type": "chatgpt" }),
             ClientRequest::AccountLoginCancel { login_id } => json!({ "loginId": login_id }),
+            ClientRequest::AccountLoginChatgptHandoff => json!({
+                "type": "chatgptAuthTokens",
+                "accessToken": super::handoff::ACCESS_PLACEHOLDER,
+                "chatgptAccountId": super::handoff::ACCOUNT_PLACEHOLDER,
+            }),
         }
     }
 
