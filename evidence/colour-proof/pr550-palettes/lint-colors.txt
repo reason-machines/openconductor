@@ -1,0 +1,31 @@
+$ git status --short | grep -v "^?? node_modules"
+exit=1
+$ npm run lint:colors
+
+> openconductor@0.1.0 lint:colors
+> node scripts/check-colors.mjs
+
+colours: no hard-coded colour outside the allowlist
+exit=0
+$ git diff --stat
+ src/styles.css | 2 ++
+ 1 file changed, 2 insertions(+)
+exit=0
+$ npm run lint:colors
+
+> openconductor@0.1.0 lint:colors
+> node scripts/check-colors.mjs
+
+src/styles.css:759: hex colour: .planted-proof { color: #3b82f6; }
+
+1 hard-coded colour(s). Use a semantic variable (see src/theme/tokens.css).
+exit=1
+$ git status --short | grep -v "^?? node_modules"
+exit=1
+$ npm run lint:colors
+
+> openconductor@0.1.0 lint:colors
+> node scripts/check-colors.mjs
+
+colours: no hard-coded colour outside the allowlist
+exit=0

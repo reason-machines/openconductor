@@ -74,8 +74,8 @@ function locate() {
   const out = {};
   const tab = document.querySelector(".main-tabs button.active, .main-tabs [role=tab][aria-selected=true]");
   if (tab) { const b = box(tab); out.tab_underline = { x: Math.round(b.left + b.width / 2), y: Math.round(b.bottom - 1), el: ".main-tabs active tab, bottom border" }; }
-  const run = [...document.querySelectorAll(".scripts button")].find((b) => b.getAttribute("role") !== "tab" && /\bRun\b/.test(b.textContent || ""));
-  if (run) { const b = box(run); out.run_button = { x: Math.round(b.left + 3), y: Math.round(b.top + b.height / 2), el: ".scripts Run button, left padding" }; }
+  const run = [...document.querySelectorAll(".scripts button, button.btn-primary")].find((b) => b.getAttribute("role") !== "tab" && /\bRun\b/.test(b.textContent || ""));
+  if (run) { const b = box(run); out.run_button = { x: Math.round(b.left + 3), y: Math.round(b.top + b.height / 2), el: "Run button, left padding" }; }
   const bubble = document.querySelector(".oc-bubble");
   if (bubble) { const b = box(bubble); out.user_bubble = { x: Math.round(b.left + 6), y: Math.round(b.top + 6), el: ".oc-bubble, top-left padding" }; }
   const scripts = document.querySelector(".scripts");
@@ -135,6 +135,8 @@ for (const palette of PALETTES) {
     await page.press(".composer textarea", "Enter");
     await page.waitForSelector(".oc-bubble", { timeout: 10000 });
     if (palette !== "baseline") await page.evaluate(({ attr, palette }) => document.documentElement.setAttribute(attr, palette), { attr: PALETTE_ATTR, palette });
+    // Pin data-theme to the emulated scheme, as the appearance setting does.
+    if (process.env.SET_THEME) await page.evaluate((s) => (document.documentElement.dataset.theme = s), scheme);
     await page.mouse.move(0, 899);
     await page.waitForTimeout(1200);
     const points = await page.evaluate(locate);
