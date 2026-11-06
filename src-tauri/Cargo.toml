@@ -46,6 +46,9 @@ plist = "1"
 # terminal history entries (terminal/history_store.rs): AES-256-GCM, SHA-256 long names
 aes-gcm = "0.10"
 sha2 = "0.10"
+# agent_binaries.rs: Codex release assets are .tar.gz (both already linked through tauri)
+flate2 = "1"
+tar = "0.4"
 # spawn_blocking for terminal history file I/O (already linked through tauri)
 tokio = { version = "1", features = ["rt", "sync"] }
 # quick_open/ (same crates Conductor links for its file picker)
