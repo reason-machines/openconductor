@@ -22,16 +22,17 @@
 use std::collections::HashMap;
 use std::ffi::OsString;
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex, OnceLock};
+use std::sync::{Arc, Mutex};
 
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, Runtime, State};
 
-use crate::agent::codex_cli::{find_codex_cli, ApprovalPolicy, CodexPolicy, SandboxMode};
+use crate::agent::codex_cli::{ApprovalPolicy, CodexPolicy, SandboxMode};
 use crate::agent::codex_consent::ConsentAnswer;
 use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
 use crate::agent::codex_runner::{CodexRunner, RunnerConfig, Sink, Timeouts};
 use crate::agent::codex_wire::{Payload, TurnEnd};
+use crate::agent_binaries::Agent;
 use crate::settings::service::SettingsService;
 
 pub const EVENT: &str = "codex-chat-event";
@@ -39,8 +40,6 @@ pub const EVENT: &str = "codex-chat-event";
 #[derive(Default)]
 pub struct CodexChats {
     chats: Mutex<HashMap<String, Arc<CodexRunner>>>,
-    /// The user's login-shell `PATH`, read once.
-    shell_path: OnceLock<Option<OsString>>,
 }
 
 /// Conductor's default when a session sets neither: never ask, full
@@ -49,31 +48,10 @@ fn default_policy() -> CodexPolicy {
     CodexPolicy::new(ApprovalPolicy::Never, SandboxMode::DangerFullAccess)
 }
 
-fn home() -> Option<PathBuf> {
-    std::env::var_os("HOME").map(PathBuf::from)
-}
-
 impl CodexChats {
     /// `PATH` from the user's login shell, falling back to the app's own.
     pub(crate) fn path(&self) -> Option<OsString> {
-        self.shell_path
-            .get_or_init(|| {
-                let shell = std::env::var("SHELL").unwrap_or_else(|_| "/bin/zsh".into());
-                oc_scripts::shell_env::capture(&shell, None)
-                    .and_then(|env| env.get("PATH").map(OsString::from))
-                    .or_else(|| std::env::var_os("PATH"))
-            })
-            .clone()
-    }
-
-    pub(crate) fn cli(&self) -> Option<PathBuf> {
-        find_codex_cli(self.path().as_deref(), home().as_deref())
-    }
-
-    /// The `codex` OpenConductor runs: Settings › Agents › Codex
-    /// "Codex executable path" when set, else [`Self::cli`].
-    pub(crate) fn executable(&self, settings: &SettingsService) -> Option<PathBuf> {
-        settings.codex_executable_override().or_else(|| self.cli())
+        crate::agent_launch::login_shell_path()
     }
 
     fn get(&self, chat_id: &str) -> Result<Arc<CodexRunner>, String> {
@@ -100,13 +78,10 @@ fn event_json(chat_id: &str, payload: &Payload) -> Value {
     v
 }
 
-/// Absolute path of the `codex` the chat would run, or null.
+/// Absolute path of the `codex` the chat would run now, or null.
 #[tauri::command]
-pub async fn codex_cli_path(
-    state: State<'_, CodexChats>,
-    settings: State<'_, SettingsService>,
-) -> Result<Option<String>, String> {
-    Ok(state.executable(&settings).map(|p| p.display().to_string()))
+pub async fn codex_cli_path<R: Runtime>(app: AppHandle<R>) -> Result<Option<String>, String> {
+    Ok(crate::agent_launch::current(&app, Agent::Codex).map(|r| r.path.display().to_string()))
 }
 
 /// Opens the chat (no process yet). Opening an open chat keeps it as is.
@@ -125,11 +100,16 @@ pub async fn codex_open_chat<R: Runtime>(
     }
     let cwd = PathBuf::from(cwd);
     // Model, effort, personality and provider come from settings, as
-    // Conductor's launch (`Ohe`); "Codex executable path" wins over `PATH`.
+    // Conductor's launch (`Ohe`). The executable is the Settings path, else
+    // the bundled copy (waits for its download), else the CLI on the login
+    // shell's PATH (agent_launch.rs).
     let mut launch = settings.codex_launch(&cwd)?;
-    launch.executable = state.executable(&settings).ok_or(
-        "The Codex CLI was not found. Install it (npm i -g @openai/codex), then sign in with `codex login`.",
-    )?;
+    let launch_app = app.clone();
+    launch.executable = tauri::async_runtime::spawn_blocking(move || {
+        crate::agent_launch::launch(&launch_app, Agent::Codex)
+    })
+    .await
+    .map_err(|e| e.to_string())??;
     if let Some(path) = state.path() {
         launch.env.set("PATH", path.to_string_lossy());
     }

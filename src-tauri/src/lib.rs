@@ -22,6 +22,7 @@
 pub mod agent;
 pub mod agent_binaries;
 pub mod agent_commands;
+pub mod agent_launch;
 pub mod agent_options;
 pub mod app_quit;
 pub mod app_prefs;
@@ -287,7 +288,13 @@ pub fn run() {
             // Conductor sweeps draft-attachments/ dirs older than 30 days at start.
             draft_attachments::sweep_at_startup(&data_dir);
             // Conductor's binary_manager: agent-binaries/ with .meta sha256 files.
-            app.manage(agent_binaries::commands::manager(app.handle(), &data_dir));
+            let binaries = agent_binaries::commands::manager(app.handle(), &data_dir);
+            // Conductor fetches (or re-verifies) both agents at launch, so a
+            // chat rarely waits on a download (agent_launch.rs).
+            for agent in agent_binaries::Agent::ALL {
+                binaries.request_download(agent);
+            }
+            app.manage(binaries);
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
@@ -486,6 +493,7 @@ pub fn run() {
             terminal_commands::cancel_shell_command,
             app_prefs::commands::get_app_prefs,
             agent_options::agent_system_binary,
+            agent_launch::agent_executable_status,
             agent_options::agent_config_file,
             agent_options::open_agent_config,
             agent_options::acp_agent_status,
