@@ -113,6 +113,12 @@
 
   const report = { flow: "claude-auth-modes", started: new Date().toISOString(), result: "fail", steps, modes: [] };
   try {
+    // A fresh HOME starts on the first-run onboarding: Continue, as a user does.
+    await waitFor("the app or the onboarding", () => q(".home-card") || q(".workspace") || q(".onb-continue"), 60000);
+    if (q(".onb-continue")) {
+      q(".onb-continue").click();
+      step("onboarding: Continue");
+    }
     await waitFor("the app", () => q(".home-card") || q(".workspace"));
     if (!qa(".sb-repo-name").map(text).includes(cfg.repoName)) {
       window.__OC_E2E_PICK_FOLDER__ = cfg.repo;
@@ -136,7 +142,8 @@
     }
     report.result = report.modes.every((m) => m.ok && m.tab.connected && !m.tab.loginPrompt) ? "pass" : "fail";
   } catch (e) {
-    report.error = String(e && e.stack ? e.stack : e);
+    report.error = `${e && e.message ? e.message : e}\n${e && e.stack ? e.stack : ""}`;
+    report.screenText = (document.body?.innerText ?? "").slice(0, 1500);
   }
   report.ended = new Date().toISOString();
   await invoke("e2e_report", { name: "claude-auth-modes", data: report });
