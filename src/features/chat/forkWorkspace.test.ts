@@ -7,14 +7,18 @@ import type { CreatedWorkspaceDto } from "../../workspace/api.ts";
 
 type Call = [string, Record<string, unknown>];
 
-function fakes(opts: { checkpoint?: boolean; head?: { stdout: string; exitCode: number }; taken?: string[]; branchExit?: number; copyFails?: boolean } = {}) {
+function fakes(opts: { checkpoint?: boolean; head?: { stdout: string; exitCode: number }; taken?: string[]; branchExit?: number; copyFails?: boolean; restoreFails?: boolean; createFails?: boolean } = {}) {
   const calls: Call[] = [];
   const created: CreateWorkspaceArgs[] = [];
   const invoke = async (cmd: string, args: Record<string, unknown>) => {
     calls.push([cmd, args]);
     if (cmd === "checkpoint_exists") return opts.checkpoint ?? true;
     if (cmd === "branch_name_is_taken") return (opts.taken ?? ["feature"]).includes(args.branchName as string);
-    if (cmd === "checkpoint_restore") return null;
+    if (cmd === "checkpoint_restore") {
+      if (opts.restoreFails) throw new Error("restore failed");
+      return null;
+    }
+    if (cmd === "delete_workspace") return null;
     if (cmd === "execute_shell_command") {
       const command = (args.request as { command: string }).command;
       if (command.startsWith("git symbolic-ref")) return { stderr: "", ...(opts.head ?? { stdout: "feature\n", exitCode: 0 }) };
@@ -26,6 +30,7 @@ function fakes(opts: { checkpoint?: boolean; head?: { stdout: string; exitCode: 
   };
   const createWorkspace = async (args: CreateWorkspaceArgs): Promise<CreatedWorkspaceDto> => {
     created.push(args);
+    if (opts.createFails) throw new Error("worktree add failed");
     const path = `/ws/${args.directoryName}`;
     return {
       workspace: { id: `repo/${args.directoryName}`, repositoryId: args.repositoryId, directoryName: args.directoryName, path, branchName: args.branchName, state: "active", head: null },
@@ -37,9 +42,6 @@ function fakes(opts: { checkpoint?: boolean; head?: { stdout: string; exitCode: 
       initializationFilesCopied: 0,
       auxiliaryFailureMessage: null,
       upstreamWarning: null,
-      initializationLogPath: null,
-      initializationFilesCopied: 0,
-      auxiliaryFailureMessage: null,
       number: 7,
     };
   };
@@ -108,4 +110,22 @@ test("a failed .context copy still returns the fork", async () => {
   } finally {
     console.warn = warn;
   }
+});
+
+test("a failed checkpoint restore removes the new workspace and its branch, then fails with the restore's error", async () => {
+  const { deps, calls, created } = fakes({ restoreFails: true });
+  await assert.rejects(forkToNewWorkspace(deps, input()), { message: "restore failed" });
+  assert.equal(created.length, 1);
+  const after = calls.slice(calls.findIndex(([c]) => c === "checkpoint_restore") + 1);
+  assert.deepEqual(after, [
+    ["delete_workspace", { workspaceId: "repo/lima" }],
+    ["execute_shell_command", { request: { command: "git branch -D 'feature-v1'", cwd: "/repo" } }],
+  ]);
+});
+
+test("a failed workspace creation removes the branch the fork made", async () => {
+  const { deps, calls } = fakes({ createFails: true });
+  await assert.rejects(forkToNewWorkspace(deps, input()), { message: "worktree add failed" });
+  assert.ok(!calls.some(([c]) => c === "delete_workspace"));
+  assert.deepEqual(calls.at(-1), ["execute_shell_command", { request: { command: "git branch -D 'feature-v1'", cwd: "/repo" } }]);
 });

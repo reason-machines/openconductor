@@ -144,8 +144,35 @@ export const flows = [
       const buttonText = () => wd.execute("return document.querySelector('.scripts-actions .btn-primary, .scripts-actions .btn-stop')?.textContent.trim() ?? null;", []);
       if (existsSync(inRoot)) throw new Error("e2e-diff.txt is already in the repository root");
 
-      const [toggle] = await wd.waitFor("the spotlight testing toggle", () => wd.findAll(".spotlight-toggle input:not([disabled])").then((ids) => ids.length && ids));
-      await wd.click(toggle);
+      // Like Conductor, the Run tab of a repository without a run script shows only
+      // "Add run script", which opens the repository's settings; spotlight
+      // testing is a switch on its Actions page. Esc goes back to the workspace.
+      const heading = () => wd.execute("return document.querySelector('.settings .settings-header h1')?.textContent.trim() ?? null;", []);
+      async function setSpotlightTesting(on) {
+        if (on) {
+          const [add] = await wd.waitFor("the Run tab's Add run script", () => wd.findAll(".scripts-empty-btn").then((ids) => ids.length && ids));
+          await wd.click(add);
+          await wd.waitFor("the repository's Scripts settings", async () => (await heading()) === "Scripts", 10000);
+        } else {
+          await wd.execute("document.activeElement?.blur();", []);
+          await wd.chord(["\uE03D"], ",");
+          await wd.waitFor("Settings after ⌘,", heading, 10000);
+          const [repoNav] = await wd.findAll('.settings-nav .settings-repo[aria-label="e2e-demo"]');
+          if (!repoNav) throw new Error("no e2e-demo under Settings › Repositories");
+          await wd.click(repoNav);
+        }
+        await clickByText(wd, ".settings-nav .settings-repo-sections .nav-item", "Actions");
+        await wd.waitFor("the repository's Actions page", async () => (await heading()) === "Actions");
+        const [toggle] = await wd.waitFor("the spotlight testing switch", () =>
+          wd.findAll(`input[aria-label="Use spotlight testing"]${on ? ":not(:checked)" : ":checked"}:not([disabled])`).then((ids) => ids.length && ids),
+        );
+        await wd.click(toggle);
+        await wd.waitFor(`spotlight_testing = ${on} in .conductor/settings.local.toml`, async () => spotlightSetting() === String(on));
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys("\uE00C");
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+      await setSpotlightTesting(true);
       await wd.waitFor("Run Spotlight", async () => (await buttonText())?.endsWith("Run Spotlight"));
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after turning it on, want true`);
       const [start] = await wd.findAll(".scripts-actions .btn-primary");
@@ -169,11 +196,8 @@ export const flows = [
       if (JSON.stringify(status) !== JSON.stringify(want)) throw new Error(`repository root status ${JSON.stringify(status)}, want ${JSON.stringify(want)}`);
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after Stop, want true`);
 
-      // Turn spotlight testing back off for later flows.
-      const [again] = await wd.findAll(".spotlight-toggle input:checked:not([disabled])");
-      if (!again) throw new Error("no checked spotlight testing toggle to turn off");
-      await wd.click(again);
-      await wd.waitFor("spotlight_testing = false in .conductor/settings.local.toml", async () => spotlightSetting() === "false");
+      // Turn spotlight testing back off for later flows (Settings › repository › Actions).
+      await setSpotlightTesting(false);
     },
   },
   {
@@ -184,10 +208,10 @@ export const flows = [
     async run(wd, ctx) {
       if (!ctx.repo) throw new Error("needs the add-repo flow's repository");
       const rows = () => wd.execute("return document.querySelector('.terminal-panel .xterm-rows')?.textContent ?? null;", []);
-      // Conductor's default layout shows no terminal; ⌘J (Toggle terminal panel) shows it.
-      if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal panel by default");
-      await wd.execute("document.activeElement?.blur();", []);
-      await wd.chord(["\uE03D"], "j");
+      // Conductor's workspace opens on the right panel's Run tab with no terminal; + (New terminal) in that strip opens one.
+      if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal by default");
+      const [plus] = await wd.waitFor("the strip's New terminal button", () => wd.findAll('.ws-strip-tabs button[aria-label="New terminal"]').then((ids) => ids.length && ids));
+      await wd.click(plus);
       const [screen] = await wd.waitFor("a terminal in the workspace's terminal panel", () => wd.findAll(".terminal-panel .xterm-screen").then((ids) => ids.length && ids), 60000);
       await wd.click(screen);
       await wd.keys("echo oc-term-$((6*7)); pwd\uE007");
@@ -585,6 +609,81 @@ export const flows = [
       if (shown.join() !== "e2e-demo,e2e-demo-v1") throw new Error(`want the sidebar to show e2e-demo and e2e-demo-v1, got ${JSON.stringify(shown)}`);
     },
   },
+  {
+    // Settings › Agents and Default models in the built app (Conductor's
+    // providers and models pages): the four agent tabs, the Authentication
+    // cards writing [providers] to settings.toml, Reset back to the CLI login,
+    // and a palette click filling a loadout slot (conductor.db favorite_models).
+    name: "agent-settings",
+    async run(wd) {
+      const META = "\uE03D";
+      const ESC = "\uE00C";
+      const file = join(process.env.OPENCONDUCTOR_HOME ?? join(homedir(), ".openconductor"), "settings.toml");
+      const heading = () => wd.execute("return document.querySelector('.settings .settings-header h1')?.textContent.trim() ?? null;", []);
+      const claudeKind = () => tomlValue(file, "providers.claude", "kind");
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.chord([META], ",");
+      await wd.waitFor("Settings after ⌘,", heading, 10000);
+      await clickByText(wd, ".settings-nav .nav-item", "Agents");
+      await wd.waitFor("the Agents page", async () => (await heading()) === "Agents");
+      const tabs = await wd.waitFor("the agent tabs", async () => {
+        const t = await textsOf(wd, '[role="tab"]');
+        return t.length === 4 ? t : null;
+      });
+      if (JSON.stringify(tabs) !== JSON.stringify(["Claude Code", "Codex", "Cursor", "OpenCode"])) throw new Error(`agent tabs ${JSON.stringify(tabs)}`);
+      const cards = await textsOf(wd, "button[aria-pressed]");
+      if (JSON.stringify(cards) !== JSON.stringify(["CLI", "API key"])) throw new Error(`Authentication cards ${JSON.stringify(cards)}`);
+      await wd.waitFor("the Claude Code status line", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]')).length === 1, 20000);
+      const before = claudeKind();
+      await clickByText(wd, "button[aria-pressed]", "API key");
+      await wd.waitFor('kind = "anthropic_api" under [providers.claude]', async () => claudeKind() === '"anthropic_api"').catch((e) => {
+        throw new Error(`${e.message}; [providers.claude] kind is ${claudeKind()}`);
+      });
+      await wd.waitFor("the Anthropic API key field", async () => (await wd.findAll('input[aria-label="Anthropic API key"]')).length === 1);
+      const status = await textsOf(wd, '[data-testid="agent-auth-status"]');
+      if (!status[0]?.includes("No Anthropic API key configured")) throw new Error(`status line ${JSON.stringify(status)}`);
+      // The row's Setting actions › Reset returns Claude Code to its CLI login.
+      // The gear shows on hover (opacity 0 otherwise), so it is clicked in the page.
+      const gear = await wd.waitFor("the Setting actions gear", async () => (await wd.findAll('button[aria-label="Setting actions"]')).length > 0);
+      if (!gear) throw new Error("no Setting actions on the Authentication row");
+      await wd.execute("document.querySelector('button[aria-label=\"Setting actions\"]').click();", []);
+      await wd.waitFor("the Reset item", async () => (await textsOf(wd, '[role="menuitem"]')).includes("Reset"));
+      await clickByText(wd, '[role="menuitem"]', "Reset");
+      await wd.waitFor("[providers.claude] cleared", async () => claudeKind() === null || claudeKind() === '"claude_login"');
+      await wd.waitFor("the Run claude /login button", async () => (await textsOf(wd, "button")).includes("Run claude /login"));
+      for (const [tab, want] of [
+        ["Codex", "Run codex login"],
+        ["Cursor", "Get key"],
+      ]) {
+        await clickByText(wd, '[role="tab"]', tab);
+        await wd.waitFor(`${tab}: ${want}`, async () => (await textsOf(wd, "button")).includes(want));
+      }
+      await clickByText(wd, '[role="tab"]', "OpenCode");
+      await wd.waitFor("the OpenCode tab", async () => (await textsOf(wd, "button")).some((t) => t === "Install OpenCode" || t === "Add your first provider"), 20000);
+      if (before !== null && before !== '"claude_login"') throw new Error(`[providers.claude] was ${before} before the flow; it is now reset`);
+
+      await clickByText(wd, ".settings-nav .nav-item", "Default models");
+      await wd.waitFor("the Default models page", async () => (await heading()) === "Default models");
+      const slots = () => wd.execute("return Array.from(document.querySelectorAll('[data-loadout-slot]'), (e) => e.textContent.trim());", []);
+      const first = await wd.waitFor("five loadout slots", async () => {
+        const s = await slots();
+        return s.length === 5 ? s : null;
+      });
+      if (!first[0].includes("DEFAULT") || !first[1].includes("DROP MODEL HERE") || !first[2].includes("EMPTY")) throw new Error(`loadout slots ${JSON.stringify(first)}`);
+      const [add] = await wd.findAll('button[aria-label="Add GPT-5.5 to loadout"]');
+      if (!add) throw new Error("no GPT-5.5 in the Codex column");
+      await wd.click(add);
+      await wd.waitFor("GPT-5.5 in slot 2", async () => (await slots())[1].includes("GPT-5.5"));
+      await wd.execute("document.querySelector('button[aria-label=\"Delete loadout 2\"]').click();", []);
+      await wd.waitFor("slot 2 empty again", async () => (await slots())[1].includes("DROP MODEL HERE"));
+      const rows = await textsOf(wd, ".ag-setting-title");
+      const want = ["Loadout", "Codex personality", "Claude output style", "Review model", "Default to plan mode in new chats"];
+      if (JSON.stringify(rows) !== JSON.stringify(want)) throw new Error(`Default models rows ${JSON.stringify(rows)}, want ${JSON.stringify(want)}`);
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.keys(ESC);
+      await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+    },
+  },
 
   // Settings › Agents per-agent options and Account tool approvals
   // (src/settings/rows/AgentOptionRows.tsx, AccountAgentRows.tsx). Each flow
@@ -595,6 +694,7 @@ export const flows = [
     name: "agents-claude-options",
     async run(wd) {
       await openSettingsPage(wd, "Agents");
+      await clickByText(wd, '[role="tab"]', "Claude Code");
       const section = 'section[aria-label="Claude Code"]';
       await wd.waitFor("the Claude Code options", async () => (await wd.findAll(`${section} input[aria-label="Use Claude Code with Chrome"]`)).length === 1);
       const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .oc-agent-config h3`);
@@ -627,6 +727,7 @@ export const flows = [
     name: "agents-codex-options",
     async run(wd) {
       await openSettingsPage(wd, "Agents");
+      await clickByText(wd, '[role="tab"]', "Codex");
       const section = 'section[aria-label="Codex"]';
       const select = `${section} select[aria-label="Codex personality for new chats"]`;
       const value = () => wd.execute("return document.querySelector(arguments[0])?.value ?? null;", [select]);
@@ -650,6 +751,7 @@ export const flows = [
     name: "agents-opencode-advanced",
     async run(wd) {
       await openSettingsPage(wd, "Agents");
+      await clickByText(wd, '[role="tab"]', "OpenCode");
       const section = 'section[aria-label="OpenCode"]';
       const toggle = `${section} .oc-agent-advanced-toggle`;
       if ((await wd.execute("return document.querySelector(arguments[0])?.getAttribute('aria-expanded');", [toggle])) !== "true") {
@@ -685,6 +787,265 @@ export const flows = [
         await wd.waitFor(`models.codex tool_approval_policy = "${v}"`, async () => (tomlValue(file, "models.codex", "tool_approval_policy") ?? '"default"') === `"${v}"`);
       }
       await showRows(wd, sw);
+    },
+  },
+  {
+    // The Experimental "Dashboard" switch (dashboard_enabled, default off) shows
+    // the sidebar's Dashboard row; the board lists workspaces in five status
+    // columns, and dropping a card on another column sets its manual status
+    // (db_set_workspace_manual_status). Turning the switch off takes the
+    // dashboard route back to Home (Conductor's `lta`, evidence/screens/dashboard.md).
+    // The drag is HTML5 drag-and-drop events dispatched in the webview:
+    // WebKitWebDriver's pointer actions do not start a native drag.
+    name: "dashboard",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
+      const ESC = "\uE00C";
+      const sw = 'input[aria-label="Dashboard"]';
+      const prefOn = async () => (await wd.execute("return window.__TAURI_INTERNALS__.invoke('get_app_prefs');", [])).dashboard_enabled === true;
+      const navRow = () => wd.execute("return Array.from(document.querySelectorAll('.sb-row')).some((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Dashboard');", []);
+      async function setSwitch(want) {
+        await openSettingsPage(wd, "Experimental");
+        await wd.waitFor("the Dashboard switch", async () => (await wd.findAll(sw)).length === 1);
+        if ((await wd.execute("return document.querySelector(arguments[0]).checked;", [sw])) !== want) await wd.click((await wd.findAll(sw))[0]);
+        await wd.waitFor(`dashboard_enabled = ${want} in conductor.db`, async () => (await prefOn()) === want);
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys(ESC);
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+
+      if (await prefOn()) throw new Error("dashboard_enabled is already on; it defaults to off");
+      if (await navRow()) throw new Error("the sidebar shows a Dashboard row while the setting is off");
+
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", []);
+      const want = realpathSync(ctx.worktree);
+      const ws = rows.find((w) => w.workspacePath && existsSync(w.workspacePath) && realpathSync(w.workspacePath) === want);
+      if (!ws) throw new Error(`no stored workspace at ${want}`);
+      const board = () =>
+        wd.execute(
+          "return Array.from(document.querySelectorAll('.dash-col'), (c) => ({ status: c.dataset.status, title: c.querySelector('.dash-col-title')?.textContent.trim(), branches: Array.from(c.querySelectorAll('[data-testid=\"dashboard-card\"] .dash-card-branch'), (b) => b.textContent.trim()) }));",
+          [],
+        );
+      const columnOf = async () => (await board()).find((c) => c.branches.includes(ws.branch))?.status;
+      const stored = async () => (await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", [])).find((w) => w.id === ws.id)?.manualStatus ?? null;
+      const original = await stored();
+
+      try {
+        await setSwitch(true);
+        await wd.waitFor("the sidebar's Dashboard row", navRow);
+        await wd.execute("Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Dashboard').click();", []);
+        const cols = await wd.waitFor("the dashboard's five columns", async () => {
+          const b = await board();
+          return b.length === 5 && b.some((c) => c.branches.includes(ws.branch)) && b;
+        });
+        const titles = cols.map((c) => c.title);
+        if (JSON.stringify(titles) !== JSON.stringify(["Backlog", "In progress", "In review", "Done", "Canceled"])) throw new Error(`dashboard columns ${JSON.stringify(titles)}`);
+
+        const from = await columnOf();
+        const to = from === "done" ? "backlog" : "done";
+        // dragstart in its own script so React re-renders with the drag active before dragover.
+        const started = await wd.execute(
+          `const card = Array.from(document.querySelectorAll('[data-testid="dashboard-card"]')).find((c) => c.querySelector('.dash-card-branch')?.textContent.trim() === arguments[0]);
+           if (!card) return false;
+           const fire = (el, type) => {
+             if (!window.__OC_E2E_DT__) window.__OC_E2E_DT__ = new DataTransfer();
+             const dt = window.__OC_E2E_DT__;
+             let ev = new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: dt });
+             // A WebKit without DragEventInit.dataTransfer: the same event with dataTransfer set by hand.
+             if (!ev.dataTransfer) { ev = new MouseEvent(type, { bubbles: true, cancelable: true }); Object.defineProperty(ev, 'dataTransfer', { value: dt }); }
+             el.dispatchEvent(ev);
+           };
+           window.__OC_E2E_FIRE__ = fire;
+           window.__OC_E2E_CARD__ = card;
+           fire(card, 'dragstart');
+           return true;`,
+          [ws.branch],
+        );
+        if (!started) throw new Error(`no dashboard card for branch ${ws.branch}`);
+        await wd.waitFor("the dragged card", () => wd.execute("return window.__OC_E2E_CARD__?.dataset.dragging === 'true';", []));
+        await wd.execute("const body = document.querySelector(`.dash-col[data-status=\"${arguments[0]}\"] .dash-col-body`); window.__OC_E2E_FIRE__(body, 'dragenter'); window.__OC_E2E_FIRE__(body, 'dragover');", [to]);
+        const pill = await wd.waitFor("the Move to pill", () =>
+          wd.execute("const d = document.querySelector(`.dash-col[data-status=\"${arguments[0]}\"] .dash-drop`); return d?.dataset.over === 'true' && d.textContent.trim();", [to]),
+        );
+        if (process.env.E2E_OUT) {
+          const { writeFile } = await import("node:fs/promises");
+          await writeFile(join(process.env.E2E_OUT, "dashboard-dragging.png"), await wd.screenshot()).catch(() => {});
+        }
+        await wd.execute(
+          "const body = document.querySelector(`.dash-col[data-status=\"${arguments[0]}\"] .dash-col-body`); window.__OC_E2E_FIRE__(body, 'drop'); const card = window.__OC_E2E_CARD__; if (card.isConnected) window.__OC_E2E_FIRE__(card, 'dragend'); delete window.__OC_E2E_DT__;",
+          [to],
+        );
+        await wd.waitFor(`the card in the ${to} column`, async () => (await columnOf()) === to).catch(async (e) => {
+          throw new Error(`${e.message}; board ${JSON.stringify(await board())}`);
+        });
+        await wd.waitFor(`manual_status = ${to} in conductor.db`, async () => (await stored()) === to).catch(async (e) => {
+          throw new Error(`${e.message}; stored ${JSON.stringify(await stored())}`);
+        });
+        if (pill !== `Move to ${cols.find((c) => c.status === to).title}`) throw new Error(`drop pill reads ${JSON.stringify(pill)}`);
+        if (process.env.E2E_OUT) {
+          const { writeFile } = await import("node:fs/promises");
+          await writeFile(join(process.env.E2E_OUT, "dashboard-dropped.png"), await wd.screenshot()).catch(() => {});
+        }
+
+        // Off again: the route goes back to Home and the row leaves the sidebar.
+        await setSwitch(false);
+        await wd.waitFor("Home after turning the dashboard off", async () => (await wd.findAll(".home")).length > 0 && (await wd.findAll(".dash")).length === 0);
+        if (await navRow()) throw new Error("the Dashboard row is still in the sidebar after turning it off");
+      } finally {
+        await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_set_workspace_manual_status', { workspaceId: arguments[0], status: arguments[1] }).then(() => true, () => false);", [ws.id, original]).catch(() => {});
+        if (await prefOn().catch(() => false)) await setSwitch(false).catch(() => {});
+      }
+    },
+  },
+  {
+    // Settings › Experimental › "Workspace status matrix" (internal_workspace_status_matrix,
+    // default off): the sidebar rows and Home's rows draw the 4×4 dot matrix
+    // (Conductor's `fJo`, src/components/StatusMatrix.tsx) in place of the row
+    // status icon and the repository initial, fed by the workspace's real status.
+    // A Needs-permission session status must reach both matrices; turning the
+    // switch off brings the ordinary status icons back. The switch saves to
+    // conductor.db's settings table, not settings.toml.
+    // Screenshots: status-matrix-on.png and status-matrix-off.png in E2E_OUT.
+    name: "status-matrix",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
+      const ESC = "\uE00C";
+      const sw = 'input[aria-label="Workspace status matrix"]';
+      const stored = async () =>
+        (await wd.execute("return window.__TAURI_INTERNALS__.invoke('get_settings');", []))?.experimental?.internal_workspace_status_matrix === true;
+      async function setSwitch(want) {
+        await openSettingsPage(wd, "Experimental");
+        await wd.waitFor("the Workspace status matrix switch", async () => (await wd.findAll(sw)).length === 1);
+        if ((await wd.execute("return document.querySelector(arguments[0]).checked;", [sw])) !== want) {
+          await wd.execute("document.querySelector(arguments[0]).scrollIntoView({ block: 'center' });", [sw]);
+          await wd.click((await wd.findAll(sw))[0]);
+        }
+        // A conductor.db settings-table row (src-tauri/src/settings/table_prefs.rs), which get_settings overlays; never settings.toml.
+        await wd.waitFor(`internal_workspace_status_matrix = ${want} in get_settings`, async () => (await stored()) === want);
+        const toml = tomlValue(settingsFile(), "experimental", "internal_workspace_status_matrix");
+        if (toml !== null) throw new Error(`internal_workspace_status_matrix leaked into ${settingsFile()} as ${toml}`);
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys(ESC);
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", []);
+      const want = realpathSync(ctx.worktree);
+      const ws = rows.find((w) => w.workspacePath && existsSync(w.workspacePath) && realpathSync(w.workspacePath) === want);
+      if (!ws) throw new Error(`no stored workspace at ${want}`);
+      const invoke = (cmd, args) =>
+        wd.execute("return window.__TAURI_INTERNALS__.invoke(arguments[0], arguments[1]).then((value) => ({ value }), (e) => ({ refused: String(e) }));", [cmd, args]);
+      const setStatus = async (status) => {
+        const r = await invoke("session_set_status", { chatId: ws.id, workspaceId: ws.id, status });
+        if (r.refused) throw new Error(`session_set_status ${status} was refused (${r.refused})`);
+      };
+
+      const ROWS = '[data-testid="left-sidebar-workspace-item"]';
+      // Every sidebar row's status slot, and the one for this workspace (its title is "label · branch · status").
+      const sidebar = () =>
+        wd.execute(
+          `return Array.from(document.querySelectorAll(arguments[0]), (row) => {
+             const slot = row.querySelector('[data-testid="workspace-status-icon"]');
+             const m = slot?.querySelector('[data-testid="workspace-status-matrix"]');
+             return {
+               mine: (row.getAttribute('title') ?? '').includes(' · ' + arguments[1] + ' · '),
+               status: slot?.dataset.status ?? null,
+               matrixAttr: slot?.dataset.matrix ?? null,
+               role: slot?.getAttribute('role') ?? null,
+               label: slot?.getAttribute('aria-label') ?? null,
+               matrix: m ? { status: m.dataset.status, label: m.getAttribute('aria-label'), dots: m.querySelectorAll('rect, path').length, attention: !!m.querySelector('.workspace-matrix-attention') } : null,
+             };
+           });`,
+          [ROWS, ws.branch],
+        );
+      const mine = async () => (await sidebar()).find((r) => r.mine);
+      const home = () =>
+        wd.execute(
+          `return Array.from(document.querySelectorAll('.allws .allws-row'), (row) => {
+             const m = row.querySelector('[data-testid="home-workspace-status-matrix"] [data-testid="workspace-status-matrix"]');
+             return {
+               initial: !!row.querySelector('.allws-repo-initial'),
+               status: row.querySelector('[data-testid="home-workspace-status"]')?.dataset.status ?? null,
+               matrix: m ? { status: m.dataset.status, label: m.getAttribute('aria-label'), attention: !!m.querySelector('.workspace-matrix-attention') } : null,
+             };
+           });`,
+          [],
+        );
+      const openHome = async () => {
+        const opened = await wd.execute("const b = Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Home'); b?.click(); return !!b;", []);
+        if (!opened) throw new Error("no Home row in the sidebar");
+        await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
+      };
+      const shot = async (name) => {
+        if (!process.env.E2E_OUT) return;
+        const { writeFile } = await import("node:fs/promises");
+        await writeFile(join(process.env.E2E_OUT, name), await wd.screenshot()).catch(() => {});
+      };
+      const failWith = (read) => async (e) => {
+        throw new Error(`${e.message}; saw ${JSON.stringify(await read())}`);
+      };
+
+      if (await stored()) throw new Error("internal_workspace_status_matrix is already on; it defaults to off");
+      const selectedRow = await wd.execute("return [...document.querySelectorAll(arguments[0])].findIndex((b) => b.getAttribute('aria-current') === 'page');", [ROWS]);
+      try {
+        // Off: the ordinary status icon, no matrix anywhere.
+        const before = await wd.waitFor("the workspace's sidebar row", mine).catch(failWith(sidebar));
+        if (before.matrix || before.matrixAttr || before.role !== "img") throw new Error(`sidebar row with the matrix off: ${JSON.stringify(before)}`);
+        if ((await wd.findAll('[data-testid="workspace-status-matrix"]')).length) throw new Error("a status matrix is drawn while the setting is off");
+
+        await setStatus("needs_user_permission");
+        await wd.waitFor("Needs permission on the sidebar row", async () => (await mine())?.status === "needs-user-permission").catch(failWith(mine));
+
+        // On: every sidebar row draws the matrix, and this one carries the real status.
+        await setSwitch(true);
+        const on = await wd
+          .waitFor("the matrix on every sidebar row", async () => {
+            const all = await sidebar();
+            return all.length > 0 && all.every((r) => r.matrix && r.matrixAttr !== null && r.role === null) && all;
+          })
+          .catch(failWith(sidebar));
+        const row = on.find((r) => r.mine);
+        if (!row) throw new Error(`no sidebar row for branch ${ws.branch}: ${JSON.stringify(on)}`);
+        if (row.matrix.status !== "needs-user-permission" || !row.matrix.label.startsWith("Needs permission") || !row.matrix.attention || row.matrix.dots < 2)
+          throw new Error(`the sidebar matrix does not show Needs permission: ${JSON.stringify(row)}`);
+
+        await openHome();
+        const homeOn = await wd
+          .waitFor("the matrix on every Home row", async () => {
+            const all = await home();
+            return all.length > 0 && all.every((r) => r.matrix && !r.initial && r.status === null) && all;
+          })
+          .catch(failWith(home));
+        const homeRow = homeOn.find((r) => r.matrix.status === "needs-user-permission");
+        if (!homeRow || !homeRow.matrix.label.startsWith("Needs permission") || !homeRow.matrix.attention) throw new Error(`no Home matrix shows Needs permission: ${JSON.stringify(homeOn)}`);
+        await shot("status-matrix-on.png");
+
+        // A status change reaches the matrices without touching the setting.
+        await setStatus("idle");
+        await wd.waitFor("the sidebar matrix back to the idle status", async () => {
+          const r = await mine();
+          return r?.matrix && r.matrix.status === before.status && !r.matrix.attention;
+        }).catch(failWith(mine));
+        await wd.waitFor("Needs permission to leave Home's matrices", async () => {
+          const all = await home();
+          return all.length > 0 && all.every((r) => r.matrix && r.matrix.status !== "needs-user-permission");
+        }).catch(failWith(home));
+
+        // Off again: the matrices go and the ordinary icons come back.
+        await setSwitch(false);
+        await wd.waitFor("no status matrix after turning it off", async () => (await wd.findAll('[data-testid="workspace-status-matrix"]')).length === 0).catch(failWith(sidebar));
+        const after = await mine();
+        if (!after || after.matrixAttr || after.role !== "img" || after.status !== before.status || after.label !== before.label)
+          throw new Error(`sidebar row after turning the matrix off: ${JSON.stringify(after)}, want ${JSON.stringify(before)}`);
+        if ((await wd.findAll(".allws")).length === 0) await openHome();
+        const homeOff = await home();
+        if (homeOff.some((r) => r.matrix)) throw new Error(`Home still draws a matrix: ${JSON.stringify(homeOff)}`);
+        await shot("status-matrix-off.png");
+      } finally {
+        await setStatus("idle").catch(() => {});
+        if (await stored().catch(() => false)) await setSwitch(false).catch(() => {});
+        await wd.execute("document.querySelectorAll(arguments[0])[arguments[1]]?.click();", [ROWS, selectedRow]).catch(() => {});
+      }
     },
   },
 ];

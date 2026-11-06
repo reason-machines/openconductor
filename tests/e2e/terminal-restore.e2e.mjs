@@ -236,7 +236,7 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
   await waitForScreen(page, "ran: echo hello");
   await type(page, "cd /repo/sub");
   await waitForScreen(page, "/repo/sub$");
-  await page.getByRole("button", { name: "New terminal tab" }).click();
+  await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   await waitForScreen(page, "/repo$");
   await type(page, "cd /gone");
@@ -302,7 +302,7 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
   await showTerminalPanel(page);
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 1);
   await waitForScreen(page, "Previous terminal session restored");
-  await page.getByRole("button", { name: "New terminal tab" }).click();
+  await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   assert.deepEqual(await tabTitles(page), ["Terminal 1", "Terminal 3"]);
 
@@ -359,7 +359,7 @@ test("a tab list saved in the webview's localStorage by an earlier build moves t
   await page.reload();
   await showTerminalPanel(page);
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
-  await page.getByRole("button", { name: "New terminal tab" }).click();
+  await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 3);
   assert.deepEqual(await tabTitles(page), ["Terminal 2", "Terminal 5", "Terminal 6"]);
   assert.deepEqual(errors, []);

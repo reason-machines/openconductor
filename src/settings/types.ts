@@ -3,6 +3,7 @@
 // untouched because every section is spread, never rebuilt field by field.
 
 import type { CodeTheme } from "../features/diff/codeThemes.ts";
+import type { PaletteId } from "../theme/palettes.ts";
 export type Theme = "system" | "light" | "dark";
 export type SoundType = "default" | "none";
 export type BranchPrefixType = "github_username" | "custom" | "none";
@@ -75,6 +76,8 @@ export interface Settings {
     file_ligatures_enabled?: boolean;
     color_vision?: "default" | "protanopia-deuteranopia" | "tritanopia";
     code_theme?: CodeTheme;
+    /** Color palette (Settings > Appearance > Color palette); Neutral when absent. */
+    color_palette?: PaletteId;
     [extra: string]: unknown;
   };
   git: {

@@ -56,7 +56,6 @@ export const PALETTE_ACTIONS: readonly ActionEntry[] = [
  * the active ones, newest first.
  */
 export function paletteDataFromState(state: AppState, recentIds: readonly string[], archived: readonly ArchivedWorkspace[] = []): PaletteData {
-  const known = new Set(sidebarOrder(state).map((w) => w.workspace.id));
   const rank = new Map(recentIds.map((id, i) => [id, i]));
   const workspaces: WorkspaceEntry[] = state.repos.flatMap((r) =>
     r.workspaces.map((w) => {
@@ -77,7 +76,9 @@ export function paletteDataFromState(state: AppState, recentIds: readonly string
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
     actions: nextUnreadWorkspace(state, { skipSelected: false }) ? PALETTE_ACTIONS : PALETTE_ACTIONS.filter((a) => a.id !== "go-to-next-unread"),
     settings: [],
-    recentWorkspaceIds: recentIds.filter((id) => known.has(id)),
+    // Archived workspaces stay in Recent, as in Conductor; ids of deleted ones drop out here
+    // but stay stored, so they still count toward the cap of 5 (recordViewedWorkspace never prunes).
+    recentWorkspaceIds: recentIds.filter((id) => workspaces.some((w) => w.id === id)),
     activeWorkspaceId,
   };
 }
