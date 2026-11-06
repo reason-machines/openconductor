@@ -40,6 +40,16 @@ after(async () => {
 
 const ROW = '[data-testid="left-sidebar-workspace-item"]';
 const row = (page, label) => page.locator(ROW, { has: page.locator(".sb-ws-name", { hasText: label }) });
+
+// A repository group nobody has toggled is folded unless the open workspace is one of its rows
+// (Conductor's `Dra`, src/state/sidebarOrder.ts isRepoCollapsed). A header click stores the
+// group's state, so this leaves it unfolded by hand whatever is opened or pinned next.
+async function unfold(page, name) {
+  const header = page.locator(".sb-repo-header", { has: page.locator(".sb-repo-name", { hasText: name }) });
+  if ((await header.getAttribute("aria-expanded")) === "true") await header.click();
+  await header.click();
+  await page.locator(".sb-repo-header[aria-expanded=true]", { has: page.locator(".sb-repo-name", { hasText: name }) }).waitFor();
+}
 const menu = (page) => page.getByRole("menu", { name: "Workspace actions" });
 // Item label = the row's text without its shortcut hint (`.cm-shortcut`).
 const menuItems = (page) =>
@@ -198,6 +208,7 @@ test("row status icon follows the agent, then the PR, then the branch", async ()
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(`${base}/?demo=1`);
   await row(page, "Quiet harbor").waitFor();
+  await unfold(page, "api-server");
   const icon = (label) => row(page, label).getByTestId("workspace-status-icon");
   const status = async (label) => [await icon(label).getAttribute("data-status"), await icon(label).getAttribute("aria-label"), await icon(label).getAttribute("data-color")];
   assert.deepEqual(await status("Lunar reef"), ["working", "Working", "muted"]);
@@ -218,6 +229,10 @@ test("row status icon follows the agent, then the PR, then the branch", async ()
 test("row status: a workspace's agent keeps showing on its row after you leave it", async () => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(`${base}/?demo=1`);
+  await row(page, "Quiet harbor").waitFor();
+  // Both groups stay unfolded while the open workspace moves between them.
+  await unfold(page, "api-server");
+  await unfold(page, "openconductor");
   const icon = (label) => row(page, label).getByTestId("workspace-status-icon");
   await row(page, "Brisk otter").click();
   assert.equal(await icon("Brisk otter").getAttribute("data-status"), "local");
@@ -234,5 +249,32 @@ test("row status: a workspace's agent keeps showing on its row after you leave i
     '[data-testid="left-sidebar-workspace-item"]',
     { timeout: 10_000 },
   );
+  await page.close();
+});
+
+test("repo groups: folded unless the open workspace is in them; a header click is remembered (Conductor's Dra)", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+  await page.goto(`${base}/?demo=1`);
+  await row(page, "Quiet harbor").waitFor();
+  const header = (name) => page.locator(".sb-repo-header", { has: page.locator(".sb-repo-name", { hasText: name }) });
+  const expanded = async () =>
+    Object.fromEntries(await Promise.all(["openconductor", "api-server", "design-system"].map(async (n) => [n, await header(n).getAttribute("aria-expanded")])));
+  // Amber falcon (openconductor) is open: only its group shows rows; folded groups with rows show their count.
+  assert.deepEqual(await expanded(), { openconductor: "true", "api-server": "false", "design-system": "false" });
+  assert.equal(await header("api-server").locator(".sb-repo-count").textContent(), "3");
+  assert.equal(await header("design-system").locator(".sb-repo-count").count(), 0);
+  assert.equal(await row(page, "Brisk otter").count(), 0);
+  // Unfold api-server by hand and open Brisk otter: openconductor, never toggled, folds.
+  await header("api-server").click();
+  await row(page, "Brisk otter").click();
+  await settled(expanded, { openconductor: "false", "api-server": "true", "design-system": "false" });
+  // Home: groups follow nothing open, so only the one unfolded by hand stays open.
+  await page.locator(".sb-primary .sb-row", { hasText: "Home" }).click();
+  await settled(expanded, { openconductor: "false", "api-server": "true", "design-system": "false" });
+  // An unfolded empty group shows nothing (no "No workspaces" line).
+  await header("design-system").click();
+  await settled(expanded, { openconductor: "false", "api-server": "true", "design-system": "true" });
+  assert.equal((await page.locator(".sb-repo-group", { has: header("design-system") }).locator(".sb-ws-list").textContent()).trim(), "");
+  assert.equal(await page.getByText("No workspaces", { exact: true }).count(), 0);
   await page.close();
 });

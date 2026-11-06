@@ -84,6 +84,19 @@ export const flows = [
       await wd.execute("window.__OC_E2E_PICK_FOLDER__ = arguments[0];", [repo]);
       await clickByText(wd, ".home-card", "Open project");
       await wd.waitFor("e2e-demo in the sidebar", async () => (await textsOf(wd, ".sb-repo-name")).includes("e2e-demo"));
+      // A group nobody has toggled folds whenever its open workspace is not one of its rows
+      // (Conductor's `Dra`); later flows read e2e-demo's rows from Home and Settings, so unfold it by hand.
+      const expanded = () => wd.execute("const h = [...document.querySelectorAll('.sb-repo-header')].find((e) => e.querySelector('.sb-repo-name')?.textContent === 'e2e-demo'); return h?.getAttribute('aria-expanded');", []);
+      const toggle = async () => {
+        const i = await wd.execute("return [...document.querySelectorAll('.sb-repo-header')].findIndex((e) => e.querySelector('.sb-repo-name')?.textContent === 'e2e-demo');", []);
+        await wd.click((await wd.findAll(".sb-repo-header"))[i]);
+      };
+      if ((await expanded()) === "true") {
+        await toggle();
+        await wd.waitFor("e2e-demo folded", async () => (await expanded()) === "false");
+      }
+      await toggle();
+      await wd.waitFor("e2e-demo unfolded by hand", async () => (await expanded()) === "true");
     },
   },
   {
