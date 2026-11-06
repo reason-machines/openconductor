@@ -42,7 +42,6 @@ interface AttachedSend {
 }
 type ShownChatBridge = ChatBridge & ComposerAttach & AttachedSend;
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
-import { TerminalPanel } from "../features/terminal/TerminalPanel";
 import { openBigTab } from "../features/terminal/session";
 import { bigTabRequest } from "../features/terminal/bigTerminal";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
@@ -720,7 +719,8 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) shows it,
   // and ⌘⇧T opens a big terminal while Big terminal mode is on.
-  const [showTerminal, setShowTerminal] = useState(false);
+  const [terminalRequest, setTerminalRequest] = useState(0);
+  const showTerminal = () => setTerminalRequest((n) => n + 1);
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
@@ -839,7 +839,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const tabOrder = [...(diffOpen ? ["diff"] : []), "chat", ...(prOpen ? ["pr"] : []), ...reviews.tabs.map((r) => r.chatId)];
   const stepTab = (dir: 1 | -1) => setMainTab((t) => tabOrder[(tabOrder.indexOf(t) + dir + tabOrder.length) % tabOrder.length] ?? "chat");
   useKeybindings({
-    "view.toggleTerminalPanel": () => setShowTerminal((v) => !v),
+    "view.toggleTerminalPanel": showTerminal,
     "diff.open": () => (diff.current < 0 && diff.files.length > 0 ? diff.open(0) : openDiffTab()),
     "nav.nextTab": () => stepTab(1),
     "nav.previousTab": () => stepTab(-1),
@@ -863,7 +863,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         if (!big || !repo.path) return false;
         void openBigTab(workspace.id, repo.path, big)
           .catch(() => {})
-          .finally(() => setShowTerminal(true));
+          .finally(showTerminal);
         return true;
       },
     },
@@ -955,13 +955,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               readOnly={workspace.status === "archived"}
               notify={notify}
             />
-            <ScriptsPanel repo={repo} workspace={workspace} />
+            <ScriptsPanel repo={repo} workspace={workspace} terminalRequest={terminalRequest} />
           </div>
         )}
       </div>
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
       <DiffDiscardHost diff={diff} onDiscarded={(f) => chatBridge.current?.attach(revertedNote(f.path))} />
-      {showTerminal && <TerminalPanel workspaceId={workspace.id} cwd={repo.path} />}
     </div>
   );
 }
