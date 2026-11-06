@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import type { Block, ChatMessage } from "./types.ts";
-import { forkAttachmentName, forkTranscript, knownModelLabel, turnAgentLabel } from "./fork.ts";
+import { completeTranscript, copiedTranscriptMessage, forkAttachmentName, forkTranscript, knownModelLabel, turnAgentLabel } from "./fork.ts";
 
 let n = 0;
 const msg = (turnId: string, role: ChatMessage["role"], blocks: Block[], extra: Partial<ChatMessage> = {}): ChatMessage => ({
@@ -92,4 +92,39 @@ test("the copy toast names the chat, cut to 20 characters (Conductor's chat tab 
   assert.equal(copiedTranscriptMessage("concise", "amber-falcon"), 'Copied concise transcript of "amber-falcon"');
   assert.equal(copiedTranscriptMessage("concise", "  "), 'Copied concise transcript of "chat"');
   assert.equal(copiedTranscriptMessage("concise", "Fix the flaky login test today"), 'Copied concise transcript of "Fix the flaky login..."');
+});
+
+test("complete transcript: every message, tool calls with their results, prompts as User", () => {
+  const t = transcript([
+    msg("c1", "user", [text("Add a footer")]),
+    msg("c1", "assistant", [text("Looking."), { type: "tool_use", id: "u1", name: "Bash", input: { command: "ls src" } }]),
+    msg("c1", "user", [{ type: "tool_result", toolUseId: "u1", content: "a.ts\nb.ts" }]),
+    msg("c1", "assistant", [{ type: "tool_use", id: "u2", name: "Edit", input: {} }, text("Done.")]),
+    msg("c2", "user", [text("Thanks")]),
+  ]);
+  assert.equal(
+    completeTranscript(t),
+    ["## User", "Add a footer", "## Assistant", "Looking.", "    Bash: ls src\n    ↳ a.ts\n      b.ts", "    Edit", "Done.", "## User", "Thanks"].join("\n\n"),
+  );
+});
+
+test("complete transcript: long input becomes an indented block, long results are cut, cancelled turns drop", () => {
+  const long = Array.from({ length: 12 }, (_, i) => `line ${i}`).join("\n");
+  const t = transcript([
+    msg("c1", "user", [text("go")]),
+    msg("c1", "assistant", [{ type: "tool_use", id: "u1", name: "Write", input: { content: "x".repeat(90) } }, { type: "tool_result", toolUseId: "u1", content: long }]),
+    msg("c2", "user", [text("never mind")], { cancelledAt: "2026-11-05T10:00:01.000Z" }),
+  ]);
+  const json = JSON.stringify({ content: "x".repeat(90) });
+  const kept = Array.from({ length: 10 }, (_, i) => `line ${i}`);
+  assert.equal(
+    completeTranscript(t),
+    ["## User", "go", "## Assistant", `    Write:\n        ${json}\n    ↳ ${kept[0]}\n${kept.slice(1).map((l) => `      ${l}`).join("\n")}\n      …\n      (2 more lines)`].join("\n\n"),
+  );
+  assert.equal(completeTranscript(transcript([])), null);
+});
+
+test("transcript toasts: concise and complete name the chat, cut to 20 characters", () => {
+  assert.equal(copiedTranscriptMessage("complete", "A very long chat title here"), 'Copied complete transcript of "A very long chat tit..."');
+  assert.equal(copiedTranscriptMessage("concise", ""), 'Copied concise transcript of "chat"');
 });

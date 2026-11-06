@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { prControl } from "./control.ts";
-import { usePrLinkMenu } from "./PrLinkMenu";
+import { usePrBadgeMenu } from "./PrBadgeMenu";
 import type { PrActions } from "./usePrActions.ts";
 import type { PullRequest } from "./usePullRequest.ts";
 import "./pr.css";
@@ -19,13 +19,13 @@ interface Props {
   notify?: (kind: "info" | "error", message: string) => void;
 }
 
-/** The header PR control; right-clicking its PR number or status pill opens Conductor's PR link menu (`RFt` -> `w_i`). */
+/** The header PR control; right-clicking its PR number or status pill opens Conductor's PR menu (`RFt` -> `w_i`, PrBadgeMenu). */
 export function PrControl({ pullRequest, actions, notify }: Props) {
-  const linkMenu = usePrLinkMenu(pullRequest.pr, notify);
+  const prMenu = usePrBadgeMenu(pullRequest.pr, notify);
   return (
     <>
-      <PrControlButtons pullRequest={pullRequest} actions={actions} onPrContextMenu={linkMenu.onContextMenu} />
-      {linkMenu.menu}
+      <PrControlButtons pullRequest={pullRequest} actions={actions} onPrContextMenu={prMenu.onContextMenu} />
+      {prMenu.menu}
     </>
   );
 }

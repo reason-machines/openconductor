@@ -8,7 +8,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Modal } from "../../../components/Dialogs";
 import type { PrInfo } from "../types";
 import type { TargetBranch } from "../useTargetBranch";
-import { usePrLinkMenu } from "../PrLinkMenu";
+import { usePrBadgeMenu } from "../PrBadgeMenu";
 import { BranchPicker } from "./BranchPicker";
 import { editPr } from "./api";
 import { planPrEdit, prEditErrorMessage, type PrText } from "./edit";
@@ -58,7 +58,7 @@ function TitleDialog({ title, onSave, onClose }: { title: string; onSave: (t: st
 }
 
 export function PrHeader({ pr, worktree, repoId, repoPath, defaultBranch, refresh, target, notify }: Props) {
-  const linkMenu = usePrLinkMenu(pr, notify);
+  const linkMenu = usePrBadgeMenu(pr, notify);
   // Saved values shown until the next lookup brings GitHub's.
   const [saved, setSaved] = useState<Partial<PrText> & { base?: string }>({});
   useEffect(() => setSaved({}), [pr.title, pr.body, pr.baseRefName, pr.number]);

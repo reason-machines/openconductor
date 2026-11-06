@@ -160,7 +160,15 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
     [workspace.id, save, onOpen],
   );
 
-  return { tabs, start, close, fork, newChat, reopen, error };
+  /** "Rename chat" on a review, fork or "+" tab. */
+  const rename = useCallback(
+    (chatId: string, title: string) => {
+      save(currentTabs(workspace.id).map((t) => (t.chatId === chatId ? { ...t, title } : t)));
+    },
+    [workspace.id, save],
+  );
+
+  return { tabs, start, close, fork, newChat, reopen, rename, error };
 }
 
 /**

@@ -10,15 +10,15 @@ extracted bundle (`renderApp-D_fmY7hW.js`) as data.
 
 | Menu | Conductor | OpenConductor | Status |
 | --- | --- | --- | --- |
-| PR number (header PR pill `RFt`, PR title "#N" `sKo`) | `w_i` in `gy` `min-w-[180px]`: Open in &lt;target&gt; (arrow-up-right, ⌘⇧G), the other targets for a github.com PR, Copy link (copy), Copy number (hash) | `PrLinkMenu.tsx` on the shared `ContextMenu`, items from `prLinkMenuItems.ts`; target from `pull_request_open_target`; `.cm-min-w-180` | Matches the bundle; no Conductor capture (see gaps) |
-| Open target URLs (`fds`) | Linear `linear.review/<owner>/<repo>/pull/<n>`, Graphite `app.graphite.com/github/pr/<owner>/<repo>/<n>`, non-GitHub PR: "Open in GitHub" / "Open remote" (`Zsi`) | `prUrlFor`, `prLinkMenu` (unit tests in `prLinkMenuItems.test.ts`) | Matches |
+| PR number (header PR control `#N` and status pill `RFt`, PR title "#N" `sKo`) | `w_i` in `gy` `min-w-[180px]`: Open in &lt;target&gt; (arrow-up-right, ⌘⇧G), the other targets for a github.com PR, Copy link (copy), Copy number (hash) | main's `PrBadgeMenu.tsx` (#683, on the `PR #N` chip) is reused through the new `usePrBadgeMenu` hook on these triggers too | Matches the bundle; no Conductor capture (see gaps) |
+| Open target URLs (`fds`) | Linear `linear.review/<owner>/<repo>/pull/<n>`, Graphite `app.graphite.com/github/pr/<owner>/<repo>/<n>`, non-GitHub PR: "Open in GitHub" / "Open remote" (`Zsi`) | `prUrlFor`, `prOpenItems` in main's `prLinks.ts` (unit tests in `prLinks.test.ts`) | Matches |
 | Copy toasts (`n5`) | "Copied PR link to clipboard", "Copied PR number to clipboard", "Failed to copy to clipboard" | Same strings through the workspace `notify` | Matches |
 | Chat markdown link (`cEi` -> `EQ`) | Copy link address (copy icon); toast "Copied address to clipboard" | `LinkMenu.tsx` on the shared `ContextMenu`; toast through the transcript's `notify` | Matches (side-by-side below) |
 | File links in chat (`EQ` with `copyLabel` "Copy file path" + "Open in Finder") | Paths Conductor turns into `conductor-file://` links | Not built: OpenConductor draws inline-code paths as buttons, not links | Gap |
 
 Shots:
 
-- `sbs-pr-pill--dark.png`: the header PR pill's number, OpenConductor only.
+- `sbs-pr-pill--dark.png`: the header PR control's `#42`, OpenConductor only.
 - `sbs-pr-tab-number--dark.png`: "#42" in the PR tab title, OpenConductor only.
 - `sbs-chat-link--dark.png`: a markdown web link in a reply, both apps. The
   Conductor side uses the screens harness scenario `chat-link` (populated plus

@@ -243,6 +243,9 @@ pub struct WorkspaceRow {
     /// The workspace's open chat tabs besides its main chat, oldest first:
     /// they come back after a restart with their unread, as Conductor's do.
     pub chat_tabs: Vec<ChatTabRow>,
+    /// The main chat's own title once the user renamed it (`sessions::main_chat_titles`);
+    /// absent, its tab shows the workspace name.
+    pub chat_title: Option<String>,
     /// The PR's title and body as last stored (`pr_title`, `pr_description`):
     /// the sidebar label and Create PR's title / description.
     pub pr_title: Option<String>,
@@ -297,6 +300,10 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
             title: t.title,
         });
     }
+    let mut titles: std::collections::HashMap<String, String> = sessions::main_chat_titles(pool)
+        .await?
+        .into_iter()
+        .collect();
     Ok(workspaces::list(pool)
         .await?
         .into_iter()
@@ -317,6 +324,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 unread: w.unread,
                 unread_chats: unread.remove(&w.local_id).unwrap_or_default(),
                 chat_tabs: tabs.remove(&w.local_id).unwrap_or_default(),
+                chat_title: titles.remove(&w.local_id),
                 pr_title: w.pr_title,
                 pr_description: w.pr_description,
                 number: w.number,
