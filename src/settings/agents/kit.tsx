@@ -10,7 +10,8 @@ import { AppIcon } from "../../features/openIn/OpenInButton";
 import { defaultAppId, loadOpenInApps, openInApp, type OpenInApp } from "../../features/openIn/apps";
 import { recordOpenIn, useAppPrefs } from "../appPrefs";
 import type { InfoRow } from "./agentAuth";
-import { CheckIcon, ChevronDownIcon, EyeIcon, PencilIcon, TrashIcon } from "./icons";
+import { openUrl } from "../../backend";
+import { CheckIcon, ChevronDownIcon, ExternalIcon, EyeIcon, PencilIcon, TrashIcon } from "./icons";
 import { AuthStatus } from "./parts";
 import { maskedSecret } from "./kitModel";
 import "./kit.css";
@@ -30,7 +31,7 @@ export interface TabSpec<T extends string> {
 /** The page title with "Open settings.toml" at the right (Sven's reference). */
 export function AgentsHeader({ settingsPath }: { settingsPath: string | null }) {
   return (
-    <header className="agk-header">
+    <header className="settings-header agk-header">
       <h1>Agents</h1>
       <OpenInSplit label="Open settings.toml" path={settingsPath} />
     </header>
@@ -135,8 +136,10 @@ export function SecretRow(props: {
   reveal?: () => Promise<string>;
   onSave: (value: string) => Promise<void>;
   onDelete: () => Promise<void>;
+  /** "Get key ↗" under the empty field. */
+  getKeyUrl?: string;
 }) {
-  const { label, configured, hint, reveal, onSave, onDelete } = props;
+  const { label, configured, hint, reveal, onSave, onDelete, getKeyUrl } = props;
   const [editing, setEditing] = useState(false);
   const [shown, setShown] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -168,6 +171,12 @@ export function SecretRow(props: {
             })
           }
         />
+        {getKeyUrl && !configured && (
+          <button type="button" className="ag-link-underline" onClick={() => void openUrl(getKeyUrl)}>
+            Get key
+            <ExternalIcon size={12} />
+          </button>
+        )}
         {error && <p className="ag-error">{error}</p>}
       </div>
     );
@@ -254,14 +263,14 @@ export function OptionRow({ title, help, control, stacked }: { title: ReactNode;
 }
 
 /** A file's card: title, path in mono, and "Open in" at the right (`Nzi`). */
-export function ConfigFileCard({ title, displayPath, path }: { title: string; displayPath: string; path: string | null }) {
+export function ConfigFileCard({ title, displayPath, path, fallbackPath }: { title: string; displayPath: string; path: string | null; fallbackPath?: string }) {
   return (
     <section className="agk-config" aria-label={title}>
       <div className="agk-config-text">
         <h3>{title}</h3>
         <p className="agk-mono">{displayPath}</p>
       </div>
-      <OpenInSplit label="Open in" path={path} />
+      <OpenInSplit label="Open in" path={path} fallbackPath={fallbackPath} />
     </section>
   );
 }
@@ -269,9 +278,10 @@ export function ConfigFileCard({ title, displayPath, path }: { title: string; di
 /**
  * Conductor's `P9` split button beside settings paths: the left half opens
  * `path` in the last-used app (its icon first), the chevron lists the
- * installed apps. Disabled until `path` is known.
+ * installed apps. Disabled until `path` is known; when `path` does not
+ * exist yet it opens `fallbackPath` (Conductor's `directoryFallbackPath`).
  */
-export function OpenInSplit({ label, path }: { label: string; path: string | null }) {
+export function OpenInSplit({ label, path, fallbackPath }: { label: string; path: string | null; fallbackPath?: string }) {
   const [apps, setApps] = useState<OpenInApp[] | null>(null);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -299,7 +309,9 @@ export function OpenInSplit({ label, path }: { label: string; path: string | nul
     setOpen(false);
     if (!path) return;
     void recordOpenIn(id, false).catch(() => undefined);
-    openInApp(id, path).then(
+    openInApp(id, path)
+      .catch((e) => (fallbackPath ? openInApp(id, fallbackPath) : Promise.reject(e)))
+      .then(
       () => setError(null),
       (e) => setError(e instanceof Error ? e.message : String(e)),
     );

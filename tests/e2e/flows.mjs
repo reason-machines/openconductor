@@ -629,10 +629,16 @@ export const flows = [
       await wd.waitFor("the Agents page", async () => (await heading()) === "Agents");
       const tabs = await wd.waitFor("the agent tabs", async () => {
         const t = await textsOf(wd, '[role="tab"]');
-        return t.length === 4 ? t : null;
+        return t.length === 3 ? t : null;
       });
-      if (JSON.stringify(tabs) !== JSON.stringify(["Claude Code", "Codex", "Cursor", "OpenCode"])) throw new Error(`agent tabs ${JSON.stringify(tabs)}`);
-      const cards = await textsOf(wd, "button[aria-pressed]");
+      if (JSON.stringify(tabs) !== JSON.stringify(["Reason", "Claude Code", "Codex"])) throw new Error(`agent tabs ${JSON.stringify(tabs)}`);
+      const openToml = await textsOf(wd, ".agk-header .agk-split-main");
+      if (openToml[0] !== "Open settings.toml") throw new Error(`page header button ${JSON.stringify(openToml)}`);
+      await clickByText(wd, '[role="tab"]', "Claude Code");
+      const cards = await wd.waitFor("the Claude Code cards", async () => {
+        const c = await textsOf(wd, "button[aria-pressed]");
+        return c.length === 2 ? c : null;
+      });
       if (JSON.stringify(cards) !== JSON.stringify(["CLI", "API key"])) throw new Error(`Authentication cards ${JSON.stringify(cards)}`);
       await wd.waitFor("the Claude Code status line", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]')).length === 1, 20000);
       const before = claudeKind();
@@ -640,27 +646,31 @@ export const flows = [
       await wd.waitFor('kind = "anthropic_api" under [providers.claude]', async () => claudeKind() === '"anthropic_api"').catch((e) => {
         throw new Error(`${e.message}; [providers.claude] kind is ${claudeKind()}`);
       });
-      await wd.waitFor("the Anthropic API key field", async () => (await wd.findAll('input[aria-label="Anthropic API key"]')).length === 1);
+      const keyField = 'input[aria-label="Anthropic API key"]';
+      await wd.waitFor("the Anthropic API key field", async () => (await wd.findAll(keyField)).length === 1);
       const status = await textsOf(wd, '[data-testid="agent-auth-status"]');
       if (!status[0]?.includes("No Anthropic API key configured")) throw new Error(`status line ${JSON.stringify(status)}`);
-      // The row's Setting actions › Reset returns Claude Code to its CLI login.
-      // The gear shows on hover (opacity 0 otherwise), so it is clicked in the page.
-      const gear = await wd.waitFor("the Setting actions gear", async () => (await wd.findAll('button[aria-label="Setting actions"]')).length > 0);
-      if (!gear) throw new Error("no Setting actions on the Authentication row");
-      await wd.execute("document.querySelector('button[aria-label=\"Setting actions\"]').click();", []);
-      await wd.waitFor("the Reset item", async () => (await textsOf(wd, '[role="menuitem"]')).includes("Reset"));
-      await clickByText(wd, '[role="menuitem"]', "Reset");
-      await wd.waitFor("[providers.claude] cleared", async () => claudeKind() === null || claudeKind() === '"claude_login"');
-      await wd.waitFor("the Run claude /login button", async () => (await textsOf(wd, "button")).includes("Run claude /login"));
-      for (const [tab, want] of [
-        ["Codex", "Run codex login"],
-        ["Cursor", "Get key"],
-      ]) {
-        await clickByText(wd, '[role="tab"]', tab);
-        await wd.waitFor(`${tab}: ${want}`, async () => (await textsOf(wd, "button")).includes(want));
-      }
-      await clickByText(wd, '[role="tab"]', "OpenCode");
-      await wd.waitFor("the OpenCode tab", async () => (await textsOf(wd, "button")).some((t) => t === "Install OpenCode" || t === "Add your first provider"), 20000);
+      // Save a key: the row masks it to its last four characters; the eye
+      // shows the whole key only on request, the trash removes it.
+      const key = "sk-ant-e2e-0123456789-bAAA";
+      await wd.click((await wd.findAll(keyField))[0]);
+      await wd.keys(key);
+      await clickByText(wd, "button", "Save");
+      const secret = () => wd.execute("return document.querySelector('[data-testid=\"secret-value\"]')?.textContent ?? null;", []);
+      await wd.waitFor("the masked key", async () => (await secret()) === "••••••••bAAA");
+      await wd.waitFor("Connected", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]'))[0]?.includes("Connected"));
+      if ((await wd.execute("return document.body.textContent.includes(arguments[0]);", [key]))) throw new Error("the key is on the page before Show");
+      await wd.click((await wd.findAll('button[aria-label="Show Anthropic API key"]'))[0]);
+      await wd.waitFor("the revealed key", async () => (await secret()) === key);
+      await wd.click((await wd.findAll('button[aria-label="Hide Anthropic API key"]'))[0]);
+      await wd.waitFor("the key masked again", async () => (await secret()) === "••••••••bAAA");
+      await wd.click((await wd.findAll('button[aria-label="Remove Anthropic API key"]'))[0]);
+      await wd.waitFor("the key field after Remove", async () => (await wd.findAll(keyField)).length === 1);
+      // The CLI card puts Claude Code back on its own login.
+      await clickByText(wd, "button[aria-pressed]", "CLI");
+      await wd.waitFor("[providers.claude] back on the CLI", async () => claudeKind() === null || claudeKind() === '"claude_login"');
+      await clickByText(wd, '[role="tab"]', "Codex");
+      await wd.waitFor("the Codex tab", async () => (await textsOf(wd, "button[aria-pressed]")).includes("API key"));
       if (before !== null && before !== '"claude_login"') throw new Error(`[providers.claude] was ${before} before the flow; it is now reset`);
 
       await clickByText(wd, ".settings-nav .nav-item", "Default models");
@@ -698,7 +708,7 @@ export const flows = [
       await clickByText(wd, '[role="tab"]', "Claude Code");
       const section = 'section[aria-label="Claude Code"]';
       await wd.waitFor("the Claude Code options", async () => (await wd.findAll(`${section} input[aria-label="Use Claude Code with Chrome"]`)).length === 1);
-      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .oc-agent-config h3`);
+      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .agk-config h3`);
       const want = ["Use Claude Code with Chrome", "Claude Code executable path", "Claude settings"];
       if (want.some((w, i) => labels.at(i - want.length) !== w)) throw new Error(`Claude option rows ${JSON.stringify(labels)}, want them to end with ${JSON.stringify(want)}`);
 
@@ -746,25 +756,6 @@ export const flows = [
       const path = await textsOf(wd, `${section} .oc-agent-config-path`);
       if (path[0] !== "~/.codex/config.toml") throw new Error(`Codex config card shows ${JSON.stringify(path)}`);
       await showRows(wd, `${section} .oc-agent-select-180`);
-    },
-  },
-  {
-    name: "agents-opencode-advanced",
-    async run(wd) {
-      await openSettingsPage(wd, "Agents");
-      await clickByText(wd, '[role="tab"]', "OpenCode");
-      const section = 'section[aria-label="OpenCode"]';
-      const toggle = `${section} .oc-agent-advanced-toggle`;
-      if ((await wd.execute("return document.querySelector(arguments[0])?.getAttribute('aria-expanded');", [toggle])) !== "true") {
-        await wd.click((await wd.findAll(toggle))[0]);
-      }
-      const badge = await wd.waitFor("the OpenCode status badge", async () => {
-        const [t] = await textsOf(wd, `${section} .oc-agent-badge`);
-        return t && t !== "Checking" ? t : null;
-      });
-      if (!/^(Installed|Missing|Update required|Needs repair)/.test(badge)) throw new Error(`OpenCode status badge ${JSON.stringify(badge)}`);
-      if ((await wd.findAll(`${section} input[aria-label="OpenCode executable path"]`)).length !== 1) throw new Error("no OpenCode executable path row under Advanced");
-      await showRows(wd, `${section} .oc-agent-advanced`);
     },
   },
   {
