@@ -1,6 +1,6 @@
 {
  "ref": "origin/main",
- "source_files": 525,
+ "source_files": 538,
  "detector_parity_pct": 91.2,
  "areas": {
   "sidebar": {
@@ -22,12 +22,12 @@
    "partial": 3,
    "missing": 1,
    "parity_pct": 86.1,
-   "verdict_implemented": 13,
-   "verdict_partial": 4,
+   "verdict_implemented": 14,
+   "verdict_partial": 3,
    "verdict_backend": 0,
    "verdict_missing": 0,
    "verdict_na": 1,
-   "verdict_parity_pct": 88.2
+   "verdict_parity_pct": 91.2
   },
   "create": {
    "items": 17,
@@ -783,7 +783,7 @@
     {
      "pattern": "data-tauri-drag-region",
      "matched": true,
-     "file": "src/components/AllWorkspaces.tsx"
+     "file": "src/components/AccountMenu.tsx"
     },
     {
      "pattern": "(grid-cols|grid-template-columns|home-entr|EntryCard)",
@@ -809,7 +809,7 @@
     {
      "pattern": "--secondary\\s*:",
      "matched": true,
-     "file": "src/settings/appearance.css"
+     "file": "src/components/rightPanel.css"
     }
    ],
    "verdict": "implemented",
@@ -1022,8 +1022,8 @@
      "file": "src/components/QuickOpenDialog.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "Re-read with REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest): 'Recent workspaces' is the command palette's All-tab heading with an empty query (m_a @10,909,908), not a Home list. Conductor keeps recentWorkspaceIds (most recent first, cap XOt = 5, recordViewedWorkspace) in its persisted UI store (partialize includes recentWorkspaceIds, index chunk @3,121,897), so the list survives a restart. Ours (src/palette/PaletteHost.tsx) shows the same heading and order but keeps up to 8 ids in React state only, so it is empty after a restart and holds 3 more than Conductor.",
+   "verdict": "implemented",
+   "why": "Builder 9afba896 (PR for parity.home.recent), REA-checked on Conductor 0.87.6 (index-BGEQ8YjU.js sha256 b5b01f33fbbe\u2026, renderApp-D_fmY7hW.js sha256 5199d392ef2d\u2026): 'Recent workspaces' is the palette All-tab group with an empty query. Store (index @3,120,888-3,125,999): recentWorkspaceIds in zustand persist 'workspace-tab-state-v2' (partialize @3,125,306), recordViewedWorkspace leaves the list when the id is already first, else moves it to the front and slices to XOt = 5; nothing else writes the list, so deleted or archived ids are never pruned from storage. Palette (renderApp @10,854,949): recents = ids.map(id => all workspaces.find(localId === id)).filter(E_a: !== undefined); the workspace list includes archived rows (k_a/S_a split it by state), so archived workspaces stay in Recent and only ids that no longer resolve are dropped. Ours: persisted under the same key and shape, capped at 5, same move-to-front rule (#401, src/palette/recentWorkspaces.ts); this PR keeps archived workspaces (from conductor.db) in Recent and drops only unknown ids (src/palette/fromAppState.ts, src/palette/search/model.ts; tests in fromAppState.test.ts and search.test.ts fail before, pass after).",
    "recheck": false
   },
   {
@@ -1450,5 +1450,5 @@
  ],
  "verdicts_ref": "origin/main",
  "verdicts_verified_at": "2026-11-06 (main 563981a: create.page after #388 (563981a), create.first-message model/effort note after #388, create.initializing re-read after #388/#399 (unchanged), sidebar.archive: #467 merged into #428's branch after #428 landed, so its fix is not on main; main f6da48f: sidebar.ws-status after #428 (5751628), home.status-overview after #428 and #457 (f6da48f), sidebar.archive re-read (Codex chats now block archive, Stop still skips them and needs_user_permission chats); main 2e13137: sidebar.archive Codex-chat gap in progress via open draft #467, verdict unchanged; main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 92.5
+ "verdict_parity_pct": 93.3
 }
