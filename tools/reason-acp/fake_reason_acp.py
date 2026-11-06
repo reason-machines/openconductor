@@ -42,7 +42,9 @@ tool_call_update to completed, with ACP kind, rawInput and _meta.claudeCode.tool
 LISBON_PROMPT, the fixture's user message, is an alias).
 
 session/new reports configOptions `model` and `reasoning_effort` like
-Reason does; session/set_config_option with a value an option does not
+Reason does (session/close forgets an unprompted one); `session get --json`
+reports the model a Session ran on (Claude Opus 5.5 for "default") and its
+reasoning effort; session/set_config_option with a value an option does not
 offer resets it to "default" without an error, as Reason does.
 """
 import json
@@ -291,6 +293,9 @@ def handle(msg):
         config[p["configId"]] = p["value"] if p["value"] in values else "default"
         save(state)
         send({"id": rid, "result": {"configOptions": config_options(config)}})
+    elif method == "session/close":
+        opened.discard(p.get("sessionId"))
+        send({"id": rid, "result": {}})
     elif method == "session/resume":
         session = load()["sessions"].get(p["sessionId"])
         if session is not None:
@@ -329,7 +334,14 @@ def session_get(sid):
     if session is None or session.get("workspace", "ws-a") != WORKSPACE:
         sys.stderr.write("Reason: Reason request failed (404 session_not_found)\n")
         sys.exit(1)
-    print(json.dumps({"session_id": sid, "status": "exit", "title": session.get("title")}))
+    # Auto ("default") runs Reason's pick; the fake picks Claude Opus 5.5.
+    config = session.get("config", {})
+    model = config.get("model", "default")
+    effort = config.get("reasoning_effort", "default")
+    print(json.dumps({"session_id": sid, "status": "exit", "title": session.get("title"),
+                      "model": None if session["turns"] == 0 else
+                      ("byok:anthropic:claude-opus-5-5" if model == "default" else model),
+                      "reasoning_effort": "high" if effort == "default" else effort}))
 
 
 if ARGS[:1] == ["whoami"]:

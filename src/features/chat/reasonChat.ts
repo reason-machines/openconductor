@@ -27,6 +27,7 @@ import { connectStatusStore, createChatRuntime, type ChatBackend, type Deliver }
 import { desktopHost } from "./desktopHost.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { withGeneralPreferences } from "../../settings/prompts.ts";
+import { parseModelOptions, saveRunningModel, loadCachedModels, saveCachedModels, type ReasonModelOption, type RunningModel } from "./reasonModels.ts";
 
 /** One Reason Session config option (`model`, `reasoning_effort`). */
 export interface ReasonConfig {
@@ -58,7 +59,12 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
       if (payload.type === "permissionRequest") {
         permissions.requested(payload.chatId, { requestId: payload.requestId, title: payload.title, options: payload.options });
       } else if (payload.type === "permissionResolved") permissions.resolved(payload.chatId, payload.requestId);
-      else deliver(payload.chatId, (s) => applyReasonPayload(s, payload));
+      else {
+        // A new Session has run no turn yet: its model is the chat's pick until one ends.
+        if (payload.type === "sessionStarted") setRunningModel(payload.chatId, null);
+        if (payload.type === "sessionModel") setRunningModel(payload.chatId, { model: payload.model, effort: payload.effort ?? null });
+        deliver(payload.chatId, (s) => applyReasonPayload(s, payload));
+      }
     }),
   async open(chatId, cwd, sessionId, config) {
     await invoke("reason_open_chat", { chatId, cwd, sessionId, config });
@@ -145,6 +151,51 @@ export const answerPermission = reason.answerPermission;
 export type { ChatSnapshot, PermissionPrompt } from "./chatRuntime.ts";
 /** The options the chat's Sessions open with (a fork opens on the same). */
 export const reasonChatConfig = reason.config;
+
+/** Window event (`detail: { chatId, running }`) when a chat's Session reports the model it ran on. */
+export const RUNNING_MODEL_EVENT = "openconductor:reason-running-model";
+
+/** Records what the chat's Session ran on (null: not known, e.g. a new Session) and tells the model picker. */
+export function setRunningModel(chatId: string, running: RunningModel | null): void {
+  saveRunningModel(chatId, running);
+  if (typeof window.dispatchEvent === "function") window.dispatchEvent(new CustomEvent(RUNNING_MODEL_EVENT, { detail: { chatId, running } }));
+}
+
+/**
+ * A pick in the chat's model picker: the options for its next new Session
+ * (`configureReason`) and, in the desktop app, for the Session it already
+ * has, from its next prompt on.
+ */
+export function pickReasonModel(chatId: string, config: ReasonConfig[]): void {
+  reason.configure(chatId, config);
+  setRunningModel(chatId, null);
+  if (reasonAvailable()) {
+    invoke("reason_set_config", { chatId, config }).catch((e) => console.warn("reason: pick not applied to the open Session", e));
+  }
+}
+
+let models: Promise<ReasonModelOption[]> | null = null;
+/**
+ * The models Reason offers, asked once per app run (the last answer is
+ * cached for the next start); the cached list, or none, outside the
+ * desktop app or when Reason cannot answer.
+ */
+export function reasonModels(): Promise<ReasonModelOption[]> {
+  if (!reasonAvailable()) return Promise.resolve(loadCachedModels());
+  models ??= invoke<{ options: unknown }>("reason_models").then(
+    (r) => {
+      const options = parseModelOptions(r.options);
+      if (options.length > 0) saveCachedModels(options);
+      return options.length > 0 ? options : loadCachedModels();
+    },
+    (e) => {
+      console.warn("reason: model list unavailable", e);
+      models = null;
+      return loadCachedModels();
+    },
+  );
+  return models;
+}
 
 /** The first message or a Retry: starts when idle, else waits in the queue. */
 export function sendReason(chatId: string, cwd: string, text: string, attachments: readonly PromptAttachment[] = [], repoPath?: string): void {

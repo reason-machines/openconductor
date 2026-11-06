@@ -410,6 +410,8 @@ pub fn run() {
             session_status_commands::session_statuses,
             session_status_commands::session_set_status,
             reason_chat::reason_list_sessions,
+            reason_chat::reason_models,
+            reason_chat::reason_set_config,
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,
