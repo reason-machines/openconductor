@@ -5,6 +5,7 @@
 // changes" and, when line wrapping is offered, "Wrap lines". A file whose
 // changes are all whitespace, while they are hidden, shows an empty state with
 // a link that shows them again.
+import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useEffect, useRef, useState } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 
@@ -68,17 +69,18 @@ export function ViewOptionsMenu({ whitespace, textWrap }: ViewOptionsProps) {
   );
   return (
     <span ref={ref} className="oc-view-options">
-      <button
-        type="button"
-        className="icon-btn"
-        aria-label={VIEW_OPTIONS_LABEL}
-        title={VIEW_OPTIONS_LABEL}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        onClick={() => setOpen(!open)}
-      >
-        <OptionsIcon />
-      </button>
+      <Tooltip content={VIEW_OPTIONS_LABEL}>
+        <button
+          type="button"
+          className="icon-btn"
+          aria-label={VIEW_OPTIONS_LABEL}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+        >
+          <OptionsIcon />
+        </button>
+      </Tooltip>
       {presence.mounted && (
         <div className="oc-view-options-menu" data-motion="popup" {...presence.attrs} role="menu" aria-label={VIEW_OPTIONS_LABEL}>
           {whitespace && item(HIDE_WHITESPACE_LABEL, whitespace.hidden, whitespace.onChange)}

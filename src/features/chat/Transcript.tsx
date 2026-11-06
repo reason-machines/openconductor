@@ -4,6 +4,7 @@
 // its prompt bubble, its agent output (tool rows from ToolRows.tsx, text as
 // markdown) and, once finished, its footer.
 
+import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import type { ChatTranscript } from "./reducer.ts";
@@ -236,9 +237,11 @@ function TurnMenu({
   }, [open]);
   return (
     <span className="chat-turn-menu" ref={ref} onKeyDown={(e) => e.key === "Escape" && setOpen(false)}>
-      <button type="button" className="oc-icon-action" title="More actions" aria-label="More actions" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        <Lucide name="ellipsis" className="oc-icon-action-svg" />
-      </button>
+      <Tooltip content="More actions">
+        <button type="button" className="oc-icon-action" aria-label="More actions" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          <Lucide name="ellipsis" className="oc-icon-action-svg" />
+        </button>
+      </Tooltip>
       {menu.mounted ? (
         <div className="chat-menu" role="menu" data-motion="popup" {...menu.attrs}>
           {onFork ? (
@@ -466,8 +469,10 @@ function CopyButton({ text, label }: { text: string; label: string }) {
   }
   const title = state === "copied" ? "Copied!" : state === "failed" ? "Couldn't copy" : label;
   return (
-    <button type="button" className="oc-icon-action" onClick={copy} title={title} aria-label={label}>
-      <Lucide name={state === "copied" ? "check" : "copy"} className="oc-icon-action-svg" />
-    </button>
+    <Tooltip content={title}>
+      <button type="button" className="oc-icon-action" onClick={copy} aria-label={label}>
+        <Lucide name={state === "copied" ? "check" : "copy"} className="oc-icon-action-svg" />
+      </button>
+    </Tooltip>
   );
 }

@@ -11,6 +11,7 @@
 // `chat.focus` focuses the box. With `onAttachFiles`, files come in through
 // the "+" menu, `chat.addAttachment` (⌘U), pasting files and dropping them.
 
+import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
@@ -280,22 +281,25 @@ export function Composer({
               />
             ) : null}
             {working ? (
-              <button
-                className="oc-icon-btn composer-stop"
-                type="button"
-                title="Stop the agent"
-                aria-label={`Stop the agent (${hint("chat.cancel")})`}
-                data-state={queue.status}
-                disabled={queue.status === "cancelling"}
-                onClick={onStop}
-              >
-                <StopCircleIcon size={16} />
-              </button>
+              <Tooltip content={<span className="oc-tip-inline">Cancel <ShortcutHint commandId="chat.cancel" /></span>}>
+                <button
+                  className="oc-icon-btn composer-stop"
+                  type="button"
+                  aria-label={`Stop the agent (${hint("chat.cancel")})`}
+                  data-state={queue.status}
+                  disabled={queue.status === "cancelling"}
+                  onClick={onStop}
+                >
+                  <StopCircleIcon size={16} />
+                </button>
+              </Tooltip>
             ) : null}
             {!working || hasText ? (
-              <button className="oc-send" type="submit" disabled={!hasText} data-mode={sendMode} aria-label={sendLabel} title={sendLabel} data-testid="composer-send-button">
-                {queues ? <CornerDownLeftIcon size={16} strokeWidth={1.5} /> : <ArrowUpIcon size={16} strokeWidth={1.5} />}
-              </button>
+              <Tooltip content={<span className="oc-tip-inline">{queues ? "Queue message" : "Send message"}<ShortcutHint commandId="chat.submitMessage" /></span>}>
+                <button className="oc-send" type="submit" disabled={!hasText} data-mode={sendMode} aria-label={sendLabel} data-testid="composer-send-button">
+                  {queues ? <CornerDownLeftIcon size={16} strokeWidth={1.5} /> : <ArrowUpIcon size={16} strokeWidth={1.5} />}
+                </button>
+              </Tooltip>
             ) : null}
           </div>
         </form>
@@ -324,9 +328,11 @@ function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: ()
         }
       }}
     >
-      <button type="button" className="oc-icon-btn oc-add-btn" aria-label="Add" title="Add attachments and more" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        <PlusIcon size={16} strokeWidth={1.5} />
-      </button>
+      <Tooltip content={<p>Add attachments and more</p>}>
+        <button type="button" className="oc-icon-btn oc-add-btn" aria-label="Add" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          <PlusIcon size={16} strokeWidth={1.5} />
+        </button>
+      </Tooltip>
       {popup.mounted ? (
         <div className="oc-menu oc-add-popup" role="menu" data-motion="popup" {...popup.attrs}>
           <button

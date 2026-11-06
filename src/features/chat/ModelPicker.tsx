@@ -5,6 +5,7 @@
 // ("Effort"/"Thinking"), the Fast toggle, and a footer with "Edit" and the
 // Cycle effort shortcut. ⌘/ opens it, ⌘⇧/ cycles the effort, ⌘⇧E toggles Fast.
 
+import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
@@ -99,23 +100,25 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
 
   return (
     <span className="oc-model-picker" ref={root} onKeyDown={onMenuKey}>
-      <button
-        type="button"
-        className="oc-model-chip"
-        data-testid="composer-model-button"
-        aria-label={`${label ? "Change model" : "Change agent"} (${label ?? chip.accessible})`}
-        title={label ?? chip.accessible}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        disabled={disabled}
-        onClick={() => setOpen((o) => !o)}
-      >
-        <span className="oc-model-chip-label">{label ?? chip.label}</span>
-        <span className="oc-model-chip-details">
-          {!label && chip.effort ? <span className="oc-model-chip-effort">{chip.effort}</span> : null}
-          <ChevronDownIcon className="oc-model-chip-chevron" />
-        </span>
-      </button>
+      <Tooltip content={<p>Change agent <ShortcutHint commandId="chat.openModelPicker" /></p>}>
+        <button
+          type="button"
+          className="oc-model-chip"
+          data-testid="composer-model-button"
+          aria-label={`${label ? "Change model" : "Change agent"} (${label ?? chip.accessible})`}
+          title={label ?? chip.accessible}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          disabled={disabled}
+          onClick={() => setOpen((o) => !o)}
+        >
+          <span className="oc-model-chip-label">{label ?? chip.label}</span>
+          <span className="oc-model-chip-details">
+            {!label && chip.effort ? <span className="oc-model-chip-effort">{chip.effort}</span> : null}
+            <ChevronDownIcon className="oc-model-chip-chevron" />
+          </span>
+        </button>
+      </Tooltip>
       {menu.mounted ? (
         <div className="oc-model-menu" role="menu" aria-label="Model" data-motion="popup" {...menu.attrs}>
           <div className="oc-model-menu-inner">
