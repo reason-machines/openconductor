@@ -8,8 +8,8 @@ import { Row } from "./GeneralPage";
 import { errorText } from "./api";
 import type { RepoSection } from "./routes";
 import { RepoActionsRows } from "./rows/PromptRows";
-import { RepoEnvironmentRows } from "./rows/EnvironmentRows";
 import { RepoGitRows } from "./rows/RepoGitRows";
+import { RepoEnvironmentPage } from "./RepoEnvironmentPage";
 import { RepoMiscRows, type RepoMiscActions } from "./rows/RepoMiscRows";
 
 interface Props {
@@ -42,8 +42,7 @@ export function RepoSettingsPage({ repo, section, miscActions }: Props) {
 }
 
 function RepoEnvironment({ repo }: { repo: Repo }) {
-  if (!repo.path) return <p className="muted small">This repository has no local checkout, so its environment settings cannot be edited.</p>;
-  return <RepoEnvironmentRows repoPath={repo.path} />;
+  return <RepoEnvironmentPage repo={repo} />;
 }
 
 function RepoGit({ repo }: { repo: Repo }) {

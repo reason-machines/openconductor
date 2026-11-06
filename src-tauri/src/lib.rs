@@ -415,6 +415,7 @@ pub fn run() {
             codex_chat::codex_prompt,
             codex_chat::codex_cancel,
             codex_chat::codex_answer,
+            codex_chat::codex_respond,
             codex_chat::codex_close_chat,
             claude_chat::commands::claude_cli_path,
             claude_chat::commands::claude_open_chat,

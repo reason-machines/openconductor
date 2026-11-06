@@ -19,6 +19,8 @@ import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
 import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
 import { ChatEmptyState } from "../features/chat/ChatEmptyState.tsx";
+import { NewChatButton } from "../features/chat/NewChatButton.tsx";
+import { atTabLimit, tabLimitToast } from "../features/chat/chatTabs.ts";
 import { lastUserMessageAt, type OtherChat } from "../features/chat/chatEmptyState.ts";
 import type { ChatAgent } from "../features/chat/chatAgentChoice.ts";
 import { commandSet, isKnownCommand, parseSlashCommand } from "../features/chat/slashCommands.ts";
@@ -26,7 +28,8 @@ import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
-import { answerCodex, CODEX_ACCESS, CODEX_CAN_STEER, codexAccess, codexQueueAction, codexSnapshot, setCodexAccess, stopCodex, submitCodex, subscribeCodex, type CodexAccess, type CodexSnapshot } from "../features/chat/codexChat.ts";
+import { CodexConsentCard } from "../features/chat/CodexConsentCard.tsx";
+import { answerCodex, answerCodexConsent, CODEX_ACCESS, CODEX_CAN_STEER, codexAccess, codexQueueAction, codexSnapshot, setCodexAccess, stopCodex, submitCodex, subscribeCodex, type CodexAccess, type CodexSnapshot } from "../features/chat/codexChat.ts";
 import { DECISION_LABELS, type CodexApproval, type CodexDecision } from "../features/chat/codex.ts";
 import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
@@ -167,8 +170,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   const main = chatId === workspace.id;
   const [agent, setAgent] = useState<ChatAgent>(() => savedAgent(chatId));
   const codex = reason && agent === "codex";
-  const snapshotOf = (a: ChatAgent): ChatView => (reason && a === "codex" ? codexSnapshot(chatId) : { ...chatSnapshot(chatId), approvals: [] });
-  const [{ transcript, queue, approvals, permissions = [] }, setSnapshot] = useState<ChatView>(() => snapshotOf(agent));
+  const snapshotOf = (a: ChatAgent): ChatView => (reason && a === "codex" ? codexSnapshot(chatId) : { ...chatSnapshot(chatId), approvals: [], consents: [] });
+  const [{ transcript, queue, approvals, consents, permissions = [] }, setSnapshot] = useState<ChatView>(() => snapshotOf(agent));
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
@@ -199,7 +202,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Follows the chat and its agent (picking another agent shows that agent's transcript and queue).
   useEffect(() => {
     setSnapshot(snapshotOf(agent));
-    return codex ? subscribeCodex(chatId, setSnapshot) : subscribeChat(chatId, (s) => setSnapshot({ ...s, approvals: [] }));
+    return codex ? subscribeCodex(chatId, setSnapshot) : subscribeChat(chatId, (s) => setSnapshot({ ...s, approvals: [], consents: [] }));
   }, [chatId, agent]);
 
   function chooseAgent(next: ChatAgent) {
@@ -434,7 +437,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       {tabs}
       {content}
       <div className="chat-scroll" hidden={content !== null}>
-        {review && !review.fork && (
+        {review && !review.fork && !review.blank && (
           <div className="review-chat-info muted" role="note">
             Code review on {review.modelLabel}
             {review.effort ? `, ${review.effort} effort` : ""}
@@ -494,6 +497,13 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           ))}
         </div>
       ) : null}
+      {codex && consents.length > 0 ? (
+        <div className="codex-approvals">
+          {consents.map((c) => (
+            <CodexConsentCard key={String(c.requestId)} consent={c} onRespond={(answer) => void answerCodexConsent(chatId, c.requestId, answer)} />
+          ))}
+        </div>
+      ) : null}
       {onNextUnread ? (
         // parity:sidebar.ws-unread — Conductor's g1o (renderApp @7,528,638): a small outline
         // "Next unread" button with a chevron, 40px above the composer's right edge.
@@ -537,7 +547,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           ) : null
         }
         picker={
-          review ? (
+          review && !review.blank ? (
             <span className="oc-review-model">{review.modelLabel}</span>
           ) : (
             // A review chat keeps its model. The agent changes only between turns.
@@ -664,9 +674,11 @@ interface MainTabsProps {
   isUnread: (chatId: string) => boolean;
   /** The chat tab menu's "Mark as read" / "Mark as unread". */
   onToggleRead: (chatId: string) => void;
+  /** The "+" after the chat tabs (NewChatButton). */
+  newChat: ReactNode;
 }
 
-function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead }: MainTabsProps) {
+function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead, newChat }: MainTabsProps) {
   const [menu, setMenu] = useState<{ chatId: string; x: number; y: number } | null>(null);
   const openMenu = (chatId: string) => (e: ReactMouseEvent) => {
     e.preventDefault();
@@ -702,7 +714,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
       )}
       {reviews.map((r) => (
         <span key={r.chatId} className={`main-tab${active === r.chatId ? " active" : ""}`}>
-          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} onContextMenu={openMenu(r.chatId)} data-unread={isUnread(r.chatId) || undefined} title={r.fork ? r.title : `Code review on ${r.modelLabel}`}>
+          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} onContextMenu={openMenu(r.chatId)} data-unread={isUnread(r.chatId) || undefined} title={r.fork || r.blank ? r.title : `Code review on ${r.modelLabel}`}>
             {r.title}
           </button>
           <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} title="Close tab" aria-label={`Close ${r.title} tab`}>
@@ -710,6 +722,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           </button>
         </span>
       ))}
+      {newChat}
     </div>
   );
 }
@@ -906,6 +919,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   });
   loaded.current = review.onLoaded;
   const reviews = useReviewChats(repo, workspace, setMainTab);
+  // The workspace's own chat plus its review, fork and new chats count toward Conductor's tab limit.
+  const openChatTabs = 1 + reviews.tabs.length;
+  const newChat = () => {
+    if (atTabLimit(openChatTabs)) notify?.("info", tabLimitToast());
+    else reviews.newChat();
+  };
   const closeReview = (chatId: string) => {
     // A closed review counts as hidden: it no longer keeps the workspace unread.
     if (isChatUnread(workspace, chatId)) dispatch({ type: "setChatUnread", repoId: repo.id, workspaceId: workspace.id, chatId, unread: false, at: Date.now() });
@@ -936,8 +955,13 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
     "git.openInGitHub": prActions.openOnGitHub,
   });
   // ⌘⇧T inside a terminal is handled by the terminal itself (session.ts), so this one skips terminal focus.
+  // So is ⌘T (terminal.newTab); elsewhere ⌘T (nav.newTab) opens a new chat, as the "+" does.
   useKeybindings(
     {
+      "nav.newTab": () => {
+        newChat();
+        return true;
+      },
       "terminal.newBigTab": () => {
         const big = bigTabRequest();
         if (!big || !repo.path) return false;
@@ -985,7 +1009,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   const rightPanelVisible = useAppPrefs().right_panel_visible;
   return (
     <div className="workspace">
-      <header className="ws-header" data-tauri-drag-region>
+      <header className="ws-header" data-tauri-drag-region="deep">
         <div className="ws-title">
           <span className="crumb">{repo.name}</span>
           <span className="crumb-sep">/</span>
@@ -1034,7 +1058,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
           onNextUnread={!prBase?.merged && hasNextUnread?.(selectedChat) ? onNextUnread : undefined}
           forkToNewTab={reviews.fork}
           chatTabs={[{ chatId: workspace.id, title: workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
-          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} />}
+          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />}
           content={
             showDiff ? (
               <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} />
