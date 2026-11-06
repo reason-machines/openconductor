@@ -434,3 +434,35 @@ async fn lists_each_workspaces_unread_chats() {
         .unread_chats[0];
     assert!(!first.updated_at.is_empty());
 }
+
+#[tokio::test]
+async fn lists_each_workspaces_open_chat_tabs() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    finish_workspace(&pool, &ws("app", "oslo"), Some("main"), None)
+        .await
+        .unwrap();
+    use openconductor_db::sessions;
+    sessions::open_tab(
+        &pool,
+        "app/oslo:review:1",
+        "app/oslo",
+        "Review",
+        "2026-11-05T10:00:00.000Z",
+    )
+    .await
+    .unwrap();
+    sessions::upsert_unread(&pool, "app/oslo:review:1", "app/oslo", true)
+        .await
+        .unwrap();
+    let rows = list_workspaces(&pool).await.unwrap();
+    let w = rows.iter().find(|w| w.id == "app/oslo").unwrap();
+    assert_eq!(
+        w.chat_tabs,
+        [ChatTabRow {
+            id: "app/oslo:review:1".into(),
+            title: "Review".into()
+        }]
+    );
+    assert_eq!(w.unread_chats[0].id, "app/oslo:review:1");
+}
