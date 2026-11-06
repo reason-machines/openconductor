@@ -28,6 +28,7 @@ use serde_json::Value;
 use tauri::{AppHandle, Emitter, Runtime, State};
 
 use crate::agent::codex_cli::{ApprovalPolicy, CodexPolicy, SandboxMode};
+use crate::agent::AgentKind;
 use crate::agent::codex_consent::ConsentAnswer;
 use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
 use crate::agent::codex_runner::{CodexRunner, RunnerConfig, Sink, Timeouts};
