@@ -4,8 +4,10 @@
 
 /* Equal-width auth cards; the column count comes from the option count. */
 .agk-cards { display: grid; gap: 12px; }
+/* The card's label stacks over its "Recommended" pill (renderApp offset 10527830: flex-col items-center). */
+.agk-cards .ag-mode-label { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .agk-pill {
-  display: inline-flex; align-items: center; margin-left: 6px; padding: 0 6px; height: 18px;
+  display: inline-flex; align-items: center; padding: 0 6px; height: 18px;
   border: 1px solid var(--ag-border); border-radius: 999px; background: var(--ag-muted);
   color: var(--ag-muted-fg); font-size: 11px; font-weight: 500; vertical-align: 1px;
 }

@@ -39,6 +39,7 @@ import {
   type TaskItem,
 } from "./conductorTools.ts";
 import { Markdown } from "./markdown.ts";
+import { thinkingChipText } from "./thinkingChip.ts";
 import type { ToolStatus } from "./view.ts";
 
 type LucideName = keyof typeof LUCIDE;
@@ -724,7 +725,7 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
         <RowShell
           {...shell}
           left={<span>Thinking</span>}
-          right={<span className="oc-code-chip sans">{text}</span>}
+          right={<span className="oc-code-chip sans">{thinkingChipText(text)}</span>}
           align="center"
           plainContent
           content={<Markdown text={text} className="oc-prose muted" />}
