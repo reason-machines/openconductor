@@ -117,6 +117,26 @@ export function validSelection(selection: Selection, repos: Repo[]): Selection {
   return repo?.workspaces.some((w) => w.id === selection.workspaceId) ? selection : { kind: "root" };
 }
 
+/** A workspace re-read from conductor.db keeps the pull request the app last read (not a column). */
+export function keepPr(fresh: Workspace, old: Workspace | undefined): Workspace {
+  return old?.pr !== undefined ? { ...fresh, pr: old.pr } : fresh;
+}
+
+/**
+ * Browser shell state saved before a reload: no agent from before it is
+ * running, so drop session statuses (the demo's, and the old `status: "working"`).
+ */
+export function withoutLiveSessions(state: AppState): AppState {
+  const repos = state.repos.map((r) => ({
+    ...r,
+    workspaces: r.workspaces.map((w): Workspace => {
+      const { sessionStatus: _gone, ...rest } = w;
+      return (rest.status as string) === "working" ? { ...rest, status: "idle" } : rest;
+    }),
+  }));
+  return { ...state, repos };
+}
+
 export function prefsOf(state: AppState): UiPrefs {
   return {
     selection: state.selection,

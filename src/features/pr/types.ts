@@ -150,5 +150,10 @@ export interface CreatePrPrompt {
   title?: string | null;
   description?: string | null;
   template?: string | null;
+  /** Null sends none, so `pr_create_prompt` falls back to `prompts.create_pr` from the settings files of `repoPath` / `workspacePath`. */
   customInstructions?: string | null;
+  /** The repository's main checkout, for reading its settings files. */
+  repoPath?: string | null;
+  /** The workspace the PR is opened from, for its workspace settings layer. */
+  workspacePath?: string | null;
 }
