@@ -82,7 +82,14 @@
         .slice(0, 10)
         .map((el) => `${el.tagName.toLowerCase()}.${[...el.classList].join(".")}`),
     };
-    data.runButton = box(q(".scripts-empty-btn"));
+    // The button's box is a fixed 32px; a wrapped label overflows it, so count the label's lines.
+    const runBtn = q(".scripts-empty-btn");
+    data.runButton = box(runBtn);
+    if (runBtn) {
+      const range = document.createRange();
+      range.selectNodeContents(runBtn);
+      data.runButtonLines = new Set([...range.getClientRects()].map((r) => Math.round(r.top))).size;
+    }
     const fail = [];
     const near = (a, b, what, tol = 1.5) => Math.abs(a - b) > tol && fail.push(`${what}: ${a} != ${b}`);
     near(data.sidebar.w, 256, "sidebar width");
@@ -97,7 +104,7 @@
     near(data.composer.x + data.composer.w / 2, data.main.x + data.main.w / 2, "composer centre");
     if (data.horizontalOverflow.list || data.horizontalOverflow.page) fail.push(`horizontal overflow ${JSON.stringify(data.horizontalOverflow)}`);
     if (data.escaping.length) fail.push(`drawn past the window edge: ${data.escaping.join(", ")}`);
-    if (data.runButton && data.runButton.h > 32.5) fail.push(`"Add run script" wraps (${data.runButton.h}px tall)`);
+    if (data.runButtonLines > 1) fail.push(`"Add run script" wraps onto ${data.runButtonLines} lines`);
     data.failures = fail;
     await invoke("e2e_report", { name: "resize-reflow", data });
   } catch (e) {
