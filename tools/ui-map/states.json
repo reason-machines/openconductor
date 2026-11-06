@@ -172,8 +172,7 @@
      "after_ms": 800
     },
     {
-     "click": "form.create-ws button",
-     "nth": 0
+     "click": ".create-repo-trigger"
     }
    ]
   },
@@ -258,8 +257,32 @@
     {
      "click": ".sb-ws-name",
      "after_ms": 1500
+    },
+    {
+     "wait": ".composer textarea"
+    },
+    {
+     "exec": "const ta=document.querySelector('.composer textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(ta,arguments[0]);ta.dispatchEvent(new Event('input',{bubbles:true}));",
+     "args": [
+      "After signing in, users with an expired session get bounced between /login and /dashboard forever. Can you find out why and fix it?"
+     ],
+     "after_ms": 300
+    },
+    {
+     "click": ".composer button[type=submit]",
+     "after_ms": 500
+    },
+    {
+     "wait": ".chat-tool-summary-row",
+     "timeout": 30000,
+     "after_ms": 800
+    },
+    {
+     "click": ".chat-tool-summary-row",
+     "after_ms": 800
     }
-   ]
+   ],
+   "oc_fake_reason": true
   },
   {
    "id": "diff-unified",
@@ -376,20 +399,45 @@
    "title": "Workspace needing permission",
    "ref": {
     "path": "/",
-    "scenario": "populated",
+    "scenario": "needs-permission",
     "actions": [
-     {
-      "wait": "text=tide-web"
-     },
      {
       "click": "text=tide-api"
      },
      {
       "click": "text=Ada/rate limit headers"
+     },
+     {
+      "wait": "text=Do you want to run this command?"
      }
     ]
    },
-   "oc_reason": "the OpenConductor seed has no workspace with a pending permission request"
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "wait": ".composer textarea"
+    },
+    {
+     "exec": "const ta=document.querySelector('.composer textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(ta,arguments[0]);ta.dispatchEvent(new Event('input',{bubbles:true}));",
+     "args": [
+      "Return X-RateLimit-Limit and X-RateLimit-Remaining headers on every API response."
+     ],
+     "after_ms": 300
+    },
+    {
+     "click": ".composer button[type=submit]",
+     "after_ms": 500
+    },
+    {
+     "wait": "[data-testid=chat-permission-request]",
+     "timeout": 30000,
+     "after_ms": 800
+    }
+   ],
+   "oc_fake_reason": true
   },
   {
    "id": "route-dashboard",

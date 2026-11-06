@@ -369,11 +369,15 @@ try {
     throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await sidebarStatus())}`);
   });
   const card = await waitFor("the permission card", () => run(`const c = document.querySelector('[data-testid="chat-permission-request"]'); return c ? c.innerText : null;`));
-  // Conductor's tool card (`Jpo`): the question for an `execute` tool, the call's title, Reason's options.
+  // Conductor's tool approval (`Jpo`), in the composer box in place of its editor: the
+  // question for an `execute` tool, the call as the transcript's Bash row (command in a
+  // chip), and Yes / No whatever the options are named.
   assert.match(card, /Do you want to run this command\?/);
-  assert.match(card, /bash: rm -rf build/);
-  assert.match(card, /Allow/);
-  assert.match(card, /Reject/);
+  assert.match(card, /Bash/);
+  assert.match(card, /rm -rf build/);
+  assert.match(card, /Yes/);
+  assert.match(card, /No/);
+  assert.equal(await run(`return !!document.querySelector('.composer.oc-composer.is-approval [data-testid="chat-permission-request"]');`), true);
   const storedRows = await waitFor("needs_user_permission in conductor.db", async () => {
     const rows = await storedStatuses();
     return Array.isArray(rows) && rows.some((r) => r.chatId === workspace.id && r.status === "needs_user_permission") && rows;

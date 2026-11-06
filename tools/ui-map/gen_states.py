@@ -18,6 +18,16 @@ def oc_settings(label=None, extra=()):
     return s+list(extra)
 OPEN_WS=[{"click":".sb-ws-name","after_ms":1500}]
 HOME=[{"click":".sb-primary .sb-row","text":"Home","after_ms":800}]
+# Chat turns from tools/reason-acp/fake_reason_acp.py, which the lane puts on PATH as `reason` for
+# states with oc_fake_reason. The prompts are its aliases for Conductor's reference turns.
+LISBON_PROMPT="After signing in, users with an expired session get bounced between /login and /dashboard forever. Can you find out why and fix it?"
+TALLINN_PROMPT="Return X-RateLimit-Limit and X-RateLimit-Remaining headers on every API response."
+def send_prompt(text):
+    # React's native value setter plus an input event: WebDriver typing loses keys when the
+    # workspace terminal takes focus (#402).
+    return [{"wait":".composer textarea"},
+            {"exec":"const ta=document.querySelector('.composer textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(ta,arguments[0]);ta.dispatchEvent(new Event('input',{bubbles:true}));","args":[text],"after_ms":300},
+            {"click":".composer button[type=submit]","after_ms":500}]
 
 # screens and routes
 st("onboarding-signed-out","Onboarding, signed out", ref("/", "signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
@@ -26,14 +36,18 @@ st("home-empty","Home, no projects", ref("/","signed-in"), oc=[{"click":".onb-co
 st("home","Home with projects", ref("/"), oc=HOME, covers=[{"kind":"route","name":"/"}])
 st("all-workspaces","All workspaces list", ref("/all-workspaces"), oc=HOME, covers=[{"kind":"route","name":"/all-workspaces"}])
 st("create","Create workspace composer", ref(actions=[{"click":"text=Create >> nth=0"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800}], covers=[{"kind":"route","name":"/create"}])
-st("create-repo-picker","Create: repo picker open", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"text=Select repo"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800},{"click":"form.create-ws button","nth":0}])
+st("create-repo-picker","Create: repo picker open", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"text=Select repo"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800},{"click":".create-repo-trigger"}])
 st("workspace-chat","Workspace: chat transcript", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]), oc=OPEN_WS, covers=[{"kind":"route","name":"/repository/$repositoryId/workspace/$localWorkspaceId"}])
 st("workspace-new-chat","Workspace: new empty chat", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"}]), oc=OPEN_WS)
-st("workspace-tool-calls","Chat: tool calls expanded", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=4 tool calls, 2 messages"}]), oc=OPEN_WS)
+st("workspace-tool-calls","Chat: tool calls expanded", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=4 tool calls, 2 messages"}]),
+   oc=OPEN_WS+send_prompt(LISBON_PROMPT)+[{"wait":".chat-tool-summary-row","timeout":30000,"after_ms":800},{"click":".chat-tool-summary-row","after_ms":800}], oc_fake_reason=True)
 st("diff-unified","Diff: file, unified", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500}])
 st("diff-split","Diff: file, split", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"},{"click":"role=button[name='Split view']"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500},{"click":"button","text":"Split view"}])
 st("diff-entire-file","Diff: entire file", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"},{"click":"role=button[name='Entire file']"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500},{"click":"button","text":"Entire file"}])
-st("needs-permission","Workspace needing permission", ref(actions=[{"click":"text=tide-api"},{"click":"text=Ada/rate limit headers"}]), oc_reason="the OpenConductor seed has no workspace with a pending permission request")
+# Conductor's harness sends the sidecar's toolApproval request for "tallinn" (scenario needs-permission,
+# tools/screens/seed-data.js); OpenConductor gets the same turn from the fake `reason acp` ("tallinn").
+st("needs-permission","Workspace needing permission", ref(scenario="needs-permission", actions=[{"click":"text=tide-api"},{"click":"text=Ada/rate limit headers"},{"wait":"text=Do you want to run this command?"}]),
+   oc=OPEN_WS+send_prompt(TALLINN_PROMPT)+[{"wait":"[data-testid=chat-permission-request]","timeout":30000,"after_ms":800}], oc_fake_reason=True)
 for path,title in [("/dashboard","Dashboard"),("/routines","Routines"),("/routines/new","New routine"),("/team","Team"),("/diagnostics","Diagnostics"),("/new-member-onboarding","New member onboarding"),("/cloud-collab-onboarding","Cloud collaboration onboarding")]:
     sid="route-"+path.strip("/").replace("/","-")
     if path == "/diagnostics":
