@@ -1,0 +1,36 @@
+{
+  "scope": "Built OpenConductor frontend in Chromium on Reason Cloud, with invented IPC data; no real CLI, credentials or settings files.",
+  "command": "PORT=51749 CHECK_SAVE_RACE=1 EXIT_AFTER_CHECK=1 node tools/settings/fixture.mjs",
+  "baseline": {
+    "application_commit": "69e87b1b92208b98b1e8a24b95099cb35e8bf000",
+    "exit_code": 1,
+    "result": "Existing default-clear and rejection/recovery checks passed. The new check timed out after 3000ms waiting for a post-persistence Reason status request."
+  },
+  "fixed": {
+    "exit_code": 0,
+    "checks": [
+      "three rapid default clears survive an older response and persist together",
+      "rejected save rolls back and does not poison the next save",
+      "executable persistence refreshes Reason status and obsolete results are ignored",
+      "preset selection, custom command editing and deletion round-trip through the settings UI"
+    ],
+    "build": "npm run build passed, including TypeScript",
+    "unit_tests": {
+      "command": "node --test \"src/**/*.test.ts\"",
+      "passed": 1252,
+      "failed": 0
+    },
+    "focused_tests": {
+      "command": "node --test \"src/settings/**/*.test.ts\" \"src/settings/*.test.ts\" src/features/terminal/bigTerminal.test.ts",
+      "passed": 140,
+      "failed": 0
+    },
+    "color_lint": "npm run -s lint:colors passed",
+    "whitespace": "git diff --check passed"
+  },
+  "limits": [
+    "The test delays actual frontend IPC calls but does not run the native Tauri backend.",
+    "This does not prove real Reason CLI authentication or native Mac rendering.",
+    "No new visual styling is introduced by the status-refresh correction."
+  ]
+}
