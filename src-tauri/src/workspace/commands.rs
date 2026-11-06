@@ -201,6 +201,10 @@ pub async fn create_workspace(
     let parent = base_branch.clone().filter(|b| !b.trim().is_empty()).unwrap_or_else(|| repo.default_branch.clone());
     let pending =
         persistence::on_create_started(&db, &repo, directory_name.as_deref(), branch_name.as_deref(), &parent).await;
+    let effective = service
+        .repository_root(&repository_id)
+        .ok()
+        .and_then(|root| crate::settings::effective::resolve(&root, None).ok());
     let req = CreateWorkspaceRequest {
         repository_id: repository_id.clone(),
         branch_name,
@@ -210,11 +214,8 @@ pub async fn create_workspace(
         pr_number,
         // The repository's effective `git.worktree_push_auto_setup_remote`;
         // unreadable settings fall back to Conductor's default (on).
-        push_auto_setup_remote: service
-            .repository_root(&repository_id)
-            .ok()
-            .and_then(|root| crate::settings::effective::resolve(&root, None).ok())
-            .is_none_or(|e| e.git.worktree_push_auto_setup_remote.value),
+        push_auto_setup_remote: effective.as_ref().is_none_or(|e| e.git.worktree_push_auto_setup_remote.value),
+        file_include_globs: effective.and_then(|e| e.file_include_globs).map(|g| g.value),
     };
     match service.create_workspace(&req) {
         Ok(created) => {

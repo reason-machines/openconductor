@@ -38,6 +38,8 @@ export interface EffectiveSettings {
   };
   previewUrls: Sourced<PreviewUrl[]> | null;
   environmentVariableFiles: Sourced<string[]> | null;
+  /** "Files to copy": gitignore-style patterns, one per line (`file_include_globs`). */
+  fileIncludeGlobs: Sourced<string> | null;
   env: { local: Record<string, EnvVar>; cloud: Record<string, EnvVar>; files: EnvFileStatus[] };
   warnings: string[];
 }
@@ -52,6 +54,7 @@ export type RepoLocalKey =
   | "git.branch_prefix_type"
   | "preview_urls"
   | "environment_variable_files"
+  | "file_include_globs"
   | `environment_variables.${string}`;
 
 export function repoSettingsEffective(repoPath: string, workspacePath?: string): Promise<EffectiveSettings> {
