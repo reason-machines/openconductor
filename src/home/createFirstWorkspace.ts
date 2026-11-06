@@ -26,7 +26,7 @@ export async function createFirstWorkspace(repo: RegisteredRepo): Promise<FirstW
 }
 
 /** Starts the repository's setup script in the new worktree; a setup that fails to start never blocks the workspace. */
-async function startSetupScript(repo: RegisteredRepo, ws: FirstWorkspace, targetBranch: string): Promise<void> {
+export async function startSetupScript(repo: RegisteredRepo, ws: Pick<FirstWorkspace, "id" | "name" | "path">, targetBranch: string): Promise<void> {
   const ref = workspaceRef({ id: repo.id, path: repo.root, defaultBranch: repo.defaultBranch }, { id: ws.id, name: ws.name, path: ws.path });
   if (!ref) return;
   const workspace = { ...ref, targetBranch: targetBranch || null };

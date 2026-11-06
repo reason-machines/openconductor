@@ -240,6 +240,35 @@ impl ResolvedEnv {
             .collect()
     }
 
+    /// [`ResolvedEnv::vars`] with the variables stored on the Environment
+    /// settings page (`env_vars`) applied, as Conductor's `xz` does: a stored
+    /// value replaces a value from the user's own files, but never one a
+    /// repository settings file sets (`oN`: a repo-scoped file), and managed
+    /// values, applied after it there, still win.
+    pub fn vars_with_stored<'a>(
+        &self,
+        context: EnvContext,
+        stored: impl IntoIterator<Item = (&'a str, &'a str)>,
+    ) -> BTreeMap<String, String> {
+        let map = match context {
+            EnvContext::Local => &self.local,
+            EnvContext::Cloud => &self.cloud,
+        };
+        let mut out = self.vars(context);
+        for (key, value) in stored {
+            let pinned = map.get(key).is_some_and(|v| {
+                matches!(
+                    v.source.layer,
+                    Layer::RepoShared | Layer::RepoLocal | Layer::Managed
+                )
+            });
+            if !pinned {
+                out.insert(key.to_string(), value.to_string());
+            }
+        }
+        out
+    }
+
     fn map(&mut self, context: EnvContext) -> &mut BTreeMap<String, EnvVar> {
         match context {
             EnvContext::Local => &mut self.local,

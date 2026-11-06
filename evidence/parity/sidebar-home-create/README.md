@@ -2,14 +2,25 @@
 
 Verifier output for the sidebar, Home and Create-workspace areas. Each item is scored against Conductor v0.87.6 REA evidence on main. This folder contains no feature code.
 
-## Result on main (`9930339`, 2026-11-05)
+## Result on main (`8da9edf`, 2026-11-05)
 
-| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `f6c05d7` | `99edc40` | `274ac80` | `962f017` | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Sidebar | 33 | 28 | 3 | 1 | 1 | 0 | **90.2%** | 85.6% | 84.1% | 79.5% | 78.0% | 75.0% | 70.5% | 65.9% | 65.9% |
-| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 85.3% | 62.5% |
-| Create workspace | 17 | 15 | 2 | 0 | 0 | 0 | **94.1%** | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 82.4% | 79.4% |
-| **All** | 68 | 56 | 9 | 1 | 1 | 1 | **90.7%** | 86.9% | 86.2% | 84.0% | 83.2% | 81.7% | 79.5% | 75.0% | 68.4% |
+| Area | Items | Implemented | Partial | Backend only | Missing | Not applicable | Verified parity | `9930339` | `f6c05d7` | `99edc40` | `274ac80` | `962f017` | `66a892a` | `df07012` | `4b9dc87` | `d8b3b2e` |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Sidebar | 33 | 28 | 4 | 0 | 1 | 0 | **90.9%** | 90.2% | 85.6% | 84.1% | 79.5% | 78.0% | 75.0% | 70.5% | 65.9% | 65.9% |
+| Home | 18 | 13 | 4 | 0 | 0 | 1 | **88.2%** | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 85.3% | 62.5% |
+| Create workspace | 17 | 15 | 2 | 0 | 0 | 0 | **94.1%** | 94.1% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 88.2% | 82.4% | 79.4% |
+| **All** | 68 | 56 | 10 | 0 | 1 | 1 | **91.0%** | 90.7% | 86.9% | 86.2% | 84.0% | 83.2% | 81.7% | 79.5% | 75.0% | 68.4% |
+
+**Since `1944b98`.** Read on `8da9edf`. Merges: #438 (`8da9edf`, Settings pages row for row), #432, #455, #445, #459 and evidence-only #442, #454, #458. No score changes.
+
+- `sidebar.transparency` stays missing and `sidebar.ws-numbers` stays partial. #438 adds Conductor's Experimental toggles "Sidebar transparency" and "Show workspace numbers" and stores them, so the detector now flags both as implemented, but no code reads either value: there is no vibrancy code (Conductor reads the key in its theme setup, renderApp @439,002) and no row shows `workspaces.number`. Owners: transparency 0cf7315e, ws-numbers e26c55fa.
+
+**Since `9930339`.** Read on `1944b98`. Merges: #431 (`93f1846`, Go to next unread; `ws-unread` stays partial, see #444), #437 (`1944b98`, archived workspaces list and read-only archived view), and #439, #441, #427, #452 and #444 (no item here).
+
+- `sidebar.archived-view` backend only to implemented (#437): the palette's "View archived workspaces" opens the Workspaces tab with archived workspaces shown; its "Archived workspaces" filter has Conductor's "Hiding archived" / "Showing all" / "Only archived"; archived rows come from conductor.db (`listArchivedWorkspaces`) with an "Unarchive workspace" button. An archived workspace opens read-only with the "This workspace is archived." banner and Unarchive in the header. Unarchive follows Conductor's `CWt`: a deleted, taken or moved branch opens "Restore to new branch?" and restores onto a unique `-vN` branch; a folder in the way offers "Clear & unarchive"; a failed archive offers "Delete permanently". All 16 strings were found as plain text in Conductor's bundles. Not run in the desktop app by the verifier; #437's new E2E passed in its CI.
+- `sidebar.archive` implemented to partial (re-read on `1944b98`, a gap #437's body reports): the #397 verdict said the running-agents check and "Stop agents and archive" cover every chat of the workspace, but only Reason chats publish a status. `chatStatuses` comes from `createChatRuntime`, which only `reasonChat.ts` uses; `codexChat.ts` keeps its own queue, and `stopWorkspaceAgents` calls Reason's `stopChat`. A working Codex chat neither blocks archive nor is stopped, and its worktree is removed under it, unlike Conductor's `Z$`, which cancels every session of the workspace.
+- `sidebar.archived-view` minor gap, still implemented: unarchive copies include files with `resolve_source(&t.repo_root, None)`, so it ignores the repository's `file_include_globs` setting that workspace creation reads. #437's "cloud workspaces can't be unarchived" does not apply, since OpenConductor has no cloud workspaces.
+- `home.status-overview` stays partial with one more gap: Home's "Archived workspaces" filter never sees an archived workspace, because `homeRows` takes only `state.repos` and `reposFromDb` drops archived rows (`HIDDEN_STATES`). "Only archived" is always empty and "Showing all" shows no archived row. adf1f469 owns the follow-up.
 
 **Since `f6c05d7`.** Read on `9930339`. Merges: #419 (`d353535`, create a workspace in a section), #410 (`9930339`, resource usage pill and Account menu), and #429 (evidence only).
 
@@ -80,7 +91,7 @@ Verifier output for the sidebar, Home and Create-workspace areas. Each item is s
 - `home.duplicate-repo` re-worded and partial to backend only. Home builder c93ae9dd's REA read of Conductor 0.87.6 (decoded index chunk, `createRepo`) shows Clone and Open project never check for an already-added repo: a second add inserts a new `repos` row and Clone picks a unique folder (`name-v1`). The real `conductor.schema.sql` agrees: `repos` has no unique constraint on `remote_url` or `root_path`. "This repository already exists." is the GitHub repo-name check, so that copy reference was dropped. The old wording ("refuse a duplicate") was wrong. Against the corrected wording the rebuild diverges in every UI path (`REPO_EXISTS` refusal in Open project and the Add-repository menu, store drops the Clone result); only the tested `clone_repository` unique-folder logic matches.
 - #305 was read as create-workspace evidence only, so `create.number` stayed missing; corrected on `0f82f19` (it carries the numbering code).
 
-Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0; an item marked not applicable (`n/a`) is left out. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (11 open; 14 on `f6c05d7`, 15 on `99edc40`, 26 on `4b9dc87`, 31 on `d8b3b2e`, 36 on `0e2531b`, 45 before).
+Each item is weighted: implemented 1, partial 0.5, backend only 0.25, missing 0; an item marked not applicable (`n/a`) is left out. "Backend only" means the logic or a registered Tauri command exists and is tested, but nothing in the UI reaches it. Per-item findings are in [sidebar-home-create.main.md](sidebar-home-create.main.md). Every item that is not implemented is filed as a builder obligation in [builder-obligations.md](builder-obligations.md) (10 open; 11 on `9930339`, 14 on `f6c05d7`, 15 on `99edc40`, 26 on `4b9dc87`, 31 on `d8b3b2e`, 36 on `0e2531b`, 45 before).
 
 All 68 items were re-read on `85e00bb`. The diff from there to `0e2531b` was then read too, and the 6 items it touches were re-read on `0e2531b`: #278 (row menu, pins, unread, status) and #269 (Home card tokens). Compared with the last verdicts on main, 17 items changed: 16 up and 1 down.
 

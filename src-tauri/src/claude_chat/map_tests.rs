@@ -216,3 +216,40 @@ fn tool_kinds() {
         assert_eq!(tool_kind(name), kind, "{name}");
     }
 }
+
+#[test]
+fn tool_rows_carry_the_tool_name_and_raw_input() {
+    let mut m = TurnMapper::new(CWD, None);
+    m.turn_started();
+    let input = json!({"pattern": "redirectTo", "path": "src"});
+    let tool = ev(
+        json!({"type": "assistant", "session_id": "s1", "message": {"id": "m1", "role": "assistant",
+        "content": [{"type": "tool_use", "id": "toolu_g", "name": "Grep", "input": input}]}}),
+    );
+    let out = m.map(&tool);
+    let [ProviderEvent::Agent(AgentEvent::Tool(row))] = out.as_slice() else {
+        panic!("{out:?}")
+    };
+    assert_eq!(row.tool_name.as_deref(), Some("Grep"));
+    assert_eq!(row.raw_input.as_ref(), Some(&input));
+
+    let done = ev(
+        json!({"type": "user", "session_id": "s1", "message": {"role": "user",
+        "content": [{"type": "tool_result", "tool_use_id": "toolu_g", "content": "src/lib/auth.ts:42", "is_error": false}]}}),
+    );
+    let out = m.map(&done);
+    let [ProviderEvent::Agent(AgentEvent::Tool(row))] = out.as_slice() else {
+        panic!("{out:?}")
+    };
+    assert_eq!(row.status, ToolStatus::Completed);
+    assert_eq!(
+        row.tool_name.as_deref(),
+        Some("Grep"),
+        "the result keeps the tool name"
+    );
+    assert_eq!(
+        row.raw_input.as_ref(),
+        Some(&input),
+        "the result keeps the raw input"
+    );
+}

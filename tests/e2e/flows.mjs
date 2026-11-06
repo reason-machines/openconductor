@@ -177,13 +177,17 @@ export const flows = [
     },
   },
   {
-    // The workspace's terminal panel runs a real login shell in the repository
+    // The workspace's terminal panel (shown with ⌘J) runs a real login shell in the repository
     // checkout. The typed line never contains "42", so seeing oc-term-42 proves
     // the shell evaluated it, and pwd shows where the shell started.
     name: "terminal",
     async run(wd, ctx) {
       if (!ctx.repo) throw new Error("needs the add-repo flow's repository");
       const rows = () => wd.execute("return document.querySelector('.terminal-panel .xterm-rows')?.textContent ?? null;", []);
+      // Conductor's default layout shows no terminal; ⌘J (Toggle terminal panel) shows it.
+      if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal panel by default");
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.chord(["\uE03D"], "j");
       const [screen] = await wd.waitFor("a terminal in the workspace's terminal panel", () => wd.findAll(".terminal-panel .xterm-screen").then((ids) => ids.length && ids), 60000);
       await wd.click(screen);
       await wd.keys("echo oc-term-$((6*7)); pwd\uE007");
@@ -253,6 +257,79 @@ export const flows = [
       await run(name, name);
       const back = await wd.waitFor(`the ${name} workspace view`, headerName);
       if (back !== name) throw new Error(`palette opened workspace ${JSON.stringify(back)}, want ${JSON.stringify(name)}`);
+    },
+  },
+  {
+    // parity: sidebar.ws-status, home.status-overview. Conductor keeps each
+    // session's status in conductor.db (sessions.status) and both the sidebar
+    // row icon and the Home list read it, folded per workspace. A status the
+    // backend stores (session_set_status, which the chat runtime calls on every
+    // change) reaches the open window through its session-status event:
+    // needs_user_permission shows "Needs permission" in the sidebar and on Home,
+    // waiting shows the loader labelled "Waiting for background tasks", and
+    // idle gives Home back the last-activity time.
+    name: "session-status",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", []);
+      const want = realpathSync(ctx.worktree);
+      const ws = rows.find((w) => {
+        const path = w.workspacePath ?? w.workspace_path;
+        return path && existsSync(path) && realpathSync(path) === want;
+      });
+      if (!ws) throw new Error(`no stored workspace at ${want}: ${JSON.stringify(rows.map((w) => w.workspacePath ?? w.workspace_path))}`);
+      // Resolves with { refused } instead of rejecting: WebKitWebDriver cannot
+      // report a promise rejected with a plain string ("Could not parse script
+      // result"), and a result with an `error` key reads as a WebDriver error.
+      const invoke = (cmd, args) =>
+        wd.execute("return window.__TAURI_INTERNALS__.invoke(arguments[0], arguments[1]).then((value) => ({ value }), (e) => ({ refused: String(e) }));", [cmd, args]);
+      const setStatus = async (status) => {
+        const r = await invoke("session_set_status", { chatId: ws.id, workspaceId: ws.id, status });
+        if (r.refused) throw new Error(`session_set_status ${status} was refused (${r.refused}); the sidebar row shows ${JSON.stringify(await sidebarIcons())}`);
+      };
+      const shown = (css) => wd.execute("return Array.from(document.querySelectorAll(arguments[0]), (e) => ({ status: e.dataset.status, label: e.getAttribute('aria-label') }));", [css]);
+      const sidebarIcons = () => shown('[data-testid="workspace-status-icon"]');
+      const homeIcons = () => shown('[data-testid="home-workspace-status"]');
+      const waitShown = (what, read, status, label) =>
+        wd.waitFor(what, async () => (await read()).find((i) => i.status === status && i.label === label)).catch(async (e) => {
+          throw new Error(`${e.message}; saw ${JSON.stringify(await read())}`);
+        });
+
+      const ROWS = '[data-testid="left-sidebar-workspace-item"]';
+      const selectedRow = await wd.execute("return [...document.querySelectorAll(arguments[0])].findIndex((b) => b.getAttribute('aria-current') === 'page');", [ROWS]);
+      try {
+        await setStatus("needs_user_permission");
+        await waitShown("Needs permission on the sidebar row", sidebarIcons, "needs-user-permission", "Needs permission");
+        const stored = (await invoke("session_statuses", {})).value ?? [];
+        if (!stored.some((r) => r.chatId === ws.id && r.status === "needs_user_permission")) throw new Error(`session_statuses ${JSON.stringify(stored)}`);
+
+        // The sidebar's Home row (its title carries the shortcut hint).
+        const opened = await wd.execute("const b = Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Home'); b?.click(); return !!b;", []);
+        if (!opened) throw new Error("no Home row in the sidebar");
+        await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
+        await waitShown("Needs permission on the Home row", homeIcons, "needs-user-permission", "Needs permission");
+        if (process.env.E2E_OUT) {
+          const { writeFile } = await import("node:fs/promises");
+          await writeFile(join(process.env.E2E_OUT, "session-status-home-needs-permission.png"), await wd.screenshot()).catch(() => {});
+        }
+
+        await setStatus("waiting");
+        await waitShown("the waiting loader on the Home row", homeIcons, "waiting", "Waiting for background tasks");
+        await waitShown("the waiting loader on the sidebar row", sidebarIcons, "waiting", "Waiting for background tasks");
+
+        await setStatus("idle");
+        await wd.waitFor("Home to show the time again", async () => (await homeIcons()).length === 0);
+        const row = await wd.waitFor("the workspace's Home row", async () => {
+          const all = await wd.execute("return Array.from(document.querySelectorAll('.allws .allws-row .allws-when'), (e) => e.textContent.trim());", []);
+          return all.length > 0 && all;
+        });
+        if (!row.some((t) => /^(now|\d+(m|h|d|mo|y))$/.test(t))) throw new Error(`no last-activity time on Home: ${JSON.stringify(row)}`);
+      } finally {
+        await setStatus("idle").catch(() => {});
+        // Leave the app where the flows before left it: the workspace's view, which later flows use.
+        await wd.execute("document.querySelectorAll(arguments[0])[arguments[1]]?.click();", [ROWS, selectedRow]).catch(() => {});
+        await wd.waitFor("the workspace view again", async () => (await wd.findAll(".workspace")).length > 0).catch(() => {});
+      }
     },
   },
   {
