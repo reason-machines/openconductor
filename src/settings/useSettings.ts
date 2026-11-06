@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { errorText, getSettings, updateSettings } from "./api";
 import { applyAppearance, DEFAULT_ZOOM, SETTINGS_CHANGED, withAppearance, zoomStep } from "./appearance";
+import { withField } from "./model";
+import { resolveDark } from "./sidebarTransparency";
 import "./appearance.css";
 import type { Settings } from "./types";
 
@@ -73,4 +75,16 @@ export function changeZoom(direction: "in" | "out" | "reset"): Promise<void> {
   });
   zoomQueue = run.catch(() => undefined);
   return run;
+}
+
+/**
+ * ⌥⌘T and the palette's "Toggle theme": the opposite of the mode in effect, saved as an explicit
+ * theme (Conductor's `i(n === "dark" ? "light" : "dark")`, renderApp @10,904,339).
+ */
+export async function toggleTheme(): Promise<void> {
+  const s = await getSettings();
+  const dark = resolveDark(s.general.theme === "system" ? undefined : s.general.theme, window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const stored = await updateSettings(withField(s, "general", "theme", dark ? "light" : "dark"));
+  applyAppearance(rememberSettings(stored));
+  window.dispatchEvent(new Event(SETTINGS_CHANGED));
 }

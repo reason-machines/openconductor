@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "./state/store";
 import { ATTACH_FAILED, destroyWorkspaceTerminals, onAttachFailure } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
-import { Sidebar } from "./components/Sidebar";
+import { OPEN_ADD_PROJECT_MENU, Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { SubmitPromptDialog } from "./components/SubmitPromptDialog";
 import { DiagnosticsPage } from "./diagnostics/DiagnosticsPage";
@@ -32,7 +32,7 @@ import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/Restor
 import type { Action } from "./state/store";
 import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
-import { FEEDBACK_URL } from "./components/helpMenuItems";
+import { CHANGELOG_URL, DOCS_URL, FEEDBACK_URL } from "./components/helpMenuItems";
 import {
   openInTerminalScript,
   XCODE_LICENSE_COMMAND,
@@ -49,7 +49,7 @@ import { QuitDialog } from "./features/quit/QuitDialog";
 import { addRegisteredRepo, decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
-import { PaletteHost } from "./palette/PaletteHost";
+import { PaletteHost, type PaletteCommands } from "./palette/PaletteHost";
 import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
 import { PRIORITY } from "./keybindings/dispatcher";
 import { copyWorkspaceLink } from "./workspace/link";
@@ -61,7 +61,7 @@ import { RoutineEditor } from "./features/routines/RoutineEditor";
 import { TeamPage } from "./features/team/TeamPage";
 import { REPO_SECTIONS, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
 import { ORGANIZATION_EVENT, storedOrganization } from "./org/organization";
-import { changeZoom, rememberSettings } from "./settings/useSettings";
+import { changeZoom, rememberSettings, toggleTheme } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
 import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
@@ -373,6 +373,7 @@ export default function App() {
     "openKeyboardShortcuts": toggleShortcuts,
     "openSettings": openSettings,
     "sendFeedback": () => void openUrl(FEEDBACK_URL),
+    "toggleTheme": () => void toggleTheme().catch((e) => show("error", errorText(e))),
     "view.zoomIn": () => void changeZoom("in").catch((e) => show("error", errorText(e))),
     "view.zoomOut": () => void changeZoom("out").catch((e) => show("error", errorText(e))),
     "view.resetZoom": () => void changeZoom("reset").catch((e) => show("error", errorText(e))),
@@ -402,6 +403,25 @@ export default function App() {
     { "workspace.copyLink": workspace ? () => copyLink(workspace.id) : undefined },
     { priority: PRIORITY.DIALOG, isGlobal: true, enableOnInputFocus: true, enableOnTerminalFocus: false },
   );
+
+  // What the command palette's items run: the same handlers as their shortcuts.
+  const paletteCommands: PaletteCommands = {
+    addProject: () => (isSidebarVisible(state) ? window.dispatchEvent(new Event(OPEN_ADD_PROJECT_MENU)) : openProject()),
+    toggleTheme: () => void toggleTheme().catch((e) => show("error", errorText(e))),
+    toggleLeftSidebar: () => dispatch({ type: "toggleSidebar" }),
+    toggleRightSidebar: toggleRightPanel,
+    toggleZenMode: () => toggleZenMode(isSidebarVisible(state), dispatch),
+    sendFeedback: () => void openUrl(FEEDBACK_URL),
+    submitPrompt: () => setSubmitPromptOpen(true),
+    showShortcuts: () => setShortcutsOpen(true),
+    openChangelog: () => void openUrl(CHANGELOG_URL),
+    openSettings: () => navigateSettings({ scope: "user", page: "general" }),
+    openDocs: () => void openUrl(DOCS_URL),
+    quickOpen: () => setQuickOpen(canQuickOpen),
+    copyUrl: () => {
+      if (workspace) copyLink(workspace.id);
+    },
+  };
 
   const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
   // Re-read each time the dialog or page opens so a settings change applies to the next create.
@@ -610,7 +630,7 @@ export default function App() {
       )}
       {submitPromptOpen && <SubmitPromptDialog appVersion={info?.version} platform={info?.platform} onClose={() => setSubmitPromptOpen(false)} />}
       {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
-      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} />
+      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} />
       {archiveOverAgents && (
         <ArchiveRunningDialog
           onClose={() => setArchiveOverAgents(null)}

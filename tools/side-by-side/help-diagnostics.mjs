@@ -64,9 +64,11 @@ const HELP_STATES = {
 
 // SBS_STATES=<module> swaps in another set of states with the same shape (its default export,
 // built from the `css` helper it is given), e.g. tools/side-by-side/create-composer-states.mjs.
-const STATES = process.env.SBS_STATES
-  ? (await import(path.resolve(process.env.SBS_STATES))).default({ css })
-  : HELP_STATES;
+// It may also export `ocInvoke`: Tauri command results the OpenConductor side answers with
+// (for example `local_account`), handed to the page server as SBS_OC_INVOKE.
+const statesModule = process.env.SBS_STATES ? await import(path.resolve(process.env.SBS_STATES)) : null;
+const STATES = statesModule ? statesModule.default({ css }) : HELP_STATES;
+if (statesModule?.ocInvoke) process.env.SBS_OC_INVOKE = JSON.stringify(statesModule.ocInvoke);
 
 // OpenConductor: dist/ with the sidebar-screens seed, Home (not All workspaces)
 // selected like Conductor's "/", and a Tauri shell that answers every command empty.
@@ -78,6 +80,8 @@ const ocExtra = `(function () {
     metadata: { currentWindow: { label: "main" }, currentWebview: { label: "main" } },
     transformCallback: () => 0,
     async invoke(cmd) {
+      const answers = ${process.env.SBS_OC_INVOKE ?? "{}"};
+      if (cmd in answers) return answers[cmd];
       if (cmd === "execute_shell_command_cancellable" || cmd === "execute_shell_command") return { stdout: "", stderr: "", exitCode: 0, signal: null, cancelled: false, truncated: false };
       throw new Error("not mocked: " + cmd);
     },
@@ -153,7 +157,10 @@ function compare(name, a, b) {
 function capture(name, url, clicks, settle) {
   const actions = [{ step_id: "settle", action: "wait_for_timeout", duration_ms: 4000 }];
   clicks.forEach((locator, i) => {
-    actions.push({ step_id: `c${i}`, action: "click", locator, timeout_ms: 5000 });
+    // A step is a locator to click, or { press: key } on the body, or { fill: [locator, text] }.
+    if (locator.press) actions.push({ step_id: `c${i}`, action: "press", locator: css("body"), key: locator.press, timeout_ms: 5000 });
+    else if (locator.fill) actions.push({ step_id: `c${i}`, action: "fill", locator: locator.fill[0], value: { source: "literal", value: locator.fill[1] }, timeout_ms: 5000 });
+    else actions.push({ step_id: `c${i}`, action: "click", locator, timeout_ms: 5000 });
     actions.push({ step_id: `p${i}`, action: "wait_for_timeout", duration_ms: 600 });
   });
   actions.push({ step_id: "final", action: "wait_for_timeout", duration_ms: settle ?? 800 });

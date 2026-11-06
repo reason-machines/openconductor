@@ -1,7 +1,8 @@
 /* Command palette. Uses the shell's theme variables from src/styles.css.
    Frame, search row and tab row follow Conductor 0.87.6's cmdk dialog (measured in
    its harness render at 1280x820): 672px wide, top at 50% - 250px, at most 500px tall. */
-.palette-backdrop { position: fixed; inset: 0; background: var(--backdrop); z-index: 20; }
+/* Conductor's `qZ` portal has no backdrop element: nothing behind the palette is dimmed. */
+.palette-backdrop { position: fixed; inset: 0; background: transparent; z-index: 20; }
 .palette { position: absolute; top: calc(50% - 250px); left: 0; right: 0; margin: 0 auto; width: min(672px, calc(100vw - 48px)); max-height: 500px; display: flex; flex-direction: column; background: var(--sidebar-background); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 20px 25px -5px var(--shadow-25), 0 8px 10px -6px var(--shadow-25); overflow: hidden; }
 .palette-search { display: flex; align-items: center; height: 49px; padding: 0 12px; border-bottom: 1px solid var(--border); flex: none; box-sizing: border-box; }
 .palette-search > svg { flex: none; margin-right: 8px; opacity: 0.5; }
@@ -61,3 +62,25 @@
 .palette-ws-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 32px 0; font-size: 14px; line-height: 20px; color: var(--muted); }
 .palette-ws-clear { height: 28px; padding: 0 10px; border: 1px solid var(--input); border-radius: 6px; background: var(--bg); color: var(--muted); font-size: 12px; font-weight: 450; }
 .palette-ws-clear:hover { background: var(--hover); color: var(--text); }
+
+/* All, Projects, Actions and Settings tabs (Conductor's `m_a` groups, `$o` items, renderApp @2,916,821-2,919,434):
+   groups px-2 pb-1.5, items px-2 py-3 (44px with a 20px icon box), rounded-sm, bg-sidebar-accent when selected,
+   a 16px Lucide icon, and the shortcut (`Ss`) as plain muted text-xs with "or" between alternatives. */
+.palette-list:not([data-tab="workspaces"]) .palette-group { padding: 0 8px 6px; }
+.palette-list:not([data-tab="workspaces"]) .palette-group:last-child { padding-bottom: 0; }
+.palette-list:not([data-tab="workspaces"]) .palette-item { height: auto; padding: 12px 8px; border-radius: 4px; font-size: 14px; line-height: 20px; cursor: pointer; user-select: none; }
+.palette-list:not([data-tab="workspaces"]) .palette-item.active { background: var(--sidebar-accent); }
+.palette-item-empty { cursor: default; opacity: 0.5; pointer-events: none; }
+.palette-item-empty .palette-title { color: var(--muted); }
+.palette-icon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 16px; height: 20px; }
+.palette-icon:empty { visibility: hidden; }
+.palette-list .palette-kbd { margin-left: auto; padding: 0 0 0 4px; display: inline-flex; align-items: center; font-size: 12px; line-height: 16px; letter-spacing: normal; background: none; border-radius: 0; color: var(--muted); white-space: nowrap; }
+.palette-kbd-or { padding: 0 4px; }
+.palette-empty { opacity: 0.7; font-size: 12px; }
+/* A workspace result in the All tab is Conductor's `SUi` row: repo initial, display name (semibold
+   while unread), then the last-activity time. */
+.palette-repo-initial { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; background: var(--repo-initial-bg); color: var(--repo-initial-fg); font-size: 10px; font-weight: 500; line-height: 1; border: 1px solid var(--sidebar-border); }
+.palette-ws-name { font-weight: 500; color: var(--muted); }
+.palette-ws-name[data-unread] { font-weight: 600; color: var(--text); }
+.palette-item[data-archived] .palette-ws-name { color: var(--faint); }
+.palette-list:not([data-tab="workspaces"]) .palette-ws-time { display: flex; flex-shrink: 0; width: 48px; justify-content: flex-end; }

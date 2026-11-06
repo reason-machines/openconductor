@@ -322,17 +322,17 @@ try {
   const resetItem = turn5Items.indexOf("Reset chat") + 1;
   await wd("POST", `/element/${await find(`.cm-turn-menu [role="menuitem"]:nth-child(${resetItem})`)}/click`, {});
   const dialog = await waitFor('"Reset chat?" with "2 changed"', () =>
-    run(`const d = document.querySelector('.modal[aria-label="Reset chat?"]'); return d && d.innerText.includes("changed") ? d.innerText : null;`),
+    run(`const d = document.querySelector('[role="alertdialog"][aria-labelledby="reset-chat-title"]'); return d && d.innerText.includes("changed") ? d.innerText : null;`),
   );
   assert.match(dialog, /Later messages will be deleted\./);
   assert.match(dialog, /Also reset files/);
   assert.match(dialog, /\b2 changed\b/, dialog);
-  assert.equal(await run(`return document.querySelector('.modal input[aria-label="Also reset files"]').checked;`), true);
+  assert.equal(await run(`return document.querySelector('[role="alertdialog"] input[aria-label="Also reset files"]').checked;`), true);
   await screenshot("reason-chat-reset-dialog");
   pass('Reset chat on turn 5 opens "Reset chat?": "Later messages will be deleted.", Also reset files on, 2 changed');
 
-  await wd("POST", `/element/${await find(".modal .oc-btn-danger")}/click`, {});
-  await waitFor("the dialog to close", () => run(`return !document.querySelector('.modal[aria-label="Reset chat?"]');`), 15000);
+  await wd("POST", `/element/${await find('[role="alertdialog"] .oc-alert-destructive')}/click`, {});
+  await waitFor("the dialog to close", () => run(`return !document.querySelector('[role="alertdialog"][aria-labelledby="reset-chat-title"]');`), 15000);
   const after = await chatText();
   assert.ok(after.includes("turn 5 wrote notes.txt"), after);
   assert.ok(!after.includes("turn 6 wrote"), after);
@@ -442,7 +442,17 @@ try {
   writeFileSync(join(home, "fake-reason-selected"), "ws-b");
   await launch();
   await waitFor("the app to load again", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
-  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  // The app saves its prefs on every state change, so one that lands between
+  // setItem and the reload (conductor.db rows arriving, say) puts the fork
+  // back. Reload until the page loaded with the first chat selected.
+  for (let attempt = 1; ; attempt++) {
+    await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+    await waitFor("the app to load again", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
+    const selected = await run("try { return JSON.parse(localStorage.getItem('openconductor.shell.prefs.v1')).selection.workspaceId; } catch { return null; }");
+    if (selected === workspace.id) break;
+    assert.ok(attempt < 5, `the relaunched app kept ${selected} selected after ${attempt} reloads`);
+    await sleep(500);
+  }
   await waitFor("the first chat's transcript after the relaunch", () => chatText().then((t) => t && t.includes("turn 5 wrote notes.txt")));
   assert.equal(await run("return localStorage.getItem(arguments[0]);", sessionKey), before, "the chat kept its Session id");
   await send("echo: after relaunch");

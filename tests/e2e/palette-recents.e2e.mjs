@@ -74,7 +74,9 @@ test("recent workspaces persist across a reload, most recent first", async () =>
   }
   const [a, b, c] = visited;
   assert.equal(new Set([a, b, c]).size, 3, `expected three distinct workspaces, visited ${JSON.stringify(visited)}`);
-  const want = [a, c, b];
+  // Rows show the sidebar's display name (Conductor's `SUi`): here the branch, which is the name, capitalised.
+  const label = (name) => name.charAt(0).toUpperCase() + name.slice(1);
+  const want = [a, c, b].map(label);
   assert.deepEqual((await recents()).slice(0, 3), want);
 
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("workspace-tab-state-v2") ?? "null"));
@@ -86,7 +88,7 @@ test("recent workspaces persist across a reload, most recent first", async () =>
   // The saved selection (a) is recorded again, which keeps the order; then ⌘2.
   await page.locator("body").press("Meta+2");
   assert.equal((await page.locator(".ws-header .ws-title strong").textContent({ timeout: 5000 })).trim(), b);
-  assert.deepEqual(await recents(), [b, a, c]);
+  assert.deepEqual(await recents(), [b, a, c].map(label));
 
   assert.deepEqual(errors, []);
   await context.close();
