@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "9792d08",
+  "commit": "10f10166",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -33,14 +33,14 @@
  },
  "summary": {
   "total": 967,
-  "missing": 759,
+  "missing": 758,
   "wrong": 86,
-  "matches": 122,
+  "matches": 123,
   "states": {
    "total": 69,
-   "missing": 16,
+   "missing": 15,
    "wrong": 27,
-   "matches": 26
+   "matches": 27
   },
   "items": {
    "total": 898,
@@ -143,9 +143,9 @@
    },
    "onboarding-auth": {
     "total": 23,
-    "missing": 16,
+    "missing": 15,
     "wrong": 7,
-    "matches": 0
+    "matches": 1
    },
    "routines": {
     "total": 40,
@@ -192,73 +192,71 @@
    "id": "onboarding-signed-out",
    "title": "Onboarding, signed out",
    "status": "wrong",
-   "why": "diff 98.0% at t24, copy 86%",
+   "why": "diff 7.8% at t24, copy 100%",
    "team": "onboarding-auth",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/onboarding-signed-out.png",
+    "file": "side-by-side/onboarding-01-signed-out.png",
     "path": "/",
     "final_path": "/",
     "scenario": "signed-out",
-    "actions_run": 0,
-    "actions_total": 0,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_d452a3bfcacacd3a36b0f77836ccbdab28a584cba58277ddfe7d0105b8b97b8a"
+    "rea_evidence_id": "ev_72c5b575a4b2439057949e5a2e7a3bf9d514eea1b2d22a39cbef6eadc6a89d88"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/onboarding-signed-out.png",
+    "file": "side-by-side/onboarding-01-signed-out.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at f30cacffb: tools/side-by-side/onboarding.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, signed-out scenario) and of OpenConductor's built frontend (dist/ browser preview, no Reason CLI) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/onboarding-signed-out.jpg",
-    "changed_ratio_t0": 0.999969512195122,
-    "changed_ratio_t24": 0.9796322408536585,
+    "file": null,
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.0780859375,
     "rea_evidence_ids": [
-     "ev_0c86ac8894f55da243c0fa25ffaa0a7941b933caacc7bbafff99b931b712e001",
-     "ev_710bf530eda08febe100095587eff7c673a7a31c72698dab02e65fa4627498a5"
+     "ev_25063c2d618f6b7f2aa83f5ca1596e6b2680a10f2b659193f504041289a54842",
+     "ev_78c3ead2bf0d5dc729fd0c93e064f77b0f7a63a6dbeb84b813323af151214057"
     ]
    },
-   "copy_coverage": 0.857,
-   "copy_missing": [
-    "privacy"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "first-run-onboarding",
    "title": "First-run onboarding",
    "status": "wrong",
-   "why": "no valid reference render (redirected to /), diff 95.5% at t24",
+   "why": "diff 7.7% at t24, copy 100%",
    "team": "onboarding-auth",
    "reference": {
-    "status": "redirected",
-    "file": "ui-map/ref/first-run-onboarding.png",
+    "status": "captured",
+    "file": "side-by-side/onboarding-03-first-run-route.png",
     "path": "/first-run-onboarding",
-    "final_path": "/",
-    "scenario": "signed-in",
-    "actions_run": 0,
-    "actions_total": 0,
+    "final_path": "/first-run-onboarding",
+    "scenario": "signed-out",
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_f3a2abedcf2f2881f07ef46a6d91b2b85dea2125f99358e34d76c534737602ca"
+    "rea_evidence_id": "ev_1c9b267db1445a38e677ac1d3c055a0325d4cd09f46f472b8d7a10a8ccf35c06"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/first-run-onboarding.png",
+    "file": "side-by-side/onboarding-03-first-run-route.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at f30cacffb: tools/side-by-side/onboarding.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, signed-out scenario) and of OpenConductor's built frontend (dist/ browser preview, no Reason CLI) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/first-run-onboarding.jpg",
-    "changed_ratio_t0": 0.9844693216463415,
-    "changed_ratio_t24": 0.9549561737804878,
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.07735899390243903,
     "rea_evidence_ids": [
-     "ev_f7cde67be1897f7e26086804fdfd8443832c8a58a2903c2b8a5068a92d2427c2",
-     "ev_968909fefece02e3cf5b7094aacc1d06fd53e330da187e5652345f8b5ff26b8f"
+     "ev_fea8f593519850e024324dfb071a709f72845c6e5d7d1fea940ca01d6d52caac",
+     "ev_64bb76f8e2499bbb7803443a8da6269852840e3767178d282c7d6670be1c2f05"
     ]
    },
-   "copy_coverage": 0.067,
-   "copy_missing": null
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "home-empty",
@@ -943,40 +941,37 @@
   {
    "id": "login",
    "title": "Login",
-   "status": "missing",
-   "why": "OpenConductor shows a different screen here (copy 0%, diff 98.0% at t24)",
+   "status": "matches",
+   "why": "diff 1.1% at t24, copy 100%",
    "team": "onboarding-auth",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/login.png",
+    "file": "side-by-side/onboarding-02-login.png",
     "path": "/login",
     "final_path": "/login",
     "scenario": "signed-out",
-    "actions_run": 0,
-    "actions_total": 0,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_1a320dfc6ce38f3dfd562a725f4d485682810f547f7c37082c8834de31872f75"
+    "rea_evidence_id": "ev_8e1d86251a1f96def2861f201588efce6c38a981abda2bbc97301b4d8ddf7f5a"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/login.png",
+    "file": "side-by-side/onboarding-02-login.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at f30cacffb: tools/side-by-side/onboarding.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, signed-out scenario) and of OpenConductor's built frontend (dist/ browser preview, no Reason CLI) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/login.jpg",
-    "changed_ratio_t0": 0.999969512195122,
-    "changed_ratio_t24": 0.9801352896341463,
+    "file": null,
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.011385289634146341,
     "rea_evidence_ids": [
-     "ev_7582917c87f0fb7051f75fa16144f8b3580a38f5df9e2ca281fd531b6f116e78",
-     "ev_8d2f6eaf55f813b0aa351136a0babe0edb2326d206c5ab994f204817d1734cb1"
+     "ev_fc79f04afe54dd59b747ded016c0ae1f8279bc64bbc1d3f7596d20485df0b494",
+     "ev_a2a0fb9b4097da1ad40be05c0c358aa4ad55a81e23f18e01a1705181d671aaa4"
     ]
    },
-   "copy_coverage": 0.0,
-   "copy_missing": [
-    "sign in to continue",
-    "privacy"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "settings-general",
@@ -2705,7 +2700,7 @@
    "kind": "route",
    "name": "/login",
    "status": "wrong",
-   "why": "diff 98.0% at t24, copy 86%",
+   "why": "diff 7.8% at t24, copy 100%",
    "team": "onboarding-auth",
    "component": "xWt",
    "source": {
@@ -2717,10 +2712,10 @@
    "tokens": [],
    "state": "onboarding-signed-out",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/onboarding-signed-out.png",
-   "openconductor_screenshot": "ui-map/oc/onboarding-signed-out.png",
-   "diff": "ui-map/diff/onboarding-signed-out.jpg",
-   "changed_ratio_t24": 0.9796322408536585
+   "reference_screenshot": "side-by-side/onboarding-01-signed-out.png",
+   "openconductor_screenshot": "side-by-side/onboarding-01-signed-out.png",
+   "diff": null,
+   "changed_ratio_t24": 0.0780859375
   },
   {
    "id": "route:settings",
@@ -3563,7 +3558,7 @@
    "kind": "route",
    "name": "/first-run-onboarding",
    "status": "wrong",
-   "why": "no valid reference render (redirected to /), diff 95.5% at t24",
+   "why": "diff 7.7% at t24, copy 100%",
    "team": "onboarding-auth",
    "component": "BCa",
    "source": {
@@ -3575,10 +3570,10 @@
    "tokens": [],
    "state": "first-run-onboarding",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/first-run-onboarding.png",
-   "openconductor_screenshot": "ui-map/oc/first-run-onboarding.png",
-   "diff": "ui-map/diff/first-run-onboarding.jpg",
-   "changed_ratio_t24": 0.9549561737804878
+   "reference_screenshot": "side-by-side/onboarding-03-first-run-route.png",
+   "openconductor_screenshot": "side-by-side/onboarding-03-first-run-route.png",
+   "diff": null,
+   "changed_ratio_t24": 0.07735899390243903
   },
   {
    "id": "route:new-member-onboarding",

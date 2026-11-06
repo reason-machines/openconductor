@@ -460,6 +460,7 @@ pub fn run() {
             reason_chat::reason_account_status,
             reason_chat::reason_cloud_setup,
             reason_chat::reason_login_start,
+            reason_chat::reason_logout,
             reason_chat::reason_connect_computer,
             reason_chat::reason_paths,
             reason_chat::reason_open_chat,
