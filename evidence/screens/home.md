@@ -1,5 +1,7 @@
 # Home screen (Conductor v0.87.6)
 
+Current Home detail proof: [footer, icons and 385-city recognition](../home-details/README.md) supersedes the earlier OpenConductor city-count and footer-size notes below. OpenConductor still uses its own wordmark and lacks the Passport/world-map dialog.
+
 Source: the frontend chunk `assets/renderApp-D_fmY7hW.js` (11,554,351 bytes) and
 `assets/index-BGEQ8YjU.js`, decoded from the Tauri asset table of
 `/Applications/Conductor.app/Contents/MacOS/conductor` on the Mac "sven m5 max"

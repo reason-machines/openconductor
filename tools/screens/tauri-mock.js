@@ -17,6 +17,7 @@
   // ?oc_theme=light|dark picks Conductor's theme mode (seed.js writes it into
   // the virtual filesystem where Conductor's portable storage reads it).
   const themeMode = new URLSearchParams(location.search).get("oc_theme") || "dark";
+  const mentionFiles = new URLSearchParams(location.search).has("oc_mention_files");
 
 
   // ---- callbacks and events -------------------------------------------------
@@ -414,6 +415,17 @@
       case "plugin:http|fetch_cancel":
         httpResponses.delete(args.rid);
         return null;
+      case "fuzzy_filter_files": {
+        if (!mentionFiles) return [];
+        const query = String(args.query ?? "").toLowerCase();
+        return TREE_FILES.flatMap((relative_path) => {
+          const match_indices = [];
+          let next = 0;
+          for (let i = 0; i < relative_path.length && next < query.length; i++)
+            if (relative_path[i].toLowerCase() === query[next]) { match_indices.push(i); next++; }
+          return next === query.length ? [{ file: { name: relative_path.split("/").pop(), path: `${args.workspacePath}/${relative_path}`, is_directory: false }, relative_path, match_indices, score: 0 }] : [];
+        });
+      }
       case "list_file_tree":
         // The right panel's All files tab: { name, path, is_directory } under
         // directoryPath, at most maxDepth levels deep (null: all).

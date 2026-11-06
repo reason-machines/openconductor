@@ -10,7 +10,7 @@ import { KeybindingsProvider } from "../../src/keybindings/KeybindingsProvider";
 import { Composer } from "../../src/features/chat/Composer";
 import { ModelPicker } from "../../src/features/chat/ModelPicker";
 import { commandSet, type ComposerAgent } from "../../src/features/chat/slashCommands";
-import { emptyQueue } from "../../src/features/chat/queue";
+import { actionStep, emptyQueue, type ChatQueue } from "../../src/features/chat/queue";
 import type { ModelChoice } from "../../src/features/chat/composerModels";
 import "../../src/fonts.css";
 import "../../src/theme/tokens.css";
@@ -19,25 +19,34 @@ import "../../src/styles.css";
 const params = new URLSearchParams(location.search);
 const agent = (params.get("agent") ?? "claude") as ComposerAgent;
 document.documentElement.dataset.theme = params.get("theme") ?? "dark";
+document.documentElement.dataset.colorPalette = params.get("palette") ?? "stone";
 
 function Demo() {
   const [draft, setDraft] = useState("");
   const [model, setModel] = useState<ModelChoice>({ model: agent === "codex" ? "gpt-5.6-sol" : "opus-5-1m", effort: "high" });
   const input = useRef<HTMLTextAreaElement>(null);
+  const [queue, setQueue] = useState<ChatQueue>(() => ({ ...emptyQueue(), status: params.has("working") ? "working" : "idle" }));
+  const [files, setFiles] = useState<File[]>([]);
+  const [sent, setSent] = useState<{ text: string; mode: string; files: string[] } | null>(null);
   const commands = commandSet({ agent, planMode: agent === "acp" ? undefined : { isPlanMode: false }, fastMode: { isFastMode: !!model.fast } });
   return (
     <div style={{ position: "fixed", inset: 0, background: "var(--bg)" }}>
+      <output data-testid="composer-result" hidden>{sent ? JSON.stringify(sent) : ""}</output>
       <div style={{ position: "absolute", left: 256, width: 789, bottom: 0 }}>
         <Composer
           draft={draft}
           setDraft={setDraft}
           inputRef={input}
-          queue={emptyQueue()}
+          workspacePath="/isolated/composer-fixture"
+          queue={queue}
           canSteer
-          onSubmit={() => setDraft("")}
-          onStop={() => undefined}
-          onQueue={() => undefined}
-          onAttachFiles={() => undefined}
+          followUpMode={params.has("queued") ? "queued" : "steering"}
+          onSubmit={(text, mode) => { setSent({ text, mode, files: files.map((file) => file.name) }); setDraft(""); setFiles([]); }}
+          onStop={() => setQueue((current) => ({ ...current, status: "idle" }))}
+          onQueue={(action) => setQueue((current) => actionStep(current, action).queue)}
+          onAttachFiles={(picked) => setFiles((current) => [...current, ...picked])}
+          hasAttachments={files.length > 0}
+          attachments={files.length ? <div className="composer-attachments" aria-label="Attachments">{files.map((file, index) => <span key={index} className="chip composer-attachment">{file.name}<button type="button" className="composer-attachment-remove" aria-label={`Remove ${file.name}`} onClick={() => setFiles((current) => current.filter((_, i) => i !== index))}>×</button></span>)}</div> : null}
           picker={<ModelPicker value={model} onChange={setModel} onOpenSettings={() => undefined} fastSupported />}
           slashCommands={commands}
         />

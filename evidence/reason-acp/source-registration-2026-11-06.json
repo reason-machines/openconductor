@@ -1,0 +1,26 @@
+{
+  "observed_on": "2026-11-06",
+  "machine": "sven m5 max",
+  "cli_version": "0.2.700",
+  "method": "reason --workspace <slug> call listProviderCredentials --input-file - with {} on stdin; filter provider_id=openai-codex and metadata fields only",
+  "required_source": "openai-codex:42b88e79-2ef2-4e3e-93b1-8c93dcad16a7",
+  "workspaces": {
+    "reason-tests": {
+      "required_account_slot_registered": false,
+      "oauth_account_slots": [
+        "desktop-local-ffc7c778-746b-4844-85ab-2db2b99cddc5",
+        "desktop-local-08948003-1ba4-4cb3-8f16-1b55b98fced5"
+      ],
+      "sol_available_source": "openai-codex:desktop-local-ffc7c778-746b-4844-85ab-2db2b99cddc5"
+    },
+    "reason-engineering": {
+      "required_account_slot_registered": true,
+      "required_slot_type": "oauth",
+      "required_slot_auth_failure_code": null,
+      "inference_run": false
+    }
+  },
+  "interpretation": "The exact saved account slot is registered in one workspace and absent in the required workspace. No provider identity equivalence or alias relationship has been verified.",
+  "credentials_read_or_transferred": false,
+  "model_turns_started": 0
+}

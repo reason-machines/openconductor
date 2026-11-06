@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import type { WorkspaceStatusValue } from "./workspaceStatus";
@@ -367,20 +367,39 @@ export async function loadSectionsFromDb(): Promise<{ sections: NavSection[]; up
   return { sections: sectionsFromDb(layout?.sections ?? []), updatedAt: layout?.updatedAt ?? 0 };
 }
 
+export type StoreStartup = "loading" | "ready" | "error";
+
 export function useAppStore() {
   const [state, rawDispatch] = useReducer(reducer, undefined, load);
   const demo = new URLSearchParams(window.location.search).get("demo") === "1";
   const desktop = inTauri() && !demo;
+  const [startup, setStartup] = useState<StoreStartup>(desktop ? "loading" : "ready");
+  const sectionsWrittenAt = useRef<number | undefined>(undefined);
   useEffect(() => {
     if (!desktop) return;
-    loadReposFromDb().then(
-      (repos) => rawDispatch({ type: "hydrate", repos }),
-      (err) => console.error("conductor.db: could not list repositories", err),
-    );
+    let current = true;
+    const reads = [
+      loadReposFromDb().then((repos) => {
+        if (current) rawDispatch({ type: "hydrate", repos });
+      }),
+      loadSectionsFromDb().then(({ sections, updatedAt }) => {
+        if (!current) return;
+        sectionsWrittenAt.current = updatedAt;
+        rawDispatch({ type: "hydrateSections", sections, updatedAt });
+      }),
+    ];
+    void Promise.allSettled(reads).then((results) => {
+      if (!current) return;
+      const sources = ["repositories", "sidebar sections"];
+      results.forEach((result, i) => {
+        if (result.status === "rejected") console.error(`conductor.db: could not read ${sources[i]}`, result.reason);
+      });
+      setStartup(results.every((result) => result.status === "fulfilled") ? "ready" : "error");
+    });
+    return () => { current = false; };
   }, [desktop]);
-  // Sections: read once, then write the whole layout whenever an edit restamps it
+  // Sections: write the whole layout whenever an edit restamps it
   // (Conductor's local backend `WIr` does the same through `tve`).
-  const sectionsWrittenAt = useRef<number | undefined>(undefined);
   const reloadSections = useCallback(() => {
     loadSectionsFromDb().then(
       ({ sections, updatedAt }) => {
@@ -390,9 +409,6 @@ export function useAppStore() {
       (err) => console.error("conductor.db: could not read sidebar sections", err),
     );
   }, []);
-  useEffect(() => {
-    if (desktop) reloadSections();
-  }, [desktop, reloadSections]);
   useEffect(() => {
     const at = state.sectionsUpdatedAt;
     if (!desktop || at === undefined || at === sectionsWrittenAt.current) return;
@@ -510,7 +526,7 @@ export function useAppStore() {
     },
     [desktop],
   );
-  return [state, dispatch] as const;
+  return [state, dispatch, startup] as const;
 }
 
 /** Conductor reruns the setup script after an unarchive; a failure shows through the setup watch. */

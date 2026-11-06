@@ -118,9 +118,9 @@ function enqueue(q: ChatQueue, text: string, attachments: readonly MessageAttach
   return { ...q, items: [...q.items, item], next: q.next + 1 };
 }
 
-/** The composer's Send. Blank text does nothing. */
+/** The composer's Send. Empty text and no attachments does nothing. */
 export function submit(q: ChatQueue, text: string, mode: SendMode, now = new Date(), attachments: readonly MessageAttachment[] = []): QueueStep {
-  if (text.trim() === "") return { queue: q, effects: [] };
+  if (text.trim() === "" && attachments.length === 0) return { queue: q, effects: [] };
   if (q.status === "working" && mode === "steer") return { queue: q, effects: [{ kind: "steer", text, attachments }] };
   // Idle with nothing waiting: start now. Otherwise keep order behind the queue.
   if (!busy(q.status) && q.items.length === 0 && !q.paused) {
@@ -176,12 +176,12 @@ export function cancelEdit(q: ChatQueue): QueueStep {
 
 /**
  * Saves the edited text. `steer` sends it into the running turn instead of
- * keeping it queued (Conductor's "Save and steer"). Saving blank text deletes it.
+ * keeping it queued (Conductor's "Save and steer"). An empty message with no attachments is deleted.
  */
 export function saveEdit(q: ChatQueue, text: string, steer = false): QueueStep {
   const id = q.editingId;
   if (id === null) return { queue: q, effects: [] };
-  if (text.trim() === "") return remove(q, id);
+  if (text.trim() === "" && !q.items.find((item) => item.id === id)?.attachments.length) return remove(q, id);
   if (steer) return steerQueued({ ...q, editingId: null, items: q.items.map((m) => (m.id === id ? { ...m, text } : m)) }, id);
   return drain({ ...q, editingId: null, items: q.items.map((m) => (m.id === id ? { ...m, text } : m)) }, []);
 }

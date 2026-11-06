@@ -46,6 +46,19 @@ test("idle submit starts a turn; blank text does nothing", () => {
   assert.deepEqual(submit(emptyQueue(), "  \n", "steer", now).effects, []);
 });
 
+test("attachment-only messages start, steer, queue and survive a blank queue edit", () => {
+  const attachments = [{ name: "notes.txt", text: "Review these notes" }];
+  const started = submit(emptyQueue(), "", "queue", now, attachments);
+  assert.deepEqual(started.effects, [{ kind: "start", text: "", attachments }]);
+  const q = working();
+  assert.deepEqual(submit(q, "", "steer", now, attachments).effects, [{ kind: "steer", text: "", attachments }]);
+  const queued = submit(q, "", "queue", now, attachments).queue;
+  assert.equal(queued.items.length, 1);
+  const edited = saveEdit(beginEdit(queued, queued.items[0]!.id), "");
+  assert.deepEqual(edited.queue.items[0]?.attachments, attachments);
+  assert.deepEqual(turnEnded(edited.queue, "completed").effects, [{ kind: "start", text: "", attachments }]);
+});
+
 test("while working, steer goes into the turn and queue waits for the turn to end", () => {
   const q = working();
   const steer = submit(q, "also do X", "steer", now);

@@ -1,0 +1,18 @@
+{
+  "result": "blocked",
+  "workspace": "reason-tests",
+  "model": "byok:openai-codex:gpt-6.1-sol",
+  "model_source_id": "openai-codex:42b88e79-2ef2-4e3e-93b1-8c93dcad16a7",
+  "reasoning_effort": "xhigh",
+  "started": "2026-11-06T13:43:52-0800",
+  "turns": [],
+  "source_check": {
+    "model": "byok:openai-codex:gpt-6.1-sol",
+    "required_source": "openai-codex:42b88e79-2ef2-4e3e-93b1-8c93dcad16a7",
+    "available_sources": [
+      "openai-codex:desktop-local-ffc7c778-746b-4844-85ab-2db2b99cddc5"
+    ],
+    "allowed": false
+  },
+  "error": "required subscription source unavailable or ambiguous; no ACP session started"
+}
