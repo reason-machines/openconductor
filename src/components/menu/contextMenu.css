@@ -4,19 +4,20 @@
    text-xs 12px/16px, tracking-widest 1.44px, rounded-lg 8px, rounded-md 6px, shadow-md, and the
    default transition easing cubic-bezier(.4, 0, .2, 1). */
 .cm {
-  --cm-popover: #ffffff;
-  --cm-popover-fg: #211e1c;
-  --cm-popover-accent: #14100f0d;
-  --cm-popover-ring: #211e1c0d;
-  --cm-accent-fg: #2c2826;
-  --cm-muted: #8e8885;
-  --cm-border: #eae8e6;
-  --cm-destructive: #dc2828;
-  --cm-status-backlog: #8e8885;
-  --cm-status-in-progress: #e0bb00;
-  --cm-status-in-review: #16a249;
-  --cm-status-done: #cca694;
-  --cm-status-canceled: #a5a09c;
+  /* Theme tokens (src/theme/tokens.css); Conductor's values are the Stone palette's. */
+  --cm-popover: var(--popover);
+  --cm-popover-fg: var(--popover-text);
+  --cm-popover-accent: var(--popover-hover);
+  --cm-popover-ring: var(--popover-ring);
+  --cm-accent-fg: var(--surface-accent-text);
+  --cm-muted: var(--muted);
+  --cm-border: var(--border);
+  --cm-destructive: var(--destructive);
+  --cm-status-backlog: var(--muted);
+  --cm-status-in-progress: var(--status-in-progress);
+  --cm-status-in-review: var(--status-in-review);
+  --cm-status-done: var(--status-done);
+  --cm-status-canceled: var(--faint);
   position: fixed;
   z-index: 50;
   box-sizing: border-box;
@@ -28,7 +29,7 @@
   border-radius: 8px;
   background: var(--cm-popover);
   color: var(--cm-popover-fg);
-  box-shadow: 0 0 0 1px var(--cm-popover-ring), 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a;
+  box-shadow: 0 0 0 1px var(--cm-popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10);
   font-size: 14px;
   line-height: 20px;
   outline: none;
@@ -39,32 +40,6 @@
   transition-property: opacity, scale;
   transition-duration: 0.1s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .cm {
-    --cm-popover: #2c2826;
-    --cm-popover-fg: #eae8e6;
-    --cm-popover-accent: #ffffff0d;
-    --cm-popover-ring: #ffffff1a;
-    --cm-accent-fg: #f3f2f1;
-    --cm-muted: #a5a09c;
-    --cm-border: #ffffff1a;
-    --cm-destructive: #f87272;
-    --cm-status-in-progress: #ffdc2e;
-    --cm-status-in-review: #4ade80;
-  }
-}
-:root[data-theme="dark"] .cm {
-  --cm-popover: #2c2826;
-  --cm-popover-fg: #eae8e6;
-  --cm-popover-accent: #ffffff0d;
-  --cm-popover-ring: #ffffff1a;
-  --cm-accent-fg: #f3f2f1;
-  --cm-muted: #a5a09c;
-  --cm-border: #ffffff1a;
-  --cm-destructive: #f87272;
-  --cm-status-in-progress: #ffdc2e;
-  --cm-status-in-review: #4ade80;
 }
 .cm-backdrop { position: fixed; inset: 0; z-index: 50; }
 .cm[data-starting-style],
