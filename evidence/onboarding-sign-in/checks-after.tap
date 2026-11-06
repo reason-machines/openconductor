@@ -1,0 +1,68 @@
+(node:3479) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:3486) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: production lifecycle: browser handoff displays its synthetic confirmation code
+ok 1 - production lifecycle: browser handoff displays its synthetic confirmation code
+  ---
+  duration_ms: 2338.533074
+  type: 'test'
+  ...
+# Subtest: production lifecycle: completed account polling leaves sign-in exactly once
+ok 2 - production lifecycle: completed account polling leaves sign-in exactly once
+  ---
+  duration_ms: 2374.335413
+  type: 'test'
+  ...
+# Subtest: production lifecycle: failed start shows inline failure and permits a successful retry
+ok 3 - production lifecycle: failed start shows inline failure and permits a successful retry
+  ---
+  duration_ms: 500.308073
+  type: 'test'
+  ...
+# Subtest: production lifecycle: already signed-in start resolves once
+ok 4 - production lifecycle: already signed-in start resolves once
+  ---
+  duration_ms: 386.727716
+  type: 'test'
+  ...
+# Subtest: StrictMode: browser handoff displays its synthetic confirmation code
+ok 5 - StrictMode: browser handoff displays its synthetic confirmation code
+  ---
+  duration_ms: 531.747677
+  type: 'test'
+  ...
+# Subtest: StrictMode: completed account polling leaves sign-in exactly once
+ok 6 - StrictMode: completed account polling leaves sign-in exactly once
+  ---
+  duration_ms: 2402.104893
+  type: 'test'
+  ...
+# Subtest: StrictMode: failed start shows inline failure and permits a successful retry
+ok 7 - StrictMode: failed start shows inline failure and permits a successful retry
+  ---
+  duration_ms: 420.505613
+  type: 'test'
+  ...
+# Subtest: StrictMode: already signed-in start resolves once
+ok 8 - StrictMode: already signed-in start resolves once
+  ---
+  duration_ms: 376.39121
+  type: 'test'
+  ...
+# Subtest: unmounted sign-up ignores a late login result
+ok 9 - unmounted sign-up ignores a late login result
+  ---
+  duration_ms: 493.683775
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10509.019867

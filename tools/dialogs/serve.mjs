@@ -9,6 +9,7 @@ import { createServer } from "vite";
 const port = Number(process.env.PORT ?? 4392);
 const dist = path.resolve(process.env.DIST_REF ?? ".rea-work/dist");
 const baselineFiles = new Set(["RenameWorkspaceDialog", "CloneGitHubRepoDialog", "CreateProjectDialog", "ArchiveRunningDialog", "RemoveRepositoryDialog", "RestoreWorkspaceDialog"].map((name) => `src/components/${name}.tsx`));
+baselineFiles.add("src/onboarding/SignIn.tsx");
 const vite = await createServer({
   server: { middlewareMode: true }, appType: "spa",
   plugins: process.env.BASELINE_REF ? [{
@@ -57,7 +58,7 @@ server.listen(port, "0.0.0.0", () => {
   if (process.argv.includes("--capture-only")) captureDialogs();
   if (process.argv.includes("--check")) {
     const log = fs.openSync(process.env.CHECK_LOG ?? ".dialog-check.log", "w");
-    const child = spawn(process.execPath, ["--test", "tests/e2e/dialogs.e2e.mjs"], { env: { ...process.env, DIALOGS_URL: `http://localhost:${port}` }, stdio: ["ignore", log, log] });
+    const child = spawn(process.execPath, ["--test", process.env.CHECK_SUITE ?? "tests/e2e/dialogs.e2e.mjs"], { env: { ...process.env, DIALOGS_URL: `http://localhost:${port}`, TEST_BASE_URL: `http://localhost:${port}` }, stdio: ["ignore", log, log] });
     child.on("exit", (code) => {
       fs.closeSync(log);
       console.log(`Dialog checks exited ${code}`);
