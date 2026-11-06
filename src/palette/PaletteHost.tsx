@@ -7,6 +7,7 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
 import { paletteDataFromState, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import type { ResultItem } from "./search/model.ts";
+import { useBoolPref } from "../settings/useBoolPref.ts";
 import { loadRecentWorkspaceIds, recordViewedWorkspace, saveRecentWorkspaceIds } from "./recentWorkspaces.ts";
 import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 import { openNextUnread } from "../state/nextUnread.ts";
@@ -49,6 +50,7 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   }, [open, state.repos]);
   const data = useMemo(() => paletteDataFromState(state, recents, archived), [state, recents, archived]);
   const archivedById = (id: string) => archived.find((a) => a.id === id);
+  const showWorkspaceNumbers = useBoolPref("experimental_show_workspace_numbers");
 
   const go = (ref: WorkspaceRef | undefined) =>
     ref && dispatch({ type: "select", selection: { kind: "workspace", repoId: ref.repoId, workspaceId: ref.workspace.id } });
@@ -104,5 +106,5 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
     const a = archivedById(id);
     if (a) dispatch({ type: "unarchiveWorkspace", repoId: a.repoId, workspaceId: a.id });
   };
-  return <CommandPalette data={data} onSelect={onSelect} onUnarchive={unarchive} onClose={() => onOpenChange(false)} />;
+  return <CommandPalette data={data} showWorkspaceNumbers={showWorkspaceNumbers} onSelect={onSelect} onUnarchive={unarchive} onClose={() => onOpenChange(false)} />;
 }
