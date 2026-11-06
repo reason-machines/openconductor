@@ -10,9 +10,11 @@ import { getSettings, updateSettings } from "./settings/api";
 import { loadAppPrefs } from "./settings/appPrefs";
 import { overridesRaw, withOverridesRaw } from "./settings/keybindingOverrides";
 import { installContextMenuGuard } from "./lib/nativeContextMenu";
+import { agentBinaryStore } from "./features/chat/agentBinaryStore";
 import "./fonts.css";
 import "./theme/tokens.css";
 import "./styles.css";
+import "./components/motion/motion.css";
 import "./components/motion/screens.css";
 
 // Conductor's startup migration: a legacy "Send messages with" of ⌘ Enter
@@ -28,6 +30,8 @@ const loadOverrides = async () => {
 };
 
 installContextMenuGuard();
+// Conductor starts its AgentBinaryStore at launch (renderApp `hRa`): failed downloads retry right away.
+void agentBinaryStore.initialize();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

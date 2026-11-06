@@ -52,11 +52,6 @@ const DISPLAY_NAMES: Record<string, string> = {
   "gpt-5.3-codex-spark": "GPT-5.3 Codex Spark",
   "gpt-5.3-codex": "GPT-5.3 Codex",
   "gpt-5.2-codex": "GPT-5.2 Codex",
-  auto: "Auto",
-  "composer-2.5": "Composer 2.5",
-  "grok-4.7": "Grok 4.7",
-  "grok-4.6": "Grok 4.6",
-  "grok-4.5": "Grok 4.5",
 };
 
 /** The name the composer shows for a model id. */
@@ -70,7 +65,6 @@ const CLAUDE_TO_MAX = ["low", "medium", "high", "xhigh", "max"];
 const CODEX_TO_X = ["none", "low", "medium", "high", "xhigh"];
 const CODEX_TO_MAX = [...CODEX_TO_X, "max"];
 const CODEX_ALL = [...CODEX_TO_MAX, "ultra"];
-const CURSOR_LEVELS = ["low", "medium", "high", "xhigh"];
 
 interface AgentEfforts {
   levels: string[];
@@ -128,13 +122,6 @@ const EFFORTS: Record<ModelAgent, AgentEfforts> = {
       "gpt-5.2-codex": { levels: CODEX_TO_X },
     },
   },
-  cursor: {
-    levels: CURSOR_LEVELS,
-    labels: { low: "Low", medium: "Medium", high: "High", xhigh: "Extra high" },
-    axisLabel: "Effort",
-    defaultLevel: "high",
-    models: { auto: { levels: [] }, "composer-2.5": { levels: [] }, "grok-4.7": { levels: CURSOR_LEVELS } },
-  },
 };
 
 /** Reason's `reasoning_effort` values (`reason acp` 0.2.692); its `default` is no level picked. */
@@ -155,7 +142,7 @@ export interface EffortOption {
 }
 
 export interface ModelEfforts {
-  /** Submenu title: "Effort" (Claude, Cursor) or "Thinking" (Codex). */
+  /** Submenu title: "Effort" (Claude, Reason) or "Thinking" (Codex). */
   axisLabel: string;
   options: EffortOption[];
   /** The level used when none is picked; null when the agent decides (Reason). */

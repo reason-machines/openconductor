@@ -1,6 +1,6 @@
 //! Providers for Claude Code: its own login and the Anthropic API (or an
-//! Anthropic-compatible gateway). Cloud backends are in `claude_cloud.rs`. Provider kinds follow `evidence/providers/README.md`;
-//! variable names are Claude Code's documented configuration.
+//! Anthropic-compatible gateway). Provider kinds follow
+//! `evidence/providers/README.md`; variable names are Claude Code's documented configuration.
 
 use serde::{Deserialize, Serialize};
 
@@ -11,8 +11,7 @@ use super::provider::{
 use super::secret::{keys, SecretStore};
 
 /// Model ids to use for Claude Code's opus / sonnet / haiku aliases. Needed
-/// when a backend names models differently (Bedrock inference profiles,
-/// Vertex or Foundry deployments, gateway model ids).
+/// when a gateway names models differently.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ModelOverrides {

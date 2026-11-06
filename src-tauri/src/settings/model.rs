@@ -27,31 +27,27 @@ pub struct Settings {
     pub schema: String,
     /// Conductor's top-level Claude provider: `custom` routes Claude Code
     /// through an Anthropic API key, anything else (`default`, the legacy
-    /// `openai`) uses the CLI's own login. `bedrock` and `vertex` are
-    /// OpenConductor's, using [`Settings::bedrock_region`] and
-    /// [`Settings::vertex_project_id`]. `[providers.claude]` outranks it in
-    /// the same layer ([`Settings::provider_for`]).
+    /// `openai`, the removed `bedrock` and `vertex`) uses the CLI's own
+    /// login. `[providers.claude]` outranks it in the same layer
+    /// ([`Settings::provider_for`]).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub claude_provider: Option<String>,
     /// Conductor's top-level Codex provider: `custom` (OpenAI API key),
     /// `chatgpt_sign_in` or `default` (both the CLI's own login).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub codex_provider: Option<String>,
-    /// AWS region for `claude_provider = "bedrock"`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bedrock_region: Option<String>,
-    /// GCP project for `claude_provider = "vertex"`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub vertex_project_id: Option<String>,
-    /// Advanced › "Claude Code executable path"; blank means `claude` on `PATH`.
+    /// Settings › Agents "Claude Code executable path"; blank means the
+    /// bundled copy in agent-binaries/ (crate::agent_launch).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub claude_code_executable_path: Option<String>,
-    /// Advanced › "Codex executable path"; blank means `codex` on `PATH`.
+    /// Settings › Agents "Codex executable path"; blank means the bundled
+    /// copy in agent-binaries/ (crate::agent_launch).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub codex_executable_path: Option<String>,
-    /// Advanced › "OpenCode executable path"; blank means `opencode` on `PATH`.
+    /// Agents › Reason › "Reason executable path"; blank means `reason`
+    /// found on `PATH`, `~/.local/bin` or Homebrew (the installer's).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub opencode_executable_path: Option<String>,
+    pub reason_executable_path: Option<String>,
     /// Advanced › "SSH private key path" for cloud workspace access; blank
     /// means a generated key.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -75,6 +71,27 @@ pub struct Settings {
     pub experimental: Experimental,
     pub terminal: Terminal,
     pub prompts: Prompts,
+    pub reason: ReasonSettings,
+    #[serde(flatten)]
+    pub extra: toml::Table,
+}
+
+/// `[reason]`: what new Reason chats start with (Settings › Agents › Reason).
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[serde(default)]
+pub struct ReasonSettings {
+    /// Workspace slug from `reason whoami` that new Reason chats open their
+    /// Session in (`reason --workspace SLUG acp`); `None` follows the
+    /// workspace selected in the Reason desktop app.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub workspace: Option<String>,
+    /// Reason model id for new Reason chats (`byok:anthropic:claude-opus-5-5`,
+    /// `default` for Auto); `None` uses `models.default` as Reason runs it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub model: Option<String>,
+    /// Reasoning effort for new Reason chats (`low` ... `max`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reasoning_effort: Option<String>,
     #[serde(flatten)]
     pub extra: toml::Table,
 }
@@ -85,11 +102,9 @@ impl Default for Settings {
             schema: SCHEMA_URL.to_string(),
             claude_provider: None,
             codex_provider: None,
-            bedrock_region: None,
-            vertex_project_id: None,
             claude_code_executable_path: None,
             codex_executable_path: None,
-            opencode_executable_path: None,
+            reason_executable_path: None,
             ssh_key_path: None,
             tool_approvals_enabled: false,
             preview_urls: Vec::new(),
@@ -103,6 +118,7 @@ impl Default for Settings {
             experimental: Experimental::default(),
             terminal: Terminal::default(),
             prompts: Prompts::default(),
+            reason: ReasonSettings::default(),
             extra: toml::Table::new(),
         }
     }
@@ -546,7 +562,8 @@ pub struct Models {
     /// "Default to plan mode in new chats".
     pub default_plan_mode: bool,
     /// Extra models per provider shown in model pickers: Conductor's JSON
-    /// string `{"opencode": ["opencode:<id>", ...], ...}`. Kept as written;
+    /// string `{"pi": ["pi:<id>", ...], ...}`; the removed Cursor and
+    /// OpenCode agents' lists are ignored. Kept as written;
     /// [`Models::visible_models`] parses it the way Conductor does.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub visible_provider_models: Option<String>,
@@ -559,7 +576,7 @@ pub struct Models {
 pub const DEFAULT_MODEL: &str = "opus";
 
 /// Providers `visible_provider_models` can list models for, in Conductor's order.
-pub const VISIBLE_MODEL_PROVIDERS: [&str; 5] = ["claude", "codex", "cursor", "opencode", "pi"];
+pub const VISIBLE_MODEL_PROVIDERS: [&str; 3] = ["claude", "codex", "pi"];
 
 impl Models {
     /// `visible_provider_models` as provider -> model ids, without the
@@ -648,19 +665,26 @@ pub struct CodexModels {
 /// The provider each agent uses: `[providers.claude]`, `[providers.codex]`,
 /// ... with the [`ProviderConfig`] `kind` tag and its non-secret options. A
 /// missing entry means the agent CLI's own login
-/// ([`ProviderConfig::default_for`]).
+/// ([`ProviderConfig::default_for`]), and so does an entry naming a removed
+/// provider kind ([`ProviderConfig::deserialize_stored`]). Tables for the
+/// removed Cursor and OpenCode agents stay in `extra`, unused.
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Providers {
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "ProviderConfig::deserialize_stored"
+    )]
     pub claude: Option<ProviderConfig>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "ProviderConfig::deserialize_stored"
+    )]
     pub codex: Option<ProviderConfig>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cursor: Option<ProviderConfig>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub opencode: Option<ProviderConfig>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "ProviderConfig::deserialize_stored"
+    )]
     pub reason: Option<ProviderConfig>,
     #[serde(flatten)]
     pub extra: toml::Table,
@@ -686,8 +710,6 @@ impl Providers {
         match agent {
             AgentKind::Claude => &self.claude,
             AgentKind::Codex => &self.codex,
-            AgentKind::Cursor => &self.cursor,
-            AgentKind::Opencode => &self.opencode,
             AgentKind::Reason => &self.reason,
         }
     }
@@ -696,8 +718,6 @@ impl Providers {
         match agent {
             AgentKind::Claude => &mut self.claude,
             AgentKind::Codex => &mut self.codex,
-            AgentKind::Cursor => &mut self.cursor,
-            AgentKind::Opencode => &mut self.opencode,
             AgentKind::Reason => &mut self.reason,
         }
     }

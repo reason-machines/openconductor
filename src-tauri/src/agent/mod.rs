@@ -12,9 +12,7 @@
 //!   and turn results.
 //! * [`claude_session`] - a running `claude` process: spawn, write messages,
 //!   receive stdout events and stderr lines; killed on drop.
-//! * [`claude_cloud`] - Claude Code on Bedrock, Vertex AI and Foundry.
-//! * [`codex`] - Codex (login, OpenAI API key, OpenRouter / Vercel AI
-//!   Gateway), Cursor and OpenCode providers.
+//! * [`codex`] - Codex providers: its own login and an OpenAI API key.
 //! * [`codex_cli`] - launching Codex: [`codex_cli::CodexPolicy`] (approval
 //!   policy and sandbox, or inherit) and the `codex app-server` command line.
 //! * [`codex_rpc`] - the JSON-RPC requests the app sends a running `codex
@@ -51,7 +49,6 @@
 pub mod byok;
 pub mod claude;
 pub mod claude_cli;
-pub mod claude_cloud;
 pub mod claude_session;
 pub mod claude_stream;
 pub mod codex;

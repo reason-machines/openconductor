@@ -20,6 +20,8 @@ import { generateWorkspaceNames } from "../workspace/naming";
 import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { AgentBinaryBanner } from "../features/chat/AgentBinaryBanner.tsx";
+import { binaryAgentFor } from "../features/chat/agentBinaries.ts";
 import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
 import { ChatEmptyState } from "../features/chat/ChatEmptyState.tsx";
 import { NewChatButton } from "../features/chat/NewChatButton.tsx";
@@ -529,6 +531,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             onForkToNewWorkspace={reason && agentId === "reason" && workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
             forkDisabled={forking}
             turnAgent={turnAgent}
+            chatAgent={agentId}
           />
         )}
         <div ref={endRef} />
@@ -565,6 +568,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           </button>
         </div>
       ) : null}
+      <AgentBinaryBanner agent={binaryAgentFor(agentId)} />
       <Composer
         draft={draft}
         setDraft={setDraft}

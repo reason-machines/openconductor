@@ -539,3 +539,35 @@ fn models_lists_what_a_new_session_offers_without_keeping_it() {
     );
     assert!(started(&log).is_empty(), "no chat gets a Session");
 }
+
+/// Settings › Agents › Reason pins new chats to a workspace; existing
+/// Sessions keep theirs. A changed launch restarts the agent between turns.
+#[test]
+fn a_pinned_workspace_takes_new_sessions_and_a_new_launch_restarts_the_agent() {
+    let (p, log, home) = provider("pinned");
+    p.open_chat("old", &home, None);
+    assert_eq!(p.prompt("old", "echo: a"), TurnEnd::Completed);
+    let old = started(&log).pop().unwrap();
+
+    let same = LaunchConfig::new(fake_agent()).unwrap();
+    p.reconfigure(same, Some("ws-b".into()));
+    p.open_chat("new", &home, None);
+    assert_eq!(p.prompt("new", "echo: b"), TurnEnd::Completed);
+    let new = started(&log).pop().unwrap();
+    let state = |home: &PathBuf| -> serde_json::Value {
+        serde_json::from_str(&std::fs::read_to_string(home.join("state.json")).unwrap()).unwrap()
+    };
+    assert_eq!(state(&home)["sessions"][&old]["workspace"], "ws-a");
+    assert_eq!(state(&home)["sessions"][&new]["workspace"], "ws-b");
+
+    // A new environment (an API key) restarts the agents; chats resume.
+    let mut env = super::cli::CliEnv::default();
+    env.set("REASON_API_KEY", "k");
+    p.reconfigure(
+        LaunchConfig::new(fake_agent()).unwrap().env(env),
+        Some("ws-b".into()),
+    );
+    assert_eq!(p.prompt("old", "echo: c"), TurnEnd::Completed);
+    assert!(reply(&log).ends_with("turn 2: c"), "{}", reply(&log));
+    assert_eq!(started(&log), [old, new], "no new Session");
+}

@@ -499,14 +499,14 @@ mod tests {
         );
 
         let bad_option = svc.connect(
-            AgentKind::Claude,
-            config(r#"{"kind":"bedrock","region":" "}"#),
-            secret(keys::BEDROCK_API_KEY, "abc"),
+            AgentKind::Codex,
+            config(r#"{"kind":"openai_api","project":"a b"}"#),
+            secret(keys::OPENAI_API_KEY, "abc"),
         );
         assert!(bad_option.is_err());
 
         assert_eq!(store.get(keys::ANTHROPIC_API_KEY).unwrap(), None);
-        assert_eq!(store.get(keys::BEDROCK_API_KEY).unwrap(), None);
+        assert_eq!(store.get(keys::OPENAI_API_KEY).unwrap(), None);
         assert!(!svc.path().exists());
     }
 
@@ -515,7 +515,7 @@ mod tests {
     #[test]
     fn settings_round_trip_through_ipc_json() {
         let mut s: Settings = toml::from_str(
-            "future = 1\n[git]\nfuture_git = [\"a\"]\n[providers.claude]\nkind = \"bedrock\"\nregion = \"us-east-1\"\n",
+            "future = 1\n[git]\nfuture_git = [\"a\"]\n[providers.claude]\nkind = \"anthropic_api\"\nbase_url = \"https://gw.example\"\n",
         )
         .unwrap();
         s.models.review = Some("opus".into());
