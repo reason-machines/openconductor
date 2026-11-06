@@ -179,7 +179,6 @@ fn remove_close_window<R: Runtime>(menu: &tauri::menu::Menu<R>) {
 #[cfg(target_os = "macos")]
 fn add_settings_and_quit<R: Runtime>(app: &AppHandle<R>, menu: &tauri::menu::Menu<R>) {
     use tauri::menu::{MenuItem, PredefinedMenuItem};
-    use tauri::Manager;
 
     let Some(app_menu) = menu
         .items()
@@ -190,10 +189,16 @@ fn add_settings_and_quit<R: Runtime>(app: &AppHandle<R>, menu: &tauri::menu::Men
         return;
     };
     // About is first, then a separator; Settings... and its own separator follow.
-    let settings = MenuItem::with_id(app, SETTINGS_ID, SETTINGS_LABEL, true, Some(SETTINGS_ACCELERATOR))
-        .and_then(|item| app_menu.insert(&item, 2))
-        .and_then(|()| PredefinedMenuItem::separator(app))
-        .and_then(|sep| app_menu.insert(&sep, 3));
+    let settings = MenuItem::with_id(
+        app,
+        SETTINGS_ID,
+        SETTINGS_LABEL,
+        true,
+        Some(SETTINGS_ACCELERATOR),
+    )
+    .and_then(|item| app_menu.insert(&item, 2))
+    .and_then(|()| PredefinedMenuItem::separator(app))
+    .and_then(|sep| app_menu.insert(&sep, 3));
     if settings.is_err() {
         eprintln!("Warning: Could not add Settings menu item");
     }
@@ -209,8 +214,14 @@ fn add_settings_and_quit<R: Runtime>(app: &AppHandle<R>, menu: &tauri::menu::Men
         .map(|t| t.replace('&', ""))
         .unwrap_or_else(|| format!("Quit {}", app.package_info().name));
     let at = quit.map_or(items.len(), |(i, _)| i);
-    let added = MenuItem::with_id(app, CUSTOM_QUIT_ID, &label, true, Some(CUSTOM_QUIT_ACCELERATOR))
-        .and_then(|item| app_menu.insert(&item, at));
+    let added = MenuItem::with_id(
+        app,
+        CUSTOM_QUIT_ID,
+        &label,
+        true,
+        Some(CUSTOM_QUIT_ACCELERATOR),
+    )
+    .and_then(|item| app_menu.insert(&item, at));
     match added {
         // Only drop the predefined Quit once ours is in, so the app can always be quit.
         Ok(()) => {
