@@ -27,7 +27,7 @@ that justifies the status.
 |---|---|---|---|---|
 | Home `home` | unassigned | #457, #501 | wrong | seed |
 | Sidebar `sidebar` | unassigned | #491, #505 | wrong | seed |
-| Header + title bar `header` | unassigned | #504, #514 | wrong | seed |
+| Header + title bar `header` | unassigned | #504, #514, #590, #586 | wrong | 2026-11-06, b3615ed, [header-01](../side-by-side/header-01-height-built-app-light.png) |
 | Chat tabs + chat area + composer `chat` | unassigned | #516 | wrong | seed |
 | Right panel: All files / Changes / Checks `right-panel` | unassigned | | wrong | seed |
 | Setup / Run / Terminal strip `strip` | unassigned | #509 | wrong | seed |
