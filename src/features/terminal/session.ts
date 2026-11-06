@@ -235,13 +235,13 @@ async function startTab(
     lineHeight: TERMINAL_LINE_HEIGHT,
     scrollback: currentScrollbackRows(),
     theme: {
-      background: cssVar("--panel", "#1d2025"),
-      foreground: cssVar("--text", "#e6e7e9"),
+      background: cssVar("--panel", "transparent"),
+      foreground: cssVar("--foreground", "transparent"),
       // xterm's default selection is pale white, invisible on the light theme.
       // The inactive colour matters for Find: the match is selected while the
       // find input, not the terminal, has focus.
-      selectionBackground: withAlpha(cssVar("--accent", "#5b82f0"), "66"),
-      selectionInactiveBackground: withAlpha(cssVar("--accent", "#5b82f0"), "4d"),
+      selectionBackground: withAlpha(cssVar("--primary", "transparent"), "66"),
+      selectionInactiveBackground: withAlpha(cssVar("--primary", "transparent"), "4d"),
     },
   });
   const fit = new FitAddon();

@@ -7,17 +7,17 @@
   --oc-diff-font-size: 12px;
   --oc-diff-line-height: 18px;
   --oc-diff-bg: var(--panel);
-  --oc-diff-fg: var(--text);
-  --oc-diff-gutter-fg: var(--muted);
-  --oc-diff-addition: #1a7f37;
-  --oc-diff-deletion: #cf222e;
-  --oc-diff-modified: #9a6700;
+  --oc-diff-fg: var(--foreground);
+  --oc-diff-gutter-fg: var(--muted-foreground);
+  --oc-diff-addition: var(--diff-addition);
+  --oc-diff-deletion: var(--diff-deletion);
+  --oc-diff-modified: var(--diff-modified);
   --oc-diff-bg-addition: color-mix(in srgb, var(--oc-diff-addition) 12%, var(--oc-diff-bg));
   --oc-diff-bg-addition-emphasis: color-mix(in srgb, var(--oc-diff-addition) 32%, var(--oc-diff-bg));
   --oc-diff-bg-deletion: color-mix(in srgb, var(--oc-diff-deletion) 12%, var(--oc-diff-bg));
   --oc-diff-bg-deletion-emphasis: color-mix(in srgb, var(--oc-diff-deletion) 32%, var(--oc-diff-bg));
   --oc-diff-bg-gutter: color-mix(in srgb, var(--oc-diff-fg) 3%, var(--oc-diff-bg));
-  --oc-diff-bg-separator: color-mix(in srgb, var(--accent) 8%, var(--oc-diff-bg));
+  --oc-diff-bg-separator: color-mix(in srgb, var(--primary) 8%, var(--oc-diff-bg));
   --oc-diff-bg-hover: var(--hover);
   --oc-diff-annotation-bg: color-mix(in srgb, var(--oc-diff-fg) 4%, var(--oc-diff-bg));
   display: grid;
@@ -28,37 +28,27 @@
   color: var(--oc-diff-fg);
   background: var(--oc-diff-bg);
 }
-@media (prefers-color-scheme: dark) {
-  .oc-diff {
-    --oc-diff-addition: #3fb950;
-    --oc-diff-deletion: #f85149;
-    --oc-diff-modified: #d29922;
-  }
-}
-/* Colour-vision palettes: additions blue, deletions orange or red. */
-.oc-diff[data-palette="protanopia-deuteranopia"] { --oc-diff-addition: #0969da; --oc-diff-deletion: #bc4c00; }
-.oc-diff[data-palette="tritanopia"] { --oc-diff-addition: #0969da; --oc-diff-deletion: #cf222e; }
 
 .oc-diff-toolbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-bottom: 1px solid var(--border); font-size: 12px; flex-wrap: wrap; }
 .oc-diff-toolbar .spacer { flex: 1; }
 .oc-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-.oc-seg button { padding: 3px 9px; color: var(--muted); }
-.oc-seg button[aria-pressed="true"] { background: var(--active); color: var(--text); }
+.oc-seg button { padding: 3px 9px; color: var(--muted-foreground); }
+.oc-seg button[aria-pressed="true"] { background: var(--active); color: var(--foreground); }
 .oc-seg.oc-icons button { display: inline-flex; align-items: center; padding: 3px 7px; }
 
 .oc-changes { border-right: 1px solid var(--border); overflow-y: auto; padding: 4px 0; font-size: 12px; }
-.oc-changes-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 10px 6px; color: var(--muted); }
+.oc-changes-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 10px 6px; color: var(--muted-foreground); }
 .oc-change-row { display: flex; align-items: center; }
 .oc-change-row .oc-change { flex: 1; min-width: 0; width: auto; }
 .oc-change-row .oc-discard { flex-shrink: 0; opacity: 0; margin-right: 4px; }
 .oc-change-row:hover .oc-discard, .oc-change-row .oc-discard:focus-visible { opacity: 1; }
-.oc-file-header .oc-discard { color: var(--muted); }
+.oc-file-header .oc-discard { color: var(--muted-foreground); }
 .oc-discard-path { font-family: var(--oc-diff-font); font-weight: 600; word-break: break-all; }
 .oc-change { display: flex; align-items: center; gap: 6px; width: 100%; padding: 3px 10px; text-align: left; }
 .oc-change:hover { background: var(--hover); }
 .oc-change[aria-current="true"] { background: var(--active); }
 .oc-change .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; text-align: left; }
-.oc-change.viewed .name { color: var(--muted); }
+.oc-change.viewed .name { color: var(--muted-foreground); }
 .oc-status { width: 14px; font-family: var(--oc-diff-font); font-weight: 600; text-align: center; }
 .oc-status.added, .oc-status.untracked { color: var(--oc-diff-addition); }
 .oc-status.deleted { color: var(--oc-diff-deletion); }
@@ -76,12 +66,12 @@
 .oc-diff-list .oc-change { padding: 5px 8px; border-radius: 6px; font-size: 13px; }
 .oc-diff-tab .oc-file { border-radius: 0; border-width: 0 0 1px; margin-bottom: 0; content-visibility: visible; }
 .oc-files { overflow: auto; min-width: 0; padding: 8px 12px 40px; }
-.oc-next-unread { position: sticky; bottom: 12px; display: block; width: fit-content; margin: 0 0 0 auto; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15); }
+.oc-next-unread { position: sticky; bottom: 12px; display: block; width: fit-content; margin: 0 0 0 auto; box-shadow: 0 2px 8px var(--shadow); }
 .oc-file { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; content-visibility: auto; contain-intrinsic-size: auto 200px; }
 .oc-file-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--oc-diff-bg-gutter); border-bottom: 1px solid var(--border); font-size: 12px; }
 .oc-file-header .path { flex: 1; font-family: var(--oc-diff-font); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.oc-file-header label { display: inline-flex; gap: 4px; align-items: center; color: var(--muted); }
-.oc-file-note { padding: 10px 12px; color: var(--muted); font-size: 12px; }
+.oc-file-header label { display: inline-flex; gap: 4px; align-items: center; color: var(--muted-foreground); }
+.oc-file-note { padding: 10px 12px; color: var(--muted-foreground); font-size: 12px; }
 
 /* Pierre draws the code; it never wraps (overflow: scroll), as in Conductor's diff tab.
    In the tab the file fills the height under its header, and Pierre's CodeView is the
@@ -97,46 +87,46 @@
 /* parity:diff.comments-inline:ui  Review comment threads and composer. */
 .oc-threads { display: flex; flex-direction: column; gap: 8px; word-break: normal; }
 .oc-thread, .oc-composer { border: 1px solid var(--border); border-radius: 6px; background: var(--panel); max-width: 720px; }
-.oc-thread[data-focused] { outline: 2px solid var(--accent); outline-offset: 1px; }
+.oc-thread[data-focused] { outline: 2px solid var(--primary); outline-offset: 1px; }
 .oc-thread.resolved { opacity: 0.85; }
 .oc-comment { padding: 8px 10px; border-bottom: 1px solid var(--border); }
 .oc-comment-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; }
 .oc-comment-meta .spacer, .oc-composer-bar .spacer { flex: 1; }
 .oc-comment-body { margin-top: 4px; font-size: 13px; white-space: pre-wrap; overflow-wrap: break-word; }
-.oc-tag { font-size: 11px; padding: 0 6px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
-.oc-link { background: none; border: 0; padding: 0; color: var(--muted); cursor: pointer; font-size: 12px; }
+.oc-tag { font-size: 11px; padding: 0 6px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted-foreground); }
+.oc-link { background: none; border: 0; padding: 0; color: var(--muted-foreground); cursor: pointer; font-size: 12px; }
 .oc-link:hover { color: inherit; text-decoration: underline; }
 .oc-thread-bar, .oc-composer-bar { display: flex; align-items: center; gap: 6px; padding: 6px 10px; font-size: 12px; }
 .oc-thread-collapsed { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 6px 10px; font-size: 12px; cursor: pointer; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .oc-composer textarea { display: block; width: 100%; box-sizing: border-box; border: 0; border-radius: 6px 6px 0 0; padding: 8px 10px; resize: vertical; font: inherit; font-size: 13px; background: transparent; color: inherit; }
 .oc-composer textarea:focus { outline: none; }
-.btn.oc-btn-danger, .btn.oc-btn-danger:hover { background: var(--del); border-color: var(--del); color: #fff; }
+.btn.oc-btn-danger, .btn.oc-btn-danger:hover { background: var(--diff-deletion); border-color: var(--diff-deletion); color: var(--destructive-foreground); }
 .btn.oc-btn-danger .muted { color: inherit; opacity: 0.7; }
 /* Whitespace-only file while whitespace is hidden (Whitespace.tsx). */
 .oc-whitespace-only { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 32px 12px; text-align: center; }
 .oc-whitespace-only p { margin: 0; font-size: 13px; font-weight: 500; }
-.oc-whitespace-only .link-btn { background: none; border: 0; padding: 0; font: inherit; font-size: 12px; color: var(--muted); text-decoration: underline; cursor: pointer; }
-.oc-whitespace-only .link-btn:hover { color: var(--text); }
+.oc-whitespace-only .link-btn { background: none; border: 0; padding: 0; font: inherit; font-size: 12px; color: var(--muted-foreground); text-decoration: underline; cursor: pointer; }
+.oc-whitespace-only .link-btn:hover { color: var(--foreground); }
 
 /* Composer chips for text files the diff viewer attaches (chatAttachment.ts). */
 .composer-attachments { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 10px 0; }
 .composer-attachment { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 11px; max-width: 100%; }
-.composer-attachment-remove { border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 0 2px; line-height: 1; }
-.composer-attachment-remove:hover { color: var(--text); }
+.composer-attachment-remove { border: 0; background: transparent; color: var(--muted-foreground); cursor: pointer; padding: 0 2px; line-height: 1; }
+.composer-attachment-remove:hover { color: var(--foreground); }
 
 /* File-toolbar "View options" menu (Whitespace.tsx) and the Viewed toggle (FileDiffView.tsx). */
 .oc-view-options { position: relative; display: inline-flex; }
-.oc-view-options .icon-btn[aria-expanded="true"] { background: var(--active); color: var(--text); }
-.oc-view-options-menu { position: absolute; top: calc(100% + 4px); right: 0; z-index: 5; min-width: 200px; padding: 4px; background: var(--panel, var(--bg)); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 20px rgb(0 0 0 / 0.18); }
-.oc-view-option { display: flex; width: 100%; height: 32px; align-items: center; gap: 8px; padding: 0 8px; border-radius: 6px; font-size: 13px; color: var(--text); text-align: left; }
+.oc-view-options .icon-btn[aria-expanded="true"] { background: var(--active); color: var(--foreground); }
+.oc-view-options-menu { position: absolute; top: calc(100% + 4px); right: 0; z-index: 5; min-width: 200px; padding: 4px; background: var(--panel, var(--background)); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 20px var(--shadow); }
+.oc-view-option { display: flex; width: 100%; height: 32px; align-items: center; gap: 8px; padding: 0 8px; border-radius: 6px; font-size: 13px; color: var(--foreground); text-align: left; }
 .oc-view-option:hover, .oc-view-option:focus-visible { background: var(--active); }
 .oc-view-option .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .oc-view-option .check { display: inline-flex; width: 14px; }
-.oc-file-header .oc-viewed { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 6px; color: var(--muted); }
+.oc-file-header .oc-viewed { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 6px; color: var(--muted-foreground); }
 .oc-file-header .oc-viewed:hover { background: var(--active); }
-.oc-file-header .oc-viewed[aria-pressed="true"] { color: var(--text); }
+.oc-file-header .oc-viewed[aria-pressed="true"] { color: var(--foreground); }
 
 /* Editing in the entire-file view (EditInViewer.ts). Conductor's dot: size-2 rounded-full bg-warning-foreground-secondary. */
-.oc-file-header .oc-unsaved { width: 8px; height: 8px; flex-shrink: 0; border-radius: 9999px; background: var(--amber); }
+.oc-file-header .oc-unsaved { width: 8px; height: 8px; flex-shrink: 0; border-radius: 9999px; background: var(--warning); }
 .oc-code-edit { display: contents; }
-.oc-save-error { color: var(--del); text-align: left; }
+.oc-save-error { color: var(--diff-deletion); text-align: left; }

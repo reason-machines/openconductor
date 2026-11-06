@@ -9,52 +9,23 @@
  * screenshots at 1440 px: 256 px navigation, content 40 px in, at most 896 px.
  */
 .settings {
-  --s-fg: #2c2826;
-  --s-muted: #8e8885;
-  --s-border: #eae8e6;
-  --s-input: #14100f1a;
-  --s-switch-on: #2c2826;
-  --s-switch-knob-on: #fff;
-  --s-switch-off: #14100f1a;
-  --s-hover: #14100f0a;
-  --s-active: #14100f0d;
-  --s-card: #fafaf9;
-  --s-warning: #a4847f;
+  --s-fg: var(--foreground);
+  --s-muted: var(--muted-foreground);
+  --s-border: var(--border);
+  --s-input: var(--input);
+  --s-switch-on: var(--foreground);
+  --s-switch-knob-on: var(--background);
+  --s-switch-off: var(--input);
+  --s-hover: var(--hover);
+  --s-active: var(--active);
+  --s-card: var(--card);
+  --s-warning: var(--warning);
   grid-template-columns: 256px 1fr;
   color: var(--s-fg);
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .settings {
-    --s-fg: #eae8e6;
-    --s-muted: #a5a09c;
-    --s-border: #ffffff1a;
-    --s-input: #fff3;
-    --s-switch-on: #eae8e6;
-    --s-switch-knob-on: #2c2826;
-    /* Conductor dark off switch: #43403f track, #2c2826 knob (sampled from its repo Git page). */
-    --s-switch-off: #43403f;
-    --s-hover: #ffffff0a;
-    --s-active: #ffffff0d;
-    --s-card: #211e1c;
-    --s-warning: #ddc1b1;
-  }
-}
-:root[data-theme="dark"] .settings {
-  --s-fg: #eae8e6;
-  --s-muted: #a5a09c;
-  --s-border: #ffffff1a;
-  --s-input: #fff3;
-  --s-switch-on: #eae8e6;
-  --s-switch-knob-on: #2c2826;
-  --s-switch-off: #43403f;
-  --s-hover: #ffffff0a;
-  --s-active: #ffffff0d;
-  --s-card: #211e1c;
-  --s-warning: #ddc1b1;
-}
 
 /* Navigation */
-.settings .settings-nav { background: var(--bg); border-right: 1px solid var(--s-border); padding: 8px 6px; font-size: 14px; }
+.settings .settings-nav { background: var(--background); border-right: 1px solid var(--s-border); padding: 8px 6px; font-size: 14px; }
 /* Conductor's `I9a` top bar: "flex h-8 shrink-0 items-center justify-end pt-2" at the top of the nav;
    Back is "gap-1.5 rounded-md px-1.5 py-1 text-sm" with a 16 px icon: 28 px tall, right edge on the items' edge. */
 .settings .settings-nav-top { display: flex; justify-content: flex-end; align-items: center; box-sizing: border-box; height: 32px; padding-top: 8px; margin: -8px 0 12px; }
@@ -114,7 +85,7 @@
   background-repeat: no-repeat; background-position: right 10px center; background-size: 12px;
 }
 .settings select.settings-select:disabled { opacity: 0.5; }
-.settings select option { background: var(--bg); color: var(--s-fg); }
+.settings select option { background: var(--background); color: var(--s-fg); }
 .settings .settings-rows input[type="checkbox"][role="switch"] {
   appearance: none; -webkit-appearance: none; position: relative; width: 40px; height: 20px; margin: 0; border-radius: 999px;
   background: var(--s-switch-off); cursor: pointer; transition: background-color 0.15s; flex-shrink: 0;
@@ -147,7 +118,7 @@
 .settings .settings-radios { gap: 12px; }
 .settings .settings-radio { font-size: 14px; gap: 8px; }
 .settings .settings-radio input[type="radio"] { width: 16px; height: 16px; margin: 0; accent-color: var(--s-fg); }
-.settings .settings-row-danger { margin-top: -8px; font-size: 12px; color: var(--del); }
+.settings .settings-row-danger { margin-top: -8px; font-size: 12px; color: var(--diff-deletion); }
 .settings .settings-radio-detail { margin-left: 24px; gap: 4px; }
 .settings .settings-radio-detail .settings-field { width: 100%; max-width: 420px; }
 
@@ -233,8 +204,8 @@
 .settings .settings-env-pasted { border: 1px solid var(--s-border); border-radius: 6px; }
 .settings .settings-env-pasted > div { display: flex; gap: 12px; padding: 8px 12px; font-size: 14px; }
 .settings .settings-env-pasted > div + div { border-top: 1px solid var(--s-border); }
-.settings-sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: rgb(0 0 0 / 0.5); display: flex; justify-content: flex-end; }
-.settings-sheet { position: relative; display: flex; flex-direction: column; width: 520px; max-width: calc(100vw - 2rem); height: 100%; background: var(--bg); border-left: 1px solid var(--s-border); color: var(--s-fg); }
+.settings-sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: var(--shadow); display: flex; justify-content: flex-end; }
+.settings-sheet { position: relative; display: flex; flex-direction: column; width: 520px; max-width: calc(100vw - 2rem); height: 100%; background: var(--background); border-left: 1px solid var(--s-border); color: var(--s-fg); }
 .settings .settings-sheet-close { top: 16px; right: 16px; transform: none; }
 .settings-sheet-body { flex: 1; overflow-y: auto; padding: 40px 24px 24px; display: flex; flex-direction: column; }
 .settings-sheet-head { padding-right: 32px; }

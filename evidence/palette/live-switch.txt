@@ -1,0 +1,11 @@
+(node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+before: { palette: 'neutral', sidebar: '#f5f5f5' }
+row present: 1
+after Stone: { palette: 'stone', sidebar: '#fafaf9' }
+after Zinc: { palette: 'zinc', sidebar: '#fafafa' }
+stored color_palette: stone
+after reload: stone
+stone, dark, low-contrast --background: #1f1c1a
+system + OS dark, neutral --background: #0a0a0a
+PASS: palette switches live, persists across reload, no page errors

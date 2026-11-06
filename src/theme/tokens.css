@@ -1,0 +1,14 @@
+/* Derived semantic tokens. Each one is a color-mix of a base token that
+   src/theme/palettes.ts sets for the chosen palette, so these follow the
+   palette and the light, dark and low-contrast modes without literal colours. */
+:root {
+  --hover: color-mix(in srgb, var(--foreground) 5%, transparent);
+  --active: color-mix(in srgb, var(--foreground) 9%, transparent);
+  --secondary-hover: color-mix(in srgb, var(--secondary) 80%, transparent);
+  --sidebar-accent: color-mix(in srgb, var(--foreground) 5%, transparent);
+  --sidebar-accent-foreground: var(--sidebar-foreground);
+  --sidebar-muted-foreground: color-mix(in srgb, var(--sidebar-foreground) 75%, transparent);
+  --sidebar-border: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --repo-initial-bg: var(--muted-foreground);
+  --repo-initial-fg: var(--muted-foreground);
+}

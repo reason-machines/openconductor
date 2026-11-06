@@ -2,27 +2,7 @@
    Kept out of styles.css; every rule is scoped to a root attribute, so its
    specificity wins regardless of stylesheet order. */
 
-/* Low-contrast dark mode: Conductor's `html.dark.low-contrast-dark` tokens
-   (evidence/frontend/css-tokens.json) mapped onto our variables. Applies only
-   while dark is in effect: chosen, or "system" with a dark OS. */
-:root[data-theme="dark"][data-low-contrast] {
-  --bg: #1f1c1a;
-  --panel: #2f2b28;
-  --text: #c5c2be;
-  --secondary: #2f2b28;
-  --secondary-text: #d0ccc8;
-  --sidebar-background: #292623;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme])[data-low-contrast] {
-    --bg: #1f1c1a;
-    --panel: #2f2b28;
-    --text: #c5c2be;
-    --secondary: #2f2b28;
-    --secondary-text: #d0ccc8;
-    --sidebar-background: #292623;
-  }
-}
+/* Low-contrast dark mode is part of the palette (src/theme/palettes.ts, data-low-contrast). */
 
 /* Mono font: code, diffs and the other monospace surfaces. */
 :root[data-mono-font] :is(code, pre, .ws-diff, .chip, .diff-summary, .scripts-output, .chat-tool-summary) {
@@ -34,4 +14,4 @@
 
 /* Appearance page: Mono Font preview, like Conductor's. */
 .settings-font-preview { margin-top: 4px; padding: 10px 12px; border-radius: 6px; background: var(--hover); font-size: 13px; line-height: 1.6; }
-.settings-terminal-preview { margin-top: 4px; padding: 10px 12px; border-radius: 6px; background: #000; color: #4ade80; overflow-x: auto; white-space: pre; }
+.settings-terminal-preview { margin-top: 4px; padding: 10px 12px; border-radius: 6px; background: var(--terminal-preview-background); color: var(--terminal-preview-foreground); overflow-x: auto; white-space: pre; }

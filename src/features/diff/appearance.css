@@ -1,32 +1,15 @@
 /* parity:diff.appearance:ui
    Accessible colors for diffs: Pierre's addition/deletion override variables,
    set from the root's data-color-vision (src/features/diff/appearance.ts).
-   Values per mode as Conductor sets them (REA, renderApp 0.87.6): blue for
-   additions in both palettes, orange for deletions with protanopia /
-   deuteranopia. Light values apply to the light theme, dark ones to dark
-   (chosen, or "system" with a dark OS). */
+   Blue for additions in both palettes, orange for deletions with protanopia /
+   deuteranopia; the values per mode are the fixed color-blind tokens in
+   src/theme/palettes.ts, as Conductor sets them (REA, renderApp 0.87.6). */
 :root[data-color-vision="protanopia-deuteranopia"] {
-  --diffs-addition-color-override: #0969da;
-  --diffs-deletion-color-override: #bc4c00;
+  --diffs-addition-color-override: var(--color-blind-addition);
+  --diffs-deletion-color-override: var(--color-blind-deletion);
 }
 :root[data-color-vision="tritanopia"] {
-  --diffs-addition-color-override: #0969da;
-}
-:root[data-theme="dark"][data-color-vision="protanopia-deuteranopia"] {
-  --diffs-addition-color-override: #58a6ff;
-  --diffs-deletion-color-override: #f0883e;
-}
-:root[data-theme="dark"][data-color-vision="tritanopia"] {
-  --diffs-addition-color-override: #58a6ff;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme])[data-color-vision="protanopia-deuteranopia"] {
-    --diffs-addition-color-override: #58a6ff;
-    --diffs-deletion-color-override: #f0883e;
-  }
-  :root:not([data-theme])[data-color-vision="tritanopia"] {
-    --diffs-addition-color-override: #58a6ff;
-  }
+  --diffs-addition-color-override: var(--tritan-addition);
 }
 
 /* Our own +/- counts and file status colours follow the same palette. */

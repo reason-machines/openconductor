@@ -3,13 +3,13 @@
 .oc-gh-author img, .oc-gh-avatar { width: 16px; height: 16px; border-radius: 50%; flex: none; }
 .oc-gh-avatar { background: var(--border); }
 .oc-suggestion { margin: 6px 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; white-space: pre; font-family: var(--font-mono, ui-monospace, monospace); font-size: 12px; }
-.oc-suggestion-head { padding: 4px 10px; border-bottom: 1px solid var(--border); color: var(--muted); font-family: var(--font-sans, inherit); }
+.oc-suggestion-head { padding: 4px 10px; border-bottom: 1px solid var(--border); color: var(--muted-foreground); font-family: var(--font-sans, inherit); }
 .oc-suggestion-row { padding: 0 10px; overflow-x: auto; }
-.oc-suggestion-row .sign { display: inline-block; width: 14px; color: var(--muted); user-select: none; }
-.oc-suggestion-row.del { background: color-mix(in srgb, var(--del) 12%, transparent); }
-.oc-suggestion-row.add { background: color-mix(in srgb, var(--add) 12%, transparent); }
+.oc-suggestion-row .sign { display: inline-block; width: 14px; color: var(--muted-foreground); user-select: none; }
+.oc-suggestion-row.del { background: color-mix(in srgb, var(--diff-deletion) 12%, transparent); }
+.oc-suggestion-row.add { background: color-mix(in srgb, var(--diff-addition) 12%, transparent); }
 .oc-file-notes { display: flex; flex-direction: column; gap: 8px; padding: 8px 12px; }
-.oc-pr-comments > summary { cursor: pointer; font-size: 12px; color: var(--muted); padding: 2px 0; }
+.oc-pr-comments > summary { cursor: pointer; font-size: 12px; color: var(--muted-foreground); padding: 2px 0; }
 .oc-pr-comments[open] > summary { margin-bottom: 8px; }
 /* Comment bodies as markdown: the chat's .md styles (chat.css), tightened for a comment card. */
 .oc-comment-body:has(.oc-md) { white-space: normal; }
@@ -19,6 +19,6 @@
 .oc-md summary { cursor: pointer; }
 /* PR-level comments, opened from the Changes toolbar with no file open. */
 .oc-pr-comments-pop { position: relative; display: inline-flex; }
-.oc-pr-comments-panel { position: absolute; top: calc(100% + 6px); right: 0; z-index: 20; width: min(420px, 80vw); max-height: 60vh; overflow: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgb(0 0 0 / 0.18); padding: 8px 10px; font-size: 13px; }
+.oc-pr-comments-panel { position: absolute; top: calc(100% + 6px); right: 0; z-index: 20; width: min(420px, 80vw); max-height: 60vh; overflow: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow); padding: 8px 10px; font-size: 13px; }
 .oc-pr-comments-head { display: flex; align-items: center; gap: 8px; padding-bottom: 6px; margin-bottom: 6px; border-bottom: 1px solid var(--border); }
 .oc-pr-comments-head .spacer { flex: 1; }

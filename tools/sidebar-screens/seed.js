@@ -19,7 +19,7 @@
   const repo = (id, name, remote) => ({
     id, name, path: `/Users/demo/code/${name}`, remote, defaultBranch: "main", collapsed: true,
     workspaces: ws.filter((w) => w[1] === id).map(([wid, , dir, branch, m, unread, prTitle, [added, removed]]) => ({
-      id: wid, name: dir, branch, status: "idle", diff: { added, removed }, createdAt: ago(m + 60), updatedAt: ago(m), unread, prTitle: prTitle ?? undefined,
+      id: wid, name: dir, path: `/Users/demo/conductor/workspaces/${name}/${dir}`, branch, status: "idle", diff: { added, removed }, createdAt: ago(m + 60), updatedAt: ago(m), unread, prTitle: prTitle ?? undefined,
     })),
   });
   const state = {

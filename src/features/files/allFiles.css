@@ -22,7 +22,7 @@
   border: 0;
   border-radius: 6px;
   background: transparent;
-  color: var(--text, inherit);
+  color: var(--foreground, inherit);
   font: inherit;
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 13px;
@@ -31,7 +31,7 @@
 }
 .oc-files-row:hover,
 .oc-files-row:focus-visible {
-  background: var(--hover, rgba(255, 255, 255, 0.06));
+  background: var(--hover);
   outline: none;
 }
 .oc-files-row .name {
@@ -49,7 +49,7 @@
   justify-content: center;
   width: 16px;
   height: 16px;
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 .oc-files-icon .oc-file-glyph {
   width: 14px;
@@ -69,7 +69,7 @@
 .oc-files-row.dir:hover .oc-files-chevron,
 .oc-files-row.dir:focus-visible .oc-files-chevron {
   display: inline-flex;
-  color: var(--text);
+  color: var(--foreground);
 }
 .oc-files-new {
   position: relative;
@@ -80,15 +80,15 @@
   min-width: 0;
   height: 22px;
   padding: 0 6px;
-  border: 1px solid var(--accent);
+  border: 1px solid var(--primary);
   border-radius: 4px;
   outline: none;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--background);
+  color: var(--foreground);
   font: inherit;
 }
 .oc-files-new input[aria-invalid] {
-  border-color: var(--del);
+  border-color: var(--diff-deletion);
 }
 .oc-files-new-error {
   position: absolute;
@@ -97,10 +97,10 @@
   right: 8px;
   z-index: 2;
   padding: 4px 6px;
-  border: 1px solid var(--del);
+  border: 1px solid var(--diff-deletion);
   border-radius: 4px;
   background: var(--panel);
-  color: var(--del);
+  color: var(--diff-deletion);
   font-family: var(--font-sans, inherit);
   font-size: 12px;
 }
@@ -113,7 +113,7 @@
   height: 30px;
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 .oc-files-filter input {
   border: 0;
@@ -122,5 +122,5 @@
   font-size: 13px;
 }
 .oc-files-filter input::placeholder {
-  color: var(--muted);
+  color: var(--muted-foreground);
 }

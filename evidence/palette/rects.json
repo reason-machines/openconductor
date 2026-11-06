@@ -1,0 +1,272 @@
+{
+  "neutral-light": {
+    "tabUnderline": {
+      "x": 296,
+      "y": 101
+    },
+    "runButton": {
+      "x": 1375,
+      "y": 537
+    },
+    "createPrButton": {
+      "x": 1300,
+      "y": 42
+    },
+    "userBubble": {
+      "x": 755,
+      "y": 162
+    },
+    "panel": {
+      "x": 1177,
+      "y": 365
+    },
+    "sidebar": {
+      "x": 128,
+      "y": 560
+    },
+    "errors": []
+  },
+  "stone-light": {
+    "tabUnderline": {
+      "x": 296,
+      "y": 101
+    },
+    "runButton": {
+      "x": 1375,
+      "y": 537
+    },
+    "createPrButton": {
+      "x": 1300,
+      "y": 42
+    },
+    "userBubble": {
+      "x": 755,
+      "y": 162
+    },
+    "panel": {
+      "x": 1177,
+      "y": 365
+    },
+    "sidebar": {
+      "x": 128,
+      "y": 560
+    },
+    "errors": []
+  },
+  "blue-light": {
+    "tabUnderline": {
+      "x": 296,
+      "y": 101
+    },
+    "runButton": {
+      "x": 1375,
+      "y": 537
+    },
+    "createPrButton": {
+      "x": 1300,
+      "y": 42
+    },
+    "userBubble": {
+      "x": 755,
+      "y": 162
+    },
+    "panel": {
+      "x": 1177,
+      "y": 365
+    },
+    "sidebar": {
+      "x": 128,
+      "y": 560
+    },
+    "errors": []
+  },
+  "slate-light": {
+    "tabUnderline": {
+      "x": 296,
+      "y": 101
+    },
+    "runButton": {
+      "x": 1375,
+      "y": 537
+    },
+    "createPrButton": {
+      "x": 1300,
+      "y": 42
+    },
+    "userBubble": {
+      "x": 755,
+      "y": 162
+    },
+    "panel": {
+      "x": 1177,
+      "y": 365
+    },
+    "sidebar": {
+      "x": 128,
+      "y": 560
+    },
+    "errors": []
+  },
+  "zinc-light": {
+    "tabUnderline": {
+      "x": 296,
+      "y": 101
+    },
+    "runButton": {
+      "x": 1375,
+      "y": 537
+    },
+    "createPrButton": {
+      "x": 1300,
+      "y": 42
+    },
+    "userBubble": {
+      "x": 755,
+      "y": 162
+    },
+    "panel": {
+      "x": 1177,
+      "y": 365
+    },
+    "sidebar": {
+      "x": 128,
+      "y": 560
+    },
+    "errors": []
+  },
+  "neutral-dark": {
+    "tabUnderline": {
+      "x": 296,
+      "y": 101
+    },
+    "runButton": {
+      "x": 1375,
+      "y": 537
+    },
+    "createPrButton": {
+      "x": 1300,
+      "y": 42
+    },
+    "userBubble": {
+      "x": 755,
+      "y": 162
+    },
+    "panel": {
+      "x": 1177,
+      "y": 365
+    },
+    "sidebar": {
+      "x": 128,
+      "y": 560
+    },
+    "errors": []
+  },
+  "stone-dark": {
+    "tabUnderline": {
+      "x": 296,
+      "y": 101
+    },
+    "runButton": {
+      "x": 1375,
+      "y": 537
+    },
+    "createPrButton": {
+      "x": 1300,
+      "y": 42
+    },
+    "userBubble": {
+      "x": 755,
+      "y": 162
+    },
+    "panel": {
+      "x": 1177,
+      "y": 365
+    },
+    "sidebar": {
+      "x": 128,
+      "y": 560
+    },
+    "errors": []
+  },
+  "blue-dark": {
+    "tabUnderline": {
+      "x": 296,
+      "y": 101
+    },
+    "runButton": {
+      "x": 1375,
+      "y": 537
+    },
+    "createPrButton": {
+      "x": 1300,
+      "y": 42
+    },
+    "userBubble": {
+      "x": 755,
+      "y": 162
+    },
+    "panel": {
+      "x": 1177,
+      "y": 365
+    },
+    "sidebar": {
+      "x": 128,
+      "y": 560
+    },
+    "errors": []
+  },
+  "slate-dark": {
+    "tabUnderline": {
+      "x": 296,
+      "y": 101
+    },
+    "runButton": {
+      "x": 1375,
+      "y": 537
+    },
+    "createPrButton": {
+      "x": 1300,
+      "y": 42
+    },
+    "userBubble": {
+      "x": 755,
+      "y": 162
+    },
+    "panel": {
+      "x": 1177,
+      "y": 365
+    },
+    "sidebar": {
+      "x": 128,
+      "y": 560
+    },
+    "errors": []
+  },
+  "zinc-dark": {
+    "tabUnderline": {
+      "x": 296,
+      "y": 101
+    },
+    "runButton": {
+      "x": 1375,
+      "y": 537
+    },
+    "createPrButton": {
+      "x": 1300,
+      "y": 42
+    },
+    "userBubble": {
+      "x": 755,
+      "y": 162
+    },
+    "panel": {
+      "x": 1177,
+      "y": 365
+    },
+    "sidebar": {
+      "x": 128,
+      "y": 560
+    },
+    "errors": []
+  }
+}

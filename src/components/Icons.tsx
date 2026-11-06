@@ -57,7 +57,7 @@ export const LogoMark = ({ size = 20 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
     <rect x="1" y="1" width="22" height="22" rx="6" fill="#262e40" />
     <path d="M12 5.5c.35 3.9 1.9 5.6 6.5 6.5-4.6.9-6.15 2.6-6.5 6.5-.35-3.9-1.9-5.6-6.5-6.5 4.6-.9 6.15-2.6 6.5-6.5z" fill="#f4efde" />
-    <circle cx="16.6" cy="7.6" r="1" fill="#e8b04b" />
+    <circle cx="16.6" cy="7.6" r="1" fill="var(--status-in-progress)" />
   </svg>
 );
 
@@ -65,6 +65,6 @@ export const LogoMark = ({ size = 20 }: { size?: number }) => (
 export const NextMarkIcon = ({ size = 16 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
     <circle cx="12" cy="12" r="10" fill="currentColor" />
-    <path d="M9 16.5v-9l7.5 10M15 7.5v5.5" fill="none" stroke="var(--bg)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M9 16.5v-9l7.5 10M15 7.5v5.5" fill="none" stroke="var(--background)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );

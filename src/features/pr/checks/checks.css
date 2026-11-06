@@ -1,27 +1,27 @@
 /* parity:pr.checks:ui  Checks tab of the right panel. */
 .checks { flex: 1; overflow-y: auto; padding: 4px 0 12px; }
 .checks-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 18px; }
-.checks-title { font-size: 12px; font-weight: 500; color: var(--muted); }
+.checks-title { font-size: 12px; font-weight: 500; color: var(--muted-foreground); }
 .checks-actions { display: flex; align-items: center; gap: 4px; }
-.checks-head .btn-ghost { background: transparent; border-color: transparent; color: var(--muted); }
-.checks-head .btn-ghost:hover:not(:disabled) { color: var(--text); background: var(--hover); }
+.checks-head .btn-ghost { background: transparent; border-color: transparent; color: var(--muted-foreground); }
+.checks-head .btn-ghost:hover:not(:disabled) { color: var(--foreground); background: var(--hover); }
 .checks-error { margin: 0 18px 6px; }
 .checks-list { list-style: none; margin: 0; padding: 0; }
 .check-line { display: flex; align-items: center; gap: 6px; margin: 0 8px; padding: 4px 10px; border-radius: 6px; font-size: 13px; }
 .check-line:hover { background: var(--hover); }
 .check-line.clickable { cursor: pointer; }
-.check-icon { width: 14px; flex-shrink: 0; text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); }
-.state-failed .check-icon { color: var(--del); }
-.state-passed .check-icon { color: var(--add); }
-.state-running .check-icon { color: var(--amber); }
+.check-icon { width: 14px; flex-shrink: 0; text-align: center; font-size: 12px; font-weight: 700; color: var(--muted-foreground); }
+.state-failed .check-icon { color: var(--diff-deletion); }
+.state-passed .check-icon { color: var(--diff-addition); }
+.state-running .check-icon { color: var(--warning); }
 .check-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.check-workflow { flex-shrink: 0; font-size: 11px; color: var(--muted); }
-.check-duration { flex-shrink: 0; font-size: 12px; color: var(--muted); }
-.check-open { flex-shrink: 0; border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 0 2px; }
-.check-open:hover { color: var(--text); }
+.check-workflow { flex-shrink: 0; font-size: 11px; color: var(--muted-foreground); }
+.check-duration { flex-shrink: 0; font-size: 12px; color: var(--muted-foreground); }
+.check-open { flex-shrink: 0; border: 0; background: transparent; color: var(--muted-foreground); cursor: pointer; padding: 0 2px; }
+.check-open:hover { color: var(--foreground); }
 .check-log-note { margin: 4px 18px 8px 34px; }
 .check-log { margin: 4px 12px 8px 30px; padding: 8px 10px; max-height: 280px; overflow: auto; border-radius: 6px; border: 1px solid var(--border); background: var(--panel); font-family: var(--font-mono); font-size: 11px; line-height: 1.45; white-space: pre; }
-.checks-dot { display: inline-block; width: 6px; height: 6px; margin-left: 4px; border-radius: 50%; vertical-align: middle; background: var(--muted); }
-.checks-dot.passing { background: var(--add); }
-.checks-dot.pending { background: var(--amber); }
-.checks-dot.failing { background: var(--del); }
+.checks-dot { display: inline-block; width: 6px; height: 6px; margin-left: 4px; border-radius: 50%; vertical-align: middle; background: var(--muted-foreground); }
+.checks-dot.passing { background: var(--diff-addition); }
+.checks-dot.pending { background: var(--warning); }
+.checks-dot.failing { background: var(--diff-deletion); }

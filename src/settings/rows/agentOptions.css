@@ -7,32 +7,9 @@
 .settings-row.oc-agent-exec,
 .oc-agent-config,
 .oc-agent-advanced {
-  --oc-success: #16a249;
-  --oc-destructive: #dc2828;
-  --oc-input-border: #14100f1a;
-}
-@media (prefers-color-scheme: dark) {
-  .settings-row.oc-agent-exec,
-  .oc-agent-config,
-  .oc-agent-advanced {
-    --oc-success: #4ade80;
-    --oc-destructive: #f87272;
-    --oc-input-border: #fff3;
-  }
-}
-:root[data-theme="dark"] .settings-row.oc-agent-exec,
-:root[data-theme="dark"] .oc-agent-config,
-:root[data-theme="dark"] .oc-agent-advanced {
-  --oc-success: #4ade80;
-  --oc-destructive: #f87272;
-  --oc-input-border: #fff3;
-}
-:root[data-theme="light"] .settings-row.oc-agent-exec,
-:root[data-theme="light"] .oc-agent-config,
-:root[data-theme="light"] .oc-agent-advanced {
-  --oc-success: #16a249;
-  --oc-destructive: #dc2828;
-  --oc-input-border: #14100f1a;
+  --oc-success: var(--success);
+  --oc-destructive: var(--destructive);
+  --oc-input-border: var(--input);
 }
 
 /* Inline link buttons in descriptions (`text-foreground hover:underline`, ExternalLink size-3). */
@@ -43,7 +20,7 @@
   padding: 0;
   border: 0;
   background: none;
-  color: var(--text);
+  color: var(--foreground);
   font: inherit;
   cursor: pointer;
 }
@@ -70,7 +47,7 @@
   font-size: 12px;
   line-height: 16px;
 }
-.oc-agent-exec-input::placeholder { color: var(--muted); }
+.oc-agent-exec-input::placeholder { color: var(--muted-foreground); }
 .oc-agent-exec-input:focus { outline: 2px solid var(--border); outline-offset: 1px; }
 .oc-agent-icon-btn {
   display: inline-flex;
@@ -82,18 +59,18 @@
   border: 0;
   border-radius: 4px;
   background: none;
-  color: var(--muted);
+  color: var(--muted-foreground);
   cursor: pointer;
 }
-.oc-agent-icon-btn:hover { color: var(--text); background: var(--hover); }
+.oc-agent-icon-btn:hover { color: var(--foreground); background: var(--hover); }
 .oc-agent-exec-browse { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); }
-.oc-agent-outline { flex-shrink: 0; background: transparent; color: var(--text); }
+.oc-agent-outline { flex-shrink: 0; background: transparent; color: var(--foreground); }
 .oc-agent-warning {
   display: flex;
   align-items: flex-start;
   gap: 8px;
   margin-top: 4px;
-  color: #d97706;
+  color: var(--warning);
   font-size: 12px;
   line-height: 16px;
 }
@@ -117,7 +94,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--muted);
+  color: var(--muted-foreground);
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 12px;
   line-height: 16px;
@@ -134,13 +111,13 @@
   padding: 0;
   border: 0;
   background: none;
-  color: var(--muted);
+  color: var(--muted-foreground);
   font: inherit;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
 }
-.oc-agent-advanced-toggle:hover { color: var(--text); }
+.oc-agent-advanced-toggle:hover { color: var(--foreground); }
 .oc-agent-chevron { transition: transform 0.15s; }
 .oc-agent-chevron.open { transform: rotate(90deg); }
 .oc-agent-advanced-body { padding-top: 16px; display: flex; flex-direction: column; gap: 16px; }
@@ -148,9 +125,9 @@
 /* Status line (`gpa`). */
 .oc-agent-status { display: flex; flex-direction: column; gap: 8px; }
 .oc-agent-status-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
-.oc-agent-status-left { display: flex; min-width: 0; flex-wrap: wrap; align-items: center; gap: 6px 12px; color: var(--muted); font-size: 14px; }
-.oc-agent-status-left .oc-agent-link { color: var(--muted); }
-.oc-agent-status-left .oc-agent-link:hover { color: var(--text); }
+.oc-agent-status-left { display: flex; min-width: 0; flex-wrap: wrap; align-items: center; gap: 6px 12px; color: var(--muted-foreground); font-size: 14px; }
+.oc-agent-status-left .oc-agent-link { color: var(--muted-foreground); }
+.oc-agent-status-left .oc-agent-link:hover { color: var(--foreground); }
 .oc-agent-ghost {
   display: inline-flex;
   align-items: center;
@@ -160,7 +137,7 @@
   border: 0;
   border-radius: 6px;
   background: none;
-  color: var(--text);
+  color: var(--foreground);
   font: inherit;
   font-size: 12px;
   font-weight: 500;
@@ -185,7 +162,7 @@
 }
 .oc-agent-badge.ok { color: var(--oc-success); border-color: color-mix(in srgb, var(--oc-success) 40%, transparent); background: color-mix(in srgb, var(--oc-success) 10%, transparent); }
 .oc-agent-badge.problem { color: var(--oc-destructive); border-color: color-mix(in srgb, var(--oc-destructive) 40%, transparent); background: color-mix(in srgb, var(--oc-destructive) 10%, transparent); }
-.oc-agent-badge.muted { color: var(--muted); border-color: var(--border); background: var(--hover); }
+.oc-agent-badge.muted { color: var(--muted-foreground); border-color: var(--border); background: var(--hover); }
 .oc-agent-badge-version { margin-left: 6px; font-family: var(--font-mono, ui-monospace, monospace); opacity: 0.8; }
 
 /* Inside a boxed .settings-rows list the card is one more row; standing alone (Conductor's tab column) it keeps its own border. */

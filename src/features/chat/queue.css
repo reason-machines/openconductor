@@ -5,8 +5,8 @@
 .composer-stop[data-state="cancelling"] { opacity: 0.75; }
 
 .queue { border: 1px solid var(--border); border-radius: 10px; background: var(--panel); font-size: 12px; }
-.queue.is-paused .queue-status { color: var(--amber); }
-.queue-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; color: var(--muted); }
+.queue.is-paused .queue-status { color: var(--warning); }
+.queue-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; color: var(--muted-foreground); }
 .queue-status { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .queue-head-actions, .queue-row-actions { display: flex; gap: 4px; flex-shrink: 0; }
 .queue-list { list-style: none; margin: 0; padding: 0 6px 6px; max-height: 13rem; overflow-y: auto; border-top: 1px solid var(--border); }
@@ -14,7 +14,7 @@
 .queue-row:hover { background: var(--hover); }
 .queue-row[draggable="true"] { cursor: grab; }
 .queue-row:focus { outline: none; }
-.queue-row:focus-visible { background: var(--hover); box-shadow: inset 0 0 0 1px var(--accent, currentColor); }
+.queue-row:focus-visible { background: var(--hover); box-shadow: inset 0 0 0 1px var(--primary, currentColor); }
 .queue-row.is-dragging { opacity: 0.5; }
 .queue-row .queue-row-actions { opacity: 0; }
 .queue-row:hover .queue-row-actions, .queue-row:focus-within .queue-row-actions, .queue-row.is-editing .queue-row-actions { opacity: 1; }
