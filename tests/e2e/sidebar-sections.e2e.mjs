@@ -7,6 +7,7 @@
 //   node --test tests/e2e/
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
+import { isDeepStrictEqual } from "node:util";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
@@ -48,6 +49,18 @@ const dialog = (page, title) => page.getByRole("dialog", { name: title });
 const rowMenu = (page) => page.getByRole("menu", { name: "Workspace actions" });
 const moveMenu = (page) => page.getByRole("menu", { name: "Move to section" });
 
+// Rows and sections leave through framer-motion's AnimatePresence, which unmounts a removed
+// child a frame after the change even with reduced motion, so removals are polled to settle.
+async function settled(read, expected, timeout = 3000) {
+  const end = Date.now() + timeout;
+  let actual = await read();
+  while (!isDeepStrictEqual(actual, expected) && Date.now() < end) {
+    await new Promise((r) => setTimeout(r, 25));
+    actual = await read();
+  }
+  assert.deepEqual(actual, expected);
+}
+
 async function openMoveMenu(page, label) {
   await row(page, label).click({ button: "right" });
   await rowMenu(page).getByRole("menuitem", { name: "Move to section" }).hover();
@@ -56,7 +69,7 @@ async function openMoveMenu(page, label) {
 
 test("sections: create, move in and out, edit, delete", async () => {
   // Reduced motion: rows move between groups at once instead of collapsing out over 200ms
-  // (Conductor's `Qj` skips its motion wrapper the same way), so counts are final right away.
+  // (Conductor's `Qj` skips its motion wrapper the same way); removals still settle a frame later.
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
   await page.goto(`${base}/?demo=1`);
   await row(page, "Quiet harbor").waitFor();
@@ -84,9 +97,9 @@ test("sections: create, move in and out, edit, delete", async () => {
   await page.locator(".sb-group", { hasText: "Pinned" }).waitFor();
   await openMoveMenu(page, "Quiet harbor");
   await moveMenu(page).getByRole("menuitemradio", { name: "Focus" }).click();
-  assert.deepEqual(await rowsIn(focus), ["Quiet harbor"]);
-  assert.equal(await page.locator(".sb-group", { hasText: "Pinned" }).count(), 0);
-  assert.ok(!(await rowsIn(repoGroup(page, "openconductor"))).includes("Quiet harbor"));
+  await settled(() => rowsIn(focus), ["Quiet harbor"]);
+  await settled(() => page.locator(".sb-group", { hasText: "Pinned" }).count(), 0);
+  await settled(async () => (await rowsIn(repoGroup(page, "openconductor"))).includes("Quiet harbor"), false);
   // Sections sit between Pinned and My workspaces.
   const order = await page.locator(".repo-list").evaluate((nav) => [...nav.querySelectorAll(".sb-nav-section .sb-section-label, .sb-section-header > .sb-section-toggle > .sb-section-label")].map((e) => e.textContent));
   assert.deepEqual(order, ["Focus", "My workspaces"]);
@@ -97,8 +110,8 @@ test("sections: create, move in and out, edit, delete", async () => {
   assert.equal(await current.getAttribute("aria-checked"), "true");
   assert.equal(await current.isDisabled(), true);
   await moveMenu(page).getByRole("menuitem", { name: "Remove from section" }).click();
-  assert.ok((await rowsIn(repoGroup(page, "openconductor"))).includes("Quiet harbor"));
-  assert.deepEqual(await rowsIn(focus), []);
+  await settled(async () => (await rowsIn(repoGroup(page, "openconductor"))).includes("Quiet harbor"), true);
+  await settled(() => rowsIn(focus), []);
 
   // New section… from the row menu creates a section holding that row.
   await openMoveMenu(page, "Brisk otter");
@@ -128,8 +141,8 @@ test("sections: create, move in and out, edit, delete", async () => {
   // Delete section sends its workspaces back to their repository group.
   await page.getByRole("button", { name: "Backend actions" }).click();
   await page.getByRole("menuitem", { name: "Delete section" }).click();
-  assert.equal(await section(page, "Backend").count(), 0);
-  assert.ok((await rowsIn(repoGroup(page, "api-server"))).includes("Brisk otter"));
+  await settled(() => section(page, "Backend").count(), 0);
+  await settled(async () => (await rowsIn(repoGroup(page, "api-server"))).includes("Brisk otter"), true);
   await page.close();
 });
 
