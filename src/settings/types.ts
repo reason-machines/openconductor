@@ -23,12 +23,8 @@ export const AGENTS: AgentKind[] = ["claude", "codex", "cursor", "opencode", "re
 export type ProviderKind =
   | "claude_login"
   | "anthropic_api"
-  | "bedrock"
-  | "vertex"
-  | "foundry"
   | "codex_login"
   | "openai_api"
-  | "codex_gateway"
   | "cursor_api"
   | "opencode_login"
   | "reason_login";
@@ -51,12 +47,9 @@ export interface Settings {
   /** Conductor's top-level provider keys: `custom` (API key) or `default` (CLI login); Codex also `chatgpt_sign_in`. */
   claude_provider?: string | null;
   codex_provider?: string | null;
-  bedrock_region?: string | null;
-  vertex_project_id?: string | null;
   /** Advanced › executable paths; blank means the agent on PATH. */
   claude_code_executable_path?: string | null;
   codex_executable_path?: string | null;
-  opencode_executable_path?: string | null;
   /** Advanced › "SSH private key path". */
   ssh_key_path?: string | null;
   /** Account › "Claude Code tool approvals"; off by default. */

@@ -3,6 +3,7 @@
 // localStorage keeps only UI preferences (selection, sidebar visibility, collapsed repos).
 import type { AppState, Repo, Selection, UnreadChat, Workspace } from "./types";
 import { isWorkspaceStatus } from "./workspaceStatus.ts";
+import { restoreChatTabs, type StoredChatTab } from "./openChat.ts";
 
 export interface DbRepoRow {
   id: string;
@@ -37,6 +38,8 @@ export interface DbWorkspaceRow {
   unread: boolean;
   /** The workspace's unread, non-hidden chats (`sessions.unread_count`); absent from rows of an older backend. */
   unreadChats?: { id: string; updatedAt: string }[];
+  /** The open chat tabs besides the main chat (review, fork, "+"), oldest first; absent from rows of an older backend. */
+  chatTabs?: StoredChatTab[];
   /** The PR's title and body as last stored (`pr_title`, `pr_description`). */
   prTitle: string | null;
   prDescription: string | null;
@@ -114,15 +117,23 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
 }
 
 /**
- * The row's unread chats. Only the main chat (id = workspace id) has a tab after a
- * restart, since review tabs live in memory: a stored unread review chat counts as
- * hidden, which Conductor leaves out of the workspace's unread (`zJo`). A legacy
- * `workspaces.unread` = 1 marks the main chat.
+ * The row's unread chats: the main chat (id = workspace id) and the chats whose
+ * tab was open when the app last ran, which come back after a restart as
+ * Conductor's do (its tabs are the workspace's non-hidden sessions, index `ylt`
+ * at 1226:63776). Any other stored unread chat counts as hidden, which Conductor
+ * leaves out of the workspace's unread (`zJo`). A legacy `workspaces.unread` = 1
+ * marks the main chat.
  */
 export function unreadChatsOf(w: DbWorkspaceRow): UnreadChat[] | undefined {
-  const chats = (w.unreadChats ?? []).filter((c) => c.id === w.id).map((c) => ({ id: c.id, at: sqliteTime(c.updatedAt) }));
+  const tabbed = (id: string) => id === w.id || (w.chatTabs?.some((t) => t.id === id) ?? false);
+  const chats = (w.unreadChats ?? []).filter((c) => tabbed(c.id)).map((c) => ({ id: c.id, at: sqliteTime(c.updatedAt) }));
   if (w.unread && chats.length === 0) chats.push({ id: w.id, at: sqliteTime(w.updatedAt ?? w.createdAt) });
   return chats.length > 0 ? chats : undefined;
+}
+
+/** Show again the chat tabs that were open when the app last ran (`db_list_workspaces` rows). */
+export function restoreChatTabsOf(rows: readonly DbWorkspaceRow[]): void {
+  for (const w of rows) restoreChatTabs(w.id, w.chatTabs ?? []);
 }
 
 /** Keep the selection only while it still points at a listed workspace. */

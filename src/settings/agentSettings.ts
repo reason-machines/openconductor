@@ -86,14 +86,13 @@ export function executablePaths(s: Settings): ExecutablePaths {
   return {
     claude: s.claude_code_executable_path ?? undefined,
     codex: s.codex_executable_path ?? undefined,
-    opencode: s.opencode_executable_path ?? undefined,
   };
 }
 
 /** A copy of `s` with a top-level text key set; blank means unset. */
 export function withTopLevel(
   s: Settings,
-  key: "claude_code_executable_path" | "codex_executable_path" | "opencode_executable_path" | "ssh_key_path",
+  key: "claude_code_executable_path" | "codex_executable_path" | "ssh_key_path",
   value: string,
 ): Settings {
   const v = value.trim();
