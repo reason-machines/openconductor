@@ -37,6 +37,8 @@ interface Props {
   workspace: Workspace;
   /** Bumped by ⌘J or a big terminal: selects the Terminal tab. */
   terminalRequest?: number;
+  /** Reports the tab on screen ("terminal" or another tab), or null once the panel unmounts. */
+  onTabChange?: (tab: string | null) => void;
 }
 
 type ScriptsTab = "setup" | "run" | "terminal";
@@ -53,13 +55,17 @@ const errorText = (e: unknown) => (typeof e === "string" ? e : e instanceof Erro
  * With the repository's spotlight_testing setting on, the Run task picker also
  * offers Spotlight, which syncs this workspace into the repository root.
  */
-export function ScriptsPanel({ repo, workspace, terminalRequest = 0 }: Props) {
+export function ScriptsPanel({ repo, workspace, terminalRequest = 0, onTabChange }: Props) {
   const ref = useMemo(() => workspaceRef(repo, workspace), [repo, workspace]);
   const wsId = workspace.id;
   const [tab, setTab] = useState<ScriptsTab>("run");
   useEffect(() => {
     if (terminalRequest > 0) setTab("terminal");
   }, [terminalRequest]);
+  useEffect(() => {
+    onTabChange?.(tab);
+  }, [tab, onTabChange]);
+  useEffect(() => () => onTabChange?.(null), [onTabChange]);
   const [config, setConfig] = useState<ScriptsConfig | null>(null);
   const [runs, setRuns] = useState<RunStatus[]>([]);
   const [picked, setPicked] = useState<string | null>(null);
