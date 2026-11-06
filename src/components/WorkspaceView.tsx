@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
-import { ArchiveIcon, BranchIcon } from "./Icons";
+import { BranchIcon, RightSidebarIcon } from "./Icons";
+import { toggleRightPanel } from "./panelPrefs";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { answerPermission, chatSnapshot, configureReason, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, reasonChatConfig, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type PermissionPrompt } from "../features/chat/reasonChat.ts";
 import { PermissionRequests } from "../features/chat/PermissionRequests.tsx";
@@ -715,13 +716,6 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
   );
 }
 
-const STATUS_TEXT: Record<Workspace["status"], string> = {
-  idle: "Idle",
-  working: "Working",
-  "needs-review": "Ready for review",
-  archived: "Archived",
-};
-
 export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) shows it,
   // and ⌘⇧T opens a big terminal while Big terminal mode is on.
@@ -898,9 +892,6 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               PR #{prNumber}
             </button>
           )}
-          <span className={`chip status ${workspace.status}`}>
-            <span className={`status-dot ${workspace.status}`} /> {STATUS_TEXT[workspace.status]}
-          </span>
           {settingUp && (
             <span className="chip status setting-up" role="status">
               <span className="status-dot working" /> {RUNNING_SETUP}
@@ -910,8 +901,14 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         <div className="ws-actions">
           {workspace.status !== "archived" && <OpenInButton path={workspace.path ?? null} notify={notify} />}
           <PrControl pullRequest={pullRequest} actions={prActions} />
-          <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
-            <ArchiveIcon size={12} /> Archive
+          <button
+            className={`btn btn-small btn-icon${rightPanelVisible ? " active" : ""}`}
+            title="Toggle right sidebar ⌥⌘B"
+            aria-label="Toggle right sidebar"
+            aria-pressed={rightPanelVisible}
+            onClick={toggleRightPanel}
+          >
+            <RightSidebarIcon size={12} />
           </button>
         </div>
       </header>

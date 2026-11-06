@@ -46,6 +46,8 @@ import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { createRepoDefault } from "./home/repoFilter";
+import { storedRepoFilter } from "./home/useRepoFilter";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
 
 export default function App() {
@@ -82,7 +84,9 @@ export default function App() {
   const [createRepoId, setCreateRepoId] = useState<string | null>(null);
   const [createSectionId, setCreateSectionId] = useState<string | undefined>(undefined);
   const openDialog = (d: DialogKind, repoId?: string, sectionId?: string) => {
-    const id = repoId ?? (state.selection.kind === "workspace" ? state.selection.repoId : null);
+    const requested = repoId ?? (state.selection.kind === "workspace" ? state.selection.repoId : null);
+    // Nothing requested: start on the sidebar's project filter, as Conductor's `q4a` does.
+    const id = createRepoDefault(state.repos.map((r) => r.id), requested, storedRepoFilter(prefs.sidebar_repo_filter));
     // Like Conductor's `g5`: the page when Experimental › New workspace page is on, else the dialog.
     if (d === "create" && prefs.experimental_new_workspace_page) {
       setDialog(null);
