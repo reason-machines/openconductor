@@ -12,6 +12,7 @@
 //! })
 //! .invoke_handler(tauri::generate_handler![
 //!     workspace::commands::add_repository,
+//!     workspace::commands::ensure_repository,
 //!     workspace::commands::clone_repository,
 //!     workspace::commands::default_clone_directory,
 //!     workspace::commands::list_repositories,
@@ -96,6 +97,21 @@ pub async fn add_repository(
     path: String,
 ) -> Result<RepositoryDto, String> {
     let repo = service.add_repository(path.as_ref()).map_err(|e| e.to_string())?;
+    persistence::on_repository_added(&db, &repo).await?;
+    Ok(repo_dto(repo))
+}
+
+/// JS: `invoke("ensure_repository", { path, repositoryId })`. The project a
+/// sidebar repo already is (by id, else by folder), registered only when the
+/// backend has none; unlike `add_repository` it never adds a `<name>-v1`.
+#[tauri::command]
+pub async fn ensure_repository(
+    service: State<'_, WorkspaceService>,
+    db: State<'_, Db>,
+    path: String,
+    repository_id: Option<String>,
+) -> Result<RepositoryDto, String> {
+    let repo = service.ensure_repository(repository_id.as_deref(), path.as_ref()).map_err(|e| e.to_string())?;
     persistence::on_repository_added(&db, &repo).await?;
     Ok(repo_dto(repo))
 }

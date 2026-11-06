@@ -10,6 +10,7 @@ import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer
 import * as Q from "./queue.ts";
 import { reportChatStatus } from "./chatRuntime.ts";
 import { answered, applyCodexPayload, codexChat, failTurn, newestTurn, startTurn, type CodexApproval, type CodexChatState, type CodexDecision, type CodexPayload, type Step } from "./codex.ts";
+import { statusWithOpenRequests, type CodexConsent, type ConsentAnswer } from "./codexConsent.ts";
 
 const EVENT = "codex-chat-event";
 const threadKey = (chatId: string) => `openconductor.codex.thread.${chatId}`;
@@ -48,6 +49,8 @@ export interface CodexSnapshot {
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
   approvals: CodexApproval[];
+  /** Open MCP elicitations and permission requests (`needs_user_input`). */
+  consents: CodexConsent[];
 }
 
 interface Chat {
@@ -70,25 +73,32 @@ export const CODEX_CAN_STEER = false;
 function chat(chatId: string): Chat {
   let c = chats.get(chatId);
   if (!c) {
-    c = { state: codexChat(chatId), view: { transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), approvals: [] }, cwd: null, opened: false, listeners: new Set() };
+    c = { state: codexChat(chatId), view: { transcript: emptyTranscript(chatId), queue: Q.emptyQueue(), approvals: [], consents: [] }, cwd: null, opened: false, listeners: new Set() };
     chats.set(chatId, c);
   }
   return c;
 }
 
 function publish(c: Chat, next: Partial<CodexSnapshot>) {
-  c.view = { ...c.view, ...next, approvals: c.state.approvals };
+  c.view = { ...c.view, ...next, approvals: c.state.approvals, consents: c.state.consents };
   for (const fn of c.listeners) fn(c.view);
 }
 
 function apply(c: Chat, step: Step) {
   const approvalsChanged = step.state.approvals !== c.state.approvals;
+  const prevConsents = c.state.consents;
   c.state = step.state;
   // An open approval is Conductor's tool approval: needs_user_permission until answered (`qV`).
-  if (approvalsChanged) setQueue(c, Q.waitingOn(c.view.queue, c.state.approvals.length > 0 ? "needs_user_permission" : null));
+  // An open MCP elicitation or permission request is needs_user_input until answered
+  // (Conductor's codexMcpElicitation / codexPermissionApproval); a tool approval outranks it.
+  const consentsChanged = step.state.consents !== prevConsents;
+  if (approvalsChanged || consentsChanged) {
+    const status = statusWithOpenRequests(c.view.queue.status, c.state.approvals.length, c.state.consents.length);
+    setQueue(c, Q.waitingOn(c.view.queue, status === "working" ? null : status));
+  }
   if (step.threadId) localStorage.setItem(threadKey(c.state.chatId), step.threadId);
   if (step.events.length === 0) {
-    if (approvalsChanged) publish(c, {});
+    if (approvalsChanged || consentsChanged) publish(c, {});
     return;
   }
   const r = applyChatEvents(c.view.transcript, step.events);
@@ -184,4 +194,11 @@ export async function answerCodex(chatId: string, requestId: number | string, de
   const c = chat(chatId);
   apply(c, { state: answered(c.state, requestId), events: [] });
   await invoke("codex_answer", { chatId, requestId, decision });
+}
+
+/** Answers an MCP elicitation or permission request; the chat goes back to working. */
+export async function answerCodexConsent(chatId: string, requestId: number | string, answer: ConsentAnswer): Promise<void> {
+  const c = chat(chatId);
+  apply(c, { state: answered(c.state, requestId), events: [] });
+  await invoke("codex_respond", { chatId, requestId, answer });
 }
