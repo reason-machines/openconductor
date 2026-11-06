@@ -40,6 +40,18 @@ try {
   await page.evaluate(() => window.__settingsTest.complete(4));
   await page.waitForFunction(() => window.__settingsTest.stored().reason.reasoning_effort === "medium");
   console.log("PASS: rejected save rolls back and does not poison the next save");
+
+  await page.goto(`${base}/settings/user/terminal`);
+  await page.locator("label.preset-option").filter({ hasText: /^Codex/ }).click();
+  await page.waitForFunction(() => window.__settingsTest.stored().terminal?.big_terminal_preset === "codex");
+  await page.getByRole("button", { name: "Add custom command", exact: true }).click();
+  const command = page.getByLabel("Custom command", { exact: true });
+  await command.fill("printf settings-test");
+  await command.blur();
+  await page.waitForFunction(() => window.__settingsTest.stored().terminal?.big_terminal_custom_commands[0]?.command === "printf settings-test");
+  await page.getByRole("button", { name: "Delete custom command", exact: true }).click();
+  await page.waitForFunction(() => window.__settingsTest.stored().terminal?.big_terminal_preset === "claude" && window.__settingsTest.stored().terminal.big_terminal_custom_commands.length === 0);
+  console.log("PASS: preset selection, custom command editing and deletion round-trip through the settings UI");
 } finally {
   await browser.close();
 }

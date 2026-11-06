@@ -23,7 +23,7 @@ function settingsBackend() {
     git: { branch_prefix_type: "github_username", delete_branch_on_archive: false, archive_on_merge: false, worktree_push_auto_setup_remote: true },
     models: { default: "opus", default_thinking_enabled: true, review_thinking_enabled: true, codex: { default_thinking_level: "medium", review_thinking_level: "medium" } },
     providers: {},
-    experimental: { experimental_big_terminal_mode: true },
+    experimental: { experimental_big_terminal_mode: location.pathname.endsWith("/terminal") },
     reason: { workspace: "ws-b", model: "test-model", reasoning_effort: "high" },
   };
   const account = { version: "0.2.692", name: "Ada Demo", email: "ada@example.com", credential: "login", error: null, organization: "Tide Labs", computerConnected: true, workspaces: [{ slug: "ws-a", name: "Workspace A", selected: true, connected: true }, { slug: "ws-b", name: "Workspace B", selected: false, connected: true }] };
@@ -42,6 +42,7 @@ function settingsBackend() {
   const original = window.__TAURI_INTERNALS__.invoke;
   window.__TAURI_INTERNALS__.invoke = async (cmd, args) => {
     if (cmd === "get_settings") return structuredClone(settings);
+    if (cmd === "env_vars_list" || cmd === "env_files_loaded") return [];
     if (cmd === "update_settings") {
       if (!manual) { settings = structuredClone(args.settings); return structuredClone(settings); }
       return new Promise((resolve, reject) => writes.push({ next: structuredClone(args.settings), resolve, reject, done: false }));
@@ -52,6 +53,17 @@ function settingsBackend() {
     if (cmd === "provider_status") return { agent: args.agent, kind: args.agent === "reason" ? "reason_login" : args.agent === "codex" ? "codex_login" : "claude_login", secrets: [], ready: false, problem: null };
     if (cmd === "agent_system_binary") return `/Users/demo/.local/bin/${args.agent === "claude" ? "claude" : args.agent}`;
     if (cmd === "agent_auth_status") return { authenticated: false, error: null };
+    if (cmd === "cli_login_status") return { installed: true, authenticated: false };
+    if (cmd === "agent_config_file") return { filePath: `/Users/demo/.${args.agent === "claude" ? "claude/settings.json" : "codex/config.toml"}`, directoryPath: `/Users/demo/.${args.agent}` };
+    if (cmd === "repo_settings_effective") return {
+      prompts: {}, git: { branch_prefix_type: null, branch_prefix: null, archive_on_merge: { value: false, layer: "defaults" }, delete_branch_on_archive: { value: false, layer: "defaults" }, worktree_push_auto_setup_remote: { value: true, layer: "defaults" } },
+      previewUrls: null, environmentVariableFiles: null, fileIncludeGlobs: null,
+      env: { local: {}, cloud: {}, files: [] }, userEnv: { local: {}, cloud: {}, files: [] }, warnings: [],
+    };
+    if (cmd === "spotlight_testing_get") return { enabled: false, layer: null, managed: false };
+    if (cmd === "scripts_config") return { setup: null, setupLayer: null, archive: null, archiveLayer: null, runMode: "nonconcurrent", autoRunAfterSetup: false, run: [], managedKeys: [], warnings: [] };
+    if (cmd === "get_conductor_root") return "/Users/demo/.openconductor";
+    if (cmd === "repo_workspaces_path") return `/Users/demo/.openconductor/workspaces/${args.repoId.replace("repo-", "")}`;
     return original(cmd, args);
   };
 }
@@ -67,6 +79,9 @@ http.createServer((req, res) => {
   res.end(body);
 }).listen(port, "0.0.0.0", () => {
   console.log(`Settings fixture listening on ${port}`);
+  if (process.env.CAPTURE_SETTINGS) {
+    void import("./capture.mjs").catch((error) => console.error("SETTINGS_CAPTURE_FAILED", error));
+  }
   if (process.env.CHECK_SAVE_RACE) {
     void import("./check-save-race.mjs").then(
       () => console.log("SAVE_RACE_CHECK_PASSED"),

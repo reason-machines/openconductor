@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BUILTIN_MONO, MONO_FONTS, monoFontError, monoFontStack, withAppearance, zoomPercent, ZOOM_PERCENTS } from "./appearance";
+import { MONO_FONTS, monoFontError, monoFontStack, withAppearance, zoomPercent, ZOOM_PERCENTS } from "./appearance";
 import { Row } from "./GeneralPage";
 import { TerminalFontRows } from "./TerminalFont";
 import { DiffColorRows, DiffLigaturesRow } from "../features/diff/DiffAppearanceRows";
@@ -45,10 +45,10 @@ export function AppearancePage({ settings, save }: Props) {
   const { overrides } = useKeybindingOverrides();
   const saved = a.mono_font ?? null;
   // "Custom..." stays local, input shown and nothing saved, until a valid name is typed.
-  const [fontChoice, setFontChoice] = useState(saved === null ? BUILTIN : MONO_FONTS.includes(saved) ? saved : CUSTOM);
+  const [fontChoice, setFontChoice] = useState(saved === null || saved === "Geist Mono" ? BUILTIN : MONO_FONTS.includes(saved) ? saved : CUSTOM);
   const [custom, setCustom] = useState(saved !== null && !MONO_FONTS.includes(saved) ? saved : "");
   useEffect(() => {
-    setFontChoice(saved === null ? BUILTIN : MONO_FONTS.includes(saved) ? saved : CUSTOM);
+    setFontChoice(saved === null || saved === "Geist Mono" ? BUILTIN : MONO_FONTS.includes(saved) ? saved : CUSTOM);
     if (saved !== null && !MONO_FONTS.includes(saved)) setCustom(saved);
   }, [saved]);
   const customError = fontChoice === CUSTOM ? monoFontError(custom) : null;
@@ -63,24 +63,16 @@ export function AppearancePage({ settings, save }: Props) {
     if (monoFontError(custom) !== null || custom.trim() === saved) return;
     save(withAppearance(settings, "mono_font", custom.trim()));
   };
-  const previewFont = fontChoice === BUILTIN ? BUILTIN_MONO : monoFontStack(fontChoice === CUSTOM ? custom : fontChoice);
+  const previewFont = fontChoice === BUILTIN ? "var(--font-mono)" : monoFontStack(fontChoice === CUSTOM ? custom : fontChoice);
 
   return (
-    <div className="settings-rows">
+    <div className="settings-rows settings-appearance-rows">
       <Row label="Theme" help={<>Toggle with <Keys glyphs={shortcutGlyphs("toggleTheme", overrides)} /></>}>
         <Select<Theme>
           label="Theme"
           value={settings.general.theme}
           options={THEMES}
           onChange={(v) => save(withField(settings, "general", "theme", v))}
-        />
-      </Row>
-      <Row label="Color palette" help="Surfaces, text and the accent color. Status and diff colors keep their meaning.">
-        <Select<PaletteId>
-          label="Color palette"
-          value={paletteFrom(a.color_palette)}
-          options={PALETTE_IDS.map((id) => ({ value: id, label: PALETTE_LABELS[id] }))}
-          onChange={(v) => save(withAppearance(settings, "color_palette", v))}
         />
       </Row>
       <Row label="Low-contrast dark mode">
@@ -107,8 +99,8 @@ export function AppearancePage({ settings, save }: Props) {
       <DiffColorRows settings={settings} save={save} />
       <Row label="Mono Font" help="Font used for code and diffs">
         <select className="settings-select" style={{ width: 180 }} aria-label="Mono Font" value={fontChoice} onChange={(e) => chooseFont(e.target.value)}>
-          <option value={BUILTIN}>System default</option>
-          {MONO_FONTS.map((f) => (
+          <option value={BUILTIN}>Geist Mono</option>
+          {MONO_FONTS.filter((font) => font !== "Geist Mono").map((f) => (
             <option key={f} value={f}>
               {f}
             </option>
@@ -162,6 +154,14 @@ export function AppearancePage({ settings, save }: Props) {
         </div>
       </div>
       <TerminalFontRows settings={settings} save={save} />
+      <Row label="Color palette" help="Surfaces, text and the accent color. Status and diff colors keep their meaning.">
+        <Select<PaletteId>
+          label="Color palette"
+          value={paletteFrom(a.color_palette)}
+          options={PALETTE_IDS.map((id) => ({ value: id, label: PALETTE_LABELS[id] }))}
+          onChange={(v) => save(withAppearance(settings, "color_palette", v))}
+        />
+      </Row>
     </div>
   );
 }
