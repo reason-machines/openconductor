@@ -2,7 +2,7 @@ import { FILES, SHELL, fakeBackend } from "./right-panel-fixture.mjs";
 
 export const SCRIPT_LOG = "\x1b[32mDependencies installed\x1b[0m\r\nProgress 10%\r\x1b[2KProgress 100%\r\n\x1b[34mReady on localhost:55000\x1b[0m\r\n";
 
-export function scriptOutputBackend({ output, kind = "setup", running = false }) {
+export function scriptOutputBackend({ output, kind = "setup", running = false, palette }) {
   const invoke = window.__TAURI_INTERNALS__.invoke;
   const callbacks = new Map();
   const transformCallback = window.__TAURI_INTERNALS__.transformCallback;
@@ -25,6 +25,10 @@ export function scriptOutputBackend({ output, kind = "setup", running = false })
     },
   };
   window.__TAURI_INTERNALS__.invoke = async (cmd, args) => {
+    if (cmd === "get_settings" && palette === "stone") {
+      const settings = await invoke(cmd, args);
+      return { ...settings, appearance: { ...settings.appearance, color_palette: palette } };
+    }
     if (cmd === "plugin:event|listen" && args.event === "scripts://event") listener = args.handler;
     if (cmd === "setup_script_status") return { state: kind === "setup" ? state : "idle", log: kind === "setup" ? output : null, last: null };
     if (cmd === "setup_script_start") { state = "running"; output = ""; return true; }
@@ -35,6 +39,6 @@ export function scriptOutputBackend({ output, kind = "setup", running = false })
   };
 }
 
-export function outputInit(kind = "setup", running = false) {
-  return `(${fakeBackend})(${JSON.stringify({ shell: SHELL, files: FILES, setupScript: "npm install", runScript: "npm run dev" })});(${scriptOutputBackend})(${JSON.stringify({ output: SCRIPT_LOG, kind, running })});`;
+export function outputInit(kind = "setup", running = false, palette) {
+  return `(${fakeBackend})(${JSON.stringify({ shell: SHELL, files: FILES, setupScript: "npm install", runScript: "npm run dev" })});(${scriptOutputBackend})(${JSON.stringify({ output: SCRIPT_LOG, kind, running, palette })});`;
 }

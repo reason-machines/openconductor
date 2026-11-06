@@ -5,11 +5,12 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 
 from PIL import Image, ImageDraw
 
-out = Path("evidence/terminal/output")
+out = Path(sys.argv[1] if len(sys.argv) > 1 else "evidence/terminal/output")
 images = []
 for name in ("reference", "openconductor"):
     image = Image.open(out / f"{name}.png").convert("RGB").crop((939, 410, 1280, 820))
@@ -17,7 +18,7 @@ for name in ("reference", "openconductor"):
     images.append(image)
 canvas = Image.new("RGB", (706, 450), "#202020")
 draw = ImageDraw.Draw(canvas)
-for x, label, image in zip((8, 357), ("Conductor 0.87.6", "OpenConductor #719"), images):
+for x, label, image in zip((8, 357), ("Conductor 0.87.6", os.environ.get("OC_LABEL", "OpenConductor #719")), images):
     draw.text((x, 10), label, fill="#ffffff")
     canvas.paste(image, (x, 32))
 canvas.save(out / "side-by-side.png")

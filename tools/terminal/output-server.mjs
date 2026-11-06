@@ -37,7 +37,7 @@ export function createOutputServer() {
     if (file.endsWith("index.html")) {
       const init = reference
         ? `<meta http-equiv="Content-Security-Policy" content="connect-src 'self' data: blob:"><script>window.__OC_SCENARIO__="populated";</script>${["sql-wasm.js", "seed-data.js", "seed.js", "fixtures.js", "org-fixtures.js", "tauri-mock.js"].map((n) => `<script src="/__mock/${n}"></script>`).join("")}<script src="/__output-reference.js"></script>`
-        : `<script>${outputInit(url.searchParams.get("kind") ?? "setup", url.searchParams.has("running"))}</script>`;
+        : `<script>${outputInit(url.searchParams.get("kind") ?? "setup", url.searchParams.has("running"), url.searchParams.get("palette"))}</script>`;
       body = body.toString().replace("<head>", `<head>${init}`);
     }
     res.writeHead(200, { "content-type": types[path.extname(file)] ?? "application/octet-stream" });

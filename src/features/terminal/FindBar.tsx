@@ -5,6 +5,7 @@
 // is shown as the terminal selection and scrolled into view; matches are
 // recomputed whenever the terminal renders, so new output is searched too.
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent, type MouseEvent } from "react";
+import type { Terminal } from "@xterm/xterm";
 import { CloseIcon, SearchIcon } from "../../components/Icons";
 import { counterText, findMatches, matchesKey, nextIndex, previousIndex, scrollRow, searchableLines } from "./find";
 import { getFindRequests, subscribeTabs, terminalOf } from "./session";
@@ -12,6 +13,17 @@ import { getFindRequests, subscribeTabs, terminalOf } from "./session";
 export function useTerminalFind(id: string) {
   const requests = useSyncExternalStore(subscribeTabs, () => getFindRequests(id));
   const seen = useRef(requests);
+  const getTerminal = useCallback(() => terminalOf(id), [id]);
+  const find = useBufferFind(getTerminal);
+  useEffect(() => {
+    if (requests === seen.current) return;
+    seen.current = requests;
+    find.open();
+  }, [requests, find.open]);
+  return find;
+}
+
+export function useBufferFind(getTerminal: () => Terminal | null | undefined) {
   const [isOpen, setOpen] = useState(false);
   const [term, setTerm] = useState("");
   const [focusTrigger, setFocusTrigger] = useState(0);
@@ -20,37 +32,35 @@ export function useTerminalFind(id: string) {
   const lastTerm = useRef("");
   const lastKey = useRef("");
 
-  useEffect(() => {
-    if (requests === seen.current) return;
-    seen.current = requests;
+  const open = useCallback(() => {
     setOpen(true);
     setFocusTrigger((n) => n + 1);
-  }, [requests]);
+  }, []);
 
   useEffect(() => {
-    const t = terminalOf(id);
+    const t = getTerminal();
     if (!isOpen || !t) return;
     const sub = t.onRender(() => setRenders((n) => n + 1));
     return () => sub.dispose();
-  }, [id, isOpen]);
+  }, [getTerminal, isOpen]);
 
   const matches = useMemo(() => {
-    const t = terminalOf(id);
+    const t = getTerminal();
     return !isOpen || !t || term === "" ? [] : findMatches(searchableLines(t.buffer.active), term);
     // `renders` re-reads the buffer after the terminal draws new output.
-  }, [id, isOpen, term, renders]);
+  }, [getTerminal, isOpen, term, renders]);
   const key = useMemo(() => matchesKey(matches), [matches]);
 
   const goTo = useCallback(
     (i: number) => {
-      const t = terminalOf(id);
+      const t = getTerminal();
       const m = matches[i];
       if (!t || !m) return;
       t.scrollToLine(scrollRow(m.lineIndex, t.buffer.active.length, t.rows));
       t.select(m.column, m.lineIndex, m.length);
       setIndex(i);
     },
-    [id, matches],
+    [getTerminal, matches],
   );
 
   // A new term jumps to its first match; output that moves the matches keeps
@@ -58,7 +68,7 @@ export function useTerminalFind(id: string) {
   useEffect(() => {
     const active = isOpen && term !== "" ? term : "";
     if (matches.length === 0) {
-      terminalOf(id)?.clearSelection();
+      getTerminal()?.clearSelection();
       setIndex(0);
       lastTerm.current = "";
       lastKey.current = "";
@@ -74,18 +84,19 @@ export function useTerminalFind(id: string) {
       lastKey.current = key;
       goTo(Math.min(index, matches.length - 1));
     }
-  }, [id, isOpen, term, key, matches.length, index, goTo]);
+  }, [getTerminal, isOpen, term, key, matches.length, index, goTo]);
 
   const close = useCallback(() => {
-    const t = terminalOf(id);
+    const t = getTerminal();
     t?.clearSelection();
     setOpen(false);
     setTerm("");
     setIndex(0);
     t?.focus();
-  }, [id]);
+  }, [getTerminal]);
 
   return {
+    open,
     isOpen,
     term,
     setTerm,
@@ -98,7 +109,7 @@ export function useTerminalFind(id: string) {
   };
 }
 
-type Find = ReturnType<typeof useTerminalFind>;
+type Find = ReturnType<typeof useBufferFind>;
 
 // Buttons keep focus in the input; clicks stay out of the terminal below.
 const keepFocus = (e: MouseEvent) => (e.preventDefault(), e.stopPropagation());

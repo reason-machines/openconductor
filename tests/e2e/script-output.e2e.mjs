@@ -21,7 +21,79 @@ after(async () => {
   if (server) await new Promise((resolve) => server.close(resolve));
 });
 
+test("interactive terminal retains Find after sharing the controller with script output", async () => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+  try {
+    await page.goto(`${base}/?kind=setup`);
+    await page.getByRole("button", { name: "New terminal", exact: true }).click();
+    const terminal = page.getByRole("region", { name: "Terminal", exact: true });
+    await page.waitForFunction(() => document.querySelector(".term-mount .xterm-rows")?.textContent.includes("ada@mac lisbon"));
+    await terminal.locator(".xterm-helper-textarea").focus();
+    await page.keyboard.press("Meta+f");
+    const search = terminal.getByRole("search", { name: "Find in terminal" });
+    const input = search.getByPlaceholder("Find");
+    await input.fill("LISBON");
+    await search.locator(".term-find-count").filter({ hasText: "1 of 1" }).waitFor();
+    await input.press("Escape");
+    assert.equal(await search.count(), 0);
+    assert.equal(await terminal.locator(".xterm-helper-textarea").evaluate((el) => document.activeElement === el), true);
+    assert.equal(await page.evaluate(() => window.__fake.spawns), 1);
+  } finally {
+    await page.close();
+  }
+});
+
 for (const kind of ["setup", "run"]) {
+  test(`${kind} output supports Find without sending terminal input`, async () => {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+    try {
+      await page.goto(`${base}/?kind=${kind}`);
+      await page.getByRole("tab", { name: kind === "setup" ? /^Setup/ : "Run", exact: kind !== "setup" }).click();
+      const output = page.getByRole("region", { name: "Script output", exact: true });
+      await output.locator(".xterm-helper-textarea").waitFor();
+      await page.evaluate(() => window.__scriptOutputTest.emit("Find Target one\r\nFind Target two\r\n"));
+      await page.waitForFunction(() => document.querySelector(".script-output .xterm-rows")?.textContent.includes("Find Target two"));
+      await output.locator(".xterm-helper-textarea").focus();
+      await page.keyboard.press("Meta+f");
+      const search = output.getByRole("search", { name: "Find in terminal" });
+      const input = search.getByPlaceholder("Find");
+      await input.waitFor({ timeout: 3000 });
+      assert.equal(await input.evaluate((el) => document.activeElement === el), true);
+      await input.fill("find target");
+      const counter = search.locator(".term-find-count");
+      await counter.filter({ hasText: "1 of 2" }).waitFor();
+      await input.press("Enter");
+      assert.equal(await counter.innerText(), "2 of 2");
+      await input.press("Enter");
+      assert.equal(await counter.innerText(), "1 of 2");
+      await input.press("Shift+Enter");
+      assert.equal(await counter.innerText(), "2 of 2");
+      await search.getByRole("button", { name: "Previous match", exact: true }).click();
+      assert.equal(await counter.innerText(), "1 of 2");
+      assert.equal(await input.evaluate((el) => document.activeElement === el), true);
+      await page.evaluate(() => window.__scriptOutputTest.emit("Find Target three\r\n"));
+      await counter.filter({ hasText: "1 of 3" }).waitFor();
+      await page.keyboard.press("Meta+f");
+      assert.equal(await input.evaluate((el) => el.selectionStart === 0 && el.selectionEnd === el.value.length), true);
+      await input.fill("not present in output");
+      await counter.filter({ hasText: "0 of 0" }).waitFor();
+      assert.equal(await search.getByRole("button", { name: "Next match", exact: true }).isDisabled(), true);
+      await input.press("Escape");
+      assert.equal(await search.count(), 0);
+      assert.equal(await output.locator(".xterm-helper-textarea").evaluate((el) => document.activeElement === el), true);
+      const calls = await page.evaluate(() => window.__fake.calls);
+      assert.deepEqual(calls.filter((c) => c.cmd.startsWith("pty_")), []);
+      if (process.env.OC_SHOT_DIR) {
+        await page.keyboard.press("Meta+f");
+        await input.fill("find target");
+        await counter.filter({ hasText: "1 of 3" }).waitFor();
+        await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/${kind}-find.png` });
+      }
+    } finally {
+      await page.close();
+    }
+  });
+
   test(`${kind} output renders terminal colors and carriage-return updates without a shell`, async () => {
     const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
     try {

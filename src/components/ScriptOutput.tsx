@@ -1,17 +1,29 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
 import { currentTerminalFont, onTerminalFont, TERMINAL_LINE_HEIGHT } from "../features/terminal/font";
 import { currentScrollbackRows, onScrollbackRows } from "../features/terminal/scrollback";
 import { outputUpdate } from "../scripts/output";
+import { FindBar, useBufferFind } from "../features/terminal/FindBar";
+import { useKeybindings } from "../keybindings/KeybindingsProvider";
+import { PRIORITY } from "../keybindings/dispatcher";
 import "../theme/scriptTerminal.css";
 import "./scriptOutput.css";
 
 export function ScriptOutput({ output }: { output: string }) {
+  const container = useRef<HTMLDivElement>(null);
   const host = useRef<HTMLDivElement>(null);
   const terminal = useRef<Terminal | null>(null);
   const written = useRef("");
+  const getTerminal = useCallback(() => terminal.current, []);
+  const find = useBufferFind(getTerminal);
+  useKeybindings({
+    "terminal.search": () => {
+      if (!container.current?.contains(document.activeElement)) return false;
+      find.open();
+    },
+  }, PRIORITY.TERMINAL);
 
   useEffect(() => {
     const element = host.current;
@@ -78,5 +90,10 @@ export function ScriptOutput({ output }: { output: string }) {
     if (update.reset || update.data) term.write(`${update.reset ? "\x1bc" : ""}${update.data}`);
   }, [output]);
 
-  return <div className="script-output" role="region" aria-label="Script output" ref={host} />;
+  return (
+    <div className="script-output" role="region" aria-label="Script output" data-terminal ref={container} onClick={() => terminal.current?.focus()}>
+      <FindBar find={find} />
+      <div className="script-output-mount" ref={host} />
+    </div>
+  );
 }
