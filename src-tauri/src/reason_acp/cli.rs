@@ -193,6 +193,13 @@ impl LaunchConfig {
         self.run_for(dir, args, stdout, SUBCOMMAND_TIMEOUT)
     }
 
+    /// `reason [--workspace SLUG]` in `dir`, for a subcommand the caller adds.
+    pub(crate) fn command_for(&self, dir: &Path) -> Command {
+        let mut cmd = self.base_command(dir);
+        cmd.args(self.workspace_args());
+        cmd
+    }
+
     /// [`Self::run`] with its own time limit.
     pub(crate) fn run_for(
         &self,

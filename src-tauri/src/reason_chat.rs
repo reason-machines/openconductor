@@ -39,6 +39,7 @@ use tauri::{AppHandle, Emitter, Manager, State};
 
 use crate::agent::AgentKind;
 use crate::reason_acp::account::{Account, CommandResult, LoginPrompt};
+use crate::reason_acp::api::ApiError;
 use crate::reason_acp::cli::{find_reason_cli, CliEnv, LaunchConfig};
 use crate::reason_acp::provider::{Attachment, ConfigChoice, ProviderEvent, ReasonProvider, Sink};
 use crate::reason_acp::wire;
@@ -191,6 +192,26 @@ pub fn reason_paths() -> ReasonPaths {
             .ok()
             .map(|h| h.join(".config/reason").display().to_string()),
     }
+}
+
+/// One public Reason API operation through `reason call`, in the configured
+/// Workspace: Routines read and change Reason Loops with it. Only the
+/// operations in [`crate::reason_acp::api::OPERATIONS`] run.
+#[tauri::command]
+pub async fn reason_api_call(
+    app: AppHandle,
+    operation: String,
+    input: Value,
+) -> Result<Value, ApiError> {
+    let unavailable = |message: String| ApiError::new("reason_unavailable", message);
+    let (launch, workspace) = configured(&app).map_err(unavailable)?;
+    let launch = launch
+        .in_workspace(workspace.as_deref())
+        .map_err(|e| unavailable(e.to_string()))?;
+    let dir = home().map_err(unavailable)?;
+    tauri::async_runtime::spawn_blocking(move || launch.call(&dir, &operation, &input))
+        .await
+        .map_err(|e| ApiError::new("no_answer", e.to_string()))?
 }
 
 /// "Connect" next to "This Mac": `reason connect`.

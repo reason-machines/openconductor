@@ -9,6 +9,8 @@
 //! * [`cli`]: finding the `reason` binary and starting `reason acp`.
 //! * [`account`]: `reason status`, `reason login` and `reason connect` for
 //!   Settings › Agents › Reason.
+//! * [`api`]: allowlisted public API operations through `reason call`, for
+//!   Routines (Reason Loops).
 //! * [`updates`]: `session/update` to provider events, error notices sent
 //!   as text, and local/cloud path mapping.
 //! * [`provider`]: one Reason Session per chat; follow-up, Stop, resume.
@@ -19,6 +21,7 @@
 //! commands over it are in `crate::reason_chat`.
 
 pub mod account;
+pub mod api;
 pub mod cli;
 pub mod provider;
 pub mod rpc;
@@ -27,6 +30,8 @@ pub mod wire;
 
 #[cfg(test)]
 mod account_tests;
+#[cfg(test)]
+mod api_tests;
 #[cfg(test)]
 mod cli_tests;
 #[cfg(test)]

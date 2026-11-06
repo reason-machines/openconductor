@@ -45,7 +45,9 @@ import { PRIORITY } from "./keybindings/dispatcher";
 import { copyWorkspaceLink } from "./workspace/link";
 import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
-import { OPEN_SETTINGS_EVENT } from "./features/chat/ChatModelPicker.tsx";
+import { OPEN_SETTINGS_EVENT, openAgentSettings } from "./features/chat/ChatModelPicker.tsx";
+import { RoutinesPage } from "./features/routines/RoutinesPage";
+import { RoutineEditor } from "./features/routines/RoutineEditor";
 import { REPO_SECTIONS, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
 import { changeZoom, rememberSettings } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
@@ -463,6 +465,24 @@ export default function App() {
           />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+        ) : sel.kind === "routines" ? (
+          sel.page ? (
+            <RoutineEditor
+              page={sel.page}
+              repos={state.repos}
+              onNavigate={(page) => dispatch({ type: "select", selection: page ? { kind: "routines", page } : { kind: "routines" } })}
+              onOpenReasonSettings={() => openAgentSettings("reason")}
+              notify={show}
+            />
+          ) : (
+            <RoutinesPage
+              sidebarVisible={isSidebarVisible(state)}
+              onToggleSidebar={() => dispatch({ type: "toggleSidebar" })}
+              onNavigate={(page) => dispatch({ type: "select", selection: page ? { kind: "routines", page } : { kind: "routines" } })}
+              onOpenReasonSettings={() => openAgentSettings("reason")}
+              notify={show}
+            />
+          )
         ) : sel.kind === "dashboard" ? (
           <Dashboard
             repos={state.repos}

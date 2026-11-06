@@ -2385,11 +2385,11 @@
  },
  "route-routines": {
   "status": "no-equivalent",
-  "reason": "OpenConductor has no route or view for /routines"
+  "reason": "the UI map lane has no Reason account; scored by tools/side-by-side/routines.mjs"
  },
  "route-routines-new": {
   "status": "no-equivalent",
-  "reason": "OpenConductor has no route or view for /routines/new"
+  "reason": "the UI map lane has no Reason account; scored by tools/side-by-side/routines.mjs"
  },
  "route-team": {
   "status": "no-equivalent",

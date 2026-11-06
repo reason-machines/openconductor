@@ -471,7 +471,7 @@
      }
     ]
    },
-   "oc_reason": "OpenConductor has no route or view for /routines",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/routines.mjs",
    "covers": [
     {
      "kind": "route",
@@ -491,7 +491,7 @@
      }
     ]
    },
-   "oc_reason": "OpenConductor has no route or view for /routines/new",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/routines.mjs",
    "covers": [
     {
      "kind": "route",

@@ -30,6 +30,9 @@ behaviours the provider has to handle (see src-tauri/src/reason_acp/):
   pending, and the next `status` finds it done (the user used the link).
   With REASON_API_KEY set the account is signed in with credential
   `api_key`. `connect` connects this computer (file `fake-reason-connected`).
+* `[--workspace SLUG] call OPERATION --input-file -` answers the public API
+  operations Routines use (getSelf, listReasons, listMembers and the Loop
+  operations) with `reason call`'s envelope; see `call` below.
 * `[--workspace SLUG] session get ID --json` prints the Session and exits 0
   when it is in that workspace, else prints "Reason: Reason request failed
   (404 session_not_found)" to stderr and exits 1.
@@ -441,7 +444,156 @@ def login():
     print("It finishes on its own once you have; run `reason login` again any time to see where it stands.")
 
 
-if ARGS[:1] == ["whoami"]:
+# `call OPERATION --input-file -`: the public API operations Routines use, in the
+# shapes `reason tools describe` documents (0.2.673). Loops live in
+# fake-reason-loops-<workspace>.json in the working directory. The account's
+# user is u1; the workspace has a main Reason of its own (mine) and one shared
+# with it, whose Loop u2 created. `fake-reason-signed-out` makes every call
+# fail with authentication_required, exit 1.
+MAIN_REASON = "11111111-1111-4111-8111-111111111111"
+SHARED_REASON = "22222222-2222-4222-8222-222222222222"
+
+
+def envelope(data=None, error=None, code=0):
+    out = {"schema_version": 1, "ok": error is None}
+    out["error" if error else "data"] = error if error else data
+    print(json.dumps(out))
+    sys.exit(code)
+
+
+def loops_path():
+    return marker(f"fake-reason-loops-{WORKSPACE}.json")
+
+
+def load_loops():
+    try:
+        with open(loops_path()) as f:
+            return json.load(f)
+    except OSError:
+        seeded = [{"id": "33333333-3333-4333-8333-333333333333", "reason_id": SHARED_REASON, "name": "Nightly triage",
+                   "prompt": "Triage new issues.", "enabled": True, "status": "active", "paused_reason": None,
+                   "wakes_on": [{"kind": "schedule", "description": "0 2 * * *"}],
+                   "schedule": {"kind": "cron", "expression": "0 2 * * *", "every_seconds": None,
+                                "timezone": "UTC", "next_run_at": "2026-11-07T02:00:00Z"},
+                   "event_trigger": None, "slack": None, "execution_mode": "new_session", "session_id": None,
+                   "latest_session_id": None, "device_id": None, "repository": None, "model": None,
+                   "notification_policy": "important_updates", "until": None, "max_runs": None, "run_count": 0,
+                   "last_run": None, "created_by_user_id": "u2",
+                   "viewer_access": {"edit": False, "stop": False}}]
+        save_loops(seeded)
+        return seeded
+
+
+def save_loops(loops):
+    with open(loops_path(), "w") as f:
+        json.dump(loops, f)
+
+
+def wake_fields(wake_on, timezone, loop):
+    loop["wakes_on"], loop["schedule"], loop["event_trigger"], loop["repository"] = [], None, None, None
+    key = None
+    for w in wake_on:
+        if "schedule" in w:
+            loop["wakes_on"].append({"kind": "schedule", "description": w["schedule"]})
+            loop["schedule"] = {"kind": "cron", "expression": w["schedule"], "every_seconds": None,
+                                "timezone": timezone or "UTC", "next_run_at": "2026-11-07T09:00:00Z"}
+        elif "webhook" in w:
+            loop["wakes_on"].append({"kind": "webhook", "description": "webhook"})
+            loop["event_trigger"] = {"kind": "webhook", "url": f"https://api.example.test/hooks/{loop['id']}"}
+            key = "rlk_fake_key"
+        elif "github" in w:
+            g = w["github"]
+            # Reads give a GitHub wake's words only, not its fields.
+            loop["wakes_on"].append({"kind": "github", "description": f"{g['event']} on {g['repo']}"})
+            loop["event_trigger"] = loop["event_trigger"] or {"kind": "github", "url": None}
+            loop["repository"] = g["repo"]
+        else:
+            envelope(error={"code": "invalid_input", "message": "unknown wake"}, code=1)
+    return key
+
+
+def call(op):
+    if os.path.exists(marker("fake-reason-signed-out")) and not os.environ.get("REASON_API_KEY"):
+        envelope(error={"code": "authentication_required",
+                        "message": "Sign in with reason login or supply REASON_API_KEY for the selected API origin."},
+                 code=1)
+    raw = sys.stdin.read()
+    inp = json.loads(raw) if raw.strip() else {}
+    path, body = inp.get("path", {}), inp.get("body", {})
+    with open(marker("fake-reason-calls.log"), "a") as f:
+        f.write(json.dumps({"workspace": WORKSPACE, "op": op, "input": inp}) + "\n")
+    loops = load_loops()
+    found = next((l for l in loops if l["id"] == path.get("loopId") and l["reason_id"] == path.get("reasonId")), None)
+    if op == "getSelf":
+        envelope({"principal_type": "user", "user_id": "u1", "user_name": "E2E", "email": "e2e@example.com",
+                  "org_id": f"org-{WORKSPACE}", "organization_name": f"Workspace {WORKSPACE}"})
+    if op == "listReasons":
+        envelope({"items": [{"id": MAIN_REASON, "name": "E2E", "main": True, "mine": True, "audience": "personal"},
+                            {"id": SHARED_REASON, "name": "Team triage", "main": False, "mine": False,
+                             "audience": "workspace"}]})
+    if op == "listMembers":
+        envelope({"items": [{"user_id": "u1", "email": "e2e@example.com", "role": "admin", "avatar_url": None},
+                            {"user_id": "u2", "email": "grace@example.com", "role": "member", "avatar_url": None}],
+                  "invites": [], "total": 2, "has_next_page": False, "end_cursor": None})
+    if op == "listReasonLoops":
+        envelope({"items": [l for l in loops if l["reason_id"] == path.get("reasonId")]})
+    if op == "createReasonLoop":
+        loop = {"id": f"44444444-4444-4444-8444-{len(loops):012d}", "reason_id": path["reasonId"],
+                "name": body.get("name") or body["prompt"][:40], "prompt": body["prompt"],
+                "enabled": body.get("enabled", True), "paused_reason": None, "slack": None,
+                "execution_mode": "new_session", "session_id": None, "latest_session_id": None, "device_id": None,
+                "model": body.get("model"), "notification_policy": "important_updates", "until": None,
+                "max_runs": None, "run_count": 0, "last_run": None, "created_by_user_id": "u1",
+                "viewer_access": {"edit": True, "stop": True}}
+        loop["status"] = "active" if loop["enabled"] else "paused"
+        key = wake_fields(body["wake_on"], body.get("timezone"), loop)
+        loops.append(loop)
+        save_loops(loops)
+        out = {"loop": loop}
+        if key:
+            out.update(url=loop["event_trigger"]["url"], key=key)
+        envelope(out)
+    if op in ("getReasonLoop", "updateReasonLoop", "deleteReasonLoop", "runReasonLoop") and not found:
+        envelope(error={"code": "loop_not_found", "message": "No such Loop"}, code=1)
+    if op == "getReasonLoop":
+        envelope(found)
+    if op == "updateReasonLoop":
+        key = None
+        for k in ("name", "prompt", "model"):
+            if k in body:
+                found[k] = body[k]
+        if "enabled" in body:
+            found["enabled"] = body["enabled"]
+            found["status"] = "active" if body["enabled"] else "paused"
+        if "wake_on" in body:
+            key = wake_fields(body["wake_on"], body.get("timezone"), found)
+        save_loops(loops)
+        out = {"loop": found}
+        if key:
+            out.update(url=found["event_trigger"]["url"], key=key)
+        envelope(out)
+    if op == "deleteReasonLoop":
+        save_loops([l for l in loops if l is not found])
+        envelope({"ok": True})
+    if op == "runReasonLoop":
+        if not found["schedule"]:
+            envelope(error={"code": "routine_not_scheduled", "message": "Only events wake this Loop"}, code=1)
+        if not found["enabled"]:
+            envelope(error={"code": "routine_not_active", "message": "The Loop is paused"}, code=1)
+        found["run_count"] += 1
+        found["latest_session_id"] = "55555555-5555-4555-8555-555555555555"
+        found["last_run"] = {"status": "running", "at": "2026-11-06T12:30:00Z",
+                             "session_id": found["latest_session_id"]}
+        save_loops(loops)
+        envelope({"loop": found})
+    envelope(error={"code": "invalid_input",
+                    "message": "Invalid command or input. Run reason tools --help and reason tools describe OPERATION."},
+             code=2)
+
+
+if ARGS[:1] == ["call"]:
+    call(ARGS[1])
+elif ARGS[:1] == ["whoami"]:
     whoami()
 elif ARGS[:2] == ["status", "--json"]:
     status()
