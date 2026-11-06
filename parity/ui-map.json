@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "28050c12",
+  "commit": "df68aece",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -32,46 +32,46 @@
   "statuses": ", from what the running apps showed:\n  matches  reference rendered and reached, OpenConductor reached the same\n           state, the item's copy is on screen in both, and the whole state\n           differs by at most MATCH_RATIO changed pixels at channel threshold 24.\n  wrong    OpenConductor shows it (copy found in a capture of the running\n           app) but it is not shown to match: the visual diff is over the bar,\n           the copy differs, or no valid reference render exists to prove it.\n  missing  OpenConductor has no way to reach the state, shows a different\n           screen there (under 25% of the reference's UI copy), or the item's\n           copy is in no capture of the running app."
  },
  "summary": {
-  "total": 979,
-  "missing": 744,
-  "wrong": 75,
-  "matches": 160,
+  "total": 982,
+  "missing": 739,
+  "wrong": 69,
+  "matches": 174,
   "states": {
-   "total": 81,
+   "total": 84,
    "missing": 13,
-   "wrong": 21,
-   "matches": 47
+   "wrong": 17,
+   "matches": 54
   },
   "items": {
    "total": 898,
-   "missing": 731,
-   "wrong": 54,
-   "matches": 113
+   "missing": 726,
+   "wrong": 52,
+   "matches": 120
   },
   "items_by_kind": {
    "dialog": {
     "total": 64,
     "missing": 53,
-    "wrong": 5,
-    "matches": 6
+    "wrong": 4,
+    "matches": 7
    },
    "empty-state": {
     "total": 52,
-    "missing": 43,
+    "missing": 41,
     "wrong": 1,
-    "matches": 8
+    "matches": 10
    },
    "menu": {
     "total": 39,
-    "missing": 37,
+    "missing": 36,
     "wrong": 0,
-    "matches": 2
+    "matches": 3
    },
    "menu-item": {
     "total": 89,
-    "missing": 84,
-    "wrong": 1,
-    "matches": 4
+    "missing": 83,
+    "wrong": 0,
+    "matches": 6
    },
    "popover": {
     "total": 45,
@@ -111,9 +111,9 @@
    },
    "tab": {
     "total": 35,
-    "missing": 27,
+    "missing": 26,
     "wrong": 2,
-    "matches": 6
+    "matches": 7
    },
    "toast": {
     "total": 327,
@@ -178,14 +178,14 @@
     "matches": 0
    },
    "workspaces": {
-    "total": 58,
-    "missing": 38,
-    "wrong": 7,
-    "matches": 13
+    "total": 61,
+    "missing": 33,
+    "wrong": 1,
+    "matches": 27
    }
   },
-  "located_items": 227,
-  "items_with_reference_screenshot": 227
+  "located_items": 229,
+  "items_with_reference_screenshot": 229
  },
  "states": [
   {
@@ -2301,39 +2301,142 @@
   {
    "id": "palette-workspaces",
    "title": "Command palette: Workspaces tab",
-   "status": "wrong",
-   "why": "diff 15.2% at t24, copy 96%",
+   "status": "matches",
+   "why": "diff 2.5% at t24, copy 100%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/palette-workspaces.png",
+    "file": "side-by-side/workspaces-palette-workspaces.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 3,
-    "actions_total": 3,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_c9211117ddbbab64a1e5db70f0e5319b939f5a29be9235165d56d50226655162"
+    "rea_evidence_id": "ev_9ca87025e0c3d1f008b1c67f54928865099d885d564c6cff79745ae32163b80f"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/palette-workspaces.png",
+    "file": "side-by-side/workspaces-palette-workspaces.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at bb5e45472: tools/side-by-side/workspaces.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/palette-workspaces.jpg",
+    "file": null,
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.15234565548780488,
+    "changed_ratio_t24": 0.024636051829268292,
     "rea_evidence_ids": [
-     "ev_bb4efd2752ba5eff7b8ddef79e47b569ba119be676b3415f6592a9c46a720511",
-     "ev_c7965563f02800f503e638e88d0b224ba2d8fddd2dd4e99ecfc2f5586727a411"
+     "ev_83729392be0ca96b7e7192adbd3cf821ecd3107c7d0c08597827eb823ea57cc4",
+     "ev_eed688e5c373b950868d3d16ee4c1a2039db92aeeb71c91366b4485c716f23b7"
     ]
    },
-   "copy_coverage": 0.955,
-   "copy_missing": [
-    "all projects"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
+  },
+  {
+   "id": "palette-workspaces-projects",
+   "title": "Command palette: Workspaces tab, project filter open",
+   "status": "matches",
+   "why": "diff 2.7% at t24, copy 100%",
+   "team": "workspaces",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/workspaces-palette-workspaces-projects.png",
+    "path": "/",
+    "final_path": "/",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_cdce42216f5b0bfd157c8eb73c8bdf54eedc09dcd1c67e029a4814746d51202f"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/workspaces-palette-workspaces-projects.png",
+    "error": null,
+    "note": "side-by-side lane at bb5e45472: tools/side-by-side/workspaces.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.026536775914634145,
+    "rea_evidence_ids": [
+     "ev_c70e8d9c1969d37fb63085b8c9dfc62419cc62e4406c06b32e148ad7995b284d",
+     "ev_f5e305669add54516d2d41ff3121cad74e640dff181756c73b476a884ea05886"
+    ]
+   },
+   "copy_coverage": 1.0,
+   "copy_missing": []
+  },
+  {
+   "id": "palette-workspaces-archive-filter",
+   "title": "Command palette: Workspaces tab, archive filter open",
+   "status": "matches",
+   "why": "diff 2.6% at t24, copy 100%",
+   "team": "workspaces",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/workspaces-palette-workspaces-archive-filter.png",
+    "path": "/",
+    "final_path": "/",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_6b0ada3c74d007117dd39acbae1fb8d09d34771d2e91a1a957501e3fbdb39790"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/workspaces-palette-workspaces-archive-filter.png",
+    "error": null,
+    "note": "side-by-side lane at bb5e45472: tools/side-by-side/workspaces.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.025521150914634146,
+    "rea_evidence_ids": [
+     "ev_1d19c6a32e2a086e8e5e2f918bb45461d7c33f67e1cf04e69ae4d0f36f438069",
+     "ev_5b7491045151f48da88f59fb8aa877e11d136d12ac51f706a59e4e065bd79e28"
+    ]
+   },
+   "copy_coverage": 1.0,
+   "copy_missing": []
+  },
+  {
+   "id": "palette-workspaces-empty",
+   "title": "Command palette: Workspaces tab, no matching workspaces",
+   "status": "matches",
+   "why": "diff 2.0% at t24, copy 100%",
+   "team": "workspaces",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/workspaces-palette-workspaces-empty.png",
+    "path": "/",
+    "final_path": "/",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_7d3e6599769dc84ddbc85d6349b23b14d23e3751028e3891bd4e412b9cf44459"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/workspaces-palette-workspaces-empty.png",
+    "error": null,
+    "note": "side-by-side lane at bb5e45472: tools/side-by-side/workspaces.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.020438262195121952,
+    "rea_evidence_ids": [
+     "ev_87d083c8e1bf27dd1edabb8118b25002e5232ebf06f551a2aa547d60e778ea49",
+     "ev_57a1156c9e95747e6be1c62a0010d5cce047e70eef4df2eb7ac329e395a255ef"
+    ]
+   },
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "palette-search",
@@ -2412,33 +2515,33 @@
   {
    "id": "dialog-create-project",
    "title": "Create project dialog",
-   "status": "wrong",
-   "why": "diff 6.7% at t24, copy 90%",
+   "status": "matches",
+   "why": "diff 4.4% at t24, copy 90%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/dialog-create-project.png",
+    "file": "side-by-side/workspaces-dialog-create-project.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 2,
-    "actions_total": 2,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_14294f671d476316bab17a522fb8e63d9b95b8f0624ea0aa789c752ccf92148e"
+    "rea_evidence_id": "ev_cd1270ac108ea98fd64c7394b06d05e4ad65e2015aa2f65fbd57df1524fe96d7"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/dialog-create-project.png",
+    "file": "side-by-side/workspaces-dialog-create-project.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at fbe5b5a7b: tools/side-by-side/workspaces.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/dialog-create-project.jpg",
-    "changed_ratio_t0": 0.9999685594512195,
-    "changed_ratio_t24": 0.06670922256097561,
+    "file": null,
+    "changed_ratio_t0": 0.9999647484756098,
+    "changed_ratio_t24": 0.044015815548780486,
     "rea_evidence_ids": [
-     "ev_8e0b337e248c6fbe104abe57660123b1c35016e0a1b321c904314e37fd07443a",
-     "ev_3d29d960207c5748ce43a9e7d3df1fd0fff36a5130ac0a082cca990d0703c53c"
+     "ev_8dd9f49fcf346e665d37d0e276bed9134c240a422cde4306d7ed90db840905c1",
+     "ev_cb0e05bf3387cf51cfd0e412d2a7fe7eeb6185890d7a372c10da8592d23dd25f"
     ]
    },
    "copy_coverage": 0.9,
@@ -2560,76 +2663,72 @@
   {
    "id": "menu-workspace-context",
    "title": "Workspace context menu",
-   "status": "wrong",
-   "why": "diff 5.2% at t24, copy 95%",
+   "status": "matches",
+   "why": "diff 4.6% at t24, copy 100%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/menu-workspace-context.png",
+    "file": "side-by-side/workspaces-menu-workspace-context.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 3,
-    "actions_total": 3,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_1bb76b074544bf60bf84e8acb3507f9555046351b705bfaffa72f141ba48ed98"
+    "rea_evidence_id": "ev_21a4e2670f0942c412a6b9df279203ae51cec33144af6fdabba0aa1fdc74637d"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/menu-workspace-context.png",
+    "file": "side-by-side/workspaces-menu-workspace-context.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 86e8ed6d1: tools/side-by-side/workspaces.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/menu-workspace-context.jpg",
-    "changed_ratio_t0": 0.9692397103658537,
-    "changed_ratio_t24": 0.052210365853658534,
+    "file": null,
+    "changed_ratio_t0": 0.9681002286585366,
+    "changed_ratio_t24": 0.0458812881097561,
     "rea_evidence_ids": [
-     "ev_759f4e1571b022fa9ec2685d8d4a5d7cbd96ac0358c9ce67c58cd7dc779b7e03",
-     "ev_09f0df5e0de87f1e93e6a35103cf5615ea4b00b5a2b26496f07f8d7157de864e"
+     "ev_55e48ac4e90025d27ee1de3af0dc470462782fc2c16eeb37cdcc6f9f3f3089b5",
+     "ev_4d4eafd175b2be01413e5d7d5bb2a9d6117bcffa5feceb8f7ad63de0ed5ebc5f"
     ]
    },
-   "copy_coverage": 0.947,
-   "copy_missing": [
-    "archive workspace"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "menu-workspace-status",
    "title": "Workspace context menu > Set status",
-   "status": "wrong",
-   "why": "diff 6.2% at t24, copy 95%",
+   "status": "matches",
+   "why": "diff 4.9% at t24, copy 100%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/menu-workspace-status.png",
+    "file": "side-by-side/workspaces-menu-workspace-status.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 4,
-    "actions_total": 4,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_bcef36750f134eb9c37e02d2069050b6b92151cee64cc9eec688213db326009b"
+    "rea_evidence_id": "ev_168501aedc4f06cd98ccdfdddb6463bf1725c5ed4f36711be25e3868c8207323"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/menu-workspace-status.png",
+    "file": "side-by-side/workspaces-menu-workspace-status.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 86e8ed6d1: tools/side-by-side/workspaces.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/menu-workspace-status.jpg",
-    "changed_ratio_t0": 0.9621398628048781,
-    "changed_ratio_t24": 0.0616015625,
+    "file": null,
+    "changed_ratio_t0": 0.9459041539634147,
+    "changed_ratio_t24": 0.04881478658536585,
     "rea_evidence_ids": [
-     "ev_755de798431277ad3c72ff63f36f59082582a8665a9f05036bf2cba56dc5eef6",
-     "ev_002d344b41ccb915757a52ec5fc3b9c216b955f049a51e6a65c434a8c2320edd"
+     "ev_1984dc292a636f8f782f2943c6937beaeff79099a3b384c3aff969c875e94bf5",
+     "ev_cf42ca34786a60e5627e9c422758fac4dea6d0c9a048458cc30f6c66a17052d3"
     ]
    },
-   "copy_coverage": 0.95,
-   "copy_missing": [
-    "archive workspace"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "menu-model-picker",
@@ -4594,8 +4693,8 @@
    "id": "dialog:create-project",
    "kind": "dialog",
    "name": "Create project",
-   "status": "wrong",
-   "why": "host state dialog-create-project is wrong",
+   "status": "matches",
+   "why": "on screen in both; state dialog-create-project matches",
    "team": "workspaces",
    "component": "gbi",
    "source": {
@@ -4609,10 +4708,10 @@
    "tokens": [],
    "state": "dialog-create-project",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/dialog-create-project.png",
-   "openconductor_screenshot": "ui-map/oc/dialog-create-project.png",
-   "diff": "ui-map/diff/dialog-create-project.jpg",
-   "changed_ratio_t24": 0.06670922256097561,
+   "reference_screenshot": "side-by-side/workspaces-dialog-create-project.png",
+   "openconductor_screenshot": "side-by-side/workspaces-dialog-create-project.png",
+   "diff": null,
+   "changed_ratio_t24": 0.044015815548780486,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -7375,8 +7474,8 @@
    "id": "menu-item:all-projects",
    "kind": "menu-item",
    "name": "All projects",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state palette-workspaces matches",
    "team": "workspaces",
    "component": "nFi",
    "source": {
@@ -7390,10 +7489,10 @@
    "tokens": [],
    "state": "palette-workspaces",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/palette-workspaces.png",
-   "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
-   "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.15234565548780488,
+   "reference_screenshot": "side-by-side/workspaces-palette-workspaces.png",
+   "openconductor_screenshot": "side-by-side/workspaces-palette-workspaces.png",
+   "diff": null,
+   "changed_ratio_t24": 0.024636051829268292,
    "primitive": "DropdownMenuCheckboxItem",
    "dynamic": false
   },
@@ -8067,8 +8166,8 @@
    "id": "menu-item:copy-link",
    "kind": "menu-item",
    "name": "Copy link",
-   "status": "wrong",
-   "why": "host state menu-workspace-context is wrong",
+   "status": "matches",
+   "why": "on screen in both; state menu-workspace-context matches",
    "team": "workspaces",
    "component": "u8i",
    "source": {
@@ -8082,10 +8181,10 @@
    "tokens": [],
    "state": "menu-workspace-context",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/menu-workspace-context.png",
-   "openconductor_screenshot": "ui-map/oc/menu-workspace-context.png",
-   "diff": "ui-map/diff/menu-workspace-context.jpg",
-   "changed_ratio_t24": 0.052210365853658534,
+   "reference_screenshot": "side-by-side/workspaces-menu-workspace-context.png",
+   "openconductor_screenshot": "side-by-side/workspaces-menu-workspace-context.png",
+   "diff": null,
+   "changed_ratio_t24": 0.0458812881097561,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -8785,8 +8884,8 @@
    "id": "menu:nfi~2",
    "kind": "menu",
    "name": null,
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state palette-workspaces matches",
    "team": "workspaces",
    "component": "nFi",
    "source": {
@@ -8800,10 +8899,10 @@
    "tokens": [],
    "state": "palette-workspaces",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/palette-workspaces.png",
-   "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
-   "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.15234565548780488,
+   "reference_screenshot": "side-by-side/workspaces-palette-workspaces.png",
+   "openconductor_screenshot": "side-by-side/workspaces-palette-workspaces.png",
+   "diff": null,
+   "changed_ratio_t24": 0.024636051829268292,
    "primitive": "DropdownMenuContent",
    "dynamic": true
   },
@@ -9752,8 +9851,8 @@
    "id": "tab:all-projects",
    "kind": "tab",
    "name": "All projects",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state palette-workspaces matches",
    "team": "workspaces",
    "component": "dta",
    "source": {
@@ -9767,10 +9866,10 @@
    "tokens": [],
    "state": "palette-workspaces",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/palette-workspaces.png",
-   "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
-   "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.15234565548780488,
+   "reference_screenshot": "side-by-side/workspaces-palette-workspaces.png",
+   "openconductor_screenshot": "side-by-side/workspaces-palette-workspaces.png",
+   "diff": null,
+   "changed_ratio_t24": 0.024636051829268292,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -21177,8 +21276,8 @@
    "id": "empty-state:no-matching-workspaces",
    "kind": "empty-state",
    "name": "No matching workspaces",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state palette-workspaces-empty matches",
    "team": "workspaces",
    "component": "UJo",
    "source": {
@@ -21190,12 +21289,12 @@
     "No matching workspaces"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "palette-workspaces-empty",
+   "state_basis": "state covers it",
+   "reference_screenshot": "side-by-side/workspaces-palette-workspaces-empty.png",
+   "openconductor_screenshot": "side-by-side/workspaces-palette-workspaces-empty.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.020438262195121952
   },
   {
    "id": "empty-state:no-members-found-in-this-organization",
@@ -21633,8 +21732,8 @@
    "id": "empty-state:no-matching-workspaces~2",
    "kind": "empty-state",
    "name": "No matching workspaces",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state palette-workspaces-empty matches",
    "team": "workspaces",
    "component": "l_a",
    "source": {
@@ -21646,12 +21745,12 @@
     "No matching workspaces"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "palette-workspaces-empty",
+   "state_basis": "state covers it",
+   "reference_screenshot": "side-by-side/workspaces-palette-workspaces-empty.png",
+   "openconductor_screenshot": "side-by-side/workspaces-palette-workspaces-empty.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.020438262195121952
   },
   {
    "id": "empty-state:no-results-found",
