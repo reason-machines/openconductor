@@ -1,8 +1,14 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Toaster, useToasts } from "../components/Toast";
+import { getSettings } from "../settings/api";
+import { applyAppearance } from "../settings/appearance";
 import { countRepos, finishFirstRun, readFirstRunStep } from "./api";
 import { FINISH_FAILED, FIRST_RUN_DONE_STEP, firstRunView, parseFirstRunStep } from "./firstRun";
 import { ExitOnboardingButton, FirstRunOnboarding, StartupLoader } from "./FirstRunOnboarding";
+import { LoginScreen } from "./SignIn";
+
+/** Conductor's `/login` route (`pSa`), outside the auth guard. */
+export const LOGIN_ROUTE = "/login";
 
 interface Loaded {
   step: number;
@@ -15,6 +21,10 @@ interface Loaded {
  * then the first-run onboarding or the app. A failed read counts as unset,
  * as the reference's queries do (step "1", repositories unknown).
  * `?demo=1` runs on the built-in demo state and skips the gate.
+ *
+ * `/login` shows the sign-in screen whatever the gate decides, as Conductor's
+ * route outside the guard does. Unlike Conductor, a signed-out user is never
+ * sent there: local agents need no account.
  */
 export function FirstRunGate({ children }: { children: ReactNode }) {
   const demo = new URLSearchParams(window.location.search).get("demo") === "1";
@@ -22,6 +32,13 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
   const [path, setPath] = useState(window.location.pathname);
   const [busy, setBusy] = useState(false);
   const { toasts, show, dismiss } = useToasts();
+
+  // The app shell applies the theme once it mounts; the onboarding and
+  // sign-in screens come before it, so they apply the stored one themselves.
+  useEffect(() => {
+    if (demo) return;
+    void getSettings().then(applyAppearance, () => undefined);
+  }, [demo]);
 
   useEffect(() => {
     if (demo) return;
@@ -59,13 +76,22 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
     );
   }, [busy, goHome, show]);
 
+  const onFailed = useCallback((title: string, description: string) => show("error", title, { description }), [show]);
+
   if (demo) return <>{children}</>;
+  if (path === LOGIN_ROUTE)
+    return (
+      <>
+        <LoginScreen onDone={goHome} onFailed={onFailed} />
+        <Toaster toasts={toasts} dismiss={dismiss} />
+      </>
+    );
   const view = firstRunView({ loaded: loaded !== null, step: loaded?.step ?? NaN, repoCount: loaded?.repoCount, path });
   if (view === "app") return <>{children}</>;
   if (view === "loading") return <StartupLoader />;
   return (
     <>
-      <FirstRunOnboarding onContinue={onContinue} busy={busy} />
+      <FirstRunOnboarding onContinue={onContinue} busy={busy} onFailed={onFailed} />
       {view === "onboarding-route" && <ExitOnboardingButton onExit={goHome} />}
       <Toaster toasts={toasts} dismiss={dismiss} />
     </>

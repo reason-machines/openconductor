@@ -1785,6 +1785,250 @@
     }
    }
   },
+  "onboarding-signed-out": {
+   "lane": "tools/side-by-side/onboarding.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, signed-out scenario) and of OpenConductor's built frontend (dist/ browser preview, no Reason CLI) in Chromium",
+   "openconductor_commit": "f30cacffb",
+   "viewport": {
+    "width": 1280,
+    "height": 820
+   },
+   "image": "side-by-side/onboarding-01-signed-out.png",
+   "supersedes_oc_png_sha256": "474cf2244be54cb74d8f6e9fedf590e6c1d74c62cb333333eb4d03d2da29e6ae",
+   "reference": {
+    "evidence_id": "ev_72c5b575a4b2439057949e5a2e7a3bf9d514eea1b2d22a39cbef6eadc6a89d88",
+    "png_sha256": "6bbe37126594c0a2ff506fba9268d0d169f0722db94e8b735274e22451b13e8d",
+    "final_url": "http://conductor.localhost:4347/?oc_scenario=signed-out&oc_theme=dark",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "Tauri + React + Typescript",
+      "\\n",
+      "\\n \\n \\n",
+      "\\n \\n \\n \\n \\n \\n \\n \\n",
+      "\\n",
+      "\\n",
+      "\\n\\n",
+      "\\n",
+      "\\n",
+      "Get coding agents working in parallel",
+      "Each agent you spin up gets an isolated workspace.",
+      "See at a glance what each agent is working on",
+      "See who's working, what needs attention, and what's planned.",
+      "Review changes and create PRs",
+      "Review, comment, and merge from Conductor.",
+      "Sign up",
+      "Privacy",
+      "\\n \\n\\n"
+     ],
+     "labels": []
+    }
+   },
+   "openconductor": {
+    "evidence_id": "ev_437431a1cc3484453d852055845cf29d68238701a215d39e1320072e06de903b",
+    "png_sha256": "7a690a4bf6d9723b8d4f30c37cfb4a86a8d7ce69fc1999ffff46d91fdd55b55a",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "OpenConductor",
+      "\\n \\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "Get coding agents working in parallel",
+      "Each agent you spin up gets an isolated workspace.",
+      "See at a glance what each agent is working on",
+      "See who's working, what needs attention, and what's planned.",
+      "Review changes and create PRs",
+      "Review, comment, and merge from OpenConductor.",
+      "Sign up",
+      "Privacy",
+      "Continue without signing in",
+      "Get coding agents working in parallel",
+      "\\n \\n\\n"
+     ],
+     "labels": []
+    }
+   },
+   "compare": {
+    "t0": {
+     "evidence_id": "ev_25063c2d618f6b7f2aa83f5ca1596e6b2680a10f2b659193f504041289a54842",
+     "changed_pixels": 1049600,
+     "total_pixels": null,
+     "changed_ratio": 1
+    },
+    "t24": {
+     "evidence_id": "ev_78c3ead2bf0d5dc729fd0c93e064f77b0f7a63a6dbeb84b813323af151214057",
+     "changed_pixels": 81959,
+     "total_pixels": null,
+     "changed_ratio": 0.0780859375
+    }
+   }
+  },
+  "login": {
+   "lane": "tools/side-by-side/onboarding.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, signed-out scenario) and of OpenConductor's built frontend (dist/ browser preview, no Reason CLI) in Chromium",
+   "openconductor_commit": "f30cacffb",
+   "viewport": {
+    "width": 1280,
+    "height": 820
+   },
+   "image": "side-by-side/onboarding-02-login.png",
+   "supersedes_oc_png_sha256": "474cf2244be54cb74d8f6e9fedf590e6c1d74c62cb333333eb4d03d2da29e6ae",
+   "reference": {
+    "evidence_id": "ev_8e1d86251a1f96def2861f201588efce6c38a981abda2bbc97301b4d8ddf7f5a",
+    "png_sha256": "51eecf92b237dd9d457ca74a3f4d0e4a78b33f106af814e56529a2f6472e2323",
+    "final_url": "http://conductor.localhost:4347/login?oc_scenario=signed-out&oc_theme=dark",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "Tauri + React + Typescript",
+      "\\n",
+      "\\n \\n \\n",
+      "\\n \\n \\n \\n \\n \\n \\n \\n",
+      "\\n",
+      "\\n",
+      "\\n\\n",
+      "\\n",
+      "\\n",
+      "Sign in to continue.",
+      "Sign up",
+      "Privacy",
+      "\\n \\n\\n"
+     ],
+     "labels": []
+    }
+   },
+   "openconductor": {
+    "evidence_id": "ev_c8e7cfb74b37323759e5b1c6dd75480d0b849fbd94275a13a7a65c96c9ea9ab3",
+    "png_sha256": "a3801af5b9f55a2a415b59b5ecdeb8a7e0a6484fad4ecf20a2121de8d3d72970",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "OpenConductor",
+      "\\n \\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "Sign in to continue.",
+      "Sign up",
+      "Privacy",
+      "Continue without signing in",
+      "\\n \\n\\n"
+     ],
+     "labels": []
+    }
+   },
+   "compare": {
+    "t0": {
+     "evidence_id": "ev_fc79f04afe54dd59b747ded016c0ae1f8279bc64bbc1d3f7596d20485df0b494",
+     "changed_pixels": 1049600,
+     "total_pixels": null,
+     "changed_ratio": 1
+    },
+    "t24": {
+     "evidence_id": "ev_a2a0fb9b4097da1ad40be05c0c358aa4ad55a81e23f18e01a1705181d671aaa4",
+     "changed_pixels": 11950,
+     "total_pixels": null,
+     "changed_ratio": 0.011385289634146341
+    }
+   }
+  },
+  "first-run-onboarding": {
+   "lane": "tools/side-by-side/onboarding.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, signed-out scenario) and of OpenConductor's built frontend (dist/ browser preview, no Reason CLI) in Chromium",
+   "openconductor_commit": "f30cacffb",
+   "viewport": {
+    "width": 1280,
+    "height": 820
+   },
+   "image": "side-by-side/onboarding-03-first-run-route.png",
+   "supersedes_oc_png_sha256": "474cf2244be54cb74d8f6e9fedf590e6c1d74c62cb333333eb4d03d2da29e6ae",
+   "reference": {
+    "evidence_id": "ev_1c9b267db1445a38e677ac1d3c055a0325d4cd09f46f472b8d7a10a8ccf35c06",
+    "png_sha256": "c40a60f44a15d0d736ae144dc1abe198aec56716f78dc17f08e819d959c6a149",
+    "final_url": "http://conductor.localhost:4347/first-run-onboarding?oc_scenario=signed-out&oc_theme=dark",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "Tauri + React + Typescript",
+      "\\n",
+      "\\n \\n \\n",
+      "\\n \\n \\n \\n \\n \\n \\n \\n",
+      "\\n",
+      "\\n",
+      "\\n\\n",
+      "\\n",
+      "\\n",
+      "Get coding agents working in parallel",
+      "Each agent you spin up gets an isolated workspace.",
+      "See at a glance what each agent is working on",
+      "See who's working, what needs attention, and what's planned.",
+      "Review changes and create PRs",
+      "Review, comment, and merge from Conductor.",
+      "Sign up",
+      "Privacy",
+      "\\n \\n\\n"
+     ],
+     "labels": []
+    }
+   },
+   "openconductor": {
+    "evidence_id": "ev_e29d5a217baebc1fe36cb081d79839ad22b329afef6d548c7baec5bb135f773d",
+    "png_sha256": "5084060de38aa4158aa6461e5d28d95b9399b076205bf8174d731b5dd4836c48",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "OpenConductor",
+      "\\n \\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "Get coding agents working in parallel",
+      "Each agent you spin up gets an isolated workspace.",
+      "See at a glance what each agent is working on",
+      "See who's working, what needs attention, and what's planned.",
+      "Review changes and create PRs",
+      "Review, comment, and merge from OpenConductor.",
+      "Sign up",
+      "Privacy",
+      "Continue without signing in",
+      "Get coding agents working in parallel",
+      "\\n \\n\\n"
+     ],
+     "labels": []
+    }
+   },
+   "compare": {
+    "t0": {
+     "evidence_id": "ev_fea8f593519850e024324dfb071a709f72845c6e5d7d1fea940ca01d6d52caac",
+     "changed_pixels": 1049598,
+     "total_pixels": null,
+     "changed_ratio": 0.9999980945121951
+    },
+    "t24": {
+     "evidence_id": "ev_64bb76f8e2499bbb7803443a8da6269852840e3767178d282c7d6670be1c2f05",
+     "changed_pixels": 81196,
+     "total_pixels": null,
+     "changed_ratio": 0.07735899390243903
+    }
+   }
+  },
   "panel-setup-add": {
    "lane": "tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium",
    "openconductor_commit": "2e316e18a",
