@@ -1,8 +1,8 @@
 // Flows run in order against one app session. Each throws on failure.
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { installFakeApps } from "./fake-apps.mjs";
 
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, stdio: "pipe" });
@@ -144,8 +144,35 @@ export const flows = [
       const buttonText = () => wd.execute("return document.querySelector('.scripts-actions .btn-primary, .scripts-actions .btn-stop')?.textContent.trim() ?? null;", []);
       if (existsSync(inRoot)) throw new Error("e2e-diff.txt is already in the repository root");
 
-      const [toggle] = await wd.waitFor("the spotlight testing toggle", () => wd.findAll(".spotlight-toggle input:not([disabled])").then((ids) => ids.length && ids));
-      await wd.click(toggle);
+      // Like Conductor, the Run tab of a repository without a run script shows only
+      // "Add run script", which opens the repository's settings; spotlight
+      // testing is a switch on its Actions page. Esc goes back to the workspace.
+      const heading = () => wd.execute("return document.querySelector('.settings .settings-header h1')?.textContent.trim() ?? null;", []);
+      async function setSpotlightTesting(on) {
+        if (on) {
+          const [add] = await wd.waitFor("the Run tab's Add run script", () => wd.findAll(".scripts-empty-btn").then((ids) => ids.length && ids));
+          await wd.click(add);
+          await wd.waitFor("the repository's Scripts settings", async () => (await heading()) === "Scripts", 10000);
+        } else {
+          await wd.execute("document.activeElement?.blur();", []);
+          await wd.chord(["\uE03D"], ",");
+          await wd.waitFor("Settings after ⌘,", heading, 10000);
+          const [repoNav] = await wd.findAll('.settings-nav .settings-repo[aria-label="e2e-demo"]');
+          if (!repoNav) throw new Error("no e2e-demo under Settings › Repositories");
+          await wd.click(repoNav);
+        }
+        await clickByText(wd, ".settings-nav .settings-repo-sections .nav-item", "Actions");
+        await wd.waitFor("the repository's Actions page", async () => (await heading()) === "Actions");
+        const [toggle] = await wd.waitFor("the spotlight testing switch", () =>
+          wd.findAll(`input[aria-label="Use spotlight testing"]${on ? ":not(:checked)" : ":checked"}:not([disabled])`).then((ids) => ids.length && ids),
+        );
+        await wd.click(toggle);
+        await wd.waitFor(`spotlight_testing = ${on} in .conductor/settings.local.toml`, async () => spotlightSetting() === String(on));
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys("\uE00C");
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+      await setSpotlightTesting(true);
       await wd.waitFor("Run Spotlight", async () => (await buttonText())?.endsWith("Run Spotlight"));
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after turning it on, want true`);
       const [start] = await wd.findAll(".scripts-actions .btn-primary");
@@ -169,21 +196,22 @@ export const flows = [
       if (JSON.stringify(status) !== JSON.stringify(want)) throw new Error(`repository root status ${JSON.stringify(status)}, want ${JSON.stringify(want)}`);
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after Stop, want true`);
 
-      // Turn spotlight testing back off for later flows.
-      const [again] = await wd.findAll(".spotlight-toggle input:checked:not([disabled])");
-      if (!again) throw new Error("no checked spotlight testing toggle to turn off");
-      await wd.click(again);
-      await wd.waitFor("spotlight_testing = false in .conductor/settings.local.toml", async () => spotlightSetting() === "false");
+      // Turn spotlight testing back off for later flows (Settings › repository › Actions).
+      await setSpotlightTesting(false);
     },
   },
   {
-    // The workspace's terminal panel runs a real login shell in the repository
+    // The workspace's terminal panel (shown with ⌘J) runs a real login shell in the repository
     // checkout. The typed line never contains "42", so seeing oc-term-42 proves
     // the shell evaluated it, and pwd shows where the shell started.
     name: "terminal",
     async run(wd, ctx) {
       if (!ctx.repo) throw new Error("needs the add-repo flow's repository");
       const rows = () => wd.execute("return document.querySelector('.terminal-panel .xterm-rows')?.textContent ?? null;", []);
+      // Conductor's workspace opens on the right panel's Run tab with no terminal; + (New terminal) in that strip opens one.
+      if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal by default");
+      const [plus] = await wd.waitFor("the strip's New terminal button", () => wd.findAll('.ws-strip-tabs button[aria-label="New terminal"]').then((ids) => ids.length && ids));
+      await wd.click(plus);
       const [screen] = await wd.waitFor("a terminal in the workspace's terminal panel", () => wd.findAll(".terminal-panel .xterm-screen").then((ids) => ids.length && ids), 60000);
       await wd.click(screen);
       await wd.keys("echo oc-term-$((6*7)); pwd\uE007");
@@ -253,6 +281,79 @@ export const flows = [
       await run(name, name);
       const back = await wd.waitFor(`the ${name} workspace view`, headerName);
       if (back !== name) throw new Error(`palette opened workspace ${JSON.stringify(back)}, want ${JSON.stringify(name)}`);
+    },
+  },
+  {
+    // parity: sidebar.ws-status, home.status-overview. Conductor keeps each
+    // session's status in conductor.db (sessions.status) and both the sidebar
+    // row icon and the Home list read it, folded per workspace. A status the
+    // backend stores (session_set_status, which the chat runtime calls on every
+    // change) reaches the open window through its session-status event:
+    // needs_user_permission shows "Needs permission" in the sidebar and on Home,
+    // waiting shows the loader labelled "Waiting for background tasks", and
+    // idle gives Home back the last-activity time.
+    name: "session-status",
+    async run(wd, ctx) {
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", []);
+      const want = realpathSync(ctx.worktree);
+      const ws = rows.find((w) => {
+        const path = w.workspacePath ?? w.workspace_path;
+        return path && existsSync(path) && realpathSync(path) === want;
+      });
+      if (!ws) throw new Error(`no stored workspace at ${want}: ${JSON.stringify(rows.map((w) => w.workspacePath ?? w.workspace_path))}`);
+      // Resolves with { refused } instead of rejecting: WebKitWebDriver cannot
+      // report a promise rejected with a plain string ("Could not parse script
+      // result"), and a result with an `error` key reads as a WebDriver error.
+      const invoke = (cmd, args) =>
+        wd.execute("return window.__TAURI_INTERNALS__.invoke(arguments[0], arguments[1]).then((value) => ({ value }), (e) => ({ refused: String(e) }));", [cmd, args]);
+      const setStatus = async (status) => {
+        const r = await invoke("session_set_status", { chatId: ws.id, workspaceId: ws.id, status });
+        if (r.refused) throw new Error(`session_set_status ${status} was refused (${r.refused}); the sidebar row shows ${JSON.stringify(await sidebarIcons())}`);
+      };
+      const shown = (css) => wd.execute("return Array.from(document.querySelectorAll(arguments[0]), (e) => ({ status: e.dataset.status, label: e.getAttribute('aria-label') }));", [css]);
+      const sidebarIcons = () => shown('[data-testid="workspace-status-icon"]');
+      const homeIcons = () => shown('[data-testid="home-workspace-status"]');
+      const waitShown = (what, read, status, label) =>
+        wd.waitFor(what, async () => (await read()).find((i) => i.status === status && i.label === label)).catch(async (e) => {
+          throw new Error(`${e.message}; saw ${JSON.stringify(await read())}`);
+        });
+
+      const ROWS = '[data-testid="left-sidebar-workspace-item"]';
+      const selectedRow = await wd.execute("return [...document.querySelectorAll(arguments[0])].findIndex((b) => b.getAttribute('aria-current') === 'page');", [ROWS]);
+      try {
+        await setStatus("needs_user_permission");
+        await waitShown("Needs permission on the sidebar row", sidebarIcons, "needs-user-permission", "Needs permission");
+        const stored = (await invoke("session_statuses", {})).value ?? [];
+        if (!stored.some((r) => r.chatId === ws.id && r.status === "needs_user_permission")) throw new Error(`session_statuses ${JSON.stringify(stored)}`);
+
+        // The sidebar's Home row (its title carries the shortcut hint).
+        const opened = await wd.execute("const b = Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Home'); b?.click(); return !!b;", []);
+        if (!opened) throw new Error("no Home row in the sidebar");
+        await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
+        await waitShown("Needs permission on the Home row", homeIcons, "needs-user-permission", "Needs permission");
+        if (process.env.E2E_OUT) {
+          const { writeFile } = await import("node:fs/promises");
+          await writeFile(join(process.env.E2E_OUT, "session-status-home-needs-permission.png"), await wd.screenshot()).catch(() => {});
+        }
+
+        await setStatus("waiting");
+        await waitShown("the waiting loader on the Home row", homeIcons, "waiting", "Waiting for background tasks");
+        await waitShown("the waiting loader on the sidebar row", sidebarIcons, "waiting", "Waiting for background tasks");
+
+        await setStatus("idle");
+        await wd.waitFor("Home to show the time again", async () => (await homeIcons()).length === 0);
+        const row = await wd.waitFor("the workspace's Home row", async () => {
+          const all = await wd.execute("return Array.from(document.querySelectorAll('.allws .allws-row .allws-when'), (e) => e.textContent.trim());", []);
+          return all.length > 0 && all;
+        });
+        if (!row.some((t) => /^(now|\d+(m|h|d|mo|y))$/.test(t))) throw new Error(`no last-activity time on Home: ${JSON.stringify(row)}`);
+      } finally {
+        await setStatus("idle").catch(() => {});
+        // Leave the app where the flows before left it: the workspace's view, which later flows use.
+        await wd.execute("document.querySelectorAll(arguments[0])[arguments[1]]?.click();", [ROWS, selectedRow]).catch(() => {});
+        await wd.waitFor("the workspace view again", async () => (await wd.findAll(".workspace")).length > 0).catch(() => {});
+      }
     },
   },
   {
@@ -383,6 +484,129 @@ export const flows = [
       if (reopened !== target) throw new Error(`Theme select shows ${JSON.stringify(reopened)} after reopening, want ${JSON.stringify(target)}`);
       await choose(original);
       await close();
+    },
+  },
+  {
+    // A non-fatal initialization issue (Conductor's qYe, evidence/create-workspace/README.md):
+    // a post-checkout hook that exits 1 makes `git worktree add` fail although the
+    // worktree exists. The workspace is still created; its row stores the
+    // worktree-add log as initialization_log_path; an error toast that stays
+    // until dismissed says so, and its "View logs" opens that log.
+    name: "create-workspace-init-issue",
+    async run(wd, ctx) {
+      if (!ctx.repo) throw new Error("needs the add-repo flow's repo");
+      const MESSAGE = "Something failed while creating your workspace. Check the logs to see what went wrong.";
+      const MARKER = "oc-e2e post-checkout hook failed";
+      const hooks = resolve(ctx.repo, git(ctx.repo, "rev-parse", "--git-common-dir").toString().trim(), "hooks");
+      const hook = join(hooks, "post-checkout");
+      mkdirSync(hooks, { recursive: true });
+      writeFileSync(hook, `#!/bin/sh\necho "${MARKER}" >&2\nexit 1\n`);
+      chmodSync(hook, 0o755);
+      try {
+        const worktreePaths = () => git(ctx.repo, "worktree", "list", "--porcelain").toString().match(/^worktree .+$/gm)?.map((l) => l.slice(9)) ?? [];
+        const pathsBefore = worktreePaths();
+        const namesBefore = await textsOf(wd, ".sb-ws-name");
+        // Observe the real opener call behind "View logs" (see openInitLog).
+        await wd.execute("window.__OC_E2E_OPENED_LOGS__ = [];", []);
+        const toastState = () =>
+          wd.execute(
+            `const t = [...document.querySelectorAll('.toast.toast-error')].find((e) => e.querySelector('.toast-message')?.textContent.includes(arguments[0]));
+             return t ? { message: t.querySelector('.toast-message').textContent.trim(), buttons: [...t.querySelectorAll('button.btn')].map((b) => b.textContent.trim()) } : null;`,
+            [MESSAGE],
+          );
+        if (await toastState()) throw new Error("the initialization-issue toast is already showing");
+
+        const [add] = await wd.findAll('.sb-repo-add[aria-label="Create workspace in e2e-demo"]');
+        if (!add) throw new Error("no Create workspace button for e2e-demo");
+        await wd.click(add);
+        const [submit] = await wd.waitFor("the Create workspace dialog", () => wd.findAll('form.create-ws button[type="submit"]').then((ids) => ids.length && ids));
+        await wd.click(submit);
+
+        // The workspace is created despite the failing hook. The sidebar lists
+        // the pending row before `git worktree add` runs, so wait for git itself.
+        const errorToasts = () => wd.execute("return [...document.querySelectorAll('.toast.toast-error .toast-message')].map((e) => e.textContent.trim());", []);
+        let created;
+        try {
+          created = await wd.waitFor("a new git worktree", async () => worktreePaths().find((p) => !pathsBefore.includes(p)) ?? null, 60000);
+        } catch (e) {
+          throw new Error(`${e?.message ?? e}; error toasts: ${JSON.stringify(await errorToasts().catch(() => null))}`);
+        }
+        await wd.waitFor("one more sidebar workspace", async () => (await textsOf(wd, ".sb-ws-name")).length === namesBefore.length + 1, 60000);
+
+        const toast = await wd.waitFor("the initialization-issue toast", toastState, 30000);
+        if (!toast.buttons.includes("View logs")) throw new Error(`toast buttons ${JSON.stringify(toast.buttons)}, want "View logs"`);
+        // Error toasts dismiss themselves after 8 s; this one stays.
+        await new Promise((r) => setTimeout(r, 9500));
+        if (!(await toastState())) throw new Error("the initialization-issue toast dismissed itself; it should stay until dismissed");
+        const out = resolve(process.env.E2E_OUT ?? "e2e-artifacts");
+        await wd.screenshot().then((png) => writeFileSync(join(out, "create-workspace-init-issue-toast.png"), png)).catch((e) => console.log(`no toast screenshot: ${e?.message ?? e}`));
+
+        // conductor.db: the row is ready and holds the log path and tracked-file count.
+        const real = realpathSync(created);
+        const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_workspaces');", []);
+        const row = rows.find((r) => r.workspacePath && existsSync(r.workspacePath) && realpathSync(r.workspacePath) === real);
+        if (!row) throw new Error(`no db_list_workspaces row for ${created}: ${JSON.stringify(rows.map((r) => r.workspacePath))}`);
+        if (row.state !== "ready") throw new Error(`row state ${row.state}, want ready`);
+        const logPath = row.initializationLogPath;
+        if (!logPath || !/\/conductor-\d+-[a-z0-9]+\.log$/.test(logPath)) throw new Error(`initializationLogPath ${JSON.stringify(logPath)}, want $TMPDIR/conductor-<ms>-<rand>.log`);
+        const tracked = git(created, "ls-files").toString().split("\n").filter(Boolean).length;
+        if (row.initializationFilesCopied !== tracked) throw new Error(`initializationFilesCopied ${row.initializationFilesCopied}, want ${tracked} (git ls-files)`);
+
+        // The log holds the `git worktree add` output and the hook's stderr. No
+        // "--- Additional Output ---" block: the wrapper's own output all went into the log (Jfe).
+        if (!existsSync(logPath)) throw new Error(`${logPath} does not exist`);
+        const log = readFileSync(logPath, "utf8");
+        if (log.includes("--- Additional Output ---")) throw new Error(`${logPath} has an Additional Output block, but the wrapper printed nothing of its own:\n${log}`);
+        for (const want of ["Preparing worktree", MARKER]) {
+          if (!log.includes(want)) throw new Error(`${logPath} lacks ${JSON.stringify(want)}:\n${log}`);
+        }
+
+        // View logs calls the opener on that file (allowed by the opener:allow-open-path scope) and dismisses the toast.
+        await clickByText(wd, ".toast.toast-error button.btn", "View logs");
+        const opened = await wd.waitFor("the opener call", () => wd.execute("return window.__OC_E2E_OPENED_LOGS__?.length ? window.__OC_E2E_OPENED_LOGS__ : null;", []));
+        if (opened.length !== 1 || opened[0].path !== logPath) throw new Error(`opened ${JSON.stringify(opened)}, want [{ path: ${JSON.stringify(logPath)} }]`);
+        // No default app on a headless runner is fine; a scope refusal is not.
+        if (opened[0].error && /not allowed|forbidden|denied|scope/i.test(opened[0].error)) throw new Error(`the opener refused ${logPath}: ${opened[0].error}`);
+        if (opened[0].error) console.log(`View logs: the opener ran but could not open ${logPath} here: ${opened[0].error}`);
+        await wd.waitFor("the toast to close after View logs", async () => !(await toastState()));
+      } finally {
+        rmSync(hook, { force: true });
+      }
+    },
+  },
+  {
+    // Open project on a folder that is already added is not refused: like
+    // Conductor it adds a second project on the same folder, `<name>-v1`
+    // (evidence/screens/duplicate-repo.md). Runs from the palette's
+    // "Open project" action, since Home's cards only show at start-up.
+    name: "duplicate-repo",
+    async run(wd, ctx) {
+      if (!ctx.repo) throw new Error("needs the add-repo flow's repo");
+      const ENTER = "\uE007";
+      await wd.execute("window.__OC_E2E_PICK_FOLDER__ = arguments[0];", [ctx.repo]);
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.chord(["\uE03D"], "k");
+      await wd.waitFor("the command palette", async () => (await wd.findAll('.palette[aria-label="Command palette"]')).length > 0, 10000);
+      await wd.keys("Open project");
+      await wd.waitFor("Open project highlighted", () =>
+        wd.execute("return document.querySelector('.palette-item.active .palette-title')?.textContent.trim() === 'Open project';", []),
+      );
+      await wd.keys(ENTER);
+      await wd.waitFor("e2e-demo-v1 in the sidebar", async () => (await textsOf(wd, ".sb-repo-name")).includes("e2e-demo-v1")).catch(async (e) => {
+        throw new Error(`${e.message}; sidebar ${JSON.stringify(await textsOf(wd, ".sb-repo-name"))}`);
+      });
+      // Exactly two projects on the folder, whatever their names: the
+      // create-workspace flow and the branch lookups must not have
+      // registered hidden extra copies (#401 once saw e2e-demo-v3 here).
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_repos');", []);
+      const root = rows.find((r) => r.name === "e2e-demo")?.rootPath;
+      const demo = rows.filter((r) => r.rootPath === root);
+      const names = demo.map((r) => r.name).sort();
+      if (!root || demo.length !== 2 || new Set(demo.map((r) => r.id)).size !== 2 || names.join() !== "e2e-demo,e2e-demo-v1") {
+        throw new Error(`want two repos rows on one folder (e2e-demo, e2e-demo-v1), got ${JSON.stringify(demo.map((r) => [r.id, r.name, r.rootPath]))}`);
+      }
+      const shown = (await textsOf(wd, ".sb-repo-name")).filter((n) => /^e2e-demo(-v\d+)?$/.test(n)).sort();
+      if (shown.join() !== "e2e-demo,e2e-demo-v1") throw new Error(`want the sidebar to show e2e-demo and e2e-demo-v1, got ${JSON.stringify(shown)}`);
     },
   },
 

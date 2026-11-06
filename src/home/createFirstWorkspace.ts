@@ -13,8 +13,6 @@ import { firstWorkspaceRequest, toStoreWorkspace, type FirstWorkspace, type Regi
 
 export interface FirstWorkspaceResult {
   workspace: FirstWorkspace;
-  /** Non-fatal issues to show once the workspace is open ("Set upstream on plain git push"). */
-  warnings: string[];
 }
 
 export async function createFirstWorkspace(repo: RegisteredRepo): Promise<FirstWorkspaceResult> {
@@ -23,11 +21,12 @@ export async function createFirstWorkspace(repo: RegisteredRepo): Promise<FirstW
   const created = await createWorkspace(toCreateWorkspaceArgs(request));
   const workspace = toStoreWorkspace(request, created);
   await startSetupScript(repo, workspace, request.targetBranch);
-  return { workspace, warnings: created.upstreamWarning ? [created.upstreamWarning] : [] };
+  // Non-fatal initialization issues reach the toast through createWorkspace (initIssues).
+  return { workspace };
 }
 
 /** Starts the repository's setup script in the new worktree; a setup that fails to start never blocks the workspace. */
-async function startSetupScript(repo: RegisteredRepo, ws: FirstWorkspace, targetBranch: string): Promise<void> {
+export async function startSetupScript(repo: RegisteredRepo, ws: Pick<FirstWorkspace, "id" | "name" | "path">, targetBranch: string): Promise<void> {
   const ref = workspaceRef({ id: repo.id, path: repo.root, defaultBranch: repo.defaultBranch }, { id: ws.id, name: ws.name, path: ws.path });
   if (!ref) return;
   const workspace = { ...ref, targetBranch: targetBranch || null };

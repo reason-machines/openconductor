@@ -1,0 +1,552 @@
+{
+  "tool": "rea-agents 6.8.0: capture-browser-scenario + compare-web-screenshots",
+  "browser": "Chromium headless, 1440x900, scale 1, en-US, UTC",
+  "results": [
+    {
+      "name": "ours-composer--empty--dark",
+      "file": "evidence/chat/composer/ours-composer--empty--dark.png",
+      "reference": "evidence/screens/chat--new-empty-session--dark.png",
+      "theme": "dark",
+      "png_sha256": "a0652e0311fd456ace5fbac4220a9723e7ac24ba745b6b64c38b916124991473",
+      "capture_evidence_id": "ev_991abf180ad62731988c5281b66e0466d8e4974f9a49e72386e68ad38b36e43f",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_3fe01c3adcb79bc111dedcb7382031122d8569fe807613a52a39511e059ffe49",
+          "changed_pixels": 813115,
+          "changed_ratio": 0.627403549382716
+        },
+        "threshold_24": {
+          "evidence_id": "ev_68a8d275eed80a508318444995765f7d449114a42f28b72d7c2e0f46670b3639",
+          "changed_pixels": 55151,
+          "changed_ratio": 0.042554783950617285
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_17e4cb2e43c12a4bb51982e5469ff9b491fe09a7065fb779b72e6dea4ecd986f",
+          "changed_pixels": 336418,
+          "changed_ratio": 0.8189337877312561
+        },
+        "threshold_24": {
+          "evidence_id": "ev_dd79f2b8f569c70b4b653cd3ae0956b1afb8949966995361a626b81c32706a34",
+          "changed_pixels": 14109,
+          "changed_ratio": 0.034345180136319375
+        }
+      }
+    },
+    {
+      "name": "ours-composer--typed--dark",
+      "file": "evidence/chat/composer/ours-composer--typed--dark.png",
+      "reference": "evidence/chat/composer/composer--typed--dark.png",
+      "theme": "dark",
+      "png_sha256": "fb42a946bcd7677fb10640bcb8d33f35a97e4590b82fa6434ff6ab4d29572846",
+      "capture_evidence_id": "ev_69dbcfb16632cc1917d13e50c51cc39af0ff79013659a58d1fdca5c60704ffb6",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_7ee272af2b2365114683ce8c23e669999cad68bc08bb5398fbeeac2f8689cfd0",
+          "changed_pixels": 874999,
+          "changed_ratio": 0.6751535493827161
+        },
+        "threshold_24": {
+          "evidence_id": "ev_413344961b01812e33c710c426a2ddf0b3608e4327b4b988a4e7749ea9a52ab5",
+          "changed_pixels": 67310,
+          "changed_ratio": 0.05193672839506173
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_1d700f405339b508a9b3d4144f8e4efa30e896d77ad1a7330c0c228cf0d1822d",
+          "changed_pixels": 336418,
+          "changed_ratio": 0.8189337877312561
+        },
+        "threshold_24": {
+          "evidence_id": "ev_0807c4d73aea152478123beb4b06471b9608f79dad950054448d0ede395b1bd5",
+          "changed_pixels": 14010,
+          "changed_ratio": 0.034104186952288215
+        }
+      }
+    },
+    {
+      "name": "ours-composer--model-picker--dark",
+      "file": "evidence/chat/composer/ours-composer--model-picker--dark.png",
+      "reference": "evidence/screens/menu--model-picker--dark.png",
+      "theme": "dark",
+      "png_sha256": "893074381ba0a5faa1bc33396db84882a8b6e627adcd7c2b598f251e4ca0d6d4",
+      "capture_evidence_id": "ev_0af557ad8a67f0ea98207d2725a3bbb3832e91acf7cecfa14df8468c598eecb6",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_7dd5fddf55a5658a3295b46eea51d97ef93561ee60497f972d27dfe40cdd8a62",
+          "changed_pixels": 909999,
+          "changed_ratio": 0.7021597222222222
+        },
+        "threshold_24": {
+          "evidence_id": "ev_0525a2f81893a296f94896891ffddd56793b7c0d28b8ac81c94e025252cd1aab",
+          "changed_pixels": 82768,
+          "changed_ratio": 0.0638641975308642
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_7f80ffaa131cc6f3d069f27eac5edb0e3bd5c136701fb2b12ea590c14c86448d",
+          "changed_pixels": 371423,
+          "changed_ratio": 0.9041455696202532
+        },
+        "threshold_24": {
+          "evidence_id": "ev_e2d82996a74c17cb8cfc68b61c056a9cf8da9e8259a04cb2f3fa737a0075a955",
+          "changed_pixels": 29406,
+          "changed_ratio": 0.07158227848101266
+        }
+      }
+    },
+    {
+      "name": "ours-composer--slash-menu--dark",
+      "file": "evidence/chat/composer/ours-composer--slash-menu--dark.png",
+      "reference": "evidence/chat/composer/composer--slash-menu--dark.png",
+      "theme": "dark",
+      "png_sha256": "e3bd3ed76f888cbd082c4171616c04f10ddfad73c7d09070ba28c46a5c5c3a3d",
+      "capture_evidence_id": "ev_4245957bfcd9056b39b6958f7167f27596b26465bd851f5abb2d7522d347c0ea",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_507bac96ac6963e9169e446756f6d7c5496aecaf531ee4af90d482c6daafa6bb",
+          "changed_pixels": 898026,
+          "changed_ratio": 0.6929212962962963
+        },
+        "threshold_24": {
+          "evidence_id": "ev_414b8e36fad1c6a804259f55d130cd5aeac0d47d564c813cd1f6486cf018443c",
+          "changed_pixels": 71043,
+          "changed_ratio": 0.05481712962962963
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_5d9e28c13f76de15355c2f9b63fae13d89ccb092e0f90a166e6f12aaf2e3c836",
+          "changed_pixels": 359445,
+          "changed_ratio": 0.8749878286270691
+        },
+        "threshold_24": {
+          "evidence_id": "ev_58c36a490527eadc94fa8b14274945a4499d0fc17d0526239b26e4ebef0c4f73",
+          "changed_pixels": 17743,
+          "changed_ratio": 0.043191333982473226
+        }
+      }
+    },
+    {
+      "name": "ours-composer--light",
+      "file": "evidence/chat/composer/ours-composer--light.png",
+      "reference": "evidence/screens/chat--transcript-collapsed-tools--light.png",
+      "theme": "light",
+      "png_sha256": "9c7975d20313160c99baeb9e437b9ae66bb83bd1adf6bc5d009a9b9985e14484",
+      "capture_evidence_id": "ev_3699cacc11133fcd90d9d450dde8d7c30e1b6da98c3931437db5d52a2c364eb3",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_1647f67327d2203278d00fa723248b9cf93cdc82a8d8b72dd619f6a575251e2d",
+          "changed_pixels": 413652,
+          "changed_ratio": 0.3191759259259259
+        },
+        "threshold_24": {
+          "evidence_id": "ev_28db75442c47c08724f8ebecefab64ed3d755ef32152119535754cd9ee4236e0",
+          "changed_pixels": 61751,
+          "changed_ratio": 0.04764737654320988
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_c568feac4ca919dea0cd903babbf13d494b60f89fa9f9bbda429184e8ccc8096",
+          "changed_pixels": 220444,
+          "changed_ratio": 0.5366212268743914
+        },
+        "threshold_24": {
+          "evidence_id": "ev_1c34ffe3a3a2cfb837663cbe8b454753035c1ec4b34a84af964197b2b4071350",
+          "changed_pixels": 13161,
+          "changed_ratio": 0.032037487828627066
+        }
+      }
+    },
+    {
+      "name": "ours-composer--working--dark",
+      "file": "evidence/chat/composer/ours-composer--working--dark.png",
+      "reference": "evidence/chat/composer/composer--working--dark.png",
+      "theme": "dark",
+      "png_sha256": "87447ea825adcca0a6e9e38c3f29f77df93aa271b3e050c8c3947e385b53d0a4",
+      "capture_evidence_id": "ev_24ff38cd3a0a132ce879c784ce51425cfad0849c3f80b62e9ab663448179e272",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_95dbbf48b53fcbafab214f46aebb1040254aca5a6c42dbd581fc58fba881356a",
+          "changed_pixels": 813247,
+          "changed_ratio": 0.6275054012345679
+        },
+        "threshold_24": {
+          "evidence_id": "ev_cc9dfc1bac2f51b8de20bd55f8a47dae94d9e331544fe767bc24ee4b135601f3",
+          "changed_pixels": 49726,
+          "changed_ratio": 0.03836882716049383
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_8d422c46fa7d85e87e411ec9ccef3e9865a2271539aa8fd0b8735655b17a43b9",
+          "changed_pixels": 336418,
+          "changed_ratio": 0.8189337877312561
+        },
+        "threshold_24": {
+          "evidence_id": "ev_947d80a2c6928d15d248c40871bd0b4ccaf0997fd4681c9036b8ecc6768243ef",
+          "changed_pixels": 12429,
+          "changed_ratio": 0.0302555988315482
+        }
+      }
+    },
+    {
+      "name": "ours-composer--working-typed--dark",
+      "file": "evidence/chat/composer/ours-composer--working-typed--dark.png",
+      "reference": "evidence/chat/composer/composer--working-typed--dark.png",
+      "theme": "dark",
+      "png_sha256": "aebf1dc7d93f231e7b31bfa865df4a99bb25d34d38cc90661e968256b76e7c07",
+      "capture_evidence_id": "ev_9f1cf85ab879edb3e4b1ed69722bca6e9704baf33e5faf58038f4c4328a120ad",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_3191f19ed25b9c0d3df95b358bb7b9c4514ae1dc3c52750b2b40a090edbe6ab9",
+          "changed_pixels": 813247,
+          "changed_ratio": 0.6275054012345679
+        },
+        "threshold_24": {
+          "evidence_id": "ev_e810f20709b9c8eb45cd421b2fc98212c40ea267d7499374405c6a6909effa78",
+          "changed_pixels": 49926,
+          "changed_ratio": 0.03852314814814815
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_224ca050832686c166fe84da5f4a89677913930cab9a7ed603714898ffb4b381",
+          "changed_pixels": 336418,
+          "changed_ratio": 0.8189337877312561
+        },
+        "threshold_24": {
+          "evidence_id": "ev_d7dc720e64a01c1a52a3e41fd0c426ebbe15d445a1e08fdcec722bb7be913a61",
+          "changed_pixels": 12657,
+          "changed_ratio": 0.030810613437195714
+        }
+      }
+    },
+    {
+      "name": "ours-composer--plus-menu--dark",
+      "file": "evidence/chat/composer/ours-composer--plus-menu--dark.png",
+      "reference": "evidence/chat/composer/composer--plus-menu--dark.png",
+      "theme": "dark",
+      "png_sha256": "c3ee79837cce513dad14ebdfd7232ea3f4efa565ff40f12d9b0306db80fcd715",
+      "capture_evidence_id": "ev_4143030b9331579ea57d8c217dc4045de1bb1dee3cc6a719d0aaab9b8fbc9e04",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_cc3e986c2ac42e9df4f0f589ed3f3755d7f92d9ec85f8f3cc59dab560d1cbda7",
+          "changed_pixels": 875007,
+          "changed_ratio": 0.6751597222222222
+        },
+        "threshold_24": {
+          "evidence_id": "ev_e4b91b098603d493a23950d59b97f5a9e5cdc90e9fe628514ec0ee1b2c1fd573",
+          "changed_pixels": 71229,
+          "changed_ratio": 0.05496064814814815
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_a42ba7752113f524f369c87378b759aa841920982a714c6e2b045d3b7044490c",
+          "changed_pixels": 336418,
+          "changed_ratio": 0.8189337877312561
+        },
+        "threshold_24": {
+          "evidence_id": "ev_16343b97847d39cd5c74c8b6f5609eea31a85288e680bdda76bd6cdc844e797b",
+          "changed_pixels": 17880,
+          "changed_ratio": 0.04352482960077897
+        }
+      }
+    },
+    {
+      "name": "ours-composer--effort-submenu--dark",
+      "file": "evidence/chat/composer/ours-composer--effort-submenu--dark.png",
+      "reference": "evidence/chat/composer/composer--effort-submenu--dark.png",
+      "theme": "dark",
+      "png_sha256": "76c140d2b35c1d77f6fc9f0216352aec4dfa03d05798a33b087530b7fd6f33ac",
+      "capture_evidence_id": "ev_5516b432f02dfebcd5e2e84a42f50e5e35f485d48fe1d8279a8a10722332cdb2",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_76bd76c1f09edd09b1c8fa737739f50c03bcd60dfa3f2616badb1c953f541ed2",
+          "changed_pixels": 948003,
+          "changed_ratio": 0.7314837962962963
+        },
+        "threshold_24": {
+          "evidence_id": "ev_20c7ae0bf849d75f61c772dbe5fcf5765f076679927fdf44f81c44462c373b7e",
+          "changed_pixels": 96540,
+          "changed_ratio": 0.07449074074074075
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_37f966d51900d9e8866b0531533b789a94cc60c9fe7260b9685c73e6550ae80b",
+          "changed_pixels": 398534,
+          "changed_ratio": 0.970141187925998
+        },
+        "threshold_24": {
+          "evidence_id": "ev_5bfaa5d099752d7f03b9ebad1b894494962a4f5945a15beb57cadae38d43a485",
+          "changed_pixels": 43084,
+          "changed_ratio": 0.10487828627069133
+        }
+      }
+    },
+    {
+      "name": "demo-composer--slash-menu--dark",
+      "file": "evidence/chat/composer/demo-composer--slash-menu--dark.png",
+      "reference": "evidence/chat/composer/composer--slash-menu--dark.png",
+      "theme": "dark",
+      "png_sha256": "fc1529a70d11fb02e1d40a823e0c9beaa111f30a68097e852b4e31043c286870",
+      "capture_evidence_id": "ev_6caf00ab2775f6677c4164775f58a18ebe12d2bd09a3122a0f1d8d4770d3aad7",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_bb3aeb37a34e6edbd9210bde99ff790b1d992ae2523f31c0b5eb594426cc81e0",
+          "changed_pixels": 384670,
+          "changed_ratio": 0.29681327160493826
+        },
+        "threshold_24": {
+          "evidence_id": "ev_5300b9a36d1129e22f32848b98183f3b1445c91b5ef1f5deedaa2dcf3303eec2",
+          "changed_pixels": 32887,
+          "changed_ratio": 0.02537577160493827
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_e005d7310bf85bf7196bbaf6199c5da009fdb78b758484825e7e400b80779db1",
+          "changed_pixels": 5169,
+          "changed_ratio": 0.012582765335929893
+        },
+        "threshold_24": {
+          "evidence_id": "ev_cd5bd32629413a1da0babc8be48fc718e093a46f58bc496ef85806651e7ad7c7",
+          "changed_pixels": 87,
+          "changed_ratio": 0.00021178188899707888
+        }
+      }
+    },
+    {
+      "name": "demo-composer--typed--dark",
+      "file": "evidence/chat/composer/demo-composer--typed--dark.png",
+      "reference": "evidence/chat/composer/composer--typed--dark.png",
+      "theme": "dark",
+      "png_sha256": "5ae1dfc5bf6e72cf379cea633e30e94504a1996ade2427f6c2af2edfb7376136",
+      "capture_evidence_id": "ev_45f98ea4a52abc7f9373c0be421acf234e4bd259836ec09a292f19927beb8c82",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_b1633182e54381b5f202a7d885f658f4f3b4d34b104ab4c781fa859ea9e5bdd0",
+          "changed_pixels": 380774,
+          "changed_ratio": 0.2938070987654321
+        },
+        "threshold_24": {
+          "evidence_id": "ev_61c95e068cb8fedb8d0fb897e88e18a386d85bde65ec7fb8a58b305d25e323d0",
+          "changed_pixels": 33450,
+          "changed_ratio": 0.025810185185185186
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_2cb7e299dc61e9af80d8d315df80625e54a99e03f6f8d4666e7d7af72ad84a5b",
+          "changed_pixels": 1273,
+          "changed_ratio": 0.003098831548198637
+        },
+        "threshold_24": {
+          "evidence_id": "ev_7c688306e3627d1f44ba5d7131b93f5b162792fb3a136e87df0f90cfe6b77f66",
+          "changed_pixels": 650,
+          "changed_ratio": 0.0015822784810126582
+        }
+      }
+    },
+    {
+      "name": "demo-composer--model-picker--dark",
+      "file": "evidence/chat/composer/demo-composer--model-picker--dark.png",
+      "reference": "evidence/chat/composer/composer--model-picker--dark.png",
+      "theme": "dark",
+      "png_sha256": "5a92fa61e38923dc012bcda0f9af46e526b3203f0d520a4999c08b1df64894d1",
+      "capture_evidence_id": "ev_b1f9077d01a4feba4cba69f047d6c38382a01c3e97becac10a2f25378913da47",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_9ccc284817a09e78002249b9ffaef7d0c48a33971e04ae2a0e9378f12e586b48",
+          "changed_pixels": 396100,
+          "changed_ratio": 0.3056327160493827
+        },
+        "threshold_24": {
+          "evidence_id": "ev_d6bd67898d131c4928f6ed0e07d7d6062882eecea8619129512b656a8de1e0db",
+          "changed_pixels": 34654,
+          "changed_ratio": 0.0267391975308642
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_374d619f0a3d9979a91508b1deb1d13c9555242130717c6d907a9d113271e08f",
+          "changed_pixels": 16606,
+          "changed_ratio": 0.04042356377799416
+        },
+        "threshold_24": {
+          "evidence_id": "ev_9cf21d0ffc3ecc1a234df8f7c19147e400dd5b2fccb55ce0d98118647be6b4b3",
+          "changed_pixels": 1851,
+          "changed_ratio": 0.004505842259006816
+        }
+      }
+    },
+    {
+      "name": "demo-composer--effort-submenu--dark",
+      "file": "evidence/chat/composer/demo-composer--effort-submenu--dark.png",
+      "reference": "evidence/chat/composer/composer--effort-submenu--dark.png",
+      "theme": "dark",
+      "png_sha256": "066bf663fc4230dde7eeac5f0692cfeea7dfe96fb6b3be1c01f6e83f14801ba5",
+      "capture_evidence_id": "ev_fe33a6bade593a294b47afce3a5de8e172ea43af5f897f9e0e5910de1bbb4fda",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_78a74bdab29e467b8a99eba6cce86cb3c75af64e36099f8ff1e93c6879f1cbdd",
+          "changed_pixels": 390039,
+          "changed_ratio": 0.3009560185185185
+        },
+        "threshold_24": {
+          "evidence_id": "ev_65a027818af70543fce98d19407f4010a4f81037cbb52fda0dbf77cd6747c39c",
+          "changed_pixels": 34601,
+          "changed_ratio": 0.026698302469135803
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_54a908ae4062f893ce0094b07f9cef776bd5bcf756c19faf8ba99042466175de",
+          "changed_pixels": 10545,
+          "changed_ratio": 0.025669425511197663
+        },
+        "threshold_24": {
+          "evidence_id": "ev_5e5dfd1a19397ee54f2abad0ec9c72d2443f0882e73c3bc944b2acb58d957c1b",
+          "changed_pixels": 1798,
+          "changed_ratio": 0.00437682570593963
+        }
+      }
+    },
+    {
+      "name": "ours-composer--mention-menu--dark",
+      "file": "evidence/chat/composer/ours-composer--mention-menu--dark.png",
+      "reference": "evidence/chat/composer/composer--mention-menu--dark.png",
+      "theme": "dark",
+      "png_sha256": "5da2f153bc7dd0ac4fb70f0181e0a864d8b42012408901ae79562e05a9c489ad",
+      "capture_evidence_id": "ev_88a3685da29760217edacac3aa2785d4798a26fc458829dfa296f41e7289e7b0",
+      "page_errors": 0,
+      "full": {
+        "threshold_0": {
+          "evidence_id": "ev_0e6b4a93f62ca2511e99cc6efa6d5bdd185e768d533e6c3100ba6e0e1016125f",
+          "changed_pixels": 874975,
+          "changed_ratio": 0.6751350308641976
+        },
+        "threshold_24": {
+          "evidence_id": "ev_58bd11d8c16e1d0bda81329318c47d162192f361df0a60d7df7d141c4d895268",
+          "changed_pixels": 65028,
+          "changed_ratio": 0.05017592592592593
+        }
+      },
+      "composer_crop": {
+        "rect": {
+          "x": 256,
+          "y": 380,
+          "w": 790,
+          "h": 520
+        },
+        "threshold_0": {
+          "evidence_id": "ev_601cc44857b5b793c30346dc1593d7479ed73e3218be3564754d40a8c1bce97e",
+          "changed_pixels": 336418,
+          "changed_ratio": 0.8189337877312561
+        },
+        "threshold_24": {
+          "evidence_id": "ev_f6db98a38627e8bc088ca120d9d0b3464c6f34c01e4eda3a7fa4e923f5760792",
+          "changed_pixels": 11744,
+          "changed_ratio": 0.028588120740019474
+        }
+      }
+    }
+  ]
+}

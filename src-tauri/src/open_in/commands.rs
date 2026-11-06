@@ -61,18 +61,23 @@ fn run(program: &str, args: &[String]) -> Result<(), String> {
 }
 
 /// JS: `invoke("open_in_app", { appId, path })`: opens the workspace folder
-/// `path` in the app.
+/// `path` in the app, or one file in it (the All files tree).
 #[tauri::command]
 pub async fn open_in_app(app_id: String, path: String) -> Result<(), String> {
     let app = find(&app_id).ok_or_else(|| format!("Unknown app: {app_id}"))?;
-    let dir = Path::new(&path);
-    if !dir.is_absolute() || !dir.is_dir() {
-        return Err(format!("Not a folder: {path}"));
+    let target = Path::new(&path);
+    if !target.is_absolute() || !(target.is_dir() || target.is_file()) {
+        return Err(format!("Not a folder or file: {path}"));
     }
-    let dir = dir.to_path_buf();
+    let is_file = target.is_file();
+    let dir = target.to_path_buf();
     tauri::async_runtime::spawn_blocking(move || {
         if cfg!(target_os = "macos") {
-            let (program, args) = super::macos_open_command(app, &dir);
+            let (program, args) = if is_file {
+                super::macos_open_file_command(app, &dir)
+            } else {
+                super::macos_open_command(app, &dir)
+            };
             // Xcode without its command line tools: open the folder in the app.
             run(&program, &args).or_else(|e| {
                 if app.id == "xcode" {
@@ -90,7 +95,11 @@ pub async fn open_in_app(app_id: String, path: String) -> Result<(), String> {
             })
         } else if app.id == "finder" {
             // Conductor's Linux branch hands the folder to the desktop's file manager.
-            run("xdg-open", &[dir.to_string_lossy().into_owned()])
+            let folder = match dir.parent() {
+                Some(parent) if is_file => parent,
+                _ => dir.as_path(),
+            };
+            run("xdg-open", &[folder.to_string_lossy().into_owned()])
         } else {
             Err(format!(
                 "Opening in {} is only supported on macOS",

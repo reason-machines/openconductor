@@ -12,6 +12,10 @@
 //   2. "follow-up"       the reply says "turn 2", so one Codex thread ran both
 //   3. "hello" + Deny    "Deny and stop" ends the turn as "Interrupted by user"
 //   4. "slow" + Stop     Stop interrupts the running turn: "Interrupted by user"
+//   5. "elicit"          an MCP server asks for a form: the card, Needs input on
+//                        the sidebar row; Continue sends the form's content
+//   6. "perm" + Deny     Codex asks for network access: the card, Needs input;
+//                        Deny grants nothing
 //
 // Usage (under a display, e.g. xvfb-run):
 //   node tools/e2e/codex-chat.e2e.mjs <path to the built app binary>
@@ -112,10 +116,13 @@ const running = () => run("return !!document.querySelector('.composer button[tit
 const approvalButtons = () => run("return [...document.querySelectorAll('.codex-approval button')].map((b) => b.textContent);");
 const clickApproval = (label) =>
   run("const b = [...document.querySelectorAll('.codex-approval button')].find((b) => b.textContent === arguments[0]); if (!b) return false; b.click(); return true;", label);
-/** Opens every collapsed "N tool calls" summary (tool rows fold into it once a turn ends), then reads each row's tool name. */
+/**
+ * Opens every collapsed "N tool calls" summary (tool rows fold into it once a turn ends), then reads each
+ * row's command: Conductor draws a Codex command as a Bash row with the command in its right-hand chip.
+ */
 const toolNames = () =>
   run(`for (const b of document.querySelectorAll('.chat-tool-summary-row[aria-expanded="false"]')) b.click(); return true;`).then(() =>
-    run("return [...document.querySelectorAll('.chat-tool-name')].map((n) => n.textContent);"),
+    run("return [...document.querySelectorAll('.chat-tool')].map((t) => t.querySelector('.oc-code-chip')?.textContent ?? t.innerText);"),
   );
 const requests = () =>
   readFileSync(join(home, "codex-fake.jsonl"), "utf8")
@@ -157,20 +164,22 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
-  await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("Reason runs this chat")));
+  await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   const cliPath = await runAsync("const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke('codex_cli_path').then(done, (e) => done('error: ' + e));");
   assert.equal(cliPath, join(bin, "codex"));
   pass(`codex_cli_path finds the CLI in ~/.local/bin: ${cliPath}`);
 
-  // Pick Codex in the composer's agent menu.
-  await run(
-    `const s = document.querySelector('.agent-select');
-     Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, 'codex');
-     s.dispatchEvent(new Event('change', { bubbles: true }));`,
+  // Pick Codex in the composer's model picker (Conductor's picker picks the agent too).
+  await run("document.querySelector(\"[data-testid='composer-model-button']\").click();");
+  await waitFor("Codex in the model picker", () =>
+    run("return [...document.querySelectorAll('.oc-model-menu .oc-model-item')].some((b) => b.textContent.trim() === 'Codex') || null;"),
   );
-  const placeholder = await waitFor("the Codex chat panel", () => chatText().then((t) => t && t.includes("Codex runs this chat") && t));
-  pass(`agent menu switches the chat to Codex: "${placeholder.split("\n").find((l) => l.includes("Codex runs"))}"`);
+  await screenshot("codex-0-model-picker");
+  await run("[...document.querySelectorAll('.oc-model-menu .oc-model-item')].find((b) => b.textContent.trim() === 'Codex').click();");
+  await waitFor("Codex on the picker chip", () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.title === 'Codex' || null;"));
+  await waitFor("the Codex access menu", () => run("return !!document.querySelector('.codex-access') || null;"));
+  pass("the model picker switches the chat to Codex: the chip reads Codex and the access menu shows");
   const access = await run("const s = document.querySelector('.codex-access'); return s && [s.value, [...s.options].map((o) => o.textContent)];");
   assert.deepEqual(access, ["full", ["Full access", "Ask first", "Read only"]], "Conductor's default: full access");
   // Ask first, so Codex asks before running the command.
@@ -192,6 +201,12 @@ try {
   assert.ok(card.includes("hello.txt"), card);
   await screenshot("codex-1-approval");
   pass(`approval card shows the command and Codex's decisions: ${buttons.join(", ")}`);
+  // parity: sidebar.ws-status. An open approval is Conductor's tool approval: Needs permission.
+  const rowStatus = () => run(`return [...document.querySelectorAll('[data-testid="workspace-status-icon"]')].map((e) => e.dataset.status);`);
+  await waitFor("Needs permission on the sidebar row", async () => (await rowStatus()).includes("needs-user-permission"), 15000).catch(async (e) => {
+    throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await rowStatus())}`);
+  });
+  pass("the sidebar row shows Needs permission while the approval is open");
 
   assert.ok(await clickApproval("Allow"));
   await waitFor('"hello from codex" reply', () => chatText().then((t) => t.includes("hello from codex") && !t.includes("Codex wants")));
@@ -202,9 +217,9 @@ try {
   // The commentary message folds into the (now opened) tool-call group and renders as Markdown, so its
   // `code` spans lose their backticks; the final reply stays outside it (user bubbles are left out: the prompt quotes the reply).
   const [grouped, outside] = await run(
-    `const groups = [...document.querySelectorAll('.chat-scroll .chat-tool-group')];
+    `const groups = [...document.querySelectorAll('.chat-scroll [data-tool-group]')];
      const clone = document.querySelector('.chat-scroll').cloneNode(true);
-     for (const g of clone.querySelectorAll('.chat-tool-group, .chat-user')) g.remove();
+     for (const g of clone.querySelectorAll('[data-tool-group], .chat-user')) g.remove();
      return [groups.map((g) => g.innerText).join('\\n'), clone.textContent];`,
   );
   assert.match(grouped, /I.ll create `?hello\.txt`? in the workspace, then run `?cat hello\.txt`?\./, "commentary message shown inside the tool-call group");
@@ -212,6 +227,8 @@ try {
   assert.ok(!/I.ll create/.test(outside), "commentary is not outside the tool-call group");
   await screenshot("codex-2-turn-done");
   pass(`Allow runs the commands (${tools.join(" | ")}), hello.txt is in ${workspace.path}, reply shown`);
+  await waitFor("the sidebar row to leave Needs permission", async () => !(await rowStatus()).includes("needs-user-permission"), 15000);
+  pass("answering the approval clears Needs permission on the sidebar row");
 
   const sent = requests();
   const start = sent.find((r) => r.method === "thread/start");
@@ -250,6 +267,56 @@ try {
   assert.deepEqual(interrupt.params, { threadId: "th-e2e-1", turnId: "turn-4" });
   await screenshot("codex-3-stopped");
   pass('Stop sends turn/interrupt for the running turn and the chat shows "Interrupted by user"');
+
+  // parity: sidebar.ws-status. Conductor holds Codex's MCP elicitations and permission requests for the
+  // user and shows the session as needs_user_input ("Needs input") until they are answered.
+  const rowIcons = () =>
+    run(`return [...document.querySelectorAll('[data-testid="workspace-status-icon"]')].map((e) => ({ status: e.dataset.status, label: e.getAttribute('aria-label') }));`);
+  const needsInput = () => rowIcons().then((icons) => icons.some((i) => i.status === "needs-user-input" && i.label === "Needs input"));
+  const consentCard = (kind) => run(`const c = document.querySelector('[data-testid="codex-consent"][data-kind="${kind}"]'); return c ? c.innerText : null;`);
+  const clickConsent = (label) =>
+    run("const b = [...document.querySelectorAll('[data-testid=\"codex-consent\"] button')].find((b) => b.textContent === arguments[0]); if (!b) return false; b.click(); return true;", label);
+  const lastResponse = (id) => requests().filter((r) => r.response?.id === id).at(-1)?.response;
+
+  // 5. MCP elicitation (form).
+  await send("elicit: file the issue in linear");
+  const elicitCard = await waitFor("the elicitation card", () => consentCard("elicitation"));
+  assert.ok(elicitCard.includes("linear needs information"), elicitCard);
+  assert.ok(elicitCard.includes("Which team should own the issue?"), elicitCard);
+  await waitFor("Needs input on the sidebar row", needsInput, 15000).catch(async (e) => {
+    throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await rowIcons())}`);
+  });
+  await screenshot("codex-4-elicitation-needs-input");
+  pass('an MCP elicitation shows "linear needs information" and the sidebar row shows Needs input');
+  assert.ok(await clickConsent("Continue"));
+  await waitFor("the required-field error", () => consentCard("elicitation").then((t) => t && t.includes("Team is required.")));
+  assert.equal(lastResponse("elicit-turn-5"), undefined, "nothing is sent while the form is incomplete");
+  await run(
+    `const i = document.querySelector('[data-testid="codex-consent"] input');
+     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(i, 'core');
+     i.dispatchEvent(new Event('input', { bubbles: true }));`,
+  );
+  assert.ok(await clickConsent("Continue"));
+  await waitFor('"linear got team core"', () => chatText().then((t) => t.includes("linear got team core")));
+  await turnDone(5);
+  assert.deepEqual(lastResponse("elicit-turn-5"), { id: "elicit-turn-5", result: { action: "accept", content: { team: "core" }, _meta: null } });
+  await waitFor("the sidebar row to leave Needs input", async () => !(await needsInput()), 15000);
+  pass("Continue sends the form's content to Codex ({team: core}), the turn ends, and Needs input clears");
+
+  // 6. Permission request, denied.
+  await send("perm: fetch the tracker");
+  const permCard = await waitFor("the permission card", () => consentCard("permissions"));
+  assert.ok(permCard.includes("codex requests permission"), permCard);
+  assert.ok(permCard.includes("Network access"), permCard);
+  assert.ok(permCard.includes("Fetch the issue tracker"), permCard);
+  await waitFor("Needs input on the sidebar row", needsInput, 15000);
+  await screenshot("codex-5-permission-needs-input");
+  assert.ok(await clickConsent("Deny"));
+  await waitFor('"permissions: none granted"', () => chatText().then((t) => t.includes("permissions: none granted")));
+  await turnDone(6);
+  assert.deepEqual(lastResponse("perm-turn-6"), { id: "perm-turn-6", result: { permissions: {}, scope: "turn" } });
+  await waitFor("the sidebar row to leave Needs input", async () => !(await needsInput()), 15000);
+  pass('a permission request shows "codex requests permission" with Network access and Needs input; Deny grants nothing');
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {
