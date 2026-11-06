@@ -3,9 +3,10 @@ import { CloseIcon } from "./Icons";
 
 export type DialogKind = "clone" | "quickstart" | "create";
 
-export function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+/** `dialogId` tags the dialog for the keybinding dispatcher (`enableOnDialogIds`). */
+export function Modal({ title, onClose, children, dialogId }: { title: string; onClose: () => void; children: ReactNode; dialogId?: string }) {
   return (
-    <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="modal-backdrop" data-dialog-id={dialogId} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal" role="dialog" aria-modal="true" aria-label={title} onKeyDown={(e) => e.key === "Escape" && onClose()}>
         <div className="modal-header">
           <h2>{title}</h2>

@@ -28,7 +28,10 @@ import type { Action } from "./state/store";
 import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
-import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
+import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, quitApp, setQuitHandlerReady, type AppInfo } from "./backend";
+import { chatStatuses } from "./features/chat/chatRuntime";
+import { countRunningAgents, quitDecision } from "./features/quit/quit";
+import { QuitDialog } from "./features/quit/QuitDialog";
 import { addRegisteredRepo, decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
@@ -267,6 +270,36 @@ export default function App() {
     return () => offs.forEach((off) => void off.then((f) => f()));
   }, [dispatch]);
 
+  // Quit: the native app menu's Quit (⌘Q) and the quitApplication shortcut ask first
+  // while agents run, as Conductor does (src/features/quit/quit.ts).
+  const [quitConfirm, setQuitConfirm] = useState<number | null>(null);
+  const reposRef = useRef(state.repos);
+  reposRef.current = state.repos;
+  const requestQuit = useCallback(() => {
+    const running = countRunningAgents(chatStatuses(), reposRef.current.flatMap((r) => r.workspaces));
+    if (quitDecision(running) === "confirm") setQuitConfirm(running);
+    else void quitApp().catch((e) => show("error", errorText(e)));
+  }, [show]);
+  const confirmQuit = useCallback(() => void quitApp().catch((e) => show("error", errorText(e))), [show]);
+  // The native menu's accelerators land here as events: App menu > Settings... (⌘,) opens
+  // Settings › General like Conductor's `open_settings_page`, and Quit (⌘Q) sends `quit_requested`.
+  const menuRef = useRef({ requestQuit, navigateSettings });
+  menuRef.current = { requestQuit, navigateSettings };
+  useEffect(() => {
+    if (!inTauri()) return;
+    const offs = [
+      listen("quit_requested", () => menuRef.current.requestQuit()),
+      listen("open_settings_page", () => menuRef.current.navigateSettings({ scope: "user", page: "general" })),
+    ];
+    // Only once it listens may the native Quit item wait for it.
+    void Promise.all(offs).then(() => setQuitHandlerReady(true)).catch(() => {});
+    return () => {
+      void setQuitHandlerReady(false).catch(() => {});
+      offs.forEach((off) => void off.then((f) => f()));
+    };
+  }, []);
+  const quitDialog = quitConfirm !== null && <QuitDialog running={quitConfirm} onConfirm={confirmQuit} onClose={() => setQuitConfirm(null)} />;
+
   const sel = state.selection;
   const repo = sel.kind === "workspace" ? state.repos.find((r) => r.id === sel.repoId) : undefined;
   // An archived workspace opened from the archived list is not in `repos` (parity:sidebar.archived-view).
@@ -294,6 +327,7 @@ export default function App() {
     "toggleGarryMode": toggleGarryMode,
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
     "workspace.create": () => openDialog("create"),
+    "quitApplication": requestQuit,
   });
 
   const copyLink = useCallback(
@@ -337,6 +371,7 @@ export default function App() {
             notify: (kind, message) => show(kind, message),
           }}
         />
+        {quitDialog}
         <Toaster toasts={toasts} dismiss={dismiss} />
       </>
     );
@@ -447,6 +482,7 @@ export default function App() {
         />
       )}
       {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
+      {quitDialog}
       <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
   );

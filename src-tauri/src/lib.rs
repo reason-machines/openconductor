@@ -23,6 +23,7 @@ pub mod agent;
 pub mod agent_binaries;
 pub mod agent_commands;
 pub mod agent_options;
+pub mod app_quit;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
@@ -330,7 +331,10 @@ pub fn run() {
             e2e::install(app.handle());
             Ok(())
         })
+        .manage(app_quit::QuitHandler::default())
         .invoke_handler(tauri::generate_handler![
+            app_quit::set_quit_handler_ready,
+            app_quit::quit_app,
             root_path_commands::get_conductor_root,
             root_path_commands::repo_workspaces_path,
             root_path_commands::change_conductor_root,

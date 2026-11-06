@@ -184,6 +184,39 @@ handled by the webview dispatcher, not a menu accelerator.
 OpenConductor: `src-tauri/src/menu.rs` appends Keyboard Shortcuts to the default
 Help submenu on macOS and emits `open_keyboard_shortcuts_dialog` on click.
 
+### Settings... and Quit (re-read 2026-11-06)
+
+- `Settings...` carries the accelerator `CmdOrCtrl+,`. The webview listens for
+  `open_settings_page` and, on it, closes any dialog and opens
+  `/settings/user/general` (renderApp-D_fmY7hW.js @ ~10,884,627). After building
+  the menu, the binary looks `Settings...` up by label to set the `gearshape` SF
+  Symbol (`Warning: Could not find Settings... menu item`,
+  `Warning: Could not load gearshape SF Symbol`).
+- `custom_quit` carries `Cmd+Q` and replaces the predefined Quit. Clicking it logs
+  `Custom quit menu item clicked` and emits `quit_requested`
+  (`Failed to emit quit_requested event`). The binary registers the commands
+  `set_quit_handler_ready(ready)` and `quit_app`.
+- The webview registers its `quit_requested` listener, then calls
+  `set_quit_handler_ready(true)` (`v5a` @ ~11,073,980). On a request (`b5a`):
+  source `system` quits at once; otherwise, if any local agent is running, it
+  opens the confirm dialog `y5a`, else quits. The dialog: title "Quit Conductor?",
+  text "No agents are running, so it's safe to quit." / "1 agent is currently
+  running and will be stopped." / "N agents are currently running and will be
+  stopped." / "Agents may be running and will be stopped." (count unknown),
+  buttons Cancel and a destructive `data-primary-action` "Quit ⌘↵".
+- The registry's `quitApplication` (⌘Q) has no `oi()` call in renderApp: Quit is
+  native-only there.
+
+OpenConductor: `menu.rs` adds `Settings...` (id `settings`, `CmdOrCtrl+,`) after
+About and swaps the predefined Quit for `custom_quit` (`Cmd+Q`);
+`src-tauri/src/app_quit.rs` holds the ready flag and `quit_app`;
+`src/features/quit/` is the dialog. `quitApplication` is also bound in the
+webview (`src/App.tsx`), so ⌘Q follows the same path where there is no native
+menu. Differences: the `system` source (quit from the Dock or the OS) is not
+routed through the webview; the running count is the chat store's
+`working`/`cancelling` chats plus workspaces that report `working` without a chat
+status; no `gearshape` icon; dialog title says OpenConductor.
+
 ## Key-bindings page (`/settings/user/key-bindings`)
 
 - Gated by `internal_settings_enabled` (or dev mode). Without it, the route
@@ -242,6 +275,14 @@ listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
   A failed save shows the toast "Failed to save keyboard shortcut".
 
 ## REA gaps
+
+- Settings... item id, its position in the app menu, and the label of `custom_quit`
+  are not in the string table and were not decompiled (`rea search` on
+  `MacOS/conductor` fails with `provider_unavailable`; no Ghidra/Hopper/IDA/Kuna
+  and no Java runtime on Sven's Mac, re-checked 2026-11-06). The running-agent
+  counter that `y5a` calls (`tPt` over sessions and workspaces) lives in a chunk
+  where the minified name does not resolve by string search; its status set was
+  not read.
 
 - `analyze-javascript-application` finds no IPC operations: it does not model
   Tauri `invoke` or `listen`. The registry and event wiring were located by
