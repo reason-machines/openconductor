@@ -245,7 +245,11 @@ try {
   await waitFor('"turn 2: follow-up"', () => chatText().then((t) => t.includes("turn 2: follow-up")));
   await turnDone(2);
   assert.equal(requests().filter((r) => r.method === "thread/start").length, 1);
-  assert.equal(requests().filter((r) => r.method === "initialize").length, 1);
+  // The chat's app-server is the process that started the thread; the "/" menu's
+  // skills/list lookup runs in a short-lived app-server of its own.
+  const chatPid = requests().find((r) => r.method === "thread/start").pid;
+  assert.equal(requests().filter((r) => r.method === "initialize" && r.pid === chatPid).length, 1);
+  assert.ok(requests().filter((r) => r.method === "initialize" && r.pid !== chatPid).every((r) => requests().some((q) => q.pid === r.pid && q.method === "skills/list")), "other app-servers only list skills");
   pass('turn 2 reply is "turn 2: follow-up": one app-server and one thread ran both turns');
 
   // 3. Deny and stop.

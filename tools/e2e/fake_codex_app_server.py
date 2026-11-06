@@ -22,7 +22,9 @@ first command really writes hello.txt in the thread's cwd. Prompts:
 `skills/list` reports the skills under $HOME/.codex/skills and
 $HOME/.agents/skills (and the folder's .agents/skills), as Codex does.
 
-Every request it receives is appended to $HOME/codex-fake.jsonl.
+Every request it receives is appended to $HOME/codex-fake.jsonl with this
+process's pid, so a test can tell the chat's app-server from the short-lived
+one the "/" menu starts for `skills/list`.
 Only "codex app-server" is handled; other subcommands exit 2.
 """
 import json
@@ -46,7 +48,7 @@ def send(obj):
 
 def note(obj):
     with open(LOG, "a") as f:
-        f.write(json.dumps(obj) + "\n")
+        f.write(json.dumps({**obj, "pid": os.getpid()}) + "\n")
 
 
 def notify(method, params):

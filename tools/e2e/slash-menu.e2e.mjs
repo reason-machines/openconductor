@@ -71,11 +71,15 @@ const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
 let sessionUrl = null;
 
+/** One WebDriver request; one that hangs fails after 60 s with its path. */
 async function wd(method, path, body) {
   const res = await fetch(`${sessionUrl ?? base}${path}`, {
     method,
     headers: { "content-type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
+    signal: AbortSignal.timeout(60000),
+  }).catch((e) => {
+    throw new Error(`${method} ${path}: ${e?.name === "TimeoutError" ? "no answer in 60 s" : (e?.message ?? e)}`);
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(`${method} ${path}: ${res.status} ${JSON.stringify(json.value ?? json)}`);
@@ -108,11 +112,20 @@ async function waitFor(what, fn, timeoutMs = 30000) {
   throw new Error(`timed out waiting for ${what}; last: ${last instanceof Error ? last.message : JSON.stringify(last)}`);
 }
 
+/**
+ * Saves a screenshot. Best effort, as in tests/e2e/run.mjs: WebKitWebDriver on
+ * a loaded Xvfb sometimes drops a screenshot request, which says nothing about
+ * the menu, so a failed shot is logged and the checks go on.
+ */
 async function screenshot(name) {
-  const png = await wd("GET", "/screenshot");
-  const file = join(out, `${name}.png`);
-  writeFileSync(file, Buffer.from(png, "base64"));
-  console.log(`screenshot: ${file}`);
+  try {
+    const png = await wd("GET", "/screenshot");
+    const file = join(out, `${name}.png`);
+    writeFileSync(file, Buffer.from(png, "base64"));
+    console.log(`screenshot: ${file}`);
+  } catch (e) {
+    console.log(`no ${name}.png: ${e?.message ?? e}`);
+  }
 }
 
 const TEXTAREA = ".composer textarea";
@@ -210,12 +223,14 @@ try {
     pass(`${agent.id}: "/oc-fix" narrows the menu to ${filtered.rows.map((r) => r.name).join(", ")}`);
 
     // Enter picks the first row into the box; the skill then runs as a turn.
+    console.log(`${agent.id}: picking with Enter`);
     assert.equal(filtered.rows[0].name, agent.fixture, "the fixture is the first match");
     await wd("POST", `/element/${await find(TEXTAREA)}/value`, { text: "\uE007" });
     await waitFor(`${agent.id}: the picked skill in the box`, async () => (await composerValue()) === `/${agent.fixture} `);
     assert.equal(await menuRows(), null, "picking closes the menu");
     const args = `e2e-${agent.id}`;
     await type(args);
+    console.log(`${agent.id}: sending "/${agent.fixture} ${args}"`);
     await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
     const reply = `${MARKER} `;
     const text = await waitFor(`${agent.id}: the skill's reply`, () => chatText().then((t) => (t && t.includes(reply) && t.includes(args) ? t : null)), 45000);
@@ -228,7 +243,7 @@ try {
   console.log(`\nall ${steps.length} checks passed`);
 } catch (e) {
   console.error(`FAIL: ${e?.stack ?? e}`);
-  await screenshot("slash-failure").catch(() => undefined);
+  await screenshot("slash-failure");
   process.exitCode = 1;
 } finally {
   if (sessionUrl) await wd("DELETE", "").catch(() => undefined);
