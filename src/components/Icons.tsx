@@ -64,6 +64,18 @@ export const CopyIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="copy"
 export const CheckIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="check" size={size} strokeWidth={strokeWidth} />;
 export const ChevronUpIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="chevron-up" size={size} strokeWidth={strokeWidth} />;
 export const UserIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="user" size={size} strokeWidth={strokeWidth} />;
+// Routines (Conductor's /routines): the sidebar row and Run button draw Lucide's play,
+// the suggestions calendar-check / heart-pulse / newspaper with clock-3 by the schedule.
+export const PlayIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="play" size={size} strokeWidth={strokeWidth} />;
+export const CalendarCheckIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="calendar-check" size={size} strokeWidth={strokeWidth} />;
+export const HeartPulseIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="heart-pulse" size={size} strokeWidth={strokeWidth} />;
+export const NewspaperIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="newspaper" size={size} strokeWidth={strokeWidth} />;
+export const ClockIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="clock-3" size={size} strokeWidth={strokeWidth} />;
+export const TrashIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="trash-2" size={size} strokeWidth={strokeWidth} />;
+export const PowerIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="power" size={size} strokeWidth={strokeWidth} />;
+export const LinkIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="link" size={size} strokeWidth={strokeWidth} />;
+export const WebhookIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="webhook" size={size} strokeWidth={strokeWidth} />;
+export const PullRequestIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="git-pull-request" size={size} strokeWidth={strokeWidth} />;
 
 export const LogoMark = ({ size = 20 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>

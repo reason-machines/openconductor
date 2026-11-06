@@ -33,20 +33,20 @@
  },
  "summary": {
   "total": 971,
-  "missing": 755,
+  "missing": 750,
   "wrong": 86,
-  "matches": 130,
+  "matches": 135,
   "states": {
    "total": 73,
-   "missing": 15,
+   "missing": 13,
    "wrong": 27,
-   "matches": 31
+   "matches": 33
   },
   "items": {
    "total": 898,
-   "missing": 740,
+   "missing": 737,
    "wrong": 59,
-   "matches": 99
+   "matches": 102
   },
   "items_by_kind": {
    "dialog": {
@@ -57,9 +57,9 @@
    },
    "empty-state": {
     "total": 52,
-    "missing": 46,
+    "missing": 45,
     "wrong": 1,
-    "matches": 5
+    "matches": 6
    },
    "menu": {
     "total": 39,
@@ -81,9 +81,9 @@
    },
    "route": {
     "total": 65,
-    "missing": 41,
+    "missing": 39,
     "wrong": 9,
-    "matches": 15
+    "matches": 17
    },
    "select": {
     "total": 29,
@@ -149,9 +149,9 @@
    },
    "routines": {
     "total": 40,
-    "missing": 40,
+    "missing": 35,
     "wrong": 0,
-    "matches": 0
+    "matches": 5
    },
    "settings": {
     "total": 181,
@@ -820,66 +820,72 @@
   {
    "id": "route-routines",
    "title": "Routines",
-   "status": "missing",
-   "why": "OpenConductor has no route or view for /routines",
+   "status": "matches",
+   "why": "diff 1.7% at t24, copy 100%",
    "team": "routines",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/route-routines.png",
+    "file": "side-by-side/routines-01-list.png",
     "path": "/routines",
     "final_path": "/routines",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_48e3c0b29e2c970abbdd1f11dd2cf41d79a025788b1a64f4850f9fc12de15fbf"
+    "rea_evidence_id": "ev_72de25d9e2882b580246191106f4cb762c604270eb84329d31c32682474718a6"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no route or view for /routines",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/routines-01-list.png",
+    "error": null,
+    "note": "side-by-side lane at 7eb539ba1: tools/side-by-side/routines.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.017330411585365853,
+    "rea_evidence_ids": [
+     "ev_00aeeacf8813ae42757ba5f10575b1f9cf06cb46d8c2830982659d07b8bf536c",
+     "ev_8cfa065749c1d9b4a0bbdc08b82bda4908f059dabed34914921dc10aaf4e3b4c"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "route-routines-new",
    "title": "New routine",
-   "status": "missing",
-   "why": "OpenConductor has no route or view for /routines/new",
+   "status": "matches",
+   "why": "diff 0.9% at t24, copy 100%",
    "team": "routines",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/route-routines-new.png",
+    "file": "side-by-side/routines-02-new.png",
     "path": "/routines/new",
     "final_path": "/routines/new",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_23d5efe0da57ed8cda80e1b48bcd580553c58492a57618edc13fcc120f856c5e"
+    "rea_evidence_id": "ev_5740caf693f5aa7f9aed3301cb250e6d6fabb6575a7d9b59f0c9d7cd22474b09"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no route or view for /routines/new",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/routines-02-new.png",
+    "error": null,
+    "note": "side-by-side lane at 7eb539ba1: tools/side-by-side/routines.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.009339748475609757,
+    "rea_evidence_ids": [
+     "ev_6df46410690d9c797c6b82e75022fb0ea98793973afb479f0e15e414a197d6f4",
+     "ev_d7891db49c7728cac6092e685dbda4357d99f7cf1fe39879707398cf4be75864"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "route-team",
@@ -3881,8 +3887,8 @@
    "id": "route:routines",
    "kind": "route",
    "name": "/routines",
-   "status": "missing",
-   "why": "OpenConductor has no route or view for /routines",
+   "status": "matches",
+   "why": "diff 1.7% at t24, copy 100%",
    "team": "routines",
    "component": "eka",
    "source": {
@@ -3894,10 +3900,10 @@
    "tokens": [],
    "state": "route-routines",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/route-routines.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/routines-01-list.png",
+   "openconductor_screenshot": "side-by-side/routines-01-list.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.017330411585365853
   },
   {
    "id": "route:routines-automationid",
@@ -3925,8 +3931,8 @@
    "id": "route:routines-new",
    "kind": "route",
    "name": "/routines/new",
-   "status": "missing",
-   "why": "OpenConductor has no route or view for /routines/new",
+   "status": "matches",
+   "why": "diff 0.9% at t24, copy 100%",
    "team": "routines",
    "component": "B7a",
    "source": {
@@ -3938,10 +3944,10 @@
    "tokens": [],
    "state": "route-routines-new",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/route-routines-new.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/routines-02-new.png",
+   "openconductor_screenshot": "side-by-side/routines-02-new.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.009339748475609757
   },
   {
    "id": "route:routines-new-suggestionid",
@@ -21634,8 +21640,8 @@
    "id": "empty-state:no-runs-yet",
    "kind": "empty-state",
    "name": "No runs yet",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state route-routines-new matches",
    "team": "routines",
    "component": "Bti",
    "source": {
@@ -21649,10 +21655,10 @@
    "tokens": [],
    "state": "route-routines-new",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/route-routines-new.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/routines-02-new.png",
+   "openconductor_screenshot": "side-by-side/routines-02-new.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.009339748475609757
   },
   {
    "id": "settings-page:account",
