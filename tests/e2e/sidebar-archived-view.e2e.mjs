@@ -3,7 +3,8 @@
 // rows in memory): archive from the row menu, "View archived workspaces" in
 // the palette, the "Archived workspaces" filter, opening an archived
 // workspace (banner, Unarchive in place of Archive, "Workspace archived"
-// placeholder), and Unarchive from the banner and from the palette row.
+// placeholder), and Unarchive from the banner. Conductor's palette rows have
+// no unarchive button (only Home's rows do), so neither do ours.
 // Run after `npm run build`:
 //
 //   node --test tests/e2e/
@@ -74,21 +75,30 @@ test("archived workspaces are listed in the palette, open read-only and can be u
   await archiveFromMenu(page, "Copper wren");
 
   // "View archived workspaces" switches to the Workspaces tab showing all.
-  let palette = await openArchivedList(page);
+  const palette = await openArchivedList(page);
   assert.equal(await palette.getByRole("tab", { selected: true }).textContent(), "Workspaces");
-  const filter = palette.getByLabel("Archived workspaces");
-  assert.equal(await filter.inputValue(), "all");
-  assert.deepEqual(await filter.locator("option").allTextContents(), ["Hiding archived", "Showing all", "Only archived"]);
+  // The "Archived workspaces" filter: a button showing the choice, and a listbox of the three.
+  const filter = palette.getByRole("button", { name: "Archived workspaces" });
+  const choose = async (label) => {
+    await filter.click();
+    await palette.getByRole("listbox", { name: "Archived workspaces" }).getByRole("option", { name: label }).click();
+  };
+  assert.equal((await filter.textContent()).trim(), "Showing all");
+  await filter.click();
+  assert.deepEqual(await palette.getByRole("listbox", { name: "Archived workspaces" }).getByRole("option").allTextContents(), ["Hiding archived", "Showing all", "Only archived"]);
+  await filter.click();
   const titles = () => palette.locator(".palette-item .palette-title").allTextContents();
   const archivedTitles = () => palette.locator(".palette-item[data-archived] .palette-title").allTextContents();
-  assert.deepEqual(await archivedTitles(), ["Copper wren", "Quiet harbor"], "newest archived first, by the sidebar's display name as in Conductor's `SUi`");
+  // Archived rows list under their own "Archived" heading, newest first.
+  assert.deepEqual(await archivedTitles(), ["Copper wren", "Quiet harbor"], "newest archived first");
+  assert.deepEqual(await palette.locator(".palette-heading").allTextContents(), ["Workspaces", "Archived"]);
   assert.ok((await titles()).includes("Amber falcon"), "Showing all keeps active workspaces");
-  await filter.selectOption("archived");
+  await choose("Only archived");
   assert.deepEqual(await titles(), ["Copper wren", "Quiet harbor"]);
   await shot(page, "archived-workspaces-palette.png");
-  await filter.selectOption("active");
+  await choose("Hiding archived");
   assert.deepEqual(await archivedTitles(), []);
-  await filter.selectOption("archived");
+  await choose("Only archived");
 
   // Opening an archived workspace: read-only, with the banner and Unarchive.
   await palette.locator(".palette-item", { hasText: "Quiet harbor" }).click();
@@ -107,16 +117,6 @@ test("archived workspaces are listed in the palette, open read-only and can be u
   await row(page, "Quiet harbor").waitFor();
   assert.equal(await page.locator(".archived-workspace").count(), 0);
   assert.equal(await row(page, "Quiet harbor").getAttribute("aria-current"), "page");
-
-  // Unarchive from the palette row's button.
-  palette = await openArchivedList(page);
-  await palette.getByLabel("Archived workspaces").selectOption("archived");
-  assert.deepEqual(await palette.locator(".palette-item[data-archived] .palette-title").allTextContents(), ["Copper wren"]);
-  const wren = palette.locator(".palette-item", { hasText: "Copper wren" });
-  await wren.hover();
-  await wren.getByRole("button", { name: "Unarchive workspace" }).click();
-  assert.equal(await palette.count(), 0);
-  await row(page, "Copper wren").waitFor();
 
   assert.deepEqual(errors, []);
   await page.close();

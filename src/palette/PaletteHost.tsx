@@ -164,17 +164,14 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   };
 
   if (!open) return null;
-  const unarchive = (id: string) => {
-    const a = archivedById(id);
-    if (a) dispatch({ type: "unarchiveWorkspace", repoId: a.repoId, workspaceId: a.id });
-  };
   return (
     <CommandPalette
       data={data}
+      repos={state.repos}
+      archived={archived}
       showWorkspaceNumbers={showWorkspaceNumbers}
       onSelect={onSelect}
       settingIcon={settingIcon}
-      onUnarchive={unarchive}
       onClose={() => onOpenChange(false)}
     />
   );

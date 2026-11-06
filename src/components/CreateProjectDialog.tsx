@@ -9,10 +9,13 @@ import {
 import type { Repo } from "../state/types";
 import { createFirstWorkspace, type FirstWorkspaceResult } from "../home/createFirstWorkspace";
 import { FileCodeIcon, NextMarkIcon } from "./Icons";
-import { Modal } from "./Dialogs";
+import { useDialogMotion } from "./motion/dialogMotion";
 
 // "Create project" (Home → Quick start), per evidence/screens/create-project.md.
 // gstack stays out of TEMPLATES until the user decides on it.
+// Layout is Conductor 0.87.6's `gbi` on its generic dialog (`nd`, `sm:max-w-[525px]`, read
+// with REA from the decoded renderApp chunk @2,108,600): 24px padding, no close button,
+// title and subtitle header, then the fields 24px apart, each label 8px above its control.
 
 /** The registered project: its backend id (`add_repository`) plus what the sidebar shows. */
 export type CreatedRepo = Omit<Repo, "workspaces">;
@@ -26,11 +29,12 @@ interface Props {
 }
 
 const TEMPLATE_ICONS: Record<TemplateId, () => JSX.Element> = {
-  empty: () => <FileCodeIcon size={20} />,
-  nextjs: () => <NextMarkIcon size={20} />,
+  empty: () => <FileCodeIcon size={24} strokeWidth={1} />,
+  nextjs: () => <NextMarkIcon size={24} />,
 };
 
 export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) {
+  const motionRef = useDialogMotion<HTMLDivElement>();
   const [name, setName] = useState(DEFAULT_PROJECT_NAME);
   const [parent, setParent] = useState("");
   const [template, setTemplate] = useState<TemplateId>("empty");
@@ -103,9 +107,13 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
   }
 
   return (
-    <Modal title="Create project" onClose={onClose}>
-      <form onSubmit={submit} className="modal-body create-project-dialog">
+    <div className="modal-backdrop" ref={motionRef} data-dialog-motion="dialog" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal create-project-modal" role="dialog" aria-modal="true" aria-label="Create project" onKeyDown={(e) => e.key === "Escape" && onClose()}>
+      <div className="create-project-header">
+        <h2>Create project</h2>
         <p className="create-project-subtitle">Create a local folder, private GitHub repo, and first workspace.</p>
+      </div>
+      <form onSubmit={submit} className="create-project-dialog">
         <label className="field">
           <span>Project name</span>
           <input
@@ -154,6 +162,7 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
           </button>
         </div>
       </form>
-    </Modal>
+      </div>
+    </div>
   );
 }

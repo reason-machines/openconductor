@@ -121,7 +121,18 @@ st("settings-repo-misc-lower", "Settings > tide-web > Misc, scrolled to Remove r
    covers=[{"kind":"settings-page","name":"repo-misc"}])
 for sec in ["github","members","preferences","computer","environment","mcp","prompts"]:
     path="/settings/organization/"+sec
-    st("settings-org-"+sec, "Settings > Organization > "+sec, ref(path), oc_reason="OpenConductor has no organization settings", covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
+    # Conductor renders these only for a member of a cloud organization (`lW`; any other account is
+    # sent to /settings/user/general), so the reference runs with ?oc_org=cloud
+    # (tools/screens/org-fixtures.js). OpenConductor's organization is the signed-in Reason workspace,
+    # which the lane's throwaway HOME has none of; tools/side-by-side/org-settings.mjs scores them.
+    # The Cloud computer page (where /github redirects) shows tide-web twice, so it waits for its own copy.
+    # /github is Conductor's redirect to /computer (`REa`), so that is where its reference lands.
+    r = (ref(path, wait=False, actions=[{"wait":"text=Configure your organization's shared cloud computer."}], query={"oc_org":"cloud"},
+             **({"expect_path":"/settings/organization/computer"} if sec=="github" else {}))
+         if sec in ("github","computer") else ref(path, query={"oc_org":"cloud"}))
+    st("settings-org-"+sec, "Settings > Organization > "+sec, r,
+       oc_reason="the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
+       covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
 # The lane's throwaway HOME has no Reason login, so Settings lists no Cloud group to click: open the page
 # the way create's "Set up cloud" does (the app's open-settings event). Its steps then read signed out.
 st("settings-cloud-setup","Settings > Cloud setup", ref("/settings/cloud/setup"),
@@ -161,6 +172,10 @@ st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{
 # Rename chat dialog and the Review button's right-click menu (chat builder 1)
 LISBON=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]
 st("dialog-rename-chat","Rename chat dialog", ref(actions=LISBON+[{"rclick":"[role=tab][aria-label^='Close chat']"},{"click":"[role=menuitem] >> text=Rename chat"}]), oc=OPEN_WS+[{"rclick":".main-tabs [role=tab]","after_ms":600},{"click":"[role=menu] [role=menuitem]","text":"Rename chat","after_ms":800}])
+# Turn footer "Show message actions" -> Reset chat (Conductor dDo "Reset chat?", renderApp @8,910,893 bytes).
+st("dialog-reset-chat","Reset chat? dialog", ref(actions=LISBON+[{"click":"[aria-label='Show message actions']"},{"click":"[role=menuitem] >> text=Reset chat"}]), oc=OPEN_WS+[{"click":"[aria-label='Show message actions']","after_ms":600},{"click":"[role=menu] [role=menuitem]","text":"Reset chat","after_ms":800}], covers=[{"kind":"dialog","name":"Reset chat?"}])
+# Model picker searched for a model no agent has (Conductor A7o "No models found", @8,601,078 bytes).
+st("empty-model-search","Model picker, search with no match", ref(actions=LISBON+[{"click":"text=Opus 5 >> nth=-1"},{"fill":["[placeholder='Search models']","zzz"]}]), oc=OPEN_WS+[{"click":".composer .oc-model-chip","after_ms":600},{"type":"zzz","css":"[placeholder='Search models']"}], covers=[{"kind":"empty-state","name":"No models found"}])
 st("menu-review-edit","Review button menu (Edit before sending)", ref(actions=LISBON+[{"rclick":"button:has-text('Review') >> nth=0"}]), oc=OPEN_WS+[{"rclick":".review-button","after_ms":600}], covers=[{"kind":"menu","name":"u6s"}])
 
 # Conductor's reference opens on "/" (Home: wordmark and the Open project / Open GitHub

@@ -67,6 +67,13 @@ columns-2
 file-text
 circle-dot
 corner-down-left
+building-2
+message-square-text
+blocks
+laptop
+users
+credit-card
+upload
 sun
 maximize-2
 panel-right
