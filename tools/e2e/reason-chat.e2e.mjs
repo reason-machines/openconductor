@@ -163,6 +163,7 @@ const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await runni
 
 // Navigate through the sidebar instead of racing React's saved preferences with a reload.
 async function openWorkspace(repoName, branch) {
+  await capture.waitForAppReady();
   const row = `button[data-testid="left-sidebar-workspace-item"][title*=" · ${branch} · "]`;
   const rowId = await waitFor(`the ${branch} row in the sidebar`, async () => {
     const id = await elementBy("return document.querySelector(arguments[0]);", row);
@@ -191,6 +192,7 @@ async function launch() {
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
   capture.sessionId = session.sessionId;
+  await capture.waitForAppReady();
 }
 
 try {
