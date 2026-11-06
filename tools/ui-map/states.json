@@ -126,6 +126,11 @@
    "oc": [
     {
      "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-primary .sb-row",
      "text": "Create",
      "after_ms": 800
     }
@@ -156,6 +161,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "click": ".sb-primary .sb-row",
      "text": "Create",
@@ -1495,6 +1505,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "chord": [
       "Meta"
      ],
@@ -1522,6 +1537,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "chord": [
       "Meta"
@@ -1558,6 +1578,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "chord": [
       "Meta"
      ],
@@ -1586,22 +1611,16 @@
    },
    "oc": [
     {
-     "chord": [
-      "Meta"
-     ],
-     "key": "k",
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
      "after_ms": 800
     },
     {
-     "keys": "Open GitHub project",
-     "after_ms": 600
-    },
-    {
-     "keys": "{Enter}",
+     "click": ".home-card",
+     "text": "Open GitHub project",
      "after_ms": 800
     }
-   ],
-   "oc_note": "OpenConductor's Home shows the workspace list, not the entry cards, so the dialog is opened from the command palette"
+   ]
   },
   {
    "id": "dialog-create-project",
@@ -1620,22 +1639,16 @@
    },
    "oc": [
     {
-     "chord": [
-      "Meta"
-     ],
-     "key": "k",
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
      "after_ms": 800
     },
     {
-     "keys": "Quick start",
-     "after_ms": 600
-    },
-    {
-     "keys": "{Enter}",
+     "click": ".home-card",
+     "text": "Quick start",
      "after_ms": 800
     }
-   ],
-   "oc_note": "opened from the command palette, see dialog-clone-github"
+   ]
   },
   {
    "id": "dialog-rename-workspace",
@@ -1659,6 +1672,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "rclick": ".sb-ws-name"
     },
@@ -1685,6 +1703,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "chord": [
       "Meta"
      ],
@@ -1710,6 +1733,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "click": ".sb-computer"
     }
    ]
@@ -1733,6 +1761,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "rclick": ".sb-ws-name"
     }
@@ -1760,6 +1793,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "rclick": ".sb-ws-name"
     },
@@ -1820,6 +1858,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "click": ".sb-menu-trigger",
      "text": "tide-web actions"
     }
@@ -1841,6 +1884,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "click": ".sb-footer-btn",
      "text": "Help"
@@ -1866,6 +1914,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "click": ".sb-footer-btn",
      "text": "Help"
@@ -1936,6 +1989,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "rclick": ".sb-ws-name"
     },
     {
@@ -1967,6 +2025,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "rclick": ".sb-ws-name"
     },
