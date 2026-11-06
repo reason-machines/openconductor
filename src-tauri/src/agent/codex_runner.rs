@@ -4,18 +4,23 @@
 //! The app talks to a [`CodexRunner`]: [`CodexRunner::prompt`] queues a
 //! prompt and hands back a receiver for its [`TurnEnd`];
 //! [`CodexRunner::cancel`] stops the running prompt and drops queued ones;
-//! [`CodexRunner::answer`] answers an approval. Everything the chat shows
+//! [`CodexRunner::answer`] answers an approval and [`CodexRunner::respond`]
+//! an MCP elicitation or permission request ([`super::codex_consent`]).
+//! Everything the chat shows
 //! goes to the [`Sink`] as [`Payload`]s, in order, ending each prompt with
 //! exactly one [`Payload::TurnEnded`].
 //!
 //! The process starts on the first prompt (so a chat that is only looked at
 //! never starts Codex) and is started again, resuming the same thread, if it
-//! exits. Requests the app has no UI for are answered the way Conductor's
-//! sidecar answers them when it has no handler (`evidence/providers/
-//! codex-conductor-client.md`): user input with no answers, MCP elicitation
-//! with cancel, anything else with an error, so a turn never waits on them.
+//! exits. MCP elicitations and permission requests wait for the user, as in
+//! Conductor; Stop and the end of the turn answer any still open the way
+//! Conductor's `cancelCodexMcpConsent` does. Other requests the app has no
+//! UI for are answered the way Conductor's sidecar answers them when it has
+//! no handler (`evidence/providers/codex-conductor-client.md`): user input
+//! with no answers, anything else with an error, so a turn never waits on
+//! them.
 
-use std::collections::VecDeque;
+use std::collections::{HashMap, VecDeque};
 use std::sync::mpsc::{self, Receiver, Sender, TryRecvError};
 use std::sync::Arc;
 use std::thread::{self, JoinHandle};
@@ -24,6 +29,7 @@ use std::time::Duration;
 use serde_json::{json, Value};
 
 use super::codex_cli::CodexLaunch;
+use super::codex_consent::{self, consent, ConsentAnswer, ConsentKind};
 use super::codex_events::{Notification, ServerMessage, ServerRequest};
 use super::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
 use super::codex_session::{CallError, CodexEvent, CodexSession};
@@ -92,6 +98,7 @@ enum Cmd {
     Prompt(Prompt),
     Cancel,
     Answer(RequestId, ApprovalDecision),
+    Respond(RequestId, ConsentAnswer),
 }
 
 /// Handle to one chat's runner thread. Dropping it stops the thread and
@@ -112,6 +119,7 @@ impl CodexRunner {
             queue: VecDeque::new(),
             running: None,
             stderr: VecDeque::new(),
+            consents: HashMap::new(),
         };
         let thread = thread::Builder::new()
             .name("codex-chat".into())
@@ -154,6 +162,11 @@ impl CodexRunner {
     pub fn answer(&self, request: RequestId, decision: ApprovalDecision) {
         self.send(Cmd::Answer(request, decision));
     }
+
+    /// Answers an open MCP elicitation or permission request.
+    pub fn respond(&self, request: RequestId, answer: ConsentAnswer) {
+        self.send(Cmd::Respond(request, answer));
+    }
 }
 
 impl Drop for CodexRunner {
@@ -179,6 +192,8 @@ struct Worker {
     queue: VecDeque<Prompt>,
     running: Option<Running>,
     stderr: VecDeque<String>,
+    /// Elicitations and permission requests waiting on the user.
+    consents: HashMap<RequestId, ConsentKind>,
 }
 
 const POLL: Duration = Duration::from_millis(25);
@@ -237,6 +252,7 @@ impl Worker {
         match cmd {
             Cmd::Prompt(p) => self.queue.push_back(p),
             Cmd::Cancel => {
+                self.close_consents();
                 for prompt in std::mem::take(&mut self.queue) {
                     self.finish(prompt, TurnEnd::cancelled());
                 }
@@ -267,6 +283,45 @@ impl Worker {
                     }
                 }
             }
+            Cmd::Respond(id, answer) => {
+                // Already answered (Stop, the turn's end, or Codex itself).
+                let Some(kind) = self.consents.get(&id).copied() else {
+                    return;
+                };
+                match codex_consent::codex_result(kind, &answer) {
+                    Ok(result) => {
+                        self.consents.remove(&id);
+                        self.send_consent(id, result);
+                    }
+                    Err(e) => self.emit(Payload::Notice {
+                        message: format!("Could not answer Codex: {e}"),
+                        will_retry: false,
+                    }),
+                }
+            }
+        }
+    }
+
+    /// Sends a consent's result and tells the window it is answered.
+    fn send_consent(&mut self, id: RequestId, result: Value) {
+        if let Some(session) = self.session.as_mut() {
+            if let Err(e) = session.respond(&id, result) {
+                self.emit(Payload::Notice {
+                    message: format!("Could not answer Codex: {e}"),
+                    will_retry: false,
+                });
+            }
+        }
+        self.emit(Payload::ApprovalResolved { request_id: id });
+    }
+
+    /// Answers every open consent as Stop does: cancel an elicitation,
+    /// decline permissions.
+    fn close_consents(&mut self) {
+        for (id, kind) in std::mem::take(&mut self.consents) {
+            let result = codex_consent::codex_result(kind, &codex_consent::stopped(kind))
+                .expect("a stop answer fits its own kind");
+            self.send_consent(id, result);
         }
     }
 
@@ -347,12 +402,19 @@ impl Worker {
                 match message {
                     ServerMessage::Notification(Notification::TurnCompleted { turn, .. }) => {
                         if self.running.as_ref().map(|r| r.turn_id.as_str()) == Some(&turn.id) {
+                            // A request the turn no longer waits on.
+                            self.close_consents();
                             let r = self.running.take().expect("running");
                             let end = TurnEnd::from_status(&turn.status, turn.error.as_deref());
                             self.finish(r.prompt, end);
                         }
                     }
-                    ServerMessage::Request(ServerRequest::Other { id, method, .. }) => {
+                    ServerMessage::Request(ServerRequest::Other { id, method, params }) => {
+                        // Shown as a card by `payloads` above; held for the user.
+                        if let Some(c) = consent(&id, &method, &params) {
+                            self.consents.insert(id, c.kind);
+                            return;
+                        }
                         let answer = default_answer(&method);
                         if let Some(s) = self.session.as_mut() {
                             let _ = match &answer {
@@ -384,6 +446,10 @@ impl Worker {
             }
             CodexEvent::BadLine { line, error } => eprintln!("codex: {error}: {line}"),
             CodexEvent::Closed => {
+                // Nobody is left to answer: just close the cards.
+                for (id, _) in std::mem::take(&mut self.consents) {
+                    self.emit(Payload::ApprovalResolved { request_id: id });
+                }
                 // Stderr is read on its own thread: collect what is still
                 // in flight so the exit can be explained.
                 if let Some(mut session) = self.session.take() {
@@ -427,7 +493,8 @@ mod tests {
     /// A stand-in app-server that plays a recorded Codex 0.166.0 turn: a
     /// command approval, the command, then the reply. A prompt containing
     /// "slow" waits for an interrupt; "ask" sends a request the app does not
-    /// handle; "die" exits mid-turn. Logs stdin to `<script>.stdin`.
+    /// handle; "perm" asks for permissions and "elicit" for MCP input, both
+    /// held for the user; "die" exits mid-turn. Logs stdin to `<script>.stdin`.
     const FAKE: &str = r#"#!/bin/sh
 n=0
 while IFS= read -r line; do
@@ -448,7 +515,9 @@ while IFS= read -r line; do
         *ask*)
           echo '{"id":77,"method":"item/tool/requestUserInput","params":{"threadId":"t","turnId":"'$turn'","itemId":"q1","questions":[]}}' ;;
         *perm*)
-          echo '{"id":78,"method":"item/permissions/requestApproval","params":{"threadId":"t","turnId":"'$turn'","itemId":"p1"}}' ;;
+          echo '{"id":78,"method":"item/permissions/requestApproval","params":{"threadId":"t","turnId":"'$turn'","itemId":"p1","startedAtMs":1,"cwd":"/ws","reason":"needs the network","permissions":{"network":{"enabled":true}}}}' ;;
+        *elicit*)
+          echo '{"id":79,"method":"mcpServer/elicitation/request","params":{"threadId":"t","turnId":"'$turn'","serverName":"linear","mode":"form","message":"Which team?","requestedSchema":{"type":"object","properties":{"team":{"type":"string"}}},"_meta":null}}' ;;
         *)
           echo '{"id":0,"method":"item/commandExecution/requestApproval","params":{"threadId":"t","turnId":"'$turn'","itemId":"exec-1","command":"cat hello.txt","cwd":"/ws","availableDecisions":["accept","cancel"]}}' ;;
       esac ;;
@@ -458,8 +527,9 @@ while IFS= read -r line; do
       echo '{"method":"turn/completed","params":{"threadId":"t","turn":{"id":"u'$n'","items":[],"status":"completed"}}}' ;;
     *'"answers":{}'*)
       echo '{"method":"turn/completed","params":{"threadId":"t","turn":{"id":"u'$n'","items":[],"status":"failed","error":{"message":"needed input"}}}}' ;;
-    *'"error":{"code":-32601'*)
-      echo '{"method":"turn/completed","params":{"threadId":"t","turn":{"id":"u'$n'","items":[],"status":"failed","error":{"message":"no permission"}}}}' ;;
+    *'"id":78,"result"'*)
+      echo '{"method":"serverRequest/resolved","params":{"threadId":"t","requestId":78}}'
+      echo '{"method":"turn/completed","params":{"threadId":"t","turn":{"id":"u'$n'","items":[],"status":"completed"}}}' ;;
     *'"method":"turn/interrupt"'*)
       echo "{\"id\":$id,\"result\":{}}"
       echo '{"method":"turn/completed","params":{"threadId":"t","turn":{"id":"u'$n'","items":[],"status":"interrupted"}}}' ;;
@@ -643,13 +713,6 @@ done
         );
         let reply = sent(&exe).into_iter().find(|v| v["id"] == 77).unwrap();
         assert_eq!(reply, json!({"id": 77, "result": {"answers": {}}}));
-        let end = r.prompt("perm", None, None);
-        assert_eq!(
-            end.recv_timeout(WAIT).unwrap(),
-            TurnEnd::failed("no permission")
-        );
-        let reply = sent(&exe).into_iter().find(|v| v["id"] == 78).unwrap();
-        assert_eq!(reply["error"]["code"], -32601);
         assert!(wait_for(&seen, "notice", 0)["message"]
             .as_str()
             .unwrap()
@@ -670,6 +733,68 @@ done
             .find(|v| v["method"] == "thread/resume")
             .unwrap();
         assert_eq!(resumed["params"]["threadId"], "t-new");
+    }
+
+    #[test]
+    fn a_permission_request_waits_for_the_users_grant() {
+        let exe = script();
+        let (r, seen) = runner(config(&exe, None));
+        let end = r.prompt("perm", None, None);
+        let card = wait_for(&seen, "consent", 0);
+        assert_eq!(card["kind"], "permissions");
+        assert_eq!(card["serverName"], "codex");
+        assert_eq!(card["reason"], "needs the network");
+        assert_eq!(card["permissions"], json!({"network": {"enabled": true}}));
+        // Nothing is answered until the user does.
+        thread::sleep(Duration::from_millis(200));
+        assert!(sent(&exe).iter().all(|v| v["id"] != 78));
+        assert!(end.try_recv().is_err(), "the turn waits");
+
+        let grant: ConsentAnswer = serde_json::from_value(json!({
+            "action": "grant", "grantedPermissions": card["permissions"], "scope": "turn"
+        }))
+        .unwrap();
+        r.respond(RequestId::Int(78), grant.clone());
+        assert_eq!(end.recv_timeout(WAIT).unwrap(), TurnEnd::completed());
+        let reply = sent(&exe).into_iter().find(|v| v["id"] == 78).unwrap();
+        assert_eq!(
+            reply,
+            json!({"id": 78, "result": {"permissions": {"network": {"enabled": true}}, "scope": "turn"}})
+        );
+        assert_eq!(
+            wait_for(&seen, "approvalResolved", 0),
+            json!({"type": "approvalResolved", "requestId": 78})
+        );
+        // A second answer to the same request sends nothing more.
+        r.respond(RequestId::Int(78), grant);
+        thread::sleep(Duration::from_millis(200));
+        assert_eq!(sent(&exe).iter().filter(|v| v["id"] == 78).count(), 1);
+    }
+
+    #[test]
+    fn stop_cancels_an_open_elicitation_before_interrupting() {
+        let exe = script();
+        let (r, seen) = runner(config(&exe, None));
+        let end = r.prompt("elicit", None, None);
+        let card = wait_for(&seen, "consent", 0);
+        assert_eq!(card["kind"], "elicitation");
+        assert_eq!(card["serverName"], "linear");
+        assert_eq!(card["mode"], "form");
+        assert_eq!(card["message"], "Which team?");
+        r.cancel();
+        assert_eq!(end.recv_timeout(WAIT).unwrap(), TurnEnd::cancelled());
+        let lines = sent(&exe);
+        let reply = lines.iter().position(|v| v["id"] == 79).expect("answered");
+        assert_eq!(
+            lines[reply]["result"],
+            json!({"action": "cancel", "content": null, "_meta": null})
+        );
+        let interrupt = lines
+            .iter()
+            .position(|v| v["method"] == "turn/interrupt")
+            .expect("interrupted");
+        assert!(reply < interrupt, "answered before the interrupt");
+        wait_for(&seen, "approvalResolved", 0);
     }
 
     #[test]

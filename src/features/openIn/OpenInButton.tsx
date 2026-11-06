@@ -20,6 +20,11 @@ interface Props {
   /** The workspace folder; the button is disabled without one. */
   path: string | null;
   notify?: Notify;
+  /**
+   * "icon": only the chevron and its menu, as Conductor's `P9` with
+   * `size: "icon"` beside settings paths. It registers no shortcuts.
+   */
+  variant?: "split" | "icon";
 }
 
 /** The app's own icon with Conductor's hairline frame, else its kind's glyph. */
@@ -57,7 +62,8 @@ function useInstalledApps(): OpenInApp[] | null {
   return apps;
 }
 
-export function OpenInButton({ path, notify }: Props) {
+export function OpenInButton({ path, notify, variant = "split" }: Props) {
+  const split = variant === "split";
   const installed = useInstalledApps();
   const apps = installed ?? [];
   const defaultId = defaultAppId(apps, useAppPrefs().default_open_in);
@@ -95,8 +101,8 @@ export function OpenInButton({ path, notify }: Props) {
   const numbers = rowNumbers(apps.length);
 
   useKeybindings({
-    "workspace.openInApp": path && defaultId ? () => void openIn(defaultId) : undefined,
-    "workspace.openInMenu": path ? () => setOpen(true) : undefined,
+    "workspace.openInApp": split && path && defaultId ? () => void openIn(defaultId) : undefined,
+    "workspace.openInMenu": split && path ? () => setOpen(true) : undefined,
   });
   // 1-9 pick a row while the menu is open (Conductor's `cJe`).
   useKeybindings(
@@ -137,7 +143,8 @@ export function OpenInButton({ path, notify }: Props) {
 
   const mainLabel = defaultApp ? `Open in ${defaultApp.name}` : "Open in...";
   return (
-    <div className="oi" ref={wrap} data-testid="open-in">
+    <div className={split ? "oi" : "oi oi-icon"} ref={wrap} data-testid={split ? "open-in" : undefined}>
+      {split && (
       <button
         type="button"
         className="oi-main"
@@ -148,6 +155,7 @@ export function OpenInButton({ path, notify }: Props) {
       >
         {defaultApp ? <AppIcon app={defaultApp} size={12} /> : <FolderIcon size={12} />}
       </button>
+      )}
       <button
         type="button"
         className="oi-chevron"
@@ -161,7 +169,7 @@ export function OpenInButton({ path, notify }: Props) {
         <ChevronDownIcon size={12} />
       </button>
       {open && (
-        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey}>
+        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey} data-tauri-drag-region="false">
           {installed === null ? (
             <div className="oi-menu-note">Loading…</div>
           ) : apps.length === 0 ? (

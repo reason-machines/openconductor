@@ -6,7 +6,7 @@
 // plus the named file-type icons below. File and folder icons are the material
 // icon SVGs Conductor ships (see fileIcons.ts); the branch glyph is the
 // "branch" shape from Conductor's sidebar status table (REA, RowStatusIcon.tsx),
-// which is Lucide's git-branch (ISC).
+// which is Lucide's git-branch, re-exported from the shared set in Icons.tsx.
 import { fileIconName, folderIconName, materialIconUrl, type MaterialIcon } from "./fileIcons";
 
 type IconProps = { size?: number; className?: string };
@@ -43,22 +43,5 @@ export const TypeScriptFileIcon = (p: IconProps) => <MaterialIconImg name="types
 export const JsonFileIcon = (p: IconProps) => <MaterialIconImg name="json" {...p} />;
 export const GenericFileIcon = (p: IconProps) => <MaterialIconImg name="file" {...p} />;
 
-/** Conductor's workspace branch glyph (24-unit outline, current colour). */
-export const BranchIcon = ({ size = 16, className, strokeWidth = 2 }: IconProps & { strokeWidth?: number }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={strokeWidth}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden
-    className={className}
-  >
-    <path d="M15 6a9 9 0 0 0-9 9V3" />
-    <circle cx="18" cy="6" r="3" />
-    <circle cx="6" cy="18" r="3" />
-  </svg>
-);
+/** Conductor's workspace branch glyph (Lucide git-branch from the shared icon set). */
+export { BranchIcon } from "./Icons";

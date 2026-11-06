@@ -15,6 +15,7 @@ fn defaults_match_the_reference_hooks() {
     assert!(!p.garry_mode);
     assert!(!p.experimental_show_agent_cost);
     assert!(!p.experimental_tab_freak_mode);
+    assert!(!p.experimental_new_workspace_page);
     assert!(
         !p.graphite_disabled,
         "unset graphite_disabled reads as enabled"
@@ -88,6 +89,15 @@ fn updates_parse_from_ipc_json() {
     let u: AppPrefUpdate =
         serde_json::from_str(r#"{"key":"experimental_tab_freak_mode","value":true}"#).unwrap();
     assert_eq!(u, AppPrefUpdate::ExperimentalTabFreakMode(true));
+    let u: AppPrefUpdate =
+        serde_json::from_str(r#"{"key":"experimental_new_workspace_page","value":true}"#).unwrap();
+    assert_eq!(
+        u.encode(),
+        Ok(Write::Set(
+            keys::EXPERIMENTAL_NEW_WORKSPACE_PAGE,
+            "true".into()
+        ))
+    );
     assert!(
         serde_json::from_str::<AppPrefUpdate>(r#"{"key":"left_panel_width","value":"x"}"#).is_err()
     );
