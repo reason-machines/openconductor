@@ -89,7 +89,8 @@
 
 /* parity:diff.comments-inline:ui  Review comment threads and composer. */
 .oc-threads { display: flex; flex-direction: column; gap: 8px; word-break: normal; }
-.oc-thread, .oc-composer { border: 1px solid var(--border); border-radius: 6px; background: var(--panel); max-width: 720px; }
+/* :not(.composer): the chat composer shares the oc-composer class and centres at its own 896px column. */
+.oc-thread, .oc-composer:not(.composer) { border: 1px solid var(--border); border-radius: 6px; background: var(--panel); max-width: 720px; }
 .oc-thread[data-focused] { outline: 2px solid var(--accent); outline-offset: 1px; }
 .oc-thread.resolved { opacity: 0.85; }
 .oc-comment { padding: 8px 10px; border-bottom: 1px solid var(--border); }
