@@ -1,5 +1,6 @@
-$ git status --short | grep -v "^?? node_modules"
-exit=1
+$ git log --oneline -1
+3015979 fix(palette): chat surfaces use the muted token, not muted-foreground
+exit=0
 $ npm run lint:colors
 
 > openconductor@0.1.0 lint:colors
@@ -20,8 +21,8 @@ src/styles.css:759: hex colour: .planted-proof { color: #3b82f6; }
 
 1 hard-coded colour(s). Use a semantic variable (see src/theme/tokens.css).
 exit=1
-$ git status --short | grep -v "^?? node_modules"
-exit=1
+$ git status --short --untracked-files=no
+exit=0
 $ npm run lint:colors
 
 > openconductor@0.1.0 lint:colors
