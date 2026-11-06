@@ -8,7 +8,7 @@
       "reference": "evidence/screens/chat--transcript-collapsed-tools--dark.png",
       "theme": "dark",
       "png_sha256": "d2ad37f735be6445e09c233237fe88fd70ab3237da6c37fdb64d101fc94bda82",
-      "capture_evidence_id": "ev_59d3e32f14792c9d230cb2be5d87d3fa6b9c6265af8d22e7ff6cf50c578e9a68",
+      "capture_evidence_id": "ev_2596121fe04df0d41b2ba4b0eb4186b5a1643797d62d22b469f966060fd584d8",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
@@ -29,7 +29,7 @@
       "reference": "evidence/screens/chat--transcript-collapsed-tools--light.png",
       "theme": "light",
       "png_sha256": "ca1f996bb34d4b90f1d09e9e39d786fa8ac689579dc6458094670e31ee381e7b",
-      "capture_evidence_id": "ev_27fdd571209b401e6eb53407f0ba86f93b22b85c2461f0a218d31adaaacbd4e5",
+      "capture_evidence_id": "ev_28d387292120f7b8bf5e87dc95f0041ec3dd75cd5fe453362aac4a5663bd7ddb",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
@@ -50,7 +50,7 @@
       "reference": "evidence/screens/diff--file-unified--dark.png",
       "theme": "dark",
       "png_sha256": "d529fc11dcb10b40899bfbe39dd82d2c46b27bfe2fade5dc58aba6756a4811c0",
-      "capture_evidence_id": "ev_73c37d6a9d4986364a9346d9122fbc53b1775b9450b88f8cf1f440394fd17bd5",
+      "capture_evidence_id": "ev_178d41cfbb836ac1b6d4fdabab8619c919215fced1061cad1830e414de3669b4",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
@@ -71,7 +71,7 @@
       "reference": "evidence/screens/diff--file-unified--light.png",
       "theme": "light",
       "png_sha256": "cd4eb34ce943e4bc5e863638b645ccc35c3198fdd26bba27cf82578453931b2c",
-      "capture_evidence_id": "ev_c5967f2ae3e69cf781922b22314902ab6ffa9b28197fc68612149757c9e70a76",
+      "capture_evidence_id": "ev_3f2d8ed2d99afca48f3b2de174584594f2eced82320ba5c95b2bf7a7e2b6eaf9",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
@@ -92,7 +92,7 @@
       "reference": "evidence/screens/diff--file-split--dark.png",
       "theme": "dark",
       "png_sha256": "ddc71879f61bc7a08e25cc72f9d75042bf5b3eaa7744cef66d4a6f01b015548d",
-      "capture_evidence_id": "ev_d723dbe7fa6d8e8461e865974e1f56180e324f4765ab155efdb08734f9d856ba",
+      "capture_evidence_id": "ev_e4c8a67ba941d4747f403c2291a37c4197770b545b7025afc338279daa67cdf5",
       "page_errors": 0,
       "compare": {
         "threshold_0": {
