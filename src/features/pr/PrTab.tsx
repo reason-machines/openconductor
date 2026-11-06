@@ -13,6 +13,7 @@ import type { TargetBranch } from "./useTargetBranch";
 import "./checks/checks.css";
 
 type Props = ComponentProps<typeof ChecksTab> & {
+  repoId?: string;
   repoPath: string;
   defaultBranch: string;
   target: TargetBranch;

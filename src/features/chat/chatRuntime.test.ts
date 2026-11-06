@@ -3,8 +3,9 @@
 // (hard on the second), a Stop before the prompt was sent, and Reset chat.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { chatStatuses, createChatRuntime, hideChat, subscribeChatStatuses, type ChatBackend, type ChatHost, type Deliver, type PromptRequest } from "./chatRuntime.ts";
+import { chatStatuses, createChatRuntime, hideChat, reportChatStatus, subscribeChatStatuses, type ChatBackend, type ChatHost, type Deliver, type PromptRequest } from "./chatRuntime.ts";
 import { applyReasonPayload, type ReasonPayload } from "./reason.ts";
+import { onChatAttention } from "./attention.ts";
 import type { FileChange } from "../diff/types.ts";
 
 type Config = string[];
@@ -12,7 +13,7 @@ type Config = string[];
 function fakeBackend() {
   let deliver: Deliver = () => assert.fail("event before listen");
   const prompts: { req: PromptRequest; end: (r?: { turnChanges?: FileChange[] }) => void }[] = [];
-  const calls = { listen: 0, open: [] as { chatId: string; cwd: string; sessionId: string | null; config: Config }[], cancel: [] as boolean[] };
+  const calls = { listen: 0, open: [] as { chatId: string; cwd: string; sessionId: string | null; config: Config }[], reconfigure: [] as { chatId: string; config: Config }[], cancel: [] as boolean[] };
   const backend: ChatBackend<Config> = {
     canSteer: true,
     defaultConfig: ["default"],
@@ -25,6 +26,9 @@ function fakeBackend() {
     },
     async open(chatId, cwd, sessionId, config) {
       calls.open.push({ chatId, cwd, sessionId, config });
+    },
+    reconfigure(chatId, config) {
+      calls.reconfigure.push({ chatId, config });
     },
     prompt(req) {
       return new Promise((resolve) => prompts.push({ req, end: (r = {}) => resolve(r) }));
@@ -99,6 +103,32 @@ test("a queued message is prompted once the running turn ends", async () => {
   await settle();
   assert.equal(rt.snapshot("c1").queue.status, "idle");
   assert.equal(rt.snapshot("c1").transcript.activeTurn, null);
+});
+
+test("a pick in a chat whose session is open goes to that session; before it opens, open carries it", async () => {
+  const f = fakeBackend();
+  const h = fakeHost();
+  const rt = createChatRuntime(f.backend, h.host);
+  rt.configure("c1", ["model=a"]);
+  assert.deepEqual(f.calls.reconfigure, [], "no session yet: the pick waits for open");
+
+  rt.submit("c1", "/ws", "first", "queue");
+  await settle();
+  assert.deepEqual(f.calls.open.map((o) => o.config), [["model=a"]]);
+  f.emit({ chatId: "c1", type: "sessionStarted", sessionId: "agent-1" });
+  f.prompts[0]!.end();
+  f.emit({ chatId: "c1", type: "turnEnded", end: { outcome: "completed" } });
+  await settle();
+
+  // Conductor switches the running session's model (reconcileSessionConfig);
+  // the chip and the agent agree without a Reset chat.
+  rt.configure("c1", ["model=b"]);
+  assert.deepEqual(f.calls.reconfigure, [{ chatId: "c1", config: ["model=b"] }]);
+  rt.submit("c1", "/ws", "second", "queue");
+  await settle();
+  assert.equal(f.calls.open.length, 1, "the same session continues");
+  assert.equal(f.prompts.length, 2);
+  assert.deepEqual(await rt.config("c1"), ["model=b"]);
 });
 
 test("a steered follow-up goes to the backend while the turn runs", async () => {
@@ -214,5 +244,30 @@ test("chat statuses span runtimes, and a hidden chat drops out", async () => {
   hideChat("status-b");
   assert.equal(chatStatuses().has("status-b"), false);
   assert.equal(chatStatuses().get("status-a"), "working");
+  off();
+});
+
+test("a chat entering plan review or user input asks for attention once, as Conductor's _p after updateSessionStatus", () => {
+  const asked: string[] = [];
+  const off = onChatAttention((id) => id.startsWith("wait-") && asked.push(id));
+  reportChatStatus("wait-plan", "working");
+  reportChatStatus("wait-plan", "needs_plan_response");
+  reportChatStatus("wait-plan", "needs_plan_response");
+  assert.deepEqual(asked, ["wait-plan"], "ExitPlanMode's plan review, reported once");
+  reportChatStatus("wait-question", "working");
+  reportChatStatus("wait-question", "needs_user_input");
+  assert.deepEqual(asked, ["wait-plan", "wait-question"], "AskUserQuestion or an MCP elicitation");
+  // A tool approval signals per request (permissionEvents), not from its status.
+  reportChatStatus("wait-tool", "working");
+  reportChatStatus("wait-tool", "needs_user_permission");
+  assert.deepEqual(asked, ["wait-plan", "wait-question"]);
+  // Answered and asked again: a new wait.
+  reportChatStatus("wait-plan", "working");
+  reportChatStatus("wait-plan", "needs_plan_response");
+  assert.deepEqual(asked, ["wait-plan", "wait-question", "wait-plan"]);
+  // A closed chat tab no longer asks.
+  hideChat("wait-hidden");
+  reportChatStatus("wait-hidden", "needs_user_input");
+  assert.deepEqual(asked, ["wait-plan", "wait-question", "wait-plan"]);
   off();
 });

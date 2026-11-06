@@ -29,11 +29,13 @@ interface Props {
   /** Shortcut glyphs for the trigger's tooltip (the createFromPRBranchIssue command). */
   shortcut?: string;
   onChange: (from: CreateFrom | null) => void;
+  /** Start with the picker open (Conductor's `createFromOpen`, the repo menu's "Create from..."). */
+  defaultOpen?: boolean;
 }
 
 /** "Create from..." in the create composer's eyebrow, and its PR / branch / issue picker. */
-export function CreateFromPicker({ value, branches, repoPath, disabled, shortcut, onChange }: Props) {
-  const [open, setOpen] = useState(false);
+export function CreateFromPicker({ value, branches, repoPath, disabled, shortcut, onChange, defaultOpen = false }: Props) {
+  const [open, setOpen] = useState(defaultOpen);
   const [tab, setTab] = useState<FromTab>("pr");
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);

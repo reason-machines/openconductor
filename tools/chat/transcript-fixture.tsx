@@ -23,6 +23,7 @@ import type { Block, ChatEvent, ChatMessage } from "../../src/features/chat/type
 import { LISBON, lisbonBlocks, type FixtureAgent } from "./lisbon.ts";
 import { catalogBlocks } from "./toolCatalog.ts";
 import "../../src/fonts.css";
+import "../../src/theme/tokens.css";
 import "../../src/styles.css";
 
 const params = new URLSearchParams(location.search);

@@ -62,6 +62,8 @@ export interface CreateWorkspaceComposerProps {
   sections?: readonly NavSection[];
   /** The section the composer was opened from (its menu's Create workspace). */
   initialSectionId?: string;
+  /** Open with the "Create from..." picker showing (the repo menu's Create from..., ⌘⇧N). */
+  fromOpen?: boolean;
 }
 
 /** Conductor's composer placeholder for a new workspace (`oya` -> `Hji`). */
@@ -92,6 +94,7 @@ export function CreateWorkspaceComposer({
   dispatch,
   sections = [],
   initialSectionId,
+  fromOpen,
 }: CreateWorkspaceComposerProps) {
   const choice = sectionChoice(sections, initialSectionId);
   // The create outlives a render; check the section against the latest list when assigning.
@@ -329,6 +332,7 @@ export function CreateWorkspaceComposer({
             repoPath={repo?.path ?? null}
             disabled={busy || !repo}
             shortcut={hint("workspace.createFromPRBranchIssue")}
+            defaultOpen={fromOpen}
             onChange={(from) => {
               setDraft(selectFrom(draft, from));
               if (errors.from) setErrors({ ...errors, from: undefined });
