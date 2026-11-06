@@ -302,9 +302,10 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   };
   return (
     <aside className="sidebar" aria-label="Repositories and workspaces">
-      {/* Top bar: drag region with the sidebar toggle, back/forward at the top right. */}
-      <div className="sb-header">
-        <div className="sb-topbar" data-tauri-drag-region>
+      {/* Header: the whole block drags the window ("deep"); its buttons and menus don't (tauri drag.js skips clickable elements).
+          Top bar holds the sidebar toggle, back/forward at the top right. */}
+      <div className="sb-header" data-tauri-drag-region="deep">
+        <div className="sb-topbar">
           <button
             type="button"
             className="sb-toggle"

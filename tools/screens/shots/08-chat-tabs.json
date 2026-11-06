@@ -1,0 +1,28 @@
+[
+  {"name": "conductor--chat-tabs--plus-tooltip--dark", "scenario": "populated", "theme": "dark", "settle_ms": 6000,
+   "actions": [
+     {"step_id": "expand_tide_web", "action": "click", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000},
+     {"step_id": "osaka", "action": "click", "locator": {"kind": "css", "selector": "text=Ada/dark mode tokens"}, "timeout_ms": 5000},
+     {"step_id": "pause", "action": "wait_for_timeout", "duration_ms": 1500},
+     {"step_id": "hover_plus", "action": "hover", "locator": {"kind": "css", "selector": ".h-10.border-b button.truncate.text-muted-foreground"}, "timeout_ms": 5000}],
+   "final_settle_ms": 1500,
+   "notes": "The chat tab strip's '+' hovered: tooltip 'New chat, same files' with the nav.newTab shortcut (⌘T)."},
+  {"name": "conductor--chat-tabs--second-chat--dark", "scenario": "populated", "theme": "dark", "settle_ms": 6000,
+   "actions": [
+     {"step_id": "expand_tide_web", "action": "click", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000},
+     {"step_id": "osaka", "action": "click", "locator": {"kind": "css", "selector": "text=Ada/dark mode tokens"}, "timeout_ms": 5000},
+     {"step_id": "pause", "action": "wait_for_timeout", "duration_ms": 1500},
+     {"step_id": "click_plus", "action": "click", "locator": {"kind": "css", "selector": ".h-10.border-b button.truncate.text-muted-foreground"}, "timeout_ms": 5000},
+     {"step_id": "pause2", "action": "wait_for_timeout", "duration_ms": 1500},
+     {"step_id": "unhover", "action": "hover", "locator": {"kind": "css", "selector": "text=New chat in"}, "timeout_ms": 5000}],
+   "final_settle_ms": 1500,
+   "notes": "After a click on '+': a second chat tab, Untitled, selected, with the new chat's empty state."},
+  {"name": "conductor--chat-tabs--cmd-t--dark", "scenario": "populated", "theme": "dark", "settle_ms": 6000,
+   "actions": [
+     {"step_id": "expand_tide_web", "action": "click", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000},
+     {"step_id": "osaka", "action": "click", "locator": {"kind": "css", "selector": "text=Ada/dark mode tokens"}, "timeout_ms": 5000},
+     {"step_id": "pause", "action": "wait_for_timeout", "duration_ms": 1500},
+     {"step_id": "cmd_t", "action": "press", "locator": {"kind": "css", "selector": "body"}, "key": "Meta+t", "timeout_ms": 5000}],
+   "final_settle_ms": 2000,
+   "notes": "⌘T in the workspace: a new Untitled chat tab, selected."}
+]

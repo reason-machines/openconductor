@@ -15,6 +15,9 @@ import {
   toggleProject,
 } from "./allWorkspaces.ts";
 import type { Repo, Workspace } from "../state/types";
+import type { DbRepoRow, DbWorkspaceRow } from "../state/persisted.ts";
+import { reposFromDb } from "../state/persisted.ts";
+import { archivedFromRows } from "../workspace/archivedList.ts";
 
 const MIN = 60_000;
 const HOUR = 60 * MIN;
@@ -125,4 +128,51 @@ test("saved filters drop unknown projects and bad values", () => {
   assert.deepEqual(parseFilters(JSON.stringify({ archiveFilter: "nope" }), ids), DEFAULT_FILTERS);
   assert.deepEqual(parseFilters("{bad", ids), DEFAULT_FILTERS);
   assert.deepEqual(parseFilters(null, ids), DEFAULT_FILTERS);
+});
+
+// Conductor's `UJo` filters one list holding active and archived workspaces;
+// ours drops archived rows from the sidebar state (reposFromDb), so Home takes
+// conductor.db's archived rows (listArchivedWorkspaces) as a second input.
+test("archived workspaces from conductor.db show under Only archived and Showing all", () => {
+  const row = (id: string, state: string, branch: string): DbWorkspaceRow => ({
+    id,
+    repositoryId: "tide-web",
+    directoryName: id,
+    workspaceName: null,
+    branch,
+    placeholderBranchName: null,
+    state,
+    derivedStatus: null,
+    manualStatus: null,
+    workspacePath: `/code/tide-web/.conductor/${id}`,
+    pinnedAt: null,
+    unread: false,
+    prTitle: null,
+    prDescription: null,
+    number: null,
+    createdAt: new Date(NOW - 2 * DAY).toISOString(),
+    updatedAt: new Date(NOW - DAY).toISOString(),
+  });
+  const db = [row("osaka", "ready", "ada/osaka"), row("lisbon", "archived", "ada/lisbon")];
+  const repos = reposFromDb([{ id: "tide-web", name: "tide-web", rootPath: "/code/tide-web", defaultBranch: "main", displayOrder: 0, hidden: false, icon: null, remoteUrl: null } as DbRepoRow], db, []);
+  assert.deepEqual(repos[0]!.workspaces.map((w) => w.id), ["osaka"], "the sidebar state has no archived rows");
+  const archived = archivedFromRows(db);
+
+  const only = homeRows(repos, { projects: [], archiveFilter: "archived" }, "", archived);
+  assert.deepEqual(only.map((r) => r.workspace.id), ["lisbon"]);
+  assert.equal(only[0]!.archived, true);
+  assert.equal(only[0]!.workspace.branch, "ada/lisbon", "an archived row shows the branch stored at archive time");
+
+  const all = homeRows(repos, { projects: [], archiveFilter: "all" }, "", archived);
+  assert.deepEqual(all.map((r) => r.workspace.id).sort(), ["lisbon", "osaka"]);
+  assert.deepEqual(homeRows(repos, DEFAULT_FILTERS, "", archived).map((r) => r.workspace.id), ["osaka"]);
+  assert.deepEqual(homeRows(repos, { projects: [], archiveFilter: "archived" }, "lisbon", archived).map((r) => r.workspace.id), ["lisbon"]);
+});
+
+test("archived rows of closed repositories, or already in the state, are not listed twice", () => {
+  const live = ws("kept", { status: "archived" });
+  const repos = [repo("a", [live])];
+  const entry = (id: string, repoId: string) => ({ id, repoId, name: id, branch: id, createdAt: NOW, workspace: ws(id, { status: "archived" }) });
+  const rows = homeRows(repos, { projects: [], archiveFilter: "archived" }, "", [entry("kept", "a"), entry("gone", "closed-repo")]);
+  assert.deepEqual(rows.map((r) => r.workspace.id), ["kept"]);
 });
