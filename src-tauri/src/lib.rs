@@ -63,6 +63,7 @@ mod root_path_commands;
 pub mod scripts;
 pub mod settings;
 pub mod sidecar_stores;
+pub mod slash_commands;
 pub mod spotlight;
 mod spotlight_commands;
 pub mod terminal;
@@ -419,6 +420,7 @@ pub fn run() {
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,
+            slash_commands::fetch_slash_commands,
             e2e::e2e_report,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,

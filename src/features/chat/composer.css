@@ -421,6 +421,10 @@
   color: var(--oc-c-fg);
   cursor: default;
 }
+/* Conductor's `fTo` section header: px-2 pt-2.5 pb-1.5, a border-t divider with mb-2, text-xs medium muted. */
+.oc-suggest-header { padding: 10px 8px 6px; }
+.oc-suggest-divider { margin-bottom: 8px; border-top: 1px solid var(--oc-c-border); }
+.oc-suggest-header-label { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--oc-c-muted-fg); }
 .oc-suggest-row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; }
 .oc-suggest-row[data-focused] { background: var(--oc-c-sidebar-accent); }
 .oc-suggest-slash { flex-shrink: 0; font-size: 14px; line-height: 20px; color: var(--oc-c-muted-fg); }

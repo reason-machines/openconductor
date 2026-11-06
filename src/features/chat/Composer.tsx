@@ -107,8 +107,8 @@ export function Composer({
   const slashOpen = slashMatches.length > 0;
   const slashFocus = Math.min(slashIndex, Math.max(0, slashMatches.length - 1));
 
-  function pickCommand(name: string) {
-    const next = completeCommand(draft, name);
+  function pickCommand(command: SlashCommand) {
+    const next = completeCommand(draft, command.name);
     setDraft(next);
     setSlashIndex(0);
     requestAnimationFrame(() => {
@@ -172,7 +172,7 @@ export function Composer({
     }
     if (slashOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
       e.preventDefault();
-      pickCommand(slashMatches[slashFocus]!.command.name);
+      pickCommand(slashMatches[slashFocus]!.command);
       return;
     }
     if (slashOpen && e.key === "Escape") {

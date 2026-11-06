@@ -1,13 +1,13 @@
 // Run: node --test "src/**/*.test.ts"
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { agentEntryLabel, agentForPick, CODEX_ENTRY, pickerState } from "./chatAgentChoice.ts";
+import { agentEntryLabel, agentForPick, CLAUDE_ENTRY, CODEX_ENTRY, pickerState } from "./chatAgentChoice.ts";
 
 const opus = { model: "opus-5-5-1m", effort: "high" };
 const fallback = { model: "opus-5-1m", effort: "high" };
 
-test("a Reason chat lists its model, the default model, then Codex", () => {
-  assert.deepEqual(pickerState("reason", opus, fallback, true), { value: opus, favorites: [fallback, CODEX_ENTRY] });
+test("a Reason chat lists its model, the default model, then Codex and Claude Code", () => {
+  assert.deepEqual(pickerState("reason", opus, fallback, true), { value: opus, favorites: [fallback, CODEX_ENTRY, CLAUDE_ENTRY] });
 });
 
 test("without Codex (browser preview) the picker lists only models", () => {
@@ -16,7 +16,13 @@ test("without Codex (browser preview) the picker lists only models", () => {
 });
 
 test("a Codex chat shows Codex on the chip and lists the Reason models to switch back", () => {
-  assert.deepEqual(pickerState("codex", opus, fallback, true), { value: CODEX_ENTRY, label: "Codex", favorites: [opus, fallback] });
+  assert.deepEqual(pickerState("codex", opus, fallback, true), { value: CODEX_ENTRY, label: "Codex", favorites: [opus, fallback, CLAUDE_ENTRY] });
+});
+
+test("a Claude Code chat shows Claude Code on the chip and lists the models and Codex", () => {
+  assert.deepEqual(pickerState("claude", opus, fallback, true), { value: CLAUDE_ENTRY, label: "Claude Code", favorites: [opus, fallback, CODEX_ENTRY] });
+  assert.equal(agentForPick(CLAUDE_ENTRY), "claude");
+  assert.equal(agentEntryLabel(CLAUDE_ENTRY), "Claude Code");
 });
 
 test("picking an entry picks its agent; a GPT model stays a Reason chat", () => {

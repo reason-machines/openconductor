@@ -22,7 +22,7 @@ use super::codex_cli::CodexLaunch;
 use super::codex_events::{thread_id, Notification, ServerMessage, Turn};
 use super::codex_rpc::{
     approval_line, error_line, initialized_line, result_line, ApprovalDecision, ClientRequest,
-    RequestId, ThreadOptions,
+    RequestId, ThreadOptions, TurnInput,
 };
 
 /// Something the process printed, in the order each stream produced it.
@@ -231,7 +231,7 @@ impl CodexSession {
     /// Starts a turn on the open thread; returns the turn id.
     pub fn start_turn(
         &mut self,
-        text: impl Into<String>,
+        input: impl Into<TurnInput>,
         model: Option<String>,
         effort: Option<String>,
         timeout: Duration,
@@ -242,7 +242,7 @@ impl CodexSession {
         let result = self.call(
             &ClientRequest::TurnStart {
                 thread_id,
-                text: text.into(),
+                input: input.into(),
                 model,
                 effort,
             },

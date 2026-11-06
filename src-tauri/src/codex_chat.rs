@@ -31,7 +31,7 @@ use crate::agent::codex_cli::{
     find_codex_cli, ApprovalPolicy, CodexLaunch, CodexPolicy, SandboxMode,
 };
 use crate::agent::codex_consent::ConsentAnswer;
-use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
+use crate::agent::codex_rpc::{ApprovalDecision, RequestId, SkillRef, ThreadOptions, TurnInput};
 use crate::agent::codex_runner::{CodexRunner, RunnerConfig, Sink, Timeouts};
 use crate::agent::codex_wire::{Payload, TurnEnd};
 use crate::agent::AgentKind;
@@ -82,6 +82,25 @@ impl CodexChats {
             .ok_or_else(|| format!("Codex chat {chat_id} is not open"))
     }
 
+    /// How to start a `codex app-server` in `cwd` with the Codex provider
+    /// from settings, for metadata calls such as `skills/list`.
+    pub(crate) fn launch(
+        &self,
+        settings: &SettingsService,
+        cwd: PathBuf,
+    ) -> Result<CodexLaunch, String> {
+        let cli = self.cli().ok_or(
+            "The Codex CLI was not found. Install it (npm i -g @openai/codex), then sign in with `codex login`.",
+        )?;
+        let mut env = settings.launch_env(AgentKind::Codex)?;
+        if let Some(path) = self.path() {
+            env.set("PATH", path.to_string_lossy());
+        }
+        let mut launch = CodexLaunch::new(cwd, env);
+        launch.executable = cli;
+        Ok(launch)
+    }
+
     /// Ends every chat's process (app exit).
     pub fn close_all(&self) {
         let chats = std::mem::take(&mut *self.chats.lock().unwrap());
@@ -117,16 +136,8 @@ pub async fn codex_open_chat<R: Runtime>(
     if state.chats.lock().unwrap().contains_key(&chat_id) {
         return Ok(());
     }
-    let cli = state.cli().ok_or(
-        "The Codex CLI was not found. Install it (npm i -g @openai/codex), then sign in with `codex login`.",
-    )?;
-    let mut env = settings.launch_env(AgentKind::Codex)?;
-    if let Some(path) = state.path() {
-        env.set("PATH", path.to_string_lossy());
-    }
     let cwd = PathBuf::from(cwd);
-    let mut launch = CodexLaunch::new(&cwd, env);
-    launch.executable = cli;
+    let launch = state.launch(&settings, cwd.clone())?;
     let config = RunnerConfig {
         launch,
         thread: ThreadOptions {
@@ -151,6 +162,8 @@ pub async fn codex_open_chat<R: Runtime>(
 
 /// Runs one prompt (after any still queued); events arrive meanwhile.
 /// Without `effort`, the Codex thinking level from settings is used.
+/// `skills` are the skills picked in the composer's "/" menu; each goes with
+/// the text as a `skill` input item.
 #[tauri::command]
 pub async fn codex_prompt(
     state: State<'_, CodexChats>,
@@ -159,6 +172,7 @@ pub async fn codex_prompt(
     text: String,
     model: Option<String>,
     effort: Option<String>,
+    skills: Option<Vec<SkillRef>>,
 ) -> Result<TurnEnd, String> {
     let runner = state.get(&chat_id)?;
     let effort = effort.or_else(|| {
@@ -168,7 +182,11 @@ pub async fn codex_prompt(
             .as_str()
             .map(str::to_owned)
     });
-    let end = runner.prompt(text, model, effort);
+    let end = runner.prompt(
+        TurnInput::new(text, skills.unwrap_or_default()),
+        model,
+        effort,
+    );
     tauri::async_runtime::spawn_blocking(move || {
         end.recv()
             .unwrap_or_else(|_| TurnEnd::failed("The Codex chat closed."))

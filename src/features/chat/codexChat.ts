@@ -11,6 +11,7 @@ import * as Q from "./queue.ts";
 import { reportChatStatus } from "./chatRuntime.ts";
 import { answered, applyCodexPayload, codexChat, failTurn, newestTurn, startTurn, type CodexApproval, type CodexChatState, type CodexDecision, type CodexPayload, type Step } from "./codex.ts";
 import { statusWithOpenRequests, type CodexConsent, type ConsentAnswer } from "./codexConsent.ts";
+import { skillMentions, type AgentSkill } from "./slashCommands.ts";
 
 const EVENT = "codex-chat-event";
 const threadKey = (chatId: string) => `openconductor.codex.thread.${chatId}`;
@@ -153,6 +154,14 @@ export function subscribeCodex(chatId: string, fn: (v: CodexSnapshot) => void): 
   return () => c.listeners.delete(fn);
 }
 
+/** Each chat's Codex skills (`skills/list`), for the `$name` mentions in its messages. */
+const chatSkills = new Map<string, readonly AgentSkill[]>();
+
+/** The skills Codex reported for the chat's folder; a message that mentions one as `$name` sends it. */
+export function setCodexSkills(chatId: string, skills: readonly AgentSkill[]): void {
+  chatSkills.set(chatId, skills);
+}
+
 /** Opens a turn and sends the prompt; `submitCodex` sets the folder first. */
 async function prompt(c: Chat, text: string): Promise<void> {
   const chatId = c.state.chatId;
@@ -166,7 +175,8 @@ async function prompt(c: Chat, text: string): Promise<void> {
       c.opened = true;
     }
     // Resolves with the prompt's end; the `turnEnded` event closes the turn.
-    await invoke("codex_prompt", { chatId, text });
+    const skills = skillMentions(text, chatSkills.get(chatId) ?? []);
+    await invoke("codex_prompt", { chatId, text, ...(skills.length > 0 ? { skills } : {}) });
   } catch (e) {
     // The prompt never reached Codex (no CLI, chat not open), so no event will end it.
     apply(c, failTurn(c.state, turnId, String(e)));

@@ -3,16 +3,18 @@
 // box, 8 px in from each side, with "/", the command name (matched letters
 // bright, the rest dimmed while a query is typed) and its description. The
 // focused row is highlighted; ↑/↓ move, Enter or Tab pick, Esc closes. The
-// keys are handled by the composer's text box (Composer.tsx).
+// keys are handled by the composer's text box (Composer.tsx). Skills come
+// after the commands under a "Skills" header with a divider (`fTo`), each
+// row still "/" + name + description (`FNi`).
 
 import { useEffect, useRef } from "react";
-import type { SlashMatch } from "./slashCommands.ts";
+import { commandKey, commandLabel, type SlashCommand, type SlashMatch } from "./slashCommands.ts";
 
 export interface SlashMenuProps {
   matches: readonly SlashMatch[];
   focused: number;
   hasQuery: boolean;
-  onPick: (name: string) => void;
+  onPick: (command: SlashCommand) => void;
   onFocus: (index: number) => void;
 }
 
@@ -24,9 +26,16 @@ export function SlashMenu({ matches, focused, hasQuery, onPick, onFocus }: Slash
   if (matches.length === 0) return null;
   return (
     <div className="oc-suggest" role="listbox" aria-label="Slash commands" data-suggestion-popup ref={list}>
-      {matches.map((m, i) => (
+      {matches.map((m, i) => [
+        m.showSkillHeader ? (
+          <div key="skills-header" className="oc-suggest-header" role="presentation">
+            <div className="oc-suggest-divider" />
+            <div className="oc-suggest-header-label">Skills</div>
+          </div>
+        ) : null,
         <div
-          key={m.command.name}
+          key={commandKey(m.command)}
+          data-skill={m.command.effect === "skill" || undefined}
           role="option"
           aria-selected={i === focused}
           data-list-index={i}
@@ -35,16 +44,16 @@ export function SlashMenu({ matches, focused, hasQuery, onPick, onFocus }: Slash
           onMouseMove={() => i !== focused && onFocus(i)}
           onMouseDown={(e) => {
             e.preventDefault();
-            onPick(m.command.name);
+            onPick(m.command);
           }}
         >
           <span className="oc-suggest-slash">/</span>
           <span className="oc-suggest-name">
-            <Highlight text={m.command.name} indices={m.indices} hasQuery={hasQuery} />
+            <Highlight text={commandLabel(m.command)} indices={m.indices} hasQuery={hasQuery} />
           </span>
           <span className="oc-suggest-desc">{m.command.description}</span>
-        </div>
-      ))}
+        </div>,
+      ])}
     </div>
   );
 }

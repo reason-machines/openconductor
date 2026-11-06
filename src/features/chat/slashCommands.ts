@@ -9,7 +9,12 @@
 //   agent, filtered by fuzzysort on the name with exact matches first (`lj`,
 //   `jNi`); an empty query keeps every item in order,
 // - a typed message `/name args` (or `/[name](command) args`) runs the
-//   command when its name is known (`gWn`).
+//   command when its name is known (`gWn`),
+// - skills the agent reports (Codex; `fetch_slash_commands_output.skills`)
+//   follow the commands under a "Skills" header: matching keeps commands
+//   first and skills after (`jI`, `jNi`, `FNi`), and a skill shows its
+//   `displayName` when it has one. Claude Code reports its skills among its
+//   commands (evidence/chat/slash-skills/README.md).
 // Pure: slashCommands.test.ts covers it.
 
 import fuzzysort from "fuzzysort";
@@ -30,7 +35,9 @@ export type SlashEffect =
   | "toggle_plan_mode"
   | "toggle_fast_mode"
   /** An agent-reported command: the agent runs it from the prompt text. */
-  | "agent";
+  | "agent"
+  /** An agent-reported skill: sent to the agent with the message. */
+  | "skill";
 
 export interface SlashCommand {
   name: string;
@@ -38,6 +45,25 @@ export interface SlashCommand {
   argumentHint: string;
   effect: SlashEffect;
   supportedAgents: ComposerAgent[];
+  /** A skill's `SKILL.md` (or `reason-skill:<id>`); set only for effect "skill". */
+  skillPath?: string;
+  /** Shown instead of the name (a skill's `displayName`). */
+  label?: string;
+}
+
+/** A command as the agent reports it (`fetch_slash_commands_output.slashCommands`). */
+export interface AgentCommand {
+  name: string;
+  description: string;
+  argumentHint?: string;
+}
+
+/** A skill as the agent reports it (`fetch_slash_commands_output.skills`). */
+export interface AgentSkill {
+  name: string;
+  description: string;
+  path: string;
+  displayName?: string;
 }
 
 const BOTH: ComposerAgent[] = ["claude", "codex"];
@@ -81,12 +107,14 @@ export interface CommandSetInput {
   planMode?: { isPlanMode: boolean };
   /** The model offers Fast mode; `isFastMode` says whether it is on. */
   fastMode?: { isFastMode: boolean };
-  /** Commands the agent reports (name and description). */
-  agentCommands?: readonly { name: string; description: string }[];
+  /** Commands the agent reports. */
+  agentCommands?: readonly AgentCommand[];
+  /** Skills the agent reports; listed after every command. */
+  agentSkills?: readonly AgentSkill[];
 }
 
 /** Every command the chat's "/" menu can show, agent commands first (Conductor's `c1`, `jI`, `z6`). */
-export function commandSet({ agent, isCloudWorkspace = false, goalsEnabled = false, planMode, fastMode, agentCommands = [] }: CommandSetInput): SlashCommand[] {
+export function commandSet({ agent, isCloudWorkspace = false, goalsEnabled = false, planMode, fastMode, agentCommands = [], agentSkills = [] }: CommandSetInput): SlashCommand[] {
   const builtins = [
     ...BUILTIN_COMMANDS.filter((c) => !(isCloudWorkspace && c.name === ADD_DIR)).filter((c) => goalsEnabled || c.name !== "goal"),
     ...(planMode ? [planCommand(planMode.isPlanMode, agent)] : []),
@@ -94,26 +122,47 @@ export function commandSet({ agent, isCloudWorkspace = false, goalsEnabled = fal
   ];
   const reported: SlashCommand[] = agentCommands
     .filter((c) => !(isCloudWorkspace && c.name === ADD_DIR))
-    .map((c) => ({ name: c.name, description: c.description, argumentHint: "", effect: "agent" as const, supportedAgents: [agent] }));
+    .map((c) => ({ name: c.name, description: c.description, argumentHint: c.argumentHint ?? "", effect: "agent" as const, supportedAgents: [agent] }));
   const taken = new Set(reported.map((c) => c.name));
   const seen = new Set<string>();
-  return [...reported, ...builtins.filter((c) => !taken.has(c.name))]
+  const commands = [...reported, ...builtins.filter((c) => !taken.has(c.name))]
     .filter((c) => c.supportedAgents.includes(agent))
     .filter((c) => (seen.has(c.name) ? false : (seen.add(c.name), true)));
+  const seenSkills = new Set<string>();
+  const skills: SlashCommand[] = agentSkills
+    .filter((s) => (seenSkills.has(`${s.name}|${s.path}`) ? false : (seenSkills.add(`${s.name}|${s.path}`), true)))
+    .map((s) => ({ name: s.name, description: s.description, argumentHint: "", effect: "skill" as const, supportedAgents: [agent], skillPath: s.path, ...(s.displayName ? { label: s.displayName } : {}) }));
+  return [...commands, ...skills];
 }
+
+/** The name a command shows in the menu. */
+export const commandLabel = (c: SlashCommand): string => c.label ?? c.name;
+/** One key per menu row: a skill may share its name with a command. */
+export const commandKey = (c: SlashCommand): string => (c.effect === "skill" ? `skill:${c.name}|${c.skillPath ?? ""}` : c.name);
 
 export interface SlashMatch {
   command: SlashCommand;
-  /** Indexes of the name's characters the query matched (for highlighting). */
+  /** Indexes of the shown name's characters the query matched (for highlighting). */
   indices: number[];
+  /** The first skill row: the "Skills" header goes above it. */
+  showSkillHeader?: boolean;
 }
 
-/** Fuzzy match on the name; exact matches first, then fuzzysort's order (Conductor's `lj`). */
+/**
+ * Fuzzy match on the shown name; exact matches first, then fuzzysort's order
+ * (Conductor's `lj`); commands before skills, with the header on the first
+ * skill (`jNi`).
+ */
 export function matchCommands(commands: readonly SlashCommand[], query: string): SlashMatch[] {
-  if (!query.trim()) return commands.map((command) => ({ command, indices: [] }));
-  const hits = fuzzysort.go(query, commands as SlashCommand[], { key: "name" }).map((r) => ({ command: r.obj, indices: Array.from(r.indexes) }));
-  const q = query.toLowerCase();
-  return [...hits.filter((h) => h.command.name.toLowerCase() === q), ...hits.filter((h) => h.command.name.toLowerCase() !== q)];
+  let hits: SlashMatch[];
+  if (!query.trim()) hits = commands.map((command) => ({ command, indices: [] }));
+  else {
+    const found = fuzzysort.go(query, commands.map((c) => ({ c, text: commandLabel(c) })), { key: "text" }).map((r) => ({ command: r.obj.c, indices: Array.from(r.indexes) }));
+    const q = query.toLowerCase();
+    hits = [...found.filter((h) => commandLabel(h.command).toLowerCase() === q), ...found.filter((h) => commandLabel(h.command).toLowerCase() !== q)];
+  }
+  const ordered = [...hits.filter((h) => h.command.effect !== "skill"), ...hits.filter((h) => h.command.effect === "skill")];
+  return ordered.map((h, i) => (h.command.effect === "skill" && ordered[i - 1]?.command.effect !== "skill" ? { ...h, showSkillHeader: true } : h));
 }
 
 /**
@@ -155,6 +204,24 @@ export function parseSlashCommand(text: string, known: (name: string) => boolean
     } else name = body;
   }
   return name && known(name) ? { name, args } : null;
+}
+
+/**
+ * Skills a message names with Codex's mention `$name`, each once, in the
+ * order they appear: they go to Codex as `skill` input items with the text.
+ */
+export function skillMentions(text: string, skills: readonly AgentSkill[]): { name: string; path: string }[] {
+  const out: { name: string; path: string }[] = [];
+  for (const m of text.matchAll(/(?:^|\s)\$([A-Za-z0-9][\w.:-]*)/g)) {
+    const skill = skills.find((s) => s.name === m[1]);
+    if (skill && !out.some((o) => o.name === skill.name)) out.push({ name: skill.name, path: skill.path });
+  }
+  return out;
+}
+
+/** A Codex message that runs skill `name` (typed or picked as "/name args"): "$name args". */
+export function codexSkillMessage(name: string, args: string): string {
+  return args ? `$${name} ${args}` : `$${name}`;
 }
 
 /** Built-in names Conductor recognises even where they do not apply (`bmo`). */

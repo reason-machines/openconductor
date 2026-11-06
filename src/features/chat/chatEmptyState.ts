@@ -16,7 +16,7 @@ import type { ChatMessage } from "./types.ts";
 export interface OtherChat {
   chatId: string;
   title: string;
-  agent: "reason" | "codex";
+  agent: "reason" | "codex" | "claude";
   /** Last user message (ms); null when the chat has none. */
   lastUserMessageAt: number | null;
 }

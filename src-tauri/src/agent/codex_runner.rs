@@ -31,7 +31,7 @@ use serde_json::{json, Value};
 use super::codex_cli::CodexLaunch;
 use super::codex_consent::{self, consent, ConsentAnswer, ConsentKind};
 use super::codex_events::{Notification, ServerMessage, ServerRequest};
-use super::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
+use super::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions, TurnInput};
 use super::codex_session::{CallError, CodexEvent, CodexSession};
 use super::codex_wire::{payloads, Payload, TurnEnd};
 
@@ -88,7 +88,7 @@ fn default_answer(method: &str) -> Option<Value> {
 const STDERR_KEPT: usize = 8;
 
 struct Prompt {
-    text: String,
+    input: TurnInput,
     model: Option<String>,
     effort: Option<String>,
     done: Sender<TurnEnd>,
@@ -140,13 +140,13 @@ impl CodexRunner {
     /// Queues a prompt; the receiver gets its end (also sent to the sink).
     pub fn prompt(
         &self,
-        text: impl Into<String>,
+        input: impl Into<TurnInput>,
         model: Option<String>,
         effort: Option<String>,
     ) -> Receiver<TurnEnd> {
         let (done, end) = mpsc::channel();
         self.send(Cmd::Prompt(Prompt {
-            text: text.into(),
+            input: input.into(),
             model,
             effort,
             done,
@@ -375,7 +375,7 @@ impl Worker {
         let timeout = self.config.timeouts.turn_start;
         let session = self.session.as_mut().expect("session started");
         match session.start_turn(
-            prompt.text.clone(),
+            prompt.input.clone(),
             prompt.model.clone(),
             prompt.effort.clone(),
             timeout,

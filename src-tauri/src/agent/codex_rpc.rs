@@ -50,7 +50,7 @@ pub enum ClientRequest {
     },
     TurnStart {
         thread_id: String,
-        text: String,
+        input: TurnInput,
         model: Option<String>,
         /// Reasoning effort the model advertises (e.g. `low`, `high`).
         effort: Option<String>,
@@ -59,6 +59,56 @@ pub enum ClientRequest {
         thread_id: String,
         turn_id: String,
     },
+    /// The skills Codex finds for each folder (`skills/list`).
+    SkillsList {
+        cwds: Vec<String>,
+    },
+}
+
+/// A skill the user picked, sent with the turn as a `skill` input item
+/// (`UserInput { type: "skill", name, path }` in the app-server protocol).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SkillRef {
+    pub name: String,
+    pub path: String,
+}
+
+/// What a turn sends: the prompt text, then any picked skills.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct TurnInput {
+    pub text: String,
+    pub skills: Vec<SkillRef>,
+}
+
+impl TurnInput {
+    pub fn new(text: impl Into<String>, skills: Vec<SkillRef>) -> Self {
+        Self {
+            text: text.into(),
+            skills,
+        }
+    }
+
+    fn items(&self) -> Value {
+        let mut items = vec![json!({ "type": "text", "text": self.text })];
+        items.extend(
+            self.skills
+                .iter()
+                .map(|s| json!({ "type": "skill", "name": s.name, "path": s.path })),
+        );
+        Value::Array(items)
+    }
+}
+
+impl From<&str> for TurnInput {
+    fn from(text: &str) -> Self {
+        Self::new(text, Vec::new())
+    }
+}
+
+impl From<String> for TurnInput {
+    fn from(text: String) -> Self {
+        Self::new(text, Vec::new())
+    }
 }
 
 /// The answer to an approval request. Decline lets the turn continue;
@@ -111,6 +161,7 @@ impl ClientRequest {
             ClientRequest::ThreadResume { .. } => "thread/resume",
             ClientRequest::TurnStart { .. } => "turn/start",
             ClientRequest::TurnInterrupt { .. } => "turn/interrupt",
+            ClientRequest::SkillsList { .. } => "skills/list",
         }
     }
 
@@ -135,13 +186,13 @@ impl ClientRequest {
             }
             ClientRequest::TurnStart {
                 thread_id,
-                text,
+                input,
                 model,
                 effort,
             } => {
                 let mut p = Map::new();
                 p.insert("threadId".into(), json!(thread_id));
-                p.insert("input".into(), json!([{ "type": "text", "text": text }]));
+                p.insert("input".into(), input.items());
                 put(&mut p, "model", model.as_ref().map(|m| json!(m)));
                 put(&mut p, "effort", effort.as_ref().map(|e| json!(e)));
                 Value::Object(p)
@@ -149,6 +200,7 @@ impl ClientRequest {
             ClientRequest::TurnInterrupt { thread_id, turn_id } => {
                 json!({ "threadId": thread_id, "turnId": turn_id })
             }
+            ClientRequest::SkillsList { cwds } => json!({ "cwds": cwds }),
         }
     }
 
@@ -210,6 +262,34 @@ mod tests {
     }
 
     #[test]
+    fn picked_skills_follow_the_text_and_skills_list_asks_for_folders() {
+        let turn = ClientRequest::TurnStart {
+            thread_id: "t1".into(),
+            input: TurnInput::new(
+                "$oc-fixture hi",
+                vec![SkillRef {
+                    name: "oc-fixture".into(),
+                    path: "/h/.codex/skills/oc-fixture/SKILL.md".into(),
+                }],
+            ),
+            model: None,
+            effort: None,
+        };
+        assert_eq!(
+            turn.params(),
+            json!({"threadId": "t1", "input": [
+                {"type": "text", "text": "$oc-fixture hi"},
+                {"type": "skill", "name": "oc-fixture", "path": "/h/.codex/skills/oc-fixture/SKILL.md"}
+            ]})
+        );
+        let list = ClientRequest::SkillsList {
+            cwds: vec!["/w".into()],
+        };
+        assert_eq!(list.method(), "skills/list");
+        assert_eq!(list.params(), json!({"cwds": ["/w"]}));
+    }
+
+    #[test]
     fn thread_and_turn_requests_carry_only_what_is_set() {
         let options = ThreadOptions {
             cwd: Some("/work/ws".into()),
@@ -229,7 +309,7 @@ mod tests {
         assert_eq!(resume.params(), json!({"threadId": "t1"}));
         let turn = ClientRequest::TurnStart {
             thread_id: "t1".into(),
-            text: "say hi".into(),
+            input: "say hi".into(),
             model: None,
             effort: Some("high".into()),
         };
