@@ -98,7 +98,7 @@ test("⌘A outside a text field is swallowed; in the composer it is left to the 
   await press(page, "Meta+a");
   assert.deepEqual(await last(), { key: "a", meta: true, prevented: true });
 
-  const composer = page.locator(".chat textarea").first();
+  const composer = page.locator(".chat [contenteditable=true]").first();
   await composer.fill("hello world");
   await composer.focus();
   await page.keyboard.press("Meta+a");

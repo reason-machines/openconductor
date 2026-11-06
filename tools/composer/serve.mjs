@@ -10,7 +10,9 @@ if (reference) {
   await server.listen();
 }
 try {
-  if (process.env.CHECK_COMPOSER === "1") await import("./check.mjs");
+  if (process.env.CHECK_COMPOSER === "1") {
+    for (let pass = 0; pass < Number(process.env.CHECK_COMPOSER_REPEATS ?? 1); pass++) await import(`./check.mjs?pass=${pass}`);
+  }
   if (process.env.CAPTURE_COMPOSER === "1") await import("./capture.mjs");
 } catch (error) {
   console.error(error);

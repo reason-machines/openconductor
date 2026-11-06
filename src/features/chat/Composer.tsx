@@ -14,7 +14,7 @@
 // (composerMinimize.ts); focus, a click or ⌘L expands it.
 
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
@@ -26,7 +26,9 @@ import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./
 import { SlashMenu } from "./SlashMenu.tsx";
 import { fuzzyFilterFiles } from "../../backend";
 import type { FileMatch } from "../../spotlight/quickOpen";
-import { fileMentionQuery, insertFileMention } from "./fileMentions.ts";
+import { fileMentionQuery } from "./fileMentions.ts";
+import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
+import { composerPrompt } from "./composerDocument.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
 import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
 import type { ComposerMinimize } from "./useComposerMinimize.ts";
@@ -40,7 +42,7 @@ export const COMPOSER_PLACEHOLDER_WORKING = "Add a follow up";
 export interface ComposerProps {
   draft: string;
   setDraft: (text: string) => void;
-  inputRef: RefObject<HTMLTextAreaElement>;
+  inputRef: RefObject<ComposerEditorHandle>;
   /** Defaults to Conductor's: "Ask to make changes, …", "Add a follow up" while working. */
   placeholder?: string;
   queue: ChatQueue;
@@ -95,8 +97,7 @@ export function Composer({
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [focused, setFocused] = useState(false);
-  const [caret, setCaret] = useState(0);
-  const [selectionEnd, setSelectionEnd] = useState(0);
+  const [selection, setSelection] = useState<ComposerSelection>({ text: "", start: 0, end: 0 });
   const [mentionIndex, setMentionIndex] = useState(0);
   const [mentionDismissed, setMentionDismissed] = useState<string | null>(null);
   const [files, setFiles] = useState<{ workspacePath: string; query: string; matches: FileMatch[] } | null>(null);
@@ -109,31 +110,23 @@ export function Composer({
     return s ? glyphs(s) : "";
   };
   const working = turnRunning(queue.status);
-  const hasText = draft.trim() !== "";
+  const hasText = composerPrompt(draft).trim() !== "";
   const canSubmit = hasText || hasAttachments;
   const mode = (opposite: boolean) => resolveSendMode({ canSteer: canSteerNow(queue, canSteer), defaultMode: followUpMode, opposite });
   const sendMode = working ? mode(false) : "queue";
   // Conductor's send button: ↑ "Send message", or ↵ "Queue message" while a turn runs and the message would wait.
   const queues = working && sendMode === "queue";
 
-  // The message grows with its text, as Conductor's editor does; the box scrolls past 188 px.
-  useLayoutEffect(() => {
-    const box = inputRef.current;
-    if (!box) return;
-    box.style.height = "auto";
-    box.style.height = `${box.scrollHeight}px`;
-  }, [draft, inputRef, minimized]);
-
   // Conductor blurs the editor when the box minimizes.
   useLayoutEffect(() => {
-    if (minimized && document.activeElement === inputRef.current) inputRef.current?.blur();
+    if (minimized && inputRef.current?.focused()) inputRef.current.blur();
   }, [minimized, inputRef]);
 
-  const query = focused ? slashQuery(draft, caret) : null;
+  const query = focused ? slashQuery(selection.text, selection.start) : null;
   const slashMatches = useMemo(() => (query === null || query === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashDismissed, slashCommands]);
   const slashOpen = slashMatches.length > 0;
   const slashFocus = Math.min(slashIndex, Math.max(0, slashMatches.length - 1));
-  const mention = focused && workspacePath ? fileMentionQuery(draft, caret, selectionEnd) : null;
+  const mention = focused && workspacePath ? fileMentionQuery(selection.text, selection.start, selection.end) : null;
   const mentionKey = mention ? `${mention.start}:${mention.query}` : null;
   const mentionQuery = mentionKey !== mentionDismissed ? mention?.query : undefined;
   useEffect(() => {
@@ -151,38 +144,24 @@ export function Composer({
   const mentionOpen = mention !== null && mentionQuery !== undefined && mentionMatches.length > 0;
   const mentionFocus = Math.min(mentionIndex, Math.max(0, mentionMatches.length - 1));
 
-  function pickFile(path: string) {
+  function pickFile(file: FileMatch) {
     const box = inputRef.current;
     if (!box) return;
-    const range = fileMentionQuery(draft, box.selectionStart, box.selectionEnd);
-    if (!range) return;
-    const next = insertFileMention(draft, range, path);
-    setDraft(next.text);
+    const current = box.selection();
+    const range = fileMentionQuery(current.text, current.start, current.end);
+    if (!range || `${range.start}:${range.query}` !== mentionKey) return;
+    box.insertFile(range, { path: file.relative_path, label: file.relative_path, directory: file.file.is_directory });
     setMentionDismissed(mentionKey);
-    requestAnimationFrame(() => {
-      box.focus();
-      box.setSelectionRange(next.caret, next.caret);
-      setCaret(next.caret);
-      setSelectionEnd(next.caret);
-    });
   }
 
   function pickCommand(command: SlashCommand) {
-    const next = completeInsert(draft, command.insert ?? `/${command.name}`);
-    setDraft(next);
+    const next = completeInsert(selection.text, command.insert ?? `/${command.name}`);
+    inputRef.current?.replaceText(next);
     setSlashIndex(0);
-    requestAnimationFrame(() => {
-      const box = inputRef.current;
-      if (!box) return;
-      box.focus();
-      box.setSelectionRange(next.length, next.length);
-      setCaret(next.length);
-      setSelectionEnd(next.length);
-    });
   }
 
   function submit(opposite: boolean) {
-    const text = draft.trim();
+    const text = composerPrompt(draft).trim();
     if (!text && !hasAttachments) return;
     if (text.startsWith("/") && onCommand?.(text)) {
       setDraft("");
@@ -197,7 +176,7 @@ export function Composer({
     "chat.addAttachment": () => (onAttachFiles ? fileInput.current?.click() : false),
     "chat.focus": () => {
       const box = inputRef.current;
-      if (!box || box.offsetParent === null) return false;
+      if (!box || !box.visible()) return false;
       box.focus();
     },
   });
@@ -208,9 +187,6 @@ export function Composer({
     onAttachFiles(files);
     return true;
   };
-  const onPaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
-    if (takeFiles(e.clipboardData?.files)) e.preventDefault();
-  };
   const hasFiles = (e: DragEvent) => onAttachFiles !== undefined && Array.from(e.dataTransfer?.types ?? []).includes("Files");
   const queueRef = useRef<HTMLOListElement>(null);
 
@@ -220,8 +196,8 @@ export function Composer({
     queueRef.current?.querySelector<HTMLElement>(`li[data-id="${CSS.escape(target.row)}"]`)?.focus();
   }
 
-  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    const ev = e.nativeEvent;
+  function onKeyDown(e: globalThis.KeyboardEvent) {
+    const ev = e;
     const hit = (id: string) => keys(id).some((s) => matchesEvent(s, ev));
     if (ev.isComposing) return;
     const plain = !e.shiftKey && !e.metaKey && !e.altKey && !e.ctrlKey;
@@ -234,7 +210,7 @@ export function Composer({
       const selected = mentionMatches[mentionFocus];
       if (selected) {
         e.preventDefault();
-        pickFile(selected.relative_path);
+        pickFile(selected);
       }
       return;
     }
@@ -262,8 +238,8 @@ export function Composer({
       return;
     }
     // ↑ with the caret at the very start goes to the last queued message.
-    const box = e.currentTarget;
-    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.altKey && box.selectionStart === 0 && box.selectionEnd === 0 && queue.items.length > 0 && queue.editingId === null) {
+    const current = inputRef.current?.selection();
+    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.altKey && current?.start === 0 && current.end === 0 && queue.items.length > 0 && queue.editingId === null) {
       e.preventDefault();
       focus({ row: queue.items[queue.items.length - 1].id });
     } else if (hit("chat.cancel") && working) {
@@ -276,7 +252,10 @@ export function Composer({
       e.preventDefault();
       submit(false);
     }
-    // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the textarea.
+    else if (hit("chat.newLine")) {
+      e.preventDefault();
+      inputRef.current?.newline();
+    }
   }
 
   // Conductor's `Lm` (composerMinimize.ts focusHintVisible); the open model picker hides it in CSS.
@@ -324,31 +303,24 @@ export function Composer({
         >
           {attachments}
           <div className="oc-composer-input">
-            <textarea
-              ref={inputRef}
+            <ComposerEditor
+              inputRef={inputRef}
               value={draft}
               placeholder={placeholder ?? (working ? COMPOSER_PLACEHOLDER_WORKING : COMPOSER_PLACEHOLDER)}
-              onChange={(e) => {
-                setDraft(e.target.value);
-                setCaret(e.target.selectionStart ?? e.target.value.length);
-                setSelectionEnd(e.target.selectionEnd ?? e.target.value.length);
+              onChange={(value) => {
+                setDraft(value);
                 setMentionDismissed(null);
                 setSlashIndex(0);
                 setSlashDismissed(null);
               }}
-              onSelect={(e) => {
-                setCaret(e.currentTarget.selectionStart ?? 0);
-                setSelectionEnd(e.currentTarget.selectionEnd ?? 0);
-              }}
+              onSelection={setSelection}
               onFocus={() => {
                 setFocused(true);
                 minimize?.expand();
               }}
               onBlur={() => setFocused(false)}
               onKeyDown={onKeyDown}
-              onPaste={onPaste}
-              rows={minimized ? 1 : 3}
-              spellCheck={false}
+              onPasteFiles={takeFiles}
             />
           </div>
           {showFocusPill && !minimized ? focusPill(false) : null}

@@ -8,6 +8,8 @@ import React, { useRef, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { KeybindingsProvider } from "../../src/keybindings/KeybindingsProvider";
 import { Composer } from "../../src/features/chat/Composer";
+import type { ComposerEditorHandle } from "../../src/features/chat/ComposerEditor";
+import { appendComposerText } from "../../src/features/chat/composerDocument";
 import { ModelPicker } from "../../src/features/chat/ModelPicker";
 import { commandSet, type ComposerAgent } from "../../src/features/chat/slashCommands";
 import { actionStep, emptyQueue, type ChatQueue } from "../../src/features/chat/queue";
@@ -23,8 +25,10 @@ document.documentElement.dataset.colorPalette = params.get("palette") ?? "stone"
 
 function Demo() {
   const [draft, setDraft] = useState("");
+  const [saved, setSaved] = useState("");
+  const [identity, setIdentity] = useState(0);
   const [model, setModel] = useState<ModelChoice>({ model: agent === "codex" ? "gpt-5.6-sol" : "opus-5-1m", effort: "high" });
-  const input = useRef<HTMLTextAreaElement>(null);
+  const input = useRef<ComposerEditorHandle>(null);
   const [queue, setQueue] = useState<ChatQueue>(() => ({ ...emptyQueue(), status: params.has("working") ? "working" : "idle" }));
   const [files, setFiles] = useState<File[]>([]);
   const [sent, setSent] = useState<{ text: string; mode: string; files: string[] } | null>(null);
@@ -32,8 +36,14 @@ function Demo() {
   return (
     <div style={{ position: "fixed", inset: 0, background: "var(--bg)" }}>
       <output data-testid="composer-result" hidden>{sent ? JSON.stringify(sent) : ""}</output>
+      {params.has("editing-checks") ? <div>
+        <button onClick={() => setSaved(draft)}>Save draft</button>
+        <button onClick={() => { setDraft(saved); setIdentity((id) => id + 1); }}>Restore draft</button>
+        <button onClick={() => setDraft((value) => appendComposerText(value, "Review note"))}>Insert review note</button>
+      </div> : null}
       <div style={{ position: "absolute", left: 256, width: 789, bottom: 0 }}>
         <Composer
+          key={identity}
           draft={draft}
           setDraft={setDraft}
           inputRef={input}

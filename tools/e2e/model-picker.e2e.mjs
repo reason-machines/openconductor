@@ -137,7 +137,7 @@ async function closePicker() {
 }
 
 async function send(text) {
-  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await running()));

@@ -142,10 +142,10 @@ const focusedElement = () =>
     if (a.closest(".composer")) return "composer " + a.tagName.toLowerCase();
     if (a.closest(".terminal-panel")) return "terminal " + a.className;
     return a.tagName.toLowerCase() + (a.className ? "." + a.className : "");`);
-const composerValue = () => run("const t = document.querySelector('.composer textarea'); return t ? t.value : null;");
+const composerValue = () => run("const t = document.querySelector('.composer [contenteditable=true]'); return t ? t.textContent : null;");
 
 async function send(text) {
-  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
   // Send is disabled while the box is empty: a click then does nothing and the
   // turn never shows, so say where the typed text went instead of timing out later.
   const typed = await composerValue();
@@ -228,11 +228,11 @@ try {
 
   // Conductor's default workspace layout shows no terminal, so none opens with
   // the workspace to take the keyboard from the chat box.
-  await run(`document.querySelector('.composer textarea').focus(); return true;`);
+  await run(`document.querySelector('.composer [contenteditable=true]').focus(); return true;`);
   await sleep(500);
   assert.equal(await run("return document.querySelectorAll('.terminal-panel').length;"), 0, "the workspace opened a terminal panel by default");
   const focus = await focusedElement();
-  assert.equal(focus, "composer textarea", `something took focus from the chat box (${focus})`);
+  assert.equal(focus, "composer div", `something took focus from the chat box (${focus})`);
   pass("no terminal opens with the workspace (Conductor's default layout) and the chat box keeps focus");
 
   // 1. A local path: in the workspace folder under HOME.

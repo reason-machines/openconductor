@@ -192,7 +192,7 @@ try {
     JSON.stringify(prefs),
     workspace.id,
   );
-  await waitFor("the chat composer", () => run("return !!document.querySelector('.composer-wrap textarea');"));
+  await waitFor("the chat composer", () => run("return !!document.querySelector('.composer-wrap [contenteditable=true]');"));
 
   // 1. The app fetches both agents at launch (lib.rs, as Conductor does); the host 404s:
   // retrying with a countdown, then failed.
@@ -225,7 +225,7 @@ try {
 
   // 2. Hydrating a failed status retries it (Conductor's AgentBinaryStore.initialize).
   await run("location.reload();");
-  await waitFor("the chat composer after reload", () => run("return !!document.querySelector('.composer-wrap textarea');"));
+  await waitFor("the chat composer after reload", () => run("return !!document.querySelector('.composer-wrap [contenteditable=true]');"));
   const again = await waitFor("the auto-retry", bannerIn("retrying"), 15000, 100);
   if (!sawRetrying) await checkRetrying(again, "the auto-retry retries");
   await waitFor("the auto-retry to fail again", bannerIn("failed"), 30000);
@@ -256,7 +256,7 @@ try {
   const settings = await invoke("get_settings");
   await invoke("update_settings", { settings: { ...settings, claude_code_executable_path: "/usr/bin/true" } });
   await run("location.reload();");
-  await waitFor("the chat composer after reload", () => run("return !!document.querySelector('.composer-wrap textarea');"));
+  await waitFor("the chat composer after reload", () => run("return !!document.querySelector('.composer-wrap [contenteditable=true]');"));
   await invoke("request_agent_binary_download", { agent: "claude" });
   await waitFor("2.1.285 to be retrying", async () => {
     const s = (await invoke("get_agent_binary_state")).find((x) => x.agent === "claude");

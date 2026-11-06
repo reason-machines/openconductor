@@ -119,19 +119,18 @@ const chatText = () => run("const el = document.querySelector('.chat-scroll'); r
 const running = () => run("return !!document.querySelector('.composer button[aria-label^=\"Stop the agent\"]');");
 
 /**
- * Sets the composer's text through React's native value setter and an input
- * event, then clicks Send. Typing with WebDriver's element/value loses keys
+ * Sets the composer's text through a normal contenteditable insertText edit, then clicks Send. Typing with WebDriver's element/value loses keys
  * when the workspace's auto-opened terminal takes focus mid-typing (see #402).
  */
 async function send(text) {
   await run(
-    `const ta = document.querySelector('.composer textarea');
-     Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(ta, arguments[0]);
-     ta.dispatchEvent(new Event('input', { bubbles: true }));
+    `const ta = document.querySelector('.composer [contenteditable=true]');
+     ta.focus(); const selection = getSelection(); selection.selectAllChildren(ta);
+     document.execCommand('insertText', false, arguments[0]);
      return true;`,
     text,
   );
-  await waitFor("the composer to hold the prompt", () => run("return document.querySelector('.composer textarea').value === arguments[0];", text));
+  await waitFor("the composer to hold the prompt", () => run("return document.querySelector('.composer [contenteditable=true]').textContent === arguments[0];", text));
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
@@ -170,7 +169,7 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
-  await waitFor("the workspace chat composer", () => run("return !!document.querySelector('.composer textarea');"));
+  await waitFor("the workspace chat composer", () => run("return !!document.querySelector('.composer [contenteditable=true]');"));
   pass("the workspace chat is open");
 
   await send(PROMPT);
