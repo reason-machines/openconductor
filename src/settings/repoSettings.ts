@@ -52,6 +52,9 @@ export type RepoLocalKey =
   | "git.branch_prefix_type"
   | "preview_urls"
   | "environment_variable_files"
+  | "scripts.setup"
+  | "scripts.archive"
+  | `scripts.run.${string}`
   | `environment_variables.${string}`;
 
 export function repoSettingsEffective(repoPath: string, workspacePath?: string): Promise<EffectiveSettings> {

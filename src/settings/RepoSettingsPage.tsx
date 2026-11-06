@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import type { Repo } from "../state/types";
-import { scriptsConfig } from "../scripts/api";
-import type { ScriptsConfig } from "../scripts/model";
 import { setSpotlightTesting, spotlightTesting } from "../spotlight/testingApi";
 import { SPOTLIGHT_SETTING_DESCRIPTION, SPOTLIGHT_SETTING_TITLE, toggleBlocked, type SpotlightTesting } from "../spotlight/testing";
 import { Row } from "./GeneralPage";
@@ -11,6 +9,7 @@ import type { RepoSection } from "./routes";
 import { RepoActionsRows } from "./rows/PromptRows";
 import { RepoEnvironmentRows } from "./rows/EnvironmentRows";
 import { RepoGitRows } from "./rows/RepoGitRows";
+import { RepoScriptsRows } from "./rows/RepoScriptsRows";
 
 interface Props {
   repo: Repo;
@@ -49,41 +48,7 @@ function RepoGit({ repo }: { repo: Repo }) {
 }
 
 function RepoScripts({ repo }: { repo: Repo }) {
-  const [config, setConfig] = useState<ScriptsConfig | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  useEffect(() => {
-    setConfig(null);
-    setError(null);
-    if (!repo.path) return;
-    // Read the repository's own scripts: the "workspace" here is the main checkout.
-    scriptsConfig({
-      workspaceId: "",
-      repositoryId: repo.id,
-      repoRoot: repo.path,
-      workspacePath: repo.path,
-      workspaceName: repo.name,
-      defaultBranch: repo.defaultBranch,
-      targetBranch: null,
-    }).then(setConfig, (e) => setError(errorText(e)));
-  }, [repo.id, repo.path, repo.name, repo.defaultBranch]);
-
-  if (!repo.path) return <p className="muted">This repository has no local checkout yet.</p>;
-  if (error) return <p className="error small" role="alert">{error}</p>;
-  if (!config) return <p className="muted">Loading…</p>;
-  const script = (value: string | null | undefined) => (value ? <pre className="settings-script">{value}</pre> : <span className="muted">None</span>);
-  return (
-    <div className="settings-rows" aria-label="Repository scripts">
-      <Row label="Setup script" help="Runs when a new workspace is created.">
-        {script(config.setup)}
-      </Row>
-      <Row label="Run script" help={`Runs from the Run button. Mode: ${config.runMode}.`}>
-        {config.run.length ? script(config.run.map((r) => r.command).join("\n")) : script(null)}
-      </Row>
-      <Row label="Archive script" help="Runs when a workspace is archived.">
-        {script(config.archive)}
-      </Row>
-    </div>
-  );
+  return <RepoScriptsRows repo={repo} />;
 }
 
 function RepoActions({ repo }: { repo: Repo }) {
