@@ -50,6 +50,7 @@ g.__TAURI_INTERNALS__ = {
     // A Codex prompt resolves when its turn ends; these turns keep running.
     if (cmd === "codex_prompt") return new Promise(() => undefined);
     if (cmd === "reason_prompt") return new Promise(() => undefined);
+    if (cmd === "claude_prompt") return new Promise(() => undefined);
     if (cmd === "chat_messages_load") return { messages: [], agentSessionId: null };
     return null;
   },
@@ -58,6 +59,7 @@ g.__TAURI_INTERNALS__ = {
 const codex = await import("../features/chat/codexChat.ts");
 const archive = await import("./archive.ts");
 const reason = await import("../features/chat/reasonChat.ts");
+const claude = await import("../features/chat/claudeChat.ts");
 
 const settle = () => new Promise((r) => setTimeout(r, 0));
 function emitCodex(payload: Record<string, unknown>) {
@@ -106,6 +108,21 @@ test("Stop agents and archive also cancels a Reason chat waiting on a permission
   await settle();
   assert.equal(reason.chatSnapshot("ws-reason-ask").queue.status, "cancelling");
   assert.equal(reasonCancels("ws-reason-ask"), 1);
+});
+
+test("Stop agents and archive cancels a running Claude Code chat through its own runtime only", async () => {
+  const chatId = claude.claudeChatId("ws-claude-stop");
+  claude.claudeRuntime.submit(chatId, "/ws/claude-stop", "fix the build", "queue");
+  await settle();
+  await settle();
+  assert.equal(calls.filter((c) => c.cmd === "claude_prompt" && c.args.chatId === chatId).length, 1);
+  assert.equal(archive.workspaceAgentStatus("ws-claude-stop"), "working");
+  archive.stopWorkspaceAgents("ws-claude-stop");
+  await settle();
+  assert.equal(claude.claudeRuntime.snapshot(chatId).queue.status, "cancelling");
+  assert.equal(calls.filter((c) => c.cmd === "claude_cancel" && c.args.chatId === chatId).length, 1);
+  assert.equal(reasonCancels(chatId), 0);
+  assert.equal(cancels(chatId), 0);
 });
 
 test("startArchive stops the Codex chat before the backend archive runs", async () => {

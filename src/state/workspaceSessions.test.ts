@@ -6,6 +6,15 @@ import { workspaceOfChat, workspaceSessionStatus } from "./workspaceSessions.ts"
 test("a review chat belongs to the workspace in its id; the main chat is the workspace id", () => {
   assert.equal(workspaceOfChat("ws-1"), "ws-1");
   assert.equal(workspaceOfChat("ws-1:review:abc-1"), "ws-1");
+  assert.equal(workspaceOfChat("ws-1:claude"), "ws-1");
+  assert.equal(workspaceOfChat("ws-1:chat:2"), "ws-1");
+  assert.equal(workspaceOfChat("ws-1:chat:2:claude"), "ws-1");
+  assert.equal(workspaceOfChat("ws-1:review:abc-1:claude"), "ws-1");
+});
+
+test("a workspace's Claude Code chat counts toward its status", () => {
+  const s = new Map([["ws-1", "idle"], ["ws-1:claude", "working"]]);
+  assert.equal(workspaceSessionStatus(s, "ws-1"), "working");
 });
 
 test("a workspace's status is its most urgent chat, from any of its chats", () => {
