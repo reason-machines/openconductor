@@ -1153,7 +1153,7 @@
     "scenario": "populated",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Repository paths and workspace file behavior."
      }
     ]
    },
@@ -1180,6 +1180,51 @@
      "kind": "route",
      "name": "/settings/repos/$repoId/misc"
     },
+    {
+     "kind": "settings-page",
+     "name": "repo-misc"
+    }
+   ]
+  },
+  {
+   "id": "settings-repo-misc-lower",
+   "title": "Settings > tide-web > Misc, scrolled to Remove repository",
+   "ref": {
+    "path": "/settings/repos/repo-tide-web/misc",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=Repository paths and workspace file behavior."
+     },
+     {
+      "click": "text=No matching gitignored files found."
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "click": ".settings-repo",
+     "text": "tide-web"
+    },
+    {
+     "click": ".settings-repo-sections .nav-item",
+     "text": "Misc",
+     "after_ms": 800
+    },
+    {
+     "exec": "document.querySelector('.settings-misc-files-note')?.scrollIntoView({block:'center'})",
+     "after_ms": 400
+    }
+   ],
+   "covers": [
     {
      "kind": "settings-page",
      "name": "repo-misc"

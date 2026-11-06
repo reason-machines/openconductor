@@ -1,6 +1,7 @@
 // Codex chats: turns the `codex-chat-event` payloads the backend emits
 // (`src-tauri/src/agent/codex_wire.rs`) into ChatEvents for the transcript,
-// and keeps the chat's open approval prompts.
+// and keeps the chat's open approval prompts and consents (MCP elicitations
+// and permission requests, `codexConsent.ts`).
 //
 // - The backend runs one prompt at a time and ends each with exactly one
 //   `turnEnded`, so content goes to the oldest open turn and `turnEnded`
@@ -15,6 +16,7 @@
 //   replaces the previous one of its turn.
 // Pure: no Tauri, no React, so `codex.test.ts` covers it.
 
+import type { CodexConsent } from "./codexConsent.ts";
 import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
 
 export type CodexDecision = "accept" | "acceptForSession" | "decline" | "cancel";
@@ -55,6 +57,7 @@ export type CodexPayload = { chatId: string } & (
   | CodexTool
   | { type: "toolOutput"; id: string; delta: string }
   | CodexApproval
+  | CodexConsent
   | { type: "approvalResolved"; requestId: number | string }
   | { type: "notice"; message: string; willRetry: boolean }
   | ({ type: "turnEnded" } & CodexTurnEnd)
@@ -71,6 +74,7 @@ export interface CodexChatState {
   chatId: string;
   open: OpenTurn[];
   approvals: CodexApproval[];
+  consents: CodexConsent[];
   next: number;
 }
 
@@ -82,7 +86,7 @@ export interface Step {
 }
 
 export function codexChat(chatId: string): CodexChatState {
-  return { chatId, open: [], approvals: [], next: 1 };
+  return { chatId, open: [], approvals: [], consents: [], next: 1 };
 }
 
 function message(state: CodexChatState, turnId: string, id: string, role: ChatMessage["role"], blocks: Block[], now: Date): ChatMessage {
@@ -168,8 +172,8 @@ export function applyCodexPayload(state: CodexChatState, p: CodexPayload, now = 
       if (!oldest) return { state, events: [] };
       const s = turnStatus(p);
       return {
-        // Open approvals belong to the turn that just ended.
-        state: { ...state, open: rest, approvals: [] },
+        // Open approvals and consents belong to the turn that just ended.
+        state: { ...state, open: rest, approvals: [], consents: [] },
         events: [{ type: "turn_status", sessionId: state.chatId, turnId: oldest.turnId, status: s.status, ...(s.error !== undefined ? { error: s.error } : {}) }],
       };
     }
@@ -187,8 +191,13 @@ export function applyCodexPayload(state: CodexChatState, p: CodexPayload, now = 
       const approvals = [...state.approvals.filter((a) => a.requestId !== p.requestId), approval];
       return { state: { ...state, approvals }, events: [] };
     }
+    case "consent": {
+      const { chatId: _chat, ...consent } = p;
+      const consents = [...state.consents.filter((c) => c.requestId !== p.requestId), consent];
+      return { state: { ...state, consents }, events: [] };
+    }
     case "approvalResolved":
-      return { state: { ...state, approvals: state.approvals.filter((a) => a.requestId !== p.requestId) }, events: [] };
+      return { state: answered(state, p.requestId), events: [] };
     case "notice": {
       const turnId = state.open[0]?.turnId ?? `${state.chatId}:n${state.next}`;
       const id = p.willRetry ? `${turnId}:retry` : `${state.chatId}:n${state.next}`;
@@ -202,9 +211,11 @@ export function applyCodexPayload(state: CodexChatState, p: CodexPayload, now = 
   }
 }
 
-/** Removes an approval once it is answered here. */
+/** Removes an approval or consent once it is answered (here or by Codex). Unchanged lists keep their identity. */
 export function answered(state: CodexChatState, requestId: number | string): CodexChatState {
-  return { ...state, approvals: state.approvals.filter((a) => a.requestId !== requestId) };
+  const approvals = state.approvals.some((a) => a.requestId === requestId) ? state.approvals.filter((a) => a.requestId !== requestId) : state.approvals;
+  const consents = state.consents.some((c) => c.requestId === requestId) ? state.consents.filter((c) => c.requestId !== requestId) : state.consents;
+  return approvals === state.approvals && consents === state.consents ? state : { ...state, approvals, consents };
 }
 
 export const DECISION_LABELS: Record<CodexDecision, string> = {

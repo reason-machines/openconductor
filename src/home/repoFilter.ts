@@ -63,3 +63,23 @@ export function reconcileRepoFilter(filter: RepoFilter, repos: readonly Pick<Rep
 export function filterRepoGroups<R extends Pick<Repo, "id">>(repos: readonly R[], filter: RepoFilter): R[] {
   return filter === undefined ? [...repos] : repos.filter((r) => r.id === filter);
 }
+
+/**
+ * The repository the create composer starts on. Conductor's `q4a`
+ * (renderApp-D_fmY7hW.js @11027112) tries, in order: the requested
+ * repository, the last repository chosen in the composer (its
+ * `dispatcher-state-v1` `lastRepositoryIdByOrg`), the composer's current one,
+ * the sidebar's project filter, then the first repository. OpenConductor does
+ * not remember a last-chosen repository yet, so after the requested one the
+ * filter decides. Any candidate that is not an available repository is skipped.
+ */
+export function createRepoDefault(
+  repoIds: readonly string[],
+  requested: string | null | undefined,
+  filter: RepoFilter,
+): string | null {
+  const available = new Set(repoIds);
+  if (requested && available.has(requested)) return requested;
+  if (filter && available.has(filter)) return filter;
+  return repoIds[0] ?? null;
+}

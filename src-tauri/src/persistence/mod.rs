@@ -132,6 +132,20 @@ pub async fn finish_workspace(
     Ok(number)
 }
 
+/// The worktree exists (Conductor's `qYe`): store the `git worktree add` log
+/// and the tracked-file count as the row passes through `setting_up`.
+/// Conductor keeps the row there until setup ends; ours tracks setup in the
+/// scripts backend (`setup_script_status`), so the row goes on to `ready`.
+pub async fn record_initialization(
+    pool: &SqlitePool,
+    local_id: &str,
+    init_log: Option<&str>,
+    files_copied: i64,
+) -> Result<()> {
+    workspaces::begin_setup(pool, local_id, init_log, files_copied).await?;
+    workspaces::finish_setup(pool, local_id).await.map(drop)
+}
+
 /// Creating the worktree failed: drop its `initializing` row.
 pub async fn abandon_workspace(pool: &SqlitePool, local_id: &str) -> Result<bool> {
     workspaces::delete_if_initializing(pool, local_id).await
@@ -210,6 +224,10 @@ pub struct WorkspaceRow {
     pub pr_description: Option<String>,
     /// `workspaces.number`, shown as `W-<n>`; null for workspaces from before numbering.
     pub number: Option<i64>,
+    /// Log of the `git worktree add` script and `git ls-files | wc -l` at
+    /// creation (`initialization_log_path`, `initialization_files_copied`).
+    pub initialization_log_path: Option<String>,
+    pub initialization_files_copied: Option<i64>,
     pub created_at: String,
     /// `workspaces.updated_at`: last activity, the sidebar's and next-unread's sort key.
     pub updated_at: String,
@@ -256,6 +274,8 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 pr_title: w.pr_title,
                 pr_description: w.pr_description,
                 number: w.number,
+                initialization_log_path: w.initialization_log_path,
+                initialization_files_copied: w.initialization_files_copied,
                 created_at: w.created_at,
                 updated_at: w.updated_at,
                 repository_id: w.repository_id,

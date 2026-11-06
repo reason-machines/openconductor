@@ -134,3 +134,34 @@ fn prompt_blocks_put_attachments_after_the_text_as_file_resources() {
         1
     );
 }
+
+#[test]
+fn a_permission_request_carries_its_title_and_options() {
+    use super::provider::permission_request;
+    let params = json!({
+        "sessionId": "s",
+        "toolCall": { "toolCallId": "t1", "kind": "execute" },
+        "options": [
+            { "optionId": "a", "name": "Allow", "kind": "allow_once" },
+            { "name": "no id is dropped" },
+        ],
+    });
+    let ev = ProviderEvent::PermissionRequested(permission_request("permission-1".into(), &params));
+    assert_eq!(
+        event_json("c", &ev),
+        json!({ "chatId": "c", "type": "permissionRequest", "requestId": "permission-1", "title": "execute",
+            "options": [{ "optionId": "a", "name": "Allow", "kind": "allow_once" }] })
+    );
+    let done = ProviderEvent::PermissionResolved {
+        request_id: "permission-1".into(),
+    };
+    assert_eq!(
+        event_json("c", &done),
+        json!({ "chatId": "c", "type": "permissionResolved", "requestId": "permission-1" })
+    );
+    let untitled = permission_request("p".into(), &json!({ "toolCall": {} }));
+    assert_eq!(
+        (untitled.title.as_str(), untitled.options.len()),
+        ("Tool call", 0)
+    );
+}

@@ -51,6 +51,8 @@ export type ReasonPayload = { chatId: string } & (
   | { type: "error"; code: string | null; status: number | null; message: string }
   | ReasonTool
   | { type: "turnEnded"; end: ReasonTurnEnd }
+  | { type: "permissionRequest"; requestId: string; title: string; options: { optionId: string; name: string; kind: string }[] }
+  | { type: "permissionResolved"; requestId: string }
 );
 
 /** Sender recorded on reports; Reason does not say which Session sent one. */
@@ -238,6 +240,9 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
     case "error":
     case "userReplay":
     case "title":
+    // Permission requests change the chat's status, not its transcript (reasonChat.ts).
+    case "permissionRequest":
+    case "permissionResolved":
       return { state, events: [] };
   }
 }
