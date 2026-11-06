@@ -9,6 +9,7 @@ import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
 import { turnMenuItems, TURN_MENU_TOOLTIP, TURN_MENU_TRIGGER_LABEL, type TurnMenuItem } from "./turnMenu.ts";
+import { LinkMenuNotify, LinkWithMenu } from "./LinkMenu.tsx";
 import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
@@ -52,6 +53,8 @@ export interface TranscriptProps {
   onOpenFile?: (path: string) => void;
   /** Clock for the footer's time of day (tests pin it). */
   now?: () => number;
+  /** Toasts, e.g. a markdown link's "Copy link address" (LinkMenu.tsx). */
+  notify?: (kind: "info" | "error", message: string) => void;
 }
 
 export function Transcript({
@@ -70,6 +73,7 @@ export function Transcript({
   forkDisabled = false,
   turnAgent,
   chatAgent,
+  notify,
 }: TranscriptProps) {
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
   const turns = useMemo(() => groupTurns(rows), [rows]);
@@ -98,21 +102,23 @@ export function Transcript({
   };
 
   return (
-    <div className="transcript">
-      {turns.map((turn) => {
-        const footer = turn.rows.find((r): r is TurnEndRow => r.kind === "turn_end");
-        return (
-          <div key={turn.key} className="oc-turn" data-turn-id={turn.turnId}>
-            <div className="oc-turn-body">
-              <div className="oc-turn-items">
-                {turn.rows.map((row) => (row.kind === "turn_end" ? null : <Row key={row.key} row={row} ctx={ctx} />))}
+    <LinkMenuNotify.Provider value={notify}>
+      <div className="transcript">
+        {turns.map((turn) => {
+          const footer = turn.rows.find((r): r is TurnEndRow => r.kind === "turn_end");
+          return (
+            <div key={turn.key} className="oc-turn" data-turn-id={turn.turnId}>
+              <div className="oc-turn-body">
+                <div className="oc-turn-items">
+                  {turn.rows.map((row) => (row.kind === "turn_end" ? null : <Row key={row.key} row={row} ctx={ctx} />))}
+                </div>
+                {footer ? <TurnFooter row={footer} ctx={ctx} /> : null}
               </div>
-              {footer ? <TurnFooter row={footer} ctx={ctx} /> : null}
             </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+    </LinkMenuNotify.Provider>
   );
 }
 
@@ -341,6 +347,7 @@ function Part({ part, preview = false, group, ctx }: { part: PartView; preview?:
                 onOpenLink={(href) => void openUrl(href)}
                 workspacePath={ctx.workspacePath}
                 onOpenFile={ctx.onOpenFile}
+                Link={LinkWithMenu}
               />
             </div>
           </div>

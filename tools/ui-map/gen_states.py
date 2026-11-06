@@ -143,6 +143,10 @@ st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{
 # Rename chat dialog and the Review button's right-click menu (chat builder 1)
 LISBON=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]
 st("dialog-rename-chat","Rename chat dialog", ref(actions=LISBON+[{"rclick":"[role=tab][aria-label^='Close chat']"},{"click":"[role=menuitem] >> text=Rename chat"}]), oc=OPEN_WS+[{"rclick":".main-tabs [role=tab]","after_ms":600},{"click":"[role=menu] [role=menuitem]","text":"Rename chat","after_ms":800}])
+# Turn footer "Show message actions" -> Reset chat (Conductor dDo "Reset chat?", renderApp @8,910,893 bytes).
+st("dialog-reset-chat","Reset chat? dialog", ref(actions=LISBON+[{"click":"[aria-label='Show message actions']"},{"click":"[role=menuitem] >> text=Reset chat"}]), oc=OPEN_WS+[{"click":"[aria-label='Show message actions']","after_ms":600},{"click":"[role=menu] [role=menuitem]","text":"Reset chat","after_ms":800}], covers=[{"kind":"dialog","name":"Reset chat?"}])
+# Model picker searched for a model no agent has (Conductor A7o "No models found", @8,601,078 bytes).
+st("empty-model-search","Model picker, search with no match", ref(actions=LISBON+[{"click":"text=Opus 5 >> nth=-1"},{"fill":["[placeholder='Search models']","zzz"]}]), oc=OPEN_WS+[{"click":".composer .oc-model-chip","after_ms":600},{"type":"zzz","css":"[placeholder='Search models']"}], covers=[{"kind":"empty-state","name":"No models found"}])
 st("menu-review-edit","Review button menu (Edit before sending)", ref(actions=LISBON+[{"rclick":"button:has-text('Review') >> nth=0"}]), oc=OPEN_WS+[{"rclick":".review-button","after_ms":600}], covers=[{"kind":"menu","name":"u6s"}])
 
 # Conductor's reference opens on "/" (Home: wordmark and the Open project / Open GitHub
@@ -153,11 +157,15 @@ st("menu-review-edit","Review button menu (Edit before sending)", ref(actions=LI
 # own OpenConductor steps start by navigating (workspace, Home, Settings) are left as is.
 def ref_leaves_home(a):
     return a.get("click", "").startswith("text=Ada/")
+# On Home both apps fold every repository group nobody has toggled (Conductor's `Dra`:
+# repo-<id> defaultCollapsed unless the open workspace is in the group), so where the
+# reference clicks "tide-web" to unfold it, OpenConductor clicks its tide-web header too.
+OPEN_TIDE = {"click": ".sb-repo-name", "text": "tide-web", "after_ms": 400}
 OC_NAVIGATES = [OPEN_WS[0], HOME[0], SETTINGS[0]]
 for s in S:
     r = s.get("ref")
     if (r and r["path"] == "/" and r["scenario"] == "populated" and s.get("oc") and not s.get("oc_fresh")
             and not any(ref_leaves_home(a) for a in r["actions"]) and s["oc"][0] not in OC_NAVIGATES):
-        s["oc"] = HOME + s["oc"]
+        s["oc"] = HOME + ([OPEN_TIDE] if {"click": "text=tide-web"} in r["actions"] else []) + s["oc"]
 json.dump({"schema":"openconductor.ui-map-states/1","viewport":{"width":1280,"height":820},"theme":"dark","states":S}, open(__import__('os').path.join(__import__('os').path.dirname(__file__),'states.json'),'w'), indent=1)
 print(len(S))

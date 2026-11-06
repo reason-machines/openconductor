@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "892d5d0",
+  "commit": "ea4d35c4",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -32,34 +32,34 @@
   "statuses": ", from what the running apps showed:\n  matches  reference rendered and reached, OpenConductor reached the same\n           state, the item's copy is on screen in both, and the whole state\n           differs by at most MATCH_RATIO changed pixels at channel threshold 24.\n  wrong    OpenConductor shows it (copy found in a capture of the running\n           app) but it is not shown to match: the visual diff is over the bar,\n           the copy differs, or no valid reference render exists to prove it.\n  missing  OpenConductor has no way to reach the state, shows a different\n           screen there (under 25% of the reference's UI copy), or the item's\n           copy is in no capture of the running app."
  },
  "summary": {
-  "total": 973,
-  "missing": 747,
+  "total": 975,
+  "missing": 745,
   "wrong": 75,
-  "matches": 151,
+  "matches": 155,
   "states": {
-   "total": 75,
+   "total": 77,
    "missing": 13,
    "wrong": 21,
-   "matches": 41
+   "matches": 43
   },
   "items": {
    "total": 898,
-   "missing": 734,
+   "missing": 732,
    "wrong": 54,
-   "matches": 110
+   "matches": 112
   },
   "items_by_kind": {
    "dialog": {
     "total": 64,
-    "missing": 54,
+    "missing": 53,
     "wrong": 5,
-    "matches": 5
+    "matches": 6
    },
    "empty-state": {
     "total": 52,
-    "missing": 44,
+    "missing": 43,
     "wrong": 1,
-    "matches": 7
+    "matches": 8
    },
    "menu": {
     "total": 39,
@@ -124,10 +124,10 @@
   },
   "by_team": {
    "chat": {
-    "total": 63,
-    "missing": 50,
+    "total": 65,
+    "missing": 48,
     "wrong": 1,
-    "matches": 12
+    "matches": 16
    },
    "cloud-org": {
     "total": 83,
@@ -184,8 +184,8 @@
     "matches": 13
    }
   },
-  "located_items": 224,
-  "items_with_reference_screenshot": 224
+  "located_items": 226,
+  "items_with_reference_screenshot": 226
  },
  "states": [
   {
@@ -517,7 +517,7 @@
    "id": "workspace-chat",
    "title": "Workspace: chat transcript",
    "status": "matches",
-   "why": "diff 2.6% at t24, copy 100%",
+   "why": "diff 2.4% at t24, copy 100%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -528,21 +528,21 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_b4f5fa27b688292ccead8a5034e51b671ba6c00d6b1ac064acf5f9bc275c4e2e"
+    "rea_evidence_id": "ev_4da38eaab39d4a5b56c7832567be28a0ec7d1091dce85a9ff54c1ee1f1ea61d5"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/chat-tabs-workspace-chat.png",
     "error": null,
-    "note": "side-by-side lane at 892d5d095: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 01a7abeea: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": 0.999906631097561,
-    "changed_ratio_t24": 0.025658346036585365,
+    "changed_ratio_t0": 0.9999552210365854,
+    "changed_ratio_t24": 0.024214939024390245,
     "rea_evidence_ids": [
-     "ev_165e8fb99fb664c1cdf11157b5ee0e65c8bcebdabaaff6fb2d2618f3c01dabc4",
-     "ev_f52daa0136b5d710af566814aa08284a2013097e97bb38894354bfbf2c82ca94"
+     "ev_d24fab9756b72b77ae580624d41e217e0ffe6fc6375a6e48378fee50c2662231",
+     "ev_7facd76693d4c62f076dee86d76cbd9eec01d03b77ec2c4a5e6fbb13ed0c079b"
     ]
    },
    "copy_coverage": 1.0,
@@ -590,7 +590,7 @@
    "id": "workspace-tool-calls",
    "title": "Chat: tool calls expanded",
    "status": "matches",
-   "why": "diff 2.6% at t24, copy 100%",
+   "why": "diff 2.4% at t24, copy 100%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -601,21 +601,21 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_fce957ecaf1f95c18522ba17853a57df7f22df23e42bab12fbec2f29630060b4"
+    "rea_evidence_id": "ev_77ca42f3a815bbc63f5f089b5b249c16dc8565c7faf8a58dfea84961c6619260"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/chat-tabs-workspace-tool-calls.png",
     "error": null,
-    "note": "side-by-side lane at 892d5d095: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 01a7abeea: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": 0.9996846417682926,
-    "changed_ratio_t24": 0.025803163109756097,
+    "changed_ratio_t0": 0.9997332317073171,
+    "changed_ratio_t24": 0.024359756097560976,
     "rea_evidence_ids": [
-     "ev_7c9d87e9c13510b4295377163f20b859bca488065304c329eafface0fbd619f7",
-     "ev_cff9a18a9e3768e223d57b5ece8d3a1e8e1bec2f7e9a3721530fb3806a59a28d"
+     "ev_24b8c3a3f26f1fd1e20f216082e61c1da542b44f0e05d1728abf014a8dd79323",
+     "ev_7a274ddfc8d371b344cb303f71abf7c22b28b07e7e7b50061024578514ebe2d6"
     ]
    },
    "copy_coverage": 1.0,
@@ -2489,7 +2489,7 @@
    "id": "menu-model-picker",
    "title": "Composer model picker",
    "status": "matches",
-   "why": "diff 3.1% at t24, copy 97%",
+   "why": "diff 2.9% at t24, copy 97%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -2500,21 +2500,21 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_f4d15d9f63f9e6885c40730251a9b278108551aed7b5a98d173fbd9b4780274a"
+    "rea_evidence_id": "ev_862c08fb0308433d05a180b355a28a63ee79267df3b21c0fdd4528402aba87fe"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/chat-tabs-menu-model-picker.png",
     "error": null,
-    "note": "side-by-side lane at 892d5d095: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 01a7abeea: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": 0.999906631097561,
-    "changed_ratio_t24": 0.030846036585365853,
+    "changed_ratio_t0": 0.9999552210365854,
+    "changed_ratio_t24": 0.029360708841463416,
     "rea_evidence_ids": [
-     "ev_288023c70f4e2cd2e8be9cd999d3fb968f71b634c47707bda964c4afe5c333ad",
-     "ev_0d0db94d9ca5920cf828866cba9dd69566bb5d41f58ba723fe9469ef62aa2017"
+     "ev_e35dc2ada761873bbdda1482bae3e93af3c3b8fab91c729c51cbc65c6b451a62",
+     "ev_168e323876227be50d642ed12f74cb68df86aebb2aee29417c7cd2da4931bfd8"
     ]
    },
    "copy_coverage": 0.97,
@@ -2707,7 +2707,7 @@
    "id": "menu-chat-tab",
    "title": "Chat tab context menu",
    "status": "matches",
-   "why": "diff 3.5% at t24, copy 100%",
+   "why": "diff 3.4% at t24, copy 100%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -2718,21 +2718,21 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_a97ea67d46a61347003bb417a26994cc36db87500de20f9aa9286268315d7f0e"
+    "rea_evidence_id": "ev_eed8bbbc573f44d56f7cb4215ed774b8932b12127f953b521a57f59c3dc0cb70"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/chat-tabs-menu-chat-tab.png",
     "error": null,
-    "note": "side-by-side lane at 892d5d095: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 01a7abeea: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": 0.9549047256097561,
-    "changed_ratio_t24": 0.035063833841463415,
+    "changed_ratio_t0": 0.9549533155487805,
+    "changed_ratio_t24": 0.03362709603658537,
     "rea_evidence_ids": [
-     "ev_dfc8d5edf031f8436cfebd9ce066fe6bff86079af2462a9554318b6f62c37ad1",
-     "ev_d309494d1c3deeacb3a4bd68b1590727b7e5c96abb94a01f8f32ebb28d4fb5f6"
+     "ev_74f194092f42dbf73b2a4df8a0614d685000aecdea58e95d19d0f3ce594bc79d",
+     "ev_4dca016ed9a93bdc9aabfae5fe5e056a66300e66e7e770f2e6e6a2cc09d850f7"
     ]
    },
    "copy_coverage": 1.0,
@@ -2820,7 +2820,7 @@
    "id": "dialog-rename-chat",
    "title": "Rename chat dialog",
    "status": "matches",
-   "why": "diff 4.1% at t24, copy 100%",
+   "why": "diff 4.0% at t24, copy 100%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -2831,21 +2831,93 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_26069ffb562cfe2aa514f6854998ceabe952f10cf7f2bcefcec79199f769c672"
+    "rea_evidence_id": "ev_0b9d3fe6abd7b15102af6221d20bd855e1df5cb1a89774a2077522d4ffc7e1a3"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/chat-tabs-dialog-rename-chat.png",
     "error": null,
-    "note": "side-by-side lane at 892d5d095: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 01a7abeea: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 0.9999895198170732,
-    "changed_ratio_t24": 0.041317644817073174,
+    "changed_ratio_t24": 0.040426829268292684,
     "rea_evidence_ids": [
-     "ev_3905d7117a107c6eb0c953e6a986ed244ba302941558d9d099f200261577fc95",
-     "ev_ef8740650fc616dd9e3e68e12cea4547dcdb3844818393263be2cdc5d237d34e"
+     "ev_c9b1074fa883d9f6d17be2c3a4ea0b4f2e62564d71bcdac08abec98fb4b9d2c9",
+     "ev_5991b4156c2d580629d1c0b61f126a2f274ab794a5bb48c9a2a6a545b5d9975b"
+    ]
+   },
+   "copy_coverage": 1.0,
+   "copy_missing": []
+  },
+  {
+   "id": "dialog-reset-chat",
+   "title": "Reset chat? dialog",
+   "status": "matches",
+   "why": "diff 1.1% at t24, copy 97%",
+   "team": "chat",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/chat-tabs-dialog-reset-chat.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_8aa35cead64b426e3c3335f27f2187145315ecf3c6a80c4d8a27b804cf429c4d"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/chat-tabs-dialog-reset-chat.png",
+    "error": null,
+    "note": "side-by-side lane at 01a7abeea: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9971217606707317,
+    "changed_ratio_t24": 0.010834603658536585,
+    "rea_evidence_ids": [
+     "ev_e5bb2134941bdbbab737612c626f760f8529ad166fa85b14fea97ca81a0d4714",
+     "ev_4dd1b6b1083db9a909590cbef654ed4c37003b6e932889c1a9d1e6f4627b82bb"
+    ]
+   },
+   "copy_coverage": 0.971,
+   "copy_missing": [
+    "table of contents"
+   ]
+  },
+  {
+   "id": "empty-model-search",
+   "title": "Model picker, search with no match",
+   "status": "matches",
+   "why": "diff 3.7% at t24, copy 100%",
+   "team": "chat",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/chat-tabs-empty-model-search.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_6ceb39246ceff67bc499a33f3252cd0ee85e36144d90abc09bf108cc9509ba98"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/chat-tabs-empty-model-search.png",
+    "error": null,
+    "note": "side-by-side lane at 01a7abeea: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999552210365854,
+    "changed_ratio_t24": 0.037240853658536584,
+    "rea_evidence_ids": [
+     "ev_06d7b0d4a08e007931970ad1f63b0363c412a7a7c8cd0cb3b70850cf0f44fce4",
+     "ev_e16a9dc52167355947e353ef8e319f1fe91c95d14a6f534e51e9792da8ab676e"
     ]
    },
    "copy_coverage": 1.0,
@@ -2855,7 +2927,7 @@
    "id": "menu-review-edit",
    "title": "Review button menu (Edit before sending)",
    "status": "matches",
-   "why": "diff 2.9% at t24, copy 100%",
+   "why": "diff 2.8% at t24, copy 100%",
    "team": "git-review",
    "reference": {
     "status": "captured",
@@ -2866,21 +2938,21 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_5f075e51ef2b7fe4ea8f898cba1aa1bd63475780b6a60b86fe228cc6b6ff9e75"
+    "rea_evidence_id": "ev_c536500456b75fe40c27e775097808695dc6be6b9f5207accedab31bd1c7d23e"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/chat-tabs-menu-review-edit.png",
     "error": null,
-    "note": "side-by-side lane at 892d5d095: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 01a7abeea: tools/side-by-side/chat-tabs.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": 0.9999123475609756,
-    "changed_ratio_t24": 0.02916825457317073,
+    "changed_ratio_t0": 0.9999552210365854,
+    "changed_ratio_t24": 0.028008765243902438,
     "rea_evidence_ids": [
-     "ev_429514e50b681d43fec641b47ec1d6b10a2966e0c06fd4055469db36038fbe28",
-     "ev_6e70a9e0d326c028f7b5ce761234da664661ce797d4f86b29eba624847f999ad"
+     "ev_c53f6433e71554f86535748478bc5fe6dc14205b5a97b8917bd018fd3e6d9d7e",
+     "ev_703d81e9e40b442cf4da4ca9716de4c98ace290ec219f0aff2c02023509ba092"
     ]
    },
    "copy_coverage": 1.0,
@@ -3817,7 +3889,7 @@
    "kind": "route",
    "name": "/repository/$repositoryId/workspace/$localWorkspaceId",
    "status": "matches",
-   "why": "diff 2.6% at t24, copy 100%",
+   "why": "diff 2.4% at t24, copy 100%",
    "team": "chat",
    "component": "dXo",
    "source": {
@@ -3832,7 +3904,7 @@
    "reference_screenshot": "side-by-side/chat-tabs-workspace-chat.png",
    "openconductor_screenshot": "side-by-side/chat-tabs-workspace-chat.png",
    "diff": null,
-   "changed_ratio_t24": 0.025658346036585365
+   "changed_ratio_t24": 0.024214939024390245
   },
   {
    "id": "route:all-workspaces",
@@ -5424,8 +5496,8 @@
    "id": "dialog:reset-chat",
    "kind": "dialog",
    "name": "Reset chat?",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state dialog-reset-chat matches",
    "team": "chat",
    "component": "dDo",
    "source": {
@@ -5437,12 +5509,12 @@
     "Reset chat?"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "dialog-reset-chat",
+   "state_basis": "state covers it",
+   "reference_screenshot": "side-by-side/chat-tabs-dialog-reset-chat.png",
+   "openconductor_screenshot": "side-by-side/chat-tabs-dialog-reset-chat.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.010834603658536585,
    "primitive": "AlertDialogTitle",
    "dynamic": false
   },
@@ -7571,7 +7643,7 @@
    "reference_screenshot": "side-by-side/chat-tabs-menu-review-edit.png",
    "openconductor_screenshot": "side-by-side/chat-tabs-menu-review-edit.png",
    "diff": null,
-   "changed_ratio_t24": 0.02916825457317073,
+   "changed_ratio_t24": 0.028008765243902438,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -7765,7 +7837,7 @@
    "reference_screenshot": "side-by-side/chat-tabs-menu-chat-tab.png",
    "openconductor_screenshot": "side-by-side/chat-tabs-menu-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": 0.035063833841463415,
+   "changed_ratio_t24": 0.03362709603658537,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -7841,7 +7913,7 @@
    "reference_screenshot": "side-by-side/chat-tabs-menu-chat-tab.png",
    "openconductor_screenshot": "side-by-side/chat-tabs-menu-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": 0.035063833841463415,
+   "changed_ratio_t24": 0.03362709603658537,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -7945,7 +8017,7 @@
    "reference_screenshot": "side-by-side/chat-tabs-menu-chat-tab.png",
    "openconductor_screenshot": "side-by-side/chat-tabs-menu-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": 0.035063833841463415,
+   "changed_ratio_t24": 0.03362709603658537,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -8831,7 +8903,7 @@
    "reference_screenshot": "side-by-side/chat-tabs-menu-review-edit.png",
    "openconductor_screenshot": "side-by-side/chat-tabs-menu-review-edit.png",
    "diff": null,
-   "changed_ratio_t24": 0.02916825457317073,
+   "changed_ratio_t24": 0.028008765243902438,
    "primitive": "ContextMenuContent",
    "dynamic": true
   },
@@ -8934,7 +9006,7 @@
    "reference_screenshot": "side-by-side/chat-tabs-menu-chat-tab.png",
    "openconductor_screenshot": "side-by-side/chat-tabs-menu-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": 0.035063833841463415,
+   "changed_ratio_t24": 0.03362709603658537,
    "primitive": "ContextMenuContent",
    "dynamic": true
   },
@@ -20863,8 +20935,8 @@
    "id": "empty-state:no-models-found",
    "kind": "empty-state",
    "name": "No models found",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state empty-model-search matches",
    "team": "chat",
    "component": "A7o",
    "source": {
@@ -20876,12 +20948,12 @@
     "No models found"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "empty-model-search",
+   "state_basis": "state covers it",
+   "reference_screenshot": "side-by-side/chat-tabs-empty-model-search.png",
+   "openconductor_screenshot": "side-by-side/chat-tabs-empty-model-search.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.037240853658536584
   },
   {
    "id": "empty-state:no-changes-in-this-file",

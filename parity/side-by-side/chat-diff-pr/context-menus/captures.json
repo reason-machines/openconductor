@@ -1,0 +1,33 @@
+{
+  "review-button--dark": {
+    "theme": "dark",
+    "crop": [
+      900,
+      0,
+      540,
+      300
+    ],
+    "conductor": {
+      "file": "conductor-review-button--dark.png",
+      "sha256": "70a8130f02a31542af3322c5548636aaa1ee9913106799d6d2ceba4e2fb89510",
+      "evidence_id": "ev_49987f9f847c88f8e52b9f90fa81c2406bab844d2a71eee777fb8b44515dcc21",
+      "failed_steps": []
+    },
+    "ours": {
+      "file": "ours-review-button--dark.png",
+      "sha256": "1595bb9ae5cfb9b65a9821aeb32f3b15a97c5338a4da12ba4102bf271490a502",
+      "evidence_id": "ev_76d420b03a010ee1fd3cdcb88b6260dcce402d868b5b8657ca52f77f30c42de1",
+      "failed_steps": []
+    },
+    "compare_t24": {
+      "evidence_id": "ev_0ac66e3f21ce97363cfde334388a24d5538f2cd603f362165b4ee15d628e81fc",
+      "changed_pixel_ratio": 0.057275462962962966
+    },
+    "sbs": {
+      "file": "sbs-review-button--dark.png",
+      "sha256": "382c7cd04726bba7dc4c2ea89017d11d017253b2b695282dd558861517a542f9",
+      "evidence_id": "ev_875aab6326de4e5eea51e2ee674778b3ae10e6c16b5731c0d8d346e5b2c00e65",
+      "failed_steps": []
+    }
+  }
+}

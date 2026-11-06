@@ -30,7 +30,7 @@ Only `parity/ui-map.md`, `parity/ui-map.json` and `parity/ui-map/{inventory,comp
 
 Prerequisites: Conductor's decoded asset table at `.rea-work/dist` (`tools/extract_tauri_assets.py`; third-party code, never committed), REA (`npm i -g rea-agents`), Chromium, `npm ci` in `tools/screens`, and for the OpenConductor lane the same system packages as `.github/workflows/e2e.yml` (`libwebkit2gtk-4.1-dev`, `webkit2gtk-driver`, `xvfb`), `cargo install tauri-driver --locked`, and `npx tauri build --debug --no-bundle`. GPU-less Xvfb also needs `WEBKIT_DISABLE_DMABUF_RENDERER=1 WEBKIT_DISABLE_COMPOSITING_MODE=1`.
 
-The OpenConductor lane runs every state in a fresh app session on a copy of one seeded HOME (repos tide-web, tide-api, dotfiles; one workspace in tide-web with two uncommitted files; dark theme), with `HOME` pointed at a scratch dir so nothing touches the real home.
+The OpenConductor lane runs every state in a fresh app session on a copy of one seeded HOME (repos tide-web, tide-api, dotfiles with 3, 2 and 1 workspaces like the reference fixture, the open tide-web one with two uncommitted files; git identity Ada Demo <ada@example.com> as in `tools/screens/fixtures.js`; dark theme), with `HOME` pointed at a scratch dir so nothing touches the real home.
 
 Status rules and the REA gaps hit are at the top and bottom of the generated map.
 

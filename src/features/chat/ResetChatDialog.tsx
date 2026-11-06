@@ -8,7 +8,8 @@
 // toast host, so the same text shows in the dialog.
 
 import { useEffect, useState } from "react";
-import { Modal } from "../../components/Dialogs";
+import { CornerDownLeftIcon } from "../../components/menu/menuIcons";
+import { useDialogMotion } from "../../components/motion/dialogMotion";
 import { RESET_FILES_KEY, parseResetFilesPreference } from "./checkpoints.ts";
 
 interface Props {
@@ -32,6 +33,7 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
   const [count, setCount] = useState<{ state: "pending" } | { state: "success"; n: number } | { state: "error" }>({ state: "pending" });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const motionRef = useDialogMotion<HTMLDivElement>();
 
   useEffect(() => {
     let live = true;
@@ -63,18 +65,30 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
     });
   };
 
+  // Conductor's AlertDialog (renderApp @~1,984,000 bytes, `Im`/`Rm`/`Nm`/`Ag`/`Dm`): a centred
+  // `max-w-lg gap-4 p-6 rounded-xl` panel over `bg-overlay backdrop-blur-xs`, no close button,
+  // header `space-y-2` (text-lg title, text-sm muted description), footer `justify-end space-x-2`
+  // with an outline Cancel and a destructive Reset.
   return (
-    <Modal title="Reset chat?" onClose={onClose} motion="alert">
+    <div className="modal-backdrop oc-alert-backdrop" ref={motionRef} data-dialog-motion="alert" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div
-        className="modal-body oc-reset-chat"
+        className="oc-alert oc-reset-chat"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="reset-chat-title"
+        aria-describedby="reset-chat-desc"
         onKeyDown={(e) => {
+          if (e.key === "Escape") onClose();
           if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
             e.preventDefault();
             confirm();
           }
         }}
       >
-        <p>Later messages will be deleted.</p>
+        <div className="oc-alert-header">
+          <h2 id="reset-chat-title">Reset chat?</h2>
+          <p id="reset-chat-desc">Later messages will be deleted.</p>
+        </div>
         <label className="oc-reset-files">
           <input type="checkbox" aria-label="Also reset files" checked={resetFiles} onChange={(e) => toggle(e.target.checked)} />
           <span>Also reset files</span>
@@ -82,15 +96,20 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
           {count.state === "success" ? <span className="muted oc-reset-count">{count.n} changed</span> : null}
         </label>
         {error && <p className="error small">{error}</p>}
-        <div className="modal-actions">
-          <button className="btn" onClick={onClose}>
+        <div className="oc-alert-footer">
+          <button type="button" className="oc-alert-btn oc-alert-cancel" onClick={onClose}>
             Cancel
           </button>
-          <button className="btn oc-btn-danger" onClick={confirm} disabled={busy} autoFocus title="Reset (⌘↵)">
-            {busy ? "Resetting..." : "Reset"} {busy ? null : <span className="muted">⌘↵</span>}
+          <button type="button" className="oc-alert-btn oc-alert-destructive" data-primary-action onClick={confirm} disabled={busy} autoFocus title="Reset (⌘↵)">
+            {busy ? "Resetting..." : "Reset"} {busy ? null : (
+              // Conductor: `ml-2 inline-flex items-center opacity-60` with "⌘" and its 12px Enter icon (`gf`).
+              <span className="oc-alert-kbd">
+                ⌘<CornerDownLeftIcon className="oc-alert-enter" />
+              </span>
+            )}
           </button>
         </div>
       </div>
-    </Modal>
+    </div>
   );
 }

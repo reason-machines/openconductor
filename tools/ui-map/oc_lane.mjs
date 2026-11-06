@@ -12,8 +12,9 @@
 // `reason` (Conductor's reference turns "lisbon" and "tallinn").
 //
 // Every state starts from a fresh app session on a copy of one seeded HOME:
-// onboarding done, repos tide-web, tide-api and dotfiles added, one workspace
-// in tide-web, theme dark. The app's HOME is pointed at the scratch dir, so
+// onboarding done, repos tide-web, tide-api and dotfiles added with 3, 2 and 1
+// workspaces like the reference fixture (a tide-web one open), git identity Ada
+// Demo <ada@example.com>, theme dark. The app's HOME is pointed at the scratch dir, so
 // conductor.db, settings.toml and worktrees never touch the real home.
 import { execFileSync, spawn } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -30,6 +31,10 @@ const states = JSON.parse(readFileSync(join(here, "states.json"), "utf8")).state
 const only = process.argv.slice(2);
 const home = join(run, "home");
 const template = join(run, "home.template");
+// The fixture repositories, kept like HOME: a state that archives a workspace (sidebar-after-archive)
+// removes its git worktree from them, which would break every later state on that workspace.
+const repos = join(run, "repos");
+const reposTemplate = join(run, "repos.template");
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const sha256 = (b) => createHash("sha256").update(b).digest("hex");
 const git = (cwd, ...a) => execFileSync("git", a, { cwd, stdio: "pipe" });
@@ -122,6 +127,9 @@ async function seed(wd) {
   rmSync(run, { recursive: true, force: true });
   mkdirSync(join(home, ".openconductor"), { recursive: true });
   writeFileSync(join(home, ".openconductor", "settings.toml"), '[general]\ntheme = "dark"\n');
+  // The reference fixture's person (tools/screens/fixtures.js): the sidebar's Account row reads
+  // "<git user.name>'s Mac" and its menu heads with git user.email when the OS account has no name.
+  writeFileSync(join(home, ".gitconfig"), "[user]\n\tname = Ada Demo\n\temail = ada@example.com\n");
   await session(wd, async () => {
     await wd.waitFor("first-run onboarding", async () => (await wd.findAll(".onb-continue")).length > 0, 30000);
     await wd.click((await wd.findAll(".onb-continue"))[0]);
@@ -131,14 +139,24 @@ async function seed(wd) {
       await wd.click((await wd.findAll(".home-card"))[0]);
       await wd.waitFor(`${name} in the sidebar`, () => wd.execute("return Array.from(document.querySelectorAll('.sb-repo-name'), (e) => e.textContent.trim()).includes(arguments[0]);", [name]));
     }
-    const [add] = await wd.findAll('.sb-repo-add[aria-label="Create workspace in tide-web"]');
-    await wd.click(add);
-    const [submit] = await wd.waitFor("Create workspace dialog", () => wd.findAll('form.create-ws button[type="submit"]').then((ids) => ids.length && ids));
-    await wd.click(submit);
-    await wd.waitFor("workspace view", async () => (await wd.findAll(".workspace")).length > 0, 60000);
-    // Uncommitted changes in the new worktree, so the Changes panel and diff views have content.
-    const tide = join(run, "repos", "tide-web");
-    const tree = git(tide, "worktree", "list", "--porcelain").toString().match(/^worktree (.+)$/gm).map((l) => l.slice(9)).find((p) => p !== tide);
+    // As many workspaces per repository as the reference fixture (tools/screens/seed-data.js:
+    // tide-web 3, tide-api 2, dotfiles 1), so folded groups show the same counts. tide-web's
+    // last one is created last and stays open.
+    const trees = (name) => git(join(run, "repos", name), "worktree", "list", "--porcelain").toString().match(/^worktree (.+)$/gm).map((l) => l.slice(9));
+    const create = async (name) => {
+      const before = trees(name);
+      const [add] = await wd.findAll(`.sb-repo-add[aria-label="Create workspace in ${name}"]`);
+      await wd.click(add);
+      const [submit] = await wd.waitFor("Create workspace dialog", () => wd.findAll('form.create-ws button[type="submit"]').then((ids) => ids.length && ids));
+      await wd.click(submit);
+      const tree = await wd.waitFor(`a new ${name} worktree`, async () => trees(name).find((p) => !before.includes(p)), 60000);
+      await wd.waitFor("workspace view", async () => (await wd.findAll(".workspace")).length > 0, 60000);
+      await sleep(1000);
+      return tree;
+    };
+    for (const name of ["dotfiles", "tide-api", "tide-api", "tide-web", "tide-web"]) await create(name);
+    // Uncommitted changes in the open worktree, so the Changes panel and diff views have content.
+    const tree = await create("tide-web");
     if (tree) {
       mkdirSync(join(tree, "src", "lib"), { recursive: true });
       writeFileSync(join(tree, "src", "lib", "auth.ts"), "export function redirectAfterLogin(next?: string) {\n  return next && next.startsWith('/') ? next : '/';\n}\n");
@@ -147,6 +165,7 @@ async function seed(wd) {
     await sleep(1500);
   });
   cpSync(home, template, { recursive: true });
+  cpSync(repos, reposTemplate, { recursive: true });
 }
 
 const DOM_TEXT = `
@@ -166,7 +185,9 @@ const laneBin = join(home, ".oc-lane-bin");
 const fakeReason = join(repoRoot, "tools/reason-acp/fake_reason_acp.py");
 const driver = spawn(process.env.TAURI_DRIVER ?? "tauri-driver", [], {
   stdio: ["ignore", "ignore", "inherit"],
-  env: { ...process.env, HOME: home, XDG_DATA_HOME: join(home, ".local/share"), XDG_CONFIG_HOME: join(home, ".config"), XDG_CACHE_HOME: join(home, ".cache"), PATH: `${laneBin}:${process.env.PATH}` },
+  // GIT_CONFIG_GLOBAL too: a host that sets it (Reason cloud computers do) would otherwise hand
+  // the app its own git identity instead of the seeded HOME's.
+  env: { ...process.env, HOME: home, XDG_DATA_HOME: join(home, ".local/share"), XDG_CONFIG_HOME: join(home, ".config"), XDG_CACHE_HOME: join(home, ".cache"), GIT_CONFIG_GLOBAL: join(home, ".gitconfig"), PATH: `${laneBin}:${process.env.PATH}` },
 });
 const wd = new WebDriver();
 const manifestPath = join(out, "oc-captures.json");
@@ -175,7 +196,7 @@ mkdirSync(join(out, "oc"), { recursive: true });
 let failures = 0;
 try {
   await wd.waitFor("tauri-driver on :4444", async () => (await fetch("http://127.0.0.1:4444/status")).ok, 20000);
-  if (!existsSync(template) || process.env.UIMAP_RESEED) await seed(wd);
+  if (!existsSync(template) || !existsSync(reposTemplate) || process.env.UIMAP_RESEED) await seed(wd);
   for (const st of states) {
     if (only.length && !only.includes(st.id)) continue;
     if (!st.oc) {
@@ -186,7 +207,11 @@ try {
     if (st.oc_fresh) {
       mkdirSync(join(home, ".openconductor"), { recursive: true });
       writeFileSync(join(home, ".openconductor", "settings.toml"), '[general]\ntheme = "dark"\n');
-    } else cpSync(template, home, { recursive: true });
+    } else {
+      cpSync(template, home, { recursive: true });
+      rmSync(repos, { recursive: true, force: true });
+      cpSync(reposTemplate, repos, { recursive: true });
+    }
     if (st.oc_fake_reason) {
       mkdirSync(laneBin, { recursive: true });
       writeFileSync(join(laneBin, "reason"), `#!/bin/sh\nexec python3 "${fakeReason}" "$@"\n`, { mode: 0o755 });

@@ -45,7 +45,8 @@ test("recent workspaces persist across a reload, most recent first", async () =>
     localStorage.setItem("openconductor.firstRunOnboardingStep", "999");
     if (localStorage.getItem("openconductor.shell.v1")) return;
     const ws = (id, name) => ({ id, name, branch: name, status: "idle", diff: { added: 0, removed: 0 }, createdAt: 1 });
-    const repos = [{ id: "r1", name: "web", path: "/code/web", defaultBranch: "main", workspaces: [ws("w1", "alpha"), ws("w2", "bravo"), ws("w3", "charlie"), ws("w4", "delta")] }];
+    // Unfolded by hand: an untoggled group is folded on Home, and ⌘1..9 number only the rows on screen.
+    const repos = [{ id: "r1", name: "web", path: "/code/web", defaultBranch: "main", collapsed: false, workspaces: [ws("w1", "alpha"), ws("w2", "bravo"), ws("w3", "charlie"), ws("w4", "delta")] }];
     localStorage.setItem("openconductor.shell.v1", JSON.stringify({ repos, selection: { kind: "home" } }));
   });
   const page = await context.newPage();

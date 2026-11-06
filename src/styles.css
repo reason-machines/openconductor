@@ -117,7 +117,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 /* Conductor's Button keeps its icon at full size ([&_svg]:shrink-0): the size-4 plus is 16px, not squeezed by the padding. */
 .sb-repo-add svg { flex: none; }
 .sb-repo-menu { right: 36px; }
-.ws-empty { color: var(--sidebar-muted-foreground); margin: 0; padding: 4px 6px 4px 26px; font-size: 12px; }
 /* Workspace rows, after Conductor's `wFi`: py-2 pr-1.5 pl-5 rounded-md, hover and selected bg-sidebar-accent,
    a size-4 leading status icon (mt-0.5 mr-0.5; the branch icon, size-3.5 muted, for a plain branch),
    name font-450 muted, or semibold accent-foreground when unread, and a text-2xs px-1 diff that is
@@ -292,9 +291,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .review-action .error { color: var(--destructive); font-size: 12px; }
 .tabs .review-button { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border: 1px solid transparent; border-radius: 6px; color: var(--accent); font-weight: 500; }
 .tabs .review-button:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
-.review-menu { position: fixed; z-index: 60; width: 180px; box-sizing: border-box; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px var(--shadow-18); }
-.review-menu button { display: block; width: 100%; padding: 6px 10px; border: 0; border-radius: 5px; text-align: left; color: var(--text); font-weight: 400; }
-.review-menu button:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
 .review-chat-info { padding: 8px 16px; font-size: 12px; border-bottom: 1px dashed var(--border); }
 .tab-count { margin-left: 4px; font-size: 11px; color: var(--muted); }
 .chat-scroll[hidden] { display: none; }
