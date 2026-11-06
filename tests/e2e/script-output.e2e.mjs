@@ -45,6 +45,10 @@ for (const kind of ["setup", "run"]) {
       await tab(kind).click();
       await page.waitForFunction(() => document.querySelector(".script-output .xterm-rows")?.textContent.includes("Live update"));
       await page.setViewportSize({ width: 1000, height: 760 });
+      await page.waitForFunction(() => {
+        const element = document.querySelector(".script-output");
+        return element && element.scrollWidth <= element.clientWidth;
+      }, null, { timeout: 3000 });
       assert.equal(await output.evaluate((el) => el.scrollWidth <= el.clientWidth), true);
       if (kind === "setup") {
         await page.evaluate(() => window.__scriptOutputTest.finish());

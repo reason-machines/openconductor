@@ -75,8 +75,7 @@ export function ScriptOutput({ output }: { output: string }) {
     if (!term) return;
     const update = outputUpdate(written.current, output);
     written.current = output;
-    if (update.reset) term.reset();
-    if (update.data) term.write(update.data);
+    if (update.reset || update.data) term.write(`${update.reset ? "\x1bc" : ""}${update.data}`);
   }, [output]);
 
   return <div className="script-output" role="region" aria-label="Script output" ref={host} />;
