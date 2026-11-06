@@ -40,7 +40,7 @@ test("cloud and organization routes need a cloud org, so they open General", () 
 });
 
 test("with a Reason workspace active, the organization pages open (Conductor's PI routes)", () => {
-  const org = { ...ctx, organization: true };
+  const org = { ...ctx, organization: true, experimentalCloudUI: true };
   for (const page of ORG_PAGES) assert.equal(at(`/settings/organization/${page}`, org), `/settings/organization/${page}`);
   // `pCa` and `REa` redirect to Cloud computer, `xCa` to MCP.
   assert.equal(at("/settings/organization", org), "/settings/organization/computer");
@@ -59,10 +59,11 @@ test("with a Reason workspace active, the organization pages open (Conductor's P
   assert.equal(settingsDeepLink({ scope: "org", page: "members" }), "openconductor://settings/organization/members");
 });
 
-test("Cloud setup has its own route, outside /settings/user", () => {
-  assert.equal(at("/settings/cloud/setup"), "/settings/cloud/setup");
-  assert.equal(at("/settings/cloud/setup/"), "/settings/cloud/setup");
-  assert.equal(at("/settings/cloud"), "/settings/cloud/setup");
+test("opted-in Cloud setup has its own route, outside /settings/user", () => {
+  const optedIn = { ...ctx, experimentalCloudUI: true };
+  assert.equal(at("/settings/cloud/setup", optedIn), "/settings/cloud/setup");
+  assert.equal(at("/settings/cloud/setup/", optedIn), "/settings/cloud/setup");
+  assert.equal(at("/settings/cloud", optedIn), "/settings/cloud/setup");
   assert.equal(at("/settings/user/setup-cloud"), "/settings/user/general");
   assert.ok(!(CLOUD_ONLY_ROUTES as readonly string[]).includes("/settings/cloud/setup"));
   assert.equal(settingsDeepLink({ scope: "user", page: "setup-cloud" }).endsWith("://settings/cloud/setup"), true);
@@ -89,7 +90,7 @@ test("the /settings index redirect (?tab=, ?repoId=)", () => {
   assert.equal(at("/settings?tab=appearance"), "/settings/user/appearance");
   assert.equal(at("/settings?tab=providers&providerTab=codex"), "/settings/user/providers");
   assert.equal(at("/settings?tab=organization-prompts"), "/settings/user/general");
-  assert.equal(at("/settings?tab=setup-cloud"), "/settings/cloud/setup");
+  assert.equal(at("/settings?tab=setup-cloud"), "/settings/user/general");
   assert.equal(at("/settings?tab=unknown"), "/settings/user/general");
   assert.equal(at("/settings?tab=repo-r2"), "/settings/repos/r2/misc");
   assert.equal(at("/settings?tab=scripts&repoId=r2"), "/settings/repos/r2/scripts");

@@ -50,7 +50,27 @@ Raw retained rows: 983. Excluded rows: 644. The in-scope queue includes two addi
 - **Command palette**: harness-only in retained evidence (7/7 state matches); final review **unverified**. Threshold matches are retained evidence, not a current native final-review verdict.
 - **Dialogs**: partial in retained evidence (8/10 state matches); final review **unverified**. Captured dialogs are a subset. Onboarding and unlocated dialogs remain separately visible.
 
-### By owning team
+## Supplemental evidence
+
+Ledger reconciled against main `9d1a106a7d9206d01a57a76ce2e62723584369e5`. This is not a new capture identity. Supplemental crops do not replace full-state scores, change the denominator, or sign off native parity.
+
+- **shell-actions-722 (partial)**: Repository actions menu crop matches exactly at thresholds 0 and 24. The larger Home and sidebar comparisons remain partial. This adds supplemental evidence, not whole-state matches or native sign-off. [Merged PR](https://github.com/reason-machines/openconductor/pull/722), [evidence](../evidence/shell-actions/README.md). Lane: REA captures of the extracted Conductor frontend and OpenConductor in Chromium, mocked IPC, synthetic populated fixture, 1280x820 dark, Stone palette
+  - Only the 169x179 menu crop at x45/y247 is exact; it does not replace the map's full-state comparisons.
+  - Home active state and sidebar trigger styling still differ; Home branding, city catalogue, card icons and footer differ.
+  - The selected Stone palette is not the default Neutral palette; default palette parity was not exercised.
+  - Native macOS, Tauri/WebKit, light theme and section-menu interaction were not run in this evidence pass.
+- **turn-changes-718 (partial)**: Compact completed-turn footer and first reveal match in control layout and behavior at the same measured 421.328125px footer width and 20px initial height. No full-workspace or pixel-percentage match is claimed. [Merged PR](https://github.com/reason-machines/openconductor/pull/718), [evidence](../evidence/chat/responsive/README.md). Lane: REA Chromium captures of the identity-checked extracted Conductor frontend and actual OpenConductor Transcript/TurnChanges components, mocked IPC, 1000x820 dark
+  - Unmodified crops retain the differing timestamp and Neutral palette; those fields are not verified as matching.
+  - Native workspace/chat, permission and tab behavior were not freshly exercised by this frontend-only proof.
+  - Turn-usage hover remains missing; current wire data has no token-usage counts.
+  - Known REA missing-screenshot locator diagnostics and geometry limits remain recorded in the area README; DOM geometry was measured separately.
+- **cloud-ui-gate-723 (browser-only)**: Default-off, explicit persisted opt-in and opt-out pass for sidebar/account/settings/direct and legacy routes/palette. Existing cloud implementation is retained; Reason local/cloud runtime is not gated. This verifies the OpenConductor scope decision, not new Conductor parity. [Merged PR](https://github.com/reason-machines/openconductor/pull/723), [evidence](../evidence/cloud-ui-gate/README.md). Lane: Production frontend build in an isolated browser, synthetic signed-in Reason/org IPC, preference writes in fixture localStorage; focused actual Rust table-preference tests
+  - Preference persistence across browser document loads is fixture persistence, not native app SQLite verification.
+  - No installed native Mac run or real signed-in Mac-to-cloud chat was exercised.
+  - The gate requirement and all nine native final-review verdicts remain unverified; deferred cloud UI stays excluded from the denominator.
+  - The pre-existing broad settings test-harness problem remains separately tracked as issue #720.
+
+## By owning team
 
 Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign there and regenerate). Counts include states and items.
 

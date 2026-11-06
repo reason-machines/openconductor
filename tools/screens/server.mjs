@@ -103,4 +103,4 @@ const server = http.createServer((req, res) => {
   return send(res, 200, MIME[".html"], indexHtml(scenario));
 });
 
-server.listen(PORT, "127.0.0.1", () => console.log(`screens harness on http://localhost:${PORT} (dist ${DIST})`));
+server.listen(PORT, process.env.HOST ?? "127.0.0.1", () => console.log(`screens harness on http://localhost:${PORT} (dist ${DIST})`));

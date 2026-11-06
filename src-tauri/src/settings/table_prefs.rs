@@ -126,6 +126,7 @@ pub const PREFS: &[Pref] = &[
     ),
     b(Section::Experimental, "experimental_show_workspace_numbers"),
     b(Section::Experimental, "internal_workspace_status_matrix"),
+    b(Section::Experimental, "experimental_cloud_ui"),
     b(Section::Experimental, "experimental_cloud_desktop"),
     b(Section::Experimental, "local_git_forge_enabled"),
     b(Section::Experimental, "voice_mode"),
@@ -278,6 +279,33 @@ mod tests {
         keys.sort();
         keys.dedup();
         assert_eq!(keys.len(), PREFS.len());
+    }
+
+    #[test]
+    fn cloud_ui_opt_in_round_trips_and_is_absent_for_existing_users() {
+        let mut settings = Settings::default();
+        overlay(&mut settings, &rows(&[("voice_mode", "true")]));
+        assert_eq!(
+            settings.experimental.extra.get("experimental_cloud_ui"),
+            None
+        );
+        settings
+            .experimental
+            .extra
+            .insert("experimental_cloud_ui".into(), Value::Boolean(true));
+        let saved = changes(&settings, &rows(&[("voice_mode", "true")])).unwrap();
+        assert_eq!(saved, vec![("experimental_cloud_ui", "true".to_string())]);
+        let mut reloaded = Settings::default();
+        overlay(&mut reloaded, &rows(&[("experimental_cloud_ui", "true")]));
+        assert_eq!(
+            reloaded.experimental.extra.get("experimental_cloud_ui"),
+            Some(&Value::Boolean(true))
+        );
+        overlay(&mut reloaded, &rows(&[("experimental_cloud_ui", "false")]));
+        assert_eq!(
+            reloaded.experimental.extra.get("experimental_cloud_ui"),
+            Some(&Value::Boolean(false))
+        );
     }
 
     #[test]

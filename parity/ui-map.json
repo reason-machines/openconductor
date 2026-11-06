@@ -32059,6 +32059,77 @@
    "verification": "unverified"
   }
  ],
+ "supplemental_evidence": {
+  "source_main_commit": "9d1a106a7d9206d01a57a76ce2e62723584369e5",
+  "records": [
+   {
+    "id": "shell-actions-722",
+    "areas": [
+     "home",
+     "sidebar"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/722",
+    "merge_commit": "f38542464fa830a953e70541b6fbccb62fff2e3c",
+    "evidence_path": "evidence/shell-actions/README.md",
+    "capture_manifests": [
+     "evidence/shell-actions/captures.json"
+    ],
+    "lane": "REA captures of the extracted Conductor frontend and OpenConductor in Chromium, mocked IPC, synthetic populated fixture, 1280x820 dark, Stone palette",
+    "summary": "Repository actions menu crop matches exactly at thresholds 0 and 24. The larger Home and sidebar comparisons remain partial. This adds supplemental evidence, not whole-state matches or native sign-off.",
+    "limits": [
+     "Only the 169x179 menu crop at x45/y247 is exact; it does not replace the map's full-state comparisons.",
+     "Home active state and sidebar trigger styling still differ; Home branding, city catalogue, card icons and footer differ.",
+     "The selected Stone palette is not the default Neutral palette; default palette parity was not exercised.",
+     "Native macOS, Tauri/WebKit, light theme and section-menu interaction were not run in this evidence pass."
+    ]
+   },
+   {
+    "id": "turn-changes-718",
+    "areas": [
+     "workspace-chat"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/718",
+    "merge_commit": "9d1a106a7d9206d01a57a76ce2e62723584369e5",
+    "evidence_path": "evidence/chat/responsive/README.md",
+    "capture_manifests": [
+     "evidence/chat/responsive/reference.json",
+     "evidence/chat/responsive/openconductor.json"
+    ],
+    "lane": "REA Chromium captures of the identity-checked extracted Conductor frontend and actual OpenConductor Transcript/TurnChanges components, mocked IPC, 1000x820 dark",
+    "summary": "Compact completed-turn footer and first reveal match in control layout and behavior at the same measured 421.328125px footer width and 20px initial height. No full-workspace or pixel-percentage match is claimed.",
+    "limits": [
+     "Unmodified crops retain the differing timestamp and Neutral palette; those fields are not verified as matching.",
+     "Native workspace/chat, permission and tab behavior were not freshly exercised by this frontend-only proof.",
+     "Turn-usage hover remains missing; current wire data has no token-usage counts.",
+     "Known REA missing-screenshot locator diagnostics and geometry limits remain recorded in the area README; DOM geometry was measured separately."
+    ]
+   },
+   {
+    "id": "cloud-ui-gate-723",
+    "areas": [
+     "settings"
+    ],
+    "requirement_ids": [
+     "deferred-ui-default-off"
+    ],
+    "verdict": "browser-only",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/723",
+    "merge_commit": "4c52a6c1ab85844e71db3a3fce4bd6d3a2388a9d",
+    "evidence_path": "evidence/cloud-ui-gate/README.md",
+    "capture_manifests": [],
+    "lane": "Production frontend build in an isolated browser, synthetic signed-in Reason/org IPC, preference writes in fixture localStorage; focused actual Rust table-preference tests",
+    "summary": "Default-off, explicit persisted opt-in and opt-out pass for sidebar/account/settings/direct and legacy routes/palette. Existing cloud implementation is retained; Reason local/cloud runtime is not gated. This verifies the OpenConductor scope decision, not new Conductor parity.",
+    "limits": [
+     "Preference persistence across browser document loads is fixture persistence, not native app SQLite verification.",
+     "No installed native Mac run or real signed-in Mac-to-cloud chat was exercised.",
+     "The gate requirement and all nine native final-review verdicts remain unverified; deferred cloud UI stays excluded from the denominator.",
+     "The pre-existing broad settings test-harness problem remains separately tracked as issue #720."
+    ]
+   }
+  ]
+ },
  "raw_summary": {
   "total": 983,
   "missing": 710,
@@ -32235,7 +32306,8 @@
     "toast-xcode-license",
     "toast-save-setting-failed",
     "toast-copied-link"
-   ]
+   ],
+   "supplemental_evidence": []
   },
   {
    "id": "deferred-ui-default-off",
@@ -32245,7 +32317,10 @@
    "scope": "in-scope",
    "scope_reason": "Deferred implementation stays behind an Experimental setting, off by default.",
    "status": "unverified",
-   "why": "Verify Routines, team, triage and organization entry points are hidden by default and available only through the explicit Experimental setting. Gate owner is implementing separately."
+   "why": "Verify native default-off gating and persisted Experimental opt-in for Routines, team, triage and organization entry points. Browser-only proof, when available, is recorded separately as supplemental evidence.",
+   "supplemental_evidence": [
+    "cloud-ui-gate-723"
+   ]
   }
  ],
  "excluded_summary": {
@@ -32299,7 +32374,10 @@
     "home-empty",
     "home"
    ],
-   "gap": "Current native side-by-side and final review not recorded."
+   "gap": "Current native side-by-side and final review not recorded.",
+   "supplemental_evidence": [
+    "shell-actions-722"
+   ]
   },
   "sidebar": {
    "title": "Sidebar",
@@ -32316,7 +32394,10 @@
     "all-workspaces",
     "sidebar-after-archive"
    ],
-   "gap": "Expanded, collapsed and populated sidebar details need current native review."
+   "gap": "Expanded, collapsed and populated sidebar details need current native review.",
+   "supplemental_evidence": [
+    "shell-actions-722"
+   ]
   },
   "workspace-chat": {
    "title": "Workspace / chat",
@@ -32336,7 +32417,10 @@
     "needs-permission",
     "menu-chat-tab"
    ],
-   "gap": "Transcript, permission state and workspace header need current native review."
+   "gap": "Transcript, permission state and workspace header need current native review.",
+   "supplemental_evidence": [
+    "turn-changes-718"
+   ]
   },
   "composer": {
    "title": "Composer",
@@ -32356,7 +32440,8 @@
     "empty-model-search",
     "menu-review-edit"
    ],
-   "gap": "These states cover create and picker controls, not the full workspace composer."
+   "gap": "These states cover create and picker controls, not the full workspace composer.",
+   "supplemental_evidence": []
   },
   "diff-changes": {
    "title": "Diff / changes",
@@ -32375,7 +32460,8 @@
     "diff-entire-file",
     "menu-changes-file"
    ],
-   "gap": "All files, Checks and current native diff review remain separate requirements."
+   "gap": "All files, Checks and current native diff review remain separate requirements.",
+   "supplemental_evidence": []
   },
   "settings": {
    "title": "Settings pages",
@@ -32409,7 +32495,10 @@
     "settings-repo-misc-lower",
     "settings-search"
    ],
-   "gap": "Only local settings are in scope. Per-page captures do not prove native final parity."
+   "gap": "Only local settings are in scope. Per-page captures do not prove native final parity.",
+   "supplemental_evidence": [
+    "cloud-ui-gate-723"
+   ]
   },
   "open-in": {
    "title": "Open in",
@@ -32423,7 +32512,8 @@
     "unverified": 0
    },
    "state_ids": [],
-   "gap": "No dedicated paired state in this map. Static evidence is not a visual match."
+   "gap": "No dedicated paired state in this map. Static evidence is not a visual match.",
+   "supplemental_evidence": []
   },
   "palette": {
    "title": "Command palette",
@@ -32445,7 +32535,8 @@
     "palette-search",
     "palette-no-results"
    ],
-   "gap": "Threshold matches are retained evidence, not a current native final-review verdict."
+   "gap": "Threshold matches are retained evidence, not a current native final-review verdict.",
+   "supplemental_evidence": []
   },
   "dialogs": {
    "title": "Dialogs",
@@ -32470,7 +32561,8 @@
     "dialog-rename-chat",
     "dialog-reset-chat"
    ],
-   "gap": "Captured dialogs are a subset. Onboarding and unlocated dialogs remain separately visible."
+   "gap": "Captured dialogs are a subset. Onboarding and unlocated dialogs remain separately visible.",
+   "supplemental_evidence": []
   }
  }
 }
