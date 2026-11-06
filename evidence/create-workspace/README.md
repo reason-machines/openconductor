@@ -171,3 +171,19 @@ REA gaps:
 
 - `rea trace-javascript-semantics` needs `analyze-javascript-application` Evidence for this chunk; looking up the saved Evidence on the Mac through `devices exec` timed out at the 60 s cap, so the functions above come from reading the REA-extracted chunk as text, not a REA semantic trace.
 - The decoded copy in Session a4283992's checkout was not reachable from this Session's cloud machine; the same file (same sha256 as `evidence/pr/NOTES.md`) was read on the Mac instead.
+
+## Create starts on the sidebar's project filter
+
+REA: decoded `renderApp-D_fmY7hW.js` from `/Applications/Conductor.app` on
+"sven m5 max", read as data. The composer `oya` (~11,036,000) reads
+`sidebar_repo_filter` and hands it to `K4a`, whose resolver `q4a`
+(~11,027,112) picks the first available of: the requested repository, the
+last repository chosen in the composer (`dispatcher-state-v1`
+`lastRepositoryIdByOrg`), the composer's current one, the sidebar filter, then
+the first repository. `g5` only forwards what its caller passes.
+
+Ours (`createRepoDefault` in `src/home/repoFilter.ts`, called from `openDialog`
+in `src/App.tsx`): requested repository (the caller's, else the open
+workspace's), then the sidebar filter, then the first repository. Deliberate
+difference: OpenConductor does not remember a last-chosen composer repository
+yet, so that step is skipped.
