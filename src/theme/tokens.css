@@ -859,26 +859,17 @@
   --terminal-preview-bg: #000000;
   --terminal-preview-fg: #4ade80;
   /* Conductor's own Stone values, fixed in every palette: right-click menus
-     (src/components/menu/contextMenu.css) and Settings > Agents / Default models
-     (src/settings/agents/agents.css) copy Conductor's look whatever palette is chosen. */
+     (src/components/menu/contextMenu.css) and popover menus (src/components/popoverMenu.css)
+     copy Conductor's look whatever palette is chosen. Settings > Agents / Default models use
+     the palette tokens, and npm run lint:colors fails any new hued colour under Neutral. */
   --conductor-popover: #ffffff;
   --conductor-popover-fg: #211e1c;
   --conductor-popover-accent: #14100f0d;
   --conductor-popover-ring: #211e1c0d;
-  --conductor-accent: #fafaf9;
   --conductor-accent-fg: #2c2826;
-  --conductor-muted: #fafaf9;
   --conductor-muted-fg: #8e8885;
   --conductor-fg: #2c2826;
-  --conductor-bg: #fff;
   --conductor-border: #eae8e6;
-  --conductor-input: #14100f1a;
-  --conductor-primary: #413030;
-  --conductor-primary-fg: #f3f2f1;
-  --conductor-tip: #fff;
-  --conductor-tip-fg: #413030;
-  --conductor-ring: #2c2826;
-  --conductor-tab-underline: #cca694;
   --conductor-slot-icon: #c8664a;
   --conductor-menu-shadow: #0000001a;
   --conductor-status-backlog: #8e8885;
@@ -902,19 +893,10 @@
   --conductor-popover-fg: #eae8e6;
   --conductor-popover-accent: #ffffff0d;
   --conductor-popover-ring: #ffffff1a;
-  --conductor-accent: #2c2826;
   --conductor-accent-fg: #f3f2f1;
-  --conductor-muted: #211e1c;
   --conductor-muted-fg: #a5a09c;
   --conductor-fg: #eae8e6;
-  --conductor-bg: #141110;
   --conductor-border: #ffffff1a;
-  --conductor-input: #fff3;
-  --conductor-primary: #f3f2f1;
-  --conductor-primary-fg: #2c2826;
-  --conductor-tip: #413030;
-  --conductor-tip-fg: #fff;
-  --conductor-ring: #bcb6b3;
   --conductor-status-in-progress: #ffdc2e;
   --unread: #cca694;
   --diff-del: #f85149;
@@ -947,19 +929,10 @@
     --conductor-popover-fg: #eae8e6;
     --conductor-popover-accent: #ffffff0d;
     --conductor-popover-ring: #ffffff1a;
-    --conductor-accent: #2c2826;
     --conductor-accent-fg: #f3f2f1;
-    --conductor-muted: #211e1c;
     --conductor-muted-fg: #a5a09c;
     --conductor-fg: #eae8e6;
-    --conductor-bg: #141110;
     --conductor-border: #ffffff1a;
-    --conductor-input: #fff3;
-    --conductor-primary: #f3f2f1;
-    --conductor-primary-fg: #2c2826;
-    --conductor-tip: #413030;
-    --conductor-tip-fg: #fff;
-    --conductor-ring: #bcb6b3;
     --conductor-status-in-progress: #ffdc2e;
     --unread: #cca694;
     --diff-del: #f85149;

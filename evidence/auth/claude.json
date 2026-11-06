@@ -1,0 +1,84 @@
+{
+  "agent": "claude",
+  "app_commit": "this PR's branch on main 1f599d7 (local commit 378a30a)",
+  "host": {
+    "os": "macOS-26.4-arm64-arm-64bit",
+    "machine": "arm64"
+  },
+  "cli_version": "2.1.319 (Claude Code)",
+  "cli_auth_in_throwaway_home": {
+    "loggedIn": true,
+    "authMethod": "claude.ai",
+    "apiProvider": "firstParty",
+    "subscriptionType": "max"
+  },
+  "started": "2026-11-06T13:45:44.844Z",
+  "ended": "2026-11-06T13:45:55.967Z",
+  "error": null,
+  "modes": [
+    {
+      "mode": "import",
+      "card": "CLI",
+      "set_in_app": false,
+      "stored": {
+        "provider": null,
+        "config": null
+      },
+      "connected": true,
+      "login_prompt": false,
+      "key_fingerprint": null,
+      "turn": {
+        "status": "failed",
+        "error": "You've hit your weekly limit · resets Nov 11 at 1am (America/Los_Angeles)",
+        "signInNotice": null,
+        "reply": null,
+        "seconds": 2
+      },
+      "result": "fail"
+    },
+    {
+      "mode": "subscription",
+      "card": "CLI",
+      "set_in_app": true,
+      "stored": {
+        "provider": null,
+        "config": null
+      },
+      "connected": true,
+      "login_prompt": false,
+      "key_fingerprint": null,
+      "turn": {
+        "status": "failed",
+        "error": "You've hit your weekly limit · resets Nov 11 at 1am (America/Los_Angeles)",
+        "signInNotice": null,
+        "reply": null,
+        "seconds": 2
+      },
+      "result": "fail"
+    },
+    {
+      "mode": "apikey",
+      "card": "API key",
+      "set_in_app": true,
+      "stored": {
+        "provider": null,
+        "config": {
+          "kind": "anthropic_api",
+          "auth": "api_key"
+        }
+      },
+      "connected": true,
+      "login_prompt": false,
+      "key_fingerprint": "de95d2c8e13ef623",
+      "turn": {
+        "status": "completed",
+        "error": null,
+        "signInNotice": null,
+        "reply": "oc-apikey-ok",
+        "seconds": 3
+      },
+      "result": "pass"
+    }
+  ],
+  "result": "fail"
+}
