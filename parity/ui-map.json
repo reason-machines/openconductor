@@ -32,21 +32,21 @@
   "statuses": ", from what the running apps showed:\n  matches  reference rendered and reached, OpenConductor reached the same\n           state, the item's copy is on screen in both, and the whole state\n           differs by at most MATCH_RATIO changed pixels at channel threshold 24.\n  wrong    OpenConductor shows it (copy found in a capture of the running\n           app) but it is not shown to match: the visual diff is over the bar,\n           the copy differs, or no valid reference render exists to prove it.\n  missing  OpenConductor has no way to reach the state, shows a different\n           screen there (under 25% of the reference's UI copy), or the item's\n           copy is in no capture of the running app."
  },
  "summary": {
-  "total": 965,
-  "missing": 764,
+  "total": 967,
+  "missing": 763,
   "wrong": 79,
-  "matches": 122,
+  "matches": 125,
   "states": {
-   "total": 67,
+   "total": 69,
    "missing": 16,
    "wrong": 25,
-   "matches": 26
+   "matches": 28
   },
   "items": {
    "total": 898,
-   "missing": 748,
+   "missing": 747,
    "wrong": 54,
-   "matches": 96
+   "matches": 97
   },
   "items_by_kind": {
    "dialog": {
@@ -57,9 +57,9 @@
    },
    "empty-state": {
     "total": 52,
-    "missing": 47,
+    "missing": 46,
     "wrong": 1,
-    "matches": 4
+    "matches": 5
    },
    "menu": {
     "total": 39,
@@ -124,9 +124,9 @@
   },
   "by_team": {
    "chat": {
-    "total": 55,
-    "missing": 49,
-    "wrong": 4,
+    "total": 62,
+    "missing": 55,
+    "wrong": 5,
     "matches": 2
    },
    "cloud-org": {
@@ -160,16 +160,16 @@
     "matches": 89
    },
    "shell": {
-    "total": 194,
-    "missing": 178,
+    "total": 197,
+    "missing": 181,
     "wrong": 7,
     "matches": 9
    },
    "terminal-scripts": {
-    "total": 30,
-    "missing": 29,
-    "wrong": 1,
-    "matches": 0
+    "total": 22,
+    "missing": 19,
+    "wrong": 0,
+    "matches": 3
    },
    "triage": {
     "total": 268,
@@ -184,8 +184,8 @@
     "matches": 11
    }
   },
-  "located_items": 213,
-  "items_with_reference_screenshot": 213
+  "located_items": 214,
+  "items_with_reference_screenshot": 214
  },
  "states": [
   {
@@ -446,7 +446,7 @@
    "title": "Workspace: chat transcript",
    "status": "wrong",
    "why": "diff 6.0% at t24, copy 86%",
-   "team": "terminal-scripts",
+   "team": "chat",
    "reference": {
     "status": "captured",
     "file": "ui-map/ref/workspace-chat.png",
@@ -672,6 +672,80 @@
     "archive workspace",
     "copy file contents",
     "filter files"
+   ]
+  },
+  {
+   "id": "panel-setup-add",
+   "title": "Terminal panel: Setup, no setup script",
+   "status": "matches",
+   "why": "diff 3.1% at t24, copy 93%",
+   "team": "terminal-scripts",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-01-setup-add.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-osaka",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_b2fdd56951de70ea5f8d0d57e9498d72b3a78dfe6720c12ef4cdba64473869dd"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-01-setup-add.png",
+    "error": null,
+    "note": "side-by-side lane at 2e316e18a: tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.031414824695121954,
+    "rea_evidence_ids": [
+     "ev_a2cf0aae10c1e55dcb840cb968744ff6e7fdf440a416f3aba926fed94a63c308",
+     "ev_60abd14d24fa0ec01b453bd63d693988ab2aa072b07165970fac843abd794ee4"
+    ]
+   },
+   "copy_coverage": 0.933,
+   "copy_missing": [
+    "add chat transcripts"
+   ]
+  },
+  {
+   "id": "panel-setup-idle",
+   "title": "Terminal panel: Setup, before setup runs",
+   "status": "matches",
+   "why": "diff 2.9% at t24, copy 92%",
+   "team": "terminal-scripts",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-02-setup-idle.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-osaka",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_9f988c57b567a5feb0c0ffc33b0c2aed6d7f45929282bfbdfc3d3cb9884cb057"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-02-setup-idle.png",
+    "error": null,
+    "note": "side-by-side lane at 2e316e18a: tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.029302591463414632,
+    "rea_evidence_ids": [
+     "ev_25bcd5b8701197377b7dd6e5714fd507909a4af2768fa4ae8d61d30ceb180f33",
+     "ev_d6422c8a5d8db528daa7e96704b97e2d14ffd37b0351377259e329d074ce59be"
+    ]
+   },
+   "copy_coverage": 0.923,
+   "copy_missing": [
+    "add chat transcripts"
    ]
   },
   {
@@ -7555,7 +7629,7 @@
    "name": "Copy full transcript",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "u8i",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -8643,7 +8717,7 @@
    "name": null,
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "u8i",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -9192,7 +9266,7 @@
    "name": "Description",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "shell",
    "component": "KKo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -12962,7 +13036,7 @@
    "name": "Recording ended — transcript saved.",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "Ngo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -12988,7 +13062,7 @@
    "name": "Recording ended — transcript saved.",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "Ngo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -13404,7 +13478,7 @@
    "name": "Failed to attach chat transcript",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "RIo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -13430,7 +13504,7 @@
    "name": "Failed to attach chat transcript",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "chat",
    "component": "RIo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -13654,7 +13728,7 @@
    "name": "Couldn't save description: ${rc(t)}",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "shell",
    "component": "lXo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -20329,8 +20403,8 @@
    "id": "empty-state:no-setup-script-output",
    "kind": "empty-state",
    "name": "No setup script output",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state panel-setup-idle matches",
    "team": "terminal-scripts",
    "component": "nro",
    "source": {
@@ -20342,12 +20416,12 @@
     "No setup script output"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "panel-setup-idle",
+   "state_basis": "state covers it",
+   "reference_screenshot": "side-by-side/terminal-scripts-02-setup-idle.png",
+   "openconductor_screenshot": "side-by-side/terminal-scripts-02-setup-idle.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.029302591463414632
   },
   {
    "id": "empty-state:no-one-has-been-added",
@@ -20667,7 +20741,7 @@
    "name": "No description",
    "status": "missing",
    "why": "copy not shown in any OpenConductor capture",
-   "team": "terminal-scripts",
+   "team": "shell",
    "component": "dKo",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",

@@ -395,6 +395,71 @@
    ]
   },
   {
+   "id": "panel-setup-add",
+   "title": "Terminal panel: Setup, no setup script",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Setup"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": ".ws-strip-tabs [role=tab]",
+     "text": "Setup",
+     "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "panel-setup-idle",
+   "title": "Terminal panel: Setup, before setup runs",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Setup"
+     }
+    ],
+    "query": {
+     "oc_setup_script": "npm install"
+    }
+   },
+   "oc_reason": "the lane's seeded repositories have no setup script; tools/side-by-side/setup-tab.mjs captures this state",
+   "covers": [
+    {
+     "kind": "empty-state",
+     "name": "No setup script output"
+    }
+   ]
+  },
+  {
    "id": "needs-permission",
    "title": "Workspace needing permission",
    "ref": {

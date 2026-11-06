@@ -93,6 +93,7 @@ import { useBoolPref } from "../settings/useBoolPref";
 import { workspaceNumberLabel } from "../state/workspaceNumber";
 import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
+import { SETUP_SCRIPT_PROMPT } from "../scripts/setupPrompt";
 
 interface Props {
   repo: Repo;
@@ -1009,6 +1010,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
     },
     [workspace.id],
   );
+  // The Setup tab's "Ask agent" (Conductor's `Jo`): the setup-script prompt goes to the workspace's chat.
+  const askSetupAgent = useCallback(() => chat.send(SETUP_SCRIPT_PROMPT), [chat]);
   const fixErrors = useFixErrors({ worktree: workspace.path ?? null, repoId: repo.id, sendToChat, notify });
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
   const [agentWorking, setAgentWorking] = useState(false);
@@ -1273,7 +1276,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
               emptyAction={<PullLatestButton pullLatest={pullLatest} agentWorking={agentWorking} />}
             />
             {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
-            <PanelStrip repo={repo} workspace={workspace} open={stripOpen} setOpen={setStripOpen} view={stripView} setView={setStripView} cwd={repo.path} />
+            <PanelStrip repo={repo} workspace={workspace} open={stripOpen} setOpen={setStripOpen} view={stripView} setView={setStripView} cwd={repo.path} onAskSetupAgent={workspace.status === "archived" ? undefined : askSetupAgent} />
           </div>
         )}
       </div>

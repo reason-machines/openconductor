@@ -319,13 +319,29 @@ function typingElsewhere(): boolean {
   return a.isContentEditable || a instanceof HTMLTextAreaElement || a instanceof HTMLInputElement || a instanceof HTMLSelectElement;
 }
 
+// Conductor's `w9e` toasts "Failed to attach terminal" when a terminal's screen cannot be
+// attached (renderApp-D_fmY7hW.js ~6,878,113); the app shell listens here and shows it.
+const attachFailureListeners = new Set<(error: unknown) => void>();
+export const ATTACH_FAILED = "Failed to attach terminal";
+export function onAttachFailure(f: (error: unknown) => void): () => void {
+  attachFailureListeners.add(f);
+  return () => void attachFailureListeners.delete(f);
+}
+
 /** Show terminal `id` inside `container`; returns the detach function. */
 export function attachTab(id: string, container: HTMLElement): () => void {
   const l = live.get(id);
   if (!l) return () => {};
   container.appendChild(l.host);
   if (!l.opened) {
-    l.term.open(l.host);
+    try {
+      l.term.open(l.host);
+    } catch (err) {
+      l.host.remove();
+      console.error(ATTACH_FAILED, err);
+      for (const f of attachFailureListeners) f(err);
+      return () => {};
+    }
     l.opened = true;
   }
   const refit = () => {

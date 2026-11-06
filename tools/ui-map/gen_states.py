@@ -44,6 +44,15 @@ st("workspace-tool-calls","Chat: tool calls expanded", ref(actions=[{"click":"te
 st("diff-unified","Diff: file, unified", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500}])
 st("diff-split","Diff: file, split", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"},{"click":"role=button[name='Split view']"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500},{"click":"button","text":"Split view"}])
 st("diff-entire-file","Diff: entire file", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"},{"click":"role=button[name='Entire file']"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500},{"click":"button","text":"Entire file"}])
+# The terminal panel's Setup tab (Conductor's `nro`, local workspace): with no setup script, the
+# dashed "Add setup script" card; with one (?oc_setup_script seeds tide-web's settings.local.toml in
+# the harness), "No setup script output" and Run setup. Both open the workspace with an empty chat, as
+# workspace-new-chat does. Side-by-side: tools/side-by-side/setup-tab.mjs.
+SETUP_TAB=[{"click":".ws-strip-tabs [role=tab]","text":"Setup","after_ms":800}]
+st("panel-setup-add","Terminal panel: Setup, no setup script", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Setup"}]), oc=OPEN_WS+SETUP_TAB)
+st("panel-setup-idle","Terminal panel: Setup, before setup runs", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Setup"}], query={"oc_setup_script":"npm install"}),
+   oc_reason="the lane's seeded repositories have no setup script; tools/side-by-side/setup-tab.mjs captures this state",
+   covers=[{"kind":"empty-state","name":"No setup script output"}])
 # Conductor's harness sends the sidecar's toolApproval request for "tallinn" (scenario needs-permission,
 # tools/screens/seed-data.js); OpenConductor gets the same turn from the fake `reason acp` ("tallinn").
 st("needs-permission","Workspace needing permission", ref(scenario="needs-permission", actions=[{"click":"text=tide-api"},{"click":"text=Ada/rate limit headers"},{"wait":"text=Do you want to run this command?"}]),

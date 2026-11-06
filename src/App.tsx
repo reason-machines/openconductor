@@ -1,6 +1,7 @@
+import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "./state/store";
-import { destroyWorkspaceTerminals } from "./features/terminal/session";
+import { ATTACH_FAILED, destroyWorkspaceTerminals, onAttachFailure } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
@@ -32,6 +33,15 @@ import type { Action } from "./state/store";
 import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
+import {
+  openInTerminalScript,
+  XCODE_LICENSE_COMMAND,
+  XCODE_LICENSE_DESCRIPTION,
+  XCODE_LICENSE_TITLE,
+  XCODE_LICENSE_TOAST_MS,
+  xcodeLicenseBlocked,
+  type ShellOut,
+} from "./scripts/xcodeLicense";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, quitApp, setQuitHandlerReady, type AppInfo } from "./backend";
 import { chatStatuses } from "./features/chat/chatRuntime";
 import { countRunningAgents, quitDecision } from "./features/quit/quit";
@@ -122,6 +132,8 @@ export default function App() {
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // A terminal screen that could not attach (Conductor's "Failed to attach terminal" toast).
+  useEffect(() => onAttachFailure(() => show("error", ATTACH_FAILED)), [show]);
   // Non-fatal initialization issues (Conductor's workspaceError with "View logs"), from every create path.
   useInitIssues(useCallback((message: string, opts: { sticky: true; action?: ToastAction }) => show("error", message, opts), [show]));
   // Archive on merge for workspaces that are not open (the open one reports through its own PR lookup).
@@ -386,6 +398,24 @@ export default function App() {
   useEffect(() => {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
+
+  // Conductor's startup Xcode license check (`HBr`, src/scripts/xcodeLicense.ts): an unaccepted
+  // license blocks git, so say so for 15 s with "Run for me".
+  useEffect(() => {
+    if (!inTauri()) return;
+    const run = (command: string) => invoke<ShellOut>("execute_shell_command", { request: { command } });
+    appInfo()
+      .then((i) => xcodeLicenseBlocked(i.platform, run))
+      .then((blocked) => {
+        if (!blocked) return;
+        show("error", XCODE_LICENSE_TITLE, {
+          durationMs: XCODE_LICENSE_TOAST_MS,
+          description: XCODE_LICENSE_DESCRIPTION,
+          action: { label: "Run for me", onClick: () => void run(openInTerminalScript(XCODE_LICENSE_COMMAND)).catch(() => {}) },
+        });
+      })
+      .catch(() => {});
+  }, [show]);
 
   // The Toaster sits at the same place (second child of this fragment) in both views, so
   // opening or closing Settings keeps the toasts mounted: their timers keep running and
