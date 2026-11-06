@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { Repo } from "../state/types";
 import { githubAvatarUrl, parseRepoIcon } from "../state/repoIcon";
 import { REPO_ICONS, type IconNode } from "./repoIcons.generated";
-import { repoFavicon } from "../backend";
+import { inspectProjectFolder, inTauri, repoFavicon } from "../backend";
 
 export const isRepoIconName = (name: string) => Object.prototype.hasOwnProperty.call(REPO_ICONS, name);
 
@@ -42,6 +42,31 @@ export function useRepoFavicon(rootPath: string | undefined): string | null {
 /** Forget a cached favicon, e.g. after the icon picker's Favicon tab is used. */
 export const forgetRepoFavicon = (rootPath: string) => faviconCache.delete(rootPath);
 
+// GitHub owner avatar for a repository. Conductor's `YJe` (renderApp @6,097,626)
+// asks the backend for the repository's remote and uses the owner of a github.com
+// origin, so a project added with Open project (stored remote `file://<path>`)
+// still gets its owner's avatar. We read `git remote get-url origin` the same way,
+// once per path per app run.
+const originCache = new Map<string, Promise<string | null>>();
+export function useRepoAvatar(rootPath: string | undefined, storedRemote: string | undefined): string | null {
+  const stored = githubAvatarUrl(storedRemote);
+  const [src, setSrc] = useState<string | null>(stored);
+  useEffect(() => {
+    if (stored || !rootPath || !inTauri()) return setSrc(stored);
+    let live = true;
+    let p = originCache.get(rootPath);
+    if (!p) {
+      p = inspectProjectFolder(rootPath).then((f) => f.origin, () => null);
+      originCache.set(rootPath, p);
+    }
+    p.then((origin) => live && setSrc(githubAvatarUrl(origin)));
+    return () => {
+      live = false;
+    };
+  }, [rootPath, stored]);
+  return src;
+}
+
 /**
  * The icon next to a repo name (Conductor's `U9`): emoji, then an uploaded image or bundled icon,
  * then a favicon found in the repository, then the GitHub owner's avatar, then the initial.
@@ -49,7 +74,7 @@ export const forgetRepoFavicon = (rootPath: string) => faviconCache.delete(rootP
 export function RepoIcon({ repo, className = "sb-repo-initial" }: { repo: Pick<Repo, "name" | "path" | "remote" | "icon">; className?: string }) {
   const value = parseRepoIcon(repo.icon, isRepoIconName);
   const favicon = useRepoFavicon(value ? undefined : repo.path || undefined);
-  const avatar = githubAvatarUrl(repo.remote);
+  const avatar = useRepoAvatar(value ? undefined : repo.path || undefined, repo.remote);
   const [avatarFailed, setAvatarFailed] = useState(false);
   if (value?.kind === "emoji") return <span className="repo-icon repo-icon-emoji" aria-hidden>{value.emoji}</span>;
   if (value?.kind === "image") return <img className="repo-icon" src={value.src} alt="" aria-hidden />;

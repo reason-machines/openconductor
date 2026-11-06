@@ -403,6 +403,16 @@ export function useAppStore() {
     if (desktop) localStorage.setItem(PREFS_KEY, JSON.stringify(prefsOf(state)));
     else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, demo, desktop]);
+  // Navigating to /all-workspaces while the app runs (history navigation)
+  // shows the Home list, as loading that path does. Sidebar Home opens the
+  // wordmark screen instead, so this is the in-session route to the list.
+  useEffect(() => {
+    const onPop = () => {
+      if (window.location.pathname === "/all-workspaces") rawDispatch({ type: "select", selection: { kind: "home" } });
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
   // Writes the backend does not already record when its command runs.
   const stateRef = useRef(state);
   stateRef.current = state;

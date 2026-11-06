@@ -51,6 +51,8 @@ export const ExternalIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="e
 export const FileCodeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="file-code" size={size} strokeWidth={strokeWidth} />;
 export const GlobeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="globe" size={size} strokeWidth={strokeWidth} />;
 export const FolderPlusIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="folder-plus" size={size} strokeWidth={strokeWidth} />;
+// Home's "cities visited" line: Conductor draws Lucide's tickets-plane there.
+export const TicketsPlaneIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="tickets-plane" size={size} strokeWidth={strokeWidth} />;
 export const ChipIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="cpu" size={size} strokeWidth={strokeWidth} />;
 export const TerminalIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="terminal" size={size} strokeWidth={strokeWidth} />;
 export const LayersIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="layers" size={size} strokeWidth={strokeWidth} />;

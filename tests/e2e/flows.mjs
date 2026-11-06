@@ -227,10 +227,9 @@ export const flows = [
   },
   {
     // ⌘K opens the palette from anywhere; typing filters it and Enter runs the
-    // active result. Go to Home leaves the workspace for the Home list
-    // (Conductor's /all-workspaces, titled "Home"; the wordmark-and-cards
-    // screen at / only shows at start-up), and searching the workspace's name
-    // brings it back.
+    // active result. Go to Home leaves the workspace for the wordmark-and-cards
+    // Home screen (Conductor opens its /all-workspaces list here; ours follows
+    // Sven's brief for #483), and searching the workspace's name brings it back.
     name: "command-palette",
     async run(wd) {
       const META = "\uE03D";
@@ -265,16 +264,16 @@ export const flows = [
 
       await open();
       await run("Go to Home", "Go to Home");
-      const homeList = () =>
+      const home = () =>
         wd.execute(
-          "return { title: document.querySelector('.allws .allws-title')?.textContent.trim() ?? null, rows: document.querySelectorAll('.allws .allws-row').length, workspace: !!document.querySelector('.workspace') };",
+          "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), workspace: !!document.querySelector('.workspace') };",
           [],
         );
-      await wd.waitFor("the Home list with the workspace's row", async () => {
-        const h = await homeList();
-        return h.title === "Home" && h.rows > 0 && !h.workspace;
+      await wd.waitFor("the Home screen with its entry cards", async () => {
+        const h = await home();
+        return h.cards === 3 && !h.list && !h.workspace;
       }).catch(async (e) => {
-        throw new Error(`${e.message}; saw ${JSON.stringify(await homeList())}`);
+        throw new Error(`${e.message}; saw ${JSON.stringify(await home())}`);
       });
 
       await open();
@@ -327,9 +326,8 @@ export const flows = [
         const stored = (await invoke("session_statuses", {})).value ?? [];
         if (!stored.some((r) => r.chatId === ws.id && r.status === "needs_user_permission")) throw new Error(`session_statuses ${JSON.stringify(stored)}`);
 
-        // The sidebar's Home row (its title carries the shortcut hint).
-        const opened = await wd.execute("const b = Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Home'); b?.click(); return !!b;", []);
-        if (!opened) throw new Error("no Home row in the sidebar");
+        // The Home list is the /all-workspaces route (sidebar Home opens the wordmark screen, #483).
+        await wd.execute('history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); return true;', []);
         await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
         await waitShown("Needs permission on the Home row", homeIcons, "needs-user-permission", "Needs permission");
         if (process.env.E2E_OUT) {
@@ -1035,9 +1033,9 @@ export const flows = [
            });`,
           [],
         );
+      // The Home list is the /all-workspaces route (sidebar Home opens the wordmark screen, #483).
       const openHome = async () => {
-        const opened = await wd.execute("const b = Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Home'); b?.click(); return !!b;", []);
-        if (!opened) throw new Error("no Home row in the sidebar");
+        await wd.execute('history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); return true;', []);
         await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
       };
       const shot = async (name) => {

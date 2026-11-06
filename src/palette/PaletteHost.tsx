@@ -63,7 +63,9 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
     "add-project": () => onOpenProject(),
     "clone-project": () => onOpenDialog("clone"),
     "quick-start": () => onOpenDialog("quickstart"),
-    "go-home": () => dispatch({ type: "select", selection: { kind: "home" } }),
+    // Home is the wordmark screen (`root`). Conductor opens /all-workspaces here;
+    // Sven's brief for #483 routes it to the wordmark screen instead.
+    "go-home": () => dispatch({ type: "select", selection: { kind: "root" } }),
     "next-workspace": () => go(stepWorkspace(state, 1)),
     "previous-workspace": () => go(stepWorkspace(state, -1)),
     "go-to-next-unread": () => void goUnread(false),
