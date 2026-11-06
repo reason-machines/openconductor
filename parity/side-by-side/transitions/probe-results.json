@@ -1,0 +1,1014 @@
+{
+ "conductor": {
+  "side": "conductor",
+  "browser": "Chromium headless 1440x900 dark, prefers-reduced-motion: no-preference",
+  "results": [
+   {
+    "id": "home-to-workspace",
+    "what": "Route: Home to a workspace (sidebar row)",
+    "url": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "max_frame_gap_ms": 724,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSAnimation",
+      "name": "enter",
+      "target": "div.absolute.top-2.right-1",
+      "duration": 150,
+      "delay": 0,
+      "fill": "none",
+      "easing": "ease",
+      "from": {
+       "transform": "translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotate(0deg)",
+       "filter": "blur(0px)",
+       "opacity": "0"
+      },
+      "to": {
+       "transform": "none",
+       "filter": "none",
+       "opacity": "1"
+      },
+      "first_seen_ms": 765
+     }
+    ]
+   },
+   {
+    "id": "chat-tab-switch",
+    "what": "Tab: switch back to the first chat tab",
+    "url": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "max_frame_gap_ms": 41,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSAnimation",
+      "name": "enter",
+      "target": "div.absolute.top-2.right-1",
+      "duration": 150,
+      "delay": 0,
+      "fill": "none",
+      "easing": "ease",
+      "from": {
+       "transform": "translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotate(0deg)",
+       "filter": "blur(0px)",
+       "opacity": "0"
+      },
+      "to": {
+       "transform": "none",
+       "filter": "none",
+       "opacity": "1"
+      },
+      "first_seen_ms": 53
+     }
+    ]
+   },
+   {
+    "id": "right-tab-switch",
+    "what": "Tab: right panel All files",
+    "url": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "max_frame_gap_ms": 96,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "terminal-panel-toggle",
+    "what": "Panel: terminal panel toggle (⌘J)",
+    "url": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "max_frame_gap_ms": 27,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "right-panel-toggle",
+    "what": "Panel: right panel toggle (⌥⌘B)",
+    "url": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "max_frame_gap_ms": 50,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "left-sidebar-hide",
+    "what": "Panel: left sidebar hide (toggle button)",
+    "url": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "max_frame_gap_ms": 132,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "left-sidebar-show",
+    "what": "Panel: left sidebar show (⌘B)",
+    "url": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "max_frame_gap_ms": 132,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "workspace-to-all",
+    "what": "Route: workspace to All workspaces (⌘⇧H)",
+    "url": "/all-workspaces",
+    "max_frame_gap_ms": 78,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "all-to-home",
+    "what": "Route: All workspaces to Home (sidebar Home)",
+    "url": "/all-workspaces",
+    "max_frame_gap_ms": 71,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "palette-open",
+    "what": "Dialog: command palette open (⌘K)",
+    "url": "/all-workspaces",
+    "max_frame_gap_ms": 56,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSAnimation",
+      "name": "cmd-dialog-in",
+      "target": "div.cmd-dialog-anim.overflow-hidden.p-0[dialog]",
+      "duration": 180,
+      "delay": 0,
+      "fill": "backwards",
+      "easing": "ease-out",
+      "from": {
+       "transform": "translateY(-12px)",
+       "opacity": "0"
+      },
+      "to": {
+       "transform": "translateY(0px)",
+       "opacity": "1"
+      },
+      "first_seen_ms": 56
+     }
+    ]
+   },
+   {
+    "id": "palette-close",
+    "what": "Dialog: command palette close (Escape)",
+    "url": "/all-workspaces",
+    "max_frame_gap_ms": 77,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSAnimation",
+      "name": "cmd-dialog-out",
+      "target": "div.cmd-dialog-anim.overflow-hidden.p-0[dialog]",
+      "duration": 130,
+      "delay": 0,
+      "fill": "forwards",
+      "easing": "ease-in",
+      "from": {
+       "transform": "translateY(0px)",
+       "opacity": "1"
+      },
+      "to": {
+       "transform": "translateY(-8px)",
+       "opacity": "0"
+      },
+      "first_seen_ms": 19
+     }
+    ]
+   },
+   {
+    "id": "dialog-open",
+    "what": "Dialog: modal open (Home, Open GitHub project)",
+    "error": "TimeoutError: locator.click: Timeout 8000ms exceeded.",
+    "animations": []
+   },
+   {
+    "id": "dialog-close",
+    "what": "Dialog: modal close (Escape)",
+    "url": "/all-workspaces",
+    "max_frame_gap_ms": 17,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "shortcuts-open",
+    "what": "Dialog: keyboard shortcuts open (⌥⌘/)",
+    "url": "/all-workspaces",
+    "max_frame_gap_ms": 111,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.fixed.inset-0.z-50[presentation]",
+      "duration": 200,
+      "delay": 0,
+      "fill": "backwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "opacity": "0"
+      },
+      "to": {
+       "opacity": "1"
+      },
+      "first_seen_ms": 213
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.pointer-events-auto.relative.max-h-full[dialog]",
+      "duration": 200,
+      "delay": 0,
+      "fill": "backwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "opacity": "0"
+      },
+      "to": {
+       "opacity": "1"
+      },
+      "first_seen_ms": 213
+     }
+    ]
+   },
+   {
+    "id": "shortcuts-close",
+    "what": "Dialog: keyboard shortcuts close (Escape)",
+    "url": "/all-workspaces",
+    "max_frame_gap_ms": 362,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.fixed.inset-0.z-50[presentation]",
+      "duration": 200,
+      "delay": 0,
+      "fill": "backwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "opacity": "1"
+      },
+      "to": {
+       "opacity": "0"
+      },
+      "first_seen_ms": 22
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.pointer-events-auto.relative.max-h-full[dialog]",
+      "duration": 200,
+      "delay": 0,
+      "fill": "backwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "opacity": "1"
+      },
+      "to": {
+       "opacity": "0"
+      },
+      "first_seen_ms": 22
+     }
+    ]
+   },
+   {
+    "id": "home-to-settings",
+    "what": "Route: Home to Settings (sidebar gear)",
+    "url": "/settings/user/general",
+    "max_frame_gap_ms": 166,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "settings-tab-switch",
+    "what": "Tab: settings page switch (Appearance)",
+    "url": "/settings/user/appearance",
+    "max_frame_gap_ms": 121,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "settings-to-app",
+    "what": "Route: Settings back to the app (Escape)",
+    "url": "/all-workspaces",
+    "max_frame_gap_ms": 347,
+    "layout_shift": 0,
+    "animations": []
+   }
+  ]
+ },
+ "openconductor_before": {
+  "side": "openconductor",
+  "dist": "main 0b89bf8",
+  "browser": "Chromium headless 1440x900 dark, prefers-reduced-motion: no-preference",
+  "results": [
+   {
+    "id": "terminal-panel-toggle",
+    "what": "Panel: terminal panel toggle (⌘J)",
+    "max_frame_gap_ms": 19,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "right-panel-toggle",
+    "what": "Panel: right panel toggle (⌥⌘B)",
+    "max_frame_gap_ms": 17,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "right-tab-switch",
+    "what": "Tab: right panel All files",
+    "max_frame_gap_ms": 46,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "left-sidebar-hide",
+    "what": "Panel: left sidebar hide (⌘B)",
+    "max_frame_gap_ms": 17,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "left-sidebar-show",
+    "what": "Panel: left sidebar show (⌘B)",
+    "max_frame_gap_ms": 22,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "workspace-to-all",
+    "what": "Route: workspace to All workspaces (⌘⇧H)",
+    "max_frame_gap_ms": 20,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "all-to-workspace",
+    "what": "Route: All workspaces to a workspace (sidebar row)",
+    "max_frame_gap_ms": 77,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "palette-open",
+    "what": "Dialog: command palette open (⌘K)",
+    "max_frame_gap_ms": 22,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "palette-close",
+    "what": "Dialog: command palette close (Escape)",
+    "max_frame_gap_ms": 17,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "create-open",
+    "what": "Dialog: new workspace open (⌘N)",
+    "max_frame_gap_ms": 36,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "create-close",
+    "what": "Dialog: new workspace close (Escape)",
+    "max_frame_gap_ms": 17,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "shortcuts-open",
+    "what": "Dialog: keyboard shortcuts open (⌥⌘/)",
+    "max_frame_gap_ms": 71,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "shortcuts-close",
+    "what": "Dialog: keyboard shortcuts close (Escape)",
+    "max_frame_gap_ms": 17,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "to-settings",
+    "what": "Route: app to Settings (⌘,)",
+    "max_frame_gap_ms": 22,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "settings-tab-switch",
+    "what": "Tab: settings page switch (Appearance)",
+    "max_frame_gap_ms": 136,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "settings-to-app",
+    "what": "Route: Settings back to the app (Escape)",
+    "max_frame_gap_ms": 37,
+    "layout_shift": 0,
+    "animations": []
+   }
+  ]
+ },
+ "openconductor_after": {
+  "side": "openconductor",
+  "dist": "this branch",
+  "browser": "Chromium headless 1440x900 dark, prefers-reduced-motion: no-preference",
+  "results": [
+   {
+    "id": "terminal-panel-toggle",
+    "what": "Panel: terminal panel toggle (⌘J)",
+    "max_frame_gap_ms": 19,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "right-panel-toggle",
+    "what": "Panel: right panel toggle (⌥⌘B)",
+    "max_frame_gap_ms": 23,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "right-tab-switch",
+    "what": "Tab: right panel All files",
+    "max_frame_gap_ms": 82,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "left-sidebar-hide",
+    "what": "Panel: left sidebar hide (⌘B)",
+    "max_frame_gap_ms": 20,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "left-sidebar-show",
+    "what": "Panel: left sidebar show (⌘B)",
+    "max_frame_gap_ms": 27,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "workspace-to-all",
+    "what": "Route: workspace to All workspaces (⌘⇧H)",
+    "max_frame_gap_ms": 21,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "all-to-workspace",
+    "what": "Route: All workspaces to a workspace (sidebar row)",
+    "max_frame_gap_ms": 61,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "palette-open",
+    "what": "Dialog: command palette open (⌘K)",
+    "max_frame_gap_ms": 70,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-backdrop-in",
+      "target": "div.palette-backdrop",
+      "duration": 180,
+      "delay": 0,
+      "fill": "backwards",
+      "easing": "ease-out",
+      "from": {
+       "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "to": {
+       "backgroundColor": "color(srgb 0 0 0 / 0.32)"
+      },
+      "first_seen_ms": 12
+     },
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-cmdk-in",
+      "target": "div.palette[Command palette]",
+      "duration": 180,
+      "delay": 0,
+      "fill": "backwards",
+      "easing": "ease-out",
+      "from": {
+       "transform": "translateY(-12px)",
+       "opacity": "0"
+      },
+      "to": {
+       "transform": "none",
+       "opacity": "1"
+      },
+      "first_seen_ms": 12
+     }
+    ]
+   },
+   {
+    "id": "palette-close",
+    "what": "Dialog: command palette close (Escape)",
+    "max_frame_gap_ms": 53,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-backdrop-out",
+      "target": "div.palette-backdrop.oc-leaving",
+      "duration": 130,
+      "delay": 0,
+      "fill": "forwards",
+      "easing": "ease-in",
+      "from": {
+       "backgroundColor": "color(srgb 0 0 0 / 0.32)"
+      },
+      "to": {
+       "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "first_seen_ms": 19
+     },
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-cmdk-out",
+      "target": "div.palette",
+      "duration": 130,
+      "delay": 0,
+      "fill": "forwards",
+      "easing": "ease-in",
+      "from": {
+       "transform": "none",
+       "opacity": "1"
+      },
+      "to": {
+       "transform": "translateY(-8px)",
+       "opacity": "0"
+      },
+      "first_seen_ms": 19
+     }
+    ]
+   },
+   {
+    "id": "create-open",
+    "what": "Dialog: new workspace open (⌘N)",
+    "max_frame_gap_ms": 35,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-backdrop-in",
+      "target": "div.modal-backdrop.create-backdrop",
+      "duration": 200,
+      "delay": 0,
+      "fill": "backwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "to": {
+       "backgroundColor": "color(srgb 0 0 0 / 0.32)"
+      },
+      "first_seen_ms": 37
+     },
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-dialog-in",
+      "target": "div.create-dialog[dialog]",
+      "duration": 200,
+      "delay": 0,
+      "fill": "backwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "opacity": "0"
+      },
+      "to": {
+       "opacity": "1"
+      },
+      "first_seen_ms": 37
+     }
+    ]
+   },
+   {
+    "id": "create-close",
+    "what": "Dialog: new workspace close (Escape)",
+    "max_frame_gap_ms": 17,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-backdrop-out",
+      "target": "div.modal-backdrop.create-backdrop.oc-leaving",
+      "duration": 200,
+      "delay": 0,
+      "fill": "forwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "backgroundColor": "color(srgb 0 0 0 / 0.32)"
+      },
+      "to": {
+       "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "first_seen_ms": 7
+     },
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-dialog-out",
+      "target": "div.create-dialog",
+      "duration": 200,
+      "delay": 0,
+      "fill": "forwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "opacity": "1"
+      },
+      "to": {
+       "opacity": "0"
+      },
+      "first_seen_ms": 7
+     }
+    ]
+   },
+   {
+    "id": "shortcuts-open",
+    "what": "Dialog: keyboard shortcuts open (⌥⌘/)",
+    "max_frame_gap_ms": 61,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-backdrop-in",
+      "target": "div.modal-backdrop",
+      "duration": 200,
+      "delay": 0,
+      "fill": "backwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "to": {
+       "backgroundColor": "color(srgb 0 0 0 / 0.32)"
+      },
+      "first_seen_ms": 50
+     },
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-dialog-in",
+      "target": "div.modal.ks-dialog[Keyboard shortcuts]",
+      "duration": 200,
+      "delay": 0,
+      "fill": "backwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "opacity": "0"
+      },
+      "to": {
+       "opacity": "1"
+      },
+      "first_seen_ms": 50
+     }
+    ]
+   },
+   {
+    "id": "shortcuts-close",
+    "what": "Dialog: keyboard shortcuts close (Escape)",
+    "max_frame_gap_ms": 26,
+    "layout_shift": 0,
+    "animations": [
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-backdrop-out",
+      "target": "div.modal-backdrop.oc-leaving",
+      "duration": 200,
+      "delay": 0,
+      "fill": "forwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "backgroundColor": "color(srgb 0 0 0 / 0.32)"
+      },
+      "to": {
+       "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "first_seen_ms": 60
+     },
+     {
+      "kind": "CSSAnimation",
+      "name": "oc-dialog-out",
+      "target": "div.modal.ks-dialog",
+      "duration": 200,
+      "delay": 0,
+      "fill": "forwards",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "from": {
+       "opacity": "1"
+      },
+      "to": {
+       "opacity": "0"
+      },
+      "first_seen_ms": 60
+     }
+    ]
+   },
+   {
+    "id": "to-settings",
+    "what": "Route: app to Settings (⌘,)",
+    "max_frame_gap_ms": 18,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "settings-tab-switch",
+    "what": "Tab: settings page switch (Appearance)",
+    "max_frame_gap_ms": 184,
+    "layout_shift": 0,
+    "animations": []
+   },
+   {
+    "id": "settings-to-app",
+    "what": "Route: Settings back to the app (Escape)",
+    "max_frame_gap_ms": 36,
+    "layout_shift": 0,
+    "animations": []
+   }
+  ]
+ },
+ "built_app_before": [
+  {
+   "id": "route-home",
+   "what": "Route: workspace to Home (sidebar)",
+   "held": []
+  },
+  {
+   "id": "route-workspace",
+   "what": "Route: Home to a workspace (sidebar row)",
+   "held": []
+  },
+  {
+   "id": "sidebar-hide",
+   "what": "Panel: left sidebar hide (⌘B)",
+   "held": []
+  },
+  {
+   "id": "sidebar-show",
+   "what": "Panel: left sidebar show (⌘B)",
+   "held": []
+  },
+  {
+   "id": "palette-open",
+   "what": "Dialog: command palette open (⌘K)",
+   "held": []
+  },
+  {
+   "id": "palette-close",
+   "what": "Dialog: command palette close (Escape)",
+   "held": []
+  },
+  {
+   "id": "shortcuts-open",
+   "what": "Dialog: keyboard shortcuts open (⌥⌘/)",
+   "held": []
+  },
+  {
+   "id": "shortcuts-close",
+   "what": "Dialog: keyboard shortcuts close (Escape)",
+   "held": []
+  },
+  {
+   "id": "create-open",
+   "what": "Dialog: new workspace open (⌘N)",
+   "held": []
+  },
+  {
+   "id": "create-close",
+   "what": "Dialog: new workspace close (Escape)",
+   "held": []
+  },
+  {
+   "id": "route-settings",
+   "what": "Route: app to Settings (sidebar gear)",
+   "held": []
+  },
+  {
+   "id": "settings-page",
+   "what": "Tab: settings page switch (Appearance)",
+   "held": []
+  },
+  {
+   "id": "settings-repo",
+   "what": "Tab: settings repository page (tide-web)",
+   "held": []
+  },
+  {
+   "id": "settings-misc",
+   "what": "Tab: repository Misc page",
+   "held": []
+  },
+  {
+   "id": "alert-open",
+   "what": "Dialog: confirmation open (Remove tide-web?)",
+   "held": []
+  },
+  {
+   "id": "alert-close",
+   "what": "Dialog: confirmation close (Cancel)",
+   "held": []
+  },
+  {
+   "id": "route-back",
+   "what": "Route: Settings back to the app (Back)",
+   "held": []
+  }
+ ],
+ "built_app_after": [
+  {
+   "id": "route-home",
+   "what": "Route: workspace to Home (sidebar)",
+   "held": []
+  },
+  {
+   "id": "route-workspace",
+   "what": "Route: Home to a workspace (sidebar row)",
+   "held": []
+  },
+  {
+   "id": "sidebar-hide",
+   "what": "Panel: left sidebar hide (⌘B)",
+   "held": []
+  },
+  {
+   "id": "sidebar-show",
+   "what": "Panel: left sidebar show (⌘B)",
+   "held": []
+  },
+  {
+   "id": "palette-open",
+   "what": "Dialog: command palette open (⌘K)",
+   "held": [
+    {
+     "name": "oc-backdrop-in",
+     "duration": 180,
+     "easing": "linear",
+     "target": "palette-backdrop"
+    },
+    {
+     "name": "oc-cmdk-in",
+     "duration": 180,
+     "easing": "linear",
+     "target": "palette"
+    }
+   ]
+  },
+  {
+   "id": "palette-close",
+   "what": "Dialog: command palette close (Escape)",
+   "held": [
+    {
+     "name": "oc-backdrop-out",
+     "duration": 130,
+     "easing": "linear",
+     "target": "palette-backdrop.oc-leaving"
+    },
+    {
+     "name": "oc-cmdk-out",
+     "duration": 130,
+     "easing": "linear",
+     "target": "palette"
+    }
+   ]
+  },
+  {
+   "id": "shortcuts-open",
+   "what": "Dialog: keyboard shortcuts open (⌥⌘/)",
+   "held": [
+    {
+     "name": "oc-backdrop-in",
+     "duration": 200,
+     "easing": "linear",
+     "target": "modal-backdrop"
+    },
+    {
+     "name": "oc-dialog-in",
+     "duration": 200,
+     "easing": "linear",
+     "target": "modal.ks-dialog"
+    }
+   ]
+  },
+  {
+   "id": "shortcuts-close",
+   "what": "Dialog: keyboard shortcuts close (Escape)",
+   "held": [
+    {
+     "name": "oc-backdrop-out",
+     "duration": 200,
+     "easing": "linear",
+     "target": "modal-backdrop.oc-leaving"
+    },
+    {
+     "name": "oc-dialog-out",
+     "duration": 200,
+     "easing": "linear",
+     "target": "modal.ks-dialog"
+    }
+   ]
+  },
+  {
+   "id": "create-open",
+   "what": "Dialog: new workspace open (⌘N)",
+   "held": [
+    {
+     "name": "oc-backdrop-in",
+     "duration": 200,
+     "easing": "linear",
+     "target": "modal-backdrop.create-backdrop"
+    },
+    {
+     "name": "oc-dialog-in",
+     "duration": 200,
+     "easing": "linear",
+     "target": "create-dialog"
+    }
+   ]
+  },
+  {
+   "id": "create-close",
+   "what": "Dialog: new workspace close (Escape)",
+   "held": [
+    {
+     "name": "oc-backdrop-out",
+     "duration": 200,
+     "easing": "linear",
+     "target": "modal-backdrop.create-backdrop"
+    },
+    {
+     "name": "oc-dialog-out",
+     "duration": 200,
+     "easing": "linear",
+     "target": "create-dialog"
+    }
+   ]
+  },
+  {
+   "id": "route-settings",
+   "what": "Route: app to Settings (sidebar gear)",
+   "held": []
+  },
+  {
+   "id": "settings-page",
+   "what": "Tab: settings page switch (Appearance)",
+   "held": []
+  },
+  {
+   "id": "settings-repo",
+   "what": "Tab: settings repository page (tide-web)",
+   "held": []
+  },
+  {
+   "id": "settings-misc",
+   "what": "Tab: repository Misc page",
+   "held": []
+  },
+  {
+   "id": "alert-open",
+   "what": "Dialog: confirmation open (Remove tide-web?)",
+   "held": [
+    {
+     "name": "oc-backdrop-in",
+     "duration": 200,
+     "easing": "linear",
+     "target": "modal-backdrop"
+    },
+    {
+     "name": "oc-alert-in",
+     "duration": 200,
+     "easing": "linear",
+     "target": "modal"
+    }
+   ]
+  },
+  {
+   "id": "alert-close",
+   "what": "Dialog: confirmation close (Cancel)",
+   "held": [
+    {
+     "name": "oc-backdrop-out",
+     "duration": 200,
+     "easing": "linear",
+     "target": "modal-backdrop.oc-leaving"
+    },
+    {
+     "name": "oc-alert-out",
+     "duration": 200,
+     "easing": "linear",
+     "target": "modal"
+    }
+   ]
+  },
+  {
+   "id": "route-back",
+   "what": "Route: Settings back to the app (Back)",
+   "held": []
+  }
+ ]
+}

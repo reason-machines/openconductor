@@ -34,15 +34,14 @@ export function parseWorkspaceLink(raw: string): WorkspaceLink | null {
 
 /**
  * What selecting the linked workspace dispatches, as clicking its sidebar row
- * does (select, then clear unread); null while no repository holds it.
+ * does: select it. Its unread chat is read once it is on screen (read on view,
+ * Conductor's yIo), not here. Null while no repository holds it.
  */
 export function openWorkspaceLinkActions(state: AppState, link: WorkspaceLink): Action[] | null {
   for (const repo of state.repos) {
     const ws = repo.workspaces.find((w) => w.id === link.workspaceId);
     if (!ws) continue;
-    const actions: Action[] = [{ type: "select", selection: { kind: "workspace", repoId: repo.id, workspaceId: ws.id } }];
-    if (ws.unread) actions.push({ type: "setWorkspaceUnread", repoId: repo.id, workspaceId: ws.id, unread: false });
-    return actions;
+    return [{ type: "select", selection: { kind: "workspace", repoId: repo.id, workspaceId: ws.id } }];
   }
   return null;
 }

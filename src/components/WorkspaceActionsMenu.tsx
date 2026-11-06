@@ -18,6 +18,7 @@ import {
   PlusIcon,
   WorkspaceStatusGlyph,
 } from "./menu/menuIcons";
+import { isWorkspaceUnread } from "../state/chatUnread";
 
 // Conductor's workspace row menu: the sidebar row (`Qj` @9894200) wraps itself in a Base UI
 // ContextMenu whose popup is `${my} min-w-[200px]` around `D9e` -> `Aao` @7302657
@@ -82,8 +83,8 @@ export function WorkspaceActionsMenu({ workspace, selected, at, actions, section
 
   return (
     <ContextMenu at={at} onClose={onClose} label="Workspace actions" className="cm-min-w-200" onKeyDown={onKeyDown}>
-      <MenuItem icon={workspace.unread ? <MailOpenIcon /> : <MailIcon />} shortcut="R" onSelect={actions.toggleRead}>
-        {workspace.unread ? "Mark as read" : "Mark as unread"}
+      <MenuItem icon={isWorkspaceUnread(workspace) ? <MailOpenIcon /> : <MailIcon />} shortcut="R" onSelect={actions.toggleRead}>
+        {isWorkspaceUnread(workspace) ? "Mark as read" : "Mark as unread"}
       </MenuItem>
       <MenuItem icon={pinned ? <PinOffIcon /> : <PinIcon />} shortcut="P" onSelect={actions.togglePin}>
         {pinned ? "Unpin" : "Pin"}

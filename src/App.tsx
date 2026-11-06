@@ -53,7 +53,7 @@ import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
 import { useWorkspaceDeepLinks } from "./workspace/useWorkspaceDeepLinks";
 import { useAutoUnread } from "./state/useAutoUnread";
-import { nextUnreadWorkspace, openNextUnread } from "./state/nextUnread";
+import { nextUnreadChat, openNextUnread } from "./state/nextUnread";
 import { createRepoDefault } from "./home/repoFilter";
 import { storedRepoFilter } from "./home/useRepoFilter";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
@@ -86,7 +86,7 @@ export default function App() {
   const nav = useNavHistory(state, dispatch);
   // openconductor://workspace?id=<id> (Copy link) selects that workspace.
   useWorkspaceDeepLinks(state, dispatch);
-  // A chat that finishes or waits on the user while not in view marks its workspace unread.
+  // A chat that finishes or waits on the user while not in view is marked unread.
   useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
   const sidebarWidth = useSidebarWidth();
@@ -420,7 +420,8 @@ export default function App() {
             workspace={workspace}
             dispatch={dispatch}
             notify={show}
-            onNextUnread={nextUnreadWorkspace(state, { skipSelected: true }) ? () => void openNextUnread(state, dispatch, { skipSelected: true }) : undefined}
+            hasNextUnread={(selectedChatId) => nextUnreadChat(state, { skipSelected: true, selectedChatId }) !== undefined}
+            onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
