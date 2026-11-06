@@ -16,6 +16,7 @@ import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
 import { applyRowLookup, useRowPrPoll } from "../features/pr/sidebarPrPoller";
 import { usePrSettings } from "../features/pr/usePullRequest";
 import type { LookupResult } from "../features/pr/types";
+import { clearManuallyUnread, markManuallyUnread } from "../state/autoUnread";
 import { Tooltip } from "./Tooltip";
 import { ArchiveIcon } from "./Icons";
 import { glyphs } from "../keybindings/shortcut";
@@ -249,7 +250,12 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
         sections={state.sections ?? []}
         currentSectionId={sectionOf(state.sections, ws.id)?.id}
         actions={{
-          toggleRead: () => dispatch({ type: "setWorkspaceUnread", ...ids, unread: !ws.unread }),
+          toggleRead: () => {
+            // A hand mark sticks while the workspace is on screen (Conductor's markManuallyUnread).
+            if (ws.unread) clearManuallyUnread(ws.id);
+            else markManuallyUnread(ws.id);
+            dispatch({ type: "setWorkspaceUnread", ...ids, unread: !ws.unread });
+          },
           togglePin: () => dispatch({ type: "setWorkspacePinned", ...ids, pinned: typeof ws.pinnedAt !== "number" }),
           setStatus: (status) => dispatch({ type: "setWorkspaceStatus", ...ids, status }),
           rename: onRename && (() => onRename(repo.id, ws)),
