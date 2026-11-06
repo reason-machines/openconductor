@@ -292,22 +292,128 @@ with python over the file; see REA gaps). Conductor's strings are data only.
   `src/keybindings/selectAll.ts`, installed by `KeybindingsProvider`.
 - `git.fixErrors` (⌘⇧X), offset ~2,300,368: already bound (PR #393).
 
-Not bound, because OpenConductor lacks the feature behind them:
+## Bound command: git.pull (pull latest from the target)
 
-- `git.pull` (⌘⇧L, priority HIGH, offset ~2,299,746): Conductor runs a
-  "pull latest from <target>" mutation (`{workspacePath, remoteName,
-  targetBranch}`) when the branch is behind its target, not merged, not
-  conflicting and not in a stack; its button's tooltip is "Pull latest from
-  <target> (<n> commits)". OpenConductor has neither that button nor a backend
-  command that merges the target into the workspace (its header "Pull <n>" is
-  a status about the remote branch). Note `openSidecarLogs` has ⌘⇧L too.
-- `terminal.openLocalhost` (⌘⇧B): the workspace view (priority LOW, offset
-  ~7,404,615) and the panel (offset ~7,141,734) open the preview URL in
-  Conductor's in-app Browser tab, or a detected localhost URL; false when
-  there is none. OpenConductor has the `preview_urls` setting but no Open
-  button and no Browser tab.
+Read on sven m5 max in the decoded `renderApp-D_fmY7hW.js` and
+`index-BGEQ8YjU.js` (python over the files; see REA gaps). Strings are data.
+
+- Shortcut, renderApp `Wds` @ ~2,299,746: `oi("git.pull", cb, {priority:
+  HIGH})`. `cb` returns false (the key passes on, e.g. to `openSidecarLogs`,
+  also ⌘⇧L) when read-only, a pull is running, the workspace is in a stack or
+  a GitHub stack, no session is selected, there is no repo or intended target,
+  the PR is merged or `mergeStateStatus === "DIRTY"`, or `targetSyncStatus ===
+  0`. Otherwise it mutates `{workspacePath, workspaceHost, localWorkspaceId,
+  sessionId, remoteName, targetBranch: <PR base> ?? intendedTargetBranch}`.
+  It does not look at a running agent or the remote branch.
+- Button, renderApp `Y4s` @ ~2,818,200, rendered only in the Changes panel's
+  empty state for the All changes scope (@ ~2,821,988, variant "text"):
+  lucide `arrow-down` (12 px), muted label "Pull latest from <target> (<n>
+  commits)", "Pulling latest..." with a spinner while running, disabled while
+  read-only or pulling. Hidden in a stack, without a target, session or
+  current branch, on a detached HEAD, for a merged or DIRTY PR, when
+  `targetSyncStatus` is 0, while the agent works, and when the remote branch
+  has commits the workspace lacks (`upstream.branchExists && behind > 0`).
+  Its "icon" variant has the tooltip "Pull latest from <target> (<n>
+  commits)" plus the ⌘⇧L hint, but no call site renders it in this build.
+- Mutation `gitPullLatestFromTarget`, index `aNt` @ ~3,207,600: with
+  uncommitted changes it sends the agent "Commit uncommitted changes, then
+  merge <remote>/<target> into this branch. Then push." (rebase wording when
+  `pull.rebase` is set); else `git fetch <remote>` (error: stderr or "Failed
+  to fetch from remote"), re-checks uncommitted, resolves
+  `refs/remotes/<remote>/<target>` (missing: toast "Target branch <t> does not
+  exist"), compares with `rev-list --left-right --count`: in sync does
+  nothing, only behind runs `git merge --ff-only` and toasts "Pulled latest
+  changes. You're up to date!", diverged sends the agent "Merge
+  <remote>/<target> into this branch. Then push." Failures toast "Pulling
+  latest from remote failed: <message>". Success refreshes the workspace's
+  changes. `targetSyncStatus` is `git rev-list --count HEAD..<remote>/<target>`
+  (index `Hse`).
+
+Ours: `pr_pull_latest_from_target` (src-tauri/src/pr/pull_latest.rs) and
+`targetBehind` / `detached` in `pr_git_state`; rules in
+src/features/pr/pullLatest.ts; button and shared state in
+src/features/pr/usePullLatest.tsx; ⌘⇧L bound at `PRIORITY.HIGH` in
+`WorkspaceView`. e2e: tests/e2e/shortcuts-git-pull.e2e.mjs. Differences:
+no stacks in OpenConductor (that check is absent); the shortcut also waits for
+the git state to load (the remote comes from it); the success toast uses our
+"info" style (no success toast kind); the worktree lock Conductor holds
+around the git steps (`Uc`) is not taken; a null `targetBehind` hides the
+button instead of showing "(undefined commits)".
+
+Formerly unbound, now bound:
+
+- `terminal.openLocalhost` (⌘⇧B): now bound; see "terminal.openLocalhost"
+  below. The in-app Browser tab it can open stays a gap.
+
+## terminal.openLocalhost (⌘⇧B) and the Run tab's Open button
+
+Read 2026-11-06 with python string search over the decoded `renderApp-D_fmY7hW.js`
+on sven m5 max (`rea search` still fails on it, see REA gaps). Four `oi` call
+sites:
+
+- Terminal panel, normal priority (offset ~7,141,744): on the Run tab (`hn`),
+  if the Open button is shown (`id`: the run task is busy, not Spotlight, and
+  there is a preview option) open the first option and return true; else if a
+  native app owns a port under the run's process tree (`Fo`) focus it; else,
+  only with the in-app browser on, open a Browser tab at
+  `http://localhost:<CONDUCTOR_PORT>`; else false. Off the Run tab: a cloud
+  terminal's forwarded port (`ha`), the active local terminal's last command
+  output URL (`Na`), or that command's native app (`C1`); else false.
+- Workspace tab bar, priority LOW (~7,404,625) and the split-group view, LOW
+  (~9,688,630): only when `canUseBrowser`, i.e. write access, not archived and
+  the experimental user setting `experimental_in_app_browser_preview`
+  ("In-app browser preview": "Open the preview button in an in-app browser tab
+  (with the annotation overlay) instead of your external browser", off by
+  default, ~10,653,572). Then they open a Browser tab at `b8i`'s URL. With the
+  setting off they return false.
+- Preview options (`rl`, `Fl`): the repository's `preview_urls` (`ezt`; entries
+  with a non-empty URL; the first is the default), else the URL detected in the
+  run terminal: `bzt` takes the last match of `Fno`
+  (`https?://(localhost|127.0.0.1|0.0.0.0|[::1]|[::])(:port)?(/path)?`) in the
+  last 1000 lines and rewrites 0.0.0.0/[::1]/[::] to localhost (`Bno`); it is
+  polled every 2 s until found and kept for that run. Each URL goes through
+  `gEi`: `$((CONDUCTOR_PORT + N))` (one digit) first, then `$NAME` for each of
+  `CONDUCTOR_WORKSPACE_NAME, _WORKSPACE_PATH, _ROOT_PATH, _DEFAULT_BRANCH, _PORT,
+  [_USER_ID,] _IS_LOCAL` in that order (`wE` in the index chunk). Label = name,
+  else the resolved URL; port from `UAt`.
+- Opening (`lr`): in-app browser on, `navigateToBrowser(url, {reload: true})`;
+  off, `vs(url)` = `plugin:opener|open_url` (index chunk `Rue`), errors only
+  logged ("Failed to open URL:").
+- The button (`Yve`, ~6,927,549): outline xs button in the panel's tab row
+  (`flex min-w-0 items-center ml-auto pl-2 gap-2`, before Run/Stop): browser
+  icon (default browser's icon, else lucide `globe`), "Open" and ` :<port>` in
+  muted mono, label hidden under a 440 px container (`@[440px]:inline-block`);
+  tooltip `Open <url>` + the ⌘⇧B hint; with several options a chevron
+  ("Choose preview URL") opens a menu of globe + label rows.
+
+Ours: `src/scripts/preview.ts` (Fno/Bno/bzt, UAt, gEi, options; unit-tested),
+`PreviewOpenButton` portaled into the strip's tab row (`PanelStrip`'s
+`.ws-strip-actions`), the handler in `ScriptsPanel` (Run tab selected, run busy,
+options present, else false), and `run_script_preview_env` (Rust,
+`oc_scripts::env::preview_env`) for the template variables and port block. URLs
+open with `openUrl` (opener plugin), as Conductor does with the experimental
+setting off. e2e: `tests/e2e/shortcuts-open-localhost.e2e.mjs`.
+
+Gaps (not built here):
+
+- In-app Browser tab and the "In-app browser preview" setting (with it on,
+  Conductor's three Browser-tab paths and the annotation overlay). Too large
+  for this change; with the setting off, Conductor's default, behaviour matches.
+- Focusing a native app found on the run's ports (`Fo`, "Focus <app>") and the
+  terminal-tab paths (`Na` local terminal command URL, `C1` its app, `ha` cloud
+  forwarding): OpenConductor has no port-to-process lookup and no per-command
+  output capture for terminal tabs.
+- The default browser's icon on the button (`fJs`, read from LaunchServices);
+  ours always shows the globe.
+- `CONDUCTOR_USER_ID` is never set (no signed-in user id in OpenConductor).
 
 ## REA gaps
+
+- terminal.openLocalhost (2026-11-06): `rea search` still fails on the decoded
+  chunk, and REA does not resolve names across chunks: the preview-template
+  variables (`xii`) are an index-chunk export (`h0 as xii`, defined there as
+  `wE`) and the opener `vs` is `dG as vs` (`Rue`, `plugin:opener|open_url`);
+  both were followed by hand through the import map with string search.
 
 - Settings... item id, its position in the app menu, and the label of `custom_quit`
   are not in the string table and were not decompiled (`rea search` on
@@ -319,6 +425,13 @@ Not bound, because OpenConductor lacks the feature behind them:
 - `rea search` over the decoded JavaScript and the binary on sven m5 max fails
   with `capability_unavailable` / `provider_unavailable`, so the handlers above
   were found with python string search over the decoded chunk.
+- git.pull: the helpers live in `index-BGEQ8YjU.js` under other minified
+  names; they were resolved by hand through the renderApp import list and the
+  index export list (`nDt` = `eo` = `sVt`, `iDt` = `er` = `q9t`, `QOt` = `dA` =
+  `z9t`). `sVe` (the PR target the shortcut uses) and `QO` beyond `cs(t) =
+  t === m$` were not followed further; we read both as the PR's base branch
+  and a detached HEAD. The Mac went offline once mid-read (`device_offline`)
+  and the read was retried.
 
 - `analyze-javascript-application` finds no IPC operations: it does not model
   Tauri `invoke` or `listen`. The registry and event wiring were located by

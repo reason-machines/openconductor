@@ -1,0 +1,3 @@
+/* Settings › Agents › Codex (CodexTab.tsx); theme tokens only. */
+.agc-ok { display: inline-flex; align-items: center; gap: 6px; color: var(--ag-success); font-size: 14px; }
+section[aria-label="Codex"] .ag-info th { white-space: nowrap; }

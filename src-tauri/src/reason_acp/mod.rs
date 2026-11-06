@@ -7,6 +7,8 @@
 //! * [`rpc`]: newline-delimited JSON-RPC 2.0 transport with in-order
 //!   dispatch of notifications before the responses that follow them.
 //! * [`cli`]: finding the `reason` binary and starting `reason acp`.
+//! * [`account`]: `reason status`, `reason login` and `reason connect` for
+//!   Settings › Agents › Reason.
 //! * [`updates`]: `session/update` to provider events, error notices sent
 //!   as text, and local/cloud path mapping.
 //! * [`provider`]: one Reason Session per chat; follow-up, Stop, resume.
@@ -16,12 +18,15 @@
 //! and tests on its own (`tools/reason-acp/run-rust-tests.sh`). The Tauri
 //! commands over it are in `crate::reason_chat`.
 
+pub mod account;
 pub mod cli;
 pub mod provider;
 pub mod rpc;
 pub mod updates;
 pub mod wire;
 
+#[cfg(test)]
+mod account_tests;
 #[cfg(test)]
 mod cli_tests;
 #[cfg(test)]

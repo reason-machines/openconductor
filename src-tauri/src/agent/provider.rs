@@ -1,6 +1,5 @@
 //! Agent providers: how an agent CLI is pointed at a model backend and
-//! authenticated (bring your own key, cloud credentials, or the CLI's own
-//! login).
+//! authenticated (bring your own key or the CLI's own login).
 //!
 //! A provider turns its options plus secrets from a [`SecretStore`] into a
 //! [`LaunchEnv`] (see `env.rs`). Which provider kinds exist is grounded in
@@ -203,14 +202,14 @@ mod tests {
         assert!(!shown.contains("sk-ant-abc"), "{shown}");
         assert!(shown.contains(keys::ANTHROPIC_API_KEY));
         assert_eq!(
-            require_secret(&MemorySecretStore::new(), keys::CURSOR_API_KEY),
+            require_secret(&MemorySecretStore::new(), keys::OPENAI_API_KEY),
             Err(ProviderError::MissingSecret {
-                key: keys::CURSOR_API_KEY
+                key: keys::OPENAI_API_KEY
             })
         );
-        assert!(check_secret(keys::CURSOR_API_KEY, "").is_err());
-        assert!(check_secret(keys::CURSOR_API_KEY, "a\u{7}b").is_err());
-        assert!(check_secret(keys::CURSOR_API_KEY, "sk-ok_123").is_ok());
+        assert!(check_secret(keys::OPENAI_API_KEY, "").is_err());
+        assert!(check_secret(keys::OPENAI_API_KEY, "a\u{7}b").is_err());
+        assert!(check_secret(keys::OPENAI_API_KEY, "sk-ok_123").is_ok());
     }
 
     #[test]

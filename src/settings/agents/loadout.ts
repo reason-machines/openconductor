@@ -4,7 +4,7 @@
 // `favorite_models`, one row per slot with the configuration as JSON
 // (`$9t`: `{type:"built-in", agent, model, thinkingLevel, fastMode}` or
 // `{type:"acp", acpAgentId, modelId}`). Pure, so node --test covers it.
-import { agentForModel, AGENT_DEFAULT_MODEL, type ModelAgent } from "../models.ts";
+import { agentForModel, AGENT_DEFAULT_MODEL, storedModel, type ModelAgent } from "../models.ts";
 import { CLAUDE_EFFORT_LEVELS, type ClaudeEffortLevel, type Settings, type ThinkingLevel } from "../types.ts";
 import type { FavoriteRow } from "./api.ts";
 
@@ -28,13 +28,12 @@ export interface AcpFavorite {
 export type Favorite = BuiltInFavorite | AcpFavorite;
 
 /** Conductor's built-in default effort per agent (`Uv.<agent>.defaultLevel`). */
-export const DEFAULT_EFFORT: Record<ModelAgent, string | undefined> = { claude: "high", codex: "medium", cursor: undefined };
+export const DEFAULT_EFFORT: Record<ModelAgent, string | undefined> = { claude: "high", codex: "medium" };
 
 /** Effort levels each agent's models offer (index `Wv`, `Bv`, `zp`). */
 export const EFFORT_LEVELS: Record<ModelAgent, readonly string[]> = {
   claude: CLAUDE_EFFORT_LEVELS,
   codex: ["none", "low", "medium", "high", "xhigh", "max", "ultra"],
-  cursor: ["low", "medium", "high", "xhigh"],
 };
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null;
@@ -81,7 +80,7 @@ export function settingsEffort(settings: Settings, model: string, purpose: "defa
     return level ?? DEFAULT_EFFORT.claude;
   }
   if (agent === "codex") return purpose === "review" ? settings.models.codex.review_thinking_level : settings.models.codex.default_thinking_level;
-  return DEFAULT_EFFORT.cursor;
+  return undefined;
 }
 
 export function builtIn(id: string, model: string, thinkingLevel?: string, fastMode = false): BuiltInFavorite {
@@ -90,9 +89,9 @@ export function builtIn(id: string, model: string, thinkingLevel?: string, fastM
   return { id, type: "built-in", agent, model, ...(level ? { thinkingLevel: level } : {}), fastMode };
 }
 
-/** Slot 1 as the settings describe it: the default model with its effort and fast mode. */
+/** Slot 1 as the settings describe it: the default model (a removed Cursor id reads as the default) with its effort and fast mode. */
 export function defaultFavorite(settings: Settings, id = "default"): BuiltInFavorite {
-  const model = settings.models.default || AGENT_DEFAULT_MODEL.claude;
+  const model = storedModel(settings.models.default || AGENT_DEFAULT_MODEL.claude);
   return builtIn(id, model, settingsEffort(settings, model), settings.models.default_fast_mode === true);
 }
 

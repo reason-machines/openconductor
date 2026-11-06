@@ -72,6 +72,29 @@ pub fn script_env(
     env
 }
 
+/// The variables the Run tab's Open URLs may use, in the reference app's
+/// order (`wE` in its index chunk), which is the order it replaces them in.
+/// No shared settings variables, no workspace id or path prefix.
+pub fn preview_env(ctx: &WorkspaceContext) -> Vec<(String, String)> {
+    let mut env = vec![
+        ("CONDUCTOR_WORKSPACE_NAME", ctx.workspace_name.clone()),
+        ("CONDUCTOR_WORKSPACE_PATH", path_string(&ctx.workspace_path)),
+        ("CONDUCTOR_ROOT_PATH", path_string(&ctx.root_path)),
+        (
+            "CONDUCTOR_DEFAULT_BRANCH",
+            ctx.target_branch
+                .clone()
+                .unwrap_or_else(|| DEFAULT_TARGET_BRANCH.to_string()),
+        ),
+        ("CONDUCTOR_PORT", ctx.port.to_string()),
+    ];
+    if let Some(user) = &ctx.user_id {
+        env.push(("CONDUCTOR_USER_ID", user.clone()));
+    }
+    env.push(("CONDUCTOR_IS_LOCAL", "1".to_string()));
+    env.into_iter().map(|(k, v)| (k.to_string(), v)).collect()
+}
+
 /// Expand `$NAME` and `${NAME}` from `env`. Unknown names are left as
 /// written, as is a `$` not followed by a name.
 pub fn expand_vars(input: &str, env: &BTreeMap<String, String>) -> String {
@@ -160,6 +183,29 @@ mod tests {
         assert_eq!(env["CONDUCTOR_USER_ID"], "u1");
         assert_eq!(env["API_URL"], "http://x");
         assert_eq!(env["CONDUCTOR_PORT"], "55000");
+    }
+
+    #[test]
+    fn preview_env_is_ordered_and_has_only_preview_vars() {
+        let mut c = ctx();
+        c.user_id = Some("u1".into());
+        let keys: Vec<String> = preview_env(&c).into_iter().map(|(k, _)| k).collect();
+        assert_eq!(
+            keys,
+            [
+                "CONDUCTOR_WORKSPACE_NAME",
+                "CONDUCTOR_WORKSPACE_PATH",
+                "CONDUCTOR_ROOT_PATH",
+                "CONDUCTOR_DEFAULT_BRANCH",
+                "CONDUCTOR_PORT",
+                "CONDUCTOR_USER_ID",
+                "CONDUCTOR_IS_LOCAL",
+            ]
+        );
+        let env: BTreeMap<_, _> = preview_env(&ctx()).into_iter().collect();
+        assert_eq!(env["CONDUCTOR_PORT"], "55000");
+        assert_eq!(env["CONDUCTOR_DEFAULT_BRANCH"], "main");
+        assert!(!env.contains_key("CONDUCTOR_USER_ID"));
     }
 
     #[test]

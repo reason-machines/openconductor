@@ -17,6 +17,22 @@ window.__ocE2eRepaint = setInterval(() => {
   el.style.outline = el.style.outline ? "" : "1px solid transparent";
   if (Date.now() > until) clearInterval(window.__ocE2eRepaint);
 }, 50);`;
+// What sits at the centre of arguments[0], for an intercepted click.
+const CLICK_TARGET = `
+const el = arguments[0];
+const describe = (e) => {
+  if (!e) return "nothing";
+  const cs = getComputedStyle(e);
+  const r = e.getBoundingClientRect();
+  const attrs = [...e.attributes].filter((a) => a.name !== "style" && a.name !== "d").map((a) => a.name + "=" + JSON.stringify(a.value.slice(0, 60))).join(" ");
+  return "<" + e.tagName.toLowerCase() + " " + attrs + "> rect " + [r.x, r.y, r.width, r.height].map(Math.round).join(",") + " opacity " + cs.opacity + " transform " + cs.transform + " pe " + cs.pointerEvents + " text " + JSON.stringify((e.textContent || "").trim().slice(0, 80));
+};
+const r = el.getBoundingClientRect();
+const x = r.x + r.width / 2, y = r.y + r.height / 2;
+const stack = document.elementsFromPoint(x, y).slice(0, 4);
+const chain = (e) => { const out = []; for (let n = e; n && n !== document.body && out.length < 4; n = n.parentElement) out.push(n.tagName.toLowerCase() + (n.className && typeof n.className === "string" ? "." + n.className.trim().split(/\\s+/).join(".") : "")); return out.join(" < "); };
+return "target " + describe(el) + " at " + Math.round(x) + "," + Math.round(y) + " in " + innerWidth + "x" + innerHeight + "; on top: " + stack.map((e) => describe(e) + " [" + chain(e) + "]").join(" | ") + "; toasts: " + [...document.querySelectorAll(".toast")].map(describe).join(" | ");`;
+
 const REPAINT_STOP = `clearInterval(window.__ocE2eRepaint); document.getElementById("__oc_e2e_repaint")?.remove();`;
 
 export class WebDriver {
@@ -76,8 +92,15 @@ export class WebDriver {
     return this.#call("GET", this.#s(`/element/${id}/text`));
   }
 
-  click(id) {
-    return this.#call("POST", this.#s(`/element/${id}/click`), {});
+  async click(id) {
+    try {
+      return await this.#call("POST", this.#s(`/element/${id}/click`), {});
+    } catch (e) {
+      // WebKitWebDriver's "element click intercepted" message is empty: name what is on top.
+      if (!/intercepted/.test(String(e?.message))) throw e;
+      const top = await this.execute(CLICK_TARGET, [{ [ELEMENT]: id }]).catch((x) => `(no detail: ${x?.message ?? x})`);
+      throw new Error(`${e.message} ${top}`);
+    }
   }
 
   /** Type into whatever has focus with real key events ("\uE007" is Enter). */

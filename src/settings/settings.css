@@ -97,6 +97,13 @@
 .settings .settings-row-label { display: flex; align-items: center; gap: 8px; min-height: 28px; margin: 0; font-size: 14px; font-weight: 500; }
 .settings .settings-row-help { margin-top: 2px; font-size: 14px; line-height: 20px; color: var(--s-muted); }
 .settings .settings-row-help p { margin: 0; }
+/* Conductor's root directory row: two paragraphs in "space-y-1". */
+.settings .settings-help-spaced p + p { margin-top: 4px; }
+/* Conductor's SSH key row (`npa`) is not a bordered row: "space-y-2" around a "space-y-0.5" title and
+   description (title plain font-medium, no min-h-7), so it sits 20 px under the row above with no rule. */
+.settings .settings-rows > .settings-plain-row { border-top: 0; padding-top: 0; display: flex; flex-direction: column; gap: 8px; }
+.settings .settings-plain-row .settings-plain-row-title { display: block; min-height: 0; font-size: 14px; line-height: 20px; font-weight: 500; }
+.settings .settings-plain-row-help { margin-top: 2px; font-size: 14px; line-height: 20px; color: var(--s-muted); }
 .settings .settings-row-help a, .settings .settings-header a { color: inherit; text-decoration: underline; }
 .settings .settings-row-help a:hover { color: var(--s-fg); }
 .settings .settings-row-help code { font-family: var(--font-mono); font-size: 13px; }
@@ -133,7 +140,8 @@
 .settings .settings-rows input[type="checkbox"][role="switch"]:checked::after { transform: translateX(20px); }
 .settings .settings-rows input[type="checkbox"][role="switch"]:disabled { opacity: 0.5; cursor: not-allowed; }
 .settings .settings-rows input[type="checkbox"][role="switch"]:focus-visible { outline: 2px solid var(--s-muted); outline-offset: 2px; }
-.settings .btn.settings-outline { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid var(--s-input); border-radius: 6px; background: transparent; color: var(--s-fg); font-size: 14px; font-weight: 500; }
+/* Conductor's Button outline, size default (`REe`): "h-8 px-3 text-sm gap-2 rounded-md border !border-input bg-background font-450". */
+.settings .btn.settings-outline { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border: 1px solid var(--s-input); border-radius: 6px; background: transparent; color: var(--s-fg); font-size: 14px; font-weight: 450; }
 .settings .btn.settings-outline:hover:not(:disabled) { background: var(--s-hover); }
 .settings .btn.settings-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 .settings .btn.settings-test { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 8px; color: var(--s-fg); font-size: 13px; background: none; border: 0; }
@@ -142,20 +150,27 @@
 .settings .btn.settings-test { border-radius: 6px; }
 .settings .btn.settings-test:hover:not(:disabled) { background: var(--sidebar-accent); }
 .settings .settings-kbd { font: inherit; font-size: 12px; padding: 0 3px; letter-spacing: 1px; }
+/* Conductor's Input (`Qo`): "flex h-8 rounded-md px-3 py-2 text-sm bg-background !border !border-input". */
 .settings .settings-field {
-  width: 100%; box-sizing: border-box; height: 36px; padding: 0 12px; border: 1px solid var(--s-input); border-radius: 6px;
+  width: 100%; box-sizing: border-box; height: 32px; padding: 0 12px; border: 1px solid var(--s-input); border-radius: 6px;
   background: transparent; color: var(--s-fg); font: inherit; font-size: 14px;
 }
 .settings .settings-field.mono { font-family: var(--font-mono); font-size: 12px; }
 .settings .settings-field-wrap { position: relative; display: flex; align-items: center; gap: 8px; }
-.settings .settings-field-wrap .settings-field { padding-right: 36px; }
-.settings .settings-field-icon { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; color: var(--s-muted); }
+/* Conductor's path fields (`mGt`, SSH key `npa`): "font-mono text-xs pr-8", a 24 px icon button "absolute right-1". */
+.settings .settings-field-wrap .settings-field { padding-right: 32px; }
+.settings .settings-field-icon { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; color: var(--s-muted); }
 .settings .settings-field-icon:hover { color: var(--s-fg); background: var(--s-hover); }
 .settings .settings-number-field { width: 128px; }
 .settings .settings-preview { margin-top: 16px; padding: 16px 12px; border-radius: 6px; background: var(--s-card); font-family: var(--font-mono); font-size: 14px; line-height: 20px; white-space: pre; overflow-x: auto; }
-.settings .settings-radios { gap: 12px; }
-.settings .settings-radio { font-size: 14px; gap: 8px; }
-.settings .settings-radio input[type="radio"] { width: 16px; height: 16px; margin: 0; accent-color: var(--s-fg); }
+/* Conductor's RadioGroup (`eW` "grid gap-2") and item (`KO`): a 16 px circle, "border border-primary
+   text-primary", checked shows a "size-2 rounded-full bg-current" dot; label "text-sm font-normal", "space-x-2". */
+.settings .settings-radios { gap: 8px; }
+.settings .settings-radio { font-size: 14px; line-height: 20px; gap: 8px; }
+.settings .settings-radio input[type="radio"] { -webkit-appearance: none; appearance: none; flex-shrink: 0; box-sizing: border-box; width: 16px; height: 16px; margin: 0; border: 1px solid var(--s-fg); border-radius: 999px; background: transparent; color: var(--s-fg); cursor: pointer; }
+.settings .settings-radio input[type="radio"]:checked { background: radial-gradient(circle, currentColor 0 3.5px, transparent 4px); }
+.settings .settings-radio input[type="radio"]:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.settings .settings-radio input[type="radio"]:disabled { cursor: not-allowed; opacity: 0.5; }
 .settings .settings-row-danger { margin-top: -8px; font-size: 12px; color: var(--diff-del); }
 .settings .settings-radio-detail { margin-left: 24px; gap: 4px; }
 .settings .settings-radio-detail .settings-field { width: 100%; max-width: 420px; }

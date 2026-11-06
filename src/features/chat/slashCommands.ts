@@ -19,7 +19,7 @@
 import fuzzysort from "fuzzysort";
 
 /** The agent running the chat, as Conductor names it; Reason runs as an ACP agent. */
-export type ComposerAgent = "claude" | "codex" | "cursor" | "acp";
+export type ComposerAgent = "claude" | "codex" | "acp";
 
 export type SlashEffect =
   | "clear_session"
@@ -107,7 +107,7 @@ export function planCommand(isPlanMode: boolean, agent: ComposerAgent): SlashCom
 
 /** Conductor's `vmo`. */
 export function fastCommand(isFastMode: boolean, agent: ComposerAgent): SlashCommand {
-  const what = agent === "codex" ? "fast mode (uses credits 2x faster)" : agent === "cursor" ? "fast mode (uses Cursor's faster variant)" : "fast mode (uses extra credits)";
+  const what = agent === "codex" ? "fast mode (uses credits 2x faster)" : "fast mode (uses extra credits)";
   return { name: "fast", description: isFastMode ? "Disable fast mode" : `Enable ${what}`, argumentHint: "", effect: "toggle_fast_mode", supportedAgents: [agent] };
 }
 
@@ -213,4 +213,4 @@ export function isKnownCommand(name: string): boolean {
 }
 
 /** The agent names Conductor uses in "/x is not available for …" (`_A`). */
-export const AGENT_NAMES: Record<ComposerAgent, string> = { claude: "Claude Code", codex: "Codex", cursor: "Cursor", acp: "this agent" };
+export const AGENT_NAMES: Record<ComposerAgent, string> = { claude: "Claude Code", codex: "Codex", acp: "this agent" };

@@ -45,6 +45,7 @@ export const CONDUCTOR_ICONS = {
   "chevrons-down-up": [["path",{"d":"m7 20 5-5 5 5"}],["path",{"d":"m7 4 5 5 5-5"}]],
   "eraser": [["path",{"d":"M21 21H8a2 2 0 0 1-1.42-.587l-3.994-3.999a2 2 0 0 1 0-2.828l10-10a2 2 0 0 1 2.829 0l5.999 6a2 2 0 0 1 0 2.828L12.834 21"}],["path",{"d":"m5.082 11.09 8.828 8.828"}]],
   "layout-grid": [["rect",{"width":"7","height":"7","x":"3","y":"3","rx":"1"}],["rect",{"width":"7","height":"7","x":"14","y":"3","rx":"1"}],["rect",{"width":"7","height":"7","x":"14","y":"14","rx":"1"}],["rect",{"width":"7","height":"7","x":"3","y":"14","rx":"1"}]],
+  "arrow-down": [["path",{"d":"M12 5v14"}],["path",{"d":"m19 12-7 7-7-7"}]],
 } as const satisfies Record<string, IconNode>;
 
 export type ConductorIconName = keyof typeof CONDUCTOR_ICONS;
