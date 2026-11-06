@@ -1,8 +1,8 @@
 use serde_json::{json, Value};
 
-use super::interact::{decision, request_of, ALLOW, DENY};
+use super::interact::{decision, request_of, Answer, ALLOW, DENY};
 use crate::agent::claude_stream::PermissionDecision;
-use crate::reason_acp::interaction::{Answer, Request};
+use crate::reason_acp::provider::Ask;
 
 fn question_input() -> Value {
     json!({ "questions": [
@@ -16,14 +16,22 @@ fn question_input() -> Value {
 
 #[test]
 fn exit_plan_mode_is_a_plan_and_ask_user_question_its_questions() {
-    let plan = request_of("ExitPlanMode", &json!({ "plan": "1. Add a table" }));
+    let plan = request_of(
+        "r1".into(),
+        "ExitPlanMode",
+        &json!({ "plan": "1. Add a table" }),
+    );
+    assert_eq!(plan.request_id, "r1");
     assert_eq!(
-        plan,
-        Request::Plan {
+        plan.ask,
+        Ask::Plan {
             plan: "1. Add a table".into()
         }
     );
-    let Request::Question { questions } = request_of("AskUserQuestion", &question_input()) else {
+    assert!(plan.options.is_empty());
+    let Ask::Questions(questions) =
+        request_of("r2".into(), "AskUserQuestion", &question_input()).ask
+    else {
         panic!("expected questions");
     };
     assert_eq!(questions.len(), 2);
@@ -38,18 +46,22 @@ fn exit_plan_mode_is_a_plan_and_ask_user_question_its_questions() {
 
 #[test]
 fn any_other_tool_is_a_yes_or_no_permission_titled_by_its_input() {
-    let Request::Permission(p) = request_of("Bash", &json!({ "command": "rm -rf build\necho hi" }))
-    else {
-        panic!("expected a permission");
-    };
-    assert_eq!(p.tool, "Bash");
+    let input = json!({ "command": "rm -rf build\necho hi" });
+    let p = request_of("r1".into(), "Bash", &input);
+    assert_eq!(
+        p.ask,
+        Ask::Tool {
+            tool: "Bash".into(),
+            input
+        }
+    );
     assert_eq!(p.title, "rm -rf build");
-    let ids: Vec<&str> = p.options.iter().map(|o| o.id.as_str()).collect();
+    let ids: Vec<&str> = p.options.iter().map(|o| o.option_id.as_str()).collect();
     assert_eq!(ids, [ALLOW, DENY]);
-    let Request::Permission(p) = request_of("mcp__x__y", &json!({})) else {
-        panic!("expected a permission");
-    };
-    assert_eq!(p.title, "mcp__x__y");
+    assert_eq!(
+        request_of("r2".into(), "mcp__x__y", &json!({})).title,
+        "mcp__x__y"
+    );
 }
 
 #[test]
@@ -112,4 +124,32 @@ fn question_answers_go_back_in_the_input_by_question_text() {
         json!({ "Which database?": "SQLite", "Which extras?": "Auth, Search" })
     );
     assert_eq!(input["questions"], question_input()["questions"]);
+}
+
+#[test]
+fn answers_parse_from_the_ui_json() {
+    assert_eq!(
+        Answer::from_json(&json!({ "kind": "option", "optionId": "allow" })),
+        Ok(Answer::Option("allow".into()))
+    );
+    assert_eq!(
+        Answer::from_json(&json!({ "kind": "plan", "approved": false, "feedback": "  " })),
+        Ok(Answer::Plan {
+            approved: false,
+            feedback: None
+        })
+    );
+    assert_eq!(
+        Answer::from_json(&json!({ "kind": "answers", "answers": [["a", "b"], "c"] })),
+        Ok(Answer::Answers(vec![
+            vec!["a".into(), "b".into()],
+            vec!["c".into()]
+        ]))
+    );
+    assert_eq!(
+        Answer::from_json(&json!({ "kind": "cancel" })),
+        Ok(Answer::Cancel)
+    );
+    assert!(Answer::from_json(&json!({ "kind": "option" })).is_err());
+    assert!(Answer::from_json(&json!({})).is_err());
 }

@@ -1,77 +1,11 @@
-// What a chat's agent is waiting on the user for, and the session status it
-// gives the chat. Pure: `interactions.test.ts` covers it without Tauri or React.
+// The permission cards' pure parts: the question a tool card asks, its
+// buttons, and the answers a questions card sends. `permissionPrompts.test.ts`
+// covers them without React.
 //
-// Conductor 0.87.6 (REA-read index chunk, frontend RPC methods TOOL_APPROVAL,
-// EXIT_PLAN_MODE and ASK_USER_QUESTION; evidence/chat-status/README.md) sets a
-// session to `needs_user_permission`, `needs_plan_response` or
-// `needs_user_input` while one of these waits and back to `working` once it is
-// answered; Stop clears them. The backend sends each as an `interaction` event
-// (src-tauri/src/reason_acp/interaction.rs) and drops it with
-// `interactionResolved`; the chat keeps the waiting ones in arrival order.
+// Conductor 0.87.6 (REA-read renderApp chunk; evidence/chat-status/README.md):
+// the tool card is `Jpo` (heading from `Xpo`), the questions card `H8i`.
 
-import { aggregateSessions, type SessionStatus } from "../../state/rowStatus.ts";
-import type { SessionStatus as QueueStatus } from "./queue.ts";
-
-export interface PermissionOption {
-  id: string;
-  label: string;
-  /** ACP's option kinds: `allow_once`, `allow_always`, `reject_once`, `reject_always`. */
-  kind: string;
-}
-
-export interface QuestionOption {
-  label: string;
-  description: string | null;
-}
-
-export interface Question {
-  header: string;
-  question: string;
-  multiSelect: boolean;
-  options: QuestionOption[];
-}
-
-export type InteractionRequest =
-  | { kind: "permission"; tool: string; title: string; input: unknown; options: PermissionOption[] }
-  | { kind: "plan"; plan: string }
-  | { kind: "question"; questions: Question[] };
-
-export interface Interaction {
-  id: string;
-  request: InteractionRequest;
-}
-
-/** The answer sent back (`reason_respond` / `claude_respond`). */
-export type InteractionAnswer =
-  | { kind: "option"; optionId: string }
-  | { kind: "plan"; approved: boolean; feedback?: string }
-  | { kind: "answers"; answers: string[][] }
-  | { kind: "cancel" };
-
-const STATUS: Record<InteractionRequest["kind"], SessionStatus> = {
-  plan: "needs_plan_response",
-  permission: "needs_user_permission",
-  question: "needs_user_input",
-};
-
-/** Adds a waiting interaction; one with the same id is replaced in place. */
-export function addInteraction(list: readonly Interaction[], i: Interaction): Interaction[] {
-  return list.some((x) => x.id === i.id) ? list.map((x) => (x.id === i.id ? i : x)) : [...list, i];
-}
-
-export function resolveInteraction(list: readonly Interaction[], id: string): Interaction[] {
-  return list.filter((x) => x.id !== id);
-}
-
-/**
- * The chat's session status (Conductor's `sessions.status`): cancelling while
- * a Stop is pending, else the most urgent waiting interaction, else the
- * queue's turn status.
- */
-export function chatSessionStatus(queue: QueueStatus, waiting: readonly Interaction[]): SessionStatus {
-  if (queue === "cancelling" || waiting.length === 0) return queue;
-  return aggregateSessions(waiting.map((i) => STATUS[i.request.kind]));
-}
+import type { PermissionOption, Question } from "./chatRuntime.ts";
 
 /** The card's question for a tool (Conductor's `Xpo`); ACP tool kinds map to the same lines. */
 export function permissionHeading(tool: string): string {

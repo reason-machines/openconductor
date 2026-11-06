@@ -12,18 +12,19 @@
 //
 // Outside the desktop app (the Vite preview) a stand-in agent answers each
 // prompt after a short delay with a note that no agent runs there, so the
-// queue and Stop can be exercised in a browser. The prompts "permission",
-// "plan" and "question" make it wait on that interaction instead, so the
-// cards and the session statuses they raise can be tried there too.
+// queue and Stop can be exercised in a browser.
 //
-// Reason asks over ACP (`session/request_permission`); the backend sends each
-// request as an `interaction` event and answers it with `reason_respond`.
+// Reason asks before some tool calls (ACP `session/request_permission`, held
+// by the backend as `permissionRequest`); the chat lists the request and its
+// status is `needs_user_permission` until `answerPermission` (chatRuntime.ts).
+// The same event carries Claude Code's plans and questions (`kind`).
+// In the desktop app every chat's status is kept in `conductor.db`
+// (`connectStatusStore`).
 
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { applyReasonPayload, type PromptAttachment, type ReasonPayload } from "./reason.ts";
-import { createChatRuntime, type ChatBackend, type Deliver, type InteractionSink } from "./chatRuntime.ts";
-import type { InteractionAnswer, InteractionRequest } from "./interactions.ts";
+import { applyReasonPayload, permissionPrompt, type PromptAttachment, type ReasonPayload } from "./reason.ts";
+import { connectStatusStore, createChatRuntime, type ChatBackend, type Deliver, type PermissionAnswer, type PermissionEvents, type PermissionPrompt } from "./chatRuntime.ts";
 import { desktopHost } from "./desktopHost.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { withGeneralPreferences } from "../../settings/prompts.ts";
@@ -48,17 +49,16 @@ export const reasonAvailable = (): boolean => isTauri();
 export const REASON_CAN_STEER = true;
 
 const reasonBackend: ChatBackend<ReasonConfig[]> = {
-  agent: "reason",
   canSteer: REASON_CAN_STEER,
   defaultConfig: [],
   sessionKey,
   configKey,
   parseConfig,
-  listen: (deliver, interactions) =>
+  listen: (deliver, permissions) =>
     listen<ReasonPayload>(EVENT, ({ payload }) => {
-      if (payload.type === "interaction") return interactions.add(payload.chatId, { id: payload.id, request: payload.request });
-      if (payload.type === "interactionResolved") return interactions.resolved(payload.chatId, payload.id);
-      deliver(payload.chatId, (s) => applyReasonPayload(s, payload));
+      if (payload.type === "permissionRequest") permissions.requested(payload.chatId, permissionPrompt(payload));
+      else if (payload.type === "permissionResolved") permissions.resolved(payload.chatId, payload.requestId);
+      else deliver(payload.chatId, (s) => applyReasonPayload(s, payload));
     }),
   async open(chatId, cwd, sessionId, config) {
     await invoke("reason_open_chat", { chatId, cwd, sessionId, config });
@@ -71,9 +71,9 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
   cancel(chatId) {
     void invoke("reason_cancel", { chatId });
   },
-  async respond(chatId, id, answer) {
-    await invoke("reason_respond", { chatId, id, answer });
-  },
+  // Reason asks only for tools: an option, or `cancelled`.
+  answerPermission: (chatId, requestId, answer) =>
+    invoke<boolean>("reason_answer_permission", { chatId, requestId, optionId: answer.kind === "option" ? answer.optionId : null }),
 };
 
 async function withGeneral(text: string, repoPath: string, cwd: string): Promise<string> {
@@ -88,25 +88,24 @@ async function withGeneral(text: string, repoPath: string, cwd: string): Promise
 
 // Stand-in agent for the browser preview: each prompt "works" for a moment,
 // then replies that no agent runs here. A follow-up supersedes the running
-// prompt, as Reason does.
+// prompt, as Reason does. The prompts "permission", "plan" and "question"
+// make it wait on that request instead, so the cards and the statuses they
+// raise can be tried in a browser.
 const PREVIEW_TURN_MS = 2500;
-/** Prompts the stand-in answers by waiting on the user. */
-const PREVIEW_ASKS: Record<string, InteractionRequest> = {
+type PreviewAsk = PermissionPrompt extends infer P ? (P extends PermissionPrompt ? Omit<P, "requestId"> : never) : never;
+const PREVIEW_ASKS: Record<string, PreviewAsk> = {
   permission: {
     kind: "permission",
-    tool: "execute",
-    title: "bash: rm -rf build",
+    tool: "Bash",
+    title: "rm -rf build",
     input: { command: "rm -rf build" },
     options: [
-      { id: "allow", label: "Yes", kind: "allow_once" },
-      { id: "always", label: "Always allow bash", kind: "allow_always" },
-      { id: "deny", label: "No", kind: "reject_once" },
+      { optionId: "allow", name: "Yes", kind: "allow_once" },
+      { optionId: "always", name: "Always allow Bash", kind: "allow_always" },
+      { optionId: "deny", name: "No", kind: "reject_once" },
     ],
   },
-  plan: {
-    kind: "plan",
-    plan: "## Plan\n\n1. Add the session status to every chat.\n2. Show it on the sidebar row and on Home.\n3. Test each status end to end.",
-  },
+  plan: { kind: "plan", plan: "## Plan\n\n1. Add the session status to every chat.\n2. Show it on the sidebar row and on Home.\n3. Test each status end to end." },
   question: {
     kind: "question",
     questions: [
@@ -124,7 +123,7 @@ const PREVIEW_ASKS: Record<string, InteractionRequest> = {
   },
 };
 
-function previewSummary(answer: InteractionAnswer): string {
+function previewSummary(answer: PermissionAnswer): string {
   switch (answer.kind) {
     case "option":
       return `option ${answer.optionId}`;
@@ -139,30 +138,29 @@ function previewSummary(answer: InteractionAnswer): string {
 
 function previewBackend(): ChatBackend<ReasonConfig[]> {
   const timers = new Map<string, ReturnType<typeof setTimeout>[]>();
-  /** The interaction each chat's stand-in waits on. */
+  /** The request each chat's stand-in waits on. */
   const asking = new Map<string, string>();
   let asks = 0;
   let send: Deliver = () => undefined;
-  let sink: InteractionSink = { add: () => undefined, resolved: () => undefined };
+  let permissions: PermissionEvents = { requested: () => undefined, resolved: () => undefined };
   const emit = (p: ReasonPayload) => send(p.chatId, (s) => applyReasonPayload(s, p));
-  /** Drops what the stand-in waits on; true when it waited. */
+  /** Withdraws what the stand-in waits on; true when it waited. */
   const stopAsking = (chatId: string) => {
     const id = asking.get(chatId);
     if (id === undefined) return false;
     asking.delete(chatId);
-    sink.resolved(chatId, id);
+    permissions.resolved(chatId, id);
     return true;
   };
   return {
-    agent: "reason",
     canSteer: REASON_CAN_STEER,
     defaultConfig: [],
     sessionKey,
     configKey,
     parseConfig,
-    async listen(deliver, interactions) {
+    async listen(deliver, events) {
       send = deliver;
-      sink = interactions;
+      permissions = events;
     },
     async open() {},
     async prompt({ chatId, text }) {
@@ -173,9 +171,9 @@ function previewBackend(): ChatBackend<ReasonConfig[]> {
       if (ask) {
         const t = setTimeout(() => {
           timers.set(chatId, (timers.get(chatId) ?? []).filter((x) => x !== t));
-          const id = `preview-${++asks}`;
-          asking.set(chatId, id);
-          sink.add(chatId, { id, request: ask });
+          const requestId = `preview-${++asks}`;
+          asking.set(chatId, requestId);
+          permissions.requested(chatId, { ...ask, requestId } as PermissionPrompt);
         }, 300);
         timers.set(chatId, [t]);
         return {};
@@ -194,24 +192,24 @@ function previewBackend(): ChatBackend<ReasonConfig[]> {
       stopAsking(chatId);
       emit({ chatId, type: "turnEnded", end: { outcome: "cancelled" } });
     },
-    async respond(chatId, id, answer) {
-      if (asking.get(chatId) !== id) return;
-      asking.delete(chatId);
+    async answerPermission(chatId, requestId, answer) {
+      if (asking.get(chatId) !== requestId) return false;
+      stopAsking(chatId);
       emit({ chatId, type: "text", text: `Browser preview: you answered with ${previewSummary(answer)}.` });
       emit({ chatId, type: "turnEnded", end: { outcome: "completed" } });
+      return true;
     },
   };
 }
 
 const reason = createChatRuntime(reasonAvailable() ? reasonBackend : previewBackend(), desktopHost);
+if (reasonAvailable()) connectStatusStore({ invoke: desktopHost.invoke, listen });
 
 export const chatSnapshot = reason.snapshot;
 export const subscribeChat = reason.subscribe;
 export const submitChat = reason.submit;
 export const stopChat = reason.stop;
 export const queueAction = reason.queueAction;
-/** Answers what the agent waits on (a permission, a plan or questions); `interactionResolved` follows from Reason. */
-export const answerInteraction = reason.answer;
 /**
  * "Reset chat". A Reason Session cannot drop turns, so a reset that deletes
  * messages forgets the chat's Session and the next prompt opens a new one
@@ -222,6 +220,9 @@ export const resetReasonChat = reason.reset;
 export const configureReason = reason.configure;
 /** The default model's options; a failed lookup leaves Reason's default. */
 export const configureReasonDefault = reason.configureDefault;
+/** Answers what the agent waits on: a tool's option, a plan decision, question answers, or `cancel`. */
+export const answerPermission = reason.answerPermission;
+export type { ChatSnapshot, PermissionAnswer, PermissionPrompt } from "./chatRuntime.ts";
 /** The options the chat's Sessions open with (a fork opens on the same). */
 export const reasonChatConfig = reason.config;
 

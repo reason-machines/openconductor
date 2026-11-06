@@ -9,12 +9,12 @@ use serde_json::Value;
 use tauri::{AppHandle, Emitter, Manager, State};
 
 use crate::agent::{AgentKind, ClaudeLaunch, PermissionMode};
-use crate::reason_acp::interaction::Answer;
 use crate::reason_acp::provider::{ProviderEvent, Sink};
 use crate::reason_acp::wire;
 use crate::settings::service::SettingsService;
 
 use super::find_claude_cli;
+use super::interact::Answer;
 use super::runner::{ClaudeRunner, Launcher};
 
 pub const EVENT: &str = "claude-chat-event";
@@ -117,8 +117,8 @@ pub fn claude_cancel(app: AppHandle, state: State<'_, ClaudeChats>, chat_id: Str
     state.runner(&app).cancel(&chat_id);
 }
 
-/// Answers the chat's waiting permission prompt `id` (an `interaction`
-/// event): `{ kind: "option", optionId: "allow" | "deny" }` for a tool,
+/// Answers the chat's waiting request `id` (a `permissionRequest` event):
+/// `{ kind: "option", optionId: "allow" | "deny" }` for a tool,
 /// `{ kind: "plan", approved, feedback? }` for a plan, `{ kind: "answers",
 /// answers }` for questions, or `{ kind: "cancel" }`.
 #[tauri::command]

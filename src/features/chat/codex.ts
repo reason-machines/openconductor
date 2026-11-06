@@ -213,12 +213,3 @@ export const DECISION_LABELS: Record<CodexDecision, string> = {
   decline: "Deny",
   cancel: "Deny and stop",
 };
-
-/**
- * A Codex chat's session status: a waiting approval is Conductor's tool
- * approval (`TOOL_APPROVAL` sets `needs_user_permission`; evidence/chat-status),
- * except while a Stop is pending.
- */
-export function codexSessionStatus(queue: "idle" | "working" | "cancelling" | "error", approvals: number): "idle" | "working" | "cancelling" | "error" | "needs_user_permission" {
-  return approvals > 0 && queue !== "cancelling" ? "needs_user_permission" : queue;
-}

@@ -136,24 +136,71 @@ fn prompt_blocks_put_attachments_after_the_text_as_file_resources() {
 }
 
 #[test]
-fn interactions_go_out_with_their_request_and_resolve_by_id() {
-    use super::interaction::{Interaction, Request};
-    let plan = ProviderEvent::Interaction(Interaction {
-        id: "perm-1".into(),
-        request: Request::Plan {
-            plan: "do it".into(),
+fn a_permission_request_carries_its_title_and_options() {
+    use super::provider::permission_request;
+    let params = json!({
+        "sessionId": "s",
+        "toolCall": { "toolCallId": "t1", "kind": "execute" },
+        "options": [
+            { "optionId": "a", "name": "Allow", "kind": "allow_once" },
+            { "name": "no id is dropped" },
+        ],
+    });
+    let ev = ProviderEvent::PermissionRequested(permission_request("permission-1".into(), &params));
+    assert_eq!(
+        event_json("c", &ev),
+        json!({ "chatId": "c", "type": "permissionRequest", "requestId": "permission-1", "title": "execute",
+            "options": [{ "optionId": "a", "name": "Allow", "kind": "allow_once" }],
+            "kind": "permission", "tool": "execute", "input": null })
+    );
+    let done = ProviderEvent::PermissionResolved {
+        request_id: "permission-1".into(),
+    };
+    assert_eq!(
+        event_json("c", &done),
+        json!({ "chatId": "c", "type": "permissionResolved", "requestId": "permission-1" })
+    );
+    let untitled = permission_request("p".into(), &json!({ "toolCall": {} }));
+    assert_eq!(
+        (untitled.title.as_str(), untitled.options.len()),
+        ("Tool call", 0)
+    );
+}
+
+#[test]
+fn plan_and_question_requests_carry_what_they_ask() {
+    use super::provider::{Ask, PermissionRequest, Question, QuestionOption};
+    let plan = ProviderEvent::PermissionRequested(PermissionRequest {
+        request_id: "r1".into(),
+        title: String::new(),
+        options: Vec::new(),
+        ask: Ask::Plan {
+            plan: "1. Add a table".into(),
         },
     });
     assert_eq!(
         event_json("c", &plan),
-        json!({ "chatId": "c", "type": "interaction", "id": "perm-1",
-                "request": { "kind": "plan", "plan": "do it" } })
+        json!({ "chatId": "c", "type": "permissionRequest", "requestId": "r1", "title": "", "options": [],
+            "kind": "plan", "plan": "1. Add a table" })
     );
-    let done = ProviderEvent::InteractionResolved {
-        id: "perm-1".into(),
-    };
+    let questions = ProviderEvent::PermissionRequested(PermissionRequest {
+        request_id: "r2".into(),
+        title: String::new(),
+        options: Vec::new(),
+        ask: Ask::Questions(vec![Question {
+            header: "Database".into(),
+            question: "Which database?".into(),
+            multi_select: true,
+            options: vec![QuestionOption {
+                label: "SQLite".into(),
+                description: None,
+            }],
+        }]),
+    });
     assert_eq!(
-        event_json("c", &done),
-        json!({ "chatId": "c", "type": "interactionResolved", "id": "perm-1" })
+        event_json("c", &questions),
+        json!({ "chatId": "c", "type": "permissionRequest", "requestId": "r2", "title": "", "options": [],
+            "kind": "question", "questions": [{ "header": "Database", "question": "Which database?", "multiSelect": true,
+                "options": [{ "label": "SQLite", "description": null }] }] })
     );
 }

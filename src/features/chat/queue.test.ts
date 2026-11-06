@@ -191,6 +191,29 @@ test("a queued message keeps its attachments until it sends", () => {
   assert.deepEqual(s.effects, [{ kind: "start", text: "with a file", attachments: [file] }]);
 });
 
+test("a permission request holds the turn: follow-ups queue, Stop cancels, an answer resumes working", async () => {
+  const { waitingOn, turnRunning } = await import("./queue.ts");
+  let q = submit(emptyQueue(), "go", "queue").queue;
+  q = waitingOn(q, "needs_user_permission");
+  assert.equal(q.status, "needs_user_permission");
+  assert.ok(turnRunning(q.status));
+  assert.equal(canSteerNow(q, true), false, "nothing to steer into while Reason waits on the user");
+
+  const followUp = submit(q, "and then", "steer");
+  assert.deepEqual(followUp.effects, [], "the follow-up waits");
+  assert.equal(followUp.queue.items.length, 1);
+  assert.deepEqual(steerQueued(followUp.queue, followUp.queue.items[0]!.id).effects, []);
+
+  assert.equal(waitingOn(q, null).status, "working");
+  assert.equal(waitingOn(q, "needs_plan_response").status, "needs_plan_response", "a plan takes over");
+  assert.equal(waitingOn(emptyQueue(), "needs_user_input").status, "idle", "only a running turn asks");
+  assert.equal(waitingOn(emptyQueue(), null).status, "idle");
+
+  const stopped = stop(q);
+  assert.equal(stopped.queue.status, "cancelling");
+  assert.deepEqual(stopped.effects, [{ kind: "cancel", hard: false }]);
+});
+
 test("queue-panel actions run through actionStep (shared by the Reason and Codex chats)", () => {
   let q = submit(emptyQueue(), "first", "queue").queue;
   q = submit(q, "second", "queue").queue;

@@ -4,14 +4,14 @@
 //! * [`map`] - stream-json events to the chat events the UI renders for
 //!   Reason (same payloads as [`crate::reason_acp::wire`]).
 //! * [`runner`] - one `claude` process per chat: turns, Stop, restarts.
-//! * [`interact`] - permission prompts as permission, plan and question
-//!   interactions, and the user's answers as decisions.
+//! * [`interact`] - permission prompts as the app's permission requests (a
+//!   tool, a plan or questions), and the user's answers as decisions.
 //! * [`commands`] - the Tauri commands and the `claude-chat-event` stream.
 //!
 //! The UI flow matches Reason chats: `claude_open_chat(chatId, cwd,
 //! sessionId?)`, then `claude_prompt(chatId, text)` per message (resolves
 //! with the turn's end), `claude_cancel(chatId)` for Stop, and
-//! `claude_respond(chatId, id, answer)` for an `interaction` event.
+//! `claude_respond(chatId, id, answer)` for a `permissionRequest` event.
 //!
 //! Evidence of the CLI's real output is in `evidence/claude-code/`.
 

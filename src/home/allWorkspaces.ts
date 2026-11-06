@@ -6,15 +6,13 @@
 //     directory, repo or "#<pr>"; "12", "w12" or "w-12" match workspace W-12);
 //   - filters: `nFi` (project filter label, archive filter labels) and the
 //     archive/project predicate in `UJo`;
-//   - row time: `BPt` over `SS` (date-fns formatDistance, shortened);
-//   - row status column (`vJo`): the row's status icon when `aWt` holds (not
-//     a PR/branch status, not unstarted), else the relative time.
+//   - row time: `BPt` over `SS` (date-fns formatDistance, shortened).
 // Conductor-only parts we leave out: owner filter and pinned group (cloud
 // organizations only), cost column and the status-matrix setting.
 
 import type { Repo, Workspace } from "../state/types";
 import { workspaceLabel } from "../components/sidebarLabel.ts";
-import type { RowStatus } from "../state/rowStatus.ts";
+import type { ArchivedWorkspace } from "../workspace/archivedList.ts";
 
 export type ArchiveFilter = "active" | "all" | "archived";
 
@@ -231,24 +229,41 @@ export function hasActiveFilters(f: HomeFilters): boolean {
 /** Clear filters shows everything, archived included (`B`). */
 export const CLEARED_FILTERS: HomeFilters = { projects: [], archiveFilter: "all" };
 
-/** Every row passing the filters and query, newest activity first. */
-export function homeRows(repos: readonly Repo[], filters: HomeFilters, query: string): HomeRow[] {
+/**
+ * Every row passing the filters and query, newest activity first.
+ *
+ * `archivedRows` are conductor.db's archived workspaces (`listArchivedWorkspaces`),
+ * which the sidebar state leaves out. Conductor's `UJo` filters one list that
+ * holds both, so "Only archived" and "Showing all" list them; an archived row
+ * shows the branch stored at archive time. Rows of repositories that are not
+ * open, or already in `repos`, are skipped.
+ */
+export function homeRows(
+  repos: readonly Repo[],
+  filters: HomeFilters,
+  query: string,
+  archivedRows: readonly ArchivedWorkspace[] = [],
+): HomeRow[] {
+  const all: { repo: Repo; workspace: Workspace }[] = repos.flatMap((repo) => repo.workspaces.map((workspace) => ({ repo, workspace })));
+  const known = new Set(all.map((e) => e.workspace.id));
+  for (const a of archivedRows) {
+    const repo = repos.find((r) => r.id === a.repoId);
+    if (repo && !known.has(a.id)) all.push({ repo, workspace: { ...a.workspace, status: "archived" } });
+  }
   const rows: HomeRow[] = [];
-  for (const repo of repos) {
-    for (const workspace of repo.workspaces) {
-      const archived = workspace.status === "archived";
-      if (filters.archiveFilter === "active" && archived) continue;
-      if (filters.archiveFilter === "archived" && !archived) continue;
-      if (filters.projects.length > 0 && !filters.projects.includes(repo.id)) continue;
-      const title = workspaceLabel({
-        name: workspace.name,
-        branch: workspace.branch,
-        prTitle: workspace.prTitle,
-        userSetWorkspaceName: workspace.userSetWorkspaceName,
-        targetBranch: repo.defaultBranch,
-      });
-      rows.push({ repo, workspace, title, lastActiveAt: lastActiveAt(workspace), archived });
-    }
+  for (const { repo, workspace } of all) {
+    const archived = workspace.status === "archived";
+    if (filters.archiveFilter === "active" && archived) continue;
+    if (filters.archiveFilter === "archived" && !archived) continue;
+    if (filters.projects.length > 0 && !filters.projects.includes(repo.id)) continue;
+    const title = workspaceLabel({
+      name: workspace.name,
+      branch: workspace.branch,
+      prTitle: workspace.prTitle,
+      userSetWorkspaceName: workspace.userSetWorkspaceName,
+      targetBranch: repo.defaultBranch,
+    });
+    rows.push({ repo, workspace, title, lastActiveAt: lastActiveAt(workspace), archived });
   }
   rows.sort((a, b) => b.lastActiveAt - a.lastActiveAt);
   if (!query.trim()) return rows;
@@ -319,15 +334,4 @@ export function saveFilters(f: HomeFilters): void {
   } catch {
     /* storage unavailable */
   }
-}
-
-/** PR and branch statuses (`AXo`): the row shows its time instead of these. */
-const GIT_STATUSES: ReadonlySet<RowStatus> = new Set<RowStatus>(["merged", "merge-queued", "ready-to-merge", "draft-pr", "merge-conflict", "checks-failing", "checks-pending", "open-pr", "local", "branch"]);
-
-/**
- * Whether a Home row shows its status icon instead of its time (`aWt`):
- * setting up, failed, an agent working, cancelling, waiting or needing the user.
- */
-export function homeShowsStatus(status: RowStatus): boolean {
-  return !GIT_STATUSES.has(status) && status !== "unstarted";
 }

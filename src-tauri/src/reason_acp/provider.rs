@@ -25,18 +25,14 @@
 //!   sends a [`ProviderEvent::Notice`] instead.
 //! * A prompt can carry attachments, sent as embedded `resource` blocks
 //!   after the text (Reason advertises `embeddedContext`).
-//! * `session/request_permission` is held for the user: it goes out as a
-//!   [`ProviderEvent::Interaction`] and is answered by [`ReasonProvider::respond`].
-//!   Stop, the turn's end and the agent exiting answer what is still
-//!   waiting with `cancelled`, as ACP requires, and each answered request
-//!   is reported with [`ProviderEvent::InteractionResolved`]. (Reason
-//!   0.2.684 does not send it: it runs its own tools and asks its questions
-//!   as reply text, see `evidence/chat-status/README.md`.)
+//! * `session/request_permission` (Reason asks before a tool call) is held
+//!   until the app answers it ([`ReasonProvider::answer_permission`]) and
+//!   reported as [`ProviderEvent::PermissionRequested`]; the chat's session
+//!   shows `needs_user_permission` meanwhile, as Conductor's tool approval
+//!   does. Stop and the end of the turn answer what is still open with
+//!   `cancelled`, as ACP requires.
 
 use super::cli::{AgentProcess, LaunchConfig};
-use super::interaction::{
-    acp_outcome, cancelled_outcome, permission_from_acp, Answer, Interaction, Request,
-};
 use super::rpc::{CallError, Incoming, Responder, RpcConnection, RpcError};
 use super::updates::{computer_is_cloud, parse_update, AgentEvent, ReasonError, UpdateContext};
 use serde_json::{json, Value};
@@ -58,12 +54,73 @@ pub enum ProviderEvent {
     /// Something the app should tell the user about the chat, e.g. that a
     /// requested model is not offered and Reason's default runs instead.
     Notice(String),
-    /// The agent waits for the user: a permission, a plan or questions.
-    Interaction(Interaction),
-    /// The interaction with this id was answered or dropped.
-    InteractionResolved {
-        id: String,
+    /// The agent waits on the user: Reason asks to run a tool
+    /// (`session/request_permission`, answered with
+    /// [`ReasonProvider::answer_permission`]); Claude Code also asks to
+    /// approve a plan or answer questions (`crate::claude_chat::interact`).
+    PermissionRequested(PermissionRequest),
+    /// A request was answered or withdrawn.
+    PermissionResolved {
+        request_id: String,
     },
+}
+
+/// One request the agent waits on, as the app shows it.
+#[derive(Debug, Clone, PartialEq)]
+pub struct PermissionRequest {
+    /// Provider-made id the answer names.
+    pub request_id: String,
+    /// The tool call's title, e.g. `bash: rm -rf build`.
+    pub title: String,
+    pub options: Vec<PermissionOption>,
+    pub ask: Ask,
+}
+
+/// What a request asks of the user. Conductor 0.87.6 (REA-read
+/// `index-BGEQ8YjU.js`, frontend RPC methods `TOOL_APPROVAL`,
+/// `EXIT_PLAN_MODE`, `ASK_USER_QUESTION`) shows each with its own card and
+/// session status: `needs_user_permission`, `needs_plan_response`,
+/// `needs_user_input`.
+#[derive(Debug, Clone, PartialEq)]
+pub enum Ask {
+    /// Run this tool call? `tool` is the tool's name (`Bash`) or ACP kind
+    /// (`execute`), empty when unknown; `input` its arguments, `Null` when
+    /// the agent sent none. Answered with one of the request's options.
+    Tool { tool: String, input: Value },
+    /// Approve this plan, or keep planning.
+    Plan { plan: String },
+    /// Answer these questions.
+    Questions(Vec<Question>),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Question {
+    pub header: String,
+    pub question: String,
+    pub options: Vec<QuestionOption>,
+    pub multi_select: bool,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct QuestionOption {
+    pub label: String,
+    pub description: Option<String>,
+}
+
+/// One choice offered with a permission request.
+#[derive(Debug, Clone, PartialEq)]
+pub struct PermissionOption {
+    pub option_id: String,
+    pub name: String,
+    /// `allow_once`, `allow_always`, `reject_once` or `reject_always`.
+    pub kind: String,
+}
+
+/// A permission request waiting for the app's answer.
+struct PendingPermission {
+    chat: String,
+    rpc_id: Value,
+    out: Responder,
 }
 
 /// A Session config option to set when the chat's Session is created.
@@ -127,15 +184,6 @@ struct Turn {
     error: Option<ReasonError>,
 }
 
-/// A `session/request_permission` waiting for the user's answer.
-struct Ask {
-    chat: String,
-    rpc_id: Value,
-    responder: Responder,
-    /// The request's option ids; an answer must be one of them.
-    options: Vec<String>,
-}
-
 #[derive(Default)]
 struct Shared {
     chats: HashMap<String, Chat>,
@@ -143,39 +191,9 @@ struct Shared {
     by_session: HashMap<String, String>,
     next_turn: u64,
     next_ticket: u64,
-    /// Permission requests waiting for an answer, by interaction id.
-    asks: HashMap<String, Ask>,
-    next_ask: u64,
-}
-
-impl Shared {
-    /// Removes the chat's waiting requests (every chat's with `None`).
-    fn take_asks(&mut self, chat: Option<&str>) -> Vec<(String, Ask)> {
-        let ids: Vec<String> = self
-            .asks
-            .iter()
-            .filter(|(_, a)| chat.is_none_or(|c| a.chat == c))
-            .map(|(id, _)| id.clone())
-            .collect();
-        let mut out: Vec<(String, Ask)> = ids
-            .into_iter()
-            .filter_map(|id| self.asks.remove(&id).map(|a| (id, a)))
-            .collect();
-        out.sort_by(|a, b| a.0.cmp(&b.0));
-        out
-    }
-}
-
-/// Reports each request resolved, then answers it `cancelled` (when the
-/// agent is still there). Resolved goes first: once answered, the agent may
-/// end the turn before this thread runs again.
-fn cancel_asks(asks: Vec<(String, Ask)>, sink: &Sink, respond: bool) {
-    for (id, ask) in asks {
-        sink(&ask.chat, ProviderEvent::InteractionResolved { id });
-        if respond {
-            let _ = ask.responder.respond(&ask.rpc_id, Ok(cancelled_outcome()));
-        }
-    }
+    /// Open permission requests by `request_id`.
+    permissions: HashMap<String, PendingPermission>,
+    next_permission: u64,
 }
 
 struct Agent {
@@ -264,22 +282,19 @@ impl ReasonProvider {
         ticket: Option<u64>,
     ) -> TurnEnd {
         let end = self.run_prompt(chat, text, attachments, ticket);
-        let asks = {
+        let idle = {
             let mut s = self.shared.lock().unwrap();
-            if let Some(t) = ticket {
-                if let Some(c) = s.chats.get_mut(chat) {
+            if let Some(c) = s.chats.get_mut(chat) {
+                if let Some(t) = ticket {
                     c.pending.remove(&t);
                 }
             }
-            // A request the turn left unanswered cannot be answered any more.
-            let turn_open = s.chats.get(chat).is_some_and(|c| c.turn.is_some());
-            if turn_open {
-                Vec::new()
-            } else {
-                s.take_asks(Some(chat))
-            }
+            s.chats.get(chat).is_none_or(|c| c.turn.is_none())
         };
-        cancel_asks(asks, &self.sink, true);
+        // No turn runs any more: nothing can use an answer to what is open.
+        if idle {
+            self.withdraw_permissions(chat);
+        }
         (self.sink)(chat, ProviderEvent::TurnEnded(end.clone()));
         end
     }
@@ -351,55 +366,75 @@ impl ReasonProvider {
         }
     }
 
-    /// Answers the chat's waiting request `id`. Reason asks only for
-    /// permission, so the answer is an option of that request (or
-    /// [`Answer::Cancel`]).
-    pub fn respond(&self, chat: &str, id: &str, answer: &Answer) -> Result<(), String> {
-        let (ask, result) = {
-            let mut s = self.shared.lock().unwrap();
-            let ask = s
-                .asks
-                .get(id)
-                .filter(|a| a.chat == chat)
-                .ok_or_else(|| format!("No request {id} is waiting in this chat."))?;
-            let result = acp_outcome(answer, &ask.options)?;
-            let ask = s.asks.remove(id).expect("ask");
-            (ask, result)
-        };
-        // Resolved first, as in `cancel_asks`.
-        (self.sink)(chat, ProviderEvent::InteractionResolved { id: id.into() });
-        let sent = ask.responder.respond(&ask.rpc_id, Ok(result));
-        sent.map_err(|e| format!("Could not answer Reason: {e}"))
-    }
-
     /// Stops the chat's running turn. Safe to call when nothing runs.
-    /// `session/cancel` goes first, then every request the turn left
-    /// waiting is answered `cancelled`, as ACP orders it.
     pub fn cancel(&self, chat: &str) {
         let session_id = {
             let mut s = self.shared.lock().unwrap();
-            match s.chats.get_mut(chat) {
-                Some(c) => {
-                    for stopped in c.pending.values_mut() {
-                        *stopped = true;
-                    }
-                    match &mut c.turn {
-                        Some(turn) => {
-                            turn.stop_requested = true;
-                            c.session_id.clone()
-                        }
-                        None => None,
-                    }
-                }
-                None => None,
+            let Some(c) = s.chats.get_mut(chat) else {
+                return;
+            };
+            for stopped in c.pending.values_mut() {
+                *stopped = true;
             }
+            let Some(turn) = &mut c.turn else {
+                return;
+            };
+            turn.stop_requested = true;
+            c.session_id.clone()
         };
         let conn = self.agent.lock().unwrap().as_ref().map(|a| a.conn.clone());
         if let (Some(conn), Some(id)) = (conn, session_id) {
             let _ = conn.notify("session/cancel", json!({ "sessionId": id }));
         }
-        let asks = self.shared.lock().unwrap().take_asks(Some(chat));
-        cancel_asks(asks, &self.sink, true);
+        // After session/cancel, so the agent knows the turn is stopping when
+        // its permission request comes back `cancelled`.
+        self.withdraw_permissions(chat);
+    }
+
+    /// Answers the chat's permission request with `option_id`, or as
+    /// `cancelled` when `None`. False when the request is not open (already
+    /// answered, withdrawn, or another chat's).
+    pub fn answer_permission(&self, chat: &str, request_id: &str, option_id: Option<&str>) -> bool {
+        let pending = {
+            let mut s = self.shared.lock().unwrap();
+            match s.permissions.get(request_id) {
+                Some(p) if p.chat == chat => s.permissions.remove(request_id),
+                _ => None,
+            }
+        };
+        let Some(p) = pending else {
+            return false;
+        };
+        let outcome = match option_id {
+            Some(id) => json!({ "outcome": "selected", "optionId": id }),
+            None => json!({ "outcome": "cancelled" }),
+        };
+        let _ = p.out.respond(&p.rpc_id, Ok(json!({ "outcome": outcome })));
+        (self.sink)(
+            chat,
+            ProviderEvent::PermissionResolved {
+                request_id: request_id.into(),
+            },
+        );
+        true
+    }
+
+    /// Answers every open permission request of the chat with `cancelled`.
+    fn withdraw_permissions(&self, chat: &str) {
+        let open: Vec<String> = {
+            let s = self.shared.lock().unwrap();
+            let mut ids: Vec<String> = s
+                .permissions
+                .iter()
+                .filter(|(_, p)| p.chat == chat)
+                .map(|(id, _)| id.clone())
+                .collect();
+            ids.sort();
+            ids
+        };
+        for id in open {
+            self.answer_permission(chat, &id, None);
+        }
     }
 
     /// Recent Sessions in the signed-in Workspace, newest first.
@@ -607,6 +642,41 @@ fn file_uri(path: &Path) -> String {
     out
 }
 
+/// The app's view of `session/request_permission` params: the tool call's
+/// title (else its kind, else "Tool call") and the offered options.
+pub fn permission_request(request_id: String, params: &Value) -> PermissionRequest {
+    let call = &params["toolCall"];
+    let title = [&call["title"], &call["kind"]]
+        .into_iter()
+        .find_map(|v| v.as_str().filter(|t| !t.trim().is_empty()))
+        .unwrap_or("Tool call")
+        .to_string();
+    let options = params["options"]
+        .as_array()
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let options = options
+        .iter()
+        .filter_map(|o| {
+            Some(PermissionOption {
+                option_id: o["optionId"].as_str()?.into(),
+                name: o["name"].as_str().unwrap_or_default().into(),
+                kind: o["kind"].as_str().unwrap_or_default().into(),
+            })
+        })
+        .collect();
+    let ask = Ask::Tool {
+        tool: call["kind"].as_str().unwrap_or_default().into(),
+        input: call.get("rawInput").cloned().unwrap_or(Value::Null),
+    };
+    PermissionRequest {
+        request_id,
+        title,
+        options,
+        ask,
+    }
+}
+
 fn error_text(v: &Value) -> String {
     v["message"]
         .as_str()
@@ -614,9 +684,9 @@ fn error_text(v: &Value) -> String {
         .into()
 }
 
-/// Routes `session/update` to the chat that owns the Session, and holds a
-/// `session/request_permission` for the user. Reason runs its own tools, so
-/// the other client-side methods (fs, terminal) are refused.
+/// Routes `session/update` to the chat that owns the Session. Reason runs
+/// its own tools, so client-side methods (fs, terminal, permission) are
+/// refused.
 fn updates_handler(shared: Arc<Mutex<Shared>>, sink: Sink) -> super::rpc::Handler {
     Box::new(move |msg: Incoming, out: &Responder| match msg {
         Incoming::Notification { method, params } if method == "session/update" => {
@@ -650,37 +720,29 @@ fn updates_handler(shared: Arc<Mutex<Shared>>, sink: Sink) -> super::rpc::Handle
             }
         }
         Incoming::Request { id, method, params } if method == "session/request_permission" => {
-            let asked = {
+            let routed = {
                 let mut s = shared.lock().unwrap();
                 let sid = params["sessionId"].as_str().unwrap_or_default();
-                let chat = s
-                    .by_session
-                    .get(sid)
-                    .filter(|c| s.chats.get(*c).is_some_and(|c| c.turn.is_some()))
-                    .cloned();
-                chat.map(|chat| {
-                    s.next_ask += 1;
-                    let key = format!("perm-{}", s.next_ask);
-                    let permission = permission_from_acp(&params);
-                    let options = permission.options.iter().map(|o| o.id.clone()).collect();
-                    s.asks.insert(
-                        key.clone(),
-                        Ask {
+                match s.by_session.get(sid).cloned() {
+                    Some(chat) => {
+                        s.next_permission += 1;
+                        let request_id = format!("permission-{}", s.next_permission);
+                        let pending = PendingPermission {
                             chat: chat.clone(),
                             rpc_id: id.clone(),
-                            responder: out.clone(),
-                            options,
-                        },
-                    );
-                    let request = Request::Permission(permission);
-                    (chat, Interaction { id: key, request })
-                })
+                            out: out.clone(),
+                        };
+                        s.permissions.insert(request_id.clone(), pending);
+                        Some((chat, permission_request(request_id, &params)))
+                    }
+                    None => None,
+                }
             };
-            match asked {
-                Some((chat, interaction)) => sink(&chat, ProviderEvent::Interaction(interaction)),
-                // No running turn of ours asked: nobody can answer it.
+            match routed {
+                Some((chat, request)) => sink(&chat, ProviderEvent::PermissionRequested(request)),
+                // No chat to ask: the tool call does not run.
                 None => {
-                    let _ = out.respond(&id, Ok(cancelled_outcome()));
+                    let _ = out.respond(&id, Ok(json!({ "outcome": { "outcome": "cancelled" } })));
                 }
             }
         }
@@ -688,10 +750,6 @@ fn updates_handler(shared: Arc<Mutex<Shared>>, sink: Sink) -> super::rpc::Handle
             let message = format!("{method} is not supported by OpenConductor");
             let code = super::rpc::codes::METHOD_NOT_FOUND;
             let _ = out.respond(&id, Err(RpcError { code, message }));
-        }
-        Incoming::Closed { .. } => {
-            let asks = shared.lock().unwrap().take_asks(None);
-            cancel_asks(asks, &sink, false);
         }
         _ => {}
     })

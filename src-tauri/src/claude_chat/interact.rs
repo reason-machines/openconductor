@@ -1,5 +1,6 @@
-//! Claude Code's permission prompts as chat interactions, and the user's
-//! answers as permission decisions.
+//! Claude Code's permission prompts (stream-json `can_use_tool`) as the
+//! app's permission requests, and the user's answers as permission
+//! decisions.
 //!
 //! Conductor 0.87.6 (REA-read `index-BGEQ8YjU.js`, frontend RPC methods)
 //! treats two tools apart from ordinary tool approvals: `ExitPlanMode`
@@ -12,8 +13,8 @@
 use serde_json::{json, Map, Value};
 
 use crate::agent::claude_stream::PermissionDecision;
-use crate::reason_acp::interaction::{
-    Answer, Permission, PermissionOption, Question, QuestionOption, Request,
+use crate::reason_acp::provider::{
+    Ask, PermissionOption, PermissionRequest, Question, QuestionOption,
 };
 
 pub const ALLOW: &str = "allow";
@@ -22,32 +23,95 @@ pub const DENY: &str = "deny";
 const PLAN_TOOL: &str = "ExitPlanMode";
 const QUESTION_TOOL: &str = "AskUserQuestion";
 
-/// What the prompt for `tool` asks the user.
-pub fn request_of(tool: &str, input: &Value) -> Request {
-    match tool {
-        PLAN_TOOL => Request::Plan {
-            plan: input["plan"].as_str().unwrap_or_default().to_owned(),
-        },
-        QUESTION_TOOL => Request::Question {
-            questions: questions(input),
-        },
-        _ => Request::Permission(Permission {
-            tool: tool.to_owned(),
-            title: title(tool, input),
-            input: input.clone(),
-            options: vec![
+/// The user's answer, as the UI sends it to `claude_respond` (`{ kind, ... }`).
+#[derive(Debug, Clone, PartialEq)]
+pub enum Answer {
+    /// A permission option by id ([`ALLOW`] or [`DENY`]).
+    Option(String),
+    /// Approve the plan, or keep planning with optional feedback.
+    Plan {
+        approved: bool,
+        feedback: Option<String>,
+    },
+    /// One entry per question: the chosen labels and any typed answer.
+    Answers(Vec<Vec<String>>),
+    /// Dismissed without an answer (Stop, or the card's cancel).
+    Cancel,
+}
+
+impl Answer {
+    pub fn from_json(v: &Value) -> Result<Answer, String> {
+        let str_list = |v: &Value| -> Vec<String> {
+            match v {
+                Value::String(s) => vec![s.clone()],
+                Value::Array(a) => a
+                    .iter()
+                    .filter_map(|s| s.as_str().map(str::to_owned))
+                    .collect(),
+                _ => Vec::new(),
+            }
+        };
+        match v["kind"].as_str() {
+            Some("option") => v["optionId"]
+                .as_str()
+                .map(|id| Answer::Option(id.to_owned()))
+                .ok_or_else(|| "an option answer needs optionId".to_owned()),
+            Some("plan") => Ok(Answer::Plan {
+                approved: v["approved"].as_bool().unwrap_or(false),
+                feedback: v["feedback"]
+                    .as_str()
+                    .map(str::trim)
+                    .filter(|s| !s.is_empty())
+                    .map(str::to_owned),
+            }),
+            Some("answers") => Ok(Answer::Answers(
+                v["answers"]
+                    .as_array()
+                    .map(|a| a.iter().map(str_list).collect())
+                    .unwrap_or_default(),
+            )),
+            Some("cancel") => Ok(Answer::Cancel),
+            other => Err(format!("unknown answer kind {other:?}")),
+        }
+    }
+}
+
+/// The request the prompt `request_id` for `tool` puts to the user.
+pub fn request_of(request_id: String, tool: &str, input: &Value) -> PermissionRequest {
+    let (title, options, ask) = match tool {
+        PLAN_TOOL => (
+            String::new(),
+            Vec::new(),
+            Ask::Plan {
+                plan: input["plan"].as_str().unwrap_or_default().to_owned(),
+            },
+        ),
+        QUESTION_TOOL => (String::new(), Vec::new(), Ask::Questions(questions(input))),
+        _ => (
+            title(tool, input),
+            vec![
                 PermissionOption {
-                    id: ALLOW.into(),
-                    label: "Yes".into(),
+                    option_id: ALLOW.into(),
+                    name: "Yes".into(),
                     kind: "allow_once".into(),
                 },
                 PermissionOption {
-                    id: DENY.into(),
-                    label: "No".into(),
+                    option_id: DENY.into(),
+                    name: "No".into(),
                     kind: "reject_once".into(),
                 },
             ],
-        }),
+            Ask::Tool {
+                tool: tool.to_owned(),
+                input: input.clone(),
+            },
+        ),
+    };
+    PermissionRequest {
+        request_id,
+        title,
+        options,
+        ask,
     }
 }
 

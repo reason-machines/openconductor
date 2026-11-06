@@ -2,7 +2,6 @@
 //! for `reason acp` that reproduces the behaviours listed in its docstring.
 
 use super::cli::LaunchConfig;
-use super::interaction::{Answer, Request};
 use super::provider::{ProviderEvent, ReasonProvider, TurnEnd};
 use super::updates::{AgentEvent, Place};
 use std::path::PathBuf;
@@ -260,84 +259,67 @@ fn a_stop_before_an_announced_prompt_is_sent_cancels_it_unsent() {
     assert_eq!(reply(&log), "turn 1: next");
 }
 
-/// The permission request the chat is waiting on: its id and option ids.
-fn asked(log: &Log) -> (String, Vec<String>) {
-    wait_for(log, |e| matches!(e, ProviderEvent::Interaction(_)));
+fn permission_request(log: &Log) -> super::provider::PermissionRequest {
+    wait_for(log, |e| matches!(e, ProviderEvent::PermissionRequested(_)));
     let log = log.lock().unwrap();
-    log.iter()
-        .find_map(|(_, e)| match e {
-            ProviderEvent::Interaction(i) => match &i.request {
-                Request::Permission(p) => {
-                    assert_eq!(p.title, "bash: rm -rf build");
-                    assert_eq!(p.tool, "execute");
-                    Some((
-                        i.id.clone(),
-                        p.options.iter().map(|o| o.id.clone()).collect(),
-                    ))
-                }
-                other => panic!("expected a permission, got {other:?}"),
-            },
-            _ => None,
-        })
-        .unwrap()
+    let found = log.iter().find_map(|(_, ev)| match ev {
+        ProviderEvent::PermissionRequested(r) => Some(r.clone()),
+        _ => None,
+    });
+    found.unwrap()
 }
 
 fn resolved(log: &Log) -> Vec<String> {
     let log = log.lock().unwrap();
-    let ids = log.iter().filter_map(|(_, e)| match e {
-        ProviderEvent::InteractionResolved { id } => Some(id.clone()),
+    let ids = log.iter().filter_map(|(_, ev)| match ev {
+        ProviderEvent::PermissionResolved { request_id } => Some(request_id.clone()),
         _ => None,
     });
     ids.collect()
 }
 
 #[test]
-fn a_permission_request_waits_for_the_users_option() {
+fn a_permission_request_waits_for_the_apps_answer() {
     let (p, log, home) = provider("permission");
-    p.open_chat("chat", &home, None);
+    p.open_chat("chat", &home.join("project"), None);
     let turn = {
         let p = p.clone();
         std::thread::spawn(move || p.prompt("chat", "permission"))
     };
-    let (id, options) = asked(&log);
-    assert_eq!(options, ["allow-once", "allow-always", "reject-once"]);
-    assert!(resolved(&log).is_empty(), "nothing answered yet");
-    assert!(p
-        .respond("other", &id, &Answer::Option("allow-once".into()))
-        .is_err());
-    assert!(p
-        .respond("chat", &id, &Answer::Option("nope".into()))
-        .is_err());
-    p.respond("chat", &id, &Answer::Option("allow-always".into()))
-        .unwrap();
-    assert_eq!(turn.join().unwrap(), TurnEnd::Completed);
-    assert_eq!(reply(&log), "permission: selected allow-always");
-    assert_eq!(resolved(&log), std::slice::from_ref(&id));
+    let r = permission_request(&log);
+    assert_eq!(r.title, "bash: rm -rf build");
+    let ids: Vec<_> = r
+        .options
+        .iter()
+        .map(|o| (o.option_id.as_str(), o.kind.as_str()))
+        .collect();
+    assert_eq!(ids, [("allow", "allow_once"), ("reject", "reject_once")]);
     assert!(
-        p.respond("chat", &id, &Answer::Cancel).is_err(),
-        "an answered request is gone"
+        !p.answer_permission("other-chat", &r.request_id, Some("allow")),
+        "another chat cannot answer it"
     );
+    assert!(p.answer_permission("chat", &r.request_id, Some("allow")));
+    assert!(
+        !p.answer_permission("chat", &r.request_id, Some("allow")),
+        "answered once"
+    );
+    assert_eq!(turn.join().unwrap(), TurnEnd::Completed);
+    assert_eq!(reply(&log), "permission: allow");
+    assert_eq!(resolved(&log), [r.request_id]);
 }
 
 #[test]
-fn stop_answers_a_waiting_permission_cancelled() {
+fn stop_answers_an_open_permission_request_cancelled() {
     let (p, log, home) = provider("permission-stop");
-    p.open_chat("chat", &home, None);
+    p.open_chat("chat", &home.join("project"), None);
     let turn = {
         let p = p.clone();
         std::thread::spawn(move || p.prompt("chat", "permission"))
     };
-    let (id, _) = asked(&log);
+    let r = permission_request(&log);
     p.cancel("chat");
     assert_eq!(turn.join().unwrap(), TurnEnd::Cancelled);
     assert_eq!(reply(&log), "permission: cancelled");
-    assert_eq!(resolved(&log), [id]);
-    // The resolution comes before the turn's end, so the UI never shows a stale card.
-    let log = log.lock().unwrap();
-    let pos =
-        |pred: &dyn Fn(&ProviderEvent) -> bool| log.iter().position(|(_, e)| pred(e)).unwrap();
-    assert!(
-        pos(&|e| matches!(e, ProviderEvent::InteractionResolved { .. }))
-            < pos(&|e| matches!(e, ProviderEvent::TurnEnded(_)))
-    );
+    assert_eq!(resolved(&log), std::slice::from_ref(&r.request_id));
+    assert!(!p.answer_permission("chat", &r.request_id, Some("allow")));
 }

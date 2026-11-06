@@ -42,7 +42,9 @@
 .allws-diff .del { color: var(--del); }
 .allws-when { display: flex; justify-content: flex-end; font-size: 12px; color: var(--muted); }
 .allws-archived { display: inline-flex; color: var(--muted); opacity: 0.6; }
-.allws-status { display: inline-flex; width: 16px; height: 16px; align-items: center; justify-content: center; color: var(--muted); }
+/* The row's agent or setup status in place of the time (Conductor's RCe at size-3.5, dWt colours). */
+.allws-status { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; color: var(--sidebar-muted-foreground, var(--muted)); }
+.allws-status[data-color="destructive"] { color: var(--del); }
 .allws-more { height: 24px; }
 .allws-empty { padding: 24px 0; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 14px; color: var(--muted); }
 .allws-clear { height: 28px; padding: 0 10px; border-radius: 6px; border: 1px solid var(--border); color: var(--text); font-size: 14px; }
@@ -58,4 +60,3 @@
 .pf-item { gap: 8px; }
 .pf-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .pf-check { display: inline-flex; flex: none; width: 16px; height: 16px; }
-.allws-status[data-color="destructive"] { color: var(--del); }

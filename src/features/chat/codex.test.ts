@@ -123,11 +123,3 @@ test("a prompt that never reached Codex fails its own turn only", () => {
   assert.equal(s.state.open.length, 0);
   assert.deepEqual(failTurn(s.state, "ws:t1", "again").events, []);
 });
-
-test("a waiting approval makes the chat need permission, unless a Stop is pending", async () => {
-  const { codexSessionStatus } = await import("./codex.ts");
-  assert.equal(codexSessionStatus("working", 0), "working");
-  assert.equal(codexSessionStatus("working", 1), "needs_user_permission");
-  assert.equal(codexSessionStatus("cancelling", 1), "cancelling");
-  assert.equal(codexSessionStatus("idle", 0), "idle");
-});

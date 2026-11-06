@@ -17,8 +17,26 @@
 //   runtime makes the second one a hard stop).
 // - Queued messages can be deleted, edited, reordered, or steered into the
 //   running turn.
+// - While the agent waits on the user the session is "needs_user_permission",
+//   "needs_plan_response" or "needs_user_input"; it still counts as running
+//   (Conductor's set of running statuses, index chunk `Rit`), so follow-ups
+//   queue and Stop cancels. An answer puts it back to "working" (Conductor's
+//   `qV`).
 
-export type SessionStatus = "idle" | "working" | "cancelling" | "error";
+/**
+ * `sessions.status` (Conductor's decoder `JZe` accepts exactly these). Chats
+ * reach idle, working, cancelling, error and the three needs_* statuses
+ * (chatRuntime.ts); "waiting" comes from `conductor.db`.
+ */
+export type SessionStatus =
+  | "idle"
+  | "working"
+  | "cancelling"
+  | "error"
+  | "needs_plan_response"
+  | "needs_user_permission"
+  | "needs_user_input"
+  | "waiting";
 export type SendMode = "queue" | "steer";
 /** The user's default follow-up behaviour (Conductor's `default_message_send_mode`). */
 export type FollowUpMode = "queued" | "steering";
@@ -71,7 +89,22 @@ export function resolveSendMode(opts: { canSteer: boolean; defaultMode: FollowUp
   return steering !== (opts.opposite ?? false) ? "steer" : "queue";
 }
 
-const busy = (s: SessionStatus) => s === "working" || s === "cancelling";
+/** The agent waits on the user mid-turn (Conductor's `FZo`). */
+export const NEEDS_USER: ReadonlySet<SessionStatus> = new Set(["needs_plan_response", "needs_user_permission", "needs_user_input"]);
+/** A turn is running (Conductor `Rit` without "waiting", which has no open turn). */
+export const turnRunning = (s: SessionStatus) => s === "working" || s === "cancelling" || NEEDS_USER.has(s);
+const busy = turnRunning;
+
+/**
+ * The agent now waits on the user for `needs` (a permission, a plan or
+ * questions), or, with null, no longer waits: the turn carries on. Only a
+ * running turn asks, and a pending Stop stays cancelling.
+ */
+export function waitingOn(q: ChatQueue, needs: SessionStatus | null): ChatQueue {
+  if (q.status !== "working" && !NEEDS_USER.has(q.status)) return q;
+  const status = needs ?? "working";
+  return status === q.status ? q : { ...q, status };
+}
 
 /** Sends the head if the session is idle and nothing holds the queue. */
 function drain(q: ChatQueue, effects: Effect[]): QueueStep {
@@ -113,7 +146,7 @@ export function turnEnded(q: ChatQueue, outcome: "completed" | "cancelled" | "fa
 
 /** Stop. Only does something while a turn runs. */
 export function stop(q: ChatQueue): QueueStep {
-  if (q.status === "working") return { queue: { ...q, status: "cancelling" }, effects: [{ kind: "cancel", hard: false }] };
+  if (q.status === "working" || NEEDS_USER.has(q.status)) return { queue: { ...q, status: "cancelling" }, effects: [{ kind: "cancel", hard: false }] };
   if (q.status === "cancelling") return { queue: q, effects: [{ kind: "cancel", hard: true }] };
   return { queue: q, effects: [] };
 }
@@ -187,7 +220,7 @@ export function steerQueued(q: ChatQueue, id: string): QueueStep {
   const items = q.items.filter((x) => x.id !== id);
   const editingId = q.editingId === id ? null : q.editingId;
   if (q.status === "working") return { queue: { ...q, items, editingId }, effects: [{ kind: "steer", text: m.text, attachments: m.attachments }] };
-  if (q.status === "cancelling") return { queue: q, effects: [] };
+  if (busy(q.status)) return { queue: q, effects: [] };
   return { queue: { ...q, items, editingId, status: "working", paused: false }, effects: [{ kind: "start", text: m.text, attachments: m.attachments }] };
 }
 

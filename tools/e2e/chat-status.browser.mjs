@@ -1,6 +1,6 @@
 // Session status from the chat layer, in the browser preview (stand-in agent).
 // The prompts "permission", "plan" and "question" make the stand-in wait on that
-// interaction (src/features/chat/reasonChat.ts), so this drives each card and
+// permission request (src/features/chat/reasonChat.ts), so this drives each card and
 // checks the status it raises on the sidebar row and on Home.
 // Usage: npx vite --host 127.0.0.1 --port 5392 --strictPort &
 //        TMPDIR=/tmp node tools/e2e/chat-status.browser.mjs <screenshot folder> [chromium path]
@@ -17,7 +17,7 @@ const box = p.locator(".composer textarea");
 await box.waitFor();
 const ok = (m) => console.log("ok -", m);
 const rowStatus = () => p.locator('[data-testid="left-sidebar-workspace-item"][data-active] [data-testid="workspace-status-icon"]').getAttribute("data-status");
-const card = (kind) => p.locator(`.interaction-card[data-kind="${kind}"]`);
+const card = (kind) => p.locator(`[data-testid="chat-permission-request"][data-kind="${kind}"]`);
 const lastReply = async () => (await p.locator(".chat-text").last().textContent())?.trim();
 const settle = async (status) => {
   for (let i = 0; i < 100 && (await rowStatus()) !== status; i++) await p.waitForTimeout(50);
@@ -31,7 +31,7 @@ const send = async (text) => {
 // Permission: the card, the row's "Needs permission", Yes with its shortcut.
 await send("permission");
 await card("permission").waitFor();
-assert.equal(await card("permission").locator(".interaction-heading").textContent(), "Do you want to run this command?");
+assert.equal(await card("permission").locator(".prompt-heading").textContent(), "Do you want to run this command?");
 await settle("needs-user-permission");
 ok("a permission request shows the card and the row needs permission");
 await p.screenshot({ path: `${OUT}/1-permission.png` });

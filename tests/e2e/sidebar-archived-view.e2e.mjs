@@ -121,3 +121,47 @@ test("archived workspaces are listed in the palette, open read-only and can be u
   assert.deepEqual(errors, []);
   await page.close();
 });
+
+// Conductor's Home list (`UJo`) runs the same archive filter over active and
+// archived workspaces; archived ones are not in the sidebar state, so Home
+// reads them from the archive (listArchivedWorkspaces).
+test("Home's All workspaces lists archived workspaces under Only archived and Showing all", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto(`${base}/?demo=1`);
+  await row(page, "Quiet harbor").waitFor();
+  await archiveFromMenu(page, "Quiet harbor");
+
+  await page.locator(".sb-row", { hasText: "Home" }).first().click();
+  const list = page.getByRole("listbox", { name: "Workspaces" });
+  await list.waitFor();
+  const names = () => list.locator(".allws-row .allws-name").allTextContents();
+  const archivedNames = () => list.locator(".allws-row", { has: page.locator(".allws-archived") }).locator(".allws-name").allTextContents();
+  const setFilter = async (label) => {
+    await page.getByRole("button", { name: "Archived workspaces" }).click();
+    await page.getByRole("menuitemcheckbox", { name: label }).click();
+  };
+  const isHarbor = (n) => /quiet.harbor/i.test(n);
+
+  assert.ok(!(await names()).some(isHarbor), "Hiding archived leaves it out");
+
+  await setFilter("Only archived");
+  await list.locator(".allws-row").first().waitFor();
+  const only = await names();
+  assert.ok(only.length > 0 && only.every(isHarbor), `Only archived lists the archived workspace, got ${JSON.stringify(only)}`);
+  assert.deepEqual(await archivedNames(), only, "every row carries the archived mark");
+  await shot(page, "home-only-archived.png");
+
+  await setFilter("Showing all");
+  const all = await names();
+  assert.ok(all.some(isHarbor) && all.some((n) => !isHarbor(n)), `Showing all lists active and archived, got ${JSON.stringify(all)}`);
+
+  // An archived row opens the read-only archived view.
+  await setFilter("Only archived");
+  await list.locator(".allws-row").first().click();
+  await page.locator(".archived-workspace").waitFor();
+
+  assert.deepEqual(errors, []);
+  await page.close();
+});

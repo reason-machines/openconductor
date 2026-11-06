@@ -9,11 +9,12 @@
 //! with the last stderr lines; the next prompt starts a new process that
 //! resumes the same Claude session.
 //!
-//! A permission prompt goes to the UI as a [`ProviderEvent::Interaction`]
-//! (a permission, a plan or questions, see [`super::interact`]) and waits
-//! for [`ClaudeRunner::respond`]. Stop denies what is still waiting; the
-//! turn's end and the process exiting drop it. Each one answered or dropped
-//! is reported with [`ProviderEvent::InteractionResolved`].
+//! A permission prompt goes to the UI as a
+//! [`ProviderEvent::PermissionRequested`] (a tool, a plan or questions, see
+//! [`super::interact`]) and waits for [`ClaudeRunner::respond`]. Stop denies
+//! what is still waiting; the turn's end and the process exiting drop it.
+//! Each one answered or dropped is reported with
+//! [`ProviderEvent::PermissionResolved`].
 
 use std::collections::{HashMap, VecDeque};
 use std::path::{Path, PathBuf};
@@ -26,10 +27,9 @@ use serde_json::Value;
 
 use crate::agent::claude_stream::{ClaudeEvent, PermissionDecision};
 use crate::agent::{ClaudeLaunch, ClaudeSession, SessionEvent};
-use crate::reason_acp::interaction::{Answer, Interaction};
 use crate::reason_acp::provider::{ProviderEvent, Sink, TurnEnd};
 
-use super::interact;
+use super::interact::{self, Answer};
 use super::map::TurnMapper;
 
 /// Builds the launch for a chat: its folder and the session to resume.
@@ -161,7 +161,9 @@ impl ClaudeRunner {
         for (id, (tool, input)) in asks {
             (self.sink)(
                 chat_id,
-                ProviderEvent::InteractionResolved { id: id.clone() },
+                ProviderEvent::PermissionResolved {
+                    request_id: id.clone(),
+                },
             );
             if let Ok(d) = interact::decision(&tool, &input, &Answer::Cancel) {
                 let _ = session.answer_permission(id, d);
@@ -189,7 +191,9 @@ impl ClaudeRunner {
         // Resolved before the answer: the agent may end the turn right after it.
         (self.sink)(
             chat_id,
-            ProviderEvent::InteractionResolved { id: id.into() },
+            ProviderEvent::PermissionResolved {
+                request_id: id.into(),
+            },
         );
         let sent = live
             .session
@@ -273,7 +277,7 @@ fn spawn_reader(
                 tool_name,
                 input,
             }) => {
-                let request = interact::request_of(&tool_name, &input);
+                let request = interact::request_of(request_id.clone(), &tool_name, &input);
                 let mut st = state.lock().unwrap();
                 if st.waiting.is_empty() {
                     // No turn of ours is running: nobody would see it.
@@ -288,12 +292,8 @@ fn spawn_reader(
                         .answer_permission(request_id, decision);
                     continue;
                 }
-                st.asks.insert(request_id.clone(), (tool_name, input));
-                let id = request_id;
-                sink(
-                    &chat_id,
-                    ProviderEvent::Interaction(Interaction { id, request }),
-                );
+                st.asks.insert(request_id, (tool_name, input));
+                sink(&chat_id, ProviderEvent::PermissionRequested(request));
             }
             SessionEvent::Event(e) => {
                 let mut st = state.lock().unwrap();
@@ -305,7 +305,10 @@ fn spawn_reader(
                     if ended.is_some() {
                         st.stopping = false;
                         for (id, _) in st.take_asks() {
-                            sink(&chat_id, ProviderEvent::InteractionResolved { id });
+                            sink(
+                                &chat_id,
+                                ProviderEvent::PermissionResolved { request_id: id },
+                            );
                         }
                     }
                     sink(&chat_id, out);
@@ -339,7 +342,10 @@ fn spawn_reader(
                 }
                 st.alive = false;
                 for (id, _) in st.take_asks() {
-                    sink(&chat_id, ProviderEvent::InteractionResolved { id });
+                    sink(
+                        &chat_id,
+                        ProviderEvent::PermissionResolved { request_id: id },
+                    );
                 }
                 let end = if st.stopping {
                     TurnEnd::Cancelled

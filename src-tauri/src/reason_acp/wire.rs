@@ -4,8 +4,7 @@
 //! [`event_json`] as its payload. Every payload has `chatId` and a `type`;
 //! field names are camelCase like the rest of the app's commands.
 
-use super::interaction::request_json;
-use super::provider::{ProviderEvent, SessionInfo, TurnEnd};
+use super::provider::{Ask, ProviderEvent, SessionInfo, TurnEnd};
 use super::updates::{AgentEvent, Diff, MappedPath, Place, ToolRow, ToolStatus};
 use serde_json::{json, Value};
 
@@ -20,11 +19,39 @@ pub fn event_json(chat: &str, ev: &ProviderEvent) -> Value {
         ProviderEvent::TurnEnded(end) => json!({ "type": "turnEnded", "end": turn_end_json(end) }),
         ProviderEvent::Agent(a) => agent_json(a),
         ProviderEvent::Notice(t) => json!({ "type": "notice", "text": t }),
-        ProviderEvent::Interaction(i) => {
-            json!({ "type": "interaction", "id": i.id, "request": request_json(&i.request) })
+        ProviderEvent::PermissionRequested(r) => {
+            let mut v = json!({
+                "type": "permissionRequest",
+                "requestId": r.request_id,
+                "title": r.title,
+                "options": r.options.iter().map(|o| json!({
+                    "optionId": o.option_id, "name": o.name, "kind": o.kind,
+                })).collect::<Vec<_>>(),
+            });
+            match &r.ask {
+                Ask::Tool { tool, input } => {
+                    v["kind"] = json!("permission");
+                    v["tool"] = json!(tool);
+                    v["input"] = input.clone();
+                }
+                Ask::Plan { plan } => {
+                    v["kind"] = json!("plan");
+                    v["plan"] = json!(plan);
+                }
+                Ask::Questions(qs) => {
+                    v["kind"] = json!("question");
+                    v["questions"] = qs.iter().map(|q| json!({
+                        "header": q.header,
+                        "question": q.question,
+                        "multiSelect": q.multi_select,
+                        "options": q.options.iter().map(|o| json!({ "label": o.label, "description": o.description })).collect::<Vec<_>>(),
+                    })).collect::<Vec<_>>().into();
+                }
+            }
+            v
         }
-        ProviderEvent::InteractionResolved { id } => {
-            json!({ "type": "interactionResolved", "id": id })
+        ProviderEvent::PermissionResolved { request_id } => {
+            json!({ "type": "permissionResolved", "requestId": request_id })
         }
     };
     v["chatId"] = json!(chat);

@@ -14,14 +14,20 @@
 // Entry and exit points: `chat()` creates a chat's state; `apply()` is the only
 // place transcript events land; `setQueue()` the only place the queue changes.
 //
-// While the agent waits on the user (a permission, a plan or questions;
-// interactions.ts) the chat's session status is `needs_user_permission`,
-// `needs_plan_response` or `needs_user_input`; `answer` answers. Statuses go
-// to the shared registry (chatStatus.ts) under the backend's `agent`.
-//
 // In the desktop app (`host.persist`) each chat's transcript is kept in
 // `conductor.db` (persist.ts): `stored()` loads it once when the chat is first
 // used and saves every later change.
+//
+// Each chat's session status is shared by every runtime (`chatStatuses`) and,
+// once `connectStatusStore` runs (the desktop app), kept in `conductor.db`
+// (`sessions.status`), loaded at start and followed through the
+// `session-status` event, so the sidebar and Home show a workspace's agent
+// from the moment the app starts. A backend whose agent waits on the user
+// mid-turn reports it through `PermissionEvents`: a tool call to allow, a
+// plan to approve or questions to answer (Claude Code asks all three through
+// its permission prompt). The chat lists the requests and its status is the
+// most urgent one's (`needs_plan_response`, `needs_user_permission`,
+// `needs_user_input`) until they are answered.
 //
 // Pure apart from what it is given: the backend, and the host's `invoke`,
 // `recordTurnChanges` and `localStorage`, so chatRuntime.test.ts runs it with
@@ -33,8 +39,6 @@ import { cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAt
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
-import { addInteraction, chatSessionStatus, resolveInteraction, type Interaction, type InteractionAnswer } from "./interactions.ts";
-import { publishChatStatus, type ChatAgentKind } from "./chatStatus.ts";
 import type { FileChange } from "../diff/types.ts";
 
 /** Open turns of one chat, as reason.ts tracks them. */
@@ -43,12 +47,86 @@ export type ChatTurns = ReasonChatState;
 /** Hands a backend event to the runtime: `reduce` turns it into a `Step` on the chat's turn state. */
 export type Deliver = (chatId: string, reduce: (state: ChatTurns) => Step) => void;
 
-/** Hands the runtime what the agent waits on the user for, and when that wait ends. */
-export interface InteractionSink {
-  /** The agent waits on the user; a request with the same id replaces the earlier one. */
-  add(chatId: string, interaction: Interaction): void;
-  /** The agent no longer waits on it (answered, cancelled, or its turn ended). */
-  resolved(chatId: string, id: string): void;
+/** One choice offered with a permission request. */
+export interface PermissionOption {
+  optionId: string;
+  name: string;
+  /** `allow_once`, `allow_always`, `reject_once` or `reject_always`. */
+  kind: string;
+}
+
+/** A tool call the agent waits to be allowed (ACP `session/request_permission`, Claude Code's tool approval). */
+export interface ToolPrompt {
+  kind: "permission";
+  requestId: string;
+  title: string;
+  options: PermissionOption[];
+  /** The tool's name (`Bash`) or ACP kind (`execute`); empty when unknown. Picks the card's question. */
+  tool: string;
+  /** The tool's arguments, shown on the card; null when none were sent. */
+  input: unknown;
+}
+
+/** A plan the agent waits to have approved (Claude Code's `ExitPlanMode`). */
+export interface PlanPrompt {
+  kind: "plan";
+  requestId: string;
+  /** Markdown. */
+  plan: string;
+}
+
+export interface QuestionOption {
+  label: string;
+  description: string | null;
+}
+
+export interface Question {
+  header: string;
+  question: string;
+  multiSelect: boolean;
+  options: QuestionOption[];
+}
+
+/** Questions the agent waits to have answered (Claude Code's `AskUserQuestion`). */
+export interface QuestionPrompt {
+  kind: "question";
+  requestId: string;
+  questions: Question[];
+}
+
+/** What the agent waits on the user for. */
+export type PermissionPrompt = ToolPrompt | PlanPrompt | QuestionPrompt;
+
+/** The user's answer to a `PermissionPrompt`. */
+export type PermissionAnswer =
+  /** One of a tool prompt's options. */
+  | { kind: "option"; optionId: string }
+  /** Approve the plan, or keep planning with the changes asked for. */
+  | { kind: "plan"; approved: boolean; feedback?: string }
+  /** Per question: the chosen labels, then any typed answer. */
+  | { kind: "answers"; answers: string[][] }
+  /** Declined without an answer (ACP `cancelled`). */
+  | { kind: "cancel" };
+
+/** The status a chat waiting on `kind` has (Conductor's TOOL_APPROVAL, EXIT_PLAN_MODE, ASK_USER_QUESTION). */
+export const PROMPT_STATUS: Record<PermissionPrompt["kind"], Q.SessionStatus> = {
+  permission: "needs_user_permission",
+  plan: "needs_plan_response",
+  question: "needs_user_input",
+};
+
+/** Most urgent first, as Conductor ranks a workspace's sessions (`tTr`). */
+const PROMPT_ORDER: readonly Q.SessionStatus[] = ["needs_plan_response", "needs_user_permission", "needs_user_input"];
+
+/** The status the open requests give a running chat; null when none is open. */
+export function promptsStatus(open: readonly PermissionPrompt[]): Q.SessionStatus | null {
+  return PROMPT_ORDER.find((s) => open.some((p) => PROMPT_STATUS[p.kind] === s)) ?? null;
+}
+
+/** How a backend reports permission requests opening and closing. */
+export interface PermissionEvents {
+  requested(chatId: string, request: PermissionPrompt): void;
+  resolved(chatId: string, requestId: string): void;
 }
 
 /** One prompt as the backend sends it. */
@@ -73,8 +151,6 @@ export interface PromptRequest {
 
 /** An agent the runtime runs chats on. */
 export interface ChatBackend<Config> {
-  /** Which agent's status this backend publishes (chatStatus.ts). */
-  agent: ChatAgentKind;
   /** The agent steers a running turn with a follow-up. */
   canSteer: boolean;
   /** Options a chat uses when none were picked, or when looking up the default failed. */
@@ -85,8 +161,8 @@ export interface ChatBackend<Config> {
   configKey(chatId: string): string;
   /** Reads saved options back; null when they are not this backend's `Config`. */
   parseConfig(saved: unknown): Config | null;
-  /** Starts delivering the agent's events, and what it waits on the user for; called once, before the first `open`. */
-  listen(deliver: Deliver, interactions: InteractionSink): Promise<unknown>;
+  /** Starts delivering the agent's events; called once, before the first `open`. */
+  listen(deliver: Deliver, permissions: PermissionEvents): Promise<unknown>;
   /** Opens the chat's agent session (a new one, or `sessionId` resumed) before its first prompt. */
   open(chatId: string, cwd: string, sessionId: string | null, config: Config): Promise<void>;
   /**
@@ -97,8 +173,8 @@ export interface ChatBackend<Config> {
   prompt(req: PromptRequest): Promise<{ turnChanges?: FileChange[] }>;
   /** Interrupts the running turn; `hard` on a repeated Stop. */
   cancel(chatId: string, hard: boolean): void;
-  /** Answers what the agent waits on (`InteractionSink.add`); agents that never ask leave it out. */
-  respond?(chatId: string, id: string, answer: InteractionAnswer): Promise<void>;
+  /** Answers a permission request. False when the request is no longer open. */
+  answerPermission?(chatId: string, requestId: string, answer: PermissionAnswer): Promise<boolean>;
 }
 
 /** What the runtime needs from the app around it. */
@@ -115,8 +191,8 @@ export interface ChatHost {
 export interface ChatSnapshot {
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
-  /** What the agent waits on the user for, oldest first. */
-  interactions: readonly Interaction[];
+  /** Open permission requests, oldest first. */
+  permissions: readonly PermissionPrompt[];
 }
 
 export type QueueAction = Q.QueueAction;
@@ -135,12 +211,6 @@ export interface ChatRuntime<Config> {
   /** Stop. A second Stop while the first is pending asks the backend to stop hard. */
   stop(chatId: string): void;
   queueAction(chatId: string, action: QueueAction): void;
-  /**
-   * Answers what the agent waits on; the card goes at once. A failed answer
-   * is logged, as the request is gone either way (the agent answered it
-   * cancelled, or the turn ended).
-   */
-  answer(chatId: string, id: string, answer: InteractionAnswer): void;
   /**
    * "Reset chat" to `turnId`: with `resetFiles`, restore the workspace to the
    * turn's end checkpoint first; only when that worked, delete the later
@@ -162,6 +232,12 @@ export interface ChatRuntime<Config> {
    * waits for them, and a failed lookup leaves `defaultConfig`.
    */
   configureDefault(chatId: string, config: Promise<Config>): void;
+  /**
+   * Answers a permission request: a tool's option, a plan decision,
+   * question answers, or `cancel`. The request closes when the backend
+   * confirms it, or at once when it was no longer open.
+   */
+  answerPermission(chatId: string, requestId: string, answer: PermissionAnswer): Promise<void>;
   /** The options the chat's sessions open with: picked, defaulted, or `defaultConfig`. */
   config(chatId: string): Promise<Config>;
 }
@@ -170,7 +246,6 @@ interface Chat<Config> {
   state: ChatTurns;
   transcript: ChatTranscript;
   queue: Q.ChatQueue;
-  interactions: readonly Interaction[];
   cwd: string | null;
   /** Repository the chat's workspace belongs to. */
   repoPath: string | null;
@@ -184,11 +259,127 @@ interface Chat<Config> {
   /** Unsent turns the user stopped: they end cancelled instead of being sent. */
   stopped: Set<string>;
   listeners: Set<(s: ChatSnapshot) => void>;
+  permissions: PermissionPrompt[];
 }
 
-// Every chat's session status lives in chatStatus.ts, shared by every
-// runtime (and Codex), so a workspace's status counts the chats of every agent.
-export { chatStatuses, hideChat, subscribeChatStatuses } from "./chatStatus.ts";
+// Every chat's session status (Conductor's `sessions.status`), so a sidebar
+// row can show its workspace's agent while that workspace is not open: chats
+// keep running here after their view unmounts. Closed (hidden) chats drop out,
+// as Conductor folds only a workspace's visible sessions. Shared by every
+// runtime, so a workspace's status counts the chats of every backend.
+let statuses: ReadonlyMap<string, Q.SessionStatus> = new Map();
+const hiddenChats = new Set<string>();
+const statusListeners = new Set<() => void>();
+
+function setStatus(chatId: string, status: Q.SessionStatus | undefined) {
+  if (statuses.get(chatId) === status) return;
+  const next = new Map(statuses);
+  if (status === undefined) next.delete(chatId);
+  else next.set(chatId, status);
+  statuses = next;
+  for (const fn of statusListeners) fn();
+}
+
+/**
+ * A chat's session status changed (any agent): the sidebar and Home see it
+ * and, once the store is connected, `conductor.db` keeps it.
+ */
+export function reportChatStatus(chatId: string, status: Q.SessionStatus): void {
+  if (hiddenChats.has(chatId)) return setStatus(chatId, undefined);
+  setStatus(chatId, status);
+  persistStatus(chatId, status);
+}
+
+/** Chat id → session status of every visible chat; a new map on each change. */
+export const chatStatuses = (): ReadonlyMap<string, Q.SessionStatus> => statuses;
+
+export function subscribeChatStatuses(fn: () => void): () => void {
+  syncStatuses();
+  statusListeners.add(fn);
+  return () => statusListeners.delete(fn);
+}
+
+/** A closed chat tab: its agent no longer counts toward the workspace's status. */
+export function hideChat(chatId: string): void {
+  hiddenChats.add(chatId);
+  setStatus(chatId, undefined);
+}
+
+/** The workspace a chat belongs to: a review chat's id is `<workspace id>:review:<n>`. */
+const workspaceOfChat = (chatId: string) => {
+  const i = chatId.indexOf(":review:");
+  return i < 0 ? chatId : chatId.slice(0, i);
+};
+
+/** What the status store needs from the desktop app. */
+export interface StatusStoreHost {
+  invoke: Invoke;
+  /** Tauri `listen`: calls `fn` with each event's payload until unlistened. */
+  listen<T>(event: string, fn: (e: { event: string; payload: T }) => void): Promise<unknown>;
+}
+
+// `conductor.db` keeps every chat's status (`sessions.status`). Writes go
+// one at a time per chat so they land in order; each write comes back as a
+// `session-status` event, which is skipped while that chat has writes in
+// flight. Any other event (another window, a test driver) is applied.
+const STATUS_EVENT = "session-status";
+const SESSION_STATUSES = new Set<string>(["idle", "working", "cancelling", "error", "needs_plan_response", "needs_user_permission", "needs_user_input", "waiting"]);
+let statusHost: StatusStoreHost | null = null;
+const writes = new Map<string, { chain: Promise<unknown>; inFlight: number; last: Q.SessionStatus | null }>();
+let syncing: Promise<unknown> | null = null;
+
+/** Keeps statuses in `conductor.db` from now on (the desktop app). */
+export function connectStatusStore(host: StatusStoreHost): void {
+  statusHost ??= host;
+  syncStatuses();
+}
+
+function persistStatus(chatId: string, status: Q.SessionStatus) {
+  const host = statusHost;
+  if (!host) return;
+  const w = writes.get(chatId) ?? { chain: Promise.resolve(), inFlight: 0, last: null };
+  writes.set(chatId, w);
+  if (w.last === status) return;
+  w.last = status;
+  w.inFlight++;
+  w.chain = w.chain
+    .then(() => host.invoke("session_set_status", { chatId, workspaceId: workspaceOfChat(chatId), status }))
+    .catch((e) => {
+      w.inFlight--;
+      console.warn("chat: session status not saved", e);
+    });
+}
+
+interface StoredStatus {
+  chatId: string;
+  status: string;
+}
+
+function receivedStatus({ chatId, status }: StoredStatus) {
+  if (!SESSION_STATUSES.has(status) || hiddenChats.has(chatId)) return;
+  const w = writes.get(chatId);
+  if (w && w.inFlight > 0) {
+    w.inFlight--;
+    return;
+  }
+  setStatus(chatId, status as Q.SessionStatus);
+}
+
+/** Loads the stored statuses once and follows later writes. */
+function syncStatuses() {
+  const host = statusHost;
+  if (syncing || !host) return;
+  syncing = host
+    .listen<StoredStatus>(STATUS_EVENT, (e) => {
+      if (e.event === STATUS_EVENT) receivedStatus(e.payload);
+    })
+    .then(() => host.invoke("session_statuses", {}) as Promise<StoredStatus[] | null>)
+    .then((rows) => {
+      // A chat that changed in this run already shows its own status.
+      for (const r of rows ?? []) if (!writes.has(r.chatId) && !statuses.has(r.chatId)) receivedStatus(r);
+    })
+    .catch((e) => console.warn("chat: stored session statuses not loaded", e));
+}
 
 export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: ChatHost): ChatRuntime<Config> {
   const chats = new Map<string, Chat<Config>>();
@@ -214,7 +405,6 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
         state: reasonChat(chatId),
         transcript: emptyTranscript(chatId),
         queue: Q.emptyQueue(),
-        interactions: [],
         cwd: null,
         repoPath: null,
         opened: false,
@@ -223,6 +413,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
         unsent: new Set(),
         stopped: new Set(),
         listeners: new Set(),
+        permissions: [],
       };
       chats.set(chatId, c);
     }
@@ -261,7 +452,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     return saver;
   }
 
-  const snapshot = (c: Chat<Config>): ChatSnapshot => ({ transcript: c.transcript, queue: c.queue, interactions: c.interactions });
+  const snapshot = (c: Chat<Config>): ChatSnapshot => ({ transcript: c.transcript, queue: c.queue, permissions: c.permissions });
   const notify = (c: Chat<Config>) => {
     const s = snapshot(c);
     for (const fn of c.listeners) fn(s);
@@ -282,30 +473,45 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     // A turn that ended moves the queue on: the next queued message may start.
     for (const e of step.events) {
       if (e.type !== "turn_status" || e.status === "running") continue;
-      // Nothing can wait on the user once no turn runs.
-      if (openTurns(c.state) === 0 && c.interactions.length > 0) setInteractions(c, []);
+      // No turn runs any more: the agent can no longer use an answer to what was open.
+      if (openTurns(c.state) === 0 && c.permissions.length > 0) {
+        c.permissions = [];
+        notify(c);
+      }
       setQueue(c, Q.turnEnded(c.queue, e.status, openTurns(c.state) > 0));
     }
   }
+
+  function closePermission(c: Chat<Config>, requestId: string) {
+    if (!c.permissions.some((r) => r.requestId === requestId)) return;
+    c.permissions = c.permissions.filter((r) => r.requestId !== requestId);
+    notify(c);
+    setQueue(c, Q.waitingOn(c.queue, promptsStatus(c.permissions)));
+  }
+
+  const permissionEvents: PermissionEvents = {
+    requested(chatId, request) {
+      const c = chats.get(chatId);
+      if (!c) return;
+      c.permissions = [...c.permissions.filter((r) => r.requestId !== request.requestId), request];
+      notify(c);
+      setQueue(c, Q.waitingOn(c.queue, promptsStatus(c.permissions)));
+    },
+    resolved(chatId, requestId) {
+      const c = chats.get(chatId);
+      if (c) closePermission(c, requestId);
+    },
+  };
 
   function setQueue(c: Chat<Config>, step: Q.QueueStep | Q.ChatQueue) {
     const { queue, effects } = "effects" in step ? step : { queue: step, effects: [] };
     if (queue !== c.queue) {
       c.queue = queue;
       notify(c);
-      publishStatus(c);
+      reportChatStatus(c.state.chatId, c.queue.status);
     }
     for (const e of effects) run(c, e);
   }
-
-  function setInteractions(c: Chat<Config>, list: readonly Interaction[]) {
-    if (list === c.interactions) return;
-    c.interactions = list;
-    notify(c);
-    publishStatus(c);
-  }
-
-  const publishStatus = (c: Chat<Config>) => publishChatStatus(c.state.chatId, backend.agent, chatSessionStatus(c.queue.status, c.interactions));
 
   function run(c: Chat<Config>, effect: Q.Effect) {
     switch (effect.kind) {
@@ -324,17 +530,6 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
   const deliver: Deliver = (chatId, reduce) => {
     const c = chats.get(chatId);
     if (c) apply(c, reduce(c.state));
-  };
-
-  const interactions: InteractionSink = {
-    add(chatId, interaction) {
-      const c = chats.get(chatId);
-      if (c) setInteractions(c, addInteraction(c.interactions, interaction));
-    },
-    resolved(chatId, id) {
-      const c = chats.get(chatId);
-      if (c) setInteractions(c, resolveInteraction(c.interactions, id));
-    },
   };
 
   /**
@@ -364,7 +559,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     // `submit` sets the folder before any effect runs.
     const cwd = c.cwd ?? "";
     try {
-      listening ??= backend.listen(deliver, interactions);
+      listening ??= backend.listen(deliver, permissionEvents);
       await listening;
       if (!c.opened) {
         const config = await c.config;
@@ -410,12 +605,6 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       const c = chat(chatId);
       setQueue(c, Q.actionStep(c.queue, action));
     },
-    answer(chatId, id, answer) {
-      const c = chat(chatId);
-      if (!c.interactions.some((i) => i.id === id)) return;
-      setInteractions(c, resolveInteraction(c.interactions, id));
-      backend.respond?.(chatId, id, answer).catch((e) => console.warn("chat: answer not sent", e));
-    },
     async reset(chatId, cwd, turnId, resetFiles) {
       const c = chat(chatId);
       if (c.transcript.activeTurn !== null) throw new Error("Stop the agent before resetting the chat.");
@@ -440,6 +629,11 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       } catch (e) {
         console.warn("chat: session options not saved", e);
       }
+    },
+    async answerPermission(chatId, requestId, answer) {
+      const c = chat(chatId);
+      const open = backend.answerPermission ? await backend.answerPermission(chatId, requestId, answer) : false;
+      if (!open) closePermission(c, requestId);
     },
     configureDefault(chatId, config) {
       const c = chat(chatId);

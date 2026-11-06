@@ -14,7 +14,6 @@ function fakeBackend() {
   const prompts: { req: PromptRequest; end: (r?: { turnChanges?: FileChange[] }) => void }[] = [];
   const calls = { listen: 0, open: [] as { chatId: string; cwd: string; sessionId: string | null; config: Config }[], cancel: [] as boolean[] };
   const backend: ChatBackend<Config> = {
-    agent: "reason",
     canSteer: true,
     defaultConfig: ["default"],
     sessionKey: (chatId) => `fake.session.${chatId}`,

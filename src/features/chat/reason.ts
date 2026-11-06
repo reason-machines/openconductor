@@ -12,12 +12,10 @@
 //   the same repository-relative path.
 // - A notice (e.g. a requested model Reason does not offer) is a system
 //   message.
-// - An interaction (a permission, plan or question the agent waits on) is
-//   not transcript content; reasonChat.ts keeps it beside the transcript.
 // Pure: no Tauri, no React, so `reason.test.ts` covers it.
 
 import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
-import type { InteractionRequest } from "./interactions.ts";
+import type { PermissionOption, PermissionPrompt, Question } from "./chatRuntime.ts";
 
 export interface ReasonPath {
   raw: string;
@@ -54,10 +52,32 @@ export type ReasonPayload = { chatId: string } & (
   | { type: "error"; code: string | null; status: number | null; message: string }
   | ReasonTool
   | { type: "turnEnded"; end: ReasonTurnEnd }
-  /** The agent waits for the user (interactions.ts); not part of the transcript. */
-  | { type: "interaction"; id: string; request: InteractionRequest }
-  | { type: "interactionResolved"; id: string }
+  | PermissionRequestPayload
+  | { type: "permissionResolved"; requestId: string }
 );
+
+/**
+ * The agent waits on the user (src-tauri reason_acp/wire.rs): `kind` says
+ * for what. Reason asks only for tools; Claude Code also for a plan or
+ * questions.
+ */
+type PermissionRequestPayload = { type: "permissionRequest"; requestId: string; title: string; options: PermissionOption[] } & (
+  | { kind: "permission"; tool: string; input: unknown }
+  | { kind: "plan"; plan: string }
+  | { kind: "question"; questions: Question[] }
+);
+
+/** The request a `permissionRequest` payload makes. */
+export function permissionPrompt(p: Extract<ReasonPayload, { type: "permissionRequest" }>): PermissionPrompt {
+  switch (p.kind) {
+    case "plan":
+      return { kind: "plan", requestId: p.requestId, plan: p.plan };
+    case "question":
+      return { kind: "question", requestId: p.requestId, questions: p.questions };
+    case "permission":
+      return { kind: "permission", requestId: p.requestId, title: p.title, options: p.options, tool: p.tool, input: p.input ?? null };
+  }
+}
 
 /** Sender recorded on reports; Reason does not say which Session sent one. */
 export const REPORT_SENDER = "reason";
@@ -244,9 +264,9 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
     case "error":
     case "userReplay":
     case "title":
-    // Waiting interactions are chat state, kept beside the transcript (reasonChat.ts).
-    case "interaction":
-    case "interactionResolved":
+    // Permission requests change the chat's status, not its transcript (reasonChat.ts).
+    case "permissionRequest":
+    case "permissionResolved":
       return { state, events: [] };
   }
 }

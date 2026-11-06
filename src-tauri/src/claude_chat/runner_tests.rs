@@ -229,25 +229,23 @@ fn wait_for_type(h: &Harness, ty: &str) {
 
 #[test]
 fn a_plan_prompt_waits_for_the_user_and_the_answer_goes_back() {
-    use crate::reason_acp::interaction::Answer;
+    use super::interact::Answer;
     let h = harness();
     h.runner.open_chat("c1", &cwd(), None);
     let r = h.runner.clone();
     let turn = thread::spawn(move || r.prompt("c1", "askplan please"));
-    wait_for_type(&h, "interaction");
+    wait_for_type(&h, "permissionRequest");
     let asked = h
         .events
         .lock()
         .unwrap()
         .iter()
-        .find(|e| e["type"] == "interaction")
+        .find(|e| e["type"] == "permissionRequest")
         .cloned()
         .unwrap();
-    assert_eq!(asked["id"], "req-1");
-    assert_eq!(
-        asked["request"],
-        serde_json::json!({ "kind": "plan", "plan": "1. build it" })
-    );
+    assert_eq!(asked["requestId"], "req-1");
+    assert_eq!(asked["kind"], "plan");
+    assert_eq!(asked["plan"], "1. build it");
     let wrong = Answer::Option("allow".into());
     assert!(
         h.runner.respond("c1", "req-1", &wrong).is_err(),
@@ -266,8 +264,8 @@ fn a_plan_prompt_waits_for_the_user_and_the_answer_goes_back() {
         h.types(),
         [
             "sessionStarted",
-            "interaction",
-            "interactionResolved",
+            "permissionRequest",
+            "permissionResolved",
             "text",
             "turnEnded"
         ]
@@ -287,14 +285,14 @@ fn stop_denies_a_waiting_prompt_and_resolves_it() {
     h.runner.open_chat("c1", &cwd(), None);
     let r = h.runner.clone();
     let turn = thread::spawn(move || r.prompt("c1", "askplan please"));
-    wait_for_type(&h, "interaction");
+    wait_for_type(&h, "permissionRequest");
     h.runner.cancel("c1");
     assert_eq!(turn.join().unwrap(), TurnEnd::Cancelled);
     wait_for_type(&h, "turnEnded");
     let types = h.types();
     let resolved = types
         .iter()
-        .position(|t| t == "interactionResolved")
+        .position(|t| t == "permissionResolved")
         .unwrap();
     let ended = types.iter().position(|t| t == "turnEnded").unwrap();
     assert!(resolved < ended, "{types:?}");
