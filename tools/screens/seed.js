@@ -25,6 +25,6 @@
   window.__OC_SEED__ = function (scenario) {
     const theme = new URLSearchParams(location.search).get("oc_theme") || "dark";
     const data = (window.__OC_SEED_DATA__ && window.__OC_SEED_DATA__[scenario]) || {};
-    return { conductor: data.conductor || "", cache: data.cache || "", vfs: { ...themeVfs(theme), ...(data.vfs || {}) }, sidecarRequests: data.sidecarRequests || [], http: data.http || {} };
+    return { conductor: data.conductor || "", cache: data.cache || "", vfs: { ...themeVfs(theme), ...(data.vfs || {}) }, sidecarRequests: data.sidecarRequests || [] };
   };
 })();

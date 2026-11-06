@@ -87,9 +87,17 @@ for path,title in [("/dashboard","Dashboard"),("/routines","Routines"),("/routin
         continue
     # OpenConductor's /routines pages run on Reason Loops and need a signed-in Reason account, which the lane's
     # throwaway HOME has none of; tools/side-by-side/routines.mjs scores them with the Reason API mocked.
+    if path == "/team":
+        # The Team page reads the path at startup, as /login does; with no Reason workspace chosen it shows Conductor's note.
+        st(sid, title, ref(path), oc=[{"exec":"location.assign('/team');"},{"wait":".team","after_ms":800}], oc_fresh=True, covers=[{"kind":"route","name":path}])
+        continue
     reason = ("the UI map lane has no Reason account; scored by tools/side-by-side/routines.mjs" if path.startswith("/routines")
               else "OpenConductor has no route or view for "+path)
     st(sid, title, ref(path, wait=path not in ("/diagnostics","/new-member-onboarding","/cloud-collab-onboarding")), oc_reason=reason, covers=[{"kind":"route","name":path}])
+# /team in a team organization (Conductor: ?oc_org=cloud; OpenConductor: a Reason workspace). The lane has no Reason
+# account; tools/side-by-side/org-settings.mjs scores it with the Reason API mocked.
+st("route-team-org", "Team, in a team organization", ref("/team", wait=False, actions=[{"wait":"text=Tide Labs Team"}], query={"oc_org":"cloud"}),
+   oc_reason="the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs")
 # The gate reads the path once at startup, so the lane loads /login rather than pushing it.
 st("login","Login", ref("/login","signed-out"), oc=[{"exec":"location.assign('/login');"},{"wait":".onb-login","after_ms":800}], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
 
@@ -119,18 +127,19 @@ st("settings-repo-misc-lower", "Settings > tide-web > Misc, scrolled to Remove r
    ref("/settings/repos/repo-tide-web/misc", wait=False, actions=[{"wait":"text=Repository paths and workspace file behavior."},{"click":"text=No matching gitignored files found."}]),
    oc=oc_settings(None,[{"click":".settings-repo","text":"Ttide-web"},{"click":".settings-repo-sections .nav-item","text":"Misc","after_ms":800},{"exec":"document.querySelector('.settings-misc-files-note')?.scrollIntoView({block:'center'})","after_ms":400}]),
    covers=[{"kind":"settings-page","name":"repo-misc"}])
-# Organization settings render in the reference's "team" scenario (tools/screens/seed-data.js: a
-# corporation organization and its members, machine, MCP servers and settings). OpenConductor's
-# organization is the Reason workspace; the lane opens each page with the app's open-settings event
-# (/settings/organization/github resolves to Cloud computer on both sides).
-ORG_WAIT={"github":"Configure your organization's shared cloud computer.","members":"People in your organization.",
-          "preferences":"Include link to workspace in PR description","computer":"Configure your organization's shared cloud computer.",
-          "environment":"Add environment variable","mcp":"Add MCP server","prompts":"General preferences"}
 for sec in ["github","members","preferences","computer","environment","mcp","prompts"]:
     path="/settings/organization/"+sec
-    page="org-computer" if sec=="github" else "org-"+sec
-    st("settings-org-"+sec, "Settings > Organization > "+sec, ref(path, scenario="team", actions=[{"wait":"text="+ORG_WAIT[sec]}]),
-       oc=oc_settings(None,[{"exec":"window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'"+page+"'}}))","after_ms":2500}]),
+    # Conductor renders these only for a member of a cloud organization (`lW`; any other account is
+    # sent to /settings/user/general), so the reference runs with ?oc_org=cloud
+    # (tools/screens/org-fixtures.js). OpenConductor's organization is the signed-in Reason workspace,
+    # which the lane's throwaway HOME has none of; tools/side-by-side/org-settings.mjs scores them.
+    # The Cloud computer page (where /github redirects) shows tide-web twice, so it waits for its own copy.
+    # /github is Conductor's redirect to /computer (`REa`), so that is where its reference lands.
+    r = (ref(path, wait=False, actions=[{"wait":"text=Configure your organization's shared cloud computer."}], query={"oc_org":"cloud"},
+             **({"expect_path":"/settings/organization/computer"} if sec=="github" else {}))
+         if sec in ("github","computer") else ref(path, query={"oc_org":"cloud"}))
+    st("settings-org-"+sec, "Settings > Organization > "+sec, r,
+       oc_reason="the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
        covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
 # The lane's throwaway HOME has no Reason login, so Settings lists no Cloud group to click: open the page
 # the way create's "Set up cloud" does (the app's open-settings event). Its steps then read signed out.

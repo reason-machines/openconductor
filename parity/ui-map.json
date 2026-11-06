@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "0018da1d",
+  "commit": "363c05f7",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -32,27 +32,27 @@
   "statuses": ", from what the running apps showed:\n  matches  reference rendered and reached, OpenConductor reached the same\n           state, the item's copy is on screen in both, and the whole state\n           differs by at most MATCH_RATIO changed pixels at channel threshold 24.\n  wrong    OpenConductor shows it (copy found in a capture of the running\n           app) but it is not shown to match: the visual diff is over the bar,\n           the copy differs, or no valid reference render exists to prove it.\n  missing  OpenConductor has no way to reach the state, shows a different\n           screen there (under 25% of the reference's UI copy), or the item's\n           copy is in no capture of the running app."
  },
  "summary": {
-  "total": 982,
-  "missing": 711,
-  "wrong": 78,
-  "matches": 193,
+  "total": 983,
+  "missing": 708,
+  "wrong": 76,
+  "matches": 199,
   "states": {
-   "total": 84,
-   "missing": 6,
+   "total": 85,
+   "missing": 5,
    "wrong": 20,
-   "matches": 58
+   "matches": 60
   },
   "items": {
    "total": 898,
-   "missing": 705,
-   "wrong": 58,
-   "matches": 135
+   "missing": 703,
+   "wrong": 56,
+   "matches": 139
   },
   "items_by_kind": {
    "dialog": {
     "total": 64,
-    "missing": 53,
-    "wrong": 4,
+    "missing": 52,
+    "wrong": 5,
     "matches": 7
    },
    "empty-state": {
@@ -81,9 +81,9 @@
    },
    "route": {
     "total": 65,
-    "missing": 32,
-    "wrong": 11,
-    "matches": 22
+    "missing": 31,
+    "wrong": 10,
+    "matches": 24
    },
    "select": {
     "total": 29,
@@ -112,14 +112,14 @@
    "tab": {
     "total": 35,
     "missing": 22,
-    "wrong": 3,
-    "matches": 10
+    "wrong": 2,
+    "matches": 11
    },
    "toast": {
     "total": 327,
     "missing": 323,
-    "wrong": 2,
-    "matches": 2
+    "wrong": 1,
+    "matches": 3
    }
   },
   "by_team": {
@@ -130,10 +130,10 @@
     "matches": 16
    },
    "cloud-org": {
-    "total": 83,
-    "missing": 45,
+    "total": 84,
+    "missing": 42,
     "wrong": 11,
-    "matches": 27
+    "matches": 31
    },
    "git-review": {
     "total": 39,
@@ -156,8 +156,8 @@
    "settings": {
     "total": 181,
     "missing": 46,
-    "wrong": 48,
-    "matches": 87
+    "wrong": 46,
+    "matches": 89
    },
    "shell": {
     "total": 197,
@@ -184,8 +184,8 @@
     "matches": 27
    }
   },
-  "located_items": 235,
-  "items_with_reference_screenshot": 235
+  "located_items": 236,
+  "items_with_reference_screenshot": 236
  },
  "states": [
   {
@@ -1090,34 +1090,75 @@
   {
    "id": "route-team",
    "title": "Team",
-   "status": "missing",
-   "why": "OpenConductor has no route or view for /team",
+   "status": "matches",
+   "why": "diff 0.2% at t24, copy 100%",
    "team": "cloud-org",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/route-team.png",
+    "file": "side-by-side/team-01-personal.png",
     "path": "/team",
     "final_path": "/team",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_f6583c2e886f16daaab821fee08ec1f3f15373e132eb80951b5e691aea4b5916"
+    "rea_evidence_id": "ev_c7378351b6152112a423f11fdcb05828091fca1e10dc63b05d0f61214bfb30fe"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no route or view for /team",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/team-01-personal.png",
+    "error": null,
+    "note": "side-by-side lane at 363c05f7a: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.0016749237804878048,
+    "rea_evidence_ids": [
+     "ev_b2b14e24af27424a614a95605c0830bae3045c33e35585b765294212b51262af",
+     "ev_6d4440a48dd592795cd29be335eb16fde897816b8fb50278219b1803a58f1b39"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 1.0,
+   "copy_missing": []
+  },
+  {
+   "id": "route-team-org",
+   "title": "Team, in a team organization",
+   "status": "wrong",
+   "why": "diff 0.9% at t24, copy 86%",
+   "team": "cloud-org",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/team-02-org.png",
+    "path": "/team",
+    "final_path": "/team",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_95ae5baa38e27da748e6818a971647d280e2a03cebc76dd6dda0526df9a24d9d"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/team-02-org.png",
+    "error": null,
+    "note": "side-by-side lane at 363c05f7a: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.009402629573170732,
+    "rea_evidence_ids": [
+     "ev_5a3f266a5165d67ad09acdef0a0a503c340030b9181787c0be7032f80e989610",
+     "ev_da1c8c155a5b14a1261deda75d4a91b68bc2caf81ae3e8e5a26eb0558b330477"
+    ]
+   },
+   "copy_coverage": 0.857,
+   "copy_missing": [
+    "create your first workspace to start building with your team",
+    "no workspaces"
+   ]
   },
   {
    "id": "route-diagnostics",
@@ -1941,70 +1982,76 @@
    "id": "settings-org-github",
    "title": "Settings > Organization > github",
    "status": "wrong",
-   "why": "no valid reference render (redirected to /settings/organization/computer), diff 4.2% at t24",
+   "why": "diff 4.5% at t24, copy 83%",
    "team": "cloud-org",
    "reference": {
-    "status": "redirected",
-    "file": "side-by-side/settings-org-09-github.png",
-    "path": "/settings/organization/github",
+    "status": "captured",
+    "file": "side-by-side/settings-org-03-computer.png",
+    "path": "/settings/organization/computer",
     "final_path": "/settings/organization/computer",
-    "scenario": "team",
+    "scenario": "populated",
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_ae41c66fd7f5b28c353222e246364bdc9ba41b666cbc334820abfeabd1fe881a"
+    "rea_evidence_id": "ev_b0c7f814c51a33d6b3c71aa80fe2c2b0095f8a30f9329ddc4c02e1306d9ffe0f"
    },
    "openconductor": {
     "status": "captured",
-    "file": "side-by-side/settings-org-09-github.png",
+    "file": "side-by-side/settings-org-03-computer.png",
     "error": null,
-    "note": "side-by-side lane at 05d3be37c: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.042316120426829265,
+    "changed_ratio_t24": 0.04464748475609756,
     "rea_evidence_ids": [
-     "ev_b5f18fd9238405b889470475a352639ef2e1c1342b2eb38d1c938ce0533ba58d",
-     "ev_639b2acbd5845d072b9ec5effbc4010ec869f38fa5a5a1f8d563e4b0cb1c89bf"
+     "ev_dac8b58da233d42f7f358a5d13a1555831312b20ecfb306f4bb9e8605d7b5fb8",
+     "ev_d88d3936e471e57f4316c6c2401f11d071c07d448da530b5d7cd71d2385e06ac"
     ]
    },
-   "copy_coverage": 0.846,
-   "copy_missing": null
+   "copy_coverage": 0.833,
+   "copy_missing": [
+    "ports",
+    "configure your organization's shared cloud computer",
+    "build computer",
+    "install software",
+    "install script"
+   ]
   },
   {
    "id": "settings-org-members",
    "title": "Settings > Organization > members",
    "status": "matches",
-   "why": "diff 1.6% at t24, copy 95%",
+   "why": "diff 1.5% at t24, copy 96%",
    "team": "cloud-org",
    "reference": {
     "status": "captured",
-    "file": "side-by-side/settings-org-03-members.png",
+    "file": "side-by-side/settings-org-04-members.png",
     "path": "/settings/organization/members",
     "final_path": "/settings/organization/members",
-    "scenario": "team",
+    "scenario": "populated",
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_76f0afa03c3e70f45c85f7e08aab61f298d1c142fbe260e377b438a783e9ffd8"
+    "rea_evidence_id": "ev_69766b4e0f9a819cbc205d98870427c0a654b703727b2186b2eb0cdc240dc3c7"
    },
    "openconductor": {
     "status": "captured",
-    "file": "side-by-side/settings-org-03-members.png",
+    "file": "side-by-side/settings-org-04-members.png",
     "error": null,
-    "note": "side-by-side lane at 05d3be37c: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.016129001524390243,
+    "changed_ratio_t24": 0.0151953125,
     "rea_evidence_ids": [
-     "ev_b23cd28135da8a40a6fc5a8f80361e5531b0dfebb32fc3e3fd6dabc0ba7179ce",
-     "ev_f133e368226638b16930c47c309ca4f20d505d44bc70ae748719680ea7d22fbe"
+     "ev_39ac278a60412efea73580a42f6282e082f6e33d916b8ea05cac6d8f6051b44e",
+     "ev_69b9ecc2cdc75f83a7728da3c6d5e5377fa8bec0aa6cdac24682e2123281fc18"
     ]
    },
-   "copy_coverage": 0.957,
+   "copy_coverage": 0.962,
    "copy_missing": [
     "ports"
    ]
@@ -2013,35 +2060,35 @@
    "id": "settings-org-preferences",
    "title": "Settings > Organization > preferences",
    "status": "matches",
-   "why": "diff 1.2% at t24, copy 95%",
+   "why": "diff 1.3% at t24, copy 96%",
    "team": "cloud-org",
    "reference": {
     "status": "captured",
-    "file": "side-by-side/settings-org-04-preferences.png",
+    "file": "side-by-side/settings-org-05-preferences.png",
     "path": "/settings/organization/preferences",
     "final_path": "/settings/organization/preferences",
-    "scenario": "team",
+    "scenario": "populated",
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_a8762d1be4b7d96dd6ced1322cb84859c68735141cc07d60adf037668816eafc"
+    "rea_evidence_id": "ev_fed4ed9be70fc07a019092a7a947889f148bcf3441a99b3c9186634162868ca2"
    },
    "openconductor": {
     "status": "captured",
-    "file": "side-by-side/settings-org-04-preferences.png",
+    "file": "side-by-side/settings-org-05-preferences.png",
     "error": null,
-    "note": "side-by-side lane at 05d3be37c: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.011629192073170732,
+    "changed_ratio_t24": 0.012514291158536585,
     "rea_evidence_ids": [
-     "ev_9b7486e2b40b83059dd1cf2a2fcac006486df777291d2072549f19ef619a7026",
-     "ev_41fad612f917602c8e42bb6fdc5a74d1174db8066b2442700e9826b6f7b5026a"
+     "ev_f9dbee798636ef34ba396f9ec1a5656be71ab83b5157a7fb39db4bf62d84fb67",
+     "ev_be835c99336205a35ad2c79fa365123a1914aab17e3b28751e078e0b46aed153"
     ]
    },
-   "copy_coverage": 0.957,
+   "copy_coverage": 0.962,
    "copy_missing": [
     "ports"
    ]
@@ -2050,37 +2097,38 @@
    "id": "settings-org-computer",
    "title": "Settings > Organization > computer",
    "status": "wrong",
-   "why": "diff 4.2% at t24, copy 85%",
+   "why": "diff 4.5% at t24, copy 83%",
    "team": "cloud-org",
    "reference": {
     "status": "captured",
-    "file": "side-by-side/settings-org-08-computer.png",
+    "file": "side-by-side/settings-org-03-computer.png",
     "path": "/settings/organization/computer",
     "final_path": "/settings/organization/computer",
-    "scenario": "team",
+    "scenario": "populated",
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_8f43c418a175d8c8d4f0d01dd94e15b9083b716f593da6707e707331d3b0af59"
+    "rea_evidence_id": "ev_1ae535d453b67ea2d5ab30116a20933f42526d47d5a1b26a7c360605947d0ead"
    },
    "openconductor": {
     "status": "captured",
-    "file": "side-by-side/settings-org-08-computer.png",
+    "file": "side-by-side/settings-org-03-computer.png",
     "error": null,
-    "note": "side-by-side lane at 05d3be37c: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.042316120426829265,
+    "changed_ratio_t24": 0.04464748475609756,
     "rea_evidence_ids": [
-     "ev_a9ba0eb0faa956c72bb215e1aa03c8edbf1c0149ffa498406909a4401d5e793f",
-     "ev_e0314c43ec95d9bc7723aec468c89313f9f1899b01eda3804be8eea75d350c6a"
+     "ev_c26cd855abbfcaac8470e067d6cd083a188873f7becb7ec6bf7ec57952271c16",
+     "ev_ede6b1bb42ddc4d7ce639b0e23d0be5845f89c0bd814ea53875f87534c83ebe6"
     ]
    },
-   "copy_coverage": 0.846,
+   "copy_coverage": 0.833,
    "copy_missing": [
     "ports",
+    "configure your organization's shared cloud computer",
     "build computer",
     "install software",
     "install script"
@@ -2090,115 +2138,114 @@
    "id": "settings-org-environment",
    "title": "Settings > Organization > environment",
    "status": "matches",
-   "why": "diff 2.2% at t24, copy 96%",
+   "why": "diff 1.4% at t24, copy 92%",
    "team": "cloud-org",
    "reference": {
     "status": "captured",
     "file": "side-by-side/settings-org-06-environment.png",
     "path": "/settings/organization/environment",
     "final_path": "/settings/organization/environment",
-    "scenario": "team",
+    "scenario": "populated",
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_0033a69fbd5ff7e03149abee5f6fb1805983e6770d5bfd0dd014b2118b52492d"
+    "rea_evidence_id": "ev_ed50d4f5373245c3789be11f233dd733e5c6de730e03b5b57530f08a744738d5"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/settings-org-06-environment.png",
     "error": null,
-    "note": "side-by-side lane at 05d3be37c: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.021899771341463415,
+    "changed_ratio_t24": 0.013532774390243902,
     "rea_evidence_ids": [
-     "ev_7106d5eedcee32c2f0b743129e786beb1073095d5207a1bc237441227b1bfd9c",
-     "ev_dd96f951d3850f4efcd9f4423ffa86d504f049175a8e22ca5c068783c6a6a167"
+     "ev_9057bdf3f870f2a949fe08e51fc67c1095f816cbedef1ddaf777342d66178c28",
+     "ev_cbb8c2a93f3615c8c13b8e5d0ee953abd345b5808e0c5da47ea06a855bdc6866"
     ]
    },
-   "copy_coverage": 0.96,
+   "copy_coverage": 0.929,
    "copy_missing": [
-    "ports"
+    "ports",
+    "applied to workspaces you create, and refreshed when those workspaces restart. may be visible to your teammates"
    ]
   },
   {
    "id": "settings-org-mcp",
    "title": "Settings > Organization > mcp",
-   "status": "wrong",
-   "why": "diff 1.6% at t24, copy 82%",
+   "status": "matches",
+   "why": "diff 1.1% at t24, copy 93%",
    "team": "cloud-org",
    "reference": {
     "status": "captured",
     "file": "side-by-side/settings-org-07-mcp.png",
     "path": "/settings/organization/mcp",
     "final_path": "/settings/organization/mcp",
-    "scenario": "team",
+    "scenario": "populated",
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_86e06071ff02944f9dfe318641bf0b724c7d1dc2069e8c517e28bc07276921ae"
+    "rea_evidence_id": "ev_d1f4f08b5f53f857d09aa84e339c40ef7aece329f556c10026f299239708e31b"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/settings-org-07-mcp.png",
     "error": null,
-    "note": "side-by-side lane at 05d3be37c: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.015600228658536585,
+    "changed_ratio_t24": 0.010677400914634146,
     "rea_evidence_ids": [
-     "ev_1373ed0efee1cbb8a5e4301aa8b0f011ad86d92d8b32af1c92d811eea2f38bfe",
-     "ev_1ca330ce260951099f03e5ac7a0229c80d1f447f3a2f322907fac1ba9497d10d"
+     "ev_f247b634f66f7f939081299fcac0870d26680960c327fe6ae9fec9eba829fabe",
+     "ev_4c835a2a100990b20ad7b2e0d4d92cc50b5c7bd1d019ae475539f4d349b03898"
     ]
    },
-   "copy_coverage": 0.821,
+   "copy_coverage": 0.939,
    "copy_missing": [
     "ports",
-    "import from local",
-    "linear",
-    "vercel",
-    "cloudflare"
+    "import from local"
    ]
   },
   {
    "id": "settings-org-prompts",
    "title": "Settings > Organization > prompts",
    "status": "matches",
-   "why": "diff 2.1% at t24, copy 96%",
+   "why": "diff 2.0% at t24, copy 92%",
    "team": "cloud-org",
    "reference": {
     "status": "captured",
-    "file": "side-by-side/settings-org-05-prompts.png",
+    "file": "side-by-side/settings-org-08-prompts.png",
     "path": "/settings/organization/prompts",
     "final_path": "/settings/organization/prompts",
-    "scenario": "team",
+    "scenario": "populated",
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_6ebe62d963129032b0d3888637a1ab6f718f214120134ebbaf5e3af9b04d84fe"
+    "rea_evidence_id": "ev_43513774ba733a631d952347d73afe128ecfd6464e4d367e4ee966717725b511"
    },
    "openconductor": {
     "status": "captured",
-    "file": "side-by-side/settings-org-05-prompts.png",
+    "file": "side-by-side/settings-org-08-prompts.png",
     "error": null,
-    "note": "side-by-side lane at 05d3be37c: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at d5c4f394d: tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.02073266006097561,
+    "changed_ratio_t24": 0.01991044207317073,
     "rea_evidence_ids": [
-     "ev_64a635b3b2e56bd520c7d3751fbb1a647c892359d0261327b2e6981e8ab0e48c",
-     "ev_aad43b57914a189c1523ad47972c8d412de4a024a2a4d25832f8640fddd345af"
+     "ev_e4e9a1a0269d1294420d04a2003801066f58e111c9cb3ade46c6734560ab0399",
+     "ev_5c0ca9cc7c3d71d1bee5dd891216d047a64fab2f835753adb3f3e62910fe83bc"
     ]
    },
-   "copy_coverage": 0.96,
+   "copy_coverage": 0.929,
    "copy_missing": [
-    "ports"
+    "ports",
+    "applied to your chats in this organization, alongside shared prompts"
    ]
   },
   {
@@ -3800,7 +3847,7 @@
    "kind": "route",
    "name": "/settings/organization/github",
    "status": "wrong",
-   "why": "no valid reference render (redirected to /settings/organization/computer), diff 4.2% at t24",
+   "why": "diff 4.5% at t24, copy 83%",
    "team": "cloud-org",
    "component": "REa",
    "source": {
@@ -3812,17 +3859,17 @@
    "tokens": [],
    "state": "settings-org-github",
    "state_basis": "route state",
-   "reference_screenshot": "side-by-side/settings-org-09-github.png",
-   "openconductor_screenshot": "side-by-side/settings-org-09-github.png",
+   "reference_screenshot": "side-by-side/settings-org-03-computer.png",
+   "openconductor_screenshot": "side-by-side/settings-org-03-computer.png",
    "diff": null,
-   "changed_ratio_t24": 0.042316120426829265
+   "changed_ratio_t24": 0.04464748475609756
   },
   {
    "id": "route:settings-organization-members",
    "kind": "route",
    "name": "/settings/organization/members",
    "status": "matches",
-   "why": "diff 1.6% at t24, copy 95%",
+   "why": "diff 1.5% at t24, copy 96%",
    "team": "cloud-org",
    "component": "NEa",
    "source": {
@@ -3834,17 +3881,17 @@
    "tokens": [],
    "state": "settings-org-members",
    "state_basis": "route state",
-   "reference_screenshot": "side-by-side/settings-org-03-members.png",
-   "openconductor_screenshot": "side-by-side/settings-org-03-members.png",
+   "reference_screenshot": "side-by-side/settings-org-04-members.png",
+   "openconductor_screenshot": "side-by-side/settings-org-04-members.png",
    "diff": null,
-   "changed_ratio_t24": 0.016129001524390243
+   "changed_ratio_t24": 0.0151953125
   },
   {
    "id": "route:settings-organization-preferences",
    "kind": "route",
    "name": "/settings/organization/preferences",
    "status": "matches",
-   "why": "diff 1.2% at t24, copy 95%",
+   "why": "diff 1.3% at t24, copy 96%",
    "team": "cloud-org",
    "component": "OEa",
    "source": {
@@ -3856,17 +3903,17 @@
    "tokens": [],
    "state": "settings-org-preferences",
    "state_basis": "route state",
-   "reference_screenshot": "side-by-side/settings-org-04-preferences.png",
-   "openconductor_screenshot": "side-by-side/settings-org-04-preferences.png",
+   "reference_screenshot": "side-by-side/settings-org-05-preferences.png",
+   "openconductor_screenshot": "side-by-side/settings-org-05-preferences.png",
    "diff": null,
-   "changed_ratio_t24": 0.011629192073170732
+   "changed_ratio_t24": 0.012514291158536585
   },
   {
    "id": "route:settings-organization-computer",
    "kind": "route",
    "name": "/settings/organization/computer",
    "status": "wrong",
-   "why": "diff 4.2% at t24, copy 85%",
+   "why": "diff 4.5% at t24, copy 83%",
    "team": "cloud-org",
    "component": "DEa",
    "source": {
@@ -3878,17 +3925,17 @@
    "tokens": [],
    "state": "settings-org-computer",
    "state_basis": "route state",
-   "reference_screenshot": "side-by-side/settings-org-08-computer.png",
-   "openconductor_screenshot": "side-by-side/settings-org-08-computer.png",
+   "reference_screenshot": "side-by-side/settings-org-03-computer.png",
+   "openconductor_screenshot": "side-by-side/settings-org-03-computer.png",
    "diff": null,
-   "changed_ratio_t24": 0.042316120426829265
+   "changed_ratio_t24": 0.04464748475609756
   },
   {
    "id": "route:settings-organization-environment",
    "kind": "route",
    "name": "/settings/organization/environment",
    "status": "matches",
-   "why": "diff 2.2% at t24, copy 96%",
+   "why": "diff 1.4% at t24, copy 92%",
    "team": "cloud-org",
    "component": "PEa",
    "source": {
@@ -3903,14 +3950,14 @@
    "reference_screenshot": "side-by-side/settings-org-06-environment.png",
    "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": 0.021899771341463415
+   "changed_ratio_t24": 0.013532774390243902
   },
   {
    "id": "route:settings-organization-mcp",
    "kind": "route",
    "name": "/settings/organization/mcp",
-   "status": "wrong",
-   "why": "diff 1.6% at t24, copy 82%",
+   "status": "matches",
+   "why": "diff 1.1% at t24, copy 93%",
    "team": "cloud-org",
    "component": "MEa",
    "source": {
@@ -3925,7 +3972,7 @@
    "reference_screenshot": "side-by-side/settings-org-07-mcp.png",
    "openconductor_screenshot": "side-by-side/settings-org-07-mcp.png",
    "diff": null,
-   "changed_ratio_t24": 0.015600228658536585
+   "changed_ratio_t24": 0.010677400914634146
   },
   {
    "id": "route:settings-organization-mcp-servers",
@@ -3954,7 +4001,7 @@
    "kind": "route",
    "name": "/settings/organization/prompts",
    "status": "matches",
-   "why": "diff 2.1% at t24, copy 96%",
+   "why": "diff 2.0% at t24, copy 92%",
    "team": "cloud-org",
    "component": "LEa",
    "source": {
@@ -3966,10 +4013,10 @@
    "tokens": [],
    "state": "settings-org-prompts",
    "state_basis": "route state",
-   "reference_screenshot": "side-by-side/settings-org-05-prompts.png",
-   "openconductor_screenshot": "side-by-side/settings-org-05-prompts.png",
+   "reference_screenshot": "side-by-side/settings-org-08-prompts.png",
+   "openconductor_screenshot": "side-by-side/settings-org-08-prompts.png",
    "diff": null,
-   "changed_ratio_t24": 0.02073266006097561
+   "changed_ratio_t24": 0.01991044207317073
   },
   {
    "id": "route:settings-organization-repositories-owner-repo",
@@ -4239,8 +4286,8 @@
    "id": "route:team",
    "kind": "route",
    "name": "/team",
-   "status": "missing",
-   "why": "OpenConductor has no route or view for /team",
+   "status": "matches",
+   "why": "diff 0.2% at t24, copy 100%",
    "team": "cloud-org",
    "component": "Yea",
    "source": {
@@ -4252,10 +4299,10 @@
    "tokens": [],
    "state": "route-team",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/route-team.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/team-01-personal.png",
+   "openconductor_screenshot": "side-by-side/team-01-personal.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.0016749237804878048
   },
   {
    "id": "route:dashboard",
@@ -5133,8 +5180,8 @@
    "id": "dialog:github-organizations",
    "kind": "dialog",
    "name": "GitHub organizations",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state settings-org-github is wrong",
    "team": "cloud-org",
    "component": "Nfa",
    "source": {
@@ -5146,12 +5193,12 @@
     "GitHub organizations"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "settings-org-github",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/settings-org-03-computer.png",
+   "openconductor_screenshot": "side-by-side/settings-org-03-computer.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.04464748475609756,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -9993,8 +10040,8 @@
    "id": "tab:installed",
    "kind": "tab",
    "name": "Installed",
-   "status": "wrong",
-   "why": "host state settings-org-mcp is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-org-mcp matches",
    "team": "settings",
    "component": "V1a",
    "source": {
@@ -10011,7 +10058,7 @@
    "reference_screenshot": "side-by-side/settings-org-07-mcp.png",
    "openconductor_screenshot": "side-by-side/settings-org-07-mcp.png",
    "diff": null,
-   "changed_ratio_t24": 0.015600228658536585,
+   "changed_ratio_t24": 0.010677400914634146,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -10141,7 +10188,7 @@
    "reference_screenshot": "side-by-side/settings-org-06-environment.png",
    "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": 0.021899771341463415,
+   "changed_ratio_t24": 0.013532774390243902,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -10193,7 +10240,7 @@
    "reference_screenshot": "side-by-side/settings-org-06-environment.png",
    "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": 0.021899771341463415,
+   "changed_ratio_t24": 0.013532774390243902,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -10443,7 +10490,7 @@
    "reference_screenshot": "side-by-side/settings-org-06-environment.png",
    "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": 0.021899771341463415,
+   "changed_ratio_t24": 0.013532774390243902,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -16266,8 +16313,8 @@
    "id": "toast:installed-u",
    "kind": "toast",
    "name": "Installed ${u}.",
-   "status": "wrong",
-   "why": "host state settings-org-mcp is wrong",
+   "status": "matches",
+   "why": "on screen in both; state settings-org-mcp matches",
    "team": "settings",
    "component": "Izi",
    "source": {
@@ -16284,7 +16331,7 @@
    "reference_screenshot": "side-by-side/settings-org-07-mcp.png",
    "openconductor_screenshot": "side-by-side/settings-org-07-mcp.png",
    "diff": null,
-   "changed_ratio_t24": 0.015600228658536585,
+   "changed_ratio_t24": 0.010677400914634146,
    "variant": "success",
    "dynamic": false
   },
@@ -21502,7 +21549,7 @@
    "reference_screenshot": "side-by-side/settings-org-06-environment.png",
    "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": 0.021899771341463415
+   "changed_ratio_t24": 0.013532774390243902
   },
   {
    "id": "empty-state:no-members-yet",
@@ -24904,7 +24951,7 @@
    "kind": "settings-page",
    "name": "organization-preferences",
    "status": "matches",
-   "why": "diff 1.2% at t24, copy 95%",
+   "why": "diff 1.3% at t24, copy 96%",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -24914,10 +24961,10 @@
    "tokens": [],
    "state": "settings-org-preferences",
    "state_basis": "settings page state",
-   "reference_screenshot": "side-by-side/settings-org-04-preferences.png",
-   "openconductor_screenshot": "side-by-side/settings-org-04-preferences.png",
+   "reference_screenshot": "side-by-side/settings-org-05-preferences.png",
+   "openconductor_screenshot": "side-by-side/settings-org-05-preferences.png",
    "diff": null,
-   "changed_ratio_t24": 0.011629192073170732,
+   "changed_ratio_t24": 0.012514291158536585,
    "route": "/settings/organization/preferences",
    "route_guess": "/settings/organization/preferences",
    "rows": 1
@@ -24939,10 +24986,10 @@
    "tokens": [],
    "state": "settings-org-preferences",
    "state_basis": "settings page state",
-   "reference_screenshot": "side-by-side/settings-org-04-preferences.png",
-   "openconductor_screenshot": "side-by-side/settings-org-04-preferences.png",
+   "reference_screenshot": "side-by-side/settings-org-05-preferences.png",
+   "openconductor_screenshot": "side-by-side/settings-org-05-preferences.png",
    "diff": null,
-   "changed_ratio_t24": 0.011629192073170732,
+   "changed_ratio_t24": 0.012514291158536585,
    "page": "organization-preferences",
    "setting_key": null,
    "row_id": "organization-preferences:pr-workspace-link",
@@ -25783,7 +25830,7 @@
    "kind": "settings-page",
    "name": "organization-members",
    "status": "matches",
-   "why": "diff 1.6% at t24, copy 95%",
+   "why": "diff 1.5% at t24, copy 96%",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25793,10 +25840,10 @@
    "tokens": [],
    "state": "settings-org-members",
    "state_basis": "settings page state",
-   "reference_screenshot": "side-by-side/settings-org-03-members.png",
-   "openconductor_screenshot": "side-by-side/settings-org-03-members.png",
+   "reference_screenshot": "side-by-side/settings-org-04-members.png",
+   "openconductor_screenshot": "side-by-side/settings-org-04-members.png",
    "diff": null,
-   "changed_ratio_t24": 0.016129001524390243,
+   "changed_ratio_t24": 0.0151953125,
    "route": "/settings/organization/members",
    "route_guess": "/settings/organization/members",
    "rows": 1
@@ -25819,10 +25866,10 @@
    "tokens": [],
    "state": "settings-org-members",
    "state_basis": "settings page state",
-   "reference_screenshot": "side-by-side/settings-org-03-members.png",
-   "openconductor_screenshot": "side-by-side/settings-org-03-members.png",
+   "reference_screenshot": "side-by-side/settings-org-04-members.png",
+   "openconductor_screenshot": "side-by-side/settings-org-04-members.png",
    "diff": null,
-   "changed_ratio_t24": 0.016129001524390243,
+   "changed_ratio_t24": 0.0151953125,
    "page": "organization-members",
    "setting_key": null,
    "row_id": "organization-members-panel",
@@ -25835,7 +25882,7 @@
    "kind": "settings-page",
    "name": "organization-computer",
    "status": "wrong",
-   "why": "diff 4.2% at t24, copy 85%",
+   "why": "diff 4.5% at t24, copy 83%",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25845,10 +25892,10 @@
    "tokens": [],
    "state": "settings-org-computer",
    "state_basis": "settings page state",
-   "reference_screenshot": "side-by-side/settings-org-08-computer.png",
-   "openconductor_screenshot": "side-by-side/settings-org-08-computer.png",
+   "reference_screenshot": "side-by-side/settings-org-03-computer.png",
+   "openconductor_screenshot": "side-by-side/settings-org-03-computer.png",
    "diff": null,
-   "changed_ratio_t24": 0.042316120426829265,
+   "changed_ratio_t24": 0.04464748475609756,
    "route": "/settings/organization/computer",
    "route_guess": "/settings/organization/computer",
    "rows": 1
@@ -25871,10 +25918,10 @@
    "tokens": [],
    "state": "settings-org-computer",
    "state_basis": "settings page state",
-   "reference_screenshot": "side-by-side/settings-org-08-computer.png",
-   "openconductor_screenshot": "side-by-side/settings-org-08-computer.png",
+   "reference_screenshot": "side-by-side/settings-org-03-computer.png",
+   "openconductor_screenshot": "side-by-side/settings-org-03-computer.png",
    "diff": null,
-   "changed_ratio_t24": 0.042316120426829265,
+   "changed_ratio_t24": 0.04464748475609756,
    "page": "organization-computer",
    "setting_key": null,
    "row_id": "organization-computer-panel",
@@ -25887,7 +25934,7 @@
    "kind": "settings-page",
    "name": "organization-environment",
    "status": "matches",
-   "why": "diff 2.2% at t24, copy 96%",
+   "why": "diff 1.4% at t24, copy 92%",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25900,7 +25947,7 @@
    "reference_screenshot": "side-by-side/settings-org-06-environment.png",
    "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": 0.021899771341463415,
+   "changed_ratio_t24": 0.013532774390243902,
    "route": "/settings/organization/environment",
    "route_guess": "/settings/organization/environment",
    "rows": 1
@@ -25926,7 +25973,7 @@
    "reference_screenshot": "side-by-side/settings-org-06-environment.png",
    "openconductor_screenshot": "side-by-side/settings-org-06-environment.png",
    "diff": null,
-   "changed_ratio_t24": 0.021899771341463415,
+   "changed_ratio_t24": 0.013532774390243902,
    "page": "organization-environment",
    "setting_key": null,
    "row_id": "organization-environment-panel",
@@ -25939,7 +25986,7 @@
    "kind": "settings-page",
    "name": "organization-prompts",
    "status": "matches",
-   "why": "diff 2.1% at t24, copy 96%",
+   "why": "diff 2.0% at t24, copy 92%",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25949,10 +25996,10 @@
    "tokens": [],
    "state": "settings-org-prompts",
    "state_basis": "settings page state",
-   "reference_screenshot": "side-by-side/settings-org-05-prompts.png",
-   "openconductor_screenshot": "side-by-side/settings-org-05-prompts.png",
+   "reference_screenshot": "side-by-side/settings-org-08-prompts.png",
+   "openconductor_screenshot": "side-by-side/settings-org-08-prompts.png",
    "diff": null,
-   "changed_ratio_t24": 0.02073266006097561,
+   "changed_ratio_t24": 0.01991044207317073,
    "route": "/settings/organization/prompts",
    "route_guess": "/settings/organization/prompts",
    "rows": 1
@@ -25975,10 +26022,10 @@
    "tokens": [],
    "state": "settings-org-prompts",
    "state_basis": "settings page state",
-   "reference_screenshot": "side-by-side/settings-org-05-prompts.png",
-   "openconductor_screenshot": "side-by-side/settings-org-05-prompts.png",
+   "reference_screenshot": "side-by-side/settings-org-08-prompts.png",
+   "openconductor_screenshot": "side-by-side/settings-org-08-prompts.png",
    "diff": null,
-   "changed_ratio_t24": 0.02073266006097561,
+   "changed_ratio_t24": 0.01991044207317073,
    "page": "organization-prompts",
    "setting_key": null,
    "row_id": "organization-prompts-panel",

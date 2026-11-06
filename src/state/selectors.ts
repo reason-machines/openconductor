@@ -16,8 +16,8 @@ export function removedWorkspaceIds(prev: AppState, next: AppState): string[] {
 }
 
 /**
- * Where the app opens: `/all-workspaces` opens the Home list and
- * `/dashboard[?repo=<id>]` the dashboard board (which goes back to `/` when
+ * Where the app opens: `/all-workspaces` opens the Home list, `/team` the
+ * Team page and `/dashboard[?repo=<id>]` the dashboard board (which goes back to `/` when
  * the setting is off), otherwise a saved open workspace is restored and
  * anything else starts at `/` (the entry cards).
  */
@@ -27,6 +27,7 @@ export function startSelection(state: AppState, pathname: string, search = ""): 
     const repo = new URLSearchParams(search).get("repo") || undefined;
     return { ...state, selection: repo ? { kind: "dashboard", repo } : { kind: "dashboard" } };
   }
+  if (pathname === "/team" || pathname === "/team/") return { ...state, selection: { kind: "team" } };
   const routines = routinesSelection(pathname, search);
   if (routines) return { ...state, selection: routines };
   if (state.selection?.kind === "workspace") return state;

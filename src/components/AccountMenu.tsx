@@ -4,8 +4,10 @@
 // 260 px menu aligned to its left edge. The model is in accountMenuModel.ts.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { invoke, isTauri } from "@tauri-apps/api/core";
-import { CheckIcon, ChevronDownIcon, SettingsIcon, UserIcon } from "./Icons";
-import { accountMenuModel, type LocalAccount, type TeamOrganization } from "./accountMenuModel";
+import { CheckIcon, ChevronDownIcon, CloudIcon, SettingsIcon, UserIcon } from "./Icons";
+import { ConductorIcon } from "./ConductorIcon";
+import { useOrganization } from "../org/useOrganization";
+import { accountMenuModel, type LocalAccount } from "./accountMenuModel";
 import { endingProps, useMenuPresence } from "./sidebarMotion";
 
 const NO_ACCOUNT: LocalAccount = { name: "", email: null };
@@ -19,31 +21,12 @@ function useLocalAccount(): LocalAccount {
   return account;
 }
 
-/** lucide building-2 (Conductor's `YTt` for a team organization). */
-const BuildingIcon = ({ size = 14 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
-    <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
-    <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
-    <path d="M10 6h4M10 10h4M10 14h4M10 18h4" />
-  </svg>
-);
-
-/**
- * `team`: a team organization to list beside the personal one (the Reason
- * workspace, in Settings); `onSelectOrganization` gets the picked id.
- */
-export function AccountMenu({
-  onOpenSettings,
-  team,
-  onSelectOrganization,
-}: {
-  onOpenSettings: () => void;
-  team?: TeamOrganization;
-  onSelectOrganization?: (id: string) => void;
-}) {
+export function AccountMenu({ onOpenSettings }: { onOpenSettings: () => void }) {
   const account = useLocalAccount();
-  const model = accountMenuModel(account, team);
+  const { active, organizations, select } = useOrganization();
+  // Until Reason answers, the stored choice stands in for the list, so the trigger names it right away.
+  const orgs = organizations ?? (active ? [active] : []);
+  const model = accountMenuModel(account, orgs, active?.id ?? null);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const close = useCallback(() => setOpen(false), []);
@@ -65,8 +48,9 @@ export function AccountMenu({
     <div ref={ref} className="sb-account">
       <button type="button" className="sb-row sb-computer" aria-label="Account menu" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(!open)}>
         <span className="sb-row-icon">
-          {model.triggerCloud ? (
-            <BuildingIcon size={14} />
+          {model.triggerOrganization ? (
+            // Conductor's organization trigger: lucide building-2, size-3.
+            <ConductorIcon name="building-2" size={12} />
           ) : (
             <span className="sb-avatar" aria-hidden>
               {icon.fallbackInitial ?? <UserIcon size={10} />}
@@ -83,22 +67,29 @@ export function AccountMenu({
               <div key="email" className="sb-account-email" role="presentation">{e.email}</div>
             ) : e.kind === "separator" ? (
               <div key={`sep-${i}`} role="separator" className="sb-menu-sep" />
-            ) : e.kind === "org" ? (
+            ) : e.kind === "organization" ? (
               <button
-                key={e.id}
+                key={e.organization.id ?? "personal"}
                 type="button"
                 role="menuitemradio"
-                aria-checked={e.selected}
+                aria-checked={e.organization.selected}
                 className="sb-account-item"
                 onClick={() => {
                   close();
-                  if (!e.selected) onSelectOrganization?.(e.id);
+                  select(e.organization.id === null ? null : (orgs.find((o) => o.id === e.organization.id) ?? null));
                 }}
               >
-                <span className="sb-account-item-icon">{e.cloud ? <BuildingIcon /> : <UserIcon size={14} />}</span>
-                <span className="sb-account-item-label">{e.label}</span>
-                {e.selected && (
-                  <span className="sb-account-item-check">
+                <span className="sb-account-item-icon">
+                  {e.organization.id === null ? <UserIcon size={14} /> : <ConductorIcon name="building-2" size={14} />}
+                </span>
+                <span className="sb-account-org-label">{e.organization.label}</span>
+                {e.organization.cloud && (
+                  <span className="sb-account-org-cloud" aria-label="Cloud organization">
+                    <CloudIcon size={12} />
+                  </span>
+                )}
+                {e.organization.selected && (
+                  <span className="sb-account-org-check">
                     <CheckIcon size={14} />
                   </span>
                 )}

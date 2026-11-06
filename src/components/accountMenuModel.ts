@@ -5,9 +5,9 @@
 //
 // Conductor's row is an organization switcher for its cloud account: the
 // personal organization reads "<name>'s Mac", other organizations their own
-// names. OpenConductor has no Conductor account or organizations, so the
-// only organization is the personal one, and the person is the local user
-// (`local_account`). Pure: unit tested in accountMenuModel.test.ts.
+// names. OpenConductor's organizations are the personal one (the local user,
+// `local_account`) and the Reason workspace the `reason` CLI is signed in to
+// (src/org/organization.ts). Pure: unit tested in accountMenuModel.test.ts.
 
 /** What `local_account` returns. */
 export interface LocalAccount {
@@ -35,59 +35,63 @@ export function personIcon(name: string, avatarUrl = ""): PersonIcon {
   };
 }
 
+/** One organization in the switcher; `id` null is the personal one (this Mac). */
+export interface OrganizationChoice {
+  id: string | null;
+  label: string;
+  /** Conductor's `isCloud` mark: a Reason workspace. */
+  cloud: boolean;
+  selected: boolean;
+}
+
 /** One entry of the open menu, in order. */
 export type AccountMenuEntry =
   | { kind: "email"; email: string }
   | { kind: "separator" }
-  | { kind: "org"; id: string; label: string; cloud: boolean; selected: boolean }
+  | { kind: "organization"; organization: OrganizationChoice }
   | { kind: "item"; id: "settings"; label: string };
 
 export interface AccountMenuModel {
   triggerLabel: string;
   triggerIcon: PersonIcon;
-  /** The trigger shows a building (`Building2`) for a team organization, not the avatar. */
-  triggerCloud: boolean;
+  /** The trigger shows Conductor's building icon instead of the avatar (an organization is active). */
+  triggerOrganization: boolean;
   entries: AccountMenuEntry[];
 }
 
-/**
- * A team organization the switcher lists besides the personal one: for
- * OpenConductor, the Reason workspace the `reason` CLI is signed in to.
- */
-export interface TeamOrganization {
+/** A Reason workspace the switcher can offer. */
+export interface OrganizationOption {
   id: string;
   name: string;
-  selected: boolean;
 }
 
 /**
- * `Jzs` + `zna`, for a single (personal) organization: the email heading,
- * then Settings. Conductor's organization list only appears with more than
- * one organization, and "Create organization" / "Upgrade to Pro" only when
- * the cloud account offers them, so neither appears here. Its last entry,
- * "Log out", ends the Conductor cloud session; with no account there is
- * nothing to end, so it is left out rather than shown doing nothing.
+ * `Jzs` + `zna`: the email heading, then (with more than one organization)
+ * the organization list, then Settings. The list is the personal
+ * organization ("<name>'s Mac") and each Reason workspace, the active one
+ * checked; Conductor marks cloud organizations with a cloud. The trigger
+ * names the active organization. "Create organization" / "Upgrade to Pro"
+ * appear only when Conductor's cloud account offers them, so neither does
+ * here. Its last entry, "Log out", ends the Conductor cloud session; signing
+ * out of Reason is Settings › Account's, so it is left out here.
  */
-export function accountMenuModel(account: LocalAccount, team?: TeamOrganization): AccountMenuModel {
+export function accountMenuModel(account: LocalAccount, organizations: readonly OrganizationOption[] = [], activeId: string | null = null): AccountMenuModel {
   const entries: AccountMenuEntry[] = [];
   if (account.email) entries.push({ kind: "email", email: account.email }, { kind: "separator" });
-  // `zna` with more than one organization: the personal one, then each team one, a check on the active one.
-  if (team) {
-    entries.push(
-      { kind: "org", id: PERSONAL_ORG, label: computerLabel(account.name), cloud: false, selected: !team.selected },
-      { kind: "org", id: team.id, label: team.name, cloud: true, selected: team.selected },
-      { kind: "separator" },
-    );
+  const active = organizations.find((o) => o.id === activeId);
+  if (organizations.length > 0) {
+    const choices: OrganizationChoice[] = [
+      { id: null, label: computerLabel(account.name), cloud: false, selected: !active },
+      ...organizations.map((o) => ({ id: o.id, label: o.name, cloud: true, selected: o.id === active?.id })),
+    ];
+    for (const organization of choices) entries.push({ kind: "organization", organization });
+    entries.push({ kind: "separator" });
   }
   entries.push({ kind: "item", id: "settings", label: "Settings" });
-  const onTeam = team?.selected === true;
   return {
-    triggerLabel: onTeam ? team.name : computerLabel(account.name),
-    triggerIcon: onTeam ? { fallbackInitial: undefined, imageAlt: team.name } : personIcon(account.name),
-    triggerCloud: onTeam,
+    triggerLabel: active ? active.name : computerLabel(account.name),
+    triggerIcon: personIcon(account.name),
+    triggerOrganization: !!active,
     entries,
   };
 }
-
-/** The personal organization's id in the switcher. */
-export const PERSONAL_ORG = "personal";

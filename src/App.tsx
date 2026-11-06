@@ -54,11 +54,13 @@ import { useKeybindingOverrides, useKeybindings } from "./keybindings/Keybinding
 import { PRIORITY } from "./keybindings/dispatcher";
 import { copyWorkspaceLink } from "./workspace/link";
 import { SettingsView } from "./settings/SettingsView";
-import { ORG_PAGES, USER_PAGES } from "./settings/pages";
+import { USER_PAGES } from "./settings/pages";
 import { OPEN_SETTINGS_EVENT, openAgentSettings } from "./features/chat/ChatModelPicker.tsx";
 import { RoutinesPage } from "./features/routines/RoutinesPage";
 import { RoutineEditor } from "./features/routines/RoutineEditor";
+import { TeamPage } from "./features/team/TeamPage";
 import { REPO_SECTIONS, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
+import { ORGANIZATION_EVENT, storedOrganization } from "./org/organization";
 import { changeZoom, rememberSettings } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
 import { errorText, getSettings } from "./settings/api";
@@ -196,6 +198,8 @@ export default function App() {
     repoIds: state.repos.map((r) => r.id),
     lastRepoId: state.selection.kind === "workspace" ? state.selection.repoId : null,
     userPages: USER_PAGES,
+    // Read synchronously from the stored choice, so an organization start URL resolves on the first render.
+    organization: storedOrganization() !== null,
   });
   const [settingsLocation, setSettingsLocation] = useState<SettingsLocation | null>(() =>
     resolveSettingsUrl(window.location.pathname, window.location.search, routeContext()),
@@ -220,6 +224,16 @@ export default function App() {
     if (settingsLocation && !pendingReposUrl.current) navigateSettings(settingsLocation);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Switching to Personal while an organization page is open lands on General, as Conductor's `lW` redirect does.
+  const settingsLocationRef = useRef(settingsLocation);
+  settingsLocationRef.current = settingsLocation;
+  useEffect(() => {
+    const onChange = () => {
+      if (storedOrganization() === null && settingsLocationRef.current?.scope === "org") navigateSettings({ scope: "user", page: "general" });
+    };
+    window.addEventListener(ORGANIZATION_EVENT, onChange);
+    return () => window.removeEventListener(ORGANIZATION_EVENT, onChange);
+  }, [navigateSettings]);
   const openSettings = useCallback(() => {
     if (!settingsLocation) navigateSettings({ scope: "user", page: "general" });
   }, [settingsLocation, navigateSettings]);
@@ -231,9 +245,8 @@ export default function App() {
       // The right panel's "Add run script" opens the repository's Scripts settings.
       const section = REPO_SECTIONS.find((s) => s === detail?.section);
       if (detail?.repoId && section) return navigateSettings({ scope: "repo", repoId: detail.repoId, section });
-      // Cloud setup (create's "Set up cloud") lives at /settings/cloud/setup and the organization
-      // pages at /settings/organization/..., outside the user pages.
-      const known = [...USER_PAGES, "setup-cloud" as const, ...ORG_PAGES].find((p) => p === detail?.page);
+      // Cloud setup (create's "Set up cloud") lives at /settings/cloud/setup, outside the user pages.
+      const known = [...USER_PAGES, "setup-cloud" as const].find((p) => p === detail?.page);
       if (known) navigateSettings({ scope: "user", page: known });
       // A chat's "Open <agent> settings": the Agents page opens on that agent's tab.
       if (known === "providers" && detail?.providerTab) {
@@ -519,6 +532,8 @@ export default function App() {
               notify={show}
             />
           )
+        ) : sel.kind === "team" ? (
+          <TeamPage />
         ) : sel.kind === "dashboard" ? (
           <Dashboard
             repos={state.repos}

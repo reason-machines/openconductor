@@ -4,6 +4,8 @@
 // Ports needs a cloud organization and Internal an internal build, so
 // neither is listed.
 
+import type { OrgPage } from "./routes";
+
 export type SettingsPage =
   | "general"
   | "account"
@@ -16,38 +18,13 @@ export type SettingsPage =
   | "experimental"
   | "advanced"
   | "terminal"
-  | "setup-cloud"
-  | OrgPage;
-
-/**
- * Conductor's organization settings tabs (`UWt`, `HWt`, `VWt`, `WWt`, `GWt`,
- * renderApp-D_fmY7hW.js @10,190,501), each at /settings/organization/<path>.
- * OpenConductor's organization is the Reason workspace the `reason` CLI is
- * signed in to; the pages read and change it through `reason call`.
- */
-export type OrgPage = "org-preferences" | "org-members" | "org-computer" | "org-environment" | "org-mcp" | "org-prompts";
-
-/** Each organization page's route segment (`/settings/organization/<segment>`). */
-export const ORG_PAGE_PATHS: Record<OrgPage, string> = {
-  "org-preferences": "preferences",
-  "org-members": "members",
-  "org-computer": "computer",
-  "org-environment": "environment",
-  "org-mcp": "mcp",
-  "org-prompts": "prompts",
-};
-
-export const ORG_PAGES = Object.keys(ORG_PAGE_PATHS) as OrgPage[];
-
-export const isOrgPage = (page: string): page is OrgPage => (ORG_PAGES as string[]).includes(page);
+  | "setup-cloud";
 
 export interface SettingsGroup {
   title: string;
   /** A badge after the title (the Cloud group's "Legacy"). */
   badge?: string;
   pages: { id: SettingsPage; label: string }[];
-  /** Links after the pages that open in the browser (the Admin group's Billing). */
-  links?: { label: string; href: string }[];
 }
 
 export const SETTINGS_GROUPS: SettingsGroup[] = [
@@ -102,51 +79,53 @@ export function settingsGroups(bigTerminalEnabled: boolean, cloud = false): Sett
  */
 export const CLOUD_GROUP: SettingsGroup = { title: "Cloud", badge: "Legacy", pages: [{ id: "setup-cloud", label: "Cloud setup" }] };
 
-/** Where the Admin group's Billing goes: the Reason workspace's plan (Conductor's `mWt`, its billing page). */
-export const BILLING_URL = "https://reasonmachines.com/customize";
-
-/**
- * Conductor's navigation with a cloud organization active, as its frontend
- * renders it (REA capture of /settings/organization/members, tools/screens
- * "team" scenario): Personal (… Git, Ports), Agents & environment (Agents,
- * Prompts, Environment, MCP, Cloud computer), the organization's
- * repositories, Admin (Preferences, Members, Billing ↗), More. The local
- * Environment page gives way to the organization's, and Cloud setup is gone
- * (the organization already is a cloud one). OpenConductor has no Ports page
- * (Conductor's cloud port forwarding), so Personal ends at Git.
- */
-export function orgSettingsGroups(bigTerminalEnabled: boolean): SettingsGroup[] {
-  const local = settingsGroups(bigTerminalEnabled);
-  const personal = local.find((g) => g.title === "Personal")!;
-  const more = local.find((g) => g.title === "More")!;
-  return [
-    personal,
-    {
-      title: "Agents & environment",
-      pages: [
-        { id: "providers", label: "Agents" },
-        { id: "org-prompts", label: "Prompts" },
-        { id: "org-environment", label: "Environment" },
-        { id: "org-mcp", label: "MCP" },
-        { id: "org-computer", label: "Cloud computer" },
-      ],
-    },
-    {
-      title: "Admin",
-      pages: [
-        { id: "org-preferences", label: "Preferences" },
-        { id: "org-members", label: "Members" },
-      ],
-      links: [{ label: "Billing", href: BILLING_URL }],
-    },
-    more,
-  ];
-}
-
 const PAGES = [...SETTINGS_GROUPS.flatMap((g) => g.pages), BIG_TERMINAL_PAGE];
 
-export const pageLabel = (page: SettingsPage): string =>
-  [...PAGES, ...CLOUD_GROUP.pages, ...orgSettingsGroups(false).flatMap((g) => g.pages)].find((p) => p.id === page)?.label ?? "";
+export const pageLabel = (page: SettingsPage): string => [...PAGES, ...CLOUD_GROUP.pages].find((p) => p.id === page)?.label ?? "";
 
 /** Every /settings/user/<id> page, for the router (Cloud setup has its own route). */
 export const USER_PAGES: readonly SettingsPage[] = PAGES.map((p) => p.id);
+
+// ---- the organization view -------------------------------------------------
+
+/** One link in the organization view's nav: a user page, an organization page, or Billing. */
+export type OrgNavEntry =
+  | { kind: "user"; page: SettingsPage; label: string }
+  | { kind: "org"; page: OrgPage; label: string }
+  | { kind: "billing"; label: string };
+
+export interface OrgNavGroup {
+  title: string;
+  entries: OrgNavEntry[];
+}
+
+/** Conductor's organization tab labels (`WWt`, `HWt`, `VWt`, `UWt`, `GWt`). */
+export const ORG_PAGE_LABELS: Record<OrgPage, string> = {
+  prompts: "Prompts",
+  environment: "Environment",
+  mcp: "MCP",
+  computer: "Cloud computer",
+  preferences: "Preferences",
+  members: "Members",
+};
+
+/**
+ * The nav with a Reason workspace active: Conductor's `I9a` with
+ * `showOrganization` (`dti` hides the user Environment page there). Agents &
+ * environment adds Prompts, Environment, MCP and Cloud computer after Agents;
+ * the repositories list follows it, then Admin (Preferences, Members, Billing).
+ * The Cloud setup group is gone (Conductor shows it to personal accounts only).
+ */
+export function orgSettingsGroups(bigTerminalEnabled: boolean): OrgNavGroup[] {
+  const user = (g: SettingsGroup): OrgNavEntry[] =>
+    g.pages.filter((p) => p.id !== "environment").map((p) => ({ kind: "user" as const, page: p.id, label: p.label }));
+  const org = (page: OrgPage): OrgNavEntry => ({ kind: "org", page, label: ORG_PAGE_LABELS[page] });
+  return settingsGroups(bigTerminalEnabled).flatMap((g): OrgNavGroup[] =>
+    g.title === "Agents & environment"
+      ? [
+          { title: g.title, entries: [...user(g), org("prompts"), org("environment"), org("mcp"), org("computer")] },
+          { title: "Admin", entries: [org("preferences"), org("members"), { kind: "billing", label: "Billing" }] },
+        ]
+      : [{ title: g.title, entries: user(g) }],
+  );
+}

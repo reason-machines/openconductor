@@ -102,6 +102,8 @@ export type Selection =
   | { kind: "dashboard"; repo?: string }
   /** Conductor's `/routines` pages on Reason Loops (src/features/routines). */
   | { kind: "routines"; page?: RoutinesPage }
+  /** Conductor's `/team` (`Yea`): the organization's people, here the Reason workspace's (src/features/team). */
+  | { kind: "team" }
   | { kind: "workspace"; repoId: string; workspaceId: string };
 
 /**

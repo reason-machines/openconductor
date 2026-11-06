@@ -36,6 +36,13 @@ test("the app opens at / unless a workspace was open or the path is /all-workspa
   assert.deepEqual(startSelection({ repos: [], selection: ws }, "/all-workspaces").selection, { kind: "home" });
 });
 
+test("/team opens the Team page", async () => {
+  const { startSelection } = await import("./selectors.ts");
+  const ws = { kind: "workspace" as const, repoId: "r", workspaceId: "w" };
+  assert.deepEqual(startSelection({ repos: [], selection: ws }, "/team").selection, { kind: "team" });
+  assert.deepEqual(startSelection({ repos: [], selection: { kind: "team" } }, "/").selection, { kind: "root" });
+});
+
 test("/dashboard opens the dashboard board, with ?repo= as its project tab", async () => {
   const { startSelection } = await import("./selectors.ts");
   const ws = { kind: "workspace" as const, repoId: "r", workspaceId: "w" };

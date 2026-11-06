@@ -780,13 +780,39 @@
      }
     ]
    },
-   "oc_reason": "OpenConductor has no route or view for /team",
+   "oc": [
+    {
+     "exec": "location.assign('/team');"
+    },
+    {
+     "wait": ".team",
+     "after_ms": 800
+    }
+   ],
    "covers": [
     {
      "kind": "route",
      "name": "/team"
     }
-   ]
+   ],
+   "oc_fresh": true
+  },
+  {
+   "id": "route-team-org",
+   "title": "Team, in a team organization",
+   "ref": {
+    "path": "/team",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=Tide Labs Team"
+     }
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
+   },
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs"
   },
   {
    "id": "route-diagnostics",
@@ -1597,27 +1623,18 @@
    "title": "Settings > Organization > github",
    "ref": {
     "path": "/settings/organization/github",
-    "scenario": "team",
+    "scenario": "populated",
     "actions": [
      {
       "wait": "text=Configure your organization's shared cloud computer."
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    },
+    "expect_path": "/settings/organization/computer"
    },
-   "oc": [
-    {
-     "click": ".sb-footer-btn",
-     "text": "Settings"
-    },
-    {
-     "wait": ".settings",
-     "after_ms": 800
-    },
-    {
-     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-computer'}}))",
-     "after_ms": 2500
-    }
-   ],
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1634,27 +1651,17 @@
    "title": "Settings > Organization > members",
    "ref": {
     "path": "/settings/organization/members",
-    "scenario": "team",
+    "scenario": "populated",
     "actions": [
      {
-      "wait": "text=People in your organization."
+      "wait": "text=tide-web"
      }
-    ]
-   },
-   "oc": [
-    {
-     "click": ".sb-footer-btn",
-     "text": "Settings"
-    },
-    {
-     "wait": ".settings",
-     "after_ms": 800
-    },
-    {
-     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-members'}}))",
-     "after_ms": 2500
+    ],
+    "query": {
+     "oc_org": "cloud"
     }
-   ],
+   },
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1671,27 +1678,17 @@
    "title": "Settings > Organization > preferences",
    "ref": {
     "path": "/settings/organization/preferences",
-    "scenario": "team",
+    "scenario": "populated",
     "actions": [
      {
-      "wait": "text=Include link to workspace in PR description"
+      "wait": "text=tide-web"
      }
-    ]
-   },
-   "oc": [
-    {
-     "click": ".sb-footer-btn",
-     "text": "Settings"
-    },
-    {
-     "wait": ".settings",
-     "after_ms": 800
-    },
-    {
-     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-preferences'}}))",
-     "after_ms": 2500
+    ],
+    "query": {
+     "oc_org": "cloud"
     }
-   ],
+   },
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1708,27 +1705,17 @@
    "title": "Settings > Organization > computer",
    "ref": {
     "path": "/settings/organization/computer",
-    "scenario": "team",
+    "scenario": "populated",
     "actions": [
      {
       "wait": "text=Configure your organization's shared cloud computer."
      }
-    ]
-   },
-   "oc": [
-    {
-     "click": ".sb-footer-btn",
-     "text": "Settings"
-    },
-    {
-     "wait": ".settings",
-     "after_ms": 800
-    },
-    {
-     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-computer'}}))",
-     "after_ms": 2500
+    ],
+    "query": {
+     "oc_org": "cloud"
     }
-   ],
+   },
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1745,27 +1732,17 @@
    "title": "Settings > Organization > environment",
    "ref": {
     "path": "/settings/organization/environment",
-    "scenario": "team",
+    "scenario": "populated",
     "actions": [
      {
-      "wait": "text=Add environment variable"
+      "wait": "text=tide-web"
      }
-    ]
-   },
-   "oc": [
-    {
-     "click": ".sb-footer-btn",
-     "text": "Settings"
-    },
-    {
-     "wait": ".settings",
-     "after_ms": 800
-    },
-    {
-     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-environment'}}))",
-     "after_ms": 2500
+    ],
+    "query": {
+     "oc_org": "cloud"
     }
-   ],
+   },
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1782,27 +1759,17 @@
    "title": "Settings > Organization > mcp",
    "ref": {
     "path": "/settings/organization/mcp",
-    "scenario": "team",
+    "scenario": "populated",
     "actions": [
      {
-      "wait": "text=Add MCP server"
+      "wait": "text=tide-web"
      }
-    ]
-   },
-   "oc": [
-    {
-     "click": ".sb-footer-btn",
-     "text": "Settings"
-    },
-    {
-     "wait": ".settings",
-     "after_ms": 800
-    },
-    {
-     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-mcp'}}))",
-     "after_ms": 2500
+    ],
+    "query": {
+     "oc_org": "cloud"
     }
-   ],
+   },
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1819,27 +1786,17 @@
    "title": "Settings > Organization > prompts",
    "ref": {
     "path": "/settings/organization/prompts",
-    "scenario": "team",
+    "scenario": "populated",
     "actions": [
      {
-      "wait": "text=General preferences"
+      "wait": "text=tide-web"
      }
-    ]
-   },
-   "oc": [
-    {
-     "click": ".sb-footer-btn",
-     "text": "Settings"
-    },
-    {
-     "wait": ".settings",
-     "after_ms": 800
-    },
-    {
-     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'org-prompts'}}))",
-     "after_ms": 2500
+    ],
+    "query": {
+     "oc_org": "cloud"
     }
-   ],
+   },
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",

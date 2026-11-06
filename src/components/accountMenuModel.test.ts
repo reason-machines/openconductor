@@ -29,20 +29,22 @@ test("without an email the menu is Settings alone, and never Log out", () => {
   assert.ok(!labels.includes("Log out"));
 });
 
-test("with a team organization the switcher lists both, checks the active one, and names the trigger after it", () => {
-  const local = accountMenuModel({ name: "Ada", email: "ada@example.com" }, { id: "reason", name: "Tide Labs", selected: false });
-  assert.equal(local.triggerLabel, "Ada's Mac");
-  assert.equal(local.triggerCloud, false);
-  assert.deepEqual(local.entries, [
-    { kind: "email", email: "ada@example.com" },
-    { kind: "separator" },
-    { kind: "org", id: "personal", label: "Ada's Mac", cloud: false, selected: true },
-    { kind: "org", id: "reason", label: "Tide Labs", cloud: true, selected: false },
-    { kind: "separator" },
-    { kind: "item", id: "settings", label: "Settings" },
-  ]);
-  const team = accountMenuModel({ name: "Ada", email: null }, { id: "reason", name: "Tide Labs", selected: true });
-  assert.equal(team.triggerLabel, "Tide Labs");
-  assert.equal(team.triggerCloud, true);
-  assert.deepEqual(team.entries.filter((e) => e.kind === "org").map((e) => e.kind === "org" && e.selected), [false, true]);
+test("with a Reason workspace, the menu lists Personal and the workspace; the trigger names the active one (Conductor's zna)", () => {
+  const tide = { id: "org_1", name: "Tide Labs" };
+  const personal = accountMenuModel({ name: "Ada", email: "a@b.c" }, [tide], null);
+  assert.equal(personal.triggerLabel, "Ada's Mac");
+  assert.equal(personal.triggerOrganization, false);
+  assert.deepEqual(
+    personal.entries.filter((e) => e.kind === "organization"),
+    [
+      { kind: "organization", organization: { id: null, label: "Ada's Mac", cloud: false, selected: true } },
+      { kind: "organization", organization: { id: "org_1", label: "Tide Labs", cloud: true, selected: false } },
+    ],
+  );
+  assert.deepEqual(personal.entries.map((e) => e.kind), ["email", "separator", "organization", "organization", "separator", "item"]);
+  const org = accountMenuModel({ name: "Ada", email: null }, [tide], "org_1");
+  assert.equal(org.triggerLabel, "Tide Labs");
+  assert.equal(org.triggerOrganization, true);
+  // A stored workspace Reason no longer lists is not active.
+  assert.equal(accountMenuModel({ name: "Ada", email: null }, [tide], "gone").triggerLabel, "Ada's Mac");
 });

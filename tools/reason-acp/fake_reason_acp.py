@@ -537,44 +537,6 @@ def call(op):
                   "invites": [], "total": 2, "has_next_page": False, "end_cursor": None})
     if op == "listReasonLoops":
         envelope({"items": [l for l in loops if l["reason_id"] == path.get("reasonId")]})
-    if op in ("listSecrets", "setSecret", "deleteSecret"):
-        # Settings › Organization › Environment: names per scope; values are kept but never returned.
-        spath = marker(f"fake-reason-secrets-{WORKSPACE}.json")
-        try:
-            with open(spath) as f:
-                secrets = json.load(f)
-        except OSError:
-            secrets = {"user": {}, "organization": {"NPM_TOKEN": "x"}}
-        scope = (inp.get("query") or {}).get("scope") or body.get("scope") or ("user" if op == "deleteSecret" else "organization")
-        if op == "listSecrets":
-            envelope({"items": [{"secret_id": n, "name": n, "scope": scope, "created_at": "2026-11-01T00:00:00Z",
-                                 "updated_at": "2026-11-01T00:00:00Z"} for n in sorted(secrets.get(scope, {}))],
-                      "end_cursor": None, "has_next_page": False})
-        if op == "setSecret":
-            secrets.setdefault(scope, {})[body["name"]] = body["value"]
-        else:
-            if path.get("secretId") not in secrets.get(scope, {}):
-                envelope(error={"code": "secret_not_found", "message": "No such secret"}, code=1)
-            del secrets[scope][path["secretId"]]
-        with open(spath, "w") as f:
-            json.dump(secrets, f)
-        envelope({"ok": True, "name": body.get("name") or path.get("secretId"), "scope": scope})
-    if op in ("listMcpServers", "createMcpServer", "deleteMcpServer"):
-        mpath = marker(f"fake-reason-mcp-{WORKSPACE}.json")
-        try:
-            with open(mpath) as f:
-                servers = json.load(f)
-        except OSError:
-            servers = []
-        if op == "createMcpServer":
-            servers.append({"id": f"mcp-{len(servers) + 1}", "name": body["name"], "transport": body.get("transport", "http"),
-                            "url": body.get("url"), "enabled": True, "connection_state": "connected", "tool_names": []})
-        if op == "deleteMcpServer":
-            servers = [s for s in servers if s["id"] != path.get("id")]
-        with open(mpath, "w") as f:
-            json.dump(servers, f)
-        envelope({"items": servers, "total": len(servers)} if op == "listMcpServers" else
-                 (servers[-1] if op == "createMcpServer" else {"ok": True}))
     if op == "createReasonLoop":
         loop = {"id": f"44444444-4444-4444-8444-{len(loops):012d}", "reason_id": path["reasonId"],
                 "name": body.get("name") or body["prompt"][:40], "prompt": body["prompt"],

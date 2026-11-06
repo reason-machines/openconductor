@@ -1,21 +1,19 @@
 // Side-by-side evidence for Settings › Organization (/settings/organization/*):
-// Conductor 0.87.6's extracted frontend (tools/screens harness, Tauri IPC
-// mocked, "team" scenario: a corporation organization with members, a built
-// cloud computer and empty environment, MCP and settings) and OpenConductor's
-// built frontend (dist/, seeded like tools/sidebar-screens), both opened at
-// the route and captured by REA capture-browser-scenario with the same
-// viewport and theme, then scored with REA compare-web-screenshots.
+// Conductor 0.87.6's extracted frontend in the tools/screens harness as a
+// member of a cloud organization (?oc_org=cloud, tools/screens/org-fixtures.js)
+// and OpenConductor's built frontend (dist/, seeded like tools/sidebar-screens)
+// with a Reason workspace as the active organization and `reason_api_call`
+// answered in the public Reason API's shapes (src/org/api.ts). Both are opened
+// at the route and captured by REA capture-browser-scenario with the same
+// viewport and theme. Data on both sides is invented; Reason's members carry
+// no names, so only the signed-in person's own name shows on our side.
 //
-// OpenConductor's organization is the Reason workspace: outside Tauri its
-// Cloud setup read comes from window.__OC_PREVIEW_CLOUD_SETUP__ and every
-// `reason_api_call` is answered below with Reason's documented shapes
-// (listMembers, getSelf, listSecrets, listMcpServers), invented data only.
-//
-//   npm run build && DIST_REF=<decoded Conductor dist> TMPDIR=/tmp/t \
+//   npm run build && DIST_REF=<decoded Conductor dist> TMPDIR=/tmp/t REA=<rea> \
 //     node tools/side-by-side/org-settings.mjs <out-dir> [state ...]
 //
+// Writes <out>/ref-<state>.png, <out>/oc-<state>.png and <out>/captures.json.
 // VIEWPORT=1280x820 and UIMAP_RECORD=parity/ui-map/side-by-side.json record
-// each pair under its UI map state (settings-org-*).
+// each pair under its UI map state (settings-org-<page>).
 import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
@@ -29,8 +27,8 @@ const [outArg = ".oc-tmp/org-settings", ...only] = process.argv[2] === "--serve-
 const out = path.resolve(outArg);
 const REA = process.env.REA ?? "rea";
 const CHROMIUM = process.env.CHROMIUM ?? "/usr/bin/chromium";
-const REF_PORT = Number(process.env.REF_PORT ?? 4347);
-const OC_PORT = Number(process.env.OC_PORT ?? 4348);
+const REF_PORT = Number(process.env.REF_PORT ?? 4337);
+const OC_PORT = Number(process.env.OC_PORT ?? 4338);
 const DIST_REF = path.resolve(process.env.DIST_REF ?? path.join(repoRoot, ".rea-work/dist"));
 const DIST_OC = path.resolve(repoRoot, "dist");
 const [vw, vh] = (process.env.VIEWPORT ?? "1440x900").split("x").map(Number);
@@ -39,58 +37,77 @@ const RECORD = process.env.UIMAP_RECORD ? path.resolve(process.env.UIMAP_RECORD)
 const tmp = process.env.TMPDIR ?? "/tmp";
 const sha256 = (b) => createHash("sha256").update(b).digest("hex");
 
-/** Synthetic Reason readiness: signed in to a workspace named like the reference's organization. */
-const signedIn = {
-  signedIn: true,
-  identity: { email: "ada@example.com", name: "Ada Demo", workspaceName: "Tide Labs", workspaceSlug: "tide-labs", cloudReady: true },
-  funding: { status: "ready", detail: "Positive usable credit.", actions: [] },
-  agentsAvailable: true,
-  repositories: ["tide-labs/tide-web"],
-  error: null,
-};
-
-/** `reason call` answers, in the shapes `reason tools describe` documents (no values for secrets). */
+/** The workspace OpenConductor has active (stored like src/org/organization.ts does). */
+const ORG = { id: "org_demo_0001", slug: "tide-labs", name: "Tide Labs", role: "admin" };
+/** Answers of `reason_api_call`, in the public Reason API's shapes (`reason tools`, CLI 0.2.699). */
 const API = {
-  getSelf: { user_id: "u-ada", user_name: "Ada Demo", email: "ada@example.com", organization_name: "Tide Labs" },
+  getSelf: { principal_type: "user", user_id: "u-ada", user_name: "Ada Demo", email: "ada@example.com", org_id: ORG.id, organization_name: ORG.name, organization_slug: ORG.slug },
+  listOrganizations: { items: [{ id: ORG.id, slug: ORG.slug, name: ORG.name, membership_role: "admin" }], total: 1, has_next_page: false, end_cursor: null },
   listMembers: {
     items: [
-      { user_id: "u-ada", email: "ada@example.com", role: "admin" },
-      { user_id: "u-grace", email: "grace@example.com", role: "member" },
-      { user_id: "u-alan", email: "alan@example.com", role: "member" },
+      { user_id: "u-ada", email: "ada@example.com", role: "admin", avatar_url: null, created_at: "2026-01-15T09:00:00.000Z" },
+      { user_id: "u-grace", email: "grace@example.com", role: "member", avatar_url: null, created_at: "2026-02-03T10:30:00.000Z" },
+      { user_id: "u-linus", email: "linus@example.com", role: "member", avatar_url: null, created_at: "2026-03-21T14:05:00.000Z" },
     ],
-    invites: [],
-    total: 3,
+    total: 3, has_next_page: false, end_cursor: null, invites: [],
   },
-  listSecrets: { items: [], end_cursor: null, has_next_page: false },
-  listMcpServers: { items: [], total: 0 },
+  listMcpServers: { items: [], total: 0, has_next_page: false, end_cursor: null },
+  // Reason's catalog (listConnections): the services Conductor recommends that Reason also connects through MCP,
+  // in Conductor's order, none connected. Shapes from `reason tools`; descriptions invented.
+  listConnections: {
+    services: ["Granola", "Notion", "Airtable", "Linear", "Asana", "PostHog", "Hex", "Sentry", "Slack", "Stripe", "Supabase", "Vercel", "Cloudflare", "Neon", "PlanetScale", "Atlassian", "Context7", "Exa"].map((name) => ({
+      id: name.toLowerCase(), name, icon: null, description: "", status: "not_connected", reason: "", connections: [],
+      offerings: [{ id: name.toLowerCase() + "-mcp", adapter: "mcp", providerId: name.toLowerCase(), name, connectable: true, reason: null }],
+    })),
+  },
+  listRepositories: {
+    items: [
+      { id: "ri-1", full_name: "tide-labs/tide-web", account_login: "tide-labs", grant: "team", host: "github.com", archived: false },
+      { id: "ri-2", full_name: "tide-labs/tide-api", account_login: "tide-labs", grant: "team", host: "github.com", archived: false },
+    ],
+  },
 };
 
-/** Per state: the route on both sides, the text to wait for, its UI map state id and committed image. */
+/**
+ * Per state: the route on both sides, what each side waits for, its UI map state and committed image
+ * (parity/side-by-side/). The Cloud computer page shows tide-web twice on Conductor's side (nav and chip),
+ * so its reference waits for the page's own copy (REA gap 12).
+ */
+const COMPUTER_WAIT = "text=Configure your organization's shared cloud computer.";
 const STATES = {
-  members: { path: "/settings/organization/members", wait: "People in your organization.", uiMap: "settings-org-members", image: "settings-org-03-members.png" },
-  preferences: { path: "/settings/organization/preferences", wait: "Include link to workspace in PR description", uiMap: "settings-org-preferences", image: "settings-org-04-preferences.png" },
-  prompts: { path: "/settings/organization/prompts", wait: "General preferences", uiMap: "settings-org-prompts", image: "settings-org-05-prompts.png" },
-  environment: { path: "/settings/organization/environment", wait: "Add environment variable", uiMap: "settings-org-environment", image: "settings-org-06-environment.png" },
-  mcp: { path: "/settings/organization/mcp", wait: "Add MCP server", uiMap: "settings-org-mcp", image: "settings-org-07-mcp.png" },
-  computer: { path: "/settings/organization/computer", wait: "Configure your organization's shared cloud computer.", uiMap: "settings-org-computer", image: "settings-org-08-computer.png" },
-  github: { path: "/settings/organization/github", wait: "Configure your organization's shared cloud computer.", uiMap: "settings-org-github", image: "settings-org-09-github.png" },
+  "org-computer": { path: "/settings/organization/computer", refWait: COMPUTER_WAIT, ocWait: ".org-chips", uiMap: "settings-org-computer", image: "settings-org-03-computer.png" },
+  "org-github": { path: "/settings/organization/github", refWait: COMPUTER_WAIT, ocWait: ".org-chips", uiMap: "settings-org-github", image: "settings-org-03-computer.png" },
+  "org-members": { path: "/settings/organization/members", uiMap: "settings-org-members", image: "settings-org-04-members.png" },
+  "org-preferences": { path: "/settings/organization/preferences", uiMap: "settings-org-preferences", image: "settings-org-05-preferences.png" },
+  "org-environment": { path: "/settings/organization/environment", uiMap: "settings-org-environment", image: "settings-org-06-environment.png" },
+  "org-mcp": { path: "/settings/organization/mcp", uiMap: "settings-org-mcp", image: "settings-org-07-mcp.png" },
+  "org-prompts": { path: "/settings/organization/prompts", uiMap: "settings-org-prompts", image: "settings-org-08-prompts.png" },
+  // Conductor's /team (`Yea`): with no team organization on either side (Conductor's personal
+  // organization; OpenConductor with no Reason workspace chosen), then with one.
+  "team-personal": { path: "/team", personal: true, refWait: "text=Teammates appear here", ocWait: "text=Teammates appear here", uiMap: "route-team", image: "team-01-personal.png" },
+  "team-org": { path: "/team", refWait: "text=Tide Labs Team", ocWait: ".team-grid", uiMap: "route-team-org", image: "team-02-org.png" },
 };
 
-// OpenConductor: dist/ with the sidebar-screens seed, Home (not All workspaces)
-// selected like Conductor's "/", and a Tauri shell that answers every command empty.
+// OpenConductor: dist/ with the sidebar-screens seed, the Reason workspace stored as the active
+// organization, and a Tauri shell that answers `reason_api_call` (above) and nothing else.
 const ocSeed = fs.readFileSync(path.join(repoRoot, "tools/sidebar-screens/seed.js"), "utf8");
-const ocExtra = (fixture) => `(function () {
-  window.__OC_PREVIEW_CLOUD_SETUP__ = ${JSON.stringify(fixture)};
-  const API = ${JSON.stringify(API)};
-  const raw = localStorage.getItem("openconductor.shell.v1");
-  if (raw) { const s = JSON.parse(raw); s.selection = { kind: "root" }; localStorage.setItem("openconductor.shell.v1", JSON.stringify(s)); }
+const ocExtra = `(function () {
+  const personal = new URLSearchParams(location.search).get("oc_personal") === "1";
+  if (personal) localStorage.removeItem("openconductor.organization.v1");
+  else localStorage.setItem("openconductor.organization.v1", ${JSON.stringify(JSON.stringify(ORG))});
+  // /team is a selection, not a settings route: open it the way a /team start URL does.
+  if (location.pathname === "/team") {
+    const raw = localStorage.getItem("openconductor.shell.v1");
+    if (raw) { const s = JSON.parse(raw); s.selection = { kind: "team" }; localStorage.setItem("openconductor.shell.v1", JSON.stringify(s)); }
+  }
+  const api = ${JSON.stringify(API)};
   window.__TAURI_INTERNALS__ = {
     metadata: { currentWindow: { label: "main" }, currentWebview: { label: "main" } },
     transformCallback: () => 0,
     async invoke(cmd, args) {
       if (cmd === "execute_shell_command_cancellable" || cmd === "execute_shell_command") return { stdout: "", stderr: "", exitCode: 0, signal: null, cancelled: false, truncated: false };
-      if (cmd === "reason_api_call" && API[args?.operation]) return API[args.operation];
-      throw new Error("not mocked: " + cmd);
+      if (cmd === "reason_api_call" && api[args.operation]) return api[args.operation];
+      throw new Error("not mocked: " + cmd + (args && args.operation ? " " + args.operation : ""));
     },
   };
 })();`;
@@ -103,8 +120,7 @@ function serveOc() {
       let file = path.join(DIST_OC, decodeURIComponent(url.pathname));
       if (!file.startsWith(DIST_OC) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) file = path.join(DIST_OC, "index.html");
       let body = fs.readFileSync(file);
-      const fixture = signedIn;
-      if (file.endsWith("index.html")) body = body.toString().replace("<head>", `<head><script>${ocSeed}</script><script>${ocExtra(fixture)}</script>`);
+      if (file.endsWith("index.html")) body = body.toString().replace("<head>", `<head><script>${ocSeed}</script><script>${ocExtra}</script>`);
       res.writeHead(200, { "content-type": TYPES[path.extname(file)] ?? "application/octet-stream" });
       res.end(body);
     })
@@ -162,10 +178,10 @@ function compare(name, a, b) {
   return res;
 }
 
-function capture(name, url, wait) {
+function capture(name, url, wait = "text=tide-web") {
   const actions = [
     { step_id: "settle", action: "wait_for_timeout", duration_ms: 4000 },
-    { step_id: "page", action: "wait_for", locator: { kind: "css", selector: `text=${wait}` }, state: "visible", timeout_ms: 15000 },
+    { step_id: "ready", action: "wait_for", locator: { kind: "css", selector: wait }, state: "visible", timeout_ms: 15000 },
     { step_id: "final", action: "wait_for_timeout", duration_ms: 1200 },
   ];
   const input = {
@@ -188,7 +204,8 @@ function capture(name, url, wait) {
   if (art.screenshot?.state !== "captured") throw new Error(`${name}: screenshot ${art.screenshot?.state} ${JSON.stringify(ev.normalized_result?.issues ?? ev.issues ?? "").slice(0, 400)}`);
   const png = Buffer.from(art.screenshot.value.data_base64, "base64");
   fs.writeFileSync(path.join(out, `${name}.png`), png);
-  const dom = art.dom?.value?.html ?? art.dom?.value?.content ?? art.dom?.value ?? "";
+  // REA's DOM artifact is {sha256, bytes, text} (REA gap 43).
+  const dom = art.dom?.value?.text ?? art.dom?.value?.html ?? "";
   return { png, evidence_id: ev.evidence_id, png_sha256: sha256(png), final_url: art.url?.value?.url ?? art.url?.value ?? null, dom: visibleText(typeof dom === "string" ? dom : JSON.stringify(dom)) };
 }
 
@@ -202,15 +219,16 @@ let failures = 0;
 try {
   for (const [state, spec] of Object.entries(STATES)) {
     if (only.length && !only.includes(state)) continue;
+    const q = "oc_scenario=populated&oc_theme=dark";
     try {
-      const { png: refPng, ...ref } = capture(`ref-${state}`, `http://conductor.localhost:${REF_PORT}${spec.path}?oc_scenario=team&oc_theme=dark`, spec.wait);
-      const { png: ocPng, ...oc } = capture(`oc-${state}`, `http://localhost:${OC_PORT}${spec.path}?oc_scenario=populated&oc_theme=dark`, spec.wait);
+      const { png: refPng, ...ref } = capture(`ref-${state}`, `http://conductor.localhost:${REF_PORT}${spec.path}?${q}${spec.personal ? "" : "&oc_org=cloud"}`, spec.refWait);
+      const { png: ocPng, ...oc } = capture(`oc-${state}`, `http://localhost:${OC_PORT}${spec.path}?${q}${spec.personal ? "&oc_personal=1" : ""}`, spec.ocWait);
       manifest[state] = { tool: "rea capture-browser-scenario", viewport: VIEWPORT, theme: "dark", ref, oc };
       let line = `${state}: ref ${ref.evidence_id} | oc ${oc.evidence_id}`;
       if (RECORD && spec.uiMap) {
         const cmp = compare(state, refPng, ocPng);
         record.states[spec.uiMap] = {
-          lane: "tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
+          lane: "tools/side-by-side/org-settings.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness, ?oc_org=cloud) and of OpenConductor's built frontend (dist/, reason_api_call mocked like the Reason API) in Chromium",
           openconductor_commit: head,
           viewport: VIEWPORT,
           image: `side-by-side/${spec.image}`,
