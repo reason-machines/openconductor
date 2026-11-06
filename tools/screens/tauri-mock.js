@@ -122,6 +122,10 @@
       localStorage.setItem(VFS_KEY, JSON.stringify(vfs));
     } catch (e) {}
   };
+  // ?oc_setup_script=<command>: tide-web's repository-local settings (.conductor/settings.local.toml in its
+  // main checkout) set scripts.setup, for the terminal panel's Setup tab (tools/side-by-side/setup-tab.mjs).
+  const setupScript = new URLSearchParams(location.search).get("oc_setup_script");
+  if (setupScript) vfs["/Users/demo/code/tide-web/.main/.conductor/settings.local.toml"] = `[scripts]\nsetup = ${JSON.stringify(setupScript)}\n`;
   saveVfs();
   window.__OC_VFS__ = vfs;
   const enc = new TextEncoder();

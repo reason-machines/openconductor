@@ -34,7 +34,7 @@ export function RepoSettingsPage({ repo, section, miscActions }: Props) {
     <div className="settings-section">
       {section === "environment" && <RepoEnvironment repo={repo} />}
       {section === "git" && <RepoGit repo={repo} />}
-      {section === "scripts" && <RepoScripts repo={repo} />}
+      {section === "scripts" && <RepoScripts repo={repo} notify={miscActions.notify} />}
       {section === "actions" && <RepoActions repo={repo} />}
       {section === "misc" && <RepoMisc repo={repo} actions={miscActions} />}
     </div>
@@ -49,8 +49,8 @@ function RepoGit({ repo }: { repo: Repo }) {
   return <RepoGitRows repo={repo} />;
 }
 
-function RepoScripts({ repo }: { repo: Repo }) {
-  return <RepoScriptsRows repo={repo} />;
+function RepoScripts({ repo, notify }: { repo: Repo; notify: RepoMiscActions["notify"] }) {
+  return <RepoScriptsRows repo={repo} notify={notify} />;
 }
 
 /**

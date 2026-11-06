@@ -8,11 +8,11 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **969** | **751** | **86** | **132** |
-| States (captured screens) | 71 | 13 | 27 | 31 |
-| Inventory items | 898 | 738 | 59 | 101 |
+| **All** | **971** | **750** | **86** | **135** |
+| States (captured screens) | 73 | 13 | 27 | 33 |
+| Inventory items | 898 | 737 | 59 | 102 |
 | &nbsp;&nbsp;dialog | 64 | 54 | 5 | 5 |
-| &nbsp;&nbsp;empty-state | 52 | 46 | 1 | 5 |
+| &nbsp;&nbsp;empty-state | 52 | 45 | 1 | 6 |
 | &nbsp;&nbsp;menu | 39 | 37 | 1 | 1 |
 | &nbsp;&nbsp;menu-item | 89 | 84 | 4 | 1 |
 | &nbsp;&nbsp;popover | 45 | 44 | 1 | 0 |
@@ -30,18 +30,18 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 
 | Team | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| chat | 56 | 46 | 7 | 3 |
+| chat | 63 | 50 | 10 | 3 |
 | cloud-org | 83 | 70 | 4 | 9 |
 | git-review | 38 | 30 | 3 | 5 |
 | onboarding-auth | 23 | 15 | 7 | 1 |
 | routines | 40 | 35 | 0 | 5 |
 | settings | 181 | 46 | 46 | 89 |
-| shell | 194 | 176 | 9 | 9 |
-| terminal-scripts | 30 | 27 | 3 | 0 |
+| shell | 197 | 179 | 9 | 9 |
+| terminal-scripts | 22 | 19 | 0 | 3 |
 | triage | 268 | 268 | 0 | 0 |
 | workspaces | 56 | 38 | 7 | 11 |
 
-220 of 898 items were located in a captured state; 220 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
+221 of 898 items were located in a captured state; 221 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
 
 ## How it was measured
 
@@ -69,12 +69,14 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | All workspaces list<br>`all-workspaces` | matches | workspaces | diff 3.9% at t24, copy 92% | [png](ui-map/ref/all-workspaces.png) | [png](ui-map/oc/all-workspaces.png) | [jpg](ui-map/diff/all-workspaces.jpg) | 3.9% |
 | Create workspace composer<br>`create` | matches | chat | diff 0.8% at t24, copy 90% | [png](side-by-side/create-composer-01-dialog.png) | [png](side-by-side/create-composer-01-dialog.png) |  | 0.8% |
 | Create: repo picker open<br>`create-repo-picker` | matches | workspaces | diff 1.0% at t24, copy 90% | [png](side-by-side/create-composer-02-repo-picker.png) | [png](side-by-side/create-composer-02-repo-picker.png) |  | 1.0% |
-| Workspace: chat transcript<br>`workspace-chat` | wrong | terminal-scripts | diff 6.0% at t24, copy 86% | [png](ui-map/ref/workspace-chat.png) | [png](ui-map/oc/workspace-chat.png) | [jpg](ui-map/diff/workspace-chat.jpg) | 6.0% |
+| Workspace: chat transcript<br>`workspace-chat` | wrong | chat | diff 6.0% at t24, copy 86% | [png](ui-map/ref/workspace-chat.png) | [png](ui-map/oc/workspace-chat.png) | [jpg](ui-map/diff/workspace-chat.jpg) | 6.0% |
 | Workspace: new empty chat<br>`workspace-new-chat` | matches | chat | diff 3.3% at t24, copy 92% | [png](ui-map/ref/workspace-new-chat.png) | [png](ui-map/oc/workspace-new-chat.png) | [jpg](ui-map/diff/workspace-new-chat.jpg) | 3.3% |
 | Chat: tool calls expanded<br>`workspace-tool-calls` | wrong | chat | diff 6.6% at t24, copy 93% | [png](ui-map/ref/workspace-tool-calls.png) | [png](ui-map/oc/workspace-tool-calls.png) | [jpg](ui-map/diff/workspace-tool-calls.jpg) | 6.6% |
 | Diff: file, unified<br>`diff-unified` | wrong | git-review | diff 10.7% at t24, copy 91% | [png](ui-map/ref/diff-unified.png) | [png](ui-map/oc/diff-unified.png) | [jpg](ui-map/diff/diff-unified.jpg) | 10.7% |
 | Diff: file, split<br>`diff-split` | wrong | git-review | diff 10.8% at t24, copy 91% | [png](ui-map/ref/diff-split.png) | [png](ui-map/oc/diff-split.png) | [jpg](ui-map/diff/diff-split.jpg) | 10.8% |
 | Diff: entire file<br>`diff-entire-file` | wrong | git-review | diff 5.3% at t24, copy 91% | [png](ui-map/ref/diff-entire-file.png) | [png](ui-map/oc/diff-entire-file.png) | [jpg](ui-map/diff/diff-entire-file.jpg) | 5.3% |
+| Terminal panel: Setup, no setup script<br>`panel-setup-add` | matches | terminal-scripts | diff 3.1% at t24, copy 93% | [png](side-by-side/terminal-scripts-01-setup-add.png) | [png](side-by-side/terminal-scripts-01-setup-add.png) |  | 3.1% |
+| Terminal panel: Setup, before setup runs<br>`panel-setup-idle` | matches | terminal-scripts | diff 2.9% at t24, copy 92% | [png](side-by-side/terminal-scripts-02-setup-idle.png) | [png](side-by-side/terminal-scripts-02-setup-idle.png) |  | 2.9% |
 | Workspace needing permission<br>`needs-permission` | wrong | chat | diff 3.9% at t24, copy 88% | [png](ui-map/ref/needs-permission.png) | [png](ui-map/oc/needs-permission.png) | [jpg](ui-map/diff/needs-permission.jpg) | 3.9% |
 | Dashboard<br>`route-dashboard` | missing | shell | OpenConductor has no route or view for /dashboard | [png](ui-map/ref/route-dashboard.png) | no-equivalent |  |  |
 | Routines<br>`route-routines` | matches | routines | diff 1.7% at t24, copy 100% | [png](side-by-side/routines-01-list.png) | [png](side-by-side/routines-01-list.png) |  | 1.7% |
@@ -474,7 +476,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `menu:eq` | missing | triage |  | `EQ` |  | no literal copy to locate it; not observed in any capture |
 | `menu:bro` | missing | triage |  | `bro` |  | no literal copy to locate it; not observed in any capture |
 | `menu:plo` | missing | triage |  | `Plo` |  | no literal copy to locate it; not observed in any capture |
-| `menu:u8i` | wrong | terminal-scripts | Rename chat / Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/shell-menus-01-chat-tab.png) | host state menu-chat-tab is wrong |
+| `menu:u8i` | wrong | chat | Rename chat / Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/shell-menus-01-chat-tab.png) | host state menu-chat-tab is wrong |
 | `menu:gwt` | missing | triage |  | `gwt` |  | no literal copy to locate it; not observed in any capture |
 | `menu:zoo` | missing | triage |  | `zOo` |  | no literal copy to locate it; not observed in any capture |
 | `menu:sko` | missing | triage |  | `sKo` |  | no literal copy to locate it; not observed in any capture |
@@ -563,7 +565,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `menu-item:rename-chat`<br>Rename chat | wrong | chat | Rename chat | `u8i` | [menu-chat-tab](side-by-side/shell-menus-01-chat-tab.png) | host state menu-chat-tab is wrong |
 | `menu-item:u8i~2` | missing | triage |  | `u8i` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:c`<br>⌘⌥C | missing | shell | ⌘⌥C | `u8i` |  | no literal copy to locate it; not observed in any capture |
-| `menu-item:copy-full-transcript`<br>Copy full transcript | wrong | terminal-scripts | Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/shell-menus-01-chat-tab.png) | host state menu-chat-tab is wrong |
+| `menu-item:copy-full-transcript`<br>Copy full transcript | wrong | chat | Copy full transcript | `u8i` | [menu-chat-tab](side-by-side/shell-menus-01-chat-tab.png) | host state menu-chat-tab is wrong |
 | `menu-item:copy-link`<br>Copy link | wrong | workspaces | Copy link | `u8i` | [menu-workspace-context](ui-map/oc/menu-workspace-context.png) | host state menu-workspace-context is wrong |
 | `menu-item:u8i~3` | missing | triage |  | `u8i` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:w`<br>⌘W | missing | shell | ⌘W | `u8i` |  | no literal copy to locate it; not observed in any capture |
@@ -675,7 +677,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `tab:f8i` | missing | triage |  | `f8i` |  | no literal copy to locate it; not observed in any capture |
 | `tab:m9e` | missing | triage |  | `M9e` |  | no literal copy to locate it; not observed in any capture |
 | `tab:activity`<br>Activity | missing | shell | Activity | `KKo` |  | copy not shown in any OpenConductor capture |
-| `tab:description`<br>Description | missing | terminal-scripts | Description | `KKo` |  | copy not shown in any OpenConductor capture |
+| `tab:description`<br>Description | missing | shell | Description | `KKo` |  | copy not shown in any OpenConductor capture |
 | `tab:kko` | missing | triage |  | `KKo` |  | no literal copy to locate it; not observed in any capture |
 | `tab:nyo` | missing | triage |  | `NYo` |  | no literal copy to locate it; not observed in any capture |
 | `tab:all-projects`<br>All projects | missing | workspaces | All projects | `dta` | [palette-workspaces](ui-map/oc/palette-workspaces.png) | copy not shown in any OpenConductor capture |
@@ -754,8 +756,8 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `toast:failed-to-save-image`<br>Failed to save image | missing | shell | Failed to save image | `Hho` |  | copy not shown in any OpenConductor capture |
 | `toast:fyi-when-you-switch-effort-mid-chat-with-claude-your-next-re`<br>FYI: When you switch effort mid-chat with Claude, your next response will be slo | missing | chat | FYI: When you switch effort mid-chat with Claude, your next response w | `cgo` |  | copy not shown in any OpenConductor capture |
 | `toast:fyi-when-you-switch-models-mid-chat-your-next-response-will-`<br>FYI: When you switch models mid-chat, your next response will be slower and use  | missing | chat | FYI: When you switch models mid-chat, your next response will be slowe | `yWn` |  | copy not shown in any OpenConductor capture |
-| `toast:recording-ended-transcript-saved`<br>Recording ended — transcript saved. | missing | terminal-scripts | Recording ended — transcript saved. | `Ngo` |  | copy not shown in any OpenConductor capture |
-| `toast:recording-ended-transcript-saved~2`<br>Recording ended — transcript saved. | missing | terminal-scripts | Recording ended — transcript saved. | `Ngo` |  | copy not shown in any OpenConductor capture |
+| `toast:recording-ended-transcript-saved`<br>Recording ended — transcript saved. | missing | chat | Recording ended — transcript saved. | `Ngo` |  | copy not shown in any OpenConductor capture |
+| `toast:recording-ended-transcript-saved~2`<br>Recording ended — transcript saved. | missing | chat | Recording ended — transcript saved. | `Ngo` |  | copy not shown in any OpenConductor capture |
 | `toast:speech-recording-failed`<br>Speech recording failed. | missing | shell | Speech recording failed. | `Pgo` |  | copy not shown in any OpenConductor capture |
 | `toast:folder-e-is-too-large-to-attach`<br>Folder "${e}" is too large to attach | missing | chat | Folder "${e}" is too large to attach | `Swo` |  | copy not shown in any OpenConductor capture |
 | `toast:couldn-t-attach-folder-e`<br>Couldn't attach folder "${e}" | missing | chat | Couldn't attach folder "${e}" | `Swo` |  | copy not shown in any OpenConductor capture |
@@ -771,8 +773,8 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `toast:failed-to-steer-queued-message`<br>Failed to steer queued message | missing | chat | Failed to steer queued message | `PAo` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-steer-queued-message~2`<br>Failed to steer queued message | missing | chat | Failed to steer queued message | `LAo` |  | copy not shown in any OpenConductor capture |
 | `toast:no-messages-in-this-chat`<br>No messages in this chat | missing | chat | No messages in this chat | `RIo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-attach-chat-transcript`<br>Failed to attach chat transcript | missing | terminal-scripts | Failed to attach chat transcript | `RIo` |  | copy not shown in any OpenConductor capture |
-| `toast:failed-to-attach-chat-transcript~2`<br>Failed to attach chat transcript | missing | terminal-scripts | Failed to attach chat transcript | `RIo` |  | copy not shown in any OpenConductor capture |
+| `toast:failed-to-attach-chat-transcript`<br>Failed to attach chat transcript | missing | chat | Failed to attach chat transcript | `RIo` |  | copy not shown in any OpenConductor capture |
+| `toast:failed-to-attach-chat-transcript~2`<br>Failed to attach chat transcript | missing | chat | Failed to attach chat transcript | `RIo` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-attach-plan`<br>Failed to attach plan | missing | cloud-org | Failed to attach plan | `RIo` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-copy-user-info`<br>Failed to copy user info | missing | shell | Failed to copy user info | `UOo` |  | copy not shown in any OpenConductor capture |
 | `toast:copied-user-info`<br>Copied user info | missing | shell | Copied user info | `HOo` |  | copy not shown in any OpenConductor capture |
@@ -781,7 +783,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `toast:lqo~2` | missing | triage |  | `lqo` |  | no literal copy to locate it; not observed in any capture |
 | `toast:lqo~3` | missing | triage |  | `lqo` |  | no literal copy to locate it; not observed in any capture |
 | `toast:eqo` | missing | triage |  | `eQo` |  | no literal copy to locate it; not observed in any capture |
-| `toast:couldn-t-save-description-rc-t`<br>Couldn't save description: ${rc(t)} | missing | terminal-scripts | Couldn't save description: ${rc(t)} | `lXo` |  | copy not shown in any OpenConductor capture |
+| `toast:couldn-t-save-description-rc-t`<br>Couldn't save description: ${rc(t)} | missing | shell | Couldn't save description: ${rc(t)} | `lXo` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-copy-user-info~2`<br>Failed to copy user info | missing | shell | Failed to copy user info | `Zna` |  | copy not shown in any OpenConductor capture |
 | `toast:copied-user-info~2`<br>Copied user info | missing | shell | Copied user info | `eia` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-copy-organization-info`<br>Failed to copy organization info | missing | cloud-org | Failed to copy organization info | `nia` |  | copy not shown in any OpenConductor capture |
@@ -1035,7 +1037,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `toast:failed-to-unarchive-t-workspacedirectoryname`<br>Failed to unarchive: ${t.workspaceDirectoryName} | missing | workspaces | Failed to unarchive: ${t.workspaceDirectoryName} | `kIa` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-start-agents`<br>Failed to start agents | missing | chat | Failed to start agents / Conductor will not work. Please report this error. | `wVi` |  | copy not shown in any OpenConductor capture |
 
-## empty-state (52: 46 missing, 1 wrong, 5 matches)
+## empty-state (52: 45 missing, 1 wrong, 6 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -1045,7 +1047,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `empty-state:no-files-match-this-filter`<br>No files match this filter | missing | shell | No files match this filter | `gyi` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-branch-found`<br>No branch found. | missing | git-review | No branch found. | `EJe` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-logs-were-recorded-or-they-have-expired`<br>No logs were recorded, or they have expired. | missing | shell | No logs were recorded, or they have expired. | `w9s` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-setup-script-output`<br>No setup script output | missing | terminal-scripts | No setup script output | `nro` |  | copy not shown in any OpenConductor capture |
+| `empty-state:no-setup-script-output`<br>No setup script output | matches | terminal-scripts | No setup script output | `nro` | [panel-setup-idle](side-by-side/terminal-scripts-02-setup-idle.png) | on screen in both; state panel-setup-idle matches |
 | `empty-state:no-one-has-been-added`<br>No one has been added | missing | shell | No one has been added | `uoo` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-people-found`<br>No people found. | missing | shell | No people found. | `foo` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-other-teammates-in-this-organization`<br>No other teammates in this organization | missing | cloud-org | No other teammates in this organization | `Ioo` |  | copy not shown in any OpenConductor capture |
@@ -1059,7 +1061,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `empty-state:no-models-found`<br>No models found | missing | chat | No models found | `A7o` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-changes-in-this-file`<br>No changes in this file | missing | shell | No changes in this file | `Mqo` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-changes-to-this-file`<br>No changes to this file. | missing | git-review | No changes to this file. | `Jqo` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-description`<br>No description | missing | terminal-scripts | No description | `dKo` |  | copy not shown in any OpenConductor capture |
+| `empty-state:no-description`<br>No description | missing | shell | No description | `dKo` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-matching-workspaces`<br>No matching workspaces | missing | workspaces | No matching workspaces | `UJo` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-members-found-in-this-organization`<br>No members found in this organization. | missing | cloud-org | No members found in this organization. | `Yea` |  | copy not shown in any OpenConductor capture |
 | `empty-state:add-a-project-to-get-started`<br>Add a project to get started. | matches | workspaces | Add a project to get started. | `hBi` | [home-empty](ui-map/oc/home-empty.png) | on screen in both; state home-empty matches |
@@ -1184,4 +1186,11 @@ Harness limits that shape the reference (not REA bugs): settings pages behind an
 45. **`rea search` still has no route for the decoded `renderApp` chunk** (gaps 17, 25, 30, 34, 36, 41): `rea search renderApp-D_fmY7hW.js "Run agents on a schedule"` fails `capability_unavailable` / `unsupported_provider` (`selection_reason: target_unsupported`; ghidra not configured, kuna rejects JavaScript). The routines list (`K8a`), editor (`GHi`), trigger menu (`r7a`), schedule presets (`itt`, `x8a`, `w8a`) and the automation API routes and zod schemas in `index-BGEQ8YjU.js` (`listOrganizationAutomations`, `lJ`, `aJ`, `WPe`) were read as plain text with byte offsets.
 46. **`capture-browser-scenario` has no `wait_for_selector`; the action is `wait_for` with `state`,** and `--schema` documents neither (gap 8). The error lists the allowed actions only in `details.issues[].expected`.
 47. **The harness cannot render Conductor's routine table or a saved routine.** Conductor gates its automation queries on a cloud organization (`fc(org) === "cloud"`) and the tools/screens harness has none, so `/routines` captures header, loader and suggestions only and `/routines/$automationId` has no reference. REA has no way to inject a query result into a captured page, so the OpenConductor-only states (`routines-03`..`05`) have no reference to score against.
+
+### Hit while building the terminal panel's Setup tab (REA 6.8.0, Linux cloud)
+
+48. **`rea search` still has no route for the decoded `renderApp` chunk** (gaps 17, 25, 30, 34, 36, 40). The terminal panel `nro` (@7,127,035; Setup tab @~7,150,400), the setup button `UUe` / `JEs` (@3,136,650), the Scripts settings `ama` (@10,594,216) and `uma` (@10,601,205), the debounced editor `fGt`, the attach toast in `w9e` (@6,878,113), the Xcode license check `HBr` (@693,724, with `QQt` / `c3t` / `YQt` in `index-BGEQ8YjU.js`) and the right column split (`git-panel` / `scripts-panel`, @~7,158,281) were read from the chunks by byte offset; the rendered Setup tab was captured with `capture-browser-scenario` (`tools/side-by-side/setup-tab.mjs`).
+49. **`capture-browser-scenario` has no pointer move** (as with `hover`, gap 37): a `mouse_move` step fails `invalid_value` at `actions[n].action` (allowed: goto, click, fill, press, select_option, check, uncheck, wait_for, request, wait_for_timeout), so the pointer stays on the last element clicked and its hover colour is in the capture on both sides.
+50. **No IPC trace in a capture.** To find how Conductor reads a repository's setup script (so the harness could seed one), the `tools/screens` mock's own IPC log was needed: REA's scenario result records console and page errors but not the Tauri `invoke` calls the page made.
+51. **No remote-artifact input** (gap 17, again): the decoded frontend lives on sven m5 max; it was packed there and copied with Reason's device copy (`devices_copy_to_cloud`, 23 MB tgz, sha256 `1bbc5bee…`). A first `tar czf` run through `devices_exec` returned before the archive was finished and left a truncated file (`gzip -t`: unexpected end of file); packing in the background and checking with `gzip -t` worked.
 

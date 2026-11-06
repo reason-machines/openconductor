@@ -46,7 +46,7 @@ function reaAction(a, i) {
 }
 
 function capture(st, actions) {
-  const q = new URLSearchParams({ oc_scenario: st.ref.scenario ?? "signed-in", oc_theme: spec.theme });
+  const q = new URLSearchParams({ oc_scenario: st.ref.scenario ?? "signed-in", oc_theme: spec.theme, ...(st.ref.query ?? {}) });
   const steps = [];
   actions.forEach((a, i) => {
     steps.push(reaAction(a, i));

@@ -106,7 +106,8 @@ TEAM_RULES = [
     ("cloud-org", r"organi[sz]ation|\bteam\b|teammate|cloud|member|invite|\bshare|sharing|\bseat|billing|subscription|\bplan\b"),
     ("settings", r"^settings|display name|setting:|settings-|/settings|preference|key-?bindings?|appearance|\btheme\b"),
     ("git-review", r"\bdiff|changes? to this file|\bgit\b|github|pull request|\bpr\b|\bmerge|\bbranch|commit|\bpush|rebase|checks?\b|review|conflict"),
-    ("terminal-scripts", r"terminal|script|\bport|\brun\b|setup command|archive script|\bshell\b"),
+    # \bscripts?\b, not "script": "transcript" and "description" are chat and PR copy.
+    ("terminal-scripts", r"terminal|\bscripts?\b|\bport|\brun\b|setup command|archive script|\bshell\b"),
     ("chat", r"\bchat|composer|message|model|prompt|permission|tool[ -]call|\bplan mode|agent|claude|codex|thinking|attach|fast mode|sending|\binput\b|transcript|\bmcp\b"),
     ("workspaces", r"workspace|repositor|\brepo|project|worktree|\bclone|\bcreate\b|archive"),
 ]

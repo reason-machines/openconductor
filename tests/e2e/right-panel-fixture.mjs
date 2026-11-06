@@ -30,7 +30,7 @@ export const FILES = [
  * Calls the right panel makes are recorded in window.__fake.calls; commands it
  * does not know fail, as in the other e2e fakes, and are listed in window.__fake.unmocked.
  */
-export function fakeBackend({ shell, files, spotlight = false }) {
+export function fakeBackend({ shell, files, spotlight = false, setupScript = null }) {
   localStorage.setItem("openconductor.shell.v1", JSON.stringify(shell));
   localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ selection: shell.selection, collapsed: [] }));
   const settings = {
@@ -62,7 +62,7 @@ export function fakeBackend({ shell, files, spotlight = false }) {
         case "db_list_repos":
           return shell.repos.map((r, i) => ({ id: r.id, name: r.name, rootPath: r.path, remoteUrl: null, defaultBranch: r.defaultBranch, displayOrder: i, hidden: false, icon: null, createdAt: "2026-01-01T00:00:00Z" }));
         case "db_list_workspaces":
-          return shell.repos.flatMap((r) => r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path, pinnedAt: null, unread: false, createdAt: "2026-01-01T00:00:00Z" })));
+          return shell.repos.flatMap((r) => r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path, pinnedAt: null, unread: w.unread ?? false, createdAt: "2026-01-01T00:00:00Z" })));
         case "get_settings":
           return structuredClone(settings);
         case "app_info":
@@ -81,7 +81,7 @@ export function fakeBackend({ shell, files, spotlight = false }) {
           fileList.push(args.request.path);
           return;
         case "scripts_config":
-          return { setup: null, setupLayer: null, archive: null, runMode: "concurrent", autoRunAfterSetup: false, run: [], managedKeys: [], warnings: [] };
+          return { setup: setupScript, setupLayer: setupScript === null ? null : "repo_local", archive: null, runMode: "concurrent", autoRunAfterSetup: false, run: [], managedKeys: [], warnings: [] };
         case "setup_script_status":
           return { state: "idle", log: null, last: null };
         case "run_script_status":
