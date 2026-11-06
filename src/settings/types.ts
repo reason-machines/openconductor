@@ -49,12 +49,6 @@ export interface Settings {
   codex_executable_path?: string | null;
   /** Agents › Reason › "Reason executable path"; blank uses the installed `reason`. */
   reason_executable_path?: string | null;
-  /**
-   * Workspaces whose Claude Code and Codex chats run on another machine, by
-   * the workspace's folder on this Mac (src-tauri/src/agent_target.rs). No
-   * settings UI yet; kept so a save round-trips it.
-   */
-  agent_targets?: Record<string, { exec?: string[]; dir: string; claude?: string; codex?: string }>;
   /** Advanced › "SSH private key path". */
   ssh_key_path?: string | null;
   /** Account › "Claude Code tool approvals"; off by default. */

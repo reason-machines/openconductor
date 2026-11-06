@@ -18,7 +18,6 @@ use std::sync::OnceLock;
 use serde::{Deserialize, Serialize};
 
 use super::env::LaunchEnv;
-use super::handoff::TargetLaunch;
 
 /// The agent skill the bundle ships, a Claude Code plugin directory:
 /// `Contents/Resources/conductor-skill/`, the same place Conductor 0.87.6
@@ -159,9 +158,6 @@ pub struct ClaudeLaunch {
     /// `--chrome`: Claude in Chrome ("Use Claude Code with Chrome",
     /// the `chrome_mode_enabled` app preference).
     pub chrome: bool,
-    /// Run on another machine with the credential handed over
-    /// ([`super::handoff`]); `executable`, `cwd` and `env` are then unused.
-    pub target: Option<TargetLaunch>,
 }
 
 impl ClaudeLaunch {
@@ -180,7 +176,6 @@ impl ClaudeLaunch {
             effort: None,
             chrome: false,
             settings: None,
-            target: None,
         }
     }
 
@@ -230,13 +225,6 @@ impl ClaudeLaunch {
     /// The command to spawn: piped stdio, the workspace as cwd, and the
     /// provider environment applied over the inherited one.
     pub fn command(&self) -> Command {
-        if let Some(target) = &self.target {
-            // This Mac's plugin and extra folders do not exist there.
-            let mut remote = self.clone();
-            remote.plugin_dirs.clear();
-            remote.add_dirs.clear();
-            return target.command(&remote.args());
-        }
         let mut cmd = Command::new(&self.executable);
         cmd.args(self.args())
             .current_dir(&self.cwd)

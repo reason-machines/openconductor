@@ -24,7 +24,6 @@ pub mod agent_binaries;
 pub mod agent_commands;
 pub mod agent_launch;
 pub mod agent_options;
-pub mod agent_target;
 pub mod app_quit;
 pub mod app_prefs;
 pub mod bin_source_markers;
