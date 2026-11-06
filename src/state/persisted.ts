@@ -42,6 +42,9 @@ export interface DbWorkspaceRow {
   prDescription: string | null;
   /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
   number: number | null;
+  /** `initialization_log_path` / `initialization_files_copied`; absent from rows of an older backend. */
+  initializationLogPath?: string | null;
+  initializationFilesCopied?: number | null;
   createdAt: string;
   /** `workspaces.updated_at`; absent from rows of an older backend. */
   updatedAt?: string;

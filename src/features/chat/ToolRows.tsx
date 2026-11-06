@@ -8,18 +8,37 @@
 import { useState, type ReactNode } from "react";
 import { FILE_GLYPHS, LUCIDE, type IconNode } from "./toolIconData.ts";
 import {
+  askUserState,
+  backgroundStatus,
   baseName,
+  collabCall,
   editCounts,
   genericSummary,
   grepMatches,
+  isTypedSubagent,
+  lastTwoSegments,
   mcpLabel,
+  parseTask,
+  parseTaskList,
   readContent,
   readLabel,
+  resultText,
+  scheduleWakeupLabel,
+  sendMessageLabel,
   shortPath,
+  skillLabel,
+  slashCommandLabel,
   stripMarkers,
+  subagentDescription,
+  taskIdIn,
+  taskUpdateLabel,
+  terminalOutput,
   toolKind,
+  type CollabAgent,
   type ConductorTool,
+  type TaskItem,
 } from "./conductorTools.ts";
+import { Markdown } from "./markdown.ts";
 import type { ToolStatus } from "./view.ts";
 
 type LucideName = keyof typeof LUCIDE;
@@ -35,35 +54,63 @@ export function Lucide({ name, className }: { name: LucideName; className?: stri
   );
 }
 
-/** Conductor's `Ju`: the icon for a tool name. */
+/** Conductor's `Ju`: the icon for a tool name (an unknown name gets the wrench). */
+const ICON_BY_NAME: Record<string, LucideName> = {
+  mcp__conductor__askuserquestion: "message-square-more",
+  mcp__conductor__AskUserQuestion: "message-square-more",
+  mcp__conductor__GetWorkspaceDiff: "file-diff",
+  mcp__conductor__DiffComment: "message-square",
+  mcp__conductor__GetDiffComments: "messages-square",
+  mcp__conductor__GetTerminalOutput: "terminal",
+  Bash: "terminal",
+  BashOutput: "terminal",
+  Read: "file-text",
+  NotebookRead: "file-text",
+  Grep: "search",
+  ToolSearch: "search",
+  Monitor: "radio",
+  Glob: "file-search",
+  LS: "file-search",
+  Edit: "file-pen",
+  MultiEdit: "file-pen",
+  NotebookEdit: "file-pen",
+  Write: "file-pen",
+  TodoRead: "square-check-big",
+  TodoWrite: "square-check-big",
+  TaskCreate: "square-check-big",
+  TaskList: "square-check-big",
+  TaskGet: "square-check-big",
+  TaskUpdate: "square-check-big",
+  WebSearch: "globe",
+  WebFetch: "globe",
+  ImageGeneration: "image",
+  Task: "file-code",
+  Agent: "file-code",
+  "sub-agent": "bot",
+  Thinking: "brain",
+  EnterPlanMode: "clipboard-list",
+  ExitPlanMode: "clipboard-list",
+  Skill: "biceps-flexed",
+  SlashCommand: "slash",
+  Teammate: "users",
+  SendMessage: "send",
+  ScheduleWakeup: "clock",
+};
+
 export function toolIconName(name: string): LucideName {
-  switch (toolKind(name)) {
-    case "bash":
-    case "bash-output":
-      return "terminal";
-    case "read":
-      return "file-text";
-    case "grep":
-      return "search";
-    case "glob":
-    case "ls":
-      return "file-search";
-    case "edit":
-    case "multi-edit":
-    case "write":
-      return "file-pen";
-    case "todo":
-      return "square-check-big";
-    case "web":
-      return "globe";
-    case "sub-agent":
-      return name === "Task" || name === "Agent" ? "file-code" : "bot";
-    default:
-      return name === "ToolSearch" ? "search" : name === "Thinking" ? "brain" : "wrench";
-  }
+  return ICON_BY_NAME[name] ?? "wrench";
 }
 
 export function ToolIcon({ name, className = "oc-tool-icon" }: { name: string; className?: string }) {
+  if (name === "mcp__conductor__RunLocalCommand") {
+    // `Ju`: a laptop and a terminal side by side.
+    return (
+      <span className="oc-tool-icon-pair">
+        <Lucide name="laptop" className={className} />
+        <Lucide name="terminal" className={className} />
+      </span>
+    );
+  }
   return <Lucide name={toolIconName(name)} className={className} />;
 }
 
@@ -173,13 +220,17 @@ interface ShellProps {
   content?: ReactNode;
   /** `isCodeBlock`: the content brings its own frame. */
   bareContent?: boolean;
+  /** `contentClassName: ""`: the content sits unframed under the label (markdown). */
+  plainContent?: boolean;
+  /** `leftContentClassName`. */
+  leftClass?: string;
   open: boolean;
   onToggle: () => void;
   tone?: "error";
   status?: ToolStatus;
 }
 
-function RowShell({ icon, left, right, keepRight = false, align = "baseline", content, bareContent = false, open, onToggle, tone, status }: ShellProps) {
+function RowShell({ icon, left, right, keepRight = false, align = "baseline", content, bareContent = false, plainContent = false, leftClass, open, onToggle, tone, status }: ShellProps) {
   const opens = content !== undefined && content !== null && content !== false;
   const collapsed = !opens || !open;
   return (
@@ -196,11 +247,11 @@ function RowShell({ icon, left, right, keepRight = false, align = "baseline", co
           )}
         </div>
         <div className={`oc-tool-main align-${align}`}>
-          <div className="oc-tool-left">{left}</div>
+          <div className={leftClass ? `oc-tool-left ${leftClass}` : "oc-tool-left"}>{left}</div>
           {right ? <div className={`oc-tool-right${!keepRight && !collapsed ? " hidden" : ""}`}>{right}</div> : null}
         </div>
       </div>
-      {opens && open ? <div className={bareContent ? "oc-tool-content bare" : "oc-tool-content"}>{content}</div> : null}
+      {opens && open ? <div className={bareContent ? "oc-tool-content bare" : plainContent ? "oc-tool-content plain" : "oc-tool-content"}>{content}</div> : null}
     </div>
   );
 }
@@ -237,9 +288,18 @@ function ErrorRow({ text }: { text: string }) {
   );
 }
 
+/** Row kinds whose Conductor component adds the `AI` error row under a failed call. */
+const ERROR_ROW_KINDS = new Set(["bash", "run-local-command", "bash-output", "grep", "edit", "multi-edit", "write", "web", "task-create", "task-list", "task-get", "task-update"]);
+
+/** Rows Conductor opens until the user closes them (`defaultCollapsed: false`). */
+export function opensByDefault(tool: ConductorTool): boolean {
+  const kind = toolKind(tool.name);
+  return kind === "exit-plan-mode" || kind === "image-generation";
+}
+
 export function ConductorToolRow(props: ToolRowProps) {
   const row = <Row {...props} />;
-  if (!props.isError || !props.result) return row;
+  if (!props.isError || !props.result || !ERROR_ROW_KINDS.has(toolKind(props.tool.name))) return row;
   return (
     <>
       {row}
@@ -254,25 +314,18 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
   const shell = { icon, open, onToggle, status };
   const output = isError ? undefined : result;
   switch (toolKind(name)) {
-    case "bash": {
-      const command = s(input.command);
+    case "bash":
+      return <BashRow {...shell} input={input} output={output} />;
+    case "run-local-command": {
+      // `I0o`: the Bash row with a laptop icon, its reason and extended-timeout note above it.
+      const reason = s(input.reason);
+      const extended = s(input.extendedTimeoutReason);
       return (
-        <RowShell
-          {...shell}
-          left={<span>{s(input.description) || "Bash"}</span>}
-          right={command ? <CodeChip text={command} /> : undefined}
-          align="center"
-          bareContent
-          content={
-            <pre className="oc-tool-code">
-              <code>
-                <span className="oc-tool-prompt">$ </span>
-                {command}
-                {output ? `\n\n${output}` : ""}
-              </code>
-            </pre>
-          }
-        />
+        <div className="oc-tool-stack">
+          {reason ? <p className="oc-tool-aside">{reason}</p> : null}
+          {extended ? <p className="oc-tool-aside">Extended timeout: {extended}</p> : null}
+          <BashRow {...shell} icon={<ToolIcon name={name} />} input={{ command: input.command, description: s(input.description) || "Local command" }} output={output === undefined ? undefined : textBlocks(output)} />
+        </div>
       );
     }
     case "read": {
@@ -402,21 +455,31 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
         />
       );
     }
-    default: {
-      const mcp = name.startsWith("mcp__");
-      const summary = genericSummary(name, input);
-      const body = [Object.keys(input).length > 0 ? JSON.stringify(input, null, 2) : "", output ?? ""].filter(Boolean).join("\n\n");
-      return (
-        <RowShell
-          {...shell}
-          left={mcp || name === "ToolSearch" ? <span>{mcpLabel(name)}</span> : <span className="oc-lowercase">{name}</span>}
-          right={summary ? <CodeChip text={summary} /> : undefined}
-          align="center"
-          content={body || undefined}
-        />
-      );
-    }
+    default:
+      return <MoreRows {...{ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }} />;
   }
+}
+
+function BashRow({ input, output, ...shell }: ShellBase & { input: Record<string, unknown>; output?: string }) {
+  const command = s(input.command);
+  return (
+    <RowShell
+      {...shell}
+      left={<span>{s(input.description) || "Bash"}</span>}
+      right={command ? <CodeChip text={command} /> : undefined}
+      align="center"
+      bareContent
+      content={
+        <pre className="oc-tool-code">
+          <code>
+            <span className="oc-tool-prompt">$ </span>
+            {command}
+            {output ? `\n\n${output}` : ""}
+          </code>
+        </pre>
+      }
+    />
+  );
 }
 
 function NumberedCode({ text, start }: { text: string; start: number }) {
@@ -452,4 +515,604 @@ function DiffBlock({ oldText, newText }: { oldText: string; newText: string }) {
       ))}
     </pre>
   );
+}
+
+// ---- The rest of Conductor's row kinds (renderApp `Tpo` ... `Kpo`, `aUt`) ---------
+
+type ShellBase = { icon: ReactNode; open: boolean; onToggle: () => void; status?: ToolStatus };
+
+/** `Mki`: a result that is a JSON array of text blocks, as its text. */
+function textBlocks(result: string): string {
+  try {
+    const v: unknown = JSON.parse(result);
+    if (Array.isArray(v)) return v.map((b) => (b && typeof b === "object" && typeof (b as { text?: unknown }).text === "string" ? (b as { text: string }).text : "")).join("\n");
+  } catch {
+    return result;
+  }
+  return result;
+}
+
+const RESULT_LIMIT = 100_000;
+
+/** `V9e`: a call's input as JSON and its output (or error), the body of most generic rows. */
+function InputOutput({ input, result, isError }: { input: Record<string, unknown>; result?: string; isError: boolean }) {
+  const hasInput = Object.keys(input).length > 0;
+  const text = result ?? "";
+  const shown = text.length > RESULT_LIMIT ? text.slice(0, RESULT_LIMIT) : text;
+  return (
+    <div className="oc-io">
+      {hasInput ? (
+        <div>
+          <div className="oc-io-label">Input:</div>
+          <pre className="oc-io-pre muted">{JSON.stringify(input, null, 2)}</pre>
+        </div>
+      ) : null}
+      {text ? (
+        <div>
+          {hasInput ? <div className="oc-io-label output">{isError ? "Error:" : "Output:"}</div> : null}
+          <pre className={`oc-io-pre${isError ? " error" : ""}`}>{shown}</pre>
+          {shown.length < text.length ? <div className="oc-io-truncated">Content truncated ({text.length.toLocaleString()} chars total)</div> : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/** `iUt`: an MCP tool's row; a failed call turns red and shows its error on the right. */
+function McpRow({ name, input, result, isError, left, right, ...shell }: ShellBase & { name: string; input: Record<string, unknown>; result?: string; isError: boolean; left: ReactNode; right?: ReactNode }) {
+  const error = isError && result !== undefined ? result.slice(0, RESULT_LIMIT) : undefined;
+  const hasBody = Object.keys(input).length > 0 || !!result;
+  return (
+    <RowShell
+      {...shell}
+      left={left}
+      right={error !== undefined ? <span className="oc-error-chip">{error}</span> : right}
+      align="center"
+      tone={error !== undefined ? "error" : undefined}
+      content={
+        hasBody ? (
+          <div className="oc-io">
+            <div className="oc-io-label mono">Tool: {name}</div>
+            <InputOutput input={input} result={result} isError={isError} />
+          </div>
+        ) : undefined
+      }
+    />
+  );
+}
+
+/** `Qu variant="outline"`: the small uppercase badge AskUserQuestion shows on the right. */
+function Badge({ icon, children, tone }: { icon: LucideName; children: ReactNode; tone?: "destructive" | "muted" }) {
+  return (
+    <span className="oc-badge" data-tone={tone}>
+      <Lucide name={icon} className="oc-badge-icon" />
+      {children}
+    </span>
+  );
+}
+
+/** `t0`: the copy icon button (ExitPlanMode's plan, a sub-agent's result). */
+function CopyIcon({ text, tooltip = "Copy" }: { text: string; tooltip?: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      type="button"
+      className="oc-copy-icon"
+      aria-label={tooltip}
+      title={tooltip}
+      onClick={(e) => {
+        e.stopPropagation();
+        void navigator.clipboard?.writeText(text).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1500);
+        });
+      }}
+    >
+      <Lucide name={copied ? "check" : "copy"} className="oc-copy-icon-svg" />
+    </button>
+  );
+}
+
+/** `Q0o` + `oUt`: one task with its status icon. */
+function TaskLine({ task }: { task: TaskItem }) {
+  const icon: LucideName = task.status === "completed" ? "circle-check" : task.status === "in_progress" ? "clock" : task.status === "deleted" ? "trash-2" : "circle";
+  return (
+    <div className="oc-task" data-status={task.status ?? "pending"}>
+      <Lucide name={icon} className="oc-task-icon" />
+      <div className="oc-task-body">
+        <p className="oc-task-subject">{task.subject}</p>
+        {task.description ? <p className="oc-task-note">{task.description}</p> : null}
+        {task.owner ? <p className="oc-task-note">Owner: {task.owner}</p> : null}
+      </div>
+    </div>
+  );
+}
+
+const note = (text: string | undefined) => (text ? <span className="oc-tool-note">{text}</span> : undefined);
+
+/** `bpo`'s model after the sub-agent type: Claude Code's aliases as Conductor names them (`IDt`). */
+function modelName(model: string): string {
+  const alias: Record<string, string> = { opus: "Opus", sonnet: "Sonnet", haiku: "Haiku", inherit: "Inherit" };
+  return alias[model] ?? model;
+}
+
+function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
+  const { name, input } = tool;
+  const kind = toolKind(name);
+  const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
+  const output = isError ? undefined : result;
+  const framed = (text: string | undefined) => (text ? text : undefined);
+  switch (kind) {
+    case "bash-output": {
+      // `N0o`
+      const st = backgroundStatus(result);
+      return (
+        <RowShell
+          {...shell}
+          left={
+            <span className="oc-tool-left-row">
+              Checking background process
+              {st ? (
+                <span className="oc-status-pill" data-status={st}>
+                  {st}
+                </span>
+              ) : null}
+            </span>
+          }
+          content={framed(result)}
+        />
+      );
+    }
+    case "ask-user-question": {
+      // `Tpo`
+      const questions = Array.isArray(input.questions) ? (input.questions as Record<string, unknown>[]) : [];
+      const ask = askUserState(questions.length, result === undefined ? undefined : resultText(result), isError);
+      const base = { ...shell, icon: <ToolIcon name="mcp__conductor__askuserquestion" />, left: <span>User input</span>, align: "center" as const };
+      if (ask.state === "cancelled") return <RowShell {...base} right={<Badge icon="circle-x">Cancelled</Badge>} />;
+      if (ask.state === "failed") return <RowShell {...base} right={<Badge icon="circle-x" tone="destructive">Failed</Badge>} content={ask.text || undefined} tone="error" />;
+      if (ask.state === "waiting") {
+        return status === "running" ? (
+          <RowShell {...base} right={<Badge icon="clock">Awaiting response</Badge>} status={status} />
+        ) : (
+          <RowShell {...base} right={<Badge icon="circle" tone="muted">Not answered</Badge>} />
+        );
+      }
+      return (
+        <RowShell
+          {...base}
+          right={<Badge icon="circle-check">Answered</Badge>}
+          content={
+            <div className="oc-qa">
+              {questions.map((q, i) => (
+                <div key={i} className="oc-qa-item">
+                  <div className="oc-qa-question">{s(q.question)}</div>
+                  <div className="oc-qa-answer">{ask.answers[i]?.trim() ? ask.answers[i] : "No response"}</div>
+                </div>
+              ))}
+            </div>
+          }
+        />
+      );
+    }
+    case "enter-plan-mode":
+      return <RowShell {...shell} left={<span>Enter plan mode</span>} />;
+    case "exit-plan-mode": {
+      const plan = s(input.plan);
+      return (
+        <RowShell
+          {...shell}
+          left={<span>Propose plan</span>}
+          right={plan ? <CopyIcon text={plan} tooltip="Copy plan" /> : undefined}
+          keepRight
+          align="center"
+          bareContent
+          content={
+            <div className="oc-plan">
+              <Markdown text={plan} className="oc-prose" workspacePath={workspacePath} onOpenFile={onOpenFile} />
+            </div>
+          }
+        />
+      );
+    }
+    case "skill":
+      return <RowShell {...shell} left={<span>{skillLabel(s(input.skill))}</span>} right={<span className="oc-tool-tag">Skill activated</span>} />;
+    case "slash-command":
+      return <RowShell {...shell} left={<span>{slashCommandLabel(s(input.command))}</span>} right={<span className="oc-tool-tag">Slash command</span>} />;
+    case "thinking": {
+      const text = s(input.thinking).trim();
+      return (
+        <RowShell
+          {...shell}
+          left={<span>Thinking</span>}
+          right={<span className="oc-code-chip sans">{text}</span>}
+          align="center"
+          plainContent
+          content={<Markdown text={text} className="oc-prose muted" />}
+        />
+      );
+    }
+    case "task-create": {
+      const subject = s(input.subject);
+      const description = s(input.description);
+      const id = taskIdIn(result);
+      return (
+        <RowShell
+          {...shell}
+          left={<span>Task created</span>}
+          right={note(subject)}
+          content={
+            <div className="oc-task-detail">
+              <p className="oc-task-subject">{subject}</p>
+              {description ? <p className="oc-task-note">{description}</p> : null}
+              {id ? <p className="oc-task-note mono">Task ID: {id}</p> : null}
+            </div>
+          }
+        />
+      );
+    }
+    case "task-list": {
+      const tasks = parseTaskList(output);
+      const active = tasks.find((t) => t.status === "in_progress");
+      const done = tasks.filter((t) => t.status === "completed").length;
+      const doing = tasks.filter((t) => t.status === "in_progress").length;
+      const pending = tasks.filter((t) => t.status === "pending" || !t.status).length;
+      const counts = [pending > 0 && `${pending} pending`, doing > 0 && `${doing} in progress`, done > 0 && `${done} completed`].filter(Boolean).join(", ");
+      return (
+        <RowShell
+          {...shell}
+          left={<span>{active ? "Task in progress" : "Task list"}</span>}
+          right={<span className="oc-tool-count">{active ? active.activeForm || active.subject : `${done}/${tasks.length} completed`}</span>}
+          content={
+            <div>
+              <div className="oc-task-counts">{counts}</div>
+              {tasks.length === 0 ? (
+                <p className="oc-task-empty">No tasks</p>
+              ) : (
+                <div className="oc-task-list">
+                  {tasks.map((t, i) => (
+                    <TaskLine key={t.id ?? i} task={t} />
+                  ))}
+                </div>
+              )}
+            </div>
+          }
+        />
+      );
+    }
+    case "task-get": {
+      const task = parseTask(output);
+      const id = s(input.taskId);
+      return (
+        <RowShell
+          {...shell}
+          left={<span>Task details</span>}
+          right={task ? note(task.subject) : id ? <span className="oc-tool-count mono">Task ID: {id}</span> : undefined}
+          content={task ? <TaskLine task={task} /> : <p className="oc-task-empty">Loading task...</p>}
+        />
+      );
+    }
+    case "task-update": {
+      const task = parseTask(output);
+      const id = s(input.taskId) || taskIdIn(result);
+      const { label, note: dep } = taskUpdateLabel(input);
+      const subject = task?.subject || s(input.subject);
+      const blockedBy = Array.isArray(input.addBlockedBy) ? (input.addBlockedBy as unknown[]).map(String) : [];
+      const blocks = Array.isArray(input.addBlocks) ? (input.addBlocks as unknown[]).map(String) : [];
+      const field = (k: string, v: ReactNode, mono = false) => (
+        <div className="oc-task-field">
+          <span className="oc-task-field-key">{k}</span>
+          <span className={mono ? "oc-task-field-value mono" : "oc-task-field-value"}>{v}</span>
+        </div>
+      );
+      return (
+        <RowShell
+          {...shell}
+          left={<span>{label}</span>}
+          right={dep ? note(dep) : subject ? note(task?.activeForm || subject) : id ? <span className="oc-tool-count mono">Task ID: {id}</span> : undefined}
+          content={
+            task ? (
+              <TaskLine task={task} />
+            ) : (
+              <div className="oc-task-fields">
+                {s(input.status) ? field("Status:", s(input.status)) : null}
+                {s(input.subject) ? field("Subject:", s(input.subject)) : null}
+                {blockedBy.length > 0 ? field("Blocked by:", `#${blockedBy.join(", #")}`, true) : null}
+                {blocks.length > 0 ? field("Blocks:", `#${blocks.join(", #")}`, true) : null}
+                {id ? <div className="oc-task-field id">Task ID: {id}</div> : null}
+              </div>
+            )
+          }
+        />
+      );
+    }
+    case "teammate": {
+      // `Gpo`
+      const spawn = input.operation === "spawnTeam";
+      const purpose = s(input.description);
+      const lead = s(input.agent_type);
+      return (
+        <RowShell
+          {...shell}
+          left={<span>{spawn ? "Spawn swarm" : "Clean up swarm"}</span>}
+          right={s(input.team_name) ? <CodeChip text={s(input.team_name)} /> : undefined}
+          align="center"
+          content={
+            spawn && (purpose || lead) ? (
+              <div className="oc-task-fields">
+                {purpose ? (
+                  <div>
+                    <span className="oc-task-field-key">Purpose: </span>
+                    <span className="oc-task-field-value">{purpose}</span>
+                  </div>
+                ) : null}
+                {lead ? (
+                  <div>
+                    <span className="oc-task-field-key">Lead type: </span>
+                    <span className="oc-task-field-value mono">{lead}</span>
+                  </div>
+                ) : null}
+              </div>
+            ) : undefined
+          }
+        />
+      );
+    }
+    case "send-message": {
+      // `qpo`
+      const { label, summary } = sendMessageLabel(input);
+      const recipient = s(input.recipient);
+      const content = s(input.content);
+      return (
+        <RowShell
+          {...shell}
+          left={<span>{label}</span>}
+          right={note(summary)}
+          content={
+            content ? (
+              <div className="oc-task-fields">
+                {recipient && input.type !== "broadcast" ? (
+                  <div>
+                    <span className="oc-task-field-key">To: </span>
+                    <span className="oc-task-field-value mono">{recipient}</span>
+                  </div>
+                ) : null}
+                <div className="oc-pre-wrap">{content}</div>
+              </div>
+            ) : undefined
+          }
+        />
+      );
+    }
+    case "diff-comment": {
+      // `Ipo`
+      const comments = Array.isArray(input.comments) ? (input.comments as Record<string, unknown>[]) : [];
+      return (
+        <RowShell
+          {...shell}
+          left={<span>Code review comments</span>}
+          right={<span className="oc-tool-count">{`${comments.length} comment${comments.length !== 1 ? "s" : ""}`}</span>}
+          content={
+            <div className="oc-qa">
+              {comments.map((c, i) => (
+                <div key={i} className="oc-comment">
+                  <div className="oc-comment-where">
+                    {s(c.file)}:{String(c.lineNumber ?? "")}
+                  </div>
+                  <div className="oc-qa-question body">{s(c.body)}</div>
+                </div>
+              ))}
+            </div>
+          }
+        />
+      );
+    }
+    case "get-diff-comments":
+      return <RowShell {...shell} left={<span>Review comments</span>} right={<span className="oc-tool-count">{s(input.file) ? lastTwoSegments(s(input.file)) : "All files"}</span>} content={framed(result)} />;
+    case "get-workspace-diff": {
+      const target = input.stat ? "File stats" : s(input.file) ? lastTwoSegments(s(input.file)) : "Full diff";
+      return <RowShell {...shell} left={<span>Workspace diff</span>} right={<span className="oc-tool-count">{target}</span>} content={framed(result)} />;
+    }
+    case "get-terminal-output": {
+      const { text, note: where } = terminalOutput(input, result);
+      return <RowShell {...shell} left={<span>Get terminal output</span>} right={where ? <span className="oc-tool-count">{where}</span> : undefined} content={framed(text)} />;
+    }
+    case "schedule-wakeup": {
+      // `Epo`: a failed call draws as the generic row.
+      if (isError) return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+      const label = scheduleWakeupLabel(input, result, undefined, Date.now(), (ms) => new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
+      return (
+        <RowShell
+          {...shell}
+          left={<span>{label}</span>}
+          right={s(input.reason) ? <CodeChip text={s(input.reason)} /> : undefined}
+          align="center"
+          content={<InputOutput input={input} result={result} isError={isError} />}
+        />
+      );
+    }
+    case "image-generation": {
+      // `Vpo`: the generated image's path (the image itself is not drawn yet).
+      const path = result === undefined ? "" : resultText(result).trim();
+      return (
+        <RowShell
+          {...shell}
+          left={<span>{result === undefined ? "Generating image" : "Generated image"}</span>}
+          keepRight
+          content={path ? <span className="oc-task-note mono">{path}</span> : undefined}
+        />
+      );
+    }
+    case "node-repl-js": {
+      // `Kpo`
+      const title = s(input.title);
+      return (
+        <RowShell
+          {...shell}
+          left={<span>Node REPL</span>}
+          right={title ? <CodeChip text={title} /> : undefined}
+          align="center"
+          content={Object.keys(input).length > 0 || result ? <InputOutput input={input} result={result} isError={isError} /> : undefined}
+        />
+      );
+    }
+    case "linear-mcp":
+    case "context7-mcp": {
+      // `Bki` / `$ki`
+      const chip =
+        name === "mcp__linear__get_issue" ? s(input.id)
+        : name === "mcp__context7__resolve-library-id" ? s(input.libraryName)
+        : name === "mcp__context7__get-library-docs" ? s(input.topic)
+        : "";
+      return <McpRow {...shell} name={name} input={input} result={result} isError={isError} left={<span>{mcpLabel(name)}</span>} right={chip ? <CodeChip text={chip} /> : undefined} />;
+    }
+    case "codex-collab":
+      return <CollabRow name={name} input={input} result={result} isError={isError} />;
+    case "sub-agent":
+      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={output} />;
+      if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }} />;
+      return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+    default:
+      return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+  }
+}
+
+/** `aUt`: any other tool. MCP tools get `iUt`'s shell; Monitor shows its description as plain text. */
+function GenericRow({ tool, status, result, isError, open, onToggle }: Pick<ToolRowProps, "tool" | "status" | "result" | "isError" | "open" | "onToggle">) {
+  const { name, input } = tool;
+  const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
+  const mcp = name.startsWith("mcp__");
+  const monitor = name === "Monitor";
+  const summary = genericSummary(name, input);
+  const left = mcp || monitor || name === "ToolSearch" ? <span>{mcpLabel(name)}</span> : <span className="oc-lowercase">{name}</span>;
+  const right = summary ? monitor ? <span className="oc-tool-plain">{summary}</span> : <CodeChip text={summary} /> : undefined;
+  if (mcp) return <McpRow {...shell} name={name} input={input} result={result} isError={isError} left={left} right={right} />;
+  return (
+    <RowShell
+      {...shell}
+      left={left}
+      leftClass={monitor ? "shrink" : undefined}
+      right={right}
+      align={monitor ? "baseline" : "center"}
+      content={Object.keys(input).length > 0 || result ? <InputOutput input={input} result={result} isError={isError} /> : undefined}
+    />
+  );
+}
+
+/** `bpo`: a typed sub-agent (Explore, Plan, ...): its type and model, its description, its answer. */
+function SubagentRow({ input, result, ...shell }: ShellBase & { input: Record<string, unknown>; result?: string }) {
+  const [raw, setRaw] = useState(false);
+  const type = s(input.subagent_type);
+  const model = s(input.model);
+  const description = subagentDescription(s(input.description), model || undefined);
+  const text = result === undefined ? "" : resultText(result);
+  return (
+    <RowShell
+      {...shell}
+      icon={<ToolIcon name={type} />}
+      left={
+        <span className="oc-subagent-type">
+          {type}
+          {model ? (
+            <>
+              <span className="oc-subagent-dot">{"\u2022"}</span>
+              <span className="oc-subagent-model">{modelName(model)}</span>
+            </>
+          ) : null}
+        </span>
+      }
+      right={description ? <span className="oc-tool-count">{description}</span> : undefined}
+      plainContent
+      content={
+        text ? (
+          <div className="oc-subagent-result">
+            <div className="oc-subagent-tabs">
+              <div className="oc-subagent-tab-group">
+                <button type="button" className={raw ? "oc-subagent-tab" : "oc-subagent-tab active"} onClick={() => setRaw(false)}>
+                  Formatted
+                </button>
+                <button type="button" className={raw ? "oc-subagent-tab active" : "oc-subagent-tab"} onClick={() => setRaw(true)}>
+                  Raw
+                </button>
+              </div>
+              <CopyIcon text={text} />
+            </div>
+            <div className="oc-subagent-body">{raw ? <div className="oc-subagent-raw">{text}</div> : <Markdown text={text} className="oc-prose" />}</div>
+          </div>
+        ) : undefined
+      }
+    />
+  );
+}
+
+const COLLAB_COLORS = ["blue", "green", "cyan", "fuchsia", "orange", "yellow"];
+
+function CollabAgentName({ agent }: { agent: CollabAgent }) {
+  return (
+    <span className="oc-collab-agent">
+      <span className="oc-collab-name" data-color={COLLAB_COLORS[agent.color]}>
+        {agent.name}
+      </span>
+      {agent.role ? <span className="oc-collab-role">{agent.role}</span> : null}
+    </span>
+  );
+}
+
+/** `_0o` in `Rki`'s shell: a Codex collaboration call (spawn, wait, send input ... to agents). */
+function CollabRow({ name, input, result, isError }: { name: string; input: Record<string, unknown>; result?: string; isError: boolean }) {
+  const [open, setOpen] = useState(false);
+  const call = collabCall(name, input, result, isError);
+  const body =
+    call.prompt || call.listAgents ? (
+      <div className="oc-collab-body">
+        {call.prompt ? <div className="oc-collab-prompt">{call.prompt}</div> : null}
+        {call.listAgents
+          ? call.agents.map((a) => (
+              <div key={a.threadId} className="oc-collab-line">
+                <CollabStatus status={a.errored ? "failed" : call.status} />
+                <span>
+                  <CollabAgentName agent={a} />
+                  {a.state ? <span className="oc-collab-state">{`: ${a.state}`}</span> : null}
+                </span>
+              </div>
+            ))
+          : null}
+      </div>
+    ) : null;
+  const statusIcon =
+    call.status === "failed" ? <Lucide name="circle-alert" className="oc-tool-icon error" />
+    : call.status === "completed" ? <Lucide name="bot" className="oc-tool-icon" />
+    : <Lucide name="bot" className="oc-tool-icon working" />;
+  return (
+    <div className="oc-tool oc-collab" data-status={call.status}>
+      <div className={`oc-tool-head${body ? " opens" : ""}`} onClick={body ? () => setOpen((o) => !o) : undefined} role={body ? "button" : undefined} aria-expanded={body ? open : undefined}>
+        <div className="oc-tool-icon-slot">
+          {body ? (
+            <div className="oc-tool-icon-swap">
+              <div className="oc-tool-icon-idle">{statusIcon}</div>
+              <Lucide name={open ? "minus" : "plus"} className="oc-tool-icon-hover" />
+            </div>
+          ) : (
+            statusIcon
+          )}
+        </div>
+        <div className="oc-tool-main align-baseline">
+          <span className="oc-collab-title">
+            <span className="oc-collab-action">{call.action}</span>
+            {call.agents.length === 1 ? <CollabAgentName agent={call.agents[0]!} /> : <span className="oc-collab-count">{call.countLabel}</span>}
+            {call.model ? (
+              <>
+                <span className="oc-subagent-dot">{"\u2022"}</span>
+                <span className="oc-subagent-model">{modelName(call.model)}</span>
+              </>
+            ) : null}
+          </span>
+        </div>
+      </div>
+      {open && body ? <div className="oc-collab-children">{body}</div> : null}
+    </div>
+  );
+}
+
+function CollabStatus({ status }: { status: "inProgress" | "completed" | "failed" }) {
+  return <Lucide name={status === "completed" ? "circle-check" : status === "failed" ? "circle-alert" : "clock"} className={`oc-tool-icon${status === "failed" ? " error" : ""}`} />;
 }

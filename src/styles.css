@@ -147,6 +147,9 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
    a w-6 spacer under the hover "..." trigger (right-[26px]) and a chevron shown on hover.
    The reference puts the label 6px from the sidebar edge, so it hangs into the list's left padding. */
 .sb-section-header { position: relative; margin: 2px 0 0 -6px; }
+/* Conductor's "My workspaces" header (`lBi`) sits outside the scroll area's px-1.5, so it spans the full sidebar width:
+   its chevron ends 6px from the edge and the "..." sits at right-[26px] of 256px, not of the 6px-inset list. */
+.sb-my-workspaces > .sb-section-header { margin-right: -6px; }
 .sb-section-toggle { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; padding: 6px; border-radius: 6px; text-align: left; }
 .sb-section-header:hover .sb-section-toggle, .sb-section-header:has([data-open]) .sb-section-toggle { background: var(--sidebar-accent); }
 .sb-section-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; font-weight: 600; color: color-mix(in srgb, var(--sidebar-muted-foreground) 70%, transparent); }
@@ -185,7 +188,9 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-repo-spacer { width: 36px; flex: none; }
 .sb-repo-add { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex: none; border-radius: 6px; color: var(--sidebar-muted-foreground); }
 .sb-repo-add:hover { color: var(--text); background: var(--sidebar-accent); }
-.sb-repo-menu { right: 36px; top: 20px; }
+/* Conductor's Button keeps its icon at full size ([&_svg]:shrink-0): the size-4 plus is 16px, not squeezed by the padding. */
+.sb-repo-add svg { flex: none; }
+.sb-repo-menu { right: 36px; }
 .ws-empty { color: var(--sidebar-muted-foreground); margin: 0; padding: 4px 6px 4px 26px; font-size: 12px; }
 /* Workspace rows, after Conductor's `wFi`: py-2 pr-1.5 pl-5 rounded-md, hover and selected bg-sidebar-accent,
    a size-4 leading status icon (mt-0.5 mr-0.5; the branch icon, size-3.5 muted, for a plain branch),
@@ -207,11 +212,14 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-ws-loader circle:nth-child(3) { animation-delay: 0.4s; }
 @keyframes sb-ws-dot { 0%, 100% { opacity: 0.35; } 40% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .sb-ws-loader circle { animation: none; opacity: 0.8; } }
-.sb-ws-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 450; color: var(--sidebar-muted-foreground); }
+.sb-ws-name { flex: 1; min-width: 0; margin-right: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 450; color: var(--sidebar-muted-foreground); }
+/* Conductor's title line is title, gap-1.5, a flex-1 spacer, gap-1.5, then the diff stat or a size-3 slot for the
+   hover archive button: a title truncates 12px before the diff stat, or 24px before the row's right padding. */
+.sb-ws-name:last-child { margin-right: 24px; }
 .sb-ws[data-unread] .sb-ws-name { font-weight: 600; color: var(--sidebar-accent-foreground); }
 /* sidebar: ws-diffstat. Conductor's ID with compactCounts: flex gap-1, + then -, each only when > 0.
    Unselected rows are muted unless Settings > Appearance > Colored sidebar diffs is on. */
-.sb-ws-diff { flex: none; display: flex; align-items: center; gap: 4px; padding: 2px 4px; font-family: var(--font-mono); font-size: 11px; line-height: 14px; }
+.sb-ws-diff { flex: none; display: flex; align-items: center; gap: 4px; padding: 2px 4px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; line-height: 14px; }
 :root:not([data-colored-sidebar-diffs]) .sb-ws:not([data-active]) .sb-ws-diff span { color: var(--sidebar-muted-foreground); }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex: none; opacity: 0.6; display: inline-block; }
 .status-dot.working { background: var(--amber); opacity: 1; animation: pulse 1.4s ease-in-out infinite; }
@@ -220,7 +228,8 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 /* Sidebar footer, after Conductor's `Nna`: px-4 py-3 flex justify-between border-t border-sidebar-border;
    actions are flex gap-5 ml-auto; each icon is text-sidebar-muted-foreground hover:text-foreground. */
 .sb-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--sidebar-border); }
-.sb-footer-actions { position: relative; display: flex; align-items: center; gap: 20px; margin-left: auto; }
+/* Conductor's footer line is 20px tall (its plan badge button), so the 16px icons centre 10px below the padding. */
+.sb-footer-actions { position: relative; display: flex; align-items: center; gap: 20px; min-height: 20px; margin-left: auto; }
 .sb-footer-btn { display: inline-flex; padding: 0; color: var(--sidebar-muted-foreground); }
 .sb-footer-btn:hover, .sb-footer-btn[aria-expanded="true"] { color: var(--text); }
 /* Help menu, after Conductor's footer popover: side top, align start, 4px offset, w-[340px] rounded-lg p-1 shadow-md;
@@ -256,6 +265,9 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .home-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .home-card-icon { display: flex; }
 .home-card-label { font-size: 14px; line-height: 20px; }
+.home-footer { display: flex; justify-content: center; gap: 16px; margin-top: 24px; }
+.home-cities { font-size: 12px; color: var(--muted); padding: 2px 4px; border-radius: 4px; }
+.home-cities:hover { color: var(--text); }
 @keyframes home-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .home-cards-wrap { animation: none; } }
 
@@ -274,6 +286,14 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .workspace { display: flex; flex-direction: column; height: 100%; }
 .ws-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 30px 16px 10px; border-bottom: 1px solid var(--border); background: var(--panel); }
 .ws-title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+/* Header actions row: Conductor's header group is "flex items-center gap-1.5" and its
+   buttons use the xs button size (h-6 px-2 text-xs gap-1.5 rounded-sm, icons size-3),
+   so Open in, the PR control and Archive share one 24px height and centre line. */
+.ws-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.ws-actions .oi { margin-right: 0; }
+.ws-actions .btn-small { height: 24px; padding: 0 8px; gap: 6px; font-size: 12px; line-height: 16px; border-radius: 4px; }
+.ws-actions .btn-icon { width: 24px; padding: 0; justify-content: center; }
+.ws-actions .btn-icon.active { color: var(--foreground); background: var(--hover); }
 .crumb { color: var(--muted); }
 .crumb-sep { color: var(--muted); opacity: 0.6; }
 .chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px; background: var(--hover); color: var(--muted); font-size: 12px; font-family: var(--font-mono); }

@@ -20,6 +20,9 @@
 //!    carries `turnChanges`, the files the turn changed (absent when a
 //!    checkpoint was skipped or the turn touched more than 200 files).
 //! 3. `reason_cancel(chatId)` for Stop.
+//! 4. `reason_answer_permission(chatId, requestId, optionId?)` answers a
+//!    `permissionRequest` event: with the chosen option, or `cancelled`
+//!    without one. A `permissionResolved` event follows.
 
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -173,6 +176,18 @@ pub fn reason_cancel(state: State<'_, ReasonChats>, chat_id: String) {
     if let Some(p) = state.provider.lock().unwrap().as_ref() {
         p.cancel(&chat_id);
     }
+}
+
+/// Answers the chat's open permission request; false when it is no longer open.
+#[tauri::command]
+pub fn reason_answer_permission(
+    state: State<'_, ReasonChats>,
+    chat_id: String,
+    request_id: String,
+    option_id: Option<String>,
+) -> bool {
+    let provider = state.provider.lock().unwrap().clone();
+    provider.is_some_and(|p| p.answer_permission(&chat_id, &request_id, option_id.as_deref()))
 }
 
 /// Recent Sessions in the signed-in Workspace, newest first.

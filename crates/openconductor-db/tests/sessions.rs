@@ -535,3 +535,82 @@ async fn list_and_delete() {
     assert!(!sessions::delete(&pool, "c").await.unwrap());
     assert!(sessions::list(&pool).await.unwrap().is_empty());
 }
+
+#[tokio::test]
+async fn chat_statuses_are_stored_listed_and_reset_at_startup() {
+    let pool = pool().await;
+    sqlx::query("INSERT INTO workspaces (local_id, state) VALUES ('ws-1', 'ready')")
+        .execute(&pool)
+        .await
+        .unwrap();
+    // A chat's row as chat_messages::save leaves it: only an id.
+    sqlx::query("INSERT INTO sessions (id) VALUES ('ws-1')")
+        .execute(&pool)
+        .await
+        .unwrap();
+    sessions::set_chat_status(&pool, "ws-1", "ws-1", SessionStatus::NeedsUserPermission)
+        .await
+        .unwrap();
+    // A review chat with no row yet.
+    sessions::set_chat_status(
+        &pool,
+        "ws-1:review:1",
+        "ws-1",
+        SessionStatus::NeedsUserInput,
+    )
+    .await
+    .unwrap();
+    sessions::set_chat_status(&pool, "ws-2", "ws-2", SessionStatus::Working)
+        .await
+        .unwrap();
+    sessions::set_chat_status(&pool, "ws-2", "ws-2", SessionStatus::Idle)
+        .await
+        .unwrap();
+    let listed: Vec<_> = sessions::active_statuses(&pool)
+        .await
+        .unwrap()
+        .into_iter()
+        .map(|a| (a.id, a.workspace_id, a.status))
+        .collect();
+    assert_eq!(
+        listed,
+        [
+            (
+                "ws-1".into(),
+                Some("ws-1".into()),
+                SessionStatus::NeedsUserPermission
+            ),
+            (
+                "ws-1:review:1".into(),
+                Some("ws-1".into()),
+                SessionStatus::NeedsUserInput
+            ),
+        ]
+    );
+
+    // Hidden sessions are left out.
+    sessions::hide(&pool, "ws-1:review:1").await.unwrap();
+    assert_eq!(sessions::active_statuses(&pool).await.unwrap().len(), 1);
+    sessions::unhide(&pool, "ws-1:review:1").await.unwrap();
+
+    // Startup resets the permission request; the question survives (`Ret`).
+    let reset = sessions::reset_busy_to_idle_at_startup(&pool)
+        .await
+        .unwrap();
+    assert_eq!(reset, ["ws-1"]);
+    let left: Vec<_> = sessions::active_statuses(&pool)
+        .await
+        .unwrap()
+        .into_iter()
+        .map(|a| a.status)
+        .collect();
+    assert_eq!(left, [SessionStatus::NeedsUserInput]);
+}
+
+#[test]
+fn status_names_round_trip_and_unknown_ones_are_refused() {
+    for s in SessionStatus::ALL {
+        assert_eq!(SessionStatus::parse(s.as_str()), Some(s));
+    }
+    assert_eq!(SessionStatus::parse("needs_input"), None);
+}

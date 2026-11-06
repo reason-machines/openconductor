@@ -330,6 +330,45 @@ async fn imported_workspaces_have_no_number() {
 }
 
 #[tokio::test]
+async fn record_initialization_stores_the_log_and_file_count_and_ends_ready() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    begin_workspace(&pool, &ws("app", "oslo"), Some("main"))
+        .await
+        .unwrap();
+    finish_workspace(&pool, &ws("app", "oslo"), Some("main"), None)
+        .await
+        .unwrap();
+    record_initialization(&pool, "app/oslo", Some("/tmp/conductor-1-abc.log"), 42)
+        .await
+        .unwrap();
+    let w = workspaces::get(&pool, "app/oslo")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert_eq!(w.state, WorkspaceState::Ready);
+    assert_eq!(
+        w.initialization_log_path.as_deref(),
+        Some("/tmp/conductor-1-abc.log")
+    );
+    assert_eq!(w.initialization_files_copied, Some(42));
+    // db_list_workspaces rows carry both, for the E2E check and the UI.
+    let row = &list_workspaces(&pool).await.unwrap()[0];
+    assert_eq!(
+        (
+            row.initialization_log_path.as_deref(),
+            row.initialization_files_copied
+        ),
+        (Some("/tmp/conductor-1-abc.log"), Some(42))
+    );
+    // An unknown workspace is an error, not a silent no-op.
+    assert!(record_initialization(&pool, "app/nope", None, 0)
+        .await
+        .is_err());
+}
+
+#[tokio::test]
 async fn lists_updated_at_as_last_activity() {
     let pool = pool().await;
     record_repository(&pool, &repo("app")).await.unwrap();

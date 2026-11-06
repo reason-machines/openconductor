@@ -34,6 +34,39 @@ pub enum SessionStatus {
     Waiting,
 }
 
+impl SessionStatus {
+    pub const ALL: [SessionStatus; 8] = [
+        Self::Idle,
+        Self::Working,
+        Self::Error,
+        Self::NeedsPlanResponse,
+        Self::NeedsUserInput,
+        Self::NeedsUserPermission,
+        Self::Cancelling,
+        Self::Waiting,
+    ];
+
+    /// The column value, e.g. `needs_user_permission`.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Idle => "idle",
+            Self::Working => "working",
+            Self::Error => "error",
+            Self::NeedsPlanResponse => "needs_plan_response",
+            Self::NeedsUserInput => "needs_user_input",
+            Self::NeedsUserPermission => "needs_user_permission",
+            Self::Cancelling => "cancelling",
+            Self::Waiting => "waiting",
+        }
+    }
+
+    /// The status a column value names; `None` for any other text, as the
+    /// reference decoder (`JZe`) throws on it.
+    pub fn parse(s: &str) -> Option<Self> {
+        Self::ALL.into_iter().find(|v| v.as_str() == s)
+    }
+}
+
 /// `sessions.permission_mode`; NULL reads as [`PermissionMode::Default`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, sqlx::Type)]
 #[sqlx(type_name = "TEXT", rename_all = "snake_case")]
@@ -649,6 +682,57 @@ pub async fn reset_busy_to_idle_at_startup(pool: &SqlitePool) -> Result<Vec<Stri
     )
     .await?;
     Ok(ids.into_iter().map(|(id,)| id).collect())
+}
+
+/// A chat's status (OpenConductor). A chat's `sessions` row is made by
+/// `chat_messages::save` with only its id; this creates it when missing and
+/// fills in `workspace_id` if it has none, so the startup reset (reference
+/// `xet`, [`reset_busy_to_idle_at_startup`]) covers chats as it covers the
+/// reference's sessions.
+pub async fn set_chat_status(
+    pool: &SqlitePool,
+    id: &str,
+    workspace_id: &str,
+    status: SessionStatus,
+) -> Result<()> {
+    exec(
+        sqlx::query("INSERT OR IGNORE INTO sessions (id, workspace_id) VALUES (?, ?)")
+            .bind(id)
+            .bind(workspace_id),
+        pool,
+    )
+    .await?;
+    exec(
+        sqlx::query(
+            "UPDATE sessions SET status = ?, workspace_id = COALESCE(workspace_id, ?) WHERE id = ?",
+        )
+        .bind(status)
+        .bind(workspace_id)
+        .bind(id),
+        pool,
+    )
+    .await?;
+    Ok(())
+}
+
+/// One visible session that is not idle.
+#[derive(Debug, Clone, PartialEq, Eq, sqlx::FromRow)]
+pub struct ActiveStatus {
+    pub id: String,
+    pub workspace_id: Option<String>,
+    pub status: SessionStatus,
+}
+
+/// Every visible (not hidden) session whose status is not `idle`, by id.
+/// The sidebar and Home fold these per workspace (reference `nTr` over a
+/// workspace's sessions with `hidden: false`).
+pub async fn active_statuses(pool: &SqlitePool) -> Result<Vec<ActiveStatus>> {
+    Ok(sqlx::query_as(
+        "SELECT id, workspace_id, status FROM sessions \
+         WHERE status IS NOT NULL AND status != 'idle' AND COALESCE(is_hidden, 0) = 0 ORDER BY id",
+    )
+    .fetch_all(pool)
+    .await?)
 }
 
 /// Delete one session row. Its messages and attachments are not deleted
